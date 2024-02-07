@@ -7,11 +7,8 @@ import {
   Grant,
   GrantRevokeRequest,
   Revoke,
-} from "../../../../shared/ApiSchema";
-import {
-  accessLevelRank,
-  GrantableAccessLevel,
-} from "../../../../shared/EntUtil";
+} from "@/wab/shared/ApiSchema";
+import { accessLevelRank, GrantableAccessLevel } from "@/wab/shared/EntUtil";
 import {
   assert,
   ensure,
@@ -19,13 +16,13 @@ import {
   spawn,
   unexpected,
   withoutFalsy,
-} from "../../../../common";
+} from "@/wab/common";
 import { notification } from "antd";
 import L from "lodash";
 import copy from "copy-to-clipboard";
-import { U } from "../../../cli-routes";
-import { getPublicUrl } from "../../../../urls";
-import Select from "../Select";
+import { U } from "@/wab/client/cli-routes";
+import { getPublicUrl } from "@/wab/urls";
+import Select from "@/wab/client/components/widgets/Select";
 import PermissionItem, {
   contentCreatorTooltip,
   contentRoleHelp,
@@ -34,24 +31,32 @@ import PermissionItem, {
   developerTooltip,
   viewerTooltip,
 } from "./PermissionItem";
-import { useAppCtx } from "../../../contexts/AppContexts";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   convertToTaggedResourceId,
   filterDirectResourcePerms,
   getAccessLevelToResource,
   resourceTypeIdField,
-} from "../../../../shared/perms";
-import { ClickStopper, Spinner, Tab, Tabs } from "../../widgets";
-import { maybeShowPaywall, PaywallError } from "../../modals/PricingModal";
-import { DEVFLAGS } from "../../../../devflags";
-import TextWithInfo from "../../../../../TextWithInfo";
-import { ORGANIZATION_LOWER } from "../../../../shared/Labels";
-import { getUserEmail } from "../../../../shared/ApiSchemaUtil";
-import PermissionsTab from "../../app-auth/PermissionsTab";
-import SettingsTab from "../../app-auth/SettingsTab";
-import ActivityTab from "../../app-auth/ActivityTab";
-import { useAppAuthConfig } from "../../app-auth/app-auth-contexts";
-import { useTopFrameCtxMaybe } from "../../../frame-ctx/top-frame-ctx";
+} from "@/wab/shared/perms";
+import {
+  ClickStopper,
+  Spinner,
+  Tab,
+  Tabs,
+} from "@/wab/client/components/widgets";
+import {
+  maybeShowPaywall,
+  PaywallError,
+} from "@/wab/client/components/modals/PricingModal";
+import { DEVFLAGS } from "@/wab/devflags";
+import TextWithInfo from "@/TextWithInfo";
+import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
+import { getUserEmail } from "@/wab/shared/ApiSchemaUtil";
+import PermissionsTab from "@/wab/client/components/app-auth/PermissionsTab";
+import SettingsTab from "@/wab/client/components/app-auth/SettingsTab";
+import ActivityTab from "@/wab/client/components/app-auth/ActivityTab";
+import { useAppAuthConfig } from "@/wab/client/components/app-auth/app-auth-contexts";
+import { useTopFrameCtxMaybe } from "@/wab/client/frame-ctx/top-frame-ctx";
 
 export const personalProjectPaywallMessage = (
   <>

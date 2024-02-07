@@ -1,9 +1,9 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import * as React from "react";
 import {
   DefaultUpsellConfirmProps,
   PlasmicUpsellConfirm,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicUpsellConfirm";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicUpsellConfirm";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import * as React from "react";
 
 interface UpsellConfirmProps extends DefaultUpsellConfirmProps {
   teamSettingsUrl: string;

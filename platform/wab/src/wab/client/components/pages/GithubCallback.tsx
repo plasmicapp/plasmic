@@ -1,7 +1,7 @@
+import { NonAuthCtx } from "@/wab/client/app-ctx";
+import { getURL } from "@/wab/client/components/auth/GithubConnect";
+import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import * as React from "react";
-import { NonAuthCtx } from "../../app-ctx";
-import { useAsyncStrict } from "../../hooks/useAsyncStrict";
-import { getURL } from "../auth/GithubConnect";
 
 export function GithubCallback(props: { nonAuthCtx: NonAuthCtx }) {
   const [err, setErr] = React.useState("");

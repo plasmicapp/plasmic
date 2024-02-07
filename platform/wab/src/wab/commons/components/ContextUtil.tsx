@@ -1,5 +1,5 @@
+import { capitalizeFirst } from "@/wab/strs";
 import * as React from "react";
-import { capitalizeFirst } from "../../strs";
 import {
   buildWrapperName,
   getComponentName,

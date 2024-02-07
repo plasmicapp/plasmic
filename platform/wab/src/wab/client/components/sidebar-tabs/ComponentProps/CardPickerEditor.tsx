@@ -1,6 +1,6 @@
+import { BareModal } from "@/wab/client/components/studio/BareModal";
+import Chip from "@/wab/client/components/widgets/Chip";
 import React from "react";
-import { BareModal } from "../../studio/BareModal";
-import Chip from "../../widgets/Chip";
 import CardPickerItem from "./CardPickerItem";
 import CardPickerModal from "./CardPickerModal";
 

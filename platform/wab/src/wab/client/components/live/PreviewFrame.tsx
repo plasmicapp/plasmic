@@ -8,6 +8,7 @@ import { getSortedHostLessPkgs } from "@/wab/client/components/studio/studio-bun
 import { scriptExec } from "@/wab/client/dom-utils";
 import { maybeToggleTrailingSlash } from "@/wab/client/utils/app-hosting-utils";
 import { ensure, spawn } from "@/wab/common";
+import { isPageComponent } from "@/wab/components";
 import {
   InteractionArgLoc,
   InteractionLoc,
@@ -23,7 +24,6 @@ import { autorun } from "mobx";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { useMountedState, usePreviousDistinct } from "react-use";
-import { isPageComponent } from "../../../components";
 import { onLoadInjectSystemJS, pushPreviewModules } from "./live-syncer";
 import { PreviewCtx } from "./PreviewCtx";
 

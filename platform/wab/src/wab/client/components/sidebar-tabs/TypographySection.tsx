@@ -1,6 +1,3 @@
-import { Alert, Menu, Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
-import React from "react";
 import {
   CustomCode,
   ensureKnownTplTag,
@@ -13,9 +10,27 @@ import {
   RichText,
   TplSlot,
   TplTag,
-} from "../../../classes";
-import { assert, cx, ensureInstance } from "../../../common";
-import { MaybeWrap } from "../../../commons/components/ReactUtil";
+} from "@/wab/classes";
+import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
+import {
+  getValueSetState,
+  LabeledItemRow,
+  shouldBeDisabled,
+  ValueSetState,
+} from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import {
+  ExpsProvider,
+  StylePanelSection,
+  TplExpsProvider,
+} from "@/wab/client/components/style-controls/StyleComponent";
+import StyleSwitch from "@/wab/client/components/style-controls/StyleSwitch";
+import { Typography } from "@/wab/client/components/style-controls/Typography";
+import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { assert, cx, ensureInstance } from "@/wab/common";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import {
   asCode,
   clone,
@@ -25,37 +40,22 @@ import {
   extractValueSavedFromDataPicker,
   isFallbackSet,
   tryExtractJson,
-} from "../../../exprs";
+} from "@/wab/exprs";
 import {
   inheritableTypographyCssProps,
   typographyCssProps,
-} from "../../../shared/core/style-props";
-import { computeDefinedIndicator } from "../../../shared/defined-indicator";
+} from "@/wab/shared/core/style-props";
+import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
 import {
   isCodeComponentSlot,
   isPlainTextTplSlot,
-} from "../../../shared/SlotUtils";
-import { VariantedStylesHelper } from "../../../shared/VariantedStylesHelper";
-import { isBaseVariant } from "../../../shared/Variants";
-import { getRichTextContent, isTplTextBlock } from "../../../tpls";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import ContextMenuIndicator from "../ContextMenuIndicator/ContextMenuIndicator";
-import {
-  getValueSetState,
-  LabeledItemRow,
-  shouldBeDisabled,
-  ValueSetState,
-} from "../sidebar/sidebar-helpers";
-import { SidebarSection } from "../sidebar/SidebarSection";
-import {
-  ExpsProvider,
-  StylePanelSection,
-  TplExpsProvider,
-} from "../style-controls/StyleComponent";
-import StyleSwitch from "../style-controls/StyleSwitch";
-import { Typography } from "../style-controls/Typography";
-import { LabelWithDetailedTooltip } from "../widgets/LabelWithDetailedTooltip";
+} from "@/wab/shared/SlotUtils";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { isBaseVariant } from "@/wab/shared/Variants";
+import { getRichTextContent, isTplTextBlock } from "@/wab/tpls";
+import { Alert, Menu, Tooltip } from "antd";
+import { observer } from "mobx-react-lite";
+import React from "react";
 import { DataPickerEditor } from "./ComponentProps/DataPickerEditor";
 import { StringPropEditor } from "./ComponentProps/StringPropEditor";
 import { FallbackEditor } from "./ComponentPropsSection";

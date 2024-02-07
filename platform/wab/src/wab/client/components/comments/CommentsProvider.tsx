@@ -1,18 +1,18 @@
-import { uniq } from "lodash";
-import * as React from "react";
-import { ReactNode, useEffect } from "react";
-import useSWR from "swr";
-import { ArenaFrame } from "../../../classes";
-import { mkIdMap } from "../../../collections";
-import { ensure, tuple } from "../../../common";
+import { ArenaFrame } from "@/wab/classes";
+import { apiKey } from "@/wab/client/api";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { mkIdMap } from "@/wab/collections";
+import { ensure, tuple } from "@/wab/common";
 import {
   ApiUser,
   CommentThreadId,
   GetCommentsResponse,
-} from "../../../shared/ApiSchema";
-import { apiKey } from "../../api";
-import { useAppCtx } from "../../contexts/AppContexts";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
+} from "@/wab/shared/ApiSchema";
+import { uniq } from "lodash";
+import * as React from "react";
+import { ReactNode, useEffect } from "react";
+import useSWR from "swr";
 import { CommentOverlaysContext } from "./CommentOverlays";
 
 export function CommentsProvider({ children }: { children: ReactNode }) {
@@ -51,10 +51,12 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
     }
   );
 
-  const [shownThreadId, setShownThreadId] =
-    React.useState<CommentThreadId | undefined>(undefined);
-  const [shownArenaFrame, setShownArenaFrame] =
-    React.useState<ArenaFrame | undefined>(undefined);
+  const [shownThreadId, setShownThreadId] = React.useState<
+    CommentThreadId | undefined
+  >(undefined);
+  const [shownArenaFrame, setShownArenaFrame] = React.useState<
+    ArenaFrame | undefined
+  >(undefined);
 
   useEffect(() => {
     if (maybeResponse) {

@@ -1,4 +1,4 @@
-import { readFileSync } from "fs";
+import { getStatusCodeFromResponse } from "@/wab/server/AppServer";
 import {
   GitSyncAction,
   GitSyncLanguage,
@@ -6,8 +6,8 @@ import {
   GitSyncScheme,
   GitWorkflowJob,
   GitWorkflowJobStatus,
-} from "../../shared/ApiSchema";
-import { getStatusCodeFromResponse } from "../AppServer";
+} from "@/wab/shared/ApiSchema";
+import { readFileSync } from "fs";
 import { getGithubApp } from "./app";
 import { getDefaultBranch } from "./branches";
 import { GithubRef } from "./types";

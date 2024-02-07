@@ -1,14 +1,14 @@
+import { Component, ComponentVariantGroup, ObjectPath } from "@/wab/classes";
+import { VariantLabel } from "@/wab/client/components/VariantControls";
+import { EditableLabelHandles } from "@/wab/client/components/widgets/EditableLabel";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ensure, spawn } from "@/wab/common";
+import { VariantPinState } from "@/wab/shared/PinManager";
+import { getPlumeVariantDef } from "@/wab/shared/plume/plume-registry";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
-import { Component, ComponentVariantGroup, ObjectPath } from "../../../classes";
-import { ensure, spawn } from "../../../common";
-import { VariantPinState } from "../../../shared/PinManager";
-import { getPlumeVariantDef } from "../../../shared/plume/plume-registry";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { VariantLabel } from "../VariantControls";
-import { EditableLabelHandles } from "../widgets/EditableLabel";
 import { makeVariantMenu, VariantDataPicker } from "./variant-menu";
 import VariantRow from "./VariantRow";
 

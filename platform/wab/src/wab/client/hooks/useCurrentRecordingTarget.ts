@@ -1,5 +1,5 @@
-import { makeVariantsController } from "../components/variants/VariantsController";
-import { useStudioCtx } from "../studio-ctx/StudioCtx";
+import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 
 export function useCurrentRecordingTarget(): "baseVariant" | "nonBaseVariant" {
   const studioCtx = useStudioCtx();

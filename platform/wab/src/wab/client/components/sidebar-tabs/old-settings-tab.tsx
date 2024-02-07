@@ -1,10 +1,10 @@
+import { isKnownTplTag, TplNode } from "@/wab/classes";
+import { Matcher } from "@/wab/client/components/view-common";
+import Checkbox from "@/wab/client/components/widgets/Checkbox";
+import { Textbox } from "@/wab/client/components/widgets/Textbox";
+import { ViewComponent, ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { Slot, SlotProvider } from "@/wab/commons/components/Slots";
 import * as React from "react";
-import { isKnownTplTag, TplNode } from "../../../classes";
-import { Slot, SlotProvider } from "../../../commons/components/Slots";
-import { ViewComponent, ViewCtx } from "../../studio-ctx/view-ctx";
-import { Matcher } from "../view-common";
-import Checkbox from "../widgets/Checkbox";
-import { Textbox } from "../widgets/Textbox";
 /*
 type ModifyPanelSectionProps = {
   title: React.ReactNode;

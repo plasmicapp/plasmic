@@ -1,9 +1,9 @@
+import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
 import { InputNumber, notification, Slider } from "antd";
 import { defer, isNil } from "lodash";
 import React, { useEffect } from "react";
 import { useUnmount } from "react-use";
 import { Optional } from "utility-types";
-import { useUndo } from "../../../shortcuts/studio/useUndo";
 
 interface InputNumPropEditorProps {
   onChange: (value?: number) => void;

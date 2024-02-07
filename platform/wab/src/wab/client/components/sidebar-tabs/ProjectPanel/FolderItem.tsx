@@ -1,16 +1,16 @@
-import cn from "classnames";
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { CSSProperties, ReactNode, RefObject, useRef } from "react";
-import {
-  DefaultFolderItemProps,
-  PlasmicFolderItem,
-} from "../../../plasmic/project_panel/PlasmicFolderItem";
 import {
   EditableLabel,
   EditableLabelHandles,
   EditableLabelProps,
-} from "../../widgets/EditableLabel";
+} from "@/wab/client/components/widgets/EditableLabel";
+import {
+  DefaultFolderItemProps,
+  PlasmicFolderItem,
+} from "@/wab/client/plasmic/project_panel/PlasmicFolderItem";
+import cn from "classnames";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
+import { CSSProperties, ReactNode, RefObject, useRef } from "react";
 import styles from "./FolderItem.module.scss";
 
 interface FolderItemProps

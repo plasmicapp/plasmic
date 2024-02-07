@@ -1,19 +1,19 @@
-import { Select } from "antd";
-import * as React from "react";
-import { spawn } from "../../../../common";
-import { DEVFLAGS } from "../../../../devflags";
-import { ApiProject } from "../../../../shared/ApiSchema";
-import {
-  INITIAL_VERSION_NUMBER,
-  SemVerReleaseType,
-} from "../../../../shared/site-diffs";
-import { useTopFrameCtx } from "../../../frame-ctx/top-frame-ctx";
+import GitJobStep from "@/wab/client/components/widgets/GitJobStep";
+import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
 import {
   DefaultSubsectionSaveVersionProps,
   PlasmicSubsectionSaveVersion,
-} from "../../../plasmic/plasmic_kit_continuous_deployment/PlasmicSubsectionSaveVersion";
-import type { PublishResult } from "../../../studio-ctx/StudioCtx";
-import GitJobStep from "../../widgets/GitJobStep";
+} from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicSubsectionSaveVersion";
+import type { PublishResult } from "@/wab/client/studio-ctx/StudioCtx";
+import { spawn } from "@/wab/common";
+import { DEVFLAGS } from "@/wab/devflags";
+import { ApiProject } from "@/wab/shared/ApiSchema";
+import {
+  INITIAL_VERSION_NUMBER,
+  SemVerReleaseType,
+} from "@/wab/shared/site-diffs";
+import { Select } from "antd";
+import * as React from "react";
 import { VisibleEnableBlock } from "./PublishFlowDialog";
 import { PublishState } from "./PublishFlowDialogWrapper";
 

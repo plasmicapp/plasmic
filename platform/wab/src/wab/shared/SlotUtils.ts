@@ -1,4 +1,3 @@
-import L from "lodash";
 import {
   Arg,
   Component,
@@ -16,19 +15,19 @@ import {
   Var,
   Variant,
   VirtualRenderExpr,
-} from "../classes";
-import { assert, ensureArray, maybe, notNil } from "../common";
-import { allSuccess } from "../commons/failable-utils";
-import { DeepReadonly } from "../commons/types";
+} from "@/wab/classes";
+import { assert, ensureArray, maybe, notNil } from "@/wab/common";
+import { allSuccess } from "@/wab/commons/failable-utils";
+import { DeepReadonly } from "@/wab/commons/types";
 import {
   getComponentDisplayName,
   isCodeComponent,
   isCodeComponentTpl,
   isPlasmicComponent,
-} from "../components";
-import { ChangeSummary } from "../model-change-util";
-import { SlotSelection } from "../slots";
-import { createExpandedRuleSetMerger, THEMABLE_TAGS } from "../styles";
+} from "@/wab/components";
+import { ChangeSummary } from "@/wab/model-change-util";
+import { SlotSelection } from "@/wab/slots";
+import { createExpandedRuleSetMerger, THEMABLE_TAGS } from "@/wab/styles";
 import {
   ancestorsUpWithSlotSelections,
   buildParamToComponent as buildParamToComponentMap,
@@ -49,7 +48,8 @@ import {
   TplTagCodeGenType,
   TplTextTag,
   tryGetOwnerSite,
-} from "../tpls";
+} from "@/wab/tpls";
+import L from "lodash";
 import { flattenComponent } from "./cached-selectors";
 import { elementSchemaToTpl } from "./code-components/code-components";
 import { toVarName } from "./codegen/util";

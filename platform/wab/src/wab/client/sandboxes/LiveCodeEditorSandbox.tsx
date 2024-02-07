@@ -2,9 +2,9 @@
  * Import and call this main instead of Shell's from main.tsx.
  */
 
+import { LiveCodeEditor } from "@/wab/client/components/coding/LiveCodeEditor";
 import React from "react";
 import ReactDOM from "react-dom";
-import { LiveCodeEditor } from "../components/coding/LiveCodeEditor";
 
 export function main() {
   ReactDOM.render(<Sandbox />, document.querySelector(".app-container"));

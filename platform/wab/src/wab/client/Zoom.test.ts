@@ -1,4 +1,4 @@
-import { tuple } from "../common";
+import { tuple } from "@/wab/common";
 import { zoomJump } from "./Zoom";
 
 describe("zoomJump", () => {

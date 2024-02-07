@@ -1,10 +1,10 @@
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import InfoIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Info";
 import { Alert, Popover } from "antd";
 import { TooltipPlacement } from "antd/lib/tooltip";
 import L from "lodash";
 import React from "react";
 import { useLocalStorage } from "react-use";
-import InfoIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Info";
-import { Icon } from "../widgets/Icon";
 
 export function DocsTooltip(props: {
   children: React.ReactNode | (() => React.ReactNode);
@@ -31,13 +31,8 @@ export function useDocsTooltip(opts: {
   tooltipPlacement?: TooltipPlacement;
   tooltipMaxWidth?: number;
 }) {
-  const {
-    key,
-    content,
-    tooltipMaxWidth,
-    tooltipPlacement,
-    tooltipContent,
-  } = opts;
+  const { key, content, tooltipMaxWidth, tooltipPlacement, tooltipContent } =
+    opts;
   const [dismissed, setDismissed] = useLocalStorage(key, false);
 
   return {

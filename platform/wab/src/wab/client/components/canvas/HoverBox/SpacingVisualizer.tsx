@@ -1,6 +1,6 @@
+import { cx } from "@/wab/common";
+import { Side } from "@/wab/geom";
 import * as React from "react";
-import { cx } from "../../../../common";
-import { Side } from "../../../../geom";
 import styles from "./SpacingVisualizer.module.sass";
 
 type SpacingValues = Record<Side, number>;

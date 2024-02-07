@@ -1,26 +1,26 @@
+import { ArenaFrame, Component, Mixin, StyleToken } from "@/wab/classes";
+import ListSectionSeparator from "@/wab/client/components/ListSectionSeparator";
+import { menuSection } from "@/wab/client/components/menu-builder";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
+import MixinIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Mixin";
+import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
+import PlasmicFindReferencesModal from "@/wab/client/plasmic/plasmic_kit_find_references_modal/PlasmicFindReferencesModal";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ensure, spawn } from "@/wab/common";
+import { getComponentDisplayName, isPageComponent } from "@/wab/components";
+import { FRAME_LOWER } from "@/wab/shared/Labels";
+import { extractComponentUsages, getArenaFromFrame } from "@/wab/sites";
+import {
+  DefaultStyle,
+  extractMixinUsages,
+  extractTokenUsages,
+} from "@/wab/styles";
 import { Menu } from "antd";
 import L, { sortBy } from "lodash";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { VariableSizeList } from "react-window";
-import { ArenaFrame, Component, Mixin, StyleToken } from "../../../classes";
-import { ensure, spawn } from "../../../common";
-import { getComponentDisplayName, isPageComponent } from "../../../components";
-import { FRAME_LOWER } from "../../../shared/Labels";
-import { extractComponentUsages, getArenaFromFrame } from "../../../sites";
-import {
-  DefaultStyle,
-  extractMixinUsages,
-  extractTokenUsages,
-} from "../../../styles";
-import ComponentIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Component";
-import MixinIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Mixin";
-import TokenIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Token";
-import PlasmicFindReferencesModal from "../../plasmic/plasmic_kit_find_references_modal/PlasmicFindReferencesModal";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import ListSectionSeparator from "../ListSectionSeparator";
-import { menuSection } from "../menu-builder";
-import { Icon } from "../widgets/Icon";
 import { MixinPopup } from "./MixinControls";
 import ReferenceItem from "./ReferenceItem";
 import { SidebarModal } from "./SidebarModal";
@@ -91,14 +91,17 @@ export const FindReferencesModal = observer(
     const { usageSummary, studioCtx, icon, displayName } = props;
     const currentArena = studioCtx.currentArena;
 
-    const [editToken, setEditToken] =
-      React.useState<StyleToken | undefined>(undefined);
-    const [editMixin, setEditMixin] =
-      React.useState<Mixin | undefined>(undefined);
+    const [editToken, setEditToken] = React.useState<StyleToken | undefined>(
+      undefined
+    );
+    const [editMixin, setEditMixin] = React.useState<Mixin | undefined>(
+      undefined
+    );
     const [editTag, setEditTag] = React.useState<string | undefined>(undefined);
 
-    const [findReferenceItem, setFindReferenceItem] =
-      React.useState<Item | undefined>(undefined);
+    const [findReferenceItem, setFindReferenceItem] = React.useState<
+      Item | undefined
+    >(undefined);
 
     const toItem = (type: ItemType, item: Reference): Item => {
       if (type === ItemType.component || type === ItemType.page) {

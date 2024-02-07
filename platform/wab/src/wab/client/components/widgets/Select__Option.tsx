@@ -1,9 +1,9 @@
-import { SelectOptionRef } from "@plasmicapp/react-web";
-import * as React from "react";
 import {
   DefaultSelect__OptionProps,
   PlasmicSelect__Option,
-} from "../../plasmic/plasmic_kit_design_system/PlasmicSelect__Option";
+} from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicSelect__Option";
+import { SelectOptionRef } from "@plasmicapp/react-web";
+import * as React from "react";
 
 interface Select__OptionProps extends DefaultSelect__OptionProps {}
 

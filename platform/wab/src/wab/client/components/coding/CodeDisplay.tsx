@@ -1,7 +1,7 @@
+import { cx } from "@/wab/common";
 import Highlight, { defaultProps, Language } from "prism-react-renderer";
 import theme from "prism-react-renderer/themes/vsDark";
 import React from "react";
-import { cx } from "../../../common";
 import sty from "./CodeDisplay.module.css";
 
 export function CodeDisplay(props: {

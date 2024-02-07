@@ -1,15 +1,18 @@
-import { observer } from "mobx-react-lite";
-import React from "react";
-import { spawn } from "../../../common";
-import { parseGridChildCssProps } from "../../../shared/grid-utils";
-import { FullRow, LabeledStyleItem } from "../sidebar/sidebar-helpers";
-import { SidebarSection } from "../sidebar/SidebarSection";
-import { DefinedIndicator } from "../style-controls/DefinedIndicator";
+import {
+  FullRow,
+  LabeledStyleItem,
+} from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import { DefinedIndicator } from "@/wab/client/components/style-controls/DefinedIndicator";
 import {
   ExpsProvider,
   TplExpsProvider,
-} from "../style-controls/StyleComponent";
-import DimTokenSpinner from "../widgets/DimTokenSelector";
+} from "@/wab/client/components/style-controls/StyleComponent";
+import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
+import { spawn } from "@/wab/common";
+import { parseGridChildCssProps } from "@/wab/shared/grid-utils";
+import { observer } from "mobx-react-lite";
+import React from "react";
 
 export const GridChildSection = observer(function GridChildSection(props: {
   expsProvider: ExpsProvider;

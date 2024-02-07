@@ -1,6 +1,6 @@
+import { useApi } from "@/wab/client/contexts/AppContexts";
+import { getDataSourceMeta } from "@/wab/shared/data-sources-meta/data-source-registry";
 import useSWR from "swr";
-import { getDataSourceMeta } from "../../../shared/data-sources-meta/data-source-registry";
-import { useApi } from "../../contexts/AppContexts";
 
 export function useSourceOp(
   sourceId: string | undefined,

@@ -1,20 +1,26 @@
-import { exportCustomFunctionConfig, exportReactPresentational } from ".";
-import { Component, Site } from "../../../classes";
+import { Component, Site } from "@/wab/classes";
 import {
   exportCodeComponentConfig,
   isCodeComponent,
   isFrameComponent,
   isHostLessCodeComponent,
   isPageComponent,
-} from "../../../components";
-import { ImageAssetType } from "../../../image-asset-type";
-import { CssVarResolver } from "../../../styles";
-import { AppAuthProvider } from "../../ApiSchema";
-import { ComponentGenHelper, SiteGenHelper } from "../codegen-helpers";
-import { exportIconAsset, exportPictureAsset } from "../image-assets";
-import { exportStyleTokens } from "../style-tokens";
-import { ExportOpts, ProjectConfig } from "../types";
-import { exportGlobalVariantGroup } from "../variants";
+} from "@/wab/components";
+import { ImageAssetType } from "@/wab/image-asset-type";
+import { AppAuthProvider } from "@/wab/shared/ApiSchema";
+import {
+  ComponentGenHelper,
+  SiteGenHelper,
+} from "@/wab/shared/codegen/codegen-helpers";
+import {
+  exportIconAsset,
+  exportPictureAsset,
+} from "@/wab/shared/codegen/image-assets";
+import { exportStyleTokens } from "@/wab/shared/codegen/style-tokens";
+import { ExportOpts, ProjectConfig } from "@/wab/shared/codegen/types";
+import { exportGlobalVariantGroup } from "@/wab/shared/codegen/variants";
+import { CssVarResolver } from "@/wab/styles";
+import { exportCustomFunctionConfig, exportReactPresentational } from ".";
 import { exportReactPlain } from "./plain";
 
 export function exportSiteComponents(

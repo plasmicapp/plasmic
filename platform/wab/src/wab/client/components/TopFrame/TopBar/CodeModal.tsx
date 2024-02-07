@@ -1,9 +1,9 @@
 /** @format */
 
+import CodeQuickstartDisplay from "@/wab/client/components/studio/code-quickstart/CodeQuickstartDisplay";
+import { ApiProject } from "@/wab/shared/ApiSchema";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
-import { ApiProject } from "../../../../shared/ApiSchema";
-import CodeQuickstartDisplay from "../../studio/code-quickstart/CodeQuickstartDisplay";
 import { TopBarModal } from "./TopBarModal";
 
 interface CodeModalProps {

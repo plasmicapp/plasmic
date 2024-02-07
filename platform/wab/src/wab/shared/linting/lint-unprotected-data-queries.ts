@@ -1,7 +1,7 @@
-import { Component, DataSourceOpExpr, Site, TplNode } from "../../classes";
-import { ApiAppRole } from "../ApiSchema";
-import { findAllDataSourceOpExpr } from "../cached-selectors";
-import { maybeComputedFn } from "../mobx-util";
+import { Component, DataSourceOpExpr, Site, TplNode } from "@/wab/classes";
+import { ApiAppRole } from "@/wab/shared/ApiSchema";
+import { findAllDataSourceOpExpr } from "@/wab/shared/cached-selectors";
+import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import { UnprotectedDataQueryLintIssue } from "./lint-types";
 import { lintIssuesEquals } from "./lint-utils";
 

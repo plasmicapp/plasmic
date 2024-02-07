@@ -1,19 +1,24 @@
-import * as React from "react";
-import { spawn } from "../../../../common";
+import { AppCtx } from "@/wab/client/app-ctx";
+import { replaceLink } from "@/wab/client/components/view-common";
+import { TriggeredWebhook } from "@/wab/client/components/webhooks/WebhookEvent";
+import WebhooksItem, {
+  ToggleWebhook,
+} from "@/wab/client/components/webhooks/WebhooksItem";
+import {
+  AsyncState,
+  useAsyncFnStrict,
+} from "@/wab/client/hooks/useAsyncStrict";
+import {
+  DefaultSubsectionWebhooksProps,
+  PlasmicSubsectionWebhooks,
+} from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicSubsectionWebhooks";
+import { spawn } from "@/wab/common";
 import {
   ApiProject,
   ApiProjectWebhook,
   ProjectWebhookEventsResponse,
-} from "../../../../shared/ApiSchema";
-import { AppCtx } from "../../../app-ctx";
-import { AsyncState, useAsyncFnStrict } from "../../../hooks/useAsyncStrict";
-import {
-  DefaultSubsectionWebhooksProps,
-  PlasmicSubsectionWebhooks,
-} from "../../../plasmic/plasmic_kit_continuous_deployment/PlasmicSubsectionWebhooks";
-import { replaceLink } from "../../view-common";
-import { TriggeredWebhook } from "../../webhooks/WebhookEvent";
-import WebhooksItem, { ToggleWebhook } from "../../webhooks/WebhooksItem";
+} from "@/wab/shared/ApiSchema";
+import * as React from "react";
 import { VisibleEnableBlock } from "./PublishFlowDialog";
 import { PublishState } from "./PublishFlowDialogWrapper";
 

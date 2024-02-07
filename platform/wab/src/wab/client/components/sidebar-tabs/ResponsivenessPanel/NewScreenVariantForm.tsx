@@ -1,11 +1,11 @@
+import { Textbox } from "@/wab/client/components/widgets/Textbox";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ScreenSizeSpec } from "@/wab/shared/Css";
+import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
+import { getResponsiveStrategy } from "@/wab/sites";
 import { Button, Col, Row } from "antd";
 import { observer } from "mobx-react-lite";
 import React, { FormEvent, useState } from "react";
-import { ScreenSizeSpec } from "../../../../shared/Css";
-import { ResponsiveStrategy } from "../../../../shared/responsiveness";
-import { getResponsiveStrategy } from "../../../../sites";
-import { useStudioCtx } from "../../../studio-ctx/StudioCtx";
-import { Textbox } from "../../widgets/Textbox";
 
 export const NewScreenVariantForm = observer(NewScreenVariantForm_);
 function NewScreenVariantForm_(props: {

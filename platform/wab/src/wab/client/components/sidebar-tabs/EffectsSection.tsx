@@ -1,3 +1,15 @@
+import {
+  FullRow,
+  LabeledStyleSelectItem,
+  LabeledStyleSelectItemRow,
+  LabeledStyleSwitchItem,
+  SectionSeparator,
+} from "@/wab/client/components/sidebar/sidebar-helpers";
+import {
+  ExpsProvider,
+  StylePanelSection,
+} from "@/wab/client/components/style-controls/StyleComponent";
+import { isStylePropSet } from "@/wab/client/utils/style-utils";
 import L from "lodash";
 import { observer } from "mobx-react-lite";
 import React from "react";
@@ -11,18 +23,6 @@ import {
 } from "react-icons/fa";
 import { FiMove } from "react-icons/fi";
 import { MdDoNotDisturbAlt } from "react-icons/md";
-import { isStylePropSet } from "../../utils/style-utils";
-import {
-  FullRow,
-  LabeledStyleSelectItem,
-  LabeledStyleSelectItemRow,
-  LabeledStyleSwitchItem,
-  SectionSeparator,
-} from "../sidebar/sidebar-helpers";
-import {
-  ExpsProvider,
-  StylePanelSection,
-} from "../style-controls/StyleComponent";
 import {
   BackdropFilterEffectSection,
   FilterEffectSection,

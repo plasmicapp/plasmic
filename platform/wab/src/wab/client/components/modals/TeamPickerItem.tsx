@@ -1,14 +1,14 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import * as React from "react";
-import {
-  NewPriceTierType,
-  PriceTierType,
-} from "../../../shared/pricing/pricing-utils";
-import { capitalizeFirst } from "../../../strs";
 import {
   DefaultTeamPickerItemProps,
   PlasmicTeamPickerItem,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicTeamPickerItem";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamPickerItem";
+import {
+  NewPriceTierType,
+  PriceTierType,
+} from "@/wab/shared/pricing/pricing-utils";
+import { capitalizeFirst } from "@/wab/strs";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import * as React from "react";
 interface TeamPickerItemProps extends DefaultTeamPickerItemProps {
   name: string;
   tier: PriceTierType;

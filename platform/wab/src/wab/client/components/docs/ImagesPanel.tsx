@@ -1,12 +1,12 @@
-import { Alert } from "antd";
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { ImageAssetType } from "../../../image-asset-type";
+import { Matcher } from "@/wab/client/components/view-common";
 import {
   DefaultImagesPanelProps,
   PlasmicImagesPanel,
-} from "../../plasmic/plasmic_kit_docs_portal/PlasmicImagesPanel";
-import { Matcher } from "../view-common";
+} from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicImagesPanel";
+import { ImageAssetType } from "@/wab/image-asset-type";
+import { Alert } from "antd";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
 import { useDocsPortalCtx } from "./DocsPortalCtx";
 import ImageListItem from "./ImageListItem";
 

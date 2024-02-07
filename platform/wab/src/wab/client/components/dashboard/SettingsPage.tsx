@@ -1,17 +1,17 @@
+import { AppCtx } from "@/wab/client/app-ctx";
+import { AddTrustedHostModal } from "@/wab/client/components/AddTrustedHostModal";
+import SettingsContainer from "@/wab/client/components/pages/plasmic/SettingsContainer";
+import { usePersonalApiTokens } from "@/wab/client/components/pages/UserSettingsPage";
+import {
+  DefaultSettingsPageProps,
+  PlasmicSettingsPage,
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicSettingsPage";
+import { ensure } from "@/wab/common";
+import { ApiTrustedHost } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import copy from "copy-to-clipboard";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
-import { ensure } from "../../../common";
-import { ApiTrustedHost } from "../../../shared/ApiSchema";
-import { AppCtx } from "../../app-ctx";
-import {
-  DefaultSettingsPageProps,
-  PlasmicSettingsPage,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicSettingsPage";
-import { AddTrustedHostModal } from "../AddTrustedHostModal";
-import SettingsContainer from "../pages/plasmic/SettingsContainer";
-import { usePersonalApiTokens } from "../pages/UserSettingsPage";
 import { documentTitle } from "./page-utils";
 
 interface SettingsPageProps extends DefaultSettingsPageProps {

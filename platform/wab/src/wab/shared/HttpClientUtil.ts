@@ -1,8 +1,8 @@
-import { assert } from "../common";
+import { assert } from "@/wab/common";
 
 export const httpMethods = ["GET", "POST", "PUT", "DELETE", "PATCH"] as const;
 
-export type HttpMethod = typeof httpMethods[number];
+export type HttpMethod = (typeof httpMethods)[number];
 
 export const lowerHttpMethods = [
   "get",
@@ -12,7 +12,7 @@ export const lowerHttpMethods = [
   "patch",
 ] as const;
 
-export type LowerHttpMethod = typeof lowerHttpMethods[number];
+export type LowerHttpMethod = (typeof lowerHttpMethods)[number];
 
 export function methodCanHaveBody(method: HttpMethod) {
   return method !== "GET";

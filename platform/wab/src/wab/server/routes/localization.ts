@@ -1,15 +1,15 @@
-import { Request, Response } from "express-serve-static-core";
-import { getConnection } from "typeorm";
-import { ensureArray } from "../../common";
-import { BadRequestError } from "../../shared/ApiErrors/errors";
-import { ProjectId } from "../../shared/ApiSchema";
+import { ensureArray } from "@/wab/common";
 import {
   getResolvedProjectVersions,
   mkVersionToSync,
   parseProjectIdSpec,
   resolveProjectDeps,
-} from "../loader/resolve-projects";
-import { withSpan } from "../util/apm-util";
+} from "@/wab/server/loader/resolve-projects";
+import { withSpan } from "@/wab/server/util/apm-util";
+import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
+import { ProjectId } from "@/wab/shared/ApiSchema";
+import { Request, Response } from "express-serve-static-core";
+import { getConnection } from "typeorm";
 import { userDbMgr } from "./util";
 
 export async function genTranslatableStrings(req: Request, res: Response) {

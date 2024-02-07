@@ -1,6 +1,6 @@
+import type { Marker, NodeMarker, StyleMarker } from "@/wab/classes";
+import "@/wab/client/components/canvas/slate";
 import type { MakeADT } from "ts-adt/MakeADT";
-import type { Marker, NodeMarker, StyleMarker } from "../../classes";
-import "../../client/components/canvas/slate";
 
 export type NormalizedMarker = {
   position: number;

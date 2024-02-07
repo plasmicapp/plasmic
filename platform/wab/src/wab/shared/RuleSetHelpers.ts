@@ -1,12 +1,12 @@
-import { isKnownTplTag, TplNode } from "../classes";
+import { isKnownTplTag, TplNode } from "@/wab/classes";
 // TODO clean up this require cycle
+import { Mixin, RuleSet } from "@/wab/classes";
+import { assert } from "@/wab/common";
+import { DeepReadonly } from "@/wab/commons/types";
+import * as css from "@/wab/css";
+import * as cssPegParser from "@/wab/gen/cssPegParser";
 import L, { memoize } from "lodash";
 import { CSSProperties } from "react";
-import { Mixin, RuleSet } from "../classes";
-import { assert } from "../common";
-import { DeepReadonly } from "../commons/types";
-import * as css from "../css";
-import * as cssPegParser from "../gen/cssPegParser";
 import { getAllDefinedStyles, typographyCssProps } from "./core/style-props";
 import {
   makeReadonlySizeAwareExpProxy,

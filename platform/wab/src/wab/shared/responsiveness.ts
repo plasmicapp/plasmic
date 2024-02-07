@@ -1,4 +1,4 @@
-import { ensure } from "../common";
+import { ensure } from "@/wab/common";
 import { ScreenSizeSpec } from "./Css";
 
 export interface FrameSize {

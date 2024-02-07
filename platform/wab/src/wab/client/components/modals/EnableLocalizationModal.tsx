@@ -1,15 +1,15 @@
+import { AppCtx } from "@/wab/client/app-ctx";
+import { U } from "@/wab/client/cli-routes";
+import Button from "@/wab/client/components/widgets/Button";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
+import { ApiProject } from "@/wab/shared/ApiSchema";
+import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
 import { notification } from "antd";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { FocusScope } from "react-aria";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import { ApiProject } from "../../../shared/ApiSchema";
-import { ORGANIZATION_LOWER } from "../../../shared/Labels";
-import { AppCtx } from "../../app-ctx";
-import { U } from "../../cli-routes";
-import { useAppCtx } from "../../contexts/AppContexts";
-import { useTopFrameCtx } from "../../frame-ctx/top-frame-ctx";
-import Button from "../widgets/Button";
 import { promptBilling, showUpsellConfirm } from "./PricingModal";
 
 export interface EnableLocalizationModalProps {

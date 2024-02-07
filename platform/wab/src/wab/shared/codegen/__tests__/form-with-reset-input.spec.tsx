@@ -2,12 +2,12 @@ import "@testing-library/jest-dom/extend-expect";
 import { render, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 // polyfill some js features like String.matchAll()
+import { Site } from "@/wab/classes";
+import { Bundle, Bundler } from "@/wab/shared/bundler";
+import { codegen } from "@/wab/shared/codegen/codegen-tests-util";
 import "core-js";
 import * as React from "react";
 import tmp from "tmp";
-import { Site } from "../../../classes";
-import { Bundle, Bundler } from "../../bundler";
-import { codegen } from "../codegen-tests-util";
 import _bundle from "./bundles/form-with-reset-input.json";
 
 describe("todo app codegen", () => {

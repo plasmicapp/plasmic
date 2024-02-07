@@ -39,6 +39,7 @@ import WidthWideIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicI
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
 import { assert, spawn, withoutNils } from "@/wab/common";
 import { TokenType, tokenTypeDimOpts } from "@/wab/commons/StyleToken";
+import { isPageComponent } from "@/wab/components";
 import { getLengthUnits } from "@/wab/css";
 import {
   CONTENT_LAYOUT_FULL_BLEED,
@@ -60,7 +61,6 @@ import { Alert, Menu } from "antd";
 import cn from "classnames";
 import { observer } from "mobx-react";
 import React from "react";
-import { isPageComponent } from "../../../components";
 import S from "./SizeSection.module.scss";
 
 interface SizePanelSectionState {

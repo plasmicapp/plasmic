@@ -1,11 +1,11 @@
+import {
+  DefaultUpsellCreditCardProps,
+  PlasmicUpsellCreditCard,
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicUpsellCreditCard";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { CardElement } from "@stripe/react-stripe-js";
 import { Spin } from "antd";
 import * as React from "react";
-import {
-  DefaultUpsellCreditCardProps,
-  PlasmicUpsellCreditCard,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicUpsellCreditCard";
 
 interface UpsellCreditCardProps extends DefaultUpsellCreditCardProps {
   disabled: boolean;

@@ -1,7 +1,7 @@
+import * as common from "@/wab/common";
 import { notification } from "antd";
 import L from "lodash";
 import React, { ReactNode } from "react";
-import * as common from "../../common";
 
 export const READ_ONLY_EXPLANATION =
   "Someone else has edited the project, so you are now viewing a stale read-only version.";

@@ -1,6 +1,4 @@
-import dayjs from "dayjs";
-import { identity } from "lodash";
-import * as common from "../common";
+import * as common from "@/wab/common";
 import {
   arrayEqIgnoreOrder,
   coalesce,
@@ -37,8 +35,10 @@ import {
   xExtend,
   xOmit,
   xpick,
-} from "../common";
-import { mkVariant } from "../shared/Variants";
+} from "@/wab/common";
+import { mkVariant } from "@/wab/shared/Variants";
+import dayjs from "dayjs";
+import { identity } from "lodash";
 
 const isEven = (x) => x % 2 === 0;
 

@@ -1,5 +1,3 @@
-import { notification } from "antd";
-import L from "lodash";
 import {
   Arg,
   Component,
@@ -19,8 +17,8 @@ import {
   TplNode,
   TplSlot,
   TplTag,
-} from "../classes";
-import * as common from "../common";
+} from "@/wab/classes";
+import * as common from "@/wab/common";
 import {
   assert,
   check,
@@ -39,17 +37,17 @@ import {
   replaceMultiple,
   switchType,
   tryRemove,
-} from "../common";
+} from "@/wab/common";
 import {
   allComponentStyleVariants,
   isCodeComponent,
   removeComponentParam,
-} from "../components";
-import { SlotSelection } from "../slots";
+} from "@/wab/components";
+import { SlotSelection } from "@/wab/slots";
 import {
   ensureCorrectImplicitStates,
   removeImplicitStatesAfterRemovingTplNode,
-} from "../states";
+} from "@/wab/states";
 import {
   ancestorsUp,
   ancestorsUpWithSlotSelections,
@@ -71,7 +69,9 @@ import {
   trackComponentRoot,
   tryGetOwnerSite,
   tryGetTplOwnerComponent,
-} from "../tpls";
+} from "@/wab/tpls";
+import { notification } from "antd";
+import L from "lodash";
 import {
   getSlotArgs,
   getSlotParams,

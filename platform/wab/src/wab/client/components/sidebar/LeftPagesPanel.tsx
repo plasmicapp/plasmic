@@ -1,28 +1,28 @@
-import { Menu } from "antd";
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
-import { moveIndex } from "../../../common";
+import ListItem from "@/wab/client/components/ListItem";
+import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import { reactPrompt } from "@/wab/client/components/quick-modals";
+import { Matcher } from "@/wab/client/components/view-common";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { ListSpace } from "@/wab/client/components/widgets/ListStack";
+import { SimpleReorderableVirtualList } from "@/wab/client/components/widgets/SimpleReorderableVirtualList";
+import PageIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Page";
+import {
+  DefaultLeftPagesPanelProps,
+  PlasmicLeftPagesPanel,
+} from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftPagesPanel";
+import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { moveIndex } from "@/wab/common";
 import {
   isCodeComponent,
   isPageComponent,
   PageComponent,
-} from "../../../components";
-import { isMixedArena } from "../../../shared/Arenas";
-import { FRAME_CAP } from "../../../shared/Labels";
-import ListItem from "../../components/ListItem";
-import PageIcon from "../../plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Page";
-import {
-  DefaultLeftPagesPanelProps,
-  PlasmicLeftPagesPanel,
-} from "../../plasmic/plasmic_kit_left_pane/PlasmicLeftPagesPanel";
-import { StudioCtx, useStudioCtx } from "../../studio-ctx/StudioCtx";
-import { MenuBuilder } from "../menu-builder";
-import { reactPrompt } from "../quick-modals";
-import { Matcher } from "../view-common";
-import { Icon } from "../widgets/Icon";
-import { ListSpace } from "../widgets/ListStack";
-import { SimpleReorderableVirtualList } from "../widgets/SimpleReorderableVirtualList";
+} from "@/wab/components";
+import { isMixedArena } from "@/wab/shared/Arenas";
+import { FRAME_CAP } from "@/wab/shared/Labels";
+import { Menu } from "antd";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
+import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 
 interface LeftPagesPanelProps extends DefaultLeftPagesPanelProps {}
 

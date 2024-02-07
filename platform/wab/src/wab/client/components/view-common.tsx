@@ -1,12 +1,3 @@
-import L from "lodash";
-import * as React from "react";
-import {
-  CSSProperties,
-  DetailedHTMLProps,
-  ReactElement,
-  SyntheticEvent,
-} from "react";
-import * as ReactDOM from "react-dom";
 import {
   assert,
   check,
@@ -17,8 +8,17 @@ import {
   reSplitAll,
   simpleWords,
   tuple,
-} from "../../common";
-import { PropsOf } from "../../commons/ComponentTypes";
+} from "@/wab/common";
+import { PropsOf } from "@/wab/commons/ComponentTypes";
+import L from "lodash";
+import * as React from "react";
+import {
+  CSSProperties,
+  DetailedHTMLProps,
+  ReactElement,
+  SyntheticEvent,
+} from "react";
+import * as ReactDOM from "react-dom";
 
 type EventBase = JQuery.EventBase;
 

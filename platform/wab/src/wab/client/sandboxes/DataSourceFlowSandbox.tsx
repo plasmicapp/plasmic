@@ -2,9 +2,9 @@
  * Import and call this main instead of Shell's from main.tsx.
  */
 
+import { DataSourceFlow } from "@/wab/client/components/DataSourceFlow";
 import React from "react";
 import ReactDOM from "react-dom";
-import { DataSourceFlow } from "../components/DataSourceFlow";
 
 export function main() {
   ReactDOM.render(<Sandbox />, document.querySelector(".app-container"));

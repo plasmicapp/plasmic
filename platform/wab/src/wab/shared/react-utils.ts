@@ -1,7 +1,7 @@
+import { CustomError } from "@/wab/common";
 import * as React from "react";
 import { isValidElement } from "react";
 import { failable, IFailable } from "ts-failable";
-import { CustomError } from "../common";
 
 export class InvalidComponentImplError extends CustomError {
   name: "InvalidComponentImplError";

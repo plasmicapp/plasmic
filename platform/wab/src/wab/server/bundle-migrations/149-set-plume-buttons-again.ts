@@ -1,17 +1,17 @@
 /**
  * Like 148, but deals with imported buttons too
  */
-import { Arg } from "../../classes";
-import { codeLit } from "../../exprs";
-import { Bundler } from "../../shared/bundler";
-import { TplMgr } from "../../shared/TplMgr";
-import { ensureBaseVariantSetting } from "../../shared/Variants";
-import { isTplComponent } from "../../tpls";
+import { Arg } from "@/wab/classes";
+import { codeLit } from "@/wab/exprs";
 import {
   BundleMigrationType,
   unbundleSite,
-} from "../db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
+} from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { Bundler } from "@/wab/shared/bundler";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
+import { isTplComponent } from "@/wab/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();

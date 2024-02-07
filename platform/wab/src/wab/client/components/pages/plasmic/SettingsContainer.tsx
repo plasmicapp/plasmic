@@ -1,14 +1,14 @@
 import * as React from "react";
 import PP__SettingsContainer from "./PlasmicSettingsContainer";
-import { ApiTrustedHost, PersonalApiToken } from "../../../../shared/ApiSchema";
-import { ensure } from "../../../../common";
+import { ApiTrustedHost, PersonalApiToken } from "@/wab/shared/ApiSchema";
+import { ensure } from "@/wab/common";
 import { Flex } from "@plasmicapp/react-web";
-import TrustedHost from "../../TrustedHost";
+import TrustedHost from "@/wab/client/components/TrustedHost";
 import { isArray } from "lodash";
-import { BareModal } from "../../studio/BareModal";
-import { AsyncState } from "../../../hooks/useAsyncStrict";
+import { BareModal } from "@/wab/client/components/studio/BareModal";
+import { AsyncState } from "@/wab/client/hooks/useAsyncStrict";
 const LazyChangePasswordModal = React.lazy(
-  () => import("../../ChangePasswordModal")
+  () => import("@/wab/client/components/ChangePasswordModal")
 );
 
 interface SettingsContainerProps {

@@ -1,10 +1,10 @@
+import { Dict } from "@/wab/collections";
+import { uncheckedCast, unexpected } from "@/wab/common";
+import { asReadablePromise } from "@/wab/commons/control";
+import { JsonScalar } from "@/wab/lang";
+import { LowerHttpMethod } from "@/wab/shared/HttpClientUtil";
 import SwaggerParser, { ResolverOptions } from "@apidevtools/swagger-parser";
 import memoizeOne from "memoize-one";
-import { Dict } from "../../collections";
-import { uncheckedCast, unexpected } from "../../common";
-import { asReadablePromise } from "../../commons/control";
-import { JsonScalar } from "../../lang";
-import { LowerHttpMethod } from "../HttpClientUtil";
 
 export interface GraphqlExample {
   sourceName: string;

@@ -1,3 +1,4 @@
+import { stringToPair } from "@/wab/server/util/hash";
 import { parse as parseDbUri } from "pg-connection-string";
 import {
   Connection,
@@ -7,7 +8,6 @@ import {
   getConnectionManager,
   getConnectionOptions,
 } from "typeorm";
-import { stringToPair } from "../util/hash";
 
 // Unused, just creating for the global side effect of having a connection
 // pool.  Contrary to the name, this actually sets up a pool of connections

@@ -1,14 +1,14 @@
+import { ensureKnownComponent, ensureKnownTplComponent } from "@/wab/classes";
+import { Comparator } from "@/wab/cmp";
+import { jsonClone, mkUuid } from "@/wab/common";
+import { ComponentType, mkComponent } from "@/wab/components";
+import { jsonLit } from "@/wab/exprs";
+import { mkParam } from "@/wab/lang";
+import * as bundler from "@/wab/shared/bundler";
+import { typeFactory } from "@/wab/shared/core/model-util";
+import { TEST_GLOBAL_VARIANT } from "@/wab/test/tpls";
+import { mkTplComponentX, mkTplTagX } from "@/wab/tpls";
 import L from "lodash";
-import { ensureKnownComponent, ensureKnownTplComponent } from "../classes";
-import { Comparator } from "../cmp";
-import { jsonClone, mkUuid } from "../common";
-import { ComponentType, mkComponent } from "../components";
-import { jsonLit } from "../exprs";
-import { mkParam } from "../lang";
-import * as bundler from "../shared/bundler";
-import { typeFactory } from "../shared/core/model-util";
-import { TEST_GLOBAL_VARIANT } from "../test/tpls";
-import { mkTplComponentX, mkTplTagX } from "../tpls";
 
 describe("bundler", () =>
   it("should work", function () {

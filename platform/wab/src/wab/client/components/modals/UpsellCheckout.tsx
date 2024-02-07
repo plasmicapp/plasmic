@@ -1,3 +1,14 @@
+import { AppCtx } from "@/wab/client/app-ctx";
+import {
+  DefaultUpsellCheckoutProps,
+  PlasmicUpsellCheckout,
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicUpsellCheckout";
+import { DEVFLAGS } from "@/wab/devflags";
+import { ApiFeatureTier, BillingFrequency } from "@/wab/shared/ApiSchema";
+import {
+  featureTiers,
+  newFeatureTiers,
+} from "@/wab/shared/pricing/pricing-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import {
   CardCvcElement,
@@ -6,17 +17,6 @@ import {
 } from "@stripe/react-stripe-js";
 import { Spin } from "antd";
 import * as React from "react";
-import { DEVFLAGS } from "../../../devflags";
-import { ApiFeatureTier, BillingFrequency } from "../../../shared/ApiSchema";
-import {
-  featureTiers,
-  newFeatureTiers,
-} from "../../../shared/pricing/pricing-utils";
-import { AppCtx } from "../../app-ctx";
-import {
-  DefaultUpsellCheckoutProps,
-  PlasmicUpsellCheckout,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicUpsellCheckout";
 
 interface UpsellCheckoutProps extends DefaultUpsellCheckoutProps {
   appCtx: AppCtx;

@@ -1,14 +1,18 @@
-import { useCombobox } from "downshift";
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { useMemo } from "react";
-import { FocusScope } from "react-aria";
-import { Variant, VariantGroup } from "../../../classes";
-import { ensure, partitions, xGroupBy } from "../../../common";
+import { Variant, VariantGroup } from "@/wab/classes";
+import { Matcher } from "@/wab/client/components/view-common";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { TextboxRef } from "@/wab/client/components/widgets/Textbox";
+import BoltIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Bolt";
+import GlobeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Globe";
+import VariantGroupIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__VariantGroup";
+import ScreenIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Screen";
+import { PlasmicVariantsDrawer } from "@/wab/client/plasmic/plasmic_kit_variants/PlasmicVariantsDrawer";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ensure, partitions, xGroupBy } from "@/wab/common";
 import {
   getNamespacedComponentName,
   getSuperComponentVariantGroupToComponent,
-} from "../../../components";
+} from "@/wab/components";
 import {
   getAllVariantsForTpl,
   isComponentStyleVariant,
@@ -19,17 +23,13 @@ import {
   isStandaloneVariantGroup,
   isStyleVariant,
   makeVariantName,
-} from "../../../shared/Variants";
-import { isTplTag } from "../../../tpls";
-import BoltIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Bolt";
-import GlobeIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Globe";
-import VariantGroupIcon from "../../plasmic/plasmic_kit/PlasmicIcon__VariantGroup";
-import ScreenIcon from "../../plasmic/plasmic_kit_design_system/PlasmicIcon__Screen";
-import { PlasmicVariantsDrawer } from "../../plasmic/plasmic_kit_variants/PlasmicVariantsDrawer";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { Matcher } from "../view-common";
-import { Icon } from "../widgets/Icon";
-import { TextboxRef } from "../widgets/Textbox";
+} from "@/wab/shared/Variants";
+import { isTplTag } from "@/wab/tpls";
+import { useCombobox } from "downshift";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
+import { useMemo } from "react";
+import { FocusScope } from "react-aria";
 import { makeVariantsController } from "./VariantsController";
 import VariantsDrawerHeader from "./VariantsDrawerHeader";
 import VariantsDrawerRow from "./VariantsDrawerRow";

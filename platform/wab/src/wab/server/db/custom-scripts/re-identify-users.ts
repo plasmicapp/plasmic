@@ -1,8 +1,8 @@
+import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { makeUserTraits } from "@/wab/server/routes/util";
+import { getSegmentWriteKey } from "@/wab/server/secrets";
 import Analytics from "analytics-node";
 import { EntityManager } from "typeorm";
-import { makeUserTraits } from "../../routes/util";
-import { getSegmentWriteKey } from "../../secrets";
-import { DbMgr, SUPER_USER } from "../DbMgr";
 
 export async function reIdentifyUsers(em: EntityManager) {
   const dbMgr = new DbMgr(em, SUPER_USER);

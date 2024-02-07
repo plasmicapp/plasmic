@@ -1,7 +1,7 @@
+import { TplNode } from "@/wab/classes";
+import { isCodeComponent } from "@/wab/components";
+import { isTplComponent, isTplTag, tplHasRef } from "@/wab/tpls";
 import { RefActionRegistration } from "@plasmicapp/host/registerComponent";
-import { TplNode } from "../../classes";
-import { isCodeComponent } from "../../components";
-import { isTplComponent, isTplTag, tplHasRef } from "../../tpls";
 import { InteractionContextData } from "./interactions-meta";
 
 export function getTplRefActions(tpl: TplNode, ctx: InteractionContextData) {

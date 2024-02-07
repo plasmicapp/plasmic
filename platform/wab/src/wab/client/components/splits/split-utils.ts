@@ -2,7 +2,7 @@ import {
   isKnownGlobalVariantSplitContent,
   Split,
   VariantGroup,
-} from "../../../classes";
+} from "@/wab/classes";
 
 export const extractGlobalVariantSplitContent = (split: Split) => {
   const contents = split.slices[1].contents[0];

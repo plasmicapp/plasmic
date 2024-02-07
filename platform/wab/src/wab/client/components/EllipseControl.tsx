@@ -1,11 +1,11 @@
-import L from "lodash";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { ensure, spreadLog } from "../../common";
+import { ensure, spreadLog } from "@/wab/common";
 import {
   XDraggable,
   XDraggableEvent,
-} from "../../commons/components/XDraggable";
+} from "@/wab/commons/components/XDraggable";
+import L from "lodash";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
 interface Ellipse {
   cx: number;
@@ -25,9 +25,9 @@ export class EllipseControl extends React.Component<EllipseControlProps> {
 
   private getDragPcts(e: XDraggableEvent) {
     let orig = ensure(this.initEllipse);
-    let area = (ReactDOM.findDOMNode(
-      ensure(this.svg)
-    ) as SVGElement).getBoundingClientRect();
+    let area = (
+      ReactDOM.findDOMNode(ensure(this.svg)) as SVGElement
+    ).getBoundingClientRect();
     let dx = (e.data.deltaX / area.width) * 100;
     let dy = (e.data.deltaY / area.height) * 100;
 

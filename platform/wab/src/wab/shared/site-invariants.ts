@@ -1,4 +1,3 @@
-import L, { uniqBy } from "lodash";
 import {
   ArenaFrame,
   Component,
@@ -13,10 +12,10 @@ import {
   StyleToken,
   TplNode,
   Variant,
-} from "../classes";
-import { meta } from "../classes-metas";
-import { describeValueOrType, ensure, partitions, pathGet } from "../common";
-import { isTokenRef, tryParseTokenRef } from "../commons/StyleToken";
+} from "@/wab/classes";
+import { meta } from "@/wab/classes-metas";
+import { describeValueOrType, ensure, partitions, pathGet } from "@/wab/common";
+import { isTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import {
   allComponentVariants,
   getComponentDisplayName,
@@ -26,10 +25,10 @@ import {
   isPageComponent,
   isPlumeComponent,
   tryGetVariantGroupValueFromArg,
-} from "../components";
-import * as cssPegParser from "../gen/cssPegParser";
-import { ParamExportType } from "../lang";
-import { ImportableObject } from "../project-deps";
+} from "@/wab/components";
+import * as cssPegParser from "@/wab/gen/cssPegParser";
+import { ParamExportType } from "@/wab/lang";
+import { ImportableObject } from "@/wab/project-deps";
 import {
   allComponents,
   allGlobalVariants,
@@ -37,9 +36,9 @@ import {
   allMixins,
   allStyleTokens,
   getSiteArenas,
-} from "../sites";
-import { isPrivateState } from "../states";
-import { parseCssValue } from "../styles";
+} from "@/wab/sites";
+import { isPrivateState } from "@/wab/states";
+import { parseCssValue } from "@/wab/styles";
 import {
   ancestorsUp,
   isTplComponent,
@@ -47,7 +46,8 @@ import {
   isTplTag,
   isTplVariantable,
   tplChildren,
-} from "../tpls";
+} from "@/wab/tpls";
+import L, { uniqBy } from "lodash";
 import { AnyArena, getArenaFrames, isMixedArena } from "./Arenas";
 import {
   componentToUsedImageAssets,

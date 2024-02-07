@@ -1,5 +1,3 @@
-import L, { last } from "lodash";
-import { computed, observable } from "mobx";
 import {
   Component,
   ImageAsset,
@@ -8,12 +6,17 @@ import {
   ProjectDependency,
   Site,
   Variant,
-} from "../classes";
-import { Dict } from "../collections";
-import { assert, ensure, ensureClientMemoizedFunction, spawn } from "../common";
-import { isFrameComponent, isReusableComponent } from "../components";
-import { InsertableIconsGroup } from "../devflags";
-import { isIcon } from "../image-assets";
+} from "@/wab/classes";
+import { Dict } from "@/wab/collections";
+import {
+  assert,
+  ensure,
+  ensureClientMemoizedFunction,
+  spawn,
+} from "@/wab/common";
+import { isFrameComponent, isReusableComponent } from "@/wab/components";
+import { InsertableIconsGroup } from "@/wab/devflags";
+import { isIcon } from "@/wab/image-assets";
 import {
   extractTransitiveDepsFromComponentDefaultSlots,
   extractTransitiveHostLessPackages,
@@ -21,14 +24,19 @@ import {
   ImportableObject,
   syncGlobalContexts,
   walkDependencyTree,
-} from "../project-deps";
-import { FastBundler } from "../shared/bundler";
-import { getUsedDataSourcesFromDep } from "../shared/cached-selectors";
-import { inlineMixins, inlineTokens } from "../shared/insertable-templates";
-import { PkgVersionInfoMeta } from "../shared/SharedApi";
-import { allStyleTokens, getNonTransitiveDepDefaultComponents } from "../sites";
-import { unbundleProjectDependency } from "../tagged-unbundle";
-import { trackComponentRoot, trackComponentSite } from "../tpls";
+} from "@/wab/project-deps";
+import { FastBundler } from "@/wab/shared/bundler";
+import { getUsedDataSourcesFromDep } from "@/wab/shared/cached-selectors";
+import { inlineMixins, inlineTokens } from "@/wab/shared/insertable-templates";
+import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
+import {
+  allStyleTokens,
+  getNonTransitiveDepDefaultComponents,
+} from "@/wab/sites";
+import { unbundleProjectDependency } from "@/wab/tagged-unbundle";
+import { trackComponentRoot, trackComponentSite } from "@/wab/tpls";
+import L, { last } from "lodash";
+import { computed, observable } from "mobx";
 import { checkDepPkgHosts } from "./init-ctx";
 import { StudioCtx } from "./studio-ctx/StudioCtx";
 

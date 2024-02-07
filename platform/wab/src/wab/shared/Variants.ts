@@ -1,5 +1,3 @@
-import { arrayContains } from "class-validator";
-import L, { orderBy } from "lodash";
 import {
   ArenaFrame,
   Arg,
@@ -19,7 +17,7 @@ import {
   VariantGroup,
   VariantGroupState,
   VariantSetting,
-} from "../classes";
+} from "@/wab/classes";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -28,21 +26,23 @@ import {
   moveIndex,
   tuple,
   xAddAll,
-} from "../common";
+} from "@/wab/common";
 import {
   allSuperComponentVariants,
   getNamespacedComponentName,
-} from "../components";
-import { code } from "../exprs";
-import { parseScreenSpec, ScreenSizeSpec } from "../shared/Css";
+} from "@/wab/components";
+import { code } from "@/wab/exprs";
+import { parseScreenSpec, ScreenSizeSpec } from "@/wab/shared/Css";
 import {
   allGlobalVariantGroups,
   getResponsiveStrategy,
   UNINITIALIZED_VALUE,
   writeable,
-} from "../sites";
-import { getLessSelector, getPseudoSelector, mkRuleSet } from "../styles";
-import { summarizeTplTag } from "../tpls";
+} from "@/wab/sites";
+import { getLessSelector, getPseudoSelector, mkRuleSet } from "@/wab/styles";
+import { summarizeTplTag } from "@/wab/tpls";
+import { arrayContains } from "class-validator";
+import L, { orderBy } from "lodash";
 import { toVarName } from "./codegen/util";
 import {
   ensureComponentArenaColsOrder,

@@ -1,19 +1,19 @@
-import { debounce } from "lodash";
-import { computedFn } from "mobx-utils";
-import type React from "react";
-import { getExportedComponentName } from "src/wab/shared/codegen/react-p/utils";
-import { Component, isKnownComponent, TplNode } from "../../../classes";
-import { getComponentDisplayName } from "../../../components";
-import { DEVFLAGS } from "../../../devflags";
+import { Component, isKnownComponent, TplNode } from "@/wab/classes";
+import { handleError } from "@/wab/client/ErrorNotifications";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { getComponentDisplayName } from "@/wab/components";
+import { DEVFLAGS } from "@/wab/devflags";
 import {
   classNameProp,
   dataCanvasEnvsProp,
   valKeyProp,
   valOwnerProp,
-} from "../../../shared/canvas-constants";
-import { summarizeTpl } from "../../../tpls";
-import { handleError } from "../../ErrorNotifications";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
+} from "@/wab/shared/canvas-constants";
+import { summarizeTpl } from "@/wab/tpls";
+import { debounce } from "lodash";
+import { computedFn } from "mobx-utils";
+import type React from "react";
+import { getExportedComponentName } from "src/wab/shared/codegen/react-p/utils";
 import { getEnvId, RenderingCtx } from "./canvas-rendering";
 
 export interface CanvasErrorBoundaryProps {

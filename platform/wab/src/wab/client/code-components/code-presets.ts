@@ -1,10 +1,10 @@
+import { TplComponent } from "@/wab/classes";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { withoutNils } from "@/wab/common";
+import { CodeComponent, getComponentDisplayName } from "@/wab/components";
 import { CodeComponentElement } from "@plasmicapp/host/dist/element-types";
 import { notification } from "antd";
 import { computedFn } from "mobx-utils";
-import { TplComponent } from "../../classes";
-import { withoutNils } from "../../common";
-import { CodeComponent, getComponentDisplayName } from "../../components";
-import { StudioCtx } from "../studio-ctx/StudioCtx";
 import { elementSchemaToTplAndLogErrors } from "./code-components";
 
 export interface Preset {

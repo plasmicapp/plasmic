@@ -1,13 +1,13 @@
+import { Component, ComponentDataQuery, Param, Site } from "@/wab/classes";
+import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
+import Button from "@/wab/client/components/widgets/Button";
+import Textbox from "@/wab/client/components/widgets/Textbox";
+import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import { Form } from "antd";
 import { computed } from "mobx";
 import { useLocalStore, useObserver } from "mobx-react-lite";
 import React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import { Component, ComponentDataQuery, Param, Site } from "../../../classes";
-import { joinReactNodes } from "../../../commons/components/ReactUtil";
-import { showTemporaryPrompt } from "../quick-modals";
-import Button from "../widgets/Button";
-import Textbox from "../widgets/Textbox";
 
 export interface ExtractComponentResponse {
   name: string;

@@ -1,13 +1,13 @@
+import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
+import {
+  DefaultStyleSwitchProps,
+  PlasmicStyleSwitch,
+} from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicStyleSwitch";
+import { combineProps } from "@/wab/commons/components/ReactUtil";
 import { SwitchRef } from "@plasmicapp/react-web";
 import { Tooltip } from "antd";
 import classNames from "classnames";
 import * as React from "react";
-import { combineProps } from "../../../commons/components/ReactUtil";
-import {
-  DefaultStyleSwitchProps,
-  PlasmicStyleSwitch,
-} from "../../plasmic/plasmic_kit_style_controls/PlasmicStyleSwitch";
-import { ValueSetState } from "../sidebar/sidebar-helpers";
 
 interface StyleSwitchProps extends DefaultStyleSwitchProps {
   valueSetState?: ValueSetState;

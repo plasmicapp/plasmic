@@ -1,28 +1,28 @@
-import { observer } from "mobx-react-lite";
-import React from "react";
-import { TokenType } from "../../../commons/StyleToken";
-import { siteToAllTokens } from "../../../shared/cached-selectors";
-import {
-  GRID_DEFAULT_TEMPLATE,
-  isFlexibleSize,
-  isTrackTemplate,
-  parseGridCssPropsToSpec,
-} from "../../../shared/grid-utils";
-import { allImageAssets, allMixins } from "../../../sites";
-import { CssVarResolver } from "../../../styles";
 import {
   FullRow,
   LabeledItemRow,
   LabeledStyleDimItem,
   shouldBeDisabled,
-} from "../sidebar/sidebar-helpers";
+} from "@/wab/client/components/sidebar/sidebar-helpers";
 import {
   ExpsProvider,
   useStyleComponent,
-} from "../style-controls/StyleComponent";
-import StyleToggleButton from "../style-controls/StyleToggleButton";
-import StyleToggleButtonGroup from "../style-controls/StyleToggleButtonGroup";
-import DimTokenSpinner from "../widgets/DimTokenSelector";
+} from "@/wab/client/components/style-controls/StyleComponent";
+import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggleButton";
+import StyleToggleButtonGroup from "@/wab/client/components/style-controls/StyleToggleButtonGroup";
+import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
+import { TokenType } from "@/wab/commons/StyleToken";
+import { siteToAllTokens } from "@/wab/shared/cached-selectors";
+import {
+  GRID_DEFAULT_TEMPLATE,
+  isFlexibleSize,
+  isTrackTemplate,
+  parseGridCssPropsToSpec,
+} from "@/wab/shared/grid-utils";
+import { allImageAssets, allMixins } from "@/wab/sites";
+import { CssVarResolver } from "@/wab/styles";
+import { observer } from "mobx-react-lite";
+import React from "react";
 
 export const GridControls = observer(function GridControls(props: {
   expsProvider: ExpsProvider;

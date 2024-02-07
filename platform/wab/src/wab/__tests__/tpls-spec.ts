@@ -1,9 +1,9 @@
-import { TplNode } from "../classes";
-import * as Components from "../components";
-import { ComponentType } from "../components";
-import { withoutUids } from "../model/model-meta";
-import * as STpls from "../test/tpls";
-import * as Tpls from "../tpls";
+import { TplNode } from "@/wab/classes";
+import * as Components from "@/wab/components";
+import { ComponentType } from "@/wab/components";
+import { withoutUids } from "@/wab/model/model-meta";
+import * as STpls from "@/wab/test/tpls";
+import * as Tpls from "@/wab/tpls";
 
 describe("clone", () =>
   it("should handle TplComponents", function () {

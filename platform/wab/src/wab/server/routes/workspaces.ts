@@ -1,6 +1,5 @@
-import { Request, Response } from "express-serve-static-core";
-import L from "lodash";
-import { ensureType } from "../../common";
+import { ensureType } from "@/wab/common";
+import { Workspace } from "@/wab/server/entities/Entities";
 import {
   ApiTeam,
   ApiWorkspace,
@@ -9,10 +8,11 @@ import {
   GetWorkspaceResponse,
   UpdateWorkspaceRequest,
   WorkspaceId,
-} from "../../shared/ApiSchema";
-import { DomainValidator } from "../../shared/hosting";
-import { createTaggedResourceId } from "../../shared/perms";
-import { Workspace } from "../entities/Entities";
+} from "@/wab/shared/ApiSchema";
+import { DomainValidator } from "@/wab/shared/hosting";
+import { createTaggedResourceId } from "@/wab/shared/perms";
+import { Request, Response } from "express-serve-static-core";
+import L from "lodash";
 import { doSafelyDeleteProject } from "./projects";
 import { maybeTriggerPaywall, passPaywall } from "./team-plans";
 import { mkApiTeam } from "./teams";

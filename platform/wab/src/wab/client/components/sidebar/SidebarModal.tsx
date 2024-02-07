@@ -1,3 +1,14 @@
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import IconButton from "@/wab/client/components/widgets/IconButton";
+import { ModalScope } from "@/wab/client/components/widgets/ModalScope";
+import { plasmicIFrameMouseDownEvent } from "@/wab/client/definitions/events";
+import ArrowLeftIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ArrowLeft";
+import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
+import { STUDIO_SHORTCUTS } from "@/wab/client/shortcuts/studio/studio-shortcuts";
+import { cx, ensure } from "@/wab/common";
+import { arrayReversed } from "@/wab/commons/collections";
+import { useInteractOutsideWithCommonExceptions } from "@/wab/commons/components/OnClickAway";
+import { Slot, SlotProvider } from "@/wab/commons/components/Slots";
 import domAlign from "dom-align";
 import L from "lodash";
 import { observer } from "mobx-react-lite";
@@ -7,17 +18,6 @@ import ReactDOM from "react-dom";
 import { animated, useTransition } from "react-spring";
 import { usePrevious } from "react-use";
 import ResizeObserver from "resize-observer-polyfill";
-import { cx, ensure } from "../../../common";
-import { arrayReversed } from "../../../commons/collections";
-import { useInteractOutsideWithCommonExceptions } from "../../../commons/components/OnClickAway";
-import { Slot, SlotProvider } from "../../../commons/components/Slots";
-import { plasmicIFrameMouseDownEvent } from "../../definitions/events";
-import ArrowLeftIcon from "../../plasmic/plasmic_kit/PlasmicIcon__ArrowLeft";
-import CloseIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Close";
-import { STUDIO_SHORTCUTS } from "../../shortcuts/studio/studio-shortcuts";
-import { Icon } from "../widgets/Icon";
-import IconButton from "../widgets/IconButton";
-import { ModalScope } from "../widgets/ModalScope";
 
 let nextId = 0;
 

@@ -1,8 +1,8 @@
-import { VariantedStylesHelper } from "../../shared/VariantedStylesHelper";
-import { isGlobalVariant } from "../../shared/Variants";
-import { ExpsProvider } from "../components/style-controls/StyleComponent";
-import { makeVariantsController } from "../components/variants/VariantsController";
-import { StudioCtx } from "../studio-ctx/StudioCtx";
+import { ExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
+import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { isGlobalVariant } from "@/wab/shared/Variants";
 
 export const isStylePropSet =
   (expsProvider: ExpsProvider) =>

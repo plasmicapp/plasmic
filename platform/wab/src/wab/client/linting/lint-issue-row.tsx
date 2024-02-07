@@ -1,12 +1,14 @@
-import { Popover } from "antd";
-import { observer } from "mobx-react-lite";
-import React, { ReactNode } from "react";
-import { makeVariantName } from "src/wab/shared/Variants";
-import { capitalizeFirst } from "src/wab/strs";
-import { isTplNamable, isTplSlot, summarizeTpl } from "src/wab/tpls";
-import { Component, TplNode } from "../../classes";
-import { spawn } from "../../common";
-import { isPageComponent } from "../../components";
+import { Component, TplNode } from "@/wab/classes";
+import ListItem from "@/wab/client/components/ListItem";
+import { DataSourceOpExprSummary } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { NOT_RENDERED_ICON } from "@/wab/client/icons";
+import TreeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Tree";
+import ResponsivenessIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Responsiveness";
+import UnlockIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Unlock";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { spawn } from "@/wab/common";
+import { isPageComponent } from "@/wab/components";
 import {
   InvalidDomNestingLintIssue,
   InvalidTplNestingLintIssue,
@@ -15,15 +17,13 @@ import {
   LintIssueType,
   NonCssScreenVariantOverrideLintIssue,
   UnprotectedDataQueryLintIssue,
-} from "../../shared/linting/lint-types";
-import ListItem from "../components/ListItem";
-import { DataSourceOpExprSummary } from "../components/sidebar-tabs/DataSource/DataSourceOpPicker";
-import { Icon } from "../components/widgets/Icon";
-import { NOT_RENDERED_ICON } from "../icons";
-import TreeIcon from "../plasmic/plasmic_kit/PlasmicIcon__Tree";
-import ResponsivenessIcon from "../plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Responsiveness";
-import UnlockIcon from "../plasmic/plasmic_kit_design_system/PlasmicIcon__Unlock";
-import { useStudioCtx } from "../studio-ctx/StudioCtx";
+} from "@/wab/shared/linting/lint-types";
+import { Popover } from "antd";
+import { observer } from "mobx-react-lite";
+import React, { ReactNode } from "react";
+import { makeVariantName } from "src/wab/shared/Variants";
+import { capitalizeFirst } from "src/wab/strs";
+import { isTplNamable, isTplSlot, summarizeTpl } from "src/wab/tpls";
 
 export function renderLintIssue(issue: LintIssue) {
   if (issue.type === "non-css-screen-variant-override") {

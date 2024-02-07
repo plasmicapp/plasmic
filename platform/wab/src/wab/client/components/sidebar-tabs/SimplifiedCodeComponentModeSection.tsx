@@ -1,17 +1,17 @@
+import { Expr, TplComponent } from "@/wab/classes";
+import { getControlModePropType } from "@/wab/client/code-components/code-components";
+import { updateComponentMode } from "@/wab/client/code-components/simplified-mode";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import StyleSwitch from "@/wab/client/components/style-controls/StyleSwitch";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
+import { ensure, spawn } from "@/wab/common";
+import { tryExtractJson } from "@/wab/exprs";
+import { getTplComponentArg } from "@/wab/shared/TplMgr";
+import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
 import type { CodeComponentMode } from "@plasmicapp/host";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { Expr, TplComponent } from "../../../classes";
-import { ensure, spawn } from "../../../common";
-import { tryExtractJson } from "../../../exprs";
-import { getTplComponentArg } from "../../../shared/TplMgr";
-import { ensureBaseVariantSetting } from "../../../shared/Variants";
-import { getControlModePropType } from "../../code-components/code-components";
-import { updateComponentMode } from "../../code-components/simplified-mode";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { TutorialEventsType } from "../../tours/tutorials/tutorials-events";
-import { SidebarSection } from "../sidebar/SidebarSection";
-import StyleSwitch from "../style-controls/StyleSwitch";
 
 export const SimplifiedCodeComponentModeSection = observer(function (props: {
   tpl: TplComponent;

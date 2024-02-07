@@ -1,30 +1,30 @@
-import { observer } from "mobx-react";
-import React from "react";
-import { useLocalStorage } from "react-use";
-import { Component, Variant, VariantGroup } from "../../../../classes";
-import { PublicStyleSection } from "../../../../shared/ApiSchema";
-import { getPlumeEditorPlugin } from "../../../../shared/plume/plume-registry";
-import { canEditStyleSection } from "../../../../shared/ui-config-utils";
-import ComponentIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Component";
-import GearIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Gear";
-import PlumeMarkIcon from "../../../plasmic/plasmic_kit_design_system/icons/PlasmicIcon__PlumeMark";
-import { StudioCtx } from "../../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../../studio-ctx/view-ctx";
-import { PlumeMissingIngredientsPanel } from "../../plume/PlumeComponentPanel";
-import { NamedPanelHeader } from "../../sidebar/sidebar-helpers";
-import { SidebarModal } from "../../sidebar/SidebarModal";
-import { SidebarSection } from "../../sidebar/SidebarSection";
+import { Component, Variant, VariantGroup } from "@/wab/classes";
+import { PlumeMissingIngredientsPanel } from "@/wab/client/components/plume/PlumeComponentPanel";
+import { ComponentDataQueriesSection } from "@/wab/client/components/sidebar-tabs/component-data-queries-section";
+import { ComponentPropsDefinitionSection } from "@/wab/client/components/sidebar-tabs/ComponentPropsDefinitionSection";
+import { LegacyComponentParamsSection } from "@/wab/client/components/sidebar-tabs/legacy-component-params-section";
+import VariablesSection from "@/wab/client/components/sidebar-tabs/StateManagement/VariablesSection";
+import { NamedPanelHeader } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
   VariantsPanel,
   VariantsPanelHandle,
-} from "../../variants/VariantsPanel";
-import { HoverableDisclosure } from "../../widgets/HoverableDisclosure";
-import { Icon } from "../../widgets/Icon";
-import IconButton from "../../widgets/IconButton";
-import { ComponentDataQueriesSection } from "../component-data-queries-section";
-import { ComponentPropsDefinitionSection } from "../ComponentPropsDefinitionSection";
-import { LegacyComponentParamsSection } from "../legacy-component-params-section";
-import VariablesSection from "../StateManagement/VariablesSection";
+} from "@/wab/client/components/variants/VariantsPanel";
+import { HoverableDisclosure } from "@/wab/client/components/widgets/HoverableDisclosure";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import IconButton from "@/wab/client/components/widgets/IconButton";
+import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
+import GearIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Gear";
+import PlumeMarkIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__PlumeMark";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { PublicStyleSection } from "@/wab/shared/ApiSchema";
+import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
+import { canEditStyleSection } from "@/wab/shared/ui-config-utils";
+import { observer } from "mobx-react";
+import React from "react";
+import { useLocalStorage } from "react-use";
 import S from "./ComponentTab.module.scss";
 
 export interface ComponentTabHandle {

@@ -1,23 +1,23 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { sortBy } from "lodash";
-import * as React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Matcher } from "@/wab/client/components/view-common";
+import ShareDialogContent from "@/wab/client/components/widgets/plasmic/ShareDialogContent";
+import Select from "@/wab/client/components/widgets/Select";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import {
+  DefaultTeamMemberListProps,
+  PlasmicTeamMemberList,
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamMemberList";
 import {
   ApiFeatureTier,
   ApiPermission,
   ApiTeam,
   TeamMember,
-} from "../../../shared/ApiSchema";
-import { fullName } from "../../../shared/ApiSchemaUtil";
-import { accessLevelRank, GrantableAccessLevel } from "../../../shared/EntUtil";
-import { useAppCtx } from "../../contexts/AppContexts";
-import {
-  DefaultTeamMemberListProps,
-  PlasmicTeamMemberList,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicTeamMemberList";
-import { Matcher } from "../view-common";
-import ShareDialogContent from "../widgets/plasmic/ShareDialogContent";
-import Select from "../widgets/Select";
+} from "@/wab/shared/ApiSchema";
+import { fullName } from "@/wab/shared/ApiSchemaUtil";
+import { accessLevelRank, GrantableAccessLevel } from "@/wab/shared/EntUtil";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import { sortBy } from "lodash";
+import * as React from "react";
+import { Modal } from "src/wab/client/components/widgets/Modal";
 import TeamMemberListItem from "./TeamMemberListItem";
 
 interface TeamMemberListProps extends DefaultTeamMemberListProps {

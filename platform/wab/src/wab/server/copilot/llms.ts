@@ -2,6 +2,11 @@
  * Wrappers around LLM APIs. Currently just for caching and simple logging.
  */
 
+import { last, mkShortId } from "@/wab/common";
+import { DbMgr } from "@/wab/server/db/DbMgr";
+import { getAnthropicApiKey, getOpenaiApiKey } from "@/wab/server/secrets";
+import { DynamoDbCache, SimpleCache } from "@/wab/server/simple-cache";
+import { showCompletionRequest } from "@/wab/shared/copilot/prompt-utils";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import axios from "axios";
 import { createHash } from "crypto";
@@ -12,11 +17,6 @@ import {
   OpenAIApi,
 } from "openai";
 import { stringify } from "safe-stable-stringify";
-import { last, mkShortId } from "../../common";
-import { DbMgr } from "../db/DbMgr";
-import { getAnthropicApiKey, getOpenaiApiKey } from "../secrets";
-import { DynamoDbCache, SimpleCache } from "../simple-cache";
-import {showCompletionRequest} from "../../shared/copilot/prompt-utils";
 
 export const chatGptDefaultPrompt = `You are ChatGPT, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown.`;
 

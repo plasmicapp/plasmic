@@ -1,3 +1,4 @@
+import { hackyCast, spanLast } from "@/wab/common";
 import {
   failableAsync,
   FailableAsyncArg,
@@ -6,7 +7,6 @@ import {
   IFailable,
   success as Success,
 } from "ts-failable";
-import { hackyCast, spanLast } from "../common";
 
 export const coalesceErrorsAsync = <R, E, Err = Error>(
   p: () => FailablePromise<R, E>

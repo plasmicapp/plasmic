@@ -1,7 +1,7 @@
-import { DataSourceId } from "../../shared/ApiSchema";
-import { BundleMigrationType } from "../db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
-import { PkgVersion } from "../entities/Entities";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { PkgVersion } from "@/wab/server/entities/Entities";
+import { DataSourceId } from "@/wab/shared/ApiSchema";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   if (entity instanceof PkgVersion) {

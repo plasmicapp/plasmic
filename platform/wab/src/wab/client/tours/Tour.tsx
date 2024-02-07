@@ -1,14 +1,14 @@
+import Button from "@/wab/client/components/widgets/Button";
+import { useApi } from "@/wab/client/contexts/AppContexts";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { zIndex } from "@/wab/client/z-index";
+import { spawn } from "@/wab/common";
 import { observer } from "mobx-react-lite";
 import moment from "moment/moment";
 import React from "react";
 import { StoreHelpers } from "react-joyride";
 import { useMountedState } from "react-use";
 import { Signal } from "signals";
-import { spawn } from "../../common";
-import Button from "../components/widgets/Button";
-import { useApi } from "../contexts/AppContexts";
-import { useStudioCtx } from "../studio-ctx/StudioCtx";
-import { zIndex } from "../z-index";
 
 const LazyJoyRide = React.lazy(() => import("react-joyride"));
 

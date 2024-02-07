@@ -1,8 +1,8 @@
-import { ProjectDependency, Site } from "../../classes";
-import { ensure, removeWhere } from "../../common";
-import { lt, sortAsc } from "../../commons/semver";
-import { upgradeProjectDeps } from "../../project-deps";
-import { Bundler } from "../bundler";
+import { ProjectDependency, Site } from "@/wab/classes";
+import { ensure, removeWhere } from "@/wab/common";
+import { lt, sortAsc } from "@/wab/commons/semver";
+import { upgradeProjectDeps } from "@/wab/project-deps";
+import { Bundler } from "@/wab/shared/bundler";
 
 export function fixProjectDependencies(
   ancestor: Site,
@@ -58,25 +58,24 @@ export function fixProjectDependencies(
             rightDep.version,
           ]).keys(),
         ]);
-        const updatesList = versionList.slice(1).map((nextVersion, index): [
-          ProjectDependency,
-          ProjectDependency
-        ] => {
-          const previousVersion = versionList[index];
-          const previousDep = ensure(
-            [ancestorDep, leftDep, rightDep].find(
-              (dep) => dep.version === previousVersion
-            ),
-            `Unexpected previous version ${previousVersion}`
-          );
-          const nextDep = ensure(
-            [ancestorDep, leftDep, rightDep].find(
-              (dep) => dep.version === nextVersion
-            ),
-            `Unexpected previous version ${previousVersion}`
-          );
-          return [previousDep, nextDep];
-        });
+        const updatesList = versionList
+          .slice(1)
+          .map((nextVersion, index): [ProjectDependency, ProjectDependency] => {
+            const previousVersion = versionList[index];
+            const previousDep = ensure(
+              [ancestorDep, leftDep, rightDep].find(
+                (dep) => dep.version === previousVersion
+              ),
+              `Unexpected previous version ${previousVersion}`
+            );
+            const nextDep = ensure(
+              [ancestorDep, leftDep, rightDep].find(
+                (dep) => dep.version === nextVersion
+              ),
+              `Unexpected previous version ${previousVersion}`
+            );
+            return [previousDep, nextDep];
+          });
         if (updatesList.length !== 0) {
           updates.push(updatesList);
         }

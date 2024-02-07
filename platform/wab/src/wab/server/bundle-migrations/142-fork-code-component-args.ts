@@ -1,11 +1,11 @@
-import { Bundler } from "../../shared/bundler";
-import { forkAllTplCodeComponentVirtualArgs } from "../../shared/code-components/code-components";
 import {
   BundleMigrationType,
   unbundleSite,
   upgradeHostlessProject,
-} from "../db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
+} from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { Bundler } from "@/wab/shared/bundler";
+import { forkAllTplCodeComponentVirtualArgs } from "@/wab/shared/code-components/code-components";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   // This is a special upgrade-hostless that first forks all code component

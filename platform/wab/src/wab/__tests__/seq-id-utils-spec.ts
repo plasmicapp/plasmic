@@ -1,13 +1,13 @@
-import { ensure } from "../common";
-import { ComponentType, mkComponent } from "../components";
+import { ensure } from "@/wab/common";
+import { ComponentType, mkComponent } from "@/wab/components";
 import {
   ComponentSeqIdAssignment,
   extractNodesByComponentAsJson,
   parseNodesByComponent,
   ProjectSeqIdAssignment,
-} from "../shared/seq-id-utils";
-import { createSite } from "../sites";
-import { mkTplTagX } from "../tpls";
+} from "@/wab/shared/seq-id-utils";
+import { createSite } from "@/wab/sites";
+import { mkTplTagX } from "@/wab/tpls";
 
 describe("seq-id-utils", function () {
   it("parseNodesByComponent works", function () {

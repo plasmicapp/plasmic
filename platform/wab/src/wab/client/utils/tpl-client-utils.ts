@@ -1,14 +1,16 @@
-import { TplNode } from "../../classes";
-import { switchType } from "../../common";
-import { isCodeComponent } from "../../components";
-import { isPlainObjectPropType } from "../../shared/code-components/code-components";
-import { EffectiveVariantSetting } from "../../shared/effective-variant-setting";
+import { TplNode } from "@/wab/classes";
+import { isTplCodeComponentStyleable } from "@/wab/client/code-components/code-components";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { switchType } from "@/wab/common";
+import { isCodeComponent } from "@/wab/components";
+import { isPlainObjectPropType } from "@/wab/shared/code-components/code-components";
+import { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import {
   ContainerLayoutType,
   getRshContainerType,
-} from "../../shared/layoututils";
-import { TplVisibility } from "../../shared/visibility-utils";
-import { SlotSelection } from "../../slots";
+} from "@/wab/shared/layoututils";
+import { TplVisibility } from "@/wab/shared/visibility-utils";
+import { SlotSelection } from "@/wab/slots";
 import {
   isTplCodeComponent,
   isTplNamable,
@@ -17,11 +19,9 @@ import {
   isTplVariantable,
   summarizeSlotParam,
   summarizeTpl,
-} from "../../tpls";
-import { ValNode } from "../../val-nodes";
-import { FocusObj } from "../../vals";
-import { isTplCodeComponentStyleable } from "../code-components/code-components";
-import { ViewCtx } from "../studio-ctx/view-ctx";
+} from "@/wab/tpls";
+import { ValNode } from "@/wab/val-nodes";
+import { FocusObj } from "@/wab/vals";
 
 export function getVisibilityChoicesForTpl(viewCtx: ViewCtx, tpl: TplNode) {
   if (isTplVariantable(tpl)) {

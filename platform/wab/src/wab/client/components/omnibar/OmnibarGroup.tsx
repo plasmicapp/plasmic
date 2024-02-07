@@ -1,21 +1,21 @@
 /** @format */
 
-import { UseComboboxGetItemPropsOptions } from "downshift";
-import * as React from "react";
-import { MaybeWrap } from "../../../commons/components/ReactUtil";
-import { isCommandItem } from "../../definitions/commands";
+import { DraggableInsertable } from "@/wab/client/components/studio/add-drawer/DraggableInsertable";
+import { PlainLink } from "@/wab/client/components/widgets";
+import { isCommandItem } from "@/wab/client/definitions/commands";
 import {
   AddItemType,
   AddTplItem,
   isAddItem,
-} from "../../definitions/insertables";
+} from "@/wab/client/definitions/insertables";
 import {
   DefaultOmnibarGroupProps,
   PlasmicOmnibarGroup,
-} from "../../plasmic/plasmic_kit_omnibar/PlasmicOmnibarGroup";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { DraggableInsertable } from "../studio/add-drawer/DraggableInsertable";
-import { PlainLink } from "../widgets";
+} from "@/wab/client/plasmic/plasmic_kit_omnibar/PlasmicOmnibarGroup";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { UseComboboxGetItemPropsOptions } from "downshift";
+import * as React from "react";
 import { OmnibarGroupData, OmnibarItem } from "./Omnibar";
 import OmnibarAddItem from "./OmnibarAddItem";
 import OmnibarCommandItem from "./OmnibarCommandItem";

@@ -1,6 +1,6 @@
-import { UnsafeBundle } from "../../shared/bundles";
-import { BundleMigrationType } from "../db/bundle-migration-utils";
-import { moveBundleAssetsToS3 } from "../routes/moveAssetsToS3";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
+import { moveBundleAssetsToS3 } from "@/wab/server/routes/moveAssetsToS3";
+import { UnsafeBundle } from "@/wab/shared/bundles";
 
 export async function migrate(bundle: UnsafeBundle) {
   Object.assign(bundle, await moveBundleAssetsToS3(bundle));

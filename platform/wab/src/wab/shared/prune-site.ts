@@ -1,5 +1,5 @@
-import { Site } from "../classes";
-import { mergeSets, removeWhere } from "../common";
+import { Site } from "@/wab/classes";
+import { mergeSets, removeWhere } from "@/wab/common";
 import {
   extractUsedIconAssetsForComponents,
   extractUsedPictureAssetsForComponents,

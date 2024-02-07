@@ -1,8 +1,8 @@
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
 import { Tooltip } from "antd";
 import * as React from "react";
 import { ReactNode } from "react";
-import MarkFullColorIcon from "../../plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
-import { Icon } from "../widgets/Icon";
 import { PageFooter } from "./PageFooter";
 
 export function IntakeFlowForm(props: { children: ReactNode }) {

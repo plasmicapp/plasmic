@@ -1,28 +1,28 @@
-import { Menu } from "antd";
-import React from "react";
-import { Component, Expr, isKnownTplSlot, State } from "../../../../classes";
-import { assert, ensure, spawn } from "../../../../common";
-import { canDeleteState } from "../../../../components";
-import { codeLit, getRawCode, tryExtractJson } from "../../../../exprs";
-import { wabTypeToPropType } from "../../../../shared/code-components/code-components";
+import { Component, Expr, isKnownTplSlot, State } from "@/wab/classes";
+import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import { PropEditorRow } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { assert, ensure, spawn } from "@/wab/common";
+import { canDeleteState } from "@/wab/components";
+import { codeLit, getRawCode, tryExtractJson } from "@/wab/exprs";
+import { wabTypeToPropType } from "@/wab/shared/code-components/code-components";
 import {
   convertVariableTypeToPropType,
   convertVariableTypeToWabType,
-} from "../../../../shared/core/model-util";
-import { evalCodeWithEnv } from "../../../../shared/eval";
-import { VARIABLE_LOWER } from "../../../../shared/Labels";
+} from "@/wab/shared/core/model-util";
+import { evalCodeWithEnv } from "@/wab/shared/eval";
+import { VARIABLE_LOWER } from "@/wab/shared/Labels";
 import {
   getStateDisplayName,
   isPrivateState,
   isReadonlyState,
   StateAccessType,
   StateVariableType,
-} from "../../../../states";
-import { StudioCtx } from "../../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../../studio-ctx/view-ctx";
-import { MenuBuilder } from "../../menu-builder";
-import { SidebarModal } from "../../sidebar/SidebarModal";
-import { PropEditorRow } from "../PropEditorRow";
+} from "@/wab/states";
+import { Menu } from "antd";
+import React from "react";
 import { VariableEditingModal } from "./VariableEditingModal";
 
 function useVariableMenu({

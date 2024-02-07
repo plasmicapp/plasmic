@@ -1,17 +1,17 @@
 /**
  * Like 148, but deals with imported buttons too
  */
-import { Bundler } from "../../shared/bundler";
-import {
-  ensureCorrectImplicitStates,
-  removeComponentState,
-} from "../../states";
-import { isTplComponent } from "../../tpls";
 import {
   BundleMigrationType,
   unbundleSite,
-} from "../db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
+} from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { Bundler } from "@/wab/shared/bundler";
+import {
+  ensureCorrectImplicitStates,
+  removeComponentState,
+} from "@/wab/states";
+import { isTplComponent } from "@/wab/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();

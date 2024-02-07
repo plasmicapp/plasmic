@@ -2,11 +2,11 @@
  * This is incomplete. We want more "raw" operations. Included is a sqlalchemy implementation, but unclear that that's a good interface to the data.
  */
 
+import type { DataSource } from "@/wab/server/entities/Entities";
+import { capitalizeFirst } from "@/wab/strs";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import moment from "moment/moment";
 import SqlString from "sqlstring";
-import type { DataSource } from "../../server/entities/Entities";
-import { capitalizeFirst } from "../../strs";
 import {
   DataSourceMeta,
   FilterArgMeta,

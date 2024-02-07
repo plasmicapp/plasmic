@@ -2,7 +2,7 @@ import {
   ApiAnalyticsConversionRateResult,
   ApiAnalyticsConversionResult,
   ApiAnalyticsImpressionResult,
-} from "../../../shared/ApiSchema";
+} from "@/wab/shared/ApiSchema";
 import {
   useAnalyticsData,
   useProjectAnalyticsMeta,

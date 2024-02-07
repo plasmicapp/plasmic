@@ -1,6 +1,6 @@
+import { GitRepository } from "@/wab/shared/ApiSchema";
 import { Octokit } from "@octokit/core";
 import { composePaginateRest } from "@octokit/plugin-paginate-rest";
-import { GitRepository } from "../../shared/ApiSchema";
 
 export async function fetchGithubRepositories(
   octokit: Octokit,

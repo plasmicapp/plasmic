@@ -1,8 +1,8 @@
+import { Type } from "@/wab/classes";
+import { ObserverLoadable } from "@/wab/client/components/widgets";
+import { stripParens } from "@/wab/exprs";
+import { Size } from "@/wab/geom";
 import React, { useState } from "react";
-import { Type } from "../../../classes";
-import { stripParens } from "../../../exprs";
-import { Size } from "../../../geom";
-import { ObserverLoadable } from "../widgets";
 
 let divSizer: HTMLDivElement | undefined = undefined;
 export function measureContentSize(
@@ -56,7 +56,9 @@ export function ExprInput({
     <div className={"ExprInput"}>
       <ObserverLoadable
         loader={() =>
-          import("../coding/CodeInput").then(({ CodeInput }) => CodeInput)
+          import("@/wab/client/components/coding/CodeInput").then(
+            ({ CodeInput }) => CodeInput
+          )
         }
         contents={(CodeInput) => (
           <CodeInput

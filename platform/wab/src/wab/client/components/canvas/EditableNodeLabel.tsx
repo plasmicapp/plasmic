@@ -1,18 +1,18 @@
+import { ArenaFrame, isKnownArenaFrame, TplSlot } from "@/wab/classes";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { Textbox } from "@/wab/client/components/widgets/Textbox";
+import RepeatingsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Repeatingsvg";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { cx, ensure, spawn } from "@/wab/common";
+import { InlineEdit } from "@/wab/commons/components/InlineEdit";
+import { OnClickAway } from "@/wab/commons/components/OnClickAway";
+import * as Tpls from "@/wab/tpls";
+import { isTplNamable, isTplSlot } from "@/wab/tpls";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { useEffect } from "react";
-import { ArenaFrame, isKnownArenaFrame, TplSlot } from "../../../classes";
-import { cx, ensure, spawn } from "../../../common";
-import { InlineEdit } from "../../../commons/components/InlineEdit";
-import { OnClickAway } from "../../../commons/components/OnClickAway";
-import * as Tpls from "../../../tpls";
-import { isTplNamable, isTplSlot } from "../../../tpls";
-import RepeatingsvgIcon from "../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__Repeatingsvg";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { Icon } from "../widgets/Icon";
-import { Textbox } from "../widgets/Textbox";
 import styles from "./EditableNodeLabel.module.sass";
 
 export const EditableNodeLabel = observer(function EditableNodeLabel_(props: {

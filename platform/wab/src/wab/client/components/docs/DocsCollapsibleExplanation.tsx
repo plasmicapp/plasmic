@@ -1,9 +1,9 @@
-import L from "lodash";
-import * as React from "react";
 import {
   DefaultDocsCollapsibleExplanationProps,
   PlasmicDocsCollapsibleExplanation,
-} from "../../plasmic/plasmic_kit_docs_portal/PlasmicDocsCollapsibleExplanation";
+} from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsCollapsibleExplanation";
+import L from "lodash";
+import * as React from "react";
 
 interface DocsCollapsibleExplanationProps
   extends Omit<DefaultDocsCollapsibleExplanationProps, "children"> {

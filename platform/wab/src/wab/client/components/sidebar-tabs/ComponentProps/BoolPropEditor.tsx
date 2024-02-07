@@ -1,6 +1,6 @@
+import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
+import StyleSwitch from "@/wab/client/components/style-controls/StyleSwitch";
 import React from "react";
-import { ValueSetState } from "../../sidebar/sidebar-helpers";
-import StyleSwitch from "../../style-controls/StyleSwitch";
 
 export function BoolPropEditor(props: {
   onChange: (value: boolean) => void;

@@ -1,8 +1,8 @@
+import { ObserverLoadable } from "@/wab/client/components/widgets";
+import { Dict } from "@/wab/collections";
+import { tryCatchElse } from "@/wab/common";
+import { evalExprInSandbox } from "@/wab/shared/eval";
 import React, { useEffect, useMemo, useState } from "react";
-import { Dict } from "../../../collections";
-import { tryCatchElse } from "../../../common";
-import { evalExprInSandbox } from "../../../shared/eval";
-import { ObserverLoadable } from "../widgets";
 import { ValueViewer } from "./ValueViewer";
 
 export type EnvDict = Dict<unknown>;
@@ -56,7 +56,9 @@ export function LiveCodeEditor({
       <div style={{ height: 200, width: "50%" }}>
         <ObserverLoadable
           loader={() =>
-            import("../coding/CodeInput").then(({ CodeInput }) => CodeInput)
+            import("@/wab/client/components/coding/CodeInput").then(
+              ({ CodeInput }) => CodeInput
+            )
           }
           contents={(CodeInput) => (
             <CodeInput

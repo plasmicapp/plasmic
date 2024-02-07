@@ -1,22 +1,22 @@
-import { Menu } from "antd";
-import { observer } from "mobx-react-lite";
-import React from "react";
-import { ObjectPath, Rep, TplNode } from "../../../classes";
-import { ensure } from "../../../common";
+import { ObjectPath, Rep, TplNode } from "@/wab/classes";
+import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import { IconLinkButton } from "@/wab/client/components/widgets";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ensure } from "@/wab/common";
 import {
   code,
   createExprForDataPickerValue,
   extractValueSavedFromDataPicker,
-} from "../../../exprs";
-import { mkVar } from "../../../lang";
-import { isBaseVariant } from "../../../shared/Variants";
-import { tryGetTplOwnerComponent } from "../../../tpls";
-import PlusIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { LabeledItemRow } from "../sidebar/sidebar-helpers";
-import { SidebarSection } from "../sidebar/SidebarSection";
-import { IconLinkButton } from "../widgets";
-import { Icon } from "../widgets/Icon";
+} from "@/wab/exprs";
+import { mkVar } from "@/wab/lang";
+import { isBaseVariant } from "@/wab/shared/Variants";
+import { tryGetTplOwnerComponent } from "@/wab/tpls";
+import { Menu } from "antd";
+import { observer } from "mobx-react-lite";
+import React from "react";
 import { DataPickerEditor } from "./ComponentProps/DataPickerEditor";
 import { StringPropEditor } from "./ComponentProps/StringPropEditor";
 

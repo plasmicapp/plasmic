@@ -1,28 +1,28 @@
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { useHistory } from "react-router";
-import { ComponentArena } from "../../../classes";
-import { spawn } from "../../../common";
-import { isPageComponent } from "../../../components";
-import { getFrameHeight } from "../../../shared/Arenas";
-import {
-  getCustomFrameForActivatedVariants,
-  getFrameForActivatedVariants,
-} from "../../../shared/component-arenas";
-import { getPublicUrl } from "../../../urls";
-import { untilClosed } from "../../dom-utils";
-import {
-  DefaultLivePopOutButtonProps,
-  PlasmicLivePopOutButton,
-} from "../../plasmic/plasmic_kit_top_bar/PlasmicLivePopOutButton";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
-import { useForceUpdate } from "../../useForceUpdate";
+import { ComponentArena } from "@/wab/classes";
 import {
   getUrlsForLiveMode,
   isLiveMode,
   usePreviewCtx,
-} from "../live/PreviewCtx";
-import { useLivePreview } from "../live/PreviewFrame";
+} from "@/wab/client/components/live/PreviewCtx";
+import { useLivePreview } from "@/wab/client/components/live/PreviewFrame";
+import { untilClosed } from "@/wab/client/dom-utils";
+import {
+  DefaultLivePopOutButtonProps,
+  PlasmicLivePopOutButton,
+} from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicLivePopOutButton";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { useForceUpdate } from "@/wab/client/useForceUpdate";
+import { spawn } from "@/wab/common";
+import { isPageComponent } from "@/wab/components";
+import { getFrameHeight } from "@/wab/shared/Arenas";
+import {
+  getCustomFrameForActivatedVariants,
+  getFrameForActivatedVariants,
+} from "@/wab/shared/component-arenas";
+import { getPublicUrl } from "@/wab/urls";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
+import { useHistory } from "react-router";
 
 interface LivePopOutButtonProps extends DefaultLivePopOutButtonProps {}
 

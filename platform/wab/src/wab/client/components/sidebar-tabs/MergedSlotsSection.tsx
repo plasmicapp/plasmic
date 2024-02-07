@@ -1,24 +1,24 @@
-import { observer } from "mobx-react-lite";
-import React from "react";
-import { TplComponent } from "../../../classes";
-import { hackyCast } from "../../../common";
-import { getComponentDisplayName } from "../../../components";
-import { isPlainObjectPropType } from "../../../shared/code-components/code-components";
-import { getContextDependentValue } from "../../../shared/context-dependent-value";
+import { TplComponent } from "@/wab/classes";
+import {
+  mkStyleComponent,
+  providesStyleComponent,
+  TplExpsProvider,
+} from "@/wab/client/components/style-controls/StyleComponent";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { hackyCast } from "@/wab/common";
+import { getComponentDisplayName } from "@/wab/components";
+import { isPlainObjectPropType } from "@/wab/shared/code-components/code-components";
+import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
 import {
   getAncestorTplSlot,
   getSingleTextBlockFromArg,
   getSingleTplComponentFromArg,
   getSlotParams,
-} from "../../../shared/SlotUtils";
-import { $$$ } from "../../../shared/TplQuery";
-import { smartHumanize } from "../../../strs";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import {
-  mkStyleComponent,
-  providesStyleComponent,
-  TplExpsProvider,
-} from "../style-controls/StyleComponent";
+} from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { smartHumanize } from "@/wab/strs";
+import { observer } from "mobx-react-lite";
+import React from "react";
 import {
   ComponentPropsSection,
   getComponentPropTypes,

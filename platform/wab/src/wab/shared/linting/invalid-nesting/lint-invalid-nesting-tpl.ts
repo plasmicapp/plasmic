@@ -7,16 +7,16 @@ import {
   TplNode,
   TplSlot,
   TplTag,
-} from "../../../classes";
+} from "@/wab/classes";
 
+import { switchType } from "@/wab/common";
+import { isCodeComponent } from "@/wab/components";
+import { InvalidTplNestingLintIssue } from "@/wab/shared/linting/lint-types";
+import { lintIssuesEquals } from "@/wab/shared/linting/lint-utils";
+import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { getSlotArgs } from "@/wab/shared/SlotUtils";
+import { isTplTag, walkTpls } from "@/wab/tpls";
 import { comparer } from "mobx";
-import { switchType } from "../../../common";
-import { isCodeComponent } from "../../../components";
-import { isTplTag, walkTpls } from "../../../tpls";
-import { maybeComputedFn } from "../../mobx-util";
-import { getSlotArgs } from "../../SlotUtils";
-import { InvalidTplNestingLintIssue } from "../lint-types";
-import { lintIssuesEquals } from "../lint-utils";
 import {
   AncestorInfo,
   ANCESTOR_INFO_KEYS,

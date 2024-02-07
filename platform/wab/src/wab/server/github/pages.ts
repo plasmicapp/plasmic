@@ -1,9 +1,9 @@
+import { tryCatchElseAsync, unexpected } from "@/wab/common";
+import { DbMgr } from "@/wab/server/db/DbMgr";
+import { ProjectRepository } from "@/wab/server/entities/Entities";
 import { Octokit } from "@octokit/core";
 import * as Sentry from "@sentry/node";
 import { failableAsync } from "ts-failable";
-import { tryCatchElseAsync, unexpected } from "../../common";
-import { DbMgr } from "../db/DbMgr";
-import { ProjectRepository } from "../entities/Entities";
 import { getGithubApp } from "./app";
 import { GithubRef } from "./types";
 

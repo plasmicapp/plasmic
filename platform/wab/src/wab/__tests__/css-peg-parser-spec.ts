@@ -7,9 +7,9 @@ import {
   LinearGradient,
   NoneBackground,
   Stop,
-} from "../bg-styles";
-import { tuple } from "../common";
-import * as cssPegParser from "../gen/cssPegParser";
+} from "@/wab/bg-styles";
+import { tuple } from "@/wab/common";
+import * as cssPegParser from "@/wab/gen/cssPegParser";
 
 describe("cssPegParser", function () {
   const parseback = (x, { rule }) => parse(x, { rule }).showCss();

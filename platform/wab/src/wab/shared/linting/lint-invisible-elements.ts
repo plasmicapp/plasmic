@@ -1,7 +1,7 @@
-import { Component, Site, TplNode } from "../../classes";
-import { flattenComponent } from "../cached-selectors";
-import { maybeComputedFn } from "../mobx-util";
-import { isAlwaysInvisibleTpl } from "../visibility-utils";
+import { Component, Site, TplNode } from "@/wab/classes";
+import { flattenComponent } from "@/wab/shared/cached-selectors";
+import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { isAlwaysInvisibleTpl } from "@/wab/shared/visibility-utils";
 import { InvisibleElementLintIssue } from "./lint-types";
 import { lintIssuesEquals } from "./lint-utils";
 

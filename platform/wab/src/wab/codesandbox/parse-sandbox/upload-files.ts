@@ -1,6 +1,6 @@
+import { createUpload } from "@/wab/codesandbox/api";
 import { INormalizedModules } from "codesandbox-import-util-types";
 import { IUploads } from ".";
-import { createUpload } from "../api";
 
 export default async function uploadFiles(token: string, uploads: IUploads) {
   const files: INormalizedModules = {};

@@ -4,13 +4,13 @@ import {
   TplComponent,
   VariantGroup,
   VariantsRef,
-} from "../classes";
-import { ComponentType, mkComponent } from "../components";
-import { ScreenSizeSpec } from "../shared/Css";
-import { ensureBaseVariant, TplMgr, uniquePagePath } from "../shared/TplMgr";
-import { mkVariantSetting } from "../shared/Variants";
-import { createSite } from "../sites";
-import { mkTplComponentX, mkTplTagX } from "../tpls";
+} from "@/wab/classes";
+import { ComponentType, mkComponent } from "@/wab/components";
+import { ScreenSizeSpec } from "@/wab/shared/Css";
+import { ensureBaseVariant, TplMgr, uniquePagePath } from "@/wab/shared/TplMgr";
+import { mkVariantSetting } from "@/wab/shared/Variants";
+import { createSite } from "@/wab/sites";
+import { mkTplComponentX, mkTplTagX } from "@/wab/tpls";
 
 describe("uniquePagePath", () => {
   it("works", () => {

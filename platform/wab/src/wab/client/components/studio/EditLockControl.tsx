@@ -1,9 +1,9 @@
+import { READ_ONLY_EXPLANATION } from "@/wab/client/components/Messages";
+import { LinkButton } from "@/wab/client/components/widgets";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
-import { READ_ONLY_EXPLANATION } from "../Messages";
-import { LinkButton } from "../widgets";
 
 export function _EditLockControl() {
   const sc = useStudioCtx();

@@ -1,4 +1,4 @@
-import { preferShorthand } from "../styles";
+import { preferShorthand } from "@/wab/styles";
 
 describe("preferShorthand", () => {
   it("should output shorthand notation", () => {

@@ -11,17 +11,17 @@ import {
   isKnownFunctionExpr,
   isKnownMapExpr,
   isKnownObjectPath,
-} from "../../classes";
-import { unexpected } from "../../common";
-import { isCodeComponent } from "../../components";
-import { isRealCodeExpr, isRealCodeExprEnsuringType } from "../../exprs";
-import { Bundler } from "../../shared/bundler";
-import { flattenTpls, isTplComponent } from "../../tpls";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
+} from "@/wab/classes";
+import { unexpected } from "@/wab/common";
+import { isCodeComponent } from "@/wab/components";
+import { isRealCodeExpr, isRealCodeExprEnsuringType } from "@/wab/exprs";
 import {
   BundleMigrationType,
   unbundleSite,
-} from "../db/bundle-migration-utils";
+} from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { Bundler } from "@/wab/shared/bundler";
+import { flattenTpls, isTplComponent } from "@/wab/tpls";
 
 export function hasSyntaxError(val: string) {
   try {

@@ -2,14 +2,14 @@
  * Import and call this main instead of Shell's from main.tsx.
  */
 
-import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
-import { Helmet } from "react-helmet";
-import { ensure, spawn, swallow } from "../../common";
 import {
   createIframeFromNamedDomSnap,
   extractImportableDomFromIframe,
-} from "../WebImporter";
+} from "@/wab/client/WebImporter";
+import { ensure, spawn, swallow } from "@/wab/common";
+import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
+import { Helmet } from "react-helmet";
 import "./WebImporterSandbox.scss";
 
 export function main() {
@@ -65,8 +65,9 @@ export function WebImporterSandbox() {
     "Must have ?snap param"
   );
 
-  const [iframe, setIframe] =
-    useState<HTMLIFrameElement | undefined>(undefined);
+  const [iframe, setIframe] = useState<HTMLIFrameElement | undefined>(
+    undefined
+  );
   const [fontFaces, setFontFaces] = useState("");
   const [html, setHtml] = useState("");
   useEffect(() => {

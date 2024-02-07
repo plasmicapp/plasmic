@@ -1,3 +1,4 @@
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import {
@@ -8,7 +9,6 @@ import {
 } from "react-aria";
 import * as ReactDOM from "react-dom";
 import { useOverlayTriggerState } from "react-stately";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
 import { Omnibar, OmnibarItem } from "./Omnibar";
 
 interface OmnibarOverlayProps {}

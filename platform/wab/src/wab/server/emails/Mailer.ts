@@ -1,6 +1,6 @@
+import { getSmtpPass } from "@/wab/server/secrets";
 import { createTransport, SentMessageInfo, Transporter } from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
-import { getSmtpPass } from "../secrets";
 
 export class Mailer {
   constructor(private transporter: Transporter) {}

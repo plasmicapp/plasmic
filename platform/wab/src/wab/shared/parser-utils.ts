@@ -1,8 +1,8 @@
+import { assertNever, jsonClone, last, withoutNils } from "@/wab/common";
 import type AcornTypes from "acorn";
 import { full as astTraversal } from "acorn-walk";
 import { generate } from "escodegen";
 import type * as ast from "estree";
-import { assertNever, jsonClone, last, withoutNils } from "../common";
 
 declare module "acorn" {
   function parse(input: string, options: AcornTypes.Options): ast.Program;

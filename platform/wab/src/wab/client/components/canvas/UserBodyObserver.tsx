@@ -1,10 +1,10 @@
-import * as React from "react";
 import {
   clearIdleCallback,
   requestIdleCallback,
-} from "../../requestidlecallback";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
+} from "@/wab/client/requestidlecallback";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import * as React from "react";
 
 export function useRerenderOnUserBodyChange(
   studioCtx: StudioCtx,

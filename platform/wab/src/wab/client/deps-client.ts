@@ -1,5 +1,5 @@
+import DeploymentFlags from "@/wab/DeploymentFlags";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
-import DeploymentFlags from "../DeploymentFlags";
 
 // Stripe
 const stripeProdPublicKey = "pk_live_s4L5mrGSii9v1JNt1CPrXPxv00yncZqGGV";

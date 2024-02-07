@@ -1,7 +1,7 @@
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { isComponentArena, isPageArena } from "@/wab/shared/Arenas";
+import { FRAME_CAP } from "@/wab/shared/Labels";
 import React, { ReactNode } from "react";
-import { isComponentArena, isPageArena } from "../../../shared/Arenas";
-import { FRAME_CAP } from "../../../shared/Labels";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
 
 export interface EmptyTabPlaceholderProps {
   children: ReactNode;

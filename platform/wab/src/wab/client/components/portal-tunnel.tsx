@@ -1,6 +1,6 @@
+import { useForceUpdate } from "@/wab/client/useForceUpdate";
 import React from "react";
 import { createPortal } from "react-dom";
-import { useForceUpdate } from "../useForceUpdate";
 
 export function createPortalTunnel() {
   let containerElement: HTMLElement | undefined = undefined;

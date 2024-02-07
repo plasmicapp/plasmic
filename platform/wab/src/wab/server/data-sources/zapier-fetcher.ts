@@ -1,6 +1,6 @@
+import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
+import { ZapierDataSource } from "@/wab/shared/data-sources-meta/zapier-meta";
 import fetch from "node-fetch";
-import { BadRequestError } from "../../shared/ApiErrors/errors";
-import { ZapierDataSource } from "../../shared/data-sources-meta/zapier-meta";
 
 export function makeZapierFetcher(source: ZapierDataSource) {
   return new ZapierFetcher(source);

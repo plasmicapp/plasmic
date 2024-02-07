@@ -1,12 +1,12 @@
+import AnonymousIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Usersvg";
+import { nullToUndefined, simpleHash } from "@/wab/common";
+import { Side } from "@/wab/geom";
+import { ApiUser } from "@/wab/shared/ApiSchema";
+import { fullNameAndEmail, getUserEmail } from "@/wab/shared/ApiSchemaUtil";
+import { Chroma } from "@/wab/shared/utils/color-utils";
 import { Tooltip } from "antd";
 import classNames from "classnames";
 import React, { CSSProperties, ReactNode } from "react";
-import { nullToUndefined, simpleHash } from "../../../common";
-import { Side } from "../../../geom";
-import { ApiUser } from "../../../shared/ApiSchema";
-import { fullNameAndEmail, getUserEmail } from "../../../shared/ApiSchemaUtil";
-import { Chroma } from "../../../shared/utils/color-utils";
-import AnonymousIcon from "../../plasmic/q_4_icons/icons/PlasmicIcon__Usersvg";
 
 type AvatarSize = "small";
 

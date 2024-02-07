@@ -1,13 +1,13 @@
+import ListSectionHeader from "@/wab/client/components/ListSectionHeader";
+import ListSectionSeparator from "@/wab/client/components/ListSectionSeparator";
+import { AddItemGroup } from "@/wab/client/components/studio/add-drawer/AddDrawerSection";
+import { Matcher } from "@/wab/client/components/view-common";
+import { AddItem } from "@/wab/client/definitions/insertables";
+import PlasmicAddDrawerItem from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicAddDrawerItem";
+import { getSuperComponents } from "@/wab/components";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { CSSProperties } from "react";
-import { getSuperComponents } from "../../../../components";
-import { AddItem } from "../../../definitions/insertables";
-import PlasmicAddDrawerItem from "../../../plasmic/plasmic_kit_left_pane/PlasmicAddDrawerItem";
-import ListSectionHeader from "../../ListSectionHeader";
-import ListSectionSeparator from "../../ListSectionSeparator";
-import { AddItemGroup } from "../../studio/add-drawer/AddDrawerSection";
-import { Matcher } from "../../view-common";
 import styles from "./InlineAddDrawer.module.scss";
 
 export const enum InsertableListItemType {

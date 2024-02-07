@@ -1,5 +1,5 @@
+import { spawn } from "@/wab/common";
 import { useEffect } from "react";
-import { spawn } from "../../../common";
 
 /**
  * This exists only because our API server uses same-site: strict.

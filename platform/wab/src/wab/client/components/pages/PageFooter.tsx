@@ -1,5 +1,5 @@
+import { U } from "@/wab/client/cli-routes";
 import * as React from "react";
-import { U } from "../../cli-routes";
 
 export function PageFooter() {
   return (

@@ -1,23 +1,23 @@
-import * as React from "react";
-import { PublicStyleSection } from "src/wab/shared/ApiSchema";
-import { TplComponent, TplTag } from "../../../classes";
-import { isCodeComponent } from "../../../components";
-import { VariantedStylesHelper } from "../../../shared/VariantedStylesHelper";
+import { TplComponent, TplTag } from "@/wab/classes";
+import { FullRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SpacingControl } from "@/wab/client/components/style-controls/SpacingControl";
+import {
+  ExpsProvider,
+  StylePanelSection,
+  TplExpsProvider,
+} from "@/wab/client/components/style-controls/StyleComponent";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { isCodeComponent } from "@/wab/components";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   isComponentRoot,
   isTplColumn,
   isTplComponent,
   isTplSlot,
   isTplTag,
-} from "../../../tpls";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { FullRow } from "../sidebar/sidebar-helpers";
-import { SpacingControl } from "../style-controls/SpacingControl";
-import {
-  ExpsProvider,
-  StylePanelSection,
-  TplExpsProvider,
-} from "../style-controls/StyleComponent";
+} from "@/wab/tpls";
+import * as React from "react";
+import { PublicStyleSection } from "src/wab/shared/ApiSchema";
 
 export function SpacingSection({
   expsProvider,

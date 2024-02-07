@@ -1,5 +1,5 @@
+import { stripParensAndMaybeConvertToIife } from "@/wab/exprs";
 import { $State } from "@plasmicapp/react-web";
-import { stripParensAndMaybeConvertToIife } from "../exprs";
 import { maybeComputedFn } from "./mobx-util";
 
 export const ENABLED_GLOBALS = new Set([

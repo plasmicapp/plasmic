@@ -1,3 +1,19 @@
+import { isKnownTplNode, TplTag } from "@/wab/classes";
+import { InlineAddDrawer } from "@/wab/client/components/canvas/InlineAddDrawer";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { isDescendant } from "@/wab/client/dom-utils";
+import { useDismissibleStudioOverlay } from "@/wab/client/hooks/useDismissibleStudioOverlay";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { getContainerType } from "@/wab/client/utils/tpl-client-utils";
+import { ContainerLayoutType } from "@/wab/shared/layoututils";
+import { SlotSelection } from "@/wab/slots";
+import {
+  isComponentRoot,
+  isTplColumn,
+  isTplContainer,
+  isTplTextBlock,
+} from "@/wab/tpls";
 import cn from "classnames";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
@@ -12,22 +28,6 @@ import {
   useState,
 } from "react";
 import { useOverlayPosition } from "react-aria";
-import { isKnownTplNode, TplTag } from "../../../../classes";
-import { ContainerLayoutType } from "../../../../shared/layoututils";
-import { SlotSelection } from "../../../../slots";
-import {
-  isComponentRoot,
-  isTplColumn,
-  isTplContainer,
-  isTplTextBlock,
-} from "../../../../tpls";
-import { isDescendant } from "../../../dom-utils";
-import { useDismissibleStudioOverlay } from "../../../hooks/useDismissibleStudioOverlay";
-import PlusIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { useStudioCtx } from "../../../studio-ctx/StudioCtx";
-import { getContainerType } from "../../../utils/tpl-client-utils";
-import { Icon } from "../../widgets/Icon";
-import { InlineAddDrawer } from "../InlineAddDrawer";
 import styles from "./InlineAddButton.module.scss";
 
 const BUTTON_SIZE = 30;

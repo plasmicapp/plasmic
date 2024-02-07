@@ -1,6 +1,6 @@
-import { ApiDataSource } from "../../shared/ApiSchema";
-import { DATA_SOURCE_LOWER } from "../../shared/Labels";
-import { AppCtx } from "../app-ctx";
+import { AppCtx } from "@/wab/client/app-ctx";
+import { ApiDataSource } from "@/wab/shared/ApiSchema";
+import { DATA_SOURCE_LOWER } from "@/wab/shared/Labels";
 import { reactConfirm } from "./quick-modals";
 
 export async function confirmDeleteDataSource(

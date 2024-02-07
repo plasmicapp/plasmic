@@ -1,13 +1,13 @@
+import { frameToScalerRect } from "@/wab/client/coords";
+import { hasLayoutBox } from "@/wab/client/dom";
+import { cssPropsForInvertTransform } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { unexpected } from "@/wab/common";
 import $ from "jquery";
 import { omit } from "lodash";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { ReactNode } from "react";
-import { unexpected } from "../../../common";
-import { frameToScalerRect } from "../../coords";
-import { hasLayoutBox } from "../../dom";
-import { cssPropsForInvertTransform } from "../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
 import { recomputeBounds } from "./HoverBox";
 
 export const CanvasTransformedBox = observer(function CanvasTransformedBox({

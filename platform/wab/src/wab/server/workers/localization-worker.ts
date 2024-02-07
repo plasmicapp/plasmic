@@ -1,12 +1,15 @@
-import { ConnectionOptions } from "typeorm";
-import { ProjectId } from "../../shared/ApiSchema";
-import { Bundler } from "../../shared/bundler";
+import {
+  ensureDbConnections,
+  getDefaultConnection,
+} from "@/wab/server/db/DbCon";
+import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { ProjectId } from "@/wab/shared/ApiSchema";
+import { Bundler } from "@/wab/shared/bundler";
 import {
   genLocalizationStringsForProject,
   LocalizationKeyScheme,
-} from "../../shared/localization";
-import { ensureDbConnections, getDefaultConnection } from "../db/DbCon";
-import { DbMgr, SUPER_USER } from "../db/DbMgr";
+} from "@/wab/shared/localization";
+import { ConnectionOptions } from "typeorm";
 import { ensureDevFlags } from "./worker-utils";
 
 interface LocalizationStringsOpts {

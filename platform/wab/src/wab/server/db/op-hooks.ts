@@ -1,5 +1,5 @@
-import { ProjectId } from "../../shared/ApiSchema";
-import { DomainValidator } from "../../shared/hosting";
+import { ProjectId } from "@/wab/shared/ApiSchema";
+import { DomainValidator } from "@/wab/shared/hosting";
 import { DbMgr } from "./DbMgr";
 
 export async function onProjectDelete(

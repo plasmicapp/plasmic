@@ -1,12 +1,12 @@
+import { AppCtx } from "@/wab/client/app-ctx";
+import { Spinner, Tab, Tabs } from "@/wab/client/components/widgets";
+import Button from "@/wab/client/components/widgets/Button";
+import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
+import { trackEvent } from "@/wab/client/tracking";
+import { uniqueName, withoutNils } from "@/wab/common";
+import { ApiEndUserDirectory, ApiProject } from "@/wab/shared/ApiSchema";
 import React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import { uniqueName, withoutNils } from "../../../common";
-import { ApiEndUserDirectory, ApiProject } from "../../../shared/ApiSchema";
-import { AppCtx } from "../../app-ctx";
-import { useTopFrameCtx } from "../../frame-ctx/top-frame-ctx";
-import { trackEvent } from "../../tracking";
-import { Spinner, Tab, Tabs } from "../widgets";
-import Button from "../widgets/Button";
 import ActivityTab from "./ActivityTab";
 import {
   useAppAuthConfig,

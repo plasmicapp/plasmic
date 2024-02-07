@@ -1,8 +1,8 @@
-import * as React from "react";
 import {
   DefaultVariantChipProps,
   PlasmicVariantChip,
-} from "../../plasmic/plasmic_kit_variants/PlasmicVariantChip";
+} from "@/wab/client/plasmic/plasmic_kit_variants/PlasmicVariantChip";
+import * as React from "react";
 
 interface VariantChipProps extends DefaultVariantChipProps {
   onClose?: (e: React.MouseEvent) => void;

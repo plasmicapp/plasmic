@@ -1,9 +1,9 @@
+import { Config } from "@/wab/server/config";
+import { Project, User } from "@/wab/server/entities/Entities";
+import { getUser } from "@/wab/server/routes/util";
+import { fullName } from "@/wab/shared/ApiSchemaUtil";
+import { ResourceType } from "@/wab/shared/perms";
 import { Request } from "express-serve-static-core";
-import { fullName } from "../../shared/ApiSchemaUtil";
-import { ResourceType } from "../../shared/perms";
-import { Config } from "../config";
-import { Project, User } from "../entities/Entities";
-import { getUser } from "../routes/util";
 
 export interface ShareEmailProps {
   config: Config;

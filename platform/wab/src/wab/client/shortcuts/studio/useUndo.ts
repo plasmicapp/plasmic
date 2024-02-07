@@ -1,7 +1,7 @@
+import { StudioCtxContext } from "@/wab/client/studio-ctx/StudioCtx";
+import { spawn } from "@/wab/common";
 import { isKeyHotkey } from "is-hotkey";
 import React, { useCallback, useContext, useState } from "react";
-import { spawn } from "../../../common";
-import { StudioCtxContext } from "../../studio-ctx/StudioCtx";
 import { STUDIO_SHORTCUTS } from "./studio-shortcuts";
 
 export interface UseUndoResult<T> {

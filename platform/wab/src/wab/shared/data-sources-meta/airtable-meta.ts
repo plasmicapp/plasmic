@@ -1,5 +1,5 @@
+import type { DataSource } from "@/wab/server/entities/Entities";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
-import type { DataSource } from "../../server/entities/Entities";
 import {
   BasesArgMeta,
   DataSourceMeta,

@@ -1,34 +1,34 @@
-import cn from "classnames";
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { useEffect, useRef } from "react";
-import { VariantedStylesHelper } from "src/wab/shared/VariantedStylesHelper";
-import { isKnownTplTag, TplNode } from "../../../classes";
-import { ensure, spawn, unanimousVal } from "../../../common";
-import { parseCssShorthand, showCssShorthand } from "../../../css";
-import { Corner, Side, standardCorners, standardSides } from "../../../geom";
-import BorderAllIcon from "../../plasmic/plasmic_kit/PlasmicIcon__BorderAll";
-import BorderDashedIcon from "../../plasmic/plasmic_kit/PlasmicIcon__BorderDashed";
-import BorderDottedIcon from "../../plasmic/plasmic_kit/PlasmicIcon__BorderDotted";
-import BorderRadiusAllIcon from "../../plasmic/plasmic_kit/PlasmicIcon__BorderRadiusAll";
-import BorderRadiusSideIcon from "../../plasmic/plasmic_kit/PlasmicIcon__BorderRadiusSide";
-import BorderSideIcon from "../../plasmic/plasmic_kit/PlasmicIcon__BorderSide";
-import BorderSolidIcon from "../../plasmic/plasmic_kit/PlasmicIcon__BorderSolid";
-import CloseIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Close";
-import MinusIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Minus";
-import PlusIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
-import { makeVariantedStylesHelperFromCurrentCtx } from "../../utils/style-utils";
+import { isKnownTplTag, TplNode } from "@/wab/classes";
 import {
   LabeledStyleColorItemRow,
   LabeledStyleDimItem,
   LabeledStyleDimItemRow,
   LabeledToggleButtonGroupItemRow,
-} from "../sidebar/sidebar-helpers";
-import { IconLinkButton } from "../widgets";
-import { DimTokenSpinnerRef } from "../widgets/DimTokenSelector";
-import { Icon } from "../widgets/Icon";
-import { IconButton } from "../widgets/IconButton";
+} from "@/wab/client/components/sidebar/sidebar-helpers";
+import { IconLinkButton } from "@/wab/client/components/widgets";
+import { DimTokenSpinnerRef } from "@/wab/client/components/widgets/DimTokenSelector";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { IconButton } from "@/wab/client/components/widgets/IconButton";
+import BorderAllIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__BorderAll";
+import BorderDashedIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__BorderDashed";
+import BorderDottedIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__BorderDotted";
+import BorderRadiusAllIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__BorderRadiusAll";
+import BorderRadiusSideIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__BorderRadiusSide";
+import BorderSideIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__BorderSide";
+import BorderSolidIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__BorderSolid";
+import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
+import MinusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Minus";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
+import { ensure, spawn, unanimousVal } from "@/wab/common";
+import { parseCssShorthand, showCssShorthand } from "@/wab/css";
+import { Corner, Side, standardCorners, standardSides } from "@/wab/geom";
+import cn from "classnames";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
+import { useEffect, useRef } from "react";
+import { VariantedStylesHelper } from "src/wab/shared/VariantedStylesHelper";
 import styles from "./BorderControls.module.sass";
 import {
   ExpsProvider,

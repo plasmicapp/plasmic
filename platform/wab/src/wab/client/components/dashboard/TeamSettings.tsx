@@ -1,16 +1,19 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import * as React from "react";
-import { ensure, swallowAsync } from "../../../common";
-import { DEVFLAGS } from "../../../devflags";
-import { TeamId } from "../../../shared/ApiSchema";
-import { accessLevelRank, GrantableAccessLevel } from "../../../shared/EntUtil";
-import { useAppCtx } from "../../contexts/AppContexts";
-import { useAsyncFnStrict, useAsyncStrict } from "../../hooks/useAsyncStrict";
+import { Spinner } from "@/wab/client/components/widgets";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import {
+  useAsyncFnStrict,
+  useAsyncStrict,
+} from "@/wab/client/hooks/useAsyncStrict";
 import {
   DefaultTeamSettingsProps,
   PlasmicTeamSettings,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicTeamSettings";
-import { Spinner } from "../widgets";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamSettings";
+import { ensure, swallowAsync } from "@/wab/common";
+import { DEVFLAGS } from "@/wab/devflags";
+import { TeamId } from "@/wab/shared/ApiSchema";
+import { accessLevelRank, GrantableAccessLevel } from "@/wab/shared/EntUtil";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import * as React from "react";
 import { TeamMenu } from "./dashboard-actions";
 
 interface TeamSettingsProps extends DefaultTeamSettingsProps {

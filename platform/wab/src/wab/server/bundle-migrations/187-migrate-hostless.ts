@@ -1,5 +1,8 @@
-import { upgradeHostlessProject, BundleMigrationType } from "../db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
+import {
+  BundleMigrationType,
+  upgradeHostlessProject,
+} from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 
 // migrates plasmic-rich-components, plasmic-strapi, antd5 hostless, react-slick, commerce, plasmic-tabs, plasmic-sanity-io, plasmic-cms
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {

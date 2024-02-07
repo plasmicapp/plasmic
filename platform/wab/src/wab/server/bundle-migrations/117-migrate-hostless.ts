@@ -1,5 +1,8 @@
-import { upgradeHostlessProject, BundleMigrationType } from "../db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
+import {
+  BundleMigrationType,
+  upgradeHostlessProject,
+} from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 
 // migrates antd
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {

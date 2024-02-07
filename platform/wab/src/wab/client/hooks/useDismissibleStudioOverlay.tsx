@@ -1,9 +1,9 @@
-import { RefObject, useCallback, useEffect, useMemo, useRef } from "react";
 import {
   plasmicIFrameMouseDownEvent,
   plasmicIFrameWheelEvent,
-} from "../definitions/events";
-import { isDescendant } from "../dom-utils";
+} from "@/wab/client/definitions/events";
+import { isDescendant } from "@/wab/client/dom-utils";
+import { RefObject, useCallback, useEffect, useMemo, useRef } from "react";
 
 /**
  * Makes it possible to monitor dismissing events on the

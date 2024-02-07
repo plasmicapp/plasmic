@@ -1,10 +1,10 @@
-import { SelectRef } from "@plasmicapp/react-web";
-import * as React from "react";
 import {
   DefaultSelectProps,
   PlasmicSelect,
-} from "../../plasmic/plasmic_kit_design_system/PlasmicSelect";
-import { useTestableSelect } from "../../utils/testable-controls";
+} from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicSelect";
+import { useTestableSelect } from "@/wab/client/utils/testable-controls";
+import { SelectRef } from "@plasmicapp/react-web";
+import * as React from "react";
 import Option from "./Select__Option";
 import OptionGroup from "./Select__OptionGroup";
 

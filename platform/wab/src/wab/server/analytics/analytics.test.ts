@@ -1,4 +1,4 @@
-import { getClickHouseConnection } from "../clickhouse";
+import { getClickHouseConnection } from "@/wab/server/clickhouse";
 import { getConversionRate, getConversions, getImpressions } from "./queries";
 
 // test_db.events.team_id is a column created by posthog that have some constraint on it, it's not actually a project

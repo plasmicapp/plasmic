@@ -1,5 +1,3 @@
-import { orderBy } from "lodash";
-import { IObservableArray } from "mobx";
 import {
   ArenaFrame,
   ArenaFrameCell,
@@ -13,15 +11,17 @@ import {
   Site,
   Variant,
   VariantGroup,
-} from "../classes";
-import { ensure, ensureArrayOfInstances, partitions } from "../common";
-import { insertAt, removeFromArray } from "../commons/collections";
-import { allComponentVariants } from "../components";
+} from "@/wab/classes";
+import { ensure, ensureArrayOfInstances, partitions } from "@/wab/common";
+import { insertAt, removeFromArray } from "@/wab/commons/collections";
+import { allComponentVariants } from "@/wab/components";
 import {
   allGlobalVariants,
   getResponsiveStrategy,
   getSiteScreenSizes,
-} from "../sites";
+} from "@/wab/sites";
+import { orderBy } from "lodash";
+import { IObservableArray } from "mobx";
 import {
   ensureActivatedScreenVariantsForArena,
   ensureActivatedScreenVariantsForFrameByWidth,

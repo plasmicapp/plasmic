@@ -1,26 +1,26 @@
-import "jest-extended";
 import {
   isKnownVariantsRef,
   RuleSet,
   TplTag,
   Variant,
   VariantSetting,
-} from "../classes";
-import { tuple } from "../common";
-import { ComponentType, extractComponent } from "../components";
-import { tryExtractJson } from "../exprs";
-import { RuleSetHelpers } from "../shared/RuleSetHelpers";
-import { assertSiteInvariants } from "../shared/site-invariants";
-import { TplMgr } from "../shared/TplMgr";
-import { $$$ } from "../shared/TplQuery";
+} from "@/wab/classes";
+import { tuple } from "@/wab/common";
+import { ComponentType, extractComponent } from "@/wab/components";
+import { tryExtractJson } from "@/wab/exprs";
+import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
+import { assertSiteInvariants } from "@/wab/shared/site-invariants";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
 import {
   getBaseVariant,
   isPrivateStyleVariant,
   isStyleVariant,
   mkVariantSetting,
-} from "../shared/Variants";
-import { createSite } from "../sites";
-import { mkTplTagX } from "../tpls";
+} from "@/wab/shared/Variants";
+import { createSite } from "@/wab/sites";
+import { mkTplTagX } from "@/wab/tpls";
+import "jest-extended";
 
 describe("extractComponent", () => {
   const site = createSite();

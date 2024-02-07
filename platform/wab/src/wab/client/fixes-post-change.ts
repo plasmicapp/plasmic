@@ -1,24 +1,24 @@
-import { Site, TplNode } from "../classes";
-import { tuple } from "../common";
-import { isPageComponent } from "../components";
-import { ChangeSummary, summarizeChanges } from "../model-change-util";
-import { mergeRecordedChanges, RecordedChanges } from "../observable-model";
-import { FrameViewMode } from "../shared/Arenas";
-import { getActiveVariantsForFrame } from "../shared/cached-selectors";
-import { isTagListContainer } from "../shared/core/rich-text-util";
+import { Site, TplNode } from "@/wab/classes";
+import { tuple } from "@/wab/common";
+import { isPageComponent } from "@/wab/components";
+import { ChangeSummary, summarizeChanges } from "@/wab/model-change-util";
+import { mergeRecordedChanges, RecordedChanges } from "@/wab/observable-model";
+import { FrameViewMode } from "@/wab/shared/Arenas";
+import { getActiveVariantsForFrame } from "@/wab/shared/cached-selectors";
+import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import {
   adjustAllGridChildren,
   removeAllGridChildProps,
-} from "../shared/Grids";
-import { fixupForPlume } from "../shared/plume/plume-utils";
-import { RSH } from "../shared/RuleSetHelpers";
-import { isStretchyComponent } from "../shared/sizingutils";
-import { fixupVirtualSlotArgs } from "../shared/SlotUtils";
-import { TplMgr } from "../shared/TplMgr";
-import { $$$ } from "../shared/TplQuery";
-import { isBaseVariant } from "../shared/Variants";
-import { getAllSiteFrames } from "../sites";
-import { ensureCorrectImplicitStates } from "../states";
+} from "@/wab/shared/Grids";
+import { fixupForPlume } from "@/wab/shared/plume/plume-utils";
+import { RSH } from "@/wab/shared/RuleSetHelpers";
+import { isStretchyComponent } from "@/wab/shared/sizingutils";
+import { fixupVirtualSlotArgs } from "@/wab/shared/SlotUtils";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { isBaseVariant } from "@/wab/shared/Variants";
+import { getAllSiteFrames } from "@/wab/sites";
+import { ensureCorrectImplicitStates } from "@/wab/states";
 import {
   flattenTpls,
   getTplOwnerComponent,
@@ -29,7 +29,7 @@ import {
   isTplTagOrComponent,
   isTplVariantable,
   tryGetOwnerSite,
-} from "../tpls";
+} from "@/wab/tpls";
 import { StudioCtx } from "./studio-ctx/StudioCtx";
 
 /**

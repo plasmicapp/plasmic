@@ -7,16 +7,16 @@ import {
   Variant,
   VariantedRuleSet,
   VariantedValue,
-} from "../classes";
+} from "@/wab/classes";
 import {
   arrayEqIgnoreOrder,
   ensure,
   ensureArray,
   last,
   remove,
-} from "../common";
-import { DeepReadonly } from "../commons/types";
-import { cloneRuleSet } from "../styles";
+} from "@/wab/common";
+import { DeepReadonly } from "@/wab/commons/types";
+import { cloneRuleSet } from "@/wab/styles";
 import { RuleSetHelpers } from "./RuleSetHelpers";
 import { isAncestorCombo, makeGlobalVariantComboSorter } from "./variant-sort";
 

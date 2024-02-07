@@ -1,25 +1,28 @@
-import cn from "classnames";
-import { clamp } from "lodash";
-import { observer } from "mobx-react";
-import React from "react";
-import { ColumnsConfig } from "../../../../classes";
-import { spawn } from "../../../../common";
+import { ColumnsConfig } from "@/wab/classes";
+import S from "@/wab/client/components/sidebar-tabs/ColumnsSection.module.scss";
+import {
+  FullRow,
+  LabeledItemRow,
+} from "@/wab/client/components/sidebar/sidebar-helpers";
+import StyleCheckbox from "@/wab/client/components/style-controls/StyleCheckbox";
+import { ExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
+import { IconLinkButton } from "@/wab/client/components/widgets";
+import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import MinusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Minus";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { spawn } from "@/wab/common";
 import {
   isReverseValue,
   redistributeColumns,
   updateCurrentTplColumns,
-} from "../../../../shared/columns-utils";
-import { TplColumnsTag } from "../../../../tpls";
-import MinusIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Minus";
-import PlusIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { ViewCtx } from "../../../studio-ctx/view-ctx";
-import { FullRow, LabeledItemRow } from "../../sidebar/sidebar-helpers";
-import StyleCheckbox from "../../style-controls/StyleCheckbox";
-import { ExpsProvider } from "../../style-controls/StyleComponent";
-import { IconLinkButton } from "../../widgets";
-import DimTokenSpinner from "../../widgets/DimTokenSelector";
-import { Icon } from "../../widgets/Icon";
-import S from "../ColumnsSection.module.scss";
+} from "@/wab/shared/columns-utils";
+import { TplColumnsTag } from "@/wab/tpls";
+import cn from "classnames";
+import { clamp } from "lodash";
+import { observer } from "mobx-react";
+import React from "react";
 
 export const ColumnsWrapControls = observer(
   function ColumnsWrapControls(props: {

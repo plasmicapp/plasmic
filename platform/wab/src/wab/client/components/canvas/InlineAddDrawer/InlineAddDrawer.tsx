@@ -1,3 +1,21 @@
+import { isKnownTplNode, TplNode, TplTag } from "@/wab/classes";
+import { InsertRelLoc } from "@/wab/client/components/canvas/view-ops";
+import { buildAddItemGroups } from "@/wab/client/components/studio/add-drawer/AddDrawer";
+import { AddItemGroup } from "@/wab/client/components/studio/add-drawer/AddDrawerSection";
+import { Matcher } from "@/wab/client/components/view-common";
+import { AddItem, AddTplItem } from "@/wab/client/definitions/insertables";
+import { usePortalContainer } from "@/wab/client/hooks/usePortalContainer";
+import { PlasmicInlineAddDrawer } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicInlineAddDrawer";
+import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { isFlexContainer } from "@/wab/client/utils/tpl-client-utils";
+import { mod } from "@/wab/common";
+import { SlotSelection } from "@/wab/slots";
+import {
+  isComponentRoot,
+  isTplColumn,
+  isTplContainer,
+  isTplTextBlock,
+} from "@/wab/tpls";
 import cn from "classnames";
 import { toJS } from "mobx";
 import { observer, useLocalStore } from "mobx-react";
@@ -12,24 +30,6 @@ import {
 } from "react";
 import ReactDOM from "react-dom";
 import { VariableSizeList } from "react-window";
-import { isKnownTplNode, TplNode, TplTag } from "../../../../classes";
-import { mod } from "../../../../common";
-import { SlotSelection } from "../../../../slots";
-import {
-  isComponentRoot,
-  isTplColumn,
-  isTplContainer,
-  isTplTextBlock,
-} from "../../../../tpls";
-import { AddItem, AddTplItem } from "../../../definitions/insertables";
-import { usePortalContainer } from "../../../hooks/usePortalContainer";
-import { PlasmicInlineAddDrawer } from "../../../plasmic/plasmic_kit_left_pane/PlasmicInlineAddDrawer";
-import { StudioCtx, useStudioCtx } from "../../../studio-ctx/StudioCtx";
-import { isFlexContainer } from "../../../utils/tpl-client-utils";
-import { buildAddItemGroups } from "../../studio/add-drawer/AddDrawer";
-import { AddItemGroup } from "../../studio/add-drawer/AddDrawerSection";
-import { Matcher } from "../../view-common";
-import { InsertRelLoc } from "../view-ops";
 import styles from "./InlineAddDrawer.module.scss";
 import InlineInsertionPosition from "./InlineInsertionPosition";
 import {

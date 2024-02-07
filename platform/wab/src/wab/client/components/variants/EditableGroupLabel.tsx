@@ -1,8 +1,11 @@
+import { VariantGroup } from "@/wab/classes";
+import {
+  EditableLabel,
+  EditableLabelHandles,
+} from "@/wab/client/components/widgets/EditableLabel";
+import { VARIANTS_CAP } from "@/wab/shared/Labels";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
-import { VariantGroup } from "../../../classes";
-import { VARIANTS_CAP } from "../../../shared/Labels";
-import { EditableLabel, EditableLabelHandles } from "../widgets/EditableLabel";
 
 interface EditableGroupLabelProps {
   onEdit: (name: string) => void;

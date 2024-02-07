@@ -1,13 +1,19 @@
-import L from "lodash";
 import {
   Component,
   Site,
   Variant,
   VariantGroup,
   VariantSetting,
-} from "../classes";
-import { assert, ensure, partitions, sortByKeys, xIndexMap } from "../common";
-import { getSuperComponents } from "../components";
+} from "@/wab/classes";
+import {
+  assert,
+  ensure,
+  partitions,
+  sortByKeys,
+  xIndexMap,
+} from "@/wab/common";
+import { getSuperComponents } from "@/wab/components";
+import L from "lodash";
 import { parseScreenSpec } from "./Css";
 import { maybeComputedFn } from "./mobx-util";
 import {

@@ -1,8 +1,8 @@
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { Reaction } from "mobx";
 import type { IReactionTracking } from "mobx-react-lite/dist/utils/reactionCleanupTrackingCommon";
 import { computedFn } from "mobx-utils";
 import type React from "react";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
 import { useCanvasForceUpdate } from "./canvas-hooks";
 import { SubDeps } from "./subdeps";
 

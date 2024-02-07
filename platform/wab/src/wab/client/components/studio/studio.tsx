@@ -1,16 +1,16 @@
+import { maybeConvertToHostLessProject } from "@/wab/client/code-components/code-components";
+import { BottomModalsProvider } from "@/wab/client/components/BottomModal";
+import { CommentsProvider } from "@/wab/client/components/comments/CommentsProvider";
+import { showPlasmicImgModal } from "@/wab/client/components/modals/PlasmicImgModal";
+import { fixStudioIframePositionAndOverflow } from "@/wab/client/dom-utils";
+import RocketsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Rocketsvg";
+import { bindStudioShortcutHandlers } from "@/wab/client/shortcuts/studio/studio-shortcut-handlers";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { TopProjectNavTour } from "@/wab/client/tours/TopProjectNavTour";
+import { StudioTutorialTours } from "@/wab/client/tours/tutorials/TutorialTours";
+import { mkShortId, spawn } from "@/wab/common";
 import { notification } from "antd";
 import * as React from "react";
-import { mkShortId, spawn } from "../../../common";
-import { maybeConvertToHostLessProject } from "../../code-components/code-components";
-import { fixStudioIframePositionAndOverflow } from "../../dom-utils";
-import RocketsvgIcon from "../../plasmic/q_4_icons/icons/PlasmicIcon__Rocketsvg";
-import { bindStudioShortcutHandlers } from "../../shortcuts/studio/studio-shortcut-handlers";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { TopProjectNavTour } from "../../tours/TopProjectNavTour";
-import { StudioTutorialTours } from "../../tours/tutorials/TutorialTours";
-import { BottomModalsProvider } from "../BottomModal";
-import { CommentsProvider } from "../comments/CommentsProvider";
-import { showPlasmicImgModal } from "../modals/PlasmicImgModal";
 import { ShortcutsModal } from "./Shortcuts";
 import {
   getCanvasPkgs,

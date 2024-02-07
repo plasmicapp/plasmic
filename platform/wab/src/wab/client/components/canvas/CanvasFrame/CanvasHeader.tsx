@@ -1,37 +1,34 @@
-import { Popover, Tooltip } from "antd";
-import cn from "classnames";
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { useLayoutEffect, useRef, useState } from "react";
-import { ArenaFrame, Component, TplTag, Variant } from "../../../../classes";
-import { cx } from "../../../../common";
-import { MaybeWrap } from "../../../../commons/components/ReactUtil";
-import { isFrameComponent, isPageComponent } from "../../../../components";
+import { ArenaFrame, Component, TplTag, Variant } from "@/wab/classes";
+import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
+import {
+  makeCanvasVariantContextMenu,
+  StyleVariantEditor,
+  VariantLabel,
+} from "@/wab/client/components/VariantControls";
+import { EditableLabelHandles } from "@/wab/client/components/widgets/EditableLabel";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import {
+  useScaledElementRef,
+  useZoomStyledRef,
+} from "@/wab/client/hooks/useScaledElementRef";
+import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
+import PageIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Page";
+import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { cx } from "@/wab/common";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { isFrameComponent, isPageComponent } from "@/wab/components";
 import {
   AnyArena,
   isComponentArena,
   isMixedArena,
   isPageArena,
-} from "../../../../shared/Arenas";
-import {
-  getDisplayVariants,
-  isStyleVariant,
-} from "../../../../shared/Variants";
-import {
-  useScaledElementRef,
-  useZoomStyledRef,
-} from "../../../hooks/useScaledElementRef";
-import ComponentIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Component";
-import PageIcon from "../../../plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Page";
-import { StudioCtx, useStudioCtx } from "../../../studio-ctx/StudioCtx";
-import { maybeShowContextMenu } from "../../ContextMenu";
-import {
-  makeCanvasVariantContextMenu,
-  StyleVariantEditor,
-  VariantLabel,
-} from "../../VariantControls";
-import { EditableLabelHandles } from "../../widgets/EditableLabel";
-import { Icon } from "../../widgets/Icon";
+} from "@/wab/shared/Arenas";
+import { getDisplayVariants, isStyleVariant } from "@/wab/shared/Variants";
+import { Popover, Tooltip } from "antd";
+import cn from "classnames";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { CanvasConfigButton } from "./CanvasConfigButton";
 import styles from "./CanvasHeader.module.scss";
 

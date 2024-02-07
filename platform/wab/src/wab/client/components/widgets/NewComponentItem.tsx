@@ -1,10 +1,10 @@
-import { Tooltip } from "antd";
-import * as React from "react";
 import {
   DefaultNewComponentItemProps,
   PlasmicNewComponentItem,
   PlasmicNewComponentItem__OverridesType,
-} from "../../plasmic/plasmic_kit_new_component/PlasmicNewComponentItem";
+} from "@/wab/client/plasmic/plasmic_kit_new_component/PlasmicNewComponentItem";
+import { Tooltip } from "antd";
+import * as React from "react";
 
 interface NewComponentItemProps
   extends DefaultNewComponentItemProps,

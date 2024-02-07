@@ -1,26 +1,26 @@
-import * as React from "react";
-import { PromiseType } from "react-use/lib/util";
-import { ensure, spawn } from "../../../../common";
+import { AppCtx } from "@/wab/client/app-ctx";
+import { GithubConnect } from "@/wab/client/components/auth/GithubConnect";
+import GithubIntegration, {
+  filterPlasmicPullRequests,
+} from "@/wab/client/components/github/GithubIntegration";
+import { confirm, reactConfirm } from "@/wab/client/components/quick-modals";
+import Button from "@/wab/client/components/widgets/Button";
+import GitJobStep from "@/wab/client/components/widgets/GitJobStep";
+import Select from "@/wab/client/components/widgets/Select";
+import { AsyncState } from "@/wab/client/hooks/useAsyncStrict";
+import {
+  DefaultSubsectionPushDeployProps,
+  PlasmicSubsectionPushDeploy,
+} from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicSubsectionPushDeploy";
+import { ensure, spawn } from "@/wab/common";
 import {
   ApiProject,
   ApiProjectRepository,
   GitActionParams,
   GitWorkflowJobStep,
-} from "../../../../shared/ApiSchema";
-import { AppCtx } from "../../../app-ctx";
-import { AsyncState } from "../../../hooks/useAsyncStrict";
-import {
-  DefaultSubsectionPushDeployProps,
-  PlasmicSubsectionPushDeploy,
-} from "../../../plasmic/plasmic_kit_continuous_deployment/PlasmicSubsectionPushDeploy";
-import { GithubConnect } from "../../auth/GithubConnect";
-import GithubIntegration, {
-  filterPlasmicPullRequests,
-} from "../../github/GithubIntegration";
-import { confirm, reactConfirm } from "../../quick-modals";
-import GitJobStep from "../../widgets//GitJobStep";
-import Button from "../../widgets/Button";
-import Select from "../../widgets/Select";
+} from "@/wab/shared/ApiSchema";
+import * as React from "react";
+import { PromiseType } from "react-use/lib/util";
 import { VisibleEnableBlock } from "./PublishFlowDialog";
 import { PublishState } from "./PublishFlowDialogWrapper";
 import { TopBarModal } from "./TopBarModal";

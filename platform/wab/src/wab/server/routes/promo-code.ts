@@ -1,5 +1,5 @@
+import { uncheckedCast } from "@/wab/common";
 import { Request, Response } from "express-serve-static-core";
-import { uncheckedCast } from "../../common";
 import { superDbMgr } from "./util";
 
 export async function getPromotionCodeById(req: Request, res: Response) {

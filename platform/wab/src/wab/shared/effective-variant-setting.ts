@@ -17,19 +17,19 @@ import {
   TplNode,
   Variant,
   VariantSetting,
-} from "../classes";
-import { arrayEq, assert, ensure, withoutNils } from "../common";
-import { arrayReversed } from "../commons/collections";
-import { DeepReadonly, DeepReadonlyArray } from "../commons/types";
-import { clone } from "../exprs";
-import { SlotSelection } from "../slots";
+} from "@/wab/classes";
+import { arrayEq, assert, ensure, withoutNils } from "@/wab/common";
+import { arrayReversed } from "@/wab/commons/collections";
+import { DeepReadonly, DeepReadonlyArray } from "@/wab/commons/types";
+import { clone } from "@/wab/exprs";
+import { SlotSelection } from "@/wab/slots";
 import {
   cloneRuleSet,
   createExpandedRuleSetMerger,
   createRuleSetMerger,
   expandRuleSets,
   tplMatchThemeStyle,
-} from "../styles";
+} from "@/wab/styles";
 import {
   cloneArgs,
   cloneAttrs,
@@ -42,7 +42,7 @@ import {
   isTplTag,
   isTplTextBlock,
   reconnectChildren,
-} from "../tpls";
+} from "@/wab/tpls";
 import {
   ArgSource,
   AttrSource,

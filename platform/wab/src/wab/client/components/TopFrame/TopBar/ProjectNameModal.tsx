@@ -1,15 +1,15 @@
 /** @format */
 
+import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
+import Textbox from "@/wab/client/components/widgets/Textbox";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
+import { spawn } from "@/wab/common";
+import { ApiProject } from "@/wab/shared/ApiSchema";
 import { Button, Form } from "antd";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import { spawn } from "../../../../common";
-import { ApiProject } from "../../../../shared/ApiSchema";
-import { useAppCtx } from "../../../contexts/AppContexts";
-import { useTopFrameCtx } from "../../../frame-ctx/top-frame-ctx";
-import { maybeShowPaywall } from "../../modals/PricingModal";
-import Textbox from "../../widgets/Textbox";
 
 interface ProjectNameModalProps {
   project: ApiProject;

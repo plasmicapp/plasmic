@@ -1,8 +1,8 @@
 import {
   BundleMigrationType,
   upgradeHostlessProject,
-} from "../db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
+} from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 
 // migrates plasmic-cms
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {

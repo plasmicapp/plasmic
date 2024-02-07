@@ -1,13 +1,13 @@
+import { isKnownVariantedValue, StyleToken } from "@/wab/classes";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { BASE_VARIANT_NAME } from "@/wab/shared/Variants";
+import { capitalizeFirst } from "@/wab/strs";
 import { Popover } from "antd";
 import classNames from "classnames";
 import React from "react";
-import { isKnownVariantedValue, StyleToken } from "../../../classes";
-import { VariantedStylesHelper } from "../../../shared/VariantedStylesHelper";
-import { BASE_VARIANT_NAME } from "../../../shared/Variants";
-import { capitalizeFirst } from "../../../strs";
-import TokenIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Token";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { Icon } from "../widgets/Icon";
 import {
   getStylePropValue,
   SourceRow,

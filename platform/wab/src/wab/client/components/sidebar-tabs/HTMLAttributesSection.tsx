@@ -1,8 +1,3 @@
-import { notification, Popover, Select } from "antd";
-import { RefSelectProps } from "antd/lib/select";
-import L, { keyBy, orderBy, uniq, without } from "lodash";
-import { observer } from "mobx-react-lite";
-import React from "react";
 import {
   Component,
   Expr,
@@ -11,31 +6,44 @@ import {
   isKnownVarRef,
   TplComponent,
   TplTag,
-} from "../../../classes";
-import { ensure, spawn, withoutNils } from "../../../common";
-import { removeFromArray } from "../../../commons/collections";
+} from "@/wab/classes";
+import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
+import {
+  IconLinkButton,
+  useOnIFrameMouseDown,
+} from "@/wab/client/components/widgets";
+import { AttributesTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ensure, spawn, withoutNils } from "@/wab/common";
+import { removeFromArray } from "@/wab/commons/collections";
 import {
   clone,
   codeLit,
   extractReferencedParam,
   isAllowedDefaultExpr,
   tryExtractLit,
-} from "../../../exprs";
-import { ComponentPropOrigin } from "../../../lang";
-import { alwaysVisibleHTMLAttributes, metaSvc } from "../../../metas";
-import { isAllowedDefaultExprForPropType } from "../../../shared/code-components/code-components";
+} from "@/wab/exprs";
+import { ComponentPropOrigin } from "@/wab/lang";
+import { alwaysVisibleHTMLAttributes, metaSvc } from "@/wab/metas";
+import { isAllowedDefaultExprForPropType } from "@/wab/shared/code-components/code-components";
 import {
   isTagInline,
   textBlockTags,
   textInlineTags,
-} from "../../../shared/core/rich-text-util";
+} from "@/wab/shared/core/rich-text-util";
 import {
   computeDefinedIndicator,
   DefinedIndicatorType,
-} from "../../../shared/defined-indicator";
-import { getInputTypeOptions } from "../../../shared/html-utils";
-import { unsetTplVariantableAttr } from "../../../shared/TplMgr";
-import { tryGetBaseVariantSetting } from "../../../shared/Variants";
+} from "@/wab/shared/defined-indicator";
+import { getInputTypeOptions } from "@/wab/shared/html-utils";
+import { unsetTplVariantableAttr } from "@/wab/shared/TplMgr";
+import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
 import {
   EventHandlerKeyType,
   getDisplayNameOfEventHandlerKey,
@@ -44,17 +52,12 @@ import {
   isTplTag,
   isTplTextBlock,
   setEventHandlerByEventKey,
-} from "../../../tpls";
-import PlusIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Plus";
-import TriangleBottomIcon from "../../plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { SidebarModal } from "../sidebar/SidebarModal";
-import { SidebarSection } from "../sidebar/SidebarSection";
-import { TplExpsProvider } from "../style-controls/StyleComponent";
-import { IconLinkButton, useOnIFrameMouseDown } from "../widgets";
-import { AttributesTooltip } from "../widgets/DetailedTooltips";
-import { Icon } from "../widgets/Icon";
-import { LabelWithDetailedTooltip } from "../widgets/LabelWithDetailedTooltip";
+} from "@/wab/tpls";
+import { notification, Popover, Select } from "antd";
+import { RefSelectProps } from "antd/lib/select";
+import L, { keyBy, orderBy, uniq, without } from "lodash";
+import { observer } from "mobx-react-lite";
+import React from "react";
 import { inferPropTypeFromAttr, PropEditorRow } from "./PropEditorRow";
 import HandlerSection from "./StateManagement/HandlerSection";
 

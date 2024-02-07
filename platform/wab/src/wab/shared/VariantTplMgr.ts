@@ -1,4 +1,3 @@
-import L from "lodash";
 import {
   Arg,
   Component,
@@ -18,7 +17,7 @@ import {
   Var,
   Variant,
   VariantSetting,
-} from "../classes";
+} from "@/wab/classes";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -27,20 +26,20 @@ import {
   ensureArray,
   last,
   swallow,
-} from "../common";
-import { arrayReversed, removeFromArray } from "../commons/collections";
-import { ReplaceKey } from "../commons/types";
+} from "@/wab/common";
+import { arrayReversed, removeFromArray } from "@/wab/commons/collections";
+import { ReplaceKey } from "@/wab/commons/types";
 import {
   allComponentVariants,
   getComponentDisplayName,
   isCodeComponent,
-} from "../components";
-import { PLASMIC_DISPLAY_NONE } from "../css";
-import { DEVFLAGS } from "../devflags";
-import { asCode } from "../exprs";
-import { ImageAssetType } from "../image-asset-type";
-import { getTagAttrForImageAsset } from "../image-assets";
-import { allGlobalVariants, isFrameRootTplComponent } from "../sites";
+} from "@/wab/components";
+import { PLASMIC_DISPLAY_NONE } from "@/wab/css";
+import { DEVFLAGS } from "@/wab/devflags";
+import { asCode } from "@/wab/exprs";
+import { ImageAssetType } from "@/wab/image-asset-type";
+import { getTagAttrForImageAsset } from "@/wab/image-assets";
+import { allGlobalVariants, isFrameRootTplComponent } from "@/wab/sites";
 import {
   AttrsSpec,
   ChildSet,
@@ -57,7 +56,8 @@ import {
   mkTplTagX,
   summarizeTpl,
   TplTagType,
-} from "../tpls";
+} from "@/wab/tpls";
+import L from "lodash";
 import { computedProjectFlags, findNonEmptyCombos } from "./cached-selectors";
 import { toVarName } from "./codegen/util";
 import {

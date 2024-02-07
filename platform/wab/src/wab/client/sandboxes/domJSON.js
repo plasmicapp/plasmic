@@ -4,7 +4,7 @@
       return factory(root);
     });
   } else if (typeof exports !== "undefined") {
-    var domJSON = factory(root);
+    let domJSON = factory(root);
     if (typeof module !== "undefined" && module.exports) {
       module.exports = domJSON;
     }
@@ -14,8 +14,8 @@
   }
 })(window, function (win) {
   "use strict";
-  var domJSON = {};
-  var metadata = {
+  let domJSON = {};
+  let metadata = {
     href: win.location.href || null,
     userAgent:
       window.navigator && window.navigator.userAgent
@@ -23,7 +23,7 @@
         : null,
     version: "0.1.2",
   };
-  var defaultsForToJSON = {
+  let defaultsForToJSON = {
     absolutePaths: ["action", "data", "href", "src"],
     attributes: true,
     computedStyle: false,
@@ -36,12 +36,12 @@
     serialProperties: false,
     stringify: false,
   };
-  var defaultsForToDOM = {
+  let defaultsForToDOM = {
     noMeta: false,
   };
-  var banned = ["link", "script"];
-  var required = ["nodeType", "nodeValue", "tagName"];
-  var ignored = [
+  let banned = ["link", "script"];
+  let required = ["nodeType", "nodeValue", "tagName"];
+  let ignored = [
     "attributes",
     "childNodes",
     "children",
@@ -49,7 +49,7 @@
     "dataset",
     "style",
   ];
-  var serials = [
+  let serials = [
     "innerHTML",
     "innerText",
     "outerHTML",
@@ -59,26 +59,26 @@
     "textContent",
     "wholeText",
   ];
-  var extend = function (target) {
+  let extend = function (target) {
     if (!arguments.length) {
       return arguments[0] || {};
     }
-    for (var p in arguments[1]) {
+    for (let p in arguments[1]) {
       target[p] = arguments[1][p];
     }
     if (arguments.length > 2) {
-      var moreArgs = [target].concat(Array.prototype.slice.call(arguments, 2));
+      let moreArgs = [target].concat(Array.prototype.slice.call(arguments, 2));
       return extend.apply(null, moreArgs);
     } else {
       return target;
     }
   };
-  var unique = function () {
+  let unique = function () {
     if (!arguments.length) {
       return [];
     }
-    var all = Array.prototype.concat.apply([], arguments);
-    for (var a = 0; a < all.length; a++) {
+    let all = Array.prototype.concat.apply([], arguments);
+    for (let a = 0; a < all.length; a++) {
       if (all.indexOf(all[a]) < a) {
         all.splice(a, 1);
         a--;
@@ -86,19 +86,19 @@
     }
     return all;
   };
-  var copy = function (item) {
+  let copy = function (item) {
     if (item instanceof Array) {
       return item.slice();
     } else {
-      var output = {};
-      for (var i in item) {
+      let output = {};
+      for (let i in item) {
         output[i] = item[i];
       }
       return output;
     }
   };
-  var boolInter = function (item, filter) {
-    var output;
+  let boolInter = function (item, filter) {
+    let output;
     if (item instanceof Array) {
       output = unique(
         item.filter(function (val) {
@@ -107,7 +107,7 @@
       );
     } else {
       output = {};
-      for (var f in filter) {
+      for (let f in filter) {
         if (item.hasOwnProperty(filter[f])) {
           output[filter[f]] = item[filter[f]];
         }
@@ -115,8 +115,8 @@
     }
     return output;
   };
-  var boolDiff = function (item, filter) {
-    var output;
+  let boolDiff = function (item, filter) {
+    let output;
     if (item instanceof Array) {
       output = unique(
         item.filter(function (val) {
@@ -125,10 +125,10 @@
       );
     } else {
       output = {};
-      for (var i in item) {
+      for (let i in item) {
         output[i] = item[i];
       }
-      for (var f in filter) {
+      for (let f in filter) {
         if (output.hasOwnProperty(filter[f])) {
           delete output[filter[f]];
         }
@@ -136,7 +136,7 @@
     }
     return output;
   };
-  var boolFilter = function (item, filter) {
+  let boolFilter = function (item, filter) {
     if (filter === false) {
       return item instanceof Array ? [] : {};
     }
@@ -162,8 +162,8 @@
       return copy(item);
     }
   };
-  var toShorthand = function (filterList) {
-    var outputArray;
+  let toShorthand = function (filterList) {
+    let outputArray;
     if (typeof filterList === "boolean") {
       return filterList;
     } else if (typeof filterList === "object" && filterList !== null) {
@@ -193,8 +193,8 @@
     }
     return false;
   };
-  var toAbsolute = function (value, origin) {
-    var protocol, stack, parts;
+  let toAbsolute = function (value, origin) {
+    let protocol, stack, parts;
     if (value.match(/(?:^data\:|^[\w\-\+\.]*?\:\/\/|^\/\/)/i)) {
       return value;
     }
@@ -205,13 +205,12 @@
       origin.indexOf("://") > -1
         ? origin.substring(0, origin.indexOf("://") + 3)
         : "";
-    stack = (protocol.length
-      ? origin.substring(protocol.length)
-      : origin
+    stack = (
+      protocol.length ? origin.substring(protocol.length) : origin
     ).split("/");
     parts = value.split("/");
     stack.pop();
-    for (var i = 0; i < parts.length; i++) {
+    for (let i = 0; i < parts.length; i++) {
       if (parts[i] == ".") {
         continue;
       }
@@ -225,9 +224,9 @@
     }
     return protocol + stack.join("/");
   };
-  var copyJSON = function (node, opts) {
-    var copy = {};
-    for (var n in node) {
+  let copyJSON = function (node, opts) {
+    let copy = {};
+    for (let n in node) {
       if (
         typeof node[n] !== "undefined" &&
         typeof node[n] !== "function" &&
@@ -247,11 +246,11 @@
     copy = boolFilter(copy, opts.domProperties);
     return copy;
   };
-  var attrJSON = function (node, opts) {
-    var attributes = {};
-    var attr = node.attributes;
-    var length = attr.length;
-    var absAttr;
+  let attrJSON = function (node, opts) {
+    let attributes = {};
+    let attr = node.attributes;
+    let length = attr.length;
+    let absAttr;
     for (var i = 0; i < length; i++) {
       attributes[attr[i].name] = attr[i].value;
     }
@@ -264,15 +263,15 @@
     }
     return attributes;
   };
-  var styleJSON = function (node, opts) {
-    var style,
+  let styleJSON = function (node, opts) {
+    let style,
       css = {};
     if (opts.computedStyle && node.style instanceof CSSStyleDeclaration) {
       style = win.getComputedStyle(node);
     } else {
       return null;
     }
-    for (var k in style) {
+    for (let k in style) {
       if (
         k !== "cssText" &&
         !k.match(/\d/) &&
@@ -286,15 +285,15 @@
       ? boolFilter(css, opts.computedStyle)
       : css;
   };
-  var toJSON = function (node, opts, depth) {
-    var style,
+  let toJSON = function (node, opts, depth) {
+    let style,
       kids,
       kidCount,
       thisChild,
       children,
       copy = copyJSON(node, opts);
     if (node.nodeType === 1) {
-      for (var b in banned) {
+      for (let b in banned) {
         if (node.tagName.toLowerCase() === banned[b]) {
           return null;
         }
@@ -315,7 +314,7 @@
       children = [];
       kids = opts.htmlOnly ? node.children : node.childNodes;
       kidCount = kids.length;
-      for (var c = 0; c < kidCount; c++) {
+      for (let c = 0; c < kidCount; c++) {
         thisChild = toJSON(kids[c], opts, depth + 1);
         if (thisChild) {
           children.push(thisChild);
@@ -326,13 +325,13 @@
     return copy;
   };
   domJSON.toJSON = function (node, opts) {
-    var copy,
+    let copy,
       keys = [],
       options = {},
       output = {};
-    var timer = new Date().getTime();
-    var requiring = required.slice();
-    var ignoring = ignored.slice();
+    let timer = new Date().getTime();
+    let requiring = required.slice();
+    let ignoring = ignored.slice();
     options = extend({}, defaultsForToJSON, opts);
     options.absolutePaths = toShorthand(options.absolutePaths);
     options.attributes = toShorthand(options.attributes);
@@ -403,7 +402,7 @@
     }
     return output;
   };
-  var createNode = function (type, doc, data) {
+  let createNode = function (type, doc, data) {
     if (doc instanceof DocumentFragment) {
       doc = doc.ownerDocument;
     }
@@ -442,14 +441,14 @@
         return false;
     }
   };
-  var toDOM = function (obj, parent, doc) {
+  let toDOM = function (obj, parent, doc) {
     if (obj.nodeType) {
       var node = createNode(obj.nodeType, doc, obj);
       parent.appendChild(node);
     } else {
       return false;
     }
-    for (var x in obj) {
+    for (let x in obj) {
       if (
         typeof obj[x] !== "object" &&
         x !== "isContentEditable" &&
@@ -462,22 +461,22 @@
         }
       }
     }
-    var src;
+    let src;
     if (obj.nodeType === 1 && obj.tagName) {
       if (obj.attributes) {
-        for (var a in obj.attributes) {
+        for (let a in obj.attributes) {
           node.setAttribute(a, obj.attributes[a]);
         }
       }
     }
     if (obj.childNodes && obj.childNodes.length) {
-      for (var c in obj.childNodes) {
+      for (let c in obj.childNodes) {
         toDOM(obj.childNodes[c], node, doc);
       }
     }
   };
   domJSON.toDOM = function (obj, opts) {
-    var options, node;
+    let options, node;
     if (typeof obj === "string") {
       obj = JSON.parse(obj);
     }

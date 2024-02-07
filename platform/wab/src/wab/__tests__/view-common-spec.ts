@@ -1,5 +1,5 @@
-import { renderStyles } from "../client/components/view-common";
-import { cx, tuple } from "../common";
+import { renderStyles } from "@/wab/client/components/view-common";
+import { cx, tuple } from "@/wab/common";
 
 describe("cx", () =>
   it("should work", function () {

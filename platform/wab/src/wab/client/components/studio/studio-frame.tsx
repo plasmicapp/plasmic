@@ -1,40 +1,43 @@
 /** @format */
 
-import { notification } from "antd";
-import Modal from "antd/lib/modal/Modal";
-import { Location } from "history";
-import moize from "moize";
-import * as React from "react";
-import { useEffect } from "react";
-import HostUrlInput from "../../../../HostUrlInput";
-import { maybeOne, spawn, swallow } from "../../../common";
-import { DEVFLAGS } from "../../../devflags";
-import { ForbiddenError } from "../../../shared/ApiErrors/errors";
+import HostUrlInput from "@/HostUrlInput";
+import {
+  getLoginRouteWithContinuation,
+  parseProjectLocation,
+  UU,
+} from "@/wab/client/cli-routes";
+import { PublicLink } from "@/wab/client/components/PublicLink";
+import { HostLoadTimeoutPrompt } from "@/wab/client/components/TopFrame/HostLoadTimeoutPrompt";
+import {
+  TopFrameChrome,
+  useTopFrameState,
+} from "@/wab/client/components/TopFrame/TopFrameChrome";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { reportError } from "@/wab/client/ErrorNotifications";
+import { buildPlasmicStudioArgsHash } from "@/wab/client/frame-ctx/plasmic-studio-args";
+import { TopFrameCtxProvider } from "@/wab/client/frame-ctx/top-frame-ctx";
+import { usePreventDefaultBrowserPinchToZoomBehavior } from "@/wab/client/hooks/usePreventDefaultBrowserPinchToZoomBehavior";
+import { useForceUpdate } from "@/wab/client/useForceUpdate";
+import { getHostUrl } from "@/wab/client/utils/app-hosting-utils";
+import { useBrowserNotification } from "@/wab/client/utils/useBrowserNotification";
+import { maybeOne, spawn, swallow } from "@/wab/common";
+import { DEVFLAGS } from "@/wab/devflags";
+import { ForbiddenError } from "@/wab/shared/ApiErrors/errors";
 import {
   ApiBranch,
   ApiPermission,
   ApiProject,
   MainBranchId,
   ProjectId,
-} from "../../../shared/ApiSchema";
-import { accessLevelRank } from "../../../shared/EntUtil";
-import { getAccessLevelToResource } from "../../../shared/perms";
-import {
-  getLoginRouteWithContinuation,
-  parseProjectLocation,
-  UU,
-} from "../../cli-routes";
-import { useAppCtx } from "../../contexts/AppContexts";
-import { reportError } from "../../ErrorNotifications";
-import { buildPlasmicStudioArgsHash } from "../../frame-ctx/plasmic-studio-args";
-import { TopFrameCtxProvider } from "../../frame-ctx/top-frame-ctx";
-import { usePreventDefaultBrowserPinchToZoomBehavior } from "../../hooks/usePreventDefaultBrowserPinchToZoomBehavior";
-import { useForceUpdate } from "../../useForceUpdate";
-import { getHostUrl } from "../../utils/app-hosting-utils";
-import { useBrowserNotification } from "../../utils/useBrowserNotification";
-import { PublicLink } from "../PublicLink";
-import { HostLoadTimeoutPrompt } from "../TopFrame/HostLoadTimeoutPrompt";
-import { TopFrameChrome, useTopFrameState } from "../TopFrame/TopFrameChrome";
+} from "@/wab/shared/ApiSchema";
+import { accessLevelRank } from "@/wab/shared/EntUtil";
+import { getAccessLevelToResource } from "@/wab/shared/perms";
+import { notification } from "antd";
+import Modal from "antd/lib/modal/Modal";
+import { Location } from "history";
+import moize from "moize";
+import * as React from "react";
+import { useEffect } from "react";
 
 const whitelistedHosts = [
   "https://studio.plasmic.app",

@@ -1,9 +1,9 @@
+import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
+import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
+import { ensureArray, filterMapTruthy } from "@/wab/common";
 import { Select } from "antd";
 import L, { isObject, isString } from "lodash";
 import React from "react";
-import { ensureArray, filterMapTruthy } from "../../../../common";
-import { ValueSetState } from "../../sidebar/sidebar-helpers";
-import StyleSelect from "../../style-controls/StyleSelect";
 
 export type OptionValue = string | number | boolean;
 const stringify = (value: any): string => {

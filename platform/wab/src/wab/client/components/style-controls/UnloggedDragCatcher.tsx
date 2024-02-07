@@ -1,6 +1,6 @@
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import React from "react";
 import { useEvent } from "react-use";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
 
 interface UnloggedDragCatcherProps {
   sc: StudioCtx;

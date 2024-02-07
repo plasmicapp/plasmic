@@ -1,5 +1,5 @@
+import { assert, tuple } from "@/wab/common";
 import * as _ from "lodash";
-import { assert, tuple } from "../common";
 const memoizeOne = ((m: any) => m.default || m)(require("memoize-one"));
 
 export function insertArray<T>(
@@ -90,7 +90,7 @@ export function insertAt<T>(xs: T[], x: T, index?: number) {
 }
 
 export function removeAllFromArray<T>(xs: T[], x: T) {
-  for (var i = xs.length; i--; ) {
+  for (let i = xs.length; i--; ) {
     if (xs[i] === x) {
       xs.splice(i, 1);
     }

@@ -1,4 +1,4 @@
-import { DomSnap } from "../../WebImporter";
+import { DomSnap } from "@/wab/client/WebImporter";
 
 export const playvsHtml = `<html lang="en"><head><script type="text/javascript" src="/static/scripts/playvs-k-1.js"></script><script type="text/javascript" src="/static/scripts/playvs-k-2.js"></script><script async="" type="text/javascript" src="//h7fl4573s1.kameleoon.eu/kameleoon.js"></script><meta name="viewport" content="width=device-width, initial-scale=1.0"><script>
             window.prismic = {

@@ -1,14 +1,14 @@
-import { Tooltip } from "antd";
-import * as React from "react";
-import { MaybeWrap } from "../../../commons/components/ReactUtil";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import InfoIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Info";
+import PlumeMarkIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__PlumeMark";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import {
   PlumeElementDef,
   PlumeSlotDef,
   PlumeVariantDef,
-} from "../../../shared/plume/plume-registry";
-import InfoIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Info";
-import PlumeMarkIcon from "../../plasmic/plasmic_kit_design_system/icons/PlasmicIcon__PlumeMark";
-import { Icon } from "../widgets/Icon";
+} from "@/wab/shared/plume/plume-registry";
+import { Tooltip } from "antd";
+import * as React from "react";
 
 export function PlumeMarker(props: {
   def: PlumeVariantDef | PlumeSlotDef | PlumeElementDef;

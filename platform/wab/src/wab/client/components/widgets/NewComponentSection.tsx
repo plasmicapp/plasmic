@@ -1,8 +1,8 @@
-import * as React from "react";
 import {
   DefaultNewComponentSectionProps,
   PlasmicNewComponentSection,
-} from "../../plasmic/plasmic_kit_new_component/PlasmicNewComponentSection";
+} from "@/wab/client/plasmic/plasmic_kit_new_component/PlasmicNewComponentSection";
+import * as React from "react";
 
 interface NewComponentSectionProps
   extends Omit<DefaultNewComponentSectionProps, "hideTitle"> {}

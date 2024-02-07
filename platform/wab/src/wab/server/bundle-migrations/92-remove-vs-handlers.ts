@@ -1,7 +1,7 @@
-import { assert } from "../../common";
-import { BundleMigrationType } from "../db/bundle-migration-utils";
-import { BundledMigrationFn } from "../db/BundleMigrator";
-import { PkgVersion } from "../entities/Entities";
+import { assert } from "@/wab/common";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
+import { BundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { PkgVersion } from "@/wab/server/entities/Entities";
 
 const stateManagementWorskpaceId = "kZp2bNnMvBuSKZXYYP1rye";
 export const migrate: BundledMigrationFn = async (bundle, entity) => {

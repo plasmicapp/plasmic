@@ -1,5 +1,3 @@
-import { ancestor as traverse } from "acorn-walk";
-import type * as ast from "estree";
 import {
   Expr,
   isKnownCustomCode,
@@ -9,19 +7,21 @@ import {
   isKnownTemplatedString,
   ObjectPath,
   TemplatedString,
-} from "../../classes";
-import { arrayEq, unexpected, xUnion } from "../../common";
-import { DEVFLAGS } from "../../devflags";
-import { asCode, isRealCodeExpr } from "../../exprs";
-import { ENABLED_GLOBALS } from "../eval";
+} from "@/wab/classes";
+import { arrayEq, unexpected, xUnion } from "@/wab/common";
+import { DEVFLAGS } from "@/wab/devflags";
+import { asCode, isRealCodeExpr } from "@/wab/exprs";
+import { ENABLED_GLOBALS } from "@/wab/shared/eval";
 import {
   isBlockScope,
   isScope,
   isValidJavaScriptCode,
   parseJsCode,
   writeJs,
-} from "../parser-utils";
-import { validJsIdentifierRegex } from "../utils/regex-valid-js-identifier";
+} from "@/wab/shared/parser-utils";
+import { validJsIdentifierRegex } from "@/wab/shared/utils/regex-valid-js-identifier";
+import { ancestor as traverse } from "acorn-walk";
+import type * as ast from "estree";
 
 const DOLLAR_VARS = ["$ctx", "$props", "$queries", "$state", "$steps"] as const;
 

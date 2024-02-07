@@ -1,14 +1,14 @@
+import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
+import * as widgets from "@/wab/client/components/widgets";
+import { PlainLinkButtonProps } from "@/wab/client/components/widgets";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { plasmicIFrameMouseDownEvent } from "@/wab/client/definitions/events";
+import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
+import { swallowClick } from "@/wab/commons/components/ReactUtil";
 import { Dropdown, Tooltip } from "antd";
 import classNames from "classnames";
 import * as React from "react";
 import { ReactNode } from "react";
-import { swallowClick } from "../../../commons/components/ReactUtil";
-import { plasmicIFrameMouseDownEvent } from "../../definitions/events";
-import TriangleBottomIcon from "../../plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
-import { maybeShowContextMenu } from "../ContextMenu";
-import * as widgets from "../widgets";
-import { PlainLinkButtonProps } from "../widgets";
-import { Icon } from "../widgets/Icon";
 
 interface IconLinkButtonProps extends Omit<PlainLinkButtonProps, "title"> {
   label?: ReactNode;

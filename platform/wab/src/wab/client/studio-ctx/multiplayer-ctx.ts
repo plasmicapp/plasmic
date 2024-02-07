@@ -1,12 +1,12 @@
-import { isEqual } from "lodash";
-import { observable, runInAction } from "mobx";
-import { asyncOneAtATime, ensure, xDifference } from "../../common";
+import { PLAYER_COLORS } from "@/wab/client/components/studio/GlobalCssVariables";
+import { asyncOneAtATime, ensure, xDifference } from "@/wab/common";
 import {
   ApiUser,
   PlayerViewInfo,
   ServerPlayerInfo,
-} from "../../shared/ApiSchema";
-import { PLAYER_COLORS } from "../components/studio/GlobalCssVariables";
+} from "@/wab/shared/ApiSchema";
+import { isEqual } from "lodash";
+import { observable, runInAction } from "mobx";
 import { StudioCtx } from "./StudioCtx";
 
 interface PlayerDataBase {

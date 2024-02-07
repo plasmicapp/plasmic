@@ -1,12 +1,12 @@
-import { ParamExportType } from "../../lang";
-import { Bundler } from "../../shared/bundler";
-import { convertVariableTypeToWabType } from "../../shared/core/model-util";
-import { StateVariableType } from "../../states";
+import { ParamExportType } from "@/wab/lang";
 import {
   BundleMigrationType,
   unbundleSite,
-} from "../db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
+} from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { Bundler } from "@/wab/shared/bundler";
+import { convertVariableTypeToWabType } from "@/wab/shared/core/model-util";
+import { StateVariableType } from "@/wab/states";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();

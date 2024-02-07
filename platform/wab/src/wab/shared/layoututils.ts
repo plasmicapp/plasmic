@@ -1,9 +1,9 @@
-import { RuleSet, TplNode, TplTag, VariantSetting } from "../classes";
-import { unexpected } from "../common";
-import { isMixinPropRef, isTokenRef } from "../commons/StyleToken";
-import { DeepReadonly } from "../commons/types";
-import { parseCssNumericNew } from "../css";
-import { getTplTagRoot, isTplComponent, isTplVariantable } from "../tpls";
+import { RuleSet, TplNode, TplTag, VariantSetting } from "@/wab/classes";
+import { unexpected } from "@/wab/common";
+import { isMixinPropRef, isTokenRef } from "@/wab/commons/StyleToken";
+import { DeepReadonly } from "@/wab/commons/types";
+import { parseCssNumericNew } from "@/wab/css";
+import { getTplTagRoot, isTplComponent, isTplVariantable } from "@/wab/tpls";
 import {
   contentLayoutProps,
   CONTENT_LAYOUT,

@@ -1,8 +1,8 @@
+import { setElementStyles } from "@/wab/client/dom-utils";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { autorun } from "mobx";
 import * as React from "react";
 import { RefObject, useCallback, useMemo } from "react";
-import { setElementStyles } from "../dom-utils";
-import { useStudioCtx } from "../studio-ctx/StudioCtx";
 
 export function useZoomStyledRef<T extends HTMLElement>(
   fn: (zoom: number) => Partial<CSSStyleDeclaration>,

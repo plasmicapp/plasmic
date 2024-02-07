@@ -1,10 +1,10 @@
-import { isKnownTplComponent, Site, TplComponent } from "../../classes";
-import { removeWhere } from "../../common";
-import * as exprs from "../../exprs";
-import { clone, cloneArgs } from "../../tpls";
-import { computedProjectFlags } from "../cached-selectors";
-import mobx from "../import-mobx";
-import { isSlot } from "../SlotUtils";
+import { isKnownTplComponent, Site, TplComponent } from "@/wab/classes";
+import { removeWhere } from "@/wab/common";
+import * as exprs from "@/wab/exprs";
+import { computedProjectFlags } from "@/wab/shared/cached-selectors";
+import mobx from "@/wab/shared/import-mobx";
+import { isSlot } from "@/wab/shared/SlotUtils";
+import { clone, cloneArgs } from "@/wab/tpls";
 
 export class ContextFactory {
   private knownContexts: Record<string, TplComponent> = {};

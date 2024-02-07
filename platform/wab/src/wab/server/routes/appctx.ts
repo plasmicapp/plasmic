@@ -1,6 +1,6 @@
+import { ensureType } from "@/wab/common";
+import { ApiTeam, ApiWorkspace, AppCtxResponse } from "@/wab/shared/ApiSchema";
 import { Request, Response } from "express-serve-static-core";
-import { ensureType } from "../../common";
-import { ApiTeam, ApiWorkspace, AppCtxResponse } from "../../shared/ApiSchema";
 import { checkFreeTrialDuration } from "./team-plans";
 import { mkApiTeam } from "./teams";
 import { userDbMgr } from "./util";

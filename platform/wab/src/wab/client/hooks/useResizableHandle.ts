@@ -1,5 +1,5 @@
+import { XDraggableEvent } from "@/wab/commons/components/XDraggable";
 import React from "react";
-import { XDraggableEvent } from "../../commons/components/XDraggable";
 
 interface ResizingState {
   initialX: number;

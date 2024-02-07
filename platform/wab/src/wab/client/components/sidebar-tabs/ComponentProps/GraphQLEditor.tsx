@@ -1,8 +1,8 @@
+import { reactConfirm } from "@/wab/client/components/quick-modals";
+import { ObserverLoadable } from "@/wab/client/components/widgets";
+import Chip from "@/wab/client/components/widgets/Chip";
 import React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import { reactConfirm } from "../../quick-modals";
-import { ObserverLoadable } from "../../widgets";
-import Chip from "../../widgets/Chip";
 
 export interface GraphQLValue {
   query: string;
@@ -69,7 +69,7 @@ export const GraphQLEditor = (props: {
             >
               <ObserverLoadable
                 loader={() =>
-                  import("../../../data/GraphqlBuilder").then(
+                  import("@/wab/client/data/GraphqlBuilder").then(
                     ({ default: GraphiqlWithExplorer }) => GraphiqlWithExplorer
                   )
                 }

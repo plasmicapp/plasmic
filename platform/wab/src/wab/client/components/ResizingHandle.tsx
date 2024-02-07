@@ -1,10 +1,10 @@
+import { plasmicCanvasTransformEvent } from "@/wab/client/definitions/events";
+import { requestIdleCallback } from "@/wab/client/requestidlecallback";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { XDraggable } from "@/wab/commons/components/XDraggable";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
-import { XDraggable } from "../../commons/components/XDraggable";
-import { plasmicCanvasTransformEvent } from "../definitions/events";
-import { requestIdleCallback } from "../requestidlecallback";
-import { useStudioCtx } from "../studio-ctx/StudioCtx";
 import styles from "./ResizingHandler.module.scss";
 
 export enum HandlePosition {

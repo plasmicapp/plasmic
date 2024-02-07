@@ -1,10 +1,10 @@
-import { isAllowedDefaultExpr } from "../../exprs";
-import { Bundler } from "../../shared/bundler";
+import { isAllowedDefaultExpr } from "@/wab/exprs";
 import {
   BundleMigrationType,
   unbundleSite,
-} from "../db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
+} from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { Bundler } from "@/wab/shared/bundler";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();

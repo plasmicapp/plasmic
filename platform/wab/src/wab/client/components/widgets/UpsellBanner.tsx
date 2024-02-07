@@ -1,9 +1,9 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import * as React from "react";
 import {
   DefaultUpsellBannerProps,
   PlasmicUpsellBanner,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicUpsellBanner";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicUpsellBanner";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import * as React from "react";
 
 interface UpsellBannerProps extends DefaultUpsellBannerProps {}
 

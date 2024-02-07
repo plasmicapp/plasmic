@@ -1,9 +1,9 @@
+import Button from "@/wab/client/components/widgets/Button";
 import { explorerPlugin } from "@graphiql/plugin-explorer";
 import { Fetcher } from "@graphiql/toolkit";
 import GraphiQL from "graphiql";
 import "graphiql/graphiql.css";
 import React, { useMemo, useState } from "react";
-import Button from "../components/widgets/Button";
 
 const createFetcher = ({
   url: urlStr,

@@ -1,5 +1,5 @@
-import { maybe } from "../common";
-import { DevFlagsType } from "../devflags";
+import { maybe } from "@/wab/common";
+import { DevFlagsType } from "@/wab/devflags";
 import { ApiProject } from "./ApiSchema";
 import { DomainValidator } from "./hosting";
 

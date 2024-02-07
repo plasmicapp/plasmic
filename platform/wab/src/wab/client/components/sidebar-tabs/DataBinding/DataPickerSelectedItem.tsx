@@ -1,9 +1,9 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import * as React from "react";
 import {
   DefaultDataPickerSelectedItemProps,
   PlasmicDataPickerSelectedItem,
-} from "../../../plasmic/plasmic_kit_data_binding/PlasmicDataPickerSelectedItem";
+} from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerSelectedItem";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import * as React from "react";
 
 export interface DataPickerSelectedItemProps
   extends DefaultDataPickerSelectedItemProps {

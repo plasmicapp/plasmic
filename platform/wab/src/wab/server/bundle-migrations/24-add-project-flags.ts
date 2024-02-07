@@ -1,6 +1,6 @@
-import { BundleMigrationType } from "../db/bundle-migration-utils";
-import { BundledMigrationFn } from "../db/BundleMigrator";
-import { PkgVersion, ProjectRevision } from "../entities/Entities";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
+import { BundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
 
 export const migrate: BundledMigrationFn = async (bundle, entity) => {
   for (const inst of Object.values(bundle.map)) {

@@ -1,23 +1,23 @@
-import { notification } from "antd";
-import { createElement } from "react";
-import { render } from "react-dom";
-import { mutate } from "swr";
-import { RevalidatePlasmicHostingResponse } from "../../../../shared/ApiSchema";
-import { apiKey } from "../../../api";
-import { U } from "../../../cli-routes";
-import { SimpleConfetti } from "../../../components/SimpleConfetti";
-import { topFrameTourSignals } from "../../../components/TopFrame/TopFrameChrome";
-import { TutorialEventsType } from "../tutorials-events";
-import { sleep } from "../tutorials-helpers";
+import { apiKey } from "@/wab/client/api";
+import { U } from "@/wab/client/cli-routes";
+import { SimpleConfetti } from "@/wab/client/components/SimpleConfetti";
+import { topFrameTourSignals } from "@/wab/client/components/TopFrame/TopFrameChrome";
+import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
+import { sleep } from "@/wab/client/tours/tutorials/tutorials-helpers";
 import {
   STUDIO_ELEMENTS_TARGETS,
   TOPFRAME_ELEMENTS_TARGETS,
-} from "../tutorials-targets";
+} from "@/wab/client/tours/tutorials/tutorials-targets";
 import {
   OnNextCtx,
   StudioTutorialStep,
   TopFrameTutorialStep,
-} from "../tutorials-types";
+} from "@/wab/client/tours/tutorials/tutorials-types";
+import { RevalidatePlasmicHostingResponse } from "@/wab/shared/ApiSchema";
+import { notification } from "antd";
+import { createElement } from "react";
+import { render } from "react-dom";
+import { mutate } from "swr";
 
 export const TOPFRAME_PUBLISH_STEPS: TopFrameTutorialStep[] = [
   {

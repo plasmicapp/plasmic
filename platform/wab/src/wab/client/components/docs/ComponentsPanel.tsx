@@ -1,16 +1,16 @@
-import { Alert } from "antd";
-import { observer } from "mobx-react-lite";
-import * as React from "react";
+import { Matcher } from "@/wab/client/components/view-common";
+import {
+  DefaultComponentsPanelProps,
+  PlasmicComponentsPanel,
+} from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicComponentsPanel";
 import {
   isCodeComponent,
   isFrameComponent,
   isSubComponent,
-} from "../../../components";
-import {
-  DefaultComponentsPanelProps,
-  PlasmicComponentsPanel,
-} from "../../plasmic/plasmic_kit_docs_portal/PlasmicComponentsPanel";
-import { Matcher } from "../view-common";
+} from "@/wab/components";
+import { Alert } from "antd";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
 import ComponentListItem from "./ComponentListItem";
 import { useDocsPortalCtx } from "./DocsPortalCtx";
 

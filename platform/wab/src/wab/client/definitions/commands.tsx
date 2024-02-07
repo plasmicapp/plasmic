@@ -1,9 +1,5 @@
-import L from "lodash";
-import * as React from "react";
-import { assert } from "../../common";
-import { ComponentType } from "../../components";
-import { U } from "../cli-routes";
-import { importProjectWithPrompt } from "../components/sidebar/ProjectDependencies";
+import { U } from "@/wab/client/cli-routes";
+import { importProjectWithPrompt } from "@/wab/client/components/sidebar/ProjectDependencies";
 import {
   ARROW_LEFT_ICON,
   COMPONENT_ICON,
@@ -11,8 +7,12 @@ import {
   FETCH_ICON,
   FRAME_ICON,
   PAGE_ICON,
-} from "../icons";
-import { StudioCtx } from "../studio-ctx/StudioCtx";
+} from "@/wab/client/icons";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { assert } from "@/wab/common";
+import { ComponentType } from "@/wab/components";
+import L from "lodash";
+import * as React from "react";
 
 export enum CommandItemKey {
   screenFrame = "screenFrame",

@@ -1,4 +1,4 @@
-import { matchOrder } from "../collections";
+import { matchOrder } from "@/wab/collections";
 
 describe("matchOrder", () => {
   it("should work", () => {

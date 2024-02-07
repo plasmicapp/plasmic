@@ -1,27 +1,27 @@
+import { Component, DataSourceOpExpr } from "@/wab/classes";
+import { useAppRoles } from "@/wab/client/components/app-auth/app-auth-contexts";
+import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
+import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import Button from "@/wab/client/components/widgets/Button";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ifDevFlag } from "@/wab/client/utils/ifDevFlag";
+import { zIndex } from "@/wab/client/z-index";
+import { ensure } from "@/wab/common";
+import { ApiAppRole } from "@/wab/shared/ApiSchema";
+import { findAllDataSourceOpExprForComponent } from "@/wab/shared/cached-selectors";
+import {
+  dataSourceTemplateToString,
+  getTemplateFieldType,
+  mkDataSourceTemplate,
+} from "@/wab/shared/data-sources-meta/data-sources";
 import { Form, notification, Select as AntSelect } from "antd";
 import { Dictionary, keyBy, mapValues } from "lodash";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import { Component, DataSourceOpExpr } from "../../../classes";
-import { ensure } from "../../../common";
-import { ApiAppRole } from "../../../shared/ApiSchema";
-import { findAllDataSourceOpExprForComponent } from "../../../shared/cached-selectors";
-import {
-  dataSourceTemplateToString,
-  getTemplateFieldType,
-  mkDataSourceTemplate,
-} from "../../../shared/data-sources-meta/data-sources";
-import TriangleBottomIcon from "../../plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
-import { ifDevFlag } from "../../utils/ifDevFlag";
-import { zIndex } from "../../z-index";
-import { useAppRoles } from "../app-auth/app-auth-contexts";
-import { showTemporaryPrompt } from "../quick-modals";
-import { LabeledItemRow } from "../sidebar/sidebar-helpers";
-import { SidebarSection } from "../sidebar/SidebarSection";
-import Button from "../widgets/Button";
-import { Icon } from "../widgets/Icon";
 
 // const LOGIN_NEEDED =
 //   "If checked, only logged in user will be able to see this page";

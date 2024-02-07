@@ -1,3 +1,4 @@
+import { getCodegenUrl } from "@/wab/urls";
 import {
   extractPlasmicQueryDataFromElement,
   GlobalVariantSpec,
@@ -6,7 +7,6 @@ import {
 } from "@plasmicapp/loader-react";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
-import { getCodegenUrl } from "../../urls";
 
 export async function genLoaderHtmlBundle(opts: {
   projectId: string;

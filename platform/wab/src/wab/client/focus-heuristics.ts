@@ -1,5 +1,4 @@
-import L from "lodash";
-import { Site, TplComponent } from "../classes";
+import { Site, TplComponent } from "@/wab/classes";
 import {
   assert,
   coalesce,
@@ -8,25 +7,29 @@ import {
   maybe,
   switchType,
   tuple,
-} from "../common";
-import { isContextCodeComponent } from "../components";
+} from "@/wab/common";
+import { isContextCodeComponent } from "@/wab/components";
 import {
   getFocusTrappingAncestor,
   getUnlockedAncestor,
   Selectable,
   SQ,
-} from "../selection";
-import { ValState } from "../shared/eval/val-state";
-import { isCodeComponentSlot, isPlainTextTplSlot } from "../shared/SlotUtils";
-import { TplMgr } from "../shared/TplMgr";
-import { SlotSelection } from "../slots";
+} from "@/wab/selection";
+import { ValState } from "@/wab/shared/eval/val-state";
+import {
+  isCodeComponentSlot,
+  isPlainTextTplSlot,
+} from "@/wab/shared/SlotUtils";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { SlotSelection } from "@/wab/slots";
 import {
   slotHasDefaultContent,
   ValComponent,
   ValNode,
   ValSlot,
-} from "../val-nodes";
-import { asVal } from "../vals";
+} from "@/wab/val-nodes";
+import { asVal } from "@/wab/vals";
+import L from "lodash";
 import { ComponentCtx } from "./studio-ctx/component-ctx";
 
 export class FocusHeuristics {

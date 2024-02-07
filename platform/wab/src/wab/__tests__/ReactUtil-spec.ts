@@ -1,5 +1,5 @@
-import { cx } from "../common";
-import { combineProps } from "../commons/components/ReactUtil";
+import { cx } from "@/wab/common";
+import { combineProps } from "@/wab/commons/components/ReactUtil";
 
 describe("combineProps", () =>
   it("should work", function () {

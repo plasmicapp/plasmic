@@ -1,9 +1,9 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import * as React from "react";
 import {
   DefaultNavTeamSectionProps,
   PlasmicNavTeamSection,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicNavTeamSection";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicNavTeamSection";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import * as React from "react";
 
 interface NavTeamSectionProps extends DefaultNavTeamSectionProps {
   freeTrial?: boolean;

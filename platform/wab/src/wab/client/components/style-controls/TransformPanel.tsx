@@ -1,17 +1,17 @@
-import { Slider } from "antd";
-import { observer } from "mobx-react";
-import React, { useEffect } from "react";
-import { parseCssNumericNew } from "../../../css";
+import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { parseCssNumericNew } from "@/wab/css";
 import {
   defaultTransforms,
   fromTransformObjToString,
   getSliderConfig,
   Transform,
   transformAllowedUnits,
-} from "../../../transform-utils";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { LabeledItemRow } from "../sidebar/sidebar-helpers";
-import DimTokenSpinner from "../widgets/DimTokenSelector";
+} from "@/wab/transform-utils";
+import { Slider } from "antd";
+import { observer } from "mobx-react";
+import React, { useEffect } from "react";
 import StyleToggleButton from "./StyleToggleButton";
 import StyleToggleButtonGroup from "./StyleToggleButtonGroup";
 

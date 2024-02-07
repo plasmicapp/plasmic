@@ -1,16 +1,16 @@
+import { apiKey } from "@/wab/client/api";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import {
+  DefaultDomainCardProps,
+  PlasmicDomainCard,
+} from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicDomainCard";
+import { spawn, spawnWrapper } from "@/wab/common";
+import { ApiProject, CheckDomainResponse } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 import { useState } from "react";
 import useSWR, { mutate } from "swr";
 import * as tldts from "tldts";
-import { spawn, spawnWrapper } from "../../../../common";
-import { ApiProject, CheckDomainResponse } from "../../../../shared/ApiSchema";
-import { apiKey } from "../../../api";
-import { useAppCtx } from "../../../contexts/AppContexts";
-import {
-  DefaultDomainCardProps,
-  PlasmicDomainCard,
-} from "../../../plasmic/plasmic_kit_continuous_deployment/PlasmicDomainCard";
 
 export interface DomainCardProps extends DefaultDomainCardProps {
   domain: string;

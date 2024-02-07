@@ -1,6 +1,6 @@
-import { mkShortId } from "../../common";
-import { UnsafeBundle } from "../../shared/bundles";
-import { BundleMigrationType } from "../db/bundle-migration-utils";
+import { mkShortId } from "@/wab/common";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
+import { UnsafeBundle } from "@/wab/shared/bundles";
 
 export async function migrate(bundle: UnsafeBundle) {
   for (const inst of Object.values(bundle.map)) {

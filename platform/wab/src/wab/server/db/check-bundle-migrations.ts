@@ -1,8 +1,8 @@
+import { arrayEq, ensure, spawn, spawnWrapper } from "@/wab/common";
 import fs from "fs";
 import { last } from "lodash";
 import path from "path";
 import yargs from "yargs";
-import { arrayEq, ensure, spawn, spawnWrapper } from "../../common";
 
 interface CheckArgs {
   files: string[];

@@ -1,20 +1,16 @@
-import L from "lodash";
-import { computed } from "mobx";
-import { Variant } from "../../../classes";
-import { ensure, mergeMaps, partitions, xpickBy } from "../../../common";
-import { toVarName } from "../../../shared/codegen/util";
+import { Variant } from "@/wab/classes";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ensure, mergeMaps, partitions, xpickBy } from "@/wab/common";
+import { toVarName } from "@/wab/shared/codegen/util";
 import {
   ComponentVariantFrame,
   GlobalVariantFrame,
-} from "../../../shared/component-frame";
-import {
-  PinManager,
-  PinState,
-  PinStateManager,
-} from "../../../shared/PinManager";
-import { isGlobalVariant } from "../../../shared/Variants";
-import { ValComponent } from "../../../val-nodes";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
+} from "@/wab/shared/component-frame";
+import { PinManager, PinState, PinStateManager } from "@/wab/shared/PinManager";
+import { isGlobalVariant } from "@/wab/shared/Variants";
+import { ValComponent } from "@/wab/val-nodes";
+import L from "lodash";
+import { computed } from "mobx";
 
 /**
  * Returns the ClientPinManager for the current viewCtx state

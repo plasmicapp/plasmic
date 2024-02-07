@@ -1,13 +1,13 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import * as React from "react";
-import { assert, maybe, spawn } from "../../common";
-import { CopilotInteractionId } from "../../shared/ApiSchema";
 import {
   DefaultCopilotMsgProps,
   PlasmicCopilotMsg,
   PlasmicCopilotMsg__OverridesType,
-} from "../plasmic/plasmic_kit_data_binding/PlasmicCopilotMsg";
-import { useStudioCtx } from "../studio-ctx/StudioCtx";
+} from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotMsg";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { assert, maybe, spawn } from "@/wab/common";
+import { CopilotInteractionId } from "@/wab/shared/ApiSchema";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import * as React from "react";
 import styles from "./CopilotMsg.module.scss";
 import { TextboxRef } from "./widgets/Textbox";
 

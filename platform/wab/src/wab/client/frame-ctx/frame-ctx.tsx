@@ -1,5 +1,5 @@
+import { ensure, ensureTruthy, hackyCast } from "@/wab/common";
 import React from "react";
-import { ensure, ensureTruthy, hackyCast } from "../../common";
 import type { HostFrameCtx } from "./host-frame-ctx";
 import type { TopFrameCtx } from "./top-frame-ctx";
 

@@ -1,4 +1,4 @@
-import GridStyleParser from "../gen/GridStyleParser";
+import GridStyleParser from "@/wab/gen/GridStyleParser";
 
 describe("GridStyleParser", () => {
   it("works", () => {

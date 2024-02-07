@@ -1,4 +1,4 @@
-import { Box, findSpaceForRectSweepRight, mergeSpans, Pt } from "../geom";
+import { Box, findSpaceForRectSweepRight, mergeSpans, Pt } from "@/wab/geom";
 
 describe("Box", () => {
   describe("adjustSides", () => {

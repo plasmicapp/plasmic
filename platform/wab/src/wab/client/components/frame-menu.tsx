@@ -1,22 +1,22 @@
-import { Menu } from "antd";
-import * as React from "react";
-import { Arena, ArenaFrame } from "../../classes";
-import { ensure } from "../../common";
+import { Arena, ArenaFrame } from "@/wab/classes";
+import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ensure } from "@/wab/common";
 import {
   FrameViewMode,
   isComponentArena,
   isDuplicatableFrame,
   isMixedArena,
   isPageArena,
-} from "../../shared/Arenas";
+} from "@/wab/shared/Arenas";
 import {
   isBaseVariantFrame,
   isGlobalVariantFrame,
-} from "../../shared/component-arenas";
-import { ARENA_LOWER, FRAME_LOWER } from "../../shared/Labels";
-import { isFrameWithVariantCombo } from "../../shared/Variants";
-import { getComboForAction } from "../shortcuts/studio/studio-shortcuts";
-import { ViewCtx } from "../studio-ctx/view-ctx";
+} from "@/wab/shared/component-arenas";
+import { ARENA_LOWER, FRAME_LOWER } from "@/wab/shared/Labels";
+import { isFrameWithVariantCombo } from "@/wab/shared/Variants";
+import { Menu } from "antd";
+import * as React from "react";
 import { MenuBuilder, MenuItemContent } from "./menu-builder";
 import { reactConfirm } from "./quick-modals";
 

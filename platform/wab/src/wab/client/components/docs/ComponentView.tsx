@@ -1,14 +1,14 @@
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { isPlumeComponent } from "../../../components";
-import { toVarName } from "../../../shared/codegen/util";
-import { wabToTsType } from "../../../shared/core/model-util";
+import { PlasmicComponentView } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicComponentView";
+import { isPlumeComponent } from "@/wab/components";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { wabToTsType } from "@/wab/shared/core/model-util";
 import {
   getPlumeDocsPlugin,
   PlumeDocsProp,
-} from "../../../shared/plume/plume-registry";
-import { getTplSlots } from "../../../shared/SlotUtils";
-import { PlasmicComponentView } from "../../plasmic/plasmic_kit_docs_portal/PlasmicComponentView";
+} from "@/wab/shared/plume/plume-registry";
+import { getTplSlots } from "@/wab/shared/SlotUtils";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
 import CodePreviewSnippet from "./CodePreviewSnippet";
 import { DocsPortalCtx } from "./DocsPortalCtx";
 import DocsPropsTableRow from "./DocsPropsTableRow";

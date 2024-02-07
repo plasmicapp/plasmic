@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { Chroma } from "../../../../shared/utils/color-utils";
+import { Chroma } from "@/wab/shared/utils/color-utils";
 
 export const enum ColorMode {
   hex = "hex",

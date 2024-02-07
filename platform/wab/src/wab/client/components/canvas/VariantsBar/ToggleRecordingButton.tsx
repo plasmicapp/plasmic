@@ -1,10 +1,10 @@
-import { Tooltip } from "antd";
-import * as React from "react";
-import { VARIANTS_LOWER } from "../../../../shared/Labels";
 import {
   DefaultToggleRecordingButtonProps,
   PlasmicToggleRecordingButton,
-} from "../../../plasmic/plasmic_kit_variants_bar/PlasmicToggleRecordingButton";
+} from "@/wab/client/plasmic/plasmic_kit_variants_bar/PlasmicToggleRecordingButton";
+import { VARIANTS_LOWER } from "@/wab/shared/Labels";
+import { Tooltip } from "antd";
+import * as React from "react";
 
 interface ToggleRecordingButtonProps extends DefaultToggleRecordingButtonProps {
   onClick: (e: React.MouseEvent) => void;

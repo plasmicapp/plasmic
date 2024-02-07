@@ -1,15 +1,15 @@
+import { ensure } from "@/wab/common";
+import {
+  withConsumer,
+  withProvider,
+} from "@/wab/commons/components/ContextUtil";
+import { ScreenDimmer } from "@/wab/commons/components/ScreenDimmer";
 import { Spin } from "antd";
 import cx from "classnames";
 import * as React from "react";
 import { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { IconContext } from "react-icons";
-import { ensure } from "../../common";
-import {
-  withConsumer,
-  withProvider,
-} from "../../commons/components/ContextUtil";
-import { ScreenDimmer } from "../../commons/components/ScreenDimmer";
 
 export class App {
   _view: AppView;

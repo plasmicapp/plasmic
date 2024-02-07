@@ -1,18 +1,21 @@
-import { Menu } from "antd";
-import { observer } from "mobx-react";
-import React from "react";
-import { spawn } from "../../../common";
-import { getCssInitial } from "../../../css";
-import OverflowHiddenIcon from "../../plasmic/plasmic_kit/PlasmicIcon__OverflowHidden";
-import OverflowVisibleIcon from "../../plasmic/plasmic_kit/PlasmicIcon__OverflowVisible";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
-import { FullRow, LabeledToggleButtonGroup } from "../sidebar/sidebar-helpers";
+import {
+  FullRow,
+  LabeledToggleButtonGroup,
+} from "@/wab/client/components/sidebar/sidebar-helpers";
 import {
   ExpsProvider,
   StylePanelSection,
-} from "../style-controls/StyleComponent";
-import StyleToggleButton from "../style-controls/StyleToggleButton";
-import { Icon } from "../widgets/Icon";
+} from "@/wab/client/components/style-controls/StyleComponent";
+import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggleButton";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import OverflowHiddenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__OverflowHidden";
+import OverflowVisibleIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__OverflowVisible";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { spawn } from "@/wab/common";
+import { getCssInitial } from "@/wab/css";
+import { Menu } from "antd";
+import { observer } from "mobx-react";
+import React from "react";
 
 export const OverflowSection = observer(OverflowSection_);
 

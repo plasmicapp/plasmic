@@ -3,19 +3,19 @@ import {
   DataSourceTemplate,
   isKnownDataSourceOpExpr,
   isKnownTemplatedString,
-} from "../../classes";
-import { randUint16 } from "../../common";
-import { Bundler } from "../../shared/bundler";
-import {
-  getDynamicStringSegments,
-  isDynamicValue,
-} from "../../shared/dynamic-bindings";
-import { findExprsInComponent } from "../../tpls";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
+} from "@/wab/classes";
+import { randUint16 } from "@/wab/common";
 import {
   BundleMigrationType,
   unbundleSite,
-} from "../db/bundle-migration-utils";
+} from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { Bundler } from "@/wab/shared/bundler";
+import {
+  getDynamicStringSegments,
+  isDynamicValue,
+} from "@/wab/shared/dynamic-bindings";
+import { findExprsInComponent } from "@/wab/tpls";
 
 function mkBindingId() {
   return `{{${randUint16().toString()}}}`;

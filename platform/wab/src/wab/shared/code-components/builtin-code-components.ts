@@ -1,3 +1,6 @@
+import { Component, TplNode } from "@/wab/classes";
+import { isCodeComponent } from "@/wab/components";
+import { isTplComponent, TplCodeComponent } from "@/wab/tpls";
 import type * as PlasmicDataSourcesContext from "@plasmicapp/data-sources-context";
 import type { ComponentRegistration } from "@plasmicapp/host";
 import type * as ReactWeb from "@plasmicapp/react-web";
@@ -7,9 +10,6 @@ import { Fetcher, FetcherMeta } from "@plasmicapp/react-web/lib/data-sources";
 import { memoize } from "lodash";
 import type React from "react";
 import type ReactDOM from "react-dom";
-import { Component, TplNode } from "../../classes";
-import { isCodeComponent } from "../../components";
-import { isTplComponent, TplCodeComponent } from "../../tpls";
 
 interface Sub {
   React: typeof React;

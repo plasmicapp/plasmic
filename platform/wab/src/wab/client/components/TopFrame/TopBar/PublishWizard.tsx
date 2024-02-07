@@ -1,12 +1,12 @@
-import * as React from "react";
-import { AppCtx } from "../../../app-ctx";
-import OpenIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Open";
+import { AppCtx } from "@/wab/client/app-ctx";
+import { GithubConnect } from "@/wab/client/components/auth/GithubConnect";
+import Button from "@/wab/client/components/widgets/Button";
+import OpenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Open";
 import {
   DefaultPublishWizardProps,
   PlasmicPublishWizard,
-} from "../../../plasmic/plasmic_kit_continuous_deployment/PlasmicPublishWizard";
-import { GithubConnect } from "../../auth/GithubConnect";
-import Button from "../../widgets/Button";
+} from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicPublishWizard";
+import * as React from "react";
 
 interface PublishWizardProps extends DefaultPublishWizardProps {
   appCtx: AppCtx;

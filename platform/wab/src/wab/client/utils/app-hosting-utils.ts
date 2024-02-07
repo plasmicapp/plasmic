@@ -1,6 +1,6 @@
-import { DEVFLAGS, DevFlagsType } from "../../devflags";
-import { ApiBranch, ApiProject } from "../../shared/ApiSchema";
-import { reportError } from "../ErrorNotifications";
+import { reportError } from "@/wab/client/ErrorNotifications";
+import { DEVFLAGS, DevFlagsType } from "@/wab/devflags";
+import { ApiBranch, ApiProject } from "@/wab/shared/ApiSchema";
 
 export function getHostUrl(
   project: ApiProject,

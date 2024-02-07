@@ -1,6 +1,6 @@
+import { ensureType } from "@/wab/common";
+import { UsersResponse } from "@/wab/shared/ApiSchema";
 import { Request, Response } from "express-serve-static-core";
-import { ensureType } from "../../common";
-import { UsersResponse } from "../../shared/ApiSchema";
 import { userDbMgr } from "./util";
 
 export async function getUsersById(req: Request, res: Response) {

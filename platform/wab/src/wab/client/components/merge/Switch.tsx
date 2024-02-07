@@ -1,9 +1,9 @@
-import { SwitchRef } from "@plasmicapp/react-web";
-import * as React from "react";
 import {
   DefaultSwitchProps,
   PlasmicSwitch,
-} from "../../plasmic/plasmic_kit_merge_flow/PlasmicSwitch";
+} from "@/wab/client/plasmic/plasmic_kit_merge_flow/PlasmicSwitch";
+import { SwitchRef } from "@plasmicapp/react-web";
+import * as React from "react";
 
 interface SwitchProps extends DefaultSwitchProps {}
 

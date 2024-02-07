@@ -1,8 +1,3 @@
-import { Alert, Button } from "antd";
-import * as mobx from "mobx";
-import { observer } from "mobx-react";
-import * as React from "react";
-import { createContext, useContext } from "react";
 import {
   Component,
   isKnownRenderExpr,
@@ -11,50 +6,55 @@ import {
   TplNode,
   TplSlot,
   TplTag,
-} from "../../../classes";
-import { cx, spawn } from "../../../common";
-import { Slot, SlotProvider } from "../../../commons/components/Slots";
+} from "@/wab/classes";
+import { NamedPanelHeader } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SidebarModalProvider } from "@/wab/client/components/sidebar/SidebarModal";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import {
+  mkStyleComponent,
+  providesStyleComponent,
+  TplExpsProvider,
+} from "@/wab/client/components/style-controls/StyleComponent";
+import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { useCurrentRecordingTarget } from "@/wab/client/hooks/useCurrentRecordingTarget";
+import SlotIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Slot";
+import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { cx, spawn } from "@/wab/common";
+import { Slot, SlotProvider } from "@/wab/commons/components/Slots";
 import {
   getComponentDisplayName,
   isCodeComponent,
   isFrameComponent,
   isPageComponent,
-} from "../../../components";
-import { isDedicatedArena } from "../../../shared/Arenas";
-import { MIXINS_CAP } from "../../../shared/Labels";
+} from "@/wab/components";
+import { isDedicatedArena } from "@/wab/shared/Arenas";
+import { MIXINS_CAP } from "@/wab/shared/Labels";
 import {
   getAncestorTplSlot,
   isCodeComponentSlot,
   revertToDefaultSlotContents,
-} from "../../../shared/SlotUtils";
-import { $$$ } from "../../../shared/TplQuery";
+} from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
 import {
   getPrivateStyleVariantsForTag,
   isBaseVariant,
-} from "../../../shared/Variants";
-import { isTplAttachedToSite } from "../../../sites";
-import { SlotSelection } from "../../../slots";
-import { selectionControlsColor } from "../../../styles/css-variables";
+} from "@/wab/shared/Variants";
+import { isTplAttachedToSite } from "@/wab/sites";
+import { SlotSelection } from "@/wab/slots";
+import { selectionControlsColor } from "@/wab/styles/css-variables";
 import {
   isTplComponent,
   isTplSlot,
   isTplTag,
   isTplVariantable,
-} from "../../../tpls";
-import { useCurrentRecordingTarget } from "../../hooks/useCurrentRecordingTarget";
-import SlotIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Slot";
-import { StudioCtx, useStudioCtx } from "../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { NamedPanelHeader } from "../sidebar/sidebar-helpers";
-import { SidebarModalProvider } from "../sidebar/SidebarModal";
-import { SidebarSection } from "../sidebar/SidebarSection";
-import {
-  mkStyleComponent,
-  providesStyleComponent,
-  TplExpsProvider,
-} from "../style-controls/StyleComponent";
-import { makeVariantsController } from "../variants/VariantsController";
-import { Icon } from "../widgets/Icon";
+} from "@/wab/tpls";
+import { Alert, Button } from "antd";
+import * as mobx from "mobx";
+import { observer } from "mobx-react";
+import * as React from "react";
+import { createContext, useContext } from "react";
 import {
   TplComponentNameSection,
   TplTagNameSection,

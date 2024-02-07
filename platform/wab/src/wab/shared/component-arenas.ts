@@ -1,6 +1,3 @@
-import orderBy from "lodash/orderBy";
-import pick from "lodash/pick";
-import uniqBy from "lodash/uniqBy";
 import {
   ArenaFrame,
   ArenaFrameCell,
@@ -18,7 +15,7 @@ import {
   Site,
   Variant,
   VariantGroup,
-} from "../classes";
+} from "@/wab/classes";
 import {
   assert,
   ensure,
@@ -28,14 +25,17 @@ import {
   replaceAll,
   setsEq,
   sortAs,
-} from "../common";
-import { removeFromArray } from "../commons/collections";
+} from "@/wab/common";
+import { removeFromArray } from "@/wab/commons/collections";
 import {
   getSuperComponentVariantGroupToComponent,
   isPageComponent,
   isPlainComponent,
-} from "../components";
-import { getComponentArena } from "../sites";
+} from "@/wab/components";
+import { getComponentArena } from "@/wab/sites";
+import orderBy from "lodash/orderBy";
+import pick from "lodash/pick";
+import uniqBy from "lodash/uniqBy";
 import {
   ensurePositionManagedFrame,
   FrameViewMode,

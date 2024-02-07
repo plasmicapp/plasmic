@@ -1,6 +1,6 @@
+import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
 import { parse as parseDbUri } from "pg-connection-string";
 import { createConnection, getConnectionOptions } from "typeorm";
-import { DEFAULT_DATABASE_URI } from "../config";
 
 export async function createDbConnection(dburi?: string) {
   dburi = dburi ?? DEFAULT_DATABASE_URI;

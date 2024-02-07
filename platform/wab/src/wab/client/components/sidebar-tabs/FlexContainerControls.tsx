@@ -1,3 +1,32 @@
+import { useContextMenu } from "@/wab/client/components/ContextMenu";
+import {
+  FullRow,
+  LabeledStyleDimItem,
+  LabeledStyleSwitchItem,
+  SectionSeparator,
+} from "@/wab/client/components/sidebar/sidebar-helpers";
+import { MaybeCollapsibleRowsRenderer } from "@/wab/client/components/sidebar/SidebarSection";
+import { DefinedIndicator } from "@/wab/client/components/style-controls/DefinedIndicator";
+import {
+  createStyleContextMenu,
+  ExpsProvider,
+  TplExpsProvider,
+  useStyleComponent,
+} from "@/wab/client/components/style-controls/StyleComponent";
+import { DropdownTooltip } from "@/wab/client/components/widgets/DropdownTooltip";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import ChevronDownsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg";
+import ChevronLeftsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronLeftsvg";
+import ChevronRightsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronRightsvg";
+import ChevronUpsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronUpsvg";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
+import { reverseIf } from "@/wab/common";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { TokenType } from "@/wab/commons/StyleToken";
+import { isCodeComponent } from "@/wab/components";
+import { flexDirToArrangement } from "@/wab/shared/layoututils";
+import { isTplComponent } from "@/wab/tpls";
 import { Menu } from "antd";
 import cn from "classnames";
 import { mapKeys, range } from "lodash";
@@ -6,35 +35,6 @@ import React, { useState } from "react";
 import { camelProp } from "src/wab/css";
 import { DefinedIndicatorType } from "src/wab/shared/defined-indicator";
 import { VariantedStylesHelper } from "src/wab/shared/VariantedStylesHelper";
-import { reverseIf } from "../../../common";
-import { MaybeWrap } from "../../../commons/components/ReactUtil";
-import { TokenType } from "../../../commons/StyleToken";
-import { isCodeComponent } from "../../../components";
-import { flexDirToArrangement } from "../../../shared/layoututils";
-import { isTplComponent } from "../../../tpls";
-import ChevronDownsvgIcon from "../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg";
-import ChevronLeftsvgIcon from "../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronLeftsvg";
-import ChevronRightsvgIcon from "../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronRightsvg";
-import ChevronUpsvgIcon from "../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronUpsvg";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
-import { makeVariantedStylesHelperFromCurrentCtx } from "../../utils/style-utils";
-import { useContextMenu } from "../ContextMenu";
-import {
-  FullRow,
-  LabeledStyleDimItem,
-  LabeledStyleSwitchItem,
-  SectionSeparator,
-} from "../sidebar/sidebar-helpers";
-import { MaybeCollapsibleRowsRenderer } from "../sidebar/SidebarSection";
-import { DefinedIndicator } from "../style-controls/DefinedIndicator";
-import {
-  createStyleContextMenu,
-  ExpsProvider,
-  TplExpsProvider,
-  useStyleComponent,
-} from "../style-controls/StyleComponent";
-import { DropdownTooltip } from "../widgets/DropdownTooltip";
-import { Icon } from "../widgets/Icon";
 import S from "./FlexContainerControls.module.scss";
 
 type FlexArrangement = "row" | "column";

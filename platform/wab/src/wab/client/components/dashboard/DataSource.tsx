@@ -1,16 +1,16 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { Dropdown, Menu, notification } from "antd";
-import * as React from "react";
-import { assert } from "../../../common";
-import { MaybeWrap } from "../../../commons/components/ReactUtil";
-import { ApiDataSource } from "../../../shared/ApiSchema";
-import { AppCtx } from "../../app-ctx";
+import { AppCtx } from "@/wab/client/app-ctx";
+import { confirmDeleteDataSource } from "@/wab/client/components/data-source-ui";
+import { Matcher } from "@/wab/client/components/view-common";
 import {
   DefaultDataSourceProps,
   PlasmicDataSource,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicDataSource";
-import { confirmDeleteDataSource } from "../data-source-ui";
-import { Matcher } from "../view-common";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicDataSource";
+import { assert } from "@/wab/common";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { ApiDataSource } from "@/wab/shared/ApiSchema";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import { Dropdown, Menu, notification } from "antd";
+import * as React from "react";
 import { promptMoveToWorkspace } from "./dashboard-actions";
 
 export interface DataSourceProps extends DefaultDataSourceProps {

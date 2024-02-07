@@ -1,4 +1,4 @@
-import { DomSnap } from "../../WebImporter";
+import { DomSnap } from "@/wab/client/WebImporter";
 
 export const everlaneHtml = `<html lang="en"><head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">

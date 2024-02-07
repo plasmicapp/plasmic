@@ -30,7 +30,7 @@
  * @copyright Epistemex.com 2014-2016
  */
 function Matrix(context, element) {
-  var me = this,
+  let me = this,
     _el;
   me._t = me.transform;
 
@@ -74,7 +74,7 @@ function Matrix(context, element) {
  * @static
  */
 Matrix.fromTriangles = function (t1, t2, context) {
-  var m1 = new Matrix(),
+  let m1 = new Matrix(),
     m2 = new Matrix(context),
     r1,
     r2,
@@ -152,7 +152,7 @@ Matrix.fromTriangles = function (t1, t2, context) {
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/SVGTransformList|MDN / SVGTransformList}
  */
 Matrix.fromSVGTransformList = function (tList, context, dom) {
-  var m = new Matrix(context, dom),
+  let m = new Matrix(context, dom),
     i = 0;
 
   while (i < tList.length) m.multiply(tList[i++].matrix);
@@ -187,7 +187,7 @@ Matrix.fromSVGTransformList = function (tList, context, dom) {
  * @static
  */
 Matrix.from = function (a, b, c, d, e, f, context, dom) {
-  var m = new Matrix(context, dom),
+  let m = new Matrix(context, dom),
     scale,
     dist,
     q;
@@ -219,7 +219,7 @@ Matrix.from = function (a, b, c, d, e, f, context, dom) {
 
 Matrix.prototype = {
   _getPX: function () {
-    var lst = ["t", "oT", "msT", "mozT", "webkitT", "khtmlT"],
+    let lst = ["t", "oT", "msT", "mozT", "webkitT", "khtmlT"],
       i = 0,
       p,
       style = document.createElement("div").style;
@@ -264,7 +264,7 @@ Matrix.prototype = {
    * @returns {{x: number, y: number}}
    */
   reflectVector: function (x, y) {
-    var v = this.applyToPoint(0, 1),
+    let v = this.applyToPoint(0, 1),
       d = (v.x * x + v.y * y) * 2;
 
     x -= d * v.x;
@@ -287,7 +287,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   rotate: function (angle) {
-    var cos = Math.cos(angle),
+    let cos = Math.cos(angle),
       sin = Math.sin(angle);
     return this._t(cos, sin, -sin, cos, 0, 0);
   },
@@ -446,7 +446,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   setTransform: function (a, b, c, d, e, f) {
-    var me = this;
+    let me = this;
     me.a = a;
     me.b = b;
     me.c = c;
@@ -496,7 +496,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   transform: function (a2, b2, c2, d2, e2, f2) {
-    var me = this,
+    let me = this,
       a1 = me.a,
       b1 = me.b,
       c1 = me.c,
@@ -545,7 +545,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   divideScalar: function (d) {
-    var me = this;
+    let me = this;
 
     if (!d) throw new Error("Division on zero");
 
@@ -570,7 +570,7 @@ Matrix.prototype = {
    * @returns {Matrix} - new Matrix instance
    */
   inverse: function (cloneContext, cloneDOM) {
-    var me = this,
+    let me = this,
       m = new Matrix(
         cloneContext ? me.context : null,
         cloneDOM ? me.element : null
@@ -607,7 +607,7 @@ Matrix.prototype = {
    * @returns {Matrix} - new Matrix instance with the interpolated result
    */
   interpolate: function (m2, t, context, dom) {
-    var me = this,
+    let me = this,
       m = new Matrix(context, dom);
 
     m.a = me.a + (m2.a - me.a) * t;
@@ -641,7 +641,7 @@ Matrix.prototype = {
    * @returns {Matrix} - new Matrix instance with the interpolated result
    */
   interpolateAnim: function (m2, t, context, dom) {
-    var m = new Matrix(context, dom),
+    let m = new Matrix(context, dom),
       d1 = this.decompose(),
       d2 = m2.decompose(),
       t1 = d1.translate,
@@ -667,7 +667,7 @@ Matrix.prototype = {
    * @see {@link https://en.wikipedia.org/wiki/LU_decomposition|More on LU decomposition}
    */
   decompose: function (useLU) {
-    var me = this,
+    let me = this,
       a = me.a,
       b = me.b,
       c = me.c,
@@ -698,12 +698,12 @@ Matrix.prototype = {
     } else {
       // Apply the QR-like decomposition.
       if (a || b) {
-        var r = sqrt(a * a + b * b);
+        let r = sqrt(a * a + b * b);
         rotation = b > 0 ? acos(a / r) : -acos(a / r);
         scale = { x: r, y: determ / r };
         skew.x = atan((a * c + b * d) / (r * r));
       } else if (c || d) {
-        var s = sqrt(c * c + d * d);
+        let s = sqrt(c * c + d * d);
         rotation = pi * 0.5 - (d > 0 ? acos(-c / s) : -acos(c / s));
         scale = { x: determ / s, y: s };
         skew.y = atan((a * c + b * d) / (s * s));
@@ -738,7 +738,7 @@ Matrix.prototype = {
    * @returns {{x: number, y: number}} A new transformed point object
    */
   applyToPoint: function (x, y) {
-    var me = this;
+    let me = this;
 
     return {
       x: x * me.a + y * me.c + me.e,
@@ -766,7 +766,7 @@ Matrix.prototype = {
    * @returns {Array} A new array with transformed points
    */
   applyToArray: function (points) {
-    var i = 0,
+    let i = 0,
       p,
       l,
       mxPoints = [];
@@ -798,7 +798,7 @@ Matrix.prototype = {
    * @returns {*} A new typed array with transformed points
    */
   applyToTypedArray: function (points, use64) {
-    var i = 0,
+    let i = 0,
       p,
       l = points.length,
       mxPoints = use64 ? new Float64Array(l) : new Float32Array(l);
@@ -821,7 +821,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   applyToContext: function (context) {
-    var me = this;
+    let me = this;
     context.setTransform(me.a, me.b, me.c, me.d, me.e, me.f);
     return me;
   },
@@ -838,7 +838,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   applyToElement: function (element, use3D) {
-    var me = this;
+    let me = this;
     if (!me._px) me._px = me._getPX();
     element.style[me._px] = use3D ? me.toCSS3D() : me.toCSS();
     return me;
@@ -857,7 +857,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   applyToObject: function (obj) {
-    var me = this;
+    let me = this;
     obj.a = me.a;
     obj.b = me.b;
     obj.c = me.c;
@@ -872,7 +872,7 @@ Matrix.prototype = {
    * @returns {boolean}
    */
   isIdentity: function () {
-    var me = this;
+    let me = this;
     return me.a === 1 && !me.b && !me.c && me.d === 1 && !me.e && !me.f;
   },
 
@@ -903,7 +903,7 @@ Matrix.prototype = {
    * @returns {boolean}
    */
   isEqual: function (m) {
-    var me = this,
+    let me = this,
       q = me._q;
 
     return (
@@ -930,7 +930,7 @@ Matrix.prototype = {
    * @returns {Array}
    */
   toArray: function () {
-    var me = this;
+    let me = this;
     return [me.a, me.b, me.c, me.d, me.e, me.f];
   },
 
@@ -941,7 +941,7 @@ Matrix.prototype = {
    * @returns {*}
    */
   toTypedArray: function (use64) {
-    var a = use64 ? new Float64Array(6) : new Float32Array(6),
+    let a = use64 ? new Float64Array(6) : new Float32Array(6),
       me = this;
 
     a[0] = me.a;
@@ -973,7 +973,7 @@ Matrix.prototype = {
    * @returns {string}
    */
   toCSS3D: function () {
-    var me = this;
+    let me = this;
     return (
       "matrix3d(" +
       me.a +
@@ -996,7 +996,7 @@ Matrix.prototype = {
    * @returns {string}
    */
   toJSON: function () {
-    var me = this;
+    let me = this;
     return (
       '{"a":' +
       me.a +
@@ -1020,7 +1020,7 @@ Matrix.prototype = {
    * @returns {string}
    */
   toString: function (fixLen) {
-    var me = this;
+    let me = this;
     fixLen = fixLen || 4;
     return (
       "a=" +
@@ -1055,7 +1055,7 @@ Matrix.prototype = {
    * @see {@link https://drafts.fxtf.org/geometry/#dommatrix|MDN / SVGMatrix}
    */
   toDOMMatrix: function () {
-    var m = null;
+    let m = null;
     if ("DOMMatrix" in window) {
       m = new DOMMatrix();
       m.a = this.a;
@@ -1076,7 +1076,7 @@ Matrix.prototype = {
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/SVGMatrix|MDN / SVGMatrix}
    */
   toSVGMatrix: function () {
-    var me = this,
+    let me = this,
       svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"),
       svgMatrix = null;
 
@@ -1111,7 +1111,7 @@ Matrix.prototype = {
    * @private
    */
   _x: function () {
-    var me = this;
+    let me = this;
 
     if (me.context) me.context.setTransform(me.a, me.b, me.c, me.d, me.e, me.f);
 

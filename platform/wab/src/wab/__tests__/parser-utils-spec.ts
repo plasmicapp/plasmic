@@ -1,4 +1,4 @@
-import { maybeConvertToIife } from "../shared/parser-utils";
+import { maybeConvertToIife } from "@/wab/shared/parser-utils";
 
 describe("maybeConvertToIife", function () {
   it("should preserve valid JS expressions", () => {

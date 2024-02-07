@@ -1,9 +1,9 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import * as React from "react";
 import {
   DefaultProjectsFilterProps,
   PlasmicProjectsFilter,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicProjectsFilter";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicProjectsFilter";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import * as React from "react";
 
 export interface ProjectsFilterProps extends DefaultProjectsFilterProps {
   query: string;

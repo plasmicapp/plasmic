@@ -1,16 +1,20 @@
-import type { TriggeredOverlayRef } from "@plasmicapp/react-web";
 import {
   getExternalParams,
   getPlumePackageName,
   serializeParamType,
   SerializerBaseContext,
-} from "../codegen/react-p";
+} from "@/wab/shared/codegen/react-p";
 import {
   getExportedComponentName,
   makeDefaultExternalPropsName,
   makePlasmicComponentName,
-} from "../codegen/react-p/utils";
-import { jsLiteral, paramToVarName, toVarName } from "../codegen/util";
+} from "@/wab/shared/codegen/react-p/utils";
+import {
+  jsLiteral,
+  paramToVarName,
+  toVarName,
+} from "@/wab/shared/codegen/util";
+import type { TriggeredOverlayRef } from "@plasmicapp/react-web";
 import { PlumePlugin } from "./plume-registry";
 import { makeComponentImportPath } from "./plume-utils";
 

@@ -1,12 +1,15 @@
+import { MenuItemContent } from "@/wab/client/components/menu-builder";
+import {
+  ClickStopper,
+  IFrameAwareDropdownMenu,
+} from "@/wab/client/components/widgets";
+import PlasmicZoomButton from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicZoomButton";
+import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { mkUuid } from "@/wab/common";
 import { InputNumber, Menu } from "antd";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
-import { mkUuid } from "../../../common";
-import PlasmicZoomButton from "../../plasmic/plasmic_kit_top_bar/PlasmicZoomButton";
-import { getComboForAction } from "../../shortcuts/studio/studio-shortcuts";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
-import { MenuItemContent } from "../menu-builder";
-import { ClickStopper, IFrameAwareDropdownMenu } from "../widgets";
 
 const ZoomSpinner = observer(ZoomSpinner_);
 function ZoomSpinner_() {

@@ -1,6 +1,6 @@
+import { Site } from "@/wab/classes";
+import { assert, ensure } from "@/wab/common";
 import L from "lodash";
-import { Site } from "../classes";
-import { assert, ensure } from "../common";
 import { flattenComponent } from "./cached-selectors";
 
 export type NodesByComponent = Array<[string, string[]]>;

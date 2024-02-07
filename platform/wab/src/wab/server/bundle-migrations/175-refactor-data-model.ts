@@ -1,5 +1,5 @@
-import { isKnownNamedState, Site, State } from "../../classes";
-import { meta } from "../../classes-metas";
+import { isKnownNamedState, Site, State } from "@/wab/classes";
+import { meta } from "@/wab/classes-metas";
 import {
   assert,
   ensure,
@@ -8,28 +8,28 @@ import {
   unexpected,
   xDifference,
   xGroupBy,
-} from "../../common";
-import { isPlumeComponent, PlumeComponent } from "../../components";
-import { mkOnChangeParamForState } from "../../lang";
-import { Class, Field, MetaRuntime, Type } from "../../model/model-meta";
+} from "@/wab/common";
+import { isPlumeComponent, PlumeComponent } from "@/wab/components";
+import { mkOnChangeParamForState } from "@/wab/lang";
+import { Class, Field, MetaRuntime, Type } from "@/wab/model/model-meta";
+import {
+  BundleMigrationType,
+  unbundleSite,
+} from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   Bundle,
   BundledInst,
   Bundler,
   FastBundler,
-} from "../../shared/bundler";
-import { writeable } from "../../sites";
+} from "@/wab/shared/bundler";
+import { writeable } from "@/wab/sites";
 import {
   genOnChangeParamName,
   isPublicState,
   removeComponentState,
-} from "../../states";
-import { trackComponentRoot, trackComponentSite } from "../../tpls";
-import {
-  BundleMigrationType,
-  unbundleSite,
-} from "../db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
+} from "@/wab/states";
+import { trackComponentRoot, trackComponentSite } from "@/wab/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   for (const inst of Object.values(bundle.map)) {

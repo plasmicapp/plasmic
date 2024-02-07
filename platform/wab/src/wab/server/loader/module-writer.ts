@@ -1,8 +1,8 @@
+import { CodegenOutputBundle } from "@/wab/server/workers/codegen";
+import { stripExtension, toVarName } from "@/wab/shared/codegen/util";
 import { promises as fs } from "fs";
 import { uniq } from "lodash";
 import path from "path";
-import { stripExtension, toVarName } from "../../shared/codegen/util";
-import { CodegenOutputBundle } from "../workers/codegen";
 
 export async function writeCodeBundlesToDisk(
   dir: string,

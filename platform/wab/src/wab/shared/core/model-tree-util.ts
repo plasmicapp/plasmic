@@ -1,15 +1,15 @@
-import { zip } from "lodash";
-import { ObjInst, Site } from "../../classes";
-import { meta } from "../../classes-metas";
+import { ObjInst, Site } from "@/wab/classes";
+import { meta } from "@/wab/classes-metas";
 import {
   assert,
   isLiteralObject,
   isPrimitive,
   tuple,
   unexpected,
-} from "../../common";
-import { isWeakRefField } from "../../model/model-meta";
-import { Bundler } from "../bundler";
+} from "@/wab/common";
+import { isWeakRefField } from "@/wab/model/model-meta";
+import { Bundler } from "@/wab/shared/bundler";
+import { zip } from "lodash";
 import { instUtil } from "./InstUtil";
 
 export function assertSameInstType(inst: ObjInst, ...others: ObjInst[]) {

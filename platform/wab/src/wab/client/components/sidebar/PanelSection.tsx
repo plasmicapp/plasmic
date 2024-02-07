@@ -1,10 +1,10 @@
+import { IconLinkButton } from "@/wab/client/components/widgets";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import ChevronDownsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg";
+import ChevronLeftsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronLeftsvg";
 import L from "lodash";
 import * as React from "react";
 import { ReactNode, useState } from "react";
-import ChevronDownsvgIcon from "../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg";
-import ChevronLeftsvgIcon from "../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronLeftsvg";
-import { IconLinkButton } from "../widgets";
-import { Icon } from "../widgets/Icon";
 import { SidebarSection } from "./SidebarSection";
 
 interface PanelSectionProps {

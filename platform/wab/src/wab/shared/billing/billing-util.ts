@@ -1,8 +1,12 @@
+import { assert, assertNever } from "@/wab/common";
+import { DEVFLAGS } from "@/wab/devflags";
+import {
+  ApiFeatureTier,
+  ApiTeam,
+  BillingFrequency,
+} from "@/wab/shared/ApiSchema";
 import Stripe from "stripe";
 import { MakeADT } from "ts-adt/MakeADT";
-import { assert, assertNever } from "../../common";
-import { DEVFLAGS } from "../../devflags";
-import { ApiFeatureTier, ApiTeam, BillingFrequency } from "../ApiSchema";
 
 export type SubscriptionStatus = MakeADT<
   "type",

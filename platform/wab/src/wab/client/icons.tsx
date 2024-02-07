@@ -1,6 +1,6 @@
+import { TplVisibility } from "@/wab/shared/visibility-utils";
 import React from "react";
 import { MdError } from "react-icons/md";
-import { TplVisibility } from "../shared/visibility-utils";
 import { Icon } from "./components/widgets/Icon";
 import AreaInputIcon from "./plasmic/plasmic_kit/PlasmicIcon__AreaInput";
 import ArrowBottomIcon from "./plasmic/plasmic_kit/PlasmicIcon__ArrowBottom";

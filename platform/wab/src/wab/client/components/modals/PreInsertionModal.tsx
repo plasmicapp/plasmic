@@ -1,16 +1,19 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
-import { Modal } from "src/wab/client/components/widgets/Modal";
-import { Component, Expr } from "../../../classes";
-import { hackyCast } from "../../../common";
-import { tryExtractJson } from "../../../exprs";
+import { Component, Expr } from "@/wab/classes";
+import { InnerPropEditorRow } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import {
+  providesStudioCtx,
+  StudioCtx,
+} from "@/wab/client/studio-ctx/StudioCtx";
+import { hackyCast } from "@/wab/common";
+import { tryExtractJson } from "@/wab/exprs";
 import {
   isPlainObjectPropType,
   maybePropTypeToDisplayName,
   StudioPropType,
-} from "../../../shared/code-components/code-components";
-import { providesStudioCtx, StudioCtx } from "../../studio-ctx/StudioCtx";
-import { InnerPropEditorRow } from "../sidebar-tabs/PropEditorRow";
+} from "@/wab/shared/code-components/code-components";
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { Modal } from "src/wab/client/components/widgets/Modal";
 
 export async function getPreInsertionProps(
   studioCtx: StudioCtx,

@@ -1,15 +1,15 @@
+import { Param, TplComponent } from "@/wab/classes";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { assert } from "@/wab/common";
+import { codeLit } from "@/wab/exprs";
+import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
+import { isTplCodeComponent } from "@/wab/tpls";
 import type { CodeComponentMode } from "@plasmicapp/host";
 import {
   executePlasmicDataOp,
   normalizeData,
 } from "@plasmicapp/react-web/lib/data-sources";
 import { formComponentName } from "@plasmicpkgs/antd5";
-import { Param, TplComponent } from "../../../classes";
-import { assert } from "../../../common";
-import { codeLit } from "../../../exprs";
-import { ensureBaseVariantSetting } from "../../../shared/Variants";
-import { isTplCodeComponent } from "../../../tpls";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
 import { updateFormComponentMode } from "./Forms";
 
 export async function updateComponentMode(

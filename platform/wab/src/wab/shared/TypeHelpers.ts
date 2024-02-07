@@ -1,4 +1,4 @@
-import { Type } from "../classes";
+import { Type } from "@/wab/classes";
 import { typeDisplayName } from "./core/model-util";
 
 export class TypeHelpers {

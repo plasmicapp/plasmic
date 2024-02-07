@@ -1,40 +1,37 @@
-import { Input, InputRef, Menu, Popover, Tooltip } from "antd";
-import { isEqual, size } from "lodash";
-import { observer } from "mobx-react-lite";
-import React, { useMemo, useState } from "react";
 import {
   Component,
   ComponentDataQuery,
   isKnownObjectPath,
   isKnownTemplatedString,
-} from "../../../classes";
+} from "@/wab/classes";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
-  ensure,
-  maybe,
-  maybeFirst,
-  swallow,
-  unexpected,
-} from "../../../common";
-import { valueAsString } from "../../../commons/values";
-import { extractParamsFromPagePath } from "../../../components";
+  IconLinkButton,
+  useOnIFrameMouseDown,
+} from "@/wab/client/components/widgets";
+import Button from "@/wab/client/components/widgets/Button";
+import { PageQueryParamsTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { LabeledListItem } from "@/wab/client/components/widgets/LabeledListItem";
+import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ensure, maybe, maybeFirst, swallow, unexpected } from "@/wab/common";
+import { valueAsString } from "@/wab/commons/values";
+import { extractParamsFromPagePath } from "@/wab/components";
 import {
   getSingleDynExprFromTemplatedString,
   tryCoerceString,
-} from "../../../exprs";
-import { getDataSourceMeta } from "../../../shared/data-sources-meta/data-source-registry";
+} from "@/wab/exprs";
+import { getDataSourceMeta } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
   ensureDataSourceStandardQuery,
   extractFiltersFromDefaultDataSourceQueries,
-} from "../../../shared/data-sources-meta/data-sources";
-import PlusIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
-import { SidebarSection } from "../sidebar/SidebarSection";
-import { IconLinkButton, useOnIFrameMouseDown } from "../widgets";
-import Button from "../widgets/Button";
-import { PageQueryParamsTooltip } from "../widgets/DetailedTooltips";
-import { Icon } from "../widgets/Icon";
-import { LabeledListItem } from "../widgets/LabeledListItem";
-import { LabelWithDetailedTooltip } from "../widgets/LabelWithDetailedTooltip";
+} from "@/wab/shared/data-sources-meta/data-sources";
+import { Input, InputRef, Menu, Popover, Tooltip } from "antd";
+import { isEqual, size } from "lodash";
+import { observer } from "mobx-react-lite";
+import React, { useMemo, useState } from "react";
 import {
   useDataSourceOpExprBottomModal,
   useSource,

@@ -1,11 +1,11 @@
+import Button from "@/wab/client/components/widgets/Button";
+import Checkbox from "@/wab/client/components/widgets/Checkbox";
+import Chip from "@/wab/client/components/widgets/Chip";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { ApiEndUser } from "@/wab/shared/ApiSchema";
 import { Table } from "antd";
 import React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import { ApiEndUser } from "../../../shared/ApiSchema";
-import { useAppCtx } from "../../contexts/AppContexts";
-import Button from "../widgets/Button";
-import Checkbox from "../widgets/Checkbox";
-import Chip from "../widgets/Chip";
 import { useDirectoryGroups, useDirectoryUsers } from "./app-auth-contexts";
 
 export default function DirectoryUsers(props: {

@@ -2,12 +2,12 @@
  * Import and call this main instead of Shell's from main.tsx.
  */
 
+import GraphiqlWithExplorer from "@/wab/client/data/GraphqlBuilder";
 import { explorerPlugin } from "@graphiql/plugin-explorer";
 import { createGraphiQLFetcher } from "@graphiql/toolkit";
 import { GraphiQLProvider } from "graphiql";
 import React from "react";
 import ReactDOM from "react-dom";
-import GraphiqlWithExplorer from "../data/GraphqlBuilder";
 
 import "@graphiql/plugin-explorer/dist/style.css";
 import { QueryEditor } from "@graphiql/react";

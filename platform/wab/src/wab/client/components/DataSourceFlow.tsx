@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 // import { FetcherQuerySettings } from "../../../QueriesSection";
 // import RestBuilder from "../../../RestBuilder";
-import { BuiltinDataSourceName } from "../../shared/data/DataSources";
+import { BuiltinDataSourceName } from "@/wab/shared/data/DataSources";
 // import { GraphqlBuilder } from "../data/GraphqlBuilder";
 import { TopModal } from "./studio/TopModal";
 
 export function DataSourceFlow({ onDone }: { onDone: (query?: any) => void }) {
   const [state, setState] = useState({ state: "initial" });
-  const [currentNode, setCurrentNode] =
-    useState<BuiltinDataSourceName | undefined>(undefined);
+  const [currentNode, setCurrentNode] = useState<
+    BuiltinDataSourceName | undefined
+  >(undefined);
   return (
     <TopModal
       onClose={() => {

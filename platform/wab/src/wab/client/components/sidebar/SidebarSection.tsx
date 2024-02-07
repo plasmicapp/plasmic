@@ -1,3 +1,10 @@
+import { WithContextMenu } from "@/wab/client/components/ContextMenu";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
+import ChevronDownsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg";
+import ChevronUpsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronUpsvg";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { isEmptyReactNode } from "@/wab/commons/ViewUtil";
 import cn from "classnames";
 import { observer, Observer } from "mobx-react";
 import React, {
@@ -12,13 +19,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { MaybeWrap } from "../../../commons/components/ReactUtil";
-import { isEmptyReactNode } from "../../../commons/ViewUtil";
-import ChevronDownsvgIcon from "../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg";
-import ChevronUpsvgIcon from "../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronUpsvg";
-import { WithContextMenu } from "../ContextMenu";
-import { Icon } from "../widgets/Icon";
-import LabeledListItem from "../widgets/LabeledListItem";
 import styles from "./SidebarSection.module.scss";
 
 export type MaybeCollapsibleRow = { collapsible: boolean; content: ReactNode };

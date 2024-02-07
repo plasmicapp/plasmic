@@ -1,5 +1,3 @@
-import { Action, CodeComponentMeta } from "@plasmicapp/host";
-import React from "react";
 import {
   Component,
   Param,
@@ -8,14 +6,16 @@ import {
   TplNode,
   Type,
   Variant,
-} from "../../classes";
-import type { SubDeps } from "../../client/components/canvas/subdeps";
-import type { ViewCtx } from "../../client/studio-ctx/view-ctx";
-import { isTplNamable } from "../../tpls";
-import { ValComponent } from "../../val-nodes";
-import { SerializerBaseContext } from "../codegen/react-p";
-import { toVarName } from "../codegen/util";
-import { isSlot } from "../SlotUtils";
+} from "@/wab/classes";
+import type { SubDeps } from "@/wab/client/components/canvas/subdeps";
+import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { SerializerBaseContext } from "@/wab/shared/codegen/react-p";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { isSlot } from "@/wab/shared/SlotUtils";
+import { isTplNamable } from "@/wab/tpls";
+import { ValComponent } from "@/wab/val-nodes";
+import { Action, CodeComponentMeta } from "@plasmicapp/host";
+import React from "react";
 import { ButtonPlugin } from "./button";
 import { CheckboxPlugin } from "./checkbox";
 import { MenuPlugin } from "./menu";

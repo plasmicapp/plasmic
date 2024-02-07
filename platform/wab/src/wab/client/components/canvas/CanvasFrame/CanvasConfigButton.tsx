@@ -1,19 +1,16 @@
+import { ArenaFrame } from "@/wab/classes";
+import { FramePanel } from "@/wab/client/components/sidebar-tabs/frame-tab";
+import { getGlobalCssVariableValue } from "@/wab/client/components/studio/GlobalCssVariables";
+import { useOnIFrameMouseDown } from "@/wab/client/components/widgets";
+import { useScaledElementRef } from "@/wab/client/hooks/useScaledElementRef";
+import GearIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Gear";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { getFrameHeight } from "@/wab/shared/Arenas";
+import { gridSpacing, hoverBoxTagHeight } from "@/wab/styles/css-variables";
 import { Popover } from "antd";
 import cn from "classnames";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
-import { ArenaFrame } from "../../../../classes";
-import { getFrameHeight } from "../../../../shared/Arenas";
-import {
-  gridSpacing,
-  hoverBoxTagHeight,
-} from "../../../../styles/css-variables";
-import { useScaledElementRef } from "../../../hooks/useScaledElementRef";
-import GearIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Gear";
-import { StudioCtx } from "../../../studio-ctx/StudioCtx";
-import { FramePanel } from "../../sidebar-tabs/frame-tab";
-import { getGlobalCssVariableValue } from "../../studio/GlobalCssVariables";
-import { useOnIFrameMouseDown } from "../../widgets";
 
 export const CanvasConfigButton = observer(function CanvasConfigButton_(props: {
   studioCtx: StudioCtx;

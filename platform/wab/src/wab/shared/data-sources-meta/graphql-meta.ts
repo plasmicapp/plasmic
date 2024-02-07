@@ -1,4 +1,4 @@
-import type { DataSource } from "../../server/entities/Entities";
+import type { DataSource } from "@/wab/server/entities/Entities";
 import { ArgMeta, DataSourceMeta } from "./data-sources";
 
 const COMMON_ARGS: Record<string, ArgMeta> = {

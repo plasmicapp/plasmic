@@ -1,7 +1,7 @@
+import { assert } from "@/wab/common";
+import { Config } from "@/wab/server/config";
+import { Project, User } from "@/wab/server/entities/Entities";
 import { Octokit } from "@octokit/core";
-import { assert } from "../../common";
-import { Config } from "../config";
-import { Project, User } from "../entities/Entities";
 
 export async function assertCanUseGithubRepository(
   token: string,

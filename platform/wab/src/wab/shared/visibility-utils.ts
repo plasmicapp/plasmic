@@ -6,18 +6,18 @@ import {
   TplNode,
   Variant,
   VariantSetting,
-} from "../classes";
-import { isNonNil } from "../common";
-import { isCodeComponent } from "../components";
-import { PLASMIC_DISPLAY_NONE } from "../css";
+} from "@/wab/classes";
+import { isNonNil } from "@/wab/common";
+import { isCodeComponent } from "@/wab/components";
+import { PLASMIC_DISPLAY_NONE } from "@/wab/css";
 import {
   codeLit,
   ExprCtx,
   getCodeExpressionWithFallback,
   isCodeLitVal,
   isRealCodeExpr,
-} from "../exprs";
-import { isTplComponent, isTplTag, isTplVariantable } from "../tpls";
+} from "@/wab/exprs";
+import { isTplComponent, isTplTag, isTplVariantable } from "@/wab/tpls";
 import { ComponentGenHelper } from "./codegen/codegen-helpers";
 import { CONTENT_LAYOUT } from "./core/style-props";
 import {

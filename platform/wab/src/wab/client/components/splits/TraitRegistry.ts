@@ -1,6 +1,6 @@
+import { uncheckedCast } from "@/wab/common";
 import { TraitRegistration } from "@plasmicapp/host";
 import memoizeOne from "memoize-one";
-import { uncheckedCast } from "../../../common";
 
 export class TraitRegistry {
   constructor(private win: Window) {}

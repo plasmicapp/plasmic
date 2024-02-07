@@ -1,9 +1,9 @@
-import { isKnownPageHref, PageHref, Site } from "../../classes";
-import { ensure } from "../../common";
-import { removeFromArray } from "../../commons/collections";
-import { isPageComponent } from "../../components";
-import { convertHrefExprToCodeExpr } from "../../exprs";
-import { flattenTpls } from "../../tpls";
+import { isKnownPageHref, PageHref, Site } from "@/wab/classes";
+import { ensure } from "@/wab/common";
+import { removeFromArray } from "@/wab/commons/collections";
+import { isPageComponent } from "@/wab/components";
+import { convertHrefExprToCodeExpr } from "@/wab/exprs";
+import { flattenTpls } from "@/wab/tpls";
 
 /**
  * Fixes any PageHref in Site to point to local pages. At this point,

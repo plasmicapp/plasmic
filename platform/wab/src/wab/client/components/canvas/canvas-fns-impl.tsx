@@ -1,5 +1,3 @@
-import type { Descendant } from "slate";
-import { Element, Text } from "slate";
 import {
   isKnownNodeMarker,
   Marker,
@@ -7,17 +5,19 @@ import {
   RawText,
   RuleSet,
   StyleMarker,
-} from "../../../classes";
-import { assert } from "../../../common";
-import { normProp, parseCssNumericNew } from "../../../css";
+} from "@/wab/classes";
+import { assert } from "@/wab/common";
+import { normProp, parseCssNumericNew } from "@/wab/css";
 import {
   isTagInline,
   isTagListContainer,
-} from "../../../shared/core/rich-text-util";
-import { EffectiveVariantSetting } from "../../../shared/effective-variant-setting";
-import { mkBaseVariant } from "../../../shared/Variants";
-import * as Tpls from "../../../tpls";
-import { mkTplTag, TplTagType } from "../../../tpls";
+} from "@/wab/shared/core/rich-text-util";
+import { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
+import { mkBaseVariant } from "@/wab/shared/Variants";
+import * as Tpls from "@/wab/tpls";
+import { mkTplTag, TplTagType } from "@/wab/tpls";
+import type { Descendant } from "slate";
+import { Element, Text } from "slate";
 import "./slate";
 
 export function isExplicitlySized(effectiveVs: EffectiveVariantSetting) {

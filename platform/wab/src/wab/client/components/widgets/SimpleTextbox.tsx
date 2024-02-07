@@ -1,11 +1,11 @@
-import React from "react";
-import { useUnmount } from "react-use";
-import { useForwardedRef } from "../../../commons/components/ReactUtil";
-import { useFocusOnDisplayed } from "../../dom-utils";
+import { useFocusOnDisplayed } from "@/wab/client/dom-utils";
 import {
   PlasmicTextbox,
   PlasmicTextbox__VariantsArgs,
-} from "../../plasmic/plasmic_kit/PlasmicTextbox";
+} from "@/wab/client/plasmic/plasmic_kit/PlasmicTextbox";
+import { useForwardedRef } from "@/wab/commons/components/ReactUtil";
+import React from "react";
+import { useUnmount } from "react-use";
 
 type SimpleTextboxProps = React.ComponentProps<"input"> & {
   onValueChange: (value: string) => void;

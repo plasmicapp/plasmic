@@ -1,7 +1,7 @@
 const { Command } = require("commander");
+import { spawn } from "@/wab/common";
+import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
 import { exit } from "process";
-import { spawn } from "../../common";
-import { DEFAULT_DATABASE_URI } from "../config";
 import { findConflictNames } from "./custom-scripts/find-conflict-names";
 import { findDanglingWeakRefs } from "./custom-scripts/find-dangling-weak-refs";
 import { findMissingImplicitStates } from "./custom-scripts/find-missing-implicit-states";

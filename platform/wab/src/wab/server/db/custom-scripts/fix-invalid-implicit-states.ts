@@ -1,6 +1,6 @@
+import { getMigratedBundle } from "@/wab/server/db/BundleMigrator";
+import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { EntityManager } from "typeorm";
-import { getMigratedBundle } from "../BundleMigrator";
-import { DbMgr, SUPER_USER } from "../DbMgr";
 
 export async function fixInvalidImplicitStates(
   em: EntityManager,

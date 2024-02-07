@@ -1,10 +1,10 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import * as React from "react";
+import { PublicLink } from "@/wab/client/components/PublicLink";
 import {
   DefaultNavTeamButtonProps,
   PlasmicNavTeamButton,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicNavTeamButton";
-import { PublicLink } from "../PublicLink";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicNavTeamButton";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import * as React from "react";
 
 interface NavTeamButtonProps extends DefaultNavTeamButtonProps {}
 

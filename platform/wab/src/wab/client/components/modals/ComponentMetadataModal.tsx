@@ -1,10 +1,10 @@
+import { Component } from "@/wab/classes";
+import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
+import Button from "@/wab/client/components/widgets/Button";
+import Textbox from "@/wab/client/components/widgets/Textbox";
 import { Form } from "antd";
 import React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import { Component } from "../../../classes";
-import { showTemporaryPrompt } from "../quick-modals";
-import Button from "../widgets/Button";
-import Textbox from "../widgets/Textbox";
 
 export default async function promptForMetadata(
   component: Component

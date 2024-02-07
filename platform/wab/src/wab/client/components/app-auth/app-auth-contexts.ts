@@ -1,6 +1,6 @@
+import { AppCtx } from "@/wab/client/app-ctx";
+import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
 import useSWR from "swr/immutable";
-import { AppCtx } from "../../app-ctx";
-import { useTopFrameCtx } from "../../frame-ctx/top-frame-ctx";
 
 export const useTeamDirectories = (appCtx: AppCtx, teamId?: string) => {
   const key = `/app-auth/team/${teamId}/directories`;

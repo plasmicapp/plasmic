@@ -1,9 +1,7 @@
-import { DataSourceSchema } from "@plasmicapp/data-sources";
-import { Popover, Tooltip } from "antd";
-import { isString, range } from "lodash";
-import { observer } from "mobx-react-lite";
-import React from "react";
-import { FocusScope } from "react-aria";
+import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
+import PlasmicCopilotCodePrompt from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotCodePrompt";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { trackEvent } from "@/wab/client/tracking";
 import {
   ensure,
   isPrimitive,
@@ -11,12 +9,14 @@ import {
   swallow,
   unexpected,
   withoutNils,
-} from "../../common";
-import { CopilotResponseData } from "../../shared/ApiSchema";
-import { useAsyncStrict } from "../hooks/useAsyncStrict";
-import PlasmicCopilotCodePrompt from "../plasmic/plasmic_kit_data_binding/PlasmicCopilotCodePrompt";
-import { useStudioCtx } from "../studio-ctx/StudioCtx";
-import { trackEvent } from "../tracking";
+} from "@/wab/common";
+import { CopilotResponseData } from "@/wab/shared/ApiSchema";
+import { DataSourceSchema } from "@plasmicapp/data-sources";
+import { Popover, Tooltip } from "antd";
+import { isString, range } from "lodash";
+import { observer } from "mobx-react-lite";
+import React from "react";
+import { FocusScope } from "react-aria";
 import CopilotMsg from "./CopilotMsg";
 import { dataPickerShouldHideKey } from "./sidebar-tabs/DataBinding/DataPickerUtil";
 import { TextboxRef } from "./widgets/Textbox";

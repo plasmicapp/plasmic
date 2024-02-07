@@ -1,9 +1,9 @@
+import { TplNode } from "@/wab/classes";
+import { ensure } from "@/wab/common";
+import GridStyleParser from "@/wab/gen/GridStyleParser";
+import { CssVarResolver, expandRuleSets } from "@/wab/styles";
+import { isTplTag } from "@/wab/tpls";
 import { isArray, last } from "lodash";
-import { TplNode } from "../classes";
-import { ensure } from "../common";
-import GridStyleParser from "../gen/GridStyleParser";
-import { CssVarResolver, expandRuleSets } from "../styles";
-import { isTplTag } from "../tpls";
 import { NumericSize, Size } from "./Css";
 import { ReadonlyIRuleSetHelpers, readonlyRSH } from "./RuleSetHelpers";
 

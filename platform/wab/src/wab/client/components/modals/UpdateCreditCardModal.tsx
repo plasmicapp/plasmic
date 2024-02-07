@@ -1,3 +1,10 @@
+import { AppCtx } from "@/wab/client/app-ctx";
+import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
+import { getStripePromise } from "@/wab/client/deps-client";
+import { ensure } from "@/wab/common";
+import { ApiTeam } from "@/wab/shared/ApiSchema";
+import { accessLevelRank } from "@/wab/shared/EntUtil";
+import { isUpgradableTier } from "@/wab/shared/pricing/pricing-utils";
 import {
   CardElement,
   Elements,
@@ -7,13 +14,6 @@ import {
 import * as React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
 import { MakeADT } from "ts-adt/MakeADT";
-import { ensure } from "../../../common";
-import { ApiTeam } from "../../../shared/ApiSchema";
-import { accessLevelRank } from "../../../shared/EntUtil";
-import { isUpgradableTier } from "../../../shared/pricing/pricing-utils";
-import { AppCtx } from "../../app-ctx";
-import { getStripePromise } from "../../deps-client";
-import { showTemporaryPrompt } from "../quick-modals";
 import UpsellCreditCard from "./UpsellCreditCard";
 
 export const canIEditTeam = (appCtx: AppCtx, t: ApiTeam) =>

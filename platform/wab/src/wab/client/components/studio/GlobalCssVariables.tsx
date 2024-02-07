@@ -1,11 +1,11 @@
+import { ComponentArena } from "@/wab/classes";
+import { useCurrentRecordingTarget } from "@/wab/client/hooks/useCurrentRecordingTarget";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { switchType } from "@/wab/common";
+import * as cssVariables from "@/wab/styles/css-variables";
+import * as tokens from "@/wab/styles/_tokens";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import { ComponentArena } from "../../../classes";
-import { switchType } from "../../../common";
-import * as cssVariables from "../../../styles/css-variables";
-import * as tokens from "../../../styles/_tokens";
-import { useCurrentRecordingTarget } from "../../hooks/useCurrentRecordingTarget";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
 
 export const NON_BASE_VARIANT_COLOR = tokens.tomato9;
 export const BASE_VARIANT_COLOR = tokens.blue9;

@@ -1,11 +1,11 @@
+import EditableResourceName from "@/wab/client/components/EditableResourceName";
+import { ClickStopper } from "@/wab/client/components/widgets";
+import Textbox from "@/wab/client/components/widgets/Textbox";
+import { InlineEdit } from "@/wab/commons/components/InlineEdit";
+import { OnClickAway } from "@/wab/commons/components/OnClickAway";
+import { Stated } from "@/wab/commons/components/Stated";
 import { notification } from "antd";
 import React from "react";
-import { InlineEdit } from "../../../commons/components/InlineEdit";
-import { OnClickAway } from "../../../commons/components/OnClickAway";
-import { Stated } from "../../../commons/components/Stated";
-import EditableResourceName from "../EditableResourceName";
-import { ClickStopper } from "../widgets";
-import Textbox from "../widgets/Textbox";
 
 interface InlineEditableResourceProps {
   visibleValue?: React.ReactNode;

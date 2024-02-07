@@ -1,8 +1,8 @@
+import { isValidEmail } from "@/wab/common";
+import { getIntercomToken } from "@/wab/server/secrets";
+import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import axios from "axios";
 import { Request, Response } from "express-serve-static-core";
-import { isValidEmail } from "../../common";
-import { BadRequestError } from "../../shared/ApiErrors/errors";
-import { getIntercomToken } from "../secrets";
 
 async function addUser(email: string) {
   const intercomToken = getIntercomToken();

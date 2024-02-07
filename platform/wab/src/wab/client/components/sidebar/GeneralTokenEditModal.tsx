@@ -1,15 +1,15 @@
+import { StyleToken } from "@/wab/classes";
+import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
+import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { assert } from "@/wab/common";
+import { TokenType, tokenTypeDimOpts } from "@/wab/commons/StyleToken";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { allTokensOfType } from "@/wab/sites";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
-import { StyleToken } from "../../../classes";
-import { assert } from "../../../common";
-import { TokenType, tokenTypeDimOpts } from "../../../commons/StyleToken";
-import { VariantedStylesHelper } from "../../../shared/VariantedStylesHelper";
-import { allTokensOfType } from "../../../sites";
-import TokenIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Token";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { DimTokenSpinner } from "../widgets/DimTokenSelector";
-import { Icon } from "../widgets/Icon";
-import { SimpleTextbox } from "../widgets/SimpleTextbox";
 import { SidebarModal } from "./SidebarModal";
 import { newTokenValueAllowed } from "./token-controls";
 

@@ -6,11 +6,11 @@ import {
   PlasmicCodeSandboxDialogContent__VariantsArgs,
   DefaultCodeSandboxDialogContentProps,
 } from "./PlasmicCodeSandboxDialogContent";
-import { StudioCtx } from "../../../studio-ctx/StudioCtx";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { notification } from "antd";
-import { createSandboxUrl } from "../../../../codesandbox/url";
-import { asOne, ensure, isValidEmail, spawn } from "../../../../common";
-import { CodeSandboxInfo } from "../../../../shared/db-json-blobs";
+import { createSandboxUrl } from "@/wab/codesandbox/url";
+import { asOne, ensure, isValidEmail, spawn } from "@/wab/common";
+import { CodeSandboxInfo } from "@/wab/shared/db-json-blobs";
 
 interface CodeSandboxDialogContentProps
   extends DefaultCodeSandboxDialogContentProps {

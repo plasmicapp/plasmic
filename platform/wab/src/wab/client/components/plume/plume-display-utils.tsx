@@ -1,6 +1,6 @@
-import { ensure } from "../../../common";
-import { isPlumeComponent, PlumeComponent } from "../../../components";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ensure } from "@/wab/common";
+import { isPlumeComponent, PlumeComponent } from "@/wab/components";
 
 const PLUME_IMAGE = {
   checkbox: "checkbox",

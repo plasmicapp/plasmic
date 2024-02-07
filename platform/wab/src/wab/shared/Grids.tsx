@@ -1,7 +1,7 @@
+import { TplNode, TplTag } from "@/wab/classes";
+import { betweenInclusive, ensureString } from "@/wab/common";
 import * as L from "lodash";
 import { CSSProperties } from "react";
-import { TplNode, TplTag } from "../classes";
-import { betweenInclusive, ensureString } from "../common";
 import { gridChildProps } from "./core/style-props";
 import { autoSize, NumericSize, showSizeCss, Size } from "./Css";
 import { convertToRelativePosition } from "./layoututils";

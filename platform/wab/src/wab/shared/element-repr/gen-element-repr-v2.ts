@@ -1,4 +1,4 @@
-import { isKnownRawText, isKnownRenderExpr } from "../../classes";
+import { isKnownRawText, isKnownRenderExpr } from "@/wab/classes";
 /**
  * This is an initial version of a public API for consuming Plasmic design structures.
  *
@@ -17,12 +17,12 @@ import { isKnownRawText, isKnownRenderExpr } from "../../classes";
  * - Data bindings/dynamic values
  */
 
-import { NodeMarker, RuleSet, StyleMarker, TplNode } from "../../classes";
-import { ensureType, switchType, tuple, withoutNils } from "../../common";
-import { tryExtractJson } from "../../exprs";
-import { isTplComponent, isTplContainer, isTplTextBlock } from "../../tpls";
-import { RuleSetHelpers } from "../RuleSetHelpers";
-import { tryGetBaseVariantSetting } from "../Variants";
+import { NodeMarker, RuleSet, StyleMarker, TplNode } from "@/wab/classes";
+import { ensureType, switchType, tuple, withoutNils } from "@/wab/common";
+import { tryExtractJson } from "@/wab/exprs";
+import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
+import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
+import { isTplComponent, isTplContainer, isTplTextBlock } from "@/wab/tpls";
 import {
   NodeMarkerElement,
   PlasmicElement,

@@ -1,8 +1,8 @@
+import { combineProps } from "@/wab/commons/components/ReactUtil";
 import { useCombobox, UseComboboxGetInputPropsOptions } from "downshift";
 import { debounce } from "lodash";
 import React from "react";
 import { FixedSizeList, VariableSizeList } from "react-window";
-import { combineProps } from "../../commons/components/ReactUtil";
 
 interface VirtualItem<I> {
   item?: I;

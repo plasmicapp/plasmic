@@ -1,6 +1,6 @@
-import { BundledInst } from "../../shared/bundler";
-import { UnsafeBundle } from "../../shared/bundles";
-import { uploadDataUriToS3 } from "../cdn/images";
+import { uploadDataUriToS3 } from "@/wab/server/cdn/images";
+import { BundledInst } from "@/wab/shared/bundler";
+import { UnsafeBundle } from "@/wab/shared/bundles";
 
 export async function moveAssetsToS3(data: string) {
   return JSON.stringify(await moveBundleAssetsToS3(JSON.parse(data)));

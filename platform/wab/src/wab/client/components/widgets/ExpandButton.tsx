@@ -1,8 +1,8 @@
-import * as React from "react";
 import {
   DefaultExpandButtonProps,
   PlasmicExpandButton,
-} from "../../plasmic/plasmic_kit_design_system/PlasmicExpandButton";
+} from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicExpandButton";
+import * as React from "react";
 
 interface ExpandButtonProps extends DefaultExpandButtonProps {
   onClick?: () => void;

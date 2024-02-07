@@ -1,11 +1,11 @@
 import { Tooltip } from "antd";
 import React, { ReactNode } from "react";
-import TextWithInfo from "../../../../../TextWithInfo";
-import { ApiFeatureTier } from "../../../../shared/ApiSchema";
-import { AccessLevel, GrantableAccessLevel } from "../../../../shared/EntUtil";
-import { useAppCtx } from "../../../contexts/AppContexts";
-import PublishSpinner from "../PublishSpinner";
-import Select from "../Select";
+import TextWithInfo from "@/TextWithInfo";
+import { ApiFeatureTier } from "@/wab/shared/ApiSchema";
+import { AccessLevel, GrantableAccessLevel } from "@/wab/shared/EntUtil";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import PublishSpinner from "@/wab/client/components/widgets/PublishSpinner";
+import Select from "@/wab/client/components/widgets/Select";
 import PP__PermissionItem from "./PlasmicPermissionItem";
 
 interface PermissionItemProps {

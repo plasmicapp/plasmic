@@ -1,9 +1,9 @@
+import * as classes from "@/wab/classes";
+import { ensure, strictZip } from "@/wab/common";
+import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
+import { Bundle, Bundler } from "@/wab/shared/bundler";
+import { parseBundle, UnsafeBundle } from "@/wab/shared/bundles";
 import L from "lodash";
-import * as classes from "../../classes";
-import { ensure, strictZip } from "../../common";
-import { Bundle, Bundler } from "../../shared/bundler";
-import { parseBundle, UnsafeBundle } from "../../shared/bundles";
-import { PkgVersion, ProjectRevision } from "../entities/Entities";
 import { getMigratedBundle, MigrationDbMgr } from "./BundleMigrator";
 import { DbMgr } from "./DbMgr";
 

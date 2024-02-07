@@ -1,11 +1,11 @@
+import {
+  DefaultSwitchProps,
+  PlasmicSwitch,
+} from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicSwitch";
 import { SwitchRef } from "@plasmicapp/react-web";
 import { Tooltip } from "antd";
 import classNames from "classnames";
 import * as React from "react";
-import {
-  DefaultSwitchProps,
-  PlasmicSwitch,
-} from "../../plasmic/plasmic_kit_design_system/PlasmicSwitch";
 
 interface SwitchProps extends DefaultSwitchProps {
   disabledTooltip?: React.ReactNode;

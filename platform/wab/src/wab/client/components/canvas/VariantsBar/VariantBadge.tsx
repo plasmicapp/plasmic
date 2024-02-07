@@ -1,23 +1,23 @@
-import { Popover } from "antd";
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { useLayoutEffect, useRef, useState } from "react";
-import { Component, Variant } from "../../../../classes";
-import {
-  DefaultVariantBadgeProps,
-  PlasmicVariantBadge,
-} from "../../../plasmic/plasmic_kit_variants_bar/PlasmicVariantBadge";
-import { maybeShowContextMenu } from "../../ContextMenu";
+import { Component, Variant } from "@/wab/classes";
+import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import {
   makeCanvasVariantContextMenu,
   StyleVariantEditor,
   VariantLabel,
-} from "../../VariantControls";
-import { EditableLabelHandles } from "../../widgets/EditableLabel";
+} from "@/wab/client/components/VariantControls";
+import { EditableLabelHandles } from "@/wab/client/components/widgets/EditableLabel";
+import {
+  DefaultVariantBadgeProps,
+  PlasmicVariantBadge,
+} from "@/wab/client/plasmic/plasmic_kit_variants_bar/PlasmicVariantBadge";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { isStyleVariant } from "@/wab/shared/Variants";
+import { Popover } from "antd";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import styles from "./VariantBadge.module.scss";
-import { useStudioCtx } from "../../../studio-ctx/StudioCtx";
-import { isStyleVariant } from "../../../../shared/Variants";
-import { MaybeWrap } from "../../../../commons/components/ReactUtil";
 
 interface VariantBadgeProps extends DefaultVariantBadgeProps {
   variant: Variant;

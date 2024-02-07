@@ -1,7 +1,7 @@
-import { Component, Site, TplNode, VariantSetting } from "../../classes";
-import { flattenComponent } from "../cached-selectors";
-import { maybeComputedFn } from "../mobx-util";
-import { isScreenVariant } from "../Variants";
+import { Component, Site, TplNode, VariantSetting } from "@/wab/classes";
+import { flattenComponent } from "@/wab/shared/cached-selectors";
+import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { isScreenVariant } from "@/wab/shared/Variants";
 import { NonCssScreenVariantOverrideLintIssue } from "./lint-types";
 import { lintIssuesEquals } from "./lint-utils";
 

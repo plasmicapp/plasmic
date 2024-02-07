@@ -1,12 +1,12 @@
-import { TplNode } from "../../classes";
-import { Bundler } from "../../shared/bundler";
-import { ensureBaseRuleVariantSetting } from "../../shared/Variants";
-import { flattenTpls, isTplVariantable } from "../../tpls";
+import { TplNode } from "@/wab/classes";
 import {
   BundleMigrationType,
   unbundleSite,
-} from "../db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
+} from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { Bundler } from "@/wab/shared/bundler";
+import { ensureBaseRuleVariantSetting } from "@/wab/shared/Variants";
+import { flattenTpls, isTplVariantable } from "@/wab/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();

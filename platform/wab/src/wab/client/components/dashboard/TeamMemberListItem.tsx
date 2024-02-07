@@ -1,22 +1,6 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { Menu, Tooltip } from "antd";
-import moment from "moment";
-import * as React from "react";
-import TextWithInfo from "../../../../TextWithInfo";
-import {
-  ApiFeatureTier,
-  ApiPermission,
-  TeamMember,
-} from "../../../shared/ApiSchema";
-import { fullName, getUserEmail } from "../../../shared/ApiSchemaUtil";
-import { GrantableAccessLevel } from "../../../shared/EntUtil";
-import { useAppCtx } from "../../contexts/AppContexts";
-import {
-  DefaultTeamMemberListItemProps,
-  PlasmicTeamMemberListItem,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicTeamMemberListItem";
-import { Matcher } from "../view-common";
-import { ClickStopper } from "../widgets";
+import TextWithInfo from "@/TextWithInfo";
+import { Matcher } from "@/wab/client/components/view-common";
+import { ClickStopper } from "@/wab/client/components/widgets";
 import {
   contentCreatorTooltip,
   contentRoleHelp,
@@ -24,8 +8,24 @@ import {
   designerTooltip,
   developerTooltip,
   viewerTooltip,
-} from "../widgets/plasmic/PermissionItem";
-import Select from "../widgets/Select";
+} from "@/wab/client/components/widgets/plasmic/PermissionItem";
+import Select from "@/wab/client/components/widgets/Select";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import {
+  DefaultTeamMemberListItemProps,
+  PlasmicTeamMemberListItem,
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamMemberListItem";
+import {
+  ApiFeatureTier,
+  ApiPermission,
+  TeamMember,
+} from "@/wab/shared/ApiSchema";
+import { fullName, getUserEmail } from "@/wab/shared/ApiSchemaUtil";
+import { GrantableAccessLevel } from "@/wab/shared/EntUtil";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import { Menu, Tooltip } from "antd";
+import moment from "moment";
+import * as React from "react";
 
 interface TeamMemberListItemProps extends DefaultTeamMemberListItemProps {
   user: TeamMember;

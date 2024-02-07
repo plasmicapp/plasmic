@@ -1,10 +1,10 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import * as React from "react";
-import { TeamId } from "../../../shared/ApiSchema";
 import {
   DefaultTeamSettingsPageProps,
   PlasmicTeamSettingsPage,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicTeamSettingsPage";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamSettingsPage";
+import { TeamId } from "@/wab/shared/ApiSchema";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import * as React from "react";
 
 interface TeamSettingsPageProps extends DefaultTeamSettingsPageProps {
   teamId: TeamId;

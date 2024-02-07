@@ -1,30 +1,30 @@
-import { $State } from "@plasmicapp/react-web";
-import { isArray } from "lodash";
 import {
   ArenaFrame,
   ArenaFrameCell,
   isKnownVariant,
   Site,
   Variant,
-} from "../../../classes";
-import { assert, ensure } from "../../../common";
-import { DEVFLAGS } from "../../../devflags";
+} from "@/wab/classes";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { assert, ensure } from "@/wab/common";
+import { DEVFLAGS } from "@/wab/devflags";
 import {
   isComponentArena,
   isPageArena,
   resizeFrameForScreenVariant,
-} from "../../../shared/Arenas";
+} from "@/wab/shared/Arenas";
 import {
   ensureCustomFrameForActivatedVariants,
   ensureManagedFrameForVariantInComponentArena,
   getCellKeyForFrame,
   getComponentArenaBaseFrame,
   isCustomComponentFrame,
-} from "../../../shared/component-arenas";
+} from "@/wab/shared/component-arenas";
 import {
   ensureManagedRowForVariantInPageArena,
   getFrameColumnIndex,
-} from "../../../shared/page-arenas";
+} from "@/wab/shared/page-arenas";
 import {
   applyPinStateToFrame,
   FramePinManager,
@@ -32,7 +32,7 @@ import {
   PinState,
   PinStateManager,
   VariantPinState,
-} from "../../../shared/PinManager";
+} from "@/wab/shared/PinManager";
 import {
   getBaseVariant,
   isBaseVariant,
@@ -41,9 +41,9 @@ import {
   isScreenVariant,
   isStyleVariant,
   VariantCombo,
-} from "../../../shared/Variants";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
+} from "@/wab/shared/Variants";
+import { $State } from "@plasmicapp/react-web";
+import { isArray } from "lodash";
 import {
   makeClientPinManager,
   makeCurrentVariantEvalState,

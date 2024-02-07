@@ -13,17 +13,17 @@ import {
   isKnownEventHandler,
   isKnownFunctionExpr,
   isKnownMapExpr,
-} from "../../classes";
-import { unexpected } from "../../common";
-import { isCodeComponent } from "../../components";
-import { isRealCodeExpr } from "../../exprs";
-import { Bundler } from "../../shared/bundler";
-import { flattenTpls, isTplComponent } from "../../tpls";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
+} from "@/wab/classes";
+import { unexpected } from "@/wab/common";
+import { isCodeComponent } from "@/wab/components";
+import { isRealCodeExpr } from "@/wab/exprs";
 import {
   BundleMigrationType,
   unbundleSite,
-} from "../db/bundle-migration-utils";
+} from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { Bundler } from "@/wab/shared/bundler";
+import { flattenTpls, isTplComponent } from "@/wab/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();

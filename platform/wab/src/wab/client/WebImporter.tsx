@@ -1,9 +1,4 @@
-import cssBackgroundParser from "css-background-parser";
-import L from "lodash";
-import nodeHtmlParser, { NodeType } from "node-html-parser";
-import { CSSProperties } from "react";
-import replaceCssUrl from "replace-css-url";
-import { RawText, TplTag, VariantSetting } from "../classes";
+import { RawText, TplTag, VariantSetting } from "@/wab/classes";
 import {
   assert,
   crunch,
@@ -13,14 +8,19 @@ import {
   only,
   tuple,
   withoutNils,
-} from "../common";
-import { resolveUrl } from "../commons/urls";
-import { codeLit } from "../exprs";
-import { ImageAssetType } from "../image-asset-type";
-import { RSH } from "../shared/RuleSetHelpers";
-import { VariantTplMgr } from "../shared/VariantTplMgr";
-import { TplTagType } from "../tpls";
-import parseCss from "../vendor/parse-css.js";
+} from "@/wab/common";
+import { resolveUrl } from "@/wab/commons/urls";
+import { codeLit } from "@/wab/exprs";
+import { ImageAssetType } from "@/wab/image-asset-type";
+import { RSH } from "@/wab/shared/RuleSetHelpers";
+import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
+import { TplTagType } from "@/wab/tpls";
+import parseCss from "@/wab/vendor/parse-css.js";
+import cssBackgroundParser from "css-background-parser";
+import L from "lodash";
+import nodeHtmlParser, { NodeType } from "node-html-parser";
+import { CSSProperties } from "react";
+import replaceCssUrl from "replace-css-url";
 import { AppCtx } from "./app-ctx";
 import { addSvgImageAsset, SiteOps } from "./components/canvas/site-ops";
 import { ALL_CONTAINER_TAGS } from "./components/sidebar-tabs/HTMLAttributesSection";

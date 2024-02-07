@@ -1,12 +1,15 @@
+import { BoxShadow, Dim } from "@/wab/bg-styles";
+import {
+  FullRow,
+  LabeledItem,
+} from "@/wab/client/components/sidebar/sidebar-helpers";
+import { ColorPicker } from "@/wab/client/components/widgets/ColorPicker";
+import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
+import { ensure } from "@/wab/common";
+import { parseCssNumericNew } from "@/wab/css";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { observer } from "mobx-react";
 import React from "react";
-import { BoxShadow, Dim } from "../../../bg-styles";
-import { ensure } from "../../../common";
-import { parseCssNumericNew } from "../../../css";
-import { VariantedStylesHelper } from "../../../shared/VariantedStylesHelper";
-import { FullRow, LabeledItem } from "../sidebar/sidebar-helpers";
-import { ColorPicker } from "../widgets/ColorPicker";
-import { DimTokenSpinner } from "../widgets/DimTokenSelector";
 import { StyleComponent, StyleComponentProps } from "./StyleComponent";
 import StyleToggleButton from "./StyleToggleButton";
 import StyleToggleButtonGroup from "./StyleToggleButtonGroup";

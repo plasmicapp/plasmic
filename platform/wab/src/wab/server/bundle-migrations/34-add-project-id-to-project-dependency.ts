@@ -1,7 +1,7 @@
-import { BundleMigrationType } from "../db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
-import { DbMgr } from "../db/DbMgr";
-import { ProjectRevision } from "../entities/Entities";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { DbMgr } from "@/wab/server/db/DbMgr";
+import { ProjectRevision } from "@/wab/server/entities/Entities";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const projectId =

@@ -1,11 +1,11 @@
-import { Tooltip } from "antd";
-import * as React from "react";
-import flattenChildren from "react-keyed-flatten-children";
+import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import {
   DefaultStyleToggleButtonGroupProps,
   PlasmicStyleToggleButtonGroup,
-} from "../../plasmic/plasmic_kit_style_controls/PlasmicStyleToggleButtonGroup";
-import { ValueSetState } from "../sidebar/sidebar-helpers";
+} from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicStyleToggleButtonGroup";
+import { Tooltip } from "antd";
+import * as React from "react";
+import flattenChildren from "react-keyed-flatten-children";
 import StyleToggleButton from "./StyleToggleButton";
 
 interface StyleToggleButtonGroupProps

@@ -1,4 +1,3 @@
-import L from "lodash";
 import {
   ComponentVariantGroup,
   CustomCode,
@@ -11,21 +10,22 @@ import {
   StyleToken,
   TplTag,
   Variant,
-} from "../classes";
-import { mkShortId } from "../common";
-import { ComponentType, mkComponent } from "../components";
-import { mkParam, ParamExportType } from "../lang";
-import { typeFactory } from "../shared/core/model-util";
+} from "@/wab/classes";
+import { mkShortId } from "@/wab/common";
+import { ComponentType, mkComponent } from "@/wab/components";
+import { mkParam, ParamExportType } from "@/wab/lang";
+import { typeFactory } from "@/wab/shared/core/model-util";
 import {
   calculateSemVer,
   ChangeLogEntry,
   compareSites,
-} from "../shared/site-diffs";
-import { $$$ } from "../shared/TplQuery";
-import { mkBaseVariant, VariantGroupType } from "../shared/Variants";
-import { ensureBaseVariantSetting } from "../shared/VariantTplMgr";
-import { createSite, UNINITIALIZED_VALUE } from "../sites";
-import { mkTplTagX } from "../tpls";
+} from "@/wab/shared/site-diffs";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { mkBaseVariant, VariantGroupType } from "@/wab/shared/Variants";
+import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
+import { createSite, UNINITIALIZED_VALUE } from "@/wab/sites";
+import { mkTplTagX } from "@/wab/tpls";
+import L from "lodash";
 
 // Using it as a LIFO stack, where i=0 is the latest
 const sites: Site[] = [];

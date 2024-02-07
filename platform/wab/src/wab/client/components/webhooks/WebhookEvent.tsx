@@ -1,9 +1,9 @@
-import * as React from "react";
+import PublishSpinner from "@/wab/client/components/widgets/PublishSpinner";
 import {
   ApiProjectWebhook,
   ApiProjectWebhookEvent,
-} from "../../../shared/ApiSchema";
-import PublishSpinner from "../widgets/PublishSpinner";
+} from "@/wab/shared/ApiSchema";
+import * as React from "react";
 import {
   DefaultWebhookEventProps,
   PlasmicWebhookEvent,

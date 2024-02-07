@@ -1,3 +1,9 @@
+import "@/wab/client/components/QueryBuilder/QueryBuilder.scss";
+import {
+  AwesomeBuilder,
+  QueryBuilderConfig,
+} from "@/wab/client/components/QueryBuilder/QueryBuilderConfig";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TraitMeta, TraitRegistration } from "@plasmicapp/host";
 import {
   Config,
@@ -9,12 +15,6 @@ import {
   Utils as QbUtils,
 } from "@react-awesome-query-builder/antd";
 import * as React from "react";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
-import "../QueryBuilder/QueryBuilder.scss";
-import {
-  AwesomeBuilder,
-  QueryBuilderConfig,
-} from "../QueryBuilder/QueryBuilderConfig";
 
 const InitialConfig = QueryBuilderConfig;
 

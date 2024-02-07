@@ -1,10 +1,10 @@
 // Returns 'changed', 'unchanged', 'conflict'.  Case-insensitive.
+import { maybe, nullToUndefined } from "@/wab/common";
+import { DEVFLAGS } from "@/wab/devflags";
 import { Form, notification, Select } from "antd";
 import L from "lodash";
 import React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import { maybe, nullToUndefined } from "../common";
-import { DEVFLAGS } from "../devflags";
 import { reactPrompt, showTemporaryPrompt } from "./components/quick-modals";
 import Button from "./components/widgets/Button";
 import NewComponentModal, {

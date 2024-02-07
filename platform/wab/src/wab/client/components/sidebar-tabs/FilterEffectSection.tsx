@@ -1,23 +1,27 @@
-import { capitalize } from "lodash";
-import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
-import { arrayMoveIndex } from "../../../collections";
-import { cx, maybe, spawn, uniqueKey } from "../../../common";
-import { removeFromArray } from "../../../commons/collections";
+import { LabeledStyleItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { FilterEffectPanel } from "@/wab/client/components/style-controls/FilterEffectPanel";
+import { ExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
+import {
+  IconLinkButton,
+  ListBox,
+  ListBoxItem,
+} from "@/wab/client/components/widgets";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import { arrayMoveIndex } from "@/wab/collections";
+import { cx, maybe, spawn, uniqueKey } from "@/wab/common";
+import { removeFromArray } from "@/wab/commons/collections";
 import {
   defaultFilterEffects,
   FilterEffect,
   fromFilterObjToString,
   fromFilterStringToObj,
-} from "../../../filter-effect-utils";
-import { joinCssValues, splitCssValue } from "../../../shared/RuleSetHelpers";
-import PlusIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { LabeledStyleItemRow } from "../sidebar/sidebar-helpers";
-import { SidebarModal } from "../sidebar/SidebarModal";
-import { FilterEffectPanel } from "../style-controls/FilterEffectPanel";
-import { ExpsProvider } from "../style-controls/StyleComponent";
-import { IconLinkButton, ListBox, ListBoxItem } from "../widgets";
-import { Icon } from "../widgets/Icon";
+} from "@/wab/filter-effect-utils";
+import { joinCssValues, splitCssValue } from "@/wab/shared/RuleSetHelpers";
+import { capitalize } from "lodash";
+import { observer } from "mobx-react-lite";
+import React, { useState } from "react";
 
 const _GenericFilterEffectSection = (
   cssProp: string,

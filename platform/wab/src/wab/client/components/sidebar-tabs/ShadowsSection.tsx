@@ -1,30 +1,34 @@
-import { Tooltip } from "antd";
-import { observer } from "mobx-react";
-import React from "react";
-import { BoxShadow, BoxShadows, Dim } from "../../../bg-styles";
-import { arrayMoveIndex } from "../../../collections";
-import { removeFromArray } from "../../../commons/collections";
-import { MaybeWrap } from "../../../commons/components/ReactUtil";
-import { derefTokenRefs, tryParseTokenRef } from "../../../commons/StyleToken";
-import * as cssPegParser from "../../../gen/cssPegParser";
-import { VariantedStylesHelper } from "../../../shared/VariantedStylesHelper";
-import { allColorTokens, allMixins, allStyleTokens } from "../../../sites";
-import { CssVarResolver } from "../../../styles";
-import PlusIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { makeVariantedStylesHelperFromCurrentCtx } from "../../utils/style-utils";
-import { shouldBeDisabled } from "../sidebar/sidebar-helpers";
-import { SidebarModal } from "../sidebar/SidebarModal";
-import { BoxShadowPanel } from "../style-controls/BoxShadowControls";
-import { ColorSwatch } from "../style-controls/ColorSwatch";
+import { BoxShadow, BoxShadows, Dim } from "@/wab/bg-styles";
+import { shouldBeDisabled } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { BoxShadowPanel } from "@/wab/client/components/style-controls/BoxShadowControls";
+import { ColorSwatch } from "@/wab/client/components/style-controls/ColorSwatch";
 import {
   StyleComponent,
   StyleComponentProps,
   StylePanelSection,
-} from "../style-controls/StyleComponent";
-import { StyleWrapper } from "../style-controls/StyleWrapper";
-import { IconLinkButton, ListBox, ListBoxItem } from "../widgets";
-import { Icon } from "../widgets/Icon";
+} from "@/wab/client/components/style-controls/StyleComponent";
+import { StyleWrapper } from "@/wab/client/components/style-controls/StyleWrapper";
+import {
+  IconLinkButton,
+  ListBox,
+  ListBoxItem,
+} from "@/wab/client/components/widgets";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
+import { arrayMoveIndex } from "@/wab/collections";
+import { removeFromArray } from "@/wab/commons/collections";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { derefTokenRefs, tryParseTokenRef } from "@/wab/commons/StyleToken";
+import * as cssPegParser from "@/wab/gen/cssPegParser";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { allColorTokens, allMixins, allStyleTokens } from "@/wab/sites";
+import { CssVarResolver } from "@/wab/styles";
+import { Tooltip } from "antd";
+import { observer } from "mobx-react";
+import React from "react";
 
 interface ShadowsPanelSectionState {
   inspectedShadow?: BoxShadow;

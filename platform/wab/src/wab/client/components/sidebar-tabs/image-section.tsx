@@ -1,7 +1,3 @@
-import { Alert, Menu, Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
-import React from "react";
-import { FaLink } from "react-icons/fa";
 import {
   Component,
   CustomCode,
@@ -19,9 +15,26 @@ import {
   Var,
   VariantSetting,
   VarRef,
-} from "../../../classes";
-import { assert, ensureInstance } from "../../../common";
-import { getRealParams } from "../../../components";
+} from "@/wab/classes";
+import { WithContextMenu } from "@/wab/client/components/ContextMenu";
+import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
+import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import {
+  LabeledItemRow,
+  LabeledStyleColorItemRow,
+} from "@/wab/client/components/sidebar/sidebar-helpers";
+import { DefinedIndicator } from "@/wab/client/components/style-controls/DefinedIndicator";
+import { ImageAssetPreviewAndPicker } from "@/wab/client/components/style-controls/ImageSelector";
+import {
+  StylePanelSection,
+  TplExpsProvider,
+} from "@/wab/client/components/style-controls/StyleComponent";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { assert, ensureInstance } from "@/wab/common";
+import { getRealParams } from "@/wab/components";
 import {
   clone,
   codeLit,
@@ -31,41 +44,25 @@ import {
   isFallbackSet,
   isRealCodeExpr,
   tryExtractLit,
-} from "../../../exprs";
-import { ImageAssetType } from "../../../image-asset-type";
-import { getTagAttrForImageAsset } from "../../../image-assets";
-import { mkParam } from "../../../lang";
-import { isImageType, typeFactory } from "../../../shared/core/model-util";
-import { typographyCssProps } from "../../../shared/core/style-props";
+} from "@/wab/exprs";
+import { ImageAssetType } from "@/wab/image-asset-type";
+import { getTagAttrForImageAsset } from "@/wab/image-assets";
+import { mkParam } from "@/wab/lang";
+import { isImageType, typeFactory } from "@/wab/shared/core/model-util";
+import { typographyCssProps } from "@/wab/shared/core/style-props";
 import {
   computeDefinedIndicator,
   DefinedIndicatorType,
-} from "../../../shared/defined-indicator";
-import { isCodeComponentSlot } from "../../../shared/SlotUtils";
-import { unsetTplVariantableAttr } from "../../../shared/TplMgr";
-import { $$$ } from "../../../shared/TplQuery";
-import {
-  ensureVariantSetting,
-  isGlobalVariant,
-} from "../../../shared/Variants";
-import { getTplComponentsInSite } from "../../../tpls";
-import PlusIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { WithContextMenu } from "../ContextMenu";
-import ContextMenuIndicator from "../ContextMenuIndicator/ContextMenuIndicator";
-import { MenuBuilder } from "../menu-builder";
-import {
-  LabeledItemRow,
-  LabeledStyleColorItemRow,
-} from "../sidebar/sidebar-helpers";
-import { DefinedIndicator } from "../style-controls/DefinedIndicator";
-import { ImageAssetPreviewAndPicker } from "../style-controls/ImageSelector";
-import {
-  StylePanelSection,
-  TplExpsProvider,
-} from "../style-controls/StyleComponent";
-import { Icon } from "../widgets/Icon";
+} from "@/wab/shared/defined-indicator";
+import { isCodeComponentSlot } from "@/wab/shared/SlotUtils";
+import { unsetTplVariantableAttr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { ensureVariantSetting, isGlobalVariant } from "@/wab/shared/Variants";
+import { getTplComponentsInSite } from "@/wab/tpls";
+import { Alert, Menu, Tooltip } from "antd";
+import { observer } from "mobx-react-lite";
+import React from "react";
+import { FaLink } from "react-icons/fa";
 import { DataPickerEditor } from "./ComponentProps/DataPickerEditor";
 import { FallbackEditor, promptForParamName } from "./ComponentPropsSection";
 import { ContentPanelSection } from "./image-content-section";

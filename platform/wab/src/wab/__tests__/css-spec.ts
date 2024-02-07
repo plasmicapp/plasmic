@@ -1,4 +1,4 @@
-import { parseScreenSpec } from "../shared/Css";
+import { parseScreenSpec } from "@/wab/shared/Css";
 
 describe("Css", function () {
   it("should work", () => {

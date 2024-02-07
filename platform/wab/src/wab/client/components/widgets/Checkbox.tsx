@@ -1,9 +1,9 @@
-import { CheckboxRef } from "@plasmicapp/react-web";
-import * as React from "react";
 import {
   DefaultCheckboxProps,
   PlasmicCheckbox,
-} from "../../plasmic/plasmic_kit_design_system/PlasmicCheckbox";
+} from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicCheckbox";
+import { CheckboxRef } from "@plasmicapp/react-web";
+import * as React from "react";
 
 interface CheckboxProps extends DefaultCheckboxProps {}
 

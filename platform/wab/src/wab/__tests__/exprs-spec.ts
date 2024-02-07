@@ -1,8 +1,8 @@
-import { CompositeExpr } from "../classes";
-import { inspect } from "../common";
-import { getProjectFlags } from "../devflags";
-import { asCode, code } from "../exprs";
-import { createSite } from "../sites";
+import { CompositeExpr } from "@/wab/classes";
+import { inspect } from "@/wab/common";
+import { getProjectFlags } from "@/wab/devflags";
+import { asCode, code } from "@/wab/exprs";
+import { createSite } from "@/wab/sites";
 
 describe("asCode", () => {
   it("works for CompositeExpr", () => {

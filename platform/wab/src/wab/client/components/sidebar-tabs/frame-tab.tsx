@@ -1,37 +1,37 @@
-import { Menu } from "antd";
-import L from "lodash";
-import { observer } from "mobx-react-lite";
-import React from "react";
-import { ArenaFrame } from "../../../classes";
-import { ensure, parsePx } from "../../../common";
-import { isTokenRef } from "../../../commons/StyleToken";
+import { ArenaFrame } from "@/wab/classes";
+import { makeFrameSizeMenu } from "@/wab/client/components/menus/FrameSizeMenu";
+import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SidebarModalProvider } from "@/wab/client/components/sidebar/SidebarModal";
+import { ColorButton } from "@/wab/client/components/style-controls/ColorButton";
+import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggleButton";
+import StyleToggleButtonGroup from "@/wab/client/components/style-controls/StyleToggleButtonGroup";
+import * as widgets from "@/wab/client/components/widgets";
+import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import CenterAndPadIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__CenterAndPad";
+import FrameStretchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__FrameStretch";
+import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
+import { ViewComponentProps, ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ensure, parsePx } from "@/wab/common";
+import { isTokenRef } from "@/wab/commons/StyleToken";
 import {
   isFrameComponent,
   isPageComponent,
   isPageFrame,
   isPlainComponent,
-} from "../../../components";
-import { FrameViewMode, getFrameHeight } from "../../../shared/Arenas";
-import { isStretchyComponentFrame } from "../../../shared/component-arenas";
-import { FRAME_CAP } from "../../../shared/Labels";
-import { ContainerLayoutType } from "../../../shared/layoututils";
-import { frameSizeGroups } from "../../../shared/responsiveness";
-import { getComponentDefaultSize } from "../../../shared/sizingutils";
-import { Chroma } from "../../../shared/utils/color-utils";
-import { getFrameContainerType } from "../../../sites";
-import CenterAndPadIcon from "../../plasmic/plasmic_kit/PlasmicIcon__CenterAndPad";
-import FrameStretchIcon from "../../plasmic/plasmic_kit/PlasmicIcon__FrameStretch";
-import TriangleBottomIcon from "../../plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
-import { ViewComponentProps, ViewCtx } from "../../studio-ctx/view-ctx";
-import { makeFrameSizeMenu } from "../menus/FrameSizeMenu";
-import { LabeledItemRow } from "../sidebar/sidebar-helpers";
-import { SidebarModalProvider } from "../sidebar/SidebarModal";
-import { ColorButton } from "../style-controls/ColorButton";
-import StyleToggleButton from "../style-controls/StyleToggleButton";
-import StyleToggleButtonGroup from "../style-controls/StyleToggleButtonGroup";
-import * as widgets from "../widgets";
-import { DimTokenSpinner } from "../widgets/DimTokenSelector";
-import { Icon } from "../widgets/Icon";
+} from "@/wab/components";
+import { FrameViewMode, getFrameHeight } from "@/wab/shared/Arenas";
+import { isStretchyComponentFrame } from "@/wab/shared/component-arenas";
+import { FRAME_CAP } from "@/wab/shared/Labels";
+import { ContainerLayoutType } from "@/wab/shared/layoututils";
+import { frameSizeGroups } from "@/wab/shared/responsiveness";
+import { getComponentDefaultSize } from "@/wab/shared/sizingutils";
+import { Chroma } from "@/wab/shared/utils/color-utils";
+import { getFrameContainerType } from "@/wab/sites";
+import { Menu } from "antd";
+import L from "lodash";
+import { observer } from "mobx-react-lite";
+import React from "react";
 
 interface FramePanelProps extends ViewComponentProps {
   frame: ArenaFrame;

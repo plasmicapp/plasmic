@@ -1,26 +1,26 @@
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { ensure, mod, spawn } from "../../../common";
-import { VARIANTS_LOWER } from "../../../shared/Labels";
+import VariantRow from "@/wab/client/components/canvas/VariantsBar/VariantRow";
+import styles from "@/wab/client/components/canvas/VariantsBar/VariantsDrawer.module.scss";
+import VariantsGroupLabel from "@/wab/client/components/canvas/VariantsBar/VariantsGroupLabel";
+import { PreviewCtx } from "@/wab/client/components/live/PreviewCtx";
+import { Matcher } from "@/wab/client/components/view-common";
+import { useRefMap } from "@/wab/client/hooks/useRefMap";
+import {
+  DefaultVariantsMenuProps,
+  PlasmicVariantsMenu,
+} from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicVariantsMenu";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ensure, mod, spawn } from "@/wab/common";
+import { VARIANTS_LOWER } from "@/wab/shared/Labels";
 import {
   getAllVariantsForTpl,
   isBaseVariant,
   isPrivateStyleVariant,
   isScreenVariant,
   isStyleVariant,
-} from "../../../shared/Variants";
-import { useRefMap } from "../../hooks/useRefMap";
-import {
-  DefaultVariantsMenuProps,
-  PlasmicVariantsMenu,
-} from "../../plasmic/plasmic_kit_top_bar/PlasmicVariantsMenu";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import VariantRow from "../canvas/VariantsBar/VariantRow";
-import styles from "../canvas/VariantsBar/VariantsDrawer.module.scss";
-import VariantsGroupLabel from "../canvas/VariantsBar/VariantsGroupLabel";
-import { PreviewCtx } from "../live/PreviewCtx";
-import { Matcher } from "../view-common";
+} from "@/wab/shared/Variants";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import defer = setTimeout;
 
 interface PreviewVariantData {

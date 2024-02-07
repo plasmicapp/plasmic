@@ -1,7 +1,7 @@
+import { ensure } from "@/wab/common";
+import { getCssInitial } from "@/wab/css";
 import L from "lodash";
 import { CSSProperties } from "react";
-import { ensure } from "../common";
-import { getCssInitial } from "../css";
 import {
   getCssDefault,
   IRuleSetHelpersX,

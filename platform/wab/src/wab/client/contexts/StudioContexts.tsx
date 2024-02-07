@@ -1,14 +1,15 @@
-import * as React from "react";
-import { useContext } from "react";
-import { ensure } from "../../common";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ensure } from "@/wab/common";
 import {
   withConsumer,
   withProvider,
-} from "../../commons/components/ContextUtil";
-import { ViewCtx } from "../studio-ctx/view-ctx";
+} from "@/wab/commons/components/ContextUtil";
+import * as React from "react";
+import { useContext } from "react";
 
-export const ViewCtxContext =
-  React.createContext<ViewCtx | undefined>(undefined);
+export const ViewCtxContext = React.createContext<ViewCtx | undefined>(
+  undefined
+);
 export const withViewCtx = withConsumer(ViewCtxContext.Consumer, "viewCtx");
 export const providesViewCtx = withProvider(ViewCtxContext.Provider);
 export const useViewCtx = () =>

@@ -1,12 +1,12 @@
 import "@testing-library/jest-dom/extend-expect";
 import { act, getByTestId, getByText, render } from "@testing-library/react";
 // polyfill some js features like String.matchAll()
+import { Site } from "@/wab/classes";
+import { Bundle, Bundler } from "@/wab/shared/bundler";
+import { codegen } from "@/wab/shared/codegen/codegen-tests-util";
 import "core-js";
 import * as React from "react";
 import tmp from "tmp";
-import { Site } from "../../../classes";
-import { Bundle, Bundler } from "../../bundler";
-import { codegen } from "../codegen-tests-util";
 // Exported from https://studio.plasmic.app/projects/a76RKRQpJHMAbDDNBWmUVs
 import _bundle from "./bundles/counters-test.json";
 

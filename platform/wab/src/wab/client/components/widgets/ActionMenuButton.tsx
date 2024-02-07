@@ -1,10 +1,10 @@
-import { Tooltip } from "antd";
-import * as React from "react";
+import { IFrameAwareDropdownMenu } from "@/wab/client/components/widgets";
 import {
   DefaultActionMenuButtonProps,
   PlasmicActionMenuButton,
-} from "../../plasmic/plasmic_kit_design_system/PlasmicActionMenuButton";
-import { IFrameAwareDropdownMenu } from "../widgets";
+} from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicActionMenuButton";
+import { Tooltip } from "antd";
+import * as React from "react";
 
 interface ActionMenuButtonProps extends DefaultActionMenuButtonProps {
   style?: React.CSSProperties;

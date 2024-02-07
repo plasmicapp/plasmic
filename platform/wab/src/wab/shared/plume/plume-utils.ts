@@ -1,25 +1,25 @@
-import React from "react";
-import { Component } from "../../classes";
-import type { SubDeps } from "../../client/components/canvas/subdeps";
-import type { ViewCtx } from "../../client/studio-ctx/view-ctx";
-import { assert, unexpected } from "../../common";
-import { ChangeSummary } from "../../model-change-util";
-import { flattenTpls, isTplComponent } from "../../tpls";
-import { getPropTypeType } from "../code-components/code-components";
+import { Component } from "@/wab/classes";
+import type { SubDeps } from "@/wab/client/components/canvas/subdeps";
+import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { assert, unexpected } from "@/wab/common";
+import { ChangeSummary } from "@/wab/model-change-util";
+import { getPropTypeType } from "@/wab/shared/code-components/code-components";
 import {
   asOneNode,
   generateSubstituteComponentCalls,
   SerializerBaseContext,
   serializeTplSlotArgsAsArray,
-} from "../codegen/react-p";
+} from "@/wab/shared/codegen/react-p";
 import {
   getExportedComponentName,
   makeComponentRenderIdFileName,
   makeComponentSkeletonIdFileName,
   makePlasmicComponentName,
-} from "../codegen/react-p/utils";
-import { jsLiteral, toVarName } from "../codegen/util";
-import { getTplSlotForParam, isSlot } from "../SlotUtils";
+} from "@/wab/shared/codegen/react-p/utils";
+import { jsLiteral, toVarName } from "@/wab/shared/codegen/util";
+import { getTplSlotForParam, isSlot } from "@/wab/shared/SlotUtils";
+import { flattenTpls, isTplComponent } from "@/wab/tpls";
+import React from "react";
 import {
   getPlumeEditorPlugin,
   PlumeCodeComponentMeta,

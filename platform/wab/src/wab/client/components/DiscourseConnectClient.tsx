@@ -1,6 +1,6 @@
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { spawn } from "@/wab/common";
 import { useEffect } from "react";
-import { spawn } from "../../common";
-import { useAppCtx } from "../contexts/AppContexts";
 
 export function DiscourseConnectClient() {
   const appCtx = useAppCtx();

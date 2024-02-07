@@ -1,14 +1,14 @@
-import { Dropdown, Menu } from "antd";
-import * as React from "react";
-import { ReactNode } from "react";
-import { ensure } from "../../common";
 import {
   AppComponent,
   NonAuthComponent,
   NonAuthComponentProps,
-} from "../app-ctx";
-import { UU } from "../cli-routes";
-import ChevronDownsvgIcon from "../plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg";
+} from "@/wab/client/app-ctx";
+import { UU } from "@/wab/client/cli-routes";
+import ChevronDownsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg";
+import { ensure } from "@/wab/common";
+import { Dropdown, Menu } from "antd";
+import * as React from "react";
+import { ReactNode } from "react";
 import { PlasmicColorLogo } from "./PlasmicColorLogo";
 import { PublicLink } from "./PublicLink";
 import { Avatar } from "./studio/Avatar";

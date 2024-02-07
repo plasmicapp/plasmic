@@ -1,11 +1,11 @@
+import { Component } from "@/wab/classes";
+import { U } from "@/wab/client/cli-routes";
+import { PublicLink } from "@/wab/client/components/PublicLink";
+import { PlasmicComponentListItem } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicComponentListItem";
+import { asOne } from "@/wab/common";
+import { toClassName } from "@/wab/shared/codegen/util";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
-import { Component } from "../../../classes";
-import { asOne } from "../../../common";
-import { toClassName } from "../../../shared/codegen/util";
-import { U } from "../../cli-routes";
-import { PlasmicComponentListItem } from "../../plasmic/plasmic_kit_docs_portal/PlasmicComponentListItem";
-import { PublicLink } from "../PublicLink";
 import { DocsPortalCtx } from "./DocsPortalCtx";
 
 interface ComponentListItemProps {

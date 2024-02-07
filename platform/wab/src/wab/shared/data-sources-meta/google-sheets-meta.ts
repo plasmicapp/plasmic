@@ -1,8 +1,8 @@
+import type { DataSource } from "@/wab/server/entities/Entities";
+import { capitalizeFirst } from "@/wab/strs";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import moment from "moment/moment";
 import SqlString from "sqlstring";
-import type { DataSource } from "../../server/entities/Entities";
-import { capitalizeFirst } from "../../strs";
 import {
   DataSourceMeta,
   FilterArgMeta,

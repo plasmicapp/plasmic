@@ -1,3 +1,5 @@
+import { App, withAppContext } from "@/wab/client/components/top-view";
+import { ensure, safeCast } from "@/wab/common";
 import L from "lodash";
 import * as React from "react";
 import { MouseEvent, ReactNode } from "react";
@@ -9,8 +11,6 @@ import {
   DraggableEventHandler,
 } from "react-draggable";
 import UseKey from "react-use/lib/comps/UseKey";
-import { App, withAppContext } from "../../client/components/top-view";
-import { ensure, safeCast } from "../../common";
 
 interface DraggableState {
   initX: number;

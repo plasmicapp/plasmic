@@ -1,18 +1,18 @@
-import { Tooltip } from "antd";
-import { observer } from "mobx-react";
-import React from "react";
-import { assert, ensure } from "../../../common";
-import ContainIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Contain";
-import CoverIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Cover";
 import {
   LabeledStyleDimItemRow,
   LabeledStyleSelectItemRow,
-} from "../sidebar/sidebar-helpers";
+} from "@/wab/client/components/sidebar/sidebar-helpers";
 import {
   StyleComponent,
   StyleComponentProps,
-} from "../style-controls/StyleComponent";
-import { Icon } from "../widgets/Icon";
+} from "@/wab/client/components/style-controls/StyleComponent";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import ContainIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Contain";
+import CoverIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Cover";
+import { assert, ensure } from "@/wab/common";
+import { Tooltip } from "antd";
+import { observer } from "mobx-react";
+import React from "react";
 
 class ObjectPosition {
   constructor(public xAlign: string, public yAlign: string) {}

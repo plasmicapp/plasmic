@@ -1,20 +1,20 @@
+import { Component, Site } from "@/wab/classes";
+import {
+  DefaultCodePreviewSnippetProps,
+  PlasmicCodePreviewSnippet,
+} from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicCodePreviewSnippet";
+import { ensure, mkUuid } from "@/wab/common";
+import { isSubComponent } from "@/wab/components";
+import { getExportedComponentName } from "@/wab/shared/codegen/react-p/utils";
+import {
+  getPlumeDocsPlugin,
+  PlumeDocsExample,
+} from "@/wab/shared/plume/plume-registry";
 import { observable } from "mobx";
 import { observer } from "mobx-react-lite";
 import * as Prettier from "prettier";
 import parserTypescript from "prettier/parser-typescript";
 import * as React from "react";
-import { Component, Site } from "../../../classes";
-import { ensure, mkUuid } from "../../../common";
-import { isSubComponent } from "../../../components";
-import { getExportedComponentName } from "../../../shared/codegen/react-p/utils";
-import {
-  getPlumeDocsPlugin,
-  PlumeDocsExample,
-} from "../../../shared/plume/plume-registry";
-import {
-  DefaultCodePreviewSnippetProps,
-  PlasmicCodePreviewSnippet,
-} from "../../plasmic/plasmic_kit_docs_portal/PlasmicCodePreviewSnippet";
 import { DocsPortalCtx } from "./DocsPortalCtx";
 import { DocsPortalEditor } from "./DocsPortalEditor";
 import { DocsPreviewCanvas } from "./DocsPreviewCanvas";

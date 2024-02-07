@@ -1,10 +1,10 @@
 // This file is owned by you, feel free to edit as you see fit.
-import * as React from "react";
-import { VARIANT_OPTION_LOWER } from "../../../shared/Labels";
 import {
   DefaultVariantPinButtonProps,
   PlasmicVariantPinButton,
-} from "../../plasmic/plasmic_kit_variants/PlasmicVariantPinButton";
+} from "@/wab/client/plasmic/plasmic_kit_variants/PlasmicVariantPinButton";
+import { VARIANT_OPTION_LOWER } from "@/wab/shared/Labels";
+import * as React from "react";
 
 interface VariantPinButtonProps extends DefaultVariantPinButtonProps {
   onToggle?: () => void;

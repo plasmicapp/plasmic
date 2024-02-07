@@ -1,12 +1,12 @@
-import { Collapse } from "antd";
-import React, { useState } from "react";
-import { ensure, zeroWidthSpace } from "../../common";
+import { useViewCtx } from "@/wab/client/contexts/StudioContexts";
+import { ensure, zeroWidthSpace } from "@/wab/common";
 import {
   addAnnotation,
   Annotation,
   getAnnotations,
-} from "../../shared/Annotations";
-import { useViewCtx } from "../contexts/StudioContexts";
+} from "@/wab/shared/Annotations";
+import { Collapse } from "antd";
+import React, { useState } from "react";
 import { PanelSection } from "./sidebar/PanelSection";
 import { ListBox, ListBoxItem } from "./widgets";
 import { EditableLabel } from "./widgets/EditableLabel";

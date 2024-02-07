@@ -1,8 +1,8 @@
+import { AppCtx } from "@/wab/client/app-ctx";
+import { TopFrameApi } from "@/wab/client/frame-ctx/top-frame-api";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Step } from "react-joyride";
-import { ProjectId } from "../../../shared/ApiSchema";
-import { AppCtx } from "../../app-ctx";
-import { TopFrameApi } from "../../frame-ctx/top-frame-api";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
 import { TutorialEvent, TutorialEventsType } from "./tutorials-events";
 
 export interface TutorialStateFlags {

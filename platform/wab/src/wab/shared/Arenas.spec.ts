@@ -1,6 +1,6 @@
-import { Variant } from "../classes";
-import { ensure } from "../common";
-import { createSite } from "../sites";
+import { Variant } from "@/wab/classes";
+import { ensure } from "@/wab/common";
+import { createSite } from "@/wab/sites";
 import {
   getFrameSizeForTargetScreenVariant,
   normalDesktopWidth,

@@ -1,5 +1,5 @@
+import { assert, spawn } from "@/wab/common";
 import html2canvas from "html2canvas";
-import { assert, spawn } from "../common";
 import { StudioCtx } from "./studio-ctx/StudioCtx";
 
 // This the id of the plasmic Chrome extension. You can find it in the details

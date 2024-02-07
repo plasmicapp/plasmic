@@ -1,4 +1,4 @@
-import { DomSnap } from "../../WebImporter";
+import { DomSnap } from "@/wab/client/WebImporter";
 
 export const smalltestSnap: DomSnap = {
   baseUrl: "http://localhost",

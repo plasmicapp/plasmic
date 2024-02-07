@@ -1,13 +1,13 @@
+import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ensure } from "@/wab/common";
+import { parseCssNumericNew } from "@/wab/css";
+import { getSliderConfig } from "@/wab/transform-utils";
 import { Menu, Slider } from "antd";
 import { observer } from "mobx-react";
 import React, { useEffect } from "react";
-import { ensure } from "../../../common";
-import { parseCssNumericNew } from "../../../css";
-import { getSliderConfig } from "../../../transform-utils";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { LabeledItemRow } from "../sidebar/sidebar-helpers";
-import { SidebarSection } from "../sidebar/SidebarSection";
-import DimTokenSpinner from "../widgets/DimTokenSelector";
 import StyleToggleButton from "./StyleToggleButton";
 import StyleToggleButtonGroup from "./StyleToggleButtonGroup";
 

@@ -1,7 +1,7 @@
+import { CodeDisplay } from "@/wab/client/components/coding/CodeDisplay";
+import { PlasmicDocsCodeSnippet } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsCodeSnippet";
 import { Language } from "prism-react-renderer";
 import * as React from "react";
-import { PlasmicDocsCodeSnippet } from "../../plasmic/plasmic_kit_docs_portal/PlasmicDocsCodeSnippet";
-import { CodeDisplay } from "../coding/CodeDisplay";
 
 interface DocsCodeSnippetProps {
   language: Language;

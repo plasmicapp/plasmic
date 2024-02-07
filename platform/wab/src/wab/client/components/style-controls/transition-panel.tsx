@@ -1,9 +1,9 @@
+import { Transition } from "@/wab/client/components/sidebar-tabs/TransitionsSection";
+import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { Textbox } from "@/wab/client/components/widgets/Textbox";
+import { asValidCssTime } from "@/wab/css";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
-import { asValidCssTime } from "../../../css";
-import { Transition } from "../sidebar-tabs/TransitionsSection";
-import { LabeledItemRow } from "../sidebar/sidebar-helpers";
-import { Textbox } from "../widgets/Textbox";
 import StyleSelect from "./StyleSelect";
 
 interface TransitionPanelProps {

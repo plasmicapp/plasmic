@@ -1,12 +1,12 @@
-import { CheckboxRef } from "@plasmicapp/react-web";
-import { Tooltip } from "antd";
-import * as React from "react";
-import { combineProps } from "../../../commons/components/ReactUtil";
+import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import {
   DefaultStyleCheckboxProps,
   PlasmicStyleCheckbox,
-} from "../../plasmic/plasmic_kit_style_controls/PlasmicStyleCheckbox";
-import { ValueSetState } from "../sidebar/sidebar-helpers";
+} from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicStyleCheckbox";
+import { combineProps } from "@/wab/commons/components/ReactUtil";
+import { CheckboxRef } from "@plasmicapp/react-web";
+import { Tooltip } from "antd";
+import * as React from "react";
 
 interface StyleCheckboxProps extends DefaultStyleCheckboxProps {
   valueSetState?: ValueSetState;

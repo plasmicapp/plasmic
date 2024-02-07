@@ -1,13 +1,13 @@
-import * as domUtils from "../../client/dom-utils";
+import * as domUtils from "@/wab/client/dom-utils";
 import {
   denormalizeFigmaData,
   tplNodeFromFigmaData,
   uploadFigmaImages,
   uploadNodeImages,
-} from "../../client/figma";
-import * as common from "../../common";
-import { Bundler } from "../../shared/bundler";
-import { createSite } from "../../sites";
+} from "@/wab/client/figma";
+import * as common from "@/wab/common";
+import { Bundler } from "@/wab/shared/bundler";
+import { createSite } from "@/wab/sites";
 import {
   createAppCtx,
   createSiteOps,
@@ -15,7 +15,7 @@ import {
   createVariantTplMgr,
   getFigmaFilesIds,
   getTestFigmaData,
-} from "../../test/figma";
+} from "@/wab/test/figma";
 jest.mock("../../client/components/coding/FullCodeEditor.tsx", () => ({
   FullCodeEditor: () => null,
   CodePreview: () => null,

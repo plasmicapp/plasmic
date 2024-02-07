@@ -1,10 +1,10 @@
+import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { PageComponent } from "@/wab/components";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { PageComponent } from "../../../components";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { LabeledItemRow } from "../sidebar/sidebar-helpers";
-import { SidebarSection } from "../sidebar/SidebarSection";
 import { StringPropEditor } from "./ComponentProps/StringPropEditor";
 
 const PageMetaPanel = observer(function PageMetaPanel(props: {

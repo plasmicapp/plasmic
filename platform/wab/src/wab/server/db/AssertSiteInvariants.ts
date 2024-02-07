@@ -1,13 +1,15 @@
-import L from "lodash";
 import {
   ensureKnownProjectDependency,
   ensureKnownSite,
   Site,
-} from "../../classes";
-import { meta } from "../../classes-metas";
-import { assert, maybe, spawn } from "../../common";
-import { observeModel } from "../../observable-model";
-import { walkDependencyTree } from "../../project-deps";
+} from "@/wab/classes";
+import { meta } from "@/wab/classes-metas";
+import { assert, maybe, spawn } from "@/wab/common";
+import { observeModel } from "@/wab/observable-model";
+import { walkDependencyTree } from "@/wab/project-deps";
+import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
+import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
+import { initializeGlobals } from "@/wab/server/svr-init";
 import {
   Bundle,
   Bundler,
@@ -15,17 +17,15 @@ import {
   checkExistingReferences,
   checkRefsInBundle,
   FastBundler,
-} from "../../shared/bundler";
-import { isEmptyBundle } from "../../shared/bundles";
-import { instUtil } from "../../shared/core/InstUtil";
+} from "@/wab/shared/bundler";
+import { isEmptyBundle } from "@/wab/shared/bundles";
+import { instUtil } from "@/wab/shared/core/InstUtil";
 import {
   assertSiteInvariants,
   InvariantError,
-} from "../../shared/site-invariants";
-import { taggedUnbundle } from "../../tagged-unbundle";
-import { DEFAULT_DATABASE_URI } from "../config";
-import { PkgVersion, ProjectRevision } from "../entities/Entities";
-import { initializeGlobals } from "../svr-init";
+} from "@/wab/shared/site-invariants";
+import { taggedUnbundle } from "@/wab/tagged-unbundle";
+import L from "lodash";
 import { getMigratedBundle } from "./BundleMigrator";
 import { getOrderedDepBundleIds } from "./DbBundleLoader";
 import { ensureDbConnections, getDefaultConnection } from "./DbCon";

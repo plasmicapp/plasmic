@@ -1,31 +1,31 @@
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
-import { Variant } from "../../../classes";
-import { maybe } from "../../../common";
-import { getEffectiveVariantSetting } from "../../../shared/effective-variant-setting";
-import { VariantPinState } from "../../../shared/PinManager";
-import { PlumeVariantDef } from "../../../shared/plume/plume-registry";
+import { Variant } from "@/wab/classes";
+import { useContextMenu } from "@/wab/client/components/ContextMenu";
+import { PlumyIcon } from "@/wab/client/components/plume/plume-markers";
+import {
+  VariantSettingPopoverContent,
+  VariantSettingPopoverTitle,
+} from "@/wab/client/components/style-controls/DefinedIndicator";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import VariantIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Variant";
+import {
+  PlasmicVariantRow,
+  PlasmicVariantRow__OverridesType,
+} from "@/wab/client/plasmic/plasmic_kit_variants/PlasmicVariantRow";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { maybe } from "@/wab/common";
+import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
+import { VariantPinState } from "@/wab/shared/PinManager";
+import { PlumeVariantDef } from "@/wab/shared/plume/plume-registry";
 import {
   isBaseVariant,
   isVariantSettingEmpty,
   tryGetVariantSetting,
-} from "../../../shared/Variants";
-import { isTplVariantable, summarizeTpl } from "../../../tpls";
-import VariantIcon from "../../plasmic/plasmic_kit_design_system/PlasmicIcon__Variant";
-import {
-  PlasmicVariantRow,
-  PlasmicVariantRow__OverridesType,
-} from "../../plasmic/plasmic_kit_variants/PlasmicVariantRow";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { useContextMenu } from "../ContextMenu";
-import { PlumyIcon } from "../plume/plume-markers";
-import {
-  VariantSettingPopoverContent,
-  VariantSettingPopoverTitle,
-} from "../style-controls/DefinedIndicator";
-import { Icon } from "../widgets/Icon";
+} from "@/wab/shared/Variants";
+import { isTplVariantable, summarizeTpl } from "@/wab/tpls";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
+import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 
 interface VariantRowProps {
   studioCtx: StudioCtx;

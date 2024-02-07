@@ -1,15 +1,15 @@
-import { State } from "../../classes";
-import { ensure } from "../../common";
-import { Bundler } from "../../shared/bundler";
-import { toVarName } from "../../shared/codegen/util";
-import { renameObjectInExpr } from "../../shared/refactoring";
-import { getStateVarName } from "../../states";
-import * as Tpls from "../../tpls";
+import { State } from "@/wab/classes";
+import { ensure } from "@/wab/common";
 import {
   BundleMigrationType,
   unbundleSite,
-} from "../db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
+} from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { Bundler } from "@/wab/shared/bundler";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { renameObjectInExpr } from "@/wab/shared/refactoring";
+import { getStateVarName } from "@/wab/states";
+import * as Tpls from "@/wab/tpls";
 
 export function getOldStateVarName(state: State) {
   const tpls: string[] = [];

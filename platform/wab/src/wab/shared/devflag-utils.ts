@@ -1,4 +1,4 @@
-import { DevFlagsType } from "../devflags";
+import { DevFlagsType } from "@/wab/devflags";
 
 export function isCoreTeamEmail(
   email: string | undefined | null,

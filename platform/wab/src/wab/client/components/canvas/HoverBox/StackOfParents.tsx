@@ -1,21 +1,21 @@
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { RefObject, useEffect, useMemo, useRef } from "react";
-import { TplNode } from "../../../../classes";
-import { Selectable, SQ } from "../../../../selection";
-import { FrameViewMode } from "../../../../shared/Arenas";
-import { SlotSelection } from "../../../../slots";
-import * as cssVariables from "../../../../styles/css-variables";
+import { TplNode } from "@/wab/classes";
+import { createNodeIcon } from "@/wab/client/components/sidebar-tabs/tpl-tree";
+import { FRAME_ICON, SLOT_ICON } from "@/wab/client/icons";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { getSlotSelectionDisplayName } from "@/wab/client/utils/tpl-client-utils";
+import { Selectable, SQ } from "@/wab/selection";
+import { FrameViewMode } from "@/wab/shared/Arenas";
+import { SlotSelection } from "@/wab/slots";
+import * as cssVariables from "@/wab/styles/css-variables";
 import {
   isTplNamable,
   isTplTagOrComponent,
   isTplVariantable,
   summarizeTpl,
-} from "../../../../tpls";
-import { FRAME_ICON, SLOT_ICON } from "../../../icons";
-import { useStudioCtx } from "../../../studio-ctx/StudioCtx";
-import { getSlotSelectionDisplayName } from "../../../utils/tpl-client-utils";
-import { createNodeIcon } from "../../sidebar-tabs/tpl-tree";
+} from "@/wab/tpls";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
+import { RefObject, useEffect, useMemo, useRef } from "react";
 import styles from "./StackOfParents.module.scss";
 
 const AUTO_HIDE_TIMEOUT = 2000;

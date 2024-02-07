@@ -1,20 +1,20 @@
-import L from "lodash";
-import { Variant } from "../classes";
-import { ComponentType } from "../components";
-import { TplMgr } from "../shared/TplMgr";
-import { $$$ } from "../shared/TplQuery";
+import { Variant } from "@/wab/classes";
+import { ComponentType } from "@/wab/components";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
 import {
   makeVariantComboSorter,
   sortedVariantCombos,
-} from "../shared/variant-sort";
+} from "@/wab/shared/variant-sort";
 import {
   getBaseVariant,
   isPrivateStyleVariant,
   isStyleVariant,
   VariantCombo,
-} from "../shared/Variants";
-import { createSite } from "../sites";
-import { mkTplTagX } from "../tpls";
+} from "@/wab/shared/Variants";
+import { createSite } from "@/wab/sites";
+import { mkTplTagX } from "@/wab/tpls";
+import L from "lodash";
 
 describe("variant-sort", () => {
   const site = createSite();

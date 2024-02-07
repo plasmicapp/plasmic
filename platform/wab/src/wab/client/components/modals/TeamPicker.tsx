@@ -1,16 +1,16 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import * as React from "react";
-import { ApiTeam } from "../../../shared/ApiSchema";
-import {
-  getNewPriceTierType,
-  getPriceTierType,
-} from "../../../shared/pricing/pricing-utils";
-import { AppCtx } from "../../app-ctx";
+import { AppCtx } from "@/wab/client/app-ctx";
+import { Spinner } from "@/wab/client/components/widgets";
 import {
   DefaultTeamPickerProps,
   PlasmicTeamPicker,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicTeamPicker";
-import { Spinner } from "../widgets";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamPicker";
+import { ApiTeam } from "@/wab/shared/ApiSchema";
+import {
+  getNewPriceTierType,
+  getPriceTierType,
+} from "@/wab/shared/pricing/pricing-utils";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import * as React from "react";
 import TeamPickerItem from "./TeamPickerItem";
 interface TeamPickerProps extends DefaultTeamPickerProps {
   appCtx: AppCtx;

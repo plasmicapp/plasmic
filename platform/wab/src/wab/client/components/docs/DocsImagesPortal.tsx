@@ -1,8 +1,8 @@
-import * as React from "react";
 import {
   DefaultDocsImagesPortalProps,
   PlasmicDocsImagesPortal,
-} from "../../plasmic/plasmic_kit_docs_portal/PlasmicDocsImagesPortal";
+} from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsImagesPortal";
+import * as React from "react";
 import { useDocsPortalCtx } from "./DocsPortalCtx";
 import { DocsPortalEditor } from "./DocsPortalEditor";
 import { DocsPreviewCanvas } from "./DocsPreviewCanvas";

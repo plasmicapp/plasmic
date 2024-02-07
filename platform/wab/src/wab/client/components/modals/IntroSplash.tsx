@@ -1,8 +1,8 @@
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { spawn } from "@/wab/common";
 import { Button } from "antd";
 import React, { useState } from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import { spawn } from "../../../common";
-import { useAppCtx } from "../../contexts/AppContexts";
 
 export function IntroSplash() {
   const appCtx = useAppCtx();

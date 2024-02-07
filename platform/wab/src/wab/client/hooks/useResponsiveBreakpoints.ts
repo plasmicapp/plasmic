@@ -1,10 +1,10 @@
-import { ResponsiveStrategy } from "../../shared/responsiveness";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
 import {
   getOrderedScreenVariantSpecs,
   isScreenVariantGroup,
-} from "../../shared/Variants";
-import { allGlobalVariantGroups, getResponsiveStrategy } from "../../sites";
-import { useStudioCtx } from "../studio-ctx/StudioCtx";
+} from "@/wab/shared/Variants";
+import { allGlobalVariantGroups, getResponsiveStrategy } from "@/wab/sites";
 
 export function useResponsiveBreakpoints() {
   const studioCtx = useStudioCtx();

@@ -1,7 +1,7 @@
+import { useViewCtx } from "@/wab/client/contexts/StudioContexts";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { useViewCtx } from "../../contexts/StudioContexts";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
 import { StyleTab, StyleTabContext } from "./style-tab";
 
 export const SettingsTab = observer((props: {}) => {

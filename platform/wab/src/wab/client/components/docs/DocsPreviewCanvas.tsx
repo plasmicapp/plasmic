@@ -1,27 +1,27 @@
-import { autorun } from "mobx";
-import { observer } from "mobx-react-lite";
-import React from "react";
-import { Component } from "../../../classes";
-import { ensure } from "../../../common";
+import { Component } from "@/wab/classes";
+import {
+  showCanvasPageNavigationNotification,
+  trapInteractionError,
+} from "@/wab/client/components/canvas/studio-canvas-util";
+import { onLoadInjectSystemJS } from "@/wab/client/components/live/live-syncer";
+import { getSortedHostLessPkgs } from "@/wab/client/components/studio/studio-bundles";
+import { scriptExec } from "@/wab/client/dom-utils";
+import { maybeToggleTrailingSlash } from "@/wab/client/utils/app-hosting-utils";
+import { ensure } from "@/wab/common";
 import {
   InteractionArgLoc,
   InteractionLoc,
   isInteractionLoc,
-} from "../../../exprs";
-import { usedHostLessPkgs } from "../../../shared/cached-selectors";
-import { nodeJsName } from "../../../shared/codegen/react-p";
-import { getExportedComponentName } from "../../../shared/codegen/react-p/utils";
-import { toJsIdentifier } from "../../../shared/codegen/util";
-import { TplNamable } from "../../../tpls";
-import { getPublicUrl } from "../../../urls";
-import { scriptExec } from "../../dom-utils";
-import { maybeToggleTrailingSlash } from "../../utils/app-hosting-utils";
-import {
-  showCanvasPageNavigationNotification,
-  trapInteractionError,
-} from "../canvas/studio-canvas-util";
-import { onLoadInjectSystemJS } from "../live/live-syncer";
-import { getSortedHostLessPkgs } from "../studio/studio-bundles";
+} from "@/wab/exprs";
+import { usedHostLessPkgs } from "@/wab/shared/cached-selectors";
+import { nodeJsName } from "@/wab/shared/codegen/react-p";
+import { getExportedComponentName } from "@/wab/shared/codegen/react-p/utils";
+import { toJsIdentifier } from "@/wab/shared/codegen/util";
+import { TplNamable } from "@/wab/tpls";
+import { getPublicUrl } from "@/wab/urls";
+import { autorun } from "mobx";
+import { observer } from "mobx-react-lite";
+import React from "react";
 import { CodePreviewCtx } from "./CodePreviewSnippet";
 import { DocsPortalCtx } from "./DocsPortalCtx";
 import { syncDocsPreview } from "./serialize-docs-preview";

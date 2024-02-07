@@ -1,6 +1,5 @@
-import { notification, Switch } from "antd";
-import * as React from "react";
-import { maybe } from "../../../common";
+import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
+import { maybe } from "@/wab/common";
 import {
   AtomicSize,
   MinMaxSize,
@@ -8,8 +7,9 @@ import {
   showSizeCss,
   Size,
   tryParseAtomicSize,
-} from "../../../shared/Css";
-import { DimTokenSpinner } from "../widgets/DimTokenSelector";
+} from "@/wab/shared/Css";
+import { notification, Switch } from "antd";
+import * as React from "react";
 import styles from "./TrackSizeInput.module.scss";
 
 export interface TrackSizeInputProps {

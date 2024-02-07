@@ -1,8 +1,8 @@
-import React from "react";
 import {
   NO_INDEX_COPY,
   plasmicClonedIndex,
-} from "../../../shared/canvas-constants";
+} from "@/wab/shared/canvas-constants";
+import React from "react";
 
 export type RepeatedElementFnType = <
   T extends React.ReactElement | React.ReactElement[]

@@ -1,5 +1,5 @@
-import { Component, TplComponent } from "../../classes";
-import { ValComponent } from "../../val-nodes";
+import { Component, TplComponent } from "@/wab/classes";
+import { ValComponent } from "@/wab/val-nodes";
 
 export class ComponentCtx {
   private _component: Component;

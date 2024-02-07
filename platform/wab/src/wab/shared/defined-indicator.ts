@@ -1,7 +1,7 @@
+import { Arg, Component, Expr, Mixin, Param, Site, Theme } from "@/wab/classes";
+import { arrayEqIgnoreOrder, ensure } from "@/wab/common";
+import { SlotSelection } from "@/wab/slots";
 import L from "lodash";
-import { Arg, Component, Expr, Mixin, Param, Site, Theme } from "../classes";
-import { arrayEqIgnoreOrder, ensure } from "../common";
-import { SlotSelection } from "../slots";
 import { makeVariantComboSorter } from "./variant-sort";
 import { VariantCombo } from "./Variants";
 import { TplVisibility } from "./visibility-utils";

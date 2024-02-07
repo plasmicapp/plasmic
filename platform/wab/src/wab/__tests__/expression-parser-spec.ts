@@ -4,7 +4,7 @@ import {
   pathToString,
   renameObjectKey,
   replaceVarWithProp,
-} from "../shared/eval/expression-parser";
+} from "@/wab/shared/eval/expression-parser";
 
 describe("parseCodeExpression", function () {
   it("should find uses of $props.key", () => {

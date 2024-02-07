@@ -1,5 +1,5 @@
-import { DeepMergeable, deepMerged } from "../commons/collections";
-import { brand } from "../commons/types";
+import { DeepMergeable, deepMerged } from "@/wab/commons/collections";
+import { brand } from "@/wab/commons/types";
 import {
   ApiBranch,
   ApiUser,

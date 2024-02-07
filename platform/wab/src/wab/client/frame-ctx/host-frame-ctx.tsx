@@ -1,3 +1,6 @@
+import { ensureIsHostFrame, isHostFrame } from "@/wab/client/cli-routes";
+import { ensure, spawn, spawnWrapper } from "@/wab/common";
+import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import * as Comlink from "comlink";
 import {
   createMemoryHistory,
@@ -11,9 +14,6 @@ import {
   UnregisterCallback,
 } from "history";
 import * as React from "react";
-import { ensure, spawn, spawnWrapper } from "../../common";
-import { PromisifyMethods } from "../../commons/promisify-methods";
-import { ensureIsHostFrame, isHostFrame } from "../cli-routes";
 import { providesFrameCtx, useFrameCtx } from "./frame-ctx";
 import { HostFrameApi } from "./host-frame-api";
 import { getPlasmicStudioArgs } from "./plasmic-studio-args";

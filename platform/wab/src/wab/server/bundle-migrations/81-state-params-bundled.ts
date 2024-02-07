@@ -1,6 +1,6 @@
-import { mkShortId, mkUuid } from "../../common";
-import { BundleMigrationType } from "../db/bundle-migration-utils";
-import { BundledMigrationFn } from "../db/BundleMigrator";
+import { mkShortId, mkUuid } from "@/wab/common";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
+import { BundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 
 /**
  * This migration turns `State { name: X, initVal: Y, ... }` into

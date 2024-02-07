@@ -1,7 +1,7 @@
+import { ensure } from "@/wab/common";
+import { capitalizeFirst } from "@/wab/strs";
 import { DataSourceSchema, TableFieldType } from "@plasmicapp/data-sources";
 import { cloneDeep } from "lodash";
-import { ensure } from "../../common";
-import { capitalizeFirst } from "../../strs";
 import {
   DataSourceMeta,
   FilterArgMeta,

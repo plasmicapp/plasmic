@@ -1,9 +1,18 @@
+// This import needs to be relative since it is directly depended on in
+// Cypress tests, which don't support import aliases right now.
+// eslint-disable-next-line path/no-relative-imports
+import {
+  coalesce,
+  ensure,
+  filterMapTruthy,
+  multimap,
+  tuple,
+} from "../common";
 import isObject from "lodash/isObject";
 import omit from "lodash/omit";
 import pick from "lodash/pick";
 import sortBy from "lodash/sortBy";
 import uniqBy from "lodash/uniqBy";
-import { coalesce, ensure, filterMapTruthy, multimap, tuple } from "../common";
 
 export class Class {
   name: string;

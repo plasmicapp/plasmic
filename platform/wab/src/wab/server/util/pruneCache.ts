@@ -1,5 +1,5 @@
+import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { EntityManager } from "typeorm";
-import { DbMgr, SUPER_USER } from "../db/DbMgr";
 
 export async function prunePartialRevCache(em: EntityManager) {
   const mgr = new DbMgr(em, SUPER_USER);

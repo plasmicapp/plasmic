@@ -1,8 +1,8 @@
 const { Command } = require("commander");
+import { assert, ensure, spawn } from "@/wab/common";
+import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
+import { ProjectRevision } from "@/wab/server/entities/Entities";
 import { MoreThan } from "typeorm";
-import { assert, ensure, spawn } from "../../common";
-import { DEFAULT_DATABASE_URI } from "../config";
-import { ProjectRevision } from "../entities/Entities";
 import { createDbConnection } from "./dbcli-utils";
 import { DbMgr, SUPER_USER } from "./DbMgr";
 

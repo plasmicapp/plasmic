@@ -1,19 +1,19 @@
-import { EntityManager } from "typeorm";
-import { assert, ensure, jsonClone, maybeOne } from "../../../common";
+import { assert, ensure, jsonClone, maybeOne } from "@/wab/common";
+import {
+  getLastBundleVersion,
+  getMigratedBundle,
+  getMigrationsToExecute,
+} from "@/wab/server/db/BundleMigrator";
+import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
 import {
   checkBundleFields,
   checkExistingReferences,
   checkRefsInBundle,
   removeUnreachableNodesFromBundle,
-} from "../../../shared/bundler";
-import { Bundle, parseBundle } from "../../../shared/bundles";
-import { PkgVersion, ProjectRevision } from "../../entities/Entities";
-import {
-  getLastBundleVersion,
-  getMigratedBundle,
-  getMigrationsToExecute,
-} from "../BundleMigrator";
-import { DbMgr, SUPER_USER } from "../DbMgr";
+} from "@/wab/shared/bundler";
+import { Bundle, parseBundle } from "@/wab/shared/bundles";
+import { EntityManager } from "typeorm";
 
 function fixBundle(bundle: Bundle) {
   checkRefsInBundle(bundle, {

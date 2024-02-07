@@ -1,22 +1,22 @@
-import L from "lodash";
-import { observable } from "mobx";
-import { ArenaFrame, Site, TplNode } from "../classes";
-import { assert } from "../common";
+import { ArenaFrame, Site, TplNode } from "@/wab/classes";
+import { assert } from "@/wab/common";
 import {
   IChangeRecorder,
   mergeRecordedChanges,
   RecordedChanges,
-} from "../observable-model";
-import { Selectable } from "../selection";
-import { AnyArena } from "../shared/Arenas";
-import { ComponentVariantFrame } from "../shared/component-frame";
+} from "@/wab/observable-model";
+import { Selectable } from "@/wab/selection";
+import { AnyArena } from "@/wab/shared/Arenas";
+import { ComponentVariantFrame } from "@/wab/shared/component-frame";
 import {
   DeletedAssetsSummary,
   undoChangesAndResolveConflicts,
-} from "../shared/server-updates-utils";
-import { SlotSelection } from "../slots";
-import { trackComponentRoot, trackComponentSite } from "../tpls";
-import { ValNode } from "../val-nodes";
+} from "@/wab/shared/server-updates-utils";
+import { SlotSelection } from "@/wab/slots";
+import { trackComponentRoot, trackComponentSite } from "@/wab/tpls";
+import { ValNode } from "@/wab/val-nodes";
+import L from "lodash";
+import { observable } from "mobx";
 import { ComponentCtx } from "./studio-ctx/component-ctx";
 import { logChangedNodes } from "./studio-ctx/StudioCtx";
 

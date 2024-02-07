@@ -1,20 +1,29 @@
-import { Octokit } from "@octokit/core";
-import * as Sentry from "@sentry/node";
-import { Request, Response } from "express-serve-static-core";
-import { IFailable } from "ts-failable";
 import {
   assert,
   ensure,
   ensureString,
   ensureType,
   uncheckedCast,
-} from "../../common";
+} from "@/wab/common";
 import {
   coalesceErrorsAsync,
   liftErrorsAsync,
   sealedFailableAsync,
-} from "../../commons/control";
-import { NotFoundError } from "../../shared/ApiErrors/errors";
+} from "@/wab/commons/control";
+import { getGithubApp } from "@/wab/server/github/app";
+import { fetchGithubBranches } from "@/wab/server/github/branches";
+import { detectSyncOptions } from "@/wab/server/github/detect";
+import { runGitJob } from "@/wab/server/github/gitjobs";
+import { setupGithubPages } from "@/wab/server/github/pages";
+import { fetchGithubRepositories } from "@/wab/server/github/repos";
+import { assertCanUseGithubRepository } from "@/wab/server/github/util";
+import {
+  createOrUpdatePushWorkflow,
+  createOrUpdateWorkflow,
+  getGitJob,
+  tryGetLastUnfinishedWorkflowRun,
+} from "@/wab/server/github/workflows";
+import { NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import {
   ApiProjectRepository,
   ExistingGithubRepoRequest,
@@ -25,20 +34,11 @@ import {
   GitSyncAction,
   NewGithubRepoRequest,
   NewGithubRepoResponse,
-} from "../../shared/ApiSchema";
-import { getGithubApp } from "../github/app";
-import { fetchGithubBranches } from "../github/branches";
-import { detectSyncOptions } from "../github/detect";
-import { runGitJob } from "../github/gitjobs";
-import { setupGithubPages } from "../github/pages";
-import { fetchGithubRepositories } from "../github/repos";
-import { assertCanUseGithubRepository } from "../github/util";
-import {
-  createOrUpdatePushWorkflow,
-  createOrUpdateWorkflow,
-  getGitJob,
-  tryGetLastUnfinishedWorkflowRun,
-} from "../github/workflows";
+} from "@/wab/shared/ApiSchema";
+import { Octokit } from "@octokit/core";
+import * as Sentry from "@sentry/node";
+import { Request, Response } from "express-serve-static-core";
+import { IFailable } from "ts-failable";
 import { getUser, parseQueryParams, userDbMgr } from "./util";
 
 function tryGetGithubTokenHeader(req: Request) {

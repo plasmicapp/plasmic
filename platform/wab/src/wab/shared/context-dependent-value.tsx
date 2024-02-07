@@ -1,6 +1,6 @@
+import { ControlExtras } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import { swallow } from "@/wab/common";
 import { ContextDependentConfig } from "@plasmicapp/host";
-import { ControlExtras } from "../client/components/sidebar-tabs/PropEditorRow";
-import { swallow } from "../common";
 
 export function getContextDependentValue<P>(
   contextDependentValue:

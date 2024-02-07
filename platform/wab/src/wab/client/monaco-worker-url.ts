@@ -1,5 +1,5 @@
+import { getPublicUrl } from "@/wab/urls";
 import memoizeOne from "memoize-one";
-import { getPublicUrl } from "../urls";
 
 /**
  * We need to run this before using the Monaco Editor:

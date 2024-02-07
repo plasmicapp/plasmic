@@ -1,9 +1,9 @@
-import { ensureKnownProjectDependency, ProjectDependency } from "../../classes";
-import { upgradeProjectDeps } from "../../project-deps";
-import { ProjectId } from "../../shared/ApiSchema";
-import { Bundler } from "../../shared/bundler";
-import { isHostLessPackage } from "../../sites";
-import { trackComponentRoot, trackComponentSite } from "../../tpls";
+import { ensureKnownProjectDependency, ProjectDependency } from "@/wab/classes";
+import { upgradeProjectDeps } from "@/wab/project-deps";
+import { ProjectId } from "@/wab/shared/ApiSchema";
+import { Bundler } from "@/wab/shared/bundler";
+import { isHostLessPackage } from "@/wab/sites";
+import { trackComponentRoot, trackComponentSite } from "@/wab/tpls";
 import { unbundleSite } from "./bundle-migration-utils";
 import { getLastBundleVersion, getMigratedBundle } from "./BundleMigrator";
 import { DbMgr } from "./DbMgr";

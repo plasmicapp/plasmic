@@ -1,6 +1,6 @@
+import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import L from "lodash";
 import React from "react";
-import { ValueSetState } from "../../sidebar/sidebar-helpers";
 import {
   EnumPropEditor,
   EnumWithSearchPropEditor,

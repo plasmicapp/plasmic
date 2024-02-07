@@ -1,7 +1,7 @@
+import { ensure, ensureArray } from "@/wab/common";
 import classNames from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { ensure, ensureArray } from "../../../common";
 import { DefinedIndicator } from "./DefinedIndicator";
 import {
   getLabelForStyleName,

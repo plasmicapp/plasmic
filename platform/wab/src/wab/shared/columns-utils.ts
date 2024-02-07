@@ -1,13 +1,13 @@
-import { clamp, isEqual, isUndefined, range, sum } from "lodash";
 import {
   ColumnsConfig,
   ColumnsConfigParams,
   TplTag,
   Variant,
-} from "../classes";
-import { ensure } from "../common";
-import { expandRuleSets } from "../styles";
-import { TplColumnsTag } from "../tpls";
+} from "@/wab/classes";
+import { ensure } from "@/wab/common";
+import { expandRuleSets } from "@/wab/styles";
+import { TplColumnsTag } from "@/wab/tpls";
+import { clamp, isEqual, isUndefined, range, sum } from "lodash";
 import { parseScreenSpec } from "./Css";
 import { readonlyRSH, RSH } from "./RuleSetHelpers";
 import { VariantTplMgr } from "./VariantTplMgr";

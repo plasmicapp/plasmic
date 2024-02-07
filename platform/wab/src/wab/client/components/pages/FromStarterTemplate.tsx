@@ -1,10 +1,10 @@
+import { AppCtx } from "@/wab/client/app-ctx";
+import { U, UU } from "@/wab/client/cli-routes";
+import { Spinner } from "@/wab/client/components/widgets";
+import { spawn } from "@/wab/common";
+import { StarterProjectConfig } from "@/wab/devflags";
+import { WorkspaceId } from "@/wab/shared/ApiSchema";
 import * as React from "react";
-import { spawn } from "../../../common";
-import { StarterProjectConfig } from "../../../devflags";
-import { WorkspaceId } from "../../../shared/ApiSchema";
-import { AppCtx } from "../../app-ctx";
-import { U, UU } from "../../cli-routes";
-import { Spinner } from "../widgets";
 
 export function FromStarterTemplate(props: {
   appCtx: AppCtx;

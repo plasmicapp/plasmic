@@ -1,11 +1,11 @@
+import { spawn } from "@/wab/common";
+import { User } from "@/wab/server/entities/Entities";
+import { makeUserTraits } from "@/wab/server/routes/util";
+import { disconnectUserSockets } from "@/wab/server/socket-util";
+import { ForbiddenError } from "@/wab/shared/ApiErrors/errors";
+import { TeamWhiteLabelInfo } from "@/wab/shared/ApiSchema";
 import OktaJwtVerifier from "@okta/jwt-verifier";
 import { Request } from "express-serve-static-core";
-import { spawn } from "../../common";
-import { ForbiddenError } from "../../shared/ApiErrors/errors";
-import { TeamWhiteLabelInfo } from "../../shared/ApiSchema";
-import { User } from "../entities/Entities";
-import { makeUserTraits } from "../routes/util";
-import { disconnectUserSockets } from "../socket-util";
 
 export function doLogin(
   request: Request,

@@ -1,7 +1,7 @@
+import { ensure, tuple } from "@/wab/common";
+import { clean, parse, transform } from "@/wab/model/model-generator";
+import { Class, Field, Type, withoutUids } from "@/wab/model/model-meta";
 import L from "lodash";
-import { ensure, tuple } from "../common";
-import { clean, parse, transform } from "../model/model-generator";
-import { Class, Field, Type, withoutUids } from "../model/model-meta";
 
 function trimIndent(x: string) {
   const lines = x.split("\n");

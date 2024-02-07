@@ -1,14 +1,14 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import * as React from "react";
-import { ApiDataSource, WorkspaceId } from "../../../shared/ApiSchema";
-import { isCoreTeamEmail } from "../../../shared/devflag-utils";
-import { AppCtx } from "../../app-ctx";
+import { AppCtx } from "@/wab/client/app-ctx";
+import { DataSourceModal } from "@/wab/client/components/modals/DataSourceModal";
+import { Matcher } from "@/wab/client/components/view-common";
 import {
   DefaultWorkspaceDataSourcesProps,
   PlasmicWorkspaceDataSources,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicWorkspaceDataSources";
-import { DataSourceModal } from "../modals/DataSourceModal";
-import { Matcher } from "../view-common";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicWorkspaceDataSources";
+import { ApiDataSource, WorkspaceId } from "@/wab/shared/ApiSchema";
+import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import * as React from "react";
 import DataSource from "./DataSource";
 
 export interface WorkspaceDataSourcesProps

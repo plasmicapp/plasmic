@@ -1,7 +1,4 @@
-import { Command } from "commander";
-import inquirer from "inquirer";
-import { groupBy } from "lodash";
-import { spawn } from "../../common";
+import { spawn } from "@/wab/common";
 import {
   CmsDatabase,
   DataSource,
@@ -9,7 +6,10 @@ import {
   Team,
   User,
   Workspace,
-} from "../entities/Entities";
+} from "@/wab/server/entities/Entities";
+import { Command } from "commander";
+import inquirer from "inquirer";
+import { groupBy } from "lodash";
 import { createDbConnection } from "./dbcli-utils";
 import { DbMgr, SUPER_USER } from "./DbMgr";
 

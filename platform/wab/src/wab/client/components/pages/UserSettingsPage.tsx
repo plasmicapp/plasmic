@@ -1,14 +1,14 @@
+import { AppCtx } from "@/wab/client/app-ctx";
+import { AddTrustedHostModal } from "@/wab/client/components/AddTrustedHostModal";
+import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
+import { NormalLayout } from "@/wab/client/components/normal-layout";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
+import { ensure } from "@/wab/common";
+import { ApiTrustedHost } from "@/wab/shared/ApiSchema";
 import copy from "copy-to-clipboard";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { ensure } from "../../../common";
-import { ApiTrustedHost } from "../../../shared/ApiSchema";
-import { AppCtx } from "../../app-ctx";
-import { useAppCtx } from "../../contexts/AppContexts";
-import { useAsyncStrict } from "../../hooks/useAsyncStrict";
-import { AddTrustedHostModal } from "../AddTrustedHostModal";
-import { documentTitle } from "../dashboard/page-utils";
-import { NormalLayout } from "../normal-layout";
 import SettingsContainer from "./plasmic/SettingsContainer";
 
 function _UserSettingsPage(props: { appCtx: AppCtx }) {

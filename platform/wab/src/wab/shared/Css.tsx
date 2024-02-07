@@ -1,7 +1,7 @@
-import { check, ensure, precisionRound, unexpected } from "../common";
-import { cssUnitsChecked, VALID_UNITS } from "../css";
+import { check, ensure, precisionRound, unexpected } from "@/wab/common";
+import { cssUnitsChecked, VALID_UNITS } from "@/wab/css";
 
-export type Unit = typeof cssUnitsChecked[number] | "fr" | "";
+export type Unit = (typeof cssUnitsChecked)[number] | "fr" | "";
 
 export function ensureUnit(text: string): Unit {
   if (isValidUnit(text)) {

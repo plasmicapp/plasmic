@@ -1,10 +1,10 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import * as React from "react";
 import {
   DefaultCopilotLikeDislikeProps,
   PlasmicCopilotLikeDislike,
   PlasmicCopilotLikeDislike__OverridesType,
-} from "../plasmic/plasmic_kit_data_binding/PlasmicCopilotLikeDislike";
+} from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotLikeDislike";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import * as React from "react";
 
 export interface CopilotLikeDislikeProps
   extends DefaultCopilotLikeDislikeProps,

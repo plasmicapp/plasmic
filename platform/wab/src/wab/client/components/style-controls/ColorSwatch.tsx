@@ -1,6 +1,6 @@
+import PlasmicColorSwatch from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicColorSwatch";
 import { Tooltip } from "antd";
 import React from "react";
-import PlasmicColorSwatch from "../../plasmic/plasmic_kit_style_controls/PlasmicColorSwatch";
 
 export function ColorSwatch(props: {
   color?: string;

@@ -1,10 +1,10 @@
+import { AppCtx } from "@/wab/client/app-ctx";
+import { isTopFrame } from "@/wab/client/cli-routes";
+import importAndRetry from "@/wab/client/components/dynamic-import";
+import { ObserverLoadable } from "@/wab/client/components/widgets";
+import { useHostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { AppCtx } from "../../app-ctx";
-import { isTopFrame } from "../../cli-routes";
-import { useHostFrameCtx } from "../../frame-ctx/host-frame-ctx";
-import importAndRetry from "../dynamic-import";
-import { ObserverLoadable } from "../widgets";
 import { StudioFrame } from "./studio-frame";
 
 type ViewInitializerProps = {

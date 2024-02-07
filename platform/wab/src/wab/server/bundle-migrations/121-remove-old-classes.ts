@@ -1,5 +1,5 @@
-import { BundleMigrationType } from "../db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 
 // migrates plasmic-sanity-io, plasmic-content-stack
 export const migrate: UnbundledMigrationFn = async (bundle) => {

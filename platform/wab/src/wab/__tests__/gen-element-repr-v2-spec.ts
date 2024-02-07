@@ -1,18 +1,18 @@
-import { NodeMarker, RawText, RenderExpr, StyleMarker } from "../classes";
-import { ensureType } from "../common";
-import { codeLit } from "../exprs";
-import { PlasmicElement } from "../shared/element-repr/element-repr-v2";
-import { tplToPlasmicElements } from "../shared/element-repr/gen-element-repr-v2";
-import { ensureBaseVariant } from "../shared/TplMgr";
-import { ensureBaseVariantSetting } from "../shared/VariantTplMgr";
-import { mkRuleSet } from "../styles";
-import { componentLib } from "../test/eval";
+import { NodeMarker, RawText, RenderExpr, StyleMarker } from "@/wab/classes";
+import { ensureType } from "@/wab/common";
+import { codeLit } from "@/wab/exprs";
+import { PlasmicElement } from "@/wab/shared/element-repr/element-repr-v2";
+import { tplToPlasmicElements } from "@/wab/shared/element-repr/gen-element-repr-v2";
+import { ensureBaseVariant } from "@/wab/shared/TplMgr";
+import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
+import { mkRuleSet } from "@/wab/styles";
+import { componentLib } from "@/wab/test/eval";
 import {
   mkTplComponent,
   mkTplInlinedText,
   mkTplTagX,
   TplTagType,
-} from "../tpls";
+} from "@/wab/tpls";
 
 describe("gen-element-types", () => {
   it("handles components and props", () => {

@@ -1,5 +1,5 @@
+import { spawn, unexpected } from "@/wab/common";
 import { isArray, isPlainObject } from "lodash";
-import { spawn, unexpected } from "../common";
 
 export type BundledInst = {
   [field: string]: any;

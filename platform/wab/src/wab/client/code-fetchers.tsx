@@ -1,10 +1,10 @@
+import { ensure, tuple, uncheckedCast } from "@/wab/common";
 import {
   Fetcher,
   FetcherMeta,
   FetcherRegistration,
 } from "@plasmicapp/host/dist/fetcher";
 import memoizeOne from "memoize-one";
-import { ensure, tuple, uncheckedCast } from "../common";
 
 export type FetcherMap = Map<string, { impl: Fetcher; meta: FetcherMeta }>;
 

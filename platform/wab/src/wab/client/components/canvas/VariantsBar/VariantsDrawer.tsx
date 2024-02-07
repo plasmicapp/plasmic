@@ -1,9 +1,15 @@
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { Component, isKnownVariant, Variant } from "../../../../classes";
-import { mod, partitions, spawn, xGroupBy } from "../../../../common";
-import { VARIANTS_LOWER } from "../../../../shared/Labels";
+import { Component, isKnownVariant, Variant } from "@/wab/classes";
+import { Matcher } from "@/wab/client/components/view-common";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { useRefMap } from "@/wab/client/hooks/useRefMap";
+import PlasmicIcon__Bolt from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Bolt";
+import {
+  DefaultVariantsDrawerProps,
+  PlasmicVariantsDrawer,
+} from "@/wab/client/plasmic/plasmic_kit_variants_bar/PlasmicVariantsDrawer";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { mod, partitions, spawn, xGroupBy } from "@/wab/common";
+import { VARIANTS_LOWER } from "@/wab/shared/Labels";
 import {
   getAllVariantsForTpl,
   isComponentStyleVariant,
@@ -13,17 +19,11 @@ import {
   isStandaloneVariantGroup,
   isStyleVariant,
   makeVariantName,
-} from "../../../../shared/Variants";
-import { isTplTag } from "../../../../tpls";
-import { useRefMap } from "../../../hooks/useRefMap";
-import PlasmicIcon__Bolt from "../../../plasmic/plasmic_kit/PlasmicIcon__Bolt";
-import {
-  DefaultVariantsDrawerProps,
-  PlasmicVariantsDrawer,
-} from "../../../plasmic/plasmic_kit_variants_bar/PlasmicVariantsDrawer";
-import { useStudioCtx } from "../../../studio-ctx/StudioCtx";
-import { Matcher } from "../../view-common";
-import { Icon } from "../../widgets/Icon";
+} from "@/wab/shared/Variants";
+import { isTplTag } from "@/wab/tpls";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import VariantRow from "./VariantRow";
 import styles from "./VariantsDrawer.module.scss";
 import VariantsGroupLabel from "./VariantsGroupLabel";

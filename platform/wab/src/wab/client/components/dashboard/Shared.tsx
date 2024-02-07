@@ -1,20 +1,20 @@
+import { Avatar, MoreUsersAvatar } from "@/wab/client/components/studio/Avatar";
+import { ClickStopper } from "@/wab/client/components/widgets";
+import ShareDialogContent from "@/wab/client/components/widgets/plasmic/ShareDialogContent";
+import {
+  DefaultSharedProps,
+  PlasmicShared,
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicShared";
+import { filterMapTruthy } from "@/wab/common";
+import { ApiPermission, ApiResource } from "@/wab/shared/ApiSchema";
+import {
+  convertToTaggedResourceId,
+  filterDirectResourcePerms,
+} from "@/wab/shared/perms";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as L from "lodash";
 import * as React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import { filterMapTruthy } from "../../../common";
-import { ApiPermission, ApiResource } from "../../../shared/ApiSchema";
-import {
-  convertToTaggedResourceId,
-  filterDirectResourcePerms,
-} from "../../../shared/perms";
-import {
-  DefaultSharedProps,
-  PlasmicShared,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicShared";
-import { Avatar, MoreUsersAvatar } from "../studio/Avatar";
-import { ClickStopper } from "../widgets";
-import ShareDialogContent from "../widgets/plasmic/ShareDialogContent";
 import styles from "./dashboard.module.scss";
 
 interface SharedProps extends DefaultSharedProps {

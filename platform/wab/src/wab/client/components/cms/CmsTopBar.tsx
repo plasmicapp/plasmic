@@ -1,11 +1,11 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import * as React from "react";
-import { useRRouteMatch, UU } from "../../cli-routes";
-import { useApi } from "../../contexts/AppContexts";
+import { useRRouteMatch, UU } from "@/wab/client/cli-routes";
+import { useApi } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultCmsTopBarProps,
   PlasmicCmsTopBar,
-} from "../../plasmic/plasmic_kit_cms/PlasmicCmsTopBar";
+} from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsTopBar";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import * as React from "react";
 import { useCmsDatabase, useMutateDatabase } from "./cms-contexts";
 
 export interface CmsTopBarProps extends DefaultCmsTopBarProps {}

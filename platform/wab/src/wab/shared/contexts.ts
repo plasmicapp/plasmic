@@ -4,8 +4,8 @@ import {
   RenderExpr,
   TplComponent,
   TplNode,
-} from "../classes";
-import { arrayEq, assert, ensure } from "../common";
+} from "@/wab/classes";
+import { arrayEq, assert, ensure } from "@/wab/common";
 import {
   ContextFactory,
   observeRelevantFields,

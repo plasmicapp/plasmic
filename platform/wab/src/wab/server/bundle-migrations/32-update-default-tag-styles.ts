@@ -1,15 +1,15 @@
-import { isKnownTplTag, TplTag } from "../../classes";
-import { ensure } from "../../common";
-import { Bundler } from "../../shared/bundler";
-import { createDefaultTheme } from "../../sites";
-import { cloneMixin, cloneThemeStyle } from "../../styles";
-import { flattenTpls } from "../../tpls";
+import { isKnownTplTag, TplTag } from "@/wab/classes";
+import { ensure } from "@/wab/common";
 import {
   BundleMigrationType,
   unbundleSite,
-} from "../db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
-import { ProjectRevision } from "../entities/Entities";
+} from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { ProjectRevision } from "@/wab/server/entities/Entities";
+import { Bundler } from "@/wab/shared/bundler";
+import { createDefaultTheme } from "@/wab/sites";
+import { cloneMixin, cloneThemeStyle } from "@/wab/styles";
+import { flattenTpls } from "@/wab/tpls";
 
 const ids = new Set([
   // Projects in "Starter projects" workspace and their pkgs.

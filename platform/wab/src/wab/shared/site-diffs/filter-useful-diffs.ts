@@ -1,5 +1,5 @@
+import { isBuiltinCodeComponentName } from "@/wab/shared/code-components/builtin-code-components";
 import { ChangeLogEntry } from ".";
-import { isBuiltinCodeComponentName } from "../code-components/builtin-code-components";
 
 export function filterUsefulDiffs(diffs: ChangeLogEntry[]) {
   return diffs.filter((diff) => {

@@ -1,7 +1,7 @@
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { mkUuid, spawn } from "@/wab/common";
 import { proxy } from "comlink";
 import { useEffect, useState } from "react";
-import { mkUuid, spawn } from "../../common";
-import { useAppCtx } from "../contexts/AppContexts";
 
 /**
  * Returns the user's last selected codegenType. Listen to changes in

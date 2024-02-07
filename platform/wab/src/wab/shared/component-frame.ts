@@ -1,12 +1,10 @@
-import L from "lodash";
-import { computed, observable } from "mobx";
 import {
   ArenaFrame,
   Site,
   TplComponent,
   Variant,
   VariantGroup,
-} from "../classes";
+} from "@/wab/classes";
 import {
   arrayEqIgnoreOrder,
   filterMapKeys,
@@ -19,9 +17,11 @@ import {
   replaceObj,
   tuple,
   withoutNils,
-} from "../common";
-import { allComponentVariants } from "../components";
-import { allGlobalVariants } from "../sites";
+} from "@/wab/common";
+import { allComponentVariants } from "@/wab/components";
+import { allGlobalVariants } from "@/wab/sites";
+import L from "lodash";
+import { computed, observable } from "mobx";
 import { ensureValidCombo, isPrivateStyleVariant } from "./Variants";
 
 /**

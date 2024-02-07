@@ -1,4 +1,4 @@
-import { WabPromTimer } from "../promstats";
+import { WabPromTimer } from "@/wab/server/promstats";
 
 export async function withSpan<T>(
   name: string,

@@ -1,13 +1,13 @@
+import { CanvasConfigButton } from "@/wab/client/components/canvas/CanvasFrame/CanvasConfigButton";
+import { VariantsBar } from "@/wab/client/components/canvas/VariantsBar";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import IconButton from "@/wab/client/components/widgets/IconButton";
+import Switch from "@/wab/client/components/widgets/Switch";
+import RefreshsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Refreshsvg";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { DEVFLAGS } from "@/wab/devflags";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { DEVFLAGS } from "../../../../devflags";
-import RefreshsvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__Refreshsvg";
-import { StudioCtx } from "../../../studio-ctx/StudioCtx";
-import { CanvasConfigButton } from "../../canvas/CanvasFrame/CanvasConfigButton";
-import { VariantsBar } from "../../canvas/VariantsBar";
-import { Icon } from "../../widgets/Icon";
-import IconButton from "../../widgets/IconButton";
-import Switch from "../../widgets/Switch";
 import S from "./FocusedModeToolbar.module.scss";
 
 export const FocusedModeToolbar = observer(

@@ -1,3 +1,16 @@
+import { Component, isKnownTplTag, Variant } from "@/wab/classes";
+import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ensure, spawn } from "@/wab/common";
+import { InlineEdit } from "@/wab/commons/components/InlineEdit";
+import { VARIANT_CAP, VARIANT_LOWER } from "@/wab/shared/Labels";
+import {
+  isBaseVariant,
+  isGlobalVariant,
+  isPrivateStyleVariant,
+  isStyleVariant,
+  makeVariantName,
+} from "@/wab/shared/Variants";
+import { isTplTag } from "@/wab/tpls";
 import { Menu } from "antd";
 import { default as classNames, default as cn } from "classnames";
 import { sumBy } from "lodash";
@@ -8,19 +21,6 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { Component, isKnownTplTag, Variant } from "../../classes";
-import { ensure, spawn } from "../../common";
-import { InlineEdit } from "../../commons/components/InlineEdit";
-import { VARIANT_CAP, VARIANT_LOWER } from "../../shared/Labels";
-import {
-  isBaseVariant,
-  isGlobalVariant,
-  isPrivateStyleVariant,
-  isStyleVariant,
-  makeVariantName,
-} from "../../shared/Variants";
-import { isTplTag } from "../../tpls";
-import { StudioCtx, useStudioCtx } from "../studio-ctx/StudioCtx";
 import { SelectorsInput, SelectorTags } from "./sidebar/RuleSetControls";
 import S from "./VariantControls.module.scss";
 import Button from "./widgets/Button";

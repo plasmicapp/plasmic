@@ -1,9 +1,9 @@
+import { ProjectsFilterProps } from "@/wab/client/components/dashboard/ProjectsFilter";
+import { Matcher } from "@/wab/client/components/view-common";
+import { ApiCmsDatabase, ApiProject } from "@/wab/shared/ApiSchema";
 import { sortBy } from "lodash";
 import * as React from "react";
 import { useLocalStorage } from "react-use";
-import { ApiCmsDatabase, ApiProject } from "../../shared/ApiSchema";
-import { ProjectsFilterProps } from "../components/dashboard/ProjectsFilter";
-import { Matcher } from "../components/view-common";
 
 const orderByStorageKey = "projectsFilter-orderBy";
 const defaultOrderBy = "updatedAt";

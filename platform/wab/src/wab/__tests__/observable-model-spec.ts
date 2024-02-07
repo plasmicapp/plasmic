@@ -1,11 +1,15 @@
+import { ensure, hackyCast } from "@/wab/common";
+import { removeFromArray } from "@/wab/commons/collections";
+import { parse, transform } from "@/wab/model/model-generator";
+import { MetaRuntime, ObjInstBase } from "@/wab/model/model-meta";
+import {
+  ChangeRecorder,
+  ModelChange,
+  observeModel,
+} from "@/wab/observable-model";
+import { InstUtil } from "@/wab/shared/core/InstUtil";
 import L from "lodash";
 import { Lambda } from "mobx";
-import { ensure, hackyCast } from "../common";
-import { removeFromArray } from "../commons/collections";
-import { parse, transform } from "../model/model-generator";
-import { MetaRuntime, ObjInstBase } from "../model/model-meta";
-import { ChangeRecorder, ModelChange, observeModel } from "../observable-model";
-import { InstUtil } from "../shared/core/InstUtil";
 
 class Sentinel {
   tag: "SENTINEL" = "SENTINEL";

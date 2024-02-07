@@ -1,9 +1,9 @@
-import { Tooltip } from "antd";
-import * as React from "react";
 import {
   DefaultLabeledPropProps,
   PlasmicLabeledProp,
-} from "../../plasmic/plasmic_kit_docs_portal/PlasmicLabeledProp";
+} from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicLabeledProp";
+import { Tooltip } from "antd";
+import * as React from "react";
 
 interface LabeledPropProps extends DefaultLabeledPropProps {
   menu?: () => React.ReactElement;

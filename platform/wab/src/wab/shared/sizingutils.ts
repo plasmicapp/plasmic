@@ -1,4 +1,3 @@
-import memoizeOne from "memoize-one";
 import {
   ArenaFrame,
   Component,
@@ -7,16 +6,16 @@ import {
   TplNode,
   Variant,
   VariantSetting,
-} from "../classes";
-import { assert, ensure } from "../common";
-import { isTokenRef } from "../commons/StyleToken";
+} from "@/wab/classes";
+import { assert, ensure } from "@/wab/common";
+import { isTokenRef } from "@/wab/commons/StyleToken";
 import {
   getEffectiveVariantSettingOfDeepRootElement,
   isPageComponent,
-} from "../components";
-import { parseCssNumericNew } from "../css";
-import { getArenaFrameActiveVariants } from "../sites";
-import { createRuleSetMerger, expandRuleSets } from "../styles";
+} from "@/wab/components";
+import { parseCssNumericNew } from "@/wab/css";
+import { getArenaFrameActiveVariants } from "@/wab/sites";
+import { createRuleSetMerger, expandRuleSets } from "@/wab/styles";
 import {
   isCodeComponentRoot,
   isComponentRoot,
@@ -27,7 +26,8 @@ import {
   isTplTag,
   isTplTextBlock,
   isTplVariantable,
-} from "../tpls";
+} from "@/wab/tpls";
+import memoizeOne from "memoize-one";
 import { ComponentGenHelper } from "./codegen/codegen-helpers";
 import {
   CONTENT_LAYOUT_FULL_BLEED,

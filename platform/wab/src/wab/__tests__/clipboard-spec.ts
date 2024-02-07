@@ -1,9 +1,9 @@
-import { TplTag } from "../classes";
-import { Clipboard, TplClip } from "../client/clipboard";
-import { ComponentType, mkComponent } from "../components";
-import { withoutUids } from "../model/model-meta";
-import { mkTplTestText } from "../test/tpls";
-import { mkTplTagX } from "../tpls";
+import { TplTag } from "@/wab/classes";
+import { Clipboard, TplClip } from "@/wab/client/clipboard";
+import { ComponentType, mkComponent } from "@/wab/components";
+import { withoutUids } from "@/wab/model/model-meta";
+import { mkTplTestText } from "@/wab/test/tpls";
+import { mkTplTagX } from "@/wab/tpls";
 
 describe("clipboard", function () {
   let src: TplTag, cb: Clipboard;

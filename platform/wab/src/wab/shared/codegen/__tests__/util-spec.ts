@@ -1,4 +1,4 @@
-import { toJsIdentifier } from "../util";
+import { toJsIdentifier } from "@/wab/shared/codegen/util";
 
 describe("toJsIdentifier", () => {
   it("should work", () => {

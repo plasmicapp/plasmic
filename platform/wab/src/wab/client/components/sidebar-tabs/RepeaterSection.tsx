@@ -1,11 +1,11 @@
+import { isKnownTplComponent, TplNode } from "@/wab/classes";
+import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
+import { RepeaterPropsTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
+import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { assert } from "@/wab/common";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { isKnownTplComponent, TplNode } from "../../../classes";
-import { assert } from "../../../common";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { TplExpsProvider } from "../style-controls/StyleComponent";
-import { RepeaterPropsTooltip } from "../widgets/DetailedTooltips";
-import { LabelWithDetailedTooltip } from "../widgets/LabelWithDetailedTooltip";
 import { ComponentPropsSection } from "./ComponentPropsSection";
 
 export const RepeaterSection = observer(function (props: {

@@ -1,9 +1,9 @@
-import * as React from "react";
+import { AsyncState } from "@/wab/client/hooks/useAsyncStrict";
 import {
   ApiProjectWebhookEvent,
   ProjectWebhookEventsResponse,
-} from "../../../shared/ApiSchema";
-import { AsyncState } from "../../hooks/useAsyncStrict";
+} from "@/wab/shared/ApiSchema";
+import * as React from "react";
 import {
   DefaultWebhooksHistoryProps,
   PlasmicWebhooksHistory,

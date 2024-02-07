@@ -1,5 +1,3 @@
-import { Menu, Popover } from "antd";
-import React from "react";
 import {
   Component,
   ComponentVariantGroup,
@@ -8,17 +6,22 @@ import {
   isKnownObjectPath,
   Variant,
   VariantGroup,
-} from "../../../classes";
-import { ensure, spawn } from "../../../common";
+} from "@/wab/classes";
+import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import DataPicker from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import { getExpectedValuesForVariantGroup } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
+import { ClickStopper } from "@/wab/client/components/widgets";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ensure, spawn } from "@/wab/common";
 import {
   allComponentStyleVariants,
   allPrivateStyleVariants,
-} from "../../../components";
+} from "@/wab/components";
 import {
   createExprForDataPickerValue,
   extractValueSavedFromDataPicker,
-} from "../../../exprs";
-import { VARIANT_GROUP_LOWER } from "../../../shared/Labels";
+} from "@/wab/exprs";
+import { VARIANT_GROUP_LOWER } from "@/wab/shared/Labels";
 import {
   getBaseVariant,
   isBaseVariant,
@@ -26,17 +29,14 @@ import {
   isScreenVariantGroup,
   isStandaloneVariantGroup,
   isStyleVariant,
-} from "../../../shared/Variants";
+} from "@/wab/shared/Variants";
 import {
   getAccessTypeDisplayName,
   StateAccessType,
   STATE_ACCESS_TYPES,
-} from "../../../states";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { MenuBuilder } from "../menu-builder";
-import DataPicker from "../sidebar-tabs/DataBinding/DataPicker";
-import { getExpectedValuesForVariantGroup } from "../sidebar-tabs/DataBinding/DataPickerUtil";
-import { ClickStopper } from "../widgets";
+} from "@/wab/states";
+import { Menu, Popover } from "antd";
+import React from "react";
 
 export function makeVariantMenu(opts: {
   variant: Variant;

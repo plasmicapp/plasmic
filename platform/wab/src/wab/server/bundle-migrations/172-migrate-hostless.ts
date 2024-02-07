@@ -1,8 +1,8 @@
 import {
   BundleMigrationType,
   upgradeHostlessProject,
-} from "../db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
+} from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { migrate as migrate175 } from "./175-refactor-data-model";
 
 // migrates plasmic-rich-components

@@ -1,7 +1,7 @@
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { XDraggable } from "@/wab/commons/components/XDraggable";
 import classNames from "classnames";
 import * as React from "react";
-import { XDraggable } from "../../../../commons/components/XDraggable";
-import { useStudioCtx } from "../../../studio-ctx/StudioCtx";
 
 export function VirtualScrollBar(props: {
   element: HTMLElement;
@@ -22,9 +22,8 @@ export function VirtualScrollBar(props: {
   const deltaProp = axis === "vertical" ? "deltaY" : "deltaX";
   const thumbPositionProp = axis === "vertical" ? "top" : "left";
   const thumbSizeProp = axis === "vertical" ? "height" : "width";
-  const overflow = getComputedStyle(element)[
-    `overflow${axis === "vertical" ? "Y" : "X"}`
-  ];
+  const overflow =
+    getComputedStyle(element)[`overflow${axis === "vertical" ? "Y" : "X"}`];
 
   if (
     element[containerSizeProp] >= element[contentSizeProp] ||

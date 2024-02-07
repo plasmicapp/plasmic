@@ -1,7 +1,7 @@
+import { hideHelp } from "@/wab/client/app-ctx";
+import { PlainLink } from "@/wab/client/components/widgets";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import * as React from "react";
-import { hideHelp } from "../../app-ctx";
-import { useAppCtx } from "../../contexts/AppContexts";
-import { PlainLink } from "../widgets";
 
 export function HelpButton() {
   const appCtx = useAppCtx();

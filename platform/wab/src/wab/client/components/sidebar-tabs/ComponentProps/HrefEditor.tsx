@@ -1,21 +1,21 @@
-import TextArea from "antd/lib/input/TextArea";
-import { defer } from "lodash";
-import React from "react";
-import { useUnmount } from "react-use";
 import {
   Component,
   isKnownComponent,
   isKnownPageHref,
   PageHref,
-} from "../../../../classes";
-import { BetterAutoComplete } from "../../../../commons/components/inputs/BetterAutoComplete";
-import { isPageComponent } from "../../../../components";
-import { codeLit, isPageHref } from "../../../../exprs";
-import PageIcon from "../../../plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Page";
-import { useUndo } from "../../../shortcuts/studio/useUndo";
-import { useStudioCtx } from "../../../studio-ctx/StudioCtx";
-import { Matcher } from "../../view-common";
-import { Icon } from "../../widgets/Icon";
+} from "@/wab/classes";
+import { Matcher } from "@/wab/client/components/view-common";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import PageIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Page";
+import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { BetterAutoComplete } from "@/wab/commons/components/inputs/BetterAutoComplete";
+import { isPageComponent } from "@/wab/components";
+import { codeLit, isPageHref } from "@/wab/exprs";
+import TextArea from "antd/lib/input/TextArea";
+import { defer } from "lodash";
+import React from "react";
+import { useUnmount } from "react-use";
 
 export function HrefEditor(props: {
   onChange: (value: PageHref | string) => void;

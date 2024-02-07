@@ -1,7 +1,7 @@
+import { ensure } from "@/wab/common";
+import { DEVFLAGS } from "@/wab/devflags";
+import { DATA_SOURCE_LOWER } from "@/wab/shared/Labels";
 import { Config } from "@react-awesome-query-builder/antd";
-import { ensure } from "../../common";
-import { DEVFLAGS } from "../../devflags";
-import { DATA_SOURCE_LOWER } from "../Labels";
 import {
   AirtableDataSource,
   AIRTABLE_META,

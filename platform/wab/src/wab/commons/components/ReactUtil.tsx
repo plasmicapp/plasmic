@@ -1,7 +1,7 @@
+import { cx, filterFalsy, spawn, tuple, withoutNils } from "@/wab/common";
+import { ReadablePromise } from "@/wab/commons/control";
 import { assignIn, groupBy, isFunction, isNil } from "lodash";
 import React, { SyntheticEvent, useState } from "react";
-import { cx, filterFalsy, spawn, tuple, withoutNils } from "../../common";
-import { ReadablePromise } from "../control";
 
 export interface KeyModifiers {
   alt?: boolean;

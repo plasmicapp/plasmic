@@ -1,6 +1,6 @@
-import { visitRefsInFields } from "../../shared/bundler";
-import { BundleMigrationType } from "../db/bundle-migration-utils";
-import { BundledMigrationFn } from "../db/BundleMigrator";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
+import { BundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { visitRefsInFields } from "@/wab/shared/bundler";
 
 export const migrate: BundledMigrationFn = async (bundle) => {
   // Convert IID references to string

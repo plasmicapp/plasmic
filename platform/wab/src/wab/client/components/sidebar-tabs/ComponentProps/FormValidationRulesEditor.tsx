@@ -1,5 +1,3 @@
-import omit from "lodash/omit";
-import React from "react";
 import {
   CollectionExpr,
   ensureKnownMapExpr,
@@ -9,22 +7,27 @@ import {
   MapExpr,
   TplComponent,
   TplTag,
-} from "../../../../classes";
-import { ViewCtx } from "../../../../client/studio-ctx/view-ctx";
-import { assert } from "../../../../common";
-import { removeFromArray } from "../../../../commons/collections";
-import { clone as cloneExpr, codeLit, tryExtractJson } from "../../../../exprs";
+} from "@/wab/classes";
+import {
+  isPropShown,
+  PropEditorRow,
+} from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import Button from "@/wab/client/components/widgets/Button";
+import Chip from "@/wab/client/components/widgets/Chip";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { assert } from "@/wab/common";
+import { removeFromArray } from "@/wab/commons/collections";
+import { clone as cloneExpr, codeLit, tryExtractJson } from "@/wab/exprs";
 import {
   maybePropTypeToDisplayName,
   StudioPropType,
-} from "../../../../shared/code-components/code-components";
-import { CanvasEnv } from "../../../../shared/eval";
-import PlusIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { SidebarModal } from "../../sidebar/SidebarModal";
-import Button from "../../widgets/Button";
-import Chip from "../../widgets/Chip";
-import { Icon } from "../../widgets/Icon";
-import { isPropShown, PropEditorRow } from "../PropEditorRow";
+} from "@/wab/shared/code-components/code-components";
+import { CanvasEnv } from "@/wab/shared/eval";
+import omit from "lodash/omit";
+import React from "react";
 
 interface StudioEnv {
   env: CanvasEnv;

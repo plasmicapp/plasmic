@@ -1,9 +1,9 @@
+import Button from "@/wab/client/components/widgets/Button";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { defaultComponentKinds } from "@/wab/components";
 import { Form, Select } from "antd";
 import React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import { defaultComponentKinds } from "../../../components";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import Button from "../widgets/Button";
 
 export function DefaultComponentKindModal<T>({
   studioCtx,

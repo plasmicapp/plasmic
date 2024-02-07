@@ -1,11 +1,11 @@
-import React from "react";
-import { spawn } from "../../../../common";
-import { U } from "../../../cli-routes";
+import { U } from "@/wab/client/cli-routes";
 import {
   promptBilling,
   PromptBillingArgs,
   showUpsellConfirm,
-} from "../../modals/PricingModal";
+} from "@/wab/client/components/modals/PricingModal";
+import { spawn } from "@/wab/common";
+import React from "react";
 
 export const UpsellModal = (
   props: PromptBillingArgs & {

@@ -1,10 +1,10 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import * as React from "react";
+import { PublicLink } from "@/wab/client/components/PublicLink";
 import {
   DefaultNavButtonProps,
   PlasmicNavButton,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicNavButton";
-import { PublicLink } from "../PublicLink";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicNavButton";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import * as React from "react";
 
 interface NavButtonProps extends DefaultNavButtonProps {
   onClick?: () => void;

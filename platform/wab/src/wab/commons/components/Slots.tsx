@@ -5,6 +5,7 @@
  * https://paper.dropbox.com/doc/Web-Dev-Tips--AZYKFaLeIhCfvd_fGevipl8BAg-ohIiFVGa3PcjyBrm8zHew#:uid=707046503510445040304251&h2=React-Portals.
  */
 
+import { ensure } from "@/wab/common";
 import React, {
   createContext,
   Dispatch,
@@ -16,7 +17,6 @@ import React, {
   useReducer,
   useState,
 } from "react";
-import { ensure } from "../../common";
 
 export interface SlotPush {
   type: "push";

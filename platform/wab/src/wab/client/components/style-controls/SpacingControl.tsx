@@ -1,9 +1,6 @@
-import { Popover, Tooltip } from "antd";
-import { TooltipPlacement } from "antd/lib/tooltip";
-import cn from "classnames";
-import * as Immutable from "immutable";
-import { observer } from "mobx-react";
-import { createRef, default as React, ReactNode } from "react";
+import { LabeledStyleDimItem } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { DimTokenSpinnerRef } from "@/wab/client/components/widgets/DimTokenSelector";
+import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
 import {
   ensure,
   hackyCast,
@@ -11,32 +8,31 @@ import {
   toggleSet,
   tuple,
   unexpected,
-} from "../../../common";
+} from "@/wab/common";
 import {
   INTERACT_OUTSIDE_EXCEPTION_SELECTORS,
   OnClickAwayExcept,
-} from "../../../commons/components/OnClickAway";
-import { Stated } from "../../../commons/components/Stated";
-import { XDraggable } from "../../../commons/components/XDraggable";
+} from "@/wab/commons/components/OnClickAway";
+import { Stated } from "@/wab/commons/components/Stated";
+import { XDraggable } from "@/wab/commons/components/XDraggable";
 import {
   lazyDerefTokenRefsWithDeps,
   TokenType,
-} from "../../../commons/StyleToken";
-import {
-  getCssInitial,
-  parseCssShorthand,
-  showCssShorthand,
-} from "../../../css";
-import { oppSide, Side, standardSides } from "../../../geom";
+} from "@/wab/commons/StyleToken";
+import { getCssInitial, parseCssShorthand, showCssShorthand } from "@/wab/css";
+import { oppSide, Side, standardSides } from "@/wab/geom";
 import {
   createNumericSize,
   NumericSize,
   parseNumericSize,
   showSizeCss,
-} from "../../../shared/Css";
-import { makeVariantedStylesHelperFromCurrentCtx } from "../../utils/style-utils";
-import { LabeledStyleDimItem } from "../sidebar/sidebar-helpers";
-import { DimTokenSpinnerRef } from "../widgets/DimTokenSelector";
+} from "@/wab/shared/Css";
+import { Popover, Tooltip } from "antd";
+import { TooltipPlacement } from "antd/lib/tooltip";
+import cn from "classnames";
+import * as Immutable from "immutable";
+import { observer } from "mobx-react";
+import { createRef, default as React, ReactNode } from "react";
 import {
   getLabelForStyleName,
   StyleComponent,

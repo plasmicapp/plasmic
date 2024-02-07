@@ -1,17 +1,21 @@
-import { omit, pick } from "lodash";
-import { Param, TplComponent } from "../../classes";
-import { internalCanvasElementProps } from "../../shared/canvas-constants";
+import { Param, TplComponent } from "@/wab/classes";
+import { internalCanvasElementProps } from "@/wab/shared/canvas-constants";
 import {
   getExternalParams,
   serializeParamType,
   SerializerBaseContext,
-} from "../codegen/react-p";
+} from "@/wab/shared/codegen/react-p";
 import {
   getExportedComponentName,
   makeDefaultExternalPropsName,
   makePlasmicComponentName,
-} from "../codegen/react-p/utils";
-import { jsLiteral, paramToVarName, toVarName } from "../codegen/util";
+} from "@/wab/shared/codegen/react-p/utils";
+import {
+  jsLiteral,
+  paramToVarName,
+  toVarName,
+} from "@/wab/shared/codegen/util";
+import { omit, pick } from "lodash";
 import { PlumePlugin } from "./plume-registry";
 import { makeComponentImportPath } from "./plume-utils";
 

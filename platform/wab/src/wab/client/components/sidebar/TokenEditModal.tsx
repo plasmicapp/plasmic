@@ -1,9 +1,9 @@
+import { StyleToken } from "@/wab/classes";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { TokenType } from "@/wab/commons/StyleToken";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
-import { StyleToken } from "../../../classes";
-import { TokenType } from "../../../commons/StyleToken";
-import { VariantedStylesHelper } from "../../../shared/VariantedStylesHelper";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
 import { FontFamilyTokenEditModal } from "./FontFamilyTokenEditModal";
 import { GeneralTokenEditModal } from "./GeneralTokenEditModal";
 import { ColorTokenPopup } from "./token-controls";

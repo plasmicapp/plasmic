@@ -1,10 +1,6 @@
-import { isKnownArena } from "../../../classes";
+import { isKnownArena } from "@/wab/classes";
 /** @format */
 
-import { useCombobox } from "downshift";
-import L from "lodash";
-import { observer } from "mobx-react-lite";
-import * as React from "react";
 import {
   Arena,
   ArenaFrame,
@@ -13,53 +9,10 @@ import {
   ProjectDependency,
   Site,
   TplNode,
-} from "../../../classes";
-import {
-  asyncFilter,
-  ensureArray,
-  filterFalsy,
-  removeWhere,
-  spawn,
-} from "../../../common";
-import {
-  getComponentDisplayName,
-  isCodeComponent,
-  isReusableComponent,
-} from "../../../components";
-import {
-  DEVFLAGS,
-  flattenInsertableIconGroups,
-  flattenInsertableTemplates,
-  HostLessPackageInfo,
-  InsertableTemplatesGroup,
-} from "../../../devflags";
-import { ImageAssetType } from "../../../image-asset-type";
-import { isIcon } from "../../../image-assets";
-import { getArenaFrameDesc, getArenaFrames } from "../../../shared/Arenas";
-import { allComponents } from "../../../sites";
-import { SlotSelection } from "../../../slots";
-import { getComponentPresets } from "../../code-components/code-presets";
-import {
-  CommandItem,
-  CommandItemKey,
-  CommandItemType,
-  COMMANDS_MAP,
-} from "../../definitions/commands";
-import {
-  AddItem,
-  AddItemType,
-  INSERTABLES_MAP,
-  isAddItem,
-  isTplAddItem,
-} from "../../definitions/insertables";
-import { FRAME_ICON } from "../../icons";
-import {
-  DefaultOmnibarProps,
-  PlasmicOmnibar,
-} from "../../plasmic/plasmic_kit_omnibar/PlasmicOmnibar";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { InsertRelLoc } from "../canvas/view-ops";
-import { checkAndNotifyUnsupportedHostVersion } from "../modals/codeComponentModals";
+} from "@/wab/classes";
+import { getComponentPresets } from "@/wab/client/code-components/code-presets";
+import { InsertRelLoc } from "@/wab/client/components/canvas/view-ops";
+import { checkAndNotifyUnsupportedHostVersion } from "@/wab/client/components/modals/codeComponentModals";
 import {
   createAddComponentPreset,
   createAddHostLessComponent,
@@ -71,10 +24,57 @@ import {
   isInsertable,
   makePlumeInsertables,
   maybeShowGlobalContextNotification,
-} from "../studio/add-drawer/AddDrawer";
-import { Matcher } from "../view-common";
-import Button from "../widgets/Button";
-import { TextboxRef } from "../widgets/Textbox";
+} from "@/wab/client/components/studio/add-drawer/AddDrawer";
+import { Matcher } from "@/wab/client/components/view-common";
+import Button from "@/wab/client/components/widgets/Button";
+import { TextboxRef } from "@/wab/client/components/widgets/Textbox";
+import {
+  CommandItem,
+  CommandItemKey,
+  CommandItemType,
+  COMMANDS_MAP,
+} from "@/wab/client/definitions/commands";
+import {
+  AddItem,
+  AddItemType,
+  INSERTABLES_MAP,
+  isAddItem,
+  isTplAddItem,
+} from "@/wab/client/definitions/insertables";
+import { FRAME_ICON } from "@/wab/client/icons";
+import {
+  DefaultOmnibarProps,
+  PlasmicOmnibar,
+} from "@/wab/client/plasmic/plasmic_kit_omnibar/PlasmicOmnibar";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import {
+  asyncFilter,
+  ensureArray,
+  filterFalsy,
+  removeWhere,
+  spawn,
+} from "@/wab/common";
+import {
+  getComponentDisplayName,
+  isCodeComponent,
+  isReusableComponent,
+} from "@/wab/components";
+import {
+  DEVFLAGS,
+  flattenInsertableIconGroups,
+  flattenInsertableTemplates,
+  HostLessPackageInfo,
+  InsertableTemplatesGroup,
+} from "@/wab/devflags";
+import { ImageAssetType } from "@/wab/image-asset-type";
+import { isIcon } from "@/wab/image-assets";
+import { getArenaFrameDesc, getArenaFrames } from "@/wab/shared/Arenas";
+import { allComponents } from "@/wab/sites";
+import { SlotSelection } from "@/wab/slots";
+import { useCombobox } from "downshift";
+import L from "lodash";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
 import OmnibarGroup from "./OmnibarGroup";
 
 // The key that defines the recent items OmnibarGroup

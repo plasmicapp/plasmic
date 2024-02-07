@@ -1,6 +1,6 @@
-import { joinCssValues } from "../../shared/RuleSetHelpers";
-import { BundleMigrationType } from "../db/bundle-migration-utils";
-import { BundledMigrationFn } from "../db/BundleMigrator";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
+import { BundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { joinCssValues } from "@/wab/shared/RuleSetHelpers";
 
 export const migrate: BundledMigrationFn = async (bundle) => {
   for (const key of Object.keys(bundle.map)) {

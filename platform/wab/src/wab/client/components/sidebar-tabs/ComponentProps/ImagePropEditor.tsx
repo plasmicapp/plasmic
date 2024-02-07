@@ -1,20 +1,20 @@
-import { Tooltip } from "antd";
-import L from "lodash";
-import { observer } from "mobx-react-lite";
-import React from "react";
-import { ImageAsset, isKnownImageAsset } from "../../../../classes";
-import { MaybeWrap } from "../../../../commons/components/ReactUtil";
-import { ImageAssetType } from "../../../../image-asset-type";
-import { isEditable } from "../../../../sites";
-import { placeholderImgUrl } from "../../../../urls";
-import { StudioCtx } from "../../../studio-ctx/StudioCtx";
-import { SidebarModal } from "../../sidebar/SidebarModal";
+import { ImageAsset, isKnownImageAsset } from "@/wab/classes";
+import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import {
   ImageAssetOrUrlPicker,
   ImagePreview,
   ImgInfo,
-} from "../../style-controls/ImageSelector";
-import { PlainLinkButton } from "../../widgets";
+} from "@/wab/client/components/style-controls/ImageSelector";
+import { PlainLinkButton } from "@/wab/client/components/widgets";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { ImageAssetType } from "@/wab/image-asset-type";
+import { isEditable } from "@/wab/sites";
+import { placeholderImgUrl } from "@/wab/urls";
+import { Tooltip } from "antd";
+import L from "lodash";
+import { observer } from "mobx-react-lite";
+import React from "react";
 
 export const ImagePropEditor = observer(function ImagePropEditor(props: {
   attr: string;

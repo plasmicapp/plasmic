@@ -1,20 +1,20 @@
-import { remove } from "lodash";
 import {
   Expr,
   isKnownEventHandler,
   isKnownFunctionType,
   isKnownVarRef,
-} from "../../classes";
-import { ensure } from "../../common";
-import { getAllComponentsInTopologicalOrder } from "../../components";
-import { extractReferencedParam, isRealCodeExpr } from "../../exprs";
-import { Bundler } from "../../shared/bundler";
-import { flattenTpls, isAttrEventHandler } from "../../tpls";
+} from "@/wab/classes";
+import { ensure } from "@/wab/common";
+import { getAllComponentsInTopologicalOrder } from "@/wab/components";
+import { extractReferencedParam, isRealCodeExpr } from "@/wab/exprs";
 import {
   BundleMigrationType,
   unbundleSite,
-} from "../db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
+} from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { Bundler } from "@/wab/shared/bundler";
+import { flattenTpls, isAttrEventHandler } from "@/wab/tpls";
+import { remove } from "lodash";
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();
   const { site, siteOrProjectDep } = await unbundleSite(

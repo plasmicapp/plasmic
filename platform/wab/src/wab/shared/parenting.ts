@@ -6,11 +6,11 @@ import {
   TplTag,
   Type,
   Var,
-} from "../classes";
-import { ensure, ensureInstance } from "../common";
-import { findVarRefs, isCodeComponent } from "../components";
-import { Selectable } from "../selection";
-import { SlotSelection } from "../slots";
+} from "@/wab/classes";
+import { ensure, ensureInstance } from "@/wab/common";
+import { findVarRefs, isCodeComponent } from "@/wab/components";
+import { Selectable } from "@/wab/selection";
+import { SlotSelection } from "@/wab/slots";
 import {
   getComponentIfRoot,
   hasChildrenSlot,
@@ -24,8 +24,8 @@ import {
   isTplSlot,
   isTplTag,
   isTplTextBlock,
-} from "../tpls";
-import { ValNode } from "../val-nodes";
+} from "@/wab/tpls";
+import { ValNode } from "@/wab/val-nodes";
 import { nodeConformsToType } from "./core/model-util";
 import { isTagListContainer } from "./core/rich-text-util";
 import { getPlumeEditorPlugin } from "./plume/plume-registry";

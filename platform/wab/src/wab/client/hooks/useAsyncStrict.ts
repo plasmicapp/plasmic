@@ -1,9 +1,9 @@
 /* eslint-disable no-restricted-imports */
+import { handleError } from "@/wab/client/ErrorNotifications";
 import * as React from "react";
 import { useAsync, useAsyncFn } from "react-use";
 import { AsyncFnReturn, AsyncState } from "react-use/lib/useAsync";
 import { FnReturningPromise, PromiseType } from "react-use/lib/util";
-import { handleError } from "../ErrorNotifications";
 export type { AsyncFnReturn, AsyncState } from "react-use/lib/useAsync";
 /* eslint-enable no-restricted-imports */
 

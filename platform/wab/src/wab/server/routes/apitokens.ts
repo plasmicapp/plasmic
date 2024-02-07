@@ -1,6 +1,6 @@
+import "@/wab/server/extensions";
+import { emitUserToken } from "@/wab/server/socket-util";
 import { Request, Response } from "express-serve-static-core";
-import "../extensions";
-import { emitUserToken } from "../socket-util";
 import { getUser, userDbMgr } from "./util";
 
 export async function listTokens(req: Request, res: Response) {

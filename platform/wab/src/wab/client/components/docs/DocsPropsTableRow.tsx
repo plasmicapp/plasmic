@@ -1,12 +1,12 @@
-import * as React from "react";
-import { Site } from "../../../classes";
-import { toVarName } from "../../../shared/codegen/util";
-import { PlumeDocsProp } from "../../../shared/plume/plume-registry";
+import { Site } from "@/wab/classes";
 import {
   DefaultDocsPropsTableRowProps,
   PlasmicDocsPropsTableRow,
   PlasmicDocsPropsTableRow__OverridesType,
-} from "../../plasmic/plasmic_kit_docs_portal/PlasmicDocsPropsTableRow";
+} from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsPropsTableRow";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { PlumeDocsProp } from "@/wab/shared/plume/plume-registry";
+import * as React from "react";
 
 interface DocsPropsTableRowProps
   extends DefaultDocsPropsTableRowProps,

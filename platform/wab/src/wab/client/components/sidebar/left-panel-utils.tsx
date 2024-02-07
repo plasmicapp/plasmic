@@ -1,8 +1,8 @@
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { Menu } from "antd";
 import { without } from "lodash";
 import React from "react";
 import { ProjectDependency } from "src/wab/classes";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
 
 export function useDepFilterButton(opts: {
   studioCtx: StudioCtx;

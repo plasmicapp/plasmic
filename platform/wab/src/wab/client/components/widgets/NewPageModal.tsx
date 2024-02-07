@@ -1,15 +1,15 @@
-import { Tooltip } from "antd";
-import * as React from "react";
-import { useState } from "react";
-import { DEVFLAGS, InsertableTemplatesItem } from "../../../devflags";
-import { UU } from "../../cli-routes";
-import { getPageTemplatesGroups } from "../../insertable-templates";
-import EyeIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Eye";
+import { UU } from "@/wab/client/cli-routes";
+import { getPageTemplatesGroups } from "@/wab/client/insertable-templates";
+import EyeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Eye";
 import {
   DefaultNewComponentModalProps,
   PlasmicNewComponentModal,
-} from "../../plasmic/plasmic_kit_new_component/PlasmicNewComponentModal";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
+} from "@/wab/client/plasmic/plasmic_kit_new_component/PlasmicNewComponentModal";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { DEVFLAGS, InsertableTemplatesItem } from "@/wab/devflags";
+import { Tooltip } from "antd";
+import * as React from "react";
+import { useState } from "react";
 import { Icon } from "./Icon";
 import NewComponentItem from "./NewComponentItem";
 import NewComponentSection from "./NewComponentSection";

@@ -1,16 +1,16 @@
-import { Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
-import React from "react";
-import { spawn } from "../../../common";
-import { isTplSlot } from "../../../tpls";
-import { FullRow } from "../sidebar/sidebar-helpers";
-import { SidebarSection } from "../sidebar/SidebarSection";
+import { FullRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
   ExpsProvider,
   TplExpsProvider,
-} from "../style-controls/StyleComponent";
-import StyleSwitch from "../style-controls/StyleSwitch";
-import LabeledListItem from "../widgets/LabeledListItem";
+} from "@/wab/client/components/style-controls/StyleComponent";
+import StyleSwitch from "@/wab/client/components/style-controls/StyleSwitch";
+import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
+import { spawn } from "@/wab/common";
+import { isTplSlot } from "@/wab/tpls";
+import { Tooltip } from "antd";
+import { observer } from "mobx-react-lite";
+import React from "react";
 
 export const SlotSettingsSection = observer(
   function SlotSettingsSection(props: { expsProvider: ExpsProvider }) {

@@ -1,16 +1,16 @@
-import { Observer } from "mobx-react-lite";
-import * as React from "react";
-import { useHistory } from "react-router-dom";
-import { asOne } from "../../../common";
-import { U } from "../../cli-routes";
+import { U } from "@/wab/client/cli-routes";
+import { useDocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
+import { PublicLink } from "@/wab/client/components/PublicLink";
+import { showTemporaryInfo } from "@/wab/client/components/quick-modals";
+import Select from "@/wab/client/components/widgets/Select";
 import {
   DefaultDocsPortalHeaderProps,
   PlasmicDocsPortalHeader,
-} from "../../plasmic/plasmic_kit_docs_portal/PlasmicDocsPortalHeader";
-import { useDocsPortalCtx } from "../docs/DocsPortalCtx";
-import { PublicLink } from "../PublicLink";
-import { showTemporaryInfo } from "../quick-modals";
-import Select from "../widgets/Select";
+} from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsPortalHeader";
+import { asOne } from "@/wab/common";
+import { Observer } from "mobx-react-lite";
+import * as React from "react";
+import { useHistory } from "react-router-dom";
 
 interface DocsPortalHeaderProps extends DefaultDocsPortalHeaderProps {}
 

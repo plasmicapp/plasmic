@@ -1,21 +1,21 @@
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { useLocalStorage } from "react-use";
-import { Component } from "../../../classes";
-import { ensure } from "../../../common";
+import { Component } from "@/wab/classes";
+import { CodeSnippet } from "@/wab/client/components/coding/CodeDisplay";
+import { SidebarModalProvider } from "@/wab/client/components/sidebar/SidebarModal";
+import { PlasmicComponentTogglesPanel } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicComponentTogglesPanel";
+import { ensure } from "@/wab/common";
 import {
   flattenTplsWithoutThrowawayNodes,
   makeNodeNamer,
-} from "../../../shared/codegen/react-p";
+} from "@/wab/shared/codegen/react-p";
 import {
   getExportedComponentName,
   makePlasmicComponentName,
-} from "../../../shared/codegen/react-p/utils";
-import { getTplSlots } from "../../../shared/SlotUtils";
-import { isTplTagOrComponent, TplNamable } from "../../../tpls";
-import { PlasmicComponentTogglesPanel } from "../../plasmic/plasmic_kit_docs_portal/PlasmicComponentTogglesPanel";
-import { CodeSnippet } from "../coding/CodeDisplay";
-import { SidebarModalProvider } from "../sidebar/SidebarModal";
+} from "@/wab/shared/codegen/react-p/utils";
+import { getTplSlots } from "@/wab/shared/SlotUtils";
+import { isTplTagOrComponent, TplNamable } from "@/wab/tpls";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
+import { useLocalStorage } from "react-use";
 import { useDocsPortalCtx } from "./DocsPortalCtx";
 import { DocsTooltip } from "./DocsTooltip";
 import ElementProp from "./ElementProp";

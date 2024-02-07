@@ -1,10 +1,21 @@
-import { Tooltip } from "antd";
-import * as React from "react";
-import { useRef, useState } from "react";
-import { assertNever, ensure, spawn } from "../../../common";
-import GatsbyIcon from "../../../commons/images/gatsby.svg";
-import NextjsIcon from "../../../commons/images/nextjs.svg";
-import ReactIcon from "../../../commons/images/react.svg";
+import { AppCtx } from "@/wab/client/app-ctx";
+import { GithubConnect } from "@/wab/client/components/auth/GithubConnect";
+import { reactConfirm } from "@/wab/client/components/quick-modals";
+import Button from "@/wab/client/components/widgets/Button";
+import {
+  DefaultActionTooltip,
+  ModeTooltip,
+} from "@/wab/client/components/widgets/DetailedTooltips";
+import Select from "@/wab/client/components/widgets/Select";
+import {
+  useAsyncFnStrict,
+  useAsyncStrict,
+} from "@/wab/client/hooks/useAsyncStrict";
+import InfoIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Info";
+import { assertNever, ensure, spawn } from "@/wab/common";
+import GatsbyIcon from "@/wab/commons/images/gatsby.svg";
+import NextjsIcon from "@/wab/commons/images/nextjs.svg";
+import ReactIcon from "@/wab/commons/images/react.svg";
 import {
   ApiProject,
   GithubOrganization,
@@ -13,16 +24,11 @@ import {
   GitSyncLanguage,
   GitSyncPlatform,
   GitSyncScheme,
-} from "../../../shared/ApiSchema";
-import { isValidSubdomainPart } from "../../../strs";
-import { AppCtx } from "../../app-ctx";
-import { useAsyncFnStrict, useAsyncStrict } from "../../hooks/useAsyncStrict";
-import InfoIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Info";
-import { GithubConnect } from "../auth/GithubConnect";
-import { reactConfirm } from "../quick-modals";
-import Button from "../widgets/Button";
-import { DefaultActionTooltip, ModeTooltip } from "../widgets/DetailedTooltips";
-import Select from "../widgets/Select";
+} from "@/wab/shared/ApiSchema";
+import { isValidSubdomainPart } from "@/wab/strs";
+import { Tooltip } from "antd";
+import * as React from "react";
+import { useRef, useState } from "react";
 import styles from "./GithubIntegration.module.scss";
 import {
   DefaultGithubIntegrationProps,

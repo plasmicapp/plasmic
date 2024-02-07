@@ -1,5 +1,5 @@
-import { applyDevFlagOverrides, DEVFLAGS } from "../../devflags";
-import { MigrationDbMgr } from "../db/BundleMigrator";
+import { applyDevFlagOverrides, DEVFLAGS } from "@/wab/devflags";
+import { MigrationDbMgr } from "@/wab/server/db/BundleMigrator";
 
 export async function ensureDevFlags(dbMgr: MigrationDbMgr) {
   const devflags = await dbMgr.tryGetDevFlagOverrides();

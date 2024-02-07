@@ -1,6 +1,6 @@
-import { tuple } from "../common";
-import * as ftp from "../func-tpl-parser";
-import * as oftp from "../gen/funcTplParser";
+import { tuple } from "@/wab/common";
+import * as ftp from "@/wab/func-tpl-parser";
+import * as oftp from "@/wab/gen/funcTplParser";
 
 const check = (tpl) => expect(ftp.parse(tpl)).toEqual(oftp.parse(tpl));
 

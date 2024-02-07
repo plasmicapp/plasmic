@@ -1,5 +1,5 @@
-import { DataSourceMeta } from "../../../shared/data-sources-meta/data-sources";
-import { normalizeOperationTemplate } from "../data-source-utils";
+import { normalizeOperationTemplate } from "@/wab/server/data-sources/data-source-utils";
+import { DataSourceMeta } from "@/wab/shared/data-sources-meta/data-sources";
 
 describe("normalizing operation template", () => {
   const dataSourceMeta: DataSourceMeta = {

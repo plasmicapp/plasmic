@@ -1,8 +1,8 @@
 /** @format */
 
+import { isAbsoluteUrl } from "@/wab/commons/urls";
 import * as React from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
-import { isAbsoluteUrl } from "../../commons/urls";
 
 interface PublicLinkProps extends React.ComponentProps<"a"> {}
 

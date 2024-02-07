@@ -1,7 +1,7 @@
-import { ensure } from "../../common";
-import { encodeUriParams } from "../../commons/urls";
-import { DevFlagsType } from "../../devflags";
-import { ensureIsTopFrame } from "../cli-routes";
+import { ensureIsTopFrame } from "@/wab/client/cli-routes";
+import { ensure } from "@/wab/common";
+import { encodeUriParams } from "@/wab/commons/urls";
+import { DevFlagsType } from "@/wab/devflags";
 
 /**
  * Args to pass from top frame to host frame.

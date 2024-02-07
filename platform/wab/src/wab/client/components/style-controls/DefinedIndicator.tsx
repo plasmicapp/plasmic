@@ -1,9 +1,4 @@
-import { Alert, Menu, Popover, Tooltip } from "antd";
-import classNames from "classnames";
-import L from "lodash";
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { BackgroundLayer } from "../../../bg-styles";
+import { BackgroundLayer } from "@/wab/bg-styles";
 import {
   Expr,
   isKnownCustomCode,
@@ -14,21 +9,40 @@ import {
   TplNode,
   Variant,
   VariantSetting,
-} from "../../../classes";
-import { cx, ensure, ensureArray, swallow } from "../../../common";
-import { removeFromArray } from "../../../commons/collections";
-import { joinReactNodes } from "../../../commons/components/ReactUtil";
-import { derefTokenRefs, tryParseTokenRef } from "../../../commons/StyleToken";
-import { getComponentDisplayName } from "../../../components";
-import { ExprCtx, summarizeExpr, tryExtractLit } from "../../../exprs";
-import * as cssPegParser from "../../../gen/cssPegParser";
-import { computedProjectFlags } from "../../../shared/cached-selectors";
+} from "@/wab/classes";
+import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import { resolvedBackgroundImageCss } from "@/wab/client/components/sidebar-tabs/background-section";
+import { EditMixinButton } from "@/wab/client/components/sidebar/MixinControls";
+import { IFrameAwareDropdownMenu } from "@/wab/client/components/widgets";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import IconButton from "@/wab/client/components/widgets/IconButton";
+import MenuButton from "@/wab/client/components/widgets/MenuButton";
+import { getVisibilityIcon } from "@/wab/client/icons";
+import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
+import ComponentBaseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ComponentBase";
+import DotsVerticalIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__DotsVertical";
+import GlobeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Globe";
+import MixinIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Mixin";
+import SlotIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Slot";
+import ThemeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Theme";
+import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
+import VariantGroupIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__VariantGroup";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { cx, ensure, ensureArray, swallow } from "@/wab/common";
+import { removeFromArray } from "@/wab/commons/collections";
+import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
+import { derefTokenRefs, tryParseTokenRef } from "@/wab/commons/StyleToken";
+import { getComponentDisplayName } from "@/wab/components";
+import { ExprCtx, summarizeExpr, tryExtractLit } from "@/wab/exprs";
+import * as cssPegParser from "@/wab/gen/cssPegParser";
+import { computedProjectFlags } from "@/wab/shared/cached-selectors";
 import {
   DefinedIndicatorType,
   isTargetOverwritten,
   VariantSettingSource,
   VariantSettingSourceStack,
-} from "../../../shared/defined-indicator";
+} from "@/wab/shared/defined-indicator";
 import {
   MIXINS_CAP,
   MIXIN_CAP,
@@ -36,10 +50,10 @@ import {
   SLOT_CAP,
   VARIANTS_LOWER,
   VARIANT_LOWER,
-} from "../../../shared/Labels";
-import { RSH, splitCssValue } from "../../../shared/RuleSetHelpers";
-import { Chroma } from "../../../shared/utils/color-utils";
-import { VariantedStylesHelper } from "../../../shared/VariantedStylesHelper";
+} from "@/wab/shared/Labels";
+import { RSH, splitCssValue } from "@/wab/shared/RuleSetHelpers";
+import { Chroma } from "@/wab/shared/utils/color-utils";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   clearVariantSetting,
   isBaseVariant,
@@ -48,34 +62,20 @@ import {
   isStyleVariant,
   unclearableBaseStyleProps,
   VariantCombo,
-} from "../../../shared/Variants";
+} from "@/wab/shared/Variants";
 import {
   clearTplVisibility,
   getVariantSettingVisibility,
   getVisibilityLabel,
-} from "../../../shared/visibility-utils";
-import { allStyleTokens } from "../../../sites";
-import { sourceMatchThemeStyle } from "../../../styles";
-import { isTplComponent, isTplTag } from "../../../tpls";
-import { getVisibilityIcon } from "../../icons";
-import CloseIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Close";
-import ComponentBaseIcon from "../../plasmic/plasmic_kit/PlasmicIcon__ComponentBase";
-import DotsVerticalIcon from "../../plasmic/plasmic_kit/PlasmicIcon__DotsVertical";
-import GlobeIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Globe";
-import MixinIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Mixin";
-import SlotIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Slot";
-import ThemeIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Theme";
-import TokenIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Token";
-import VariantGroupIcon from "../../plasmic/plasmic_kit/PlasmicIcon__VariantGroup";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { MenuBuilder } from "../menu-builder";
-import { resolvedBackgroundImageCss } from "../sidebar-tabs/background-section";
-import { EditMixinButton } from "../sidebar/MixinControls";
-import { IFrameAwareDropdownMenu } from "../widgets";
-import { Icon } from "../widgets/Icon";
-import IconButton from "../widgets/IconButton";
-import MenuButton from "../widgets/MenuButton";
+} from "@/wab/shared/visibility-utils";
+import { allStyleTokens } from "@/wab/sites";
+import { sourceMatchThemeStyle } from "@/wab/styles";
+import { isTplComponent, isTplTag } from "@/wab/tpls";
+import { Alert, Menu, Popover, Tooltip } from "antd";
+import classNames from "classnames";
+import L from "lodash";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
 import { ColorSwatch } from "./ColorSwatch";
 import styles from "./DefinedIndicator.module.sass";
 import { ImagePreview } from "./ImageSelector";

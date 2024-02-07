@@ -1,21 +1,25 @@
-import type { SelectOptionRef } from "@plasmicapp/react-web";
-import { omit, pick } from "lodash";
-import React from "react";
-import { Param, TplComponent } from "../../classes";
-import { assert } from "../../common";
-import { internalCanvasElementProps } from "../canvas-constants";
+import { Param, TplComponent } from "@/wab/classes";
+import { assert } from "@/wab/common";
+import { internalCanvasElementProps } from "@/wab/shared/canvas-constants";
 import {
   getExternalParams,
   getPlumePackageName,
   serializeParamType,
   SerializerBaseContext,
-} from "../codegen/react-p";
+} from "@/wab/shared/codegen/react-p";
 import {
   getExportedComponentName,
   makeDefaultExternalPropsName,
   makePlasmicComponentName,
-} from "../codegen/react-p/utils";
-import { jsLiteral, paramToVarName, toVarName } from "../codegen/util";
+} from "@/wab/shared/codegen/react-p/utils";
+import {
+  jsLiteral,
+  paramToVarName,
+  toVarName,
+} from "@/wab/shared/codegen/util";
+import type { SelectOptionRef } from "@plasmicapp/react-web";
+import { omit, pick } from "lodash";
+import React from "react";
 import { PlumePlugin } from "./plume-registry";
 import {
   ensureValidPlumeCodeMeta,
