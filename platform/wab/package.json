@@ -37,6 +37,7 @@
     "db:permanently-delete": "npm run run-ts -- src/wab/server/db/permanently-delete.ts",
     "db:upgrade-stale-bundle": "npm run run-ts -- src/wab/server/scripts/upgrade-stale-bundle.ts",
     "prepare": "playwright install chromium",
+    "eslint-all": "yarn --cwd ../.. eslint platform/wab",
     "test": "jest --runInBand --forceExit",
     "test:coverage": "jest --coverage",
     "eject": "react-scripts eject",
