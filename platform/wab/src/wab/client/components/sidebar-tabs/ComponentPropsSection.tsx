@@ -1102,6 +1102,7 @@ const ApplyMenu = observer(function ApplyMenu_(props: {
       trigger={["click"]}
     >
       <Button
+        className="flex-no-shrink"
         disabled={items.length === 0}
         type={"clear"}
         withIcons={"endIcon"}
