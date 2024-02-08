@@ -485,10 +485,6 @@ export const VariantsPanel = observer(
                 onAddNewVariant={() =>
                   studioCtx.change(({ success }) => {
                     studioCtx.siteOps().createStyleVariant(component);
-                    const variant = studioCtx
-                      .tplMgr()
-                      .createStyleVariant(component, []);
-                    onAddedVariant(variant);
                     return success();
                   })
                 }
