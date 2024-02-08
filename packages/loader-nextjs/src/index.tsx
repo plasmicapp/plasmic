@@ -28,6 +28,8 @@ export {
   DataCtxReader,
   DataProvider,
   extractPlasmicQueryData,
+  GlobalActionsContext,
+  GlobalActionsProvider,
   PageParamsProvider,
   PlasmicCanvasContext,
   PlasmicCanvasHost,

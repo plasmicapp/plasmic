@@ -11,6 +11,8 @@ import type {
 export {
   DataCtxReader,
   DataProvider,
+  GlobalActionsContext,
+  GlobalActionsProvider,
   PageParamsProvider,
   PlasmicCanvasContext,
   PlasmicCanvasHost,

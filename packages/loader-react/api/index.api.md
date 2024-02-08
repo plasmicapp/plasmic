@@ -14,6 +14,8 @@ import { DataProvider } from '@plasmicapp/host';
 import { extractPlasmicQueryData } from '@plasmicapp/prepass';
 import { FontMeta } from '@plasmicapp/loader-core';
 import { getExternalIds } from '@plasmicapp/loader-splits';
+import { GlobalActionsContext } from '@plasmicapp/host';
+import { GlobalActionsProvider } from '@plasmicapp/host';
 import { GlobalContextMeta as GlobalContextMeta_2 } from '@plasmicapp/host';
 import { GlobalGroupMeta } from '@plasmicapp/loader-core';
 import { LoaderBundleCache } from '@plasmicapp/loader-core';
@@ -91,6 +93,10 @@ export function extractPlasmicQueryDataFromElement(loader: PlasmicComponentLoade
 export interface FetchComponentDataOpts {
     target?: "server" | "browser";
 }
+
+export { GlobalActionsContext }
+
+export { GlobalActionsProvider }
 
 // @public (undocumented)
 export interface GlobalVariantSpec {

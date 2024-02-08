@@ -14,6 +14,8 @@ import { DataCtxReader } from '@plasmicapp/loader-react';
 import { DataProvider } from '@plasmicapp/loader-react';
 import { extractPlasmicQueryData } from '@plasmicapp/loader-react';
 import { FetchComponentDataOpts as FetchComponentDataOpts_2 } from '@plasmicapp/loader-react';
+import { GlobalActionsContext } from '@plasmicapp/loader-react';
+import { GlobalActionsProvider } from '@plasmicapp/loader-react';
 import { IncomingMessage } from 'http';
 import { InitOptions } from '@plasmicapp/loader-react/react-server-conditional';
 import { InternalPlasmicComponentLoader } from '@plasmicapp/loader-react';
@@ -55,6 +57,10 @@ export { extractPlasmicQueryData }
 export interface FetchComponentDataOpts extends FetchComponentDataOpts_2 {
     deferChunks?: boolean;
 }
+
+export { GlobalActionsContext }
+
+export { GlobalActionsProvider }
 
 export { InitOptions }
 
