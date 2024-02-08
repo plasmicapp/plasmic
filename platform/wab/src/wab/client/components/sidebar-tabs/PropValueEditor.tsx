@@ -703,7 +703,7 @@ const PropValueEditor_ = (
         step = ensureNumberValueIsValid(
           _getContextDependentValue(propType.step)
         );
-        if (!min || !max || !step || min > max || step <= 0) {
+        if (isNil(min) || isNil(max) || isNil(step) || min > max || step <= 0) {
           step = undefined;
         }
       }
