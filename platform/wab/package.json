@@ -244,7 +244,7 @@
     "@plasmicapp/data-sources": "^0.1.148",
     "@plasmicapp/data-sources-context": "0.1.21",
     "@plasmicapp/host": "^1.0.190",
-    "@plasmicapp/loader-react": "^1.0.338",
+    "@plasmicapp/loader-react": "^1.0.339",
     "@plasmicapp/react-web": "^0.2.319",
     "@plasmicpkgs/antd5": "^0.0.215",
     "@plasmicpkgs/commerce-local": "^0.0.188",
