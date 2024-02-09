@@ -4,7 +4,6 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ensure } from "@/wab/common";
 import {
   FrameViewMode,
-  isComponentArena,
   isDuplicatableFrame,
   isMixedArena,
   isPageArena,
@@ -31,6 +30,12 @@ export function makeFrameMenu({
 }) {
   const originArena = ensure(viewCtx.studioCtx.currentArena);
   const _canCreateComponentFromFrame = !frame.container.component.name;
+
+  const isCombinationPageArenaFrame =
+    isPageArena(originArena) &&
+    originArena.customMatrix.rows.some((r) =>
+      r.cols.some((c) => c.frame === frame)
+    );
 
   const builder = new MenuBuilder();
 
@@ -123,7 +128,7 @@ export function makeFrameMenu({
           key={`delete-${FRAME_LOWER}`}
         >
           <MenuItemContent shortcut={getComboForAction("DELETE")}>
-            {isPageArena(originArena)
+            {isPageArena(originArena) && !isCombinationPageArenaFrame
               ? "Delete this screen size"
               : "Delete " + FRAME_LOWER}
           </MenuItemContent>
@@ -167,8 +172,9 @@ export function makeFrameMenu({
   }
 
   if (
-    isComponentArena(originArena) &&
-    isFrameWithVariantCombo({ site: viewCtx.site, frame })
+    (!isPageArena(originArena) &&
+      isFrameWithVariantCombo({ site: viewCtx.site, frame })) ||
+    isCombinationPageArenaFrame
   ) {
     builder.genSection(undefined, (push) => {
       push(

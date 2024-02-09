@@ -179,7 +179,7 @@ function getComponentArenaWidthFromScreenVariant(globals: Variant[]) {
   return spec.maxWidth || spec.minWidth;
 }
 
-function makeComponentArenaFrame({
+export function makeComponentArenaFrame({
   site,
   component,
   variants,
@@ -434,46 +434,6 @@ export function ensureManagedFrameForVariantInComponentArena(
   return frame;
 }
 
-export function ensureCustomFrameForActivatedVariants(
-  site: Site,
-  arena: ComponentArena | PageArena,
-  variants: Set<Variant>
-) {
-  const existing = getCustomFrameForActivatedVariants(arena, variants);
-  if (existing) {
-    return existing;
-  }
-
-  const combo = ensureValidCombo(arena.component, [...variants]);
-  assert(combo.length > 0, `Must be a valid combo`);
-  const { width, height } = deriveDefaultFrameSize(site, arena.component);
-
-  const frame = makeComponentArenaFrame({
-    site,
-    component: arena.component,
-    variants: [...combo],
-    width,
-    height,
-    viewMode: getComponentArenaBaseFrameViewMode(arena),
-  });
-  if (arena.customMatrix.rows.length === 0) {
-    arena.customMatrix.rows.push(
-      new ArenaFrameRow({ cols: [], rowKey: undefined })
-    );
-  }
-  const cell = new ArenaFrameCell({ frame, cellKey: combo });
-  arena.customMatrix.rows[0].cols.push(cell);
-
-  ensureActivatedScreenVariantsForCustomCell(site, cell);
-
-  const targetScreenVariant = combo.find((v) => isScreenVariant(v));
-  if (targetScreenVariant) {
-    resizeFrameForScreenVariant(site, frame, targetScreenVariant);
-  }
-
-  return frame;
-}
-
 export function deriveDefaultFrameSize(
   site: Site,
   component: Component
@@ -660,7 +620,7 @@ export function ensureActivatedScreenVariantsForComponentArena(
   }
 }
 
-function ensureActivatedScreenVariantsForCustomCell(
+export function ensureActivatedScreenVariantsForCustomCell(
   site: Site,
   cell: ArenaFrameCell
 ) {

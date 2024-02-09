@@ -35,6 +35,7 @@ import {
   ensure,
   mkUuid,
   removeAtIndexes,
+  removeWhere,
   switchType,
   uniqueName,
   xAddAll,
@@ -271,7 +272,7 @@ export class SiteOps {
     } else if (isComponentArena(arena)) {
       return this.removeComponentArenaFrame(arena, frame);
     } else {
-      return this.change(() => this.removePageArenaFrame(frame));
+      return this.change(() => this.removePageArenaFrame(arena, frame));
     }
   }
 
@@ -544,19 +545,25 @@ export class SiteOps {
     return true;
   }
 
-  removePageArenaFrame(frame: ArenaFrame) {
+  removePageArenaFrame(arena: PageArena, frame: ArenaFrame) {
+    const combinationRow = arena.customMatrix.rows.find((r) =>
+      r.cols.some((c) => c.frame === frame)
+    );
     this.clearFrameComboSettings(frame);
-    const frameIndex = getFrameColumnIndex(
-      this.studioCtx.currentArena as PageArena,
-      frame
-    );
+    if (!combinationRow) {
+      const frameIndex = getFrameColumnIndex(
+        this.studioCtx.currentArena as PageArena,
+        frame
+      );
 
-    this.site.pageArenas.forEach((pageArena) =>
-      pageArena.matrix.rows.forEach((pageArenaRow) =>
-        removeAtIndexes(pageArenaRow.cols, [frameIndex])
-      )
-    );
-
+      this.site.pageArenas.forEach((pageArena) =>
+        pageArena.matrix.rows.forEach((pageArenaRow) =>
+          removeAtIndexes(pageArenaRow.cols, [frameIndex])
+        )
+      );
+    } else {
+      removeWhere(combinationRow.cols, (c) => c.frame === frame);
+    }
     this.fixChromeAfterRemoveFrame();
   }
 

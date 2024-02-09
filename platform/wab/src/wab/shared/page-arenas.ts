@@ -76,14 +76,14 @@ function makeDefaultPageArenaMatrix(site: Site, component: Component) {
   });
 }
 
-function makePageArenaFrame(
+export function makePageArenaFrame(
   site: Site,
   component: Component,
-  variant: Variant,
+  variants: Variant[],
   width: number,
   height: number
 ) {
-  const [globals, locals] = partitions([variant], [isGlobalVariant]);
+  const [globals, locals] = partitions(variants, [isGlobalVariant]);
   const frame = mkArenaFrame({
     site,
     name: "",
@@ -108,7 +108,7 @@ function makeFrameRow(site: Site, component: Component, variant: Variant) {
       const frame = makePageArenaFrame(
         site,
         component,
-        variant,
+        [variant],
         size.width,
         size.height
       );
@@ -270,7 +270,7 @@ export function addScreenSizeToPageArenas({
       const newArenaFrame = makePageArenaFrame(
         site,
         pageArena.component,
-        ensureKnownVariant(arenaRow.rowKey),
+        [ensureKnownVariant(arenaRow.rowKey)],
         width,
         height
       );

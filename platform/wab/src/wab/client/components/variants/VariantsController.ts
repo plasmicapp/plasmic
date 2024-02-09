@@ -10,12 +10,12 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { assert, ensure } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
 import {
+  ensureCustomFrameForActivatedVariants,
   isComponentArena,
   isPageArena,
   resizeFrameForScreenVariant,
 } from "@/wab/shared/Arenas";
 import {
-  ensureCustomFrameForActivatedVariants,
   ensureManagedFrameForVariantInComponentArena,
   getCellKeyForFrame,
   getComponentArenaBaseFrame,
@@ -528,12 +528,20 @@ export class PageArenaVariantsController implements VariantsController {
     );
   }
 
-  onClickCombo(_combo: VariantCombo) {
-    // TODO: hmm, what to do?
+  onClickCombo(combo: VariantCombo) {
+    this.applyAndSwitch((state, machine) => {
+      return machine.setSelectedVariants(makeEmptyPinState(), combo);
+    });
   }
 
-  onActivateCombo(_combo: VariantCombo) {
-    // TODO: hmm, what to do?
+  onActivateCombo(combo: VariantCombo) {
+    this.applyAndSwitch((state, machine) => {
+      state = makeEmptyPinState();
+      for (const variant of combo) {
+        state = machine.activateVariant(state, variant);
+      }
+      return state;
+    });
   }
 
   onToggleTargetingOfActiveVariants() {
@@ -575,6 +583,35 @@ export class PageArenaVariantsController implements VariantsController {
     } else {
       return new FramePinManager(this.studioCtx.site, frame);
     }
+  }
+
+  private applyAndSwitch(
+    fn: (state: PinState, machine: PinStateManager) => PinState
+  ) {
+    const curFrame = ensure(this.currentFrame, "Current frame should be set");
+    const curVc = this.studioCtx.tryGetViewCtxForFrame(curFrame);
+    const machine = new PinStateManager(
+      this.studioCtx.site,
+      this.currentArena.component,
+      curVc ? makeCurrentVariantEvalState(curVc) : new Map()
+    );
+    let state = ensure(
+      this.pinManager,
+      "Expected pin manager to be not null"
+    ).getPinState();
+    state = fn(state, machine);
+    const activeVariants = machine.activeNonBaseVariants(state);
+    const newFrame =
+      activeVariants.length === 0
+        ? getComponentArenaBaseFrame(this.currentArena)
+        : ensureCustomFrameForActivatedVariants(
+            this.studioCtx.site,
+            this.currentArena,
+            new Set(activeVariants)
+          );
+    applyPinStateToFrame(state, newFrame);
+    this.switchToFrame(newFrame);
+    return newFrame;
   }
 
   private switchToVariant(variant: Variant) {

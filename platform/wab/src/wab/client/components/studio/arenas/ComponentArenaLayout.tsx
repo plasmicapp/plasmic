@@ -28,11 +28,11 @@ import {
   allComponentVariants,
   getSuperComponentVariantGroupToComponent,
 } from "@/wab/components";
-import { getFrameHeight } from "@/wab/shared/Arenas";
 import {
   ensureCustomFrameForActivatedVariants,
-  getComponentArenaRowLabel,
-} from "@/wab/shared/component-arenas";
+  getFrameHeight,
+} from "@/wab/shared/Arenas";
+import { getComponentArenaRowLabel } from "@/wab/shared/component-arenas";
 import {
   COMBINATIONS_CAP,
   FRAME_LOWER,

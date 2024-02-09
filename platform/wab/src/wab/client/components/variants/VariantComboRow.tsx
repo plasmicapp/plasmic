@@ -52,13 +52,13 @@ const VariantComboRow = observer(function VariantComboRow(
           <Menu.Item
             onClick={async () => {
               if (onActivate) {
-                onActivate();
                 const frame = viewCtx.studioCtx.focusedFrame();
                 if (frame) {
                   return viewCtx.change(() =>
                     viewCtx.getViewOps().clearFrameComboSettings(frame)
                   );
                 }
+                onActivate();
               }
             }}
             key={`clear-combo-settings`}

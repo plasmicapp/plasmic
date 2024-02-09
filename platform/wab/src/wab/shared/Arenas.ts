@@ -2,8 +2,10 @@ import {
   Arena,
   ArenaChild,
   ArenaFrame,
+  ArenaFrameCell,
   ArenaFrameGrid,
   ArenaFrameParams,
+  ArenaFrameRow,
   Component,
   ComponentArena,
   ensureKnownArenaFrame,
@@ -53,11 +55,15 @@ import { ArenaType, arenaTypes } from "./ApiSchema";
 import {
   deriveDefaultFrameSize,
   ensureActivatedScreenVariantsForComponentArena,
+  ensureActivatedScreenVariantsForCustomCell,
   ensureComponentArenaFrameSizeForTargetScreenVariant,
   getCellKeyForFrame,
+  getComponentArenaBaseFrameViewMode,
   getComponentArenaRowLabel,
+  getCustomFrameForActivatedVariants,
   isCustomComponentFrame,
   isStretchyComponentFrame,
+  makeComponentArenaFrame,
   removeFramesFromComponentArenaForVariants,
   removeManagedFramesFromComponentArenaForVariantGroup,
   syncComponentArenaFrameSize,
@@ -67,6 +73,7 @@ import { COMBINATIONS_CAP } from "./Labels";
 import { ContainerLayoutType } from "./layoututils";
 import {
   getPageArenaRowLabel,
+  makePageArenaFrame,
   removeManagedFramesFromPageArenaForVariantGroup,
   removeManagedFramesFromPageArenaForVariants,
   syncPageArenaFrameSize,
@@ -639,6 +646,50 @@ export function isDuplicatableFrame(arena: AnyArena, frame: ArenaFrame) {
   }
 
   return true;
+}
+
+export function ensureCustomFrameForActivatedVariants(
+  site: Site,
+  arena: ComponentArena | PageArena,
+  variants: Set<Variant>
+) {
+  const existing = getCustomFrameForActivatedVariants(arena, variants);
+  if (existing) {
+    return existing;
+  }
+
+  const combo = ensureValidCombo(arena.component, [...variants]);
+  assert(combo.length > 0, `Must be a valid combo`);
+  const { width, height } = isPageComponent(arena.component)
+    ? getSiteScreenSizes(site)[0]
+    : deriveDefaultFrameSize(site, arena.component);
+
+  const frame = isPageComponent(arena.component)
+    ? makePageArenaFrame(site, arena.component, [...combo], width, height)
+    : makeComponentArenaFrame({
+        site,
+        component: arena.component,
+        variants: [...combo],
+        width,
+        height,
+        viewMode: getComponentArenaBaseFrameViewMode(arena),
+      });
+  if (arena.customMatrix.rows.length === 0) {
+    arena.customMatrix.rows.push(
+      new ArenaFrameRow({ cols: [], rowKey: undefined })
+    );
+  }
+  const cell = new ArenaFrameCell({ frame, cellKey: combo });
+  arena.customMatrix.rows[0].cols.push(cell);
+
+  ensureActivatedScreenVariantsForCustomCell(site, cell);
+
+  const targetScreenVariant = combo.find((v) => isScreenVariant(v));
+  if (targetScreenVariant) {
+    resizeFrameForScreenVariant(site, frame, targetScreenVariant);
+  }
+
+  return frame;
 }
 
 export function ensureActivatedScreenVariantsForArena(
