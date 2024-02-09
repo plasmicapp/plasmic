@@ -1,3 +1,4 @@
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { tryEvalExpr } from "@/wab/shared/eval";
 import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -11,6 +12,7 @@ const BASE_FONT_FAMILY = '"Roboto Mono", Consolas, Menlo, monospace';
 const BASE_FONT_SIZE = 12;
 
 export const CodePreview = function _CodePreview(props: {
+  viewCtx?: ViewCtx;
   value: string;
   data: Record<string, any>;
   className?: string;
@@ -18,10 +20,10 @@ export const CodePreview = function _CodePreview(props: {
     expandLevel?: number;
   };
 }) {
-  const { value, data, className, opts } = props;
+  const { viewCtx, value, data, className, opts } = props;
   let previewValue: any | undefined = undefined;
   try {
-    previewValue = tryEvalExpr(value, data).val;
+    previewValue = tryEvalExpr(value, data, viewCtx?.canvasCtx.win()).val;
     if (previewValue instanceof Window) {
       previewValue = undefined;
     }

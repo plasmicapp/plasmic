@@ -94,7 +94,11 @@ function DataPickerCodeEditorLayout_(
       }}
       codePreview={
         !runCodeContext ? (
-          <CodePreview value={`(${currentValue})`} data={data} />
+          <CodePreview
+            viewCtx={studioCtx.focusedViewCtx()}
+            value={`(${currentValue})`}
+            data={data}
+          />
         ) : (
           renderInspector(runCodeContext.stepValue)
         )
