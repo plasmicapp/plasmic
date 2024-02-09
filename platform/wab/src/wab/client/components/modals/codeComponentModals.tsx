@@ -360,8 +360,8 @@ export function unknownCodeComponentErrorDescription(
   return (
     <p>
       Some code components reference a component that is not registered. Please
-      either register a code component named <code>{err.componentName}</code>
-      or remove the references to it.
+      either register a code component named <code>{err.componentName}</code> or
+      remove the references to it.
     </p>
   );
 }
