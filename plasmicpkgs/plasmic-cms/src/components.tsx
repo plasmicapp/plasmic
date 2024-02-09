@@ -242,8 +242,9 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
     where: {
       type: "object",
       displayName: "Filter",
-      description: "Filter clause, in JSON format.",
-      hidden: () => true,
+      description:
+        "Filter clause, as a JSON in Mongo query format. Should not be used together with Filter field and Filter value",
+      advanced: true,
     },
     filterField: {
       type: "choice",
@@ -691,7 +692,7 @@ export const cmsCountFieldMeta: ComponentMeta<CmsCountProps> = {
 export function CmsCount({
   className,
   table,
-  setControlContextData,
+  setControlContextData: _,
   ...rest
 }: CmsCountProps) {
   const tables = useTablesWithDataLoaded("count");
