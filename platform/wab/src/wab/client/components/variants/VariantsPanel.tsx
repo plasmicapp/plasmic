@@ -475,7 +475,7 @@ export const VariantsPanel = observer(
                 )
               )}
             </SimpleReorderableList>
-            {isTplTag(root) && (
+            {isTplTag(root) && !isPageComponent(component) && (
               <VariantSection
                 showIcon
                 icon={<Icon icon={BoltIcon} />}
@@ -490,45 +490,44 @@ export const VariantsPanel = observer(
                 }
                 isQuiet
               >
-                {!isPageComponent(component) &&
-                  styleVariants.map((variant) => (
-                    <ComponentStyleVariantRow
-                      key={variant.uuid}
-                      variant={variant}
-                      component={component}
-                      studioCtx={studioCtx}
-                      viewCtx={viewCtx}
-                      pinState={vcontroller.getPinState(variant)}
-                      onClick={() =>
-                        justAddedVariant !== variant &&
-                        studioCtx.change(({ success }) => {
-                          vcontroller.onClickVariant(variant);
-                          return success();
-                        })
-                      }
-                      onTarget={
-                        canChangeVariants ||
-                        vcontroller.canToggleTargeting(variant)
-                          ? (target) =>
-                              studioCtx.change(({ success }) => {
-                                vcontroller.onTargetVariant(variant, target);
-                                return success();
-                              })
-                          : undefined
-                      }
-                      onToggle={
-                        canChangeVariants
-                          ? () =>
-                              studioCtx.change(({ success }) => {
-                                vcontroller.onToggleVariant(variant);
-                                return success();
-                              })
-                          : undefined
-                      }
-                      defaultEditing={variant === justAddedVariant}
-                      onEdited={() => setJustAddedVariant(undefined)}
-                    />
-                  ))}
+                {styleVariants.map((variant) => (
+                  <ComponentStyleVariantRow
+                    key={variant.uuid}
+                    variant={variant}
+                    component={component}
+                    studioCtx={studioCtx}
+                    viewCtx={viewCtx}
+                    pinState={vcontroller.getPinState(variant)}
+                    onClick={() =>
+                      justAddedVariant !== variant &&
+                      studioCtx.change(({ success }) => {
+                        vcontroller.onClickVariant(variant);
+                        return success();
+                      })
+                    }
+                    onTarget={
+                      canChangeVariants ||
+                      vcontroller.canToggleTargeting(variant)
+                        ? (target) =>
+                            studioCtx.change(({ success }) => {
+                              vcontroller.onTargetVariant(variant, target);
+                              return success();
+                            })
+                        : undefined
+                    }
+                    onToggle={
+                      canChangeVariants
+                        ? () =>
+                            studioCtx.change(({ success }) => {
+                              vcontroller.onToggleVariant(variant);
+                              return success();
+                            })
+                        : undefined
+                    }
+                    defaultEditing={variant === justAddedVariant}
+                    onEdited={() => setJustAddedVariant(undefined)}
+                  />
+                ))}
               </VariantSection>
             )}
 
