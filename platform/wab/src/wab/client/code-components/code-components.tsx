@@ -1,12 +1,24 @@
-import {
-  ComponentMeta,
-  GlobalContextMeta,
-  PlasmicElement,
-} from "@plasmicapp/host";
-import { notification } from "antd";
-import React from "react";
-import { failable } from "ts-failable";
 import { Component, HostLessPackageInfo, Site, TplNode } from "@/wab/classes";
+import {
+  duplicateCodeComponentErrorDescription,
+  fixInvalidReactVersion,
+  fixMissingCodeComponents,
+  notifyInvalidImportName,
+  promptHostLessPackageInfo,
+  showModalToRefreshCodeComponentProps,
+  unknownCodeComponentErrorDescription,
+} from "@/wab/client/components/modals/codeComponentModals";
+import { reactConfirm } from "@/wab/client/components/quick-modals";
+import { getComponentPropTypes } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
+import {
+  getHostLessPkg,
+  getSortedHostLessPkgs,
+} from "@/wab/client/components/studio/studio-bundles";
+import { scriptExec } from "@/wab/client/dom-utils";
+import { reportError } from "@/wab/client/ErrorNotifications";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { trackEvent } from "@/wab/client/tracking";
 import {
   assert,
   assignReadonly,
@@ -28,6 +40,7 @@ import {
 import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
 import {
   appendCodeComponentMetaToModel,
+  BadElementSchemaError,
   BadPresetSchemaError,
   CodeComponentRegistrationTypeError,
   CodeComponentSyncCallbackFns,
@@ -49,25 +62,13 @@ import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { isHostLessPackage } from "@/wab/sites";
 import { TplCodeComponent } from "@/wab/tpls";
 import {
-  duplicateCodeComponentErrorDescription,
-  fixInvalidReactVersion,
-  fixMissingCodeComponents,
-  notifyInvalidImportName,
-  promptHostLessPackageInfo,
-  showModalToRefreshCodeComponentProps,
-  unknownCodeComponentErrorDescription,
-} from "@/wab/client/components/modals/codeComponentModals";
-import { reactConfirm } from "@/wab/client/components/quick-modals";
-import { getComponentPropTypes } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
-import {
-  getHostLessPkg,
-  getSortedHostLessPkgs,
-} from "@/wab/client/components/studio/studio-bundles";
-import { scriptExec } from "@/wab/client/dom-utils";
-import { reportError } from "@/wab/client/ErrorNotifications";
-import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { trackEvent } from "@/wab/client/tracking";
+  ComponentMeta,
+  GlobalContextMeta,
+  PlasmicElement,
+} from "@plasmicapp/host";
+import { notification } from "antd";
+import React from "react";
+import { failable } from "ts-failable";
 
 function onCreateCodeComponent(
   name: string,
@@ -312,6 +313,12 @@ export async function syncCodeComponentsAndHandleErrors(
           });
         })
         .when([InvalidCustomFunctionError, InvalidCodeLibraryError], (err2) => {
+          notification.error({
+            message: err2.message,
+            duration: 0,
+          });
+        })
+        .when(BadElementSchemaError, (err2) => {
           notification.error({
             message: err2.message,
             duration: 0,
