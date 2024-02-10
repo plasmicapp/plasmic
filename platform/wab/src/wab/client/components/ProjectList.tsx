@@ -101,6 +101,7 @@ function ProjectList(props: ProjectListProps) {
                 infoTooltip={section.infoTooltip}
                 docsUrl={section.docsUrl}
                 moreUrl={section.moreUrl}
+                twoColumnGrid
               />
             )),
           },
