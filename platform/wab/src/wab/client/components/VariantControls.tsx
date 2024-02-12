@@ -195,6 +195,7 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
         forRoot={true}
       />
       <Button
+        data-test-id="variant-selector-button"
         type={"primary"}
         disabled={chosenSelectors.length === 0}
         onClick={async (e) => {

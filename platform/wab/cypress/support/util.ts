@@ -1009,6 +1009,7 @@ export function addVariantToGroup(groupName: string, variantName: string) {
 
 export function addInteractionVariant(selector: string) {
   addVariantToGroup("Interaction Variants", selector);
+  cy.get(`[data-test-id="variant-selector-button"]`).click();
 }
 
 export function selectVariant(groupName: string, variantName: string) {
