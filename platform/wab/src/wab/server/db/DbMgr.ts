@@ -216,6 +216,7 @@ import {
   TaggedResourceId,
   TaggedResourceIds,
 } from "@/wab/shared/perms";
+import { isEnterprise } from "@/wab/shared/pricing/pricing-utils";
 import { ProjectSeqIdAssignment } from "@/wab/shared/seq-id-utils";
 import {
   calculateSemVer,
@@ -1163,6 +1164,12 @@ export class DbMgr implements MigrationDbMgr {
       fields.billingEmail = fields.billingEmail.toLowerCase();
     }
     const team = await this.getTeamById(id);
+    if (fields.uiConfig) {
+      checkPermissions(
+        isEnterprise(team.featureTier),
+        "Must be on Enterprise plan"
+      );
+    }
     assignAllowEmpty(team, this.stampUpdate(), fields);
     return await this.entMgr.save(team);
   }

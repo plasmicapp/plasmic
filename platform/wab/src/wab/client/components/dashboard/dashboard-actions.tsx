@@ -29,6 +29,7 @@ import {
   PERSONAL_WORKSPACE,
 } from "@/wab/shared/Labels";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
+import { isEnterprise } from "@/wab/shared/pricing/pricing-utils";
 import { mergeUiConfigs, UiConfig } from "@/wab/shared/ui-config-utils";
 import { Form, Menu } from "antd";
 import { History } from "history";
@@ -36,30 +37,46 @@ import * as React from "react";
 import { useHistory } from "react-router-dom";
 import { MakeADT } from "ts-adt/MakeADT";
 
-// import Checkbox from "../widgets/Checkbox";
-
 interface TeamMenuProps {
   appCtx: AppCtx;
   team: ApiTeam;
-  perms: ApiPermission[];
+  items: TeamMenuItem[];
   onUpdate: () => Promise<void>;
   redirectOnDelete?: boolean;
 }
 
-export function TeamMenu(props: TeamMenuProps) {
-  const { appCtx, team, perms, onUpdate, redirectOnDelete } = props;
-  const history = useHistory();
-
+// This is only needed to conditionally hide the three dot button
+// since the three dots and menus are independent components.
+// TODO: Build a three dot button + menu component.
+type TeamMenuItem = "ui-config" | "delete";
+export function getTeamMenuItems(appCtx: AppCtx, team: ApiTeam) {
   const accessLevel = getAccessLevelToResource(
     { type: "team", resource: team },
     appCtx.selfInfo,
-    perms
+    appCtx.perms
   );
+
+  const items: TeamMenuItem[] = [];
+  if (
+    isEnterprise(team.featureTier) &&
+    accessLevelRank(accessLevel) >= accessLevelRank("editor")
+  ) {
+    items.push("ui-config");
+  }
+  if (accessLevelRank(accessLevel) >= accessLevelRank("owner")) {
+    items.push("delete");
+  }
+  return items;
+}
+
+export function TeamMenu(props: TeamMenuProps) {
+  const { appCtx, team, items, onUpdate, redirectOnDelete } = props;
+  const history = useHistory();
 
   const builder = new MenuBuilder();
 
-  builder.genSection(undefined, (push) => {
-    if (accessLevelRank(accessLevel) >= accessLevelRank("editor")) {
+  if (items.includes("ui-config")) {
+    builder.genSection(undefined, (push) => {
       push(
         <Menu.Item
           key="ui-config"
@@ -81,13 +98,14 @@ export function TeamMenu(props: TeamMenuProps) {
           Configure Studio UI for {ORGANIZATION_CAP}
         </Menu.Item>
       );
-    }
-  });
+    });
+  }
 
-  if (accessLevelRank(accessLevel) >= accessLevelRank("owner")) {
+  if (items.includes("delete")) {
     builder.genSection(undefined, (push) => {
       push(
         <Menu.Item
+          key="delete"
           onClick={async () => {
             const { meta } = await appCtx.app.withSpinner(
               appCtx.api.getTeamMeta(team.id)

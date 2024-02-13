@@ -14,7 +14,7 @@ import { TeamId } from "@/wab/shared/ApiSchema";
 import { accessLevelRank, GrantableAccessLevel } from "@/wab/shared/EntUtil";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
-import { TeamMenu } from "./dashboard-actions";
+import { getTeamMenuItems, TeamMenu } from "./dashboard-actions";
 
 interface TeamSettingsProps extends DefaultTeamSettingsProps {
   teamId: TeamId;
@@ -53,7 +53,7 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
   useAsyncStrict(fetchAsyncData, [teamId]);
   const team = asyncData?.value?.team;
   const perms = asyncData?.value?.perms ?? [];
-  let members = asyncData?.value?.members ?? [];
+  const members = asyncData?.value?.members ?? [];
   const availFeatureTiers = asyncData?.value?.tiers ?? [];
   const subscription = asyncData?.value?.subscription;
   const tier = team?.featureTier ?? DEVFLAGS.freeTier;
@@ -65,6 +65,8 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
         ?.accessLevel || "blocked"
     ) < accessLevelRank("editor");
 
+  const teamMenuItems = team ? getTeamMenuItems(appCtx, team) : [];
+
   return !asyncData.value ? (
     <Spinner />
   ) : (
@@ -74,14 +76,14 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
         {...rest}
         teamName={team?.name}
         teamMenuButton={
-          team
+          team && teamMenuItems.length > 0
             ? {
                 props: {
                   menu: () => (
                     <TeamMenu
                       appCtx={appCtx}
                       team={team}
-                      perms={perms}
+                      items={teamMenuItems}
                       onUpdate={async () => {
                         await fetchAsyncData();
                       }}
