@@ -609,6 +609,7 @@ const DEFAULT_DEVFLAGS = {
   analytics: false,
   analyticsPaywall: false,
   monthlyViewsPaywall: false,
+  verifyMonthlyViews: false,
 
   debugCmsForms: false,
 
