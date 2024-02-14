@@ -3145,10 +3145,10 @@
   dependencies:
     "@chakra-ui/react" "^2.8.1"
 
-"@plasmicpkgs/plasmic-cms@^0.0.250":
-  version "0.0.250"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-cms/-/plasmic-cms-0.0.250.tgz#46d04da2eef122e13f7f3c5269b822461041f320"
-  integrity sha512-pE2qskpniQ8JxVanakYolqvWlXcbGR7uaxBzzIbXdyTsufZB+zQE8f7Q2gEpruwAORgJcvaBXABjfLLKcmr6lg==
+"@plasmicpkgs/plasmic-cms@^0.0.251":
+  version "0.0.251"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-cms/-/plasmic-cms-0.0.251.tgz#d99eaf2e792a5fb06ab46a9e698779d8d1618837"
+  integrity sha512-bkaG1pmKkAF1UORufwKmMktvpWToQCILY5WvD5zeIWmGL/llS7xgmlAgSqlWLTdwI3rG39tI6rmsKPVVXHqx7g==
   dependencies:
     dayjs "^1.10.7"
 
