@@ -97,6 +97,9 @@ import {
   createIframeFromNamedDomSnap,
   DomSnap,
   domSnapIframeToTpl,
+  WIElement,
+  wiTreeToTpl,
+  WI_IMPORTER_HEADER,
 } from "@/wab/client/WebImporter";
 import {
   assert,
@@ -205,6 +208,7 @@ type PastableItem =
   | { type: "text"; text: string }
   | { type: "presets"; text: string }
   | { type: "domsnap"; snap: DomSnap; iframe: HTMLIFrameElement }
+  | { type: "wi-importer"; tree: WIElement }
   | undefined;
 
 const minDragPx = 4;
@@ -1148,6 +1152,21 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       return;
     }
 
+    if (itemToPaste.type === "wi-importer") {
+      const tpl = wiTreeToTpl(
+        itemToPaste.tree,
+        vc,
+        vc.variantTplMgr(),
+        this.siteOps(),
+        vc.appCtx
+      );
+
+      if (tpl) {
+        vc.getViewOps().pasteNode(tpl);
+      }
+      return;
+    }
+
     assertNever(itemToPaste);
   }
 
@@ -1252,6 +1271,13 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
           }));
           return { replaceComponentInstances, ...figmaPasteInput };
         }
+      }
+
+      if (textContent.startsWith(WI_IMPORTER_HEADER)) {
+        return {
+          type: "wi-importer",
+          tree: JSON.parse(textContent.substring(WI_IMPORTER_HEADER.length)),
+        };
       }
 
       const presetsHeader = "__wab_plasmic_presets;";
