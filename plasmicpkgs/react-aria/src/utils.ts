@@ -1,6 +1,13 @@
 import type { CodeComponentMeta } from "@plasmicapp/host";
 import registerComponent from "@plasmicapp/host/registerComponent";
-import React from "react";
+import React, { useEffect } from "react";
+
+export function ValueObserver({ value, onChange }: any) {
+  useEffect(() => {
+    onChange(value);
+  }, [value, onChange]);
+  return null;
+}
 
 export type Registerable = {
   registerComponent: typeof registerComponent;
