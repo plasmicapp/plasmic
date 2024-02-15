@@ -22,6 +22,7 @@ import DotsHorizontalCirclesvgIcon from "@/wab/client/plasmic/q_4_icons/icons/Pl
 import DownloadsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Downloadsvg";
 import FigmasvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Figmasvg";
 import HelpCirclesvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__HelpCirclesvg";
+import MessagesvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Messagesvg";
 import PhotosvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Photosvg";
 import WarningTrianglesvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__WarningTrianglesvg";
 import { PlayerData } from "@/wab/client/studio-ctx/multiplayer-ctx";
@@ -285,12 +286,12 @@ Help
           href: "https://plasmic.app/learn",
           cond: !isWhiteLabelUser,
         },
-        keyboard: {
+        forum: {
           type: "item",
-          icon: <KeyboardIcon />,
-          label: "Keyboard shortcuts",
-          className: shortcutModalButtonClassName,
-          onClick: studioCtx.openShortcutsModal,
+          icon: <MessagesvgIcon />,
+          label: "Forum",
+          href: "https://forum.plasmic.app/",
+          cond: !isWhiteLabelUser,
         },
         slack: {
           type: "item",
@@ -298,6 +299,13 @@ Help
           label: "Slack community",
           href: "https://plasmic.app/slack",
           cond: !isWhiteLabelUser,
+        },
+        keyboard: {
+          type: "item",
+          icon: <KeyboardIcon />,
+          label: "Keyboard shortcuts",
+          className: shortcutModalButtonClassName,
+          onClick: studioCtx.openShortcutsModal,
         },
       },
     },

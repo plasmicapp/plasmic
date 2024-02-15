@@ -500,7 +500,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
     });
     this.resizeObserver.observe(canvasClipper);
     this.resizeObserver.observe(canvasScaler);
-    (window as any).drift?.show();
 
     this.focusResetListener = this.props.studioCtx.focusReset.add(() => {
       if (this.dragState) {
@@ -922,7 +921,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       this.resizeObserver.unobserve(canvasClipper);
       this.resizeObserver.unobserve(canvasScaler);
     }
-    (window as any).drift?.hide();
     if (this.focusResetListener) {
       this.focusResetListener.detach();
       this.focusResetListener = undefined;
