@@ -1,6 +1,7 @@
 import React from "react";
 import type { ButtonProps } from "react-aria-components";
 import { Button } from "react-aria-components";
+import { getCommonInputProps } from "./common";
 import {
   CodeComponentMetaOverrides,
   makeComponentName,
@@ -10,15 +11,17 @@ import {
 } from "./utils";
 
 interface BaseButtonProps extends ButtonProps {
+  resetsForm?: boolean;
   submitsForm?: boolean;
   onFocusVisibleChange?: (isFocusVisible: boolean) => void;
 }
 
 export function BaseButton(props: BaseButtonProps) {
-  const { submitsForm, onFocusVisibleChange, children, ...rest } = props;
-
+  const { submitsForm, onFocusVisibleChange, resetsForm, children, ...rest } =
+    props;
+  const type = submitsForm ? "submit" : resetsForm ? "reset" : "button";
   return (
-    <Button type={submitsForm ? "submit" : "button"} {...rest}>
+    <Button type={type} {...rest}>
       {({ isFocusVisible }) => (
         <>
           <ValueObserver
@@ -45,29 +48,27 @@ export function registerButton(
       importPath: "@plasmicpkgs/react-aria/registerButton",
       importName: "BaseButton",
       props: {
-        children: {
-          type: "slot",
-          mergeWithParent: true as any,
-        },
-        isDisabled: {
-          displayName: "Disabled",
-          type: "boolean",
-          description: "Whether the button is disabled",
-          defaultValueHint: false,
-        },
+        ...getCommonInputProps<BaseButtonProps>("button", [
+          "isDisabled",
+          "aria-label",
+          "children",
+        ]),
         submitsForm: {
           type: "boolean",
           displayName: "Submits form?",
           defaultValueHint: false,
+          hidden: (ps: BaseButtonProps) => Boolean(ps.resetsForm),
           description:
             "Whether clicking this button should submit the enclosing form.",
           advanced: true,
         },
-        "aria-label": {
-          type: "string",
-          displayName: "Aria Label",
+        resetsForm: {
+          type: "boolean",
+          displayName: "Resets form?",
+          defaultValueHint: false,
+          hidden: (ps: BaseButtonProps) => Boolean(ps.submitsForm),
           description:
-            "Label for this button, if no visible label is used (e.g. an icon only button)",
+            "Whether clicking this button should reset the enclosing form.",
           advanced: true,
         },
         onPress: {

@@ -6,6 +6,7 @@ import { registerListBox } from "./registerListBox";
 import { registerPopover } from "./registerPopover";
 import { registerSection } from "./registerSection";
 import { registerSelect } from "./registerSelect";
+import { registerSwitch } from "./registerSwitch";
 import { Registerable } from "./utils";
 
 export function registerAll(loader?: Registerable) {
@@ -17,4 +18,5 @@ export function registerAll(loader?: Registerable) {
   registerPopover(loader);
   registerInput(loader);
   registerSection(loader);
+  registerSwitch(loader);
 }
