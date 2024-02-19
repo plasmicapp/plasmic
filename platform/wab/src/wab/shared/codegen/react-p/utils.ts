@@ -187,10 +187,10 @@ export function makeStylesImports(
             .map(
               (dep) =>
                 `${cssImport(
-                  `${makeCssProjectImportName(dep.projectName)}`,
+                  `${makeCssProjectImportName()}`,
                   opts.idFileNames
                     ? makeCssProjectIdFileName(dep.projectId)
-                    : makeCssProjectFileName(dep.projectName)
+                    : makeCssProjectFileName()
                 )} // plasmic-import: ${
                   dep.projectId
                 }/${projectStyleCssImportName}`
@@ -543,12 +543,12 @@ export function makeGlobalVariantIdFileName(group: VariantGroup) {
   return `global__${group.uuid}`;
 }
 
-export function makeCssProjectImportName(projectName: string) {
-  return `plasmic_${L.snakeCase(projectName)}_css`;
+export function makeCssProjectImportName() {
+  return `plasmic_css`;
 }
 
-export function makeCssProjectFileName(projectName: string) {
-  return `plasmic_${L.snakeCase(projectName)}`;
+export function makeCssProjectFileName() {
+  return `plasmic`;
 }
 
 export function makeCssProjectIdFileName(projectId: string) {
