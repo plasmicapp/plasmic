@@ -22,6 +22,8 @@ type ImgTagProps = Omit<
   "src" | "srcSet" | "ref" | "style"
 >;
 
+const IMG_OPTIMIZER_HOST = "https://img.plasmic.app";
+
 // Default image sizes to snap to
 // TODO: make this configurable?
 const IMG_SIZES = [16, 32, 48, 64, 96, 128, 256, 384];
@@ -139,10 +141,14 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     loading: loading ?? "lazy",
   });
 
-  const { fullWidth, fullHeight, aspectRatio } =
-    typeof src === "string" || !src
-      ? { fullWidth: undefined, fullHeight: undefined, aspectRatio: undefined }
-      : src;
+  const { fullWidth, fullHeight, aspectRatio } = !src
+    ? { fullWidth: undefined, fullHeight: undefined, aspectRatio: undefined }
+    : typeof src === "string"
+    ? getImageSizeData(
+        getPixelLength(props.width),
+        getPixelLength(props.height)
+      )
+    : src;
   const srcStr = src
     ? typeof src === "string"
       ? src
@@ -513,6 +519,18 @@ function parseNumeric(val: string) {
   return { num: +num, units };
 }
 
+function getImageSizeData(
+  width: number | undefined,
+  height: number | undefined
+) {
+  const aspectRatio = width && height ? width / height : undefined;
+  return {
+    fullWidth: width,
+    fullHeight: height,
+    aspectRatio: aspectRatio && isFinite(aspectRatio) ? aspectRatio : undefined,
+  };
+}
+
 function getImageLoader(loader: "plasmic" | ImageLoader | undefined) {
   if (loader == null) {
     return undefined;
@@ -525,14 +543,15 @@ function getImageLoader(loader: "plasmic" | ImageLoader | undefined) {
 
 const PLASMIC_IMAGE_LOADER: ImageLoader = {
   supportsUrl: (src) => {
-    return src.startsWith("https://img.plasmic.app") && !isSvg(src);
+    return src.startsWith("http") && !isSvg(src);
   },
   transformUrl: (opts) => {
     const params = [
+      `src=${opts.src}`,
       opts.width ? `w=${opts.width}` : undefined,
       `q=${opts.quality ?? 75}`,
       opts.format ? `f=${opts.format}` : undefined,
     ].filter((x) => !!x);
-    return `${opts.src}?${params.join("&")}`;
+    return `${IMG_OPTIMIZER_HOST}/img-optimizer/v1/img?${params.join("&")}`;
   },
 };
