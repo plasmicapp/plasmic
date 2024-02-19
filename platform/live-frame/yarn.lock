@@ -139,10 +139,10 @@
   dependencies:
     unfetch "^4.2.0"
 
-"@plasmicapp/loader-splits@1.0.55":
-  version "1.0.55"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-splits/-/loader-splits-1.0.55.tgz#ffa8e6c8dea39b2be748cee520bf42c0b29f0f21"
-  integrity sha512-jjPe6/NeZUeLH0DzoTpfTFedkD8zReAkeEAtbdS6Zed9x9ighAwEwsMLHfhCvEfuSStaNQDWoBwC9r0QwTUD6w==
+"@plasmicapp/loader-splits@1.0.56":
+  version "1.0.56"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-splits/-/loader-splits-1.0.56.tgz#067c85b1b8d03b628cbd04602625825799d0560e"
+  integrity sha512-qk6i4YrQuiAVe88pygNZ3xcFdDqaZugkZq2eDlyd4sFIyBkhGpszPk6BRtj/2OgA5ceXEa6MBat7r8Ql1oVnTA==
   dependencies:
     json-logic-js "^2.0.2"
 

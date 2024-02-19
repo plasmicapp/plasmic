@@ -196,40 +196,27 @@ export const isDescendant = ({
   return false;
 };
 
-async function sanitizeImageDataUrl(appCtx: AppCtx, dataUrl: string) {
+async function sanitizeImageData(appCtx: AppCtx, dataUrl: string) {
   const parsed = parseDataUrl(dataUrl);
   if (parsed && parsed.mediaType === SVG_MEDIA_TYPE) {
     const xml = getParsedDataUrlData(parsed);
-    return await asSanitizedSvgUrl(appCtx, xml);
+    return await asSanitizedSvg(appCtx, xml);
   } else {
     // May want to do something for non-svg too?  At least white-list
     // the media types
-    return dataUrl;
+    return { url: dataUrl, aspectRatio: undefined };
   }
 }
 
-async function asSanitizedSvgUrl(appCtx: AppCtx, xml: string) {
+async function asSanitizedSvg(appCtx: AppCtx, xml: string) {
   const processed = await appCtx.api.processSvg({ svgXml: xml });
   if (processed.status === "failure") {
-    return undefined;
+    return { url: undefined, aspectRatio: undefined };
   }
-  return asSvgDataUrl(processed.result.xml);
-}
-
-async function maybeGetAspectRatioFromImageDataUrl(
-  appCtx: AppCtx,
-  dataUrl: string
-) {
-  const parsed = parseDataUrl(dataUrl);
-  if (parsed && parsed.mediaType === SVG_MEDIA_TYPE) {
-    const processed = await appCtx.api.processSvg({
-      svgXml: getParsedDataUrlData(parsed),
-    });
-    if (processed.status === "success") {
-      return processed.result.aspectRatio;
-    }
-  }
-  return undefined;
+  return {
+    url: asSvgDataUrl(processed.result.xml),
+    aspectRatio: processed.result.aspectRatio,
+  };
 }
 
 export async function readAndSanitizeFileAsImage(
@@ -239,17 +226,12 @@ export async function readAndSanitizeFileAsImage(
   const dataUrl = isString(fileOrDataUrl)
     ? fileOrDataUrl
     : await readUploadedFileAsDataUrl(fileOrDataUrl);
-  const url = await sanitizeImageDataUrl(appCtx, dataUrl);
+  const { url, aspectRatio } = await sanitizeImageData(appCtx, dataUrl);
   if (!url) {
     return undefined;
   }
   const size = await deriveImageSize(url);
-  const img = new ResizableImage(
-    url,
-    size.width,
-    size.height,
-    await maybeGetAspectRatioFromImageDataUrl(appCtx, url)
-  );
+  const img = new ResizableImage(url, size.width, size.height, aspectRatio);
   return Promise.resolve(img);
 }
 
@@ -301,7 +283,7 @@ export async function maybeUploadImage(
       res.dataUri,
       image.width,
       image.height,
-      image.scaledRoundedAspectRatio
+      image.actualAspectRatio
     );
     await imageResult.tryDownscale();
   }

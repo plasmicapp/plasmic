@@ -126,6 +126,7 @@ class SizeSection_ extends StyleComponent<
           <div>
             {isSvg(this.props.expsProvider) && (
               <Alert
+                className="mb-sm"
                 type="warning"
                 showIcon={true}
                 message={
