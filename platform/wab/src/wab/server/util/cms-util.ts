@@ -208,6 +208,8 @@ export function makeSqlCondition(
         return `< :${getValParam(cond.$lt)}`;
       } else if ("$le" in cond) {
         return `<= :${getValParam(cond.$le)}`;
+      } else if ("$regex" in cond) {
+        return `~* :${getValParam(cond.$regex)}`;
       }
     }
     throw new BadRequestError(

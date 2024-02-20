@@ -1457,7 +1457,8 @@ export type FilterCond =
   | { $gt: PrimitiveFilterCond }
   | { $ge: PrimitiveFilterCond }
   | { $lt: PrimitiveFilterCond }
-  | { $le: PrimitiveFilterCond };
+  | { $le: PrimitiveFilterCond }
+  | { $regex: PrimitiveFilterCond };
 
 export type CmsUploadedFile = {
   name: string;
