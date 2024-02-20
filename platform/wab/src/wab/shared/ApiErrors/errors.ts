@@ -58,6 +58,12 @@ export class CopilotRateLimitExceededError extends ApiError {
   statusCode = 429;
 }
 
+export class GrantUserNotFoundError extends ApiError {
+  name = "GrantUserNotFoundError";
+  statusCode = 404;
+  message = "Unable to grant access to a non-existent user";
+}
+
 /**
  * We can't simply use instanceof ApiError, since our build pipeline doesn't
  * handle extending Error correctly. class extends Error works fine with
@@ -80,6 +86,7 @@ const errorNameRegistry = {
   EntityNotFound: NotFoundError,
   BadRequestError,
   CopilotRateLimitExceededError,
+  GrantUserNotFoundError,
 };
 
 /**

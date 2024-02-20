@@ -133,6 +133,7 @@ import { generateSomeApiToken } from "@/wab/server/util/Tokens";
 import {
   BadRequestError,
   CopilotRateLimitExceededError,
+  GrantUserNotFoundError,
   UnauthorizedError,
 } from "@/wab/shared/ApiErrors/errors";
 import {
@@ -5489,7 +5490,8 @@ export class DbMgr implements MigrationDbMgr {
   async grantResourcePermissionByEmail(
     taggedResourceId: TaggedResourceId,
     email: string,
-    rawLevelToGrant: GrantableAccessLevel | ForcedAccessLevel
+    rawLevelToGrant: GrantableAccessLevel | ForcedAccessLevel,
+    grantExistingUsersOnly?: boolean
   ) {
     await this._checkResourcePerms(
       taggedResourceId,
@@ -5503,6 +5505,9 @@ export class DbMgr implements MigrationDbMgr {
       ? rawLevelToGrant.force
       : ensureGrantableAccessLevel(rawLevelToGrant);
     const user = await this.tryGetUserByEmail(email);
+    if (!user && grantExistingUsersOnly) {
+      throw new GrantUserNotFoundError();
+    }
     const existingPerm = await this.permissions().findOne({
       where: {
         [taggedResourceId.type]: resource,

@@ -72,7 +72,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg___2OKoH {
@@ -80,7 +79,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .roleDropdown:global(.__wab_instance) {

@@ -532,6 +532,7 @@ export interface Revoke {
 export interface GrantRevokeRequest {
   grants: Grant[];
   revokes: Revoke[];
+  requireSignUp?: boolean;
 }
 
 export interface GrantRevokeResponse {

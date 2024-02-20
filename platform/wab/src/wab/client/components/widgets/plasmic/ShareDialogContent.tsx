@@ -133,6 +133,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
   // but it will require editor access to update invite by link
   const canInvite = ownAccessLevelRank >= accessLevelRank("viewer");
   const canEdit = ownAccessLevelRank >= accessLevelRank("editor");
+  const [requireSignUp, setRequireSignUp] = React.useState(false);
   const [inviteAccessLevel, setInviteAccessLevel] =
     React.useState<GrantableAccessLevel>(canEdit ? "editor" : "commenter");
   const [email, setEmail] = React.useState("");
@@ -193,6 +194,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
       const { enqueued } = await doGrantRevoke({
         grants: [{ email: cleaned, accessLevel: inviteAccessLevel }],
         revokes: [],
+        requireSignUp,
       });
 
       if (enqueued) {
@@ -430,6 +432,10 @@ function ShareDialogContent(props: ShareDialogContentProps) {
             }
           : undefined
       }
+      requireSignUpSwitch={{
+        isChecked: requireSignUp,
+        onChange: setRequireSignUp,
+      }}
       shareByLinkSwitch={
         resource.type !== "workspace"
           ? {

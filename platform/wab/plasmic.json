@@ -1376,7 +1376,7 @@
     {
       "projectId": "kA1Hysr5ZeimtATHTDJz5B",
       "projectName": "[PlasmicKit] Share Dialog",
-      "version": ">=0.0.0",
+      "version": "latest",
       "cssFilePath": "wab/client/plasmic/PP__plasmickit_share_dialog.module.css",
       "components": [
         {
@@ -1425,8 +1425,8 @@
       ],
       "indirect": false,
       "globalContextsFilePath": "",
-      "jsBundleThemes": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "customFunctions": []
     },
     {
       "projectId": "aaggSgVS8yYsAwQffVQB4p",
@@ -9865,7 +9865,8 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "caTPwKxj5ZrD9LQ7DMdK4Z",

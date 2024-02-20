@@ -216,7 +216,9 @@ export async function getTeamMeta(req: Request, res: Response) {
 
 export async function changeResourcePermissions(req: Request, res: Response) {
   const mgr = userDbMgr(req);
-  const { grants, revokes } = uncheckedCast<GrantRevokeRequest>(req.body);
+  const { grants, revokes, requireSignUp } = uncheckedCast<GrantRevokeRequest>(
+    req.body
+  );
   const host = req.config.host;
   const resourcesById: Record<string, Team | Workspace | Project> = {};
   const emailsToSend: {
@@ -258,7 +260,8 @@ export async function changeResourcePermissions(req: Request, res: Response) {
         await mgr.grantResourcePermissionByEmail(
           taggedResourceId,
           email,
-          accessLevel
+          accessLevel,
+          requireSignUp
         );
         userAnalytics(req).track({
           event: "Share resource",

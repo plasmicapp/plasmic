@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import IconButton from "../IconButton"; // plasmic-import: LPry-TF4j22a/component
 import Select from "../Select"; // plasmic-import: j_4IQyOWK2b/component
 import Select__Option from "../Select__Option"; // plasmic-import: rr-LWdMni2G/component
@@ -75,11 +98,11 @@ export const PlasmicPermissionItem__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicPermissionItem__OverridesType = {
-  root?: p.Flex<"div">;
-  freeBox?: p.Flex<"div">;
-  owner?: p.Flex<"div">;
-  deleteBtn?: p.Flex<typeof IconButton>;
-  roleDropdown?: p.Flex<typeof Select>;
+  root?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
+  owner?: Flex__<"div">;
+  deleteBtn?: Flex__<typeof IconButton>;
+  roleDropdown?: Flex__<typeof Select>;
 };
 
 export interface DefaultPermissionItemProps {
@@ -90,13 +113,7 @@ export interface DefaultPermissionItemProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicPermissionItem__RenderFunc(props: {
   variants: PlasmicPermissionItem__VariantsArgs;
@@ -113,13 +130,13 @@ function PlasmicPermissionItem__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "role",
@@ -136,7 +153,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -149,7 +166,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
   };
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -172,11 +189,11 @@ function PlasmicPermissionItem__RenderFunc(props: {
       )}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
-      {p.renderPlasmicSlot({
+      {renderPlasmicSlot({
         defaultContents: "yang@plasmic.app",
         value: args.email,
       })}
-      <p.Stack
+      <Stack__
         as={"div"}
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
@@ -199,36 +216,26 @@ function PlasmicPermissionItem__RenderFunc(props: {
             {hasVariant($state, "role", "owner") ? "owner" : "Enter some text"}
           </div>
         ) : null}
-        {(
-          hasVariant($state, "role", "owner") && triggers.hover_root
-            ? true
-            : triggers.hover_root
-            ? true
-            : true
-        ) ? (
-          <IconButton
-            data-plasmic-name={"deleteBtn"}
-            data-plasmic-override={overrides.deleteBtn}
-            children2={
-              <ChevronDownsvgIcon
-                className={classNames(projectcss.all, sty.svg___2OKoH)}
-                role={"img"}
-              />
-            }
-            className={classNames("__wab_instance", sty.deleteBtn, {
-              [sty.deleteBtnrole_owner]: hasVariant($state, "role", "owner"),
-            })}
-            withRedBackgroundHover={true}
-          >
-            <p.PlasmicIcon
-              PlasmicIconType={
-                triggers.hover_root ? Trash2SvgIcon : PlussvgIcon
-              }
-              className={classNames(projectcss.all, sty.svg__oRYw)}
+        <IconButton
+          data-plasmic-name={"deleteBtn"}
+          data-plasmic-override={overrides.deleteBtn}
+          children2={
+            <ChevronDownsvgIcon
+              className={classNames(projectcss.all, sty.svg___2OKoH)}
               role={"img"}
             />
-          </IconButton>
-        ) : null}
+          }
+          className={classNames("__wab_instance", sty.deleteBtn, {
+            [sty.deleteBtnrole_owner]: hasVariant($state, "role", "owner"),
+          })}
+          withRedBackgroundHover={true}
+        >
+          <PlasmicIcon__
+            PlasmicIconType={triggers.hover_root ? Trash2SvgIcon : PlussvgIcon}
+            className={classNames(projectcss.all, sty.svg__oRYw)}
+            role={"img"}
+          />
+        </IconButton>
         {(hasVariant($state, "role", "owner") ? false : true) ? (
           <Select
             data-plasmic-name={"roleDropdown"}
@@ -250,37 +257,37 @@ function PlasmicPermissionItem__RenderFunc(props: {
             isDisabled={
               hasVariant($state, "loading", "loading") ? true : undefined
             }
-            type={"bordered" as const}
-            value={"viewer" as const}
+            type={"bordered"}
+            value={"viewer"}
           >
             <Select__Option
               className={classNames("__wab_instance", sty.option__clhZ3)}
-              value={"viewer" as const}
+              value={"viewer"}
             >
               {"viewer"}
             </Select__Option>
             <Select__Option
               className={classNames("__wab_instance", sty.option__wZq0D)}
-              value={"content" as const}
+              value={"content"}
             >
               {"designer"}
             </Select__Option>
             <Select__Option
               className={classNames("__wab_instance", sty.option__xCsAc)}
-              value={"designer" as const}
+              value={"designer"}
             >
               {"content creator"}
             </Select__Option>
             <Select__Option
               className={classNames("__wab_instance", sty.option__ncavV)}
-              value={"editor" as const}
+              value={"editor"}
             >
               {"editor"}
             </Select__Option>
           </Select>
         ) : null}
         {(hasVariant($state, "loading", "loading") ? true : false)
-          ? p.renderPlasmicSlot({
+          ? renderPlasmicSlot({
               defaultContents: (
                 <ResetIcon
                   className={classNames(projectcss.all, sty.svg__vmeQb)}
@@ -291,8 +298,8 @@ function PlasmicPermissionItem__RenderFunc(props: {
               value: args.spinner,
             })
           : null}
-      </p.Stack>
-    </p.Stack>
+      </Stack__>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -348,7 +355,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPermissionItem__ArgProps,
           internalVariantPropNames: PlasmicPermissionItem__VariantProps,
         }),
