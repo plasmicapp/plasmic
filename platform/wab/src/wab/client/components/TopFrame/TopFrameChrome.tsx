@@ -140,6 +140,7 @@ export function TopFrameChrome({
   }, [
     appCtx,
     project,
+    shouldShowRegenerateSecretTokenModal,
     showRegenerateSecretTokenModal,
     didShowRegenerateSecretTokenModal,
   ]);

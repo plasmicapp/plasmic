@@ -136,7 +136,9 @@ function _TopBar({ preview }: TopBarProps) {
             push2(
               <Menu.Item
                 key="secret"
-                onClick={() => topFrameApi.showRegenerateSecretTokenModal()}
+                onClick={() => {
+                  spawn(topFrameApi.showRegenerateSecretTokenModal());
+                }}
               >
                 Regenerate secret project API token
               </Menu.Item>
