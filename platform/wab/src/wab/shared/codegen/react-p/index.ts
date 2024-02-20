@@ -475,7 +475,7 @@ export function exportProjectConfig(
   const cssFileName = makeCssFileName(
     exportOpts.idFileNames
       ? makeCssProjectIdFileName(projectId)
-      : makeCssProjectFileName(),
+      : makeCssProjectFileName(projectName),
     exportOpts
   );
 
@@ -2339,9 +2339,9 @@ const makeCssClassExprsForVariantedTokens = (ctx: SerializerBaseContext) => {
     ...withoutNils(
       cssProjectDependencies.map((dep) =>
         useCssModules
-          ? `${makeCssProjectImportName()}.${makePlasmicTokensClassName(
-              ctx.exportOpts
-            )}`
+          ? `${makeCssProjectImportName(
+              dep.projectName
+            )}.${makePlasmicTokensClassName(ctx.exportOpts)}`
           : undefined
       )
     )
@@ -2382,7 +2382,7 @@ const makeCssClassExprsForVariantedTokens = (ctx: SerializerBaseContext) => {
         );
         const variantDep = depMap.get(variantGroup);
         const importName = variantDep
-          ? makeCssProjectImportName()
+          ? makeCssProjectImportName(variantDep.name)
           : "projectcss";
         comboClassNameExpr = `[${importName}.${makeCssClassNameForVariantCombo(
           vc,
