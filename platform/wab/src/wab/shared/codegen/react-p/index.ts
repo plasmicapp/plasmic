@@ -475,7 +475,7 @@ export function exportProjectConfig(
   const cssFileName = makeCssFileName(
     exportOpts.idFileNames
       ? makeCssProjectIdFileName(projectId)
-      : makeCssProjectFileName(projectName),
+      : makeCssProjectFileName(),
     exportOpts
   );
 
