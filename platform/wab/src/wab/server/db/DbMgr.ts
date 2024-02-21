@@ -1078,6 +1078,7 @@ export class DbMgr implements MigrationDbMgr {
     const qb = this.teams()
       .createQueryBuilder("t")
       .leftJoinAndSelect("t.featureTier", "ft")
+      .leftJoinAndSelect("t.parentTeam", "pt")
       .where(where);
     if (!includeDeleted) {
       qb.andWhere("t.deletedAt is null");
@@ -2082,6 +2083,7 @@ export class DbMgr implements MigrationDbMgr {
       .createQueryBuilder("w")
       .innerJoinAndSelect("w.team", "t")
       .leftJoinAndSelect("t.featureTier", "ft")
+      .leftJoinAndSelect("t.parentTeam", "pt")
       .where(where);
     if (!includeDeleted) {
       qb.andWhere("w.deletedAt is null and t.deletedAt is null");

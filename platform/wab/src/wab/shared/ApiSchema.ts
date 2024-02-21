@@ -166,7 +166,7 @@ export interface ApiTeam extends ApiEntityBase {
   onTrial: boolean;
   whiteLabelName: string | null;
   whiteLabelInfo: TeamWhiteLabelInfo | null;
-  uiConfig: UiConfig | null;
+  uiConfig: UiConfig;
 }
 
 export interface TeamWhiteLabelInfo {

@@ -41,6 +41,7 @@ import {
   ResourceId,
   ResourceType,
 } from "@/wab/shared/perms";
+import { mergeUiConfigs } from "@/wab/shared/ui-config-utils";
 import {
   createProjectUrl,
   createTeamUrl,
@@ -73,7 +74,6 @@ export function mkApiTeam(team: Team): ApiTeam {
       "name",
       "billingEmail",
       "seats",
-      "featureTier",
       "featureTierId",
       "stripeCustomerId",
       "stripeSubscriptionId",
@@ -84,9 +84,10 @@ export function mkApiTeam(team: Team): ApiTeam {
       "defaultAccessLevel",
       "whiteLabelInfo",
       "whiteLabelName",
-      "uiConfig",
     ]),
     {
+      featureTier: team.featureTier || team.parentTeam?.featureTier || null,
+      uiConfig: mergeUiConfigs(team.parentTeam?.uiConfig, team.uiConfig),
       onTrial: isTeamOnFreeTrial(team),
     }
   );

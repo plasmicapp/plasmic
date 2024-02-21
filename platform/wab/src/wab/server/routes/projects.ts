@@ -68,6 +68,7 @@ import "@/wab/server/extensions";
 import { REAL_PLUME_VERSION } from "@/wab/server/pkgs/plume-pkg-mgr";
 import { checkEtagSkippable } from "@/wab/server/routes/loader";
 import { BLOCKED_PROJECTS } from "@/wab/server/routes/projects-constants";
+import { mkApiTeam } from "@/wab/server/routes/teams";
 import { getCodesandboxToken } from "@/wab/server/secrets";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
 import { TutorialType } from "@/wab/server/tutorialdb/tutorialdb-utils";
@@ -182,17 +183,16 @@ import {
 } from "./util";
 
 export function mkApiProject(project: Project): ApiProject {
+  const team = project.workspace?.team
+    ? mkApiTeam(project.workspace.team)
+    : null;
   return {
     ...L.omit(project, "workspace"),
     workspaceName: project.workspace?.name || null,
     teamId: project.workspace?.teamId || null,
-    teamName: project.workspace?.team?.name || null,
-    featureTier: project.workspace?.team?.featureTier || null,
-    uiConfig: mergeUiConfigs(
-      project.workspace?.team?.parentTeam?.uiConfig,
-      project.workspace?.team?.uiConfig,
-      project.workspace?.uiConfig
-    ),
+    teamName: team?.name || null,
+    featureTier: team?.featureTier || null,
+    uiConfig: mergeUiConfigs(team?.uiConfig, project.workspace?.uiConfig),
     contentCreatorConfig: project.workspace?.team?.featureTier
       ?.editContentCreatorMode
       ? project.workspace?.contentCreatorConfig
