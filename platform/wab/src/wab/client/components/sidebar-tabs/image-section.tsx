@@ -162,6 +162,7 @@ export const ImageSection = observer(function ImageSection(props: {
     switchToDynamic,
   });
   const isCustomCode = isRealCodeExpr(expr);
+  const shouldShowSizeProps = isKnownCustomCode(expr);
 
   return (
     <StylePanelSection
@@ -293,7 +294,7 @@ export const ImageSection = observer(function ImageSection(props: {
               onUnset={() =>
                 studioCtx.changeUnsafe(() => {
                   const clonedExpr = clone(expr);
-                  let newExpr = ensureInstance(
+                  const newExpr = ensureInstance(
                     clonedExpr,
                     ObjectPath,
                     CustomCode
@@ -314,7 +315,7 @@ export const ImageSection = observer(function ImageSection(props: {
                 onPicked={(picked) =>
                   studioCtx.changeUnsafe(() => {
                     const clonedExpr = clone(expr);
-                    let newExpr = ensureInstance(
+                    const newExpr = ensureInstance(
                       clonedExpr,
                       ObjectPath,
                       CustomCode
@@ -424,7 +425,10 @@ export const ImageSection = observer(function ImageSection(props: {
       )}
       {!isIcon && (
         <>
-          <ContentPanelSection expsProvider={expsProvider} />
+          <ContentPanelSection
+            expsProvider={expsProvider}
+            shouldShowSizeProps={shouldShowSizeProps}
+          />
         </>
       )}
     </StylePanelSection>
