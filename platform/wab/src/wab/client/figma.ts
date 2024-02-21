@@ -43,6 +43,7 @@ import {
 import { codeLit } from "@/wab/exprs";
 import {
   ComponentNode,
+  ComponentPropertiesEntries,
   DefaultFrameMixin,
   DefaultShapeMixin,
   FrameNode,
@@ -1407,8 +1408,29 @@ const getNodeToTplNode = (
     ) {
       const component = findMappedComponent(node, allComponents);
       if (component) {
+        function getAllProperties(
+          inst: InstanceNode
+        ): ComponentPropertiesEntries {
+          const localProps: ComponentPropertiesEntries = Object.entries(
+            inst.componentProperties ?? {}
+          );
+
+          const exposedInstances: InstanceNode[] = inst.exposedInstances ?? [];
+
+          const exposedProps = exposedInstances.reduce(
+            (acc, _inst): ComponentPropertiesEntries => {
+              return [...acc, ...getAllProperties(_inst)];
+            },
+            [] as ComponentPropertiesEntries
+          );
+
+          return [...localProps, ...exposedProps];
+        }
+
+        const allNodeProperties = getAllProperties(node);
+
         const propsArgs = withoutNils(
-          Object.entries(node.componentProperties ?? {}).map(([k, prop]) => {
+          allNodeProperties.map(([k, prop]) => {
             if (
               /*
                   When creating the nodes while denormalizing the data, we always create an

@@ -653,8 +653,13 @@ export interface InstanceNode extends DefaultFrameMixin {
   readonly type: "INSTANCE";
   mainComponent?: string;
   componentProperties?: ComponentProperties;
+  exposedInstances?: [InstanceNode];
   scaleFactor: number;
 }
+
+export type ComponentPropertiesEntries = Array<
+  [string, NonNullable<InstanceNode["componentProperties"]>[string]]
+>;
 
 interface BooleanOperationNode
   extends DefaultShapeMixin,
