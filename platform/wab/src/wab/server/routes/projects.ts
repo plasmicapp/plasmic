@@ -67,6 +67,7 @@ import {
 import "@/wab/server/extensions";
 import { REAL_PLUME_VERSION } from "@/wab/server/pkgs/plume-pkg-mgr";
 import { checkEtagSkippable } from "@/wab/server/routes/loader";
+import { BLOCKED_PROJECTS } from "@/wab/server/routes/projects-constants";
 import { getCodesandboxToken } from "@/wab/server/secrets";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
 import { TutorialType } from "@/wab/server/tutorialdb/tutorialdb-utils";
@@ -2631,6 +2632,13 @@ export async function updateProjectData(req: Request, res: Response) {
   const dbMgr = userDbMgr(req);
   const suMgr = superDbMgr(req);
   const projectId = req.params.projectId;
+
+  if (BLOCKED_PROJECTS.includes(projectId)) {
+    throw new BadRequestError(
+      "This project is blocked from making updates. Please contact support."
+    );
+  }
+
   const data = req.body as UpdateProjectReq;
   const latestRev = await dbMgr.getLatestProjectRev(
     projectId,
