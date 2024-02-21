@@ -1,1 +1,1 @@
-export const BLOCKED_PROJECTS = [];
+export const BLOCKED_PROJECTS: string[] = [];
