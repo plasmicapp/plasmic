@@ -4618,8 +4618,8 @@ export class StudioCtx extends WithDbCtx {
             toDeleteIids,
             branchId: this.dbCtx().branchInfo?.id,
           }),
-          // One-minute timeout
-          60 * 1000
+          // Two-minute timeout
+          120 * 1000
         );
         this.dbCtx().revisionNum++;
         // We can clear the change records as they have already been saved
