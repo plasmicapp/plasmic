@@ -498,6 +498,9 @@ const DEFAULT_DEVFLAGS = {
   useWhitespaceNormal: false,
   autoUpgradeHostless: true,
 
+  writeApiSizeLimit: 70000000, // 70MB
+  writeApiExcludedProjectIds: [] as string[],
+
   // Disabled by default
   runningInCypress: false,
   posthog: true,

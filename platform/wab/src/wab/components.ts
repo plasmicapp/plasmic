@@ -1,3 +1,4 @@
+import { walkDependencyTree } from "@/wab/project-deps";
 import { CodeComponentMeta as ComponentRegistration } from "@plasmicapp/host/registerComponent";
 import L, { cloneDeep, orderBy, uniq, without } from "lodash";
 import memoizeOne from "memoize-one";
@@ -153,7 +154,7 @@ import {
   setTplVisibility,
   TplVisibility,
 } from "./shared/visibility-utils";
-import { UNINITIALIZED_VALUE, writeable } from "./sites";
+import { isHostLessPackage, UNINITIALIZED_VALUE, writeable } from "./sites";
 import { removeVariantGroupFromSplits } from "./splits";
 import {
   genOnChangeParamName,
@@ -2342,4 +2343,10 @@ export function getAllComponentsInTopologicalOrder(site: Site) {
 
 export function getPageOrComponentLabel(c: Component) {
   return isPageComponent(c) ? "page" : "component";
+}
+
+export function getDependencyComponents(site: Site) {
+  return walkDependencyTree(site, "all")
+    .filter((dep) => !isHostLessPackage(dep.site))
+    .flatMap((dep) => dep.site.components.filter(isPlainComponent));
 }

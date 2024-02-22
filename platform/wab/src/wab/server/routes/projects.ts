@@ -67,13 +67,11 @@ import {
 import "@/wab/server/extensions";
 import { REAL_PLUME_VERSION } from "@/wab/server/pkgs/plume-pkg-mgr";
 import { checkEtagSkippable } from "@/wab/server/routes/loader";
-import { BLOCKED_PROJECTS } from "@/wab/server/routes/projects-constants";
 import { mkApiTeam } from "@/wab/server/routes/teams";
 import { getCodesandboxToken } from "@/wab/server/secrets";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
 import { TutorialType } from "@/wab/server/tutorialdb/tutorialdb-utils";
 import { withSpan } from "@/wab/server/util/apm-util";
-import { generateSomeApiToken } from "@/wab/server/util/Tokens";
 import {
   BadRequestError,
   BundleTypeError,
@@ -131,6 +129,7 @@ import {
 import {
   Bundle,
   getBundle,
+  getSerializedBundleSize,
   isExpectedBundleVersion,
   OutdatedBundleError,
 } from "@/wab/shared/bundles";
@@ -1501,16 +1500,15 @@ export async function updateProject(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const data: SetSiteInfoReq = req.body;
   const projectId = req.params.projectId;
-  let regeneratedSecretApiToken: string | undefined = undefined;
-  const project = await mgr.updateProject({
-    id: projectId,
-    ...data,
-    ...(data.regenerateSecretApiToken
-      ? {
-          secretApiToken: (regeneratedSecretApiToken = generateSomeApiToken()),
-        }
-      : {}),
-  });
+  const project = await mgr.updateProject(
+    {
+      id: projectId,
+      ...data,
+    },
+    data.regenerateSecretApiToken
+  );
+  const regeneratedSecretApiToken: string | undefined =
+    project.secretApiToken ?? undefined;
 
   req.promLabels.projectId = project.id;
   const apiProject = mkApiProject(project);
@@ -2633,7 +2631,9 @@ export async function updateProjectData(req: Request, res: Response) {
   const suMgr = superDbMgr(req);
   const projectId = req.params.projectId;
 
-  if (BLOCKED_PROJECTS.includes(projectId)) {
+  const excludedProjectIds = req.devflags.writeApiExcludedProjectIds;
+
+  if (excludedProjectIds.includes(projectId)) {
     throw new BadRequestError(
       "This project is blocked from making updates. Please contact support."
     );
@@ -2648,6 +2648,16 @@ export async function updateProjectData(req: Request, res: Response) {
         }
       : undefined
   );
+
+  const writeApiSizeLimit = req.devflags.writeApiSizeLimit;
+  const oldBundleSize = getSerializedBundleSize(latestRev);
+  const incomingSize = JSON.stringify(data).length;
+  if (oldBundleSize + incomingSize > writeApiSizeLimit) {
+    throw new BadRequestError(
+      "Project data size exceeds the limit. Please contact the support."
+    );
+  }
+
   const oldBundle = await getMigratedBundle(latestRev);
   const bundler = new Bundler();
   // Need to use superuser because our API token set probably only has access to leaf project and not dependencies
@@ -2776,12 +2786,13 @@ export async function updateProjectData(req: Request, res: Response) {
   }
 
   if (data.regenerateSecretApiToken) {
-    const secretApiToken = generateSomeApiToken();
-    await dbMgr.updateProject({
-      id: req.params.projectId,
-      secretApiToken: secretApiToken,
-    });
-    result.regeneratedSecretApiToken = secretApiToken;
+    const project = await dbMgr.updateProject(
+      {
+        id: req.params.projectId,
+      },
+      true /* regenerateSecretApiToken */
+    );
+    result.regeneratedSecretApiToken = project.secretApiToken ?? undefined;
   }
 
   const newBundle = bundler.bundle(site, latestRev.id, oldBundle.version);

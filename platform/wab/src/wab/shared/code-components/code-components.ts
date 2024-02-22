@@ -86,6 +86,7 @@ import {
   getCodeComponentImportName,
   getComponentDisplayName,
   getDefaultComponent,
+  getDependencyComponents,
   getRealParams,
   isCodeComponent,
   isContextCodeComponent,
@@ -2244,7 +2245,10 @@ export function elementSchemaToTpl(
     ...getHostLessComponents(site),
     ...(opts.codeComponentsOnly
       ? []
-      : site.components.filter((c) => isPlainComponent(c))),
+      : [
+          ...site.components.filter((c) => isPlainComponent(c)),
+          ...getDependencyComponents(site),
+        ]),
   ];
   const baseVariant =
     opts.baseVariant ?? component?.variants[0] ?? mkBaseVariant();

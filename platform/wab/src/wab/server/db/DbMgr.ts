@@ -320,7 +320,6 @@ export const updatableProjectFields = [
   "hostUrl",
   "workspaceId",
   "extraData",
-  "secretApiToken",
   "isMainBranchProtected",
   "isUserStarter",
 ] as const;
@@ -2503,16 +2502,21 @@ export class DbMgr implements MigrationDbMgr {
     await this._assignResourceOwner({ type: "project", id: projectId }, userId);
   }
 
-  async updateProject({
-    id,
-    ...fields
-  }: { id: string } & Partial<UpdatableProjectFields>) {
+  async updateProject(
+    { id, ...fields }: { id: string } & Partial<UpdatableProjectFields>,
+    regenerateSecretApiToken = false
+  ) {
     fields = _.pick(fields, updatableProjectFields);
     if (editorOnlyUpdatableProjectFields.some((f) => fields[f] !== undefined)) {
       await this.checkProjectPerms(id, "editor", "update", true);
     } else {
       await this.checkProjectPerms(id, "content", "update", true);
     }
+
+    if (regenerateSecretApiToken) {
+      fields["secretApiToken"] = generateSomeApiToken();
+    }
+
     const project = await this.getProjectById(id);
     if (fields.workspaceId || fields.workspaceId === null) {
       // If fields.workspaceId === null, project is moved out from its
