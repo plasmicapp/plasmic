@@ -1081,6 +1081,7 @@ export class DbMgr implements MigrationDbMgr {
       .createQueryBuilder("t")
       .leftJoinAndSelect("t.featureTier", "ft")
       .leftJoinAndSelect("t.parentTeam", "pt")
+      .leftJoinAndSelect("pt.featureTier", "pft")
       .where(where);
     if (!includeDeleted) {
       qb.andWhere("t.deletedAt is null");
@@ -2092,6 +2093,7 @@ export class DbMgr implements MigrationDbMgr {
       .innerJoinAndSelect("w.team", "t")
       .leftJoinAndSelect("t.featureTier", "ft")
       .leftJoinAndSelect("t.parentTeam", "pt")
+      .leftJoinAndSelect("pt.featureTier", "pft")
       .where(where);
     if (!includeDeleted) {
       qb.andWhere("w.deletedAt is null and t.deletedAt is null");
@@ -2876,6 +2878,7 @@ export class DbMgr implements MigrationDbMgr {
       .leftJoinAndSelect("w.team", "t")
       .leftJoinAndSelect("t.featureTier", "ft")
       .leftJoinAndSelect("t.parentTeam", "pt")
+      .leftJoinAndSelect("pt.featureTier", "pft")
       .where(where);
     if (!includeDeleted) {
       qb.andWhere(
