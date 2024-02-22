@@ -4858,10 +4858,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.3.tgz#d946d81c3d1e3a8f4f3cfcb8751edfe14b90d09e"
   integrity sha512-jFde/wfL8NlJEr76Mshyju/3GvJD5Z9YijCG1/8DR+KOEv7m5uRvORjxtEEw2GKDXRp2GqpQqj97iWGLFUsOzA==
 
-"@plasmicapp/react-web@^0.2.319":
-  version "0.2.319"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.319.tgz#3024d64dcbd91580c256ef300f216054de9cb68e"
-  integrity sha512-GLoXQTfA+OfAJTzVqT9wCyEdhCkl0V+XkWDcc7/SAwSkgTahgFb/j6UvgVgT5pvPwmrB4XPQ66wz1w2HTD3y9w==
+"@plasmicapp/react-web@^0.2.320":
+  version "0.2.320"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.320.tgz#30aa994cd32457b22543db69cc79f27d6d872682"
+  integrity sha512-auBSpCw8qWUmNR328b6JnrP3hwFYeV80Vx29BDOcqn+29rm5rG7GEEriqs8kUOQKEiW7BXPUYOzC4Lj3J8d3+A==
   dependencies:
     "@plasmicapp/auth-react" "0.0.20"
     "@plasmicapp/data-sources" "0.1.148"
@@ -4894,10 +4894,10 @@
     fast-deep-equal "^3.1.3"
     valtio "^1.6.3"
 
-"@plasmicpkgs/antd5@^0.0.215":
-  version "0.0.215"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.215.tgz#f85894caa9f8118ba9fadbe993ffab666a0705d5"
-  integrity sha512-J3fb/fUtXvebJRmmUzseom6/eTha+BWeLlzhSXikGVhFLEkH5mljFWr9ZVqjXOtfROXC1bv3AW0YWwGtwRp9yw==
+"@plasmicpkgs/antd5@^0.0.216":
+  version "0.0.216"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.216.tgz#3f9f5b5da7c6cf84156ff72726fcfd64046fab8f"
+  integrity sha512-5RL6lTRGGIiz/EnVwodeIFxO+0+YfBKPTQONHNw/uMNyp6Q3OwwggxayedfxwNly/skV6I+/yXGxVRI+hkESsA==
   dependencies:
     antd "^5.12.7"
     classnames "^2.3.2"
