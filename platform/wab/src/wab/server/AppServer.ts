@@ -500,9 +500,26 @@ function addSentryError(app: express.Application, config: Config) {
 }
 
 export function addLoggingMiddleware(app: express.Application) {
+  app.use(
+    safeCast<RequestHandler>(async (req: Request, res, next) => {
+      req.id = mkShortId();
+      next();
+    })
+  );
   morgan.token("request-id", (req: Request) => req.id);
   morgan.token("user-email", (req: Request) => req.user?.email);
   // Remove metrics url to avoid spam
+  app.use(
+    morgan(
+      `START [:request-id] :remote-addr - :user-email [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" (:total-time[0]ms)`,
+      {
+        skip: (req, _) => {
+          return req.originalUrl === "/metrics" || req.url === "/metrics";
+        },
+        immediate: true,
+      }
+    )
+  );
   app.use(
     morgan(
       `[:request-id] :remote-addr - :user-email [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" (:total-time[0]ms)`,
@@ -553,7 +570,6 @@ function addMiddlewares(
   // Initialize some book-keeping stuff
   app.use(
     safeCast<RequestHandler>(async (req: Request, res, next) => {
-      req.id = mkShortId();
       req.statsd = new WabPromStats(name);
       req.statsd.onReqStart(req);
       res.on("finish", () => {
