@@ -2,6 +2,7 @@
 
 "use strict";
 import { ensure, mkShortId } from "@/wab/common";
+import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { ProcessSvgResponse } from "@/wab/shared/ApiSchema";
 import { parseSvgXml } from "@/wab/shared/data-urls";
 import { JSDOM } from "jsdom";
@@ -217,6 +218,7 @@ export function svgoProcess(svgXml: string): ProcessSvgResponse {
     let svgData: string | undefined = undefined;
     let previousDataLength: number | undefined = undefined;
 
+    let limit = 0;
     while (svgData === undefined || svgData.length !== previousDataLength) {
       previousDataLength = svgData?.length;
 
@@ -229,6 +231,17 @@ export function svgoProcess(svgXml: string): ProcessSvgResponse {
         indent: "  ",
         pretty: true,
       }).data;
+
+      // TODO: Remove this. Workaround to see if this is causing an infinite loop
+      limit = limit + 1;
+      if (limit > 100) {
+        return {
+          status: "failure",
+          error: new BadRequestError(
+            `There was an issue trying to process SVG. Please contact a Plasmic employee`
+          ),
+        };
+      }
     }
 
     const dims = getDimensions(svg);
