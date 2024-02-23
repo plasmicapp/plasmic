@@ -199,6 +199,10 @@ interface JsonElement {
 export interface DefaultComponentElement<P> {
   type: "default-component";
   kind: "button" | "text-input";
+  /**
+   * The name of the element in the tree
+   */
+  elementName?: string;
   props?: {
     // For auto-completion
     [prop in keyof Partial<P>]:
@@ -230,6 +234,10 @@ export interface CodeComponentElement<P> {
    * The registered component name
    */
   name: string;
+  /**
+   * The name of the element in the tree
+   */
+  elementName?: string;
   styles?: CSSProperties;
   props?: {
     // For auto-completion
