@@ -378,6 +378,8 @@ export interface LayoutMixin {
 
   layoutAlign: "MIN" | "CENTER" | "MAX" | "STRETCH" | "INHERIT"; // applicable only inside auto-layout frames
   layoutGrow: number;
+  layoutSizingHorizontal: "FIXED" | "HUG";
+  layoutSizingVertical: "FIXED" | "HUG";
 
   resize(width: number, height: number): void;
   resizeWithoutConstraints(width: number, height: number): void;

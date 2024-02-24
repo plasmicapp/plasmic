@@ -73,7 +73,7 @@ import {
   TplTagType,
 } from "@/wab/tpls";
 import { getBoundingRect } from "@figma-plugin/helpers";
-import { isString, keys } from "lodash";
+import { isString, keys, omit } from "lodash";
 import { CSSProperties } from "react";
 import {
   applyToPoint,
@@ -506,6 +506,16 @@ const styleForLayoutMixin = (node: SceneNode & LayoutMixin): CSSProperties => {
         style.flexGrow = 1;
         style[node.parent.layoutMode === "HORIZONTAL" ? "width" : "height"] =
           undefined;
+      }
+      if (node.layoutSizingHorizontal === "HUG") {
+        // if layoutSizingHorizontal is HUG, then we want its width to hug. So we
+        // unset the pixel width set above
+        style.width = undefined;
+      }
+      if (node.layoutSizingVertical === "HUG") {
+        // if layoutSizingVertical is HUG, then we want its height to hug. So we
+        // unset the pixel width set above
+        style.height = undefined;
       }
       return style;
     }
@@ -1255,6 +1265,15 @@ const vectorNodeTypes = [
   "POLYGON",
 ];
 
+// We consider display invalid for code components since applying `display: block` to
+// a code component root maybe doesn't work as expected so we will ignore it.
+// Similarly to when a code component is inserted through the UI
+const invalidCodeComponentStyles = ["display"] as (keyof CSSProperties)[];
+
+function filterValidCodeComponentStyles(styles: CSSProperties) {
+  return omit(styles, invalidCodeComponentStyles);
+}
+
 const getNodeToTplNode = (
   site: Site,
   vtm: VariantTplMgr,
@@ -1515,7 +1534,9 @@ const getNodeToTplNode = (
           name: node.name,
         });
         setNodeStyle(node, tplComponent, [
-          styleForLayoutMixinAndConstraintMixin(node),
+          filterValidCodeComponentStyles(
+            styleForLayoutMixinAndConstraintMixin(node)
+          ),
         ]);
         return tplComponent;
       }
