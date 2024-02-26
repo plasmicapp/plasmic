@@ -2197,7 +2197,11 @@ export class StudioCtx extends WithDbCtx {
     if (this.focusedViewCtx()?.component === component) {
       this.focusedViewCtx()?.setStudioFocusByTpl(tpl);
     } else {
-      const arena = this.switchToComponentArena(component);
+      let arena: ComponentArena | PageArena | undefined = undefined;
+      await this.change(({ success }) => {
+        arena = this.switchToComponentArena(component);
+        return success();
+      });
       if (arena) {
         const firstFrame = getArenaFrames(arena)[0];
         const viewCtx = await this.awaitViewCtxForFrame(firstFrame);
@@ -4972,7 +4976,15 @@ export class StudioCtx extends WithDbCtx {
       const prevArena = prevArenaName
         ? getArenaByNameOrUuidOrPath(this.site, prevArenaName, undefined)
         : undefined;
-      this.switchToArena(prevArena);
+      await this.change(
+        ({ success }) => {
+          this.switchToArena(prevArena);
+          return success();
+        },
+        {
+          noUndoRecord: true,
+        }
+      );
     } else {
       // Switch to latest version of branch.
       this.switchToBranchVersion(undefined);
@@ -5574,7 +5586,15 @@ export class StudioCtx extends WithDbCtx {
           getArenaType(this.currentArena)
         );
         if (newCurrentArena) {
-          this.switchToArena(newCurrentArena);
+          await this.change(
+            ({ success }) => {
+              this.switchToArena(newCurrentArena);
+              return success();
+            },
+            {
+              noUndoRecord: true,
+            }
+          );
         }
       }
       return;

@@ -79,8 +79,10 @@ export function makeFrameMenu({
         push(
           <Menu.Item
             onClick={() =>
-              onClickToMoveToArena(
-                viewCtx.studioCtx.tplMgr().addArena(frame.name)
+              viewCtx.studioCtx.changeUnsafe(() =>
+                onClickToMoveToArena(
+                  viewCtx.studioCtx.tplMgr().addArena(frame.name)
+                )
               )
             }
             key={`new-${ARENA_LOWER}`}
