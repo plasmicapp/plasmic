@@ -1,26 +1,17 @@
-import * as PlasmicDataSourcesContext from "@plasmicapp/data-sources-context";
-// eslint-disable-next-line no-restricted-imports
-import * as PlasmicHost from "@plasmicapp/host";
-import {
+import type {
   CodeComponentMeta as InternalCodeComponentMeta,
+  ComponentHelpers,
   ComponentHelpers as InternalCodeComponentHelpers,
   CustomFunctionMeta as InternalCustomFunctionMeta,
   GlobalContextMeta as InternalGlobalContextMeta,
-  // eslint-disable-next-line no-restricted-imports
-  registerComponent,
-  registerFunction,
-  registerGlobalContext,
-  registerToken,
-  registerTrait,
   StateHelpers,
-  stateHelpersKeys,
   StateSpec,
   TokenRegistration,
   TraitMeta,
 } from "@plasmicapp/host";
 import {
-  ComponentMeta,
-  LoaderBundleOutput,
+  LoaderBundleCache,
+  PageMeta,
   PlasmicModulesFetcher,
   PlasmicTracker,
   Registry,
@@ -28,24 +19,72 @@ import {
 } from "@plasmicapp/loader-core";
 import {
   CodeModule,
+  ComponentMeta,
   internal_getCachedBundleInNodeServer,
+  LoaderBundleOutput,
 } from "@plasmicapp/loader-fetcher";
 import { getActiveVariation, getExternalIds } from "@plasmicapp/loader-splits";
-import * as PlasmicQuery from "@plasmicapp/query";
-import React from "react";
-import ReactDOM from "react-dom";
-import * as jsxDevRuntime from "react/jsx-dev-runtime";
-import * as jsxRuntime from "react/jsx-runtime";
+import { prepComponentData } from "./bundles";
 import { ComponentLookup } from "./component-lookup";
-import { createUseGlobalVariant } from "./global-variants";
-import {
-  FetchComponentDataOpts,
-  InitOptions,
-  ReactServerPlasmicComponentLoader,
-} from "./loader-react-server";
 import type { GlobalVariantSpec } from "./PlasmicRootProvider";
-import { ComponentLookupSpec, getCompMetas, isBrowser, uniq } from "./utils";
+import {
+  ComponentLookupSpec,
+  getCompMetas,
+  getLookupSpecName,
+  isBrowser,
+  isDynamicPagePath,
+  uniq,
+} from "./utils";
 import { getPlasmicCookieValues, updatePlasmicCookieValue } from "./variation";
+
+export interface InitOptions {
+  projects: {
+    id: string;
+    token: string;
+    version?: string;
+  }[];
+  cache?: LoaderBundleCache;
+  platform?: "react" | "nextjs" | "gatsby";
+  platformOptions?: {
+    nextjs?: {
+      appDir: boolean;
+    };
+  };
+  preview?: boolean;
+  host?: string;
+  onClientSideFetch?: "warn" | "error";
+  i18n?: {
+    keyScheme: "content" | "hash" | "path";
+    tagPrefix?: string;
+  };
+  /**
+   * @deprecated use i18n.keyScheme instead
+   */
+  i18nKeyScheme?: "content" | "hash";
+
+  /**
+   * By default, fetchComponentData() and fetchPages() calls cached in memory
+   * with the PlasmicComponentLoader instance.  If alwaysFresh is true, then
+   * data is always freshly fetched over the network.
+   */
+  alwaysFresh?: boolean;
+
+  /**
+   * If true, generated code from the server won't include page metadata tags
+   */
+  skipHead?: boolean;
+
+  /**
+   * If true, uses browser / node's native fetch
+   */
+  nativeFetch?: boolean;
+
+  /**
+   * If true, will not redirect to the codegen server automatically, and will
+   * try to reuse the existing bundle in the cache.
+   */
+  manualRedirect?: boolean;
+}
 
 export interface ComponentRenderData {
   entryCompMetas: (ComponentMeta & { params?: Record<string, string> })[];
@@ -53,7 +92,7 @@ export interface ComponentRenderData {
   remoteFontUrls: string[];
 }
 
-interface ComponentSubstitutionSpec {
+export interface ComponentSubstitutionSpec {
   lookup: ComponentLookupSpec;
   component: React.ComponentType<any>;
   codeComponentHelpers?: InternalCodeComponentHelpers<
@@ -61,7 +100,7 @@ interface ComponentSubstitutionSpec {
   >;
 }
 
-interface PlasmicRootWatcher {
+export interface PlasmicRootWatcher {
   onDataFetched?: () => void;
 }
 
@@ -117,15 +156,21 @@ export type FetchPagesOpts = {
   includeDynamicPages?: boolean;
 };
 
-const SUBSTITUTED_COMPONENTS: Record<string, React.ComponentType<any>> = {};
-const REGISTERED_CODE_COMPONENT_HELPERS: Record<
+export const SUBSTITUTED_COMPONENTS: Record<
+  string,
+  React.ComponentType<any>
+> = {};
+export const REGISTERED_CODE_COMPONENT_HELPERS: Record<
   string,
   InternalCodeComponentHelpers<React.ComponentProps<any>>
 > = {};
-const SUBSTITUTED_GLOBAL_VARIANT_HOOKS: Record<string, () => any> = {};
-const REGISTERED_CUSTOM_FUNCTIONS: Record<string, (...args: any[]) => any> = {};
+export const SUBSTITUTED_GLOBAL_VARIANT_HOOKS: Record<string, () => any> = {};
+export const REGISTERED_CUSTOM_FUNCTIONS: Record<
+  string,
+  (...args: any[]) => any
+> = {};
 
-function customFunctionImportAlias<F extends (...args: any[]) => any>(
+export function customFunctionImportAlias<F extends (...args: any[]) => any>(
   meta: CustomFunctionMeta<F>
 ) {
   const customFunctionPrefix = `__fn_`;
@@ -134,63 +179,269 @@ function customFunctionImportAlias<F extends (...args: any[]) => any>(
     : `${customFunctionPrefix}${meta.name}`;
 }
 
-export class InternalPlasmicComponentLoader {
-  private readonly reactServerLoader: ReactServerPlasmicComponentLoader;
+interface BuiltinRegisteredModules {
+  react: typeof import("react");
+  "react-dom": typeof import("react-dom");
+  "react/jsx-runtime": typeof import("react/jsx-runtime");
+  "react/jsx-dev-runtime": typeof import("react/jsx-dev-runtime");
+  "@plasmicapp/query": typeof import("@plasmicapp/query");
+  "@plasmicapp/data-sources-context": typeof import("@plasmicapp/data-sources-context");
+  "@plasmicapp/host": typeof import("@plasmicapp/host");
+  "@plasmicapp/loader-runtime-registry": {
+    components: Record<string, React.ComponentType<any>>;
+    globalVariantHooks: Record<string, () => any>;
+    codeComponentHelpers: Record<string, ComponentHelpers<any>>;
+    functions: Record<string, (...args: any[]) => any>;
+  };
+}
+
+export interface FetchComponentDataOpts {
+  /**
+   * Will fetch either code targeting SSR or browser hydration in the
+   * returned bundle.
+   *
+   * By default, the target is browser. That's okay, because even when
+   * doing SSR, as long as you are using the same instance of PlasmicLoader
+   * that was used to fetch component data, it will still know how to get at
+   * the server code.
+   *
+   * But, if you are building your own SSR solution, where fetching and rendering
+   * are using different instances of PlasmicLoader, then you'll want to make
+   * sure that when you fetch, you are fetching the right one to be used in the
+   * right environment for either SSR or browser hydration.
+   */
+  target?: "server" | "browser";
+}
+
+function parseFetchComponentDataArgs(
+  specs: ComponentLookupSpec[],
+  opts?: FetchComponentDataOpts
+): { specs: ComponentLookupSpec[]; opts?: FetchComponentDataOpts };
+function parseFetchComponentDataArgs(...specs: ComponentLookupSpec[]): {
+  specs: ComponentLookupSpec[];
+  opts?: FetchComponentDataOpts;
+};
+function parseFetchComponentDataArgs(...args: any[]) {
+  let specs: ComponentLookupSpec[];
+  let opts: FetchComponentDataOpts | undefined;
+  if (Array.isArray(args[0])) {
+    specs = args[0];
+    opts = args[1];
+  } else {
+    specs = args;
+    opts = undefined;
+  }
+  return { specs, opts };
+}
+
+/** Subset of loader functionality that works on Client and React Server Components. */
+export abstract class BaseInternalPlasmicComponentLoader {
+  public readonly opts: InitOptions;
   private readonly registry = new Registry();
-  private subs: ComponentSubstitutionSpec[] = [];
-  private roots: PlasmicRootWatcher[] = [];
+  private readonly tracker: PlasmicTracker;
+  private readonly fetcher: PlasmicModulesFetcher;
+  private readonly onBundleMerged?: () => void;
+  private readonly onBundleFetched?: () => void;
   private globalVariants: GlobalVariantSpec[] = [];
-  private tracker: PlasmicTracker;
+  private subs: ComponentSubstitutionSpec[] = [];
 
-  constructor(public opts: InitOptions) {
-    this.tracker = new PlasmicTracker({
-      projectIds: opts.projects.map((p) => p.id),
-      platform: opts.platform,
-      preview: opts.preview,
-      nativeFetch: opts.nativeFetch,
-    });
-    this.reactServerLoader = new ReactServerPlasmicComponentLoader({
-      opts,
-      fetcher: new PlasmicModulesFetcher(opts),
-      tracker: this.tracker,
-      onBundleMerged: () => {
-        this.refreshRegistry();
-      },
-      onBundleFetched: () => {
-        this.roots.forEach((watcher) => watcher.onDataFetched?.());
-      },
-    });
+  private bundle: LoaderBundleOutput = {
+    modules: {
+      browser: [],
+      server: [],
+    },
+    components: [],
+    globalGroups: [],
+    external: [],
+    projects: [],
+    activeSplits: [],
+    bundleKey: null,
+    deferChunksByDefault: false,
+  };
 
-    this.registerModules({
-      react: React,
-      "react-dom": ReactDOM,
-      "react/jsx-runtime": jsxRuntime,
-      "react/jsx-dev-runtime": jsxDevRuntime,
-
-      // Also inject @plasmicapp/query and @plasmicapp/host to use the
-      // same contexts here and in loader-downloaded code.
-      "@plasmicapp/query": PlasmicQuery,
-      "@plasmicapp/data-sources-context": PlasmicDataSourcesContext,
-      "@plasmicapp/host": PlasmicHost,
-      "@plasmicapp/loader-runtime-registry": {
-        components: SUBSTITUTED_COMPONENTS,
-        globalVariantHooks: SUBSTITUTED_GLOBAL_VARIANT_HOOKS,
-        codeComponentHelpers: REGISTERED_CODE_COMPONENT_HELPERS,
-        functions: REGISTERED_CUSTOM_FUNCTIONS,
-      },
-    });
+  constructor(args: {
+    opts: InitOptions;
+    fetcher: PlasmicModulesFetcher;
+    tracker: PlasmicTracker;
+    /** Called after `mergeBundle` (including `fetch` calls). */
+    onBundleMerged?: () => void;
+    /** Called after any `fetch` calls. */
+    onBundleFetched?: () => void;
+    builtinModules: BuiltinRegisteredModules;
+  }) {
+    this.opts = args.opts;
+    this.fetcher = args.fetcher;
+    this.tracker = args.tracker;
+    this.onBundleMerged = args.onBundleMerged;
+    this.onBundleFetched = args.onBundleFetched;
+    this.registerModules(args.builtinModules);
   }
 
-  getBundle() {
-    return this.reactServerLoader.getBundle();
+  private maybeGetCompMetas(...specs: ComponentLookupSpec[]) {
+    const found = new Set<ComponentMeta>();
+    const missing: ComponentLookupSpec[] = [];
+    for (const spec of specs) {
+      const filteredMetas = getCompMetas(this.bundle.components, spec);
+      if (filteredMetas.length > 0) {
+        filteredMetas.forEach((meta) => found.add(meta));
+      } else {
+        missing.push(spec);
+      }
+    }
+    return { found: Array.from(found.keys()), missing };
   }
 
-  setGlobalVariants(globalVariants: GlobalVariantSpec[]) {
-    this.globalVariants = globalVariants;
+  async maybeFetchComponentData(
+    specs: ComponentLookupSpec[],
+    opts?: FetchComponentDataOpts
+  ): Promise<ComponentRenderData | null>;
+  async maybeFetchComponentData(
+    ...specs: ComponentLookupSpec[]
+  ): Promise<ComponentRenderData | null>;
+  async maybeFetchComponentData(
+    ...args: any[]
+  ): Promise<ComponentRenderData | null> {
+    const { specs, opts } = parseFetchComponentDataArgs(...args);
+    const returnWithSpecsToFetch = async (
+      specsToFetch: ComponentLookupSpec[]
+    ) => {
+      await this.fetchMissingData({ missingSpecs: specsToFetch });
+      const { found: existingMetas2, missing: missingSpecs2 } =
+        this.maybeGetCompMetas(...specs);
+      if (missingSpecs2.length > 0) {
+        return null;
+      }
+
+      return prepComponentData(this.bundle, existingMetas2, opts);
+    };
+
+    if (this.opts.alwaysFresh) {
+      // If alwaysFresh, then we treat all specs as missing
+      return await returnWithSpecsToFetch(specs);
+    }
+
+    // Else we only fetch actually missing specs
+    const { found: existingMetas, missing: missingSpecs } =
+      this.maybeGetCompMetas(...specs);
+    if (missingSpecs.length === 0) {
+      return prepComponentData(this.bundle, existingMetas, opts);
+    }
+
+    return await returnWithSpecsToFetch(missingSpecs);
   }
 
-  getGlobalVariants() {
-    return this.globalVariants;
+  async fetchComponentData(
+    specs: ComponentLookupSpec[],
+    opts?: FetchComponentDataOpts
+  ): Promise<ComponentRenderData>;
+  async fetchComponentData(
+    ...specs: ComponentLookupSpec[]
+  ): Promise<ComponentRenderData>;
+  async fetchComponentData(...args: any[]): Promise<ComponentRenderData> {
+    const { specs, opts } = parseFetchComponentDataArgs(...args);
+    const data = await this.maybeFetchComponentData(specs, opts);
+
+    if (!data) {
+      const { missing: missingSpecs } = this.maybeGetCompMetas(...specs);
+      throw new Error(
+        `Unable to find components ${missingSpecs
+          .map(getLookupSpecName)
+          .join(", ")}`
+      );
+    }
+
+    return data;
+  }
+
+  async fetchPages(opts?: FetchPagesOpts) {
+    this.maybeReportClientSideFetch(
+      () => `Plasmic: fetching all page metadata in the browser`
+    );
+    const data = await this.fetchAllData();
+    return data.components.filter(
+      (comp) =>
+        comp.isPage &&
+        comp.path &&
+        (opts?.includeDynamicPages || !isDynamicPagePath(comp.path))
+    ) as PageMeta[];
+  }
+
+  async fetchComponents() {
+    this.maybeReportClientSideFetch(
+      () => `Plasmic: fetching all component metadata in the browser`
+    );
+    const data = await this.fetchAllData();
+    return data.components;
+  }
+
+  getActiveSplits() {
+    return this.bundle.activeSplits;
+  }
+
+  getChunksUrl(bundle: LoaderBundleOutput, modules: CodeModule[]) {
+    return this.fetcher.getChunksUrl(bundle, modules);
+  }
+
+  private async fetchMissingData(opts: {
+    missingSpecs: ComponentLookupSpec[];
+  }) {
+    // TODO: do better than just fetching everything
+    this.maybeReportClientSideFetch(
+      () =>
+        `Plasmic: fetching missing components in the browser: ${opts.missingSpecs
+          .map((spec) => getLookupSpecName(spec))
+          .join(", ")}`
+    );
+    return this.fetchAllData();
+  }
+
+  private maybeReportClientSideFetch(mkMsg: () => string) {
+    if (isBrowser && this.opts.onClientSideFetch) {
+      const msg = mkMsg();
+      if (this.opts.onClientSideFetch === "warn") {
+        console.warn(msg);
+      } else {
+        throw new Error(msg);
+      }
+    }
+  }
+
+  private async fetchAllData() {
+    const bundle = await this.fetcher.fetchAllData();
+    this.tracker.trackFetch();
+    this.mergeBundle(bundle);
+    this.onBundleFetched?.();
+    return bundle;
+  }
+
+  mergeBundle(bundle: LoaderBundleOutput) {
+    // TODO: this is only possible as the bundle is the full bundle,
+    // not a partial bundle. Figure it out how to merge partial bundles.
+    this.bundle = bundle;
+    // Avoid `undefined` as it cannot be serialized as JSON
+    this.bundle.bundleKey = this.bundle.bundleKey ?? null;
+    this.onBundleMerged?.();
+  }
+
+  getBundle(): LoaderBundleOutput {
+    return this.bundle;
+  }
+
+  clearCache() {
+    this.bundle = {
+      modules: {
+        browser: [],
+        server: [],
+      },
+      components: [],
+      globalGroups: [],
+      external: [],
+      projects: [],
+      activeSplits: [],
+      bundleKey: null,
+      deferChunksByDefault: false,
+    };
+    this.registry.clear();
   }
 
   registerModules(modules: Record<string, any>) {
@@ -218,7 +469,7 @@ export class InternalPlasmicComponentLoader {
     this.internalSubstituteComponent(component, name, undefined);
   }
 
-  private internalSubstituteComponent<P>(
+  protected internalSubstituteComponent<P>(
     component: React.ComponentType<P>,
     name: ComponentLookupSpec,
     codeComponentHelpers:
@@ -227,85 +478,62 @@ export class InternalPlasmicComponentLoader {
         >
       | undefined
   ) {
-    if (!this.registry.isEmpty()) {
+    if (!this.isRegistryEmpty()) {
       console.warn(
         "Calling PlasmicComponentLoader.registerSubstitution() after Plasmic component has rendered; starting over."
       );
-      this.registry.clear();
+      this.clearRegistry();
     }
     this.subs.push({ lookup: name, component, codeComponentHelpers });
   }
 
-  registerComponent<T extends React.ComponentType<any>>(
+  abstract registerComponent<T extends React.ComponentType<any>>(
     component: T,
     meta: CodeComponentMeta<React.ComponentProps<T>>
-  ) {
-    // making the component meta consistent between codegen and loader
-    const stateHelpers = Object.fromEntries(
-      Object.entries(meta.states ?? {})
-        .filter(([_, stateSpec]) =>
-          Object.keys(stateSpec).some((key) => stateHelpersKeys.includes(key))
-        )
-        .map(([stateName, stateSpec]) => [
-          stateName,
-          Object.fromEntries(
-            stateHelpersKeys
-              .filter((key) => key in stateSpec)
-              .map((key) => [key, stateSpec[key]])
-          ),
-        ])
-    );
-    const helpers = { states: stateHelpers };
-    this.internalSubstituteComponent(
-      component,
-      { name: meta.name, isCode: true },
-      Object.keys(stateHelpers).length > 0 ? helpers : undefined
-    );
-    registerComponent(component, {
-      ...meta,
-      // Import path is not used as we will use component substitution
-      importPath: meta.importPath ?? "",
-      ...(Object.keys(stateHelpers).length > 0
-        ? {
-            componentHelpers: {
-              helpers,
-              importPath: "",
-              importName: "",
-            },
-          }
-        : {}),
-    });
-  }
-
-  registerFunction<F extends (...args: any[]) => any>(
+  ): void;
+  abstract registerFunction<F extends (...args: any[]) => any>(
     fn: F,
     meta: CustomFunctionMeta<F>
-  ) {
-    registerFunction(fn, {
-      ...meta,
-      importPath: meta.importPath ?? "",
-    });
-    REGISTERED_CUSTOM_FUNCTIONS[customFunctionImportAlias(meta)] = fn;
-  }
-
-  registerGlobalContext<T extends React.ComponentType<any>>(
+  ): void;
+  abstract registerGlobalContext<T extends React.ComponentType<any>>(
     context: T,
     meta: GlobalContextMeta<React.ComponentProps<T>>
-  ) {
-    this.substituteComponent(context, { name: meta.name, isCode: true });
-    // Import path is not used as we will use component substitution
-    registerGlobalContext(context, {
-      ...meta,
-      importPath: meta.importPath ?? "",
-    });
+  ): void;
+  abstract registerTrait(trait: string, meta: TraitMeta): void;
+  abstract registerToken(token: TokenRegistration): void;
+
+  protected refreshRegistry() {
+    // Once we have received data, we register components to
+    // substitute.  We had to wait for data to do this so
+    // that we can look up the right module name to substitute
+    // in component meta.
+    for (const sub of this.subs) {
+      const metas = getCompMetas(this.getBundle().components, sub.lookup);
+      metas.forEach((meta) => {
+        SUBSTITUTED_COMPONENTS[meta.id] = sub.component;
+        if (sub.codeComponentHelpers) {
+          REGISTERED_CODE_COMPONENT_HELPERS[meta.id] = sub.codeComponentHelpers;
+        }
+      });
+    }
+
+    this.registry.updateModules(this.getBundle());
   }
 
-  registerTrait(trait: string, meta: TraitMeta) {
-    registerTrait(trait, meta);
+  isRegistryEmpty() {
+    return this.registry.isEmpty();
   }
 
-  registerToken(token: TokenRegistration) {
-    registerToken(token);
+  clearRegistry() {
+    this.registry.clear();
+  }
+
+  setGlobalVariants(globalVariants: GlobalVariantSpec[]) {
+    this.globalVariants = globalVariants;
+  }
+
+  getGlobalVariants() {
+    return this.globalVariants;
   }
 
   registerPrefetchedBundle(bundle: LoaderBundleOutput) {
@@ -320,70 +548,14 @@ export class InternalPlasmicComponentLoader {
       const cachedBundle = internal_getCachedBundleInNodeServer(this.opts);
       if (cachedBundle) {
         // If it's there, merge the cached bundle first.
-        this.reactServerLoader.mergeBundle(cachedBundle);
+        this.mergeBundle(cachedBundle);
       }
     }
-    this.reactServerLoader.mergeBundle(bundle);
-  }
-
-  subscribePlasmicRoot(watcher: PlasmicRootWatcher) {
-    this.roots.push(watcher);
-  }
-
-  unsubscribePlasmicRoot(watcher: PlasmicRootWatcher) {
-    const index = this.roots.indexOf(watcher);
-    if (index >= 0) {
-      this.roots.splice(index, 1);
-    }
-  }
-
-  clearCache() {
-    this.reactServerLoader.clearCache();
-    this.registry.clear();
+    this.mergeBundle(bundle);
   }
 
   getLookup() {
     return new ComponentLookup(this.getBundle(), this.registry);
-  }
-
-  // ReactServerLoader methods
-
-  maybeFetchComponentData(
-    specs: ComponentLookupSpec[],
-    opts?: FetchComponentDataOpts
-  ): Promise<ComponentRenderData | null>;
-  maybeFetchComponentData(
-    ...specs: ComponentLookupSpec[]
-  ): Promise<ComponentRenderData | null>;
-  maybeFetchComponentData(...args: any[]): Promise<ComponentRenderData | null> {
-    return this.reactServerLoader.maybeFetchComponentData(...args);
-  }
-
-  fetchComponentData(
-    specs: ComponentLookupSpec[],
-    opts?: FetchComponentDataOpts
-  ): Promise<ComponentRenderData>;
-  fetchComponentData(
-    ...specs: ComponentLookupSpec[]
-  ): Promise<ComponentRenderData>;
-  fetchComponentData(...args: any[]): Promise<ComponentRenderData> {
-    return this.reactServerLoader.fetchComponentData(...args);
-  }
-
-  fetchPages(opts?: FetchPagesOpts) {
-    return this.reactServerLoader.fetchPages(opts);
-  }
-
-  fetchComponents() {
-    return this.reactServerLoader.fetchComponents();
-  }
-
-  getActiveSplits() {
-    return this.reactServerLoader.getActiveSplits();
-  }
-
-  getChunksUrl(bundle: LoaderBundleOutput, modules: CodeModule[]) {
-    return this.reactServerLoader.getChunksUrl(bundle, modules);
   }
 
   trackConversion(value = 0) {
@@ -395,7 +567,7 @@ export class InternalPlasmicComponentLoader {
     getKnownValue: (key: string) => string | undefined;
     updateKnownValue: (key: string, value: string) => void;
   }) {
-    await this.reactServerLoader.fetchComponents();
+    await this.fetchComponents();
     return getActiveVariation({
       ...opts,
       splits: this.getBundle().activeSplits,
@@ -423,36 +595,6 @@ export class InternalPlasmicComponentLoader {
   public trackRender(opts?: TrackRenderOptions) {
     this.tracker.trackRender(opts);
   }
-
-  private refreshRegistry() {
-    // Once we have received data, we register components to
-    // substitute.  We had to wait for data to do this so
-    // that we can look up the right module name to substitute
-    // in component meta.
-    for (const sub of this.subs) {
-      const metas = getCompMetas(this.getBundle().components, sub.lookup);
-      metas.forEach((meta) => {
-        SUBSTITUTED_COMPONENTS[meta.id] = sub.component;
-        if (sub.codeComponentHelpers) {
-          REGISTERED_CODE_COMPONENT_HELPERS[meta.id] = sub.codeComponentHelpers;
-        }
-      });
-    }
-
-    // We also swap global variants' useXXXGlobalVariant() hook with
-    // a fake one that just reads from the PlasmicRootContext. Because
-    // global variant values are not supplied by the generated global variant
-    // context providers, but instead by <PlasmicRootProvider/> and by
-    // PlasmicComponentLoader.setGlobalVariants(), we redirect these
-    // hooks to read from them instead.
-    for (const globalGroup of this.getBundle().globalGroups) {
-      if (globalGroup.type !== "global-screen") {
-        SUBSTITUTED_GLOBAL_VARIANT_HOOKS[globalGroup.id] =
-          createUseGlobalVariant(globalGroup.name, globalGroup.projectId);
-      }
-    }
-    this.registry.updateModules(this.getBundle());
-  }
 }
 
 /**
@@ -460,8 +602,9 @@ export class InternalPlasmicComponentLoader {
  * custom components.
  */
 export class PlasmicComponentLoader {
-  private __internal: InternalPlasmicComponentLoader;
-  constructor(internal: InternalPlasmicComponentLoader) {
+  private __internal: BaseInternalPlasmicComponentLoader;
+
+  constructor(internal: BaseInternalPlasmicComponentLoader) {
     this.__internal = internal;
   }
 

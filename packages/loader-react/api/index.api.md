@@ -4,38 +4,49 @@
 
 ```ts
 
+/// <reference types="react" />
+
 import { AssetModule } from '@plasmicapp/loader-core';
-import { CodeComponentMeta as CodeComponentMeta_2 } from '@plasmicapp/host';
+import type { CodeComponentMeta as CodeComponentMeta_2 } from '@plasmicapp/host';
 import { CodeModule } from '@plasmicapp/loader-fetcher';
+import type { ComponentHelpers } from '@plasmicapp/host';
 import { ComponentMeta } from '@plasmicapp/loader-core';
-import { CustomFunctionMeta as CustomFunctionMeta_2 } from '@plasmicapp/host';
+import { ComponentMeta as ComponentMeta_2 } from '@plasmicapp/loader-fetcher';
+import type { CustomFunctionMeta as CustomFunctionMeta_2 } from '@plasmicapp/host';
 import { DataCtxReader } from '@plasmicapp/host';
 import { DataProvider } from '@plasmicapp/host';
-import { extractPlasmicQueryData } from '@plasmicapp/prepass';
 import { FontMeta } from '@plasmicapp/loader-core';
 import { getExternalIds } from '@plasmicapp/loader-splits';
 import { GlobalActionsContext } from '@plasmicapp/host';
 import { GlobalActionsProvider } from '@plasmicapp/host';
-import { GlobalContextMeta as GlobalContextMeta_2 } from '@plasmicapp/host';
+import type { GlobalContextMeta as GlobalContextMeta_2 } from '@plasmicapp/host';
 import { GlobalGroupMeta } from '@plasmicapp/loader-core';
 import { LoaderBundleCache } from '@plasmicapp/loader-core';
-import { LoaderBundleOutput } from '@plasmicapp/loader-core';
+import { LoaderBundleOutput } from '@plasmicapp/loader-fetcher';
+import { LoaderBundleOutput as LoaderBundleOutput_2 } from '@plasmicapp/loader-core';
 import { PageMeta } from '@plasmicapp/loader-core';
-import { PageMeta as PageMeta_2 } from '@plasmicapp/loader-fetcher';
 import { PageMetadata } from '@plasmicapp/loader-core';
 import { PageParamsProvider } from '@plasmicapp/host';
+import { plasmicappDataSourcesContext } from '@plasmicapp/data-sources-context';
+import { plasmicappHost } from '@plasmicapp/host';
+import { plasmicappQuery } from '@plasmicapp/query';
 import { PlasmicCanvasContext } from '@plasmicapp/host';
 import { PlasmicCanvasHost } from '@plasmicapp/host';
 import { PlasmicDataSourceContextValue } from '@plasmicapp/data-sources-context';
-import { plasmicPrepass } from '@plasmicapp/prepass';
+import { PlasmicModulesFetcher } from '@plasmicapp/loader-core';
+import { PlasmicTracker } from '@plasmicapp/loader-core';
 import { PropType } from '@plasmicapp/host';
-import { default as React_2 } from 'react';
-import * as React_3 from 'react';
+import { react } from 'react';
+import * as React_2 from 'react';
+import { default as React_3 } from 'react';
+import { reactDom } from 'react-dom';
+import { reactJsxDevRuntime } from 'react/jsx-dev-runtime';
+import { reactJsxRuntime } from 'react/jsx-runtime';
 import { Registry } from '@plasmicapp/loader-core';
 import { repeatedElement } from '@plasmicapp/host';
 import { Split } from '@plasmicapp/loader-fetcher';
-import { StateHelpers } from '@plasmicapp/host';
-import { StateSpec } from '@plasmicapp/host';
+import type { StateHelpers } from '@plasmicapp/host';
+import type { StateSpec } from '@plasmicapp/host';
 import { TokenRegistration } from '@plasmicapp/host';
 import { TrackRenderOptions } from '@plasmicapp/loader-core';
 import { TraitMeta } from '@plasmicapp/host';
@@ -65,7 +76,7 @@ export interface ComponentRenderData {
     // (undocumented)
     bundle: LoaderBundleOutput;
     // (undocumented)
-    entryCompMetas: (ComponentMeta & {
+    entryCompMetas: (ComponentMeta_2 & {
         params?: Record<string, string>;
     })[];
     // (undocumented)
@@ -73,13 +84,14 @@ export interface ComponentRenderData {
 }
 
 // @public (undocumented)
-export const convertBundlesToComponentRenderData: (bundles: LoaderBundleOutput[], compMetas: ComponentMeta[]) => ComponentRenderData | null;
+export const convertBundlesToComponentRenderData: (bundles: LoaderBundleOutput_2[], compMetas: ComponentMeta[]) => ComponentRenderData | null;
 
 export { DataCtxReader }
 
 export { DataProvider }
 
-export { extractPlasmicQueryData }
+// @public
+export function extractPlasmicQueryData(element: React.ReactElement): Promise<Record<string, any>>;
 
 // @public (undocumented)
 export function extractPlasmicQueryDataFromElement(loader: PlasmicComponentLoader, lookup: ComponentLookupSpec, opts?: {
@@ -157,68 +169,22 @@ export interface InitOptions {
 export function initPlasmicLoader(opts: InitOptions): PlasmicComponentLoader;
 
 // @public (undocumented)
-export class InternalPlasmicComponentLoader {
+export class InternalPlasmicComponentLoader extends BaseInternalPlasmicComponentLoader {
     constructor(opts: InitOptions);
     // (undocumented)
-    clearCache(): void;
+    refreshRegistry(): void;
     // (undocumented)
-    fetchComponentData(specs: ComponentLookupSpec[], opts?: FetchComponentDataOpts): Promise<ComponentRenderData>;
-    // (undocumented)
-    fetchComponentData(...specs: ComponentLookupSpec[]): Promise<ComponentRenderData>;
-    // (undocumented)
-    fetchComponents(): Promise<ComponentMeta[]>;
-    // (undocumented)
-    fetchPages(opts?: FetchPagesOpts): Promise<PageMeta_2[]>;
-    // (undocumented)
-    getActiveSplits(): Split[];
-    // (undocumented)
-    getActiveVariation(opts: {
-        traits: Record<string, string | number | boolean>;
-        getKnownValue: (key: string) => string | undefined;
-        updateKnownValue: (key: string, value: string) => void;
-    }): Promise<Record<string, string>>;
-    // (undocumented)
-    getBundle(): LoaderBundleOutput;
-    // (undocumented)
-    getChunksUrl(bundle: LoaderBundleOutput, modules: CodeModule[]): string;
-    // (undocumented)
-    getGlobalVariants(): GlobalVariantSpec[];
-    // (undocumented)
-    getLookup(): ComponentLookup;
-    // (undocumented)
-    getProjectIds(): string[];
-    // (undocumented)
-    getTeamIds(): string[];
-    // (undocumented)
-    maybeFetchComponentData(specs: ComponentLookupSpec[], opts?: FetchComponentDataOpts): Promise<ComponentRenderData | null>;
-    // (undocumented)
-    maybeFetchComponentData(...specs: ComponentLookupSpec[]): Promise<ComponentRenderData | null>;
-    // (undocumented)
-    opts: InitOptions;
-    // (undocumented)
-    registerComponent<T extends React_2.ComponentType<any>>(component: T, meta: CodeComponentMeta<React_2.ComponentProps<T>>): void;
+    registerComponent<T extends React_3.ComponentType<any>>(component: T, meta: CodeComponentMeta<React_3.ComponentProps<T>>): void;
     // (undocumented)
     registerFunction<F extends (...args: any[]) => any>(fn: F, meta: CustomFunctionMeta<F>): void;
     // (undocumented)
-    registerGlobalContext<T extends React_2.ComponentType<any>>(context: T, meta: GlobalContextMeta<React_2.ComponentProps<T>>): void;
-    // (undocumented)
-    registerModules(modules: Record<string, any>): void;
-    // (undocumented)
-    registerPrefetchedBundle(bundle: LoaderBundleOutput): void;
+    registerGlobalContext<T extends React_3.ComponentType<any>>(context: T, meta: GlobalContextMeta<React_3.ComponentProps<T>>): void;
     // (undocumented)
     registerToken(token: TokenRegistration): void;
     // (undocumented)
     registerTrait(trait: string, meta: TraitMeta): void;
     // (undocumented)
-    setGlobalVariants(globalVariants: GlobalVariantSpec[]): void;
-    // (undocumented)
     subscribePlasmicRoot(watcher: PlasmicRootWatcher): void;
-    // (undocumented)
-    substituteComponent<P>(component: React_2.ComponentType<P>, name: ComponentLookupSpec): void;
-    // (undocumented)
-    trackConversion(value?: number): void;
-    // (undocumented)
-    trackRender(opts?: TrackRenderOptions): void;
     // (undocumented)
     unsubscribePlasmicRoot(watcher: PlasmicRootWatcher): void;
 }
@@ -244,18 +210,18 @@ export function PlasmicComponent(props: {
     projectId?: string;
     forceOriginal?: boolean;
     componentProps?: any;
-}): React_3.ReactElement | null;
+}): React_2.ReactElement | null;
 
 // @public
 export class PlasmicComponentLoader {
-    constructor(internal: InternalPlasmicComponentLoader);
+    constructor(internal: BaseInternalPlasmicComponentLoader);
     // (undocumented)
     clearCache(): void;
     fetchComponentData(...specs: ComponentLookupSpec[]): Promise<ComponentRenderData>;
     // (undocumented)
     fetchComponentData(specs: ComponentLookupSpec[], opts?: FetchComponentDataOpts): Promise<ComponentRenderData>;
-    fetchComponents(): Promise<ComponentMeta[]>;
-    fetchPages(opts?: FetchPagesOpts): Promise<PageMeta_2[]>;
+    fetchComponents(): Promise<ComponentMeta_2[]>;
+    fetchPages(opts?: FetchPagesOpts): Promise<PageMeta[]>;
     // (undocumented)
     getActiveSplits(): Split[];
     // (undocumented)
@@ -276,12 +242,12 @@ export class PlasmicComponentLoader {
     maybeFetchComponentData(...specs: ComponentLookupSpec[]): Promise<ComponentRenderData | null>;
     // (undocumented)
     maybeFetchComponentData(specs: ComponentLookupSpec[], opts?: FetchComponentDataOpts): Promise<ComponentRenderData | null>;
-    registerComponent<T extends React_2.ComponentType<any>>(component: T, meta: CodeComponentMeta<React_2.ComponentProps<T>>): void;
-    registerComponent<T extends React_2.ComponentType<any>>(component: T, name: ComponentLookupSpec): void;
+    registerComponent<T extends React.ComponentType<any>>(component: T, meta: CodeComponentMeta<React.ComponentProps<T>>): void;
+    registerComponent<T extends React.ComponentType<any>>(component: T, name: ComponentLookupSpec): void;
     // (undocumented)
     registerFunction<F extends (...args: any[]) => any>(fn: F, meta: CustomFunctionMeta<F>): void;
     // (undocumented)
-    registerGlobalContext<T extends React_2.ComponentType<any>>(context: T, meta: GlobalContextMeta<React_2.ComponentProps<T>>): void;
+    registerGlobalContext<T extends React.ComponentType<any>>(context: T, meta: GlobalContextMeta<React.ComponentProps<T>>): void;
     // (undocumented)
     registerModules(modules: Record<string, any>): void;
     // (undocumented)
@@ -289,18 +255,19 @@ export class PlasmicComponentLoader {
     // (undocumented)
     registerTrait(trait: string, meta: TraitMeta): void;
     setGlobalVariants(globalVariants: GlobalVariantSpec[]): void;
-    substituteComponent<P>(component: React_2.ComponentType<P>, name: ComponentLookupSpec): void;
+    substituteComponent<P>(component: React.ComponentType<P>, name: ComponentLookupSpec): void;
     // (undocumented)
     trackConversion(value?: number): void;
 }
 
-export { plasmicPrepass }
+// @public @deprecated (undocumented)
+export function plasmicPrepass(element: React.ReactElement): Promise<void>;
 
 // @public
 export function PlasmicRootProvider(props: {
     loader: PlasmicComponentLoader;
     globalVariants?: GlobalVariantSpec[];
-    children?: React_3.ReactNode;
+    children?: React_2.ReactNode;
     skipCss?: boolean;
     skipFonts?: boolean;
     prefetchedData?: ComponentRenderData;
@@ -309,21 +276,21 @@ export function PlasmicRootProvider(props: {
     globalContextsProps?: Record<string, any>;
     variation?: Record<string, string>;
     translator?: PlasmicTranslator;
-    Head?: React_3.ComponentType<any>;
-    Link?: React_3.ComponentType<any>;
+    Head?: React_2.ComponentType<any>;
+    Link?: React_2.ComponentType<any>;
     pageRoute?: string;
     pageParams?: Record<string, string | string[] | undefined>;
     pageQuery?: Record<string, string | string[] | undefined>;
     disableLoadingBoundary?: boolean;
-    suspenseFallback?: React_3.ReactNode;
-} & PlasmicDataSourceContextValue): React_3.JSX.Element;
+    suspenseFallback?: React_2.ReactNode;
+} & PlasmicDataSourceContextValue): React_2.JSX.Element;
 
 // @public (undocumented)
 export type PlasmicTranslator = (str: string, opts?: {
     components?: {
-        [key: string]: React_3.ReactElement | React_3.ReactFragment;
+        [key: string]: React_2.ReactElement | React_2.ReactFragment;
     };
-}) => React_3.ReactNode;
+}) => React_2.ReactNode;
 
 export { PropType }
 
@@ -354,7 +321,7 @@ export { useDataEnv }
 export { usePlasmicCanvasContext }
 
 // @public
-export function usePlasmicComponent<P extends React_3.ComponentType = any>(spec: ComponentLookupSpec, opts?: {
+export function usePlasmicComponent<P extends React_2.ComponentType = any>(spec: ComponentLookupSpec, opts?: {
     forceOriginal?: boolean;
 }): P;
 

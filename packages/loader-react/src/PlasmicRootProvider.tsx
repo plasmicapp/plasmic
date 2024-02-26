@@ -3,11 +3,8 @@ import { PageParamsProvider } from "@plasmicapp/host";
 import { AssetModule, ComponentMeta, Split } from "@plasmicapp/loader-core";
 import { PlasmicQueryDataProvider } from "@plasmicapp/query";
 import * as React from "react";
-import {
-  ComponentRenderData,
-  InternalPlasmicComponentLoader,
-  PlasmicComponentLoader,
-} from "./loader";
+import { InternalPlasmicComponentLoader } from "./loader-client";
+import { ComponentRenderData, PlasmicComponentLoader } from "./loader-shared";
 import { MaybeWrap, useForceUpdate } from "./utils";
 import {
   ensureVariationCookies,
@@ -15,7 +12,7 @@ import {
   mergeGlobalVariantsSpec,
 } from "./variation";
 
-interface PlasmicRootContextValue extends PlasmicDataSourceContextValue {
+export interface PlasmicRootContextValue extends PlasmicDataSourceContextValue {
   globalVariants?: GlobalVariantSpec[];
   globalContextsProps?: Record<string, any>;
   loader: InternalPlasmicComponentLoader;

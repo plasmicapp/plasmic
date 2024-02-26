@@ -11,8 +11,8 @@
  * after the data load.
  */
 
-import { InternalPlasmicComponentLoader } from './loader';
-import { usePlasmicRootContext } from './PlasmicRootProvider';
+import { InternalPlasmicComponentLoader } from "./loader-client";
+import { usePlasmicRootContext } from "./PlasmicRootProvider";
 
 export function createUseGlobalVariant(name: string, projectId: string) {
   return () => {
@@ -26,8 +26,9 @@ export function createUseGlobalVariant(name: string, projectId: string) {
       ...loader.getGlobalVariants(),
       ...(rootContext.globalVariants ?? []),
     ].find(
-      (spec) =>
-        spec.name === name && (!spec.projectId || spec.projectId === projectId)
+      (spec2) =>
+        spec2.name === name &&
+        (!spec2.projectId || spec2.projectId === projectId)
     );
     return spec ? spec.value : undefined;
   };

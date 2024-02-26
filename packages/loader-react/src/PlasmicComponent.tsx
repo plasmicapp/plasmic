@@ -77,7 +77,7 @@ export function PlasmicComponent(props: {
       return null;
     }
 
-    let element = <Component {...componentProps} />;
+    let elt = <Component {...componentProps} />;
 
     if (isRootLoader) {
       // If this is the root PlasmicComponent, then wrap the content with the
@@ -94,7 +94,7 @@ export function PlasmicComponent(props: {
         name: component,
         projectId,
       });
-      element = (
+      elt = (
         <ReactWebRootProvider
           {...rest}
           userAuthToken={userAuthToken}
@@ -114,13 +114,13 @@ export function PlasmicComponent(props: {
             )}
           >
             <PlasmicComponentContext.Provider value={true}>
-              {element}
+              {elt}
             </PlasmicComponentContext.Provider>
           </MaybeWrap>
         </ReactWebRootProvider>
       );
     }
-    return element;
+    return elt;
   }, [
     Component,
     componentProps,

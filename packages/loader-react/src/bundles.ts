@@ -2,8 +2,8 @@ import {
   ComponentMeta,
   getBundleSubset,
   LoaderBundleOutput,
-} from '@plasmicapp/loader-core';
-import type { ComponentRenderData } from './loader';
+} from "@plasmicapp/loader-core";
+import type { ComponentRenderData } from "./loader-shared";
 
 function getUsedComps(allComponents: ComponentMeta[], entryCompIds: string[]) {
   const q: string[] = [...entryCompIds];
@@ -33,7 +33,7 @@ export function prepComponentData(
   bundle: LoaderBundleOutput,
   compMetas: ComponentMeta[],
   opts?: {
-    target?: 'browser' | 'server';
+    target?: "browser" | "server";
   }
 ): ComponentRenderData {
   if (compMetas.length === 0) {
@@ -52,9 +52,9 @@ export function prepComponentData(
   const subBundle = getBundleSubset(
     bundle,
     [
-      'entrypoint.css',
+      "entrypoint.css",
       ...compPaths,
-      'root-provider.js',
+      "root-provider.js",
       ...bundle.projects
         .map((x) => x.globalContextsProviderFileName)
         .filter((x) => !!x),

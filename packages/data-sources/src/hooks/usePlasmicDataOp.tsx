@@ -5,10 +5,12 @@ import {
   useMutablePlasmicQueryData,
   usePlasmicDataConfig,
 } from "@plasmicapp/query";
-import React from "react";
+import * as React from "react";
 import { DataOp, executePlasmicDataOp } from "../executor";
 import { ManyRowsResult, Pagination, SingleRowResult } from "../types";
 import { pick } from "../utils";
+
+const isRSC = (React as any).isRSC;
 
 export function makeCacheKey(
   dataOp: DataOp,
@@ -221,7 +223,9 @@ export function usePlasmicDataOp<
   const resolvedDataOp = resolveDataOp(dataOp);
   const ctx = usePlasmicDataSourceContext();
   const enableLoadingBoundary = !!ph.useDataEnv?.()?.[enableLoadingBoundaryKey];
-  const { mutate, cache } = usePlasmicDataConfig();
+  const { mutate, cache } = isRSC
+    ? ({} as any as Partial<ReturnType<typeof usePlasmicDataConfig>>)
+    : usePlasmicDataConfig();
   // Cannot perform this operation
   const isNullDataOp = !resolvedDataOp;
   // This operation depends on another data query to resolve first
@@ -330,11 +334,11 @@ export function usePlasmicDataOp<
       // but we will still finish rendering that pass, which means any `$queries`
       // access will still end up here.  So we look into the SWR cache and
       // return any data that's here.
-      const cached = cache.get(key);
+      const cached = cache?.get(key);
       if (cached) {
         return Promise.resolve(cached);
       }
-      const cachedError = cache.get(`$swr$${key}`);
+      const cachedError = cache?.get(`$swr$${key}`);
       if (cachedError) {
         return Promise.reject(cachedError.error);
       }
@@ -363,16 +367,17 @@ export function usePlasmicDataOp<
           fetcher().then(resolve, reject);
         }, 1);
       });
-      fetcherPromise
-        .then((data) => {
-          // Insert the fetched data into the SWR cache
-          mutate(key, data);
-        })
-        .catch((err) => {
-          // Cache the error here to avoid infinite loop
-          const keyInfo = key ? "$swr$" + key : "";
-          cache.set(keyInfo, { ...(cache.get(keyInfo) ?? {}), error: err });
-        });
+      if (!isRSC)
+        fetcherPromise
+          .then((data) => {
+            // Insert the fetched data into the SWR cache
+            mutate?.(key, data);
+          })
+          .catch((err) => {
+            // Cache the error here to avoid infinite loop
+            const keyInfo = key ? "$swr$" + key : "";
+            cache?.set(keyInfo, { ...(cache?.get(keyInfo) ?? {}), error: err });
+          });
       return fetcherPromise;
     };
   }, [fetcher, fetchingData, cache, key, dependentKeyDataErrorPromise]);

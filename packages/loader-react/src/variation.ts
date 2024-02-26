@@ -1,4 +1,8 @@
-import { ExperimentSlice, SegmentSlice, Split } from "@plasmicapp/loader-core";
+import type {
+  ExperimentSlice,
+  SegmentSlice,
+  Split,
+} from "@plasmicapp/loader-core";
 import type { GlobalVariantSpec } from "./PlasmicRootProvider";
 
 export function getPlasmicCookieValues() {

@@ -1,10 +1,10 @@
+import { extractPlasmicQueryData } from "@plasmicapp/prepass";
 import React from "react";
 import ReactDOM from "react-dom";
 import { renderToString as reactRenderToString } from "react-dom/server";
-import { ComponentRenderData, PlasmicComponentLoader } from "./loader";
+import { ComponentRenderData, PlasmicComponentLoader } from "./loader-shared";
 import { PlasmicComponent } from "./PlasmicComponent";
 import { GlobalVariantSpec, PlasmicRootProvider } from "./PlasmicRootProvider";
-import { extractPlasmicQueryData } from "@plasmicapp/prepass";
 import { ComponentLookupSpec } from "./utils";
 
 export async function renderToElement(

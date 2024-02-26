@@ -6,6 +6,5 @@ export type {
   PageMetadata,
 } from "@plasmicapp/loader-core";
 export { convertBundlesToComponentRenderData } from "./bundles";
-export type { ComponentRenderData } from "./loader";
-export type { InitOptions } from "./loader-react-server";
+export type { ComponentRenderData, InitOptions } from "./loader-shared";
 export { matchesPagePath } from "./utils";

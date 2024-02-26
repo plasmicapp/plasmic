@@ -1,12 +1,10 @@
+import { InternalPlasmicComponentLoader } from "./loader-client";
 import {
   CodeComponentMeta,
-  InternalPlasmicComponentLoader,
-  PlasmicComponentLoader,
-} from "./loader";
-import type {
   FetchComponentDataOpts,
   InitOptions,
-} from "./loader-react-server";
+  PlasmicComponentLoader,
+} from "./loader-shared";
 
 export {
   DataCtxReader,
@@ -23,7 +21,6 @@ export {
   useSelectors,
 } from "@plasmicapp/host";
 export type { PropType, TokenRegistration } from "@plasmicapp/host";
-export { extractPlasmicQueryData, plasmicPrepass } from "@plasmicapp/prepass";
 export { usePlasmicQueryData } from "@plasmicapp/query";
 export { PlasmicComponent } from "./PlasmicComponent";
 export { PlasmicRootProvider } from "./PlasmicRootProvider";
@@ -31,6 +28,7 @@ export type {
   GlobalVariantSpec,
   PlasmicTranslator,
 } from "./PlasmicRootProvider";
+export { extractPlasmicQueryData, plasmicPrepass } from "./prepass-client";
 export {
   extractPlasmicQueryDataFromElement,
   hydrateFromElement,
@@ -41,7 +39,7 @@ export * from "./shared-exports";
 export { usePlasmicComponent } from "./usePlasmicComponent";
 export type { ComponentLookupSpec } from "./utils";
 export type { CodeComponentMeta };
-export { FetchComponentDataOpts };
+export type { FetchComponentDataOpts };
 export { InternalPlasmicComponentLoader, PlasmicComponentLoader };
 
 export function initPlasmicLoader(opts: InitOptions): PlasmicComponentLoader {

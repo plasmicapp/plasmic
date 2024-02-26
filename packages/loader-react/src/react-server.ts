@@ -1,24 +1,16 @@
 import "server-only";
 
-import { PlasmicModulesFetcher, PlasmicTracker } from "@plasmicapp/loader-core";
-import {
-  InitOptions,
-  ReactServerPlasmicComponentLoader,
-} from "./loader-react-server";
+import { InternalPrepassPlasmicLoader } from "./loader-server";
+import { InitOptions, PlasmicComponentLoader } from "./loader-shared";
 
+export { extractPlasmicQueryData as __EXPERMIENTAL__extractPlasmicQueryData } from "./prepass-server";
 export * from "./shared-exports";
-export { ReactServerPlasmicComponentLoader };
+export {
+  InternalPrepassPlasmicLoader as InternalPlasmicComponentLoader,
+  PlasmicComponentLoader,
+};
 
-export function initPlasmicLoader(
-  opts: InitOptions
-): ReactServerPlasmicComponentLoader {
-  return new ReactServerPlasmicComponentLoader({
-    opts,
-    fetcher: new PlasmicModulesFetcher(opts),
-    tracker: new PlasmicTracker({
-      projectIds: opts.projects.map((p) => p.id),
-      platform: opts.platform,
-      preview: opts.preview,
-    }),
-  });
+export function initPlasmicLoader(opts: InitOptions): PlasmicComponentLoader {
+  const internal = new InternalPrepassPlasmicLoader(opts);
+  return new PlasmicComponentLoader(internal);
 }

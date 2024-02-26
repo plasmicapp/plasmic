@@ -63,9 +63,9 @@ export function ensureNumber(x: number | string): number {
   return x as number;
 }
 
-export function ensure<T>(x: T | null | undefined): T {
+export function ensure<T>(x: T | null | undefined, msg: string): T {
   if (x === null || x === undefined) {
-    throw new Error('Expected non-null or non-undefined value');
+    throw new Error("Expected non-null or non-undefined value: " + msg);
   }
   return x;
 }
@@ -83,7 +83,7 @@ export function maybe<T, U>(
 }
 
 export function isLikeImage(value: unknown) {
-  return typeof value === 'string'
+  return typeof value === "string"
     ? value.match(/\.(png|jpg|jpeg|gif|svg|webp|avif|ico|bmp|tiff)$/i)
     : false;
 }
@@ -108,7 +108,7 @@ export function withoutNils<T>(xs: Array<T | undefined | null>): T[] {
   return xs.filter((x): x is T => x != null);
 }
 
-export type Falsey = null | undefined | false | '' | 0 | 0n;
+export type Falsey = null | undefined | false | "" | 0 | 0n;
 export type Truthy<T> = T extends Falsey ? never : T;
 
 export function withoutFalsey<T>(xs: Array<T | Falsey>): T[] {

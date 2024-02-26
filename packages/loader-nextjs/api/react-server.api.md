@@ -4,12 +4,20 @@
 
 ```ts
 
+/// <reference types="node" />
+
+import { __EXPERMIENTAL__extractPlasmicQueryData } from '@plasmicapp/loader-react/react-server';
 import { ComponentMeta } from '@plasmicapp/loader-react/react-server-conditional';
 import { ComponentRenderData } from '@plasmicapp/loader-react/react-server-conditional';
+import type { IncomingMessage } from 'http';
 import { InitOptions } from '@plasmicapp/loader-react/react-server-conditional';
+import { InternalPlasmicComponentLoader } from '@plasmicapp/loader-react/react-server';
 import { PageMeta } from '@plasmicapp/loader-react/react-server-conditional';
 import { PageMetadata } from '@plasmicapp/loader-react/react-server-conditional';
-import { ReactServerPlasmicComponentLoader } from '@plasmicapp/loader-react/react-server';
+import { PlasmicComponentLoader } from '@plasmicapp/loader-react/react-server';
+import type { ServerResponse } from 'http';
+
+export { __EXPERMIENTAL__extractPlasmicQueryData }
 
 export { ComponentMeta }
 
@@ -18,7 +26,7 @@ export { ComponentRenderData }
 export { InitOptions }
 
 // @public (undocumented)
-export function initPlasmicLoader(opts: NextInitOptions): ReactServerPlasmicComponentLoader;
+export function initPlasmicLoader(opts: NextInitOptions): NextJsPlasmicComponentLoader;
 
 // @public (undocumented)
 export interface NextInitOptions extends InitOptions {
@@ -30,6 +38,18 @@ export interface NextInitOptions extends InitOptions {
         useRouter: unknown;
         useSearchParams: unknown;
     };
+}
+
+// @public (undocumented)
+export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
+    constructor(internal: InternalPlasmicComponentLoader);
+    // (undocumented)
+    getActiveVariation(opts: {
+        req?: ServerRequest;
+        res?: ServerResponse;
+        known?: Record<string, string>;
+        traits: Record<string, string | number | boolean>;
+    }): Promise<Record<string, string>>;
 }
 
 export { PageMeta }
