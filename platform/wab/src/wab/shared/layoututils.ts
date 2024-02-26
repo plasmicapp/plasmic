@@ -42,7 +42,8 @@ export function ensureContainerType(x: string): ContainerType {
 
 export function convertSelfContainerType(
   targetExp: IRuleSetHelpersX,
-  type: ContainerType
+  type: ContainerType,
+  baseRsh?: IRuleSetHelpersX
 ) {
   const prevType = getRshContainerType(targetExp);
   if (prevType === type && targetExp.has("display")) {
@@ -67,11 +68,15 @@ export function convertSelfContainerType(
     rsh.set("flex-direction", type === "flex-row" ? "row" : "column");
     if (!rsh.has("flex-wrap") || rsh.get("flex-wrap") === "nowrap") {
       // If there's no wrapping, then transfer row-gap to column-gap and vice versa
-      if (type === "flex-row" && rsh.has("flex-row-gap")) {
-        rsh.set("flex-column-gap", rsh.get("flex-row-gap"));
+      const flexRowGap =
+        rsh.getRaw("flex-row-gap") || baseRsh?.getRaw("flex-row-gap");
+      const flexColumnGap =
+        rsh.getRaw("flex-column-gap") || baseRsh?.getRaw("flex-column-gap");
+      if (type === "flex-row" && flexRowGap) {
+        rsh.set("flex-column-gap", flexRowGap);
         rsh.clear("flex-row-gap");
-      } else if (type === "flex-column" && rsh.has("flex-column-gap")) {
-        rsh.set("flex-row-gap", rsh.get("flex-column-gap"));
+      } else if (type === "flex-column" && flexColumnGap) {
+        rsh.set("flex-row-gap", flexColumnGap);
         rsh.clear("flex-column-gap");
       }
     }

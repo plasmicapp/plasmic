@@ -4468,10 +4468,12 @@ export class ViewOps {
       // we just need to perform the conversion for the current
       // variant
       const rsh = RSH(vtm.ensureCurrentVariantSetting(tpl).rs, tpl);
+      const baseRsh = RSH(vtm.ensureBaseVariantSetting(tpl).rs, tpl);
+
       const effectiveExp = vtm.effectiveVariantSetting(tpl).rsh();
       const previousType = getRshContainerType(effectiveExp);
       const combo = vtm.getTargetVariantComboForNode(tpl);
-      if (!convertSelfContainerType(rsh, type)) {
+      if (!convertSelfContainerType(rsh, type, baseRsh)) {
         return;
       }
 
