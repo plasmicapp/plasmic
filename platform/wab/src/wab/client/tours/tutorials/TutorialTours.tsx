@@ -83,15 +83,14 @@ function StepContentPopup(props: StepContentPopupProps) {
         <IconButton
           href="https://plasmic.app/slack"
           target="_blank"
-          style={{
-            minWidth: 32,
-          }}
           hoverText="Join our community for help"
+          size="large"
         >
           <HelpIcon />
         </IconButton>
         <IconButton
           hoverText="Exit tutorial"
+          size="large"
           onClick={async () => {
             if (
               await reactConfirm({
@@ -104,9 +103,6 @@ function StepContentPopup(props: StepContentPopupProps) {
             ) {
               await onQuit();
             }
-          }}
-          style={{
-            minWidth: 32,
           }}
         >
           <CloseIcon />

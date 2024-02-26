@@ -139,16 +139,16 @@ And don't forget to:
   shouldAdvance: (event) => {
     return event.type === TutorialEventsType.FinishClicked;
   },
-  secondaryButtonText: "Stay and play",
-  onSecondary: async () => {
+  nextButtonText: "Stay and play",
+  onNext: async () => {
     topFrameTourSignals?.dispatch({
       type: TutorialEventsType.FinishClicked,
     });
   },
-  onNext: async () => {
+  onSecondary: async () => {
     location.href = U.dashboard({});
   },
-  nextButtonText: "Exit to dashboard",
+  secondaryButtonText: "Exit to dashboard",
 };
 
 export function publishedProjectStep({
@@ -251,6 +251,8 @@ Let's **publish the app** so the Customer Operations team can start using it!`,
 });
 
 export const PORTFOLIO_PUBLISH_TRIGGER = triggerPublishModalStep({
-  hidden: true,
+  content: `
+Click in Publish to learn how to deploy your project to the web!
+`,
   topFrameTour: TopFramePublishTours.PortfolioPublish,
 });
