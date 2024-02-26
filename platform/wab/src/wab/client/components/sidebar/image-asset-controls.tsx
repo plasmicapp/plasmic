@@ -581,7 +581,9 @@ export function getCmsImageUrl(uploaded: ImageUploadResponse) {
   let imgUrl = uploaded.dataUri;
 
   if (!uploaded.mimeType?.includes("svg")) {
-    imgUrl = `${DEVFLAGS.imgOptimizerHost}/img-optimizer/v1/img/${imgId}?f=webp&q=75`;
+    imgUrl = `${
+      DEVFLAGS.imgOptimizerHost
+    }/img-optimizer/v1/img?src=${encodeURIComponent(imgId)}&f=webp&q=75`;
     if (uploaded.width > 3840) {
       // Cap width at 3840
       imgUrl += "&w=3840";
