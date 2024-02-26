@@ -33,7 +33,26 @@ export class Registry {
       return true;
     }
 
-    return name in this.modules;
+    if (name in this.modules) {
+      return true;
+    }
+
+    if (
+      (globalThis as any).__PLASMIC_CHUNKS &&
+      !!(globalThis as any).__PLASMIC_CHUNKS[name]
+    ) {
+      return true;
+    }
+
+    if (
+      (globalThis as any).__PlasmicBundlePromises &&
+      !!typeof (globalThis as any).__PlasmicBundlePromises[name] &&
+      !!(globalThis as any).__PlasmicBundlePromises[name].then
+    ) {
+      return true;
+    }
+
+    return false;
   }
 
   load(name: string, opts: { forceOriginal?: boolean } = {}) {
