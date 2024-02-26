@@ -541,13 +541,17 @@ function getImageLoader(loader: "plasmic" | ImageLoader | undefined) {
   }
 }
 
+function isInternalKey(src: string) {
+  return /^([a-f0-9]{32})\..{1,16}$/i.test(src);
+}
+
 const PLASMIC_IMAGE_LOADER: ImageLoader = {
   supportsUrl: (src) => {
-    return src.startsWith("http") && !isSvg(src);
+    return (src.startsWith("http") || isInternalKey(src)) && !isSvg(src);
   },
   transformUrl: (opts) => {
     const params = [
-      `src=${opts.src}`,
+      `src=${encodeURIComponent(opts.src)}`,
       opts.width ? `w=${opts.width}` : undefined,
       `q=${opts.quality ?? 75}`,
       opts.format ? `f=${opts.format}` : undefined,
