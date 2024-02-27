@@ -81,13 +81,6 @@ Here we've configured the app to deploy to <https://{APP_DOMAIN}>.
     shouldAdvance: (event) => {
       return event.type === TutorialEventsType.PublishModalButtonClicked;
     },
-    onNext: async (ctx) => {
-      // TODO: figure it out how manually triggering the click is going to affect the next steps
-      const btn = document.querySelector(
-        TOPFRAME_ELEMENTS_TARGETS.publishFlowDialogPublishBtn
-      ) as HTMLButtonElement;
-      btn.click();
-    },
     placement: "left",
   },
   {
