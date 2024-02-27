@@ -10,7 +10,6 @@ import { mkUuid, spawnWrapper } from "@/wab/common";
 import { ApiUser, UserId } from "@/wab/shared/ApiSchema";
 import { Button, Divider, Input, notification } from "antd";
 import $ from "jquery";
-import Cookies from "js-cookie";
 import * as React from "react";
 import { useState } from "react";
 import { Redirect } from "react-router-dom";
@@ -90,7 +89,6 @@ export function useAuthForm({
               firstName,
               lastName,
               nextPath,
-              fpromTid: Cookies.get("_fprom_tid"),
               appInfo,
             });
       if (res.status) {

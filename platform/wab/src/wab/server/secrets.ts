@@ -41,9 +41,6 @@ interface Secrets {
       clientSecret: string;
     };
   };
-  firstPromoter?: {
-    apiKey: string;
-  };
   shopify?: {
     apiKey: string;
     secretKey: string;
@@ -139,10 +136,6 @@ export function getGoogleSheetsClientId() {
 
 export function getGoogleSheetsClientSecret() {
   return loadSecrets()["google-sheets"]?.clientSecret;
-}
-
-export function getFirstPromoterSecrets() {
-  return loadSecrets().firstPromoter;
 }
 
 export function getOpenaiApiKey() {

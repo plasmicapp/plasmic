@@ -27,7 +27,6 @@ import {
   extractSsoConfig,
   UserNotWhitelistedError,
 } from "@/wab/server/passport-cfg";
-import { getFirstPromoterSecrets } from "@/wab/server/secrets";
 import { doLogin, doLogout } from "@/wab/server/util/auth-util";
 import {
   NotFoundError,
@@ -190,7 +189,7 @@ export async function createUserFull({
 }
 
 export async function signUp(req: Request, res: Response, next: NextFunction) {
-  const { email, password, firstName, lastName, nextPath, fpromTid, appInfo } =
+  const { email, password, firstName, lastName, nextPath, appInfo } =
     uncheckedCast<SignUpRequest>(req.body);
   const mgr = superDbMgr(req);
 
@@ -279,23 +278,6 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
       });
     });
 
-    if (fpromTid) {
-      try {
-        await fetch("https://firstpromoter.com/api/v1/track/signup", {
-          method: "POST",
-          body: `email=${email}&tid=${fpromTid}`,
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "X-Api-Key": ensure(
-              getFirstPromoterSecrets(),
-              "Should have first promoter secrets set"
-            ).apiKey,
-          },
-        });
-      } catch (err) {
-        Sentry.captureException(err);
-      }
-    }
     res.json(ensureType<SignUpResponse>({ status: true, user }));
   } catch (error) {
     if (error instanceof WeakPasswordError) {

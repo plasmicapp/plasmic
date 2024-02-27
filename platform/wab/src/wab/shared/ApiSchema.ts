@@ -309,7 +309,6 @@ export interface SignUpRequest {
   firstName: string;
   lastName: string;
   nextPath?: string;
-  fpromTid?: string;
   appInfo?: {
     appName: string;
     authorizationPath: string;

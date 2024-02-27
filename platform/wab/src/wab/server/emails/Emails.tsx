@@ -152,8 +152,6 @@ export async function sendWelcomeEmail(
 
   <p>We're excited to see what you build with Plasmic!</p>
 
-  <p>And if you love Plasmic, please help us spread the word and <a href="https://plasmic.app/affiliates">get rewarded</a> for doing so!</p>
-
   <p>- The Plasmic team</p>
   `;
 
