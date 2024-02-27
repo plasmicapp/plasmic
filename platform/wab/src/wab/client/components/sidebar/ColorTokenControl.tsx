@@ -12,6 +12,7 @@ import { DEVFLAGS } from "@/wab/devflags";
 import { TokenResolver } from "@/wab/shared/cached-selectors";
 import Chroma from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { Tooltip } from "antd";
 import classNames from "classnames";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
@@ -48,7 +49,7 @@ function ColorTokenControl(props: ColorTokenControlProps) {
   const isSelected = multiAssetsActions.isAssetSelected(token.uuid);
 
   return (
-    <>
+    <Tooltip title={token.name} mouseEnterDelay={0.5}>
       <PlasmicColorTokenControl
         icon={
           <>
@@ -77,7 +78,7 @@ function ColorTokenControl(props: ColorTokenControlProps) {
       >
         {matcher.boldSnippets(token.name)}
       </PlasmicColorTokenControl>
-    </>
+    </Tooltip>
   );
 }
 

@@ -261,6 +261,34 @@ export const BackgroundSection = observer(function BackgroundSection(
               >
                 {bg.layers.map(
                   (layer: BackgroundLayer, index: /*TWZ*/ number) => {
+                    const mainContentText = switchType(layer.image)
+                      .when(ImageBackground, (img: ImageBackground) => {
+                        const asset = tryParseImageAssetRef(
+                          img.url,
+                          studioCtx.site.imageAssets
+                        );
+                        if (asset) {
+                          return asset.name;
+                        } else if (img.url.startsWith("data:")) {
+                          return "Uploaded file";
+                        } else {
+                          return basename(img.url);
+                        }
+                      })
+                      .when(ColorFill, (fill: ColorFill) =>
+                        isTokenRef(fill.color)
+                          ? tryParseTokenRef(
+                              fill.color,
+                              allColorTokens(studioCtx.site, {
+                                includeDeps: "all",
+                              })
+                            )?.name || "Color token"
+                          : Chroma.stringify(fill.color)
+                      )
+                      .when(LinearGradient, () => "Linear gradient")
+                      .when(RadialGradient, () => "Radial gradient")
+                      .when(NoneBackground, () => "Invalid layer")
+                      .result();
                     return (
                       <widgets.ListBoxItem
                         index={index}
@@ -287,34 +315,12 @@ export const BackgroundSection = observer(function BackgroundSection(
                         }
                         mainContent={
                           <div className={"bg-layer__label"}>
-                            {switchType(layer.image)
-                              .when(ImageBackground, (img: ImageBackground) => {
-                                const asset = tryParseImageAssetRef(
-                                  img.url,
-                                  studioCtx.site.imageAssets
-                                );
-                                if (asset) {
-                                  return asset.name;
-                                } else if (img.url.startsWith("data:")) {
-                                  return "Uploaded file";
-                                } else {
-                                  return basename(img.url);
-                                }
-                              })
-                              .when(ColorFill, (fill: ColorFill) =>
-                                isTokenRef(fill.color)
-                                  ? tryParseTokenRef(
-                                      fill.color,
-                                      allColorTokens(studioCtx.site, {
-                                        includeDeps: "all",
-                                      })
-                                    )?.name || "Color token"
-                                  : Chroma.stringify(fill.color)
-                              )
-                              .when(LinearGradient, () => "Linear gradient")
-                              .when(RadialGradient, () => "Radial gradient")
-                              .when(NoneBackground, () => "Invalid layer")
-                              .result()}
+                            <Tooltip
+                              title={mainContentText}
+                              mouseEnterDelay={0.5}
+                            >
+                              {mainContentText}
+                            </Tooltip>
                           </div>
                         }
                         gridThumbnail

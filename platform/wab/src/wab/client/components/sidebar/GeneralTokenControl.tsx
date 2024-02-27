@@ -7,6 +7,7 @@ import PlasmicGeneralTokenControl from "@/wab/client/plasmic/plasmic_kit_left_pa
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TokenResolver } from "@/wab/shared/cached-selectors";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { Tooltip } from "antd";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
@@ -46,7 +47,7 @@ const GeneralTokenControl = observer(function GeneralTokenControl(
   const isSelected = multiAssetsActions.isAssetSelected(token.uuid);
 
   return (
-    <>
+    <Tooltip title={token.name} mouseEnterDelay={0.5}>
       <PlasmicGeneralTokenControl
         value={matcher.boldSnippets(realValue)}
         className={props.className}
@@ -75,7 +76,7 @@ const GeneralTokenControl = observer(function GeneralTokenControl(
       >
         {matcher.boldSnippets(token.name)}
       </PlasmicGeneralTokenControl>
-    </>
+    </Tooltip>
   );
 });
 

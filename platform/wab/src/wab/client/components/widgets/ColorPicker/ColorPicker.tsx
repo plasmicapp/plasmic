@@ -28,6 +28,7 @@ import { allColorTokens, allStyleTokens, isEditable } from "@/wab/sites";
 import Pickr from "@simonwep/pickr";
 import "@simonwep/pickr/dist/themes/nano.min.css";
 import { Input, InputRef, Select, Tooltip } from "antd";
+import { sortBy } from "lodash";
 import debounce from "lodash/debounce";
 import defer from "lodash/defer";
 import { observer } from "mobx-react-lite";
@@ -61,7 +62,7 @@ export function tryGetRealColor(
 ) {
   const colorTokens = maybeColorTokens
     ? maybeColorTokens
-    : allColorTokens(sc.site, { includeDeps: "direct" });
+    : sortBy(allColorTokens(sc.site, { includeDeps: "direct" }), (t) => t.name);
 
   // Currently-applied token, if `color` is a token reference
   const appliedToken = color ? tryParseTokenRef(color, colorTokens) : undefined;
@@ -510,9 +511,11 @@ function ColorPicker_({
                   }
                   withIcons={["startIcon", "endIcon"]}
                 >
-                  <div className="fill-width text-ellipsis">
-                    {appliedToken.name}
-                  </div>
+                  <Tooltip title={appliedToken.name} mouseEnterDelay={0.5}>
+                    <div className="fill-width text-ellipsis">
+                      {appliedToken.name}
+                    </div>
+                  </Tooltip>
                 </Button>
               </MaybeWrap>
             </div>
