@@ -77,6 +77,7 @@ export const TabsContainerMeta: ComponentMeta<TabsProviderProps> = {
   name: 'hostless-tabs-container',
   displayName: 'Tabs Container',
   importName: 'TabsContainer',
+  styleSections: false,
   importPath: modulePath,
   providesData: true,
   description:
@@ -93,7 +94,7 @@ export const TabsContainerMeta: ComponentMeta<TabsProviderProps> = {
     },
     previewKey: {
       type: 'string',
-      description: 'SShow this key while editing in Plasmic Studio',
+      description: 'Show this key while editing in Plasmic Studio',
     },
     previewAll: {
       type: 'boolean',
@@ -372,7 +373,7 @@ export function TabContent({
   );
   switch (mountMode) {
     case 'mountOneAtATime':
-      return <>{show ? children : null}</>;
+      return <>{show ? divContent : null}</>;
     case 'mountAllEagerly':
       return divContent;
     case 'mountLazily':
