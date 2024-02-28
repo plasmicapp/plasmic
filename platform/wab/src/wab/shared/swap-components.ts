@@ -1,6 +1,7 @@
 import {
   Component,
   isKnownCustomCode,
+  isKnownObjectPath,
   isKnownRenderExpr,
   isKnownStateParam,
   isKnownVariantsRef,
@@ -139,7 +140,10 @@ export function makeComponentSwapper(
               .filter(isNonNil);
             expr.variants = toVariants;
             arg.param = toParam;
-          } else if (isKnownCustomCode(arg.expr)) {
+          } else if (
+            isKnownCustomCode(arg.expr) ||
+            isKnownObjectPath(arg.expr)
+          ) {
             // If we have a custom code we assume it's an expression that properly
             // matches to the new variants
             arg.param = toParam;
