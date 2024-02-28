@@ -4335,9 +4335,9 @@ async function upsertRegisteredFunctions(
       }
 
       const functionIds = new Set<string>(
-        allCustomFunctions(site)
-          .filter(({ customFunction }) => !removedFunctions.has(customFunction))
-          .map(({ customFunction }) => customFunctionId(customFunction))
+        site.customFunctions
+          .filter((customFunction) => !removedFunctions.has(customFunction))
+          .map((customFunction) => customFunctionId(customFunction))
       );
 
       const functionNamespaces = new Set<string>(
