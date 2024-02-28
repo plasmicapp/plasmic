@@ -1778,7 +1778,7 @@ function buildComponentToMeta(
 
 function checkElementSchemaToTpl(
   site: Site,
-  component: Component | undefined,
+  component: Component,
   rootSchema: PlasmicElement
 ) {
   return failable<
@@ -2394,6 +2394,7 @@ export function elementSchemaToTpl(
           }
 
           const kind = schema.kind;
+          const elementName = schema.elementName?.trim();
           const defaultComponent = getDefaultComponent(site, kind);
           const schemaPropErrors = findSchemaPropErrors(
             schema,
@@ -2404,6 +2405,7 @@ export function elementSchemaToTpl(
           }
 
           const tpl = mkTplComponentX({
+            name: elementName,
             component: defaultComponent,
             baseVariant,
             args: mkComponentArgsFromSchema(schema, defaultComponent),
@@ -2536,7 +2538,9 @@ export function elementSchemaToTpl(
           if (schemaPropErrors) {
             return schemaPropErrors;
           }
+          const elementName = schema.elementName?.trim();
           const tpl = mkTplComponentX({
+            name: elementName,
             component: referencedComponent,
             args: mkComponentArgsFromSchema(schema, referencedComponent),
             baseVariant,
