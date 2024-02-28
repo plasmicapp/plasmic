@@ -14,8 +14,10 @@ import { useTracking } from "@/wab/client/tracking";
 import {
   CustomError,
   hackyCast,
+  isLiteralObject,
   mkUuid,
   stampObjectUuid,
+  swallow,
   tuple,
   withoutFalsy,
 } from "@/wab/common";
@@ -76,6 +78,10 @@ function reportAndFixOversizedLocalStorage() {
   }
 }
 
+// Monkey patch console.log afterwards based on the devflags
+const originalConsoleLog = console.log;
+console.log = function () {};
+
 /**
  * main needs to go in Shell rather than main.tsx since Shell is the root of
  * hot-reload, so this way hot reload works more fully.  Need to ensure that as
@@ -110,12 +116,6 @@ export function main() {
   }
 
   applyDevFlagOverrides(DEVFLAGS, initClientFlags(DEVFLAGS));
-
-  // Monkey patch console.log to not log anything to console unless
-  // logToConsole devflag is on.
-  if (!DEVFLAGS.logToConsole) {
-    // console.log = function () {};
-  }
 
   if (DEVFLAGS.useLogrocket) {
     hackyCast(window).useLogrocket = true;
@@ -299,6 +299,8 @@ export function main() {
 
   const appContainerElement = document.querySelector(".app-container");
 
+  monkeyPatchConsoleLog();
+
   if (isTopFrame()) {
     const studioPlaceholder = getStudioPlaceholderElement();
 
@@ -378,4 +380,97 @@ export function Shell() {
       </OverlayProvider>
     </Router>
   );
+}
+
+function monkeyPatchConsoleLog() {
+  // Some integrations also monkey-patch console.log and try serialize the
+  // arguments which can be pretty expensive, so we make sure to override them
+  // and limit their total size.
+  let finalConsoleLog = console.log;
+  let innerConsoleLog = false;
+  const monkeyPatchConsoleLogValue = (
+    previousConsoleLog: typeof console.log
+  ) => {
+    finalConsoleLog = (...args: any[]) => {
+      if (innerConsoleLog) {
+        // The args are already sanitized and the original console.log has
+        // already been called
+        return previousConsoleLog(...args);
+      }
+      if (DEVFLAGS.logToConsole) {
+        // Only the native `console.log` should take the actual arguments
+        originalConsoleLog(...args);
+      }
+      const MAX_DEPTH = 3;
+      const MAX_WIDTH = 20;
+      try {
+        innerConsoleLog = true;
+        const visitedObjects = new Map<any, any>();
+        const sanitizeLogArg = (arg: any, depth: number) => {
+          if (arg && typeof arg === "object") {
+            if (visitedObjects.has(arg)) {
+              return visitedObjects.get(arg);
+            }
+            if (depth >= MAX_DEPTH) {
+              const filtered = Array.isArray(arg)
+                ? "[ Array ]"
+                : isLiteralObject(arg)
+                ? "[ Object ]"
+                : `[ ${
+                    swallow(() => arg.typeTag as string) || arg.constructor.name
+                  } ]`;
+              visitedObjects.set(arg, filtered);
+              return filtered;
+            } else {
+              if (Array.isArray(arg)) {
+                const filtered: any[] = [];
+                visitedObjects.set(arg, filtered);
+                filtered.push(
+                  ...(arg.length > MAX_WIDTH
+                    ? [...arg.slice(0, MAX_WIDTH), "..."]
+                    : arg
+                  ).map((subArg) => sanitizeLogArg(subArg, depth + 1))
+                );
+                return filtered;
+              } else {
+                const filtered: any = {};
+                visitedObjects.set(arg, filtered);
+                Object.assign(
+                  filtered,
+                  Object.fromEntries([
+                    ...Object.entries(arg)
+                      .slice(0, MAX_WIDTH)
+                      .map(([key, field]) => [
+                        key,
+                        sanitizeLogArg(field, depth + 1),
+                      ]),
+                    ...(isLiteralObject(arg)
+                      ? []
+                      : [
+                          [
+                            "constructorClass",
+                            swallow(() => arg.typeTag as string) ||
+                              arg.constructor.name,
+                          ],
+                        ]),
+                  ])
+                );
+                return filtered;
+              }
+            }
+          }
+          return arg;
+        };
+        return previousConsoleLog(...args.map((arg) => sanitizeLogArg(arg, 0)));
+      } finally {
+        innerConsoleLog = false;
+      }
+    };
+  };
+  monkeyPatchConsoleLogValue(console.log);
+  // Ensure new overrides to console.log will not take precedence
+  Object.defineProperty(console, "log", {
+    get: () => finalConsoleLog,
+    set: (newConsoleLog) => monkeyPatchConsoleLogValue(newConsoleLog),
+  });
 }
