@@ -117,11 +117,21 @@ import {
   OutlineNodeData,
   OutlineNodeKey,
 } from "@/wab/client/components/sidebar-tabs/OutlineCtx";
+import BoltIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Bolt";
+import { INTERACTIVE_CAP, REPEATED_CAP } from "@/wab/shared/Labels";
 
 function RepIcon() {
   return (
-    <Tooltip title={"Repeated element"}>
+    <Tooltip title={`${REPEATED_CAP} element`}>
       <Icon icon={RepeatingsvgIcon} />
+    </Tooltip>
+  );
+}
+
+function ActionIcon() {
+  return (
+    <Tooltip title={`${INTERACTIVE_CAP} element`}>
+      <Icon icon={BoltIcon} />
     </Tooltip>
   );
 }
@@ -348,6 +358,18 @@ const TplTreeNode = observer(function TplTreeNode(props: {
     { name: "hasRep" }
   ).get();
 
+  const hasInteraction = computed(
+    () => {
+      if (isKnownTplNode(item)) {
+        return Tpls.hasEventHandlers(item);
+      }
+      return false;
+    },
+    {
+      name: "hasInteraction",
+    }
+  ).get();
+
   const visibilityDataCond = effectiveVs.get()?.dataCond;
   const canvasEnv = isKnownTplNode(item)
     ? viewCtx.getCanvasEnvForTpl(item)
@@ -505,8 +527,19 @@ const TplTreeNode = observer(function TplTreeNode(props: {
   const renderRep = () => {
     if (hasRep) {
       return (
-        <div className="tpltree__label__action-icon">
+        <div className="tpltree__label__icon tpltree__label__icon--tag">
           <RepIcon />
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const renderInteractive = () => {
+    if (hasInteraction) {
+      return (
+        <div className="tpltree__label__icon tpltree__label__icon--tag">
+          <ActionIcon />
         </div>
       );
     }
@@ -780,9 +813,14 @@ const TplTreeNode = observer(function TplTreeNode(props: {
         >
           {icon}
         </div>
+        {!codeComponentRoot && !codeComponentSlot && (
+          <>
+            {renderRep()}
+            {renderInteractive()}
+          </>
+        )}
         {renderContent()}
       </div>
-      {!codeComponentRoot && !codeComponentSlot && renderRep()}
       {!codeComponentRoot && renderLockToggle()}
       {!codeComponentRoot && !codeComponentSlot && renderVisibilityToggle()}
       {!codeComponentRoot && !codeComponentSlot && (

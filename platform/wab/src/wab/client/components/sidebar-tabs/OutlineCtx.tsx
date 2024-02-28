@@ -35,6 +35,7 @@ import {
   EffectiveVariantSetting,
   getTplComponentActiveVariants,
 } from "@/wab/shared/effective-variant-setting";
+import { INTERACTIVE_CAP, REPEATED_CAP } from "@/wab/shared/Labels";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { ReadonlyIRuleSetHelpersX } from "@/wab/shared/RuleSetHelpers";
 import {
@@ -418,6 +419,14 @@ function* getSearchableTexts(
   viewCtx: ViewCtx,
   vs?: EffectiveVariantSetting
 ) {
+  if (Tpls.isTplRepeated(tpl)) {
+    yield REPEATED_CAP;
+  }
+
+  if (Tpls.hasEventHandlers(tpl)) {
+    yield INTERACTIVE_CAP;
+  }
+
   if (Tpls.isTplNamable(tpl) && tpl.name) {
     yield tpl.name;
   }

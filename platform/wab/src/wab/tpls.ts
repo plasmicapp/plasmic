@@ -1933,6 +1933,10 @@ export function hasNoEventHandlers(tpl: TplNode) {
   );
 }
 
+export function hasEventHandlers(tpl: TplNode) {
+  return !hasNoEventHandlers(tpl);
+}
+
 export function hasNoExistingStyles(
   tpl: TplNode,
   opts: {

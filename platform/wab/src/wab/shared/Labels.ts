@@ -94,3 +94,7 @@ export const ORGANIZATION_CAP = "Organization";
 export const ORGANIZATION_PLURAL_CAP = "Organization";
 export const ORGANIZATION_LOWER = ORGANIZATION_CAP.toLowerCase();
 export const ORGANIZATION_PLURAL_LOWER = ORGANIZATION_PLURAL_CAP.toLowerCase();
+
+export const INTERACTIVE_CAP = "Interactive";
+
+export const REPEATED_CAP = "Repeated";
