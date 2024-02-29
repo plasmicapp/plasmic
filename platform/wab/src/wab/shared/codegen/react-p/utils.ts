@@ -591,7 +591,10 @@ export function maybeMakePlasmicImgSrc(asset: ImageAsset, exprCtx: ExprCtx) {
     );
 
   return {
-    src: !imgId || imgId.endsWith(".svg") ? asset.dataUri : imgId,
+    src:
+      !imgId || imgId.endsWith(".svg")
+        ? asset.dataUri
+        : `${DEVFLAGS.imgOptimizerHost}/img-optimizer/v1/img/${imgId}`,
     fullWidth: asset.width,
     fullHeight: asset.height,
     aspectRatio: maybe(
