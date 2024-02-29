@@ -70,6 +70,9 @@
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^5.4.1",
     "@plasmicapp/cli": "^0.1.327",
+    "@rsbuild/core": "^0.3.7",
+    "@rsbuild/plugin-react": "^0.3.7",
+    "@rspack/core": "^0.5.3",
     "@storybook/addon-essentials": "^7.5.0",
     "@storybook/addon-interactions": "^7.5.0",
     "@storybook/addon-links": "^7.5.0",
