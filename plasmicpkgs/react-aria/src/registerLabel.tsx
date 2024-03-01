@@ -1,5 +1,3 @@
-import React from "react";
-import type { LabelProps } from "react-aria-components";
 import { Label } from "react-aria-components";
 import {
   CodeComponentMetaOverrides,
@@ -8,9 +6,7 @@ import {
   registerComponentHelper,
 } from "./utils";
 
-export function BaseLabel(props: LabelProps) {
-  return <Label {...props} />;
-}
+export const BaseLabel = Label;
 
 export function registerLabel(
   loader?: Registerable,
