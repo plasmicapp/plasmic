@@ -13,25 +13,47 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -70,9 +92,9 @@ export const PlasmicNavTeamButton__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicNavTeamButton__OverridesType = {
-  root?: p.Flex<"a">;
-  svg?: p.Flex<"svg">;
-  link?: p.Flex<"a">;
+  root?: Flex__<"a">;
+  svg?: Flex__<"svg">;
+  link?: Flex__<"a">;
 };
 
 export interface DefaultNavTeamButtonProps {
@@ -100,13 +122,13 @@ function PlasmicNavTeamButton__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "selected",
@@ -123,7 +145,7 @@ function PlasmicNavTeamButton__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -131,7 +153,7 @@ function PlasmicNavTeamButton__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"a"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -188,7 +210,7 @@ function PlasmicNavTeamButton__RenderFunc(props: {
           ),
         })}
       >
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: "Team name",
           value: args.name,
           className: classNames(sty.slotTargetName, {
@@ -204,7 +226,7 @@ function PlasmicNavTeamButton__RenderFunc(props: {
             ),
           }),
         })}
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__hk3YJ, {
@@ -274,9 +296,9 @@ function PlasmicNavTeamButton__RenderFunc(props: {
           >
             {"Free trial"}
           </a>
-        </p.Stack>
+        </Stack__>
       </div>
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 

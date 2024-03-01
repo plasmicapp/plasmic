@@ -1341,8 +1341,7 @@
       "indirect": false,
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "8n4Jmw9HN2r6jnjKYgqsK4",
@@ -10771,8 +10770,9 @@
           "componentImportPath": "@plasmicpkgs/plasmic-embed-css"
         }
       ],
-      "jsBundleThemes": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "ehckhYnyDHgCBbV47m9bkf",

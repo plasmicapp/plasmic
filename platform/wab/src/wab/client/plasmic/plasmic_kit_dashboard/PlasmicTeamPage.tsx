@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import DefaultLayout from "../../components/dashboard/DefaultLayout"; // plasmic-import: nSkQWLjK-B/component
 import TeamPageHeader from "../../components/dashboard/TeamPageHeader"; // plasmic-import: pcPdf_yULU3/component
 import WorkspaceSection from "../../components/dashboard/WorkspaceSection"; // plasmic-import: 5cdjGaqBQ4/component
@@ -63,11 +86,11 @@ type ArgPropType = keyof PlasmicTeamPage__ArgsType;
 export const PlasmicTeamPage__ArgProps = new Array<ArgPropType>("children");
 
 export type PlasmicTeamPage__OverridesType = {
-  root?: p.Flex<"div">;
-  defaultLayout?: p.Flex<typeof DefaultLayout>;
-  header?: p.Flex<typeof TeamPageHeader>;
-  navTeamSection?: p.Flex<typeof NavTeamSection>;
-  text?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  defaultLayout?: Flex__<typeof DefaultLayout>;
+  header?: Flex__<typeof TeamPageHeader>;
+  navTeamSection?: Flex__<typeof NavTeamSection>;
+  text?: Flex__<"div">;
 };
 
 export interface DefaultTeamPageProps {
@@ -92,11 +115,11 @@ function PlasmicTeamPage__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
   return (
     <React.Fragment>
@@ -166,7 +189,7 @@ function PlasmicTeamPage__RenderFunc(props: {
               />
 
               <div className={classNames(projectcss.all, sty.freeBox__jk5PX)}>
-                {p.renderPlasmicSlot({
+                {renderPlasmicSlot({
                   defaultContents: (
                     <React.Fragment>
                       <WorkspaceSection

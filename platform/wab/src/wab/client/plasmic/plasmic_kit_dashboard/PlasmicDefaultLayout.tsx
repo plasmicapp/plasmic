@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import NavButton from "../../components/dashboard/NavButton"; // plasmic-import: 82ZzbE4hazN/component
 import FreeTrial from "../../components/FreeTrial"; // plasmic-import: p3GgKAlaQe/component
@@ -59,7 +82,8 @@ import GolfsvgIcon from "../q_4_icons/icons/PlasmicIcon__Golfsvg"; // plasmic-im
 import Icon19Icon from "./icons/PlasmicIcon__Icon19"; // plasmic-import: MHEeMLIhlB/icon
 import SparklessvgIcon from "../q_4_icons/icons/PlasmicIcon__Sparklessvg"; // plasmic-import: 9Z0Cu-c5J/icon
 import UsersPlussvgIcon from "../q_4_icons/icons/PlasmicIcon__UsersPlussvg"; // plasmic-import: OqMJdWElK/icon
-import HelpCirclesvgIcon from "../q_4_icons/icons/PlasmicIcon__HelpCirclesvg"; // plasmic-import: zY-2PPrFT/icon
+import BooksvgIcon from "../q_4_icons/icons/PlasmicIcon__Booksvg"; // plasmic-import: hxRmy8Nhq/icon
+import HelpIcon from "../plasmic_kit/PlasmicIcon__Help"; // plasmic-import: -9-68IGPdLG-5/icon
 
 createPlasmicElementProxy;
 
@@ -99,27 +123,28 @@ export const PlasmicDefaultLayout__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicDefaultLayout__OverridesType = {
-  root?: p.Flex<"div">;
-  header?: p.Flex<"header">;
-  headerWrapper?: p.Flex<"div">;
-  headerLogoLink?: p.Flex<"a">;
-  headerLogo?: p.Flex<"svg">;
-  headerActions?: p.Flex<"div">;
-  newProjectButton?: p.Flex<typeof Button>;
-  text?: p.Flex<"div">;
-  upgradeButton?: p.Flex<typeof NavButton>;
-  freeTrial?: p.Flex<typeof FreeTrial>;
-  wrapper?: p.Flex<"div">;
-  sidebar?: p.Flex<"aside">;
-  nav?: p.Flex<"nav">;
-  allProjectsButton?: p.Flex<typeof NavButton>;
-  myProjectsButton?: p.Flex<typeof NavButton>;
-  startersButton?: p.Flex<typeof NavButton>;
-  navFooter?: p.Flex<"footer">;
-  newTeamButton?: p.Flex<typeof NavButton>;
-  helpButton?: p.Flex<typeof NavButton>;
-  userButton?: p.Flex<typeof NavButton>;
-  main?: p.Flex<"main">;
+  root?: Flex__<"div">;
+  header?: Flex__<"header">;
+  headerWrapper?: Flex__<"div">;
+  headerLogoLink?: Flex__<"a">;
+  headerLogo?: Flex__<"svg">;
+  headerActions?: Flex__<"div">;
+  newProjectButton?: Flex__<typeof Button>;
+  text?: Flex__<"div">;
+  upgradeButton?: Flex__<typeof NavButton>;
+  freeTrial?: Flex__<typeof FreeTrial>;
+  wrapper?: Flex__<"div">;
+  sidebar?: Flex__<"aside">;
+  nav?: Flex__<"nav">;
+  allProjectsButton?: Flex__<typeof NavButton>;
+  myProjectsButton?: Flex__<typeof NavButton>;
+  startersButton?: Flex__<typeof NavButton>;
+  navFooter?: Flex__<"footer">;
+  newTeamButton?: Flex__<typeof NavButton>;
+  documentationButton?: Flex__<typeof NavButton>;
+  helpButton?: Flex__<typeof NavButton>;
+  userButton?: Flex__<typeof NavButton>;
+  main?: Flex__<"main">;
 };
 
 export interface DefaultDefaultLayoutProps {
@@ -151,13 +176,13 @@ function PlasmicDefaultLayout__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "navigation",
@@ -194,7 +219,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -257,7 +282,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
               role={"img"}
             />
           </a>
-          <p.Stack
+          <Stack__
             as={"div"}
             data-plasmic-name={"headerActions"}
             data-plasmic-override={overrides.headerActions}
@@ -366,7 +391,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                   : undefined
               }
             />
-          </p.Stack>
+          </Stack__>
         </div>
       </header>
       <div
@@ -399,7 +424,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
               ),
             })}
           >
-            <p.Stack
+            <Stack__
               as={"nav"}
               data-plasmic-name={"nav"}
               data-plasmic-override={overrides.nav}
@@ -503,7 +528,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 }
               />
 
-              <p.Stack
+              <Stack__
                 as={"div"}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.freeBox___1I5Dl, {
@@ -514,7 +539,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                   ),
                 })}
               >
-                {p.renderPlasmicSlot({
+                {renderPlasmicSlot({
                   defaultContents: (
                     <NavTeamSection
                       className={classNames(
@@ -526,7 +551,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
 
                   value: args.teams,
                 })}
-              </p.Stack>
+              </Stack__>
               <NavSeparator
                 className={classNames(
                   "__wab_instance",
@@ -594,8 +619,8 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                   ? "Starters"
                   : "Starters"}
               </NavButton>
-            </p.Stack>
-            <p.Stack
+            </Stack__>
+            <Stack__
               as={"footer"}
               data-plasmic-name={"navFooter"}
               data-plasmic-override={overrides.navFooter}
@@ -622,25 +647,43 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 {"New organization"}
               </NavButton>
               <NavButton
-                data-plasmic-name={"helpButton"}
-                data-plasmic-override={overrides.helpButton}
-                className={classNames("__wab_instance", sty.helpButton, {
-                  [sty.helpButtonnavigation_myProjects]: hasVariant(
-                    $state,
-                    "navigation",
-                    "myProjects"
-                  ),
-                })}
+                data-plasmic-name={"documentationButton"}
+                data-plasmic-override={overrides.documentationButton}
+                className={classNames(
+                  "__wab_instance",
+                  sty.documentationButton
+                )}
                 endIcon={
                   <TriangleBottomIcon
-                    className={classNames(projectcss.all, sty.svg__mJhnX)}
+                    className={classNames(projectcss.all, sty.svg__qc8Uw)}
                     role={"img"}
                   />
                 }
-                href={"https://docs.plasmic.app/learn/"}
+                href={"https://docs.plasmic.app/"}
                 startIcon={
-                  <HelpCirclesvgIcon
-                    className={classNames(projectcss.all, sty.svg__yEwkq)}
+                  <BooksvgIcon
+                    className={classNames(projectcss.all, sty.svg___2Eo9K)}
+                    role={"img"}
+                  />
+                }
+                target={"_blank"}
+              >
+                {"Documentation"}
+              </NavButton>
+              <NavButton
+                data-plasmic-name={"helpButton"}
+                data-plasmic-override={overrides.helpButton}
+                className={classNames("__wab_instance", sty.helpButton)}
+                endIcon={
+                  <TriangleBottomIcon
+                    className={classNames(projectcss.all, sty.svg___9PUi)}
+                    role={"img"}
+                  />
+                }
+                href={"https://forum.plasmic.app/c/5"}
+                startIcon={
+                  <HelpIcon
+                    className={classNames(projectcss.all, sty.svg__lkX6)}
                     role={"img"}
                   />
                 }
@@ -662,7 +705,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                   <div
                     className={classNames(projectcss.all, sty.freeBox__hmXkw)}
                   >
-                    {p.renderPlasmicSlot({
+                    {renderPlasmicSlot({
                       defaultContents: (
                         <img
                           alt={""}
@@ -682,7 +725,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
               >
                 {"kim23"}
               </NavButton>
-            </p.Stack>
+            </Stack__>
           </aside>
           <main
             data-plasmic-name={"main"}
@@ -696,7 +739,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
               ),
             })}
           >
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: null,
               value: args.children,
             })}
@@ -727,6 +770,7 @@ const PlasmicDescendants = {
     "startersButton",
     "navFooter",
     "newTeamButton",
+    "documentationButton",
     "helpButton",
     "userButton",
     "main",
@@ -774,6 +818,7 @@ const PlasmicDescendants = {
     "startersButton",
     "navFooter",
     "newTeamButton",
+    "documentationButton",
     "helpButton",
     "userButton",
     "main",
@@ -786,6 +831,7 @@ const PlasmicDescendants = {
     "startersButton",
     "navFooter",
     "newTeamButton",
+    "documentationButton",
     "helpButton",
     "userButton",
   ],
@@ -793,8 +839,15 @@ const PlasmicDescendants = {
   allProjectsButton: ["allProjectsButton"],
   myProjectsButton: ["myProjectsButton"],
   startersButton: ["startersButton"],
-  navFooter: ["navFooter", "newTeamButton", "helpButton", "userButton"],
+  navFooter: [
+    "navFooter",
+    "newTeamButton",
+    "documentationButton",
+    "helpButton",
+    "userButton",
+  ],
   newTeamButton: ["newTeamButton"],
+  documentationButton: ["documentationButton"],
   helpButton: ["helpButton"],
   userButton: ["userButton"],
   main: ["main"],
@@ -821,6 +874,7 @@ type NodeDefaultElementType = {
   startersButton: typeof NavButton;
   navFooter: "footer";
   newTeamButton: typeof NavButton;
+  documentationButton: typeof NavButton;
   helpButton: typeof NavButton;
   userButton: typeof NavButton;
   main: "main";
@@ -903,6 +957,7 @@ export const PlasmicDefaultLayout = Object.assign(
     startersButton: makeNodeComponent("startersButton"),
     navFooter: makeNodeComponent("navFooter"),
     newTeamButton: makeNodeComponent("newTeamButton"),
+    documentationButton: makeNodeComponent("documentationButton"),
     helpButton: makeNodeComponent("helpButton"),
     userButton: makeNodeComponent("userButton"),
     main: makeNodeComponent("main"),

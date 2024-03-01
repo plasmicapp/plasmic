@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -58,11 +81,11 @@ type ArgPropType = keyof PlasmicUpsellCreditCard__ArgsType;
 export const PlasmicUpsellCreditCard__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicUpsellCreditCard__OverridesType = {
-  root?: p.Flex<"div">;
-  stripeCardElement?: p.Flex<"div">;
-  text?: p.Flex<"div">;
-  spinnerContainer?: p.Flex<"div">;
-  submitButton?: p.Flex<typeof Button>;
+  root?: Flex__<"div">;
+  stripeCardElement?: Flex__<"div">;
+  text?: Flex__<"div">;
+  spinnerContainer?: Flex__<"div">;
+  submitButton?: Flex__<typeof Button>;
 };
 
 export interface DefaultUpsellCreditCardProps {
@@ -86,11 +109,11 @@ function PlasmicUpsellCreditCard__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
   return (
     <div
@@ -110,7 +133,7 @@ function PlasmicUpsellCreditCard__RenderFunc(props: {
         sty.root
       )}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__mqxSq)}
@@ -132,7 +155,7 @@ function PlasmicUpsellCreditCard__RenderFunc(props: {
             {"STRIPE CARD ELEMENT"}
           </div>
         </div>
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__pvAE)}
@@ -164,8 +187,8 @@ function PlasmicUpsellCreditCard__RenderFunc(props: {
           >
             {"Submit"}
           </Button>
-        </p.Stack>
-      </p.Stack>
+        </Stack__>
+      </Stack__>
     </div>
   ) as React.ReactElement | null;
 }

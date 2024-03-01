@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import EditableResourceName from "../../components/EditableResourceName"; // plasmic-import: UttGK3xVrb/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import ShareButton from "../../components/dashboard/ShareButton"; // plasmic-import: BOKmukuncx/component
@@ -98,23 +121,23 @@ export const PlasmicWorkspaceSection__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicWorkspaceSection__OverridesType = {
-  root?: p.Flex<"div">;
-  header?: p.Flex<"header">;
-  editableName?: p.Flex<typeof EditableResourceName>;
-  actions?: p.Flex<"div">;
-  newProjectButton?: p.Flex<typeof Button>;
-  shareButton?: p.Flex<typeof ShareButton>;
-  projectsFilter?: p.Flex<typeof ProjectsFilter>;
-  moreButton?: p.Flex<typeof MenuButton>;
-  projectsSection?: p.Flex<"div">;
-  projectsTab?: p.Flex<"div">;
-  dataSourcesTab?: p.Flex<"div">;
-  h3?: p.Flex<"h3">;
-  newCmsButton2?: p.Flex<typeof Button>;
-  databases?: p.Flex<typeof ProjectListItem>;
-  dataSources?: p.Flex<typeof WorkspaceDataSources>;
-  cmsSection?: p.Flex<"div">;
-  newCmsButton?: p.Flex<typeof Button>;
+  root?: Flex__<"div">;
+  header?: Flex__<"header">;
+  editableName?: Flex__<typeof EditableResourceName>;
+  actions?: Flex__<"div">;
+  newProjectButton?: Flex__<typeof Button>;
+  shareButton?: Flex__<typeof ShareButton>;
+  projectsFilter?: Flex__<typeof ProjectsFilter>;
+  moreButton?: Flex__<typeof MenuButton>;
+  projectsSection?: Flex__<"div">;
+  projectsTab?: Flex__<"div">;
+  dataSourcesTab?: Flex__<"div">;
+  h3?: Flex__<"h3">;
+  newCmsButton2?: Flex__<typeof Button>;
+  databases?: Flex__<typeof ProjectListItem>;
+  dataSources?: Flex__<typeof WorkspaceDataSources>;
+  cmsSection?: Flex__<"div">;
+  newCmsButton?: Flex__<typeof Button>;
 };
 
 export interface DefaultWorkspaceSectionProps {
@@ -150,13 +173,13 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "noProjects",
@@ -199,7 +222,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -368,7 +391,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
               }
             />
 
-            <p.Stack
+            <Stack__
               as={"div"}
               hasGap={true}
               className={classNames(projectcss.all, sty.freeBox__jiCaG, {
@@ -397,7 +420,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
               >
                 {"\u2022"}
               </div>
-              <p.Stack
+              <Stack__
                 as={"div"}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.freeBox__gydIl, {
@@ -408,7 +431,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                   ),
                 })}
               >
-                {p.renderPlasmicSlot({
+                {renderPlasmicSlot({
                   defaultContents: "6",
                   value: args.numMembers,
                   className: classNames(sty.slotTargetNumMembers),
@@ -441,10 +464,10 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                     </span>
                   </React.Fragment>
                 </div>
-              </p.Stack>
-            </p.Stack>
+              </Stack__>
+            </Stack__>
           </div>
-          <p.Stack
+          <Stack__
             as={"div"}
             data-plasmic-name={"actions"}
             data-plasmic-override={overrides.actions}
@@ -582,9 +605,9 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
               }
               withBackgroundHover={true}
             />
-          </p.Stack>
+          </Stack__>
         </header>
-        <p.Stack
+        <Stack__
           as={"div"}
           data-plasmic-name={"projectsSection"}
           data-plasmic-override={overrides.projectsSection}
@@ -617,7 +640,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
             ),
           })}
         >
-          <p.Stack
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox__mMquk, {
@@ -676,7 +699,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                 ? "Integrations"
                 : "Data sources"}
             </div>
-          </p.Stack>
+          </Stack__>
           <div
             className={classNames(projectcss.all, sty.freeBox__taBnm, {
               [sty.freeBoxnoProjects__taBnmPq4Fx]: hasVariant(
@@ -686,7 +709,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
               ),
             })}
           >
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: (
                 <div
                   className={classNames(
@@ -768,7 +791,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
               ? false
               : true
           )
-            ? p.renderPlasmicSlot({
+            ? renderPlasmicSlot({
                 defaultContents: (
                   <React.Fragment>
                     <ProjectListItem timestamp={"updated 1h ago"} />
@@ -825,7 +848,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
               })}
             />
           ) : null}
-        </p.Stack>
+        </Stack__>
         {(hasVariant($state, "canUseCms", "canUseCms") ? true : false) ? (
           <div
             data-plasmic-name={"cmsSection"}
@@ -848,7 +871,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
               ),
             })}
           >
-            <p.Stack
+            <Stack__
               as={"div"}
               hasGap={true}
               className={classNames(projectcss.all, sty.freeBox__pxyYv, {
@@ -926,7 +949,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                   {"New CMS"}
                 </Button>
               </div>
-              {p.renderPlasmicSlot({
+              {renderPlasmicSlot({
                 defaultContents: "This workspace has no CMSs.",
                 value: args.databases,
                 className: classNames(sty.slotTargetDatabases, {
@@ -937,7 +960,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                     hasVariant($state, "canUseCmsAndDataSources", "empty"),
                 }),
               })}
-            </p.Stack>
+            </Stack__>
           </div>
         ) : null}
       </div>

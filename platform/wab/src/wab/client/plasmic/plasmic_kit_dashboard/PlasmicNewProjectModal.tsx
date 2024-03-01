@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import Modal from "../../../../Modal"; // plasmic-import: rD0wOVzSnE/component
 import StarterGroup from "../../components/StarterGroup"; // plasmic-import: u6dq5eydCj/component
 import StarterProject from "../../components/StarterProject"; // plasmic-import: CCsDeqqYeoM/component
@@ -68,10 +91,10 @@ export const PlasmicNewProjectModal__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicNewProjectModal__OverridesType = {
-  root?: p.Flex<typeof Modal>;
-  freeBox?: p.Flex<"div">;
-  cancelButton?: p.Flex<typeof Button>;
-  text?: p.Flex<"div">;
+  root?: Flex__<typeof Modal>;
+  freeBox?: Flex__<"div">;
+  cancelButton?: Flex__<typeof Button>;
+  text?: Flex__<"div">;
 };
 
 export interface DefaultNewProjectModalProps {
@@ -96,11 +119,11 @@ function PlasmicNewProjectModal__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
   return (
     <Modal
@@ -145,14 +168,14 @@ function PlasmicNewProjectModal__RenderFunc(props: {
       tintBackground={true}
       title={"New Project"}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox)}
       >
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: (
             <React.Fragment>
               <StarterGroup
@@ -639,7 +662,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
           ),
           value: args.children,
         })}
-      </p.Stack>
+      </Stack__>
     </Modal>
   ) as React.ReactElement | null;
 }

@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import DefaultLayout from "../../components/dashboard/DefaultLayout"; // plasmic-import: nSkQWLjK-B/component
 import TeamSettings from "../../components/dashboard/TeamSettings"; // plasmic-import: zRIUpVU0Cm8/component
 import NavTeamSection from "../../components/dashboard/NavTeamSection"; // plasmic-import: VqaN_WL-stA/component
@@ -60,10 +83,10 @@ type ArgPropType = keyof PlasmicTeamSettingsPage__ArgsType;
 export const PlasmicTeamSettingsPage__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicTeamSettingsPage__OverridesType = {
-  root?: p.Flex<"div">;
-  defaultLayout?: p.Flex<typeof DefaultLayout>;
-  settings?: p.Flex<typeof TeamSettings>;
-  navTeamSection?: p.Flex<typeof NavTeamSection>;
+  root?: Flex__<"div">;
+  defaultLayout?: Flex__<typeof DefaultLayout>;
+  settings?: Flex__<typeof TeamSettings>;
+  navTeamSection?: Flex__<typeof NavTeamSection>;
 };
 
 export interface DefaultTeamSettingsPageProps {
@@ -87,11 +110,11 @@ function PlasmicTeamSettingsPage__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
   return (
     <React.Fragment>

@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import PriceTierChip from "../../components/pricing/PriceTierChip"; // plasmic-import: UwHbCO-1rFrq/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -60,10 +83,10 @@ export const PlasmicTeamPickerItem__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicTeamPickerItem__OverridesType = {
-  root?: p.Flex<"div">;
-  newPriceTierChip?: p.Flex<typeof PriceTierChip>;
-  text?: p.Flex<"div">;
-  svg?: p.Flex<"svg">;
+  root?: Flex__<"div">;
+  newPriceTierChip?: Flex__<typeof PriceTierChip>;
+  text?: Flex__<"div">;
+  svg?: Flex__<"svg">;
 };
 
 export interface DefaultTeamPickerItemProps {
@@ -88,11 +111,11 @@ function PlasmicTeamPickerItem__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
   return (
     <div
@@ -113,12 +136,12 @@ function PlasmicTeamPickerItem__RenderFunc(props: {
       )}
     >
       <div className={classNames(projectcss.all, sty.freeBox___2SOfh)}>
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: "Team Name",
           value: args.teamName,
           className: classNames(sty.slotTargetTeamName),
         })}
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__yYwPl)}
@@ -149,7 +172,7 @@ function PlasmicTeamPickerItem__RenderFunc(props: {
             className={classNames(projectcss.all, sty.svg)}
             role={"img"}
           />
-        </p.Stack>
+        </Stack__>
       </div>
     </div>
   ) as React.ReactElement | null;

@@ -13,25 +13,47 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -63,8 +85,8 @@ type ArgPropType = keyof PlasmicCopyButton__ArgsType;
 export const PlasmicCopyButton__ArgProps = new Array<ArgPropType>("version");
 
 export type PlasmicCopyButton__OverridesType = {
-  root?: p.Flex<"button">;
-  svg?: p.Flex<"svg">;
+  root?: Flex__<"button">;
+  svg?: Flex__<"svg">;
 };
 
 export interface DefaultCopyButtonProps {
@@ -90,13 +112,13 @@ function PlasmicCopyButton__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "mode",
@@ -107,7 +129,7 @@ function PlasmicCopyButton__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -120,7 +142,7 @@ function PlasmicCopyButton__RenderFunc(props: {
   };
 
   return (
-    <p.Stack
+    <Stack__
       as={"button"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -142,7 +164,7 @@ function PlasmicCopyButton__RenderFunc(props: {
       title={triggers.hover_root ? "Copy project ID" : undefined}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
-      {p.renderPlasmicSlot({
+      {renderPlasmicSlot({
         defaultContents: "ID: ooL7EhXDmFQWnW9sxtchhE",
         value: args.version,
         className: classNames(sty.slotTargetVersion, {
@@ -155,7 +177,7 @@ function PlasmicCopyButton__RenderFunc(props: {
         className={classNames(projectcss.all, sty.svg)}
         role={"img"}
       />
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 

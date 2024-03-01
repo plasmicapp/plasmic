@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import EditableResourceName from "../../components/EditableResourceName"; // plasmic-import: UttGK3xVrb/component
 import Shared from "../../components/dashboard/Shared"; // plasmic-import: r2L4x5kulJ/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
@@ -63,14 +86,14 @@ export const PlasmicDatabaseListItem__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicDatabaseListItem__OverridesType = {
-  root?: p.Flex<"a">;
-  left?: p.Flex<"div">;
-  svg?: p.Flex<"svg">;
-  editableName?: p.Flex<typeof EditableResourceName>;
-  right?: p.Flex<"div">;
-  shared?: p.Flex<typeof Shared>;
-  menuButton?: p.Flex<typeof MenuButton>;
-  updatedJustNow?: p.Flex<"div">;
+  root?: Flex__<"a">;
+  left?: Flex__<"div">;
+  svg?: Flex__<"svg">;
+  editableName?: Flex__<typeof EditableResourceName>;
+  right?: Flex__<"div">;
+  shared?: Flex__<typeof Shared>;
+  menuButton?: Flex__<typeof MenuButton>;
+  updatedJustNow?: Flex__<"div">;
 };
 
 export interface DefaultDatabaseListItemProps {
@@ -95,11 +118,11 @@ function PlasmicDatabaseListItem__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
   const [isRootFocusVisible, triggerRootFocusVisibleProps] = useTrigger(
     "useFocusVisible",
@@ -114,7 +137,7 @@ function PlasmicDatabaseListItem__RenderFunc(props: {
   };
 
   return (
-    <p.Stack
+    <Stack__
       as={"a"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -140,7 +163,7 @@ function PlasmicDatabaseListItem__RenderFunc(props: {
         triggerRootHoverProps,
       ]}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         data-plasmic-name={"left"}
         data-plasmic-override={overrides.left}
@@ -167,7 +190,7 @@ function PlasmicDatabaseListItem__RenderFunc(props: {
           />
 
           <div className={classNames(projectcss.all, sty.freeBox__tql95)}>
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: "updated 1h ago",
               value: args.timestamp,
               className: classNames(sty.slotTargetTimestamp, {
@@ -177,7 +200,7 @@ function PlasmicDatabaseListItem__RenderFunc(props: {
             })}
           </div>
         </div>
-      </p.Stack>
+      </Stack__>
       <div
         data-plasmic-name={"right"}
         data-plasmic-override={overrides.right}
@@ -206,7 +229,7 @@ function PlasmicDatabaseListItem__RenderFunc(props: {
       >
         {"updated just now"}
       </div>
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 

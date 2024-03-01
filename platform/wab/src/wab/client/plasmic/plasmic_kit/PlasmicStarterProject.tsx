@@ -13,25 +13,47 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -90,12 +112,12 @@ export const PlasmicStarterProject__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicStarterProject__OverridesType = {
-  root?: p.Flex<"div">;
-  button?: p.Flex<"button">;
-  divider?: p.Flex<"div">;
-  frame317?: p.Flex<"div">;
-  frame308?: p.Flex<"div">;
-  bordersoutlinesstrokesPlaceholder?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  button?: Flex__<"button">;
+  divider?: Flex__<"div">;
+  frame317?: Flex__<"div">;
+  frame308?: Flex__<"div">;
+  bordersoutlinesstrokesPlaceholder?: Flex__<"div">;
 };
 
 export interface DefaultStarterProjectProps {
@@ -130,13 +152,13 @@ function PlasmicStarterProject__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "type",
@@ -177,7 +199,7 @@ function PlasmicStarterProject__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -291,7 +313,7 @@ function PlasmicStarterProject__RenderFunc(props: {
             })}
             style={{ aspectRatio: "285 / 165" }}
           >
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: (
                 <img
                   alt={""}
@@ -382,7 +404,7 @@ function PlasmicStarterProject__RenderFunc(props: {
             })}
           />
 
-          <p.Stack
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox__h0Gn, {
@@ -471,7 +493,7 @@ function PlasmicStarterProject__RenderFunc(props: {
                 })}
               >
                 {(hasVariant($state, "icon", "withIcon") ? true : false)
-                  ? p.renderPlasmicSlot({
+                  ? renderPlasmicSlot({
                       defaultContents: (
                         <CheckIcon
                           className={classNames(projectcss.all, sty.svg__oYrWt)}
@@ -510,7 +532,7 @@ function PlasmicStarterProject__RenderFunc(props: {
                   : null}
               </div>
             ) : null}
-            <p.Stack
+            <Stack__
               as={"div"}
               hasGap={true}
               className={classNames(projectcss.all, sty.freeBox__wHm4F, {
@@ -551,7 +573,7 @@ function PlasmicStarterProject__RenderFunc(props: {
                 ),
               })}
             >
-              <p.Stack
+              <Stack__
                 as={"div"}
                 data-plasmic-name={"frame317"}
                 data-plasmic-override={overrides.frame317}
@@ -586,7 +608,7 @@ function PlasmicStarterProject__RenderFunc(props: {
                   ),
                 })}
               >
-                {p.renderPlasmicSlot({
+                {renderPlasmicSlot({
                   defaultContents: (
                     <div
                       className={classNames(
@@ -643,11 +665,11 @@ function PlasmicStarterProject__RenderFunc(props: {
                     ),
                   }),
                 })}
-              </p.Stack>
+              </Stack__>
               {(
                 hasVariant($state, "withDescrip", "withDescrip") ? true : false
               ) ? (
-                <p.Stack
+                <Stack__
                   as={"div"}
                   data-plasmic-name={"frame308"}
                   data-plasmic-override={overrides.frame308}
@@ -690,7 +712,7 @@ function PlasmicStarterProject__RenderFunc(props: {
                     ),
                   })}
                 >
-                  {p.renderPlasmicSlot({
+                  {renderPlasmicSlot({
                     defaultContents:
                       "Strongly recommended! Plasmic's power lies in its more advanced concepts.",
                     value: args.instruction,
@@ -741,11 +763,11 @@ function PlasmicStarterProject__RenderFunc(props: {
                       ),
                     }),
                   })}
-                </p.Stack>
+                </Stack__>
               ) : null}
-            </p.Stack>
+            </Stack__>
             {(hasVariant($state, "showPreview", "showPreview") ? true : false)
-              ? p.renderPlasmicSlot({
+              ? renderPlasmicSlot({
                   defaultContents: (
                     <EyesvgIcon
                       className={classNames(projectcss.all, sty.svg__llXDw)}
@@ -763,7 +785,7 @@ function PlasmicStarterProject__RenderFunc(props: {
                   }),
                 })
               : null}
-          </p.Stack>
+          </Stack__>
         </div>
         <div
           data-plasmic-name={"bordersoutlinesstrokesPlaceholder"}

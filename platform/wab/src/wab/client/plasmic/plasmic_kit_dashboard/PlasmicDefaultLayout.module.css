@@ -187,7 +187,6 @@
   display: flex;
   position: relative;
   flex-direction: column;
-  padding: 8px;
 }
 .nav > :global(.__wab_flex-container) {
   flex-direction: column;
@@ -323,7 +322,6 @@
   display: flex;
   position: relative;
   flex-direction: column;
-  padding: 8px;
 }
 .navFooter > :global(.__wab_flex-container) {
   flex-direction: column;
@@ -357,16 +355,32 @@
   width: 16px;
   height: 16px;
 }
-.helpButton:global(.__wab_instance) {
+.documentationButton:global(.__wab_instance) {
   position: relative;
 }
-.svg__yEwkq {
+.svg___2Eo9K {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
-.svg__mJhnX {
+.svg__qc8Uw {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.helpButton:global(.__wab_instance) {
+  position: relative;
+}
+.svg__lkX6 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.svg___9PUi {
   display: flex;
   position: relative;
   object-fit: cover;

@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import EditableResourceName from "../../components/EditableResourceName"; // plasmic-import: UttGK3xVrb/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
@@ -94,16 +117,16 @@ export const PlasmicCmsSection__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicCmsSection__OverridesType = {
-  root?: p.Flex<"div">;
-  header?: p.Flex<"header">;
-  backNav?: p.Flex<"a">;
-  editableName?: p.Flex<typeof EditableResourceName>;
-  readonlyName?: p.Flex<"div">;
-  subtext?: p.Flex<"div">;
-  text?: p.Flex<"div">;
-  actions?: p.Flex<"div">;
-  newProjectButton?: p.Flex<typeof Button>;
-  moreButton?: p.Flex<typeof MenuButton>;
+  root?: Flex__<"div">;
+  header?: Flex__<"header">;
+  backNav?: Flex__<"a">;
+  editableName?: Flex__<typeof EditableResourceName>;
+  readonlyName?: Flex__<"div">;
+  subtext?: Flex__<"div">;
+  text?: Flex__<"div">;
+  actions?: Flex__<"div">;
+  newProjectButton?: Flex__<typeof Button>;
+  moreButton?: Flex__<typeof MenuButton>;
 };
 
 export interface DefaultCmsSectionProps {
@@ -138,13 +161,13 @@ function PlasmicCmsSection__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "noProjects",
@@ -191,7 +214,7 @@ function PlasmicCmsSection__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -284,7 +307,7 @@ function PlasmicCmsSection__RenderFunc(props: {
           })}
         >
           {(hasVariant($state, "showControls", "showControls") ? true : false)
-            ? p.renderPlasmicSlot({
+            ? renderPlasmicSlot({
                 defaultContents: null,
                 value: args.controls,
               })
@@ -372,19 +395,19 @@ function PlasmicCmsSection__RenderFunc(props: {
             >
               {"Read-only"}
             </div>
-            <p.Stack
+            <Stack__
               as={"div"}
               hasGap={true}
               className={classNames(projectcss.all, sty.freeBox__qR4PO)}
             >
-              <p.Stack
+              <Stack__
                 as={"div"}
                 data-plasmic-name={"subtext"}
                 data-plasmic-override={overrides.subtext}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.subtext)}
               >
-                {p.renderPlasmicSlot({
+                {renderPlasmicSlot({
                   defaultContents: "6",
                   value: args.numMembers,
                   className: classNames(sty.slotTargetNumMembers),
@@ -407,11 +430,11 @@ function PlasmicCmsSection__RenderFunc(props: {
                 >
                   {"models"}
                 </div>
-              </p.Stack>
-            </p.Stack>
+              </Stack__>
+            </Stack__>
           </div>
         </div>
-        <p.Stack
+        <Stack__
           as={"div"}
           data-plasmic-name={"actions"}
           data-plasmic-override={overrides.actions}
@@ -471,10 +494,10 @@ function PlasmicCmsSection__RenderFunc(props: {
             hoverText={"More…"}
             withBackgroundHover={true}
           />
-        </p.Stack>
+        </Stack__>
       </header>
       {(hasVariant($state, "noProjects", "noProjects") ? true : false)
-        ? p.renderPlasmicSlot({
+        ? renderPlasmicSlot({
             defaultContents: (
               <div
                 className={classNames(
@@ -520,7 +543,7 @@ function PlasmicCmsSection__RenderFunc(props: {
               ),
             })}
           >
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: (
                 <React.Fragment>
                   <CmsListItem

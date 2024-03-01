@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import HostProtocolSelect from "../../../../HostProtocolSelect"; // plasmic-import: 6_CfQ5GVLku/component
 import HostProtocolSelect__Option from "../../../../HostProtocolSelect__Option"; // plasmic-import: aHgWgR3OVni/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
@@ -59,11 +82,11 @@ type ArgPropType = keyof PlasmicHostUrlInput__ArgsType;
 export const PlasmicHostUrlInput__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicHostUrlInput__OverridesType = {
-  root?: p.Flex<"div">;
-  hostProtocolSelect?: p.Flex<typeof HostProtocolSelect>;
-  urlInput?: p.Flex<"input">;
-  clearButton?: p.Flex<typeof Button>;
-  confirmButton?: p.Flex<typeof Button>;
+  root?: Flex__<"div">;
+  hostProtocolSelect?: Flex__<typeof HostProtocolSelect>;
+  urlInput?: Flex__<"input">;
+  clearButton?: Flex__<typeof Button>;
+  confirmButton?: Flex__<typeof Button>;
 };
 
 export interface DefaultHostUrlInputProps {
@@ -87,13 +110,13 @@ function PlasmicHostUrlInput__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "hostProtocolSelect.value",
@@ -104,7 +127,7 @@ function PlasmicHostUrlInput__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -112,7 +135,7 @@ function PlasmicHostUrlInput__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -145,14 +168,11 @@ function PlasmicHostUrlInput__RenderFunc(props: {
         data-plasmic-override={overrides.hostProtocolSelect}
         className={classNames("__wab_instance", sty.hostProtocolSelect)}
         onChange={(...eventArgs) => {
-          p.generateStateOnChangeProp($state, ["hostProtocolSelect", "value"])(
+          generateStateOnChangeProp($state, ["hostProtocolSelect", "value"])(
             eventArgs[0]
           );
         }}
-        value={p.generateStateValueProp($state, [
-          "hostProtocolSelect",
-          "value",
-        ])}
+        value={generateStateValueProp($state, ["hostProtocolSelect", "value"])}
       >
         <HostProtocolSelect__Option
           className={classNames("__wab_instance", sty.option__jSgyS)}
@@ -240,7 +260,7 @@ function PlasmicHostUrlInput__RenderFunc(props: {
           {"Confirm"}
         </div>
       </Button>
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 

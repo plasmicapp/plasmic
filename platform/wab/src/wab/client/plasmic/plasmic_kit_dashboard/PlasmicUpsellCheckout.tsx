@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import Switch from "../../components/widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
 import PriceTierPicker from "../../components/pricing/PriceTierPicker"; // plasmic-import: Xx_WsdQKli-S/component
 import Bill from "../../components/dashboard/Bill"; // plasmic-import: sK-iPs7I1Z/component
@@ -76,21 +99,21 @@ export const PlasmicUpsellCheckout__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicUpsellCheckout__OverridesType = {
-  root?: p.Flex<"div">;
-  operationTitle?: p.Flex<"div">;
-  operationDescription?: p.Flex<"div">;
-  billingFrequencyToggle?: p.Flex<typeof Switch>;
-  priceTierPicker?: p.Flex<typeof PriceTierPicker>;
-  bill?: p.Flex<typeof Bill>;
-  spinnerContainer?: p.Flex<"div">;
-  cancelButton?: p.Flex<typeof Button>;
-  confirmButton?: p.Flex<typeof Button>;
-  stripeCardElement?: p.Flex<"div">;
-  stripeExpiryElement?: p.Flex<"div">;
-  stripeCvcElement?: p.Flex<"div">;
-  spinnerContainer2?: p.Flex<"div">;
-  cancelButton2?: p.Flex<typeof Button>;
-  confirmButton2?: p.Flex<typeof Button>;
+  root?: Flex__<"div">;
+  operationTitle?: Flex__<"div">;
+  operationDescription?: Flex__<"div">;
+  billingFrequencyToggle?: Flex__<typeof Switch>;
+  priceTierPicker?: Flex__<typeof PriceTierPicker>;
+  bill?: Flex__<typeof Bill>;
+  spinnerContainer?: Flex__<"div">;
+  cancelButton?: Flex__<typeof Button>;
+  confirmButton?: Flex__<typeof Button>;
+  stripeCardElement?: Flex__<"div">;
+  stripeExpiryElement?: Flex__<"div">;
+  stripeCvcElement?: Flex__<"div">;
+  spinnerContainer2?: Flex__<"div">;
+  cancelButton2?: Flex__<typeof Button>;
+  confirmButton2?: Flex__<typeof Button>;
 };
 
 export interface DefaultUpsellCheckoutProps {
@@ -118,13 +141,13 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "skipCreditCard",
@@ -154,7 +177,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -162,7 +185,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -207,7 +230,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
           ),
         })}
       >
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox___48TmO, {
@@ -255,7 +278,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
               ),
             })}
           >
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: "TEAM NAME",
               value: args.teamName,
               className: classNames(sty.slotTargetTeamName, {
@@ -267,7 +290,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
               }),
             })}
           </div>
-        </p.Stack>
+        </Stack__>
         <div
           className={classNames(projectcss.all, sty.freeBox__veMFb, {
             [sty.freeBoxtempPickOneModal__veMFbzGtUe]: hasVariant(
@@ -548,13 +571,13 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
           data-plasmic-override={overrides.billingFrequencyToggle}
           className={classNames("__wab_instance", sty.billingFrequencyToggle)}
           isChecked={
-            p.generateStateValueProp($state, [
+            generateStateValueProp($state, [
               "billingFrequencyToggle",
               "isChecked",
             ]) ?? false
           }
           onChange={(...eventArgs) => {
-            p.generateStateOnChangeProp($state, [
+            generateStateOnChangeProp($state, [
               "billingFrequencyToggle",
               "isChecked",
             ])(eventArgs[0]);
@@ -571,7 +594,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
           </div>
         </Switch>
       </div>
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__cZbE, {
@@ -596,7 +619,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
           noScrolling={true}
         />
 
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__lrnq, {
@@ -630,7 +653,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
               }
             />
           </div>
-          <p.Stack
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox___7P51B, {
@@ -688,9 +711,9 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
             >
               {"Submit"}
             </Button>
-          </p.Stack>
-        </p.Stack>
-        <p.Stack
+          </Stack__>
+        </Stack__>
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox___6BfLa, {
@@ -706,7 +729,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
             ),
           })}
         >
-          <p.Stack
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox__eVxan)}
@@ -720,7 +743,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
             >
               {"Checkout"}
             </div>
-            <p.Stack
+            <Stack__
               as={"div"}
               hasGap={true}
               className={classNames(projectcss.all, sty.freeBox__i0LzW)}
@@ -799,9 +822,9 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                   </div>
                 </div>
               </div>
-            </p.Stack>
-          </p.Stack>
-          <p.Stack
+            </Stack__>
+          </Stack__>
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox___5U5GM, {
@@ -859,10 +882,10 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
             >
               {"Submit"}
             </Button>
-          </p.Stack>
-        </p.Stack>
-      </p.Stack>
-    </p.Stack>
+          </Stack__>
+        </Stack__>
+      </Stack__>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 

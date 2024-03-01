@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import EditableResourceName from "../../components/EditableResourceName"; // plasmic-import: UttGK3xVrb/component
 import PanelDivider from "../../components/PanelDivider"; // plasmic-import: 0NaTcyuAGK2dN/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
@@ -75,16 +98,16 @@ type ArgPropType = keyof PlasmicCmsListItem__ArgsType;
 export const PlasmicCmsListItem__ArgProps = new Array<ArgPropType>("timestamp");
 
 export type PlasmicCmsListItem__OverridesType = {
-  root?: p.Flex<"a">;
-  left?: p.Flex<"div">;
-  editableName?: p.Flex<typeof EditableResourceName>;
-  panelDivider?: p.Flex<typeof PanelDivider>;
-  workspace?: p.Flex<typeof Button>;
-  text?: p.Flex<"div">;
-  projectIdCopyButton?: p.Flex<typeof CopyButton>;
-  right?: p.Flex<"div">;
-  menuButton?: p.Flex<typeof MenuButton>;
-  updatedJustNow?: p.Flex<"div">;
+  root?: Flex__<"a">;
+  left?: Flex__<"div">;
+  editableName?: Flex__<typeof EditableResourceName>;
+  panelDivider?: Flex__<typeof PanelDivider>;
+  workspace?: Flex__<typeof Button>;
+  text?: Flex__<"div">;
+  projectIdCopyButton?: Flex__<typeof CopyButton>;
+  right?: Flex__<"div">;
+  menuButton?: Flex__<typeof MenuButton>;
+  updatedJustNow?: Flex__<"div">;
 };
 
 export interface DefaultCmsListItemProps {
@@ -112,13 +135,13 @@ function PlasmicCmsListItem__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "explorations",
@@ -141,7 +164,7 @@ function PlasmicCmsListItem__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -166,7 +189,7 @@ function PlasmicCmsListItem__RenderFunc(props: {
   };
 
   return (
-    <p.Stack
+    <Stack__
       as={"a"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -262,7 +285,7 @@ function PlasmicCmsListItem__RenderFunc(props: {
               ),
             })}
           >
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: "updated 1h ago",
               value: args.timestamp,
               className: classNames(sty.slotTargetTimestamp, {
@@ -414,7 +437,7 @@ function PlasmicCmsListItem__RenderFunc(props: {
       >
         {"updated just now"}
       </div>
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 

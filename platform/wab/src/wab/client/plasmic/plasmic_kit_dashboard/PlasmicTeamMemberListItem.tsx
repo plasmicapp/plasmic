@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
 import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
@@ -70,12 +93,12 @@ export const PlasmicTeamMemberListItem__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicTeamMemberListItem__OverridesType = {
-  root?: p.Flex<"div">;
-  role?: p.Flex<typeof Select>;
-  text?: p.Flex<"div">;
-  svg?: p.Flex<"svg">;
-  roleHelp?: p.Flex<"svg">;
-  menuButton?: p.Flex<typeof MenuButton>;
+  root?: Flex__<"div">;
+  role?: Flex__<typeof Select>;
+  text?: Flex__<"div">;
+  svg?: Flex__<"svg">;
+  roleHelp?: Flex__<"svg">;
+  menuButton?: Flex__<typeof MenuButton>;
 };
 
 export interface DefaultTeamMemberListItemProps {
@@ -103,13 +126,13 @@ function PlasmicTeamMemberListItem__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "role.value",
@@ -120,7 +143,7 @@ function PlasmicTeamMemberListItem__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -128,7 +151,7 @@ function PlasmicTeamMemberListItem__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -148,26 +171,26 @@ function PlasmicTeamMemberListItem__RenderFunc(props: {
       )}
     >
       <div className={classNames(projectcss.all, sty.freeBox__lV3Y)}>
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: "Name",
           value: args.name,
           className: classNames(sty.slotTargetName),
         })}
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: "email@domain.com",
           value: args.email,
           className: classNames(sty.slotTargetEmail),
         })}
       </div>
       <div className={classNames(projectcss.all, sty.freeBox__bvhPk)}>
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: "1d ago",
           value: args.lastActive,
           className: classNames(sty.slotTargetLastActive),
         })}
       </div>
       <div className={classNames(projectcss.all, sty.freeBox__yKwtR)}>
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: (
             <div
               className={classNames(
@@ -184,7 +207,7 @@ function PlasmicTeamMemberListItem__RenderFunc(props: {
         })}
       </div>
       <div className={classNames(projectcss.all, sty.freeBox__alQif)}>
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__yVnYe)}
@@ -202,7 +225,7 @@ function PlasmicTeamMemberListItem__RenderFunc(props: {
               />
             }
             onChange={(...eventArgs) => {
-              p.generateStateOnChangeProp($state, ["role", "value"])(
+              generateStateOnChangeProp($state, ["role", "value"])(
                 eventArgs[0]
               );
             }}
@@ -220,7 +243,7 @@ function PlasmicTeamMemberListItem__RenderFunc(props: {
               </div>
             }
             type={"bordered"}
-            value={p.generateStateValueProp($state, ["role", "value"])}
+            value={generateStateValueProp($state, ["role", "value"])}
           >
             <Select__Option
               className={classNames("__wab_instance", sty.option__pMoLu)}
@@ -267,7 +290,7 @@ function PlasmicTeamMemberListItem__RenderFunc(props: {
             className={classNames(projectcss.all, sty.roleHelp)}
             role={"img"}
           />
-        </p.Stack>
+        </Stack__>
         <MenuButton
           data-plasmic-name={"menuButton"}
           data-plasmic-override={overrides.menuButton}
@@ -275,7 +298,7 @@ function PlasmicTeamMemberListItem__RenderFunc(props: {
           withBackgroundHover={true}
         />
       </div>
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 

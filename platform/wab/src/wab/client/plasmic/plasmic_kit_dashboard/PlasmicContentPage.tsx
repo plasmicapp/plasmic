@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import DefaultLayout from "../../components/dashboard/DefaultLayout"; // plasmic-import: nSkQWLjK-B/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 import MenuItem from "../../../../MenuItem"; // plasmic-import: Ts79yZbRFG/component
@@ -65,14 +88,14 @@ type ArgPropType = keyof PlasmicContentPage__ArgsType;
 export const PlasmicContentPage__ArgProps = new Array<ArgPropType>("modelList");
 
 export type PlasmicContentPage__OverridesType = {
-  root?: p.Flex<"div">;
-  defaultLayout?: p.Flex<typeof DefaultLayout>;
-  moreButton?: p.Flex<typeof MenuButton>;
-  modelNav?: p.Flex<"div">;
-  editModelsButton?: p.Flex<"a">;
-  svg?: p.Flex<"svg">;
-  cmsSection?: p.Flex<typeof CmsSection>;
-  navTeamSection?: p.Flex<typeof NavTeamSection>;
+  root?: Flex__<"div">;
+  defaultLayout?: Flex__<typeof DefaultLayout>;
+  moreButton?: Flex__<typeof MenuButton>;
+  modelNav?: Flex__<"div">;
+  editModelsButton?: Flex__<"a">;
+  svg?: Flex__<"svg">;
+  cmsSection?: Flex__<typeof CmsSection>;
+  navTeamSection?: Flex__<typeof NavTeamSection>;
 };
 
 export interface DefaultContentPageProps {
@@ -97,11 +120,11 @@ function PlasmicContentPage__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
   return (
     <React.Fragment>
@@ -159,7 +182,7 @@ function PlasmicContentPage__RenderFunc(props: {
                 data-plasmic-override={overrides.modelNav}
                 className={classNames(projectcss.all, sty.modelNav)}
               >
-                <p.Stack
+                <Stack__
                   as={"div"}
                   hasGap={true}
                   className={classNames(projectcss.all, sty.freeBox__qpmBb)}
@@ -194,12 +217,12 @@ function PlasmicContentPage__RenderFunc(props: {
                       />
                     </a>
                   </div>
-                  <p.Stack
+                  <Stack__
                     as={"div"}
                     hasGap={true}
                     className={classNames(projectcss.all, sty.freeBox__d2EH)}
                   >
-                    {p.renderPlasmicSlot({
+                    {renderPlasmicSlot({
                       defaultContents: (
                         <React.Fragment>
                           <MenuItem href={"#"}>{"Alpha"}</MenuItem>
@@ -211,8 +234,8 @@ function PlasmicContentPage__RenderFunc(props: {
                       ),
                       value: args.modelList,
                     })}
-                  </p.Stack>
-                </p.Stack>
+                  </Stack__>
+                </Stack__>
               </div>
               <CmsSection
                 data-plasmic-name={"cmsSection"}

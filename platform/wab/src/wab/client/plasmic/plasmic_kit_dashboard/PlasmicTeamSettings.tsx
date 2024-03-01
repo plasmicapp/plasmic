@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 import TeamMemberList from "../../components/dashboard/TeamMemberList"; // plasmic-import: 3jXSiWKc1-/component
 import TeamMemberListItem from "../../components/dashboard/TeamMemberListItem"; // plasmic-import: gdLJj97tYt/component
@@ -70,13 +93,13 @@ export const PlasmicTeamSettings__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicTeamSettings__OverridesType = {
-  root?: p.Flex<"div">;
-  header?: p.Flex<"header">;
-  freeBox?: p.Flex<"div">;
-  teamMenuButton?: p.Flex<typeof MenuButton>;
-  memberList?: p.Flex<typeof TeamMemberList>;
-  navSeparator?: p.Flex<typeof NavSeparator>;
-  teamBilling?: p.Flex<typeof TeamBilling>;
+  root?: Flex__<"div">;
+  header?: Flex__<"header">;
+  freeBox?: Flex__<"div">;
+  teamMenuButton?: Flex__<typeof MenuButton>;
+  memberList?: Flex__<typeof TeamMemberList>;
+  navSeparator?: Flex__<typeof NavSeparator>;
+  teamBilling?: Flex__<typeof TeamBilling>;
 };
 
 export interface DefaultTeamSettingsProps {
@@ -103,13 +126,13 @@ function PlasmicTeamSettings__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "hideNewButton",
@@ -120,7 +143,7 @@ function PlasmicTeamSettings__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -161,7 +184,7 @@ function PlasmicTeamSettings__RenderFunc(props: {
           data-plasmic-override={overrides.freeBox}
           className={classNames(projectcss.all, sty.freeBox)}
         >
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: "Team Name",
             value: args.teamName,
             className: classNames(sty.slotTargetTeamName),
@@ -250,7 +273,7 @@ function PlasmicTeamSettings__RenderFunc(props: {
       <TeamBilling
         data-plasmic-name={"teamBilling"}
         data-plasmic-override={overrides.teamBilling}
-        billingError={p.renderPlasmicSlot({
+        billingError={renderPlasmicSlot({
           defaultContents: "ERROR: Cannot process payment",
           value: args.billingError,
         })}

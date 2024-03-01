@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
 import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
@@ -60,10 +83,10 @@ type ArgPropType = keyof PlasmicProjectsFilter__ArgsType;
 export const PlasmicProjectsFilter__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicProjectsFilter__OverridesType = {
-  root?: p.Flex<"div">;
-  orderBySelect?: p.Flex<typeof Select>;
-  text?: p.Flex<"div">;
-  searchBox?: p.Flex<typeof Textbox>;
+  root?: Flex__<"div">;
+  orderBySelect?: Flex__<typeof Select>;
+  text?: Flex__<"div">;
+  searchBox?: Flex__<typeof Textbox>;
 };
 
 export interface DefaultProjectsFilterProps {
@@ -87,13 +110,13 @@ function PlasmicProjectsFilter__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "orderBySelect.value",
@@ -104,7 +127,7 @@ function PlasmicProjectsFilter__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -112,7 +135,7 @@ function PlasmicProjectsFilter__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -141,7 +164,7 @@ function PlasmicProjectsFilter__RenderFunc(props: {
           />
         }
         onChange={(...eventArgs) => {
-          p.generateStateOnChangeProp($state, ["orderBySelect", "value"])(
+          generateStateOnChangeProp($state, ["orderBySelect", "value"])(
             eventArgs[0]
           );
         }}
@@ -159,7 +182,7 @@ function PlasmicProjectsFilter__RenderFunc(props: {
           </div>
         }
         type={"wide"}
-        value={p.generateStateValueProp($state, ["orderBySelect", "value"])}
+        value={generateStateValueProp($state, ["orderBySelect", "value"])}
       >
         <Select__Option
           className={classNames("__wab_instance", sty.option__uOhyt)}
@@ -195,7 +218,7 @@ function PlasmicProjectsFilter__RenderFunc(props: {
         whiteBackground={true}
         withIcons={["withPrefix"]}
       />
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 

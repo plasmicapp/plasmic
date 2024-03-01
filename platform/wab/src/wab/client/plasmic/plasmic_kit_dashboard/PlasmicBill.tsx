@@ -13,25 +13,47 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -88,9 +110,9 @@ export const PlasmicBill__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicBill__OverridesType = {
-  root?: p.Flex<"div">;
-  lessSeats?: p.Flex<"div">;
-  moreSeats?: p.Flex<"button">;
+  root?: Flex__<"div">;
+  lessSeats?: Flex__<"div">;
+  moreSeats?: Flex__<"button">;
 };
 
 export interface DefaultBillProps {
@@ -126,13 +148,13 @@ function PlasmicBill__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "type",
@@ -155,7 +177,7 @@ function PlasmicBill__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -163,7 +185,7 @@ function PlasmicBill__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -189,7 +211,7 @@ function PlasmicBill__RenderFunc(props: {
         }
       )}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__azp5F)}
@@ -213,21 +235,21 @@ function PlasmicBill__RenderFunc(props: {
           />
         </div>
         <div className={classNames(projectcss.all, sty.freeBox__y5JyR)}>
-          <p.Stack
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox___91Tox)}
           >
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: "10",
               value: args.numSeats,
               className: classNames(sty.slotTargetNumSeats),
             })}
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: "seats",
               value: args.seatNoun,
             })}
-          </p.Stack>
+          </Stack__>
         </div>
         <button
           data-plasmic-name={"moreSeats"}
@@ -246,13 +268,13 @@ function PlasmicBill__RenderFunc(props: {
             role={"img"}
           />
         </button>
-      </p.Stack>
-      <p.Stack
+      </Stack__>
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__vvxAi)}
       >
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__huPEa, {
@@ -278,11 +300,11 @@ function PlasmicBill__RenderFunc(props: {
             })}
           >
             <div className={classNames(projectcss.all, sty.freeBox__rl9Jl)}>
-              {p.renderPlasmicSlot({
+              {renderPlasmicSlot({
                 defaultContents: "1 Basic Team",
                 value: args.baseTitle,
               })}
-              {p.renderPlasmicSlot({
+              {renderPlasmicSlot({
                 defaultContents: "$20 x 1 team",
                 value: args.baseDescription,
                 className: classNames(sty.slotTargetBaseDescription),
@@ -299,7 +321,7 @@ function PlasmicBill__RenderFunc(props: {
                 >
                   {"$"}
                 </div>
-                {p.renderPlasmicSlot({
+                {renderPlasmicSlot({
                   defaultContents: "20",
                   value: args.baseSubtotal,
                 })}
@@ -342,11 +364,11 @@ function PlasmicBill__RenderFunc(props: {
             })}
           >
             <div className={classNames(projectcss.all, sty.freeBox___2IfV0)}>
-              {p.renderPlasmicSlot({
+              {renderPlasmicSlot({
                 defaultContents: "10 Basic seats",
                 value: args.seatTitle,
               })}
-              {p.renderPlasmicSlot({
+              {renderPlasmicSlot({
                 defaultContents: "$15 x 10 seats",
                 value: args.seatDescription,
                 className: classNames(sty.slotTargetSeatDescription),
@@ -363,7 +385,7 @@ function PlasmicBill__RenderFunc(props: {
                 >
                   {"$"}
                 </div>
-                {p.renderPlasmicSlot({
+                {renderPlasmicSlot({
                   defaultContents: "20",
                   value: args.seatSubtotal,
                 })}
@@ -386,7 +408,7 @@ function PlasmicBill__RenderFunc(props: {
               </div>
             </div>
           </div>
-        </p.Stack>
+        </Stack__>
         <div className={classNames(projectcss.all, sty.freeBox___2EnbQ)} />
 
         <div className={classNames(projectcss.all, sty.freeBox___266J7)}>
@@ -426,7 +448,7 @@ function PlasmicBill__RenderFunc(props: {
               >
                 {"$"}
               </div>
-              {p.renderPlasmicSlot({
+              {renderPlasmicSlot({
                 defaultContents: "15",
                 value: args.total,
                 className: classNames(sty.slotTargetTotal),
@@ -450,8 +472,8 @@ function PlasmicBill__RenderFunc(props: {
             </div>
           </div>
         </div>
-      </p.Stack>
-    </p.Stack>
+      </Stack__>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 

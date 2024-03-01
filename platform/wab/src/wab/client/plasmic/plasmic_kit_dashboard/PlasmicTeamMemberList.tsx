@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
 import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
@@ -72,13 +95,13 @@ export const PlasmicTeamMemberList__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicTeamMemberList__OverridesType = {
-  root?: p.Flex<"div">;
-  freeBox?: p.Flex<"div">;
-  actions?: p.Flex<"div">;
-  newButton?: p.Flex<typeof Button>;
-  filterSelect?: p.Flex<typeof Select>;
-  memberSearch?: p.Flex<typeof Searchbox>;
-  header?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
+  actions?: Flex__<"div">;
+  newButton?: Flex__<typeof Button>;
+  filterSelect?: Flex__<typeof Select>;
+  memberSearch?: Flex__<typeof Searchbox>;
+  header?: Flex__<"div">;
 };
 
 export interface DefaultTeamMemberListProps {
@@ -104,13 +127,13 @@ function PlasmicTeamMemberList__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isCollapsed",
@@ -127,7 +150,7 @@ function PlasmicTeamMemberList__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -173,7 +196,7 @@ function PlasmicTeamMemberList__RenderFunc(props: {
         >
           {"Members"}
         </div>
-        <p.Stack
+        <Stack__
           as={"div"}
           data-plasmic-name={"actions"}
           data-plasmic-override={overrides.actions}
@@ -214,13 +237,13 @@ function PlasmicTeamMemberList__RenderFunc(props: {
               />
             }
             onChange={(...eventArgs) => {
-              p.generateStateOnChangeProp($state, ["filterSelect", "value"])(
+              generateStateOnChangeProp($state, ["filterSelect", "value"])(
                 eventArgs[0]
               );
             }}
             placeholder={"Filter\u2026"}
             type={"bordered"}
-            value={p.generateStateValueProp($state, ["filterSelect", "value"])}
+            value={generateStateValueProp($state, ["filterSelect", "value"])}
           >
             <Select__Option
               className={classNames("__wab_instance", sty.option__egmzu)}
@@ -272,9 +295,9 @@ function PlasmicTeamMemberList__RenderFunc(props: {
             className={classNames("__wab_instance", sty.memberSearch)}
             whiteBackground={true}
           />
-        </p.Stack>
+        </Stack__>
       </div>
-      <p.Stack
+      <Stack__
         as={"div"}
         data-plasmic-name={"header"}
         data-plasmic-override={overrides.header}
@@ -317,8 +340,8 @@ function PlasmicTeamMemberList__RenderFunc(props: {
         >
           {"Team role"}
         </div>
-      </p.Stack>
-      {p.renderPlasmicSlot({
+      </Stack__>
+      {renderPlasmicSlot({
         defaultContents: (
           <React.Fragment>
             <TeamMemberListItem

@@ -13,25 +13,47 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -92,10 +114,10 @@ export const PlasmicNavButton__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicNavButton__OverridesType = {
-  root?: p.Flex<"a">;
-  startIconContainer?: p.Flex<"div">;
-  freeBox?: p.Flex<"div">;
-  endIconContainer?: p.Flex<"div">;
+  root?: Flex__<"a">;
+  startIconContainer?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
+  endIconContainer?: Flex__<"div">;
 };
 
 export interface DefaultNavButtonProps {
@@ -140,13 +162,13 @@ function PlasmicNavButton__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "disabled",
@@ -193,7 +215,7 @@ function PlasmicNavButton__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -216,7 +238,7 @@ function PlasmicNavButton__RenderFunc(props: {
   };
 
   return (
-    <p.Stack
+    <Stack__
       as={"a"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -291,7 +313,7 @@ function PlasmicNavButton__RenderFunc(props: {
           ),
         })}
       >
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: (
             <ArrowRightsvgIcon
               className={classNames(projectcss.all, sty.svg__qik2M)}
@@ -329,7 +351,7 @@ function PlasmicNavButton__RenderFunc(props: {
           }),
         })}
       </div>
-      <p.Stack
+      <Stack__
         as={"div"}
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
@@ -344,7 +366,7 @@ function PlasmicNavButton__RenderFunc(props: {
           ),
         })}
       >
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: "Button",
           value: args.children,
           className: classNames(sty.slotTargetChildren, {
@@ -393,7 +415,7 @@ function PlasmicNavButton__RenderFunc(props: {
               ),
             })}
           >
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: (
                 <ChevronDownsvgIcon
                   className={classNames(projectcss.all, sty.svg__siHw5)}
@@ -418,8 +440,8 @@ function PlasmicNavButton__RenderFunc(props: {
             })}
           </div>
         ) : null}
-      </p.Stack>
-    </p.Stack>
+      </Stack__>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 

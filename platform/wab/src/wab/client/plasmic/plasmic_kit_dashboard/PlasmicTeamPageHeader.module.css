@@ -3,10 +3,10 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  align-content: unset;
   position: relative;
   width: 100%;
   background: #ffffff;
+  align-content: unset;
   min-width: 0;
   padding: 1.5rem;
   border-bottom: 1px solid var(--token-hoA5qaM-91G);
@@ -113,8 +113,9 @@
 }
 .freeBox__hp5G2 > :global(.__wab_flex-container) {
   flex-direction: row;
-  align-items: center;
-  justify-content: space-evenly;
+  align-items: stretch;
+  justify-content: flex-end;
+  flex-wrap: wrap;
   margin-left: calc(0px - 8px);
   width: calc(100% + 8px);
 }
