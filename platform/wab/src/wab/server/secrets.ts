@@ -60,7 +60,10 @@ interface Secrets {
     teamId: string;
     authBearerToken: string;
   };
-  discourseConnectSecret?: string;
+  discourse?: {
+    discourseConnectSecret?: string;
+    apiKey?: string;
+  };
   clickhouse?: {
     host: string;
     port: number;
@@ -148,9 +151,13 @@ export function getAnthropicApiKey() {
 
 export function getDiscourseConnectSecret() {
   return ensure(
-    loadSecrets().discourseConnectSecret,
-    "Discourse secret required"
+    loadSecrets().discourse?.discourseConnectSecret,
+    "DiscourseConnect secret required"
   );
+}
+
+export function getDiscourseApiKey() {
+  return ensure(loadSecrets().discourse?.apiKey, "Discourse API key required");
 }
 
 /**

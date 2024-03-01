@@ -43,6 +43,11 @@ export class AuthError extends ApiError {
   statusCode = 403;
 }
 
+export class PreconditionFailedError extends ApiError {
+  name = "PreconditionFailed";
+  statusCode = 412;
+}
+
 export class UnknownReferencesError extends ApiError {
   name = "UnknownReferencesError";
   statusCode = 412;

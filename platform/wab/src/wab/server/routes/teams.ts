@@ -6,6 +6,7 @@ import {
   xGroupBy,
 } from "@/wab/common";
 import { checkPermissions, ForbiddenError } from "@/wab/server/db/DbMgr";
+import { prepareTeamSupportUrls as doPrepareTeamSupportUrls } from "@/wab/server/discourse/prepareTeamSupportUrls";
 import { sendShareEmail } from "@/wab/server/emails/Emails";
 import {
   Project,
@@ -570,4 +571,11 @@ export async function revokeTeamToken(req: Request, res: Response) {
   const tokenStr = req.params.token;
   await mgr.revokeTeamApiToken(tokenStr);
   res.json({});
+}
+
+export async function prepareTeamSupportUrls(req: Request, res: Response) {
+  const user = getUser(req);
+  const mgr = userDbMgr(req);
+  const teamId = req.params.teamId as TeamId;
+  res.json(await doPrepareTeamSupportUrls(mgr, user, teamId));
 }

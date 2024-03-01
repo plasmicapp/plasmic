@@ -1640,5 +1640,39 @@ export class DataSourceAllowedProjects extends Base<"DataSourceAllowedProjectsId
   project: Project;
 }
 
+@Entity()
+export class TeamDiscourseInfo extends Base<"TeamDiscourseInfo"> {
+  @Index({ unique: true })
+  @Column({ nullable: false, type: "text" })
+  teamId: TeamId;
+
+  @OneToOne(() => Team)
+  team: Team;
+
+  /**
+   * Used as the category.slug and group.name.
+   *
+   * Slug should be <=50 characters because that's Discourse's limit.
+   */
+  @Index({ unique: true })
+  @Column({ nullable: false, type: "text" })
+  slug: string;
+
+  /**
+   * Used as the category.name and group.full_name.
+   *
+   * This could be different from their organization's name in Plasmic.
+   */
+  @Index({ unique: true })
+  @Column({ nullable: false, type: "text" })
+  name: string;
+
+  @Column({ nullable: false, type: "integer" })
+  categoryId: number;
+
+  @Column({ nullable: false, type: "integer" })
+  groupId: number;
+}
+
 // Import any additional database tables
 require("./CustomEntities");

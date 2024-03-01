@@ -35,6 +35,7 @@ import * as path from "path";
 import { getConnection } from "typeorm";
 import v8 from "v8";
 // API keys and Passport configuration
+import { discourseConnect } from "@/wab/server/routes/discourse";
 import {
   AuthError,
   isApiError,
@@ -201,12 +202,7 @@ import {
 } from "./routes/loader";
 import { genTranslatableStrings } from "./routes/localization";
 import * as mailingListRoutes from "./routes/mailinglist";
-import {
-  discourseConnect,
-  getAppConfig,
-  getClip,
-  putClip,
-} from "./routes/misc";
+import { getAppConfig, getClip, putClip } from "./routes/misc";
 import {
   createProjectWebhook,
   deleteProjectWebhook,
@@ -1593,6 +1589,17 @@ export function addMainAppServerRoutes(app: express.Application) {
     withNext(adminRoutes.savePkgVersion)
   );
 
+  app.get(
+    "/api/v1/admin/teams/:teamId/discourse-info",
+    adminOnly,
+    withNext(adminRoutes.getTeamDiscourseInfo)
+  );
+  app.put(
+    "/api/v1/admin/teams/:teamId/sync-discourse-info",
+    adminOnly,
+    withNext(adminRoutes.syncTeamDiscourseInfo)
+  );
+
   /**
    * Self routes
    */
@@ -1835,6 +1842,10 @@ export function addMainAppServerRoutes(app: express.Application) {
   app.delete(
     "/api/v1/teams/:teamId/tokens/:token",
     withNext(teamRoutes.revokeTeamToken)
+  );
+  app.post(
+    "/api/v1/teams/:teamId/prepare-support-urls",
+    withNext(teamRoutes.prepareTeamSupportUrls)
   );
 
   /**

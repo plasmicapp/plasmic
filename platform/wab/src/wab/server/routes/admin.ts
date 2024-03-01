@@ -23,6 +23,7 @@ import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import {
   AddToWhitelistRequest,
   ApiFeatureTier,
+  ApiTeamDiscourseInfo,
   DataSourceId,
   GetWhitelistResponse,
   InviteRequest,
@@ -52,6 +53,8 @@ import {
 import { doSafelyDeleteProject } from "./projects";
 import { getUser, superDbMgr, userDbMgr } from "./util";
 
+import { getTeamDiscourseInfo as doGetTeamDiscourseInfo } from "@/wab/server/discourse/getTeamDiscourseInfo";
+import { syncTeamDiscourseInfo as doSyncTeamDiscourseInfo } from "@/wab/server/discourse/syncTeamDiscourseInfo";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
 import { checkAndResetTeamTrial } from "./team-plans";
 
@@ -566,4 +569,26 @@ export async function getProjectAppMeta(req: Request, res: Response) {
   };
 
   res.json(meta);
+}
+
+export async function getTeamDiscourseInfo(req: Request, res: Response) {
+  const mgr = superDbMgr(req);
+  const teamId = req.params.teamId as TeamId;
+  const info: ApiTeamDiscourseInfo | undefined = await doGetTeamDiscourseInfo(
+    mgr,
+    teamId
+  );
+  if (info) {
+    res.json(info);
+  } else {
+    throw new NotFoundError();
+  }
+}
+
+export async function syncTeamDiscourseInfo(req: Request, res: Response) {
+  const mgr = superDbMgr(req);
+  const teamId = req.params.teamId as TeamId;
+  const slug = req.body.slug;
+  const name = req.body.name;
+  res.json(await doSyncTeamDiscourseInfo(mgr, teamId, slug, name));
 }

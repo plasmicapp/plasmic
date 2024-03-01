@@ -144,6 +144,13 @@ export interface ApiTeamMeta {
   memberCount: number;
 }
 
+export interface ApiTeamDiscourseInfo {
+  slug: string;
+  name: string;
+  categoryId: number;
+  groupId: number;
+}
+
 export type BillingFrequency = "month" | "year";
 
 export interface ApiTeam extends ApiEntityBase {
@@ -2017,3 +2024,8 @@ export type ProcessSvgResponse =
       status: "failure";
       error: Error;
     };
+
+export interface ApiTeamSupportUrls {
+  publicSupportUrl: string;
+  privateSupportUrl?: string;
+}

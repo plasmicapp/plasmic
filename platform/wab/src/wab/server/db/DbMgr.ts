@@ -104,6 +104,7 @@ import {
   SsoConfig,
   Team,
   TeamApiToken,
+  TeamDiscourseInfo,
   TemporaryTeamApiToken,
   TokenData,
   TrustedHost,
@@ -350,7 +351,7 @@ export type UserUpdatableTeamFields = Pick<
   (typeof userUpdatableTeamFields)[number]
 >;
 
-export const sudoUpdatableTeamFields = [
+export const sudoUpdatableTeamFields: readonly (keyof Team)[] = [
   "name",
   "seats",
   "featureTierId",
@@ -1000,6 +1001,11 @@ export class DbMgr implements MigrationDbMgr {
   private dataSourceAllowedProjects() {
     return this.entMgr.getRepository(DataSourceAllowedProjects);
   }
+
+  private discourseInfos() {
+    return this.entMgr.getRepository(TeamDiscourseInfo);
+  }
+
   //
   // Stamping utilities.
   //
@@ -1088,9 +1094,9 @@ export class DbMgr implements MigrationDbMgr {
     return qb;
   }
 
-  async listAllTeams() {
+  async listAllTeams(where: FindConditions<Team> = {}): Promise<Team[]> {
     this.checkSuperUser();
-    return this._queryTeams({}, false).getMany();
+    return this._queryTeams(where, false).getMany();
   }
 
   async createTeam(
@@ -10003,6 +10009,50 @@ export class DbMgr implements MigrationDbMgr {
     });
 
     await this.entMgr.save(permissions);
+  }
+
+  async upsertDiscourseInfo(fields: {
+    teamId: TeamId;
+    slug: string;
+    name: string;
+    categoryId: number;
+    groupId: number;
+  }) {
+    this.checkSuperUser();
+
+    let discourseOrg = await this.getDiscourseInfoByTeamId(fields.teamId);
+    if (discourseOrg) {
+      assignAllowEmpty(discourseOrg, this.stampUpdate(), fields);
+    } else {
+      discourseOrg = this.discourseInfos().create({
+        ...this.stampNew(),
+        ...fields,
+      });
+    }
+    await this.entMgr.save(discourseOrg);
+    return discourseOrg;
+  }
+
+  async getDiscourseInfoByTeamId(
+    teamId: TeamId
+  ): Promise<TeamDiscourseInfo | undefined> {
+    await this.checkTeamPerms(teamId, "content", "read");
+    return this.discourseInfos().findOne({
+      where: {
+        teamId,
+      },
+    });
+  }
+
+  async getDiscourseInfosByTeamIds(
+    teamIds: TeamId[]
+  ): Promise<TeamDiscourseInfo[]> {
+    await this.checkTeamsPerms(teamIds, "content", "read");
+    return await this.discourseInfos().find({
+      where: {
+        teamId: In(teamIds),
+      },
+    });
   }
 }
 

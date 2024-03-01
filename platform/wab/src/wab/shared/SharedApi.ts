@@ -52,7 +52,9 @@ import {
   ApiProjectWebhook,
   ApiProjectWebhookEvent,
   ApiTeam,
+  ApiTeamDiscourseInfo,
   ApiTeamMeta,
+  ApiTeamSupportUrls,
   ApiUpdateDataSourceRequest,
   ApiUser,
   AppAuthProvider,
@@ -921,6 +923,10 @@ export abstract class SharedApi {
     });
   }
 
+  async prepareTeamSupportUrls(teamId: TeamId): Promise<ApiTeamSupportUrls> {
+    return this.post(`/teams/${teamId}/prepare-support-urls`);
+  }
+
   async createWorkspace(
     data: CreateWorkspaceRequest
   ): Promise<MayTriggerPaywall<CreateWorkspaceResponse>> {
@@ -1023,6 +1029,17 @@ export abstract class SharedApi {
 
   async listTeamsForUser(userId: string): Promise<ListTeamsResponse> {
     return this.post(`/admin/teams`, { userId });
+  }
+
+  async getTeamDiscourseInfo(teamId: TeamId): Promise<ApiTeamDiscourseInfo> {
+    return this.get(`/admin/teams/${teamId}/discourse-info`);
+  }
+
+  async syncTeamDiscourseInfo(
+    teamId: TeamId,
+    data: { slug: string; name: string }
+  ): Promise<ApiTeamDiscourseInfo> {
+    return this.put(`/admin/teams/${teamId}/sync-discourse-info`, data);
   }
 
   async listProjectsForOwner(ownerId: string): Promise<ListProjectsResponse> {
