@@ -7,7 +7,7 @@ export function registerDescription(
 ) {
   registerText(loader, {
     ...overrides,
-    displayName: "BaseDescription",
+    displayName: "Aria Description",
     props: {
       slot: { type: "string", hidden: () => true, defaultValue: "description" },
     },

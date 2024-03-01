@@ -66,8 +66,8 @@ export function registerSection(
     BaseSection,
     {
       name: makeComponentName("section"),
-      displayName: "BaseSection",
-      importPath: "@plasmicpkgs/react-aria/registerSection",
+      displayName: "Aria Section",
+      importPath: "@plasmicpkgs/react-aria/skinny/registerSection",
       importName: "BaseSection",
       props: {
         renderHeader: {

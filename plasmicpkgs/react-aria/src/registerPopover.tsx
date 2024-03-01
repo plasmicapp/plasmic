@@ -18,7 +18,7 @@ export function BasePopover(props: {
   const contextProps = React.useContext(PlasmicPopoverContext);
   const canvas = usePlasmicCanvasContext();
   const mergedProps = mergeProps(contextProps, restProps, {
-    className: `${props.resetClassName}`,
+    className: `${resetClassName}`,
   });
 
   if (isStandalone) {
@@ -48,8 +48,8 @@ export function registerPopover(
     BasePopover,
     {
       name: "plasmic-react-aria-popover",
-      displayName: "BasePopover",
-      importPath: "@plasmicpkgs/react-aria/registerPopover",
+      displayName: "Aria Popover",
+      importPath: "@plasmicpkgs/react-aria/skinny/registerPopover",
       importName: "BasePopover",
       props: {
         children: {

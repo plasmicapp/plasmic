@@ -21,8 +21,8 @@ export function registerText(
     BaseText,
     {
       name: makeComponentName("text"),
-      displayName: "BaseText",
-      importPath: "@plasmicpkgs/react-aria/registerText",
+      displayName: "Aria Text",
+      importPath: "@plasmicpkgs/react-aria/skinny/registerText",
       importName: "BaseText",
       props: {
         children: {

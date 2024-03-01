@@ -4,15 +4,13 @@ import { Header } from "react-aria-components";
 import { PlasmicHeaderContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
-  Registerable,
   makeComponentName,
-  registerComponentHelper
+  Registerable,
+  registerComponentHelper,
 } from "./utils";
 export function BaseHeader(props: React.ComponentProps<typeof Header>) {
   const contextProps = React.useContext(PlasmicHeaderContext);
-  return (
-    <Header {...mergeProps(contextProps, props)} />
-  );
+  return <Header {...mergeProps(contextProps, props)} />;
 }
 
 export function registerHeader(
@@ -24,8 +22,8 @@ export function registerHeader(
     BaseHeader,
     {
       name: makeComponentName("header"),
-      displayName: "BaseHeader",
-      importPath: "@plasmicpkgs/react-aria/registerHeader",
+      displayName: "Aria Header",
+      importPath: "@plasmicpkgs/react-aria/skinny/registerHeader",
       importName: "BaseHeader",
       props: {},
     },

@@ -11,6 +11,7 @@ import { registerRadioGroup } from "./registerRadioGroup";
 import { registerSection } from "./registerSection";
 import { registerSelect } from "./registerSelect";
 import { registerSwitch } from "./registerSwitch";
+import { registerTextField } from "./registerTextField";
 import { Registerable } from "./utils";
 
 export function registerAll(loader?: Registerable) {
@@ -27,4 +28,5 @@ export function registerAll(loader?: Registerable) {
   registerCheckbox(loader);
   registerCheckboxGroup(loader);
   registerRadioGroup(loader);
+  registerTextField(loader);
 }

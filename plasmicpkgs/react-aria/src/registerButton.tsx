@@ -44,8 +44,8 @@ export function registerButton(
     BaseButton,
     {
       name: makeComponentName("button"),
-      displayName: "BaseButton",
-      importPath: "@plasmicpkgs/react-aria/registerButton",
+      displayName: "Aria Button",
+      importPath: "@plasmicpkgs/react-aria/skinny/registerButton",
       importName: "BaseButton",
       props: {
         ...getCommonInputProps<BaseButtonProps>("button", [

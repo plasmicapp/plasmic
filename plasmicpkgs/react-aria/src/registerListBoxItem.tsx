@@ -28,8 +28,8 @@ export function registerListBoxItem(
     BaseListBoxItem,
     {
       name: makeComponentName("item"),
-      displayName: "BaseListBoxItem",
-      importPath: "@plasmicpkgs/react-aria/registerListBoxItem",
+      displayName: "Aria ListBoxItem",
+      importPath: "@plasmicpkgs/react-aria/skinny/registerListBoxItem",
       importName: "BaseListBoxItem",
       props: {
         className: {

@@ -113,8 +113,8 @@ export function BaseSelect<T extends object>(props: BaseSelectProps<T>) {
 export function registerSelect(loader?: Registerable) {
   registerComponentHelper(loader, BaseSelect, {
     name: SELECT_NAME,
-    displayName: "BaseSelect",
-    importPath: "@plasmicpkgs/react-aria/registerSelect",
+    displayName: "Aria Select",
+    importPath: "@plasmicpkgs/react-aria/skinny/registerSelect",
     importName: "BaseSelect",
     props: {
       options: makeOptionsPropType(),
@@ -215,7 +215,7 @@ export function registerSelect(loader?: Registerable) {
 
   registerComponentHelper(loader, BaseSelectValue, {
     name: makeComponentName("select-value"),
-    displayName: "Base Selected Value",
+    displayName: "Aria Selected Value",
     importPath: "@plasmicpkgs/react-aria/registerSelect",
     importName: "SelectValue",
     parentComponentName: SELECT_NAME,

@@ -75,10 +75,10 @@ export function BaseComboBox<T extends object>(props: BaseComboBoxProps<T>) {
       return options;
     }
     const filterOptions = (
-      options: StrictOptionType[]
+      opts: StrictOptionType[]
     ): StrictOptionType[] | undefined => {
       return withoutNils(
-        options.map((op) => {
+        opts.map((op) => {
           if (op.type === "section") {
             return {
               ...op,
@@ -255,8 +255,8 @@ export function registerComboBox(loader?: Registerable) {
 
   registerComponentHelper(loader, BaseComboBox, {
     name: rootName,
-    displayName: "BaseComboBox",
-    importPath: "@plasmicpkgs/react-aria/registerComboBox",
+    displayName: "Aria ComboBox",
+    importPath: "@plasmicpkgs/react-aria/skinny/registerComboBox",
     importName: "BaseComboBox",
     props: {
       options: makeOptionsPropType(),

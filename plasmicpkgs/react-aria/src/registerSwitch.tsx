@@ -19,8 +19,8 @@ export function registerSwitch(
     BaseSwitch,
     {
       name: makeComponentName("switch"),
-      displayName: "BaseSwitch",
-      importPath: "@plasmicpkgs/react-aria/registerSwitch",
+      displayName: "Aria Switch",
+      importPath: "@plasmicpkgs/react-aria/skinny/registerSwitch",
       importName: "BaseSwitch",
       props: {
         ...getCommonInputProps<SwitchProps>("switch", [

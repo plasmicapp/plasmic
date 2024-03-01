@@ -17,8 +17,8 @@ export function registerLabel(
     BaseLabel,
     {
       name: makeComponentName("label"),
-      displayName: "BaseLabel",
-      importPath: "@plasmicpkgs/react-aria/registerLabel",
+      displayName: "Aria Label",
+      importPath: "@plasmicpkgs/react-aria/skinny/registerLabel",
       importName: "BaseLabel",
       props: {
         children: {

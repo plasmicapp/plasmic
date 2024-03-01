@@ -45,8 +45,8 @@ export function registerCheckbox(
     BaseCheckbox,
     {
       name: makeComponentName("checkbox"),
-      displayName: "BaseCheckbox",
-      importPath: "@plasmicpkgs/react-aria/registerCheckbox",
+      displayName: "Aria Checkbox",
+      importPath: "@plasmicpkgs/react-aria/skinny/registerCheckbox",
       importName: "BaseCheckbox",
       props: {
         ...getCommonInputProps<BaseCheckboxProps>("checkbox", [

@@ -112,8 +112,8 @@ export function registerListBox(
     BaseListBox,
     {
       name: makeComponentName("listbox"),
-      displayName: "BaseListBox",
-      importPath: "@plasmicpkgs/react-aria/registerListBox",
+      displayName: "Aria ListBox",
+      importPath: "@plasmicpkgs/react-aria/skinny/registerListBox",
       importName: "BaseListBox",
       props: {
         renderItem: {

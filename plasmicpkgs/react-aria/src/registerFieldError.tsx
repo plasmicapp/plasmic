@@ -88,8 +88,8 @@ export function registerFieldError(
     BaseFieldError,
     {
       name: makeComponentName("fielderror"),
-      displayName: "BaseFieldError",
-      importPath: "@plasmicpkgs/react-aria/registerFieldError",
+      displayName: "Aria Field Error",
+      importPath: "@plasmicpkgs/react-aria/skinny/registerFieldError",
       importName: "BaseFieldError",
       actions: [
         {

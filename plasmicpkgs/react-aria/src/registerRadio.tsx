@@ -1,8 +1,8 @@
-import { DataProvider } from "@plasmicapp/host";
 import React, { ReactNode } from "react";
 import type { RadioProps } from "react-aria-components";
-import { Radio } from "react-aria-components";
+import { Radio, RadioGroup } from "react-aria-components";
 import { getCommonInputProps } from "./common";
+import ErrorBoundary from "./ErrorBoundary";
 import {
   CodeComponentMetaOverrides,
   makeComponentName,
@@ -12,6 +12,7 @@ import {
 } from "./utils";
 
 interface BaseRadioProps extends RadioProps {
+  onSelectionChange: (isSelected: boolean) => void;
   onPressChange: (isPressed: boolean) => void;
   onFocusVisibleChange: (isFocusVisible: boolean) => void;
 }
@@ -22,29 +23,31 @@ export function BaseRadio(props: BaseRadioProps) {
     onPressChange,
     onFocusVisibleChange,
     onHoverChange,
+    onSelectionChange,
     ...rest
   } = props;
 
+  const radio = (
+    <Radio {...rest}>
+      {({ isFocusVisible, isPressed, isHovered, isSelected }) => (
+        <>
+          <ValueObserver
+            value={isFocusVisible}
+            onChange={onFocusVisibleChange}
+          />
+          <ValueObserver value={isSelected} onChange={onSelectionChange} />
+          <ValueObserver value={isPressed} onChange={onPressChange} />
+          <ValueObserver value={isHovered} onChange={onHoverChange} />
+          {children as ReactNode}
+        </>
+      )}
+    </Radio>
+  );
+
   return (
-    <>
-      <Radio {...rest}>
-        {({ isFocusVisible, isPressed, isHovered }) => (
-          // TODO: Remove DataProvider once Interaction variants are implemented for Code components
-          <DataProvider
-            name="states"
-            data={{ isFocusVisible, isPressed, isHovered }}
-          >
-            <ValueObserver
-              value={isFocusVisible}
-              onChange={onFocusVisibleChange}
-            />
-            <ValueObserver value={isPressed} onChange={onPressChange} />
-            <ValueObserver value={isHovered} onChange={onHoverChange} />
-            {children as ReactNode}
-          </DataProvider>
-        )}
-      </Radio>
-    </>
+    <ErrorBoundary fallback={<RadioGroup>{radio}</RadioGroup>}>
+      {radio}
+    </ErrorBoundary>
   );
 }
 
@@ -57,10 +60,8 @@ export function registerRadio(
     BaseRadio,
     {
       name: makeComponentName("radio"),
-      displayName: "BaseRadio",
-      importPath: "@plasmicpkgs/react-aria/registerRadio",
-      // TODO: Remove DataProvider once Interaction variants are implemented for Code components
-      providesData: true,
+      displayName: "Aria Radio",
+      importPath: "@plasmicpkgs/react-aria/skinny/registerRadio",
       importName: "BaseRadio",
       props: {
         ...getCommonInputProps<BaseRadioProps>("radio", [
@@ -90,6 +91,10 @@ export function registerRadio(
           type: "eventHandler",
           argTypes: [{ name: "isFocusVisible", type: "boolean" }],
         },
+        onSelectionChange: {
+          type: "eventHandler",
+          argTypes: [{ name: "isSelected", type: "boolean" }],
+        },
       },
       states: {
         isHovered: {
@@ -110,6 +115,11 @@ export function registerRadio(
         isFocusVisible: {
           type: "readonly",
           onChangeProp: "onFocusVisibleChange",
+          variableType: "boolean",
+        },
+        isSelected: {
+          type: "readonly",
+          onChangeProp: "onSelectionChange",
           variableType: "boolean",
         },
       },

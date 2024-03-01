@@ -1,7 +1,6 @@
-import { mergeProps } from "@react-aria/utils";
 import React from "react";
+import type { InputProps } from "react-aria-components";
 import { Input } from "react-aria-components";
-import { PlasmicInputContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
   makeComponentName,
@@ -9,9 +8,8 @@ import {
   registerComponentHelper,
 } from "./utils";
 
-export function BaseInput(props: React.ComponentProps<typeof Input>) {
-  const contextProps = React.useContext(PlasmicInputContext);
-  return <Input {...mergeProps(contextProps, props)} />;
+export function BaseInput(props: InputProps) {
+  return <Input {...props} />;
 }
 
 export function registerInput(
@@ -23,37 +21,15 @@ export function registerInput(
     BaseInput,
     {
       name: makeComponentName("input"),
-      displayName: "BaseInput",
-      importPath: "@plasmicpkgs/react-aria/registerInput",
+      displayName: "Aria Input",
+      importPath: "@plasmicpkgs/react-aria/skinny/registerInput",
       importName: "BaseInput",
       props: {
-        className: {
-          type: "class",
-          displayName: "Additional states",
-          selectors: [
-            {
-              selector: ":self[data-hovered]",
-              label: "Hovered",
-            },
-            {
-              selector: ":self[data-focused]",
-              label: "Focused",
-            },
-            {
-              selector: ":self[data-focus-visible]",
-              label: "Focused by keyboard",
-            },
-            {
-              selector: ":self[data-disabled]",
-              label: "Disabled",
-            },
-            {
-              selector: ":self::placeholder",
-              label: "Placeholder",
-            },
-          ],
+        placeholder: {
+          type: "string",
         },
       },
+      trapsFocus: true,
     },
     overrides
   );

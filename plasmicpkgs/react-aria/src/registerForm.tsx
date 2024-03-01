@@ -56,8 +56,8 @@ export function registerForm(
     BaseForm,
     {
       name: makeComponentName("form"),
-      displayName: "BaseForm",
-      importPath: "@plasmicpkgs/react-aria/registerForm",
+      displayName: "Aria Form",
+      importPath: "@plasmicpkgs/react-aria/skinny/registerForm",
       importName: "BaseForm",
       props: {
         children: {

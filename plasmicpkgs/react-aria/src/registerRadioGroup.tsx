@@ -39,8 +39,8 @@ export function registerRadioGroup(
     BaseRadioGroup,
     {
       name: componentName,
-      displayName: "BaseRadioGroup",
-      importPath: "@plasmicpkgs/react-aria/registerRadioGroup",
+      displayName: "Aria RadioGroup",
+      importPath: "@plasmicpkgs/react-aria/skinny/registerRadioGroup",
       importName: "BaseRadioGroup",
       props: {
         ...getCommonInputProps<BaseRadioGroupProps>("radio group", [
