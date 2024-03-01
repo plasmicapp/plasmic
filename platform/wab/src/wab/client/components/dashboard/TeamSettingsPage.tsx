@@ -1,3 +1,4 @@
+import { UU } from "@/wab/client/cli-routes";
 import {
   DefaultTeamSettingsPageProps,
   PlasmicTeamSettingsPage,
@@ -16,7 +17,18 @@ function TeamSettingsPage_(
 ) {
   const { teamId, ...rest } = props;
   return (
-    <PlasmicTeamSettingsPage root={{ ref }} {...rest} settings={{ teamId }} />
+    <PlasmicTeamSettingsPage
+      root={{ ref }}
+      defaultLayout={{
+        helpButton: {
+          props: {
+            href: UU.orgSupport.fill({ teamId }),
+          },
+        },
+      }}
+      settings={{ teamId }}
+      {...rest}
+    />
   );
 }
 

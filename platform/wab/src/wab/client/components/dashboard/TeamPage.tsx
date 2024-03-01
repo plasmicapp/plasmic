@@ -1,4 +1,4 @@
-import { U } from "@/wab/client/cli-routes";
+import { U, UU } from "@/wab/client/cli-routes";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
@@ -101,11 +101,15 @@ function TeamPage_(props: TeamPageProps, ref: HTMLElementRefOf<"div">) {
         />
       )}
       <PlasmicTeamPage
-        {...rest}
         root={{ ref }}
         defaultLayout={{
           wrapChildren: (children) =>
             !asyncData?.value ? <Spinner /> : children,
+          helpButton: {
+            props: {
+              href: UU.orgSupport.fill({ teamId }),
+            },
+          },
         }}
         header={{
           team,
@@ -117,6 +121,7 @@ function TeamPage_(props: TeamPageProps, ref: HTMLElementRefOf<"div">) {
             await fetchAsyncData();
           },
         }}
+        {...rest}
       >
         {workspaces.map((workspace) => (
           <WorkspaceSection

@@ -61,6 +61,7 @@ import { SurveyForm } from "./pages/SurveyForm";
 import { TeamCreation } from "./pages/TeamCreation";
 import { UserSettingsPage } from "./pages/UserSettingsPage";
 import PromoBanner from "./PromoBanner";
+import { TeamSupportRedirect } from "./TeamSupportRedirect";
 import { AppView } from "./top-view";
 import * as widgets from "./widgets";
 
@@ -312,6 +313,12 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                     path={UU.orgSettings.pattern}
                     render={({ match }) => (
                       <TeamSettingsPage teamId={match.params.teamId} />
+                    )}
+                  />
+                  <Route
+                    path={UU.orgSupport.pattern}
+                    render={({ match }) => (
+                      <TeamSupportRedirect teamId={match.params.teamId} />
                     )}
                   />
                   <Route

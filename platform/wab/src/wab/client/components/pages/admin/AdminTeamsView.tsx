@@ -6,8 +6,13 @@ import {
 } from "@/wab/client/hooks/useAsyncStrict";
 import EyeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Eye";
 import {
+  BASE_URL,
+  PUBLIC_SUPPORT_CATEGORY_ID,
+} from "@/wab/server/discourse/config";
+import {
   ApiPermission,
   ApiTeam,
+  ApiTeamDiscourseInfo,
   ApiUser,
   TeamWhiteLabelInfo,
 } from "@/wab/shared/ApiSchema";
@@ -22,7 +27,7 @@ import {
   Select,
   Table,
 } from "antd";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { AutoInfo, smartRender } from "./admin-util";
 
 export function AdminTeamsView() {
@@ -30,15 +35,20 @@ export function AdminTeamsView() {
   const nonAuthCtx = useNonAuthCtx();
   const [shouldRefetch, setShouldRefetch] = useState({});
   const refetch = useCallback(() => setShouldRefetch({}), [setShouldRefetch]);
-  const { loading, value } = useAsyncStrict(async () => {
+  const { loading, value: data } = useAsyncStrict(async () => {
     if (!teamId) {
       return undefined;
     }
 
-    return nonAuthCtx.api.getTeam(teamId);
+    const [teamAndPerms, discourseInfo] = await Promise.all([
+      nonAuthCtx.api.getTeam(teamId),
+      nonAuthCtx.api.getTeamDiscourseInfo(teamId).catch(() => null),
+    ]);
+    return {
+      ...teamAndPerms,
+      discourseInfo,
+    };
   }, [nonAuthCtx, teamId, shouldRefetch]);
-  const team = value?.team;
-  const perms = value?.perms;
   return (
     <>
       <TeamLookup />
@@ -46,7 +56,9 @@ export function AdminTeamsView() {
         <Card
           title={
             <div className="flex-col">
-              <h1 className="m0">Team: {team?.name || ""}</h1>
+              <h1 className="m0">
+                {data ? `Team: ${data.team.name}` : "Loading..."}
+              </h1>
               <pre className="text-xsm dimfg">{teamId}</pre>
             </div>
           }
@@ -57,8 +69,15 @@ export function AdminTeamsView() {
             </Button>
           }
         >
-          {team && perms && (
-            <TeamDetail team={team} perms={perms} refetch={refetch} />
+          {data && (
+            <>
+              <TeamDetail
+                team={data.team}
+                perms={data.perms}
+                discourseInfo={data.discourseInfo}
+                refetch={refetch}
+              />
+            </>
           )}
         </Card>
       )}
@@ -170,6 +189,7 @@ function TeamLookup() {
 interface TeamProps {
   team: ApiTeam;
   perms: ApiPermission[];
+  discourseInfo: ApiTeamDiscourseInfo | null;
   refetch: () => void;
 }
 
@@ -200,6 +220,46 @@ function TeamDetail(props: TeamProps) {
       <div>
         <h2>Members</h2>
         <Members {...props} />
+      </div>
+      <div>
+        <h2>Discourse Info</h2>
+        <div className="flex-col gap-m">
+          {props.discourseInfo ? (
+            <div className="flex-row gap-m">
+              <Button
+                href={`${BASE_URL}/c/${props.discourseInfo.categoryId}`}
+                target="_blank"
+              >
+                Discourse Support Category
+              </Button>
+              <Button
+                href={`${BASE_URL}/g/${props.discourseInfo.slug}`}
+                target="_blank"
+              >
+                Discourse Group
+              </Button>
+              <div>Use the form below to update the org's slug or name.</div>
+            </div>
+          ) : (
+            <div>
+              This org doesn't currently have a private Discourse support
+              category. They will be directed to the{" "}
+              <a
+                href={`${BASE_URL}/c/${PUBLIC_SUPPORT_CATEGORY_ID}`}
+                target="_blank"
+              >
+                public Discourse support category
+              </a>{" "}
+              instead. Use the form below to create a private Discourse support
+              category. It will only succeed if the org has a valid feature
+              tier.
+            </div>
+          )}
+          <TeamDiscourseInfoForm
+            team={props.team}
+            discourseInfo={props.discourseInfo}
+          />
+        </div>
       </div>
     </div>
   );
@@ -600,4 +660,89 @@ function UpdateWhiteLabelTeamClientCredentials({ team, refetch }: TeamProps) {
       Update white label client credentials
     </Button>
   );
+}
+
+function TeamDiscourseInfoForm({
+  team,
+  discourseInfo,
+}: {
+  team: ApiTeam;
+  discourseInfo: ApiTeamDiscourseInfo | null;
+}) {
+  const nonAuthCtx = useNonAuthCtx();
+  const [form] = Form.useForm();
+  const initialValues = useMemo(() => {
+    if (discourseInfo) {
+      return {
+        slug: discourseInfo.slug,
+        name: discourseInfo.name,
+      };
+    } else {
+      return {
+        slug: suggestSlug(team),
+        name: team.name,
+      };
+    }
+  }, [discourseInfo]);
+  return (
+    <Form<{ slug: string; name: string }>
+      form={form}
+      initialValues={initialValues}
+      onFinish={async (values) => {
+        console.log(
+          `Syncing ${team.name} team's to Discourse slug=${values.slug} name=${values.name}`
+        );
+        await nonAuthCtx.api.syncTeamDiscourseInfo(team.id, values);
+        console.log(`Sync success`);
+      }}
+    >
+      <Form.Item
+        name="slug"
+        label="Slug"
+        validateFirst
+        rules={[
+          { required: true },
+          { min: 7 },
+          { max: 50 },
+          { pattern: /^org-[a-z]+(-[a-z]+)*$/ },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        name="name"
+        label="Name"
+        validateFirst
+        rules={[
+          { required: true },
+          { min: 3 },
+          { max: 50 },
+          { pattern: /^\S.*\S$/ },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+      <Button htmlType="submit" type="primary">
+        Sync to Discourse
+      </Button>
+    </Form>
+  );
+}
+
+function suggestSlug(team: ApiTeam) {
+  // Get the part of the name before any punctuation
+  const companyNameBeforePunctuation = team.name.split(
+    /[.,/#!$%^&*;:{}=\-_`~()]/
+  )[0];
+  const slug = companyNameBeforePunctuation
+    .replace(/[^\w\s]/gi, "") // Remove non-word characters
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/-{2,}/g, "-") // Replace multiple hyphens with single hyphen
+    .trim() // Trim leading and trailing spaces
+    // Category name max length is 50 (cannot be configured).
+    // Group name max length is 50 (defaults to 20, configured via "max username length").
+    // Take first 46 characters to make room for "org-".
+    .substring(0, 46)
+    .toLowerCase();
+  return `org-${slug}`;
 }

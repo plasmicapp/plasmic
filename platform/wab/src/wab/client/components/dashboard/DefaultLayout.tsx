@@ -13,6 +13,7 @@ import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultDefaultLayoutProps,
   PlasmicDefaultLayout,
+  PlasmicDefaultLayout__OverridesType,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicDefaultLayout";
 import { useBrowserNotification } from "@/wab/client/utils/useBrowserNotification";
 import { ensure } from "@/wab/common";
@@ -29,7 +30,9 @@ import NavSeparator from "./NavSeparator";
 import NavTeamSection from "./NavTeamSection";
 import NavWorkspaceButton from "./NavWorkspaceButton";
 
-type DefaultLayoutProps = DefaultDefaultLayoutProps;
+type DefaultLayoutProps = DefaultDefaultLayoutProps & {
+  helpButton: PlasmicDefaultLayout__OverridesType["helpButton"];
+};
 
 function DefaultLayout_(
   props: DefaultLayoutProps,

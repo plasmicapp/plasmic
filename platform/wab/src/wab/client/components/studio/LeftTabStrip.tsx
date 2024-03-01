@@ -1,4 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
+import { UU } from "@/wab/client/cli-routes";
 import { showTemporaryInfo } from "@/wab/client/components/quick-modals";
 import GearIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Gear";
 import MixinIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Mixin";
@@ -16,12 +17,14 @@ import DiamondsIcon from "@/wab/client/plasmic/plasmic_kit_merge_flow/icons/Plas
 import ComponentsvgIcon from "@/wab/client/plasmic/plasmic_kit_q_4_icons/icons/PlasmicIcon__Componentsvg";
 import DevicessvgIcon from "@/wab/client/plasmic/plasmic_kit_q_4_icons/icons/PlasmicIcon__Devicessvg";
 import Paintbrush2SvgIcon from "@/wab/client/plasmic/plasmic_kit_q_4_icons/icons/PlasmicIcon__Paintbrush2Svg";
+import BooksvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Booksvg";
 import ClocksvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Clocksvg";
 import ComponentssvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Componentssvg";
 import DotsHorizontalCirclesvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__DotsHorizontalCirclesvg";
 import DownloadsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Downloadsvg";
 import FigmasvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Figmasvg";
 import HelpCirclesvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__HelpCirclesvg";
+import HelpsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Helpsvg";
 import MessagesvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Messagesvg";
 import PhotosvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Photosvg";
 import WarningTrianglesvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__WarningTrianglesvg";
@@ -279,11 +282,18 @@ Help
       title: "Help",
       style: { marginTop: "auto" },
       items: {
-        docs: {
+        keyboard: {
           type: "item",
-          icon: <HelpCirclesvgIcon />,
-          label: "Documentation",
-          href: "https://plasmic.app/learn",
+          icon: <KeyboardIcon />,
+          label: "Keyboard shortcuts",
+          className: shortcutModalButtonClassName,
+          onClick: studioCtx.openShortcutsModal,
+        },
+        slack: {
+          type: "item",
+          icon: <SlackIcon style={{ margin: 4 }} height={16} width={16} />,
+          label: "Slack community",
+          href: "https://www.plasmic.app/slack",
           cond: !isWhiteLabelUser,
         },
         forum: {
@@ -293,19 +303,19 @@ Help
           href: "https://forum.plasmic.app/",
           cond: !isWhiteLabelUser,
         },
-        slack: {
+        docs: {
           type: "item",
-          icon: <SlackIcon />,
-          label: "Slack community",
-          href: "https://plasmic.app/slack",
+          icon: <BooksvgIcon />,
+          label: "Documentation",
+          href: "https://docs.plasmic.app/",
           cond: !isWhiteLabelUser,
         },
-        keyboard: {
+        help: {
           type: "item",
-          icon: <KeyboardIcon />,
-          label: "Keyboard shortcuts",
-          className: shortcutModalButtonClassName,
-          onClick: studioCtx.openShortcutsModal,
+          icon: <HelpsvgIcon />,
+          label: "Help",
+          href: UU.orgSupport.fill({ teamId: studioCtx.siteInfo.teamId! }),
+          cond: !isWhiteLabelUser,
         },
       },
     },

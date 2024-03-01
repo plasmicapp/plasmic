@@ -1,3 +1,4 @@
+import { UU } from "@/wab/client/cli-routes";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
@@ -68,6 +69,13 @@ function WorkspacePage_(
         defaultLayout={{
           wrapChildren: (children) =>
             !asyncData?.value ? <Spinner /> : children,
+          helpButton: workspace
+            ? {
+                props: {
+                  href: UU.orgSupport.fill({ teamId: workspace.team.id }),
+                },
+              }
+            : undefined,
         }}
         workspaceSection={
           !asyncData?.value

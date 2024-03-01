@@ -170,6 +170,7 @@ export class RouteSet {
   org = new R<{ teamId: string }>("/orgs/:teamId");
   teamSettings = new R<{ teamId: string }>("/teams/:teamId/settings");
   orgSettings = new R<{ teamId: string }>("/orgs/:teamId/settings");
+  orgSupport = new R<{ teamId: string }>("/orgs/:teamId/support");
   settings = new R("/settings");
   project = new R<{ projectId: string }>("/projects/:projectId");
   projectSlug = new R<{ projectId: string; slug: string }>(
