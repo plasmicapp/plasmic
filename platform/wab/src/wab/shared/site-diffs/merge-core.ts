@@ -1586,11 +1586,12 @@ function walkAndFixNames(site: Site, bundler: Bundler, seenMap: SeenNamesMap) {
             seen.set(name, iid);
           }
         }
+        const newNames = countBy(value.map((obj) => pathGet(obj, nameKey)));
         assert(
-          Object.values(allNames).every((v) => v === 0 || v === 1),
+          Object.values(newNames).every((v) => v === 0 || v === 1),
           `All names should be unique, but aren't for ${cls.name}.${
             field.name
-          }: ${JSON.stringify(allNames)}`
+          }: ${JSON.stringify(newNames)}`
         );
       }
     }
