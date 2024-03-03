@@ -50,7 +50,7 @@ import {
   mkApiAppEndUserAccess,
   mkApiAppRole,
 } from "./end-user";
-import { doSafelyDeleteProject } from "./projects";
+import { doSafelyDeleteProject, mkApiProject } from "./projects";
 import { getUser, superDbMgr, userDbMgr } from "./util";
 
 import { getTeamDiscourseInfo as doGetTeamDiscourseInfo } from "@/wab/server/discourse/getTeamDiscourseInfo";
@@ -122,7 +122,7 @@ export async function listProjects(req: Request, res: Response) {
   const projects = await (ownerId
     ? mgr.listProjectsForUser(ownerId)
     : mgr.listAllProjects());
-  res.json({ projects });
+  res.json({ projects: projects.map(mkApiProject) });
 }
 
 export async function deleteProjectAndRevisions(req: Request, res: Response) {

@@ -4,10 +4,11 @@ import { smartRender } from "@/wab/client/components/pages/admin/admin-util";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import { LinkButton, SearchBox } from "@/wab/client/components/widgets";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
-import { ApiUser } from "@/wab/shared/ApiSchema";
-import { Button, Form, Input, notification, Select, Table } from "antd";
+import { ApiProject } from "@/wab/shared/ApiSchema";
+import { Button, Form, Input, notification, Table } from "antd";
 import L from "lodash";
 import React, { useState } from "react";
+import { AdminUserSelect } from "./AdminUserSelect";
 
 export function AdminUsersView() {
   return (
@@ -65,7 +66,7 @@ function UsersView() {
               render: smartRender,
               sorter: (a, b) => (a[key] < b[key] ? -1 : 1),
               ...(key === "email"
-                ? { defaultSortOrder: "descend" as const }
+                ? { defaultSortOrder: "ascend" as const }
                 : {}),
             })
           ),
@@ -88,55 +89,58 @@ function UsersView() {
 
 function UserProjects() {
   const nonAuthCtx = useNonAuthCtx();
-  const [userId, setUserId] = useState<string | undefined>(undefined);
-  const usersResp = useAsyncStrict(
-    () => nonAuthCtx.api.listUsers(),
-    [nonAuthCtx, 0]
+  const [selectedUserId, setSelectedUserId] = useState<string | undefined>(
+    undefined
   );
-  const projectsResp = useAsyncStrict(
-    async () =>
-      userId ? await nonAuthCtx.api.listProjectsForOwner(userId) : undefined,
-    [nonAuthCtx, userId]
-  );
+  const { value: projects } = useAsyncStrict(async () => {
+    if (!selectedUserId) {
+      return [];
+    }
+    const resp = await nonAuthCtx.api.listProjectsForOwner(selectedUserId);
+    return resp.projects as (ApiProject & {
+      teamName: string;
+      workspaceName: string;
+    })[];
+  }, [nonAuthCtx, selectedUserId]);
 
   return (
     <div className="mv-lg">
       <h2>Lookup projects for user</h2>
       <div>
-        <Select
-          style={{ width: 400 }}
-          showSearch
-          placeholder="Search for a user"
-          filterOption={(input, option) => {
-            const user: ApiUser | undefined = option?.user;
-            if (user) {
-              return (
-                user.email?.toLowerCase().includes(input.toLowerCase()) ||
-                user.firstName?.toLowerCase().includes(input.toLowerCase()) ||
-                user.lastName?.toLowerCase().includes(input.toLowerCase()) ||
-                false
-              );
-            }
-            return false;
-          }}
-          options={
-            usersResp.value
-              ? usersResp.value.users.map((user) => ({
-                  value: user.id,
-                  label: user.email,
-                  user,
-                }))
-              : []
-          }
-          onChange={(val) => {
-            setUserId(val);
-          }}
-          value={userId}
-        />
+        <AdminUserSelect onChange={(userId) => setSelectedUserId(userId)} />
         <Table
-          dataSource={projectsResp.value?.projects ?? []}
+          dataSource={projects ?? []}
           rowKey="id"
           columns={[
+            {
+              title: "Team",
+              dataIndex: "team",
+              render: (x, project) => (
+                <a target="_blank" href={`/orgs/${project.teamId}`}>
+                  {project.teamName}
+                </a>
+              ),
+              sorter: {
+                compare: (a, b) => a.teamName.localeCompare(b.teamName),
+                multiple: 3,
+              },
+              defaultSortOrder: "ascend",
+            },
+            {
+              title: "Workspace",
+              dataIndex: "workspace",
+              render: (x, project) => (
+                <a target="_blank" href={`/workspaces/${project.workspaceId}`}>
+                  {project.workspaceName}
+                </a>
+              ),
+              sorter: {
+                compare: (a, b) =>
+                  a.workspaceName.localeCompare(b.workspaceName),
+                multiple: 2,
+              },
+              defaultSortOrder: "ascend",
+            },
             {
               title: "Project",
               dataIndex: "name",
@@ -145,27 +149,29 @@ function UserProjects() {
                   {project.name}
                 </a>
               ),
-              sorter: (a, b) => (a.name < b.name ? -1 : 1),
+              sorter: {
+                compare: (a, b) => a.name.localeCompare(b.name),
+                multiple: 1,
+              },
+              defaultSortOrder: "ascend",
             },
             {
               title: "Created at",
               dataIndex: "createdAt",
               render: smartRender,
               sorter: (a, b) => (a.createdAt < b.createdAt ? -1 : 1),
-              defaultSortOrder: "descend",
             },
             {
               title: "Modified at",
               dataIndex: "updatedAt",
               render: smartRender,
               sorter: (a, b) => (a.updatedAt < b.updatedAt ? -1 : 1),
-              defaultSortOrder: "descend",
             },
             {
               title: "Owner?",
               dataIndex: "createdById",
-              render: (id) => (id === userId ? "Yes" : "No"),
-              sorter: (a) => (a.createdById === userId ? -1 : 1),
+              render: (id) => (id === selectedUserId ? "Yes" : "No"),
+              sorter: (a) => (a.createdById === selectedUserId ? -1 : 1),
             },
           ]}
         />

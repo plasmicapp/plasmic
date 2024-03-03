@@ -13,7 +13,6 @@ import {
   ApiPermission,
   ApiTeam,
   ApiTeamDiscourseInfo,
-  ApiUser,
   TeamWhiteLabelInfo,
 } from "@/wab/shared/ApiSchema";
 import {
@@ -29,6 +28,7 @@ import {
 } from "antd";
 import React, { useCallback, useMemo, useState } from "react";
 import { AutoInfo, smartRender } from "./admin-util";
+import { AdminUserSelect } from "./AdminUserSelect";
 
 export function AdminTeamsView() {
   const { teamId, navigate } = useAdminCtx();
@@ -89,10 +89,6 @@ function TeamLookup() {
   const nonAuthCtx = useNonAuthCtx();
   const adminCtx = useAdminCtx();
   const [userId, setUserId] = useState<string | undefined>(undefined);
-  const usersResp = useAsyncStrict(
-    () => nonAuthCtx.api.listUsers(),
-    [nonAuthCtx]
-  );
   const [teamsResp, fetchTeams] = useAsyncFnStrict(
     async () =>
       userId ? await nonAuthCtx.api.listTeamsForUser(userId) : undefined,
@@ -103,36 +99,7 @@ function TeamLookup() {
   return (
     <>
       <h2>Lookup teams for user</h2>
-      <Select
-        style={{ width: 400 }}
-        showSearch
-        placeholder="Search for a user"
-        filterOption={(input, option) => {
-          const user: ApiUser | undefined = option?.user;
-          if (user) {
-            return (
-              user.email?.toLowerCase().includes(input.toLowerCase()) ||
-              user.firstName?.toLowerCase().includes(input.toLowerCase()) ||
-              user.lastName?.toLowerCase().includes(input.toLowerCase()) ||
-              false
-            );
-          }
-          return false;
-        }}
-        options={
-          usersResp.value
-            ? usersResp.value.users.map((user) => ({
-                value: user.id,
-                label: user.email,
-                user,
-              }))
-            : []
-        }
-        onChange={(val) => {
-          setUserId(val);
-        }}
-        value={userId}
-      />
+      <AdminUserSelect onChange={(val) => setUserId(val)} />
       <Table<ApiTeam>
         dataSource={teamsResp.value?.teams ?? []}
         rowKey="id"
@@ -142,20 +109,19 @@ function TeamLookup() {
             dataIndex: "name",
             render: smartRender,
             sorter: (a, b) => (a.name < b.name ? -1 : 1),
+            defaultSortOrder: "ascend",
           },
           {
             title: "Created at",
             dataIndex: "createdAt",
             render: smartRender,
             sorter: (a, b) => (a.createdAt < b.createdAt ? -1 : 1),
-            defaultSortOrder: "descend",
           },
           {
             title: "Modified at",
             dataIndex: "updatedAt",
             render: smartRender,
             sorter: (a, b) => (a.updatedAt < b.updatedAt ? -1 : 1),
-            defaultSortOrder: "descend",
           },
           {
             title: "Billing Email",
@@ -277,8 +243,12 @@ function Members({ team, perms, refetch }: TeamProps) {
           title: "Email",
           key: "email",
           render: (_value, perm) => getEmail(perm),
-          sorter: (a, b) =>
-            (getEmail(a) ?? "") < (getEmail(b) ?? "") ? -1 : 1,
+          sorter: {
+            compare: (a, b) =>
+              (getEmail(a) ?? "") < (getEmail(b) ?? "") ? -1 : 1,
+            multiple: 2,
+          },
+          defaultSortOrder: "ascend",
         },
         {
           title: "isUser",
@@ -290,7 +260,11 @@ function Members({ team, perms, refetch }: TeamProps) {
           title: "Access Level",
           dataIndex: "accessLevel",
           render: smartRender,
-          sorter: (a, b) => (a.accessLevel < b.accessLevel ? -1 : 1),
+          sorter: {
+            compare: (a, b) => (a.accessLevel < b.accessLevel ? -1 : 1),
+            multiple: 1,
+          },
+          defaultSortOrder: "descend",
         },
         {
           title: "Actions",
