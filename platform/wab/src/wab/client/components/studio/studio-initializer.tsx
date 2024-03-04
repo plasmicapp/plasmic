@@ -20,6 +20,7 @@ import {
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawn } from "@/wab/common";
 import { lt } from "@/wab/commons/semver";
+import { makeGlobalObservable } from "@/wab/shared/mobx-util";
 import { requiredPackageVersions } from "@/wab/shared/required-versions";
 import { isHostLessPackage } from "@/wab/sites";
 import { initBuiltinActions } from "@/wab/states";
@@ -93,6 +94,9 @@ class StudioInitializer_ extends React.Component<
   init = async () => {
     initializePlasmicExtension();
     const { hostFrameCtx, appCtx, onRefreshUi, projectId } = this.props;
+    if (appCtx.appConfig.incrementalObservables) {
+      makeGlobalObservable();
+    }
     const studioCtx = await initStudioCtx(appCtx, projectId, onRefreshUi);
     const previewCtx = new PreviewCtx(hostFrameCtx, studioCtx);
 

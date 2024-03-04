@@ -539,6 +539,7 @@ const DEFAULT_DEVFLAGS = {
   ccStubs: false,
   workspaces: false,
   noObserve: false,
+  incrementalObservables: false,
   spacing: true,
   spacingArea: true,
   setHostLessProject: false,

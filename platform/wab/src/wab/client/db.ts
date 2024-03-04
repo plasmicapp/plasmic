@@ -1,4 +1,4 @@
-import { Site } from "@/wab/classes";
+import { Component, Site } from "@/wab/classes";
 import { meta } from "@/wab/classes-metas";
 import { maybe } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
@@ -133,7 +133,20 @@ export class DbCtx {
     this._siteInfo.set(siteInfo);
   }
 
+  /**
+   * This function will observe the tplTree of any component that is still not being observed.
+   * @param components the list of components to try to observe the tplTree of.
+   * @returns true if any of the components in the list started being observed now, false otherwise.
+   */
+  maybeObserveComponents(components: Component[]) {
+    if (!this.appCtx.appConfig.incrementalObservables) {
+      return false;
+    }
+    return this.recorder.maybeObserveComponentTrees(components);
+  }
+
   private createRecorder(site: Site) {
+    const incrementalObservables = this.appCtx.appConfig.incrementalObservables;
     return new ChangeRecorder(
       site,
       instUtil,
@@ -160,7 +173,12 @@ export class DbCtx {
         !!maybe(
           this.bundler().addrOf(obj),
           (addr) => addr.uuid !== this.siteInfo.id
-        )
+        ),
+      undefined,
+      incrementalObservables
+        ? [meta.getFieldByName("Component", "tplTree")]
+        : undefined,
+      incrementalObservables
     );
   }
 }

@@ -2,12 +2,15 @@ import type {
   IComputedValue,
   IComputedValueOptions,
   IEqualsComparer,
+  IObservableValue,
 } from "mobx";
 import { computedFn } from "mobx-utils";
 import mobx from "./import-mobx";
 
 type Getter<T> = () => T;
 type Setter<T> = (value: T) => void;
+
+let globalObservable: IObservableValue<number> | undefined = undefined;
 
 /** Shorthand for defining a getter function. */
 export function getter<T>(observable: { get: Getter<T> }): Getter<T> {
@@ -28,11 +31,34 @@ export const equalsComparer: IEqualsComparer<{
   equals: (other: any) => boolean;
 }> = (a, b) => a.equals(b);
 
+export function dependOnGlobalObservable() {
+  return globalObservable?.get();
+}
+
+export function makeGlobalObservable() {
+  globalObservable = mobx.observable.box(1);
+}
+
+export function mutateGlobalObservable() {
+  globalObservable?.set((globalObservable.get() + 1) % 100);
+}
+
+export function clearGlobalObservable() {
+  globalObservable = undefined;
+}
+
 export function maybeComputedFn<T extends (...args: any[]) => any>(
   fn: T,
   opts?: IComputedValueOptions<ReturnType<T>>
 ): T {
-  const actuallyComputedFn = computedFn(fn, { keepAlive: true, ...opts });
+  const maybeAddGlobalObservableFn: T = ((...args: any[]) => {
+    dependOnGlobalObservable();
+    return fn(...args);
+  }) as T;
+  const actuallyComputedFn = computedFn(maybeAddGlobalObservableFn, {
+    keepAlive: true,
+    ...opts,
+  });
   return function (...args: any[]) {
     if (
       typeof window !== "undefined" &&

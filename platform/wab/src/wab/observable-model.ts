@@ -1,3 +1,4 @@
+import { meta } from "@/wab/classes-metas";
 import { Dictionary, memoize, once } from "lodash";
 import type { IObservableArray, Lambda } from "mobx";
 import type { Atom, IDerivation, IObjectDidChange } from "mobx/dist/internal";
@@ -44,6 +45,7 @@ import {
 } from "./shared/cached-selectors";
 import { InstUtil, instUtil } from "./shared/core/InstUtil";
 import mobx from "./shared/import-mobx";
+import { mutateGlobalObservable } from "./shared/mobx-util";
 import { allGlobalVariants, allImageAssets, allStyleTokens } from "./sites";
 import { undoChanges } from "./undo-util";
 
@@ -160,6 +162,18 @@ export type ModelChange = AnyChange & {
 
 export type ModelChangeListener = (event: ModelChange) => void;
 
+type ObservableState = {
+  dispose: Lambda;
+  prune: Lambda;
+  getToBeDeletedInsts: () => Set<ObjInst>;
+  getDeletedInstsWithDanglingRefs: () => Set<ObjInst>;
+  getPathToChild: (node: ObjInst) => ChangeNode[] | undefined;
+  getAnyPathToChild: (node: ObjInst) => ChangeNode[] | undefined;
+  getRefsToInst: (node: ObjInst, all: boolean) => ObjInst[];
+  getNewInsts: () => Set<ObjInst>;
+  observeInstField: (node: ObjInst, field: Field) => void;
+};
+
 /**
  * Starts observing changes to the argument `inst`.  Specifically,
  *
@@ -184,6 +198,8 @@ export type ModelChangeListener = (event: ModelChange) => void;
  *   that reference the changed object, so they each see a change.
  * @param opts.excludeFields exclude Fields that you do not want to track
  *   changes for.
+ * @param opts.skipInitialObserveFields skip Fields that you will manually observe later.
+ *
  *
  * @returns a disposal function that, when called, will unsubscribe to
  * all changes to mobx observables.  `inst` will remain mobx-observable
@@ -196,14 +212,16 @@ export function observeModel(
     listener: ModelChangeListener;
     instDisposeListener?: (v: ObjInst) => void;
     excludeFields?: Field[];
+    skipInitialObserveFields?: Field[];
     excludeClasses?: Class[];
     visitNodeListener?: (inst: ObjInst) => void;
     isExternalRef?: (obj: ObjInst) => boolean;
     React?: typeof defaultReact;
     localObject?: typeof Object;
     quiet?: boolean;
+    incremental?: boolean;
   }
-) {
+): ObservableState {
   const {
     instUtil: _instUtil,
     listener,
@@ -270,6 +288,9 @@ export function observeModel(
       // External references shouldn't have strong references pointing to it.
       return true;
     }
+    if (opts.incremental && !mobxHack.isObservable(inst)) {
+      return true;
+    }
     return false;
   };
 
@@ -291,6 +312,9 @@ export function observeModel(
         )
         .join(", ");
     };
+    if (opts.incremental && !mobxHack.isObservable(inst)) {
+      return false;
+    }
 
     if (shouldNotHaveParents(inst)) {
       // The only assertion for nodes that shouldn't have strong parents is
@@ -392,7 +416,7 @@ export function observeModel(
       const fieldName = event.name as string;
       const field = allFields.find((f) => f.name === fieldName);
 
-      // field may be undefined, if we're setting some untracked field
+      // Field may be undefined, if we're setting some untracked field.
       if (field) {
         // We should first fire the field change so the change is recorded
         // and can be reverted if any assertion fails
@@ -413,7 +437,9 @@ export function observeModel(
       }
     });
 
-    for (const field of allFields) {
+    for (const field of allFields.filter(
+      (f) => !opts.skipInitialObserveFields?.includes(f)
+    )) {
       // Furthermore, we also want to observe the current field value itself
       // -- the field value may be another `ObjInst` to be tracked, or an array
       // of them, etc.
@@ -1124,6 +1150,26 @@ export function observeModel(
         ...(all ? inst2Weakrefs.get(inst)?.keys() ?? [] : []),
       ];
     },
+    observeInstField: (inst: ObjInst, field: Field) => {
+      const state = ensure(
+        instStates.get(inst),
+        "The parent instance should exist"
+      );
+
+      const instClass = _instUtil.getInstClass(inst);
+      const allFields = getClassFields(instClass);
+
+      const fieldToUpdate = ensure(
+        allFields.find((f) => f === field),
+        "Should observe an existing field"
+      );
+
+      addInstChildDispose(
+        state.fieldValueDisposes,
+        fieldToUpdate.name,
+        visitFieldValue(inst, fieldToUpdate, inst[fieldToUpdate.name])
+      );
+    },
   };
 }
 
@@ -1323,6 +1369,7 @@ export interface IChangeRecorder {
   withRecording<E>(f: () => IFailable<void, E>): IFailable<RecordedChanges, E>;
   dispose(): void;
   setExtraListener(newListener: (change: ModelChange) => void): void;
+  maybeObserveComponentTrees(components: Component[]): boolean;
   isRecording: boolean;
 }
 
@@ -1333,15 +1380,8 @@ export interface IChangeRecorder {
  */
 export class ChangeRecorder implements IChangeRecorder {
   private changes: ModelChange[] = [];
-  private _dispose: Lambda;
   private listener: (change: ModelChange) => void | undefined;
-  private _prune: Lambda;
-  private _getToBeDeletedInsts: () => Set<ObjInst>;
-  private _getDeletedInstsWithDanglingRefs: () => Set<ObjInst>;
-  private _getPathToChild: (node: ObjInst) => ChangeNode[] | undefined;
-  private _getAnyPathToChild: (node: ObjInst) => ChangeNode[] | undefined;
-  private _getReferencingInsts: (node: ObjInst, all: boolean) => ObjInst[];
-  private _getNewInsts: () => Set<ObjInst>;
+  private observableState: ObservableState;
   private _isRecording = false;
 
   constructor(
@@ -1350,9 +1390,11 @@ export class ChangeRecorder implements IChangeRecorder {
     excludeFields?: Field[],
     excludeClasses?: Class[],
     isExternalRef?: (obj: ObjInst) => boolean,
-    visitNodeListener?: (inst: ObjInst) => void
+    visitNodeListener?: (inst: ObjInst) => void,
+    skipInitialObserveFields?: Field[],
+    incremental?: boolean
   ) {
-    const r = observeModel(inst, {
+    this.observableState = observeModel(inst, {
       instUtil: _instUtil,
       listener: (change) => {
         this.onChange(change);
@@ -1362,40 +1404,59 @@ export class ChangeRecorder implements IChangeRecorder {
       excludeClasses,
       isExternalRef,
       visitNodeListener,
+      skipInitialObserveFields: skipInitialObserveFields,
+      incremental,
     });
-    this._dispose = r.dispose;
-    this._prune = r.prune;
-    this._getToBeDeletedInsts = r.getToBeDeletedInsts;
-    this._getDeletedInstsWithDanglingRefs = r.getDeletedInstsWithDanglingRefs;
-    this._getPathToChild = r.getPathToChild;
-    this._getAnyPathToChild = r.getAnyPathToChild;
-    this._getReferencingInsts = r.getRefsToInst;
-    this._getNewInsts = r.getNewInsts;
+  }
+
+  /**
+   * This function will observe the tplTree of any component that is still not being observed.
+   * @param components the list of components to try to observe the tplTree of.
+   * @returns true if any of the components in the list started being observed now, false otherwise.
+   */
+  maybeObserveComponentTrees(components: Component[]) {
+    const observedResult = components.reduce((observedNewComp, component) => {
+      if (!mobx.isObservable(component.tplTree)) {
+        this.observableState.observeInstField(
+          component,
+          meta.getFieldByName("Component", "tplTree")
+        );
+        return true;
+      }
+      return observedNewComp;
+    }, false);
+    console.log("Tried to observe", components, observedResult);
+    if (observedResult) {
+      mutateGlobalObservable();
+      console.log("Mutated global state");
+    }
+
+    return observedResult;
   }
 
   prune() {
-    this._prune();
+    this.observableState.prune();
   }
 
   getToBeDeletedInsts() {
-    return this._getToBeDeletedInsts();
+    return this.observableState.getToBeDeletedInsts();
   }
 
   getDeletedInstsWithDanglingRefs() {
-    return this._getDeletedInstsWithDanglingRefs();
+    return this.observableState.getDeletedInstsWithDanglingRefs();
   }
 
   getPathToChild(inst: ObjInst) {
-    return this._getPathToChild(inst);
+    return this.observableState.getPathToChild(inst);
   }
 
   getAnyPathToChild(inst: ObjInst) {
-    return this._getAnyPathToChild(inst);
+    return this.observableState.getAnyPathToChild(inst);
   }
 
   // If `all` is set, also includes WeakRefs
   getRefsToInst(inst: ObjInst, all = true) {
-    return this._getReferencingInsts(inst, all);
+    return this.observableState.getRefsToInst(inst, all);
   }
 
   // Get model changes since we started recording, so we can patch before
@@ -1412,7 +1473,7 @@ export class ChangeRecorder implements IChangeRecorder {
     const deletedInsts = this.getToBeDeletedInsts();
     return {
       changes: this.changes,
-      newInsts: Array.from(this._getNewInsts().keys()).filter(
+      newInsts: Array.from(this.observableState.getNewInsts().keys()).filter(
         (inst) => !deletedInsts.has(inst)
       ),
       removedInsts: Array.from(deletedInsts.keys()),
@@ -1468,7 +1529,7 @@ export class ChangeRecorder implements IChangeRecorder {
   }
 
   dispose() {
-    this._dispose();
+    this.observableState.dispose();
   }
 
   setExtraListener(newListener: (change: ModelChange) => void) {
@@ -1519,6 +1580,9 @@ export class FakeChangeRecorder implements IChangeRecorder {
     } else {
       return emptyRecordedChanges();
     }
+  }
+  maybeObserveComponentTrees(components: Component[]) {
+    return false;
   }
   dispose() {}
   setExtraListener(_newListener: (change: ModelChange) => void) {}
