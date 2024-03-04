@@ -22,8 +22,8 @@ export async function withDb(
     dburi: string
   ) => Promise<void>
 ): Promise<void> {
-  await withDatabase(async (dburi) => {
-    const con = await ensureDbConnection(dburi);
+  await withDatabase(async (dburi, dbname) => {
+    const con = await ensureDbConnection(dburi, dbname);
     await con.transaction(async (em) => {
       const sudo = new DbMgr(em, SUPER_USER);
       const users = await sequentially(
@@ -55,10 +55,12 @@ export async function withDb(
   });
 }
 
-async function withDatabase(f: (dburi: string) => Promise<void>) {
-  const { dburi, cleanup } = await createDatabase();
+async function withDatabase(
+  f: (dburi: string, dbname: string) => Promise<void>
+) {
+  const { dburi, dbname, cleanup } = await createDatabase();
   try {
-    await f(dburi);
+    await f(dburi, dbname);
   } finally {
     await cleanup();
   }
@@ -79,18 +81,20 @@ export async function getTeamAndWorkspace(db1: DbMgr) {
 export async function createDatabase() {
   const dbname = `test_${dbNameGen()}`.toLowerCase();
   const sucon = await ensureDbConnection(
-    "postgresql://superwab@localhost/postgres"
+    "postgresql://superwab@localhost/postgres",
+    "super"
   );
   await sucon.query("select 1");
   await sucon.query(`create database ${dbname} owner wab;`);
   const dburi = `postgresql://wab@localhost/${dbname}`;
-  const con = await ensureDbConnection(dburi);
+  const con = await ensureDbConnection(dburi, dbname);
   await con.synchronize();
   await con.transaction(async (em) => {
     await initDb(em);
   });
 
   return {
+    dbname,
     dburi,
     cleanup: async () => {
       await sucon.query(`drop database ${dbname} with (force);`);

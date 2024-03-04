@@ -17,14 +17,13 @@ import {
 // causes an error).
 export async function ensureDbConnection(
   dburi: string | ConnectionOptions,
+  name: string,
   opts?: {
     maxConnections?: number;
-    name?: string;
     useEnvPassword?: boolean;
   }
 ) {
   const maxConnections = opts?.maxConnections ?? 15;
-  const name = opts?.name ?? "default";
   if (!getConnectionManager().has(name)) {
     console.log(`Creating typeorm connection pool for ${name}`);
     let connOpts: ConnectionOptions;
@@ -89,13 +88,11 @@ export async function ensureDbConnections(
     useEnvPassword?: boolean;
   }
 ) {
-  await ensureDbConnection(dbUri, {
-    name: "default",
+  await ensureDbConnection(dbUri, "default", {
     maxConnections: opts?.defaultPoolSize ?? 15,
     useEnvPassword: opts?.useEnvPassword,
   });
-  await ensureDbConnection(dbUri, {
-    name: MIGRATION_POOL_NAME,
+  await ensureDbConnection(dbUri, MIGRATION_POOL_NAME, {
     maxConnections: opts?.migrationPoolSize ?? 10,
     useEnvPassword: opts?.useEnvPassword,
   });

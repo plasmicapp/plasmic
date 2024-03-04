@@ -135,7 +135,7 @@ function parsePlumeMasterPkg() {
 }
 
 async function updatePlumePkg() {
-  const con = await ensureDbConnection(DEFAULT_DATABASE_URI);
+  const con = await ensureDbConnection(DEFAULT_DATABASE_URI, "default");
   await con.transaction(async (em) => {
     const db = new DbMgr(em, SUPER_USER);
     const mgr = new PlumePkgMgr(db);

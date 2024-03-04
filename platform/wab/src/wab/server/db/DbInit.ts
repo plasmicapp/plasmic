@@ -92,7 +92,7 @@ export async function createDummyDb(em: EntityManager) {
 }
 
 export async function main() {
-  const con = await ensureDbConnection(DEFAULT_DATABASE_URI);
+  const con = await ensureDbConnection(DEFAULT_DATABASE_URI, "default");
   await con.transaction(async (em) => {
     await initDb(em);
     await createDummyDb(em);
