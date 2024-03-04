@@ -11,6 +11,7 @@ import {
 } from "@/wab/shared/discourse/DiscourseClient";
 import { createSystemDiscourseClient } from "./clients";
 import {
+  BASE_URL,
   FeatureTierConfig,
   FEATURE_TIERS,
   PRIVATE_SUPPORT_CATEGORY_ID,
@@ -160,7 +161,7 @@ async function updateDiscourseCategoryWelcomePost(
   const post = (
     await systemDiscourseClient.postUpdate(welcomePost.id, {
       post: {
-        raw: `Click [New Topic](https://forum.plasmic.app/new-topic?category=${parentCategorySlug}/${slug}) to create a new support topic.`,
+        raw: `Click [New Topic](${BASE_URL}/new-topic?category=${parentCategorySlug}/${slug}) to create a new support topic.`,
       },
     })
   ).post;

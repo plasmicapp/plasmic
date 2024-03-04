@@ -5,12 +5,17 @@ describe-instance-by-name() {
 
 mssh-by-name() {
   local name="$1" ip id
+  local user="${2:-ubuntu}"
   read id ip <<<"$(describe-instance-by-name "$name")"
-  mssh "ubuntu@$ip" -t "$id"
+  mssh "$user@$ip" -t "$id"
 }
 
 mssh-discourse() {
-  mssh-by-name discourse-server
+  mssh-by-name discourse-server $1
+}
+
+mssh-discourse-test() {
+  mssh-by-name discourse-test-server $1
 }
 
 mssh-gerrit() {

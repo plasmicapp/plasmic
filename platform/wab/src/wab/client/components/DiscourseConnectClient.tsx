@@ -1,5 +1,6 @@
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { spawn } from "@/wab/common";
+import { BASE_URL } from "@/wab/shared/discourse/config";
 import { useEffect } from "react";
 
 export function DiscourseConnectClient() {
@@ -9,7 +10,7 @@ export function DiscourseConnectClient() {
       (async () => {
         const params = await appCtx.api.discourseConnect(location.search);
 
-        const url = new URL("https://forum.plasmic.app/session/sso_login");
+        const url = new URL(`${BASE_URL}/session/sso_login`);
         url.search = new URLSearchParams(params).toString();
 
         location.replace(url.toString());

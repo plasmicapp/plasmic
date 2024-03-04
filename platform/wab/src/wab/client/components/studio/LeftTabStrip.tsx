@@ -34,6 +34,7 @@ import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-event
 import { spawn, unexpected } from "@/wab/common";
 import { Stated } from "@/wab/commons/components/Stated";
 import { DEVFLAGS } from "@/wab/devflags";
+import { BASE_URL } from "@/wab/shared/discourse/config";
 import { MIXINS_CAP } from "@/wab/shared/Labels";
 import {
   getLeftTabPermission,
@@ -300,7 +301,7 @@ Help
           type: "item",
           icon: <MessagesvgIcon />,
           label: "Forum",
-          href: "https://forum.plasmic.app/",
+          href: `${BASE_URL}.app/`,
           cond: !isWhiteLabelUser,
         },
         docs: {
