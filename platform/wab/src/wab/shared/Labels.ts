@@ -91,9 +91,11 @@ export const COMBINATIONS_CAP = `Combinations`;
 export const CUSTOM_BEHAVIORS_CAP = "Custom behaviors";
 
 export const ORGANIZATION_CAP = "Organization";
-export const ORGANIZATION_PLURAL_CAP = "Organization";
+export const ORGANIZATION_PLURAL_CAP = "Organizations";
 export const ORGANIZATION_LOWER = ORGANIZATION_CAP.toLowerCase();
 export const ORGANIZATION_PLURAL_LOWER = ORGANIZATION_PLURAL_CAP.toLowerCase();
+
+export const WORKSPACE_CAP = "Workspace";
 
 export const INTERACTIVE_CAP = "Interactive";
 

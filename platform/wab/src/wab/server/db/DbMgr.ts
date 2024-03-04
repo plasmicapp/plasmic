@@ -206,6 +206,7 @@ import {
   ORGANIZATION_CAP,
   ORGANIZATION_LOWER,
   PERSONAL_WORKSPACE,
+  WORKSPACE_CAP,
 } from "@/wab/shared/Labels";
 import { LocalizationKeyScheme } from "@/wab/shared/localization";
 import { ratePasswordStrength } from "@/wab/shared/password-strength";
@@ -444,6 +445,23 @@ export function ensureFound<T>(x: T | null | undefined, name: string): T {
 async function getOneOrFailIfTooMany<T>(queryBuilder: SelectQueryBuilder<T>) {
   return maybeOne(await queryBuilder.getMany());
 }
+
+export type StampNewFields = {
+  id: string;
+  createdAt: Date;
+  createdById: UserId | null;
+} & StampUpdateFields &
+  StampDeleteFields;
+
+export type StampUpdateFields = {
+  updatedAt: Date;
+  updatedById: UserId | null;
+};
+
+export type StampDeleteFields = {
+  deletedAt: Date | null;
+  deletedById: UserId | null;
+};
 
 export interface SuperUser {
   type: "SuperUser";
@@ -1013,41 +1031,40 @@ export class DbMgr implements MigrationDbMgr {
   /**
    * Generate standard new-object timestamps and ID.
    */
-  protected stampNew(genShortUuid?: boolean) {
-    const creatorId = this.tryGetNormalActorId();
+  protected stampNew(genShortUuid?: boolean): StampNewFields {
+    const actorUserId = this.tryGetNormalActorId() ?? null;
     const UUID = uuid.v4();
-
     return {
       id: genShortUuid ? shortUuid.fromUUID(UUID) : UUID,
       createdAt: new Date(),
+      createdById: actorUserId,
       updatedAt: new Date(),
+      updatedById: actorUserId,
       deletedAt: null,
-      createdBy: creatorId ? { id: creatorId } : undefined,
-      updatedBy: creatorId ? { id: creatorId } : undefined,
-      deletedBy: null,
+      deletedById: null,
     };
   }
 
-  protected stampUpdate() {
-    const updaterId = this.tryGetNormalActorId();
+  protected stampUpdate(): StampUpdateFields {
+    const actorUserId = this.tryGetNormalActorId() ?? null;
     return {
       updatedAt: new Date(),
-      updatedBy: updaterId ? { id: updaterId } : null,
+      updatedById: actorUserId,
     };
   }
 
-  protected stampDelete() {
-    const deleterId = this.tryGetNormalActorId();
+  protected stampDelete(): StampDeleteFields {
+    const actorUserId = this.tryGetNormalActorId() ?? null;
     return {
       deletedAt: new Date(),
-      deletedBy: deleterId ? { id: deleterId } : null,
+      deletedById: actorUserId,
     };
   }
 
-  private stampUndelete() {
+  private stampUndelete(): StampDeleteFields {
     return {
       deletedAt: null,
-      deletedBy: null,
+      deletedById: null,
     };
   }
 
@@ -1655,15 +1672,14 @@ export class DbMgr implements MigrationDbMgr {
     return result;
   }
 
-  async addFeatureTier(rawTier: ApiFeatureTier) {
+  async addFeatureTier(rawTier: Omit<ApiFeatureTier, keyof StampNewFields>) {
     this.checkSuperUser();
     const tier = this.featureTiers().create({
       ...rawTier,
       // We stamp over the `rawTier` to overwrite base fields
       ...this.stampNew(),
     });
-    await this.entMgr.save(tier);
-    return tier;
+    return await this.entMgr.save(tier);
   }
 
   async getFeatureTier(featureTierId: FeatureTierId, includeDeleted = false) {
@@ -1781,7 +1797,7 @@ export class DbMgr implements MigrationDbMgr {
         `${user.firstName}'s First ${ORGANIZATION_CAP}`
       );
       await asUser.createWorkspace({
-        name: `${user.firstName}'s First Workspace`,
+        name: `${user.firstName}'s First ${WORKSPACE_CAP}`,
         description: "",
         teamId: team.id,
       });
