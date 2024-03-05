@@ -1,5 +1,6 @@
 import { registerButton } from "./registerButton";
 import { registerComboBox } from "./registerComboBox";
+import { registerForm } from "./registerForm";
 import { registerInput } from "./registerInput";
 import { registerLabel } from "./registerLabel";
 import { registerListBox } from "./registerListBox";
@@ -19,4 +20,5 @@ export function registerAll(loader?: Registerable) {
   registerInput(loader);
   registerSection(loader);
   registerSwitch(loader);
+  registerForm(loader);
 }

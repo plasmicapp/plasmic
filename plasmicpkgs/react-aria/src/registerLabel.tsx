@@ -1,17 +1,17 @@
-import { mergeProps } from "@react-aria/utils";
 import React from "react";
+import type { LabelProps } from "react-aria-components";
 import { Label } from "react-aria-components";
-import { PlasmicLabelContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
+  makeComponentName,
   Registerable,
   registerComponentHelper,
 } from "./utils";
 
-export function BaseLabel(props: React.ComponentProps<typeof Label>) {
-  const contextProps = React.useContext(PlasmicLabelContext);
-  return <Label {...mergeProps(contextProps, props)} />;
+export function BaseLabel(props: LabelProps) {
+  return <Label {...props} />;
 }
+
 export function registerLabel(
   loader?: Registerable,
   overrides?: CodeComponentMetaOverrides<typeof BaseLabel>
@@ -20,18 +20,13 @@ export function registerLabel(
     loader,
     BaseLabel,
     {
-      name: "plasmic-react-aria-label",
+      name: makeComponentName("label"),
       displayName: "BaseLabel",
       importPath: "@plasmicpkgs/react-aria/registerLabel",
       importName: "BaseLabel",
       props: {
         children: {
           type: "slot",
-          defaultValue: {
-            type: "text",
-            value: "Label",
-          },
-          mergeWithParent: true as any,
         },
       },
       trapsFocus: true,

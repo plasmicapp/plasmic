@@ -37,7 +37,7 @@
     "skinny"
   ],
   "scripts": {
-    "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.tsx --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --lib esnext --jsx react --esModuleInterop --strict --outDir ./dist/ && cp ./dist/*.d.ts skinny/ && rm skinny/index.d.ts",
+    "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.tsx --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --lib esnext,dom,dom.iterable --jsx react --esModuleInterop --strict --outDir ./dist/ && cp ./dist/*.d.ts skinny/ && rm skinny/index.d.ts",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "clean": "rm -rf dist/ skinny/*.ts skinny/*.map skinny/*.js",
     "storybook": "storybook dev -p 6006",
@@ -61,7 +61,7 @@
     "react-dom": "^18.2.0",
     "rollup": "^3.10.1",
     "rollup-plugin-esbuild": "^5.0.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5"
   },
   "peerDependencies": {
     "@plasmicapp/host": ">=1.0.0",
