@@ -58,7 +58,15 @@ export function useTriggeredOverlay<
   isDismissable = true
 ) {
   const overlayRef = React.useRef<HTMLElement>(null);
-  const onOverlayRef = mergeRefs(overlayRef, outerRef);
+  const onOverlayRef = mergeRefs(overlayRef, outerRef, (ref) => {
+    // Workaround for https://github.com/adobe/react-spectrum/issues/1513
+    // to avoid touch events leaking under the overlay when it is closed.
+    if (ref) {
+      ref.addEventListener("touchend", (e) => {
+        e.preventDefault();
+      });
+    }
+  });
 
   const context = React.useContext(TriggeredOverlayContext);
 
