@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import HandlerRow from "../../components/sidebar-tabs/StateManagement/HandlerRow"; // plasmic-import: VYbagtLCKV/component
 import ActionChip from "../../components/sidebar-tabs/StateManagement/ActionChip"; // plasmic-import: _uEitkIFZr/component
 
@@ -60,8 +83,8 @@ export const PlasmicInteractionsSection__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicInteractionsSection__OverridesType = {
-  root?: p.Flex<"div">;
-  freeBox?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
 };
 
 export interface DefaultInteractionsSectionProps {
@@ -86,11 +109,11 @@ function PlasmicInteractionsSection__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
   return (
     <div
@@ -110,14 +133,14 @@ function PlasmicInteractionsSection__RenderFunc(props: {
         sty.root
       )}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox)}
       >
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: (
             <React.Fragment>
               <HandlerRow
@@ -145,7 +168,7 @@ function PlasmicInteractionsSection__RenderFunc(props: {
           ),
           value: args.children,
         })}
-      </p.Stack>
+      </Stack__>
     </div>
   ) as React.ReactElement | null;
 }
@@ -196,7 +219,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicInteractionsSection__ArgProps,
           internalVariantPropNames: PlasmicInteractionsSection__VariantProps,
         }),

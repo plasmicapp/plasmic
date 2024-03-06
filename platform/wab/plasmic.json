@@ -10445,8 +10445,8 @@
           "componentImportPath": "@plasmicapp/react-web/lib/data-sources"
         }
       ],
-      "jsBundleThemes": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "customFunctions": []
     },
     {
       "projectId": "fuzE93KTc4ZKNBYf3LAfy",

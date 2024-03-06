@@ -127,6 +127,10 @@ export function ComponentPropModal(props: {
       ? deriveArgTypes(existingParam.type)
       : []
   );
+  const isLocalizationEnabled = studioCtx.site.flags.usePlasmicTranslation;
+  const [isLocalizable, setIsLocalizable] = React.useState(
+    existingParam && isLocalizationEnabled ? existingParam.isLocalizable : false
+  );
 
   const isValid = React.useMemo(
     () =>
@@ -154,11 +158,14 @@ export function ComponentPropModal(props: {
       const name = studioCtx
         .tplMgr()
         .getUniqueParamName(component, paramName, existingParam);
+      const isLocalizableVal =
+        paramType === "text" && isLocalizationEnabled ? isLocalizable : false;
       if (existingParam) {
         existingParam.variable.name = name;
         existingParam.type = newParamType;
         existingParam.defaultExpr = defaultExpr && clone(defaultExpr);
         existingParam.previewExpr = previewExpr && clone(previewExpr);
+        existingParam.isLocalizable = isLocalizableVal;
         onFinish(existingParam);
         return success();
       } else {
@@ -174,6 +181,7 @@ export function ComponentPropModal(props: {
           description: "metaProp",
           defaultExpr,
           previewExpr,
+          isLocalizable: isLocalizableVal,
         });
         component.params.push(param);
         onFinish(param);
@@ -231,6 +239,7 @@ export function ComponentPropModal(props: {
               if (val) {
                 setParamType(val as ComponentParamTypeOptions);
                 setDefaultExpr(val === "bool" ? codeLit(false) : undefined);
+                setIsLocalizable(false);
               }
             },
             children: getComponentParamTypeOptions().map(({ value, label }) => (
@@ -357,8 +366,16 @@ export function ComponentPropModal(props: {
           </IconLinkButton>
         }
         specialParamType={
-          paramType === "eventHandler" ? "eventHandler" : undefined
+          paramType === "eventHandler"
+            ? "eventHandler"
+            : paramType === "text" && isLocalizationEnabled
+            ? "localizable"
+            : undefined
         }
+        localizableSwitch={{
+          isChecked: isLocalizable,
+          onChange: (val) => setIsLocalizable(val),
+        }}
         hideEventArgs={!!type && paramType === "eventHandler"}
         confirmBtn={{
           props: {

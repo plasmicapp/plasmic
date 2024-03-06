@@ -6,7 +6,7 @@
 
 import * as React from "react";
 import { hasVariant, ensureGlobalVariants } from "@plasmicapp/react-web";
-import { EmbedCss } from "@plasmicpkgs/plasmic-embed-css"; // plasmic-import: qF0uJxFztB/codeComponent
+import { EmbedCss } from "@plasmicpkgs/plasmic-embed-css";
 
 export interface GlobalContextsProviderProps {
   children?: React.ReactElement;

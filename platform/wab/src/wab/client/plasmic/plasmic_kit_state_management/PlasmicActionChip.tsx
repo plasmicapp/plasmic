@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -58,10 +81,10 @@ type ArgPropType = keyof PlasmicActionChip__ArgsType;
 export const PlasmicActionChip__ArgProps = new Array<ArgPropType>("actionName");
 
 export type PlasmicActionChip__OverridesType = {
-  root?: p.Flex<"div">;
-  text?: p.Flex<"div">;
-  svg?: p.Flex<"svg">;
-  menuButton?: p.Flex<typeof MenuButton>;
+  root?: Flex__<"div">;
+  text?: Flex__<"div">;
+  svg?: Flex__<"svg">;
+  menuButton?: Flex__<typeof MenuButton>;
 };
 
 export interface DefaultActionChipProps {
@@ -86,11 +109,11 @@ function PlasmicActionChip__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
   const [isRootHover, triggerRootHoverProps] = useTrigger("useHover", {});
   const triggers = {
@@ -116,7 +139,7 @@ function PlasmicActionChip__RenderFunc(props: {
       )}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__zcpRw)}
@@ -143,12 +166,12 @@ function PlasmicActionChip__RenderFunc(props: {
           />
         </div>
         <div className={classNames(projectcss.all, sty.freeBox__lWbe1)}>
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: "Action Name",
             value: args.actionName,
           })}
         </div>
-      </p.Stack>
+      </Stack__>
       <div className={classNames(projectcss.all, sty.freeBox__yakOm)}>
         <MenuButton
           data-plasmic-name={"menuButton"}
@@ -210,7 +233,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicActionChip__ArgProps,
           internalVariantPropNames: PlasmicActionChip__VariantProps,
         }),

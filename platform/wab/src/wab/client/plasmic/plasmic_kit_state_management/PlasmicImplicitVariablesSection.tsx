@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import LabeledListItem from "../../components/widgets/LabeledListItem"; // plasmic-import: -L2zZ5Mvmr/component
 import VariableRow from "../../components/sidebar-tabs/StateManagement/VariableRow"; // plasmic-import: jiD9NQWVHe/component
 
@@ -72,9 +95,9 @@ export const PlasmicImplicitVariablesSection__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicImplicitVariablesSection__OverridesType = {
-  root?: p.Flex<"div">;
-  tplRow?: p.Flex<typeof LabeledListItem>;
-  freeBox?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  tplRow?: Flex__<typeof LabeledListItem>;
+  freeBox?: Flex__<"div">;
 };
 
 export interface DefaultImplicitVariablesSectionProps {
@@ -103,13 +126,13 @@ function PlasmicImplicitVariablesSection__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isSelected",
@@ -131,7 +154,7 @@ function PlasmicImplicitVariablesSection__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -173,7 +196,7 @@ function PlasmicImplicitVariablesSection__RenderFunc(props: {
             "isSelected"
           ),
         })}
-        icon={p.renderPlasmicSlot({
+        icon={renderPlasmicSlot({
           defaultContents: (
             <ComponentIcon
               className={classNames(projectcss.all, sty.svg___2Wwcl)}
@@ -183,7 +206,7 @@ function PlasmicImplicitVariablesSection__RenderFunc(props: {
 
           value: args.icon,
         })}
-        label={p.renderPlasmicSlot({
+        label={renderPlasmicSlot({
           defaultContents: "Label",
           value: args.title,
         })}
@@ -191,14 +214,14 @@ function PlasmicImplicitVariablesSection__RenderFunc(props: {
         withMenu={true}
       />
 
-      <p.Stack
+      <Stack__
         as={"div"}
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox)}
       >
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: (
             <React.Fragment>
               <VariableRow
@@ -227,7 +250,7 @@ function PlasmicImplicitVariablesSection__RenderFunc(props: {
           ),
           value: args.children,
         })}
-      </p.Stack>
+      </Stack__>
     </div>
   ) as React.ReactElement | null;
 }
@@ -280,7 +303,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicImplicitVariablesSection__ArgProps,
           internalVariantPropNames:
             PlasmicImplicitVariablesSection__VariantProps,

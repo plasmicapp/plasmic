@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import LabeledItem from "../../components/sidebar-tabs/StateManagement/LabeledItem"; // plasmic-import: EmZVqVuGE1/component
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
 import StyleSelect from "../../components/style-controls/StyleSelect"; // plasmic-import: E0bKgamUEin/component
@@ -88,12 +111,12 @@ export const PlasmicNewVariable__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicNewVariable__OverridesType = {
-  root?: p.Flex<"div">;
-  variableType?: p.Flex<typeof StyleSelect>;
-  allowExternalAccess?: p.Flex<typeof Switch>;
-  accessTypeSelect?: p.Flex<typeof StyleSelect>;
-  cancelButton?: p.Flex<typeof Button>;
-  confirmButton?: p.Flex<typeof Button>;
+  root?: Flex__<"div">;
+  variableType?: Flex__<typeof StyleSelect>;
+  allowExternalAccess?: Flex__<typeof Switch>;
+  accessTypeSelect?: Flex__<typeof StyleSelect>;
+  cancelButton?: Flex__<typeof Button>;
+  confirmButton?: Flex__<typeof Button>;
 };
 
 export interface DefaultNewVariableProps {
@@ -124,13 +147,13 @@ function PlasmicNewVariable__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isExternal",
@@ -189,7 +212,7 @@ function PlasmicNewVariable__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -197,7 +220,7 @@ function PlasmicNewVariable__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -275,7 +298,7 @@ function PlasmicNewVariable__RenderFunc(props: {
             hasVariant($state, "accessType", "writable"),
         })}
       >
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: (
             <LabeledItem
               className={classNames("__wab_instance", sty.labeledItem___92BR)}
@@ -337,12 +360,12 @@ function PlasmicNewVariable__RenderFunc(props: {
               ),
             })}
             onChange={(...eventArgs) => {
-              p.generateStateOnChangeProp($state, ["variableType", "value"])(
+              generateStateOnChangeProp($state, ["variableType", "value"])(
                 eventArgs[0]
               );
             }}
             placeholder={"Placeholder\u2026"}
-            value={p.generateStateValueProp($state, ["variableType", "value"])}
+            value={generateStateValueProp($state, ["variableType", "value"])}
             valueSetState={"isSet"}
           >
             <StyleSelect__Option
@@ -375,7 +398,7 @@ function PlasmicNewVariable__RenderFunc(props: {
           ),
         })}
       >
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: (
             <LabeledItem
               className={classNames("__wab_instance", sty.labeledItem__yQqyl)}
@@ -405,7 +428,7 @@ function PlasmicNewVariable__RenderFunc(props: {
           value: args.variableInitVal,
         })}
       </div>
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__knZkb, {
@@ -468,13 +491,13 @@ function PlasmicNewVariable__RenderFunc(props: {
             ),
           })}
           isChecked={
-            p.generateStateValueProp($state, [
+            generateStateValueProp($state, [
               "allowExternalAccess",
               "isChecked",
             ]) ?? false
           }
           onChange={(...eventArgs) => {
-            p.generateStateOnChangeProp($state, [
+            generateStateOnChangeProp($state, [
               "allowExternalAccess",
               "isChecked",
             ])(eventArgs[0]);
@@ -514,13 +537,13 @@ function PlasmicNewVariable__RenderFunc(props: {
                 ),
               })}
               onChange={(...eventArgs) => {
-                p.generateStateOnChangeProp($state, [
+                generateStateOnChangeProp($state, [
                   "accessTypeSelect",
                   "value",
                 ])(eventArgs[0]);
               }}
               placeholder={"Placeholder\u2026"}
-              value={p.generateStateValueProp($state, [
+              value={generateStateValueProp($state, [
                 "accessTypeSelect",
                 "value",
               ])}
@@ -541,8 +564,8 @@ function PlasmicNewVariable__RenderFunc(props: {
             </StyleSelect>
           }
         />
-      </p.Stack>
-      <p.Stack
+      </Stack__>
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__uirV1, {
@@ -594,8 +617,8 @@ function PlasmicNewVariable__RenderFunc(props: {
         >
           {"Confirm"}
         </Button>
-      </p.Stack>
-    </p.Stack>
+      </Stack__>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -660,7 +683,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicNewVariable__ArgProps,
           internalVariantPropNames: PlasmicNewVariable__VariantProps,
         }),

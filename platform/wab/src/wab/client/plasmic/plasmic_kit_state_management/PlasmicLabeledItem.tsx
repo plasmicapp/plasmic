@@ -13,27 +13,50 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
-import { Fetcher } from "@plasmicapp/react-web/lib/data-sources"; // plasmic-import: 11bnIiSxJUyPwS/codeComponent
+import { Fetcher } from "@plasmicapp/react-web/lib/data-sources";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -80,7 +103,7 @@ export const PlasmicLabeledItem__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicLabeledItem__OverridesType = {
-  root?: p.Flex<"div">;
+  root?: Flex__<"div">;
 };
 
 export interface DefaultLabeledItemProps {
@@ -120,13 +143,13 @@ function PlasmicLabeledItem__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "layout",
@@ -150,7 +173,7 @@ function PlasmicLabeledItem__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -158,7 +181,7 @@ function PlasmicLabeledItem__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -186,7 +209,7 @@ function PlasmicLabeledItem__RenderFunc(props: {
         }
       )}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__bXw82, {
@@ -202,7 +225,7 @@ function PlasmicLabeledItem__RenderFunc(props: {
           ),
         })}
       >
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox___0Gerh, {
@@ -228,11 +251,11 @@ function PlasmicLabeledItem__RenderFunc(props: {
             ),
           })}
         >
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: "Label",
             value: args.label,
           })}
-        </p.Stack>
+        </Stack__>
         <div
           className={classNames(projectcss.all, sty.freeBox__wrYhU, {
             [sty.freeBoxlabelSize_half__wrYhUhH4Fv]: hasVariant(
@@ -242,7 +265,7 @@ function PlasmicLabeledItem__RenderFunc(props: {
             ),
           })}
         >
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: (
               <Textbox
                 className={classNames("__wab_instance", sty.textbox__kv871, {
@@ -271,7 +294,7 @@ function PlasmicLabeledItem__RenderFunc(props: {
             value: args.value,
           })}
         </div>
-      </p.Stack>
+      </Stack__>
       <div
         className={classNames(projectcss.all, sty.freeBox__oh2X, {
           [sty.freeBoxlayout_vertical__oh2X1KxsP]: hasVariant(
@@ -286,12 +309,12 @@ function PlasmicLabeledItem__RenderFunc(props: {
           ),
         })}
       >
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: null,
           value: args.rightExtras,
         })}
       </div>
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -339,7 +362,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLabeledItem__ArgProps,
           internalVariantPropNames: PlasmicLabeledItem__VariantProps,
         }),
