@@ -262,14 +262,13 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
           }
 
           await studioCtx.change(({ success }) => {
-            tokensUsages.forEach(({ usages, token }) => {
-              usages[0].forEach((usage) => {
+            tokens.forEach((token) => {
+              const [usages, _] = extractTokenUsages(studioCtx.site, token);
+              usages.forEach((usage) => {
                 changeTokenUsage(studioCtx.site, token, usage, "inline");
               });
+              removeFromArray(studioCtx.site.styleTokens, token);
             });
-            tokens.forEach((token) =>
-              removeFromArray(studioCtx.site.styleTokens, token)
-            );
             return success();
           });
 
