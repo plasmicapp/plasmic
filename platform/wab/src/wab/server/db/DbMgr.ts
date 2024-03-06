@@ -2482,7 +2482,7 @@ export class DbMgr implements MigrationDbMgr {
       workspaceId = personalWorkspace?.id ?? workspaceId;
     } else if (workspaceId && inviteOnly === undefined) {
       const team = await this.getTeamByWorkspaceId(workspaceId);
-      inviteOnly = team ? await this.isTeamWhiteLabel(team) : undefined;
+      inviteOnly = team ? true : undefined;
     }
 
     const project = this.projects().create({
@@ -2491,7 +2491,7 @@ export class DbMgr implements MigrationDbMgr {
       workspace: workspaceId ? { id: workspaceId } : null,
       name,
       defaultAccessLevel: "commenter",
-      inviteOnly: inviteOnly ?? false,
+      inviteOnly: inviteOnly ?? true,
       readableByPublic: false,
       hostUrl: hostUrl ?? null,
       projectApiToken: generateSomeApiToken(),

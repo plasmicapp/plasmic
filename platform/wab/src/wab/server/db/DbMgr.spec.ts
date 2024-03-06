@@ -935,6 +935,8 @@ describe("DbMgr", () => {
       await expect(db2().getTeamById(team.id)).toReject();
       await expect(db2().getWorkspaceById(workspace.id)).toReject();
 
+      await sudo.updateProject({ id: project.id, inviteOnly: false });
+
       await db2().getLatestProjectRev(project.id);
       const perms = await db2().getPermissionsForProject(project.id);
       expect(perms.find((perm) => perm.userId === user2.id)).toMatchObject({
