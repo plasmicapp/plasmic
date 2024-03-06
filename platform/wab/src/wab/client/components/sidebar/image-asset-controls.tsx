@@ -165,9 +165,14 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
       ),
     ];
 
+    const selectableAssets = studioCtx.site.imageAssets.map(
+      (asset) => asset.uuid
+    );
+
     return (
       <MultiAssetsActions
         type="asset"
+        selectableAssets={selectableAssets}
         onDelete={async (selected: string[]) => {
           const selectedAssetsIds = new Set(selected);
           const selectedAssets = studioCtx.site.imageAssets.filter((asset) => {

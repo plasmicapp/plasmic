@@ -11,6 +11,7 @@ import * as React from "react";
 export interface MultiAssetsActionsProps
   extends DefaultMultiAssetsActionsProps {
   type: "asset" | "token";
+  selectableAssets: string[];
   onDelete: (selected: string[]) => Promise<boolean>;
 }
 
@@ -50,7 +51,7 @@ function MultiAssetsActions_(
   props: MultiAssetsActionsProps,
   ref: HTMLElementRefOf<"div">
 ) {
-  const { type, children, onDelete, ...rest } = props;
+  const { type, selectableAssets, children, onDelete, ...rest } = props;
 
   const [isSelecting, setIsSelecting] = React.useState(false);
   const [selectedAssets, setSelectedAssets] = React.useState<string[]>([]);
@@ -72,11 +73,30 @@ function MultiAssetsActions_(
     [selectedAssets]
   );
 
+  const isAllSelected = React.useMemo(() => {
+    if (selectedAssets.length !== selectableAssets.length) {
+      return false;
+    }
+    return selectableAssets.every((assetId) =>
+      selectedAssets.includes(assetId)
+    );
+  }, [selectableAssets, selectedAssets]);
+
   return (
     <PlasmicMultiAssetsActions
       root={{ ref }}
       withoutControlBar={!isSelecting}
       numSelected={getLabelForNumSelected(type, selectedAssets.length)}
+      selectAll={{
+        isChecked: isAllSelected,
+        onChange: (checked) => {
+          if (checked) {
+            setSelectedAssets(selectableAssets);
+          } else {
+            setSelectedAssets([]);
+          }
+        },
+      }}
       cancel={{
         onClick: () => {
           setIsSelecting(false);

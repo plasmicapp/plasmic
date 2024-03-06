@@ -227,9 +227,14 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
       ),
     ];
 
+    const selectableTokens = makeTokensItems(studioCtx.site.styleTokens).map(
+      (t) => t.key
+    );
+
     return (
       <MultiAssetsActions
         type="token"
+        selectableAssets={selectableTokens}
         onDelete={async (selected: string[]) => {
           const tokens = studioCtx.site.styleTokens.filter((t) =>
             selected.includes(t.uuid)

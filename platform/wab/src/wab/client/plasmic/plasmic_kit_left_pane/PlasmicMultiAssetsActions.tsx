@@ -55,7 +55,8 @@ import {
   useGlobalActions,
 } from "@plasmicapp/react-web/lib/host";
 
-import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import Checkbox from "../../components/widgets/Checkbox"; // plasmic-import: W-rO7NZqPjZ/component
+import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -65,7 +66,6 @@ import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../
 import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicMultiAssetsActions.module.css"; // plasmic-import: d693eBfNDs7j/css
 
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
 import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
 import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
@@ -94,10 +94,9 @@ export type PlasmicMultiAssetsActions__OverridesType = {
   root?: Flex__<"div">;
   controlBar?: Flex__<"div">;
   numSelected?: Flex__<"div">;
-  deleteSelected?: Flex__<typeof Button>;
-  deleteSelectedBox?: Flex__<"div">;
-  cancel?: Flex__<typeof Button>;
-  cancelBox?: Flex__<"div">;
+  selectAll?: Flex__<typeof Checkbox>;
+  deleteSelected?: Flex__<typeof IconButton>;
+  cancel?: Flex__<typeof IconButton>;
 };
 
 export interface DefaultMultiAssetsActionsProps {
@@ -138,6 +137,12 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) =>
           $props.withoutControlBar,
       },
+      {
+        path: "selectAll.isChecked",
+        type: "private",
+        variableType: "boolean",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -166,11 +171,9 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
         sty.root
       )}
     >
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"controlBar"}
         data-plasmic-override={overrides.controlBar}
-        hasGap={true}
         className={classNames(projectcss.all, sty.controlBar, {
           [sty.controlBarwithoutControlBar]: hasVariant(
             $state,
@@ -190,63 +193,46 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
         >
           {"8 elements selected"}
         </div>
-        <Button
+        <Checkbox
+          data-plasmic-name={"selectAll"}
+          data-plasmic-override={overrides.selectAll}
+          className={classNames("__wab_instance", sty.selectAll)}
+          isChecked={
+            generateStateValueProp($state, ["selectAll", "isChecked"]) ?? false
+          }
+          onChange={(...eventArgs) => {
+            generateStateOnChangeProp($state, ["selectAll", "isChecked"])(
+              eventArgs[0]
+            );
+          }}
+        >
+          {"Select all"}
+        </Checkbox>
+        <IconButton
           data-plasmic-name={"deleteSelected"}
           data-plasmic-override={overrides.deleteSelected}
           className={classNames("__wab_instance", sty.deleteSelected)}
-          size={"compact"}
-          type={["clear"]}
+          hoverText={"Delete selected assets"}
+          withBackgroundHover={true}
         >
-          <div
-            data-plasmic-name={"deleteSelectedBox"}
-            data-plasmic-override={overrides.deleteSelectedBox}
-            className={classNames(projectcss.all, sty.deleteSelectedBox)}
-          >
-            <TrashIcon
-              className={classNames(projectcss.all, sty.svg__lY64)}
-              role={"img"}
-            />
-
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__h9Tgv
-              )}
-            >
-              {"Delete"}
-            </div>
-          </div>
-        </Button>
-        <Button
+          <TrashIcon
+            className={classNames(projectcss.all, sty.svg__rQOhJ)}
+            role={"img"}
+          />
+        </IconButton>
+        <IconButton
           data-plasmic-name={"cancel"}
           data-plasmic-override={overrides.cancel}
           className={classNames("__wab_instance", sty.cancel)}
-          size={"compact"}
-          type={["clear"]}
+          hoverText={"Cancel selection"}
+          withBackgroundHover={true}
         >
-          <div
-            data-plasmic-name={"cancelBox"}
-            data-plasmic-override={overrides.cancelBox}
-            className={classNames(projectcss.all, sty.cancelBox)}
-          >
-            <CloseIcon
-              className={classNames(projectcss.all, sty.svg__dFu8E)}
-              role={"img"}
-            />
-
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__brp3D
-              )}
-            >
-              {"Cancel"}
-            </div>
-          </div>
-        </Button>
-      </Stack__>
+          <CloseIcon
+            className={classNames(projectcss.all, sty.svg__duSe7)}
+            role={"img"}
+          />
+        </IconButton>
+      </div>
       {renderPlasmicSlot({
         defaultContents: null,
         value: args.children,
@@ -260,24 +246,21 @@ const PlasmicDescendants = {
     "root",
     "controlBar",
     "numSelected",
+    "selectAll",
     "deleteSelected",
-    "deleteSelectedBox",
     "cancel",
-    "cancelBox",
   ],
   controlBar: [
     "controlBar",
     "numSelected",
+    "selectAll",
     "deleteSelected",
-    "deleteSelectedBox",
     "cancel",
-    "cancelBox",
   ],
   numSelected: ["numSelected"],
-  deleteSelected: ["deleteSelected", "deleteSelectedBox"],
-  deleteSelectedBox: ["deleteSelectedBox"],
-  cancel: ["cancel", "cancelBox"],
-  cancelBox: ["cancelBox"],
+  selectAll: ["selectAll"],
+  deleteSelected: ["deleteSelected"],
+  cancel: ["cancel"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -286,10 +269,9 @@ type NodeDefaultElementType = {
   root: "div";
   controlBar: "div";
   numSelected: "div";
-  deleteSelected: typeof Button;
-  deleteSelectedBox: "div";
-  cancel: typeof Button;
-  cancelBox: "div";
+  selectAll: typeof Checkbox;
+  deleteSelected: typeof IconButton;
+  cancel: typeof IconButton;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -354,10 +336,9 @@ export const PlasmicMultiAssetsActions = Object.assign(
     // Helper components rendering sub-elements
     controlBar: makeNodeComponent("controlBar"),
     numSelected: makeNodeComponent("numSelected"),
+    selectAll: makeNodeComponent("selectAll"),
     deleteSelected: makeNodeComponent("deleteSelected"),
-    deleteSelectedBox: makeNodeComponent("deleteSelectedBox"),
     cancel: makeNodeComponent("cancel"),
-    cancelBox: makeNodeComponent("cancelBox"),
 
     // Metadata about props expected for PlasmicMultiAssetsActions
     internalVariantProps: PlasmicMultiAssetsActions__VariantProps,
