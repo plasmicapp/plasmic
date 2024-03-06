@@ -224,6 +224,7 @@ function TeamDetail(props: TeamProps) {
           <TeamDiscourseInfoForm
             team={props.team}
             discourseInfo={props.discourseInfo}
+            refetch={props.refetch}
           />
         </div>
       </div>
@@ -639,9 +640,11 @@ function UpdateWhiteLabelTeamClientCredentials({ team, refetch }: TeamProps) {
 function TeamDiscourseInfoForm({
   team,
   discourseInfo,
+  refetch,
 }: {
   team: ApiTeam;
   discourseInfo: ApiTeamDiscourseInfo | null;
+  refetch: () => void;
 }) {
   const nonAuthCtx = useNonAuthCtx();
   const [form] = Form.useForm();
@@ -668,6 +671,7 @@ function TeamDiscourseInfoForm({
         );
         await nonAuthCtx.api.syncTeamDiscourseInfo(team.id, values);
         console.log(`Sync success`);
+        await refetch();
       }}
     >
       <Form.Item

@@ -42,6 +42,7 @@ export interface CategoryMutation {
   color?: string;
   text_color?: string;
   permissions?: GroupPermissionsMutation;
+  topic_template?: string;
   custom_fields?: {
     enable_accepted_answers?: "true"; // Discourse Solved
     enable_unassigned_filter?: "true"; // Discourse Assign
@@ -93,6 +94,15 @@ export interface Site {
 }
 
 export interface Topic {
+  post_stream: {
+    posts: {
+      id: number;
+      post_number: number;
+    }[];
+  };
+}
+
+export interface BasicTopic {
   id: number;
 }
 
@@ -230,11 +240,19 @@ class DiscourseApiClient {
   }
   /** undocumented */
   async postRevisionHide(id: number, revisionId: number): Promise<void> {
-    return this.httpPut(`/posts/${id}/revisions/${revisionId}/hide`, undefined);
+    return this.httpPut(
+      `/posts/${id}/revisions/${revisionId}/hide`,
+      undefined,
+      noop
+    );
   }
   /** undocumented */
   async postRevisionShow(id: number, revisionId: number): Promise<void> {
-    return this.httpPut(`/posts/${id}/revisions/${revisionId}/show`, undefined);
+    return this.httpPut(
+      `/posts/${id}/revisions/${revisionId}/show`,
+      undefined,
+      noop
+    );
   }
 
   /** https://docs.discourse.org/#tag/Search/operation/search */
@@ -253,11 +271,15 @@ class DiscourseApiClient {
     return this.httpGet(`/site.json`);
   }
 
+  /** https://docs.discourse.org/#tag/Topics/operation/getTopic */
+  async topicGet(id: number): Promise<Topic> {
+    return this.httpGet(`/t/-/${id}.json`);
+  }
   /** https://docs.discourse.org/#tag/Topics/operation/updateTopic */
   async topicUpdate(
     id: number,
     data: { title?: string; category_id?: string }
-  ): Promise<{ basic_topic: Topic }> {
+  ): Promise<{ basic_topic: BasicTopic }> {
     return this.httpPut(`/t/-/${id}.json`, data);
   }
 
@@ -266,37 +288,45 @@ class DiscourseApiClient {
     return this.httpGet(`/u/by-external/${externalId}.json`);
   }
 
-  private async httpGet<T>(endpoint: string): Promise<T> {
-    return this.http("get", endpoint, undefined);
+  private async httpGet<TResponse>(
+    endpoint: string,
+    handleResponse: (response: Response) => Promise<TResponse> = parseJson
+  ): Promise<TResponse> {
+    return this.http("get", endpoint, undefined, handleResponse);
   }
 
   private async httpPost<TRequest, TResponse>(
     endpoint: string,
-    data: TRequest
+    data: TRequest,
+    handleResponse: (response: Response) => Promise<TResponse> = parseJson
   ): Promise<TResponse> {
-    return this.http("post", endpoint, data);
+    return this.http("post", endpoint, data, handleResponse);
   }
 
   private async httpPut<TRequest, TResponse>(
     endpoint: string,
-    data: TRequest
+    data: TRequest,
+    handleResponse: (response: Response) => Promise<TResponse> = parseJson
   ): Promise<TResponse> {
-    return this.http("put", endpoint, data);
+    return this.http("put", endpoint, data, handleResponse);
   }
 
   private async httpDelete<TRequest, TResponse>(
     endpoint: string,
-    data: TRequest
+    data: TRequest,
+    handleResponse: (response: Response) => Promise<TResponse> = parseJson
   ): Promise<TResponse> {
-    return this.http("delete", endpoint, data);
+    return this.http("delete", endpoint, data, handleResponse);
   }
 
-  private async http<T>(
+  private async http<TResponse>(
     method: string,
     endpoint: string,
-    data: any
-  ): Promise<T> {
+    data: any,
+    handleResponse: (response: Response) => Promise<TResponse>
+  ): Promise<TResponse> {
     const url = `${this.baseUrl}${endpoint}`;
+    console.log(`${method} ${url}`, data);
     const response = await fetch(url, {
       method,
       headers: {
@@ -316,7 +346,7 @@ class DiscourseApiClient {
       );
     }
 
-    return await response.json();
+    return await handleResponse(response);
   }
 }
 
@@ -349,3 +379,6 @@ export class DiscourseClient extends DiscourseApiClient {
     ).category;
   }
 }
+
+const noop = async () => undefined;
+const parseJson = async (response: Response) => response.json();

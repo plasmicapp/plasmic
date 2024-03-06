@@ -3,6 +3,8 @@ import { TeamDiscourseInfo } from "@/wab/server/entities/Entities";
 import { PreconditionFailedError } from "@/wab/shared/ApiErrors/errors";
 import { TeamId } from "@/wab/shared/ApiSchema";
 import {
+  Category,
+  CategoryMutation,
   DiscourseClient,
   GroupAliasLevel,
   GroupPermissionsMutation,
@@ -46,6 +48,7 @@ export async function syncTeamDiscourseInfo(
   const { categoryId, groupId } = await upsertToDiscourse({
     systemDiscourseClient: createSystemDiscourseClient(),
     existingInfo,
+    teamId,
     slug,
     name,
     featureTierConfig,
@@ -62,6 +65,7 @@ export async function syncTeamDiscourseInfo(
 interface Ctx {
   systemDiscourseClient: DiscourseClient;
   existingInfo: TeamDiscourseInfo | undefined;
+  teamId: string;
   slug: string;
   name: string;
   featureTierConfig: FeatureTierConfig;
@@ -69,9 +73,9 @@ interface Ctx {
 
 async function upsertToDiscourse(ctx: Ctx) {
   const groupId = await upsertDiscourseGroup(ctx);
-  const { categoryId, parentCategory } = await upsertDiscourseCategory(ctx);
-  await updateDiscourseCategoryWelcomePost(ctx, parentCategory.slug);
-  return { categoryId, groupId };
+  const { category, parentCategory } = await upsertDiscourseCategory(ctx);
+  await updateDiscourseCategoryWelcomePost(ctx, category, parentCategory);
+  return { categoryId: category.id, groupId };
 }
 
 async function upsertDiscourseGroup(ctx: Ctx) {
@@ -111,57 +115,71 @@ async function upsertDiscourseCategory(ctx: Ctx) {
       permissions
     );
 
-  const categoryData = {
+  const categoryData: CategoryMutation & { name: string } = {
     name,
     slug,
     parent_category_id: PRIVATE_SUPPORT_CATEGORY_ID,
     color: featureTierConfig.categoryBackgroundColor,
     permissions,
+    topic_template:
+      "What are you trying to do? (please be as specific as possible and include relevant screenshots, code snippets, and reproduction steps)\n" +
+      "\n" +
+      "What have you tried so far? (please link relevant docs and other forum posts)\n" +
+      "\n" +
+      "Relevant links:\n" +
+      "- My project: https://studio.plasmic.app/projects/my_project_link\n",
     custom_fields: {
       enable_accepted_answers: "true" as const,
     },
   };
   if (existingInfo) {
-    await systemDiscourseClient.categoryUpdate(
-      existingInfo.categoryId,
-      categoryData
-    );
+    const category = (
+      await systemDiscourseClient.categoryUpdate(
+        existingInfo.categoryId,
+        categoryData
+      )
+    ).category;
     return {
       parentCategory,
-      categoryId: existingInfo.categoryId,
+      category,
     };
   } else {
-    const categoryId = (
-      await systemDiscourseClient.categoryCreate(categoryData)
-    ).category.id;
+    const category = (await systemDiscourseClient.categoryCreate(categoryData))
+      .category;
     return {
       parentCategory,
-      categoryId,
+      category,
     };
   }
 }
 
 async function updateDiscourseCategoryWelcomePost(
-  { systemDiscourseClient, slug }: Ctx,
-  parentCategorySlug: string
+  { systemDiscourseClient, teamId, slug, name }: Ctx,
+  category: Category,
+  parentCategory: Category
 ) {
-  const maybeWelcomePost = (
-    await systemDiscourseClient.search(
-      `in:pinned @system #${parentCategorySlug}:${slug}`
-    )
-  ).posts;
-  if (maybeWelcomePost.length !== 1) {
-    throw new Error(`expected 1 pinned post, found ${maybeWelcomePost.length}`);
+  const welcomeTopicId = Number(category.topic_url.split("/").pop());
+  const welcomeTopic = await systemDiscourseClient.topicGet(welcomeTopicId);
+  const welcomePostId = welcomeTopic.post_stream.posts.find(
+    (p) => p.post_number === 1
+  )?.id;
+  if (!welcomePostId) {
+    throw new Error(`Couldn't find welcome post in topic ${welcomeTopicId}`);
   }
 
-  const welcomePost = maybeWelcomePost[0];
-  await systemDiscourseClient.topicUpdate(welcomePost.topic_id, {
+  await systemDiscourseClient.topicUpdate(welcomeTopicId, {
     title: `👋 Welcome to your support forum!`,
   });
   const post = (
-    await systemDiscourseClient.postUpdate(welcomePost.id, {
+    await systemDiscourseClient.postUpdate(welcomePostId, {
       post: {
-        raw: `Click [New Topic](${BASE_URL}/new-topic?category=${parentCategorySlug}/${slug}) to create a new support topic.`,
+        raw:
+          `Click [New Topic](${BASE_URL}/new-topic?category=${parentCategory.slug}/${slug}) to create a new support topic. ` +
+          `Topics in this category are only visible to members of the [${name}](/g/${slug}) [organization](https://studio.plasmic.app/orgs/${teamId}). ` +
+          `For sensitive topics, please directly message the [support team](/g/support).\n` +
+          `\n` +
+          `Note that the Plasmic team may move topics to a public category for documentation purposes. ` +
+          `Sensitive information will be redacted first.\n`,
       },
     })
   ).post;
