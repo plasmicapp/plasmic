@@ -22,6 +22,7 @@ import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
 import { ensure, spawn, unanimousVal } from "@/wab/common";
+import { TokenType } from "@/wab/commons/StyleToken";
 import { parseCssShorthand, showCssShorthand } from "@/wab/css";
 import { Corner, Side, standardCorners, standardSides } from "@/wab/geom";
 import cn from "classnames";
@@ -625,6 +626,7 @@ const BorderRadiusControls = observer(function BorderRadiusControls(props: {
           styleName={effectiveCorners().map((s) => `border-${s}-radius`)}
           labelSize="small"
           displayStyleName="border-radius"
+          tokenType={TokenType.Spacing}
           dimOpts={{
             ref: props.inputRef,
             value: getSelectedCornerRadius() || "--",
