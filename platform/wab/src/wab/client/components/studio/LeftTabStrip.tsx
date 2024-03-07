@@ -301,7 +301,7 @@ Help
           type: "item",
           icon: <MessagesvgIcon />,
           label: "Forum",
-          href: `${BASE_URL}.app/`,
+          href: BASE_URL,
           cond: !isWhiteLabelUser,
         },
         docs: {
