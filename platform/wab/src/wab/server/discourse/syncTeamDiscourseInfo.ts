@@ -7,7 +7,6 @@ import {
   CategoryMutation,
   DiscourseClient,
   GroupAliasLevel,
-  GroupPermissionsMutation,
   GroupVisibilityLevel,
   PermissionType,
 } from "@/wab/shared/discourse/DiscourseClient";
@@ -105,14 +104,13 @@ async function upsertDiscourseCategory(ctx: Ctx) {
     ctx;
 
   // Must set permissions on parent category before child category
-  const permissions: GroupPermissionsMutation = {
-    [SUPPORT_GROUP_NAME]: PermissionType.CREATE,
-    [slug]: PermissionType.CREATE,
-  };
   const parentCategory =
     await systemDiscourseClient.categoryAppendGroupPermissions(
       PRIVATE_SUPPORT_CATEGORY_ID,
-      permissions
+      {
+        [SUPPORT_GROUP_NAME]: PermissionType.CREATE,
+        [slug]: PermissionType.SEE, // don't allow creating posts in parent category
+      }
     );
 
   const categoryData: CategoryMutation & { name: string } = {
@@ -120,7 +118,10 @@ async function upsertDiscourseCategory(ctx: Ctx) {
     slug,
     parent_category_id: PRIVATE_SUPPORT_CATEGORY_ID,
     color: featureTierConfig.categoryBackgroundColor,
-    permissions,
+    permissions: {
+      [SUPPORT_GROUP_NAME]: PermissionType.CREATE,
+      [slug]: PermissionType.CREATE,
+    },
     topic_template:
       "What are you trying to do? (please be as specific as possible and include relevant screenshots, code snippets, and reproduction steps)\n" +
       "\n" +
