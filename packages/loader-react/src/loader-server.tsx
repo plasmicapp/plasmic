@@ -143,7 +143,7 @@ const fakeUseMutablePlasmicQueryData: typeof useMutablePlasmicQueryData = (
       data: cache.get(key),
     };
   }
-  const response = fetcher(args as any);
+  const response = fetcher(...(args as any));
   if (response && typeof (response as Promise<any>).then == "function") {
     throw (response as Promise<any>).then((data) => cache.set(key, data));
   } else {
@@ -155,6 +155,56 @@ const fakeUseMutablePlasmicQueryData: typeof useMutablePlasmicQueryData = (
     };
   }
 };
+
+/**
+ * Class components cannot be server components, and for that reason React
+ * doesn't even allow calling `createElement` on them if they are not client
+ * references.
+ *
+ * For prepass, we replace the actual Component class with this fake one, and
+ * use it as an adaptor to creating a function component instead, before calling
+ * `createElement`.
+ */
+const FakeReactComponent = class FakeReactComponent {
+  context = undefined;
+  static contextType: any = undefined;
+  props: any = {};
+  setState: (v: any) => void = (v) => void (this.state = v);
+  forceUpdate = noop;
+  initRender(props: any) {
+    // Called before render to set the appropriate values for props, state,
+    // context... Use hooks to simulate the class component behavior.
+    this.props = props;
+    const dispatcher = (React as any)
+      .__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentDispatcher
+      .current;
+    const [state, setState] = dispatcher.useState({});
+    this.state = state;
+    this.setState = setState;
+    if ((this.constructor as any).contextType) {
+      this.context = dispatcher.useContext(
+        (this.constructor as any).contextType
+      );
+    }
+  }
+  render = () => null;
+  state: any = {};
+  refs = {};
+} satisfies typeof React.Component;
+
+const fakeCreateElement: <F extends (type: any, ...args: any[]) => any>(
+  originalFn: F
+) => F = ((originalCreateElement: Function) =>
+  (type: any, ...args: any[]) => {
+    if (Object.prototype.isPrototypeOf.call(FakeReactComponent, type)) {
+      return originalCreateElement((props: any) => {
+        const instance: InstanceType<typeof FakeReactComponent> = new type();
+        instance.initRender(props);
+        return instance.render();
+      }, ...args);
+    }
+    return originalCreateElement(type, ...args);
+  }) as any;
 
 export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLoader {
   constructor(opts: InitOptions) {
@@ -213,20 +263,44 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
               },
             ])
           ),
-          /*
-              TODO (might be used by hostless packages):
-                  Component,
-                  PureComponent,
-                  useOptimistic,
-                  createFactory,
-                  useTransition,
-                  useDeferredValue,
-                  act,
-            */
+          useDeferredValue: (v) => v,
+          useTransition: () => [
+            false,
+            (f) => {
+              f();
+            },
+          ],
+          createFactory: (type: any) =>
+            React.createElement.bind(null, type) as any,
+          Component: FakeReactComponent,
+          PureComponent: FakeReactComponent,
+          createElement: fakeCreateElement(React.createElement),
         },
         "react-dom": ReactDOM,
-        "react/jsx-runtime": jsxRuntime,
-        "react/jsx-dev-runtime": jsxDevRuntime,
+        "react/jsx-runtime": {
+          ...jsxRuntime,
+          ...((jsxRuntime as any).jsx
+            ? { jsx: fakeCreateElement((jsxRuntime as any).jsx) }
+            : {}),
+          ...((jsxRuntime as any).jsxs
+            ? { jsxs: fakeCreateElement((jsxRuntime as any).jsxs) }
+            : {}),
+          ...((jsxRuntime as any).jsxDEV
+            ? { jsxDEV: fakeCreateElement((jsxRuntime as any).jsxDEV) }
+            : {}),
+        },
+        "react/jsx-dev-runtime": {
+          ...jsxDevRuntime,
+          ...((jsxDevRuntime as any).jsx
+            ? { jsx: fakeCreateElement((jsxDevRuntime as any).jsx) }
+            : {}),
+          ...((jsxDevRuntime as any).jsxs
+            ? { jsxs: fakeCreateElement((jsxDevRuntime as any).jsxs) }
+            : {}),
+          ...((jsxDevRuntime as any).jsxDEV
+            ? { jsxDEV: fakeCreateElement((jsxDevRuntime as any).jsxDEV) }
+            : {}),
+        },
         "@plasmicapp/query": {
           addLoadingStateListener: () => noop,
           isPlasmicPrepass: () => true,
@@ -234,7 +308,7 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
           PlasmicQueryDataProvider: ({ children }: any) => <>{children}</>,
           useMutablePlasmicQueryData: fakeUseMutablePlasmicQueryData,
           usePlasmicDataConfig: fakeUsePlasmicDataConfig,
-          usePlasmicQueryData: unreachable, // TODO: used by some hostless packages
+          usePlasmicQueryData: fakeUseMutablePlasmicQueryData,
           useSWRConfig: unreachable,
           wrapLoadingFetcher: identity,
         },
