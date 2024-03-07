@@ -132,7 +132,11 @@ export interface ExportOpts {
   // Options for how image assets are exported
   imageOpts: ImageExportOpts;
 
-  stylesOpts: { scheme: "css" | "css-modules"; skipGlobalCssImport?: boolean };
+  stylesOpts: {
+    scheme: "css" | "css-modules";
+    skipGlobalCssImport?: boolean;
+    useCssFlexGap?: boolean;
+  };
 
   codeOpts: {
     reactRuntime: "classic" | "automatic";

@@ -1284,6 +1284,7 @@ export const showSimpleCssRuleSet = (
     useCssModules?: boolean;
     onlyInteractiveCanvasPseudoClasses?: boolean;
     whitespaceNormal?: boolean;
+    useCssFlexGap?: boolean;
   }
 ): string[] => {
   const site = ctx.site;
@@ -1315,6 +1316,8 @@ export const showSimpleCssRuleSet = (
   const shouldHaveGapStyles =
     hasGap || (isStudio && isValidGapContainer(tpl, vs));
 
+  const shouldWrapFlexChildren = shouldHaveGapStyles && !opts.useCssFlexGap;
+
   // If we are dealing with columns in base variant ensure that we have a gap variable to be used in the container
   const ensureColGapVariable = isTplColumns(tpl) && isBaseVariant(vs.variants);
 
@@ -1327,7 +1330,7 @@ export const showSimpleCssRuleSet = (
   // styles to both wrapper and the container, since different variants might
   // expect to inherit styles to both containers.
   if (shouldHaveGapStyles) {
-    if (isTplCodeComponent(tpl)) {
+    if (isTplCodeComponent(tpl) || !shouldWrapFlexChildren) {
       // For code components, we set real column/row gap styles
       if (styles.has("flex-column-gap")) {
         styles.set("column-gap", styles.get("flex-column-gap")!);
@@ -1342,10 +1345,12 @@ export const showSimpleCssRuleSet = (
       );
       const slotName = getGlobalClassSelector(makeWabSlotClassName(opts));
       rules.push(
+        // container styles
         maybeRule(
           ruleName,
           showStyles(deriveFlexContainerStyles(new Map<string, string>(styles)))
         ),
+        // flex wrapper styles
         maybeRule(
           `${ruleName} > ${flexContainerName}`,
           showStyles(
@@ -1605,7 +1610,10 @@ export const showSimpleCssRuleSet = (
           )
         : undefined
     );
-  } else if (!shouldHaveGapStyles) {
+  } else if (!shouldHaveGapStyles || !shouldWrapFlexChildren) {
+    // For "normal" elements, add the styles.  For containers with flex gap
+    // that wrap children, then the styles are already applied earlier in the
+    // function.
     rules.push(maybeRule(ruleName, showStyles(styles)));
   }
 
@@ -1619,7 +1627,7 @@ export const showSimpleCssRuleSet = (
         ctx,
         tpl,
         vs,
-        shouldHaveGapStyles
+        shouldWrapFlexChildren
           ? `${ruleName} > ${getGlobalClassSelector(
               makeWabFlexContainerClassName(opts)
             )}`

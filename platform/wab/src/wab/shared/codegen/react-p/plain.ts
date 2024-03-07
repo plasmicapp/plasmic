@@ -153,7 +153,15 @@ export function exportReactPlain(
     usedGlobalVariantGroups,
     variantComboChecker,
     variantComboSorter: makeVariantComboSorter(site, component),
-    exportOpts: opts,
+    exportOpts: {
+      ...opts,
+      stylesOpts: {
+        ...opts.stylesOpts,
+        // For plain export, always use css flex-gap so that each stack
+        // doesn't become two separate divs
+        useCssFlexGap: true,
+      },
+    },
     aliases: new Map(),
     ...extraOpts,
     s3ImageLinks: {},

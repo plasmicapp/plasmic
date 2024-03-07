@@ -2855,7 +2855,10 @@ export function serializeTplTagBase(
   let wrapFlexChild = "false";
   if (!isTplTextBlock(node)) {
     // See whether any VariantSettings flex-gap wrapping
-    if (ctx.componentGenHelper.hasGapStyle(node)) {
+    if (
+      ctx.componentGenHelper.hasGapStyle(node) &&
+      !ctx.exportOpts.stylesOpts.useCssFlexGap
+    ) {
       wrapFlexChild = "true";
     }
   }
@@ -4765,6 +4768,7 @@ export function serializeCssRules(ctx: SerializerBaseContext) {
               targetEnv: ctx.exportOpts.targetEnv,
               useCssModules: ctx.exportOpts.stylesOpts.scheme === "css-modules",
               whitespaceNormal: !!ctx.exportOpts.whitespaceNormal,
+              useCssFlexGap: ctx.exportOpts.stylesOpts.useCssFlexGap,
             }
           );
           buffer.push(...tryAugmentRulesWithScreenVariant(rules, vs));
