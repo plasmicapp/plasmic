@@ -38,6 +38,7 @@ export default defineConfig({
     distPath: {
       root: "build",
     },
+    charset: "utf8",
   },
   plugins: [pluginReact()],
   tools: {
