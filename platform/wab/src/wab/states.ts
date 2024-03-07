@@ -3,7 +3,6 @@ import {
   Component,
   ComponentVariantGroup,
   CustomCode,
-  ensureKnownFunctionArg,
   ensureKnownFunctionType,
   ensureKnownNamedState,
   EventHandler,
@@ -11,6 +10,7 @@ import {
   Interaction,
   isKnownCollectionExpr,
   isKnownCustomCode,
+  isKnownFunctionArg,
   isKnownFunctionExpr,
   isKnownGenericEventHandler,
   isKnownImageAssetRef,
@@ -1208,11 +1208,15 @@ export const initBuiltinActions = (siteCtx: SiteCtx) =>
       function: (args) => {
         const argsArg = args.find((arg) => arg.name === "args");
         const argsExpr = argsArg?.expr;
-        let _argNames: string[] = [];
         if (isKnownCollectionExpr(argsExpr)) {
-          _argNames = argsExpr.exprs.map(
-            (expr) => ensureKnownFunctionArg(expr).argType.argName
-          );
+          for (const expr of argsExpr.exprs) {
+            if (expr) {
+              assert(
+                isKnownFunctionArg(expr),
+                "exprs for ref action should be of type FunctionArg"
+              );
+            }
+          }
         }
         return `({tplRef, action, args}) => {
           return $refs?.[tplRef]?.[action]?.(...(args ?? []));
