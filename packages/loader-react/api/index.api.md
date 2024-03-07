@@ -60,6 +60,7 @@ import { useSelectors } from '@plasmicapp/host';
 export type CodeComponentMeta<P> = Omit<CodeComponentMeta_2<P>, "importPath" | "componentHelpers" | "states"> & {
     importPath?: string;
     states?: Record<string, StateSpec<P> & StateHelpers<P, any>>;
+    getServerInfo?: (props: P, ops: ReactServerOps) => ServerInfo;
 };
 
 // @public (undocumented)

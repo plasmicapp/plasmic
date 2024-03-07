@@ -17,6 +17,8 @@ import {
   InitOptions,
   REGISTERED_CODE_COMPONENT_HELPERS,
   REGISTERED_CUSTOM_FUNCTIONS,
+  ServerProvidedContext,
+  ServerProvidedData,
   SUBSTITUTED_COMPONENTS,
   SUBSTITUTED_GLOBAL_VARIANT_HOOKS,
 } from "./loader-shared";
@@ -413,11 +415,63 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
     );
     const helpers = { states: stateHelpers };
     this.internalSubstituteComponent(
-      component,
+      meta.getServerInfo
+        ? (props) => {
+            const { readContextValue } = getPrepassContextEnv();
+            const cache = fakeUsePlasmicDataConfig().cache as Map<string, any>;
+
+            const serverInfo = meta.getServerInfo?.(props, {
+              readContext: readContextValue as any,
+              readDataEnv: () => readContextValue(FakeDataContext),
+              readDataSelector: fakeUseSelector,
+              readDataSelectors: fakeUseSelectors,
+              fetchData: (cacheKey, fetcher) => {
+                if (!cache.has(cacheKey)) {
+                  throw fetcher().then((value) => cache.set(cacheKey, value));
+                }
+                return cache.get(cacheKey);
+              },
+            });
+
+            if (serverInfo && serverInfo.children) {
+              const contents: React.ReactNode[] = [] as React.ReactNode[];
+              const children = Array.isArray(serverInfo.children)
+                ? serverInfo.children
+                : [serverInfo.children];
+              children.forEach((childData) => {
+                contents.push(
+                  <ContextAndDataProviderWrapper contextAndData={childData}>
+                    {childData.node}
+                  </ContextAndDataProviderWrapper>
+                );
+              });
+              return (
+                <ContextAndDataProviderWrapper contextAndData={serverInfo}>
+                  {contents}
+                </ContextAndDataProviderWrapper>
+              );
+            } else {
+              return (
+                <ContextAndDataProviderWrapper
+                  contextAndData={serverInfo ?? {}}
+                >
+                  {Object.values(props)
+                    .flat(Infinity)
+                    .filter(
+                      (v: any): v is React.ReactNode =>
+                        v &&
+                        typeof v == "object" &&
+                        v.$$typeof &&
+                        React.isValidElement(v)
+                    )}
+                </ContextAndDataProviderWrapper>
+              );
+            }
+          }
+        : component,
       { name: meta.name, isCode: true },
       Object.keys(stateHelpers).length > 0 ? helpers : undefined
     );
-    // TODO: use `meta.getServerInfo`
   }
 
   registerFunction<F extends (...args: any[]) => any>(
@@ -660,4 +714,41 @@ function getPrepassContextEnv(): {
   readContextValue: (context: React.Context<any>) => any;
 } {
   return (globalThis as any).__ssrPrepassEnv;
+}
+
+// Provides context values to the children, described by
+// `ComponentMeta.getServerInfo`.
+function ContextAndDataProviderWrapper({
+  children,
+  contextAndData,
+}: {
+  children: React.ReactNode;
+  contextAndData: {
+    providedData?: ServerProvidedData | ServerProvidedData[];
+    providedContexts?: ServerProvidedContext | ServerProvidedContext[];
+  };
+}) {
+  const { setContextValue, readContextValue } = getPrepassContextEnv();
+  const contexts = contextAndData.providedContexts
+    ? Array.isArray(contextAndData.providedContexts)
+      ? contextAndData.providedContexts
+      : [contextAndData.providedContexts]
+    : [];
+  const providedData = contextAndData.providedData
+    ? Array.isArray(contextAndData.providedData)
+      ? contextAndData.providedData
+      : [contextAndData.providedData]
+    : [];
+  contexts.forEach((context) => {
+    setContextValue(context.contextKey as any, context.value);
+  });
+  let $ctx = readContextValue(FakeDataContext) ?? {};
+  providedData.forEach(({ name, data }) => {
+    $ctx = {
+      ...$ctx,
+      [name]: data,
+    };
+  });
+  setContextValue(FakeDataContext, $ctx);
+  return <>{children}</>;
 }

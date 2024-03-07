@@ -8,6 +8,9 @@ import type {
   StateSpec,
   TokenRegistration,
   TraitMeta,
+  useDataEnv,
+  useSelector,
+  useSelectors,
 } from "@plasmicapp/host";
 import {
   LoaderBundleCache,
@@ -104,6 +107,76 @@ export interface PlasmicRootWatcher {
   onDataFetched?: () => void;
 }
 
+/**
+ * Helper functions to describe code component behaviors, in order to allow
+ * data extraction in RSC / Next.js App routing.
+ */
+export interface ReactServerOps {
+  readDataEnv: typeof useDataEnv;
+  readDataSelector: typeof useSelector;
+  readDataSelectors: typeof useSelectors;
+  /**
+   * The contexts are passed using a key instead of the context provider
+   * Notice it cannot access the default context value if none has been provided,
+   * since React server components cannot create contexts.
+   */
+  readContext: (contextKey: string) => any;
+  /**
+   * Allows data fetching from the code component and caching the result,
+   * which will be stored in the `queryCache` returned by
+   * `extractPlasmicQueryData`.
+   */
+  fetchData: <T>(cacheKey: string, fetcher: () => Promise<T>) => T;
+}
+
+/**
+ * Represents data provided by a code component via `DataProvider`
+ */
+export interface ServerProvidedData {
+  name: string;
+  data: any;
+}
+
+/**
+ * Provides a new value for a given context key, similar to Context.Provider.
+ * The context itself is not available (RSC doesn't allow calling
+ * `createContext`) so each context will need to be represented as a unique
+ * "context key". Also it means the default context value is not available
+ * in case no value is passed (and reading that context will return `undefined`)
+ */
+export interface ServerProvidedContext {
+  /**
+   * Identifier to the context, required to read it later via
+   * `ReactServerOps.readContext()`.
+   */
+  contextKey: string;
+  /**
+   * Context value being provided (similar to `Context.Provider`).
+   */
+  value: any;
+}
+
+/**
+ *  Each child of a code component might receive separate `DataProvider` and
+ *  Context values.
+ */
+export interface ServerChildData {
+  providedData?: ServerProvidedData | ServerProvidedData[];
+  providedContexts?: ServerProvidedContext | ServerProvidedContext[];
+  node: React.ReactNode;
+}
+
+export interface ServerInfo {
+  /**
+   * Optional: Indicates the React Nodes created by the component and the
+   * respective contexts provided to them. If not specified, it will render the
+   * children passed to the component as props.
+   */
+  children?: ServerChildData | ServerChildData[];
+  providedData?: ServerProvidedData | ServerProvidedData[];
+  providedContexts?: ServerProvidedContext | ServerProvidedContext[];
+}
+
 export type CodeComponentMeta<P> = Omit<
   InternalCodeComponentMeta<P>,
   "importPath" | "componentHelpers" | "states"
@@ -119,6 +192,12 @@ export type CodeComponentMeta<P> = Omit<
    * The states helpers are registered together with the states for the Plasmic headless API
    */
   states?: Record<string, StateSpec<P> & StateHelpers<P, any>>;
+
+  /**
+   * Helper function to enable data extraction when running Plasmic from
+   * Next.js App Router.
+   */
+  getServerInfo?: (props: P, ops: ReactServerOps) => ServerInfo;
 };
 
 export type GlobalContextMeta<P> = Omit<
