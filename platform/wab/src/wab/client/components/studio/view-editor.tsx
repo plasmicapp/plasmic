@@ -1256,7 +1256,13 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
           const replaceComponentInstances = !!(await confirm({
             message: (
               <>
-                What should we do when we paste a Figma component instance?{" "}
+                <p>
+                  Figma components instances can be converted into existing
+                  components of the same name, in your Plasmic project,
+                  including code components. If there's no component of the same
+                  name, it will be converted into basic elements.
+                </p>
+                <p>Try converting Figma components to Plasmic components?</p>
                 <a
                   href="https://docs.plasmic.app/learn/importing-from-figma/#converting-component-instances"
                   target="_blank"
@@ -1265,9 +1271,8 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                 </a>
               </>
             ),
-            confirmLabel:
-              "Replace with Plasmic component of the same name if possible",
-            cancelLabel: "Always flatten into html tags",
+            confirmLabel: "Yes, use existing Plasmic components",
+            cancelLabel: "No, use basic elements",
           }));
           return { replaceComponentInstances, ...figmaPasteInput };
         }
