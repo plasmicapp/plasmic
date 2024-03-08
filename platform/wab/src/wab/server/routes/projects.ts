@@ -2640,11 +2640,15 @@ export async function updateProjectData(req: Request, res: Response) {
   }
 
   const data = req.body as UpdateProjectReq;
+  const branchId = data.branchId
+    ? brand<string, "BranchId">(data.branchId)
+    : undefined;
+
   const latestRev = await dbMgr.getLatestProjectRev(
     projectId,
-    data.branchId
+    branchId
       ? {
-          branchId: brand(data.branchId),
+          branchId,
         }
       : undefined
   );
@@ -2817,6 +2821,7 @@ export async function updateProjectData(req: Request, res: Response) {
     data: JSON.stringify(newBundle),
     revisionNum: latestRev.revision + 1,
     seqIdAssign: undefined,
+    branchId: branchId,
   });
 
   userAnalytics(req).track({
