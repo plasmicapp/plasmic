@@ -81,9 +81,9 @@ function StepContentPopup(props: StepContentPopupProps) {
           </StandardMarkdown>
         </div>
         <IconButton
-          href="https://plasmic.app/slack"
+          href="https://forum.plasmic.app/"
           target="_blank"
-          hoverText="Join our community for help"
+          hoverText="Visit our community forum for help"
           size="large"
         >
           <HelpIcon />

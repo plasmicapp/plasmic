@@ -15,6 +15,7 @@ A live demo is available at:
 https://custom-target-plasmic.vercel.app/
 
 The targetting shows different variations based on the following rules:
+
 - `browser` = `chrome`
 - `utm_source` = `google`
 
@@ -33,6 +34,6 @@ To learn more about Plasmic, take a look at the following resources:
 
 - [Plasmic Website](https://www.plasmic.app/)
 - [Plasmic Documentation](https://docs.plasmic.app/learn/)
-- [Plasmic Slack Community](https://www.plasmic.app/slack)
+- [Plasmic Community Forum](https://forum.plasmic.app/)
 
 You can check out [the Plasmic GitHub repository](https://github.com/plasmicapp/plasmic) - your feedback and contributions are welcome!

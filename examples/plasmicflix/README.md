@@ -5,6 +5,7 @@
 </p>
 
 # PlasmicFlix Demo
+
 This is a demo of building a video streaming service on top of Plasmic and Next.js. To read more about how this works, check out our tutorial [here]().
 
 ## Getting Started
@@ -20,7 +21,7 @@ yarn dev
 3. Open your browser to see the result.
 
 4. You can view the Plasmic-built frontend [here](https://studio.plasmic.app/projects/eqrDNQBEf6ytvNJgLEmjN2). If you want to make edits, clone the Plasmic project and note the new
-project ID and token. These fields will need to be updated in `.env.local` to reflect your changes.
+   project ID and token. These fields will need to be updated in `.env.local` to reflect your changes.
 
 ## Learn More
 
@@ -30,7 +31,7 @@ To learn more about Plasmic, take a look at the following resources:
 
 - [Plasmic Website](https://www.plasmic.app/)
 - [Plasmic Documentation](https://docs.plasmic.app/learn/)
-- [Plasmic Slack Community](https://www.plasmic.app/slack)
+- [Plasmic Community Forum](https://forum.plasmic.app/)
 
 You can check out [the Plasmic GitHub repository](https://github.com/plasmicapp/plasmic) - your feedback and contributions are welcome!
 

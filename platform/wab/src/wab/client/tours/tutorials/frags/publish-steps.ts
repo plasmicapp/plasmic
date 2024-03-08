@@ -126,7 +126,7 @@ Or, feel free to stay and keep playing around in this tutorial project. Experime
 
 And don't forget to:
 
-- [Join our Slack Community](https://plasmic.app/slack) 💬
+- [Check out our community forum](https://forum.plasmic.app/) 💬
 - [Learn more in the docs](https://docs.plasmic.app) 📖
 `,
   shouldAdvance: (event) => {

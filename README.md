@@ -46,10 +46,13 @@
 - [Website](https://www.plasmic.app/)
 - [Documentation][docs]
 - [Quickstart][quickstart]
+- [Plasmic Forum][forum]
 - [Slack Community][slack]
 
 [docs]: https://www.plasmic.app/learn/
 [quickstart]: https://www.plasmic.app/learn/quickstart/
+[forum]: https://forum.plasmic.app/
+[slack]: https://www.plasmic.app/slack
 
 ## See Plasmic in action
 
@@ -243,21 +246,21 @@ which detects whether a package has changed since its last git-tagged release.
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Getting help
+## Get help and join our community
 
-Feel free to join our [Slack Community][slack] and ask us anything! We're here to help and always welcome contributions.
+Our [docs][docs] and our community [forum] and [Slack] with 3000+ members are the best places to get help with Plasmic.
+
+For support from the Plasmic team, please use the forum.
+The forum is also easily searchable for all previously asked questions and discussions.
+
+Both the docs and forum are indexed by search engines!
+Search both by including “plasmic” in your query.
 
 ## License
 
 All content outside of `platform/` is licensed under the MIT license--see LICENSE.md.
 
 `platform/` is licensed under the AGPL--see LICENSE.platform.md.
-
-## Get help and join our community
-
-Connect with the Plasmic team and with other Plasmic users on the [Plasmic Community Slack][slack].
-
-[slack]: https://www.plasmic.app/slack
 
 ## Contributors ❤️
 

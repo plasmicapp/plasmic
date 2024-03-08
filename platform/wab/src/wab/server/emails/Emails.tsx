@@ -146,9 +146,11 @@ export async function sendWelcomeEmail(
       : ""
   }
 
-  <p>You're invited to join us on Slack - we want to hear all your questions/feedback:</p>
+  <p>For help and discussions, join our community - we want to hear all your questions and feedback.</p>
 
-  <p><a href="https://plasmic.app/slack">https://plasmic.app/slack</a></p>
+  <p>Forum: <a href="https://forum.plasmic.app/">https://forum.plasmic.app/</a></p>
+
+  <p>Slack: <a href="https://plasmic.app/slack">https://plasmic.app/slack</a></p>
 
   <p>We're excited to see what you build with Plasmic!</p>
 
