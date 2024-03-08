@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="robots" content="noindex" />
-    <script src="%PUBLIC_URL%/static/js/preamble.js"></script>
+    <script src="<%= assetPrefix %>/static/js/preamble.js"></script>
 
     <script>
       const isProd =
@@ -193,7 +193,7 @@
         animation-timing-function: ease-in-out;
       }
     </style>
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="shortcut icon" href="<%= assetPrefix %>/favicon.ico" />
     <link
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Inter:wght@300;400;500;600;700;900&display=swap"
       rel="stylesheet"
@@ -201,7 +201,7 @@
     <link
       rel="stylesheet"
       type="text/css"
-      href="%PUBLIC_URL%/static/css/normalize.css"
+      href="<%= assetPrefix %>/static/css/normalize.css"
     />
     <title>Plasmic</title>
     <!-- For style tokens and mixins -->
