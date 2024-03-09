@@ -55,6 +55,7 @@ import {
   Column,
   Entity,
   Index,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -153,6 +154,7 @@ export class Team extends Base<"TeamId"> {
   personalTeamOwnerId: UserId | null;
 
   @OneToOne((_type) => User)
+  @JoinColumn()
   personalTeamOwner: User | null;
 
   @OneToMany((type) => Permission, (perm) => perm.team)
@@ -1029,6 +1031,7 @@ export class SamlConfig extends Base<"SamlConfigId"> {
   teamId: TeamId;
 
   @OneToOne(() => Team)
+  @JoinColumn()
   team: Team;
 
   @Index()
@@ -1056,6 +1059,7 @@ export class SsoConfig extends Base<"SsoConfigId"> {
   teamId: TeamId;
 
   @OneToOne(() => Team)
+  @JoinColumn()
   team: Team;
 
   @Index()
@@ -1647,6 +1651,7 @@ export class TeamDiscourseInfo extends Base<"TeamDiscourseInfo"> {
   teamId: TeamId;
 
   @OneToOne(() => Team)
+  @JoinColumn()
   team: Team;
 
   /**
