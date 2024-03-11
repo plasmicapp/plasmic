@@ -165,8 +165,8 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
       ),
     ];
 
-    const selectableAssets = studioCtx.site.imageAssets.map(
-      (asset) => asset.uuid
+    const selectableAssets = makeAssetsItems(studioCtx.site.imageAssets).map(
+      (asset) => asset.key
     );
 
     return (
