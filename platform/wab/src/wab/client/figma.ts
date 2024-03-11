@@ -685,6 +685,12 @@ const styleForGeometryMixin = (
             // Figma stores gradient start and endpoints as an affine transform
             // applied to these original points
             const matrix = inverse(transformToMatrix(paint.gradientTransform));
+
+            // If the matrix is not invertible, we won't attempt to use it
+            if (isNaN(matrix.a)) {
+              return;
+            }
+
             const startPoint = applyToPoint(matrix, { x: 0, y: 0.5 });
             const endPoint = applyToPoint(matrix, { x: 1, y: 0.5 });
 
