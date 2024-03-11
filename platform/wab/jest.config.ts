@@ -36,6 +36,7 @@ const config: Config = {
     "^src/(.*)$": "<rootDir>/src/$1",
     "^@/(.*)": "<rootDir>/src/$1",
     "^!file-loader!": "<rootDir>/__mocks__/file-loader-mock.js",
+    "^!raw-loader!(.*)$": "$1",
   },
   moduleFileExtensions: [
     "web.js",

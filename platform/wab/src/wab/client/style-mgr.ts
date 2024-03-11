@@ -67,10 +67,10 @@ import {
 } from "@/wab/tpls";
 import { sortBy } from "lodash";
 import { StudioCtx } from "./studio-ctx/StudioCtx";
-const reactWebCssPkg = require("!css-loader!@plasmicapp/react-web/lib/plasmic.css");
-const reactWebCss = (
-  reactWebCssPkg.default ?? reactWebCssPkg
-).toString() as string;
+
+// @ts-ignore
+// eslint-disable-next-line path/no-relative-imports
+import reactWebCss from "!raw-loader!../gen/static/styles/react-web-css.txt";
 
 export interface UpsertStyleChanges {
   variantSettings?: ReadonlyArray<

@@ -30,9 +30,11 @@ if (window && "matchMedia" in window) {
 import "tinymce/skins/ui/tinymce-5/skin.min.css";
 
 // @ts-ignore
-import contentCss from "!file-loader!tinymce/skins/ui/tinymce-5/content.min.css";
+// eslint-disable-next-line path/no-relative-imports
+import contentCss from "!raw-loader!../../gen/static/styles/tinymce-content-css.txt";
 // @ts-ignore
-import prismCss from "!file-loader!prismjs/themes/prism.min.css";
+// eslint-disable-next-line path/no-relative-imports
+import prismCss from "!raw-loader!../../gen/static/styles/prismjs-css.txt";
 
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
@@ -50,7 +52,6 @@ export function TinyEditor({ value, onChange, ...props }: TinyEditorProps) {
       <Editor
         init={{
           skin: false,
-          content_css: [contentCss, prismCss],
           height: 500,
           width: 600,
           menubar: false,
@@ -64,7 +65,11 @@ export function TinyEditor({ value, onChange, ...props }: TinyEditorProps) {
             img {
               height: auto;
               max-width: 100%;
-            }`,
+            }
+
+            ${contentCss}
+            ${prismCss}
+            `,
           plugins: [
             "advlist",
             "anchor",
