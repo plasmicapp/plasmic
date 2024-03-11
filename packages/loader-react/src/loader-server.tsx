@@ -418,19 +418,13 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
       meta.getServerInfo
         ? (props) => {
             const { readContextValue } = getPrepassContextEnv();
-            const cache = fakeUsePlasmicDataConfig().cache as Map<string, any>;
 
             const serverInfo = meta.getServerInfo?.(props, {
               readContext: readContextValue as any,
               readDataEnv: () => readContextValue(FakeDataContext),
               readDataSelector: fakeUseSelector,
               readDataSelectors: fakeUseSelectors,
-              fetchData: (cacheKey, fetcher) => {
-                if (!cache.has(cacheKey)) {
-                  throw fetcher().then((value) => cache.set(cacheKey, value));
-                }
-                return cache.get(cacheKey);
-              },
+              fetchData: fakeUseMutablePlasmicQueryData,
             });
 
             if (serverInfo && serverInfo.children) {

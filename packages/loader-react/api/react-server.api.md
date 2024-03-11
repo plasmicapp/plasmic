@@ -41,11 +41,12 @@ import type { TokenRegistration } from '@plasmicapp/host';
 import { TrackRenderOptions } from '@plasmicapp/loader-core';
 import type { TraitMeta } from '@plasmicapp/host';
 import type { useDataEnv } from '@plasmicapp/host';
+import type { useMutablePlasmicQueryData } from '@plasmicapp/query';
 import type { useSelector } from '@plasmicapp/host';
 import type { useSelectors } from '@plasmicapp/host';
 
 // @public
-export function __EXPERMIENTAL__extractPlasmicQueryData(element: React.ReactElement): Promise<Record<string, any>>;
+export function __EXPERMIENTAL__extractPlasmicQueryData(element: React.ReactElement, loader: PlasmicComponentLoader): Promise<Record<string, any>>;
 
 export { ComponentMeta }
 

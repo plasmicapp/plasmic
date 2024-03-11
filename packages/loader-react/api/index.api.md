@@ -51,6 +51,7 @@ import { TokenRegistration } from '@plasmicapp/host';
 import { TrackRenderOptions } from '@plasmicapp/loader-core';
 import { TraitMeta } from '@plasmicapp/host';
 import { useDataEnv } from '@plasmicapp/host';
+import type { useMutablePlasmicQueryData } from '@plasmicapp/query';
 import { usePlasmicCanvasContext } from '@plasmicapp/host';
 import { usePlasmicQueryData } from '@plasmicapp/query';
 import { useSelector } from '@plasmicapp/host';

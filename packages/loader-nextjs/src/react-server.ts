@@ -11,8 +11,10 @@ import * as NextRouter from "next/router.js";
 import { initPlasmicLoaderWithCache } from "./cache";
 import type { NextInitOptions } from "./shared-exports";
 
-export { __EXPERMIENTAL__extractPlasmicQueryData } from "@plasmicapp/loader-react/react-server";
+import { __EXPERMIENTAL__extractPlasmicQueryData as internalExtractPlasmicQueryData } from "@plasmicapp/loader-react/react-server";
 export * from "./shared-exports";
+
+import type * as ClientExports from ".";
 
 type ServerRequest = IncomingMessage & {
   cookies: {
@@ -89,3 +91,12 @@ export function initPlasmicLoader(opts: NextInitOptions) {
   }
   return loader;
 }
+
+export const __EXPERMIENTAL__extractPlasmicQueryData: (
+  element: React.ReactElement,
+  // We can't use `NextJsPlasmicComponentLoader` or `PlasmicComponentLoader`
+  // types because they refer to the react-server version, which Typescript
+  // doesn't recognize as compatible with the client version (whose type is
+  // also the one exported from `react-server-conditional` imports).
+  loader: ClientExports.NextJsPlasmicComponentLoader
+) => Promise<Record<string, any>> = internalExtractPlasmicQueryData as any;

@@ -27,6 +27,7 @@ import {
   LoaderBundleOutput,
 } from "@plasmicapp/loader-fetcher";
 import { getActiveVariation, getExternalIds } from "@plasmicapp/loader-splits";
+import type { useMutablePlasmicQueryData } from "@plasmicapp/query";
 import { prepComponentData } from "./bundles";
 import { ComponentLookup } from "./component-lookup";
 import type { GlobalVariantSpec } from "./PlasmicRootProvider";
@@ -126,7 +127,7 @@ export interface ReactServerOps {
    * which will be stored in the `queryCache` returned by
    * `extractPlasmicQueryData`.
    */
-  fetchData: <T>(cacheKey: string, fetcher: () => Promise<T>) => T;
+  fetchData: typeof useMutablePlasmicQueryData;
 }
 
 /**
