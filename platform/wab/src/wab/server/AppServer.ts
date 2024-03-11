@@ -1684,6 +1684,7 @@ export function addMainAppServerRoutes(app: express.Application) {
   );
   app.delete(
     "/api/v1/projects/:projectId/branches/:branchId",
+    safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
     withNext(deleteBranch)
   );
   app.post(
