@@ -51,7 +51,7 @@ export function useEmailVerification(selfInfo: ApiUser) {
   function showEmailSentNotification() {
     notification.info({
       message: `New email sent to ${selfInfo.email}"`,
-      description: "Please verifiy your email address to start use Plasmic.",
+      description: "Please verify your email address to start using Plasmic.",
     });
   }
 

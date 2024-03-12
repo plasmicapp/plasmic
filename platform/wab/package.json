@@ -39,6 +39,7 @@
     "eslint-all": "yarn --cwd ../.. eslint platform/wab",
     "test": "jest --runInBand --forceExit",
     "test:coverage": "jest --coverage",
+    "test:inspect": "node --inspect-brk node_modules/.bin/jest --runInBand",
     "backend": "bash tools/backend-server.bash",
     "backend:debug": "debug=1 bash tools/backend-server.bash",
     "gen:models": "npm run run-ts -- tools/gen-models.ts",

@@ -281,15 +281,12 @@ export class User extends OrgChild<"UserId"> {
   @Column("jsonb", { nullable: true })
   whiteLabelInfo: UserWhiteLabelInfo | null;
 
+  @ManyToOne(() => PromotionCode, { nullable: true })
+  signUpPromotionCode: PromotionCode | null;
+
   toJSON() {
     return normalizeJson(_.omit(this, "bcrypt"));
   }
-}
-
-export function createShopifySyncState() {
-  return {
-    pages: {},
-  };
 }
 
 @Entity()

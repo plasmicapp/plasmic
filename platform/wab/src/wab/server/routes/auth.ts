@@ -59,6 +59,7 @@ import { IVerifyOptions } from "passport-local";
 import util from "util";
 import { customTeamApiAuth, customTeamApiUserAuth } from "./custom-api-auth";
 import { isCustomPublicApiRequest } from "./custom-routes";
+import { getPromotionCodeCookie } from "./promo-code";
 import {
   addShopify,
   getShopifyClientForUserId,
@@ -141,11 +142,13 @@ export async function createUserFull({
       return undefined;
     }
   }
+  const signUpPromotionCode = getPromotionCodeCookie(req);
   const user = await mgr.createUser({
     email,
     password,
     firstName,
     lastName,
+    signUpPromotionCode,
     ...(noWelcomeEmailAndSurvey != null
       ? {
           needsSurvey: !noWelcomeEmailAndSurvey,

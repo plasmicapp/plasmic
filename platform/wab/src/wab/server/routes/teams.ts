@@ -8,12 +8,7 @@ import {
 import { checkPermissions, ForbiddenError } from "@/wab/server/db/DbMgr";
 import { prepareTeamSupportUrls as doPrepareTeamSupportUrls } from "@/wab/server/discourse/prepareTeamSupportUrls";
 import { sendShareEmail } from "@/wab/server/emails/Emails";
-import {
-  Project,
-  PromotionCode,
-  Team,
-  Workspace,
-} from "@/wab/server/entities/Entities";
+import { Project, Team, Workspace } from "@/wab/server/entities/Entities";
 import { isTeamOnFreeTrial } from "@/wab/server/freeTrial";
 import {
   ApiPermission,
@@ -52,6 +47,7 @@ import { Request, Response } from "express-serve-static-core";
 import L from "lodash";
 import { customCreateTeam } from "./custom-routes";
 import { mkApiProject } from "./projects";
+import { getPromotionCodeCookie } from "./promo-code";
 import {
   maybeTriggerPaywall,
   passPaywall,
@@ -125,9 +121,7 @@ export async function createTeam(req: Request, res: Response) {
   const teamName = rawName
     ? rawName
     : `${ensure(req.user, "User must be authenticated").firstName}'s Team`;
-  const promotionCode = req.cookies["promo_code"]
-    ? (JSON.parse(req.cookies["promo_code"]) as PromotionCode)
-    : undefined;
+  const promotionCode = getPromotionCodeCookie(req);
   const extendedFreeTrial = promotionCode
     ? (await superMgr.getPromotionCodeById(promotionCode.id))?.trialDays
     : undefined;

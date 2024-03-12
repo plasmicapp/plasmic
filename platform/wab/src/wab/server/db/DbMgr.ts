@@ -59,7 +59,6 @@ import {
   CommentReaction,
   CopilotInteraction,
   CopilotUsage,
-  createShopifySyncState,
   DataSource,
   DataSourceAllowedProjects,
   DataSourceOperation,
@@ -1721,6 +1720,7 @@ export class DbMgr implements MigrationDbMgr {
     whiteLabelId,
     whiteLabelInfo,
     owningTeamId,
+    signUpPromotionCode,
     ...fields
   }: {
     orgId?: string;
@@ -1732,6 +1732,7 @@ export class DbMgr implements MigrationDbMgr {
     whiteLabelId?: string;
     whiteLabelInfo?: User["whiteLabelInfo"];
     owningTeamId?: string;
+    signUpPromotionCode?: PromotionCode;
   } & Partial<UpdatableUserFields>) {
     this.allowAnyone();
     fields = _.pick(fields, updatableUserFields);
@@ -1750,6 +1751,7 @@ export class DbMgr implements MigrationDbMgr {
       whiteLabelId,
       whiteLabelInfo,
       owningTeamId,
+      signUpPromotionCode,
       ...fields,
     });
 
@@ -6123,7 +6125,7 @@ export class DbMgr implements MigrationDbMgr {
     projectId: ProjectId
   ): Promise<ShopifySyncStateData> {
     const project = await this.getProjectById(projectId);
-    return project.extraData?.shopifySyncState ?? createShopifySyncState();
+    return project.extraData?.shopifySyncState ?? { pages: {} };
   }
 
   async upsertShopifySyncState(

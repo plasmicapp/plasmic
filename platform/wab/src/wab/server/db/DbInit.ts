@@ -56,6 +56,8 @@ async function seedTestDb(em: EntityManager) {
   await seedTeam(em, user2, "Test Pro Org", proFt);
   await seedTeam(em, user2, "Test Starter Org", starterFt);
 
+  await seedTestPromotionCodes(em);
+
   // Seed the Plume pkg, which must be done after some users have been created
   await new PlumePkgMgr(db).seedPlumePkg();
 }
@@ -254,4 +256,14 @@ async function seedTeam(
   );
 
   return team;
+}
+
+async function seedTestPromotionCodes(em: EntityManager) {
+  const db0 = new DbMgr(em, SUPER_USER);
+  await db0.createPromotionCode(
+    "FREETESTING",
+    "FREETESTING - Free trial for testing",
+    30,
+    null
+  );
 }
