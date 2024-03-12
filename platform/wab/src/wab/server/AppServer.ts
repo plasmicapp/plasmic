@@ -327,37 +327,36 @@ const datadogMiddleware = connectDatadog({
   dogstatsd: new hotShots.StatsD("localhost", 8126),
 });
 
-const csrfFreeStaticRoutes = {
-  "/api/v1/admin/user": true,
-  "/api/v1/admin/resetPassword": true,
-  "/api/v1/admin/delete-project": true,
-  "/api/v1/admin/restore-project": true,
-  "/api/v1/admin/login-as": true,
-  "/api/v1/admin/invite": true,
-  "/api/v1/admin/devflags": true,
-  "/api/v1/admin/clone": true,
-  "/api/v1/admin/deactivate-user": true,
-  "/api/v1/admin/revert-project-revision": true,
-  "/api/v1/bigcommerce/graphql": true,
-  "/api/v1/mail/subscribe": true,
-  "/api/v1/plume-pkg/versions": true,
-  "/api/v1/localization/gen-texts": true,
-  "/api/v1/hosting-hit": true,
-  "/api/v1/socket/": true,
-  "/api/v1/init-token/": true,
-  "/api/v1/promo-code/": true,
-  "/api/v1/projects/import": process.env.NODE_ENV !== "production",
+const csrfFreeStaticRoutes = [
+  "/api/v1/admin/user",
+  "/api/v1/admin/resetPassword",
+  "/api/v1/admin/delete-project",
+  "/api/v1/admin/restore-project",
+  "/api/v1/admin/login-as",
+  "/api/v1/admin/invite",
+  "/api/v1/admin/devflags",
+  "/api/v1/admin/clone",
+  "/api/v1/admin/deactivate-user",
+  "/api/v1/admin/revert-project-revision",
+  "/api/v1/bigcommerce/graphql",
+  "/api/v1/mail/subscribe",
+  "/api/v1/plume-pkg/versions",
+  "/api/v1/localization/gen-texts",
+  "/api/v1/hosting-hit",
+  "/api/v1/socket/",
+  "/api/v1/init-token/",
+  "/api/v1/promo-code/",
 
   // csrf-free routes to the socket server routes, if socket server
   // is not running and the routes are mounted on this server
-  "/api/v1/disconnect": true,
-  "/api/v1/projects/broadcast": true,
-  "/api/v1/cli/emit-token": true,
-};
+  "/api/v1/disconnect",
+  "/api/v1/projects/broadcast",
+  "/api/v1/cli/emit-token",
+];
 
-const isCsrfFreeRoute = (pathname: string) => {
+const isCsrfFreeRoute = (pathname: string, config: Config) => {
   return (
-    csrfFreeStaticRoutes[pathname] ||
+    csrfFreeStaticRoutes.includes(pathname) ||
     pathname.includes("/api/v1/clip/") ||
     pathname.includes("/code/") ||
     pathname.includes("/api/v1/loader/code") ||
@@ -372,11 +371,12 @@ const isCsrfFreeRoute = (pathname: string) => {
     pathname.match("/api/v1/projects/[^/]+$") ||
     pathname.match("/api/v1/auth/saml/.*/consume") ||
     pathname.match("/api/v1/auth/sso/.*/consume") ||
-    (pathname.includes("/api/v1/cmse/") &&
-      process.env.NODE_ENV !== "production") ||
     pathname.includes("/api/v1/app-auth/user") ||
     pathname.includes("/api/v1/app-auth/userinfo") ||
-    pathname.includes("/api/v1/app-auth/token")
+    pathname.includes("/api/v1/app-auth/token") ||
+    (!config.production &&
+      (pathname === "/api/v1/projects/import" ||
+        pathname.includes("/api/v1/cmse/")))
   );
 };
 
@@ -388,27 +388,6 @@ const ignoredErrorMessages = [
   // a typeorm query. Nothing we can do about that.
   "Query runner already released",
 ];
-
-// Rate limit for forgetPassword and signUp routes.
-// Currently using in-memory storage, can be improved to use
-// redis/postgres.
-const sensitiveRateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  limit: 15,
-  message: "Too many requests, please try again later.",
-  handler: (req, res, next, options) => {
-    req
-      .resolveTransaction()
-      .catch(() => {})
-      .finally(() => res.status(options.statusCode).send(options.message));
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  validate: {
-    xForwardedForHeader: false,
-    trustProxy: false,
-  },
-});
 
 function shouldIgnoreErrorByMessage(message: string) {
   return ignoredErrorMessages.some((pattern) => message.includes(pattern));
@@ -748,7 +727,10 @@ function addMiddlewares(
   if (!opts?.skipSession) {
     const csrf = lusca.csrf();
     app.use((req, res, next) => {
-      if (isCsrfFreeRoute(req.path) || authRoutes.isPublicApiRequest(req)) {
+      if (
+        isCsrfFreeRoute(req.path, config) ||
+        authRoutes.isPublicApiRequest(req)
+      ) {
         // API requests also don't need csrf
         return next();
       } else {
@@ -1295,7 +1277,36 @@ export function addCodegenRoutes(app: express.Application) {
   );
 }
 
-export function addMainAppServerRoutes(app: express.Application) {
+export function addMainAppServerRoutes(
+  app: express.Application,
+  config: Config
+) {
+  // Rate limit for forgetPassword and signUp routes.
+  // Currently using in-memory storage, can be improved to use
+  // redis/postgres.
+  const sensitiveRateLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 15,
+    message: "Too many requests, please try again later.",
+    handler: (req, res, next, options) => {
+      req
+        .resolveTransaction()
+        .catch(() => {})
+        .finally(() => res.status(options.statusCode).send(options.message));
+    },
+    skip: (req) => {
+      const shouldRateLimit =
+        config.production || req.get("x-plasmic-test-rate-limit") === "true";
+      return !shouldRateLimit;
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+    validate: {
+      xForwardedForHeader: false,
+      trustProxy: false,
+    },
+  });
+
   app.use((req, res, next) => {
     console.log(req.ip);
     next();
@@ -1315,7 +1326,11 @@ export function addMainAppServerRoutes(app: express.Application) {
    * Auth Routes
    */
   app.get("/api/v1/auth/csrf", withNext(authRoutes.csrf));
-  app.post("/api/v1/auth/login", withNext(authRoutes.login));
+  app.post(
+    "/api/v1/auth/login",
+    sensitiveRateLimiter,
+    withNext(authRoutes.login)
+  );
   app.post(
     "/api/v1/auth/sign-up",
     sensitiveRateLimiter,
@@ -1325,6 +1340,7 @@ export function addMainAppServerRoutes(app: express.Application) {
   app.post("/api/v1/auth/self", withNext(authRoutes.updateSelf));
   app.post(
     "/api/v1/auth/self/password",
+    sensitiveRateLimiter,
     withNext(authRoutes.updateSelfPassword)
   );
   app.post("/api/v1/auth/logout", withNext(authRoutes.logout));
@@ -1333,10 +1349,19 @@ export function addMainAppServerRoutes(app: express.Application) {
     sensitiveRateLimiter,
     withNext(authRoutes.forgotPassword)
   );
-  app.post("/api/v1/auth/resetPassword", withNext(authRoutes.resetPassword));
-  app.post("/api/v1/auth/confirmEmail", withNext(authRoutes.confirmEmail));
+  app.post(
+    "/api/v1/auth/resetPassword",
+    sensitiveRateLimiter,
+    withNext(authRoutes.resetPassword)
+  );
+  app.post(
+    "/api/v1/auth/confirmEmail",
+    sensitiveRateLimiter,
+    withNext(authRoutes.confirmEmail)
+  );
   app.post(
     "/api/v1/auth/sendEmailVerification",
+    sensitiveRateLimiter,
     withNext(authRoutes.sendEmailVerification)
   );
   app.get(

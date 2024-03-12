@@ -102,4 +102,32 @@ describe("auth", () => {
       });
     });
   });
+
+  describe("login", () => {
+    it("is rate limited", async () => {
+      api = new ApiTester(apiRequestContext, baseURL, {
+        "x-plasmic-test-rate-limit": "true",
+      });
+      await api.refreshCsrfToken();
+      for (let i = 0; i < 20; ++i) {
+        try {
+          const res = await api.login({
+            email: `${Date.now()}@example.com`,
+            password: "SuperStrongPassword!!",
+          });
+          expect(res).toEqual({
+            status: false,
+            reason: "IncorrectLoginError",
+          });
+          expect(i).toBeLessThan(15);
+        } catch (error: unknown) {
+          if (error instanceof Error && error.message.startsWith("429")) {
+            expect(i).toBeGreaterThanOrEqual(15);
+          } else {
+            throw error;
+          }
+        }
+      }
+    });
+  });
 });

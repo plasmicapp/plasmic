@@ -5,7 +5,8 @@ import { APIRequestContext } from "playwright";
 export class ApiTester extends SharedApi {
   constructor(
     private readonly api: APIRequestContext,
-    private readonly baseURL
+    private readonly baseURL: string,
+    private readonly extraHeaders: { [name: string]: string } = {}
   ) {
     super();
   }
@@ -20,14 +21,22 @@ export class ApiTester extends SharedApi {
     _hideDataOnError?: boolean | undefined,
     _noErrorTransform?: boolean | undefined
   ): Promise<any> {
-    console.info("HTTP request", method, url, data);
+    const headers = { ...opts?.headers, ...this.extraHeaders };
+    console.info("HTTP request", method, url, headers, data);
     const res = await this.api.fetch(`${this.baseURL}${url}`, {
       method,
-      headers: opts?.headers,
+      headers,
       data,
     });
-    const json = await res.json();
-    console.info("HTTP response", method, url, json);
-    return json;
+    try {
+      const json = await res.json();
+      console.info("HTTP response", method, url, res.status(), json);
+      return json;
+    } catch {
+      // TODO: make a common HTTP error shared across the codebase
+      const text = await res.text();
+      console.info("HTTP response", method, url, res.status(), text);
+      throw new Error(`${res.status()}: ${text}`);
+    }
   }
 }

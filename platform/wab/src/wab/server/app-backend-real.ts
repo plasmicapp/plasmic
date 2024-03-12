@@ -42,9 +42,9 @@ export async function runAppServer(config: Config) {
     "studio",
     config,
     (application) => {
-      addMainAppServerRoutes(application);
+      addMainAppServerRoutes(application, config);
 
-      if (process.env.NODE_ENV !== "production") {
+      if (!config.production) {
         // For development, we also add codegen routes to the dev server.
         // In production, we don't, as codegen routes has security issues
         // like server side rendering, which the prod server is not
