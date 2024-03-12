@@ -1,4 +1,5 @@
 import { stringToPair } from "@/wab/server/util/hash";
+import * as Sentry from "@sentry/node";
 import { parse as parseDbUri } from "pg-connection-string";
 import {
   Connection,
@@ -24,41 +25,52 @@ export async function ensureDbConnection(
   }
 ) {
   const maxConnections = opts?.maxConnections ?? 15;
-  if (!getConnectionManager().has(name)) {
-    console.log(`Creating typeorm connection pool for ${name}`);
-    let connOpts: ConnectionOptions;
-    if (typeof dburi === "string") {
-      const envPassword = process.env.WAB_DBPASSWORD;
-      connOpts = Object.assign(
-        {},
-        await getConnectionOptions(),
-        {
-          type: "postgres",
-          extra: {
-            // Set postgres pool size up from default of 10
-            // https://node-postgres.com/api/pool
-            max: maxConnections,
-          },
-        },
-        opts?.useEnvPassword && envPassword
-          ? {
-              // We parse dbUri into its component options, instead of specifying
-              // `url:`, because we can't use `url:` in combination with `password:`
-              ...parseDbUri(dburi),
-              password: envPassword,
-            }
-          : {
-              url: dburi,
-            }
-      );
-    } else {
-      connOpts = dburi;
-    }
+  const connMgr = getConnectionManager();
 
-    return await createConnection({ ...connOpts, name });
-  } else {
-    return getConnection(name);
+  if (connMgr.has(name)) {
+    try {
+      const conn = connMgr.get(name);
+      if (conn.isConnected) {
+        console.log(`Reusing typeorm connection pool for ${name}`);
+        return conn;
+      }
+    } catch (error: unknown) {
+      console.warn(error);
+      Sentry.captureException(error);
+    }
   }
+
+  console.log(`Creating typeorm connection pool for ${name}`);
+  let connOpts: ConnectionOptions;
+  if (typeof dburi === "string") {
+    const envPassword = process.env.WAB_DBPASSWORD;
+    connOpts = Object.assign(
+      {},
+      await getConnectionOptions(),
+      {
+        type: "postgres",
+        extra: {
+          // Set postgres pool size up from default of 10
+          // https://node-postgres.com/api/pool
+          max: maxConnections,
+        },
+      },
+      opts?.useEnvPassword && envPassword
+        ? {
+            // We parse dbUri into its component options, instead of specifying
+            // `url:`, because we can't use `url:` in combination with `password:`
+            ...parseDbUri(dburi),
+            password: envPassword,
+          }
+        : {
+            url: dburi,
+          }
+    );
+  } else {
+    connOpts = dburi;
+  }
+
+  return await createConnection({ ...connOpts, name });
 }
 
 export const MIGRATION_POOL_NAME = "migration-pool";

@@ -98,7 +98,9 @@ export async function createDatabase() {
     dbname,
     dburi,
     cleanup: async () => {
+      await con.close();
       await sucon.query(`drop database ${dbname} with (force);`);
+      await sucon.close();
     },
   };
 }
