@@ -291,7 +291,9 @@ export abstract class SharedApi {
     method: LowerHttpMethod,
     url: string,
     data?: {},
-    opts?: {},
+    opts?: {
+      headers: { [name: string]: string | undefined };
+    },
     hideDataOnError?: boolean,
     noErrorTransform?: boolean
   ): Promise<any>;

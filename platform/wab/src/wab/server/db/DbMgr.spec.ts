@@ -1,10 +1,10 @@
 import { ensure, filterMapTruthy } from "@/wab/common";
 import { CmsRow, User } from "@/wab/server/entities/Entities";
+import { getTeamAndWorkspace, withDb } from "@/wab/server/test/backend-util";
 import { AccessLevel } from "@/wab/shared/EntUtil";
 import L from "lodash";
 import { ApiCmsQuery, CmsTableId } from "src/wab/shared/ApiSchema";
 import { ANON_USER, DbMgr, SkipSafeDelete } from "./DbMgr";
-import { getTeamAndWorkspace, withDb } from "./test-util";
 
 describe("DbMgr.CMS", () => {
   it("allows crud on database", () =>

@@ -1,6 +1,6 @@
-import { withDb } from "@/wab/server/db/test-util";
 import * as genCodeBundleMod from "@/wab/server/loader/gen-code-bundle";
 import * as resolveProjectsMod from "@/wab/server/loader/resolve-projects";
+import { withDb } from "@/wab/server/test/backend-util";
 import { prefillCloudfront } from "@/wab/server/workers/prefill-cloudfront";
 
 describe("Prefill cloudfront", () => {

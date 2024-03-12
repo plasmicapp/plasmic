@@ -7,6 +7,7 @@ import {
   PkgVersion,
   ProjectRevision,
 } from "@/wab/server/entities/Entities";
+import { DbTestArgs, withDb } from "@/wab/server/test/backend-util";
 import { BranchId, MainBranchId, ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
 import { BranchSide } from "@/wab/shared/site-diffs/merge-core";
@@ -15,7 +16,6 @@ import { createSite } from "@/wab/sites";
 import L, { omit } from "lodash";
 import { getLastBundleVersion } from "./BundleMigrator";
 import { DbMgr } from "./DbMgr";
-import { DbTestArgs, withDb } from "./test-util";
 
 const bundler = new Bundler();
 

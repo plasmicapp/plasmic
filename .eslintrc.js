@@ -1,5 +1,24 @@
 const TYPES = `AnyType|Arena|ArenaChild|ArenaFrame|ArenaFrameCell|ArenaFrameGrid|ArenaFrameRow|Arg|ArgType|BindingStruct|BoolType|Choice|ClassNamePropType|CodeComponentHelper|CodeComponentMeta|CodeLibrary|CollectionExpr|ColorPropType|ColumnsConfig|ColumnsSetting|Component|ComponentArena|ComponentDataQuery|ComponentInstance|ComponentSwapSplitContent|ComponentTemplateInfo|ComponentVariantGroup|ComponentVariantSplitContent|CompositeExpr|CustomCode|CustomFunction|DataSourceOpExpr|DataSourceTemplate|DateRangeStrings|DateString|DefaultStylesClassNamePropType|DefaultStylesPropType|EventHandler|Expr|ExprText|FigmaComponentMapping|FunctionArg|FunctionExpr|FunctionType|GenericEventHandler|GlobalVariantGroup|GlobalVariantGroupParam|GlobalVariantSplitContent|HostLessPackageInfo|HrefType|ImageAsset|ImageAssetRef|Img|Interaction|LabeledSelector|MapExpr|Marker|Mixin|NameArg|NamedState|NodeMarker|Num|ObjectPath|PageArena|PageHref|PageMeta|Param|PlumeInfo|PlumeInstance|PrimitiveType|ProjectDependency|PropParam|QueryData|QueryInvalidationExpr|QueryRef|RandomSplitSlice|RawText|RenderExpr|RenderFuncType|RenderableType|Rep|RichText|Rule|RuleSet|Scalar|SegmentSplitSlice|SelectorRuleSet|Site|SlotParam|Split|SplitContent|SplitSlice|State|StateChangeHandlerParam|StateParam|StrongFunctionArg|StyleExpr|StyleMarker|StyleNode|StylePropType|StyleScopeClassNamePropType|StyleToken|StyleTokenRef|TargetType|TemplatedString|Text|Theme|ThemeLayoutSettings|ThemeStyle|TplComponent|TplNode|TplRef|TplSlot|TplTag|Var|VarRef|Variant|VariantGroup|VariantGroupState|VariantSetting|VariantedRuleSet|VariantedValue|VariantsRef|VirtualRenderExpr`;
 
+const clientFiles = [
+  "platform/wab/src/wab/main.tsx",
+  "platform/wab/src/wab/client/**/*.ts",
+  "platform/wab/src/wab/client/**/*.tsx",
+];
+const serverFiles = [
+  "platform/wab/src/wab/server/**/*.ts",
+  "platform/wab/src/wab/server/**/*.tsx",
+];
+const testFiles = [
+  "**/*.spec.ts",
+  "**/*.spec.tsx",
+  "**/*-spec.ts",
+  "**/*-spec.tsx",
+  "**/*.test.ts",
+  "**/*.test.tsx",
+  "**/test/**/*",
+];
+
 module.exports = {
   root: true,
   ignorePatterns: [
@@ -241,17 +260,8 @@ module.exports = {
 
       overrides: [
         {
-          files: [
-            "platform/wab/src/wab/server/**/*.ts",
-            "platform/wab/src/wab/server/**/*.tsx",
-          ],
-          excludedFiles: [
-            "**/*.spec.ts",
-            "**/*.spec.tsx",
-            "**/*-spec.ts",
-            "**/*.test.ts",
-            "**/test/**/*",
-          ],
+          files: serverFiles,
+          excludedFiles: testFiles,
           rules: {
             "@typescript-eslint/no-restricted-imports": [
               "error",
@@ -261,6 +271,12 @@ module.exports = {
                     group: ["**/client/*"],
                     message:
                       "Files in `server/` cannot import from `client/`. Please move this file inside `client/` or use `import type`",
+                    allowTypeImports: true,
+                  },
+                  {
+                    group: ["**/test/*"],
+                    message:
+                      "Only test files can import files in `test/`. Please move this file inside `test/` or use `import type`",
                     allowTypeImports: true,
                   },
                   {
@@ -274,14 +290,8 @@ module.exports = {
           },
         },
         {
-          files: ["wab/src/wab/client/**/*.ts", "wab/src/wab/client/**/*.tsx"],
-          excludedFiles: [
-            "**/*.spec.ts",
-            "**/*.spec.tsx",
-            "**/*-spec.ts",
-            "**/*.test.ts",
-            "**/test/**/*",
-          ],
+          files: clientFiles,
+          excludedFiles: testFiles,
           rules: {
             "@typescript-eslint/no-restricted-imports": [
               "error",
@@ -293,6 +303,12 @@ module.exports = {
                       "Files in `client/` cannot import from `server/`. Please move this file inside `server/` or use `import type`",
                     allowTypeImports: true,
                   },
+                  {
+                    group: ["**/test/*"],
+                    message:
+                      "Only test files can import files in `test/`. Please move this file inside `test/` or use `import type`",
+                    allowTypeImports: true,
+                  },
                 ],
               },
             ],
@@ -300,16 +316,7 @@ module.exports = {
         },
         {
           files: ["platform/wab/src/**/*.ts", "platform/wab/src/**/*.tsx"],
-          excludedFiles: [
-            "platform/wab/src/wab/server/**/*",
-            "platform/wab/src/wab/client/**/*",
-            "platform/wab/src/wab/main.tsx",
-            "**/*.spec.ts",
-            "**/*.spec.tsx",
-            "**/*-spec.ts",
-            "**/*.test.ts",
-            "**/test/**/*",
-          ],
+          excludedFiles: [...clientFiles, ...serverFiles, ...testFiles],
           rules: {
             "@typescript-eslint/no-restricted-imports": [
               "error",
@@ -326,6 +333,12 @@ module.exports = {
                     group: ["**/server/*"],
                     message:
                       "Only server files can import from `server/`. Please move this file inside `server/` or use `import type`",
+                    allowTypeImports: true,
+                  },
+                  {
+                    group: ["**/test/*"],
+                    message:
+                      "Only test files can import files in `test/`. Please move this file inside `test/` or use `import type`",
                     allowTypeImports: true,
                   },
                   {
