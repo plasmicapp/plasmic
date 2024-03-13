@@ -3233,10 +3233,10 @@
     dlv "^1.1.3"
     qs "^6.11.0"
 
-"@plasmicpkgs/plasmic-tabs@^0.0.31":
-  version "0.0.31"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-tabs/-/plasmic-tabs-0.0.31.tgz#e3ce1cd454017b74ed3dc73c3ef1fbf7dd0e25b2"
-  integrity sha512-xxRsCHAWPmET2Q/THAcQVLGnucr1JiQ/UTkKtEwE/QenxLRgJlXtEUMZ/UAbHy3SYWcD+rglDfcV3H4InEdJog==
+"@plasmicpkgs/plasmic-tabs@^0.0.32":
+  version "0.0.32"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-tabs/-/plasmic-tabs-0.0.32.tgz#9d7f6581f09afaad5bc341af360c96ba9066d1a3"
+  integrity sha512-qVUlAMXePKwMOvasl08NZwv0emt7ytBmadPZBbcWlaE09r3V/6e6bkiRUK/z4WtXjlQluHpUSTrq47W1hGV5DA==
   dependencies:
     "@plasmicapp/host" "1.0.191"
     constate "^3.3.2"

@@ -38,7 +38,7 @@
     "@plasmicpkgs/plasmic-rich-components": "^1.0.178",
     "@plasmicpkgs/plasmic-sanity-io": "^1.0.169",
     "@plasmicpkgs/plasmic-strapi": "^0.1.139",
-    "@plasmicpkgs/plasmic-tabs": "^0.0.31",
+    "@plasmicpkgs/plasmic-tabs": "^0.0.32",
     "@plasmicpkgs/plasmic-wordpress": "^0.0.112",
     "@plasmicpkgs/plasmic-wordpress-graphql": "^0.0.107",
     "@plasmicpkgs/radix-ui": "^0.0.45",
