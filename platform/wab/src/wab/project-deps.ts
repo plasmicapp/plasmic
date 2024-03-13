@@ -139,13 +139,23 @@ export type DependencyWalkScope = "all" | "direct";
 export function walkDependencyTree(site: Site, scope: DependencyWalkScope) {
   const queue: ProjectDependency[] = [...site.projectDependencies];
   const result: ProjectDependency[] = [];
+  const traversedIds = new Set();
 
   while (queue.length > 0) {
     const curr = ensure(queue.shift(), "Queue should not be empty");
+    if (traversedIds.has(curr.projectId)) continue;
+    traversedIds.add(curr.projectId);
     result.push(curr);
     // By default only get direct dependencies
     if (scope === "all") {
-      queue.push(...curr.site.projectDependencies);
+      queue.push(
+        // only add those dependencies to the queue which have not already been traversed, neither already queued for traversal
+        ...curr.site.projectDependencies.filter(
+          (pdep) =>
+            !traversedIds.has(pdep.projectId) &&
+            !queue.some((item) => item.projectId === pdep.projectId)
+        )
+      );
     }
   }
   return result;
