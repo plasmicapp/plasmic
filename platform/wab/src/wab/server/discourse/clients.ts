@@ -1,5 +1,5 @@
-import { BASE_URL, SYSTEM_USERNAME } from "@/wab/server/discourse/config";
 import { getDiscourseApiKey } from "@/wab/server/secrets";
+import { BASE_URL, SYSTEM_USERNAME } from "@/wab/shared/discourse/config";
 import { DiscourseClient } from "@/wab/shared/discourse/DiscourseClient";
 
 export function createSystemDiscourseClient() {

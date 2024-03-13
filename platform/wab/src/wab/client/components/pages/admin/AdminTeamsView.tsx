@@ -6,15 +6,15 @@ import {
 } from "@/wab/client/hooks/useAsyncStrict";
 import EyeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Eye";
 import {
-  BASE_URL,
-  PUBLIC_SUPPORT_CATEGORY_ID,
-} from "@/wab/server/discourse/config";
-import {
   ApiPermission,
   ApiTeam,
   ApiTeamDiscourseInfo,
   TeamWhiteLabelInfo,
 } from "@/wab/shared/ApiSchema";
+import {
+  BASE_URL,
+  PUBLIC_SUPPORT_CATEGORY_ID,
+} from "@/wab/shared/discourse/config";
 import {
   Button,
   Card,

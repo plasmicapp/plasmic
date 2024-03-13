@@ -3,6 +3,13 @@ import { TeamDiscourseInfo } from "@/wab/server/entities/Entities";
 import { PreconditionFailedError } from "@/wab/shared/ApiErrors/errors";
 import { TeamId } from "@/wab/shared/ApiSchema";
 import {
+  BASE_URL,
+  FeatureTierConfig,
+  FEATURE_TIERS,
+  PRIVATE_SUPPORT_CATEGORY_ID,
+  SUPPORT_GROUP_NAME,
+} from "@/wab/shared/discourse/config";
+import {
   Category,
   CategoryMutation,
   DiscourseClient,
@@ -11,13 +18,6 @@ import {
   PermissionType,
 } from "@/wab/shared/discourse/DiscourseClient";
 import { createSystemDiscourseClient } from "./clients";
-import {
-  BASE_URL,
-  FeatureTierConfig,
-  FEATURE_TIERS,
-  PRIVATE_SUPPORT_CATEGORY_ID,
-  SUPPORT_GROUP_NAME,
-} from "./config";
 
 /**
  * Creates or updates the org's Discourse configuration,

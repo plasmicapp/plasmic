@@ -3,12 +3,12 @@ import {
   createSystemDiscourseClient,
   createUserDiscourseClient,
 } from "@/wab/server/discourse/clients";
+import { User } from "@/wab/server/entities/Entities";
+import { ApiTeamSupportUrls, TeamId } from "@/wab/shared/ApiSchema";
 import {
   BASE_URL,
   PUBLIC_SUPPORT_CATEGORY_ID,
-} from "@/wab/server/discourse/config";
-import { User } from "@/wab/server/entities/Entities";
-import { ApiTeamSupportUrls, TeamId } from "@/wab/shared/ApiSchema";
+} from "@/wab/shared/discourse/config";
 import {
   DiscourseHttpError,
   Group as DiscourseGroup,
