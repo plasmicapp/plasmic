@@ -161,8 +161,8 @@ export const ImageSection = observer(function ImageSection(props: {
     fallback: { showFallback, setShowFallback },
     switchToDynamic,
   });
-  const isCustomCode = isRealCodeExpr(expr);
-  const shouldShowSizeProps = isKnownCustomCode(expr);
+  const isDynamicExpression = isRealCodeExpr(expr);
+  const shouldShowSizeProps = isDynamicExpression || isKnownCustomCode(expr);
 
   return (
     <StylePanelSection
@@ -216,7 +216,7 @@ export const ImageSection = observer(function ImageSection(props: {
             expr={expr}
           />
         </WithContextMenu>
-      ) : isCustomCode ? (
+      ) : isDynamicExpression ? (
         <div className="panel-row flex-col">
           <WithContextMenu
             overlay={imageMenu}
