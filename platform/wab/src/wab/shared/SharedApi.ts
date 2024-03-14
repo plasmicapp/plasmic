@@ -416,6 +416,7 @@ export abstract class SharedApi {
         revision: number;
         depPkgs: PkgVersionInfo[];
         deletedIids: string[];
+        modifiedComponentIids: string[];
       }
     | { data?: never; needsReload: true }
     | { data: null; needsReload?: never }
@@ -517,6 +518,7 @@ export abstract class SharedApi {
       hostlessDataVersion: number;
       incremental: boolean;
       toDeleteIids: string[];
+      modifiedComponentIids: string[];
       branchId?: BranchId;
     }
   ) {

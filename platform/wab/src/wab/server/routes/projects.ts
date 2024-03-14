@@ -1019,11 +1019,17 @@ export async function getModelUpdates(req: Request, res: Response) {
     const deletedIids = new Set(
       JSON.parse(partialChanges[0].deletedIids) as string[]
     );
+    const modifiedComponentIids = new Set(
+      partialChanges[0].modifiedComponentIids ?? []
+    );
     for (const change of partialChanges.slice(1)) {
       const changeBundle = getBundle(change, latestVersion);
       const newDeletedIids = JSON.parse(change.deletedIids) as string[];
       Object.keys(changeBundle.map).forEach((iid) => deletedIids.delete(iid));
       newDeletedIids.forEach((iid) => deletedIids.add(iid));
+      change.modifiedComponentIids?.forEach((c) =>
+        modifiedComponentIids.add(c)
+      );
       const newMap = { ...data.map };
       Object.entries(changeBundle.map).forEach(([iid, json]) => {
         if (newMap[iid]) {
@@ -1051,6 +1057,7 @@ export async function getModelUpdates(req: Request, res: Response) {
       ).revision,
       depPkgs: deps.filter((dep) => !installedDeps.has(dep.id)),
       deletedIids: Array.from(deletedIids),
+      modifiedComponentIids: Array.from(modifiedComponentIids),
     });
   }
 }
@@ -1232,6 +1239,7 @@ export async function saveProjectRev(req: Request, res: Response) {
     })();
 
     const deletedIids: string[] = req.body.toDeleteIids || [];
+    const modifiedComponents: string[] = req.body.modifiedComponents || [];
 
     await mgr.savePartialRevision({
       projectId,
@@ -1240,6 +1248,7 @@ export async function saveProjectRev(req: Request, res: Response) {
       deletedIids: JSON.stringify(deletedIids),
       branchId,
       projectRevisionId: rev.id,
+      modifiedComponentIids: modifiedComponents,
     });
   } else {
     // If we're saving the entire bundle, it's better not to save it as an

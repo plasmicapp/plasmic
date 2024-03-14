@@ -44,6 +44,7 @@ class Helpers {
       data: JSON.stringify(commonArgs),
       deletedIids: "{}",
       projectRevisionId: rev.id,
+      modifiedComponentIids: [],
     });
     this.revisionNum++;
   }

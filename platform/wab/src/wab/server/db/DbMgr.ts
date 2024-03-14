@@ -3879,6 +3879,7 @@ export class DbMgr implements MigrationDbMgr {
     revisionNum,
     branchId,
     projectRevisionId,
+    modifiedComponentIids,
   }: {
     projectId: string;
     data: string;
@@ -3886,6 +3887,7 @@ export class DbMgr implements MigrationDbMgr {
     revisionNum: number;
     branchId?: BranchId;
     projectRevisionId: string;
+    modifiedComponentIids: string[];
   }) {
     await this.checkProjectBranchPerms(
       { projectId, branchId },
@@ -3901,6 +3903,7 @@ export class DbMgr implements MigrationDbMgr {
       revision: revisionNum,
       projectRevisionId,
       branchId: branchId ?? null,
+      modifiedComponentIids,
     });
     await this.entMgr.save(partialRev);
     return partialRev;

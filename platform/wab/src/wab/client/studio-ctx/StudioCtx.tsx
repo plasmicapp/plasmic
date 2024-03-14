@@ -4648,10 +4648,8 @@ export class StudioCtx extends WithDbCtx {
           changeCounterBeingSaved - this._savedChangeCounter,
         "changeRecords should have exactly the amount os changes since it was saved last"
       );
-      const { changesBundle, toDeleteIids, allIids } = this.bundleChanges(
-        changes.changes,
-        incremental
-      );
+      const { changesBundle, toDeleteIids, allIids, modifiedComponentIids } =
+        this.bundleChanges(changes.changes, incremental);
 
       if (!DEVFLAGS.skipInvariants) {
         try {
@@ -4681,6 +4679,7 @@ export class StudioCtx extends WithDbCtx {
             incremental: incremental,
             toDeleteIids,
             branchId: this.dbCtx().branchInfo?.id,
+            modifiedComponentIids,
           }),
           // Two-minute timeout
           120 * 1000
@@ -4924,6 +4923,7 @@ export class StudioCtx extends WithDbCtx {
     changesBundle: DeepReadonly<Bundle>;
     toDeleteIids: string[];
     allIids: string[];
+    modifiedComponentIids: string[];
   } {
     const persistentChanges = filterPersistentChanges(allChanges);
 
@@ -4957,6 +4957,7 @@ export class StudioCtx extends WithDbCtx {
         changesBundle: bundle,
         toDeleteIids: [],
         allIids,
+        modifiedComponentIids: [],
       };
     }
 
@@ -4969,7 +4970,8 @@ export class StudioCtx extends WithDbCtx {
       }
     });
 
-    // Updated Iids
+    const modifiedComponentIids = new Set<string>();
+    // Updated Iids and modified components
     persistentChanges.forEach((change) => {
       const { inst, field } = change.changeNode;
       const addr = this.bundler().addrOf(inst);
@@ -4985,6 +4987,13 @@ export class StudioCtx extends WithDbCtx {
           map[addr.iid][field] = bundle.map[addr.iid][field];
         }
       }
+      if (this.appCtx.appConfig.incrementalObservables) {
+        change.path?.forEach((path) => {
+          if (classes.isKnownComponent(path.inst) && path.field === "tplTree") {
+            modifiedComponentIids.add(this.bundler().addrOf(path.inst).iid);
+          }
+        });
+      }
     });
 
     // Deleted Iids
@@ -4996,6 +5005,7 @@ export class StudioCtx extends WithDbCtx {
       changesBundle: { ...bundle, map },
       toDeleteIids,
       allIids,
+      modifiedComponentIids: Array.from(modifiedComponentIids),
     };
   }
 
@@ -5669,9 +5679,26 @@ export class StudioCtx extends WithDbCtx {
     }
     const hasUnsavedChanges = this.hasUnsavedChanges();
     if (updatedModel.data) {
-      const { data, depPkgs } = updatedModel;
+      const { data, depPkgs, deletedIids, modifiedComponentIids } =
+        updatedModel;
       try {
         this._isRefreshing = true;
+
+        if (this.appCtx.appConfig.incrementalObservables) {
+          this.dbCtx().maybeObserveComponents(
+            withoutNils(
+              modifiedComponentIids.map((c) => {
+                const compInst = this.bundler().objByAddr({
+                  uuid: projectId,
+                  iid: c,
+                });
+                return classes.isKnownComponent(compInst)
+                  ? compInst
+                  : undefined;
+              })
+            )
+          );
+        }
 
         const undoAndRecord = (changes: RecordedChanges) =>
           this.recorder.withRecording(() => undoChanges(changes.changes));
@@ -5689,7 +5716,7 @@ export class StudioCtx extends WithDbCtx {
           updateSummaryFromDeletedInstances(
             this._serverUpdatesSummary,
             withoutNils(
-              updatedModel.deletedIids.map((iid) =>
+              deletedIids.map((iid) =>
                 this.bundler().objByAddr({ uuid: projectId, iid })
               )
             )
@@ -5728,9 +5755,7 @@ export class StudioCtx extends WithDbCtx {
             Object.keys(partialBundle.map).forEach((iid) =>
               this._savedIids.add(iid)
             );
-            updatedModel.deletedIids.forEach((iid) =>
-              this._savedIids.delete(iid)
-            );
+            deletedIids.forEach((iid) => this._savedIids.delete(iid));
           });
 
           // Re-apply the local changes on top of the server changes
