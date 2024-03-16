@@ -337,7 +337,7 @@ function useColumnDefinitions(
 
           // To come later
           readonly: false,
-          sorter: true,
+          sorter: !cconfig.disableSorting,
           copyable: false,
           ellipsis: false,
           tip: undefined,

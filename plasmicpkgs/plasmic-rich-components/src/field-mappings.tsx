@@ -1,8 +1,8 @@
-import { TableSchema, QueryResult } from "@plasmicapp/data-sources";
-import { PropType } from "@plasmicapp/host/registerComponent";
-import { isOneOf, withoutFalsey } from "./utils";
-import deepGet from "lodash/get";
+import { QueryResult, TableSchema } from "@plasmicapp/data-sources";
 import { ContextDependentConfig } from "@plasmicapp/host";
+import { PropType } from "@plasmicapp/host/registerComponent";
+import deepGet from "lodash/get";
+import { isOneOf, withoutFalsey } from "./utils";
 
 export interface AutoSettings {
   dataType: "auto";

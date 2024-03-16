@@ -48,7 +48,15 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
   props: {
     data: dataProp(),
 
-    fields: buildFieldsPropType<TableColumnConfig, RichTableProps>({}),
+    fields: buildFieldsPropType<TableColumnConfig, RichTableProps>({
+      fieldTypes: {
+        disableSorting: {
+          type: "boolean",
+          displayName: "Disable sorting?",
+          defaultValueHint: false,
+        },
+      },
+    }),
 
     canSelectRows: {
       type: "choice",
