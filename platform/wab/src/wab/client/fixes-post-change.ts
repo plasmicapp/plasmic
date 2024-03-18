@@ -27,6 +27,7 @@ import {
   fillVirtualSlotContents,
   findParentArgs,
   findParentSlot,
+  isDefaultSlotArg,
 } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
@@ -45,6 +46,8 @@ import {
   isTplVariantable,
   tryGetOwnerSite,
 } from "@/wab/tpls";
+import { uniqBy } from "lodash";
+import { DbCtx } from "./db";
 import { StudioCtx } from "./studio-ctx/StudioCtx";
 
 /**
@@ -69,7 +72,7 @@ export function fixupForChanges(
   if (changes.changes.length > 0) {
     // Do model-related fixes
     [changes, summary] = applyFix(() =>
-      fixupVirtualSlotArgs(studioCtx.tplMgr(), summary)
+      fixupVirtualSlotArgs(studioCtx.dbCtx(), studioCtx.tplMgr(), summary)
     );
 
     [changes, summary] = applyFix(() =>
@@ -263,6 +266,7 @@ function fixupImplicitStates(summary: ChangeSummary) {
     }
   }
 }
+
 /**
  * Given some ModelChanges, fixes up the data model related to virtual slots.  Specifically:
  *
@@ -288,6 +292,7 @@ function fixupImplicitStates(summary: ChangeSummary) {
  * "fix up" the forking or virtual node updates here, after the change has happened.
  */
 export function fixupVirtualSlotArgs(
+  dbCtx: DbCtx,
   tplMgr: TplMgr,
   summary: Pick<ChangeSummary, "updatedNodes" | "newTrees">
 ) {
@@ -347,6 +352,12 @@ export function fixupVirtualSlotArgs(
   // affected by updatedTplSlots, because some of those updatedTplSlots may
   // contain one of these newTplComponents, and they need to have their virtual
   // contents filled in first before they are copied to affected TplComponents
+  dbCtx.maybeObserveComponents(
+    uniqBy(
+      Array.from(newTplComponents).map((tpl) => $$$(tpl).owningComponent()),
+      "uuid"
+    )
+  );
   for (const tplc of newTplComponents) {
     fillVirtualSlotContents(tplMgr, tplc);
   }
@@ -361,8 +372,26 @@ export function fixupVirtualSlotArgs(
         .map((slot) => param2Components.get(slot.param))
         .filter(notNil)
     );
-    const affectedTplComponents = allTplComponents.filter((tplc) =>
-      affectedComponents.has(tplc.component)
+    const affectedTplComponents = allTplComponents.filter((tplc) => {
+      if (!affectedComponents.has(tplc.component)) {
+        return false;
+      }
+      const slots = Array.from(updatedTplSlots).filter((slot) =>
+        tplc.component.params.includes(slot.param)
+      );
+      for (const slot of slots) {
+        const arg = $$$(tplc).getSlotArgForParam(slot.param);
+        if (isDefaultSlotArg(arg)) {
+          return true;
+        }
+      }
+      return false;
+    });
+    dbCtx.maybeObserveComponents(
+      uniqBy(
+        affectedTplComponents.map((tpl) => $$$(tpl).owningComponent()),
+        "uuid"
+      )
     );
     for (const tplc of affectedTplComponents) {
       const slots = Array.from(updatedTplSlots).filter((slot) =>

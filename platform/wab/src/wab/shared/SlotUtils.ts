@@ -362,6 +362,10 @@ export function isDescendantOfVirtualRenderExpr(node: TplNode) {
   return res ? isKnownVirtualRenderExpr(res.arg.expr) : false;
 }
 
+export function isDefaultSlotArg(arg?: Arg) {
+  return !arg || arg.expr === null || isKnownVirtualRenderExpr(arg.expr);
+}
+
 /**
  * Returns ancestor TplSlot of argument tpl.  A TplSlot is returned
  * if the `tpl` is a descendent of a TplSlot (and so part of its
@@ -469,11 +473,8 @@ export function fillVirtualSlotContents(
   const baseVariant = getBaseVariantForClonedDefaultContents(tplMgr, tpl);
   for (const slot of slots) {
     const arg = $$$(tpl).getSlotArgForParam(slot.param);
-    let newDefaultContents: TplNode[] | undefined = undefined;
-    if (!arg || arg.expr === null || isKnownVirtualRenderExpr(arg.expr)) {
-      newDefaultContents = cloneSlotDefaultContents(slot, [baseVariant]);
-    }
-    if (newDefaultContents) {
+    if (isDefaultSlotArg(arg)) {
+      const newDefaultContents = cloneSlotDefaultContents(slot, [baseVariant]);
       $$$(tpl).updateSlotArgForParam(
         slot.param,
         (arg_) => {
