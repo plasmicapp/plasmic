@@ -1,5 +1,15 @@
-import { Site, TplNode } from "@/wab/classes";
-import { tuple } from "@/wab/common";
+import {
+  Arg,
+  isKnownTplComponent,
+  isKnownTplSlot,
+  isKnownVirtualRenderExpr,
+  RenderExpr,
+  Site,
+  TplComponent,
+  TplNode,
+  TplSlot,
+} from "@/wab/classes";
+import { notNil, tuple } from "@/wab/common";
 import { isPageComponent } from "@/wab/components";
 import { ChangeSummary, summarizeChanges } from "@/wab/model-change-util";
 import { mergeRecordedChanges, RecordedChanges } from "@/wab/observable-model";
@@ -13,13 +23,18 @@ import {
 import { fixupForPlume } from "@/wab/shared/plume/plume-utils";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { isStretchyComponent } from "@/wab/shared/sizingutils";
-import { fixupVirtualSlotArgs } from "@/wab/shared/SlotUtils";
+import {
+  fillVirtualSlotContents,
+  findParentArgs,
+  findParentSlot,
+} from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { isBaseVariant } from "@/wab/shared/Variants";
 import { getAllSiteFrames } from "@/wab/sites";
 import { ensureCorrectImplicitStates } from "@/wab/states";
 import {
+  buildParamToComponent as buildParamToComponentMap,
   flattenTpls,
   getTplOwnerComponent,
   isGrid,
@@ -245,6 +260,115 @@ function fixupImplicitStates(summary: ChangeSummary) {
           }
         }
       }
+    }
+  }
+}
+/**
+ * Given some ModelChanges, fixes up the data model related to virtual slots.  Specifically:
+ *
+ * * If a TplComponent has been updated / created, we fill in its slot Args with
+ *   VirtualRenderExpr with a copy of the default slot contents.
+ * * If a TplNode has been updated under some TplSlot.defaultContents, then we update
+ *   all TplComponents with args that have a VirtualRenderExpr for the corresponding arg
+ *   with a new copy of defaultContents.
+ * * If a TplNode has been updated under some slot arg, and it was previously an arg with
+ *   VirtualRenderExpr, then we "fork" the arg and turn it into a normal RenderExpr.
+ *
+ * A discussion on VirtualRenderExpr: we want TplComponents that don't have their own
+ * args for slots to display the defaultContents for those slots.  To do so, we
+ * instantiate args for those slots with a VirtualRenderExpr that is a copy of the
+ * defaultContents for those slots.  Then, when we detect user changes to
+ * the arg content, we can fork; when we detect user changes to the default contents,
+ * we can sync.  It's not ideal that we are "manually" maintaining a clone of the
+ * defaultContents in all these VirtualRenderExpr.  However, node editing currently
+ * can happen anywhere in the app at any time for whatever reason, and so when the
+ * edits happen to args that currently reflect default slot contents, we need to make sure
+ * those edits don't go to the actual defaultContents TplNodes.  Therefore the
+ * scheme here is to keep a clone that can absorb those edits, and then we
+ * "fix up" the forking or virtual node updates here, after the change has happened.
+ */
+export function fixupVirtualSlotArgs(
+  tplMgr: TplMgr,
+  summary: Pick<ChangeSummary, "updatedNodes" | "newTrees">
+) {
+  // Gather up all the new values to see what TplSlot or TplComponent themselves
+  // have been updated.
+  const updatedTplSlots = new Set<TplSlot>();
+  const newTplComponents = new Set<TplComponent>();
+
+  const maybeForkArg = (arg: Arg) => {
+    if (isKnownVirtualRenderExpr(arg.expr)) {
+      // Fork the update!
+      arg.expr = new RenderExpr({ tpl: [...arg.expr.tpl] });
+    }
+  };
+
+  // If any new TplSlot or TplComponent have been attached to the model tree,
+  // also track them for fixing.  We look at both newTrees and movedTrees,
+  //
+  for (const newTree of summary.newTrees) {
+    for (const newNode of flattenTpls(newTree)) {
+      if (isKnownTplSlot(newNode)) {
+        updatedTplSlots.add(newNode);
+      } else if (isKnownTplComponent(newNode)) {
+        newTplComponents.add(newNode);
+      }
+    }
+  }
+
+  // From summary.updatedNodes, see if any TplNodes that belong to a TplSlot
+  // or TplComponent.args have been updated.  We look at summary.updatedNodes
+  // and also summary.movedTrees, because we may have a tpl that was moved from
+  // a VirtualRenderExpr to a RenderExpr (via a fork), which would only show up
+  // in movedTrees; we want to detect the correspondingly affected parent arg
+  // in that case.
+  for (const node of [...summary.updatedNodes]) {
+    if (isKnownTplSlot(node)) {
+      updatedTplSlots.add(node);
+    } else {
+      const parentArgs = findParentArgs(node);
+      if (parentArgs.length > 0) {
+        // changed `node` is a part of some TplComponent slot arg;
+        // we might need to fork the arg content
+        for (const parentArg of parentArgs) {
+          maybeForkArg(parentArg.arg);
+        }
+      }
+      const parentSlot = findParentSlot(node);
+      if (parentSlot) {
+        // changed `node` is a part of some slot default content
+        updatedTplSlots.add(parentSlot);
+      }
+    }
+  }
+
+  // For each new TplComponent, we fill in VirualRenderExpr args for
+  // slots with defaultContents. We do this before we fix up the TplComponents
+  // affected by updatedTplSlots, because some of those updatedTplSlots may
+  // contain one of these newTplComponents, and they need to have their virtual
+  // contents filled in first before they are copied to affected TplComponents
+  for (const tplc of newTplComponents) {
+    fillVirtualSlotContents(tplMgr, tplc);
+  }
+
+  if (updatedTplSlots.size > 0) {
+    // For each updated TplSlot (defaultContents have changed), we
+    // update all TplComponents with a VirtualRenderExpr for this slot
+    const allTplComponents = tplMgr.filterAllNodes(isTplComponent);
+    const param2Components = buildParamToComponentMap(tplMgr.getComponents());
+    const affectedComponents = new Set(
+      Array.from(updatedTplSlots)
+        .map((slot) => param2Components.get(slot.param))
+        .filter(notNil)
+    );
+    const affectedTplComponents = allTplComponents.filter((tplc) =>
+      affectedComponents.has(tplc.component)
+    );
+    for (const tplc of affectedTplComponents) {
+      const slots = Array.from(updatedTplSlots).filter((slot) =>
+        tplc.component.params.includes(slot.param)
+      );
+      fillVirtualSlotContents(tplMgr, tplc, slots);
     }
   }
 }
