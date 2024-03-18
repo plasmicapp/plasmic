@@ -6837,126 +6837,141 @@
     estree-walker "^2.0.1"
     picomatch "^2.2.2"
 
-"@rsbuild/core@^0.3.7":
-  version "0.3.11"
-  resolved "https://registry.yarnpkg.com/@rsbuild/core/-/core-0.3.11.tgz#3368e7204e8ed0e2fa168ada60da666c5da75264"
-  integrity sha512-nnjULj8IGyxIQqJZwaZAErXmUES0gVnCVTlcDKxExlMpvufnzhwn2jzgPepYUKsqgUD+BnvEyaV0MZJTPjpScg==
+"@rsbuild/core@0.3.7":
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/@rsbuild/core/-/core-0.3.7.tgz#62f925cd38d71f7959bf5f6c1f116e0f3c246e7b"
+  integrity sha512-3CECaT33x0m+tnnvdSMmNkRUn5D0hrd2lSBklmyBKwTASKT8xlhHNWOTFbrOlG4PByjPRCO4PoykZa5OOVvXMA==
   dependencies:
-    "@rsbuild/shared" "0.3.11"
-    "@rspack/core" "0.5.3"
+    "@rsbuild/shared" "0.3.7"
+    "@rspack/core" "0.5.0"
     "@swc/helpers" "0.5.3"
     core-js "~3.32.2"
     html-webpack-plugin "npm:html-rspack-plugin@5.5.7"
     postcss "^8.4.33"
 
-"@rsbuild/plugin-react@^0.3.7":
-  version "0.3.11"
-  resolved "https://registry.yarnpkg.com/@rsbuild/plugin-react/-/plugin-react-0.3.11.tgz#4938b11dbd1fb8e4f41bade2f0fd7af628351b4c"
-  integrity sha512-F4r/OFfibtdcF6QQaoUr9XnaYBfkYvk6H60z3DpxN33AS6qGFQCiHOievte6DqnALuwJC+iS9ZGDnTtEREq8pQ==
+"@rsbuild/plugin-react@0.3.7":
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/@rsbuild/plugin-react/-/plugin-react-0.3.7.tgz#1fb23c31931b30a086d8d60d5caae68c3221621b"
+  integrity sha512-vKjVMZBHp1EEodVsPW5E9cOaA7UvnXxK7ACjWRvuRlMK54VUkYE/npzB2QAxXU3bKK2KiYOH78YYpiHyz1mkFQ==
   dependencies:
-    "@rsbuild/shared" "0.3.11"
-    "@rspack/plugin-react-refresh" "0.5.3"
+    "@rsbuild/shared" "0.3.7"
+    "@rspack/plugin-react-refresh" "0.5.0"
     react-refresh "^0.14.0"
 
-"@rsbuild/shared@0.3.11":
-  version "0.3.11"
-  resolved "https://registry.yarnpkg.com/@rsbuild/shared/-/shared-0.3.11.tgz#44151c48c94d60937a3e0495005c57de61272041"
-  integrity sha512-PjjrUe1mstoy7N7A6Xr1i5sAKSGPfNay/cEbRt3SBvdYPOsK87TLE6DS9WtViSp8QYHh97cgJ6z1ufuluElDDw==
+"@rsbuild/shared@0.3.7":
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/@rsbuild/shared/-/shared-0.3.7.tgz#15d8673cc68e02c3da876ee4af37115524e3d32d"
+  integrity sha512-XY82H5CzymyuUC3zGxTWDgKEXWXiQnt1kmPQS1T1mS6jwo8SSwTcEub+E5vtpAOn6r1tNGGHZre+7EVJtF51nQ==
   dependencies:
-    "@rspack/core" "0.5.3"
+    "@rspack/core" "0.5.0"
     caniuse-lite "^1.0.30001559"
     lodash "^4.17.21"
     postcss "^8.4.33"
+
+"@rspack/binding-darwin-arm64@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-darwin-arm64/-/binding-darwin-arm64-0.5.0.tgz#9edb67028774d8aff235c16165a1bc10ec6edbde"
+  integrity sha512-zRx4efhn2eCjdhHt6avhdkKur6FZvYy1TgPhNKpWbTg7fnrvtNGzcVQCAOnPUUPkJjnss3veOhZlWJ3paX0EDQ==
 
 "@rspack/binding-darwin-arm64@0.5.3":
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@rspack/binding-darwin-arm64/-/binding-darwin-arm64-0.5.3.tgz#5bfb126f52e17f8c7f6309ff4b8f380087f7baae"
   integrity sha512-IgGpPtPwwlWkViTbrGBhywohXoGXwMZGZLPLR3tRZY4oPuSo41cwkPAhf2TZtBIfHGbITrmewsck853A4g7poA==
 
-"@rspack/binding-darwin-arm64@0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-darwin-arm64/-/binding-darwin-arm64-0.5.5.tgz#97ac62cb5c37a45615554640527cac79c8f3f94d"
-  integrity sha512-vmpfveZdmWJv0WUkcZSnSfcAJUpeaL5J+NYcLzOGDyKOFiyKQQ7ewls6G0kMse4USbW7XlaJJKQoR3Kq3enf1Q==
+"@rspack/binding-darwin-x64@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-darwin-x64/-/binding-darwin-x64-0.5.0.tgz#2e77a939765ed8b7b78ce81bbb9a99d512cc7500"
+  integrity sha512-d6SvBURfKow3WcKxTrjJPBkp+NLsuCPoIMaS8/bM4gHwgjVs2zuOsTQ9+l36dypOkjnu6QLkOIykTdiUKJ0eQg==
 
 "@rspack/binding-darwin-x64@0.5.3":
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@rspack/binding-darwin-x64/-/binding-darwin-x64-0.5.3.tgz#81fd05f7f163b86ec500b9608046ad37ab9d157b"
   integrity sha512-95lDx4+QTmuGQ3Ilo1BhM22jGHxPAMDvQzBD/4zO1cBtmXrFQuaDVRoM0hwlZDLZwGMP1sSpD5F75kWKhkOTDw==
 
-"@rspack/binding-darwin-x64@0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-darwin-x64/-/binding-darwin-x64-0.5.5.tgz#e27ddea86886bf7e80ecfe7d5ab7f6d52545ecb3"
-  integrity sha512-1axw5PAgxEGyx1Tz8/VzBqmCUrSxFWAiJqKmxc6+sJsRixHb0/gIc/rg9zCOJBzAr1CNBsNqQIdrJT0usBagow==
+"@rspack/binding-linux-arm64-gnu@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-linux-arm64-gnu/-/binding-linux-arm64-gnu-0.5.0.tgz#6a6fa47189a6494abdb31d2c2719eed70795923e"
+  integrity sha512-97xFbF7RjJc2VvX+0Hvb7Jzsk+eEE8oEUcc5Dnb7OIwGZulWKk6cLNcRkNfmL/F9kk1QEKlUTNC/VQI7ljf2tA==
 
 "@rspack/binding-linux-arm64-gnu@0.5.3":
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@rspack/binding-linux-arm64-gnu/-/binding-linux-arm64-gnu-0.5.3.tgz#39c4994705982a996cf9a13c4eb148415c5ef0e9"
   integrity sha512-7ZcsDROYK01FWJ9Nv1Oso7gC3b3aP8FLzbZA7ZWFCPEuBoFmIvCIVqs6DSmmpZW3KSw+XoVMELuEJuTjDi869g==
 
-"@rspack/binding-linux-arm64-gnu@0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-linux-arm64-gnu/-/binding-linux-arm64-gnu-0.5.5.tgz#709d5ad439a9761c15ad76212d52ce17ec925537"
-  integrity sha512-5HB8TejsTHN2/lOG0jzdUQnWZyg3dkuuIUiZUOnW3GgTIPqs02t4xDkPGDdwTfMtXz4+6iVUFR+4sx/LMG29EA==
+"@rspack/binding-linux-arm64-musl@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-linux-arm64-musl/-/binding-linux-arm64-musl-0.5.0.tgz#a035c62edb9bc9ba381a5b68db30ba851b942b82"
+  integrity sha512-lk0IomCy276EoynmksoBwg0IcHvvVXuZPMeq7OgRPTvs33mdTExSzSTPtrGzx/D00bX1ybUqLQwJhcgGt6erPQ==
 
 "@rspack/binding-linux-arm64-musl@0.5.3":
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@rspack/binding-linux-arm64-musl/-/binding-linux-arm64-musl-0.5.3.tgz#99329e3877f009e23fbf097ea92ccb38667380cb"
   integrity sha512-IBfVGpycRrLbyCWzokzeFIfK+yII68w1WOx2iCoR+tPUKa3M7WAZjrbVB33PHxGKXeF+xX7Lzm50hi4uTK8L6g==
 
-"@rspack/binding-linux-arm64-musl@0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-linux-arm64-musl/-/binding-linux-arm64-musl-0.5.5.tgz#bba2dbfcfa12981f5e04b4d98a8fa1e70f594c34"
-  integrity sha512-bIXziiMXMb5INje5LyPYmXcbreb6Lbifzs0oOlqIlVH3LFZC6tmxUMfHGZ39d3vm+MzBVEOuiHxzsrnczbv5EQ==
+"@rspack/binding-linux-x64-gnu@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-linux-x64-gnu/-/binding-linux-x64-gnu-0.5.0.tgz#4139923574cf75367a2715de0e326f43827d76e9"
+  integrity sha512-r15ddpse0S/8wHtfL85uJrVotvPVIMnQX06KlXyGUSw1jWrjxV+NXFDJ4xXnHCvk/YV6lCFTotAssk4wJEE0Fw==
 
 "@rspack/binding-linux-x64-gnu@0.5.3":
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@rspack/binding-linux-x64-gnu/-/binding-linux-x64-gnu-0.5.3.tgz#52fa35d890bbff5c11a0b4182a175ccf7effe32e"
   integrity sha512-EiVsp0yaGBmnMsS1U6Z5bitl2AjiVqFN3ArdIDZLlxgpVUHaR1ObXIkVqsX/VK5Jgytv1H7iOmtOnkOqyFmxPw==
 
-"@rspack/binding-linux-x64-gnu@0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-linux-x64-gnu/-/binding-linux-x64-gnu-0.5.5.tgz#e5741c658db944eaeac35f895cd926b686e74ef8"
-  integrity sha512-CRR2PlZNi8115RnQIpUj7KsPU6ZEWziqd1mlgWCsQzYLOuq/15TvAKyscazVzi6g1X9b+8qY6Jo/6jJ0etbwiw==
+"@rspack/binding-linux-x64-musl@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-linux-x64-musl/-/binding-linux-x64-musl-0.5.0.tgz#16a2cc56b2894f4ed0c6dfef956d9743e441b062"
+  integrity sha512-lB9Dn1bi4xyzEe6Bf/GQ7Ktlrq4Kmt1LHwN+t0m6iVYH3Vb/3g8uQGDSkwnjP8NmlAtldK1cmvRMhR7flUrgZA==
 
 "@rspack/binding-linux-x64-musl@0.5.3":
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@rspack/binding-linux-x64-musl/-/binding-linux-x64-musl-0.5.3.tgz#ba2318e6a6e7695df6c9bb33c7a62f12c0ddfae7"
   integrity sha512-PZbmHZ/sFBC0W2vNNmMgeVORijAxhdkaU0QS95ltacO+bU8npcNb+01QgRzJovuhOfiT7HXDUmH7K0mrUqXpFg==
 
-"@rspack/binding-linux-x64-musl@0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-linux-x64-musl/-/binding-linux-x64-musl-0.5.5.tgz#2438cb1f3d71f5925c828959d90df333f0bef78c"
-  integrity sha512-Fo6QN32NYxEnIxjRjhEjDJeE9TJZWtqMDccsIXlu00JRfB4OniW5ESkCtT26oP5aJesB3cCh5PQo6HvRfJr/pw==
+"@rspack/binding-win32-arm64-msvc@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-win32-arm64-msvc/-/binding-win32-arm64-msvc-0.5.0.tgz#93df9b695ff9124c1f83de7271b434c4f35a1743"
+  integrity sha512-aDoF13puU8LxST/qKZndtXzlJbnbnxY2Bxyj0fu7UDh8nHJD4A2HQfWRN6BZFHaVSqM6Bnli410dJrIWeTNhZQ==
 
 "@rspack/binding-win32-arm64-msvc@0.5.3":
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@rspack/binding-win32-arm64-msvc/-/binding-win32-arm64-msvc-0.5.3.tgz#8572f94ca629a397714bb434ddd77e6e6fd33d6c"
   integrity sha512-bP1tgwQuTe0YSVpe73qEPXdt2rZGUpCUG3nFW+Ve27CJtq6btLqdcnnNEx2cAKs12ArN4H36U+BXfwJDp9/DaQ==
 
-"@rspack/binding-win32-arm64-msvc@0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-win32-arm64-msvc/-/binding-win32-arm64-msvc-0.5.5.tgz#b7068a0188cbb70f57923f209e3cdf6e52b13948"
-  integrity sha512-xK6JGm3exvdtI2y+aJVqb3gkiq0GP+FuCXpEoWG5z3ASGLEx658Vx20OkD0BrAFodbx3/3k1Mlr3OCR5W9/lUg==
+"@rspack/binding-win32-ia32-msvc@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-win32-ia32-msvc/-/binding-win32-ia32-msvc-0.5.0.tgz#28117772e6f4d2c6edae86f088bfc73280da9723"
+  integrity sha512-EYGeH4YKX5v4gtTL8mBAWnsKSkF+clsKu0z1hgWgSV/vnntNlqJQZUCb5CMdg5VqadNm+lUNDYYHeHNa3+Jp3w==
 
 "@rspack/binding-win32-ia32-msvc@0.5.3":
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@rspack/binding-win32-ia32-msvc/-/binding-win32-ia32-msvc-0.5.3.tgz#e2d5b535e00724fb26ca7031100dca4761203f88"
   integrity sha512-XKMNgkc5ScDKzt2xFQWD7ELefaEQtm9+1/7xhftDAxAC3AQELC0NqL5qAWpgSXEgVIjCW8r7xiwX5mqEEqqiuw==
 
-"@rspack/binding-win32-ia32-msvc@0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-win32-ia32-msvc/-/binding-win32-ia32-msvc-0.5.5.tgz#799a59de4db7fb4eb5f8099a2220bd39beed3b80"
-  integrity sha512-n59X3BxZqipN8nBAgi7aHGX8MGA3mjgxylpGfamAAltMWNmrm6VUJbbdheI9cl+oPwazcf7alcB3R7bvXIOcjg==
+"@rspack/binding-win32-x64-msvc@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-win32-x64-msvc/-/binding-win32-x64-msvc-0.5.0.tgz#535d1230f096f067a14f048d608d44b157393910"
+  integrity sha512-RCECFW6otUrFiPbWQyOvLZOMNV/OL6AyAKMDbX9ejjk0TjLMrHjnhmI5X8EoA/SUc1/vEbgsJzDVLKTfn138cg==
 
 "@rspack/binding-win32-x64-msvc@0.5.3":
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@rspack/binding-win32-x64-msvc/-/binding-win32-x64-msvc-0.5.3.tgz#af37a28c9207a4b8d958aa49f8ceece5b5fff3d6"
   integrity sha512-B0iosD3cTXErnlqnOawn4DqfrO2QaY135vKqBrbqTfm9Zr4ftbqvp39nL9Qot+1QuixZdYwwF/NqBvRoFd9nig==
 
-"@rspack/binding-win32-x64-msvc@0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-win32-x64-msvc/-/binding-win32-x64-msvc-0.5.5.tgz#9f070693f4040203c9bd9dbd30be61897de8bb52"
-  integrity sha512-ssvI0O8e9pGIcXcu9ninvbjXYfotiEqIf7dxhb0xvllke/5jTkR3azF0up7TivFQJ2BpgIm8gVKGVJOufxaTOA==
+"@rspack/binding@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@rspack/binding/-/binding-0.5.0.tgz#242e17bfe47ee4b817a3cc14ee4be8493486ac1d"
+  integrity sha512-+v1elZMn6lKBqbXQzhcfeCaPzztFNGEkNDEcQ7weako6yQPsBihGCRzveMMzZkja4RyB9GRHjWRE+THm8V8+3w==
+  optionalDependencies:
+    "@rspack/binding-darwin-arm64" "0.5.0"
+    "@rspack/binding-darwin-x64" "0.5.0"
+    "@rspack/binding-linux-arm64-gnu" "0.5.0"
+    "@rspack/binding-linux-arm64-musl" "0.5.0"
+    "@rspack/binding-linux-x64-gnu" "0.5.0"
+    "@rspack/binding-linux-x64-musl" "0.5.0"
+    "@rspack/binding-win32-arm64-msvc" "0.5.0"
+    "@rspack/binding-win32-ia32-msvc" "0.5.0"
+    "@rspack/binding-win32-x64-msvc" "0.5.0"
 
 "@rspack/binding@0.5.3":
   version "0.5.3"
@@ -6973,20 +6988,24 @@
     "@rspack/binding-win32-ia32-msvc" "0.5.3"
     "@rspack/binding-win32-x64-msvc" "0.5.3"
 
-"@rspack/binding@0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@rspack/binding/-/binding-0.5.5.tgz#1028dafe2742e2a7d543469e797e18a56900b0c2"
-  integrity sha512-Y4jDzV0h9pjtq53nG7znyWWZipigMNjnsUjaH4th4hKBWCGvSx7iFt7p8cHoNhudNKi2XuEZr7KCWCQjhK8/yQ==
-  optionalDependencies:
-    "@rspack/binding-darwin-arm64" "0.5.5"
-    "@rspack/binding-darwin-x64" "0.5.5"
-    "@rspack/binding-linux-arm64-gnu" "0.5.5"
-    "@rspack/binding-linux-arm64-musl" "0.5.5"
-    "@rspack/binding-linux-x64-gnu" "0.5.5"
-    "@rspack/binding-linux-x64-musl" "0.5.5"
-    "@rspack/binding-win32-arm64-msvc" "0.5.5"
-    "@rspack/binding-win32-ia32-msvc" "0.5.5"
-    "@rspack/binding-win32-x64-msvc" "0.5.5"
+"@rspack/core@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@rspack/core/-/core-0.5.0.tgz#61344f3d6c9a71a9114ab30b3ae144ed1c5e0b15"
+  integrity sha512-/Bpujdtx28qYir7AK9VVSbY35GBFEcZ1NTJZBx/WIzZGZWLCxhlVYfjH8cj44y4RvXa0Y26tnj/q7VJ4U3sHug==
+  dependencies:
+    "@module-federation/runtime-tools" "0.0.8"
+    "@rspack/binding" "0.5.0"
+    browserslist "^4.21.3"
+    enhanced-resolve "5.12.0"
+    graceful-fs "4.2.10"
+    json-parse-even-better-errors "^3.0.0"
+    neo-async "2.6.2"
+    tapable "2.2.1"
+    terminal-link "^2.1.1"
+    watchpack "^2.4.0"
+    webpack-sources "3.2.3"
+    zod "^3.21.4"
+    zod-validation-error "1.3.1"
 
 "@rspack/core@0.5.3":
   version "0.5.3"
@@ -7008,30 +7027,10 @@
     zod "^3.21.4"
     zod-validation-error "1.3.1"
 
-"@rspack/core@^0.5.3":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@rspack/core/-/core-0.5.5.tgz#5ee411560d8a742c3c1b84672cc885f50e83fcd7"
-  integrity sha512-fsYPOE6HIGMAol8TiNsstvC2QfCo1NLpagzhu9c/ptNKLxKGGjxXrQ3ekjXbtvHnPhLJbonN6nWHN2Ee3boDFA==
-  dependencies:
-    "@module-federation/runtime-tools" "0.0.8"
-    "@rspack/binding" "0.5.5"
-    browserslist "^4.21.3"
-    enhanced-resolve "5.12.0"
-    events "^3.3.0"
-    graceful-fs "4.2.10"
-    json-parse-even-better-errors "^3.0.0"
-    neo-async "2.6.2"
-    tapable "2.2.1"
-    terminal-link "^2.1.1"
-    watchpack "^2.4.0"
-    webpack-sources "3.2.3"
-    zod "^3.21.4"
-    zod-validation-error "1.3.1"
-
-"@rspack/plugin-react-refresh@0.5.3":
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/@rspack/plugin-react-refresh/-/plugin-react-refresh-0.5.3.tgz#4ae321fa373d4b18f7c8c1962b2dd69a8c0281fa"
-  integrity sha512-YdEtvfLBpbbtqUO5cxM947FjdZhsTBR3Dp8djxGS1jPUZ+gJ0tOmNI5V3MZtDC/lsiSlnnKwOAImOUSQ9yV1Fw==
+"@rspack/plugin-react-refresh@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@rspack/plugin-react-refresh/-/plugin-react-refresh-0.5.0.tgz#c1e6aee9539202e90c87877a8ad8f60a0d6502c3"
+  integrity sha512-Tas91XaFgRmgdLFzgeei/LybMFvnYBicMf4Y7Yt9lZHRHfgONrGbmqSVeS+nWWTW9U8Q31K9uiM2Z2a02hq2Vw==
 
 "@rushstack/eslint-patch@^1.1.0":
   version "1.2.0"
