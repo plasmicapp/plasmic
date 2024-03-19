@@ -31,10 +31,10 @@ import "tinymce/skins/ui/tinymce-5/skin.min.css";
 
 // @ts-ignore
 // eslint-disable-next-line path/no-relative-imports
-import contentCss from "!raw-loader!../../gen/static/styles/tinymce-content-css.txt";
+import contentCss from "!!raw-loader!../../gen/static/styles/tinymce-content-css.txt";
 // @ts-ignore
 // eslint-disable-next-line path/no-relative-imports
-import prismCss from "!raw-loader!../../gen/static/styles/prismjs-css.txt";
+import prismCss from "!!raw-loader!../../gen/static/styles/prismjs-css.txt";
 
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";

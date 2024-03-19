@@ -70,7 +70,7 @@ import { StudioCtx } from "./studio-ctx/StudioCtx";
 
 // @ts-ignore
 // eslint-disable-next-line path/no-relative-imports
-import reactWebCss from "!raw-loader!../gen/static/styles/react-web-css.txt";
+import reactWebCss from "!!raw-loader!../gen/static/styles/react-web-css.txt";
 
 export interface UpsertStyleChanges {
   variantSettings?: ReadonlyArray<
