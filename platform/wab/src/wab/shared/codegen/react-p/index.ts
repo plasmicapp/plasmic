@@ -4119,7 +4119,12 @@ ${customFunctionsAndLibsImport}`;
   const serializedCustomFunctionsAndLibs = `const $$ = {
     ${[
       ...customFunctions.filter((f) => !f.namespace),
-      ...Object.values(groupBy(customFunctions.filter((f) => !!f.namespace))),
+      ...Object.values(
+        groupBy(
+          customFunctions.filter((f) => !!f.namespace),
+          (f) => f.namespace
+        )
+      ),
     ]
       .map((functionOrGroup) =>
         !Array.isArray(functionOrGroup)
@@ -4127,9 +4132,9 @@ ${customFunctionsAndLibsImport}`;
               functionOrGroup
             )},`
           : `${functionOrGroup[0].namespace}: {
-          ${functionOrGroup.map(
-            (fn) => `${fn.importName}: ${customFunctionImportAlias(fn)},`
-          )}
+          ${functionOrGroup
+            .map((fn) => `${fn.importName}: ${customFunctionImportAlias(fn)},`)
+            .join("\n")}
         },`
       )
       .join("\n")}
