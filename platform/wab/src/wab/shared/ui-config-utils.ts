@@ -137,6 +137,7 @@ export interface UiConfig {
   canInsertBasics?: Record<InsertBasicAlias, boolean> | boolean;
   canInsertBuiltinComponent?: Record<InsertComponentAlias, boolean> | boolean;
   canInsertHostless?: Record<string, boolean> | boolean;
+  hideDefaultPageTemplates?: boolean;
   pageTemplates?: TemplateSpec[];
   insertableTemplates?: TemplateSpec[];
   leftTabs?: Record<LeftTabButtonKey, "hidden" | "readable" | "writable">;
@@ -215,6 +216,9 @@ export function mergeUiConfigs(
       configs.map((c) => c.canInsertHostless)
     ),
     leftTabs: mergeshallowObjs(configs.map((c) => c.leftTabs)),
+    hideDefaultPageTemplates: mergedFirst(
+      configs.map((c) => c.hideDefaultPageTemplates)
+    ),
     pageTemplates: mergedFirst(configs.map((c) => c.pageTemplates)),
     insertableTemplates: mergedFirst(configs.map((c) => c.insertableTemplates)),
     projectConfigs: mergeshallowObjs(configs.map((c) => c.projectConfigs)),

@@ -551,7 +551,6 @@ const DEFAULT_DEVFLAGS = {
   pageLayout: false,
   mainContentSlots: false,
   insertTemplatesIntoMainContentSlots: false,
-  simplifiedDynamicPages: true,
   simplifiedScreenVariants: false,
   simplifiedForms: false,
   schemaDrivenForms: false,
@@ -586,7 +585,6 @@ const DEFAULT_DEVFLAGS = {
 
   // Enables the margin and padding spacing visualizer improvements
   spacingVisualizer202209: true,
-  showPageTemplates: true,
   gapControls: false,
   variantedStyles: true,
   textSlotsSelectable: true,
@@ -711,7 +709,6 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     onboardingTours: true,
     showInsertableTemplateComponents: true,
     advancedAppAuth: true,
-    simplifiedDynamicPages: true,
     posthog: true,
     linting: true,
     authUsersTab: true,

@@ -48,7 +48,6 @@ import {
   isReusableComponent,
   PageComponent,
 } from "@/wab/components";
-import { DEVFLAGS } from "@/wab/devflags";
 import {
   AnyArena,
   getArenaName,
@@ -63,7 +62,7 @@ import {
   ARENAS_DESCRIPTION,
   ARENA_LOWER,
 } from "@/wab/shared/Labels";
-import { extractComponentUsages, getPageArena } from "@/wab/sites";
+import { extractComponentUsages } from "@/wab/sites";
 import { Dropdown, Menu } from "antd";
 import { observer } from "mobx-react-lite";
 import React, {
@@ -306,45 +305,37 @@ export const ProjectPanel = observer(function ProjectPanel_() {
           });
           break;
 
-        case "page":
-          if (DEVFLAGS.showPageTemplates) {
-            const chosenTemplate = await promptPageTemplate(studioCtx);
-            if (!chosenTemplate) {
-              return;
-            }
-
-            let info: InsertableTemplateExtraInfo | undefined = undefined;
-            if (chosenTemplate.projectId && chosenTemplate.componentName) {
-              const { screenVariant } =
-                await getScreenVariantToInsertableTemplate(studioCtx);
-              info = await studioCtx.appCtx.app.withSpinner(
-                buildInsertableExtraInfo(
-                  studioCtx,
-                  chosenTemplate.projectId,
-                  chosenTemplate.componentName,
-                  screenVariant
-                )
-              );
-            }
-
-            await studioCtx.change(({ success }) => {
-              const page = studioCtx.addComponent(chosenTemplate.name, {
-                type: ComponentType.Page,
-              }) as PageComponent;
-
-              if (info) {
-                replaceWithPageTemplate(studioCtx, page, info);
-              }
-              return success();
-            });
-          } else {
-            const page = studioCtx.addComponent("NewPage", {
-              type: ComponentType.Page,
-            });
-
-            const pageArena = getPageArena(site, page);
-            setRenamingItem(pageArena);
+        case "page": {
+          const chosenTemplate = await promptPageTemplate(studioCtx);
+          if (!chosenTemplate) {
+            return;
           }
+
+          let info: InsertableTemplateExtraInfo | undefined = undefined;
+          if (chosenTemplate.projectId && chosenTemplate.componentName) {
+            const { screenVariant } =
+              await getScreenVariantToInsertableTemplate(studioCtx);
+            info = await studioCtx.appCtx.app.withSpinner(
+              buildInsertableExtraInfo(
+                studioCtx,
+                chosenTemplate.projectId,
+                chosenTemplate.componentName,
+                screenVariant
+              )
+            );
+          }
+
+          await studioCtx.change(({ success }) => {
+            const page = studioCtx.addComponent(chosenTemplate.name, {
+              type: ComponentType.Page,
+            }) as PageComponent;
+
+            if (info) {
+              replaceWithPageTemplate(studioCtx, page, info);
+            }
+            return success();
+          });
+        }
       }
     };
 

@@ -526,8 +526,7 @@ export async function buildOmnibarItemGroups({
             (i) =>
               i.type === "insertable-templates-group" &&
               i.onlyShownIn !== "new" &&
-              !i.isPageTemplatesGroup &&
-              (DEVFLAGS.showPageTemplates || !i.isPageTemplatesGroup)
+              !i.isPageTemplatesGroup
           )
           .map((g) =>
             getInsertableTemplatesSection(g as InsertableTemplatesGroup)

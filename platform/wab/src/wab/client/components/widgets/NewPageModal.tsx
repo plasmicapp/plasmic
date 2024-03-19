@@ -6,7 +6,7 @@ import {
   PlasmicNewComponentModal,
 } from "@/wab/client/plasmic/plasmic_kit_new_component/PlasmicNewComponentModal";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { DEVFLAGS, InsertableTemplatesItem } from "@/wab/devflags";
+import { InsertableTemplatesItem } from "@/wab/devflags";
 import { Tooltip } from "antd";
 import * as React from "react";
 import { useState } from "react";
@@ -47,6 +47,9 @@ function NewPageModal(props: NewPageModalProps) {
   const contentEditorMode = studioCtx.contentEditorMode;
   const pageTemplatesGroups =
     isApp || contentEditorMode ? [] : getPageTemplatesGroups(studioCtx);
+  const showDefaultPageTemplates =
+    pageTemplatesGroups.length === 0 ||
+    !studioCtx.getCurrentUiConfig().hideDefaultPageTemplates;
 
   return (
     <PlasmicNewComponentModal
@@ -87,22 +90,22 @@ function NewPageModal(props: NewPageModalProps) {
       isPage={true}
       {...rest}
     >
-      <NewComponentSection title={""}>
-        <NewComponentItem
-          isSelected={type === "blank"}
-          title="Empty page"
-          imgUrl={"https://jovial-poitras-57edb1.netlify.app/blank.png"}
-          onClick={() => {
-            const previousName = componentName;
-            setComponentName(undefined);
-            setProjectId(undefined);
-            setType("blank");
-            if (!name || previousName === name) {
-              setName("NewPage");
-            }
-          }}
-        />
-        {DEVFLAGS.simplifiedDynamicPages && (
+      {showDefaultPageTemplates && (
+        <NewComponentSection title={""}>
+          <NewComponentItem
+            isSelected={type === "blank"}
+            title="Empty page"
+            imgUrl={"https://jovial-poitras-57edb1.netlify.app/blank.png"}
+            onClick={() => {
+              const previousName = componentName;
+              setComponentName(undefined);
+              setProjectId(undefined);
+              setType("blank");
+              if (!name || previousName === name) {
+                setName("NewPage");
+              }
+            }}
+          />
           <NewComponentItem
             isSelected={type === "dynamic"}
             title="Dynamic page"
@@ -117,8 +120,8 @@ function NewPageModal(props: NewPageModalProps) {
               }
             }}
           />
-        )}
-      </NewComponentSection>
+        </NewComponentSection>
+      )}
       {pageTemplatesGroups.map((group, idx) => (
         <NewComponentSection
           title={group.name}

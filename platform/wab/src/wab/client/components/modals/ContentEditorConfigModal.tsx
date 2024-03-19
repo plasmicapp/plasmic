@@ -4,7 +4,7 @@ import { Modal } from "@/wab/client/components/widgets/Modal";
 import Select from "@/wab/client/components/widgets/Select";
 import { ensureType, isOneOf, unreachable } from "@/wab/common";
 import { brand } from "@/wab/commons/types";
-import { PublicStyleSection } from "@/wab/shared/ApiSchema";
+import { PublicStyleSection, TemplateSpec } from "@/wab/shared/ApiSchema";
 import {
   BASIC_ALIASES,
   COMPONENT_ALIASES,
@@ -164,7 +164,23 @@ export function ContentEditorConfigModal(props: {
 
         <hr className="mv-xlg" />
         <h3>Templates</h3>
-        {renderJsonEditor({
+        <p>
+          Don't forget to publish the project with your templates. Templates
+          will always use the latest published version.{" "}
+          <a href="https://docs.plasmic.app/learn/custom-templates/">
+            Learn more
+          </a>
+        </p>
+        <Form.Item
+          name="hideDefaultPageTemplates"
+          label="Hide default page templates?"
+          help={
+            'Hide default page templates like "Empty page". Can only be hidden if custom page templates (below) are defined.'
+          }
+        >
+          <BooleanControl trueLabel="Hide" falseLabel="Show" />
+        </Form.Item>
+        {renderJsonEditor<TemplateSpec[]>({
           fieldName: "pageTemplates",
           label: "page templates",
           help: "JSON array of page templates.",
@@ -175,10 +191,12 @@ export function ContentEditorConfigModal(props: {
               projectId: brand("rBVncjZMfEPDGmCMNe2QhK"),
               componentName: "Homepage",
               category: "Landing Pages",
+              componentResolution: "inline",
+              tokenResolution: "inline",
             },
           ],
         })}
-        {renderJsonEditor({
+        {renderJsonEditor<TemplateSpec[]>({
           fieldName: "insertableTemplates",
           label: "insertable templates",
           help: "JSON array of insertable templates.",
@@ -189,6 +207,8 @@ export function ContentEditorConfigModal(props: {
               projectId: brand("3SwC2F4BeXucfS9cpFbd24"),
               componentName: "Hero Section 1",
               category: "Hero Sections",
+              componentResolution: "inline",
+              tokenResolution: "inline",
             },
           ],
         })}
@@ -214,36 +234,48 @@ function renderJsonEditor<T>({
   defaultInitialValue: T;
 }) {
   return (
-    <Form.Item shouldUpdate>
-      {(form) =>
-        !form.getFieldValue([fieldName]) ? (
-          <Button
-            onClick={() => {
-              form.setFieldsValue({
-                [fieldName]: JSON.stringify(defaultInitialValue, null, 2),
-              });
-            }}
-          >
-            Configure custom {label}
-          </Button>
-        ) : (
-          <Form.Item
-            name={[fieldName]}
-            label={capitalize(label)}
-            help={help}
-            rules={[
-              {
-                validator: async (_, value) => {
-                  value.trim().length === 0 || safeParse(value);
-                },
-              },
-            ]}
-          >
-            <Input.TextArea rows={12} />
-          </Form.Item>
-        )
-      }
+    <Form.Item
+      name={[fieldName]}
+      label={capitalize(label)}
+      help={help}
+      rules={[
+        {
+          validator: async (_, value) => {
+            value.trim().length === 0 || safeParse(value);
+          },
+        },
+      ]}
+    >
+      <JsonControl
+        label={label}
+        defaultInitialValue={JSON.stringify(defaultInitialValue, null, 2)}
+      />
     </Form.Item>
+  );
+}
+
+function JsonControl(props: {
+  label: string;
+  defaultInitialValue: string;
+  value?: string;
+  onChange?: (value: string) => void;
+}) {
+  const { label, defaultInitialValue, value, onChange } = props;
+  return (
+    <>
+      <Input.TextArea
+        className={value ? undefined : "display-none"}
+        value={value}
+        onChange={(event) => onChange?.(event.target.value)}
+        rows={12}
+      />
+      <Button
+        className={value ? "display-none" : undefined}
+        onClick={() => onChange?.(defaultInitialValue)}
+      >
+        Configure
+      </Button>
+    </>
   );
 }
 
@@ -251,17 +283,49 @@ const safeParse = (str: string) => {
   return str?.trim().length > 0 ? JSON.parse(str) : null;
 };
 
-type BooleanPreferencesType<T extends string> =
-  | boolean
-  | undefined
-  | null
-  | Record<T, boolean>;
+/** Represents a "default" value, which will be ignored when merging UiConfig. */
+type Default = null;
+
+type BooleanOrDefault = boolean | Default;
+
+function BooleanControl(props: {
+  trueLabel: string;
+  falseLabel: string;
+  value?: BooleanOrDefault;
+  onChange?: (value: BooleanOrDefault) => void;
+}) {
+  const { trueLabel, falseLabel, value, onChange } = props;
+  return (
+    <Select
+      type="bordered"
+      value={value === true ? "true" : value === false ? "false" : "default"}
+      onChange={(newValue) =>
+        onChange?.(
+          newValue === "true" ? true : newValue === "false" ? false : null
+        )
+      }
+    >
+      <Select.Option value={"default"}>Default</Select.Option>
+      <Select.Option value={"true"}>{trueLabel}</Select.Option>
+      <Select.Option value={"false"}>{falseLabel}</Select.Option>
+    </Select>
+  );
+}
+
+/**
+ * Type used to represent a map of string keys to BooleanOrDefault.
+ *
+ * If the value is BooleanOrDefault, the value applies to all string keys.
+ */
+type BooleanOrDefaultRecord<T extends string> =
+  | BooleanOrDefault
+  | Record<T, BooleanOrDefault>;
 
 function BooleanPreferencesControl<T extends string>(props: {
   label: string;
   prefKeys: (T | { value: T; label?: string })[];
-  value?: BooleanPreferencesType<T>;
-  onChange?: (value: BooleanPreferencesType<T>) => void;
+  value?: BooleanOrDefaultRecord<T>;
+  onChange?: (value: BooleanOrDefaultRecord<T>) => void;
 }) {
   const { label, prefKeys, value, onChange } = props;
   return (

@@ -1199,8 +1199,7 @@ export function buildAddItemGroups({
             (i) =>
               i.type === "insertable-templates-group" &&
               i.onlyShownIn !== "old" &&
-              !i.isPageTemplatesGroup &&
-              (DEVFLAGS.showPageTemplates || !i.isPageTemplatesGroup)
+              !i.isPageTemplatesGroup
           )
           .map((g) =>
             getInsertableTemplatesSection(g as InsertableTemplatesGroup)

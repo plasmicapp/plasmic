@@ -2,7 +2,7 @@
 // environment we're running in.
 import { spawn } from "@/wab/common";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
-import { FeatureTier, User } from "@/wab/server/entities/Entities";
+import { FeatureTier, Team, User } from "@/wab/server/entities/Entities";
 import { PlumePkgMgr } from "@/wab/server/pkgs/plume-pkg-mgr";
 import { initializeGlobals } from "@/wab/server/svr-init";
 import { Bundler } from "@/wab/shared/bundler";
@@ -51,7 +51,27 @@ async function seedTestDb(em: EntityManager) {
   const { enterpriseFt, teamFt, proFt, starterFt } = await seedTestFeatureTiers(
     em
   );
-  await seedTeam(em, user1, "Test Enterprise Org", enterpriseFt);
+
+  const enterpriseOrg = await seedTeam(
+    em,
+    user1,
+    "Test Enterprise Org",
+    enterpriseFt
+  );
+  await seedTeam(
+    em,
+    user1,
+    "Test Enterprise Child Org A",
+    enterpriseFt,
+    enterpriseOrg
+  );
+  await seedTeam(
+    em,
+    user1,
+    "Test Enterprise Child Org B",
+    enterpriseFt,
+    enterpriseOrg
+  );
   await seedTeam(em, user1, "Test Scale Org", teamFt);
   await seedTeam(em, user2, "Test Pro Org", proFt);
   await seedTeam(em, user2, "Test Starter Org", starterFt);
@@ -240,7 +260,8 @@ async function seedTeam(
   em: EntityManager,
   user: User,
   name: string,
-  featureTier: FeatureTier
+  featureTier: FeatureTier,
+  parentTeam?: Team
 ) {
   const db = new DbMgr(em, normalActor(user.id));
   let team = await db.createTeam(name);
@@ -249,6 +270,7 @@ async function seedTeam(
   team = await db0.sudoUpdateTeam({
     id: team.id,
     featureTierId: featureTier.id,
+    parentTeamId: parentTeam?.id,
   });
 
   console.log(
