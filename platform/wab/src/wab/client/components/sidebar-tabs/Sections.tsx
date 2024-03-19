@@ -203,7 +203,7 @@ const SECTION_SETTINGS: AllSectionsPresent<SectionSetting> = {
     publicSection: PublicStyleSection.Repetition,
   },
   [Section.Repeater]: { publicSection: PublicStyleSection.Repetition },
-  [Section.Tag]: { publicSection: PublicStyleSection.HTMLAttributes },
+  [Section.Tag]: { publicSection: PublicStyleSection.Tag },
   [Section.HTMLAttributes]: {
     publicSection: PublicStyleSection.HTMLAttributes,
   },

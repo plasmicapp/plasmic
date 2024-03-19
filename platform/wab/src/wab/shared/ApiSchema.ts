@@ -275,6 +275,7 @@ export enum PublicStyleSection {
   Effects = "effects",
   Interactions = "interactions",
   CustomBehaviors = "customBehaviors",
+  Tag = "tag",
   HTMLAttributes = "htmlAttributes",
   ElementStates = "elementStates",
   Mixins = "mixins",
