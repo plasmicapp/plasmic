@@ -37,6 +37,7 @@ import { extractImageAssetUsages } from "@/wab/image-assets";
 import { ImageUploadResponse } from "@/wab/shared/ApiSchema";
 import { getAllUsedImageAssets } from "@/wab/shared/cached-selectors";
 import { imageDataUriToBlob } from "@/wab/shared/data-urls";
+import { canRead, canWrite } from "@/wab/shared/ui-config-utils";
 import { Menu } from "antd";
 import { last, orderBy } from "lodash";
 import { observer } from "mobx-react-lite";
@@ -62,7 +63,9 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
       (dep) => dep.site.imageAssets.length > 0
     ),
   });
-  const readOnly = studioCtx.getLeftTabPermission("images") === "readable";
+
+  const { canReadIcons, canWriteIcons, canReadImages, canWriteImages } =
+    getImageAssetsPermissions(studioCtx);
 
   const matcher = new Matcher(query);
 
@@ -112,7 +115,7 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
     }));
   };
 
-  const imageAssetsSection = (type: ImageAssetType) => {
+  const imageAssetsSection = (type: ImageAssetType, editable: boolean) => {
     if (!isImageAssetTypeExpanded[type]) {
       return null;
     }
@@ -218,7 +221,7 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
               studioCtx={studioCtx}
               asset={asset}
               matcher={matcher}
-              readOnly={readOnly || !editableAssets.has(asset)}
+              editable={editable && editableAssets.has(asset)}
               onFindReferences={() => onFindReferences(asset)}
               onClick={
                 editableAssets.has(asset) ? () => onSelect(asset) : undefined
@@ -252,45 +255,64 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
           filterProps,
         }}
         newIconButton={
-          readOnly
-            ? { render: () => null }
-            : {
-                onClick: async () => addAsset(ImageAssetType.Icon),
-              }
+          canWriteIcons
+            ? { onClick: async () => addAsset(ImageAssetType.Icon) }
+            : { render: () => null }
         }
-        iconsContent={{
-          children: imageAssetsSection(ImageAssetType.Icon),
-        }}
+        iconsContent={
+          canReadIcons
+            ? {
+                children: imageAssetsSection(
+                  ImageAssetType.Icon,
+                  canWriteIcons
+                ),
+              }
+            : { render: () => null }
+        }
         iconInfo={{
-          tooltip: <LeftIconsSectionTooltip />,
+          tooltip: canReadIcons && <LeftIconsSectionTooltip />,
         }}
-        iconsHeader={{
-          isExpanded: isImageAssetTypeExpanded[ImageAssetType.Icon],
-          onExpandClick: onCollapseStateChange(ImageAssetType.Icon),
-        }}
-        newImageButton={
-          readOnly
-            ? { render: () => null }
-            : {
-                onClick: () => addAsset(ImageAssetType.Picture),
+        iconsHeader={
+          canReadIcons
+            ? {
+                isExpanded: isImageAssetTypeExpanded[ImageAssetType.Icon],
+                onExpandClick: onCollapseStateChange(ImageAssetType.Icon),
               }
+            : { render: () => null }
         }
-        imagesContent={{
-          children: imageAssetsSection(ImageAssetType.Picture),
-        }}
+        newImageButton={
+          canWriteImages
+            ? { onClick: () => addAsset(ImageAssetType.Picture) }
+            : { render: () => null }
+        }
+        imagesContent={
+          canReadImages
+            ? {
+                children: imageAssetsSection(
+                  ImageAssetType.Picture,
+                  canWriteImages
+                ),
+              }
+            : { render: () => null }
+        }
         imageInfo={{
-          tooltip: <LeftImagesSectionTooltip />,
+          tooltip: canReadImages && <LeftImagesSectionTooltip />,
         }}
-        imagesHeader={{
-          isExpanded: isImageAssetTypeExpanded[ImageAssetType.Picture],
-          onExpandClick: onCollapseStateChange(ImageAssetType.Picture),
-        }}
+        imagesHeader={
+          canReadImages
+            ? {
+                isExpanded: isImageAssetTypeExpanded[ImageAssetType.Picture],
+                onExpandClick: onCollapseStateChange(ImageAssetType.Picture),
+              }
+            : { render: () => null }
+        }
       />
 
       {editAsset && (
         <ImageAssetSidebarPopup
           studioCtx={studioCtx}
           asset={editAsset}
+          editable={editAsset.type === "icon" ? canWriteIcons : canWriteImages}
           onClose={() => {
             setEditAsset(undefined);
             setJustAdded(undefined);
@@ -325,7 +347,7 @@ const ImageAssetControl = observer(function ImageAssetControl(props: {
   studioCtx: StudioCtx;
   asset: ImageAsset;
   matcher: Matcher;
-  readOnly?: boolean;
+  editable: boolean;
   isDragging?: boolean;
   dragHandleProps?: DraggableProvidedDragHandleProps;
   onFindReferences: () => void;
@@ -335,7 +357,7 @@ const ImageAssetControl = observer(function ImageAssetControl(props: {
     studioCtx,
     asset,
     matcher,
-    readOnly,
+    editable,
     isDragging,
     dragHandleProps,
     onFindReferences,
@@ -352,7 +374,7 @@ const ImageAssetControl = observer(function ImageAssetControl(props: {
           Find all references
         </Menu.Item>
       );
-      if (!readOnly) {
+      if (editable) {
         if (!multiAssetsActions.isSelecting) {
           push(
             <Menu.Item
@@ -405,7 +427,7 @@ const ImageAssetControl = observer(function ImageAssetControl(props: {
     >
       <ListItem
         isDragging={isDragging}
-        isDraggable={!readOnly}
+        isDraggable={editable}
         icon={
           <>
             {multiAssetsActions.isSelecting && (
@@ -437,10 +459,11 @@ export const ImageAssetSidebarPopup = observer(
   function ImageAssetSidebarPopup(props: {
     studioCtx: StudioCtx;
     asset: ImageAsset;
+    editable: boolean;
     onClose: () => void;
     autoFocusTitle?: boolean;
   }) {
-    const { studioCtx, asset, onClose, autoFocusTitle } = props;
+    const { studioCtx, asset, editable, onClose, autoFocusTitle } = props;
 
     const handleUploaded = async (image: ResizableImage, file?: File) => {
       const { imageResult, opts } = await studioCtx.app.withSpinner(
@@ -479,6 +502,7 @@ export const ImageAssetSidebarPopup = observer(
 
             <SimpleTextbox
               defaultValue={asset.name}
+              disabled={!editable}
               onValueChange={(name) =>
                 studioCtx.changeUnsafe(() =>
                   studioCtx.tplMgr().renameImageAsset(asset, name)
@@ -514,20 +538,22 @@ export const ImageAssetSidebarPopup = observer(
             </>
           )}
 
-          <div className="panel-content dimfg flex-col">
-            <div className="mb-sm">Upload a new image</div>
-            <ImageUploader
-              accept={
-                asset.type === ImageAssetType.Picture
-                  ? ".gif,.jpg,.jpeg,.png,.tif,.svg"
-                  : ".svg"
-              }
-              onUploaded={handleUploaded}
-            />
+          {editable && (
+            <div className="panel-content dimfg flex-col">
+              <div className="mb-sm">Upload a new image</div>
+              <ImageUploader
+                accept={
+                  asset.type === ImageAssetType.Picture
+                    ? ".gif,.jpg,.jpeg,.png,.tif,.svg"
+                    : ".svg"
+                }
+                onUploaded={handleUploaded}
+              />
 
-            <div className="mv-sm">or paste a new image from clipboard</div>
-            <ImagePaster onPasted={handleUploaded} />
-          </div>
+              <div className="mv-sm">or paste a new image from clipboard</div>
+              <ImagePaster onPasted={handleUploaded} />
+            </div>
+          )}
         </div>
       </SidebarModal>
     );
@@ -596,4 +622,16 @@ export function getCmsImageUrl(uploaded: ImageUploadResponse) {
   }
 
   return imgUrl;
+}
+
+function getImageAssetsPermissions(studioCtx: StudioCtx) {
+  const panelPermission = studioCtx.getLeftTabPermission("images");
+  const iconsPermission = studioCtx.getLeftTabPermission("iconsSection");
+  const imagesPermission = studioCtx.getLeftTabPermission("imagesSection");
+  return {
+    canReadIcons: canRead(panelPermission, iconsPermission),
+    canWriteIcons: canWrite(panelPermission, iconsPermission),
+    canReadImages: canRead(panelPermission, imagesPermission),
+    canWriteImages: canWrite(panelPermission, imagesPermission),
+  };
 }

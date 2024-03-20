@@ -131,6 +131,7 @@ export const ImageAssetPreviewAndPicker = observer(
         {showAssetPopup && asset && (
           <ImageAssetSidebarPopup
             asset={asset}
+            editable // consider using the left tab icons/images setting here?
             onClose={() => setShowAssetPopup(false)}
             studioCtx={studioCtx}
           />

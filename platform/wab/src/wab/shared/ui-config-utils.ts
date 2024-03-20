@@ -106,6 +106,7 @@ export type InsertComponentAlias = (typeof COMPONENT_ALIASES)[number];
 
 export type InsertAlias = InsertBasicAlias | InsertComponentAlias;
 
+/** These correspond to actual buttons on the left tab strip. */
 export const LEFT_TAB_PANEL_KEYS = [
   "outline",
   "components",
@@ -125,12 +126,30 @@ export const LEFT_TAB_PANEL_KEYS = [
 
 export type LeftTabKey = (typeof LEFT_TAB_PANEL_KEYS)[number];
 
-export const LEFT_TAB_BUTTON_KEYS = [...LEFT_TAB_PANEL_KEYS, "figma"] as const;
-export type LeftTabButtonKey = (typeof LEFT_TAB_BUTTON_KEYS)[number];
+/** These are extra left tab UI parts that can be configured.  */
+export const LEFT_TAB_UI_KEYS = [
+  ...LEFT_TAB_PANEL_KEYS,
+
+  // sections in the images panel can be selectively configured
+  "imagesSection",
+  "iconsSection",
+
+  "figma",
+] as const;
+
+export type LeftTabUiKey = (typeof LEFT_TAB_UI_KEYS)[number];
 
 export const PROJECT_CONFIGS = ["localization", "rename"] as const;
 
 export type ProjectConfig = (typeof PROJECT_CONFIGS)[number];
+
+export type UiAccess = "hidden" | "readable" | "writable";
+export function canRead(...access: UiAccess[]) {
+  return access.every((a) => a === "writable" || a === "readable");
+}
+export function canWrite(...access: UiAccess[]) {
+  return access.every((a) => a === "writable");
+}
 
 export interface UiConfig {
   styleSectionVisibilities?: Partial<StyleSectionVisibilities>;
@@ -140,7 +159,7 @@ export interface UiConfig {
   hideDefaultPageTemplates?: boolean;
   pageTemplates?: TemplateSpec[];
   insertableTemplates?: TemplateSpec[];
-  leftTabs?: Record<LeftTabButtonKey, "hidden" | "readable" | "writable">;
+  leftTabs?: Record<LeftTabUiKey, UiAccess>;
   projectConfigs?: Record<ProjectConfig, boolean>;
   brand?: {
     logoImgSrc?: string;
@@ -320,7 +339,7 @@ export function canInsertAlias(
 
 export function getLeftTabPermission(
   config: UiConfig,
-  tab: LeftTabButtonKey,
+  tab: LeftTabUiKey,
   opts: {
     isContentCreator: boolean;
   }
@@ -336,10 +355,7 @@ export function getLeftTabPermission(
   return pref ?? defaultAnswer;
 }
 
-const LEFT_TAB_CONTENT_CREATOR_DEFAULT: Record<
-  LeftTabButtonKey,
-  "readable" | "writable" | "hidden"
-> = {
+const LEFT_TAB_CONTENT_CREATOR_DEFAULT: Record<LeftTabUiKey, UiAccess> = {
   outline: "writable",
   components: "hidden",
   tokens: "hidden",
@@ -347,6 +363,8 @@ const LEFT_TAB_CONTENT_CREATOR_DEFAULT: Record<
   fonts: "hidden",
   themes: "hidden",
   images: "writable",
+  iconsSection: "writable",
+  imagesSection: "writable",
   responsiveness: "hidden",
   imports: "hidden",
   versions: "writable",

@@ -284,6 +284,7 @@ import { addEmptyQuery } from "@/wab/shared/TplMgr";
 import {
   getLeftTabPermission,
   LeftTabKey,
+  LeftTabUiKey,
   LEFT_TAB_PANEL_KEYS,
   mergeUiConfigs,
   UiConfig,
@@ -2697,7 +2698,7 @@ export class StudioCtx extends WithDbCtx {
     }
   }
 
-  getLeftTabPermission(tab: LeftTabKey) {
+  getLeftTabPermission(tab: LeftTabUiKey) {
     return getLeftTabPermission(this.getCurrentUiConfig(), tab, {
       isContentCreator: this.contentEditorMode,
     });

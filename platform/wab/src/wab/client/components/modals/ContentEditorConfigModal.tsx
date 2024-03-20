@@ -8,9 +8,8 @@ import { PublicStyleSection, TemplateSpec } from "@/wab/shared/ApiSchema";
 import {
   BASIC_ALIASES,
   COMPONENT_ALIASES,
-  LeftTabButtonKey,
-  LeftTabKey,
-  LEFT_TAB_PANEL_KEYS,
+  LeftTabUiKey,
+  LEFT_TAB_UI_KEYS,
   makeNiceAliasName,
   PROJECT_CONFIGS,
   UiConfig,
@@ -21,7 +20,7 @@ import { capitalize, omit, uniqBy } from "lodash";
 import React from "react";
 import sty from "./ContentEditorConfigModal.module.scss";
 
-const HIDDEN_LEFT_TAB_KEYS: LeftTabKey[] = ["outline", "copilot"];
+const HIDDEN_LEFT_TAB_KEYS: LeftTabUiKey[] = ["outline", "copilot"];
 
 export function ContentEditorConfigModal(props: {
   appCtx: AppCtx;
@@ -42,9 +41,16 @@ export function ContentEditorConfigModal(props: {
       footer={null}
       onCancel={onCancel}
       closable={false}
+      maskClosable={false}
       wrapClassName="prompt-modal"
+      bodyStyle={{
+        height: "75vh",
+        maxHeight: "75vh",
+        padding: 0,
+      }}
     >
       <Form
+        className="max-scrollable justify-between"
         form={form}
         onFinish={(values) => {
           onSubmit?.(
@@ -68,156 +74,160 @@ export function ContentEditorConfigModal(props: {
               : JSON.stringify(config.insertableTemplates, null, 2),
         }}
       >
-        <h3 className="mv-xlg">Insertion</h3>
-        <Form.Item name={["canInsertBasics"]} noStyle>
-          <BooleanPreferencesControl
-            label="Can insert basic elements?"
-            prefKeys={BASIC_ALIASES.map((alias) => ({
-              value: alias,
-              label: makeNiceAliasName(alias),
-            }))}
-          />
-        </Form.Item>
-        <Form.Item name={["canInsertBuiltinComponent"]} noStyle>
-          <BooleanPreferencesControl
-            label="Can insert builtin components?"
-            prefKeys={COMPONENT_ALIASES.map((alias) => ({
-              value: alias,
-              label: makeNiceAliasName(alias),
-            }))}
-          />
-        </Form.Item>
-        <Form.Item name={["canInsertHostless"]} noStyle>
-          <BooleanPreferencesControl
-            label="Can use components from component store?"
-            prefKeys={[
-              ...uniqBy(
-                appCtx.appConfig.hostLessComponents ?? [],
-                (p) => p.codeName
-              ).map((pkg) => ({
-                value: pkg.codeName ?? "",
-                label: pkg.name,
-              })),
-            ]}
-          />
-        </Form.Item>
+        <div className="ph-xxlg overflow-scroll">
+          <h3 className="mv-xlg">Insertion</h3>
+          <Form.Item name={["canInsertBasics"]} noStyle>
+            <BooleanPreferencesControl
+              label="Can insert basic elements?"
+              prefKeys={BASIC_ALIASES.map((alias) => ({
+                value: alias,
+                label: makeNiceAliasName(alias),
+              })).sort((a, b) => a.label.localeCompare(b.label))}
+            />
+          </Form.Item>
+          <Form.Item name={["canInsertBuiltinComponent"]} noStyle>
+            <BooleanPreferencesControl
+              label="Can insert builtin components?"
+              prefKeys={COMPONENT_ALIASES.map((alias) => ({
+                value: alias,
+                label: makeNiceAliasName(alias),
+              })).sort((a, b) => a.label.localeCompare(b.label))}
+            />
+          </Form.Item>
+          <Form.Item name={["canInsertHostless"]} noStyle>
+            <BooleanPreferencesControl
+              label="Can use components from component store?"
+              prefKeys={[
+                ...uniqBy(
+                  appCtx.appConfig.hostLessComponents ?? [],
+                  (p) => p.codeName
+                ).map((pkg) => ({
+                  value: pkg.codeName ?? "",
+                  label: pkg.name,
+                })),
+              ]}
+            />
+          </Form.Item>
 
-        <h3 className="mv-xlg">Project Configs</h3>
-        <Form.Item name={["projectConfigs"]} noStyle>
-          <PreferencesControl
-            label={"Can edit project configurations?"}
-            prefKeys={PROJECT_CONFIGS.map((t) => ({
-              value: t,
-              label: capitalizeFirst(t),
-            }))}
-            options={[true, false]}
-            optionLabel={(op) => (op ? "Enabled" : "Disabled")}
-          />
-        </Form.Item>
+          <h3 className="mv-xlg">Project Configs</h3>
+          <Form.Item name={["projectConfigs"]} noStyle>
+            <PreferencesControl
+              label={"Can edit project configurations?"}
+              prefKeys={PROJECT_CONFIGS.map((t) => ({
+                value: t,
+                label: capitalizeFirst(t),
+              })).sort((a, b) => a.label.localeCompare(b.label))}
+              options={[true, false]}
+              optionLabel={(op) => (op ? "Enabled" : "Disabled")}
+            />
+          </Form.Item>
 
-        <h3 className="mv-xlg">Left tabs</h3>
-        <Form.Item name={["leftTabs"]} noStyle>
-          <PreferencesControl
-            label={"Show left tabs?"}
-            prefKeys={LEFT_TAB_PANEL_KEYS.filter(
-              (x) => !HIDDEN_LEFT_TAB_KEYS.includes(x)
-            ).map((t) => ({ value: t, label: leftTabKeyToLabel(t) }))}
-            options={["hidden", "readable", "writable"]}
-            optionLabel={(op) => capitalizeFirst(op)}
-          />
-        </Form.Item>
+          <h3 className="mv-xlg">Left tabs</h3>
+          <Form.Item name={["leftTabs"]} noStyle>
+            <PreferencesControl
+              label={"Show left tabs?"}
+              prefKeys={LEFT_TAB_UI_KEYS.filter(
+                (x) => !HIDDEN_LEFT_TAB_KEYS.includes(x)
+              )
+                .map((t) => ({ value: t, label: leftTabKeyToLabel(t) }))
+                .sort((a, b) => a.label.localeCompare(b.label))}
+              options={["hidden", "readable", "writable"]}
+              optionLabel={(op) => capitalizeFirst(op)}
+            />
+          </Form.Item>
 
-        <h3 className="mv-xlg">Style panels</h3>
-        <Form.Item name={["styleSectionVisibilities"]} noStyle>
-          <BooleanPreferencesControl
-            label="Can edit these sections in the right panel?"
-            prefKeys={Object.entries(PublicStyleSection).map(
-              ([label, value]) => ({ value, label })
-            )}
-          />
-        </Form.Item>
+          <h3 className="mv-xlg">Style panels</h3>
+          <Form.Item name={["styleSectionVisibilities"]} noStyle>
+            <BooleanPreferencesControl
+              label="Can edit these sections in the right panel?"
+              prefKeys={Object.entries(PublicStyleSection).map(
+                ([label, value]) => ({ value, label })
+              )}
+            />
+          </Form.Item>
 
-        {isOneOf(level, ["team", "workspace"]) && (
-          <>
-            <hr className="mv-xlg" />
-            <h3>Branding</h3>
-            <Form.Item
-              name={["brand", "logoImgSrc"]}
-              label="Logo image url"
-              getValueFromEvent={(e) =>
-                e.target.value === "" ? undefined : e.target.value
-              }
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name={["brand", "logoHref"]}
-              label="Logo link url"
-              getValueFromEvent={(e) =>
-                e.target.value === "" ? undefined : e.target.value
-              }
-            >
-              <Input />
-            </Form.Item>
-          </>
-        )}
+          {isOneOf(level, ["team", "workspace"]) && (
+            <>
+              <hr className="mv-xlg" />
+              <h3>Branding</h3>
+              <Form.Item
+                name={["brand", "logoImgSrc"]}
+                label="Logo image url"
+                getValueFromEvent={(e) =>
+                  e.target.value === "" ? undefined : e.target.value
+                }
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name={["brand", "logoHref"]}
+                label="Logo link url"
+                getValueFromEvent={(e) =>
+                  e.target.value === "" ? undefined : e.target.value
+                }
+              >
+                <Input />
+              </Form.Item>
+            </>
+          )}
 
-        <hr className="mv-xlg" />
-        <h3>Templates</h3>
-        <p>
-          Don't forget to publish the project with your templates. Templates
-          will always use the latest published version.{" "}
-          <a href="https://docs.plasmic.app/learn/custom-templates/">
-            Learn more
-          </a>
-        </p>
-        <Form.Item
-          name="hideDefaultPageTemplates"
-          label="Hide default page templates?"
-          help={
-            'Hide default page templates like "Empty page". Can only be hidden if custom page templates (below) are defined.'
-          }
-        >
-          <BooleanControl trueLabel="Hide" falseLabel="Show" />
-        </Form.Item>
-        {renderJsonEditor<TemplateSpec[]>({
-          fieldName: "pageTemplates",
-          label: "page templates",
-          help: "JSON array of page templates.",
-          defaultInitialValue: [
-            {
-              displayName: "My Page Template",
-              imageUrl: "https://example.com/my-template.png",
-              projectId: brand("rBVncjZMfEPDGmCMNe2QhK"),
-              componentName: "Homepage",
-              category: "Landing Pages",
-              componentResolution: "inline",
-              tokenResolution: "inline",
-            },
-          ],
-        })}
-        {renderJsonEditor<TemplateSpec[]>({
-          fieldName: "insertableTemplates",
-          label: "insertable templates",
-          help: "JSON array of insertable templates.",
-          defaultInitialValue: [
-            {
-              displayName: "My Insertable Template",
-              imageUrl: "https://example.com/my-template.png",
-              projectId: brand("3SwC2F4BeXucfS9cpFbd24"),
-              componentName: "Hero Section 1",
-              category: "Hero Sections",
-              componentResolution: "inline",
-              tokenResolution: "inline",
-            },
-          ],
-        })}
-        <Form.Item style={{ margin: 0 }}>
+          <hr className="mv-xlg" />
+          <h3>Templates</h3>
+          <p>
+            Don't forget to publish the project with your templates. Templates
+            will always use the latest published version.{" "}
+            <a href="https://docs.plasmic.app/learn/custom-templates/">
+              Learn more
+            </a>
+          </p>
+          <Form.Item
+            name="hideDefaultPageTemplates"
+            label="Hide default page templates?"
+            help={
+              'Hide default page templates like "Empty page". Can only be hidden if custom page templates (below) are defined.'
+            }
+          >
+            <BooleanControl trueLabel="Hide" falseLabel="Show" />
+          </Form.Item>
+          {renderJsonEditor<TemplateSpec[]>({
+            fieldName: "pageTemplates",
+            label: "page templates",
+            help: "JSON array of page templates.",
+            defaultInitialValue: [
+              {
+                displayName: "My Page Template",
+                imageUrl: "https://example.com/my-template.png",
+                projectId: brand("rBVncjZMfEPDGmCMNe2QhK"),
+                componentName: "Homepage",
+                category: "Landing Pages",
+                componentResolution: "inline",
+                tokenResolution: "inline",
+              },
+            ],
+          })}
+          {renderJsonEditor<TemplateSpec[]>({
+            fieldName: "insertableTemplates",
+            label: "insertable templates",
+            help: "JSON array of insertable templates.",
+            defaultInitialValue: [
+              {
+                displayName: "My Insertable Template",
+                imageUrl: "https://example.com/my-template.png",
+                projectId: brand("3SwC2F4BeXucfS9cpFbd24"),
+                componentName: "Hero Section 1",
+                category: "Hero Sections",
+                componentResolution: "inline",
+                tokenResolution: "inline",
+              },
+            ],
+          })}
+        </div>
+        <div className="flex-no-shrink p-xxlg bt-dim">
           <Button className="mr-sm" type="primary" htmlType="submit">
             Update
           </Button>
           <Button onClick={() => onCancel()}>Cancel</Button>
-        </Form.Item>
+        </div>
       </Form>
     </Modal>
   );
@@ -297,6 +307,7 @@ function BooleanControl(props: {
   const { trueLabel, falseLabel, value, onChange } = props;
   return (
     <Select
+      className={sty.select}
       type="bordered"
       value={value === true ? "true" : value === false ? "false" : "default"}
       onChange={(newValue) =>
@@ -332,6 +343,7 @@ function BooleanPreferencesControl<T extends string>(props: {
     <>
       <Form.Item label={label}>
         <Select
+          className={sty.select}
           type="bordered"
           value={
             value == null
@@ -394,6 +406,7 @@ function PreferenceSelect<OptionType>(props: {
         : `${op}`);
   return (
     <Select
+      className={sty.select}
       type="bordered"
       value={value == null ? "default" : optionKey(value)}
       onChange={(val) => {
@@ -433,6 +446,7 @@ function PreferencesControl<T extends string, OptionType>(props: {
     <>
       <Form.Item label={label}>
         <Select
+          className={sty.select}
           type="bordered"
           value={value == null ? "default" : "customize"}
           onChange={(newValue) =>
@@ -521,7 +535,7 @@ function PreferenceMapControl<T extends string, OptionType>(props: {
   );
 }
 
-function leftTabKeyToLabel(key: LeftTabButtonKey) {
+function leftTabKeyToLabel(key: LeftTabUiKey) {
   switch (key) {
     case "outline":
       return "Outline";
@@ -537,6 +551,10 @@ function leftTabKeyToLabel(key: LeftTabButtonKey) {
       return "Default styles";
     case "images":
       return "Image assets";
+    case "iconsSection":
+      return "Image assets > Icons";
+    case "imagesSection":
+      return "Image assets > Images";
     case "responsiveness":
       return "Responsive breakpoints";
     case "imports":

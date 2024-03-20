@@ -38,8 +38,8 @@ import { BASE_URL } from "@/wab/shared/discourse/config";
 import { MIXINS_CAP } from "@/wab/shared/Labels";
 import {
   getLeftTabPermission,
-  LeftTabButtonKey,
   LeftTabKey,
+  LeftTabUiKey,
 } from "@/wab/shared/ui-config-utils";
 import { Popover } from "antd";
 import classNames from "classnames";
@@ -86,7 +86,7 @@ const LeftTabStrip = observer(function LeftTabStrip(props: LeftTabStripProps) {
   const isWhiteLabelUser = studioCtx.appCtx.isWhiteLabelUser();
   const uiConfig = studioCtx.getCurrentUiConfig();
 
-  const canViewTab = (tab: LeftTabButtonKey) => {
+  const canViewTab = (tab: LeftTabUiKey) => {
     return (
       getLeftTabPermission(uiConfig, tab, {
         isContentCreator: contentEditorMode,

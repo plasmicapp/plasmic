@@ -1,5 +1,9 @@
 @import "src/wab/styles/_tokens.sass";
 
+.select {
+  min-width: 80px;
+}
+
 .prefsTable {
   background-color: $sand2;
   width: 100%;
