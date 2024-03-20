@@ -1790,7 +1790,31 @@ function runMergeFnAndApplyFixes(
     });
   });
 
-  return { autoReconciliations };
+  const fixAutoReconciliationsInsts = (
+    arr: AutoReconciliation[]
+  ): AutoReconciliation[] => {
+    const mergedSiteUuid = bundler.addrOf(mergedSite).uuid;
+    const getMergedInst = (inst: ObjInst) => {
+      return bundler.objByAddr({
+        uuid: mergedSiteUuid,
+        iid: bundler.addrOf(inst).iid,
+      });
+    };
+    return arr.map((r) => {
+      if (r.violation === "duplicate-page-path") {
+        return r;
+      }
+      return {
+        ...r,
+        mergedInst: getMergedInst(r.mergedInst) ?? r.mergedInst,
+        mergedParent: getMergedInst(r.mergedParent) ?? r.mergedParent,
+      };
+    });
+  };
+
+  return {
+    autoReconciliations: fixAutoReconciliationsInsts(autoReconciliations),
+  };
 }
 
 /**

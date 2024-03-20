@@ -278,7 +278,7 @@ function MergeFlow_(
     (item) => {
       return item.violation === "duplicate-names" &&
         isKnownComponent(item.mergedParent)
-        ? item.mergedParent.name
+        ? item.mergedParent.uuid
         : "";
     }
   );
