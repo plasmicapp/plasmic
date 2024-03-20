@@ -119,6 +119,7 @@ import styleTokenBundle from "./style-tokens-conflict.json";
 import edgeCasesBundle2 from "./test-edge-cases-merge-2.json";
 import edgeCasesBundle from "./test-edge-cases-merge.json";
 import mergeDepsBundle from "./test-merging-deps.json";
+import rerootBundle from "./test-reroot.json";
 import mergeTplsBundle from "./test-tpl-merge.json";
 
 const fixmeLater = false;
@@ -4954,5 +4955,19 @@ describe("merging", () => {
     expect(result).toMatchObject({
       status: "merged",
     });
+  });
+
+  it("Reroot should not delete entire tpl tree", () => {
+    const result = testMergeFromJsonBundle(
+      hackyCast<ProjectFullDataResponse>(rerootBundle)
+    );
+    expect(result).toMatchObject({
+      status: "merged",
+    });
+    const tplTree = result.mergedSite.components.find(
+      (c) => c.name === "Test"
+    )!.tplTree;
+    assert(isKnownTplTag(tplTree), "Root should be tpl tag");
+    expect(tplTree.children.length).toBe(1);
   });
 });

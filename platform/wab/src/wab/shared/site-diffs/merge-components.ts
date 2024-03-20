@@ -622,12 +622,12 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
             }
           } else if (
             !!tplAnc.parent &&
-            tplA.parent?.uuid !== tplMerged.parent?.uuid
+            tplA.parent?.uuid !== tplAnc.parent?.uuid
           ) {
             updateParent(tplMerged, tplA, (tpl) => cloneInst(tpl, siteA));
           } else if (
             !!tplAnc.parent &&
-            tplB.parent?.uuid !== tplMerged.parent?.uuid
+            tplB.parent?.uuid !== tplAnc.parent?.uuid
           ) {
             updateParent(tplMerged, tplB, (tpl) => cloneInst(tpl, siteB));
           }
