@@ -1,4 +1,5 @@
 import {
+  isKnownSlotParam,
   isKnownTplSlot,
   TplComponent,
   TplNode,
@@ -115,8 +116,21 @@ export function canAddChildrenAndWhy(
 ): true | CantAddChildMsg {
   if (tpl instanceof SlotSelection) {
     return canAddChildrenToSlotSelectionAndWhy(tpl, child);
-  } else if (isTplComponent(tpl) && !hasChildrenSlot(tpl)) {
-    return { type: "CantAddToTplComponent", tpl };
+  } else if (isTplComponent(tpl)) {
+    if (!hasChildrenSlot(tpl)) {
+      return { type: "CantAddToTplComponent", tpl };
+    }
+    const slotParam = ensure(
+      tpl.component.params.find((p) => p.variable.name === "children"),
+      "Should have children slot"
+    );
+    if (!isKnownSlotParam(slotParam)) {
+      return { type: "CantAddToTplComponent", tpl };
+    }
+    const slotType = getSlotLikeType(slotParam.tplSlot);
+    if (child && !nodeConformsToType(child, slotType)) {
+      return { type: "ViolatesSlotType", slotType };
+    }
   } else if (isTplTag(tpl)) {
     const component = getComponentIfRoot(tpl);
     if (component && isCodeComponent(component)) {
