@@ -132,6 +132,8 @@ import {
   MayTriggerPaywall,
   NewGithubRepoRequest,
   NewGithubRepoResponse,
+  NextPublishVersionRequest,
+  NextPublishVersionResponse,
   PersonalApiToken,
   PlasmicHostingSettings,
   PostCommentRequest,
@@ -712,6 +714,17 @@ export abstract class SharedApi {
       version: version ?? "latest",
       meta: true,
       ...(branchId ? { branchId } : {}),
+    });
+  }
+
+  async computeNextProjectVersion(
+    projectId,
+    { branchId, revisionNum }: NextPublishVersionRequest
+  ): Promise<NextPublishVersionResponse> {
+    return this.post(`/projects/${projectId}/next-publish-version`, {
+      projectId,
+      branchId,
+      revisionNum,
     });
   }
 

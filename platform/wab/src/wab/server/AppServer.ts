@@ -217,6 +217,7 @@ import {
   checkAndNofityHostlessVersion,
   cloneProject,
   clonePublishedTemplate,
+  computeNextProjectVersion,
   createBranch,
   createPkgByProjectId,
   createProject,
@@ -1745,6 +1746,10 @@ export function addMainAppServerRoutes(
   );
   app.get("/api/v1/projects/:projectId/pkg", withNext(getPkgByProjectId));
   app.post("/api/v1/projects/:projectId/publish", withNext(publishProject));
+  app.post(
+    "/api/v1/projects/:projectId/next-publish-version",
+    withNext(computeNextProjectVersion)
+  );
   app.get(
     "/api/v1/projects/:projectId/pkgs/:pkgVersionId/status",
     withNext(getPkgVersionPublishStatus)

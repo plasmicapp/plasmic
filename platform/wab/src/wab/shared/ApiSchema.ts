@@ -24,6 +24,7 @@ import { PkgVersionInfo, RevInfo, SiteInfo } from "./SharedApi";
 import { DirectConflictPickMap, MergeStep } from "./site-diffs/merge-core";
 
 import { WholeChatCompletionResponse } from "./copilot/prompt-utils";
+import { ChangeLogEntry, SemVerReleaseType } from "./site-diffs";
 import { UiConfig } from "./ui-config-utils";
 
 export type UserId = Brand<string, "UserId">;
@@ -1790,6 +1791,17 @@ export interface MergeResolution {
   picks?: DirectConflictPickMap;
   expectedFromRevisionNum: number;
   expectedToRevisionNum: number;
+}
+
+export interface NextPublishVersionRequest {
+  revisionNum: number;
+  branchId: BranchId | undefined;
+}
+
+export interface NextPublishVersionResponse {
+  version: string;
+  changeLog: ChangeLogEntry[];
+  releaseType: SemVerReleaseType;
 }
 
 export interface PublishProjectRequest {

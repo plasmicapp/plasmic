@@ -5276,7 +5276,6 @@ export class StudioCtx extends WithDbCtx {
       return {
         version: INITIAL_VERSION_NUMBER,
         changeLog: extractSplitStatusDiff(this.site, () => SplitStatus.New),
-        prevSite: undefined,
         releaseType: undefined,
       };
     }
@@ -5294,6 +5293,16 @@ export class StudioCtx extends WithDbCtx {
       );
     if (latestPublishedRev.revision === this.dbCtx().revisionNum) {
       return undefined;
+    }
+
+    if (
+      this.siteInfo.teamId &&
+      this.appCtx.appConfig.serverPublishTeamIds.includes(this.siteInfo.teamId)
+    ) {
+      return this.appCtx.api.computeNextProjectVersion(this.siteInfo.id, {
+        revisionNum: this.dbCtx().revisionNum,
+        branchId: this.dbCtx().branchInfo?.id,
+      });
     }
 
     const latestPublishedPkg = await this.appCtx.api.getPkgVersion(
@@ -5316,7 +5325,7 @@ export class StudioCtx extends WithDbCtx {
     if (!version) {
       throw new Error("Invalid version number found: " + latestRelease.version);
     }
-    return { version, changeLog, prevSite, releaseType };
+    return { version, changeLog, releaseType };
   }
 
   async branchHasUnpublishedChanges({

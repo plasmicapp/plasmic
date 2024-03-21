@@ -3137,6 +3137,104 @@ export class DbMgr implements MigrationDbMgr {
     return await this.projectRevs().save(rev);
   }
 
+  async getPreviousPkgId(
+    projectId: ProjectId,
+    branchId: BranchId | undefined,
+    pkgId: string
+  ) {
+    const graph = await this.getCommitGraphForProject(projectId as ProjectId);
+    const branchHead = graph.branches[branchId ?? MainBranchId];
+
+    // The branch head might not be the latest version in this branch, if the
+    // user reverted to a previous version. So we get all branch versions.
+    const previousVersions: Pick<PkgVersion, "id" | "version">[] =
+      await this.pkgVersions()
+        .createQueryBuilder()
+        .select("id, version")
+        .where(
+          `"pkgId" = :pkgId AND
+          (
+            (:branchId::text is null AND "branchId" is null)
+            OR "branchId" = :branchId::text
+            ${branchHead ? `OR "id" = :branchHead::text` : ""}
+          )`,
+          { pkgId: pkgId, branchId, ...(branchHead ? { branchHead } : {}) }
+        )
+        .getRawMany();
+
+    const { id: prevPkgVersionId } = previousVersions.reduce<{
+      id?: PkgVersionId;
+      version?: string;
+    }>(({ id: id1, version: version1 }, { id: id2, version: version2 }) => {
+      if (!version1 || (version2 && semver.gt(version2, version1))) {
+        return { id: id2, version: version2 };
+      } else {
+        return { id: id1, version: version1 };
+      }
+    }, {});
+    return prevPkgVersionId;
+  }
+
+  async computeNextProjectVersion(
+    projectId: ProjectId,
+    revisionNum?: number,
+    branchId?: BranchId
+  ) {
+    await this.checkProjectBranchPerms(
+      { projectId, branchId },
+      "content",
+      "publish",
+      true
+    );
+    const devflags = mergeSane(
+      {},
+      DEVFLAGS,
+      JSON.parse((await this.tryGetDevFlagOverrides())?.data ?? "{}")
+    ) as typeof DEVFLAGS;
+    const project = await this.getProjectById(projectId);
+    if (
+      !project.workspaceId ||
+      !(devflags.serverPublishTeamIds ?? []).includes(
+        (await this.getWorkspaceById(project.workspaceId)).teamId
+      )
+    ) {
+      throw new UnauthorizedError("Access denied");
+    }
+
+    const pkg = await this.getPkgByProjectId(projectId);
+    const rev = await (revisionNum
+      ? this.getProjectRevision(projectId, revisionNum, branchId)
+      : this.getLatestProjectRev(projectId, { branchId }));
+    if (pkg) {
+      const prevPkgVersionId = await this.getPreviousPkgId(
+        projectId as ProjectId,
+        branchId,
+        pkg.id
+      );
+      if (prevPkgVersionId) {
+        const bundler = new Bundler();
+        const publishedSite = await unbundleProjectFromData(this, bundler, rev);
+        const prevPkgVersion = await this.getPkgVersionById(prevPkgVersionId);
+        const prevUnbundled = await unbundlePkgVersion(
+          this,
+          bundler,
+          prevPkgVersion
+        );
+        const changeLog = compareSites(prevUnbundled.site, publishedSite);
+        const releaseType = calculateSemVer(changeLog);
+        const version = ensureString(
+          semver.inc(prevPkgVersion.version, releaseType)
+        );
+        return { changeLog, releaseType, version };
+      }
+    }
+    return {
+      version: INITIAL_VERSION_NUMBER,
+      changeLog: [],
+      releaseType: undefined,
+    };
+  }
+
   async publishProject(
     projectId: string,
     version: string | undefined,
@@ -3179,36 +3277,11 @@ export class DbMgr implements MigrationDbMgr {
     }
 
     if (!version) {
-      const graph = await this.getCommitGraphForProject(projectId as ProjectId);
-      const branchHead = graph.branches[branchId ?? MainBranchId];
-
-      // The branch head might not be the latest version in this branch, if the
-      // user reverted to a previous version. So we get all branch versions.
-      const previousVersions: Pick<PkgVersion, "id" | "version">[] =
-        await this.pkgVersions()
-          .createQueryBuilder()
-          .select("id, version")
-          .where(
-            `"pkgId" = :pkgId AND
-          (
-            (:branchId::text is null AND "branchId" is null)
-            OR "branchId" = :branchId::text
-            ${branchHead ? `OR "id" = :branchHead::text` : ""}
-          )`,
-            { pkgId: pkg.id, branchId, ...(branchHead ? { branchHead } : {}) }
-          )
-          .getRawMany();
-
-      const { id: prevPkgVersionId } = previousVersions.reduce<{
-        id?: PkgVersionId;
-        version?: string;
-      }>(({ id: id1, version: version1 }, { id: id2, version: version2 }) => {
-        if (!version1 || (version2 && semver.gt(version2, version1))) {
-          return { id: id2, version: version2 };
-        } else {
-          return { id: id1, version: version1 };
-        }
-      }, {});
+      const prevPkgVersionId = await this.getPreviousPkgId(
+        projectId as ProjectId,
+        branchId,
+        pkg.id
+      );
 
       if (prevPkgVersionId) {
         const prevPkgVersion = await this.getPkgVersionById(prevPkgVersionId);

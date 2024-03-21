@@ -544,6 +544,7 @@ export function filteredApi(
     },
     cloneProject: checkProjectIdInFirstArg,
     saveProjectRevChanges: checkProjectIdInFirstArg,
+    computeNextProjectVersion: checkProjectIdInFirstArg,
     publishProject: checkProjectIdInFirstArg,
     listPkgVersionsWithoutData:
       (f) =>

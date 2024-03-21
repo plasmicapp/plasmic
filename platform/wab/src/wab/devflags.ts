@@ -601,6 +601,7 @@ const DEFAULT_DEVFLAGS = {
   commitsOnBranches: false,
   appAuth: false,
   advancedAppAuth: false,
+  serverPublishTeamIds: [] as TeamId[],
   focusable: false,
   envPanel: false,
   linting: false,

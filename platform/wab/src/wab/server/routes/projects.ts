@@ -98,6 +98,7 @@ import {
   ListBranchesResponse,
   MainBranchId,
   NewComponentReq,
+  NextPublishVersionRequest,
   PkgVersionId,
   PostCommentRequest,
   PostCommentResponse,
@@ -1779,6 +1780,19 @@ export async function getPkgVersion(req: Request, res: Response) {
     branchId ? { branchId } : undefined
   );
   res.json(await getPkgWithDeps(mgr, pkg, meta, { dontMigrateProject }));
+}
+
+export async function computeNextProjectVersion(req: Request, res: Response) {
+  const mgr = userDbMgr(req);
+  const projectId = req.params.projectId;
+  const body = uncheckedCast<NextPublishVersionRequest>(req.body);
+  res.json(
+    await mgr.computeNextProjectVersion(
+      projectId as ProjectId,
+      body.revisionNum,
+      body.branchId
+    )
+  );
 }
 
 export async function publishProject(req: Request, res: Response) {
