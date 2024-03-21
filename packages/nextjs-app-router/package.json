@@ -1,0 +1,73 @@
+{
+  "name": "@plasmicapp/nextjs-app-router",
+  "version": "1.0.1",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
+  "files": [
+    "dist"
+  ],
+  "bin": {
+    "with-plasmic-prepass": "./dist/with-plasmic-prepass.cjs.js"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "build": "yarn build:types && yarn build:index && yarn build:react-server && yarn build:with-dev-server",
+    "build:types": "yarn tsc",
+    "build:index": "node ../../build.mjs ./src/index.ts --use-client",
+    "build:with-dev-server": "esbuild --format=cjs --target=node18 --bundle --outfile=./dist/with-plasmic-prepass.cjs.js --platform=node ./src/with-dev-server.mts",
+    "build:react-server": "node ../../build.mjs ./src/react-server.ts",
+    "test": "yarn --cwd=../.. test",
+    "coverage": "yarn --cwd=../.. test --coverage --passWithNoTests",
+    "lint": "eslint",
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
+  },
+  "dependencies": {
+    "@plasmicapp/prepass": "1.0.14",
+    "fkill": "^8.1.0",
+    "get-port": "^7.0.0",
+    "node-html-parser": "^6.1.5",
+    "yargs": "^17.7.2"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js"
+    },
+    "./react-server": {
+      "types": "./dist/react-server.d.ts",
+      "import": "./dist/react-server.esm.js",
+      "require": "./dist/react-server.js"
+    },
+    "./react-server-conditional": {
+      "react-server": {
+        "types": "./dist/react-server.d.ts",
+        "import": "./dist/react-server.esm.js",
+        "require": "./dist/react-server.js"
+      },
+      "default": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.esm.js",
+        "require": "./dist/index.js"
+      }
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.9",
+    "@types/react": "^18.0.27",
+    "@types/yargs": "^17.0.32",
+    "react": "^18.2.0",
+    "typescript": "^5.2.2"
+  }
+}

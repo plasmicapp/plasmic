@@ -7,14 +7,17 @@
 /// <reference types="node" />
 /// <reference types="react" />
 
+import { fetchExtractedQueryData as __EXPERMIENTAL__fetchExtractedQueryData } from '@plasmicapp/nextjs-app-router/react-server';
 import { CodeComponentMeta } from '@plasmicapp/loader-react';
 import { ComponentLookupSpec } from '@plasmicapp/loader-react';
 import { ComponentMeta } from '@plasmicapp/loader-react/react-server-conditional';
 import { ComponentRenderData } from '@plasmicapp/loader-react/react-server-conditional';
 import { DataCtxReader } from '@plasmicapp/loader-react';
 import { DataProvider } from '@plasmicapp/loader-react';
+import { ExtractPlasmicQueryData } from '@plasmicapp/nextjs-app-router';
 import { extractPlasmicQueryData } from '@plasmicapp/loader-react';
 import { FetchComponentDataOpts as FetchComponentDataOpts_2 } from '@plasmicapp/loader-react';
+import { fetchExtractedQueryData } from '@plasmicapp/nextjs-app-router';
 import { GlobalActionsContext } from '@plasmicapp/loader-react';
 import { GlobalActionsProvider } from '@plasmicapp/loader-react';
 import { IncomingMessage } from 'http';
@@ -46,6 +49,8 @@ import { useSelectors } from '@plasmicapp/loader-react';
 
 // @public (undocumented)
 export const __EXPERMIENTAL__extractPlasmicQueryData: (element: React.ReactElement, loader: ClientExports.NextJsPlasmicComponentLoader) => Promise<Record<string, any>>;
+
+export { __EXPERMIENTAL__fetchExtractedQueryData }
 
 export { ComponentMeta }
 

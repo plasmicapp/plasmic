@@ -16,6 +16,7 @@ packages:
   - packages/loader-splits
   - packages/loader-svelte
   - packages/loader-vue
+  - packages/nextjs-app-router
   - packages/prepass
   - packages/query
   - packages/react-web

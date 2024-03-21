@@ -6,24 +6,6 @@ import {
   PlasmicRootProvider as CommonPlasmicRootProvider,
 } from "@plasmicapp/loader-react";
 import { IncomingMessage, ServerResponse } from "http";
-// NextHead and NextLink must be default imported (`import Pkg`) instead of a namespace import (`import * as Pkg`).
-// Otherwise, there's a Next.js 12 bug when referencing these dependencies due to default import interop.
-// The transpiled CommonJS code would create a `default` field on the package,
-// causing React to think it's an invalid React object:
-// ```
-// const NextHead = __defaultInterop(require('next/head.js'))
-// assert(typeof NextHead === 'object')
-// assert(typeof NextHead.default === 'function')
-// ```
-import type { CodeModule } from "@plasmicapp/loader-core";
-import NextHead from "next/head.js";
-import NextLink from "next/link.js";
-import * as NextRouter from "next/router.js";
-import Script from "next/script";
-import * as React from "react";
-import { initPlasmicLoaderWithCache } from "./cache";
-import type { ComponentRenderData, NextInitOptions } from "./shared-exports";
-
 export {
   DataCtxReader,
   DataProvider,
@@ -49,7 +31,28 @@ export type {
   PropType,
   TokenRegistration,
 } from "@plasmicapp/loader-react";
+export {
+  ExtractPlasmicQueryData as __EXPERMIENTAL__ExtractPlasmicQueryData,
+  fetchExtractedQueryData as __EXPERMIENTAL__fetchExtractedQueryData,
+} from "@plasmicapp/nextjs-app-router";
 export * from "./shared-exports";
+import type { CodeModule } from "@plasmicapp/loader-core";
+// NextHead and NextLink must be default imported (`import Pkg`) instead of a namespace import (`import * as Pkg`).
+// Otherwise, there's a Next.js 12 bug when referencing these dependencies due to default import interop.
+// The transpiled CommonJS code would create a `default` field on the package,
+// causing React to think it's an invalid React object:
+// ```
+// const NextHead = __defaultInterop(require('next/head.js'))
+// assert(typeof NextHead === 'object')
+// assert(typeof NextHead.default === 'function')
+// ```
+import NextHead from "next/head.js";
+import NextLink from "next/link.js";
+import * as NextRouter from "next/router.js";
+import Script from "next/script";
+import * as React from "react";
+import { initPlasmicLoaderWithCache } from "./cache";
+import type { ComponentRenderData, NextInitOptions } from "./shared-exports";
 
 type ServerRequest = IncomingMessage & {
   cookies: {

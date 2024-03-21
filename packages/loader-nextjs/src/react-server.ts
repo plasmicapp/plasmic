@@ -12,6 +12,7 @@ import { initPlasmicLoaderWithCache } from "./cache";
 import type { NextInitOptions } from "./shared-exports";
 
 import { __EXPERMIENTAL__extractPlasmicQueryData as internalExtractPlasmicQueryData } from "@plasmicapp/loader-react/react-server";
+export { fetchExtractedQueryData as __EXPERMIENTAL__fetchExtractedQueryData } from "@plasmicapp/nextjs-app-router/react-server";
 export * from "./shared-exports";
 
 import type * as ClientExports from ".";
