@@ -57,18 +57,6 @@ export function registerRadioGroup(
           uncontrolledProp: "defaultValue",
           description: "The current value",
         },
-        options: {
-          type: "array",
-          description: "The options in the radio group",
-          itemType: {
-            type: "object",
-            nameFunc: (item) => item.label,
-            fields: {
-              label: "string",
-              value: "string",
-            },
-          },
-        },
         isInvalid: {
           displayName: "Invalid",
           type: "boolean",
