@@ -15,8 +15,9 @@ import { StudioHtmlPlugin } from "./tools/studio-html-plugin";
 
 const commitHash = execSync("git rev-parse HEAD").toString().slice(0, 6);
 const buildEnv = process.env.NODE_ENV ?? "production";
-const publicUrl =
-  buildEnv === "development" ? process.env.PUBLIC_URL : homepage;
+const publicUrl: string =
+  buildEnv === "development" ? (process.env.PUBLIC_URL as string) : homepage;
+const isProd = buildEnv === "production";
 const port = process.env.PORT ? +process.env.PORT : 3003;
 const backendPort = process.env.BACKEND_PORT || 3004;
 
@@ -87,6 +88,10 @@ export default defineConfig({
       root: "build",
     },
     charset: "utf8",
+    sourceMap: {
+      js: isProd ? "source-map" : "cheap-module-source-map",
+      css: true,
+    },
   },
   plugins: [pluginReact()],
   tools: {
