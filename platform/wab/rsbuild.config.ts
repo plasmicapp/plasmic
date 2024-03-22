@@ -7,6 +7,7 @@ import {
   ProvidePlugin,
   RspackPluginInstance,
 } from "@rspack/core";
+import { Source } from "@rspack/core/dist/Template";
 import { execSync } from "child_process";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
@@ -30,6 +31,89 @@ console.log(`Starting rsbuild...
 - port: ${port}
 - backendPort: ${backendPort}
 `);
+
+/**
+ * Appends a sourceMappingURL for js files in paths, by looking for
+ * the source map file with the same hash-tagged name
+ */
+class AppendSourceMapWithHash implements RspackPluginInstance {
+  constructor(
+    private opts: {
+      paths: string[];
+    }
+  ) {}
+
+  apply(compiler: Compiler) {
+    const processFile = (filePath: string, assets: Record<string, Source>) => {
+      if (this.shouldProcessFile(filePath)) {
+        const sourceMapFilePath = this.makeSourceMapFilePath(filePath);
+        if (assets[sourceMapFilePath]) {
+          let content = assets[filePath].source();
+          // We use the full path (with publicUrl) because the files may be
+          // loaded from the inner frame and so the relative path would be
+          // wrong.
+          const newMapping = `//# sourceMappingURL=${publicUrl}/${sourceMapFilePath}`;
+          if (content.includes("//# sourceMappingURL=")) {
+            content = content
+              .toString()
+              .replace(/\/\/# sourceMappingURL=[^\s*]*\s*$/, newMapping);
+          } else {
+            content = content.toString() + `\n${newMapping}\n`;
+          }
+          assets[filePath] = {
+            source: () => content,
+            size: () => content.length,
+          };
+        }
+      }
+    };
+
+    // This hook transforms the source map reference in dev mode
+    compiler.hooks.compilation.tap("AppedSourceMapWithHash", (compilation) => {
+      compilation.hooks.processAssets.tapAsync(
+        {
+          name: "AppendSourceMapWithHash",
+          stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONS,
+        },
+        (assets, callback) => {
+          Object.keys(assets).forEach((filePath) => {
+            processFile(filePath, assets);
+          });
+          callback();
+        }
+      );
+    });
+
+    // This hook appends the source map reference when doing `yarn build`. Not
+    // sure why this is necessary and why the previous hook alone isn't enough;
+    // with just the previous hook, the source map reference is stripped out
+    // completely for `yarn build`.
+    compiler.hooks.emit.tapAsync(
+      "AppendSourceMapWithHash",
+      (compilation, callback) => {
+        Object.keys(compilation.assets).forEach((filePath) => {
+          processFile(filePath, compilation.assets);
+        });
+        callback();
+      }
+    );
+  }
+
+  private makeSourceMapFilePath(file: string) {
+    const parts = file.split(".");
+    const ext = parts[parts.length - 1];
+    const hash = parts[parts.length - 2];
+    const rest = parts.slice(0, parts.length - 2).join(".");
+    return `${rest}.${ext}.${hash}.map`;
+  }
+
+  private shouldProcessFile(filePath: string) {
+    return (
+      filePath.endsWith(".js") &&
+      this.opts.paths.some((path) => filePath.startsWith(path))
+    );
+  }
+}
 
 /**
  * rspack when concatenating css files doesn't properly move @import
@@ -108,7 +192,6 @@ export default defineConfig({
         // file name to use, and it's too much work to expose each
         // one by one. Maybe one day! For now, at least this means all
         // the files are cacheable until the next deployment.
-        // TODO: Add source map transforms (https://gerrit.aws.plasmic.app/c/create-react-app-new/+/12102).
         new CopyRspackPlugin({
           patterns: [
             {
@@ -135,6 +218,14 @@ export default defineConfig({
               from: "../loader-html-hydrate/build/",
               to: "static/js/",
             },
+          ],
+        }),
+        new AppendSourceMapWithHash({
+          paths: [
+            "static/sub/build/",
+            "static/live-frame/build/",
+            "static/react-web-bundle/build/",
+            "static/canvas-packages/build/",
           ],
         }),
         new FixCssImports(),
