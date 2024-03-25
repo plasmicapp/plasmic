@@ -388,8 +388,10 @@ export function submitPrompt(answer: string) {
   cy.get(`button[data-test-id="prompt-submit"]`).click();
 }
 
-export function linkNewProp(propName: string, defaultValue?: string) {
-  cy.get(`input[data-test-id="prop-name"]`).type(propName);
+export function linkNewProp(propName?: string, defaultValue?: string) {
+  if (propName) {
+    cy.get(`input[data-test-id="prop-name"]`).clear().type(propName);
+  }
   if (defaultValue) {
     cy.get(`input[data-plasmic-prop="default-value"]`).type(defaultValue);
   }

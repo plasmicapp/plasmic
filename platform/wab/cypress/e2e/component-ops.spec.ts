@@ -44,7 +44,7 @@ describe("component tricky operations", function () {
             "Make sure linking to a new prop will preserve the default value"
           );
           cy.get(`[data-plasmic-prop="withDefaultValue"]`).first().rightclick();
-          cy.contains("Link to a prop").trigger("mouseover");
+          cy.contains("Allow external access").trigger("mouseover");
           cy.contains("Create new prop").click();
           cy.linkNewProp("linkProp1");
           cy.get(`[data-test-id="prop-editor-row-default-withDefaultValue"]`)
@@ -62,7 +62,7 @@ describe("component tricky operations", function () {
             .first()
             .type("5{enter}")
             .rightclick();
-          cy.contains("Link to a prop").trigger("mouseover");
+          cy.contains("Allow external access").trigger("mouseover");
           cy.contains("Create new prop").click();
           cy.linkNewProp("linkProp2");
           cy.get(`[data-test-id="prop-editor-row-default-tabIndex"]`)
@@ -73,7 +73,7 @@ describe("component tricky operations", function () {
             .first()
             .type("5{enter}")
             .rightclick();
-          cy.contains("Link to a prop").trigger("mouseover");
+          cy.contains("Allow external access").trigger("mouseover");
           cy.get('[role="menuitem"]').contains("linkProp2").click();
           cy.get(`[data-test-id="prop-editor-row-default-title"]`)
             .contains("5")

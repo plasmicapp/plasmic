@@ -3643,8 +3643,8 @@ export function propTypeToWabType(
             case "string":
             case "number":
             case "boolean":
-            case "dateString" as any:
-            case "dateRangeStrings" as any:
+            case "dateString":
+            case "dateRangeStrings":
             case "array":
             case "href":
             case "interactionExprValue":

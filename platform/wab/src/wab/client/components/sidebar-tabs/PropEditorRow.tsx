@@ -757,14 +757,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
         (isPageComponent(ownerComponent) || isPlainComponent(ownerComponent)) &&
         !referencedParam &&
         canLinkToProp && (
-          <Menu.SubMenu
-            title={
-              <span>
-                Link to a prop for component{" "}
-                <strong>{getComponentDisplayName(ownerComponent)}</strong>
-              </span>
-            }
-          >
+          <Menu.SubMenu title={<span>Allow external access</span>}>
             {getRealParams(ownerComponent)
               .filter((p) => canLinkPropToParam(wabType, p))
               .map((param) => (
@@ -1015,6 +1008,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
           {newParamModalVisibile && ownerComponent && viewCtx && (
             <ComponentPropModal
               studioCtx={studioCtx}
+              suggestedName={label}
               component={ownerComponent}
               visible={newParamModalVisibile}
               type={wabType}

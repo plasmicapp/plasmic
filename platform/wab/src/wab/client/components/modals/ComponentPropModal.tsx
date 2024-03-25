@@ -91,6 +91,7 @@ export function ComponentPropModal(props: {
   onFinish: (newParam?: Param) => void;
   type?: Param["type"];
   centeredModal?: boolean;
+  suggestedName?: string;
 }) {
   const {
     studioCtx,
@@ -99,11 +100,12 @@ export function ComponentPropModal(props: {
     onFinish,
     existingParam,
     centeredModal,
+    suggestedName,
   } = props;
 
   const type = props.type ?? existingParam?.type;
   const [paramName, setParamName] = React.useState(
-    existingParam?.variable.name ?? ""
+    existingParam?.variable.name ?? suggestedName ?? ""
   );
   const [paramType, setParamType] = React.useState<ComponentParamTypeOptions>(
     (isKnownFunctionType(type)

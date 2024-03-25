@@ -249,6 +249,8 @@ const tsToWabTypeKey = {
   href: "href",
   target: "target",
   img: "img",
+  dateString: "dateString",
+  dateRangeStrings: "dateRangeStrings",
 } as const;
 
 export function convertTsToWabType(propType?: string) {
