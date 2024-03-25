@@ -12,6 +12,7 @@ import { instUtil } from "@/wab/shared/core/InstUtil";
 import { PkgVersionInfoMeta, SiteInfo } from "@/wab/shared/SharedApi";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { trackComponentRoot, trackComponentSite } from "@/wab/tpls";
+import { uniqBy } from "lodash";
 import { IObservableValue, observable } from "mobx";
 import { BundlingSiteApi } from "./api";
 import { AppCtx } from "./app-ctx";
@@ -142,7 +143,7 @@ export class DbCtx {
     if (!this.appCtx.appConfig.incrementalObservables) {
       return false;
     }
-    return this.recorder.maybeObserveComponentTrees(components);
+    return this.recorder.maybeObserveComponentTrees(uniqBy(components, "uuid"));
   }
 
   private createRecorder(site: Site) {

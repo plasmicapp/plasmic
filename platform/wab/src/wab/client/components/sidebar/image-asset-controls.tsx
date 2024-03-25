@@ -2,7 +2,6 @@ import { ImageAsset, ProjectDependency } from "@/wab/classes";
 import { AppCtx } from "@/wab/client/app-ctx";
 import ListItem from "@/wab/client/components/ListItem";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
-import { reactConfirm } from "@/wab/client/components/quick-modals";
 import MultiAssetsActions, {
   useMultiAssetsActions,
 } from "@/wab/client/components/sidebar/MultiAssetsActions";
@@ -35,7 +34,6 @@ import { DEVFLAGS } from "@/wab/devflags";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import { extractImageAssetUsages } from "@/wab/image-assets";
 import { ImageUploadResponse } from "@/wab/shared/ApiSchema";
-import { getAllUsedImageAssets } from "@/wab/shared/cached-selectors";
 import { imageDataUriToBlob } from "@/wab/shared/data-urls";
 import { canRead, canWrite } from "@/wab/shared/ui-config-utils";
 import { Menu } from "antd";
@@ -86,8 +84,6 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
       [ImageAssetType.Icon]: true,
       [ImageAssetType.Picture]: true,
     });
-
-  const usedImageAssets = getAllUsedImageAssets(studioCtx.site);
 
   const addAsset = async (type: ImageAssetType) => {
     return studioCtx.changeUnsafe(() => {
@@ -181,36 +177,7 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
           const selectedAssets = studioCtx.site.imageAssets.filter((asset) => {
             return selectedAssetsIds.has(asset.uuid);
           });
-          const assetsInUse = selectedAssets.filter((_asset) =>
-            usedImageAssets.has(_asset)
-          );
-          if (assetsInUse.length > 0) {
-            const confirmed = await reactConfirm({
-              message: (
-                <>
-                  <p>
-                    <strong>
-                      {assetsInUse.map((_asset) => _asset.name).join(", ")}
-                    </strong>{" "}
-                    are being used in your project.
-                  </p>
-                  Are you sure you want to delete it?
-                </>
-              ),
-            });
-            if (!confirmed) {
-              return false;
-            }
-          }
-
-          await studioCtx.change(({ success }) => {
-            for (const _asset of selectedAssets) {
-              studioCtx.tplMgr().removeImageAsset(_asset);
-            }
-            return success();
-          });
-
-          return true;
+          return await studioCtx.siteOps().tryDeleteImageAssets(selectedAssets);
         }}
       >
         <VirtualGroupedList
@@ -389,7 +356,7 @@ const ImageAssetControl = observer(function ImageAssetControl(props: {
           push(
             <Menu.Item
               key="delete"
-              onClick={() => studioCtx.siteOps().tryDeleteImageAsset(asset)}
+              onClick={() => studioCtx.siteOps().tryDeleteImageAssets([asset])}
             >
               Delete
             </Menu.Item>

@@ -46,7 +46,6 @@ import {
   isTplVariantable,
   tryGetOwnerSite,
 } from "@/wab/tpls";
-import { uniqBy } from "lodash";
 import { DbCtx } from "./db";
 import { StudioCtx } from "./studio-ctx/StudioCtx";
 
@@ -353,10 +352,7 @@ export function fixupVirtualSlotArgs(
   // contain one of these newTplComponents, and they need to have their virtual
   // contents filled in first before they are copied to affected TplComponents
   dbCtx.maybeObserveComponents(
-    uniqBy(
-      Array.from(newTplComponents).map((tpl) => $$$(tpl).owningComponent()),
-      "uuid"
-    )
+    Array.from(newTplComponents).map((tpl) => $$$(tpl).owningComponent())
   );
   for (const tplc of newTplComponents) {
     fillVirtualSlotContents(tplMgr, tplc);
@@ -388,10 +384,7 @@ export function fixupVirtualSlotArgs(
       return false;
     });
     dbCtx.maybeObserveComponents(
-      uniqBy(
-        affectedTplComponents.map((tpl) => $$$(tpl).owningComponent()),
-        "uuid"
-      )
+      affectedTplComponents.map((tpl) => $$$(tpl).owningComponent())
     );
     for (const tplc of affectedTplComponents) {
       const slots = Array.from(updatedTplSlots).filter((slot) =>

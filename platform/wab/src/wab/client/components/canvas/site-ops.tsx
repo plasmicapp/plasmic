@@ -151,6 +151,7 @@ import React from "react";
 /**
  * Place for site-wide logic that both performs data model manipulation
  * (usually just by deferring to TplMgr), and updates client state.
+ * All operations that mutate multiple component tplTrees should be here
  */
 export class SiteOps {
   constructor(private studioCtx: StudioCtx) {}
@@ -1335,33 +1336,55 @@ export class SiteOps {
     }
   }
 
-  async tryDeleteImageAsset(asset: ImageAsset) {
-    const existingUses = getComponentsUsingImageAsset(this.site, asset);
-    if (existingUses.length > 0) {
+  async tryDeleteImageAssets(assets: ImageAsset[]) {
+    const usageByAsset = new Map<ImageAsset, Component[]>();
+    let assetsUsed = false;
+    assets.forEach((asset) => {
+      const componentUsage = getComponentsUsingImageAsset(this.site, asset);
+      if (componentUsage.length === 0) {
+        return;
+      }
+      assetsUsed = true;
+      usageByAsset.set(asset, componentUsage);
+    });
+
+    if (assetsUsed) {
       const confirmed = await reactConfirm({
         message: (
           <>
-            <p>
-              <strong>{asset.name}</strong> is still being used by components{" "}
-              {joinReactNodes(
-                L.uniq(
-                  existingUses.map((comp) => getComponentDisplayName(comp))
-                ).map((name) => <code>{name}</code>),
-                ", "
-              )}
-              .
-            </p>
+            {Array.from(usageByAsset.entries()).map(([asset, usage]) => {
+              return (
+                <p>
+                  <strong>{asset.name}</strong> is still being used by
+                  components{" "}
+                  {joinReactNodes(
+                    L.uniq(
+                      usage.map((comp) => getComponentDisplayName(comp))
+                    ).map((name) => <code>{name}</code>),
+                    ", "
+                  )}
+                  .
+                </p>
+              );
+            })}
             Are you sure you want to delete it?
           </>
         ),
       });
       if (!confirmed) {
-        return;
+        return false;
       }
     }
-    await this.change(() => {
-      this.tplMgr.removeImageAsset(asset);
-    });
+    await this.studioCtx.changeObserved(
+      () => {
+        return Array.from(usageByAsset.values()).flat();
+      },
+      ({ success }) => {
+        assets.forEach((asset) => this.tplMgr.removeImageAsset(asset));
+        return success();
+      }
+    );
+    return true;
   }
 
   // This method was created to be used from browser console whenever there is
