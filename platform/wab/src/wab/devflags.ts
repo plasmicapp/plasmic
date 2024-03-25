@@ -658,6 +658,8 @@ const DEFAULT_DEVFLAGS = {
   by cloning a template, we can show them the tour for that template.
   */
   templateTours: {} as Record<string, string>,
+
+  arbitraryCssSelectors: false,
 };
 
 Object.assign(DEFAULT_DEVFLAGS, DEFAULT_DEVFLAG_OVERRIDES);

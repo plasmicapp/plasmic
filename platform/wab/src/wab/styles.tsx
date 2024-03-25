@@ -1752,11 +1752,25 @@ function showPseudoClassSelector(
           () => `Expected variant ${sv.name} (${sv.uuid}) to have selectors`
         )
       )
-      .map(getPseudoSelector)
-      .filter(
-        (sel) => !sel.cssSelector.startsWith("::") && !sel.trigger?.alwaysByHook
-      )
-      .map((sel) => sel.cssSelector)
+      .map((sel) => {
+        if (pseudoSelectors.find((opt) => opt.displayName === sel)) {
+          return getPseudoSelector(sel);
+        } else {
+          return sel;
+        }
+      })
+      .filter((sel) => {
+        if (L.isString(sel)) {
+          return true;
+        }
+        return !sel.cssSelector.startsWith("::") && !sel.trigger?.alwaysByHook;
+      })
+      .map((sel) => {
+        if (L.isString(sel)) {
+          return sel;
+        }
+        return sel.cssSelector;
+      })
       .join("");
   };
 
@@ -1997,7 +2011,7 @@ export function getTriggerableSelectors(sv: Variant) {
   )
     .map((sel) =>
       ensure(
-        psuedoSelectors.find((opt) => opt.displayName === sel),
+        pseudoSelectors.find((opt) => opt.displayName === sel),
         () => `Couldn't find PseudoSelectorOption for ${sel}`
       )
     )
@@ -2050,7 +2064,7 @@ export function oppositeSelectorDisplayName(displayName: string) {
   }
 }
 
-export const psuedoSelectors = (() => {
+export const pseudoSelectors = (() => {
   const opts = new Array<PseudoSelectorOption>();
   const addSelector = (
     displayName: string,
@@ -2158,19 +2172,19 @@ export function getApplicableSelectors(
   forPrivateStyleVariant: boolean,
   forRoot: boolean
 ) {
-  return psuedoSelectors.filter((opt) =>
+  return pseudoSelectors.filter((opt) =>
     opt.applicable(forTag, forPrivateStyleVariant, forRoot)
   );
 }
 
 export function getLessSelector(optDisplayName: string) {
-  const opt = psuedoSelectors.find((s) => s.displayName === optDisplayName);
+  const opt = pseudoSelectors.find((s) => s.displayName === optDisplayName);
   return opt ? opt.cssSelector : optDisplayName;
 }
 
 export function getPseudoSelector(optDisplayName: string) {
   return ensure(
-    psuedoSelectors.find((s) => s.displayName === optDisplayName),
+    pseudoSelectors.find((s) => s.displayName === optDisplayName),
     () => `Couldn't find PseudoSelectorOption for ${optDisplayName}`
   );
 }

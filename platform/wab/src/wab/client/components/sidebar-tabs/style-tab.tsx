@@ -38,6 +38,7 @@ import {
 } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
+  getArbitraryCssSelectorsVariantsForTag,
   getPrivateStyleVariantsForTag,
   isBaseVariant,
 } from "@/wab/shared/Variants";
@@ -62,6 +63,7 @@ import {
 import { ComponentTab } from "./ComponentTab/ComponentTab";
 import { PageTab } from "./PageTab/PageTab";
 import {
+  canRenderArbitraryCssSelectors,
   canRenderMixins,
   canRenderPrivateStyleVariants,
   getOrderedSectionRender,
@@ -80,6 +82,8 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
   const [showMixins, setShowMixins] = React.useState(isMixinSet(tpl, viewCtx));
   const [showPrivateStyleVariants, setShowPrivateStyleVariants] =
     React.useState(isPrivateStyleVariantSet(tpl, viewCtx));
+  const [showArbitraryCssSelectors, setShowArbitraryCssSelectors] =
+    React.useState(isArbitraryCssSelectorsVariantSet(tpl, viewCtx));
   React.useEffect(() => {
     const mixinDisposal = mobx.reaction(
       () => {
@@ -105,9 +109,21 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
         fireImmediately: true,
       }
     );
+    const arbitraryCssSelectorsDisposal = mobx.reaction(
+      () => {
+        const curTpl = viewCtx.focusedTpl(false);
+        return !!curTpl && isArbitraryCssSelectorsVariantSet(curTpl, viewCtx);
+      },
+      (arbitraryCssSelectorsVisible) =>
+        setShowArbitraryCssSelectors(arbitraryCssSelectorsVisible),
+      {
+        fireImmediately: true,
+      }
+    );
     return () => {
       mixinDisposal();
       privateStyleVariantsDisposal();
+      arbitraryCssSelectorsDisposal();
     };
   }, [tpl, viewCtx]);
   const isTag = isTplTag(tpl);
@@ -137,6 +153,17 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
   if (canRenderMixins(tpl, viewCtx) && !showMixins && showStyleSections) {
     applyMenu.push({ label: MIXINS_CAP, onClick: () => setShowMixins(true) });
   }
+  if (
+    canRenderArbitraryCssSelectors(tpl, viewCtx) &&
+    !showArbitraryCssSelectors &&
+    viewCtx.appCtx.appConfig.arbitraryCssSelectors &&
+    showStyleSections
+  ) {
+    applyMenu.push({
+      label: "Arbitraty CSS Selectors",
+      onClick: () => setShowArbitraryCssSelectors(true),
+    });
+  }
 
   const orderedSections = getOrderedSectionRender(
     tpl,
@@ -144,6 +171,9 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
     new Map([
       [Section.Mixins, showMixins],
       [Section.PrivateStyleVariants, showPrivateStyleVariants],
+      ...(viewCtx.appCtx.appConfig.arbitraryCssSelectors
+        ? [Section.ArbitraryCssSelectors, showArbitraryCssSelectors]
+        : ([] as any)),
     ]),
     styleTabFilter
   );
@@ -550,4 +580,16 @@ function isPrivateStyleVariantSet(tpl: TplNode, viewCtx: ViewCtx) {
   const component = viewCtx.currentTplComponent().component;
   const privateStyleVariants = getPrivateStyleVariantsForTag(component, tpl);
   return privateStyleVariants.length > 0;
+}
+
+function isArbitraryCssSelectorsVariantSet(tpl: TplNode, viewCtx: ViewCtx) {
+  if (!isTplTag(tpl)) {
+    return false;
+  }
+  const component = viewCtx.currentTplComponent().component;
+  const arbitraryCssSelectors = getArbitraryCssSelectorsVariantsForTag(
+    component,
+    tpl
+  );
+  return arbitraryCssSelectors.length > 0;
 }

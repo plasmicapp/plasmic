@@ -65,6 +65,7 @@ import { Alert } from "antd";
 import $ from "jquery";
 import { observer } from "mobx-react";
 import * as React from "react";
+import { ArbitraryCssSelectorsPanel } from "./ArbitraryCssSelectorsSection";
 import { BackgroundSection } from "./background-section";
 import { ColumnSection, ColumnsPanelSection } from "./columns-section";
 import { ComponentPropsSection } from "./ComponentPropsSection";
@@ -140,6 +141,7 @@ export enum Section {
   Interactions = "interactions",
   SlotSettings = "slot-settings",
   SimplifiedCodeComponentMode = "simplified-cc-mode",
+  ArbitraryCssSelectors = "arbitrary-css-selectors",
 }
 
 type AllSectionsPresent<T> = {
@@ -209,6 +211,9 @@ const SECTION_SETTINGS: AllSectionsPresent<SectionSetting> = {
   },
   [Section.PrivateStyleVariants]: {
     publicSection: PublicStyleSection.ElementStates,
+  },
+  [Section.ArbitraryCssSelectors]: {
+    publicSection: PublicStyleSection.ArbitrayCssSelectors,
   },
   [Section.Mixins]: { publicSection: PublicStyleSection.Mixins },
 
@@ -307,6 +312,7 @@ const styleSections = new Set([
   Section.TransformPanel,
   Section.ComponentStyleProps,
   Section.ComponentMergedSlotTypography,
+  Section.ArbitraryCssSelectors,
 ]);
 
 const isSectionActive = (section: Section, devflags: DevFlagsType) => {
@@ -318,6 +324,9 @@ const isSectionActive = (section: Section, devflags: DevFlagsType) => {
   }
   if (section === Section.SimplifiedCodeComponentMode) {
     return devflags.simplifiedForms;
+  }
+  if (section === Section.ArbitraryCssSelectors) {
+    return devflags.arbitraryCssSelectors;
   }
   return true;
 };
@@ -598,6 +607,20 @@ export function getRenderBySection(
           // as default slot content can only target base variant
           <PrivateStyleVariantsPanel
             key={`${tpl.uuid}-private-variants`}
+            tpl={tpl as TplTag}
+            viewCtx={viewCtx}
+            studioCtx={expsProvider.studioCtx}
+          />
+        ),
+    ],
+    [
+      Section.ArbitraryCssSelectors,
+      () =>
+        canRenderArbitraryCssSelectors(tpl, viewCtx) &&
+        viewCtx.appCtx.appConfig.arbitraryCssSelectors &&
+        renderOpts.get(Section.ArbitraryCssSelectors) && (
+          <ArbitraryCssSelectorsPanel
+            key={`${tpl.uuid}-css-selectors`}
             tpl={tpl as TplTag}
             viewCtx={viewCtx}
             studioCtx={expsProvider.studioCtx}
@@ -941,6 +964,9 @@ function getOrderedSections(tpl: TplNode, viewCtx: ViewCtx): Set<Section> {
   // Top Sections
   pushIfNew(Section.PrivateStyleVariants);
   pushIfNew(Section.Mixins);
+  if (viewCtx.appCtx.appConfig.arbitraryCssSelectors) {
+    pushIfNew(Section.ArbitraryCssSelectors);
+  }
   pushIfNew(Section.Visibility);
   pushIfNew(Section.RepeatingElement);
   pushIfNew(Section.SizeWidthOnly);
@@ -1245,6 +1271,18 @@ export function canRenderPrivateStyleVariants(
     !ancestorSlot &&
     getApplicableSelectors(tpl.tag, true, isComponentRoot(tpl)).length !== 0 &&
     canEditSection(viewCtx.studioCtx, Section.PrivateStyleVariants)
+  );
+}
+
+export function canRenderArbitraryCssSelectors(
+  tpl: TplNode,
+  viewCtx: ViewCtx
+): tpl is TplTag {
+  const ancestorSlot = getAncestorTplSlot(tpl, true);
+  return (
+    isTplTag(tpl) &&
+    !ancestorSlot &&
+    canEditSection(viewCtx.studioCtx, Section.ArbitraryCssSelectors)
   );
 }
 

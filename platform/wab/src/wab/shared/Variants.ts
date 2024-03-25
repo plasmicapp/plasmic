@@ -39,7 +39,12 @@ import {
   UNINITIALIZED_VALUE,
   writeable,
 } from "@/wab/sites";
-import { getLessSelector, getPseudoSelector, mkRuleSet } from "@/wab/styles";
+import {
+  getLessSelector,
+  getPseudoSelector,
+  mkRuleSet,
+  pseudoSelectors,
+} from "@/wab/styles";
 import { summarizeTplTag } from "@/wab/tpls";
 import { arrayContains } from "class-validator";
 import L, { orderBy } from "lodash";
@@ -212,6 +217,16 @@ export function genCodeForGroupVariant(group: VariantGroup, variant: Variant) {
     group.multi
       ? `(${groupName} || []).includes(${variantUuidLit})`
       : `${groupName} === ${variantUuidLit}`
+  );
+}
+
+export function isArbitraryCssSelector(variant: Variant) {
+  return (
+    variant.selectors &&
+    variant.selectors.length > 0 &&
+    variant.selectors?.every(
+      (sel) => !pseudoSelectors.find((opt) => opt.displayName == sel)
+    )
   );
 }
 
@@ -414,7 +429,16 @@ export function getPrivateStyleVariantsForTag(
   tpl: TplTag
 ) {
   return component.variants.filter(
-    (v) => isStyleVariant(v) && v.forTpl === tpl
+    (v) => isStyleVariant(v) && v.forTpl === tpl && !isArbitraryCssSelector(v)
+  );
+}
+
+export function getArbitraryCssSelectorsVariantsForTag(
+  component: Component,
+  tpl: TplTag
+) {
+  return component.variants.filter(
+    (v) => isStyleVariant(v) && v.forTpl === tpl && isArbitraryCssSelector(v)
   );
 }
 
@@ -598,6 +622,9 @@ export function isBaseRuleVariant(variant: Variant) {
     // screen variant will be triggered via media query
     return false;
   }
+  // if (isArbitraryCssSelector(variant)) {
+  //   return false;
+  // }
   if (isStyleVariant(variant) && !isHookTriggeredStyleVariant(variant)) {
     // a style variant that doesn't have to be triggered by js will just
     // be triggered by css selectors instead

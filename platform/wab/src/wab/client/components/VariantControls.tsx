@@ -213,6 +213,7 @@ export const StyleVariantLabel = observer(forwardRef(StyleVariantLabel_));
 function StyleVariantLabel_(
   props: {
     defaultEditing?: boolean;
+    overrideSelectors?: any[];
     variant: Variant;
     forTag: string;
     onSelectorsChange: (selectors: string[]) => void;
@@ -222,7 +223,7 @@ function StyleVariantLabel_(
   ref: React.Ref<EditableLabelHandles>
 ) {
   const { defaultEditing, variant, forTag, onSelectorsChange, forRoot } = props;
-  const selectors = ensure(variant.selectors);
+  const selectors = props.overrideSelectors ?? ensure(variant.selectors);
   const isPrivate = isPrivateStyleVariant(variant);
   return (
     <div
