@@ -12,6 +12,7 @@ import {
   Site,
   Split,
   State,
+  StyleToken,
   Variant,
   VariantGroup,
 } from "@/wab/classes";
@@ -40,6 +41,7 @@ import {
   uniqueName,
   xAddAll,
 } from "@/wab/common";
+import { removeFromArray } from "@/wab/commons/collections";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import {
   ComponentType,
@@ -88,7 +90,12 @@ import {
   parseDataUrlToSvgXml,
   parseSvgXml,
 } from "@/wab/shared/data-urls";
-import { DATA_QUERY_LOWER } from "@/wab/shared/Labels";
+import {
+  DATA_QUERY_LOWER,
+  FRAMES_CAP,
+  FRAME_LOWER,
+  MIXINS_CAP,
+} from "@/wab/shared/Labels";
 import {
   getFrameColumnIndex,
   removeManagedFramesFromPageArenaForVariants,
@@ -137,6 +144,7 @@ import {
   StateType,
   updateStateAccessType,
 } from "@/wab/states";
+import { changeTokenUsage, extractTokenUsages } from "@/wab/styles";
 import {
   findExprsInComponent,
   flattenTpls,
@@ -1387,6 +1395,77 @@ export class SiteOps {
     return true;
   }
 
+  async tryDeleteTokens(tokens: StyleToken[]) {
+    const tokensUsages = tokens
+      .map((t) => ({
+        usages: extractTokenUsages(this.site, t),
+        token: t,
+      }))
+      .filter(({ usages }) => usages[0].size > 0);
+    if (tokensUsages.length > 0) {
+      const confirmed = await reactConfirm({
+        message: (
+          <>
+            {tokensUsages.map(({ token, usages }) => (
+              <p>
+                <strong>{token.name}</strong> is still being used in
+                {makeUsageControl(
+                  usages[1].components.map(getComponentDisplayName),
+                  "Components"
+                )}
+                {makeUsageControl(
+                  usages[1].frames.map(
+                    (frame) => frame.name || `unnamed ${FRAME_LOWER}`
+                  ),
+                  FRAMES_CAP
+                )}
+                {makeUsageControl(
+                  usages[1].mixins.map((m) => m.name),
+                  MIXINS_CAP
+                )}
+                {makeUsageControl(
+                  usages[1].tokens.map((t) => t.name),
+                  "Tokens"
+                )}
+                {makeUsageControl(
+                  usages[1].themes.map((t) => t.style.name),
+                  "Default Typography Styles"
+                )}
+                {makeUsageControl(usages[1].addItemPrefs, "Initial Styles")}
+              </p>
+            ))}
+            Are you sure you want to delete it? Deleting the token will hard
+            code its value at all its usages.
+          </>
+        ),
+      });
+
+      if (!confirmed) {
+        return false;
+      }
+    }
+
+    await this.studioCtx.changeObserved(
+      () => {
+        return tokensUsages.flatMap(
+          (tokenUsage) => tokenUsage.usages[1].components
+        );
+      },
+      ({ success }) => {
+        tokens.forEach((token) => {
+          const [usages, _] = extractTokenUsages(this.site, token);
+          usages.forEach((usage) => {
+            changeTokenUsage(this.site, token, usage, "inline");
+          });
+          removeFromArray(this.site.styleTokens, token);
+        });
+        return success();
+      }
+    );
+
+    return true;
+  }
+
   // This method was created to be used from browser console whenever there is
   // a broken project with missing base rule variant settings.
   ensureAllBaseRuleVariantSettings() {
@@ -1526,3 +1605,20 @@ function makeComponentName(site: Site, comp: Component) {
     return <code>{comp.name}</code>;
   }
 }
+
+const makeUsageControl = (names: Array<string>, usageName: string) => {
+  if (names.length === 0) {
+    return null;
+  }
+  return (
+    <li className="asset-usage-type-container" key={usageName}>
+      {usageName}:{" "}
+      <span className="asset-usage-items">
+        {joinReactNodes(
+          names.map((name, i) => <code key={i}>{name}</code>),
+          ", "
+        )}
+      </span>
+    </li>
+  );
+};

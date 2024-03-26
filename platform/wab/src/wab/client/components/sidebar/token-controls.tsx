@@ -11,18 +11,11 @@ import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawn } from "@/wab/common";
-import { removeFromArray } from "@/wab/commons/collections";
 import { TokenType } from "@/wab/commons/StyleToken";
-import { getComponentDisplayName } from "@/wab/components";
 import { TokenResolver } from "@/wab/shared/cached-selectors";
-import { FRAMES_CAP, FRAME_LOWER, MIXINS_CAP } from "@/wab/shared/Labels";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { allColorTokens } from "@/wab/sites";
-import {
-  changeTokenUsage,
-  extractTokenUsages,
-  maybeTokenRefCycle,
-} from "@/wab/styles";
+import { maybeTokenRefCycle } from "@/wab/styles";
 import { Menu, notification } from "antd";
 import { sortBy } from "lodash";
 import { observer } from "mobx-react-lite";
@@ -225,57 +218,7 @@ export const StyleTokenControl = observer(function StyleTokenControl(props: {
             <Menu.Item
               key="delete"
               onClick={async () => {
-                const site = studioCtx.site;
-                const [usages, summary] = extractTokenUsages(site, token);
-
-                if (usages.size > 0) {
-                  const usageControls = (
-                    <>
-                      {makeUsageControl(
-                        summary.components.map(getComponentDisplayName),
-                        "Components"
-                      )}
-                      {makeUsageControl(
-                        summary.frames.map(
-                          (frame) => frame.name || `unnamed ${FRAME_LOWER}`
-                        ),
-                        FRAMES_CAP
-                      )}
-                      {makeUsageControl(
-                        summary.mixins.map((m) => m.name),
-                        MIXINS_CAP
-                      )}
-                      {makeUsageControl(
-                        summary.tokens.map((t) => t.name),
-                        "Tokens"
-                      )}
-                      {makeUsageControl(
-                        summary.themes.map((t) => t.style.name),
-                        "Default Typography Styles"
-                      )}
-                      {makeUsageControl(summary.addItemPrefs, "Initial Styles")}
-                    </>
-                  );
-
-                  const reallyDelete = await showDeleteModal(
-                    usageControls,
-                    `Deleting token ${token.name}`,
-                    "Deleting the token will hard code its value at all its usages as below."
-                  );
-                  if (reallyDelete) {
-                    await studioCtx.changeUnsafe(() => {
-                      usages.forEach((usage) =>
-                        changeTokenUsage(site, token, usage, "inline")
-                      );
-
-                      removeFromArray(site.styleTokens, token);
-                    });
-                  }
-                } else {
-                  await studioCtx.changeUnsafe(() => {
-                    removeFromArray(site.styleTokens, token);
-                  });
-                }
+                await studioCtx.siteOps().tryDeleteTokens([token]);
               }}
             >
               Delete
