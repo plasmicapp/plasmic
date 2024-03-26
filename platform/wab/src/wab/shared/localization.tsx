@@ -8,7 +8,11 @@ import {
   TplNode,
 } from "@/wab/classes";
 import { assert, unexpected } from "@/wab/common";
-import { isPageComponent, isPlainComponent } from "@/wab/components";
+import {
+  isCodeComponent,
+  isPageComponent,
+  isPlainComponent,
+} from "@/wab/components";
 import { getCssRulesFromRs } from "@/wab/css";
 import { tryExtractJson } from "@/wab/exprs";
 import {
@@ -44,6 +48,7 @@ import {
   ensureValidCombo,
   getBaseVariant,
   isBaseVariant,
+  tryGetBaseVariantSetting,
   VariantCombo,
 } from "./Variants";
 
@@ -73,6 +78,28 @@ export function genLocalizationStringsForProject(
 
   for (const component of components) {
     const variantComboSorter = makeVariantComboSorter(site, component);
+    if (!isCodeComponent(component)) {
+      for (const param of component.params) {
+        if (param.isLocalizable && param.defaultExpr) {
+          const lit = tryExtractJson(param.defaultExpr);
+          if (typeof lit === "string") {
+            const key = makeLocalizationStringKey(
+              lit,
+              {
+                type: "default-param-expr",
+                projectId,
+                site,
+                component,
+                attr: paramToVarName(component, param),
+              },
+              opts
+            );
+            localizedStrs[key] = lit;
+          }
+        }
+      }
+    }
+
     for (const tpl of flattenComponent(component)) {
       // Extract localizable text blocks
       if (
@@ -115,7 +142,7 @@ export function genLocalizationStringsForProject(
         combo: VariantCombo
       ) => {
         const lit = tryExtractJson(expr);
-        if (lit && typeof lit === "string") {
+        if (typeof lit === "string") {
           const key = makeLocalizationStringKey(
             lit,
             {
@@ -156,6 +183,26 @@ export function genLocalizationStringsForProject(
               );
             }
           }
+        }
+        if (isCodeComponent(tpl.component)) {
+          const baseVs = tryGetBaseVariantSetting(tpl);
+          const baseVsArgParams = new Set(
+            baseVs?.args.map((arg) => arg.param) ?? []
+          );
+          tpl.component.params.forEach((p) => {
+            if (
+              p.isLocalizable &&
+              p.defaultExpr &&
+              baseVs &&
+              !baseVsArgParams.has(p)
+            ) {
+              maybeLocalizeExpr(
+                paramToVarName(tpl.component, p),
+                p.defaultExpr,
+                baseVs.variants
+              );
+            }
+          });
         }
       }
     }
