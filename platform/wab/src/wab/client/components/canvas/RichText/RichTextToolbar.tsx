@@ -25,6 +25,8 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { EditingTextContext } from "@/wab/client/studio-ctx/view-ctx";
 import { fontWeightOptions } from "@/wab/client/typography-utils";
 import { spawn } from "@/wab/common";
+import { PublicStyleSection } from "@/wab/shared/ApiSchema";
+import { canEditStyleSection } from "@/wab/shared/ui-config-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, Popover } from "antd";
 import { observer } from "mobx-react-lite";
@@ -160,6 +162,14 @@ function RichTextToolbar_(
     setMarks(Editor.marks(editor) || {});
   }, [ctx.editor]);
 
+  const showBlock = canEditStyleSection(
+    studioCtx.getCurrentUiConfig(),
+    PublicStyleSection.Tag,
+    {
+      isContentCreator: studioCtx.contentEditorMode,
+      defaultContentEditorVisible: false, // matches what's chosen in Sections.tsx
+    }
+  );
   return (
     <PlasmicRichTextToolbar
       {...props}
@@ -168,6 +178,7 @@ function RichTextToolbar_(
         position: "absolute",
         top: studioCtx.focusedMode ? 60 : 12,
       }}
+      hideBlock={!showBlock}
       block={{
         props: {
           "aria-label": "Block type",
