@@ -30,13 +30,11 @@ import ThemeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Theme";
 import PlasmicLeftMixinsPanel from "@/wab/client/plasmic/plasmic_kit/PlasmicLeftMixinsPanel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ensure, spawn, tuple } from "@/wab/common";
-import { removeFromArray } from "@/wab/commons/collections";
 import { isTokenRef } from "@/wab/commons/StyleToken";
-import { getComponentDisplayName } from "@/wab/components";
 import { extractTransitiveDepsFromMixins } from "@/wab/project-deps";
 import { makeTokenRefResolver } from "@/wab/shared/cached-selectors";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
-import { FRAMES_CAP, FRAME_LOWER, MIXIN_LOWER } from "@/wab/shared/Labels";
+import { MIXIN_LOWER } from "@/wab/shared/Labels";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { extractMixinUsages } from "@/wab/styles";
 import { Menu, notification } from "antd";
@@ -49,7 +47,6 @@ import { FindReferencesModal } from "./FindReferencesModal";
 import { useDepFilterButton } from "./left-panel-utils";
 import { SidebarModal } from "./SidebarModal";
 import { SidebarSection } from "./SidebarSection";
-import { makeUsageControl, showDeleteModal } from "./token-controls";
 import { ItemOrGroup, VirtualGroupedList } from "./VirtualGroupedList";
 
 function _MixinPreview(props: {
@@ -331,38 +328,7 @@ function _MixinsPanel() {
   };
 
   const onDelete = async (mixin: Mixin) => {
-    const [usages, summary] = extractMixinUsages(sc.site, mixin);
-
-    if (usages.size > 0) {
-      const usageControls = (
-        <>
-          {makeUsageControl(
-            summary.components.map(getComponentDisplayName),
-            "Components"
-          )}
-          {makeUsageControl(
-            summary.frames.map(
-              (frame) => frame.name || `unnamed ${FRAME_LOWER}`
-            ),
-            FRAMES_CAP
-          )}
-        </>
-      );
-
-      const reallyDelete = await showDeleteModal(
-        usageControls,
-        `Deleting ${MIXIN_LOWER} ${mixin.name}`,
-        `Deleting the ${MIXIN_LOWER} remove it from the following usages below.`
-      );
-      if (reallyDelete) {
-        await sc.changeUnsafe(() => {
-          usages.forEach((usage) => removeFromArray(usage.mixins, mixin));
-          removeFromArray(sc.site.mixins, mixin);
-        });
-      }
-    } else {
-      await sc.changeUnsafe(() => removeFromArray(sc.site.mixins, mixin));
-    }
+    await sc.siteOps().tryDeleteMixins([mixin]);
   };
 
   const addMixin = async () => {

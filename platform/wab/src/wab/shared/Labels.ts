@@ -70,6 +70,7 @@ export const PRIVATE_STYLE_VARIANTS_CAP = "Element states";
 export const SLOT_CAP = "Slot";
 export const TOKENS_CAP = "Tokens";
 export const TOKEN_CAP = "Token";
+export const TOKEN_LOWER = "token";
 
 export const VARIANTS_CAP = "Variants";
 export const VARIANTS_LOWER = VARIANTS_CAP.toLowerCase();

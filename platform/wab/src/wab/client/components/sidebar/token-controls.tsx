@@ -1,7 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { StyleToken } from "@/wab/classes";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
-import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { useMultiAssetsActions } from "@/wab/client/components/sidebar/MultiAssetsActions";
 import { ColorSidebarPopup } from "@/wab/client/components/style-controls/ColorButton";
 import ColorSwatch from "@/wab/client/components/style-controls/ColorSwatch";
@@ -53,42 +52,6 @@ export const newTokenValueAllowed = (
   });
 
   return false;
-};
-
-export const makeUsageControl = (names: Array<string>, usageName: string) => {
-  if (names.length === 0) {
-    return null;
-  }
-  return (
-    <li className="asset-usage-type-container" key={usageName}>
-      {usageName}:{" "}
-      <span className="asset-usage-items">
-        {names.map((name, i) => (
-          <span key={i} className={"asset-usage-item"}>
-            {name}
-          </span>
-        ))}
-      </span>
-    </li>
-  );
-};
-
-export const showDeleteModal = async (
-  usages: React.ReactNode,
-  title: string,
-  message: string
-) => {
-  const content = (
-    <>
-      {message}
-      <ul className="asset-usage-ul">{usages}</ul>
-    </>
-  );
-
-  return await reactConfirm({
-    title,
-    message: content,
-  });
 };
 
 export const StyleTokenControl = observer(function StyleTokenControl(props: {

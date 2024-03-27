@@ -7,6 +7,7 @@ import {
   ComponentVariantGroup,
   ImageAsset,
   isKnownComponentVariantGroup,
+  Mixin,
   PageArena,
   ProjectDependency,
   Site,
@@ -20,7 +21,11 @@ import { AppCtx } from "@/wab/client/app-ctx";
 import { U } from "@/wab/client/cli-routes";
 import { FrameClip } from "@/wab/client/clipboard";
 import { toast } from "@/wab/client/components/Messages";
-import { confirm, reactConfirm } from "@/wab/client/components/quick-modals";
+import {
+  confirm,
+  deleteStudioElementConfirm,
+  reactConfirm,
+} from "@/wab/client/components/quick-modals";
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
 import { NewComponentInfo } from "@/wab/client/components/widgets/NewComponentModal";
 import {
@@ -92,9 +97,8 @@ import {
 } from "@/wab/shared/data-urls";
 import {
   DATA_QUERY_LOWER,
-  FRAMES_CAP,
-  FRAME_LOWER,
-  MIXINS_CAP,
+  MIXIN_LOWER,
+  TOKEN_LOWER,
 } from "@/wab/shared/Labels";
 import {
   getFrameColumnIndex,
@@ -144,7 +148,11 @@ import {
   StateType,
   updateStateAccessType,
 } from "@/wab/states";
-import { changeTokenUsage, extractTokenUsages } from "@/wab/styles";
+import {
+  changeTokenUsage,
+  extractMixinUsages,
+  extractTokenUsages,
+} from "@/wab/styles";
 import {
   findExprsInComponent,
   flattenTpls,
@@ -1345,47 +1353,30 @@ export class SiteOps {
   }
 
   async tryDeleteImageAssets(assets: ImageAsset[]) {
-    const usageByAsset = new Map<ImageAsset, Component[]>();
-    let assetsUsed = false;
-    assets.forEach((asset) => {
-      const componentUsage = getComponentsUsingImageAsset(this.site, asset);
-      if (componentUsage.length === 0) {
-        return;
-      }
-      assetsUsed = true;
-      usageByAsset.set(asset, componentUsage);
-    });
+    const assetsUsages = assets
+      .map((asset) => ({
+        asset,
+        usages: getComponentsUsingImageAsset(this.site, asset),
+      }))
+      .filter(({ usages }) => usages.length > 0);
 
-    if (assetsUsed) {
-      const confirmed = await reactConfirm({
-        message: (
-          <>
-            {Array.from(usageByAsset.entries()).map(([asset, usage]) => {
-              return (
-                <p>
-                  <strong>{asset.name}</strong> is still being used by
-                  components{" "}
-                  {joinReactNodes(
-                    L.uniq(
-                      usage.map((comp) => getComponentDisplayName(comp))
-                    ).map((name) => <code>{name}</code>),
-                    ", "
-                  )}
-                  .
-                </p>
-              );
-            })}
-            Are you sure you want to delete it?
-          </>
-        ),
-      });
+    if (assetsUsages.length > 0) {
+      const confirmed = await deleteStudioElementConfirm(
+        `Deleting asset`,
+        assetsUsages.map(({ asset, usages }) => ({
+          element: asset,
+          summary: { components: usages },
+        })),
+        `Are you sure you want to delete it?`
+      );
+
       if (!confirmed) {
         return false;
       }
     }
     await this.studioCtx.changeObserved(
       () => {
-        return Array.from(usageByAsset.values()).flat();
+        return assetsUsages.flatMap(({ usages }) => usages);
       },
       ({ success }) => {
         assets.forEach((asset) => this.tplMgr.removeImageAsset(asset));
@@ -1403,42 +1394,14 @@ export class SiteOps {
       }))
       .filter(({ usages }) => usages[0].size > 0);
     if (tokensUsages.length > 0) {
-      const confirmed = await reactConfirm({
-        message: (
-          <>
-            {tokensUsages.map(({ token, usages }) => (
-              <p>
-                <strong>{token.name}</strong> is still being used in
-                {makeUsageControl(
-                  usages[1].components.map(getComponentDisplayName),
-                  "Components"
-                )}
-                {makeUsageControl(
-                  usages[1].frames.map(
-                    (frame) => frame.name || `unnamed ${FRAME_LOWER}`
-                  ),
-                  FRAMES_CAP
-                )}
-                {makeUsageControl(
-                  usages[1].mixins.map((m) => m.name),
-                  MIXINS_CAP
-                )}
-                {makeUsageControl(
-                  usages[1].tokens.map((t) => t.name),
-                  "Tokens"
-                )}
-                {makeUsageControl(
-                  usages[1].themes.map((t) => t.style.name),
-                  "Default Typography Styles"
-                )}
-                {makeUsageControl(usages[1].addItemPrefs, "Initial Styles")}
-              </p>
-            ))}
-            Are you sure you want to delete it? Deleting the token will hard
-            code its value at all its usages.
-          </>
-        ),
-      });
+      const confirmed = await deleteStudioElementConfirm(
+        `Deleting ${TOKEN_LOWER}`,
+        tokensUsages.map(({ token, usages }) => ({
+          element: token,
+          summary: usages[1],
+        })),
+        `Are you sure you want to delete it? Deleting the ${TOKEN_LOWER} will hard code its value at all its usages.`
+      );
 
       if (!confirmed) {
         return false;
@@ -1458,6 +1421,47 @@ export class SiteOps {
             changeTokenUsage(this.site, token, usage, "inline");
           });
           removeFromArray(this.site.styleTokens, token);
+        });
+        return success();
+      }
+    );
+
+    return true;
+  }
+
+  async tryDeleteMixins(mixins: Mixin[]) {
+    const mixinsUsages = mixins
+      .map((m) => ({
+        usages: extractMixinUsages(this.site, m),
+        mixin: m,
+      }))
+      .filter(({ usages }) => usages[0].size > 0);
+    if (mixinsUsages.length > 0) {
+      const confirmed = await deleteStudioElementConfirm(
+        `Deleting ${MIXIN_LOWER}`,
+        mixinsUsages.map(({ mixin, usages }) => ({
+          element: mixin,
+          summary: usages[1],
+        })),
+        `Are you sure you want to delete it? Deleting the ${MIXIN_LOWER} remove it from the following usages above.`
+      );
+
+      if (!confirmed) {
+        return false;
+      }
+    }
+
+    await this.studioCtx.changeObserved(
+      () => {
+        return mixinsUsages.flatMap(
+          (mixinUsage) => mixinUsage.usages[1].components
+        );
+      },
+      ({ success }) => {
+        mixins.forEach((mixin) => {
+          const [usages, _] = extractMixinUsages(this.site, mixin);
+          usages.forEach((usage) => removeFromArray(usage.mixins, mixin));
+          removeFromArray(this.site.mixins, mixin);
         });
         return success();
       }
@@ -1605,20 +1609,3 @@ function makeComponentName(site: Site, comp: Component) {
     return <code>{comp.name}</code>;
   }
 }
-
-const makeUsageControl = (names: Array<string>, usageName: string) => {
-  if (names.length === 0) {
-    return null;
-  }
-  return (
-    <li className="asset-usage-type-container" key={usageName}>
-      {usageName}:{" "}
-      <span className="asset-usage-items">
-        {joinReactNodes(
-          names.map((name, i) => <code key={i}>{name}</code>),
-          ", "
-        )}
-      </span>
-    </li>
-  );
-};
