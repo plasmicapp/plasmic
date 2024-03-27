@@ -5296,8 +5296,7 @@ export class StudioCtx extends WithDbCtx {
     }
 
     if (
-      this.siteInfo.teamId &&
-      this.appCtx.appConfig.serverPublishTeamIds.includes(this.siteInfo.teamId)
+      this.appCtx.appConfig.serverPublishProjectIds.includes(this.siteInfo.id)
     ) {
       return this.appCtx.api.computeNextProjectVersion(this.siteInfo.id, {
         revisionNum: this.dbCtx().revisionNum,

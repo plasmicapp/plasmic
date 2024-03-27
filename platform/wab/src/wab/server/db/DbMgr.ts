@@ -3191,13 +3191,7 @@ export class DbMgr implements MigrationDbMgr {
       DEVFLAGS,
       JSON.parse((await this.tryGetDevFlagOverrides())?.data ?? "{}")
     ) as typeof DEVFLAGS;
-    const project = await this.getProjectById(projectId);
-    if (
-      !project.workspaceId ||
-      !(devflags.serverPublishTeamIds ?? []).includes(
-        (await this.getWorkspaceById(project.workspaceId)).teamId
-      )
-    ) {
+    if (!devflags.serverPublishProjectIds.includes(projectId)) {
       throw new UnauthorizedError("Access denied");
     }
 

@@ -6,6 +6,7 @@ import { DEFAULT_DEVFLAG_OVERRIDES } from "./devflag-overrides";
 import {
   ApiFeatureTier,
   FeatureTierId,
+  ProjectId,
   TeamId,
   WorkspaceId,
 } from "./shared/ApiSchema";
@@ -601,7 +602,7 @@ const DEFAULT_DEVFLAGS = {
   commitsOnBranches: false,
   appAuth: false,
   advancedAppAuth: false,
-  serverPublishTeamIds: [] as TeamId[],
+  serverPublishProjectIds: [] as ProjectId[],
   focusable: false,
   envPanel: false,
   linting: false,
