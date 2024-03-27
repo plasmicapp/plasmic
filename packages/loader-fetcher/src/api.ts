@@ -99,7 +99,6 @@ export interface LoaderBundleOutput {
     browser: (CodeModule | AssetModule)[];
     server: (CodeModule | AssetModule)[];
   };
-  external: string[];
   components: ComponentMeta[];
   globalGroups: GlobalGroupMeta[];
   projects: ProjectMeta[];

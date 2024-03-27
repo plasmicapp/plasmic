@@ -142,12 +142,6 @@ export function mergeBundles(
     };
   }
 
-  const existingExternals = new Set(target.external);
-  const newExternals = target.external.filter((x) => !existingExternals.has(x));
-  if (newExternals.length > 0) {
-    target = { ...target, external: [...target.external, ...newExternals] };
-  }
-
   const existingSplitIds = new Set(target.activeSplits.map((s) => s.id));
   const newSplits =
     from.activeSplits.filter((s) => !existingSplitIds.has(s.id)) ?? [];

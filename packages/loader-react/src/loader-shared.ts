@@ -38,6 +38,7 @@ import {
   isBrowser,
   isDynamicPagePath,
   uniq,
+  uniqBy,
 } from "./utils";
 import { getPlasmicCookieValues, updatePlasmicCookieValue } from "./variation";
 
@@ -332,7 +333,6 @@ export abstract class BaseInternalPlasmicComponentLoader {
     },
     components: [],
     globalGroups: [],
-    external: [],
     projects: [],
     activeSplits: [],
     bundleKey: null,
@@ -494,12 +494,53 @@ export abstract class BaseInternalPlasmicComponentLoader {
     return bundle;
   }
 
-  mergeBundle(bundle: LoaderBundleOutput) {
-    // TODO: this is only possible as the bundle is the full bundle,
-    // not a partial bundle. Figure it out how to merge partial bundles.
-    this.bundle = bundle;
-    // Avoid `undefined` as it cannot be serialized as JSON
-    this.bundle.bundleKey = this.bundle.bundleKey ?? null;
+  mergeBundle(newBundle: LoaderBundleOutput) {
+    newBundle.bundleKey = newBundle.bundleKey ?? null;
+    if (
+      newBundle.bundleKey &&
+      this.bundle.bundleKey &&
+      newBundle.bundleKey !== this.bundle.bundleKey
+    ) {
+      console.warn(
+        `Plasmic Error: Different code export hashes. This can happen if your app is using different loaders with different project IDs or project versions.
+Conflicting values:
+${newBundle.bundleKey}
+${this.bundle.bundleKey}`
+      );
+    }
+    const bundles = [this.bundle, newBundle];
+    this.bundle = {
+      activeSplits: uniqBy(
+        bundles.flatMap((bundle) => bundle.activeSplits),
+        (split) => split.id
+      ),
+      components: uniqBy(
+        bundles.flatMap((bundle) => bundle.components),
+        (c) => c.id
+      ),
+      globalGroups: uniqBy(
+        bundles.flatMap((bundle) => bundle.globalGroups),
+        (g) => g.id
+      ),
+      modules: {
+        browser: uniqBy(
+          bundles.flatMap((bundle) => bundle.modules.browser),
+          (m) => m.fileName
+        ),
+        server: uniqBy(
+          bundles.flatMap((bundle) => bundle.modules.server),
+          (m) => m.fileName
+        ),
+      },
+      projects: uniqBy(
+        bundles.flatMap((bundle) => bundle.projects),
+        (p) => p.id
+      ),
+      // Avoid `undefined` as it cannot be serialized as JSON
+      bundleKey: newBundle.bundleKey ?? this.bundle.bundleKey ?? null,
+      deferChunksByDefault: newBundle.deferChunksByDefault ?? false,
+    };
+
     this.onBundleMerged?.();
   }
 
@@ -515,7 +556,6 @@ export abstract class BaseInternalPlasmicComponentLoader {
       },
       components: [],
       globalGroups: [],
-      external: [],
       projects: [],
       activeSplits: [],
       bundleKey: null,

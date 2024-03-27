@@ -28,7 +28,6 @@ export function getBundleSubset(
       browser: forBrowser ? filteredModules : [],
       server: forBrowser ? [] : filteredModules,
     },
-    external: bundle.external.filter((dep) => deps.has(dep)),
     components: bundle.components.filter((c) => isSubModule(c.entry)),
     globalGroups: bundle.globalGroups,
     projects: bundle.projects,

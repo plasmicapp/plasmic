@@ -249,3 +249,16 @@ export function MaybeWrap(props: {
 export function uniq<T>(elements: T[]): T[] {
   return Array.from(new Set(elements));
 }
+
+export function uniqBy<T, K>(elements: T[], iterator: (elt: T) => K): T[] {
+  const vis = new Set<K>();
+  const filtered: T[] = [];
+  for (const elt of elements) {
+    const key = iterator(elt);
+    if (!vis.has(key)) {
+      vis.add(key);
+      filtered.push(elt);
+    }
+  }
+  return filtered;
+}

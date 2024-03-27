@@ -169,7 +169,7 @@ export function PlasmicRootProvider(
     .__internal as InternalPlasmicComponentLoader;
 
   if (prefetchedData) {
-    loader.registerPrefetchedBundle(prefetchedData?.bundle);
+    loader.registerPrefetchedBundle(prefetchedData.bundle);
   }
 
   const [splits, setSplits] = React.useState<Split[]>(loader.getActiveSplits());
@@ -189,6 +189,80 @@ export function PlasmicRootProvider(
     return () => loader.unsubscribePlasmicRoot(watcher);
   }, [watcher, loader]);
 
+  const currentContextValue = React.useContext(PlasmicRootContext);
+
+  const { user, userAuthToken, isUserLoading, authRedirectUri } = props;
+
+  const value = React.useMemo<PlasmicRootContextValue>(() => {
+    // Fallback to the value in `currentContextValue` if none is provided
+    const withCurrentContextValueFallback = <
+      K extends keyof PlasmicRootContextValue
+    >(
+      v: PlasmicRootContextValue[K],
+      key: K
+    ): PlasmicRootContextValue[K] => {
+      return (v !== undefined ? v : currentContextValue?.[key])!;
+    };
+    return {
+      globalVariants: [
+        ...mergeGlobalVariantsSpec(
+          globalVariants ?? [],
+          getGlobalVariantsFromSplits(splits, variation ?? {})
+        ),
+        ...(currentContextValue?.globalVariants ?? []),
+      ],
+      globalContextsProps: {
+        ...(currentContextValue?.globalContextsProps ?? {}),
+        ...(globalContextsProps ?? {}),
+      },
+      loader: withCurrentContextValueFallback(loader, "loader"),
+      variation: {
+        ...(currentContextValue?.variation ?? {}),
+        ...(variation ?? {}),
+      },
+      translator: withCurrentContextValueFallback(translator, "translator"),
+      Head: withCurrentContextValueFallback(Head, "Head"),
+      Link: withCurrentContextValueFallback(Link, "Link"),
+      user: withCurrentContextValueFallback(user, "user"),
+      userAuthToken: withCurrentContextValueFallback(
+        userAuthToken,
+        "userAuthToken"
+      ),
+      isUserLoading: withCurrentContextValueFallback(
+        isUserLoading,
+        "isUserLoading"
+      ),
+      authRedirectUri: withCurrentContextValueFallback(
+        authRedirectUri,
+        "authRedirectUri"
+      ),
+      suspenseFallback: withCurrentContextValueFallback(
+        suspenseFallback,
+        "suspenseFallback"
+      ),
+      disableLoadingBoundary: withCurrentContextValueFallback(
+        disableLoadingBoundary,
+        "disableLoadingBoundary"
+      ),
+    };
+  }, [
+    globalVariants,
+    variation,
+    globalContextsProps,
+    loader,
+    splits,
+    translator,
+    Head,
+    Link,
+    user,
+    userAuthToken,
+    isUserLoading,
+    authRedirectUri,
+    suspenseFallback,
+    disableLoadingBoundary,
+    currentContextValue,
+  ]);
+
   React.useEffect(() => {
     ensureVariationCookies(variation);
     loader.trackRender({
@@ -198,48 +272,9 @@ export function PlasmicRootProvider(
         teamIds: loader.getTeamIds(),
         projectIds: loader.getProjectIds(),
       },
-      variation,
+      variation: value.variation,
     });
-  }, [loader, variation]);
-
-  const { user, userAuthToken, isUserLoading, authRedirectUri } = props;
-
-  const value = React.useMemo<PlasmicRootContextValue>(
-    () => ({
-      globalVariants: mergeGlobalVariantsSpec(
-        globalVariants ?? [],
-        getGlobalVariantsFromSplits(splits, variation ?? {})
-      ),
-      globalContextsProps,
-      loader,
-      variation,
-      translator,
-      Head,
-      Link,
-      user,
-      userAuthToken,
-      isUserLoading,
-      authRedirectUri,
-      suspenseFallback,
-      disableLoadingBoundary,
-    }),
-    [
-      globalVariants,
-      variation,
-      globalContextsProps,
-      loader,
-      splits,
-      translator,
-      Head,
-      Link,
-      user,
-      userAuthToken,
-      isUserLoading,
-      authRedirectUri,
-      suspenseFallback,
-      disableLoadingBoundary,
-    ]
-  );
+  }, [loader, value]);
 
   const reactMajorVersion = +React.version.split(".")[0];
 
