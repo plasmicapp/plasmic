@@ -1,5 +1,6 @@
 import ListItem from "@/wab/client/components/ListItem";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import promptDeleteComponent from "@/wab/client/components/modals/componentDeletionModal";
 import { reactPrompt } from "@/wab/client/components/quick-modals";
 import { Matcher } from "@/wab/client/components/view-common";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -24,7 +25,7 @@ import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 
-interface LeftPagesPanelProps extends DefaultLeftPagesPanelProps {}
+type LeftPagesPanelProps = DefaultLeftPagesPanelProps;
 
 const LeftPagesPanel = observer(function LeftPagesPanel(
   _props: LeftPagesPanelProps
@@ -202,11 +203,13 @@ const PageRow = observer(function PageRow(props: {
       push(
         <Menu.Item
           key="delete"
-          onClick={async () =>
-            studioCtx.changeUnsafe(() =>
+          onClick={async () => {
+            const confirmation = await promptDeleteComponent("page", page.name);
+            if (!confirmation) return;
+            await studioCtx.changeUnsafe(() =>
               studioCtx.siteOps().tryRemoveComponent(page)
-            )
-          }
+            );
+          }}
         >
           <strong>Delete</strong> page
         </Menu.Item>

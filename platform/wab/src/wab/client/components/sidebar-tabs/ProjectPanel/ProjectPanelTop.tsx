@@ -14,6 +14,7 @@ import {
   KeyboardShortcut,
   menuSection,
 } from "@/wab/client/components/menu-builder";
+import promptDeleteComponent from "@/wab/client/components/modals/componentDeletionModal";
 import {
   reactConfirm,
   reactPrompt,
@@ -1015,14 +1016,20 @@ function getFolderItemMenuRenderer({
         () => (studioCtx.findReferencesComponent = component)
       );
 
-    const onDelete = () =>
-      studioCtx.changeUnsafe(() => {
+    const onDelete = async () => {
+      const confirmation = await promptDeleteComponent(
+        getSiteItemTypeName(folderItem.item),
+        folderItem.name
+      );
+      if (!confirmation) return;
+      await studioCtx.changeUnsafe(() => {
         if (isDedicatedArena(folderItem.item)) {
           studioCtx.siteOps().tryRemoveComponent(folderItem.item.component);
         } else if (isMixedArena(folderItem.item)) {
           studioCtx.siteOps().removeMixedArena(folderItem.item);
         }
       });
+    };
 
     return (
       <Menu
@@ -1035,7 +1042,6 @@ function getFolderItemMenuRenderer({
               "duplicate",
               "convertToComponent",
               "convertToPage",
-              "delete",
             ].includes(e.key)
           ) {
             onClose();

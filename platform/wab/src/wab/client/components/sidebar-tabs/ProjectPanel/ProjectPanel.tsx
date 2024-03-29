@@ -12,6 +12,7 @@ import {
   KeyboardShortcut,
   menuSection,
 } from "@/wab/client/components/menu-builder";
+import promptDeleteComponent from "@/wab/client/components/modals/componentDeletionModal";
 import { FindReferencesModal } from "@/wab/client/components/sidebar/FindReferencesModal";
 import { TopModal } from "@/wab/client/components/studio/TopModal";
 import { Matcher } from "@/wab/client/components/view-common";
@@ -684,15 +685,20 @@ function getFolderItemMenuRenderer({
 
     const onFindReferences = () => setFindReferenceComponent(component!);
 
-    const onDelete = () =>
-      studioCtx.changeUnsafe(() => {
+    const onDelete = async () => {
+      const confirmation = await promptDeleteComponent(
+        getSiteItemTypeName(folderItem.item),
+        folderItem.name
+      );
+      if (!confirmation) return;
+      await studioCtx.changeUnsafe(() => {
         if (isDedicatedArena(folderItem.item)) {
           studioCtx.siteOps().tryRemoveComponent(folderItem.item.component);
         } else if (isMixedArena(folderItem.item)) {
           studioCtx.siteOps().removeMixedArena(folderItem.item);
         }
       });
-
+    };
     return (
       <Menu onClick={(e) => e.domEvent.stopPropagation()}>
         {menuSection(

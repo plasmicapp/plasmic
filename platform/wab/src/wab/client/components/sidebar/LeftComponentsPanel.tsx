@@ -8,6 +8,7 @@ import {
 import { mkProjectLocation, openNewTab } from "@/wab/client/cli-routes";
 import ListItem from "@/wab/client/components/ListItem";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import promptDeleteComponent from "@/wab/client/components/modals/componentDeletionModal";
 import { DefaultComponentKindModal } from "@/wab/client/components/modals/DefaultComponentKindModal";
 import {
   reactPrompt,
@@ -439,11 +440,16 @@ const ComponentRow = observer(function ComponentRow(props: {
         push(
           <Menu.Item
             key="delete"
-            onClick={async () =>
-              studioCtx.changeUnsafe(() =>
+            onClick={async () => {
+              const confirmation = await promptDeleteComponent(
+                "component",
+                component.name
+              );
+              if (!confirmation) return;
+              await studioCtx.changeUnsafe(() =>
                 studioCtx.siteOps().tryRemoveComponent(component)
-              )
-            }
+              );
+            }}
           >
             <strong>Delete</strong> component
           </Menu.Item>
