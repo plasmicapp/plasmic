@@ -1,30 +1,32 @@
-import { useNonAuthCtx } from "@/wab/client/app-ctx";
-import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
+import { useAdminCtx } from "@/wab/client/components/pages/admin/AdminCtx";
 import { Select } from "antd";
-import React from "react";
+import React, { useMemo } from "react";
 
 export interface AdminUserSelectProps {
   onChange: (userId: string) => void;
 }
 
 export function AdminUserSelect({ onChange }: AdminUserSelectProps) {
-  const nonAuthCtx = useNonAuthCtx();
-  const { loading, value: users } = useAsyncStrict(async () => {
-    const resp = await nonAuthCtx.api.listUsers();
-    return resp.users
+  const { listUsers } = useAdminCtx();
+  const userOptions = useMemo(() => {
+    if (!listUsers.value) {
+      return [];
+    }
+
+    return listUsers.value
       .sort((a, b) => a.email.localeCompare(b.email))
       .map((user) => ({
         value: user.id,
         label: `${user.email} (${user.firstName} ${user.lastName})`,
       }));
-  }, [nonAuthCtx]);
+  }, [listUsers.value]);
   return (
     <Select
       style={{ width: 400 }}
       showSearch
-      placeholder={loading ? "Loading users..." : "Search for a user"}
+      placeholder={listUsers.loading ? "Loading users..." : "Search for a user"}
       filterOption={(input, option) => !!option?.label?.includes(input)}
-      options={users}
+      options={userOptions}
       onChange={(userId: string) => onChange(userId)}
     />
   );

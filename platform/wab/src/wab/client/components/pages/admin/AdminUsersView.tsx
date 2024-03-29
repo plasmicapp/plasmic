@@ -1,6 +1,7 @@
 import { useNonAuthCtx } from "@/wab/client/app-ctx";
 import { UU } from "@/wab/client/cli-routes";
 import { smartRender } from "@/wab/client/components/pages/admin/admin-util";
+import { useAdminCtx } from "@/wab/client/components/pages/admin/AdminCtx";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import { LinkButton, SearchBox } from "@/wab/client/components/widgets";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
@@ -23,12 +24,9 @@ export function AdminUsersView() {
 
 function UsersView() {
   const nonAuthCtx = useNonAuthCtx();
+  const { listUsers } = useAdminCtx();
 
   const [query, setQuery] = useState<string>("");
-  const usersResp = useAsyncStrict(
-    () => nonAuthCtx.api.listUsers(),
-    [nonAuthCtx]
-  );
 
   async function handleLogin(email: string) {
     await nonAuthCtx.api.adminLoginAs({ email });
@@ -40,7 +38,7 @@ function UsersView() {
       <h2>Users</h2>
       <SearchBox value={query} onChange={(e) => setQuery(e.target.value)} />
       <Table
-        dataSource={(usersResp.value?.users ?? []).filter((user) => {
+        dataSource={(listUsers.value ?? []).filter((user) => {
           if (!query || query.trim().length === 0) {
             return true;
           }

@@ -1,6 +1,8 @@
+import { useNonAuthCtx } from "@/wab/client/app-ctx";
 import { UU } from "@/wab/client/cli-routes";
+import { AsyncState, useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import { ensure, unexpected } from "@/wab/common";
-import { TeamId } from "@/wab/shared/ApiSchema";
+import { ApiUser, TeamId } from "@/wab/shared/ApiSchema";
 import React, { useCallback, useContext, useMemo } from "react";
 import { useHistory } from "react-router";
 
@@ -9,6 +11,8 @@ interface AdminState {
   tab: string;
   /** Selected team ID. */
   teamId: TeamId | undefined;
+  /** State for listing all users. */
+  listUsers: AsyncState<ApiUser[]>;
 }
 
 interface AdminActions {
@@ -27,9 +31,11 @@ export function useAdminCtx() {
 }
 
 export function AdminCtxProvider({ children }: React.PropsWithChildren) {
+  const nonAuthCtx = useNonAuthCtx();
+
   const history = useHistory();
   const pathname = history.location.pathname;
-  const state = useMemo<AdminState>(() => {
+  const pathState = useMemo(() => {
     const matchesTeams = UU.adminTeams.parse(pathname);
     if (matchesTeams) {
       return {
@@ -57,11 +63,22 @@ export function AdminCtxProvider({ children }: React.PropsWithChildren) {
         history.push(UU.admin.fill({ tab }));
       }
     },
-    [history, state]
+    [history, pathState]
   );
 
+  const listUsers = useAsyncStrict(async () => {
+    const res = await nonAuthCtx.api.listUsers();
+    return res.users;
+  }, [nonAuthCtx]);
+
   return (
-    <AdminCtxContext.Provider value={{ ...state, navigate }}>
+    <AdminCtxContext.Provider
+      value={{
+        ...pathState,
+        navigate,
+        listUsers,
+      }}
+    >
       {children}
     </AdminCtxContext.Provider>
   );
