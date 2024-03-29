@@ -27,7 +27,10 @@ import {
 } from "@/wab/project-deps";
 import { FastBundler } from "@/wab/shared/bundler";
 import { getUsedDataSourcesFromDep } from "@/wab/shared/cached-selectors";
-import { inlineMixins, inlineTokens } from "@/wab/shared/insertable-templates";
+import {
+  inlineMixins,
+  inlineTokens,
+} from "@/wab/shared/insertable-templates/inliners";
 import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
 import {
   allStyleTokens,

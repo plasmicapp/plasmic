@@ -332,6 +332,12 @@ export class Api extends SharedApi {
     const items = await navigator.clipboard.read();
     return await parseClipboardItems(items, lastAction);
   }
+
+  async whiltelistProjectIdToCopy(projectId: string) {
+    assert(!isHostFrame(), "Should only run in the top frame");
+
+    this.addStorageItem(`copy/${projectId}`, JSON.stringify(+new Date()));
+  }
 }
 
 export class SiteApi {
@@ -533,13 +539,34 @@ export function filteredApi(
       return f(key);
     },
     getModelUpdates: checkProjectIdInFirstArg,
-    getSiteInfo: (f) => (siteId, opts) => {
+    getSiteInfo: (f) => async (siteId, opts) => {
       // The only projects we need to fetch are the site itself and the
       // insertable templates (imported projects use `getPkgVersion`).
-      assert(
-        [projectId, ...insertableProjectIds].includes(siteId),
-        "Unexpected projectId " + siteId
+
+      const isKnownProject = [projectId, ...insertableProjectIds].includes(
+        siteId
       );
+      if (isKnownProject) {
+        return f(siteId, opts);
+      }
+
+      // In case the user has copied some elements from another project we
+      // check how long ago the user copied the elements. If it's been more
+      // than 1 day, we don't need to fetch the project.
+      const errorMsg = `Unexpected projectId ${siteId}`;
+
+      const value = await apiProxy.getStorageItem(`copy/${siteId}`);
+      if (!value) {
+        throw new Error(errorMsg);
+      }
+
+      const diff = new Date().getTime() - new Date(+value).getTime();
+      const diffInDays = diff / (1000 * 3600 * 24);
+
+      if (diffInDays > 1) {
+        throw new Error(errorMsg);
+      }
+
       return f(siteId, opts);
     },
     cloneProject: checkProjectIdInFirstArg,
@@ -592,6 +619,7 @@ export function filteredApi(
         });
       },
     setMainBranchProtection: checkProjectIdInFirstArg,
+    whiltelistProjectIdToCopy: checkProjectIdInFirstArg,
   };
 
   // Start with all methods marked as forbidden

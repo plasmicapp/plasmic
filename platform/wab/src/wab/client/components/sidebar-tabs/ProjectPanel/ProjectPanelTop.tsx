@@ -145,7 +145,7 @@ import { useDebounce } from "react-use";
 import { FixedSizeList } from "react-window";
 import { Modal } from "src/wab/client/components/widgets/Modal";
 import { isCoreTeamEmail } from "src/wab/shared/devflag-utils";
-import { InsertableTemplateExtraInfo } from "src/wab/shared/insertable-templates";
+import { InsertableTemplateExtraInfo } from "src/wab/shared/insertable-templates/types";
 import useSWR, { mutate } from "swr";
 import FolderItem from "./FolderItem";
 import styles from "./ProjectPanelTop.module.scss";

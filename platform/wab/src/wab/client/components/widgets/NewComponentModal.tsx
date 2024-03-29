@@ -15,7 +15,7 @@ import {
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { assert, ensure } from "@/wab/common";
 import { flattenInsertableTemplatesByType } from "@/wab/devflags";
-import { InsertableTemplateExtraInfo } from "@/wab/shared/insertable-templates";
+import { InsertableTemplateExtraInfo } from "@/wab/shared/insertable-templates/types";
 import { getPlumeEditorPluginByType } from "@/wab/shared/plume/plume-registry";
 import { Tooltip } from "antd";
 import * as React from "react";

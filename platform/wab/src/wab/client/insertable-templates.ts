@@ -1,20 +1,38 @@
-import { Component, ProjectDependency, Site, Variant } from "@/wab/classes";
-import { ensure, maybe } from "@/wab/common";
+import {
+  Component,
+  isKnownArenaFrame,
+  isKnownTplNode,
+  ProjectDependency,
+  Site,
+  TplNode,
+  Variant,
+} from "@/wab/classes";
+import { ViewOps } from "@/wab/client/components/canvas/view-ops";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ensure, maybe, unexpected } from "@/wab/common";
 import { PageComponent } from "@/wab/components";
 import {
   flattenInsertableTemplatesByType,
+  InsertableTemplateComponentResolution,
   InsertableTemplatesGroup,
   InsertableTemplatesItem,
+  InsertableTemplateTokenResolution,
 } from "@/wab/devflags";
+import { FastBundler } from "@/wab/shared/bundler";
+import { getBundle } from "@/wab/shared/bundles";
+import { cloneInsertableTemplate } from "@/wab/shared/insertable-templates";
 import {
-  cloneInsertableTemplate,
+  CopyElementsReference,
+  CopyState,
+  CopyStateExtraInfo,
   InsertableTemplateExtraInfo,
-} from "@/wab/shared/insertable-templates";
+} from "@/wab/shared/insertable-templates/types";
 import { PkgInfo } from "@/wab/shared/SharedApi";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { getBaseVariant } from "@/wab/shared/Variants";
-import { unbundleProjectDependency } from "@/wab/tagged-unbundle";
-import { flatten, fromPairs } from "lodash";
+import { unbundleProjectDependency, unbundleSite } from "@/wab/tagged-unbundle";
+import { deepTrackComponents } from "@/wab/tpls";
+import { flatten, fromPairs, isArray } from "lodash";
 import { promptChooseItem } from "./components/modals/ChooseItemModal";
 import { normalizeTemplateSpec, StudioCtx } from "./studio-ctx/StudioCtx";
 
@@ -287,4 +305,123 @@ export function getInsertableTemplateComponentItem(
   return getInsertableTemplateComponentItems(studioCtx).find(
     (i) => i.templateName === templateName
   );
+}
+
+export function createCopyableElementsReferences(
+  viewCtx: ViewCtx,
+  copyObj: ReturnType<ViewOps["copy"]>
+): CopyElementsReference[] {
+  // Copy paste will only handle single tplNodes for now
+  if (isArray(copyObj)) {
+    // No need for pasting multiple elements for now
+    return [];
+  } else {
+    function tplNodeRef(node: TplNode): CopyElementsReference {
+      const activeVariants = viewCtx
+        .variantTplMgr()
+        .getActivatedVariantsForNode(node);
+      return {
+        type: "tpl-node",
+        uuid: node.uuid,
+        activeVariantsUuids: [...activeVariants].map((v) => v.uuid),
+      };
+    }
+
+    if (isKnownTplNode(copyObj)) {
+      return [tplNodeRef(copyObj)];
+    } else if (isKnownArenaFrame(copyObj)) {
+      // We have some options here:
+      // 1. Copy the entire frame as a frame
+      // 2. Import the component which the frame is based on
+      // 3. Copy the tree of the component
+      // For now, the most natural thing to do is to copy the tree of the component
+      const node = copyObj.container.component.tplTree;
+      return [tplNodeRef(node)];
+    }
+  }
+  unexpected("Unknown copyable element type");
+}
+
+export const PLASMIC_COPY_PREFIX = "pl-copy;";
+
+export function getCopyState(
+  viewCtx: ViewCtx,
+  copyObj: ReturnType<ViewOps["copy"]>
+): CopyState {
+  const references = createCopyableElementsReferences(viewCtx, copyObj);
+
+  const currentComponent = viewCtx.currentComponent();
+
+  const state: CopyState = {
+    action: "cross-tab-copy",
+    projectId: viewCtx.studioCtx.siteInfo.id,
+    // We include revisionNum so that we reference this exact state, but this
+    // implies that eventually the copy state will reference a non existent
+    // revision likely, but this is fine, copy and paste is not meant to be
+    // take a long time
+    revisionNum: viewCtx.dbCtx().revisionNum,
+    componentUuid: currentComponent.uuid,
+    componentName: currentComponent.name,
+    references,
+  };
+
+  return state;
+}
+
+export async function buildCopyStateExtraInfo(
+  studioCtx: StudioCtx,
+  state: CopyState
+): Promise<CopyStateExtraInfo> {
+  const { projectId, componentUuid, componentName, revisionNum, references } =
+    state;
+
+  // TODO: For copy and paste to work, we are downloading the entire site info
+  // for the project. This is not ideal and we should find a way to avoid this.
+  const { rev, depPkgs } = await studioCtx.app.withSpinner(
+    studioCtx.appCtx.api.getSiteInfo(projectId, {
+      revisionNum: revisionNum,
+    })
+  );
+
+  const bundler = new FastBundler();
+
+  const bundle = getBundle(rev, studioCtx.appCtx.lastBundleVersion);
+
+  const { site } = unbundleSite(bundler, projectId, bundle, depPkgs);
+
+  // Be sure to track it, so that we can properly to do some fixups
+  // as effectiveVs may require `getTplOwnerComponent`
+  deepTrackComponents(site);
+
+  const { screenVariant } = await getScreenVariantToInsertableTemplate(
+    studioCtx
+  );
+
+  // This hostless dependencies have been unbundled with the current studio
+  // bundler which makes them compatible to be installed in the current site
+  const { hostLessDependencies } =
+    await getHostLessDependenciesToInsertableTemplate(studioCtx, site);
+
+  const resolution: {
+    token?: InsertableTemplateTokenResolution;
+    component?: InsertableTemplateComponentResolution;
+  } = {
+    token: "reuse-by-name-and-value",
+    component: "reuse",
+  };
+
+  const component = ensure(
+    site.components.find((c) => c.uuid === componentUuid),
+    `Component "${componentName}" was not found to paste content`
+  );
+
+  return {
+    projectId,
+    site,
+    screenVariant,
+    hostLessDependencies,
+    resolution,
+    component,
+    references,
+  };
 }

@@ -14,6 +14,7 @@ import {
   Clippable,
   FrameClip,
   isFrameClip,
+  PLASMIC_CLIPBOARD_FORMAT,
 } from "@/wab/client/clipboard";
 import { BottomModals } from "@/wab/client/components/BottomModal";
 import { CanvasArenaShell } from "@/wab/client/components/canvas/canvas-arena";
@@ -75,6 +76,7 @@ import {
   readImageFromClipboard,
   ResizableImage,
 } from "@/wab/client/dom-utils";
+import { reportError } from "@/wab/client/ErrorNotifications";
 import {
   denormalizeFigmaData,
   figmaClipIdFromStr,
@@ -84,6 +86,11 @@ import {
   uploadNodeImages,
 } from "@/wab/client/figma";
 import { DragMoveFrameManager } from "@/wab/client/FreestyleManipulator";
+import {
+  buildCopyStateExtraInfo,
+  getCopyState,
+  postInsertableTemplate,
+} from "@/wab/client/insertable-templates";
 import { PLATFORM } from "@/wab/client/platform";
 import { bindShortcutHandlers } from "@/wab/client/shortcuts/shortcut-handler";
 import { shouldHandleStudioShortcut } from "@/wab/client/shortcuts/studio/studio-shortcut-handlers";
@@ -142,6 +149,8 @@ import {
   GlobalVariantFrame,
   RootComponentVariantFrame,
 } from "@/wab/shared/component-frame";
+import { cloneCopyState } from "@/wab/shared/insertable-templates";
+import { CopyStateExtraInfo } from "@/wab/shared/insertable-templates/types";
 import {
   ARENAS_DESCRIPTION,
   ARENA_LOWER,
@@ -150,6 +159,7 @@ import {
 import { PositionLayoutType } from "@/wab/shared/layoututils";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { WaitForClipError } from "@/wab/shared/UserError";
+import { getBaseVariant } from "@/wab/shared/Variants";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { TplVisibility } from "@/wab/shared/visibility-utils";
 import { getSiteArenas } from "@/wab/sites";
@@ -209,6 +219,7 @@ type PastableItem =
   | { type: "presets"; text: string }
   | { type: "domsnap"; snap: DomSnap; iframe: HTMLIFrameElement }
   | { type: "wi-importer"; tree: WIElement }
+  | { type: "copy-reference"; extraInfo: CopyStateExtraInfo }
   | undefined;
 
 const minDragPx = 4;
@@ -388,10 +399,24 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
             viewCtx.enforcePastingAsSibling = true;
           }
 
-          this.viewOps().copy();
+          const copyObj = this.viewOps().copy();
+
+          if (viewCtx) {
+            const copyState = getCopyState(viewCtx, copyObj);
+            spawn(
+              viewCtx.appCtx.api.whiltelistProjectIdToCopy(copyState.projectId)
+            );
+            if (copyState.references.length > 0) {
+              e.clipboardData.setData(
+                PLASMIC_CLIPBOARD_FORMAT,
+                JSON.stringify(copyState)
+              );
+              return;
+            }
+          }
 
           e.clipboardData.setData(
-            "application/vnd.plasmic.clipboard+json",
+            PLASMIC_CLIPBOARD_FORMAT,
             JSON.stringify({ action: "copy" })
           );
           this.clipboardAction = "copy";
@@ -405,7 +430,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
         if (e.clipboardData) {
           await this.viewOps().cut();
           e.clipboardData.setData(
-            "application/vnd.plasmic.clipboard+json",
+            PLASMIC_CLIPBOARD_FORMAT,
             JSON.stringify({ action: "cut" })
           );
           this.clipboardAction = "cut";
@@ -1019,7 +1044,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       // contains a paste from Plasmic.
       await data.setParsedData(sc.appCtx, {
         map: {
-          "application/vnd.plasmic.clipboard+json": JSON.stringify({
+          [PLASMIC_CLIPBOARD_FORMAT]: JSON.stringify({
             action: this.clipboardAction,
           }),
         },
@@ -1167,6 +1192,40 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       return;
     }
 
+    if (itemToPaste.type === "copy-reference") {
+      const currentComponent = vc.currentComponent();
+
+      try {
+        const { nodesToPaste, seenFonts } = cloneCopyState(
+          vc.studioCtx.site,
+          itemToPaste.extraInfo,
+          getBaseVariant(currentComponent),
+          vc.studioCtx.getPlumeSite(),
+          currentComponent,
+          vc.viewOps.adaptTplNodeForPaste
+        );
+
+        if (nodesToPaste.length > 0) {
+          // `cloneCopyState` only handles a single node for now
+          vc.getViewOps().pasteNode(nodesToPaste[0]);
+          postInsertableTemplate(vc.studioCtx, seenFonts);
+          // Infer that only the design has been pasted as content
+          // related to data or dynamic binding have been striped
+          notification.success({
+            message: "Elements pasted",
+            description: "Designs have been successfully pasted.",
+          });
+        }
+      } catch (err) {
+        notification.error({
+          message: "Cannot paste elements",
+          description: err.message,
+        });
+      }
+
+      return;
+    }
+
     assertNever(itemToPaste);
   }
 
@@ -1180,9 +1239,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
     clipboardData: DataTransfer | ClipboardData
   ): Promise<PastableItem> {
     const sc = this.props.studioCtx;
-    const plasmicDataStr = clipboardData.getData(
-      "application/vnd.plasmic.clipboard+json"
-    );
+    const plasmicDataStr = clipboardData.getData(PLASMIC_CLIPBOARD_FORMAT);
     const viewCtx = this.viewCtx();
     if (viewCtx && DEVFLAGS.pasteSnap) {
       const { iframe, snap } = await createIframeFromNamedDomSnap(
@@ -1198,10 +1255,25 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       const plasmicData = JSON.parse(plasmicDataStr);
       if (
         sc.clipboard.isSet() &&
-        ["copy", "cut"].includes(plasmicData.action)
+        ["cross-tab-copy", "copy", "cut"].includes(plasmicData.action)
       ) {
         console.log("Pasting plasmic-clipboard tpl");
         return { type: "clip", clip: sc.clipboard.paste() };
+      } else if (plasmicData.action === "cross-tab-copy") {
+        try {
+          const extraInfo = await buildCopyStateExtraInfo(sc, plasmicData);
+          return {
+            type: "copy-reference",
+            extraInfo,
+          };
+        } catch (err) {
+          reportError(err);
+          notification.error({
+            message: "Cannot paste elements",
+            description: err.message,
+          });
+          return undefined;
+        }
       }
     } else {
       // Figma paste check needs to come before the image check, as it contains

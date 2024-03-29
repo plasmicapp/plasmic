@@ -2279,6 +2279,101 @@ export class ViewOps {
     }
   }
 
+  adaptTplNodeForPaste = (
+    node: TplNode,
+    component: Component,
+    activeVariants: VariantCombo,
+    targetVariants?: VariantCombo
+  ) => {
+    if (!Tpls.isTplVariantable(node)) {
+      return;
+    }
+    const nonGlobalActiveVariants = activeVariants.filter(
+      (v) => !isGlobalVariant(v)
+    );
+    const nonGlobalActiveVsettings = sortedVariantSettingStack(
+      node.vsettings,
+      nonGlobalActiveVariants,
+      makeVariantComboSorter(this.site(), component)
+    );
+    const effectiveVs = new EffectiveVariantSetting(
+      node,
+      nonGlobalActiveVsettings,
+      this.site(),
+      nonGlobalActiveVariants
+    );
+
+    // We handle global and private style variants different from "normal"
+    // ones. If the user copied a TplNode from a component where a component
+    // variant "red" and a global variant "desktop" were active, we want to
+    // copy the styles from "red" and paste as "base" (note there is no "red"
+    // variant here), while we want variant settings from [red, desktop]
+    // to be merged with [desktop] in here.
+    //
+    // The code below filters variant settings that are active when in
+    // combination with any global and private variants, remove nonglobal
+    // variants from them, and then generate a map effectiveVsMap from variant
+    // combos to effective variant settings. We use effective variant
+    // settings to merge variant settings such as [red, desktop] and
+    // [desktop], which will be simply [desktop] in the paste.
+    const preservedVSettings = node.vsettings.filter((vs) =>
+      vs.variants.every(
+        (v) =>
+          isGlobalVariant(v) ||
+          nonGlobalActiveVariants.includes(v) ||
+          isPrivateStyleVariant(v)
+      )
+    );
+    preservedVSettings.forEach(
+      (vs) =>
+        (vs.variants = vs.variants.filter(
+          (v) => isGlobalVariant(v) || isPrivateStyleVariant(v)
+        ))
+    );
+    const effectiveVsMap = new Map<Variant[], EffectiveVariantSetting>();
+    for (const vs of preservedVSettings) {
+      if (vs.variants.length === 0) {
+        continue;
+      }
+
+      if (!effectiveVsMap.has(vs.variants)) {
+        const activeVSettings = sortedVariantSettingStack(
+          preservedVSettings.filter((_vs) =>
+            common.arrayEqIgnoreOrder(_vs.variants, vs.variants)
+          ),
+          vs.variants,
+          makeVariantComboSorter(this.site(), component)
+        );
+        effectiveVsMap.set(
+          vs.variants,
+          new EffectiveVariantSetting(
+            node,
+            activeVSettings,
+            this.site(),
+            vs.variants
+          )
+        );
+      }
+    }
+
+    node.vsettings = [];
+    const vtm = this.viewCtx().variantTplMgr();
+    const targetVs = targetVariants
+      ? ensureVariantSetting(node, targetVariants)
+      : vtm.ensureBaseVariantSetting(node);
+
+    adaptEffectiveVariantSetting(node, targetVs, effectiveVs, false);
+
+    for (const [variants, evs] of effectiveVsMap) {
+      const vs = ensureVariantSetting(node, variants);
+      adaptEffectiveVariantSetting(node, vs, evs, false);
+    }
+
+    if (Tpls.isTplTextBlock(node)) {
+      Tpls.fixTextChildren(node);
+    }
+  };
+
   private adaptTplForPaste = (clip: TplClip, targetVariants?: VariantCombo) => {
     const newTree = Tpls.clone(clip.node);
     if (
@@ -2314,98 +2409,18 @@ export class ViewOps {
         return;
       }
     }
-    const adaptNode = (node: TplNode) => {
-      if (!Tpls.isTplVariantable(node)) {
-        return;
-      }
-      const nonGlobalActiveVariants = ensure(
-        clip.activeVariants,
-        "Unexpected undefined value for clip activeVariants"
-      ).filter((v) => !isGlobalVariant(v));
-      const nonGlobalActiveVsettings = sortedVariantSettingStack(
-        node.vsettings,
-        nonGlobalActiveVariants,
-        makeVariantComboSorter(this.site(), clip.component)
-      );
-      const effectiveVs = new EffectiveVariantSetting(
-        node,
-        nonGlobalActiveVsettings,
-        this.site(),
-        nonGlobalActiveVariants
-      );
 
-      // We handle global and private style variants different from "normal"
-      // ones. If the user copied a TplNode from a component where a component
-      // variant "red" and a global variant "desktop" were active, we want to
-      // copy the styles from "red" and paste as "base" (note there is no "red"
-      // variant here), while we want variant settings from [red, desktop]
-      // to be merged with [desktop] in here.
-      //
-      // The code below filters variant settings that are active when in
-      // combination with any global and private variants, remove nonglobal
-      // variants from them, and then generate a map effectiveVsMap from variant
-      // combos to effective variant settings. We use effective variant
-      // settings to merge variant settings such as [red, desktop] and
-      // [desktop], which will be simply [desktop] in the paste.
-      const preservedVSettings = node.vsettings.filter((vs) =>
-        vs.variants.every(
-          (v) =>
-            isGlobalVariant(v) ||
-            nonGlobalActiveVariants.includes(v) ||
-            isPrivateStyleVariant(v)
-        )
-      );
-      preservedVSettings.forEach(
-        (vs) =>
-          (vs.variants = vs.variants.filter(
-            (v) => isGlobalVariant(v) || isPrivateStyleVariant(v)
-          ))
-      );
-      const effectiveVsMap = new Map<Variant[], EffectiveVariantSetting>();
-      for (const vs of preservedVSettings) {
-        if (vs.variants.length === 0) {
-          continue;
-        }
-
-        if (!effectiveVsMap.has(vs.variants)) {
-          const activeVSettings = sortedVariantSettingStack(
-            preservedVSettings.filter((_vs) =>
-              common.arrayEqIgnoreOrder(_vs.variants, vs.variants)
-            ),
-            vs.variants,
-            makeVariantComboSorter(this.site(), clip.component)
-          );
-          effectiveVsMap.set(
-            vs.variants,
-            new EffectiveVariantSetting(
-              node,
-              activeVSettings,
-              this.site(),
-              vs.variants
-            )
-          );
-        }
-      }
-
-      node.vsettings = [];
-      const vtm = this.viewCtx().variantTplMgr();
-      const targetVs = targetVariants
-        ? ensureVariantSetting(node, targetVariants)
-        : vtm.ensureBaseVariantSetting(node);
-
-      adaptEffectiveVariantSetting(node, targetVs, effectiveVs, false);
-
-      for (const [variants, evs] of effectiveVsMap) {
-        const vs = ensureVariantSetting(node, variants);
-        adaptEffectiveVariantSetting(node, vs, evs, false);
-      }
-
-      if (Tpls.isTplTextBlock(node)) {
-        Tpls.fixTextChildren(node);
-      }
-    };
-
-    Tpls.flattenTplsBottomUp(newTree).forEach((child) => adaptNode(child));
+    Tpls.flattenTplsBottomUp(newTree).forEach((child) =>
+      this.adaptTplNodeForPaste(
+        child,
+        clip.component,
+        ensure(
+          clip.activeVariants,
+          "Unexpected undefined value for clip activeVariants"
+        ),
+        targetVariants
+      )
+    );
     return newTree;
   };
 

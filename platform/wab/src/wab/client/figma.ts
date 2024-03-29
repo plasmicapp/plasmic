@@ -20,6 +20,7 @@ import {
   TplTag,
   VariantsRef,
 } from "@/wab/classes";
+import { PLASMIC_CLIPBOARD_FORMAT } from "@/wab/client/clipboard";
 import { unzip } from "@/wab/collections";
 import {
   arrayEqIgnoreOrder,
@@ -127,7 +128,7 @@ export function figmaClipIdFromStr(clipboardText: string): string | undefined {
   if (!maybeFigmaKey) {
     return undefined;
   }
-  if (maybeFigmaKey.__clipType !== "application/vnd.plasmic.clipboard+json") {
+  if (maybeFigmaKey.__clipType !== PLASMIC_CLIPBOARD_FORMAT) {
     return undefined;
   }
   return maybeFigmaKey.clipId;

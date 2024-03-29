@@ -105,6 +105,7 @@ import {
 } from "@/wab/shared/code-components/code-components";
 import { isRenderableType } from "@/wab/shared/core/model-util";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
+import { InsertableTemplateExtraInfo } from "@/wab/shared/insertable-templates/types";
 import { FRAMES_CAP } from "@/wab/shared/Labels";
 import {
   canAddChildren,
@@ -127,7 +128,6 @@ import { areEqual, VariableSizeList } from "react-window";
 import {
   cloneInsertableTemplate,
   cloneInsertableTemplateComponent,
-  InsertableTemplateExtraInfo,
 } from "src/wab/shared/insertable-templates";
 import { getPlumeEditorPlugin } from "src/wab/shared/plume/plume-registry";
 import { getBaseVariant } from "src/wab/shared/Variants";

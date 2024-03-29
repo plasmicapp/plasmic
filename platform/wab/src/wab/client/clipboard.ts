@@ -104,6 +104,9 @@ export class Clipboard {
 
 export type ClipboardAction = "cut" | "copy";
 
+export const PLASMIC_CLIPBOARD_FORMAT =
+  "application/vnd.plasmic.clipboard+json";
+
 export interface ParsedClipboardData {
   map: Record<string, string>;
 }
@@ -119,7 +122,7 @@ export async function parseClipboardItems(
 
       // Clipboard API does not allow getting arbitrary data (other
       // than text and image).
-      if (format === "application/vnd.plasmic.clipboard+json") {
+      if (format === PLASMIC_CLIPBOARD_FORMAT) {
         map[format] = JSON.stringify({ action: lastAction });
         continue;
       }
