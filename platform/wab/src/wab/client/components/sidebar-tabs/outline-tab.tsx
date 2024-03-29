@@ -7,7 +7,6 @@ import PlasmicSearchInput from "@/wab/client/plasmic/project_panel/PlasmicSearch
 import ChevronDownsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { switchType } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
 import {
   getArenaFrameDesc,
   getArenaFrames,
@@ -19,7 +18,6 @@ import { Dropdown, Menu } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import styles from "./outline-tab.module.scss";
-import { ProjectPanel } from "./ProjectPanel";
 import { ArenaTree, ArenaTreeRef, TreeDndManager } from "./tpl-tree";
 
 export const OutlineTab = observer(OutlineTab_);
@@ -77,143 +75,137 @@ function OutlineTab_() {
   const query = outlineCtx.query;
 
   return (
-    <>
-      {!DEVFLAGS.projPanelTop && !studioCtx.appCtx.appConfig.projPanelTop && (
-        <ProjectPanel />
-      )}
-      <PlasmicOutlineTab
-        noHeader={_isPageArena || !arena}
-        headerFilter={{
-          wrap: () =>
-            !_isPageArena && arena && !studioCtx.focusedMode ? (
-              <Dropdown
-                trigger={["click"]}
-                overlay={() => (
-                  <Menu>
-                    {arenaFrameGroups
-                      .filter((it) => it.frames.length)
-                      .map((group) => {
-                        const items = group.frames.map((frame) => (
-                          <Menu.Item
-                            onClick={() =>
-                              studioCtx.changeUnsafe(() =>
-                                studioCtx.setStudioFocusOnFrame({
-                                  frame: frame,
-                                  autoZoom: true,
-                                })
-                              )
-                            }
-                          >
-                            {getArenaFrameDesc(arena, frame, studioCtx.site)}
-                          </Menu.Item>
-                        ));
+    <PlasmicOutlineTab
+      noHeader={_isPageArena || !arena}
+      headerFilter={{
+        wrap: () =>
+          !_isPageArena && arena && !studioCtx.focusedMode ? (
+            <Dropdown
+              trigger={["click"]}
+              overlay={() => (
+                <Menu>
+                  {arenaFrameGroups
+                    .filter((it) => it.frames.length)
+                    .map((group) => {
+                      const items = group.frames.map((frame) => (
+                        <Menu.Item
+                          onClick={() =>
+                            studioCtx.changeUnsafe(() =>
+                              studioCtx.setStudioFocusOnFrame({
+                                frame: frame,
+                                autoZoom: true,
+                              })
+                            )
+                          }
+                        >
+                          {getArenaFrameDesc(arena, frame, studioCtx.site)}
+                        </Menu.Item>
+                      ));
 
-                        const shouldShowGroupLabel =
-                          group.groupLabel &&
-                          (group.frames.length > 1 ||
-                            group.alwaysShowGroupLabel);
+                      const shouldShowGroupLabel =
+                        group.groupLabel &&
+                        (group.frames.length > 1 || group.alwaysShowGroupLabel);
 
-                        return shouldShowGroupLabel ? (
-                          <Menu.ItemGroup
-                            key={group.groupLabel}
-                            title={
-                              <span className={styles.framesMenuGroupLabel}>
-                                {group.groupLabel}
-                              </span>
-                            }
-                          >
-                            {items}
-                          </Menu.ItemGroup>
-                        ) : (
-                          <React.Fragment key={0}>{items}</React.Fragment>
-                        );
-                      })}
-                  </Menu>
-                )}
+                      return shouldShowGroupLabel ? (
+                        <Menu.ItemGroup
+                          key={group.groupLabel}
+                          title={
+                            <span className={styles.framesMenuGroupLabel}>
+                              {group.groupLabel}
+                            </span>
+                          }
+                        >
+                          {items}
+                        </Menu.ItemGroup>
+                      ) : (
+                        <React.Fragment key={0}>{items}</React.Fragment>
+                      );
+                    })}
+                </Menu>
+              )}
+            >
+              <div
+                data-test-id="elements-panel--current-frame"
+                className={styles.currentFrame}
               >
-                <div
-                  data-test-id="elements-panel--current-frame"
-                  className={styles.currentFrame}
-                >
-                  {currentArenaFrame ? (
-                    <strong>
-                      {getArenaFrameDesc(
-                        arena,
-                        currentArenaFrame,
-                        studioCtx.site
-                      )}
-                    </strong>
-                  ) : (
-                    <div>
-                      {isComponentArena(arena)
-                        ? "Select a variant"
-                        : "Select an artboard"}
-                    </div>
-                  )}
-                  {arenaFrameGroups.some((groups) => groups.frames.length) && (
-                    <Icon monochromeExempt icon={ChevronDownsvgIcon} />
-                  )}
-                </div>
-              </Dropdown>
-            ) : (
-              <div style={{ height: 8 }} />
-            ),
-        }}
-        searchInput={{
-          wrap: () => (
-            <PlasmicSearchInput
-              overrides={{
-                searchInput: {
-                  value: query,
-                  onChange: (e) => outlineCtx.setQuery(e.target.value),
-                  onKeyUp: (e) => {
-                    if (e.key === "Escape") {
-                      outlineCtx.clearQuery();
-                    }
-                  },
-                },
-                clearFieldIcon: {
-                  style: { display: query ? "block" : "none" },
-                  onClick: () => outlineCtx.clearQuery(),
-                },
-              }}
-            />
+                {currentArenaFrame ? (
+                  <strong>
+                    {getArenaFrameDesc(
+                      arena,
+                      currentArenaFrame,
+                      studioCtx.site
+                    )}
+                  </strong>
+                ) : (
+                  <div>
+                    {isComponentArena(arena)
+                      ? "Select a variant"
+                      : "Select an artboard"}
+                  </div>
+                )}
+                {arenaFrameGroups.some((groups) => groups.frames.length) && (
+                  <Icon monochromeExempt icon={ChevronDownsvgIcon} />
+                )}
+              </div>
+            </Dropdown>
+          ) : (
+            <div style={{ height: 8 }} />
           ),
+      }}
+      searchInput={{
+        wrap: () => (
+          <PlasmicSearchInput
+            overrides={{
+              searchInput: {
+                value: query,
+                onChange: (e) => outlineCtx.setQuery(e.target.value),
+                onKeyUp: (e) => {
+                  if (e.key === "Escape") {
+                    outlineCtx.clearQuery();
+                  }
+                },
+              },
+              clearFieldIcon: {
+                style: { display: query ? "block" : "none" },
+                onClick: () => outlineCtx.clearQuery(),
+              },
+            }}
+          />
+        ),
+      }}
+      expandAllButton={{
+        onClick: () => outlineCtx.expandAll(),
+      }}
+      collapseAllButton={{
+        onClick: () => outlineCtx.collapseAll(),
+      }}
+    >
+      <div
+        className="tpltree__root flex-fill rel fill-width fill-height flex-child-min"
+        onDragOver={(e) => {
+          // We must cancel the onDragOver event to be considered a drop target.
+          e.preventDefault();
         }}
-        expandAllButton={{
-          onClick: () => outlineCtx.expandAll(),
-        }}
-        collapseAllButton={{
-          onClick: () => outlineCtx.collapseAll(),
+        onDrop={(e) => {
+          // In case the user drops on the tree panel instead of a tree node,
+          // we inform the TreeDndManager to execute the drop anyway.
+          dndManager.onDrop(e);
         }}
       >
-        <div
-          className="tpltree__root flex-fill rel fill-width fill-height flex-child-min"
-          onDragOver={(e) => {
-            // We must cancel the onDragOver event to be considered a drop target.
-            e.preventDefault();
-          }}
-          onDrop={(e) => {
-            // In case the user drops on the tree panel instead of a tree node,
-            // we inform the TreeDndManager to execute the drop anyway.
-            dndManager.onDrop(e);
-          }}
-        >
-          {arena && (
-            <ArenaTree
-              // We reset the ArenaTree whenever we switch Arena to work around
-              // an issue with FixedSizeTree, where whenever we pass in a new treeWalker,
-              // we end up walking the tree twice for each update.
-              key={arena?.uid}
-              studioCtx={studioCtx}
-              arena={arena}
-              outlineCtx={outlineCtx}
-              dndManager={dndManager}
-              ref={treeRef}
-            />
-          )}
-        </div>
-      </PlasmicOutlineTab>
-    </>
+        {arena && (
+          <ArenaTree
+            // We reset the ArenaTree whenever we switch Arena to work around
+            // an issue with FixedSizeTree, where whenever we pass in a new treeWalker,
+            // we end up walking the tree twice for each update.
+            key={arena?.uid}
+            studioCtx={studioCtx}
+            arena={arena}
+            outlineCtx={outlineCtx}
+            dndManager={dndManager}
+            ref={treeRef}
+          />
+        )}
+      </div>
+    </PlasmicOutlineTab>
   );
 }

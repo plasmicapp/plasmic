@@ -1,1 +1,1 @@
-export * from "./ProjectPanel";
+export * from "./ProjectPanelTop";

@@ -593,7 +593,6 @@ const DEFAULT_DEVFLAGS = {
   ccAttachs: true,
   publishWithTags: true,
   ancestorsBoxes: true,
-  projPanelTop: true,
   branching: false,
   disableBranching: false,
   branchingTeamIds: [] as TeamId[],
@@ -691,7 +690,6 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
   mergeSane(target, {
     ancestorsBoxes: true,
     multiSelect: true,
-    projPanelTop: true,
     insert2022Q4: true,
     branching: true,
     comments: true,

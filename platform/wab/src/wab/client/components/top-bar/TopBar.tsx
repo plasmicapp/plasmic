@@ -354,9 +354,6 @@ function _TopBar({ preview }: TopBarProps) {
         saveIndicator={{
           wrap: (n) => (studioCtx.canEditProject() ? n : null),
         }}
-        arenaSwitcher={{
-          wrap: (n) => (studioCtx.appCtx.appConfig.projPanelTop ? n : null),
-        }}
         branchSeparator={{
           wrap: (n) => (studioCtx.showBranching() ? n : null),
         }}

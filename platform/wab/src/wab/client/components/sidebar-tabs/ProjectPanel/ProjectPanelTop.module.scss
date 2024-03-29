@@ -1,7 +1,13 @@
 @import "src/wab/styles/tokens";
 
+$handleColor: #e8e8e8;
+$handleColorHover: #d0d0d0;
+
 .root {
   flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .collapsedRoot {
@@ -30,6 +36,42 @@
 
 .collapsedCounter {
   color: $sand8;
+}
+
+.resizingHandle {
+  width: 100%;
+  height: 9px;
+  cursor: ns-resize;
+  position: relative;
+  background: white;
+
+  &::before /* line */ {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 0;
+    height: 1px;
+    width: 100%;
+    background: $handleColor;
+  }
+
+  &::after /* handle */ {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    width: 70px;
+    height: 6px;
+    border-radius: 99px;
+    background: $handleColor;
+    transition: all 200ms;
+  }
+
+  &:hover::after {
+    background: $handleColorHover;
+  }
 }
 
 .filterMenuItem {

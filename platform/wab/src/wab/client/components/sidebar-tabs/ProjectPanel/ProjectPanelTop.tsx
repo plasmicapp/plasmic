@@ -148,7 +148,7 @@ import { isCoreTeamEmail } from "src/wab/shared/devflag-utils";
 import { InsertableTemplateExtraInfo } from "src/wab/shared/insertable-templates";
 import useSWR, { mutate } from "swr";
 import FolderItem from "./FolderItem";
-import styles from "./ProjectPanel.module.scss";
+import styles from "./ProjectPanelTop.module.scss";
 
 const enum SiteItemType {
   arena = "arena",

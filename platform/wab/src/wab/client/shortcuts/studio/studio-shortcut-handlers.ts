@@ -5,7 +5,6 @@ import { bindShortcutHandlers } from "src/wab/client/shortcuts/shortcut-handler"
 import { STUDIO_SHORTCUTS } from "src/wab/client/shortcuts/studio/studio-shortcuts";
 import { RightTabKey, StudioCtx } from "src/wab/client/studio-ctx/StudioCtx";
 import { assert, mod } from "src/wab/common";
-import { DEVFLAGS } from "src/wab/devflags";
 import { getArenaFrames } from "src/wab/shared/Arenas";
 import { getSiteArenas } from "src/wab/sites";
 
@@ -211,14 +210,7 @@ export function bindStudioShortcutHandlers(studioCtx: StudioCtx) {
       },
       SEARCH_PROJECT_ARENAS: async () => {
         return studioCtx.changeUnsafe(() => {
-          if (
-            DEVFLAGS.projPanelTop ||
-            studioCtx.appCtx.appConfig.projPanelTop
-          ) {
-            studioCtx.showProjectPanel();
-          } else {
-            studioCtx.switchToTreeTab();
-          }
+          studioCtx.showProjectPanel();
           studioCtx.focusOnProjectSearchInput();
         });
       },
