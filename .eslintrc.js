@@ -112,16 +112,20 @@ module.exports = {
       },
       {
         name: "react-use",
-        importNames: ["useAsync", "useAsyncFn"],
+        importNames: ["useAsync", "useAsyncRetry", "useAsyncFn"],
         message: "Please use useAsyncStrict()/useAsyncFnStrict() instead",
       },
       {
         name: "react-use/lib/useAsync",
-        message: "Please use useAsyncStrict()/useAsyncFnStrict() instead",
+        message: "Please use useAsyncStrict() instead",
+      },
+      {
+        name: "react-use/lib/useAsyncRetry",
+        message: "Please use useAsyncStrict() instead",
       },
       {
         name: "react-use/lib/useAsyncFn",
-        message: "Please use useAsyncStrict()/useAsyncFnStrict() instead",
+        message: "Please use useAsyncFnStrict() instead",
       },
     ],
     "no-restricted-syntax": [

@@ -610,19 +610,17 @@ function DevFlagControls() {
 
 export function FeatureTierControls() {
   const nonAuthCtx = useNonAuthCtx();
+  const { listFeatureTiers } = useAdminCtx();
+
   // Viewing table
   const [query, setQuery] = useState<string | undefined>("");
-  const [reloadCount, setReloadCount] = useState(0);
   // New tier submission form
   const [newTierData, setNewTierData] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   // Get tiers
-  const tiersResp = useAsyncStrict(async () => {
-    return await nonAuthCtx.api.listAllFeatureTiers();
-  }, [nonAuthCtx, reloadCount]);
-  const tiers = tiersResp.value?.tiers ?? [];
+  const tiers = listFeatureTiers.value ?? [];
   const keysToDisplay: string[] = tiers.length > 0 ? Object.keys(tiers[0]) : [];
   // Removes certain keys in-place
   [
@@ -649,7 +647,7 @@ export function FeatureTierControls() {
       setError(e.toString());
     } finally {
       setSubmitting(false);
-      setReloadCount((prev) => prev + 1);
+      listFeatureTiers.retry();
     }
   }
 

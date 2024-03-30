@@ -7,7 +7,7 @@ import { confirm, reactConfirm } from "@/wab/client/components/quick-modals";
 import Button from "@/wab/client/components/widgets/Button";
 import GitJobStep from "@/wab/client/components/widgets/GitJobStep";
 import Select from "@/wab/client/components/widgets/Select";
-import { AsyncState } from "@/wab/client/hooks/useAsyncStrict";
+import { AsyncFnReturn } from "@/wab/client/hooks/useAsyncStrict";
 import {
   DefaultSubsectionPushDeployProps,
   PlasmicSubsectionPushDeploy,
@@ -20,7 +20,6 @@ import {
   GitWorkflowJobStep,
 } from "@/wab/shared/ApiSchema";
 import * as React from "react";
-import { PromiseType } from "react-use/lib/util";
 import { VisibleEnableBlock } from "./PublishFlowDialog";
 import { PublishState } from "./PublishFlowDialogWrapper";
 import { TopBarModal } from "./TopBarModal";
@@ -28,9 +27,9 @@ import { TopBarModal } from "./TopBarModal";
 export type SetupPushDeploy = {
   gitActionParams: GitActionParams;
   setGitActionParams: (params: GitActionParams) => void;
-  projectRepository: AsyncState<
-    PromiseType<ReturnType<() => Promise<ApiProjectRepository | null>>>
-  >;
+  projectRepository: AsyncFnReturn<
+    () => Promise<ApiProjectRepository | null>
+  >[0];
   updateProjectRepository: () => Promise<ApiProjectRepository | null>;
   connectedToGithub: boolean;
   setConnectedToGithub: (connected: boolean) => void;

@@ -1,10 +1,8 @@
 import { useNonAuthCtx } from "@/wab/client/app-ctx";
 import { useAdminCtx } from "@/wab/client/components/pages/admin/AdminCtx";
-import {
-  useAsyncFnStrict,
-  useAsyncStrict,
-} from "@/wab/client/hooks/useAsyncStrict";
-import EyeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Eye";
+import { PublicLink } from "@/wab/client/components/PublicLink";
+import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
+import { notNil } from "@/wab/common";
 import {
   ApiPermission,
   ApiTeam,
@@ -25,17 +23,20 @@ import {
   notification,
   Select,
   Table,
+  Tabs,
 } from "antd";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { AutoInfo, smartRender } from "./admin-util";
 import { AdminUserSelect } from "./AdminUserSelect";
 
 export function AdminTeamsView() {
   const { teamId, navigate } = useAdminCtx();
   const nonAuthCtx = useNonAuthCtx();
-  const [shouldRefetch, setShouldRefetch] = useState({});
-  const refetch = useCallback(() => setShouldRefetch({}), [setShouldRefetch]);
-  const { loading, value: data } = useAsyncStrict(async () => {
+  const {
+    loading,
+    value: data,
+    retry: refetch,
+  } = useAsyncStrict(async () => {
     if (!teamId) {
       return undefined;
     }
@@ -48,10 +49,23 @@ export function AdminTeamsView() {
       ...teamAndPerms,
       discourseInfo,
     };
-  }, [nonAuthCtx, teamId, shouldRefetch]);
+  }, [nonAuthCtx, teamId]);
   return (
     <>
-      <TeamLookup />
+      <Tabs
+        items={[
+          {
+            key: "paying",
+            label: "Paying teams",
+            children: <PayingTeamsView />,
+          },
+          {
+            key: "user",
+            label: "Lookup team by user",
+            children: <TeamLookupByUser />,
+          },
+        ]}
+      />
       {teamId && (
         <Card
           title={
@@ -85,70 +99,170 @@ export function AdminTeamsView() {
   );
 }
 
-function TeamLookup() {
+function TeamLookupByUser() {
   const nonAuthCtx = useNonAuthCtx();
-  const adminCtx = useAdminCtx();
+  const { navigate } = useAdminCtx();
   const [userId, setUserId] = useState<string | undefined>(undefined);
-  const [teamsResp, fetchTeams] = useAsyncFnStrict(
+  const listTeams = useAsyncStrict(
     async () =>
-      userId ? await nonAuthCtx.api.listTeamsForUser(userId) : undefined,
+      userId ? await nonAuthCtx.api.adminListTeams({ userId }) : undefined,
     [nonAuthCtx, userId]
   );
-  useAsyncStrict(fetchTeams, [nonAuthCtx, userId]);
 
   return (
     <>
       <h2>Lookup teams for user</h2>
       <AdminUserSelect onChange={(val) => setUserId(val)} />
-      <Table<ApiTeam>
-        dataSource={teamsResp.value?.teams ?? []}
-        rowKey="id"
-        columns={[
-          {
-            title: "Team",
-            dataIndex: "name",
-            render: smartRender,
-            sorter: (a, b) => (a.name < b.name ? -1 : 1),
-            defaultSortOrder: "ascend",
-          },
-          {
-            title: "Created at",
-            dataIndex: "createdAt",
-            render: smartRender,
-            sorter: (a, b) => (a.createdAt < b.createdAt ? -1 : 1),
-          },
-          {
-            title: "Modified at",
-            dataIndex: "updatedAt",
-            render: smartRender,
-            sorter: (a, b) => (a.updatedAt < b.updatedAt ? -1 : 1),
-          },
-          {
-            title: "Billing Email",
-            dataIndex: "billingEmail",
-            render: smartRender,
-            sorter: (a, b) => (a.billingEmail < b.billingEmail ? -1 : 1),
-          },
-          {
-            title: "Seats",
-            dataIndex: "seats",
-            render: smartRender,
-            sorter: (a, b) => (a.name < b.name ? -1 : 1),
-          },
-          {
-            title: "Users",
-            key: "users",
-            render: () => <EyeIcon />,
-          },
-        ]}
-        style={{ cursor: "pointer" }}
-        onRow={(record) => ({
-          onClick: () => {
-            adminCtx.navigate({ tab: "teams", id: record.id });
-          },
-        })}
+      <TeamTable
+        loading={listTeams.loading}
+        teams={listTeams.value?.teams ?? []}
       />
     </>
+  );
+}
+
+function PayingTeamsView() {
+  const nonAuthCtx = useNonAuthCtx();
+  const { listFeatureTiers } = useAdminCtx();
+  const listTeams = useAsyncStrict(
+    async () =>
+      listFeatureTiers.value
+        ? await nonAuthCtx.api.adminListTeams({
+            featureTierIds: listFeatureTiers.value.map((ft) => ft.id),
+          })
+        : undefined,
+    [nonAuthCtx, listFeatureTiers.value]
+  );
+
+  return (
+    <>
+      <h2>All customers</h2>
+      <TeamTable
+        loading={listTeams.loading}
+        teams={listTeams.value?.teams ?? []}
+      />
+    </>
+  );
+}
+
+function TeamTable(props: { loading: boolean; teams: ApiTeam[] }) {
+  const { navigate } = useAdminCtx();
+  return (
+    <Table<ApiTeam>
+      loading={props.loading}
+      dataSource={props.teams}
+      rowKey="id"
+      columns={[
+        {
+          title: "Team",
+          dataIndex: "name",
+          render: smartRender,
+          sorter: {
+            compare: (a, b) => (a.name < b.name ? -1 : 1),
+            multiple: 1,
+          },
+          defaultSortOrder: "ascend",
+        },
+        {
+          title: "Feature Tier",
+          key: "featureTier",
+          filters: [
+            {
+              text: "Enterprise",
+              value: "Enterprise",
+            },
+            {
+              text: "Team (Scale)",
+              value: "Team",
+            },
+            {
+              text: "Starter",
+              value: "Starter",
+            },
+            {
+              text: "Free",
+              value: "Free",
+            },
+          ],
+          onFilter: (value, team) => {
+            if (team.featureTier) {
+              return team.featureTier.name.includes(value as string);
+            } else {
+              return value === "Free";
+            }
+          },
+          render: (_value, team) => {
+            const ft = team.featureTier;
+            if (ft) {
+              return `${ft.name} ($${ft.monthlyBasePrice}/mo)`;
+            } else {
+              return "Free";
+            }
+          },
+          sorter: {
+            compare: (a, b) => {
+              const aft = a.featureTier;
+              const bft = b.featureTier;
+
+              if (aft === bft) {
+                return 0;
+              } else if (aft === null) {
+                return -1;
+              } else if (bft === null) {
+                return 1;
+              } else if (
+                aft.name === "Enterprise" &&
+                bft.name !== "Enterprise"
+              ) {
+                return 1;
+              } else if (
+                aft.name !== "Enterprise" &&
+                bft.name === "Enterprise"
+              ) {
+                return -1;
+              } else {
+                return (
+                  (a.featureTier?.monthlyBasePrice ?? 0) -
+                  (b.featureTier?.monthlyBasePrice ?? 0)
+                );
+              }
+            },
+            multiple: 2,
+          },
+          defaultSortOrder: "descend",
+        },
+        {
+          title: "Seats",
+          dataIndex: "seats",
+          render: smartRender,
+          sorter: (a, b) => (a.seats ?? 0) - (b.seats ?? 0),
+        },
+        {
+          title: "Billing Email",
+          dataIndex: "billingEmail",
+          render: smartRender,
+          sorter: (a, b) => a.billingEmail.localeCompare(b.billingEmail),
+        },
+        {
+          title: "Created at",
+          dataIndex: "createdAt",
+          render: smartRender,
+          sorter: (a, b) => (a.createdAt < b.createdAt ? -1 : 1),
+        },
+        {
+          title: "Modified at",
+          dataIndex: "updatedAt",
+          render: smartRender,
+          sorter: (a, b) => (a.updatedAt < b.updatedAt ? -1 : 1),
+        },
+      ]}
+      style={{ cursor: "pointer" }}
+      onRow={(record) => ({
+        onClick: () => {
+          navigate({ tab: "teams", id: record.id });
+        },
+      })}
+    />
   );
 }
 
@@ -160,8 +274,28 @@ interface TeamProps {
 }
 
 function TeamDetail(props: TeamProps) {
+  const { team } = props;
+  const links = [
+    `https://studio.plasmic.app/orgs/${team.id}`,
+    `https://studio.plasmic.app/orgs/${team.id}/settings`,
+    `https://studio.plasmic.app/orgs/${team.id}/support`,
+    team.stripeCustomerId &&
+      `https://dashboard.stripe.com/customers/${team.stripeCustomerId}`,
+    team.stripeSubscriptionId &&
+      `https://dashboard.stripe.com/subscriptions/${team.stripeSubscriptionId}`,
+  ].filter(notNil);
   return (
     <div className="flex-col gap-xlg">
+      <div>
+        <h2>Quick Links</h2>
+        <div className="flex-col gap-m">
+          {links.map((link) => (
+            <PublicLink href={link} target="_blank">
+              {link}
+            </PublicLink>
+          ))}
+        </div>
+      </div>
       <div>
         <h2>Actions</h2>
         <div className="flex-row gap-m">
@@ -191,20 +325,22 @@ function TeamDetail(props: TeamProps) {
         <h2>Discourse Info</h2>
         <div className="flex-col gap-m">
           {props.discourseInfo ? (
-            <div className="flex-row gap-m">
-              <Button
+            <div>
+              This org has a private Discourse support{" "}
+              <PublicLink
                 href={`${BASE_URL}/c/${props.discourseInfo.categoryId}`}
                 target="_blank"
               >
-                Discourse Support Category
-              </Button>
-              <Button
+                category
+              </PublicLink>{" "}
+              and{" "}
+              <PublicLink
                 href={`${BASE_URL}/g/${props.discourseInfo.slug}`}
                 target="_blank"
               >
-                Discourse Group
-              </Button>
-              <div>Use the form below to update the org's slug or name.</div>
+                group
+              </PublicLink>
+              . Use the form below to update the org's slug or name.
             </div>
           ) : (
             <div>

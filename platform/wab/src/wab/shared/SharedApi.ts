@@ -1044,8 +1044,16 @@ export abstract class SharedApi {
     return this.post(`/admin/reset-team-trial`, { teamId });
   }
 
-  async listTeamsForUser(userId: string): Promise<ListTeamsResponse> {
-    return this.post(`/admin/teams`, { userId });
+  async adminListTeams(
+    data:
+      | {
+          userId: string;
+        }
+      | {
+          featureTierIds: string[];
+        }
+  ): Promise<ListTeamsResponse> {
+    return this.post(`/admin/teams`, data);
   }
 
   async getTeamDiscourseInfo(teamId: TeamId): Promise<ApiTeamDiscourseInfo> {

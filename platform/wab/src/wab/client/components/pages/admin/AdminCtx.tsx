@@ -2,7 +2,7 @@ import { useNonAuthCtx } from "@/wab/client/app-ctx";
 import { UU } from "@/wab/client/cli-routes";
 import { AsyncState, useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import { ensure, unexpected } from "@/wab/common";
-import { ApiUser, TeamId } from "@/wab/shared/ApiSchema";
+import { ApiFeatureTier, ApiUser, TeamId } from "@/wab/shared/ApiSchema";
 import React, { useCallback, useContext, useMemo } from "react";
 import { useHistory } from "react-router";
 
@@ -13,6 +13,8 @@ interface AdminState {
   teamId: TeamId | undefined;
   /** State for listing all users. */
   listUsers: AsyncState<ApiUser[]>;
+  /** State for listing all feature tiers. */
+  listFeatureTiers: AsyncState<ApiFeatureTier[]>;
 }
 
 interface AdminActions {
@@ -70,6 +72,10 @@ export function AdminCtxProvider({ children }: React.PropsWithChildren) {
     const res = await nonAuthCtx.api.listUsers();
     return res.users;
   }, [nonAuthCtx]);
+  const listFeatureTiers = useAsyncStrict(async () => {
+    const res = await nonAuthCtx.api.listAllFeatureTiers();
+    return res.tiers;
+  }, [nonAuthCtx]);
 
   return (
     <AdminCtxContext.Provider
@@ -77,6 +83,7 @@ export function AdminCtxProvider({ children }: React.PropsWithChildren) {
         ...pathState,
         navigate,
         listUsers,
+        listFeatureTiers,
       }}
     >
       {children}

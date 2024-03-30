@@ -2759,11 +2759,22 @@ export class DbMgr implements MigrationDbMgr {
     await this.entMgr.save(personalTeamPermission);
   }
 
-  async listTeamsForUser(userId: string) {
+  async listTeamsForUser(userId: UserId) {
+    this.checkSuperUser();
     return await this._queryTeams({}, false)
       .leftJoin(Permission, "perm", "perm.teamId = t.id")
       .where(`perm.userId = '${userId}'`)
       .getMany();
+  }
+
+  async listTeamsByFeatureTiers(featureTierIds: FeatureTierId[]) {
+    this.checkSuperUser();
+    return await this._queryTeams(
+      {
+        featureTierId: In(featureTierIds),
+      },
+      false
+    ).getMany();
   }
 
   async listProjectsCreatedBy(

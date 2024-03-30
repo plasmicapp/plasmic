@@ -25,6 +25,7 @@ import {
   ApiFeatureTier,
   ApiTeamDiscourseInfo,
   DataSourceId,
+  FeatureTierId,
   GetWhitelistResponse,
   InviteRequest,
   InviteResponse,
@@ -38,6 +39,7 @@ import {
   TeamId,
   TutorialDbId,
   UpdateSelfAdminModeRequest,
+  UserId,
 } from "@/wab/shared/ApiSchema";
 import { Bundle } from "@/wab/shared/bundler";
 import { DomainValidator } from "@/wab/shared/hosting";
@@ -110,9 +112,19 @@ export async function resetTeamTrial(req: Request, res: Response) {
 
 export async function listTeams(req: Request, res: Response) {
   const mgr = superDbMgr(req);
-  const userId = req.body.userId;
+  const userId = req.body.userId as UserId;
+  const featureTierIds = req.body.featureTierIds as FeatureTierId[];
+  if (!userId && !featureTierIds) {
+    throw new BadRequestError("must filter by userId or featureTierIds");
+  } else if (userId && featureTierIds) {
+    throw new BadRequestError(
+      "cannot filter by both userId and featureTierIds"
+    );
+  }
 
-  const teams = await (userId ? mgr.listTeamsForUser(userId) : undefined);
+  const teams = await (userId
+    ? mgr.listTeamsForUser(userId)
+    : mgr.listTeamsByFeatureTiers(featureTierIds));
   res.json({ teams });
 }
 
