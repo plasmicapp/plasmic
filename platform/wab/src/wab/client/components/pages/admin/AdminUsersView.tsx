@@ -1,13 +1,10 @@
 import { useNonAuthCtx } from "@/wab/client/app-ctx";
-import { UU } from "@/wab/client/cli-routes";
 import { smartRender } from "@/wab/client/components/pages/admin/admin-util";
 import { useAdminCtx } from "@/wab/client/components/pages/admin/AdminCtx";
-import { Avatar } from "@/wab/client/components/studio/Avatar";
-import { LinkButton, SearchBox } from "@/wab/client/components/widgets";
+import { AdminUserTable } from "@/wab/client/components/pages/admin/AdminUserTable";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import { ApiProject } from "@/wab/shared/ApiSchema";
 import { Button, Form, Input, notification, Table } from "antd";
-import L from "lodash";
 import React, { useState } from "react";
 import { AdminUserSelect } from "./AdminUserSelect";
 
@@ -23,63 +20,12 @@ export function AdminUsersView() {
 }
 
 function UsersView() {
-  const nonAuthCtx = useNonAuthCtx();
   const { listUsers } = useAdminCtx();
-
-  const [query, setQuery] = useState<string>("");
-
-  async function handleLogin(email: string) {
-    await nonAuthCtx.api.adminLoginAs({ email });
-    document.location.href = UU.dashboard.fill({});
-  }
-
   return (
     <div className="mv-lg">
       <h2>Users</h2>
-      <SearchBox value={query} onChange={(e) => setQuery(e.target.value)} />
-      <Table
-        dataSource={(listUsers.value ?? []).filter((user) => {
-          if (!query || query.trim().length === 0) {
-            return true;
-          }
-          const q = query.toLowerCase();
-          return (
-            user.email?.toLowerCase().includes(q) ||
-            user.firstName?.toLowerCase().includes(q) ||
-            user.lastName?.toLowerCase().includes(q)
-          );
-        })}
-        rowKey={"id"}
-        columns={[
-          {
-            title: "",
-            key: "avatar",
-            render: (_value, user) => <Avatar user={user} />,
-          },
-          ...["email", "firstName", "lastName", "createdAt", "deletedAt"].map(
-            (key) => ({
-              key,
-              dataIndex: key,
-              title: L.startCase(key),
-              render: smartRender,
-              sorter: (a, b) => (a[key] < b[key] ? -1 : 1),
-              ...(key === "email"
-                ? { defaultSortOrder: "ascend" as const }
-                : {}),
-            })
-          ),
-          {
-            title: "Action",
-            key: "action",
-            render: (value, user) => (
-              <span>
-                <LinkButton onClick={() => handleLogin(user.email)}>
-                  Login
-                </LinkButton>
-              </span>
-            ),
-          },
-        ]}
+      <AdminUserTable
+        items={listUsers.value?.map((user) => ({ user })) ?? []}
       />
     </div>
   );

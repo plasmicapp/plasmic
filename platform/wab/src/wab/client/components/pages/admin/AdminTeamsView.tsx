@@ -1,5 +1,6 @@
 import { useNonAuthCtx } from "@/wab/client/app-ctx";
 import { useAdminCtx } from "@/wab/client/components/pages/admin/AdminCtx";
+import { AdminUserTable } from "@/wab/client/components/pages/admin/AdminUserTable";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import { notNil } from "@/wab/common";
@@ -7,6 +8,7 @@ import {
   ApiPermission,
   ApiTeam,
   ApiTeamDiscourseInfo,
+  ApiUser,
   TeamWhiteLabelInfo,
 } from "@/wab/shared/ApiSchema";
 import {
@@ -370,29 +372,21 @@ function TeamDetail(props: TeamProps) {
 
 function Members({ team, perms, refetch }: TeamProps) {
   const nonAuthCtx = useNonAuthCtx();
-  const getEmail = (perm: ApiPermission) => perm.user?.email ?? perm.email;
+
+  // Each permission should already have a user,
+  // but need to check and make the types happy.
+  const items = useMemo(
+    () =>
+      perms.filter((perm) => {
+        return !!perm.user;
+      }),
+    [perms]
+  ) as (ApiPermission & { user: ApiUser })[];
+
   return (
-    <Table<ApiPermission>
-      dataSource={perms}
-      rowKey="id"
-      columns={[
-        {
-          title: "Email",
-          key: "email",
-          render: (_value, perm) => getEmail(perm),
-          sorter: {
-            compare: (a, b) =>
-              (getEmail(a) ?? "") < (getEmail(b) ?? "") ? -1 : 1,
-            multiple: 2,
-          },
-          defaultSortOrder: "ascend",
-        },
-        {
-          title: "isUser",
-          key: "isUser",
-          render: (_value, perm) => `${!!perm.user}`,
-          sorter: (a, b) => (!!a.user < !!b.user ? -1 : 1),
-        },
+    <AdminUserTable<ApiPermission & { user: ApiUser }>
+      items={items}
+      extraColumns={[
         {
           title: "Access Level",
           dataIndex: "accessLevel",
