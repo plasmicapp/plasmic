@@ -16,7 +16,6 @@ import {
   AddCommentReactionRequest,
   AddCommentReactionResponse,
   AddFeatureTierResponse,
-  AddToWhitelistRequest,
   ApiAnalyticsImpressionResponse,
   ApiAnalyticsProjectMeta,
   ApiAnalyticsQueryType,
@@ -99,7 +98,6 @@ import {
   GetProjectResponse,
   GetSubscriptionResponse,
   GetTeamResponse,
-  GetWhitelistResponse,
   GetWorkspaceResponse,
   GitActionParams,
   GitBranchesResponse,
@@ -112,8 +110,6 @@ import {
   GrantRevokeResponse,
   ImageUploadRequest,
   ImageUploadResponse,
-  InviteRequest,
-  InviteResponse,
   JoinTeamRequest,
   JoinTeamResponse,
   ListAuthIntegrationsResponse,
@@ -122,7 +118,6 @@ import {
   ListDataSourceBasesResponse,
   ListDataSourcesResponse,
   ListFeatureTiersResponse,
-  ListInviteRequestsResponse,
   ListProjectsResponse,
   ListTeamProjectsResponse,
   ListTeamsResponse,
@@ -153,7 +148,6 @@ import {
   QueryCopilotFeedbackResponse,
   QueryCopilotRequest,
   QueryCopilotResponse,
-  RemoveWhitelistRequest,
   ResetPasswordRequest,
   ResetPasswordResponse,
   RevalidatePlasmicHostingRequest,
@@ -1202,28 +1196,8 @@ export abstract class SharedApi {
     return await this.post(`/admin/reset-tutorial-db`, { sourceId });
   }
 
-  async listInviteRequests(): Promise<ListInviteRequestsResponse> {
-    return this.get(`/admin/invite-requests`);
-  }
-
-  async getWhitelist(): Promise<GetWhitelistResponse> {
-    return this.get(`/admin/whitelist`);
-  }
-
-  async addToWhitelist(args: AddToWhitelistRequest) {
-    await this.post("/admin/whitelist", args);
-  }
-
-  async removeWhitelist(args: RemoveWhitelistRequest) {
-    await this.delete("/admin/whitelist", args);
-  }
-
   async adminLoginAs(args: { email: string }): Promise<LoginResponse> {
     return this.post("/admin/login-as", args);
-  }
-
-  async invite(args: InviteRequest): Promise<InviteResponse> {
-    return this.post("/admin/invite", args);
   }
 
   async getDevFlagOverrides(): Promise<GetDevFlagOverridesResponse> {

@@ -9,7 +9,6 @@ import {
   check,
   ensure,
   ensureString,
-  extractDomainFromEmail,
   filterMapTruthy,
   generate,
   jsonClone,
@@ -75,7 +74,6 @@ import {
   GenericPair,
   HostingHit,
   HostlessVersion,
-  InviteRequest,
   IssuedCode,
   KeyValueNamespace,
   LoaderPublishment,
@@ -110,7 +108,6 @@ import {
   TutorialDb,
   User,
   UserlessOauthToken,
-  WhitelistedIdentities,
   Workspace,
   WorkspaceApiToken,
   WorkspaceAuthConfig,
@@ -520,8 +517,6 @@ interface ForcedAccessLevel {
   force: AccessLevel;
 }
 
-type WhitelistKey = { email: string } | { domain: string };
-
 type Resource = Project | Workspace | Team | CmsDatabase;
 
 function isForcedAccessLevel(x: any): x is ForcedAccessLevel {
@@ -863,20 +858,12 @@ export class DbMgr implements MigrationDbMgr {
     return this.entMgr.getRepository(TemporaryTeamApiToken);
   }
 
-  private whitelistedIdents() {
-    return this.entMgr.getRepository(WhitelistedIdentities);
-  }
-
   private trustedHosts() {
     return this.entMgr.getRepository(TrustedHost);
   }
 
   private signUpAttempts() {
     return this.entMgr.getRepository(SignUpAttempt);
-  }
-
-  private inviteRequests() {
-    return this.entMgr.getRepository(InviteRequest);
   }
 
   private devFlagOverrides() {
@@ -6051,70 +6038,6 @@ export class DbMgr implements MigrationDbMgr {
   }
 
   //
-  // Whitelist
-  //
-
-  async isUserWhitelisted(email: string, ignoreDomainWhitelist = false) {
-    this.allowAnyone();
-    const domain = extractDomainFromEmail(email);
-    const emailApproved = await getOneOrFailIfTooMany(
-      this.whitelistedIdents()
-        .createQueryBuilder()
-        .where(`lower(email) = lower(:email)`, { email })
-    );
-    if (ignoreDomainWhitelist) {
-      return emailApproved;
-    }
-    const domainApproved = await getOneOrFailIfTooMany(
-      this.whitelistedIdents()
-        .createQueryBuilder()
-        .where(`lower(domain) = lower(:domain)`, { domain })
-    );
-    return !!(emailApproved || domainApproved);
-  }
-
-  /**
-   * Removes and returns the pending inviteRequests that match the given
-   * emailOrDomain.
-   */
-  async addToWhitelist(emailOrDomain: WhitelistKey) {
-    this.checkSuperUser();
-    const entry = this.whitelistedIdents().create({
-      ...this.stampNew(),
-      ...emailOrDomain,
-    });
-    const requests = await this.inviteRequests().find({
-      ...maybeIncludeDeleted(false),
-    });
-    const approvedRequests = requests.filter((req) =>
-      "email" in emailOrDomain
-        ? emailOrDomain.email === req.inviteeEmail
-        : req.inviteeEmail.endsWith(emailOrDomain.domain)
-    );
-    for (const req of approvedRequests) {
-      Object.assign(req, this.stampDelete());
-    }
-    await this.entMgr.save([entry, ...approvedRequests]);
-    return approvedRequests;
-  }
-
-  async getWhitelist() {
-    this.checkSuperUser();
-    return this.whitelistedIdents().find({
-      where: {
-        ...maybeIncludeDeleted(false),
-      },
-    });
-  }
-
-  async removeWhitelist(emailOrDomain: WhitelistKey) {
-    this.checkSuperUser();
-    await this.whitelistedIdents().delete({
-      ...emailOrDomain,
-    });
-  }
-
-  //
   // SignUpAttempt
   //
 
@@ -6126,26 +6049,6 @@ export class DbMgr implements MigrationDbMgr {
       email,
     });
     await this.entMgr.save(attempt);
-  }
-
-  //
-  // InviteRequest
-  //
-
-  async logInviteRequest(inviteeEmail: string, projectId: string) {
-    inviteeEmail = inviteeEmail.toLowerCase();
-    const request = this.inviteRequests().create({
-      ...this.stampNew(),
-      inviteeEmail,
-      projectId,
-    });
-    await this.entMgr.save(request);
-  }
-
-  async listInviteRequests() {
-    return await this.inviteRequests().find({
-      ...maybeIncludeDeleted(false),
-    });
   }
 
   //
@@ -9781,7 +9684,6 @@ export class DbMgr implements MigrationDbMgr {
     await this.loaderPublishments().delete({ projectId: id });
     await this.permissions().delete({ projectId: id });
     await this.projectSyncMetadata().delete({ projectId: id });
-    await this.inviteRequests().delete({ projectId: id });
     await this.seqIdAssignment().delete({ projectId: id });
     await this.copilotInteractions().delete({ projectId: id });
 

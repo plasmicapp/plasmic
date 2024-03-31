@@ -54,8 +54,6 @@ import {
 } from "@/wab/server/db/DbMgr";
 import { onProjectDelete } from "@/wab/server/db/op-hooks";
 import { upgradeReferencedHostlessDeps } from "@/wab/server/db/upgrade-hostless-utils";
-import { sendInviteApprovalAdminEmail } from "@/wab/server/emails/Emails";
-import { sendShareEmail } from "@/wab/server/emails/share-email";
 import {
   Branch,
   PkgVersion,
@@ -91,8 +89,6 @@ import {
   CreateSiteRequest,
   DataSourceId,
   GetCommentsResponse,
-  GrantRevokeRequest,
-  GrantRevokeResponse,
   ListBranchesResponse,
   MainBranchId,
   NewComponentReq,
@@ -1631,68 +1627,6 @@ export async function removeSelfPerm(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   await mgr.removeSelfPerm(req.params.projectId);
   res.json({});
-}
-
-/**
- * @deprecated
- * To be removed once we start using generic `changeResourcePermissions`
- */
-export async function changeProjectPermissions(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  const { projectId } = req.params;
-  const { grants, revokes } = uncheckedCast<GrantRevokeRequest>(req.body);
-  const project = await mgr.getProjectById(projectId);
-  req.promLabels.projectId = projectId;
-  let enqueued = false;
-  for (const { email, accessLevel } of grants) {
-    // Note: we intentionally do not check whether this is a new permission or
-    // not. We always re-send share emails if the user re-requested sharing with
-    // a user!
-    await mgr.grantProjectPermissionByEmail(projectId, email, accessLevel);
-    if (
-      req.devflags.allowAllShareInvites &&
-      !(await mgr.isUserWhitelisted(email)) &&
-      !(await mgr.tryGetUserByEmail(email))
-    ) {
-      await superDbMgr(req).addToWhitelist({ email });
-    }
-    if (
-      (await mgr.isUserWhitelisted(email)) ||
-      (await mgr.tryGetUserByEmail(email))
-    ) {
-      userAnalytics(req).track({
-        event: "Invite others to this project",
-        properties: {
-          projectId,
-          projectName: project.name,
-          email,
-          accessLevel,
-        },
-      });
-      await sendShareEmail(
-        req,
-        getUser(req),
-        email,
-        "project",
-        project.name,
-        createProjectUrl(req.config.host, project.id),
-        !!(await mgr.tryGetUserByEmail(email))
-      );
-    } else {
-      await mgr.logInviteRequest(email, project.id);
-      await sendInviteApprovalAdminEmail(req, email, project);
-      enqueued = true;
-    }
-  }
-  if (revokes.length > 0) {
-    await mgr.revokeProjectPermissionsByEmails(
-      projectId,
-      revokes.map(({ email }) => email)
-    );
-  }
-
-  const perms = await mgr.getPermissionsForProject(projectId);
-  res.json(ensureType<GrantRevokeResponse>({ perms, enqueued }));
 }
 
 export async function getLatestBundleVersion(req: Request, res: Response) {

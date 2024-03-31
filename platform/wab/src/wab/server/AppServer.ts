@@ -213,7 +213,6 @@ import {
 } from "./routes/project-webhooks";
 import {
   addReactionToComment,
-  changeProjectPermissions,
   checkAndNofityHostlessVersion,
   cloneProject,
   clonePublishedTemplate,
@@ -334,7 +333,6 @@ const csrfFreeStaticRoutes = [
   "/api/v1/admin/delete-project",
   "/api/v1/admin/restore-project",
   "/api/v1/admin/login-as",
-  "/api/v1/admin/invite",
   "/api/v1/admin/devflags",
   "/api/v1/admin/clone",
   "/api/v1/admin/deactivate-user",
@@ -1152,10 +1150,6 @@ export function addEndUserManagementRoutes(app: express.Application) {
   );
 }
 
-export function addDataServerRoutes(app: express.Application) {
-  addCmsPublicRoutes(app);
-}
-
 export function addCodegenRoutes(app: express.Application) {
   app.post("/api/v1/code/resolve-sync", apiAuth, withNext(resolveSync));
   app.post("/api/v1/code/style-config", apiAuth, withNext(genStyleConfig));
@@ -1463,11 +1457,6 @@ export function addMainAppServerRoutes(
     adminOnly,
     withNext(adminRoutes.listProjects)
   );
-  app.get(
-    "/api/v1/admin/invite-requests",
-    adminOnly,
-    withNext(adminRoutes.listInviteRequests)
-  );
   app.post(
     "/api/v1/admin/delete-project",
     adminOnly,
@@ -1488,27 +1477,11 @@ export function addMainAppServerRoutes(
     adminOnly,
     withNext(adminRoutes.updateProjectOwner)
   );
-  app.get(
-    "/api/v1/admin/whitelist",
-    adminOnly,
-    withNext(adminRoutes.getWhitelist)
-  );
-  app.post(
-    "/api/v1/admin/whitelist",
-    adminOnly,
-    withNext(adminRoutes.addToWhitelist)
-  );
-  app.delete(
-    "/api/v1/admin/whitelist",
-    adminOnly,
-    withNext(adminRoutes.removeWhitelist)
-  );
   app.post(
     "/api/v1/admin/login-as",
     adminOnly,
     withNext(adminRoutes.adminLoginAs)
   );
-  app.post("/api/v1/admin/invite", adminOnly, withNext(adminRoutes.invite));
   app.post(
     "/api/v1/admin/deactivate-user",
     adminOnly,
@@ -1753,10 +1726,6 @@ export function addMainAppServerRoutes(
   app.get(
     "/api/v1/projects/:projectId/pkgs/:pkgVersionId/status",
     withNext(getPkgVersionPublishStatus)
-  );
-  app.post(
-    "/api/v1/projects/:projectId/grant-revoke",
-    withNext(changeProjectPermissions)
   );
   app.post(
     "/api/v1/projects/:projectBranchId/revisions/:revision",

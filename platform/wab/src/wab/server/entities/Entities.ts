@@ -812,33 +812,6 @@ export class SignUpAttempt extends Base<"SignUpAttempt"> {
   email: string;
 }
 
-/**
- * This is just a log of sign-up attempts.
- */
-@Entity()
-export class InviteRequest extends Base<"InviteRequestId"> {
-  @Column("text")
-  inviteeEmail: string;
-
-  @ManyToOne((type) => Project, { nullable: false })
-  project: Project;
-
-  @Index()
-  @Column("text")
-  projectId: ProjectId;
-}
-
-@Entity()
-export class WhitelistedIdentities extends Base<"WhitelistedIdentitiesId"> {
-  @Index({ unique: true })
-  @Column("text", { nullable: true })
-  email: string | null;
-
-  @Index({ unique: true })
-  @Column("text", { nullable: true })
-  domain: string | null;
-}
-
 @Entity()
 @Unique(["projectId", "revision"])
 export class ProjectSyncMetadata extends Base<"ProjectSyncMetadataId"> {

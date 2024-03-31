@@ -1,12 +1,5 @@
 import { fetchUser, verifyUser } from "@/wab/codesandbox/api";
-import {
-  assert,
-  ensure,
-  ensureType,
-  filterFalsy,
-  uncheckedCast,
-} from "@/wab/common";
-import { sendInviteEmail } from "@/wab/server/emails/Emails";
+import { assert, ensure, ensureType, uncheckedCast } from "@/wab/common";
 import {
   PkgVersion,
   ProjectRevision,
@@ -21,21 +14,15 @@ import {
 import { doLogin } from "@/wab/server/util/auth-util";
 import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import {
-  AddToWhitelistRequest,
   ApiFeatureTier,
   ApiTeamDiscourseInfo,
   DataSourceId,
   FeatureTierId,
-  GetWhitelistResponse,
-  InviteRequest,
-  InviteResponse,
   ListFeatureTiersResponse,
-  ListInviteRequestsResponse,
   ListUsersResponse,
   LoginResponse,
   PkgVersionId,
   ProjectId,
-  RemoveWhitelistRequest,
   TeamId,
   TutorialDbId,
   UpdateSelfAdminModeRequest,
@@ -43,9 +30,8 @@ import {
 } from "@/wab/shared/ApiSchema";
 import { Bundle } from "@/wab/shared/bundler";
 import { DomainValidator } from "@/wab/shared/hosting";
-import { createProjectUrl } from "@/wab/urls";
 import { Request, Response } from "express-serve-static-core";
-import L, { omit, uniq } from "lodash";
+import { omit, uniq } from "lodash";
 import { mkApiDataSource } from "./data-source";
 import {
   mkApiAppAuthConfig,
@@ -57,7 +43,6 @@ import { getUser, superDbMgr, userDbMgr } from "./util";
 
 import { getTeamDiscourseInfo as doGetTeamDiscourseInfo } from "@/wab/server/discourse/getTeamDiscourseInfo";
 import { syncTeamDiscourseInfo as doSyncTeamDiscourseInfo } from "@/wab/server/discourse/syncTeamDiscourseInfo";
-import { sendShareEmail } from "@/wab/server/emails/share-email";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
 import { checkAndResetTeamTrial } from "./team-plans";
 
@@ -206,42 +191,6 @@ export async function setPassword(req: Request, res: Response) {
   }
 }
 
-export async function addToWhitelist(req: Request, res: Response) {
-  const mgr = superDbMgr(req);
-  const approvedRequests = await mgr.addToWhitelist(
-    uncheckedCast<AddToWhitelistRequest>(req.body)
-  );
-  for (const approvedRequest of approvedRequests) {
-    const project = await mgr.getProjectById(approvedRequest.projectId);
-    await sendShareEmail(
-      req,
-      await mgr.getUserById(
-        ensure(approvedRequest.createdById, () => `User not found`)
-      ),
-      approvedRequest.inviteeEmail,
-      "project",
-      project.name,
-      createProjectUrl(req.config.host, project.id),
-      !!(await mgr.tryGetUserByEmail(approvedRequest.inviteeEmail))
-    );
-  }
-  res.json({});
-}
-
-export async function removeWhitelist(req: Request, res: Response) {
-  const mgr = superDbMgr(req);
-  await mgr.removeWhitelist(uncheckedCast<RemoveWhitelistRequest>(req.body));
-  res.json({});
-}
-
-export async function getWhitelist(req: Request, res: Response) {
-  const mgr = superDbMgr(req);
-  const entries = await mgr.getWhitelist();
-  const emails = filterFalsy(entries.map((entry) => entry.email));
-  const domains = filterFalsy(entries.map((entry) => entry.domain));
-  res.json(ensureType<GetWhitelistResponse>({ emails, domains }));
-}
-
 export async function adminLoginAs(req: Request, res: Response) {
   const mgr = superDbMgr(req);
   const email = req.body.email;
@@ -261,30 +210,6 @@ export async function adminLoginAs(req: Request, res: Response) {
   console.log("admin logged in as", getUser(req).email);
   res.cookie("plasmic-observer", "true");
   res.json(ensureType<LoginResponse>({ status: true, user }));
-}
-
-export async function invite(req: Request, res: Response) {
-  const mgr = superDbMgr(req);
-  const { emails } = uncheckedCast<InviteRequest>(req.body);
-  const skippedEmails: string[] = [];
-  for (const email of L.uniq(emails.map((e) => e.toLowerCase()))) {
-    if (
-      (await mgr.isUserWhitelisted(email, true)) ||
-      (await mgr.tryGetUserByEmail(email))
-    ) {
-      skippedEmails.push(email);
-    } else {
-      await mgr.addToWhitelist({ email });
-      await sendInviteEmail(req, email);
-    }
-  }
-  res.json(ensureType<InviteResponse>({ skippedEmails }));
-}
-
-export async function listInviteRequests(req: Request, res: Response) {
-  const mgr = superDbMgr(req);
-  const requests = await mgr.listInviteRequests();
-  res.json(ensureType<ListInviteRequestsResponse>({ requests }));
 }
 
 export async function getDevFlagOverrides(req: Request, res: Response) {

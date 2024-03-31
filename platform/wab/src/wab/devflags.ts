@@ -339,8 +339,6 @@ const INSERT_PANEL_CONTENT: InsertPanelConfig = {
 };
 
 const DEFAULT_DEVFLAGS = {
-  allowAllShareInvites: true,
-  allowAllSignups: true,
   appContentBaseUrl: "https://docs.plasmic.app/app-content",
   artboardEval: true,
   autoSave: true,
