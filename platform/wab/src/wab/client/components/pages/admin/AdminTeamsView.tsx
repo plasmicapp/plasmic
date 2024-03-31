@@ -103,7 +103,6 @@ export function AdminTeamsView() {
 
 function TeamLookupByUser() {
   const nonAuthCtx = useNonAuthCtx();
-  const { navigate } = useAdminCtx();
   const [userId, setUserId] = useState<string | undefined>(undefined);
   const listTeams = useAsyncStrict(
     async () =>
@@ -276,7 +275,46 @@ interface TeamProps {
 }
 
 function TeamDetail(props: TeamProps) {
-  const { team } = props;
+  return (
+    <div className="flex-col gap-xlg">
+      <Tabs
+        items={[
+          {
+            key: "links",
+            label: "Quick Links",
+            children: <QuickLinks {...props} />,
+          },
+          {
+            key: "actions",
+            label: "Actions",
+            children: <Actions {...props} />,
+          },
+          {
+            key: "members",
+            label: "Members",
+            children: <Members {...props} />,
+          },
+          {
+            key: "discourse",
+            label: "Discourse",
+            children: <TeamDiscourseInfo {...props} />,
+          },
+          {
+            key: "white-label",
+            label: "White-label",
+            children: <WhiteLabel {...props} />,
+          },
+        ]}
+      />
+      <div>
+        <h2>Info</h2>
+        <AutoInfo info={props.team} />
+      </div>
+    </div>
+  );
+}
+
+function QuickLinks({ team }: TeamProps) {
   const links = [
     `https://studio.plasmic.app/orgs/${team.id}`,
     `https://studio.plasmic.app/orgs/${team.id}/settings`,
@@ -287,85 +325,23 @@ function TeamDetail(props: TeamProps) {
       `https://dashboard.stripe.com/subscriptions/${team.stripeSubscriptionId}`,
   ].filter(notNil);
   return (
-    <div className="flex-col gap-xlg">
-      <div>
-        <h2>Quick Links</h2>
-        <div className="flex-col gap-m">
-          {links.map((link) => (
-            <PublicLink href={link} target="_blank">
-              {link}
-            </PublicLink>
-          ))}
-        </div>
-      </div>
-      <div>
-        <h2>Actions</h2>
-        <div className="flex-row gap-m">
-          <UpgradePersonalTeam {...props} />
-          <ResetTeamTrial {...props} />
-          <ConfigureSso {...props} />
-          <GenerateTeamApiToken {...props} />
-        </div>
-      </div>
-      <div>
-        <h2>White Label</h2>
-        <div className="flex-row gap-m">
-          <UpdateWhiteLabelName {...props} />
-          <UpdateWhiteLabelJwt {...props} />
-          <UpdateWhiteLabelTeamClientCredentials {...props} />
-        </div>
-      </div>
-      <div>
-        <h2>Info</h2>
-        <AutoInfo info={props.team} />
-      </div>
-      <div>
-        <h2>Members</h2>
-        <Members {...props} />
-      </div>
-      <div>
-        <h2>Discourse Info</h2>
-        <div className="flex-col gap-m">
-          {props.discourseInfo ? (
-            <div>
-              This org has a private Discourse support{" "}
-              <PublicLink
-                href={`${BASE_URL}/c/${props.discourseInfo.categoryId}`}
-                target="_blank"
-              >
-                category
-              </PublicLink>{" "}
-              and{" "}
-              <PublicLink
-                href={`${BASE_URL}/g/${props.discourseInfo.slug}`}
-                target="_blank"
-              >
-                group
-              </PublicLink>
-              . Use the form below to update the org's slug or name.
-            </div>
-          ) : (
-            <div>
-              This org doesn't currently have a private Discourse support
-              category. They will be directed to the{" "}
-              <a
-                href={`${BASE_URL}/c/${PUBLIC_SUPPORT_CATEGORY_ID}`}
-                target="_blank"
-              >
-                public Discourse support category
-              </a>{" "}
-              instead. Use the form below to create a private Discourse support
-              category. It will only succeed if the org has a valid feature
-              tier.
-            </div>
-          )}
-          <TeamDiscourseInfoForm
-            team={props.team}
-            discourseInfo={props.discourseInfo}
-            refetch={props.refetch}
-          />
-        </div>
-      </div>
+    <div className="flex-col gap-m">
+      {links.map((link) => (
+        <PublicLink href={link} target="_blank">
+          {link}
+        </PublicLink>
+      ))}
+    </div>
+  );
+}
+
+function Actions(props: TeamProps) {
+  return (
+    <div className="flex-row gap-m">
+      <UpgradePersonalTeam {...props} />
+      <ResetTeamTrial {...props} />
+      <ConfigureSso {...props} />
+      <GenerateTeamApiToken {...props} />
     </div>
   );
 }
@@ -585,6 +561,16 @@ function GenerateTeamApiToken({ team, refetch }: TeamProps) {
   );
 }
 
+function WhiteLabel(props: TeamProps) {
+  return (
+    <div className="flex-row gap-m">
+      <UpdateWhiteLabelName {...props} />
+      <UpdateWhiteLabelJwt {...props} />
+      <UpdateWhiteLabelTeamClientCredentials {...props} />
+    </div>
+  );
+}
+
 function UpdateWhiteLabelName({ team, refetch }: TeamProps) {
   const nonAuthCtx = useNonAuthCtx();
   return (
@@ -764,6 +750,50 @@ function UpdateWhiteLabelTeamClientCredentials({ team, refetch }: TeamProps) {
     >
       Update white label client credentials
     </Button>
+  );
+}
+
+function TeamDiscourseInfo(props: TeamProps) {
+  return (
+    <div className="flex-col gap-m">
+      {props.discourseInfo ? (
+        <div>
+          This org has a private Discourse support{" "}
+          <PublicLink
+            href={`${BASE_URL}/c/${props.discourseInfo.categoryId}`}
+            target="_blank"
+          >
+            category
+          </PublicLink>{" "}
+          and{" "}
+          <PublicLink
+            href={`${BASE_URL}/g/${props.discourseInfo.slug}`}
+            target="_blank"
+          >
+            group
+          </PublicLink>
+          . Use the form below to update the org's slug or name.
+        </div>
+      ) : (
+        <div>
+          This org doesn't currently have a private Discourse support category.
+          They will be directed to the{" "}
+          <a
+            href={`${BASE_URL}/c/${PUBLIC_SUPPORT_CATEGORY_ID}`}
+            target="_blank"
+          >
+            public Discourse support category
+          </a>{" "}
+          instead. Use the form below to create a private Discourse support
+          category. It will only succeed if the org has a valid feature tier.
+        </div>
+      )}
+      <TeamDiscourseInfoForm
+        team={props.team}
+        discourseInfo={props.discourseInfo}
+        refetch={props.refetch}
+      />
+    </div>
   );
 }
 
