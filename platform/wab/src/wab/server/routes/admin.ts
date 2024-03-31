@@ -6,7 +6,7 @@ import {
   filterFalsy,
   uncheckedCast,
 } from "@/wab/common";
-import { sendInviteEmail, sendShareEmail } from "@/wab/server/emails/Emails";
+import { sendInviteEmail } from "@/wab/server/emails/Emails";
 import {
   PkgVersion,
   ProjectRevision,
@@ -57,6 +57,7 @@ import { getUser, superDbMgr, userDbMgr } from "./util";
 
 import { getTeamDiscourseInfo as doGetTeamDiscourseInfo } from "@/wab/server/discourse/getTeamDiscourseInfo";
 import { syncTeamDiscourseInfo as doSyncTeamDiscourseInfo } from "@/wab/server/discourse/syncTeamDiscourseInfo";
+import { sendShareEmail } from "@/wab/server/emails/share-email";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
 import { checkAndResetTeamTrial } from "./team-plans";
 

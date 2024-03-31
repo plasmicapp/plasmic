@@ -54,10 +54,8 @@ import {
 } from "@/wab/server/db/DbMgr";
 import { onProjectDelete } from "@/wab/server/db/op-hooks";
 import { upgradeReferencedHostlessDeps } from "@/wab/server/db/upgrade-hostless-utils";
-import {
-  sendInviteApprovalAdminEmail,
-  sendShareEmail,
-} from "@/wab/server/emails/Emails";
+import { sendInviteApprovalAdminEmail } from "@/wab/server/emails/Emails";
+import { sendShareEmail } from "@/wab/server/emails/share-email";
 import {
   Branch,
   PkgVersion,

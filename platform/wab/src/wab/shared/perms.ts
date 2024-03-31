@@ -1,3 +1,4 @@
+import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
 import * as _ from "lodash";
 import { MakeADT } from "ts-adt/MakeADT";
 import {
@@ -10,6 +11,10 @@ import {
 import { AccessLevel, accessLevelRank } from "./EntUtil";
 
 export type ResourceType = "project" | "workspace" | "team";
+export function labelForResourceType(type: ResourceType) {
+  return type === "team" ? ORGANIZATION_LOWER : type;
+}
+
 export type SiteFeature = "split";
 export type ResourceId = string | WorkspaceId | TeamId;
 

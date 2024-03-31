@@ -15,12 +15,10 @@ import {
   PwnedPasswordError,
   WeakPasswordError,
 } from "@/wab/server/db/DbMgr";
-import {
-  sendBlockedSignupAdminEmail,
-  sendEmailVerificationToUser,
-  sendResetPasswordEmail,
-  sendWelcomeEmail,
-} from "@/wab/server/emails/Emails";
+import { sendBlockedSignupAdminEmail } from "@/wab/server/emails/Emails";
+import { sendResetPasswordEmail } from "@/wab/server/emails/reset-password-email";
+import { sendEmailVerificationToUser } from "@/wab/server/emails/verification-email";
+import { sendWelcomeEmail } from "@/wab/server/emails/welcome-email";
 import { OauthTokenProvider, User } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
 import {
@@ -160,7 +158,7 @@ export async function createUserFull({
 
   const emailVerificationToken = password
     ? await mgr.createEmailVerificationForUser(user)
-    : "";
+    : null;
 
   if (!noWelcomeEmailAndSurvey) {
     if (!appInfo) {
@@ -171,7 +169,7 @@ export async function createUserFull({
       await sendEmailVerificationToUser(
         req,
         email,
-        emailVerificationToken,
+        emailVerificationToken ?? "",
         appInfo.authorizationPath,
         appInfo.appName
       );

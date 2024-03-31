@@ -6,7 +6,7 @@ import {
 import { getMigratedUserPropsOpBundle } from "@/wab/server/data-sources/end-user-utils";
 import { getDevFlagsMergedWithOverrides } from "@/wab/server/db/appconfig";
 import { DbMgr, ForbiddenError } from "@/wab/server/db/DbMgr";
-import { sendAppEndUserInviteEmail } from "@/wab/server/emails/Emails";
+import { sendAppEndUserInviteEmail } from "@/wab/server/emails/app-end-user-invite-email";
 import {
   AppAccessRegistry,
   AppAuthConfig,

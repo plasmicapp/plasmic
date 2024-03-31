@@ -7,7 +7,7 @@ import {
 } from "@/wab/common";
 import { checkPermissions, ForbiddenError } from "@/wab/server/db/DbMgr";
 import { prepareTeamSupportUrls as doPrepareTeamSupportUrls } from "@/wab/server/discourse/prepareTeamSupportUrls";
-import { sendShareEmail } from "@/wab/server/emails/Emails";
+import { sendShareEmail } from "@/wab/server/emails/share-email";
 import { Project, Team, Workspace } from "@/wab/server/entities/Entities";
 import { isTeamOnFreeTrial } from "@/wab/server/freeTrial";
 import {
