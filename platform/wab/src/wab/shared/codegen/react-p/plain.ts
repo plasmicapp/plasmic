@@ -305,6 +305,13 @@ function ${componentName}_(props: ${makeComponentPropsTypeName(component)}${
   `
       : ""
   }
+
+  ${
+    ctx.projectFlags.usePlasmicTranslation
+      ? `const $translator = usePlasmicTranslator?.();`
+      : ""
+  }
+
   const variants = {
     ...pick(props, ...${jsLiteral(
       getParamNames(

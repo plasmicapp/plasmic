@@ -1981,6 +1981,14 @@ function serializeRenderFunc(
     `;
   }
 
+  const serializedArgs = serializeArgsDefaultValues(ctx);
+
+  const argsDependencyArray =
+    serializedArgs.includes("$translator") &&
+    ctx.projectFlags.usePlasmicTranslation
+      ? `[props.args, $translator]`
+      : `[props.args]`;
+
   return `
     function ${makeRenderFuncName(component)}(
       props: {
@@ -2002,10 +2010,14 @@ function serializeRenderFunc(
       }
       const {variants, overrides, forNode } = props;
 
-      const args = React.useMemo(() => Object.assign(${serializeArgsDefaultValues(
-        ctx
-      )}, props.args),
-        [props.args]
+      ${
+        ctx.projectFlags.usePlasmicTranslation
+          ? `const $translator = usePlasmicTranslator?.();`
+          : ""
+      }
+
+      const args = React.useMemo(() => Object.assign(${serializedArgs}, props.args),
+        ${argsDependencyArray}
       );
 
       ${serializeComponentLocalVars(ctx)}
@@ -2036,11 +2048,6 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
       ...variants,
     };
 
-    ${
-      ctx.projectFlags.usePlasmicTranslation
-        ? `const $translator = usePlasmicTranslator?.();`
-        : ""
-    }
     ${
       ctx.exportOpts.platform === "nextjs"
         ? `const __nextRouter = useNextRouter();`
