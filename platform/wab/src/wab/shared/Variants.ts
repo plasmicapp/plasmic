@@ -622,9 +622,9 @@ export function isBaseRuleVariant(variant: Variant) {
     // screen variant will be triggered via media query
     return false;
   }
-  // if (isArbitraryCssSelector(variant)) {
-  //   return false;
-  // }
+  if (isArbitraryCssSelector(variant)) {
+    return false;
+  }
   if (isStyleVariant(variant) && !isHookTriggeredStyleVariant(variant)) {
     // a style variant that doesn't have to be triggered by js will just
     // be triggered by css selectors instead

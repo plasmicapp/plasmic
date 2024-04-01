@@ -172,7 +172,7 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
       [Section.Mixins, showMixins],
       [Section.PrivateStyleVariants, showPrivateStyleVariants],
       ...(viewCtx.appCtx.appConfig.arbitraryCssSelectors
-        ? [Section.ArbitraryCssSelectors, showArbitraryCssSelectors]
+        ? [[Section.ArbitraryCssSelectors, showArbitraryCssSelectors]]
         : ([] as any)),
     ]),
     styleTabFilter
