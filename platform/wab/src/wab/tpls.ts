@@ -2125,7 +2125,7 @@ export function duplicateMarkerTpl(text: RawText, tpl: TplNode) {
   return newTpl;
 }
 
-type ExprReference = {
+export type ExprReference = {
   node?: TplNode;
   expr: Expr;
 };

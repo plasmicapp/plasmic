@@ -99,7 +99,7 @@ import {
   isCodeComponentWithHelpers,
   makePlumeComponentMeta,
 } from "./shared/code-components/code-components";
-import { toClassName, toVarName } from "./shared/codegen/util";
+import { paramToVarName, toClassName, toVarName } from "./shared/codegen/util";
 import { typeFactory } from "./shared/core/model-util";
 import { EXTRACT_COMPONENT_PROPS } from "./shared/core/style-props";
 import {
@@ -859,6 +859,44 @@ export function cloneComponent(
     oldToNewTpls,
     oldToNewComponentQuery,
   };
+}
+
+export function findPropUsages(component: Component, prop: Param) {
+  /**
+   *
+   * - Usage in dynamic value (expressions) via $prop
+   * - Usage via Prop linking
+   *
+   */
+  const varName = paramToVarName(component, prop);
+  const exprs = Tpls.findExprsInComponent(component).filter((expr) => {
+    const parsed = parseExpr(expr.expr);
+
+    // prop linking
+    if (expr.expr.typeTag === "VarRef") {
+      return expr.expr.variable.uid === prop.variable.uid;
+    }
+
+    // The Tpls.findExprsInComponent util returns redundant exprs. E.g. if its a Templated string `${props.test}`, it would return an expr of type ClsTemplateString with items "", (`${props.test}`), "", and 3 CustomCode exprs too for each of these items. Likewise in case of expr of type FunctionExpr
+    if (
+      expr.expr.typeTag === "TemplatedString" ||
+      expr.expr.typeTag === "FunctionExpr"
+    )
+      return false;
+
+    // Usage in dynamic value (expressions) via $prop
+    if (
+      [...parsed.usedDollarVarKeys.$props].filter(
+        (propName) => propName === varName
+      ).length > 0
+    ) {
+      return true;
+    }
+
+    // remaining expressions do not use this prop.
+    return false;
+  });
+  return exprs;
 }
 
 /**

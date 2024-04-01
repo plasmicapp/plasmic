@@ -1,6 +1,7 @@
 import { Component, Param } from "@/wab/classes";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
+import { confirm } from "@/wab/client/components/quick-modals";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
@@ -14,6 +15,7 @@ import {
   canChangeParamExportType,
   canDeleteParam,
   canRenameParam,
+  findPropUsages,
   getRealParams,
   isCodeComponent,
   removeComponentParam,
@@ -225,11 +227,27 @@ function makeParamMenu(
       )}
       {!isCodeComponent(component) && canDeleteParam(component, param) && (
         <Menu.Item
-          onClick={() =>
-            studioCtx.changeUnsafe(() => {
+          onClick={async () => {
+            const usages = findPropUsages(component, param);
+            if (usages?.length > 0) {
+              const confirmed = await confirm({
+                title: "Confirm deletion",
+                message: `Prop "${
+                  param.displayName ?? param.variable.name
+                }" is still being used by ${component.name} in ${
+                  usages.length
+                } ${
+                  usages.length > 1 ? "different locations" : "location"
+                }. Are you sure you want to delete it?`,
+                confirmLabel: "Delete",
+              });
+              if (!confirmed) return;
+            }
+
+            await studioCtx.changeUnsafe(() => {
               removeComponentParam(studioCtx.site, component, param);
-            })
-          }
+            });
+          }}
         >
           Delete {COMPONENT_PROP_LOWER}
         </Menu.Item>
