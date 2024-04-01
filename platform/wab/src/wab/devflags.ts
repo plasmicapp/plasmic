@@ -717,7 +717,8 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     authUsersTab: true,
     warningsInCanvas: true,
     previewSteps: true,
-  });
+    arbitraryCssSelectors: true,
+  } as Partial<DevFlagsType>);
 }
 
 const perProjectFlags: (keyof DevFlagsType)[] = [
