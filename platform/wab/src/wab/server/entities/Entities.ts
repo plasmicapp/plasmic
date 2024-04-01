@@ -380,6 +380,10 @@ export class ProjectRevision extends Base<"ProjectRevisionId"> {
   data: string;
 
   @Column("integer") revision: number;
+
+  @Column("integer", { nullable: true })
+  @Index()
+  dataLength?: number | null;
 }
 
 @Entity()
@@ -598,6 +602,10 @@ export class PkgVersion extends Base<"PkgVersionId"> {
   @Column("text")
   @IsJSON()
   model: string;
+
+  @Column("integer", { nullable: true })
+  @Index()
+  modelLength?: number | null;
 
   @Column("text", { nullable: true })
   hostUrl: string | null;

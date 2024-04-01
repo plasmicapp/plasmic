@@ -142,7 +142,7 @@ async function withAdvisoryLock(
 export async function maybeMigrateDatabase() {
   const conn = await getDefaultConnection();
   await withAdvisoryLock(conn, async () => {
-    const migrations = await conn.runMigrations({ transaction: "all" });
+    const migrations = await conn.runMigrations({ transaction: "none" });
     if (migrations.length > 0) {
       console.log(
         `Successfully ran ${migrations.length} migrations`,

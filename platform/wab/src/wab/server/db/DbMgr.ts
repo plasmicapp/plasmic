@@ -3054,6 +3054,7 @@ export class DbMgr implements MigrationDbMgr {
       ...this.stampNew(),
       project: { id: projectId },
       data,
+      dataLength: data.length,
       revision: revisionNum,
       branchId,
     });
@@ -4286,6 +4287,7 @@ export class DbMgr implements MigrationDbMgr {
       pkg,
       version,
       model,
+      modelLength: model.length,
       tags,
       description,
       ...(branchId ? { branchId } : {}),
