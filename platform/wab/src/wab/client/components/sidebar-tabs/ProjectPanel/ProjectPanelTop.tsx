@@ -924,11 +924,7 @@ function getFolderItemMenuRenderer({
     );
 
     const doReplaceAllInstances = (toComp: Component) => {
-      spawn(
-        studioCtx.changeUnsafe(() => {
-          studioCtx.tplMgr().swapComponents(component!, toComp);
-        })
-      );
+      spawn(studioCtx.siteOps().swapComponents(component!, toComp));
     };
 
     const componentToReplaceAllInstancesItem = (comp: Component) => {

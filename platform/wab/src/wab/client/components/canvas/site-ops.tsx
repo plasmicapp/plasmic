@@ -6,6 +6,7 @@ import {
   ComponentDataQuery,
   ComponentVariantGroup,
   ImageAsset,
+  isKnownComponent,
   isKnownComponentVariantGroup,
   Mixin,
   PageArena,
@@ -21,6 +22,7 @@ import { AppCtx } from "@/wab/client/app-ctx";
 import { U } from "@/wab/client/cli-routes";
 import { FrameClip } from "@/wab/client/clipboard";
 import { toast } from "@/wab/client/components/Messages";
+import { promptRemapCodeComponent } from "@/wab/client/components/modals/codeComponentModals";
 import {
   confirm,
   deleteStudioElementConfirm,
@@ -49,6 +51,7 @@ import {
 import { removeFromArray } from "@/wab/commons/collections";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import {
+  CodeComponent,
   ComponentType,
   DefaultComponentKind,
   findStateForParam,
@@ -73,6 +76,7 @@ import {
   isPageArena,
 } from "@/wab/shared/Arenas";
 import {
+  componentToReferencers,
   findComponentsUsingComponentVariant,
   findComponentsUsingGlobalVariant,
   findSplitsUsingVariantGroup,
@@ -116,6 +120,7 @@ import {
 } from "@/wab/shared/responsiveness";
 import { removeSvgIds } from "@/wab/shared/svg-utils";
 import { VariantOptionsType } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
 import {
   ensureBaseRuleVariantSetting,
   getDisplayVariants,
@@ -140,6 +145,7 @@ import {
   getReferencingComponents,
   getResponsiveStrategy,
   getSiteArenas,
+  visitComponentRefs,
 } from "@/wab/sites";
 import {
   findImplicitUsages,
@@ -158,6 +164,7 @@ import {
   flattenTpls,
   isTplSlot,
   isTplVariantable,
+  replaceTplTreeByEmptyBox,
 } from "@/wab/tpls";
 import { notification } from "antd";
 import L from "lodash";
@@ -907,6 +914,81 @@ export class SiteOps {
 
       return success();
     });
+  }
+
+  async swapComponents(fromComp: Component, toComp: Component) {
+    const referencersSet = componentToReferencers(this.site).get(fromComp);
+
+    return await this.studioCtx.changeObserved(
+      () => {
+        return Array.from(referencersSet ?? []);
+      },
+      ({ success }) => {
+        this.studioCtx.tplMgr().swapComponents(fromComp, toComp);
+        return success();
+      }
+    );
+  }
+
+  /**
+   * Returns true if `fromComponent` instances have successfully been replaced and
+   * it's been deleted, and false if the user closed the form
+   */
+  async tryRemapCodeComponent(
+    component: CodeComponent,
+    titleMessage: React.ReactNode
+  ) {
+    if (!this.studioCtx.site.components.includes(component)) {
+      // may be a sub component that was removed when parent was removed
+      return true;
+    }
+    const referencersSet = componentToReferencers(this.site).get(component);
+
+    if (referencersSet && referencersSet.size > 0) {
+      const componentToRemap = await promptRemapCodeComponent({
+        studioCtx: this.studioCtx,
+        component,
+        refComponents: Array.from(referencersSet),
+        title: titleMessage,
+      });
+      if (!componentToRemap) {
+        return false;
+      }
+
+      await this.studioCtx.changeObserved(
+        () => {
+          return Array.from(referencersSet ?? []);
+        },
+        ({ success }) => {
+          if (componentToRemap === "delete") {
+            visitComponentRefs(
+              this.studioCtx.site,
+              component,
+              (tplComponent, owner) => {
+                if (isKnownComponent(owner) && owner.tplTree === tplComponent) {
+                  // We need to replace the root, just create an empty free box with
+                  // all vsettings
+                  replaceTplTreeByEmptyBox(owner);
+                } else {
+                  $$$(tplComponent).remove({ deep: true });
+                }
+              }
+            );
+          } else {
+            // Swap with the component to remap to
+            this.tplMgr.swapComponents(component, componentToRemap);
+          }
+          this.tryRemoveComponent(component);
+          return success();
+        }
+      );
+    } else {
+      await this.studioCtx.change(({ success }) => {
+        this.tryRemoveComponent(component);
+        return success();
+      });
+    }
+    return true;
   }
 
   updateState(state: State, update: Partial<StateType>) {

@@ -529,11 +529,7 @@ export function genComponentSwapMenuItem(
   component: Component
 ) {
   const doSwap = (toComp: Component) => {
-    spawn(
-      studioCtx.changeUnsafe(() => {
-        studioCtx.tplMgr().swapComponents(component, toComp);
-      })
-    );
+    spawn(studioCtx.siteOps().swapComponents(component, toComp));
   };
   const pushComps = (
     comps: Component[],

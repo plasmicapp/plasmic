@@ -2,10 +2,7 @@
 // This file is owned by you, feel free to edit as you see fit.
 import ListItem from "@/wab/client/components/ListItem";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
-import {
-  showModalToRefreshCodeComponentProps,
-  tryRemapComponent,
-} from "@/wab/client/components/modals/codeComponentModals";
+import { showModalToRefreshCodeComponentProps } from "@/wab/client/components/modals/codeComponentModals";
 import { DraggableInsertable } from "@/wab/client/components/studio/add-drawer/DraggableInsertable";
 import { Matcher } from "@/wab/client/components/view-common";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -125,8 +122,7 @@ export const CodeComponentRow = observer(function ComponentRow(props: {
         <Menu.Item
           key="delete"
           onClick={() =>
-            tryRemapComponent(
-              studioCtx,
+            studioCtx.siteOps().tryRemapCodeComponent(
               component,
               <>
                 Delete code component {getComponentDisplayName(component)} (
