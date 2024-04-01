@@ -2018,3 +2018,8 @@ export interface ApiTeamSupportUrls {
   publicSupportUrl: string;
   privateSupportUrl?: string;
 }
+
+export interface SendEmailsResponse {
+  sent: string[];
+  failed: string[];
+}

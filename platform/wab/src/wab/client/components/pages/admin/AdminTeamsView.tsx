@@ -754,6 +754,7 @@ function UpdateWhiteLabelTeamClientCredentials({ team, refetch }: TeamProps) {
 }
 
 function TeamDiscourseInfo(props: TeamProps) {
+  const nonAuthCtx = useNonAuthCtx();
   return (
     <div className="flex-col gap-m">
       {props.discourseInfo ? (
@@ -773,6 +774,29 @@ function TeamDiscourseInfo(props: TeamProps) {
             group
           </PublicLink>
           . Use the form below to update the org's slug or name.
+          <Button
+            onClick={async () => {
+              console.log(
+                `Sending support welcome email to members of team ${props.team.name}`
+              );
+              const { sent, failed } =
+                await nonAuthCtx.api.sendTeamSupportWelcomeEmail(props.team.id);
+              console.log(`Sent:`, sent);
+              console.log(`Failed:`, failed);
+
+              if (failed.length > 0) {
+                notification.error({
+                  message: `Sent ${sent.length} emails, failed to send ${failed.length} emails (see console logs for emails)`,
+                });
+              } else {
+                notification.success({
+                  message: `Sent ${sent.length} emails (see console logs for emails)`,
+                });
+              }
+            }}
+          >
+            Send support welcome email
+          </Button>
         </div>
       ) : (
         <div>
@@ -831,6 +855,9 @@ function TeamDiscourseInfoForm({
         );
         await nonAuthCtx.api.syncTeamDiscourseInfo(team.id, values);
         console.log(`Sync success`);
+        notification.success({
+          message: `Discourse info synced. Send a support welcome email when ready.`,
+        });
         await refetch();
       }}
     >

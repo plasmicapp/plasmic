@@ -23,6 +23,7 @@ import {
   LoginResponse,
   PkgVersionId,
   ProjectId,
+  SendEmailsResponse,
   TeamId,
   TutorialDbId,
   UpdateSelfAdminModeRequest,
@@ -42,6 +43,7 @@ import { doSafelyDeleteProject, mkApiProject } from "./projects";
 import { getUser, superDbMgr, userDbMgr } from "./util";
 
 import { getTeamDiscourseInfo as doGetTeamDiscourseInfo } from "@/wab/server/discourse/getTeamDiscourseInfo";
+import { sendTeamSupportWelcomeEmail as doSendTeamSupportWelcomeEmail } from "@/wab/server/discourse/sendTeamSupportWelcomeEmail";
 import { syncTeamDiscourseInfo as doSyncTeamDiscourseInfo } from "@/wab/server/discourse/syncTeamDiscourseInfo";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
 import { checkAndResetTeamTrial } from "./team-plans";
@@ -528,5 +530,18 @@ export async function syncTeamDiscourseInfo(req: Request, res: Response) {
   const teamId = req.params.teamId as TeamId;
   const slug = req.body.slug;
   const name = req.body.name;
-  res.json(await doSyncTeamDiscourseInfo(mgr, teamId, slug, name));
+  res.json(
+    uncheckedCast<ApiTeamDiscourseInfo>(
+      await doSyncTeamDiscourseInfo(mgr, teamId, slug, name)
+    )
+  );
+}
+
+export async function sendTeamSupportWelcomeEmail(req: Request, res: Response) {
+  const teamId = req.params.teamId as TeamId;
+  res.json(
+    uncheckedCast<SendEmailsResponse>(
+      await doSendTeamSupportWelcomeEmail(req, teamId)
+    )
+  );
 }

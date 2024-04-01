@@ -191,6 +191,7 @@ import {
 import { OperationTemplate } from "@/wab/shared/data-sources-meta/data-sources";
 import { WebhookHeader } from "@/wab/shared/db-json-blobs";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { MIN_ACCESS_LEVEL_FOR_SUPPORT } from "@/wab/shared/discourse/config";
 import {
   AccessLevel,
   accessLevelRank,
@@ -5055,7 +5056,7 @@ export class DbMgr implements MigrationDbMgr {
   private async getPermissionsForResources(
     taggedResourceIds: TaggedResourceIds,
     directOnly: boolean
-  ) {
+  ): Promise<Permission[]> {
     await this._checkResourcesPerms(
       taggedResourceIds,
       "viewer",
@@ -10037,7 +10038,7 @@ export class DbMgr implements MigrationDbMgr {
   async getDiscourseInfoByTeamId(
     teamId: TeamId
   ): Promise<TeamDiscourseInfo | undefined> {
-    await this.checkTeamPerms(teamId, "content", "read");
+    await this.checkTeamPerms(teamId, MIN_ACCESS_LEVEL_FOR_SUPPORT, "read");
     return this.discourseInfos().findOne({
       where: {
         teamId,
@@ -10048,7 +10049,7 @@ export class DbMgr implements MigrationDbMgr {
   async getDiscourseInfosByTeamIds(
     teamIds: TeamId[]
   ): Promise<TeamDiscourseInfo[]> {
-    await this.checkTeamsPerms(teamIds, "content", "read");
+    await this.checkTeamsPerms(teamIds, MIN_ACCESS_LEVEL_FOR_SUPPORT, "read");
     return await this.discourseInfos().find({
       where: {
         teamId: In(teamIds),

@@ -1598,6 +1598,11 @@ export function addMainAppServerRoutes(
     adminOnly,
     withNext(adminRoutes.syncTeamDiscourseInfo)
   );
+  app.post(
+    "/api/v1/admin/teams/:teamId/send-support-welcome-email",
+    adminOnly,
+    withNext(adminRoutes.sendTeamSupportWelcomeEmail)
+  );
 
   /**
    * Self routes

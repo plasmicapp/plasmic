@@ -154,6 +154,7 @@ import {
   RevalidatePlasmicHostingResponse,
   SelfResponse,
   SendCopilotFeedbackRequest,
+  SendEmailsResponse,
   SendEmailVerificationRequest,
   SendEmailVerificationResponse,
   SetCustomDomainForProjectRequest,
@@ -1059,6 +1060,12 @@ export abstract class SharedApi {
     data: { slug: string; name: string }
   ): Promise<ApiTeamDiscourseInfo> {
     return this.put(`/admin/teams/${teamId}/sync-discourse-info`, data);
+  }
+
+  async sendTeamSupportWelcomeEmail(
+    teamId: TeamId
+  ): Promise<SendEmailsResponse> {
+    return this.post(`/admin/teams/${teamId}/send-support-welcome-email`);
   }
 
   async listProjectsForOwner(ownerId: string): Promise<ListProjectsResponse> {
