@@ -485,17 +485,6 @@ export function addLoggingMiddleware(app: express.Application) {
   // Remove metrics url to avoid spam
   app.use(
     morgan(
-      `START [:request-id] :remote-addr - :user-email [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" (:total-time[0]ms)`,
-      {
-        skip: (req, _) => {
-          return req.originalUrl === "/metrics" || req.url === "/metrics";
-        },
-        immediate: true,
-      }
-    )
-  );
-  app.use(
-    morgan(
       `[:request-id] :remote-addr - :user-email [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" (:total-time[0]ms)`,
       {
         skip: (req, _) => {
