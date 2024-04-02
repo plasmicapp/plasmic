@@ -1,6 +1,6 @@
 import { Site } from "@/wab/classes";
 import { ensure, UnexpectedTypeError, withoutNils } from "@/wab/common";
-import { brand } from "@/wab/commons/types";
+import { toOpaque } from "@/wab/commons/types";
 import { CodeComponentConfig, isPageComponent } from "@/wab/components";
 import { DEVFLAGS, getProjectFlags } from "@/wab/devflags";
 import { ImageAssetType } from "@/wab/image-asset-type";
@@ -196,7 +196,7 @@ export async function doGenCode(
     projectConfig.teamId = project.workspace?.teamId;
   }
 
-  const projectDomains = await mgr.getDomainsForProject(brand(projectId));
+  const projectDomains = await mgr.getDomainsForProject(toOpaque(projectId));
   // This may not be accurate, it only means that the user registered a domain in the project
   const isPlasmicHosted = projectDomains.length > 0;
 

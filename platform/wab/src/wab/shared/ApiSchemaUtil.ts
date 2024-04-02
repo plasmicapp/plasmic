@@ -1,5 +1,5 @@
 import { DeepMergeable, deepMerged } from "@/wab/commons/collections";
-import { brand } from "@/wab/commons/types";
+import { toOpaque } from "@/wab/commons/types";
 import {
   ApiBranch,
   ApiUser,
@@ -48,8 +48,8 @@ export function updateExtraDataJson(
 export function parseProjectBranchId(spec: string): ProjectAndBranchId {
   const [projectId, branchId] = spec.split("@");
   return {
-    projectId: brand(projectId),
-    branchId: branchId !== undefined ? brand(branchId) : undefined,
+    projectId: toOpaque(projectId),
+    branchId: branchId !== undefined ? toOpaque(branchId) : undefined,
   };
 }
 

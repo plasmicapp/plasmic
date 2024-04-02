@@ -533,7 +533,6 @@
     "url": "^0.11.3",
     "url-join": "^4.0.1",
     "util": "^0.12.5",
-    "utility-types": "^3.10.0",
     "uuid": "^8.2.0",
     "validator": "^13.1.1",
     "workerpool": "^6.1.4",

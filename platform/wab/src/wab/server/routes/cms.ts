@@ -1,5 +1,5 @@
 import { ensure, ensureString } from "@/wab/common";
-import { brand } from "@/wab/commons/types";
+import { toOpaque } from "@/wab/commons/types";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { CmsRow } from "@/wab/server/entities/Entities";
 import {
@@ -84,7 +84,7 @@ export async function getDatabase(req: Request, res: Response) {
 }
 
 export async function upsertDatabaseTables(req: Request, res: Response) {
-  const databaseId: CmsDatabaseId = brand(req.params.dbId);
+  const databaseId: CmsDatabaseId = toOpaque(req.params.dbId);
   const deleteUnspecified = req.body.deleteUnspecified as boolean;
   const tables: ApiCmsTable[] = req.body.tables;
   const mgr = userDbMgr(req);

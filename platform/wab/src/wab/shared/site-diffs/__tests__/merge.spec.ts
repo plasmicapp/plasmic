@@ -111,7 +111,7 @@ import {
   trackComponentSite,
 } from "@/wab/tpls";
 import { isArray, isString, pick, range, sortBy } from "lodash";
-import { DeepPartial } from "utility-types";
+import type { PartialDeep } from "type-fest";
 import codeComponentsWithSameNameBundle from "./code-components-with-same-name.json";
 import globalContextBundle from "./global-context-merge.json";
 import richTextConflict from "./rich-text-conflict.json";
@@ -676,7 +676,7 @@ describe("merging", () => {
         b: (site) => upsertTokens(site, { x: 2 }),
       })
     ).toMatchObject(
-      ensureType<DeepPartial<MergeStep>>({
+      ensureType<PartialDeep<MergeStep, { recurseIntoArrays: true }>>({
         status: "merged",
         mergedSite: {
           styleTokens: [{ name: "x", value: "2" }, {}],
@@ -693,7 +693,7 @@ describe("merging", () => {
         b: (site) => upsertTokens(site, { x: 2 }),
       })
     ).toMatchObject(
-      ensureType<DeepPartial<MergeStep>>({
+      ensureType<PartialDeep<MergeStep, { recurseIntoArrays: true }>>({
         status: "merged",
         mergedSite: {
           styleTokens: [{ name: "x", value: "2" }, {}],
@@ -710,7 +710,7 @@ describe("merging", () => {
         b: (site) => upsertTokens(site, { y: 2 }),
       })
     ).toMatchObject(
-      ensureType<DeepPartial<MergeStep>>({
+      ensureType<PartialDeep<MergeStep, { recurseIntoArrays: true }>>({
         status: "merged",
         mergedSite: {
           styleTokens: [
@@ -736,7 +736,7 @@ describe("merging", () => {
         b: (site) => upsertTokens(site, { b: 1 }),
       })
     ).toMatchObject(
-      ensureType<DeepPartial<MergeStep>>({
+      ensureType<PartialDeep<MergeStep, { recurseIntoArrays: true }>>({
         status: "merged",
         mergedSite: {
           styleTokens: [
@@ -770,7 +770,7 @@ describe("merging", () => {
         b: (site) => upsertTokens(site, { b: 1 }),
       })
     ).toMatchObject(
-      ensureType<DeepPartial<MergeStep>>({
+      ensureType<PartialDeep<MergeStep, { recurseIntoArrays: true }>>({
         status: "merged",
         mergedSite: {
           styleTokens: [{}, {}, { name: "b", value: "1" }],
@@ -806,7 +806,7 @@ describe("merging", () => {
       },
     });
     expect(res).toMatchObject(
-      ensureType<DeepPartial<MergeStep>>({
+      ensureType<PartialDeep<MergeStep>>({
         status: "merged",
       })
     );
@@ -837,7 +837,7 @@ describe("merging", () => {
       directConflictsPicks: ["right"],
     });
     expect(res).toMatchObject(
-      ensureType<DeepPartial<MergeStep>>({
+      ensureType<PartialDeep<MergeStep, { recurseIntoArrays: true }>>({
         status: "needs-resolution",
         genericDirectConflicts: [
           {
@@ -895,7 +895,7 @@ describe("merging", () => {
       directConflictsPicks: ["right"],
     });
     expect(res).toMatchObject(
-      ensureType<DeepPartial<MergeStep>>({
+      ensureType<PartialDeep<MergeStep, { recurseIntoArrays: true }>>({
         status: "needs-resolution",
         genericDirectConflicts: [
           {
@@ -944,7 +944,7 @@ describe("merging", () => {
       },
     });
     expect(res).toMatchObject(
-      ensureType<DeepPartial<MergeStep>>({
+      ensureType<PartialDeep<MergeStep>>({
         status: "merged",
       })
     );
@@ -2068,7 +2068,7 @@ describe("merging", () => {
           },
         }))
       ).toMatchObject(
-        ensureType<DeepPartial<MergeStep>>({
+        ensureType<PartialDeep<MergeStep>>({
           status: "merged",
         })
       );
@@ -2184,7 +2184,7 @@ describe("merging", () => {
             );
             return site;
           })(),
-          a: (site, tplMgr) => {
+          a: (site) => {
             const vgroup = site.globalVariantGroups[1];
             (
               (leftSubject = site.components[0]).tplTree as TplTag

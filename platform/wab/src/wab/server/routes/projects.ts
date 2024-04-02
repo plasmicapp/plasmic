@@ -29,7 +29,7 @@ import {
 } from "@/wab/common";
 import * as semver from "@/wab/commons/semver";
 import { addOrUpsertTokens } from "@/wab/commons/StyleToken";
-import { brand, RequiredSubKeys } from "@/wab/commons/types";
+import { toOpaque } from "@/wab/commons/types";
 import { ProjectVersionMeta, VersionResolution } from "@/wab/commons/versions";
 import { ComponentType, isPlasmicComponent } from "@/wab/components";
 import { DEVFLAGS } from "@/wab/devflags";
@@ -161,6 +161,7 @@ import * as _ from "lodash";
 import L, { isString, last, uniq, without } from "lodash";
 import fetch from "node-fetch";
 import * as Prettier from "prettier";
+import type { SetRequired } from "type-fest";
 import { EntityManager, getConnection, MigrationExecutor } from "typeorm";
 import { escapeHTML } from "underscore.string";
 import { mkApiDataSource } from "./data-source";
@@ -1594,7 +1595,9 @@ export async function updateHostUrl(req: Request, res: Response) {
   }
 }
 
-const _ProofSafeDelete: ProofSafeDelete = brand({ SafeDelete: "SafeDelete" });
+const _ProofSafeDelete: ProofSafeDelete = toOpaque({
+  SafeDelete: "SafeDelete",
+});
 
 /**
  * Delete a project while performing clean-up of any associated external resources.
@@ -1617,7 +1620,7 @@ export async function deleteProject(req: Request, res: Response) {
   await doSafelyDeleteProject(
     mgr,
     new DomainValidator(req.devflags.plasmicHostingSubdomainSuffix),
-    brand(req.params.projectId)
+    toOpaque(req.params.projectId)
   );
   req.promLabels.projectId = req.params.projectId;
   res.json({ deletedId: req.params.projectId });
@@ -1928,7 +1931,7 @@ export async function updatePkgVersion(req: Request, res: Response) {
 }
 
 function getFormattedStyleConfig(
-  opts: RequiredSubKeys<Partial<ExportOpts>, "targetEnv">
+  opts: SetRequired<Partial<ExportOpts>, "targetEnv">
 ) {
   const sc = exportStyleConfig(opts);
   const formattedRules = Prettier.format(sc.defaultStyleCssRules, {
@@ -2548,7 +2551,7 @@ async function makeProjectMeta(mgr: DbMgr, projectId: string) {
       uniq(withoutNils(allVersions.map((v) => v.createdById)))
     )
   );
-  const branches = await mgr.listBranchesForProject(brand(projectId));
+  const branches = await mgr.listBranchesForProject(toOpaque(projectId));
   return {
     id: project.id,
     name: project.name,
@@ -2596,7 +2599,7 @@ export async function updateProjectData(req: Request, res: Response) {
 
   const data = req.body as UpdateProjectReq;
   const branchId = data.branchId
-    ? brand<string, "BranchId">(data.branchId)
+    ? toOpaque<string, "BranchId">(data.branchId)
     : undefined;
 
   const latestRev = await dbMgr.getLatestProjectRev(
@@ -2833,7 +2836,7 @@ export async function getCommentsForProject(req: Request, res: Response) {
   const comments = await mgr.getCommentsForProject({ projectId, branchId });
   const reactions = await mgr.getReactionsForComments(comments);
   const selfNotificationSettings = req.user
-    ? await mgr.tryGetNotificationSettings(req.user.id, brand(projectId))
+    ? await mgr.tryGetNotificationSettings(req.user.id, toOpaque(projectId))
     : undefined;
   res.json(
     ensureType<GetCommentsResponse>({
@@ -2878,7 +2881,7 @@ export async function postCommentInProject(req: Request, res: Response) {
     for (const mate of mates) {
       const notificationSettings = await mgr.tryGetNotificationSettings(
         mate.id,
-        brand(projectId)
+        toOpaque(projectId)
       );
       const notifyAbout = notificationSettings?.notifyAbout ?? "all";
       const isMentionOrReply = commentsByThread
@@ -2958,13 +2961,13 @@ export async function deleteThreadInProject(req: Request, res: Response) {
 export async function addReactionToComment(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const { data } = uncheckedCast<AddCommentReactionRequest>(req.body);
-  await mgr.addCommentReaction(brand(req.params.commentId), data);
+  await mgr.addCommentReaction(toOpaque(req.params.commentId), data);
   res.json(ensureType<PostCommentResponse>({}));
 }
 
 export async function removeReactionFromComment(req: Request, res: Response) {
   const mgr = userDbMgr(req);
-  await mgr.removeCommentReaction(brand(req.params.reactionId));
+  await mgr.removeCommentReaction(toOpaque(req.params.reactionId));
   res.json({});
 }
 
@@ -2995,7 +2998,7 @@ export async function updateNotificationSettings(req: Request, res: Response) {
   const settings: ApiNotificationSettings = req.body;
   await mgr.updateNotificationSettings(
     getUser(req).id,
-    brand(projectId),
+    toOpaque(projectId),
     settings
   );
   res.json({});

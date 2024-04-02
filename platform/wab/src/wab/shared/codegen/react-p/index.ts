@@ -61,7 +61,6 @@ import {
 } from "@/wab/common";
 import { arrayReversed } from "@/wab/commons/collections";
 import { DeepMap } from "@/wab/commons/deep-map";
-import { RequiredSubKeys } from "@/wab/commons/types";
 import {
   findVariantGroupForParam,
   getCodeComponentHelperImportName,
@@ -290,6 +289,7 @@ import {
 import { getIntegrationsUrl, getPublicUrl } from "@/wab/urls";
 import L, { groupBy, sortBy } from "lodash";
 import memoizeOne from "memoize-one";
+import type { SetRequired } from "type-fest";
 import { optimizeGeneratedCodeForHostlessPackages } from "./optimize-hostless-packages";
 import { ReactHookSpec } from "./react-hook-spec";
 import {
@@ -362,7 +362,7 @@ function sortedVSettings(ctx: SerializerBaseContext, node: TplNode) {
 }
 
 export function exportStyleConfig(
-  opts: RequiredSubKeys<Partial<ExportOpts>, "targetEnv">
+  opts: SetRequired<Partial<ExportOpts>, "targetEnv">
 ): StyleConfig {
   const { stylesOpts, targetEnv } = opts;
   const useCssModules = stylesOpts?.scheme === "css-modules";
@@ -399,7 +399,7 @@ export function exportProjectConfig(
   revision: number,
   projectRevId: string,
   version: string,
-  exportOpts: RequiredSubKeys<Partial<ExportOpts>, "targetEnv">,
+  exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">,
   indirect = false
 ): ProjectConfig {
   const fontUsages = extractUsedFontsFromComponents(site, site.components);

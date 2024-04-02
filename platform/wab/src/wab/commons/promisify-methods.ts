@@ -1,4 +1,4 @@
-import { OmitByValue } from "utility-types";
+import { OmitByValue } from "@/wab/commons/types";
 
 /** Converts an object with sync/async methods into an object with async methods only. */
 export type PromisifyMethods<T extends object> = OmitByValue<

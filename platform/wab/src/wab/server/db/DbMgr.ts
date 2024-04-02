@@ -31,7 +31,7 @@ import {
 import { sequentially } from "@/wab/commons/asyncutil";
 import { removeFromArray } from "@/wab/commons/collections";
 import * as semver from "@/wab/commons/semver";
-import { brand } from "@/wab/commons/types";
+import { toOpaque } from "@/wab/commons/types";
 import { DEVFLAGS } from "@/wab/devflags";
 import { withoutUids } from "@/wab/model/model-meta";
 import { adminEmails } from "@/wab/server/admin";
@@ -242,6 +242,7 @@ import L, { fromPairs, intersection, pick, uniq } from "lodash";
 import moment from "moment";
 import { CreateChatCompletionRequest } from "openai";
 import ShortUuid from "short-uuid";
+import type { Opaque } from "type-fest";
 import {
   DeepPartial,
   EntityManager,
@@ -259,7 +260,6 @@ import {
   SelectQueryBuilder,
   UpdateResult,
 } from "typeorm";
-import { Brand } from "utility-types";
 import * as uuid from "uuid";
 import {
   getLastBundleVersion,
@@ -636,14 +636,14 @@ function getCommitChainFromBranch(
   return getCommitChainFromCommit(g, g.branches[branchSpec]);
 }
 
-export type ProofSafeDelete = Brand<
+export type ProofSafeDelete = Opaque<
   | { SafeDelete: "SafeDelete" }
   | {
       SkipSafeDelete: "SkipSafeDelete";
     },
   "ProofSafeDelete"
 >;
-export const SkipSafeDelete: ProofSafeDelete = brand({
+export const SkipSafeDelete: ProofSafeDelete = toOpaque({
   SkipSafeDelete: "SkipSafeDelete",
 });
 

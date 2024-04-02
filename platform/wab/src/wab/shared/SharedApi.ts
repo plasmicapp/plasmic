@@ -6,7 +6,7 @@ import {
   NotImplementedError,
   omitNils,
 } from "@/wab/common";
-import { brand } from "@/wab/commons/types";
+import { toOpaque } from "@/wab/commons/types";
 import { executePlasmicDataOp } from "@plasmicapp/data-sources";
 import L, { pick, uniq } from "lodash";
 import semver from "semver";
@@ -438,7 +438,7 @@ export abstract class SharedApi {
     }
   ): Promise<GetProjectResponse> {
     return this.get(
-      `/projects/${showProjectBranchId(brand(siteId), opts?.branchId)}`,
+      `/projects/${showProjectBranchId(toOpaque(siteId), opts?.branchId)}`,
       {
         ...(opts?.revisionId !== undefined
           ? { revisionId: opts.revisionId }
@@ -520,7 +520,7 @@ export abstract class SharedApi {
     const { branchId, revisionNum, ...rest } = rev;
     return this.post(
       `/projects/${showProjectBranchId(
-        brand(projectId),
+        toOpaque(projectId),
         branchId
       )}/revisions/${revisionNum}`,
       {
@@ -1814,7 +1814,7 @@ export abstract class SharedApi {
     branchId?: BranchId
   ): Promise<GetCommentsResponse> {
     return this.get(
-      `/projects/${showProjectBranchId(brand(projectId), branchId)}/comments`
+      `/projects/${showProjectBranchId(toOpaque(projectId), branchId)}/comments`
     );
   }
 
@@ -1824,7 +1824,10 @@ export abstract class SharedApi {
     data: CommentData
   ): Promise<PostCommentResponse> {
     return this.post(
-      `/projects/${showProjectBranchId(brand(projectId), branchId)}/comments`,
+      `/projects/${showProjectBranchId(
+        toOpaque(projectId),
+        branchId
+      )}/comments`,
       ensureType<PostCommentRequest>({ data })
     );
   }
@@ -1836,7 +1839,7 @@ export abstract class SharedApi {
   ): Promise<DeleteCommentResponse> {
     return this.delete(
       `/projects/${showProjectBranchId(
-        brand(projectId),
+        toOpaque(projectId),
         branchId
       )}/comment/${commentId}`
     );
@@ -1849,7 +1852,7 @@ export abstract class SharedApi {
   ): Promise<DeleteCommentResponse> {
     return this.delete(
       `/projects/${showProjectBranchId(
-        brand(projectId),
+        toOpaque(projectId),
         branchId
       )}/thread/${threadId}`
     );
@@ -1861,7 +1864,7 @@ export abstract class SharedApi {
   ): Promise<PostCommentResponse> {
     return this.put(
       `/projects/${showProjectBranchId(
-        brand(projectId),
+        toOpaque(projectId),
         branchId
       )}/notification-settings`,
       ensureType<UpdateNotificationSettingsRequest>(data)

@@ -3,7 +3,7 @@ import Button from "@/wab/client/components/widgets/Button";
 import { Modal } from "@/wab/client/components/widgets/Modal";
 import Select from "@/wab/client/components/widgets/Select";
 import { ensureType, isOneOf, unreachable } from "@/wab/common";
-import { brand } from "@/wab/commons/types";
+import { toOpaque } from "@/wab/commons/types";
 import { PublicStyleSection, TemplateSpec } from "@/wab/shared/ApiSchema";
 import {
   BASIC_ALIASES,
@@ -197,7 +197,7 @@ export function ContentEditorConfigModal(props: {
               {
                 displayName: "My Page Template",
                 imageUrl: "https://example.com/my-template.png",
-                projectId: brand("rBVncjZMfEPDGmCMNe2QhK"),
+                projectId: toOpaque("rBVncjZMfEPDGmCMNe2QhK"),
                 componentName: "Homepage",
                 category: "Landing Pages",
                 componentResolution: "inline",
@@ -213,7 +213,7 @@ export function ContentEditorConfigModal(props: {
               {
                 displayName: "My Insertable Template",
                 imageUrl: "https://example.com/my-template.png",
-                projectId: brand("3SwC2F4BeXucfS9cpFbd24"),
+                projectId: toOpaque("3SwC2F4BeXucfS9cpFbd24"),
                 componentName: "Hero Section 1",
                 category: "Hero Sections",
                 componentResolution: "inline",

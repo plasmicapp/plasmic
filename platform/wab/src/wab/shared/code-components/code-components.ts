@@ -223,7 +223,7 @@ import {
   IFailable,
   mapMultiple,
 } from "ts-failable";
-import { Brand } from "utility-types";
+import type { Opaque } from "type-fest";
 import {
   isBuiltinCodeComponent,
   isBuiltinCodeComponentImportPath,
@@ -2190,7 +2190,7 @@ export function getHostLessComponents(site: Site) {
     .flatMap((dep) => dep.site.components.filter(isHostLessCodeComponent));
 }
 
-export type CustomFunctionId = Brand<string, "CustomFunctionId">;
+export type CustomFunctionId = Opaque<string, "CustomFunctionId">;
 
 export function customFunctionId(f: CustomFunction) {
   return `${f.namespace ? f.namespace + "." : ""}${

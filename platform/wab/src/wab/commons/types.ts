@@ -1,20 +1,28 @@
-/**
- * Lets you convert certain keys of argument type from optional to required
- */
-import { Brand, Omit } from "utility-types";
+import type { Opaque } from "type-fest";
 
 /**
- * Lets you convert certain keys of argument type from required to optional
+ * Falsy (from utility-types)
+ * @desc Type representing falsy values in TypeScript: `false | "" | 0 | null | undefined`
+ * @example
+ *   type Various = 'a' | 'b' | undefined | false;
+ *
+ *   // Expect: "a" | "b"
+ *   Exclude<Various, Falsy>;
  */
-export type OptionalSubKeys<T extends {}, K extends keyof T> = Omit<T, K> &
-  Partial<Pick<T, K>>;
+export type Falsy = false | "" | 0 | null | undefined;
 
-export type RequiredSubKeys<T extends {}, K extends keyof T> = Omit<T, K> & {
-  [P in K]-?: T[P];
-};
-
+/**
+ * See https://gerrit.aws.plasmic.app/c/plasmic/+/12368
+ * Use type-fest.ReadonlyDeep instead.
+ * @deprecated
+ */
 export type DeepReadonly<T> = T;
 
+/**
+ * See https://gerrit.aws.plasmic.app/c/plasmic/+/12368
+ * Use type-fest.ReadonlyDeep instead.
+ * @deprecated
+ */
 export type DeepReadonlyArray<T> = T[];
 
 /**
@@ -27,8 +35,8 @@ export type ReplaceKey<T extends object, K extends keyof T, V> = Omit<T, K> & {
   [k in K]: V;
 };
 
-export function brand<T, U>(x: T): Brand<T, U> {
-  return x as Brand<T, U>;
+export function toOpaque<T, U>(x: T): Opaque<T, U> {
+  return x as Opaque<T, U>;
 }
 
 /**
@@ -100,3 +108,20 @@ export type AsyncGeneratorReturnType<T> = T extends (
 ) => AsyncGenerator<infer R, any, any>
   ? R
   : never;
+
+/**
+ * OmitByValue (from utility-types)
+ * @desc From `T` remove a set of properties by value matching `ValueType`.
+ * Credit: [Piotr Lewandowski](https://medium.com/dailyjs/typescript-create-a-condition-based-subset-types-9d902cea5b8c)
+ * @example
+ *   type Props = { req: number; reqUndef: number | undefined; opt?: string; };
+ *
+ *   // Expect: { reqUndef: number | undefined; opt?: string; }
+ *   type Props = OmitByValue<Props, number>;
+ *   // Expect: { opt?: string; }
+ *   type Props = OmitByValue<Props, number | undefined>;
+ */
+export type OmitByValue<T, ValueType> = Pick<
+  T,
+  { [Key in keyof T]-?: T[Key] extends ValueType ? never : Key }[keyof T]
+>;

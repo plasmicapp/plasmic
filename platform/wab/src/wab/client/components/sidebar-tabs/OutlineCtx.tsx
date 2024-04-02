@@ -25,7 +25,7 @@ import {
   tuple,
   withoutNils,
 } from "@/wab/common";
-import { brand } from "@/wab/commons/types";
+import { toOpaque } from "@/wab/commons/types";
 import { isCodeComponent } from "@/wab/components";
 import { getOnlyAssetRef } from "@/wab/image-assets";
 import { FrameViewMode } from "@/wab/shared/Arenas";
@@ -69,9 +69,9 @@ import {
   runInAction,
 } from "mobx";
 import { computedFn } from "mobx-utils";
-import { Brand } from "utility-types";
+import type { Opaque } from "type-fest";
 
-export type OutlineNodeKey = Brand<string, "OutlineNodeKey">;
+export type OutlineNodeKey = Opaque<string, "OutlineNodeKey">;
 
 export interface OutlineNodeData {
   key: OutlineNodeKey;
@@ -456,15 +456,15 @@ export function makeNodeKey(
   tpl: TplNode | SlotSelection | ArenaFrame
 ): OutlineNodeKey {
   if (isKnownArenaFrame(tpl)) {
-    return brand(`${tpl.uid}`);
+    return toOpaque(`${tpl.uid}`);
   } else if (tpl instanceof SlotSelection) {
-    return brand(
+    return toOpaque(
       `${
         ensure(tpl.toTplSlotSelection().tpl, "SlotSelection.tpl must exist").uid
       }-${tpl.slotParam.uid}`
     );
   } else {
-    return brand(`${tpl.uid}`);
+    return toOpaque(`${tpl.uid}`);
   }
 }
 

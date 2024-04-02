@@ -14,7 +14,7 @@ import { DbMgr } from "@/wab/server/db/DbMgr";
 import { User } from "@/wab/server/entities/Entities";
 import { getShopifySecrets } from "@/wab/server/secrets";
 import { UnauthorizedError } from "@/wab/shared/ApiErrors/errors";
-import { ProjectId } from "@/wab/shared/ApiSchema";
+import { ProjectId, UserId } from "@/wab/shared/ApiSchema";
 import { getPublicUrl } from "@/wab/urls";
 import Shopify, {
   ApiVersion,
@@ -134,10 +134,7 @@ export type ShopifyCreateScriptTagRequest = z.infer<
   typeof ShopifyCreateScriptTagRequest
 >;
 
-export async function getShopifyClientForUserId(
-  dbMgr: DbMgr,
-  userId: string & { __brand: "UserId" }
-) {
+export async function getShopifyClientForUserId(dbMgr: DbMgr, userId: UserId) {
   const token = await dbMgr.tryGetOauthToken(userId, "shopify");
   if (!token) {
     throw new Error("Missing Shopify token");

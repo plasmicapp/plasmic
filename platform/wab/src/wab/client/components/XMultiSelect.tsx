@@ -2,7 +2,6 @@ import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import { arrayMoveIndex } from "@/wab/collections";
 import { cx, ensure, ensureHTMLElt, tuple } from "@/wab/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import { OptionalSubKeys } from "@/wab/commons/types";
 import { Dropdown, Menu, Tooltip } from "antd";
 import classNames from "classnames";
 import Downshift, {
@@ -12,6 +11,7 @@ import Downshift, {
 import L from "lodash";
 import * as React from "react";
 import { createRef } from "react";
+import type { SetOptional } from "type-fest";
 import { DropdownArrow, IconLinkButton } from "./widgets";
 import { Icon } from "./widgets/Icon";
 
@@ -409,7 +409,7 @@ class _XMultiSelect<Item> extends React.Component<
 
 type RawProps = typeof _XMultiSelect.defaultProps;
 
-type XMultiSelectProps<Item> = OptionalSubKeys<
+type XMultiSelectProps<Item> = SetOptional<
   _XMultiSelectProps<Item>,
   keyof RawProps
 > & {

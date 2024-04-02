@@ -34,7 +34,6 @@ import {
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
 import { TokenType } from "@/wab/commons/StyleToken";
-import { OptionalSubKeys } from "@/wab/commons/types";
 import { parseCssNumericNew, roundedCssNumeric } from "@/wab/css";
 import {
   DefinedIndicatorType,
@@ -48,6 +47,7 @@ import cn from "classnames";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { CSSProperties, ReactNode } from "react";
+import type { SetOptional } from "type-fest";
 
 export function LabeledItem(props: {
   label?: React.ReactNode;
@@ -343,7 +343,7 @@ export const DraggableDimLabel = observer(function DraggableDimLabel(props: {
 
 export const LabeledStyleDimItem = observer(function LabeledStyleDimItem(
   props: Omit<React.ComponentProps<typeof LabeledStyleItem>, "children"> & {
-    dimOpts?: OptionalSubKeys<
+    dimOpts?: SetOptional<
       Omit<React.ComponentProps<typeof DimTokenSpinner>, "studioCtx">,
       "value" | "onChange"
     > &
@@ -450,7 +450,7 @@ export const LabeledStyleDimItem = observer(function LabeledStyleDimItem(
 export const LabeledStyleColorItem = observer(function LabeledStyleColorItem(
   props: Omit<React.ComponentProps<typeof LabeledStyleItem>, "children"> & {
     colorOpts?: Omit<
-      OptionalSubKeys<
+      SetOptional<
         React.ComponentProps<typeof ColorButton>,
         "color" | "onChange"
       >,

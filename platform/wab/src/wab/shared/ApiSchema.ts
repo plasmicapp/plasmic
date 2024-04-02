@@ -13,8 +13,7 @@ import type { DataSourceSchema } from "@plasmicapp/data-sources";
 import { PlasmicElement } from "@plasmicapp/host/dist/element-types";
 import Stripe from "stripe";
 import { MakeADT } from "ts-adt/MakeADT";
-import type { JsonValue } from "type-fest";
-import { Brand } from "utility-types";
+import type { JsonValue, Opaque } from "type-fest";
 import { Bundle } from "./bundles";
 import { DataSourceType } from "./data-sources-meta/data-source-registry";
 import { LabeledValue, RawPagination } from "./data-sources-meta/data-sources";
@@ -27,28 +26,28 @@ import { WholeChatCompletionResponse } from "./copilot/prompt-utils";
 import { ChangeLogEntry, SemVerReleaseType } from "./site-diffs";
 import { UiConfig } from "./ui-config-utils";
 
-export type UserId = Brand<string, "UserId">;
-export type ProjectId = Brand<string, "ProjectId">;
-export type PkgVersionId = Brand<string, "PkgVersionId">;
-export type BranchId = Brand<string, "BranchId">;
-export type WorkspaceId = Brand<string, "WorkspaceId">;
-export type TeamId = Brand<string, "TeamId">;
-export type FeatureTierId = Brand<string, "FeatureTierId">;
-export type StripeCustomerId = Brand<string, "StripeCustomerId">;
-export type StripePriceId = Brand<string, "StripePriceId">;
-export type StripeSubscriptionId = Brand<string, "StripeSubscriptionId">;
-export type CmsDatabaseId = Brand<string, "CmsDatabaseId">;
-export type CmsTableId = Brand<string, "CmsTableId">;
-export type CmsRowId = Brand<string, "CmsRowId">;
-export type CmsRowRevisionId = Brand<string, "CmsRowRevisionId">;
-export type CommentId = Brand<string, "CommentId">;
-export type CommentReactionId = Brand<string, "CommentReactionId">;
-export type SsoConfigId = Brand<string, "SsoConfigId">;
-export type TutorialDbId = Brand<string, "TutorialDbId">;
-export type DataSourceId = Brand<string, "DataSourceId">;
-export type CopilotInteractionId = Brand<string, "CopilotInteractionId">;
+export type UserId = Opaque<string, "UserId">;
+export type ProjectId = Opaque<string, "ProjectId">;
+export type PkgVersionId = Opaque<string, "PkgVersionId">;
+export type BranchId = Opaque<string, "BranchId">;
+export type WorkspaceId = Opaque<string, "WorkspaceId">;
+export type TeamId = Opaque<string, "TeamId">;
+export type FeatureTierId = Opaque<string, "FeatureTierId">;
+export type StripeCustomerId = Opaque<string, "StripeCustomerId">;
+export type StripePriceId = Opaque<string, "StripePriceId">;
+export type StripeSubscriptionId = Opaque<string, "StripeSubscriptionId">;
+export type CmsDatabaseId = Opaque<string, "CmsDatabaseId">;
+export type CmsTableId = Opaque<string, "CmsTableId">;
+export type CmsRowId = Opaque<string, "CmsRowId">;
+export type CmsRowRevisionId = Opaque<string, "CmsRowRevisionId">;
+export type CommentId = Opaque<string, "CommentId">;
+export type CommentReactionId = Opaque<string, "CommentReactionId">;
+export type SsoConfigId = Opaque<string, "SsoConfigId">;
+export type TutorialDbId = Opaque<string, "TutorialDbId">;
+export type DataSourceId = Opaque<string, "DataSourceId">;
+export type CopilotInteractionId = Opaque<string, "CopilotInteractionId">;
 
-export type MainBranchId = Brand<string, "MainBranchId">;
+export type MainBranchId = Opaque<string, "MainBranchId">;
 export const MainBranchId = "main" as MainBranchId;
 
 export interface CommitParentGraph {
@@ -1503,7 +1502,7 @@ export interface CommentLocation {
   variants: ModelAddr[];
 }
 
-export type CommentThreadId = Brand<string, "CommentThreadId">;
+export type CommentThreadId = Opaque<string, "CommentThreadId">;
 
 export interface CommentData {
   location: CommentLocation;

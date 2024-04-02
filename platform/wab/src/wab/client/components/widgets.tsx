@@ -43,7 +43,6 @@ import {
 } from "react-beautiful-dnd";
 import { createPortal } from "react-dom";
 import { FaUpload } from "react-icons/fa";
-import { Omit } from "utility-types";
 import { PublicLink } from "./PublicLink";
 import { absorb, uncontrollable } from "./view-common";
 import { Icon } from "./widgets/Icon";

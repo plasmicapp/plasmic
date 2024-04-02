@@ -5,7 +5,6 @@ import {
   getComponentName,
   UnwrappableComponent,
 } from "./HocUtil";
-//import {Omit} from "utility-types";
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
