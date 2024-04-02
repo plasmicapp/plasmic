@@ -2760,6 +2760,10 @@ export class DbMgr implements MigrationDbMgr {
     return await this._queryTeams(
       {
         featureTierId: In(featureTierIds),
+
+        // It would be nice to not need to know to check for stripeSubscriptionId
+        // https://linear.app/plasmic/issue/PLA-10654
+        stripeSubscriptionId: Not(IsNull()),
       },
       false
     ).getMany();
