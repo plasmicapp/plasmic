@@ -1552,6 +1552,19 @@ export class SiteOps {
     return true;
   }
 
+  async swapTokens(fromToken: StyleToken, toToken: StyleToken) {
+    const [_, summary] = extractTokenUsages(this.site, fromToken);
+    await this.studioCtx.changeObserved(
+      () => {
+        return summary.components;
+      },
+      ({ success }) => {
+        this.tplMgr.swapTokens(fromToken, toToken);
+        return success();
+      }
+    );
+  }
+
   // This method was created to be used from browser console whenever there is
   // a broken project with missing base rule variant settings.
   ensureAllBaseRuleVariantSettings() {

@@ -126,11 +126,7 @@ export const StyleTokenControl = observer(function StyleTokenControl(props: {
                 <Menu.Item
                   key={tok.uuid}
                   onClick={() => {
-                    spawn(
-                      studioCtx.changeUnsafe(() =>
-                        studioCtx.tplMgr().swapTokens(token, tok)
-                      )
-                    );
+                    spawn(studioCtx.siteOps().swapTokens(token, tok));
                   }}
                 >
                   <div className="flex-row flex-vcenter gap-sm">
