@@ -15,6 +15,7 @@ import {
 } from "@/wab/codesandbox/utils";
 import { Dict, mkIdMap } from "@/wab/collections";
 import {
+  arrayEqIgnoreOrder,
   assert,
   ensure,
   ensureType,
@@ -1921,6 +1922,7 @@ export async function updatePkgVersion(req: Request, res: Response) {
   const rawPkgVersion = req.body.pkg ?? {};
   // Note: The only thing users can modify from API is "tags" and "description" at the moment
   const toMerge = _.pick(rawPkgVersion, ["tags", "description"]);
+  const oldPkgVersion = await mgr.getPkgVersion(pkgId);
   const pkgVersion = await mgr.updatePkgVersion(
     pkgId,
     version,
@@ -1928,6 +1930,24 @@ export async function updatePkgVersion(req: Request, res: Response) {
     toMerge
   );
   res.json({ pkg: pkgVersion });
+
+  if (arrayEqIgnoreOrder(oldPkgVersion.tags, pkgVersion.tags)) {
+    return;
+  }
+
+  const projectId = (await mgr.getPkgById(pkgVersion.pkgId)).projectId;
+
+  await req.resolveTransaction();
+
+  // Broadcast to publish listeners
+  console.log(
+    `Broadcasting publish event for ${projectId}@${pkgVersion.version} because of tags change`
+  );
+  await broadcastProjectsMessage({
+    room: `projects/${projectId}`,
+    type: "publish",
+    message: { projectId: projectId, ..._.omit(pkgVersion, "model") },
+  });
 }
 
 function getFormattedStyleConfig(
