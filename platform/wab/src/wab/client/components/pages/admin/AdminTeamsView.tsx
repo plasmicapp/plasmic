@@ -3,12 +3,17 @@ import { useAdminCtx } from "@/wab/client/components/pages/admin/AdminCtx";
 import { AdminUserTable } from "@/wab/client/components/pages/admin/AdminUserTable";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
-import { notNil } from "@/wab/common";
+import { notNil, uncheckedCast } from "@/wab/common";
+import { DEVFLAGS } from "@/wab/devflags";
 import {
+  ApiFeatureTier,
   ApiPermission,
   ApiTeam,
   ApiTeamDiscourseInfo,
   ApiUser,
+  BillingFrequency,
+  StripeCustomerId,
+  StripeSubscriptionId,
   TeamWhiteLabelInfo,
 } from "@/wab/shared/ApiSchema";
 import {
@@ -285,14 +290,14 @@ function TeamDetail(props: TeamProps) {
             children: <QuickLinks {...props} />,
           },
           {
-            key: "actions",
-            label: "Actions",
-            children: <Actions {...props} />,
-          },
-          {
             key: "members",
             label: "Members",
             children: <Members {...props} />,
+          },
+          {
+            key: "billing",
+            label: "Billing",
+            children: <Billing {...props} />,
           },
           {
             key: "discourse",
@@ -303,6 +308,11 @@ function TeamDetail(props: TeamProps) {
             key: "white-label",
             label: "White-label",
             children: <WhiteLabel {...props} />,
+          },
+          {
+            key: "misc",
+            label: "Misc",
+            children: <Misc {...props} />,
           },
         ]}
       />
@@ -335,11 +345,299 @@ function QuickLinks({ team }: TeamProps) {
   );
 }
 
-function Actions(props: TeamProps) {
+function Billing(props: TeamProps) {
+  return (
+    <div className="flex-col gap-m">
+      <div className="flex-row gap-m">
+        {props.team.featureTier && (
+          <>
+            <CheckStripeSubscription
+              {...props}
+              featureTier={props.team.featureTier}
+            />
+            <CancelTeamPlan {...props} featureTier={props.team.featureTier} />
+          </>
+        )}
+        <ResetTeamTrial {...props} />
+      </div>
+      <TeamTierControls {...props} />
+    </div>
+  );
+}
+
+function CheckStripeSubscription({
+  team,
+  featureTier,
+  refetch,
+}: TeamProps & { featureTier: ApiFeatureTier }) {
+  const nonAuthCtx = useNonAuthCtx();
+  return (
+    <Button
+      onClick={async () => {
+        const res = await nonAuthCtx.api.getSubscription(team.id);
+        if (res.type === "success") {
+          notification.info({
+            message: `Organization ${team.name} on ${featureTier.name} plan has Stripe subscription status ${res.subscription.status}`,
+          });
+        } else {
+          notification.error({
+            message: `Organization ${team.name} does not have a subscription`,
+          });
+        }
+        refetch();
+      }}
+    >
+      Check Stripe subscription
+    </Button>
+  );
+}
+
+function CancelTeamPlan({
+  team,
+  featureTier,
+  refetch,
+}: TeamProps & { featureTier: ApiFeatureTier }) {
+  const nonAuthCtx = useNonAuthCtx();
+  return (
+    <Button
+      onClick={async () => {
+        Modal.confirm({
+          title: `Cancel ${featureTier.name} plan for organization ${team.name}?`,
+          content: `This cancels the Stripe subscription and puts the organization on the free tier. No refunds will be issued.`,
+          onOk: async () => {
+            await nonAuthCtx.api.cancelSubscription(team.id);
+            refetch();
+            notification.info({
+              message: `Canceled ${featureTier.name} plan for organization ${team.name}`,
+            });
+          },
+        });
+      }}
+    >
+      Cancel {featureTier.name} plan
+    </Button>
+  );
+}
+
+function ResetTeamTrial({ team, refetch }: TeamProps) {
+  const nonAuthCtx = useNonAuthCtx();
+  return (
+    <Button
+      onClick={() => {
+        Modal.confirm({
+          title: "Reset team trial?",
+          content: `This will reset the team trial for team "${team.name}"`,
+          onOk: async () => {
+            await nonAuthCtx.api.resetTeamTrial(team.id);
+            refetch();
+          },
+        });
+      }}
+    >
+      Reset team trial
+    </Button>
+  );
+}
+
+/**
+ * Makes it easy to change an existing team's tier
+ * - Note that you need
+ */
+function TeamTierControls({ team }: TeamProps) {
+  const nonAuthCtx = useNonAuthCtx();
+  const teamId = team.id;
+  const [error, setError] = useState("");
+  const [featureTierName, setFeatureTierName] = React.useState<
+    string | undefined
+  >();
+  const [seats, setSeats] = React.useState<number | undefined>();
+  const [billingFrequency, setBillingFreq] = React.useState<
+    BillingFrequency | undefined
+  >();
+  const [billingEmail, setBillingEmail] = React.useState<string | undefined>();
+  const [stripeCustomerId, setStripeCustomerId] = React.useState<
+    StripeCustomerId | undefined
+  >();
+  const [stripeSubscriptionId, setStripeSubscriptionId] = React.useState<
+    StripeSubscriptionId | undefined
+  >();
+  return (
+    <div>
+      <h2>Modify team billing</h2>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <h2>Upgrade a team from free tier</h2>
+      <p></p>
+      <ul>
+        <li>
+          1. First manually create a Stripe customer and subscription for them.
+          If Enterprise, select the right combination of products based on what
+          was negotiated. If you plan on charging, make sure you send the user
+          the invoice when making the subscription.
+        </li>
+        <li>2. Populate every field in this form</li>
+        <li>
+          Warning: If you run this on a team that's already on a paid tier, it
+          will NOT cancel the existing subscription
+        </li>
+      </ul>
+      <Form
+        onFinish={async () => {
+          if (!teamId) {
+            return setError("Missing Team ID");
+          } else if (!featureTierName) {
+            return setError("Missing Feature Tier");
+          } else if (!seats) {
+            return setError("Missing Seats");
+          } else if (!billingFrequency) {
+            return setError("Missing Billing Frequency");
+          } else if (!billingEmail) {
+            return setError("Missing Billing Email");
+          } else if (!stripeCustomerId) {
+            return setError("Missing Stripe Customer ID");
+          } else if (!stripeSubscriptionId) {
+            return setError("Missing Stripe Subscription ID");
+          }
+          const { tiers } = await nonAuthCtx.api.listCurrentFeatureTiers({
+            includeLegacyTiers: true,
+          });
+          const tier = tiers.find(
+            (t) => t.name.toLowerCase() === featureTierName.toLowerCase()
+          );
+          if (!tier) {
+            return setError(`Cannot find a tier with name ${featureTierName}`);
+          }
+          await nonAuthCtx.api.upgradeTeamAsAdmin({
+            teamId,
+            featureTierId: tier.id,
+            seats,
+            billingFrequency,
+            billingEmail,
+            stripeCustomerId,
+            stripeSubscriptionId,
+          });
+          setError("");
+          notification.info({
+            message: `Upgraded Team ${teamId}`,
+          });
+        }}
+      >
+        <Select
+          style={{ width: 120 }}
+          onChange={(v: string) => setFeatureTierName(v)}
+        >
+          {[
+            ...DEVFLAGS.featureTierNames.slice(0, -1),
+            ...DEVFLAGS.newFeatureTierNames,
+          ].map((name) => (
+            <Select.Option value={name}>{name}</Select.Option>
+          ))}
+        </Select>
+        <Input
+          type={"input"}
+          value={seats}
+          placeholder="Number of Seats"
+          onChange={(e) => setSeats(parseInt(e.target.value))}
+        />
+        <Select
+          style={{ width: 120 }}
+          onChange={(v: BillingFrequency) => setBillingFreq(v)}
+        >
+          <Select.Option value="month">Monthly</Select.Option>
+          <Select.Option value="year">Yearly</Select.Option>
+        </Select>
+        <Input
+          type={"input"}
+          value={billingEmail}
+          placeholder="Billing Email"
+          onChange={(e) => setBillingEmail(e.target.value)}
+        />
+        <Input
+          type={"input"}
+          value={stripeCustomerId}
+          placeholder="Stripe Customer Id"
+          onChange={(e) =>
+            setStripeCustomerId(uncheckedCast<StripeCustomerId>(e.target.value))
+          }
+        />
+        <Input
+          type={"input"}
+          value={stripeSubscriptionId}
+          placeholder="Stripe Subscription Id"
+          onChange={(e) =>
+            setStripeSubscriptionId(
+              uncheckedCast<StripeSubscriptionId>(e.target.value)
+            )
+          }
+        />
+        <Button htmlType={"submit"}>Upgrade team </Button>
+      </Form>
+
+      <br />
+
+      <h2>Change team tier</h2>
+      <p>
+        Note: only use this on teams on an existing paid tier. Team will be
+        billed according to the new tier pricing. (Useful for testing enterprise
+        on dev server)
+      </p>
+      <Form
+        onFinish={async () => {
+          if (!teamId) {
+            return setError("Missing Team ID");
+          } else if (!featureTierName) {
+            return setError("Missing Feature Tier");
+          } else if (!seats) {
+            return setError("Missing Seats");
+          }
+          const { tiers } = await nonAuthCtx.api.listCurrentFeatureTiers();
+          const tier = tiers.find(
+            (t) => t.name.toLowerCase() === featureTierName.toLowerCase()
+          );
+          if (!tier) {
+            return setError(`Cannot find a tier with name ${featureTierName}`);
+          }
+          const result = await nonAuthCtx.api.changeSubscription({
+            teamId,
+            featureTierId: tier.id,
+            billingFrequency: team.billingFrequency ?? "month",
+            seats,
+          });
+          if (result.type !== "success") {
+            return setError("Error changing subscription");
+          }
+          setError("");
+          notification.info({
+            message: `Updated Team ${teamId}`,
+          });
+        }}
+      >
+        <Select
+          style={{ width: 120 }}
+          onChange={(v: string) => setFeatureTierName(v)}
+        >
+          {[
+            ...DEVFLAGS.featureTierNames.slice(0, -1),
+            ...DEVFLAGS.newFeatureTierNames,
+          ].map((name) => (
+            <Select.Option value={name}>{name}</Select.Option>
+          ))}
+        </Select>
+        <Input
+          type={"input"}
+          value={seats}
+          placeholder="Number of Seats"
+          onChange={(e) => setSeats(parseInt(e.target.value))}
+        />
+        <Button htmlType={"submit"}>Change plan</Button>
+      </Form>
+    </div>
+  );
+}
+
+function Misc(props: TeamProps) {
   return (
     <div className="flex-row gap-m">
       <UpgradePersonalTeam {...props} />
-      <ResetTeamTrial {...props} />
       <ConfigureSso {...props} />
       <GenerateTeamApiToken {...props} />
     </div>
@@ -412,26 +710,6 @@ function UpgradePersonalTeam({ team, refetch }: TeamProps) {
       }}
     >
       Promote to real team
-    </Button>
-  );
-}
-
-function ResetTeamTrial({ team, refetch }: TeamProps) {
-  const nonAuthCtx = useNonAuthCtx();
-  return (
-    <Button
-      onClick={() => {
-        Modal.confirm({
-          title: "Reset team trial?",
-          content: `This will reset the team trial for team "${team.name}"`,
-          onOk: async () => {
-            await nonAuthCtx.api.resetTeamTrial(team.id);
-            refetch();
-          },
-        });
-      }}
-    >
-      Reset team trial
     </Button>
   );
 }
@@ -858,7 +1136,7 @@ function TeamDiscourseInfoForm({
         notification.success({
           message: `Discourse info synced. Send a support welcome email when ready.`,
         });
-        await refetch();
+        refetch();
       }}
     >
       <Form.Item
