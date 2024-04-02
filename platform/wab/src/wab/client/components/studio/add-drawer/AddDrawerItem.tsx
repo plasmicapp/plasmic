@@ -20,7 +20,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { isCodeComponent } from "@/wab/components";
 import { DEVFLAGS } from "@/wab/devflags";
 import { Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 
 interface AddDrawerItemProps {

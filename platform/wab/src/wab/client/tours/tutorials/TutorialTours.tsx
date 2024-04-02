@@ -18,7 +18,7 @@ import { useSignalListener } from "@/wab/commons/components/use-signal-listener"
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import * as Sentry from "@sentry/browser";
 import { notification } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import type { Step } from "react-joyride";

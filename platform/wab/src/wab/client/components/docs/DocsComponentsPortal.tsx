@@ -3,13 +3,13 @@ import {
   PlasmicDocsComponentsPortal,
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsComponentsPortal";
 import { isPlumeComponent } from "@/wab/components";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useDocsPortalCtx } from "./DocsPortalCtx";
 import { DocsPortalEditor } from "./DocsPortalEditor";
 import { DocsPreviewCanvas } from "./DocsPreviewCanvas";
 
-interface DocsComponentsPortalProps extends DefaultDocsComponentsPortalProps {}
+type DocsComponentsPortalProps = DefaultDocsComponentsPortalProps
 
 const DocsComponentsPortal = observer(function DocsComponentsPortal(
   props: DocsComponentsPortalProps

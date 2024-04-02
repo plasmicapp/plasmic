@@ -2,7 +2,7 @@ import { Transition } from "@/wab/client/components/sidebar-tabs/TransitionsSect
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { Textbox } from "@/wab/client/components/widgets/Textbox";
 import { asValidCssTime } from "@/wab/css";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { useState } from "react";
 import StyleSelect from "./StyleSelect";
 

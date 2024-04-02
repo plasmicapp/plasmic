@@ -120,7 +120,7 @@ import * as Tpls from "@/wab/tpls";
 import { notification } from "antd";
 import { UseComboboxGetItemPropsOptions } from "downshift";
 import L, { mapValues } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { FocusScope, useFocusManager } from "react-aria";
 import AutoSizer from "react-virtualized-auto-sizer";

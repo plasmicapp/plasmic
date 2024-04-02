@@ -1,6 +1,5 @@
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { Reaction } from "mobx";
-import type { IReactionTracking } from "mobx-react-lite/dist/utils/reactionCleanupTrackingCommon";
 import { computedFn } from "mobx-utils";
 import type React from "react";
 import { useCanvasForceUpdate } from "./canvas-hooks";
@@ -161,6 +160,14 @@ function observerComponentNameFor(baseComponentName: string) {
   return `observer${baseComponentName}`;
 }
 
+interface IReactionTracking {
+  reaction: Reaction;
+  mounted: boolean;
+  changedBeforeMount: boolean;
+  cleanAt: number;
+  finalizationRegistryCleanupToken?: number;
+}
+
 const cleanupTokenToReactionTrackingMap = new Map<number, IReactionTracking>();
 
 let globalCleanupTokensCounter = 1;
@@ -207,14 +214,13 @@ function recordReactionAsCommitted(
   }
 }
 
-function createTrackingData(reaction: Reaction) {
-  const trackingData: IReactionTracking = {
+function createTrackingData(reaction: Reaction): IReactionTracking {
+  return {
     reaction,
     mounted: false,
     changedBeforeMount: false,
     cleanAt: Date.now() + CLEANUP_LEAKED_REACTIONS_AFTER_MILLIS,
   };
-  return trackingData;
 }
 
 /**

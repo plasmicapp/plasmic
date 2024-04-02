@@ -5,7 +5,7 @@ import Textbox from "@/wab/client/components/widgets/Textbox";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import { Form } from "antd";
 import { computed } from "mobx";
-import { useLocalStore, useObserver } from "mobx-react-lite";
+import { useLocalStore, useObserver } from "mobx-react";
 import React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
 

@@ -10,7 +10,7 @@ import { tryExtractJson } from "@/wab/exprs";
 import { getTplComponentArg } from "@/wab/shared/TplMgr";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
 import type { CodeComponentMode } from "@plasmicapp/host";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 
 export const SimplifiedCodeComponentModeSection = observer(function (props: {

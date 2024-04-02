@@ -9,12 +9,12 @@ import {
   isSubComponent,
 } from "@/wab/components";
 import { Alert } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import ComponentListItem from "./ComponentListItem";
 import { useDocsPortalCtx } from "./DocsPortalCtx";
 
-interface ComponentsPanelProps extends DefaultComponentsPanelProps {}
+type ComponentsPanelProps = DefaultComponentsPanelProps
 
 const ComponentsPanel = observer(function ComponentsPanel(
   props: ComponentsPanelProps

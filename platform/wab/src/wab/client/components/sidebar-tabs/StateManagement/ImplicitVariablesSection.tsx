@@ -18,7 +18,7 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu } from "antd";
 import assert from "assert";
 import { computed } from "mobx";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import ImplicitVariableRow from "./ImplicitVariableRow";
 
@@ -31,7 +31,7 @@ export interface ImplicitVariablesSectionProps
 }
 
 const ImplicitVariablesSection = observer(
-  function ImplicitVariablesSection(
+  React.forwardRef(function ImplicitVariablesSection(
     props: ImplicitVariablesSectionProps,
     ref: HTMLElementRefOf<"div">
   ) {
@@ -131,9 +131,6 @@ const ImplicitVariablesSection = observer(
           ))}
       </PlasmicImplicitVariablesSection>
     );
-  },
-  {
-    forwardRef: true,
-  }
+  })
 );
 export default ImplicitVariablesSection;

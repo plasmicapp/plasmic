@@ -15,7 +15,7 @@ import {
   getFilterEffectLabel,
 } from "@/wab/filter-effect-utils";
 import { Slider } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { useEffect } from "react";
 import styles from "./FilterEffectPanel.module.sass";
 

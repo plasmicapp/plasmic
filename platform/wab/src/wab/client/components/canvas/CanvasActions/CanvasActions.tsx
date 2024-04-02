@@ -23,7 +23,7 @@ import {
 } from "@/wab/val-nodes";
 import { Tooltip } from "antd";
 import $ from "jquery";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 
 const getErrorMessage = (invalidArg: InvalidArgMeta) =>

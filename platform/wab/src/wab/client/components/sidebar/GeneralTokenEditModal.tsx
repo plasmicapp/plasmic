@@ -8,7 +8,7 @@ import { assert } from "@/wab/common";
 import { TokenType, tokenTypeDimOpts } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { allTokensOfType } from "@/wab/sites";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { SidebarModal } from "./SidebarModal";
 import { newTokenValueAllowed } from "./token-controls";

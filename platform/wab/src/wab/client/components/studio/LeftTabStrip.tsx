@@ -44,7 +44,7 @@ import {
 import { Popover } from "antd";
 import classNames from "classnames";
 import { omit } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { CSSProperties, ReactNode } from "react";
 import { AnonymousAvatar, Avatar } from "./Avatar";

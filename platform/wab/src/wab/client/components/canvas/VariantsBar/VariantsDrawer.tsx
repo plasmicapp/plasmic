@@ -21,7 +21,7 @@ import {
   makeVariantName,
 } from "@/wab/shared/Variants";
 import { isTplTag } from "@/wab/tpls";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import VariantRow from "./VariantRow";

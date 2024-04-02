@@ -22,7 +22,7 @@ import { getAllVariantsForTpl, isScreenVariant } from "@/wab/shared/Variants";
 import { Dropdown } from "antd";
 import defer from "lodash/defer";
 import last from "lodash/lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, {
   useCallback,
   useEffect,

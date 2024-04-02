@@ -5,7 +5,7 @@ import { promptMoveToWorkspace } from "@/wab/client/components/dashboard/dashboa
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { assert, spawn } from "@/wab/common";
 import { ApiProject, MainBranchId } from "@/wab/shared/ApiSchema";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import { useEffect } from "react";
 
 interface CloneProjectModalProps {

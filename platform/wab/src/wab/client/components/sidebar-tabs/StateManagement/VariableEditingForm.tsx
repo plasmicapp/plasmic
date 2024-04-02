@@ -26,7 +26,7 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 
 export interface NewVariableProps extends DefaultNewVariableProps {
@@ -39,7 +39,7 @@ export interface NewVariableProps extends DefaultNewVariableProps {
 }
 
 const VariableEditingForm = observer(
-  function VariableEditingForm(
+  React.forwardRef(function VariableEditingForm(
     {
       component,
       state,
@@ -265,7 +265,6 @@ const VariableEditingForm = observer(
         />
       </form>
     );
-  },
-  { forwardRef: true }
+  })
 );
 export default VariableEditingForm;

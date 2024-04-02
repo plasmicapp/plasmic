@@ -17,7 +17,7 @@ import { isScreenVariant } from "@/wab/shared/Variants";
 import { extractTokenUsages } from "@/wab/styles";
 import { Tooltip } from "antd";
 import { orderBy } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { isHostLessPackage } from "src/wab/sites";
 import { FindReferencesModal } from "./FindReferencesModal";

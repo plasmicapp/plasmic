@@ -78,7 +78,7 @@ import { notification } from "antd";
 import { ArgsProps } from "antd/lib/notification";
 import cn from "classnames";
 import { throttle } from "lodash";
-import { Observer, observer } from "mobx-react-lite";
+import { Observer, observer } from "mobx-react";
 import * as React from "react";
 import { memo, useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "react-use";

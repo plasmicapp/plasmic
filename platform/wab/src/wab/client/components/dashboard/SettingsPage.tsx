@@ -10,7 +10,7 @@ import { ensure } from "@/wab/common";
 import { ApiTrustedHost } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import copy from "copy-to-clipboard";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { documentTitle } from "./page-utils";
 
@@ -90,6 +90,5 @@ function SettingsPage_(props: SettingsPageProps, ref: HTMLElementRefOf<"div">) {
   );
 }
 
-//const SettingsPage = observer(React.forwardRef(SettingsPage_));
-const SettingsPage = observer(SettingsPage_, { forwardRef: true });
+const SettingsPage = observer(React.forwardRef(SettingsPage_));
 export default SettingsPage;

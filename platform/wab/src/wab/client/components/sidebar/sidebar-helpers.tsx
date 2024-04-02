@@ -44,7 +44,7 @@ import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { makeVariantName, VariantCombo } from "@/wab/shared/Variants";
 import { Select, Tooltip } from "antd";
 import cn from "classnames";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { CSSProperties, ReactNode } from "react";
 import type { SetOptional } from "type-fest";

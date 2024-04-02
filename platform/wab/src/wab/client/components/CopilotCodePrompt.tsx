@@ -14,7 +14,7 @@ import { CopilotResponseData } from "@/wab/shared/ApiSchema";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import { Popover, Tooltip } from "antd";
 import { isString, range } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { FocusScope } from "react-aria";
 import CopilotMsg from "./CopilotMsg";

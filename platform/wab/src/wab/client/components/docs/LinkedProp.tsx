@@ -5,7 +5,7 @@ import { wabTypeToPropType } from "@/wab/shared/code-components/code-components"
 import { toVarName } from "@/wab/shared/codegen/util";
 import { wabToTsType } from "@/wab/shared/core/model-util";
 import { Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { DocsPortalCtx } from "./DocsPortalCtx";
 

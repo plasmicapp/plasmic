@@ -14,7 +14,7 @@ import { MainBranchId } from "@/wab/shared/ApiSchema";
 import { PlasmicIcon } from "@plasmicapp/react-web";
 import { Menu, Tooltip } from "antd";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 
 interface PublishButtonProps extends DefaultPublishButtonProps {

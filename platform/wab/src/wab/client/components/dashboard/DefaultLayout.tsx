@@ -21,7 +21,7 @@ import { TeamId, WorkspaceId } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Dropdown, Menu } from "antd";
 import * as _ from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
 import { useHistory } from "react-router";
@@ -263,5 +263,5 @@ function DefaultLayout_(
   );
 }
 
-const DefaultLayout = observer(DefaultLayout_, { forwardRef: true });
+const DefaultLayout = observer(React.forwardRef(DefaultLayout_));
 export default DefaultLayout;

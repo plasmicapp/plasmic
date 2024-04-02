@@ -20,7 +20,7 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { PageComponent } from "@/wab/components";
 import { PublicStyleSection } from "@/wab/shared/ApiSchema";
 import { canEditStyleSection } from "@/wab/shared/ui-config-utils";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { useLocalStorage } from "react-use";
 

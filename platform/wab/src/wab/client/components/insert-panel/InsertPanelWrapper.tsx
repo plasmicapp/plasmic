@@ -4,7 +4,7 @@ import { useDismissibleStudioOverlay } from "@/wab/client/hooks/useDismissibleSt
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawnWrapper } from "@/wab/common";
 import { LeftTabKey } from "@/wab/shared/ui-config-utils";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useEffect, useRef } from "react";
 import { mergeProps, useOverlayPosition, useOverlayTrigger } from "react-aria";

@@ -13,7 +13,7 @@ import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import { isScreenVariant } from "@/wab/shared/Variants";
 import { getApplicableSelectors, mkRuleSet, THEMABLE_TAGS } from "@/wab/styles";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { RuleSetHelpers } from "src/wab/shared/RuleSetHelpers";
 import { DEFAULT_THEME_STYLES } from "src/wab/sites";
@@ -22,7 +22,7 @@ import { MixinFormContent } from "./MixinControls";
 export type DefaultStylesPanelProps = DefaultDefaultStylesPanelProps;
 
 const DefaultStylesPanel = observer(
-  function DefaultStylesPanel(
+  React.forwardRef(function DefaultStylesPanel(
     props: DefaultStylesPanelProps,
     ref: HTMLElementRefOf<"div">
   ) {
@@ -230,10 +230,7 @@ const DefaultStylesPanel = observer(
         {...props}
       />
     );
-  },
-  {
-    forwardRef: true,
-  }
+  })
 );
 
 function initializeMixinWithDefaults(mixin: Mixin, selector: string) {

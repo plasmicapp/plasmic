@@ -26,7 +26,7 @@ import {
 } from "@/wab/shared/Variants";
 import { isTplTag } from "@/wab/tpls";
 import { useCombobox } from "downshift";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useMemo } from "react";
 import { FocusScope } from "react-aria";

@@ -22,7 +22,7 @@ import {
 } from "@/wab/shared/Variants";
 import { isTplVariantable, summarizeTpl } from "@/wab/tpls";
 import { Menu } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 
 interface VariantComboRowProps {

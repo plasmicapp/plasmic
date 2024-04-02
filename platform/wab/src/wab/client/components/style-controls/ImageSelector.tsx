@@ -29,7 +29,7 @@ import { allImageAssets, isEditable } from "@/wab/sites";
 import { placeholderImgUrl } from "@/wab/urls";
 import { notification, Select, Tooltip } from "antd";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { CSSProperties } from "react";
 import validator from "validator";
 

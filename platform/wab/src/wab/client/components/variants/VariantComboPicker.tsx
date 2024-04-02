@@ -5,7 +5,7 @@ import { VARIANTS_LOWER } from "@/wab/shared/Labels";
 import { PinStateManager } from "@/wab/shared/PinManager";
 import { isBaseVariant, VariantCombo } from "@/wab/shared/Variants";
 import { Dropdown } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { useLayoutEffect, useRef, useState } from "react";
 import styles from "./VariantComboPicker.module.scss";
 import defer = setTimeout;

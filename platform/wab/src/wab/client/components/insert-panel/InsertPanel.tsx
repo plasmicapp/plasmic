@@ -107,7 +107,7 @@ import { SlotSelection } from "@/wab/slots";
 import { UseComboboxGetItemPropsOptions } from "downshift";
 import L, { groupBy, last, uniq } from "lodash";
 import memoizeOne from "memoize-one";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useMemo, useState } from "react";
 import { FocusScope, useFocusManager } from "react-aria";

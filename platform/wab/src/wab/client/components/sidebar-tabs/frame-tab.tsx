@@ -30,7 +30,7 @@ import { Chroma } from "@/wab/shared/utils/color-utils";
 import { getFrameContainerType } from "@/wab/sites";
 import { Menu } from "antd";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 
 interface FramePanelProps extends ViewComponentProps {

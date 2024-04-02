@@ -25,7 +25,7 @@ import { ApiAppUser } from "@/wab/shared/ApiSchema";
 import { Bundle, FastBundler } from "@/wab/shared/bundler";
 import { DATA_SOURCE_OPERATION_LOWER } from "@/wab/shared/Labels";
 import { Menu, notification } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
 import {

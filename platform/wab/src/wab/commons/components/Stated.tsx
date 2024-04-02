@@ -1,4 +1,4 @@
-import { Observer } from "mobx-react-lite";
+import { Observer } from "mobx-react";
 import React, { ReactNode, useState } from "react";
 
 export interface StatedProps<T> {

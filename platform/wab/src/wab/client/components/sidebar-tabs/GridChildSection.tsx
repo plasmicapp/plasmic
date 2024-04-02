@@ -11,7 +11,7 @@ import {
 import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
 import { spawn } from "@/wab/common";
 import { parseGridChildCssProps } from "@/wab/shared/grid-utils";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 
 export const GridChildSection = observer(function GridChildSection(props: {

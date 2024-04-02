@@ -19,7 +19,7 @@ import {
 } from "@/wab/shared/data-sources-meta/data-sources";
 import { Form, notification, Select as AntSelect } from "antd";
 import { Dictionary, keyBy, mapValues } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
 

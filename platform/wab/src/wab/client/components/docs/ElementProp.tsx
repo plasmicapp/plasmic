@@ -5,7 +5,7 @@ import { PlasmicElementProp } from "@/wab/client/plasmic/plasmic_kit_docs_portal
 import { toClassName } from "@/wab/shared/codegen/util";
 import { isTplComponent, isTplTag, TplNamable } from "@/wab/tpls";
 import { Dropdown, Menu } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { DocsPortalCtx } from "./DocsPortalCtx";
 

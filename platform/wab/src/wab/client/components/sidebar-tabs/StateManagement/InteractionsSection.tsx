@@ -13,7 +13,7 @@ import { useSignalListener } from "@/wab/commons/components/use-signal-listener"
 import { Popover } from "antd";
 import Select, { RefSelectProps } from "antd/lib/select";
 import { remove, uniqBy } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
 
@@ -76,7 +76,7 @@ function InteractionsSection_(props: InteractionsSectionProps) {
   );
 
   function handleAdd(eventHandlerKey: EventHandlerKeyType) {
-    let eventHandler = getEventHandlerByEventKey(
+    const eventHandler = getEventHandlerByEventKey(
       component,
       tpl,
       eventHandlerKey
@@ -222,9 +222,7 @@ function InteractionsSection_(props: InteractionsSectionProps) {
   );
 }
 
-const InteractionsSection = observer(InteractionsSection_, {
-  forwardRef: true,
-});
+const InteractionsSection = observer(React.forwardRef(InteractionsSection_));
 export default InteractionsSection;
 
 const AddHandlerFunctionButton = observer(

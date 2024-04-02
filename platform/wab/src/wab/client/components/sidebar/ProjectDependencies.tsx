@@ -30,7 +30,7 @@ import { isHostLessPackage } from "@/wab/sites";
 import { unbundleProjectDependency } from "@/wab/tagged-unbundle";
 import { extractProjectIdFromUrlOrId, getPublicUrl } from "@/wab/urls";
 import { Menu, notification, Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { areEquivalentScreenVariants } from "src/wab/shared/Variants";
 

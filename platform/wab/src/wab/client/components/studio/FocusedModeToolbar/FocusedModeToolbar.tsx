@@ -6,7 +6,7 @@ import Switch from "@/wab/client/components/widgets/Switch";
 import RefreshsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Refreshsvg";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { DEVFLAGS } from "@/wab/devflags";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import S from "./FocusedModeToolbar.module.scss";
 

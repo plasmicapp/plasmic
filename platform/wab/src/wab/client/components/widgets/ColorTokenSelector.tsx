@@ -11,7 +11,7 @@ import Chroma from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Tooltip } from "antd";
 import Downshift from "downshift";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { FixedSizeList } from "react-window";
 import { Icon } from "./Icon";

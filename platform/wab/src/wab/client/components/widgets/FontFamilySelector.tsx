@@ -7,7 +7,7 @@ import { derefToken, mkTokenRef, TokenType } from "@/wab/commons/StyleToken";
 import { siteToAllDirectTokensOfType } from "@/wab/shared/cached-selectors";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Select } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import Chip from "./Chip";
 

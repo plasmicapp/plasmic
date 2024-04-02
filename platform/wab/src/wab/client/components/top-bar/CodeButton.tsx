@@ -10,7 +10,7 @@ import { toClassName } from "@/wab/shared/codegen/util";
 import { PlasmicIcon } from "@plasmicapp/react-web";
 import { Menu, Tooltip } from "antd";
 import { defer } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { MdOpenInNew } from "react-icons/all";
 import { useLocalStorage } from "react-use";

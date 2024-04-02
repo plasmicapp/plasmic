@@ -4,7 +4,7 @@ import { CanvasFrame } from "@/wab/client/components/canvas/CanvasFrame";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { getMixedArenaSize } from "@/wab/shared/Arenas";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 
 export const FreeFramesLayout = observer(function FreeFramesLayout(props: {

@@ -2,7 +2,7 @@ import { CodeDisplay } from "@/wab/client/components/coding/CodeDisplay";
 import { ObserverLoadable } from "@/wab/client/components/widgets";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { exportReactPlainTypical } from "@/wab/shared/codegen/react-p/plain";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import sty from "./CodePreviewPanel.module.css";
 

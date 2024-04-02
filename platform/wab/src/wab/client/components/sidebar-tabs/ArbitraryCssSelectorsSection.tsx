@@ -17,7 +17,7 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { spawn } from "@/wab/common";
 import { getArbitraryCssSelectorsVariantsForTag } from "@/wab/shared/Variants";
 import { Popover, RefSelectProps, Select } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 
 export const ArbitraryCssSelectorsPanel = observer(

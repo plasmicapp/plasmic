@@ -38,7 +38,7 @@ import { imageDataUriToBlob } from "@/wab/shared/data-urls";
 import { canRead, canWrite } from "@/wab/shared/ui-config-utils";
 import { Menu } from "antd";
 import { last, orderBy } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { isHostLessPackage } from "src/wab/sites";

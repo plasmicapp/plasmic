@@ -19,7 +19,7 @@ import { tryGetVariantSetting } from "@/wab/shared/Variants";
 import { allMixins, isEditable } from "@/wab/sites";
 import { Tooltip } from "antd";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { useEffect, useRef, useState } from "react";
 
 interface CreateOption {

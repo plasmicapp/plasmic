@@ -20,7 +20,7 @@ import {
 } from "@/wab/filter-effect-utils";
 import { joinCssValues, splitCssValue } from "@/wab/shared/RuleSetHelpers";
 import { capitalize } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { useState } from "react";
 
 const _GenericFilterEffectSection = (

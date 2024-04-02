@@ -10,7 +10,7 @@ import { toVarName } from "@/wab/shared/codegen/util";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
 import { Popover, Tooltip } from "antd";
 import { default as classNames } from "classnames";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 
 interface DataPickerEditorProps {

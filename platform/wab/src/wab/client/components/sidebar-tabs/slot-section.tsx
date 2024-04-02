@@ -9,7 +9,7 @@ import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
 import { spawn } from "@/wab/common";
 import { isTplSlot } from "@/wab/tpls";
 import { Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 
 export const SlotSettingsSection = observer(

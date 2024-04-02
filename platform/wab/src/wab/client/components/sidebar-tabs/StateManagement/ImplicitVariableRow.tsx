@@ -8,7 +8,7 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { assert } from "@/wab/common";
 import { isPageComponent } from "@/wab/components";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { getStateVarName } from "src/wab/states";
 import { useVariableRow } from "./useVariableRow";
@@ -21,7 +21,10 @@ export interface ImplicitVariableRowProps extends DefaultVariableRowProps {
 }
 
 const ImplicitVariableRow = observer(
-  function (props: ImplicitVariableRowProps, ref: HTMLElementRefOf<"div">) {
+  React.forwardRef(function (
+    props: ImplicitVariableRowProps,
+    ref: HTMLElementRefOf<"div">
+  ) {
     const { component, state, sc, viewCtx, ...rest } = props;
     const {
       menu,
@@ -66,9 +69,6 @@ const ImplicitVariableRow = observer(
         {modals}
       </WithContextMenu>
     );
-  },
-  {
-    forwardRef: true,
-  }
+  })
 );
 export default ImplicitVariableRow;

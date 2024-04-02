@@ -6,7 +6,7 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ensure, spawn } from "@/wab/common";
 import { VariantPinState } from "@/wab/shared/PinManager";
 import { getPlumeVariantDef } from "@/wab/shared/plume/plume-registry";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { makeVariantMenu, VariantDataPicker } from "./variant-menu";

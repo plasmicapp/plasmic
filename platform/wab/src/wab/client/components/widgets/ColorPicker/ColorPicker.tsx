@@ -31,7 +31,7 @@ import { Input, InputRef, Select, Tooltip } from "antd";
 import { sortBy } from "lodash";
 import debounce from "lodash/debounce";
 import defer from "lodash/defer";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import {
   useCallback,

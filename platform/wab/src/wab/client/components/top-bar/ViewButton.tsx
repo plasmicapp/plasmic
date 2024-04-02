@@ -19,10 +19,10 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { DEVFLAGS } from "@/wab/devflags";
 import { isDedicatedArena } from "@/wab/shared/Arenas";
 import { Menu, Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 
-interface ViewButtonProps extends DefaultViewButtonProps {}
+type ViewButtonProps = DefaultViewButtonProps
 
 const contentCreatorModeHelp = (
   <>

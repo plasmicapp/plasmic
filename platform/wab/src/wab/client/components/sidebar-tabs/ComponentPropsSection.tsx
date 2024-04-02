@@ -94,7 +94,7 @@ import {
 import { Dropdown, Input, Menu, notification, Tooltip } from "antd";
 import L, { defer, isArray, sortBy } from "lodash";
 import { autorun } from "mobx";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { flattenComponent } from "src/wab/shared/cached-selectors";
 import { paramToVarName } from "src/wab/shared/codegen/util";

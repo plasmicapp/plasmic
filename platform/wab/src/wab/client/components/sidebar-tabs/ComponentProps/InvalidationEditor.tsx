@@ -1,12 +1,10 @@
-import { Menu } from "antd";
-import { isString } from "lodash";
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import {
-  Component,
-  QueryInvalidationExpr,
-  QueryRef,
-} from "@/wab/classes";
+import { Component, QueryInvalidationExpr, QueryRef } from "@/wab/classes";
+import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import IconButton from "@/wab/client/components/widgets/IconButton";
+import Trash2SvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Trash2Svg";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ensure, notNil } from "@/wab/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import {
@@ -17,12 +15,10 @@ import {
   ALL_QUERIES,
   SHOW_INVALIDATION_KEYS,
 } from "@/wab/shared/data-sources-meta/data-sources";
-import Trash2SvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Trash2Svg";
-import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
-import { Icon } from "@/wab/client/components/widgets/Icon";
-import IconButton from "@/wab/client/components/widgets/IconButton";
-import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import { Menu } from "antd";
+import { isString } from "lodash";
+import { observer } from "mobx-react";
+import * as React from "react";
 import { DataPickerEditor } from "./DataPickerEditor";
 import styles from "./InvalidationEditor.module.scss";
 import { MultiSelectEnumPropEditor } from "./MultiSelectEnumPropEditor";

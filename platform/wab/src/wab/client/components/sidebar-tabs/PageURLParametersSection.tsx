@@ -30,7 +30,7 @@ import {
 } from "@/wab/shared/data-sources-meta/data-sources";
 import { Input, InputRef, Menu, Popover, Tooltip } from "antd";
 import { isEqual, size } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { useMemo, useState } from "react";
 import {
   useDataSourceOpExprBottomModal,

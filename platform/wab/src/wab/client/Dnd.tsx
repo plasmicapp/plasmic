@@ -39,7 +39,7 @@ import { asVal } from "@/wab/vals";
 import classNames from "classnames";
 import $ from "jquery";
 import L from "lodash";
-import { Observer, observer } from "mobx-react-lite";
+import { Observer, observer } from "mobx-react";
 import * as React from "react";
 import { hasLinkedSelectable } from "./components/canvas/studio-canvas-util";
 import {

@@ -10,7 +10,7 @@ import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import * as Tpls from "@/wab/tpls";
 import { isTplNamable, isTplSlot } from "@/wab/tpls";
 import { Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useEffect } from "react";
 import styles from "./EditableNodeLabel.module.sass";

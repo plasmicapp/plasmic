@@ -18,7 +18,7 @@ import { $$$ } from "@/wab/shared/TplQuery";
 import { isTplSlot, isTplTag, isTplTagOrComponent } from "@/wab/tpls";
 import { notification } from "antd";
 import $ from "jquery";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { useState } from "react";
 
 export function _FreestyleBox() {

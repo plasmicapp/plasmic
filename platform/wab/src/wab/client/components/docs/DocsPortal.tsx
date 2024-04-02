@@ -7,7 +7,7 @@ import { HostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
 import { PlasmicDocsPortal } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsPortal";
 import CodegenTypeContext from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicGlobalVariant__CodegenType";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
 import { Route, Switch } from "react-router";

@@ -20,7 +20,7 @@ import { AddItemKey } from "@/wab/shared/add-item-keys";
 import { getDefaultStyles } from "@/wab/shared/default-styles";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { kebabCase, mapKeys } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 
 export type ThemeInitialStylesPanelProps = DefaultThemeInitialStylesPanelProps;
@@ -49,7 +49,7 @@ const InitialsForm = observer(function InitialsForm(props: {
 });
 
 const ThemeInitialStylesPanel = observer(
-  function ThemeInitialStylesPanel_(
+  React.forwardRef(function ThemeInitialStylesPanel_(
     props: ThemeInitialStylesPanelProps,
     ref: HTMLElementRefOf<"div">
   ) {
@@ -115,8 +115,7 @@ const ThemeInitialStylesPanel = observer(
         }
       />
     );
-  },
-  { forwardRef: true }
+  })
 );
 
 export default ThemeInitialStylesPanel;

@@ -12,7 +12,7 @@ import { removeFromArray } from "@/wab/commons/collections";
 import { swallowClick } from "@/wab/commons/components/ReactUtil";
 import { Menu, notification, Tooltip } from "antd";
 import * as _ from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 
 const helpSuffix = `

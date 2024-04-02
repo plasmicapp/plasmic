@@ -56,7 +56,7 @@ import {
 import { notification, Popover, Select } from "antd";
 import { RefSelectProps } from "antd/lib/select";
 import L, { keyBy, orderBy, uniq, without } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { inferPropTypeFromAttr, PropEditorRow } from "./PropEditorRow";
 import HandlerSection from "./StateManagement/HandlerSection";

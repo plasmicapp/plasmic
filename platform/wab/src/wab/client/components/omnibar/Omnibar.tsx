@@ -73,7 +73,7 @@ import { allComponents } from "@/wab/sites";
 import { SlotSelection } from "@/wab/slots";
 import { useCombobox } from "downshift";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import OmnibarGroup from "./OmnibarGroup";
 

@@ -16,7 +16,7 @@ import { CssVarResolver, hasGapStyle } from "@/wab/styles";
 import { isTplColumns, isTplTag } from "@/wab/tpls";
 import cn from "classnames";
 import $ from "jquery";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import S from "./GapCanvasControls.module.scss";
 

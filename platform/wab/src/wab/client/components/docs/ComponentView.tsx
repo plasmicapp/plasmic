@@ -7,7 +7,7 @@ import {
   PlumeDocsProp,
 } from "@/wab/shared/plume/plume-registry";
 import { getTplSlots } from "@/wab/shared/SlotUtils";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import CodePreviewSnippet from "./CodePreviewSnippet";
 import { DocsPortalCtx } from "./DocsPortalCtx";

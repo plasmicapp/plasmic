@@ -41,7 +41,7 @@ import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { tryGetTplOwnerComponent } from "@/wab/tpls";
 import { Menu } from "antd";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { DataPickerEditor } from "./ComponentProps/DataPickerEditor";
 import { FallbackEditor } from "./ComponentPropsSection";

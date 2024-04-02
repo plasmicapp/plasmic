@@ -14,7 +14,7 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { isStyleVariant } from "@/wab/shared/Variants";
 import { Popover } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useLayoutEffect, useRef, useState } from "react";
 import styles from "./VariantBadge.module.scss";

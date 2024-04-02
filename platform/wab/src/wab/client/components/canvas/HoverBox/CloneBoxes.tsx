@@ -13,7 +13,7 @@ import Chroma from "@/wab/shared/utils/color-utils";
 import { isTplVariantable } from "@/wab/tpls";
 import $ from "jquery";
 import { computed } from "mobx";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 export const CloneBoxes = observer(function CloneBoxes() {
   const studioCtx = useStudioCtx();

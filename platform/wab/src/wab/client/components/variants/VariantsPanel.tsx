@@ -62,7 +62,7 @@ import {
 } from "@/wab/shared/Variants";
 import { Menu } from "antd";
 import sortBy from "lodash/sortBy";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { useSessionStorage } from "react-use";
@@ -97,7 +97,7 @@ export interface VariantsPanelHandle {
 }
 
 export const VariantsPanel = observer(
-  function VariantsPanel(
+  React.forwardRef(function VariantsPanel(
     props: VariantsPanelProps,
     ref: React.Ref<VariantsPanelHandle>
   ) {
@@ -743,8 +743,7 @@ export const VariantsPanel = observer(
         </SidebarSection>
       </div>
     );
-  },
-  { forwardRef: true }
+  })
 );
 
 const ComponentVariantRow = observer(function ComponentVariantRow(props: {

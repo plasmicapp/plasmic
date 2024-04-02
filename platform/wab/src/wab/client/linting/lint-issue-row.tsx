@@ -19,7 +19,7 @@ import {
   UnprotectedDataQueryLintIssue,
 } from "@/wab/shared/linting/lint-types";
 import { Popover } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { ReactNode } from "react";
 import { makeVariantName } from "src/wab/shared/Variants";
 import { capitalizeFirst } from "src/wab/strs";

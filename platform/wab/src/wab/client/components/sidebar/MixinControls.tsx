@@ -39,7 +39,7 @@ import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { extractMixinUsages } from "@/wab/styles";
 import { Menu, notification } from "antd";
 import L, { orderBy } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { isHostLessPackage } from "src/wab/sites";

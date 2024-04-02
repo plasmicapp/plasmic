@@ -32,7 +32,7 @@ import { SlotSelection } from "@/wab/slots";
 import { isTplComponent } from "@/wab/tpls";
 import { Dropdown, Menu } from "antd";
 import { findIndex } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import S from "./CustomBehaviorsSection.module.scss";
 

@@ -20,7 +20,7 @@ import {
   StudioPropType,
 } from "@/wab/shared/code-components/code-components";
 import { PropType } from "@plasmicapp/host";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { useState } from "react";
 import { ItemFunc, ObjectPropEditor } from "./ObjectPropEditor";
 

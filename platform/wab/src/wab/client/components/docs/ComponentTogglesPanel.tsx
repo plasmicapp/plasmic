@@ -13,7 +13,7 @@ import {
 } from "@/wab/shared/codegen/react-p/utils";
 import { getTplSlots } from "@/wab/shared/SlotUtils";
 import { isTplTagOrComponent, TplNamable } from "@/wab/tpls";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useLocalStorage } from "react-use";
 import { useDocsPortalCtx } from "./DocsPortalCtx";

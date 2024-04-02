@@ -5,7 +5,7 @@ import { PREVIEW_SHORTCUTS } from "@/wab/client/shortcuts/preview/preview-shortc
 import { useBindShortcutHandlers } from "@/wab/client/shortcuts/shortcut-handler";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawn } from "@/wab/common";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { usePreviewCtx } from "./PreviewCtx";
 import { PreviewFrame } from "./PreviewFrame";

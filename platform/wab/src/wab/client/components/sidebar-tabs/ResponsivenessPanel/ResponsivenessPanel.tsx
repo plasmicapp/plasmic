@@ -33,7 +33,7 @@ import SubMenu from "antd/es/menu/SubMenu";
 import cn from "classnames";
 import { findLast } from "lodash";
 import startCase from "lodash/startCase";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { useState } from "react";
 import { NewScreenVariantForm } from "./NewScreenVariantForm";
 import styles from "./ResponsivenessPanel.module.scss";

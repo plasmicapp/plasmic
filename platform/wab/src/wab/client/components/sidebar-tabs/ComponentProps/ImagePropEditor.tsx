@@ -13,7 +13,7 @@ import { isEditable } from "@/wab/sites";
 import { placeholderImgUrl } from "@/wab/urls";
 import { Tooltip } from "antd";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 
 export const ImagePropEditor = observer(function ImagePropEditor(props: {

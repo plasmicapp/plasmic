@@ -74,7 +74,7 @@ import { allColorTokens, allMixins, allStyleTokens } from "@/wab/sites";
 import { CssVarResolver } from "@/wab/styles";
 import { userImgUrl } from "@/wab/urls";
 import { Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import { basename } from "path";
 import React, { useState } from "react";
 

@@ -52,7 +52,7 @@ import { filterUsefulDiffs } from "@/wab/shared/site-diffs/filter-useful-diffs";
 import { allStyleTokens, createSite, isHostLessPackage } from "@/wab/sites";
 import { Alert, Form, Select } from "antd";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
 import { SiteDiffs } from "./SiteDiffs";

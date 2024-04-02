@@ -11,7 +11,7 @@ import {
 } from "@/wab/client/components/style-controls/StyleComponent";
 import { isStylePropSet } from "@/wab/client/utils/style-utils";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import {
   FaHandPaper,

@@ -6,7 +6,7 @@ import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
 import { ApiProject } from "@/wab/shared/ApiSchema";
 import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
 import { notification } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { FocusScope } from "react-aria";
 import { Modal } from "src/wab/client/components/widgets/Modal";

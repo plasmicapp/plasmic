@@ -25,7 +25,7 @@ import { smartHumanize } from "@/wab/strs";
 import { summarizeVal } from "@/wab/vals";
 import { PropType } from "@plasmicapp/host";
 import { isString } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 
 export type ItemFunc<Value, Return> = (

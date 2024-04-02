@@ -4,7 +4,7 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { switchType } from "@/wab/common";
 import * as cssVariables from "@/wab/styles/css-variables";
 import * as tokens from "@/wab/styles/_tokens";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import { useEffect } from "react";
 
 export const NON_BASE_VARIANT_COLOR = tokens.tomato9;

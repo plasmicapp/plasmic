@@ -7,7 +7,7 @@ import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import { ensure } from "@/wab/common";
 import { ApiTrustedHost } from "@/wab/shared/ApiSchema";
 import copy from "copy-to-clipboard";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import SettingsContainer from "./plasmic/SettingsContainer";
 

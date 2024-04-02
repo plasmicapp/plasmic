@@ -77,7 +77,7 @@ import { smartHumanize } from "@/wab/strs";
 import { getDisplayNameOfEventHandlerKey, isTplComponent } from "@/wab/tpls";
 import { ContextDependentConfig } from "@plasmicapp/host";
 import L, { isNil, isNumber } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { ArrayPropEditor } from "./ComponentProps/ArrayPropEditor";
 import { BoolPropEditor } from "./ComponentProps/BoolPropEditor";
@@ -1187,4 +1187,4 @@ const PropValueEditor_ = (
   }
 };
 
-export const PropValueEditor = observer(PropValueEditor_, { forwardRef: true });
+export const PropValueEditor = observer(React.forwardRef(PropValueEditor_));

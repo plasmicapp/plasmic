@@ -13,7 +13,7 @@ import {
 } from "@/wab/shared/plume/plume-registry";
 import { isTplSlot } from "@/wab/tpls";
 import { Alert } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 
 export const PlumeMissingIngredientsPanel = observer(

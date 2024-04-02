@@ -5,7 +5,7 @@ import { Matcher } from "@/wab/client/components/view-common";
 import { AddItem } from "@/wab/client/definitions/insertables";
 import PlasmicAddDrawerItem from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicAddDrawerItem";
 import { getSuperComponents } from "@/wab/components";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { CSSProperties } from "react";
 import styles from "./InlineAddDrawer.module.scss";

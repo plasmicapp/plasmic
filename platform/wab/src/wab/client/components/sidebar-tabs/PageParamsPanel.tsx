@@ -6,7 +6,7 @@ import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelW
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ensure } from "@/wab/common";
 import { extractParamsFromPagePath } from "@/wab/components";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { StringPropEditor } from "./ComponentProps/StringPropEditor";
 

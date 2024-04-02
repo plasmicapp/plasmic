@@ -60,7 +60,7 @@ import { $$$ } from "@/wab/shared/TplQuery";
 import { ensureVariantSetting, isGlobalVariant } from "@/wab/shared/Variants";
 import { getTplComponentsInSite } from "@/wab/tpls";
 import { Alert, Menu, Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { FaLink } from "react-icons/fa";
 import { DataPickerEditor } from "./ComponentProps/DataPickerEditor";

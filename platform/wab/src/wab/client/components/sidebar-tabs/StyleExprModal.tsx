@@ -17,7 +17,7 @@ import { ensure, mkShortId, spawn, withoutNils } from "@/wab/common";
 import { isCodeComponent } from "@/wab/components";
 import { PublicStyleSection } from "@/wab/shared/ApiSchema";
 import { mkSelectorRuleSet } from "@/wab/styles";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { BackgroundSection } from "./background-section";
 import { EffectsPanelSection } from "./EffectsSection";

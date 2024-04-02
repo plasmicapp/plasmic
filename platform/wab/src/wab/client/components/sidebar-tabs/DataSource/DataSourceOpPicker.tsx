@@ -14,7 +14,7 @@ import { Input, Menu, notification, Tooltip } from "antd";
 import { GraphiQLProvider } from "graphiql";
 import "graphiql/graphiql.css";
 import { isArray, isNil, isString, mapValues, omit } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, {
   createContext,
   Dispatch,

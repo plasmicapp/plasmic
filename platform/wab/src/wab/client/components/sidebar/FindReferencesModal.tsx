@@ -18,7 +18,7 @@ import {
 } from "@/wab/styles";
 import { Menu } from "antd";
 import L, { sortBy } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { VariableSizeList } from "react-window";
 import { MixinPopup } from "./MixinControls";

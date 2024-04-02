@@ -8,11 +8,11 @@ import {
   PlasmicDocsPortalHeader,
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsPortalHeader";
 import { asOne } from "@/wab/common";
-import { Observer } from "mobx-react-lite";
+import { Observer } from "mobx-react";
 import * as React from "react";
 import { useHistory } from "react-router-dom";
 
-interface DocsPortalHeaderProps extends DefaultDocsPortalHeaderProps {}
+type DocsPortalHeaderProps = DefaultDocsPortalHeaderProps
 
 const CodegenTypes = [
   <Select.Option value="loader" key="loader">

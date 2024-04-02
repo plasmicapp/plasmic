@@ -22,7 +22,7 @@ import type {
 } from "@/wab/shared/site-diffs";
 import { SplitType } from "@/wab/splits";
 import L, { uniq } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import sty from "./SiteDiffs.module.css";
 

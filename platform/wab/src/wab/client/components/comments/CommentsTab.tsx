@@ -18,7 +18,7 @@ import { xGroupBy, xSymmetricDifference } from "@/wab/common";
 import { ApiComment, CommentThreadId } from "@/wab/shared/ApiSchema";
 import { isTplNamable } from "@/wab/tpls";
 import { sortBy } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
 import { mutate } from "swr";

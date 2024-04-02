@@ -12,7 +12,7 @@ import { SlotSelection } from "@/wab/slots";
 import { Switch } from "antd";
 import $ from "jquery";
 import { reaction } from "mobx";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { recomputeBounds } from "./HoverBox";
 

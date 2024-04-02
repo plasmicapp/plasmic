@@ -18,7 +18,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Input, Tag } from "antd";
 import cn from "classnames";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { useState } from "react";
 import {
   FaArrowDown,

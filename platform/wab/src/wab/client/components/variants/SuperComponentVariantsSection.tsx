@@ -4,7 +4,7 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import VariantGroupIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__VariantGroup";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { VariantsController } from "./VariantsController";
 import { makeReadOnlySection } from "./VariantSection";

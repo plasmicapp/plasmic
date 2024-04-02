@@ -8,10 +8,10 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 
-export interface SaveIndicatorProps extends DefaultSaveIndicatorProps {}
+export type SaveIndicatorProps = DefaultSaveIndicatorProps;
 
 function SaveIndicator_(
   props: SaveIndicatorProps,
@@ -39,5 +39,5 @@ function SaveIndicator_(
   );
 }
 
-const SaveIndicator = observer(SaveIndicator_, { forwardRef: true });
+const SaveIndicator = observer(React.forwardRef(SaveIndicator_));
 export default SaveIndicator;

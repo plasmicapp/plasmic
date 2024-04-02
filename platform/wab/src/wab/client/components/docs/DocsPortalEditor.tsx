@@ -11,7 +11,7 @@ import {
 } from "@/wab/shared/codegen/react-p/utils";
 import L from "lodash";
 import { autorun } from "mobx";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as monacoEditor from "monaco-editor/esm/vs/editor/editor.api";
 import React from "react";
 import MonacoEditor from "react-monaco-editor";

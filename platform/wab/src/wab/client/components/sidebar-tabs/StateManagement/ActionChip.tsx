@@ -7,7 +7,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_state_management/PlasmicActionChip";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { omit } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 
 export interface ActionChipProps extends DefaultActionChipProps {
@@ -37,5 +37,5 @@ function ActionChip_(props: ActionChipProps, ref: HTMLElementRefOf<"div">) {
   );
 }
 
-const ActionChip = observer(ActionChip_, { forwardRef: true });
+const ActionChip = observer(React.forwardRef(ActionChip_));
 export default ActionChip;

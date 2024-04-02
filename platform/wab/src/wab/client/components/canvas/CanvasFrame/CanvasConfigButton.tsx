@@ -9,7 +9,7 @@ import { getFrameHeight } from "@/wab/shared/Arenas";
 import { gridSpacing, hoverBoxTagHeight } from "@/wab/styles/css-variables";
 import { Popover } from "antd";
 import cn from "classnames";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 
 export const CanvasConfigButton = observer(function CanvasConfigButton_(props: {

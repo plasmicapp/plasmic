@@ -11,7 +11,7 @@ import {
   PlumeDocsExample,
 } from "@/wab/shared/plume/plume-registry";
 import { observable } from "mobx";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as Prettier from "prettier";
 import parserTypescript from "prettier/parser-typescript";
 import * as React from "react";

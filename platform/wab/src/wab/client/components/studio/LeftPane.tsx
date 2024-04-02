@@ -33,7 +33,7 @@ import { getComponentDisplayName } from "@/wab/components";
 import { LeftTabKey } from "@/wab/shared/ui-config-utils";
 import { extractComponentUsages } from "@/wab/sites";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { useState } from "react";
 import { useLocalStorage } from "react-use";
 

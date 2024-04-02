@@ -8,7 +8,7 @@ import { DefaultVariableRowProps } from "@/wab/client/plasmic/plasmic_kit_state_
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { getStateVarName } from "src/wab/states";
 import { useVariableRow } from "./useVariableRow";
@@ -22,7 +22,10 @@ export interface VariableRowProps extends DefaultVariableRowProps {
 }
 
 const VariableRow = observer(
-  function VariableRow(props: VariableRowProps, ref: HTMLElementRefOf<"div">) {
+  React.forwardRef(function VariableRow(
+    props: VariableRowProps,
+    ref: HTMLElementRefOf<"div">
+  ) {
     const { component, state, sc, viewCtx, defaultEditing, ...rest } = props;
     const {
       menu,
@@ -64,8 +67,7 @@ const VariableRow = observer(
         {modals}
       </WithContextMenu>
     );
-  },
-  { forwardRef: true }
+  })
 );
 
 export default VariableRow;

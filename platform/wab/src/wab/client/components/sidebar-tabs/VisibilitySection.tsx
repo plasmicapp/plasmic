@@ -53,7 +53,7 @@ import {
 import { isTplCodeComponent } from "@/wab/tpls";
 import { Menu } from "antd";
 import cn from "classnames";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { BoolPropEditor } from "./ComponentProps/BoolPropEditor";
 import { DataPickerEditor } from "./ComponentProps/DataPickerEditor";
@@ -363,7 +363,7 @@ function VisibilitySection_(props: {
             isSet={isFallbackSet(customCode)}
             onUnset={() => {
               const clonedExpr = clone(customCode);
-              let newExpr = ensureInstance(clonedExpr, ObjectPath, CustomCode);
+              const newExpr = ensureInstance(clonedExpr, ObjectPath, CustomCode);
               newExpr.fallback = undefined;
               _setCustomCond(newExpr);
             }}
@@ -373,7 +373,7 @@ function VisibilitySection_(props: {
               <BoolPropEditor
                 onChange={(val) => {
                   const clonedExpr = clone(customCode);
-                  let newExpr = ensureInstance(
+                  const newExpr = ensureInstance(
                     clonedExpr,
                     ObjectPath,
                     CustomCode

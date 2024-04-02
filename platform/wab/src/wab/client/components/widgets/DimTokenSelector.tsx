@@ -44,7 +44,7 @@ import { notification, Tooltip } from "antd";
 import cn from "classnames";
 import { useCombobox, UseComboboxGetItemPropsOptions } from "downshift";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { useInteractOutside, useOverlayPosition } from "react-aria";
 import ReactDOM from "react-dom";
@@ -102,7 +102,7 @@ function MiddleEllipsis({
 }
 
 export const DimTokenSpinner = observer(
-  function DimTokenSpinner(
+  React.forwardRef(function DimTokenSpinner(
     props: {
       className?: string;
       "data-test-id"?: string;
@@ -752,8 +752,7 @@ export const DimTokenSpinner = observer(
         )}
       </>
     );
-  },
-  { forwardRef: true }
+  })
 );
 
 interface SelectTokenItem {

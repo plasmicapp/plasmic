@@ -29,7 +29,7 @@ import { PublicStyleSection } from "@/wab/shared/ApiSchema";
 import { canEditStyleSection } from "@/wab/shared/ui-config-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, Popover } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { Editor, Range, Text } from "slate";
 
@@ -346,5 +346,5 @@ function RichTextToolbar_(
   );
 }
 
-const RichTextToolbar = observer(RichTextToolbar_, { forwardRef: true });
+const RichTextToolbar = observer(React.forwardRef(RichTextToolbar_));
 export default RichTextToolbar;

@@ -24,7 +24,7 @@ import { Spin } from "antd";
 import $ from "jquery";
 import L from "lodash";
 import { reaction } from "mobx";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useMountedState, useUnmount } from "react-use";

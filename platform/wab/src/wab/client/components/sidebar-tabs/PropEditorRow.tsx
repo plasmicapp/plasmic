@@ -138,7 +138,7 @@ import {
 } from "@/wab/tpls";
 import { Menu } from "antd";
 import { capitalize, isString, keyBy } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { useMemo } from "react";
 import { DataPickerEditor } from "./ComponentProps/DataPickerEditor";
 import {

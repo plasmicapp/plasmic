@@ -4,7 +4,7 @@ import { RepeaterPropsTooltip } from "@/wab/client/components/widgets/DetailedTo
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { assert } from "@/wab/common";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { ComponentPropsSection } from "./ComponentPropsSection";
 

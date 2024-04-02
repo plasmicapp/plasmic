@@ -54,7 +54,7 @@ import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { isBaseVariant } from "@/wab/shared/Variants";
 import { getRichTextContent, isTplTextBlock } from "@/wab/tpls";
 import { Alert, Menu, Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { DataPickerEditor } from "./ComponentProps/DataPickerEditor";
 import { StringPropEditor } from "./ComponentProps/StringPropEditor";

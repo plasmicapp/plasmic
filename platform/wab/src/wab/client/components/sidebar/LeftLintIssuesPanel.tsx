@@ -28,7 +28,7 @@ import { DownOutlined, SmileOutlined } from "@ant-design/icons";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Empty, notification, Popover, Space } from "antd";
 import { groupBy } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
 import { ItemOrGroup, VirtualGroupedList } from "./VirtualGroupedList";

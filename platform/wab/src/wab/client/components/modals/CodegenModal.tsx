@@ -3,7 +3,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ensure, spawn } from "@/wab/common";
 import { isFrameComponent } from "@/wab/components";
 import { Spin } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { useEffect, useState } from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
 

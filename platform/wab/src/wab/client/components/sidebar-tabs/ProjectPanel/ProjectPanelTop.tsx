@@ -137,7 +137,7 @@ import { executePlasmicDataOp } from "@plasmicapp/react-web/lib/data-sources";
 import { Dropdown, Menu, notification, Tooltip } from "antd";
 import { UseComboboxGetItemPropsOptions } from "downshift";
 import { orderBy, trimStart } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import { computedFn } from "mobx-utils";
 import React, { ReactNode, useRef, useState } from "react";
 import { FocusScope } from "react-aria";
@@ -304,7 +304,7 @@ interface ProjectPanelTopProps {
   onClose: () => void;
 }
 
-export const ProjectPanelTop = observer(ProjectPanelTop_, { forwardRef: true });
+export const ProjectPanelTop = observer(React.forwardRef(ProjectPanelTop_));
 
 const rankedFieldsForDisplayName = [
   "displayname",
@@ -1179,7 +1179,7 @@ function getSiteItemTypeName(item: AnyArena) {
   }
 }
 
-export const BranchPanelTop = observer(BranchPanelTop_, { forwardRef: true });
+export const BranchPanelTop = observer(React.forwardRef(BranchPanelTop_));
 
 function BranchPanelTop_(
   { onClose }: ProjectPanelTopProps,

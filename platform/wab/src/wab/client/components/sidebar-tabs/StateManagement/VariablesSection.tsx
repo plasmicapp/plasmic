@@ -24,7 +24,7 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import cn from "classnames";
 import { groupBy } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
 import { codeLit } from "src/wab/exprs";
@@ -188,5 +188,5 @@ function VariablesSection_(
   );
 }
 
-const VariablesSection = observer(VariablesSection_, { forwardRef: true });
+const VariablesSection = observer(React.forwardRef(VariablesSection_));
 export default VariablesSection;

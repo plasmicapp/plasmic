@@ -4,7 +4,7 @@ import PresetsIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicI
 import { ApiProjectWebhook } from "@/wab/shared/ApiSchema";
 import { httpMethods } from "@/wab/shared/HttpClientUtil";
 import { Menu } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import {
   DefaultWebhooksItemProps,

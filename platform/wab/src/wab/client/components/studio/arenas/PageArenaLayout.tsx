@@ -8,7 +8,7 @@ import { allComponentVariants } from "@/wab/components";
 import { COMBINATIONS_CAP } from "@/wab/shared/Labels";
 import { isBaseVariant, isStandaloneVariant } from "@/wab/shared/Variants";
 import { allGlobalVariantGroups } from "@/wab/sites";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { VariantComboGhostFrame } from "./ComponentArenaLayout";
 import sty from "./ComponentArenaLayout.module.sass";

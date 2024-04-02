@@ -1,20 +1,17 @@
 import { dependOnGlobalObservable } from "@/wab/shared/mobx-util";
-import type { IObserverOptions } from "mobx-react-lite";
-import { observer as mobxObserver } from "mobx-react-lite";
+import { observer as mobxObserver } from "mobx-react";
 import React from "react";
 
-export function observer<P extends object, TRef = {}>(
-  baseComponent:
-    | React.FunctionComponent<P>
-    | React.ForwardRefRenderFunction<TRef, P>
-    | React.ForwardRefExoticComponent<
-        React.PropsWithoutRef<P> & React.RefAttributes<TRef>
-      >,
-  options?: IObserverOptions | undefined
+type IReactComponent<P = any> =
+  | React.FunctionComponent<P>
+  | React.ForwardRefExoticComponent<P>;
+
+export function observer<T extends IReactComponent<P>, P = any>(
+  baseComponent: T
 ) {
-  const wrappedComponent = (props: any, ref?: React.Ref<TRef>) => {
+  const wrappedComponent = (props: P, ref?: React.Ref<T>) => {
     dependOnGlobalObservable();
     return baseComponent(props, ref);
   };
-  return mobxObserver(wrappedComponent, options);
+  return mobxObserver(wrappedComponent);
 }

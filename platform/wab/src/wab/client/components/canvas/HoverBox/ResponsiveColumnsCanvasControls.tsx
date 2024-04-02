@@ -9,7 +9,7 @@ import { ensure, NullOrUndefinedValueError } from "@/wab/common";
 import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
 import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
 import { isTplColumns, TplColumnsTag } from "@/wab/tpls";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 
 export const ResponsiveColumnsCanvasControls = observer(

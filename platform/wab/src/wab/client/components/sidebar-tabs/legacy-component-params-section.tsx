@@ -39,7 +39,7 @@ import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { getSlotParams } from "@/wab/shared/SlotUtils";
 import { extractLit } from "@/wab/states";
 import { Menu, notification, Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { BoolPropEditor } from "./ComponentProps/BoolPropEditor";
 import { updateOrCreateExpr } from "./PropEditorRow";

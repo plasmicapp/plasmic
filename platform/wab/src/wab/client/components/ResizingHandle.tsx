@@ -2,7 +2,7 @@ import { plasmicCanvasTransformEvent } from "@/wab/client/definitions/events";
 import { requestIdleCallback } from "@/wab/client/requestidlecallback";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import styles from "./ResizingHandler.module.scss";

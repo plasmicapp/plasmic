@@ -50,7 +50,7 @@ import { allGlobalVariantGroups } from "@/wab/sites";
 import { isTplTag } from "@/wab/tpls";
 import { Button, Form, Menu, Popover } from "antd";
 import cn from "classnames";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { useLayoutEffect, useRef } from "react";
 import sty from "./ComponentArenaLayout.module.sass";
 import { GhostFrame, GhostFrameRef } from "./GhostFrame";

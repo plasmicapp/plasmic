@@ -14,7 +14,7 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { spawn } from "@/wab/common";
 import { PRIVATE_STYLE_VARIANTS_CAP } from "@/wab/shared/Labels";
 import { getPrivateStyleVariantsForTag } from "@/wab/shared/Variants";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 
 export const PrivateStyleVariantsPanel = observer(

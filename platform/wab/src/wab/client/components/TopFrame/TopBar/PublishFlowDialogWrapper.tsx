@@ -24,7 +24,7 @@ import {
 } from "@/wab/shared/ApiSchema";
 import { notification } from "antd";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useInterval } from "react-use";
 import useSWR from "swr";

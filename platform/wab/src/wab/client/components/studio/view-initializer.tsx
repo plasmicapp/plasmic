@@ -3,7 +3,7 @@ import { isTopFrame } from "@/wab/client/cli-routes";
 import importAndRetry from "@/wab/client/components/dynamic-import";
 import { ObserverLoadable } from "@/wab/client/components/widgets";
 import { useHostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { StudioFrame } from "./studio-frame";
 

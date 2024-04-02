@@ -1,7 +1,7 @@
 import { useViewCtx } from "@/wab/client/contexts/StudioContexts";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ensure } from "@/wab/common";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { useState } from "react";
 
 const _RestQueryControl = observer(function RestQueryControl({

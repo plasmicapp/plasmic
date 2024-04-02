@@ -16,7 +16,7 @@ import { ensure } from "@/wab/common";
 import { getArenaFrames } from "@/wab/shared/Arenas";
 import { isTplTagOrComponent, isTplVariantable } from "@/wab/tpls";
 import cn from "classnames";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import styles from "./HoverBox.module.scss";
 import { recomputeBounds } from "./recomputeBounds";

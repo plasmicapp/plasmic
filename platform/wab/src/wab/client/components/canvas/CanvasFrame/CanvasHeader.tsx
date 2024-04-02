@@ -26,7 +26,7 @@ import {
 import { getDisplayVariants, isStyleVariant } from "@/wab/shared/Variants";
 import { Popover, Tooltip } from "antd";
 import cn from "classnames";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useLayoutEffect, useRef, useState } from "react";
 import { CanvasConfigButton } from "./CanvasConfigButton";

@@ -16,7 +16,7 @@ import { Action, ActionProps, PlasmicElement } from "@plasmicapp/host";
 import { notification } from "antd";
 import domAlign from "dom-align";
 import $ from "jquery";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { useUnmount } from "react-use";
 import { ConnectToDBTableModal } from "./DataSource/ConnectToDBTable";

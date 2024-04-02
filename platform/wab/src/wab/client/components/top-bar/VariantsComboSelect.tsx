@@ -15,11 +15,11 @@ import {
 } from "@/wab/shared/Variants";
 import { Dropdown } from "antd";
 import { defer } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import VariantsMenu from "./VariantsMenu";
 
-interface VariantsComboSelectProps extends DefaultVariantsComboSelectProps {}
+type VariantsComboSelectProps = DefaultVariantsComboSelectProps
 
 const VariantsComboSelect = observer(function VariantsComboSelect(
   props: VariantsComboSelectProps

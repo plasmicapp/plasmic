@@ -21,7 +21,7 @@ import {
 } from "@/wab/shared/grid-utils";
 import { allImageAssets, allMixins } from "@/wab/sites";
 import { CssVarResolver } from "@/wab/styles";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 
 export const GridControls = observer(function GridControls(props: {

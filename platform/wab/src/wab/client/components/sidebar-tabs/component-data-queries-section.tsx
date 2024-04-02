@@ -29,7 +29,7 @@ import { tryGetTplOwnerComponent } from "@/wab/tpls";
 import { PlasmicDataSourceContextProvider } from "@plasmicapp/react-web";
 import { Menu } from "antd";
 import { autorun } from "mobx";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import {
   DataSourceOpExprSummary,
@@ -166,7 +166,7 @@ function ComponentQueriesSection_(props: {
 
   const componentType = isPageComponent(component) ? "page" : "component";
 
-  let handleAddDataQuery = () => {
+  const handleAddDataQuery = () => {
     // Intercept add query requests during tour to configure tutorialdb for the user
     if (
       studioCtx.onboardingTourState.triggers.includes(

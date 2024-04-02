@@ -15,11 +15,11 @@ import {
   isPageArena,
 } from "@/wab/shared/Arenas";
 import { Popover } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { XDraggable } from "src/wab/commons/components/XDraggable";
 
-export interface ArenaSwitcherProps extends DefaultArenaSwitcherProps {}
+export type ArenaSwitcherProps = DefaultArenaSwitcherProps
 
 const ArenaSwitcher = observer(function ArenaSwitcher(
   props: ArenaSwitcherProps

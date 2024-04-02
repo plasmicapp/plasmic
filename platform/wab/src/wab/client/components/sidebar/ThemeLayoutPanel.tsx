@@ -21,12 +21,12 @@ import {
 import { makeExpProxy } from "@/wab/shared/exprs";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { LabeledStyleDimItemRow } from "./sidebar-helpers";
 import { SidebarSection } from "./SidebarSection";
 
-export interface ThemeLayoutPanelProps extends DefaultThemeLayoutPanelProps {}
+export type ThemeLayoutPanelProps = DefaultThemeLayoutPanelProps;
 
 function ThemeLayoutPanel_(
   props: ThemeLayoutPanelProps,
@@ -101,5 +101,5 @@ function ThemeLayoutPanel_(
   );
 }
 
-const ThemeLayoutPanel = observer(ThemeLayoutPanel_, { forwardRef: true });
+const ThemeLayoutPanel = observer(React.forwardRef(ThemeLayoutPanel_));
 export default ThemeLayoutPanel;

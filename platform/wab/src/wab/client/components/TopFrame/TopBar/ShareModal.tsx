@@ -3,7 +3,7 @@
 import ShareDialogContent from "@/wab/client/components/widgets/plasmic/ShareDialogContent";
 import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
 import { ApiPermission, ApiProject } from "@/wab/shared/ApiSchema";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { TopBarModal } from "./TopBarModal";
 

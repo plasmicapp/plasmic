@@ -13,7 +13,7 @@ import {
   isTplVariantable,
   summarizeTpl,
 } from "@/wab/tpls";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { RefObject, useEffect, useMemo, useRef } from "react";
 import styles from "./StackOfParents.module.scss";

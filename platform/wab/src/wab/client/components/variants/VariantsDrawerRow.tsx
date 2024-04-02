@@ -14,7 +14,7 @@ import {
   tryGetVariantSetting,
 } from "@/wab/shared/Variants";
 import { isTplVariantable } from "@/wab/tpls";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { pinStateToPlasmicPinState } from "./VariantRow";
 

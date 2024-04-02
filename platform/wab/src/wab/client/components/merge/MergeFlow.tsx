@@ -59,7 +59,7 @@ import { unbundleProjectDependency, unbundleSite } from "@/wab/tagged-unbundle";
 import { isTplVariantable } from "@/wab/tpls";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { ReactElement, useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";

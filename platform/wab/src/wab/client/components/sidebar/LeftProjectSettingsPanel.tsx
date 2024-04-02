@@ -44,7 +44,7 @@ import { tryGetTplOwnerComponent } from "@/wab/tpls";
 import { Menu, notification, Tooltip } from "antd";
 import L from "lodash";
 import { autorun } from "mobx";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { getValueSetState, LabeledItemRow } from "./sidebar-helpers";

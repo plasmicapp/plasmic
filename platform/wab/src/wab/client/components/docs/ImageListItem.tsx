@@ -8,7 +8,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicImageListItem";
 import { asOne, ensure } from "@/wab/common";
 import { toClassName } from "@/wab/shared/codegen/util";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { DocsPortalCtx } from "./DocsPortalCtx";
 

@@ -1,4 +1,4 @@
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 // import KeyValueRow from "./KeyValueRow";
 // import ListBuilder from "./ListBuilder";
 // import RestBuilder from "./RestBuilder";
@@ -8,7 +8,7 @@ import { observer } from "mobx-react-lite";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { DefaultQueriesSectionProps } from "./wab/client/plasmic/plasmic_kit_data_queries/PlasmicQueriesSection";
 
-interface QueriesSectionProps extends DefaultQueriesSectionProps {}
+type QueriesSectionProps = DefaultQueriesSectionProps
 /*
 const TypicalQueryControl = observer(function RestQueryControl({
   query,

@@ -40,7 +40,7 @@ import {
 import { fontWeightNumber, parseCssNumericNew } from "@/wab/css";
 import { allStyleTokens } from "@/wab/sites";
 import { notification } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { ReactElement } from "react";
 import { VariantedStylesHelper } from "src/wab/shared/VariantedStylesHelper";

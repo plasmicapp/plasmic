@@ -5,7 +5,7 @@ import { DEVFLAGS } from "@/wab/devflags";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { isHostLessPackage } from "@/wab/sites";
 import { uniq } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 
 export const DefaultStylesPanel = observer(function DefaultStylesPanel() {

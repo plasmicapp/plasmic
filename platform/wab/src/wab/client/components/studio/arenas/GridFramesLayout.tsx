@@ -10,7 +10,7 @@ import { CanvasFrame } from "@/wab/client/components/canvas/CanvasFrame";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { maybe, switchType } from "@/wab/common";
 import { AnyArena, getFrameHeight } from "@/wab/shared/Arenas";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import sty from "./GridFramesLayout.module.sass";
 

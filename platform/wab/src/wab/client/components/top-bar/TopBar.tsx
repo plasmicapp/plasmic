@@ -30,7 +30,7 @@ import {
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { canEditProjectConfig } from "@/wab/shared/ui-config-utils";
 import { Menu, notification, Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { pruneUnusedImageAssets } from "src/wab/shared/prune-site";
 import { fixPageHrefsToLocal } from "src/wab/shared/utils/split-site-utils";

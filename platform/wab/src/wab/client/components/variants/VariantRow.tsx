@@ -23,7 +23,7 @@ import {
   tryGetVariantSetting,
 } from "@/wab/shared/Variants";
 import { isTplVariantable, summarizeTpl } from "@/wab/tpls";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 

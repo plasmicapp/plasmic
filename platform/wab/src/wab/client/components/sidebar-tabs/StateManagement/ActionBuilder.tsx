@@ -55,7 +55,7 @@ import { EventHandlerKeyType } from "@/wab/tpls";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Popover } from "antd";
 import { isEmpty } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { ensureGenericFuncTypes } from "./HandlerSection";
@@ -560,7 +560,7 @@ function ActionBuilder_(
   );
 }
 
-const ActionBuilder = observer(ActionBuilder_, { forwardRef: true });
+const ActionBuilder = observer(React.forwardRef(ActionBuilder_));
 export default ActionBuilder;
 
 function getActionMeta(sc: StudioCtx, actionName: string) {

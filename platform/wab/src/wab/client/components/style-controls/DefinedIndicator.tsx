@@ -74,7 +74,7 @@ import { isTplComponent, isTplTag } from "@/wab/tpls";
 import { Alert, Menu, Popover, Tooltip } from "antd";
 import classNames from "classnames";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { ColorSwatch } from "./ColorSwatch";
 import styles from "./DefinedIndicator.module.sass";

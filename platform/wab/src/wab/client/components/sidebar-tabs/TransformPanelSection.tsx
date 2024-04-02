@@ -28,7 +28,7 @@ import {
   Transform,
 } from "@/wab/transform-utils";
 import { capitalize } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { useState } from "react";
 
 export const TransformPanelSection = observer(

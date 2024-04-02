@@ -4,7 +4,7 @@ import { ScreenSizeSpec } from "@/wab/shared/Css";
 import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
 import { getResponsiveStrategy } from "@/wab/sites";
 import { Button, Col, Row } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { FormEvent, useState } from "react";
 
 export const NewScreenVariantForm = observer(NewScreenVariantForm_);

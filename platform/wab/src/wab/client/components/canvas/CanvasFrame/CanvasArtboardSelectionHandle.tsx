@@ -8,7 +8,7 @@ import PlasmicIcon__Frame from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Fr
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { gridSpacing, hoverBoxTagHeight } from "@/wab/styles/css-variables";
 import cn from "classnames";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import styles from "./CanvasFrame.module.scss";
 

@@ -21,7 +21,7 @@ import Chroma from "@/wab/shared/utils/color-utils";
 import { isTplVariantable } from "@/wab/tpls";
 import classNames from "classnames";
 import $ from "jquery";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React, { createContext, ReactNode, useContext } from "react";
 import { createPortal } from "react-dom";
 import { useCommentViews } from "./CommentViews";

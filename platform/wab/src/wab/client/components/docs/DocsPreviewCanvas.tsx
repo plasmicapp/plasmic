@@ -20,7 +20,7 @@ import { toJsIdentifier } from "@/wab/shared/codegen/util";
 import { TplNamable } from "@/wab/tpls";
 import { getPublicUrl } from "@/wab/urls";
 import { autorun } from "mobx";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { CodePreviewCtx } from "./CodePreviewSnippet";
 import { DocsPortalCtx } from "./DocsPortalCtx";

@@ -17,7 +17,7 @@ import { allColorTokens } from "@/wab/sites";
 import { maybeTokenRefCycle } from "@/wab/styles";
 import { Menu, notification } from "antd";
 import { sortBy } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { FaArrowRight } from "react-icons/fa";

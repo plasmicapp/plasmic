@@ -26,7 +26,7 @@ import { TokenType } from "@/wab/commons/StyleToken";
 import { parseCssShorthand, showCssShorthand } from "@/wab/css";
 import { Corner, Side, standardCorners, standardSides } from "@/wab/geom";
 import cn from "classnames";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useEffect, useRef } from "react";
 import { VariantedStylesHelper } from "src/wab/shared/VariantedStylesHelper";

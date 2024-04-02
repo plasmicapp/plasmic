@@ -15,7 +15,7 @@ import { FocusScope } from "@react-aria/focus";
 import { notification, Tooltip } from "antd";
 import { default as classNames } from "classnames";
 import jsonrepair from "jsonrepair";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
 

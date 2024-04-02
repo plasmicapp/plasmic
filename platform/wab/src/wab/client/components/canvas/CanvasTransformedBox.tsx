@@ -5,7 +5,7 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { unexpected } from "@/wab/common";
 import $ from "jquery";
 import { omit } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { ReactNode } from "react";
 import { recomputeBounds } from "./HoverBox";

@@ -24,7 +24,7 @@ import {
   UnknownComponentError,
 } from "@/wab/shared/code-components/code-components";
 import { Menu, notification, Popover, Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { buildCommonComponentMenuItems } from "./LeftComponentsPanel";

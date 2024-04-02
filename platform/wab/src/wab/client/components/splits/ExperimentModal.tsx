@@ -12,7 +12,7 @@ import PlasmicExperimentModal from "@/wab/client/plasmic/plasmic_kit_optimize/Pl
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawn } from "@/wab/common";
 import { SplitType } from "@/wab/splits";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import ExperimentPanel from "./ExperimentPanel";
 import SliceControls from "./SliceControls";

@@ -43,7 +43,7 @@ import { FRAME_CAP } from "@/wab/shared/Labels";
 import { isHostLessPackage } from "@/wab/sites";
 import { Menu, Popover } from "antd";
 import { orderBy } from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { isBuiltinCodeComponent } from "src/wab/shared/code-components/builtin-code-components";

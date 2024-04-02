@@ -8,7 +8,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicIconTogglesPanel";
 import { lengthCssUnits } from "@/wab/css";
 import { makeAssetClassName } from "@/wab/shared/codegen/image-assets";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useLocalStorage } from "react-use";
 import { useDocsPortalCtx } from "./DocsPortalCtx";

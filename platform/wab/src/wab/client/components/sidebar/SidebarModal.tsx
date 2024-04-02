@@ -11,7 +11,7 @@ import { useInteractOutsideWithCommonExceptions } from "@/wab/commons/components
 import { Slot, SlotProvider } from "@/wab/commons/components/Slots";
 import domAlign from "dom-align";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { OverlayProvider, useOverlay } from "react-aria";
 import ReactDOM from "react-dom";

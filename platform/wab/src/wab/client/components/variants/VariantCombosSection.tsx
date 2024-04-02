@@ -6,7 +6,7 @@ import { ensure, partitions } from "@/wab/common";
 import { findNonEmptyCombos } from "@/wab/shared/cached-selectors";
 import { VariantCombo, variantComboKey } from "@/wab/shared/Variants";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import VariantComboRow from "./VariantComboRow";
 import { makeVariantsController } from "./VariantsController";

@@ -21,7 +21,7 @@ import {
 } from "@/wab/shared/component-arenas";
 import { getPublicUrl } from "@/wab/urls";
 import { autorun } from "mobx";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { useMountedState, usePreviousDistinct } from "react-use";
 import { onLoadInjectSystemJS, pushPreviewModules } from "./live-syncer";

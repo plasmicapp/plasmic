@@ -34,7 +34,7 @@ import {
 } from "@/wab/tpls";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Alert, Menu } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import { HighlightInteractionRequest } from "src/wab/shared/code-components/code-components";
 import ActionBuilder from "./ActionBuilder";
 
@@ -217,7 +217,7 @@ function HandlerSection_(
   );
 }
 
-const HandlerSection = observer(HandlerSection_, { forwardRef: true });
+const HandlerSection = observer(React.forwardRef(HandlerSection_));
 export default HandlerSection;
 
 /**

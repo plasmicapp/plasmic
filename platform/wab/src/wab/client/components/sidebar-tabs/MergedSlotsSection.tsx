@@ -17,7 +17,7 @@ import {
 } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { smartHumanize } from "@/wab/strs";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import {
   ComponentPropsSection,

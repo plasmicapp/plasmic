@@ -3,7 +3,7 @@ import PlasmicExperimentRow from "@/wab/client/plasmic/plasmic_kit_optimize/Plas
 import PlasmicExperimentRows from "@/wab/client/plasmic/plasmic_kit_optimize/PlasmicExperimentRows";
 import { SplitType } from "@/wab/splits";
 import { Menu } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 
 export const ExperimentRows = observer(function ExperimentRows(props: {

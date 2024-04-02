@@ -16,7 +16,7 @@ import { getNormalizedComponentName } from "@/wab/shared/codegen/react-p/utils";
 import { notification } from "antd";
 import { sortBy } from "lodash";
 import { autorun, computed } from "mobx";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import React from "react";
 import { mutate as swrMutate } from "swr";
 

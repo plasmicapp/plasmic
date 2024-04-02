@@ -8,7 +8,7 @@ import {
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { useInteractOutsideWithCommonExceptions } from "@/wab/commons/components/OnClickAway";
 import { Popover } from "antd";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 
 export interface BranchSwitcherProps extends DefaultBranchSwitcherProps {}

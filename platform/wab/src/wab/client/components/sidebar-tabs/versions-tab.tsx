@@ -18,7 +18,7 @@ import { DEVFLAGS } from "@/wab/devflags";
 import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
 import { Alert, Form, Menu, Spin, Tag, Tooltip } from "antd";
 import L from "lodash";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import moment from "moment";
 import React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";

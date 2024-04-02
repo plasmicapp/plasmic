@@ -12,7 +12,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ensure, spawn } from "@/wab/common";
 import { isStyleVariant } from "@/wab/shared/Variants";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { makeVariantMenu } from "./variant-menu";

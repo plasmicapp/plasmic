@@ -15,7 +15,7 @@ import {
   isTplTextBlock,
 } from "@/wab/tpls";
 import cn from "classnames";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import {
   CSSProperties,

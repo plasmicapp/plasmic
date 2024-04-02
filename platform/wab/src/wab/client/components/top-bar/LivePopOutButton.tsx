@@ -20,11 +20,11 @@ import {
   getFrameForActivatedVariants,
 } from "@/wab/shared/component-arenas";
 import { getPublicUrl } from "@/wab/urls";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useHistory } from "react-router";
 
-interface LivePopOutButtonProps extends DefaultLivePopOutButtonProps {}
+type LivePopOutButtonProps = DefaultLivePopOutButtonProps
 
 const LivePopOutButton = observer(function LivePopOutButton(
   props: LivePopOutButtonProps
