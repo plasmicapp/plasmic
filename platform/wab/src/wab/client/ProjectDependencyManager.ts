@@ -400,11 +400,8 @@ export class ProjectDependencyManager {
         )}`
       );
     }
-    await this._sc.changeUnsafe(() => {
-      const dep = this._dependencyMap[pkgId];
-      this._sc.tplMgr().removeProjectDep(dep.model);
-      this._sc.ensureAllComponentStackFramesHasOnlyValidVariants();
-    });
+    const dep = this._dependencyMap[pkgId];
+    await this._sc.siteOps().removeProjectDependency(dep.model);
   }
 
   /**
@@ -419,10 +416,7 @@ export class ProjectDependencyManager {
     targetDeps: ProjectDependency[],
     opts?: { noUndoRecord?: boolean }
   ) {
-    await this._sc.changeUnsafe(() => {
-      this._sc.tplMgr().upgradeProjectDeps(targetDeps);
-      this._sc.ensureAllComponentStackFramesHasOnlyValidVariants();
-    }, opts);
+    await this._sc.siteOps().upgradeProjectDeps(targetDeps, opts);
     await this._fetchData();
     // invalidate cache after upgrading dep
     for (const dep of targetDeps) {

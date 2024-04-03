@@ -991,6 +991,46 @@ export class SiteOps {
     return true;
   }
 
+  /**
+   * Currently observes the entire site for upgrading project dependencies.
+   * Would be nice if we could do it incrementally only for the components we change.
+   * Another option would be to have this operation happen server-side and reload the
+   * whole updated bundle.
+   */
+  async upgradeProjectDeps(
+    targetDeps: ProjectDependency[],
+    opts?: { noUndoRecord?: boolean }
+  ) {
+    await this.studioCtx.changeObserved(
+      () => {
+        return this.site.components;
+      },
+      ({ success }) => {
+        this.tplMgr.upgradeProjectDeps(targetDeps);
+        this.studioCtx.ensureAllComponentStackFramesHasOnlyValidVariants();
+        return success();
+      },
+      opts
+    );
+  }
+
+  /**
+   * Currently observes the entire site for upgrading project dependencies.
+   * See comment for `upgradeProjectDeps`
+   */
+  async removeProjectDependency(projectDependency: ProjectDependency) {
+    await this.studioCtx.changeObserved(
+      () => {
+        return this.site.components;
+      },
+      ({ success }) => {
+        this.tplMgr.removeProjectDep(projectDependency);
+        this.studioCtx.ensureAllComponentStackFramesHasOnlyValidVariants();
+        return success();
+      }
+    );
+  }
+
   updateState(state: State, update: Partial<StateType>) {
     const { accessType, ...rest } = update;
 
