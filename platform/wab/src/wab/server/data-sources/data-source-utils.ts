@@ -100,10 +100,15 @@ export async function executeDataSourceOperation(
     currentUser
   );
 
-  const result = await fetcher[opMeta.name]({ ...finalArgs, ...fetchArgs });
-
-  // Always return valid JSON
-  return result ?? null;
+  try {
+    const result = await fetcher[opMeta.name]({ ...finalArgs, ...fetchArgs });
+    // Always return valid JSON
+    return result ?? null;
+  } catch (err) {
+    console.error("Integration Error: ", err);
+    err.plasmicIgnoreError = true;
+    throw err;
+  }
 }
 
 export async function makeFetcher(

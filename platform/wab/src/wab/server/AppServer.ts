@@ -462,6 +462,9 @@ function addSentryError(app: express.Application, config: Config) {
     if (shouldIgnoreErrorByMessage(error.message || "")) {
       return false;
     }
+    if (error["plasmicIgnoreError"]) {
+      return false;
+    }
     if (error["request"]?.headers?.["user-agent"]?.startsWith("octokit")) {
       // Errors from Octokit (GitHub client) should always be logged,
       // even if status code < 500.
