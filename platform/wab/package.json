@@ -12,7 +12,7 @@
     "dev": "bash tools/dev.bash",
     "dev:screens": "bash tools/start.bash",
     "dev:frontend": "wait-on http://localhost:3004 && PORT=3003 yarn start",
-    "dev:frontend:prodbuild": "wait-on http://localhost:3004 && PORT=3003 bash tools/dev-server.bash build && yarn dev:frontend:proxy",
+    "dev:frontend:prodbuild": "wait-on http://localhost:3004 && PUBLIC_URL=http://localhost:3003 bash tools/dev-server.bash build && yarn dev:frontend:proxy",
     "dev:frontend:proxy": "cd build && npx -p local-web-server ws --spa index.html --port 3003 --cors.origin '*' --rewrite '/api/(.*) -> http://localhost:3004/api/$1'",
     "dev:backend": "yarn backend",
     "start": "bash tools/dev-server.bash dev",

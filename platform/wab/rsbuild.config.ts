@@ -15,11 +15,13 @@ import { StudioHtmlPlugin } from "./tools/studio-html-plugin";
 
 const commitHash = execSync("git rev-parse HEAD").toString().slice(0, 6);
 const buildEnv = process.env.NODE_ENV ?? "production";
-const publicUrl: string =
-  buildEnv === "development" ? (process.env.PUBLIC_URL as string) : homepage;
 const isProd = buildEnv === "production";
-const port = process.env.PORT ? +process.env.PORT : 3003;
-const backendPort = process.env.BACKEND_PORT || 3004;
+const port: number = process.env.PORT ? +process.env.PORT : 3003;
+const backendPort: number = process.env.BACKEND_PORT
+  ? +process.env.BACKEND_PORT
+  : 3004;
+const publicUrl: string =
+  process.env.PUBLIC_URL ?? (isProd ? homepage : `http://localhost:${port}`);
 
 console.log(`Starting rsbuild...
 - commitHash: ${commitHash}
