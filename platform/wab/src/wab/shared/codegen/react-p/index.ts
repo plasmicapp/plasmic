@@ -64,6 +64,7 @@ import { DeepMap } from "@/wab/commons/deep-map";
 import {
   findVariantGroupForParam,
   getCodeComponentHelperImportName,
+  getComponentDisplayName,
   getNonVariantParams,
   getRealParams,
   getRepetitionIndexName,
@@ -4485,7 +4486,25 @@ function serializeSkeletonWrapperTs(
   const componentSubstitutionApi = opts.useComponentSubstitutionApi
     ? `import { components } from "@plasmicapp/loader-runtime-registry";
 
+    ${
+      isCodeComponent(component) && !isHostLessCodeComponent(component)
+        ? "let __hasWarnedMissingCodeComponent = false;"
+        : ""
+    }
+
     export function getPlasmicComponent() {
+      ${
+        isCodeComponent(component) && !isHostLessCodeComponent(component)
+          ? `if (!components["${
+              component.uuid
+            }"] && !__hasWarnedMissingCodeComponent) {
+        console.warn("Warning: Code component ${getComponentDisplayName(
+          component
+        )} is not registered. Make sure to call \`PLASMIC.registerComponent\` for all used code components in your page.");
+        __hasWarnedMissingCodeComponent = true;
+      }`
+          : ""
+      }
       return components["${component.uuid}"] ?? ${componentName};
     }`
     : "";
