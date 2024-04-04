@@ -25,4 +25,8 @@ export const FEATURE_TIERS: { [featureTier: string]: FeatureTierConfig } = {
   Pro: {
     categoryBackgroundColor: "12A89D",
   },
+  // Growth === legacy plan similar to Pro plan
+  Growth: {
+    categoryBackgroundColor: "12A89D",
+  },
 };
