@@ -4,7 +4,10 @@
 
 ```ts
 
+import { describeVariation } from '@plasmicapp/loader-splits';
 import type { Split } from '@plasmicapp/loader-fetcher';
+
+export { describeVariation }
 
 // @public (undocumented)
 export const generateAllPaths: (path: string, seedRange?: number) => string[];
