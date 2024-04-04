@@ -44,40 +44,40 @@
   dependencies:
     unfetch "^4.2.0"
 
-"@plasmicapp/loader-core@1.0.128":
-  version "1.0.128"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-core/-/loader-core-1.0.128.tgz#9364831af9ddfbdf2c652a490dd362aa36e940b1"
-  integrity sha512-/DcCRKazlemg1cN+Ae6PPAnAb0cT0LIDFGBcIchUeLNho/14WCTS30sqpEmt99dHXPWD1aH7KJBFacP7Zxj5/Q==
+"@plasmicapp/loader-core@1.0.129":
+  version "1.0.129"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-core/-/loader-core-1.0.129.tgz#dcd344019621d124ecfac3c6b996e6799b89e00d"
+  integrity sha512-e1WMKosBvUUldbRXen4CqKbwxezOIYn1Boz1xYNvvgVu1wcEvxI6OIsAPSYPDeU42uNvUlNBWJUrS/Eomi5upQ==
   dependencies:
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
-    "@plasmicapp/loader-fetcher" "1.0.49"
+    "@plasmicapp/loader-fetcher" "1.0.50"
 
-"@plasmicapp/loader-fetcher@1.0.49":
-  version "1.0.49"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-fetcher/-/loader-fetcher-1.0.49.tgz#132b97421d7e53e9071ba900ab0838ec65be2d8f"
-  integrity sha512-y2hIA8GragX1ouaN6oj5zteH7MCSdD/QPIbkbADO472Ea0m7tbmOQGTbGjofVlhwX3vKRjDjunbYCLXzNohFyg==
+"@plasmicapp/loader-fetcher@1.0.50":
+  version "1.0.50"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-fetcher/-/loader-fetcher-1.0.50.tgz#8b198a0817cdfcfecf433aadb67c8540f7edc141"
+  integrity sha512-jvigoWgZLhP7GE73MLYIT9Wopby29JDWJqjUgWB/cHRNOW+8J6Gf9ChIf2y4CGQDTt9HUwKJZutjfBE2gJcv/A==
   dependencies:
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
 
-"@plasmicapp/loader-react@^1.0.343":
-  version "1.0.343"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-1.0.343.tgz#e3bf12100b730480a3a7f23027a217e404db80c6"
-  integrity sha512-AzTq9nVzqdB6KRyxd7ZO2Nb1+oImMcFv0+iIT/DVc5ZG8DbYvFjNNG+bDBGfVgHnCTuOU+MW8IqwhYX5S4nhCQ==
+"@plasmicapp/loader-react@^1.0.344":
+  version "1.0.344"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-1.0.344.tgz#32abd268605b42bdc5ba53b270066ea3b23d4a4b"
+  integrity sha512-SN7DOisgeQFfLE1ZN7JuH4bsZ4bswkAQA+fW3/HLfb2ZQXtJBlM6Qow1UPMWqGXkXm6yG1aiXFcNh6c7ZO4buw==
   dependencies:
     "@plasmicapp/data-sources-context" "0.1.21"
     "@plasmicapp/host" "1.0.191"
-    "@plasmicapp/loader-core" "1.0.128"
-    "@plasmicapp/loader-fetcher" "1.0.49"
-    "@plasmicapp/loader-splits" "1.0.57"
+    "@plasmicapp/loader-core" "1.0.129"
+    "@plasmicapp/loader-fetcher" "1.0.50"
+    "@plasmicapp/loader-splits" "1.0.58"
     "@plasmicapp/prepass" "1.0.15"
     "@plasmicapp/query" "0.1.78"
     pascalcase "^1.0.0"
     server-only "0.0.1"
 
-"@plasmicapp/loader-splits@1.0.57":
-  version "1.0.57"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-splits/-/loader-splits-1.0.57.tgz#bdf44889fe4954c0f41bc62e788e756855d9354f"
-  integrity sha512-zcu/Cvg3zBGF63lfYzT+jjJN+1lw+RvidIHaWA0m3X1ZWbRKIq4vxUPFod9EJpNbjFcmYB0rgjk1HmqO+j3pVA==
+"@plasmicapp/loader-splits@1.0.58":
+  version "1.0.58"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-splits/-/loader-splits-1.0.58.tgz#ad7c1fac5ec2a620758e4057483faa076e80d289"
+  integrity sha512-iks91hRbDPKlruyV7x/HpBIZBajLeGmyjOna701WlxDqnu1mW8d/odqSqgUexkPuLEiEY4P+b+mzx/zWLc/9ow==
   dependencies:
     json-logic-js "^2.0.2"
 
