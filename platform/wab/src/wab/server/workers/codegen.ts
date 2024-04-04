@@ -255,7 +255,7 @@ export async function doGenCode(
       defaultStyles: exportStyleConfig(opts.exportOpts),
       externalCssImports: site.hostLessPackageInfo?.cssImport ?? [],
       usedNpmPackages: makeNpmPackagesWithVersions(site) ?? [],
-      activeSplits: exportActiveSplitsConfig(site.splits, projectId),
+      activeSplits: exportActiveSplitsConfig(site, projectId),
     };
 
     const existingChecksums = opts.existingChecksums ?? emptyChecksumBundle();

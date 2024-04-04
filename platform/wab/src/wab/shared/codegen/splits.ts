@@ -2,11 +2,17 @@ import {
   isKnownGlobalVariantSplitContent,
   RandomSplitSlice,
   SegmentSplitSlice,
+  Site,
   Split,
   SplitContent,
 } from "@/wab/classes";
+import { withDefault } from "@/wab/common";
+import {
+  allGlobalVariantsReferencedByComponent,
+  isPageComponent,
+} from "@/wab/components";
 import { SplitStatus, SplitType } from "@/wab/splits";
-import { sumBy } from "lodash";
+import { sumBy, uniq } from "lodash";
 import { toClassName, toVarName } from "./util";
 
 interface SerializedGlobalVariantSplitContent {
@@ -34,6 +40,10 @@ interface SerializedSegmentSlice extends SerializedSlice {
 export interface ActiveSplit {
   id: string;
   projectId: string;
+  name: string;
+  // Paths of pages that can be affected by this split
+  pagePaths: string[];
+  description?: string | null;
   externalId?: string | null;
 }
 
@@ -79,16 +89,36 @@ function convertRowsToJsonLogic(obj: any) {
   return logic ?? {};
 }
 
-function serializeSplit(split: Split, projectId: string) {
+function serializeSplit(
+  split: Split,
+  projectId: string,
+  globalVariantsToPathsMap: Record<string, string[]>
+) {
+  const common: ActiveSplit = {
+    id: split.uuid,
+    name: split.name,
+    projectId,
+    externalId: split.externalId,
+    description: split.description,
+    pagePaths: uniq(
+      split.slices.flatMap((slice) => {
+        return slice.contents.flatMap((c) => {
+          if (isKnownGlobalVariantSplitContent(c)) {
+            return withDefault(globalVariantsToPathsMap, c.variant.uuid, []);
+          }
+          return [];
+        });
+      })
+    ),
+  };
+
   switch (split.splitType) {
     case SplitType.Experiment: {
       const slices = split.slices as RandomSplitSlice[];
       const slicesSum = sumBy(slices, "prob");
 
       const serializedSplit: ExperimentSplit = {
-        id: split.uuid,
-        projectId,
-        externalId: split.externalId,
+        ...common,
         type: "experiment",
         slices: slices.map((slice) => ({
           id: slice.uuid,
@@ -104,9 +134,7 @@ function serializeSplit(split: Split, projectId: string) {
     case SplitType.Segment: {
       const slices = split.slices as SegmentSplitSlice[];
       const serializedSplit: SegmentSplit = {
-        id: split.uuid,
-        projectId,
-        externalId: split.externalId,
+        ...common,
         type: "segment",
         slices: slices.map((slice) => ({
           id: slice.uuid,
@@ -122,9 +150,7 @@ function serializeSplit(split: Split, projectId: string) {
     case SplitType.Schedule: {
       const slices = split.slices as SegmentSplitSlice[];
       const serializedSplit: SegmentSplit = {
-        id: split.uuid,
-        projectId,
-        externalId: split.externalId,
+        ...common,
         type: "segment",
         slices: slices.map((slice) => ({
           id: slice.uuid,
@@ -142,8 +168,26 @@ function serializeSplit(split: Split, projectId: string) {
   }
 }
 
-export function exportActiveSplitsConfig(splits: Split[], projectId: string) {
-  return splits
-    .filter((split) => split.status === SplitStatus.Running)
-    .map((s) => serializeSplit(s, projectId));
+export function exportActiveSplitsConfig(site: Site, projectId: string) {
+  const activeSplits = site.splits.filter(
+    (split) => split.status === SplitStatus.Running
+  );
+
+  const globalVariantsToPathsMap: Record<string, string[]> = {};
+
+  site.components.forEach((component) => {
+    if (isPageComponent(component)) {
+      const path = component.pageMeta.path;
+      const globalVariants = allGlobalVariantsReferencedByComponent(component);
+      globalVariants.forEach((gv) => {
+        const paths = withDefault(globalVariantsToPathsMap, gv.uuid, []);
+        paths.push(path);
+        globalVariantsToPathsMap[gv.uuid] = paths;
+      });
+    }
+  });
+
+  return activeSplits.map((s) =>
+    serializeSplit(s, projectId, globalVariantsToPathsMap)
+  );
 }

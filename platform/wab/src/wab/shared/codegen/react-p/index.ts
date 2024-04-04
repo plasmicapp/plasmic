@@ -5614,7 +5614,7 @@ export function makeSplitsProviderBundle(
     };
 
     export const splits = ${JSON.stringify(
-      exportActiveSplitsConfig(runningSplits, projectId)
+      exportActiveSplitsConfig(site, projectId)
     )};
 
     export function getGlobalContextValueFromVariation(groupId: string, variation: Record<string, string>) {

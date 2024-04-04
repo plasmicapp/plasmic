@@ -2388,3 +2388,17 @@ export function getDependencyComponents(site: Site) {
     .filter((dep) => !isHostLessPackage(dep.site))
     .flatMap((dep) => dep.site.components.filter(isPlainComponent));
 }
+
+/**
+ * Returns a list of global variants that are referenced by the component. Being referenced
+ * doesn't necessarily mean that the component uses the variant.
+ */
+export function allGlobalVariantsReferencedByComponent(c: Component) {
+  return [
+    ...new Set(
+      [...findVariantSettingsUnderTpl(c.tplTree)].flatMap(([vs]) => {
+        return vs.variants.filter((v) => isGlobalVariant(v));
+      })
+    ),
+  ];
+}

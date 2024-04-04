@@ -6,6 +6,12 @@
 
 import type { Split } from '@plasmicapp/loader-fetcher';
 
+// @public
+export function describeVariation(splits: Split[], variation: Record<string, string>): Record<string, PickedVariationDescription>;
+
+// @public (undocumented)
+export function describeVariationForKey(splits: Split[], key: string, value: string): PickedVariationDescription;
+
 // @public (undocumented)
 export function getActiveVariation(opts: {
     splits: Split[];
@@ -26,6 +32,24 @@ export const getSeededRandomFunction: (strSeed: string) => () => number;
 
 // @public (undocumented)
 export const getSplitKey: (split: Split) => string;
+
+// @public (undocumented)
+export interface PickedVariationDescription {
+    // (undocumented)
+    chosenValue: string;
+    // (undocumented)
+    description?: string;
+    // (undocumented)
+    externalIdGroup?: string;
+    // (undocumented)
+    externalIdValue?: string;
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    pagesPaths: string[];
+    // (undocumented)
+    type: "original" | "override";
+}
 
 // (No @packageDocumentation comment for this package)
 

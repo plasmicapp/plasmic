@@ -76,18 +76,21 @@ export interface SegmentSlice extends Slice {
   cond: any;
 }
 
-export interface ExperimentSplit {
+interface BareSplit {
   id: string;
   projectId: string;
+  name: string;
   externalId?: string;
+  description?: string;
+  pagesPaths: string[];
+}
+
+export interface ExperimentSplit extends BareSplit {
   type: "experiment";
   slices: ExperimentSlice[];
 }
 
-export interface SegmentSplit {
-  id: string;
-  projectId: string;
-  externalId?: string;
+export interface SegmentSplit extends BareSplit {
   type: "segment";
   slices: SegmentSlice[];
 }

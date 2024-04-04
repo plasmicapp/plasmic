@@ -11,7 +11,7 @@ const isBrowser =
   window != null &&
   typeof window.document !== "undefined";
 
-export const PLASMIC_SEED = "plasmic_seed";
+const PLASMIC_SEED = "plasmic_seed";
 
 const BUILTIN_TRAITS_UNKNOWN = {
   pageUrl: "unknown",
@@ -188,4 +188,64 @@ export function getExternalIds(
     }
   });
   return externalVariation;
+}
+
+export interface PickedVariationDescription {
+  name: string;
+  description?: string;
+  pagesPaths: string[];
+  type: "original" | "override";
+  chosenValue: string;
+  externalIdGroup?: string;
+  externalIdValue?: string;
+}
+
+export function describeVariationForKey(
+  splits: Split[],
+  key: string,
+  value: string
+): PickedVariationDescription {
+  const [, splitId] = key.split(".");
+  const split = splits.find(
+    (s) => s.id === splitId || s.externalId === splitId
+  );
+
+  if (!split) {
+    throw new Error(`Split not found for key "${key}"`);
+  }
+
+  const sliceIndex = split.slices.findIndex(
+    (s) => s.id === value || s.externalId === value
+  );
+
+  if (sliceIndex === -1) {
+    throw new Error(`Invalid split value "${value}" for key "${key}"`);
+  }
+
+  return {
+    name: split.name,
+    description: split.description,
+    pagesPaths: split.pagesPaths,
+    type: sliceIndex === 0 ? "original" : "override",
+    chosenValue: value,
+    externalIdGroup: split.externalId,
+    externalIdValue:
+      sliceIndex >= 0 && split.slices[sliceIndex].externalId
+        ? split.slices[sliceIndex].externalId
+        : undefined,
+  };
+}
+
+/**
+ * Gets a more human-readable description of the variation
+ */
+export function describeVariation(
+  splits: Split[],
+  variation: Record<string, string>
+): Record<string, PickedVariationDescription> {
+  return Object.fromEntries(
+    Object.entries(variation).map(([key, value]) => {
+      return [key, describeVariationForKey(splits, key, value)];
+    })
+  );
 }
