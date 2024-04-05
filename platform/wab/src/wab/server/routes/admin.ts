@@ -289,7 +289,6 @@ export async function saveProjectRevisionData(req: Request, res: Response) {
     projectId: projectId,
     data: req.body.data,
     revisionNum: rev.revision + 1,
-    seqIdAssign: undefined,
   });
   await mgr.clearPartialRevisionsCacheForProject(projectId, undefined);
   res.json({ rev: omit(newRev, "data") });

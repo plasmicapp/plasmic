@@ -177,7 +177,6 @@ export async function publishHostlessProject(
     projectId,
     data: JSON.stringify(projectBundle),
     revisionNum: rev.revision + 1,
-    seqIdAssign: undefined,
   });
 
   await db.publishProject(

@@ -46,6 +46,5 @@ export async function fixInvalidImplicitStates(
     branchId: undefined,
     data: JSON.stringify(bundle),
     revisionNum: rev.revision + 1,
-    seqIdAssign: undefined,
   });
 }

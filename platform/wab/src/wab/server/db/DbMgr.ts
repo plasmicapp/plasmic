@@ -96,7 +96,6 @@ import {
   PromotionCode,
   ResetPassword,
   SamlConfig,
-  SeqIdAssignment,
   SignUpAttempt,
   SsoConfig,
   Team,
@@ -217,7 +216,6 @@ import {
   TaggedResourceIds,
 } from "@/wab/shared/perms";
 import { isEnterprise } from "@/wab/shared/pricing/pricing-utils";
-import { ProjectSeqIdAssignment } from "@/wab/shared/seq-id-utils";
 import {
   calculateSemVer,
   compareSites,
@@ -797,10 +795,6 @@ export class DbMgr implements MigrationDbMgr {
 
   private projectRevs() {
     return this.entMgr.getRepository(ProjectRevision);
-  }
-
-  private seqIdAssignment() {
-    return this.entMgr.getRepository(SeqIdAssignment);
   }
 
   private projectSyncMetadata() {
@@ -3000,42 +2994,17 @@ export class DbMgr implements MigrationDbMgr {
     `);
   }
 
-  async tryGetSeqAssignment(projectId: string) {
-    return await this.seqIdAssignment().findOne({ where: { projectId } });
-  }
-
-  private async createOrSaveSeqAssignment(
-    projectId: string,
-    seqIdAssign: ProjectSeqIdAssignment
-  ) {
-    const existing = await this.tryGetSeqAssignment(projectId);
-    if (existing) {
-      existing.assign = JSON.stringify(seqIdAssign);
-      await this.seqIdAssignment().save(existing);
-      return;
-    }
-    const ent = this.seqIdAssignment().create({
-      ...this.stampNew(),
-      projectId,
-      assign: JSON.stringify(seqIdAssign),
-    });
-    await this.seqIdAssignment().save(ent);
-  }
-
   // TODO allow saving revisions with comments.
   async saveProjectRev({
     projectId,
     branchId,
     data,
     revisionNum,
-    seqIdAssign,
   }: {
     projectId: string;
     branchId?: BranchId;
     data: string;
     revisionNum: number;
-    // if undefined, skip updating the assignment
-    seqIdAssign: undefined;
   }) {
     await this.checkProjectBranchPerms(
       { projectId, branchId },
@@ -3077,9 +3046,6 @@ export class DbMgr implements MigrationDbMgr {
       throw err;
     }
 
-    if (seqIdAssign) {
-      await this.createOrSaveSeqAssignment(projectId, seqIdAssign);
-    }
     // Update-stamp the project itself as well, since clients typically query the
     // Project to see updatedAt/updatedBy.
     await this.updateProject({ id: projectId });
@@ -3115,7 +3081,6 @@ export class DbMgr implements MigrationDbMgr {
       projectId,
       data: rev.data,
       revisionNum: latest.revision + 1,
-      seqIdAssign: undefined,
     });
     return newRev;
   }
@@ -3867,7 +3832,6 @@ export class DbMgr implements MigrationDbMgr {
       projectId: project.id,
       data: JSON.stringify(newBundle),
       revisionNum: rev.revision + 1,
-      seqIdAssign: undefined,
     });
     return project;
   }
@@ -7283,7 +7247,6 @@ export class DbMgr implements MigrationDbMgr {
         bundler.bundle(site, project.id, await getLastBundleVersion())
       ),
       revisionNum: rev.revision + 1,
-      seqIdAssign: undefined,
     });
     return {
       project,
@@ -7962,7 +7925,6 @@ export class DbMgr implements MigrationDbMgr {
                 await getLastBundleVersion()
               )
             ),
-        seqIdAssign: undefined,
         revisionNum: latestToRev.revision + 1,
         branchId: toBranchId,
       });
@@ -7985,7 +7947,6 @@ export class DbMgr implements MigrationDbMgr {
           )
         ),
         revisionNum: latestToRev.revision + 1,
-        seqIdAssign: undefined,
         branchId: toBranchId,
       });
     }
@@ -9691,7 +9652,6 @@ export class DbMgr implements MigrationDbMgr {
     await this.loaderPublishments().delete({ projectId: id });
     await this.permissions().delete({ projectId: id });
     await this.projectSyncMetadata().delete({ projectId: id });
-    await this.seqIdAssignment().delete({ projectId: id });
     await this.copilotInteractions().delete({ projectId: id });
 
     // comment reactions deleted by cascade

@@ -566,7 +566,6 @@ export async function doImportProject(
         projectId: project.id,
         data: JSON.stringify(depSite),
         revisionNum: fstRev.revision + 1,
-        seqIdAssign: undefined,
       });
 
       pkgVersion = await mgr.insertPkgVersion(
@@ -654,7 +653,6 @@ export async function doImportProject(
     projectId: project.id,
     data: JSON.stringify(siteBundle),
     revisionNum: rev.revision + 1,
-    seqIdAssign: undefined,
   });
 
   if (opts?.keepProjectIdsAndNames) {
@@ -807,7 +805,6 @@ async function importFullProjectData(
       projectId: newProjectId,
       data: JSON.stringify(depSite),
       revisionNum: latestRev + 1,
-      seqIdAssign: undefined,
     });
 
     if (branchId !== MainBranchId) {
@@ -882,7 +879,6 @@ async function importFullProjectData(
           newProject.id,
           branchData.id !== MainBranchId ? { branchId: newBranchId } : undefined
         )) + 1,
-      seqIdAssign: undefined,
       ...(branchData.id !== MainBranchId ? { branchId: newBranchId } : {}),
     });
   }
@@ -1218,7 +1214,6 @@ export async function saveProjectRev(req: Request, res: Response) {
     projectId,
     data: data,
     revisionNum: +req.params.revision,
-    seqIdAssign: undefined,
     branchId,
   });
 
@@ -2004,7 +1999,6 @@ export async function revertToVersion(req: Request, res: Response) {
     projectId,
     revisionNum: latestRev.revision + 1,
     data: JSON.stringify(data),
-    seqIdAssign: undefined,
     branchId,
   });
 
@@ -2023,7 +2017,7 @@ export async function revertToVersion(req: Request, res: Response) {
   await broadcastProjectsMessage({
     room: `projects/${projectId}`,
     type: "update",
-    message: { projectId: projectId, revisionNum: rev.revision },
+    message: { projectId: projectId, rvisionNum: rev.revision },
   });
 }
 
@@ -2636,7 +2630,7 @@ export async function updateProjectData(req: Request, res: Response) {
   const incomingSize = JSON.stringify(data).length;
   if (oldBundleSize + incomingSize > writeApiSizeLimit) {
     throw new BadRequestError(
-      "Project data size exceeds the limit. Please contact the support."
+      "Project data size exceeds the limit. Please contact support."
     );
   }
 
@@ -2790,15 +2784,12 @@ export async function updateProjectData(req: Request, res: Response) {
   // Maybe also assert observable-model invariants?
   // assertObservabeModelInvariants(site, bundler, projectId);
 
-  const existingProjectAssign = await dbMgr.tryGetSeqAssignment(projectId);
-
   const project = await dbMgr.getProjectById(projectId);
 
   const rev = await dbMgr.saveProjectRev({
     projectId: projectId,
     data: JSON.stringify(newBundle),
     revisionNum: latestRev.revision + 1,
-    seqIdAssign: undefined,
     branchId: branchId,
   });
 

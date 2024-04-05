@@ -116,7 +116,6 @@ async function seedTestUserAndProjects(
       projectId: project.id,
       data: '{"hello": "world"}',
       revisionNum: 2,
-      seqIdAssign: undefined,
     });
     await db.getLatestProjectRev(project.id);
 
@@ -127,7 +126,6 @@ async function seedTestUserAndProjects(
       projectId: project.id,
       data: JSON.stringify(siteBundle),
       revisionNum: 3,
-      seqIdAssign: undefined,
     });
   }
 

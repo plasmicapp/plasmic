@@ -75,7 +75,6 @@ export async function upgradeReferencedHostlessDeps(
       projectId,
       data: JSON.stringify(newBundle),
       revisionNum: projectRev.revision + 1,
-      seqIdAssign: undefined,
     });
   }
 }

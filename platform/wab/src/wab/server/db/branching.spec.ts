@@ -37,7 +37,6 @@ class Helpers {
       data: JSON.stringify(
         bundler.bundle(site, this.projectId, await getLastBundleVersion())
       ),
-      seqIdAssign: undefined,
     });
     await db.savePartialRevision({
       ...commonArgs,

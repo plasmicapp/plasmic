@@ -845,30 +845,6 @@ export class DevFlagOverrides extends Base<"DevFlagOverridesId"> {
 }
 
 @Entity()
-export class SeqIdAssignment extends Base<"SeqIdAssignmentId"> {
-  @Index({ unique: true })
-  @Column("text")
-  projectId: ProjectId;
-
-  // This is a JSON contains a list of id assignment and nextSeqId, i.e.
-  /*
-    {
-      "comp1": {
-        "nextSeqId": 5,
-        "seqIdMap": { "uuid1": 1, "uuid2": 2, "uuid3": 3, "uuid4": 4 },
-      },
-      "comp2": {
-        "nextSeqId": 4,
-        "seqIdMap": { "uuid1": 1, "uuid2": 2, "uuid3": 3 },
-      },
-    }
-  */
-  @Column("text", { nullable: false })
-  @IsJSON()
-  assign: string;
-}
-
-@Entity()
 export class BundleBackup extends Base<"BundleBackupId"> {
   @Column("text")
   rowType: string;

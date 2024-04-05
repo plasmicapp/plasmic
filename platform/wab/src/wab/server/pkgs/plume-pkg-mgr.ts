@@ -98,7 +98,6 @@ export class PlumePkgMgr {
         bundler.bundle(dep.site, rev.projectId, await getLastBundleVersion())
       ),
       revisionNum: rev.revision + 1,
-      seqIdAssign: undefined,
     });
     await this.db.insertPkgVersion(
       pkg.id,
