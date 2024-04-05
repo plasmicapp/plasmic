@@ -18,7 +18,6 @@ export function ExtractPlasmicQueryData(props: { children?: React.ReactNode }) {
     );
   }
   const scriptId = `plasmic-prefetch-${React.useId()}`;
-  console.log("SCRIPT ID", scriptId);
   if (typeof window === "undefined") {
     const data: Record<string, any> = (React as any).use(
       extractPlasmicQueryData(<>{children}</>)

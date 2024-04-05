@@ -11,9 +11,6 @@ export function ExtractPlasmicQueryData(props: {
     children?: React_2.ReactNode;
 }): React_2.JSX.Element | null;
 
-// @public (undocumented)
-export function fetchExtractedQueryData(url: string): Promise<any>;
-
 // (No @packageDocumentation comment for this package)
 
 ```

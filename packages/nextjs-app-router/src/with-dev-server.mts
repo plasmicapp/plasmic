@@ -23,14 +23,17 @@ async function startDevServer(command: string, port: number) {
   let started = false;
   return new Promise<cp.ChildProcess>((resolve, reject) => {
     devServerProcess.stdout?.on("data", (data) => {
-      if (!started && data.toString().includes("ready")) {
+      if (!started && data.toString().toLowerCase().includes("ready")) {
         started = true;
         console.log(`Plasmic: Dev server started`);
         resolve(devServerProcess);
       }
     });
     devServerProcess.stderr?.on("data", (data) => {
-      reject(new Error(`Error starting dev server: ${data.toString()}`));
+      if (data.toString().toLowerCase().includes("error")) {
+        console.log(`Plasmic: Dev server failed to start`);
+        reject(new Error(`Error starting dev server: ${data.toString()}`));
+      }
     });
   });
 }

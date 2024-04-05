@@ -17,7 +17,6 @@ import { DataProvider } from '@plasmicapp/loader-react';
 import { ExtractPlasmicQueryData } from '@plasmicapp/nextjs-app-router';
 import { extractPlasmicQueryData } from '@plasmicapp/loader-react';
 import { FetchComponentDataOpts as FetchComponentDataOpts_2 } from '@plasmicapp/loader-react';
-import { fetchExtractedQueryData } from '@plasmicapp/nextjs-app-router';
 import { GlobalActionsContext } from '@plasmicapp/loader-react';
 import { GlobalActionsProvider } from '@plasmicapp/loader-react';
 import { IncomingMessage } from 'http';

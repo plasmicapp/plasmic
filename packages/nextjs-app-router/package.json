@@ -25,7 +25,7 @@
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
   "dependencies": {
-    "@plasmicapp/prepass": "1.0.14",
+    "@plasmicapp/prepass": "1.0.15",
     "fkill": "^8.1.0",
     "get-port": "^7.0.0",
     "node-html-parser": "^6.1.5",

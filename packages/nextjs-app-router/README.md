@@ -6,83 +6,119 @@ The idea here is to use the dev server's SSR instead! At SSR time (instead of RS
 
 So...
 
-1. Create a `app/plasmic-ssr/[[...catchall]]/page.tsx` route, whose purpose is to perform SSR. It looks something like...
+1. Update `app/[[...catchall]]/page.tsx` to conditionally wrap the page contents inside `<ExtractPlasmicQueryData>` to extract the query data. It would look something like:
 
 ```
 import { ExtractPlasmicQueryData } from "@plasmicapp/nextjs-app-router";
+import { fetchExtractedQueryData } from "@plasmicapp/nextjs-app-router/react-server";
 
-export default async function CatchallPrepass(props: {
-  params?: Params;
+// Use revalidate if you want incremental static regeneration
+export const revalidate = 60;
+
+export default async function PlasmicLoaderPage({
+  params,
+  searchParams,
+}: {
+  params?: { catchall: string[] | undefined };
+  searchParams?: Record<string, string | string[]>;
 }) {
-  const { params } = props;
-
-  const plasmicPath = params.catchall ? `/${params.catchall.join("/")}` : "/";
-  const prefetchedData = await PLASMIC.maybeFetchComponentData(plasmicPath);
+  const pathname = "/" + (params?.catchall ? params.catchall.join("/") : "");
+  const prefetchedData = await fetchPlasmicComponentData(
+    params?.catchall
+  );
   if (!prefetchedData || prefetchedData.entryCompMetas.length === 0) {
     notFound();
   }
 
   const pageMeta = prefetchedData.entryCompMetas[0];
 
-  return (
-    <ExtractPlasmicQueryData>
-      <PlasmicClientRootProvider
-        prefetchedData={prefetchedData}
-        pageParams={pageMeta.params}
-      >
-        <PlasmicComponent
-          component={pageMeta.displayName}
-        />
-      </PlasmicClientRootProvider>
-    </ExtractPlasmicQueryData>
-  )
-}
-```
-
-`<ExtractPlasmicQueryData />` is a new client component from this package, which basically performs `extractPlasmicQueryData()` on its children, and then renders a `<script data-plasmic-prefetch-id/>` tag with the json of the extracted data.
-
-2. From the real `app/[...catchall]/page.tsx` file, make use of this endpoint to read the extracted data:
-
-```
-import { fetchExtractedQueryData } from "@plasmicapp/nextjs-app-router";
-
-export default async function Catchall(props: {
-  params?: Params;
-}) {
-  const { params } = props;
-
-  const plasmicPath = params.catchall ? `/${params.catchall.join("/")}` : "/";
-  const prefetchedData = await PLASMIC.maybeFetchComponentData(plasmicPath);
-
-  if (!prefetchedData || prefetchedData.entryCompMetas.length === 0) {
-    notFound();
-  }
-
-  const prepassHost = process.env.PLASMIC_PREPASS_HOST ?? process.env.VERCEL_URL ?? `http://localhost:${process.env.PORT ?? 3000}`;
-
-  const queryData = await fetchExtractedQueryData(`${prepassHost}/plasmic-ssr/${(params?.catchall ?? []).join("/")}`);
-
-  const pageMeta = prefetchedData.entryCompMetas[0];
-
-  return (
+  return withExtractPlasmicQueryData(
     <PlasmicClientRootProvider
       prefetchedData={prefetchedData}
-      prefetchedQueryData={queryData}
+      pageRoute={pageMeta.path}
       pageParams={pageMeta.params}
+      pageQuery={searchParams}
     >
-      <PlasmicComponent
-        component={pageMeta.displayName}
-      />
-    </PlasmicClientRootProvider>
-  )
+      <PlasmicComponent component={pageMeta.displayName} />
+    </PlasmicClientRootProvider>,
+    {
+      pathname,
+      searchParams,
+    }
+  );
+}
+
+async function fetchPlasmicComponentData(catchall: string[] | undefined) {
+  const plasmicPath = "/" + (catchall ? catchall.join("/") : "");
+  return PLASMIC.maybeFetchComponentData(plasmicPath);;
+}
+
+/**
+ * Helper function to extract Plasmic data.
+ *
+ * Given the <PlasmicClientRootProvider> element and current pathname + search
+ * params, returns:
+ * - The extracted query data, if `plasmicSsr` search param is set
+ * - A copy of the root provider element with the extracted query data, otherwise
+ */
+async function withExtractPlasmicQueryData(
+  plasmicRootProvider: React.ReactElement,
+  {
+    pathname,
+    searchParams,
+  }: {
+    pathname: string;
+    searchParams: Record<string, string | string[]> | undefined;
+  }
+) {
+  const isPlasmicSsr =
+    !!searchParams?.["plasmicSsr"] && searchParams?.["plasmicSsr"] !== "false";
+
+  // If `plasmicSsr` search param is set, just wrap the root provider inside
+  // <ExtractPlasmicQueryData>
+  if (isPlasmicSsr) {
+    return (
+      <ExtractPlasmicQueryData>{plasmicRootProvider}</ExtractPlasmicQueryData>
+    );
+  }
+
+  // Otherwise, fetch the same endpoint, but setting `plasmicSsr` to extract the
+  // query data.
+  const prepassHost =
+    process.env.PLASMIC_PREPASS_HOST ??
+    process.env.VERCEL_URL ??
+    `http://localhost:${process.env.PORT ?? 3000}`;
+
+  // Build a copy of the search params
+  const newSearchParams = new URLSearchParams(
+    Object.entries(searchParams ?? {}).flatMap(([key, values]) =>
+      Array.isArray(values) ? values.map((v) => [key, v]) : [[key, values]]
+    )
+  );
+
+  // Set `plasmicSsr` search param to indicate you are using this endpoint
+  // to extract query data.
+  newSearchParams.set("plasmicSsr", "true");
+
+  // Fetch the data from the endpoint using the new search params
+  const prefetchedQueryData = await fetchExtractedQueryData(
+    `${prepassHost}/${pathname}?${newSearchParams.toString()}`
+  );
+
+  // Provide the query data to <PlasmicClientRootProvider>
+  return React.cloneElement(plasmicRootProvider, {
+    prefetchedQueryData,
+  });
 }
 ```
 
-Here, `fetchExtractedQueryData()` basically just hits the `/plasmic-ssr/` endpoint, and extracts the data from the json embedded in the `<script/>`.
+`<ExtractPlasmicQueryData />` is a new client component from this package, which basically performs `extractPlasmicQueryData()` on its children, and then renders a `<script data-plasmic-prefetch-id/>` tag with the json of the extracted data. The helper function `withExtractPlasmicQueryData` will likely be moved into the package in the future.
+
+Here, `fetchExtractedQueryData()` basically just hits the same endpoint with `?plasmicSsr=true`, and extracts the data from the json embedded in the `<script/>`.
 
 The `prepassHost` to use is read from `PLASMIC_PREPASS_HOST` or `VERCEL_URL`. `VERCEL_URL` is available when your site is deployed on Vercel; it is the generated deployment url.
 
-`@plasmicapp/nextjs-app-router` also comes with a `with-plasmic-prepass` command that you can use like this in your package.json:
+2. If you have static generation at build time, `@plasmicapp/nextjs-app-router` also comes with a `with-plasmic-prepass` command that you can use like this in your package.json:
 
 ```
 "script": {
@@ -105,5 +141,5 @@ The `PLASMIC_PREPASS_SERVER` environment variable will be set by with-plasmic-pr
 So...
 
 - At dev time, uses itself for extracting query data (hits `localhost:${PORT}`)
-- At build time, we start a parallel dev server.
+- At build time, we start a parallel dev server via `with-plasmic-prepass`.
 - In production, with revalidation, it will also use itself for extracting query data (using `VERCEL_URL` as the prepass host).

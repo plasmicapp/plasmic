@@ -1,3 +1,4 @@
+import type { CodeModule } from "@plasmicapp/loader-core";
 import {
   ComponentLookupSpec,
   FetchComponentDataOpts as InternalFetchComponentDataOpts,
@@ -31,12 +32,8 @@ export type {
   PropType,
   TokenRegistration,
 } from "@plasmicapp/loader-react";
-export {
-  ExtractPlasmicQueryData as __EXPERMIENTAL__ExtractPlasmicQueryData,
-  fetchExtractedQueryData as __EXPERMIENTAL__fetchExtractedQueryData,
-} from "@plasmicapp/nextjs-app-router";
+export { ExtractPlasmicQueryData as __EXPERMIENTAL__ExtractPlasmicQueryData } from "@plasmicapp/nextjs-app-router";
 export * from "./shared-exports";
-import type { CodeModule } from "@plasmicapp/loader-core";
 // NextHead and NextLink must be default imported (`import Pkg`) instead of a namespace import (`import * as Pkg`).
 // Otherwise, there's a Next.js 12 bug when referencing these dependencies due to default import interop.
 // The transpiled CommonJS code would create a `default` field on the package,
