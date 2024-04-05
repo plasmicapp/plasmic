@@ -152,6 +152,7 @@ export function getActiveVariation(opts: {
 
 interface ExternalIDsFilters {
   projectIds?: string[];
+  customFilter?: (split: Split) => boolean;
 }
 
 export function getExternalIds(
@@ -166,6 +167,9 @@ export function getExternalIds(
       return true;
     }
     if (filters.projectIds && !filters.projectIds.includes(split.projectId)) {
+      return false;
+    }
+    if (filters.customFilter && !filters.customFilter(split)) {
       return false;
     }
     return true;
