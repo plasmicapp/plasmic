@@ -1,4 +1,10 @@
-import { CustomCode, EventHandler, Rep } from "@/wab/classes";
+import {
+  CustomCode,
+  EventHandler,
+  ImageAsset,
+  ImageAssetRef,
+  Rep,
+} from "@/wab/classes";
 import { ensure } from "@/wab/common";
 import { codeLit } from "@/wab/exprs";
 import { fixTplTreeExprs } from "@/wab/shared/insertable-templates/fixers";
@@ -21,6 +27,17 @@ describe("Insertable templates fixers", () => {
           onClick: new EventHandler({
             interactions: [],
           }),
+          src: new ImageAssetRef({
+            asset: new ImageAsset({
+              uuid: "image-id",
+              name: "image",
+              type: "picture",
+              dataUri: "",
+              width: 100,
+              height: 100,
+              aspectRatio: 1,
+            }),
+          }),
         },
         dataCond: codeLit("$props.showTitle"),
         dataRep: mkRep("elements", codeLit("[1, 2, 3]")),
@@ -35,6 +52,7 @@ describe("Insertable templates fixers", () => {
 
       expect(vs.attrs["onClick"]).toBeNil();
       expect(vs.attrs["href"]).toBeInstanceOf(CustomCode);
+      expect(vs.attrs["src"]).toBeInstanceOf(ImageAssetRef);
       expect(vs.dataCond).toBeNil();
       expect(vs.dataRep).toBeInstanceOf(Rep);
       expect(vs.dataRep?.collection).toBeInstanceOf(CustomCode);

@@ -10,15 +10,18 @@ import {
   isKnownTemplatedString,
   isKnownTplTag,
   ObjectPath,
+  PageHref,
   RenderExpr,
   RuleSet,
   Site,
+  StyleExpr,
   StyleToken,
   TemplatedString,
   TplNode,
   Variant,
   VariantedValue,
   VariantSetting,
+  VariantsRef,
   VirtualRenderExpr,
 } from "@/wab/classes";
 import {
@@ -488,7 +491,18 @@ export function fixTplTreeExprs(tpl: TplNode, vs: VariantSetting) {
       .when([CustomCode, ObjectPath, TemplatedString], (expr) => {
         return isInvalidTextOrDynamicExpression(expr) ? null : expr;
       })
+      // Should be fixed by the component importer `mkInsertableComponentImporter`
       .when([VirtualRenderExpr, RenderExpr], (expr) => expr)
+      // Should have been fixed the asset fixer `makeImageAssetFixer`
+      .when([ImageAssetRef], (expr) => expr)
+      // TODO: handle style expr so that customizations to code components through
+      // class are not lost
+      .when([StyleExpr], (expr) => null)
+      // TODO: handle variants ref, this may depend whether the tree is owned or not
+      .when([VariantsRef], (expr) => null)
+      // TODO: possible to handle if it's possible to reference the same page in the target
+      .when([PageHref], (expr) => null)
+
       .elseUnsafe(() => null);
     if (!fixedExpr) {
       remove(vs.args, arg);
@@ -503,6 +517,7 @@ export function fixTplTreeExprs(tpl: TplNode, vs: VariantSetting) {
       .when([CustomCode, ObjectPath, TemplatedString], (expr) => {
         return isInvalidTextOrDynamicExpression(expr) ? null : expr;
       })
+      .when([ImageAssetRef], (expr) => expr)
       .elseUnsafe(() => null);
 
     if (!fixedExpr) {
