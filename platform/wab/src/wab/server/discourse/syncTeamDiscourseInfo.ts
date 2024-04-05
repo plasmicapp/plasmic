@@ -14,6 +14,7 @@ import {
   CategoryMutation,
   DiscourseClient,
   GroupAliasLevel,
+  GroupData,
   GroupVisibilityLevel,
   PermissionType,
 } from "@/wab/shared/discourse/DiscourseClient";
@@ -74,13 +75,14 @@ async function upsertToDiscourse(ctx: Ctx) {
   const groupId = await upsertDiscourseGroup(ctx);
   const { category, parentCategory } = await upsertDiscourseCategory(ctx);
   await updateDiscourseCategoryWelcomePost(ctx, category, parentCategory);
+  await ensureSupportGroupTrackingCategory(ctx, category);
   return { categoryId: category.id, groupId };
 }
 
 async function upsertDiscourseGroup(ctx: Ctx) {
   const { systemDiscourseClient, existingInfo, slug, name } = ctx;
 
-  const groupData = {
+  const groupData: GroupData = {
     name: slug,
     full_name: name,
     members_visibility_level: GroupVisibilityLevel.MEMBERS,
@@ -185,4 +187,26 @@ async function updateDiscourseCategoryWelcomePost(
     })
   ).post;
   await systemDiscourseClient.postRevisionHide(post.id, post.version);
+}
+
+async function ensureSupportGroupTrackingCategory(
+  { systemDiscourseClient }: Ctx,
+  category: Category
+) {
+  const group = (await systemDiscourseClient.groupGet(SUPPORT_GROUP_NAME))
+    .group;
+  if (group.watching_category_ids.includes(category.id)) {
+    return;
+  }
+
+  const newWatchingCategoryIds = [
+    ...group.watching_category_ids,
+    category.id,
+  ].sort();
+  await systemDiscourseClient.groupUpdate(group.id, {
+    group: {
+      watching_category_ids: newWatchingCategoryIds,
+    },
+    update_existing_users: true,
+  });
 }

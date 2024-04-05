@@ -5,10 +5,18 @@ export const BASE_URL =
     ? "https://forum.plasmic.app"
     : "https://forum.test.plasmic.app";
 
+// https://forum.plasmic.app/u/system/summary
 export const SYSTEM_USERNAME = "system";
+
+// https://forum.plasmic.app/c/plasmic-studio-questions/5
 export const PUBLIC_SUPPORT_CATEGORY_ID = 5;
+
+// https://forum.plasmic.app/c/support/14
 export const PRIVATE_SUPPORT_CATEGORY_ID = 14;
+
+// https://forum.plasmic.app/g/support
 export const SUPPORT_GROUP_NAME = "support";
+
 export const MIN_ACCESS_LEVEL_FOR_SUPPORT: AccessLevel = "content";
 
 export interface FeatureTierConfig {

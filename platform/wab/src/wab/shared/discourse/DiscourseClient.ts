@@ -49,21 +49,48 @@ export interface CategoryMutation {
   };
 }
 
-export interface Group {
-  id: number;
+export interface GroupData {
   name: string;
-  is_group_owner: boolean;
-  is_group_user: boolean;
+  full_name: string;
+  members_visibility_level: GroupVisibilityLevel;
+  mentionable_level: GroupAliasLevel;
+  messageable_level: GroupAliasLevel;
+  visibility_level: GroupVisibilityLevel;
 }
 
-export interface GroupMutation {
-  name?: string;
-  full_name?: string;
-  members_visibility_level?: GroupVisibilityLevel;
-  mentionable_level?: GroupAliasLevel;
-  messageable_level?: GroupAliasLevel;
-  visibility_level?: GroupVisibilityLevel;
+export interface GroupCategoryDefaultNotifications {
+  muted_category_ids: number[];
+  regular_category_ids: number[];
+  tracking_category_ids: number[];
+  watching_category_ids: number[];
+  watching_first_post_category_ids: number[];
 }
+
+export type Group = {
+  id: number;
+  is_group_owner: boolean;
+  is_group_user: boolean;
+} & GroupData &
+  GroupCategoryDefaultNotifications;
+
+export type GroupCreate = {
+  group: { name: string } & Partial<
+    GroupData | GroupCategoryDefaultNotifications
+  >;
+};
+
+/**
+ * If changing category default notifications,
+ * must specify whether the changes should affect existing users.
+ */
+export type GroupUpdate =
+  | {
+      group: Partial<GroupData>;
+    }
+  | {
+      group: Partial<GroupData | GroupCategoryDefaultNotifications>;
+      update_existing_users: boolean;
+    };
 
 export interface Invite {
   id: number;
@@ -155,18 +182,11 @@ class DiscourseApiClient {
     return this.httpGet(`/groups/${name}.json`);
   }
   /** https://docs.discourse.org/#tag/Groups/operation/createGroup */
-  async groupCreate(data: {
-    group: GroupMutation & { name: string };
-  }): Promise<{ basic_group: Group }> {
+  async groupCreate(data: GroupCreate): Promise<{ basic_group: Group }> {
     return this.httpPost(`/admin/groups.json`, data);
   }
   /** https://docs.discourse.org/#tag/Groups/operation/updateGroup */
-  async groupUpdate(
-    id: number,
-    data: {
-      group: GroupMutation;
-    }
-  ): Promise<{ success: "OK" }> {
+  async groupUpdate(id: number, data: GroupUpdate): Promise<{ success: "OK" }> {
     return this.httpPut(`/groups/${id}.json`, data);
   }
   /** https://docs.discourse.org/#tag/Groups/operation/addGroupMembers */
