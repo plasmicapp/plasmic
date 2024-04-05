@@ -171,24 +171,9 @@ export interface LoaderBundleCache {
 }
 
 // @public (undocumented)
-export interface LoaderBundleOutput {
+export interface LoaderBundleOutput extends ApiLoaderBundleOutput {
     // (undocumented)
-    activeSplits: Split[];
-    // (undocumented)
-    bundleKey: string | null;
-    // (undocumented)
-    components: ComponentMeta[];
-    // (undocumented)
-    deferChunksByDefault: boolean;
-    // (undocumented)
-    globalGroups: GlobalGroupMeta[];
-    // (undocumented)
-    modules: {
-        browser: (CodeModule | AssetModule)[];
-        server: (CodeModule | AssetModule)[];
-    };
-    // (undocumented)
-    projects: ProjectMeta[];
+    filteredIds: Record<string, string[]>;
 }
 
 // @public (undocumented)

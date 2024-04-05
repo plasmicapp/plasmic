@@ -4,6 +4,7 @@ import {
   LoaderBundleOutput,
 } from "@plasmicapp/loader-core";
 import type { ComponentRenderData } from "./loader-shared";
+import { intersect } from "./utils";
 
 function getUsedComps(allComponents: ComponentMeta[], entryCompIds: string[]) {
   const q: string[] = [...entryCompIds];
@@ -91,15 +92,6 @@ export function mergeBundles(
   target: LoaderBundleOutput,
   from: LoaderBundleOutput
 ) {
-  const existingCompIds = new Set(target.components.map((c) => c.id));
-
-  const newCompMetas = from.components.filter(
-    (m) => !existingCompIds.has(m.id)
-  );
-  if (newCompMetas.length > 0) {
-    target = { ...target, components: [...target.components, ...newCompMetas] };
-  }
-
   const existingProjects = new Set(target.projects.map((p) => p.id));
   const newProjects = from.projects.filter((p) => !existingProjects.has(p.id));
   if (newProjects.length > 0) {
@@ -107,6 +99,45 @@ export function mergeBundles(
       ...target,
       projects: [...target.projects, ...newProjects],
     };
+  }
+
+  const existingCompIds = new Set(target.components.map((c) => c.id));
+
+  function shouldIncludeComponentInBundle(c: ComponentMeta) {
+    // If the component is already present in the target bundle, don't include it
+    if (existingCompIds.has(c.id)) {
+      return false;
+    }
+    // If the component belongs to a project that is not present in the target bundle,
+    // include it
+    if (!existingProjects.has(c.projectId)) {
+      return true;
+    }
+    if (!target.filteredIds[c.projectId]) {
+      return true;
+    }
+    // If the component is present in the filteredIds of the project it belongs to,
+    // in the target bundle, we consider that the component was not deleted in the target
+    // bundle, so we can include it
+    return target.filteredIds[c.projectId].includes(c.id);
+  }
+
+  const newCompMetas = from.components.filter((m) =>
+    shouldIncludeComponentInBundle(m)
+  );
+  if (newCompMetas.length > 0) {
+    target = { ...target, components: [...target.components, ...newCompMetas] };
+
+    Object.entries(from.filteredIds).forEach(([projectId, ids]) => {
+      if (!target.filteredIds[projectId]) {
+        target.filteredIds[projectId] = [...ids];
+      } else {
+        target.filteredIds[projectId] = intersect(
+          target.filteredIds[projectId],
+          ids
+        );
+      }
+    });
   }
 
   const existingModules = {
@@ -144,13 +175,22 @@ export function mergeBundles(
 
   const existingSplitIds = new Set(target.activeSplits.map((s) => s.id));
   const newSplits =
-    from.activeSplits.filter((s) => !existingSplitIds.has(s.id)) ?? [];
+    from.activeSplits.filter(
+      // Don't include splits belonging to projects already present
+      // in the target bundle
+      (s) => !existingSplitIds.has(s.id) && !existingProjects.has(s.projectId)
+    ) ?? [];
   if (newSplits.length > 0) {
     target = {
       ...target,
       activeSplits: [...target.activeSplits, ...newSplits],
     };
   }
+
+  // Avoid `undefined` as it cannot be serialized as JSON
+  target.bundleKey = target.bundleKey ?? from.bundleKey ?? null;
+  target.deferChunksByDefault =
+    target.deferChunksByDefault ?? from.deferChunksByDefault ?? false;
 
   return target;
 }

@@ -262,3 +262,8 @@ export function uniqBy<T, K>(elements: T[], iterator: (elt: T) => K): T[] {
   }
   return filtered;
 }
+
+export function intersect<T>(a: T[], b: T[]): T[] {
+  const setB = new Set(b);
+  return a.filter((elt) => setB.has(elt));
+}

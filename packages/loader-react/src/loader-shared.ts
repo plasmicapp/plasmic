@@ -28,7 +28,7 @@ import {
 } from "@plasmicapp/loader-fetcher";
 import { getActiveVariation, getExternalIds } from "@plasmicapp/loader-splits";
 import type { useMutablePlasmicQueryData } from "@plasmicapp/query";
-import { prepComponentData } from "./bundles";
+import { mergeBundles, prepComponentData } from "./bundles";
 import { ComponentLookup } from "./component-lookup";
 import type { GlobalVariantSpec } from "./PlasmicRootProvider";
 import {
@@ -38,7 +38,6 @@ import {
   isBrowser,
   isDynamicPagePath,
   uniq,
-  uniqBy,
 } from "./utils";
 import { getPlasmicCookieValues, updatePlasmicCookieValue } from "./variation";
 
@@ -337,6 +336,7 @@ export abstract class BaseInternalPlasmicComponentLoader {
     activeSplits: [],
     bundleKey: null,
     deferChunksByDefault: false,
+    filteredIds: {},
   };
 
   constructor(args: {
@@ -508,38 +508,10 @@ ${newBundle.bundleKey}
 ${this.bundle.bundleKey}`
       );
     }
-    const bundles = [this.bundle, newBundle];
-    this.bundle = {
-      activeSplits: uniqBy(
-        bundles.flatMap((bundle) => bundle.activeSplits),
-        (split) => split.id
-      ),
-      components: uniqBy(
-        bundles.flatMap((bundle) => bundle.components),
-        (c) => c.id
-      ),
-      globalGroups: uniqBy(
-        bundles.flatMap((bundle) => bundle.globalGroups),
-        (g) => g.id
-      ),
-      modules: {
-        browser: uniqBy(
-          bundles.flatMap((bundle) => bundle.modules.browser),
-          (m) => m.fileName
-        ),
-        server: uniqBy(
-          bundles.flatMap((bundle) => bundle.modules.server),
-          (m) => m.fileName
-        ),
-      },
-      projects: uniqBy(
-        bundles.flatMap((bundle) => bundle.projects),
-        (p) => p.id
-      ),
-      // Avoid `undefined` as it cannot be serialized as JSON
-      bundleKey: newBundle.bundleKey ?? this.bundle.bundleKey ?? null,
-      deferChunksByDefault: newBundle.deferChunksByDefault ?? false,
-    };
+    // Merge the old bundle into the new bundle, this way
+    // the new bundle will enforce the latest data from the server
+    // allowing elements to be deleted by newer bundles
+    this.bundle = mergeBundles(newBundle, this.bundle);
 
     this.onBundleMerged?.();
   }
@@ -560,6 +532,7 @@ ${this.bundle.bundleKey}`
       activeSplits: [],
       bundleKey: null,
       deferChunksByDefault: false,
+      filteredIds: {},
     };
     this.registry.clear();
   }
