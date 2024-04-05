@@ -1116,8 +1116,41 @@ export const mkCanvasText = computedFn(
                   spawn(fn(editor, shortcutOpts, sub));
                 });
             },
+
             // Shouldn't leak key events to code components.
             onKeyUp: (e) => e.stopPropagation(),
+            // Shouldn't leak click events in non-interactive mode only
+            onClick: (e) => {
+              if (readOnly) return;
+              // NOTE: we must not use e.preventDefault in any other event handler below, or the Slate cursor will stop moving on click events
+              // Meanwhile, preventDefault here in the onCLick event handler is required to make stopPropagation work in other click event handlers
+              e.stopPropagation();
+              e.preventDefault();
+            },
+            onMouseDown: (e) => {
+              if (readOnly) return;
+              e.stopPropagation();
+            },
+            onMouseUp: (e) => {
+              if (readOnly) return;
+              e.stopPropagation();
+            },
+            onPointerDown: (e) => {
+              if (readOnly) return;
+              e.stopPropagation();
+            },
+            onPointerUp: (e) => {
+              if (readOnly) return;
+              e.stopPropagation();
+            },
+            onDoubleClick: (e) => {
+              if (readOnly) return;
+              e.stopPropagation();
+            },
+            onDragStart: (e) => {
+              if (readOnly) return;
+              e.stopPropagation();
+            },
           }),
         });
       }, `mkCanvasText(${node.uuid})`);
