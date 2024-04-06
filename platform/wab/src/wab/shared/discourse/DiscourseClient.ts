@@ -1,3 +1,5 @@
+type TrueFalseString = "true" | "false";
+
 export enum PermissionType {
   CREATE = 1, // FULL
   REPLY = 2, // CREATE_POST
@@ -44,8 +46,8 @@ export interface CategoryMutation {
   permissions?: GroupPermissionsMutation;
   topic_template?: string;
   custom_fields?: {
-    enable_accepted_answers?: "true"; // Discourse Solved
-    enable_unassigned_filter?: "true"; // Discourse Assign
+    enable_accepted_answers?: TrueFalseString; // Discourse Solved
+    enable_unassigned_filter?: TrueFalseString; // Discourse Assign
   };
 }
 
@@ -89,7 +91,7 @@ export type GroupUpdate =
     }
   | {
       group: Partial<GroupData | GroupCategoryDefaultNotifications>;
-      update_existing_users: boolean;
+      update_existing_users: TrueFalseString;
     };
 
 export interface Invite {

@@ -207,6 +207,6 @@ async function ensureSupportGroupTrackingCategory(
     group: {
       watching_category_ids: newWatchingCategoryIds,
     },
-    update_existing_users: true,
+    update_existing_users: "true",
   });
 }
