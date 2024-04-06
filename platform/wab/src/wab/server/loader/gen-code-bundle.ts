@@ -1,4 +1,4 @@
-import { unzip } from "@/wab/collections";
+import { unzip3 } from "@/wab/collections";
 import { tuple } from "@/wab/common";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { withSpan } from "@/wab/server/util/apm-util";
@@ -29,8 +29,9 @@ import {
  * codegen requests!  Provision codegen cluster appropriately.
  *
  * 17 - bumped for using shortened css class names
+ * 18 - started returning list of component refs in codegen response to handle errors
  */
-export const LOADER_CACHE_BUST = "17";
+export const LOADER_CACHE_BUST = "18";
 
 /**
  * This represents the version of the loader API wire format; should reflect the
@@ -193,10 +194,11 @@ async function genLoaderCodeBundleForProjectVersions(
         indirect,
       },
     ]);
-    return tuple(res.output, res.componentDeps);
+
+    return tuple(res.output, res.componentDeps, res.componentRefs);
   };
 
-  const [outputBundles, componentDeps] = unzip(
+  const [outputBundles, componentDeps, componentRefs] = unzip3(
     await withSpan(
       "loader-codegen",
       async () =>
@@ -246,6 +248,7 @@ async function genLoaderCodeBundleForProjectVersions(
     return await pool.exec("loader-assets", [
       outputBundles,
       mergedComponentDeps,
+      componentRefs.flat(),
       exportOpts.platform,
       {
         mode: opts.mode,

@@ -80,6 +80,14 @@ export function unzip<A, B>(xs: [A, B][]): [A[], B[]] {
   );
 }
 
+export function unzip3<A, B, C>(xs: [A, B, C][]): [A[], B[], C[]] {
+  return tuple(
+    xs.map(([a, b, c]) => a),
+    xs.map(([a, b, c]) => b),
+    xs.map(([a, b, c]) => c)
+  );
+}
+
 /**
  * This is a better alternative to both:
  *

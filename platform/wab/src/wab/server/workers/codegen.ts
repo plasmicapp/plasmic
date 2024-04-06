@@ -66,6 +66,13 @@ export interface CodegenOutputBundle {
   activeSplits: ActiveSplit[];
 }
 
+export interface ComponentReference {
+  id: string;
+  name: string;
+  projectId: string;
+  projectName: string;
+}
+
 interface CodegenOpts {
   connectionOptions: ConnectionOptions;
   projectId: string;
@@ -267,11 +274,21 @@ export async function doGenCode(
       newChecksums,
       imagesToFilter
     );
+
+    const componentRefs: ComponentReference[] = site.components.map((c) => {
+      return {
+        id: c.uuid,
+        name: c.name,
+        projectId,
+        projectName: project.name,
+      };
+    });
     return {
       output,
       site,
       checksums: newChecksums,
       componentDeps: getComponentDeps(site, appAuthProvider),
+      componentRefs,
     };
   } catch (error) {
     if (

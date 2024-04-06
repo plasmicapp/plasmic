@@ -69,6 +69,11 @@ export class GrantUserNotFoundError extends ApiError {
   message = "Unable to grant access to a non-existent user";
 }
 
+export class LoaderBundlingError extends ApiError {
+  name = "LoaderBundlingError";
+  statusCode = 412;
+}
+
 /**
  * We can't simply use instanceof ApiError, since our build pipeline doesn't
  * handle extending Error correctly. class extends Error works fine with

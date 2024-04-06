@@ -5,11 +5,12 @@ import {
 } from "@/wab/server/loader/module-bundler";
 import { writeCodeBundlesToDisk } from "@/wab/server/loader/module-writer";
 import tmp from "tmp";
-import { CodegenOutputBundle } from "./codegen";
+import { CodegenOutputBundle, ComponentReference } from "./codegen";
 
 export async function workerBuildAssets(
   codegenOutputs: CodegenOutputBundle[],
   componentDeps: Record<string, string[]>,
+  componentRefs: ComponentReference[],
   platform: "react" | "nextjs" | "gatsby",
   opts: {
     mode: "production" | "development";
@@ -35,6 +36,7 @@ export async function workerBuildAssets(
               dir,
               codegenOutputs,
               componentDeps,
+              componentRefs,
               {
                 platform,
                 mode: opts.mode,

@@ -1,7 +1,12 @@
 import { mkShortUuid, omitNils, tuple, withoutNils } from "@/wab/common";
+import { transformBundlerErrors } from "@/wab/server/loader/error-handler";
 import { withSpan } from "@/wab/server/util/apm-util";
 import { uploadFilesToS3 } from "@/wab/server/util/s3-util";
-import { CodegenOutputBundle } from "@/wab/server/workers/codegen";
+import {
+  CodegenOutputBundle,
+  ComponentReference,
+} from "@/wab/server/workers/codegen";
+import { LoaderBundlingError } from "@/wab/shared/ApiErrors/errors";
 import { FontUsage, makeGoogleFontUrl } from "@/wab/shared/codegen/fonts";
 import { ActiveSplit } from "@/wab/shared/codegen/splits";
 import {
@@ -583,6 +588,7 @@ export async function bundleModules(
   dir: string,
   codegenOutputs: CodegenOutputBundle[],
   componentDeps: Record<string, string[]>,
+  componentRefs: ComponentReference[],
   opts: BundleOpts,
   preferEsbuild: boolean
 ): Promise<LoaderBundleOutput> {
@@ -599,8 +605,9 @@ export async function bundleModules(
           opts
         );
       } catch (err) {
+        const bundleErrorStr: string = err.toString();
         console.error(
-          `Error bundling with esbuild: ${err.toString()}: ${err.stack}`
+          `Error bundling with esbuild: ${bundleErrorStr}: ${err.stack}`
         );
         try {
           const errPrefix = await uploadErrorFiles(err, dir);
@@ -608,7 +615,18 @@ export async function bundleModules(
         } catch (err2) {
           console.error(`Error uploading error files: ${err2.toString()}`);
         }
-        throw new Error(`Error bundling with esbuild: ${err.toString()}`);
+
+        const transformedBundleErrorStr = transformBundlerErrors(
+          bundleErrorStr,
+          componentRefs
+        );
+
+        if (transformedBundleErrorStr) {
+          console.log(`transformedError: ${transformedBundleErrorStr}`);
+          throw new LoaderBundlingError(transformedBundleErrorStr);
+        }
+
+        throw new Error(`Error bundling with esbuild: ${bundleErrorStr}`);
       }
     });
   } else {
