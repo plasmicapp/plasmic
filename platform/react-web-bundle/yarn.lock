@@ -409,10 +409,10 @@
   dependencies:
     unfetch "^4.2.0"
 
-"@plasmicapp/loader-splits@1.0.58":
-  version "1.0.58"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-splits/-/loader-splits-1.0.58.tgz#ad7c1fac5ec2a620758e4057483faa076e80d289"
-  integrity sha512-iks91hRbDPKlruyV7x/HpBIZBajLeGmyjOna701WlxDqnu1mW8d/odqSqgUexkPuLEiEY4P+b+mzx/zWLc/9ow==
+"@plasmicapp/loader-splits@1.0.59":
+  version "1.0.59"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-splits/-/loader-splits-1.0.59.tgz#9f9989f2e5043212f539844dc1354e58cdb7d83e"
+  integrity sha512-beLj7xDHSfbXYwkC/nsly9m56xZuXsH9xo/Ey0jGU8+n8lWr3jn8KbF5awb1K40BXdmfna54zAm9JOpnKfT2pA==
   dependencies:
     json-logic-js "^2.0.2"
 
@@ -436,16 +436,16 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.4.tgz#4ba0a2a894bd5d945d05282a0fbaf36d6d991224"
   integrity sha512-TgF/heoVNozZOJK2Pnnqsa/M3bxgLtAoy32xxfJ7vbSjj5fEuYmWNnzdTmvdeYyEZihyCBtUt5gs6gPiqV8pbw==
 
-"@plasmicapp/react-web@^0.2.325":
-  version "0.2.325"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.325.tgz#9cb186989a60c02928ced07e63d4635c366d4591"
-  integrity sha512-u8uWnXQApLAda8Ya9puVpba9gwIrcIdkVCkDUQSNPiNYvGBA+B4MmYH2zITtdT1NJothciIxLJwU9SKlAojsiA==
+"@plasmicapp/react-web@^0.2.326":
+  version "0.2.326"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.326.tgz#9eeb16363182ecd80e601657eb8ae6c6b70bbad6"
+  integrity sha512-R40bSMWomeLt9D/CK8pWM8ujIt7vlHiLEt/mLS4gY0HAebHaUsOAtqcPwD2xc8PPAculuasdkf4AL8ntHqRCRw==
   dependencies:
     "@plasmicapp/auth-react" "0.0.20"
     "@plasmicapp/data-sources" "0.1.150"
     "@plasmicapp/data-sources-context" "0.1.21"
     "@plasmicapp/host" "1.0.191"
-    "@plasmicapp/loader-splits" "1.0.58"
+    "@plasmicapp/loader-splits" "1.0.59"
     "@plasmicapp/prepass" "1.0.15"
     "@plasmicapp/query" "0.1.78"
     "@react-aria/checkbox" "^3.11.2"
