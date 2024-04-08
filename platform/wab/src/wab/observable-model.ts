@@ -162,6 +162,10 @@ export type ModelChange = AnyChange & {
 
 export type ModelChangeListener = (event: ModelChange) => void;
 
+type VisitFlags = {
+  incrementalObserve?: boolean;
+};
+
 type ObservableState = {
   dispose: Lambda;
   prune: Lambda;
@@ -385,7 +389,10 @@ export function observeModel(
    * Returns disposal function, or `undefined` if the `path` contains
    * a cycle.
    */
-  const observeInst = (inst: ObjInst): Lambda | undefined => {
+  const observeInst = (
+    inst: ObjInst,
+    flags: VisitFlags
+  ): Lambda | undefined => {
     if (instStates.has(inst)) {
       // We've seen this `inst` before...  So exit early
       return makeDisposeInst(inst);
@@ -393,7 +400,9 @@ export function observeModel(
 
     // We've never seen this `inst` before, so initialize `InstState`.
     // We keep track of the disposal functions used to observe this inst
-    possiblyNewlyAddedInsts.add(inst);
+    if (!flags.incrementalObserve) {
+      possiblyNewlyAddedInsts.add(inst);
+    }
     const fieldValueDisposes = new Map<string, Lambda>(); // tracks updates to field values
 
     const state: InstState = {
@@ -432,7 +441,7 @@ export function observeModel(
         addInstChildDispose(
           fieldValueDisposes,
           fieldName,
-          visitFieldValue(inst, field, event.newValue)
+          visitFieldValue(inst, field, event.newValue, flags)
         );
       }
     });
@@ -446,7 +455,7 @@ export function observeModel(
       addInstChildDispose(
         fieldValueDisposes,
         field.name,
-        visitFieldValue(inst, field, inst[field.name])
+        visitFieldValue(inst, field, inst[field.name], flags)
       );
     }
 
@@ -460,20 +469,21 @@ export function observeModel(
   const visitFieldValue = (
     inst: ObjInst,
     field: Field,
-    value: any
+    value: any,
+    flags: VisitFlags
   ): Lambda | undefined => {
     if (value == null) {
       return undefined;
     }
 
     if (_instUtil.isObjInst(value)) {
-      return observeInstFieldValue(inst, field, value);
+      return observeInstFieldValue(inst, field, value, flags);
     } else if (Array.isArray(value)) {
-      return observeArrayFieldValue(inst, field, value);
+      return observeArrayFieldValue(inst, field, value, flags);
     } else if (React.isValidElement(value)) {
       return undefined;
     } else if (isLiteralObject(value, opts.localObject)) {
-      return observePlainObjFieldValue(inst, field, value);
+      return observePlainObjFieldValue(inst, field, value, flags);
     } else if (isPrimitive(value) || typeof value === "function") {
       // Primitive values don't need subscription. However, they might weakly
       // reference another instance (e.g., by its uuid), so we should also
@@ -495,7 +505,8 @@ export function observeModel(
   const observeInstFieldValue = (
     inst: ObjInst,
     field: Field,
-    value: ObjInst
+    value: ObjInst,
+    flags: VisitFlags
   ): Lambda | undefined => {
     visitNodeListener?.(inst);
 
@@ -508,7 +519,7 @@ export function observeModel(
     }
 
     if (isStrongRefField(field)) {
-      const instDispose = observeInst(value);
+      const instDispose = observeInst(value, flags);
       if (instDispose) {
         // Add this value as a child of the owning inst
         updateInstParent(inst, field.name, value, true);
@@ -549,7 +560,9 @@ export function observeModel(
   const observeArrayFieldValue = (
     inst: ObjInst,
     field: Field,
-    array: any[]
+    array: any[],
+
+    flags: VisitFlags
   ): Lambda => {
     const childDisposes = new Map<any, Lambda[]>();
     // Support repeated children in the array
@@ -560,7 +573,7 @@ export function observeModel(
         addCollectionChildDispose(
           childDisposes,
           child,
-          visitFieldValue(inst, field, child)
+          visitFieldValue(inst, field, child, flags)
         );
       }
       childCount.set(child, (childCount.get(child) ?? 0) + 1);
@@ -636,7 +649,8 @@ export function observeModel(
   const observePlainObjFieldValue = (
     inst: ObjInst,
     field: Field,
-    obj: Record<string, any>
+    obj: Record<string, any>,
+    flags: VisitFlags
   ): Lambda => {
     // Disposes for children value stores mapping from child value to
     // a list of dispose functions.  It's a list because the same
@@ -653,7 +667,7 @@ export function observeModel(
       addCollectionChildDispose(
         childDisposes,
         val,
-        visitFieldValue(inst, field, val)
+        visitFieldValue(inst, field, val, flags)
       );
     }
 
@@ -662,7 +676,7 @@ export function observeModel(
       addCollectionChildDispose(
         childDisposes,
         val,
-        visitFieldValue(inst, field, val)
+        visitFieldValue(inst, field, val, flags)
       );
     }
 
@@ -685,12 +699,12 @@ export function observeModel(
         addCollectionChildDispose(
           childDisposes,
           event.newValue,
-          visitFieldValue(inst, field, event.newValue)
+          visitFieldValue(inst, field, event.newValue, flags)
         );
         addCollectionChildDispose(
           childDisposes,
           event.name,
-          visitFieldValue(inst, field, event.name)
+          visitFieldValue(inst, field, event.name, flags)
         );
       } else if (event.type === "update") {
         fireFieldChange(inst, field.name, {
@@ -704,7 +718,7 @@ export function observeModel(
         addCollectionChildDispose(
           childDisposes,
           event.newValue,
-          visitFieldValue(inst, field, event.newValue)
+          visitFieldValue(inst, field, event.newValue, flags)
         );
       } else if (event.type === "remove") {
         fireFieldChange(inst, field.name, {
@@ -1028,7 +1042,10 @@ export function observeModel(
   };
 
   // Finally, we begin by observing the root instance!
-  const rootDispose = ensure(observeInst(rootInst), "Expected root dispose");
+  const rootDispose = ensure(
+    observeInst(rootInst, {}),
+    "Expected root dispose"
+  );
 
   firstRun = false;
   firstRunData.allGlobalVariants =
@@ -1167,7 +1184,9 @@ export function observeModel(
       addInstChildDispose(
         state.fieldValueDisposes,
         fieldToUpdate.name,
-        visitFieldValue(inst, fieldToUpdate, inst[fieldToUpdate.name])
+        visitFieldValue(inst, fieldToUpdate, inst[fieldToUpdate.name], {
+          incrementalObserve: true,
+        })
       );
     },
   };

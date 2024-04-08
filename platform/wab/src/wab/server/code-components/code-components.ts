@@ -305,6 +305,7 @@ export async function updateHostlessPackage(
     const result = await syncCodeComponents(
       {
         change: async (f) => failable((args) => f(args)),
+        observeComponents: (_) => true,
         codeComponentsRegistry: new CodeComponentsRegistry(
           globalThis,
           getBuiltinComponentRegistrations()

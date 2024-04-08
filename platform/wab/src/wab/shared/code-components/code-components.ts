@@ -105,6 +105,7 @@ import { walkDependencyTree } from "@/wab/project-deps";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import {
   allCustomFunctions,
+  componentToReferencers,
   componentToTplComponents,
   computedProjectFlags,
   flattenComponent,
@@ -549,6 +550,7 @@ interface SiteCtx {
     f: (args: FailableArgParams<void, E>) => IFailable<void, E>,
     opts?: { noUndoRecord?: boolean }
   ): Promise<IFailable<void, E>>;
+  observeComponents(components: Component[]): boolean;
   getRegisteredComponentsReact(): typeof React;
   tplMgr(): TplMgr;
   getPlumeSite(): Site | undefined;
@@ -660,7 +662,7 @@ export async function syncCodeComponents(
     // all the removed components.
 
     run(await refreshCodeComponentMetas(ctx, fns));
-    run(await checkComponentProps(ctx, newComponents, fns, opts));
+    run(await checkComponentPropsAndStates(ctx, newComponents, fns, opts));
     run(await checkParentComponents(ctx));
     run(await refreshDefaultSlotContents(ctx));
     run(await checkReactVersion(ctx, fns));
@@ -1046,6 +1048,7 @@ async function addNewRegisteredComponents(
             newComponents.forEach(([_meta, c]) =>
               ctx.tplMgr().attachComponent(c)
             );
+            ctx.observeComponents(newComponents.map(([_, c]) => c));
 
             newComponents.forEach(([meta, c]) => {
               c.params = changeRun(
@@ -1134,36 +1137,60 @@ async function refreshCodeComponentMetas(
   fns: CodeComponentSyncCallbackFns
 ) {
   const tplMgr = new TplMgr({ site: ctx.site });
-  return await ctx.change<never>(
+  const componentsToUpdate = withoutNils(
+    ctx.site.components.map((c) => {
+      if (!isCodeComponent(c) && !isPlumeComponent(c)) {
+        return undefined;
+      }
+      const meta = isCodeComponent(c)
+        ? ctx.codeComponentsRegistry
+            .getRegisteredComponentsAndContextsMap()
+            .get(c.name)?.meta
+        : makePlumeComponentMeta(c);
+      if (!meta) {
+        return undefined;
+      }
+      return { component: c, meta };
+    })
+  );
+  const componentsToRename: Component[] = [];
+
+  return ctx.change<never>(
     ({ success, run }) => {
-      ctx.site.components.forEach((c) => {
-        if (isCodeComponent(c) || isPlumeComponent(c)) {
-          const meta = isCodeComponent(c)
-            ? ctx.codeComponentsRegistry
-                .getRegisteredComponentsAndContextsMap()
-                .get(c.name)?.meta
-            : makePlumeComponentMeta(c);
-          if (!meta) {
-            return;
-          }
-          const mustBeNamed = run(
-            refreshCodeComponentMeta(ctx.site, c, meta, fns)
-          );
-          if (mustBeNamed) {
-            findAllInstancesOfComponent(ctx.site, c).forEach(
-              ({ referencedComponent, tpl }) => {
-                if (!tpl.name) {
-                  tplMgr.renameTpl(
-                    referencedComponent,
-                    tpl,
-                    getComponentDisplayName(tpl.component)
-                  );
-                }
-              }
-            );
-          }
+      componentsToUpdate.forEach(({ component, meta }) => {
+        const mustBeNamed = run(
+          refreshCodeComponentMeta(ctx.site, component, meta, fns)
+        );
+        if (mustBeNamed) {
+          componentsToRename.push(component);
         }
       });
+
+      const allComponentInstances = componentsToRename.map((component) => {
+        return {
+          component,
+          allInstances: findAllInstancesOfComponent(ctx.site, component),
+        };
+      });
+      ctx.observeComponents(
+        allComponentInstances.flatMap(({ allInstances }) =>
+          allInstances
+            .filter(({ tpl }) => !tpl.name)
+            .map(({ referencedComponent }) => referencedComponent)
+        )
+      );
+      allComponentInstances.forEach(({ allInstances }) => {
+        allInstances.forEach(({ referencedComponent, tpl }) => {
+          if (!tpl.name) {
+            tplMgr.renameTpl(
+              referencedComponent,
+              tpl,
+              getComponentDisplayName(tpl.component)
+            );
+          }
+        });
+      });
+
       return success();
     },
     { noUndoRecord: true }
@@ -1488,6 +1515,10 @@ interface StateChanges {
   }[];
 }
 
+interface StateChangesWithComponent extends StateChanges {
+  component: Component;
+}
+
 export function compareComponentStatesWithMeta(
   site: Site,
   component: Component,
@@ -1569,6 +1600,14 @@ function refreshComponentStates(ctx: SiteCtx) {
             ...run(compareComponentStatesWithMeta(ctx.site, c, meta)),
           });
         });
+
+      const changedComponents = Array.from(
+        new Set(stateChanges.map(({ component }) => component))
+      );
+      const parentComponents = changedComponents.flatMap((c) =>
+        Array.from(componentToReferencers(ctx.site).get(c) ?? [])
+      );
+      ctx.observeComponents([...parentComponents, ...changedComponents]);
       stateChanges.forEach((changes) => {
         if (hasStateChanges(changes)) {
           doUpdateComponentStates(ctx.site, changes.component, changes);
@@ -1576,6 +1615,14 @@ function refreshComponentStates(ctx: SiteCtx) {
       });
       return success();
     }
+  );
+}
+
+function hasPropChanges(changes: CodeComponentMetaDiff) {
+  return (
+    changes.addedProps.length > 0 ||
+    changes.updatedProps.length > 0 ||
+    changes.removedProps.length > 0
   );
 }
 
@@ -1634,7 +1681,7 @@ type CodeComponentPropsError =
   | SelfReferencingComponent
   | DuplicatedComponentParamError;
 
-async function checkComponentProps(
+async function checkComponentPropsAndStates(
   ctx: SiteCtx,
   newComponents: CodeComponent[],
   fns: CodeComponentSyncCallbackFns,
@@ -1651,9 +1698,7 @@ async function checkComponentProps(
             ...diff,
           };
         })
-        .filter(({ addedProps, updatedProps, removedProps }) =>
-          [addedProps, updatedProps, removedProps].some((i) => i.length > 0)
-        );
+        .filter((change) => hasPropChanges(change));
 
       const newParams = changes.flatMap((change) =>
         change.addedProps.map((p) => ({
@@ -1685,6 +1730,13 @@ async function checkComponentProps(
       run(
         await ctx.change<CodeComponentPropsError>(
           ({ success: changeSuccess, run: changeRun }) => {
+            const changedComponents = Array.from(
+              new Set(changes.map(({ component }) => component))
+            );
+            const parentComponents = changedComponents.flatMap((c) =>
+              Array.from(componentToReferencers(ctx.site).get(c) ?? [])
+            );
+            ctx.observeComponents([...parentComponents, ...changedComponents]);
             // First pass registers all new props (which are safe and needed
             // to instantiate `TplComponent`s in the default slot contents).
             newParams.forEach(({ component, param }) => {
@@ -4063,7 +4115,11 @@ async function upsertRegisteredTokens(
               }
 
               const removeToken = (token: StyleToken) => {
-                const usages = extractTokenUsages(site, token)[0];
+                const [usages, summary] = extractTokenUsages(site, token);
+                ctx.observeComponents([
+                  ...summary.components,
+                  ...summary.frames.map((f) => f.container.component),
+                ]);
                 for (const usage of usages) {
                   changeTokenUsage(site, token, usage, "reset");
                 }
@@ -4683,6 +4739,7 @@ async function refreshDefaultSlotContents(siteCtx: SiteCtx) {
       .filter(isTplSlot)
       .filter((slot) => slot.defaultContents.length > 0);
     if (slots.length > 0) {
+      siteCtx.observeComponents(siteCtx.site.components);
       // If there are any slots with default contents, then we fork them all first
       // before clearing the default contents
       forkAllTplCodeComponentVirtualArgs(siteCtx.site);

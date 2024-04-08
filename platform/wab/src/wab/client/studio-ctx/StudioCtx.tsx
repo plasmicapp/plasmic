@@ -1358,6 +1358,10 @@ export class StudioCtx extends WithDbCtx {
     });
   }
 
+  observeComponents(components: Component[]) {
+    return this.dbCtx().maybeObserveComponents(components);
+  }
+
   private _isDocs = observable.box(false);
 
   set isDocs(v: boolean) {

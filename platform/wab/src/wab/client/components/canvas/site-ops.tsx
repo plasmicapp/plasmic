@@ -1532,9 +1532,10 @@ export class SiteOps {
 
     await this.studioCtx.changeObserved(
       () => {
-        return tokensUsages.flatMap(
-          (tokenUsage) => tokenUsage.usages[1].components
-        );
+        return tokensUsages.flatMap((tokenUsage) => [
+          ...tokenUsage.usages[1].components,
+          ...tokenUsage.usages[1].frames.map((f) => f.container.component),
+        ]);
       },
       ({ success }) => {
         tokens.forEach((token) => {
@@ -1575,9 +1576,10 @@ export class SiteOps {
 
     await this.studioCtx.changeObserved(
       () => {
-        return mixinsUsages.flatMap(
-          (mixinUsage) => mixinUsage.usages[1].components
-        );
+        return mixinsUsages.flatMap((mixinUsage) => [
+          ...mixinUsage.usages[1].components,
+          ...mixinUsage.usages[1].frames.map((f) => f.container.component),
+        ]);
       },
       ({ success }) => {
         mixins.forEach((mixin) => {
@@ -1596,7 +1598,10 @@ export class SiteOps {
     const [_, summary] = extractTokenUsages(this.site, fromToken);
     await this.studioCtx.changeObserved(
       () => {
-        return summary.components;
+        return [
+          ...summary.components,
+          ...summary.frames.map((f) => f.container.component),
+        ];
       },
       ({ success }) => {
         this.tplMgr.swapTokens(fromToken, toToken);
