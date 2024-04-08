@@ -436,38 +436,50 @@ export class SiteOps {
       }
     }
 
-    await this.change(() => {
-      this.clearFrameComboSettings(frame);
-      const index = variant.parent
-        ? variant.parent.variants.indexOf(variant)
-        : -1;
-      this.tplMgr.tryRemoveVariant(variant, arena.component);
+    await this.studioCtx.changeObserved(
+      () => {
+        return Array.from(
+          findComponentsUsingComponentVariant(
+            this.site,
+            arena.component,
+            variant
+          )
+        );
+      },
+      ({ success }) => {
+        this.clearFrameComboSettings(frame);
+        const index = variant.parent
+          ? variant.parent.variants.indexOf(variant)
+          : -1;
+        this.tplMgr.tryRemoveVariant(variant, arena.component);
 
-      if (variant.parent?.variants.length === 0) {
-        removeVariantGroup(this.site, arena.component, variant.parent);
-      } else if (wasFocused) {
-        if (index < 0) {
-          // For style variants, just refocus on base
-          this.studioCtx.setStudioFocusOnFrame({
-            frame: getComponentArenaBaseFrame(arena),
-          });
-        } else {
-          const group = ensure(
-            variant.parent,
-            "Variant is expected to have a group"
-          );
-          const nextVariant =
-            group.variants[Math.min(index, group.variants.length - 1)];
-          const nextFrame = nextVariant
-            ? getManagedFrameForVariant(this.site, arena, nextVariant)
-            : undefined;
-          this.studioCtx.setStudioFocusOnFrame({
-            frame: nextFrame ?? getComponentArenaBaseFrame(arena),
-          });
+        if (variant.parent?.variants.length === 0) {
+          removeVariantGroup(this.site, arena.component, variant.parent);
+        } else if (wasFocused) {
+          if (index < 0) {
+            // For style variants, just refocus on base
+            this.studioCtx.setStudioFocusOnFrame({
+              frame: getComponentArenaBaseFrame(arena),
+            });
+          } else {
+            const group = ensure(
+              variant.parent,
+              "Variant is expected to have a group"
+            );
+            const nextVariant =
+              group.variants[Math.min(index, group.variants.length - 1)];
+            const nextFrame = nextVariant
+              ? getManagedFrameForVariant(this.site, arena, nextVariant)
+              : undefined;
+            this.studioCtx.setStudioFocusOnFrame({
+              frame: nextFrame ?? getComponentArenaBaseFrame(arena),
+            });
+          }
         }
+        this.fixChromeAfterRemoveFrame();
+        return success();
       }
-      this.fixChromeAfterRemoveFrame();
-    });
+    );
   }
 
   private async confirmDeleteVariant(
@@ -511,12 +523,9 @@ export class SiteOps {
     return true;
   }
 
-  private async confirmDeleteVariantGroup(
+  private findComponentsUsingVariantGroup(
     group: VariantGroup,
-    component: Component | undefined,
-    opts: {
-      confirm: "always" | "if-referenced";
-    }
+    component: Component | undefined
   ) {
     const usingComps = new Set<Component>();
     for (const variant of group.variants) {
@@ -525,6 +534,17 @@ export class SiteOps {
         : findComponentsUsingGlobalVariant(this.site, variant);
       xAddAll(usingComps, compsUsingVariant);
     }
+    return usingComps;
+  }
+
+  private async confirmDeleteVariantGroup(
+    group: VariantGroup,
+    component: Component | undefined,
+    opts: {
+      confirm: "always" | "if-referenced";
+    }
+  ) {
+    const usingComps = this.findComponentsUsingVariantGroup(group, component);
     const usingSplits = findSplitsUsingVariantGroup(this.site, group);
     if (
       opts.confirm === "always" ||
@@ -1213,11 +1233,21 @@ export class SiteOps {
       return;
     }
 
-    await this.change(() => {
-      removeVariantGroup(this.site, component, group);
-      this.studioCtx.ensureComponentStackFramesHasOnlyValidVariants(component);
-      this.studioCtx.pruneInvalidViewCtxs();
-    });
+    await this.studioCtx.changeObserved(
+      () => {
+        return Array.from(
+          this.findComponentsUsingVariantGroup(group, component)
+        );
+      },
+      ({ success }) => {
+        removeVariantGroup(this.site, component, group);
+        this.studioCtx.ensureComponentStackFramesHasOnlyValidVariants(
+          component
+        );
+        this.studioCtx.pruneInvalidViewCtxs();
+        return success();
+      }
+    );
   }
 
   async removeGlobalVariantGroup(group: VariantGroup) {
@@ -1227,11 +1257,19 @@ export class SiteOps {
     if (!really) {
       return;
     }
-    await this.change(() => {
-      this.tplMgr.removeGlobalVariantGroup(group);
-      this.studioCtx.ensureGlobalStackFramesHasOnlyValidVariants();
-      this.studioCtx.pruneInvalidViewCtxs();
-    });
+    await this.studioCtx.changeObserved(
+      () => {
+        return Array.from(
+          this.findComponentsUsingVariantGroup(group, undefined)
+        );
+      },
+      ({ success }) => {
+        this.tplMgr.removeGlobalVariantGroup(group);
+        this.studioCtx.ensureGlobalStackFramesHasOnlyValidVariants();
+        this.studioCtx.pruneInvalidViewCtxs();
+        return success();
+      }
+    );
   }
 
   async removeVariant(component: Component, variant: Variant) {
@@ -1254,11 +1292,23 @@ export class SiteOps {
         return;
       }
     }
-    await this.change(() => {
-      this.tplMgr.tryRemoveVariant(variant, component);
-      this.studioCtx.ensureComponentStackFramesHasOnlyValidVariants(component);
-      this.studioCtx.pruneInvalidViewCtxs();
-    });
+    await this.studioCtx.changeObserved(
+      () => {
+        return Array.from(
+          !isStyleVariant(variant)
+            ? findComponentsUsingComponentVariant(this.site, component, variant)
+            : new Set<Component>()
+        );
+      },
+      ({ success }) => {
+        this.tplMgr.tryRemoveVariant(variant, component);
+        this.studioCtx.ensureComponentStackFramesHasOnlyValidVariants(
+          component
+        );
+        this.studioCtx.pruneInvalidViewCtxs();
+        return success();
+      }
+    );
   }
 
   tryRenameVariant(variant: Variant, newName: string) {
@@ -1302,11 +1352,17 @@ export class SiteOps {
     if (!really) {
       return;
     }
-    await this.change(() => {
-      this.tplMgr.tryRemoveVariant(variant, undefined);
-      this.studioCtx.ensureGlobalStackFramesHasOnlyValidVariants();
-      this.studioCtx.pruneInvalidViewCtxs();
-    });
+    await this.studioCtx.changeObserved(
+      () => {
+        return Array.from(findComponentsUsingGlobalVariant(this.site, variant));
+      },
+      ({ success }) => {
+        this.tplMgr.tryRemoveVariant(variant, undefined);
+        this.studioCtx.ensureGlobalStackFramesHasOnlyValidVariants();
+        this.studioCtx.pruneInvalidViewCtxs();
+        return success();
+      }
+    );
   }
 
   async removeSplitAndGlobalVariant(split: Split, group: VariantGroup) {
@@ -1318,12 +1374,20 @@ export class SiteOps {
       return;
     }
 
-    await this.change(() => {
-      this.tplMgr.removeSplit(split);
-      this.tplMgr.removeGlobalVariantGroup(group);
-      this.studioCtx.ensureGlobalStackFramesHasOnlyValidVariants();
-      this.studioCtx.pruneInvalidViewCtxs();
-    });
+    await this.studioCtx.changeObserved(
+      () => {
+        return Array.from(
+          this.findComponentsUsingVariantGroup(group, undefined)
+        );
+      },
+      ({ success }) => {
+        this.tplMgr.removeSplit(split);
+        this.tplMgr.removeGlobalVariantGroup(group);
+        this.studioCtx.ensureGlobalStackFramesHasOnlyValidVariants();
+        this.studioCtx.pruneInvalidViewCtxs();
+        return success();
+      }
+    );
   }
 
   removeStyleVariantIfEmptyAndUnused(component: Component, variant: Variant) {
