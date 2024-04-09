@@ -1255,7 +1255,9 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       const plasmicData = JSON.parse(plasmicDataStr);
       if (
         sc.clipboard.isSet() &&
-        ["cross-tab-copy", "copy", "cut"].includes(plasmicData.action)
+        (["copy", "cut"].includes(plasmicData.action) ||
+          (plasmicData.action === "cross-tab-copy" &&
+            plasmicData.projectId === sc.siteInfo.id))
       ) {
         console.log("Pasting plasmic-clipboard tpl");
         return { type: "clip", clip: sc.clipboard.paste() };
