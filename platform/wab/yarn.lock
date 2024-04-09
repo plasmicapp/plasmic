@@ -4844,17 +4844,17 @@
   dependencies:
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
 
-"@plasmicapp/loader-react@^1.0.345":
-  version "1.0.345"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-1.0.345.tgz#ab78561a5af1040f9ddf3d91e40f3956d59d69ea"
-  integrity sha512-/X+lN3qhuq2nspz8V6d0r1d0bOQp2uYKJkZgAd9RBGqvEx1NuBpRU7ZjQxW4uUVboipr93IJXrZEzLyFQwmQvw==
+"@plasmicapp/loader-react@^1.0.346":
+  version "1.0.346"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-1.0.346.tgz#d886ca92eb47a25c007911041c9e5dbaa10af5d1"
+  integrity sha512-4CjGx277prAMdzNfI5GRj0yiRwNjpeopyhZNAi+fO9GV5JvO1T2Fsf9xNLgHxLJlrcK+E5RLujCByHk4BPzOjQ==
   dependencies:
     "@plasmicapp/data-sources-context" "0.1.21"
     "@plasmicapp/host" "1.0.191"
     "@plasmicapp/loader-core" "1.0.130"
     "@plasmicapp/loader-fetcher" "1.0.51"
     "@plasmicapp/loader-splits" "1.0.59"
-    "@plasmicapp/prepass" "1.0.15"
+    "@plasmicapp/prepass" "1.0.16"
     "@plasmicapp/query" "0.1.78"
     pascalcase "^1.0.0"
     server-only "0.0.1"
@@ -4866,13 +4866,13 @@
   dependencies:
     json-logic-js "^2.0.2"
 
-"@plasmicapp/prepass@1.0.15":
-  version "1.0.15"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/prepass/-/prepass-1.0.15.tgz#114b01429de44cc9209b87f943d0285783b740d1"
-  integrity sha512-SGScIt98IxWe841Q+z+aI0TEAtEdN/c0+PKcFVew4uKNzYLCk3JMRSCpMPqVTGTcGUOZNM9X2UI+94uA4mD93g==
+"@plasmicapp/prepass@1.0.16":
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/prepass/-/prepass-1.0.16.tgz#8a2084c169d7e67ccd2a7d290e55af6f4ccaf87c"
+  integrity sha512-D21I4N5BQKGEoE47NWykFjSzc/OZ7rJFOylP/2j5BA22Cqkrcjv5Qm7F6N74oJxuD/B8FKN8pdqEsJc0ldcQJw==
   dependencies:
     "@plasmicapp/query" "0.1.78"
-    "@plasmicapp/react-ssr-prepass" "2.0.4"
+    "@plasmicapp/react-ssr-prepass" "2.0.6"
 
 "@plasmicapp/query@0.1.78":
   version "0.1.78"
@@ -4881,22 +4881,22 @@
   dependencies:
     swr "^1.0.0"
 
-"@plasmicapp/react-ssr-prepass@2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.4.tgz#4ba0a2a894bd5d945d05282a0fbaf36d6d991224"
-  integrity sha512-TgF/heoVNozZOJK2Pnnqsa/M3bxgLtAoy32xxfJ7vbSjj5fEuYmWNnzdTmvdeYyEZihyCBtUt5gs6gPiqV8pbw==
+"@plasmicapp/react-ssr-prepass@2.0.6":
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.6.tgz#e36cc365a8ddb54e3c5caf0ce4ad6818c995b5a6"
+  integrity sha512-D+/pxBSYV8/qiwuwVMRnASZMXmlxDYUKRjVnRGjf3Q9s7SC/KlRSB5ORIk81heOH5HaRq05TD47LPsmNFvhNiw==
 
-"@plasmicapp/react-web@^0.2.326":
-  version "0.2.326"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.326.tgz#9eeb16363182ecd80e601657eb8ae6c6b70bbad6"
-  integrity sha512-R40bSMWomeLt9D/CK8pWM8ujIt7vlHiLEt/mLS4gY0HAebHaUsOAtqcPwD2xc8PPAculuasdkf4AL8ntHqRCRw==
+"@plasmicapp/react-web@^0.2.327":
+  version "0.2.327"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.327.tgz#9bf6b8cc5d230b4ae0ee681e2c30d8a320e15ec1"
+  integrity sha512-PS49T5ybaLiHxn4aiMu3nah3MDkbGJ07P6PXnOB8n70n/zBxf/MQtv3VDaqNo9lA6LgaDZnN7O+Omr9zE7VZ4w==
   dependencies:
     "@plasmicapp/auth-react" "0.0.20"
     "@plasmicapp/data-sources" "0.1.150"
     "@plasmicapp/data-sources-context" "0.1.21"
     "@plasmicapp/host" "1.0.191"
     "@plasmicapp/loader-splits" "1.0.59"
-    "@plasmicapp/prepass" "1.0.15"
+    "@plasmicapp/prepass" "1.0.16"
     "@plasmicapp/query" "0.1.78"
     "@react-aria/checkbox" "^3.11.2"
     "@react-aria/focus" "^3.14.3"
@@ -4922,10 +4922,10 @@
     fast-deep-equal "^3.1.3"
     valtio "^1.6.3"
 
-"@plasmicpkgs/antd5@^0.0.222":
-  version "0.0.222"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.222.tgz#d720cac6ebdb2d6d0619278e943f1298fb4677a3"
-  integrity sha512-Ybnkfic7N+hKAzkQr1lhvbufwi8F7r8BeYsFI8xCiy3B+zwnLAE3hGYiU1JMX/t9sXi3pZkua32/BIIQiiz2nQ==
+"@plasmicpkgs/antd5@^0.0.223":
+  version "0.0.223"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.223.tgz#df5712e46ab714ea9f9b446dd1e8b604e714a074"
+  integrity sha512-/ulTdryFMWFyH1l63YHrIbAJ5RwPowdrY/9GJKnsYMV5kWj5wWv0naydYVhU3WOdzRVmV2z7U0XdvCoWaYNotQ==
   dependencies:
     antd "^5.12.7"
     classnames "^2.3.2"
