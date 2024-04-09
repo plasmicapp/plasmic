@@ -524,12 +524,27 @@ const TplTreeNode = observer(function TplTreeNode(props: {
     return outlineCtx.matcher.boldSnippets(label);
   };
 
+  const IconWrapper = ({ children }: { children: React.ReactNode }) => {
+    return (
+      <div
+        className={cx({
+          tpltree__label__icon: true,
+          "tpltree__label__icon--tag": Tpls.isTplTag(item),
+          "tpltree__label__icon--component": Tpls.isTplComponent(item),
+          "tpltree__label__icon--slot": Tpls.isTplSlot(item),
+        })}
+      >
+        {children}
+      </div>
+    );
+  };
+
   const renderRep = () => {
     if (hasRep) {
       return (
-        <div className="tpltree__label__icon tpltree__label__icon--tag">
+        <IconWrapper>
           <RepIcon />
-        </div>
+        </IconWrapper>
       );
     }
     return null;
@@ -538,9 +553,9 @@ const TplTreeNode = observer(function TplTreeNode(props: {
   const renderInteractive = () => {
     if (hasInteraction) {
       return (
-        <div className="tpltree__label__icon tpltree__label__icon--tag">
+        <IconWrapper>
           <ActionIcon />
-        </div>
+        </IconWrapper>
       );
     }
     return null;
