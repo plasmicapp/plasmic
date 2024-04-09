@@ -1,4 +1,4 @@
-import type { Opaque } from "type-fest";
+import type { Opaque, Primitive } from "type-fest";
 
 /**
  * Falsy (from utility-types)
@@ -125,3 +125,42 @@ export type OmitByValue<T, ValueType> = Pick<
   T,
   { [Key in keyof T]-?: T[Key] extends ValueType ? never : Key }[keyof T]
 >;
+
+/**
+ * Overrides all values satisfying Condition with Override in T.
+ *
+ * Based on implementation of type-fest.ReadonlyDeep.
+ */
+export type ConditionalOverrideDeep<T, Condition, Override> =
+  T extends Condition
+    ? Override
+    : T extends Primitive | void | Date | RegExp
+    ? T
+    : // Identify tuples to avoid converting them to arrays inadvertently; special case `readonly [...never[]]`, as it emerges undesirably from recursive invocations of ReadonlyDeep below.
+    T extends [] | [...never[]]
+    ? []
+    : T extends [infer U, ...infer V]
+    ? [
+        ConditionalOverrideDeep<U, Condition, Override>,
+        ...ConditionalOverrideDeepArray<V, Condition, Override>
+      ]
+    : T extends [...infer U, infer V]
+    ? [
+        ...ConditionalOverrideDeepArray<U, Condition, Override>,
+        ConditionalOverrideDeep<V, Condition, Override>
+      ]
+    : T extends Array<infer ItemType>
+    ? Array<ConditionalOverrideDeep<ItemType, Condition, Override>>
+    : T extends object
+    ? {
+        [KeyType in keyof T]: ConditionalOverrideDeep<
+          T[KeyType],
+          Condition,
+          Override
+        >;
+      }
+    : unknown;
+
+type ConditionalOverrideDeepArray<T, Condition, Override> = T extends Condition
+  ? Override[]
+  : T[];
