@@ -441,7 +441,10 @@ export function observeModel(
         addInstChildDispose(
           fieldValueDisposes,
           fieldName,
-          visitFieldValue(inst, field, event.newValue, flags)
+          visitFieldValue(inst, field, event.newValue, {
+            ...flags,
+            incrementalObserve: false,
+          })
         );
       }
     });
@@ -568,12 +571,16 @@ export function observeModel(
     // Support repeated children in the array
     const childCount = new Map<any, number>();
 
-    const handleNewChild = (child: any) => {
+    const handleNewChild = (child: any, onUpdate: boolean) => {
       if (!childCount.has(child)) {
+        const newFlags = { ...flags };
+        if (onUpdate) {
+          newFlags.incrementalObserve = false;
+        }
         addCollectionChildDispose(
           childDisposes,
           child,
-          visitFieldValue(inst, field, child, flags)
+          visitFieldValue(inst, field, child, newFlags)
         );
       }
       childCount.set(child, (childCount.get(child) ?? 0) + 1);
@@ -593,7 +600,7 @@ export function observeModel(
     // know if any of them has changed.  Note that we're not tracking
     // things array index location.
     array.forEach((childVal) => {
-      handleNewChild(childVal);
+      handleNewChild(childVal, false);
     });
 
     // Now, we want to observe the array itself, to monitor when new
@@ -613,7 +620,7 @@ export function observeModel(
           handleDeleteChild(child);
         }
         for (const child of event.added) {
-          handleNewChild(child);
+          handleNewChild(child, true);
         }
       } else if (event.type === "update") {
         fireFieldChange(inst, field.name, {
@@ -626,7 +633,7 @@ export function observeModel(
         // An index location has been set to a new value!  Dispose the
         // old value, and observe the new value.
         handleDeleteChild(event.oldValue);
-        handleNewChild(event.newValue);
+        handleNewChild(event.newValue, true);
       } else {
         throw new Error(`Unknown event of type ${(event as any).type}`);
       }
@@ -689,6 +696,7 @@ export function observeModel(
     // are added, removed, or changed.
     // eslint-disable-next-line @typescript-eslint/ban-types
     const objDispose = mobx.observe(obj as Object, (event) => {
+      const newFlags: VisitFlags = { ...flags, incrementalObserve: false };
       if (event.type === "add") {
         fireFieldChange(inst, field.name, {
           type: "obj-add",
@@ -699,12 +707,12 @@ export function observeModel(
         addCollectionChildDispose(
           childDisposes,
           event.newValue,
-          visitFieldValue(inst, field, event.newValue, flags)
+          visitFieldValue(inst, field, event.newValue, newFlags)
         );
         addCollectionChildDispose(
           childDisposes,
           event.name,
-          visitFieldValue(inst, field, event.name, flags)
+          visitFieldValue(inst, field, event.name, newFlags)
         );
       } else if (event.type === "update") {
         fireFieldChange(inst, field.name, {
@@ -718,7 +726,7 @@ export function observeModel(
         addCollectionChildDispose(
           childDisposes,
           event.newValue,
-          visitFieldValue(inst, field, event.newValue, flags)
+          visitFieldValue(inst, field, event.newValue, newFlags)
         );
       } else if (event.type === "remove") {
         fireFieldChange(inst, field.name, {
