@@ -32,12 +32,24 @@ export interface CopyElementsReference {
   activeVariantsUuids: string[];
 }
 
+export type CopyStateBundleRef =
+  | {
+      type: "revision";
+      revisionNum: number;
+    }
+  | {
+      type: "pkg";
+      pkgId: string;
+      version: string;
+    };
+
 export interface CopyState {
   action: "cross-tab-copy";
   projectId: string;
   componentName: string;
   componentUuid: string;
-  revisionNum: number;
+  branchId?: string;
+  bundleRef: CopyStateBundleRef;
   references: CopyElementsReference[];
 }
 

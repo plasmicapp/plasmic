@@ -18,16 +18,18 @@ import {
   InsertableTemplatesItem,
   InsertableTemplateTokenResolution,
 } from "@/wab/devflags";
+import { BranchId } from "@/wab/shared/ApiSchema";
 import { FastBundler } from "@/wab/shared/bundler";
-import { getBundle } from "@/wab/shared/bundles";
+import { Bundle, getBundle } from "@/wab/shared/bundles";
 import { cloneInsertableTemplate } from "@/wab/shared/insertable-templates";
 import {
   CopyElementsReference,
   CopyState,
+  CopyStateBundleRef,
   CopyStateExtraInfo,
   InsertableTemplateExtraInfo,
 } from "@/wab/shared/insertable-templates/types";
-import { PkgInfo } from "@/wab/shared/SharedApi";
+import { PkgInfo, PkgVersionInfo } from "@/wab/shared/SharedApi";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { getBaseVariant } from "@/wab/shared/Variants";
 import { unbundleProjectDependency, unbundleSite } from "@/wab/tagged-unbundle";
@@ -352,14 +354,32 @@ export function getCopyState(
 
   const currentComponent = viewCtx.currentComponent();
 
+  const dbCtx = viewCtx.dbCtx();
+
+  function getBundleRef(): CopyStateBundleRef {
+    if (dbCtx.pkgVersionInfoMeta) {
+      return {
+        type: "pkg",
+        // This is a stable package version, so the copy and paste will be stable
+        pkgId: dbCtx.pkgVersionInfoMeta.pkgId,
+        version: dbCtx.pkgVersionInfoMeta.version,
+      };
+    }
+    return {
+      type: "revision",
+      // We include revisionNum so that we reference this exact state, but this
+      // implies that eventually the copy state will reference a non existent
+      // revision likely, but this is fine, copy and paste is not meant to be
+      // take a long time
+      revisionNum: dbCtx.revisionNum,
+    };
+  }
+
   const state: CopyState = {
     action: "cross-tab-copy",
     projectId: viewCtx.studioCtx.siteInfo.id,
-    // We include revisionNum so that we reference this exact state, but this
-    // implies that eventually the copy state will reference a non existent
-    // revision likely, but this is fine, copy and paste is not meant to be
-    // take a long time
-    revisionNum: viewCtx.dbCtx().revisionNum,
+    branchId: dbCtx.branchInfo?.id,
+    bundleRef: getBundleRef(),
     componentUuid: currentComponent.uuid,
     componentName: currentComponent.name,
     references,
@@ -368,27 +388,50 @@ export function getCopyState(
   return state;
 }
 
+async function resolveBundleRef(
+  studioCtx: StudioCtx,
+  state: CopyState
+): Promise<{
+  bundle: Bundle;
+  depPkgs: PkgVersionInfo[];
+}> {
+  const ref = state.bundleRef;
+  if (ref.type === "pkg") {
+    const { pkg, depPkgs } = await studioCtx.appCtx.api.getPkgVersion(
+      ref.pkgId,
+      ref.version,
+      state.branchId
+    );
+    return { bundle: pkg.model, depPkgs };
+  }
+  const { rev, depPkgs } = await studioCtx.appCtx.api.getSiteInfo(
+    state.projectId,
+    {
+      revisionNum: ref.revisionNum,
+      branchId: state.branchId as BranchId | undefined,
+    }
+  );
+  return {
+    bundle: getBundle(rev, studioCtx.appCtx.lastBundleVersion),
+    depPkgs,
+  };
+}
+
 export async function buildCopyStateExtraInfo(
   studioCtx: StudioCtx,
   state: CopyState
 ): Promise<CopyStateExtraInfo> {
-  const { projectId, componentUuid, componentName, revisionNum, references } =
+  const { projectId, componentUuid, componentName, references, bundleRef } =
     state;
 
   const site = await studioCtx.app.withSpinner(
     (async () => {
       // TODO: For copy and paste to work, we are downloading the entire site info
       // for the project. This is not ideal and we should find a way to avoid this.
-      const { rev, depPkgs } = await studioCtx.appCtx.api.getSiteInfo(
-        projectId,
-        {
-          revisionNum: revisionNum,
-        }
-      );
+
+      const { bundle, depPkgs } = await resolveBundleRef(studioCtx, state);
 
       const bundler = new FastBundler();
-
-      const bundle = getBundle(rev, studioCtx.appCtx.lastBundleVersion);
 
       const { site: originSite } = unbundleSite(
         bundler,
