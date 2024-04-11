@@ -388,6 +388,10 @@ export function getCopyState(
   return state;
 }
 
+export function isCopyState(x: any): x is CopyState {
+  return "action" in x && x.action === "cross-tab-copy";
+}
+
 async function resolveBundleRef(
   studioCtx: StudioCtx,
   state: CopyState
@@ -463,7 +467,7 @@ export async function buildCopyStateExtraInfo(
     token?: InsertableTemplateTokenResolution;
     component?: InsertableTemplateComponentResolution;
   } = {
-    token: "reuse-by-name-and-value",
+    token: "reuse-by-name",
     component: "reuse",
   };
 

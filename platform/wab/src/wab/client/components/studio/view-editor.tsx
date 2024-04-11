@@ -89,6 +89,7 @@ import { DragMoveFrameManager } from "@/wab/client/FreestyleManipulator";
 import {
   buildCopyStateExtraInfo,
   getCopyState,
+  isCopyState,
   postInsertableTemplate,
 } from "@/wab/client/insertable-templates";
 import { PLATFORM } from "@/wab/client/platform";
@@ -150,10 +151,7 @@ import {
   RootComponentVariantFrame,
 } from "@/wab/shared/component-frame";
 import { cloneCopyState } from "@/wab/shared/insertable-templates";
-import {
-  CopyState,
-  CopyStateExtraInfo,
-} from "@/wab/shared/insertable-templates/types";
+import { CopyStateExtraInfo } from "@/wab/shared/insertable-templates/types";
 import {
   ARENAS_DESCRIPTION,
   ARENA_LOWER,
@@ -1269,23 +1267,22 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       // which we can't be sure to perform an attachment in between projects.
 
       function shouldPerformCrossTabCopy() {
-        if (plasmicData.action !== "cross-tab-copy") {
+        if (!isCopyState(plasmicData)) {
           return false;
         }
-        const copyState = plasmicData as CopyState;
         // If we are dealing with a different project, then we can only
         // perform a cross-tab copy
-        if (copyState.projectId !== sc.siteInfo.id) {
+        if (plasmicData.projectId !== sc.siteInfo.id) {
           return true;
         }
         // We are in the same project, dealing with different branches
         // perform a cross-tab copy, since we are not sure about references
-        if (copyState.branchId !== sc.dbCtx().branchInfo?.id) {
+        if (plasmicData.branchId !== sc.dbCtx().branchInfo?.id) {
           return true;
         }
         // We are dealing with the same project and branch, but an older version
         // perform a cross-tab copy, since we are not sure about references
-        if (copyState.bundleRef.type === "pkg") {
+        if (plasmicData.bundleRef.type === "pkg") {
           return true;
         }
         // It may be the case that we are dealing with a different revisionNum here
