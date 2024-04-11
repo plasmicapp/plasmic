@@ -375,32 +375,46 @@ export async function buildCopyStateExtraInfo(
   const { projectId, componentUuid, componentName, revisionNum, references } =
     state;
 
-  // TODO: For copy and paste to work, we are downloading the entire site info
-  // for the project. This is not ideal and we should find a way to avoid this.
-  const { rev, depPkgs } = await studioCtx.app.withSpinner(
-    studioCtx.appCtx.api.getSiteInfo(projectId, {
-      revisionNum: revisionNum,
-    })
+  const site = await studioCtx.app.withSpinner(
+    (async () => {
+      // TODO: For copy and paste to work, we are downloading the entire site info
+      // for the project. This is not ideal and we should find a way to avoid this.
+      const { rev, depPkgs } = await studioCtx.appCtx.api.getSiteInfo(
+        projectId,
+        {
+          revisionNum: revisionNum,
+        }
+      );
+
+      const bundler = new FastBundler();
+
+      const bundle = getBundle(rev, studioCtx.appCtx.lastBundleVersion);
+
+      const { site: originSite } = unbundleSite(
+        bundler,
+        projectId,
+        bundle,
+        depPkgs
+      );
+
+      // Be sure to track it, so that we can properly to do some fixups
+      // as effectiveVs may require `getTplOwnerComponent`
+      deepTrackComponents(originSite);
+
+      return originSite;
+    })()
   );
 
-  const bundler = new FastBundler();
-
-  const bundle = getBundle(rev, studioCtx.appCtx.lastBundleVersion);
-
-  const { site } = unbundleSite(bundler, projectId, bundle, depPkgs);
-
-  // Be sure to track it, so that we can properly to do some fixups
-  // as effectiveVs may require `getTplOwnerComponent`
-  deepTrackComponents(site);
-
+  // Don't add spinner wrapper, as this may prompt the user to select a screen variant
   const { screenVariant } = await getScreenVariantToInsertableTemplate(
     studioCtx
   );
 
   // This hostless dependencies have been unbundled with the current studio
   // bundler which makes them compatible to be installed in the current site
-  const { hostLessDependencies } =
-    await getHostLessDependenciesToInsertableTemplate(studioCtx, site);
+  const { hostLessDependencies } = await studioCtx.app.withSpinner(
+    getHostLessDependenciesToInsertableTemplate(studioCtx, site)
+  );
 
   const resolution: {
     token?: InsertableTemplateTokenResolution;
