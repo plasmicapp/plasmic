@@ -113,6 +113,7 @@ import {
   ParsedExprInfo,
   parseExpr,
 } from "./shared/eval/expression-parser";
+import { ensureComponentsObserved } from "./shared/mobx-util";
 import {
   replaceQueryWithPropInCodeExprs,
   replaceStateWithPropInCodeExprs,
@@ -1787,6 +1788,7 @@ export function removeComponentParam(
     removeComponentStateOnly(site, component, state);
   }
 
+  ensureComponentsObserved([component]);
   const group = findVariantGroupForParam(component, param);
   if (group) {
     // Remove all VariantSettings referencing this group
@@ -1795,6 +1797,7 @@ export function removeComponentParam(
         findVariantSettingsUnderTpl(comp.tplTree)
       )) {
         if (vs.variants.some((v) => group.variants.includes(v))) {
+          ensureComponentsObserved([comp]);
           removeFromArray(tpl.vsettings, vs);
         }
       }
@@ -1825,6 +1828,7 @@ export function removeComponentParam(
     for (const vs of inst.vsettings) {
       for (const arg of [...vs.args]) {
         if (arg.param === param) {
+          ensureComponentsObserved([$$$(inst).owningComponent()]);
           // If we're removing a slot prop, we first explicitly remove
           // the tpl nodes passed in as arg, so that we can deal with invariants
           // maintained by $$$.remove() -- for example, if the slot prop

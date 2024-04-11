@@ -1,3 +1,5 @@
+import type { Component } from "@/wab/classes";
+import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import type {
   IComputedValue,
   IComputedValueOptions,
@@ -45,6 +47,19 @@ export function mutateGlobalObservable() {
 
 export function clearGlobalObservable() {
   globalObservable = undefined;
+}
+
+/**
+ * Workaround function while we migrate to the Operation model
+ * USE WITH CAUTION.
+ */
+export function ensureComponentsObserved(components: Component[]) {
+  if (typeof window === "undefined") {
+    return true;
+  }
+  const studioCtx: StudioCtx | undefined = (window as any).studioCtx;
+
+  return studioCtx?.observeComponents(components);
 }
 
 export function maybeComputedFn<T extends (...args: any[]) => any>(
