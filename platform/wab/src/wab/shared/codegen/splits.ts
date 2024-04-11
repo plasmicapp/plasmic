@@ -42,7 +42,7 @@ export interface ActiveSplit {
   projectId: string;
   name: string;
   // Paths of pages that can be affected by this split
-  pagePaths: string[];
+  pagesPaths: string[];
   description?: string | null;
   externalId?: string | null;
 }
@@ -100,7 +100,7 @@ function serializeSplit(
     projectId,
     externalId: split.externalId,
     description: split.description,
-    pagePaths: uniq(
+    pagesPaths: uniq(
       split.slices.flatMap((slice) => {
         return slice.contents.flatMap((c) => {
           if (isKnownGlobalVariantSplitContent(c)) {
