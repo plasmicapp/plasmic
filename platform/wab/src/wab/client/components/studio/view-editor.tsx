@@ -150,7 +150,10 @@ import {
   RootComponentVariantFrame,
 } from "@/wab/shared/component-frame";
 import { cloneCopyState } from "@/wab/shared/insertable-templates";
-import { CopyStateExtraInfo } from "@/wab/shared/insertable-templates/types";
+import {
+  CopyState,
+  CopyStateExtraInfo,
+} from "@/wab/shared/insertable-templates/types";
 import {
   ARENAS_DESCRIPTION,
   ARENA_LOWER,
@@ -1253,15 +1256,44 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
     }
     if (plasmicDataStr) {
       const plasmicData = JSON.parse(plasmicDataStr);
-      if (
-        sc.clipboard.isSet() &&
-        (["copy", "cut"].includes(plasmicData.action) ||
-          (plasmicData.action === "cross-tab-copy" &&
-            plasmicData.projectId === sc.siteInfo.id))
-      ) {
-        console.log("Pasting plasmic-clipboard tpl");
-        return { type: "clip", clip: sc.clipboard.paste() };
-      } else if (plasmicData.action === "cross-tab-copy") {
+      // We've 2 different behavior when performing a copy/paste:
+      //
+      // - Copy/paste inside the project
+      // This has a different handling because it allows to do more direct surgery in the tree
+      // which will be pasted, as we can reference existing content more easily, but this actually
+      // can be troublesome inside the own project if it involves different branches or versions
+      //
+      // - Copy/paste cross projects
+      // This is a more limited copy/paste as in many cases some references will be removed, as
+      // an example, global variants, data source exprs, page references, state references,
+      // which we can't be sure to perform an attachment in between projects.
+
+      function shouldPerformCrossTabCopy() {
+        if (plasmicData.action !== "cross-tab-copy") {
+          return false;
+        }
+        const copyState = plasmicData as CopyState;
+        // If we are dealing with a different project, then we can only
+        // perform a cross-tab copy
+        if (copyState.projectId !== sc.siteInfo.id) {
+          return true;
+        }
+        // We are in the same project, dealing with different branches
+        // perform a cross-tab copy, since we are not sure about references
+        if (copyState.branchId !== sc.dbCtx().branchInfo?.id) {
+          return true;
+        }
+        // We are dealing with the same project and branch, but an older version
+        // perform a cross-tab copy, since we are not sure about references
+        if (copyState.bundleRef.type === "pkg") {
+          return true;
+        }
+        // It may be the case that we are dealing with a different revisionNum here
+        // but we will assume it's fine, considering the expected time for user to copy/paste
+        return false;
+      }
+
+      if (shouldPerformCrossTabCopy()) {
         try {
           const extraInfo = await buildCopyStateExtraInfo(sc, plasmicData);
           return {
@@ -1276,6 +1308,12 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
           });
           return undefined;
         }
+      } else if (
+        sc.clipboard.isSet() &&
+        ["copy", "cut", "cross-tab-copy"].includes(plasmicData.action)
+      ) {
+        console.log("Pasting plasmic-clipboard tpl");
+        return { type: "clip", clip: sc.clipboard.paste() };
       }
     } else {
       // Figma paste check needs to come before the image check, as it contains
