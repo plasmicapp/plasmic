@@ -1715,7 +1715,11 @@ export function addMainAppServerRoutes(
     withNext(createPkgByProjectId)
   );
   app.get("/api/v1/projects/:projectId/pkg", withNext(getPkgByProjectId));
-  app.post("/api/v1/projects/:projectId/publish", withNext(publishProject));
+  app.post(
+    "/api/v1/projects/:projectId/publish",
+    safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
+    withNext(publishProject)
+  );
   app.post(
     "/api/v1/projects/:projectId/next-publish-version",
     withNext(computeNextProjectVersion)
