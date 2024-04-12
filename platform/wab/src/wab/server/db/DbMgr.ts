@@ -6930,10 +6930,7 @@ export class DbMgr implements MigrationDbMgr {
     if (opts.identifier !== undefined) {
       row.identifier = opts.identifier;
     }
-    if (opts.revision == null) {
-      opts.revision = 0;
-    }
-    if (opts.revision !== (row.revision ?? 0)) {
+    if (opts.revision != null && opts.revision !== (row.revision ?? 0)) {
       console.log(`Got revision ${opts.revision} but expected ${row.revision}`);
       throw new BadRequestError(
         `This CMS row has been updated in the meanwhile`
