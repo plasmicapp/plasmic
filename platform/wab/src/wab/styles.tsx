@@ -1326,6 +1326,12 @@ export const showSimpleCssRuleSet = (
 
   const rules: (string | undefined)[] = [];
 
+  if (ensureColGapVariable) {
+    // It's fine to set it to 0px, since it will be overridden by the
+    // parent fake flex container if it's not 0px
+    styles.set("--plsmc-rc-col-gap", "0px");
+  }
+
   // If any variant has gap styles, we should generate styles to provide
   // styles to both wrapper and the container, since different variants might
   // expect to inherit styles to both containers.
@@ -1373,12 +1379,6 @@ export const showSimpleCssRuleSet = (
         )
       );
     }
-  }
-
-  if (ensureColGapVariable) {
-    // It's fine to set it to 0px, since it will be overridden by the
-    // parent fake flex container if it's not 0px
-    rules.push(maybeRule(ruleName, `--plsmc-rc-col-gap: 0px`));
   }
 
   styles.delete("flex-column-gap");
