@@ -4390,7 +4390,8 @@ export class StudioCtx extends WithDbCtx {
               groupBy(
                 allCustomFunctions(this.site)
                   .map(({ customFunction }) => customFunction)
-                  .filter((f) => !!f.namespace)
+                  .filter((f) => !!f.namespace),
+                (f) => f.namespace
               )
             ),
           ].map((functionOrGroup) =>
