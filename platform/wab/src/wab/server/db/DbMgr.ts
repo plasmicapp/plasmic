@@ -6390,9 +6390,20 @@ export class DbMgr implements MigrationDbMgr {
     // We don't check permissions here because we don't want to require permissions
     // to view the tutorial data sources. That could throw errors by sharing the project.
     return await this.dataSources().find({
-      workspaceId,
-      source: "tutorialdb",
-      deletedAt: IsNull(),
+      // Don't select credentials to reduce processing time, involved in decrypting it
+      select: [
+        "id",
+        "name",
+        "workspaceId",
+        "source",
+        "settings",
+        "createdById",
+      ],
+      where: {
+        workspaceId,
+        source: "tutorialdb",
+        deletedAt: IsNull(),
+      },
     });
   }
 

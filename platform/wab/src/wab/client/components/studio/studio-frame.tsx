@@ -148,10 +148,14 @@ export function StudioFrame({
     const fetchProject = async () => {
       try {
         setIsRefreshingProjectData(true);
-        const { projects, perms: permissions } = await appCtx.api.getProjects({
-          query: "byIds",
-          projectIds: [projectId],
-        });
+        const [{ projects, perms: permissions }, { trustedHosts }] =
+          await Promise.all([
+            appCtx.api.getProjects({
+              query: "byIds",
+              projectIds: [projectId],
+            }),
+            appCtx.api.getTrustedHostsList(),
+          ]);
         const proj = maybeOne(projects);
         if (!proj) {
           throw new ForbiddenError("Project not found");
@@ -167,7 +171,6 @@ export function StudioFrame({
         }
         const hostUrl = getHostUrl(proj, maybeBranch, appCtx.appConfig);
         setBranch(maybeBranch);
-        const { trustedHosts } = await appCtx.api.getTrustedHostsList();
         const urlsOrDomains = [
           ...trustedHosts.map((i) => i.hostUrl),
           ...whitelistedHosts,
