@@ -178,6 +178,8 @@ type ObservableState = {
   observeInstField: (node: ObjInst, field: Field) => void;
 };
 
+const mobxHack = hackyMobxUtils();
+
 /**
  * Starts observing changes to the argument `inst`.  Specifically,
  *
@@ -278,8 +280,6 @@ export function observeModel(
       [...[...parents.values()][0].values()][0] === 1
     );
   };
-
-  const mobxHack = hackyMobxUtils();
 
   // Returns true if there should be no strong references to a given instance.
   // This is the case for the root and for most external references.
@@ -1443,7 +1443,7 @@ export class ChangeRecorder implements IChangeRecorder {
    */
   maybeObserveComponentTrees(components: Component[]) {
     const observedResult = components.reduce((observedNewComp, component) => {
-      if (!mobx.isObservable(component.tplTree)) {
+      if (!mobxHack.isObserved(component.tplTree)) {
         this.observableState.observeInstField(
           component,
           meta.getFieldByName("Component", "tplTree")
@@ -1679,6 +1679,13 @@ function hackyMobxUtils() {
   }
 
   /**
+   * Returns whether this inst is currently being observed
+   */
+  function isObserved(inst: ObjInst) {
+    return isObservable(inst) && !!getInstAdmin(inst).__changeListeners?.length;
+  }
+
+  /**
    * Returns an observable version of the argument value. We deeply
    * make array and object field values observable as well
    */
@@ -1813,6 +1820,7 @@ function hackyMobxUtils() {
   }
 
   return {
+    isObserved,
     isObservable,
     makeInstObservable,
   };

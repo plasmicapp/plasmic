@@ -4993,7 +4993,10 @@ export class StudioCtx extends WithDbCtx {
       if (this.appCtx.appConfig.incrementalObservables) {
         change.path?.forEach((path) => {
           if (classes.isKnownComponent(path.inst) && path.field === "tplTree") {
-            modifiedComponentIids.add(this.bundler().addrOf(path.inst).iid);
+            const compAddr = this.bundler().addrOf(path.inst);
+            if (compAddr) {
+              modifiedComponentIids.add(compAddr.iid);
+            }
           }
         });
       }

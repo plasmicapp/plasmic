@@ -691,6 +691,7 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     ancestorsBoxes: true,
     multiSelect: true,
     insert2022Q4: true,
+    incrementalObservables: true,
     branching: true,
     comments: true,
     pageLayout: true,
