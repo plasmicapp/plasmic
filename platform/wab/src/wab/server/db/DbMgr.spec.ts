@@ -1,10 +1,16 @@
 import { ensure, filterMapTruthy } from "@/wab/common";
-import { CmsRow, User } from "@/wab/server/entities/Entities";
+import { seedTestDb } from "@/wab/server/db/DbInit";
+import { ANON_USER, DbMgr, SkipSafeDelete } from "@/wab/server/db/DbMgr";
+import {
+  CmsRow,
+  FeatureTier,
+  Team,
+  User,
+} from "@/wab/server/entities/Entities";
 import { getTeamAndWorkspace, withDb } from "@/wab/server/test/backend-util";
+import { ApiCmsQuery, CmsTableId } from "@/wab/shared/ApiSchema";
 import { AccessLevel } from "@/wab/shared/EntUtil";
 import L from "lodash";
-import { ApiCmsQuery, CmsTableId } from "src/wab/shared/ApiSchema";
-import { ANON_USER, DbMgr, SkipSafeDelete } from "./DbMgr";
 
 describe("DbMgr.CMS", () => {
   it("allows crud on database", () =>
@@ -1024,5 +1030,91 @@ describe("DbMgr", () => {
       const { team } = await getTeamAndWorkspace(db1());
       const team2 = await db1().getTeamByProjectId(project.id);
       expect(team2!.id).toEqual(team.id);
+    }));
+
+  it("can update UI config if team is on enterprise tier", () =>
+    withDb(async (sudo, [user1], [db1], _project, em) => {
+      await seedTestDb(em);
+      const { team } = await getTeamAndWorkspace(db1());
+
+      // cannot update UI config on free tier
+      await expect(
+        db1().updateTeam({
+          id: team.id,
+          uiConfig: {
+            hideDefaultPageTemplates: true,
+          },
+        })
+      ).toReject();
+
+      // cannot update UI config on team/scale tier
+      const teamFt = await em.getRepository(FeatureTier).findOne({
+        where: {
+          name: "Team",
+          deletedAt: null,
+        },
+      });
+      await em.getRepository(Team).update(team.id, {
+        featureTierId: teamFt!.id,
+      });
+      await expect(
+        db1().updateTeam({
+          id: team.id,
+          uiConfig: {
+            hideDefaultPageTemplates: true,
+          },
+        })
+      ).toReject();
+
+      // can update UI config on enterprise tier
+      const enterpriseFt = await em.getRepository(FeatureTier).findOne({
+        where: {
+          name: "Enterprise",
+          deletedAt: null,
+        },
+      });
+      await em.getRepository(Team).update(team.id, {
+        featureTierId: enterpriseFt!.id,
+      });
+      const updatedTeam = await db1().updateTeam({
+        id: team.id,
+        uiConfig: {
+          hideDefaultPageTemplates: true,
+        },
+      });
+      expect(updatedTeam.uiConfig?.hideDefaultPageTemplates).toBe(true);
+    }));
+
+  it("can update UI config if parent team is on enterprise tier", () =>
+    withDb(async (sudo, [user1], [db1], _project, em) => {
+      await seedTestDb(em);
+      const { team } = await getTeamAndWorkspace(db1());
+
+      // cannot update UI config on free tier
+      await expect(
+        db1().updateTeam({
+          id: team.id,
+          uiConfig: {
+            hideDefaultPageTemplates: true,
+          },
+        })
+      ).toReject();
+
+      // can update UI config if parent team is on enterprise tier
+      const enterpriseTeam = await em.getRepository(Team).findOne({
+        where: {
+          name: "Test Enterprise Org",
+        },
+      });
+      await em.getRepository(Team).update(team.id, {
+        parentTeamId: enterpriseTeam!.id,
+      });
+      const updatedTeam = await db1().updateTeam({
+        id: team.id,
+        uiConfig: {
+          hideDefaultPageTemplates: true,
+        },
+      });
+      expect(updatedTeam.uiConfig?.hideDefaultPageTemplates).toBe(true);
     }));
 });

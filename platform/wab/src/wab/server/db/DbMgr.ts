@@ -1171,7 +1171,7 @@ export class DbMgr implements MigrationDbMgr {
     const team = await this.getTeamById(id);
     if (fields.uiConfig) {
       checkPermissions(
-        isEnterprise(team.featureTier),
+        isEnterprise(team.featureTier || team.parentTeam?.featureTier),
         "Must be on Enterprise plan"
       );
     }

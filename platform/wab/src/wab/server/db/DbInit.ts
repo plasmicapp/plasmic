@@ -28,7 +28,7 @@ async function main() {
   });
 }
 
-async function seedTestDb(em: EntityManager) {
+export async function seedTestDb(em: EntityManager) {
   const db = new DbMgr(em, SUPER_USER);
   const bundler = new Bundler();
 
