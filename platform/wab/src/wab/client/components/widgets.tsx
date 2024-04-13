@@ -1128,3 +1128,50 @@ export function VerticalFillTable(
     </div>
   );
 }
+
+export function StudioPlaceholder(props: { visible: boolean }) {
+  return (
+    <div
+      className={cx({
+        StudioPlaceholder: true,
+        visible: props.visible,
+        fadeOut: !props.visible,
+      })}
+    >
+      <div className="placeholder_topBar">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 32 32"
+          height="40px"
+          width="40px"
+          role="img"
+        >
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M30.974 20.103C30.51 12.236 23.984 6 16 6 8.017 6 1.49 12.236 1.026 20.103c.027.339.082.589.192.805a2 2 0 00.874.874c.402.205.92.217 1.908.218v-1C4 14.373 9.373 9 16 9s12 5.373 12 12v1c.988 0 1.506-.013 1.908-.218a2 2 0 00.874-.874c.11-.216.165-.466.192-.805z"
+            fill="rgba(200,199,193)"
+          ></path>
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M16 13a8 8 0 00-8 8v1H5v-1c0-6.075 4.925-11 11-11s11 4.925 11 11v1h-3v-1a8 8 0 00-8-8z"
+            fill="rgba(200,199,193)"
+          ></path>
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M23 22v-1a7 7 0 10-14 0v1h2a1 1 0 001-1 4 4 0 018 0 1 1 0 001 1h2z"
+            fill="rgba(200,199,193)"
+          ></path>
+        </svg>
+      </div>
+      <div className="placeholder_leftToolbar"></div>
+      <div className="placeholder_leftPanel"></div>
+      <div className="placeholder_canvasArea"></div>
+      <div className="placeholder_rightPanel"></div>
+      <div className="placeholder_loading placeholder_loading--fast"></div>
+    </div>
+  );
+}

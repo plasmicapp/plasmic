@@ -312,7 +312,16 @@ export function main() {
           "addStorageListener",
           "exposeHostFrameApi",
           "setLatestPublishedVersionData",
-        ].includes(data?.path?.[0])
+        ].includes(data?.path?.[0]) ||
+        // Include the PLASMIC_HOST_REGISTER message, so that we can
+        // hide the studio placeholder as soon as the host frame is registered.
+        // The skeleton is split in two phases, first the top frame,
+        // then the host frame. As the host frame can open modals, about
+        // untrusted hosts, sync code components, we don't want to have
+        // the skeleton visible in the top frame during this operations as it
+        // would hiding those modals. So we hide the skeleton as soon as the
+        // host frame is registered.
+        ["PLASMIC_HOST_REGISTER"].includes(data?.type)
       ) {
         studioPlaceholder.classList.add("fadeOut");
       }

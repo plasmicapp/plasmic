@@ -297,7 +297,13 @@ class StudioInitializer_ extends React.Component<
         )
       );
     };
-    return <widgets.ObserverLoadable loader={this.init} contents={contents} />;
+    return (
+      <widgets.ObserverLoadable
+        loader={this.init}
+        contents={contents}
+        loadingContents={() => <widgets.StudioPlaceholder visible />}
+      />
+    );
   }
 }
 export const StudioInitializer = observer(StudioInitializer_);

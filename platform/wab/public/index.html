@@ -102,7 +102,7 @@
       }
 
       .StudioPlaceholder {
-        display: none !important;
+        display: none;
         position: fixed;
         top: 0;
         left: 0;
@@ -191,6 +191,10 @@
         height: 3px;
         animation: growUntilFull 10s infinite, rotateColors 10s infinite;
         animation-timing-function: ease-in-out;
+      }
+
+      .placeholder_loading.placeholder_loading--fast {
+        animation-duration: 3s;
       }
     </style>
     <link rel="shortcut icon" href="<%= assetPrefix %>/favicon.ico" />
