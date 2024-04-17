@@ -1,31 +1,31 @@
-.__wab_flex-container,
-.ρfc {
+:where(.__wab_flex-container),
+:where(.ρfc) {
   display: flex;
   flex: 1;
   align-self: stretch;
   pointer-events: none;
 }
 
-.__wab_flex-container > *,
-.ρfc > * {
+:where(.__wab_flex-container > *),
+:where(.ρfc > *) {
   pointer-events: auto;
 }
 
-.__wab_slot,
-.ρs {
+:where(.__wab_slot),
+:where(.ρs) {
   display: contents;
 }
 
-.__wab_slot-string-wrapper,
-.ρsw {
+:where(.__wab_slot-string-wrapper),
+:where(.ρsw) {
   position: relative;
 }
 
-.__wab_passthrough {
+:where(.__wab_passthrough) {
   display: contents;
 }
 
-.__wab_img-wrapper {
+:where(.__wab_img-wrapper) {
   position: relative;
   display: inherit;
   flex-direction: column;
@@ -33,23 +33,23 @@
   flex-shrink: 0;
 }
 
-.__wab_slot > .__wab_img-wrapper,
-.ρs > .__wab_img-wrapper {
+:where(.__wab_slot > .__wab_img-wrapper),
+:where(.ρs > .__wab_img-wrapper) {
   display: block;
 }
 
-.__wab_passthrough > .__wab_img-wrapper {
+:where(.__wab_passthrough > .__wab_img-wrapper) {
   display: block;
 }
 
-.__wab_img-spacer-svg {
+:where(.__wab_img-spacer-svg) {
   display: block;
   margin: 0;
   border: none;
   padding: 0;
 }
 
-.__wab_img {
+:where(.__wab_img) {
   position: absolute;
   top: 0;
   left: 0;
@@ -67,6 +67,6 @@
   box-sizing: border-box;
 }
 
-.__wab_picture {
+:where(.__wab_picture) {
   display: contents;
 }
