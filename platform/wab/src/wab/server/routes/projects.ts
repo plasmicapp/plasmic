@@ -1737,7 +1737,7 @@ export async function computeNextProjectVersion(req: Request, res: Response) {
 
 export async function publishProject(req: Request, res: Response) {
   const body = uncheckedCast<PublishProjectRequest>(req.body);
-  if (!semver.valid(body.version)) {
+  if (body.version && !semver.valid(body.version)) {
     throw new BadRequestError(
       `Invalid publish version; please use a valid semver version like "1.2.3".`
     );
