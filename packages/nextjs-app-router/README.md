@@ -86,7 +86,7 @@ async function withExtractPlasmicQueryData(
   // query data.
   const prepassHost =
     process.env.PLASMIC_PREPASS_HOST ??
-    process.env.VERCEL_URL ??
+    (process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`) ??
     `http://localhost:${process.env.PORT ?? 3000}`;
 
   // Build a copy of the search params
@@ -102,7 +102,7 @@ async function withExtractPlasmicQueryData(
 
   // Fetch the data from the endpoint using the new search params
   const prefetchedQueryData = await fetchExtractedQueryData(
-    `${prepassHost}/${pathname}?${newSearchParams.toString()}`
+    `${prepassHost}${pathname}?${newSearchParams.toString()}`
   );
 
   // Provide the query data to <PlasmicClientRootProvider>
