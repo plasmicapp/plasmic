@@ -6,10 +6,11 @@ module.exports = {
     "summary",
   ],
   testRegex:
-    ".*\\/(packages|plasmicpkgs)\\/.*\\.(spec|test)\\.(js|jsx|ts|tsx)$",
-  // TODO Should really be running jest from each package rather than the root.
+    ".*\\/(packages|plasmicpkgs|platform)\\/.*\\.(spec|test)\\.(js|jsx|ts|tsx)$",
   testPathIgnorePatterns: [
-    "<rootDir>/platform/.*",
+    "<rootDir>/platform/integration-tests",
+    "<rootDir>/platform/loader-tests",
+    "<rootDir>/platform/wab",
     "<rootDir>/packages/plume-stories",
     "/node_modules/",
   ],
