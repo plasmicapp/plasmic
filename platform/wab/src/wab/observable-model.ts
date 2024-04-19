@@ -1492,6 +1492,11 @@ export class ChangeRecorder implements IChangeRecorder {
     return [...this.changes];
   }
 
+  // Returns the changes array instance, do not mutate it!
+  getChangesSoFarImmutable() {
+    return this.changes as readonly ModelChange[];
+  }
+
   private startRecording() {
     this.changes = [];
   }

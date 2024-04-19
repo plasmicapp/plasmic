@@ -34,9 +34,11 @@ import {
   tuple,
   withoutNils,
   xIntersect,
+  xSetDefault,
 } from "@/wab/common";
 import { CodeComponent, isCodeComponent } from "@/wab/components";
 import { Field } from "@/wab/model/model-meta";
+import { ChangeRecorder } from "@/wab/observable-model";
 import { Bundler } from "@/wab/shared/bundler";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
 import {
@@ -1644,10 +1646,48 @@ export const mergeComponentVariants: MergeSpecialFieldHandler<Component> = (
   return [];
 };
 
-export function fixVirtualSlotArgs(mergedSite: Site) {
+export function fixVirtualSlotArgs(mergedSite: Site, recorder: ChangeRecorder) {
   const tplMgr = new TplMgr({ site: mergedSite });
   const fixedComponents = new Set<Component>();
   const allLocalComponents = new Set(mergedSite.components);
+  let lastProcessedChange = 0;
+  const componentToUpdatedTplSlots = new Map<Component, Set<TplSlot>>();
+  const newComponents = new Set<Component>();
+  const processNewChanges = () => {
+    const allChanges = recorder.getChangesSoFarImmutable();
+    for (
+      let changeIdx = lastProcessedChange;
+      changeIdx < allChanges.length;
+      changeIdx++
+    ) {
+      const change = allChanges[changeIdx];
+      const component =
+        change.path &&
+        (change.path.find(
+          (node) => node.inst instanceof Component && node.field === "tplTree"
+        )?.inst as Component | undefined);
+      const tplSlot =
+        change.path &&
+        (change.path.find(
+          (node) =>
+            node.inst instanceof TplSlot && node.field === "defaultContents"
+        )?.inst as TplSlot | undefined);
+      if (component && tplSlot) {
+        xSetDefault(componentToUpdatedTplSlots, component, () => new Set()).add(
+          tplSlot
+        );
+      }
+      if (
+        change.type == "array-splice" &&
+        change.changeNode.inst === mergedSite &&
+        change.changeNode.field === "components"
+      ) {
+        change.added.forEach((c) => newComponents.add(c));
+      }
+    }
+    lastProcessedChange = allChanges.length;
+  };
+  processNewChanges();
   const fixComponent = (c: Component) => {
     if (fixedComponents.has(c) || !allLocalComponents.has(c)) {
       return;
@@ -1658,7 +1698,23 @@ export function fixVirtualSlotArgs(mergedSite: Site) {
         // Make sure to fix the virtual slots of the instantiated component
         // before updating the referencing `TplComponent`
         fixComponent(tpl.component);
-        fillVirtualSlotContents(tplMgr, tpl);
+        // Only fill the virtual slot args for `TplSlot`s that were changed somehow
+        // (and TplSlots for new components).
+        processNewChanges();
+        const updatedTplSlots = xSetDefault(
+          componentToUpdatedTplSlots,
+          tpl.component,
+          () => new Set()
+        );
+        if (newComponents.has(tpl.component)) {
+          fillVirtualSlotContents(tplMgr, tpl);
+        } else if (updatedTplSlots.size > 0) {
+          fillVirtualSlotContents(
+            tplMgr,
+            tpl,
+            Array.from(updatedTplSlots.keys())
+          );
+        }
         const slots = getTplSlots(tpl.component);
         for (const slot of slots) {
           const arg = $$$(tpl).getSlotArgForParam(slot.param);

@@ -1762,11 +1762,11 @@ function runMergeFnAndApplyFixes(
 
       fixDuplicatedRegisteredTokens(mergedSite);
 
-      fixVirtualSlotArgs(mergedSite);
-
       fixSwappedTplComponents(ancestor, a, b, mergedSite);
 
       fixDuplicatedContentFields(mergedSite, recorder, bundler);
+
+      fixVirtualSlotArgs(mergedSite, recorder);
 
       fixDanglingReferenceConflicts(
         mergedSite,
