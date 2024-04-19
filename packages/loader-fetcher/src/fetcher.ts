@@ -77,10 +77,17 @@ export class PlasmicModulesFetcher {
     if (typeof process === "undefined" || !process.env?.PLASMIC_QUIET) {
       console.debug("Plasmic: doing a fresh fetch...");
     }
-    this.curFetch = this.doFetch();
-    const data = await this.curFetch;
-    this.curFetch = undefined;
-    return data;
+    const fetchPromise = this.doFetch();
+    this.curFetch = fetchPromise;
+    try {
+      const data = await fetchPromise;
+      return data;
+    } finally {
+      // Reset this.curFetch only if it still holds the original fetch promise
+      if (this.curFetch === fetchPromise) {
+        this.curFetch = undefined;
+      }
+    }
   }
 
   private async doFetch() {
