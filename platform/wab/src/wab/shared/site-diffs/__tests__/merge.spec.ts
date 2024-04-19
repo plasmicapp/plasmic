@@ -4970,4 +4970,190 @@ describe("merging", () => {
     assert(isKnownTplTag(tplTree), "Root should be tpl tag");
     expect(tplTree.children.length).toBe(1);
   });
+
+  it("Re-computed only the needed Virtual Slot Args", () => {
+    let originalUuidSlotArg1 = "",
+      originalUuidSlotArg2 = "";
+    const result = testMerge({
+      ancestorSite: (() => {
+        // Create a component with two slots and instantiate it
+        const site = createSite();
+        const tplMgr = new TplMgr({ site });
+        const instantiatedComp = tplMgr.addComponent({
+          name: "InstantiatedComp",
+          type: ComponentType.Plain,
+        });
+        const slotParam1 = addSlotParam(site, instantiatedComp, "slot1");
+        const instantiatedBaseVariant = getBaseVariant(instantiatedComp);
+        const tplSlot1 = mkSlot(slotParam1, [
+          mkTplTagX("div", {
+            name: "slot1Element1",
+            baseVariant: instantiatedBaseVariant,
+            variants: [
+              mkVariantSetting({ variants: [instantiatedBaseVariant] }),
+            ],
+          }),
+        ]);
+        tplSlot1.vsettings = [
+          mkVariantSetting({ variants: [instantiatedBaseVariant] }),
+        ];
+        $$$(instantiatedComp.tplTree).append(tplSlot1);
+        const slotParam2 = addSlotParam(site, instantiatedComp, "slot2");
+        const tplSlot2 = mkSlot(slotParam2, [
+          mkTplTagX("div", {
+            name: "slot2Element1",
+            baseVariant: instantiatedBaseVariant,
+            variants: [
+              mkVariantSetting({ variants: [instantiatedBaseVariant] }),
+            ],
+          }),
+        ]);
+        tplSlot2.vsettings = [
+          mkVariantSetting({ variants: [instantiatedBaseVariant] }),
+        ];
+        $$$(instantiatedComp.tplTree).append(tplSlot2);
+
+        const parentComp = tplMgr.addComponent({
+          name: "ParentComp",
+          type: ComponentType.Plain,
+        });
+        const parentCompBaseVariant = getBaseVariant(parentComp);
+
+        const tplComp = mkTplComponentX({
+          name: "tplComp",
+          baseVariant: parentCompBaseVariant,
+          component: instantiatedComp,
+        });
+        $$$(parentComp.tplTree).append(tplComp);
+        fillVirtualSlotContents(tplMgr, tplComp);
+        originalUuidSlotArg1 = (
+          ensure(
+            flattenTpls(parentComp.tplTree).find(
+              (tpl) => tpl instanceof TplTag && tpl.name === "slot1Element1"
+            ),
+            () => `Couldn't find slot1Element1`
+          ) as TplTag
+        ).uuid;
+        originalUuidSlotArg2 = (
+          ensure(
+            flattenTpls(parentComp.tplTree).find(
+              (tpl) => tpl instanceof TplTag && tpl.name === "slot2Element1"
+            ),
+            () => `Couldn't find slot2Element1`
+          ) as TplTag
+        ).uuid;
+        return site;
+      })(),
+      a: (site, tplMgr) => {
+        // Edit the first slot to append a new element in the default contents
+        const instantiatedComp = ensure(
+          site.components.find((c) => c.name === "InstantiatedComp"),
+          () => "Should have InstantiatedComp"
+        );
+        const parentComp = ensure(
+          site.components.find((c) => c.name === "ParentComp"),
+          () => "Should have ParentComp"
+        );
+        const tplComp = ensure(
+          flattenTpls(parentComp.tplTree).find(
+            (tpl) => tpl instanceof TplComponent && tpl.name === "tplComp"
+          ),
+          () => `Couldn't find tplComp`
+        ) as TplComponent;
+        const tplSlot1 = ensure(
+          flattenTpls(instantiatedComp.tplTree).find(
+            (tpl) =>
+              tpl instanceof TplSlot && tpl.param.variable.name === "slot1"
+          ),
+          () => `Couldn't find slot1`
+        ) as TplSlot;
+        const instantiatedBaseVariant = getBaseVariant(instantiatedComp);
+        $$$(tplSlot1).append(
+          mkTplTagX("div", {
+            name: "slot1Element2",
+            baseVariant: instantiatedBaseVariant,
+            variants: [
+              mkVariantSetting({ variants: [instantiatedBaseVariant] }),
+            ],
+          })
+        );
+        fillVirtualSlotContents(tplMgr, tplComp, [tplSlot1]);
+      },
+      b: (site, tplMgr) => {
+        // Edit the first slot to prepend a new element in the default contents
+        const instantiatedComp = ensure(
+          site.components.find((c) => c.name === "InstantiatedComp"),
+          () => "Should have InstantiatedComp"
+        );
+        const parentComp = ensure(
+          site.components.find((c) => c.name === "ParentComp"),
+          () => "Should have ParentComp"
+        );
+        const tplComp = ensure(
+          flattenTpls(parentComp.tplTree).find(
+            (tpl) => tpl instanceof TplComponent && tpl.name === "tplComp"
+          ),
+          () => `Couldn't find tplComp`
+        ) as TplComponent;
+        const tplSlot1 = ensure(
+          flattenTpls(instantiatedComp.tplTree).find(
+            (tpl) =>
+              tpl instanceof TplSlot && tpl.param.variable.name === "slot1"
+          ),
+          () => `Couldn't find slot1`
+        ) as TplSlot;
+        const instantiatedBaseVariant = getBaseVariant(instantiatedComp);
+        $$$(tplSlot1).prepend(
+          mkTplTagX("div", {
+            name: "slot1Element0",
+            baseVariant: instantiatedBaseVariant,
+            variants: [
+              mkVariantSetting({ variants: [instantiatedBaseVariant] }),
+            ],
+          })
+        );
+        fillVirtualSlotContents(tplMgr, tplComp, [tplSlot1]);
+      },
+    });
+    expect(result).toMatchObject({
+      status: "merged",
+      autoReconciliations: [],
+    });
+    const parentComp = ensure(
+      result.mergedSite.components.find((c) => c.name === "ParentComp"),
+      () => "Should have ParentComp"
+    );
+    const mergedUuidSlotArg1 = (
+      ensure(
+        flattenTpls(parentComp.tplTree).find(
+          (tpl) => tpl instanceof TplTag && tpl.name === "slot1Element1"
+        ),
+        () => `Couldn't find slot1Element1`
+      ) as TplTag
+    ).uuid;
+    const mergedUuidSlotArg2 = (
+      ensure(
+        flattenTpls(parentComp.tplTree).find(
+          (tpl) => tpl instanceof TplTag && tpl.name === "slot2Element1"
+        ),
+        () => `Couldn't find slot2Element1`
+      ) as TplTag
+    ).uuid;
+    const tplComp = ensure(
+      flattenTpls(parentComp.tplTree).find(
+        (tpl) => tpl instanceof TplComponent && tpl.name === "tplComp"
+      ),
+      () => `Couldn't find tplComp`
+    ) as TplComponent;
+    expect(
+      tplChildren(tplComp).map((tpl) => tpl instanceof TplTag && tpl.name)
+    ).toMatchObject([
+      "slot1Element0",
+      "slot1Element1",
+      "slot1Element2",
+      "slot2Element1",
+    ]);
+    expect(mergedUuidSlotArg1).not.toBe(originalUuidSlotArg1);
+    expect(mergedUuidSlotArg2).toBe(originalUuidSlotArg2);
+  });
 });
