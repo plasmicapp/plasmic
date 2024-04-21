@@ -46,6 +46,7 @@
     "eslint-config-react-app": "7.0.1",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-jest": "^27.6.0",
     "eslint-plugin-path": "1.2.2",
     "eslint-plugin-prettier": "5.0.1",
     "eslint-plugin-react": "^7.33.2",
@@ -55,10 +56,8 @@
     "nx": "^16",
     "prettier": "2.8.8",
     "tsconfig-paths": "^4.2.0",
+    "ts-node": "^10.9.2",
     "typescript": "5.2.2"
-  },
-  "dependencies": {
-    "eslint-plugin-jest": "^27.6.0"
   },
   "workspaces": [
     "packages/auth-api",
