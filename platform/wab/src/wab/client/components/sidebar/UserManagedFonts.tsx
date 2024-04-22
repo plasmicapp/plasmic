@@ -118,10 +118,7 @@ function _UserManagedFontsPanel(props: {}) {
     missingUsedFonts.length > 0
       ? `
 The project may not render correctly since the following fonts are missing from your machine:
-
-${missingUsedFonts.map((font) => `- \`${font}\``).join("\n")}
-
-;`
+${missingUsedFonts.map((font) => `- \`${font}\``).join("\n")}\n`
       : "";
 
   return (
@@ -142,7 +139,9 @@ ${missingUsedFonts.map((font) => `- \`${font}\``).join("\n")}
       }
       fontsHeader={{
         description: (
-          <StandardMarkdown>{helpPrefix + helpSuffix}</StandardMarkdown>
+          <StandardMarkdown className="flex-col">
+            {helpPrefix + helpSuffix}
+          </StandardMarkdown>
         ),
       }}
       content={<div className="overflow-scroll-y">{renderFonts()}</div>}
