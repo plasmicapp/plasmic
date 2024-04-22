@@ -7,7 +7,13 @@ import process from "process";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
-async function startDevServer(command: string, port: number) {
+async function startDevServer(
+  command: string,
+  port: number,
+  opts?: {
+    verbose?: boolean;
+  }
+) {
   console.log(
     `Plasmic: starting prepass dev server at http://localhost:${port} via "npm run ${command}"...`
   );
@@ -28,11 +34,17 @@ async function startDevServer(command: string, port: number) {
         console.log(`Plasmic: Dev server started`);
         resolve(devServerProcess);
       }
+      if (opts?.verbose) {
+        console.log(data);
+      }
     });
     devServerProcess.stderr?.on("data", (data) => {
       if (data.toString().toLowerCase().includes("error")) {
         console.log(`Plasmic: Dev server failed to start`);
         reject(new Error(`Error starting dev server: ${data.toString()}`));
+      }
+      if (opts?.verbose) {
+        console.error(data);
       }
     });
   });
@@ -47,10 +59,19 @@ async function main() {
       description:
         "The name of the command script to run to start the dev server, as defined in your package.json; it will be invoked with `npm run COMMAND`.",
     })
+    .option("verbose", {
+      alias: "v",
+      type: "boolean",
+      default: false,
+      description:
+        "Make the operation more talkative, include logs from the dev server.",
+    })
     .parse();
 
   const port = await getPort();
-  const devProcess = await startDevServer(argv.command ?? "dev", port);
+  const devProcess = await startDevServer(argv.command ?? "dev", port, {
+    verbose: argv.verbose,
+  });
 
   const killDevServer = () => {
     devProcess.kill("SIGKILL");
