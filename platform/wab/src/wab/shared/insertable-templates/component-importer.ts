@@ -13,8 +13,9 @@ import {
   isHostLessCodeComponent,
   isPlumeComponent,
 } from "@/wab/components";
+import { siteToAllImageAssetsDict } from "@/wab/shared/cached-selectors";
 import {
-  ensureValidOwnedTree,
+  ensureValidClonedComponent,
   makeImageAssetFixer,
 } from "@/wab/shared/insertable-templates/fixers";
 import {
@@ -25,9 +26,7 @@ import { HostLessDependencies } from "@/wab/shared/insertable-templates/types";
 import { makeComponentSwapper } from "@/wab/shared/swap-components";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { getBaseVariant } from "@/wab/shared/Variants";
-import { allImageAssets } from "@/wab/sites";
 import { flattenTpls, isTplComponent } from "@/wab/tpls";
-import { keyBy } from "lodash";
 
 interface OriginInfo {
   projectId: string;
@@ -69,25 +68,23 @@ export function mkInsertableComponentImporter(
   resolveTreeTokens: (tplTree: TplNode) => void
 ): ComponentImporter {
   const oldToNewComponent = new Map<Component, Component>();
-  const assetFixer = makeImageAssetFixer(
+  const { tplAssetFixer, getNewImageAsset } = makeImageAssetFixer(
     site,
-    keyBy(allImageAssets(info.site, { includeDeps: "all" }), (x) => x.uuid)
+    siteToAllImageAssetsDict(info.site)
   );
   const tplMgr = new TplMgr({ site });
 
   const fixupComp = (comp: Component) => {
-    // Remove data queries from the component as we properly bind them
-    comp.dataQueries = [];
-
-    ensureValidOwnedTree(
-      comp.tplTree,
+    ensureValidClonedComponent(
+      comp,
       {
         baseVariant: getBaseVariant(comp),
         screenVariant: info.screenVariant,
       },
       {
+        getNewImageAsset,
         resolveTokens: resolveTreeTokens,
-        fixAssets: assetFixer,
+        tplAssetFixer,
       }
     );
 

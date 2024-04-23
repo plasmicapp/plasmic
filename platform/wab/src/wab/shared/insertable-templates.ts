@@ -8,6 +8,7 @@ import {
 import {
   assertValidInsertable,
   ensureValidUnownedTree,
+  getInvalidComponentNames,
   makeImageAssetFixer,
   mkInsertableTokenImporter,
   mkTextTplStyleFixer,
@@ -22,6 +23,7 @@ import {
   InlineComponentContext,
   InsertableTemplateExtraInfo,
 } from "@/wab/shared/insertable-templates/types";
+import { assertSiteInvariants } from "@/wab/shared/site-invariants";
 import { VariantCombo } from "@/wab/shared/Variants";
 import { allGlobalVariants, allStyleTokens } from "@/wab/sites";
 import {
@@ -61,7 +63,7 @@ export function getUnownedTreeCloneUtils(
   plumeSite: Site | undefined,
   ownerComponent: Component
 ) {
-  const assetFixer = makeImageAssetFixer(
+  const { getNewImageAsset, tplAssetFixer } = makeImageAssetFixer(
     site,
     siteToAllImageAssetsDict(info.site)
   );
@@ -94,9 +96,10 @@ export function getUnownedTreeCloneUtils(
   );
 
   return {
-    assetFixer,
     componentImporter,
     textTplStyleFixer,
+    tplAssetFixer,
+    getNewImageAsset,
     tokenImporter,
     seenFonts,
     oldTokens,
@@ -123,7 +126,8 @@ export function cloneInsertableTemplate(
   } = info;
 
   const {
-    assetFixer,
+    getNewImageAsset,
+    tplAssetFixer,
     componentImporter,
     textTplStyleFixer,
     tokenImporter,
@@ -173,9 +177,11 @@ export function cloneInsertableTemplate(
     },
     {
       resolveTokens: tokenImporter,
-      fixAssets: assetFixer,
+      tplAssetFixer,
       fixTextTplStyles: textTplStyleFixer,
-    }
+      getNewImageAsset,
+    },
+    getInvalidComponentNames(sourceComp, false)
   );
 
   if (isImportMode) {
@@ -205,7 +211,8 @@ export function cloneCopyState(
   ) => void
 ) {
   const {
-    assetFixer,
+    getNewImageAsset,
+    tplAssetFixer,
     componentImporter,
     textTplStyleFixer,
     tokenImporter,
@@ -257,6 +264,9 @@ export function cloneCopyState(
         adaptTplNodeForPaste(tpl, info.component, activeVariants);
       });
 
+      // Collect invalid names to remove invalid references
+      const invalidNames = getInvalidComponentNames(info.component, false);
+
       ensureValidUnownedTree(
         tplTree,
         {
@@ -265,9 +275,11 @@ export function cloneCopyState(
         },
         {
           resolveTokens: tokenImporter,
-          fixAssets: assetFixer,
+          tplAssetFixer,
           fixTextTplStyles: textTplStyleFixer,
-        }
+          getNewImageAsset,
+        },
+        invalidNames
       );
 
       // The order actually matters for importing components, the fixes in the tree assume
@@ -278,6 +290,8 @@ export function cloneCopyState(
       nodesToPaste.push(tplTree);
     }
   }
+
+  assertSiteInvariants(site);
 
   return {
     nodesToPaste,

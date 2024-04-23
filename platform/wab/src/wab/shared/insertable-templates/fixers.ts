@@ -1,11 +1,12 @@
 import {
   Component,
   CustomCode,
+  EventHandler,
+  Expr,
   ImageAsset,
   ImageAssetRef,
   isKnownCustomCode,
   isKnownExprText,
-  isKnownImageAssetRef,
   isKnownObjectPath,
   isKnownTemplatedString,
   isKnownTplTag,
@@ -22,6 +23,7 @@ import {
   VariantedValue,
   VariantSetting,
   VariantsRef,
+  VarRef,
   VirtualRenderExpr,
 } from "@/wab/classes";
 import {
@@ -43,9 +45,10 @@ import {
 } from "@/wab/commons/StyleToken";
 import { isCodeComponent, isPlumeComponent } from "@/wab/components";
 import { InsertableTemplateTokenResolution } from "@/wab/devflags";
-import { code } from "@/wab/exprs";
+import { code, isFallbackableExpr } from "@/wab/exprs";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import { mkImageAssetRef } from "@/wab/image-assets";
+import { toVarName } from "@/wab/shared/codegen/util";
 import { getEffectiveVariantSettingForInsertable } from "@/wab/shared/effective-variant-setting";
 import {
   inlineMixins,
@@ -195,14 +198,13 @@ export const fixBackgroundImage = (
   }
 };
 
-export function makeImageAssetFixer(
-  site: Site,
-  allImageAssetsDict: Record<string, ImageAsset>
-): TplVSettingFixer {
-  const tplMgr = new TplMgr({ site: site });
+export function makeImageAssetImporter(
+  site: Site
+): (_: ImageAsset) => ImageAsset | undefined {
+  const tplMgr = new TplMgr({ site });
 
   const oldToNew = new Map<ImageAsset, ImageAsset>();
-  const getImageAsset = (asset: ImageAsset) => {
+  const getNewImageAsset = (asset: ImageAsset) => {
     if (!asset.dataUri) {
       return undefined;
     }
@@ -225,30 +227,21 @@ export function makeImageAssetFixer(
     return newAsset;
   };
 
-  return (tpl: TplNode, vs: VariantSetting) => {
-    for (const [attr, expr] of [...Object.entries(vs.attrs)]) {
-      if (isKnownImageAssetRef(expr)) {
-        const newAsset = getImageAsset(expr.asset);
-        if (newAsset) {
-          vs.attrs[attr] = new ImageAssetRef({ asset: newAsset });
-        } else {
-          delete vs.attrs[attr];
-        }
-      }
-    }
+  return getNewImageAsset;
+}
 
-    for (const [prop, arg] of [...Object.entries(vs.args)]) {
-      if (isKnownImageAssetRef(arg.expr)) {
-        const newAsset = getImageAsset(arg.expr.asset);
-        if (newAsset) {
-          arg.expr = new ImageAssetRef({ asset: newAsset });
-        } else {
-          delete vs.args[prop];
-        }
-      }
-    }
+export function makeImageAssetFixer(
+  site: Site,
+  allImageAssetsDict: Record<string, ImageAsset>
+) {
+  const getNewImageAsset = makeImageAssetImporter(site);
+  const tplAssetFixer = (tpl: TplNode, vs: VariantSetting) => {
+    fixBackgroundImage(tpl, vs, allImageAssetsDict, getNewImageAsset);
+  };
 
-    fixBackgroundImage(tpl, vs, allImageAssetsDict, getImageAsset);
+  return {
+    getNewImageAsset,
+    tplAssetFixer,
   };
 }
 
@@ -464,46 +457,110 @@ export function mkTextTplStyleFixer(
   };
 }
 
-export function fixTplTreeExprs(tpl: TplNode, vs: VariantSetting) {
-  function isInvalidTextOrDynamicExpression(
-    expr: CustomCode | ObjectPath | TemplatedString
-  ) {
-    // TODO: handle props known through tpl.component
-    if (isKnownCustomCode(expr)) {
-      return expr.code.includes("$");
-    }
-    if (isKnownObjectPath(expr)) {
-      return expr.path.join(".").includes("$");
-    }
-    if (isKnownTemplatedString(expr)) {
-      return expr.text.some((t) => {
-        if (isString(t)) {
-          return false;
-        }
-        return isInvalidTextOrDynamicExpression(t);
-      });
-    }
-    unexpected("Invalid expression type");
-  }
+type ValidVariantsFilter = (tpl: TplNode, tv: TargetVariants) => void;
 
-  for (const arg of [...vs.args]) {
-    const fixedExpr = switchType(arg.expr)
-      .when([CustomCode, ObjectPath, TemplatedString], (expr) => {
-        return isInvalidTextOrDynamicExpression(expr) ? null : expr;
+type ContextHelpers = {
+  resolveTokens: (tplTree: TplNode) => void;
+  getNewImageAsset: (asset: ImageAsset) => ImageAsset | undefined;
+  tplAssetFixer: TplVSettingFixer;
+  fixTextTplStyles: TplVSettingFixer;
+};
+
+function isInvalidTextOrDynamicExpression(
+  expr: CustomCode | ObjectPath | TemplatedString,
+  invalidExprNames: string[]
+) {
+  // We've to figure it out if the expression is invalid or not, this can happen
+  // to owned trees, which try to reference data source operations which have been
+  // removed from the component.
+  // In unowned trees, we have to consider data source operations, state, and props
+  // Checking if the expression contain $ and any invalid name is a good enough
+  // heuristic to determine if the expression is invalid
+  const isInvalidText = (text: string) =>
+    text.includes("$") && invalidExprNames.some((n) => text.includes(n));
+
+  if (isKnownCustomCode(expr)) {
+    return isInvalidText(expr.code);
+  }
+  if (isKnownObjectPath(expr)) {
+    const path = expr.path.join(".");
+    return isInvalidText(path);
+  }
+  if (isKnownTemplatedString(expr)) {
+    return expr.text.some((t) => {
+      if (isString(t)) {
+        return false;
+      }
+      return isInvalidTextOrDynamicExpression(t, invalidExprNames);
+    });
+  }
+  unexpected("Invalid expression type");
+}
+
+interface ExprFixerCtx {
+  isOwned: boolean;
+  invalidExprNames: string[];
+}
+
+function getFixedExpr(
+  ctx: ExprFixerCtx,
+  expr: Expr,
+  helpers: Pick<ContextHelpers, "getNewImageAsset">
+) {
+  const { isOwned, invalidExprNames } = ctx;
+  return (
+    switchType(expr)
+      .when([CustomCode, ObjectPath, TemplatedString], (_expr) => {
+        // should check for invalid names based on the component / context
+        if (isInvalidTextOrDynamicExpression(_expr, invalidExprNames)) {
+          return null;
+        }
+
+        // If there is a fallback, let's fix it
+        if (isFallbackableExpr(_expr) && _expr.fallback) {
+          _expr.fallback = getFixedExpr(ctx, _expr.fallback, helpers);
+        }
+
+        return expr;
       })
       // Should be fixed by the component importer `mkInsertableComponentImporter`
-      .when([VirtualRenderExpr, RenderExpr], (expr) => expr)
+      .when([VirtualRenderExpr, RenderExpr], (_expr) => expr)
       // Should have been fixed the asset fixer `makeImageAssetFixer`
-      .when([ImageAssetRef], (expr) => expr)
+      .when([ImageAssetRef], (_expr) => {
+        const newAsset = helpers.getNewImageAsset(_expr.asset);
+        if (newAsset) {
+          return new ImageAssetRef({ asset: newAsset });
+        }
+        return null;
+      })
+      // If we are dealing with an owned tree, we can keep variable references
+      .when([VarRef], (_expr) => (isOwned ? expr : null))
+      // TODO: handle event handlers, this may depend on `isOwned`
+      .when([EventHandler], (_expr) => {
+        return null;
+      })
       // TODO: handle style expr so that customizations to code components through
       // class are not lost
-      .when([StyleExpr], (expr) => null)
+      .when([StyleExpr], (_expr) => null)
       // TODO: handle variants ref, this may depend whether the tree is owned or not
-      .when([VariantsRef], (expr) => null)
+      .when([VariantsRef], (_expr) => null)
       // TODO: possible to handle if it's possible to reference the same page in the target
-      .when([PageHref], (expr) => null)
+      .when([PageHref], (_expr) => null)
 
-      .elseUnsafe(() => null);
+      .elseUnsafe(() => null)
+  );
+}
+
+export function fixTplTreeExprs(
+  ctx: ExprFixerCtx,
+  tpl: TplNode,
+  vs: VariantSetting,
+  helpers: Pick<ContextHelpers, "getNewImageAsset">
+) {
+  const { invalidExprNames } = ctx;
+
+  for (const arg of [...vs.args]) {
+    const fixedExpr = getFixedExpr(ctx, arg.expr, helpers);
     if (!fixedExpr) {
       remove(vs.args, arg);
     } else {
@@ -513,34 +570,33 @@ export function fixTplTreeExprs(tpl: TplNode, vs: VariantSetting) {
 
   for (const attrName of Object.keys(vs.attrs)) {
     const attr = vs.attrs[attrName];
-    const fixedExpr = switchType(attr)
-      .when([CustomCode, ObjectPath, TemplatedString], (expr) => {
-        return isInvalidTextOrDynamicExpression(expr) ? null : expr;
-      })
-      .when([ImageAssetRef], (expr) => expr)
-      .elseUnsafe(() => null);
+    const fixedExpr = getFixedExpr(ctx, attr, helpers);
 
     if (!fixedExpr) {
       delete vs.attrs[attrName];
+    } else {
+      vs.attrs[attrName] = fixedExpr;
     }
   }
 
   if (isKnownExprText(vs.text)) {
-    if (isInvalidTextOrDynamicExpression(vs.text.expr)) {
+    if (isInvalidTextOrDynamicExpression(vs.text.expr, invalidExprNames)) {
       // We remove the full text, as we can't resolve it
       vs.text = null;
     }
   }
 
   if (vs.dataCond) {
-    if (isInvalidTextOrDynamicExpression(vs.dataCond)) {
+    if (isInvalidTextOrDynamicExpression(vs.dataCond, invalidExprNames)) {
       // We may not be able to resolve the condition, just remove it
       delete vs.dataCond;
     }
   }
 
   if (vs.dataRep?.collection) {
-    if (isInvalidTextOrDynamicExpression(vs.dataRep?.collection)) {
+    if (
+      isInvalidTextOrDynamicExpression(vs.dataRep?.collection, invalidExprNames)
+    ) {
       // We may not be able to resolve the collection, but we will keep a
       // a collection, so that the element still keeps a valid tree
       vs.dataRep.collection = code("[]");
@@ -548,13 +604,31 @@ export function fixTplTreeExprs(tpl: TplNode, vs: VariantSetting) {
   }
 }
 
-type ValidVariantsFilter = (tpl: TplNode, tv: TargetVariants) => void;
+export function fixComponentExprs(
+  ctx: ExprFixerCtx,
+  comp: Component,
+  helpers: Pick<ContextHelpers, "getNewImageAsset">
+) {
+  for (const param of comp.params) {
+    if (param.defaultExpr) {
+      const newDefaultExpr = getFixedExpr(ctx, param.defaultExpr, helpers);
+      if (newDefaultExpr) {
+        param.defaultExpr = newDefaultExpr;
+      } else {
+        param.defaultExpr = null;
+      }
+    }
 
-type ContextualizedFixers = {
-  resolveTokens: (tplTree: TplNode) => void;
-  fixAssets: TplVSettingFixer;
-  fixTextTplStyles: TplVSettingFixer;
-};
+    if (param.previewExpr) {
+      const newPreviewExpr = getFixedExpr(ctx, param.previewExpr, helpers);
+      if (newPreviewExpr) {
+        param.previewExpr = newPreviewExpr;
+      } else {
+        param.previewExpr = null;
+      }
+    }
+  }
+}
 
 /**
 So we need to ensure the following to have a valid tree:
@@ -576,19 +650,16 @@ function traverseAndFixTree(
   targetVariants: TargetVariants,
   filter: ValidVariantsFilter,
   specificFixes: TplVSettingFixer,
-  fixers: Omit<ContextualizedFixers, "fixTextTplStyles">
+  helpers: Omit<ContextHelpers, "fixTextTplStyles">
 ) {
   inlineMixins(tplTree);
-  fixers.resolveTokens(tplTree);
+  helpers.resolveTokens(tplTree);
 
   for (const tpl of flattenTpls(tplTree)) {
     filter(tpl, targetVariants);
 
     for (const vs of tpl.vsettings) {
-      fixers.fixAssets(tpl, vs);
-
-      // This shouldn't be a generic fix
-      fixTplTreeExprs(tpl, vs);
+      helpers.tplAssetFixer(tpl, vs);
 
       specificFixes(tpl, vs);
     }
@@ -602,7 +673,8 @@ component in the original project.
 export function ensureValidUnownedTree(
   tplTree: TplNode,
   targetVariants: TargetVariants,
-  fixers: ContextualizedFixers
+  helpers: ContextHelpers,
+  invalidExprNames: string[]
 ) {
   traverseAndFixTree(
     tplTree,
@@ -611,32 +683,91 @@ export function ensureValidUnownedTree(
       ensureTplWithBaseAndScreenVariants(tpl, tv.baseVariant, tv.screenVariant);
     },
     (tpl, vs) => {
+      fixTplTreeExprs(
+        {
+          isOwned: false,
+          invalidExprNames,
+        },
+        tpl,
+        vs,
+        helpers
+      );
       // We need to fix text styles here as we aren't sure about the inherited values
       // they may have, we can opt out of this too and let the target design affect
       // those style attributes
-      fixers.fixTextTplStyles(tpl, vs);
+      helpers.fixTextTplStyles(tpl, vs);
     },
-    fixers
+    helpers
   );
+}
+
+export function getInvalidComponentNames(
+  ownerComponent: Component,
+  isOwned: boolean
+) {
+  return [
+    ...ownerComponent.dataQueries.map((q) => toVarName(q.name)),
+    // If the component is owned we don't need to remove the states and params
+    // as they are going to be used in the tree, otherwise we need to remove them
+    ...(isOwned
+      ? []
+      : [
+          // TODO: Is it possible to improve the handling of nested states? Operations like
+          // ($state.something).somethingElse are hard to handle
+          ...ownerComponent.states.flatMap((s) => {
+            const name = s.param.variable.name;
+            return name.split(" ").map((n) => toVarName(n));
+          }),
+          ...ownerComponent.params.map((p) => toVarName(p.variable.name)),
+        ]),
+  ];
 }
 
 /**
 A owned tree is a tree from a component that is being inserted into the project.
  */
-export function ensureValidOwnedTree(
-  tplTree: TplNode,
+export function ensureValidClonedComponent(
+  ownerComponent: Component,
   targetVariants: TargetVariants,
-  fixers: Omit<ContextualizedFixers, "fixTextTplStyles">
+  helpers: Omit<ContextHelpers, "fixTextTplStyles">
 ) {
+  // Collect names of data queries to remove them from the component
+  const invalidNames = getInvalidComponentNames(ownerComponent, true);
+  // Remove data queries from the component as we properly bind them
+  ownerComponent.dataQueries = [];
+
+  // Fix the component expressions present in component params
+  fixComponentExprs(
+    {
+      isOwned: true,
+      invalidExprNames: invalidNames,
+    },
+    ownerComponent,
+    helpers
+  );
+
+  // Fix issues in the tree
   traverseAndFixTree(
-    tplTree,
+    ownerComponent.tplTree,
     targetVariants,
+    // Variants filter
     (tpl, tv) => {
       ensureNonGlobalVariants(tpl, {
         screenVariant: tv.screenVariant,
       });
     },
-    (tpl, vs) => {},
-    fixers
+    // Fixes for the tree
+    (tpl, vs) => {
+      fixTplTreeExprs(
+        {
+          isOwned: true,
+          invalidExprNames: invalidNames,
+        },
+        tpl,
+        vs,
+        helpers
+      );
+    },
+    helpers
   );
 }
