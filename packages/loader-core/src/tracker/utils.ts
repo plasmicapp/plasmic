@@ -1,7 +1,7 @@
 const isBrowser =
-  typeof window !== 'undefined' &&
+  typeof window !== "undefined" &&
   window != null &&
-  typeof window.document !== 'undefined';
+  typeof window.document !== "undefined";
 
 export function getPlasmicCookieValues() {
   if (!isBrowser) {
@@ -9,10 +9,10 @@ export function getPlasmicCookieValues() {
   }
   return Object.fromEntries(
     document.cookie
-      .split('; ')
-      .filter((cookie) => cookie.includes('plasmic:'))
-      .map((cookie) => cookie.split('='))
-      .map(([key, value]) => [key.split(':')[1], value])
+      .split("; ")
+      .filter((cookie) => cookie.includes("plasmic:"))
+      .map((cookie) => cookie.split("="))
+      .map(([key, value]) => [key.split(":")[1], value])
   );
 }
 
@@ -20,7 +20,7 @@ export function getVariationCookieValues() {
   const cookies = getPlasmicCookieValues();
   return Object.fromEntries(
     Object.keys(cookies)
-      .map((key) => [key.split('.')[1], cookies[key]])
+      .map((key) => [key.split(".")[1], cookies[key]])
       .filter((val) => !!val[0])
   );
 }
@@ -30,11 +30,11 @@ export function generateUUID() {
   // Public Domain/MIT
   var d = new Date().getTime(); //Timestamp
   var d2 =
-    (typeof performance !== 'undefined' &&
+    (typeof performance !== "undefined" &&
       performance.now &&
       performance.now() * 1000) ||
     0; //Time in microseconds since page-load or 0 if unsupported
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
     var r = Math.random() * 16; //random number between 0 and 16
     if (d > 0) {
       //Use timestamp until depleted
@@ -45,15 +45,18 @@ export function generateUUID() {
       r = (d2 + r) % 16 | 0;
       d2 = Math.floor(d2 / 16);
     }
-    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
   });
 }
 
 export function getDistinctId(): string {
   if (!isBrowser) {
-    return 'LOADER-SERVER';
+    return "LOADER-SERVER";
   }
-  return generateUUID();
+  // Don't generate a new UUID per event so that we don't consider
+  // each event from a different person which uses more storage
+  // return generateUUID();
+  return "LOADER-CLIENT";
 }
 
 function getCampaignParams() {
@@ -62,12 +65,12 @@ function getCampaignParams() {
   try {
     const url = new URL(location.href);
     const CAMPAIGN_KEYWORDS = [
-      'utm_source',
-      'utm_medium',
-      'utm_campaign',
-      'utm_content',
-      'utm_term',
-      'gclid',
+      "utm_source",
+      "utm_medium",
+      "utm_campaign",
+      "utm_content",
+      "utm_term",
+      "gclid",
     ];
     CAMPAIGN_KEYWORDS.forEach((keyword) => {
       const value = url.searchParams.get(keyword);
@@ -104,46 +107,46 @@ function getScreenMeta() {
 function getOS(userAgent: string) {
   if (/Windows/i.test(userAgent)) {
     if (/Phone/.test(userAgent) || /WPDesktop/.test(userAgent)) {
-      return 'Windows Phone';
+      return "Windows Phone";
     }
-    return 'Windows';
+    return "Windows";
   } else if (/(iPhone|iPad|iPod)/.test(userAgent)) {
-    return 'iOS';
+    return "iOS";
   } else if (/Android/.test(userAgent)) {
-    return 'Android';
+    return "Android";
   } else if (/(BlackBerry|PlayBook|BB10)/i.test(userAgent)) {
-    return 'BlackBerry';
+    return "BlackBerry";
   } else if (/Mac/i.test(userAgent)) {
-    return 'Mac OS X';
+    return "Mac OS X";
   } else if (/Linux/.test(userAgent)) {
-    return 'Linux';
+    return "Linux";
   } else if (/CrOS/.test(userAgent)) {
-    return 'Chrome OS';
+    return "Chrome OS";
   } else {
-    return '';
+    return "";
   }
 }
 
 function getDeviceInfo(userAgent: string) {
   const PATTERNS = [
     {
-      device: 'iPhone',
+      device: "iPhone",
       patterns: [/iPhone/],
     },
     {
-      device: 'iPad',
+      device: "iPad",
       patterns: [/iPad/],
     },
     {
-      device: 'iPod Touch',
+      device: "iPod Touch",
       patterns: [/iPod/],
     },
     {
-      device: 'Windows Phone',
+      device: "Windows Phone",
       patterns: [/Windows Phone/i, /WPDesktop/],
     },
     {
-      device: 'Android',
+      device: "Android",
       patterns: [/Android/],
     },
   ];
@@ -152,8 +155,8 @@ function getDeviceInfo(userAgent: string) {
   );
   const device = match?.device;
   return {
-    device: device ?? '',
-    deviceType: device ? 'Mobile' : 'Desktop',
+    device: device ?? "",
+    deviceType: device ? "Mobile" : "Desktop",
     os: getOS(userAgent),
   };
 }
@@ -177,7 +180,7 @@ export function getWindowMeta() {
   };
 }
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === "production";
 
 export function getEnvMeta() {
   return {
@@ -189,7 +192,7 @@ export function getEnvMeta() {
 export function rawSplitVariation(variation: Record<string, string>) {
   const rawVariations: Record<string, string> = {};
   Object.keys(variation).forEach((variationKey) => {
-    const [, splitId] = variationKey.split('.');
+    const [, splitId] = variationKey.split(".");
     if (splitId) {
       rawVariations[splitId] = variation[variationKey];
     }
