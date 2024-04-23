@@ -35,7 +35,7 @@ async function startDevServer(
         resolve(devServerProcess);
       }
       if (opts?.verbose) {
-        console.log(data);
+        console.log(data.toString());
       }
     });
     devServerProcess.stderr?.on("data", (data) => {
@@ -44,7 +44,7 @@ async function startDevServer(
         reject(new Error(`Error starting dev server: ${data.toString()}`));
       }
       if (opts?.verbose) {
-        console.error(data);
+        console.error(data.toString());
       }
     });
   });
