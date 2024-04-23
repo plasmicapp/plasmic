@@ -71,11 +71,7 @@ export function getUnownedTreeCloneUtils(
   const oldTokens = allStyleTokens(info.site, { includeDeps: "all" });
   const newTokens = allStyleTokens(site, { includeDeps: "all" });
 
-  const textTplStyleFixer = mkTextTplStyleFixer(
-    oldTokens,
-    info.component,
-    info.site
-  );
+  const textTplStyleFixer = mkTextTplStyleFixer(info.component, info.site);
 
   const seenFonts = new Set<string>();
   const tokenImporter = mkInsertableTokenImporter(

@@ -77,7 +77,7 @@ describe("cloneCopyState", () => {
         () => null
       );
 
-      expect([...seenFonts]).toEqual(["Arial"]);
+      expect([...seenFonts]).toEqual(["Arial", "Inter"]);
       for (const node of nodesToPaste) {
         const allExprRef = findExprsInTree(node);
         for (const exprRef of allExprRef) {

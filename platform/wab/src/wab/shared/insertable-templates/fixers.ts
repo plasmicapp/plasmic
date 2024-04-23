@@ -40,7 +40,6 @@ import {
   hasTokenRefs,
   mkTokenRef,
   replaceAllTokenRefs,
-  resolveAllTokenRefs,
   TokenType,
 } from "@/wab/commons/StyleToken";
 import { isCodeComponent, isPlumeComponent } from "@/wab/components";
@@ -407,7 +406,6 @@ export function assertValidInsertable(
 export const fixTextTplStyles = (
   tpl: TplTextTag,
   vs: VariantSetting,
-  allTokens: StyleToken[],
   sourceComp: Component,
   sourceSite: Site
 ) => {
@@ -435,24 +433,14 @@ export const fixTextTplStyles = (
     fixedRsh.mergeRs(vs.rs);
   }
 
-  for (const prop of fixedRsh.props()) {
-    const val = fixedRsh.getRaw(prop);
-    if (val) {
-      fixedRsh.set(prop, resolveAllTokenRefs(val, allTokens));
-    }
-  }
   const targetRsh = new RuleSetHelpers(vs.rs, tpl.tag);
   targetRsh.mergeRs(fixedRsh.rs());
 };
 
-export function mkTextTplStyleFixer(
-  oldTokens: StyleToken[],
-  sourceComp: Component,
-  sourceSite: Site
-) {
+export function mkTextTplStyleFixer(sourceComp: Component, sourceSite: Site) {
   return (tpl: TplNode, vs: VariantSetting) => {
     if (isTplTextBlock(tpl)) {
-      fixTextTplStyles(tpl, vs, oldTokens, sourceComp, sourceSite);
+      fixTextTplStyles(tpl, vs, sourceComp, sourceSite);
     }
   };
 }
@@ -676,6 +664,14 @@ export function ensureValidUnownedTree(
   helpers: ContextHelpers,
   invalidExprNames: string[]
 ) {
+  for (const [vs, tpl] of findVariantSettingsUnderTpl(tplTree)) {
+    // We need to fix text styles here as we aren't sure about the inherited values
+    // they may have, we can opt out of this too and let the target design affect
+    // those style attributes. We do this beforehand so that we only fix tokens
+    // after new styles have been applied
+    helpers.fixTextTplStyles(tpl, vs);
+  }
+
   traverseAndFixTree(
     tplTree,
     targetVariants,
@@ -692,10 +688,6 @@ export function ensureValidUnownedTree(
         vs,
         helpers
       );
-      // We need to fix text styles here as we aren't sure about the inherited values
-      // they may have, we can opt out of this too and let the target design affect
-      // those style attributes
-      helpers.fixTextTplStyles(tpl, vs);
     },
     helpers
   );
