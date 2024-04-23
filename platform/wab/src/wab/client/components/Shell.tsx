@@ -1,5 +1,5 @@
 import { AppCtx, hideStarters } from "@/wab/client/app-ctx";
-import { isTopFrame, UU } from "@/wab/client/cli-routes";
+import { isProjectPath, isTopFrame } from "@/wab/client/cli-routes";
 import { initClientFlags } from "@/wab/client/client-dev-flags";
 import {
   handleError,
@@ -338,14 +338,6 @@ export function main() {
   }
 
   reportAndFixOversizedLocalStorage();
-}
-
-function isProjectPath(pathname) {
-  return !!(
-    UU.project.parse(pathname) ||
-    UU.projectSlug.parse(pathname) ||
-    UU.projectBranchArena.parse(pathname)
-  );
 }
 
 export function Shell() {

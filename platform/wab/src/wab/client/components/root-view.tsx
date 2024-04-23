@@ -12,6 +12,7 @@ import {
 import {
   getLoginRouteWithContinuation,
   getRouteContinuation,
+  isProjectPath,
   mkProjectLocation,
   Router,
   UU,
@@ -33,7 +34,7 @@ import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { getMaximumTierFromTeams } from "@/wab/shared/pricing/pricing-utils";
 import posthog from "posthog-js";
 import * as React from "react";
-import { Redirect, Route, Switch, useHistory } from "react-router";
+import { Redirect, Route, Switch, useHistory, useLocation } from "react-router";
 import AllProjectsPage from "./dashboard/AllProjectsPage";
 import MyPlayground from "./dashboard/MyPlayground";
 import { documentTitle } from "./dashboard/page-utils";
@@ -120,9 +121,19 @@ function LoggedInContainer(props: LoggedInContainerProps) {
     }
   }, [selfEmail]);
 
+  const currentLocation = useLocation();
+
   const isWhiteLabeled = !!selfInfo?.isWhiteLabel;
   return (
-    <React.Suspense fallback={<widgets.Spinner />}>
+    <React.Suspense
+      fallback={
+        isProjectPath(currentLocation.pathname) ? (
+          <widgets.StudioPlaceholder />
+        ) : (
+          <widgets.Spinner />
+        )
+      }
+    >
       <IntroSplash />
       {!selfInfo ? (
         // Not logged in users

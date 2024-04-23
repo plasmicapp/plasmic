@@ -69,7 +69,7 @@ function HostFrameViewInitializer({
     <ObserverLoadable
       loader={loader}
       contents={contents}
-      loadingContents={() => <StudioPlaceholder visible />}
+      loadingContents={() => <StudioPlaceholder />}
     />
   );
 }

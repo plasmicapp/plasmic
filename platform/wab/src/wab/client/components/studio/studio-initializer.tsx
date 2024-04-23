@@ -301,7 +301,7 @@ class StudioInitializer_ extends React.Component<
       <widgets.ObserverLoadable
         loader={this.init}
         contents={contents}
-        loadingContents={() => <widgets.StudioPlaceholder visible />}
+        loadingContents={() => <widgets.StudioPlaceholder />}
       />
     );
   }

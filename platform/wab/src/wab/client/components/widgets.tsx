@@ -1129,15 +1129,9 @@ export function VerticalFillTable(
   );
 }
 
-export function StudioPlaceholder(props: { visible: boolean }) {
+export function StudioPlaceholder() {
   return (
-    <div
-      className={cx({
-        StudioPlaceholder: true,
-        visible: props.visible,
-        fadeOut: !props.visible,
-      })}
-    >
+    <div className="StudioPlaceholder visible">
       <div className="placeholder_topBar">
         <svg
           xmlns="http://www.w3.org/2000/svg"

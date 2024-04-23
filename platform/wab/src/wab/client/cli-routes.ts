@@ -256,6 +256,14 @@ export class RouteSet {
 
 export const UU = new RouteSet();
 
+export function isProjectPath(pathname) {
+  return !!(
+    UU.project.parse(pathname) ||
+    UU.projectSlug.parse(pathname) ||
+    UU.projectBranchArena.parse(pathname)
+  );
+}
+
 export const U: {
   [P in keyof typeof UU]: (typeof UU)[P] extends R<infer X>
     ? (x: X) => string
