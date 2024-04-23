@@ -13,6 +13,7 @@ import { registerSection } from "./registerSection";
 import { registerSelect } from "./registerSelect";
 import { registerSwitch } from "./registerSwitch";
 import { registerTextField } from "./registerTextField";
+import { registerTooltip } from "./registerTooltip";
 import { Registerable } from "./utils";
 
 export function registerAll(loader?: Registerable) {
@@ -31,4 +32,5 @@ export function registerAll(loader?: Registerable) {
   registerRadioGroup(loader);
   registerTextField(loader);
   registerModal(loader);
+  registerTooltip(loader);
 }

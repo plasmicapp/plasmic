@@ -48,7 +48,10 @@
   "dependencies": {
     "@react-aria/i18n": "^3.11.0",
     "@react-aria/utils": "^3.24.0",
-    "react-aria-components": "^1.2.0"
+    "react-aria-components": "^1.2.0",
+    "react-aria": "^3.33.0",
+    "react-stately": "^3.31.0",
+    "react-keyed-flatten-children": "^3.0.0"
   },
   "devDependencies": {
     "@plasmicapp/host": "1.0.196",
