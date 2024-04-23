@@ -42,6 +42,12 @@ module.exports = {
     // Maybe not needed, from public-packages
     // "@typescript-eslint/no-empty-interface": "off",
     // "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/triple-slash-reference": [
+      "error",
+      {
+        types: "always",
+      },
+    ],
     "no-restricted-properties": [
       "error",
       {
