@@ -100,6 +100,15 @@ async function withExtractPlasmicQueryData(
   // to extract query data.
   newSearchParams.set("plasmicSsr", "true");
 
+  if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
+    // If protection bypass is enabled, use it to ensure fetching from
+    // the SSR endpoint will not return the authentication page HTML
+    newSearchParams.set(
+      "x-vercel-protection-bypass",
+      process.env.VERCEL_AUTOMATION_BYPASS_SECRET
+    );
+  }
+
   // Fetch the data from the endpoint using the new search params
   const prefetchedQueryData = await fetchExtractedQueryData(
     `${prepassHost}${pathname}?${newSearchParams.toString()}`
@@ -137,6 +146,8 @@ module.exports = {
 ```
 
 The `PLASMIC_PREPASS_SERVER` environment variable will be set by with-plasmic-prepass.
+
+3. If you are deploying to Vercel, make sure to either disable [Vercel Authentication](https://vercel.com/docs/security/deployment-protection/methods-to-protect-deployments/vercel-authentication) or provide the [Protection Bypass](https://vercel.com/docs/security/deployment-protection/methods-to-bypass-deployment-protection/protection-bypass-automation) (Note: this is a paid feature). This is to ensure the SSR endpoint will not return Vercel's page authentication HTML.
 
 So...
 
