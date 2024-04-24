@@ -12,14 +12,14 @@ import * as React from "react";
  */
 export function ExtractPlasmicQueryData(props: { children?: React.ReactNode }) {
   const { children } = props;
-  if (!React.useId || !(React as any).use) {
+  if (!("useId" in React) || !("use" in React)) {
     throw new Error(
       `You can only use <ExtractPlasmicQueryData /> from server components.`
     );
   }
-  const scriptId = `plasmic-prefetch-${React.useId()}`;
+  const scriptId = `plasmic-prefetch-${(React as any)["" + "useId"]()}`;
   if (typeof window === "undefined") {
-    const data: Record<string, any> = (React as any).use(
+    const data: Record<string, any> = (React as any)["" + "use"](
       extractPlasmicQueryData(<>{children}</>)
     );
     return (
