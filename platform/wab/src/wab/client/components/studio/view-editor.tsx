@@ -107,6 +107,7 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import { trackEvent } from "@/wab/client/tracking";
+import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import {
   createIframeFromNamedDomSnap,
   DomSnap,
@@ -1220,7 +1221,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       } catch (err) {
         notification.error({
           message: "Cannot paste elements",
-          description: err.message,
+          description: <StandardMarkdown>{err.message}</StandardMarkdown>,
         });
       }
 

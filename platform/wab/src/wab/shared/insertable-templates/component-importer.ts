@@ -13,6 +13,7 @@ import {
   isHostLessCodeComponent,
   isPlumeComponent,
 } from "@/wab/components";
+import { walkDependencyTree } from "@/wab/project-deps";
 import { siteToAllImageAssetsDict } from "@/wab/shared/cached-selectors";
 import {
   ensureValidClonedComponent,
@@ -26,6 +27,7 @@ import { HostLessDependencies } from "@/wab/shared/insertable-templates/types";
 import { makeComponentSwapper } from "@/wab/shared/swap-components";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { getBaseVariant } from "@/wab/shared/Variants";
+import { allComponents } from "@/wab/sites";
 import { flattenTpls, isTplComponent } from "@/wab/tpls";
 
 interface OriginInfo {
@@ -155,10 +157,33 @@ export function mkInsertableComponentImporter(
       (c) => c.uuid === comp.uuid
     );
 
-    assert(
-      isDirectSourceComponent,
-      () => `Cannot clone imported component ${comp.name}`
-    );
+    if (!isDirectSourceComponent) {
+      // We need to check if the component is present as a dependency
+      const allSiteComponents = allComponents(site, {
+        includeDeps: "all",
+      });
+      const sourceComp = allSiteComponents.find((c) => c.uuid === comp.uuid);
+      if (sourceComp) {
+        // The project already has the same dependency, as the origin site
+        // so we can just reuse it, the version may be different, but we won't
+        // worry about it here, the component-swapper will handle the adaptation.
+        // Later when the user upgrades the dependency, the component will be updated
+        oldToNewComponent.set(comp, sourceComp);
+        return sourceComp;
+      }
+
+      const missingDependency = ensure(
+        walkDependencyTree(info.site, "all").find((dep) =>
+          dep.site.components.some((c) => c.uuid === comp.uuid)
+        ),
+        "Cannot find dependency for component"
+      );
+
+      // If the dependency is not present, we won't be able to link it
+      throw new Error(
+        `Cannot clone imported component ${comp.name} from "${missingDependency.name}".\n Please import the project ["${missingDependency.name}"](https://studio.plasmic.app/projects/${missingDependency.projectId}) first.`
+      );
+    }
 
     const newComp = cloneComp(comp);
     oldToNewComponent.set(comp, newComp);
