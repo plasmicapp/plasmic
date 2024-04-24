@@ -52,7 +52,8 @@
     "clean": "rm -rf dist/ skinny/*.ts skinny/*.map skinny/*.js",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "test-storybook": "test-storybook"
+    "test-storybook": "test-storybook",
+    "test": "TEST_CWD=`pwd` yarn --cwd=../.. test"
   },
   "dependencies": {
     "antd": "^5.12.7",
