@@ -13,29 +13,21 @@ import {
 interface BaseCheckboxProps extends CheckboxProps {
   onPressChange: (isPressed: boolean) => void;
   onFocusVisibleChange: (isFocusVisible: boolean) => void;
-  onInvalidChange: (isInvalid: boolean) => void;
 }
 
 export function BaseCheckbox(props: BaseCheckboxProps) {
-  const {
-    children,
-    onPressChange,
-    onFocusVisibleChange,
-    onInvalidChange,
-    ...rest
-  } = props;
+  const { children, onPressChange, onFocusVisibleChange, ...rest } = props;
 
   return (
     <>
       <Checkbox {...rest}>
-        {({ isFocusVisible, isPressed, isInvalid }) => (
+        {({ isFocusVisible, isPressed }) => (
           <>
             <ValueObserver
               value={isFocusVisible}
               onChange={onFocusVisibleChange}
             />
             <ValueObserver value={isPressed} onChange={onPressChange} />
-            <ValueObserver value={isInvalid} onChange={onInvalidChange} />
             {children}
           </>
         )}
@@ -118,10 +110,6 @@ export function registerCheckbox(
           type: "eventHandler",
           argTypes: [{ name: "isFocusVisible", type: "boolean" }],
         },
-        onInvalidChange: {
-          type: "eventHandler",
-          argTypes: [{ name: "isInvalid", type: "boolean" }],
-        },
       },
       states: {
         isSelected: {
@@ -143,11 +131,6 @@ export function registerCheckbox(
         isFocused: {
           type: "readonly",
           onChangeProp: "onFocusChange",
-          variableType: "boolean",
-        },
-        isInvalid: {
-          type: "readonly",
-          onChangeProp: "onInvalidChange",
           variableType: "boolean",
         },
         isFocusVisible: {

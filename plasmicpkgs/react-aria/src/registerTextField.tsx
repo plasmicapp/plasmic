@@ -13,7 +13,6 @@ import {
   makeComponentName,
   Registerable,
   registerComponentHelper,
-  ValueObserver,
 } from "./utils";
 
 interface BaseTextFieldProps extends TextFieldProps {
@@ -23,29 +22,17 @@ interface BaseTextFieldProps extends TextFieldProps {
   enableAutoComplete?: boolean;
   multiline?: boolean;
   inputProps?: InputProps;
-  onInvalidChange?: (isInvalid: boolean) => void;
 }
 
 export function BaseTextField(props: BaseTextFieldProps) {
-  const {
-    enableAutoComplete,
-    autoComplete,
-    children,
-    onInvalidChange,
-    ...rest
-  } = props;
+  const { enableAutoComplete, autoComplete, children, ...rest } = props;
 
   return (
     <TextField
       autoComplete={enableAutoComplete ? autoComplete : undefined}
       {...rest}
     >
-      {({ isInvalid }) => (
-        <>
-          <ValueObserver value={isInvalid} onChange={onInvalidChange} />
-          {children as ReactNode}
-        </>
-      )}
+      {children}
     </TextField>
   );
 }
@@ -231,10 +218,6 @@ export function registerTextField(
           type: "eventHandler",
           argTypes: [{ name: "isFocused", type: "boolean" }],
         },
-        onInvalidChange: {
-          type: "eventHandler",
-          argTypes: [{ name: "isInvalid", type: "boolean" }],
-        },
       },
       // NOTE: React-Aria does not support render props for <Input> and <Textarea>, so focusVisible and inputHovered states are not implemented
       states: {
@@ -247,11 +230,6 @@ export function registerTextField(
         isFocused: {
           type: "readonly",
           onChangeProp: "onFocusChange",
-          variableType: "boolean",
-        },
-        isInvalid: {
-          type: "readonly",
-          onChangeProp: "onInvalidChange",
           variableType: "boolean",
         },
       },
