@@ -88,6 +88,7 @@ export function mkApiTeam(team: Team): ApiTeam {
       "whiteLabelName",
     ]),
     {
+      parentTeamId: team.parentTeamId,
       featureTier: team.featureTier || team.parentTeam?.featureTier || null,
       uiConfig: mergeUiConfigs(team.parentTeam?.uiConfig, team.uiConfig),
       onTrial: isTeamOnFreeTrial(team),

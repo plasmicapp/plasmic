@@ -156,6 +156,7 @@ export type BillingFrequency = "month" | "year";
 
 export interface ApiTeam extends ApiEntityBase {
   id: TeamId;
+  parentTeamId: TeamId | null;
   name: string;
   billingEmail: string;
   seats: number | null;

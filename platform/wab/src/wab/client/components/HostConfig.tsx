@@ -30,10 +30,13 @@ export function HostConfig({
   const [currentUrlWithoutProtocol, setCurrentUrlWithoutProtocol] =
     React.useState<string | null>(null);
   const parsedLocation = parseProjectLocation(appCtx.history.location);
+  const team = appCtx.getAllTeams().find((t) => t.id === project.teamId);
   const showBranching =
     appCtx.appConfig.branching ||
     (project.teamId &&
-      appCtx.appConfig.branchingTeamIds.includes(project.teamId));
+      appCtx.appConfig.branchingTeamIds.includes(project.teamId)) ||
+    (team?.parentTeamId &&
+      appCtx.appConfig.branchingTeamIds.includes(team?.parentTeamId));
   const [branchName, setBranchName] = React.useState<string | MainBranchId>(
     !showBranching ? MainBranchId : parsedLocation?.branchName || MainBranchId
   );

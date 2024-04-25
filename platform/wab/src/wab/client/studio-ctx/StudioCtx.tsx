@@ -2600,10 +2600,17 @@ export class StudioCtx extends WithDbCtx {
   // Branching
   //
   showBranching() {
+    const team = this.appCtx
+      .getAllTeams()
+      .find((t) => t.id === this.siteInfo.teamId);
     return (
       this.appCtx.appConfig.branching ||
       (this.siteInfo.teamId &&
-        this.appCtx.appConfig.branchingTeamIds.includes(this.siteInfo.teamId))
+        this.appCtx.appConfig.branchingTeamIds.includes(
+          this.siteInfo.teamId
+        )) ||
+      (team?.parentTeamId &&
+        this.appCtx.appConfig.branchingTeamIds.includes(team.parentTeamId))
     );
   }
 
