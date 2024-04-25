@@ -12,12 +12,8 @@ describe("create-data-source", function () {
     const dataSourceName = "Postgres Test";
     cy.contains("Plasmic's First Workspace").click();
     cy.contains("Integrations").click();
-    cy.contains("New integration").click();
-    cy.get(`[data-test-id="data-source-picker"]`)
-      .parent()
-      .within(() => {
-        cy.get("select").select("postgres", { force: true });
-      });
+    cy.contains("New integration").click().wait(1000);
+    cy.selectPropOption(`[data-test-id="data-source-picker"]`, "Postgres");
     cy.get(`[data-test-id="data-source-name"]`).click();
     cy.justType(dataSourceName);
     Cypress.env("dataSourceName", dataSourceName);
@@ -60,12 +56,8 @@ describe("create-data-source", function () {
     const dataSourceName = "HTTP Test";
     cy.contains("Plasmic's First Workspace").click();
     cy.contains("Integrations").click();
-    cy.contains("New integration").click();
-    cy.get(`[data-test-id="data-source-picker"]`)
-      .parent()
-      .within(() => {
-        cy.get("select").select("http", { force: true });
-      });
+    cy.contains("New integration").click().wait(1000);
+    cy.selectPropOption(`[data-test-id="data-source-picker"]`, "HTTP");
     cy.get(`[data-test-id="data-source-name"]`).click();
     cy.justType(dataSourceName);
     Cypress.env("dataSourceName", dataSourceName);

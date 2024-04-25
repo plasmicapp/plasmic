@@ -4,7 +4,7 @@ import {
   removeCurrentProject,
 } from "../../support/util";
 
-describe("arena", function () {
+describe("schema", function () {
   beforeEach(() => {
     cy.createFakeDataSource();
     cy.setupProjectWithHostlessPackages({
@@ -32,6 +32,7 @@ describe("arena", function () {
 
         cy.contains("Connect to Table").click();
 
+        cy.wait(1000);
         cy.selectDataPlasmicProp("formType", "New Entry");
         cy.pickIntegration();
         cy.setSelectByLabel("dataTablePickerTable", "athletes");
@@ -89,6 +90,7 @@ describe("arena", function () {
 
         cy.contains("Connect to Table").click();
 
+        cy.wait(1000);
         cy.selectDataPlasmicProp("formType", "Update Entry");
         cy.pickIntegration();
         cy.setSelectByLabel("dataTablePickerTable", "athletes");
@@ -150,6 +152,7 @@ describe("arena", function () {
 
         cy.contains("Connect to Table").click();
 
+        cy.wait(1000);
         cy.selectDataPlasmicProp("formType", "New Entry");
         cy.pickIntegration();
         cy.setSelectByLabel("dataTablePickerTable", "athletes");

@@ -1,0 +1,16 @@
+diff --git a/node_modules/@react-aria/overlays/dist/calculatePosition.mjs b/node_modules/@react-aria/overlays/dist/calculatePosition.mjs
+index 6bdd0f3..3181a16 100644
+--- a/node_modules/@react-aria/overlays/dist/calculatePosition.mjs
++++ b/node_modules/@react-aria/overlays/dist/calculatePosition.mjs
+@@ -110,8 +110,9 @@ containerDimensions, padding, containerOffsetWithBoundary) {
+     // Note that these values are with respect to the visual viewport (aka 0,0 is the top left of the viewport)
+     let boundaryStartEdge = boundaryDimensions.scroll[$edcf132a9284368a$var$AXIS[axis]] + padding;
+     let boundaryEndEdge = boundarySize + boundaryDimensions.scroll[$edcf132a9284368a$var$AXIS[axis]] - padding;
+-    let startEdgeOffset = offset - containerScroll + containerOffsetWithBoundary[axis] - boundaryDimensions[$edcf132a9284368a$var$AXIS[axis]];
+-    let endEdgeOffset = offset - containerScroll + size + containerOffsetWithBoundary[axis] - boundaryDimensions[$edcf132a9284368a$var$AXIS[axis]];
++    // https://github.com/adobe/react-spectrum/issues/6333
++    let startEdgeOffset = offset - containerScroll + containerOffsetWithBoundary[axis];
++    let endEdgeOffset = offset - containerScroll + size + containerOffsetWithBoundary[axis];
+     // If any of the overlay edges falls outside of the boundary, shift the overlay the required amount to align one of the overlay's
+     // edges with the closest boundary edge.
+     if (startEdgeOffset < boundaryStartEdge) return boundaryStartEdge - startEdgeOffset;

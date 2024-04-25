@@ -1,5 +1,13 @@
 {
   "name": "canvas-packages",
+  "scripts": {
+    "build": "NODE_ENV=production node ./esbuild.js",
+    "watch": "ESBUILD_WATCH=true node ./esbuild.js",
+    "prepare": "node ./makePkgTypes.js",
+    "size": "size-limit",
+    "analyze": "size-limit --why",
+    "upgrade-aria": "yarn upgrade --latest react-aria && npx yarn-deduplicate@latest --scopes @react-aria @react-stately @react-types @internationalized && npx yarn-deduplicate@latest --packages react-aria @swc/helpers"
+  },
   "dependenciesComments": {
     "@ant-design/pro-components": "Must be 2.6.4. Earlier doesn't support newer antd, later incurs a disallowed dynamic require of antd/es/layout/Sider. https://app.shortcut.com/plasmic/story/37043/richlayout-always-initially-loads-with-dark-background"
   },
@@ -48,9 +56,9 @@
     "@plasmicpkgs/react-twitter-widgets": "^0.0.192",
     "@plasmicpkgs/react-youtube": "^7.13.198",
     "@plasmicpkgs/tiptap": "^0.0.3",
-    "@react-aria/focus": "^3.14.3",
-    "@react-aria/interactions": "^3.19.1",
-    "@react-aria/overlays": "^3.18.1",
+    "@react-aria/focus": "^3.17.0",
+    "@react-aria/interactions": "^3.21.2",
+    "@react-aria/overlays": "^3.22.0",
     "@types/isomorphic-fetch": "^0.0.37",
     "@types/md5": "^2.3.3",
     "@types/papaparse": "^5.3.9",
@@ -91,19 +99,6 @@
     "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },
-  "size-limit": [
-    {
-      "path": "build/client.js",
-      "limit": "60 KB"
-    }
-  ],
-  "scripts": {
-    "build": "NODE_ENV=production node ./esbuild.js",
-    "watch": "ESBUILD_WATCH=true node ./esbuild.js",
-    "prepare": "node ./makePkgTypes.js",
-    "size": "size-limit",
-    "analyze": "size-limit --why"
-  },
   "devDependencies": {
     "@babel/core": "^7.17.8",
     "@babel/preset-react": "^7.16.7",
@@ -136,5 +131,11 @@
   "resolutions": {
     "@plasmicpkgs/antd/antd": "4.19.3",
     "@plasmicpkgs/react-slick/antd": "4.19.3"
-  }
+  },
+  "size-limit": [
+    {
+      "path": "build/client.js",
+      "limit": "60 KB"
+    }
+  ]
 }

@@ -42,12 +42,13 @@
     "clean": "rm -rf dist/ skinny/*.ts skinny/*.map skinny/*.js",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "test-storybook": "test-storybook"
+    "test-storybook": "test-storybook",
+    "upgrade-aria": "yarn upgrade --latest --scope @react-stately && yarn upgrade --latest --scope @react-aria && yarn upgrade --latest --scope react-aria-components"
   },
   "dependencies": {
-    "@react-aria/i18n": "^3.8.4",
-    "@react-aria/utils": "^3.21.1",
-    "react-aria-components": "^1.0.0-rc.0"
+    "@react-aria/i18n": "^3.11.0",
+    "@react-aria/utils": "^3.24.0",
+    "react-aria-components": "^1.2.0"
   },
   "devDependencies": {
     "@plasmicapp/host": "1.0.194",

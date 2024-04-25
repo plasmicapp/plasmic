@@ -4,7 +4,7 @@ import {
   removeCurrentProject,
 } from "../../support/util";
 
-describe("arena", function () {
+describe("dynamic-initial-value", function () {
   beforeEach(() => {
     cy.setupProjectWithHostlessPackages({
       hostLessPackagesInfo: [

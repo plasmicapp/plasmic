@@ -19,13 +19,13 @@ describe("Antd5 progress", () => {
         cy.addState({
           name: "basePercent",
           variableType: "number",
-          accessType: "writable",
+          accessType: "private",
           initialValue: "0",
         }).wait(200);
         cy.addState({
           name: "success",
           variableType: "number",
-          accessType: "writable",
+          accessType: "private",
           initialValue: "0",
         }).wait(200);
         cy.insertFromAddDrawer("plasmic-antd5-progress");

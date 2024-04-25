@@ -117,12 +117,14 @@ export function useInteractOutsideWithCommonExceptions(
     exceptSelectors?: string[];
   }
 ) {
-  const lastPointerDown = useRef<React.SyntheticEvent | undefined>(undefined);
+  const lastPointerDown = useRef<PointerEvent | undefined>(undefined);
   const onInteractOutside = opts.onInteractOutside;
   useInteractOutside({
     ...opts,
     onInteractOutside: (e) => {
-      const shouldInteractOutside = (eventTarget: EventTarget | undefined) => {
+      const shouldInteractOutside = (
+        eventTarget: EventTarget | null | undefined
+      ) => {
         if (eventTarget instanceof Node) {
           // Don't close if the interaction was with an ant menu
           // or select.

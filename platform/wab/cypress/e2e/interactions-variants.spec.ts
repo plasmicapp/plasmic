@@ -4,7 +4,7 @@ import {
   setupProjectFromTemplate,
 } from "../support/util";
 
-describe("state-management-variants-interactions", function () {
+describe("interactions-variants", function () {
   beforeEach(() => {
     setupProjectFromTemplate("state-management");
   });

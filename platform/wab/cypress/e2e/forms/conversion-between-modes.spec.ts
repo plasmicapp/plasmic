@@ -4,7 +4,7 @@ import {
   removeCurrentProject,
 } from "../../support/util";
 
-describe("arena", function () {
+describe("conversion-between-modes", function () {
   beforeEach(() => {
     cy.createFakeDataSource().then(() => {
       cy.setupProjectFromTemplate("forms", {

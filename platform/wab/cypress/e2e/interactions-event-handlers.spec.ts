@@ -3,7 +3,7 @@ import {
   setupProjectFromTemplate,
 } from "../support/util";
 
-describe("state-management-event-handler-interactions", function () {
+describe("interactions-event-handlers", function () {
   beforeEach(() => {
     setupProjectFromTemplate("state-management");
   });

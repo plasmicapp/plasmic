@@ -24,4 +24,7 @@ export default defineConfig({
     specPattern: "cypress/e2e/**/*.{js,jsx,ts,tsx}",
   },
   reporter: "mocha-reporter-gha",
+
+  // Since our Cypress tests are quite heavy, avoid restarting tests automatically.
+  watchForFileChanges: false,
 });

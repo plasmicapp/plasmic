@@ -1,8 +1,8 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { FocusScope, useFocusManager } from "@react-aria/focus";
+import { useFocusManager } from "@/wab/client/components/aria-utils";
 import { isKeyHotkey } from "is-hotkey";
 import * as React from "react";
 import { useLayoutEffect, useMemo, useRef } from "react";
+import { FocusScope } from "react-aria";
 
 export type ModalScopeProps = Omit<
   React.ComponentProps<"div">,

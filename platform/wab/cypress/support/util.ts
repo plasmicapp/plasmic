@@ -5,6 +5,7 @@
 import * as _ from "lodash";
 import * as platform from "platform";
 import { HostLessPackageInfo, State } from "../../src/wab/classes";
+import { ACTIONS_META } from "../../src/wab/client/state-management/interactions-meta";
 import { StudioCtx } from "../../src/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "../../src/wab/client/studio-ctx/view-ctx";
 import { testIds } from "../../src/wab/client/test-helpers/test-ids";
@@ -405,20 +406,12 @@ export function createNewEventHandler(
   cy.switchToComponentDataTab();
   cy.get(`[data-test-id="add-prop-btn"]`).click({ force: true });
   cy.get(`[data-test-id="prop-name"]`).type(eventName);
-  cy.get(`[data-test-id="prop-type"]`)
-    .parent()
-    .within(() => {
-      cy.get("select").select("eventHandler", { force: true });
-    });
+  cy.selectPropOption(`[data-test-id="prop-type"]`, { key: "eventHandler" });
   for (const arg of args) {
     cy.get(`[data-test-id="add-arg"]`).click();
     cy.get(`[data-test-id="arg-name"]`).last().type(arg.name);
-    cy.get(`[data-test-id="arg-type"]`)
-      .last()
-      .parent()
-      .within(() => {
-        cy.get("select").select(arg.type, { force: true });
-      });
+    cy.get(`[data-test-id="arg-type"]`).last().click();
+    cy.selectOption({ key: arg.type });
   }
   cy.get(`button[data-test-id="prop-submit"]`).click();
 }
@@ -1834,12 +1827,32 @@ export function expandSection(sectionId: string) {
   ).click({ timeout: 30000 });
 }
 
-export function selectDataPlasmicProp(prop: string, value: string) {
-  cy.get(`[data-plasmic-prop="${prop}"]`)
-    .parent()
-    .within(() => {
-      cy.get("select").select(value, { force: true });
-    });
+export function selectDataPlasmicProp(
+  prop: string,
+  value: string | { key: string }
+) {
+  return selectPropOption(`[data-plasmic-prop="${prop}"]`, value);
+}
+
+export function selectPropOption(
+  propSelector: string,
+  value: string | { key: string }
+) {
+  cy.get(propSelector).click();
+  cy.selectOption(value);
+}
+
+export function selectOption(value: string | { key: string }) {
+  // This is the old code, which should work, but stopped working since upgrading react-aria.
+  // Cypress is doing its job correctly, setting the value of the hidden select.
+  // However, at some point, before our code (react-web) handles the event,
+  // somehow the value is reset to the original value.
+  //  cy.get("select").select(value, { force: true });
+  if (typeof value === "string") {
+    cy.contains(`[role=option] *`, value).parents("[role=option]").click();
+  } else {
+    cy.get(`[data-key="${value.key}"]`).click();
+  }
 }
 
 export function pickIntegration(maybeName?: string) {
@@ -1861,14 +1874,16 @@ export function pickIntegration(maybeName?: string) {
 }
 
 export function multiSelectDataPlasmicProp(prop: string, values: string[]) {
-  cy.get(`[data-plasmic-prop="${prop}"]`).click({ force: true });
-  cy.get(
+  cy.get(`[data-plasmic-prop="${prop}"]`).click();
+
+  // Remove existing values, if any
+  Cypress.$(
     `[data-plasmic-prop="${prop}"] [data-test-id="multi-select-value"]`
   ).each(() => {
-    cy.get(`[data-plasmic-prop="${prop}"]`)
-      .click({ force: true })
-      .type("{backspace}");
+    cy.get(`[data-plasmic-prop="${prop}"]`).click().type("{backspace}");
   });
+
+  // Add values
   for (const val of values) {
     cy.get(`[data-plasmic-prop="${prop}"]`).type(`${val}{enter}`);
   }
@@ -2032,7 +2047,7 @@ export function changeStateAccessType(
       .click({ force: true })
       .wait(200);
   }
-  cy.selectDataPlasmicProp("access-type", newAccessType);
+  cy.selectDataPlasmicProp("access-type", { key: newAccessType });
   cy.get(`[data-test-id="close-sidebar-modal"]`).click().wait(200);
 }
 
@@ -2060,7 +2075,7 @@ export function addState(state: StateType) {
   cy.get('[data-test-id="add-state-btn"]').click().wait(200);
   cy.get(`[data-plasmic-prop="variable-name"]`).click();
   cy.justType(`{selectAll}{backspace}${state.name}`).wait(200);
-  cy.selectDataPlasmicProp("variable-type", state.variableType);
+  cy.selectDataPlasmicProp("variable-type", { key: state.variableType });
   if (state.isInitValDynamicValue || state.initialValue == null) {
     cy.get(`[data-test-id="prop-editor-row-initial-value"]`).rightclick();
     cy.contains("Use dynamic value").click();
@@ -2076,10 +2091,11 @@ export function addState(state: StateType) {
     });
   }
   if (state.accessType !== "private") {
-    cy.get('[data-test-id="allow-external-access"]')
-      .click({ force: true })
+    cy.get('label [data-test-id="allow-external-access"]')
+      .parents("label")
+      .click()
       .wait(200);
-    cy.selectDataPlasmicProp("access-type", state.accessType);
+    cy.selectDataPlasmicProp("access-type", { key: state.accessType });
   }
   cy.get('[data-test-id="confirm"]').click().wait(200);
 }
@@ -2102,8 +2118,10 @@ export function addInteraction(
   cy.get(`[data-test-id="add-interaction"]`).click().wait(200);
   justType(`${eventHandler}{enter}`);
   ensureArray(interactions).forEach((interaction, interactionIndex, list) => {
-    cy.selectDataPlasmicProp("action-name", interaction.actionName);
+    cy.wait(500);
+    cy.selectDataPlasmicProp("action-name", { key: interaction.actionName });
     for (const argName in interaction.args) {
+      cy.wait(500);
       if (argName === "operation") {
         const argVal =
           interaction.actionName === "updateVariable"
@@ -2117,7 +2135,7 @@ export function addInteraction(
                   argName
                 ] as keyof typeof updateVariantOperations
               ];
-        cy.selectDataPlasmicProp(argName, `${argVal}`);
+        cy.selectDataPlasmicProp(argName, { key: `${argVal}` });
       } else if (argName === "variable") {
         const argVal = interaction.args[argName] as string[];
         cy.get(`[data-plasmic-prop="${argName}"]`).click();
@@ -2331,11 +2349,11 @@ export function createDataSourceOperation(
     { value: string; isDynamicValue?: boolean; inputType?: string; opts?: any }
   >
 ) {
+  cy.wait(2000);
   cy.selectDataPlasmicProp("data-source-modal-pick-integration-btn", name);
-  cy.selectDataPlasmicProp(
-    "data-source-modal-pick-operation-btn",
-    args["operation"].value
-  );
+  cy.selectDataPlasmicProp("data-source-modal-pick-operation-btn", {
+    key: args["operation"].value,
+  });
   if (args["resource"]) {
     cy.selectDataPlasmicProp(
       "data-source-modal-pick-resource-btn",

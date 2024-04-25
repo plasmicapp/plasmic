@@ -1,7 +1,7 @@
 import { cloneDeep } from "lodash";
 import { Framed, getFormValue, removeCurrentProject } from "../../support/util";
 
-describe("arena", function () {
+describe("simplified", function () {
   beforeEach(() => {
     cy.setupProjectWithHostlessPackages({
       hostLessPackagesInfo: [

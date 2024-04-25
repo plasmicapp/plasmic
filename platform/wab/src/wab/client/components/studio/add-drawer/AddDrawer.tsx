@@ -13,6 +13,7 @@ import {
   getComponentPresets,
   Preset,
 } from "@/wab/client/code-components/code-presets";
+import { useFocusManager } from "@/wab/client/components/aria-utils";
 import {
   AsChildInsertRelLoc,
   AsSiblingInsertRelLoc,
@@ -125,7 +126,7 @@ import { UseComboboxGetItemPropsOptions } from "downshift";
 import L, { mapValues } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { FocusScope, useFocusManager } from "react-aria";
+import { FocusScope } from "react-aria";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { areEqual, VariableSizeList } from "react-window";
 import {

@@ -101,10 +101,7 @@ describe("hostless-strapi", function () {
             .first()
             .children()
             .click({ force: true });
-          cy.get(`[data-plasmic-prop="path"]`)
-            .parent()
-            .find("select")
-            .select("name", { force: true });
+          cy.selectDataPlasmicProp("path", "name");
           cy.getSelectedElt().should("contain.text", "Café Coffee Day");
           cy.getSelectedElt().should("be.visible");
           cy.withinLiveMode(() => {
@@ -112,10 +109,7 @@ describe("hostless-strapi", function () {
           });
 
           // Change the field to be 'photo' and ensure the image has been rendered correcly
-          cy.get(`[data-plasmic-prop="path"]`)
-            .parent()
-            .find("select")
-            .select("photo", { force: true });
+          cy.selectDataPlasmicProp("path", "photo");
           cy.focusFrameRoot(framed);
           cy.getSelectedElt().find("img").should("have.attr", "src");
           cy.withinLiveMode(() => {

@@ -111,10 +111,7 @@ describe("hostless-sanity-io", function () {
             });
 
             // Select 'screening' in the Document type and check the message
-            cy.get(`[data-plasmic-prop="docType"]`)
-              .parent()
-              .find("select")
-              .select("screening", { force: true });
+            cy.selectDataPlasmicProp("docType", "screening");
             cy.wait(500);
             cy.getSelectedElt().should(
               "contain.text",
@@ -143,10 +140,7 @@ describe("hostless-sanity-io", function () {
               .first()
               .children()
               .click({ force: true });
-            cy.get(`[data-plasmic-prop="field"]`)
-              .parent()
-              .find("select")
-              .select("title", { force: true });
+            cy.selectDataPlasmicProp("field", "title");
             cy.getSelectedElt().should("contain.text", "WALL·E");
             cy.getSelectedElt().should("be.visible");
             cy.withinLiveMode(() => {

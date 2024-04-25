@@ -10,13 +10,12 @@ import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { validJsIdentifierChars } from "@/wab/shared/codegen/util";
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { isValidJavaScriptCode } from "@/wab/shared/parser-utils";
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { FocusScope } from "@react-aria/focus";
 import { notification, Tooltip } from "antd";
 import { default as classNames } from "classnames";
 import jsonrepair from "jsonrepair";
 import { observer } from "mobx-react";
 import React from "react";
+import { FocusScope } from "react-aria";
 import { Modal } from "src/wab/client/components/widgets/Modal";
 
 const softStrSizeLimit = 500 * 1024; // 500KB

@@ -109,7 +109,11 @@ export function BaseComboBox<T extends object>(props: BaseComboBoxProps<T>) {
     .map((op) => op.value);
 
   const onSelectionChange = React.useCallback(
-    (key: Key) => {
+    (key: Key | null) => {
+      if (key === null) {
+        return;
+      }
+
       const selectedOption = flattenedOptions?.find((op) => op.value === key);
       if (valueType === "text") {
         if (selectedOption) {

@@ -2,7 +2,7 @@ import { VERT_CONTAINER_CAP } from "../../src/wab/shared/Labels";
 import { Framed, removeCurrentProject, setupNewProject } from "../support/util";
 
 // Mostly regression tests
-describe("component tricky operations", function () {
+describe("component-ops - tricky operations", function () {
   beforeEach(() => {
     setupNewProject({
       name: "component-ops",

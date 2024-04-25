@@ -8,6 +8,7 @@ import {
   TplNode,
 } from "@/wab/classes";
 import { getComponentPresets } from "@/wab/client/code-components/code-presets";
+import { useFocusManager } from "@/wab/client/components/aria-utils";
 import { getPlacementOptions } from "@/wab/client/components/canvas/InlineAddDrawer";
 import {
   getFocusedInsertAnchor,
@@ -111,7 +112,7 @@ import memoizeOne from "memoize-one";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useMemo, useState } from "react";
-import { FocusScope, useFocusManager } from "react-aria";
+import { FocusScope } from "react-aria";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { areEqual, VariableSizeList } from "react-window";
 

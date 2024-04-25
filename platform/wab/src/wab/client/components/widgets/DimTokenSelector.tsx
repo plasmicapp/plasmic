@@ -43,14 +43,17 @@ import {
 } from "@/wab/shared/cached-selectors";
 import { createNumericSize, isValidUnit, showSizeCss } from "@/wab/shared/Css";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { Placement } from "@react-types/overlays";
 import { notification, Tooltip } from "antd";
 import cn from "classnames";
 import { useCombobox, UseComboboxGetItemPropsOptions } from "downshift";
 import L from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
-import { useInteractOutside, useOverlayPosition } from "react-aria";
+import {
+  AriaPositionProps,
+  useInteractOutside,
+  useOverlayPosition,
+} from "react-aria";
 import ReactDOM from "react-dom";
 import { VariableSizeList } from "react-window";
 
@@ -109,7 +112,7 @@ export const DimTokenSpinner = observer(
       tokenType?: TokenType;
       fieldAriaProps?: FieldAriaProps;
       studioCtx?: StudioCtx;
-      dropdownPlacement?: Placement;
+      dropdownPlacement?: AriaPositionProps["placement"];
       minDropdownWidth?: number;
       maxDropdownWidth?: number;
       autoFocus?: boolean;
