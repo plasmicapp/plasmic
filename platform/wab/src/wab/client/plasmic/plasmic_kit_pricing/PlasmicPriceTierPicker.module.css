@@ -288,28 +288,14 @@
   max-width: 100%;
   position: relative;
 }
-.priceTierFeatureItem__ak88V:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
-.hoverableText__cd4Cr:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
-.priceTierFeatureItem__ojbcy:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
-.hoverableText__h84Xa:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
 .priceTierFeatureItem__aZrZe:global(.__wab_instance) {
   max-width: 100%;
   position: relative;
 }
 .text__j2Zwc {
   font-size: var(--token-YU1H6d7MUtVL);
+  padding-right: 0px;
+  height: auto;
 }
 .priceTierFeatureItem__yVk1M:global(.__wab_instance) {
   max-width: 100%;
@@ -638,22 +624,6 @@
 .text__rvSe {
   font-size: var(--token-YU1H6d7MUtVL);
 }
-.priceTierFeatureItem__brId2:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
-.hoverableText___63IPb:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
-.priceTierFeatureItem__dzt8F:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
-.hoverableText__d130:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
 .priceTierFeatureItem__zeLm:global(.__wab_instance) {
   max-width: 100%;
   position: relative;
@@ -973,22 +943,6 @@
   position: relative;
 }
 .hoverableText__bbMgq:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
-.priceTierFeatureItem___9HNz8:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
-.hoverableText__usATm:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
-.priceTierFeatureItem__lhqT1:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
-.hoverableText__wjzid:global(.__wab_instance) {
   max-width: 100%;
   position: relative;
 }
@@ -1316,22 +1270,6 @@
   position: relative;
 }
 .hoverableText___1Ynqj:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
-.priceTierFeatureItem__xsfTt:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
-.hoverableText__gtei:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
-.priceTierFeatureItem___2VIok:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
-.hoverableText__aF7Cy:global(.__wab_instance) {
   max-width: 100%;
   position: relative;
 }
@@ -1733,19 +1671,11 @@
   max-width: 100%;
   position: relative;
 }
-.priceTierFeatureItem__ndcwl:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
 .priceTierFeatureItem__eqk5:global(.__wab_instance) {
   max-width: 100%;
   position: relative;
 }
 .priceTierFeatureItem__sc8E9:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
-.priceTierFeatureItem__ja5Pk:global(.__wab_instance) {
   max-width: 100%;
   position: relative;
 }
@@ -1760,7 +1690,10 @@
   max-width: 100%;
   position: relative;
 }
-.priceTierFeatureItem__mYoPz:global(.__wab_instance) {
+.text__taizU {
+  padding-right: 0px;
+}
+.priceTierFeatureItem__ja5Pk:global(.__wab_instance) {
   max-width: 100%;
   position: relative;
 }
@@ -1771,13 +1704,12 @@
 .text__rsSYq {
   width: auto;
 }
-.priceTierFeatureItem__blMq:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
 .priceTierFeatureItem___23Gzj:global(.__wab_instance) {
   max-width: 100%;
   position: relative;
+}
+.text___0VqYr {
+  padding-right: 0px;
 }
 .text___7ZlfK {
   width: 100%;

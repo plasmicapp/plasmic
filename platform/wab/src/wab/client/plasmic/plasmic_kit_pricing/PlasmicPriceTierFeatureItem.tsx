@@ -13,25 +13,47 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
 
 import {
   EnvironmentValue,
@@ -73,9 +95,9 @@ export const PlasmicPriceTierFeatureItem__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicPriceTierFeatureItem__OverridesType = {
-  root?: p.Flex<"div">;
-  svg?: p.Flex<"svg">;
-  freeBox?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  svg?: Flex__<"svg">;
+  freeBox?: Flex__<"div">;
 };
 
 export interface DefaultPriceTierFeatureItemProps {
@@ -85,6 +107,8 @@ export interface DefaultPriceTierFeatureItemProps {
   checkIcon?: SingleBooleanChoiceArg<"checkIcon">;
   className?: string;
 }
+
+const $$ = {};
 
 function PlasmicPriceTierFeatureItem__RenderFunc(props: {
   variants: PlasmicPriceTierFeatureItem__VariantsArgs;
@@ -101,13 +125,13 @@ function PlasmicPriceTierFeatureItem__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "tier",
@@ -129,10 +153,9 @@ function PlasmicPriceTierFeatureItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.checkIcon,
       },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -144,7 +167,7 @@ function PlasmicPriceTierFeatureItem__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -185,7 +208,7 @@ function PlasmicPriceTierFeatureItem__RenderFunc(props: {
         }
       )}
     >
-      <p.PlasmicIcon
+      <PlasmicIcon__
         data-plasmic-name={"svg"}
         data-plasmic-override={overrides.svg}
         PlasmicIconType={
@@ -233,7 +256,7 @@ function PlasmicPriceTierFeatureItem__RenderFunc(props: {
           [sty.freeBoxtier_team]: hasVariant($state, "tier", "team"),
         })}
       >
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: "What a cool feature",
           value: args.children,
           className: classNames(sty.slotTargetChildren, {
@@ -276,7 +299,7 @@ function PlasmicPriceTierFeatureItem__RenderFunc(props: {
           }),
         })}
       </div>
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -299,7 +322,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPriceTierFeatureItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -329,7 +351,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPriceTierFeatureItem__ArgProps,
           internalVariantPropNames: PlasmicPriceTierFeatureItem__VariantProps,
         }),

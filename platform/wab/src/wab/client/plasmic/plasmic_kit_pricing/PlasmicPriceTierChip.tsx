@@ -13,25 +13,47 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
 
 import {
   EnvironmentValue,
@@ -72,10 +94,10 @@ export const PlasmicPriceTierChip__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicPriceTierChip__OverridesType = {
-  root?: p.Flex<"div">;
-  h5?: p.Flex<"h5">;
-  freeBox?: p.Flex<"div">;
-  text?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  h5?: Flex__<"h5">;
+  freeBox?: Flex__<"div">;
+  text?: Flex__<"div">;
 };
 
 export interface DefaultPriceTierChipProps {
@@ -85,6 +107,8 @@ export interface DefaultPriceTierChipProps {
   simplified?: SingleBooleanChoiceArg<"simplified">;
   className?: string;
 }
+
+const $$ = {};
 
 function PlasmicPriceTierChip__RenderFunc(props: {
   variants: PlasmicPriceTierChip__VariantsArgs;
@@ -101,13 +125,13 @@ function PlasmicPriceTierChip__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "current",
@@ -122,10 +146,9 @@ function PlasmicPriceTierChip__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.simplified,
       },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -137,7 +160,7 @@ function PlasmicPriceTierChip__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -171,7 +194,7 @@ function PlasmicPriceTierChip__RenderFunc(props: {
           [sty.h5simplified]: hasVariant($state, "simplified", "simplified"),
         })}
       >
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: (
             <div
               className={classNames(
@@ -183,7 +206,6 @@ function PlasmicPriceTierChip__RenderFunc(props: {
               {"Free"}
             </div>
           ),
-
           value: args.tier,
           className: classNames(sty.slotTargetTier, {
             [sty.slotTargetTiercurrent]: hasVariant(
@@ -206,7 +228,7 @@ function PlasmicPriceTierChip__RenderFunc(props: {
             ),
           })}
         >
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: "For anyone getting started with Plasmic.",
             value: args.description,
             className: classNames(sty.slotTargetDescription, {
@@ -238,7 +260,7 @@ function PlasmicPriceTierChip__RenderFunc(props: {
           ) : null}
         </div>
       ) : null}
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -263,7 +285,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPriceTierChip__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -293,7 +314,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPriceTierChip__ArgProps,
           internalVariantPropNames: PlasmicPriceTierChip__VariantProps,
         }),

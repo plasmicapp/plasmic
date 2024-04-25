@@ -8,7 +8,7 @@
 .root > :global(.__wab_flex-container) {
   flex-direction: row;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   min-width: 0;
   margin-left: calc(0px - 4px);
   width: calc(100% + 4px);
@@ -28,25 +28,47 @@
   color: var(--token-mlyauzeAvywY);
   width: 16px;
   height: 16px;
+  margin-top: 1px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+  margin-left: calc(0px + 4px) !important;
   flex-shrink: 0;
 }
 .svgglobal_environment_website {
   margin-top: 4px;
+  margin-left: calc(0px + 4px) !important;
+}
+.svgtier_free {
+  margin-left: calc(0px + 4px) !important;
+}
+.svgtier_starter {
+  margin-left: calc(0px + 4px) !important;
+}
+.svgtier_pro {
+  margin-left: calc(0px + 4px) !important;
+}
+.svgtier_team {
+  margin-left: calc(0px + 4px) !important;
 }
 .svgtier_enterprise {
   color: var(--token-N1gO6v-RIEn);
+  margin-left: calc(0px + 4px) !important;
 }
 .svgspecialSectionHeading {
   opacity: 0;
+  margin-left: calc(0px + 4px) !important;
+}
+.svgcheckIcon {
+  margin-left: calc(0px + 4px) !important;
 }
 .freeBox {
   position: relative;
   width: 100%;
   height: auto;
   display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
   align-items: center;
+  justify-content: flex-start;
+  flex-direction: row;
   min-width: 0;
 }
 .slotTargetChildren {

@@ -4819,7 +4819,7 @@
           "projectId": "m8VxGcigeLAEXFe8c12w5Q",
           "renderModuleFilePath": "wab/client/plasmic/project_panel/PlasmicProjectPanel.tsx",
           "importSpec": {
-            "modulePath": "wab/client/components/sidebar-tabs/ProjectPanel/ProjectPanel.tsx"
+            "modulePath": "wab/client/components/sidebar-tabs/ProjectPanel/ProjectPanelTop.tsx"
           },
           "cssFilePath": "wab/client/plasmic/project_panel/PlasmicProjectPanel.module.css",
           "scheme": "blackbox",
@@ -8636,7 +8636,8 @@
       ],
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "ieacQ3Z46z4gwo1FnaB5vY",
@@ -10952,8 +10953,8 @@
           "componentImportPath": "./src/wab/client/components/pricing/Tooltip"
         }
       ],
-      "jsBundleThemes": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "customFunctions": []
     },
     {
       "projectId": "28e27syQUKgfkErJT9mxWA",

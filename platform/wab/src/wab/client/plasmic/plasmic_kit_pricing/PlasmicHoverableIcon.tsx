@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import { PricingTooltip } from "../../components/pricing/Tooltip"; // plasmic-import: eAE4YEj_YxMC/codeComponent
 import Popout from "../../components/pricing/Popout"; // plasmic-import: XvpbI4g-IJWK/component
 import ElevatedCard from "../../components/pricing/ElevatedCard"; // plasmic-import: OOKbAz_EJ7Rm/component
@@ -77,11 +100,11 @@ export const PlasmicHoverableIcon__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicHoverableIcon__OverridesType = {
-  root?: p.Flex<"div">;
-  tooltip?: p.Flex<typeof PricingTooltip>;
-  svg?: p.Flex<"svg">;
-  popout?: p.Flex<typeof Popout>;
-  elevatedCard?: p.Flex<typeof ElevatedCard>;
+  root?: Flex__<"div">;
+  tooltip?: Flex__<typeof PricingTooltip>;
+  svg?: Flex__<"svg">;
+  popout?: Flex__<typeof Popout>;
+  elevatedCard?: Flex__<typeof ElevatedCard>;
 };
 
 export interface DefaultHoverableIconProps {
@@ -91,6 +114,8 @@ export interface DefaultHoverableIconProps {
   white?: SingleBooleanChoiceArg<"white">;
   className?: string;
 }
+
+const $$ = {};
 
 function PlasmicHoverableIcon__RenderFunc(props: {
   variants: PlasmicHoverableIcon__VariantsArgs;
@@ -116,13 +141,13 @@ function PlasmicHoverableIcon__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "above",
@@ -137,10 +162,9 @@ function PlasmicHoverableIcon__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.white,
       },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -198,7 +222,7 @@ function PlasmicHoverableIcon__RenderFunc(props: {
               className={classNames("__wab_instance", sty.elevatedCard)}
               menuContainer2={
                 <div className={classNames(projectcss.all, sty.freeBox__diuB5)}>
-                  {p.renderPlasmicSlot({
+                  {renderPlasmicSlot({
                     defaultContents: "Some description",
                     value: args.popover,
                     className: classNames(sty.slotTargetPopover, {
@@ -255,7 +279,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicHoverableIcon__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -285,7 +308,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicHoverableIcon__ArgProps,
           internalVariantPropNames: PlasmicHoverableIcon__VariantProps,
         }),
