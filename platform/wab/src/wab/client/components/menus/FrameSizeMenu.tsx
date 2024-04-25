@@ -19,15 +19,13 @@ export function makeFrameSizeMenu({
           title={<span>{group.groupName}</span>}
         >
           {group.sizes.map((size) => (
-            <Menu.Item
-              key={size.name}
-              className={sty.screenSizeMenuItem}
-              onClick={() => onClick(size)}
-            >
-              {size.name}{" "}
-              <div className={sty.screenSizeDims}>
-                {size.width} x {size.height}
-              </div>
+            <Menu.Item key={size.name} onClick={() => onClick(size)}>
+              <span className={sty.screenSizeMenuItem}>
+                {size.name}{" "}
+                <div className={sty.screenSizeDims}>
+                  {size.width} x {size.height}
+                </div>
+              </span>
             </Menu.Item>
           ))}
         </Menu.SubMenu>

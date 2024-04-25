@@ -21,26 +21,27 @@ export const enum ResponsiveStrategy {
 // Based on Figma's presets.
 export const frameSizeGroups = [
   mkGroup("Phone")`
-    iPhone 11 Pro Max 414 × 896
-    iPhone 11 Pro / X 375 × 812
+    iPhone 14 & 15 Pro Max 430 × 932
+    iPhone 14 & 15 Pro 393 × 852
+    iPhone 13 & 14 390 × 844
+    iPhone 14 Plus 428 × 926
+    iPhone SE 320 × 568
     iPhone 8 Plus 414 × 736
     iPhone 8 375 × 667
-    iPhone SE 320 × 568
-    Google Pixel 2 411 × 731
-    Google Pixel 2 XL 411 × 823
-    Android 360 × 640`,
+    Google Pixel 8 412 × 732
+    Android Small 360 × 640
+    Android Large 360 × 800`,
 
   mkGroup("Tablet")`
-    iPad mini 768 × 1024
+    Surface Pro 8 1440 × 960
+    iPad mini 8.3 744 × 1133
     iPad Pro 11" 834 × 1194
-    iPad Pro 12.9" 1024 × 1366
-    Surface Pro 3 1440 × 990
-    Surface Pro 4 1368 × 912`,
+    iPad Pro 12.9" 1024 × 1366`,
 
   mkGroup("Desktop")`
     Desktop 1440 × 1024
-    MacBook 1152 × 700
-    MacBook Pro 1440 × 900
+    MacBook Air 1280 × 832
+    MacBook Pro 1512 × 982
     Surface Book 1500 × 1000
     iMac 1280 × 720`,
 
