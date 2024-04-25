@@ -24,6 +24,7 @@ import {
   Img,
   Interaction,
   isKnownArg,
+  isKnownClassNamePropType,
   isKnownCollectionExpr,
   isKnownCompositeExpr,
   isKnownCustomCode,
@@ -64,8 +65,10 @@ import {
   RichText,
   RuleSet,
   Scalar,
+  SelectorRuleSet,
   Site,
   SlotParam,
+  StyleExpr,
   StyleMarker,
   StyleScopeClassNamePropType,
   TargetType,
@@ -91,6 +94,7 @@ import {
   checkUnique,
   ensure,
   ensureArray,
+  ensureType,
   flexFlatten,
   InvalidCodePathError,
   isArrayOfStrings,
@@ -163,7 +167,11 @@ import {
   isCodeComponentSlot,
   isDescendantOfVirtualRenderExpr,
 } from "./shared/SlotUtils";
-import { getTplComponentArg, TplMgr } from "./shared/TplMgr";
+import {
+  getTplComponentArg,
+  setTplComponentArg,
+  TplMgr,
+} from "./shared/TplMgr";
 import { $$$ } from "./shared/TplQuery";
 import {
   makeVariantComboSorter,
@@ -418,7 +426,6 @@ export interface MkTplComponentParams {
 }
 
 export function mkTplComponentX(obj: MkTplComponentParams) {
-  let expr, param;
   const { component, args, children, dataRep, dataCond, baseVariant } = obj;
   const name2param = new Map(
     [...component.params].map(
@@ -448,7 +455,8 @@ export function mkTplComponentX(obj: MkTplComponentParams) {
     : (() => {
         const result: Arg[] = [];
         for (const argName in args) {
-          expr = args[argName];
+          let param: Param;
+          const expr = ensureType<Expr | TplNode | ChildSet>(args[argName]);
           result.push(
             new Arg({
               param: (param = ensure(
@@ -456,7 +464,7 @@ export function mkTplComponentX(obj: MkTplComponentParams) {
                 "Checked before"
               )),
               expr: isRenderableType(param.type)
-                ? processRenderables(expr)
+                ? processRenderables(expr as RenderExpr | ChildSet)
                 : switchType(expr)
                     .when(Expr, (_expr) => _expr)
                     // We always assume an array is meant to be a renderable. Not
@@ -506,6 +514,52 @@ export function mkTplComponentX(obj: MkTplComponentParams) {
       new RuleSetHelpers(baseVs.rs, "div").mergeRs(
         component.codeComponentMeta.defaultStyles
       );
+    }
+
+    for (const param of component.params) {
+      if (isKnownClassNamePropType(param.type)) {
+        const styledSelectors = [
+          ...(Object.keys(param.type.defaultStyles).length > 0
+            ? [
+                {
+                  label: "Base",
+                  selector: null,
+                  defaultStyles: param.type.defaultStyles,
+                },
+              ]
+            : []),
+          ...param.type.selectors.filter(
+            (selector) => Object.keys(selector.defaultStyles).length > 0
+          ),
+        ];
+        if (styledSelectors.length > 0) {
+          const selectorRulesets = styledSelectors.map((s) =>
+            styles.mkSelectorRuleSet({
+              selector: s.selector,
+              isBase: s.selector == null || s.label === "Base",
+            })
+          );
+          const selectorToRuleSet = new Map<string, SelectorRuleSet>();
+          selectorRulesets.forEach((s) => {
+            selectorToRuleSet.set(!s.selector ? "base" : s.selector, s);
+          });
+          styledSelectors.forEach((s) => {
+            const selector = !s.selector ? "base" : s.selector;
+            new RuleSetHelpers(
+              ensure(
+                selectorToRuleSet.get(selector),
+                () => `Should have selector ${selector}`
+              ).rs,
+              "div"
+            ).mergeRs(styles.mkRuleSet({ values: s.defaultStyles }));
+          });
+          const expr = new StyleExpr({
+            uuid: mkShortId(),
+            styles: selectorRulesets,
+          });
+          setTplComponentArg(tpl, baseVs, param.variable, expr);
+        }
+      }
     }
 
     // This is the owner site of the _component_, not the owner site
@@ -1353,7 +1407,9 @@ export function cloneType<T extends Type>(type_: T): T {
     .when(ColorPropType, (t) => typeFactory.color({ noDeref: t.noDeref }))
     .when(DateString, (t) => typeFactory.dateString())
     .when(DateRangeStrings, (t) => typeFactory.dateRangeStrings())
-    .when(ClassNamePropType, (t) => typeFactory.classNamePropType(t.selectors))
+    .when(ClassNamePropType, (t) =>
+      typeFactory.classNamePropType(t.selectors, t.defaultStyles)
+    )
     .when(StyleScopeClassNamePropType, (t) =>
       typeFactory.styleScopeClassNamePropType(t.scopeName)
     )

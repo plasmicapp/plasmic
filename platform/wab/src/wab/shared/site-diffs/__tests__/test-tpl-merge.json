@@ -4943,7 +4943,7 @@
           }
         },
         "deps": [],
-        "version": "228-add-allow-root-wrapper"
+        "version": "229-add-class-type-default-styles"
       },
       "projectId": "dNoM99U17XFRGCXZ5SUbc1",
       "version": "0.0.1",
@@ -10153,7 +10153,7 @@
           "65055094": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "228-add-allow-root-wrapper"
+        "version": "229-add-class-type-default-styles"
       }
     },
     {
@@ -15199,7 +15199,7 @@
           "52044046": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "228-add-allow-root-wrapper"
+        "version": "229-add-class-type-default-styles"
       }
     }
   ]

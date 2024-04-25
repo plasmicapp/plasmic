@@ -6118,7 +6118,7 @@
           "53898074": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "228-add-allow-root-wrapper"
+        "version": "229-add-class-type-default-styles"
       },
       "projectId": "5txi3zd6hPLtbkzbV8p6jB",
       "version": "0.0.1",
@@ -12300,7 +12300,7 @@
           "63532015": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "228-add-allow-root-wrapper"
+        "version": "229-add-class-type-default-styles"
       }
     },
     {
@@ -18567,7 +18567,7 @@
           }
         },
         "deps": [],
-        "version": "228-add-allow-root-wrapper"
+        "version": "229-add-class-type-default-styles"
       }
     }
   ]

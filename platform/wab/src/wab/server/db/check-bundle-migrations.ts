@@ -1,8 +1,10 @@
-import { arrayEq, ensure, spawn, spawnWrapper } from "@/wab/common";
 import fs from "fs";
 import { last } from "lodash";
 import path from "path";
 import yargs from "yargs";
+// pre-commit cannot understand "@/path" imports
+// eslint-disable-next-line
+import { arrayEq, ensure, spawn, spawnWrapper } from "../../common";
 
 interface CheckArgs {
   files: string[];

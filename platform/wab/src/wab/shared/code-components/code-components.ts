@@ -304,7 +304,12 @@ export type DynamicPropType<P> = PropTypeBase<P> & {
 
 export type ClassNamePropType<P> = PropTypeBase<P> & {
   type: "class";
-  selectors?: { label?: string; selector: string }[];
+  selectors?: {
+    label?: string;
+    selector: string;
+    defaultStyles?: CSSProperties;
+  }[];
+  defaultStyles?: CSSProperties;
 };
 
 export type StyleScopeClassNamePropType<P> = PropTypeBase<P> & {
@@ -2652,7 +2657,7 @@ export function parseStyles(
   elementType: Exclude<PlasmicElement, String>["type"],
   opts: { prefs?: AddItemPrefs }
 ): {
-  styles: CSSProperties;
+  styles: Record<string, string>;
   warnings: SchemaWarning[];
 } {
   const styles: Readonly<Record<string, string>> = Object.fromEntries(
@@ -3641,7 +3646,17 @@ export function propTypeToWabType(
               return success(convertTsToWabType("string"));
             case "class":
               return success(
-                typeFactory.classNamePropType(type.selectors ?? [])
+                typeFactory.classNamePropType(
+                  (type.selectors ?? []).map((s) => ({
+                    ...s,
+                    defaultStyles: s.defaultStyles
+                      ? parseStyles(s.defaultStyles, "component", {}).styles
+                      : {},
+                  })),
+                  type.defaultStyles
+                    ? parseStyles(type.defaultStyles, "component", {}).styles
+                    : {}
+                )
               );
             case "target":
               return success(typeFactory.target());

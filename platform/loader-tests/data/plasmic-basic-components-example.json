@@ -1446,7 +1446,7 @@
         }
       },
       "deps": [],
-      "version": "228-add-allow-root-wrapper"
+      "version": "229-add-class-type-default-styles"
     }
   ],
   [
@@ -2876,7 +2876,7 @@
         }
       },
       "deps": ["46daef11-1a70-4f74-b471-12e71963588c"],
-      "version": "228-add-allow-root-wrapper"
+      "version": "229-add-class-type-default-styles"
     }
   ]
 ]

@@ -202,11 +202,19 @@ export interface ClassType<P> extends PropTypeBase<P> {
      * knows what this selector means.
      */
     label?: string;
+    /**
+     * Initial styles to be applied for this selector
+     */
+    defaultStyles?: CSSProperties;
   }[];
   /**
    * If specified, then only shows these style sections for styling this class
    */
   styleSections?: StyleSection[];
+  /**
+   * Initial styles to be applied for this class
+   */
+  defaultStyles?: CSSProperties;
 }
 
 export interface ThemeResetClassType<P> extends PropTypeBase<P> {

@@ -15863,7 +15863,8 @@
         "57463263": {
           "name": "className",
           "selectors": [{ "__ref": "57463374" }, { "__ref": "57463375" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "57463264": {
           "name": "popupScopeClassName",
@@ -15883,7 +15884,8 @@
         "57463267": {
           "name": "className",
           "selectors": [],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "57463268": {
           "name": "optionClassName",
@@ -15897,7 +15899,8 @@
             { "__ref": "57463377" },
             { "__ref": "57463378" }
           ],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "57463270": {
           "name": "placeholderClassName",
@@ -15907,7 +15910,8 @@
         "57463271": {
           "name": "className",
           "selectors": [{ "__ref": "57463379" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "57463272": {
           "name": "defaultStylesClassName",
@@ -16399,32 +16403,38 @@
         "57463374": {
           "selector": ":component .ant-select-selector.ant-select-selector",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "57463375": {
           "selector": ":component .ant-select-selector:hover",
           "label": "Hovered",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "57463376": {
           "selector": ":popup.ant-select-dropdown .ant-select-item-option",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "57463377": {
           "selector": ":popup.ant-select-dropdown .ant-select-item-option-active",
           "label": "Focused",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "57463378": {
           "selector": ":popup.ant-select-dropdown .ant-select-item-option-selected",
           "label": "Selected",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "57463379": {
           "selector": ":component .ant-select-selector .ant-select-selection-placeholder",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "57463381": {
           "variants": [{ "__ref": "57463184" }],
@@ -18062,7 +18072,8 @@
         "vavEhYDof9GP": {
           "name": "className",
           "selectors": [],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "jrih8O1fzodo": {
           "name": "headerClass",
@@ -18556,12 +18567,14 @@
         "M1vu6xwhpOWw": {
           "selector": ":popover.ant-popover .ant-popover-inner",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "WB_vrE2RSWCI": {
           "name": "className",
           "selectors": [{ "__ref": "M1vu6xwhpOWw" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "BPGWWNre7c-D": {
           "name": "popoverContentClassName",
@@ -18591,7 +18604,8 @@
         "aeuyhUyQgqTu": {
           "name": "className",
           "selectors": [],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "S3-6MXab10IP": {
           "name": "overlayClassName",
@@ -19507,12 +19521,14 @@
         "BvKik9V7Yz0S": {
           "selector": ":tabs.ant-tabs .ant-tabs-nav",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "Z3PvJY8JPCgm": {
           "name": "className",
           "selectors": [{ "__ref": "BvKik9V7Yz0S" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "iTRaOhKAcEmu": {
           "name": "tabBarClassName",
@@ -19572,12 +19588,14 @@
         "qZ8vhcZRuBas": {
           "selector": ":tabsDropdown.ant-tabs-dropdown .ant-tabs-dropdown-menu",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "o7OW6BrF8dAV": {
           "name": "className",
           "selectors": [{ "__ref": "qZ8vhcZRuBas" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "XCztGMMATfjV": {
           "name": "tabsDropdownClassName",
@@ -19992,12 +20010,14 @@
         "1Fp6vYUJuW9v": {
           "selector": ":modal .ant-modal-close",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "FvK4k8XCoFeD": {
           "name": "className",
           "selectors": [{ "__ref": "1Fp6vYUJuW9v" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "2A4Ouxk4v2yc": {
           "name": "wrapClassName",
@@ -20027,12 +20047,14 @@
         "9KHijZfZhENm": {
           "selector": ":modal .ant-modal-content",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "oIPOCDG1J0LV": {
           "name": "className",
           "selectors": [{ "__ref": "9KHijZfZhENm" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "NHXuj1IYaLvs": {
           "name": "modalContentClassName",
@@ -20062,7 +20084,8 @@
         "0cQtEQ2LB8oP": {
           "name": "className",
           "selectors": [],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "JNdM_C74EbPX": {
           "name": "popupClassName",
@@ -20122,12 +20145,14 @@
         "DpZWq_6v9zTM": {
           "selector": ":dropdownMenu.ant-dropdown-menu",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "B_0quU7Bx2lQ": {
           "name": "className",
           "selectors": [{ "__ref": "DpZWq_6v9zTM" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "yobQ5amOWa-R": {
           "name": "menuClassName",
@@ -20157,12 +20182,14 @@
         "SRRcLZqM5ULC": {
           "selector": ":dropdownMenu.ant-dropdown-menu .ant-dropdown-menu-item",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "WUeRiB2NJBSm": {
           "selector": ":dropdownMenu.ant-dropdown-menu .ant-dropdown-menu-item-active",
           "label": "Focused",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "xP9vFalkDKqE": {
           "name": "className",
@@ -20170,7 +20197,8 @@
             { "__ref": "SRRcLZqM5ULC" },
             { "__ref": "WUeRiB2NJBSm" }
           ],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "zLPcQtXewgow": {
           "name": "menuItemClassName",
@@ -20230,12 +20258,14 @@
         "EXCnBlRgSuTK": {
           "selector": ":datePickerPopup .ant-picker-panel-container",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "8KpybmYF6kg2": {
           "name": "className",
           "selectors": [{ "__ref": "EXCnBlRgSuTK" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "Qxq--r9nBFap": {
           "name": "popupClassName",
@@ -20265,12 +20295,14 @@
         "wVSEA-2y7pdu": {
           "selector": ":datePickerPopup .ant-picker-header",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "6W8SOKRnCD9X": {
           "name": "className",
           "selectors": [{ "__ref": "wVSEA-2y7pdu" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "zRHLQrmuZskD": {
           "name": "popupHeaderClassName",
@@ -20300,12 +20332,14 @@
         "b0K5KEVN34Ai": {
           "selector": ":datePickerPopup .ant-picker-body",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "yOIUF4AZMBG5": {
           "name": "className",
           "selectors": [{ "__ref": "b0K5KEVN34Ai" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "Qt6Bs-9xuonj": {
           "name": "popupBodyClassName",
@@ -20335,12 +20369,14 @@
         "LTqwm5Y6XnT-": {
           "selector": ":datePickerPopup .ant-picker-footer",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "L6T4fcNcWt-F": {
           "name": "className",
           "selectors": [{ "__ref": "LTqwm5Y6XnT-" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "oFW6YwoH4JGV": {
           "name": "popupFooterClassName",
@@ -20370,22 +20406,26 @@
         "52f3kkVzX5Uz": {
           "selector": ":drawer .ant-drawer-close",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "GLU-Bh-fYX3P": {
           "name": "className",
           "selectors": [{ "__ref": "52f3kkVzX5Uz" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "_p9Rs52yDl4Y": {
           "selector": ":drawer .ant-drawer-header",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "RUmwgMNYyM9C": {
           "name": "className",
           "selectors": [{ "__ref": "_p9Rs52yDl4Y" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "8Uss6tEUSzlm": {
           "name": "drawerHeaderClassName",
@@ -20415,12 +20455,14 @@
         "Eesw2znJPiI-": {
           "selector": ":drawer .ant-drawer-body",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "xZN_IvoPpaVm": {
           "name": "className",
           "selectors": [{ "__ref": "Eesw2znJPiI-" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "doQS6mzaC-Ca": {
           "name": "drawerBodyClassName",
@@ -20450,12 +20492,14 @@
         "SufWgaqcOrLo": {
           "selector": ":drawer .ant-drawer-footer",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "GfL1JffwaHAO": {
           "name": "className",
           "selectors": [{ "__ref": "SufWgaqcOrLo" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "8u1RvnM-aGy9": {
           "name": "drawerFooterClassName",
@@ -20485,12 +20529,14 @@
         "nVeKwSzqRJ7p": {
           "selector": ":drawer .ant-drawer-title",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "FC8lx_9ob2vi": {
           "name": "className",
           "selectors": [{ "__ref": "nVeKwSzqRJ7p" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "Ivg3Oj1cmiqG": {
           "name": "drawerTitleClassName",
@@ -20520,12 +20566,14 @@
         "Hb2TXgNIAejc": {
           "selector": ":drawer .ant-drawer-mask",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "TPtUToHh3Hb-": {
           "name": "className",
           "selectors": [{ "__ref": "Hb2TXgNIAejc" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "z2Q_JTEr7vRh": {
           "name": "drawerMaskClassName",
@@ -20555,12 +20603,14 @@
         "VQ6yLbvupVtx": {
           "selector": ":drawer .ant-drawer-content-wrapper",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "dH3jRQe3IUT4": {
           "name": "className",
           "selectors": [{ "__ref": "VQ6yLbvupVtx" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "EhsBg9JqJLAO": {
           "name": "drawerContentWrapperClassName",
@@ -20590,7 +20640,8 @@
         "d1lqc452xMRS": {
           "name": "className",
           "selectors": [],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "bgOJpBRLOHg4": {
           "name": "overlayClassName",
@@ -20707,7 +20758,8 @@
         "2wSX0LG2V6ja": {
           "name": "className",
           "selectors": [],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "m5bcrwfRk9tC": {
           "name": "headerClass",
@@ -22597,12 +22649,14 @@
         "fHKESPBXosJ6": {
           "selector": ":dateRangePickerPopup .ant-picker-panel-container",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "qUzIgmRCuD1t": {
           "name": "className",
           "selectors": [{ "__ref": "fHKESPBXosJ6" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "vsI4wkpUQCmM": {
           "name": "popupClassName",
@@ -22632,12 +22686,14 @@
         "EbRG5C3bhG3j": {
           "selector": ":dateRangePickerPopup .ant-picker-header",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "L63Ee_BkFiv3": {
           "name": "className",
           "selectors": [{ "__ref": "EbRG5C3bhG3j" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "h4yvN7NIF0gb": {
           "name": "popupHeaderClassName",
@@ -22667,12 +22723,14 @@
         "F60HUMggB2kv": {
           "selector": ":dateRangePickerPopup .ant-picker-body",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "CcbZRPLh29Qx": {
           "name": "className",
           "selectors": [{ "__ref": "F60HUMggB2kv" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "Ecv-7e7VQN8k": {
           "name": "popupBodyClassName",
@@ -22702,12 +22760,14 @@
         "sHVoK-3Nvsn8": {
           "selector": ":dateRangePickerPopup .ant-picker-footer",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "Qkb30P2qF3M6": {
           "name": "className",
           "selectors": [{ "__ref": "sHVoK-3Nvsn8" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "Elyw89vaj-UJ": {
           "name": "popupFooterClassName",
@@ -23406,12 +23466,14 @@
         "A-H8COiWr6A7": {
           "selector": ":slider.ant-slider .ant-slider-rail",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "l9Zs9SThPG17": {
           "name": "className",
           "selectors": [{ "__ref": "A-H8COiWr6A7" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "ws8Cl7g-tRyq": {
           "name": "railClassName",
@@ -23441,12 +23503,14 @@
         "c_uGHqxayXJ4": {
           "selector": ":slider.ant-slider .ant-slider-track",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "z5gdljZsTHtW": {
           "name": "className",
           "selectors": [{ "__ref": "c_uGHqxayXJ4" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "r3BPRHnDtpjx": {
           "name": "trackClassName",
@@ -23476,12 +23540,14 @@
         "NtKWBlUxgdsY": {
           "selector": ":slider.ant-slider .ant-slider-handle::after",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "xtLC7ueBFYXV": {
           "name": "className",
           "selectors": [{ "__ref": "NtKWBlUxgdsY" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "XbXRN_rTxnBi": {
           "name": "handleClassName",
@@ -23511,12 +23577,14 @@
         "3dy_oXP5ijw2": {
           "selector": ":slider.ant-slider .ant-slider-dot",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "x7Hof_rIOdjZ": {
           "name": "className",
           "selectors": [{ "__ref": "3dy_oXP5ijw2" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "UbioRReqJph4": {
           "name": "dotClassName",
@@ -23546,12 +23614,14 @@
         "M1TLh7O7d8CP": {
           "selector": ":slider.ant-slider .ant-slider-dot.ant-slider-dot-active",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "CArbfFN9I197": {
           "name": "className",
           "selectors": [{ "__ref": "M1TLh7O7d8CP" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "-cPB620QpdDK": {
           "name": "activeDotClassName",
@@ -23581,12 +23651,14 @@
         "L3wGGu1SMkxs": {
           "selector": ":slider.ant-slider .ant-slider-tooltip",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "sd6nd_sySbOd": {
           "name": "className",
           "selectors": [{ "__ref": "L3wGGu1SMkxs" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "7x-Yrqxou_iG": {
           "name": "tooltipClassName",
@@ -24290,12 +24362,14 @@
         "1rmODYyHT71g": {
           "selector": ":slider.ant-slider .ant-slider-rail",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "BSoGkI4-1s52": {
           "name": "className",
           "selectors": [{ "__ref": "1rmODYyHT71g" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "Qh9uQaYkAz1E": {
           "name": "railClassName",
@@ -24325,12 +24399,14 @@
         "x4ga7grpX4sr": {
           "selector": ":slider.ant-slider .ant-slider-track",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "efulM8WLIKHG": {
           "name": "className",
           "selectors": [{ "__ref": "x4ga7grpX4sr" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "w8MNiPShD43p": {
           "name": "trackClassName",
@@ -24360,12 +24436,14 @@
         "uF9I5HyMcRZq": {
           "selector": ":slider.ant-slider .ant-slider-handle::after",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "Gc2FKWqHxPZO": {
           "name": "className",
           "selectors": [{ "__ref": "uF9I5HyMcRZq" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "1Pbc35oF5b91": {
           "name": "handleClassName",
@@ -24395,12 +24473,14 @@
         "8jbJsTu9NsM9": {
           "selector": ":slider.ant-slider .ant-slider-dot",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "zlecwHhJVD-Z": {
           "name": "className",
           "selectors": [{ "__ref": "8jbJsTu9NsM9" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "B1jwTLQkId1l": {
           "name": "dotClassName",
@@ -24430,12 +24510,14 @@
         "vvdK9AVmtlK6": {
           "selector": ":slider.ant-slider .ant-slider-dot.ant-slider-dot-active",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "JCjOWe85_Elo": {
           "name": "className",
           "selectors": [{ "__ref": "vvdK9AVmtlK6" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "-SIN7L1Bc-c5": {
           "name": "activeDotClassName",
@@ -24465,12 +24547,14 @@
         "AOR7rCU1oP2X": {
           "selector": ":slider.ant-slider .ant-slider-tooltip",
           "label": "Base",
-          "__type": "LabeledSelector"
+          "__type": "LabeledSelector",
+          "defaultStyles": {}
         },
         "tHJT2frlvPWH": {
           "name": "className",
           "selectors": [{ "__ref": "AOR7rCU1oP2X" }],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "AkdAUn8gVdTs": {
           "name": "tooltipClassName",
@@ -26506,7 +26590,8 @@
         "sxrvG9tx4OJq": {
           "name": "className",
           "selectors": [],
-          "__type": "ClassNamePropType"
+          "__type": "ClassNamePropType",
+          "defaultStyles": {}
         },
         "MVAfQTt6an5M": { "name": "text", "__type": "Text" },
         "fby4WKnM6pfk": {
@@ -26814,7 +26899,7 @@
         }
       },
       "deps": [],
-      "version": "228-add-allow-root-wrapper"
+      "version": "229-add-class-type-default-styles"
     }
   ],
   [
@@ -30857,7 +30942,7 @@
         }
       },
       "deps": [],
-      "version": "228-add-allow-root-wrapper"
+      "version": "229-add-class-type-default-styles"
     }
   ],
   [
@@ -31161,7 +31246,7 @@
         }
       },
       "deps": [],
-      "version": "228-add-allow-root-wrapper"
+      "version": "229-add-class-type-default-styles"
     }
   ],
   [
@@ -35780,7 +35865,7 @@
         "88b7de88-9046-4021-b08b-d5d7d1db6a8c",
         "0b5c4773-e201-48c2-86a4-c29335ea539b"
       ],
-      "version": "228-add-allow-root-wrapper"
+      "version": "229-add-class-type-default-styles"
     }
   ]
 ]

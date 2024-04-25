@@ -278,6 +278,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
           classes.LabeledSelector,
         ]),
     },
+    defaultStyles: "generic",
   },
   StyleScopeClassNamePropType: {
     name: "unexpected",
@@ -1004,6 +1005,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
   LabeledSelector: {
     selector: "generic",
     label: "generic",
+    defaultStyles: "generic",
   },
   DataSourceOpExpr: {
     parent: "generic",
