@@ -39,9 +39,11 @@ import {
   xSetDefault,
 } from "@/wab/common";
 import {
-  derefToken,
   extractAllReferencedTokenIds,
+  ResolvedToken,
+  resolveToken,
   TokenType,
+  TokenValue,
   tryParseTokenRef,
 } from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
@@ -616,41 +618,57 @@ export const componentToTplComponents = maybeComputedFn(
   }
 );
 
+/** Token resolver that returns the value and token. */
 export type TokenResolver = (
   token: StyleToken,
   vsh?: VariantedStylesHelper
-) => string;
-export const makeTokenValueResolver = maybeComputedFn(
-  function makeTokenValueResolver(site: Site) {
+) => ResolvedToken;
+export const makeTokenResolver = maybeComputedFn(
+  function makeTokenValueResolver(site: Site): TokenResolver {
     const allTokens = siteToAllTokens(site);
-    const map: Map<StyleToken, Map<string, string>> = new Map();
+    const map: Map<StyleToken, Map<string, ResolvedToken>> = new Map();
 
     allTokens.forEach((token) => {
-      const tokenMap: Map<string, string> = new Map();
+      const tokenMap: Map<string, ResolvedToken> = new Map();
       tokenMap.set(
         new VariantedStylesHelper().key(),
-        derefToken(allTokens, token)
+        resolveToken(allTokens, token)
       );
       token.variantedValues?.forEach((v) => {
         const vsh = new VariantedStylesHelper(site, v.variants);
-        tokenMap.set(vsh.key(), derefToken(allTokens, token, vsh));
+        tokenMap.set(vsh.key(), resolveToken(allTokens, token, vsh));
       });
       map.set(token, tokenMap);
     });
 
-    return (token: StyleToken, maybeVsh?: VariantedStylesHelper) => {
+    return (
+      token: StyleToken,
+      maybeVsh?: VariantedStylesHelper
+    ): ResolvedToken => {
       const vsh = maybeVsh ?? new VariantedStylesHelper();
       const tokenMap = ensure(
         map.get(token),
         () => `Missing token ${token.name} (${token.uuid})`
       );
       if (!tokenMap.has(vsh.key())) {
-        tokenMap.set(vsh.key(), derefToken(allTokens, token, vsh));
+        tokenMap.set(vsh.key(), resolveToken(allTokens, token, vsh));
       }
       return ensure(tokenMap.get(vsh.key()), () => `Missing vsh ${vsh.key()}`);
     };
   }
 );
+
+/** Token resolver that returns the value only. */
+export type TokenValueResolver = (
+  token: StyleToken,
+  vsh?: VariantedStylesHelper
+) => TokenValue;
+export const makeTokenValueResolver = (site: Site): TokenValueResolver => {
+  const tokenResolver = makeTokenResolver(site);
+  return (token: StyleToken, maybeVsh?: VariantedStylesHelper): TokenValue => {
+    return tokenResolver(token, maybeVsh).value;
+  };
+};
 
 export const getTplComponentFetchers = maybeComputedFn(
   function getTplComponentFetchers(component: Component) {

@@ -6,7 +6,7 @@ import { useToggleDisplayed } from "@/wab/client/dom-utils";
 import { PlusIcon } from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import SearchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
 import { cx } from "@/wab/common";
-import { TokenResolver } from "@/wab/shared/cached-selectors";
+import { TokenValueResolver } from "@/wab/shared/cached-selectors";
 import Chroma from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Tooltip } from "antd";
@@ -25,7 +25,7 @@ export const ColorTokenSelector = observer(function ColorTokenSelector(props: {
   onSelect: (token: StyleToken) => void;
   selectedToken?: StyleToken;
   onAddToken: () => void;
-  resolver: TokenResolver;
+  resolver: TokenValueResolver;
   className?: string;
   autoFocusSearch?: boolean;
   maxRows?: number;

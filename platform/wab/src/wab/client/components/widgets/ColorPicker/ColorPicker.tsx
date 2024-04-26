@@ -21,7 +21,7 @@ import {
   TokenType,
   tryParseTokenRef,
 } from "@/wab/commons/StyleToken";
-import { TokenResolver } from "@/wab/shared/cached-selectors";
+import { TokenValueResolver } from "@/wab/shared/cached-selectors";
 import { Chroma } from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { allColorTokens, allStyleTokens, isEditable } from "@/wab/sites";
@@ -56,7 +56,7 @@ import "./Pickr.overrides.scss";
 export function tryGetRealColor(
   color: string,
   sc: StudioCtx,
-  resolver: TokenResolver,
+  resolver: TokenValueResolver,
   vsh: VariantedStylesHelper = new VariantedStylesHelper(),
   maybeColorTokens?: StyleToken[]
 ) {

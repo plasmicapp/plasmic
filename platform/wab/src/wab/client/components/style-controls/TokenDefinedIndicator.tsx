@@ -1,4 +1,10 @@
 import { isKnownVariantedValue, StyleToken } from "@/wab/classes";
+import {
+  getStylePropValue,
+  SourceRow,
+  variantComboName,
+} from "@/wab/client/components/style-controls/DefinedIndicator";
+import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -8,11 +14,6 @@ import { capitalizeFirst } from "@/wab/strs";
 import { Popover } from "antd";
 import classNames from "classnames";
 import React from "react";
-import {
-  getStylePropValue,
-  SourceRow,
-  variantComboName,
-} from "./DefinedIndicator";
 import styles from "./DefinedIndicator.module.sass";
 
 export function TokenDefinedIndicator(props: {
@@ -27,6 +28,7 @@ export function TokenDefinedIndicator(props: {
     studioCtx,
     className,
   } = props;
+  const clientTokenResolver = useClientTokenResolver();
 
   const indicatorType = vsh.isStyleInherited(token) ? "otherVariants" : "set";
   const isEditingNonBaseVariant = !vsh.isTargetBaseVariant();
@@ -55,7 +57,13 @@ export function TokenDefinedIndicator(props: {
                 type={i !== arr.length - 1 ? "overwritten" : "target"}
               >
                 <div className="flex flex-vcenter">
-                  {getStylePropValue(studioCtx.site, undefined, v.value, vsh)}
+                  {getStylePropValue(
+                    clientTokenResolver,
+                    studioCtx.site,
+                    undefined,
+                    v.value,
+                    vsh
+                  )}
                 </div>
               </SourceRow>
             </div>

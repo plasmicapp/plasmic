@@ -10,7 +10,11 @@ import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { PlasmicLeftGeneralTokensPanel } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftGeneralTokensPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ensure } from "@/wab/common";
-import { TokenType, tokenTypeDefaults } from "@/wab/commons/StyleToken";
+import {
+  TokenType,
+  tokenTypeDefaults,
+  TokenValue,
+} from "@/wab/commons/StyleToken";
 import Chroma from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { isScreenVariant } from "@/wab/shared/Variants";
@@ -156,7 +160,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
       tokens = tokens.filter((token) => {
         let resolved = resolver(token, vsh);
         if (token.type === TokenType.Color) {
-          resolved = Chroma.stringify(resolved);
+          resolved = Chroma.stringify(resolved) as TokenValue;
         }
         return (
           token.type === type &&

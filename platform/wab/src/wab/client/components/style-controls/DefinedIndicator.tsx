@@ -13,7 +13,12 @@ import {
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { resolvedBackgroundImageCss } from "@/wab/client/components/sidebar-tabs/background-section";
 import { EditMixinButton } from "@/wab/client/components/sidebar/MixinControls";
+import { ColorSwatch } from "@/wab/client/components/style-controls/ColorSwatch";
+import styles from "@/wab/client/components/style-controls/DefinedIndicator.module.sass";
+import { ImagePreview } from "@/wab/client/components/style-controls/ImageSelector";
+import { getLabelForStyleName } from "@/wab/client/components/style-controls/StyleComponent";
 import { IFrameAwareDropdownMenu } from "@/wab/client/components/widgets";
+import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import IconButton from "@/wab/client/components/widgets/IconButton";
 import MenuButton from "@/wab/client/components/widgets/MenuButton";
@@ -36,7 +41,10 @@ import { derefTokenRefs, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import { getComponentDisplayName } from "@/wab/components";
 import { ExprCtx, summarizeExpr, tryExtractLit } from "@/wab/exprs";
 import * as cssPegParser from "@/wab/gen/cssPegParser";
-import { computedProjectFlags } from "@/wab/shared/cached-selectors";
+import {
+  computedProjectFlags,
+  TokenValueResolver,
+} from "@/wab/shared/cached-selectors";
 import {
   DefinedIndicatorType,
   isTargetOverwritten,
@@ -76,10 +84,6 @@ import classNames from "classnames";
 import L from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { ColorSwatch } from "./ColorSwatch";
-import styles from "./DefinedIndicator.module.sass";
-import { ImagePreview } from "./ImageSelector";
-import { getLabelForStyleName } from "./StyleComponent";
 
 export const variantComboName = (combo: VariantCombo) => {
   const variantName = (variant: Variant) => {
@@ -103,6 +107,7 @@ export const variantComboName = (combo: VariantCombo) => {
 };
 
 export function getStylePropValue(
+  clientTokenResolver: TokenValueResolver,
   site: Site,
   prop: string | undefined,
   value: string,
@@ -138,6 +143,7 @@ export function getStylePropValue(
           backgroundSize: "cover",
           backgroundImage: resolvedBackgroundImageCss(
             parsedBgImg.image,
+            clientTokenResolver,
             site,
             vsh
           ),
@@ -196,6 +202,7 @@ export const SourceValue = observer(function SourceValue(props: {
   onShowPopup?: (showing: boolean) => void;
 }) {
   const { site, source, editable, onShowPopup } = props;
+  const clientTokenResolver = useClientTokenResolver();
   const exprCtx: ExprCtx = {
     projectFlags: computedProjectFlags(site),
     // TODO: get the actual component
@@ -213,7 +220,12 @@ export const SourceValue = observer(function SourceValue(props: {
               className="defined-indicator__edit-button code flex flex-vcenter"
               onShowPopup={onShowPopup}
             >
-              {getStylePropValue(site, source.prop, source.value)}
+              {getStylePropValue(
+                clientTokenResolver,
+                site,
+                source.prop,
+                source.value
+              )}
             </EditMixinButton>
           </div>
         </Tooltip>
@@ -222,7 +234,12 @@ export const SourceValue = observer(function SourceValue(props: {
       // We're using a theme from a dependency, so it can't be edited.
       return (
         <div className="flex flex-vcenter">
-          {getStylePropValue(site, source.prop, source.value)}
+          {getStylePropValue(
+            clientTokenResolver,
+            site,
+            source.prop,
+            source.value
+          )}
         </div>
       );
     }
@@ -244,7 +261,12 @@ export const SourceValue = observer(function SourceValue(props: {
               onShowPopup={onShowPopup}
               tag={source.selector.split(":")[0]}
             >
-              {getStylePropValue(site, source.prop, source.value)}
+              {getStylePropValue(
+                clientTokenResolver,
+                site,
+                source.prop,
+                source.value
+              )}
             </EditMixinButton>
           </div>
         </Tooltip>
@@ -252,7 +274,12 @@ export const SourceValue = observer(function SourceValue(props: {
     } else {
       return (
         <div className="flex flex-vcenter">
-          {getStylePropValue(site, source.prop, source.value)}
+          {getStylePropValue(
+            clientTokenResolver,
+            site,
+            source.prop,
+            source.value
+          )}
         </div>
       );
     }
@@ -267,7 +294,12 @@ export const SourceValue = observer(function SourceValue(props: {
               onShowPopup={onShowPopup}
             >
               <Icon icon={MixinIcon} className="mr-ch" />
-              {getStylePropValue(site, source.prop, source.value)}
+              {getStylePropValue(
+                clientTokenResolver,
+                site,
+                source.prop,
+                source.value
+              )}
             </EditMixinButton>
           </div>
         </Tooltip>
@@ -278,7 +310,12 @@ export const SourceValue = observer(function SourceValue(props: {
           <Tooltip title={`${MIXIN_CAP} ${source.mixin.name}`}>
             <Icon icon={MixinIcon} className="mr-ch" />
           </Tooltip>
-          {getStylePropValue(site, source.prop, source.value)}
+          {getStylePropValue(
+            clientTokenResolver,
+            site,
+            source.prop,
+            source.value
+          )}
         </div>
       );
     }
@@ -323,7 +360,12 @@ export const SourceValue = observer(function SourceValue(props: {
         <Tooltip title={`${SLOT_CAP}: ${source.param.variable.name}`}>
           <Icon icon={SlotIcon} className="mr-ch" />
         </Tooltip>
-        {getStylePropValue(site, source.prop, source.value)}
+        {getStylePropValue(
+          clientTokenResolver,
+          site,
+          source.prop,
+          source.value
+        )}
       </div>
     );
   } else if (source.type === "sel") {
@@ -332,7 +374,12 @@ export const SourceValue = observer(function SourceValue(props: {
         <Tooltip title={`Prop: ${source.sel.slotParam.variable.name}`}>
           <Icon icon={SlotIcon} className="mr-ch" />
         </Tooltip>
-        {getStylePropValue(site, source.prop, source.value)}
+        {getStylePropValue(
+          clientTokenResolver,
+          site,
+          source.prop,
+          source.value
+        )}
       </div>
     );
   } else if (source.type === "visibility") {
@@ -379,7 +426,12 @@ export const SourceValue = observer(function SourceValue(props: {
         display = "free";
       }
     }
-    const rendered = getStylePropValue(site, source.prop, display);
+    const rendered = getStylePropValue(
+      clientTokenResolver,
+      site,
+      source.prop,
+      display
+    );
     if (source.isDerived) {
       return <>{rendered} (derived)</>;
     } else {
@@ -525,6 +577,7 @@ const PopoverContent = observer(function PopoverContent(props: {
 }) {
   const types = props.types.filter((type) => type.source !== "none");
   const studioCtx = useStudioCtx();
+  const clientTokenResolver = useClientTokenResolver();
 
   const renderIndicator = (type: DefinedIndicatorType) => {
     if (type.source === "none" || type.source === "invariantable") {
@@ -538,7 +591,12 @@ const PopoverContent = observer(function PopoverContent(props: {
               : getLabelForStyleName(type.prop)}
           </div>
           <div className="defined-indicator__source-value">
-            {getStylePropValue(studioCtx.site, type.prop, type.value)}
+            {getStylePropValue(
+              clientTokenResolver,
+              studioCtx.site,
+              type.prop,
+              type.value
+            )}
           </div>
         </div>
       );

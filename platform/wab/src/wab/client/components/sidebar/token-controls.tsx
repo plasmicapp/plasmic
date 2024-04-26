@@ -11,7 +11,7 @@ import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawn } from "@/wab/common";
 import { TokenType } from "@/wab/commons/StyleToken";
-import { TokenResolver } from "@/wab/shared/cached-selectors";
+import { TokenValueResolver } from "@/wab/shared/cached-selectors";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { allColorTokens } from "@/wab/sites";
 import { maybeTokenRefCycle } from "@/wab/styles";
@@ -64,7 +64,7 @@ export const StyleTokenControl = observer(function StyleTokenControl(props: {
   isDragging?: boolean;
   dragHandleProps?: DraggableProvidedDragHandleProps;
   onClick?: () => void;
-  resolver: TokenResolver;
+  resolver: TokenValueResolver;
   vsh?: VariantedStylesHelper;
 }) {
   const {

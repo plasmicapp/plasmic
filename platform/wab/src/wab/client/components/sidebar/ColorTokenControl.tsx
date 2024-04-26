@@ -8,7 +8,7 @@ import { Matcher } from "@/wab/client/components/view-common";
 import Checkbox from "@/wab/client/components/widgets/Checkbox";
 import { PlasmicColorTokenControl } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicColorTokenControl";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { TokenResolver } from "@/wab/shared/cached-selectors";
+import { TokenValueResolver } from "@/wab/shared/cached-selectors";
 import Chroma from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Tooltip } from "antd";
@@ -25,7 +25,7 @@ interface ColorTokenControlProps {
   isDragging?: boolean;
   dragHandleProps?: DraggableProvidedDragHandleProps;
   onClick?: () => void;
-  resolver: TokenResolver;
+  resolver: TokenValueResolver;
   vsh?: VariantedStylesHelper;
 }
 

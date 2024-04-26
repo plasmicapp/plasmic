@@ -13,6 +13,21 @@ import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { allTokensOfType } from "@/wab/sites";
 import CSSEscape from "css.escape";
 import L from "lodash";
+import type { Opaque, SetOptional } from "type-fest";
+
+/** A string that can be used as a CSS value. Could be a value or a reference to a token. */
+export type TokenValue = Opaque<string, "TokenValue">;
+
+/**
+ * Resolved CSS value and token.
+ *
+ * CSS value may be an empty string if a cycle was detected.
+ * The token is the last token in the resolution chain.
+ */
+export type ResolvedToken = {
+  value: TokenValue;
+  token: StyleToken;
+};
 
 export const enum TokenType {
   Color = "Color",
@@ -22,6 +37,15 @@ export const enum TokenType {
   FontFamily = "FontFamily",
   FontSize = "FontSize",
 }
+
+const tokenTypes = [
+  TokenType.Color,
+  TokenType.FontFamily,
+  TokenType.FontSize,
+  TokenType.LineHeight,
+  TokenType.Opacity,
+  TokenType.Spacing,
+];
 
 export function tokenTypeLabel(type: TokenType) {
   switch (type) {
@@ -118,16 +142,31 @@ export const tryParseTokenRef = (
 ) => {
   const m = ref.match(RE_TOKENREF);
   if (!m) return undefined;
+  const tokenId = m[1];
   if (L.isArray(tokensProvider) || L.isFunction(tokensProvider)) {
     const tokens = L.isArray(tokensProvider)
       ? tokensProvider
       : tokensProvider();
-    return tokens.find((t) => t.uuid === m[1]);
+    return tokens.find((t) => t.uuid === tokenId);
   } else if (tokensProvider instanceof Map) {
-    return tokensProvider.get(m[1]);
+    return tokensProvider.get(tokenId);
   } else {
-    return tokensProvider[m[1]];
+    return tokensProvider[tokenId];
   }
+};
+
+export const parseTokenRef = (
+  ref: string,
+  tokensProvider:
+    | StyleToken[]
+    | (() => StyleToken[])
+    | Record<string, StyleToken>
+    | Map<string, StyleToken>
+) => {
+  return ensure(
+    tryParseTokenRef(ref, tokensProvider),
+    `Expected to be a token ref`
+  );
 };
 
 export const hasTokenRefs = (str: string) => {
@@ -224,51 +263,56 @@ export const tryParseMixinPropRef = (
   return tuple(mixin, m[2]);
 };
 
-function doDerefTokenRefs(
+export function resolveToken(
   tokens: StyleToken[] | Map<string, StyleToken>,
-  value: string,
-  failSoft?: boolean,
+  token: StyleToken,
   vsh?: VariantedStylesHelper
-) {
+): ResolvedToken {
   const seenTokens = new Set<StyleToken>();
   vsh = vsh ?? new VariantedStylesHelper();
-  while (isTokenRef(value)) {
-    const maybeToken = tryParseTokenRef(value, tokens);
-    if (!maybeToken && failSoft) {
-      return undefined;
+
+  let curToken = token;
+  let curValue = vsh.getActiveTokenValue(token);
+  while (isTokenRef(curValue)) {
+    curToken = parseTokenRef(curValue, tokens);
+    curValue = vsh.getActiveTokenValue(curToken);
+
+    // Return original token if we hit a cycle.
+    if (seenTokens.has(curToken)) {
+      return { token, value: vsh.getActiveTokenValue(token) };
     }
-    const token = ensure(maybeToken, `Expected to be a token ref`);
-    if (seenTokens.has(token)) {
-      return "";
-    }
-    seenTokens.add(token);
-    value = vsh.getActiveTokenValue(token);
+    seenTokens.add(curToken);
   }
 
-  return value;
+  return { token: curToken, value: curValue };
+}
+
+export function resolveTokenRef(
+  tokens: StyleToken[] | Map<string, StyleToken>,
+  value: TokenValue,
+  vsh?: VariantedStylesHelper
+): SetOptional<ResolvedToken, "token"> {
+  if (isTokenRef(value)) {
+    return resolveToken(tokens, parseTokenRef(value, tokens), vsh);
+  } else {
+    return { value };
+  }
 }
 
 export function derefTokenRefs(
-  tokens: StyleToken[],
+  tokens: StyleToken[] | Map<string, StyleToken>,
   value: string,
   vsh?: VariantedStylesHelper
-) {
-  return ensure(
-    doDerefTokenRefs(tokens, value, undefined, vsh),
-    `Expected token ref`
-  );
+): TokenValue {
+  return resolveTokenRef(tokens, value as TokenValue, vsh).value;
 }
 
 export function derefToken(
   tokens: StyleToken[] | Map<string, StyleToken>,
   token: StyleToken,
   vsh?: VariantedStylesHelper
-) {
-  vsh = vsh ?? new VariantedStylesHelper();
-  return ensure(
-    doDerefTokenRefs(tokens, vsh.getActiveTokenValue(token), undefined, vsh),
-    "Expected token ref"
-  );
+): TokenValue {
+  return resolveToken(tokens, token, vsh).value;
 }
 
 export function lazyDerefTokenRefs(
@@ -277,9 +321,9 @@ export function lazyDerefTokenRefs(
   tokenType: TokenType,
   opts: { includeDeps?: DependencyWalkScope } = {},
   vsh?: VariantedStylesHelper
-) {
+): TokenValue {
   if (!isTokenRef(value)) {
-    return value;
+    return value as TokenValue;
   }
   const tokens = allTokensOfType(site, tokenType, opts);
   return derefTokenRefs(tokens, value, vsh);
@@ -290,7 +334,7 @@ export function lazyDerefTokenRefsWithDeps(
   site: Site,
   tokenType: TokenType,
   vsh?: VariantedStylesHelper
-) {
+): TokenValue {
   return lazyDerefTokenRefs(
     value,
     site,
@@ -299,23 +343,6 @@ export function lazyDerefTokenRefsWithDeps(
     vsh
   );
 }
-
-export function tryDerefTokenRefs(
-  tokens: StyleToken[],
-  value: string,
-  vsh?: VariantedStylesHelper
-) {
-  return doDerefTokenRefs(tokens, value, true, vsh);
-}
-
-const tokenTypes = [
-  TokenType.Color,
-  TokenType.FontFamily,
-  TokenType.FontSize,
-  TokenType.LineHeight,
-  TokenType.Opacity,
-  TokenType.Spacing,
-];
 
 export function addOrUpsertTokens(site: Site, tokens: UpsertTokenReq[]) {
   const normalize = toVarName;
@@ -384,7 +411,7 @@ export function addOrUpsertTokens(site: Site, tokens: UpsertTokenReq[]) {
     const normalizedName = normalize(token.name);
 
     if (token.type === "BoxShadow") {
-      let mixin = ensure(
+      const mixin = ensure(
         mixinByNormalizedName.get(normalizedName),
         `${MIXIN_CAP} should exist`
       );

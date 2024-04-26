@@ -35,7 +35,7 @@ import * as css from "@/wab/css";
 import { lengthCssUnits, parseCssNumericNew, toShorthandVals } from "@/wab/css";
 import {
   siteToAllDirectTokensOfType,
-  TokenResolver,
+  TokenValueResolver,
 } from "@/wab/shared/cached-selectors";
 import { createNumericSize, isValidUnit, showSizeCss } from "@/wab/shared/Css";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
@@ -814,7 +814,7 @@ interface DimTokenContextValue {
   highlightedItemIndex: number;
   tokenType?: TokenType;
   vsh?: VariantedStylesHelper;
-  resolver: TokenResolver;
+  resolver: TokenValueResolver;
 }
 
 const DimTokenContext = React.createContext<DimTokenContextValue | undefined>(

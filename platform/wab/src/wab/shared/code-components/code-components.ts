@@ -180,6 +180,7 @@ import type {
   PlasmicElement,
   PropType,
   StateSpec,
+  TokenRegistration,
 } from "@plasmicapp/host";
 import type {
   CodeComponentElement,
@@ -3997,13 +3998,6 @@ export function checkForCyclesInSlotsDefaultValue(ctx: SiteCtx) {
       return success();
     }
   );
-}
-
-export interface TokenRegistration {
-  name: string;
-  displayName?: string;
-  value: string;
-  type: string;
 }
 
 function registeredTypeToTokenType(type: string) {
