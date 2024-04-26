@@ -18,7 +18,6 @@ import BoxControlsIcon from "@/wab/client/plasmic/plasmic_kit_design_system/Plas
 import { PlasmicAddDrawerItem } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicAddDrawerItem";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { isCodeComponent } from "@/wab/components";
-import { DEVFLAGS } from "@/wab/devflags";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -99,7 +98,7 @@ const InsertActions = observer(function InsertActions(props: {
   const { studioCtx, item, onInserted, validTplLocs } = props;
 
   let preset: React.ReactElement | null = null;
-  if (DEVFLAGS.preset && item.component && isCodeComponent(item.component)) {
+  if (item.component && isCodeComponent(item.component)) {
     const component = item.component;
     if (getComponentPresets(studioCtx, item.component).length > 0) {
       preset = (

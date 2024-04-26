@@ -630,7 +630,6 @@ export function getRenderBySection(
     [
       Section.CustomBehaviors,
       () =>
-        DEVFLAGS.ccAttachs &&
         isTplVariantable(tpl) &&
         !isColumn &&
         !isComponentRoot(tpl) &&

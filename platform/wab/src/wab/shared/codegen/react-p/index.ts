@@ -414,7 +414,7 @@ export function exportProjectConfig(
     allImageAssets(site, { includeDeps: "all" }),
     site.activeTheme,
     {
-      useCssVariables: DEVFLAGS.variantedStyles,
+      useCssVariables: true,
     }
   );
   const rootResetClass = makeRootResetClassName(projectId, {
@@ -499,9 +499,9 @@ export function exportProjectConfig(
     cssFileName,
     cssRules: `
       ${fontsCss}
-      ${DEVFLAGS.variantedStyles ? cssTokenVarsRules : ""}
+      ${cssTokenVarsRules}
       ${layoutVarsRules}
-      ${DEVFLAGS.variantedStyles ? defaultTagStylesVarsRules : ""}
+      ${defaultTagStylesVarsRules}
       ${cssMixinPropVarsRules}
       ${
         // If we're using CSS modules, defaultcss should be generated inside
@@ -2567,11 +2567,9 @@ function serializeComponentRootResetClasses(
     );
   }
 
-  if (DEVFLAGS.variantedStyles) {
-    const tokenClassExprs = makeCssClassExprsForVariantedTokens(ctx);
-    unconditionalClassExprs.push(...tokenClassExprs.unconditionalClassExprs);
-    conditionalClassExprs.push(...tokenClassExprs.conditionalClassExprs);
-  }
+  const tokenClassExprs = makeCssClassExprsForVariantedTokens(ctx);
+  unconditionalClassExprs.push(...tokenClassExprs.unconditionalClassExprs);
+  conditionalClassExprs.push(...tokenClassExprs.conditionalClassExprs);
 
   return {
     conditionalClassExprs,

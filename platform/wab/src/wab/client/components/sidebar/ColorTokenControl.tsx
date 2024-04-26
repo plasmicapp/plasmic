@@ -8,7 +8,6 @@ import { Matcher } from "@/wab/client/components/view-common";
 import Checkbox from "@/wab/client/components/widgets/Checkbox";
 import { PlasmicColorTokenControl } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicColorTokenControl";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { DEVFLAGS } from "@/wab/devflags";
 import { TokenResolver } from "@/wab/shared/cached-selectors";
 import Chroma from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
@@ -56,7 +55,7 @@ function ColorTokenControl(props: ColorTokenControlProps) {
             {multiAssetsActions.isSelecting && (
               <Checkbox isChecked={isSelected}> </Checkbox>
             )}
-            {DEVFLAGS.variantedStyles && vsh && (
+            {vsh && (
               <TokenDefinedIndicator
                 token={token}
                 vsh={vsh}

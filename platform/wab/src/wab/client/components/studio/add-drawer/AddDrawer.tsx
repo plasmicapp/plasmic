@@ -271,7 +271,6 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
     if (isTplAddItem(item)) {
       const component = item.component;
       if (
-        DEVFLAGS.preset &&
         component &&
         isCodeComponent(component) &&
         getComponentPresets(studioCtx, component).length > 0
@@ -1132,16 +1131,14 @@ export function buildAddItemGroups({
     },
 
     // Insertable Templates
-    DEVFLAGS.showInsertableTemplates &&
-      !contentEditorMode &&
+    !contentEditorMode &&
       !!insertableTemplatesMeta && {
         key: "insertable-templates",
         label: "Template blocks",
         items: [INSERTABLES_MAP.openInsertModal],
       },
 
-    DEVFLAGS.showHostLessComponents &&
-      !contentEditorMode &&
+    !contentEditorMode &&
       !!hostLessComponentsMeta && {
         key: "hostless-components",
         label: "Component Packages",
@@ -1155,7 +1152,7 @@ export function buildAddItemGroups({
         INSERTABLES_MAP.vstack,
         INSERTABLES_MAP.columns,
         INSERTABLES_MAP.hstack,
-        ...(DEVFLAGS.grid ? [INSERTABLES_MAP.grid] : []),
+        INSERTABLES_MAP.grid,
         INSERTABLES_MAP.box,
       ],
     },

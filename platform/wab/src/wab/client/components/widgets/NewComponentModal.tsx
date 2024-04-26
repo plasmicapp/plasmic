@@ -184,28 +184,27 @@ function NewComponentModal(props: NewComponentModalProps) {
           })}
         </NewComponentSection>
       )}
-      {studioCtx.appCtx.appConfig.showInsertableTemplateComponents &&
-        otherTemplates.length > 0 && (
-          <NewComponentSection title={"Common components"}>
-            {otherTemplates.map((template) => {
-              const thisTemplateId = `template:${template.templateName}`;
-              return (
-                <NewComponentItem
-                  isSelected={templateId === thisTemplateId}
-                  title={template.displayName ?? template.componentName}
-                  imgUrl={template.imageUrl}
-                  onClick={() => {
-                    setName(template.componentName);
-                    setTemplateId(thisTemplateId);
-                    if (nameRef.current) {
-                      nameRef.current.focus();
-                    }
-                  }}
-                />
-              );
-            })}
-          </NewComponentSection>
-        )}
+      {otherTemplates.length > 0 && (
+        <NewComponentSection title={"Common components"}>
+          {otherTemplates.map((template) => {
+            const thisTemplateId = `template:${template.templateName}`;
+            return (
+              <NewComponentItem
+                isSelected={templateId === thisTemplateId}
+                title={template.displayName ?? template.componentName}
+                imgUrl={template.imageUrl}
+                onClick={() => {
+                  setName(template.componentName);
+                  setTemplateId(thisTemplateId);
+                  if (nameRef.current) {
+                    nameRef.current.focus();
+                  }
+                }}
+              />
+            );
+          })}
+        </NewComponentSection>
+      )}
     </PlasmicNewComponentModal>
   );
 }

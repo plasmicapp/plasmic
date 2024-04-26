@@ -822,7 +822,7 @@ export const createComponentOutput = computedFn(
       studioCtx.site.activeTheme,
       {
         keepAssetRefs: false,
-        useCssVariables: DEVFLAGS.variantedStyles,
+        useCssVariables: true,
       }
     );
     const compGenHelper = new ComponentGenHelper(siteGenHelper, cssVarResolver);

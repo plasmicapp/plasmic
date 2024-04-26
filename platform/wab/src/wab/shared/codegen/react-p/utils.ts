@@ -182,7 +182,7 @@ export function makeStylesImports(
           )}; // plasmic-import: global/${defaultStyleCssImportName}`
     }
     ${
-      DEVFLAGS.variantedStyles && !opts.includeImportedTokens
+      !opts.includeImportedTokens
         ? cssProjectDependencies
             .map(
               (dep) =>

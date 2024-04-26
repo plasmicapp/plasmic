@@ -398,7 +398,9 @@ export async function buildOmnibarItemGroups({
     studioCtx.appCtx.appConfig.insertableTemplates ??
     DEVFLAGS.insertableTemplates;
   const hostLessComponentsMeta = (
-    studioCtx.appCtx.appConfig.hostLessComponents ?? DEVFLAGS.hostLessComponents
+    studioCtx.appCtx.appConfig.hostLessComponents ??
+    DEVFLAGS.hostLessComponents ??
+    []
   )?.filter((meta) => shouldShowHostLessPackage(studioCtx, meta));
   const getInsertableTemplatesSection = (group: InsertableTemplatesGroup) => {
     return {
@@ -556,105 +558,100 @@ export async function buildOmnibarItemGroups({
       ],
     },
 
-    ...(DEVFLAGS.showHostLessComponents && hostLessComponentsMeta
-      ? await Promise.all(
-          hostLessComponentsMeta
-            .filter((meta) => meta.onlyShownIn !== "new")
-            .map<Promise<OmnibarGroupData>>(async (meta) => {
-              const existingDep = ensureArray(meta.projectId).every(
-                (projectId) =>
-                  studioCtx.site.projectDependencies.find(
-                    (dep) => dep.projectId === projectId
-                  )
-              );
-              return {
-                key: "hostless-package",
-                tab: OmnibarTabNames.insert,
-                label: meta.name,
-                codeName: meta.codeName,
-                codeLink: meta.codeLink,
-                showInstall: meta.showInstall,
-                items: meta.items
-                  .filter(
-                    (item) =>
-                      (!item.hidden &&
-                        !item.hiddenOnStore &&
-                        item.onlyShownIn !== "new") ||
-                      DEVFLAGS.showHiddenHostLessComponents
-                  )
-                  .map((item) => {
-                    if (item.isFake) {
-                      return createFakeHostLessComponent(
-                        item,
-                        ensureArray(meta.projectId)
-                      );
-                    } else {
-                      return createAddHostLessComponent(
-                        item,
-                        ensureArray(meta.projectId)
+    ...(await Promise.all(
+      hostLessComponentsMeta
+        .filter((meta) => meta.onlyShownIn !== "new")
+        .map<Promise<OmnibarGroupData>>(async (meta) => {
+          const existingDep = ensureArray(meta.projectId).every((projectId) =>
+            studioCtx.site.projectDependencies.find(
+              (dep) => dep.projectId === projectId
+            )
+          );
+          return {
+            key: "hostless-package",
+            tab: OmnibarTabNames.insert,
+            label: meta.name,
+            codeName: meta.codeName,
+            codeLink: meta.codeLink,
+            showInstall: meta.showInstall,
+            items: meta.items
+              .filter(
+                (item) =>
+                  (!item.hidden &&
+                    !item.hiddenOnStore &&
+                    item.onlyShownIn !== "new") ||
+                  DEVFLAGS.showHiddenHostLessComponents
+              )
+              .map((item) => {
+                if (item.isFake) {
+                  return createFakeHostLessComponent(
+                    item,
+                    ensureArray(meta.projectId)
+                  );
+                } else {
+                  return createAddHostLessComponent(
+                    item,
+                    ensureArray(meta.projectId)
+                  );
+                }
+              }),
+            rightBtn: (
+              <Button
+                type={existingDep ? "secondary" : "primary"}
+                size="small"
+                disabled={!!existingDep}
+                onClick={async () => {
+                  if (existingDep) {
+                    // await studioCtx.projectDependencyManager.removeByPkgId(
+                    //   existingDep.pkgId
+                    // );
+                  } else {
+                    if (checkAndNotifyUnsupportedHostVersion()) {
+                      return;
+                    }
+
+                    const projectDependencies: ProjectDependency[] = [];
+                    const missingDeps = ensureArray(meta.projectId).filter(
+                      (projectId) =>
+                        !studioCtx.site.projectDependencies.find(
+                          (dep) => dep.projectId === projectId
+                        )
+                    );
+                    for (const id of missingDeps) {
+                      projectDependencies.push(
+                        await studioCtx.projectDependencyManager.addByProjectId(
+                          id
+                        )
                       );
                     }
-                  }),
-                rightBtn: (
-                  <Button
-                    type={existingDep ? "secondary" : "primary"}
-                    size="small"
-                    disabled={!!existingDep}
-                    onClick={async () => {
-                      if (existingDep) {
-                        // await studioCtx.projectDependencyManager.removeByPkgId(
-                        //   existingDep.pkgId
-                        // );
-                      } else {
-                        if (checkAndNotifyUnsupportedHostVersion()) {
-                          return;
-                        }
 
-                        const projectDependencies: ProjectDependency[] = [];
-                        const missingDeps = ensureArray(meta.projectId).filter(
-                          (projectId) =>
-                            !studioCtx.site.projectDependencies.find(
-                              (dep) => dep.projectId === projectId
-                            )
-                        );
-                        for (const id of missingDeps) {
-                          projectDependencies.push(
-                            await studioCtx.projectDependencyManager.addByProjectId(
-                              id
-                            )
-                          );
-                        }
-
-                        projectDependencies.forEach((projectDependency) =>
-                          maybeShowGlobalContextNotification(
-                            studioCtx,
-                            projectDependency
-                          )
-                        );
-                      }
-                    }}
-                  >
-                    {existingDep ? "Installed" : "Install"}
-                  </Button>
-                ),
-              };
-            })
-        )
-      : []),
+                    projectDependencies.forEach((projectDependency) =>
+                      maybeShowGlobalContextNotification(
+                        studioCtx,
+                        projectDependency
+                      )
+                    );
+                  }
+                }}
+              >
+                {existingDep ? "Installed" : "Install"}
+              </Button>
+            ),
+          };
+        })
+    )),
 
     // Component templates
-    ...(DEVFLAGS.preset
-      ? allComponents(studioCtx.site, { includeDeps: "all" })
-          .filter(isCodeComponent)
-          .map((c) => ({
-            key: "presets-" + c.uuid,
-            tab: OmnibarTabNames.insert,
-            label: "Component templates for " + getComponentDisplayName(c),
-            items: getComponentPresets(studioCtx, c).map((preset) =>
-              createAddComponentPreset(studioCtx, c, preset)
-            ),
-          }))
-      : []),
+    ...allComponents(studioCtx.site, { includeDeps: "all" })
+      .filter(isCodeComponent)
+      .map((c) => ({
+        key: "presets-" + c.uuid,
+        tab: OmnibarTabNames.insert,
+        label: "Component templates for " + getComponentDisplayName(c),
+        items: getComponentPresets(studioCtx, c).map((preset) =>
+          createAddComponentPreset(studioCtx, c, preset)
+        ),
+      })),
 
     // Run commands
     {
