@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-basic-components",
-  "version": "0.0.210",
+  "version": "0.0.211",
   "description": "Plasmic registration call for the HTML5 video element",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,7 +28,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.191",
+    "@plasmicapp/host": "1.0.192",
     "@plasmicapp/query": "0.1.78",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
