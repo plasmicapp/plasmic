@@ -2,6 +2,11 @@
 import { ArenaFrame } from "@/wab/classes";
 import { CodeFetchersRegistry } from "@/wab/client/code-fetchers";
 import {
+  CanvasFrameInfo,
+  mkCanvas,
+} from "@/wab/client/components/canvas/canvas-rendering";
+import { SubDeps } from "@/wab/client/components/canvas/subdeps";
+import {
   getCanvasPkgs,
   getReactWebBundle,
   getSortedHostLessPkgs,
@@ -44,8 +49,6 @@ import L from "lodash";
 import debounce from "lodash/debounce";
 import { autorun, Lambda, observable, runInAction } from "mobx";
 import React from "react";
-import { CanvasFrameInfo, mkCanvas } from "./canvas-rendering";
-import { SubDeps } from "./subdeps";
 
 declare const COMMITHASH: string;
 

@@ -3,6 +3,7 @@ import {
   getDefaultConnection,
 } from "@/wab/server/db/DbCon";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
 import {
@@ -10,7 +11,6 @@ import {
   LocalizationKeyScheme,
 } from "@/wab/shared/localization";
 import { ConnectionOptions } from "typeorm";
-import { ensureDevFlags } from "./worker-utils";
 
 interface LocalizationStringsOpts {
   connectionOptions: ConnectionOptions;

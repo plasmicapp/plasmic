@@ -1,4 +1,7 @@
 import { Variant, VariantGroup } from "@/wab/classes";
+import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
+import VariantsDrawerHeader from "@/wab/client/components/variants/VariantsDrawerHeader";
+import VariantsDrawerRow from "@/wab/client/components/variants/VariantsDrawerRow";
 import { Matcher } from "@/wab/client/components/view-common";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { TextboxRef } from "@/wab/client/components/widgets/Textbox";
@@ -30,9 +33,6 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { useMemo } from "react";
 import { FocusScope } from "react-aria";
-import { makeVariantsController } from "./VariantsController";
-import VariantsDrawerHeader from "./VariantsDrawerHeader";
-import VariantsDrawerRow from "./VariantsDrawerRow";
 
 const VariantsDrawer = observer(function VariantsDrawer(props: {
   viewCtx: ViewCtx;

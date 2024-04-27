@@ -1,3 +1,5 @@
+import { usePreviewCtx } from "@/wab/client/components/live/PreviewCtx";
+import { PreviewFrame } from "@/wab/client/components/live/PreviewFrame";
 import { TopFrameObserver } from "@/wab/client/components/studio/TopFrameObserver";
 import { TopBar } from "@/wab/client/components/top-bar";
 import { fixStudioIframePositionAndOverflow } from "@/wab/client/dom-utils";
@@ -7,8 +9,6 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawn } from "@/wab/common";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { usePreviewCtx } from "./PreviewCtx";
-import { PreviewFrame } from "./PreviewFrame";
 
 interface PreviewProps {
   studioCtx: StudioCtx;

@@ -9,6 +9,7 @@ import {
 import { resetNodes as doResetNodes } from "@/wab/client/components/canvas/slate";
 import { ContextMenuContext } from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
 import CopilotCodePrompt from "@/wab/client/components/CopilotCodePrompt";
+import styles from "@/wab/client/components/sidebar-tabs/ComponentProps/TemplatedTextEditor.module.scss";
 import DataPicker, {
   DataPickerTypesSchema,
 } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
@@ -84,7 +85,6 @@ import {
   RenderPlaceholderProps,
 } from "slate-react/dist/components/editable";
 import { getSegments } from "sql-highlight";
-import styles from "./TemplatedTextEditor.module.scss";
 
 type CodeTagNode = {
   type: "code-tag";

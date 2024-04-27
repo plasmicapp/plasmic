@@ -7,6 +7,8 @@ import {
   PreviewCtx,
   providesPreviewCtx,
 } from "@/wab/client/components/live/PreviewCtx";
+import { Studio } from "@/wab/client/components/studio/studio";
+import { ViewEditor } from "@/wab/client/components/studio/view-editor";
 import * as widgets from "@/wab/client/components/widgets";
 import { AlertSpec } from "@/wab/client/components/widgets/plasmic/AlertBanner";
 import { providesViewCtx } from "@/wab/client/contexts/StudioContexts";
@@ -29,8 +31,6 @@ import { observer } from "mobx-react";
 import React from "react";
 import { Helmet } from "react-helmet";
 import { Route, Switch } from "react-router";
-import { Studio } from "./studio";
-import { ViewEditor } from "./view-editor";
 
 function checkHostVersion() {
   const hostVersion = (window.parent as any).__Sub.hostVersion as

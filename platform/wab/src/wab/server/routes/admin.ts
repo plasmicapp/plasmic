@@ -6,6 +6,17 @@ import {
   PromotionCode,
 } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions.ts";
+import { mkApiDataSource } from "@/wab/server/routes/data-source";
+import {
+  mkApiAppAuthConfig,
+  mkApiAppEndUserAccess,
+  mkApiAppRole,
+} from "@/wab/server/routes/end-user";
+import {
+  doSafelyDeleteProject,
+  mkApiProject,
+} from "@/wab/server/routes/projects";
+import { getUser, superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import { updateSecrets } from "@/wab/server/secrets";
 import {
   resetTutorialDb as doResetTutorialDb,
@@ -33,20 +44,12 @@ import { Bundle } from "@/wab/shared/bundler";
 import { DomainValidator } from "@/wab/shared/hosting";
 import { Request, Response } from "express-serve-static-core";
 import { omit, uniq } from "lodash";
-import { mkApiDataSource } from "./data-source";
-import {
-  mkApiAppAuthConfig,
-  mkApiAppEndUserAccess,
-  mkApiAppRole,
-} from "./end-user";
-import { doSafelyDeleteProject, mkApiProject } from "./projects";
-import { getUser, superDbMgr, userDbMgr } from "./util";
 
 import { getTeamDiscourseInfo as doGetTeamDiscourseInfo } from "@/wab/server/discourse/getTeamDiscourseInfo";
 import { sendTeamSupportWelcomeEmail as doSendTeamSupportWelcomeEmail } from "@/wab/server/discourse/sendTeamSupportWelcomeEmail";
 import { syncTeamDiscourseInfo as doSyncTeamDiscourseInfo } from "@/wab/server/discourse/syncTeamDiscourseInfo";
+import { checkAndResetTeamTrial } from "@/wab/server/routes/team-plans";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
-import { checkAndResetTeamTrial } from "./team-plans";
 
 export async function createUser(req: Request, res: Response) {
   throw new Error("NOT IMPLEMENTED");

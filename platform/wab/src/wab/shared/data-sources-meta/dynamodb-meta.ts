@@ -3,10 +3,6 @@
  */
 
 import type { DataSource } from "@/wab/server/entities/Entities";
-import { capitalizeFirst } from "@/wab/strs";
-import { DataSourceSchema } from "@plasmicapp/data-sources";
-import moment from "moment/moment";
-import SqlString from "sqlstring";
 import {
   DataSourceMeta,
   FilterArgMeta,
@@ -14,7 +10,11 @@ import {
   PAGINATION_TYPE,
   SortArgMeta,
   TableArgMeta,
-} from "./data-sources";
+} from "@/wab/shared/data-sources-meta/data-sources";
+import { capitalizeFirst } from "@/wab/strs";
+import { DataSourceSchema } from "@plasmicapp/data-sources";
+import moment from "moment/moment";
+import SqlString from "sqlstring";
 
 export interface DynamoDbDataSource extends DataSource {
   source: "dynamodb";

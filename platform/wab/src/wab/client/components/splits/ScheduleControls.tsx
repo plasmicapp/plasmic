@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultScheduleControlsProps altogether and have
 // total control over the props for your component.
-export interface ScheduleControlsProps extends DefaultScheduleControlsProps {}
+export type ScheduleControlsProps = DefaultScheduleControlsProps;
 
 function ScheduleControls_(
   props: ScheduleControlsProps,

@@ -3,6 +3,10 @@ import {
   renderInspector,
 } from "@/wab/client/components/coding/CodePreview";
 import {
+  DataPickerRunCodeActionContext,
+  DataPickerTypesSchema,
+} from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import {
   DefaultDataPickerCodeEditorLayoutProps,
   PlasmicDataPickerCodeEditorLayout,
 } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerCodeEditorLayout";
@@ -11,10 +15,6 @@ import * as React from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useStudioCtx } from "src/wab/client/studio-ctx/StudioCtx";
 import { isLiteralObjectByName, withoutNils } from "src/wab/common";
-import {
-  DataPickerRunCodeActionContext,
-  DataPickerTypesSchema,
-} from "./DataPicker";
 
 export interface DataPickerCodeEditorLayoutProps
   extends Omit<DefaultDataPickerCodeEditorLayoutProps, "envPanel"> {

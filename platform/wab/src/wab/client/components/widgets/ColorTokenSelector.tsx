@@ -2,6 +2,8 @@ import { StyleToken } from "@/wab/classes";
 import { ColorSwatch } from "@/wab/client/components/style-controls/ColorSwatch";
 import { Matcher } from "@/wab/client/components/view-common";
 import { PlainLinkButton } from "@/wab/client/components/widgets";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { IconButton } from "@/wab/client/components/widgets/IconButton";
 import { useToggleDisplayed } from "@/wab/client/dom-utils";
 import { PlusIcon } from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import SearchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
@@ -14,8 +16,6 @@ import Downshift from "downshift";
 import { observer } from "mobx-react";
 import React from "react";
 import { FixedSizeList } from "react-window";
-import { Icon } from "./Icon";
-import { IconButton } from "./IconButton";
 
 const GRID_SIZE = 32;
 const ROW_SIZE = 32;

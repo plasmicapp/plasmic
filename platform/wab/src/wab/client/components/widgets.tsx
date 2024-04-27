@@ -1,3 +1,8 @@
+import { PublicLink } from "@/wab/client/components/PublicLink";
+import { absorb, uncontrollable } from "@/wab/client/components/view-common";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { IconButton } from "@/wab/client/components/widgets/IconButton";
+import { Textbox, TextboxRef } from "@/wab/client/components/widgets/Textbox";
 import { plasmicIFrameMouseDownEvent } from "@/wab/client/definitions/events";
 import { useFocusOnDisplayed } from "@/wab/client/dom-utils";
 import { VERT_MENU_ICON } from "@/wab/client/icons";
@@ -43,11 +48,6 @@ import {
 } from "react-beautiful-dnd";
 import { createPortal } from "react-dom";
 import { FaUpload } from "react-icons/fa";
-import { PublicLink } from "./PublicLink";
-import { absorb, uncontrollable } from "./view-common";
-import { Icon } from "./widgets/Icon";
-import { IconButton } from "./widgets/IconButton";
-import { Textbox, TextboxRef } from "./widgets/Textbox";
 
 export type HTMLIProps = Omit<JSX.IntrinsicElements["i"], "ref">;
 export class DropdownArrow extends React.Component<HTMLIProps, {}> {

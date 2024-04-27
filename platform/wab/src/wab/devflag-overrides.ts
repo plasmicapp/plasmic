@@ -1,4 +1,4 @@
-import type { DevFlagsType } from "./devflags";
+import type { DevFlagsType } from "@/wab/devflags";
 
 export const DEFAULT_DEVFLAG_OVERRIDES: Partial<DevFlagsType> = {
   enablePlasmicHosting: false,

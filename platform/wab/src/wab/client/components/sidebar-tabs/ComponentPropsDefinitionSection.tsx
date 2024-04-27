@@ -2,6 +2,7 @@ import { Component, Param } from "@/wab/classes";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
 import { confirm } from "@/wab/client/components/quick-modals";
+import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
@@ -32,7 +33,6 @@ import { observer } from "mobx-react";
 import React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { FaCheck } from "react-icons/fa";
-import { ValuePreview } from "./data-tab";
 
 export const ComponentPropsDefinitionSection = observer(
   function ComponentParamsPanel(props: {

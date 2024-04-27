@@ -1,4 +1,15 @@
 import { ensureKnownStyleExpr, StyleExpr, TplComponent } from "@/wab/classes";
+import { BackgroundSection } from "@/wab/client/components/sidebar-tabs/background-section";
+import { EffectsPanelSection } from "@/wab/client/components/sidebar-tabs/EffectsSection";
+import { LayoutSection } from "@/wab/client/components/sidebar-tabs/LayoutSection";
+import { OverflowSection } from "@/wab/client/components/sidebar-tabs/OverflowSection";
+import { PositioningPanelSection } from "@/wab/client/components/sidebar-tabs/PositioningSection";
+import { ShadowsPanelSection } from "@/wab/client/components/sidebar-tabs/ShadowsSection";
+import { SizeSection } from "@/wab/client/components/sidebar-tabs/SizeSection";
+import { SpacingSection } from "@/wab/client/components/sidebar-tabs/SpacingSection";
+import { TransformPanelSection } from "@/wab/client/components/sidebar-tabs/TransformPanelSection";
+import { TransitionsPanelSection } from "@/wab/client/components/sidebar-tabs/TransitionsSection";
+import { TypographySection } from "@/wab/client/components/sidebar-tabs/TypographySection";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import {
   BorderPanelSection,
@@ -19,17 +30,6 @@ import { PublicStyleSection } from "@/wab/shared/ApiSchema";
 import { mkSelectorRuleSet } from "@/wab/styles";
 import { observer } from "mobx-react";
 import React from "react";
-import { BackgroundSection } from "./background-section";
-import { EffectsPanelSection } from "./EffectsSection";
-import { LayoutSection } from "./LayoutSection";
-import { OverflowSection } from "./OverflowSection";
-import { PositioningPanelSection } from "./PositioningSection";
-import { ShadowsPanelSection } from "./ShadowsSection";
-import { SizeSection } from "./SizeSection";
-import { SpacingSection } from "./SpacingSection";
-import { TransformPanelSection } from "./TransformPanelSection";
-import { TransitionsPanelSection } from "./TransitionsSection";
-import { TypographySection } from "./TypographySection";
 
 export interface StyleExprSpec {
   selectors?: SelectorSpec[];

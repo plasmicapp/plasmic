@@ -5,6 +5,14 @@ import { HostConfig } from "@/wab/client/components/HostConfig";
 import { MergeModalWrapper } from "@/wab/client/components/merge/MergeFlow";
 import { EnableLocalizationModal } from "@/wab/client/components/modals/EnableLocalizationModal";
 import { TopBarPromptBillingArgs } from "@/wab/client/components/modals/PricingModal";
+import { DataSourcePicker } from "@/wab/client/components/TopFrame/DataSourcePicker";
+import CloneProjectModal from "@/wab/client/components/TopFrame/TopBar/CloneProjectModal";
+import CodeModal from "@/wab/client/components/TopFrame/TopBar/CodeModal";
+import ProjectNameModal from "@/wab/client/components/TopFrame/TopBar/ProjectNameModal";
+import PublishFlowDialogWrapper from "@/wab/client/components/TopFrame/TopBar/PublishFlowDialogWrapper";
+import { showRegenerateSecretTokenModal } from "@/wab/client/components/TopFrame/TopBar/RegenerateSecretTokenModal";
+import ShareModal from "@/wab/client/components/TopFrame/TopBar/ShareModal";
+import UpsellModal from "@/wab/client/components/TopFrame/TopBar/UpsellModal";
 import { IconButton } from "@/wab/client/components/widgets/IconButton";
 import {
   TopFrameApi,
@@ -40,14 +48,6 @@ import { ExtendedKeyboardEvent } from "mousetrap";
 import React from "react";
 import { useHistory, useLocation } from "react-router";
 import * as Signals from "signals";
-import { DataSourcePicker } from "./DataSourcePicker";
-import CloneProjectModal from "./TopBar/CloneProjectModal";
-import CodeModal from "./TopBar/CodeModal";
-import ProjectNameModal from "./TopBar/ProjectNameModal";
-import PublishFlowDialogWrapper from "./TopBar/PublishFlowDialogWrapper";
-import { showRegenerateSecretTokenModal } from "./TopBar/RegenerateSecretTokenModal";
-import ShareModal from "./TopBar/ShareModal";
-import UpsellModal from "./TopBar/UpsellModal";
 
 export interface MergeModalContext {
   subject: MergeSrcDst;

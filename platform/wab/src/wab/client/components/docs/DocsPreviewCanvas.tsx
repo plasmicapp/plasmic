@@ -3,6 +3,9 @@ import {
   showCanvasPageNavigationNotification,
   trapInteractionError,
 } from "@/wab/client/components/canvas/studio-canvas-util";
+import { CodePreviewCtx } from "@/wab/client/components/docs/CodePreviewSnippet";
+import { DocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
+import { syncDocsPreview } from "@/wab/client/components/docs/serialize-docs-preview";
 import { onLoadInjectSystemJS } from "@/wab/client/components/live/live-syncer";
 import { getSortedHostLessPkgs } from "@/wab/client/components/studio/studio-bundles";
 import { scriptExec } from "@/wab/client/dom-utils";
@@ -22,9 +25,6 @@ import { getPublicUrl } from "@/wab/urls";
 import { autorun } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
-import { CodePreviewCtx } from "./CodePreviewSnippet";
-import { DocsPortalCtx } from "./DocsPortalCtx";
-import { syncDocsPreview } from "./serialize-docs-preview";
 
 export const DocsPreviewCanvas = observer(function DocsPreviewCanvas(props: {
   docsCtx: DocsPortalCtx;

@@ -1,8 +1,8 @@
+import CardPickerItem from "@/wab/client/components/sidebar-tabs/ComponentProps/CardPickerItem";
+import CardPickerModal from "@/wab/client/components/sidebar-tabs/ComponentProps/CardPickerModal";
 import { BareModal } from "@/wab/client/components/studio/BareModal";
 import Chip from "@/wab/client/components/widgets/Chip";
 import React from "react";
-import CardPickerItem from "./CardPickerItem";
-import CardPickerModal from "./CardPickerModal";
 
 export function CardPickerEditor(props: {
   onChange: (value: string) => void;

@@ -1,3 +1,4 @@
+import styles from "@/wab/client/components/dashboard/dashboard.module.scss";
 import { Avatar, MoreUsersAvatar } from "@/wab/client/components/studio/Avatar";
 import { ClickStopper } from "@/wab/client/components/widgets";
 import ShareDialogContent from "@/wab/client/components/widgets/plasmic/ShareDialogContent";
@@ -15,7 +16,6 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as L from "lodash";
 import * as React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import styles from "./dashboard.module.scss";
 
 interface SharedProps extends DefaultSharedProps {
   resource: ApiResource;

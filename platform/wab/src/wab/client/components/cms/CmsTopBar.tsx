@@ -1,4 +1,8 @@
 import { useRRouteMatch, UU } from "@/wab/client/cli-routes";
+import {
+  useCmsDatabase,
+  useMutateDatabase,
+} from "@/wab/client/components/cms/cms-contexts";
 import { useApi } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultCmsTopBarProps,
@@ -6,9 +10,8 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsTopBar";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
-import { useCmsDatabase, useMutateDatabase } from "./cms-contexts";
 
-export interface CmsTopBarProps extends DefaultCmsTopBarProps {}
+export type CmsTopBarProps = DefaultCmsTopBarProps;
 
 function CmsTopBar_(props: CmsTopBarProps, ref: HTMLElementRefOf<"div">) {
   const match = useRRouteMatch(UU.cmsRoot)!;

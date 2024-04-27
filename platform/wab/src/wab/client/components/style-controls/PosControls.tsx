@@ -1,5 +1,15 @@
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import { FullRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { DefinedIndicator } from "@/wab/client/components/style-controls/DefinedIndicator";
+import styles from "@/wab/client/components/style-controls/PosControls.module.sass";
+import {
+  createStyleContextMenu,
+  ExpsProvider,
+  getLabelForStyleName,
+  mkStyleComponent,
+  StyleComponentProps,
+  useSidebarPopupSetting,
+} from "@/wab/client/components/style-controls/StyleComponent";
 import Button from "@/wab/client/components/widgets/Button";
 import {
   DimTokenSpinner,
@@ -57,16 +67,6 @@ import {
 } from "react-aria";
 import * as ReactDOM from "react-dom";
 import { useOverlayTriggerState } from "react-stately";
-import { DefinedIndicator } from "./DefinedIndicator";
-import styles from "./PosControls.module.sass";
-import {
-  createStyleContextMenu,
-  ExpsProvider,
-  getLabelForStyleName,
-  mkStyleComponent,
-  StyleComponentProps,
-  useSidebarPopupSetting,
-} from "./StyleComponent";
 
 interface MeasureControlProps extends StyleComponentProps {
   prop: Side;

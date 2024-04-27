@@ -5,7 +5,7 @@ import * as React from "react";
 import {
   DefaultQueryRowProps,
   PlasmicQueryRow,
-} from "./wab/client/plasmic/plasmic_kit_data_queries/PlasmicQueryRow";
+} from "@/wab/client/plasmic/plasmic_kit_data_queries/PlasmicQueryRow";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can
@@ -20,7 +20,7 @@ import {
 //
 // You can also stop extending from DefaultQueryRowProps altogether and have
 // total control over the props for your component.
-interface QueryRowProps extends DefaultQueryRowProps {}
+type QueryRowProps = DefaultQueryRowProps;
 
 function QueryRow(props: QueryRowProps) {
   // Use PlasmicQueryRow to render this component as it was

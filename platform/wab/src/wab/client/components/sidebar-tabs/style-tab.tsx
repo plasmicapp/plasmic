@@ -7,6 +7,20 @@ import {
   TplSlot,
   TplTag,
 } from "@/wab/classes";
+import {
+  TplComponentNameSection,
+  TplTagNameSection,
+} from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
+import { ComponentTab } from "@/wab/client/components/sidebar-tabs/ComponentTab/ComponentTab";
+import { PageTab } from "@/wab/client/components/sidebar-tabs/PageTab/PageTab";
+import {
+  canRenderArbitraryCssSelectors,
+  canRenderMixins,
+  canRenderPrivateStyleVariants,
+  getOrderedSectionRender,
+  Section,
+  StyleTabFilter,
+} from "@/wab/client/components/sidebar-tabs/Sections";
 import { NamedPanelHeader } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarModalProvider } from "@/wab/client/components/sidebar/SidebarModal";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
@@ -56,20 +70,6 @@ import * as mobx from "mobx";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { createContext, useContext } from "react";
-import {
-  TplComponentNameSection,
-  TplTagNameSection,
-} from "./ComponentPropsSection";
-import { ComponentTab } from "./ComponentTab/ComponentTab";
-import { PageTab } from "./PageTab/PageTab";
-import {
-  canRenderArbitraryCssSelectors,
-  canRenderMixins,
-  canRenderPrivateStyleVariants,
-  getOrderedSectionRender,
-  Section,
-  StyleTabFilter,
-} from "./Sections";
 
 export const StyleTabContext = createContext<StyleTabFilter>("all");
 

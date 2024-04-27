@@ -1,17 +1,20 @@
 /** @format */
 
-import { cloneDeep, pick } from "lodash";
-import { assert, ensureType, mergeSane } from "./common";
-import { DEFAULT_DEVFLAG_OVERRIDES } from "./devflag-overrides";
+import { assert, ensureType, mergeSane } from "@/wab/common";
+import { DEFAULT_DEVFLAG_OVERRIDES } from "@/wab/devflag-overrides";
 import {
   ApiFeatureTier,
   FeatureTierId,
   ProjectId,
   TeamId,
   WorkspaceId,
-} from "./shared/ApiSchema";
-import { featureTiers, newFeatureTiers } from "./shared/pricing/pricing-utils";
-import { InsertPanelConfig, UiConfig } from "./shared/ui-config-utils";
+} from "@/wab/shared/ApiSchema";
+import {
+  featureTiers,
+  newFeatureTiers,
+} from "@/wab/shared/pricing/pricing-utils";
+import { InsertPanelConfig, UiConfig } from "@/wab/shared/ui-config-utils";
+import { cloneDeep, pick } from "lodash";
 
 export interface StarterSectionConfig {
   title: string; // Shown as the heading

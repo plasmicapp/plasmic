@@ -54,6 +54,12 @@ import {
   StyleTab,
   StyleTabContext,
 } from "@/wab/client/components/sidebar-tabs/style-tab";
+import { CodePreviewPanel } from "@/wab/client/components/studio/code-preview/CodePreviewPanel";
+import { FocusedModeToolbar } from "@/wab/client/components/studio/FocusedModeToolbar/FocusedModeToolbar";
+import { GlobalCssVariables } from "@/wab/client/components/studio/GlobalCssVariables";
+import LeftPane from "@/wab/client/components/studio/LeftPane";
+import { TopFrameObserver } from "@/wab/client/components/studio/TopFrameObserver";
+import { TopModal } from "@/wab/client/components/studio/TopModal";
 import { providesSidebarPopupSetting } from "@/wab/client/components/style-controls/StyleComponent";
 import { TopBar } from "@/wab/client/components/top-bar";
 import { getContextMenuForFocusedTpl } from "@/wab/client/components/tpl-menu";
@@ -185,12 +191,6 @@ import React, { createRef } from "react";
 import { createPortal } from "react-dom";
 import ResizeObserver from "resize-observer-polyfill";
 import { SignalBinding } from "signals";
-import { CodePreviewPanel } from "./code-preview/CodePreviewPanel";
-import { FocusedModeToolbar } from "./FocusedModeToolbar/FocusedModeToolbar";
-import { GlobalCssVariables } from "./GlobalCssVariables";
-import LeftPane from "./LeftPane";
-import { TopFrameObserver } from "./TopFrameObserver";
-import { TopModal } from "./TopModal";
 
 type UIEventBase = JQuery.UIEventBase;
 

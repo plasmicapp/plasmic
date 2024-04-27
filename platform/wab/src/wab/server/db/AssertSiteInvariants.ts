@@ -8,6 +8,13 @@ import { assert, maybe, spawn } from "@/wab/common";
 import { observeModel } from "@/wab/observable-model";
 import { walkDependencyTree } from "@/wab/project-deps";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
+import { getMigratedBundle } from "@/wab/server/db/BundleMigrator";
+import { getOrderedDepBundleIds } from "@/wab/server/db/DbBundleLoader";
+import {
+  ensureDbConnections,
+  getDefaultConnection,
+} from "@/wab/server/db/DbCon";
+import { DbMgr, NotFoundError, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
 import { initializeGlobals } from "@/wab/server/svr-init";
 import {
@@ -26,10 +33,6 @@ import {
 } from "@/wab/shared/site-invariants";
 import { taggedUnbundle } from "@/wab/tagged-unbundle";
 import L from "lodash";
-import { getMigratedBundle } from "./BundleMigrator";
-import { getOrderedDepBundleIds } from "./DbBundleLoader";
-import { ensureDbConnections, getDefaultConnection } from "./DbCon";
-import { DbMgr, NotFoundError, SUPER_USER } from "./DbMgr";
 const { Command } = require("commander");
 
 export async function withDbModels(

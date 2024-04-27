@@ -20,6 +20,22 @@ import {
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import { TextAndShortcut } from "@/wab/client/components/menu-builder";
 import { reactPrompt } from "@/wab/client/components/quick-modals";
+import { ComponentActionsSection } from "@/wab/client/components/sidebar-tabs/ComponentActionsSection";
+import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
+import {
+  DataPickerRunCodeActionContext,
+  DataPickerTypesSchema,
+  InitialMode,
+} from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import {
+  isPropShown,
+  PropEditorRowWrapper,
+} from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import ActionChip from "@/wab/client/components/sidebar-tabs/StateManagement/ActionChip";
+import HandlerSection from "@/wab/client/components/sidebar-tabs/StateManagement/HandlerSection";
+import VariableEditingForm from "@/wab/client/components/sidebar-tabs/StateManagement/VariableEditingForm";
+import { mkInitialState } from "@/wab/client/components/sidebar-tabs/StateManagement/VariablesSection";
+import { createNodeIcon } from "@/wab/client/components/sidebar-tabs/tpl-tree";
 import {
   LabeledItem,
   NamedPanelHeader,
@@ -99,19 +115,6 @@ import React from "react";
 import { flattenComponent } from "src/wab/shared/cached-selectors";
 import { paramToVarName } from "src/wab/shared/codegen/util";
 import { DefinedIndicatorType } from "src/wab/shared/defined-indicator";
-import { ComponentActionsSection } from "./ComponentActionsSection";
-import { DataPickerEditor } from "./ComponentProps/DataPickerEditor";
-import {
-  DataPickerRunCodeActionContext,
-  DataPickerTypesSchema,
-  InitialMode,
-} from "./DataBinding/DataPicker";
-import { isPropShown, PropEditorRowWrapper } from "./PropEditorRow";
-import ActionChip from "./StateManagement/ActionChip";
-import HandlerSection from "./StateManagement/HandlerSection";
-import VariableEditingForm from "./StateManagement/VariableEditingForm";
-import { mkInitialState } from "./StateManagement/VariablesSection";
-import { createNodeIcon } from "./tpl-tree";
 
 export const ComponentPropsSection = observer(
   function ComponentPropsSection(props: {

@@ -5,7 +5,7 @@ import * as React from "react";
 import {
   DefaultSimplePathRowHeaderProps,
   PlasmicSimplePathRowHeader,
-} from "./wab/client/plasmic/plasmic_kit_data_expressions/PlasmicSimplePathRowHeader";
+} from "@/wab/client/plasmic/plasmic_kit_data_expressions/PlasmicSimplePathRowHeader";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can
@@ -20,7 +20,7 @@ import {
 //
 // You can also stop extending from DefaultSimplePathRowHeaderProps altogether and have
 // total control over the props for your component.
-interface SimplePathRowHeaderProps extends DefaultSimplePathRowHeaderProps {}
+type SimplePathRowHeaderProps = DefaultSimplePathRowHeaderProps;
 
 function SimplePathRowHeader(props: SimplePathRowHeaderProps) {
   // Use PlasmicSimplePathRowHeader to render this component as it was

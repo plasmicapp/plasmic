@@ -111,6 +111,10 @@ import {
   flattenComponent,
 } from "@/wab/shared/cached-selectors";
 import {
+  isBuiltinCodeComponent,
+  isBuiltinCodeComponentImportPath,
+} from "@/wab/shared/code-components/builtin-code-components";
+import {
   paramToVarName,
   toVarName,
   validJsIdentifierChars,
@@ -226,10 +230,6 @@ import {
   mapMultiple,
 } from "ts-failable";
 import type { Opaque } from "type-fest";
-import {
-  isBuiltinCodeComponent,
-  isBuiltinCodeComponentImportPath,
-} from "./builtin-code-components";
 
 export type VariablePropType<P> = PropTypeBaseDefault<P, VarRef> & {
   type: "variable";

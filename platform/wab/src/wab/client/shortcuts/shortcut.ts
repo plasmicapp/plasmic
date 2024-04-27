@@ -43,7 +43,7 @@ interface AddShortcut {
 
 /** Useful for displaying non-keyboard shortcuts. */
 export function mkNoActionShortcuts(...shortcuts: AddShortcut[]): Shortcut[] {
-  let transformedShortcuts: Shortcut[] = shortcuts.map(
+  const transformedShortcuts: Shortcut[] = shortcuts.map(
     ({ combos, ...rest }) => {
       const combosArray = ensureArray(combos);
       return {

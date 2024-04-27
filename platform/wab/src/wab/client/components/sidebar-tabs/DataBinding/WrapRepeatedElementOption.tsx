@@ -20,8 +20,8 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultWrapRepeatedElementOptionProps altogether and have
 // total control over the props for your component.
-export interface WrapRepeatedElementOptionProps
-  extends DefaultWrapRepeatedElementOptionProps {}
+export type WrapRepeatedElementOptionProps =
+  DefaultWrapRepeatedElementOptionProps;
 
 function WrapRepeatedElementOption_(
   props: WrapRepeatedElementOptionProps,

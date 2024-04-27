@@ -1,6 +1,6 @@
+import { getGithubApp } from "@/wab/server/github/app";
 import { App } from "@octokit/app";
 import { composePaginateRest } from "@octokit/plugin-paginate-rest";
-import { getGithubApp } from "./app";
 
 export async function fetchGithubBranches(
   installationId: number,

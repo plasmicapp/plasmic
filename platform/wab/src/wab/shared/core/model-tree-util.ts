@@ -9,8 +9,8 @@ import {
 } from "@/wab/common";
 import { isWeakRefField } from "@/wab/model/model-meta";
 import { Bundler } from "@/wab/shared/bundler";
+import { instUtil } from "@/wab/shared/core/InstUtil";
 import { zip } from "lodash";
-import { instUtil } from "./InstUtil";
 
 export function assertSameInstType(inst: ObjInst, ...others: ObjInst[]) {
   const cls = instUtil.getInstClass(inst);

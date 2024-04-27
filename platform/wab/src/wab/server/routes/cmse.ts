@@ -3,6 +3,8 @@ import { ensureArray, ensureString, ensureType } from "@/wab/common";
 import { uploadDataUriToS3 } from "@/wab/server/cdn/images";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { CmsDatabase } from "@/wab/server/entities/Entities";
+import { userAnalytics, userDbMgr } from "@/wab/server/routes/util";
+import { mkApiWorkspace } from "@/wab/server/routes/workspaces";
 import { triggerWebhookOnly } from "@/wab/server/trigger-webhooks";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
@@ -23,8 +25,6 @@ import imageSize from "@coderosh/image-size";
 import { UploadedFile } from "express-fileupload";
 import { Request, Response } from "express-serve-static-core";
 import { flatten, mapValues, pick } from "lodash";
-import { userAnalytics, userDbMgr } from "./util";
-import { mkApiWorkspace } from "./workspaces";
 
 export async function listDatabases(req: Request, res: Response) {
   if (req.query.workspaceId) {

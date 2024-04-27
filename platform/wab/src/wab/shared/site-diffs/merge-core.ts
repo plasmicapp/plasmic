@@ -93,18 +93,21 @@ import {
   zip,
 } from "lodash";
 import isEqual from "lodash/isEqual";
+
+// site-diffs has circular dependencies
+// keeping these imports last seems to make sure everything works properly
 import {
   fixDuplicatedCodeComponents,
   fixPagePaths,
   fixSwappedTplComponents,
   fixVirtualSlotArgs,
-} from "./merge-components";
-import { fixProjectDependencies } from "./merge-deps";
-import { fixDuplicatedRegisteredTokens } from "./merge-tokens";
+} from "@/wab/shared/site-diffs/merge-components";
+import { fixProjectDependencies } from "@/wab/shared/site-diffs/merge-deps";
+import { fixDuplicatedRegisteredTokens } from "@/wab/shared/site-diffs/merge-tokens";
 import {
   FieldConflictDescriptorMeta,
   modelConflictsMeta,
-} from "./model-conflicts-meta";
+} from "@/wab/shared/site-diffs/model-conflicts-meta";
 
 export type UpdateData = {
   field: Field;

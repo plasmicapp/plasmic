@@ -1,5 +1,5 @@
+import { Task } from "@/wab/server/tutorialdb/todo/entities";
 import { Connection } from "typeorm";
-import { Task } from "./entities";
 
 export async function initDb(con: Connection) {
   await con.synchronize();

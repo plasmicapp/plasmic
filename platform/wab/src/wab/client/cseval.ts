@@ -1,4 +1,20 @@
 import { TplNode, Variant } from "@/wab/classes";
+import { useCanvasForceUpdate } from "@/wab/client/components/canvas/canvas-hooks";
+import { mkUseCanvasObserver } from "@/wab/client/components/canvas/canvas-observer";
+import {
+  PinMap,
+  useRenderedFrameRoot,
+} from "@/wab/client/components/canvas/canvas-rendering";
+import {
+  ClientPinManager,
+  makeVariantEvalState,
+} from "@/wab/client/components/variants/ClientPinManager";
+import { globalHookCtx } from "@/wab/client/react-global-hook/globalHook";
+import {
+  getRenderState,
+  RenderState,
+} from "@/wab/client/studio-ctx/renderState";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
   ensure,
   ensureInstance,
@@ -21,19 +37,6 @@ import { allGlobalVariants } from "@/wab/sites";
 import { ValComponent, ValNode } from "@/wab/val-nodes";
 import { autorun, observable } from "mobx";
 import React from "react";
-import { useCanvasForceUpdate } from "./components/canvas/canvas-hooks";
-import { mkUseCanvasObserver } from "./components/canvas/canvas-observer";
-import {
-  PinMap,
-  useRenderedFrameRoot,
-} from "./components/canvas/canvas-rendering";
-import {
-  ClientPinManager,
-  makeVariantEvalState,
-} from "./components/variants/ClientPinManager";
-import { globalHookCtx } from "./react-global-hook/globalHook";
-import { getRenderState, RenderState } from "./studio-ctx/renderState";
-import { ViewCtx } from "./studio-ctx/view-ctx";
 import defer = setTimeout;
 
 function getActivatedVariants(

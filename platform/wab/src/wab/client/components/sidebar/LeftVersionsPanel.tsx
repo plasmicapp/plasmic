@@ -19,7 +19,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultLeftVersionsPanelProps altogether and have
 // total control over the props for your component.
-interface LeftVersionsPanelProps extends DefaultLeftVersionsPanelProps {}
+type LeftVersionsPanelProps = DefaultLeftVersionsPanelProps;
 
 function LeftVersionsPanel(props: LeftVersionsPanelProps) {
   // Use PlasmicLeftVersionsPanel to render this component as it was

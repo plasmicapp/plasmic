@@ -1,5 +1,6 @@
 import { AppCtx } from "@/wab/client/app-ctx";
 import { AddTrustedHostModal } from "@/wab/client/components/AddTrustedHostModal";
+import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
 import SettingsContainer from "@/wab/client/components/pages/plasmic/SettingsContainer";
 import { usePersonalApiTokens } from "@/wab/client/components/pages/UserSettingsPage";
 import {
@@ -12,7 +13,6 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import copy from "copy-to-clipboard";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { documentTitle } from "./page-utils";
 
 interface SettingsPageProps extends DefaultSettingsPageProps {
   appCtx: AppCtx;

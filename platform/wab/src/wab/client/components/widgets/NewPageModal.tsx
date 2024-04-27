@@ -1,4 +1,8 @@
 import { UU } from "@/wab/client/cli-routes";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import NewComponentItem from "@/wab/client/components/widgets/NewComponentItem";
+import NewComponentSection from "@/wab/client/components/widgets/NewComponentSection";
+import { TextboxRef } from "@/wab/client/components/widgets/Textbox";
 import { getPageTemplatesGroups } from "@/wab/client/insertable-templates";
 import EyeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Eye";
 import {
@@ -10,10 +14,6 @@ import { InsertableTemplatesItem } from "@/wab/devflags";
 import { Tooltip } from "antd";
 import * as React from "react";
 import { useState } from "react";
-import { Icon } from "./Icon";
-import NewComponentItem from "./NewComponentItem";
-import NewComponentSection from "./NewComponentSection";
-import { TextboxRef } from "./Textbox";
 
 type NewPageType = "blank" | "dynamic" | "template";
 export type NewPageInfo = {

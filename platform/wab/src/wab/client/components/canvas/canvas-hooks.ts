@@ -1,4 +1,4 @@
-import { SubDeps } from "./subdeps";
+import { SubDeps } from "@/wab/client/components/canvas/subdeps";
 import defer = setTimeout;
 
 // fork of isMounted using sub.React

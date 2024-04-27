@@ -5,10 +5,10 @@ import userEvent from "@testing-library/user-event";
 import { Site } from "@/wab/classes";
 import { Bundle, Bundler } from "@/wab/shared/bundler";
 import { codegen } from "@/wab/shared/codegen/codegen-tests-util";
+import _bundle from "@/wab/shared/codegen/__tests__/bundles/form-with-reset-input.json";
 import "core-js";
 import * as React from "react";
 import tmp from "tmp";
-import _bundle from "./bundles/form-with-reset-input.json";
 
 describe("todo app codegen", () => {
   const projectBundle = _bundle[0][1] as Bundle;

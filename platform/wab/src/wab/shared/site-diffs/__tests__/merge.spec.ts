@@ -82,6 +82,15 @@ import {
   MergeStep,
   tryMerge,
 } from "@/wab/shared/site-diffs/merge-core";
+import codeComponentsWithSameNameBundle from "@/wab/shared/site-diffs/__tests__/code-components-with-same-name.json";
+import globalContextBundle from "@/wab/shared/site-diffs/__tests__/global-context-merge.json";
+import richTextConflict from "@/wab/shared/site-diffs/__tests__/rich-text-conflict.json";
+import styleTokenBundle from "@/wab/shared/site-diffs/__tests__/style-tokens-conflict.json";
+import edgeCasesBundle2 from "@/wab/shared/site-diffs/__tests__/test-edge-cases-merge-2.json";
+import edgeCasesBundle from "@/wab/shared/site-diffs/__tests__/test-edge-cases-merge.json";
+import mergeDepsBundle from "@/wab/shared/site-diffs/__tests__/test-merging-deps.json";
+import rerootBundle from "@/wab/shared/site-diffs/__tests__/test-reroot.json";
+import mergeTplsBundle from "@/wab/shared/site-diffs/__tests__/test-tpl-merge.json";
 import { assertSiteInvariants } from "@/wab/shared/site-invariants";
 import { fillVirtualSlotContents } from "@/wab/shared/SlotUtils";
 import {
@@ -112,15 +121,6 @@ import {
 } from "@/wab/tpls";
 import { isArray, isString, pick, range, sortBy } from "lodash";
 import type { PartialDeep } from "type-fest";
-import codeComponentsWithSameNameBundle from "./code-components-with-same-name.json";
-import globalContextBundle from "./global-context-merge.json";
-import richTextConflict from "./rich-text-conflict.json";
-import styleTokenBundle from "./style-tokens-conflict.json";
-import edgeCasesBundle2 from "./test-edge-cases-merge-2.json";
-import edgeCasesBundle from "./test-edge-cases-merge.json";
-import mergeDepsBundle from "./test-merging-deps.json";
-import rerootBundle from "./test-reroot.json";
-import mergeTplsBundle from "./test-tpl-merge.json";
 
 const fixmeLater = false;
 

@@ -1,14 +1,14 @@
-import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
-import * as _ from "lodash";
-import { MakeADT } from "ts-adt/MakeADT";
 import {
   ApiPermission,
   ApiResource,
   ApiUser,
   TeamId,
   WorkspaceId,
-} from "./ApiSchema";
-import { AccessLevel, accessLevelRank } from "./EntUtil";
+} from "@/wab/shared/ApiSchema";
+import { AccessLevel, accessLevelRank } from "@/wab/shared/EntUtil";
+import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
+import * as _ from "lodash";
+import { MakeADT } from "ts-adt/MakeADT";
 
 export type ResourceType = "project" | "workspace" | "team";
 export function labelForResourceType(type: ResourceType) {

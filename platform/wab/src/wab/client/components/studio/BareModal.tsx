@@ -1,6 +1,6 @@
+import sty from "@/wab/client/components/studio/BareModal.module.css";
 import React, { CSSProperties } from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import sty from "./BareModal.module.css";
 
 interface BareModalProps {
   children?: React.ReactNode;

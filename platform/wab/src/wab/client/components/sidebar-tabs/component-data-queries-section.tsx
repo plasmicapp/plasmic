@@ -7,6 +7,11 @@ import {
   TplComponent,
 } from "@/wab/classes";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
+import {
+  DataSourceOpExprSummary,
+  DataSourceOpValuePreview,
+  useDataSourceOpExprBottomModal,
+} from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { DataQueriesTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
@@ -31,11 +36,6 @@ import { Menu } from "antd";
 import { autorun } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
-import {
-  DataSourceOpExprSummary,
-  DataSourceOpValuePreview,
-  useDataSourceOpExprBottomModal,
-} from "./DataSource/DataSourceOpPicker";
 
 const DataQueryRow = observer(
   ({

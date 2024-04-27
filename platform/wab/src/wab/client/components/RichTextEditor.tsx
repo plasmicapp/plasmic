@@ -1,7 +1,7 @@
+import { TinyEditor } from "@/wab/client/components/TinyEditor";
 import { CmsDatabaseId } from "@/wab/shared/ApiSchema";
 import * as React from "react";
 import { useRouteMatch } from "react-router";
-import { TinyEditor } from "./TinyEditor";
 
 type RichTextEditorProps = {
   value: string;

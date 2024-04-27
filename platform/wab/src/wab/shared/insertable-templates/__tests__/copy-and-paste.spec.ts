@@ -4,6 +4,7 @@ import { ComponentType, mkComponent } from "@/wab/components";
 import { Bundle, Bundler } from "@/wab/shared/bundler";
 import { cloneCopyState } from "@/wab/shared/insertable-templates";
 import { CopyElementsReference } from "@/wab/shared/insertable-templates/types";
+import copyAndPasteBundle from "@/wab/shared/insertable-templates/__tests__/bundles/copy-and-paste.json";
 import { mkBaseVariant } from "@/wab/shared/Variants";
 import { createSite } from "@/wab/sites";
 import {
@@ -12,7 +13,6 @@ import {
   isTplNamable,
   mkTplTag,
 } from "@/wab/tpls";
-import copyAndPasteBundle from "./bundles/copy-and-paste.json";
 
 describe("cloneCopyState", () => {
   const getBundleSite = async (projectBundle: Bundle) => {

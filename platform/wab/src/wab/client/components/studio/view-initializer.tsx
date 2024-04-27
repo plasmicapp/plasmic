@@ -1,6 +1,7 @@
 import { AppCtx } from "@/wab/client/app-ctx";
 import { isTopFrame } from "@/wab/client/cli-routes";
 import importAndRetry from "@/wab/client/components/dynamic-import";
+import { StudioFrame } from "@/wab/client/components/studio/studio-frame";
 import {
   ObserverLoadable,
   StudioPlaceholder,
@@ -8,7 +9,6 @@ import {
 import { useHostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
 import { observer } from "mobx-react";
 import React from "react";
-import { StudioFrame } from "./studio-frame";
 
 type ViewInitializerProps = {
   projectId: string;

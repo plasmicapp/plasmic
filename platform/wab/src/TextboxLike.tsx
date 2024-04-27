@@ -6,7 +6,7 @@ import * as React from "react";
 import {
   DefaultTextboxLikeProps,
   PlasmicTextboxLike,
-} from "./wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicTextboxLike";
+} from "@/wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicTextboxLike";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can
@@ -21,7 +21,7 @@ import {
 //
 // You can also stop extending from DefaultTextboxLikeProps altogether and have
 // total control over the props for your component.
-export interface TextboxLikeProps extends DefaultTextboxLikeProps {}
+export type TextboxLikeProps = DefaultTextboxLikeProps;
 
 function TextboxLike_(props: TextboxLikeProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicTextboxLike to render this component as it was

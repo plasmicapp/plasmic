@@ -1,4 +1,5 @@
 import { TplTag } from "@/wab/classes";
+import S from "@/wab/client/components/canvas/HoverBox/Controls/GapCanvasControls.module.scss";
 import { prefixSum } from "@/wab/client/components/sidebar-tabs/ResponsiveColumns/tpl-columns-utils";
 import { getContentOnlyRect, getMarginRect } from "@/wab/client/dom";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
@@ -18,7 +19,6 @@ import cn from "classnames";
 import $ from "jquery";
 import { observer } from "mobx-react";
 import React from "react";
-import S from "./GapCanvasControls.module.scss";
 
 interface ContainerGapMetaElement {
   type: string;

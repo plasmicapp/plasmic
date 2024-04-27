@@ -13,9 +13,8 @@ import {
   xIndexMap,
 } from "@/wab/common";
 import { getSuperComponents } from "@/wab/components";
-import L from "lodash";
-import { parseScreenSpec } from "./Css";
-import { maybeComputedFn } from "./mobx-util";
+import { parseScreenSpec } from "@/wab/shared/Css";
+import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
   getBaseVariant,
   getOrderedScreenVariants,
@@ -26,7 +25,8 @@ import {
   isScreenVariantGroup,
   isStyleVariant,
   VariantCombo,
-} from "./Variants";
+} from "@/wab/shared/Variants";
+import L from "lodash";
 
 // See https://coda.io/d/Plasmic-Wiki_dHQygjmQczq/Targeting-Multiple-Component-Variants_suH6g#_luNNY
 

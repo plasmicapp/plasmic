@@ -20,8 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultDataPickerValueTypeIconProps altogether and have
 // total control over the props for your component.
-export interface DataPickerValueTypeIconProps
-  extends DefaultDataPickerValueTypeIconProps {}
+export type DataPickerValueTypeIconProps = DefaultDataPickerValueTypeIconProps;
 
 function DataPickerValueTypeIcon_(
   props: DataPickerValueTypeIconProps,

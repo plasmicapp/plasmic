@@ -1,8 +1,8 @@
 // Google fonts list retrieved via API key
 // AIzaSyDSElXZLVBST65rcJdy01gM1y-0p4GBh70. See
 // https://developers.google.com/fonts/docs/developer_api.
-import { ensure, tuple } from "./common";
-import { googleFontsMetaStr } from "./googfontsmeta";
+import { ensure, tuple } from "@/wab/common";
+import { googleFontsMetaStr } from "@/wab/googfontsmeta";
 
 interface GoogFontsMeta {
   kind: string;

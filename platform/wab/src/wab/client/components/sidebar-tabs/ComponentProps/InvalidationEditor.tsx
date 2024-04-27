@@ -1,4 +1,7 @@
 import { Component, QueryInvalidationExpr, QueryRef } from "@/wab/classes";
+import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
+import styles from "@/wab/client/components/sidebar-tabs/ComponentProps/InvalidationEditor.module.scss";
+import { MultiSelectEnumPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/MultiSelectEnumPropEditor";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -19,9 +22,6 @@ import { Menu } from "antd";
 import { isString } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { DataPickerEditor } from "./DataPickerEditor";
-import styles from "./InvalidationEditor.module.scss";
-import { MultiSelectEnumPropEditor } from "./MultiSelectEnumPropEditor";
 
 export const InvalidationEditor = observer(function InvalidationKeysEditor({
   value,

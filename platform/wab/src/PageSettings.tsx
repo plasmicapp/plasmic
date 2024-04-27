@@ -5,21 +5,21 @@ import { observer, Observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { WithContextMenu } from "./wab/client/components/ContextMenu";
+import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { LegacyComponentParamsSection } from "./wab/client/components/sidebar-tabs/legacy-component-params-section";
+import { LegacyComponentParamsSection } from "@/wab/client/components/sidebar-tabs/legacy-component-params-section";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { ImageAssetPreviewAndPicker } from "./wab/client/components/style-controls/ImageSelector";
+import { ImageAssetPreviewAndPicker } from "@/wab/client/components/style-controls/ImageSelector";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
   DefaultPageSettingsProps,
   PlasmicPageSettings,
-} from "./wab/client/plasmic/plasmic_kit_page_settings/PlasmicPageSettings";
+} from "@/wab/client/plasmic/plasmic_kit_page_settings/PlasmicPageSettings";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { useStudioCtx } from "./wab/client/studio-ctx/StudioCtx";
-import { nullToUndefined, spawn } from "./wab/common";
-import { PageComponent } from "./wab/components";
-import { ImageAssetType } from "./wab/image-asset-type";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { nullToUndefined, spawn } from "@/wab/common";
+import { PageComponent } from "@/wab/components";
+import { ImageAssetType } from "@/wab/image-asset-type";
 
 interface PageSettingsProps extends DefaultPageSettingsProps {
   page: PageComponent;

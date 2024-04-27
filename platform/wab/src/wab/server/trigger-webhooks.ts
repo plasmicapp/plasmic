@@ -1,8 +1,8 @@
+import { DbMgr } from "@/wab/server/db/DbMgr";
 import { ApiProjectWebhook } from "@/wab/shared/ApiSchema";
 import axios, { Method } from "axios";
 import dns from "dns";
 import isPrivateIp from "private-ip";
-import { DbMgr } from "./db/DbMgr";
 export async function triggerWebhook(
   mgr: DbMgr,
   projectId: string,

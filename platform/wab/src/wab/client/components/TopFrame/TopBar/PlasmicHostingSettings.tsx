@@ -4,6 +4,7 @@ import {
   usePlasmicHostingSettings,
 } from "@/wab/client/api-hooks";
 import { ImageUploader } from "@/wab/client/components/style-controls/ImageSelector";
+import DomainCard from "@/wab/client/components/TopFrame/TopBar/DomainCard";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultPlasmicHostingSettingsProps,
@@ -20,7 +21,6 @@ import { useEffect, useState } from "react";
 import { FaUpload } from "react-icons/fa";
 import { mutate } from "swr";
 import * as tldts from "tldts";
-import DomainCard from "./DomainCard";
 
 strictIdentity(React);
 

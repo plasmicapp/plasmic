@@ -1,4 +1,5 @@
 import { UU } from "@/wab/client/cli-routes";
+import { useCmsDatabase } from "@/wab/client/components/cms/cms-contexts";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useApi } from "@/wab/client/contexts/AppContexts";
 import {
@@ -9,7 +10,6 @@ import { CmsDatabaseId } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 import { Redirect, Route, Switch } from "react-router";
-import { useCmsDatabase } from "./cms-contexts";
 
 export interface CmsRootProps extends DefaultCmsRootProps {
   databaseId: CmsDatabaseId;

@@ -43,6 +43,19 @@ import {
   isCodeComponent,
   removeComponentParam,
 } from "@/wab/components";
+import {
+  getSlotArgs,
+  getSlotParams,
+  getTplSlotDescendants,
+  getTplSlotForParam,
+  isSlot,
+} from "@/wab/shared/SlotUtils";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import {
+  ComponentCycleUserError,
+  NestedTplSlotsError,
+} from "@/wab/shared/UserError";
+import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
 import { SlotSelection } from "@/wab/slots";
 import {
   ensureCorrectImplicitStates,
@@ -72,16 +85,6 @@ import {
 } from "@/wab/tpls";
 import { notification } from "antd";
 import L from "lodash";
-import {
-  getSlotArgs,
-  getSlotParams,
-  getTplSlotDescendants,
-  getTplSlotForParam,
-  isSlot,
-} from "./SlotUtils";
-import { TplMgr } from "./TplMgr";
-import { ComponentCycleUserError, NestedTplSlotsError } from "./UserError";
-import { tryGetBaseVariantSetting } from "./Variants";
 
 type TplNodeOrSlot = TplNode | SlotSelection;
 export type TplQueryInput = TplQuery | TplNodeOrSlot | TplNodeOrSlot[];

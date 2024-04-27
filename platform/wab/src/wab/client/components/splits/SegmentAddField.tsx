@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultSegmentAddFieldProps altogether and have
 // total control over the props for your component.
-export interface SegmentAddFieldProps extends DefaultSegmentAddFieldProps {}
+export type SegmentAddFieldProps = DefaultSegmentAddFieldProps;
 
 function SegmentAddField_(
   props: SegmentAddFieldProps,

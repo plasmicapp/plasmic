@@ -4,10 +4,9 @@ import * as React from "react";
 import {
   DefaultHostProtocolSelect__OptionProps,
   PlasmicHostProtocolSelect__Option,
-} from "./wab/client/plasmic/plasmic_kit_dashboard/PlasmicHostProtocolSelect__Option";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicHostProtocolSelect__Option";
 
-interface HostProtocolSelect__OptionProps
-  extends DefaultHostProtocolSelect__OptionProps {}
+type HostProtocolSelect__OptionProps = DefaultHostProtocolSelect__OptionProps;
 
 function HostProtocolSelect__Option_(
   props: HostProtocolSelect__OptionProps,

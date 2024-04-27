@@ -7,8 +7,7 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
-export interface PriceTierFeatureItemProps
-  extends DefaultPriceTierFeatureItemProps {}
+export type PriceTierFeatureItemProps = DefaultPriceTierFeatureItemProps;
 
 function PriceTierFeatureItem_(
   props: PriceTierFeatureItemProps,

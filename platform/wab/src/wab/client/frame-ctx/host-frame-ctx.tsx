@@ -1,4 +1,11 @@
 import { ensureIsHostFrame, isHostFrame } from "@/wab/client/cli-routes";
+import {
+  providesFrameCtx,
+  useFrameCtx,
+} from "@/wab/client/frame-ctx/frame-ctx";
+import { HostFrameApi } from "@/wab/client/frame-ctx/host-frame-api";
+import { getPlasmicStudioArgs } from "@/wab/client/frame-ctx/plasmic-studio-args";
+import { TopFrameFullApi } from "@/wab/client/frame-ctx/top-frame-api";
 import { ensure, spawn, spawnWrapper } from "@/wab/common";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import * as Comlink from "comlink";
@@ -14,10 +21,6 @@ import {
   UnregisterCallback,
 } from "history";
 import * as React from "react";
-import { providesFrameCtx, useFrameCtx } from "./frame-ctx";
-import { HostFrameApi } from "./host-frame-api";
-import { getPlasmicStudioArgs } from "./plasmic-studio-args";
-import { TopFrameFullApi } from "./top-frame-api";
 
 export interface HostFrameCtx {
   topFrameApi: PromisifyMethods<TopFrameFullApi>;

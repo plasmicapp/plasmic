@@ -1,5 +1,6 @@
 import { FunctionExpr, Interaction, TplComponent, TplTag } from "@/wab/classes";
 import { mkEventHandlerEnv } from "@/wab/client/components/canvas/canvas-rendering";
+import { extractDataCtx } from "@/wab/client/state-management/interactions-meta";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ensure } from "@/wab/common";
@@ -15,7 +16,6 @@ import {
 import { ancestor as traverse } from "acorn-walk";
 import { notification } from "antd";
 import { findLast, isString } from "lodash";
-import { extractDataCtx } from "./interactions-meta";
 
 function wrapInteractionCode(interactionCode: string) {
   return `(async () => {

@@ -8,6 +8,12 @@ import { assert, ensure, ensureInstance } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
 import { upgradeProjectDeps, walkDependencyTree } from "@/wab/project-deps";
 import { updateHostlessPackage } from "@/wab/server/code-components/code-components";
+import {
+  getMigratedBundle,
+  MigrationDbMgr,
+} from "@/wab/server/db/BundleMigrator";
+import { loadDepPackages } from "@/wab/server/db/DbBundleLoader";
+import { DbMgr } from "@/wab/server/db/DbMgr";
 import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
 import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
 import { Bundler } from "@/wab/shared/bundler";
@@ -16,9 +22,6 @@ import { InvariantError } from "@/wab/shared/site-invariants";
 import { isHostLessPackage } from "@/wab/sites";
 import { trackComponentRoot, trackComponentSite } from "@/wab/tpls";
 import semver from "semver";
-import { getMigratedBundle, MigrationDbMgr } from "./BundleMigrator";
-import { loadDepPackages } from "./DbBundleLoader";
-import { DbMgr } from "./DbMgr";
 
 export async function unbundleSite(
   bundler: Bundler,

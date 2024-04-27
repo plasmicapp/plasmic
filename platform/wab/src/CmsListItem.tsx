@@ -6,7 +6,7 @@ import * as React from "react";
 import {
   DefaultCmsListItemProps,
   PlasmicCmsListItem,
-} from "./wab/client/plasmic/plasmic_kit_dashboard/PlasmicCmsListItem";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicCmsListItem";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can
@@ -21,7 +21,7 @@ import {
 //
 // You can also stop extending from DefaultCmsListItemProps altogether and have
 // total control over the props for your component.
-export interface CmsListItemProps extends DefaultCmsListItemProps {}
+export type CmsListItemProps = DefaultCmsListItemProps;
 
 function CmsListItem_(props: CmsListItemProps, ref: HTMLElementRefOf<"a">) {
   // Use PlasmicCmsListItem to render this component as it was

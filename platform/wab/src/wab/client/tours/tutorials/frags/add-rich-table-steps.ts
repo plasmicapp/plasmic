@@ -1,10 +1,13 @@
+import {
+  addElementStepFunc,
+  OPEN_ADD_DRAWER_STEP_FUNC,
+} from "@/wab/client/tours/tutorials/frags/basic-steps";
 import { addRichTable } from "@/wab/client/tours/tutorials/tutorials-helpers";
 import { STUDIO_ELEMENTS_TARGETS } from "@/wab/client/tours/tutorials/tutorials-targets";
 import {
   OnNextCtx,
   StudioTutorialStep,
 } from "@/wab/client/tours/tutorials/tutorials-types";
-import { addElementStepFunc, OPEN_ADD_DRAWER_STEP_FUNC } from "./basic-steps";
 
 export const ADD_RICH_TABLE_STEPS: StudioTutorialStep[] = [
   {

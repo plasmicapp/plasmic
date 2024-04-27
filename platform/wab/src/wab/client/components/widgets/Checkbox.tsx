@@ -5,7 +5,7 @@ import {
 import { CheckboxRef } from "@plasmicapp/react-web";
 import * as React from "react";
 
-interface CheckboxProps extends DefaultCheckboxProps {}
+type CheckboxProps = DefaultCheckboxProps;
 
 function Checkbox_(props: CheckboxProps, ref: CheckboxRef) {
   const { plasmicProps, state } = PlasmicCheckbox.useBehavior<CheckboxProps>(

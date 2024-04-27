@@ -46,6 +46,38 @@ import {
   VarRef,
   VirtualRenderExpr,
 } from "@/wab/classes";
+import {
+  cachedRenderTplNode,
+  reactHookSpecsToKey,
+} from "@/wab/client/components/canvas/canvas-cache";
+import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
+import {
+  CanvasErrorBoundaryProps,
+  mkCanvasErrorBoundary,
+  withErrorDisplayFallback,
+} from "@/wab/client/components/canvas/canvas-error";
+import {
+  isExplicitlySized,
+  resizePlaceholder,
+} from "@/wab/client/components/canvas/canvas-fns-impl";
+import { useCanvasForceUpdate } from "@/wab/client/components/canvas/canvas-hooks";
+import {
+  mkCanvasObserver,
+  mkUseCanvasObserver,
+} from "@/wab/client/components/canvas/canvas-observer";
+import {
+  mkCanvasText,
+  mkSlateChildren,
+  SlateRenderNodeOpts,
+} from "@/wab/client/components/canvas/CanvasText";
+import { genRepeatedElement } from "@/wab/client/components/canvas/repeatedElement";
+import {
+  showCanvasAuthNotification,
+  showCanvasPageNavigationNotification,
+  trapInteractionError,
+} from "@/wab/client/components/canvas/studio-canvas-util";
+import { getRealClassNames } from "@/wab/client/components/canvas/styles-name";
+import { SubDeps } from "@/wab/client/components/canvas/subdeps";
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
 import { buildViewCtxPinMaps } from "@/wab/client/cseval";
 import { globalHookCtx } from "@/wab/client/react-global-hook/globalHook";
@@ -251,29 +283,6 @@ import {
 import { computed, IObservableValue, observable } from "mobx";
 import { computedFn } from "mobx-utils";
 import type React from "react";
-import { cachedRenderTplNode, reactHookSpecsToKey } from "./canvas-cache";
-import { CanvasCtx } from "./canvas-ctx";
-import {
-  CanvasErrorBoundaryProps,
-  mkCanvasErrorBoundary,
-  withErrorDisplayFallback,
-} from "./canvas-error";
-import { isExplicitlySized, resizePlaceholder } from "./canvas-fns-impl";
-import { useCanvasForceUpdate } from "./canvas-hooks";
-import { mkCanvasObserver, mkUseCanvasObserver } from "./canvas-observer";
-import {
-  mkCanvasText,
-  mkSlateChildren,
-  SlateRenderNodeOpts,
-} from "./CanvasText";
-import { genRepeatedElement } from "./repeatedElement";
-import {
-  showCanvasAuthNotification,
-  showCanvasPageNavigationNotification,
-  trapInteractionError,
-} from "./studio-canvas-util";
-import { getRealClassNames } from "./styles-name";
-import { SubDeps } from "./subdeps";
 import defer = setTimeout;
 
 export const hasLoadingBoundaryKey = "plasmicInternalHasLoadingBoundary";

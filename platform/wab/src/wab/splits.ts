@@ -10,8 +10,8 @@ import {
   SplitSlice,
   Variant,
   VariantGroup,
-} from "./classes";
-import { mkShortId, removeWhere, switchType } from "./common";
+} from "@/wab/classes";
+import { mkShortId, removeWhere, switchType } from "@/wab/common";
 
 export enum SplitType {
   Experiment = "experiment",

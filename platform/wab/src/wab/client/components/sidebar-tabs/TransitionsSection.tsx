@@ -1,3 +1,4 @@
+import { NonBaseVariantTransitionsMessage } from "@/wab/client/components/sidebar-tabs/style-tab";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { SidebarSectionHandle } from "@/wab/client/components/sidebar/SidebarSection";
 import {
@@ -24,7 +25,6 @@ import { joinCssValues, RSH, splitCssValue } from "@/wab/shared/RuleSetHelpers";
 import { isBaseVariant, tryGetBaseVariantSetting } from "@/wab/shared/Variants";
 import { observer } from "mobx-react";
 import React, { createRef } from "react";
-import { NonBaseVariantTransitionsMessage } from "./style-tab";
 
 export class Transition {
   transitionProperty: string;

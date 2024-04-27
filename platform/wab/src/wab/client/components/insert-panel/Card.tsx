@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultCardProps altogether and have
 // total control over the props for your component.
-export interface CardProps extends DefaultCardProps {}
+export type CardProps = DefaultCardProps;
 
 function Card_(props: CardProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicCard to render this component as it was

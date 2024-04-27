@@ -63,8 +63,23 @@ import {
 } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
 import { REAL_PLUME_VERSION } from "@/wab/server/pkgs/plume-pkg-mgr";
+import { mkApiDataSource } from "@/wab/server/routes/data-source";
 import { checkEtagSkippable } from "@/wab/server/routes/loader";
+import { moveBundleAssetsToS3 } from "@/wab/server/routes/moveAssetsToS3";
+import {
+  maybeTriggerPaywall,
+  passPaywall,
+} from "@/wab/server/routes/team-plans";
 import { mkApiTeam } from "@/wab/server/routes/teams";
+import {
+  getUser,
+  hasUser,
+  parseMetadata,
+  parseQueryParams,
+  superDbMgr,
+  userAnalytics,
+  userDbMgr,
+} from "@/wab/server/routes/util";
 import { getCodesandboxToken } from "@/wab/server/secrets";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
 import { TutorialType } from "@/wab/server/tutorialdb/tutorialdb-utils";
@@ -165,18 +180,6 @@ import * as Prettier from "prettier";
 import type { SetRequired } from "type-fest";
 import { EntityManager, getConnection, MigrationExecutor } from "typeorm";
 import { escapeHTML } from "underscore.string";
-import { mkApiDataSource } from "./data-source";
-import { moveBundleAssetsToS3 } from "./moveAssetsToS3";
-import { maybeTriggerPaywall, passPaywall } from "./team-plans";
-import {
-  getUser,
-  hasUser,
-  parseMetadata,
-  parseQueryParams,
-  superDbMgr,
-  userAnalytics,
-  userDbMgr,
-} from "./util";
 
 export function mkApiProject(project: Project): ApiProject {
   const team = project.workspace?.team

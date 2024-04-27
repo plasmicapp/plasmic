@@ -1,5 +1,5 @@
 import { Team } from "@/wab/server/entities/Entities";
-import { mkApiTeam } from "./teams";
+import { mkApiTeam } from "@/wab/server/routes/teams";
 
 describe("mkApiTeam", () => {
   it("has expected fields", () => {

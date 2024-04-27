@@ -5,7 +5,7 @@ import {
   PlasmicCodeSandboxDialogContent,
   PlasmicCodeSandboxDialogContent__VariantsArgs,
   DefaultCodeSandboxDialogContentProps,
-} from "./PlasmicCodeSandboxDialogContent";
+} from "@/wab/client/components/widgets/plasmic/PlasmicCodeSandboxDialogContent";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { notification } from "antd";
 import { createSandboxUrl } from "@/wab/codesandbox/url";

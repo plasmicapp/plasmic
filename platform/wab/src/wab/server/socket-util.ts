@@ -2,11 +2,11 @@
  * Utility functions that makes requests on the sockeetHost to
  * broadcast messages to websocket listeners.
  */
+import { BroadcastPayload } from "@/wab/server/app-socket-backend-real";
+import "@/wab/server/extensions";
+import { logError } from "@/wab/server/server-util";
 import { Request } from "express";
 import fetch from "node-fetch";
-import { BroadcastPayload } from "./app-socket-backend-real";
-import "./extensions";
-import { logError } from "./server-util";
 
 export async function disconnectUserSockets(req: Request) {
   const socketHost = getSocketHost();

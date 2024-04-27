@@ -1,4 +1,4 @@
-import { parseRedirectURI } from "./app-oauth";
+import { parseRedirectURI } from "@/wab/server/routes/app-oauth";
 
 describe("parseRedirectURI", () => {
   it("should validate redirectUri", () => {

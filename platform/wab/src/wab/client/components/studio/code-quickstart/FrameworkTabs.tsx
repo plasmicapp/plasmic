@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultFrameworkTabsProps altogether and have
 // total control over the props for your component.
-interface FrameworkTabsProps extends DefaultFrameworkTabsProps {}
+type FrameworkTabsProps = DefaultFrameworkTabsProps;
 
 function FrameworkTabs_(
   props: FrameworkTabsProps,

@@ -6,6 +6,8 @@ import {
   makeFetcher,
 } from "@/wab/server/data-sources/data-source-utils";
 import { DataSource } from "@/wab/server/entities/Entities";
+import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
+import { mkApiWorkspace } from "@/wab/server/routes/workspaces";
 import {
   BadRequestError,
   ForbiddenError,
@@ -38,8 +40,6 @@ import { DATA_SOURCE_LOWER } from "@/wab/shared/Labels";
 import * as Sentry from "@sentry/node";
 import assert from "assert";
 import { Request, Response } from "express-serve-static-core";
-import { superDbMgr, userDbMgr } from "./util";
-import { mkApiWorkspace } from "./workspaces";
 
 export function mkApiDataSource(
   dataSource: DataSource,

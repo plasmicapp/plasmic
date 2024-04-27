@@ -9,6 +9,24 @@ import {
   StandardCallback,
 } from "@/wab/common";
 import { DevFlagsType } from "@/wab/devflags";
+import { Config } from "@/wab/server/config";
+import { setupCustomPassport } from "@/wab/server/custom-passport-cfg";
+import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { OauthTokenProvider, User } from "@/wab/server/entities/Entities";
+import "@/wab/server/extensions";
+import { createUserFull } from "@/wab/server/routes/auth";
+import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
+import {
+  getAirtableSsoSecrets,
+  getGoogleClientId,
+  getGoogleClientSecret,
+  getGoogleSheetsClientId,
+  getGoogleSheetsClientSecret,
+} from "@/wab/server/secrets";
+import {
+  MultiOAuth2Strategy,
+  OAuth2Config,
+} from "@/wab/server/util/passport-multi-oauth2";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { SsoConfigId, UserId } from "@/wab/shared/ApiSchema";
 import { findGoogleAuthRequiredEmailDomain } from "@/wab/shared/devflag-utils";
@@ -27,24 +45,6 @@ import OAuth2Strategy from "passport-oauth2";
 import refresh from "passport-oauth2-refresh";
 import { getManager } from "typeorm";
 import * as util from "util";
-import { Config } from "./config";
-import { setupCustomPassport } from "./custom-passport-cfg";
-import { DbMgr, SUPER_USER } from "./db/DbMgr";
-import { OauthTokenProvider, User } from "./entities/Entities";
-import "./extensions";
-import { createUserFull } from "./routes/auth";
-import { superDbMgr, userDbMgr } from "./routes/util";
-import {
-  getAirtableSsoSecrets,
-  getGoogleClientId,
-  getGoogleClientSecret,
-  getGoogleSheetsClientId,
-  getGoogleSheetsClientSecret,
-} from "./secrets";
-import {
-  MultiOAuth2Strategy,
-  OAuth2Config,
-} from "./util/passport-multi-oauth2";
 
 const LocalStrategy = passportLocal.Strategy;
 

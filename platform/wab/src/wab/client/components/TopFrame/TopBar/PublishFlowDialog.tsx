@@ -4,6 +4,22 @@ import {
   SiteDiffs,
   SplitStatusUpdateSummarySection,
 } from "@/wab/client/components/modals/SiteDiffs";
+import {
+  SetupPlasmicHosting,
+  StatusPlasmicHosting,
+} from "@/wab/client/components/TopFrame/TopBar/SubsectionPlasmicHosting";
+import {
+  SetupPushDeploy,
+  StatusPushDeploy,
+} from "@/wab/client/components/TopFrame/TopBar/SubsectionPushDeploy";
+import {
+  SetupSaveVersion,
+  StatusSaveVersion,
+} from "@/wab/client/components/TopFrame/TopBar/SubsectionSaveVersion";
+import {
+  SetupWebhooks,
+  StatusWebhooks,
+} from "@/wab/client/components/TopFrame/TopBar/SubsectionWebhooks";
 import { topFrameTourSignals } from "@/wab/client/components/TopFrame/TopFrameChrome";
 import { replaceLink } from "@/wab/client/components/view-common";
 import { Spinner } from "@/wab/client/components/widgets";
@@ -28,13 +44,6 @@ import type {
 } from "@/wab/shared/site-diffs";
 import { filterUsefulDiffs } from "@/wab/shared/site-diffs/filter-useful-diffs";
 import * as React from "react";
-import {
-  SetupPlasmicHosting,
-  StatusPlasmicHosting,
-} from "./SubsectionPlasmicHosting";
-import { SetupPushDeploy, StatusPushDeploy } from "./SubsectionPushDeploy";
-import { SetupSaveVersion, StatusSaveVersion } from "./SubsectionSaveVersion";
-import { SetupWebhooks, StatusWebhooks } from "./SubsectionWebhooks";
 
 export interface VisibleEnableBlockReadOnly {
   visible: boolean;

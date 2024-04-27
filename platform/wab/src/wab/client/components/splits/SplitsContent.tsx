@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultSplitsContentProps altogether and have
 // total control over the props for your component.
-export interface SplitsContentProps extends DefaultSplitsContentProps {}
+export type SplitsContentProps = DefaultSplitsContentProps;
 
 function SplitsContent_(
   props: SplitsContentProps,

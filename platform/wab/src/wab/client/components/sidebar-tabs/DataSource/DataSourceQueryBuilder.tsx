@@ -11,6 +11,9 @@ import {
   QueryBuilderConfig,
 } from "@/wab/client/components/QueryBuilder/QueryBuilderConfig";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import { DataPickerWidgetFactory } from "@/wab/client/components/sidebar-tabs/DataSource/DataPickerWidgetFactory";
+import { mkBindingId } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
+import { TemplatedTextWidget } from "@/wab/client/components/sidebar-tabs/DataSource/TemplatedTextWidget";
 import { arrayEq, ensure } from "@/wab/common";
 import { ExprCtx } from "@/wab/exprs";
 import { Filters } from "@/wab/shared/data-sources-meta/data-sources";
@@ -31,9 +34,6 @@ import {
 import cn from "classnames";
 import { isNil, isString, merge, pick } from "lodash";
 import * as React from "react";
-import { DataPickerWidgetFactory } from "./DataPickerWidgetFactory";
-import { mkBindingId } from "./DataSourceOpPicker";
-import { TemplatedTextWidget } from "./TemplatedTextWidget";
 
 const InitialConfig = QueryBuilderConfig;
 

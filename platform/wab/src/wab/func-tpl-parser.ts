@@ -1,5 +1,5 @@
+import { plus, seq, seq_, _ } from "@/wab/packrattle-util";
 import PR from "packrattle";
-import { plus, seq, seq_, _ } from "./packrattle-util";
 
 function noExc(f: /*TWZ*/ () => any) {
   try {

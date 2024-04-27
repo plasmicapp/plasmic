@@ -1,6 +1,7 @@
 import { Component, Site, TplNode, Variant } from "@/wab/classes";
 import { withoutNils } from "@/wab/common";
 import { allComponentVariants } from "@/wab/components";
+import { siteToAllImageAssetsDict } from "@/wab/shared/cached-selectors";
 import {
   importComponentsInTree,
   mkInsertableComponentImporter,
@@ -31,7 +32,6 @@ import {
   flattenTpls,
   flattenTplsBottomUp,
 } from "@/wab/tpls";
-import { siteToAllImageAssetsDict } from "./cached-selectors";
 
 export function cloneInsertableTemplateComponent(
   site: Site,

@@ -1,3 +1,11 @@
+import { CodePreviewCtx } from "@/wab/client/components/docs/CodePreviewSnippet";
+import { DocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
+import {
+  makePlumeDepsImports,
+  serializeDependentModules,
+  serializeToggledComponent,
+  serializeToggledIcon,
+} from "@/wab/client/components/docs/serialize-docs-preview";
 import { fixWorkerUrl } from "@/wab/client/monaco-worker-url";
 import { ensure } from "@/wab/common";
 import { isCodeComponent, isPlumeComponent } from "@/wab/components";
@@ -15,23 +23,13 @@ import { observer } from "mobx-react";
 import * as monacoEditor from "monaco-editor/esm/vs/editor/editor.api";
 import React from "react";
 import MonacoEditor from "react-monaco-editor";
-import { CodePreviewCtx } from "./CodePreviewSnippet";
-import { DocsPortalCtx } from "./DocsPortalCtx";
-import {
-  makePlumeDepsImports,
-  serializeDependentModules,
-  serializeToggledComponent,
-  serializeToggledIcon,
-} from "./serialize-docs-preview";
 
 // @ts-expect-error: Importing raw @plasmicapp/react-web types as a string
-// eslint-disable-next-line path/no-relative-imports
 import REACT_WEB_TYPES from "!raw-loader!../../../../../node_modules/@plasmicapp/react-web/dist/all.d.ts";
 // We need to install some typing information into our Monaco editor to
 // support typing <Plasmic*/> components.  We cheat a bit here by just
 // loading the relevant types directly from our own node_modules :-p
 // @ts-expect-error: Importing raw react types as a string
-// eslint-disable-next-line path/no-relative-imports, import/no-extraneous-dependencies
 import REACT_TYPES from "!raw-loader!../../../../../node_modules/@types/react/index.d.ts";
 
 type MonacoType = typeof monacoEditor;

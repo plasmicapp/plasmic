@@ -5,7 +5,7 @@ import * as React from "react";
 import {
   DefaultStyleItemProps,
   PlasmicStyleItem,
-} from "./wab/client/plasmic/plasmic_kit_style_controls/PlasmicStyleItem";
+} from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicStyleItem";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can
@@ -20,7 +20,7 @@ import {
 //
 // You can also stop extending from DefaultStyleItemProps altogether and have
 // total control over the props for your component.
-interface StyleItemProps extends DefaultStyleItemProps {}
+type StyleItemProps = DefaultStyleItemProps;
 
 function StyleItem(props: StyleItemProps) {
   // Use PlasmicStyleItem to render this component as it was

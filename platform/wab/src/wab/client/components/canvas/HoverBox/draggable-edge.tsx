@@ -1,3 +1,4 @@
+import sty from "@/wab/client/components/canvas/HoverBox/draggable-edge.module.sass";
 import EdgeHandleDownwardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__EdgeHandleDownward";
 import EdgeHandleLeftwardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__EdgeHandleLeftward";
 import EdgeHandleRightwardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__EdgeHandleRightward";
@@ -8,7 +9,6 @@ import { DEVFLAGS } from "@/wab/devflags";
 import { oppSide, Side, sideEdgeToOrient, standardSides } from "@/wab/geom";
 import { clamp, isNil } from "lodash";
 import * as React from "react";
-import sty from "./draggable-edge.module.sass";
 
 export type SpaceEdgeType = "padding" | "margin" | "size";
 export type EdgeDragMode = "single" | "symmetric" | "all";

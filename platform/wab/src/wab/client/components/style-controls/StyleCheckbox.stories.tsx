@@ -1,7 +1,7 @@
+import StyleCheckbox from "@/wab/client/components/style-controls/StyleCheckbox";
 import { expect } from "@storybook/jest";
 import type { Meta, StoryObj } from "@storybook/react";
 import { userEvent, waitFor, within } from "@storybook/testing-library";
-import StyleCheckbox from "./StyleCheckbox";
 
 export default {
   component: StyleCheckbox,

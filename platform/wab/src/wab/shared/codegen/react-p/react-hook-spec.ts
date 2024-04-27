@@ -14,6 +14,7 @@
 import { Component, TplNode, Variant } from "@/wab/classes";
 import { ensure } from "@/wab/common";
 import { tryExtractLit } from "@/wab/exprs";
+import { NodeNamer } from "@/wab/shared/codegen/react-p/utils";
 import { jsLiteral } from "@/wab/shared/codegen/util";
 import {
   isPrivateStyleVariant,
@@ -26,7 +27,6 @@ import {
 } from "@/wab/styles";
 import { flattenTpls, isTplTag } from "@/wab/tpls";
 import L from "lodash";
-import { NodeNamer } from "./utils";
 
 // The usage of the hook, however, should check if all ancestors are active.
 export class ReactHookSpec {

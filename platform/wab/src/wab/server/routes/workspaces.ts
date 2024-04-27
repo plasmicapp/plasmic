@@ -1,5 +1,12 @@
 import { ensureType } from "@/wab/common";
 import { Workspace } from "@/wab/server/entities/Entities";
+import { doSafelyDeleteProject } from "@/wab/server/routes/projects";
+import {
+  maybeTriggerPaywall,
+  passPaywall,
+} from "@/wab/server/routes/team-plans";
+import { mkApiTeam } from "@/wab/server/routes/teams";
+import { userAnalytics, userDbMgr } from "@/wab/server/routes/util";
 import {
   ApiTeam,
   ApiWorkspace,
@@ -13,10 +20,6 @@ import { DomainValidator } from "@/wab/shared/hosting";
 import { createTaggedResourceId } from "@/wab/shared/perms";
 import { Request, Response } from "express-serve-static-core";
 import L from "lodash";
-import { doSafelyDeleteProject } from "./projects";
-import { maybeTriggerPaywall, passPaywall } from "./team-plans";
-import { mkApiTeam } from "./teams";
-import { userAnalytics, userDbMgr } from "./util";
 
 export function mkApiWorkspace(workspace: Workspace): ApiWorkspace {
   return {

@@ -2,6 +2,7 @@ import { Component } from "@/wab/classes";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import promptForMetadata from "@/wab/client/components/modals/ComponentMetadataModal";
 import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
+import { BoolPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/BoolPropEditor";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { IFrameAwareDropdownMenu } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
@@ -19,7 +20,6 @@ import { toVarName } from "@/wab/shared/codegen/util";
 import { Menu, notification } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
-import { BoolPropEditor } from "./ComponentProps/BoolPropEditor";
 
 export const ComponentMetaDataPropsSection = observer(
   function ComponentMetaDataPropsSection(props: {

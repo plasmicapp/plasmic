@@ -1,9 +1,9 @@
-import { Parser } from "node-sql-parser";
 import {
   AnalyticsQueryConstants,
   getConversionRateQuery,
   getImpressionsQuery,
-} from "./queries";
+} from "@/wab/server/analytics/queries";
+import { Parser } from "node-sql-parser";
 
 function fillQueryParams(query: string, PARAMS: Record<string, string>) {
   let result = query;

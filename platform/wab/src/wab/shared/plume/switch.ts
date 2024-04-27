@@ -17,18 +17,18 @@ import {
   paramToVarName,
   toVarName,
 } from "@/wab/shared/codegen/util";
-import { getTplSlotByName } from "@/wab/shared/SlotUtils";
-import type { SwitchRef } from "@plasmicapp/react-web";
-import { omit, pick } from "lodash";
-import type React from "react";
-import { PlumePlugin } from "./plume-registry";
+import { PlumePlugin } from "@/wab/shared/plume/plume-registry";
 import {
   createDefaultSlotContentsStub,
   ensureValidPlumeCodeMeta,
   makeComponentImportPath,
   maybeIncludeSerializedDefaultSlotContent,
   serializeComponentSubstitutionCallsForDefaultContents,
-} from "./plume-utils";
+} from "@/wab/shared/plume/plume-utils";
+import { getTplSlotByName } from "@/wab/shared/SlotUtils";
+import type { SwitchRef } from "@plasmicapp/react-web";
+import { omit, pick } from "lodash";
+import type React from "react";
 
 const RESERVED_PROPS = [
   "noLabel",

@@ -49,11 +49,10 @@ import {
   VariantsRef,
   VarRef,
   VirtualRenderExpr,
-} from "./classes";
+} from "@/wab/classes";
 /* eslint-disable
     no-this-before-super,
 */
-import L, { escapeRegExp, isString, mapValues, set } from "lodash";
 import {
   assert,
   ensure,
@@ -69,36 +68,41 @@ import {
   tryCatchElse,
   unexpected,
   withoutNils,
-} from "./common";
-import { mkTokenRef } from "./commons/StyleToken";
-import { cloneNameArg, cloneQueryRef } from "./components";
-import { DevFlagsType, getProjectFlags } from "./devflags";
-import { jsLiteral, toJsIdentifier, toVarName } from "./shared/codegen/util";
-import { typeDisplayName } from "./shared/core/model-util";
+} from "@/wab/common";
+import { mkTokenRef } from "@/wab/commons/StyleToken";
+import { cloneNameArg, cloneQueryRef } from "@/wab/components";
+import { DevFlagsType, getProjectFlags } from "@/wab/devflags";
+import {
+  jsLiteral,
+  toJsIdentifier,
+  toVarName,
+} from "@/wab/shared/codegen/util";
+import { typeDisplayName } from "@/wab/shared/core/model-util";
 import {
   dataSourceTemplateToString,
   exprToDataSourceString,
   getTemplateFieldType,
   isJsonType,
   mkDataSourceTemplate,
-} from "./shared/data-sources-meta/data-sources";
+} from "@/wab/shared/data-sources-meta/data-sources";
 import {
   getDynamicBindings,
   getDynamicSnippetsForExpr,
   getDynamicSnippetsForJsonExpr,
-} from "./shared/dynamic-bindings";
-import { tryEvalExpr } from "./shared/eval";
-import { pathToString } from "./shared/eval/expression-parser";
-import { maybeComputedFn } from "./shared/mobx-util";
-import { maybeConvertToIife } from "./shared/parser-utils";
+} from "@/wab/shared/dynamic-bindings";
+import { tryEvalExpr } from "@/wab/shared/eval";
+import { pathToString } from "@/wab/shared/eval/expression-parser";
+import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { maybeConvertToIife } from "@/wab/shared/parser-utils";
 import {
   extractEventArgsNameFromEventHandler,
   isGlobalAction,
   serializeActionArg,
   serializeActionFunction,
-} from "./states";
-import { cloneRuleSet, makeStyleExprClassName } from "./styles";
-import { clone as cloneTpl, cloneType } from "./tpls";
+} from "@/wab/states";
+import { cloneRuleSet, makeStyleExprClassName } from "@/wab/styles";
+import { clone as cloneTpl, cloneType } from "@/wab/tpls";
+import L, { escapeRegExp, isString, mapValues, set } from "lodash";
 
 export interface ExprCtx {
   component: Component | null;

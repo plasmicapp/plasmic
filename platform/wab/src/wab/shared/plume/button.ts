@@ -17,13 +17,13 @@ import {
   paramToVarName,
   toVarName,
 } from "@/wab/shared/codegen/util";
-import type { ButtonRef } from "@plasmicapp/react-web";
-import { omit, pick } from "lodash";
-import { PlumePlugin } from "./plume-registry";
+import { PlumePlugin } from "@/wab/shared/plume/plume-registry";
 import {
   ensureValidPlumeCodeMeta,
   makeComponentImportPath,
-} from "./plume-utils";
+} from "@/wab/shared/plume/plume-utils";
+import type { ButtonRef } from "@plasmicapp/react-web";
+import { omit, pick } from "lodash";
 
 const RESERVED_PROPS = [
   "startIcon",

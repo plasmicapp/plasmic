@@ -8,11 +8,11 @@ import {
   Period,
 } from "@/wab/server/analytics/queries";
 import { unbundleProjectFromData } from "@/wab/server/db/DbBundleLoader";
+import { getTeamCurrentPeriodRange } from "@/wab/server/routes/team-plans";
+import { userDbMgr } from "@/wab/server/routes/util";
 import { TeamId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
 import { Request, Response } from "express-serve-static-core";
-import { getTeamCurrentPeriodRange } from "./team-plans";
-import { userDbMgr } from "./util";
 
 export async function getAnalyticsForTeam(req: Request, res: Response) {
   const mgr = userDbMgr(req);

@@ -7,6 +7,11 @@ import {
   Variant,
   VariantGroup,
 } from "@/wab/classes";
+import { CodePreviewCtx } from "@/wab/client/components/docs/CodePreviewSnippet";
+import {
+  DocsPortalCtx,
+  IconToggleProp,
+} from "@/wab/client/components/docs/DocsPortalCtx";
 import {
   CodeModule,
   createCodeComponentHelperModule,
@@ -62,8 +67,6 @@ import L from "lodash";
 import { autorun } from "mobx";
 import * as Prettier from "prettier";
 import parserTypescript from "prettier/parser-typescript";
-import { CodePreviewCtx } from "./CodePreviewSnippet";
-import { DocsPortalCtx, IconToggleProp } from "./DocsPortalCtx";
 
 /**
  * Syncs current state DocsPortalCtx -- focused component and configured

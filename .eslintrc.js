@@ -260,10 +260,11 @@ module.exports = {
             ],
           },
         ],
-        "path/no-relative-imports": [
+        "no-relative-import-paths/no-relative-import-paths": [
           "error",
           {
-            maxDepth: 0,
+            rootDir: "platform/wab/src",
+            prefix: "@",
           },
         ],
       },
@@ -374,7 +375,13 @@ module.exports = {
       },
     },
   ],
-  plugins: ["@typescript-eslint", "react", "jest", "import", "path"],
+  plugins: [
+    "@typescript-eslint",
+    "react",
+    "jest",
+    "import",
+    "eslint-plugin-no-relative-import-paths",
+  ],
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",

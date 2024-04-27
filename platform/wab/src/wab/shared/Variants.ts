@@ -32,7 +32,17 @@ import {
   getNamespacedComponentName,
 } from "@/wab/components";
 import { code } from "@/wab/exprs";
+import { toVarName } from "@/wab/shared/codegen/util";
+import {
+  ensureComponentArenaColsOrder,
+  ensureComponentArenaRowsOrder,
+} from "@/wab/shared/component-arenas";
 import { parseScreenSpec, ScreenSizeSpec } from "@/wab/shared/Css";
+import {
+  FramePinManager,
+  withoutIrrelevantScreenVariants,
+} from "@/wab/shared/PinManager";
+import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
 import {
   allGlobalVariantGroups,
   getResponsiveStrategy,
@@ -48,13 +58,6 @@ import {
 import { summarizeTplTag } from "@/wab/tpls";
 import { arrayContains } from "class-validator";
 import L, { orderBy } from "lodash";
-import { toVarName } from "./codegen/util";
-import {
-  ensureComponentArenaColsOrder,
-  ensureComponentArenaRowsOrder,
-} from "./component-arenas";
-import { FramePinManager, withoutIrrelevantScreenVariants } from "./PinManager";
-import { ResponsiveStrategy } from "./responsiveness";
 
 export const BASE_VARIANT_NAME = "base";
 

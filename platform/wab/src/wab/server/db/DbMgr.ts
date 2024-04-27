@@ -42,6 +42,15 @@ import {
   reevaluateDataSourceExprOpIds,
 } from "@/wab/server/data-sources/data-source-utils";
 import {
+  getLastBundleVersion,
+  getMigratedBundle,
+  MigrationDbMgr,
+} from "@/wab/server/db/BundleMigrator";
+import {
+  unbundlePkgVersion,
+  unbundleProjectFromData,
+} from "@/wab/server/db/DbBundleLoader";
+import {
   AppAccessRegistry,
   AppAuthConfig,
   AppEndUserAccess,
@@ -259,12 +268,6 @@ import {
   UpdateResult,
 } from "typeorm";
 import * as uuid from "uuid";
-import {
-  getLastBundleVersion,
-  getMigratedBundle,
-  MigrationDbMgr,
-} from "./BundleMigrator";
-import { unbundlePkgVersion, unbundleProjectFromData } from "./DbBundleLoader";
 
 export const updatableUserFields = [
   "firstName",

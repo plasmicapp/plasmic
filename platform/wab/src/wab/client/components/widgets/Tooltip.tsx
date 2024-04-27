@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultTooltipProps altogether and have
 // total control over the props for your component.
-export interface TooltipProps extends DefaultTooltipProps {}
+export type TooltipProps = DefaultTooltipProps;
 
 function Tooltip_(props: TooltipProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicTooltip to render this component as it was

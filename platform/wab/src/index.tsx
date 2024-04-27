@@ -1,1 +1,1 @@
-import "./wab/main";
+import "@/wab/main";

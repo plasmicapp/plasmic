@@ -1,7 +1,7 @@
+import { MIGRATION_POOL_NAME } from "@/wab/server/db/DbCon";
 import { Request, Response } from "express-serve-static-core";
 import { Gauge, Histogram } from "prom-client";
 import { getConnection } from "typeorm";
-import { MIGRATION_POOL_NAME } from "./db/DbCon";
 
 const liveRequests = new Gauge({
   name: "http_request_live",

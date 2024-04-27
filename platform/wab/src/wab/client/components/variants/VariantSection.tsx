@@ -3,6 +3,9 @@
 import { Component, Variant } from "@/wab/classes";
 import { useContextMenu } from "@/wab/client/components/ContextMenu";
 import { SelectorTags } from "@/wab/client/components/sidebar/RuleSetControls";
+import { makeVariantMenu } from "@/wab/client/components/variants/variant-menu";
+import VariantRow from "@/wab/client/components/variants/VariantRow";
+import { VariantsController } from "@/wab/client/components/variants/VariantsController";
 import {
   DefaultVariantSectionProps,
   PlasmicVariantSection,
@@ -15,9 +18,6 @@ import { isStyleVariant } from "@/wab/shared/Variants";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
-import { makeVariantMenu } from "./variant-menu";
-import VariantRow from "./VariantRow";
-import { VariantsController } from "./VariantsController";
 
 interface VariantSectionProps extends DefaultVariantSectionProps {
   menu?: () => React.ReactElement;

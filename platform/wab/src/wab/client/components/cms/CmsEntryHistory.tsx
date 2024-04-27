@@ -1,6 +1,15 @@
 import MenuItem from "@/MenuItem";
 import { useUsersMap } from "@/wab/client/api-hooks";
 import { useRRouteMatch, UU } from "@/wab/client/cli-routes";
+import {
+  useCmsDatabase,
+  useCmsRow,
+  useCmsRowHistory,
+  useCmsRowRevision,
+  useCmsTable,
+  useMutateRow,
+} from "@/wab/client/components/cms/cms-contexts";
+import { renderContentEntryFormFields } from "@/wab/client/components/cms/CmsEntryDetails";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { Spinner } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
@@ -10,15 +19,6 @@ import { CmsDatabaseId, CmsRowId, CmsTableId } from "@/wab/shared/ApiSchema";
 import { Form, message } from "antd";
 import React from "react";
 import { Redirect, Route, Switch, useHistory } from "react-router";
-import {
-  useCmsDatabase,
-  useCmsRow,
-  useCmsRowHistory,
-  useCmsRowRevision,
-  useCmsTable,
-  useMutateRow,
-} from "./cms-contexts";
-import { renderContentEntryFormFields } from "./CmsEntryDetails";
 
 export function CmsEntryHistory(props: {
   databaseId: CmsDatabaseId;

@@ -1,4 +1,5 @@
 import { TplNode } from "@/wab/classes";
+import styles from "@/wab/client/components/canvas/HoverBox/StackOfParents.module.scss";
 import { createNodeIcon } from "@/wab/client/components/sidebar-tabs/tpl-tree";
 import { FRAME_ICON, SLOT_ICON } from "@/wab/client/icons";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -16,7 +17,6 @@ import {
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RefObject, useEffect, useMemo, useRef } from "react";
-import styles from "./StackOfParents.module.scss";
 
 const AUTO_HIDE_TIMEOUT = 2000;
 

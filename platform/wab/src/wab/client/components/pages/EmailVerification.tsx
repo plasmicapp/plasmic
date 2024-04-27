@@ -1,5 +1,6 @@
 import { useNonAuthCtx } from "@/wab/client/app-ctx";
 import { isPlasmicPath, U } from "@/wab/client/cli-routes";
+import "@/wab/client/components/pages/AuthForm.sass";
 import { LinkButton } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
@@ -8,7 +9,6 @@ import { spawn } from "@/wab/common";
 import { ApiUser, ConfirmEmailResponse } from "@/wab/shared/ApiSchema";
 import { Button, notification, Spin, Tooltip } from "antd";
 import * as React from "react";
-import "./AuthForm.sass";
 
 interface EmailVerificationProps {
   selfInfo: ApiUser;

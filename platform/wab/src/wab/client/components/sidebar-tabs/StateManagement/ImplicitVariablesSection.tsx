@@ -2,6 +2,7 @@ import { Component, isKnownTplNode, TplComponent, TplTag } from "@/wab/classes";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { PlumyIcon } from "@/wab/client/components/plume/plume-markers";
 import { getContextDependentValuesForImplicitState } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
+import ImplicitVariableRow from "@/wab/client/components/sidebar-tabs/StateManagement/ImplicitVariableRow";
 import { createNodeIcon } from "@/wab/client/components/sidebar-tabs/tpl-tree";
 import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
 import {
@@ -20,7 +21,6 @@ import assert from "assert";
 import { computed } from "mobx";
 import { observer } from "mobx-react";
 import * as React from "react";
-import ImplicitVariableRow from "./ImplicitVariableRow";
 
 export interface ImplicitVariablesSectionProps
   extends DefaultImplicitVariablesSectionProps {

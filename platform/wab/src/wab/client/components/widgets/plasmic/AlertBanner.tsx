@@ -9,7 +9,7 @@ import { createDarkMask } from "@/wab/client/components/darkMask";
 import {
   PlasmicAlertBanner,
   PlasmicAlertBanner__VariantsArgs,
-} from "./PlasmicAlertBanner";
+} from "@/wab/client/components/widgets/plasmic/PlasmicAlertBanner";
 
 export interface AlertData {
   stateVariant: PlasmicAlertBanner__VariantsArgs["state"];

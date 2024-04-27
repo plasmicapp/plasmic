@@ -1,4 +1,7 @@
 import { U, UU } from "@/wab/client/cli-routes";
+import FreeTrialModal from "@/wab/client/components/dashboard/FreeTrialModal";
+import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
+import WorkspaceSection from "@/wab/client/components/dashboard/WorkspaceSection";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
@@ -17,9 +20,6 @@ import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
 import * as React from "react";
-import FreeTrialModal from "./FreeTrialModal";
-import { documentTitle } from "./page-utils";
-import WorkspaceSection from "./WorkspaceSection";
 
 interface TeamPageProps extends DefaultTeamPageProps {
   teamId: TeamId;

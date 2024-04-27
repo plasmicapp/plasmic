@@ -13,6 +13,7 @@ import {
 import { getComponentPresets } from "@/wab/client/code-components/code-presets";
 import { InsertRelLoc } from "@/wab/client/components/canvas/view-ops";
 import { checkAndNotifyUnsupportedHostVersion } from "@/wab/client/components/modals/codeComponentModals";
+import OmnibarGroup from "@/wab/client/components/omnibar/OmnibarGroup";
 import {
   createAddComponentPreset,
   createAddHostLessComponent,
@@ -75,7 +76,6 @@ import { useCombobox } from "downshift";
 import L from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
-import OmnibarGroup from "./OmnibarGroup";
 
 // The key that defines the recent items OmnibarGroup
 const RECENT_GROUP_KEY = "omnibar-recent";

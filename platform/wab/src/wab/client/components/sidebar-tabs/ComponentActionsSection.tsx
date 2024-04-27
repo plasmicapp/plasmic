@@ -1,6 +1,8 @@
 import { isKnownNamedState, isKnownRenderExpr } from "@/wab/classes";
 /** @format */
 import { TplComponent } from "@/wab/classes";
+import { ConnectToDBTableModal } from "@/wab/client/components/sidebar-tabs/DataSource/ConnectToDBTable";
+import { updateOrCreateExpr } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
 import Button from "@/wab/client/components/widgets/Button";
 import { reportError } from "@/wab/client/ErrorNotifications";
@@ -19,8 +21,6 @@ import $ from "jquery";
 import { observer } from "mobx-react";
 import React from "react";
 import { useUnmount } from "react-use";
-import { ConnectToDBTableModal } from "./DataSource/ConnectToDBTable";
-import { updateOrCreateExpr } from "./PropEditorRow";
 
 export const ComponentActionsSection = observer(
   function ComponentActionsSection(props: {

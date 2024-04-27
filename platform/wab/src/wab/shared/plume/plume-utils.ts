@@ -17,14 +17,14 @@ import {
   makePlasmicComponentName,
 } from "@/wab/shared/codegen/react-p/utils";
 import { jsLiteral, toVarName } from "@/wab/shared/codegen/util";
-import { getTplSlotForParam, isSlot } from "@/wab/shared/SlotUtils";
-import { flattenTpls, isTplComponent } from "@/wab/tpls";
-import React from "react";
 import {
   getPlumeEditorPlugin,
   PlumeCodeComponentMeta,
   PlumeType,
-} from "./plume-registry";
+} from "@/wab/shared/plume/plume-registry";
+import { getTplSlotForParam, isSlot } from "@/wab/shared/SlotUtils";
+import { flattenTpls, isTplComponent } from "@/wab/tpls";
+import React from "react";
 
 /**
  * A stub for default slot contents.

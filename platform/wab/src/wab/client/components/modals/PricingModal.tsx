@@ -1,5 +1,8 @@
 import { AppCtx } from "@/wab/client/app-ctx";
 import { isHostFrame, U } from "@/wab/client/cli-routes";
+import TeamPicker from "@/wab/client/components/modals/TeamPicker";
+import UpsellCheckout from "@/wab/client/components/modals/UpsellCheckout";
+import UpsellConfirm from "@/wab/client/components/modals/UpsellConfirm";
 import PriceTierPicker from "@/wab/client/components/pricing/PriceTierPicker";
 import {
   showTemporaryInfo,
@@ -30,9 +33,6 @@ import { Alert, Form } from "antd";
 import * as React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
 import { MakeADT } from "ts-adt/MakeADT";
-import TeamPicker from "./TeamPicker";
-import UpsellCheckout from "./UpsellCheckout";
-import UpsellConfirm from "./UpsellConfirm";
 
 const DEFAULT_BILLING_FREQUENCY = "year";
 

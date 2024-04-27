@@ -29,6 +29,50 @@ import {
   VariantsRef,
   VarRef,
 } from "@/wab/classes";
+import { ArrayPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/ArrayPropEditor";
+import { BoolPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/BoolPropEditor";
+import { CardPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/CardPickerEditor";
+import { ChoicePropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/ChoicePropEditor";
+import { CodeEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/CodeEditor";
+import { CustomPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/CustomPropEditor";
+import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
+import DateRangeStringsEditor from "@/wab/client/components/sidebar-tabs/ComponentProps/DateRangeStringsEditor";
+import DateStringEditor from "@/wab/client/components/sidebar-tabs/ComponentProps/DateStringEditor";
+import { EnumPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/EnumPropEditor";
+import { FormValidationRulesEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/FormValidationRulesEditor";
+import {
+  GraphQLEditor,
+  GraphQLValue,
+} from "@/wab/client/components/sidebar-tabs/ComponentProps/GraphQLEditor";
+import { HrefEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/HrefEditor";
+import { ImagePropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/ImagePropEditor";
+import { InvalidationEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/InvalidationEditor";
+import { MultiSelectEnumPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/MultiSelectEnumPropEditor";
+import { NumPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/NumPropEditor";
+import { ObjectPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/ObjectPropEditor";
+import { RichTextPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/RichTextPropEditor";
+import { TemplatedStringPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
+import {
+  DataSourceEditor,
+  ExprEditor,
+  InteractionExprEditor,
+  InteractionPropEditor,
+  TargetPropEditor,
+  TplRefEditor,
+  VariableEditor,
+} from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
+import { FormDataConnectionPropEditor } from "@/wab/client/components/sidebar-tabs/DataSource/ConnectToDBTable";
+import { DataSourceOpDataPicker } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpDataPicker";
+import { DataSourceOpPicker } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
+import {
+  ControlExtras,
+  PropEditorRow,
+  usePropValueEditorContext,
+} from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import {
+  StyleExprButton,
+  StyleExprSpec,
+} from "@/wab/client/components/sidebar-tabs/StyleExprModal";
 import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { ColorButton } from "@/wab/client/components/style-controls/ColorButton";
 import { extractDataCtx } from "@/wab/client/state-management/interactions-meta";
@@ -79,44 +123,6 @@ import { ContextDependentConfig } from "@plasmicapp/host";
 import L, { isNil, isNumber } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
-import { ArrayPropEditor } from "./ComponentProps/ArrayPropEditor";
-import { BoolPropEditor } from "./ComponentProps/BoolPropEditor";
-import { CardPickerEditor } from "./ComponentProps/CardPickerEditor";
-import { ChoicePropEditor } from "./ComponentProps/ChoicePropEditor";
-import { CodeEditor } from "./ComponentProps/CodeEditor";
-import { CustomPropEditor } from "./ComponentProps/CustomPropEditor";
-import { DataPickerEditor } from "./ComponentProps/DataPickerEditor";
-import DateRangeStringsEditor from "./ComponentProps/DateRangeStringsEditor";
-import DateStringEditor from "./ComponentProps/DateStringEditor";
-import { EnumPropEditor } from "./ComponentProps/EnumPropEditor";
-import { FormValidationRulesEditor } from "./ComponentProps/FormValidationRulesEditor";
-import { GraphQLEditor, GraphQLValue } from "./ComponentProps/GraphQLEditor";
-import { HrefEditor } from "./ComponentProps/HrefEditor";
-import { ImagePropEditor } from "./ComponentProps/ImagePropEditor";
-import { InvalidationEditor } from "./ComponentProps/InvalidationEditor";
-import { MultiSelectEnumPropEditor } from "./ComponentProps/MultiSelectEnumPropEditor";
-import { NumPropEditor } from "./ComponentProps/NumPropEditor";
-import { ObjectPropEditor } from "./ComponentProps/ObjectPropEditor";
-import { RichTextPropEditor } from "./ComponentProps/RichTextPropEditor";
-import { TemplatedStringPropEditor } from "./ComponentProps/StringPropEditor";
-import {
-  DataSourceEditor,
-  ExprEditor,
-  InteractionExprEditor,
-  InteractionPropEditor,
-  TargetPropEditor,
-  TplRefEditor,
-  VariableEditor,
-} from "./ComponentPropsSection";
-import { FormDataConnectionPropEditor } from "./DataSource/ConnectToDBTable";
-import { DataSourceOpDataPicker } from "./DataSource/DataSourceOpDataPicker";
-import { DataSourceOpPicker } from "./DataSource/DataSourceOpPicker";
-import {
-  ControlExtras,
-  PropEditorRow,
-  usePropValueEditorContext,
-} from "./PropEditorRow";
-import { StyleExprButton, StyleExprSpec } from "./StyleExprModal";
 
 const PropValueEditor_ = (
   props: {

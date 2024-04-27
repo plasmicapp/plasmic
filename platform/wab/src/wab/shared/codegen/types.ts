@@ -1,5 +1,5 @@
+import { FontUsage } from "@/wab/shared/codegen/fonts";
 import { LocalizationKeyScheme } from "@/wab/shared/localization";
-import { FontUsage } from "./fonts";
 
 export interface InterpClassNames {
   unconditionalClasses: string[];

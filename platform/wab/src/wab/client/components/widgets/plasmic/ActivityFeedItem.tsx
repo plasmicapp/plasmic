@@ -5,7 +5,7 @@ import { AvatarGallery } from "@/wab/client/components/studio/Avatar";
 import {
   PlasmicActivityFeedItem__VariantsArgs,
   PlasmicActivityFeedItem,
-} from "./PlasmicActivityFeedItem";
+} from "@/wab/client/components/widgets/plasmic/PlasmicActivityFeedItem";
 
 export interface ActivityFeedItemData {
   id: string;

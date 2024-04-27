@@ -81,13 +81,11 @@ import {
   Variant,
   VariantSetting,
   VarRef,
-} from "./classes";
+} from "@/wab/classes";
 /* eslint-disable
     no-fallthrough,
 */
-import L, { uniq, uniqBy } from "lodash";
-import * as US from "underscore.string";
-import type { ViewCtx } from "./client/studio-ctx/view-ctx";
+import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
   assert,
   check,
@@ -108,12 +106,12 @@ import {
   unexpected,
   withoutNils,
   xDifference,
-} from "./common";
-import { DeepReadonly } from "./commons/types";
+} from "@/wab/common";
+import { DeepReadonly } from "@/wab/commons/types";
 import {
   TAG_TO_HTML_ATTRIBUTES,
   TAG_TO_HTML_INTERFACE,
-} from "./component-metas/tag-to-html-interface";
+} from "@/wab/component-metas/tag-to-html-interface";
 import {
   CodeComponent,
   findStateForOnChangeParam,
@@ -122,61 +120,64 @@ import {
   isCodeComponent,
   isHostLessCodeComponent,
   isPlumeComponent,
-} from "./components";
-import { getCssInitial } from "./css";
-import * as Exprs from "./exprs";
+} from "@/wab/components";
+import { getCssInitial } from "@/wab/css";
+import * as Exprs from "@/wab/exprs";
 import {
   isRealCodeExpr,
   isRealCodeExprEnsuringType,
   tryExtractJson,
-} from "./exprs";
-import * as Html from "./html";
-import { mkVar } from "./lang";
-import { metaSvc } from "./metas";
-import { isAdvancedProp } from "./shared/code-components/code-components";
-import { toVarName } from "./shared/codegen/util";
-import { isRenderableType, typeFactory } from "./shared/core/model-util";
-import { isTagInline } from "./shared/core/rich-text-util";
+} from "@/wab/exprs";
+import * as Html from "@/wab/html";
+import { mkVar } from "@/wab/lang";
+import { metaSvc } from "@/wab/metas";
+import { isAdvancedProp } from "@/wab/shared/code-components/code-components";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { isRenderableType, typeFactory } from "@/wab/shared/core/model-util";
+import { isTagInline } from "@/wab/shared/core/rich-text-util";
 import {
   ignoredConvertablePlainTextProps,
   typographyCssProps,
-} from "./shared/core/style-props";
-import { CanvasEnv, evalCodeWithEnv } from "./shared/eval";
-import { parseExpr, pathToString } from "./shared/eval/expression-parser";
+} from "@/wab/shared/core/style-props";
+import { CanvasEnv, evalCodeWithEnv } from "@/wab/shared/eval";
+import { parseExpr, pathToString } from "@/wab/shared/eval/expression-parser";
 import {
   FREE_CONTAINER_LOWER,
   GRID_LOWER,
   HORIZ_CONTAINER_LOWER,
   LAYOUT_CONTAINER_LOWER,
   VERT_CONTAINER_LOWER,
-} from "./shared/Labels";
-import { ContainerLayoutType, getRshContainerType } from "./shared/layoututils";
+} from "@/wab/shared/Labels";
+import {
+  ContainerLayoutType,
+  getRshContainerType,
+} from "@/wab/shared/layoututils";
 import {
   getPlumeCodegenPlugin,
   getPlumeEditorPlugin,
-} from "./shared/plume/plume-registry";
+} from "@/wab/shared/plume/plume-registry";
 import {
   ReadonlyIRuleSetHelpersX,
   RSH,
   RuleSetHelpers,
-} from "./shared/RuleSetHelpers";
+} from "@/wab/shared/RuleSetHelpers";
 import {
   fillCodeComponentDefaultSlotContent,
   getSlotArgs,
   getSlotSelectionContainingTpl,
   isCodeComponentSlot,
   isDescendantOfVirtualRenderExpr,
-} from "./shared/SlotUtils";
+} from "@/wab/shared/SlotUtils";
 import {
   getTplComponentArg,
   setTplComponentArg,
   TplMgr,
-} from "./shared/TplMgr";
-import { $$$ } from "./shared/TplQuery";
+} from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
 import {
   makeVariantComboSorter,
   sortedVariantSettings,
-} from "./shared/variant-sort";
+} from "@/wab/shared/variant-sort";
 import {
   ensureBaseVariantSetting,
   ensureVariantSetting,
@@ -184,12 +185,14 @@ import {
   mkVariantSetting,
   tryGetBaseVariantSetting,
   VariantCombo,
-} from "./shared/Variants";
-import { extractComponentUsages, writeable } from "./sites";
-import { SlotSelection } from "./slots";
-import { isOnChangeParam } from "./states";
-import { smartHumanize } from "./strs";
-import * as styles from "./styles";
+} from "@/wab/shared/Variants";
+import { extractComponentUsages, writeable } from "@/wab/sites";
+import { SlotSelection } from "@/wab/slots";
+import { isOnChangeParam } from "@/wab/states";
+import { smartHumanize } from "@/wab/strs";
+import * as styles from "@/wab/styles";
+import L, { uniq, uniqBy } from "lodash";
+import * as US from "underscore.string";
 
 /**
  * From

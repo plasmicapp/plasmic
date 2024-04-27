@@ -62,6 +62,20 @@ import { StringPropEditor } from "@/wab/client/components/sidebar-tabs/Component
 import { IndentedRow } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import {
+  DynamicValueWidget,
+  mkUndefinedObjectPath,
+} from "@/wab/client/components/sidebar-tabs/DataSource/DataPickerWidgetFactory";
+import styles from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker.module.scss";
+import DataSourceQueryBuilder from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceQueryBuilder";
+import {
+  GqlComponents,
+  GqlDoc,
+} from "@/wab/client/components/sidebar-tabs/DataSource/specific-data-source-ui/GqlComponents";
+import {
+  TemplatedTextEditorWithMenuIndicator,
+  TemplatedTextWidget,
+} from "@/wab/client/components/sidebar-tabs/DataSource/TemplatedTextWidget";
 import { useSourceOp } from "@/wab/client/components/sidebar-tabs/useSourceOp";
 import {
   FullRow,
@@ -180,17 +194,6 @@ import SearchIcon from "src/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
 import { ApiDataSource } from "src/wab/shared/ApiSchema";
 import { siteToUsedDataSources } from "src/wab/shared/cached-selectors";
 import useSWR from "swr";
-import {
-  DynamicValueWidget,
-  mkUndefinedObjectPath,
-} from "./DataPickerWidgetFactory";
-import styles from "./DataSourceOpPicker.module.scss";
-import DataSourceQueryBuilder from "./DataSourceQueryBuilder";
-import { GqlComponents, GqlDoc } from "./specific-data-source-ui/GqlComponents";
-import {
-  TemplatedTextEditorWithMenuIndicator,
-  TemplatedTextWidget,
-} from "./TemplatedTextWidget";
 
 interface DataSourceOpPickerInputs {
   onRowSelected?: (row: any) => void;

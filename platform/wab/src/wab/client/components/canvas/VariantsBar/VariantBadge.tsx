@@ -1,4 +1,5 @@
 import { Component, Variant } from "@/wab/classes";
+import styles from "@/wab/client/components/canvas/VariantsBar/VariantBadge.module.scss";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import {
   makeCanvasVariantContextMenu,
@@ -17,7 +18,6 @@ import { Popover } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useLayoutEffect, useRef, useState } from "react";
-import styles from "./VariantBadge.module.scss";
 
 interface VariantBadgeProps extends DefaultVariantBadgeProps {
   variant: Variant;

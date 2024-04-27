@@ -1,8 +1,8 @@
+import sty from "@/wab/client/components/menus/FrameSizeMenu.module.sass";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { FrameSize, frameSizeGroups } from "@/wab/shared/responsiveness";
 import { Menu } from "antd";
 import React from "react";
-import sty from "./FrameSizeMenu.module.sass";
 
 export function makeFrameSizeMenu({
   onClick,

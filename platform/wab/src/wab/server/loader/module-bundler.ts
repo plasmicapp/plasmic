@@ -1,5 +1,6 @@
 import { mkShortUuid, omitNils, tuple, withoutNils } from "@/wab/common";
 import { transformBundlerErrors } from "@/wab/server/loader/error-handler";
+import { makeGlobalContextsProviderFileName } from "@/wab/server/loader/module-writer";
 import { withSpan } from "@/wab/server/util/apm-util";
 import { uploadFilesToS3 } from "@/wab/server/util/s3-util";
 import {
@@ -29,7 +30,6 @@ import csso from "postcss-csso";
 import { OutputOptions, rollup } from "rollup";
 import postcss from "rollup-plugin-postcss";
 import { terser } from "rollup-plugin-terser";
-import { makeGlobalContextsProviderFileName } from "./module-writer";
 
 export interface ComponentMeta {
   id: string;

@@ -18,7 +18,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultLeftActivitiesPanelProps altogether and have
 // total control over the props for your component.
-interface LeftActivitiesPanelProps extends DefaultLeftActivitiesPanelProps {}
+type LeftActivitiesPanelProps = DefaultLeftActivitiesPanelProps;
 
 function LeftActivitiesPanel(props: LeftActivitiesPanelProps) {
   // Use PlasmicLeftActivitiesPanel to render this component as it was

@@ -1,5 +1,11 @@
 /** @format */
 
+import {
+  OmnibarGroupData,
+  OmnibarItem,
+} from "@/wab/client/components/omnibar/Omnibar";
+import OmnibarAddItem from "@/wab/client/components/omnibar/OmnibarAddItem";
+import OmnibarCommandItem from "@/wab/client/components/omnibar/OmnibarCommandItem";
 import { DraggableInsertable } from "@/wab/client/components/studio/add-drawer/DraggableInsertable";
 import { PlainLink } from "@/wab/client/components/widgets";
 import { isCommandItem } from "@/wab/client/definitions/commands";
@@ -16,9 +22,6 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { UseComboboxGetItemPropsOptions } from "downshift";
 import * as React from "react";
-import { OmnibarGroupData, OmnibarItem } from "./Omnibar";
-import OmnibarAddItem from "./OmnibarAddItem";
-import OmnibarCommandItem from "./OmnibarCommandItem";
 
 interface OmnibarGroupProps extends DefaultOmnibarGroupProps {
   studioCtx: StudioCtx;

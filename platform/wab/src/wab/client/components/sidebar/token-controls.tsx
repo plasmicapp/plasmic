@@ -1,6 +1,8 @@
 // eslint-disable-next-line no-restricted-imports
 import { StyleToken } from "@/wab/classes";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import ColorTokenControl from "@/wab/client/components/sidebar/ColorTokenControl";
+import GeneralTokenControl from "@/wab/client/components/sidebar/GeneralTokenControl";
 import { useMultiAssetsActions } from "@/wab/client/components/sidebar/MultiAssetsActions";
 import { ColorSidebarPopup } from "@/wab/client/components/style-controls/ColorButton";
 import ColorSwatch from "@/wab/client/components/style-controls/ColorSwatch";
@@ -21,8 +23,6 @@ import { observer } from "mobx-react";
 import React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { FaArrowRight } from "react-icons/fa";
-import ColorTokenControl from "./ColorTokenControl";
-import GeneralTokenControl from "./GeneralTokenControl";
 
 export const newTokenValueAllowed = (
   token: StyleToken,

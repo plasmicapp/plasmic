@@ -5,6 +5,11 @@ import {
   Site,
   Variant,
 } from "@/wab/classes";
+import {
+  makeClientPinManager,
+  makeCurrentVariantEvalState,
+  makeEmptyPinState,
+} from "@/wab/client/components/variants/ClientPinManager";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { assert, ensure } from "@/wab/common";
@@ -44,11 +49,6 @@ import {
 } from "@/wab/shared/Variants";
 import { $State } from "@plasmicapp/react-web";
 import { isArray } from "lodash";
-import {
-  makeClientPinManager,
-  makeCurrentVariantEvalState,
-  makeEmptyPinState,
-} from "./ClientPinManager";
 
 export interface VariantsController {
   onClearVariants: () => void;

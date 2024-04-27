@@ -1,9 +1,4 @@
-import keyBy from "lodash/keyBy";
-import keys from "lodash/keys";
-import orderBy from "lodash/orderBy";
-import pick from "lodash/pick";
-import { CSSProperties } from "react";
-import { ColorFill } from "./bg-styles";
+import { ColorFill } from "@/wab/bg-styles";
 import {
   ArenaFrame,
   ArenaFrameCell,
@@ -82,8 +77,8 @@ import {
   VariantsRef,
   VarRef,
   VirtualRenderExpr,
-} from "./classes";
-import { Dict } from "./collections";
+} from "@/wab/classes";
+import { Dict } from "@/wab/collections";
 import {
   assert,
   ensure,
@@ -96,12 +91,12 @@ import {
   switchType,
   tuple,
   withoutNils,
-} from "./common";
+} from "@/wab/common";
 import {
   mkTokenRef,
   replaceAllTokenRefs,
   TokenType,
-} from "./commons/StyleToken";
+} from "@/wab/commons/StyleToken";
 import {
   allComponentVariants,
   cloneComponent,
@@ -116,17 +111,17 @@ import {
   getSuperComponentVariantToComponent,
   isFrameComponent,
   isPageComponent,
-} from "./components";
-import { getCssInitial } from "./css";
-import { convertHrefExprToCodeExpr } from "./exprs";
+} from "@/wab/components";
+import { getCssInitial } from "@/wab/css";
+import { convertHrefExprToCodeExpr } from "@/wab/exprs";
 import {
   cloneImageAsset,
   isIcon,
   mkImageAssetRef,
   replaceAllAssetRefs,
-} from "./image-assets";
-import { DependencyWalkScope, walkDependencyTree } from "./project-deps";
-import { ArenaType } from "./shared/ApiSchema";
+} from "@/wab/image-assets";
+import { DependencyWalkScope, walkDependencyTree } from "@/wab/project-deps";
+import { ArenaType } from "@/wab/shared/ApiSchema";
 import {
   AnyArena,
   cloneArena,
@@ -135,37 +130,40 @@ import {
   isComponentArena,
   isPageArena,
   mkMixedArena,
-} from "./shared/Arenas";
+} from "@/wab/shared/Arenas";
 import {
   findAllDataSourceOpExprForComponent,
   flattenComponent,
-} from "./shared/cached-selectors";
-import { ensureComponentArenaColsOrder } from "./shared/component-arenas";
-import { isRenderableType, isRenderFuncType } from "./shared/core/model-util";
-import { typographyCssProps } from "./shared/core/style-props";
-import { parseScreenSpec } from "./shared/Css";
-import { ARENA_CAP } from "./shared/Labels";
-import { getRshContainerType } from "./shared/layoututils";
-import { maybeComputedFn } from "./shared/mobx-util";
+} from "@/wab/shared/cached-selectors";
+import { ensureComponentArenaColsOrder } from "@/wab/shared/component-arenas";
+import {
+  isRenderableType,
+  isRenderFuncType,
+} from "@/wab/shared/core/model-util";
+import { typographyCssProps } from "@/wab/shared/core/style-props";
+import { parseScreenSpec } from "@/wab/shared/Css";
+import { ARENA_CAP } from "@/wab/shared/Labels";
+import { getRshContainerType } from "@/wab/shared/layoututils";
+import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
   defaultResponsiveSettings,
   ResponsiveStrategy,
-} from "./shared/responsiveness";
-import { getSlotArgs } from "./shared/SlotUtils";
-import { mkScreenVariantGroup } from "./shared/SpecialVariants";
-import { getMatchingPagePathParams } from "./shared/utils/url-utils";
+} from "@/wab/shared/responsiveness";
+import { getSlotArgs } from "@/wab/shared/SlotUtils";
+import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
+import { getMatchingPagePathParams } from "@/wab/shared/utils/url-utils";
 import {
   isGlobalVariant,
   isGlobalVariantGroup,
   mkBaseVariant,
-} from "./shared/Variants";
+} from "@/wab/shared/Variants";
 import {
   cloneMixin,
   cloneStyleToken,
   cloneTheme,
   cssPropsToRuleSet,
   mkRuleSet,
-} from "./styles";
+} from "@/wab/styles";
 import {
   clone,
   findExprsInComponent,
@@ -176,7 +174,12 @@ import {
   isTplComponent,
   isTplVariantable,
   tryGetTplOwnerComponent,
-} from "./tpls";
+} from "@/wab/tpls";
+import keyBy from "lodash/keyBy";
+import keys from "lodash/keys";
+import orderBy from "lodash/orderBy";
+import pick from "lodash/pick";
+import { CSSProperties } from "react";
 
 export const writeable = <T extends ObjInst>(
   v: T

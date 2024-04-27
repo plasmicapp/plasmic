@@ -1,5 +1,6 @@
 import { CanvasConfigButton } from "@/wab/client/components/canvas/CanvasFrame/CanvasConfigButton";
 import { VariantsBar } from "@/wab/client/components/canvas/VariantsBar";
+import S from "@/wab/client/components/studio/FocusedModeToolbar/FocusedModeToolbar.module.scss";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import IconButton from "@/wab/client/components/widgets/IconButton";
 import Switch from "@/wab/client/components/widgets/Switch";
@@ -8,7 +9,6 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { DEVFLAGS } from "@/wab/devflags";
 import { observer } from "mobx-react";
 import React from "react";
-import S from "./FocusedModeToolbar.module.scss";
 
 export const FocusedModeToolbar = observer(
   ({ studioCtx }: { studioCtx: StudioCtx }) => {

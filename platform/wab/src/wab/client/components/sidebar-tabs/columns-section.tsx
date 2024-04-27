@@ -1,4 +1,13 @@
 import { ColumnsConfig } from "@/wab/classes";
+import S from "@/wab/client/components/sidebar-tabs/ColumnsSection.module.scss";
+import { FlexContainerControls } from "@/wab/client/components/sidebar-tabs/FlexContainerControls";
+import { ColumnsAlignControls } from "@/wab/client/components/sidebar-tabs/ResponsiveColumns/ColumnsAlignControls";
+import { ColumnsSizeControls } from "@/wab/client/components/sidebar-tabs/ResponsiveColumns/ColumnsSizeControls";
+import { ColumnsWrapControls } from "@/wab/client/components/sidebar-tabs/ResponsiveColumns/ColumnsWrapControls";
+import {
+  addNewColumn,
+  removeLastColumn,
+} from "@/wab/client/components/sidebar-tabs/ResponsiveColumns/tpl-columns-utils";
 import {
   DraggableDimLabel,
   FullRow,
@@ -29,15 +38,6 @@ import { Menu } from "antd";
 import cn from "classnames";
 import { observer } from "mobx-react";
 import React from "react";
-import S from "./ColumnsSection.module.scss";
-import { FlexContainerControls } from "./FlexContainerControls";
-import { ColumnsAlignControls } from "./ResponsiveColumns/ColumnsAlignControls";
-import { ColumnsSizeControls } from "./ResponsiveColumns/ColumnsSizeControls";
-import { ColumnsWrapControls } from "./ResponsiveColumns/ColumnsWrapControls";
-import {
-  addNewColumn,
-  removeLastColumn,
-} from "./ResponsiveColumns/tpl-columns-utils";
 
 export interface ColumnsPanelProps {
   studioCtx: StudioCtx;

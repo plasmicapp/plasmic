@@ -1,5 +1,5 @@
+import { ensure } from "@/wab/common";
 import { capitalize, Dictionary } from "lodash";
-import { ensure } from "./common";
 
 export type FilterEffectType =
   | "blur"

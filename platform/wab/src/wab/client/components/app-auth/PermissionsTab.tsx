@@ -5,6 +5,15 @@ import {
   useGetProjectReleases,
 } from "@/wab/client/api-hooks";
 import { AppCtx } from "@/wab/client/app-ctx";
+import {
+  useAppAccessRules,
+  useAppAuthConfig,
+  useAppRoles,
+  useDirectoryGroups,
+  useMutateHostAppAuthData,
+} from "@/wab/client/components/app-auth/app-auth-contexts";
+import { APP_AUTH_TRACKING_EVENT } from "@/wab/client/components/app-auth/constants";
+import PermissionRule from "@/wab/client/components/app-auth/PermissionRule";
 import { Spinner } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
 import Chip from "@/wab/client/components/widgets/Chip";
@@ -25,15 +34,6 @@ import { uniqBy, without } from "lodash";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import validator from "validator";
-import {
-  useAppAccessRules,
-  useAppAuthConfig,
-  useAppRoles,
-  useDirectoryGroups,
-  useMutateHostAppAuthData,
-} from "./app-auth-contexts";
-import { APP_AUTH_TRACKING_EVENT } from "./constants";
-import PermissionRule from "./PermissionRule";
 
 export interface PermissionsTabProps extends DefaultPermissionsTabProps {
   directoryId: string;

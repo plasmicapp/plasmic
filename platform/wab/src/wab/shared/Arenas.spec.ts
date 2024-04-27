@@ -1,12 +1,12 @@
 import { Variant } from "@/wab/classes";
 import { ensure } from "@/wab/common";
-import { createSite } from "@/wab/sites";
 import {
   getFrameSizeForTargetScreenVariant,
   normalDesktopWidth,
   normalMobileWidth,
-} from "./Arenas";
-import { mkVariant } from "./Variants";
+} from "@/wab/shared/Arenas";
+import { mkVariant } from "@/wab/shared/Variants";
+import { createSite } from "@/wab/sites";
 
 describe("getFrameSizeForTargetScreenVariant", () => {
   it("works", () => {

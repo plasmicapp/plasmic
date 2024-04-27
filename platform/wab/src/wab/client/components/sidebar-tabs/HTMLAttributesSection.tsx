@@ -7,6 +7,11 @@ import {
   TplComponent,
   TplTag,
 } from "@/wab/classes";
+import {
+  inferPropTypeFromAttr,
+  PropEditorRow,
+} from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import HandlerSection from "@/wab/client/components/sidebar-tabs/StateManagement/HandlerSection";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
@@ -58,8 +63,6 @@ import { RefSelectProps } from "antd/lib/select";
 import L, { keyBy, orderBy, uniq, without } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
-import { inferPropTypeFromAttr, PropEditorRow } from "./PropEditorRow";
-import HandlerSection from "./StateManagement/HandlerSection";
 
 // Note: these should be JSX attributes, not HTML attributes.
 const COMMON_GLOBAL_ATTRS = [

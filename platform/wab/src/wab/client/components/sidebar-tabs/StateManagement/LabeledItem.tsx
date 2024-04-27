@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultLabeledItemProps altogether and have
 // total control over the props for your component.
-export interface LabeledItemProps extends DefaultLabeledItemProps {}
+export type LabeledItemProps = DefaultLabeledItemProps;
 
 function LabeledItem_(props: LabeledItemProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicLabeledItem to render this component as it was

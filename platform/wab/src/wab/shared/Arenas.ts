@@ -36,22 +36,7 @@ import {
   isPageFrame,
 } from "@/wab/components";
 import { Pt } from "@/wab/geom";
-import {
-  allGlobalVariants,
-  getAllSiteFrames,
-  getComponentArena,
-  getFrameContainerType,
-  getPageArena,
-  getResponsiveStrategy,
-  getSiteArenas,
-  getSiteScreenSizes,
-} from "@/wab/sites";
-import { capitalizeFirst } from "@/wab/strs";
-import { clone, mkTplComponent } from "@/wab/tpls";
-import { has, isArray, isEmpty, keyBy, orderBy } from "lodash";
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { IObservableValue, observable } from "mobx";
-import { ArenaType, arenaTypes } from "./ApiSchema";
+import { ArenaType, arenaTypes } from "@/wab/shared/ApiSchema";
 import {
   deriveDefaultFrameSize,
   ensureActivatedScreenVariantsForComponentArena,
@@ -67,20 +52,20 @@ import {
   removeFramesFromComponentArenaForVariants,
   removeManagedFramesFromComponentArenaForVariantGroup,
   syncComponentArenaFrameSize,
-} from "./component-arenas";
-import { parseScreenSpec, ScreenSizeSpec } from "./Css";
-import { COMBINATIONS_CAP } from "./Labels";
-import { ContainerLayoutType } from "./layoututils";
+} from "@/wab/shared/component-arenas";
+import { parseScreenSpec, ScreenSizeSpec } from "@/wab/shared/Css";
+import { COMBINATIONS_CAP } from "@/wab/shared/Labels";
+import { ContainerLayoutType } from "@/wab/shared/layoututils";
 import {
   getPageArenaRowLabel,
   makePageArenaFrame,
   removeManagedFramesFromPageArenaForVariantGroup,
   removeManagedFramesFromPageArenaForVariants,
   syncPageArenaFrameSize,
-} from "./page-arenas";
-import { FramePinManager } from "./PinManager";
-import { ResponsiveStrategy } from "./responsiveness";
-import { isStretchyComponent } from "./sizingutils";
+} from "@/wab/shared/page-arenas";
+import { FramePinManager } from "@/wab/shared/PinManager";
+import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
+import { isStretchyComponent } from "@/wab/shared/sizingutils";
 import {
   ensureValidCombo,
   getBaseVariant,
@@ -89,7 +74,22 @@ import {
   getPartitionedScreenVariants,
   getPartitionedScreenVariantsByTargetVariant,
   isScreenVariant,
-} from "./Variants";
+} from "@/wab/shared/Variants";
+import {
+  allGlobalVariants,
+  getAllSiteFrames,
+  getComponentArena,
+  getFrameContainerType,
+  getPageArena,
+  getResponsiveStrategy,
+  getSiteArenas,
+  getSiteScreenSizes,
+} from "@/wab/sites";
+import { capitalizeFirst } from "@/wab/strs";
+import { clone, mkTplComponent } from "@/wab/tpls";
+import { has, isArray, isEmpty, keyBy, orderBy } from "lodash";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { IObservableValue, observable } from "mobx";
 
 export type AnyArena = Arena | ComponentArena | PageArena;
 

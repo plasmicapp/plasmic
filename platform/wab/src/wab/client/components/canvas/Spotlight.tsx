@@ -1,3 +1,4 @@
+import { recomputeBounds } from "@/wab/client/components/canvas/HoverBox";
 import { frameToScalerRect } from "@/wab/client/coords";
 import { hasLayoutBox } from "@/wab/client/dom";
 import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
@@ -14,7 +15,6 @@ import $ from "jquery";
 import { reaction } from "mobx";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { recomputeBounds } from "./HoverBox";
 
 export const Spotlight = observer(Spotlight_);
 

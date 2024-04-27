@@ -1,3 +1,7 @@
+import {
+  useDirectoryGroups,
+  useDirectoryUsers,
+} from "@/wab/client/components/app-auth/app-auth-contexts";
 import Button from "@/wab/client/components/widgets/Button";
 import Checkbox from "@/wab/client/components/widgets/Checkbox";
 import Chip from "@/wab/client/components/widgets/Chip";
@@ -6,7 +10,6 @@ import { ApiEndUser } from "@/wab/shared/ApiSchema";
 import { Table } from "antd";
 import React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import { useDirectoryGroups, useDirectoryUsers } from "./app-auth-contexts";
 
 export default function DirectoryUsers(props: {
   teamId: string;

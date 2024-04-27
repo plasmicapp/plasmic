@@ -1,6 +1,6 @@
 import { mergeSane } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
-import { DbMgr } from "./DbMgr";
+import { DbMgr } from "@/wab/server/db/DbMgr";
 
 export async function getDevFlagsMergedWithOverrides(
   mgr: DbMgr

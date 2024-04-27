@@ -1,4 +1,5 @@
 import type { Expr } from "@/wab/classes";
+import type { tags } from "@/wab/client/components/canvas/subdeps";
 import { CSSProperties } from "react";
 import {
   BaseEditor,
@@ -11,7 +12,6 @@ import {
 } from "slate";
 import type { ReactEditor } from "slate-react";
 import type { MakeADT } from "ts-adt/MakeADT";
-import type { tags } from "./subdeps";
 
 type ParagraphAttributes = {
   children: Descendant[];

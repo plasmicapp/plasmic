@@ -6,6 +6,7 @@ import {
   TplNode,
   VariantSetting,
 } from "@/wab/classes";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   assert,
   ensure,
@@ -66,10 +67,8 @@ import {
   tplChildren,
 } from "@/wab/tpls";
 import { sortBy } from "lodash";
-import { StudioCtx } from "./studio-ctx/StudioCtx";
 
 // @ts-ignore
-// eslint-disable-next-line path/no-relative-imports
 import reactWebCss from "!!raw-loader!../gen/static/styles/react-web-css.txt";
 
 export interface UpsertStyleChanges {

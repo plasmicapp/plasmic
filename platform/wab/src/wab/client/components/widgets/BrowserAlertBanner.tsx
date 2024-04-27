@@ -1,5 +1,5 @@
+import PlasmicAlertBanner from "@/wab/client/components/widgets/plasmic/PlasmicAlertBanner";
 import React from "react";
-import PlasmicAlertBanner from "./plasmic/PlasmicAlertBanner";
 
 export function BrowserAlertBanner() {
   const isChrome = navigator.userAgent.indexOf("Chrome") >= 0;

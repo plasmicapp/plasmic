@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultSegmentModalProps altogether and have
 // total control over the props for your component.
-export interface SegmentModalProps extends DefaultSegmentModalProps {}
+export type SegmentModalProps = DefaultSegmentModalProps;
 
 function SegmentModal_(props: SegmentModalProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicSegmentModal to render this component as it was

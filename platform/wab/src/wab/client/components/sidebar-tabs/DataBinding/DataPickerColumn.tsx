@@ -1,4 +1,15 @@
 import { ensureKnownInteraction } from "@/wab/classes";
+import DataPickerColumnItem from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerColumnItem";
+import {
+  ColumnItem,
+  DataPickerOpts,
+  evalExpr,
+  getItemPath,
+  getSupportedObjectKeys,
+  getVariableType,
+  isListType,
+  isTypeSupported,
+} from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
 import {
   DefaultDataPickerColumnProps,
   PlasmicDataPickerColumn,
@@ -17,17 +28,6 @@ import { mkMetaName } from "@plasmicapp/host";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
 import * as React from "react";
-import DataPickerColumnItem from "./DataPickerColumnItem";
-import {
-  ColumnItem,
-  DataPickerOpts,
-  evalExpr,
-  getItemPath,
-  getSupportedObjectKeys,
-  getVariableType,
-  isListType,
-  isTypeSupported,
-} from "./DataPickerUtil";
 
 export interface DataPickerColumnProps extends DefaultDataPickerColumnProps {
   data: Record<string, any>;

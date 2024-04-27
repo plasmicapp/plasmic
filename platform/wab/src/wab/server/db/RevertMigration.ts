@@ -1,10 +1,13 @@
 const { Command } = require("commander");
 import { assert, ensure, spawn } from "@/wab/common";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
+import {
+  ensureDbConnections,
+  getDefaultConnection,
+} from "@/wab/server/db/DbCon";
+import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
 import { isEmptyBundle, parseBundle } from "@/wab/shared/bundles";
-import { ensureDbConnections, getDefaultConnection } from "./DbCon";
-import { DbMgr, SUPER_USER } from "./DbMgr";
 
 export async function main() {
   const opts = new Command("Assert site invariants")

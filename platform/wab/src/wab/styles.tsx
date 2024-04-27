@@ -1,7 +1,4 @@
-import L, { camelCase, pick } from "lodash";
-import { CSSProperties } from "react";
-import { unquote } from "underscore.string";
-import { BackgroundLayer, bgClipTextTag } from "./bg-styles";
+import { BackgroundLayer, bgClipTextTag } from "@/wab/bg-styles";
 import {
   ArenaFrame,
   Arg,
@@ -31,7 +28,7 @@ import {
   VariantedRuleSet,
   VariantedValue,
   VariantSetting,
-} from "./classes";
+} from "@/wab/classes";
 import {
   assert,
   capCamelCase,
@@ -45,7 +42,7 @@ import {
   xMapValues,
   xpickBy,
   xpickExists,
-} from "./common";
+} from "@/wab/common";
 import {
   extractAllReferencedTokenIds,
   getExternalMixinPropVarName,
@@ -65,31 +62,31 @@ import {
   tokenTypeDefaults,
   tryParseMixinPropRef,
   tryParseTokenRef,
-} from "./commons/StyleToken";
-import { DeepReadonly, DeepReadonlyArray } from "./commons/types";
-import { isCodeComponent, isFrameComponent } from "./components";
-import * as css from "./css";
+} from "@/wab/commons/StyleToken";
+import { DeepReadonly, DeepReadonlyArray } from "@/wab/commons/types";
+import { isCodeComponent, isFrameComponent } from "@/wab/components";
+import * as css from "@/wab/css";
 import {
   getCssOverrides,
   getTagsWithCssOverrides,
   normProp,
   showCssShorthand,
-} from "./css";
-import { getProjectFlags } from "./devflags";
-import { codeLit } from "./exprs";
-import * as cssPegParser from "./gen/cssPegParser";
-import { standardCorners, standardSides } from "./geom";
-import { getGoogFontMeta } from "./googfonts";
-import { getImageAssetVarName, resolveAllAssetRefs } from "./image-assets";
-import { walkDependencyTree } from "./project-deps";
-import { AddItemKey } from "./shared/add-item-keys";
-import { getArenaFrames } from "./shared/Arenas";
+} from "@/wab/css";
+import { getProjectFlags } from "@/wab/devflags";
+import { codeLit } from "@/wab/exprs";
+import * as cssPegParser from "@/wab/gen/cssPegParser";
+import { standardCorners, standardSides } from "@/wab/geom";
+import { getGoogFontMeta } from "@/wab/googfonts";
+import { getImageAssetVarName, resolveAllAssetRefs } from "@/wab/image-assets";
+import { walkDependencyTree } from "@/wab/project-deps";
+import { AddItemKey } from "@/wab/shared/add-item-keys";
+import { getArenaFrames } from "@/wab/shared/Arenas";
 import {
   makeTokenRefResolver,
   siteToAllTokensDict,
-} from "./shared/cached-selectors";
-import { ComponentGenHelper } from "./shared/codegen/codegen-helpers";
-import { makeCssClassNameForVariantCombo } from "./shared/codegen/react-p";
+} from "@/wab/shared/cached-selectors";
+import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
+import { makeCssClassNameForVariantCombo } from "@/wab/shared/codegen/react-p";
 import {
   makeRootResetClassName,
   makeWabFlexContainerClassName,
@@ -98,9 +95,9 @@ import {
   makeWabSlotClassName,
   makeWabSlotStringWrapperClassName,
   makeWabTextClassName,
-} from "./shared/codegen/react-p/utils";
-import { TargetEnv } from "./shared/codegen/types";
-import { toVarName } from "./shared/codegen/util";
+} from "@/wab/shared/codegen/react-p/utils";
+import { TargetEnv } from "@/wab/shared/codegen/types";
+import { toVarName } from "@/wab/shared/codegen/util";
 import {
   ALWAYS_RESOLVE_MIXIN_PROPS,
   componentRootResetProps,
@@ -118,34 +115,34 @@ import {
   TPL_COMPONENT_PROPS,
   transitionProps,
   typographyCssProps,
-} from "./shared/core/style-props";
-import { imageDataUriToBlob } from "./shared/data-urls";
-import { ThemeTagSource } from "./shared/defined-indicator";
+} from "@/wab/shared/core/style-props";
+import { imageDataUriToBlob } from "@/wab/shared/data-urls";
+import { ThemeTagSource } from "@/wab/shared/defined-indicator";
 import {
   getNumericGap,
   isContentLayoutTpl,
   makeLayoutAwareRuleSet,
-} from "./shared/layoututils";
+} from "@/wab/shared/layoututils";
 import {
   readonlyRSH,
   RSH,
   RuleSetHelpers,
   splitCssValue,
-} from "./shared/RuleSetHelpers";
+} from "@/wab/shared/RuleSetHelpers";
 import {
   deriveSizeStylesForTpl,
   deriveSizeStyleValue,
   getViewportAwareHeight,
   isExplicitSize,
   isSizeProp,
-} from "./shared/sizingutils";
-import { isStyledTplSlot } from "./shared/SlotUtils";
-import { $$$ } from "./shared/TplQuery";
+} from "@/wab/shared/sizingutils";
+import { isStyledTplSlot } from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
 import {
   makeGlobalVariantComboSorter,
   partitionVariants,
-} from "./shared/variant-sort";
-import { VariantedStylesHelper } from "./shared/VariantedStylesHelper";
+} from "@/wab/shared/variant-sort";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   getGlobalVariants,
   hasScreenVariant,
@@ -158,9 +155,9 @@ import {
   tryGetVariantSetting,
   VariantCombo,
   variantComboKey,
-} from "./shared/Variants";
-import { appendVisibilityStylesForTpl } from "./shared/visibility-utils";
-import { GeneralUsageSummary, isHostLessPackage } from "./sites";
+} from "@/wab/shared/Variants";
+import { appendVisibilityStylesForTpl } from "@/wab/shared/visibility-utils";
+import { GeneralUsageSummary, isHostLessPackage } from "@/wab/sites";
 import {
   canTagHaveChildren,
   findVariantSettingsUnderTpl,
@@ -175,8 +172,11 @@ import {
   isTplTextBlock,
   isTplVariantable,
   tryGetOwnerSite,
-} from "./tpls";
-import { has3dComponent } from "./transform-utils";
+} from "@/wab/tpls";
+import { has3dComponent } from "@/wab/transform-utils";
+import L, { camelCase, pick } from "lodash";
+import { CSSProperties } from "react";
+import { unquote } from "underscore.string";
 
 export const selstr = (rs: /*TWZ*/ RuleSet) => `.${classNameForRuleSet(rs)}`;
 

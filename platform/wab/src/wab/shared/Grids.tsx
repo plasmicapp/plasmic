@@ -1,13 +1,13 @@
 import { TplNode, TplTag } from "@/wab/classes";
 import { betweenInclusive, ensureString } from "@/wab/common";
+import { gridChildProps } from "@/wab/shared/core/style-props";
+import { autoSize, NumericSize, showSizeCss, Size } from "@/wab/shared/Css";
+import { convertToRelativePosition } from "@/wab/shared/layoututils";
+import { RSH } from "@/wab/shared/RuleSetHelpers";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { ensureVariantSetting, VariantCombo } from "@/wab/shared/Variants";
 import * as L from "lodash";
 import { CSSProperties } from "react";
-import { gridChildProps } from "./core/style-props";
-import { autoSize, NumericSize, showSizeCss, Size } from "./Css";
-import { convertToRelativePosition } from "./layoututils";
-import { RSH } from "./RuleSetHelpers";
-import { $$$ } from "./TplQuery";
-import { ensureVariantSetting, VariantCombo } from "./Variants";
 
 export type Axis = "rows" | "cols";
 export const axes: ["rows", "cols"] = ["rows", "cols"];

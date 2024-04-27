@@ -1,9 +1,9 @@
 import { Component, DataSourceOpExpr, Site, TplNode } from "@/wab/classes";
 import { ApiAppRole } from "@/wab/shared/ApiSchema";
 import { findAllDataSourceOpExpr } from "@/wab/shared/cached-selectors";
+import { UnprotectedDataQueryLintIssue } from "@/wab/shared/linting/lint-types";
+import { lintIssuesEquals } from "@/wab/shared/linting/lint-utils";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
-import { UnprotectedDataQueryLintIssue } from "./lint-types";
-import { lintIssuesEquals } from "./lint-utils";
 
 const TYPE = "unprotected-data-query";
 

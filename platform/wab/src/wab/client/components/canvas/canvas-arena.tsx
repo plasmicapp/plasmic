@@ -1,4 +1,5 @@
 import { ArenaFrame } from "@/wab/classes";
+import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import { ComponentArenaLayout } from "@/wab/client/components/studio/arenas/ComponentArenaLayout";
 import { FocusModeLayout } from "@/wab/client/components/studio/arenas/FocusModeLayout";
 import { FreeFramesLayout } from "@/wab/client/components/studio/arenas/FreeFramesLayout";
@@ -14,7 +15,6 @@ import {
 } from "@/wab/shared/Arenas";
 import { observer } from "mobx-react";
 import React from "react";
-import { CanvasCtx } from "./canvas-ctx";
 
 export const CanvasArenaShell = observer(function CanvasArenaShell(props: {
   studioCtx: StudioCtx;

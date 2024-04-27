@@ -6,7 +6,7 @@ export const parseComponentProps = (rawComponentProps?: any) => {
     return undefined;
   }
   try {
-    let componentProps = JSON.parse(rawComponentProps);
+    const componentProps = JSON.parse(rawComponentProps);
     console.log(componentProps);
     if (!componentProps || isArray(componentProps)) {
       throw null;

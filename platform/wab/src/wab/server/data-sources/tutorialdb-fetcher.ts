@@ -1,4 +1,5 @@
 import { ensure } from "@/wab/common";
+import { PostgresFetcher } from "@/wab/server/data-sources/postgres-fetcher";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import {
   getSslOptions,
@@ -6,7 +7,6 @@ import {
 } from "@/wab/server/tutorialdb/tutorialdb-utils";
 import { TutorialDbDataSource } from "@/wab/shared/data-sources-meta/tutorialdb-meta";
 import { Connection } from "typeorm";
-import { PostgresFetcher } from "./postgres-fetcher";
 
 export async function makeTutorialDbFetcher(
   dbCon: Connection,

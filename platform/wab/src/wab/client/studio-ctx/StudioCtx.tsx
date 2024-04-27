@@ -98,6 +98,13 @@ import { PLATFORM } from "@/wab/client/platform";
 import { ProjectDependencyManager } from "@/wab/client/ProjectDependencyManager";
 import { requestIdleCallbackAsync } from "@/wab/client/requestidlecallback";
 import { plasmicExtensionAvailable } from "@/wab/client/screenshot-util";
+import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
+import { MultiplayerCtx } from "@/wab/client/studio-ctx/multiplayer-ctx";
+import {
+  SpotlightAndVariantsInfo,
+  ViewCtx,
+} from "@/wab/client/studio-ctx/view-ctx";
+import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import {
   StyleMgr,
   summaryToStyleChanges,
@@ -363,10 +370,6 @@ import semver from "semver";
 import * as Signals from "signals";
 import { mutate } from "swr";
 import { failable, FailableArgParams, IFailable } from "ts-failable";
-import { ComponentCtx } from "./component-ctx";
-import { MultiplayerCtx } from "./multiplayer-ctx";
-import { SpotlightAndVariantsInfo, ViewCtx } from "./view-ctx";
-import { ViewportCtx } from "./ViewportCtx";
 
 (window as any).dbg.classes = classes;
 

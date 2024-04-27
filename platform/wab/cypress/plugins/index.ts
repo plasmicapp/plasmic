@@ -25,11 +25,11 @@ const path = require("path");
 const fetchPolyfill = fs
   .readFileSync(require.resolve("whatwg-fetch"))
   .toString();
-
 const options = wp.defaultOptions;
 options.webpackOptions.resolve = {
   extensions: [".ts", ".js"],
   alias: {
+    "@": path.resolve(__dirname, "../../src"),
     lodash: "lodash-es",
     http: "stream-http",
     https: "https-browserify",

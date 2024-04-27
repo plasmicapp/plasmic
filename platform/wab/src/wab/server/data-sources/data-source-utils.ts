@@ -2,6 +2,18 @@ import { DataSourceOpExpr, Site } from "@/wab/classes";
 import { assert, isLiteralObject, jsonClone, swallow } from "@/wab/common";
 import { DEVFLAGS, getProjectFlags } from "@/wab/devflags";
 import { ExprCtx } from "@/wab/exprs";
+import { makeAirtableFetcher } from "@/wab/server/data-sources/airtable-fetcher";
+import { makeDynamoDbFetcher } from "@/wab/server/data-sources/dynamodb-fetcher";
+import { getMigratedUserPropsOpBundle } from "@/wab/server/data-sources/end-user-utils";
+import { makeFakeFetcher } from "@/wab/server/data-sources/fake-fetcher";
+import { makeGoogleSheetsFetcher } from "@/wab/server/data-sources/google-sheets-fetcher";
+import { makeGraphqlFetcher } from "@/wab/server/data-sources/graphql-fetcher";
+import { makeHttpFetcher } from "@/wab/server/data-sources/http-fetcher";
+import { makePlasmicCMSFetcher } from "@/wab/server/data-sources/plasmic-cms-fetcher";
+import { makePostgresFetcher } from "@/wab/server/data-sources/postgres-fetcher";
+import { makeSupabaseFetcher } from "@/wab/server/data-sources/supabase-fetcher";
+import { makeTutorialDbFetcher } from "@/wab/server/data-sources/tutorialdb-fetcher";
+import { makeZapierFetcher } from "@/wab/server/data-sources/zapier-fetcher";
 import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { getOpEncryptionKey as getDataSourceOperationEncryptionKey } from "@/wab/server/secrets";
@@ -48,18 +60,6 @@ import { isUUID } from "class-validator";
 import { isArray, isNil, isString, mapValues } from "lodash";
 import { astMapper, parse, toSql } from "pgsql-ast-parser";
 import { Connection } from "typeorm";
-import { makeAirtableFetcher } from "./airtable-fetcher";
-import { makeDynamoDbFetcher } from "./dynamodb-fetcher";
-import { getMigratedUserPropsOpBundle } from "./end-user-utils";
-import { makeFakeFetcher } from "./fake-fetcher";
-import { makeGoogleSheetsFetcher } from "./google-sheets-fetcher";
-import { makeGraphqlFetcher } from "./graphql-fetcher";
-import { makeHttpFetcher } from "./http-fetcher";
-import { makePlasmicCMSFetcher } from "./plasmic-cms-fetcher";
-import { makePostgresFetcher } from "./postgres-fetcher";
-import { makeSupabaseFetcher } from "./supabase-fetcher";
-import { makeTutorialDbFetcher } from "./tutorialdb-fetcher";
-import { makeZapierFetcher } from "./zapier-fetcher";
 
 export type ParameterizedArgs = Record<
   string,

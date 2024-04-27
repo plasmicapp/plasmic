@@ -1,4 +1,5 @@
 import { TplNode } from "@/wab/classes";
+import { RenderingCtx } from "@/wab/client/components/canvas/canvas-rendering";
 import {
   arrayEq,
   assert,
@@ -18,7 +19,6 @@ import {
   _isComputingDerivation,
 } from "mobx";
 import { CanvasEnv } from "src/wab/shared/eval";
-import { RenderingCtx } from "./canvas-rendering";
 
 export type IComputedFnOptions<F extends (...args: any[]) => any> = {
   onCleanup?: (

@@ -2,6 +2,7 @@
 //  tracked, since the use case hasn't come up.
 
 import { Cancelable, ensure, makeCancelable, spawn } from "@/wab/common";
+import sty from "@/wab/commons/components/inputs/BetterAutoComplete.module.css";
 import {
   callEventHandlers,
   KeyModifiers,
@@ -18,7 +19,6 @@ import L, * as _ from "lodash";
 import * as React from "react";
 import { Component, createRef } from "react";
 import ReactDOM from "react-dom";
-import sty from "./BetterAutoComplete.module.css";
 
 export interface AutoCompleteSource<T> {
   query: (

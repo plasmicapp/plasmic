@@ -1,4 +1,11 @@
 import { AppCtx } from "@/wab/client/app-ctx";
+import {
+  useAppAccessRules,
+  useAppAuthConfig,
+  useAppRoles,
+  useMutateHostAppAuthData,
+} from "@/wab/client/components/app-auth/app-auth-contexts";
+import InlineEditableResource from "@/wab/client/components/app-auth/InlineEditableResource";
 import { ListBox, ListBoxItem } from "@/wab/client/components/widgets";
 import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
 import { arrayMoveIndex } from "@/wab/collections";
@@ -6,13 +13,6 @@ import { ApiProject } from "@/wab/shared/ApiSchema";
 import * as tokens from "@/wab/styles/_tokens";
 import { Menu, notification } from "antd";
 import React from "react";
-import {
-  useAppAccessRules,
-  useAppAuthConfig,
-  useAppRoles,
-  useMutateHostAppAuthData,
-} from "./app-auth-contexts";
-import InlineEditableResource from "./InlineEditableResource";
 
 interface RolesControlProps {
   appCtx: AppCtx;

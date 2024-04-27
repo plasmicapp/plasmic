@@ -1,5 +1,5 @@
 import { Type } from "@/wab/classes";
-import { typeDisplayName } from "./core/model-util";
+import { typeDisplayName } from "@/wab/shared/core/model-util";
 
 export class TypeHelpers {
   _type: Type;

@@ -1,9 +1,9 @@
+import { migrate as migrate175 } from "@/wab/server/bundle-migrations/175-refactor-data-model";
 import {
   BundleMigrationType,
   upgradeHostlessProject,
 } from "@/wab/server/db/bundle-migration-utils";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
-import { migrate as migrate175 } from "./175-refactor-data-model";
 
 // migrates plasmic-rich-components
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {

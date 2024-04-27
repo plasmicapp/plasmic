@@ -1,6 +1,12 @@
 import { assert, mkShortId, unexpected } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
 import {
+  bundleHasStaleHostlessDeps,
+  upgradeHostlessProject,
+} from "@/wab/server/db/bundle-migration-utils";
+import { getMigrationConnection } from "@/wab/server/db/DbCon";
+import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import {
   DevFlagOverrides,
   PkgVersion,
   ProjectRevision,
@@ -24,12 +30,6 @@ import {
 import fs from "fs/promises";
 import { partition } from "lodash";
 import path from "path";
-import {
-  bundleHasStaleHostlessDeps,
-  upgradeHostlessProject,
-} from "./bundle-migration-utils";
-import { getMigrationConnection } from "./DbCon";
-import { DbMgr, SUPER_USER } from "./DbMgr";
 
 export const BUNDLE_MIGRATION_PATH = path.join(
   __dirname,

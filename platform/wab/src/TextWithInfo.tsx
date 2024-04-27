@@ -7,7 +7,7 @@ import { ReactNode } from "react";
 import {
   DefaultTextWithInfoProps,
   PlasmicTextWithInfo,
-} from "./wab/client/plasmic/plasmic_kit_design_system/PlasmicTextWithInfo";
+} from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicTextWithInfo";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can

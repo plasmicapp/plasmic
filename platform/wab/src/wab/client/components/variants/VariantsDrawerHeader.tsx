@@ -19,7 +19,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultVariantsDrawerHeaderProps altogether and have
 // total control over the props for your component.
-interface VariantsDrawerHeaderProps extends DefaultVariantsDrawerHeaderProps {}
+type VariantsDrawerHeaderProps = DefaultVariantsDrawerHeaderProps;
 
 function VariantsDrawerHeader(props: VariantsDrawerHeaderProps) {
   // Use PlasmicVariantsDrawerHeader to render this component as it was

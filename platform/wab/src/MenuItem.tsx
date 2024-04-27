@@ -5,12 +5,12 @@
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { PublicLink } from "./wab/client/components/PublicLink";
+import { PublicLink } from "@/wab/client/components/PublicLink";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
   DefaultMenuItemProps,
   PlasmicMenuItem,
-} from "./wab/client/plasmic/plasmic_kit_dashboard/PlasmicMenuItem";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicMenuItem";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can
@@ -25,7 +25,7 @@ import {
 //
 // You can also stop extending from DefaultMenuItemProps altogether and have
 // total control over the props for your component.
-export interface MenuItemProps extends DefaultMenuItemProps {}
+export type MenuItemProps = DefaultMenuItemProps;
 
 function MenuItem_(props: MenuItemProps, ref: HTMLElementRefOf<"a">) {
   // Use PlasmicMenuItem to render this component as it was

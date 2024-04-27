@@ -14,6 +14,42 @@ import {
   isPageComponent,
 } from "@/wab/components";
 import { parseCssNumericNew } from "@/wab/css";
+import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
+import {
+  CONTENT_LAYOUT_FULL_BLEED,
+  CONTENT_LAYOUT_WIDE,
+  CONTENT_LAYOUT_WIDTH_OPTIONS,
+} from "@/wab/shared/core/style-props";
+import {
+  getEffectiveVariantSetting,
+  getTplComponentActiveVariantsByVs,
+} from "@/wab/shared/effective-variant-setting";
+import {
+  makeExpandedExp,
+  makeExpProxy,
+  makeReadonlyExpandedExp,
+  makeReadonlyExpProxy,
+} from "@/wab/shared/exprs";
+import {
+  ContainerLayoutType,
+  getRshContainerType,
+} from "@/wab/shared/layoututils";
+import { keyedComputedFn } from "@/wab/shared/mobx-util";
+import {
+  getCssDefault,
+  IRuleSetHelpersX,
+  ReadonlyIRuleSetHelpersX,
+  RSH,
+} from "@/wab/shared/RuleSetHelpers";
+import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  ensureValidCombo,
+  getGlobalVariants,
+  isBaseVariant,
+  tryGetBaseVariantSetting,
+  VariantCombo,
+} from "@/wab/shared/Variants";
+import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { getArenaFrameActiveVariants } from "@/wab/sites";
 import { createRuleSetMerger, expandRuleSets } from "@/wab/styles";
 import {
@@ -28,39 +64,6 @@ import {
   isTplVariantable,
 } from "@/wab/tpls";
 import memoizeOne from "memoize-one";
-import { ComponentGenHelper } from "./codegen/codegen-helpers";
-import {
-  CONTENT_LAYOUT_FULL_BLEED,
-  CONTENT_LAYOUT_WIDE,
-  CONTENT_LAYOUT_WIDTH_OPTIONS,
-} from "./core/style-props";
-import {
-  getEffectiveVariantSetting,
-  getTplComponentActiveVariantsByVs,
-} from "./effective-variant-setting";
-import {
-  makeExpandedExp,
-  makeExpProxy,
-  makeReadonlyExpandedExp,
-  makeReadonlyExpProxy,
-} from "./exprs";
-import { ContainerLayoutType, getRshContainerType } from "./layoututils";
-import { keyedComputedFn } from "./mobx-util";
-import {
-  getCssDefault,
-  IRuleSetHelpersX,
-  ReadonlyIRuleSetHelpersX,
-  RSH,
-} from "./RuleSetHelpers";
-import { $$$ } from "./TplQuery";
-import {
-  ensureValidCombo,
-  getGlobalVariants,
-  isBaseVariant,
-  tryGetBaseVariantSetting,
-  VariantCombo,
-} from "./Variants";
-import { VariantTplMgr } from "./VariantTplMgr";
 
 export function isSizeProp(prop: string): prop is "width" | "height" {
   return prop === "width" || prop === "height";

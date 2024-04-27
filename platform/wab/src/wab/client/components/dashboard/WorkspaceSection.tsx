@@ -1,3 +1,10 @@
+import {
+  promptNewDatabase,
+  WorkspaceMenu,
+} from "@/wab/client/components/dashboard/dashboard-actions";
+import DatabaseListItem from "@/wab/client/components/dashboard/DatabaseListItem";
+import { ProjectsFilterProps } from "@/wab/client/components/dashboard/ProjectsFilter";
+import WorkspaceDataSources from "@/wab/client/components/dashboard/WorkspaceDataSources";
 import EditableResourceName from "@/wab/client/components/EditableResourceName";
 import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
 import NewProjectModal from "@/wab/client/components/NewProjectModal";
@@ -35,10 +42,6 @@ import * as _ from "lodash";
 import { trimStart } from "lodash";
 import * as React from "react";
 import { useHistory } from "react-router-dom";
-import { promptNewDatabase, WorkspaceMenu } from "./dashboard-actions";
-import DatabaseListItem from "./DatabaseListItem";
-import { ProjectsFilterProps } from "./ProjectsFilter";
-import WorkspaceDataSources from "./WorkspaceDataSources";
 
 interface WorkspaceSectionProps
   extends Omit<DefaultWorkspaceSectionProps, "databases"> {

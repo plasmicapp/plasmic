@@ -1,5 +1,6 @@
 import { isKnownImageAssetRef } from "@/wab/classes";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
+import S from "@/wab/client/components/sidebar-tabs/SizeSection.module.scss";
 import {
   FullRow,
   getValueSetState,
@@ -61,7 +62,6 @@ import { Alert, Menu } from "antd";
 import cn from "classnames";
 import { observer } from "mobx-react";
 import React from "react";
-import S from "./SizeSection.module.scss";
 
 interface SizePanelSectionState {
   showMore: boolean;

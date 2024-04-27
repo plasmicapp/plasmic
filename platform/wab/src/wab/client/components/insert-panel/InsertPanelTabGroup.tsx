@@ -20,8 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultInsertPanelTabGroupProps altogether and have
 // total control over the props for your component.
-export interface InsertPanelTabGroupProps
-  extends DefaultInsertPanelTabGroupProps {}
+export type InsertPanelTabGroupProps = DefaultInsertPanelTabGroupProps;
 
 function InsertPanelTabGroup_(
   props: InsertPanelTabGroupProps,

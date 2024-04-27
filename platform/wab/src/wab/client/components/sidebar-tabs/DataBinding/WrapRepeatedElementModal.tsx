@@ -20,8 +20,8 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultWrapRepeatedElementModalProps altogether and have
 // total control over the props for your component.
-export interface WrapRepeatedElementModalProps
-  extends DefaultWrapRepeatedElementModalProps {}
+export type WrapRepeatedElementModalProps =
+  DefaultWrapRepeatedElementModalProps;
 
 function WrapRepeatedElementModal_(
   props: WrapRepeatedElementModalProps,

@@ -1,9 +1,9 @@
 import { AppCtx } from "@/wab/client/app-ctx";
 import { NormalLayout } from "@/wab/client/components/normal-layout";
+import InitTokenContainer from "@/wab/client/components/pages/InitTokenContainer";
 import { useAsyncFnStrict } from "@/wab/client/hooks/useAsyncStrict";
 import { ensure } from "@/wab/common";
 import React from "react";
-import InitTokenContainer from "./InitTokenContainer";
 
 interface InitTokenPageProps {
   appCtx: AppCtx;

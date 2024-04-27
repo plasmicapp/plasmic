@@ -19,11 +19,11 @@ import {
   withoutNils,
 } from "@/wab/common";
 import { allComponentVariants } from "@/wab/components";
+import { ensureValidCombo, isPrivateStyleVariant } from "@/wab/shared/Variants";
 import { allGlobalVariants } from "@/wab/sites";
 import L from "lodash";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { computed, observable } from "mobx";
-import { ensureValidCombo, isPrivateStyleVariant } from "./Variants";
 
 /**
  * A class that tracks the targeted variants as well as

@@ -10,8 +10,7 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { debounce } from "lodash";
 import * as React from "react";
 
-export interface PasswordStrengthBarProps
-  extends DefaultPasswordStrengthBarProps {}
+export type PasswordStrengthBarProps = DefaultPasswordStrengthBarProps;
 
 function PasswordStrengthBar_(
   props: PasswordStrengthBarProps,

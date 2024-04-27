@@ -6,7 +6,7 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
-interface NavWorkspaceButtonProps extends DefaultNavWorkspaceButtonProps {}
+type NavWorkspaceButtonProps = DefaultNavWorkspaceButtonProps;
 
 function NavWorkspaceButton_(
   props: NavWorkspaceButtonProps,

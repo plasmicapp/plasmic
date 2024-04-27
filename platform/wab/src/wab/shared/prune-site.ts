@@ -3,8 +3,8 @@ import { mergeSets, removeWhere } from "@/wab/common";
 import {
   extractUsedIconAssetsForComponents,
   extractUsedPictureAssetsForComponents,
-} from "./codegen/image-assets";
-import { isVariantSettingEmpty } from "./Variants";
+} from "@/wab/shared/codegen/image-assets";
+import { isVariantSettingEmpty } from "@/wab/shared/Variants";
 
 export function pruneUnusedImageAssets(site: Site) {
   const icons = extractUsedIconAssetsForComponents(site, site.components);

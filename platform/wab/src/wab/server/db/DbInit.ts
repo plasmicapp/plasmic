@@ -2,16 +2,16 @@
 // environment we're running in.
 import { spawn } from "@/wab/common";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
+import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
+import { ensureDbConnection } from "@/wab/server/db/DbCon";
+import { initDb } from "@/wab/server/db/DbInitUtil";
+import { DbMgr, normalActor, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { FeatureTier, Team, User } from "@/wab/server/entities/Entities";
 import { PlumePkgMgr } from "@/wab/server/pkgs/plume-pkg-mgr";
 import { initializeGlobals } from "@/wab/server/svr-init";
 import { Bundler } from "@/wab/shared/bundler";
 import { createSite } from "@/wab/sites";
 import { EntityManager } from "typeorm";
-import { getLastBundleVersion } from "./BundleMigrator";
-import { ensureDbConnection } from "./DbCon";
-import { initDb } from "./DbInitUtil";
-import { DbMgr, normalActor, SUPER_USER } from "./DbMgr";
 
 initializeGlobals();
 

@@ -1,4 +1,5 @@
 import { ensureType } from "@/wab/common";
+import { userDbMgr } from "@/wab/server/routes/util";
 import { triggerWebhook } from "@/wab/server/trigger-webhooks";
 import {
   ApiProjectWebhook,
@@ -8,7 +9,6 @@ import {
 } from "@/wab/shared/ApiSchema";
 import { Request, Response } from "express-serve-static-core";
 import _ from "lodash";
-import { userDbMgr } from "./util";
 
 export async function triggerProjectWebhook(req: Request, res: Response) {
   const { projectId } = req.params;

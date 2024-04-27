@@ -1,5 +1,9 @@
 import { AppCtx } from "@/wab/client/app-ctx";
 import { U } from "@/wab/client/cli-routes";
+import {
+  promptBilling,
+  showUpsellConfirm,
+} from "@/wab/client/components/modals/PricingModal";
 import Button from "@/wab/client/components/widgets/Button";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
@@ -10,7 +14,6 @@ import { observer } from "mobx-react";
 import React from "react";
 import { FocusScope } from "react-aria";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import { promptBilling, showUpsellConfirm } from "./PricingModal";
 
 export interface EnableLocalizationModalProps {
   onDone: () => void;

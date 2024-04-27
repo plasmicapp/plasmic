@@ -3,7 +3,7 @@ import React, { useState } from "react";
 // import RestBuilder from "../../../RestBuilder";
 import { BuiltinDataSourceName } from "@/wab/shared/data/DataSources";
 // import { GraphqlBuilder } from "../data/GraphqlBuilder";
-import { TopModal } from "./studio/TopModal";
+import { TopModal } from "@/wab/client/components/studio/TopModal";
 
 export function DataSourceFlow({ onDone }: { onDone: (query?: any) => void }) {
   const [state, setState] = useState({ state: "initial" });

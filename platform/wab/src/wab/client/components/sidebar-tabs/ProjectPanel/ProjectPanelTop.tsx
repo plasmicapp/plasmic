@@ -30,6 +30,8 @@ import {
   DataSourceTablePicker,
   INVALID_DATA_SOURCE_MESSAGE,
 } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceTablePicker";
+import FolderItem from "@/wab/client/components/sidebar-tabs/ProjectPanel/FolderItem";
+import styles from "@/wab/client/components/sidebar-tabs/ProjectPanel/ProjectPanelTop.module.scss";
 import { Matcher } from "@/wab/client/components/view-common";
 import { Spinner } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
@@ -147,8 +149,6 @@ import { Modal } from "src/wab/client/components/widgets/Modal";
 import { isCoreTeamEmail } from "src/wab/shared/devflag-utils";
 import { InsertableTemplateExtraInfo } from "src/wab/shared/insertable-templates/types";
 import useSWR, { mutate } from "swr";
-import FolderItem from "./FolderItem";
-import styles from "./ProjectPanelTop.module.scss";
 
 const enum SiteItemType {
   arena = "arena",

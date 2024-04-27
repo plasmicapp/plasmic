@@ -32,11 +32,11 @@ import {
   toTs,
   Type,
 } from "@/wab/model/model-meta";
+import { Bundle, BundledInst, UnsafeBundle } from "@/wab/shared/bundles";
+import { InstUtil } from "@/wab/shared/core/InstUtil";
+import { conformsToType } from "@/wab/shared/core/model-util";
 import { flatten, isArray, isEmpty, isNil, isObject, uniq } from "lodash";
 import { failable, IFailable } from "ts-failable";
-import { Bundle, BundledInst, UnsafeBundle } from "./bundles";
-import { InstUtil } from "./core/InstUtil";
-import { conformsToType } from "./core/model-util";
 
 export type { Bundle, BundledInst };
 

@@ -1,4 +1,9 @@
 import { UU } from "@/wab/client/cli-routes";
+import {
+  useCmsRows,
+  useCmsTableMaybe,
+} from "@/wab/client/components/cms/cms-contexts";
+import { getRowIdentifierNode } from "@/wab/client/components/cms/CmsEntryDetails";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { FileUploader, Spinner } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
@@ -38,8 +43,6 @@ import moment from "moment";
 import * as React from "react";
 import { createContext, ReactElement, ReactNode, useContext } from "react";
 import { GrNewWindow } from "react-icons/all";
-import { useCmsRows, useCmsTableMaybe } from "./cms-contexts";
-import { getRowIdentifierNode } from "./CmsEntryDetails";
 const LazyRichTextEditor = React.lazy(
   () => import("@/wab/client/components/RichTextEditor")
 );

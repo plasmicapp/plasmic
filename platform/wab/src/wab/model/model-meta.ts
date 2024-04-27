@@ -1,13 +1,10 @@
-// This import needs to be relative since it is directly depended on in
-// Cypress tests, which don't support import aliases right now.
-// eslint-disable-next-line path/no-relative-imports
 import {
   coalesce,
   ensure,
   filterMapTruthy,
   multimap,
   tuple,
-} from "../common";
+} from "@/wab/common";
 import isObject from "lodash/isObject";
 import omit from "lodash/omit";
 import pick from "lodash/pick";

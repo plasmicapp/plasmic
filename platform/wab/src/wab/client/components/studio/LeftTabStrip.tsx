@@ -1,6 +1,9 @@
 // eslint-disable-next-line no-restricted-imports
 import { UU } from "@/wab/client/cli-routes";
 import { showTemporaryInfo } from "@/wab/client/components/quick-modals";
+import { AnonymousAvatar, Avatar } from "@/wab/client/components/studio/Avatar";
+import { FigmaModalContent } from "@/wab/client/components/studio/FigmaModalContent";
+import LeftTabButton from "@/wab/client/components/studio/LeftTabButton";
 import GearIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Gear";
 import MixinIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Mixin";
 import SlackIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Slack";
@@ -47,9 +50,6 @@ import { omit } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { CSSProperties, ReactNode } from "react";
-import { AnonymousAvatar, Avatar } from "./Avatar";
-import { FigmaModalContent } from "./FigmaModalContent";
-import LeftTabButton from "./LeftTabButton";
 
 interface LeftTabStripProps extends DefaultLeftTabStripProps {
   useVersionsCTA: boolean;

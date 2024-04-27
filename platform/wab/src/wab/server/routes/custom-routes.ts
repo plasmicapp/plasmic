@@ -1,9 +1,9 @@
+import { withNext } from "@/wab/server/routes/util";
 import {
   GetSubscriptionResponse,
   RevalidatePlasmicHostingResponse,
 } from "@/wab/shared/ApiSchema";
 import { Application, Request, Response } from "express";
-import { withNext } from "./util";
 
 export const ROUTES_WITH_TIMING = [];
 

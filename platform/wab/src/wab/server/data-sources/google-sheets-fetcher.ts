@@ -1,4 +1,8 @@
 import { assert, ensure, withoutNils } from "@/wab/common";
+import {
+  SqlalchemyClient,
+  SQLITE_TO_BUILDER_TYPE,
+} from "@/wab/server/data-sources/pybackend-client/pybackend-client";
 import { getDefaultConnection } from "@/wab/server/db/DbCon";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { TokenData } from "@/wab/server/entities/Entities";
@@ -11,10 +15,6 @@ import { DataSourceSchema } from "@plasmicapp/data-sources";
 import { google, sheets_v4 } from "googleapis";
 import refresh from "passport-oauth2-refresh";
 import { Connection } from "typeorm";
-import {
-  SqlalchemyClient,
-  SQLITE_TO_BUILDER_TYPE,
-} from "./pybackend-client/pybackend-client";
 
 export async function makeGoogleSheetsFetcher(
   dbCon: Connection,

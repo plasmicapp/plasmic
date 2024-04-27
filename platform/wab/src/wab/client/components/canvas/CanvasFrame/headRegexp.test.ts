@@ -1,4 +1,4 @@
-import { headRegexp } from "./headRegexp";
+import { headRegexp } from "@/wab/client/components/canvas/CanvasFrame/headRegexp";
 
 describe("headRegexp", () => {
   it("can inject <script> after <head>", () => {

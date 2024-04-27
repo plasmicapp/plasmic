@@ -2,6 +2,8 @@ import { ProjectDependency, Site } from "@/wab/classes";
 import { assert, ensure, sortBy, tuple } from "@/wab/common";
 import { TokenType } from "@/wab/commons/StyleToken";
 import { withoutUids } from "@/wab/model/model-meta";
+import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
+import { DbMgr } from "@/wab/server/db/DbMgr";
 import {
   Branch,
   PkgVersion,
@@ -14,8 +16,6 @@ import { BranchSide } from "@/wab/shared/site-diffs/merge-core";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { createSite } from "@/wab/sites";
 import L, { omit } from "lodash";
-import { getLastBundleVersion } from "./BundleMigrator";
-import { DbMgr } from "./DbMgr";
 
 const bundler = new Bundler();
 

@@ -48,6 +48,7 @@ import { getComponentDisplayName } from "@/wab/components";
 import { Type as ModelType } from "@/wab/model/model-meta";
 import { StudioPropType } from "@/wab/shared/code-components/code-components";
 import { jsLiteral } from "@/wab/shared/codegen/util";
+import { instUtil as defaultInstUtil } from "@/wab/shared/core/InstUtil";
 import { StateVariableType } from "@/wab/states";
 import { isTplComponent, isTplFromComponent, isTplTextBlock } from "@/wab/tpls";
 import L, {
@@ -58,7 +59,6 @@ import L, {
   isNumber,
   isString,
 } from "lodash";
-import { instUtil as defaultInstUtil } from "./InstUtil";
 
 export const typeFactory = {
   text: () => new Text({ name: "text" }),

@@ -1,5 +1,8 @@
 import type { DataSource } from "@/wab/server/entities/Entities";
-import { ArgMeta, DataSourceMeta } from "./data-sources";
+import {
+  ArgMeta,
+  DataSourceMeta,
+} from "@/wab/shared/data-sources-meta/data-sources";
 
 const COMMON_ARGS: Record<string, ArgMeta> = {
   path: {

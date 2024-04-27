@@ -1,6 +1,6 @@
+import sty from "@/wab/client/components/TopFrame/TopBar/TopBarModal.module.css";
 import React, { ComponentProps } from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import sty from "./TopBarModal.module.css";
 
 export function TopBarModal(
   props: ComponentProps<typeof Modal> & {

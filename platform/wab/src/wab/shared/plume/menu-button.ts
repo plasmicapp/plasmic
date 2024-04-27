@@ -19,6 +19,13 @@ import {
   toVarName,
 } from "@/wab/shared/codegen/util";
 import { typeFactory } from "@/wab/shared/core/model-util";
+import { PlumePlugin } from "@/wab/shared/plume/plume-registry";
+import {
+  createDefaultSlotContentsStub,
+  makeComponentImportPath,
+  maybeIncludeSerializedDefaultSlotContent,
+  serializeComponentSubstitutionCallsForDefaultContents,
+} from "@/wab/shared/plume/plume-utils";
 import { getTplSlotByName, getTplSlotForParam } from "@/wab/shared/SlotUtils";
 import { ensureBaseVariant, TplMgr } from "@/wab/shared/TplMgr";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
@@ -26,13 +33,6 @@ import { fixParentPointers, mkTplComponent } from "@/wab/tpls";
 import type { BaseMenuButtonProps, MenuButtonRef } from "@plasmicapp/react-web";
 import { omit, pick } from "lodash";
 import type React from "react";
-import { PlumePlugin } from "./plume-registry";
-import {
-  createDefaultSlotContentsStub,
-  makeComponentImportPath,
-  maybeIncludeSerializedDefaultSlotContent,
-  serializeComponentSubstitutionCallsForDefaultContents,
-} from "./plume-utils";
 
 const RESERVED_PROPS = ["isOpen", "isDisabled", "menu"];
 

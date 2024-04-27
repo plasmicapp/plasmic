@@ -1,4 +1,5 @@
 import { ImageBackground, mkBackgroundLayer } from "@/wab/bg-styles";
+import { AppCtx } from "@/wab/client/app-ctx";
 import { ensure, ensureHTMLElt, ensureString } from "@/wab/common";
 import { Rect } from "@/wab/geom";
 import { ImageAssetType } from "@/wab/image-asset-type";
@@ -29,7 +30,6 @@ import memoize from "lodash/memoize";
 import * as parseDataUrl from "parse-data-url";
 import React from "react";
 import intersection from "rectangle-overlap";
-import { AppCtx } from "./app-ctx";
 import defer = setTimeout;
 
 const MaxImageDim = 4096;

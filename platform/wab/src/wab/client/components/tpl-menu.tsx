@@ -7,6 +7,13 @@ import {
 } from "@/wab/classes";
 import { mkProjectLocation, openNewTab } from "@/wab/client/cli-routes";
 import { isStyleClip } from "@/wab/client/clipboard";
+import { makeFrameMenu } from "@/wab/client/components/frame-menu";
+import {
+  MenuBuilder,
+  MenuItemContent,
+} from "@/wab/client/components/menu-builder";
+import { SlotsTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
+import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { getVisibilityChoicesForTpl } from "@/wab/client/utils/tpl-client-utils";
@@ -65,10 +72,6 @@ import {
 import { ValComponent } from "@/wab/val-nodes";
 import { Menu, notification } from "antd";
 import React from "react";
-import { makeFrameMenu } from "./frame-menu";
-import { MenuBuilder, MenuItemContent } from "./menu-builder";
-import { SlotsTooltip } from "./widgets/DetailedTooltips";
-import { LabelWithDetailedTooltip } from "./widgets/LabelWithDetailedTooltip";
 
 export function makeSelectableMenu(viewCtx: ViewCtx, node: Selectable) {
   if (node instanceof SlotSelection) {

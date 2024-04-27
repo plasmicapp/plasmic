@@ -17490,12 +17490,10 @@ eslint-plugin-jsx-a11y@^6.2.3, eslint-plugin-jsx-a11y@^6.5.1, eslint-plugin-jsx-
     object.fromentries "^2.0.6"
     semver "^6.3.0"
 
-eslint-plugin-path@1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-path/-/eslint-plugin-path-1.2.2.tgz#5306f46036907ffe1abca6f6e21dc2c2bf869ad5"
-  integrity sha512-RJ5e/DXRUj7cFD6y3xX5r2syU0uKEkjo9sU8lpayxV/H2plNKPjWv/oRSrWv+XibWV1Qvsu7VELobBFFSPb1UQ==
-  dependencies:
-    load-tsconfig "^0.2.5"
+eslint-plugin-no-relative-import-paths@1.5.4:
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-no-relative-import-paths/-/eslint-plugin-no-relative-import-paths-1.5.4.tgz#dd83666b13d43dd22156e4cc660f73700843791a"
+  integrity sha512-2smViH7R3682NR6dwgYr8Vm7emqNP1gEjBku6DbvUy3Ef/2Fz+mhwsFjZGSixzWzazMCj4MAgIWTsHELCCDJKA==
 
 eslint-plugin-prettier@5.0.1:
   version "5.0.1"
@@ -23606,7 +23604,7 @@ load-script@^1.0.0:
   resolved "https://registry.yarnpkg.com/load-script/-/load-script-1.0.0.tgz#0491939e0bee5643ee494a7e3da3d2bac70c6ca4"
   integrity sha512-kPEjMFtZvwL9TaZo0uZ2ml+Ye9HUMmPwbYRJ324qF9tqMejwykJ5ggTyvzmrbBeapCAbk98BSbTeovHEEP1uCA==
 
-load-tsconfig@^0.2.3, load-tsconfig@^0.2.5:
+load-tsconfig@^0.2.3:
   version "0.2.5"
   resolved "https://registry.yarnpkg.com/load-tsconfig/-/load-tsconfig-0.2.5.tgz#453b8cd8961bfb912dea77eb6c168fe8cca3d3a1"
   integrity sha512-IXO6OCs9yg8tMKzfPZ1YmheJbZCiEsnBdcB03l0OcfK9prKnJb96siuHCr5Fl37/yo9DnKU+TLpxzTUspw9shg==

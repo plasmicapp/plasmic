@@ -1,4 +1,5 @@
 // So we should just be transforming the angle to 90 - angle.
+import Dial from "@/wab/client/components/style-controls/Dial.svg";
 import { PlainLinkButton } from "@/wab/client/components/widgets";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { deg2rad, ensure, rad2deg } from "@/wab/common";
@@ -10,7 +11,6 @@ import $ from "jquery";
 import L from "lodash";
 import * as React from "react";
 import { useRef } from "react";
-import Dial from "./Dial.svg";
 
 function angleToOffset(angle: /*TWZ*/ number, radius: /*TWZ*/ number) {
   const x = radius * Math.cos(deg2rad(90 - angle));

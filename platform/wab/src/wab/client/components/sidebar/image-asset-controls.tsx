@@ -2,9 +2,16 @@ import { ImageAsset, ProjectDependency } from "@/wab/classes";
 import { AppCtx } from "@/wab/client/app-ctx";
 import ListItem from "@/wab/client/components/ListItem";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import { FindReferencesModal } from "@/wab/client/components/sidebar/FindReferencesModal";
+import { useDepFilterButton } from "@/wab/client/components/sidebar/left-panel-utils";
 import MultiAssetsActions, {
   useMultiAssetsActions,
 } from "@/wab/client/components/sidebar/MultiAssetsActions";
+import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import {
+  ItemOrGroup,
+  VirtualGroupedList,
+} from "@/wab/client/components/sidebar/VirtualGroupedList";
 import { DraggableInsertable } from "@/wab/client/components/studio/add-drawer/DraggableInsertable";
 import {
   ImagePaster,
@@ -42,10 +49,6 @@ import { observer } from "mobx-react";
 import React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { isHostLessPackage } from "src/wab/sites";
-import { FindReferencesModal } from "./FindReferencesModal";
-import { useDepFilterButton } from "./left-panel-utils";
-import { SidebarModal } from "./SidebarModal";
-import { ItemOrGroup, VirtualGroupedList } from "./VirtualGroupedList";
 
 type ImageAssetTypeExpanded = {
   [ImageAssetType.Icon]: boolean;

@@ -11,6 +11,9 @@ import {
   VariantsRef,
 } from "@/wab/classes";
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
+import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
+import { FallbackEditor } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
+import { getExpectedValuesForVariantGroup } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
 import {
   getValueSetState,
   LabeledItemRow,
@@ -43,9 +46,6 @@ import { Menu } from "antd";
 import L from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
-import { DataPickerEditor } from "./ComponentProps/DataPickerEditor";
-import { FallbackEditor } from "./ComponentPropsSection";
-import { getExpectedValuesForVariantGroup } from "./DataBinding/DataPickerUtil";
 
 export interface VariantsPickerPanelProps {
   tpl: TplComponent;

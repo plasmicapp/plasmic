@@ -1,4 +1,6 @@
 import { ObjectPath, Rep, TplNode } from "@/wab/classes";
+import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
+import { StringPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { IconLinkButton } from "@/wab/client/components/widgets";
@@ -17,8 +19,6 @@ import { tryGetTplOwnerComponent } from "@/wab/tpls";
 import { Menu } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
-import { DataPickerEditor } from "./ComponentProps/DataPickerEditor";
-import { StringPropEditor } from "./ComponentProps/StringPropEditor";
 
 const defaultElementName = "currentItem";
 const defaultIndexName = "currentIndex";

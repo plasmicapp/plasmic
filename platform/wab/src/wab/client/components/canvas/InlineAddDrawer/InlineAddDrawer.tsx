@@ -1,4 +1,11 @@
 import { isKnownTplNode, TplNode, TplTag } from "@/wab/classes";
+import styles from "@/wab/client/components/canvas/InlineAddDrawer/InlineAddDrawer.module.scss";
+import InlineInsertionPosition from "@/wab/client/components/canvas/InlineAddDrawer/InlineInsertionPosition";
+import {
+  InsertableListItemType,
+  InsertableListRow,
+  InsertableRow,
+} from "@/wab/client/components/canvas/InlineAddDrawer/InsertableListRow";
 import { InsertRelLoc } from "@/wab/client/components/canvas/view-ops";
 import { buildAddItemGroups } from "@/wab/client/components/studio/add-drawer/AddDrawer";
 import { AddItemGroup } from "@/wab/client/components/studio/add-drawer/AddDrawerSection";
@@ -30,13 +37,6 @@ import {
 } from "react";
 import ReactDOM from "react-dom";
 import { VariableSizeList } from "react-window";
-import styles from "./InlineAddDrawer.module.scss";
-import InlineInsertionPosition from "./InlineInsertionPosition";
-import {
-  InsertableListItemType,
-  InsertableListRow,
-  InsertableRow,
-} from "./InsertableListRow";
 
 interface InlineAddDrawerProps {
   style?: CSSProperties;
@@ -177,7 +177,7 @@ function _InlineAddDrawer(
       },
 
       moveInsertableHighlight(step: number) {
-        let currentIndex = this.highlightedInsertableIndex;
+        const currentIndex = this.highlightedInsertableIndex;
         const insertables = this.insertables;
 
         let newIndex = mod(currentIndex + step, insertables.length);

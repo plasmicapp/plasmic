@@ -1,5 +1,6 @@
 import { ArenaFrame } from "@/wab/classes";
 import { apiKey } from "@/wab/client/api";
+import { CommentOverlaysContext } from "@/wab/client/components/comments/CommentOverlays";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { mkIdMap } from "@/wab/collections";
@@ -13,7 +14,6 @@ import { uniq } from "lodash";
 import * as React from "react";
 import { ReactNode, useEffect } from "react";
 import useSWR from "swr";
-import { CommentOverlaysContext } from "./CommentOverlays";
 
 export function CommentsProvider({ children }: { children: ReactNode }) {
   const appCtx = useAppCtx();

@@ -1,18 +1,18 @@
-import L from "lodash";
-import * as US from "underscore.string";
-import { isKnownRenderExpr, isKnownTplNode, TplNode } from "./classes";
-import { switchType, unreachable } from "./common";
-import { Selectable } from "./selection";
+import { isKnownRenderExpr, isKnownTplNode, TplNode } from "@/wab/classes";
+import { switchType, unreachable } from "@/wab/common";
+import { Selectable } from "@/wab/selection";
 import {
   isPlaceholderValue,
   UNINITIALIZED_BOOLEAN,
   UNINITIALIZED_NUMBER,
   UNINITIALIZED_OBJECT,
   UNINITIALIZED_STRING,
-} from "./shared/core/model-util";
-import { SlotSelection } from "./slots";
-import { capitalizeFirst } from "./strs";
-import { ValNode } from "./val-nodes";
+} from "@/wab/shared/core/model-util";
+import { SlotSelection } from "@/wab/slots";
+import { capitalizeFirst } from "@/wab/strs";
+import { ValNode } from "@/wab/val-nodes";
+import L from "lodash";
+import * as US from "underscore.string";
 
 export const summarizeVal = function (val: any) {
   if (val == null) {

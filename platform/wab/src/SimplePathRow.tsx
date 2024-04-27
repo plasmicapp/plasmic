@@ -5,7 +5,7 @@ import * as React from "react";
 import {
   DefaultSimplePathRowProps,
   PlasmicSimplePathRow,
-} from "./wab/client/plasmic/plasmic_kit_data_expressions/PlasmicSimplePathRow";
+} from "@/wab/client/plasmic/plasmic_kit_data_expressions/PlasmicSimplePathRow";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can

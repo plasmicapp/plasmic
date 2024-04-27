@@ -2,14 +2,14 @@
 // This file is owned by you, feel free to edit as you see fit.
 import * as React from "react";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { PublicLink } from "./wab/client/components/PublicLink";
+import { PublicLink } from "@/wab/client/components/PublicLink";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
   DefaultDocsPortalBranchProps,
   PlasmicDocsPortalBranch,
-} from "./wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsPortalBranch";
+} from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsPortalBranch";
 
-interface DocsPortalBranchProps extends DefaultDocsPortalBranchProps {}
+type DocsPortalBranchProps = DefaultDocsPortalBranchProps;
 
 function DocsPortalBranch(props: DocsPortalBranchProps) {
   return (

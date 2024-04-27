@@ -1,9 +1,9 @@
 import { Api } from "@/wab/client/api";
+import { ConnectOAuthButton } from "@/wab/client/components/auth/ConnectOAuth";
 import { mkShortId, spawn } from "@/wab/common";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import { DEVFLAGS } from "@/wab/devflags";
 import React from "react";
-import { ConnectOAuthButton } from "./ConnectOAuth";
 
 const githubOAuthURL = "https://github.com/login/oauth/authorize";
 const githubInstallURL = `https://github.com/apps/${DEVFLAGS.githubAppName}/installations/new`;

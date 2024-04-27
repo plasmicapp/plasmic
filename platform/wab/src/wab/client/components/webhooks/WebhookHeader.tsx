@@ -1,8 +1,8 @@
-import * as React from "react";
 import {
   DefaultWebhookHeaderProps,
   PlasmicWebhookHeader,
-} from "./plasmic/plasmic_kit_continuous_deployment/PlasmicWebhookHeader";
+} from "@/wab/client/components/webhooks/plasmic/plasmic_kit_continuous_deployment/PlasmicWebhookHeader";
+import * as React from "react";
 
 interface WebhookHeaderProps extends DefaultWebhookHeaderProps {
   index: number;
@@ -14,15 +14,8 @@ interface WebhookHeaderProps extends DefaultWebhookHeaderProps {
 }
 
 function WebhookHeader(props: WebhookHeaderProps) {
-  const {
-    index,
-    headerKey,
-    headerValue,
-    onChange,
-    onAdd,
-    onRemove,
-    ...rest
-  } = props;
+  const { index, headerKey, headerValue, onChange, onAdd, onRemove, ...rest } =
+    props;
   return (
     <PlasmicWebhookHeader
       {...rest}

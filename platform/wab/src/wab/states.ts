@@ -1,4 +1,3 @@
-import { isArray } from "lodash";
 import {
   Component,
   ComponentVariantGroup,
@@ -35,7 +34,7 @@ import {
   TplTag,
   VariantGroup,
   VariantGroupState,
-} from "./classes";
+} from "@/wab/classes";
 import {
   assert,
   assertNever,
@@ -44,9 +43,12 @@ import {
   remove,
   unexpected,
   uniqueName,
-} from "./common";
-import { getComponentDisplayName, removeComponentParam } from "./components";
-import { DevFlagsType } from "./devflags";
+} from "@/wab/common";
+import {
+  getComponentDisplayName,
+  removeComponentParam,
+} from "@/wab/components";
+import { DevFlagsType } from "@/wab/devflags";
 import {
   asCode,
   code,
@@ -58,23 +60,24 @@ import {
   isRealCodeExprEnsuringType,
   tryExtractJson,
   tryExtractLit,
-} from "./exprs";
-import * as Lang from "./lang";
-import { ParamExportType } from "./lang";
-import { AddItemKey } from "./shared/add-item-keys";
-import { toVarName } from "./shared/codegen/util";
-import { parseExpr } from "./shared/eval/expression-parser";
-import { TplMgr } from "./shared/TplMgr";
-import { $$$ } from "./shared/TplQuery";
+} from "@/wab/exprs";
+import * as Lang from "@/wab/lang";
+import { ParamExportType } from "@/wab/lang";
+import { AddItemKey } from "@/wab/shared/add-item-keys";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { parseExpr } from "@/wab/shared/eval/expression-parser";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
 import {
   isStandaloneVariantGroup,
   tryGetBaseVariantSetting,
-} from "./shared/Variants";
-import { extractComponentUsages, writeable } from "./sites";
-import { smartHumanize } from "./strs";
-import * as Tpls from "./tpls";
-import { isTplComponent } from "./tpls";
-import { getPublicUrl } from "./urls";
+} from "@/wab/shared/Variants";
+import { extractComponentUsages, writeable } from "@/wab/sites";
+import { smartHumanize } from "@/wab/strs";
+import * as Tpls from "@/wab/tpls";
+import { isTplComponent } from "@/wab/tpls";
+import { getPublicUrl } from "@/wab/urls";
+import { isArray } from "lodash";
 
 export const STATE_VARIABLE_TYPES = [
   "text",

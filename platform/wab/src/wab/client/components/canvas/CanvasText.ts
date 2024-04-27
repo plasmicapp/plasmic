@@ -7,6 +7,25 @@ import {
   TplNode,
   TplTag,
 } from "@/wab/classes";
+import { withErrorDisplayFallback } from "@/wab/client/components/canvas/canvas-error";
+import { resolveNodesToMarkers } from "@/wab/client/components/canvas/canvas-fns-impl";
+import { mkUseCanvasObserver } from "@/wab/client/components/canvas/canvas-observer";
+import {
+  getSortedActiveVariantSettings,
+  hasLoadingBoundaryKey,
+  RenderingCtx,
+  renderTplNode,
+} from "@/wab/client/components/canvas/canvas-rendering";
+import "@/wab/client/components/canvas/slate";
+import {
+  mkTplTagElement,
+  ParagraphElement,
+  TplTagElement,
+} from "@/wab/client/components/canvas/slate";
+import {
+  SubDeps,
+  tags as htmlTags,
+} from "@/wab/client/components/canvas/subdeps";
 import {
   reactPrompt,
   ReactPromptOpts,
@@ -42,18 +61,6 @@ import type {
   Path,
 } from "slate";
 import type { RenderElementProps } from "slate-react";
-import { withErrorDisplayFallback } from "./canvas-error";
-import { resolveNodesToMarkers } from "./canvas-fns-impl";
-import { mkUseCanvasObserver } from "./canvas-observer";
-import {
-  getSortedActiveVariantSettings,
-  hasLoadingBoundaryKey,
-  RenderingCtx,
-  renderTplNode,
-} from "./canvas-rendering";
-import "./slate";
-import { mkTplTagElement, ParagraphElement, TplTagElement } from "./slate";
-import { SubDeps, tags as htmlTags } from "./subdeps";
 
 export interface SlateRenderNodeOpts {
   attributes: RenderElementProps["attributes"];

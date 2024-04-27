@@ -5,7 +5,7 @@ import {
 import { SelectOptionRef } from "@plasmicapp/react-web";
 import * as React from "react";
 
-interface StyleSelect__OptionProps extends DefaultStyleSelect__OptionProps {}
+type StyleSelect__OptionProps = DefaultStyleSelect__OptionProps;
 
 function StyleSelect__Option_(
   props: StyleSelect__OptionProps,

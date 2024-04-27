@@ -14,14 +14,11 @@ import {
   xOmit,
 } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
-import { getStateVarName } from "@/wab/states";
-import { $State } from "@plasmicapp/react-web";
-import L from "lodash";
 import {
   componentToAllVariants,
   siteToAllGlobalVariants,
-} from "./cached-selectors";
-import { toVarName } from "./codegen/util";
+} from "@/wab/shared/cached-selectors";
+import { toVarName } from "@/wab/shared/codegen/util";
 import {
   ensureValidCombo,
   getOrderedScreenVariants,
@@ -32,7 +29,10 @@ import {
   isPrivateStyleVariant,
   isScreenVariant,
   isStandaloneVariantGroup,
-} from "./Variants";
+} from "@/wab/shared/Variants";
+import { getStateVarName } from "@/wab/states";
+import { $State } from "@plasmicapp/react-web";
+import L from "lodash";
 
 export type VariantPinState =
   | "selected-pinned"

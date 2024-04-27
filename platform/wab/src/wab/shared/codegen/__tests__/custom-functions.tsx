@@ -12,7 +12,7 @@ import path from "path";
 import * as React from "react";
 import tmp from "tmp";
 // Exported from https://studio.plasmic.app/projects/p4ABdMDb4xMuoc9mL7Lf2y
-import _bundle from "./bundles/custom-functions-test.json";
+import _bundle from "@/wab/shared/codegen/__tests__/bundles/custom-functions-test.json";
 
 describe("tests codegen for custom functions", () => {
   const countersBundle = _bundle[0][1] as Bundle;

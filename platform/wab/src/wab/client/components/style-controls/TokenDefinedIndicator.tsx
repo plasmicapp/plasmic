@@ -4,6 +4,7 @@ import {
   SourceRow,
   variantComboName,
 } from "@/wab/client/components/style-controls/DefinedIndicator";
+import styles from "@/wab/client/components/style-controls/DefinedIndicator.module.sass";
 import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
@@ -14,7 +15,6 @@ import { capitalizeFirst } from "@/wab/strs";
 import { Popover } from "antd";
 import classNames from "classnames";
 import React from "react";
-import styles from "./DefinedIndicator.module.sass";
 
 export function TokenDefinedIndicator(props: {
   token: StyleToken;

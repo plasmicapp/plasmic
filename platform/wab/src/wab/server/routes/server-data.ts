@@ -4,20 +4,23 @@ import {
   getOperationCurrentUserUsage,
 } from "@/wab/server/data-sources/data-source-utils";
 import { DbMgr } from "@/wab/server/db/DbMgr";
+import {
+  extractAppUserFromToken,
+  trackAppUserActivity,
+} from "@/wab/server/routes/app-oauth";
+import {
+  buildFakeCurrentUser,
+  canCurrentUserExecuteOperation,
+  checkPermissionToPerformOperationAsUser,
+  getAppUserInfo,
+} from "@/wab/server/routes/end-user";
+import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import { asyncTimed } from "@/wab/server/timing-util";
 import { withSpan } from "@/wab/server/util/apm-util";
 import { GenericDataSource } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { OperationTemplate } from "@/wab/shared/data-sources-meta/data-sources";
 import { Request, Response } from "express-serve-static-core";
 import { isString } from "lodash";
-import { extractAppUserFromToken, trackAppUserActivity } from "./app-oauth";
-import {
-  buildFakeCurrentUser,
-  canCurrentUserExecuteOperation,
-  checkPermissionToPerformOperationAsUser,
-  getAppUserInfo,
-} from "./end-user";
-import { superDbMgr, userDbMgr } from "./util";
 
 export function executeDataSourceOperationWithCurrentUserHandler(
   inStudioAuth: boolean

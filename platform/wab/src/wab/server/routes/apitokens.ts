@@ -1,7 +1,7 @@
 import "@/wab/server/extensions";
+import { getUser, userDbMgr } from "@/wab/server/routes/util";
 import { emitUserToken } from "@/wab/server/socket-util";
 import { Request, Response } from "express-serve-static-core";
-import { getUser, userDbMgr } from "./util";
 
 export async function listTokens(req: Request, res: Response) {
   const mgr = userDbMgr(req);

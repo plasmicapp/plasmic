@@ -5,14 +5,17 @@ import { assert } from "@/wab/common";
 import { DeepReadonly } from "@/wab/commons/types";
 import * as css from "@/wab/css";
 import * as cssPegParser from "@/wab/gen/cssPegParser";
-import L, { memoize } from "lodash";
-import { CSSProperties } from "react";
-import { getAllDefinedStyles, typographyCssProps } from "./core/style-props";
+import {
+  getAllDefinedStyles,
+  typographyCssProps,
+} from "@/wab/shared/core/style-props";
 import {
   makeReadonlySizeAwareExpProxy,
   makeSizeAwareExpProxy,
-} from "./sizingutils";
-import { VariantedStylesHelper } from "./VariantedStylesHelper";
+} from "@/wab/shared/sizingutils";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import L, { memoize } from "lodash";
+import { CSSProperties } from "react";
 
 export interface IRuleSetHelpers {
   has(prop: string): boolean;

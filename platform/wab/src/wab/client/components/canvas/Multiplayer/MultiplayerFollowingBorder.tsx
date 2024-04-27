@@ -20,8 +20,8 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultMultiplayerFollowingBorderProps altogether and have
 // total control over the props for your component.
-export interface MultiplayerFollowingBorderProps
-  extends DefaultMultiplayerFollowingBorderProps {}
+export type MultiplayerFollowingBorderProps =
+  DefaultMultiplayerFollowingBorderProps;
 
 function MultiplayerFollowingBorder_(
   props: MultiplayerFollowingBorderProps,

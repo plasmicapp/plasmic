@@ -65,6 +65,38 @@ import {
 import { ParamExportType } from "@/wab/lang";
 import { walkDependencyTree } from "@/wab/project-deps";
 import {
+  getBuiltinComponentRegistrations,
+  isBuiltinCodeComponent,
+} from "@/wab/shared/code-components/builtin-code-components";
+import {
+  CustomFunctionId,
+  customFunctionId,
+} from "@/wab/shared/code-components/code-components";
+import {
+  buildUidToNameMap,
+  getNamedDescendantNodes,
+  getParamNames,
+  makeNodeNamerFromMap,
+  nodeNameBackwardsCompatibility,
+} from "@/wab/shared/codegen/react-p";
+import { validJsIdentifierChars } from "@/wab/shared/codegen/util";
+import mobx from "@/wab/shared/import-mobx";
+import { keyedComputedFn, maybeComputedFn } from "@/wab/shared/mobx-util";
+import { FramePinManager } from "@/wab/shared/PinManager";
+import { readonlyRSH } from "@/wab/shared/RuleSetHelpers";
+import {
+  makeVariantComboSorter,
+  sortedVariantSettings,
+} from "@/wab/shared/variant-sort";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import {
+  isPrivateStyleVariant,
+  isVariantSettingEmpty,
+  VariantCombo,
+  variantComboKey,
+} from "@/wab/shared/Variants";
+import { getTplVisibilityAsDescendant } from "@/wab/shared/visibility-utils";
+import {
   allGlobalVariantGroups,
   allGlobalVariants,
   allImageAssets,
@@ -83,35 +115,6 @@ import {
   isTplVariantable,
 } from "@/wab/tpls";
 import L from "lodash";
-import {
-  getBuiltinComponentRegistrations,
-  isBuiltinCodeComponent,
-} from "./code-components/builtin-code-components";
-import {
-  CustomFunctionId,
-  customFunctionId,
-} from "./code-components/code-components";
-import {
-  buildUidToNameMap,
-  getNamedDescendantNodes,
-  getParamNames,
-  makeNodeNamerFromMap,
-  nodeNameBackwardsCompatibility,
-} from "./codegen/react-p";
-import { validJsIdentifierChars } from "./codegen/util";
-import mobx from "./import-mobx";
-import { keyedComputedFn, maybeComputedFn } from "./mobx-util";
-import { FramePinManager } from "./PinManager";
-import { readonlyRSH } from "./RuleSetHelpers";
-import { makeVariantComboSorter, sortedVariantSettings } from "./variant-sort";
-import { VariantedStylesHelper } from "./VariantedStylesHelper";
-import {
-  isPrivateStyleVariant,
-  isVariantSettingEmpty,
-  VariantCombo,
-  variantComboKey,
-} from "./Variants";
-import { getTplVisibilityAsDescendant } from "./visibility-utils";
 
 const { comparer, computed } = mobx;
 

@@ -6,7 +6,7 @@ import * as React from "react";
 import {
   DefaultStartersSectionProps,
   PlasmicStartersSection,
-} from "./wab/client/plasmic/plasmic_kit_dashboard/PlasmicStartersSection";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicStartersSection";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can
@@ -20,7 +20,7 @@ import {
 // }
 // You can also stop extending from DefaultStartersSectionProps altogether and have
 // total control over the props for your component.
-export interface StartersSectionProps extends DefaultStartersSectionProps {}
+export type StartersSectionProps = DefaultStartersSectionProps;
 
 function StartersSection_(
   props: StartersSectionProps,

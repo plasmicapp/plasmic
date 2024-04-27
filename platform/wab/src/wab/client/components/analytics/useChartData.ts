@@ -1,13 +1,16 @@
 import {
+  useAnalyticsData,
+  useProjectAnalyticsMeta,
+} from "@/wab/client/components/analytics/analytics-contexts";
+import {
+  getAnalyticsQueryTypeFromEvent,
+  TimeRange,
+} from "@/wab/client/components/analytics/utils";
+import {
   ApiAnalyticsConversionRateResult,
   ApiAnalyticsConversionResult,
   ApiAnalyticsImpressionResult,
 } from "@/wab/shared/ApiSchema";
-import {
-  useAnalyticsData,
-  useProjectAnalyticsMeta,
-} from "./analytics-contexts";
-import { getAnalyticsQueryTypeFromEvent, TimeRange } from "./utils";
 
 export interface ChartFilters {
   teamId: string;

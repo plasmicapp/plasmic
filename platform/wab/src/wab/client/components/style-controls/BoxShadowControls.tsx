@@ -3,6 +3,12 @@ import {
   FullRow,
   LabeledItem,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
+import {
+  StyleComponent,
+  StyleComponentProps,
+} from "@/wab/client/components/style-controls/StyleComponent";
+import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggleButton";
+import StyleToggleButtonGroup from "@/wab/client/components/style-controls/StyleToggleButtonGroup";
 import { ColorPicker } from "@/wab/client/components/widgets/ColorPicker";
 import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
 import { ensure } from "@/wab/common";
@@ -10,9 +16,6 @@ import { parseCssNumericNew } from "@/wab/css";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { observer } from "mobx-react";
 import React from "react";
-import { StyleComponent, StyleComponentProps } from "./StyleComponent";
-import StyleToggleButton from "./StyleToggleButton";
-import StyleToggleButtonGroup from "./StyleToggleButtonGroup";
 import defer = setTimeout;
 
 interface BoxShadowPanelProps extends StyleComponentProps {

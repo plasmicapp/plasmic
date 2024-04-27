@@ -14,9 +14,9 @@ import {
   paramToVarName,
   toVarName,
 } from "@/wab/shared/codegen/util";
+import { PlumePlugin } from "@/wab/shared/plume/plume-registry";
+import { makeComponentImportPath } from "@/wab/shared/plume/plume-utils";
 import type { TriggeredOverlayRef } from "@plasmicapp/react-web";
-import { PlumePlugin } from "./plume-registry";
-import { makeComponentImportPath } from "./plume-utils";
 
 const RESERVED_PROPS = ["relativePlacement"];
 

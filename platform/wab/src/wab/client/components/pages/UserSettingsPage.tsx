@@ -2,6 +2,7 @@ import { AppCtx } from "@/wab/client/app-ctx";
 import { AddTrustedHostModal } from "@/wab/client/components/AddTrustedHostModal";
 import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
 import { NormalLayout } from "@/wab/client/components/normal-layout";
+import SettingsContainer from "@/wab/client/components/pages/plasmic/SettingsContainer";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import { ensure } from "@/wab/common";
@@ -9,7 +10,6 @@ import { ApiTrustedHost } from "@/wab/shared/ApiSchema";
 import copy from "copy-to-clipboard";
 import { observer } from "mobx-react";
 import React from "react";
-import SettingsContainer from "./plasmic/SettingsContainer";
 
 function _UserSettingsPage(props: { appCtx: AppCtx }) {
   const { appCtx } = props;

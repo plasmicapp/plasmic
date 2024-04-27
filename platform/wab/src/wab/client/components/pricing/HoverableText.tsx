@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultHoverableTextProps altogether and have
 // total control over the props for your component.
-export interface HoverableTextProps extends DefaultHoverableTextProps {}
+export type HoverableTextProps = DefaultHoverableTextProps;
 
 function HoverableText_(
   props: HoverableTextProps,

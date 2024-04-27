@@ -1,9 +1,9 @@
+import { loadConfig } from "@/wab/server/config";
+import { closeDbConnections } from "@/wab/server/db/DbCon";
+import { initializeGlobals } from "@/wab/server/svr-init";
 import { createTerminus, HealthCheckError } from "@godaddy/terminus";
 import { Application } from "express";
 import http from "http";
-import { loadConfig } from "./config";
-import { closeDbConnections } from "./db/DbCon";
-import { initializeGlobals } from "./svr-init";
 
 export function runExpressApp(
   app: Application,

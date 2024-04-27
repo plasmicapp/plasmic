@@ -1,4 +1,5 @@
 import { AppCtx } from "@/wab/client/app-ctx";
+import DataSource from "@/wab/client/components/dashboard/DataSource";
 import { DataSourceModal } from "@/wab/client/components/modals/DataSourceModal";
 import { Matcher } from "@/wab/client/components/view-common";
 import {
@@ -9,7 +10,6 @@ import { ApiDataSource, WorkspaceId } from "@/wab/shared/ApiSchema";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
-import DataSource from "./DataSource";
 
 export interface WorkspaceDataSourcesProps
   extends DefaultWorkspaceDataSourcesProps {

@@ -1,14 +1,14 @@
+import { isKnownType, Param } from "@/wab/classes";
+import { ensure, tuple } from "@/wab/common";
 import L from "lodash";
-import { isKnownType, Param } from "./classes";
-import { ensure, tuple } from "./common";
 // import { componentMetasStr as ReactMetasStr } from "./component-metas/react-meta-gen";
 import {
   CompressedReactMeta,
   compressedReactMetaString,
-} from "./component-metas/react-meta-gen-compressed";
-import { ParamExportType } from "./lang";
-import { convertTsToWabType, typeFactory } from "./shared/core/model-util";
-import { cloneType } from "./tpls";
+} from "@/wab/component-metas/react-meta-gen-compressed";
+import { ParamExportType } from "@/wab/lang";
+import { convertTsToWabType, typeFactory } from "@/wab/shared/core/model-util";
+import { cloneType } from "@/wab/tpls";
 
 export interface ComponentMeta {
   component: string;

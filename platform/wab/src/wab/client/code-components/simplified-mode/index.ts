@@ -1,4 +1,5 @@
 import { Param, TplComponent } from "@/wab/classes";
+import { updateFormComponentMode } from "@/wab/client/code-components/simplified-mode/Forms";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { assert } from "@/wab/common";
 import { codeLit } from "@/wab/exprs";
@@ -10,7 +11,6 @@ import {
   normalizeData,
 } from "@plasmicapp/react-web/lib/data-sources";
 import { formComponentName } from "@plasmicpkgs/antd5";
-import { updateFormComponentMode } from "./Forms";
 
 export async function updateComponentMode(
   tpl: TplComponent,

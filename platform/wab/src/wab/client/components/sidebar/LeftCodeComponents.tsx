@@ -3,6 +3,7 @@
 import ListItem from "@/wab/client/components/ListItem";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { showModalToRefreshCodeComponentProps } from "@/wab/client/components/modals/codeComponentModals";
+import { buildCommonComponentMenuItems } from "@/wab/client/components/sidebar/LeftComponentsPanel";
 import { DraggableInsertable } from "@/wab/client/components/studio/add-drawer/DraggableInsertable";
 import { Matcher } from "@/wab/client/components/view-common";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -27,7 +28,6 @@ import { Menu, notification, Popover, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
-import { buildCommonComponentMenuItems } from "./LeftComponentsPanel";
 
 export const CodeComponentRow = observer(function ComponentRow(props: {
   studioCtx: StudioCtx;

@@ -6,7 +6,7 @@ import * as React from "react";
 import {
   DefaultCmsPageProps,
   PlasmicCmsPage,
-} from "./wab/client/plasmic/plasmic_kit_dashboard/PlasmicCmsPage";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicCmsPage";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can
@@ -21,7 +21,7 @@ import {
 //
 // You can also stop extending from DefaultCmsPageProps altogether and have
 // total control over the props for your component.
-export interface CmsPageProps extends DefaultCmsPageProps {}
+export type CmsPageProps = DefaultCmsPageProps;
 
 function CmsPage_(props: CmsPageProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicCmsPage to render this component as it was

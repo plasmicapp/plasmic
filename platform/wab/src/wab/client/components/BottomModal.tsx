@@ -1,3 +1,4 @@
+import sty from "@/wab/client/components/BottomModal.module.sass";
 import { ensure } from "@/wab/common";
 import { useConstant } from "@/wab/commons/components/ReactUtil";
 import classNames from "classnames";
@@ -7,7 +8,6 @@ import { FocusScope } from "react-aria";
 import { animated, useSpring, useTransition } from "react-spring";
 import { useMeasure } from "react-use";
 import tunnel from "tunnel-rat";
-import sty from "./BottomModal.module.sass";
 
 interface BottomModalsStore {
   state: BottomModalsState;

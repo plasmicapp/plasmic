@@ -1,8 +1,8 @@
+import { base64StringToBuffer } from "@/wab/server/data-sources/data-utils";
 import { DataSourceError } from "@/wab/shared/data-sources-meta/data-sources";
 import { HttpDataSource } from "@/wab/shared/data-sources-meta/http-meta";
 import { isEmpty, isNil, isString } from "lodash";
 import fetch, { Response } from "node-fetch";
-import { base64StringToBuffer } from "./data-utils";
 
 export function makeHttpFetcher(source: HttpDataSource) {
   return new HttpFetcher(source);

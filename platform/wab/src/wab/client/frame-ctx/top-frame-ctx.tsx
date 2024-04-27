@@ -1,15 +1,22 @@
 import { filteredApi } from "@/wab/client/api";
 import { ensureIsTopFrame } from "@/wab/client/cli-routes";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import {
+  providesFrameCtx,
+  useFrameCtx,
+  useFrameCtxMaybe,
+} from "@/wab/client/frame-ctx/frame-ctx";
+import { HostFrameApi } from "@/wab/client/frame-ctx/host-frame-api";
+import {
+  TopFrameApi,
+  TopFrameFullApi,
+} from "@/wab/client/frame-ctx/top-frame-api";
 import { assert } from "@/wab/common";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import { bindMethods } from "@/wab/commons/proxies";
 import * as Comlink from "comlink";
 import { UnregisterCallback } from "history";
 import * as React from "react";
-import { providesFrameCtx, useFrameCtx, useFrameCtxMaybe } from "./frame-ctx";
-import { HostFrameApi } from "./host-frame-api";
-import { TopFrameApi, TopFrameFullApi } from "./top-frame-api";
 
 export interface TopFrameCtx {
   hostFrameApi: PromisifyMethods<HostFrameApi>;

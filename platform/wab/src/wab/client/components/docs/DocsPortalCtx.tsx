@@ -1,5 +1,10 @@
 import { Component, ImageAsset, Param } from "@/wab/classes";
 import { U, UU } from "@/wab/client/cli-routes";
+import {
+  resolveCollisionsForComponentProp,
+  serializeToggledComponent,
+  updateComponentCode,
+} from "@/wab/client/components/docs/serialize-docs-preview";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ensure, spawn } from "@/wab/common";
 import { withProvider } from "@/wab/commons/components/ContextUtil";
@@ -14,11 +19,6 @@ import { TplNamable } from "@/wab/tpls";
 import { History } from "history";
 import { action, makeObservable, observable } from "mobx";
 import React from "react";
-import {
-  resolveCollisionsForComponentProp,
-  serializeToggledComponent,
-  updateComponentCode,
-} from "./serialize-docs-preview";
 
 export type DocsTabKey = "intro" | "components" | "images";
 

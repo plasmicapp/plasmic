@@ -19,7 +19,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultCopyButtonProps altogether and have
 // total control over the props for your component.
-interface CopyButtonProps extends DefaultCopyButtonProps {}
+type CopyButtonProps = DefaultCopyButtonProps;
 
 function CopyButton(props: CopyButtonProps) {
   // Use PlasmicCopyButton to render this component as it was

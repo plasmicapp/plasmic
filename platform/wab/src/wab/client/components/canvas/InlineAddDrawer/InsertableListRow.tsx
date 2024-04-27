@@ -1,3 +1,4 @@
+import styles from "@/wab/client/components/canvas/InlineAddDrawer/InlineAddDrawer.module.scss";
 import ListSectionHeader from "@/wab/client/components/ListSectionHeader";
 import ListSectionSeparator from "@/wab/client/components/ListSectionSeparator";
 import { AddItemGroup } from "@/wab/client/components/studio/add-drawer/AddDrawerSection";
@@ -8,7 +9,6 @@ import { getSuperComponents } from "@/wab/components";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { CSSProperties } from "react";
-import styles from "./InlineAddDrawer.module.scss";
 
 export const enum InsertableListItemType {
   groupHeader = "groupHeader",

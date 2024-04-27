@@ -2,6 +2,7 @@
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import uniqBy from "lodash/uniqBy";
 // This file is owned by you, feel free to edit as you see fit.
+import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
@@ -15,9 +16,8 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicMyPlayground";
 import { PERSONAL_WORKSPACE } from "@/wab/shared/Labels";
 import * as React from "react";
-import { documentTitle } from "./page-utils";
 
-export interface MyPlaygroundProps extends DefaultMyPlaygroundProps {}
+export type MyPlaygroundProps = DefaultMyPlaygroundProps;
 
 function MyPlayground_(props: MyPlaygroundProps, ref: HTMLElementRefOf<"div">) {
   const appCtx = useAppCtx();

@@ -6,9 +6,9 @@ import { observer } from "mobx-react";
 // import { ExprVal } from "./wab/client/components/sidebar-tabs/data-tab";
 // import { VarName } from "./wab/client/components/sidebar/expr-editor";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { DefaultQueriesSectionProps } from "./wab/client/plasmic/plasmic_kit_data_queries/PlasmicQueriesSection";
+import { DefaultQueriesSectionProps } from "@/wab/client/plasmic/plasmic_kit_data_queries/PlasmicQueriesSection";
 
-type QueriesSectionProps = DefaultQueriesSectionProps
+type QueriesSectionProps = DefaultQueriesSectionProps;
 /*
 const TypicalQueryControl = observer(function RestQueryControl({
   query,

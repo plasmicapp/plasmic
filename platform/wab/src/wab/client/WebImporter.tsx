@@ -1,4 +1,10 @@
 import { RawText, TplNode, TplTag, VariantSetting } from "@/wab/classes";
+import { AppCtx } from "@/wab/client/app-ctx";
+import {
+  addSvgImageAsset,
+  SiteOps,
+} from "@/wab/client/components/canvas/site-ops";
+import { ALL_CONTAINER_TAGS } from "@/wab/client/components/sidebar-tabs/HTMLAttributesSection";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
   assert,
@@ -23,9 +29,6 @@ import L from "lodash";
 import nodeHtmlParser, { NodeType } from "node-html-parser";
 import { CSSProperties } from "react";
 import replaceCssUrl from "replace-css-url";
-import { AppCtx } from "./app-ctx";
-import { addSvgImageAsset, SiteOps } from "./components/canvas/site-ops";
-import { ALL_CONTAINER_TAGS } from "./components/sidebar-tabs/HTMLAttributesSection";
 
 const debugLogging = false;
 

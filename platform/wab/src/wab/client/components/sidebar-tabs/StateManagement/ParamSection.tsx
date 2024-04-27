@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultParamSectionProps altogether and have
 // total control over the props for your component.
-export interface ParamSectionProps extends DefaultParamSectionProps {}
+export type ParamSectionProps = DefaultParamSectionProps;
 
 function ParamSection_(props: ParamSectionProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicParamSection to render this component as it was

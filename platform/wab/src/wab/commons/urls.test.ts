@@ -1,4 +1,4 @@
-import { encodeUriParams } from "./urls";
+import { encodeUriParams } from "@/wab/commons/urls";
 
 describe("encodeUriParams", () => {
   it("encodes 0 params", () => {

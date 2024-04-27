@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultHiliteTabButtonProps altogether and have
 // total control over the props for your component.
-export interface HiliteTabButtonProps extends DefaultHiliteTabButtonProps {}
+export type HiliteTabButtonProps = DefaultHiliteTabButtonProps;
 
 function HiliteTabButton_(
   props: HiliteTabButtonProps,

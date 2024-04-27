@@ -8,7 +8,7 @@ import {
   ProjectAndBranchId,
   ProjectId,
   UserExtraData,
-} from "./ApiSchema";
+} from "@/wab/shared/ApiSchema";
 
 export function fullName(user: ApiUser) {
   return user.firstName || user.lastName

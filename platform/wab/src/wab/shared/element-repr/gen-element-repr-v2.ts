@@ -20,14 +20,14 @@ import { isKnownRawText, isKnownRenderExpr } from "@/wab/classes";
 import { NodeMarker, RuleSet, StyleMarker, TplNode } from "@/wab/classes";
 import { ensureType, switchType, tuple, withoutNils } from "@/wab/common";
 import { tryExtractJson } from "@/wab/exprs";
-import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
-import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
-import { isTplComponent, isTplContainer, isTplTextBlock } from "@/wab/tpls";
 import {
   NodeMarkerElement,
   PlasmicElement,
   StyleMarkerElement,
-} from "./element-repr-v2";
+} from "@/wab/shared/element-repr/element-repr-v2";
+import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
+import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
+import { isTplComponent, isTplContainer, isTplTextBlock } from "@/wab/tpls";
 
 const rulesetToStyles = (rs: RuleSet) => {
   const rsh = new RuleSetHelpers(rs, "div");

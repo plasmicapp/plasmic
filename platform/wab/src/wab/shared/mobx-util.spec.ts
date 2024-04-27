@@ -1,10 +1,10 @@
-import { configure, observable } from "mobx";
 import {
   clearGlobalObservable,
   makeGlobalObservable,
   maybeComputedFn,
   mutateGlobalObservable,
-} from "./mobx-util";
+} from "@/wab/shared/mobx-util";
+import { configure, observable } from "mobx";
 
 describe("Global Observable", () => {
   beforeAll(() => {

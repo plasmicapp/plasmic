@@ -1,4 +1,8 @@
 import {
+  ADMIN_PANEL_WELCOME_TUTORIAL_STEP,
+  changeRightTabKeyStepFunc,
+} from "@/wab/client/tours/tutorials/frags/basic-steps";
+import {
   TutorialEvent,
   TutorialEventsType,
 } from "@/wab/client/tours/tutorials/tutorials-events";
@@ -17,10 +21,6 @@ import {
 } from "@/wab/client/tours/tutorials/tutorials-types";
 import { ensure } from "@/wab/common";
 import { RightTabKey } from "src/wab/client/studio-ctx/StudioCtx";
-import {
-  ADMIN_PANEL_WELCOME_TUTORIAL_STEP,
-  changeRightTabKeyStepFunc,
-} from "./basic-steps";
 
 export const DYNAMIC_PAGE_STEPS: StudioTutorialStep[] = [
   ADMIN_PANEL_WELCOME_TUTORIAL_STEP,

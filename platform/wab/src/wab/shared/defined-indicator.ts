@@ -1,10 +1,10 @@
 import { Arg, Component, Expr, Mixin, Param, Site, Theme } from "@/wab/classes";
 import { arrayEqIgnoreOrder, ensure } from "@/wab/common";
+import { makeVariantComboSorter } from "@/wab/shared/variant-sort";
+import { VariantCombo } from "@/wab/shared/Variants";
+import { TplVisibility } from "@/wab/shared/visibility-utils";
 import { SlotSelection } from "@/wab/slots";
 import L from "lodash";
-import { makeVariantComboSorter } from "./variant-sort";
-import { VariantCombo } from "./Variants";
-import { TplVisibility } from "./visibility-utils";
 
 // The stack of variant settings (from lowest priority to highest) and the
 // the value in each variant setting. Must be non empty.

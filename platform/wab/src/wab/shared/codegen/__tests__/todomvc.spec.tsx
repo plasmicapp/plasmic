@@ -8,7 +8,7 @@ import "core-js";
 import * as React from "react";
 import tmp from "tmp";
 // Exported from https://studio.plasmic.app/projects/uhASAhKsCsKUuxeJL6gacV
-import todomvcBundle from "./bundles/todomvc.json";
+import todomvcBundle from "@/wab/shared/codegen/__tests__/bundles/todomvc.json";
 
 describe("todolist blackbox codegen", () => {
   todomvcBundle.version = "some-version";

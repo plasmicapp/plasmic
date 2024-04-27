@@ -1,7 +1,7 @@
 import { ensureType } from "@/wab/common";
+import { userDbMgr } from "@/wab/server/routes/util";
 import { UsersResponse } from "@/wab/shared/ApiSchema";
 import { Request, Response } from "express-serve-static-core";
-import { userDbMgr } from "./util";
 
 export async function getUsersById(req: Request, res: Response) {
   const mgr = userDbMgr(req);

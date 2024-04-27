@@ -1,10 +1,10 @@
 import { CodeDisplay } from "@/wab/client/components/coding/CodeDisplay";
+import sty from "@/wab/client/components/studio/code-preview/CodePreviewPanel.module.css";
 import { ObserverLoadable } from "@/wab/client/components/widgets";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { exportReactPlainTypical } from "@/wab/shared/codegen/react-p/plain";
 import { observer } from "mobx-react";
 import React from "react";
-import sty from "./CodePreviewPanel.module.css";
 
 export const CodePreviewPanel = observer(function CodePreviewPanel(props: {
   studioCtx: StudioCtx;

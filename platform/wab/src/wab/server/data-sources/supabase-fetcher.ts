@@ -1,4 +1,6 @@
 import { ensure, withoutNils } from "@/wab/common";
+import { filtersToRefineFilters } from "@/wab/server/data-sources/data-source-utils";
+import { base64StringToBuffer } from "@/wab/server/data-sources/data-utils";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { DATA_SOURCE_QUERY_BUILDER_CONFIG } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
@@ -19,8 +21,6 @@ import {
 } from "@plasmicapp/data-sources";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import fetch from "node-fetch";
-import { filtersToRefineFilters } from "./data-source-utils";
-import { base64StringToBuffer } from "./data-utils";
 
 export function makeSupabaseFetcher(source: SupabaseDataSource) {
   return new SupabaseFetcher(source);

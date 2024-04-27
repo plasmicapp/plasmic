@@ -1,4 +1,5 @@
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
+import styles from "@/wab/client/components/sidebar/SidebarSection.module.scss";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
 import ChevronDownsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg";
@@ -19,7 +20,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import styles from "./SidebarSection.module.scss";
 
 export type MaybeCollapsibleRow = { collapsible: boolean; content: ReactNode };
 

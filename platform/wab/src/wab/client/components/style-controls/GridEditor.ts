@@ -1,3 +1,4 @@
+import styles from "@/wab/client/components/style-controls/GridEditor.module.scss";
 import { getRect } from "@/wab/client/dom";
 import { Dict } from "@/wab/collections";
 import { ensure, parsePx, zipWithIndex } from "@/wab/common";
@@ -7,7 +8,6 @@ import { px } from "@/wab/styles";
 import $ from "jquery";
 import L from "lodash";
 import { CSSProperties } from "react";
-import styles from "./GridEditor.module.scss";
 
 function ensureValues<T>(x: Dict<T | null | undefined>): Dict<T> {
   for (const k in x) {

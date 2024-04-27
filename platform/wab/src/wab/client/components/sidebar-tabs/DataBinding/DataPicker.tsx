@@ -4,6 +4,23 @@ import {
   checkStrSizeLimit,
   checkSyntaxError,
 } from "@/wab/client/components/sidebar-tabs/ComponentProps/CodeEditor";
+import DataPickerColumn from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerColumn";
+import DataPickerGlobalSearchResultsItem from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerGlobalSearchResultsItem";
+import DataPickerSelectedItem from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerSelectedItem";
+import {
+  ColumnItem,
+  DataPickerOpts,
+  evalExpr,
+  getItemPath,
+  getSupportedObjectKeys,
+  getVariableType,
+  hasAdvancedFields,
+  isListType,
+  isTypeSupported,
+  mkColumnItems,
+  parseItem,
+  prepareEnvForDataPicker,
+} from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
 import { Matcher } from "@/wab/client/components/view-common";
 import { ModalScope } from "@/wab/client/components/widgets/ModalScope";
 import { TextboxRef } from "@/wab/client/components/widgets/Textbox";
@@ -25,23 +42,6 @@ import { mapValues } from "lodash";
 import deepGet from "lodash/get";
 import * as React from "react";
 import { useUpdateEffect } from "react-use";
-import DataPickerColumn from "./DataPickerColumn";
-import DataPickerGlobalSearchResultsItem from "./DataPickerGlobalSearchResultsItem";
-import DataPickerSelectedItem from "./DataPickerSelectedItem";
-import {
-  ColumnItem,
-  DataPickerOpts,
-  evalExpr,
-  getItemPath,
-  getSupportedObjectKeys,
-  getVariableType,
-  hasAdvancedFields,
-  isListType,
-  isTypeSupported,
-  mkColumnItems,
-  parseItem,
-  prepareEnvForDataPicker,
-} from "./DataPickerUtil";
 
 type Column = {
   selectedItem: number | undefined;

@@ -12,6 +12,14 @@ import { SpacingSection } from "@/wab/client/components/sidebar-tabs/SpacingSect
 import { TransformPanelSection } from "@/wab/client/components/sidebar-tabs/TransformPanelSection";
 import { TransitionsPanelSection } from "@/wab/client/components/sidebar-tabs/TransitionsSection";
 import { TypographySection } from "@/wab/client/components/sidebar-tabs/TypographySection";
+import { FindReferencesModal } from "@/wab/client/components/sidebar/FindReferencesModal";
+import { useDepFilterButton } from "@/wab/client/components/sidebar/left-panel-utils";
+import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import {
+  ItemOrGroup,
+  VirtualGroupedList,
+} from "@/wab/client/components/sidebar/VirtualGroupedList";
 import {
   BorderPanelSection,
   BorderRadiusSection,
@@ -43,11 +51,6 @@ import { observer } from "mobx-react";
 import React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { isHostLessPackage } from "src/wab/sites";
-import { FindReferencesModal } from "./FindReferencesModal";
-import { useDepFilterButton } from "./left-panel-utils";
-import { SidebarModal } from "./SidebarModal";
-import { SidebarSection } from "./SidebarSection";
-import { ItemOrGroup, VirtualGroupedList } from "./VirtualGroupedList";
 
 function _MixinPreview(props: {
   sc: StudioCtx;

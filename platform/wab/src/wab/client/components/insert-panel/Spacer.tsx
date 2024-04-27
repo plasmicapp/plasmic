@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultSpacerProps altogether and have
 // total control over the props for your component.
-export interface SpacerProps extends DefaultSpacerProps {}
+export type SpacerProps = DefaultSpacerProps;
 
 function Spacer_(props: SpacerProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicSpacer to render this component as it was

@@ -12,6 +12,9 @@ import {
   TplNode,
 } from "@/wab/classes";
 import { apiKey, invalidationKey } from "@/wab/client/api";
+import Conflict from "@/wab/client/components/merge/Conflict";
+import Diffs from "@/wab/client/components/merge/Diffs";
+import LineItem from "@/wab/client/components/merge/LineItem";
 import { objIcon, SiteDiffs } from "@/wab/client/components/modals/SiteDiffs";
 import { createNodeIcon } from "@/wab/client/components/sidebar-tabs/tpl-tree";
 import { TopBarModal } from "@/wab/client/components/TopFrame/TopBar/TopBarModal";
@@ -63,9 +66,6 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { ReactElement, useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
-import Conflict from "./Conflict";
-import Diffs from "./Diffs";
-import LineItem from "./LineItem";
 
 interface MergeModalWrapperProps {
   project: ApiProject;

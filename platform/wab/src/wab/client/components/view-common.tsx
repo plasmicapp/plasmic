@@ -67,7 +67,7 @@ function boldSnippets(text: React.ReactNode, pat: RegExp, className?: string) {
 function boldSnippetsString(text: string, pat: RegExp, className?: string) {
   function* gen() {
     let i = 0;
-    for (let [skipped, match] of [...reSplitAll(pat, text)]) {
+    for (const [skipped, match] of [...reSplitAll(pat, text)]) {
       if (skipped.length > 0) {
         yield skipped;
       }
@@ -116,7 +116,7 @@ export function uncontrollable<
       super(props);
       this.state = Object.fromEntries(
         generateWith(this, function* () {
-          for (let [prop, pureProp] of [...this.getUncontrolledProps()]) {
+          for (const [prop, pureProp] of [...this.getUncontrolledProps()]) {
             yield tuple(pureProp, this.props[prop]);
           }
         })
@@ -124,7 +124,7 @@ export function uncontrollable<
     }
     getUncontrolledProps() {
       return generateWith(this, function* () {
-        for (let prop in this.props) {
+        for (const prop in this.props) {
           const pureProp = stripDefault(prop);
           if (pureProp != null && pureProp in propToCallbackName) {
             yield tuple(prop, pureProp);

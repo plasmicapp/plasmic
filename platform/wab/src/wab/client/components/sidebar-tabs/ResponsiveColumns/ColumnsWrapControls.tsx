@@ -110,7 +110,7 @@ export const ColumnsWrapControls = observer(
                 value={`${colsSizes.length}`}
                 onChange={async (val) => {
                   if (val && +val !== colsSizes.length && +val > 0) {
-                    let delta = +val - colsSizes.length;
+                    const delta = +val - colsSizes.length;
                     spawn(handleChangeColsPerRow(delta));
                   }
                 }}

@@ -1,4 +1,6 @@
 import { StyleToken } from "@/wab/classes";
+import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { newTokenValueAllowed } from "@/wab/client/components/sidebar/token-controls";
 import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
@@ -10,8 +12,6 @@ import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { allTokensOfType } from "@/wab/sites";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { SidebarModal } from "./SidebarModal";
-import { newTokenValueAllowed } from "./token-controls";
 
 export const GeneralTokenEditModal = observer(
   function GeneralTokenModal(props: {

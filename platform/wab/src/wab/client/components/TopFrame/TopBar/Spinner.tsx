@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultSpinnerProps altogether and have
 // total control over the props for your component.
-export interface SpinnerProps extends DefaultSpinnerProps {}
+export type SpinnerProps = DefaultSpinnerProps;
 
 function Spinner_(props: SpinnerProps, ref: HTMLElementRefOf<"svg">) {
   // Use PlasmicSpinner to render this component as it was

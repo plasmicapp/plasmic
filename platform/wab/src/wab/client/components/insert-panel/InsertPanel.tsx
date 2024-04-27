@@ -14,6 +14,7 @@ import {
   getValidInsertLocs,
   InsertRelLoc,
 } from "@/wab/client/components/canvas/view-ops";
+import S from "@/wab/client/components/insert-panel/InsertPanel.module.scss";
 import ListSectionHeader from "@/wab/client/components/ListSectionHeader";
 import ListSectionSeparator from "@/wab/client/components/ListSectionSeparator";
 import {
@@ -113,7 +114,6 @@ import { useMemo, useState } from "react";
 import { FocusScope, useFocusManager } from "react-aria";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { areEqual, VariableSizeList } from "react-window";
-import S from "./InsertPanel.module.scss";
 
 const leftSideWidth = 200;
 const rightSideWidth = 330;

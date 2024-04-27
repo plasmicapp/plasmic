@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultReactionButtonProps altogether and have
 // total control over the props for your component.
-export interface ReactionButtonProps extends DefaultReactionButtonProps {}
+export type ReactionButtonProps = DefaultReactionButtonProps;
 
 function ReactionButton_(
   props: ReactionButtonProps,

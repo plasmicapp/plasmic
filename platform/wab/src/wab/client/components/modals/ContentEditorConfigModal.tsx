@@ -1,4 +1,5 @@
 import { AppCtx } from "@/wab/client/app-ctx";
+import sty from "@/wab/client/components/modals/ContentEditorConfigModal.module.scss";
 import Button from "@/wab/client/components/widgets/Button";
 import { Modal } from "@/wab/client/components/widgets/Modal";
 import Select from "@/wab/client/components/widgets/Select";
@@ -18,7 +19,6 @@ import { capitalizeFirst } from "@/wab/strs";
 import { Form, Input } from "antd";
 import { capitalize, omit, uniqBy } from "lodash";
 import React from "react";
-import sty from "./ContentEditorConfigModal.module.scss";
 
 const HIDDEN_LEFT_TAB_KEYS: LeftTabUiKey[] = ["outline", "copilot"];
 

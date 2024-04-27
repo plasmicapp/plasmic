@@ -35,6 +35,9 @@ import {
   getPlumeImage,
 } from "@/wab/client/components/plume/plume-display-utils";
 import { PlumyIcon } from "@/wab/client/components/plume/plume-markers";
+import AddDrawerItem from "@/wab/client/components/studio/add-drawer/AddDrawerItem";
+import { AddItemGroup } from "@/wab/client/components/studio/add-drawer/AddDrawerSection";
+import { DraggableInsertable } from "@/wab/client/components/studio/add-drawer/DraggableInsertable";
 import { ImagePreview } from "@/wab/client/components/style-controls/ImageSelector";
 import { Matcher } from "@/wab/client/components/view-common";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -131,9 +134,6 @@ import {
 } from "src/wab/shared/insertable-templates";
 import { getPlumeEditorPlugin } from "src/wab/shared/plume/plume-registry";
 import { getBaseVariant } from "src/wab/shared/Variants";
-import AddDrawerItem from "./AddDrawerItem";
-import { AddItemGroup } from "./AddDrawerSection";
-import { DraggableInsertable } from "./DraggableInsertable";
 
 // The key that defines the recent items OmnibarGroup
 const RECENT_GROUP_KEY = "adddrawer-recent";

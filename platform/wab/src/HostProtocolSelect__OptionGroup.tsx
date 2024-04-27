@@ -3,10 +3,10 @@ import * as React from "react";
 import {
   DefaultHostProtocolSelect__OptionGroupProps,
   PlasmicHostProtocolSelect__OptionGroup,
-} from "./wab/client/plasmic/plasmic_kit_dashboard/PlasmicHostProtocolSelect__OptionGroup";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicHostProtocolSelect__OptionGroup";
 
-interface HostProtocolSelect__OptionGroupProps
-  extends DefaultHostProtocolSelect__OptionGroupProps {}
+type HostProtocolSelect__OptionGroupProps =
+  DefaultHostProtocolSelect__OptionGroupProps;
 
 function HostProtocolSelect__OptionGroup(
   props: HostProtocolSelect__OptionGroupProps

@@ -14,21 +14,21 @@ import { isCodeComponent, isFrameComponent } from "@/wab/components";
 import { isWeakRefField, Type } from "@/wab/model/model-meta";
 import { Bundler } from "@/wab/shared/bundler";
 import { NodeCtx } from "@/wab/shared/core/model-tree-util";
-import { isSlot } from "@/wab/shared/SlotUtils";
-import { TplMgr } from "@/wab/shared/TplMgr";
-import { isString } from "lodash";
 import {
   mergeComponentVariants,
   mergeTplNodeChildren,
   mergeVSettings,
   tryMergeComponents,
   tryMergeGlobalContexts,
-} from "./merge-components";
+} from "@/wab/shared/site-diffs/merge-components";
 import {
   DirectConflict,
   DirectConflictPickMap,
   generateIidForInst,
-} from "./merge-core";
+} from "@/wab/shared/site-diffs/merge-core";
+import { isSlot } from "@/wab/shared/SlotUtils";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { isString } from "lodash";
 
 export type MaybeWithPrefix<T extends string | null> = T extends null
   ? never

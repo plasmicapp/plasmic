@@ -1,4 +1,6 @@
 import type { ArenaFrame, Component, Mixin, StyleToken } from "@/wab/classes";
+import Button from "@/wab/client/components/widgets/Button";
+import Textbox from "@/wab/client/components/widgets/Textbox";
 import { zIndex } from "@/wab/client/z-index";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import { getComponentDisplayName } from "@/wab/components";
@@ -10,8 +12,6 @@ import { Rule } from "rc-field-form/lib/interface";
 import React from "react";
 import ReactDOM from "react-dom";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import Button from "./widgets/Button";
-import Textbox from "./widgets/Textbox";
 
 /**
  * Shows a React element appended to the end of document.  As such, it is outside of

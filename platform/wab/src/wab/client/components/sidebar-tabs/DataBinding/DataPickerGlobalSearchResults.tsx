@@ -20,8 +20,8 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultDataPickerGlobalSearchResultsProps altogether and have
 // total control over the props for your component.
-export interface DataPickerGlobalSearchResultsProps
-  extends DefaultDataPickerGlobalSearchResultsProps {}
+export type DataPickerGlobalSearchResultsProps =
+  DefaultDataPickerGlobalSearchResultsProps;
 
 function DataPickerGlobalSearchResults_(
   props: DataPickerGlobalSearchResultsProps,

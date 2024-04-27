@@ -1,43 +1,59 @@
 import { ensure } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
-import { DATA_SOURCE_LOWER } from "@/wab/shared/Labels";
-import { Config } from "@react-awesome-query-builder/antd";
 import {
   AirtableDataSource,
   AIRTABLE_META,
   QueryBuilderAirtableConfig,
-} from "./airtable-meta";
-import { DataSourceMeta } from "./data-sources";
-import { DynamoDbDataSource, DYNAMODB_META } from "./dynamodb-meta";
-import { FakeDataSource, FAKE_META, QueryBuilderFakeConfig } from "./fake-meta";
+} from "@/wab/shared/data-sources-meta/airtable-meta";
+import { DataSourceMeta } from "@/wab/shared/data-sources-meta/data-sources";
+import {
+  DynamoDbDataSource,
+  DYNAMODB_META,
+} from "@/wab/shared/data-sources-meta/dynamodb-meta";
+import {
+  FakeDataSource,
+  FAKE_META,
+  QueryBuilderFakeConfig,
+} from "@/wab/shared/data-sources-meta/fake-meta";
 import {
   GoogleSheetsDataSource,
   GOOGLE_SHEETS_META,
   QueryBuilderGoogleSheetsConfig,
-} from "./google-sheets-meta";
-import { GraphqlDataSource, GRAPHQL_META } from "./graphql-meta";
-import { HttpDataSource, HTTP_META } from "./http-meta";
+} from "@/wab/shared/data-sources-meta/google-sheets-meta";
+import {
+  GraphqlDataSource,
+  GRAPHQL_META,
+} from "@/wab/shared/data-sources-meta/graphql-meta";
+import {
+  HttpDataSource,
+  HTTP_META,
+} from "@/wab/shared/data-sources-meta/http-meta";
 import {
   PlasmicCMSDataSource,
   PLASMIC_CMS_META,
   QueryBuilderPlasmicCMSConfig,
-} from "./plasmic-cms-meta";
+} from "@/wab/shared/data-sources-meta/plasmic-cms-meta";
 import {
   PostgresDataSource,
   POSTGRES_META,
   QueryBuilderPostgresConfig,
-} from "./postgres-meta";
+} from "@/wab/shared/data-sources-meta/postgres-meta";
 import {
   QueryBuilderSupabaseConfig,
   SupabaseDataSource,
   SUPABASE_META,
-} from "./supabase-meta";
+} from "@/wab/shared/data-sources-meta/supabase-meta";
 import {
   QueryBuilderTutorialDbConfig,
   TutorialDbDataSource,
   TUTORIALDB_META,
-} from "./tutorialdb-meta";
-import { ZapierDataSource, ZAPIER_META } from "./zapier-meta";
+} from "@/wab/shared/data-sources-meta/tutorialdb-meta";
+import {
+  ZapierDataSource,
+  ZAPIER_META,
+} from "@/wab/shared/data-sources-meta/zapier-meta";
+import { DATA_SOURCE_LOWER } from "@/wab/shared/Labels";
+import { Config } from "@react-awesome-query-builder/antd";
 
 export type GenericDataSource =
   | AirtableDataSource

@@ -17,6 +17,42 @@ import {
   Router,
   UU,
 } from "@/wab/client/cli-routes";
+import AllProjectsPage from "@/wab/client/components/dashboard/AllProjectsPage";
+import MyPlayground from "@/wab/client/components/dashboard/MyPlayground";
+import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
+import SettingsPage from "@/wab/client/components/dashboard/SettingsPage";
+import TeamPage from "@/wab/client/components/dashboard/TeamPage";
+import TeamSettingsPage from "@/wab/client/components/dashboard/TeamSettingsPage";
+import WorkspacePage from "@/wab/client/components/dashboard/WorkspacePage";
+import { DiscourseConnectClient } from "@/wab/client/components/DiscourseConnectClient";
+import { IntroSplash } from "@/wab/client/components/modals/IntroSplash";
+import {
+  NormalLayout,
+  NormalNonAuthLayout,
+} from "@/wab/client/components/normal-layout";
+import { AppAuthPage } from "@/wab/client/components/pages/AppAuthPage";
+import {
+  AuthForm,
+  ForgotPasswordForm,
+  ResetPasswordForm,
+  SsoLoginForm,
+} from "@/wab/client/components/pages/AuthForm";
+import { EmailVerification } from "@/wab/client/components/pages/EmailVerification";
+import { FromStarterTemplate } from "@/wab/client/components/pages/FromStarterTemplate";
+import { GithubCallback } from "@/wab/client/components/pages/GithubCallback";
+import { ImportProjectsFromProd } from "@/wab/client/components/pages/ImportProjectFromProd";
+import { InitTokenPage } from "@/wab/client/components/pages/InitTokenPage";
+import {
+  FinishShopifyAuth,
+  StartShopifyAuth,
+} from "@/wab/client/components/pages/StartShopifyAuth";
+import { SurveyForm } from "@/wab/client/components/pages/SurveyForm";
+import { TeamCreation } from "@/wab/client/components/pages/TeamCreation";
+import { UserSettingsPage } from "@/wab/client/components/pages/UserSettingsPage";
+import PromoBanner from "@/wab/client/components/PromoBanner";
+import { TeamSupportRedirect } from "@/wab/client/components/TeamSupportRedirect";
+import { AppView } from "@/wab/client/components/top-view";
+import * as widgets from "@/wab/client/components/widgets";
 import { providesAppCtx, useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useHostFrameCtxIfHostFrame } from "@/wab/client/frame-ctx/host-frame-ctx";
 import deployedVersions from "@/wab/client/plasmic-deployed.json";
@@ -35,36 +71,6 @@ import { getMaximumTierFromTeams } from "@/wab/shared/pricing/pricing-utils";
 import posthog from "posthog-js";
 import * as React from "react";
 import { Redirect, Route, Switch, useHistory, useLocation } from "react-router";
-import AllProjectsPage from "./dashboard/AllProjectsPage";
-import MyPlayground from "./dashboard/MyPlayground";
-import { documentTitle } from "./dashboard/page-utils";
-import SettingsPage from "./dashboard/SettingsPage";
-import TeamPage from "./dashboard/TeamPage";
-import TeamSettingsPage from "./dashboard/TeamSettingsPage";
-import WorkspacePage from "./dashboard/WorkspacePage";
-import { DiscourseConnectClient } from "./DiscourseConnectClient";
-import { IntroSplash } from "./modals/IntroSplash";
-import { NormalLayout, NormalNonAuthLayout } from "./normal-layout";
-import { AppAuthPage } from "./pages/AppAuthPage";
-import {
-  AuthForm,
-  ForgotPasswordForm,
-  ResetPasswordForm,
-  SsoLoginForm,
-} from "./pages/AuthForm";
-import { EmailVerification } from "./pages/EmailVerification";
-import { FromStarterTemplate } from "./pages/FromStarterTemplate";
-import { GithubCallback } from "./pages/GithubCallback";
-import { ImportProjectsFromProd } from "./pages/ImportProjectFromProd";
-import { InitTokenPage } from "./pages/InitTokenPage";
-import { FinishShopifyAuth, StartShopifyAuth } from "./pages/StartShopifyAuth";
-import { SurveyForm } from "./pages/SurveyForm";
-import { TeamCreation } from "./pages/TeamCreation";
-import { UserSettingsPage } from "./pages/UserSettingsPage";
-import PromoBanner from "./PromoBanner";
-import { TeamSupportRedirect } from "./TeamSupportRedirect";
-import { AppView } from "./top-view";
-import * as widgets from "./widgets";
 
 const LazyTeamAnalytics = React.lazy(() => import("./analytics/TeamAnalytics"));
 const LazyAdminPage = React.lazy(() => import("./pages/admin/AdminPage"));

@@ -5,12 +5,12 @@ import {
   Variant,
 } from "@/wab/classes";
 import { ensure } from "@/wab/common";
+import { parseScreenSpec } from "@/wab/shared/Css";
+import { readonlyRSH, RSH } from "@/wab/shared/RuleSetHelpers";
+import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { expandRuleSets } from "@/wab/styles";
 import { TplColumnsTag } from "@/wab/tpls";
 import { clamp, isEqual, isUndefined, range, sum } from "lodash";
-import { parseScreenSpec } from "./Css";
-import { readonlyRSH, RSH } from "./RuleSetHelpers";
-import { VariantTplMgr } from "./VariantTplMgr";
 
 export const hasMaxWidthVariant = (variant: Variant): boolean => {
   const spec = parseScreenSpec(ensure(variant.mediaQuery));

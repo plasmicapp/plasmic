@@ -9,7 +9,7 @@ export async function findMissingImplicitStates(em: EntityManager) {
   const dbMgr = new DbMgr(em, SUPER_USER);
   const badProjects: string[] = [];
   let processedProjects = 0;
-  let numberOfProjects = await dbMgr.countAllProjects();
+  const numberOfProjects = await dbMgr.countAllProjects();
 
   const printData = () => {
     console.log("....................");

@@ -1,5 +1,7 @@
 import { Variant } from "@/wab/classes";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
+import { NewScreenVariantForm } from "@/wab/client/components/sidebar-tabs/ResponsivenessPanel/NewScreenVariantForm";
+import styles from "@/wab/client/components/sidebar-tabs/ResponsivenessPanel/ResponsivenessPanel.module.scss";
 import LeftPaneHeader from "@/wab/client/components/studio/LeftPaneHeader";
 import Button from "@/wab/client/components/widgets/Button";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -35,8 +37,6 @@ import { findLast } from "lodash";
 import startCase from "lodash/startCase";
 import { observer } from "mobx-react";
 import React, { useState } from "react";
-import { NewScreenVariantForm } from "./NewScreenVariantForm";
-import styles from "./ResponsivenessPanel.module.scss";
 
 export const ResponsivenessPanel = observer(ResponsivenessPanel_);
 

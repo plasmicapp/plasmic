@@ -1,4 +1,4 @@
-import { Fiber, SuspenseComponent } from "./fiber";
+import { Fiber, SuspenseComponent } from "@/wab/client/react-global-hook/fiber";
 
 export function fiberChildren(fiber: Fiber) {
   const children: Fiber[] = [];

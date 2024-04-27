@@ -1,4 +1,5 @@
 import { Param } from "@/wab/classes";
+import { DocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
 import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
 import { PlasmicLinkedProp } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicLinkedProp";
 import { wabTypeToPropType } from "@/wab/shared/code-components/code-components";
@@ -7,7 +8,6 @@ import { wabToTsType } from "@/wab/shared/core/model-util";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { DocsPortalCtx } from "./DocsPortalCtx";
 
 interface LinkedPropProps {
   docsCtx: DocsPortalCtx;

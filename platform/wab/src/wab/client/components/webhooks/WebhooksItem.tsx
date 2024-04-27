@@ -1,3 +1,9 @@
+import {
+  DefaultWebhooksItemProps,
+  PlasmicWebhooksItem,
+} from "@/wab/client/components/webhooks/plasmic/plasmic_kit_continuous_deployment/PlasmicWebhooksItem";
+import WebhookHeader from "@/wab/client/components/webhooks/WebhookHeader";
+import styles from "@/wab/client/components/webhooks/WebhooksItem.module.scss";
 import Select from "@/wab/client/components/widgets/Select";
 import TrashIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Trash";
 import PresetsIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Presets";
@@ -6,12 +12,6 @@ import { httpMethods } from "@/wab/shared/HttpClientUtil";
 import { Menu } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
-import {
-  DefaultWebhooksItemProps,
-  PlasmicWebhooksItem,
-} from "./plasmic/plasmic_kit_continuous_deployment/PlasmicWebhooksItem";
-import WebhookHeader from "./WebhookHeader";
-import styles from "./WebhooksItem.module.scss";
 
 export type ToggleWebhook = ApiProjectWebhook & { enable: boolean };
 

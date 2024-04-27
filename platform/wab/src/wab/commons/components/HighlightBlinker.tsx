@@ -1,7 +1,7 @@
+import S from "@/wab/commons/components/HighlightBlinker.module.scss";
 import cn from "classnames";
 import * as React from "react";
 import { useTimeout } from "react-use";
-import S from "./HighlightBlinker.module.scss";
 
 export function HighlightBlinker({
   doScroll,

@@ -1,6 +1,6 @@
+import { check, ensure, tuple } from "@/wab/common";
+import { insertArray, withoutArrayIndex } from "@/wab/commons/collections";
 import { range as lodashRange, takeWhile } from "lodash";
-import { check, ensure, tuple } from "./common";
-import { insertArray, withoutArrayIndex } from "./commons/collections";
 
 export interface Dict<T> {
   [key: string]: T;

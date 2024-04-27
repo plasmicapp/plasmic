@@ -14,6 +14,12 @@ import {
   reactPrompt,
   showTemporaryPrompt,
 } from "@/wab/client/components/quick-modals";
+import { useDepFilterButton } from "@/wab/client/components/sidebar/left-panel-utils";
+import { CodeComponentRow } from "@/wab/client/components/sidebar/LeftCodeComponents";
+import {
+  ItemOrGroup,
+  VirtualGroupedList,
+} from "@/wab/client/components/sidebar/VirtualGroupedList";
 import { DraggableInsertable } from "@/wab/client/components/studio/add-drawer/DraggableInsertable";
 import { Matcher } from "@/wab/client/components/view-common";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -48,9 +54,6 @@ import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { isBuiltinCodeComponent } from "src/wab/shared/code-components/builtin-code-components";
 import { isCoreTeamEmail } from "src/wab/shared/devflag-utils";
-import { useDepFilterButton } from "./left-panel-utils";
-import { CodeComponentRow } from "./LeftCodeComponents";
-import { ItemOrGroup, VirtualGroupedList } from "./VirtualGroupedList";
 
 const LeftComponentsPanel = observer(function LeftComponentsPanel(props: {}) {
   const studioCtx = useStudioCtx();

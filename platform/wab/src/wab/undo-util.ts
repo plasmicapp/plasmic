@@ -1,7 +1,7 @@
+import { arrayEq, ensure, removeWhere } from "@/wab/common";
+import { arrayReversed } from "@/wab/commons/collections";
+import { ModelChange } from "@/wab/observable-model";
 import { range } from "lodash";
-import { arrayEq, ensure, removeWhere } from "./common";
-import { arrayReversed } from "./commons/collections";
-import { ModelChange } from "./observable-model";
 
 export function undoChanges(changes: ModelChange[]) {
   for (const change of arrayReversed(ensure(changes))) {

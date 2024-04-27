@@ -1,5 +1,5 @@
+import PlasmicInitTokenContainer from "@/wab/client/components/pages/plasmic/PlasmicInitTokenContainer";
 import * as React from "react";
-import PlasmicInitTokenContainer from "./plasmic/PlasmicInitTokenContainer";
 
 interface InitTokenContainerProps {
   state?: "loading" | "error" | "done";

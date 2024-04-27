@@ -8,20 +8,17 @@ import {
 } from "@/wab/classes";
 import { xAddAll } from "@/wab/common";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
-import { plasmicImgAttrStyles } from "@/wab/shared/core/style-props";
-import { makeLayoutAwareRuleSet } from "@/wab/shared/layoututils";
-import { isGlobalVariant, VariantGroupType } from "@/wab/shared/Variants";
-import { createExpandedRuleSetMerger } from "@/wab/styles";
-import { isTplTag, isTplVariantable } from "@/wab/tpls";
-import L from "lodash";
-import { ComponentGenHelper } from "./codegen-helpers";
-import { getReactWebPackageName } from "./react-p";
-import { makeGlobalVariantIdFileName, makeUseClient } from "./react-p/utils";
+import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
+import { getReactWebPackageName } from "@/wab/shared/codegen/react-p";
+import {
+  makeGlobalVariantIdFileName,
+  makeUseClient,
+} from "@/wab/shared/codegen/react-p/utils";
 import {
   extractUsedGlobalVariantsForTokens,
   extractUsedTokensForComponents,
-} from "./style-tokens";
-import { ExportOpts } from "./types";
+} from "@/wab/shared/codegen/style-tokens";
+import { ExportOpts } from "@/wab/shared/codegen/types";
 import {
   DEFAULT_CONTEXT_VALUE,
   jsLiteral,
@@ -29,7 +26,13 @@ import {
   stripExtension,
   toClassName,
   toVarName,
-} from "./util";
+} from "@/wab/shared/codegen/util";
+import { plasmicImgAttrStyles } from "@/wab/shared/core/style-props";
+import { makeLayoutAwareRuleSet } from "@/wab/shared/layoututils";
+import { isGlobalVariant, VariantGroupType } from "@/wab/shared/Variants";
+import { createExpandedRuleSetMerger } from "@/wab/styles";
+import { isTplTag, isTplVariantable } from "@/wab/tpls";
+import L from "lodash";
 
 export interface GlobalVariantConfig {
   // uuid of VariantGroup

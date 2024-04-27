@@ -1,10 +1,10 @@
 import { ensureType } from "@/wab/common";
+import { checkFreeTrialDuration } from "@/wab/server/routes/team-plans";
+import { mkApiTeam } from "@/wab/server/routes/teams";
+import { userDbMgr } from "@/wab/server/routes/util";
+import { mkApiWorkspace } from "@/wab/server/routes/workspaces";
 import { ApiTeam, ApiWorkspace, AppCtxResponse } from "@/wab/shared/ApiSchema";
 import { Request, Response } from "express-serve-static-core";
-import { checkFreeTrialDuration } from "./team-plans";
-import { mkApiTeam } from "./teams";
-import { userDbMgr } from "./util";
-import { mkApiWorkspace } from "./workspaces";
 
 export async function getAppCtx(req: Request, res: Response) {
   const userMgr = userDbMgr(req, { allowUnverifiedEmail: true });

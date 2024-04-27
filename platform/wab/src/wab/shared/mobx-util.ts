@@ -1,5 +1,6 @@
 import type { Component } from "@/wab/classes";
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import mobx from "@/wab/shared/import-mobx";
 import type {
   IComputedValue,
   IComputedValueOptions,
@@ -7,7 +8,6 @@ import type {
   IObservableValue,
 } from "mobx";
 import { computedFn } from "mobx-utils";
-import mobx from "./import-mobx";
 
 type Getter<T> = () => T;
 type Setter<T> = (value: T) => void;

@@ -15,6 +15,7 @@ import {
 } from "@/wab/classes";
 import { InteractionExprEditor } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import { PropEditorRow } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import { ensureGenericFuncTypes } from "@/wab/client/components/sidebar-tabs/StateManagement/HandlerSection";
 import { useSourceOp } from "@/wab/client/components/sidebar-tabs/useSourceOp";
 import { LabeledItem } from "@/wab/client/components/sidebar/sidebar-helpers";
 import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
@@ -58,7 +59,6 @@ import { isEmpty } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
-import { ensureGenericFuncTypes } from "./HandlerSection";
 
 export interface ActionBuilderProps extends DefaultActionBuilderProps {
   tpl: TplComponent | TplTag;

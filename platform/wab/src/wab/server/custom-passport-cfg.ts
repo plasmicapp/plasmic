@@ -1,6 +1,6 @@
 import { DevFlagsType } from "@/wab/devflags";
-import { Config } from "./config";
-import { DbMgr } from "./db/DbMgr";
+import { Config } from "@/wab/server/config";
+import { DbMgr } from "@/wab/server/db/DbMgr";
 
 export async function setupCustomPassport(
   dbMgr: DbMgr,

@@ -1,5 +1,6 @@
 import { ObjInst } from "@/wab/classes";
 import { apiKey } from "@/wab/client/api";
+import CommentPost from "@/wab/client/components/comments/CommentPost";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import PlasmicCommentPostForm from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPostForm";
@@ -33,7 +34,6 @@ import { groupBy, sortBy } from "lodash";
 import moment from "moment/moment";
 import React, { ReactNode, useState } from "react";
 import { mutate } from "swr";
-import CommentPost from "./CommentPost";
 
 export function useCommentViews(
   studioCtx: StudioCtx,

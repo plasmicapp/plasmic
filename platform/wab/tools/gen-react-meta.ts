@@ -21,7 +21,7 @@ function getObjs(tree: any) {
       obj.forEach(rec);
     } else if (typeof obj === "object") {
       xs.push(obj);
-      for (let key in obj) {
+      for (const key in obj) {
         rec(obj[key]);
       }
     }
@@ -44,15 +44,15 @@ async function main() {
   const fileName = process.argv[3];
   const json = await readTypedocJson(fileName);
 
-  let allObjs = getObjs(json).filter((x) => x.id && x.type !== "reference");
+  const allObjs = getObjs(json).filter((x) => x.id && x.type !== "reference");
   const idMap = new Map(allObjs.map((x) => [x.id, x] as [number, any]));
   // Note: names are not unique.
   const nameMap = new Map(
     [...idMap.values()].map((x) => [x.name, x] as [string, any])
   );
   const parentMap = new Map<number, any>();
-  for (let x of idMap.values()) {
-    for (let child of x.children || []) {
+  for (const x of idMap.values()) {
+    for (const child of x.children || []) {
       parentMap.set(child.id, x);
     }
   }
@@ -77,9 +77,9 @@ async function main() {
       return getAncestorTypes(type.type);
     } else if (type && type.type == "intersection") {
       let res: any[] = [];
-      for (let interArg of type.types) {
+      for (const interArg of type.types) {
         if (interArg.name === "Readonly") {
-          for (let arg of interArg.typeArguments) {
+          for (const arg of interArg.typeArguments) {
             res = res.concat(getAncestorTypes(reflect(arg) || arg));
           }
         } else {
@@ -126,8 +126,8 @@ async function main() {
       console.log(comp.name, comp.sources[0].fileName);
     }
     const outMeta: any[] = [];
-    for (let c of components) {
-      for (let child of c.children) {
+    for (const c of components) {
+      for (const child of c.children) {
         if (child.name === "props") {
           let types: any[] = [];
 
@@ -135,9 +135,9 @@ async function main() {
             types = getAncestorTypes(child.type);
           } catch (e) {}
           const props: any[] = [];
-          for (let type of types) {
+          for (const type of types) {
             // TODO we are only admitting children props of the standard HTMLProps
-            for (let field of type.children) {
+            for (const field of type.children) {
               if (
                 field.kindString == "Property" ||
                 field.kindString === "Variable"
@@ -180,12 +180,12 @@ async function main() {
   if (pkg === "react") {
     // IntrinsicElements is where HTML tag props are defined.
     const outElts: any[] = [];
-    for (let elt of getByName("IntrinsicElements").children) {
+    for (const elt of getByName("IntrinsicElements").children) {
       const propType = reflect(
         elt.type.name === "SVGProps" ? elt.type : elt.type.typeArguments[0]
       );
       const outProps: any[] = [];
-      for (let prop of propType.children) {
+      for (const prop of propType.children) {
         if (prop.kindString === "Property") {
           outProps.push({
             name: prop.name,

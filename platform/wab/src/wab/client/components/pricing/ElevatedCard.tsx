@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultElevatedCardProps altogether and have
 // total control over the props for your component.
-export interface ElevatedCardProps extends DefaultElevatedCardProps {}
+export type ElevatedCardProps = DefaultElevatedCardProps;
 
 function ElevatedCard_(props: ElevatedCardProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicElevatedCard to render this component as it was

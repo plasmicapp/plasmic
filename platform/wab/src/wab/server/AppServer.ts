@@ -35,42 +35,36 @@ import * as path from "path";
 import { getConnection } from "typeorm";
 import v8 from "v8";
 // API keys and Passport configuration
-import { discourseConnect } from "@/wab/server/routes/discourse";
-import {
-  AuthError,
-  isApiError,
-  NotFoundError,
-  transformErrors,
-} from "@/wab/shared/ApiErrors/errors";
-import { Bundler } from "@/wab/shared/bundler";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
-import fileUpload from "express-fileupload";
-import { Config } from "./config";
-import { getDevFlagsMergedWithOverrides } from "./db/appconfig";
-import { DbMgr, SUPER_USER } from "./db/DbMgr";
-import { createMailer } from "./emails/Mailer";
-import { ExpressSession } from "./entities/Entities";
-import "./extensions";
-import { setupPassport } from "./passport-cfg";
-import { trackPostgresPool, WabPromStats } from "./promstats";
-import * as adminRoutes from "./routes/admin";
+import { Config } from "@/wab/server/config";
+import { getDevFlagsMergedWithOverrides } from "@/wab/server/db/appconfig";
+import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { createMailer } from "@/wab/server/emails/Mailer";
+import { ExpressSession } from "@/wab/server/entities/Entities";
+import "@/wab/server/extensions";
+import { setupPassport } from "@/wab/server/passport-cfg";
+import { trackPostgresPool, WabPromStats } from "@/wab/server/promstats";
+import * as adminRoutes from "@/wab/server/routes/admin";
 import {
   getAnalyticsBillingInfoForTeam,
   getAnalyticsForProject,
   getAnalyticsForTeam,
   getAnalyticsProjectMeta,
-} from "./routes/analytics";
-import * as apiTokenRoutes from "./routes/apitokens";
+} from "@/wab/server/routes/analytics";
+import * as apiTokenRoutes from "@/wab/server/routes/apitokens";
 import {
   getEndUserByToken,
   grantOauthToken,
   issueOauthCode,
   upsertEndUser,
-} from "./routes/app-oauth";
-import { getAppCtx } from "./routes/appctx";
-import * as authRoutes from "./routes/auth";
-import { apiAuth, shopifyAuthStart, shopifyCallback } from "./routes/auth";
-import { bigCommerceGraphql } from "./routes/bigcommerce";
+} from "@/wab/server/routes/app-oauth";
+import { getAppCtx } from "@/wab/server/routes/appctx";
+import * as authRoutes from "@/wab/server/routes/auth";
+import {
+  apiAuth,
+  shopifyAuthStart,
+  shopifyCallback,
+} from "@/wab/server/routes/auth";
+import { bigCommerceGraphql } from "@/wab/server/routes/bigcommerce";
 import {
   cachePublicCmsRead,
   countTable,
@@ -81,7 +75,7 @@ import {
   publicUpdateRow,
   queryTable,
   upsertDatabaseTables,
-} from "./routes/cms";
+} from "@/wab/server/routes/cms";
 import {
   cmsFileUpload,
   createDatabase,
@@ -102,8 +96,11 @@ import {
   updateDatabase,
   updateRow,
   updateTable,
-} from "./routes/cmse";
-import { addInternalRoutes, ROUTES_WITH_TIMING } from "./routes/custom-routes";
+} from "@/wab/server/routes/cmse";
+import {
+  addInternalRoutes,
+  ROUTES_WITH_TIMING,
+} from "@/wab/server/routes/custom-routes";
 import {
   allowProjectToDataSource,
   createDataSource,
@@ -115,7 +112,7 @@ import {
   listDataSources,
   testDataSourceConnection,
   updateDataSource,
-} from "./routes/data-source";
+} from "@/wab/server/routes/data-source";
 import {
   getFakeBlurbs,
   getFakePlans,
@@ -123,7 +120,8 @@ import {
   getFakeTasks,
   getFakeTestimonials,
   getFakeTweets,
-} from "./routes/demodata";
+} from "@/wab/server/routes/demodata";
+import { discourseConnect } from "@/wab/server/routes/discourse";
 import {
   addDirectoryEndUsers,
   changeAppRolesOrder,
@@ -161,7 +159,7 @@ import {
   updateEndUserGroups,
   upsertAppAuthConfig,
   upsertCurrentUserOpConfig,
-} from "./routes/end-user";
+} from "@/wab/server/routes/end-user";
 import {
   addProjectRepository,
   connectGithubInstallations,
@@ -175,13 +173,13 @@ import {
   githubData,
   setupExistingGithubRepo,
   setupNewGithubRepo,
-} from "./routes/git";
+} from "@/wab/server/routes/git";
 import {
   addTrustedHost,
   deleteTrustedHost,
   getTrustedHostsForSelf,
-} from "./routes/hosts";
-import { uploadImage } from "./routes/image";
+} from "@/wab/server/routes/hosts";
+import { uploadImage } from "@/wab/server/routes/image";
 import {
   buildLatestLoaderAssets,
   buildLatestLoaderHtml,
@@ -199,10 +197,10 @@ import {
   getHydrationScriptVersioned,
   getLoaderChunk,
   prefillPublishedLoader,
-} from "./routes/loader";
-import { genTranslatableStrings } from "./routes/localization";
-import * as mailingListRoutes from "./routes/mailinglist";
-import { getAppConfig, getClip, putClip } from "./routes/misc";
+} from "@/wab/server/routes/loader";
+import { genTranslatableStrings } from "@/wab/server/routes/localization";
+import * as mailingListRoutes from "@/wab/server/routes/mailinglist";
+import { getAppConfig, getClip, putClip } from "@/wab/server/routes/misc";
 import {
   createProjectWebhook,
   deleteProjectWebhook,
@@ -210,7 +208,7 @@ import {
   getProjectWebhooks,
   triggerProjectWebhook,
   updateProjectWebhook,
-} from "./routes/project-webhooks";
+} from "@/wab/server/routes/project-webhooks";
 import {
   addReactionToComment,
   checkAndNofityHostlessVersion,
@@ -270,12 +268,12 @@ import {
   updateProject,
   updateProjectData,
   updateProjectMeta,
-} from "./routes/projects";
-import { getPromotionCodeById } from "./routes/promo-code";
+} from "@/wab/server/routes/projects";
+import { getPromotionCodeById } from "@/wab/server/routes/promo-code";
 import {
   executeDataSourceOperationHandler,
   executeDataSourceOperationHandlerInStudio,
-} from "./routes/server-data";
+} from "@/wab/server/routes/server-data";
 import {
   emailWebhook,
   getProducts,
@@ -283,22 +281,22 @@ import {
   proxyToShopify,
   publishShopifyPages,
   updateShopifyStorePassword,
-} from "./routes/shopify";
-import { processSvgRoute } from "./routes/svg";
-import * as teamRoutes from "./routes/teams";
-import { getUsersById } from "./routes/users";
+} from "@/wab/server/routes/shopify";
+import { processSvgRoute } from "@/wab/server/routes/svg";
+import * as teamRoutes from "@/wab/server/routes/teams";
+import { getUsersById } from "@/wab/server/routes/users";
 import {
   adminOnly,
   adminOrDevelopmentEnvOnly,
   superDbMgr,
   withNext,
-} from "./routes/util";
+} from "@/wab/server/routes/util";
 import {
   createWhiteLabelUser,
   deleteWhiteLabelUser,
   getWhiteLabelUser,
   openJwt,
-} from "./routes/whitelabel";
+} from "@/wab/server/routes/whitelabel";
 import {
   createWorkspace,
   deleteWorkspace,
@@ -306,18 +304,27 @@ import {
   getWorkspace,
   getWorkspaces,
   updateWorkspace,
-} from "./routes/workspaces";
-import { getSegmentWriteKey } from "./secrets";
-import { logError } from "./server-util";
-import { ASYNC_TIMING } from "./timing-util";
-import { doLogout } from "./util/auth-util";
+} from "@/wab/server/routes/workspaces";
+import { getSegmentWriteKey } from "@/wab/server/secrets";
+import { logError } from "@/wab/server/server-util";
+import { ASYNC_TIMING } from "@/wab/server/timing-util";
+import { doLogout } from "@/wab/server/util/auth-util";
 import {
   pruneOldBundleBackupsCache,
   prunePartialRevCache,
-} from "./util/pruneCache";
-import { TypeormStore } from "./util/TypeormSessionStore";
-import { createWorkerPool } from "./workers/pool";
-import { ensureDevFlags } from "./workers/worker-utils";
+} from "@/wab/server/util/pruneCache";
+import { TypeormStore } from "@/wab/server/util/TypeormSessionStore";
+import { createWorkerPool } from "@/wab/server/workers/pool";
+import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
+import {
+  AuthError,
+  isApiError,
+  NotFoundError,
+  transformErrors,
+} from "@/wab/shared/ApiErrors/errors";
+import { Bundler } from "@/wab/shared/bundler";
+import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import fileUpload from "express-fileupload";
 
 const hotShots = require("hot-shots");
 

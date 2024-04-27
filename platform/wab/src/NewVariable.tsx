@@ -6,7 +6,7 @@ import * as React from "react";
 import {
   DefaultNewVariableProps,
   PlasmicNewVariable,
-} from "./wab/client/plasmic/plasmic_kit_state_management/PlasmicNewVariable";
+} from "@/wab/client/plasmic/plasmic_kit_state_management/PlasmicNewVariable";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can
@@ -21,7 +21,7 @@ import {
 //
 // You can also stop extending from DefaultNewVariableProps altogether and have
 // total control over the props for your component.
-export interface NewVariableProps extends DefaultNewVariableProps {}
+export type NewVariableProps = DefaultNewVariableProps;
 
 function NewVariable_(props: NewVariableProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicNewVariable to render this component as it was

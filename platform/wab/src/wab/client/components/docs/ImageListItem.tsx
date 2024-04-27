@@ -1,5 +1,6 @@
 import { ImageAsset } from "@/wab/classes";
 import { U } from "@/wab/client/cli-routes";
+import { DocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { ImagePreview } from "@/wab/client/components/style-controls/ImageSelector";
 import {
@@ -10,7 +11,6 @@ import { asOne, ensure } from "@/wab/common";
 import { toClassName } from "@/wab/shared/codegen/util";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { DocsPortalCtx } from "./DocsPortalCtx";
 
 interface ImageListItemProps extends Omit<DefaultImageListItemProps, "icon"> {
   icon: ImageAsset;

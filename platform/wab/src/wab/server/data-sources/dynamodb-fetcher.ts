@@ -1,9 +1,9 @@
-import { DynamoDbDataSource } from "@/wab/shared/data-sources-meta/dynamodb-meta";
-import { DataSourceSchema } from "@plasmicapp/data-sources";
 import {
   SqlalchemyClient,
   SQLITE_TO_BUILDER_TYPE,
-} from "./pybackend-client/pybackend-client";
+} from "@/wab/server/data-sources/pybackend-client/pybackend-client";
+import { DynamoDbDataSource } from "@/wab/shared/data-sources-meta/dynamodb-meta";
+import { DataSourceSchema } from "@plasmicapp/data-sources";
 
 // From https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBMapper.DataTypes.html
 const DYNAMODB_TO_BUILDER_TYPE = {

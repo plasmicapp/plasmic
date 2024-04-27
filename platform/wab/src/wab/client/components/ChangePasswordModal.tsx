@@ -6,7 +6,7 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
-interface ChangePasswordModalProps extends DefaultChangePasswordModalProps {}
+type ChangePasswordModalProps = DefaultChangePasswordModalProps;
 
 const unexpectedError =
   "An unexpected error occurred when trying to change your password. Please try again later.";

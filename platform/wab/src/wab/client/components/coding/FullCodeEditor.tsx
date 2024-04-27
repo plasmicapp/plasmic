@@ -1,3 +1,10 @@
+import { makeMonacoAutoFocus } from "@/wab/client/components/coding/CodeInput";
+import {
+  IAdvancedStandaloneCodeEditor,
+  IEditorConstructionOptions,
+  IStandaloneCodeEditor,
+  setUpWrappers,
+} from "@/wab/client/components/coding/monacoEditorUtil";
 import {
   DataPickerTypesSchema,
   extraTsFilesSymbol,
@@ -8,19 +15,10 @@ import { isPlainObject, uniq } from "lodash";
 import * as monaco from "monaco-editor";
 import React, { useEffect } from "react";
 import MonacoEditor from "react-monaco-editor";
-import { makeMonacoAutoFocus } from "./CodeInput";
-import {
-  IAdvancedStandaloneCodeEditor,
-  IEditorConstructionOptions,
-  IStandaloneCodeEditor,
-  setUpWrappers,
-} from "./monacoEditorUtil";
 
 // @ts-expect-error: Importing raw react types as a string
-// eslint-disable-next-line path/no-relative-imports, import/no-extraneous-dependencies
 import REACT_TYPES_RAW from "!raw-loader!../../../../../node_modules/@types/react/index.d.ts";
 // @ts-expect-error: Importing raw react types as a string
-// eslint-disable-next-line path/no-relative-imports, import/no-extraneous-dependencies
 import GLOBAL_TYPES_RAW from "!raw-loader!../../../../../node_modules/@types/react/global.d.ts";
 
 const BASE_FONT_FAMILY = '"Roboto Mono", Consolas, Menlo, monospace';

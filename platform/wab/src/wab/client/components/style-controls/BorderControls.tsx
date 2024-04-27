@@ -5,6 +5,14 @@ import {
   LabeledStyleDimItemRow,
   LabeledToggleButtonGroupItemRow,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
+import styles from "@/wab/client/components/style-controls/BorderControls.module.sass";
+import {
+  ExpsProvider,
+  MixinExpsProvider,
+  StylePanelSection,
+  TplExpsProvider,
+} from "@/wab/client/components/style-controls/StyleComponent";
+import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggleButton";
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { DimTokenSpinnerRef } from "@/wab/client/components/widgets/DimTokenSelector";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -30,14 +38,6 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { useEffect, useRef } from "react";
 import { VariantedStylesHelper } from "src/wab/shared/VariantedStylesHelper";
-import styles from "./BorderControls.module.sass";
-import {
-  ExpsProvider,
-  MixinExpsProvider,
-  StylePanelSection,
-  TplExpsProvider,
-} from "./StyleComponent";
-import StyleToggleButton from "./StyleToggleButton";
 import defer = setTimeout;
 
 enum BorderType {

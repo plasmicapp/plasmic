@@ -1,4 +1,7 @@
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import { ContentLayoutContainerControls } from "@/wab/client/components/sidebar-tabs/ContentLayoutControls";
+import { FlexContainerControls } from "@/wab/client/components/sidebar-tabs/FlexContainerControls";
+import { GridControls } from "@/wab/client/components/sidebar-tabs/GridControls";
 import {
   ExpsProvider,
   StylePanelSection,
@@ -23,9 +26,6 @@ import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Menu } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
-import { ContentLayoutContainerControls } from "./ContentLayoutControls";
-import { FlexContainerControls } from "./FlexContainerControls";
-import { GridControls } from "./GridControls";
 
 type LayoutSectionProps = {
   expsProvider: ExpsProvider;

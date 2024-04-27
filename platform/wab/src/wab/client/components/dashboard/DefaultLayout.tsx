@@ -1,6 +1,10 @@
 /** @format */
 
 import { U, UU } from "@/wab/client/cli-routes";
+import { promptNewTeam } from "@/wab/client/components/dashboard/dashboard-actions";
+import NavSeparator from "@/wab/client/components/dashboard/NavSeparator";
+import NavTeamSection from "@/wab/client/components/dashboard/NavTeamSection";
+import NavWorkspaceButton from "@/wab/client/components/dashboard/NavWorkspaceButton";
 import { recentlyEndedTrial } from "@/wab/client/components/FreeTrial";
 import {
   canUpgradeTeam,
@@ -25,10 +29,6 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
 import { useHistory } from "react-router";
-import { promptNewTeam } from "./dashboard-actions";
-import NavSeparator from "./NavSeparator";
-import NavTeamSection from "./NavTeamSection";
-import NavWorkspaceButton from "./NavWorkspaceButton";
 
 type DefaultLayoutProps = DefaultDefaultLayoutProps & {
   helpButton: PlasmicDefaultLayout__OverridesType["helpButton"];

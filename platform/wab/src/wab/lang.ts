@@ -9,18 +9,18 @@ import {
   StateChangeHandlerParam,
   StateParam,
   Var,
-} from "./classes";
-import { Dict } from "./collections";
-import { assertNever, mkShortId, switchType, unexpected } from "./common";
-import * as exprs from "./exprs";
-import { codeLit } from "./exprs";
+} from "@/wab/classes";
+import { Dict } from "@/wab/collections";
+import { assertNever, mkShortId, switchType, unexpected } from "@/wab/common";
+import * as exprs from "@/wab/exprs";
+import { codeLit } from "@/wab/exprs";
 import {
   convertVariableTypeToWabType,
   typeFactory,
-} from "./shared/core/model-util";
-import { UNINITIALIZED_VALUE } from "./sites";
-import { StateAccessType, StateVariableType } from "./states";
-import { cloneType } from "./tpls";
+} from "@/wab/shared/core/model-util";
+import { UNINITIALIZED_VALUE } from "@/wab/sites";
+import { StateAccessType, StateVariableType } from "@/wab/states";
+import { cloneType } from "@/wab/tpls";
 
 export type JsonScalar = number | string | boolean;
 

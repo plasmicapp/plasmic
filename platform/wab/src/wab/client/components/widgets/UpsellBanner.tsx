@@ -5,7 +5,7 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
-interface UpsellBannerProps extends DefaultUpsellBannerProps {}
+type UpsellBannerProps = DefaultUpsellBannerProps;
 
 function UpsellBanner_(props: UpsellBannerProps, ref: HTMLElementRefOf<"div">) {
   return <PlasmicUpsellBanner root={{ ref }} {...props} />;

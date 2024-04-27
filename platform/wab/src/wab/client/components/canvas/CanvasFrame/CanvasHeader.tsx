@@ -1,4 +1,6 @@
 import { ArenaFrame, Component, TplTag, Variant } from "@/wab/classes";
+import { CanvasConfigButton } from "@/wab/client/components/canvas/CanvasFrame/CanvasConfigButton";
+import styles from "@/wab/client/components/canvas/CanvasFrame/CanvasHeader.module.scss";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import {
   makeCanvasVariantContextMenu,
@@ -29,8 +31,6 @@ import cn from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useLayoutEffect, useRef, useState } from "react";
-import { CanvasConfigButton } from "./CanvasConfigButton";
-import styles from "./CanvasHeader.module.scss";
 
 export const CanvasHeader = observer(CanvasHeader_);
 

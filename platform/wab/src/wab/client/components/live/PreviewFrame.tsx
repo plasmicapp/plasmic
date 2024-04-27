@@ -1,6 +1,11 @@
 import { ComponentArena } from "@/wab/classes";
 import { trapInteractionError } from "@/wab/client/components/canvas/studio-canvas-util";
 import {
+  onLoadInjectSystemJS,
+  pushPreviewModules,
+} from "@/wab/client/components/live/live-syncer";
+import { PreviewCtx } from "@/wab/client/components/live/PreviewCtx";
+import {
   HandlePosition,
   ResizingHandle,
 } from "@/wab/client/components/ResizingHandle";
@@ -24,8 +29,6 @@ import { autorun } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 import { useMountedState, usePreviousDistinct } from "react-use";
-import { onLoadInjectSystemJS, pushPreviewModules } from "./live-syncer";
-import { PreviewCtx } from "./PreviewCtx";
 
 const frameHash = `#live=true&origin=${encodeURIComponent(getPublicUrl())}`;
 

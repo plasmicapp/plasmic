@@ -1,5 +1,13 @@
 import { TplComponent } from "@/wab/classes";
 import {
+  ComponentPropsSection,
+  getComponentPropTypes,
+} from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
+import {
+  TextOnlySection,
+  TypographySection,
+} from "@/wab/client/components/sidebar-tabs/TypographySection";
+import {
   mkStyleComponent,
   providesStyleComponent,
   TplExpsProvider,
@@ -19,11 +27,6 @@ import { $$$ } from "@/wab/shared/TplQuery";
 import { smartHumanize } from "@/wab/strs";
 import { observer } from "mobx-react";
 import React from "react";
-import {
-  ComponentPropsSection,
-  getComponentPropTypes,
-} from "./ComponentPropsSection";
-import { TextOnlySection, TypographySection } from "./TypographySection";
 
 export const MergedSlotsTextSection = observer(
   function MergedSlotsSection(props: {

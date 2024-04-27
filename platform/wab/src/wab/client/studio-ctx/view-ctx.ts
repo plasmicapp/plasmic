@@ -30,6 +30,12 @@ import {
   mkFrameValKeyToContextDataKey,
 } from "@/wab/client/react-global-hook/globalHook";
 import { requestIdleCallbackAsync } from "@/wab/client/requestidlecallback";
+import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
+import {
+  FreestyleState,
+  PointerState,
+  StudioCtx,
+} from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import { trackEvent } from "@/wab/client/tracking";
 import { ViewStateSnapshot } from "@/wab/client/undo-log";
@@ -112,8 +118,6 @@ import {
   allCustomFunctions,
   getLinkedCodeProps,
 } from "src/wab/shared/cached-selectors";
-import { ComponentCtx } from "./component-ctx";
-import { FreestyleState, PointerState, StudioCtx } from "./StudioCtx";
 
 export class ViewMode {
   static live: ViewMode;

@@ -7,6 +7,12 @@ import {
 import ListItem from "@/wab/client/components/ListItem";
 import { promptDeleteDep } from "@/wab/client/components/modals/UpgradeDepModal";
 import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
+import {
+  getValueSetState,
+  LabeledItemRow,
+} from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { Matcher } from "@/wab/client/components/view-common";
 import { SimpleReorderableList } from "@/wab/client/components/widgets/SimpleReorderableList";
 import PlasmicLeftSettingsPanel from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftSettingsPanel";
@@ -47,9 +53,6 @@ import { autorun } from "mobx";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
-import { getValueSetState, LabeledItemRow } from "./sidebar-helpers";
-import { SidebarModal } from "./SidebarModal";
-import { SidebarSection } from "./SidebarSection";
 
 type ComponentDependency = {
   component: Component;

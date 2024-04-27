@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultVariableTypeProps altogether and have
 // total control over the props for your component.
-export interface VariableTypeProps extends DefaultVariableTypeProps {}
+export type VariableTypeProps = DefaultVariableTypeProps;
 
 function VariableType_(props: VariableTypeProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicVariableType to render this component as it was

@@ -11,23 +11,23 @@ import type { SubDeps } from "@/wab/client/components/canvas/subdeps";
 import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p";
 import { toVarName } from "@/wab/shared/codegen/util";
+import { ButtonPlugin } from "@/wab/shared/plume/button";
+import { CheckboxPlugin } from "@/wab/shared/plume/checkbox";
+import { MenuPlugin } from "@/wab/shared/plume/menu";
+import { MenuButtonPlugin } from "@/wab/shared/plume/menu-button";
+import { MenuGroupPlugin } from "@/wab/shared/plume/menu-group";
+import { MenuItemPlugin } from "@/wab/shared/plume/menu-item";
+import { SelectPlugin } from "@/wab/shared/plume/select";
+import { SelectOptionPlugin } from "@/wab/shared/plume/select-option";
+import { SelectOptionGroupPlugin } from "@/wab/shared/plume/select-option-group";
+import { SwitchPlugin } from "@/wab/shared/plume/switch";
+import { TextInputPlugin } from "@/wab/shared/plume/text-input";
+import { TriggeredOverlayPlugin } from "@/wab/shared/plume/triggered-overlay";
 import { isSlot } from "@/wab/shared/SlotUtils";
 import { isTplNamable } from "@/wab/tpls";
 import { ValComponent } from "@/wab/val-nodes";
 import { Action, CodeComponentMeta } from "@plasmicapp/host";
 import React from "react";
-import { ButtonPlugin } from "./button";
-import { CheckboxPlugin } from "./checkbox";
-import { MenuPlugin } from "./menu";
-import { MenuButtonPlugin } from "./menu-button";
-import { MenuGroupPlugin } from "./menu-group";
-import { MenuItemPlugin } from "./menu-item";
-import { SelectPlugin } from "./select";
-import { SelectOptionPlugin } from "./select-option";
-import { SelectOptionGroupPlugin } from "./select-option-group";
-import { SwitchPlugin } from "./switch";
-import { TextInputPlugin } from "./text-input";
-import { TriggeredOverlayPlugin } from "./triggered-overlay";
 
 export interface PlumeCanvasPlugin {
   genCanvasWrapperComponent(

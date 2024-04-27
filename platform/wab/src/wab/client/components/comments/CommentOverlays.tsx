@@ -1,6 +1,7 @@
 import { ArenaFrame, TplNode } from "@/wab/classes";
 import { CanvasTransformedBox } from "@/wab/client/components/canvas/CanvasTransformedBox";
 import { useRerenderOnUserBodyChange } from "@/wab/client/components/canvas/UserBodyObserver";
+import { useCommentViews } from "@/wab/client/components/comments/CommentViews";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import {
   BASE_VARIANT_COLOR,
@@ -24,7 +25,6 @@ import $ from "jquery";
 import { observer } from "mobx-react";
 import React, { createContext, ReactNode, useContext } from "react";
 import { createPortal } from "react-dom";
-import { useCommentViews } from "./CommentViews";
 
 interface CommentOverlaysContextData {
   shownThreadId: CommentThreadId | undefined;

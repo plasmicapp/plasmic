@@ -6,7 +6,7 @@ import * as React from "react";
 import {
   DefaultPresetProps,
   PlasmicPreset,
-} from "./wab/client/plasmic/plasmic_kit_left_pane/PlasmicPreset";
+} from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicPreset";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can
@@ -21,7 +21,7 @@ import {
 //
 // You can also stop extending from DefaultPresetProps altogether and have
 // total control over the props for your component.
-export interface PresetProps extends DefaultPresetProps {}
+export type PresetProps = DefaultPresetProps;
 
 function Preset_(props: PresetProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicPreset to render this component as it was

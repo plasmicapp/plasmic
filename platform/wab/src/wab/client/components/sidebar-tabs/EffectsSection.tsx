@@ -1,4 +1,8 @@
 import {
+  BackdropFilterEffectSection,
+  FilterEffectSection,
+} from "@/wab/client/components/sidebar-tabs/FilterEffectSection";
+import {
   FullRow,
   LabeledStyleSelectItem,
   LabeledStyleSelectItemRow,
@@ -23,10 +27,6 @@ import {
 } from "react-icons/fa";
 import { FiMove } from "react-icons/fi";
 import { MdDoNotDisturbAlt } from "react-icons/md";
-import {
-  BackdropFilterEffectSection,
-  FilterEffectSection,
-} from "./FilterEffectSection";
 
 const mixBlendModeOpts = [
   "normal",

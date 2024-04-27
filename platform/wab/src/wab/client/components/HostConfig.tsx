@@ -3,13 +3,13 @@
 import HostUrlInput from "@/HostUrlInput";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { parseProjectLocation } from "@/wab/client/cli-routes";
+import { Spinner } from "@/wab/client/components/widgets";
+import Select from "@/wab/client/components/widgets/Select";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import { ensure, spawnWrapper, swallow } from "@/wab/common";
 import { ApiBranch, ApiProject, MainBranchId } from "@/wab/shared/ApiSchema";
 import React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import { Spinner } from "./widgets";
-import Select from "./widgets/Select";
 
 interface HostConfigProps {
   appCtx: AppCtx;

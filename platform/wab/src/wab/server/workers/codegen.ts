@@ -13,6 +13,7 @@ import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { withSpan } from "@/wab/server/util/apm-util";
 import { md5 } from "@/wab/server/util/hash";
 import { getHostlessPackageNpmVersion } from "@/wab/server/util/hostless-pkg-util";
+import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
 import { Bundler } from "@/wab/shared/bundler";
 import { componentToReferenced } from "@/wab/shared/cached-selectors";
 import {
@@ -49,7 +50,6 @@ import { deepTrackComponents } from "@/wab/tpls";
 import S3 from "aws-sdk/clients/s3";
 import fs from "fs";
 import { ConnectionOptions } from "typeorm";
-import { ensureDevFlags } from "./worker-utils";
 
 export interface CodegenOutputBundle {
   components: ComponentExportOutput[];

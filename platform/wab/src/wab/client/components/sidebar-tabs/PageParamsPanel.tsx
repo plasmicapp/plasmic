@@ -1,4 +1,5 @@
 import { Component } from "@/wab/classes";
+import { StringPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { PageParamsTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
@@ -8,7 +9,6 @@ import { ensure } from "@/wab/common";
 import { extractParamsFromPagePath } from "@/wab/components";
 import { observer } from "mobx-react";
 import React from "react";
-import { StringPropEditor } from "./ComponentProps/StringPropEditor";
 
 const PageParamsPanel = observer(function PageParamsPanel(props: {
   page: Component;

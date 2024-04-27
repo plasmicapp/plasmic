@@ -1,3 +1,5 @@
+import { VisibleEnableBlock } from "@/wab/client/components/TopFrame/TopBar/PublishFlowDialog";
+import { PublishState } from "@/wab/client/components/TopFrame/TopBar/PublishFlowDialogWrapper";
 import GitJobStep from "@/wab/client/components/widgets/GitJobStep";
 import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
 import {
@@ -14,8 +16,6 @@ import {
 } from "@/wab/shared/site-diffs";
 import { Select } from "antd";
 import * as React from "react";
-import { VisibleEnableBlock } from "./PublishFlowDialog";
-import { PublishState } from "./PublishFlowDialogWrapper";
 
 const { Option } = Select;
 

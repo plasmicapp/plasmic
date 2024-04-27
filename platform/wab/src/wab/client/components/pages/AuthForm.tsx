@@ -4,6 +4,8 @@ import {
   GoogleSignInButton,
   useAuthPopup,
 } from "@/wab/client/components/auth/ConnectOAuth";
+import "@/wab/client/components/pages/AuthForm.sass";
+import { IntakeFlowForm } from "@/wab/client/components/pages/IntakeFlowForm";
 import { LinkButton } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { mkUuid, spawnWrapper } from "@/wab/common";
@@ -14,8 +16,6 @@ import * as React from "react";
 import { useState } from "react";
 import { Redirect } from "react-router-dom";
 import useSWR from "swr";
-import "./AuthForm.sass";
-import { IntakeFlowForm } from "./IntakeFlowForm";
 const LazyPasswordStrengthBar = React.lazy(
   () => import("@/wab/client/components/PasswordStrengthBar")
 );
