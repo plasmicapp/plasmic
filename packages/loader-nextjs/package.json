@@ -47,7 +47,7 @@
     "build:types": "yarn tsc",
     "build:index": "node ../../build.mjs ./src/index.tsx --use-client",
     "build:edge": "node ../../build.mjs ./src/edge.ts --no-esm",
-    "build:react-server": "node ../../build.mjs ./src/react-server.ts",
+    "build:react-server": "node ../../build.mjs ./src/react-server.tsx",
     "yalcp": "yalc publish --push",
     "test": "jest packages/loader-nextjs --config=../../jest.config.js --passWithNoTests",
     "coverage": "yarn test --coverage",

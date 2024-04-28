@@ -65,6 +65,16 @@
     },
     "./additional-types-PlasmicImg": {
       "types": "./dist/render/PlasmicImg/index.d.ts"
+    },
+    "./lib/nextjs-app-router": {
+      "types": "./lib/nextjs-app-router/index.d.ts",
+      "import": "./lib/nextjs-app-router/index.js",
+      "require": "./lib/nextjs-app-router/index.cjs.js"
+    },
+    "./lib/nextjs-app-router/react-server": {
+      "types": "./lib/nextjs-app-router/react-server/index.d.ts",
+      "import": "./lib/nextjs-app-router/react-server/index.js",
+      "require": "./lib/nextjs-app-router/react-server/index.cjs.js"
     }
   },
   "files": [

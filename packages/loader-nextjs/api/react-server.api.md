@@ -5,7 +5,6 @@
 ```ts
 
 /// <reference types="node" />
-/// <reference types="react" />
 
 import { fetchExtractedQueryData as __EXPERMIENTAL__fetchExtractedQueryData } from '@plasmicapp/nextjs-app-router/react-server';
 import { CodeComponentMeta } from '@plasmicapp/loader-react';
@@ -35,7 +34,8 @@ import { plasmicPrepass } from '@plasmicapp/loader-react';
 import { PlasmicRootProvider as PlasmicRootProvider_2 } from '@plasmicapp/loader-react';
 import { PlasmicTranslator } from '@plasmicapp/loader-react';
 import { PropType } from '@plasmicapp/loader-react';
-import * as React_2 from 'react';
+import { default as React_2 } from 'react';
+import * as React_3 from 'react';
 import { repeatedElement } from '@plasmicapp/loader-react';
 import { ServerResponse } from 'http';
 import { TokenRegistration } from '@plasmicapp/loader-react';
@@ -47,9 +47,15 @@ import { useSelector } from '@plasmicapp/loader-react';
 import { useSelectors } from '@plasmicapp/loader-react';
 
 // @public (undocumented)
-export const __EXPERMIENTAL__extractPlasmicQueryData: (element: React.ReactElement, loader: ClientExports.NextJsPlasmicComponentLoader) => Promise<Record<string, any>>;
+export const __EXPERMIENTAL__extractPlasmicQueryData: (element: React_2.ReactElement, loader: ClientExports.NextJsPlasmicComponentLoader) => Promise<Record<string, any>>;
 
 export { __EXPERMIENTAL__fetchExtractedQueryData }
+
+// @public
+export function __EXPERMIENTAL__withExtractPlasmicQueryData(plasmicRootProvider: React_2.ReactElement, { pathname, searchParams, }: {
+    pathname: string;
+    searchParams: Record<string, string | string[]> | undefined;
+}): Promise<React_2.JSX.Element>;
 
 export { ComponentMeta }
 

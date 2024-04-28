@@ -12,9 +12,13 @@ import { initPlasmicLoaderWithCache } from "./cache";
 import type { NextInitOptions } from "./shared-exports";
 
 import { __EXPERMIENTAL__extractPlasmicQueryData as internalExtractPlasmicQueryData } from "@plasmicapp/loader-react/react-server";
-export { fetchExtractedQueryData as __EXPERMIENTAL__fetchExtractedQueryData } from "@plasmicapp/nextjs-app-router/react-server";
-export * from "./shared-exports";
+import { ExtractPlasmicQueryData } from "@plasmicapp/nextjs-app-router";
+import { fetchExtractedQueryData } from "@plasmicapp/nextjs-app-router/react-server";
 
+export * from "./shared-exports";
+export { fetchExtractedQueryData as __EXPERMIENTAL__fetchExtractedQueryData };
+
+import React from "react";
 import type * as ClientExports from ".";
 
 type ServerRequest = IncomingMessage & {
@@ -101,3 +105,70 @@ export const __EXPERMIENTAL__extractPlasmicQueryData: (
   // also the one exported from `react-server-conditional` imports).
   loader: ClientExports.NextJsPlasmicComponentLoader
 ) => Promise<Record<string, any>> = internalExtractPlasmicQueryData as any;
+
+/**
+ * Helper function to extract Plasmic data.
+ *
+ * Given the <PlasmicClientRootProvider> element and current pathname + search
+ * params, returns:
+ * - The extracted query data, if `plasmicSsr` search param is set
+ * - A copy of the root provider element with the extracted query data, otherwise
+ */
+export async function __EXPERMIENTAL__withExtractPlasmicQueryData(
+  plasmicRootProvider: React.ReactElement,
+  {
+    pathname,
+    searchParams,
+  }: {
+    pathname: string;
+    searchParams: Record<string, string | string[]> | undefined;
+  }
+) {
+  const isPlasmicSsr =
+    !!searchParams?.["plasmicSsr"] && searchParams?.["plasmicSsr"] !== "false";
+
+  // If `plasmicSsr` search param is set, just wrap the root provider inside
+  // <ExtractPlasmicQueryData>
+  if (isPlasmicSsr) {
+    return (
+      <ExtractPlasmicQueryData>{plasmicRootProvider}</ExtractPlasmicQueryData>
+    );
+  }
+
+  // Otherwise, fetch the same endpoint, but setting `plasmicSsr` to extract the
+  // query data.
+  const prepassHost =
+    process.env.PLASMIC_PREPASS_HOST ??
+    (process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`) ??
+    `http://localhost:${process.env.PORT ?? 3000}`;
+
+  // Build a copy of the search params
+  const newSearchParams = new URLSearchParams(
+    Object.entries(searchParams ?? {}).flatMap(([key, values]) =>
+      Array.isArray(values) ? values.map((v) => [key, v]) : [[key, values]]
+    )
+  );
+
+  // Set `plasmicSsr` search param to indicate you are using this endpoint
+  // to extract query data.
+  newSearchParams.set("plasmicSsr", "true");
+
+  if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
+    // If protection bypass is enabled, use it to ensure fetching from
+    // the SSR endpoint will not return the authentication page HTML
+    newSearchParams.set(
+      "x-vercel-protection-bypass",
+      process.env.VERCEL_AUTOMATION_BYPASS_SECRET
+    );
+  }
+
+  // Fetch the data from the endpoint using the new search params
+  const prefetchedQueryData = await fetchExtractedQueryData(
+    `${prepassHost}${pathname}?${newSearchParams.toString()}`
+  );
+
+  // Provide the query data to <PlasmicClientRootProvider>
+  return React.cloneElement(plasmicRootProvider, {
+    prefetchedQueryData,
+  });
+}
