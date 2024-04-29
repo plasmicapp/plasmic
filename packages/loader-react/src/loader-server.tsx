@@ -313,6 +313,12 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
           usePlasmicQueryData: fakeUseMutablePlasmicQueryData,
           useSWRConfig: unreachable,
           wrapLoadingFetcher: identity,
+          HeadMetadataContext: {
+            _currentValue: {},
+            displayName: "FakeHeadMetadataContext",
+            Provider: ({ children }: any) => <>{children}</>,
+            Consumer: ({ children }: any) => children({}),
+          } as any as React.Context<any>,
         },
         "@plasmicapp/data-sources-context": (() => {
           const FakePlasmicDataSourceContext: React.Context<any> = {

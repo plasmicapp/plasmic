@@ -1,4 +1,5 @@
-import { extractPlasmicQueryData } from "@plasmicapp/prepass";
+import { plasmicPrepassExtract } from "@plasmicapp/prepass";
+import type { HeadMetadata } from "@plasmicapp/query";
 import * as React from "react";
 
 /**
@@ -19,17 +20,30 @@ export function ExtractPlasmicQueryData(props: { children?: React.ReactNode }) {
   }
   const scriptId = `plasmic-prefetch-${(React as any)["" + "useId"]()}`;
   if (typeof window === "undefined") {
-    const data: Record<string, any> = (React as any)["" + "use"](
-      extractPlasmicQueryData(<>{children}</>)
-    );
+    const {
+      queryData,
+      headMetadata,
+    }: { queryData: Record<string, any>; headMetadata: HeadMetadata } = (
+      React as any
+    )["" + "use"](plasmicPrepassExtract(<>{children}</>));
     return (
       <>
         <script
           type="application/json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(queryData) }}
           data-plasmic-prefetch-id={scriptId}
           suppressHydrationWarning={true}
         />
+        {headMetadata && (
+          <script
+            type="application/json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(headMetadata),
+            }}
+            data-plasmic-head-metadata-id={scriptId}
+            suppressHydrationWarning={true}
+          />
+        )}
       </>
     );
   } else {

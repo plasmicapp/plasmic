@@ -13,10 +13,18 @@ import type { NextInitOptions } from "./shared-exports";
 
 import { __EXPERMIENTAL__extractPlasmicQueryData as internalExtractPlasmicQueryData } from "@plasmicapp/loader-react/react-server";
 import { ExtractPlasmicQueryData } from "@plasmicapp/nextjs-app-router";
-import { fetchExtractedQueryData } from "@plasmicapp/nextjs-app-router/react-server";
+import {
+  fetchExtractedHeadMetadata,
+  fetchExtractedQueryData,
+  withPlasmicMetadata,
+} from "@plasmicapp/nextjs-app-router/react-server";
 
 export * from "./shared-exports";
-export { fetchExtractedQueryData as __EXPERMIENTAL__fetchExtractedQueryData };
+export {
+  fetchExtractedQueryData as __EXPERMIENTAL__fetchExtractedQueryData,
+  fetchExtractedHeadMetadata as __EXPERMIENTAL__fetchExtractedHeadMetadata,
+  withPlasmicMetadata as __EXPERMIENTAL__withPlasmicMetadata,
+};
 
 import React from "react";
 import type * as ClientExports from ".";

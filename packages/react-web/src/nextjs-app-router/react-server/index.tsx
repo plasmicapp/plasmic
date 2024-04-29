@@ -1,9 +1,17 @@
 import { ExtractPlasmicQueryData } from "@plasmicapp/nextjs-app-router";
-import { fetchExtractedQueryData } from "@plasmicapp/nextjs-app-router/react-server";
+import {
+  fetchExtractedHeadMetadata,
+  fetchExtractedQueryData,
+  withPlasmicMetadata,
+} from "@plasmicapp/nextjs-app-router/react-server";
 import { PlasmicQueryDataProvider } from "@plasmicapp/query";
 import React from "react";
 
-export { fetchExtractedQueryData as __EXPERMIENTAL__fetchExtractedQueryData };
+export {
+  fetchExtractedQueryData as __EXPERMIENTAL__fetchExtractedQueryData,
+  fetchExtractedHeadMetadata as __EXPERMIENTAL__fetchExtractedHeadMetadata,
+  withPlasmicMetadata as __EXPERMIENTAL__withPlasmicMetadata,
+};
 
 /**
  * Helper function to extract Plasmic data.

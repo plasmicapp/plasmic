@@ -6,7 +6,9 @@
 
 /// <reference types="node" />
 
+import { fetchExtractedHeadMetadata as __EXPERMIENTAL__fetchExtractedHeadMetadata } from '@plasmicapp/nextjs-app-router/react-server';
 import { fetchExtractedQueryData as __EXPERMIENTAL__fetchExtractedQueryData } from '@plasmicapp/nextjs-app-router/react-server';
+import { withPlasmicMetadata as __EXPERMIENTAL__withPlasmicMetadata } from '@plasmicapp/nextjs-app-router/react-server';
 import { CodeComponentMeta } from '@plasmicapp/loader-react';
 import { ComponentLookupSpec } from '@plasmicapp/loader-react';
 import { ComponentMeta } from '@plasmicapp/loader-react/react-server-conditional';
@@ -49,6 +51,8 @@ import { useSelectors } from '@plasmicapp/loader-react';
 // @public (undocumented)
 export const __EXPERMIENTAL__extractPlasmicQueryData: (element: React_2.ReactElement, loader: ClientExports.NextJsPlasmicComponentLoader) => Promise<Record<string, any>>;
 
+export { __EXPERMIENTAL__fetchExtractedHeadMetadata }
+
 export { __EXPERMIENTAL__fetchExtractedQueryData }
 
 // @public
@@ -56,6 +60,8 @@ export function __EXPERMIENTAL__withExtractPlasmicQueryData(plasmicRootProvider:
     pathname: string;
     searchParams: Record<string, string | string[]> | undefined;
 }): Promise<React_2.JSX.Element>;
+
+export { __EXPERMIENTAL__withPlasmicMetadata }
 
 export { ComponentMeta }
 

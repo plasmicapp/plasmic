@@ -18,6 +18,17 @@ export function addLoadingStateListener(listener: LoadingStateListener, opts?: {
 }): () => void;
 
 // @public (undocumented)
+export type HeadMetadata = {
+    title?: string;
+    description?: string;
+    image?: string;
+    canonical?: string;
+};
+
+// @public (undocumented)
+export const HeadMetadataContext: React_2.Context<HeadMetadata>;
+
+// @public (undocumented)
 export function isPlasmicPrepass(): boolean;
 
 // @public (undocumented)

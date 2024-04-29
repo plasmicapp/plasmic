@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@plasmicapp/prepass": "1.0.16",
+    "@plasmicapp/query": "0.1.78",
     "fkill": "^8.1.0",
     "get-port": "^7.0.0",
     "node-html-parser": "^6.1.5",
@@ -68,6 +69,7 @@
     "@types/react": "^18.0.27",
     "@types/yargs": "^17.0.32",
     "react": "^18.2.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "next": "^13.2.0"
   }
 }
