@@ -1,3 +1,4 @@
+import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import { ActionProps } from "@plasmicapp/host/registerComponent";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
@@ -24,6 +25,8 @@ export type TiptapProps = {
   contentHtml?: string;
   defaultContentHtml?: string;
   contentJson?: JSONContent;
+  defaultContentJson?: JSONContent;
+  useJson: boolean;
   extensions?: React.ReactElement;
   toolbar?: React.ReactElement;
   className: string;
@@ -41,9 +44,12 @@ export function Tiptap(props: TiptapProps) {
     extensions,
     contentHtml,
     defaultContentHtml,
+    defaultContentJson,
+    contentJson,
     className,
     onChange,
     toolbar,
+    useJson,
   } = props;
   const { ...tiptapContext } = useTiptapContext();
   const usedExtensions: Record<string, any> = allExtensions.reduce(
@@ -63,11 +69,17 @@ export function Tiptap(props: TiptapProps) {
     ...Object.values(usedExtensions),
   ];
 
+  const isCanvas = usePlasmicCanvasContext();
+
+  const content = useJson
+    ? contentJson || defaultContentJson
+    : contentHtml || defaultContentHtml;
+
   // If you try to update the content via the content prop (as opposed to directly typing into the tiptap editor), the new content won't show. So we got to refresh the editor to make the default content appear.
   useEffect(() => {
     if (activeRef.current) return;
     setRefreshKey(Math.random() * 1000000);
-  }, [contentHtml]);
+  }, [...(isCanvas ? [content] : [])]);
 
   if (!isClient) {
     return null;
@@ -90,7 +102,7 @@ export function Tiptap(props: TiptapProps) {
         key={`${extensionsProp.length}${refreshKey}`}
         // extensions={extensionsProp}
         extensions={extensionsProp}
-        content={contentHtml || defaultContentHtml}
+        content={content}
         onCreate={({ editor }) => {
           onChange(editor.getJSON());
         }}
@@ -205,6 +217,7 @@ export function AddExtension({
       </p>
       {allExtensions.map((ext) => (
         <label
+          key={ext}
           data-test-id={`custom-action-${ext}`}
           style={{
             display: "flex",
@@ -246,17 +259,26 @@ export function registerTiptap(loader?: Registerable) {
       },
     ],
     props: {
+      useJson: {
+        displayName: "Use JSON default content",
+        type: "boolean",
+        defaultValue: false,
+      },
       contentHtml: {
         type: "string",
         displayName: "HTML Content",
         editOnly: true,
         uncontrolledProp: "defaultContentHtml",
         description: "Contents of the editor",
+        hidden: (ps) => ps.useJson,
       },
       contentJson: {
         type: "object",
         displayName: "JSON Content",
-        hidden: () => true,
+        editOnly: true,
+        uncontrolledProp: "defaultContentJson",
+        description: "Contents of the editor as JSON",
+        hidden: (ps) => !ps.useJson,
       },
       extensions: {
         type: "slot",
