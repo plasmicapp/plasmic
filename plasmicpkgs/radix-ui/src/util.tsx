@@ -477,9 +477,18 @@ export type PopoverExtraProps = AnimatedProps & {
   slideIn?: boolean;
 };
 
-export function wrapFragmentInDiv(node: React.ReactNode): React.ReactNode {
+export function wrapFragmentInDiv(
+  node: React.ReactNode,
+  className?: string
+): React.ReactNode {
   if (React.isValidElement(node) && node.type === React.Fragment) {
-    const props = { ...omit(node.props, ["children"]), key: node.key };
+    const props: { [key: string]: string | undefined | null } = {
+      ...omit(node.props, ["children"]),
+      key: node.key,
+    };
+    props["className"] = props["className"]
+      ? props["className"] + className
+      : className;
     return <div {...props}>{node.props.children}</div>;
   }
   return node;

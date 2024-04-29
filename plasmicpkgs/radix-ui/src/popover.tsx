@@ -55,11 +55,11 @@ export function Popover({
         >
           {trigger ? (
             <PopoverPrimitive.Trigger asChild>
-              {wrapFragmentInDiv(children)}
+              {wrapFragmentInDiv(children, className)}
             </PopoverPrimitive.Trigger>
           ) : (
             <PopoverPrimitive.Anchor asChild>
-              {wrapFragmentInDiv(children)}
+              {wrapFragmentInDiv(children, className)}
             </PopoverPrimitive.Anchor>
           )}
           <PopoverPrimitive.Portal>
@@ -74,7 +74,6 @@ export function Popover({
                     )
                   : "",
                 dynClass ? dynClass : "",
-                className,
                 themeResetClass
               )}
               sideOffset={sideOffset}

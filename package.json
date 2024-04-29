@@ -55,8 +55,8 @@
     "lerna": "^7.4.2",
     "nx": "^16",
     "prettier": "2.8.8",
-    "tsconfig-paths": "^4.2.0",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "5.2.2"
   },
   "workspaces": [
