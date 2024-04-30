@@ -26,6 +26,7 @@ import {
   SubDeps,
   tags as htmlTags,
 } from "@/wab/client/components/canvas/subdeps";
+import { mkSlateString } from "@/wab/client/components/canvas/RichText/SlateString";
 import {
   reactPrompt,
   ReactPromptOpts,
@@ -1032,7 +1033,25 @@ export const mkCanvasText = computedFn(
                 return react.createElement("span", attributes, children);
               }
 
-              let childrenNode: JSX.Element = children;
+              function getChildrenNode() {
+                if (React.isValidElement(children)) {
+                  const childrenProps = children.props as any;
+                  // If we are dealing with a leaf that is rendered with String
+                  // from Slate, we will render it ourselves.
+                  if ("leaf" in childrenProps) {
+                    return react.createElement(
+                      mkSlateString(react, ctx.sub.slateReact),
+                      childrenProps
+                    );
+                  } else {
+                    return children;
+                  }
+                } else {
+                  return children;
+                }
+              }
+
+              let childrenNode = getChildrenNode();
               Object.entries(leaf).forEach(([key, val]) => {
                 if (key === "text") {
                   return;
