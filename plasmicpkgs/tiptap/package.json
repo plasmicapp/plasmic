@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/tiptap",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Tiptap for React",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
