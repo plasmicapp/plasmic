@@ -2151,7 +2151,6 @@ export class StudioCtx extends WithDbCtx {
           this.projectDependencyManager.plumeSite
         );
         postInsertableTemplate(this, seenFonts);
-        this.tplMgr().attachComponent(comp);
         return comp;
       } else {
         return this.tplMgr().addComponent({
