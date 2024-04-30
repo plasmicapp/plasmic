@@ -81,7 +81,6 @@ async function main() {
       })
       .catch((err) => {
         console.error(`Plasmic: Failed to kill dev server: ${err}`);
-        process.exit(1);
       });
   };
 
