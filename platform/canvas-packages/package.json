@@ -47,7 +47,7 @@
     "@plasmicpkgs/react-slick": "^0.0.213",
     "@plasmicpkgs/react-twitter-widgets": "^0.0.190",
     "@plasmicpkgs/react-youtube": "^7.13.196",
-    "@plasmicpkgs/tiptap": "^0.0.1",
+    "@plasmicpkgs/tiptap": "^0.0.2",
     "@react-aria/focus": "^3.14.3",
     "@react-aria/interactions": "^3.19.1",
     "@react-aria/overlays": "^3.18.1",

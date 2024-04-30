@@ -51,7 +51,7 @@
     "@plasmicpkgs/react-slick": "^0.0.213",
     "@plasmicpkgs/react-twitter-widgets": "^0.0.190",
     "@plasmicpkgs/react-youtube": "^7.13.196",
-    "@plasmicpkgs/tiptap": "^0.0.1",
+    "@plasmicpkgs/tiptap": "^0.0.2",
     "ant-design-pro-form-stub": "link:./internal_pkgs/ant-design-pro-form-stub",
     "antd": "^5.7.3",
     "axios": "^1.5.1",
