@@ -382,21 +382,21 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources-context/-/data-sources-context-0.1.21.tgz#fcf7ead9d9576084ff9fdcc3eadc4a5856119866"
   integrity sha512-DF86rstDK2zs/aTbPOUTWwXiVmFG2GDxXYvztIfXUNtuCvNDJKAZK2thYaULv9bGTRitPKWlwcz0zAMjYRHavQ==
 
-"@plasmicapp/data-sources@0.1.152":
-  version "0.1.152"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources/-/data-sources-0.1.152.tgz#dd63dfe7fd66d52d914059d58d2649375d6a5222"
-  integrity sha512-gTnqiRRwfUA1rIjBNW1ZQJ63BPNQRd5QYvSwCCaBQpMLSsuiiivcH+iBi6LyCR6PnyRdeoibb5PCJtJRgVhaQw==
+"@plasmicapp/data-sources@0.1.153":
+  version "0.1.153"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources/-/data-sources-0.1.153.tgz#f19f59dae1d067943933384dc1c74b0fb2304b3a"
+  integrity sha512-tfemy6Ob2d3yo1OiLvNp9FBY35i3HWuwttb8TJLYDjNIGEb1Zn8bXZx4zHFbWu4P8rTg8zryizGH+r0m9Jp6bg==
   dependencies:
     "@plasmicapp/data-sources-context" "0.1.21"
-    "@plasmicapp/host" "1.0.193"
+    "@plasmicapp/host" "1.0.194"
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
     "@plasmicapp/query" "0.1.79"
     fast-stringify "^2.0.0"
 
-"@plasmicapp/host@1.0.193":
-  version "1.0.193"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.193.tgz#7a194d1a879c2dc2ac2815e8fff64b35b32e13e2"
-  integrity sha512-fta1tgeuk/pMUAHQfNnwG/4ivAjnQJFtzokd54U0W1L82COYSk8iUf0hH6axHlcP6MGE/PmKj1HmRL/n0klwHQ==
+"@plasmicapp/host@1.0.194":
+  version "1.0.194"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.194.tgz#57e8c9db282e6dc0675093271bacaeb5a26b90c8"
+  integrity sha512-AHQINadGyMCJ+gPgRhwL1Rmk8DrPPUriXAgEDm62h/i9xI4i8qb7PCADtFH6oMasgX8xXoorQwGtHiMMz3MYQw==
   dependencies:
     "@plasmicapp/query" "0.1.79"
     csstype "^3.1.2"
@@ -448,15 +448,15 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.6.tgz#e36cc365a8ddb54e3c5caf0ce4ad6818c995b5a6"
   integrity sha512-D+/pxBSYV8/qiwuwVMRnASZMXmlxDYUKRjVnRGjf3Q9s7SC/KlRSB5ORIk81heOH5HaRq05TD47LPsmNFvhNiw==
 
-"@plasmicapp/react-web@^0.2.333":
-  version "0.2.333"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.333.tgz#bfea4ba3716fe87255f97d97dc450b9340053521"
-  integrity sha512-BoMDk/PgOtRzOAOYKn6Swv/P7weJDGSmF7xF2fGnu6xVal0yn0Do3A6uwaPOCFwerMOfMERIAat82tiCYgVdBg==
+"@plasmicapp/react-web@^0.2.334":
+  version "0.2.334"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.334.tgz#3939ebbb2f609342439138f71f9e0dcf9290ab3b"
+  integrity sha512-LK79oZcDstGH33ouUCHo9QlUAGnKvtL4XAkxowYC6+Xxl0sbfA1rk6xIFICDcwHeFbx7kPGoG8ITgrbuTrpPHQ==
   dependencies:
     "@plasmicapp/auth-react" "0.0.21"
-    "@plasmicapp/data-sources" "0.1.152"
+    "@plasmicapp/data-sources" "0.1.153"
     "@plasmicapp/data-sources-context" "0.1.21"
-    "@plasmicapp/host" "1.0.193"
+    "@plasmicapp/host" "1.0.194"
     "@plasmicapp/loader-splits" "1.0.60"
     "@plasmicapp/nextjs-app-router" "1.0.11"
     "@plasmicapp/prepass" "1.0.17"
