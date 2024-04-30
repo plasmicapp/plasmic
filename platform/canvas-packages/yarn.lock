@@ -3203,10 +3203,10 @@
   dependencies:
     json-logic-js "^2.0.2"
 
-"@plasmicapp/nextjs-app-router@1.0.10":
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/nextjs-app-router/-/nextjs-app-router-1.0.10.tgz#4cd079ed0e4302949e8782f05f51af579a814396"
-  integrity sha512-LXyracCCmWCw8r2yrNQByHtelNriJQ2NnjP5lfidBWQhQ97G3Dcl4e5LMzfJJTSAmt+wIr7ARWbCi0JH825OPA==
+"@plasmicapp/nextjs-app-router@1.0.11":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/nextjs-app-router/-/nextjs-app-router-1.0.11.tgz#6458b8fa13210f2db4a1d8ff57d48448e8b14f3b"
+  integrity sha512-A23zVQvGLf0aZN1WMewOlBX08WzQU49ic8hLJoBiSJwXjPykev5ph7IG0rDOHcKsQyW1yGq1d3h0INJyorb5kg==
   dependencies:
     "@plasmicapp/prepass" "1.0.17"
     "@plasmicapp/query" "0.1.79"
@@ -3235,17 +3235,17 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.6.tgz#e36cc365a8ddb54e3c5caf0ce4ad6818c995b5a6"
   integrity sha512-D+/pxBSYV8/qiwuwVMRnASZMXmlxDYUKRjVnRGjf3Q9s7SC/KlRSB5ORIk81heOH5HaRq05TD47LPsmNFvhNiw==
 
-"@plasmicapp/react-web@^0.2.332":
-  version "0.2.332"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.332.tgz#ea1ad18dab2988d21307de837478774f0ade12f9"
-  integrity sha512-PIP/ayk7NLOXfaAUnVOaBiVK6oai9mls/JN75TEvxRFcA1gE8GMZfmEdthxgPWKXcEx0UsLmd+MFa7Pfd0aApQ==
+"@plasmicapp/react-web@^0.2.333":
+  version "0.2.333"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.333.tgz#bfea4ba3716fe87255f97d97dc450b9340053521"
+  integrity sha512-BoMDk/PgOtRzOAOYKn6Swv/P7weJDGSmF7xF2fGnu6xVal0yn0Do3A6uwaPOCFwerMOfMERIAat82tiCYgVdBg==
   dependencies:
     "@plasmicapp/auth-react" "0.0.21"
     "@plasmicapp/data-sources" "0.1.152"
     "@plasmicapp/data-sources-context" "0.1.21"
     "@plasmicapp/host" "1.0.193"
     "@plasmicapp/loader-splits" "1.0.60"
-    "@plasmicapp/nextjs-app-router" "1.0.10"
+    "@plasmicapp/nextjs-app-router" "1.0.11"
     "@plasmicapp/prepass" "1.0.17"
     "@plasmicapp/query" "0.1.79"
     "@react-aria/checkbox" "^3.11.2"
@@ -3277,10 +3277,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/airtable/-/airtable-0.0.207.tgz#26d73f59bfba35633c23e2fdbeda0b088453f8e1"
   integrity sha512-skhY2SuCj2UQ7q8HWTw+dbweTaUjdVvmqZ82vttqRdLN7oMlDchLG8AiCr/4Q2O3+egJ427cno+BvPFmfeJgTA==
 
-"@plasmicpkgs/antd5@^0.0.228":
-  version "0.0.228"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.228.tgz#896d6294237502dd371c7f8c5bcd26762b26ffd4"
-  integrity sha512-gD0cuZHoheEHEB637yixOciPA1ao3QmcY5ZmZ2XKE+cewarAJp4OfpwHTNemlys9ZL3xdVqr2CIF/ldHa4YJ7g==
+"@plasmicpkgs/antd5@^0.0.229":
+  version "0.0.229"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.229.tgz#602c7a85f70d6e49e7222bf8539278040ffd71a0"
+  integrity sha512-m0QgHV8N1+1Kybu9KScQ9WNmH5ngOhHdm5hFJjuQziPeYQinF7Ei2wHczT+xUia5He2t2EfED0fLo9iHMppWtg==
   dependencies:
     antd "^5.12.7"
     classnames "^2.3.2"
