@@ -39,13 +39,22 @@ class FileCache {
   }
 }
 
+function hashString(str: string) {
+  let h = 0,
+    i = 0;
+  for (; i < str.length; h &= h) h = 31 * h + str.charCodeAt(i++);
+  return Math.abs(h);
+}
+
 function makeCache(opts: InitOptions) {
   const cacheDir = path.resolve(process.cwd(), ".next", ".plasmic");
   const cachePath = path.join(
     cacheDir,
-    `plasmic-${[...opts.projects.map((p) => `${p.id}@${p.version ?? ""}`)]
-      .sort()
-      .join("-")}${opts.preview ? "-preview" : ""}-cache.json`
+    `plasmic-${hashString(
+      [...opts.projects.map((p) => `${p.id}@${p.version ?? ""}`)]
+        .sort()
+        .join("-")
+    )}${opts.preview ? "-preview" : ""}-cache.json`
   );
   return new FileCache(cachePath);
 }
