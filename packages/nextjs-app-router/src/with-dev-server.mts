@@ -75,13 +75,9 @@ async function main() {
 
   const killDevServer = () => {
     devProcess.kill("SIGKILL");
-    fkill(`:${port}`, { force: true })
-      .then(() => {
-        process.exit(commandProcess.exitCode ?? undefined);
-      })
-      .catch((err) => {
-        console.error(`Plasmic: Failed to kill dev server: ${err}`);
-      });
+    return fkill(`:${port}`, { force: true }).catch((err) => {
+      console.error(`Plasmic: Failed to kill dev server: ${err}`);
+    });
   };
 
   const command = argv._.map((x) => `${x}`);
@@ -97,11 +93,15 @@ async function main() {
   commandProcess.stderr?.pipe(process.stderr);
   commandProcess.on("error", (err) => {
     console.error(`Plasmic: Command error: ${err}`);
-    killDevServer();
+    killDevServer().then(() => {
+      process.exit(commandProcess.exitCode ?? undefined);
+    });
   });
   commandProcess.on("exit", () => {
     console.log(`Plasmic: Command finished; killing prepass dev server...`);
-    killDevServer();
+    killDevServer().then(() => {
+      process.exit(undefined);
+    });
   });
 }
 
