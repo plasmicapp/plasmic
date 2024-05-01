@@ -192,6 +192,15 @@ export interface CodeComponentMeta<P> {
    */
   description?: string;
   /**
+   * A specific section to which the component should be displayed in Studio. By default, the component will be displayed in the "Custom Components" section.
+   * A new section will be created to display the components with the same `section` value.
+   */
+  section?: string;
+  /**
+   * A link to an image that will be displayed as a thumbnail of the component in the Studio, if the component has a `section` specified.
+   */
+  thumbnailUrl?: string;
+  /**
    * The javascript name to be used when generating code. Optional: if not
    * provided, `meta.name` is used.
    */
