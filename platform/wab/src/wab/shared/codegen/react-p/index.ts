@@ -3039,10 +3039,12 @@ function serializeTplTag(ctx: SerializerBaseContext, node: TplTag) {
     serializedChildren = [];
   }
 
-  if (isPageAwarePlatform(ctx.exportOpts.platform) && tag === "a") {
+  if (tag === "a") {
     tag = "PlasmicLink__";
     attrs["platform"] = jsLiteral(ctx.exportOpts.platform);
-    attrs["component"] = "Link";
+    if (isPageAwarePlatform(ctx.exportOpts.platform)) {
+      attrs["component"] = "Link";
+    }
   }
 
   const baseVs = node.vsettings.find((vs) => isBaseVariant(vs.variants));
