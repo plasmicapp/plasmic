@@ -57,7 +57,6 @@ function DataPickerCodeEditorLayout_(
   return (
     <PlasmicDataPickerCodeEditorLayout
       root={{ ref }}
-      key={`${props.hidePreview}`}
       {...rest}
       codeEditor={
         <React.Suspense fallback={<div />}>

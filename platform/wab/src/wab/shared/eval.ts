@@ -15,6 +15,7 @@ export const ENABLED_GLOBALS = new Set([
   "Number",
   "Object",
   "Promise",
+  "Blob",
   "ReferenceError",
   "RegExp",
   "Set",
