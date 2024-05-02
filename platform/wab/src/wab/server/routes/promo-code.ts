@@ -9,6 +9,7 @@ export async function getPromotionCodeById(req: Request, res: Response) {
   const promotionCode = await dbMgr.getPromotionCodeById(promoCodeId);
   if (!promotionCode) {
     res.json({});
+    return;
   }
   res.json({ ...promotionCode });
 }
