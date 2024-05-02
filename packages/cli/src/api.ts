@@ -66,6 +66,10 @@ export interface ProjectMetaBundle {
   jsBundleThemes?: JsBundleTheme[];
   globalContextBundle?: GlobalContextBundle;
   splitsProviderBundle?: SplitsProviderBundle;
+  reactWebExportedFiles?: Array<{
+    fileName: string;
+    content: string;
+  }>;
 }
 
 export interface IconBundle {

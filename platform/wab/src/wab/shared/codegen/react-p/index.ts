@@ -123,6 +123,7 @@ import {
   makePictureImports,
   toReactAttr,
 } from "@/wab/shared/codegen/image-assets";
+import { reactWebExportedFiles } from "@/wab/shared/codegen/react-p/exported-react-web/files";
 import { optimizeGeneratedCodeForHostlessPackages } from "@/wab/shared/codegen/react-p/optimize-hostless-packages";
 import { ReactHookSpec } from "@/wab/shared/codegen/react-p/react-hook-spec";
 import {
@@ -193,6 +194,7 @@ import {
   extractUsedTokensForTheme,
 } from "@/wab/shared/codegen/style-tokens";
 import {
+  CodegenScheme,
   ComponentExportOutput,
   CustomFunctionConfig,
   ExportOpts,
@@ -401,7 +403,8 @@ export function exportProjectConfig(
   projectRevId: string,
   version: string,
   exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">,
-  indirect = false
+  indirect = false,
+  scheme: CodegenScheme = "blackbox"
 ): ProjectConfig {
   const fontUsages = extractUsedFontsFromComponents(site, site.components);
 
@@ -520,6 +523,8 @@ export function exportProjectConfig(
     globalContextBundle,
     splitsProviderBundle,
     indirect,
+    reactWebExportedFiles:
+      scheme === "plain" ? reactWebExportedFiles : undefined,
   };
 }
 

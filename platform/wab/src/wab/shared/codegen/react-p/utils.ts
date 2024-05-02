@@ -18,6 +18,7 @@ import { ExprCtx } from "@/wab/exprs";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import { CodeComponentWithHelpers } from "@/wab/shared/code-components/code-components";
 import {
+  CodegenScheme,
   ExportOpts,
   ExportPlatform,
   ProjectConfig,
@@ -142,7 +143,7 @@ export function makeStylesImports(
   component: Component,
   projectConfig: ProjectConfig,
   opts: ExportOpts,
-  scheme: "blackbox" | "plain" = "blackbox"
+  scheme: CodegenScheme = "blackbox"
 ) {
   const useCssModules = opts.stylesOpts.scheme === "css-modules";
   const cssImport = (name: string, path: string) => {

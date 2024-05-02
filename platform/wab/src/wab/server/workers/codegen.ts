@@ -194,7 +194,8 @@ export async function doGenCode(
         revisionId,
         version,
         exportOpts,
-        indirect
+        indirect,
+        opts.scheme
       ),
     `Project ${projectId}`
   );
