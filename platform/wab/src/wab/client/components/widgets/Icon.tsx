@@ -5,7 +5,7 @@ export function Icon(
   props: React.ComponentProps<"svg"> & {
     monochromeExempt?: boolean;
     icon: React.ComponentType<React.ComponentProps<"svg">>;
-    size?: number;
+    size?: number | string;
   }
 ) {
   const {

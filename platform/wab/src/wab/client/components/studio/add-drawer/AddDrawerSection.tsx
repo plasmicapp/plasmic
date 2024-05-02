@@ -17,6 +17,7 @@ export interface AddItemGroup {
   codeName?: string;
   codeLink?: string;
   hostLessPackageInfo?: HostLessPackageInfo;
+  isHeaderLess?: boolean;
 }
 
 interface AddDrawerSectionProps {

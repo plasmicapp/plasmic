@@ -36,6 +36,7 @@ import {
   getPlumeImage,
 } from "@/wab/client/components/plume/plume-display-utils";
 import { PlumyIcon } from "@/wab/client/components/plume/plume-markers";
+import sty from "@/wab/client/components/studio/add-drawer/AddDrawer.module.css";
 import AddDrawerItem from "@/wab/client/components/studio/add-drawer/AddDrawerItem";
 import { AddItemGroup } from "@/wab/client/components/studio/add-drawer/AddDrawerSection";
 import { DraggableInsertable } from "@/wab/client/components/studio/add-drawer/DraggableInsertable";
@@ -58,6 +59,7 @@ import {
   getScreenVariantToInsertableTemplate,
   postInsertableTemplate,
 } from "@/wab/client/insertable-templates";
+import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
 import PlumeMarkIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__PlumeMark";
 import { PlasmicAddDrawer } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicAddDrawer";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -65,6 +67,7 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { trackEvent } from "@/wab/client/tracking";
 import {
   assert,
+  cx,
   ensure,
   ensureArray,
   filterFalsy,
@@ -109,6 +112,7 @@ import {
 } from "@/wab/shared/code-components/code-components";
 import { isRenderableType } from "@/wab/shared/core/model-util";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
+import { CSSProperties } from "@/wab/shared/element-repr/element-repr-v2";
 import { InsertableTemplateExtraInfo } from "@/wab/shared/insertable-templates/types";
 import { FRAMES_CAP } from "@/wab/shared/Labels";
 import {
@@ -448,6 +452,51 @@ export function createAddTplComponent(component: Component): AddTplItem {
   };
 }
 
+function getAddTplItemPreviewImage(
+  url: string,
+  objectPosition: CSSProperties["objectPosition"]
+) {
+  return (
+    <img
+      className={cx("no-pointer-events", sty.previewImage)}
+      style={{
+        objectPosition,
+      }}
+      role="img"
+      src={url}
+    />
+  );
+}
+
+export function createAddTplCodeComponent(
+  component: CodeComponent
+): AddTplItem {
+  const thumbUrl = component.codeComponentMeta.thumbnailUrl;
+  return {
+    ...createAddTplComponent(component),
+    previewImage: thumbUrl ? (
+      getAddTplItemPreviewImage(thumbUrl, "center center")
+    ) : (
+      <Icon icon={ComponentIcon} size="100%" />
+    ),
+    isCompact: true,
+  };
+}
+
+export function createAddTplCodeComponents(
+  components: CodeComponent[]
+): AddTplItem[] {
+  return components.flatMap((component) => {
+    // It shouldn't be possible to have a sub component that is not a code component
+    // but we'll be safe and filter them out
+    const subComponents = getSubComponents(component).filter(isCodeComponent);
+    return [
+      createAddTplCodeComponent(component),
+      ...subComponents.map(createAddTplCodeComponent),
+    ];
+  });
+}
+
 export function createAddComponentPreset(
   studioCtx: StudioCtx,
   component: CodeComponent,
@@ -481,22 +530,9 @@ export function createAddInsertableTemplate(
     label: meta.componentName,
     canWrap: false,
     icon: COMBINATION_ICON,
-    previewImage: meta.imageUrl ? (
-      <img
-        className={"no-pointer-events"}
-        style={{
-          position: "relative",
-          width: "100%",
-          height: "100%",
-          objectPosition: "center top",
-          objectFit: "contain",
-          minWidth: 0,
-          minHeight: 0,
-        }}
-        role={"img"}
-        src={meta.imageUrl}
-      />
-    ) : null,
+    previewImage: meta.imageUrl
+      ? getAddTplItemPreviewImage(meta.imageUrl, "center top")
+      : null,
     factory: (
       vc: ViewCtx,
       extraInfo: InsertableTemplateExtraInfo,
@@ -547,22 +583,9 @@ export function createAddTemplateComponent(
     label: meta.displayName ?? meta.componentName,
     canWrap: false,
     icon: COMBINATION_ICON,
-    previewImage: meta.imageUrl ? (
-      <img
-        className={"no-pointer-events"}
-        style={{
-          position: "relative",
-          width: "100%",
-          height: "100%",
-          objectPosition: "center top",
-          objectFit: "contain",
-          minWidth: 0,
-          minHeight: 0,
-        }}
-        role={"img"}
-        src={meta.imageUrl}
-      />
-    ) : null,
+    previewImage: meta.imageUrl
+      ? getAddTplItemPreviewImage(meta.imageUrl, "center top")
+      : null,
     factory: (
       vc: ViewCtx,
       extraInfo: InsertableTemplateComponentExtraInfo,
@@ -639,21 +662,7 @@ export function createAddHostLessComponent(
     icon: COMBINATION_ICON,
     gray: meta.gray,
     previewImage: meta.imageUrl ? (
-      <img
-        className={"no-pointer-events"}
-        style={{
-          position: "relative",
-          width: "100%",
-          height: "100%",
-          objectPosition: "center center",
-          objectFit: "contain",
-          minWidth: 0,
-          minHeight: 0,
-          pointerEvents: "none",
-        }}
-        role={"img"}
-        src={meta.imageUrl}
-      />
+      getAddTplItemPreviewImage(meta.imageUrl, "center center")
     ) : meta.videoUrl ? (
       <video
         className={"no-pointer-events"}
@@ -737,20 +746,7 @@ export function createInstallOnlyPackage(
     hostLessPackageInfo: packageMeta,
     hostLessComponentInfo: meta,
     previewImage: meta.imageUrl ? (
-      <img
-        style={{
-          position: "relative",
-          width: "100%",
-          height: "100%",
-          objectPosition: "center center",
-          objectFit: "contain",
-          minWidth: 0,
-          minHeight: 0,
-          pointerEvents: "none",
-        }}
-        role={"img"}
-        src={meta.imageUrl}
-      />
+      getAddTplItemPreviewImage(meta.imageUrl, "center center")
     ) : meta.videoUrl ? (
       <video
         src={meta.videoUrl}
@@ -804,21 +800,7 @@ export function createFakeHostLessComponent(
     monospaced: meta.monospaced,
     description: meta.description,
     previewImage: meta.imageUrl ? (
-      <img
-        className={"no-pointer-events"}
-        style={{
-          position: "relative",
-          width: "100%",
-          height: "100%",
-          objectPosition: "center center",
-          objectFit: "contain",
-          minWidth: 0,
-          minHeight: 0,
-          pointerEvents: "none",
-        }}
-        role={"img"}
-        src={meta.imageUrl}
-      />
+      getAddTplItemPreviewImage(meta.imageUrl, "center center")
     ) : meta.videoUrl ? (
       <video
         className={"no-pointer-events"}
@@ -1485,20 +1467,9 @@ export function makePlumeInsertables(
         asyncExtraInfo: async (_studioCtx, opts) => {
           return { attachComponent: !opts?.isDragging };
         },
-        previewImage: (
-          <img
-            src={getPlumeImage(component.plumeInfo.type)}
-            style={{
-              position: "relative",
-              width: "100%",
-              height: "100%",
-              objectPosition: "center center",
-              objectFit: "contain",
-              minWidth: 0,
-              minHeight: 0,
-              pointerEvents: "none",
-            }}
-          />
+        previewImage: getAddTplItemPreviewImage(
+          getPlumeImage(component.plumeInfo.type),
+          "center center"
         ),
       });
     }

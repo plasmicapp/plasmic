@@ -28,6 +28,7 @@ import {
   createAddHostLessComponent,
   createAddInsertableTemplate,
   createAddTemplateComponent,
+  createAddTplCodeComponents,
   createAddTplComponent,
   createAddTplImage,
   createFakeHostLessComponent,
@@ -77,9 +78,11 @@ import {
 } from "@/wab/common";
 import { HighlightBlinker } from "@/wab/commons/components/HighlightBlinker";
 import {
+  CodeComponent,
   getSubComponents,
   getSuperComponents,
   isCodeComponent,
+  isCodeComponentWithSection,
   isComponentHiddenFromContentEditor,
   isContextCodeComponent,
   isDefaultComponentKind,
@@ -275,10 +278,13 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
 
       let itemIndex = 0;
       const isAtomicSection = atomicHostlessSections.includes(section);
+
       const virtualItems: VirtualItem[] = groupedItems
         .filter((group) => query || (group.sectionKey ?? group.key) === section)
         .flatMap((group, index) => [
-          ...(!isAtomicSection ? [{ type: "header", group } as const] : []),
+          ...(!isAtomicSection && !group.isHeaderLess
+            ? [{ type: "header", group } as const]
+            : []),
           ...group.items.map(
             (item) =>
               ({ type: "item", item, group, itemIndex: itemIndex++ } as const)
@@ -936,6 +942,49 @@ function getLeafProjectIdForHostLessPackageMeta(pkg: HostLessPackageInfo) {
   return last(ensureArray(pkg.projectId));
 }
 
+function getCodeComponentsGroups(studioCtx: StudioCtx): AddItemGroup[] {
+  // All code components with studio UI will receive a dedicated section
+  // in the AddDrawer.
+  const components: CodeComponent[] = studioCtx.site.components.filter(
+    (c): c is CodeComponent => isCodeComponentWithSection(c)
+  );
+  const groups = groupBy(components, (c) => c.codeComponentMeta.section);
+  return sortBy(
+    Object.entries(groups)
+      .map(([section, sectionComponents]) => {
+        const subGroups = groupBy(sectionComponents, (c) => {
+          const meta = c.codeComponentMeta;
+          if (!meta.displayName) {
+            return "";
+          }
+          const parts = meta.displayName.split("/");
+          // Remove the last part to get the sub-section
+          return parts.length > 1 ? parts.slice(0, -1).join("/") : "";
+        });
+
+        return Object.entries(subGroups).map(
+          ([subSection, subSectionComponents]) => {
+            return {
+              key: `code-components-${section}${
+                subSection ? `-${subSection}` : ""
+              }`,
+              isHeaderLess: !subSection,
+              sectionKey: section,
+              sectionLabel: section,
+              label: subSection,
+              items: sortBy(
+                createAddTplCodeComponents(subSectionComponents),
+                (item) => item.label
+              ),
+            };
+          }
+        );
+      })
+      .flat(),
+    (itemGroup) => itemGroup.key
+  );
+}
+
 export function buildAddItemGroups({
   studioCtx,
   includeFrames = true,
@@ -1155,6 +1204,9 @@ export function buildAddItemGroups({
         }
     ),
 
+    // Code components groups
+    ...getCodeComponentsGroups(studioCtx),
+
     includeFrames &&
       canInsertAlias(uiConfig, "frame", canInsertContext) && {
         key: "frames",
@@ -1166,6 +1218,7 @@ export function buildAddItemGroups({
         ],
       },
 
+    // Custom components includes all the components from the project
     {
       key: "components",
       label: "Custom components",
@@ -1174,6 +1227,7 @@ export function buildAddItemGroups({
           (c) =>
             isReusableComponent(c) &&
             !isContextCodeComponent(c) &&
+            !isCodeComponentWithSection(c) &&
             !(
               contentEditorMode &&
               isComponentHiddenFromContentEditor(c, studioCtx)

@@ -1220,6 +1220,8 @@ function refreshCodeComponentMeta(
       c.codeComponentMeta.importName = meta.importName ?? null;
       c.codeComponentMeta.displayName = meta.displayName ?? null;
       c.codeComponentMeta.description = meta.description ?? null;
+      c.codeComponentMeta.section = meta.section ?? null;
+      c.codeComponentMeta.thumbnailUrl = meta.thumbnailUrl ?? null;
       c.codeComponentMeta.isAttachment = !!meta.isAttachment;
       c.codeComponentMeta.providesData = !!meta.providesData;
       c.codeComponentMeta.isRepeatable = meta.isRepeatable ?? true;
