@@ -23,7 +23,6 @@ export const TIPTAP_COMPONENT_NAME = "hostless-tiptap";
 
 export type TiptapProps = {
   contentHtml?: string;
-  defaultContentHtml?: string;
   contentJson?: JSONContent;
   defaultContentJson?: JSONContent;
   useJson: boolean;
@@ -43,9 +42,7 @@ export function Tiptap(props: TiptapProps) {
   const {
     extensions,
     contentHtml,
-    defaultContentHtml,
     defaultContentJson,
-    contentJson,
     className,
     onChange,
     toolbar,
@@ -70,16 +67,14 @@ export function Tiptap(props: TiptapProps) {
   ];
 
   const isCanvas = usePlasmicCanvasContext();
-
-  const content = useJson
-    ? contentJson || defaultContentJson
-    : contentHtml || defaultContentHtml;
+  const defaultContent = useJson ? defaultContentJson : contentHtml;
 
   // If you try to update the content via the content prop (as opposed to directly typing into the tiptap editor), the new content won't show. So we got to refresh the editor to make the default content appear.
   useEffect(() => {
+    // only refresh key if the user is not typing
     if (activeRef.current) return;
     setRefreshKey(Math.random() * 1000000);
-  }, [...(isCanvas ? [content] : [])]);
+  }, [...(isCanvas ? [defaultContent] : [])]);
 
   if (!isClient) {
     return null;
@@ -98,11 +93,11 @@ export function Tiptap(props: TiptapProps) {
 
   return (
     <div className={className} style={{ position: "relative" }}>
+      {/* Editor provider is an uncontrolled component */}
       <EditorProvider
-        key={`${extensionsProp.length}${refreshKey}`}
-        // extensions={extensionsProp}
         extensions={extensionsProp}
-        content={content}
+        key={`${extensionsProp.length}${refreshKey}`}
+        content={defaultContent}
         onCreate={({ editor }) => {
           onChange(editor.getJSON());
         }}
@@ -264,21 +259,24 @@ export function registerTiptap(loader?: Registerable) {
         type: "boolean",
         defaultValue: false,
       },
+      // a better naming for this would be defaultContentHtml, but we can't change the name anymore for backwards compatibility reasons (can't change the name of an existing prop)
       contentHtml: {
         type: "string",
         displayName: "HTML Content",
-        editOnly: true,
-        uncontrolledProp: "defaultContentHtml",
-        description: "Contents of the editor",
+        description: "Provide default content as HTML",
         hidden: (ps) => ps.useJson,
       },
-      contentJson: {
+      defaultContentJson: {
         type: "object",
         displayName: "JSON Content",
-        editOnly: true,
-        uncontrolledProp: "defaultContentJson",
-        description: "Contents of the editor as JSON",
+        description: "Provide default content as JSON",
         hidden: (ps) => !ps.useJson,
+      },
+      // contentJson is exposed as state, and its not combined with defaultContentJson via "editOnly/uncontrolledProp" fields because
+      // that pattern is for controlled components, while the wrapped component (EditorProvider) is an uncontrolled component.
+      contentJson: {
+        type: "object",
+        hidden: () => true,
       },
       extensions: {
         type: "slot",
