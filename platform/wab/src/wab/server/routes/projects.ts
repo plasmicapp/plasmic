@@ -2897,7 +2897,7 @@ export async function postCommentInProject(req: Request, res: Response) {
         mate.id,
         toOpaque(projectId)
       );
-      const notifyAbout = notificationSettings?.notifyAbout ?? "all";
+      const notifyAbout = notificationSettings?.notifyAbout ?? "none";
       const isMentionOrReply = commentsByThread
         .get(data.threadId)
         ?.some((c) => c.createdById === mate.id);
