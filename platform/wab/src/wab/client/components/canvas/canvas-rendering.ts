@@ -599,9 +599,9 @@ function mkInitFuncFromExpr(
   isForRegisterInitFunc?: boolean
 ) {
   return evalCodeWithEnv(
-    `({$props, $state, $queries${isForRegisterInitFunc ? ", $ctx" : ""}}) => (
+    `(({$props, $state, $queries${isForRegisterInitFunc ? ", $ctx" : ""}}) => (
       ${getRawCode(initFuncExpr, exprCtx)}
-    )`,
+    ))`,
     { ...(env ?? {}) },
     viewCtx.canvasCtx.win()
   );

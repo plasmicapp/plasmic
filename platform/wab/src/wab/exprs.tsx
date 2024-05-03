@@ -718,7 +718,7 @@ const _asCode = maybeComputedFn(
         // We hope there are no collisions with the symbol "__composite"!
         return code(
           `
-(() => {
+((() => {
   const __composite = (${expr.hostLiteral});
   ${Object.entries(expr.substitutions)
     .map(
@@ -730,7 +730,7 @@ const _asCode = maybeComputedFn(
     )
     .join("\n")}
   return __composite;
-})()
+})())
   `.trim()
         );
       })
