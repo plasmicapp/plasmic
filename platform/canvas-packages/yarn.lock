@@ -3588,10 +3588,10 @@
   dependencies:
     react-youtube "9.0.2"
 
-"@plasmicpkgs/tiptap@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/tiptap/-/tiptap-0.0.2.tgz#585aab0c9710eea1c6868248fa66447cd6a6abc7"
-  integrity sha512-RGfD6BjwcYWZjvyJX+4VALQLygxU+BbPHqWvKW9FBtrFLkTU9XD2158tknM1JEtx+Qu75E1WXitZoks4j7sKPg==
+"@plasmicpkgs/tiptap@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/tiptap/-/tiptap-0.0.3.tgz#dea0d529030a3217855666b2e1a182cf235ea2c5"
+  integrity sha512-416kWG1+r2cHL9bJp3u6w06ApJdfnGg6YjW7nqXW615Y27ZzM/tCxz92qzW3wrNfDdvMR84I1xD/yAiAesYcAg==
   dependencies:
     "@tiptap/core" "^2.1.12"
     "@tiptap/extension-bold" "^2.1.12"
