@@ -163,7 +163,7 @@ export function ComponentPropModal(props: {
       const isLocalizableVal =
         paramType === "text" && isLocalizationEnabled ? isLocalizable : false;
       if (existingParam) {
-        existingParam.variable.name = name;
+        studioCtx.tplMgr().renameParam(component, existingParam, name);
         existingParam.type = newParamType;
         existingParam.defaultExpr = defaultExpr && clone(defaultExpr);
         existingParam.previewExpr = previewExpr && clone(previewExpr);
