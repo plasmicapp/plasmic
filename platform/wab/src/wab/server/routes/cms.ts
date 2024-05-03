@@ -54,7 +54,7 @@ export async function queryTable(req: Request, res: Response) {
 
   // Query is encoded as the q= query param, a JSON string
   const query = JSON.parse(ensureString(req.query.q ?? "{}")) as ApiCmsQuery;
-  const locale = (req.query.locale ?? "") as string;
+  const locale = fixLocale((req.query.locale ?? "") as string);
   const useDraft = shouldUseDraft(req);
   const rows = await mgr.queryCmsRows(table.id, query, { useDraft });
   const metaMap = makeFieldMetaMap(table.schema, query.fields);
@@ -236,6 +236,10 @@ function shouldPublish(req: Request) {
 
 function shouldUseDraft(req: Request) {
   return req.query.draft === "1";
+}
+
+function fixLocale(locale: string) {
+  return locale === "undefined" ? "" : locale;
 }
 
 export function cachePublicCmsRead(

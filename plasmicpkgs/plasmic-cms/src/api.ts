@@ -48,7 +48,14 @@ export class API {
     const url = new URL(
       `${this.config.host}/api/v1/cms/databases/${this.config.databaseId}${endpoint}`
     );
-    url.search = new URLSearchParams(params).toString();
+    const fixedParams = Object.keys(params).reduce((newObj, key) => {
+      const value = params[key];
+      if (value != null) {
+        newObj[key] = value;
+      }
+      return newObj;
+    }, {} as any);
+    url.search = new URLSearchParams(fixedParams).toString();
     const response = await fetch(url.toString(), {
       method: "GET",
       headers: {
