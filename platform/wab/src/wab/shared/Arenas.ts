@@ -804,6 +804,20 @@ export function getFrameSizeForTargetScreenVariant(
   site: Site,
   targetVariant: Variant | undefined
 ): number | undefined {
+  // Try finding an already existing frame for this variant and use it's size
+  if (targetVariant && site.pageArenas.length > 0) {
+    const first = site.pageArenas[0];
+    if (first.matrix.rows.length > 0) {
+      const firstRow = first.matrix.rows[0];
+      const variantFrame = firstRow.cols.find(({ frame }) => {
+        return !!frame.pinnedGlobalVariants[targetVariant.uuid];
+      });
+      if (variantFrame) {
+        return variantFrame.frame.width;
+      }
+    }
+  }
+
   const foundRange = getOrderedScreenRanges(site).find(
     (range) => range.variant === targetVariant
   );
