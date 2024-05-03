@@ -17,7 +17,6 @@ import {
 import {
   inlineComponents,
   inlineSlots,
-  inlineTokens,
 } from "@/wab/shared/insertable-templates/inliners";
 import {
   CopyStateExtraInfo,
@@ -48,11 +47,20 @@ export function cloneInsertableTemplateComponent(
 ) {
   const seenFonts = new Set<string>();
 
-  const oldTokens = allStyleTokens(info.site, { includeDeps: "all" });
+  const targetTokens = allStyleTokens(site, { includeDeps: "all" });
+  const sourceTokens = allStyleTokens(info.site, {
+    includeDeps: "all",
+  });
 
-  const tokenImporter = (tplTree: TplNode) => {
-    inlineTokens(tplTree, oldTokens, (font) => seenFonts.add(font));
-  };
+  const tokenImporter = mkInsertableTokenImporter(
+    info.site,
+    site,
+    sourceTokens,
+    targetTokens,
+    info.resolution.token,
+    info.screenVariant,
+    (font) => seenFonts.add(font)
+  );
 
   const componentImporter = mkInsertableComponentImporter(
     site,

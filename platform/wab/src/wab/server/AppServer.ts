@@ -236,6 +236,7 @@ import {
   getModelUpdates,
   getPkgByProjectId,
   getPkgVersion,
+  getPkgVersionByProjectId,
   getPkgVersionPublishStatus,
   getPlumePkg,
   getPlumePkgVersionStrings,
@@ -1617,6 +1618,10 @@ export function addMainAppServerRoutes(
   app.get("/api/v1/plume-pkg/versions", withNext(getPlumePkgVersionStrings));
   app.get("/api/v1/plume-pkg/latest", withNext(getLatestPlumePkg));
   app.get("/api/v1/pkgs/:pkgId", withNext(getPkgVersion));
+  app.get(
+    "/api/v1/pkgs/projectId/:projectId",
+    withNext(getPkgVersionByProjectId)
+  );
   app.get(
     "/api/v1/pkgs/:pkgId/versions-without-data",
     withNext(listPkgVersionsWithoutData)

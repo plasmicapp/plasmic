@@ -575,7 +575,8 @@ type InsertableTemplateComponentExtraInfo =
   | ({ type: "clone" } & InsertableTemplateExtraInfo);
 
 export function createAddTemplateComponent(
-  meta: InsertableTemplatesComponent
+  meta: InsertableTemplatesComponent,
+  defaultKind?: string
 ): AddTplItem<InsertableTemplateComponentExtraInfo> {
   return {
     type: AddItemType.tpl as const,
@@ -606,6 +607,18 @@ export function createAddTemplateComponent(
         extraInfo,
         vc.studioCtx.projectDependencyManager.plumeSite
       );
+      if (defaultKind) {
+        setTimeout(() => {
+          void vc.studioCtx.change(({ success }) => {
+            // ASK: If I try to do this, the Studio hangs (no longer responds to click events) and needs to be restarted. Why?
+            // I had to put it inside a settimeout and then wrap it in a .change to make it work.
+            vc.studioCtx
+              .tplMgr()
+              .addComponentToDefaultComponents(comp, defaultKind);
+            return success();
+          });
+        }, 1000);
+      }
       postInsertableTemplate(vc.studioCtx, seenFonts);
       return createAddTplComponent(comp).factory(vc, extraInfo, _drawnRect);
     },

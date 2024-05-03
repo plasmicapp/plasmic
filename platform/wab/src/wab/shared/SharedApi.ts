@@ -678,6 +678,13 @@ export abstract class SharedApi {
     return this.post(`/projects/${projectId}/create-pkg`);
   }
 
+  getPkgVersionByProjectId(
+    projectId: string,
+    version
+  ): Promise<{ pkg: PkgVersionInfo; depPkgs: PkgVersionInfo[] }> {
+    return this.get(`/pkgs/projectId/${projectId}`, { version });
+  }
+
   /**
    * Gets the pkg at a particular version.
    * If the version is not specified, it will return the latest

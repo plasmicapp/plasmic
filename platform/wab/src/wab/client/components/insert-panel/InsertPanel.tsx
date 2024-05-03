@@ -1152,26 +1152,50 @@ export function buildAddItemGroups({
                 } else if (
                   canInsertHostlessPackage(uiConfig, "plume", canInsertContext)
                 ) {
-                  return {
-                    ...only(makePlumeInsertables(studioCtx, kind)),
-                    isCompact: true,
-                  };
+                  const defaultInsertable =
+                    studioCtx.site.flags.defaultInsertable ?? "plume";
+
+                  if (
+                    defaultInsertable === "plume" ||
+                    DEVFLAGS.runningInCypress
+                  ) {
+                    return {
+                      ...only(makePlumeInsertables(studioCtx, kind)),
+                      isCompact: true,
+                    };
+                  }
+
+                  // The template name for default insertables need to be of format "<defaultInsertable>/<kind>". E.g. For Plexus button, it will be "plexus/button".
+                  // The template name will be fetched from devflags.insertableTemplates.
+                  return handleTemplateAlias(
+                    `${defaultInsertable}/${kind}`,
+                    kind
+                  );
                 } else {
                   return undefined;
                 }
               }
 
-              if (resolved.startsWith("template:")) {
-                const templateName = resolved.split(":")[1];
+              function handleTemplateAlias(
+                templateName: string,
+                defaultKind?: string
+              ) {
                 const item = getTemplateComponents(studioCtx).find(
                   (i) => i.templateName === templateName
                 );
                 if (item) {
                   return {
-                    ...createAddTemplateComponent(item),
+                    ...createAddTemplateComponent(item, defaultKind),
                     isCompact: true,
                   };
                 }
+                return undefined;
+              }
+
+              if (resolved.startsWith("template:")) {
+                const templateName = resolved.split(":")[1];
+                // ASK: Previously, it only returned if a template was found. Is it OK to return undefined if the template isn't found?
+                return handleTemplateAlias(templateName);
               }
 
               // Is this a hostless component entry?

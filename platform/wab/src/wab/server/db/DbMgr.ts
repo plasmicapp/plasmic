@@ -123,7 +123,7 @@ import {
   WorkspaceAuthConfig,
   WorkspaceUser,
 } from "@/wab/server/entities/Entities";
-import { REAL_PLUME_VERSION } from "@/wab/server/pkgs/plume-pkg-mgr";
+import { REAL_PLUME_VERSION } from "@/wab/server/pkg-mgr/plume-pkg-mgr";
 import {
   createTutorialDb,
   TutorialType,
@@ -3929,13 +3929,14 @@ export class DbMgr implements MigrationDbMgr {
   // Package methods.
   //
 
-  async createSysPkg(name: string, projectId?: string) {
+  async createSysPkg(name: string, projectId?: string, pkgId?: string) {
     this.allowAnyone();
     const pkg = this.pkgs().create({
       ...this.stampNew(),
       name,
       sysname: name,
       projectId,
+      ...(pkgId ? { id: pkgId } : {}),
     });
     await this.pkgs().save(pkg);
     return pkg;
@@ -4231,11 +4232,15 @@ export class DbMgr implements MigrationDbMgr {
 
   async getPlumePkgVersionStrings() {
     const pkg = await this.getPlumePkg();
+    return await this.getPkgVersionStrings(pkg.id);
+  }
+
+  async getPkgVersionStrings(pkgId: string) {
     const versions = await this.pkgVersions()
       .createQueryBuilder()
       .select(["version"])
       .where('"pkgId" = :pkgId')
-      .setParameter("pkgId", pkg.id)
+      .setParameter("pkgId", pkgId)
       .getRawMany();
     return versions.map((v) => v.version);
   }
@@ -4263,7 +4268,8 @@ export class DbMgr implements MigrationDbMgr {
     tags: string[],
     description: string,
     revisionNum: number,
-    branchId?: BranchId
+    branchId?: BranchId,
+    id?: string
   ) {
     await this.checkPkgPerms(pkgId, "content", "publish");
 
@@ -4276,6 +4282,7 @@ export class DbMgr implements MigrationDbMgr {
       modelLength: model.length,
       tags,
       description,
+      ...(id ? { id } : {}),
       ...(branchId ? { branchId } : {}),
     });
 

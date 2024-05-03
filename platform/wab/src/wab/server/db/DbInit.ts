@@ -7,7 +7,7 @@ import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { initDb } from "@/wab/server/db/DbInitUtil";
 import { DbMgr, normalActor, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { FeatureTier, Team, User } from "@/wab/server/entities/Entities";
-import { PlumePkgMgr } from "@/wab/server/pkgs/plume-pkg-mgr";
+import { getAllSysnames, getDevflags, PkgMgr } from "@/wab/server/pkg-mgr";
 import { initializeGlobals } from "@/wab/server/svr-init";
 import { Bundler } from "@/wab/shared/bundler";
 import { createSite } from "@/wab/sites";
@@ -78,8 +78,27 @@ export async function seedTestDb(em: EntityManager) {
 
   await seedTestPromotionCodes(em);
 
-  // Seed the Plume pkg, which must be done after some users have been created
-  await new PlumePkgMgr(db).seedPlumePkg();
+  // Seed the special pkgs, which must be done after some users have been created
+  const sysnames = await getAllSysnames();
+  await Promise.all(
+    sysnames.map(async (sysname) => await new PkgMgr(db, sysname).seedPkg())
+  );
+
+  await db.setDevFlagOverrides(
+    JSON.stringify(
+      {
+        insertableTemplates: {
+          type: "insertable-templates-group",
+          name: "root",
+          items: sysnames
+            .map(getDevflags)
+            .filter((insertableGroup) => insertableGroup.items.length > 0),
+        },
+      },
+      null,
+      2
+    )
+  );
 }
 
 async function seedTestUserAndProjects(

@@ -115,6 +115,7 @@ import {
   PageComponent,
 } from "@/wab/components";
 import { getCssInitial } from "@/wab/css";
+import { DEVFLAGS } from "@/wab/devflags";
 import { convertHrefExprToCodeExpr } from "@/wab/exprs";
 import {
   cloneImageAsset,
@@ -216,6 +217,7 @@ export function createSite({
     flags: {
       usePlasmicImg: true,
       useLoadingState: true,
+      defaultInsertable: DEVFLAGS.defaultInsertable,
     },
     hostLessPackageInfo: hostLessPackageInfo ?? null,
     globalContexts: [],

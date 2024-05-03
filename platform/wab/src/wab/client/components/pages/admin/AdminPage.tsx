@@ -127,6 +127,7 @@ function AdminPageTabs() {
               <CreateTutorialDb />
               <ResetTutorialDb />
               <TourCypressTest />
+              <DownloadPkgForPkgMgr />
               <DownloadPlumePkg />
               <ImportProjectsFromProd />
               <CopilotFeedbackView />
@@ -410,6 +411,28 @@ function ImportProjectsFromProd() {
     </div>
   );
 }
+
+function downloadForPkgMgr(
+  pkg: PkgVersionInfo,
+  depPkgs: PkgVersionInfo[] | undefined,
+  fileName
+) {
+  const blob = new Blob(
+    [
+      JSON.stringify(
+        [...(depPkgs || []), pkg].map((pkgVersion) => [
+          pkgVersion.id,
+          pkgVersion.model,
+        ])
+      ),
+    ],
+    {
+      type: "text/plain;charset=utf-8",
+    }
+  );
+  downloadBlob(blob, `${fileName}-master-pkg.json`);
+}
+
 function DownloadPlumePkg() {
   const nonAuthCtx = useNonAuthCtx();
   const download = async (type: "latest" | "current") => {
@@ -417,11 +440,9 @@ function DownloadPlumePkg() {
     const { pkg } = await (type === "current"
       ? appCtx.api.getPlumePkg()
       : appCtx.api.getLatestPlumePkg());
-    const blob = new Blob([JSON.stringify(pkg.model)], {
-      type: "text/plain;charset=utf-8",
-    });
-    downloadBlob(blob, "plume-master-pkg.json");
+    downloadForPkgMgr(pkg, undefined, "plume");
   };
+
   return (
     <div>
       <h2>Download Plume pkg as json</h2>
@@ -431,6 +452,43 @@ function DownloadPlumePkg() {
       <Button onClick={() => download("current")}>
         Download currently used
       </Button>
+    </div>
+  );
+}
+
+function DownloadPkgForPkgMgr() {
+  const nonAuthCtx = useNonAuthCtx();
+  const [projectId, setProjectId] = useState("");
+  const download = async () => {
+    const appCtx = await loadAppCtx(nonAuthCtx);
+    const { depPkgs, pkg } = await appCtx.api.getPkgVersionByProjectId(
+      projectId,
+      "latest"
+    );
+
+    downloadForPkgMgr(
+      pkg,
+      depPkgs,
+      pkg.model.map[pkg.model.root].name
+        .replace(/[^a-zA-Z0-9\s]/g, "")
+        .replace(/\s+/g, "-")
+        .toLowerCase()
+    );
+  };
+  return (
+    <div>
+      <h2>Download pkg as json for pkg-mgr</h2>
+      <Form>
+        <Form.Item name="projectId" label="Project ID">
+          <Input
+            type={"input"}
+            value={projectId}
+            placeholder="Project Id"
+            onChange={(e) => setProjectId(e.target.value)}
+          />
+        </Form.Item>
+        <Button onClick={() => download()}>Download latest version</Button>
+      </Form>
     </div>
   );
 }

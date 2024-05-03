@@ -1250,6 +1250,12 @@ export class TplMgr {
     });
   }
 
+  addComponentToDefaultComponents(component: Component, kind: string) {
+    if (!this.site().defaultComponents[kind]) {
+      this.site().defaultComponents[kind] = component;
+    }
+  }
+
   removeComponentQuery(component: Component, query: ComponentDataQuery) {
     removeFromArray(component.dataQueries, query);
     this.clearReferencesToRemovedQueries(query.uuid);

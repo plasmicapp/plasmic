@@ -67,7 +67,7 @@ import {
   ProjectRevision,
 } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
-import { REAL_PLUME_VERSION } from "@/wab/server/pkgs/plume-pkg-mgr";
+import { REAL_PLUME_VERSION } from "@/wab/server/pkg-mgr/plume-pkg-mgr";
 import { mkApiDataSource } from "@/wab/server/routes/data-source";
 import { checkEtagSkippable } from "@/wab/server/routes/loader";
 import { moveBundleAssetsToS3 } from "@/wab/server/routes/moveAssetsToS3";
@@ -160,6 +160,7 @@ import { exportStyleTokens } from "@/wab/shared/codegen/style-tokens";
 import { ExportOpts } from "@/wab/shared/codegen/types";
 import { toClassName } from "@/wab/shared/codegen/util";
 import { CodeSandboxInfo } from "@/wab/shared/db-json-blobs";
+import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { DomainValidator } from "@/wab/shared/hosting";
 import { createTaggedResourceId } from "@/wab/shared/perms";
@@ -244,6 +245,11 @@ export async function createProject(req: Request, res: Response) {
   const { name, workspaceId }: CreateSiteRequest = req.body;
 
   const site = createSite();
+
+  // Devflag overrides at project creation time
+  if (isCoreTeamEmail(req.user?.email, DEVFLAGS)) {
+    site.flags.defaultInsertable = "plexus";
+  }
 
   const { project, rev } = await mgr.createProjectAndSaveRev({
     site,
@@ -1706,6 +1712,38 @@ async function getPkgWithDeps(
         depPkgs,
       };
   return result;
+}
+
+export async function getPkgVersionByProjectId(req: Request, res: Response) {
+  const mgr = userDbMgr(req);
+  const { projectId } = req.params;
+  const { version } = parseQueryParams(req);
+  const pkg = await mgr.getPkgByProjectId(projectId);
+  assert(
+    pkg,
+    "No package found for projectId. Project has no published version"
+  );
+
+  if (!pkg) {
+    throw new BadRequestError("Missing sysname or projectId");
+  }
+
+  const bundleVersion = await getLastBundleVersion();
+  const versionStrings = await mgr.getPkgVersionStrings(pkg.id);
+  const chosenVersion =
+    version === "latest" ? versionStrings.slice(-1)[0] : version;
+  ensure(
+    versionStrings.includes(chosenVersion),
+    `Unknown version ${chosenVersion}`
+  );
+  const etag = `${pkg.id}-${chosenVersion}-${bundleVersion}`;
+
+  if (checkEtagSkippable(req, res, etag)) {
+    return;
+  }
+
+  const pkgVersion = await mgr.getPkgVersion(pkg.id, chosenVersion);
+  res.json(await getPkgWithDeps(mgr, pkgVersion, false));
 }
 
 export async function getPkgVersion(req: Request, res: Response) {
