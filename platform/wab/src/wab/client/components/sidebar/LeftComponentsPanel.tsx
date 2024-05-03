@@ -156,8 +156,12 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel(props: {}) {
             // For deps, we only show code components from hostless packages; for non-hostless
             // packages, ony the code components from the current host page count, and they're
             // shown in the Code components section
-            items: dep.site.components
-              .filter((c) => isPageComponent(c))
+            items: sortComponentsByName(dep.site.components)
+              .filter(
+                (c) =>
+                  isPageComponent(c) &&
+                  matcher.matches(getComponentDisplayName(c))
+              )
               .map((comp) => ({
                 type: "item" as const,
                 item: comp,
