@@ -3,7 +3,6 @@ import { Matcher } from "@/wab/client/components/view-common";
 import Checkbox from "@/wab/client/components/widgets/Checkbox";
 import { Textbox } from "@/wab/client/components/widgets/Textbox";
 import { ViewComponent, ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { Slot, SlotProvider } from "@/wab/commons/components/Slots";
 import * as React from "react";
 /*
 type ModifyPanelSectionProps = {
@@ -401,46 +400,45 @@ export class OldSettingsTab extends ViewComponent<
     }
 
     return (
-      <SlotProvider key={tpl.uid}>
-        <div className={"flex-fill rel overflow-scroll-y settings-panel"}>
-          {tpl == null ? (
+      <div className={"flex-fill rel overflow-scroll-y settings-panel"}>
+        {tpl == null ? (
+          <div className={"panel-content"}>
+            {"(select an element to configure settings)"}
+          </div>
+        ) : (
+          <div>
             <div className={"panel-content"}>
-              {"(select an element to configure settings)"}
-            </div>
-          ) : (
-            <div>
-              <div className={"panel-content"}>
+              <div className={"panel-row"}>
+                <div className={"panel-col-12"}>
+                  <Textbox
+                    className={"form-control"}
+                    placeholder={"Search for prop"}
+                    onChange={(e) =>
+                      this.setState({ typeahead: e.target.value })
+                    }
+                    value={this.state.typeahead}
+                  />
+                </div>
+              </div>
+
+              {/* <QueriesSection /> */}
+
+              {!this.state.typeahead ? (
                 <div className={"panel-row"}>
                   <div className={"panel-col-12"}>
-                    <Textbox
-                      className={"form-control"}
-                      placeholder={"Search for prop"}
-                      onChange={(e) =>
-                        this.setState({ typeahead: e.target.value })
+                    <Checkbox
+                      onChange={(checked) =>
+                        this.setState({ showAll: checked })
                       }
-                      value={this.state.typeahead}
-                    />
+                      isChecked={this.state.showAll}
+                    >
+                      Show all
+                    </Checkbox>
                   </div>
                 </div>
-
-                {/* <QueriesSection /> */}
-
-                {!this.state.typeahead ? (
-                  <div className={"panel-row"}>
-                    <div className={"panel-col-12"}>
-                      <Checkbox
-                        onChange={(checked) =>
-                          this.setState({ showAll: checked })
-                        }
-                        isChecked={this.state.showAll}
-                      >
-                        Show all
-                      </Checkbox>
-                    </div>
-                  </div>
-                ) : undefined}
-              </div>
-              {/*!this.state.typeahead && (
+              ) : undefined}
+            </div>
+            {/*!this.state.typeahead && (
                 <>
                   <div className={"focused-scope"}>
                     {tpl != null
@@ -493,7 +491,7 @@ export class OldSettingsTab extends ViewComponent<
                 </>
 
                 )*/}{" "}
-              {/*tpl instanceof TplTag || tpl instanceof TplComponent ? (
+            {/*tpl instanceof TplTag || tpl instanceof TplComponent ? (
                 <>
                   <PanelSection title={"Props"}>
                     <ComponentInputSection
@@ -519,11 +517,9 @@ export class OldSettingsTab extends ViewComponent<
                   <AnnotationControls />
                 </>
                     ) : undefined*/}
-            </div>
-          )}
-        </div>
-        <Slot />
-      </SlotProvider>
+          </div>
+        )}
+      </div>
     );
   }
 }

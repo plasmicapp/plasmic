@@ -8,7 +8,6 @@ import { STUDIO_SHORTCUTS } from "@/wab/client/shortcuts/studio/studio-shortcuts
 import { cx, ensure } from "@/wab/common";
 import { arrayReversed } from "@/wab/commons/collections";
 import { useInteractOutsideWithCommonExceptions } from "@/wab/commons/components/OnClickAway";
-import { Slot, SlotProvider } from "@/wab/commons/components/Slots";
 import domAlign from "dom-align";
 import L from "lodash";
 import { observer } from "mobx-react";
@@ -131,10 +130,7 @@ export function SidebarModalProvider(props: {
   const store = React.useMemo(() => ({ state, dispatch }), [state, dispatch]);
   return (
     <SidebarModalContext.Provider value={store}>
-      <SlotProvider>
-        <SidebarModalShell />
-        <Slot />
-      </SlotProvider>
+      <SidebarModalShell />
       {props.children}
     </SidebarModalContext.Provider>
   );

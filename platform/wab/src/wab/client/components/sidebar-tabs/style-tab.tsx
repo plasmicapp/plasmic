@@ -36,7 +36,6 @@ import SlotIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Slot";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { cx, spawn } from "@/wab/common";
-import { Slot, SlotProvider } from "@/wab/commons/components/Slots";
 import {
   getComponentDisplayName,
   isCodeComponent,
@@ -335,36 +334,33 @@ const StyleTabBottomPanel = observer(function StyleTabBottomPanel(props: {
 
   return (
     <SidebarModalProvider containerSelector=".style-tab">
-      <SlotProvider>
-        <div className="canvas-editor__right-pane__bottom style-tab">
-          <div
-            className="canvas-editor__right-pane__bottom__scroll"
-            style={
-              focused
-                ? {
-                    borderLeft:
-                      currentTarget === "baseVariant"
-                        ? "1px solid transparent"
-                        : `1px solid var(${selectionControlsColor})`,
-                  }
-                : undefined
-            }
-          >
-            {focused instanceof SlotSelection ? (
-              <SlotSelectionMessage node={focused} viewCtx={viewCtx} />
-            ) : tpl === component.tplTree && isCodeComponent(component) ? (
-              <CodeComponentRootMessage component={component} />
-            ) : isCodeComponent(component) && isTplSlot(tpl) ? (
-              <CodeComponentTplSlotMessage component={component} />
-            ) : tpl ? (
-              <>
-                <StyleTabForTpl viewCtx={viewCtx} tpl={tpl} />
-              </>
-            ) : null}
-          </div>
+      <div className="canvas-editor__right-pane__bottom style-tab">
+        <div
+          className="canvas-editor__right-pane__bottom__scroll"
+          style={
+            focused
+              ? {
+                  borderLeft:
+                    currentTarget === "baseVariant"
+                      ? "1px solid transparent"
+                      : `1px solid var(${selectionControlsColor})`,
+                }
+              : undefined
+          }
+        >
+          {focused instanceof SlotSelection ? (
+            <SlotSelectionMessage node={focused} viewCtx={viewCtx} />
+          ) : tpl === component.tplTree && isCodeComponent(component) ? (
+            <CodeComponentRootMessage component={component} />
+          ) : isCodeComponent(component) && isTplSlot(tpl) ? (
+            <CodeComponentTplSlotMessage component={component} />
+          ) : tpl ? (
+            <>
+              <StyleTabForTpl viewCtx={viewCtx} tpl={tpl} />
+            </>
+          ) : null}
         </div>
-        <Slot />
-      </SlotProvider>
+      </div>
     </SidebarModalProvider>
   );
 });
