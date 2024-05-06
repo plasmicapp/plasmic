@@ -6,14 +6,17 @@ import {
   ComponentVariantSplitContent,
   CustomFunction,
   DataSourceOpExpr,
+  Expr,
   GlobalVariantSplitContent,
   ImageAsset,
   isKnownCustomCode,
   isKnownDataSourceOpExpr,
   isKnownImageAssetRef,
+  isKnownPageHref,
   isKnownQueryInvalidationExpr,
   isKnownVarRef,
   Mixin,
+  PageHref,
   Param,
   QueryInvalidationExpr,
   RuleSet,
@@ -53,6 +56,7 @@ import {
   getNonVariantParams,
   isCodeComponent,
   isPlumeComponent,
+  PageComponent,
   tryGetVariantGroupValueFromArg,
 } from "@/wab/components";
 import { getProjectFlags } from "@/wab/devflags";
@@ -479,6 +483,23 @@ const _componentToDeepReferenced = maybeComputedFn(
 
     extract(component);
     return seen;
+  }
+);
+
+export const componentsReferecerToPageHref = maybeComputedFn(
+  function componentsReferecerToPageHref(site: Site, page: PageComponent) {
+    const isHRefToPage = (expr: Expr | null | undefined): expr is PageHref =>
+      isKnownPageHref(expr) && expr.page == page;
+
+    const usingComponents = new Set<Component>();
+
+    for (const c of site.components) {
+      const exprs = cachedExprsInComponent(c);
+      if (exprs.some(({ expr }) => isHRefToPage(expr))) {
+        usingComponents.add(c);
+      }
+    }
+    return usingComponents;
   }
 );
 

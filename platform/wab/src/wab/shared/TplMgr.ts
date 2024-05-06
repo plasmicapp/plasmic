@@ -1576,7 +1576,9 @@ export class TplMgr {
   convertPageToComponent(component: Component) {
     component.pageMeta = undefined;
     component.type = ComponentType.Plain;
-    removeReferencingLinks(this.site(), component);
+    if (isPageComponent(component)) {
+      removeReferencingLinks(this.site(), component);
+    }
 
     const existingPageArena = getPageArena(this.site(), component);
     if (existingPageArena) {

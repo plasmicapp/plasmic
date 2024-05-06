@@ -19,6 +19,7 @@ import {
   PageComponent,
 } from "@/wab/components";
 import { isMixedArena } from "@/wab/shared/Arenas";
+import { componentsReferecerToPageHref } from "@/wab/shared/cached-selectors";
 import { FRAME_CAP } from "@/wab/shared/Labels";
 import { Menu } from "antd";
 import { observer } from "mobx-react";
@@ -206,8 +207,16 @@ const PageRow = observer(function PageRow(props: {
           onClick={async () => {
             const confirmation = await promptDeleteComponent("page", page.name);
             if (!confirmation) return;
-            await studioCtx.changeUnsafe(() =>
-              studioCtx.siteOps().tryRemoveComponent(page)
+            await studioCtx.changeObserved(
+              () => {
+                return Array.from(
+                  componentsReferecerToPageHref(studioCtx.site, page)
+                );
+              },
+              ({ success }) => {
+                studioCtx.siteOps().tryRemoveComponent(page);
+                return success();
+              }
             );
           }}
         >

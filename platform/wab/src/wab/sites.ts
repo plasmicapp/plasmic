@@ -111,6 +111,7 @@ import {
   getSuperComponentVariantToComponent,
   isFrameComponent,
   isPageComponent,
+  PageComponent,
 } from "@/wab/components";
 import { getCssInitial } from "@/wab/css";
 import { convertHrefExprToCodeExpr } from "@/wab/exprs";
@@ -132,6 +133,7 @@ import {
   mkMixedArena,
 } from "@/wab/shared/Arenas";
 import {
+  componentsReferecerToPageHref,
   findAllDataSourceOpExprForComponent,
   flattenComponent,
 } from "@/wab/shared/cached-selectors";
@@ -1455,7 +1457,7 @@ export function removeReferencingTypeInstances(
  */
 export function removeReferencingLinks(
   site: Site,
-  page: Component,
+  page: PageComponent,
   opts?: {
     convertPageHrefToCode?: boolean;
   }
@@ -1463,7 +1465,7 @@ export function removeReferencingLinks(
   const isHRefToPage = (expr: Expr | null | undefined): expr is PageHref =>
     isKnownPageHref(expr) && expr.page == page;
 
-  for (const c of site.components) {
+  for (const c of componentsReferecerToPageHref(site, page)) {
     const removeFromEventHandler = (expr: EventHandler) => {
       for (const interaction of expr.interactions) {
         for (const arg of [...interaction.args]) {
