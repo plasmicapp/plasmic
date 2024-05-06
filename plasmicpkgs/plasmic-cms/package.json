@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-cms",
-  "version": "0.0.255",
+  "version": "0.0.256",
   "description": "Plasmic CMS components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
