@@ -4768,7 +4768,10 @@ export function serializeParamType(
     return `React.ComponentProps<typeof PlasmicImg__>["src"]`;
   } else if (isKnownFunctionType(param.type)) {
     return `(${param.type.params
-      .map((arg) => `${arg.argName}: ${wabToTsType(arg.type, true)}`)
+      .map(
+        (arg) =>
+          `${toJsIdentifier(arg.argName)}: ${wabToTsType(arg.type, true)}`
+      )
       .join(", ")}) => void`;
   } else {
     return `${wabToTsType(param.type, true)}`;
