@@ -252,10 +252,10 @@ export const parameterSubstituteDynamicValues = (
         return map.super().constant(v);
       },
       ref: (ref) => {
-        if (ref.name.match(/^__plasmic_binding_(\d)+_$/)) {
+        if (ref.name.match(/^__plasmic_binding_(\d+)_$/)) {
           return {
             type: "parameter",
-            name: ref.name.replace(/__plasmic_binding_(\d)+_/, "$$$1"),
+            name: ref.name.replace(/__plasmic_binding_(\d+)_/, "$$$1"),
           };
         }
         return map.super().ref(ref);
