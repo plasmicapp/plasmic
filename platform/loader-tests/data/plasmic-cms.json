@@ -179,7 +179,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "8246013": { "name": "host", "uuid": "-SRg14byEK", "__type": "Var" },
         "8246016": {
@@ -435,7 +436,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "21177036": {
           "type": { "__ref": "21970002" },
@@ -564,7 +566,8 @@
           },
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "21177092": { "name": "table", "uuid": "fT-JCfK2bZj", "__type": "Var" },
         "21177094": { "name": "field", "uuid": "jXgFZu9bLlN", "__type": "Var" },
@@ -1252,7 +1255,8 @@
           },
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "58829014": {
           "name": "dateFormat",
@@ -1553,7 +1557,8 @@
           },
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "60389013": {
           "type": { "__ref": "60389034" },
@@ -1680,7 +1685,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "60389021": {
           "name": "children",
@@ -1865,7 +1871,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "Z-t-81vAFTyY": {
           "uuid": "fFQWD7CEtltw",
@@ -2094,7 +2101,7 @@
         }
       },
       "deps": [],
-      "version": "230-add-studio-ui-cc"
+      "version": "231-add-interaction-variant-for-code-components"
     }
   ],
   [
@@ -4535,7 +4542,7 @@
         }
       },
       "deps": ["7349d209-ded6-417a-aa97-05311f8b93c4"],
-      "version": "230-add-studio-ui-cc"
+      "version": "231-add-interaction-variant-for-code-components"
     }
   ]
 ]

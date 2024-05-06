@@ -676,7 +676,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "s6tO-w_oxl8R": {
             "type": { "__ref": "kXWE95a_KQen" },
@@ -823,7 +824,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "0pGeXrADFz6E": { "name": "text", "__type": "Text" },
           "UaN1AFzlCTTm": {
@@ -1149,7 +1151,7 @@
           }
         },
         "deps": [],
-        "version": "230-add-studio-ui-cc"
+        "version": "231-add-interaction-variant-for-code-components"
       },
       "projectId": "3Ly8WyuoJ263bQVv2eUgq7",
       "version": "0.0.1",
@@ -1830,7 +1832,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "s6tO-w_oxl8R": {
             "type": { "__ref": "kXWE95a_KQen" },
@@ -1977,7 +1980,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "0pGeXrADFz6E": { "name": "text", "__type": "Text" },
           "UaN1AFzlCTTm": {
@@ -2292,7 +2296,7 @@
           }
         },
         "deps": [],
-        "version": "230-add-studio-ui-cc"
+        "version": "231-add-interaction-variant-for-code-components"
       },
       "projectId": "3Ly8WyuoJ263bQVv2eUgq7",
       "version": "0.0.1",
@@ -2995,7 +2999,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "s6tO-w_oxl8R": {
             "type": { "__ref": "kXWE95a_KQen" },
@@ -3142,7 +3147,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "0pGeXrADFz6E": { "name": "text", "__type": "Text" },
           "UaN1AFzlCTTm": {
@@ -3459,7 +3465,7 @@
           }
         },
         "deps": [],
-        "version": "230-add-studio-ui-cc"
+        "version": "231-add-interaction-variant-for-code-components"
       }
     },
     {
@@ -4137,7 +4143,8 @@
             "helpers": null,
             "defaultSlotContents": {},
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "s6tO-w_oxl8R": {
             "__type": "PropParam",
@@ -4284,7 +4291,8 @@
             "helpers": null,
             "defaultSlotContents": {},
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "0pGeXrADFz6E": { "__type": "Text", "name": "text" },
           "UaN1AFzlCTTm": {
@@ -4590,7 +4598,7 @@
           }
         },
         "deps": [],
-        "version": "230-add-studio-ui-cc"
+        "version": "231-add-interaction-variant-for-code-components"
       }
     }
   ]

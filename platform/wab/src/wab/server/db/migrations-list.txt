@@ -228,3 +228,4 @@ platform/wab/src/wab/server/bundle-migrations/227-add-ids-templateInfo.ts
 platform/wab/src/wab/server/bundle-migrations/228-add-allow-root-wrapper.ts
 platform/wab/src/wab/server/bundle-migrations/229-add-class-type-default-styles.ts
 platform/wab/src/wab/server/bundle-migrations/230-add-studio-ui-cc.ts
+platform/wab/src/wab/server/bundle-migrations/231-add-interaction-variant-for-code-components.ts

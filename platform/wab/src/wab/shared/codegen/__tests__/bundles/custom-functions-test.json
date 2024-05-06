@@ -400,7 +400,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "5xd_u-JP1gew": {
           "uuid": "WxYff_NPVJvK",
@@ -657,7 +658,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "f2E7_tNnXWGs": {
           "uuid": "wzTkMnXfRlz9",
@@ -1435,7 +1437,7 @@
         }
       },
       "deps": [],
-      "version": "230-add-studio-ui-cc"
+      "version": "231-add-interaction-variant-for-code-components"
     }
   ]
 ]

@@ -11,6 +11,7 @@ import {
   Choice,
   ClassNamePropType as ModelClassNamePropType,
   CodeComponentHelper,
+  CodeComponentInteractionVariantMeta,
   CodeComponentMeta,
   CodeLibrary,
   CollectionExpr,
@@ -3230,6 +3231,17 @@ export function mkCodeComponent(
       // explicitly not handling defaultSlotContents, which is done by
       // refreshDefaultSlotContents()
       defaultSlotContents: {},
+      interactionVariantMeta: Object.fromEntries(
+        Object.entries((meta as any).interactionVariant ?? {}).map(
+          ([selector, variantMeta]: any) => [
+            selector,
+            new CodeComponentInteractionVariantMeta({
+              cssSelector: variantMeta.cssSelector,
+              trigger: variantMeta.trigger,
+            }),
+          ]
+        )
+      ),
     }),
     figmaMappings: (isGlobalContextMeta(meta)
       ? []

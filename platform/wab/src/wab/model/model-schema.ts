@@ -349,6 +349,9 @@ CodeComponentHelper
   importPath: String
   importName: String
   defaultExport: Bool
+CodeComponentInteractionVariantMeta
+  cssSelector: String
+  trigger: String
 CodeComponentMeta
   importPath: String
   defaultExport: Bool
@@ -371,6 +374,7 @@ CodeComponentMeta
   helpers: CodeComponentHelper?
   # where Any is PlasmicElement|PlasmicElement[]
   defaultSlotContents: Map[String, Any]
+  interactionVariantMeta: Map[String, CodeComponentInteractionVariantMeta]
 Component
   @Const uuid: String
   name: String

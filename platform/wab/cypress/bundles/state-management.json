@@ -9551,7 +9551,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "64092010": {
           "type": { "__ref": "64092028" },
@@ -9698,7 +9699,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "64092018": { "name": "title", "uuid": "kQl2B_SpuJ", "__type": "Var" },
         "64092019": { "name": "text", "__type": "Text" },
@@ -20263,7 +20265,7 @@
         }
       },
       "deps": [],
-      "version": "230-add-studio-ui-cc"
+      "version": "231-add-interaction-variant-for-code-components"
     }
   ]
 ]

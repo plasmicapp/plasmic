@@ -230,7 +230,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "4418516": { "name": "name", "uuid": "s3uqiUNM3l", "__type": "Var" },
         "4418517": { "name": "text", "__type": "Text" },
@@ -402,7 +403,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "7682008": { "name": "code", "uuid": "ARXptWIBzB", "__type": "Var" },
         "7682011": {
@@ -573,7 +575,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "34442070": {
           "type": { "__ref": "34442179" },
@@ -779,7 +782,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "34442160": { "name": "src", "uuid": "6-acOUSDbVf", "__type": "Var" },
         "34442161": { "name": "text", "__type": "Text" },
@@ -900,7 +904,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "SWtwhJYgQ-3A": {
           "uuid": "byr_p-bc-_sU",
@@ -991,7 +996,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "9TiqKe8jPBG_": {
           "uuid": "YqgBoba3CyLl",
@@ -1307,7 +1313,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "6aTkH4AuJH5j": {
           "uuid": "vJ7yHsz9uCYO",
@@ -1460,7 +1467,7 @@
         }
       },
       "deps": [],
-      "version": "230-add-studio-ui-cc"
+      "version": "231-add-interaction-variant-for-code-components"
     }
   ],
   [
@@ -1651,7 +1658,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "476910": {
           "type": { "__ref": "476928" },
@@ -1798,7 +1806,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "476918": { "name": "title", "uuid": "JuRqn_7eHM", "__type": "Var" },
         "476919": { "name": "text", "__type": "Text" },
@@ -2894,7 +2903,7 @@
         }
       },
       "deps": ["46daef11-1a70-4f74-b471-12e71963588c"],
-      "version": "230-add-studio-ui-cc"
+      "version": "231-add-interaction-variant-for-code-components"
     }
   ]
 ]

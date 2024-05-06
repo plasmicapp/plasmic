@@ -99,7 +99,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "10466006": {
             "name": "param1",
@@ -341,7 +342,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "18650010": {
             "type": { "__ref": "18650028" },
@@ -488,7 +490,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "18650018": {
             "name": "title",
@@ -1289,7 +1292,7 @@
           }
         },
         "deps": [],
-        "version": "230-add-studio-ui-cc"
+        "version": "231-add-interaction-variant-for-code-components"
       },
       "projectId": "cpkeUeeErCd6XAniAHq8xq",
       "version": "0.0.1",
@@ -1441,7 +1444,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "10673006": {
             "name": "param1",
@@ -1869,7 +1873,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "18650010": {
             "type": { "__ref": "18650028" },
@@ -2016,7 +2021,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "18650018": {
             "name": "title",
@@ -2813,7 +2819,7 @@
           }
         },
         "deps": [],
-        "version": "230-add-studio-ui-cc"
+        "version": "231-add-interaction-variant-for-code-components"
       }
     },
     {
@@ -2914,7 +2920,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "10466006": {
             "name": "param1",
@@ -3156,7 +3163,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "18650010": {
             "type": { "__ref": "18650028" },
@@ -3303,7 +3311,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "18650018": {
             "name": "title",
@@ -4321,7 +4330,7 @@
           "55543038": { "text": ["arg3"], "__type": "TemplatedString" }
         },
         "deps": [],
-        "version": "230-add-studio-ui-cc"
+        "version": "231-add-interaction-variant-for-code-components"
       }
     }
   ]

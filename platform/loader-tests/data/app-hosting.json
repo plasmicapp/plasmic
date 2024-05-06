@@ -97,7 +97,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "30184006": { "name": "name", "uuid": "iy-0P5ktJM", "__type": "Var" },
         "30184007": { "name": "text", "__type": "Text" },
@@ -972,7 +973,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "35978008": {
           "type": { "__ref": "35978020" },
@@ -1059,7 +1061,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "35978013": {
           "variants": [{ "__ref": "34512056" }],
@@ -1255,7 +1258,7 @@
         }
       },
       "deps": [],
-      "version": "230-add-studio-ui-cc"
+      "version": "231-add-interaction-variant-for-code-components"
     }
   ]
 ]

@@ -2,6 +2,7 @@ import {
   ArenaFrame,
   Arg,
   CodeComponentHelper,
+  CodeComponentInteractionVariantMeta,
   CodeComponentMeta,
   Component,
   ComponentDataQuery,
@@ -446,6 +447,17 @@ export function cloneCodeComponentMeta(
         styleSections: codeMeta.styleSections,
         helpers: cloneCodeComponentHelpers(codeMeta.helpers),
         defaultSlotContents: cloneDeep(codeMeta.defaultSlotContents),
+        interactionVariantMeta: Object.fromEntries(
+          Object.entries(codeMeta.interactionVariantMeta).map(
+            ([selector, meta]) => [
+              selector,
+              new CodeComponentInteractionVariantMeta({
+                cssSelector: meta.cssSelector,
+                trigger: meta.trigger,
+              }),
+            ]
+          )
+        ),
       })
     : null;
 }

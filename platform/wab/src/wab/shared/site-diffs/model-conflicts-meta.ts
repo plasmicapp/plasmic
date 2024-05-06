@@ -646,6 +646,10 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     importPath: "generic",
     defaultExport: "generic",
   },
+  CodeComponentInteractionVariantMeta: {
+    cssSelector: "generic",
+    trigger: "generic",
+  },
   CodeComponentMeta: {
     classNameProp: "generic",
     defaultExport: "generic",
@@ -667,6 +671,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     helpers: "generic",
     styleSections: "generic",
     defaultSlotContents: "contents",
+    interactionVariantMeta: "generic",
   },
   Component: {
     codeComponentMeta: "generic",

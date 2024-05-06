@@ -10487,7 +10487,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "63011010": {
           "type": { "__ref": "63011028" },
@@ -10634,7 +10635,8 @@
           "defaultSlotContents": {},
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
-          "section": null
+          "section": null,
+          "interactionVariantMeta": {}
         },
         "63011018": { "name": "title", "uuid": "FabHFh-IiQ", "__type": "Var" },
         "63011019": { "name": "text", "__type": "Text" },
@@ -11572,7 +11574,7 @@
         }
       },
       "deps": [],
-      "version": "230-add-studio-ui-cc"
+      "version": "231-add-interaction-variant-for-code-components"
     }
   ]
 ]

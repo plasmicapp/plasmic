@@ -525,7 +525,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "4f5QJDTElPWj": {
             "type": { "__ref": "19-KO5WSIn9u" },
@@ -672,7 +673,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "8cyCagXbmfTU": { "name": "text", "__type": "Text" },
           "o5emTqYfAe8x": {
@@ -1021,7 +1023,7 @@
           }
         },
         "deps": [],
-        "version": "230-add-studio-ui-cc"
+        "version": "231-add-interaction-variant-for-code-components"
       },
       "projectId": "aH1hFXMTo8YybdGp5ScZNk",
       "version": "0.0.1",
@@ -1564,7 +1566,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "4f5QJDTElPWj": {
             "type": { "__ref": "19-KO5WSIn9u" },
@@ -1711,7 +1714,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "8cyCagXbmfTU": { "name": "text", "__type": "Text" },
           "o5emTqYfAe8x": {
@@ -2047,7 +2051,7 @@
           }
         },
         "deps": [],
-        "version": "230-add-studio-ui-cc"
+        "version": "231-add-interaction-variant-for-code-components"
       }
     },
     {
@@ -2574,7 +2578,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "4f5QJDTElPWj": {
             "type": { "__ref": "19-KO5WSIn9u" },
@@ -2721,7 +2726,8 @@
             "defaultSlotContents": {},
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
-            "section": null
+            "section": null,
+            "interactionVariantMeta": {}
           },
           "8cyCagXbmfTU": { "name": "text", "__type": "Text" },
           "o5emTqYfAe8x": {
@@ -3061,7 +3067,7 @@
           }
         },
         "deps": [],
-        "version": "230-add-studio-ui-cc"
+        "version": "231-add-interaction-variant-for-code-components"
       }
     }
   ]
