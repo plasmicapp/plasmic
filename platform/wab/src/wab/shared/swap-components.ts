@@ -11,6 +11,7 @@ import {
   TplComponent,
   TplNode,
   Variant,
+  VariantsRef,
 } from "@/wab/classes";
 import { assert, isNonNil } from "@/wab/common";
 import { removeFromArray } from "@/wab/commons/collections";
@@ -131,15 +132,17 @@ export function makeComponentSwapper(
           isKnownStateParam(toParam) &&
           toVariantGroupParams.has(toParam)
         ) {
-          // A variants arg; map to new variants if we have a variants ref
-          if (isKnownVariantsRef(arg.expr)) {
-            const expr = arg.expr;
+          const fixVariantsRef = (expr: VariantsRef) => {
             const fromVariants = expr.variants;
             const toVariants = fromVariants
               .map((v) => variantMap.get(v))
               .filter(isNonNil);
             expr.variants = toVariants;
             arg.param = toParam;
+          };
+          // A variants arg; map to new variants if we have a variants ref
+          if (isKnownVariantsRef(arg.expr)) {
+            fixVariantsRef(arg.expr);
           } else if (
             isKnownCustomCode(arg.expr) ||
             isKnownObjectPath(arg.expr)
@@ -147,6 +150,11 @@ export function makeComponentSwapper(
             // If we have a custom code we assume it's an expression that properly
             // matches to the new variants
             arg.param = toParam;
+            // If arg.expr is a CustomCode/ObjectPath it means that we might need to fix
+            // the fallback expr.
+            if (isKnownVariantsRef(arg.expr.fallback)) {
+              fixVariantsRef(arg.expr.fallback);
+            }
           } else {
             assert(false, "Unexpected variants arg");
           }

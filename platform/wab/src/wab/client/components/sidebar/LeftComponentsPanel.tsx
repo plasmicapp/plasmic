@@ -554,7 +554,7 @@ export function genComponentSwapMenuItem(
         isReusableComponent(comp) &&
         comp !== component &&
         (!isCodeComponent(comp) ||
-          (comp.name !== "plasmic-data-source-fetcher" &&
+          (!isBuiltinCodeComponent(comp) &&
             (includeCodeComponents || isHostLessCodeComponent(comp)) &&
             !isContextCodeComponent(comp)))
       ) {
