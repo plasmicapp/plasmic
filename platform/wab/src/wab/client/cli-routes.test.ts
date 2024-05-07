@@ -1,6 +1,9 @@
 // jest.requireActual because we have mocks for cli-routes.ts
+import type {
+  ProjectLocationParams,
+  R as RouteType,
+} from "@/wab/client/cli-routes";
 import { LocationDescriptor } from "history";
-import type { ProjectLocationParams, R as RouteType } from "./cli-routes";
 const {
   R: RouteActual,
   mkProjectLocation,

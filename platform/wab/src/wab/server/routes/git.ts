@@ -23,6 +23,7 @@ import {
   getGitJob,
   tryGetLastUnfinishedWorkflowRun,
 } from "@/wab/server/github/workflows";
+import { getUser, parseQueryParams, userDbMgr } from "@/wab/server/routes/util";
 import { NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import {
   ApiProjectRepository,
@@ -39,7 +40,6 @@ import { Octokit } from "@octokit/core";
 import * as Sentry from "@sentry/node";
 import { Request, Response } from "express-serve-static-core";
 import { IFailable } from "ts-failable";
-import { getUser, parseQueryParams, userDbMgr } from "./util";
 
 function tryGetGithubTokenHeader(req: Request) {
   return req.headers["x-plasmic-github-token"] as string | undefined;

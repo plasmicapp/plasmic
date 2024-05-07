@@ -1,12 +1,12 @@
 import { Component } from "@/wab/classes";
 import { U } from "@/wab/client/cli-routes";
+import { DocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { PlasmicComponentListItem } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicComponentListItem";
 import { asOne } from "@/wab/common";
 import { toClassName } from "@/wab/shared/codegen/util";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { DocsPortalCtx } from "./DocsPortalCtx";
 
 interface ComponentListItemProps {
   docsCtx: DocsPortalCtx;

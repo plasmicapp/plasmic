@@ -2,16 +2,16 @@
 // This file is owned by you, feel free to edit as you see fit.
 import * as React from "react";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { U } from "./wab/client/cli-routes";
+import { U } from "@/wab/client/cli-routes";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { useDocsPortalCtx } from "./wab/client/components/docs/DocsPortalCtx";
+import { useDocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
   DefaultDocsPortalBranchesProps,
   PlasmicDocsPortalBranches,
-} from "./wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsPortalBranches";
+} from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsPortalBranches";
 
-interface DocsPortalBranchesProps extends DefaultDocsPortalBranchesProps {}
+type DocsPortalBranchesProps = DefaultDocsPortalBranchesProps;
 
 function DocsPortalBranches(props: DocsPortalBranchesProps) {
   const docsCtx = useDocsPortalCtx();

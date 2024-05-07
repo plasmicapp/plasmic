@@ -1,5 +1,5 @@
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { Box, Pt, Rect, rectTopLeft } from "@/wab/geom";
-import { ViewCtx } from "./studio-ctx/view-ctx";
 
 // clientRect: a rect in the top most window's viewport
 // frameRect: a rect in iframe. Subject to current studio zoom.

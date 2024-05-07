@@ -1,13 +1,13 @@
+import {
+  DefaultWebhookEventProps,
+  PlasmicWebhookEvent,
+} from "@/wab/client/components/webhooks/plasmic/plasmic_kit_continuous_deployment/PlasmicWebhookEvent";
 import PublishSpinner from "@/wab/client/components/widgets/PublishSpinner";
 import {
   ApiProjectWebhook,
   ApiProjectWebhookEvent,
 } from "@/wab/shared/ApiSchema";
 import * as React from "react";
-import {
-  DefaultWebhookEventProps,
-  PlasmicWebhookEvent,
-} from "./plasmic/plasmic_kit_continuous_deployment/PlasmicWebhookEvent";
 
 export type TriggeredWebhook = ApiProjectWebhook & {
   event?: ApiProjectWebhookEvent;

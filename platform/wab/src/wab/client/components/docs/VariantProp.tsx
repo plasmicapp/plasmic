@@ -1,4 +1,5 @@
 import { Variant, VariantGroup } from "@/wab/classes";
+import { DocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
 import Select from "@/wab/client/components/widgets/Select";
 import { XMultiSelect } from "@/wab/client/components/XMultiSelect";
 import { PlasmicVariantProp } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicVariantProp";
@@ -9,7 +10,6 @@ import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { DocsPortalCtx } from "./DocsPortalCtx";
 
 interface VariantPropProps {
   docsCtx: DocsPortalCtx;

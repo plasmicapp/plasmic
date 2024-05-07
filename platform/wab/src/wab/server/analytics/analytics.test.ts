@@ -1,5 +1,9 @@
+import {
+  getConversionRate,
+  getConversions,
+  getImpressions,
+} from "@/wab/server/analytics/queries";
 import { getClickHouseConnection } from "@/wab/server/clickhouse";
-import { getConversionRate, getConversions, getImpressions } from "./queries";
 
 // test_db.events.team_id is a column created by posthog that have some constraint on it, it's not actually a project
 // team id, we set a big team id for the queries executed in jest script so that we can easily distinguish this data

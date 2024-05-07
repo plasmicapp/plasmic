@@ -1,5 +1,12 @@
 /** @format */
 
+import { ensureIsTopFrame, isHostFrame } from "@/wab/client/cli-routes";
+import {
+  ClipboardAction,
+  parseClipboardItems,
+  ParsedClipboardData,
+} from "@/wab/client/clipboard";
+import { storageViewAsKey } from "@/wab/client/components/app-auth/ViewAsButton";
 import {
   assert,
   ensure,
@@ -32,13 +39,6 @@ import $ from "jquery";
 import L, { pick } from "lodash";
 import LogRocket from "logrocket";
 import io, { Socket } from "socket.io-client";
-import { ensureIsTopFrame, isHostFrame } from "./cli-routes";
-import {
-  ClipboardAction,
-  parseClipboardItems,
-  ParsedClipboardData,
-} from "./clipboard";
-import { storageViewAsKey } from "./components/app-auth/ViewAsButton";
 
 const fullApiPath = (url: /*TWZ*/ string) => `/api/v1/${L.trimStart(url, "/")}`;
 

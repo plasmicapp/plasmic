@@ -1,7 +1,7 @@
 import {
   extractValueFromCurrentUser,
   isCurrentUserBinding,
-} from "./dynamic-bindings";
+} from "@/wab/shared/dynamic-bindings";
 
 describe("dynamic-bindings", () => {
   describe("isCurrentUserBinding", () => {

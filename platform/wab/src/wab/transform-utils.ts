@@ -1,5 +1,5 @@
+import { ensure } from "@/wab/common";
 import { Dictionary } from "lodash";
-import { ensure } from "./common";
 
 type TransformType = "move" | "rotate" | "scale" | "skew";
 

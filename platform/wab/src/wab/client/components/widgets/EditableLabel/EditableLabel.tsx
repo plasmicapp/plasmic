@@ -1,3 +1,4 @@
+import styles from "@/wab/client/components/widgets/EditableLabel/EditableLabel.module.scss";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import Tooltip from "antd/lib/tooltip";
@@ -13,7 +14,6 @@ import {
   useRef,
   useState,
 } from "react";
-import styles from "./EditableLabel.module.scss";
 
 export type EditableLabelProps = {
   onEdit?: (val: string) => boolean | void;

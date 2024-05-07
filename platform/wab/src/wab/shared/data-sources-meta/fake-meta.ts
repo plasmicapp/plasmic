@@ -1,7 +1,4 @@
 import { ensure } from "@/wab/common";
-import { capitalizeFirst } from "@/wab/strs";
-import { DataSourceSchema, TableFieldType } from "@plasmicapp/data-sources";
-import { cloneDeep } from "lodash";
 import {
   DataSourceMeta,
   FilterArgMeta,
@@ -9,8 +6,11 @@ import {
   JsonSchemaArrayArgMeta,
   MAKE_DEFAULT_STANDARD_QUERIES,
   TableArgMeta,
-} from "./data-sources";
-import { QueryBuilderPostgresConfig } from "./postgres-meta";
+} from "@/wab/shared/data-sources-meta/data-sources";
+import { QueryBuilderPostgresConfig } from "@/wab/shared/data-sources-meta/postgres-meta";
+import { capitalizeFirst } from "@/wab/strs";
+import { DataSourceSchema, TableFieldType } from "@plasmicapp/data-sources";
+import { cloneDeep } from "lodash";
 
 export const fakeSchema: Record<
   string,

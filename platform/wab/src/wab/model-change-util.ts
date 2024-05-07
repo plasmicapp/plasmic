@@ -1,4 +1,3 @@
-import L, { omit } from "lodash";
 import {
   Component,
   isKnownColumnsConfig,
@@ -27,52 +26,52 @@ import {
   Variant,
   VariantGroup,
   VariantSetting,
-} from "./classes";
-import type { StudioCtx } from "./client/studio-ctx/StudioCtx";
+} from "@/wab/classes";
+import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   ensure,
   ensureArrayOfInstances,
   tuple,
   TypeStamped,
   xDifference,
-} from "./common";
-import { arrayReversed } from "./commons/collections";
-import { allComponentVariants } from "./components";
-import { PLASMIC_DISPLAY_NONE } from "./css";
+} from "@/wab/common";
+import { arrayReversed } from "@/wab/commons/collections";
+import { allComponentVariants } from "@/wab/components";
+import { PLASMIC_DISPLAY_NONE } from "@/wab/css";
 import {
   ChangeNode,
   mkArrayBeforeSplice,
   ModelChange,
   RecordedChanges,
-} from "./observable-model";
+} from "@/wab/observable-model";
 import {
   componentToTplComponents,
   deepComponentToReferencers,
   extractComponentVariantSettings,
   extractImageAssetRefsByAttrs,
-} from "./shared/cached-selectors";
+} from "@/wab/shared/cached-selectors";
 import {
   ALWAYS_RESOLVE_MIXIN_PROPS,
   plasmicImgAttrStyles,
   SIZE_PROPS,
-} from "./shared/core/style-props";
-import { getEffectiveVariantSetting } from "./shared/effective-variant-setting";
-import { makeExpFromValues } from "./shared/exprs";
-import { isFlexContainerWithGap } from "./shared/layoututils";
+} from "@/wab/shared/core/style-props";
+import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
+import { makeExpFromValues } from "@/wab/shared/exprs";
+import { isFlexContainerWithGap } from "@/wab/shared/layoututils";
 import {
   ReadonlyIRuleSetHelpersX,
   RuleSetHelpers,
-} from "./shared/RuleSetHelpers";
-import { hasSpecialSizeVal } from "./shared/sizingutils";
-import { $$$ } from "./shared/TplQuery";
-import { isAncestorCombo } from "./shared/variant-sort";
+} from "@/wab/shared/RuleSetHelpers";
+import { hasSpecialSizeVal } from "@/wab/shared/sizingutils";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { isAncestorCombo } from "@/wab/shared/variant-sort";
 import {
   isGlobalVariant,
   isGlobalVariantGroup,
   isStyleVariant,
   tryGetBaseVariantSetting,
-} from "./shared/Variants";
-import { createRuleSetMerger } from "./styles";
+} from "@/wab/shared/Variants";
+import { createRuleSetMerger } from "@/wab/styles";
 import {
   findVariantSettingsUnderTpl,
   flattenTpls,
@@ -82,7 +81,8 @@ import {
   isTplSlot,
   isTplTag,
   isTplVariantable,
-} from "./tpls";
+} from "@/wab/tpls";
+import L, { omit } from "lodash";
 
 export enum ChangesType {
   NoChange,
@@ -1354,7 +1354,7 @@ function extractAlongPath(
     return undefined;
   }
   let curIndex = 0;
-  let found: any[] = [];
+  const found: any[] = [];
   for (const n of arrayReversed(path)) {
     if (cls[curIndex].isKnown(n.inst)) {
       found.push(n.inst);

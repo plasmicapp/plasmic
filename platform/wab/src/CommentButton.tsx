@@ -6,7 +6,7 @@ import * as React from "react";
 import {
   DefaultCommentButtonProps,
   PlasmicCommentButton,
-} from "./wab/client/plasmic/plasmic_kit_top_bar/PlasmicCommentButton";
+} from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicCommentButton";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can
@@ -21,7 +21,7 @@ import {
 //
 // You can also stop extending from DefaultCommentButtonProps altogether and have
 // total control over the props for your component.
-export interface CommentButtonProps extends DefaultCommentButtonProps {}
+export type CommentButtonProps = DefaultCommentButtonProps;
 
 function CommentButton_(
   props: CommentButtonProps,

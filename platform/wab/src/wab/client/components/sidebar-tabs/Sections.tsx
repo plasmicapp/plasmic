@@ -9,6 +9,54 @@ import {
   hasSimplifiedMode,
   isTplCodeComponentStyleable,
 } from "@/wab/client/code-components/code-components";
+import { ArbitraryCssSelectorsPanel } from "@/wab/client/components/sidebar-tabs/ArbitraryCssSelectorsSection";
+import { BackgroundSection } from "@/wab/client/components/sidebar-tabs/background-section";
+import {
+  ColumnSection,
+  ColumnsPanelSection,
+} from "@/wab/client/components/sidebar-tabs/columns-section";
+import { ComponentPropsSection } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
+import { CustomBehaviorsSection } from "@/wab/client/components/sidebar-tabs/CustomBehaviorsSection";
+import { EffectsPanelSection } from "@/wab/client/components/sidebar-tabs/EffectsSection";
+import { GridChildSection } from "@/wab/client/components/sidebar-tabs/GridChildSection";
+import {
+  HTMLAttributesSection,
+  TplTagSection,
+} from "@/wab/client/components/sidebar-tabs/HTMLAttributesSection";
+import {
+  ImageSection,
+  ImageSectionForCodeComponent,
+} from "@/wab/client/components/sidebar-tabs/image-section";
+import { LayoutSection } from "@/wab/client/components/sidebar-tabs/LayoutSection";
+import { ListStyleSection } from "@/wab/client/components/sidebar-tabs/ListStyleSection";
+import {
+  MergedSlotsPropsSection,
+  MergedSlotsTextSection,
+} from "@/wab/client/components/sidebar-tabs/MergedSlotsSection";
+import { MixinsSection } from "@/wab/client/components/sidebar-tabs/MixinsSection";
+import { OverflowSection } from "@/wab/client/components/sidebar-tabs/OverflowSection";
+import { PositioningPanelSection } from "@/wab/client/components/sidebar-tabs/PositioningSection";
+import { PrivateStyleVariantsPanel } from "@/wab/client/components/sidebar-tabs/private-style-variants-section";
+import { RepeaterSection } from "@/wab/client/components/sidebar-tabs/RepeaterSection";
+import { RepeatingElementSection } from "@/wab/client/components/sidebar-tabs/RepeatingElementSection";
+import { ShadowsPanelSection } from "@/wab/client/components/sidebar-tabs/ShadowsSection";
+import { SimplifiedCodeComponentModeSection } from "@/wab/client/components/sidebar-tabs/SimplifiedCodeComponentModeSection";
+import {
+  PageSizePanelSection,
+  SizeSection,
+  SizeWidthOnlySection,
+} from "@/wab/client/components/sidebar-tabs/SizeSection";
+import { SlotSettingsSection } from "@/wab/client/components/sidebar-tabs/slot-section";
+import { SpacingSection } from "@/wab/client/components/sidebar-tabs/SpacingSection";
+import InteractionsSection from "@/wab/client/components/sidebar-tabs/StateManagement/InteractionsSection";
+import { TransformPanelSection } from "@/wab/client/components/sidebar-tabs/TransformPanelSection";
+import { TransitionsPanelSection } from "@/wab/client/components/sidebar-tabs/TransitionsSection";
+import {
+  TextOnlySection,
+  TypographySection,
+} from "@/wab/client/components/sidebar-tabs/TypographySection";
+import { VariantsPickerPanel } from "@/wab/client/components/sidebar-tabs/VariantsPicker";
+import { VisibilitySection } from "@/wab/client/components/sidebar-tabs/VisibilitySection";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
   BorderPanelSection,
@@ -65,42 +113,6 @@ import { Alert } from "antd";
 import $ from "jquery";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { ArbitraryCssSelectorsPanel } from "./ArbitraryCssSelectorsSection";
-import { BackgroundSection } from "./background-section";
-import { ColumnSection, ColumnsPanelSection } from "./columns-section";
-import { ComponentPropsSection } from "./ComponentPropsSection";
-import { CustomBehaviorsSection } from "./CustomBehaviorsSection";
-import { EffectsPanelSection } from "./EffectsSection";
-import { GridChildSection } from "./GridChildSection";
-import { HTMLAttributesSection, TplTagSection } from "./HTMLAttributesSection";
-import { ImageSection, ImageSectionForCodeComponent } from "./image-section";
-import { LayoutSection } from "./LayoutSection";
-import { ListStyleSection } from "./ListStyleSection";
-import {
-  MergedSlotsPropsSection,
-  MergedSlotsTextSection,
-} from "./MergedSlotsSection";
-import { MixinsSection } from "./MixinsSection";
-import { OverflowSection } from "./OverflowSection";
-import { PositioningPanelSection } from "./PositioningSection";
-import { PrivateStyleVariantsPanel } from "./private-style-variants-section";
-import { RepeaterSection } from "./RepeaterSection";
-import { RepeatingElementSection } from "./RepeatingElementSection";
-import { ShadowsPanelSection } from "./ShadowsSection";
-import { SimplifiedCodeComponentModeSection } from "./SimplifiedCodeComponentModeSection";
-import {
-  PageSizePanelSection,
-  SizeSection,
-  SizeWidthOnlySection,
-} from "./SizeSection";
-import { SlotSettingsSection } from "./slot-section";
-import { SpacingSection } from "./SpacingSection";
-import InteractionsSection from "./StateManagement/InteractionsSection";
-import { TransformPanelSection } from "./TransformPanelSection";
-import { TransitionsPanelSection } from "./TransitionsSection";
-import { TextOnlySection, TypographySection } from "./TypographySection";
-import { VariantsPickerPanel } from "./VariantsPicker";
-import { VisibilitySection } from "./VisibilitySection";
 
 export enum Section {
   Tag = "tag",
@@ -630,7 +642,6 @@ export function getRenderBySection(
     [
       Section.CustomBehaviors,
       () =>
-        DEVFLAGS.ccAttachs &&
         isTplVariantable(tpl) &&
         !isColumn &&
         !isComponentRoot(tpl) &&

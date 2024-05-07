@@ -1,5 +1,5 @@
+import { useChartData } from "@/wab/client/components/analytics/useChartData";
 import moment, { Moment } from "moment";
-import { useChartData } from "./useChartData";
 
 export enum TeamAnalyticsFilterParams {
   WorkspaceId = "workspaceId",

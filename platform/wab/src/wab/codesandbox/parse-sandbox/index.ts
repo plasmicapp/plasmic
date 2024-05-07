@@ -1,8 +1,8 @@
+import FileError from "@/wab/codesandbox/parse-sandbox/file-error";
 import { IModule, INormalizedModules } from "codesandbox-import-util-types";
 import { isText, isTooBig } from "codesandbox-import-utils/lib/is-text";
 import * as fs from "fs-extra";
 import * as path from "path";
-import FileError from "./file-error";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 

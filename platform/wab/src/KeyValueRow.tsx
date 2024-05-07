@@ -6,7 +6,7 @@ import {
   DefaultKeyValueRowProps,
   PlasmicKeyValueRow,
   PlasmicKeyValueRow__OverridesType,
-} from "./wab/client/plasmic/plasmic_kit_data_queries/PlasmicKeyValueRow";
+} from "@/wab/client/plasmic/plasmic_kit_data_queries/PlasmicKeyValueRow";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can

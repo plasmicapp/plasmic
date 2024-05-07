@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultMultiplayerCursorProps altogether and have
 // total control over the props for your component.
-export interface MultiplayerCursorProps extends DefaultMultiplayerCursorProps {}
+export type MultiplayerCursorProps = DefaultMultiplayerCursorProps;
 
 function MultiplayerCursor_(
   props: MultiplayerCursorProps,

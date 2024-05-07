@@ -20,8 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultBoundingBoxHighlighterProps altogether and have
 // total control over the props for your component.
-export interface BoundingBoxHighlighterProps
-  extends DefaultBoundingBoxHighlighterProps {}
+export type BoundingBoxHighlighterProps = DefaultBoundingBoxHighlighterProps;
 
 function BoundingBoxHighlighter_(
   props: BoundingBoxHighlighterProps,

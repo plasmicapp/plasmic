@@ -1,4 +1,8 @@
 import {
+  TURN_OFF_INTERACTIVE_MODE_STEP_FUNC,
+  TURN_ON_INTERACTIVE_MODE_STEP_FUNC,
+} from "@/wab/client/tours/tutorials/frags/basic-steps";
+import {
   isFormInitialValuesDynamic,
   isFormInitialValuesProperlyLinked,
   sleep,
@@ -8,10 +12,6 @@ import {
   OnNextCtx,
   StudioTutorialStep,
 } from "@/wab/client/tours/tutorials/tutorials-types";
-import {
-  TURN_OFF_INTERACTIVE_MODE_STEP_FUNC,
-  TURN_ON_INTERACTIVE_MODE_STEP_FUNC,
-} from "./basic-steps";
 
 export const FORM_INITIAL_VALUES_STEPS: StudioTutorialStep[] = [
   {

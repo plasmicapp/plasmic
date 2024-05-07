@@ -5,6 +5,12 @@ import {
 } from "@/wab/classes";
 import { meta } from "@/wab/classes-metas";
 import { tuple } from "@/wab/common";
+import {
+  getLastBundleVersion,
+  getMigratedBundle,
+} from "@/wab/server/db/BundleMigrator";
+import { getOrderedDepBundleIds } from "@/wab/server/db/DbBundleLoader";
+import { DbMgr, NotFoundError, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
 import { initializeGlobals } from "@/wab/server/svr-init";
 import {
@@ -17,9 +23,6 @@ import {
 import L from "lodash";
 import { EntityManager } from "typeorm";
 import * as util from "util";
-import { getLastBundleVersion, getMigratedBundle } from "./BundleMigrator";
-import { getOrderedDepBundleIds } from "./DbBundleLoader";
-import { DbMgr, NotFoundError, SUPER_USER } from "./DbMgr";
 
 /**
  * Scan the DB for all models and perform some action on each.

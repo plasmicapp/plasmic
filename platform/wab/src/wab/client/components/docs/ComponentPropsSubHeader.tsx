@@ -19,8 +19,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultComponentPropsSubHeaderProps altogether and have
 // total control over the props for your component.
-interface ComponentPropsSubHeaderProps
-  extends DefaultComponentPropsSubHeaderProps {}
+type ComponentPropsSubHeaderProps = DefaultComponentPropsSubHeaderProps;
 
 function ComponentPropsSubHeader(props: ComponentPropsSubHeaderProps) {
   // Use PlasmicComponentPropsSubHeader to render this component as it was

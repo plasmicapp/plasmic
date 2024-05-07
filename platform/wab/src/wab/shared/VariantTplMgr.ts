@@ -39,6 +39,58 @@ import { DEVFLAGS } from "@/wab/devflags";
 import { asCode } from "@/wab/exprs";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import { getTagAttrForImageAsset } from "@/wab/image-assets";
+import {
+  computedProjectFlags,
+  findNonEmptyCombos,
+} from "@/wab/shared/cached-selectors";
+import { toVarName } from "@/wab/shared/codegen/util";
+import {
+  ComponentVariantFrame,
+  GlobalVariantFrame,
+  TransientComponentVariantFrame,
+} from "@/wab/shared/component-frame";
+import { getAllDefinedStyles } from "@/wab/shared/core/style-props";
+import {
+  ArgSource,
+  computeDefinedIndicator,
+  DefinedIndicatorType,
+} from "@/wab/shared/defined-indicator";
+import {
+  adaptEffectiveVariantSetting,
+  EffectiveVariantSetting,
+} from "@/wab/shared/effective-variant-setting";
+import { CanvasEnv, tryEvalExpr } from "@/wab/shared/eval";
+import { RSH } from "@/wab/shared/RuleSetHelpers";
+import { getAncestorTplSlot, isSlotVar } from "@/wab/shared/SlotUtils";
+import { ensureBaseVariant, TplMgr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  isAncestorScreenVariant,
+  makeVariantComboSorter,
+  sortedVariantSettingStack,
+} from "@/wab/shared/variant-sort";
+import {
+  addingBaseToTplWithExistingBase,
+  ensureBaseRuleVariantSetting,
+  ensureValidCombo,
+  getBaseVariant,
+  getImplicitlyActivatedStyleVariants,
+  isBaseVariant,
+  isGlobalVariant,
+  isPrivateStyleVariant,
+  isScreenVariant,
+  isStandaloneVariantGroup,
+  mkVariantSetting,
+  tryGetVariantSetting,
+  VariantCombo,
+} from "@/wab/shared/Variants";
+import {
+  getTplVisibilityAsDescendant,
+  isInvisible,
+  isMaybeVisible,
+  setTplVisibility,
+  TplVisibility,
+} from "@/wab/shared/visibility-utils";
 import { allGlobalVariants, isFrameRootTplComponent } from "@/wab/sites";
 import {
   AttrsSpec,
@@ -58,55 +110,6 @@ import {
   TplTagType,
 } from "@/wab/tpls";
 import L from "lodash";
-import { computedProjectFlags, findNonEmptyCombos } from "./cached-selectors";
-import { toVarName } from "./codegen/util";
-import {
-  ComponentVariantFrame,
-  GlobalVariantFrame,
-  TransientComponentVariantFrame,
-} from "./component-frame";
-import { getAllDefinedStyles } from "./core/style-props";
-import {
-  ArgSource,
-  computeDefinedIndicator,
-  DefinedIndicatorType,
-} from "./defined-indicator";
-import {
-  adaptEffectiveVariantSetting,
-  EffectiveVariantSetting,
-} from "./effective-variant-setting";
-import { CanvasEnv, tryEvalExpr } from "./eval";
-import { RSH } from "./RuleSetHelpers";
-import { getAncestorTplSlot, isSlotVar } from "./SlotUtils";
-import { ensureBaseVariant, TplMgr } from "./TplMgr";
-import { $$$ } from "./TplQuery";
-import {
-  isAncestorScreenVariant,
-  makeVariantComboSorter,
-  sortedVariantSettingStack,
-} from "./variant-sort";
-import {
-  addingBaseToTplWithExistingBase,
-  ensureBaseRuleVariantSetting,
-  ensureValidCombo,
-  getBaseVariant,
-  getImplicitlyActivatedStyleVariants,
-  isBaseVariant,
-  isGlobalVariant,
-  isPrivateStyleVariant,
-  isScreenVariant,
-  isStandaloneVariantGroup,
-  mkVariantSetting,
-  tryGetVariantSetting,
-  VariantCombo,
-} from "./Variants";
-import {
-  getTplVisibilityAsDescendant,
-  isInvisible,
-  isMaybeVisible,
-  setTplVisibility,
-  TplVisibility,
-} from "./visibility-utils";
 
 type StylePropOpts = { forVisibility?: boolean };
 

@@ -1,9 +1,9 @@
+import { migrate as migration72 } from "@/wab/server/bundle-migrations/72-variant-state-management";
 import {
   BundleMigrationType,
   upgradeHostlessProject,
 } from "@/wab/server/db/bundle-migration-utils";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
-import { migrate as migration72 } from "./72-variant-state-management";
 
 // migrates antd
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {

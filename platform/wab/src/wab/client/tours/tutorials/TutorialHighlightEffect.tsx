@@ -1,8 +1,8 @@
+import { useQuerySelector } from "@/wab/client/tours/tutorials/useQuerySelector";
 import type { PopperOffsetsModifier } from "@popperjs/core/lib/modifiers/popperOffsets";
 import type { Modifier } from "@popperjs/core/lib/popper-lite";
 import { createPopper } from "@popperjs/core/lib/popper-lite";
 import React from "react";
-import { useQuerySelector } from "./useQuerySelector";
 
 /** How much taller and wider the highlight will be relative to the target. */
 const HIGHLIGHT_PADDING = 4;

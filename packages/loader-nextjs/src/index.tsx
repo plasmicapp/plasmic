@@ -297,6 +297,32 @@ function renderDynamicPayloadScripts(
   if (!missingModulesData || missingModulesData.length === 0) {
     return null;
   }
+
+  const isBrowser = typeof window !== "undefined";
+
+  if (isBrowser) {
+    // `next/script` seems to not be correctly added to `<head>` in the initial
+    // HTML sometimes when using custom documents:
+    // https://linear.app/plasmic/issue/PLA-10652
+
+    // Make sure to create the promises in this case - the script to actually fetch
+    // the chunks will be added once hydration is completed.
+    if (!(globalThis as any).__PlasmicBundlePromises) {
+      (globalThis as any).__PlasmicBundlePromises = {};
+    }
+    for (const { fileName } of missingModulesData) {
+      if (!(globalThis as any).__PlasmicBundlePromises[fileName]) {
+        (globalThis as any).__PlasmicBundlePromises[fileName] = new Promise(
+          (resolve) => {
+            (globalThis as any).__PlasmicBundlePromises[
+              "__promise_resolve_" + fileName
+            ] = resolve;
+          }
+        );
+      }
+    }
+  }
+
   return (
     <>
       <Script
@@ -328,16 +354,14 @@ function renderDynamicPayloadScripts(
               .join("\n")}`.trim(),
         }}
       ></Script>
-      {missingModulesData.length > 0 && (
-        <Script
-          strategy="beforeInteractive"
-          key={"load:" + missingModulesData.map((m) => m.fileName).join(";")}
-          id={"load:" + missingModulesData.map((m) => m.fileName).join(";")}
-          defer
-          async
-          src={loader.getChunksUrl(prefetchedData.bundle, missingModulesData)}
-        />
-      )}
+      <Script
+        strategy="beforeInteractive"
+        key={"load:" + missingModulesData.map((m) => m.fileName).join(";")}
+        id={"load:" + missingModulesData.map((m) => m.fileName).join(";")}
+        defer
+        async
+        src={loader.getChunksUrl(prefetchedData.bundle, missingModulesData)}
+      />
     </>
   );
 }

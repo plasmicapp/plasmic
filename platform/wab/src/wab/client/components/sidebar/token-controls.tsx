@@ -1,6 +1,8 @@
 // eslint-disable-next-line no-restricted-imports
 import { StyleToken } from "@/wab/classes";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import ColorTokenControl from "@/wab/client/components/sidebar/ColorTokenControl";
+import GeneralTokenControl from "@/wab/client/components/sidebar/GeneralTokenControl";
 import { useMultiAssetsActions } from "@/wab/client/components/sidebar/MultiAssetsActions";
 import { ColorSidebarPopup } from "@/wab/client/components/style-controls/ColorButton";
 import ColorSwatch from "@/wab/client/components/style-controls/ColorSwatch";
@@ -11,7 +13,7 @@ import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawn } from "@/wab/common";
 import { TokenType } from "@/wab/commons/StyleToken";
-import { TokenResolver } from "@/wab/shared/cached-selectors";
+import { TokenValueResolver } from "@/wab/shared/cached-selectors";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { allColorTokens } from "@/wab/sites";
 import { maybeTokenRefCycle } from "@/wab/styles";
@@ -21,8 +23,6 @@ import { observer } from "mobx-react";
 import React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { FaArrowRight } from "react-icons/fa";
-import ColorTokenControl from "./ColorTokenControl";
-import GeneralTokenControl from "./GeneralTokenControl";
 
 export const newTokenValueAllowed = (
   token: StyleToken,
@@ -64,7 +64,7 @@ export const StyleTokenControl = observer(function StyleTokenControl(props: {
   isDragging?: boolean;
   dragHandleProps?: DraggableProvidedDragHandleProps;
   onClick?: () => void;
-  resolver: TokenResolver;
+  resolver: TokenValueResolver;
   vsh?: VariantedStylesHelper;
 }) {
   const {

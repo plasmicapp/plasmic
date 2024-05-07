@@ -1,9 +1,9 @@
+import { DbMgr } from "@/wab/server/db/DbMgr";
 import {
   DynamoDBClient,
   GetItemCommand,
   PutItemCommand,
 } from "@aws-sdk/client-dynamodb";
-import { DbMgr } from "./db/DbMgr";
 
 export interface SimpleCache {
   get(key: string): Promise<string | undefined>;

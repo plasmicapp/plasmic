@@ -1,5 +1,9 @@
+import {
+  Comment,
+  Ticket,
+  User,
+} from "@/wab/server/tutorialdb/ticketing2/entities";
 import { Connection } from "typeorm";
-import { Comment, Ticket, User } from "./entities";
 
 export async function initDb(con: Connection) {
   await con.query("CREATE SCHEMA If NOT EXISTS ticketing");

@@ -1,6 +1,48 @@
 import { TplNode } from "@/wab/classes";
+import { hasLinkedSelectable } from "@/wab/client/components/canvas/studio-canvas-util";
+import {
+  findRowColForMouse,
+  MeasuredGrid,
+} from "@/wab/client/components/style-controls/GridEditor";
+import { useViewCtx } from "@/wab/client/contexts/StudioContexts";
+import {
+  clientToFramePt,
+  frameToClientRect,
+  frameToScalerRect,
+} from "@/wab/client/coords";
+import { AddTplItem } from "@/wab/client/definitions/insertables";
 import * as domMod from "@/wab/client/dom";
 import { getPaddingRect, hasLayoutBox } from "@/wab/client/dom";
+import {
+  getElementVisibleBounds,
+  getVisibleBoundingClientRect,
+} from "@/wab/client/dom-utils";
+import {
+  ManipState,
+  ManipulatorAbortedError,
+  mkFreestyleManipForFocusedDomElt,
+  ModifierStates,
+} from "@/wab/client/FreestyleManipulator";
+import {
+  CONTENT_LAYOUT_ICON,
+  ERROR_ICON,
+  FREE_CONTAINER_ICON,
+  GRID_CONTAINER_ICON,
+  HORIZ_STACK_ICON,
+  SLOT_ICON,
+  VERT_STACK_ICON,
+} from "@/wab/client/icons";
+import {
+  ClientCantAddChildMsg,
+  renderCantAddMsg,
+} from "@/wab/client/messages/parenting-msgs";
+import { computeNodeOutlineTagLayoutClass } from "@/wab/client/node-outline";
+import {
+  cssPropsForInvertTransform,
+  StudioCtx,
+} from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { summarizeFocusObj } from "@/wab/client/utils/tpl-client-utils";
 import {
   assert,
   ensure,
@@ -41,45 +83,6 @@ import $ from "jquery";
 import L from "lodash";
 import { Observer, observer } from "mobx-react";
 import * as React from "react";
-import { hasLinkedSelectable } from "./components/canvas/studio-canvas-util";
-import {
-  findRowColForMouse,
-  MeasuredGrid,
-} from "./components/style-controls/GridEditor";
-import { useViewCtx } from "./contexts/StudioContexts";
-import {
-  clientToFramePt,
-  frameToClientRect,
-  frameToScalerRect,
-} from "./coords";
-import { AddTplItem } from "./definitions/insertables";
-import {
-  getElementVisibleBounds,
-  getVisibleBoundingClientRect,
-} from "./dom-utils";
-import {
-  ManipState,
-  ManipulatorAbortedError,
-  mkFreestyleManipForFocusedDomElt,
-  ModifierStates,
-} from "./FreestyleManipulator";
-import {
-  CONTENT_LAYOUT_ICON,
-  ERROR_ICON,
-  FREE_CONTAINER_ICON,
-  GRID_CONTAINER_ICON,
-  HORIZ_STACK_ICON,
-  SLOT_ICON,
-  VERT_STACK_ICON,
-} from "./icons";
-import {
-  ClientCantAddChildMsg,
-  renderCantAddMsg,
-} from "./messages/parenting-msgs";
-import { computeNodeOutlineTagLayoutClass } from "./node-outline";
-import { cssPropsForInvertTransform, StudioCtx } from "./studio-ctx/StudioCtx";
-import { ViewCtx } from "./studio-ctx/view-ctx";
-import { summarizeFocusObj } from "./utils/tpl-client-utils";
 
 const insertionStripThickness = 4;
 const insertionStripExtension = 0;

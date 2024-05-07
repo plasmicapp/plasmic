@@ -1,4 +1,8 @@
 import { Component, isKnownVariant, Variant } from "@/wab/classes";
+import VariantRow from "@/wab/client/components/canvas/VariantsBar/VariantRow";
+import styles from "@/wab/client/components/canvas/VariantsBar/VariantsDrawer.module.scss";
+import VariantsGroupLabel from "@/wab/client/components/canvas/VariantsBar/VariantsGroupLabel";
+import VariantsSectionDivider from "@/wab/client/components/canvas/VariantsBar/VariantsSectionDivider";
 import { Matcher } from "@/wab/client/components/view-common";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { useRefMap } from "@/wab/client/hooks/useRefMap";
@@ -24,10 +28,6 @@ import { isTplTag } from "@/wab/tpls";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import VariantRow from "./VariantRow";
-import styles from "./VariantsDrawer.module.scss";
-import VariantsGroupLabel from "./VariantsGroupLabel";
-import VariantsSectionDivider from "./VariantsSectionDivider";
 import defer = setTimeout;
 
 const elementInteractionsLabel = "Element Interactions";

@@ -1,3 +1,4 @@
+import { DbMgr } from "@/wab/server/db/DbMgr";
 import {
   EndUser,
   EndUserDirectory,
@@ -13,7 +14,6 @@ import {
 } from "@/wab/server/routes/end-user";
 import { withDb } from "@/wab/server/test/backend-util";
 import { Connection } from "typeorm";
-import { DbMgr } from "./DbMgr";
 
 async function setupEndUsers(mgr: DbMgr) {
   const team = await mgr.createTeam("My team");

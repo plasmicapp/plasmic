@@ -42,12 +42,13 @@ import {
   TplNode,
   Type,
 } from "@/wab/classes";
-import { assert, ensureInstance, switchType } from "@/wab/common";
+import { assert, ensureInstance, objsEq, switchType } from "@/wab/common";
 import { Values } from "@/wab/commons/types";
 import { getComponentDisplayName } from "@/wab/components";
 import { Type as ModelType } from "@/wab/model/model-meta";
 import { StudioPropType } from "@/wab/shared/code-components/code-components";
 import { jsLiteral } from "@/wab/shared/codegen/util";
+import { instUtil as defaultInstUtil } from "@/wab/shared/core/InstUtil";
 import { StateVariableType } from "@/wab/states";
 import { isTplComponent, isTplFromComponent, isTplTextBlock } from "@/wab/tpls";
 import L, {
@@ -58,7 +59,6 @@ import L, {
   isNumber,
   isString,
 } from "lodash";
-import { instUtil as defaultInstUtil } from "./InstUtil";
 
 export const typeFactory = {
   text: () => new Text({ name: "text" }),
@@ -100,13 +100,24 @@ export const typeFactory = {
   dateString: () => new DateString({ name: "dateString" }),
   dateRangeStrings: () => new DateRangeStrings({ name: "dateRangeStrings" }),
   classNamePropType: (
-    selectors: { selector: string; label?: string | null }[]
+    selectors: {
+      selector: string;
+      label?: string | null;
+      defaultStyles?: Record<string, string>;
+    }[],
+    defaultStyles: Record<string, string>
   ) =>
     new ClassNamePropType({
       name: "className",
       selectors: selectors.map(
-        (s) => new LabeledSelector({ label: s.label, selector: s.selector })
+        (s) =>
+          new LabeledSelector({
+            label: s.label,
+            selector: s.selector,
+            defaultStyles: { ...(s.defaultStyles ?? {}) },
+          })
       ),
+      defaultStyles: { ...defaultStyles },
     }),
   styleScopeClassNamePropType: (scope: string) =>
     new StyleScopeClassNamePropType({
@@ -497,8 +508,10 @@ export function typesEqual(t1: Type, t2: Type): boolean {
       t1.selectors.every(
         (s, i) =>
           s.label === t2.selectors[i].label &&
-          s.selector === t2.selectors[i].selector
-      )
+          s.selector === t2.selectors[i].selector &&
+          objsEq(s.defaultStyles, t2.selectors[i].defaultStyles)
+      ) &&
+      objsEq(t1.defaultStyles, t2.defaultStyles)
     );
   }
   if (isKnownStyleScopeClassNamePropType(t1)) {

@@ -1,12 +1,12 @@
-import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
-import L from "lodash";
-import React from "react";
 import {
   EnumPropEditor,
   EnumWithSearchPropEditor,
   OptionValue,
-} from "./EnumPropEditor";
-import { MultiSelectEnumPropEditor } from "./MultiSelectEnumPropEditor";
+} from "@/wab/client/components/sidebar-tabs/ComponentProps/EnumPropEditor";
+import { MultiSelectEnumPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/MultiSelectEnumPropEditor";
+import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
+import L from "lodash";
+import React from "react";
 
 type ChoicePropEditorProps<T extends OptionValue> = {
   attr: string;

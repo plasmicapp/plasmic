@@ -1,7 +1,7 @@
+import { ensureTruthy } from "@/wab/common";
 import L from "lodash";
 import urljoin from "url-join";
 import pkg from "../../package.json";
-import { ensureTruthy } from "./common";
 
 export const baseDomain = () => {
   const loc = window?.location;

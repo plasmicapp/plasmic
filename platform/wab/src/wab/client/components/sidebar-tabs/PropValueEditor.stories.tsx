@@ -1,9 +1,9 @@
+import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
 import { SidebarModalProvider } from "@/wab/client/components/sidebar/SidebarModal";
 import { expect } from "@storybook/jest";
 import type { Meta, StoryObj } from "@storybook/react";
 import { userEvent, waitFor, within } from "@storybook/testing-library";
 import React from "react";
-import { PropValueEditor } from "./PropValueEditor";
 
 export default {
   component: PropValueEditor,

@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultHandlerRowProps altogether and have
 // total control over the props for your component.
-export interface HandlerRowProps extends DefaultHandlerRowProps {}
+export type HandlerRowProps = DefaultHandlerRowProps;
 
 function HandlerRow_(props: HandlerRowProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicHandlerRow to render this component as it was

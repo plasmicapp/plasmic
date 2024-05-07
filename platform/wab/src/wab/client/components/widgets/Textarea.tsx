@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultTextareaProps altogether and have
 // total control over the props for your component.
-export interface TextareaProps extends DefaultTextareaProps {}
+export type TextareaProps = DefaultTextareaProps;
 
 function Textarea_(props: TextareaProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicTextarea to render this component as it was

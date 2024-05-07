@@ -8,7 +8,7 @@ _.mixin(UStr.exports());
 export {};
 
 const lines: string[] = [];
-for (let filepath of [
+for (const filepath of [
   ...glob.sync("./export/*.svg"),
   ...glob.sync("./export/icons/*.svg"),
 ]) {

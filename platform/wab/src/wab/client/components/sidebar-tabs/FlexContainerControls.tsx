@@ -1,4 +1,5 @@
 import { useContextMenu } from "@/wab/client/components/ContextMenu";
+import S from "@/wab/client/components/sidebar-tabs/FlexContainerControls.module.scss";
 import {
   FullRow,
   LabeledStyleDimItem,
@@ -35,7 +36,6 @@ import React, { useState } from "react";
 import { camelProp } from "src/wab/css";
 import { DefinedIndicatorType } from "src/wab/shared/defined-indicator";
 import { VariantedStylesHelper } from "src/wab/shared/VariantedStylesHelper";
-import S from "./FlexContainerControls.module.scss";
 
 type FlexArrangement = "row" | "column";
 

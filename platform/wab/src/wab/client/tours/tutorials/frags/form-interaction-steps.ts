@@ -1,5 +1,9 @@
 import { RightTabKey } from "@/wab/client/studio-ctx/StudioCtx";
 import {
+  TURN_OFF_INTERACTIVE_MODE_STEP_FUNC,
+  TURN_ON_INTERACTIVE_MODE_STEP_FUNC,
+} from "@/wab/client/tours/tutorials/frags/basic-steps";
+import {
   TutorialEvent,
   TutorialEventsType,
 } from "@/wab/client/tours/tutorials/tutorials-events";
@@ -17,10 +21,6 @@ import {
 } from "@/wab/client/tours/tutorials/tutorials-types";
 import { zIndex } from "@/wab/client/z-index";
 import { ensure } from "@/wab/common";
-import {
-  TURN_OFF_INTERACTIVE_MODE_STEP_FUNC,
-  TURN_ON_INTERACTIVE_MODE_STEP_FUNC,
-} from "./basic-steps";
 
 const OPEN_INTERACTION_MODAL_FLAGS: Partial<TutorialStateFlags> = {
   keepActionBuilderUncollapsed: true,

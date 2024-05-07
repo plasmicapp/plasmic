@@ -16,9 +16,9 @@ import {
   toVarName,
 } from "@/wab/shared/codegen/util";
 import { typeFactory } from "@/wab/shared/core/model-util";
+import { PlumePlugin } from "@/wab/shared/plume/plume-registry";
+import { makeComponentImportPath } from "@/wab/shared/plume/plume-utils";
 import { omit, pick } from "lodash";
-import { PlumePlugin } from "./plume-registry";
-import { makeComponentImportPath } from "./plume-utils";
 
 const RESERVED_PROPS = ["isFirst", "children"];
 

@@ -111,6 +111,10 @@ import {
   flattenComponent,
 } from "@/wab/shared/cached-selectors";
 import {
+  isBuiltinCodeComponent,
+  isBuiltinCodeComponentImportPath,
+} from "@/wab/shared/code-components/builtin-code-components";
+import {
   paramToVarName,
   toVarName,
   validJsIdentifierChars,
@@ -180,6 +184,7 @@ import type {
   PlasmicElement,
   PropType,
   StateSpec,
+  TokenRegistration,
 } from "@plasmicapp/host";
 import type {
   CodeComponentElement,
@@ -225,10 +230,6 @@ import {
   mapMultiple,
 } from "ts-failable";
 import type { Opaque } from "type-fest";
-import {
-  isBuiltinCodeComponent,
-  isBuiltinCodeComponentImportPath,
-} from "./builtin-code-components";
 
 export type VariablePropType<P> = PropTypeBaseDefault<P, VarRef> & {
   type: "variable";
@@ -304,7 +305,12 @@ export type DynamicPropType<P> = PropTypeBase<P> & {
 
 export type ClassNamePropType<P> = PropTypeBase<P> & {
   type: "class";
-  selectors?: { label?: string; selector: string }[];
+  selectors?: {
+    label?: string;
+    selector: string;
+    defaultStyles?: CSSProperties;
+  }[];
+  defaultStyles?: CSSProperties;
 };
 
 export type StyleScopeClassNamePropType<P> = PropTypeBase<P> & {
@@ -2652,7 +2658,7 @@ export function parseStyles(
   elementType: Exclude<PlasmicElement, String>["type"],
   opts: { prefs?: AddItemPrefs }
 ): {
-  styles: CSSProperties;
+  styles: Record<string, string>;
   warnings: SchemaWarning[];
 } {
   const styles: Readonly<Record<string, string>> = Object.fromEntries(
@@ -3641,7 +3647,17 @@ export function propTypeToWabType(
               return success(convertTsToWabType("string"));
             case "class":
               return success(
-                typeFactory.classNamePropType(type.selectors ?? [])
+                typeFactory.classNamePropType(
+                  (type.selectors ?? []).map((s) => ({
+                    ...s,
+                    defaultStyles: s.defaultStyles
+                      ? parseStyles(s.defaultStyles, "component", {}).styles
+                      : {},
+                  })),
+                  type.defaultStyles
+                    ? parseStyles(type.defaultStyles, "component", {}).styles
+                    : {}
+                )
               );
             case "target":
               return success(typeFactory.target());
@@ -3982,13 +3998,6 @@ export function checkForCyclesInSlotsDefaultValue(ctx: SiteCtx) {
       return success();
     }
   );
-}
-
-export interface TokenRegistration {
-  name: string;
-  displayName?: string;
-  value: string;
-  type: string;
 }
 
 function registeredTypeToTokenType(type: string) {

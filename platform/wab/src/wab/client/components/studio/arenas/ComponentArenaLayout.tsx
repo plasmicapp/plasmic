@@ -13,6 +13,12 @@ import {
 import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import ExperimentCanvasButton from "@/wab/client/components/splits/ExperimentCanvasButton";
+import sty from "@/wab/client/components/studio/arenas/ComponentArenaLayout.module.sass";
+import {
+  GhostFrame,
+  GhostFrameRef,
+} from "@/wab/client/components/studio/arenas/GhostFrame";
+import { GridFramesLayout } from "@/wab/client/components/studio/arenas/GridFramesLayout";
 import { VariantComboPicker } from "@/wab/client/components/variants/VariantComboPicker";
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
 import {
@@ -52,9 +58,6 @@ import { Button, Form, Menu, Popover } from "antd";
 import cn from "classnames";
 import { observer } from "mobx-react";
 import React, { useLayoutEffect, useRef } from "react";
-import sty from "./ComponentArenaLayout.module.sass";
-import { GhostFrame, GhostFrameRef } from "./GhostFrame";
-import { GridFramesLayout } from "./GridFramesLayout";
 
 export const ComponentArenaLayout = observer(
   function ComponentArenaLayout(props: {

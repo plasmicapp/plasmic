@@ -1,6 +1,11 @@
 import { Site } from "@/wab/classes";
 import { jsonClone } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
+import {
+  exportProjectConfig,
+  exportStyleConfig,
+} from "@/wab/shared/codegen/react-p";
+import { exportSiteComponents } from "@/wab/shared/codegen/react-p/gen-site-bundle";
 import { initBuiltinActions } from "@/wab/states";
 import { deepTrackComponents } from "@/wab/tpls";
 import { exec } from "child_process";
@@ -8,8 +13,6 @@ import fs from "fs";
 import path from "path";
 import process from "process";
 import { promisify } from "util";
-import { exportProjectConfig, exportStyleConfig } from "./react-p";
-import { exportSiteComponents } from "./react-p/gen-site-bundle";
 
 export async function codegen(dir: string, site: Site) {
   console.log("Codegen output dir", dir);

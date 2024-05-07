@@ -103,6 +103,110 @@ import {
   walkDependencyTree,
 } from "@/wab/project-deps";
 import {
+  cloneArenaFrame,
+  ensureActivatedScreenVariantsForArena,
+  ensureFrameSizeForTargetScreenVariant,
+  FrameViewMode,
+  getArenaFrames,
+  getFrameHeight,
+  isComponentArena,
+  isMixedArena,
+  mkArenaFrame,
+  mkMixedArena,
+  normalizeMixedArenaFrames,
+  removeVariantGroupFromArenas,
+  removeVariantsFromArenas,
+} from "@/wab/shared/Arenas";
+import {
+  findAllQueryInvalidationExpr,
+  flattenComponent,
+} from "@/wab/shared/cached-selectors";
+import { toClassName, toVarName } from "@/wab/shared/codegen/util";
+import {
+  deriveDefaultFrameSize,
+  ensureManagedFrameForVariantInComponentArena,
+  ensureRowForVariantGroupInComponentArena,
+  isCustomComponentFrame,
+  isGlobalVariantFrame,
+  isSuperVariantFrame,
+  maybeEnsureManagedFrameForGlobalVariantInComponentArena,
+  mkComponentArena,
+  removeCustomComponentFrame,
+  removeFramesFromComponentArenaForVariants,
+  removeManagedFramesFromComponentArenaForVariantGroup,
+  removeSuperOrGlobalVariantComponentFrame,
+} from "@/wab/shared/component-arenas";
+import { instUtil } from "@/wab/shared/core/InstUtil";
+import { typeFactory } from "@/wab/shared/core/model-util";
+import { SIZE_PROPS } from "@/wab/shared/core/style-props";
+import { ScreenSizeSpec } from "@/wab/shared/Css";
+import { CONTENT_LAYOUT_INITIALS } from "@/wab/shared/default-styles";
+import {
+  ARENA_CAP,
+  FRAME_LOWER,
+  MIXIN_CAP,
+  VARIANT_CAP,
+  VARIANT_GROUP_CAP,
+  VARIANT_OPTION_LOWER,
+} from "@/wab/shared/Labels";
+import {
+  addScreenSizeToPageArenas,
+  ensureManagedRowForVariantInPageArena,
+  mkPageArena,
+  reorderPageArenaCols,
+} from "@/wab/shared/page-arenas";
+import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
+import {
+  renameParamAndFixExprs,
+  renameTplAndFixExprs,
+} from "@/wab/shared/refactoring";
+import { FrameSize } from "@/wab/shared/responsiveness";
+import {
+  extractStyles,
+  IRuleSetHelpersX,
+  RSH,
+  RuleSetHelpers,
+} from "@/wab/shared/RuleSetHelpers";
+import { setPageSizeType } from "@/wab/shared/sizingutils";
+import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
+import { makeComponentSwapper } from "@/wab/shared/swap-components";
+import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  allVariantsInGroup,
+  areEquivalentScreenVariants,
+  ensureValidCombo,
+  ensureVariantSetting,
+  getBaseVariant,
+  getPartitionedScreenVariants,
+  hasScreenVariant,
+  hasStyleVariant,
+  isBaseVariant,
+  isGlobalVariant,
+  isGlobalVariantGroup,
+  isScreenVariant,
+  isScreenVariantGroup,
+  isStandaloneVariant,
+  isStandaloneVariantGroup,
+  isStyleVariant,
+  isVariantSettingEmpty,
+  mkBaseVariant,
+  mkComponentVariantGroup,
+  mkGlobalVariantGroup,
+  mkVariant,
+  mkVariantSetting,
+  tryGetVariantSetting,
+  VariantCombo,
+  VariantGroupType,
+} from "@/wab/shared/Variants";
+import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
+import {
+  getVariantSettingVisibility,
+  hasVisibilitySetting,
+  isInvisible,
+  setTplVisibility,
+  TplVisibility,
+} from "@/wab/shared/visibility-utils";
+import {
   ensureScreenVariantsOrderOnMatrices,
   getAllSiteFrames,
   getComponentArena,
@@ -172,107 +276,6 @@ import trim from "lodash/trim";
 import uniq from "lodash/uniq";
 import without from "lodash/without";
 import { CSSProperties } from "react";
-import {
-  cloneArenaFrame,
-  ensureActivatedScreenVariantsForArena,
-  ensureFrameSizeForTargetScreenVariant,
-  FrameViewMode,
-  getArenaFrames,
-  getFrameHeight,
-  isComponentArena,
-  isMixedArena,
-  mkArenaFrame,
-  mkMixedArena,
-  normalizeMixedArenaFrames,
-  removeVariantGroupFromArenas,
-  removeVariantsFromArenas,
-} from "./Arenas";
-import {
-  findAllQueryInvalidationExpr,
-  flattenComponent,
-} from "./cached-selectors";
-import { toClassName, toVarName } from "./codegen/util";
-import {
-  deriveDefaultFrameSize,
-  ensureManagedFrameForVariantInComponentArena,
-  ensureRowForVariantGroupInComponentArena,
-  isCustomComponentFrame,
-  isGlobalVariantFrame,
-  isSuperVariantFrame,
-  maybeEnsureManagedFrameForGlobalVariantInComponentArena,
-  mkComponentArena,
-  removeCustomComponentFrame,
-  removeFramesFromComponentArenaForVariants,
-  removeManagedFramesFromComponentArenaForVariantGroup,
-  removeSuperOrGlobalVariantComponentFrame,
-} from "./component-arenas";
-import { instUtil } from "./core/InstUtil";
-import { typeFactory } from "./core/model-util";
-import { SIZE_PROPS } from "./core/style-props";
-import { ScreenSizeSpec } from "./Css";
-import { CONTENT_LAYOUT_INITIALS } from "./default-styles";
-import {
-  ARENA_CAP,
-  FRAME_LOWER,
-  MIXIN_CAP,
-  VARIANT_CAP,
-  VARIANT_GROUP_CAP,
-  VARIANT_OPTION_LOWER,
-} from "./Labels";
-import {
-  addScreenSizeToPageArenas,
-  ensureManagedRowForVariantInPageArena,
-  mkPageArena,
-  reorderPageArenaCols,
-} from "./page-arenas";
-import { getPlumeEditorPlugin } from "./plume/plume-registry";
-import { renameParamAndFixExprs, renameTplAndFixExprs } from "./refactoring";
-import { FrameSize } from "./responsiveness";
-import {
-  extractStyles,
-  IRuleSetHelpersX,
-  RSH,
-  RuleSetHelpers,
-} from "./RuleSetHelpers";
-import { setPageSizeType } from "./sizingutils";
-import { mkScreenVariantGroup } from "./SpecialVariants";
-import { makeComponentSwapper } from "./swap-components";
-import { $$$ } from "./TplQuery";
-import {
-  allVariantsInGroup,
-  areEquivalentScreenVariants,
-  ensureValidCombo,
-  ensureVariantSetting,
-  getBaseVariant,
-  getPartitionedScreenVariants,
-  hasScreenVariant,
-  hasStyleVariant,
-  isBaseVariant,
-  isGlobalVariant,
-  isGlobalVariantGroup,
-  isScreenVariant,
-  isScreenVariantGroup,
-  isStandaloneVariant,
-  isStandaloneVariantGroup,
-  isStyleVariant,
-  isVariantSettingEmpty,
-  mkBaseVariant,
-  mkComponentVariantGroup,
-  mkGlobalVariantGroup,
-  mkVariant,
-  mkVariantSetting,
-  tryGetVariantSetting,
-  VariantCombo,
-  VariantGroupType,
-} from "./Variants";
-import { ensureBaseVariantSetting } from "./VariantTplMgr";
-import {
-  getVariantSettingVisibility,
-  hasVisibilitySetting,
-  isInvisible,
-  setTplVisibility,
-  TplVisibility,
-} from "./visibility-utils";
 
 export const DEFAULT_MARGIN_FOR_NEW_FRAMES = 80;
 

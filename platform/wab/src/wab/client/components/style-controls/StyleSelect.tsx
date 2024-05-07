@@ -1,4 +1,6 @@
 import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
+import Option from "@/wab/client/components/style-controls/StyleSelect__Option";
+import OptionGroup from "@/wab/client/components/style-controls/StyleSelect__OptionGroup";
 import {
   DefaultStyleSelectProps,
   PlasmicStyleSelect,
@@ -7,8 +9,6 @@ import { useTestableSelect } from "@/wab/client/utils/testable-controls";
 import { SelectRef } from "@plasmicapp/react-web";
 import { Tooltip } from "antd";
 import * as React from "react";
-import Option from "./StyleSelect__Option";
-import OptionGroup from "./StyleSelect__OptionGroup";
 
 interface StyleSelectProps extends DefaultStyleSelectProps {
   valueSetState?: ValueSetState;

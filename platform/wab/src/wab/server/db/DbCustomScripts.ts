@@ -1,14 +1,17 @@
 const { Command } = require("commander");
 import { spawn } from "@/wab/common";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
+import { findConflictNames } from "@/wab/server/db/custom-scripts/find-conflict-names";
+import { findDanglingWeakRefs } from "@/wab/server/db/custom-scripts/find-dangling-weak-refs";
+import { findMissingImplicitStates } from "@/wab/server/db/custom-scripts/find-missing-implicit-states";
+import { fixInvalidImplicitStates } from "@/wab/server/db/custom-scripts/fix-invalid-implicit-states";
+import { profileCodegen } from "@/wab/server/db/custom-scripts/profile-codegen";
+import { reIdentifyUsers } from "@/wab/server/db/custom-scripts/re-identify-users";
+import {
+  ensureDbConnections,
+  getDefaultConnection,
+} from "@/wab/server/db/DbCon";
 import { exit } from "process";
-import { findConflictNames } from "./custom-scripts/find-conflict-names";
-import { findDanglingWeakRefs } from "./custom-scripts/find-dangling-weak-refs";
-import { findMissingImplicitStates } from "./custom-scripts/find-missing-implicit-states";
-import { fixInvalidImplicitStates } from "./custom-scripts/fix-invalid-implicit-states";
-import { profileCodegen } from "./custom-scripts/profile-codegen";
-import { reIdentifyUsers } from "./custom-scripts/re-identify-users";
-import { ensureDbConnections, getDefaultConnection } from "./DbCon";
 
 /**
  * This file is meant to be used to run scripts on prod without requiring to

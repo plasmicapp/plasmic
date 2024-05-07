@@ -1,6 +1,6 @@
+import { SelectInput } from "@/wab/client/components/QueryBuilder/Components/SelectInput";
 import { ConjsProps } from "@react-awesome-query-builder/antd";
 import React from "react";
-import { SelectInput } from "./SelectInput";
 
 type Props = React.Attributes & ConjsProps;
 

@@ -1,7 +1,7 @@
 import { RightTabKey } from "@/wab/client/studio-ctx/StudioCtx";
+import { OPEN_ADD_DRAWER_STEP_FUNC } from "@/wab/client/tours/tutorials/frags/basic-steps";
 import { STUDIO_ELEMENTS_TARGETS } from "@/wab/client/tours/tutorials/tutorials-targets";
 import { StudioTutorialStep } from "@/wab/client/tours/tutorials/tutorials-types";
-import { OPEN_ADD_DRAWER_STEP_FUNC } from "./basic-steps";
 
 export const LEFT_TAB_STRIP_STEP: StudioTutorialStep = {
   name: "left-tab-strip",

@@ -1,4 +1,6 @@
 import { ArenaFrame, Site, TplNode } from "@/wab/classes";
+import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
+import { logChangedNodes } from "@/wab/client/studio-ctx/StudioCtx";
 import { assert } from "@/wab/common";
 import {
   IChangeRecorder,
@@ -17,8 +19,6 @@ import { trackComponentRoot, trackComponentSite } from "@/wab/tpls";
 import { ValNode } from "@/wab/val-nodes";
 import L from "lodash";
 import { observable } from "mobx";
-import { ComponentCtx } from "./studio-ctx/component-ctx";
-import { logChangedNodes } from "./studio-ctx/StudioCtx";
 
 export interface ViewStateSnapshot {
   focusedArena?: AnyArena | null;

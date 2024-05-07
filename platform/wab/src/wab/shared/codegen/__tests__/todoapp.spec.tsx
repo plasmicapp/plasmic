@@ -9,7 +9,7 @@ import "core-js";
 import * as React from "react";
 import tmp from "tmp";
 // Exported from https://studio.plasmic.app/projects/a76RKRQpJHMAbDDNBWmUVs
-import _bundle from "./bundles/todoapp.json";
+import _bundle from "@/wab/shared/codegen/__tests__/bundles/todoapp.json";
 
 describe("todo app codegen", () => {
   const projectBundle = _bundle[0][1] as Bundle;

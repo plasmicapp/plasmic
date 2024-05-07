@@ -1,5 +1,7 @@
 import { Component, State } from "@/wab/classes";
 import ImplicitVariablesSection from "@/wab/client/components/sidebar-tabs/StateManagement/ImplicitVariablesSection";
+import { VariableEditingModal } from "@/wab/client/components/sidebar-tabs/StateManagement/VariableEditingModal";
+import VariableRow from "@/wab/client/components/sidebar-tabs/StateManagement/VariableRow";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { StateVariablesTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
@@ -28,8 +30,6 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
 import { codeLit } from "src/wab/exprs";
-import { VariableEditingModal } from "./VariableEditingModal";
-import VariableRow from "./VariableRow";
 
 export function mkInitialState(sc: StudioCtx, component: Component) {
   const name = sc

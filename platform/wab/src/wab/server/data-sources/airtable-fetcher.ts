@@ -1,4 +1,8 @@
 import { ensure } from "@/wab/common";
+import {
+  JSON_LOGIC_REVERSE_OPERATORS,
+  toJsonLogicFormat,
+} from "@/wab/server/data-sources/data-source-utils";
 import { getDefaultConnection } from "@/wab/server/db/DbCon";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { OauthToken, TokenData } from "@/wab/server/entities/Entities";
@@ -36,10 +40,6 @@ import { isNumber, omit } from "lodash";
 import moize from "moize";
 import refresh from "passport-oauth2-refresh";
 import { Connection } from "typeorm";
-import {
-  JSON_LOGIC_REVERSE_OPERATORS,
-  toJsonLogicFormat,
-} from "./data-source-utils";
 
 const JSON_LOGIC_TO_AIRTABLE_OPERATORS = {
   "===": "=",

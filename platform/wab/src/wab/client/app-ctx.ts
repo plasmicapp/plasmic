@@ -1,3 +1,10 @@
+import { Api, setUser } from "@/wab/client/api";
+import { isHostFrame, Router, UU } from "@/wab/client/cli-routes";
+import { getClientDevFlagOverrides } from "@/wab/client/client-dev-flags";
+import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
+import { StarterGroupProps } from "@/wab/client/components/StarterGroup";
+import { App } from "@/wab/client/components/top-view";
+import { TopFrameApi } from "@/wab/client/frame-ctx/top-frame-api";
 import { ensure, swallowAsync } from "@/wab/common";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import {
@@ -24,13 +31,6 @@ import L from "lodash";
 import { observable } from "mobx";
 import * as React from "react";
 import { useContext } from "react";
-import { Api, setUser } from "./api";
-import { isHostFrame, Router, UU } from "./cli-routes";
-import { getClientDevFlagOverrides } from "./client-dev-flags";
-import { maybeShowPaywall } from "./components/modals/PricingModal";
-import { StarterGroupProps } from "./components/StarterGroup";
-import { App } from "./components/top-view";
-import { TopFrameApi } from "./frame-ctx/top-frame-api";
 
 export class NonAuthCtx {
   /** PromisifyMethods so that `api` behaves the same in both the top frame and host frame. */

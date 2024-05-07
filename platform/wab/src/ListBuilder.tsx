@@ -7,7 +7,7 @@ import {
   DefaultListBuilderProps,
   PlasmicListBuilder,
   PlasmicListBuilder__OverridesType,
-} from "./wab/client/plasmic/plasmic_kit_data_queries/PlasmicListBuilder";
+} from "@/wab/client/plasmic/plasmic_kit_data_queries/PlasmicListBuilder";
 
 interface ListBuilderProps
   extends DefaultListBuilderProps,

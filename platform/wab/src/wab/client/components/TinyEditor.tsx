@@ -30,16 +30,14 @@ if (window && "matchMedia" in window) {
 import "tinymce/skins/ui/tinymce-5/skin.min.css";
 
 // @ts-ignore
-// eslint-disable-next-line path/no-relative-imports
 import contentCss from "!!raw-loader!../../gen/static/styles/tinymce-content-css.txt";
 // @ts-ignore
-// eslint-disable-next-line path/no-relative-imports
 import prismCss from "!!raw-loader!../../gen/static/styles/prismjs-css.txt";
 
+import { getCmsImageUrl } from "@/wab/client/components/sidebar/image-asset-controls";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
 import * as React from "react";
-import { getCmsImageUrl } from "./sidebar/image-asset-controls";
 
 type TinyEditorProps = Omit<IAllProps, "onChange"> & {
   onChange: (value: string) => void;

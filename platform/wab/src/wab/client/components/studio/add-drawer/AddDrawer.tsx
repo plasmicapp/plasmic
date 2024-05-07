@@ -35,6 +35,9 @@ import {
   getPlumeImage,
 } from "@/wab/client/components/plume/plume-display-utils";
 import { PlumyIcon } from "@/wab/client/components/plume/plume-markers";
+import AddDrawerItem from "@/wab/client/components/studio/add-drawer/AddDrawerItem";
+import { AddItemGroup } from "@/wab/client/components/studio/add-drawer/AddDrawerSection";
+import { DraggableInsertable } from "@/wab/client/components/studio/add-drawer/DraggableInsertable";
 import { ImagePreview } from "@/wab/client/components/style-controls/ImageSelector";
 import { Matcher } from "@/wab/client/components/view-common";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -131,9 +134,6 @@ import {
 } from "src/wab/shared/insertable-templates";
 import { getPlumeEditorPlugin } from "src/wab/shared/plume/plume-registry";
 import { getBaseVariant } from "src/wab/shared/Variants";
-import AddDrawerItem from "./AddDrawerItem";
-import { AddItemGroup } from "./AddDrawerSection";
-import { DraggableInsertable } from "./DraggableInsertable";
 
 // The key that defines the recent items OmnibarGroup
 const RECENT_GROUP_KEY = "adddrawer-recent";
@@ -271,7 +271,6 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
     if (isTplAddItem(item)) {
       const component = item.component;
       if (
-        DEVFLAGS.preset &&
         component &&
         isCodeComponent(component) &&
         getComponentPresets(studioCtx, component).length > 0
@@ -1132,16 +1131,14 @@ export function buildAddItemGroups({
     },
 
     // Insertable Templates
-    DEVFLAGS.showInsertableTemplates &&
-      !contentEditorMode &&
+    !contentEditorMode &&
       !!insertableTemplatesMeta && {
         key: "insertable-templates",
         label: "Template blocks",
         items: [INSERTABLES_MAP.openInsertModal],
       },
 
-    DEVFLAGS.showHostLessComponents &&
-      !contentEditorMode &&
+    !contentEditorMode &&
       !!hostLessComponentsMeta && {
         key: "hostless-components",
         label: "Component Packages",
@@ -1155,7 +1152,7 @@ export function buildAddItemGroups({
         INSERTABLES_MAP.vstack,
         INSERTABLES_MAP.columns,
         INSERTABLES_MAP.hstack,
-        ...(DEVFLAGS.grid ? [INSERTABLES_MAP.grid] : []),
+        INSERTABLES_MAP.grid,
         INSERTABLES_MAP.box,
       ],
     },

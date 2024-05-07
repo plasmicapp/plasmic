@@ -14,6 +14,7 @@ import {
   getValidInsertLocs,
   InsertRelLoc,
 } from "@/wab/client/components/canvas/view-ops";
+import S from "@/wab/client/components/insert-panel/InsertPanel.module.scss";
 import ListSectionHeader from "@/wab/client/components/ListSectionHeader";
 import ListSectionSeparator from "@/wab/client/components/ListSectionSeparator";
 import {
@@ -113,7 +114,6 @@ import { useMemo, useState } from "react";
 import { FocusScope, useFocusManager } from "react-aria";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { areEqual, VariableSizeList } from "react-window";
-import S from "./InsertPanel.module.scss";
 
 const leftSideWidth = 200;
 const rightSideWidth = 330;
@@ -372,7 +372,6 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
       case AddItemType.plume: {
         const component = item.component;
         if (
-          DEVFLAGS.preset &&
           component &&
           isCodeComponent(component) &&
           getComponentPresets(studioCtx, component).length > 0
@@ -850,10 +849,6 @@ let cachedHostLess: HostLessStuff | undefined = undefined;
 const getTemplateComponents = memoizeOne(function getTemplateComponent(
   studioCtx: StudioCtx
 ) {
-  if (!studioCtx.appCtx.appConfig.showInsertableTemplateComponents) {
-    return [];
-  }
-
   return flattenInsertableTemplatesByType(
     studioCtx.appCtx.appConfig.insertableTemplates,
     "insertable-templates-component"
@@ -863,65 +858,63 @@ const getTemplateComponents = memoizeOne(function getTemplateComponent(
 function getHostLess(studioCtx: StudioCtx): AddItemGroup[] {
   const hostLessComponentsMeta =
     studioCtx.appCtx.appConfig.hostLessComponents ??
-    DEVFLAGS.hostLessComponents;
-  return DEVFLAGS.showHostLessComponents && hostLessComponentsMeta
-    ? hostLessComponentsMeta
-        .filter(
-          (meta) =>
-            meta.onlyShownIn !== "old" &&
-            shouldShowHostLessPackage(studioCtx, meta)
+    DEVFLAGS.hostLessComponents ??
+    [];
+  return hostLessComponentsMeta
+    .filter(
+      (meta) =>
+        meta.onlyShownIn !== "old" && shouldShowHostLessPackage(studioCtx, meta)
+    )
+    .map<AddItemGroup>((meta) => {
+      const existingDep = ensureArray(meta.projectId).every((projectId) =>
+        studioCtx.site.projectDependencies.find(
+          (dep) => dep.projectId === projectId
         )
-        .map<AddItemGroup>((meta) => {
-          const existingDep = ensureArray(meta.projectId).every((projectId) =>
-            studioCtx.site.projectDependencies.find(
-              (dep) => dep.projectId === projectId
-            )
-          );
-          const isAtomicSection = atomicHostlessSections.includes(
-            meta.sectionLabel
-          );
-          const newVar: AddItemGroup = {
-            hostLessPackageInfo: meta,
-            key: `hostless-packages--${meta.projectId}`,
-            sectionKey: meta.sectionLabel,
-            sectionLabel: meta.sectionLabel,
-            familyKey: "hostless-packages",
-            familyLabel: "Browse component store",
-            label: meta.name,
-            codeName: meta.codeName,
-            codeLink: meta.codeLink,
-            items: meta.items
-              .filter(
-                (item) =>
-                  (!item.hidden &&
-                    !item.hiddenOnStore &&
-                    item.onlyShownIn !== "old") ||
-                  DEVFLAGS.showHiddenHostLessComponents
-              )
-              .map((item) => {
-                item = {
-                  ...item,
-                  displayName: isAtomicSection ? meta.name : item.displayName,
-                };
-                if (meta.isInstallOnly) {
-                  return createInstallOnlyPackage(item, meta);
-                }
-                if (item.isFake) {
-                  return createFakeHostLessComponent(
-                    item,
-                    ensureArray(meta.projectId)
-                  );
-                } else {
-                  return createAddHostLessComponent(
-                    item,
-                    ensureArray(meta.projectId)
-                  );
-                }
-              }),
-          };
-          return newVar;
-        })
-    : [];
+      );
+      const isAtomicSection = atomicHostlessSections.includes(
+        meta.sectionLabel
+      );
+      const newVar: AddItemGroup = {
+        hostLessPackageInfo: meta,
+        key: `hostless-packages--${meta.projectId}`,
+        sectionKey: meta.sectionLabel,
+        sectionLabel: meta.sectionLabel,
+        familyKey: "hostless-packages",
+        familyLabel: "Browse component store",
+        label: meta.name,
+        codeName: meta.codeName,
+        codeLink: meta.codeLink,
+        items: meta.items
+          .filter(
+            (item) =>
+              (!item.hidden &&
+                !item.hiddenOnStore &&
+                item.onlyShownIn !== "old") ||
+              DEVFLAGS.showHiddenHostLessComponents
+          )
+          .map((item) => {
+            item = {
+              ...item,
+              displayName: isAtomicSection ? meta.name : item.displayName,
+            };
+            if (meta.isInstallOnly) {
+              return createInstallOnlyPackage(item, meta);
+            }
+            if (item.isFake) {
+              return createFakeHostLessComponent(
+                item,
+                ensureArray(meta.projectId)
+              );
+            } else {
+              return createAddHostLessComponent(
+                item,
+                ensureArray(meta.projectId)
+              );
+            }
+          }),
+      };
+      return newVar;
+    });
 }
 
 function initHostLess(studioCtx: StudioCtx) {
@@ -1190,8 +1183,7 @@ export function buildAddItemGroups({
     },
 
     // Insertable Templates
-    ...(DEVFLAGS.showInsertableTemplates &&
-    !isApp &&
+    ...(!isApp &&
     (!contentEditorMode || customInsertableTemplates) &&
     !!insertableTemplatesMeta
       ? insertableTemplatesMeta.items
@@ -1313,9 +1305,7 @@ export function buildAddItemGroups({
       ],
     })),
 
-    ...(DEVFLAGS.showHostLessComponents &&
-    !!hostLessComponentsMeta &&
-    cachedHostLess
+    ...(!!hostLessComponentsMeta && cachedHostLess
       ? // We want to hide the listings that were shown in "Default components" - this is just a simple way to ensure things don't show up in both menus.
         cachedHostLess
           .filter((group) =>

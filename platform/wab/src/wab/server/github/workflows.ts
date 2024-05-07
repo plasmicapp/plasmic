@@ -1,4 +1,7 @@
 import { getStatusCodeFromResponse } from "@/wab/server/AppServer";
+import { getGithubApp } from "@/wab/server/github/app";
+import { getDefaultBranch } from "@/wab/server/github/branches";
+import { GithubRef } from "@/wab/server/github/types";
 import {
   GitSyncAction,
   GitSyncLanguage,
@@ -8,9 +11,6 @@ import {
   GitWorkflowJobStatus,
 } from "@/wab/shared/ApiSchema";
 import { readFileSync } from "fs";
-import { getGithubApp } from "./app";
-import { getDefaultBranch } from "./branches";
-import { GithubRef } from "./types";
 
 const gitUserName = "Plasmic Bot";
 const gitUserEmail = "ops+git@plasmic.app";

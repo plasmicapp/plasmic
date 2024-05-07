@@ -1,12 +1,12 @@
 import { useNonAuthCtx } from "@/wab/client/app-ctx";
 import { smartRender } from "@/wab/client/components/pages/admin/admin-util";
 import { useAdminCtx } from "@/wab/client/components/pages/admin/AdminCtx";
+import { AdminUserSelect } from "@/wab/client/components/pages/admin/AdminUserSelect";
 import { AdminUserTable } from "@/wab/client/components/pages/admin/AdminUserTable";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import { ApiProject } from "@/wab/shared/ApiSchema";
 import { Button, Form, Input, notification, Table } from "antd";
 import React, { useState } from "react";
-import { AdminUserSelect } from "./AdminUserSelect";
 
 export function AdminUsersView() {
   return (

@@ -1,7 +1,7 @@
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { Tour } from "@/wab/client/tours/Tour";
 import { observer } from "mobx-react";
 import React from "react";
-import { Tour } from "./Tour";
 
 export const DataTabTour = observer(function DataTabTour() {
   const studioCtx = useStudioCtx();

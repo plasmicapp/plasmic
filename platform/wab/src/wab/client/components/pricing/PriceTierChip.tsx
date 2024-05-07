@@ -7,7 +7,7 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
-export interface PriceTierChipProps extends DefaultPriceTierChipProps {}
+export type PriceTierChipProps = DefaultPriceTierChipProps;
 
 function PriceTierChip_(
   props: PriceTierChipProps,

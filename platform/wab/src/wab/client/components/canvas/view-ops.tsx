@@ -125,6 +125,7 @@ import {
   StyleClip,
   TplClip,
 } from "@/wab/client/clipboard";
+import { closestTaggedNonTextDomElt } from "@/wab/client/components/canvas/studio-canvas-util";
 import { toast } from "@/wab/client/components/Messages";
 import { promptExtractComponent } from "@/wab/client/components/modals/ExtractComponentModal";
 import { promptWrapInComponent } from "@/wab/client/components/modals/WrapInComponentModal";
@@ -253,7 +254,6 @@ import {
   asTplOrSlotSelection,
   equivTplOrSlotSelection,
 } from "@/wab/vals";
-import { closestTaggedNonTextDomElt } from "./studio-canvas-util";
 
 export class ViewOps {
   _viewCtx: ViewCtx;

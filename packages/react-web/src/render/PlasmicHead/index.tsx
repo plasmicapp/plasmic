@@ -1,18 +1,35 @@
+import * as plasmicQuery from "@plasmicapp/query";
 import * as React from "react";
 
 export const PlasmicHeadContext = React.createContext<
   React.ComponentType<any> | undefined
 >(undefined);
 
-type PlasmicHeadProps = {
-  title?: string;
-  description?: string;
-  image?: string;
-  canonical?: string;
-};
-
-export function PlasmicHead(props: PlasmicHeadProps) {
+export function PlasmicHead(props: plasmicQuery.HeadMetadata) {
   const Head = React.useContext(PlasmicHeadContext);
+  const headMetadata =
+    // Check if `HeadMetadataContext` is exported for backward compatibility
+    "HeadMetadataContext" in plasmicQuery
+      ? React.useContext(plasmicQuery.HeadMetadataContext)
+      : undefined;
+
+  if (headMetadata) {
+    // If we have the Head metadata object specified, mutate it so to ensure it
+    // stores the data that should go in the <head>.
+    if (props.image) {
+      headMetadata.image = props.image;
+    }
+    if (props.title) {
+      headMetadata.title = props.title;
+    }
+    if (props.description) {
+      headMetadata.description = props.description;
+    }
+    if (props.canonical) {
+      headMetadata.canonical = props.canonical;
+    }
+  }
+
   if (!Head) {
     console.warn(
       `Plasmic: Head meta tags are being ignored. To make them work, pass a Head component into PlasmicRootProvider.`

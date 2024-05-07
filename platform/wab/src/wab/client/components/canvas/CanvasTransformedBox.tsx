@@ -1,3 +1,4 @@
+import { recomputeBounds } from "@/wab/client/components/canvas/HoverBox";
 import { frameToScalerRect } from "@/wab/client/coords";
 import { hasLayoutBox } from "@/wab/client/dom";
 import { cssPropsForInvertTransform } from "@/wab/client/studio-ctx/StudioCtx";
@@ -8,7 +9,6 @@ import { omit } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { ReactNode } from "react";
-import { recomputeBounds } from "./HoverBox";
 
 export const CanvasTransformedBox = observer(function CanvasTransformedBox({
   relativeTo,

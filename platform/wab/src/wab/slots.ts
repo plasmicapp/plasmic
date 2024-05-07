@@ -1,6 +1,6 @@
-import type { Param, TplComponent } from "./classes";
-import { assert, ensure } from "./common";
-import { ValComponent, ValNode } from "./val-nodes";
+import type { Param, TplComponent } from "@/wab/classes";
+import { assert, ensure } from "@/wab/common";
+import { ValComponent, ValNode } from "@/wab/val-nodes";
 
 /**
  * This represents selecting a slot from the perspective of outside the

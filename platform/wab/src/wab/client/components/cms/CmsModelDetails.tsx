@@ -1,4 +1,15 @@
 import { useRRouteMatch, UU } from "@/wab/client/cli-routes";
+import {
+  useCmsDatabase,
+  useCmsTable,
+  useMutateTable,
+} from "@/wab/client/components/cms/cms-contexts";
+import {
+  ContentEntryFormContext,
+  renderEntryField,
+  renderMaybeLocalizedInput,
+  ValueSwitch,
+} from "@/wab/client/components/cms/CmsInputs";
 import PlasmicWebhookHeader from "@/wab/client/components/webhooks/plasmic/plasmic_kit_continuous_deployment/PlasmicWebhookHeader";
 import PlasmicWebhooksItem from "@/wab/client/components/webhooks/plasmic/plasmic_kit_continuous_deployment/PlasmicWebhooksItem";
 import { Spinner } from "@/wab/client/components/widgets";
@@ -51,13 +62,6 @@ import L, { isEqual, sortBy } from "lodash";
 import * as React from "react";
 import { Prompt, useHistory } from "react-router";
 import { useBeforeUnload } from "react-use";
-import { useCmsDatabase, useCmsTable, useMutateTable } from "./cms-contexts";
-import {
-  ContentEntryFormContext,
-  renderEntryField,
-  renderMaybeLocalizedInput,
-  ValueSwitch,
-} from "./CmsInputs";
 
 export type CmsModelDetailsProps = DefaultCmsModelDetailsProps;
 

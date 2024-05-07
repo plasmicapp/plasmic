@@ -2,6 +2,25 @@
 
 import { apiKey } from "@/wab/client/api";
 import { AppCtx } from "@/wab/client/app-ctx";
+import PublishFlowDialog, {
+  SubsectionMeta,
+  VisibleEnableBlockReadOnly,
+} from "@/wab/client/components/TopFrame/TopBar/PublishFlowDialog";
+import PublishWizard from "@/wab/client/components/TopFrame/TopBar/PublishWizard";
+import { StatusPlasmicHosting } from "@/wab/client/components/TopFrame/TopBar/SubsectionPlasmicHosting";
+import {
+  mkPushDeployPublishState,
+  StatusPushDeploy,
+} from "@/wab/client/components/TopFrame/TopBar/SubsectionPushDeploy";
+import {
+  mkSaveVersionPublishState,
+  StatusSaveVersion,
+} from "@/wab/client/components/TopFrame/TopBar/SubsectionSaveVersion";
+import {
+  mkWebhooksPublishState,
+  StatusWebhooks,
+} from "@/wab/client/components/TopFrame/TopBar/SubsectionWebhooks";
+import { TopBarModal } from "@/wab/client/components/TopFrame/TopBar/TopBarModal";
 import { topFrameTourSignals } from "@/wab/client/components/TopFrame/TopFrameChrome";
 import { ToggleWebhook } from "@/wab/client/components/webhooks/WebhooksItem";
 import { personalProjectPaywallMessage } from "@/wab/client/components/widgets/plasmic/ShareDialogContent";
@@ -28,22 +47,6 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { useInterval } from "react-use";
 import useSWR from "swr";
-import PublishFlowDialog, {
-  SubsectionMeta,
-  VisibleEnableBlockReadOnly,
-} from "./PublishFlowDialog";
-import PublishWizard from "./PublishWizard";
-import { StatusPlasmicHosting } from "./SubsectionPlasmicHosting";
-import {
-  mkPushDeployPublishState,
-  StatusPushDeploy,
-} from "./SubsectionPushDeploy";
-import {
-  mkSaveVersionPublishState,
-  StatusSaveVersion,
-} from "./SubsectionSaveVersion";
-import { mkWebhooksPublishState, StatusWebhooks } from "./SubsectionWebhooks";
-import { TopBarModal } from "./TopBarModal";
 
 export type PublishState = undefined | "publishing" | "success" | "failure";
 

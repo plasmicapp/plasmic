@@ -1,3 +1,4 @@
+import { useDocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
 import { SidebarModalProvider } from "@/wab/client/components/sidebar/SidebarModal";
 import { ColorButton } from "@/wab/client/components/style-controls/ColorButton";
 import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
@@ -11,9 +12,8 @@ import { makeAssetClassName } from "@/wab/shared/codegen/image-assets";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useLocalStorage } from "react-use";
-import { useDocsPortalCtx } from "./DocsPortalCtx";
 
-interface IconTogglesPanelProps extends DefaultIconTogglesPanelProps {}
+type IconTogglesPanelProps = DefaultIconTogglesPanelProps;
 
 const IconTogglesPanel = observer(function IconTogglesPanel(
   props: IconTogglesPanelProps

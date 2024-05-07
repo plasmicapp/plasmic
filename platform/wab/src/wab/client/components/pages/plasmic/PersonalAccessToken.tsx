@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import PlasmicPersonalAccessToken from "./PlasmicPersonalAccessToken";
+import PlasmicPersonalAccessToken from "@/wab/client/components/pages/plasmic/PlasmicPersonalAccessToken";
 
 interface PersonalAccessTokenProps {
   tokenValue?: ReactNode;

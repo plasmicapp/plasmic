@@ -1,4 +1,8 @@
 import { Component, isKnownComponent, TplNode } from "@/wab/classes";
+import {
+  getEnvId,
+  RenderingCtx,
+} from "@/wab/client/components/canvas/canvas-rendering";
 import { handleError } from "@/wab/client/ErrorNotifications";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { getComponentDisplayName } from "@/wab/components";
@@ -14,7 +18,6 @@ import { debounce } from "lodash";
 import { computedFn } from "mobx-utils";
 import type React from "react";
 import { getExportedComponentName } from "src/wab/shared/codegen/react-p/utils";
-import { getEnvId, RenderingCtx } from "./canvas-rendering";
 
 export interface CanvasErrorBoundaryProps {
   nodeOrComponent: TplNode | Component;

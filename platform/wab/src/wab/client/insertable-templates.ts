@@ -8,6 +8,11 @@ import {
   Variant,
 } from "@/wab/classes";
 import { ViewOps } from "@/wab/client/components/canvas/view-ops";
+import { promptChooseItem } from "@/wab/client/components/modals/ChooseItemModal";
+import {
+  normalizeTemplateSpec,
+  StudioCtx,
+} from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ensure, maybe, unexpected } from "@/wab/common";
 import { PageComponent } from "@/wab/components";
@@ -35,8 +40,6 @@ import { getBaseVariant } from "@/wab/shared/Variants";
 import { unbundleProjectDependency, unbundleSite } from "@/wab/tagged-unbundle";
 import { deepTrackComponents } from "@/wab/tpls";
 import { flatten, fromPairs, isArray } from "lodash";
-import { promptChooseItem } from "./components/modals/ChooseItemModal";
-import { normalizeTemplateSpec, StudioCtx } from "./studio-ctx/StudioCtx";
 
 export const getPageTemplatesGroups = (studioCtx: StudioCtx) => {
   const insertableTemplates =

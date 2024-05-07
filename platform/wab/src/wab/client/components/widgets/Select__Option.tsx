@@ -5,7 +5,7 @@ import {
 import { SelectOptionRef } from "@plasmicapp/react-web";
 import * as React from "react";
 
-interface Select__OptionProps extends DefaultSelect__OptionProps {}
+type Select__OptionProps = DefaultSelect__OptionProps;
 
 function Select__Option_(props: Select__OptionProps, ref: SelectOptionRef) {
   const { plasmicProps } = PlasmicSelect__Option.useBehavior(props, ref);

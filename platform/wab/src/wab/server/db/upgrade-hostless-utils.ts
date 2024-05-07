@@ -1,13 +1,16 @@
 import { ensureKnownProjectDependency, ProjectDependency } from "@/wab/classes";
 import { upgradeProjectDeps } from "@/wab/project-deps";
+import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
+import {
+  getLastBundleVersion,
+  getMigratedBundle,
+} from "@/wab/server/db/BundleMigrator";
+import { DbMgr } from "@/wab/server/db/DbMgr";
+import { publishHostlessProject } from "@/wab/server/db/PublishHostless";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
 import { isHostLessPackage } from "@/wab/sites";
 import { trackComponentRoot, trackComponentSite } from "@/wab/tpls";
-import { unbundleSite } from "./bundle-migration-utils";
-import { getLastBundleVersion, getMigratedBundle } from "./BundleMigrator";
-import { DbMgr } from "./DbMgr";
-import { publishHostlessProject } from "./PublishHostless";
 
 /**
  * Upgrades the hostless projects imported by `projectId` by running the

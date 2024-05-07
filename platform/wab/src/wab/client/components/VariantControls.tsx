@@ -1,4 +1,14 @@
 import { Component, isKnownTplTag, Variant } from "@/wab/classes";
+import {
+  SelectorsInput,
+  SelectorTags,
+} from "@/wab/client/components/sidebar/RuleSetControls";
+import S from "@/wab/client/components/VariantControls.module.scss";
+import Button from "@/wab/client/components/widgets/Button";
+import {
+  EditableLabel,
+  EditableLabelHandles,
+} from "@/wab/client/components/widgets/EditableLabel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ensure, spawn } from "@/wab/common";
 import { InlineEdit } from "@/wab/commons/components/InlineEdit";
@@ -21,10 +31,6 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { SelectorsInput, SelectorTags } from "./sidebar/RuleSetControls";
-import S from "./VariantControls.module.scss";
-import Button from "./widgets/Button";
-import { EditableLabel, EditableLabelHandles } from "./widgets/EditableLabel";
 
 type VariantLabelProps = {
   variant: Variant;

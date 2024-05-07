@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultNavSeparatorProps altogether and have
 // total control over the props for your component.
-interface NavSeparatorProps extends DefaultNavSeparatorProps {}
+type NavSeparatorProps = DefaultNavSeparatorProps;
 
 function NavSeparator_(props: NavSeparatorProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicNavSeparator to render this component as it was

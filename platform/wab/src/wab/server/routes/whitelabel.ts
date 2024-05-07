@@ -1,5 +1,6 @@
 import { ensure, ensureType } from "@/wab/common";
 import { User } from "@/wab/server/entities/Entities";
+import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import { doLogin } from "@/wab/server/util/auth-util";
 import {
   BadRequestError,
@@ -10,7 +11,6 @@ import { ApiWhiteLabelUser, TeamJwtOpenPayload } from "@/wab/shared/ApiSchema";
 import { NextFunction } from "express";
 import { Request, Response } from "express-serve-static-core";
 import * as jwt from "jsonwebtoken";
-import { superDbMgr, userDbMgr } from "./util";
 
 function whiteLabelMgr(req: Request) {
   if (!req.apiTeam) {

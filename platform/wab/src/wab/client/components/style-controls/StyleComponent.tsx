@@ -21,6 +21,9 @@ import {
   SidebarSection,
   SidebarSectionHandle,
 } from "@/wab/client/components/sidebar/SidebarSection";
+import { ColorSwatch } from "@/wab/client/components/style-controls/ColorSwatch";
+import { DefinedIndicator } from "@/wab/client/components/style-controls/DefinedIndicator";
+import { UnloggedDragCatcher } from "@/wab/client/components/style-controls/UnloggedDragCatcher";
 import { Tab, Tabs } from "@/wab/client/components/widgets";
 import { StudioChangeOpts, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
@@ -111,9 +114,6 @@ import { observer } from "mobx-react";
 import { computedFn } from "mobx-utils";
 import * as React from "react";
 import { forwardRef, MouseEventHandler, ReactNode, useContext } from "react";
-import { ColorSwatch } from "./ColorSwatch";
-import { DefinedIndicator } from "./DefinedIndicator";
-import { UnloggedDragCatcher } from "./UnloggedDragCatcher";
 
 export interface StyleComponentProps {
   expsProvider: ExpsProvider;

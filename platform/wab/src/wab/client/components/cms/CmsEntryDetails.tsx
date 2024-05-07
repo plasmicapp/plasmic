@@ -1,4 +1,17 @@
 import { UU } from "@/wab/client/cli-routes";
+import {
+  useCmsDatabase,
+  useCmsRow,
+  useCmsTable,
+  useMutateRow,
+} from "@/wab/client/components/cms/cms-contexts";
+import { CmsEntryHistory } from "@/wab/client/components/cms/CmsEntryHistory";
+import {
+  ContentEntryFormContext,
+  deriveFormItemPropsFromField,
+  renderEntryField,
+  renderMaybeLocalizedInput,
+} from "@/wab/client/components/cms/CmsInputs";
 import { useApi, useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultCmsEntryDetailsProps,
@@ -24,19 +37,6 @@ import { isEqual, isNil, mapValues, pickBy } from "lodash";
 import * as React from "react";
 import { Prompt, Route, useHistory, useRouteMatch } from "react-router";
 import { useBeforeUnload, useInterval } from "react-use";
-import {
-  useCmsDatabase,
-  useCmsRow,
-  useCmsTable,
-  useMutateRow,
-} from "./cms-contexts";
-import { CmsEntryHistory } from "./CmsEntryHistory";
-import {
-  ContentEntryFormContext,
-  deriveFormItemPropsFromField,
-  renderEntryField,
-  renderMaybeLocalizedInput,
-} from "./CmsInputs";
 
 export type CmsEntryDetailsProps = DefaultCmsEntryDetailsProps;
 

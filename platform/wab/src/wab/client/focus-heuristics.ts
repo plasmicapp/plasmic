@@ -1,4 +1,5 @@
 import { Site, TplComponent } from "@/wab/classes";
+import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
 import {
   assert,
   coalesce,
@@ -30,7 +31,6 @@ import {
 } from "@/wab/val-nodes";
 import { asVal } from "@/wab/vals";
 import L from "lodash";
-import { ComponentCtx } from "./studio-ctx/component-ctx";
 
 export class FocusHeuristics {
   constructor(

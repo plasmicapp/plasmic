@@ -12,7 +12,7 @@ import {
   TplNode,
   Variant,
 } from "@/wab/classes";
-import { ensure } from "@/wab/common";
+import { ensure, isNonNil } from "@/wab/common";
 import { unwrap } from "@/wab/commons/failable-utils";
 import {
   clone as cloneExpr,
@@ -124,7 +124,7 @@ export function generateTplsFromFormItems(
   const extractFormItemsFromArg = (
     itemArg: Arg | undefined,
     itemParam: Param
-  ) => {
+  ): FormItemProps[] | undefined => {
     if (itemArg) {
       if (isKnownCompositeExpr(itemArg.expr)) {
         return deserCompositeExprMaybe(itemArg.expr);
@@ -137,99 +137,100 @@ export function generateTplsFromFormItems(
     return undefined;
   };
 
-  const formItems: FormItemProps[] = extractFormItemsFromArg(
-    formItemsArg,
-    formItemsParam
-  );
+  const formItems = extractFormItemsFromArg(formItemsArg, formItemsParam);
 
-  for (const formItem of formItems) {
-    const inputType: InputType = isKnownExpr(formItem.inputType)
-      ? tryExtractJson(formItem.inputType)
-      : formItem.inputType;
-    const labelRenderExpr = createLabelRenderExprFromFormItem(
-      formItem,
-      baseVariant
-    );
-    const elementSchema = inputTypeToElementSchema(formItem);
-    if (!elementSchema) {
-      continue;
-    }
-    const inputTpl = unwrap(
-      elementSchemaToTpl(site, component, elementSchema, {
-        codeComponentsOnly: true,
-      })
-    ).tpl as TplComponent;
-    const inputTplBaseVs = ensureBaseVariantSetting(inputTpl);
-    if (
-      [InputType.Select, InputType.RadioGroup].includes(inputType) &&
-      formItem.options
-    ) {
-      tplMgr.setArg(
-        inputTpl,
-        inputTplBaseVs,
-        getParamVariable(inputTpl, "options"),
-        cloneExpr(formItem.options)
+  if (isNonNil(formItems)) {
+    for (const formItem of formItems) {
+      const inputType: InputType = isKnownExpr(formItem.inputType)
+        ? tryExtractJson(formItem.inputType)
+        : formItem.inputType;
+      const labelRenderExpr = createLabelRenderExprFromFormItem(
+        formItem,
+        baseVariant
       );
-    }
-    if (InputType.RadioGroup === inputType && formItem.optionType) {
-      tplMgr.setArg(
-        inputTpl,
-        inputTplBaseVs,
-        getParamVariable(inputTpl, "optionType"),
-        cloneExpr(formItem.optionType)
+      const elementSchema = inputTypeToElementSchema(formItem);
+      if (!elementSchema) {
+        continue;
+      }
+      const inputTpl = unwrap(
+        elementSchemaToTpl(site, component, elementSchema, {
+          codeComponentsOnly: true,
+        })
+      ).tpl as TplComponent;
+      const inputTplBaseVs = ensureBaseVariantSetting(inputTpl);
+      if (
+        [InputType.Select, InputType.RadioGroup].includes(inputType) &&
+        formItem.options
+      ) {
+        tplMgr.setArg(
+          inputTpl,
+          inputTplBaseVs,
+          getParamVariable(inputTpl, "options"),
+          cloneExpr(formItem.options)
+        );
+      }
+      if (InputType.RadioGroup === inputType && formItem.optionType) {
+        tplMgr.setArg(
+          inputTpl,
+          inputTplBaseVs,
+          getParamVariable(inputTpl, "optionType"),
+          cloneExpr(formItem.optionType)
+        );
+      }
+
+      const formItemComponent = ensure(
+        allComponents.find((c) => c.name === formItemComponentName),
+        `project should have a "${formItemComponentName}" component`
       );
-    }
+      const tplFormItem = mkTplComponent(
+        formItemComponent,
+        tplMgr.ensureBaseVariant(component),
+        {
+          ...Object.fromEntries(
+            Object.entries(formItem)
+              .filter(
+                ([name]) =>
+                  ![
+                    "inputType",
+                    "options",
+                    "optionType",
+                    "label",
+                    "key",
+                    "fieldId",
+                    "showTime",
+                  ].includes(name)
+              )
+              .map(([name, value]) => [
+                name,
+                isKnownExpr(value as any)
+                  ? cloneExpr(value as Expr)
+                  : codeLit(value as any),
+              ])
+          ),
+          ...(labelRenderExpr && inputType !== InputType.Checkbox
+            ? { label: labelRenderExpr }
+            : inputType === InputType.Checkbox
+            ? { noLabel: codeLit(true) }
+            : {}),
+        },
+        inputTpl
+      );
+      if (InputType.Checkbox === inputType) {
+        const checkboxChildrenSlot = new SlotSelection({
+          tpl: inputTpl,
+          slotParam: ensure(
+            inputTpl.component.params.find(
+              (p) => p.variable.name === "children"
+            ),
+            `"${inputTpl.component.name}" should have a "children" slot`
+          ),
+        });
+        $$$(checkboxChildrenSlot.getTpl()).remove({ deep: true });
+        $$$(inputTpl).append(labelRenderExpr.tpl[0]);
+      }
 
-    const formItemComponent = ensure(
-      allComponents.find((c) => c.name === formItemComponentName),
-      `project should have a "${formItemComponentName}" component`
-    );
-    const tplFormItem = mkTplComponent(
-      formItemComponent,
-      tplMgr.ensureBaseVariant(component),
-      {
-        ...Object.fromEntries(
-          Object.entries(formItem)
-            .filter(
-              ([name]) =>
-                ![
-                  "inputType",
-                  "options",
-                  "optionType",
-                  "label",
-                  "key",
-                  "fieldId",
-                  "showTime",
-                ].includes(name)
-            )
-            .map(([name, value]) => [
-              name,
-              isKnownExpr(value as any)
-                ? cloneExpr(value as Expr)
-                : codeLit(value as any),
-            ])
-        ),
-        ...(labelRenderExpr && inputType !== InputType.Checkbox
-          ? { label: labelRenderExpr }
-          : inputType === InputType.Checkbox
-          ? { noLabel: codeLit(true) }
-          : {}),
-      },
-      inputTpl
-    );
-    if (InputType.Checkbox === inputType) {
-      const checkboxChildrenSlot = new SlotSelection({
-        tpl: inputTpl,
-        slotParam: ensure(
-          inputTpl.component.params.find((p) => p.variable.name === "children"),
-          `"${inputTpl.component.name}" should have a "children" slot`
-        ),
-      });
-      $$$(checkboxChildrenSlot.getTpl()).remove({ deep: true });
-      $$$(inputTpl).append(labelRenderExpr.tpl[0]);
+      tplFormsItems.push(tplFormItem);
     }
-
-    tplFormsItems.push(tplFormItem);
   }
   const submitSlotArg = getTplComponentArgByParamName(
     tpl,

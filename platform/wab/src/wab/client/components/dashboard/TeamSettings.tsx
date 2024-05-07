@@ -1,3 +1,7 @@
+import {
+  getTeamMenuItems,
+  TeamMenu,
+} from "@/wab/client/components/dashboard/dashboard-actions";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
@@ -14,7 +18,6 @@ import { TeamId } from "@/wab/shared/ApiSchema";
 import { accessLevelRank, GrantableAccessLevel } from "@/wab/shared/EntUtil";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
-import { getTeamMenuItems, TeamMenu } from "./dashboard-actions";
 
 interface TeamSettingsProps extends DefaultTeamSettingsProps {
   teamId: TeamId;

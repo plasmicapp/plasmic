@@ -1,9 +1,9 @@
 import { Component, Site, TplNode } from "@/wab/classes";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
+import { InvisibleElementLintIssue } from "@/wab/shared/linting/lint-types";
+import { lintIssuesEquals } from "@/wab/shared/linting/lint-utils";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import { isAlwaysInvisibleTpl } from "@/wab/shared/visibility-utils";
-import { InvisibleElementLintIssue } from "./lint-types";
-import { lintIssuesEquals } from "./lint-utils";
 
 const TYPE = "invisible-element";
 

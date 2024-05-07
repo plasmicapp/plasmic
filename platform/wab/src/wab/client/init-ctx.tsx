@@ -1,4 +1,14 @@
 import { ProjectDependency } from "@/wab/classes";
+import * as Api from "@/wab/client/api";
+import { AppCtx, hideStarters } from "@/wab/client/app-ctx";
+import {
+  getEmaiLVerificationRouteWithContinuation,
+  getLoginRouteWithContinuation,
+  parseProjectLocation,
+  UU,
+} from "@/wab/client/cli-routes";
+import { PublicLink } from "@/wab/client/components/PublicLink";
+import * as DbMod from "@/wab/client/db";
 import { asyncNever, spawn } from "@/wab/common";
 import { getProjectFlags } from "@/wab/devflags";
 import * as exprs from "@/wab/exprs";
@@ -12,16 +22,6 @@ import { unbundleSite } from "@/wab/tagged-unbundle";
 import * as tpls from "@/wab/tpls";
 import { notification } from "antd";
 import * as React from "react";
-import * as Api from "./api";
-import { AppCtx, hideStarters } from "./app-ctx";
-import {
-  getEmaiLVerificationRouteWithContinuation,
-  getLoginRouteWithContinuation,
-  parseProjectLocation,
-  UU,
-} from "./cli-routes";
-import { PublicLink } from "./components/PublicLink";
-import * as DbMod from "./db";
 
 export async function loadSiteDbCtx(
   appCtx: AppCtx,

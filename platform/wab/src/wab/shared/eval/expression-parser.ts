@@ -262,7 +262,7 @@ export function parseCodeExpression(code: string): ParsedExprInfo {
     node: ast.Identifier,
     parents: WithLocals<ast.Node>[]
   ) => {
-    let name = node.name;
+    const name = node.name;
     if (name === "undefined") return;
     for (const parent of parents) {
       if (name === "arguments" && declaresArguments(parent)) {
@@ -316,7 +316,7 @@ export function parseCodeExpression(code: string): ParsedExprInfo {
     Identifier: identifier,
     ThisExpression: function (_node, parents) {
       for (let i = 0; i < parents.length; i++) {
-        let parent = parents[i];
+        const parent = parents[i];
         if (
           parent.type === "FunctionExpression" ||
           parent.type === "FunctionDeclaration"

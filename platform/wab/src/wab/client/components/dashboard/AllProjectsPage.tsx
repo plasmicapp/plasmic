@@ -1,4 +1,5 @@
 import { U } from "@/wab/client/cli-routes";
+import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
 import {
   PaywallError,
   promptBilling,
@@ -14,9 +15,8 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as querystring from "querystring";
 import * as React from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { documentTitle } from "./page-utils";
 
-interface AllProjectsPageProps extends DefaultAllProjectsPageProps {}
+type AllProjectsPageProps = DefaultAllProjectsPageProps;
 
 const upsellQuery = "upsell";
 

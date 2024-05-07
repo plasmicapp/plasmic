@@ -1,7 +1,7 @@
+import styles from "@/wab/client/components/canvas/HoverBox/SpacingVisualizer.module.sass";
 import { cx } from "@/wab/common";
 import { Side } from "@/wab/geom";
 import * as React from "react";
-import styles from "./SpacingVisualizer.module.sass";
 
 type SpacingValues = Record<Side, number>;
 

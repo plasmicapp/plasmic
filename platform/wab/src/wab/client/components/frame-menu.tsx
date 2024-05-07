@@ -1,4 +1,9 @@
 import { Arena, ArenaFrame } from "@/wab/classes";
+import {
+  MenuBuilder,
+  MenuItemContent,
+} from "@/wab/client/components/menu-builder";
+import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ensure } from "@/wab/common";
@@ -16,8 +21,6 @@ import { ARENA_LOWER, FRAME_LOWER } from "@/wab/shared/Labels";
 import { isFrameWithVariantCombo } from "@/wab/shared/Variants";
 import { Menu } from "antd";
 import * as React from "react";
-import { MenuBuilder, MenuItemContent } from "./menu-builder";
-import { reactConfirm } from "./quick-modals";
 
 export function makeFrameMenu({
   viewCtx,

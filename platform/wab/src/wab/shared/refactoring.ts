@@ -14,18 +14,18 @@ import {
 } from "@/wab/classes";
 import { assert, isPrefixArray, uniqueName } from "@/wab/common";
 import * as Exprs from "@/wab/exprs";
+import { toVarName } from "@/wab/shared/codegen/util";
+import {
+  parseExpr,
+  renameObjectKey,
+  replaceVarWithProp,
+} from "@/wab/shared/eval/expression-parser";
 import {
   findRecursiveImplicitStates,
   getStateVarName,
   isStateUsedInExpr,
 } from "@/wab/states";
 import * as Tpls from "@/wab/tpls";
-import { toVarName } from "./codegen/util";
-import {
-  parseExpr,
-  renameObjectKey,
-  replaceVarWithProp,
-} from "./eval/expression-parser";
 
 /**
  * Returns boolean indicating whether `expr` is referencing `param`.

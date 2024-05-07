@@ -1,10 +1,10 @@
+import { apiKey, invalidationKey } from "@/wab/client/api";
+import { AppCtx } from "@/wab/client/app-ctx";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { withoutNils } from "@/wab/common";
 import { BranchId, ProjectId } from "@/wab/shared/ApiSchema";
 import { keyBy } from "lodash";
 import useSWR from "swr";
-import { apiKey, invalidationKey } from "./api";
-import { AppCtx } from "./app-ctx";
-import { useAppCtx } from "./contexts/AppContexts";
 
 export function useGetDomainsForProject(projectId: ProjectId) {
   const appCtx = useAppCtx();

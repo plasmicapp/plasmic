@@ -2,6 +2,12 @@
 // This file is owned by you, feel free to edit as you see fit.
 import { DataSourceOpExpr } from "@/wab/classes";
 import { AppCtx } from "@/wab/client/app-ctx";
+import {
+  useAppCurrentUserOpConfig,
+  useAppRoles,
+  useAppUsers,
+} from "@/wab/client/components/app-auth/app-auth-contexts";
+import { APP_AUTH_TRACKING_EVENT } from "@/wab/client/components/app-auth/constants";
 import { useDataSourceOpExprBottomModal } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
 import {
   ClickStopper,
@@ -28,12 +34,6 @@ import { Menu, notification } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
-import {
-  useAppCurrentUserOpConfig,
-  useAppRoles,
-  useAppUsers,
-} from "./app-auth-contexts";
-import { APP_AUTH_TRACKING_EVENT } from "./constants";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can

@@ -4,9 +4,9 @@ import * as React from "react";
 import {
   DefaultSwitchProps,
   PlasmicSwitch,
-} from "./wab/client/plasmic/plasmic_kit_page_settings/PlasmicSwitch";
+} from "@/wab/client/plasmic/plasmic_kit_page_settings/PlasmicSwitch";
 
-interface SwitchProps extends DefaultSwitchProps {}
+type SwitchProps = DefaultSwitchProps;
 
 function Switch_(props: SwitchProps, ref: SwitchRef) {
   const { plasmicProps, state } = PlasmicSwitch.useBehavior<SwitchProps>(

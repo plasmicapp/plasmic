@@ -1,4 +1,9 @@
 import { LabeledToggleButtonGroupItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import {
+  StyleComponent,
+  StyleComponentProps,
+} from "@/wab/client/components/style-controls/StyleComponent";
+import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggleButton";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import ColumnAlignBaselineIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ColumnAlignBaseline";
@@ -13,8 +18,6 @@ import RowAlignStartIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Row
 import RowAlignStretchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__RowAlignStretch";
 import { observer } from "mobx-react";
 import React from "react";
-import { StyleComponent, StyleComponentProps } from "./StyleComponent";
-import StyleToggleButton from "./StyleToggleButton";
 
 export const AlignItemsControls = observer(
   class extends StyleComponent<

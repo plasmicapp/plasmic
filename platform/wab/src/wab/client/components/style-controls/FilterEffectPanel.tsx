@@ -2,6 +2,7 @@ import {
   FullRow,
   LabeledItemRow,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
+import styles from "@/wab/client/components/style-controls/FilterEffectPanel.module.sass";
 import { ColorPicker } from "@/wab/client/components/widgets/ColorPicker";
 import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
 import Select from "@/wab/client/components/widgets/Select";
@@ -17,7 +18,6 @@ import {
 import { Slider } from "antd";
 import { observer } from "mobx-react";
 import React, { useEffect } from "react";
-import styles from "./FilterEffectPanel.module.sass";
 
 interface FilterEffectPanelProps {
   studioCtx: StudioCtx;

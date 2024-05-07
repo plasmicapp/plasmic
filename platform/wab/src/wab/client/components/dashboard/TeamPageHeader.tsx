@@ -1,6 +1,8 @@
 /** @format */
 
 import { U } from "@/wab/client/cli-routes";
+import { promptNewWorkspace } from "@/wab/client/components/dashboard/dashboard-actions";
+import { ProjectsFilterProps } from "@/wab/client/components/dashboard/ProjectsFilter";
 import EditableResourceName from "@/wab/client/components/EditableResourceName";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import IconButton from "@/wab/client/components/widgets/IconButton";
@@ -21,8 +23,6 @@ import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 import { useHistory } from "react-router-dom";
-import { promptNewWorkspace } from "./dashboard-actions";
-import { ProjectsFilterProps } from "./ProjectsFilter";
 
 interface TeamPageHeaderProps extends DefaultTeamPageHeaderProps {
   team?: ApiTeam;

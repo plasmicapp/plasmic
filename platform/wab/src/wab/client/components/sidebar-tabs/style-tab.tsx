@@ -7,6 +7,20 @@ import {
   TplSlot,
   TplTag,
 } from "@/wab/classes";
+import {
+  TplComponentNameSection,
+  TplTagNameSection,
+} from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
+import { ComponentTab } from "@/wab/client/components/sidebar-tabs/ComponentTab/ComponentTab";
+import { PageTab } from "@/wab/client/components/sidebar-tabs/PageTab/PageTab";
+import {
+  canRenderArbitraryCssSelectors,
+  canRenderMixins,
+  canRenderPrivateStyleVariants,
+  getOrderedSectionRender,
+  Section,
+  StyleTabFilter,
+} from "@/wab/client/components/sidebar-tabs/Sections";
 import { NamedPanelHeader } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarModalProvider } from "@/wab/client/components/sidebar/SidebarModal";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
@@ -22,7 +36,6 @@ import SlotIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Slot";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { cx, spawn } from "@/wab/common";
-import { Slot, SlotProvider } from "@/wab/commons/components/Slots";
 import {
   getComponentDisplayName,
   isCodeComponent,
@@ -56,20 +69,6 @@ import * as mobx from "mobx";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { createContext, useContext } from "react";
-import {
-  TplComponentNameSection,
-  TplTagNameSection,
-} from "./ComponentPropsSection";
-import { ComponentTab } from "./ComponentTab/ComponentTab";
-import { PageTab } from "./PageTab/PageTab";
-import {
-  canRenderArbitraryCssSelectors,
-  canRenderMixins,
-  canRenderPrivateStyleVariants,
-  getOrderedSectionRender,
-  Section,
-  StyleTabFilter,
-} from "./Sections";
 
 export const StyleTabContext = createContext<StyleTabFilter>("all");
 
@@ -335,36 +334,33 @@ const StyleTabBottomPanel = observer(function StyleTabBottomPanel(props: {
 
   return (
     <SidebarModalProvider containerSelector=".style-tab">
-      <SlotProvider>
-        <div className="canvas-editor__right-pane__bottom style-tab">
-          <div
-            className="canvas-editor__right-pane__bottom__scroll"
-            style={
-              focused
-                ? {
-                    borderLeft:
-                      currentTarget === "baseVariant"
-                        ? "1px solid transparent"
-                        : `1px solid var(${selectionControlsColor})`,
-                  }
-                : undefined
-            }
-          >
-            {focused instanceof SlotSelection ? (
-              <SlotSelectionMessage node={focused} viewCtx={viewCtx} />
-            ) : tpl === component.tplTree && isCodeComponent(component) ? (
-              <CodeComponentRootMessage component={component} />
-            ) : isCodeComponent(component) && isTplSlot(tpl) ? (
-              <CodeComponentTplSlotMessage component={component} />
-            ) : tpl ? (
-              <>
-                <StyleTabForTpl viewCtx={viewCtx} tpl={tpl} />
-              </>
-            ) : null}
-          </div>
+      <div className="canvas-editor__right-pane__bottom style-tab">
+        <div
+          className="canvas-editor__right-pane__bottom__scroll"
+          style={
+            focused
+              ? {
+                  borderLeft:
+                    currentTarget === "baseVariant"
+                      ? "1px solid transparent"
+                      : `1px solid var(${selectionControlsColor})`,
+                }
+              : undefined
+          }
+        >
+          {focused instanceof SlotSelection ? (
+            <SlotSelectionMessage node={focused} viewCtx={viewCtx} />
+          ) : tpl === component.tplTree && isCodeComponent(component) ? (
+            <CodeComponentRootMessage component={component} />
+          ) : isCodeComponent(component) && isTplSlot(tpl) ? (
+            <CodeComponentTplSlotMessage component={component} />
+          ) : tpl ? (
+            <>
+              <StyleTabForTpl viewCtx={viewCtx} tpl={tpl} />
+            </>
+          ) : null}
         </div>
-        <Slot />
-      </SlotProvider>
+      </div>
     </SidebarModalProvider>
   );
 });

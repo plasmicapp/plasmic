@@ -1,4 +1,5 @@
 import { usePreviewCtx } from "@/wab/client/components/live/PreviewCtx";
+import VariantsMenu from "@/wab/client/components/top-bar/VariantsMenu";
 import {
   DefaultVariantsComboSelectProps,
   PlasmicVariantsComboSelect,
@@ -17,9 +18,8 @@ import { Dropdown } from "antd";
 import { defer } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
-import VariantsMenu from "./VariantsMenu";
 
-type VariantsComboSelectProps = DefaultVariantsComboSelectProps
+type VariantsComboSelectProps = DefaultVariantsComboSelectProps;
 
 const VariantsComboSelect = observer(function VariantsComboSelect(
   props: VariantsComboSelectProps

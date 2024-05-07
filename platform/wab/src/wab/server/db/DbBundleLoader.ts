@@ -1,11 +1,14 @@
 import * as classes from "@/wab/classes";
 import { ensure, strictZip } from "@/wab/common";
+import {
+  getMigratedBundle,
+  MigrationDbMgr,
+} from "@/wab/server/db/BundleMigrator";
+import { DbMgr } from "@/wab/server/db/DbMgr";
 import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
 import { Bundle, Bundler } from "@/wab/shared/bundler";
 import { parseBundle, UnsafeBundle } from "@/wab/shared/bundles";
 import L from "lodash";
-import { getMigratedBundle, MigrationDbMgr } from "./BundleMigrator";
-import { DbMgr } from "./DbMgr";
 
 /**
  * Returns all PkgVersion entities that the argument `bundle` transitively

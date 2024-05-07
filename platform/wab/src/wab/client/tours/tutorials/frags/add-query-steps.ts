@@ -1,4 +1,5 @@
 import { RightTabKey } from "@/wab/client/studio-ctx/StudioCtx";
+import { changeRightTabKeyStepFunc } from "@/wab/client/tours/tutorials/frags/basic-steps";
 import {
   TutorialEvent,
   TutorialEventsType,
@@ -15,7 +16,6 @@ import {
   StudioTutorialStep,
   TutorialStepFunctionality,
 } from "@/wab/client/tours/tutorials/tutorials-types";
-import { changeRightTabKeyStepFunc } from "./basic-steps";
 
 const QUERY_ADD_STEP_FUNC: TutorialStepFunctionality<OnNextCtx> = {
   target: STUDIO_ELEMENTS_TARGETS.dataQueriesSection,

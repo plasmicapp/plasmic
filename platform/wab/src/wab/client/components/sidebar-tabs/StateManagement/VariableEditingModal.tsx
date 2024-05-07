@@ -1,11 +1,11 @@
 import { Component, State } from "@/wab/classes";
+import VariableEditingForm from "@/wab/client/components/sidebar-tabs/StateManagement/VariableEditingForm";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawn } from "@/wab/common";
 import { VARIABLE_CAP } from "@/wab/shared/Labels";
 import startCase from "lodash/startCase";
 import React from "react";
-import VariableEditingForm from "./VariableEditingForm";
 
 export function VariableEditingModal({
   component,

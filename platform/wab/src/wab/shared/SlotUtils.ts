@@ -25,6 +25,18 @@ import {
   isCodeComponentTpl,
   isPlasmicComponent,
 } from "@/wab/components";
+import { flattenComponent } from "@/wab/shared/cached-selectors";
+import { elementSchemaToTpl } from "@/wab/shared/code-components/code-components";
+import { toVarName } from "@/wab/shared/codegen/util";
+import {
+  isRenderableType,
+  isRenderFuncType,
+} from "@/wab/shared/core/model-util";
+import { typographyCssProps } from "@/wab/shared/core/style-props";
+import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { tryGetBaseVariantSetting, VariantCombo } from "@/wab/shared/Variants";
 import { SlotSelection } from "@/wab/slots";
 import { createExpandedRuleSetMerger, THEMABLE_TAGS } from "@/wab/styles";
 import {
@@ -48,15 +60,6 @@ import {
   tryGetOwnerSite,
 } from "@/wab/tpls";
 import L from "lodash";
-import { flattenComponent } from "./cached-selectors";
-import { elementSchemaToTpl } from "./code-components/code-components";
-import { toVarName } from "./codegen/util";
-import { isRenderableType, isRenderFuncType } from "./core/model-util";
-import { typographyCssProps } from "./core/style-props";
-import { maybeComputedFn } from "./mobx-util";
-import { TplMgr } from "./TplMgr";
-import { $$$ } from "./TplQuery";
-import { tryGetBaseVariantSetting, VariantCombo } from "./Variants";
 
 export function getSlotParams(component: Component) {
   return component.params.filter((p): p is SlotParam => isSlot(p));

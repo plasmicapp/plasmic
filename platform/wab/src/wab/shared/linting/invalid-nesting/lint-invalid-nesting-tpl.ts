@@ -11,6 +11,13 @@ import {
 
 import { switchType } from "@/wab/common";
 import { isCodeComponent } from "@/wab/components";
+import {
+  AncestorInfo,
+  ANCESTOR_INFO_KEYS,
+  findInvalidAncestorForTag,
+  getInvalidAncestor,
+  updatedAncestorInfo,
+} from "@/wab/shared/linting/invalid-nesting/reactValidateDomNesting";
 import { InvalidTplNestingLintIssue } from "@/wab/shared/linting/lint-types";
 import { lintIssuesEquals } from "@/wab/shared/linting/lint-utils";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
@@ -18,13 +25,6 @@ import { getSlotArgs } from "@/wab/shared/SlotUtils";
 import { isTplTag, walkTpls } from "@/wab/tpls";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { comparer } from "mobx";
-import {
-  AncestorInfo,
-  ANCESTOR_INFO_KEYS,
-  findInvalidAncestorForTag,
-  getInvalidAncestor,
-  updatedAncestorInfo,
-} from "./reactValidateDomNesting";
 
 const TYPE = "invalid-tpl-nesting";
 

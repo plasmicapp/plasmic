@@ -4,6 +4,10 @@ import {
   isKnownObjectPath,
   isKnownTemplatedString,
 } from "@/wab/classes";
+import {
+  useDataSourceOpExprBottomModal,
+  useSource,
+} from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
   IconLinkButton,
@@ -32,10 +36,6 @@ import { Input, InputRef, Menu, Popover, Tooltip } from "antd";
 import { isEqual, size } from "lodash";
 import { observer } from "mobx-react";
 import React, { useMemo, useState } from "react";
-import {
-  useDataSourceOpExprBottomModal,
-  useSource,
-} from "./DataSource/DataSourceOpPicker";
 
 const URLParameterRow = observer(
   (props: {

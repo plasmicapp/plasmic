@@ -48,6 +48,22 @@ import {
 import { instUtil } from "@/wab/shared/core/InstUtil";
 import { assertSameInstType } from "@/wab/shared/core/model-tree-util";
 import {
+  AutoReconciliation,
+  cloneFieldValueToMergedSite,
+  cloneObjInstToMergedSite,
+  deriveKeyFunc,
+  DirectConflict,
+  getArrayKey,
+  getDirectConflicts,
+  SpecialDirectConflict,
+} from "@/wab/shared/site-diffs/merge-core";
+import {
+  FieldConflictDescriptorMeta,
+  MergeSpecialFieldHandler,
+  modelConflictsMeta,
+  ModelConflictsMeta,
+} from "@/wab/shared/site-diffs/model-conflicts-meta";
+import {
   fillVirtualSlotContents,
   getSlotArgs,
   getSlotParams,
@@ -80,22 +96,6 @@ import {
   uniq,
   uniqBy,
 } from "lodash";
-import {
-  AutoReconciliation,
-  cloneFieldValueToMergedSite,
-  cloneObjInstToMergedSite,
-  deriveKeyFunc,
-  DirectConflict,
-  getArrayKey,
-  getDirectConflicts,
-  SpecialDirectConflict,
-} from "./merge-core";
-import {
-  FieldConflictDescriptorMeta,
-  MergeSpecialFieldHandler,
-  modelConflictsMeta,
-  ModelConflictsMeta,
-} from "./model-conflicts-meta";
 
 function getCompPath(comp: Component, bundler: Bundler) {
   return [

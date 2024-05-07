@@ -38,7 +38,7 @@ while (ordered.length < L.size(graph)) {
       .sortBy(([a, b]) => a)
       .value()
   );
-  let bestNode = L(graph)
+  const bestNode = L(graph)
     .keys()
     .difference(ordered)
     .sortBy((node) => added.union(crawl(node)).size)

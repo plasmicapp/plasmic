@@ -7,6 +7,9 @@ import {
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import promptForMetadata from "@/wab/client/components/modals/ComponentMetadataModal";
 import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
+import { BoolPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/BoolPropEditor";
+import { updateOrCreateExpr } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { IFrameAwareDropdownMenu } from "@/wab/client/components/widgets";
@@ -41,9 +44,6 @@ import { extractLit } from "@/wab/states";
 import { Menu, notification, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
-import { BoolPropEditor } from "./ComponentProps/BoolPropEditor";
-import { updateOrCreateExpr } from "./PropEditorRow";
-import { PropValueEditor } from "./PropValueEditor";
 
 export const LegacyComponentParamsSection = observer(
   function ComponentParamsPanel(props: {

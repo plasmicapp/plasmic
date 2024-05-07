@@ -1,6 +1,7 @@
 import { Component, State } from "@/wab/classes";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
+import { useVariableRow } from "@/wab/client/components/sidebar-tabs/StateManagement/useVariableRow";
 import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
 import { DefaultVariableRowProps } from "@/wab/client/plasmic/plasmic_kit_state_management/PlasmicVariableRow";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -11,7 +12,6 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { getStateVarName } from "src/wab/states";
-import { useVariableRow } from "./useVariableRow";
 
 export interface ImplicitVariableRowProps extends DefaultVariableRowProps {
   component: Component;

@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultThreadCommentsProps altogether and have
 // total control over the props for your component.
-export interface ThreadCommentsProps extends DefaultThreadCommentsProps {}
+export type ThreadCommentsProps = DefaultThreadCommentsProps;
 
 function ThreadComments_(
   props: ThreadCommentsProps,

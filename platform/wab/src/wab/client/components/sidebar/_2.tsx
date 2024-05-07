@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from Default_2Props altogether and have
 // total control over the props for your component.
-interface _2Props extends Default_2Props {}
+type _2Props = Default_2Props;
 
 function _2_(props: _2Props, ref: HTMLElementRefOf<"div">) {
   // Use Plasmic_2 to render this component as it was

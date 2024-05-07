@@ -4,10 +4,9 @@ import * as React from "react";
 import {
   DefaultHostProtocolSelect__OverlayProps,
   PlasmicHostProtocolSelect__Overlay,
-} from "./wab/client/plasmic/plasmic_kit_dashboard/PlasmicHostProtocolSelect__Overlay";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicHostProtocolSelect__Overlay";
 
-interface HostProtocolSelect__OverlayProps
-  extends DefaultHostProtocolSelect__OverlayProps {}
+type HostProtocolSelect__OverlayProps = DefaultHostProtocolSelect__OverlayProps;
 
 function HostProtocolSelect__Overlay_(
   props: HostProtocolSelect__OverlayProps,

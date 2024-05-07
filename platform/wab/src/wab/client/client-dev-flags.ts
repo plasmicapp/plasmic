@@ -1,9 +1,9 @@
+import { isTopFrame } from "@/wab/client/cli-routes";
+import { getPlasmicStudioArgs } from "@/wab/client/frame-ctx/plasmic-studio-args";
 import { assert, withoutNils } from "@/wab/common";
 import { dbg } from "@/wab/dbg";
 import { applyDevFlagOverrides, DEVFLAGS, DevFlagsType } from "@/wab/devflags";
 import { isPlainObject } from "lodash";
-import { isTopFrame } from "./cli-routes";
-import { getPlasmicStudioArgs } from "./frame-ctx/plasmic-studio-args";
 
 export function getClientDevFlagOverrides(): DevFlagsType {
   let params: URLSearchParams;

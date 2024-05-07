@@ -1,8 +1,8 @@
+import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
 import { expect } from "@storybook/jest";
 import type { Meta, StoryObj } from "@storybook/react";
 import { screen, userEvent, waitFor, within } from "@storybook/testing-library";
 import React from "react";
-import StyleSelect from "./StyleSelect";
 
 export default {
   component: StyleSelect,

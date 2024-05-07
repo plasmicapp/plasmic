@@ -1,6 +1,6 @@
+import styles from "@/wab/client/components/widgets/PublishSpinner.module.scss";
 import { Spin } from "antd";
 import * as React from "react";
-import styles from "./PublishSpinner.module.scss";
 
 export default function PublishSpinner() {
   return <Spin className={styles.spin} />;

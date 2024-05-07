@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultCommentPostFormProps altogether and have
 // total control over the props for your component.
-export interface CommentPostFormProps extends DefaultCommentPostFormProps {}
+export type CommentPostFormProps = DefaultCommentPostFormProps;
 
 function CommentPostForm_(
   props: CommentPostFormProps,

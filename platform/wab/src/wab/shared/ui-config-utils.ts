@@ -1,20 +1,20 @@
 import { withoutNils } from "@/wab/common";
 import { arrayReversed } from "@/wab/commons/collections";
 import { HostLessPackageInfo } from "@/wab/devflags";
-import { smartHumanize } from "@/wab/strs";
-import { merge } from "lodash";
 import {
   PublicStyleSection,
   StyleSectionVisibilities,
   TemplateSpec,
-} from "./ApiSchema";
+} from "@/wab/shared/ApiSchema";
 import {
   FRAME_CAP,
   FREE_CONTAINER_CAP,
   HORIZ_CONTAINER_CAP,
   LAYOUT_CONTAINER_CAP,
   VERT_CONTAINER_CAP,
-} from "./Labels";
+} from "@/wab/shared/Labels";
+import { smartHumanize } from "@/wab/strs";
+import { merge } from "lodash";
 
 export const BASIC_ALIASES = [
   "box",

@@ -19,7 +19,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultSearchInputProps altogether and have
 // total control over the props for your component.
-interface SearchInputProps extends DefaultSearchInputProps {}
+type SearchInputProps = DefaultSearchInputProps;
 
 function SearchInput(props: SearchInputProps) {
   // Use PlasmicSearchInput to render this component as it was

@@ -12,6 +12,8 @@ import { isPageComponent } from "@/wab/components";
 import { Config } from "@/wab/server/config";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { User } from "@/wab/server/entities/Entities";
+import { genLoaderHtmlBundleSandboxed } from "@/wab/server/routes/loader";
+import { getUser, superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import { getShopifySecrets } from "@/wab/server/secrets";
 import { UnauthorizedError } from "@/wab/shared/ApiErrors/errors";
 import { ProjectId, UserId } from "@/wab/shared/ApiSchema";
@@ -28,8 +30,6 @@ import glob from "glob";
 import https from "https";
 import { matchPath } from "react-router-dom";
 import { z } from "zod";
-import { genLoaderHtmlBundleSandboxed } from "./loader";
-import { getUser, superDbMgr, userDbMgr } from "./util";
 
 const always = !process.env.NEVER;
 

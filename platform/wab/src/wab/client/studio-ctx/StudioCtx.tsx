@@ -98,6 +98,13 @@ import { PLATFORM } from "@/wab/client/platform";
 import { ProjectDependencyManager } from "@/wab/client/ProjectDependencyManager";
 import { requestIdleCallbackAsync } from "@/wab/client/requestidlecallback";
 import { plasmicExtensionAvailable } from "@/wab/client/screenshot-util";
+import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
+import { MultiplayerCtx } from "@/wab/client/studio-ctx/multiplayer-ctx";
+import {
+  SpotlightAndVariantsInfo,
+  ViewCtx,
+} from "@/wab/client/studio-ctx/view-ctx";
+import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import {
   StyleMgr,
   summaryToStyleChanges,
@@ -363,10 +370,6 @@ import semver from "semver";
 import * as Signals from "signals";
 import { mutate } from "swr";
 import { failable, FailableArgParams, IFailable } from "ts-failable";
-import { ComponentCtx } from "./component-ctx";
-import { MultiplayerCtx } from "./multiplayer-ctx";
-import { SpotlightAndVariantsInfo, ViewCtx } from "./view-ctx";
-import { ViewportCtx } from "./ViewportCtx";
 
 (window as any).dbg.classes = classes;
 
@@ -2148,7 +2151,6 @@ export class StudioCtx extends WithDbCtx {
           this.projectDependencyManager.plumeSite
         );
         postInsertableTemplate(this, seenFonts);
-        this.tplMgr().attachComponent(comp);
         return comp;
       } else {
         return this.tplMgr().addComponent({
@@ -2597,10 +2599,17 @@ export class StudioCtx extends WithDbCtx {
   // Branching
   //
   showBranching() {
+    const team = this.appCtx
+      .getAllTeams()
+      .find((t) => t.id === this.siteInfo.teamId);
     return (
       this.appCtx.appConfig.branching ||
       (this.siteInfo.teamId &&
-        this.appCtx.appConfig.branchingTeamIds.includes(this.siteInfo.teamId))
+        this.appCtx.appConfig.branchingTeamIds.includes(
+          this.siteInfo.teamId
+        )) ||
+      (team?.parentTeamId &&
+        this.appCtx.appConfig.branchingTeamIds.includes(team.parentTeamId))
     );
   }
 
@@ -4993,7 +5002,10 @@ export class StudioCtx extends WithDbCtx {
       if (this.appCtx.appConfig.incrementalObservables) {
         change.path?.forEach((path) => {
           if (classes.isKnownComponent(path.inst) && path.field === "tplTree") {
-            modifiedComponentIids.add(this.bundler().addrOf(path.inst).iid);
+            const compAddr = this.bundler().addrOf(path.inst);
+            if (compAddr) {
+              modifiedComponentIids.add(compAddr.iid);
+            }
           }
         });
       }

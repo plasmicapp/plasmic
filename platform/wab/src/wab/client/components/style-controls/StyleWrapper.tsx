@@ -1,15 +1,15 @@
-import { ensure, ensureArray } from "@/wab/common";
-import classNames from "classnames";
-import { observer } from "mobx-react";
-import * as React from "react";
-import { DefinedIndicator } from "./DefinedIndicator";
+import { DefinedIndicator } from "@/wab/client/components/style-controls/DefinedIndicator";
 import {
   getLabelForStyleName,
   StyleComponent,
   useStyleComponent,
   withStyleComponent,
   WithStyleContextMenu,
-} from "./StyleComponent";
+} from "@/wab/client/components/style-controls/StyleComponent";
+import { ensure, ensureArray } from "@/wab/common";
+import classNames from "classnames";
+import { observer } from "mobx-react";
+import * as React from "react";
 
 export class StyleWrapper_ extends React.Component<
   {

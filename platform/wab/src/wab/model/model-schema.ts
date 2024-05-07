@@ -65,6 +65,7 @@ Type
     ClassNamePropType
       @Const name: 'className'
       selectors: [LabeledSelector]
+      defaultStyles: Map[String, String]
     StyleScopeClassNamePropType
       @Const name: 'styleScopeClassName'
       scopeName: String
@@ -610,6 +611,7 @@ SelectorRuleSet
 LabeledSelector
   selector: String
   label: String?
+  defaultStyles: Map[String, String]
 
 DataSourceTemplate
   # RawType from data-sources.ts

@@ -4,6 +4,9 @@ import GithubIntegration, {
   filterPlasmicPullRequests,
 } from "@/wab/client/components/github/GithubIntegration";
 import { confirm, reactConfirm } from "@/wab/client/components/quick-modals";
+import { VisibleEnableBlock } from "@/wab/client/components/TopFrame/TopBar/PublishFlowDialog";
+import { PublishState } from "@/wab/client/components/TopFrame/TopBar/PublishFlowDialogWrapper";
+import { TopBarModal } from "@/wab/client/components/TopFrame/TopBar/TopBarModal";
 import Button from "@/wab/client/components/widgets/Button";
 import GitJobStep from "@/wab/client/components/widgets/GitJobStep";
 import Select from "@/wab/client/components/widgets/Select";
@@ -20,9 +23,6 @@ import {
   GitWorkflowJobStep,
 } from "@/wab/shared/ApiSchema";
 import * as React from "react";
-import { VisibleEnableBlock } from "./PublishFlowDialog";
-import { PublishState } from "./PublishFlowDialogWrapper";
-import { TopBarModal } from "./TopBarModal";
 
 export type SetupPushDeploy = {
   gitActionParams: GitActionParams;

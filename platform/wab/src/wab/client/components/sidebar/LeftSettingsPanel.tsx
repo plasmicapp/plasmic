@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultLeftSettingsPanelProps altogether and have
 // total control over the props for your component.
-interface LeftSettingsPanelProps extends DefaultLeftSettingsPanelProps {}
+type LeftSettingsPanelProps = DefaultLeftSettingsPanelProps;
 
 function LeftSettingsPanel_(
   props: LeftSettingsPanelProps,

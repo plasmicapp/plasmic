@@ -11,9 +11,9 @@ import {
   allGlobalVariantsReferencedByComponent,
   isPageComponent,
 } from "@/wab/components";
+import { toClassName, toVarName } from "@/wab/shared/codegen/util";
 import { SplitStatus, SplitType } from "@/wab/splits";
 import { sumBy, uniq } from "lodash";
-import { toClassName, toVarName } from "./util";
 
 interface SerializedGlobalVariantSplitContent {
   type: "global-variant";

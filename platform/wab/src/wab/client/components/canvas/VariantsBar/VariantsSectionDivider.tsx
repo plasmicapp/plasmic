@@ -19,8 +19,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultVariantsSectionDividerProps altogether and have
 // total control over the props for your component.
-interface VariantsSectionDividerProps
-  extends DefaultVariantsSectionDividerProps {}
+type VariantsSectionDividerProps = DefaultVariantsSectionDividerProps;
 
 function VariantsSectionDivider(props: VariantsSectionDividerProps) {
   // Use PlasmicVariantsSectionDivider to render this component as it was

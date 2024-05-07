@@ -27,7 +27,7 @@ export async function findConflictNames(em: EntityManager) {
   conflictCounter[CONFLICT_TYPE.NODE_AND_VARIANT] = 0;
   const projectsWithConflicts: string[] = [];
   let processedProjects = 0;
-  let numberOfProjects = await dbMgr.countAllProjects();
+  const numberOfProjects = await dbMgr.countAllProjects();
 
   const printData = () => {
     console.log("....................");

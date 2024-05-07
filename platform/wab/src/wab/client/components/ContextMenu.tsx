@@ -1,3 +1,4 @@
+import styles from "@/wab/client/components/ContextMenu.module.scss";
 import {
   plasmicIFrameMouseDownEvent,
   plasmicIFrameWheelEvent,
@@ -9,7 +10,6 @@ import { MenuProps } from "antd/lib/menu";
 import L from "lodash";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import styles from "./ContextMenu.module.scss";
 
 export type MenuType = React.ReactElement | (() => React.ReactElement);
 

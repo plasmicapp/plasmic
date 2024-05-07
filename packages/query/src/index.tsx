@@ -2,6 +2,7 @@ import { mutateKeys } from "./query-data";
 export { useSWRConfig } from "swr";
 export {
   addLoadingStateListener,
+  HeadMetadataContext,
   isPlasmicPrepass,
   PlasmicPrepassContext,
   PlasmicQueryDataProvider,
@@ -10,7 +11,11 @@ export {
   usePlasmicQueryData,
   wrapLoadingFetcher,
 } from "./query-data";
-export type { LoadingStateListener, SWRResponse } from "./query-data";
+export type {
+  HeadMetadata,
+  LoadingStateListener,
+  SWRResponse,
+} from "./query-data";
 
 if (typeof window !== "undefined") {
   const root = window as any;

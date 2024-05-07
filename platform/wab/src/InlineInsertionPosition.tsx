@@ -5,7 +5,7 @@ import * as React from "react";
 import {
   DefaultInlineInsertionPositionProps,
   PlasmicInlineInsertionPosition,
-} from "./wab/client/plasmic/plasmic_kit_left_pane/PlasmicInlineInsertionPosition";
+} from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicInlineInsertionPosition";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can
@@ -20,8 +20,7 @@ import {
 //
 // You can also stop extending from DefaultInlineInsertionPositionProps altogether and have
 // total control over the props for your component.
-interface InlineInsertionPositionProps
-  extends DefaultInlineInsertionPositionProps {}
+type InlineInsertionPositionProps = DefaultInlineInsertionPositionProps;
 
 function InlineInsertionPosition(props: InlineInsertionPositionProps) {
   // Use PlasmicInlineInsertionPosition to render this component as it was

@@ -1,4 +1,5 @@
 import { AppCtx } from "@/wab/client/app-ctx";
+import { promptMoveToWorkspace } from "@/wab/client/components/dashboard/dashboard-actions";
 import { confirmDeleteDataSource } from "@/wab/client/components/data-source-ui";
 import { Matcher } from "@/wab/client/components/view-common";
 import {
@@ -11,7 +12,6 @@ import { ApiDataSource } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Dropdown, Menu, notification } from "antd";
 import * as React from "react";
-import { promptMoveToWorkspace } from "./dashboard-actions";
 
 export interface DataSourceProps extends DefaultDataSourceProps {
   appCtx: AppCtx;

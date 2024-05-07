@@ -1,5 +1,4 @@
-import L from "lodash";
-import { isKnownTplSlot, TplNode } from "./classes";
+import { isKnownTplSlot, TplNode } from "@/wab/classes";
 import {
   assert,
   ensure,
@@ -7,14 +6,14 @@ import {
   ensureArrayOfInstances,
   only,
   switchType,
-} from "./common";
-import { ValState } from "./shared/eval/val-state";
+} from "@/wab/common";
+import { ValState } from "@/wab/shared/eval/val-state";
 import {
   makeSlotSelectionFullKey,
   makeSlotSelectionKey,
   SlotSelection,
-} from "./slots";
-import { getTagOrComponentName } from "./tpls";
+} from "@/wab/slots";
+import { getTagOrComponentName } from "@/wab/tpls";
 import {
   getValChildren,
   slotHasDefaultContent,
@@ -22,7 +21,8 @@ import {
   ValNode,
   ValSlot,
   ValTag,
-} from "./val-nodes";
+} from "@/wab/val-nodes";
+import L from "lodash";
 
 export type Selectable = ValNode | SlotSelection;
 

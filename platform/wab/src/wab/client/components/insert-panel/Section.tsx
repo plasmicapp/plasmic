@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultSectionProps altogether and have
 // total control over the props for your component.
-export interface SectionProps extends DefaultSectionProps {}
+export type SectionProps = DefaultSectionProps;
 
 function Section_(props: SectionProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicSection to render this component as it was

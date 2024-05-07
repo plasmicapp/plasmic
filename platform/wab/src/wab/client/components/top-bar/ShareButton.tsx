@@ -10,7 +10,7 @@ import { ensure, spawn } from "@/wab/common";
 import { observer } from "mobx-react";
 import * as React from "react";
 
-interface ShareButtonProps extends DefaultShareButtonProps {}
+type ShareButtonProps = DefaultShareButtonProps;
 
 const ShareButton = observer((props: ShareButtonProps) => {
   const appCtx = useAppCtx();

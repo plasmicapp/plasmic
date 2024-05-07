@@ -199,15 +199,31 @@
   --mixin-ID7LgJl6y2t5_box-shadow: 0px 0px 0px 1px #12376914,
     0px 1px 2px 0px #a4acb929;
   --plasmic-mixin-card-shadow_box-shadow: var(--mixin-ID7LgJl6y2t5_box-shadow);
+  --mixin-ID7LgJl6y2t5_white-space: pre-wrap;
+  --plasmic-mixin-card-shadow_white-space: var(
+    --mixin-ID7LgJl6y2t5_white-space
+  );
+  --mixin-dQtrpoh9D7Gh_white-space: pre-wrap;
+  --plasmic-mixin-pricing-page-list-item-style_white-space: var(
+    --mixin-dQtrpoh9D7Gh_white-space
+  );
   --mixin-_IKeJhP7E7FO_box-shadow: 0px 6px 12px 0px #1a1b251f,
     0px 1px 3px 0px #1a1b251f, 0px 0px 0px 1px #1a1b250f;
   --plasmic-mixin-standard-shadow_box-shadow: var(
     --mixin-_IKeJhP7E7FO_box-shadow
   );
+  --mixin-_IKeJhP7E7FO_white-space: pre-wrap;
+  --plasmic-mixin-standard-shadow_white-space: var(
+    --mixin-_IKeJhP7E7FO_white-space
+  );
   --mixin-2GWGCAfCNFx1_box-shadow: 0px 0px 0px 1px #12376914,
     0px 1px 2px 0px #a4acb929;
   --plasmic-mixin-card-shadow-0000_box-shadow: var(
     --mixin-2GWGCAfCNFx1_box-shadow
+  );
+  --mixin-2GWGCAfCNFx1_white-space: pre-wrap;
+  --plasmic-mixin-card-shadow-0000_white-space: var(
+    --mixin-2GWGCAfCNFx1_white-space
   );
 }
 

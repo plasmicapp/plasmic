@@ -1,4 +1,5 @@
 import { AppCtx } from "@/wab/client/app-ctx";
+import TeamPickerItem from "@/wab/client/components/modals/TeamPickerItem";
 import { Spinner } from "@/wab/client/components/widgets";
 import {
   DefaultTeamPickerProps,
@@ -11,7 +12,6 @@ import {
 } from "@/wab/shared/pricing/pricing-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
-import TeamPickerItem from "./TeamPickerItem";
 interface TeamPickerProps extends DefaultTeamPickerProps {
   appCtx: AppCtx;
   // Callback when a team is chosen

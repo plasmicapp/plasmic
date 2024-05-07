@@ -1,3 +1,4 @@
+import styles from "@/wab/client/components/studio/Shortcuts.module.scss";
 import {
   FREE_CONTAINER_ICON,
   HORIZ_STACK_ICON,
@@ -28,7 +29,6 @@ import {
   FaRegHandRock,
 } from "react-icons/fa";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import styles from "./Shortcuts.module.scss";
 
 export const ShortcutsModal = observer(
   ({ children }: { children: React.ReactNode }) => {

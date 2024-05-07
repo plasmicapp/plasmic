@@ -109,7 +109,7 @@ describe("switchType", function () {
         .result()
     ).toThrow());
   it("should not treat nulls, or scalars as Objects", () => {
-    for (let query of [null, "", 0]) {
+    for (const query of [null, "", 0]) {
       const res = common
         .switchType(query)
         .when(Object, () => "Object")
@@ -118,7 +118,7 @@ describe("switchType", function () {
     }
   });
   return it("should treat Arrays, Dates, Functions as Objects", () => {
-    for (let query of [[], new Date(), () => {}]) {
+    for (const query of [[], new Date(), () => {}]) {
       const res = common
         .switchType(query)
         .when(Object, () => "Object")

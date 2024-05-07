@@ -5,7 +5,7 @@ import {
 import { TriggeredOverlayRef } from "@plasmicapp/react-web";
 import * as React from "react";
 
-interface StyleSelect__OverlayProps extends DefaultStyleSelect__OverlayProps {}
+type StyleSelect__OverlayProps = DefaultStyleSelect__OverlayProps;
 
 function StyleSelect__Overlay_(
   props: StyleSelect__OverlayProps,

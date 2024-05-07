@@ -2,6 +2,10 @@ import {
   getPlumeComponentTemplates,
   getPlumeImage,
 } from "@/wab/client/components/plume/plume-display-utils";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import NewComponentItem from "@/wab/client/components/widgets/NewComponentItem";
+import NewComponentSection from "@/wab/client/components/widgets/NewComponentSection";
+import { TextboxRef } from "@/wab/client/components/widgets/Textbox";
 import {
   buildInsertableExtraInfo,
   getInsertableTemplateComponentItem,
@@ -19,10 +23,6 @@ import { InsertableTemplateExtraInfo } from "@/wab/shared/insertable-templates/t
 import { getPlumeEditorPluginByType } from "@/wab/shared/plume/plume-registry";
 import { Tooltip } from "antd";
 import * as React from "react";
-import { Icon } from "./Icon";
-import NewComponentItem from "./NewComponentItem";
-import NewComponentSection from "./NewComponentSection";
-import { TextboxRef } from "./Textbox";
 
 export type NewComponentInfo = {
   name: string;
@@ -184,28 +184,27 @@ function NewComponentModal(props: NewComponentModalProps) {
           })}
         </NewComponentSection>
       )}
-      {studioCtx.appCtx.appConfig.showInsertableTemplateComponents &&
-        otherTemplates.length > 0 && (
-          <NewComponentSection title={"Common components"}>
-            {otherTemplates.map((template) => {
-              const thisTemplateId = `template:${template.templateName}`;
-              return (
-                <NewComponentItem
-                  isSelected={templateId === thisTemplateId}
-                  title={template.displayName ?? template.componentName}
-                  imgUrl={template.imageUrl}
-                  onClick={() => {
-                    setName(template.componentName);
-                    setTemplateId(thisTemplateId);
-                    if (nameRef.current) {
-                      nameRef.current.focus();
-                    }
-                  }}
-                />
-              );
-            })}
-          </NewComponentSection>
-        )}
+      {otherTemplates.length > 0 && (
+        <NewComponentSection title={"Common components"}>
+          {otherTemplates.map((template) => {
+            const thisTemplateId = `template:${template.templateName}`;
+            return (
+              <NewComponentItem
+                isSelected={templateId === thisTemplateId}
+                title={template.displayName ?? template.componentName}
+                imgUrl={template.imageUrl}
+                onClick={() => {
+                  setName(template.componentName);
+                  setTemplateId(thisTemplateId);
+                  if (nameRef.current) {
+                    nameRef.current.focus();
+                  }
+                }}
+              />
+            );
+          })}
+        </NewComponentSection>
+      )}
     </PlasmicNewComponentModal>
   );
 }

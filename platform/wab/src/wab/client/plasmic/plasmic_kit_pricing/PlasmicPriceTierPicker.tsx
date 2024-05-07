@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import Switch from "../../components/widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
 import PriceTier from "../../components/pricing/PriceTier"; // plasmic-import: P7E8qtNzKrbM/component
 import PriceTierFeatureItem from "../../components/pricing/PriceTierFeatureItem"; // plasmic-import: Z40kBWC-Knbn/component
@@ -88,16 +111,16 @@ export const PlasmicPriceTierPicker__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicPriceTierPicker__OverridesType = {
-  root?: p.Flex<"div">;
-  link?: p.Flex<"a">;
-  billingFrequencyToggle?: p.Flex<typeof Switch>;
-  newGrandfatheredTier?: p.Flex<typeof PriceTier>;
-  newOutdatedTier?: p.Flex<typeof PriceTier>;
-  newFreeTier?: p.Flex<typeof PriceTier>;
-  newStarterTier?: p.Flex<typeof PriceTier>;
-  newProTier?: p.Flex<typeof PriceTier>;
-  newTeamTier?: p.Flex<typeof PriceTier>;
-  newEnterpriseTier?: p.Flex<typeof PriceTier>;
+  root?: Flex__<"div">;
+  link?: Flex__<"a">;
+  billingFrequencyToggle?: Flex__<typeof Switch>;
+  newGrandfatheredTier?: Flex__<typeof PriceTier>;
+  newOutdatedTier?: Flex__<typeof PriceTier>;
+  newFreeTier?: Flex__<typeof PriceTier>;
+  newStarterTier?: Flex__<typeof PriceTier>;
+  newProTier?: Flex__<typeof PriceTier>;
+  newTeamTier?: Flex__<typeof PriceTier>;
+  newEnterpriseTier?: Flex__<typeof PriceTier>;
 };
 
 export interface DefaultPriceTierPickerProps {
@@ -110,6 +133,8 @@ export interface DefaultPriceTierPickerProps {
   noScrolling?: SingleBooleanChoiceArg<"noScrolling">;
   className?: string;
 }
+
+const $$ = {};
 
 function PlasmicPriceTierPicker__RenderFunc(props: {
   variants: PlasmicPriceTierPicker__VariantsArgs;
@@ -126,13 +151,13 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "showOutdatedTier",
@@ -181,10 +206,9 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => "isChecked",
       },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -197,7 +221,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -257,7 +281,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
           ),
         })}
       >
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox___5QXt7, {
@@ -278,13 +302,13 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
             {"Upgrade "}
           </div>
           <div className={classNames(projectcss.all, sty.freeBox__pSqi)}>
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: "TEAM NAME",
               value: args.teamName,
               className: classNames(sty.slotTargetTeamName),
             })}
           </div>
-        </p.Stack>
+        </Stack__>
         <div
           className={classNames(projectcss.all, sty.freeBox___8Z6, {
             [sty.freeBoxshowGrandfatheredTier___8Z6IBuS4]: hasVariant(
@@ -322,7 +346,6 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   {"Learn more."}
                 </a>
               }
-
               <React.Fragment>{""}</React.Fragment>
             </React.Fragment>
           </div>
@@ -342,13 +365,13 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
           data-plasmic-override={overrides.billingFrequencyToggle}
           className={classNames("__wab_instance", sty.billingFrequencyToggle)}
           isChecked={
-            p.generateStateValueProp($state, [
+            generateStateValueProp($state, [
               "billingFrequencyToggle",
               "isChecked",
             ]) ?? false
           }
           onChange={(...eventArgs) => {
-            p.generateStateOnChangeProp($state, [
+            generateStateOnChangeProp($state, [
               "billingFrequencyToggle",
               "isChecked",
             ])(eventArgs[0]);
@@ -390,7 +413,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
         }
       />
 
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__uhZsz, {
@@ -1236,7 +1259,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   }
                 )}
               >
-                {"Free plan includes (monthly):"}
+                {"Free plan includes:"}
               </div>
               <PriceTierFeatureItem
                 className={classNames(
@@ -1284,45 +1307,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                     "The maximum number of editors that can make changes to your projects"
                   }
                 >
-                  {"up to 3 collaborators"}
-                </HoverableText>
-              </PriceTierFeatureItem>
-              <PriceTierFeatureItem
-                className={classNames(
-                  "__wab_instance",
-                  sty.priceTierFeatureItem__ak88V
-                )}
-                tier={"free"}
-              >
-                <HoverableText
-                  className={classNames(
-                    "__wab_instance",
-                    sty.hoverableText__cd4Cr
-                  )}
-                  popover={
-                    "Monthly active users who need special permission to access certain projects"
-                  }
-                >
-                  {"up to 10 private users"}
-                </HoverableText>
-              </PriceTierFeatureItem>
-              <PriceTierFeatureItem
-                className={classNames(
-                  "__wab_instance",
-                  sty.priceTierFeatureItem__ojbcy
-                )}
-                tier={"free"}
-              >
-                <HoverableText
-                  className={classNames(
-                    "__wab_instance",
-                    sty.hoverableText__h84Xa
-                  )}
-                  popover={
-                    "Monthly active users who can access any project with a public sign-in"
-                  }
-                >
-                  {"up to 10k public users"}
+                  {"3 collaborators"}
                 </HoverableText>
               </PriceTierFeatureItem>
               <PriceTierFeatureItem
@@ -1339,7 +1324,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                     sty.text__j2Zwc
                   )}
                 >
-                  {"10k page views"}
+                  {"10k monthly page views"}
                 </div>
               </PriceTierFeatureItem>
               <PriceTierFeatureItem
@@ -2220,49 +2205,11 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
               <PriceTierFeatureItem
                 className={classNames(
                   "__wab_instance",
-                  sty.priceTierFeatureItem__brId2
-                )}
-                tier={"free"}
-              >
-                <HoverableText
-                  className={classNames(
-                    "__wab_instance",
-                    sty.hoverableText___63IPb
-                  )}
-                  popover={
-                    "Monthly active users who need special permission to access certain projects"
-                  }
-                >
-                  {"15 private users"}
-                </HoverableText>
-              </PriceTierFeatureItem>
-              <PriceTierFeatureItem
-                className={classNames(
-                  "__wab_instance",
-                  sty.priceTierFeatureItem__dzt8F
-                )}
-                tier={"free"}
-              >
-                <HoverableText
-                  className={classNames(
-                    "__wab_instance",
-                    sty.hoverableText__d130
-                  )}
-                  popover={
-                    "Monthly active users who can access any project with a public sign-in"
-                  }
-                >
-                  {"1k public users"}
-                </HoverableText>
-              </PriceTierFeatureItem>
-              <PriceTierFeatureItem
-                className={classNames(
-                  "__wab_instance",
                   sty.priceTierFeatureItem__zeLm
                 )}
                 tier={"starter"}
               >
-                {"100k monthly views"}
+                {"100k monthly page views"}
               </PriceTierFeatureItem>
               <PriceTierFeatureItem
                 className={classNames(
@@ -3092,49 +3039,11 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
               <PriceTierFeatureItem
                 className={classNames(
                   "__wab_instance",
-                  sty.priceTierFeatureItem___9HNz8
-                )}
-                tier={"free"}
-              >
-                <HoverableText
-                  className={classNames(
-                    "__wab_instance",
-                    sty.hoverableText__usATm
-                  )}
-                  popover={
-                    "Monthly active users who need special permission to access certain projects"
-                  }
-                >
-                  {"50 private users"}
-                </HoverableText>
-              </PriceTierFeatureItem>
-              <PriceTierFeatureItem
-                className={classNames(
-                  "__wab_instance",
-                  sty.priceTierFeatureItem__lhqT1
-                )}
-                tier={"free"}
-              >
-                <HoverableText
-                  className={classNames(
-                    "__wab_instance",
-                    sty.hoverableText__wjzid
-                  )}
-                  popover={
-                    "Monthly active users who can access any project with a public sign-in"
-                  }
-                >
-                  {"5k public users"}
-                </HoverableText>
-              </PriceTierFeatureItem>
-              <PriceTierFeatureItem
-                className={classNames(
-                  "__wab_instance",
                   sty.priceTierFeatureItem__d9B99
                 )}
                 tier={"starter"}
               >
-                {"250k monthly views"}
+                {"250k monthly page views"}
               </PriceTierFeatureItem>
               <PriceTierFeatureItem
                 className={classNames(
@@ -3147,7 +3056,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
                 tier={"pro"}
               >
-                {"Email & chat support"}
+                {"Priority support"}
               </PriceTierFeatureItem>
             </React.Fragment>
           }
@@ -4152,49 +4061,11 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
               <PriceTierFeatureItem
                 className={classNames(
                   "__wab_instance",
-                  sty.priceTierFeatureItem__xsfTt
-                )}
-                tier={"free"}
-              >
-                <HoverableText
-                  className={classNames(
-                    "__wab_instance",
-                    sty.hoverableText__gtei
-                  )}
-                  popover={
-                    "Monthly active users who need special permission to access certain projects"
-                  }
-                >
-                  {"115 private users"}
-                </HoverableText>
-              </PriceTierFeatureItem>
-              <PriceTierFeatureItem
-                className={classNames(
-                  "__wab_instance",
-                  sty.priceTierFeatureItem___2VIok
-                )}
-                tier={"free"}
-              >
-                <HoverableText
-                  className={classNames(
-                    "__wab_instance",
-                    sty.hoverableText__aF7Cy
-                  )}
-                  popover={
-                    "Monthly active users who can access any project with a public sign-in"
-                  }
-                >
-                  {"10k public users"}
-                </HoverableText>
-              </PriceTierFeatureItem>
-              <PriceTierFeatureItem
-                className={classNames(
-                  "__wab_instance",
                   sty.priceTierFeatureItem__rsp0V
                 )}
                 tier={"starter"}
               >
-                {"500k monthly views"}
+                {"500k monthly page views"}
               </PriceTierFeatureItem>
               <PriceTierFeatureItem
                 className={classNames(
@@ -5684,15 +5555,6 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
               <PriceTierFeatureItem
                 className={classNames(
                   "__wab_instance",
-                  sty.priceTierFeatureItem__ndcwl
-                )}
-                tier={"enterprise"}
-              >
-                {"Custom private & public users"}
-              </PriceTierFeatureItem>
-              <PriceTierFeatureItem
-                className={classNames(
-                  "__wab_instance",
                   sty.priceTierFeatureItem__eqk5
                 )}
                 tier={"enterprise"}
@@ -5707,15 +5569,6 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 tier={"enterprise"}
               >
                 {"Custom integrations"}
-              </PriceTierFeatureItem>
-              <PriceTierFeatureItem
-                className={classNames(
-                  "__wab_instance",
-                  sty.priceTierFeatureItem__ja5Pk
-                )}
-                tier={"enterprise"}
-              >
-                {"Whitelabeling & embedding"}
               </PriceTierFeatureItem>
               <PriceTierFeatureItem
                 className={classNames(
@@ -5741,16 +5594,24 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
                 tier={"enterprise"}
               >
-                {"SSO"}
+                <div
+                  className={classNames(
+                    projectcss.all,
+                    projectcss.__wab_text,
+                    sty.text__taizU
+                  )}
+                >
+                  {"SSO & domain capture"}
+                </div>
               </PriceTierFeatureItem>
               <PriceTierFeatureItem
                 className={classNames(
                   "__wab_instance",
-                  sty.priceTierFeatureItem__mYoPz
+                  sty.priceTierFeatureItem__ja5Pk
                 )}
                 tier={"enterprise"}
               >
-                {"Domain capture"}
+                {"Whitelabeling & embedding"}
               </PriceTierFeatureItem>
               <PriceTierFeatureItem
                 className={classNames(
@@ -5766,17 +5627,8 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                     sty.text__rsSYq
                   )}
                 >
-                  {"Availability SLAs"}
+                  {"Availability & response time SLAs"}
                 </div>
-              </PriceTierFeatureItem>
-              <PriceTierFeatureItem
-                className={classNames(
-                  "__wab_instance",
-                  sty.priceTierFeatureItem__blMq
-                )}
-                tier={"enterprise"}
-              >
-                {"Response Time SLAs"}
               </PriceTierFeatureItem>
               <PriceTierFeatureItem
                 className={classNames(
@@ -5785,13 +5637,21 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 )}
                 tier={"enterprise"}
               >
-                {"Dedicated onboarding & support"}
+                <div
+                  className={classNames(
+                    projectcss.all,
+                    projectcss.__wab_text,
+                    sty.text___0VqYr
+                  )}
+                >
+                  {"Dedicated support & onboarding"}
+                </div>
               </PriceTierFeatureItem>
             </React.Fragment>
           }
         />
-      </p.Stack>
-    </p.Stack>
+      </Stack__>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -5808,7 +5668,6 @@ const PlasmicDescendants = {
     "newTeamTier",
     "newEnterpriseTier",
   ],
-
   link: ["link"],
   billingFrequencyToggle: ["billingFrequencyToggle"],
   newGrandfatheredTier: ["newGrandfatheredTier"],
@@ -5840,7 +5699,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPriceTierPicker__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -5870,7 +5728,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPriceTierPicker__ArgProps,
           internalVariantPropNames: PlasmicPriceTierPicker__VariantProps,
         }),

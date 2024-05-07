@@ -5,6 +5,27 @@ import {
   TplNode,
 } from "@/wab/classes";
 import { EditableNodeLabel } from "@/wab/client/components/canvas/EditableNodeLabel";
+import {
+  computeHoverBoxTargets,
+  computeHoverBoxViewState,
+  getControlledSpacingObj,
+  HoverBoxTarget,
+  HoverBoxViewProps,
+} from "@/wab/client/components/canvas/HoverBox/computeHoverBoxViewStates";
+import { GapCanvasControls } from "@/wab/client/components/canvas/HoverBox/Controls/GapCanvasControls";
+import { ImageCanvasControls } from "@/wab/client/components/canvas/HoverBox/Controls/ImageCanvasControls";
+import {
+  EdgeDragMode,
+  getAffectedSides,
+  SpaceEdgeControls,
+  SpaceEdgeType,
+} from "@/wab/client/components/canvas/HoverBox/draggable-edge";
+import styles from "@/wab/client/components/canvas/HoverBox/HoverBox.module.scss";
+import { InlineAddButton } from "@/wab/client/components/canvas/HoverBox/InlineAddButton";
+import { ResponsiveColumnsCanvasControls } from "@/wab/client/components/canvas/HoverBox/ResponsiveColumnsCanvasControls";
+import { SpacingVisualizer } from "@/wab/client/components/canvas/HoverBox/SpacingVisualizer";
+import { StackOfParents } from "@/wab/client/components/canvas/HoverBox/StackOfParents";
+import { VirtualScrollBar } from "@/wab/client/components/canvas/HoverBox/virtual-scrollbar";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import { toast } from "@/wab/client/components/Messages";
 import {
@@ -24,6 +45,7 @@ import {
   mkFreestyleManipForFocusedDomElt,
   mkFreestyleManipForFocusedFrame,
 } from "@/wab/client/FreestyleManipulator";
+import { PLATFORM } from "@/wab/client/platform";
 import {
   cssPropsForInvertTransform,
   StudioCtx,
@@ -85,28 +107,6 @@ import { useLocalStorage } from "react-use";
 import { useHoverIntent } from "react-use-hoverintent";
 import ResizeObserver from "resize-observer-polyfill";
 import { failable } from "ts-failable";
-import { PLATFORM } from "../../../platform";
-import {
-  computeHoverBoxTargets,
-  computeHoverBoxViewState,
-  getControlledSpacingObj,
-  HoverBoxTarget,
-  HoverBoxViewProps,
-} from "./computeHoverBoxViewStates";
-import { GapCanvasControls } from "./Controls/GapCanvasControls";
-import { ImageCanvasControls } from "./Controls/ImageCanvasControls";
-import {
-  EdgeDragMode,
-  getAffectedSides,
-  SpaceEdgeControls,
-  SpaceEdgeType,
-} from "./draggable-edge";
-import styles from "./HoverBox.module.scss";
-import { InlineAddButton } from "./InlineAddButton";
-import { ResponsiveColumnsCanvasControls } from "./ResponsiveColumnsCanvasControls";
-import { SpacingVisualizer } from "./SpacingVisualizer";
-import { StackOfParents } from "./StackOfParents";
-import { VirtualScrollBar } from "./virtual-scrollbar";
 
 const HoverBoxInner = memo(HoverBoxInner_);
 

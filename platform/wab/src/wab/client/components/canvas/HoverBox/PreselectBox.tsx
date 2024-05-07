@@ -1,4 +1,6 @@
 import { EditableNodeLabel } from "@/wab/client/components/canvas/EditableNodeLabel";
+import styles from "@/wab/client/components/canvas/HoverBox/HoverBox.module.scss";
+import { recomputeBounds } from "@/wab/client/components/canvas/HoverBox/recomputeBounds";
 import { createNodeIcon } from "@/wab/client/components/sidebar-tabs/tpl-tree";
 import {
   BASE_VARIANT_COLOR,
@@ -18,8 +20,6 @@ import { isTplTagOrComponent, isTplVariantable } from "@/wab/tpls";
 import cn from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";
-import styles from "./HoverBox.module.scss";
-import { recomputeBounds } from "./recomputeBounds";
 
 export const PreselectBox = observer(PreselectBox_);
 function PreselectBox_() {

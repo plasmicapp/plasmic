@@ -15,10 +15,14 @@ import {
   last,
   remove,
 } from "@/wab/common";
+import { TokenValue } from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
+import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
+import {
+  isAncestorCombo,
+  makeGlobalVariantComboSorter,
+} from "@/wab/shared/variant-sort";
 import { cloneRuleSet } from "@/wab/styles";
-import { RuleSetHelpers } from "./RuleSetHelpers";
-import { isAncestorCombo, makeGlobalVariantComboSorter } from "./variant-sort";
 
 export class VariantedStylesHelper {
   constructor(
@@ -112,10 +116,9 @@ export class VariantedStylesHelper {
     );
   }
 
-  getActiveTokenValue(token: StyleToken) {
-    return (
-      this.getVariantedValueWithHighestPriority(token)?.value ?? token.value
-    );
+  getActiveTokenValue(token: StyleToken): TokenValue {
+    return (this.getVariantedValueWithHighestPriority(token)?.value ??
+      token.value) as TokenValue;
   }
 
   updateToken(token: StyleToken, value: string) {

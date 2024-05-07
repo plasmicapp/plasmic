@@ -1,4 +1,6 @@
 import { spawn } from "@/wab/common";
+import { createDbConnection } from "@/wab/server/db/dbcli-utils";
+import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import {
   CmsDatabase,
   DataSource,
@@ -10,8 +12,6 @@ import {
 import { Command } from "commander";
 import inquirer from "inquirer";
 import { groupBy } from "lodash";
-import { createDbConnection } from "./dbcli-utils";
-import { DbMgr, SUPER_USER } from "./DbMgr";
 
 async function main() {
   const opts = new Command("permanently-delete")

@@ -1,9 +1,9 @@
 import { ensureInstance, ensureType } from "@/wab/common";
 import "@/wab/server/extensions";
+import { userAnalytics } from "@/wab/server/routes/util";
 import { GetClipResponse } from "@/wab/shared/ApiSchema";
 import S3 from "aws-sdk/clients/s3";
 import { Request, Response } from "express-serve-static-core";
-import { userAnalytics } from "./util";
 
 export async function getAppConfig(req: Request, res: Response) {
   const config = req.devflags;

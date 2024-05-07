@@ -1,6 +1,6 @@
-import { meta } from "./classes-metas";
-import { BaseRuntime } from "./model/model-meta";
-import { instUtil } from "./shared/core/InstUtil";
+import { meta } from "@/wab/classes-metas";
+import { BaseRuntime } from "@/wab/model/model-meta";
+import { instUtil } from "@/wab/shared/core/InstUtil";
 
 // Equality comparator that uses class metadata to guide its crawling
 export class Comparator {

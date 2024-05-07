@@ -19,6 +19,8 @@ import {
   SUPER_USER,
 } from "@/wab/server/db/DbMgr";
 import { SocketUser } from "@/wab/server/extensions";
+import { getApiTokenUser } from "@/wab/server/routes/auth";
+import { parseProjectIdsAndTokensHeader } from "@/wab/server/routes/util";
 import {
   InitServerInfo,
   PlayerViewInfo,
@@ -33,8 +35,6 @@ import { get } from "lodash";
 import { Gauge } from "prom-client";
 import { Server as SocketIoServer, Socket } from "socket.io";
 import { getConnection } from "typeorm";
-import { getApiTokenUser } from "./auth";
-import { parseProjectIdsAndTokensHeader } from "./util";
 
 export interface BroadcastPayload {
   // Null room means broadcast to all rooms

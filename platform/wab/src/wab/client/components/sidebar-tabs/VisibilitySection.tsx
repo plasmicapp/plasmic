@@ -8,6 +8,10 @@ import { isTplCodeComponentStyleable } from "@/wab/client/code-components/code-c
 import { useAppRoles } from "@/wab/client/components/app-auth/app-auth-contexts";
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import { BoolPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/BoolPropEditor";
+import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
+import { FallbackEditor } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
+import S from "@/wab/client/components/sidebar-tabs/VisibilitySection.module.scss";
 import {
   LabeledItem,
   LabeledItemRow,
@@ -55,10 +59,6 @@ import { Menu } from "antd";
 import cn from "classnames";
 import { observer } from "mobx-react";
 import React from "react";
-import { BoolPropEditor } from "./ComponentProps/BoolPropEditor";
-import { DataPickerEditor } from "./ComponentProps/DataPickerEditor";
-import { FallbackEditor } from "./ComponentPropsSection";
-import S from "./VisibilitySection.module.scss";
 
 export const VisibilitySection = observer(VisibilitySection_);
 
@@ -363,7 +363,11 @@ function VisibilitySection_(props: {
             isSet={isFallbackSet(customCode)}
             onUnset={() => {
               const clonedExpr = clone(customCode);
-              const newExpr = ensureInstance(clonedExpr, ObjectPath, CustomCode);
+              const newExpr = ensureInstance(
+                clonedExpr,
+                ObjectPath,
+                CustomCode
+              );
               newExpr.fallback = undefined;
               _setCustomCond(newExpr);
             }}

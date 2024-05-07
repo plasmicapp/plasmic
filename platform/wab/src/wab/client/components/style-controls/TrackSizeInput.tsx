@@ -1,3 +1,4 @@
+import styles from "@/wab/client/components/style-controls/TrackSizeInput.module.scss";
 import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
 import { maybe } from "@/wab/common";
 import {
@@ -10,7 +11,6 @@ import {
 } from "@/wab/shared/Css";
 import { notification, Switch } from "antd";
 import * as React from "react";
-import styles from "./TrackSizeInput.module.scss";
 
 export interface TrackSizeInputProps {
   size: Size;

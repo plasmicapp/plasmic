@@ -24,6 +24,7 @@ import {
 } from "@/wab/client/definitions/insertables";
 import { addGetManyQuery, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { StudioTutorialStep } from "@/wab/client/tours/tutorials/tutorials-types";
 import { ensure, ensureArray, waitUntil } from "@/wab/common";
 import { ComponentType, isPageComponent } from "@/wab/components";
 import { DEVFLAGS } from "@/wab/devflags";
@@ -50,7 +51,6 @@ import {
   tryGetTplOwnerComponent,
 } from "@/wab/tpls";
 import { capitalize, isEqual, mapValues } from "lodash";
-import { StudioTutorialStep } from "./tutorials-types";
 
 export const ONBOARDING_TUTORIALS_META = {
   northwind: {

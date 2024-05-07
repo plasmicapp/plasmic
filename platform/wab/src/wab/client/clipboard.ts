@@ -1,15 +1,15 @@
 import { ArenaFrame, Component, TplNode } from "@/wab/classes";
-import { ensure } from "@/wab/common";
-import { cloneArenaFrame } from "@/wab/shared/Arenas";
-import { VariantCombo } from "@/wab/shared/Variants";
-import * as Tpls from "@/wab/tpls";
-import { AppCtx } from "./app-ctx";
+import { AppCtx } from "@/wab/client/app-ctx";
 import {
   readAndSanitizeFileAsImage,
   readAndSanitizeSvgXmlAsImage,
   readUploadedFileAsDataUrl,
   ResizableImage,
-} from "./dom-utils";
+} from "@/wab/client/dom-utils";
+import { ensure } from "@/wab/common";
+import { cloneArenaFrame } from "@/wab/shared/Arenas";
+import { VariantCombo } from "@/wab/shared/Variants";
+import * as Tpls from "@/wab/tpls";
 
 export interface StyleClip {
   type: "style";

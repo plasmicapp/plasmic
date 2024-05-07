@@ -1,4 +1,13 @@
 import { Component, Site } from "@/wab/classes";
+import {
+  deleteModule,
+  getSandbox,
+  updateFileContent,
+  uploadContents,
+  uploadSandbox,
+} from "@/wab/codesandbox/api";
+import parseSandbox from "@/wab/codesandbox/parse-sandbox";
+import uploadFiles from "@/wab/codesandbox/parse-sandbox/upload-files";
 import { ensure } from "@/wab/common";
 import { CodeComponentConfig } from "@/wab/components";
 import { getImageAssetVarName } from "@/wab/image-assets";
@@ -26,15 +35,6 @@ import createSandbox from "codesandbox-import-utils/lib/create-sandbox";
 import denormalize from "codesandbox-import-utils/lib/utils/files/denormalize";
 import latestVersion from "latest-version";
 import L from "lodash";
-import {
-  deleteModule,
-  getSandbox,
-  updateFileContent,
-  uploadContents,
-  uploadSandbox,
-} from "./api";
-import parseSandbox from "./parse-sandbox";
-import uploadFiles from "./parse-sandbox/upload-files";
 
 const CURRENT_VERSION = "1.0.0";
 const revisionFilePath = "revision.txt";

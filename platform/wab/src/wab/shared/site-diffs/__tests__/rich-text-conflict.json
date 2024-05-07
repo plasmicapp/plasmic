@@ -1017,7 +1017,7 @@
           }
         },
         "deps": [],
-        "version": "228-add-allow-root-wrapper"
+        "version": "229-add-class-type-default-styles"
       },
       "projectId": "aH1hFXMTo8YybdGp5ScZNk",
       "version": "0.0.1",
@@ -2039,7 +2039,7 @@
           }
         },
         "deps": [],
-        "version": "228-add-allow-root-wrapper"
+        "version": "229-add-class-type-default-styles"
       }
     },
     {
@@ -3049,7 +3049,7 @@
           }
         },
         "deps": [],
-        "version": "228-add-allow-root-wrapper"
+        "version": "229-add-class-type-default-styles"
       }
     }
   ]

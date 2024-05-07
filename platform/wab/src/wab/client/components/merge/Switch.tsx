@@ -5,7 +5,7 @@ import {
 import { SwitchRef } from "@plasmicapp/react-web";
 import * as React from "react";
 
-interface SwitchProps extends DefaultSwitchProps {}
+type SwitchProps = DefaultSwitchProps;
 
 function Switch_(props: SwitchProps, ref: SwitchRef) {
   const { plasmicProps, state } = PlasmicSwitch.useBehavior<SwitchProps>(

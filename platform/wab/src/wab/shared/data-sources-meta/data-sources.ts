@@ -11,6 +11,7 @@ import {
 import { assert, ensure, ensureString, mkUuid } from "@/wab/common";
 import { asCode, clone, ExprCtx } from "@/wab/exprs";
 import { ApiDataSource } from "@/wab/shared/ApiSchema";
+import type { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { substitutePlaceholder } from "@/wab/shared/dynamic-bindings";
 import {
   DataSourceSchema,
@@ -35,7 +36,6 @@ import type {
 } from "json-logic-js";
 import { isString, mapValues, merge } from "lodash";
 import { z } from "zod";
-import type { DataSourceType } from "./data-source-registry";
 
 export const ALL_QUERIES = { value: "plasmic_refresh_all", label: "All" };
 export const SHOW_INVALIDATION_KEYS = {

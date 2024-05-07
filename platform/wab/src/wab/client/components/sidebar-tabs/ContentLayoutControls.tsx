@@ -1,4 +1,9 @@
 import {
+  AlignmentGridControl,
+  getFlexLabel,
+  getGridLocation,
+} from "@/wab/client/components/sidebar-tabs/FlexContainerControls";
+import {
   LabeledStyleDimItemRow,
   SectionSeparator,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
@@ -6,11 +11,6 @@ import { ExpsProvider } from "@/wab/client/components/style-controls/StyleCompon
 import { TokenType } from "@/wab/commons/StyleToken";
 import { observer } from "mobx-react";
 import React from "react";
-import {
-  AlignmentGridControl,
-  getFlexLabel,
-  getGridLocation,
-} from "./FlexContainerControls";
 
 export const ContentLayoutContainerControls = observer(
   function ContentLayoutContainerControls(props: {

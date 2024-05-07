@@ -1,6 +1,7 @@
 // Borrowed from Appsmith
 
 import { isPrimitive } from "@/wab/common";
+import { ApiAppUser } from "@/wab/shared/ApiSchema";
 import {
   isBoolean,
   isFunction,
@@ -10,7 +11,6 @@ import {
   isString,
   isUndefined,
 } from "lodash";
-import { ApiAppUser } from "./ApiSchema";
 
 export const DATA_BIND_REGEX = /{{([\s\S]*?)}}/;
 

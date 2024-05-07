@@ -1,3 +1,4 @@
+import StarterProject from "@/wab/client/components/StarterProject";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultStarterGroupProps,
@@ -11,7 +12,6 @@ import { WorkspaceId } from "@/wab/shared/ApiSchema";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { Tooltip } from "antd";
 import * as React from "react";
-import StarterProject from "./StarterProject";
 
 const iconMap = {
   JoystickIcon: <JoystickIcon style={{ width: 20, height: 20 }} />,

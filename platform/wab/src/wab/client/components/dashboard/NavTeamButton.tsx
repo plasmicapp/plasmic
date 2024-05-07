@@ -6,7 +6,7 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
-interface NavTeamButtonProps extends DefaultNavTeamButtonProps {}
+type NavTeamButtonProps = DefaultNavTeamButtonProps;
 
 function NavTeamButton_(props: NavTeamButtonProps, ref: HTMLElementRefOf<"a">) {
   return <PlasmicNavTeamButton root={{ as: PublicLink, ref }} {...props} />;

@@ -1,9 +1,9 @@
+import { PageFooter } from "@/wab/client/components/pages/PageFooter";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
 import { Tooltip } from "antd";
 import * as React from "react";
 import { ReactNode } from "react";
-import { PageFooter } from "./PageFooter";
 
 export function IntakeFlowForm(props: { children: ReactNode }) {
   return (

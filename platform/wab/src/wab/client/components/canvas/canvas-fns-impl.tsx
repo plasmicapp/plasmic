@@ -6,6 +6,7 @@ import {
   RuleSet,
   StyleMarker,
 } from "@/wab/classes";
+import "@/wab/client/components/canvas/slate";
 import { assert } from "@/wab/common";
 import { normProp, parseCssNumericNew } from "@/wab/css";
 import {
@@ -18,7 +19,6 @@ import * as Tpls from "@/wab/tpls";
 import { mkTplTag, TplTagType } from "@/wab/tpls";
 import type { Descendant } from "slate";
 import { Element, Text } from "slate";
-import "./slate";
 
 export function isExplicitlySized(effectiveVs: EffectiveVariantSetting) {
   // We need to use `getComputedStyleForVal` because this function might be

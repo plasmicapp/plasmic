@@ -24,6 +24,7 @@ import {
   Img,
   Interaction,
   isKnownArg,
+  isKnownClassNamePropType,
   isKnownCollectionExpr,
   isKnownCompositeExpr,
   isKnownCustomCode,
@@ -64,8 +65,10 @@ import {
   RichText,
   RuleSet,
   Scalar,
+  SelectorRuleSet,
   Site,
   SlotParam,
+  StyleExpr,
   StyleMarker,
   StyleScopeClassNamePropType,
   TargetType,
@@ -78,19 +81,18 @@ import {
   Variant,
   VariantSetting,
   VarRef,
-} from "./classes";
+} from "@/wab/classes";
 /* eslint-disable
     no-fallthrough,
 */
-import L, { uniq, uniqBy } from "lodash";
-import * as US from "underscore.string";
-import type { ViewCtx } from "./client/studio-ctx/view-ctx";
+import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
   assert,
   check,
   checkUnique,
   ensure,
   ensureArray,
+  ensureType,
   flexFlatten,
   InvalidCodePathError,
   isArrayOfStrings,
@@ -104,12 +106,12 @@ import {
   unexpected,
   withoutNils,
   xDifference,
-} from "./common";
-import { DeepReadonly } from "./commons/types";
+} from "@/wab/common";
+import { DeepReadonly } from "@/wab/commons/types";
 import {
   TAG_TO_HTML_ATTRIBUTES,
   TAG_TO_HTML_INTERFACE,
-} from "./component-metas/tag-to-html-interface";
+} from "@/wab/component-metas/tag-to-html-interface";
 import {
   CodeComponent,
   findStateForOnChangeParam,
@@ -118,57 +120,64 @@ import {
   isCodeComponent,
   isHostLessCodeComponent,
   isPlumeComponent,
-} from "./components";
-import { getCssInitial } from "./css";
-import * as Exprs from "./exprs";
+} from "@/wab/components";
+import { getCssInitial } from "@/wab/css";
+import * as Exprs from "@/wab/exprs";
 import {
   isRealCodeExpr,
   isRealCodeExprEnsuringType,
   tryExtractJson,
-} from "./exprs";
-import * as Html from "./html";
-import { mkVar } from "./lang";
-import { metaSvc } from "./metas";
-import { isAdvancedProp } from "./shared/code-components/code-components";
-import { toVarName } from "./shared/codegen/util";
-import { isRenderableType, typeFactory } from "./shared/core/model-util";
-import { isTagInline } from "./shared/core/rich-text-util";
+} from "@/wab/exprs";
+import * as Html from "@/wab/html";
+import { mkVar } from "@/wab/lang";
+import { metaSvc } from "@/wab/metas";
+import { isAdvancedProp } from "@/wab/shared/code-components/code-components";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { isRenderableType, typeFactory } from "@/wab/shared/core/model-util";
+import { isTagInline } from "@/wab/shared/core/rich-text-util";
 import {
   ignoredConvertablePlainTextProps,
   typographyCssProps,
-} from "./shared/core/style-props";
-import { CanvasEnv, evalCodeWithEnv } from "./shared/eval";
-import { parseExpr, pathToString } from "./shared/eval/expression-parser";
+} from "@/wab/shared/core/style-props";
+import { CanvasEnv, evalCodeWithEnv } from "@/wab/shared/eval";
+import { parseExpr, pathToString } from "@/wab/shared/eval/expression-parser";
 import {
   FREE_CONTAINER_LOWER,
   GRID_LOWER,
   HORIZ_CONTAINER_LOWER,
   LAYOUT_CONTAINER_LOWER,
   VERT_CONTAINER_LOWER,
-} from "./shared/Labels";
-import { ContainerLayoutType, getRshContainerType } from "./shared/layoututils";
+} from "@/wab/shared/Labels";
+import {
+  ContainerLayoutType,
+  getRshContainerType,
+} from "@/wab/shared/layoututils";
 import {
   getPlumeCodegenPlugin,
   getPlumeEditorPlugin,
-} from "./shared/plume/plume-registry";
+} from "@/wab/shared/plume/plume-registry";
 import {
   ReadonlyIRuleSetHelpersX,
   RSH,
   RuleSetHelpers,
-} from "./shared/RuleSetHelpers";
+} from "@/wab/shared/RuleSetHelpers";
 import {
   fillCodeComponentDefaultSlotContent,
   getSlotArgs,
   getSlotSelectionContainingTpl,
   isCodeComponentSlot,
   isDescendantOfVirtualRenderExpr,
-} from "./shared/SlotUtils";
-import { getTplComponentArg, TplMgr } from "./shared/TplMgr";
-import { $$$ } from "./shared/TplQuery";
+} from "@/wab/shared/SlotUtils";
+import {
+  getTplComponentArg,
+  setTplComponentArg,
+  TplMgr,
+} from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
 import {
   makeVariantComboSorter,
   sortedVariantSettings,
-} from "./shared/variant-sort";
+} from "@/wab/shared/variant-sort";
 import {
   ensureBaseVariantSetting,
   ensureVariantSetting,
@@ -176,12 +185,14 @@ import {
   mkVariantSetting,
   tryGetBaseVariantSetting,
   VariantCombo,
-} from "./shared/Variants";
-import { extractComponentUsages, writeable } from "./sites";
-import { SlotSelection } from "./slots";
-import { isOnChangeParam } from "./states";
-import { smartHumanize } from "./strs";
-import * as styles from "./styles";
+} from "@/wab/shared/Variants";
+import { extractComponentUsages, writeable } from "@/wab/sites";
+import { SlotSelection } from "@/wab/slots";
+import { isOnChangeParam } from "@/wab/states";
+import { smartHumanize } from "@/wab/strs";
+import * as styles from "@/wab/styles";
+import L, { uniq, uniqBy } from "lodash";
+import * as US from "underscore.string";
 
 /**
  * From
@@ -418,7 +429,6 @@ export interface MkTplComponentParams {
 }
 
 export function mkTplComponentX(obj: MkTplComponentParams) {
-  let expr, param;
   const { component, args, children, dataRep, dataCond, baseVariant } = obj;
   const name2param = new Map(
     [...component.params].map(
@@ -448,7 +458,8 @@ export function mkTplComponentX(obj: MkTplComponentParams) {
     : (() => {
         const result: Arg[] = [];
         for (const argName in args) {
-          expr = args[argName];
+          let param: Param;
+          const expr = ensureType<Expr | TplNode | ChildSet>(args[argName]);
           result.push(
             new Arg({
               param: (param = ensure(
@@ -456,7 +467,7 @@ export function mkTplComponentX(obj: MkTplComponentParams) {
                 "Checked before"
               )),
               expr: isRenderableType(param.type)
-                ? processRenderables(expr)
+                ? processRenderables(expr as RenderExpr | ChildSet)
                 : switchType(expr)
                     .when(Expr, (_expr) => _expr)
                     // We always assume an array is meant to be a renderable. Not
@@ -506,6 +517,52 @@ export function mkTplComponentX(obj: MkTplComponentParams) {
       new RuleSetHelpers(baseVs.rs, "div").mergeRs(
         component.codeComponentMeta.defaultStyles
       );
+    }
+
+    for (const param of component.params) {
+      if (isKnownClassNamePropType(param.type)) {
+        const styledSelectors = [
+          ...(Object.keys(param.type.defaultStyles).length > 0
+            ? [
+                {
+                  label: "Base",
+                  selector: null,
+                  defaultStyles: param.type.defaultStyles,
+                },
+              ]
+            : []),
+          ...param.type.selectors.filter(
+            (selector) => Object.keys(selector.defaultStyles).length > 0
+          ),
+        ];
+        if (styledSelectors.length > 0) {
+          const selectorRulesets = styledSelectors.map((s) =>
+            styles.mkSelectorRuleSet({
+              selector: s.selector,
+              isBase: s.selector == null || s.label === "Base",
+            })
+          );
+          const selectorToRuleSet = new Map<string, SelectorRuleSet>();
+          selectorRulesets.forEach((s) => {
+            selectorToRuleSet.set(!s.selector ? "base" : s.selector, s);
+          });
+          styledSelectors.forEach((s) => {
+            const selector = !s.selector ? "base" : s.selector;
+            new RuleSetHelpers(
+              ensure(
+                selectorToRuleSet.get(selector),
+                () => `Should have selector ${selector}`
+              ).rs,
+              "div"
+            ).mergeRs(styles.mkRuleSet({ values: s.defaultStyles }));
+          });
+          const expr = new StyleExpr({
+            uuid: mkShortId(),
+            styles: selectorRulesets,
+          });
+          setTplComponentArg(tpl, baseVs, param.variable, expr);
+        }
+      }
     }
 
     // This is the owner site of the _component_, not the owner site
@@ -1353,7 +1410,9 @@ export function cloneType<T extends Type>(type_: T): T {
     .when(ColorPropType, (t) => typeFactory.color({ noDeref: t.noDeref }))
     .when(DateString, (t) => typeFactory.dateString())
     .when(DateRangeStrings, (t) => typeFactory.dateRangeStrings())
-    .when(ClassNamePropType, (t) => typeFactory.classNamePropType(t.selectors))
+    .when(ClassNamePropType, (t) =>
+      typeFactory.classNamePropType(t.selectors, t.defaultStyles)
+    )
     .when(StyleScopeClassNamePropType, (t) =>
       typeFactory.styleScopeClassNamePropType(t.scopeName)
     )

@@ -6,6 +6,7 @@ import {
 } from "@/wab/classes";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { checkAndNotifyUnsupportedHostVersion } from "@/wab/client/components/modals/codeComponentModals";
+import S from "@/wab/client/components/sidebar-tabs/CustomBehaviorsSection.module.scss";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { maybeShowGlobalContextNotification } from "@/wab/client/components/studio/add-drawer/AddDrawer";
 import * as widgets from "@/wab/client/components/widgets";
@@ -34,7 +35,6 @@ import { Dropdown, Menu } from "antd";
 import { findIndex } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
-import S from "./CustomBehaviorsSection.module.scss";
 
 export const CustomBehaviorsSection = observer(function (props: {
   tpl: TplNode;

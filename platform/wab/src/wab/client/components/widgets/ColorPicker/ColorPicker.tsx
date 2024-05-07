@@ -6,6 +6,17 @@ import {
 import { ColorSwatch } from "@/wab/client/components/style-controls/ColorSwatch";
 import { UnloggedDragCatcher } from "@/wab/client/components/style-controls/UnloggedDragCatcher";
 import Button from "@/wab/client/components/widgets/Button";
+import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
+import {
+  ColorMode,
+  getColorAlpha,
+  getColorComponents,
+  getFullColorRepresentation,
+  getShortColorHex,
+  getShortenedColor,
+  getShortenedHSL,
+} from "@/wab/client/components/widgets/ColorPicker/colorPickerUtils";
+import "@/wab/client/components/widgets/ColorPicker/Pickr.overrides.scss";
 import { ColorTokenSelector } from "@/wab/client/components/widgets/ColorTokenSelector";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { IconButton } from "@/wab/client/components/widgets/IconButton";
@@ -21,7 +32,7 @@ import {
   TokenType,
   tryParseTokenRef,
 } from "@/wab/commons/StyleToken";
-import { TokenResolver } from "@/wab/shared/cached-selectors";
+import { TokenValueResolver } from "@/wab/shared/cached-selectors";
 import { Chroma } from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { allColorTokens, allStyleTokens, isEditable } from "@/wab/sites";
@@ -41,22 +52,11 @@ import {
   useRef,
   useState,
 } from "react";
-import { useClientTokenResolver } from "./client-token-resolver";
-import {
-  ColorMode,
-  getColorAlpha,
-  getColorComponents,
-  getFullColorRepresentation,
-  getShortColorHex,
-  getShortenedColor,
-  getShortenedHSL,
-} from "./colorPickerUtils";
-import "./Pickr.overrides.scss";
 
 export function tryGetRealColor(
   color: string,
   sc: StudioCtx,
-  resolver: TokenResolver,
+  resolver: TokenValueResolver,
   vsh: VariantedStylesHelper = new VariantedStylesHelper(),
   maybeColorTokens?: StyleToken[]
 ) {

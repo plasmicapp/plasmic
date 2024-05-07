@@ -2,6 +2,7 @@ import { Component, Site, TplNode, VariantSetting } from "@/wab/classes";
 import { DeepMap, deepMapMemoized } from "@/wab/commons/deep-map";
 import { buildObjToDepMap } from "@/wab/project-deps";
 import { makeTokenRefResolver } from "@/wab/shared/cached-selectors";
+import { extractUsedTokensForTheme } from "@/wab/shared/codegen/style-tokens";
 import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import { makeLayoutAwareRuleSet } from "@/wab/shared/layoututils";
 import { readonlyRSH } from "@/wab/shared/RuleSetHelpers";
@@ -23,7 +24,6 @@ import {
 } from "@/wab/styles";
 import { flattenTpls } from "@/wab/tpls";
 import { keyBy } from "lodash";
-import { extractUsedTokensForTheme } from "./style-tokens";
 
 export class SiteGenHelper {
   private cache: Map<string, DeepMap<any>> = new Map();

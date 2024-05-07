@@ -1,12 +1,12 @@
 import { meta } from "@/wab/classes-metas";
+import { AppCtx } from "@/wab/client/app-ctx";
+import { Clipboard } from "@/wab/client/clipboard";
+import { DbCtx } from "@/wab/client/db";
+import { loadSiteDbCtx } from "@/wab/client/init-ctx";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { observeModel } from "@/wab/observable-model";
 import { SiteInfo } from "@/wab/shared/SharedApi";
 import * as mobx from "mobx";
-import { AppCtx } from "./app-ctx";
-import { Clipboard } from "./clipboard";
-import { DbCtx } from "./db";
-import { loadSiteDbCtx } from "./init-ctx";
-import { StudioCtx } from "./studio-ctx/StudioCtx";
 
 (window as any).mobx = mobx;
 (window as any).meta = meta;

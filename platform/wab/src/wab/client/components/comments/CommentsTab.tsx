@@ -4,6 +4,7 @@ import { Dropdown, Menu } from "antd";
 
 import { TplNode } from "@/wab/classes";
 import { apiKey } from "@/wab/client/api";
+import { useCommentViews } from "@/wab/client/components/comments/CommentViews";
 import {
   SidebarModal,
   SidebarModalProvider,
@@ -22,7 +23,6 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
 import { mutate } from "swr";
-import { useCommentViews } from "./CommentViews";
 
 export const DEFAULT_NOTIFICATION_LEVEL = "all";
 export const notifyAboutKeyToLabel = {

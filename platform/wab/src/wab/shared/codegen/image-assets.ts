@@ -16,6 +16,23 @@ import {
   extractAllAssetRefs,
   getTagAttrForImageAsset,
 } from "@/wab/image-assets";
+import possibleStandardNames from "@/wab/shared/codegen/react-attrs";
+import {
+  getReactWebPackageName,
+  ImportAliasesMap,
+} from "@/wab/shared/codegen/react-p";
+import {
+  makeAssetIdFileName,
+  makeImportedPictureRef,
+} from "@/wab/shared/codegen/react-p/utils";
+import { ExportOpts } from "@/wab/shared/codegen/types";
+import {
+  jsLiteral,
+  jsString,
+  stripExtension,
+  toClassName,
+  toVarName,
+} from "@/wab/shared/codegen/util";
 import {
   parseDataUrl,
   parseDataUrlToSvgXml,
@@ -37,17 +54,6 @@ import {
 } from "@/wab/tpls";
 import L, { last } from "lodash";
 import mime from "mime/lite";
-import possibleStandardNames from "./react-attrs";
-import { getReactWebPackageName, ImportAliasesMap } from "./react-p";
-import { makeAssetIdFileName, makeImportedPictureRef } from "./react-p/utils";
-import { ExportOpts } from "./types";
-import {
-  jsLiteral,
-  jsString,
-  stripExtension,
-  toClassName,
-  toVarName,
-} from "./util";
 
 export function extractUsedIconAssetsForComponents(
   site: Site,

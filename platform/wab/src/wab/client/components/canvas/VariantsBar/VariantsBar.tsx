@@ -3,6 +3,9 @@ import {
   getSpotlightDomInfo,
   getSpotlightInfo,
 } from "@/wab/client/components/canvas/Spotlight";
+import VariantBadge from "@/wab/client/components/canvas/VariantsBar/VariantBadge";
+import styles from "@/wab/client/components/canvas/VariantsBar/VariantsBar.module.scss";
+import VariantsDrawer from "@/wab/client/components/canvas/VariantsBar/VariantsDrawer";
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
 import { frameToClientRect } from "@/wab/client/coords";
 import { plasmicCanvasTransformEvent } from "@/wab/client/definitions/events";
@@ -30,9 +33,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import VariantBadge from "./VariantBadge";
-import styles from "./VariantsBar.module.scss";
-import VariantsDrawer from "./VariantsDrawer";
 
 const HOVER_TAG_HEIGHT = 30;
 const CANVAS_PADDING = 15;

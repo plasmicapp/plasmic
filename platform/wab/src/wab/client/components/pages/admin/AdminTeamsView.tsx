@@ -1,5 +1,10 @@
 import { useNonAuthCtx } from "@/wab/client/app-ctx";
+import {
+  AutoInfo,
+  smartRender,
+} from "@/wab/client/components/pages/admin/admin-util";
 import { useAdminCtx } from "@/wab/client/components/pages/admin/AdminCtx";
+import { AdminUserSelect } from "@/wab/client/components/pages/admin/AdminUserSelect";
 import { AdminUserTable } from "@/wab/client/components/pages/admin/AdminUserTable";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
@@ -33,8 +38,6 @@ import {
   Tabs,
 } from "antd";
 import React, { useMemo, useState } from "react";
-import { AutoInfo, smartRender } from "./admin-util";
-import { AdminUserSelect } from "./AdminUserSelect";
 
 export function AdminTeamsView() {
   const { teamId, navigate } = useAdminCtx();

@@ -1,4 +1,5 @@
 import { ArenaFrame } from "@/wab/classes";
+import styles from "@/wab/client/components/canvas/CanvasFrame/CanvasFrame.module.scss";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import { makeFrameMenu } from "@/wab/client/components/frame-menu";
 import { getGlobalCssVariableValue } from "@/wab/client/components/studio/GlobalCssVariables";
@@ -10,7 +11,6 @@ import { gridSpacing, hoverBoxTagHeight } from "@/wab/styles/css-variables";
 import cn from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";
-import styles from "./CanvasFrame.module.scss";
 
 export const CanvasArtboardSelectionHandle = observer(
   function CanvasArtboardSelectionHandle_({

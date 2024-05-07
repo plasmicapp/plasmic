@@ -31,6 +31,12 @@ import {
   resolveLatestProjectRevisions,
   VersionToSync,
 } from "@/wab/server/loader/resolve-projects";
+import {
+  hasUser,
+  superDbMgr,
+  userAnalytics,
+  userDbMgr,
+} from "@/wab/server/routes/util";
 import { prefillCloudfront } from "@/wab/server/workers/prefill-cloudfront";
 import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import { Bundler } from "@/wab/shared/bundler";
@@ -48,7 +54,6 @@ import path from "path";
 import { ProjectId } from "src/wab/shared/ApiSchema";
 import { LocalizationKeyScheme } from "src/wab/shared/localization";
 import { getConnection } from "typeorm";
-import { hasUser, superDbMgr, userAnalytics, userDbMgr } from "./util";
 
 /**
  * Loader version is used for backwards compatibility (otherwise we could

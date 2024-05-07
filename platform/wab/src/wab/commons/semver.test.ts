@@ -1,4 +1,4 @@
-import * as semver from "./semver";
+import * as semver from "@/wab/commons/semver";
 
 describe("semver", () => {
   it("should understand latest", () => {

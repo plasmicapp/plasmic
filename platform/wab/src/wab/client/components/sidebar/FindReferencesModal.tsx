@@ -1,6 +1,10 @@
 import { ArenaFrame, Component, Mixin, StyleToken } from "@/wab/classes";
 import ListSectionSeparator from "@/wab/client/components/ListSectionSeparator";
 import { menuSection } from "@/wab/client/components/menu-builder";
+import { MixinPopup } from "@/wab/client/components/sidebar/MixinControls";
+import ReferenceItem from "@/wab/client/components/sidebar/ReferenceItem";
+import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { TokenEditModal } from "@/wab/client/components/sidebar/TokenEditModal";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
 import MixinIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Mixin";
@@ -21,10 +25,6 @@ import L, { sortBy } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { VariableSizeList } from "react-window";
-import { MixinPopup } from "./MixinControls";
-import ReferenceItem from "./ReferenceItem";
-import { SidebarModal } from "./SidebarModal";
-import { TokenEditModal } from "./TokenEditModal";
 
 const enum ItemType {
   page = "page",

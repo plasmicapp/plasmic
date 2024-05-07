@@ -1,9 +1,9 @@
 import { InlineIcon } from "@/wab/client/components/widgets";
+import { Icon } from "@/wab/client/components/widgets/Icon";
 import InfoIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Info";
 import { Popover } from "antd";
 import { isFunction } from "lodash";
 import React, { ReactNode } from "react";
-import { Icon } from "./Icon";
 
 export function LabelWithDetailedTooltip(props: {
   tooltip: ReactNode | (() => React.ReactNode);

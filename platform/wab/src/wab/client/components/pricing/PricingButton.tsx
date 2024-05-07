@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultPricingButtonProps altogether and have
 // total control over the props for your component.
-export interface PricingButtonProps extends DefaultPricingButtonProps {}
+export type PricingButtonProps = DefaultPricingButtonProps;
 
 function PricingButton_(
   props: PricingButtonProps,

@@ -14,18 +14,18 @@ import {
 } from "@/wab/classes";
 import { assert, isNonNil } from "@/wab/common";
 import { removeFromArray } from "@/wab/commons/collections";
+import { componentToDeepReferenced } from "@/wab/shared/cached-selectors";
+import { wabToTsType } from "@/wab/shared/core/model-util";
+import { isSlot } from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { UserError } from "@/wab/shared/UserError";
+import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import {
   ensureCorrectImplicitStates,
   isPublicState,
   removeComponentState,
 } from "@/wab/states";
 import { isTplComponent } from "@/wab/tpls";
-import { componentToDeepReferenced } from "./cached-selectors";
-import { wabToTsType } from "./core/model-util";
-import { isSlot } from "./SlotUtils";
-import { $$$ } from "./TplQuery";
-import { UserError } from "./UserError";
-import { isStandaloneVariantGroup } from "./Variants";
 
 export function makeComponentSwapper(
   site: Site,

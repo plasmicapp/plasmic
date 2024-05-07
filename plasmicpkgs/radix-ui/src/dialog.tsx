@@ -168,6 +168,7 @@ export const Dialog = React.forwardRef<
 >(
   (
     {
+      className,
       open,
       onOpenChange,
       modal,
@@ -188,7 +189,7 @@ export const Dialog = React.forwardRef<
       defaultOpen={defaultOpen}
     >
       <DialogPrimitive.Trigger asChild>
-        {wrapFragmentInDiv(triggerSlot)}
+        {wrapFragmentInDiv(triggerSlot, className)}
       </DialogPrimitive.Trigger>
       {/*
       The main benefit of containing by default is that users can apply layout to position the dialog content easily, e.g. centered on the screen.

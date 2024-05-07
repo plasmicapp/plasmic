@@ -1,4 +1,4 @@
-import { Team } from "./entities/Entities";
+import { Team } from "@/wab/server/entities/Entities";
 
 // It would be nice to not need to know to check for stripeSubscriptionId
 // https://linear.app/plasmic/issue/PLA-10654

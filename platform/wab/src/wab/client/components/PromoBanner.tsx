@@ -7,7 +7,7 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import Cookies from "js-cookie";
 import * as React from "react";
 
-export interface PromoBannerProps extends DefaultPromoBannerProps {}
+export type PromoBannerProps = DefaultPromoBannerProps;
 
 function PromoBanner_(props: PromoBannerProps, ref: HTMLElementRefOf<"a">) {
   const promoCookie = Cookies.get("promo_code");

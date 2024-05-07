@@ -7,6 +7,8 @@ import {
   Site,
   Variant,
 } from "@/wab/classes";
+import { checkDepPkgHosts } from "@/wab/client/init-ctx";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { Dict } from "@/wab/collections";
 import {
   assert,
@@ -40,8 +42,6 @@ import { unbundleProjectDependency } from "@/wab/tagged-unbundle";
 import { trackComponentRoot, trackComponentSite } from "@/wab/tpls";
 import L, { last } from "lodash";
 import { computed, observable } from "mobx";
-import { checkDepPkgHosts } from "./init-ctx";
-import { StudioCtx } from "./studio-ctx/StudioCtx";
 
 export interface ProjectDependencyData {
   // `model` is the object stored in the Site

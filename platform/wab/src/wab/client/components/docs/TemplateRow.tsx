@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultTemplateRowProps altogether and have
 // total control over the props for your component.
-interface TemplateRowProps extends DefaultTemplateRowProps {}
+type TemplateRowProps = DefaultTemplateRowProps;
 
 function TemplateRow_(props: TemplateRowProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicTemplateRow to render this component as it was

@@ -1,5 +1,8 @@
 import { ArenaFrame, Site } from "@/wab/classes";
+import { Dims, offsetPxAsUnits } from "@/wab/client/DimManip";
 import { getOffsetRect } from "@/wab/client/dom";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
   absmax,
   CustomError,
@@ -57,9 +60,6 @@ import { IRuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { isSpecialSizeVal } from "@/wab/shared/sizingutils";
 import { ValComponent, ValTag } from "@/wab/val-nodes";
 import { failable } from "ts-failable";
-import { Dims, offsetPxAsUnits } from "./DimManip";
-import { StudioCtx } from "./studio-ctx/StudioCtx";
-import { ViewCtx } from "./studio-ctx/view-ctx";
 
 export interface ManipState {
   /**

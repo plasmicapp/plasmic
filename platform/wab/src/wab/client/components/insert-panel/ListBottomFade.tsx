@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultListBottomFadeProps altogether and have
 // total control over the props for your component.
-export interface ListBottomFadeProps extends DefaultListBottomFadeProps {}
+export type ListBottomFadeProps = DefaultListBottomFadeProps;
 
 function ListBottomFade_(
   props: ListBottomFadeProps,

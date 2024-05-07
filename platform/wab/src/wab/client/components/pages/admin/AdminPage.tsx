@@ -11,6 +11,7 @@ import {
   AdminCtxProvider,
   useAdminCtx,
 } from "@/wab/client/components/pages/admin/AdminCtx";
+import { AdminTeamsView } from "@/wab/client/components/pages/admin/AdminTeamsView";
 import { AdminUsersView } from "@/wab/client/components/pages/admin/AdminUsersView";
 import {
   LinkButton,
@@ -45,7 +46,6 @@ import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
 import useSWR from "swr/immutable";
-import { AdminTeamsView } from "./AdminTeamsView";
 
 export default function AdminPage({ nonAuthCtx }: { nonAuthCtx: NonAuthCtx }) {
   return (

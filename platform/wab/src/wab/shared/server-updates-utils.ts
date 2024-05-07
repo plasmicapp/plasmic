@@ -98,6 +98,13 @@ import {
   ModelChange,
   RecordedChanges,
 } from "@/wab/observable-model";
+import { getArenaFrames } from "@/wab/shared/Arenas";
+import { instUtil } from "@/wab/shared/core/InstUtil";
+import {
+  isBaseVariant,
+  isScreenVariantGroup,
+  tryGetBaseVariantSetting,
+} from "@/wab/shared/Variants";
 import {
   removeMarkersToTpl,
   replaceTplTreeByEmptyBox,
@@ -108,13 +115,6 @@ import {
 } from "@/wab/tpls";
 import { undoChanges } from "@/wab/undo-util";
 import { uniq } from "lodash";
-import { getArenaFrames } from "./Arenas";
-import { instUtil } from "./core/InstUtil";
-import {
-  isBaseVariant,
-  isScreenVariantGroup,
-  tryGetBaseVariantSetting,
-} from "./Variants";
 
 export interface DeletedAssetsSummary {
   deletedComponents: Component[];

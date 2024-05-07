@@ -1,3 +1,4 @@
+import sty from "@/wab/client/components/studio/arenas/GhostFrame.module.sass";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { plasmicIFrameMouseDownEvent } from "@/wab/client/definitions/events";
 import {
@@ -17,7 +18,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import sty from "./GhostFrame.module.sass";
 
 const GHOST_FRAME_MIN_DIM = 80;
 const GHOST_FRAME_MAX_DIM = 1200;

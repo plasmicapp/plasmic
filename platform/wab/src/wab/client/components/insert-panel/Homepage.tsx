@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultHomepageProps altogether and have
 // total control over the props for your component.
-export interface HomepageProps extends DefaultHomepageProps {}
+export type HomepageProps = DefaultHomepageProps;
 
 function Homepage_(props: HomepageProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicHomepage to render this component as it was

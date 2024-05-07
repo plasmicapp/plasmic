@@ -1,5 +1,5 @@
+import { getClickhouseSecrets } from "@/wab/server/secrets";
 import { createClient } from "@clickhouse/client";
-import { getClickhouseSecrets } from "./secrets";
 
 export const getClickHouseConnection = () => {
   const config = getClickhouseSecrets();

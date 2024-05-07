@@ -6,12 +6,12 @@ import { useState } from "react";
 import {
   DefaultConnectToDataSourceProps,
   PlasmicConnectToDataSource,
-} from "./wab/client/plasmic/plasmic_kit_data_queries/PlasmicConnectToDataSource";
+} from "@/wab/client/plasmic/plasmic_kit_data_queries/PlasmicConnectToDataSource";
 import {
   BuiltinDataSource,
   BuiltinDataSourceName,
   dataSourceNameToHumanName,
-} from "./wab/shared/data/DataSources";
+} from "@/wab/shared/data/DataSources";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can

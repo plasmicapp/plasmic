@@ -1,4 +1,9 @@
 import { UU } from "@/wab/client/cli-routes";
+import {
+  useCmsDatabase,
+  useMutateTables,
+} from "@/wab/client/components/cms/cms-contexts";
+import CmsModelItem from "@/wab/client/components/cms/CmsModelItem";
 import { reactPrompt } from "@/wab/client/components/quick-modals";
 import { Matcher } from "@/wab/client/components/view-common";
 import { useApi } from "@/wab/client/contexts/AppContexts";
@@ -11,8 +16,6 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { partition, sortBy } from "lodash";
 import * as React from "react";
 import { useHistory, useRouteMatch } from "react-router";
-import { useCmsDatabase, useMutateTables } from "./cms-contexts";
-import CmsModelItem from "./CmsModelItem";
 
 export type CmsModelsListProps = DefaultCmsModelsListProps;
 

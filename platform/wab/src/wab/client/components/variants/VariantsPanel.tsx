@@ -18,6 +18,25 @@ import {
   StyleVariantLabel,
   VariantLabel,
 } from "@/wab/client/components/VariantControls";
+import { EditableGroupLabel } from "@/wab/client/components/variants/EditableGroupLabel";
+import { StandaloneVariant } from "@/wab/client/components/variants/StandaloneVariantGroup";
+import { SuperComponentVariantsSection } from "@/wab/client/components/variants/SuperComponentVariantsSection";
+import {
+  makeVariantGroupMenu,
+  makeVariantMenu,
+  VariantDataPicker,
+} from "@/wab/client/components/variants/variant-menu";
+import VariantComboRow from "@/wab/client/components/variants/VariantComboRow";
+import VariantRow from "@/wab/client/components/variants/VariantRow";
+import {
+  ComponentArenaVariantsController,
+  CustomVariantsController,
+  makeVariantsController,
+  PageArenaVariantsController,
+} from "@/wab/client/components/variants/VariantsController";
+import VariantSection, {
+  makeReadOnlySection,
+} from "@/wab/client/components/variants/VariantSection";
 import {
   IconLinkButton,
   IFrameAwareDropdownMenu,
@@ -67,23 +86,6 @@ import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { useSessionStorage } from "react-use";
 import { isTplTag } from "src/wab/tpls";
-import { EditableGroupLabel } from "./EditableGroupLabel";
-import { StandaloneVariant } from "./StandaloneVariantGroup";
-import { SuperComponentVariantsSection } from "./SuperComponentVariantsSection";
-import {
-  makeVariantGroupMenu,
-  makeVariantMenu,
-  VariantDataPicker,
-} from "./variant-menu";
-import VariantComboRow from "./VariantComboRow";
-import VariantRow from "./VariantRow";
-import {
-  ComponentArenaVariantsController,
-  CustomVariantsController,
-  makeVariantsController,
-  PageArenaVariantsController,
-} from "./VariantsController";
-import VariantSection, { makeReadOnlySection } from "./VariantSection";
 
 interface VariantsPanelProps {
   studioCtx: StudioCtx;

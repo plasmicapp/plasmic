@@ -10,6 +10,22 @@ import { prepareTeamSupportUrls as doPrepareTeamSupportUrls } from "@/wab/server
 import { sendShareEmail } from "@/wab/server/emails/share-email";
 import { Project, Team, Workspace } from "@/wab/server/entities/Entities";
 import { isTeamOnFreeTrial } from "@/wab/server/freeTrial";
+import { customCreateTeam } from "@/wab/server/routes/custom-routes";
+import { mkApiProject } from "@/wab/server/routes/projects";
+import { getPromotionCodeCookie } from "@/wab/server/routes/promo-code";
+import {
+  maybeTriggerPaywall,
+  passPaywall,
+  resetStripeCustomer,
+  syncDataWithStripe,
+} from "@/wab/server/routes/team-plans";
+import {
+  getUser,
+  superDbMgr,
+  userAnalytics,
+  userDbMgr,
+} from "@/wab/server/routes/util";
+import { mkApiWorkspace } from "@/wab/server/routes/workspaces";
 import {
   ApiPermission,
   ApiTeam,
@@ -45,17 +61,6 @@ import {
 } from "@/wab/urls";
 import { Request, Response } from "express-serve-static-core";
 import L from "lodash";
-import { customCreateTeam } from "./custom-routes";
-import { mkApiProject } from "./projects";
-import { getPromotionCodeCookie } from "./promo-code";
-import {
-  maybeTriggerPaywall,
-  passPaywall,
-  resetStripeCustomer,
-  syncDataWithStripe,
-} from "./team-plans";
-import { getUser, superDbMgr, userAnalytics, userDbMgr } from "./util";
-import { mkApiWorkspace } from "./workspaces";
 
 export function mkApiTeam(team: Team): ApiTeam {
   return L.assign(
@@ -83,6 +88,7 @@ export function mkApiTeam(team: Team): ApiTeam {
       "whiteLabelName",
     ]),
     {
+      parentTeamId: team.parentTeamId,
       featureTier: team.featureTier || team.parentTeam?.featureTier || null,
       uiConfig: mergeUiConfigs(team.parentTeam?.uiConfig, team.uiConfig),
       onTrial: isTeamOnFreeTrial(team),

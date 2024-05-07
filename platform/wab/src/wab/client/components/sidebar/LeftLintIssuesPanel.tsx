@@ -1,5 +1,9 @@
 import { Component, isKnownComponent } from "@/wab/classes";
 import { useAppRoles } from "@/wab/client/components/app-auth/app-auth-contexts";
+import {
+  ItemOrGroup,
+  VirtualGroupedList,
+} from "@/wab/client/components/sidebar/VirtualGroupedList";
 import { Matcher } from "@/wab/client/components/view-common";
 import Button from "@/wab/client/components/widgets/Button";
 import Checkbox from "@/wab/client/components/widgets/Checkbox";
@@ -31,7 +35,6 @@ import { groupBy } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
-import { ItemOrGroup, VirtualGroupedList } from "./VirtualGroupedList";
 
 export type LeftLintIssuesPanelProps = DefaultLeftLintIssuesPanelProps;
 

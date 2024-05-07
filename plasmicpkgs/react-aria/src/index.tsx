@@ -6,6 +6,7 @@ import { registerForm } from "./registerForm";
 import { registerInput } from "./registerInput";
 import { registerLabel } from "./registerLabel";
 import { registerListBox } from "./registerListBox";
+import { registerModal } from "./registerModal";
 import { registerPopover } from "./registerPopover";
 import { registerRadioGroup } from "./registerRadioGroup";
 import { registerSection } from "./registerSection";
@@ -29,4 +30,5 @@ export function registerAll(loader?: Registerable) {
   registerCheckboxGroup(loader);
   registerRadioGroup(loader);
   registerTextField(loader);
+  registerModal(loader);
 }

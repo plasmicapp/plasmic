@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultExperimentEventProps altogether and have
 // total control over the props for your component.
-export interface ExperimentEventProps extends DefaultExperimentEventProps {}
+export type ExperimentEventProps = DefaultExperimentEventProps;
 
 function ExperimentEvent_(
   props: ExperimentEventProps,

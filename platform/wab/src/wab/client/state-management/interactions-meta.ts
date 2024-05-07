@@ -23,6 +23,7 @@ import {
   VariantsRef,
   VarRef,
 } from "@/wab/classes";
+import { getTplRefActions } from "@/wab/client/state-management/ref-actions";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { assert, ensure, ensureInstance } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
@@ -73,7 +74,6 @@ import {
 import { mkMetaName } from "@plasmicapp/host";
 import { GlobalActionRegistration } from "@plasmicapp/host/registerGlobalContext";
 import { get, startCase } from "lodash";
-import { getTplRefActions } from "./ref-actions";
 
 export const BLOCKED_RUN_INTERACTION_MESSAGE = `This action depends on the results of the previous step or the event arguments. You need to manually trigger it through the interactive mode`;
 export const BLOCKED_RUN_INTERACTION_ONLY_BY_EVENT_ARGS_MESSAGE = `This action depends on the event arguments. You need to manually trigger it through the interactive mode`;

@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultHoverableIconProps altogether and have
 // total control over the props for your component.
-export interface HoverableIconProps extends DefaultHoverableIconProps {}
+export type HoverableIconProps = DefaultHoverableIconProps;
 
 function HoverableIcon_(
   props: HoverableIconProps,

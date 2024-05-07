@@ -1,3 +1,14 @@
+import { RuleSet } from "@/wab/classes";
+import {
+  chunkPairs,
+  ensure,
+  maybes,
+  simpleWords,
+  tryParseNumLit,
+  tuple,
+} from "@/wab/common";
+import { horizontalSides, standardSides, verticalSides } from "@/wab/geom";
+import { createNumericSize, ensureUnit, showSizeCss } from "@/wab/shared/Css";
 import CssInitials from "css-initials";
 import {
   camelCase,
@@ -11,17 +22,6 @@ import {
 } from "lodash";
 import memoizeOne from "memoize-one";
 import { CSSProperties } from "react";
-import { RuleSet } from "./classes";
-import {
-  chunkPairs,
-  ensure,
-  maybes,
-  simpleWords,
-  tryParseNumLit,
-  tuple,
-} from "./common";
-import { horizontalSides, standardSides, verticalSides } from "./geom";
-import { createNumericSize, ensureUnit, showSizeCss } from "./shared/Css";
 
 // see visibility-utils.ts
 export const PLASMIC_DISPLAY_NONE = "plasmic-display-none";

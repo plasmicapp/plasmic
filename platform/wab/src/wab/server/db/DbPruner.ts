@@ -1,10 +1,10 @@
 const { Command } = require("commander");
 import { assert, ensure, spawn } from "@/wab/common";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
+import { createDbConnection } from "@/wab/server/db/dbcli-utils";
+import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { ProjectRevision } from "@/wab/server/entities/Entities";
 import { MoreThan } from "typeorm";
-import { createDbConnection } from "./dbcli-utils";
-import { DbMgr, SUPER_USER } from "./DbMgr";
 
 export async function main() {
   const opts = new Command("db pruner")

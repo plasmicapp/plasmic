@@ -10,7 +10,7 @@ export default async function promptForMetadata(
   component: Component
 ): Promise<{ key: string; value: string } | undefined> {
   type KeyValuePair = { key: string; value: string };
-  let keyAndValue = await showTemporaryPrompt<KeyValuePair | undefined>(
+  const keyAndValue = await showTemporaryPrompt<KeyValuePair | undefined>(
     (onSubmit, onCancel) => (
       <Modal
         title={null}

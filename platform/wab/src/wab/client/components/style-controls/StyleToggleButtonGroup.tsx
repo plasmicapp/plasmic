@@ -1,4 +1,5 @@
 import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
+import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggleButton";
 import {
   DefaultStyleToggleButtonGroupProps,
   PlasmicStyleToggleButtonGroup,
@@ -6,7 +7,6 @@ import {
 import { Tooltip } from "antd";
 import * as React from "react";
 import flattenChildren from "react-keyed-flatten-children";
-import StyleToggleButton from "./StyleToggleButton";
 
 interface StyleToggleButtonGroupProps
   extends DefaultStyleToggleButtonGroupProps {

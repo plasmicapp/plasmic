@@ -1,18 +1,23 @@
 // Returns 'changed', 'unchanged', 'conflict'.  Case-insensitive.
+import {
+  reactPrompt,
+  showTemporaryPrompt,
+} from "@/wab/client/components/quick-modals";
+import Button from "@/wab/client/components/widgets/Button";
+import NewComponentModal, {
+  NewComponentInfo,
+} from "@/wab/client/components/widgets/NewComponentModal";
+import NewPageModal, {
+  NewPageInfo,
+} from "@/wab/client/components/widgets/NewPageModal";
+import Textbox from "@/wab/client/components/widgets/Textbox";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { maybe, nullToUndefined } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
 import { Form, notification, Select } from "antd";
 import L from "lodash";
 import React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import { reactPrompt, showTemporaryPrompt } from "./components/quick-modals";
-import Button from "./components/widgets/Button";
-import NewComponentModal, {
-  NewComponentInfo,
-} from "./components/widgets/NewComponentModal";
-import NewPageModal, { NewPageInfo } from "./components/widgets/NewPageModal";
-import Textbox from "./components/widgets/Textbox";
-import { StudioCtx } from "./studio-ctx/StudioCtx";
 const { Option } = Select;
 
 export interface HasName {

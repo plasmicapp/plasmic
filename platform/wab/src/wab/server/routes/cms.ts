@@ -2,6 +2,8 @@ import { ensure, ensureString } from "@/wab/common";
 import { toOpaque } from "@/wab/commons/types";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { CmsRow } from "@/wab/server/entities/Entities";
+import { makeApiDatabase } from "@/wab/server/routes/cmse";
+import { userAnalytics, userDbMgr } from "@/wab/server/routes/util";
 import {
   denormalizeCmsData,
   makeFieldMetaMap,
@@ -19,8 +21,6 @@ import {
 import { NextFunction } from "express";
 import { Request, Response } from "express-serve-static-core";
 import { differenceBy } from "lodash";
-import { makeApiDatabase } from "./cmse";
-import { userAnalytics, userDbMgr } from "./util";
 
 function toApiCmsRow(
   row: CmsRow,
@@ -54,7 +54,7 @@ export async function queryTable(req: Request, res: Response) {
 
   // Query is encoded as the q= query param, a JSON string
   const query = JSON.parse(ensureString(req.query.q ?? "{}")) as ApiCmsQuery;
-  const locale = (req.query.locale ?? "") as string;
+  const locale = fixLocale((req.query.locale ?? "") as string);
   const useDraft = shouldUseDraft(req);
   const rows = await mgr.queryCmsRows(table.id, query, { useDraft });
   const metaMap = makeFieldMetaMap(table.schema, query.fields);
@@ -236,6 +236,10 @@ function shouldPublish(req: Request) {
 
 function shouldUseDraft(req: Request) {
   return req.query.draft === "1";
+}
+
+function fixLocale(locale: string) {
+  return locale === "undefined" ? "" : locale;
 }
 
 export function cachePublicCmsRead(

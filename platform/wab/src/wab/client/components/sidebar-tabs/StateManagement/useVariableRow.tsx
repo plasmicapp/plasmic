@@ -1,6 +1,7 @@
 import { Component, Expr, isKnownTplSlot, State } from "@/wab/classes";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { PropEditorRow } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import { VariableEditingModal } from "@/wab/client/components/sidebar-tabs/StateManagement/VariableEditingModal";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
@@ -23,7 +24,6 @@ import {
 } from "@/wab/states";
 import { Menu } from "antd";
 import React from "react";
-import { VariableEditingModal } from "./VariableEditingModal";
 
 function useVariableMenu({
   showVariableConfigModal,

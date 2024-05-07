@@ -7,11 +7,7 @@ import {
   omitNils,
 } from "@/wab/common";
 import { toOpaque } from "@/wab/commons/types";
-import { executePlasmicDataOp } from "@plasmicapp/data-sources";
-import L, { pick, uniq } from "lodash";
-import semver from "semver";
-import Stripe from "stripe";
-import { AuthError } from "./ApiErrors/errors";
+import { AuthError } from "@/wab/shared/ApiErrors/errors";
 import {
   AddCommentReactionRequest,
   AddCommentReactionResponse,
@@ -188,14 +184,18 @@ import {
   UserId,
   UsersResponse,
   WorkspaceId,
-} from "./ApiSchema";
-import { showProjectBranchId } from "./ApiSchemaUtil";
-import { Bundle } from "./bundles";
-import { OperationTemplate } from "./data-sources-meta/data-sources";
-import { CodeSandboxInfo } from "./db-json-blobs";
-import { GrantableAccessLevel } from "./EntUtil";
-import { LowerHttpMethod } from "./HttpClientUtil";
-import { UiConfig } from "./ui-config-utils";
+} from "@/wab/shared/ApiSchema";
+import { showProjectBranchId } from "@/wab/shared/ApiSchemaUtil";
+import { Bundle } from "@/wab/shared/bundles";
+import { OperationTemplate } from "@/wab/shared/data-sources-meta/data-sources";
+import { CodeSandboxInfo } from "@/wab/shared/db-json-blobs";
+import { GrantableAccessLevel } from "@/wab/shared/EntUtil";
+import { LowerHttpMethod } from "@/wab/shared/HttpClientUtil";
+import { UiConfig } from "@/wab/shared/ui-config-utils";
+import { executePlasmicDataOp } from "@plasmicapp/data-sources";
+import L, { pick, uniq } from "lodash";
+import semver from "semver";
+import Stripe from "stripe";
 
 export interface SiteInfo {
   createdAt: string | Date;

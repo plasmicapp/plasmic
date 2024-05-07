@@ -1,11 +1,11 @@
 import { Api } from "@/wab/client/api";
 import { TopBarPromptBillingArgs } from "@/wab/client/components/modals/PricingModal";
 import { MergeModalContext } from "@/wab/client/components/TopFrame/TopFrameChrome";
+import { HostFrameApi } from "@/wab/client/frame-ctx/host-frame-api";
 import { TopFrameTourState } from "@/wab/client/tours/tutorials/TutorialTours";
 import { ApiBranch } from "@/wab/shared/ApiSchema";
 import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { LocationListener, UnregisterCallback } from "history";
-import { HostFrameApi } from "./host-frame-api";
 
 /**
  * API the TopFrame exposes to HostFrame.

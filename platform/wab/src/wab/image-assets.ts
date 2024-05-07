@@ -1,4 +1,3 @@
-import L from "lodash";
 import {
   ArenaFrame,
   Arg,
@@ -12,7 +11,7 @@ import {
   TplComponent,
   TplNode,
   VariantSetting,
-} from "./classes";
+} from "@/wab/classes";
 import {
   ensure,
   findIndexes,
@@ -21,19 +20,20 @@ import {
   removeAtIndexes,
   tryRemove,
   tuple,
-} from "./common";
-import { isFrameComponent, isPageComponent } from "./components";
-import { isFallbackSet, isRealCodeExpr } from "./exprs";
-import { ImageAssetType } from "./image-asset-type";
-import { getArenaFrames } from "./shared/Arenas";
-import { joinCssValues, splitCssValue } from "./shared/RuleSetHelpers";
-import { DefaultStyle } from "./styles";
+} from "@/wab/common";
+import { isFrameComponent, isPageComponent } from "@/wab/components";
+import { isFallbackSet, isRealCodeExpr } from "@/wab/exprs";
+import { ImageAssetType } from "@/wab/image-asset-type";
+import { getArenaFrames } from "@/wab/shared/Arenas";
+import { joinCssValues, splitCssValue } from "@/wab/shared/RuleSetHelpers";
+import { DefaultStyle } from "@/wab/styles";
 import {
   findVariantSettingsUnderTpl,
   isTplComponent,
   isTplImage,
   TplImageTag,
-} from "./tpls";
+} from "@/wab/tpls";
+import L from "lodash";
 
 export function cloneImageAsset(asset: ImageAsset) {
   return new ImageAsset({

@@ -1,3 +1,4 @@
+import type { RepeatedElementFnType } from "@/wab/client/components/canvas/repeatedElement";
 import type * as PlasmicDataSourcesContext from "@plasmicapp/data-sources-context";
 import type {
   DataContext,
@@ -17,7 +18,6 @@ import type ReactDOM from "react-dom";
 import type ResizeObserver from "resize-observer-polyfill";
 import type * as slate from "slate";
 import type * as slateReact from "slate-react";
-import type { RepeatedElementFnType } from "./repeatedElement";
 
 export const tags = [
   // HTML

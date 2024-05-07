@@ -138,6 +138,12 @@ export async function exportProjectsCli(opts: ExportArgs): Promise<void> {
       );
     }
 
+    if (bundle.projectConfig.reactWebExportedFiles) {
+      for (const file of bundle.projectConfig.reactWebExportedFiles) {
+        writeFile(file.fileName, file.content);
+      }
+    }
+
     await Promise.all(promises);
   };
 

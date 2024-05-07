@@ -24,6 +24,24 @@ import {
   extractSsoConfig,
   UserNotWhitelistedError,
 } from "@/wab/server/passport-cfg";
+import {
+  customTeamApiAuth,
+  customTeamApiUserAuth,
+} from "@/wab/server/routes/custom-api-auth";
+import { isCustomPublicApiRequest } from "@/wab/server/routes/custom-routes";
+import { getPromotionCodeCookie } from "@/wab/server/routes/promo-code";
+import {
+  addShopify,
+  getShopifyClientForUserId,
+  shopifyPostInstallSetup,
+} from "@/wab/server/routes/shopify";
+import {
+  getUser,
+  makeUserTraits,
+  superDbMgr,
+  userAnalytics,
+  userDbMgr,
+} from "@/wab/server/routes/util";
 import { doLogin, doLogout } from "@/wab/server/util/auth-util";
 import {
   NotFoundError,
@@ -55,21 +73,6 @@ import passport from "passport";
 import { AuthenticateOptionsGoogle } from "passport-google-oauth20";
 import { IVerifyOptions } from "passport-local";
 import util from "util";
-import { customTeamApiAuth, customTeamApiUserAuth } from "./custom-api-auth";
-import { isCustomPublicApiRequest } from "./custom-routes";
-import { getPromotionCodeCookie } from "./promo-code";
-import {
-  addShopify,
-  getShopifyClientForUserId,
-  shopifyPostInstallSetup,
-} from "./shopify";
-import {
-  getUser,
-  makeUserTraits,
-  superDbMgr,
-  userAnalytics,
-  userDbMgr,
-} from "./util";
 
 export function csrf(req: Request, res: Response, _next: NextFunction) {
   res.json({ csrf: res.locals._csrf });

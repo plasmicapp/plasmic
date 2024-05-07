@@ -1,8 +1,8 @@
+import type { workerBuildAssets } from "@/wab/server/workers/build-loader-assets";
+import type { workerGenCode } from "@/wab/server/workers/codegen";
+import type { workerLocalizationStrings } from "@/wab/server/workers/localization-worker";
 import path from "path";
 import { pool as createPool, WorkerPool } from "workerpool";
-import type { workerBuildAssets } from "./build-loader-assets";
-import type { workerGenCode } from "./codegen";
-import type { workerLocalizationStrings } from "./localization-worker";
 
 // Setting a pool task timeout of 6 minutes
 const TIMEOUT_MS = 6 * 60 * 1000;

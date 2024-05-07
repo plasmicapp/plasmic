@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultSeparatorProps altogether and have
 // total control over the props for your component.
-export interface SeparatorProps extends DefaultSeparatorProps {}
+export type SeparatorProps = DefaultSeparatorProps;
 
 function Separator_(props: SeparatorProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicSeparator to render this component as it was

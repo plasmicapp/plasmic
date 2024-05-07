@@ -1,4 +1,5 @@
 import { DbMgr } from "@/wab/server/db/DbMgr";
+import { createSystemDiscourseClient } from "@/wab/server/discourse/clients";
 import { TeamDiscourseInfo } from "@/wab/server/entities/Entities";
 import { PreconditionFailedError } from "@/wab/shared/ApiErrors/errors";
 import { TeamId } from "@/wab/shared/ApiSchema";
@@ -18,7 +19,6 @@ import {
   GroupVisibilityLevel,
   PermissionType,
 } from "@/wab/shared/discourse/DiscourseClient";
-import { createSystemDiscourseClient } from "./clients";
 
 /**
  * Creates or updates the org's Discourse configuration,

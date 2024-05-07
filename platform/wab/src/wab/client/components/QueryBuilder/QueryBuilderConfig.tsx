@@ -1,3 +1,9 @@
+import { ActionButton } from "@/wab/client/components/QueryBuilder/Components/ActionButton";
+import { BooleanEditor } from "@/wab/client/components/QueryBuilder/Components/BooleanEditor";
+import { FieldPicker } from "@/wab/client/components/QueryBuilder/Components/FieldPicker";
+import { GroupHeader } from "@/wab/client/components/QueryBuilder/Components/GroupHeader";
+import { OperatorPicker } from "@/wab/client/components/QueryBuilder/Components/OperatorPicker";
+import { RowActionsGroup } from "@/wab/client/components/QueryBuilder/Components/RowActionsGroup";
 import {
   AntdConfig,
   Builder,
@@ -5,12 +11,6 @@ import {
 } from "@react-awesome-query-builder/antd";
 import L from "lodash";
 import React from "react";
-import { ActionButton } from "./Components/ActionButton";
-import { BooleanEditor } from "./Components/BooleanEditor";
-import { FieldPicker } from "./Components/FieldPicker";
-import { GroupHeader } from "./Components/GroupHeader";
-import { OperatorPicker } from "./Components/OperatorPicker";
-import { RowActionsGroup } from "./Components/RowActionsGroup";
 
 // https://github.com/ukrbublik/react-awesome-query-builder/blob/master/modules/config/default.js
 // https://github.com/ukrbublik/react-awesome-query-builder/blob/master/modules/config/basic.js

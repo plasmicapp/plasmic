@@ -1,4 +1,9 @@
 import { ColumnsConfig } from "@/wab/classes";
+import S from "@/wab/client/components/sidebar-tabs/ResponsiveColumns/ColumnsSizeControls.module.scss";
+import {
+  addNewColumn,
+  prefixSum,
+} from "@/wab/client/components/sidebar-tabs/ResponsiveColumns/tpl-columns-utils";
 import { FullRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -19,8 +24,6 @@ import cn from "classnames";
 import { isEqual, isUndefined } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
-import S from "./ColumnsSizeControls.module.scss";
-import { addNewColumn, prefixSum } from "./tpl-columns-utils";
 
 interface ColumnSizeDragState {
   index: number;

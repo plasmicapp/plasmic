@@ -39,6 +39,18 @@ import {
 } from "@/wab/classes";
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
 import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
+import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
+import {
+  AUTOCOMPLETE_OPTIONS,
+  FallbackEditor,
+  getComponentPropTypes,
+  getContextComponentPropTypes,
+  IndentedRow,
+} from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
+import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
+import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import { getInputTagType } from "@/wab/client/components/sidebar-tabs/HTMLAttributesSection";
+import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
 import {
   getValueSetState,
   InvariantablePropTooltip,
@@ -140,18 +152,6 @@ import { Menu } from "antd";
 import { capitalize, isString, keyBy } from "lodash";
 import { observer } from "mobx-react";
 import React, { useMemo } from "react";
-import { DataPickerEditor } from "./ComponentProps/DataPickerEditor";
-import {
-  AUTOCOMPLETE_OPTIONS,
-  FallbackEditor,
-  getComponentPropTypes,
-  getContextComponentPropTypes,
-  IndentedRow,
-} from "./ComponentPropsSection";
-import { ValuePreview } from "./data-tab";
-import { DataPickerTypesSchema } from "./DataBinding/DataPicker";
-import { getInputTagType } from "./HTMLAttributesSection";
-import { PropValueEditor } from "./PropValueEditor";
 
 export interface ControlExtras {
   path: (number | string)[];

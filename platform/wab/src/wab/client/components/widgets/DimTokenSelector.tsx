@@ -6,6 +6,10 @@ import ListSectionSeparator from "@/wab/client/components/ListSectionSeparator";
 import { GeneralTokenEditModal } from "@/wab/client/components/sidebar/GeneralTokenEditModal";
 import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { Matcher } from "@/wab/client/components/view-common";
+import Chip from "@/wab/client/components/widgets/Chip";
+import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
+import DropdownOverlay from "@/wab/client/components/widgets/DropdownOverlay";
+import { Icon } from "@/wab/client/components/widgets/Icon";
 import { useOnContainerScroll } from "@/wab/client/dom-utils";
 import PencilIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Pencil";
 import { PlusCircleIcon } from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__PlusCircle";
@@ -35,7 +39,7 @@ import * as css from "@/wab/css";
 import { lengthCssUnits, parseCssNumericNew, toShorthandVals } from "@/wab/css";
 import {
   siteToAllDirectTokensOfType,
-  TokenResolver,
+  TokenValueResolver,
 } from "@/wab/shared/cached-selectors";
 import { createNumericSize, isValidUnit, showSizeCss } from "@/wab/shared/Css";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
@@ -49,10 +53,6 @@ import React from "react";
 import { useInteractOutside, useOverlayPosition } from "react-aria";
 import ReactDOM from "react-dom";
 import { VariableSizeList } from "react-window";
-import Chip from "./Chip";
-import { useClientTokenResolver } from "./ColorPicker/client-token-resolver";
-import DropdownOverlay from "./DropdownOverlay";
-import { Icon } from "./Icon";
 
 export interface DimTokenSpinnerRef {
   focus: () => void;
@@ -814,7 +814,7 @@ interface DimTokenContextValue {
   highlightedItemIndex: number;
   tokenType?: TokenType;
   vsh?: VariantedStylesHelper;
-  resolver: TokenResolver;
+  resolver: TokenValueResolver;
 }
 
 const DimTokenContext = React.createContext<DimTokenContextValue | undefined>(

@@ -1283,7 +1283,7 @@
           }
         },
         "deps": [],
-        "version": "228-add-allow-root-wrapper"
+        "version": "229-add-class-type-default-styles"
       },
       "projectId": "cpkeUeeErCd6XAniAHq8xq",
       "version": "0.0.1",
@@ -2801,7 +2801,7 @@
           }
         },
         "deps": [],
-        "version": "228-add-allow-root-wrapper"
+        "version": "229-add-class-type-default-styles"
       }
     },
     {
@@ -4303,7 +4303,7 @@
           "55543038": { "text": ["arg3"], "__type": "TemplatedString" }
         },
         "deps": [],
-        "version": "228-add-allow-root-wrapper"
+        "version": "229-add-class-type-default-styles"
       }
     }
   ]

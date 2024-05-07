@@ -1,5 +1,5 @@
+import { ensure, last, pairwise, tuple } from "@/wab/common";
 import { max, min, minBy, sortBy } from "lodash";
-import { ensure, last, pairwise, tuple } from "./common";
 
 export interface Offset {
   top: number;

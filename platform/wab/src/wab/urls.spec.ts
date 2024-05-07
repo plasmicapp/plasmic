@@ -1,4 +1,4 @@
-import { extractProjectIdFromUrlOrId } from "./urls";
+import { extractProjectIdFromUrlOrId } from "@/wab/urls";
 
 describe("extractProjectIdFromUrlOrId", () => {
   it("works", () => {

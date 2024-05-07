@@ -1,4 +1,5 @@
 import { UU } from "@/wab/client/cli-routes";
+import { promptMoveToWorkspace } from "@/wab/client/components/dashboard/dashboard-actions";
 import EditableResourceName from "@/wab/client/components/EditableResourceName";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
@@ -22,7 +23,6 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, notification } from "antd";
 import moment from "moment";
 import * as React from "react";
-import { promptMoveToWorkspace } from "./dashboard-actions";
 
 export interface DatabaseListItemProps {
   className?: string;

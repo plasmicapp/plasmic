@@ -4,8 +4,11 @@ import {
   LoaderBundleOutput,
 } from "@/wab/server/loader/module-bundler";
 import { writeCodeBundlesToDisk } from "@/wab/server/loader/module-writer";
+import {
+  CodegenOutputBundle,
+  ComponentReference,
+} from "@/wab/server/workers/codegen";
 import tmp from "tmp";
-import { CodegenOutputBundle, ComponentReference } from "./codegen";
 
 export async function workerBuildAssets(
   codegenOutputs: CodegenOutputBundle[],

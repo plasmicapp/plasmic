@@ -1,3 +1,4 @@
+import { HTMLAttributePropEditor } from "@/wab/client/components/sidebar-tabs/HTMLAttributesSection";
 import {
   LabeledStyleDimItemRow,
   LabeledStyleSelectItemRow,
@@ -12,7 +13,6 @@ import { isTplTagOrComponent } from "@/wab/tpls";
 import { Alert, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
-import { HTMLAttributePropEditor } from "./HTMLAttributesSection";
 
 class ObjectPosition {
   constructor(public xAlign: string, public yAlign: string) {}

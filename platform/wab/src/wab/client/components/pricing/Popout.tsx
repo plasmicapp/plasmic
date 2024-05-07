@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultPopoutProps altogether and have
 // total control over the props for your component.
-export interface PopoutProps extends DefaultPopoutProps {}
+export type PopoutProps = DefaultPopoutProps;
 
 function Popout_(props: PopoutProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicPopout to render this component as it was

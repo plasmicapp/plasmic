@@ -24,7 +24,7 @@ export function makeFieldMetaMap(schema: CmsTableSchema, fields?: string[]) {
 }
 
 export function projectCmsData(
-  data: Dict<Dict<unknown>>,
+  data: Dict<Dict<unknown> | undefined>,
   fieldMetaMap: Record<string, CmsFieldMeta>,
   locale: string
 ) {
@@ -32,7 +32,7 @@ export function projectCmsData(
   return Object.fromEntries(
     withoutNils(
       Object.entries(fieldMetaMap).map(([key, meta]) => {
-        const val = dataDic[key] ?? data[""][key];
+        const val = dataDic?.[key] ?? data[""]?.[key];
         if (!val || !conformsToType(val, meta.type)) {
           return undefined;
         }

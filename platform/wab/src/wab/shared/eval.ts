@@ -1,6 +1,6 @@
 import { stripParensAndMaybeConvertToIife } from "@/wab/exprs";
+import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import { $State } from "@plasmicapp/react-web";
-import { maybeComputedFn } from "./mobx-util";
 
 export const ENABLED_GLOBALS = new Set([
   "Array",
@@ -15,6 +15,7 @@ export const ENABLED_GLOBALS = new Set([
   "Number",
   "Object",
   "Promise",
+  "Blob",
   "ReferenceError",
   "RegExp",
   "Set",

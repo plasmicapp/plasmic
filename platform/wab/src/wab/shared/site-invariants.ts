@@ -29,6 +29,34 @@ import {
 import * as cssPegParser from "@/wab/gen/cssPegParser";
 import { ParamExportType } from "@/wab/lang";
 import { ImportableObject } from "@/wab/project-deps";
+import { AnyArena, getArenaFrames, isMixedArena } from "@/wab/shared/Arenas";
+import {
+  componentToUsedImageAssets,
+  componentToUsedMixins,
+  componentToUsedTokens,
+  flattenComponent,
+} from "@/wab/shared/cached-selectors";
+import { instUtil } from "@/wab/shared/core/InstUtil";
+import {
+  createNodeCtx,
+  walkModelTree,
+} from "@/wab/shared/core/model-tree-util";
+import { isValidStyleProp } from "@/wab/shared/core/style-props";
+import { MIXIN_LOWER } from "@/wab/shared/Labels";
+import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { modelConflictsMeta } from "@/wab/shared/site-diffs/model-conflicts-meta";
+import { getTplSlot, isSlot } from "@/wab/shared/SlotUtils";
+import {
+  isBaseRuleVariant,
+  isBaseVariant,
+  isComponentStyleVariant,
+  isGlobalVariant,
+  isPrivateStyleVariant,
+  isScreenVariant,
+  isStyleVariant,
+  splitVariantCombo,
+  tryGetVariantSetting,
+} from "@/wab/shared/Variants";
 import {
   allComponents,
   allGlobalVariants,
@@ -48,31 +76,6 @@ import {
   tplChildren,
 } from "@/wab/tpls";
 import L, { uniqBy } from "lodash";
-import { AnyArena, getArenaFrames, isMixedArena } from "./Arenas";
-import {
-  componentToUsedImageAssets,
-  componentToUsedMixins,
-  componentToUsedTokens,
-  flattenComponent,
-} from "./cached-selectors";
-import { instUtil } from "./core/InstUtil";
-import { createNodeCtx, walkModelTree } from "./core/model-tree-util";
-import { isValidStyleProp } from "./core/style-props";
-import { MIXIN_LOWER } from "./Labels";
-import { maybeComputedFn } from "./mobx-util";
-import { modelConflictsMeta } from "./site-diffs/model-conflicts-meta";
-import { getTplSlot, isSlot } from "./SlotUtils";
-import {
-  isBaseRuleVariant,
-  isBaseVariant,
-  isComponentStyleVariant,
-  isGlobalVariant,
-  isPrivateStyleVariant,
-  isScreenVariant,
-  isStyleVariant,
-  splitVariantCombo,
-  tryGetVariantSetting,
-} from "./Variants";
 
 export class InvariantError extends Error {
   constructor(message: string, public data?: any) {

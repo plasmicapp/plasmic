@@ -4,7 +4,7 @@ import { isAbsoluteUrl } from "@/wab/commons/urls";
 import * as React from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
 
-interface PublicLinkProps extends React.ComponentProps<"a"> {}
+type PublicLinkProps = React.ComponentProps<"a">;
 
 export function PublicLink(props: PublicLinkProps) {
   if (isAbsoluteUrl(props.href || "")) {

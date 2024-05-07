@@ -1,6 +1,7 @@
 import { AppCtx, hideStarters } from "@/wab/client/app-ctx";
-import { isTopFrame, UU } from "@/wab/client/cli-routes";
+import { isProjectPath, isTopFrame } from "@/wab/client/cli-routes";
 import { initClientFlags } from "@/wab/client/client-dev-flags";
+import { Root } from "@/wab/client/components/root-view";
 import {
   handleError,
   shouldIgnoreError,
@@ -36,7 +37,6 @@ import * as React from "react";
 import { OverlayProvider } from "react-aria";
 import * as ReactDOM from "react-dom";
 import { Router } from "react-router-dom";
-import { Root } from "./root-view";
 
 declare const COMMITHASH: string;
 
@@ -338,14 +338,6 @@ export function main() {
   }
 
   reportAndFixOversizedLocalStorage();
-}
-
-function isProjectPath(pathname) {
-  return !!(
-    UU.project.parse(pathname) ||
-    UU.projectSlug.parse(pathname) ||
-    UU.projectBranchArena.parse(pathname)
-  );
 }
 
 export function Shell() {

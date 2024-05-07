@@ -1,5 +1,8 @@
 import { Component, Site } from "@/wab/classes";
 import { meta } from "@/wab/classes-metas";
+import { BundlingSiteApi } from "@/wab/client/api";
+import { AppCtx } from "@/wab/client/app-ctx";
+import { App } from "@/wab/client/components/top-view";
 import { maybe } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
 import {
@@ -14,9 +17,6 @@ import { TplMgr } from "@/wab/shared/TplMgr";
 import { trackComponentRoot, trackComponentSite } from "@/wab/tpls";
 import { uniqBy } from "lodash";
 import { IObservableValue, observable } from "mobx";
-import { BundlingSiteApi } from "./api";
-import { AppCtx } from "./app-ctx";
-import { App } from "./components/top-view";
 
 class DbCtxArgs {
   app: App;

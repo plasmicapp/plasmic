@@ -1,5 +1,11 @@
 import { ArenaFrame, ComponentArena } from "@/wab/classes";
+import styles from "@/wab/client/components/sidebar-tabs/outline-tab.module.scss";
 import { OutlineCtx } from "@/wab/client/components/sidebar-tabs/OutlineCtx";
+import {
+  ArenaTree,
+  ArenaTreeRef,
+  TreeDndManager,
+} from "@/wab/client/components/sidebar-tabs/tpl-tree";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { useToggleDisplayed } from "@/wab/client/dom-utils";
 import PlasmicOutlineTab from "@/wab/client/plasmic/project_panel/PlasmicOutlineTab";
@@ -17,8 +23,6 @@ import { getComponentArenaRowLabel } from "@/wab/shared/component-arenas";
 import { Dropdown, Menu } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
-import styles from "./outline-tab.module.scss";
-import { ArenaTree, ArenaTreeRef, TreeDndManager } from "./tpl-tree";
 
 export const OutlineTab = observer(OutlineTab_);
 

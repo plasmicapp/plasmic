@@ -19,8 +19,8 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultMultiplayerLightDarkColorProviderProps altogether and have
 // total control over the props for your component.
-export interface MultiplayerLightDarkColorProviderProps
-  extends DefaultMultiplayerLightDarkColorProviderProps {}
+export type MultiplayerLightDarkColorProviderProps =
+  DefaultMultiplayerLightDarkColorProviderProps;
 
 function MultiplayerLightDarkColorProvider(
   props: MultiplayerLightDarkColorProviderProps

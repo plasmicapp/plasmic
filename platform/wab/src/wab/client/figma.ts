@@ -20,7 +20,18 @@ import {
   TplTag,
   VariantsRef,
 } from "@/wab/classes";
+import { AppCtx } from "@/wab/client/app-ctx";
 import { PLASMIC_CLIPBOARD_FORMAT } from "@/wab/client/clipboard";
+import {
+  SiteOps,
+  uploadSvgImage,
+} from "@/wab/client/components/canvas/site-ops";
+import {
+  ImageAssetOpts,
+  maybeUploadImage,
+  parseImage,
+  ResizableImage,
+} from "@/wab/client/dom-utils";
 import { unzip } from "@/wab/collections";
 import {
   arrayEqIgnoreOrder,
@@ -83,14 +94,6 @@ import {
   Matrix,
   rotate,
 } from "transformation-matrix";
-import { AppCtx } from "./app-ctx";
-import { SiteOps, uploadSvgImage } from "./components/canvas/site-ops";
-import {
-  ImageAssetOpts,
-  maybeUploadImage,
-  parseImage,
-  ResizableImage,
-} from "./dom-utils";
 
 type Serializable =
   | number

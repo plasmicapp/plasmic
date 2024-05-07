@@ -5,12 +5,12 @@ import userEvent from "@testing-library/user-event";
 import { Site } from "@/wab/classes";
 import { Bundle, Bundler } from "@/wab/shared/bundler";
 import { codegen } from "@/wab/shared/codegen/codegen-tests-util";
+import _explicitStatesBundle from "@/wab/shared/codegen/__tests__/bundles/people-list-explicit-states.json";
+import _implicitStatesBundle from "@/wab/shared/codegen/__tests__/bundles/people-list-implicit-states.json";
 import "core-js";
 import * as React from "react";
 import { last } from "src/wab/common";
 import tmp from "tmp";
-import _explicitStatesBundle from "./bundles/people-list-explicit-states.json";
-import _implicitStatesBundle from "./bundles/people-list-implicit-states.json";
 
 describe("todo app codegen", () => {
   let dir: tmp.DirResult;

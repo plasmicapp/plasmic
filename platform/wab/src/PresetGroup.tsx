@@ -6,7 +6,7 @@ import * as React from "react";
 import {
   DefaultPresetGroupProps,
   PlasmicPresetGroup,
-} from "./wab/client/plasmic/plasmic_kit_left_pane/PlasmicPresetGroup";
+} from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicPresetGroup";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can
@@ -21,7 +21,7 @@ import {
 //
 // You can also stop extending from DefaultPresetGroupProps altogether and have
 // total control over the props for your component.
-export interface PresetGroupProps extends DefaultPresetGroupProps {}
+export type PresetGroupProps = DefaultPresetGroupProps;
 
 function PresetGroup_(props: PresetGroupProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicPresetGroup to render this component as it was

@@ -1,4 +1,9 @@
 import { LabeledToggleButtonGroup } from "@/wab/client/components/sidebar/sidebar-helpers";
+import {
+  StyleComponent,
+  StyleComponentProps,
+} from "@/wab/client/components/style-controls/StyleComponent";
+import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggleButton";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import ColumnJustifyCenterIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ColumnJustifyCenter";
 import ColumnJustifyEndIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ColumnJustifyEnd";
@@ -12,8 +17,6 @@ import ColumnJustifySpaceEvenlyIcon from "@/wab/client/plasmic/plasmic_kit_desig
 import RowJustifySpaceEvenlyIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__RowJustifySpaceEvenly";
 import { observer } from "mobx-react";
 import React from "react";
-import { StyleComponent, StyleComponentProps } from "./StyleComponent";
-import StyleToggleButton from "./StyleToggleButton";
 
 class JustifyContentControls_ extends StyleComponent<StyleComponentProps> {
   render() {

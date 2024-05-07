@@ -6,7 +6,7 @@ import * as React from "react";
 import {
   DefaultContentPageProps,
   PlasmicContentPage,
-} from "./wab/client/plasmic/plasmic_kit_dashboard/PlasmicContentPage";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicContentPage";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can
@@ -21,7 +21,7 @@ import {
 //
 // You can also stop extending from DefaultContentPageProps altogether and have
 // total control over the props for your component.
-export interface ContentPageProps extends DefaultContentPageProps {}
+export type ContentPageProps = DefaultContentPageProps;
 
 function ContentPage_(props: ContentPageProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicContentPage to render this component as it was

@@ -21,6 +21,24 @@ import {
   makeIconImports,
   makePictureImports,
 } from "@/wab/shared/codegen/image-assets";
+import { optimizeGeneratedCodeForHostlessPackages } from "@/wab/shared/codegen/react-p/optimize-hostless-packages";
+import {
+  getExportedComponentName,
+  getHostNamedImportsForRender,
+  getHostNamedImportsForSkeleton,
+  getImportedComponentName,
+  getNormalizedComponentName,
+  getReactWebNamedImportsForRender,
+  makeArgPropsName,
+  makeArgsTypeName,
+  makeCssFileName,
+  makePlasmicComponentName,
+  makePlasmicSuperContextName,
+  makeStylesImports,
+  makeVariantPropsName,
+  makeVariantsArgTypeName,
+  makeWabFlexContainerClassName,
+} from "@/wab/shared/codegen/react-p/utils";
 import {
   ComponentExportOutput,
   ExportOpts,
@@ -75,24 +93,6 @@ import {
   serializeTplTextBlockContent,
   serializeVariantsArgsType,
 } from ".";
-import { optimizeGeneratedCodeForHostlessPackages } from "./optimize-hostless-packages";
-import {
-  getExportedComponentName,
-  getHostNamedImportsForRender,
-  getHostNamedImportsForSkeleton,
-  getImportedComponentName,
-  getNormalizedComponentName,
-  getReactWebNamedImportsForRender,
-  makeArgPropsName,
-  makeArgsTypeName,
-  makeCssFileName,
-  makePlasmicComponentName,
-  makePlasmicSuperContextName,
-  makeStylesImports,
-  makeVariantPropsName,
-  makeVariantsArgTypeName,
-  makeWabFlexContainerClassName,
-} from "./utils";
 
 export const tplMarker = `/*__TPL_MARKER__*/`;
 

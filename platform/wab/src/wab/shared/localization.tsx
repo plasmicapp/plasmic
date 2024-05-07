@@ -15,6 +15,31 @@ import {
 } from "@/wab/components";
 import { getCssRulesFromRs } from "@/wab/css";
 import { tryExtractJson } from "@/wab/exprs";
+import { ProjectId } from "@/wab/shared/ApiSchema";
+import { flattenComponent } from "@/wab/shared/cached-selectors";
+import {
+  cleanPlainText,
+  paramToVarName,
+  toClassName,
+  toVarName,
+} from "@/wab/shared/codegen/util";
+import {
+  isTagInline,
+  normalizeMarkers,
+} from "@/wab/shared/core/rich-text-util";
+import { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
+import {
+  makeVariantComboSorter,
+  sortedVariantSettings,
+  VariantComboSorter,
+} from "@/wab/shared/variant-sort";
+import {
+  ensureValidCombo,
+  getBaseVariant,
+  isBaseVariant,
+  tryGetBaseVariantSetting,
+  VariantCombo,
+} from "@/wab/shared/Variants";
 import {
   flattenTpls,
   hasTextAncestor,
@@ -29,28 +54,6 @@ import {
 import { genTranslatableString } from "@plasmicapp/react-web";
 import { isEmpty, sortBy, uniq } from "lodash";
 import React from "react";
-import { ProjectId } from "./ApiSchema";
-import { flattenComponent } from "./cached-selectors";
-import {
-  cleanPlainText,
-  paramToVarName,
-  toClassName,
-  toVarName,
-} from "./codegen/util";
-import { isTagInline, normalizeMarkers } from "./core/rich-text-util";
-import { EffectiveVariantSetting } from "./effective-variant-setting";
-import {
-  makeVariantComboSorter,
-  sortedVariantSettings,
-  VariantComboSorter,
-} from "./variant-sort";
-import {
-  ensureValidCombo,
-  getBaseVariant,
-  isBaseVariant,
-  tryGetBaseVariantSetting,
-  VariantCombo,
-} from "./Variants";
 
 export type LocalizationKeyScheme = "content" | "hash" | "path";
 

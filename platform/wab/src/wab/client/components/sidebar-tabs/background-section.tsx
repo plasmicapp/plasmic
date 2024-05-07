@@ -61,12 +61,17 @@ import {
   unexpected,
   uniqueKey,
 } from "@/wab/common";
-import { isTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
+import {
+  isTokenRef,
+  replaceAllTokenRefs,
+  tryParseTokenRef,
+} from "@/wab/commons/StyleToken";
 import * as css from "@/wab/css";
 import * as cssPegParser from "@/wab/gen/cssPegParser";
 import { isStandardSide, oppSides } from "@/wab/geom";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import { mkImageAssetRef, tryParseImageAssetRef } from "@/wab/image-assets";
+import { TokenValueResolver } from "@/wab/shared/cached-selectors";
 import { joinCssValues, splitCssValue } from "@/wab/shared/RuleSetHelpers";
 import Chroma from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
@@ -77,12 +82,27 @@ import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import { basename } from "path";
 import React, { useState } from "react";
+import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
 
 export const resolvedBackgroundImageCss = (
   bgImg: BackgroundLayer["image"],
+  clientTokenResolver: TokenValueResolver,
   site: Site,
   vsh?: VariantedStylesHelper
 ) => {
+  let cssValue = bgImg.showCss();
+
+  // First try resolving with client token resolver.
+  // Client token resolver is needed for registered style tokens that have a selector.
+  cssValue = replaceAllTokenRefs(cssValue, (tokenId) => {
+    const token = site.styleTokens.find((t) => t.uuid === tokenId);
+    if (token) {
+      return clientTokenResolver(token, vsh);
+    } else {
+      return undefined;
+    }
+  });
+
   const resolver = new CssVarResolver(
     allStyleTokens(site, { includeDeps: "all" }),
     allMixins(site, { includeDeps: "all" }),
@@ -91,7 +111,7 @@ export const resolvedBackgroundImageCss = (
     {},
     vsh
   );
-  return resolver.resolveTokenRefs(bgImg.showCss());
+  return resolver.resolveTokenRefs(cssValue);
 };
 
 function mkEmptyLayer() {
@@ -122,6 +142,7 @@ export const BackgroundSection = observer(function BackgroundSection(
 
   const [inspected, setInspected] = useState<number>();
   const sc = useStyleComponent();
+  const clientTokenResolver = useClientTokenResolver();
 
   const vsh = props.vsh ?? makeVariantedStylesHelperFromCurrentCtx(studioCtx);
 
@@ -306,6 +327,7 @@ export const BackgroundSection = observer(function BackgroundSection(
                               style={{
                                 backgroundImage: resolvedBackgroundImageCss(
                                   layer.image,
+                                  clientTokenResolver,
                                   studioCtx.site,
                                   vsh
                                 ),

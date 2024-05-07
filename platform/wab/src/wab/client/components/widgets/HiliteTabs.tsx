@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultHiliteTabsProps altogether and have
 // total control over the props for your component.
-export interface HiliteTabsProps extends DefaultHiliteTabsProps {}
+export type HiliteTabsProps = DefaultHiliteTabsProps;
 
 function HiliteTabs_(props: HiliteTabsProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicHiliteTabs to render this component as it was

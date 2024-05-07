@@ -2,6 +2,9 @@
 // This file is owned by you, feel free to edit as you see fit.
 import { AppCtx } from "@/wab/client/app-ctx";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
+import PlasmicHostingSettings from "@/wab/client/components/TopFrame/TopBar/PlasmicHostingSettings";
+import { VisibleEnableBlock } from "@/wab/client/components/TopFrame/TopBar/PublishFlowDialog";
+import { TopBarModal } from "@/wab/client/components/TopFrame/TopBar/TopBarModal";
 import GitJobStep from "@/wab/client/components/widgets/GitJobStep";
 import { DefaultGitJobStepProps } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicGitJobStep";
 import {
@@ -15,9 +18,6 @@ import {
 import { DomainValidator } from "@/wab/shared/hosting";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
-import PlasmicHostingSettings from "./PlasmicHostingSettings";
-import { VisibleEnableBlock } from "./PublishFlowDialog";
-import { TopBarModal } from "./TopBarModal";
 
 export type SetupPlasmicHosting = {
   domains: string[];

@@ -1,9 +1,9 @@
+import { ValueViewer } from "@/wab/client/components/coding/ValueViewer";
 import { ObserverLoadable } from "@/wab/client/components/widgets";
 import { Dict } from "@/wab/collections";
 import { tryCatchElse } from "@/wab/common";
 import { evalExprInSandbox } from "@/wab/shared/eval";
 import React, { useEffect, useMemo, useState } from "react";
-import { ValueViewer } from "./ValueViewer";
 
 export type EnvDict = Dict<unknown>;
 

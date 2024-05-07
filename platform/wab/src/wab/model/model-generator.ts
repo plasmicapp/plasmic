@@ -1,8 +1,4 @@
 import { coalesce, simpleHash, simpleWords, tuple } from "@/wab/common";
-import fs from "fs";
-import assignIn from "lodash/assignIn";
-import difference from "lodash/difference";
-import flattenDeep from "lodash/flattenDeep";
 import {
   Class,
   Field,
@@ -11,7 +7,11 @@ import {
   MetaRuntime,
   toTs,
   Type,
-} from "./model-meta";
+} from "@/wab/model/model-meta";
+import fs from "fs";
+import assignIn from "lodash/assignIn";
+import difference from "lodash/difference";
+import flattenDeep from "lodash/flattenDeep";
 
 const modelPegParser = require("@/wab/gen/modelPegParser");
 
@@ -21,7 +21,7 @@ export function clean(x: string) {
   let i;
   let prevLevel = 0;
   const res: string[] = [];
-  for (let line of x.split("\n")) {
+  for (const line of x.split("\n")) {
     if (line.match(/^\s*(#.*)?$/) != null) {
       continue;
     }

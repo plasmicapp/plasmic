@@ -4,7 +4,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_omnibar/PlasmicOmnibarTabHeader";
 import * as React from "react";
 
-interface OmnibarTabHeaderProps extends DefaultOmnibarTabHeaderProps {}
+type OmnibarTabHeaderProps = DefaultOmnibarTabHeaderProps;
 
 function OmnibarTabHeader(props: OmnibarTabHeaderProps) {
   return <PlasmicOmnibarTabHeader {...props} />;

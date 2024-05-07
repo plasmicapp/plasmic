@@ -1,4 +1,5 @@
 import { useNonAuthCtx } from "@/wab/client/app-ctx";
+import styles from "@/wab/client/components/auth/ConnectOAuth.module.scss";
 import Button from "@/wab/client/components/widgets/Button";
 import { PlasmicButton__VariantsArgs } from "@/wab/client/plasmic/PlasmicButton";
 import { mkUuid, spawn } from "@/wab/common";
@@ -8,7 +9,6 @@ import { WrappedStorageEvent } from "@/wab/shared/SharedApi";
 import { proxy } from "comlink";
 import _ from "lodash";
 import React from "react";
-import styles from "./ConnectOAuth.module.scss";
 
 interface ConnectOAuthButtonProps {
   url: string;

@@ -1,4 +1,9 @@
 import { LabeledStyleDimItem } from "@/wab/client/components/sidebar/sidebar-helpers";
+import {
+  getLabelForStyleName,
+  StyleComponent,
+  StyleComponentProps,
+} from "@/wab/client/components/style-controls/StyleComponent";
 import { DimTokenSpinnerRef } from "@/wab/client/components/widgets/DimTokenSelector";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
 import {
@@ -33,11 +38,6 @@ import cn from "classnames";
 import * as Immutable from "immutable";
 import { observer } from "mobx-react";
 import { createRef, default as React, ReactNode } from "react";
-import {
-  getLabelForStyleName,
-  StyleComponent,
-  StyleComponentProps,
-} from "./StyleComponent";
 import defer = setTimeout;
 
 function closeLoop(pointsStr: /*TWZ*/ string) {

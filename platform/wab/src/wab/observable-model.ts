@@ -1,9 +1,3 @@
-import { meta } from "@/wab/classes-metas";
-import { Dictionary, memoize, once } from "lodash";
-import type { IObservableArray, Lambda } from "mobx";
-import type { Atom, IDerivation, IObjectDidChange } from "mobx/dist/internal";
-import defaultReact from "react";
-import { failable, IFailable } from "ts-failable";
 import {
   ArenaFrame,
   Component,
@@ -15,7 +9,8 @@ import {
   StyleToken,
   Variant,
   VariantedValue,
-} from "./classes";
+} from "@/wab/classes";
+import { meta } from "@/wab/classes-metas";
 import {
   assert,
   ensure,
@@ -26,28 +21,33 @@ import {
   switchType,
   withoutNils,
   xSetDefault,
-} from "./common";
-import { hasTokenRefs, tryParseAllTokenRefs } from "./commons/StyleToken";
-import { allComponentVariants } from "./components";
-import { dbg } from "./dbg";
-import { hasAssetRefs, tryParseImageAssetRef } from "./image-assets";
+} from "@/wab/common";
+import { hasTokenRefs, tryParseAllTokenRefs } from "@/wab/commons/StyleToken";
+import { allComponentVariants } from "@/wab/components";
+import { dbg } from "@/wab/dbg";
+import { hasAssetRefs, tryParseImageAssetRef } from "@/wab/image-assets";
 import {
   Class,
   Field,
   isStrongRefField,
   isWeakRefField,
-} from "./model/model-meta";
+} from "@/wab/model/model-meta";
 import {
   componentToAllVariants,
   siteToAllGlobalVariants,
   siteToAllImageAssetsDict,
   siteToAllTokensDict,
-} from "./shared/cached-selectors";
-import { InstUtil, instUtil } from "./shared/core/InstUtil";
-import mobx from "./shared/import-mobx";
-import { mutateGlobalObservable } from "./shared/mobx-util";
-import { allGlobalVariants, allImageAssets, allStyleTokens } from "./sites";
-import { undoChanges } from "./undo-util";
+} from "@/wab/shared/cached-selectors";
+import { InstUtil, instUtil } from "@/wab/shared/core/InstUtil";
+import mobx from "@/wab/shared/import-mobx";
+import { mutateGlobalObservable } from "@/wab/shared/mobx-util";
+import { allGlobalVariants, allImageAssets, allStyleTokens } from "@/wab/sites";
+import { undoChanges } from "@/wab/undo-util";
+import { Dictionary, memoize, once } from "lodash";
+import type { IObservableArray, Lambda } from "mobx";
+import type { Atom, IDerivation, IObjectDidChange } from "mobx/dist/internal";
+import defaultReact from "react";
+import { failable, IFailable } from "ts-failable";
 
 export interface ChangeNode {
   readonly inst: ObjInst;
@@ -178,6 +178,8 @@ type ObservableState = {
   observeInstField: (node: ObjInst, field: Field) => void;
 };
 
+const mobxHack = hackyMobxUtils();
+
 /**
  * Starts observing changes to the argument `inst`.  Specifically,
  *
@@ -278,8 +280,6 @@ export function observeModel(
       [...[...parents.values()][0].values()][0] === 1
     );
   };
-
-  const mobxHack = hackyMobxUtils();
 
   // Returns true if there should be no strong references to a given instance.
   // This is the case for the root and for most external references.
@@ -1443,7 +1443,7 @@ export class ChangeRecorder implements IChangeRecorder {
    */
   maybeObserveComponentTrees(components: Component[]) {
     const observedResult = components.reduce((observedNewComp, component) => {
-      if (!mobx.isObservable(component.tplTree)) {
+      if (!mobxHack.isObserved(component.tplTree)) {
         this.observableState.observeInstField(
           component,
           meta.getFieldByName("Component", "tplTree")
@@ -1679,6 +1679,13 @@ function hackyMobxUtils() {
   }
 
   /**
+   * Returns whether this inst is currently being observed
+   */
+  function isObserved(inst: ObjInst) {
+    return isObservable(inst) && !!getInstAdmin(inst).__changeListeners?.length;
+  }
+
+  /**
    * Returns an observable version of the argument value. We deeply
    * make array and object field values observable as well
    */
@@ -1813,6 +1820,7 @@ function hackyMobxUtils() {
   }
 
   return {
+    isObserved,
     isObservable,
     makeInstObservable,
   };

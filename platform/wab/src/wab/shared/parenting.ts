@@ -11,6 +11,11 @@ import {
 import { ensure, ensureInstance } from "@/wab/common";
 import { findVarRefs, isCodeComponent } from "@/wab/components";
 import { Selectable } from "@/wab/selection";
+import { nodeConformsToType } from "@/wab/shared/core/model-util";
+import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
+import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
+import { getParentOrSlotSelection } from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
 import { SlotSelection } from "@/wab/slots";
 import {
   getComponentIfRoot,
@@ -27,11 +32,6 @@ import {
   isTplTextBlock,
 } from "@/wab/tpls";
 import { ValNode } from "@/wab/val-nodes";
-import { nodeConformsToType } from "./core/model-util";
-import { isTagListContainer } from "./core/rich-text-util";
-import { getPlumeEditorPlugin } from "./plume/plume-registry";
-import { getParentOrSlotSelection } from "./SlotUtils";
-import { $$$ } from "./TplQuery";
 
 export type CantAddChildMsg =
   | CantAddToTplComponentMsg

@@ -3,6 +3,8 @@ import {
   isKnownTemplatedString,
   TemplatedString,
 } from "@/wab/classes";
+import { checkStrSizeLimit } from "@/wab/client/components/sidebar-tabs/ComponentProps/CodeEditor";
+import { TemplatedTextEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/TemplatedTextEditor";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { PropEditorRef } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
@@ -15,8 +17,6 @@ import { default as classNames } from "classnames";
 import { defer } from "lodash";
 import React from "react";
 import { useUnmount } from "react-use";
-import { checkStrSizeLimit } from "./CodeEditor";
-import { TemplatedTextEditor } from "./TemplatedTextEditor";
 
 export interface StringPropEditorProps {
   onChange: (value: string) => void;

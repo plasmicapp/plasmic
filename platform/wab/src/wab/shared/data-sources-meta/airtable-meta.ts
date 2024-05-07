@@ -1,5 +1,4 @@
 import type { DataSource } from "@/wab/server/entities/Entities";
-import { DataSourceSchema } from "@plasmicapp/data-sources";
 import {
   BasesArgMeta,
   DataSourceMeta,
@@ -11,7 +10,8 @@ import {
   PAGINATION_TYPE,
   SortArgMeta,
   TableArgMeta,
-} from "./data-sources";
+} from "@/wab/shared/data-sources-meta/data-sources";
+import { DataSourceSchema } from "@plasmicapp/data-sources";
 
 export const FAKE_AIRTABLE_FIELD = "__airtable_id";
 

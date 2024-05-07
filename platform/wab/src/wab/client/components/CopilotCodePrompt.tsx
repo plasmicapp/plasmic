@@ -1,3 +1,6 @@
+import CopilotMsg from "@/wab/client/components/CopilotMsg";
+import { dataPickerShouldHideKey } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
+import { TextboxRef } from "@/wab/client/components/widgets/Textbox";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import PlasmicCopilotCodePrompt from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotCodePrompt";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -17,9 +20,6 @@ import { isString, range } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
 import { FocusScope } from "react-aria";
-import CopilotMsg from "./CopilotMsg";
-import { dataPickerShouldHideKey } from "./sidebar-tabs/DataBinding/DataPickerUtil";
-import { TextboxRef } from "./widgets/Textbox";
 import defer = setTimeout;
 
 export interface CopilotCodePromptProps {

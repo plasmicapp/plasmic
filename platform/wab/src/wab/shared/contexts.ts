@@ -9,9 +9,9 @@ import { arrayEq, assert, ensure } from "@/wab/common";
 import {
   ContextFactory,
   observeRelevantFields,
-} from "./code-components/context-factory";
-import { getSlotArgs } from "./SlotUtils";
-import { $$$ } from "./TplQuery";
+} from "@/wab/shared/code-components/context-factory";
+import { getSlotArgs } from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
 
 export function wrapWithContext(
   root: TplComponent,

@@ -5,7 +5,7 @@ import * as React from "react";
 import {
   DefaultSplitRowProps,
   PlasmicSplitRow,
-} from "./wab/client/plasmic/plasmic_kit_style_controls/PlasmicSplitRow";
+} from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicSplitRow";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can
@@ -20,7 +20,7 @@ import {
 //
 // You can also stop extending from DefaultSplitRowProps altogether and have
 // total control over the props for your component.
-interface SplitRowProps extends DefaultSplitRowProps {}
+type SplitRowProps = DefaultSplitRowProps;
 
 function SplitRow(props: SplitRowProps) {
   // Use PlasmicSplitRow to render this component as it was

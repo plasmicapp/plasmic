@@ -9,22 +9,28 @@ import {
   InsertableTemplateComponentResolution,
   InsertableTemplateTokenResolution,
 } from "@/wab/devflags";
+import { Bundle } from "@/wab/shared/bundles";
+import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
+import {
+  LabeledValue,
+  RawPagination,
+} from "@/wab/shared/data-sources-meta/data-sources";
+import { WebhookHeader } from "@/wab/shared/db-json-blobs";
+import { AccessLevel, GrantableAccessLevel } from "@/wab/shared/EntUtil";
+import { PkgVersionInfo, RevInfo, SiteInfo } from "@/wab/shared/SharedApi";
+import {
+  DirectConflictPickMap,
+  MergeStep,
+} from "@/wab/shared/site-diffs/merge-core";
 import type { DataSourceSchema } from "@plasmicapp/data-sources";
 import { PlasmicElement } from "@plasmicapp/host/dist/element-types";
 import Stripe from "stripe";
 import { MakeADT } from "ts-adt/MakeADT";
 import type { JsonValue, Opaque } from "type-fest";
-import { Bundle } from "./bundles";
-import { DataSourceType } from "./data-sources-meta/data-source-registry";
-import { LabeledValue, RawPagination } from "./data-sources-meta/data-sources";
-import { WebhookHeader } from "./db-json-blobs";
-import { AccessLevel, GrantableAccessLevel } from "./EntUtil";
-import { PkgVersionInfo, RevInfo, SiteInfo } from "./SharedApi";
-import { DirectConflictPickMap, MergeStep } from "./site-diffs/merge-core";
 
-import { WholeChatCompletionResponse } from "./copilot/prompt-utils";
-import { ChangeLogEntry, SemVerReleaseType } from "./site-diffs";
-import { UiConfig } from "./ui-config-utils";
+import { WholeChatCompletionResponse } from "@/wab/shared/copilot/prompt-utils";
+import { ChangeLogEntry, SemVerReleaseType } from "@/wab/shared/site-diffs";
+import { UiConfig } from "@/wab/shared/ui-config-utils";
 
 export type UserId = Opaque<string, "UserId">;
 export type ProjectId = Opaque<string, "ProjectId">;
@@ -150,6 +156,7 @@ export type BillingFrequency = "month" | "year";
 
 export interface ApiTeam extends ApiEntityBase {
   id: TeamId;
+  parentTeamId: TeamId | null;
   name: string;
   billingEmail: string;
   seats: number | null;

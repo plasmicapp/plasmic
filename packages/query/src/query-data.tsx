@@ -259,3 +259,12 @@ export function isPlasmicPrepass() {
   return !!(React as any).__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
     ?.ReactCurrentDispatcher?.current?.isPlasmicPrepass;
 }
+
+export type HeadMetadata = {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonical?: string;
+};
+
+export const HeadMetadataContext = React.createContext<HeadMetadata>({});

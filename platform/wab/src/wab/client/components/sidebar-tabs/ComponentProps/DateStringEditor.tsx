@@ -1,7 +1,7 @@
+import styles from "@/wab/client/components/sidebar-tabs/ComponentProps/DateStringEditor.module.scss";
 import { DatePicker } from "antd";
 import moment from "moment";
 import React from "react";
-import styles from "./DateStringEditor.module.scss";
 
 const DateStringEditor = ({
   onChange,

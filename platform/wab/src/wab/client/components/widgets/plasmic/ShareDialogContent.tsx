@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import PP__ShareDialogContent from "./PlasmicShareDialogContent";
+import PP__ShareDialogContent from "@/wab/client/components/widgets/plasmic/PlasmicShareDialogContent";
 import {
   ApiPermission,
   ApiResource,
@@ -30,7 +30,7 @@ import PermissionItem, {
   designerTooltip,
   developerTooltip,
   viewerTooltip,
-} from "./PermissionItem";
+} from "@/wab/client/components/widgets/plasmic/PermissionItem";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   convertToTaggedResourceId,

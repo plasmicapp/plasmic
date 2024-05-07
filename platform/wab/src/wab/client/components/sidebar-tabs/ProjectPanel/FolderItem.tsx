@@ -1,3 +1,4 @@
+import styles from "@/wab/client/components/sidebar-tabs/ProjectPanel/FolderItem.module.scss";
 import {
   EditableLabel,
   EditableLabelHandles,
@@ -11,7 +12,6 @@ import cn from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { CSSProperties, ReactNode, useRef } from "react";
-import styles from "./FolderItem.module.scss";
 
 interface FolderItemProps
   extends DefaultFolderItemProps,

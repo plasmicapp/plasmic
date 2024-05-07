@@ -2,6 +2,12 @@ import { maybeConvertToHostLessProject } from "@/wab/client/code-components/code
 import { BottomModalsProvider } from "@/wab/client/components/BottomModal";
 import { CommentsProvider } from "@/wab/client/components/comments/CommentsProvider";
 import { showPlasmicImgModal } from "@/wab/client/components/modals/PlasmicImgModal";
+import { ShortcutsModal } from "@/wab/client/components/studio/Shortcuts";
+import {
+  getCanvasPkgs,
+  getLiveFrameClientJs,
+  getReactWebBundle,
+} from "@/wab/client/components/studio/studio-bundles";
 import { fixStudioIframePositionAndOverflow } from "@/wab/client/dom-utils";
 import RocketsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Rocketsvg";
 import { bindStudioShortcutHandlers } from "@/wab/client/shortcuts/studio/studio-shortcut-handlers";
@@ -11,12 +17,6 @@ import { StudioTutorialTours } from "@/wab/client/tours/tutorials/TutorialTours"
 import { mkShortId, spawn } from "@/wab/common";
 import { notification } from "antd";
 import * as React from "react";
-import { ShortcutsModal } from "./Shortcuts";
-import {
-  getCanvasPkgs,
-  getLiveFrameClientJs,
-  getReactWebBundle,
-} from "./studio-bundles";
 
 interface StudioProps {
   studioCtx: StudioCtx;

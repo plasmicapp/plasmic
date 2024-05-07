@@ -17,6 +17,9 @@ import {
   EndUserDirectory,
   EndUserIdentifier,
 } from "@/wab/server/entities/Entities";
+import { extractAppUserFromToken } from "@/wab/server/routes/app-oauth";
+import { mkApiProject } from "@/wab/server/routes/projects";
+import { getUser, superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import {
   ApiAppAccessRegistry,
   ApiAppAuthConfig,
@@ -39,9 +42,6 @@ import { Request, Response } from "express-serve-static-core";
 import { groupBy, isString, pick, uniq } from "lodash";
 import { Connection } from "typeorm";
 import validator from "validator";
-import { extractAppUserFromToken } from "./app-oauth";
-import { mkApiProject } from "./projects";
-import { getUser, superDbMgr, userDbMgr } from "./util";
 
 function mkApiEndUser(
   endUser: EndUser,

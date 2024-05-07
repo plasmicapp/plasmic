@@ -16,12 +16,12 @@ import {
   exportIconAsset,
   exportPictureAsset,
 } from "@/wab/shared/codegen/image-assets";
+import { exportReactPlain } from "@/wab/shared/codegen/react-p/plain";
 import { exportStyleTokens } from "@/wab/shared/codegen/style-tokens";
 import { ExportOpts, ProjectConfig } from "@/wab/shared/codegen/types";
 import { exportGlobalVariantGroup } from "@/wab/shared/codegen/variants";
 import { CssVarResolver } from "@/wab/styles";
 import { exportCustomFunctionConfig, exportReactPresentational } from ".";
-import { exportReactPlain } from "./plain";
 
 export function exportSiteComponents(
   site: Site,

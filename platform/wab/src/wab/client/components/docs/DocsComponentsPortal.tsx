@@ -1,3 +1,6 @@
+import { useDocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
+import { DocsPortalEditor } from "@/wab/client/components/docs/DocsPortalEditor";
+import { DocsPreviewCanvas } from "@/wab/client/components/docs/DocsPreviewCanvas";
 import {
   DefaultDocsComponentsPortalProps,
   PlasmicDocsComponentsPortal,
@@ -5,11 +8,8 @@ import {
 import { isPlumeComponent } from "@/wab/components";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { useDocsPortalCtx } from "./DocsPortalCtx";
-import { DocsPortalEditor } from "./DocsPortalEditor";
-import { DocsPreviewCanvas } from "./DocsPreviewCanvas";
 
-type DocsComponentsPortalProps = DefaultDocsComponentsPortalProps
+type DocsComponentsPortalProps = DefaultDocsComponentsPortalProps;
 
 const DocsComponentsPortal = observer(function DocsComponentsPortal(
   props: DocsComponentsPortalProps

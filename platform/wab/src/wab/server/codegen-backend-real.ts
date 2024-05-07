@@ -1,10 +1,10 @@
 // newrelic must be imported as early as possible, so we shift config loading to
 // the top so that we know if we are running production and want newrelic.
+import { addCodegenRoutes, createApp } from "@/wab/server/AppServer";
+import { Config } from "@/wab/server/config";
+import { ensureDbConnections } from "@/wab/server/db/DbCon";
+import { runExpressApp, setupServerCli } from "@/wab/server/server-common";
 import "core-js";
-import { addCodegenRoutes, createApp } from "./AppServer";
-import { Config } from "./config";
-import { ensureDbConnections } from "./db/DbCon";
-import { runExpressApp, setupServerCli } from "./server-common";
 
 async function runAppServer(config: Config) {
   await ensureDbConnections(config.databaseUri);

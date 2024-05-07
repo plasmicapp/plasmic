@@ -5,6 +5,7 @@ import {
   isKnownStyleToken,
   ProjectDependency,
 } from "@/wab/classes";
+import { SiteDiffs } from "@/wab/client/components/modals/SiteDiffs";
 import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
 import Button from "@/wab/client/components/widgets/Button";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -55,7 +56,6 @@ import L from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import { SiteDiffs } from "./SiteDiffs";
 
 const { Option } = Select;
 

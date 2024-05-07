@@ -1,5 +1,14 @@
 import { EnumPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/EnumPropEditor";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import {
+  DataSourcePicker,
+  getPreferredDataSource,
+  JsonWithSchemaEditor,
+  orderFieldsByRanking,
+  rankedFieldsForTableCols,
+  useSource,
+  useSourceSchemaData,
+} from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { Spinner } from "@/wab/client/components/widgets";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -16,15 +25,6 @@ import { DATA_SOURCE_CAP } from "@/wab/shared/Labels";
 import { TableFieldSchema, TableSchema } from "@plasmicapp/data-sources";
 import { isEqual, size } from "lodash";
 import React from "react";
-import {
-  DataSourcePicker,
-  getPreferredDataSource,
-  JsonWithSchemaEditor,
-  orderFieldsByRanking,
-  rankedFieldsForTableCols,
-  useSource,
-  useSourceSchemaData,
-} from "./DataSourceOpPicker";
 
 export const MULTIPLE_PRIMARY_KEY_VALUE = "__plasmic_mpk";
 

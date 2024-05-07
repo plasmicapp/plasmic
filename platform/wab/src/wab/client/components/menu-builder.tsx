@@ -1,3 +1,4 @@
+import { comboToKeyLabels } from "@/wab/client/components/studio/Shortcuts";
 import { extractEventProps, trackEvent } from "@/wab/client/tracking";
 import { ensure, filterFalsy } from "@/wab/common";
 import { joinReactNodes, MaybeWrap } from "@/wab/commons/components/ReactUtil";
@@ -5,7 +6,6 @@ import { Menu, Tooltip } from "antd";
 import L from "lodash";
 import { MenuInfo } from "rc-menu/lib/interface";
 import React from "react";
-import { comboToKeyLabels } from "./studio/Shortcuts";
 
 interface MenuBuilderFrame {
   type: "root" | "group" | "sub";

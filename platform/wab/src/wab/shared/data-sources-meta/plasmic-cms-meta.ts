@@ -1,12 +1,12 @@
 import type { DataSource } from "@/wab/server/entities/Entities";
-import { capitalizeFirst } from "@/wab/strs";
-import { DataSourceSchema } from "@plasmicapp/data-sources";
 import {
   DataSourceMeta,
   FilterArgMeta,
   SortArgMeta,
   TableArgMeta,
-} from "./data-sources";
+} from "@/wab/shared/data-sources-meta/data-sources";
+import { capitalizeFirst } from "@/wab/strs";
+import { DataSourceSchema } from "@plasmicapp/data-sources";
 
 const TABLE_TYPE: TableArgMeta = {
   type: "table",

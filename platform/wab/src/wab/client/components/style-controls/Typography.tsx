@@ -11,6 +11,11 @@ import {
   StyleSelectOption,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { MaybeCollapsibleRowsRenderer } from "@/wab/client/components/sidebar/SidebarSection";
+import {
+  StyleComponent,
+  useStyleComponent,
+} from "@/wab/client/components/style-controls/StyleComponent";
+import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggleButton";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import AlignCenterIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__AlignCenter";
 import AlignLeftIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__AlignLeft";
@@ -44,8 +49,6 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { ReactElement } from "react";
 import { VariantedStylesHelper } from "src/wab/shared/VariantedStylesHelper";
-import { StyleComponent, useStyleComponent } from "./StyleComponent";
-import StyleToggleButton from "./StyleToggleButton";
 
 interface TypographyContentProps {
   onChange: (cssPropName: string, newValue: string) => void;

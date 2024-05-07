@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultExperimentRowProps altogether and have
 // total control over the props for your component.
-export interface ExperimentRowProps extends DefaultExperimentRowProps {}
+export type ExperimentRowProps = DefaultExperimentRowProps;
 
 function ExperimentRow_(
   props: ExperimentRowProps,

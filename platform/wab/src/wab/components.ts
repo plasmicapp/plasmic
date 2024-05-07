@@ -1,7 +1,3 @@
-import { walkDependencyTree } from "@/wab/project-deps";
-import { CodeComponentMeta as ComponentRegistration } from "@plasmicapp/host/registerComponent";
-import L, { cloneDeep, orderBy, uniq, without } from "lodash";
-import memoizeOne from "memoize-one";
 import {
   ArenaFrame,
   Arg,
@@ -64,8 +60,8 @@ import {
   VariantGroupState,
   VariantsRef,
   VarRef,
-} from "./classes";
-import type { StudioCtx } from "./client/studio-ctx/StudioCtx";
+} from "@/wab/classes";
+import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -81,53 +77,58 @@ import {
   switchType,
   tuple,
   uniqueName,
-} from "./common";
-import { removeFromArray } from "./commons/collections";
-import { DeepReadonly } from "./commons/types";
-import { DEVFLAGS, HostLessPackageInfo } from "./devflags";
-import { clone as cloneExpr, isRealCodeExpr } from "./exprs";
-import * as Lang from "./lang";
-import { cloneParamAndVar } from "./lang";
-import { removeVariantGroupFromArenas } from "./shared/Arenas";
+} from "@/wab/common";
+import { removeFromArray } from "@/wab/commons/collections";
+import { DeepReadonly } from "@/wab/commons/types";
+import { DEVFLAGS, HostLessPackageInfo } from "@/wab/devflags";
+import { clone as cloneExpr, isRealCodeExpr } from "@/wab/exprs";
+import * as Lang from "@/wab/lang";
+import { cloneParamAndVar } from "@/wab/lang";
+import { walkDependencyTree } from "@/wab/project-deps";
+import { removeVariantGroupFromArenas } from "@/wab/shared/Arenas";
 import {
   findAllDataSourceOpExprForComponent,
   findAllQueryInvalidationExprForComponent,
-} from "./shared/cached-selectors";
-import { isBuiltinCodeComponent } from "./shared/code-components/builtin-code-components";
+} from "@/wab/shared/cached-selectors";
+import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
 import {
   CodeComponentWithHelpers,
   isCodeComponentWithHelpers,
   makePlumeComponentMeta,
-} from "./shared/code-components/code-components";
-import { paramToVarName, toClassName, toVarName } from "./shared/codegen/util";
-import { typeFactory } from "./shared/core/model-util";
-import { EXTRACT_COMPONENT_PROPS } from "./shared/core/style-props";
+} from "@/wab/shared/code-components/code-components";
+import {
+  paramToVarName,
+  toClassName,
+  toVarName,
+} from "@/wab/shared/codegen/util";
+import { typeFactory } from "@/wab/shared/core/model-util";
+import { EXTRACT_COMPONENT_PROPS } from "@/wab/shared/core/style-props";
 import {
   EffectiveVariantSetting,
   getEffectiveVariantSetting,
   getTplComponentActiveVariants,
-} from "./shared/effective-variant-setting";
-import { CanvasEnv } from "./shared/eval";
+} from "@/wab/shared/effective-variant-setting";
+import { CanvasEnv } from "@/wab/shared/eval";
 import {
   mergeParsedExprInfos,
   ParsedExprInfo,
   parseExpr,
-} from "./shared/eval/expression-parser";
-import { ensureComponentsObserved } from "./shared/mobx-util";
+} from "@/wab/shared/eval/expression-parser";
+import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import {
   replaceQueryWithPropInCodeExprs,
   replaceStateWithPropInCodeExprs,
   replaceVarWithPropInCodeExprs,
-} from "./shared/refactoring";
-import { RSH } from "./shared/RuleSetHelpers";
+} from "@/wab/shared/refactoring";
+import { RSH } from "@/wab/shared/RuleSetHelpers";
 import {
   cloneSlotDefaultContents,
   getTplSlot,
   getTplSlots,
   isSlot,
-} from "./shared/SlotUtils";
-import { setTplComponentArg, TplMgr } from "./shared/TplMgr";
-import { $$$ } from "./shared/TplQuery";
+} from "@/wab/shared/SlotUtils";
+import { setTplComponentArg, TplMgr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
 import {
   ensureBaseRuleVariantSetting,
   ensureVariantSetting,
@@ -147,32 +148,35 @@ import {
   mkVariantSetting,
   splitVariantCombo,
   VariantCombo,
-} from "./shared/Variants";
+} from "@/wab/shared/Variants";
 import {
   clearTplVisibility,
   getEffectiveTplVisibility,
   hasVisibilitySetting,
   setTplVisibility,
   TplVisibility,
-} from "./shared/visibility-utils";
-import { isHostLessPackage, UNINITIALIZED_VALUE, writeable } from "./sites";
-import { removeVariantGroupFromSplits } from "./splits";
+} from "@/wab/shared/visibility-utils";
+import { isHostLessPackage, UNINITIALIZED_VALUE, writeable } from "@/wab/sites";
+import { removeVariantGroupFromSplits } from "@/wab/splits";
 import {
   genOnChangeParamName,
   isOnChangeParam,
   mkState,
   removeComponentStateOnly,
-} from "./states";
-import { smartHumanize } from "./strs";
-import { cloneRuleSet, mkRuleSet } from "./styles";
-import * as Tpls from "./tpls";
+} from "@/wab/states";
+import { smartHumanize } from "@/wab/strs";
+import { cloneRuleSet, mkRuleSet } from "@/wab/styles";
+import * as Tpls from "@/wab/tpls";
 import {
   findExprsInNode,
   findVariantSettingsUnderTpl,
   flattenTpls,
   isTplComponent,
   isTplVariantable,
-} from "./tpls";
+} from "@/wab/tpls";
+import { CodeComponentMeta as ComponentRegistration } from "@plasmicapp/host/registerComponent";
+import L, { cloneDeep, orderBy, uniq, without } from "lodash";
+import memoizeOne from "memoize-one";
 
 export enum ComponentType {
   Plain = "plain",

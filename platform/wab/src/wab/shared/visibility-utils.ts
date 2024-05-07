@@ -17,17 +17,16 @@ import {
   isCodeLitVal,
   isRealCodeExpr,
 } from "@/wab/exprs";
-import { isTplComponent, isTplTag, isTplVariantable } from "@/wab/tpls";
-import { ComponentGenHelper } from "./codegen/codegen-helpers";
-import { CONTENT_LAYOUT } from "./core/style-props";
+import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
+import { CONTENT_LAYOUT } from "@/wab/shared/core/style-props";
 import {
   EffectiveVariantSetting,
   getEffectiveVariantSetting,
   getTplComponentActiveVariantsByVs,
-} from "./effective-variant-setting";
-import { CanvasEnv, tryEvalExpr } from "./eval";
-import { RSH, RuleSetHelpers } from "./RuleSetHelpers";
-import { $$$ } from "./TplQuery";
+} from "@/wab/shared/effective-variant-setting";
+import { CanvasEnv, tryEvalExpr } from "@/wab/shared/eval";
+import { RSH, RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
+import { $$$ } from "@/wab/shared/TplQuery";
 import {
   ensureVariantSetting,
   getGlobalVariants,
@@ -35,7 +34,8 @@ import {
   tryGetBaseVariantSetting,
   tryGetVariantSetting,
   VariantCombo,
-} from "./Variants";
+} from "@/wab/shared/Variants";
+import { isTplComponent, isTplTag, isTplVariantable } from "@/wab/tpls";
 
 // When doing "DisplayNone" in css, we set `display: none`.  However,
 // we don't actually want to set that in our RuleSet, because

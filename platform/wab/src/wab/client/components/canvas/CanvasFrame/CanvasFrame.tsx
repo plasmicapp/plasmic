@@ -1,6 +1,10 @@
 import { ArenaFrame } from "@/wab/classes";
 import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import { CanvasActions } from "@/wab/client/components/canvas/CanvasActions/CanvasActions";
+import { CanvasArtboardSelectionHandle } from "@/wab/client/components/canvas/CanvasFrame/CanvasArtboardSelectionHandle";
+import styles from "@/wab/client/components/canvas/CanvasFrame/CanvasFrame.module.scss";
+import { CanvasHeader } from "@/wab/client/components/canvas/CanvasFrame/CanvasHeader";
+import { headRegexp } from "@/wab/client/components/canvas/CanvasFrame/headRegexp";
 import {
   absorbLinkClick,
   closestTaggedNonTextDomElt,
@@ -30,10 +34,6 @@ import { createPortal } from "react-dom";
 import { useMountedState, useUnmount } from "react-use";
 import { AsyncGeneratorReturnType } from "src/wab/commons/types";
 import { DEVFLAGS } from "src/wab/devflags";
-import { CanvasArtboardSelectionHandle } from "./CanvasArtboardSelectionHandle";
-import styles from "./CanvasFrame.module.scss";
-import { CanvasHeader } from "./CanvasHeader";
-import { headRegexp } from "./headRegexp";
 
 interface CanvasFrameProps {
   studioCtx: StudioCtx;

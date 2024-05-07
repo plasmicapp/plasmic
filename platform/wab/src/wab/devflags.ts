@@ -1,17 +1,20 @@
 /** @format */
 
-import { cloneDeep, pick } from "lodash";
-import { assert, ensureType, mergeSane } from "./common";
-import { DEFAULT_DEVFLAG_OVERRIDES } from "./devflag-overrides";
+import { assert, ensureType, mergeSane } from "@/wab/common";
+import { DEFAULT_DEVFLAG_OVERRIDES } from "@/wab/devflag-overrides";
 import {
   ApiFeatureTier,
   FeatureTierId,
   ProjectId,
   TeamId,
   WorkspaceId,
-} from "./shared/ApiSchema";
-import { featureTiers, newFeatureTiers } from "./shared/pricing/pricing-utils";
-import { InsertPanelConfig, UiConfig } from "./shared/ui-config-utils";
+} from "@/wab/shared/ApiSchema";
+import {
+  featureTiers,
+  newFeatureTiers,
+} from "@/wab/shared/pricing/pricing-utils";
+import { InsertPanelConfig, UiConfig } from "@/wab/shared/ui-config-utils";
+import { cloneDeep, pick } from "lodash";
 
 export interface StarterSectionConfig {
   title: string; // Shown as the heading
@@ -471,7 +474,6 @@ const DEFAULT_DEVFLAGS = {
   imgOptimizerHost: "https://img.plasmic.app",
   introYoutubeId: "K_YzFBd7b2I",
   noFlipTags: true,
-  preset: true,
   proxyDomainSuffixes: [".devtun.plasmic.app", ".prox1.plasmic.link"],
   revisionNum: undefined,
   richtext2: true,
@@ -531,9 +533,6 @@ const DEFAULT_DEVFLAGS = {
   // Prefers loading state over expression fallback
   useLoadingState: false,
   useLogrocket: false,
-  showInsertableTemplates: true,
-  showInsertableTemplateComponents: false,
-  showHostLessComponents: true,
   showHiddenHostLessComponents: false,
   ccStubs: false,
   workspaces: false,
@@ -586,11 +585,7 @@ const DEFAULT_DEVFLAGS = {
   // Enables the margin and padding spacing visualizer improvements
   spacingVisualizer202209: true,
   gapControls: false,
-  variantedStyles: true,
-  textSlotsSelectable: true,
   contentOnly: false,
-  grid: true,
-  ccAttachs: true,
   publishWithTags: true,
   ancestorsBoxes: true,
   branching: false,
@@ -691,6 +686,7 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     ancestorsBoxes: true,
     multiSelect: true,
     insert2022Q4: true,
+    incrementalObservables: true,
     branching: true,
     comments: true,
     pageLayout: true,

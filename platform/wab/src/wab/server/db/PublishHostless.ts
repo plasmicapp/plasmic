@@ -3,6 +3,18 @@ import { assert, ensure, spawn } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
 import { updateHostlessPackage } from "@/wab/server/code-components/code-components";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
+import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
+import {
+  BUNDLE_MIGRATION_PATH,
+  getAllMigrations,
+  getLastBundleVersion,
+  getMigratedBundle,
+} from "@/wab/server/db/BundleMigrator";
+import {
+  ensureDbConnections,
+  getDefaultConnection,
+} from "@/wab/server/db/DbCon";
+import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
@@ -11,15 +23,6 @@ import fs from "fs";
 import path from "path";
 import semver from "semver";
 import { EntityManager } from "typeorm";
-import { unbundleSite } from "./bundle-migration-utils";
-import {
-  BUNDLE_MIGRATION_PATH,
-  getAllMigrations,
-  getLastBundleVersion,
-  getMigratedBundle,
-} from "./BundleMigrator";
-import { ensureDbConnections, getDefaultConnection } from "./DbCon";
-import { DbMgr, SUPER_USER } from "./DbMgr";
 
 const { Command } = require("commander");
 

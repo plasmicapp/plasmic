@@ -1,6 +1,11 @@
 import { unzip3 } from "@/wab/collections";
 import { tuple } from "@/wab/common";
 import { DbMgr } from "@/wab/server/db/DbMgr";
+import {
+  mkVersionToSync,
+  resolveProjectDeps,
+  VersionToSync,
+} from "@/wab/server/loader/resolve-projects";
 import { withSpan } from "@/wab/server/util/apm-util";
 import { upsertS3CacheEntry } from "@/wab/server/util/s3-util";
 import { PlasmicWorkerPool } from "@/wab/server/workers/pool";
@@ -10,11 +15,6 @@ import { createHash } from "crypto";
 import { ProjectId } from "src/wab/shared/ApiSchema";
 import { LocalizationKeyScheme } from "src/wab/shared/localization";
 import { getConnection } from "typeorm";
-import {
-  mkVersionToSync,
-  resolveProjectDeps,
-  VersionToSync,
-} from "./resolve-projects";
 
 /**
  * This is used for busting codegen caches.  You should increment this number if

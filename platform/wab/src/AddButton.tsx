@@ -6,7 +6,7 @@ import * as React from "react";
 import {
   DefaultAddButtonProps,
   PlasmicAddButton,
-} from "./wab/client/plasmic/plasmic_kit_left_pane/PlasmicAddButton";
+} from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicAddButton";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can
@@ -21,7 +21,7 @@ import {
 //
 // You can also stop extending from DefaultAddButtonProps altogether and have
 // total control over the props for your component.
-export interface AddButtonProps extends DefaultAddButtonProps {}
+export type AddButtonProps = DefaultAddButtonProps;
 
 function AddButton_(props: AddButtonProps, ref: HTMLElementRefOf<"button">) {
   // Use PlasmicAddButton to render this component as it was

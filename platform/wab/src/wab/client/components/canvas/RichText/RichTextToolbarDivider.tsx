@@ -20,8 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultRichTextToolbarDividerProps altogether and have
 // total control over the props for your component.
-interface RichTextToolbarDividerProps
-  extends DefaultRichTextToolbarDividerProps {}
+type RichTextToolbarDividerProps = DefaultRichTextToolbarDividerProps;
 
 function RichTextToolbarDivider_(
   props: RichTextToolbarDividerProps,

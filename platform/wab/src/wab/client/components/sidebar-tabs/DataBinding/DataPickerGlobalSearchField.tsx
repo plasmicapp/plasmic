@@ -7,8 +7,8 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
-export interface DataPickerGlobalSearchFieldProps
-  extends DefaultDataPickerGlobalSearchFieldProps {}
+export type DataPickerGlobalSearchFieldProps =
+  DefaultDataPickerGlobalSearchFieldProps;
 
 function DataPickerGlobalSearchField_(
   props: DataPickerGlobalSearchFieldProps,

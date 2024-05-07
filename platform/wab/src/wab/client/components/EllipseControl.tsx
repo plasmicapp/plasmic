@@ -24,19 +24,19 @@ export class EllipseControl extends React.Component<EllipseControlProps> {
   initEllipse: Ellipse | null = null;
 
   private getDragPcts(e: XDraggableEvent) {
-    let orig = ensure(this.initEllipse);
-    let area = (
+    const orig = ensure(this.initEllipse);
+    const area = (
       ReactDOM.findDOMNode(ensure(this.svg)) as SVGElement
     ).getBoundingClientRect();
-    let dx = (e.data.deltaX / area.width) * 100;
-    let dy = (e.data.deltaY / area.height) * 100;
+    const dx = (e.data.deltaX / area.width) * 100;
+    const dy = (e.data.deltaY / area.height) * 100;
 
     spreadLog({ ...e.data, ...area, dx, dy });
     return { orig, dx, dy };
   }
 
   private handleDragCenter = (e: XDraggableEvent) => {
-    let { orig, dx, dy } = this.getDragPcts(e);
+    const { orig, dx, dy } = this.getDragPcts(e);
     this.props.onChange({
       ...orig,
       cx: L.clamp(orig.cx + dx, 0, 100),
@@ -45,7 +45,7 @@ export class EllipseControl extends React.Component<EllipseControlProps> {
   };
 
   private handleDragKnobRight = (e: XDraggableEvent) => {
-    let { orig, dx, dy } = this.getDragPcts(e);
+    const { orig, dx, dy } = this.getDragPcts(e);
     this.props.onChange({
       ...orig,
       rx: L.clamp(orig.rx + dx, orig.cx, 100 - orig.cx),
@@ -53,7 +53,7 @@ export class EllipseControl extends React.Component<EllipseControlProps> {
   };
 
   private handleDragKnobBottom = (e: XDraggableEvent) => {
-    let { orig, dx, dy } = this.getDragPcts(e);
+    const { orig, dx, dy } = this.getDragPcts(e);
     this.props.onChange({
       ...orig,
       ry: L.clamp(orig.ry + dy, orig.cy, 100 - orig.cy),
@@ -61,7 +61,7 @@ export class EllipseControl extends React.Component<EllipseControlProps> {
   };
 
   private handleDragKnobLeft = (e: XDraggableEvent) => {
-    let { orig, dx, dy } = this.getDragPcts(e);
+    const { orig, dx, dy } = this.getDragPcts(e);
     this.props.onChange({
       ...orig,
       rx: L.clamp(orig.rx - dx, 0, orig.cx),
@@ -69,7 +69,7 @@ export class EllipseControl extends React.Component<EllipseControlProps> {
   };
 
   private handleDragKnobTop = (e: XDraggableEvent) => {
-    let { orig, dx, dy } = this.getDragPcts(e);
+    const { orig, dx, dy } = this.getDragPcts(e);
     this.props.onChange({
       ...orig,
       ry: L.clamp(orig.ry - dy, 0, orig.cy),

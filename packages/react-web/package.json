@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/react-web",
-  "version": "0.2.329",
+  "version": "0.2.334",
   "description": "plasmic library for rendering in the presentational style",
   "main": "dist/index.cjs.js",
   "types": "dist/index.d.ts",
@@ -65,6 +65,16 @@
     },
     "./additional-types-PlasmicImg": {
       "types": "./dist/render/PlasmicImg/index.d.ts"
+    },
+    "./lib/nextjs-app-router": {
+      "types": "./lib/nextjs-app-router/index.d.ts",
+      "import": "./lib/nextjs-app-router/index.js",
+      "require": "./lib/nextjs-app-router/index.cjs.js"
+    },
+    "./lib/nextjs-app-router/react-server": {
+      "types": "./lib/nextjs-app-router/react-server/index.d.ts",
+      "import": "./lib/nextjs-app-router/react-server/index.js",
+      "require": "./lib/nextjs-app-router/react-server/index.cjs.js"
     }
   },
   "files": [
@@ -86,13 +96,14 @@
     "test-storybook": "test-storybook"
   },
   "dependencies": {
-    "@plasmicapp/auth-react": "0.0.20",
-    "@plasmicapp/data-sources": "0.1.150",
+    "@plasmicapp/auth-react": "0.0.21",
+    "@plasmicapp/data-sources": "0.1.153",
     "@plasmicapp/data-sources-context": "0.1.21",
-    "@plasmicapp/host": "1.0.191",
+    "@plasmicapp/host": "1.0.194",
     "@plasmicapp/loader-splits": "1.0.60",
-    "@plasmicapp/prepass": "1.0.16",
-    "@plasmicapp/query": "0.1.78",
+    "@plasmicapp/nextjs-app-router": "1.0.11",
+    "@plasmicapp/prepass": "1.0.17",
+    "@plasmicapp/query": "0.1.79",
     "@react-aria/checkbox": "^3.11.2",
     "@react-aria/focus": "^3.14.3",
     "@react-aria/interactions": "^3.19.1",

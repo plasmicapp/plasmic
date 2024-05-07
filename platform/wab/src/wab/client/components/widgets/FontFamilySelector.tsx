@@ -1,3 +1,4 @@
+import Chip from "@/wab/client/components/widgets/Chip";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
 import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
@@ -9,7 +10,6 @@ import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Select } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
-import Chip from "./Chip";
 
 const CSS_VAR_REGEX = /^var\(--(.*)\)$/;
 

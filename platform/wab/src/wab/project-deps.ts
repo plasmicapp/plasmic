@@ -1,4 +1,3 @@
-import L from "lodash";
 import {
   ArenaFrame,
   ArenaFrameCell,
@@ -39,7 +38,7 @@ import {
   VariantedValue,
   VariantGroup,
   VariantSetting,
-} from "./classes";
+} from "@/wab/classes";
 import {
   assert,
   assignReadonly,
@@ -47,15 +46,15 @@ import {
   maybe,
   tuple,
   withoutNils,
-} from "./common";
-import { removeFromArray } from "./commons/collections";
+} from "@/wab/common";
+import { removeFromArray } from "@/wab/commons/collections";
 import {
   derefToken,
   hasTokenRefs,
   mkTokenRef,
   replaceAllTokenRefs,
   TokenType,
-} from "./commons/StyleToken";
+} from "@/wab/commons/StyleToken";
 import {
   getComponentDisplayName,
   isCodeComponent,
@@ -64,47 +63,51 @@ import {
   isReusableComponent,
   PageComponent,
   removeComponentParam,
-} from "./components";
-import { isFallbackableExpr } from "./exprs";
-import { ImageAssetType } from "./image-asset-type";
+} from "@/wab/components";
+import { isFallbackableExpr } from "@/wab/exprs";
+import { ImageAssetType } from "@/wab/image-asset-type";
 import {
   hasAssetRefs,
   mkImageAssetRef,
   replaceAllAssetRefs,
-} from "./image-assets";
-import { getArenaFrames, isComponentArena, isPageArena } from "./shared/Arenas";
-import { flattenComponent } from "./shared/cached-selectors";
+} from "@/wab/image-assets";
+import {
+  getArenaFrames,
+  isComponentArena,
+  isPageArena,
+} from "@/wab/shared/Arenas";
+import { flattenComponent } from "@/wab/shared/cached-selectors";
 import {
   collectUsedIconAssetsForTpl,
   collectUsedPictureAssetsForTpl,
-} from "./shared/codegen/image-assets";
-import { collectUsedMixinsForTpl } from "./shared/codegen/mixins";
+} from "@/wab/shared/codegen/image-assets";
+import { collectUsedMixinsForTpl } from "@/wab/shared/codegen/mixins";
 import {
   collectUsedTokensForTpl,
   extractUsedTokensForMixins,
   extractUsedTokensForTokens,
-} from "./shared/codegen/style-tokens";
+} from "@/wab/shared/codegen/style-tokens";
 import {
   renameParamAndFixExprs,
   renameTplAndFixExprs,
-} from "./shared/refactoring";
+} from "@/wab/shared/refactoring";
 import {
   fillVirtualSlotContents,
   findParentArgs,
   getTplSlots,
   isSlot,
   revertToDefaultSlotContents,
-} from "./shared/SlotUtils";
-import { TplMgr } from "./shared/TplMgr";
-import { $$$ } from "./shared/TplQuery";
-import { VariantedStylesHelper } from "./shared/VariantedStylesHelper";
+} from "@/wab/shared/SlotUtils";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   areEquivalentScreenVariants,
   isBaseVariant,
   isScreenVariant,
   isScreenVariantGroup,
   VariantGroupType,
-} from "./shared/Variants";
+} from "@/wab/shared/Variants";
 import {
   allGlobalVariants,
   allImageAssets,
@@ -112,15 +115,15 @@ import {
   getAllAttachedTpls,
   getSiteArenas,
   isHostLessPackage,
-} from "./sites";
+} from "@/wab/sites";
 import {
   ensureCorrectImplicitStates,
   getStateDisplayName,
   isPrivateState,
   isStateUsedInExpr,
   removeComponentState,
-} from "./states";
-import { cloneMixin } from "./styles";
+} from "@/wab/states";
+import { cloneMixin } from "@/wab/styles";
 import {
   clone,
   findExprsInComponent,
@@ -132,7 +135,8 @@ import {
   isTplNamable,
   isTplVariantable,
   replaceTplTreeByEmptyBox,
-} from "./tpls";
+} from "@/wab/tpls";
+import L from "lodash";
 
 export type DependencyWalkScope = "all" | "direct";
 

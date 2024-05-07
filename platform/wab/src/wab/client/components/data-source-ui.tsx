@@ -1,7 +1,7 @@
 import { AppCtx } from "@/wab/client/app-ctx";
+import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { ApiDataSource } from "@/wab/shared/ApiSchema";
 import { DATA_SOURCE_LOWER } from "@/wab/shared/Labels";
-import { reactConfirm } from "./quick-modals";
 
 export async function confirmDeleteDataSource(
   appCtx: AppCtx,

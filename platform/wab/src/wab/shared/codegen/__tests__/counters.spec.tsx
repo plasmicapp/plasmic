@@ -8,7 +8,7 @@ import "core-js";
 import * as React from "react";
 import tmp from "tmp";
 // Exported from https://studio.plasmic.app/projects/a76RKRQpJHMAbDDNBWmUVs
-import _bundle from "./bundles/counters-test.json";
+import _bundle from "@/wab/shared/codegen/__tests__/bundles/counters-test.json";
 
 describe("counters blackbox codegen", () => {
   const countersBundle = _bundle[0][1] as Bundle;

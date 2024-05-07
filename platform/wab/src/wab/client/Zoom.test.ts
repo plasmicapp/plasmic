@@ -1,5 +1,5 @@
+import { zoomJump } from "@/wab/client/Zoom";
 import { tuple } from "@/wab/common";
-import { zoomJump } from "./Zoom";
 
 describe("zoomJump", () => {
   it("works on whole zooms", () => {

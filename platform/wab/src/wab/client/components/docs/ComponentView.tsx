@@ -1,3 +1,7 @@
+import CodePreviewSnippet from "@/wab/client/components/docs/CodePreviewSnippet";
+import { DocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
+import DocsPropsTableRow from "@/wab/client/components/docs/DocsPropsTableRow";
+import { typeString } from "@/wab/client/components/docs/VariantProp";
 import { PlasmicComponentView } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicComponentView";
 import { isPlumeComponent } from "@/wab/components";
 import { toVarName } from "@/wab/shared/codegen/util";
@@ -9,10 +13,6 @@ import {
 import { getTplSlots } from "@/wab/shared/SlotUtils";
 import { observer } from "mobx-react";
 import * as React from "react";
-import CodePreviewSnippet from "./CodePreviewSnippet";
-import { DocsPortalCtx } from "./DocsPortalCtx";
-import DocsPropsTableRow from "./DocsPropsTableRow";
-import { typeString } from "./VariantProp";
 
 const ComponentView = observer(({ docsCtx }: { docsCtx: DocsPortalCtx }) => {
   const component = docsCtx.getFocusedComponent();

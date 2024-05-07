@@ -1,7 +1,7 @@
 import { uncheckedCast } from "@/wab/common";
 import { PromotionCode } from "@/wab/server/entities/Entities";
+import { superDbMgr } from "@/wab/server/routes/util";
 import { Request, Response } from "express-serve-static-core";
-import { superDbMgr } from "./util";
 
 export async function getPromotionCodeById(req: Request, res: Response) {
   const dbMgr = superDbMgr(req);
@@ -9,6 +9,7 @@ export async function getPromotionCodeById(req: Request, res: Response) {
   const promotionCode = await dbMgr.getPromotionCodeById(promoCodeId);
   if (!promotionCode) {
     res.json({});
+    return;
   }
   res.json({ ...promotionCode });
 }

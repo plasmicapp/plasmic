@@ -1,6 +1,7 @@
 import { Component, Site, TplNode, Variant } from "@/wab/classes";
 import { withoutNils } from "@/wab/common";
 import { allComponentVariants } from "@/wab/components";
+import { siteToAllImageAssetsDict } from "@/wab/shared/cached-selectors";
 import {
   importComponentsInTree,
   mkInsertableComponentImporter,
@@ -31,8 +32,15 @@ import {
   flattenTpls,
   flattenTplsBottomUp,
 } from "@/wab/tpls";
-import { siteToAllImageAssetsDict } from "./cached-selectors";
 
+/**
+ * @param site Target site to clone the component
+ * @param info Information about the handling of the component together with the origin site
+ * and a reference to the component to clone
+ * @param plumeSite Plume site to use for importing plume components
+ * @returns a cloned component which is already attached to the target site and seen fonts
+ * which the component depends on
+ */
 export function cloneInsertableTemplateComponent(
   site: Site,
   info: InsertableTemplateExtraInfo,

@@ -5,7 +5,7 @@ import * as React from "react";
 import {
   DefaultModalProps,
   PlasmicModal,
-} from "./wab/client/plasmic/plasmic_kit_design_system/PlasmicModal";
+} from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicModal";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can

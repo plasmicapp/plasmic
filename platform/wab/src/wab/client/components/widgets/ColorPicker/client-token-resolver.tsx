@@ -1,16 +1,18 @@
 import { StyleToken } from "@/wab/classes";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { TokenValue } from "@/wab/commons/StyleToken";
 import {
-  makeTokenValueResolver,
+  makeTokenResolver,
   TokenResolver,
+  TokenValueResolver,
 } from "@/wab/shared/cached-selectors";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 
 const RE_VARIABLE_REF = /var\((--[^)]+)\)/;
 
 /**
- * Returns a TokenResolver that also consults the DOM to dereference
+ * Returns a TokenValueResolver that also consults the DOM to dereference
  * css variable references. This is for style tokens whose values
  * are set to `var(--MY-WEIRD-TOKEN)`.
  *
@@ -24,10 +26,10 @@ const RE_VARIABLE_REF = /var\((--[^)]+)\)/;
  * We always try to read the css property value from document.documentElement
  * (so, only works for css properties defined via `:root {}`).
  */
-export function useClientTokenResolver(): TokenResolver {
+export function useClientTokenResolver(): TokenValueResolver {
   const sc = useStudioCtx();
   const vc = sc.focusedViewCtx();
-  const resolver = makeTokenValueResolver(sc.site);
+  const resolver = makeTokenResolver(sc.site);
   return makeClientTokenResolver(resolver, vc ?? sc);
 }
 
@@ -38,7 +40,7 @@ function extractReferencedVariable(value: string) {
 function makeClientTokenResolver(
   resolver: TokenResolver,
   clientCtx: StudioCtx | ViewCtx | undefined
-) {
+): TokenValueResolver {
   const studioCtx =
     clientCtx instanceof ViewCtx ? clientCtx.studioCtx : clientCtx;
   const viewCtx =
@@ -51,8 +53,8 @@ function makeClientTokenResolver(
     const doc = viewCtx ? viewCtx.canvasCtx.doc() : window.parent.document;
     if (token.isRegistered && studioCtx && token.regKey) {
       const reg = studioCtx.getTokenRegistration(token);
-      if ((reg as any)?.selector) {
-        const elt = doc.querySelector((reg as any).selector as string);
+      if (reg?.selector) {
+        const elt = doc.querySelector(reg.selector);
         if (elt) {
           return elt as HTMLElement;
         }
@@ -60,14 +62,14 @@ function makeClientTokenResolver(
     }
     return doc.documentElement;
   };
-  return (token: StyleToken, vsh?: VariantedStylesHelper) => {
-    const value = resolver(token, vsh);
+  return (token: StyleToken, vsh?: VariantedStylesHelper): TokenValue => {
+    const { value, token: resolvedToken } = resolver(token, vsh);
     const refVarName = extractReferencedVariable(value);
     if (!refVarName) {
       return value;
     }
 
-    const elt = getTokenElement(token);
+    const elt = getTokenElement(resolvedToken);
     const variableValue = getCssVariableValue(elt, refVarName);
     if (variableValue) {
       return variableValue;
@@ -77,11 +79,14 @@ function makeClientTokenResolver(
   };
 }
 
-function getCssVariableValue(elt: HTMLElement, name: string) {
+function getCssVariableValue(
+  elt: HTMLElement,
+  name: string
+): TokenValue | undefined {
   const win = elt.ownerDocument.defaultView;
   if (!win) {
     return undefined;
   }
   const value = win.getComputedStyle(elt).getPropertyValue(name).trim();
-  return value.length === 0 ? undefined : value;
+  return value.length === 0 ? undefined : (value as TokenValue);
 }

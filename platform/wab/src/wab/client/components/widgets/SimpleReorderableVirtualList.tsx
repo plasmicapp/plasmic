@@ -1,3 +1,4 @@
+import { axisLockedStyle } from "@/wab/client/components/widgets/SimpleReorderableList";
 import { ensure } from "@/wab/common";
 import React from "react";
 import {
@@ -7,7 +8,6 @@ import {
   Droppable,
 } from "react-beautiful-dnd";
 import { areEqual, FixedSizeList } from "react-window";
-import { axisLockedStyle } from "./SimpleReorderableList";
 
 export function SimpleReorderableVirtualList<T>(props: {
   onReordered: (fromIndex: number, toIndex: number) => void;

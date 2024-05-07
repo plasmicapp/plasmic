@@ -1,3 +1,5 @@
+import { DropdownArrow, IconLinkButton } from "@/wab/client/components/widgets";
+import { Icon } from "@/wab/client/components/widgets/Icon";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import { arrayMoveIndex } from "@/wab/collections";
 import { cx, ensure, ensureHTMLElt, tuple } from "@/wab/common";
@@ -12,8 +14,6 @@ import L from "lodash";
 import * as React from "react";
 import { createRef } from "react";
 import type { SetOptional } from "type-fest";
-import { DropdownArrow, IconLinkButton } from "./widgets";
-import { Icon } from "./widgets/Icon";
 
 interface _XMultiSelectProps<Item> {
   fixedValues: Item[];

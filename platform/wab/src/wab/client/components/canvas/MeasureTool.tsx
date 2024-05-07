@@ -1,3 +1,4 @@
+import { recomputeBounds } from "@/wab/client/components/canvas/HoverBox";
 import { hasLayoutBox } from "@/wab/client/dom";
 import { StudioCtx, withStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewComponentBase } from "@/wab/client/studio-ctx/view-ctx";
@@ -6,7 +7,6 @@ import { Box, horizontalSides, Pt, Side } from "@/wab/geom";
 import { Observer } from "mobx-react";
 import * as React from "react";
 import { memo } from "react";
-import { recomputeBounds } from "./HoverBox";
 
 interface MeasureToolViewProps {
   x1: number;

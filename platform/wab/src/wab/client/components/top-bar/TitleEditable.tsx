@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultTitleEditableProps altogether and have
 // total control over the props for your component.
-export interface TitleEditableProps extends DefaultTitleEditableProps {}
+export type TitleEditableProps = DefaultTitleEditableProps;
 
 function TitleEditable_(
   props: TitleEditableProps,

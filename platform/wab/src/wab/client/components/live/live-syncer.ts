@@ -9,6 +9,7 @@ import {
   absorbLinkClick,
   showCanvasAuthNotification,
 } from "@/wab/client/components/canvas/studio-canvas-util";
+import { PreviewCtx } from "@/wab/client/components/live/PreviewCtx";
 import {
   getLiveFrameClientJs,
   getReactWebBundle,
@@ -78,7 +79,6 @@ import L from "lodash";
 import { autorun, comparer, untracked } from "mobx";
 import { computedFn } from "mobx-utils";
 import { getPlumeEditorPlugin } from "src/wab/shared/plume/plume-registry";
-import { PreviewCtx } from "./PreviewCtx";
 
 export interface CodeModule {
   name?: string;
@@ -822,7 +822,7 @@ export const createComponentOutput = computedFn(
       studioCtx.site.activeTheme,
       {
         keepAssetRefs: false,
-        useCssVariables: DEVFLAGS.variantedStyles,
+        useCssVariables: true,
       }
     );
     const compGenHelper = new ComponentGenHelper(siteGenHelper, cssVarResolver);

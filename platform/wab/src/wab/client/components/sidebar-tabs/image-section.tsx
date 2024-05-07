@@ -19,6 +19,12 @@ import {
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
+import {
+  FallbackEditor,
+  promptForParamName,
+} from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
+import { ContentPanelSection } from "@/wab/client/components/sidebar-tabs/image-content-section";
 import {
   LabeledItemRow,
   LabeledStyleColorItemRow,
@@ -63,9 +69,6 @@ import { Alert, Menu, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
 import { FaLink } from "react-icons/fa";
-import { DataPickerEditor } from "./ComponentProps/DataPickerEditor";
-import { FallbackEditor, promptForParamName } from "./ComponentPropsSection";
-import { ContentPanelSection } from "./image-content-section";
 
 export const ImageSection = observer(function ImageSection(props: {
   expsProvider: TplExpsProvider;

@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultActivityRowProps altogether and have
 // total control over the props for your component.
-export interface ActivityRowProps extends DefaultActivityRowProps {}
+export type ActivityRowProps = DefaultActivityRowProps;
 
 function ActivityRow_(props: ActivityRowProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicActivityRow to render this component as it was

@@ -1,5 +1,5 @@
-import { toVarName } from "./codegen/util";
-import { tryEvalExpr } from "./eval";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { tryEvalExpr } from "@/wab/shared/eval";
 
 export function getDataQueryState(
   env: Record<string, any> | undefined,

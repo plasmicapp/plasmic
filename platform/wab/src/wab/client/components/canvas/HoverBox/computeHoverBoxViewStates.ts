@@ -4,6 +4,11 @@ import {
   isKnownTplNode,
   TplNode,
 } from "@/wab/classes";
+import {
+  ContainerChildAlignment,
+  SpaceEdgeType,
+} from "@/wab/client/components/canvas/HoverBox/draggable-edge";
+import { recomputeBounds } from "@/wab/client/components/canvas/HoverBox/recomputeBounds";
 import { isCodeComponentMissingPositionClass } from "@/wab/client/components/sidebar-tabs/Sections";
 import { createNodeIcon } from "@/wab/client/components/sidebar-tabs/tpl-tree";
 import { frameToScalerRect } from "@/wab/client/coords";
@@ -52,8 +57,6 @@ import {
 import { ValComponent, ValNode, ValSlot } from "@/wab/val-nodes";
 import { uniq } from "lodash";
 import * as React from "react";
-import { ContainerChildAlignment, SpaceEdgeType } from "./draggable-edge";
-import { recomputeBounds } from "./recomputeBounds";
 
 export interface HoverBoxViewDisplayProps {
   // These should always match the size of the selected element and not the size

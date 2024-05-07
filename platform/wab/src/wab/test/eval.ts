@@ -20,6 +20,7 @@ import {
 } from "@/wab/shared/Variants";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
 import { createSite } from "@/wab/sites";
+import { mkTplTestText } from "@/wab/test/tpls";
 import {
   flattenTpls,
   mkRep,
@@ -28,7 +29,6 @@ import {
   mkTplComponentX,
   mkTplTagX,
 } from "@/wab/tpls";
-import { mkTplTestText } from "./tpls";
 
 export const componentLib = {
   TextDisp: (() => {

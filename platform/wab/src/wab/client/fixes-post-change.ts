@@ -9,6 +9,8 @@ import {
   TplNode,
   TplSlot,
 } from "@/wab/classes";
+import { DbCtx } from "@/wab/client/db";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { notNil, tuple } from "@/wab/common";
 import { isPageComponent } from "@/wab/components";
 import { ChangeSummary, summarizeChanges } from "@/wab/model-change-util";
@@ -46,8 +48,6 @@ import {
   isTplVariantable,
   tryGetOwnerSite,
 } from "@/wab/tpls";
-import { DbCtx } from "./db";
-import { StudioCtx } from "./studio-ctx/StudioCtx";
 
 /**
  * Applies various fixes to the tpl trees based on the argument changes.

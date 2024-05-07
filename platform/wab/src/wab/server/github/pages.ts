@@ -1,11 +1,11 @@
 import { tryCatchElseAsync, unexpected } from "@/wab/common";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { ProjectRepository } from "@/wab/server/entities/Entities";
+import { getGithubApp } from "@/wab/server/github/app";
+import { GithubRef } from "@/wab/server/github/types";
 import { Octokit } from "@octokit/core";
 import * as Sentry from "@sentry/node";
 import { failableAsync } from "ts-failable";
-import { getGithubApp } from "./app";
-import { GithubRef } from "./types";
 
 type SetupGithubPagesError = "domain taken";
 

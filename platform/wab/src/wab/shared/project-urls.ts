@@ -1,7 +1,7 @@
 import { maybe } from "@/wab/common";
 import { DevFlagsType } from "@/wab/devflags";
-import { ApiProject } from "./ApiSchema";
-import { DomainValidator } from "./hosting";
+import { ApiProject } from "@/wab/shared/ApiSchema";
+import { DomainValidator } from "@/wab/shared/hosting";
 
 /**
  * This does not also include the projectRepository.cachedCname, since it's legacy.

@@ -20,7 +20,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultExpandableSectionProps altogether and have
 // total control over the props for your component.
-export interface ExpandableSectionProps extends DefaultExpandableSectionProps {}
+export type ExpandableSectionProps = DefaultExpandableSectionProps;
 
 function ExpandableSection_(
   props: ExpandableSectionProps,

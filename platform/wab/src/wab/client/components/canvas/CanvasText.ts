@@ -7,6 +7,26 @@ import {
   TplNode,
   TplTag,
 } from "@/wab/classes";
+import { withErrorDisplayFallback } from "@/wab/client/components/canvas/canvas-error";
+import { resolveNodesToMarkers } from "@/wab/client/components/canvas/canvas-fns-impl";
+import { mkUseCanvasObserver } from "@/wab/client/components/canvas/canvas-observer";
+import {
+  getSortedActiveVariantSettings,
+  hasLoadingBoundaryKey,
+  RenderingCtx,
+  renderTplNode,
+} from "@/wab/client/components/canvas/canvas-rendering";
+import "@/wab/client/components/canvas/slate";
+import {
+  mkTplTagElement,
+  ParagraphElement,
+  TplTagElement,
+} from "@/wab/client/components/canvas/slate";
+import {
+  SubDeps,
+  tags as htmlTags,
+} from "@/wab/client/components/canvas/subdeps";
+import { mkSlateString } from "@/wab/client/components/canvas/RichText/SlateString";
 import {
   reactPrompt,
   ReactPromptOpts,
@@ -42,18 +62,6 @@ import type {
   Path,
 } from "slate";
 import type { RenderElementProps } from "slate-react";
-import { withErrorDisplayFallback } from "./canvas-error";
-import { resolveNodesToMarkers } from "./canvas-fns-impl";
-import { mkUseCanvasObserver } from "./canvas-observer";
-import {
-  getSortedActiveVariantSettings,
-  hasLoadingBoundaryKey,
-  RenderingCtx,
-  renderTplNode,
-} from "./canvas-rendering";
-import "./slate";
-import { mkTplTagElement, ParagraphElement, TplTagElement } from "./slate";
-import { SubDeps, tags as htmlTags } from "./subdeps";
 
 export interface SlateRenderNodeOpts {
   attributes: RenderElementProps["attributes"];
@@ -1025,7 +1033,25 @@ export const mkCanvasText = computedFn(
                 return react.createElement("span", attributes, children);
               }
 
-              let childrenNode: JSX.Element = children;
+              function getChildrenNode() {
+                if (React.isValidElement(children)) {
+                  const childrenProps = children.props as any;
+                  // If we are dealing with a leaf that is rendered with String
+                  // from Slate, we will render it ourselves.
+                  if ("leaf" in childrenProps) {
+                    return react.createElement(
+                      mkSlateString(react, ctx.sub.slateReact),
+                      childrenProps
+                    );
+                  } else {
+                    return children;
+                  }
+                } else {
+                  return children;
+                }
+              }
+
+              let childrenNode = getChildrenNode();
               Object.entries(leaf).forEach(([key, val]) => {
                 if (key === "text") {
                   return;

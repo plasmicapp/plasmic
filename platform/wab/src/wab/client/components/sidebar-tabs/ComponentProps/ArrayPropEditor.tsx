@@ -1,5 +1,9 @@
 import { TplComponent } from "@/wab/classes";
 import {
+  ItemFunc,
+  ObjectPropEditor,
+} from "@/wab/client/components/sidebar-tabs/ComponentProps/ObjectPropEditor";
+import {
   ControlExtras,
   PropValueEditorContext,
   usePropValueEditorContext,
@@ -22,7 +26,6 @@ import {
 import { PropType } from "@plasmicapp/host";
 import { observer } from "mobx-react";
 import React, { useState } from "react";
-import { ItemFunc, ObjectPropEditor } from "./ObjectPropEditor";
 
 interface ArrayPropEditorProps<Value extends object> {
   subfields: Dict<PropType<unknown>>;

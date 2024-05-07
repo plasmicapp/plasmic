@@ -42,6 +42,12 @@ module.exports = {
     // Maybe not needed, from public-packages
     // "@typescript-eslint/no-empty-interface": "off",
     // "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/triple-slash-reference": [
+      "error",
+      {
+        types: "always",
+      },
+    ],
     "no-restricted-properties": [
       "error",
       {
@@ -254,10 +260,11 @@ module.exports = {
             ],
           },
         ],
-        "path/no-relative-imports": [
+        "no-relative-import-paths/no-relative-import-paths": [
           "error",
           {
-            maxDepth: 0,
+            rootDir: "platform/wab/src",
+            prefix: "@",
           },
         ],
       },
@@ -368,7 +375,13 @@ module.exports = {
       },
     },
   ],
-  plugins: ["@typescript-eslint", "react", "jest", "import", "path"],
+  plugins: [
+    "@typescript-eslint",
+    "react",
+    "jest",
+    "import",
+    "eslint-plugin-no-relative-import-paths",
+  ],
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",

@@ -7,6 +7,12 @@ import {
 } from "@/wab/classes";
 import { ExtraSlotCanvasEnvData } from "@/wab/client/components/canvas/canvas-rendering";
 import { handleError } from "@/wab/client/ErrorNotifications";
+import { Fiber, FiberRoot } from "@/wab/client/react-global-hook/fiber";
+import {
+  fiberChildren,
+  traverseTree,
+  traverseUpdates,
+} from "@/wab/client/react-global-hook/traverseFiber";
 import {
   getRenderState,
   RenderState,
@@ -61,8 +67,6 @@ import {
 } from "@/wab/val-nodes";
 import { isString, omit } from "lodash";
 import { observable, runInAction } from "mobx";
-import { Fiber, FiberRoot } from "./fiber";
-import { fiberChildren, traverseTree, traverseUpdates } from "./traverseFiber";
 
 function hasKey(v: any, key: string) {
   return typeof v === "object" && v !== null && key in v;

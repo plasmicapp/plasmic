@@ -2,10 +2,10 @@ import React, { ReactNode } from "react";
 import type { InputProps, TextFieldProps } from "react-aria-components";
 import { TextField } from "react-aria-components";
 import { getCommonInputProps } from "./common";
+import { registerDescription } from "./registerDescription";
 import { registerFieldError } from "./registerFieldError";
 import { registerInput } from "./registerInput";
 import { registerLabel } from "./registerLabel";
-import { registerText } from "./registerText";
 import { registerTextArea } from "./registerTextArea";
 import {
   CodeComponentMetaOverrides,
@@ -246,11 +246,6 @@ export function registerTextField(
   registerFieldError(loader, { parentComponentName: thisName });
   registerInput(loader, { parentComponentName: thisName });
   registerLabel(loader, { parentComponentName: thisName });
-  registerText(loader, {
-    parentComponentName: thisName,
-    props: {
-      slot: { type: "string", readOnly: true, defaultValue: "description" },
-    },
-  });
+  registerDescription(loader, { parentComponentName: thisName });
   registerTextArea(loader, { parentComponentName: thisName });
 }

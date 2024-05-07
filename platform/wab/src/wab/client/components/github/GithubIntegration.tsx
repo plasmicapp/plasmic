@@ -1,5 +1,10 @@
 import { AppCtx } from "@/wab/client/app-ctx";
 import { GithubConnect } from "@/wab/client/components/auth/GithubConnect";
+import styles from "@/wab/client/components/github/GithubIntegration.module.scss";
+import {
+  DefaultGithubIntegrationProps,
+  PlasmicGithubIntegration,
+} from "@/wab/client/components/github/plasmic/plasmic_kit_continuous_deployment/PlasmicGithubIntegration";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
 import Button from "@/wab/client/components/widgets/Button";
 import {
@@ -29,11 +34,6 @@ import { isValidSubdomainPart } from "@/wab/strs";
 import { Tooltip } from "antd";
 import * as React from "react";
 import { useRef, useState } from "react";
-import styles from "./GithubIntegration.module.scss";
-import {
-  DefaultGithubIntegrationProps,
-  PlasmicGithubIntegration,
-} from "./plasmic/plasmic_kit_continuous_deployment/PlasmicGithubIntegration";
 
 const defaultAction: GitSyncAction = "commit";
 const defaultFramework: GitSyncPlatform = "nextjs";

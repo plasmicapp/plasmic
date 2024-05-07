@@ -1,9 +1,9 @@
+import { useCanvasForceUpdate } from "@/wab/client/components/canvas/canvas-hooks";
+import { SubDeps } from "@/wab/client/components/canvas/subdeps";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { Reaction } from "mobx";
 import { computedFn } from "mobx-utils";
 import type React from "react";
-import { useCanvasForceUpdate } from "./canvas-hooks";
-import { SubDeps } from "./subdeps";
 
 /**
  * We use class to make it easier to detect in heap snapshots by name

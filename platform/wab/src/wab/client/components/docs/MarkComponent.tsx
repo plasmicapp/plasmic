@@ -7,7 +7,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicMarkComponent";
 import * as React from "react";
 
-interface MarkComponentProps extends DefaultMarkComponentProps {}
+type MarkComponentProps = DefaultMarkComponentProps;
 
 function MarkComponent(props: MarkComponentProps) {
   return (

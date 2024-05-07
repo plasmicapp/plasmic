@@ -32,10 +32,6 @@ import {
   isPageComponent,
   isPlainComponent,
 } from "@/wab/components";
-import { getComponentArena } from "@/wab/sites";
-import orderBy from "lodash/orderBy";
-import pick from "lodash/pick";
-import uniqBy from "lodash/uniqBy";
 import {
   ensurePositionManagedFrame,
   FrameViewMode,
@@ -47,14 +43,17 @@ import {
   maybeResizeFrameForTargetScreenVariant,
   mkArenaFrame,
   resizeFrameForScreenVariant,
-} from "./Arenas";
+} from "@/wab/shared/Arenas";
 import {
   findNonEmptyCombos,
   usedGlobalVariantGroups,
-} from "./cached-selectors";
-import { parseScreenSpec } from "./Css";
-import { FramePinManager } from "./PinManager";
-import { getComponentDefaultSize, isExplicitPixelSize } from "./sizingutils";
+} from "@/wab/shared/cached-selectors";
+import { parseScreenSpec } from "@/wab/shared/Css";
+import { FramePinManager } from "@/wab/shared/PinManager";
+import {
+  getComponentDefaultSize,
+  isExplicitPixelSize,
+} from "@/wab/shared/sizingutils";
 import {
   ensureValidCombo,
   ensureVariantSetting,
@@ -67,7 +66,11 @@ import {
   isPrivateStyleVariant,
   isScreenVariant,
   isScreenVariantGroup,
-} from "./Variants";
+} from "@/wab/shared/Variants";
+import { getComponentArena } from "@/wab/sites";
+import orderBy from "lodash/orderBy";
+import pick from "lodash/pick";
+import uniqBy from "lodash/uniqBy";
 
 export function mkComponentArena({
   site,

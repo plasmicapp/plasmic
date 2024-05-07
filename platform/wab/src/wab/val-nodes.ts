@@ -1,5 +1,3 @@
-import L, { uniq } from "lodash";
-import type React from "react";
 import {
   Param,
   RichText,
@@ -7,8 +5,8 @@ import {
   TplNode,
   TplSlot,
   TplTag,
-} from "./classes";
-import type { Fiber } from "./client/react-global-hook/fiber";
+} from "@/wab/classes";
+import type { Fiber } from "@/wab/client/react-global-hook/fiber";
 import {
   arrayEq,
   assert,
@@ -20,21 +18,23 @@ import {
   switchType,
   switchTypeUnsafe,
   tuple,
-} from "./common";
-import { isCodeComponent } from "./components";
-import { Selectable, SelQuery, SQ } from "./selection";
-import { CanvasEnv } from "./shared/eval";
-import { SlotInfo, ValState } from "./shared/eval/val-state";
-import mobx from "./shared/import-mobx";
-import { makeLayoutAwareRuleSet } from "./shared/layoututils";
-import { isBaseVariant } from "./shared/Variants";
-import { SlotSelection } from "./slots";
+} from "@/wab/common";
+import { isCodeComponent } from "@/wab/components";
+import { Selectable, SelQuery, SQ } from "@/wab/selection";
+import { CanvasEnv } from "@/wab/shared/eval";
+import { SlotInfo, ValState } from "@/wab/shared/eval/val-state";
+import mobx from "@/wab/shared/import-mobx";
+import { makeLayoutAwareRuleSet } from "@/wab/shared/layoututils";
+import { isBaseVariant } from "@/wab/shared/Variants";
+import { SlotSelection } from "@/wab/slots";
 import {
   classNameToRuleSetUid,
   createRuleSetMerger,
   expandRuleSets,
-} from "./styles";
-import { ancestors, TplTagType, TplTextTag } from "./tpls";
+} from "@/wab/styles";
+import { ancestors, TplTagType, TplTextTag } from "@/wab/tpls";
+import L, { uniq } from "lodash";
+import type React from "react";
 
 // Remove `readonly` modifier so the global hook can update the node's children.
 // Should only be called when updating the React tree nodes.

@@ -1,5 +1,5 @@
+import { FontUsage } from "@/wab/shared/codegen/fonts";
 import { LocalizationKeyScheme } from "@/wab/shared/localization";
-import { FontUsage } from "./fonts";
 
 export interface InterpClassNames {
   unconditionalClasses: string[];
@@ -48,6 +48,10 @@ export interface ProjectConfig {
 
   globalContextBundle?: GlobalContextBundle;
   splitsProviderBundle?: SplitsProviderBundle;
+  reactWebExportedFiles?: Array<{
+    fileName: string;
+    content: string;
+  }>;
 }
 
 export interface ChecksumBundle {
@@ -229,6 +233,8 @@ export interface PageMetadata {
   canonical?: string | null;
 }
 
+export type CodegenScheme = "blackbox" | "plain";
+
 export interface ComponentExportOutput {
   // component uuid
   id: string;
@@ -259,7 +265,7 @@ export interface ComponentExportOutput {
   skeletonModuleFileName: string;
   cssFileName: string;
 
-  scheme: "blackbox" | "plain";
+  scheme: CodegenScheme;
   nameInIdToUuid: Record<string, string>;
   isPage: boolean;
 

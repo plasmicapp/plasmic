@@ -1,4 +1,5 @@
 import { UU } from "@/wab/client/cli-routes";
+import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
@@ -14,7 +15,6 @@ import { WorkspaceId } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { uniqBy } from "lodash";
 import * as React from "react";
-import { documentTitle } from "./page-utils";
 
 interface WorkspacePageProps
   extends Omit<DefaultWorkspacePageProps, "children" | "title"> {

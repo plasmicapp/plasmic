@@ -1,3 +1,4 @@
+import MultiplayerCursor from "@/wab/client/components/canvas/Multiplayer/MultiplayerCursor";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import { Pt } from "@/wab/geom";
@@ -5,7 +6,6 @@ import { getArenaType, getArenaUuidOrName } from "@/wab/shared/Arenas";
 import { observer } from "mobx-react";
 import { PerfectCursor } from "perfect-cursors";
 import * as React from "react";
-import MultiplayerCursor from "./MultiplayerCursor";
 
 export const PlayerCursors = observer(function PlayerCursors() {
   const studioCtx = useStudioCtx();

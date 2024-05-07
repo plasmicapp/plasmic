@@ -1,5 +1,5 @@
 import * as React from "react";
-import PP__SettingsContainer from "./PlasmicSettingsContainer";
+import PP__SettingsContainer from "@/wab/client/components/pages/plasmic/PlasmicSettingsContainer";
 import { ApiTrustedHost, PersonalApiToken } from "@/wab/shared/ApiSchema";
 import { ensure } from "@/wab/common";
 import { Flex } from "@plasmicapp/react-web";

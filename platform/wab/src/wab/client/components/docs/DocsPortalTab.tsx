@@ -19,7 +19,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultDocsPortalTabProps altogether and have
 // total control over the props for your component.
-interface DocsPortalTabProps extends DefaultDocsPortalTabProps {}
+type DocsPortalTabProps = DefaultDocsPortalTabProps;
 
 function DocsPortalTab(props: DocsPortalTabProps) {
   // Use PlasmicDocsPortalTab to render this component as it was

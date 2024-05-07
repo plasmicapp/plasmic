@@ -1,4 +1,5 @@
 import { isKnownTplNode, TplTag } from "@/wab/classes";
+import styles from "@/wab/client/components/canvas/HoverBox/InlineAddButton.module.scss";
 import { InlineAddDrawer } from "@/wab/client/components/canvas/InlineAddDrawer";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { isDescendant } from "@/wab/client/dom-utils";
@@ -28,7 +29,6 @@ import {
   useState,
 } from "react";
 import { useOverlayPosition } from "react-aria";
-import styles from "./InlineAddButton.module.scss";
 
 const BUTTON_SIZE = 30;
 const BUTTON_MARGIN = 15;

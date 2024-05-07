@@ -18,6 +18,17 @@ import {
 } from "@/wab/client/components/quick-modals";
 import { ChoicePropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/ChoicePropEditor";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import {
+  DataSourceOpDraftPreview,
+  DataSourceOpPickerProvider,
+  getOpIdForDataSourceOpExpr,
+  useSource,
+  useSourceSchemaData,
+} from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
+import {
+  DataSourceTablePicker,
+  INVALID_DATA_SOURCE_MESSAGE,
+} from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceTablePicker";
 import { useSourceOp } from "@/wab/client/components/sidebar-tabs/useSourceOp";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import Button from "@/wab/client/components/widgets/Button";
@@ -49,17 +60,6 @@ import { notification } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import { isString, size } from "lodash";
 import React from "react";
-import {
-  DataSourceOpDraftPreview,
-  DataSourceOpPickerProvider,
-  getOpIdForDataSourceOpExpr,
-  useSource,
-  useSourceSchemaData,
-} from "./DataSourceOpPicker";
-import {
-  DataSourceTablePicker,
-  INVALID_DATA_SOURCE_MESSAGE,
-} from "./DataSourceTablePicker";
 
 type ConnectionData = {
   formType: FormType;

@@ -12,6 +12,9 @@ import {
   TplTag,
 } from "@/wab/classes";
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
+import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
+import { StringPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
+import { FallbackEditor } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import {
   getValueSetState,
   LabeledItemRow,
@@ -56,9 +59,6 @@ import { getRichTextContent, isTplTextBlock } from "@/wab/tpls";
 import { Alert, Menu, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
-import { DataPickerEditor } from "./ComponentProps/DataPickerEditor";
-import { StringPropEditor } from "./ComponentProps/StringPropEditor";
-import { FallbackEditor } from "./ComponentPropsSection";
 
 export const TypographySection = observer(TypographySection_);
 
@@ -416,7 +416,7 @@ const TextContentRow = observer(function TextContentRow(props: {
               codeExpr,
               "Unexpected undefined value, codeExpr must be defined when data binding"
             );
-            let newExpr = ensureInstance(
+            const newExpr = ensureInstance(
               clone(codeExpr),
               ObjectPath,
               CustomCode
@@ -441,7 +441,7 @@ const TextContentRow = observer(function TextContentRow(props: {
                 codeExpr,
                 "Unexpected undefined value, codeExpr must be defined when data binding"
               );
-              let newExpr = ensureInstance(
+              const newExpr = ensureInstance(
                 clone(codeExpr),
                 ObjectPath,
                 CustomCode

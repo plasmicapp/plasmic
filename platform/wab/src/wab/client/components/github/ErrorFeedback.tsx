@@ -19,7 +19,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultErrorFeedbackProps altogether and have
 // total control over the props for your component.
-interface ErrorFeedbackProps extends DefaultErrorFeedbackProps {}
+type ErrorFeedbackProps = DefaultErrorFeedbackProps;
 
 function ErrorFeedback(props: ErrorFeedbackProps) {
   // Use PlasmicErrorFeedback to render this component as it was

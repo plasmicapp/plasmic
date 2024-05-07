@@ -150,19 +150,19 @@
     picocolors "^1.0.0"
     tslib "^2.6.0"
 
-"@plasmicapp/host@^1.0.191":
-  version "1.0.191"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.191.tgz#71098fd49f89d61a51611a310fb8a262bfcafce5"
-  integrity sha512-2qD93nrgx4anUkDWMpWoCvbC70ADA3UDMODPizdDDnYvE8O+tOmrdC6u9N3JzSXPHya2Lb6dJftvmbTRX/vu4g==
+"@plasmicapp/host@^1.0.194":
+  version "1.0.194"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.194.tgz#57e8c9db282e6dc0675093271bacaeb5a26b90c8"
+  integrity sha512-AHQINadGyMCJ+gPgRhwL1Rmk8DrPPUriXAgEDm62h/i9xI4i8qb7PCADtFH6oMasgX8xXoorQwGtHiMMz3MYQw==
   dependencies:
-    "@plasmicapp/query" "0.1.78"
+    "@plasmicapp/query" "0.1.79"
     csstype "^3.1.2"
     window-or-global "^1.0.1"
 
-"@plasmicapp/query@0.1.78":
-  version "0.1.78"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.78.tgz#119f3e8967b28f2714fee1ec0aa9cc8eba4758de"
-  integrity sha512-ld0rVA7FqqohmvTYkm9TrzqwJBNZ5YPB3PXd75owir5LTfHfZLRDpWmr6Q2OZBs5iCBJxA9y+W0H+jvIcC15VA==
+"@plasmicapp/query@0.1.79":
+  version "0.1.79"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.79.tgz#a12316ea29277b93ab2d49edb4904495bc641b3c"
+  integrity sha512-EdjQkvsMoFRoiaalMg1iithfUJCgH0nfSeRXp/nPBuYL9LeW4ueJbimkRWsJPHWxgnb+92MTG3WQWtkstQEdxw==
   dependencies:
     swr "^1.0.0"
 

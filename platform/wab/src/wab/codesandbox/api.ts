@@ -1,3 +1,11 @@
+import {
+  BASE_URL,
+  CREATE_SANDBOX_URL,
+  CREATE_UPLOAD_URL,
+  GET_SANDBOX_URL,
+  GET_USER_URL,
+  verifyUserTokenUrl,
+} from "@/wab/codesandbox/url";
 import { ensure } from "@/wab/common";
 import * as Sentry from "@sentry/node";
 import axios, { AxiosRequestConfig } from "axios";
@@ -9,14 +17,6 @@ import {
 import DatauriParser from "datauri/parser";
 import { camelizeKeys, decamelizeKeys } from "humps";
 import { values } from "lodash";
-import {
-  BASE_URL,
-  CREATE_SANDBOX_URL,
-  CREATE_UPLOAD_URL,
-  GET_SANDBOX_URL,
-  GET_USER_URL,
-  verifyUserTokenUrl,
-} from "./url";
 
 const callApi = async (options: AxiosRequestConfig) => {
   console.log(

@@ -13,6 +13,7 @@ import {
   TplTag,
 } from "@/wab/classes";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import ActionBuilder from "@/wab/client/components/sidebar-tabs/StateManagement/ActionBuilder";
 import { SimpleReorderableList } from "@/wab/client/components/widgets/SimpleReorderableList";
 import {
   DefaultHandlerSectionProps,
@@ -36,7 +37,6 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Alert, Menu } from "antd";
 import { observer } from "mobx-react";
 import { HighlightInteractionRequest } from "src/wab/shared/code-components/code-components";
-import ActionBuilder from "./ActionBuilder";
 
 export interface HandlerSectionProps extends DefaultHandlerSectionProps {
   sc: StudioCtx;

@@ -1,3 +1,4 @@
+import sty from "@/wab/client/components/modals/SiteDiffs.module.css";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import ArrowRightIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ArrowRight";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
@@ -24,7 +25,6 @@ import { SplitType } from "@/wab/splits";
 import L, { uniq } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
-import sty from "./SiteDiffs.module.css";
 
 React;
 
