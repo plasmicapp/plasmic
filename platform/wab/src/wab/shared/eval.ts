@@ -24,6 +24,7 @@ export const ENABLED_GLOBALS = new Set([
   "alert",
   "clearInterval",
   "clearTimeout",
+  "parseInt",
   "confirm",
   "console",
   "localStorage",
