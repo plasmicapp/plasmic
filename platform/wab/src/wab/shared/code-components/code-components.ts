@@ -1566,9 +1566,11 @@ export function compareComponentStatesWithMeta(
           "Couldn't find state " + name
         ),
       }));
-    const removedStates = [...existingStates.entries()]
-      .filter(([name]) => !registeredStates.has(name))
-      .map(([_, s]) => s);
+    const removedStates = !isPlumeComponent(component)
+      ? [...existingStates.entries()]
+          .filter(([name]) => !registeredStates.has(name))
+          .map(([_, s]) => s)
+      : [];
 
     return success({
       addedStates,
@@ -1601,10 +1603,13 @@ function refreshComponentStates(ctx: SiteCtx) {
                 "Missing code component " + c.name
               ).meta
             : makePlumeComponentMeta(c);
-          stateChanges.push({
+          const stateChange = {
             component: c,
             ...run(compareComponentStatesWithMeta(ctx.site, c, meta)),
-          });
+          };
+          if (hasStateChanges(stateChange)) {
+            stateChanges.push(stateChange);
+          }
         });
 
       const changedComponents = Array.from(
@@ -1615,9 +1620,7 @@ function refreshComponentStates(ctx: SiteCtx) {
       );
       ctx.observeComponents([...parentComponents, ...changedComponents]);
       stateChanges.forEach((changes) => {
-        if (hasStateChanges(changes)) {
-          doUpdateComponentStates(ctx.site, changes.component, changes);
-        }
+        doUpdateComponentStates(ctx.site, changes.component, changes);
       });
       return success();
     }
@@ -1985,9 +1988,11 @@ export function compareComponentPropsWithMeta(
           "Couldn't find param " + name
         ),
       }));
-    const removedProps = [...existingParams.entries()]
-      .filter(([name]) => !registeredParams.has(name))
-      .map(([_, p]) => p);
+    const removedProps = !isPlumeComponent(component)
+      ? [...existingParams.entries()]
+          .filter(([name]) => !registeredParams.has(name))
+          .map(([_, p]) => p)
+      : [];
     return success({
       addedProps,
       updatedProps,

@@ -46,6 +46,7 @@ import { undoChanges } from "@/wab/undo-util";
 import { Dictionary, memoize, once } from "lodash";
 import type { IObservableArray, Lambda } from "mobx";
 import type { Atom, IDerivation, IObjectDidChange } from "mobx/dist/internal";
+import moment from "moment";
 import defaultReact from "react";
 import { failable, IFailable } from "ts-failable";
 
@@ -176,6 +177,7 @@ type ObservableState = {
   getRefsToInst: (node: ObjInst, all: boolean) => ObjInst[];
   getNewInsts: () => Set<ObjInst>;
   observeInstField: (node: ObjInst, field: Field) => void;
+  disposeInstField: (node: ObjInst, field: Field) => void;
 };
 
 const mobxHack = hackyMobxUtils();
@@ -292,7 +294,7 @@ export function observeModel(
       // External references shouldn't have strong references pointing to it.
       return true;
     }
-    if (opts.incremental && !mobxHack.isObservable(inst)) {
+    if (opts.incremental && !mobxHack.isObserved(inst)) {
       return true;
     }
     return false;
@@ -351,6 +353,7 @@ export function observeModel(
 
   // Insts that became unreachable at some point
   const possiblyUnreachableInsts = new Map<ObjInst, Lambda>();
+  const manuallyDisposedInsts = new Set<ObjInst>();
 
   // Instances that we started observing
   const possiblyNewlyAddedInsts = new Set<ObjInst>();
@@ -1085,6 +1088,7 @@ export function observeModel(
       .filter(([inst]) => !instParents.get(inst))
       .forEach(([_inst, dispose]) => dispose());
     possiblyUnreachableInsts.clear();
+    manuallyDisposedInsts.clear();
     possiblyNewlyAddedInsts.clear();
     const modelErrors: string[] = withoutNils(
       [...instsToCheck].map((inst) => {
@@ -1163,7 +1167,9 @@ export function observeModel(
         }
       };
 
-      [...possiblyUnreachableInsts.keys()].forEach((inst) => visit(inst));
+      [...possiblyUnreachableInsts.keys()]
+        .filter((inst) => !manuallyDisposedInsts.has(inst))
+        .forEach((inst) => visit(inst));
       return toBeDeleted;
     },
     getNewInsts: () => {
@@ -1196,6 +1202,24 @@ export function observeModel(
           incrementalObserve: true,
         })
       );
+    },
+    disposeInstField: (inst: ObjInst, field: Field) => {
+      const state = ensure(
+        instStates.get(inst),
+        "The parent instance should exist"
+      );
+
+      const instClass = _instUtil.getInstClass(inst);
+      const allFields = getClassFields(instClass);
+
+      const fieldToDispose = ensure(
+        allFields.find((f) => f === field),
+        "Should observe an existing field"
+      );
+
+      manuallyDisposedInsts.add(inst[fieldToDispose.name]);
+
+      disposeInstChild(state.fieldValueDisposes, fieldToDispose.name);
     },
   };
 }
@@ -1396,7 +1420,7 @@ export interface IChangeRecorder {
   withRecording<E>(f: () => IFailable<void, E>): IFailable<RecordedChanges, E>;
   dispose(): void;
   setExtraListener(newListener: (change: ModelChange) => void): void;
-  maybeObserveComponentTrees(components: Component[]): boolean;
+  maybeObserveComponents(components: Component[]): boolean;
   isRecording: boolean;
 }
 
@@ -1410,6 +1434,7 @@ export class ChangeRecorder implements IChangeRecorder {
   private listener: (change: ModelChange) => void | undefined;
   private observableState: ObservableState;
   private _isRecording = false;
+  private observedCompsCache: Map<Component, Date> = new Map();
 
   constructor(
     inst: ObjInst,
@@ -1441,7 +1466,8 @@ export class ChangeRecorder implements IChangeRecorder {
    * @param components the list of components to try to observe the tplTree of.
    * @returns true if any of the components in the list started being observed now, false otherwise.
    */
-  maybeObserveComponentTrees(components: Component[]) {
+  maybeObserveComponents(components: Component[]) {
+    const currentTime = new Date();
     const observedResult = components.reduce((observedNewComp, component) => {
       if (!mobxHack.isObserved(component.tplTree)) {
         this.observableState.observeInstField(
@@ -1450,6 +1476,7 @@ export class ChangeRecorder implements IChangeRecorder {
         );
         return true;
       }
+      this.observedCompsCache.set(component, currentTime);
       return observedNewComp;
     }, false);
     console.log("Tried to observe", components, observedResult);
@@ -1461,7 +1488,29 @@ export class ChangeRecorder implements IChangeRecorder {
     return observedResult;
   }
 
+  private disposeOldComponents() {
+    if (this.observedCompsCache.size <= 5) {
+      return;
+    }
+    const allowedLastTime = moment(new Date())
+      .subtract(this.observedCompsCache.size > 20 ? 5 : 10, "minute")
+      .toDate();
+    this.observedCompsCache.forEach((date, comp, map) => {
+      if (mobxHack.isObserved(comp.tplTree) && date < allowedLastTime) {
+        console.log(`Tried to dispose ${comp.name}`);
+        this.observableState.disposeInstField(
+          comp,
+          meta.getFieldByName("Component", "tplTree")
+        );
+        map.delete(comp);
+      } else if (!mobxHack.isObserved(comp.tplTree)) {
+        map.delete(comp);
+      }
+    });
+  }
+
   prune() {
+    this.disposeOldComponents();
     this.observableState.prune();
   }
 
@@ -1561,6 +1610,7 @@ export class ChangeRecorder implements IChangeRecorder {
   }
 
   dispose() {
+    this.observedCompsCache.clear();
     this.observableState.dispose();
   }
 
@@ -1613,7 +1663,7 @@ export class FakeChangeRecorder implements IChangeRecorder {
       return emptyRecordedChanges();
     }
   }
-  maybeObserveComponentTrees(components: Component[]) {
+  maybeObserveComponents(components: Component[]) {
     return false;
   }
   dispose() {}

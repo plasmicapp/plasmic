@@ -143,7 +143,7 @@ export class DbCtx {
     if (!this.appCtx.appConfig.incrementalObservables) {
       return false;
     }
-    return this.recorder.maybeObserveComponentTrees(uniqBy(components, "uuid"));
+    return this.recorder.maybeObserveComponents(uniqBy(components, "uuid"));
   }
 
   private createRecorder(site: Site) {
