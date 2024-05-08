@@ -57,7 +57,7 @@ import {
 } from "@/wab/styles";
 import { summarizeTplTag } from "@/wab/tpls";
 import { arrayContains } from "class-validator";
-import L, { orderBy } from "lodash";
+import L, { orderBy, uniqBy } from "lodash";
 
 export const BASE_VARIANT_NAME = "base";
 
@@ -673,6 +673,24 @@ export function variantComboKey(combo: VariantCombo) {
 export function ensureValidCombo(component: Component, combo: VariantCombo) {
   if (!isBaseVariant(combo)) {
     combo = combo.filter((v) => !isBaseVariant(v));
+    combo = uniqBy(combo, (v) => {
+      /**
+       * Handle the following cases:
+       * 1. Variant that doesn't have a parent (e.g. style variants like :hover)
+       * 2. Standalone variant groups (e.g variants that are the only variant in a group / toggle variants)
+       * 3. Multi variant groups
+       *
+       * In all these cases, we can just use the variant uuid as the key, since any combination of these
+       * would be allowed in the combo
+       */
+      if (!v.parent || isStandaloneVariantGroup(v.parent) || v.parent.multi) {
+        return v.uuid;
+      }
+      // This means that we are dealing with a single choice variant group
+      // We can only have one variant from a single choice variant group
+      // So we can just use the parent uuid as the key,
+      return v.parent.uuid;
+    });
   }
   if (combo.length === 0) {
     combo = [getBaseVariant(component)];
