@@ -1,7 +1,6 @@
-import { ensureTruthy } from "@/wab/common";
+import { ensure, ensureTruthy } from "@/wab/common";
 import L from "lodash";
 import urljoin from "url-join";
-import pkg from "../../package.json";
 
 export const baseDomain = () => {
   const loc = window?.location;
@@ -47,25 +46,21 @@ export function placeholderImgUrl(isIcon?: boolean) {
     : globalStatic("img/placeholder.png");
 }
 
+let PUBLIC_URL: string | undefined = undefined;
+
 export function getPublicUrl() {
-  // PUBLIC_URL is always set to "", so dev-server.bash passes in REACT_APP_PUBLIC_URL, otherwise default to the homepage in package.json.
-  return ensureTruthy(process.env.REACT_APP_PUBLIC_URL || pkg.homepage).replace(
-    /\/$/,
-    ""
-  );
+  if (PUBLIC_URL === undefined) {
+    if (typeof window !== "undefined") {
+      PUBLIC_URL = maybeGetPlasmicStudioOrigin() ?? window.location.origin;
+    } else {
+      PUBLIC_URL = process.env.REACT_APP_PUBLIC_URL ?? "http://localhost:3003";
+    }
+  }
+  return ensureTruthy(PUBLIC_URL!).replace(/\/$/, "");
 }
 
 export function getCodegenUrl() {
   return process.env.CODEGEN_HOST || getPublicUrl();
-}
-
-export function getCdnUrl() {
-  // backend-server.bash sets this to localhost; else uses pkg.homepage
-  // TODO: in production, set up and point to actual CDN host
-  return ensureTruthy(process.env.REACT_APP_CDN_URL || pkg.homepage).replace(
-    /\/$/,
-    ""
-  );
 }
 
 export function getIntegrationsUrl() {
@@ -92,4 +87,17 @@ export function createWorkspaceUrl(host: string, workspaceId: string) {
 
 export function createTeamUrl(host: string, teamId: string) {
   return `${host}/teams/${teamId}`;
+}
+
+/** Get params passed from top frame to host frame. */
+function maybeGetPlasmicStudioOrigin(): string | undefined {
+  const hash = (window as any).__PlasmicStudioArgs;
+  if (!hash) {
+    return undefined;
+  }
+  const params = new URLSearchParams(hash.replace(/^#/, "?"));
+  return ensure(
+    params.get("origin"),
+    "Missing origin hash param in host frame"
+  );
 }
