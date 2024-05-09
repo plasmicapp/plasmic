@@ -432,6 +432,8 @@ export function cloneCodeComponentMeta(
         displayName: codeMeta.displayName,
         importName: codeMeta.importName,
         description: codeMeta.description,
+        section: codeMeta.section,
+        thumbnailUrl: codeMeta.thumbnailUrl,
         defaultStyles:
           codeMeta.defaultStyles && cloneRuleSet(codeMeta.defaultStyles),
         defaultDisplay: codeMeta.defaultDisplay,

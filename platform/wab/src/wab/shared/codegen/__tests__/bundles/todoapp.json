@@ -1553,7 +1553,9 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "26369010": {
           "type": { "__ref": "26369028" },
@@ -1698,7 +1700,9 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "26369018": { "name": "title", "uuid": "2p6AcT23Gi", "__type": "Var" },
         "26369019": { "name": "text", "__type": "Text" },
@@ -12435,7 +12439,7 @@
         }
       },
       "deps": [],
-      "version": "229-add-class-type-default-styles"
+      "version": "230-add-studio-ui-cc"
     }
   ]
 ]

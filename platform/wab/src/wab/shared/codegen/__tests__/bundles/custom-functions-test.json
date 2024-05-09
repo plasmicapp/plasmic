@@ -398,7 +398,9 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "5xd_u-JP1gew": {
           "uuid": "WxYff_NPVJvK",
@@ -653,7 +655,9 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "f2E7_tNnXWGs": {
           "uuid": "wzTkMnXfRlz9",
@@ -1431,7 +1435,7 @@
         }
       },
       "deps": [],
-      "version": "228-add-allow-root-wrapper"
+      "version": "230-add-studio-ui-cc"
     }
   ]
 ]

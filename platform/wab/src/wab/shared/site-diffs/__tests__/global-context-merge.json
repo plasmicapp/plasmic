@@ -673,7 +673,9 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "Fvmfvud2xzlF": {
             "type": { "__ref": "q6r05UR3mlFM" },
@@ -818,7 +820,9 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "JqBHMKZ47aPh": { "name": "text", "__type": "Text" },
           "bhhuM5HU0rud": {
@@ -952,7 +956,7 @@
           }
         },
         "deps": [],
-        "version": "229-add-class-type-default-styles"
+        "version": "230-add-studio-ui-cc"
       },
       "projectId": "jktPeioPm3Q1RvAsGWDSCe",
       "version": "0.0.1",
@@ -1644,7 +1648,9 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "Fvmfvud2xzlF": {
             "type": { "__ref": "q6r05UR3mlFM" },
@@ -1789,7 +1795,9 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "JqBHMKZ47aPh": { "name": "text", "__type": "Text" },
           "bhhuM5HU0rud": {
@@ -2052,7 +2060,9 @@
             "isRepeatable": true,
             "styleSections": null,
             "helpers": null,
-            "defaultSlotContents": {}
+            "defaultSlotContents": {},
+            "thumbnailUrl": null,
+            "section": null
           },
           "eCJaS3ruXAuc": {
             "__type": "VariantSetting",
@@ -2138,7 +2148,7 @@
           }
         },
         "deps": [],
-        "version": "229-add-class-type-default-styles"
+        "version": "230-add-studio-ui-cc"
       }
     },
     {
@@ -2814,7 +2824,9 @@
             "isRepeatable": false,
             "styleSections": false,
             "helpers": null,
-            "defaultSlotContents": {}
+            "defaultSlotContents": {},
+            "thumbnailUrl": null,
+            "section": null
           },
           "Fvmfvud2xzlF": {
             "__type": "PropParam",
@@ -2959,7 +2971,9 @@
             "isRepeatable": true,
             "styleSections": false,
             "helpers": null,
-            "defaultSlotContents": {}
+            "defaultSlotContents": {},
+            "thumbnailUrl": null,
+            "section": null
           },
           "JqBHMKZ47aPh": { "__type": "Text", "name": "text" },
           "bhhuM5HU0rud": {
@@ -3222,7 +3236,9 @@
             "isRepeatable": true,
             "styleSections": null,
             "helpers": null,
-            "defaultSlotContents": {}
+            "defaultSlotContents": {},
+            "thumbnailUrl": null,
+            "section": null
           },
           "ivdl0USvCJJp": {
             "__type": "VariantSetting",
@@ -3308,7 +3324,7 @@
           }
         },
         "deps": [],
-        "version": "229-add-class-type-default-styles"
+        "version": "230-add-studio-ui-cc"
       }
     }
   ]

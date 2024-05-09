@@ -704,7 +704,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "13821036": {
           "uuid": "lWO71uL5m5yG",
@@ -769,7 +771,9 @@
               "children": [{ "type": "component", "name": "AntdTableValue" }]
             }
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "13821062": {
           "type": { "__ref": "13821064" },
@@ -925,7 +929,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "14050001": {
           "code": "\"menuItemKey\"",
@@ -1219,7 +1225,9 @@
             "overlay": [{ "type": "component", "name": "AntdMenu" }],
             "children": [{ "type": "text", "value": "Dropdown" }]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "14719017": {
           "type": { "__ref": "14719054" },
@@ -1453,7 +1461,9 @@
             "overlay": [{ "type": "component", "name": "AntdMenu" }],
             "children": [{ "type": "text", "value": "Dropdown" }]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "14719031": { "name": "range", "uuid": "67AfNh_Tr-1", "__type": "Var" },
         "14719032": { "name": "bool", "__type": "BoolType" },
@@ -2710,7 +2720,9 @@
           "defaultSlotContents": {
             "children": [{ "type": "text", "value": "Button" }]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675037": {
           "type": { "__ref": "19675267" },
@@ -2914,7 +2926,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675049": {
           "type": { "__ref": "19675288" },
@@ -3104,7 +3118,9 @@
             "checkedChildren": [],
             "unCheckedChildren": []
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675059": {
           "type": { "__ref": "19675306" },
@@ -3251,7 +3267,9 @@
           "defaultSlotContents": {
             "children": [{ "type": "text", "value": "Option" }]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675067": {
           "type": { "__ref": "19675319" },
@@ -3358,7 +3376,9 @@
           "defaultSlotContents": {
             "children": [{ "type": "component", "name": "AntdOption" }]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675073": {
           "type": { "__ref": "19675328" },
@@ -3677,7 +3697,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675090": {
           "type": { "__ref": "19675360" },
@@ -3850,7 +3872,9 @@
             "header": [{ "type": "text", "value": "Header" }],
             "children": [{ "type": "text", "value": "Insert text here" }]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675099": {
           "type": { "__ref": "19675376" },
@@ -4027,7 +4051,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675109": {
           "type": { "__ref": "19675393" },
@@ -4195,7 +4221,9 @@
           "defaultSlotContents": {
             "children": [{ "type": "text", "value": "Checkbox" }]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675118": {
           "type": { "__ref": "19675409" },
@@ -4282,7 +4310,9 @@
           "defaultSlotContents": {
             "children": [{ "type": "component", "name": "AntdCheckbox" }]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675124": {
           "type": { "__ref": "19675418" },
@@ -4346,7 +4376,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675128": {
           "type": { "__ref": "19675422" },
@@ -4493,7 +4525,9 @@
           "defaultSlotContents": {
             "children": [{ "type": "text", "value": "Option" }]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675136": {
           "type": { "__ref": "52743012" },
@@ -4582,7 +4616,9 @@
             "title": [{ "type": "text", "value": "Group" }],
             "children": [{ "type": "component", "name": "AntdMenuItem" }]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675141": {
           "type": { "__ref": "19675443" },
@@ -4728,7 +4764,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675148": {
           "type": { "__ref": "19675455" },
@@ -5044,7 +5082,9 @@
               { "type": "component", "name": "AntdSubMenu" }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675165": {
           "type": { "__ref": "19675488" },
@@ -5220,7 +5260,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675173": {
           "type": { "__ref": "19675501" },
@@ -5534,7 +5576,9 @@
           "styleSections": null,
           "helpers": { "__ref": "26736002" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675189": {
           "type": { "__ref": "19675533" },
@@ -5759,7 +5803,9 @@
           "styleSections": null,
           "helpers": { "__ref": "26736003" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675201": {
           "type": { "__ref": "19675553" },
@@ -6093,7 +6139,9 @@
           "styleSections": null,
           "helpers": { "__ref": "26736004" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675218": {
           "type": { "__ref": "19675587" },
@@ -6405,7 +6453,9 @@
           "styleSections": null,
           "helpers": { "__ref": "26736005" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675235": {
           "type": { "__ref": "19675621" },
@@ -6515,7 +6565,9 @@
               { "type": "component", "name": "AntdInput" }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "19675241": { "name": "type", "uuid": "WMAJNmGUCpB", "__type": "Var" },
         "19675242": {
@@ -8692,7 +8744,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "26017001": {
           "type": { "__ref": "26017024" },
@@ -9483,7 +9537,9 @@
             "tab": [{ "type": "text", "value": "Tab" }],
             "children": [{ "type": "text", "value": "Tab Content" }]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "43229022": {
           "type": { "__ref": "43229076" },
@@ -9819,7 +9875,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "43229039": {
           "name": "allowClear",
@@ -11137,7 +11195,7 @@
         }
       },
       "deps": [],
-      "version": "229-add-class-type-default-styles"
+      "version": "230-add-studio-ui-cc"
     }
   ],
   [
@@ -15774,7 +15832,9 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "43396010": {
           "type": { "__ref": "43396028" },
@@ -15919,7 +15979,9 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "43396018": { "name": "title", "uuid": "RfwVQYCHTo", "__type": "Var" },
         "43396019": { "name": "text", "__type": "Text" },
@@ -17539,7 +17601,7 @@
         }
       },
       "deps": ["39835060-ce5b-4983-baf1-aad50207dbde"],
-      "version": "229-add-class-type-default-styles"
+      "version": "230-add-studio-ui-cc"
     }
   ]
 ]

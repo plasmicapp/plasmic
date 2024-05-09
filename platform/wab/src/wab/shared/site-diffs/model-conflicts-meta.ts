@@ -652,6 +652,8 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     defaultStyles: "generic",
     defaultDisplay: "generic",
     description: "generic",
+    section: "generic",
+    thumbnailUrl: "generic",
     displayName: "generic",
     importName: "generic",
     importPath: "generic",

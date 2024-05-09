@@ -1250,7 +1250,9 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "62876009": { "name": "title", "uuid": "VyIm0_aYsK", "__type": "Var" },
         "62876010": { "name": "text", "__type": "Text" },
@@ -1475,7 +1477,7 @@
         "62876048": { "values": {}, "mixins": [], "__type": "RuleSet" }
       },
       "deps": [],
-      "version": "229-add-class-type-default-styles"
+      "version": "230-add-studio-ui-cc"
     }
   ]
 ]

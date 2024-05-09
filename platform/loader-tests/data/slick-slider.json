@@ -895,7 +895,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "ejSM67D97QE-": {
           "name": "renderable",
@@ -1279,7 +1281,7 @@
         }
       },
       "deps": [],
-      "version": "229-add-class-type-default-styles"
+      "version": "230-add-studio-ui-cc"
     }
   ],
   [
@@ -1979,7 +1981,9 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "tyiDQptJ2skf": {
           "type": { "__ref": "JSvpuXAShe9I" },
@@ -2124,7 +2128,9 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "mkofqeljrS4N": { "name": "text", "__type": "Text" },
         "vWcWZgeUzczW": {
@@ -13901,7 +13907,7 @@
         }
       },
       "deps": ["1397401c-b15c-47b2-8659-9b44c397e887"],
-      "version": "229-add-class-type-default-styles"
+      "version": "230-add-studio-ui-cc"
     }
   ]
 ]

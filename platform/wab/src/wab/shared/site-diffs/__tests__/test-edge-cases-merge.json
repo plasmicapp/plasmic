@@ -261,7 +261,9 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "53897022": {
             "uuid": "kd3zVeJf4r_",
@@ -513,7 +515,9 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "53897050": {
             "uuid": "gWxyex68plF",
@@ -1364,7 +1368,9 @@
             "styleSections": null,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "53897170": {
             "variants": [{ "__ref": "53897054" }],
@@ -6118,7 +6124,7 @@
           "53898074": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "229-add-class-type-default-styles"
+        "version": "230-add-studio-ui-cc"
       },
       "projectId": "5txi3zd6hPLtbkzbV8p6jB",
       "version": "0.0.1",
@@ -6568,7 +6574,9 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "53897022": {
             "uuid": "kd3zVeJf4r_",
@@ -6820,7 +6828,9 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "53897050": {
             "uuid": "gWxyex68plF",
@@ -7636,7 +7646,9 @@
             "styleSections": null,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "53897170": {
             "variants": [{ "__ref": "53897054" }],
@@ -12300,7 +12312,7 @@
           "63532015": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "229-add-class-type-default-styles"
+        "version": "230-add-studio-ui-cc"
       }
     },
     {
@@ -12554,7 +12566,9 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "53897022": {
             "uuid": "kd3zVeJf4r_",
@@ -12806,7 +12820,9 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "53897050": {
             "uuid": "gWxyex68plF",
@@ -13631,7 +13647,9 @@
             "styleSections": null,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "53897170": {
             "variants": [{ "__ref": "53897054" }],
@@ -18567,7 +18585,7 @@
           }
         },
         "deps": [],
-        "version": "229-add-class-type-default-styles"
+        "version": "230-add-studio-ui-cc"
       }
     }
   ]

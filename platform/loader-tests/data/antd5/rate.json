@@ -3384,7 +3384,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": { "placeholder": "Select..." },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "eO8cYrl-fjx1": {
           "type": { "__ref": "bTNAVlmF6Ekx" },
@@ -3469,7 +3471,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": { "children": "Option" },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "k5HD2REVdKZb": {
           "type": { "__ref": "ahL6djEvY6FV" },
@@ -3578,7 +3582,9 @@
             ],
             "label": "Group label"
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "iMzBnz_4PEva": {
           "type": { "__ref": "nS63mXhXqBvq" },
@@ -3794,7 +3800,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "nuX1b9W-TOv6": {
           "type": { "__ref": "UQGdeR4YrVXR" },
@@ -3963,7 +3971,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": { "title": "Column Name" },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "c7En0yNE2bXB": {
           "type": { "__ref": "ajt-Pblp3efT" },
@@ -4052,7 +4062,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": { "title": "Column Group Name" },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "Wo6FzhemI_kK": {
           "type": { "__ref": "AfuK1stt4wJR" },
@@ -4230,7 +4242,9 @@
           "defaultSlotContents": {
             "children": [{ "type": "text", "value": "Checkbox" }]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "yvjf5KjAQnBF": {
           "type": { "__ref": "XWHf9invI1aO" },
@@ -4366,7 +4380,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "Z-2BmabTT7aS": {
           "type": { "__ref": "7_mnm9RUWifT" },
@@ -4501,7 +4517,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "XwVXk-3kLQq2": {
           "type": { "__ref": "fnobOjvxXD47" },
@@ -4628,7 +4646,9 @@
           "defaultSlotContents": {
             "children": [{ "type": "text", "value": "Radio" }]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "rDgVXDL5Mza2": {
           "type": { "__ref": "khU5Yc_8I7Ls" },
@@ -4755,7 +4775,9 @@
           "defaultSlotContents": {
             "children": [{ "type": "text", "value": "Radio" }]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "16wzbejFOubD": {
           "type": { "__ref": "AlLg61fAOdQp" },
@@ -4970,7 +4992,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "h8coO_MPGXNV": {
           "type": { "__ref": "3VQi2KhoH0LM" },
@@ -5343,7 +5367,9 @@
               "props": { "children": { "type": "text", "value": "Show modal" } }
             }
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "Ya0PDlmWLCrD": {
           "type": { "__ref": "HHb4Fkxn2ZLB" },
@@ -5654,7 +5680,9 @@
           "defaultSlotContents": {
             "children": [{ "type": "text", "value": "Button" }]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "9_cc6O_MFDpe": {
           "type": { "__ref": "HFA_Z0D6m4Ux" },
@@ -5836,7 +5864,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "_cMFTAIk0FjP": {
           "type": { "__ref": "sxXvYhSFwe74" },
@@ -6003,7 +6033,9 @@
           "defaultSlotContents": {
             "children": [{ "type": "text", "value": "Menu item" }]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "yAXZfhQYOcGJ": {
           "type": { "__ref": "_8qv5fxhctdM" },
@@ -6097,7 +6129,9 @@
               { "type": "component", "name": "plasmic-antd5-menu-item" }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "rRmlNbpM_c59": {
           "type": { "__ref": "iwVxVGPr-QH1" },
@@ -6161,7 +6195,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "SzpGdaIShLL7": {
           "type": { "__ref": "QK1cHM1_qBTV" },
@@ -6330,7 +6366,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "cMeJUn4cgtNL": {
           "type": { "__ref": "Y4KoZGRj7eGu" },
@@ -6639,7 +6677,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "ZlJZ9h_3jfsc": {
           "type": { "__ref": "vHXvYF4iiLFQ" },
@@ -7069,7 +7109,9 @@
               }
             }
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "cLSPGD-LKNbh": {
           "type": { "__ref": "64nReTrgRNR1" },
@@ -7501,7 +7543,9 @@
             "label": { "type": "text", "value": "Label" },
             "children": { "type": "component", "name": "plasmic-antd5-input" }
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "_DYa75HKZT-t": {
           "type": { "__ref": "-1sZOzYoWZMS" },
@@ -7586,7 +7630,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "yoL7zSfgdEHm": {
           "type": { "__ref": "IgSJtc4NiZKF" },
@@ -7723,7 +7769,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "WUqdgwbMffrH": {
           "type": { "__ref": "-eITndYETTlF" },
@@ -8107,7 +8155,9 @@
           "styleSections": null,
           "helpers": { "__ref": "i6YnOXWq1dKO" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "Jop0wr1-XFRO": {
           "type": { "__ref": "R2VS6gJvGsxe" },
@@ -8302,7 +8352,9 @@
           "styleSections": null,
           "helpers": { "__ref": "y3rjTs0ry5QW" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "qt73Y3JsGl0l": {
           "type": { "__ref": "d7AJdif_iyY5" },
@@ -8497,7 +8549,9 @@
           "styleSections": null,
           "helpers": { "__ref": "SVLka_sLUPYL" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "sJi7CRS7eAkZ": {
           "type": { "__ref": "QK_00IVOXjuz" },
@@ -8921,7 +8975,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "sQ5Ns0u2TvH7": {
           "type": { "__ref": "VXSToJYb2ukf" },
@@ -9276,7 +9332,9 @@
           "styleSections": null,
           "helpers": { "__ref": "vs3Z9MwuXFNo" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "fgDZz2Vk1tez": {
           "type": { "__ref": "IU91HMNsXcPe" },
@@ -9460,7 +9518,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "ONyQpzxsrvCq": {
           "type": { "__ref": "80LF1EHy9xCT" },
@@ -9700,7 +9760,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "SnH3Yv_RINY6": {
           "type": { "__ref": "sDQOvOfTSdv8" },
@@ -10107,7 +10169,9 @@
             "children": { "type": "vbox", "children": ["Drawer content"] },
             "title": "Drawer title"
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "UX8HjLBzeTKl": {
           "type": { "__ref": "8Swi31XjV_Pm" },
@@ -10362,7 +10426,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "vywbljxxkndJ": {
           "type": { "__ref": "Fpm8ZpCW7NMf" },
@@ -10536,7 +10602,9 @@
               "value": "This text element is wrapped in a Tooltip component"
             }
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "hfO_LHejx6g1": {
           "type": { "__ref": "OuUZwB1CnocE" },
@@ -10700,7 +10768,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "3hY5Nj1g65Sm": {
           "type": { "__ref": "5QkFw5kc-myP" },
@@ -10876,7 +10946,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "djvf0DCEiRaT": {
           "type": { "__ref": "MIXG171v-GKK" },
@@ -11387,7 +11459,9 @@
           "styleSections": null,
           "helpers": { "__ref": "OJcZtYnK-lUE" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "fGPXFKbmKpCu": {
           "type": { "__ref": "ARNGatjA2YJA" },
@@ -11898,7 +11972,9 @@
           "styleSections": null,
           "helpers": { "__ref": "8EB2JZq8nGKp" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "rj3IdhAXzGiJ": {
           "type": { "__ref": "xHVamkXsnW7f" },
@@ -12325,7 +12401,9 @@
             "label2": "Collapse Header",
             "children": "Collapsible text..."
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "nkgpX3y2PpWd": {
           "type": { "__ref": "rZrgjJSIFY44" },
@@ -12666,7 +12744,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "d3QsCAfbZOAb": {
           "type": { "__ref": "g3_dCZqbSh0Q" },
@@ -12920,7 +13000,9 @@
             "label2": "Collapse Header",
             "children": "Collapsible text..."
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "cWZMv43zrdOz": {
           "type": { "__ref": "JW8ttXKDrBc4" },
@@ -13286,7 +13368,9 @@
             "content": "Popover contents",
             "title": "Popover title"
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "5KgJ8tbf2nBo": {
           "type": { "__ref": "-fYX1eTJV1Eb" },
@@ -13829,7 +13913,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "ZHIrNwaelN7Q": {
           "type": { "__ref": "beRAVfZatymS" },
@@ -13978,7 +14064,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": { "label": "Tab" },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "zHg6MSQUxS3y": {
           "type": { "__ref": "lzGjTgMdxdc3" },
@@ -14338,7 +14426,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": { "symbols": ["1", "2", "3", "4", "5"] },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "m3YihB29bVtB": {
           "type": { "__ref": "xNBC_4_7zjw_" },
@@ -14723,7 +14813,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "vxmmwKxmWWpk": {
           "variants": [{ "__ref": "E5lWxuQ9Tlrn" }],
@@ -22048,7 +22140,9 @@
           "styleSections": null,
           "helpers": { "__ref": "bcTsh4X3ctlN" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "cTAXQFfzJuYD": {
           "uuid": "iwJosX_yLvqq",
@@ -22175,7 +22269,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "tJRdO_l96pz6": {
           "uuid": "oL5CvEO1nMIx",
@@ -22308,7 +22404,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "hV7nHw-ajmuP": {
           "uuid": "NhHWwDvjrtDA",
@@ -22421,7 +22519,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "vKDT3pUB6wfN": {
           "uuid": "JwM2BqSlMTF4",
@@ -25206,7 +25306,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "J7QaQK7Pjbwl": {
           "uuid": "XtdjQHXPDyZc",
@@ -25345,7 +25447,9 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "FM8d5Aw7pMz4": {
           "uuid": "T_gShIDNzuQv",
@@ -25805,7 +25909,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "4vbVNzmutqJH": {
           "uuid": "dMLxzp2qIoCQ",
@@ -25913,7 +26019,9 @@
           "styleSections": null,
           "helpers": { "__ref": "zOt-92v3kc_o" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "NmIuACLHpo42": {
           "uuid": "AOqMlxwfn4xf",
@@ -27189,7 +27297,7 @@
         }
       },
       "deps": [],
-      "version": "229-add-class-type-default-styles"
+      "version": "230-add-studio-ui-cc"
     }
   ],
   [
@@ -27877,7 +27985,9 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "hTuI4UIU6Upj": {
           "type": { "__ref": "nH4U6sTZ_6jI" },
@@ -28022,7 +28132,9 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "P6fGMD8MQdqn": { "name": "text", "__type": "Text" },
         "L0jTBpl3REtF": {
@@ -28817,7 +28929,7 @@
         }
       },
       "deps": ["5325bdab-f6eb-4f26-874d-07b1e74aeeab"],
-      "version": "229-add-class-type-default-styles"
+      "version": "230-add-studio-ui-cc"
     }
   ]
 ]

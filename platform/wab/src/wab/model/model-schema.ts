@@ -355,6 +355,8 @@ CodeComponentMeta
   displayName: String?
   importName: String?
   description: String?
+  section: String?
+  thumbnailUrl: String?
   classNameProp: String?
   refProp: String?
   defaultStyles: RuleSet?

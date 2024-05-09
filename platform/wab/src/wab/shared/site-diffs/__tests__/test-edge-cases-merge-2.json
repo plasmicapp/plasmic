@@ -688,7 +688,9 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "53903010": {
             "type": { "__ref": "53903028" },
@@ -833,7 +835,9 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "53903018": {
             "name": "title",
@@ -2490,7 +2494,7 @@
           }
         },
         "deps": [],
-        "version": "229-add-class-type-default-styles"
+        "version": "230-add-studio-ui-cc"
       },
       "projectId": "2YAtuqUruz4SscKrr5g25x",
       "version": "0.0.1",
@@ -3197,7 +3201,9 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "53903010": {
             "type": { "__ref": "53903028" },
@@ -3342,7 +3348,9 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "53903018": {
             "name": "title",
@@ -4672,7 +4680,7 @@
           "53903362": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "229-add-class-type-default-styles"
+        "version": "230-add-studio-ui-cc"
       }
     },
     {
@@ -5362,7 +5370,9 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "53903010": {
             "type": { "__ref": "53903028" },
@@ -5507,7 +5517,9 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "thumbnailUrl": null,
+            "section": null
           },
           "53903018": {
             "name": "title",
@@ -7330,7 +7342,7 @@
           }
         },
         "deps": [],
-        "version": "229-add-class-type-default-styles"
+        "version": "230-add-studio-ui-cc"
       }
     }
   ]

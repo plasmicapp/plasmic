@@ -95,7 +95,9 @@
           "styleSections": true,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "30184006": { "name": "name", "uuid": "iy-0P5ktJM", "__type": "Var" },
         "30184007": { "name": "text", "__type": "Text" },
@@ -968,7 +970,9 @@
           "styleSections": true,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "35978008": {
           "type": { "__ref": "35978020" },
@@ -1053,7 +1057,9 @@
           "styleSections": true,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "35978013": {
           "variants": [{ "__ref": "34512056" }],
@@ -1249,7 +1255,7 @@
         }
       },
       "deps": [],
-      "version": "229-add-class-type-default-styles"
+      "version": "230-add-studio-ui-cc"
     }
   ]
 ]

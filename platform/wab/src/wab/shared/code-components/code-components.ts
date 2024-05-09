@@ -3207,6 +3207,8 @@ export function mkCodeComponent(
       displayName: meta.displayName,
       importName: meta.importName,
       description: meta.description,
+      section: !isGlobalContextMeta(meta) ? meta.section : undefined,
+      thumbnailUrl: !isGlobalContextMeta(meta) ? meta.section : undefined,
       defaultStyles: styles
         ? mkRuleSet({
             values: Object.fromEntries(

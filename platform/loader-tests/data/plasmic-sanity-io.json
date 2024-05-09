@@ -211,7 +211,9 @@
               "children": { "type": "component", "name": "SanityField" }
             }
           },
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "10603012": {
           "type": { "__ref": "10603037" },
@@ -275,7 +277,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "10603016": {
           "type": { "__ref": "16376005" },
@@ -440,7 +444,9 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "thumbnailUrl": null,
+          "section": null
         },
         "10603025": {
           "variants": [{ "__ref": "10867007" }],
@@ -909,7 +915,7 @@
         }
       },
       "deps": [],
-      "version": "229-add-class-type-default-styles"
+      "version": "230-add-studio-ui-cc"
     }
   ],
   [
@@ -2040,7 +2046,7 @@
         }
       },
       "deps": ["4536e610-f7b7-43b7-b45e-172856a7e132"],
-      "version": "229-add-class-type-default-styles"
+      "version": "230-add-studio-ui-cc"
     }
   ]
 ]
