@@ -70,7 +70,7 @@
   "gitHead": "14cfee473c6a27212c54d536a8bd531c84e9fb68",
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^5.4.1",
-    "@plasmicapp/cli": "^0.1.329",
+    "@plasmicapp/cli": "^0.1.330",
     "@rsbuild/core": "0.3.7",
     "@rsbuild/plugin-react": "0.3.7",
     "@rspack/core": "0.5.3",
