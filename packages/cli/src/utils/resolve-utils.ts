@@ -106,7 +106,7 @@ async function checkProjectMeta(
     const versionOnDiskIsLatest =
       semver.isLatest(versionOnDisk) || !semver.valid(versionOnDisk);
 
-    if (versionOnDiskIsLatest && newVersionIsLatest && meta !== root) {
+    if (versionOnDiskIsLatest && meta !== root) {
       // If this is a dependency (not root), and we're dealing with latest dep version
       // just skip, it's confusing
       if (!isOnDiskCodeInvalid) {
