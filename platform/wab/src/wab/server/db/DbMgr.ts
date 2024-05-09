@@ -1171,6 +1171,9 @@ export class DbMgr implements MigrationDbMgr {
     if (fields.billingEmail) {
       fields.billingEmail = fields.billingEmail.toLowerCase();
     }
+    if (fields.defaultAccessLevel) {
+      ensureGrantableAccessLevel(fields.defaultAccessLevel);
+    }
     const team = await this.getTeamById(id);
     if (fields.uiConfig) {
       checkPermissions(
