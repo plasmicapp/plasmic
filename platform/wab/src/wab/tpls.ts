@@ -1316,6 +1316,23 @@ export function summarizeTplTag(tpl: TplTag, rsh?: ReadonlyIRuleSetHelpersX) {
   return getTplTagTypeDescription(tpl, rsh);
 }
 
+export function summarizeUnamedTpl(
+  tpl: TplNamable,
+  rsh?: ReadonlyIRuleSetHelpersX
+) {
+  return `(unamed ${summarizeTpl(tpl, rsh)})`;
+}
+
+export function summarizeTplNamable(
+  tpl: TplNamable,
+  rsh?: ReadonlyIRuleSetHelpersX
+) {
+  if (tpl.name) {
+    return tpl.name;
+  }
+  return summarizeUnamedTpl(tpl, rsh);
+}
+
 export function getTplTagTypeDescription(
   tpl: TplTag,
   rsh?: ReadonlyIRuleSetHelpersX

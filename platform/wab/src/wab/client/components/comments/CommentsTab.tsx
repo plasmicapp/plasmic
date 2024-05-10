@@ -17,7 +17,7 @@ import {
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { xGroupBy, xSymmetricDifference } from "@/wab/common";
 import { ApiComment, CommentThreadId } from "@/wab/shared/ApiSchema";
-import { isTplNamable } from "@/wab/tpls";
+import { isTplNamable, summarizeTplNamable } from "@/wab/tpls";
 import { sortBy } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -82,7 +82,9 @@ export const CommentsTab = observer(function CommentsTab(
     const [comment] = threadComments;
     const subject = bundler.objByAddr(comment.data.location.subject);
     const isSelected = viewCtx?.focusedTpl() === subject;
-    const label = deriveLabel(subject);
+    const label = isTplNamable(subject)
+      ? summarizeTplNamable(subject)
+      : deriveLabel(subject);
 
     const threadId = comment.data.threadId;
 
@@ -201,7 +203,13 @@ export const CommentsTab = observer(function CommentsTab(
             wrap: focusedTpl ? (it) => it : () => null,
           }}
           currentlySelectedSubject={{
-            children: focusedTpl ? deriveLabel(focusedTpl) : undefined,
+            children:
+              focusedTpl && viewCtx
+                ? summarizeTplNamable(
+                    focusedTpl,
+                    viewCtx.effectiveCurrentVariantSetting(focusedTpl).rsh()
+                  )
+                : undefined,
           }}
           currentlySelectedPrefix={
             commentsForSelection.size > 0

@@ -103,8 +103,7 @@ import {
   isEventHandlerKeyForParam,
   isTplComponent,
   isTplNamable,
-  summarizeTpl,
-  summarizeTplTag,
+  summarizeUnamedTpl,
   tplHasRef,
 } from "@/wab/tpls";
 import { Dropdown, Input, Menu, notification, Tooltip } from "antd";
@@ -1044,10 +1043,10 @@ function TplComponentNameSection_(props: {
         onChange={(name) =>
           viewCtx.change(() => viewCtx.getViewOps().renameTpl(name, tpl))
         }
-        placeholder={`(unnamed ${summarizeTpl(
+        placeholder={summarizeUnamedTpl(
           tpl,
           viewCtx.effectiveCurrentVariantSetting(tpl).rsh()
-        )})`}
+        )}
         subtitle={subtitle}
         description={tpl.component.codeComponentMeta?.description ?? undefined}
         suffix={menuOptions && <ApplyMenu items={menuOptions} />}
@@ -1077,7 +1076,7 @@ function TplTagNameSection_(props: {
         onChange={(name) =>
           viewCtx.change(() => viewCtx.getViewOps().renameTpl(name, tpl))
         }
-        placeholder={`(unnamed ${summarizeTplTag(tpl, effectiveVs.rsh())})`}
+        placeholder={summarizeUnamedTpl(tpl, effectiveVs.rsh())}
         suffix={menuOptions && <ApplyMenu items={menuOptions} />}
       />
     </SidebarSection>

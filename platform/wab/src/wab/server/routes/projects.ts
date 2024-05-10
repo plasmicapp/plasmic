@@ -55,6 +55,7 @@ import {
 } from "@/wab/server/db/DbMgr";
 import { onProjectDelete } from "@/wab/server/db/op-hooks";
 import { upgradeReferencedHostlessDeps } from "@/wab/server/db/upgrade-hostless-utils";
+import { sendCommentNotificationEmail } from "@/wab/server/emails/comment-notification-email";
 import {
   Branch,
   PkgVersion,
@@ -128,7 +129,7 @@ import {
   UpdateProjectReq,
   UpdateProjectResponse,
 } from "@/wab/shared/ApiSchema";
-import { fullName, parseProjectBranchId } from "@/wab/shared/ApiSchemaUtil";
+import { parseProjectBranchId } from "@/wab/shared/ApiSchemaUtil";
 import {
   Bundler,
   checkBundleFields,
@@ -169,7 +170,7 @@ import {
   localComponents,
   localIcons,
 } from "@/wab/sites";
-import { createProjectUrl, getCodegenUrl } from "@/wab/urls";
+import { getCodegenUrl } from "@/wab/urls";
 import * as Sentry from "@sentry/node";
 import { ISandbox } from "codesandbox-import-util-types";
 import { Request, Response } from "express-serve-static-core";
@@ -2870,8 +2871,7 @@ export async function postCommentInProject(req: Request, res: Response) {
   const { data } = uncheckedCast<PostCommentRequest>(req.body);
   await mgr.postCommentInProject({ projectId, branchId }, data);
 
-  // TODO: move side effects to somewhere else
-  const notifySubscribers = async () => {
+  async function collectUsersToNotify() {
     const project = await mgr.getProjectById(projectId as ProjectId);
     const perms = await mgr.getPermissionsForProject(projectId);
     const mates = await mgr.getUsersById(
@@ -2892,12 +2892,16 @@ export async function postCommentInProject(req: Request, res: Response) {
       allComments,
       (comment) => comment.data.threadId
     );
+
+    const toNotifyEmails = new Set<string>();
+
     for (const mate of mates) {
       const notificationSettings = await mgr.tryGetNotificationSettings(
         mate.id,
         toOpaque(projectId)
       );
-      const notifyAbout = notificationSettings?.notifyAbout ?? "none";
+      const notifyAbout =
+        notificationSettings?.notifyAbout ?? "mentions-and-replies";
       const isMentionOrReply = commentsByThread
         .get(data.threadId)
         ?.some((c) => c.createdById === mate.id);
@@ -2905,29 +2909,19 @@ export async function postCommentInProject(req: Request, res: Response) {
         notifyAbout === "all" ||
         (notifyAbout === "mentions-and-replies" && isMentionOrReply)
       ) {
-        await req.mailer.sendMail({
-          from: req.config.mailFrom,
-          to: mate.email,
-          bcc: req.config.mailBcc,
-          subject: `New comments on ${project.name}`,
-          html: `
-<p><strong>${fullName(author)}</strong> replied to a comment on <strong>${
-            project.name
-          }</strong>:</p>
-
-<pre style="font: inherit;">${escapeHTML(data.body)}</pre>
-
-<p><a href="${createProjectUrl(
-            req.config.host,
-            projectId
-          )}">Open project in Plasmic Studio</a> to reply or change notification settings</p>
-`.trim(),
-        });
+        toNotifyEmails.add(mate.email);
       }
     }
-  };
 
-  void notifySubscribers();
+    return {
+      emails: Array.from(toNotifyEmails),
+      project,
+    };
+  }
+
+  // We just collect the emails and project here, and send the emails after resolving the
+  // request. This is to avoid blocking the request on sending emails.
+  const { emails, project } = await collectUsersToNotify();
 
   await broadcastProjectsMessage({
     room: `projects/${projectId}`,
@@ -2936,6 +2930,18 @@ export async function postCommentInProject(req: Request, res: Response) {
   });
 
   res.json(ensureType<PostCommentResponse>({}));
+
+  if (emails.length > 0) {
+    for (const email of emails) {
+      await sendCommentNotificationEmail(
+        req,
+        project,
+        author,
+        email,
+        escapeHTML(data.body)
+      );
+    }
+  }
 }
 
 export async function deleteCommentInProject(req: Request, res: Response) {
