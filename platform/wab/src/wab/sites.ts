@@ -109,6 +109,7 @@ import {
   getEffectiveVariantSettingOfDeepRootElement,
   getSuperComponentVariantGroupToComponent,
   getSuperComponentVariantToComponent,
+  isCodeComponent,
   isFrameComponent,
   isPageComponent,
   PageComponent,
@@ -1959,12 +1960,24 @@ export function isEditable(
   asset: Component | StyleToken | Mixin | ImageAsset
 ): boolean {
   return (
-    (isKnownComponent(asset) && localComponents(site).includes(asset)) ||
-    (isKnownStyleToken(asset) && localStyleTokens(site).includes(asset)) ||
+    (isKnownComponent(asset) &&
+      !isCodeComponent(asset) &&
+      localComponents(site).includes(asset)) ||
+    (isKnownStyleToken(asset) && isStyleTokenEditable(site, asset)) ||
     (isKnownMixin(asset) && localMixins(site).includes(asset)) ||
     (isKnownImageAsset(asset) && localImageAssets(site).includes(asset))
   );
 }
+
+export function isStyleTokenEditable(
+  site: Site,
+  styleToken: StyleToken
+): boolean {
+  return (
+    !styleToken.isRegistered && localStyleTokens(site).includes(styleToken)
+  );
+}
+
 export function getSiteScreenSizes(site: Site) {
   if (site.pageArenas.length > 0) {
     const first = site.pageArenas[0];

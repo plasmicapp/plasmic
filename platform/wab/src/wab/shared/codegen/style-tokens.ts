@@ -19,10 +19,9 @@ import {
   readonlyRSH,
   RuleSetHelpers,
 } from "@/wab/shared/RuleSetHelpers";
-import { TplMgr } from "@/wab/shared/TplMgr";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { VariantCombo } from "@/wab/shared/Variants";
-import { allStyleTokens, isEditable, localStyleTokens } from "@/wab/sites";
+import { allStyleTokens, localStyleTokens } from "@/wab/sites";
 import { expandRuleSets } from "@/wab/styles";
 import { flattenTpls } from "@/wab/tpls";
 import L from "lodash";
@@ -56,19 +55,10 @@ export function exportStyleTokens(
 ): TheoTokensOutput {
   const tokens = localStyleTokens(site);
   const resolver = makeTokenValueResolver(site);
-  const tplMgr = new TplMgr({ site });
   return {
-    props: tokens.map((token) => {
-      const meta = isEditable(site, token) // editable means local to a project
-        ? { projectId }
-        : {
-            pkgId: ensure(
-              tplMgr.findProjectDepOwner(token),
-              "token must belong to a project dep"
-            ).pkgId,
-          };
-      return serializeStyleToken(token, meta, resolver);
-    }),
+    props: tokens.map((token) =>
+      serializeStyleToken(token, { projectId }, resolver)
+    ),
     global: {
       meta: {
         source: "plasmic.app",

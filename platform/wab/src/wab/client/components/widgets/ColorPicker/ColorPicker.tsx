@@ -35,7 +35,11 @@ import {
 import { TokenValueResolver } from "@/wab/shared/cached-selectors";
 import { Chroma } from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { allColorTokens, allStyleTokens, isEditable } from "@/wab/sites";
+import {
+  allColorTokens,
+  allStyleTokens,
+  isStyleTokenEditable,
+} from "@/wab/sites";
 import Pickr from "@simonwep/pickr";
 import "@simonwep/pickr/dist/themes/nano.min.css";
 import { Input, InputRef, Select, Tooltip } from "antd";
@@ -479,7 +483,7 @@ function ColorPicker_({
           {appliedToken && (
             <div className="flex flex-vcenter mb-sm">
               <MaybeWrap
-                cond={isEditable(sc.site, appliedToken)}
+                cond={isStyleTokenEditable(sc.site, appliedToken)}
                 wrapper={(x) => (
                   <Tooltip title="Edit color token">
                     {x as React.ReactElement}
@@ -568,7 +572,7 @@ function ColorPicker_({
           />
         </div>
       )}
-      {editToken && isEditable(sc.site, editToken) && (
+      {editToken && isStyleTokenEditable(sc.site, editToken) && (
         <ColorTokenPopup
           token={editToken}
           studioCtx={sc}
