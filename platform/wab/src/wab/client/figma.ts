@@ -1453,28 +1453,42 @@ const getNodeToTplNode = (
             [] as ComponentPropertiesEntries
           );
 
-          return [...localProps, ...exposedProps];
+          /*
+            When creating the nodes while denormalizing the data, we always create an
+            "parent" prop to every Object, which just points to its parent on the
+            entire tree, but that applies to every object (since we don't know before
+              which objects are nodes), so we also add the parent to the object
+              "ComponentProperties"... which is why we filter it here
+          */
+          return [...localProps, ...exposedProps].filter(
+            ([k]) => k !== "parent"
+          );
+        }
+
+        function getChildComponentNameFromId(
+          inst: InstanceNode,
+          id: string | undefined
+        ) {
+          if (!id) {
+            return undefined;
+          }
+          const children = inst.children ?? [];
+          const componentNode = children.find(
+            (
+              child
+            ): child is InstanceNode & { mainComponent: { name: string } } =>
+              child.type === "INSTANCE" && getMainComponentId(child) === id
+          );
+          return componentNode?.mainComponent.name;
         }
 
         const allNodeProperties = getAllProperties(node);
 
+        const ACCEPTED_TYPES = ["TEXT", "BOOLEAN", "VARIANT", "INSTANCE_SWAP"];
+
         const propsArgs = withoutNils(
           allNodeProperties.map(([k, prop]) => {
-            if (
-              /*
-                  When creating the nodes while denormalizing the data, we always create an
-                  "parent" prop to every Object, which just points to its parent on the
-                  entire tree, but that applies to every object (since we don't know before
-                   which objects are nodes), so we also add the parent to the object
-                   "ComponentProperties"... which is why we filter it here
-                */
-              k === "parent" ||
-              // We don't support instance swap properties, also we should ignore
-              // any new property that figma create in the future until we support it
-              (prop.type !== "VARIANT" &&
-                prop.type !== "TEXT" &&
-                prop.type !== "BOOLEAN")
-            ) {
+            if (!ACCEPTED_TYPES.includes(prop.type)) {
               return null;
             }
             // Fix property name, removing the suffix that figma adds to text and boolean properties
@@ -1483,13 +1497,27 @@ const getNodeToTplNode = (
             const param = component.params.find(
               (p) => toVarName(p.variable.name) === toVarName(key)
             );
-            if (!param) return null;
+
+            if (!param) {
+              return null;
+            }
+
+            // We don't handle slots here, they are handled in the next step
+            if (param?.type.name === "renderable") {
+              return null;
+            }
+
+            const parsedValue =
+              prop.type === "INSTANCE_SWAP"
+                ? getChildComponentNameFromId(node, prop.value.toString())
+                : prop.value;
+
             const variantGroup = component.variantGroups.find(
               (group) => group.param === param
             );
             const isTrueishValue =
-              prop.value === 1 ||
-              ["true", "on"].includes(`${prop.value}`.trim().toLowerCase());
+              parsedValue === 1 ||
+              ["true", "on"].includes(`${parsedValue}`.trim().toLowerCase());
             if (variantGroup) {
               // Currently only will toggle single-variants if the Property and Value has the same name, the value has the name "on" or if its
               // a boolean prop. For variant groups, works as expected (matches figma property with group name, and value with variant name)
@@ -1502,7 +1530,7 @@ const getNodeToTplNode = (
                   : null;
               } else {
                 const variant = variantGroup.variants.find(
-                  (v) => toVarName(v.name) === toVarName(`${prop.value}`)
+                  (v) => toVarName(v.name) === toVarName(`${parsedValue}`)
                 );
                 return variant
                   ? [
@@ -1517,12 +1545,12 @@ const getNodeToTplNode = (
               return null;
             // Parse text to number if param is number
             if (param.type.name === "num" && prop.type === "TEXT") {
-              return [param.variable.name, Number(prop.value)];
+              return [param.variable.name, Number(parsedValue)];
             }
             if (param.type.name === "bool") {
               return isTrueishValue ? [param.variable.name, true] : null;
             }
-            return [param.variable.name, prop.value];
+            return [param.variable.name, parsedValue];
           })
         );
 
@@ -1850,24 +1878,42 @@ export function createNodeAssets(
   return nodeAssets;
 }
 
+export function getMainComponentName(node: InstanceNode) {
+  if (!node.mainComponent) {
+    return undefined;
+  }
+  if (isString(node.mainComponent)) {
+    return node.mainComponent;
+  }
+  return node.mainComponent.name;
+}
+
+export function getMainComponentId(node: InstanceNode) {
+  if (!node.mainComponent || isString(node.mainComponent)) {
+    return undefined;
+  }
+  return node.mainComponent.id;
+}
+
 function findMappedComponent(node: InstanceNode, components: Component[]) {
   // First use Component.figmaMappings, which takes precedence over
   // name matching
+  const mainComponentName = getMainComponentName(node);
   const mapped = components.find((c) =>
-    c.figmaMappings?.some((m) => m.figmaComponentName === node.mainComponent)
+    c.figmaMappings?.some((m) => m.figmaComponentName === mainComponentName)
   );
   if (mapped) {
     return mapped;
   }
 
   // Next do matching with component.name
-  const mapped2 = components.find((c) => c.name === node.mainComponent);
+  const mapped2 = components.find((c) => c.name === mainComponentName);
   if (mapped2) {
     return mapped2;
   }
 
   // Finally, use display name, which is "fuzziest"
   return components.find(
-    (c) => getComponentDisplayName(c) === node.mainComponent
+    (c) => getComponentDisplayName(c) === mainComponentName
   );
 }
