@@ -5,7 +5,6 @@ import * as React from "react";
 import { createRoot } from "react-dom/client";
 
 export function renderHostScaffold() {
-  debugger;
   const appRoot = document.querySelector(".app-root");
   if (appRoot) {
     const root = createRoot(appRoot);
