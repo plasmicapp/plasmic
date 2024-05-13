@@ -1465,26 +1465,31 @@ const getNodeToTplNode = (
           );
         }
 
-        function getChildComponentNameFromId(
-          inst: InstanceNode,
-          id: string | undefined
-        ) {
-          if (!id) {
-            return undefined;
-          }
+        function getAllDescendants(inst: InstanceNode): InstanceNode[] {
           const children = inst.children ?? [];
-          const componentNode = children.find(
-            (
-              child
-            ): child is InstanceNode & { mainComponent: { name: string } } =>
-              child.type === "INSTANCE" && getMainComponentId(child) === id
+          const descendants = children.flatMap((child) =>
+            child.type === "INSTANCE"
+              ? [child, ...getAllDescendants(child)]
+              : []
           );
-          return componentNode?.mainComponent.name;
+          return descendants;
         }
 
         const allNodeProperties = getAllProperties(node);
 
         const ACCEPTED_TYPES = ["TEXT", "BOOLEAN", "VARIANT", "INSTANCE_SWAP"];
+
+        const allDescendants = getAllDescendants(node);
+
+        function getChildComponentNameFromPropertyKey(key: string | undefined) {
+          if (!key) {
+            return undefined;
+          }
+          const refNode = allDescendants.find(
+            (child) => child.componentPropertyReferences?.mainComponent === key
+          );
+          return refNode?.name;
+        }
 
         const propsArgs = withoutNils(
           allNodeProperties.map(([k, prop]) => {
@@ -1509,7 +1514,7 @@ const getNodeToTplNode = (
 
             const parsedValue =
               prop.type === "INSTANCE_SWAP"
-                ? getChildComponentNameFromId(node, prop.value.toString())
+                ? getChildComponentNameFromPropertyKey(k)
                 : prop.value;
 
             const variantGroup = component.variantGroups.find(

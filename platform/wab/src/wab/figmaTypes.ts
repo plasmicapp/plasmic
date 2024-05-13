@@ -662,6 +662,11 @@ export interface InstanceNode extends DefaultFrameMixin {
         name: string;
       };
   componentProperties?: ComponentProperties;
+  componentPropertyReferences:
+    | {
+        [nodeProperty in "visible" | "characters" | "mainComponent"]?: string;
+      }
+    | null;
   exposedInstances?: [InstanceNode];
   scaleFactor: number;
 }
