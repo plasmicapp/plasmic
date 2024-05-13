@@ -1,4 +1,5 @@
-import { Breadcrumb, BreadcrumbItemProps, BreadcrumbProps } from "antd/lib";
+import type { BreadcrumbItemProps, BreadcrumbProps } from "antd";
+import { Breadcrumb } from "antd";
 import React from "react";
 import { Registerable, registerComponentHelper } from "./utils";
 
@@ -9,7 +10,7 @@ export function AntdBreadcrumbItem(props: BreadcrumbItemProps) {
 export function AntdBreadcrumb(
   props: BreadcrumbProps & { itemsRaw: React.ReactNode }
 ) {
-  const itemsRaw = props.itemsRaw;
+  const { itemsRaw, ...rest } = props;
   const items = React.useMemo(() => {
     if (!React.isValidElement(itemsRaw) && !Array.isArray(itemsRaw)) return [];
     return (
@@ -28,7 +29,7 @@ export function AntdBreadcrumb(
       .filter((i: any) => i != null);
   }, [itemsRaw]);
 
-  return <Breadcrumb {...props} items={items} />;
+  return <Breadcrumb {...rest} items={items} />;
 }
 
 const breadcrumbItemComponentName = "plasmic-antd5-breadcrumb-item";
