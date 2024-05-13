@@ -418,6 +418,8 @@ export type ChoiceType<P> =
 
 export interface RichSlotType<P> {
   type: "slot";
+  description?: string;
+
   /**
    * The unique names of all code components that can be placed in the slot
    */

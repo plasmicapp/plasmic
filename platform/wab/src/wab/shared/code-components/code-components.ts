@@ -3038,6 +3038,7 @@ export function propMetasToComponentParams(
               propEffect: maybePropTypeToPropEffect(type),
               displayName: maybePropTypeToDisplayName(type),
               about: maybePropTypeToAbout(type),
+              description: maybePropTypeToAbout(type),
               isRepeated: maybePropTypeToIsRepeated(type),
               isMainContentSlot: maybePropTypeToIsMainContentSlot(type),
               mergeWithParent: maybePropTypeToMergeWithParent(type),
@@ -3416,7 +3417,7 @@ export function maybePropTypeToRequired(type: StudioPropType<any>) {
 }
 
 export function maybePropTypeToAbout(type: StudioPropType<any>) {
-  if (isPlainObjectPropType(type) && type.type !== "slot") {
+  if (isPlainObjectPropType(type)) {
     if (type.description) {
       return type.description;
     }

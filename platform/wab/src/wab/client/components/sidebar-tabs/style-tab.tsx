@@ -420,16 +420,20 @@ const SlotSelectionMessage = observer(function SlotSelectionMessage(props: {
   return (
     <div className="canvas-editor__right-float-pane">
       <SidebarSection>
-        <div className="flex flex-vcenter">
-          <Icon icon={SlotIcon} className="component-fg mr-sm" />
-          <div className="code text-xlg flex-fill">
-            {node.slotParam.variable.name}
+        <div className="flex flex-col gap-lg">
+          <div className="flex flex-vcenter">
+            <Icon icon={SlotIcon} className="component-fg mr-sm" />
+            <div className="code text-xlg flex-fill">
+              {node.slotParam.variable.name}
+            </div>
+            <div className="ml-sm">
+              Slot for <code>{getComponentDisplayName(component)}</code>
+            </div>
           </div>
-          <div className="ml-sm">
-            Slot for <code>{getComponentDisplayName(component)}</code>
-          </div>
+          <p className="text-m">{node.slotParam.about}</p>
         </div>
       </SidebarSection>
+
       {arg &&
         isKnownRenderExpr(arg.expr) &&
         !isKnownVirtualRenderExpr(arg.expr) && (
