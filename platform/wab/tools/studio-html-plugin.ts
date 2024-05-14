@@ -13,11 +13,9 @@ const PLUGIN_NAME = "StudioHtmlPlugin";
  * index.html and tweak it so that it can be loaded from the user's app.
  */
 export class StudioHtmlPlugin implements RspackPluginInstance {
-  publicUrl: string | undefined;
   commitHash: string;
 
-  constructor(publicUrl: string | undefined, commitHash: string) {
-    this.publicUrl = publicUrl;
+  constructor(commitHash: string) {
     this.commitHash = commitHash;
   }
   apply(compiler: Compiler) {
@@ -33,8 +31,6 @@ export class StudioHtmlPlugin implements RspackPluginInstance {
 
           const html = compilation.assets[data.outputName].source();
           const root = parse(html);
-
-          const { publicUrl } = this;
 
           root.querySelector("head").insertAdjacentHTML(
             "afterbegin",
@@ -72,10 +68,21 @@ export class StudioHtmlPlugin implements RspackPluginInstance {
             );
 
           // Add our own <base> to direct all requests to the main origin.
+          root.querySelector("head").insertAdjacentHTML(
+            "afterbegin",
+            `<script>
+                try {
+                  const params = new URL(
+                    \`https://fakeurl/\${window.__PlasmicStudioArgs.replace(/#/, "?")}\`
+                  ).searchParams;
+                  document.getElementById("newBase").href = params.get("origin")
+                } catch(e) {}
+              </script>`
+          );
           root.querySelector("base").remove();
           root
             .querySelector("head")
-            .insertAdjacentHTML("afterbegin", `<base href="${publicUrl}">`);
+            .insertAdjacentHTML("afterbegin", `<base id="newBase">`);
 
           // Include a marker that this is the Plasmic Studio iframe. This is
           // needed by sub client.js to determine when it should or shouldn't
@@ -97,7 +104,6 @@ export class StudioHtmlPlugin implements RspackPluginInstance {
           // script in JSON form.
           const injectedData = {
             html: root.toString(),
-            publicUrl,
           };
           const template = fs.readFileSync(
             require.resolve("../public/studio.js.template"),

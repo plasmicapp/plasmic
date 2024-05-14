@@ -3,7 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="robots" content="noindex" />
-    <script src="<%= assetPrefix %>/static/js/preamble.js"></script>
+    <script id="preambleScript"></script>
+
+    <!-- Inject URLs based on origin -->
+    <script id="addPreambleSrc">
+      const maybeParams = !!window.__PlasmicStudioArgs ? new URLSearchParams(window.__PlasmicStudioArgs.replace(/^#/, "?")) : undefined;
+      const origin = maybeParams ? maybeParams.get("origin") : window.location.origin
+      document.getElementById("preambleScript").src = `${origin}/static/js/preamble.js`
+    </script>
 
     <script>
       const isProd =
@@ -197,16 +204,22 @@
         animation-duration: 3s;
       }
     </style>
-    <link rel="shortcut icon" href="<%= assetPrefix %>/favicon.ico" />
+    <link id="shortcutIcon" rel="shortcut icon" />
     <link
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Inter:wght@300;400;500;600;700;900&display=swap"
       rel="stylesheet"
     />
     <link
+      id="normalizeCss"
       rel="stylesheet"
       type="text/css"
-      href="<%= assetPrefix %>/static/css/normalize.css"
     />
+    <!-- Inject URLs based on origin -->
+    <script>
+      document.getElementById("shortcutIcon").href = `${origin}/favicon.ico`
+      document.getElementById("normalizeCss").href = `${origin}/static/css/normalize.css`
+    </script>
+
     <title>Plasmic</title>
     <!-- For style tokens and mixins -->
     <style id="globalCssVars"></style>

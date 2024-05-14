@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="https://studio.plasmic.app/static/js/preamble.js"></script>
+    <script id="preambleScript"></script>
+
+    <script>
+      const params = new URLSearchParams(window.location.hash.replace(/^#/, "?"));
+      const origin = params.get("origin");
+      document.getElementById("preambleScript").src = `${origin}/static/js/preamble.js`
+    </script>
     <style>
       body {
         margin: 0;

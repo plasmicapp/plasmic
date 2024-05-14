@@ -259,9 +259,6 @@ export default defineConfig({
             {
               inject: true,
               template: "./public/index.html",
-              templateParameters: {
-                assetPrefix: publicUrl,
-              },
             },
             buildEnv === "production"
               ? {
@@ -281,7 +278,7 @@ export default defineConfig({
               : undefined
           )
         ),
-        new StudioHtmlPlugin(publicUrl, commitHash),
+        new StudioHtmlPlugin(commitHash),
       ],
     },
   },
