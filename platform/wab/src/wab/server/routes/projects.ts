@@ -1234,7 +1234,8 @@ export async function saveProjectRev(req: Request, res: Response) {
     })();
 
     const deletedIids: string[] = req.body.toDeleteIids || [];
-    const modifiedComponents: string[] = req.body.modifiedComponents || [];
+    const modifiedComponentIids: string[] =
+      req.body.modifiedComponentIids || [];
 
     await mgr.savePartialRevision({
       projectId,
@@ -1243,7 +1244,7 @@ export async function saveProjectRev(req: Request, res: Response) {
       deletedIids: JSON.stringify(deletedIids),
       branchId,
       projectRevisionId: rev.id,
-      modifiedComponentIids: modifiedComponents,
+      modifiedComponentIids: modifiedComponentIids,
     });
   } else {
     // If we're saving the entire bundle, it's better not to save it as an
