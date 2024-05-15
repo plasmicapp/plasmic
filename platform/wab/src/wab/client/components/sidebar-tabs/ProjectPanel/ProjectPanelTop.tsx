@@ -107,6 +107,7 @@ import {
   isMixedArena,
   isPageArena,
 } from "@/wab/shared/Arenas";
+import { componentsReferecerToPageHref } from "@/wab/shared/cached-selectors";
 import { getHostLessComponents } from "@/wab/shared/code-components/code-components";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { getDataSourceMeta } from "@/wab/shared/data-sources-meta/data-source-registry";
@@ -1022,13 +1023,27 @@ function getFolderItemMenuRenderer({
         folderItem.name
       );
       if (!confirmation) return;
-      await studioCtx.changeUnsafe(() => {
-        if (isDedicatedArena(folderItem.item)) {
-          studioCtx.siteOps().tryRemoveComponent(folderItem.item.component);
-        } else if (isMixedArena(folderItem.item)) {
-          studioCtx.siteOps().removeMixedArena(folderItem.item);
+      await studioCtx.changeObserved(
+        () => {
+          return isDedicatedArena(folderItem.item) &&
+            isPageComponent(folderItem.item.component)
+            ? Array.from(
+                componentsReferecerToPageHref(
+                  studioCtx.site,
+                  folderItem.item.component
+                )
+              )
+            : [];
+        },
+        ({ success }) => {
+          if (isDedicatedArena(folderItem.item)) {
+            studioCtx.siteOps().tryRemoveComponent(folderItem.item.component);
+          } else if (isMixedArena(folderItem.item)) {
+            studioCtx.siteOps().removeMixedArena(folderItem.item);
+          }
+          return success();
         }
-      });
+      );
     };
 
     return (
