@@ -32,7 +32,11 @@ import * as semver from "@/wab/commons/semver";
 import { addOrUpsertTokens } from "@/wab/commons/StyleToken";
 import { toOpaque } from "@/wab/commons/types";
 import { ProjectVersionMeta, VersionResolution } from "@/wab/commons/versions";
-import { ComponentType, isPlasmicComponent } from "@/wab/components";
+import {
+  ComponentType,
+  isPageComponent,
+  isPlasmicComponent,
+} from "@/wab/components";
 import { DEVFLAGS } from "@/wab/devflags";
 import { syncGlobalContexts } from "@/wab/project-deps";
 import { createBranchFromBase } from "@/wab/server/branch";
@@ -2698,11 +2702,14 @@ export async function updateProjectData(req: Request, res: Response) {
         });
       }
       if (compReq.path) {
-        const path = tplMgr.getUniquePagePath(compReq.path);
-        ensure(
-          component.pageMeta,
-          "Unexpected nullish component.pageMeta"
-        ).path = path;
+        assert(isPageComponent(component), "Expected page component");
+
+        tplMgr.changePagePath(component, compReq.path);
+
+        const assignedPath = component.pageMeta.path;
+        warnings.push({
+          message: `Component ${component.name} was assigned path ${assignedPath} because the requested path ${compReq.path} was already used or invalid.`,
+        });
       }
     }
 
