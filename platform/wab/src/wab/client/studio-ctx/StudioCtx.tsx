@@ -5371,9 +5371,12 @@ export class StudioCtx extends WithDbCtx {
         return [];
       }
     })();
-    const { rev } = await this.appCtx.api.getSiteInfo(this.siteInfo.id, {
-      branchId: branchId ?? undefined,
-    });
+    const { rev } = await this.appCtx.api.getProjectRevWithoutData(
+      this.siteInfo.id,
+      // undefined to get the latest revision
+      undefined,
+      branchId ?? undefined
+    );
     const latestPublishedVersion = head(branchReleases);
     const { rev: latestPublishedRev } = await this.getLatestVersion(
       latestPublishedVersion?.revisionId,
