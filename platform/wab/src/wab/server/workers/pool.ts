@@ -25,19 +25,28 @@ export interface PlasmicWorkerPool {
 }
 
 class WorkerPoolWrapper {
-  constructor(private pool: WorkerPool) {}
+  constructor(
+    private loaderPool: WorkerPool,
+    private genericPool: WorkerPool
+  ) {}
 
   exec(method: string, params: any) {
-    return this.pool.exec(method, params).timeout(TIMEOUT_MS);
+    return (method === "loader-assets" ? this.loaderPool : this.genericPool)
+      .exec(method, params)
+      .timeout(TIMEOUT_MS);
   }
 }
 
 export function createWorkerPool() {
-  const pool = createPool(path.join(__dirname, "worker.js"), {
+  const loaderPool = createPool(path.join(__dirname, "worker.js"), {
     workerType: "thread",
-    maxWorkers: 2,
+    maxWorkers: 1,
+  });
+  const genericPool = createPool(path.join(__dirname, "worker.js"), {
+    workerType: "thread",
+    maxWorkers: 1,
   });
 
-  const wrapper = new WorkerPoolWrapper(pool);
+  const wrapper = new WorkerPoolWrapper(loaderPool, genericPool);
   return wrapper as any as PlasmicWorkerPool;
 }
