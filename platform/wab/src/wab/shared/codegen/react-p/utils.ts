@@ -355,24 +355,23 @@ export function makeGlobalGroupImports(
   globalGroups: VariantGroup[],
   opts: { idFileNames?: boolean } = {}
 ) {
-  return globalGroups
-    .map((vg) => {
-      const groupFileName = opts.idFileNames
-        ? makeGlobalVariantIdFileName(vg)
-        : makeGlobalVariantGroupFileName(vg);
-      if (vg.type === VariantGroupType.GlobalScreen) {
-        return `import {ScreenVariantProvider} from "./${stripExtension(
-          groupFileName
-        )}"; // plasmic-import: ${vg.uuid}/globalVariant`;
-      } else {
+  return (
+    globalGroups
+      // Filter out global screens, since they don't use a context provider
+      .filter((vg) => vg.type !== VariantGroupType.GlobalScreen)
+      .map((vg) => {
+        const groupFileName = opts.idFileNames
+          ? makeGlobalVariantIdFileName(vg)
+          : makeGlobalVariantGroupFileName(vg);
+
         return `import {${makeGlobalVariantGroupContextName(
           vg
         )}} from "./${stripExtension(groupFileName)}"; // plasmic-import: ${
           vg.uuid
         }/globalVariant`;
-      }
-    })
-    .join("\n");
+      })
+      .join("\n")
+  );
 }
 
 export function wrapGlobalProvider(
