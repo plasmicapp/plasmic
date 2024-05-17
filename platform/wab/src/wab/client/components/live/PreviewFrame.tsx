@@ -1,4 +1,3 @@
-import { ComponentArena } from "@/wab/classes";
 import { trapInteractionError } from "@/wab/client/components/canvas/studio-canvas-util";
 import {
   onLoadInjectSystemJS,
@@ -12,18 +11,20 @@ import {
 import { getSortedHostLessPkgs } from "@/wab/client/components/studio/studio-bundles";
 import { scriptExec } from "@/wab/client/dom-utils";
 import { maybeToggleTrailingSlash } from "@/wab/client/utils/app-hosting-utils";
-import { ensure, spawn } from "@/wab/common";
+import { assert, ensure, spawn } from "@/wab/common";
 import { isPageComponent } from "@/wab/components";
 import {
   InteractionArgLoc,
   InteractionLoc,
   isInteractionLoc,
 } from "@/wab/exprs";
+import { isComponentArena } from "@/wab/shared/Arenas";
 import { usedHostLessPkgs } from "@/wab/shared/cached-selectors";
 import {
   getCustomFrameForActivatedVariants,
   getFrameForActivatedVariants,
 } from "@/wab/shared/component-arenas";
+import { getDedicatedArena } from "@/wab/sites";
 import { getPublicUrl } from "@/wab/urls";
 import { autorun } from "mobx";
 import { observer } from "mobx-react";
@@ -264,43 +265,19 @@ export const PreviewFrame = observer(function PreviewFrame(
     ensureMaxViewportSize();
   }, [previewCtx.width, previewCtx.height, containerRef.current]);
 
-  function setFrameColor(
-    iframe: React.MutableRefObject<HTMLIFrameElement | null>,
-    color: string | null | undefined
-  ) {
-    if (iframe?.current?.contentDocument?.body?.style) {
-      iframe.current.contentDocument.body.style.backgroundColor = color ?? "";
-    }
-  }
+  const setFrameColor = React.useCallback(
+    (
+      iframe: React.MutableRefObject<HTMLIFrameElement | null>,
+      color: string | null | undefined
+    ) => {
+      if (iframe?.current?.contentDocument?.body?.style) {
+        iframe.current.contentDocument.body.style.backgroundColor = color ?? "";
+      }
+    },
+    []
+  );
 
-  const adjustBackgroundColor = () => {
-    if (!previewCtx.component || isPageComponent(previewCtx.component)) {
-      setFrameColor(iframeRef, null);
-      return;
-    }
-    const componentArena = previewCtx.studioCtx.getDedicatedArena(
-      previewCtx.component
-    ) as ComponentArena | undefined;
-    if (!componentArena) {
-      setFrameColor(iframeRef, null);
-      return;
-    }
-    const activeVariants = new Set(previewCtx.getVariants());
-    const currentFrame =
-      getCustomFrameForActivatedVariants(componentArena, activeVariants) ??
-      getFrameForActivatedVariants(componentArena, activeVariants);
-
-    setFrameColor(iframeRef, currentFrame?.bgColor);
-  };
-
-  React.useEffect(() => {
-    adjustBackgroundColor();
-  }, [
-    previewCtx.component,
-    previewCtx.variants,
-    previewCtx.global,
-    iframeRef.current?.contentDocument?.body,
-  ]);
+  useFrameBgColor(iframeRef, previewCtx, setFrameColor);
 
   const previousComponent = usePreviousDistinct(previewCtx.component);
   const adjustPreviewSize = () => {
@@ -457,3 +434,50 @@ export const PreviewFrame = observer(function PreviewFrame(
     </div>
   );
 });
+
+export function useFrameBgColor<T>(
+  iframeRef: React.MutableRefObject<T | null>,
+  previewCtx: PreviewCtx,
+  setFrameColor: (
+    iframe: React.MutableRefObject<T | null>,
+    color: string | undefined | null
+  ) => void
+) {
+  const adjustBackgroundColor = () => {
+    if (!previewCtx.component || isPageComponent(previewCtx.component)) {
+      setFrameColor(iframeRef, null);
+      return;
+    }
+
+    // We go directly through `getDedicatedArena` because studioCtx.getDedicatedArena
+    // checks for editing mode, which is not relevant for picking the color of the frame.
+    const componentArena = getDedicatedArena(
+      previewCtx.studioCtx.site,
+      previewCtx.component
+    );
+
+    if (!componentArena) {
+      setFrameColor(iframeRef, null);
+      return;
+    }
+
+    assert(isComponentArena(componentArena), "Expected component arena");
+
+    const activeVariants = new Set(previewCtx.getVariants());
+    const currentFrame =
+      getCustomFrameForActivatedVariants(componentArena, activeVariants) ??
+      getFrameForActivatedVariants(componentArena, activeVariants);
+
+    setFrameColor(iframeRef, currentFrame?.bgColor);
+  };
+
+  React.useEffect(() => {
+    adjustBackgroundColor();
+  }, [
+    previewCtx.component,
+    previewCtx.variants,
+    previewCtx.global,
+    previewCtx.studioCtx.focusedFrame()?.bgColor,
+    iframeRef.current,
+  ]);
+}
