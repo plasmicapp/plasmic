@@ -1,46 +1,57 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import type { RadioProps } from "react-aria-components";
 import { Radio, RadioGroup } from "react-aria-components";
-import { getCommonInputProps } from "./common";
 import ErrorBoundary from "./ErrorBoundary";
+import { getCommonInputProps } from "./common";
+import {
+  UpdateInteractionVariant,
+  pickAriaComponentVariants,
+} from "./interaction-variant-utils";
 import {
   CodeComponentMetaOverrides,
-  makeComponentName,
   Registerable,
+  makeComponentName,
   registerComponentHelper,
-  ValueObserver,
 } from "./utils";
 
-interface BaseRadioProps extends RadioProps {
-  onSelectionChange: (isSelected: boolean) => void;
-  onPressChange: (isPressed: boolean) => void;
-  onFocusVisibleChange: (isFocusVisible: boolean) => void;
+const RADIO_INTERACTION_VARIANTS = [
+  "hovered" as const,
+  "pressed" as const,
+  "focused" as const,
+  "focusVisible" as const,
+];
+
+export interface BaseRadioProps extends RadioProps {
+  children: React.ReactNode;
+  isSelected: boolean;
+  // Optional callback to update the interaction variant state
+  // as it's only provided if the component is the root of a Studio component
+  updateInteractionVariant?: UpdateInteractionVariant<
+    typeof RADIO_INTERACTION_VARIANTS
+  >;
 }
 
+const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
+  RADIO_INTERACTION_VARIANTS
+);
+
 export function BaseRadio(props: BaseRadioProps) {
-  const {
-    children,
-    onPressChange,
-    onFocusVisibleChange,
-    onHoverChange,
-    onSelectionChange,
-    ...rest
-  } = props;
+  const { children, updateInteractionVariant, ...rest } = props;
 
   const radio = (
     <Radio {...rest}>
-      {({ isFocusVisible, isPressed, isHovered, isSelected }) => (
-        <>
-          <ValueObserver
-            value={isFocusVisible}
-            onChange={onFocusVisibleChange}
-          />
-          <ValueObserver value={isSelected} onChange={onSelectionChange} />
-          <ValueObserver value={isPressed} onChange={onPressChange} />
-          <ValueObserver value={isHovered} onChange={onHoverChange} />
-          {children as ReactNode}
-        </>
-      )}
+      {({ isHovered, isPressed, isFocused, isFocusVisible }) =>
+        withObservedValues(
+          children,
+          {
+            hovered: isHovered,
+            pressed: isPressed,
+            focused: isFocused,
+            focusVisible: isFocusVisible,
+          },
+          updateInteractionVariant
+        )
+      }
     </Radio>
   );
 
@@ -63,6 +74,7 @@ export function registerRadio(
       displayName: "Aria Radio",
       importPath: "@plasmicpkgs/react-aria/skinny/registerRadio",
       importName: "BaseRadio",
+      interactionVariants,
       props: {
         ...getCommonInputProps<BaseRadioProps>("radio", [
           "isDisabled",
@@ -75,48 +87,12 @@ export function registerRadio(
           description:
             "The value of the input element, used when submitting an HTML form.",
         },
-        onHoverChange: {
-          type: "eventHandler",
-          argTypes: [{ name: "isHovered", type: "boolean" }],
-        },
-        onFocusChange: {
-          type: "eventHandler",
-          argTypes: [{ name: "isFocused", type: "boolean" }],
-        },
-        onPressChange: {
-          type: "eventHandler",
-          argTypes: [{ name: "isPressed", type: "boolean" }],
-        },
-        onFocusVisibleChange: {
-          type: "eventHandler",
-          argTypes: [{ name: "isFocusVisible", type: "boolean" }],
-        },
         onSelectionChange: {
           type: "eventHandler",
           argTypes: [{ name: "isSelected", type: "boolean" }],
         },
       },
       states: {
-        isHovered: {
-          type: "readonly",
-          onChangeProp: "onHoverChange",
-          variableType: "boolean",
-        },
-        isPressed: {
-          type: "readonly",
-          onChangeProp: "onPressChange",
-          variableType: "boolean",
-        },
-        isFocused: {
-          type: "readonly",
-          onChangeProp: "onFocusChange",
-          variableType: "boolean",
-        },
-        isFocusVisible: {
-          type: "readonly",
-          onChangeProp: "onFocusVisibleChange",
-          variableType: "boolean",
-        },
         isSelected: {
           type: "readonly",
           onChangeProp: "onSelectionChange",

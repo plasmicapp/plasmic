@@ -9,19 +9,19 @@ import { registerLabel } from "./registerLabel";
 import { registerTextArea } from "./registerTextArea";
 import {
   CodeComponentMetaOverrides,
+  Registerable,
   makeChildComponentName,
   makeComponentName,
-  Registerable,
   registerComponentHelper,
 } from "./utils";
 
 interface BaseTextFieldProps extends TextFieldProps {
-  children?: ReactNode;
   label?: ReactNode;
   description?: ReactNode;
   enableAutoComplete?: boolean;
   multiline?: boolean;
   inputProps?: InputProps;
+  children: ReactNode;
 }
 
 export function BaseTextField(props: BaseTextFieldProps) {
@@ -214,9 +214,61 @@ export function registerTextField(
           type: "eventHandler",
           argTypes: [{ name: "value", type: "string" }],
         },
+        onFocus: {
+          type: "eventHandler",
+          argTypes: [{ name: "focusEvent", type: "object" }],
+        },
+        onBlur: {
+          type: "eventHandler",
+          argTypes: [{ name: "focusEvent", type: "object" }],
+        },
         onFocusChange: {
           type: "eventHandler",
           argTypes: [{ name: "isFocused", type: "boolean" }],
+        },
+        onKeyDown: {
+          type: "eventHandler",
+          argTypes: [{ name: "keyboardEvent", type: "object" }],
+        },
+        onKeyUp: {
+          type: "eventHandler",
+          argTypes: [{ name: "keyboardEvent", type: "object" }],
+        },
+        onCopy: {
+          type: "eventHandler",
+          argTypes: [{ name: "clipbordEvent", type: "object" }],
+        },
+        onCut: {
+          type: "eventHandler",
+          argTypes: [{ name: "clipbordEvent", type: "object" }],
+        },
+        onPaste: {
+          type: "eventHandler",
+          argTypes: [{ name: "clipbordEvent", type: "object" }],
+        },
+        onCompositionStart: {
+          type: "eventHandler",
+          argTypes: [{ name: "compositionEvent", type: "object" }],
+        },
+        onCompositionEnd: {
+          type: "eventHandler",
+          argTypes: [{ name: "compositionEvent", type: "object" }],
+        },
+        onCompositionUpdate: {
+          type: "eventHandler",
+          argTypes: [{ name: "compositionEvent", type: "object" }],
+        },
+        onSelect: {
+          type: "eventHandler",
+          argTypes: [{ name: "selectionEvent", type: "object" }],
+        },
+        onBeforeInput: {
+          type: "eventHandler",
+          argTypes: [{ name: "inputEvent", type: "object" }],
+        },
+        onInput: {
+          type: "eventHandler",
+          argTypes: [{ name: "inputEvent", type: "object" }],
         },
       },
       // NOTE: React-Aria does not support render props for <Input> and <Textarea>, so focusVisible and inputHovered states are not implemented
@@ -226,11 +278,6 @@ export function registerTextField(
           valueProp: "value",
           onChangeProp: "onChange",
           variableType: "text",
-        },
-        isFocused: {
-          type: "readonly",
-          onChangeProp: "onFocusChange",
-          variableType: "boolean",
         },
       },
       trapsFocus: true,

@@ -3,34 +3,63 @@ import type { ButtonProps } from "react-aria-components";
 import { Button } from "react-aria-components";
 import { getCommonInputProps } from "./common";
 import {
+  UpdateInteractionVariant,
+  pickAriaComponentVariants,
+} from "./interaction-variant-utils";
+import {
   CodeComponentMetaOverrides,
-  makeComponentName,
   Registerable,
+  makeComponentName,
   registerComponentHelper,
-  ValueObserver,
 } from "./utils";
 
+const BUTTON_INTERACTION_VARIANTS = [
+  "hovered" as const,
+  "pressed" as const,
+  "focused" as const,
+  "focusVisible" as const,
+];
+
+const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
+  BUTTON_INTERACTION_VARIANTS
+);
+
 interface BaseButtonProps extends ButtonProps {
+  children: React.ReactNode;
   resetsForm?: boolean;
   submitsForm?: boolean;
-  onFocusVisibleChange?: (isFocusVisible: boolean) => void;
+  // Optional callback to update the interaction variant state
+  // as it's only provided if the component is the root of a Studio component
+  updateInteractionVariant?: UpdateInteractionVariant<
+    typeof BUTTON_INTERACTION_VARIANTS
+  >;
 }
 
 export function BaseButton(props: BaseButtonProps) {
-  const { submitsForm, onFocusVisibleChange, resetsForm, children, ...rest } =
-    props;
+  const {
+    submitsForm,
+    resetsForm,
+    children,
+    updateInteractionVariant,
+    ...rest
+  } = props;
+
   const type = submitsForm ? "submit" : resetsForm ? "reset" : "button";
+
   return (
     <Button type={type} {...rest}>
-      {({ isFocusVisible }) => (
-        <>
-          <ValueObserver
-            value={isFocusVisible}
-            onChange={onFocusVisibleChange}
-          />
-          {children}
-        </>
-      )}
+      {({ isHovered, isPressed, isFocused, isFocusVisible }) =>
+        withObservedValues(
+          children,
+          {
+            hovered: isHovered,
+            pressed: isPressed,
+            focused: isFocused,
+            focusVisible: isFocusVisible,
+          },
+          updateInteractionVariant
+        )
+      }
     </Button>
   );
 }
@@ -47,6 +76,7 @@ export function registerButton(
       displayName: "Aria Button",
       importPath: "@plasmicpkgs/react-aria/skinny/registerButton",
       importName: "BaseButton",
+      interactionVariants,
       props: {
         ...getCommonInputProps<BaseButtonProps>("button", [
           "isDisabled",
@@ -70,48 +100,6 @@ export function registerButton(
           description:
             "Whether clicking this button should reset the enclosing form.",
           advanced: true,
-        },
-        onPress: {
-          type: "eventHandler",
-          argTypes: [{ name: "event", type: "object" }],
-        },
-        onHoverChange: {
-          type: "eventHandler",
-          argTypes: [{ name: "isHovered", type: "boolean" }],
-        },
-        onPressChange: {
-          type: "eventHandler",
-          argTypes: [{ name: "isPressed", type: "boolean" }],
-        },
-        onFocusChange: {
-          type: "eventHandler",
-          argTypes: [{ name: "isFocused", type: "boolean" }],
-        },
-        onFocusVisibleChange: {
-          type: "eventHandler",
-          argTypes: [{ name: "isFocusVisible", type: "boolean" }],
-        },
-      },
-      states: {
-        isHovered: {
-          type: "readonly",
-          onChangeProp: "onHoverChange",
-          variableType: "boolean",
-        },
-        isPressed: {
-          type: "readonly",
-          onChangeProp: "onPressChange",
-          variableType: "boolean",
-        },
-        isFocused: {
-          type: "readonly",
-          onChangeProp: "onFocusChange",
-          variableType: "boolean",
-        },
-        isFocusVisible: {
-          type: "readonly",
-          onChangeProp: "onFocusVisibleChange",
-          variableType: "boolean",
         },
       },
       trapsFocus: true,

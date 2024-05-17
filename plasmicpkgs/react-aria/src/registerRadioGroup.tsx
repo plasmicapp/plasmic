@@ -1,4 +1,3 @@
-import React, { ReactNode } from "react";
 import type { RadioGroupProps } from "react-aria-components";
 import { RadioGroup } from "react-aria-components";
 import { getCommonInputProps } from "./common";
@@ -8,25 +7,13 @@ import { registerLabel } from "./registerLabel";
 import { registerRadio } from "./registerRadio";
 import {
   CodeComponentMetaOverrides,
+  Registerable,
   makeChildComponentName,
   makeComponentName,
-  Registerable,
   registerComponentHelper,
 } from "./utils";
 
-interface BaseRadioGroupProps extends RadioGroupProps {
-  children?: ReactNode;
-}
-
-export function BaseRadioGroup(props: BaseRadioGroupProps) {
-  const { children, ...rest } = props;
-
-  return (
-    <>
-      <RadioGroup {...rest}>{children}</RadioGroup>
-    </>
-  );
-}
+export const BaseRadioGroup = RadioGroup;
 
 const componentName = makeComponentName("radioGroup");
 
@@ -43,7 +30,7 @@ export function registerRadioGroup(
       importPath: "@plasmicpkgs/react-aria/skinny/registerRadioGroup",
       importName: "BaseRadioGroup",
       props: {
-        ...getCommonInputProps<BaseRadioGroupProps>("radio group", [
+        ...getCommonInputProps<RadioGroupProps>("radio group", [
           "name",
           "isDisabled",
           "isReadOnly",
@@ -74,10 +61,6 @@ export function registerRadioGroup(
           type: "eventHandler",
           argTypes: [{ name: "value", type: "string" }],
         },
-        onFocusChange: {
-          type: "eventHandler",
-          argTypes: [{ name: "isFocused", type: "boolean" }],
-        },
       },
       states: {
         value: {
@@ -85,11 +68,6 @@ export function registerRadioGroup(
           valueProp: "value",
           onChangeProp: "onChange",
           variableType: "array",
-        },
-        isFocused: {
-          type: "readonly",
-          onChangeProp: "onFocusChange",
-          variableType: "boolean",
         },
       },
       trapsFocus: true,

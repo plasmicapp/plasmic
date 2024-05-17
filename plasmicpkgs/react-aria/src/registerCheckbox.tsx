@@ -3,34 +3,54 @@ import type { CheckboxProps } from "react-aria-components";
 import { Checkbox } from "react-aria-components";
 import { getCommonInputProps } from "./common";
 import {
+  UpdateInteractionVariant,
+  pickAriaComponentVariants,
+} from "./interaction-variant-utils";
+import {
   CodeComponentMetaOverrides,
-  makeComponentName,
   Registerable,
+  makeComponentName,
   registerComponentHelper,
-  ValueObserver,
 } from "./utils";
 
+const CHECKBOX_INTERACTION_VARIANTS = [
+  "hovered" as const,
+  "pressed" as const,
+  "focused" as const,
+  "focusVisible" as const,
+];
+
 interface BaseCheckboxProps extends CheckboxProps {
-  onPressChange: (isPressed: boolean) => void;
-  onFocusVisibleChange: (isFocusVisible: boolean) => void;
+  children: React.ReactNode;
+  // Optional callback to update the interaction variant state
+  // as it's only provided if the component is the root of a Studio component
+  updateInteractionVariant?: UpdateInteractionVariant<
+    typeof CHECKBOX_INTERACTION_VARIANTS
+  >;
 }
 
+const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
+  CHECKBOX_INTERACTION_VARIANTS
+);
+
 export function BaseCheckbox(props: BaseCheckboxProps) {
-  const { children, onPressChange, onFocusVisibleChange, ...rest } = props;
+  const { children, updateInteractionVariant, ...rest } = props;
 
   return (
     <>
       <Checkbox {...rest}>
-        {({ isFocusVisible, isPressed }) => (
-          <>
-            <ValueObserver
-              value={isFocusVisible}
-              onChange={onFocusVisibleChange}
-            />
-            <ValueObserver value={isPressed} onChange={onPressChange} />
-            {children}
-          </>
-        )}
+        {({ isHovered, isPressed, isFocused, isFocusVisible }) =>
+          withObservedValues(
+            children,
+            {
+              hovered: isHovered,
+              pressed: isPressed,
+              focused: isFocused,
+              focusVisible: isFocusVisible,
+            },
+            updateInteractionVariant
+          )
+        }
       </Checkbox>
     </>
   );
@@ -48,8 +68,9 @@ export function registerCheckbox(
       displayName: "Aria Checkbox",
       importPath: "@plasmicpkgs/react-aria/skinny/registerCheckbox",
       importName: "BaseCheckbox",
+      interactionVariants,
       props: {
-        ...getCommonInputProps<BaseCheckboxProps>("checkbox", [
+        ...getCommonInputProps<CheckboxProps>("checkbox", [
           "name",
           "isDisabled",
           "isReadOnly",
@@ -94,48 +115,12 @@ export function registerCheckbox(
           type: "eventHandler",
           argTypes: [{ name: "isSelected", type: "boolean" }],
         },
-        onHoverChange: {
-          type: "eventHandler",
-          argTypes: [{ name: "isHovered", type: "boolean" }],
-        },
-        onFocusChange: {
-          type: "eventHandler",
-          argTypes: [{ name: "isFocused", type: "boolean" }],
-        },
-        onPressChange: {
-          type: "eventHandler",
-          argTypes: [{ name: "isPressed", type: "boolean" }],
-        },
-        onFocusVisibleChange: {
-          type: "eventHandler",
-          argTypes: [{ name: "isFocusVisible", type: "boolean" }],
-        },
       },
       states: {
         isSelected: {
           type: "writable",
           valueProp: "isSelected",
           onChangeProp: "onChange",
-          variableType: "boolean",
-        },
-        isHovered: {
-          type: "readonly",
-          onChangeProp: "onHoverChange",
-          variableType: "boolean",
-        },
-        isPressed: {
-          type: "readonly",
-          onChangeProp: "onPressChange",
-          variableType: "boolean",
-        },
-        isFocused: {
-          type: "readonly",
-          onChangeProp: "onFocusChange",
-          variableType: "boolean",
-        },
-        isFocusVisible: {
-          type: "readonly",
-          onChangeProp: "onFocusVisibleChange",
           variableType: "boolean",
         },
       },

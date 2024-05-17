@@ -1,13 +1,6 @@
 import type { CodeComponentMeta } from "@plasmicapp/host";
 import registerComponent from "@plasmicapp/host/registerComponent";
-import React, { useEffect } from "react";
-
-export function ValueObserver({ value, onChange }: any) {
-  useEffect(() => {
-    onChange(value);
-  }, [value, onChange]);
-  return null;
-}
+import React from "react";
 
 export type Registerable = {
   registerComponent: typeof registerComponent;
@@ -74,9 +67,7 @@ export interface Styleable {
 
 export function extractPlasmicDataProps(props: Record<string, any>) {
   return Object.fromEntries(
-    Object.entries(props).filter(([key, val]) =>
-      key.startsWith("data-plasmic-")
-    )
+    Object.entries(props).filter(([key]) => key.startsWith("data-plasmic-"))
   );
 }
 
