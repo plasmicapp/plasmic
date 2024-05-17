@@ -110,6 +110,8 @@ export interface ExprCtx {
   inStudio: boolean | undefined;
 }
 
+export type FallbackableExpr = CustomCode | ObjectPath;
+
 export const summarizeExpr = (expr: Expr, exprCtx: ExprCtx): string =>
   switchType(expr)
     .when(CustomCode, (customCode: CustomCode) => {
@@ -850,9 +852,7 @@ export function getRawCode(
   );
 }
 
-export function isFallbackableExpr(
-  expr: Expr
-): expr is CustomCode | ObjectPath {
+export function isFallbackableExpr(expr: Expr): expr is FallbackableExpr {
   return isKnownCustomCode(expr) || isKnownObjectPath(expr);
 }
 

@@ -73,7 +73,7 @@ import {
   showCssShorthand,
 } from "@/wab/css";
 import { getProjectFlags } from "@/wab/devflags";
-import { codeLit } from "@/wab/exprs";
+import { codeLit, FallbackableExpr, isFallbackableExpr } from "@/wab/exprs";
 import * as cssPegParser from "@/wab/gen/cssPegParser";
 import { standardCorners, standardSides } from "@/wab/geom";
 import { getGoogFontMeta } from "@/wab/googfonts";
@@ -2865,11 +2865,19 @@ interface TokenUsageByComponentProp extends TokenUsageBase {
   type: "prop";
 }
 
+interface TokenUsageByComponentPropFallback extends TokenUsageBase {
+  tpl: TplComponent;
+  vs: VariantSetting;
+  expr: FallbackableExpr;
+  type: "fallback";
+}
+
 type TokenUsage =
   | TokenUsageByRule
   | TokenUsageByToken
   | TokenUsageByVariantedValue
-  | TokenUsageByComponentProp;
+  | TokenUsageByComponentProp
+  | TokenUsageByComponentPropFallback;
 
 export interface DefaultStyle {
   style: Mixin;
@@ -2904,6 +2912,8 @@ export function changeTokenUsage(
         : replaced;
   } else if (usage.type === "prop") {
     usage.arg.expr = codeLit(replaced);
+  } else if (usage.type === "fallback") {
+    usage.expr.fallback = codeLit(replaced);
   } else {
     unreachable(usage);
   }
@@ -2950,6 +2960,12 @@ export function extractTokenUsages(
           if (isKnownStyleTokenRef(arg.expr) && arg.expr.token === token) {
             trackComponent();
             usages.add({ type: "prop", tpl, vs, arg });
+          } else if (isFallbackableExpr(arg.expr)) {
+            const fallback = arg.expr.fallback;
+            if (isKnownStyleTokenRef(fallback) && fallback.token === token) {
+              trackComponent();
+              usages.add({ type: "fallback", tpl, vs, expr: arg.expr });
+            }
           }
         }
       }

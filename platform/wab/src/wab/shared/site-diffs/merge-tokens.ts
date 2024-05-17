@@ -45,6 +45,8 @@ function replaceToken(site: Site, fromToken: StyleToken, toToken: StyleToken) {
       );
     } else if (usage.type === "prop") {
       ensureKnownStyleTokenRef(usage.arg.expr).token = toToken;
+    } else if (usage.type === "fallback") {
+      ensureKnownStyleTokenRef(usage.expr.fallback).token = toToken;
     } else {
       unreachable(usage);
     }
