@@ -173,7 +173,7 @@ async function bundleModulesEsbuild(
       // This is risky! We may encounter modules where this creates issues.
       // We override those issues, somehow, in plugins below :-/
       mainFields: target === "node" ? ["module", "main"] : undefined,
-      minify: opts.mode === "production",
+      minify: true,
       // We keep the hash out of the output entrypoint names, as we need
       // to know what files to load in the loader, and we only know them
       // by the file names without the content hash.
@@ -330,7 +330,7 @@ async function bundleModulesEsbuild(
       platform: target,
       metafile: true,
       absWorkingDir: outDirEsm,
-      minify: opts.mode === "production",
+      minify: true,
       entryNames: "[name]",
       define: deriveEsbuildDefines({ mode: opts.mode, target }),
       target: target === "node" ? "node12" : "es6",
@@ -351,7 +351,7 @@ async function bundleModulesEsbuild(
   // First, all the component css
   await esbuild.build({
     entryPoints: glob.sync(path.join(dir, "css__*.css")),
-    minify: opts.mode === "production",
+    minify: true,
     outdir: browserOutDir,
     // Target browsers so that esbuild doesn't minify code that would create incompatible css
     // with older browsers. https://esbuild.github.io/content-types/#css
@@ -366,7 +366,7 @@ async function bundleModulesEsbuild(
   // referenced css
   await esbuild.build({
     entryPoints: [path.join(dir, "css-entrypoint.tsx")],
-    minify: opts.mode === "production",
+    minify: true,
     outdir: browserOutDir,
     bundle: true,
     plugins: [
