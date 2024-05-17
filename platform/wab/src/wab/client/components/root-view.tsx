@@ -67,6 +67,7 @@ import { CmsDatabaseId } from "@/wab/shared/ApiSchema";
 import { isArenaType } from "@/wab/shared/Arenas";
 import { FastBundler } from "@/wab/shared/bundler";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { getMaximumTierFromTeams } from "@/wab/shared/pricing/pricing-utils";
 import posthog from "posthog-js";
 import * as React from "react";
@@ -328,9 +329,33 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                   />
                   <Route
                     path={UU.orgSettings.pattern}
-                    render={({ match }) => (
-                      <TeamSettingsPage teamId={match.params.teamId} />
-                    )}
+                    render={({ match, location }) => {
+                      const teamId = match.params.teamId;
+                      // Block viewers from seeing the settings page.
+                      const userAccessLevel =
+                        (teamId
+                          ? appCtx.perms.find(
+                              (p) =>
+                                p.teamId === teamId && p.userId === selfInfo.id
+                            )?.accessLevel
+                          : undefined) ?? "blocked";
+                      if (
+                        accessLevelRank(userAccessLevel) <=
+                        accessLevelRank("commenter")
+                      ) {
+                        return (
+                          <Redirect
+                            to={UU.org.fill(
+                              match.params,
+                              Object.fromEntries(
+                                new URLSearchParams(location.search)
+                              )
+                            )}
+                          />
+                        );
+                      }
+                      return <TeamSettingsPage teamId={teamId} />;
+                    }}
                   />
                   <Route
                     path={UU.orgSupport.pattern}

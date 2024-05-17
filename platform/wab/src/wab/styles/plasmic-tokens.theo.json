@@ -496,16 +496,6 @@
       "value": "rgb(50,52,54)",
       "category": "color",
       "meta": {
-        "projectId": "kA1Hysr5ZeimtATHTDJz5B",
-        "id": "2kgsBg0W9R8"
-      }
-    },
-    {
-      "name": "Spectrum/Gray/20",
-      "type": "color",
-      "value": "rgb(50,52,54)",
-      "category": "color",
-      "meta": {
         "projectId": "aaggSgVS8yYsAwQffVQB4p",
         "id": "0WgitNN_nh"
       }
@@ -868,16 +858,6 @@
       "meta": {
         "projectId": "9csusiyEETC5n9fFKLeYNK",
         "id": "e-8qF3S6uYn"
-      }
-    },
-    {
-      "name": "Spectrum/Yellow/95",
-      "type": "color",
-      "value": "rgb(255,249,209)",
-      "category": "color",
-      "meta": {
-        "projectId": "kA1Hysr5ZeimtATHTDJz5B",
-        "id": "B4mmHwMgLGq"
       }
     },
     {

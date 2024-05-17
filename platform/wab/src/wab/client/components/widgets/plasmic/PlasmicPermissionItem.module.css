@@ -54,9 +54,6 @@
   flex-shrink: 0;
   padding: 8px;
 }
-.ownerrole_owner {
-  color: var(--token-2kgsBg0W9R8);
-}
 .deleteBtn:global(.__wab_instance) {
   max-width: 100%;
   position: relative;

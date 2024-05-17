@@ -61,7 +61,7 @@ import Select__Option from "../Select__Option"; // plasmic-import: rr-LWdMni2G/c
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import plasmic_plasmic_kit_design_system_deprecated_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../../../plasmic/PP__plasmickit_share_dialog.module.css"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/projectcss
 import sty from "./PlasmicPermissionItem.module.css"; // plasmic-import: GFrmKeyhlA/css
@@ -150,6 +150,12 @@ function PlasmicPermissionItem__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.loading,
       },
+      {
+        path: "roleDropdown.value",
+        type: "private",
+        variableType: "text",
+        initFunc: ({ $props, $state, $queries, $ctx }) => "viewer",
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -179,7 +185,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
+        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         sty.root,
         {
@@ -257,8 +263,13 @@ function PlasmicPermissionItem__RenderFunc(props: {
             isDisabled={
               hasVariant($state, "loading", "loading") ? true : undefined
             }
+            onChange={(...eventArgs) => {
+              generateStateOnChangeProp($state, ["roleDropdown", "value"])(
+                eventArgs[0]
+              );
+            }}
             type={"bordered"}
-            value={"viewer"}
+            value={generateStateValueProp($state, ["roleDropdown", "value"])}
           >
             <Select__Option
               className={classNames("__wab_instance", sty.option__clhZ3)}

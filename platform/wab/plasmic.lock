@@ -2664,37 +2664,37 @@
       "projectId": "kA1Hysr5ZeimtATHTDJz5B",
       "version": "latest",
       "dependencies": {
-        "tXkSR39sgCDWSitZxC5xFV": "75.3.0",
-        "oT38tGyqov9SPWHpf3Y2Rf": "4.7.0",
+        "tXkSR39sgCDWSitZxC5xFV": "81.0.1",
+        "oT38tGyqov9SPWHpf3Y2Rf": "5.5.0",
         "95xp9cYcv7HrNWpFWWhbcv": "2.2.6",
-        "sDniSX4oPUZFyk2sXXb3nh": "6.0.0"
+        "sDniSX4oPUZFyk2sXXb3nh": "6.1.0"
       },
       "lang": "ts",
       "fileLocks": [
         {
           "type": "renderModule",
           "assetId": "cWsnP3_PIix",
-          "checksum": "bbb91bc6cbe70c06cf6a005e709e540c"
+          "checksum": "55e973556bd65cc08ae4a3727d1a0e6f"
         },
         {
           "type": "cssRules",
           "assetId": "cWsnP3_PIix",
-          "checksum": "bbb91bc6cbe70c06cf6a005e709e540c"
+          "checksum": "55e973556bd65cc08ae4a3727d1a0e6f"
         },
         {
           "type": "renderModule",
           "assetId": "GFrmKeyhlA",
-          "checksum": "30c0017cb5cd3419ba029edaea30e725"
+          "checksum": "69eb94efe4886decee43a1fb57e01e71"
         },
         {
           "type": "cssRules",
           "assetId": "GFrmKeyhlA",
-          "checksum": "30c0017cb5cd3419ba029edaea30e725"
+          "checksum": "69eb94efe4886decee43a1fb57e01e71"
         },
         {
           "assetId": "kA1Hysr5ZeimtATHTDJz5B",
           "type": "projectCss",
-          "checksum": "b3dedfc6a958cd0535cf602945079620"
+          "checksum": "543591a10e481f021542f7a8bbf99293"
         }
       ],
       "codegenVersion": "0.0.1"

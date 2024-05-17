@@ -217,6 +217,11 @@ function ShareDialogContent(props: ShareDialogContentProps) {
       : resource.type === "team"
       ? !!resource.resource.defaultAccessLevel
       : false;
+  const noShareByLink =
+    resource.type === "team" && !!resource.resource.defaultAccessLevel
+      ? ownAccessLevelRank <
+        accessLevelRank(resource.resource.defaultAccessLevel)
+      : false;
 
   const updateProject = async (
     inviteOnly: boolean,
@@ -436,6 +441,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
         isChecked: requireSignUp,
         onChange: setRequireSignUp,
       }}
+      noShareByLink={noShareByLink}
       shareByLinkSwitch={
         resource.type !== "workspace"
           ? {
@@ -525,52 +531,56 @@ function ShareDialogContent(props: ShareDialogContentProps) {
 
   if (loadingAuthConfig) return <Spinner />;
 
-  return (
-    <div style={{ width: 500 }}>
-      <Tabs
-        onSwitch={(tabKey) => {
-          setCurrentTab(tabKey);
-        }}
-        barWrapper={(bar) => (
-          <div
-            style={{
-              fontSize: 12,
-              paddingLeft: 16,
-            }}
-          >
-            {bar}
-          </div>
-        )}
-        tabKey={currentTab}
-        useDefaultClasses={false}
-        tabClassName="hilite-tab"
-        activeTabClassName="hilite-tab--active"
-        tabs={withoutFalsy([
-          showEndUsersTab &&
+  const TabsWrapper = () => {
+    return (
+      <div style={{ width: 500 }}>
+        <Tabs
+          onSwitch={(tabKey) => {
+            setCurrentTab(tabKey);
+          }}
+          barWrapper={(bar) => (
+            <div
+              style={{
+                fontSize: 12,
+                paddingLeft: 16,
+              }}
+            >
+              {bar}
+            </div>
+          )}
+          tabKey={currentTab}
+          useDefaultClasses={false}
+          tabClassName="hilite-tab"
+          activeTabClassName="hilite-tab--active"
+          tabs={withoutFalsy([
+            showEndUsersTab &&
+              new Tab({
+                name: "End users",
+                key: "end-users",
+                contents: () => {
+                  return (
+                    <PermissionsTab
+                      appCtx={appCtx}
+                      project={resource.resource}
+                      directoryId={config.directoryId!}
+                    />
+                  );
+                },
+              }),
             new Tab({
-              name: "End users",
-              key: "end-users",
+              name: "Collaborators",
+              key: "collaborators",
               contents: () => {
-                return (
-                  <PermissionsTab
-                    appCtx={appCtx}
-                    project={resource.resource}
-                    directoryId={config.directoryId!}
-                  />
-                );
+                return collaboratorShareDialog;
               },
             }),
-          new Tab({
-            name: "Collaborators",
-            key: "collaborators",
-            contents: () => {
-              return collaboratorShareDialog;
-            },
-          }),
-        ])}
-      ></Tabs>
-    </div>
-  );
+          ])}
+        ></Tabs>
+      </div>
+    );
+  };
+
+  return showEndUsersTab ? TabsWrapper() : collaboratorShareDialog;
 }
 
 export default ShareDialogContent;
