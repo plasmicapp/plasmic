@@ -501,7 +501,7 @@ function MergeFlow_(
         hasSubtext={change.mergeStatus === "partial" || !!change.renamed}
         icon={innermostIcon}
         name={
-          <span>
+          <span className="wrap-word">
             {descriptionsAndTypes.map(([description]) => description)}
           </span>
         }

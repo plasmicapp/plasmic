@@ -21,11 +21,12 @@
   margin-left: 17px;
 }
 .button10 {
-  height: 32px;
   display: flex;
   position: relative;
   flex-grow: 1;
   flex-direction: row;
+  max-width: 250px;
+  min-height: 32px;
   border-radius: 6px;
   padding: 6px 8px 6px 6px;
 }

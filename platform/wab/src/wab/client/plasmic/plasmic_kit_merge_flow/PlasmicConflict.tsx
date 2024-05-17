@@ -200,7 +200,13 @@ function PlasmicConflict__RenderFunc(props: {
         data-plasmic-name={"button10"}
         data-plasmic-override={overrides.button10}
         hasGap={true}
-        className={classNames(projectcss.all, sty.button10)}
+        className={classNames(projectcss.all, sty.button10, {
+          [sty.button10hasSubtext]: hasVariant(
+            $state,
+            "hasSubtext",
+            "hasSubtext"
+          ),
+        })}
       >
         <Stack__
           as={"div"}
