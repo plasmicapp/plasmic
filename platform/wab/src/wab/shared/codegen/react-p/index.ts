@@ -292,6 +292,7 @@ import {
   allMixins,
   allStyleTokens,
   allStyleTokensDict,
+  CssProjectDependencies,
   isHostLessPackage,
 } from "@/wab/sites";
 import { SplitStatus } from "@/wab/splits";
@@ -868,6 +869,24 @@ export function deriveReactHookSpecs(
   return reactHookSpecs;
 }
 
+export function computeSerializerSiteContext(
+  site: Site
+): SerializerSiteContext {
+  return {
+    projectFlags: getProjectFlags(site),
+    cssProjectDependencies: L.uniqBy(
+      allImportedStyleTokensWithProjectInfo(site),
+      "projectId"
+    ),
+    cssVarResolver: new CssVarResolver(
+      allStyleTokens(site, { includeDeps: "all" }),
+      allMixins(site, { includeDeps: "all" }),
+      allImageAssets(site, { includeDeps: "all" }),
+      site.activeTheme
+    ),
+  };
+}
+
 export function exportReactPresentational(
   componentGenHelper: ComponentGenHelper,
   component: Component,
@@ -876,7 +895,7 @@ export function exportReactPresentational(
   s3ImageLinks: Record<string, string>,
   isPlasmicHosted: boolean,
   forceAllCsr: boolean,
-  appAuthProvider?: AppAuthProvider,
+  appAuthProvider: AppAuthProvider | undefined,
   opts: ExportOpts = {
     lang: "ts",
     relPathFromImplToManagedDir: ".",
@@ -900,7 +919,8 @@ export function exportReactPresentational(
     whitespaceNormal: false,
     useCustomFunctionsStub: false,
     targetEnv: "codegen",
-  }
+  },
+  siteCtx: SerializerSiteContext
 ): ComponentExportOutput {
   interpreterMeta = createInterpreterMeta();
   if (!opts.relPathFromImplToManagedDir) {
@@ -917,7 +937,8 @@ export function exportReactPresentational(
     );
   const nodeNamer = makeNodeNamer(component);
   const reactHookSpecs = deriveReactHookSpecs(component, nodeNamer);
-  const projectFlags = getProjectFlags(site);
+
+  const projectFlags = siteCtx.projectFlags;
   if (opts.isPlasmicTeamUser) {
     applyPlasmicUserDevFlagOverrides(projectFlags);
   }
@@ -979,6 +1000,7 @@ export function exportReactPresentational(
     nodeNamer,
     reactHookSpecs,
     site,
+    siteCtx,
     projectConfig,
     usedGlobalVariantGroups,
     variantComboChecker,
@@ -987,12 +1009,7 @@ export function exportReactPresentational(
     aliases: makeComponentAliases(referencedComponents, opts.platform),
     s3ImageLinks,
     projectFlags,
-    cssVarResolver: new CssVarResolver(
-      allStyleTokens(site, { includeDeps: "all" }),
-      allMixins(site, { includeDeps: "all" }),
-      allImageAssets(site, { includeDeps: "all" }),
-      site.activeTheme
-    ),
+    cssVarResolver: siteCtx.cssVarResolver,
     usesDataSourceInteraction: hasDataSourceInteractions(component),
     usesLoginInteraction:
       !!component.pageMeta?.roleId || hasLoginInteractions(component),
@@ -1140,7 +1157,12 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
     }
     ${referencedImports.join("\n")}
     ${importGlobalVariantContexts}
-    ${makeStylesImports(site, component, projectConfig, ctx.exportOpts)}
+    ${makeStylesImports(
+      siteCtx.cssProjectDependencies,
+      component,
+      projectConfig,
+      ctx.exportOpts
+    )}
     ${iconImports}
     ${makePictureImports(site, component, ctx.exportOpts, "managed")}
     ${makeSuperCompImports(component, ctx.exportOpts)}
@@ -2329,9 +2351,7 @@ const makeCssClassExprsForVariantedTokens = (ctx: SerializerBaseContext) => {
   const conditionalClassExprs: [string, string][] = [];
 
   const cssProjectDependencies = L.uniqBy(
-    allImportedStyleTokensWithProjectInfo(ctx.site).map((t) => ({
-      projectName: t.projectName,
-    })),
+    ctx.siteCtx.cssProjectDependencies,
     "projectName"
   );
 
@@ -2795,10 +2815,17 @@ export function serializeTplTextBlockContent(
   };
 }
 
+export interface SerializerSiteContext {
+  projectFlags: DevFlagsType;
+  cssProjectDependencies: CssProjectDependencies;
+  cssVarResolver: CssVarResolver;
+}
+
 export interface SerializerBaseContext {
   componentGenHelper: ComponentGenHelper;
   nodeNamer: NodeNamer;
   site: Site;
+  siteCtx: SerializerSiteContext;
   component: Component;
   reactHookSpecs: ReactHookSpec[];
   projectConfig: ProjectConfig;

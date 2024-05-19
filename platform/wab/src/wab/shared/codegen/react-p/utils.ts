@@ -1,7 +1,6 @@
 import {
   Component,
   ImageAsset,
-  Site,
   TplNode,
   Variant,
   VariantGroup,
@@ -36,7 +35,7 @@ import {
   makeGlobalVariantGroupFileName,
 } from "@/wab/shared/codegen/variants";
 import { VariantGroupType } from "@/wab/shared/Variants";
-import { allImportedStyleTokensWithProjectInfo } from "@/wab/sites";
+import { CssProjectDependencies } from "@/wab/sites";
 import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/tpls";
 import L, { last, lowerFirst } from "lodash";
 
@@ -139,7 +138,7 @@ export const safeShortUuid = (shortUuid: string) => {
 export type NodeNamer = (node: TplNode) => string | undefined;
 
 export function makeStylesImports(
-  site: Site,
+  cssProjectDependencies: CssProjectDependencies,
   component: Component,
   projectConfig: ProjectConfig,
   opts: ExportOpts,
@@ -160,11 +159,6 @@ export function makeStylesImports(
     }`;
     return `import ${importName} "./${importPath}"`;
   };
-
-  const cssProjectDependencies = L.uniqBy(
-    allImportedStyleTokensWithProjectInfo(site),
-    "projectId"
-  );
 
   return `
     ${

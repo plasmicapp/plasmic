@@ -192,6 +192,7 @@ async function genLoaderCodeBundleForProjectVersions(
         exportOpts: exportOpts,
         maybeVersionOrTag: version,
         indirect,
+        skipChecksums: true,
       },
     ]);
 

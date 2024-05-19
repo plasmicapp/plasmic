@@ -21,7 +21,11 @@ import { exportStyleTokens } from "@/wab/shared/codegen/style-tokens";
 import { ExportOpts, ProjectConfig } from "@/wab/shared/codegen/types";
 import { exportGlobalVariantGroup } from "@/wab/shared/codegen/variants";
 import { CssVarResolver } from "@/wab/styles";
-import { exportCustomFunctionConfig, exportReactPresentational } from ".";
+import {
+  computeSerializerSiteContext,
+  exportCustomFunctionConfig,
+  exportReactPresentational,
+} from ".";
 
 export function exportSiteComponents(
   site: Site,
@@ -52,6 +56,7 @@ export function exportSiteComponents(
   } = opts;
 
   const siteGenHelper = new SiteGenHelper(site, false);
+  const siteCtx = computeSerializerSiteContext(site);
 
   const cssVarResolver = new CssVarResolver(
     siteGenHelper.allStyleTokens(),
@@ -112,14 +117,16 @@ export function exportSiteComponents(
         isPlasmicHosted,
         forceAllCsr,
         appAuthProvider,
-        componentExportOpts
+        componentExportOpts,
+        siteCtx
       );
     } else {
       return exportReactPlain(
         component,
         site,
         projectConfig,
-        componentExportOpts
+        componentExportOpts,
+        siteCtx
       );
     }
   };

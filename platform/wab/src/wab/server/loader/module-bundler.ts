@@ -1,4 +1,10 @@
-import { mkShortUuid, omitNils, tuple, withoutNils } from "@/wab/common";
+import {
+  ensure,
+  mkShortUuid,
+  omitNils,
+  tuple,
+  withoutNils,
+} from "@/wab/common";
 import { transformBundlerErrors } from "@/wab/server/loader/error-handler";
 import { makeGlobalContextsProviderFileName } from "@/wab/server/loader/module-writer";
 import { withSpan } from "@/wab/server/util/apm-util";
@@ -127,6 +133,9 @@ async function bundleModulesEsbuild(
   const targets = opts.browserOnly
     ? (["browser"] as const)
     : (["node", "browser"] as const);
+
+  const metafiles: Record<string, Metafile> = {};
+
   for (const target of targets) {
     // We want to use `splitting: true`, which means esbuild will try to extract
     // code shared by different entrypoints into module chunks that can be reused
@@ -336,11 +345,7 @@ async function bundleModulesEsbuild(
       target: target === "node" ? "node12" : "es6",
     });
 
-    // Also write out the metadata.json for debugging
-    await fs.writeFile(
-      path.join(outDirEsm, "metadata.json"),
-      JSON.stringify(outRes.metafile, undefined, 2)
-    );
+    metafiles[target] = outRes.metafile;
   }
 
   // Next we build the css, which is really just a minification pass, as we don't
@@ -422,12 +427,8 @@ async function bundleModulesEsbuild(
     if (opts.browserOnly && target === "node") {
       return [];
     }
-    const metaContent = (
-      await fs.readFile(
-        path.join(dir, `dist-esbuild-esm-${target}`, "metadata.json")
-      )
-    ).toString();
-    const meta = JSON.parse(metaContent) as Metafile;
+
+    const meta = ensure(metafiles[target], `No metafile for ${target}`);
 
     const buildJsModule = async (
       file: string,
@@ -497,11 +498,6 @@ Object.assign(exports,module.exports);
     opts
   );
 
-  // Write out the bundle for debugging
-  await fs.writeFile(
-    path.join(browserOutDir, "bundle.json"),
-    JSON.stringify(output, undefined, 2)
-  );
   return output;
 }
 

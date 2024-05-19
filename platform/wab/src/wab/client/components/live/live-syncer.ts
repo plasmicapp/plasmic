@@ -48,6 +48,7 @@ import {
 } from "@/wab/shared/codegen/image-assets";
 import {
   codeLibraryImportAlias,
+  computeSerializerSiteContext,
   customFunctionImportAlias,
   exportProjectConfig,
   exportReactPresentational,
@@ -839,7 +840,8 @@ export const createComponentOutput = computedFn(
       false,
       false,
       studioCtx.siteInfo.appAuthProvider,
-      exportOpts
+      exportOpts,
+      computeSerializerSiteContext(studioCtx.site)
     );
   },
   { name: "createComponentMods", keepAlive: true, equals: comparer.structural }

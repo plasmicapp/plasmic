@@ -63,6 +63,7 @@ import {
 import L from "lodash";
 import {
   asOneNode,
+  computeSerializerSiteContext,
   deriveReactHookSpecs,
   exportProjectConfig,
   generateReferencedImports,
@@ -87,6 +88,7 @@ import {
   serializeDefaultExternalProps,
   serializePlasmicSuperContext,
   SerializerBaseContext,
+  SerializerSiteContext,
   serializeTplComponentBase,
   serializeTplSlotBase,
   serializeTplTagBase,
@@ -122,6 +124,7 @@ export function exportReactPlain(
     useCustomFunctionsStub: false,
     targetEnv: "codegen",
   },
+  siteCtx: SerializerSiteContext,
   extraOpts: Partial<SerializerBaseContext> = {}
 ): ComponentExportOutput {
   const { fakeTpls, replacedHostlessComponentImportPath } =
@@ -149,6 +152,7 @@ export function exportReactPlain(
     nodeNamer,
     reactHookSpecs,
     site,
+    siteCtx,
     projectConfig,
     usedGlobalVariantGroups,
     variantComboChecker,
@@ -254,7 +258,13 @@ ${plumeImports ? plumeImports.imports : ""}
 
 ${referencedImports.join("\n")}
 ${importGlobalVariantContexts}
-${makeStylesImports(site, component, projectConfig, ctx.exportOpts, "plain")}
+${makeStylesImports(
+  siteCtx.cssProjectDependencies,
+  component,
+  projectConfig,
+  ctx.exportOpts,
+  "plain"
+)}
 ${iconImports}
 ${makePictureImports(site, component, ctx.exportOpts, "managed")}
 
@@ -655,6 +665,7 @@ export function exportReactPlainTypical(
     project,
     projectConfig,
     exportOpts,
+    computeSerializerSiteContext(project),
     extraOpts
   );
   return skeletonModule;

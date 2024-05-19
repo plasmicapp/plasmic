@@ -1937,10 +1937,15 @@ export function allImageAssets(
   return images;
 }
 
-export type StyleTokenWithProjectInfo = {
-  projectName: string;
-  projectId: string;
-} & StyleToken;
+type StyleTokenWithProjectInfo = Omit<
+  {
+    projectName: string;
+    projectId: string;
+  } & StyleToken,
+  "typeTag"
+>;
+
+export type CssProjectDependencies = StyleTokenWithProjectInfo[];
 
 export function allImportedStyleTokensWithProjectInfo(site: Site) {
   return [
