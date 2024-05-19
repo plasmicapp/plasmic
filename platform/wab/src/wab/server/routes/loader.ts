@@ -683,12 +683,11 @@ async function genReprV2(
   const mgr = superDbMgr(req);
 
   const bundler = new Bundler();
-  const { site, unbundledAs, model, revisionNumber, revisionId, version } =
-    await mgr.tryGetPkgVersionByProjectVersionOrTag(
-      bundler,
-      projectId,
-      props.version || "latest"
-    );
+  const { site } = await mgr.tryGetPkgVersionByProjectVersionOrTag(
+    bundler,
+    projectId,
+    props.version || "latest"
+  );
 
   const componentReprs = site.components.map((c) =>
     tuple(c.name, tplToPlasmicElements(c.tplTree))
@@ -708,12 +707,11 @@ async function genReprV3(
   const mgr = superDbMgr(req);
 
   const bundler = new Bundler();
-  const { site, unbundledAs, model, revisionNumber, revisionId, version } =
-    await mgr.tryGetPkgVersionByProjectVersionOrTag(
-      bundler,
-      projectId,
-      props.version || "latest"
-    );
+  const { site, version } = await mgr.tryGetPkgVersionByProjectVersionOrTag(
+    bundler,
+    projectId,
+    props.version || "latest"
+  );
 
   // This is a temporary hack to piggyback some additional details on the reprV3 API, generated from a run of codegen. This is for the model renderer.
   const opts = {} as any;

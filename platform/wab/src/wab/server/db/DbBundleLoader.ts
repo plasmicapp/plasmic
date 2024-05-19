@@ -190,3 +190,13 @@ export async function unbundlePkgVersion(
   const result = await unbundleWithDeps(dbMgr, bundler, pkgVersion.id, bundle);
   return result as classes.ProjectDependency;
 }
+
+export async function unbundlePkgVersionFromBundle(
+  dbMgr: DbMgr,
+  bundler: Bundler,
+  pkgVersion: PkgVersion,
+  bundle: Bundle
+) {
+  const result = await unbundleWithDeps(dbMgr, bundler, pkgVersion.id, bundle);
+  return result as classes.ProjectDependency;
+}

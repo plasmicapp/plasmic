@@ -119,7 +119,7 @@ export async function doGenCode(
   } = opts;
   const project = await mgr.getProjectById(projectId);
   const bundler = new Bundler();
-  const { site, unbundledAs, model, revisionNumber, revisionId, version } =
+  const { site, unbundledAs, revisionNumber, revisionId, version } =
     await mgr.tryGetPkgVersionByProjectVersionOrTag(
       bundler,
       projectId,
@@ -298,10 +298,18 @@ export async function doGenCode(
       !(global as any).badExport
     ) {
       (global as any).badExport = { bundler, site };
-      fs.writeFileSync(
-        `/tmp/corrupt-unbundle-${projectId}--${unbundledAs}.json`,
-        JSON.stringify(JSON.parse(model), undefined, 2)
+      const { model } = await mgr.tryGetPkgVersionByProjectVersionOrTag(
+        bundler,
+        projectId,
+        maybeVersionOrTag,
+        true
       );
+      if (model) {
+        fs.writeFileSync(
+          `/tmp/corrupt-unbundle-${projectId}--${unbundledAs}.json`,
+          JSON.stringify(JSON.parse(model), undefined, 2)
+        );
+      }
     }
     throw error;
   }

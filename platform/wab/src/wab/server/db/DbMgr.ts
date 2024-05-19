@@ -48,6 +48,8 @@ import {
 } from "@/wab/server/db/BundleMigrator";
 import {
   unbundlePkgVersion,
+  unbundlePkgVersionFromBundle,
+  unbundleProjectFromBundle,
   unbundleProjectFromData,
 } from "@/wab/server/db/DbBundleLoader";
 import {
@@ -4145,12 +4147,13 @@ export class DbMgr implements MigrationDbMgr {
   async tryGetPkgVersionByProjectVersionOrTag(
     bundler: Bundler,
     projectId: string,
-    versionRangeOrTag?: string
+    versionRangeOrTag?: string,
+    withModel?: boolean
   ): Promise<{
     version: string;
     pkgVersion: PkgVersion | undefined;
     site: Site;
-    model: string;
+    model?: string;
     unbundledAs: string;
     revisionNumber: number;
     revisionId: string;
@@ -4164,7 +4167,6 @@ export class DbMgr implements MigrationDbMgr {
     );
 
     const versionOrTag = versionRangeOrTag ?? "latest";
-    const pkg = await this.getPkgByProjectId(projectId);
 
     // If versionRangeOrTag is a branch name, then we want to get the "latest" of that branch
     if (semver.isLatest(versionOrTag) || maybeBranch) {
@@ -4172,16 +4174,21 @@ export class DbMgr implements MigrationDbMgr {
       const projectRev = await this.getLatestProjectRev(projectId, {
         branchId: maybeBranch?.id,
       });
+      const bundle = await getMigratedBundle(projectRev);
       return {
         version: versionOrTag,
         pkgVersion: undefined,
-        site: await unbundleProjectFromData(this, bundler, projectRev),
-        model: JSON.stringify(await getMigratedBundle(projectRev)),
+        site: await unbundleProjectFromBundle(this, bundler, {
+          projectId,
+          bundle,
+        }),
+        model: withModel ? JSON.stringify(bundle) : undefined,
         unbundledAs: projectRev.projectId,
         revisionNumber: projectRev.revision,
         revisionId: projectRev.id,
       };
     } else {
+      const pkg = await this.getPkgByProjectId(projectId);
       assert(!!pkg, "Pkg must exist");
       // If versionOrTag is not a valid version range, assume it's a tag
       const pkgVersion = ensure(
@@ -4197,11 +4204,15 @@ export class DbMgr implements MigrationDbMgr {
         pkg.projectId,
         pkgVersion.revisionId
       );
+
+      const bundle = await getMigratedBundle(pkgVersion);
       return {
         version: pkgVersion.version,
         pkgVersion,
-        site: (await unbundlePkgVersion(this, bundler, pkgVersion)).site,
-        model: JSON.stringify(await getMigratedBundle(pkgVersion)),
+        site: (
+          await unbundlePkgVersionFromBundle(this, bundler, pkgVersion, bundle)
+        ).site,
+        model: withModel ? JSON.stringify(bundle) : undefined,
         unbundledAs: pkgVersion.id,
         revisionNumber: projectRev?.revision ?? -1,
         revisionId: pkgVersion.revisionId,
