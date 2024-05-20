@@ -1998,14 +1998,15 @@ export function hasNoRichTextStyles(tpl: TplTextTag) {
 }
 
 export function hasNoEventHandlers(tpl: TplNode) {
-  return tpl.vsettings.every(
-    (vs) =>
-      Object.values(vs.attrs).every((expr) =>
-        flattenExprs(expr).every((innerExpr) => !isKnownEventHandler(innerExpr))
-      ) &&
-      vs.args.every(({ expr }) =>
-        flattenExprs(expr).every((innerExpr) => !isKnownEventHandler(innerExpr))
-      )
+  return tpl.vsettings.every((vs) =>
+    [...Object.values(vs.attrs), ...vs.args.map((arg) => arg.expr)].every(
+      (expr) =>
+        flattenExprs(expr).every(
+          (innerExpr) =>
+            !isKnownEventHandler(innerExpr) ||
+            innerExpr.interactions.length === 0
+        )
+    )
   );
 }
 
