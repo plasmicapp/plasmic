@@ -1,6 +1,7 @@
 const { Command } = require("commander");
 import { spawn } from "@/wab/common";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
+import { cleanTutorialDbs } from "@/wab/server/db/custom-scripts/clean-tutorialdbs";
 import { findConflictNames } from "@/wab/server/db/custom-scripts/find-conflict-names";
 import { findDanglingWeakRefs } from "@/wab/server/db/custom-scripts/find-dangling-weak-refs";
 import { findMissingImplicitStates } from "@/wab/server/db/custom-scripts/find-missing-implicit-states";
@@ -64,6 +65,9 @@ async function main() {
     }
     if (opts.script === "profile-codegen") {
       await profileCodegen(em, opts.projectId);
+    }
+    if (opts.script === "clean-tutorialdbs") {
+      await cleanTutorialDbs(em);
     }
   });
 

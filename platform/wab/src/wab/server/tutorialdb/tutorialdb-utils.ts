@@ -127,7 +127,7 @@ async function withSuperTutorialDbConnection<T>(
 /**
  * super connection for creating and dropping databases
  */
-async function getSuperTutorialDbConnection(opts?: {
+export async function getSuperTutorialDbConnection(opts?: {
   database?: string;
   type?: TutorialType;
 }) {
