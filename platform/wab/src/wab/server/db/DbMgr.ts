@@ -1020,11 +1020,12 @@ export class DbMgr implements MigrationDbMgr {
   protected stampNew(genShortUuid?: boolean): StampNewFields {
     const actorUserId = this.tryGetNormalActorId() ?? null;
     const UUID = uuid.v4();
+    const date = new Date();
     return {
       id: genShortUuid ? shortUuid.fromUUID(UUID) : UUID,
-      createdAt: new Date(),
+      createdAt: date,
       createdById: actorUserId,
-      updatedAt: new Date(),
+      updatedAt: date,
       updatedById: actorUserId,
       deletedAt: null,
       deletedById: null,
