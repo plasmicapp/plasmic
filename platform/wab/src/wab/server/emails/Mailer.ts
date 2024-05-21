@@ -16,6 +16,9 @@ class NodeMailer implements Mailer {
 class ConsoleMailer implements Mailer {
   async sendMail(mailOptions: Mail.Options): Promise<SentMessageInfo> {
     console.log(`SENDING MAIL TO CONSOLE`, mailOptions);
+    // Delay to simulate sending
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    console.log(`MAIL SENT`);
   }
 }
 

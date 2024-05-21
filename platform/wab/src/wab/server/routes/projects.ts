@@ -2931,13 +2931,16 @@ export async function postCommentInProject(req: Request, res: Response) {
   // request. This is to avoid blocking the request on sending emails.
   const { emails, project } = await collectUsersToNotify();
 
+  res.json(ensureType<PostCommentResponse>({}));
+
+  // Resolving the transaction before broadcasting the new comment to other players and sending emails
+  await req.resolveTransaction();
+
   await broadcastProjectsMessage({
     room: `projects/${projectId}`,
     type: "commentsUpdate",
     message: {},
   });
-
-  res.json(ensureType<PostCommentResponse>({}));
 
   if (emails.length > 0) {
     for (const email of emails) {
