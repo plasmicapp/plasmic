@@ -531,10 +531,9 @@ export function updateStateAccessType(
   const isPrevStatePrivate = isPrivateState(state);
   state.accessType = newAccessType;
   state.param.exportType =
-    newAccessType === "writable"
+    newAccessType === "writable" ||
+    component.variantGroups.find((vg) => vg.linkedState === state)
       ? ParamExportType.External
-      : component.variantGroups.find((vg) => vg.linkedState === state)
-      ? ParamExportType.Internal
       : ParamExportType.ToolsOnly;
   const isCurrStatePrivate = isPrivateState(state);
   if (isPrevStatePrivate && !isCurrStatePrivate) {
