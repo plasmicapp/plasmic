@@ -16,7 +16,6 @@ import { ComponentRenderData } from '@plasmicapp/loader-react/react-server-condi
 import { DataCtxReader } from '@plasmicapp/loader-react';
 import { DataProvider } from '@plasmicapp/loader-react';
 import { ExtractPlasmicQueryData } from '@plasmicapp/nextjs-app-router';
-import { extractPlasmicQueryData } from '@plasmicapp/loader-react';
 import { FetchComponentDataOpts as FetchComponentDataOpts_2 } from '@plasmicapp/loader-react';
 import { GlobalActionsContext } from '@plasmicapp/loader-react';
 import { GlobalActionsProvider } from '@plasmicapp/loader-react';

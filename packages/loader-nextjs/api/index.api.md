@@ -13,7 +13,6 @@ import { ComponentMeta } from '@plasmicapp/loader-react/react-server-conditional
 import { ComponentRenderData } from '@plasmicapp/loader-react/react-server-conditional';
 import { DataCtxReader } from '@plasmicapp/loader-react';
 import { DataProvider } from '@plasmicapp/loader-react';
-import { extractPlasmicQueryData } from '@plasmicapp/loader-react';
 import { FetchComponentDataOpts as FetchComponentDataOpts_2 } from '@plasmicapp/loader-react';
 import { GlobalActionsContext } from '@plasmicapp/loader-react';
 import { GlobalActionsProvider } from '@plasmicapp/loader-react';
@@ -54,7 +53,8 @@ export { DataCtxReader }
 
 export { DataProvider }
 
-export { extractPlasmicQueryData }
+// @public
+export function extractPlasmicQueryData(element: React_2.ReactElement): Promise<Record<string, any>>;
 
 // @public (undocumented)
 export interface FetchComponentDataOpts extends FetchComponentDataOpts_2 {
