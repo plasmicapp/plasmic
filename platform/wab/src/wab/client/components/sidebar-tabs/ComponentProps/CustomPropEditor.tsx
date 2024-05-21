@@ -74,8 +74,7 @@ export function CustomPropEditor({
             updateValue: onChange,
             FullscreenModal,
             SideModal,
-            // TODO: Remove `as any` once host is updated
-            ...({ studioDocument: window.document } as any),
+            studioDocument: window.document,
           })
         ),
         node
