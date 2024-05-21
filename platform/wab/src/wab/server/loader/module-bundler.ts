@@ -13,7 +13,10 @@ import {
   CodegenOutputBundle,
   ComponentReference,
 } from "@/wab/server/workers/codegen";
-import { LoaderBundlingError } from "@/wab/shared/ApiErrors/errors";
+import {
+  LoaderBundlingError,
+  LoaderDeprecatedVersionError,
+} from "@/wab/shared/ApiErrors/errors";
 import { FontUsage, makeGoogleFontUrl } from "@/wab/shared/codegen/fonts";
 import { ActiveSplit } from "@/wab/shared/codegen/splits";
 import {
@@ -635,12 +638,9 @@ export async function bundleModules(
           opts
         );
       } catch (err) {
-        // We explicitly catch and re-throw a plain error, as some errors thrown from
-        // rollup cannot be serialized across the worker pool boundary
-        console.error(
-          `Error bundling with rollup: ${err.toString()}: ${err.stack}`
-        );
-        throw new Error(`Error bundling with rollup: ${err.toString()}`);
+        // Building with rollup failed, but this is deprecated, so we will only warn
+        // the user and ignore the error.
+        throw new LoaderDeprecatedVersionError();
       }
     });
   }

@@ -74,6 +74,13 @@ export class LoaderBundlingError extends ApiError {
   statusCode = 412;
 }
 
+export class LoaderDeprecatedVersionError extends ApiError {
+  name = "LoaderDeprecatedVersionError";
+  statusCode = 412;
+  message =
+    "An internal error occurred. Please upgrade your @plasmicapp/* packages.";
+}
+
 /**
  * We can't simply use instanceof ApiError, since our build pipeline doesn't
  * handle extending Error correctly. class extends Error works fine with
