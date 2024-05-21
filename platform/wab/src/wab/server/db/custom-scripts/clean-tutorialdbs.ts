@@ -27,7 +27,9 @@ async function dropUnusedTutorialDbs(
   em: EntityManager,
   tutorialDbCon: Connection
 ) {
-  const unusedDataSourceIds = await em.query(unusedTutorialDbsQuery);
+  const unusedDataSourceIds = (await em.query(unusedTutorialDbsQuery)).map(
+    (result) => result.dataSourceId
+  );
 
   const unusedDataSources = await em.find(DataSource, {
     where: {
@@ -76,7 +78,7 @@ async function dropTutorialDbFromDataSources(
 const unusedTutorialDbsQuery = `
 WITH ds AS (SELECT id
   FROM data_source
-  WHERE source = 'tutorialdb' AND "deletedAt" IS NOT NULL)
+  WHERE source = 'tutorialdb' AND "deletedAt" IS NULL)
 
 SELECT d_ds."dataSourceId"
 FROM (SELECT "dataSourceId", array_agg(p."deletedAt") as deleted
