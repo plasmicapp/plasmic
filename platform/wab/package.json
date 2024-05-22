@@ -334,7 +334,7 @@
     "downscale": "^1.0.6",
     "downshift": "^6.1.9",
     "dropzone": "^5.7.1",
-    "emoji-picker-react": "^4.3.0",
+    "emoji-picker-react": "^4.9.3",
     "errorhandler": "^1.5.1",
     "es7-shim": "^6.0.0",
     "esbuild": "^0.17.19",

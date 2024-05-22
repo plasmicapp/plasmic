@@ -22,6 +22,17 @@ export interface CommentPostProps extends DefaultCommentPostProps {
   onAddEmoji?: (e: EmojiClickData) => Promise<void>;
 }
 
+// Reactions using unicode emojis hex codes
+const REACTIONS = [
+  "1f44d", // 👍
+  "1f44f", // 👏
+  "1f4af", // 💯
+  "2705", // ✅
+  "1f525", // 🔥
+  "274c", // ❌
+  "1f44e", // 👎
+];
+
 function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
   const {
     repliesLinkLabel,
@@ -49,14 +60,17 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
             trigger={[]}
             open={showPicker}
             onOpenChange={(x) => setShowPicker(x)}
-            overlayClassName={"NoPaddingPopover"}
+            overlayClassName={"NoPaddingPopover NoBackgroundStyles"}
             content={
               <div>
                 <OnClickAway onDone={() => setShowPicker(false)}>
-                  <div>
+                  <div onClick={(e) => e.stopPropagation()}>
                     <EmojiPicker
-                      onEmojiClick={async (e) => {
-                        await onAddEmoji?.(e);
+                      reactionsDefaultOpen
+                      allowExpandReactions={false}
+                      reactions={REACTIONS}
+                      onEmojiClick={async (emoji) => {
+                        await onAddEmoji?.(emoji);
                         setShowPicker(false);
                       }}
                     />
