@@ -1,6 +1,7 @@
 import { ObjInst } from "@/wab/classes";
 import { apiKey } from "@/wab/client/api";
 import CommentPost from "@/wab/client/components/comments/CommentPost";
+import { getCommentsWithModelMetadata } from "@/wab/client/components/comments/utils";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import PlasmicCommentPostForm from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPostForm";
@@ -55,9 +56,9 @@ export function useCommentViews(
 
   const [commentsReal, userMapReal] = commentsData;
 
-  const allComments = sortBy(
-    commentsReal.comments.filter(commentIsValid),
-    (c) => +c.createdAt
+  const allComments = getCommentsWithModelMetadata(
+    bundler,
+    commentsReal.comments
   );
 
   const userMap = userMapReal;
@@ -74,11 +75,6 @@ export function useCommentViews(
   let focusedTpl = viewCtx?.focusedTpl();
   if (!isTplNamable(focusedTpl)) {
     focusedTpl = null;
-  }
-
-  function commentIsValid(comment: ApiComment) {
-    const subject = bundler.objByAddr(comment.data.location.subject);
-    return !!subject;
   }
 
   function renderComment(

@@ -1511,6 +1511,7 @@ export interface CommentLocation {
 
 export type CommentThreadId = Opaque<string, "CommentThreadId">;
 
+// Comment data is already branch specific
 export interface CommentData {
   location: CommentLocation;
   body: string;

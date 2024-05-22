@@ -1617,6 +1617,12 @@ export class StudioCtx extends WithDbCtx {
     return this._currentArena.get();
   }
 
+  get currentComponent() {
+    return isDedicatedArena(this.currentArena)
+      ? this.currentArena.component
+      : undefined;
+  }
+
   private arenaViewStates = observable.map<AnyArena, ArenaViewInfo>();
 
   getCurrentStudioViewportSnapshot(): StudioViewportSnapshot {
