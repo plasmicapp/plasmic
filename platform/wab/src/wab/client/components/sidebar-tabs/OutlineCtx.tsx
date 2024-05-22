@@ -13,6 +13,7 @@ import {
   TplSlot,
   TplTag,
 } from "@/wab/classes";
+import { isElementWithComments } from "@/wab/client/components/comments/utils";
 import { Matcher } from "@/wab/client/components/view-common";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
@@ -35,7 +36,11 @@ import {
   EffectiveVariantSetting,
   getTplComponentActiveVariants,
 } from "@/wab/shared/effective-variant-setting";
-import { INTERACTIVE_CAP, REPEATED_CAP } from "@/wab/shared/Labels";
+import {
+  COMMENTS_LOWER,
+  INTERACTIVE_CAP,
+  REPEATED_CAP,
+} from "@/wab/shared/Labels";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { ReadonlyIRuleSetHelpersX } from "@/wab/shared/RuleSetHelpers";
 import {
@@ -425,6 +430,10 @@ function* getSearchableTexts(
 
   if (Tpls.hasEventHandlers(tpl)) {
     yield INTERACTIVE_CAP;
+  }
+
+  if (isElementWithComments(viewCtx.studioCtx, tpl)) {
+    yield COMMENTS_LOWER;
   }
 
   if (Tpls.isTplNamable(tpl) && tpl.name) {

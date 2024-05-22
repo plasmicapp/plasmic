@@ -101,3 +101,5 @@ export const WORKSPACE_CAP = "Workspace";
 export const INTERACTIVE_CAP = "Interactive";
 
 export const REPEATED_CAP = "Repeated";
+
+export const COMMENTS_LOWER = "comments";

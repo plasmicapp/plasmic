@@ -110,6 +110,7 @@ import pluralize from "pluralize";
 import * as React from "react";
 import { FixedSizeList } from "react-window";
 
+import { isElementWithComments } from "@/wab/client/components/comments/utils";
 import {
   getNodeSummary,
   OutlineCtx,
@@ -118,7 +119,12 @@ import {
   OutlineNodeKey,
 } from "@/wab/client/components/sidebar-tabs/OutlineCtx";
 import BoltIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Bolt";
-import { INTERACTIVE_CAP, REPEATED_CAP } from "@/wab/shared/Labels";
+import SpeechBubblesvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__SpeechBubblesvg";
+import {
+  COMMENTS_LOWER,
+  INTERACTIVE_CAP,
+  REPEATED_CAP,
+} from "@/wab/shared/Labels";
 
 function RepIcon() {
   return (
@@ -132,6 +138,14 @@ function ActionIcon() {
   return (
     <Tooltip title={`${INTERACTIVE_CAP} element`}>
       <Icon icon={BoltIcon} />
+    </Tooltip>
+  );
+}
+
+function CommentIcon() {
+  return (
+    <Tooltip title={`Element with ${COMMENTS_LOWER}`}>
+      <Icon icon={SpeechBubblesvgIcon} />
     </Tooltip>
   );
 }
@@ -169,6 +183,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
     isDropParent,
   } = props;
 
+  const studioCtx = viewCtx.studioCtx;
   const component = $$$(item).owningComponent();
   const isInFrame = !!viewCtx
     .componentStackFrames()
@@ -370,6 +385,18 @@ const TplTreeNode = observer(function TplTreeNode(props: {
     }
   ).get();
 
+  const hasComment = computed(
+    () => {
+      if (!isKnownTplNode(item)) {
+        return false;
+      }
+      return isElementWithComments(studioCtx, item);
+    },
+    {
+      name: "hasComment",
+    }
+  ).get();
+
   const visibilityDataCond = effectiveVs.get()?.dataCond;
   const canvasEnv = isKnownTplNode(item)
     ? viewCtx.getCanvasEnvForTpl(item)
@@ -555,6 +582,17 @@ const TplTreeNode = observer(function TplTreeNode(props: {
       return (
         <IconWrapper>
           <ActionIcon />
+        </IconWrapper>
+      );
+    }
+    return null;
+  };
+
+  const renderCommentIcon = () => {
+    if (hasComment) {
+      return (
+        <IconWrapper>
+          <CommentIcon />
         </IconWrapper>
       );
     }
@@ -828,6 +866,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
         >
           {icon}
         </div>
+        {renderCommentIcon()}
         {!codeComponentRoot && !codeComponentSlot && (
           <>
             {renderRep()}
