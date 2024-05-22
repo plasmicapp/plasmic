@@ -66,6 +66,7 @@ import { ParamExportType } from "@/wab/lang";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { parseExpr } from "@/wab/shared/eval/expression-parser";
+import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
@@ -537,7 +538,7 @@ export function updateStateAccessType(
       : ParamExportType.ToolsOnly;
   const isCurrStatePrivate = isPrivateState(state);
   if (isPrevStatePrivate && !isCurrStatePrivate) {
-    addImplicitStates(site, component, state);
+    addImplicitStates(site, component);
     const onChangePropName = new TplMgr({ site }).getUniqueParamName(
       component,
       opts?.onChangeProp ?? genOnChangeParamName(state.param.variable.name),
@@ -551,14 +552,11 @@ export function updateStateAccessType(
   }
 }
 
-export function addImplicitStates(
-  site: Site,
-  component: Component,
-  state: State
-) {
+export function addImplicitStates(site: Site, component: Component) {
   const tplMgr = new TplMgr({ site });
   Tpls.findAllInstancesOfComponent(site, component).forEach(
     ({ referencedComponent, tpl }) => {
+      ensureComponentsObserved([referencedComponent]);
       if (!tpl.name) {
         // Auto-name TplComponents with public states.
         tplMgr.renameTpl(
@@ -629,7 +627,7 @@ export function addComponentState(
     component.params.push(state.onChangeParam);
   }
   if (isPublicState(state)) {
-    addImplicitStates(site, component, state);
+    addImplicitStates(site, component);
   }
 }
 

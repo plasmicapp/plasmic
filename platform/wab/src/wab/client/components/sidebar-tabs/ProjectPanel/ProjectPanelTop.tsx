@@ -1008,8 +1008,12 @@ function getFolderItemMenuRenderer({
       );
 
     const onConvertToPage = () =>
-      studioCtx.changeUnsafe(() =>
-        studioCtx.siteOps().convertComponentToPage(component!)
+      studioCtx.changeObserved(
+        () => [component!],
+        ({ success }) => {
+          studioCtx.siteOps().convertComponentToPage(component!);
+          return success();
+        }
       );
 
     const onFindReferences = () =>

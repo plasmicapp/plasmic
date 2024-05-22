@@ -424,8 +424,12 @@ const ComponentRow = observer(function ComponentRow(props: {
           <Menu.Item
             key="convert_to_page"
             onClick={() =>
-              studioCtx.changeUnsafe(() =>
-                studioCtx.siteOps().convertComponentToPage(component)
+              studioCtx.changeObserved(
+                () => [component],
+                ({ success }) => {
+                  studioCtx.siteOps().convertComponentToPage(component);
+                  return success();
+                }
               )
             }
           >
