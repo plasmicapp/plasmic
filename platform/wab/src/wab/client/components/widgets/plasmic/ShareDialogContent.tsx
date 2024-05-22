@@ -533,54 +533,57 @@ function ShareDialogContent(props: ShareDialogContentProps) {
 
   const TabsWrapper = () => {
     return (
-      <div style={{ width: 500 }}>
-        <Tabs
-          onSwitch={(tabKey) => {
-            setCurrentTab(tabKey);
-          }}
-          barWrapper={(bar) => (
-            <div
-              style={{
-                fontSize: 12,
-                paddingLeft: 16,
-              }}
-            >
-              {bar}
-            </div>
-          )}
-          tabKey={currentTab}
-          useDefaultClasses={false}
-          tabClassName="hilite-tab"
-          activeTabClassName="hilite-tab--active"
-          tabs={withoutFalsy([
-            showEndUsersTab &&
-              new Tab({
-                name: "End users",
-                key: "end-users",
-                contents: () => {
-                  return (
-                    <PermissionsTab
-                      appCtx={appCtx}
-                      project={resource.resource}
-                      directoryId={config.directoryId!}
-                    />
-                  );
-                },
-              }),
+      <Tabs
+        onSwitch={(tabKey) => {
+          setCurrentTab(tabKey);
+        }}
+        barWrapper={(bar) => (
+          <div
+            style={{
+              fontSize: 12,
+              paddingLeft: 16,
+            }}
+          >
+            {bar}
+          </div>
+        )}
+        tabKey={currentTab}
+        useDefaultClasses={false}
+        tabClassName="hilite-tab"
+        activeTabClassName="hilite-tab--active"
+        tabs={withoutFalsy([
+          showEndUsersTab &&
             new Tab({
-              name: "Collaborators",
-              key: "collaborators",
+              name: "End users",
+              key: "end-users",
               contents: () => {
-                return collaboratorShareDialog;
+                return (
+                  <PermissionsTab
+                    appCtx={appCtx}
+                    project={resource.resource}
+                    directoryId={config.directoryId!}
+                  />
+                );
               },
             }),
-          ])}
-        ></Tabs>
-      </div>
+          new Tab({
+            name: "Collaborators",
+            key: "collaborators",
+            contents: () => {
+              return collaboratorShareDialog;
+            },
+          }),
+        ])}
+      ></Tabs>
     );
   };
 
-  return showEndUsersTab ? TabsWrapper() : collaboratorShareDialog;
+  return (
+    <div style={{ width: 500 }}>
+      {" "}
+      {showEndUsersTab ? TabsWrapper() : collaboratorShareDialog}{" "}
+    </div>
+  );
 }
 
 export default ShareDialogContent;
