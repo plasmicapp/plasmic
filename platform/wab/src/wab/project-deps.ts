@@ -87,6 +87,7 @@ import {
   extractUsedTokensForMixins,
   extractUsedTokensForTokens,
 } from "@/wab/shared/codegen/style-tokens";
+import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import {
   renameParamAndFixExprs,
   renameTplAndFixExprs,
@@ -701,6 +702,7 @@ function upgradeProjectDep(
     if (!newComp) {
       const componentName = tplMgr.getUniqueComponentName(oldComp.name);
       const res = tplMgr.cloneComponent(oldComp, componentName, true);
+      ensureComponentsObserved([res.component]);
       newComp = res.component;
       oldToNewComp.set(oldComp, newComp);
       mapParams(oldComp, newComp);
@@ -1248,7 +1250,9 @@ function upgradeProjectDep(
           }
         }
       }
-      fillVirtualSlotContents(tplMgr, tpl);
+      // Leave renaming the tree to fixes-post-change to avoid forking the
+      // virtual render expr.
+      fillVirtualSlotContents(tplMgr, tpl, undefined, false);
 
       // Now, this TplComponent may have been the default content of some
       // local component's slot (say, LocalComp), and there may be different

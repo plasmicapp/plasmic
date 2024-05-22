@@ -464,7 +464,8 @@ export function findParentSlot(tpl: TplNode) {
 export function fillVirtualSlotContents(
   tplMgr: TplMgr,
   tpl: TplComponent,
-  slots?: TplSlot[]
+  slots?: TplSlot[],
+  renameDefaultContents: boolean = true
 ) {
   if (!tplMgr.findComponentContainingTpl(tpl)) {
     // must be a TplComponent for a ArenaFrame - nothing to fix since we don't
@@ -503,9 +504,11 @@ export function fillVirtualSlotContents(
           deepRemove: true,
         }
       );
-      // We make sure the new default contents have the proper, unique names.
-      for (const content of newDefaultContents) {
-        tplMgr.ensureSubtreeCorrectlyNamed(owningComponent, content);
+      if (renameDefaultContents) {
+        // We make sure the new default contents have the proper, unique names.
+        for (const content of newDefaultContents) {
+          tplMgr.ensureSubtreeCorrectlyNamed(owningComponent, content);
+        }
       }
     }
   }
