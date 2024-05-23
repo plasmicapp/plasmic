@@ -14,7 +14,7 @@ import {
   isPlainComponent,
 } from "@/wab/components";
 import { getCssRulesFromRs } from "@/wab/css";
-import { tryExtractJson } from "@/wab/exprs";
+import { isFallbackableExpr, tryExtractJson } from "@/wab/exprs";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
 import {
@@ -160,6 +160,9 @@ export function genLocalizationStringsForProject(
             opts
           );
           localizedStrs[key] = lit;
+        }
+        if (isFallbackableExpr(expr) && expr.fallback) {
+          maybeLocalizeExpr(attr, expr.fallback, combo);
         }
       };
 
