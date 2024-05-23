@@ -1,17 +1,7 @@
+import type * as RouterContextType from "next/dist/shared/lib/router-context.shared-runtime";
 import type { NextRouter } from "next/router";
 import * as React from "react";
-
-function tryRequire(module: string) {
-  try {
-    return require(module);
-  } catch {
-    return undefined;
-  }
-}
-
-const RouterImport: any =
-  tryRequire("next/dist/shared/lib/router-context.shared-runtime") ??
-  tryRequire("next/dist/shared/lib/router-context");
+import { tryServerRequires } from "./server-require";
 
 const fakeRouter: NextRouter = {
   push: async () => {
@@ -43,11 +33,17 @@ const fakeRouter: NextRouter = {
   isPreview: false,
 };
 
-export function wrapRouterContext(element: React.ReactElement) {
-  return !!RouterImport.RouterContext?.Provider ? (
-    <RouterImport.RouterContext.Provider value={fakeRouter}>
+export async function wrapRouterContext(element: React.ReactElement) {
+  const RouterContext = (
+    await tryServerRequires<typeof RouterContextType>([
+      "next/dist/shared/lib/router-context.shared-runtime",
+      "next/dist/shared/lib/router-context",
+    ])
+  )?.RouterContext;
+  return !!RouterContext?.Provider ? (
+    <RouterContext.Provider value={fakeRouter}>
       {element}
-    </RouterImport.RouterContext.Provider>
+    </RouterContext.Provider>
   ) : (
     element
   );

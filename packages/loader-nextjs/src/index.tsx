@@ -261,8 +261,8 @@ export function initPlasmicLoader(opts: NextInitOptions) {
  *   in this element tree.
  * @returns an object mapping query key to fetched data
  */
-export function extractPlasmicQueryData(element: React.ReactElement) {
-  return internalExtractPlasmicQueryData(wrapRouterContext(element));
+export async function extractPlasmicQueryData(element: React.ReactElement) {
+  return internalExtractPlasmicQueryData(await wrapRouterContext(element));
 }
 
 const PlasmicNextLink = React.forwardRef(function PlasmicNextLink(
