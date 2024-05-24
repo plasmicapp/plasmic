@@ -105,6 +105,7 @@ import {
   allComponentVariants,
   ComponentType,
   getComponentDisplayName,
+  getRepetitionElementName,
   getRepetitionIndexName,
   isCodeComponent,
   isHostLessCodeComponent,
@@ -1215,7 +1216,7 @@ function renderReppable(tplNode: TplNode, ctx: RenderingCtx) {
               ...ctx,
               env: {
                 ...ctx.env,
-                [dataRep.element.name]: item,
+                [getRepetitionElementName(dataRep)]: item,
                 [getRepetitionIndexName(dataRep)]: index,
                 [elementInternalName]: item,
                 [indexInternalName]: index,

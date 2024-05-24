@@ -67,6 +67,7 @@ import {
   getComponentDisplayName,
   getNonVariantParams,
   getRealParams,
+  getRepetitionElementName,
   getRepetitionIndexName,
   getSuperComponents,
   getSuperComponentVariantToComponent,
@@ -3734,7 +3735,7 @@ export function serializeDataReps(
     return serializedContent;
   }
 
-  const elementName = toVarName(baseVs.dataRep.element.name);
+  const elementName = getRepetitionElementName(baseVs.dataRep);
   const indexName = getRepetitionIndexName(baseVs.dataRep);
 
   const idx = getNumberOfRepeatingAncestors(node) - 1;

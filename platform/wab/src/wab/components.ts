@@ -2338,6 +2338,10 @@ export function extractParamsFromPagePath(path: string) {
   return [...path.matchAll(/\[\[?([^\]]*)\]/g)].map((m) => m[1]);
 }
 
+export function getRepetitionElementName(dataRep: Rep) {
+  return toVarName(dataRep.element.name);
+}
+
 export function getRepetitionIndexName(dataRep: Rep) {
   return dataRep.index ? toVarName(dataRep.index.name) : "__index";
 }
