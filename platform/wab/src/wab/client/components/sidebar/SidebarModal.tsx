@@ -45,7 +45,7 @@ const SidebarModalContext = React.createContext<Store | undefined>(undefined);
 function useSidebarModalContext() {
   return ensure(
     React.useContext(SidebarModalContext),
-    "Unexpected nulish SidebarModalContext"
+    "Unexpected nullish SidebarModalContext"
   );
 }
 

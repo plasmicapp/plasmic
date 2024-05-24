@@ -1,6 +1,7 @@
 import { CustomCssProps } from "@/wab/client/components/canvas/CanvasText";
 import { TplTagElement } from "@/wab/client/components/canvas/slate";
 import { tags } from "@/wab/client/components/canvas/subdeps";
+import { SidebarModalProvider } from "@/wab/client/components/sidebar/SidebarModal";
 import Button from "@/wab/client/components/widgets/Button";
 import {
   ColorPicker,
@@ -171,178 +172,183 @@ function RichTextToolbar_(
     }
   );
   return (
-    <PlasmicRichTextToolbar
-      {...props}
-      root={{ ref }}
-      style={{
-        position: "absolute",
-        top: studioCtx.focusedMode ? 60 : 12,
-      }}
-      hideBlock={!showBlock}
-      block={{
-        props: {
-          "aria-label": "Block type",
-          children: [
-            ...blocks.map((b) => (
-              <Select.Option
-                key={b.tag}
-                value={b.tag}
-                aria-label={b.label}
-                textValue={b.label}
-              >
-                <Icon icon={b.icon} style={{ marginRight: 4 }} /> {b.label}
-              </Select.Option>
-            )),
-            <Select.Option key={null} value={null} textValue={"Default"}>
-              <Icon icon={TextsvgIcon} style={{ marginRight: 4 }} />
-              Default
-            </Select.Option>,
-          ],
-          onChange: (tag) => runInEditor("WRAP_BLOCK", tag),
-          value: block || null,
-        },
-      }}
-      currentColor={{
-        style: {
-          background: currentColor,
-        },
-      }}
-      color={{
-        wrap: (node) => (
-          <Popover
-            visible={colorPickerVisible}
-            onVisibleChange={(visible) => {
-              setColorPickerVisible(visible);
-              markCss({ color: currentColor }, false);
-            }}
-            transitionName=""
-            content={() =>
-              colorPickerVisible && (
-                <div style={{ width: 250 }}>
-                  <ColorPicker
-                    color={currentColor}
-                    onChange={(color: string) => {
-                      const { editor } = ctx;
-                      const oldColor = (editor ? Editor.marks(editor) : {})
-                        ?.color;
-                      if (oldColor !== color) {
-                        markCss({ color }, false);
-                      }
-                    }}
-                  />
-                  <div style={{ marginTop: 8 }}>
-                    <Button
-                      onClick={() => {
-                        markCss({ color: undefined });
-                        setColorPickerVisible(false);
-                      }}
-                    >
-                      Unset color
-                    </Button>
-                  </div>
-                </div>
-              )
-            }
-            trigger="click"
-          >
-            {node}
-          </Popover>
-        ),
-      }}
-      fontWeight={{
-        props: {
-          // TODO: Make button active if selection is bold according to marks.
-          "aria-label": "Bold",
-          onClick: () => runInEditor("BOLD"),
-          menu: () => (
-            <Menu>
-              {fontWeightOptions.map((option) => (
-                <Menu.Item
-                  aria-label={option.label}
-                  key={option.value}
-                  onClick={() =>
-                    markCss({ fontWeight: `${option.value}` as any })
-                  }
+    <SidebarModalProvider>
+      <PlasmicRichTextToolbar
+        {...props}
+        root={{ ref }}
+        style={{
+          position: "absolute",
+          top: studioCtx.focusedMode ? 60 : 12,
+        }}
+        hideBlock={!showBlock}
+        block={{
+          props: {
+            "aria-label": "Block type",
+            children: [
+              ...blocks.map((b) => (
+                <Select.Option
+                  key={b.tag}
+                  value={b.tag}
+                  aria-label={b.label}
+                  textValue={b.label}
                 >
-                  {option.value} - {option.label}
-                </Menu.Item>
-              ))}
-              <Menu.Item
-                aria-label="Unset"
-                onClick={() => markCss({ fontWeight: undefined })}
-              >
-                Unset
-              </Menu.Item>
-            </Menu>
-          ),
-        },
-      }}
-      fontStyle={{
-        // TODO: Make button active if selection is italic according to marks.
-        props: {
-          onClick: () => runInEditor("ITALIC"),
-        },
-      }}
-      textDecoration={{
-        // TODO: Make button active if selection has text-decoration according
-        // to marks.
-        props: {
-          "aria-label": "Underline",
-          onClick: () => runInEditor("UNDERLINE"),
-          menu: () => (
-            <Menu>
-              <Menu.Item
-                aria-label="Underline"
-                onClick={() => runInEditor("UNDERLINE")}
-              >
-                <Icon icon={UnderlinesvgIcon} /> Underline
-              </Menu.Item>
-              <Menu.Item
-                aria-label="Strikethrough"
-                onClick={() => runInEditor("STRIKETHROUGH")}
-              >
-                <Icon icon={StrikeIcon} /> Strikethrough
-              </Menu.Item>
-              <Menu.Item
-                aria-label="Unset"
-                onClick={() => markCss({ textDecorationLine: undefined })}
-              >
-                Unset
-              </Menu.Item>
-            </Menu>
-          ),
-        },
-      }}
-      inline={{
-        // TODO: Make button active if selection has link, code or span.
-        props: {
-          "aria-label": "Link",
-          onClick: () => runInEditor("LINK"),
-          menu: () => (
-            <Menu>
-              <Menu.Item aria-label="Link" onClick={() => runInEditor("LINK")}>
-                <Icon icon={LinksvgIcon} style={{ marginRight: 4 }} />
-                Link
-              </Menu.Item>
-              <Menu.Item
-                aria-label="Inline code"
-                onClick={() => runInEditor("CODE")}
-              >
-                <Icon icon={CodesvgIcon} style={{ marginRight: 4 }} />
-                Inline code
-              </Menu.Item>
-              <Menu.Item
-                aria-label="Span element"
-                onClick={() => runInEditor("SPAN")}
-              >
+                  <Icon icon={b.icon} style={{ marginRight: 4 }} /> {b.label}
+                </Select.Option>
+              )),
+              <Select.Option key={null} value={null} textValue={"Default"}>
                 <Icon icon={TextsvgIcon} style={{ marginRight: 4 }} />
-                Span element
-              </Menu.Item>
-            </Menu>
+                Default
+              </Select.Option>,
+            ],
+            onChange: (tag) => runInEditor("WRAP_BLOCK", tag),
+            value: block || null,
+          },
+        }}
+        currentColor={{
+          style: {
+            background: currentColor,
+          },
+        }}
+        color={{
+          wrap: (node) => (
+            <Popover
+              visible={colorPickerVisible}
+              onVisibleChange={(visible) => {
+                setColorPickerVisible(visible);
+                markCss({ color: currentColor }, false);
+              }}
+              transitionName=""
+              content={() =>
+                colorPickerVisible && (
+                  <div style={{ width: 250 }}>
+                    <ColorPicker
+                      color={currentColor}
+                      onChange={(color: string) => {
+                        const { editor } = ctx;
+                        const oldColor = (editor ? Editor.marks(editor) : {})
+                          ?.color;
+                        if (oldColor !== color) {
+                          markCss({ color }, false);
+                        }
+                      }}
+                    />
+                    <div style={{ marginTop: 8 }}>
+                      <Button
+                        onClick={() => {
+                          markCss({ color: undefined });
+                          setColorPickerVisible(false);
+                        }}
+                      >
+                        Unset color
+                      </Button>
+                    </div>
+                  </div>
+                )
+              }
+              trigger="click"
+            >
+              {node}
+            </Popover>
           ),
-        },
-      }}
-    />
+        }}
+        fontWeight={{
+          props: {
+            // TODO: Make button active if selection is bold according to marks.
+            "aria-label": "Bold",
+            onClick: () => runInEditor("BOLD"),
+            menu: () => (
+              <Menu>
+                {fontWeightOptions.map((option) => (
+                  <Menu.Item
+                    aria-label={option.label}
+                    key={option.value}
+                    onClick={() =>
+                      markCss({ fontWeight: `${option.value}` as any })
+                    }
+                  >
+                    {option.value} - {option.label}
+                  </Menu.Item>
+                ))}
+                <Menu.Item
+                  aria-label="Unset"
+                  onClick={() => markCss({ fontWeight: undefined })}
+                >
+                  Unset
+                </Menu.Item>
+              </Menu>
+            ),
+          },
+        }}
+        fontStyle={{
+          // TODO: Make button active if selection is italic according to marks.
+          props: {
+            onClick: () => runInEditor("ITALIC"),
+          },
+        }}
+        textDecoration={{
+          // TODO: Make button active if selection has text-decoration according
+          // to marks.
+          props: {
+            "aria-label": "Underline",
+            onClick: () => runInEditor("UNDERLINE"),
+            menu: () => (
+              <Menu>
+                <Menu.Item
+                  aria-label="Underline"
+                  onClick={() => runInEditor("UNDERLINE")}
+                >
+                  <Icon icon={UnderlinesvgIcon} /> Underline
+                </Menu.Item>
+                <Menu.Item
+                  aria-label="Strikethrough"
+                  onClick={() => runInEditor("STRIKETHROUGH")}
+                >
+                  <Icon icon={StrikeIcon} /> Strikethrough
+                </Menu.Item>
+                <Menu.Item
+                  aria-label="Unset"
+                  onClick={() => markCss({ textDecorationLine: undefined })}
+                >
+                  Unset
+                </Menu.Item>
+              </Menu>
+            ),
+          },
+        }}
+        inline={{
+          // TODO: Make button active if selection has link, code or span.
+          props: {
+            "aria-label": "Link",
+            onClick: () => runInEditor("LINK"),
+            menu: () => (
+              <Menu>
+                <Menu.Item
+                  aria-label="Link"
+                  onClick={() => runInEditor("LINK")}
+                >
+                  <Icon icon={LinksvgIcon} style={{ marginRight: 4 }} />
+                  Link
+                </Menu.Item>
+                <Menu.Item
+                  aria-label="Inline code"
+                  onClick={() => runInEditor("CODE")}
+                >
+                  <Icon icon={CodesvgIcon} style={{ marginRight: 4 }} />
+                  Inline code
+                </Menu.Item>
+                <Menu.Item
+                  aria-label="Span element"
+                  onClick={() => runInEditor("SPAN")}
+                >
+                  <Icon icon={TextsvgIcon} style={{ marginRight: 4 }} />
+                  Span element
+                </Menu.Item>
+              </Menu>
+            ),
+          },
+        }}
+      />
+    </SidebarModalProvider>
   );
 }
 
