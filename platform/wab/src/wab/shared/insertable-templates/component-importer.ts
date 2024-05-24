@@ -32,6 +32,7 @@ interface OriginInfo {
   site: Site;
   screenVariant: Variant | undefined;
   hostLessDependencies: HostLessDependencies;
+  groupName?: string;
 }
 
 export type ComponentImporter = (
@@ -197,7 +198,16 @@ export function mkInsertableComponentImporter(
   };
 
   const cloneComp = (comp: Component) => {
-    const newComp = cloneComponent(comp, comp.name).component;
+    let compName = comp.name;
+    if (info.groupName) {
+      // Hidden pages should stay hidden even after prefixing
+      if (comp.type === "page" && compName.startsWith("_")) {
+        compName = compName.replace("_", `_${info.groupName}/`);
+      } else {
+        compName = `${info.groupName}/${compName}`;
+      }
+    }
+    const newComp = cloneComponent(comp, compName).component;
     fixupComp(newComp);
     newComp.templateInfo = new ComponentTemplateInfo({
       name: newComp.templateInfo?.name,

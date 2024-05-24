@@ -9,6 +9,7 @@ import {
   TeamId,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
+import { DEFAULT_INSERTABLE } from "@/wab/shared/constants";
 import {
   featureTiers,
   newFeatureTiers,
@@ -82,6 +83,21 @@ export interface InsertableTemplatesGroup {
   isPageTemplatesGroup?: boolean;
 }
 
+export interface Installable {
+  type: "ui-kit";
+  name: string;
+  sectionLabel?: string;
+  isInstallOnly: true;
+  isNew?: boolean;
+  groupName: string; // Used to prefix imported assets
+  projectId: string;
+  imageUrl?: string;
+  entryPoint: {
+    type: "component" | "page" | "arena";
+    name: string;
+  };
+}
+
 /**
  * Represents a single template (pulled from a component)
  */
@@ -91,6 +107,7 @@ export interface InsertableTemplatesItem {
   componentName: string; // Name of component to insert
   imageUrl?: string; // A preview image
   displayName?: string;
+  groupName?: string;
   onlyShownIn?: "old" | "new";
   tokenResolution?: InsertableTemplateTokenResolution;
   componentResolution?: InsertableTemplateComponentResolution;
@@ -103,6 +120,7 @@ export interface InsertableTemplatesComponent {
   type: "insertable-templates-component";
   projectId: string; // Where to find the template
   componentName: string; // Name of component to insert
+  groupName?: string;
   /**
    * Globally unique name of the template; should match up with
    * Component.templateInfo.name of the corresponding component.
@@ -111,6 +129,8 @@ export interface InsertableTemplatesComponent {
   templateName: string;
   imageUrl?: string; // A preview image
   displayName?: string;
+  tokenResolution?: InsertableTemplateTokenResolution;
+  componentResolution?: InsertableTemplateComponentResolution;
 }
 
 /**
@@ -423,6 +443,7 @@ const DEFAULT_DEVFLAGS = {
   insertableTemplates: ensureType<InsertableTemplatesGroup | undefined>(
     undefined
   ),
+  installables: ensureType<Installable[]>([]),
   hostLessComponents: ensureType<HostLessPackageInfo[] | undefined>([
     {
       type: "hostless-package",
@@ -538,6 +559,7 @@ const DEFAULT_DEVFLAGS = {
   workspaces: false,
   noObserve: false,
   incrementalObservables: false,
+  plexusEnabled: false,
   defaultInsertable: "plume",
   spacing: true,
   spacingArea: true,
@@ -688,7 +710,8 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     multiSelect: true,
     insert2022Q4: true,
     incrementalObservables: true,
-    defaultInsertable: "plexus",
+    plexusEnabled: true,
+    defaultInsertable: DEFAULT_INSERTABLE,
     branching: true,
     comments: true,
     pageLayout: true,

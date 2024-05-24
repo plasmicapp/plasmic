@@ -23,6 +23,16 @@
   --plasmic-token-spectrum-cyan-60: var(--token-jkHiEp9PkT);
 }
 
+.plasmic_tokens {
+  --plsmc-standard-width: 800px;
+  --plsmc-wide-width: 1280px;
+  --plsmc-viewport-gap: 16px;
+  --plsmc-wide-chunk: calc(
+    ((var(--plsmc-wide-width) - var(--plsmc-standard-width)) / 2) -
+      var(--plsmc-viewport-gap)
+  );
+}
+
 .plasmic_default_styles {
   --mixin-WbicF9taXJLU_font-family: "Inter", sans-serif;
   --mixin-WbicF9taXJLU_font-size: 16px;
@@ -157,6 +167,10 @@
 .plasmic_mixins {
   --mixin-dN0TJHoz-_box-shadow: inset 0px 0px 0px 1px var(--token-d0cmIJuLq);
   --plasmic-mixin-border-outline_box-shadow: var(--mixin-dN0TJHoz-_box-shadow);
+  --mixin-dN0TJHoz-_white-space: pre-wrap;
+  --plasmic-mixin-border-outline_white-space: var(
+    --mixin-dN0TJHoz-_white-space
+  );
 }
 
 :where(.all) {
@@ -467,7 +481,7 @@
 .__wab_expr_html_text {
   white-space: normal;
 }
-.root_reset {
+:where(.root_reset) {
   font-family: var(--mixin-WbicF9taXJLU_font-family);
   font-size: var(--mixin-WbicF9taXJLU_font-size);
   font-weight: var(--mixin-WbicF9taXJLU_font-weight);
@@ -480,10 +494,11 @@
   white-space: var(--mixin-WbicF9taXJLU_white-space);
 }
 
-:where(.root_reset .plasmic_default__h1),
-:where(.root_reset .h1),
-:where(.root_reset :global(.__wab_expr_html_text) h1),
-:where(.root_reset.plasmic_default__h1) {
+:where(.root_reset) h1:where(.h1),
+h1:where(.root_reset.h1),
+:where(.root_reset .__wab_expr_html_text) h1,
+:where(.root_reset_tags) h1,
+h1:where(.root_reset_tags) {
   font-family: var(--mixin-vRaLCXxIn_font-family);
   color: var(--mixin-vRaLCXxIn_color);
   font-size: var(--mixin-vRaLCXxIn_font-size);
@@ -492,10 +507,11 @@
   line-height: var(--mixin-vRaLCXxIn_line-height);
 }
 
-:where(.root_reset .plasmic_default__h2),
-:where(.root_reset .h2),
-:where(.root_reset :global(.__wab_expr_html_text) h2),
-:where(.root_reset.plasmic_default__h2) {
+:where(.root_reset) h2:where(.h2),
+h2:where(.root_reset.h2),
+:where(.root_reset .__wab_expr_html_text) h2,
+:where(.root_reset_tags) h2,
+h2:where(.root_reset_tags) {
   font-family: var(--mixin-o0eu5ISY6Y_font-family);
   color: var(--mixin-o0eu5ISY6Y_color);
   font-size: var(--mixin-o0eu5ISY6Y_font-size);
@@ -504,10 +520,11 @@
   line-height: var(--mixin-o0eu5ISY6Y_line-height);
 }
 
-:where(.root_reset .plasmic_default__h3),
-:where(.root_reset .h3),
-:where(.root_reset :global(.__wab_expr_html_text) h3),
-:where(.root_reset.plasmic_default__h3) {
+:where(.root_reset) h3:where(.h3),
+h3:where(.root_reset.h3),
+:where(.root_reset .__wab_expr_html_text) h3,
+:where(.root_reset_tags) h3,
+h3:where(.root_reset_tags) {
   font-family: var(--mixin-DpK2f5Dbrh_font-family);
   color: var(--mixin-DpK2f5Dbrh_color);
   font-size: var(--mixin-DpK2f5Dbrh_font-size);
@@ -516,10 +533,11 @@
   line-height: var(--mixin-DpK2f5Dbrh_line-height);
 }
 
-:where(.root_reset .plasmic_default__h4),
-:where(.root_reset .h4),
-:where(.root_reset :global(.__wab_expr_html_text) h4),
-:where(.root_reset.plasmic_default__h4) {
+:where(.root_reset) h4:where(.h4),
+h4:where(.root_reset.h4),
+:where(.root_reset .__wab_expr_html_text) h4,
+:where(.root_reset_tags) h4,
+h4:where(.root_reset_tags) {
   font-family: var(--mixin-UNUcKlYnF__font-family);
   color: var(--mixin-UNUcKlYnF__color);
   font-size: var(--mixin-UNUcKlYnF__font-size);
@@ -528,10 +546,11 @@
   line-height: var(--mixin-UNUcKlYnF__line-height);
 }
 
-:where(.root_reset .plasmic_default__h5),
-:where(.root_reset .h5),
-:where(.root_reset :global(.__wab_expr_html_text) h5),
-:where(.root_reset.plasmic_default__h5) {
+:where(.root_reset) h5:where(.h5),
+h5:where(.root_reset.h5),
+:where(.root_reset .__wab_expr_html_text) h5,
+:where(.root_reset_tags) h5,
+h5:where(.root_reset_tags) {
   font-family: var(--mixin-8fRSlHMoFf_font-family);
   color: var(--mixin-8fRSlHMoFf_color);
   font-size: var(--mixin-8fRSlHMoFf_font-size);
@@ -540,10 +559,11 @@
   line-height: var(--mixin-8fRSlHMoFf_line-height);
 }
 
-:where(.root_reset .plasmic_default__h6),
-:where(.root_reset .h6),
-:where(.root_reset :global(.__wab_expr_html_text) h6),
-:where(.root_reset.plasmic_default__h6) {
+:where(.root_reset) h6:where(.h6),
+h6:where(.root_reset.h6),
+:where(.root_reset .__wab_expr_html_text) h6,
+:where(.root_reset_tags) h6,
+h6:where(.root_reset_tags) {
   font-family: var(--mixin-SDE2SKfo2D_font-family);
   color: var(--mixin-SDE2SKfo2D_color);
   font-size: var(--mixin-SDE2SKfo2D_font-size);
@@ -551,24 +571,27 @@
   line-height: var(--mixin-SDE2SKfo2D_line-height);
 }
 
-:where(.root_reset .plasmic_default__a),
-:where(.root_reset .a),
-:where(.root_reset :global(.__wab_expr_html_text) a),
-:where(.root_reset.plasmic_default__a) {
+:where(.root_reset) a:where(.a),
+a:where(.root_reset.a),
+:where(.root_reset .__wab_expr_html_text) a,
+:where(.root_reset_tags) a,
+a:where(.root_reset_tags) {
   color: var(--mixin-F_TIfDI_04_color);
 }
 
-:where(.root_reset .plasmic_default__a:hover),
-:where(.root_reset .a:hover),
-:where(.root_reset :global(.__wab_expr_html_text) a:hover),
-:where(.root_reset.plasmic_default__a:hover) {
+:where(.root_reset) a:where(.a):hover,
+a:where(.root_reset.a):hover,
+:where(.root_reset .__wab_expr_html_text) a:hover,
+:where(.root_reset_tags) a:hover,
+a:where(.root_reset_tags):hover {
   color: var(--mixin-xqLFIoZYpF_color);
 }
 
-:where(.root_reset .plasmic_default__blockquote),
-:where(.root_reset .blockquote),
-:where(.root_reset :global(.__wab_expr_html_text) blockquote),
-:where(.root_reset.plasmic_default__blockquote) {
+:where(.root_reset) blockquote:where(.blockquote),
+blockquote:where(.root_reset.blockquote),
+:where(.root_reset .__wab_expr_html_text) blockquote,
+:where(.root_reset_tags) blockquote,
+blockquote:where(.root_reset_tags) {
   color: var(--mixin-kkUvnTidWP_color);
   padding-left: var(--mixin-kkUvnTidWP_padding-left);
   border-left: var(--mixin-kkUvnTidWP_border-left-width)
@@ -576,10 +599,11 @@
     var(--mixin-kkUvnTidWP_border-left-color);
 }
 
-:where(.root_reset .plasmic_default__code),
-:where(.root_reset .code),
-:where(.root_reset :global(.__wab_expr_html_text) code),
-:where(.root_reset.plasmic_default__code) {
+:where(.root_reset) code:where(.code),
+code:where(.root_reset.code),
+:where(.root_reset .__wab_expr_html_text) code,
+:where(.root_reset_tags) code,
+code:where(.root_reset_tags) {
   background: #f8f8f8;
   font-family: var(--mixin-jIT_grnR1M_font-family);
   border-radius: var(--mixin-jIT_grnR1M_border-top-left-radius)
@@ -603,10 +627,11 @@
     var(--mixin-jIT_grnR1M_border-left-color);
 }
 
-:where(.root_reset .plasmic_default__pre),
-:where(.root_reset .pre),
-:where(.root_reset :global(.__wab_expr_html_text) pre),
-:where(.root_reset.plasmic_default__pre) {
+:where(.root_reset) pre:where(.pre),
+pre:where(.root_reset.pre),
+:where(.root_reset .__wab_expr_html_text) pre,
+:where(.root_reset_tags) pre,
+pre:where(.root_reset_tags) {
   background: #f8f8f8;
   font-family: var(--mixin-_Hodov5jhA_font-family);
   border-radius: var(--mixin-_Hodov5jhA_border-top-left-radius)
@@ -630,10 +655,11 @@
     var(--mixin-_Hodov5jhA_border-left-color);
 }
 
-:where(.root_reset .plasmic_default__ol),
-:where(.root_reset .ol),
-:where(.root_reset :global(.__wab_expr_html_text) ol),
-:where(.root_reset.plasmic_default__ol) {
+:where(.root_reset) ol:where(.ol),
+ol:where(.root_reset.ol),
+:where(.root_reset .__wab_expr_html_text) ol,
+:where(.root_reset_tags) ol,
+ol:where(.root_reset_tags) {
   display: var(--mixin-USQ7iGvO2a_display);
   flex-direction: var(--mixin-USQ7iGvO2a_flex-direction);
   align-items: var(--mixin-USQ7iGvO2a_align-items);
@@ -645,10 +671,11 @@
   flex-column-gap: var(--mixin-USQ7iGvO2a_flex-column-gap);
 }
 
-:where(.root_reset .plasmic_default__ul),
-:where(.root_reset .ul),
-:where(.root_reset :global(.__wab_expr_html_text) ul),
-:where(.root_reset.plasmic_default__ul) {
+:where(.root_reset) ul:where(.ul),
+ul:where(.root_reset.ul),
+:where(.root_reset .__wab_expr_html_text) ul,
+:where(.root_reset_tags) ul,
+ul:where(.root_reset_tags) {
   display: var(--mixin-bDKZP_5Sia_display);
   flex-direction: var(--mixin-bDKZP_5Sia_flex-direction);
   align-items: var(--mixin-bDKZP_5Sia_align-items);

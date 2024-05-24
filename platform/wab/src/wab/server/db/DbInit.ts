@@ -1,15 +1,22 @@
 // Must initialize globals early so that imported code can detect what
 // environment we're running in.
-import { spawn } from "@/wab/common";
+import { ensureType, spawn } from "@/wab/common";
+import { InsertableTemplatesGroup, Installable } from "@/wab/devflags";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
 import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { initDb } from "@/wab/server/db/DbInitUtil";
 import { DbMgr, normalActor, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { FeatureTier, Team, User } from "@/wab/server/entities/Entities";
-import { getAllSysnames, getDevflags, PkgMgr } from "@/wab/server/pkg-mgr";
+import {
+  getAllSysnames,
+  getBundleInfo,
+  getDevflagForInsertableTemplateItem,
+  PkgMgr,
+} from "@/wab/server/pkg-mgr";
 import { initializeGlobals } from "@/wab/server/svr-init";
 import { Bundler } from "@/wab/shared/bundler";
+import { DEFAULT_INSERTABLE } from "@/wab/shared/constants";
 import { createSite } from "@/wab/sites";
 import { EntityManager } from "typeorm";
 
@@ -87,13 +94,28 @@ export async function seedTestDb(em: EntityManager) {
   await db.setDevFlagOverrides(
     JSON.stringify(
       {
-        insertableTemplates: {
+        installables: ensureType<Installable[] | undefined>([
+          {
+            type: "ui-kit",
+            isInstallOnly: true,
+            isNew: true,
+            name: "Plasmic Design System",
+            projectId: getBundleInfo(DEFAULT_INSERTABLE).projectId,
+            imageUrl: "https://static1.plasmic.app/plasmic-logo.png",
+            groupName: "PDS",
+            entryPoint: {
+              type: "arena",
+              name: "Entry",
+            },
+          },
+        ]),
+        insertableTemplates: ensureType<InsertableTemplatesGroup | undefined>({
           type: "insertable-templates-group",
           name: "root",
           items: sysnames
-            .map(getDevflags)
+            .map(getDevflagForInsertableTemplateItem)
             .filter((insertableGroup) => insertableGroup.items.length > 0),
-        },
+        }),
       },
       null,
       2

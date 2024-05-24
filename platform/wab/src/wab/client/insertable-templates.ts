@@ -32,7 +32,7 @@ import {
   CopyState,
   CopyStateBundleRef,
   CopyStateExtraInfo,
-  InsertableTemplateExtraInfo,
+  InsertableTemplateComponentExtraInfo,
 } from "@/wab/shared/insertable-templates/types";
 import { PkgInfo, PkgVersionInfo } from "@/wab/shared/SharedApi";
 import { $$$ } from "@/wab/shared/TplQuery";
@@ -136,7 +136,7 @@ export const getInsertablePageTemplateComponent = (
 export const replaceWithPageTemplate = (
   studioCtx: StudioCtx,
   page: PageComponent,
-  templateInfo: InsertableTemplateExtraInfo
+  templateInfo: InsertableTemplateComponentExtraInfo
 ) => {
   const { tpl: toBeInserted, seenFonts } = cloneInsertableTemplate(
     studioCtx.site,
@@ -273,7 +273,7 @@ export async function buildInsertableExtraInfo(
   projectId: string,
   componentName: string,
   screenVariant: Variant | undefined
-): Promise<InsertableTemplateExtraInfo | undefined> {
+): Promise<InsertableTemplateComponentExtraInfo | undefined> {
   await studioCtx.projectDependencyManager.fetchInsertableTemplate(projectId);
 
   const it = studioCtx.projectDependencyManager.getInsertableTemplate({
@@ -293,6 +293,7 @@ export async function buildInsertableExtraInfo(
     screenVariant,
     ...(await getHostLessDependenciesToInsertableTemplate(studioCtx, it.site)),
     projectId,
+    groupName: template?.groupName,
     resolution: {
       token: template?.tokenResolution,
       component: template?.componentResolution,

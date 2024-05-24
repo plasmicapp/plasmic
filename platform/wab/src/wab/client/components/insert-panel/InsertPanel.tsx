@@ -4,6 +4,7 @@ import cn from "classnames";
 import {
   Component,
   isKnownArena,
+  isKnownComponent,
   ProjectDependency,
   TplNode,
 } from "@/wab/classes";
@@ -19,6 +20,10 @@ import S from "@/wab/client/components/insert-panel/InsertPanel.module.scss";
 import ListSectionHeader from "@/wab/client/components/ListSectionHeader";
 import ListSectionSeparator from "@/wab/client/components/ListSectionSeparator";
 import {
+  notifiyInstallableFailure,
+  notifiyInstallableSuccess,
+} from "@/wab/client/components/modals/codeComponentModals";
+import {
   OmnibarTabNames,
   shouldShowHostLessPackage,
 } from "@/wab/client/components/omnibar/Omnibar";
@@ -27,6 +32,7 @@ import { getPlumeImage } from "@/wab/client/components/plume/plume-display-utils
 import {
   createAddHostLessComponent,
   createAddInsertableTemplate,
+  createAddInstallable,
   createAddTemplateComponent,
   createAddTplCodeComponents,
   createAddTplComponent,
@@ -48,6 +54,7 @@ import {
   INSERTABLES_MAP,
   isTplAddItem,
 } from "@/wab/client/definitions/insertables";
+import { DragInsertManager } from "@/wab/client/Dnd";
 import { useVirtualCombobox } from "@/wab/client/hooks/useVirtualCombobox";
 import {
   DefaultInsertPanelProps,
@@ -396,6 +403,26 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
         });
         break;
       }
+      case AddItemType.installable: {
+        try {
+          const installed = await DragInsertManager.install(studioCtx, item);
+          if (!installed) {
+            // Happens when maybe devflag does not have the right info. E.g. there is no arena named "Abc" for devflag installable item `entryPoint: {type: "arena", name: "abc"}`
+            throw new Error("Failed to fetch installable info");
+          }
+          await studioCtx.changeUnsafe(() => {
+            if (isKnownArena(installed)) {
+              studioCtx.switchToArena(installed);
+            } else if (isKnownComponent(installed)) {
+              studioCtx.switchToComponentArena(installed);
+            }
+          });
+          notifiyInstallableSuccess(item.label);
+        } catch (error) {
+          notifiyInstallableFailure(item.label, (error as any).message);
+        }
+        break;
+      }
       case AddItemType.fake: {
         const extraInfo_ = await studioCtx.runFakeItem(item);
         if (item.isPackage && extraInfo_ !== false) {
@@ -740,7 +767,8 @@ const Row = React.memo(function Row(props: {
           const hasImage =
             (i.type === AddItemType.tpl ||
               i.type === AddItemType.plume ||
-              i.type === AddItemType.fake) &&
+              i.type === AddItemType.fake ||
+              i.type === AddItemType.installable) &&
             !!i.previewImage;
 
           const indent =
@@ -799,14 +827,16 @@ const Row = React.memo(function Row(props: {
                       hoverText={
                         item["hostLessPackageInfo"]?.syntheticPackage
                           ? "Show package"
-                          : undefined
+                          : "Install package"
                       }
+                      _new={item.isNew}
                       installOnly={item["isPackage"]}
                       preview={hasImage ? "image" : "icon"}
                       previewImage={
                         item.type === AddItemType.tpl ||
                         item.type === AddItemType.plume ||
-                        item.type === AddItemType.fake
+                        item.type === AddItemType.fake ||
+                        item.type === AddItemType.installable
                           ? item.previewImage
                           : null
                       }
@@ -1327,6 +1357,19 @@ export function buildAddItemGroups({
           (item) => item.label.toLowerCase()
         ),
       },
+
+    studioCtx.appCtx.appConfig.plexusEnabled
+      ? {
+          key: "ui-kits",
+          sectionLabel: "Design systems",
+          sectionKey: "Design systems",
+          familyKey: "hostless-packages",
+          familyLabel: "Browse component store",
+          items: studioCtx.appCtx.appConfig.installables
+            .filter((item) => item.type === "ui-kit")
+            .map(createAddInstallable),
+        }
+      : undefined,
 
     canInsertHostlessPackage(uiConfig, "unstyled", canInsertContext) &&
       studioCtx.shownSyntheticSections.get("unstyled") && {

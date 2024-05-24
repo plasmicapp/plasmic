@@ -1,4 +1,4 @@
-import { TplNode } from "@/wab/classes";
+import { Arena, Component, TplNode } from "@/wab/classes";
 import { hasLinkedSelectable } from "@/wab/client/components/canvas/studio-canvas-util";
 import {
   findRowColForMouse,
@@ -10,7 +10,10 @@ import {
   frameToClientRect,
   frameToScalerRect,
 } from "@/wab/client/coords";
-import { AddTplItem } from "@/wab/client/definitions/insertables";
+import {
+  AddInstallableItem,
+  AddTplItem,
+} from "@/wab/client/definitions/insertables";
 import * as domMod from "@/wab/client/dom";
 import { getPaddingRect, hasLayoutBox } from "@/wab/client/dom";
 import {
@@ -750,6 +753,22 @@ export class DragInsertManager {
    */
   constructor(private studioCtx: StudioCtx, targeters: NodeTargeter[]) {
     this.targeters.push(...targeters);
+  }
+
+  /**
+   * Installs a collection from the Insert Panel without needing to require a view context.
+   * @param studioCtx
+   * @param spec
+   */
+  public static async install(studioCtx: StudioCtx, spec: AddInstallableItem) {
+    const extraInfo = spec.asyncExtraInfo
+      ? await spec.asyncExtraInfo(studioCtx)
+      : undefined;
+    let installed: Arena | Component | undefined;
+    await studioCtx.changeUnsafe(() => {
+      installed = spec.factory(studioCtx, extraInfo);
+    });
+    return installed;
   }
 
   public static async build(

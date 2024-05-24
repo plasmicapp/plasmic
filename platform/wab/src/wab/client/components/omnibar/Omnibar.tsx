@@ -42,6 +42,7 @@ import {
   isAddItem,
   isTplAddItem,
 } from "@/wab/client/definitions/insertables";
+import { DragInsertManager } from "@/wab/client/Dnd";
 import { FRAME_ICON } from "@/wab/client/icons";
 import {
   DefaultOmnibarProps,
@@ -230,6 +231,9 @@ export const Omnibar = observer(function Omnibar(props: OmnibarProps) {
       });
     } else if (item.type === AddItemType.fake) {
       await studioCtx.runFakeItem(item);
+    } else if (item.type === AddItemType.installable) {
+      // NOTE: Omnibar is an un-used feature, so the line below is just assumed to work
+      await DragInsertManager.install(studioCtx, item);
     } else if (L.values(CommandItemType).includes(item.type)) {
       await item.action(studioCtx);
     }

@@ -36,7 +36,6 @@ import { DEVFLAGS } from "@/wab/devflags";
 import { withoutUids } from "@/wab/model/model-meta";
 import { adminEmails } from "@/wab/server/admin";
 import { createSiteForHostlessProject } from "@/wab/server/code-components/code-components";
-import { DEFAULT_INSERTABLE } from "@/wab/server/constants";
 import {
   normalizeOperationTemplate,
   reevaluateAppAuthUserPropsOpId,
@@ -195,6 +194,7 @@ import { isMainBranchId, validateBranchName } from "@/wab/shared/ApiSchemaUtil";
 import { Bundler } from "@/wab/shared/bundler";
 import { getBundle } from "@/wab/shared/bundles";
 import { toVarName } from "@/wab/shared/codegen/util";
+import { DEFAULT_INSERTABLE } from "@/wab/shared/constants";
 import {
   DataSourceType,
   getDataSourceMeta,

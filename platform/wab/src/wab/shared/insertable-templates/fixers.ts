@@ -253,6 +253,7 @@ export function mkInsertableTokenImporter(
   targetTokens: StyleToken[],
   tokenResolution: InsertableTemplateTokenResolution | undefined,
   screenVariant: Variant | undefined,
+  groupName: string | undefined,
   onFontSeen: (font: string) => void
 ) {
   const oldToNewToken = new Map<StyleToken, StyleToken>();
@@ -301,7 +302,9 @@ export function mkInsertableTokenImporter(
 
     const tplMgr = new TplMgr({ site: targetSite });
     const newToken = tplMgr.addToken({
-      name: tplMgr.getUniqueTokenName(oldToken.name),
+      name: tplMgr.getUniqueTokenName(
+        groupName ? `${groupName}/${oldToken.name}` : oldToken.name
+      ),
       tokenType: oldToken.type as TokenType,
       value: maybeDerefToken(targetTokens, oldTokens, oldToken),
     });

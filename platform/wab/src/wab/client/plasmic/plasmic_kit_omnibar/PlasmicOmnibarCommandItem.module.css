@@ -13,9 +13,9 @@
   background: var(--token-7ZKxn5-4Au);
 }
 .freeBox__mKbC {
-  flex-direction: row;
   display: flex;
   position: relative;
+  flex-direction: row;
 }
 .freeBox__mKbC > :global(.__wab_flex-container) {
   flex-direction: row;

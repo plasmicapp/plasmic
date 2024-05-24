@@ -1,4 +1,10 @@
-import { Component, ProjectDependency, Site, Variant } from "@/wab/classes";
+import {
+  Arena,
+  Component,
+  ProjectDependency,
+  Site,
+  Variant,
+} from "@/wab/classes";
 import {
   InsertableTemplateComponentResolution,
   InsertableTemplateTokenResolution,
@@ -16,14 +22,24 @@ export type HostLessDependencies = Record<
 
 export interface InsertableTemplateExtraInfo {
   site: Site;
-  component: Component;
   screenVariant: Variant | undefined;
   hostLessDependencies: HostLessDependencies;
   projectId: string;
+  groupName?: string;
   resolution: {
     token?: InsertableTemplateTokenResolution;
     component?: InsertableTemplateComponentResolution;
   };
+}
+
+export interface InsertableTemplateComponentExtraInfo
+  extends InsertableTemplateExtraInfo {
+  component: Component;
+}
+
+export interface InsertableTemplateArenaExtraInfo
+  extends InsertableTemplateExtraInfo {
+  arena: Arena;
 }
 
 export interface CopyElementsReference {
@@ -53,7 +69,8 @@ export interface CopyState {
   references: CopyElementsReference[];
 }
 
-export interface CopyStateExtraInfo extends InsertableTemplateExtraInfo {
+export interface CopyStateExtraInfo
+  extends InsertableTemplateComponentExtraInfo {
   references: CopyElementsReference[];
   activeVariants?: VariantCombo;
 }
@@ -68,6 +85,6 @@ export interface InlineComponentContext {
   sourceComp: Component;
   targetSite: Site;
   targetBaseVariant: Variant;
-  extraInfo: InsertableTemplateExtraInfo;
+  extraInfo: InsertableTemplateComponentExtraInfo;
   plumeSite: Site | undefined;
 }

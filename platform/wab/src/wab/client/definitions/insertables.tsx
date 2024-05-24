@@ -1,6 +1,6 @@
 /** @format */
 
-import { Component, TplNode, TplTag } from "@/wab/classes";
+import { Arena, Component, TplNode, TplTag } from "@/wab/classes";
 import {
   ensureTplColumnsRs,
   getScreenVariant,
@@ -57,13 +57,36 @@ export enum AddItemType {
   frame = "frame",
   tpl = "tpl",
   plume = "plume",
+  installable = "installable",
   fake = "fake",
+}
+
+export interface AddInstallableItem<T = any> {
+  key: string;
+  type: AddItemType.installable;
+  label: string;
+  isPackage: boolean;
+  isNew?: boolean;
+  // Assumed to run inside sc.change()
+  factory: (
+    studioCtx: StudioCtx,
+    extraInfo: T
+  ) => Arena | Component | undefined;
+  asyncExtraInfo?: (studioCtx: StudioCtx) => Promise<T>;
+  previewImage?: React.ReactNode;
+  isCompact?: boolean;
+  systemName?: string;
+  icon: React.ReactNode;
+  displayLabel?: React.ReactNode; // ASK: What's the difference between this and the AddInstallableItem.label?
+  description?: string;
+  monospaced?: boolean;
 }
 
 export interface AddFrameItem {
   key: AddItemKey;
   type: AddItemType.frame;
   isCompact?: boolean;
+  isNew?: boolean;
   label: string;
   displayLabel?: React.ReactNode;
   systemName?: string;
@@ -78,6 +101,7 @@ export interface AddFrameItem {
 export interface AddTplItem<T = any> {
   key: AddItemKey | string;
   type: AddItemType.tpl | AddItemType.plume;
+  isNew?: boolean;
   isCompact?: boolean;
   label: string;
   displayLabel?: React.ReactNode;
@@ -107,6 +131,7 @@ export interface AddFakeItem<T = any> {
   key: AddItemKey | string;
   type: AddItemType.fake;
   isCompact?: boolean;
+  isNew?: boolean;
   label: string;
   systemName?: string;
   isPackage?: boolean;
@@ -128,7 +153,11 @@ export function isTplAddItem(item: AddItem): item is AddTplItem {
   return item.type === AddItemType.tpl || item.type === AddItemType.plume;
 }
 
-export type AddItem = AddFrameItem | AddTplItem | AddFakeItem;
+export type AddItem =
+  | AddFrameItem
+  | AddTplItem
+  | AddFakeItem
+  | AddInstallableItem;
 export const isAddItem = (i: { type: string }): i is AddItem =>
   L.values(AddItemType).includes(i.type as AddItemType);
 

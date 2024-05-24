@@ -260,7 +260,7 @@ import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { DataSourceUser } from "@/wab/shared/dynamic-bindings";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { cloneInsertableTemplateComponent } from "@/wab/shared/insertable-templates";
-import { InsertableTemplateExtraInfo } from "@/wab/shared/insertable-templates/types";
+import { InsertableTemplateComponentExtraInfo } from "@/wab/shared/insertable-templates/types";
 import { reorderPageArenaCols } from "@/wab/shared/page-arenas";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import {
@@ -2121,7 +2121,7 @@ export class StudioCtx extends WithDbCtx {
     }: {
       type: ComponentType;
       plumeTemplateId?: string;
-      insertableTemplateInfo?: InsertableTemplateExtraInfo;
+      insertableTemplateInfo?: InsertableTemplateComponentExtraInfo;
       noSwitchArena?: boolean;
     }
   ) {

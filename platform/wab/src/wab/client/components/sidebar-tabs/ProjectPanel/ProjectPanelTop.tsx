@@ -148,7 +148,7 @@ import { useDebounce } from "react-use";
 import { FixedSizeList } from "react-window";
 import { Modal } from "src/wab/client/components/widgets/Modal";
 import { isCoreTeamEmail } from "src/wab/shared/devflag-utils";
-import { InsertableTemplateExtraInfo } from "src/wab/shared/insertable-templates/types";
+import { InsertableTemplateComponentExtraInfo } from "src/wab/shared/insertable-templates/types";
 import useSWR, { mutate } from "swr";
 
 const enum SiteItemType {
@@ -379,7 +379,8 @@ function ProjectPanelTop_(
               return page_;
             });
 
-          let info: InsertableTemplateExtraInfo | undefined = undefined;
+          let info: InsertableTemplateComponentExtraInfo | undefined =
+            undefined;
           switch (chosenTemplate.type) {
             case "blank": {
               await mkPage();

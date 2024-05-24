@@ -1,5 +1,6 @@
 import { ProjectDependency } from "@/wab/classes";
 import { assert } from "@/wab/common";
+import { InsertableTemplatesGroup } from "@/wab/devflags";
 import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { unbundleWithDeps } from "@/wab/server/db/DbBundleLoader";
 import { DbMgr } from "@/wab/server/db/DbMgr";
@@ -169,7 +170,18 @@ export class PkgMgr {
   }
 }
 
-export function getDevflags(sysname: string) {
+export function getBundleInfo(sysname: string) {
+  const {
+    master: [_, bundle],
+  } = parseMasterPkg(sysname);
+  const root = bundle.map[bundle.root];
+  const { projectId, site } = root;
+  return { bundle, projectId, site };
+}
+
+export function getDevflagForInsertableTemplateItem(
+  sysname: string
+): InsertableTemplatesGroup {
   /**
    *  {
         "type": "insertable-templates-component",
@@ -179,13 +191,9 @@ export function getDevflags(sysname: string) {
         "imageUrl": "https://static1.plasmic.app/antd_button.svg"
       }
    */
-  const {
-    master: [_, bundle],
-  } = parseMasterPkg(sysname);
-  const root = bundle.map[bundle.root];
-  const { projectId, site } = root;
+  const { bundle, projectId, site } = getBundleInfo(sysname);
   const defaultComponents = bundle.map[site.__ref].defaultComponents;
-  const items = Object.keys(defaultComponents).map((defaultKind) => {
+  const items = Object.keys(defaultComponents).map((defaultKind): InsertableTemplatesGroup["items"][0] => {
     /**
      * NOTE: Currently, we require that the default components in the insertable template project are set. E.g. Plexus Button set as the default button component in the Plexus project
      * That helps us to fetch the default component and create a template name for it that fits the required pattern (e.g. plexus/button)
