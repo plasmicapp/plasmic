@@ -305,6 +305,9 @@ export class Project extends OrgChild<"ProjectId"> {
     | null;
   @Column("boolean") readableByPublic: boolean;
 
+  @Column("jsonb", { nullable: true })
+  uiConfig: UiConfig | null;
+
   @ManyToOne((type) => Workspace)
   workspace: Workspace | null;
 
