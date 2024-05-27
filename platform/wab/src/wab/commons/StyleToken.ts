@@ -315,6 +315,37 @@ export function derefToken(
   return resolveToken(tokens, token, vsh).value;
 }
 
+/**
+ *  De-refs the token only if the ref is not known by the destination
+ * E.g.
+ * Token: primary -> gray-900 (the ref coming from a Lib-A) -> #111827
+ * Destination:
+ * - Case-1: Lib-A is not imported by the destination. In this case, the gray-900 ref is not known. So the token is de-reffed to return #111827
+ * - Case-2: Lib-A is imported by the destination. In this case, the gray-900 ref is known, so the token is not re-reffed and gray-900 is returned
+ * @param currentTokens Tokens available in the destination
+ * @param oldTokens Tokens that were available in the origin
+ * @param token the token being transferred from origin to destination
+ * @param vsh VariantedStyleHelper
+ * @returns the token's primitive/de-reffed value only if the ref is not known by the destination
+ */
+export function maybeDerefToken(
+  currentTokens: StyleToken[] | Map<string, StyleToken>,
+  oldTokens: StyleToken[] | Map<string, StyleToken>,
+  token: StyleToken,
+  vsh?: VariantedStylesHelper
+): TokenValue {
+  try {
+    // If its a token ref and the ref is present in the current project, then don't de-ref it, because the ref in value is known
+    if (isTokenRef(token.value)) {
+      parseTokenRef(token.value, currentTokens);
+    }
+    return token.value as TokenValue;
+  } catch (e) {
+    // The ref in value is not known, so resolve the token to a primitive value
+    return resolveToken(oldTokens, token, vsh).value;
+  }
+}
+
 export function lazyDerefTokenRefs(
   value: string,
   site: Site,

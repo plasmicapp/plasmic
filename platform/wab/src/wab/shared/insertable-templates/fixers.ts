@@ -39,6 +39,7 @@ import {
   derefToken,
   derefTokenRefs,
   hasTokenRefs,
+  maybeDerefToken,
   mkTokenRef,
   replaceAllTokenRefs,
   TokenType,
@@ -302,7 +303,7 @@ export function mkInsertableTokenImporter(
     const newToken = tplMgr.addToken({
       name: tplMgr.getUniqueTokenName(oldToken.name),
       tokenType: oldToken.type as TokenType,
-      value: derefToken(oldTokens, oldToken),
+      value: maybeDerefToken(targetTokens, oldTokens, oldToken),
     });
 
     if (screenVariant) {

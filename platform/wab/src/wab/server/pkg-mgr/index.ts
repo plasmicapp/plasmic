@@ -198,6 +198,7 @@ export function getDevflags(sysname: string) {
       componentName: defaultComp.name,
       templateName: `${sysname}/${defaultKind}`,
       imageUrl: `https://static1.plasmic.app/insertables/${defaultKind}.svg`,
+      tokenResolution: "reuse-by-name",
     };
   });
   return {

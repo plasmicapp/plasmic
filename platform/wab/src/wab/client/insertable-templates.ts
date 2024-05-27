@@ -79,7 +79,11 @@ export const getInsertableTemplatesGroups = (studioCtx: StudioCtx) => {
 export const getInsertableTemplates = (studioCtx: StudioCtx) => {
   const insertableTemplates = flatten(
     getInsertableTemplatesGroups(studioCtx).map((g) => g.items)
-  ).filter((i) => i.type === "insertable-templates-item");
+  ).filter(
+    (i) =>
+      i.type === "insertable-templates-item" ||
+      i.type === "insertable-templates-component"
+  );
   return insertableTemplates as InsertableTemplatesItem[];
 };
 
