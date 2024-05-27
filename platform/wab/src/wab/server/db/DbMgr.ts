@@ -36,6 +36,7 @@ import { DEVFLAGS } from "@/wab/devflags";
 import { withoutUids } from "@/wab/model/model-meta";
 import { adminEmails } from "@/wab/server/admin";
 import { createSiteForHostlessProject } from "@/wab/server/code-components/code-components";
+import { DEFAULT_INSERTABLE } from "@/wab/server/constants";
 import {
   normalizeOperationTemplate,
   reevaluateAppAuthUserPropsOpId,
@@ -3580,6 +3581,7 @@ export class DbMgr implements MigrationDbMgr {
       workspaceId?: WorkspaceId;
       revisionNum?: number;
       branchName?: string;
+      ownerEmail?: string;
     }
   ) {
     await this.checkProjectPerms(projectId, "viewer", "clone");
@@ -3614,6 +3616,7 @@ export class DbMgr implements MigrationDbMgr {
       bundler,
       {
         ...opts,
+        updateDefaultInsertable: false, // we want to retain project settings (i.e. use the same defaultInsertables as the cloned project)
         name: opts.name ?? `Copy of ${fromProjectInfo.name}${nameSuffix}`,
         ...(fromProjectBranch
           ? { hostUrl: fromProjectBranch.hostUrl ?? null }
@@ -3630,6 +3633,7 @@ export class DbMgr implements MigrationDbMgr {
       ownerId?: string;
       workspaceId?: WorkspaceId;
       hostUrl?: string;
+      ownerEmail?: string;
     }
   ) {
     await this.checkProjectPerms(projectId, "viewer", "clone");
@@ -3653,7 +3657,11 @@ export class DbMgr implements MigrationDbMgr {
       fromProject,
       fromPkgVersion,
       bundler,
-      { ...opts, name: opts.name ?? fromProject.name }
+      {
+        ...opts,
+        updateDefaultInsertable: true, // Existing published templates are used to scaffold new projects. In this case, we want to be able to modify project settings for the owner of the cloned project
+        name: opts.name ?? fromProject.name,
+      }
     );
   }
 
@@ -3666,16 +3674,28 @@ export class DbMgr implements MigrationDbMgr {
       ownerId?: string;
       workspaceId?: WorkspaceId;
       hostUrl?: string | null;
+      ownerEmail?: string;
+      updateDefaultInsertable?: boolean; // This is used to allow/prevent modifications to defaultInsertable flag
     }
   ) {
-    const { name, ownerId, workspaceId, hostUrl } = opts;
+    const {
+      name,
+      ownerId,
+      workspaceId,
+      hostUrl,
+      ownerEmail,
+      updateDefaultInsertable,
+    } = opts;
 
     const fromSite =
       fromData instanceof ProjectRevision
         ? await unbundleProjectFromData(this, bundler, fromData)
         : (await unbundlePkgVersion(this, bundler, fromData)).site;
     const clonedSite = cloneSite(fromSite);
-
+    // Devflag overrides at project creation time
+    if (isCoreTeamEmail(ownerEmail, DEVFLAGS) && updateDefaultInsertable) {
+      clonedSite.flags.defaultInsertable = DEFAULT_INSERTABLE;
+    }
     const { project, rev } = await this.createProject({
       name,
       workspaceId,
@@ -7264,12 +7284,18 @@ export class DbMgr implements MigrationDbMgr {
     bundler,
     name,
     workspaceId,
+    ownerEmail,
   }: {
     site: Site;
     bundler: Bundler;
     name: string;
     workspaceId?: WorkspaceId;
+    ownerEmail?: string;
   }) {
+    // Devflag overrides at project creation time
+    if (isCoreTeamEmail(ownerEmail, DEVFLAGS)) {
+      site.flags.defaultInsertable = DEFAULT_INSERTABLE;
+    }
     const { project, rev } = await this.createProject({
       name: name,
       workspaceId,

@@ -160,7 +160,6 @@ import { exportStyleTokens } from "@/wab/shared/codegen/style-tokens";
 import { ExportOpts } from "@/wab/shared/codegen/types";
 import { toClassName } from "@/wab/shared/codegen/util";
 import { CodeSandboxInfo } from "@/wab/shared/db-json-blobs";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { DomainValidator } from "@/wab/shared/hosting";
 import { createTaggedResourceId } from "@/wab/shared/perms";
@@ -246,16 +245,12 @@ export async function createProject(req: Request, res: Response) {
 
   const site = createSite();
 
-  // Devflag overrides at project creation time
-  if (isCoreTeamEmail(req.user?.email, DEVFLAGS)) {
-    site.flags.defaultInsertable = "plexus";
-  }
-
   const { project, rev } = await mgr.createProjectAndSaveRev({
     site,
     bundler,
     name: name ?? "Untitled Project",
     workspaceId,
+    ownerEmail: req.user?.email,
   });
   userAnalytics(req).track({
     event: "Create project",
@@ -290,6 +285,7 @@ export async function createProjectWithHostlessPackages(
     site,
     bundler,
     name: "Untitled Project",
+    ownerEmail: req.user?.email,
   });
 
   req.promLabels.projectId = project.id;
@@ -304,6 +300,7 @@ export async function cloneProject(req: Request, res: Response) {
     name,
     workspaceId,
     branchName,
+    ownerEmail: req.user?.email,
   });
   req.promLabels.projectId = projectId;
   res.json({ projectId: project.id, workspaceId: project.workspaceId });
@@ -321,6 +318,7 @@ export async function clonePublishedTemplate(req: Request, res: Response) {
     name,
     workspaceId,
     hostUrl,
+    ownerEmail: req.user?.email,
   });
   userAnalytics(req).track({
     event: "Clone template",
