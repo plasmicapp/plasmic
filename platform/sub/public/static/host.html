@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script id="preambleScript"></script>
+
     <script>
       const params = new URLSearchParams(window.location.hash.replace(/^#/, "?"));
       const origin = params.get("origin");
-      const head = document.head || document.getElementsByTagName('head')[0];
-      const scriptElement = document.createElement("script");
-      scriptElement.src = `${origin}/static/js/preamble.js`;
-      scriptElement.async = false;
-      head.insertBefore(scriptElement, head.firstChild);
+      document.getElementById("preambleScript").src = `${origin}/static/js/preamble.js`
     </script>
     <style>
       body {
