@@ -88,6 +88,7 @@ import {
   isDefaultComponentKind,
   isReusableComponent,
   isShownHostLessCodeComponent,
+  isSubComponent,
   sortComponentsByName,
   tryGetDefaultComponent,
 } from "@/wab/components";
@@ -946,7 +947,9 @@ function getCodeComponentsGroups(studioCtx: StudioCtx): AddItemGroup[] {
   // All code components with studio UI will receive a dedicated section
   // in the AddDrawer.
   const components: CodeComponent[] = studioCtx.site.components.filter(
-    (c): c is CodeComponent => isCodeComponentWithSection(c)
+    // Sub components always take in consideration the parent component
+    (c): c is CodeComponent =>
+      isCodeComponentWithSection(c) && !isSubComponent(c)
   );
   const groups = groupBy(components, (c) => c.codeComponentMeta.section);
   return sortBy(
@@ -972,10 +975,7 @@ function getCodeComponentsGroups(studioCtx: StudioCtx): AddItemGroup[] {
               sectionKey: section,
               sectionLabel: section,
               label: subSection,
-              items: sortBy(
-                createAddTplCodeComponents(subSectionComponents),
-                (item) => item.label
-              ),
+              items: createAddTplCodeComponents(subSectionComponents),
             };
           }
         );

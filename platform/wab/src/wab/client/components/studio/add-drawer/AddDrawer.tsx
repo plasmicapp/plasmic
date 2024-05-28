@@ -127,7 +127,7 @@ import { unbundleProjectDependency } from "@/wab/tagged-unbundle";
 import * as Tpls from "@/wab/tpls";
 import { notification } from "antd";
 import { UseComboboxGetItemPropsOptions } from "downshift";
-import L, { mapValues } from "lodash";
+import L, { mapValues, uniqBy } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { FocusScope } from "react-aria";
@@ -469,32 +469,34 @@ function getAddTplItemPreviewImage(
 }
 
 export function createAddTplCodeComponent(
-  component: CodeComponent
+  component: CodeComponent,
+  showImages: boolean
 ): AddTplItem {
   const thumbUrl = component.codeComponentMeta.thumbnailUrl;
   return {
     ...createAddTplComponent(component),
-    previewImage: thumbUrl ? (
+    [showImages ? "previewImage" : "icon"]: thumbUrl ? (
       getAddTplItemPreviewImage(thumbUrl, "center center")
     ) : (
       <Icon icon={ComponentIcon} size="100%" />
     ),
-    isCompact: true,
+    // If we are showing images, we want to show the compact version of the item
+    isCompact: showImages,
   };
 }
 
 export function createAddTplCodeComponents(
   components: CodeComponent[]
 ): AddTplItem[] {
-  return components.flatMap((component) => {
-    // It shouldn't be possible to have a sub component that is not a code component
-    // but we'll be safe and filter them out
-    const subComponents = getSubComponents(component).filter(isCodeComponent);
-    return [
-      createAddTplCodeComponent(component),
-      ...subComponents.map(createAddTplCodeComponent),
-    ];
-  });
+  const uniqComponents = uniqBy(components, (c) => c.uuid);
+  const shouldShowImages = uniqComponents.some(
+    (c) => c.codeComponentMeta.thumbnailUrl
+  );
+  return sortComponentsByName(uniqComponents)
+    .filter(isCodeComponent)
+    .map((component) => {
+      return createAddTplCodeComponent(component, shouldShowImages);
+    });
 }
 
 export function createAddComponentPreset(
