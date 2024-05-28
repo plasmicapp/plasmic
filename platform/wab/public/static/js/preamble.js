@@ -1,7 +1,8 @@
 if (typeof window !== "undefined") {
   if (window.parent !== window) {
     try {
-      window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = window.parent.__REACT_DEVTOOLS_GLOBAL_HOOK__;
+      window.__REACT_DEVTOOLS_GLOBAL_HOOK__ =
+        window.parent.__REACT_DEVTOOLS_GLOBAL_HOOK__;
     } catch (err) {}
   }
   if (!window.__REACT_DEVTOOLS_GLOBAL_HOOK__) {

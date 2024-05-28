@@ -3,15 +3,39 @@
   <head>
     <meta charset="utf-8" />
     <meta name="robots" content="noindex" />
-    <script id="preambleScript"></script>
-
-    <!-- Inject URLs based on origin -->
-    <script id="addPreambleSrc">
-      const maybeParams = !!window.__PlasmicStudioArgs ? new URLSearchParams(window.__PlasmicStudioArgs.replace(/^#/, "?")) : undefined;
-      const origin = maybeParams ? maybeParams.get("origin") : window.location.origin
-      document.getElementById("preambleScript").src = `${origin}/static/js/preamble.js`
+    <script>
+      const maybeParams = !!window.__PlasmicStudioArgs
+        ? new URLSearchParams(window.__PlasmicStudioArgs.replace(/^#/, "?"))
+        : undefined;
+      const origin = maybeParams
+        ? maybeParams.get("origin")
+        : window.location.origin;
     </script>
-
+    <script>
+      if (typeof window !== "undefined") {
+        if (window.parent !== window) {
+          try {
+            window.__REACT_DEVTOOLS_GLOBAL_HOOK__ =
+              window.parent.__REACT_DEVTOOLS_GLOBAL_HOOK__;
+          } catch (err) {}
+        }
+        if (!window.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
+          const renderers = new Map();
+          window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
+            supportsFiber: true,
+            renderers,
+            inject: (renderer) => {
+              renderers.set(renderers.size + 1, renderer);
+            },
+            onCommitFiberRoot: function () {},
+            onCommitFiberUnmount: function () {},
+          };
+        }
+        if (!window.__REACT_DEVTOOLS_GLOBAL_HOOK__.__PlasmicPreambleVersion) {
+          window.__REACT_DEVTOOLS_GLOBAL_HOOK__.__PlasmicPreambleVersion = "1";
+        }
+      }
+    </script>
     <script>
       const isProd =
         "isProd" in window
@@ -209,15 +233,13 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Inter:wght@300;400;500;600;700;900&display=swap"
       rel="stylesheet"
     />
-    <link
-      id="normalizeCss"
-      rel="stylesheet"
-      type="text/css"
-    />
+    <link id="normalizeCss" rel="stylesheet" type="text/css" />
     <!-- Inject URLs based on origin -->
     <script>
-      document.getElementById("shortcutIcon").href = `${origin}/favicon.ico`
-      document.getElementById("normalizeCss").href = `${origin}/static/css/normalize.css`
+      document.getElementById("shortcutIcon").href = `${origin}/favicon.ico`;
+      document.getElementById(
+        "normalizeCss"
+      ).href = `${origin}/static/css/normalize.css`;
     </script>
 
     <title>Plasmic</title>
