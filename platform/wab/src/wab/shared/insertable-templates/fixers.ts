@@ -1,5 +1,6 @@
 import {
   Component,
+  CompositeExpr,
   CustomCode,
   EventHandler,
   Expr,
@@ -534,7 +535,21 @@ function getFixedExpr(
       .when([VariantsRef], (_expr) => null)
       // TODO: possible to handle if it's possible to reference the same page in the target
       .when([PageHref], (_expr) => null)
-
+      .when([CompositeExpr], (_expr) => {
+        return new CompositeExpr({
+          hostLiteral: _expr.hostLiteral,
+          substitutions: Object.entries(_expr.substitutions ?? {}).reduce(
+            (acc, [key, value]) => {
+              const fixedValue = getFixedExpr(ctx, value, helpers);
+              if (fixedValue) {
+                acc[key] = fixedValue;
+              }
+              return acc;
+            },
+            {} as CompositeExpr["substitutions"]
+          ),
+        });
+      })
       .elseUnsafe(() => null)
   );
 }

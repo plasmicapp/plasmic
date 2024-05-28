@@ -19,10 +19,7 @@ import {
   ensureValidClonedComponent,
   makeImageAssetFixer,
 } from "@/wab/shared/insertable-templates/fixers";
-import {
-  ensureHostLessDepComponent,
-  getSiteMatchingPlumeComponent,
-} from "@/wab/shared/insertable-templates/inliners";
+import { ensureHostLessDepComponent } from "@/wab/shared/insertable-templates/inliners";
 import { HostLessDependencies } from "@/wab/shared/insertable-templates/types";
 import { makeComponentSwapper } from "@/wab/shared/swap-components";
 import { TplMgr } from "@/wab/shared/TplMgr";
@@ -91,6 +88,11 @@ export function mkInsertableComponentImporter(
     );
 
     importComponentsInTree(site, comp.tplTree, comp, getNewComponent);
+
+    // Recursively fixup subcomps
+    for (const component of comp.subComps) {
+      fixupComp(component);
+    }
   };
 
   const getNewComponent = (comp: Component, tpl?: TplComponent) => {
@@ -116,17 +118,21 @@ export function mkInsertableComponentImporter(
     }
 
     if (isPlumeComponent(comp)) {
-      const plumeComp = getSiteMatchingPlumeComponent(
-        site,
+      const existing = site.components.find(
+        (c) => c.plumeInfo?.type === comp.plumeInfo?.type
+      );
+      if (existing) {
+        oldToNewComponent.set(comp, existing);
+        return existing;
+      }
+
+      const plumeComp = new TplMgr({ site }).clonePlumeComponent(
         info.site,
-        ensure(tpl, "Cannot insert a plume component as a template"),
-        plumeSite,
-        info
+        comp.uuid,
+        comp.name,
+        true
       );
-      assert(
-        plumeComp,
-        () => `Cannot find plume component ${comp.plumeInfo?.type}`
-      );
+
       oldToNewComponent.set(comp, plumeComp);
       // Perform fixes in the plume component as this may be a customized version
       // created by the user

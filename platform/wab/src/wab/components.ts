@@ -2156,7 +2156,9 @@ export function isPlumeComponent(
   return !!component.plumeInfo;
 }
 
-export function isSubComponent(component: Component) {
+export function isSubComponent(
+  component: Component
+): component is Component & { superComp: Component } {
   return !!component.superComp;
 }
 
