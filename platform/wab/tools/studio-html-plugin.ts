@@ -68,6 +68,7 @@ export class StudioHtmlPlugin implements RspackPluginInstance {
             );
 
           // Add our own <base> to direct all requests to the main origin.
+          root.querySelector("base").remove();
           root.querySelector("head").insertAdjacentHTML(
             "afterbegin",
             `<script>
@@ -75,14 +76,13 @@ export class StudioHtmlPlugin implements RspackPluginInstance {
                   const params = new URL(
                     \`https://fakeurl/\${window.__PlasmicStudioArgs.replace(/#/, "?")}\`
                   ).searchParams;
-                  document.getElementById("newBase").href = params.get("origin")
+                  const head = document.head || document.getElementsByTagName('head')[0];
+                  const baseElement = document.createElement("base");
+                  baseElement.href = params.get("origin");
+                  head.insertBefore(baseElement, head.firstChild);
                 } catch(e) {}
               </script>`
           );
-          root.querySelector("base").remove();
-          root
-            .querySelector("head")
-            .insertAdjacentHTML("afterbegin", `<base id="newBase">`);
 
           // Include a marker that this is the Plasmic Studio iframe. This is
           // needed by sub client.js to determine when it should or shouldn't
