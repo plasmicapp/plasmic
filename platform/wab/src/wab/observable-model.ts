@@ -1463,12 +1463,16 @@ export class ChangeRecorder implements IChangeRecorder {
 
   /**
    * This function will observe the tplTree of any component that is still not being observed.
+   * If the component is not currently observed, there is no reason to observe it's tplTree.
    * @param components the list of components to try to observe the tplTree of.
    * @returns true if any of the components in the list started being observed now, false otherwise.
    */
   maybeObserveComponents(components: Component[]) {
     const currentTime = new Date();
     const observedResult = components.reduce((observedNewComp, component) => {
+      if (!mobxHack.isObserved(component)) {
+        return observedNewComp;
+      }
       if (!mobxHack.isObserved(component.tplTree)) {
         this.observableState.observeInstField(
           component,
