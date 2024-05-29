@@ -532,8 +532,8 @@ function getFixedExpr(
       // TODO: handle style expr so that customizations to code components through
       // class are not lost
       .when([StyleExpr], (_expr) => null)
-      // TODO: handle variants ref, this may depend whether the tree is owned or not
-      .when([VariantsRef], (_expr) => null)
+      // VariantsRef should have been fixed when the component was imported/swapped
+      .when([VariantsRef], (_expr) => _expr)
       // TODO: possible to handle if it's possible to reference the same page in the target
       .when([PageHref], (_expr) => null)
       .when([CompositeExpr], (_expr) => {
