@@ -1488,7 +1488,14 @@ const getNodeToTplNode = (
           const refNode = allDescendants.find(
             (child) => child.componentPropertyReferences?.mainComponent === key
           );
-          return refNode?.name;
+
+          const nodeName = refNode?.name;
+          if (!nodeName) {
+            return undefined;
+          }
+
+          // if the name contains `/` it means it uses group naming, so we will use the last part of the name
+          return nodeName.includes("/") ? nodeName.split("/").pop() : nodeName;
         }
 
         const propsArgs = withoutNils(
