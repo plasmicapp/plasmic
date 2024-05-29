@@ -151,8 +151,8 @@ export class ComponentGenHelper {
   });
   layoutParent = deepMapMemoized(
     this.cache,
-    function layoutParent(tpl: TplNode) {
-      return $$$(tpl).layoutParent().maybeOneTpl();
+    function layoutParent(tpl: TplNode, throughSlot: boolean) {
+      return $$$(tpl).layoutParent({ throughSlot }).maybeOneTpl();
     },
     { funcKey: "layoutParent" }
   );

@@ -649,7 +649,7 @@ function deriveCssRuleSetStyles(
   // `__wab_flex-container > *`)
   // We merge the child margin with the parent's flex gap, to simulate what
   // real flex gap does.
-  const parent = ctx.layoutParent(tpl);
+  const parent = ctx.layoutParent(tpl, true);
   if (parent && isTplVariantable(parent)) {
     const parentExp = ctx.getEffectiveExprWithTheme(parent, vs.variants);
     if (hasGapStyle(parent)) {

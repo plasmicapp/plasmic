@@ -489,7 +489,7 @@ export function getParentExp(
   tpl: TplNode,
   variantCombo: VariantCombo
 ) {
-  const parent = ctx.layoutParent(tpl);
+  const parent = ctx.layoutParent(tpl, false);
   if (isKnownTplTag(parent)) {
     return ctx.getEffectiveVariantSetting(parent, variantCombo).rsh();
   }
