@@ -336,7 +336,7 @@ export function maybeDerefToken(
 ): TokenValue {
   try {
     // If its a token ref and the ref is present in the current project, then don't de-ref it, because the ref in value is known
-    if (isTokenRef(token.value)) {
+    if (isTokenRef(vsh?.getActiveTokenValue(token) ?? token.value)) {
       parseTokenRef(token.value, currentTokens);
     }
     return token.value as TokenValue;
