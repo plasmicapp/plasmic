@@ -648,7 +648,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
   },
   CodeComponentInteractionVariantMeta: {
     cssSelector: "generic",
-    trigger: "generic",
+    displayName: "generic",
   },
   CodeComponentMeta: {
     classNameProp: "generic",

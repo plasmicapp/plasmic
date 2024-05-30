@@ -453,7 +453,7 @@ export function cloneCodeComponentMeta(
               selector,
               new CodeComponentInteractionVariantMeta({
                 cssSelector: meta.cssSelector,
-                trigger: meta.trigger,
+                displayName: meta.displayName,
               }),
             ]
           )

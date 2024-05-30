@@ -3238,7 +3238,7 @@ export function mkCodeComponent(
             selector,
             new CodeComponentInteractionVariantMeta({
               cssSelector: variantMeta.cssSelector,
-              trigger: variantMeta.trigger,
+              displayName: variantMeta.displayName,
             }),
           ]
         )

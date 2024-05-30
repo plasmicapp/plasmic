@@ -351,7 +351,7 @@ CodeComponentHelper
   defaultExport: Bool
 CodeComponentInteractionVariantMeta
   cssSelector: String
-  trigger: String
+  displayName: String
 CodeComponentMeta
   importPath: String
   defaultExport: Bool
