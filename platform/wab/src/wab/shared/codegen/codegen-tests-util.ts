@@ -139,7 +139,7 @@ export async function codegen(dir: string, site: Site) {
     // Compile ts to js
     await promisify(exec)("node_modules/.bin/tsc", { cwd: dir });
   } catch (err) {
-    fail(`Typescript compilation failed: ${err.stdout}`);
+    throw new Error(`Typescript compilation failed: ${err.stdout}`);
   }
 
   return importFromProject;
