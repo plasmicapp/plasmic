@@ -325,6 +325,7 @@ export const updatableProjectFields = [
   "extraData",
   "isMainBranchProtected",
   "isUserStarter",
+  "uiConfig",
 ] as const;
 
 export const editorOnlyUpdatableProjectFields = [
@@ -334,6 +335,7 @@ export const editorOnlyUpdatableProjectFields = [
   "readableByPublic",
   "hostUrl",
   "workspaceId",
+  "uiConfig",
 ] as const;
 
 export type UpdatableProjectFields = Pick<

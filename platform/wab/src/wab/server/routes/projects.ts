@@ -101,6 +101,7 @@ import {
   AddCommentReactionRequest,
   ApiNotificationSettings,
   ApiProject,
+  ApiProjectMeta,
   BranchId,
   CloneProjectRequest,
   CommentId,
@@ -178,8 +179,17 @@ import { getCodegenUrl } from "@/wab/urls";
 import * as Sentry from "@sentry/node";
 import { ISandbox } from "codesandbox-import-util-types";
 import { Request, Response } from "express-serve-static-core";
-import * as _ from "lodash";
-import L, { isString, last, uniq, without } from "lodash";
+import {
+  fromPairs,
+  isString,
+  last,
+  map,
+  omit,
+  pick,
+  sortBy,
+  uniq,
+  without,
+} from "lodash";
 import fetch from "node-fetch";
 import * as Prettier from "prettier";
 import type { SetRequired } from "type-fest";
@@ -191,12 +201,16 @@ export function mkApiProject(project: Project): ApiProject {
     ? mkApiTeam(project.workspace.team)
     : null;
   return {
-    ...L.omit(project, "workspace"),
+    ...omit(project, "workspace"),
     workspaceName: project.workspace?.name || null,
     teamId: project.workspace?.teamId || null,
     teamName: team?.name || null,
     featureTier: team?.featureTier || null,
-    uiConfig: mergeUiConfigs(team?.uiConfig, project.workspace?.uiConfig),
+    uiConfig: mergeUiConfigs(
+      team?.uiConfig,
+      project.workspace?.uiConfig,
+      project.uiConfig
+    ),
     contentCreatorConfig: project.workspace?.team?.featureTier
       ?.editContentCreatorMode
       ? project.workspace?.contentCreatorConfig
@@ -259,7 +273,7 @@ export async function createProject(req: Request, res: Response) {
     },
   });
   req.promLabels.projectId = project.id;
-  res.json({ project: mkApiProject(project), rev: _.omit(rev, "data") });
+  res.json({ project: mkApiProject(project), rev: omit(rev, "data") });
 }
 
 export async function createProjectWithHostlessPackages(
@@ -289,7 +303,7 @@ export async function createProjectWithHostlessPackages(
   });
 
   req.promLabels.projectId = project.id;
-  res.json({ project: mkApiProject(project), rev: _.omit(rev, "data") });
+  res.json({ project: mkApiProject(project), rev: omit(rev, "data") });
 }
 
 export async function cloneProject(req: Request, res: Response) {
@@ -626,14 +640,12 @@ export async function doImportProject(
         project.workspaceId!,
         "Imported data source"
       );
-      oldToNewSourceIds = _.fromPairs(
+      oldToNewSourceIds = fromPairs(
         sourceIds.map((id) => [id, newDataSource.id])
       );
     } else {
       const { fakeSourceId } = opts.dataSourceReplacement;
-      oldToNewSourceIds = _.fromPairs(
-        sourceIds.map((id) => [id, fakeSourceId])
-      );
+      oldToNewSourceIds = fromPairs(sourceIds.map((id) => [id, fakeSourceId]));
     }
     await reevaluateDataSourceExprOpIds(mgr, unbundledSite, oldToNewSourceIds);
     const newBundle = bundler.bundle(
@@ -990,7 +1002,7 @@ export async function getModelUpdates(req: Request, res: Response) {
     return loadDepPackages(mgr, bundle);
   };
 
-  const partialChanges = L.sortBy(
+  const partialChanges = sortBy(
     await mgr.getPartialRevsFromRevisionNumber(
       projectId,
       revisionNum,
@@ -1047,7 +1059,7 @@ export async function getModelUpdates(req: Request, res: Response) {
         }
       });
       data = {
-        ...L.omit(changeBundle, ["map"]),
+        ...omit(changeBundle, ["map"]),
         map: newMap,
       };
     }
@@ -1055,10 +1067,8 @@ export async function getModelUpdates(req: Request, res: Response) {
 
     res.json({
       data: JSON.stringify(data),
-      revision: ensure(
-        L.last(partialChanges),
-        "Couldn't find last partialChange"
-      ).revision,
+      revision: ensure(last(partialChanges), "Couldn't find last partialChange")
+        .revision,
       depPkgs: deps.filter((dep) => !installedDeps.has(dep.id)),
       deletedIids: Array.from(deletedIids),
       modifiedComponentIids: Array.from(modifiedComponentIids),
@@ -1233,10 +1243,10 @@ export async function saveProjectRev(req: Request, res: Response) {
     const partial = await (async () => {
       const bundle = getBundle({ data }, await getLastBundleVersion());
       const partialData = getBundle(req.body, await getLastBundleVersion());
-      bundle.map = L.pick(bundle.map, Object.keys(partialData.map)) as any;
+      bundle.map = pick(bundle.map, Object.keys(partialData.map)) as any;
       Object.keys(bundle.map).forEach((iid) => {
         const fields = Object.keys(partialData.map[iid]);
-        bundle.map[iid] = L.pick(bundle.map[iid], fields) as any;
+        bundle.map[iid] = pick(bundle.map[iid], fields) as any;
       });
       return JSON.stringify(bundle);
     })();
@@ -1260,7 +1270,7 @@ export async function saveProjectRev(req: Request, res: Response) {
     await mgr.clearPartialRevisionsCacheForProject(projectId, branchId);
   }
 
-  res.json({ rev: _.omit(rev, "data") });
+  res.json({ rev: omit(rev, "data") });
 
   // We resolve the transaction first before we broadcast the new updates
   // to other players
@@ -1343,7 +1353,7 @@ export async function getProjectRev(req: Request, res: Response) {
     : undefined;
   const revisionNum = req.query.revisionNum;
   if (revisionNum !== undefined) {
-    console.log(`revisionNum is ${revisionNum}. ${L.isString(revisionNum)}`);
+    console.log(`revisionNum is ${revisionNum}. ${isString(revisionNum)}`);
   }
   const dontMigrateProject =
     !!req.query.dontMigrateProject &&
@@ -1437,7 +1447,7 @@ export async function getProjectRevWithoutData(req: Request, res: Response) {
   const projectId = req.params.projectId;
   const project = await mgr.getProjectById(projectId);
   req.promLabels.projectId = projectId;
-  const rev = _.omit(
+  const rev = omit(
     revisionId
       ? await mgr.getProjectRevisionById(
           projectId,
@@ -1611,7 +1621,7 @@ const _ProofSafeDelete: ProofSafeDelete = toOpaque({
 /**
  * Delete a project while performing clean-up of any associated external resources.
  *
- * Currently this just means freeing up domains from Vercel.
+ * Currently this just means freeing up domains from Verce
  *
  * Note that this is not reverted by restoreProject().
  */
@@ -1702,8 +1712,8 @@ async function getPkgWithDeps(
   await Promise.all(depPkgs.map((depPkg) => getMigratedBundle(depPkg)));
   const result = meta
     ? {
-        pkg: _.omit(pkg, "model"),
-        depPkgs: _.map(depPkgs, (v) => _.omit(v, "model")),
+        pkg: omit(pkg, "model"),
+        depPkgs: map(depPkgs, (v) => omit(v, "model")),
       }
     : {
         pkg,
@@ -1824,7 +1834,7 @@ export async function publishProject(req: Request, res: Response) {
       {
         [projectId]: [...usedSiteFeatures],
       },
-      { pkg: _.omit(pkgVersion, "model") },
+      { pkg: omit(pkgVersion, "model") },
       undefined,
       {
         verifyMonthlyViews: req.devflags.verifyMonthlyViews,
@@ -1875,7 +1885,7 @@ export async function publishProject(req: Request, res: Response) {
   await broadcastProjectsMessage({
     room: `projects/${projectId}`,
     type: "publish",
-    message: { projectId: projectId, ..._.omit(pkgVersion, "model") },
+    message: { projectId: projectId, ...omit(pkgVersion, "model") },
   });
 }
 
@@ -1921,7 +1931,7 @@ export async function getPkgVersionPublishStatus(req: Request, res: Response) {
         }
       } catch (e) {
         // if we catch an error while decoding the url, we are going to consider that
-        // that the redirection is succesfull. The exception is going to be sent to
+        // that the redirection is succesful The exception is going to be sent to
         // sentry
         isRedirectingToLatest = true;
         Sentry.captureException(e);
@@ -1961,7 +1971,7 @@ export async function updatePkgVersion(req: Request, res: Response) {
   const branchId = req.body.branchId;
   const rawPkgVersion = req.body.pkg ?? {};
   // Note: The only thing users can modify from API is "tags" and "description" at the moment
-  const toMerge = _.pick(rawPkgVersion, ["tags", "description"]);
+  const toMerge = pick(rawPkgVersion, ["tags", "description"]);
   const oldPkgVersion = await mgr.getPkgVersion(pkgId);
   const pkgVersion = await mgr.updatePkgVersion(
     pkgId,
@@ -1986,7 +1996,7 @@ export async function updatePkgVersion(req: Request, res: Response) {
   await broadcastProjectsMessage({
     room: `projects/${projectId}`,
     type: "publish",
-    message: { projectId: projectId, ..._.omit(pkgVersion, "model") },
+    message: { projectId: projectId, ...omit(pkgVersion, "model") },
   });
 }
 
@@ -2052,7 +2062,7 @@ export async function revertToVersion(req: Request, res: Response) {
     dag.branches[branchId ?? MainBranchId] = pkgVersion.id;
   });
 
-  res.json({ rev: _.omit(rev, "data") });
+  res.json({ rev: omit(rev, "data") });
 
   // We resolve the transaction first before we broadcast the new updates
   // to other players
@@ -2598,7 +2608,10 @@ export async function getProjectMeta(req: Request, res: Response) {
   res.json(await makeProjectMeta(mgr, projectId));
 }
 
-async function makeProjectMeta(mgr: DbMgr, projectId: string) {
+async function makeProjectMeta(
+  mgr: DbMgr,
+  projectId: string
+): Promise<ApiProjectMeta> {
   const project = await mgr.getProjectById(projectId);
   const pkg = await mgr.getPkgByProjectId(projectId);
   const pkgVersion = pkg
@@ -2617,6 +2630,7 @@ async function makeProjectMeta(mgr: DbMgr, projectId: string) {
     workspaceId: project.workspaceId,
     hostUrl: project.hostUrl,
     lastPublishedVersion: pkgVersion?.version,
+    uiConfig: project.uiConfig,
     publishedVersions: allVersions.map((v) => ({
       version: v.version,
       description: v.description,
@@ -2625,7 +2639,7 @@ async function makeProjectMeta(mgr: DbMgr, projectId: string) {
       tags: v.tags,
     })),
     branches: branches.map((branch) =>
-      L.pick(branch, ["id", "name", "hostUrl", "status"])
+      pick(branch, ["id", "name", "hostUrl", "status"])
     ),
   };
 }
@@ -2633,12 +2647,16 @@ async function makeProjectMeta(mgr: DbMgr, projectId: string) {
 export async function updateProjectMeta(req: Request, res: Response) {
   const projectId = req.params.projectId;
   const mgr = userDbMgr(req);
-  console.log("Updating project hostUrl", projectId, req.body.hostUrl);
+  const metaFields = pick(
+    req.body,
+    "name",
+    "hostUrl",
+    "workspaceId",
+    "uiConfig"
+  );
   await mgr.updateProject({
     id: projectId,
-    ...(req.body.hostUrl ? { hostUrl: req.body.hostUrl } : {}),
-    ...(req.body.workspaceId ? { workspaceId: req.body.workspaceId } : {}),
-    ...(req.body.name ? { name: req.body.name } : {}),
+    ...metaFields,
   });
   res.json(await makeProjectMeta(mgr, projectId));
 }

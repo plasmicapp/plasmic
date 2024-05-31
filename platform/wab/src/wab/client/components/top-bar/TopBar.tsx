@@ -34,6 +34,7 @@ import { observer } from "mobx-react";
 import React from "react";
 import { pruneUnusedImageAssets } from "src/wab/shared/prune-site";
 import { fixPageHrefsToLocal } from "src/wab/shared/utils/split-site-utils";
+import useSWR from "swr";
 
 export const outlineModes = ["blocks", "inlines", "all"];
 
@@ -46,10 +47,18 @@ function _TopBar({ preview }: TopBarProps) {
   const appCtx = useAppCtx();
   const previewCtx = usePreviewCtx();
   const topFrameApi = useTopFrameApi();
-  const projectId = studioCtx.siteInfo.id;
-  const team = appCtx
-    .getAllTeams()
-    .find((t) => t.id === studioCtx.siteInfo.teamId);
+  const { data } = useSWR("top-bar-config", async () => {
+    const [team, canEditUiConfig] = await Promise.all([
+      topFrameApi.getCurrentTeam(),
+      topFrameApi.canEditProjectUiConfig(),
+    ]);
+    return {
+      team,
+      canEditUiConfig,
+    };
+  });
+  const team = data?.team;
+  const canEditUiConfig = data?.canEditUiConfig;
   const isWhiteLabelUser = appCtx.isWhiteLabelUser();
   const isObserver = appCtx.selfInfo?.isObserver;
 
@@ -141,6 +150,19 @@ function _TopBar({ preview }: TopBarProps) {
                 }}
               >
                 Regenerate secret project API token
+              </Menu.Item>
+            );
+          }
+
+          if (canEditUiConfig) {
+            push2(
+              <Menu.Item
+                key="ui-config"
+                onClick={() => {
+                  spawn(topFrameApi.setShowUiConfigModal(true));
+                }}
+              >
+                Configure Studio UI for project
               </Menu.Item>
             );
           }

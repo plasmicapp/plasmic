@@ -29,8 +29,11 @@ import {
   PERSONAL_WORKSPACE,
 } from "@/wab/shared/Labels";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
-import { isEnterprise } from "@/wab/shared/pricing/pricing-utils";
-import { mergeUiConfigs, UiConfig } from "@/wab/shared/ui-config-utils";
+import {
+  canEditUiConfig,
+  mergeUiConfigs,
+  UiConfig,
+} from "@/wab/shared/ui-config-utils";
 import { Form, Menu } from "antd";
 import { History } from "history";
 import * as React from "react";
@@ -58,8 +61,12 @@ export function getTeamMenuItems(appCtx: AppCtx, team: ApiTeam) {
 
   const items: TeamMenuItem[] = [];
   if (
-    isEnterprise(team.featureTier) &&
-    accessLevelRank(accessLevel) >= accessLevelRank("editor")
+    canEditUiConfig(
+      team,
+      { type: "team", resource: team },
+      appCtx.selfInfo,
+      appCtx.perms
+    )
   ) {
     items.push("ui-config");
   }

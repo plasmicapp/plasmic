@@ -137,11 +137,6 @@ export function StudioFrame({
     return dispose;
   }, [appCtx, refreshStudio, project]);
 
-  const { topFrameApi, ...topFrameChromeProps } = useTopFrameState({
-    forceUpdate,
-    toggleAdminMode,
-  });
-
   usePreventDefaultBrowserPinchToZoomBehavior();
 
   useEffect(() => {
@@ -226,6 +221,13 @@ export function StudioFrame({
     };
     spawn(fetchProject());
   }, [projectId, setProject, fetchProjectCount]);
+
+  const { topFrameApi, ...topFrameChromeProps } = useTopFrameState({
+    appCtx,
+    project,
+    forceUpdate,
+    toggleAdminMode,
+  });
 
   useBrowserNotification();
 

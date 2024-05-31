@@ -2,10 +2,15 @@ import { withoutNils } from "@/wab/common";
 import { arrayReversed } from "@/wab/commons/collections";
 import { HostLessPackageInfo } from "@/wab/devflags";
 import {
+  ApiPermission,
+  ApiResource,
+  ApiTeam,
+  ApiUser,
   PublicStyleSection,
   StyleSectionVisibilities,
   TemplateSpec,
 } from "@/wab/shared/ApiSchema";
+import { accessLevelRank } from "@/wab/shared/EntUtil";
 import {
   FRAME_CAP,
   FREE_CONTAINER_CAP,
@@ -13,6 +18,8 @@ import {
   LAYOUT_CONTAINER_CAP,
   VERT_CONTAINER_CAP,
 } from "@/wab/shared/Labels";
+import { getAccessLevelToResource } from "@/wab/shared/perms";
+import { isEnterprise } from "@/wab/shared/pricing/pricing-utils";
 import { smartHumanize } from "@/wab/strs";
 import { merge } from "lodash";
 
@@ -384,4 +391,17 @@ export function canEditProjectConfig(
   }
 
   return config.projectConfigs[projectConfig] ?? true;
+}
+
+export function canEditUiConfig(
+  team: ApiTeam | undefined,
+  resource: ApiResource,
+  user: ApiUser | null,
+  perms: ApiPermission[]
+) {
+  if (!team || !isEnterprise(team.featureTier) || user?.isWhiteLabel) {
+    return false;
+  }
+  const accessLevel = getAccessLevelToResource(resource, user, perms);
+  return accessLevelRank(accessLevel) >= accessLevelRank("editor");
 }

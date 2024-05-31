@@ -500,6 +500,19 @@ export interface ApiProject extends ApiEntityBase {
   isUserStarter?: boolean;
 }
 
+export interface ApiProjectMeta
+  extends Pick<
+    ApiProject,
+    "id" | "name" | "workspaceId" | "hostUrl" | "uiConfig"
+  > {
+  lastPublishedVersion?: string;
+  publishedVersions: (Pick<
+    PkgVersionInfo,
+    "version" | "description" | "tags"
+  > & { createdAt: string; createdBy?: string })[];
+  branches: Pick<ApiBranch, "id" | "name" | "hostUrl" | "status">[];
+}
+
 export interface ApiWhiteLabelUser {
   id: string; // Plasmic user id
   firstName: string;
@@ -942,6 +955,10 @@ export interface SetSiteInfoReq
   > {
   regenerateSecretApiToken?: boolean;
 }
+
+export type UpdateProjectMetaRequest = Partial<
+  Pick<ApiProject, "name" | "hostUrl" | "workspaceId" | "uiConfig">
+>;
 
 export type GitSyncAction = "commit" | "pr" | "build";
 export type GitSyncScheme = "codegen" | "loader";

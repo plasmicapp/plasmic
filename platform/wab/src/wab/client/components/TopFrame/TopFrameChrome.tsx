@@ -3,8 +3,12 @@ import { isPlasmicPath, U, UU } from "@/wab/client/cli-routes";
 import { AppAuthSettingsModal } from "@/wab/client/components/app-auth/AppAuthSettings";
 import { HostConfig } from "@/wab/client/components/HostConfig";
 import { MergeModalWrapper } from "@/wab/client/components/merge/MergeFlow";
+import { ContentEditorConfigModal } from "@/wab/client/components/modals/ContentEditorConfigModal";
 import { EnableLocalizationModal } from "@/wab/client/components/modals/EnableLocalizationModal";
-import { TopBarPromptBillingArgs } from "@/wab/client/components/modals/PricingModal";
+import {
+  getTiersAndPromptBilling,
+  TopBarPromptBillingArgs,
+} from "@/wab/client/components/modals/PricingModal";
 import { DataSourcePicker } from "@/wab/client/components/TopFrame/DataSourcePicker";
 import CloneProjectModal from "@/wab/client/components/TopFrame/TopBar/CloneProjectModal";
 import CodeModal from "@/wab/client/components/TopFrame/TopBar/CodeModal";
@@ -42,6 +46,7 @@ import {
 } from "@/wab/shared/ApiSchema";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
+import { canEditUiConfig } from "@/wab/shared/ui-config-utils";
 import { message, notification } from "antd";
 import { Action, Location } from "history";
 import { ExtendedKeyboardEvent } from "mousetrap";
@@ -79,6 +84,7 @@ export interface TopFrameChromeProps {
   showCloneProjectModal: boolean;
   showHostModal: boolean;
   showLocalizationModal: boolean;
+  showUiConfigModal: boolean;
   showUpsellForm: TopBarPromptBillingArgs | undefined;
   setShowUpsellForm: (_: undefined) => void;
   showAppAuthModal: boolean;
@@ -305,6 +311,28 @@ export function TopFrameChrome({
                 project={project}
               />
             )}
+            {rest.showUiConfigModal && (
+              <ContentEditorConfigModal
+                title={`Studio UI for ${project.name}`}
+                appCtx={appCtx}
+                level={"project"}
+                onSubmit={async (newConfig) => {
+                  if (newConfig) {
+                    await appCtx.api.updateProjectMeta(project.id, {
+                      uiConfig: newConfig,
+                    });
+                  }
+                  await topFrameApi.setShowUiConfigModal(false);
+                  notification.info({
+                    message:
+                      "Changes in the configuration UI will only take place after refreshing the page",
+                    duration: 5,
+                  });
+                }}
+                onCancel={() => topFrameApi.setShowUiConfigModal(false)}
+                config={project.uiConfig ?? {}}
+              />
+            )}
             {rest.showLocalizationModal && (
               <EnableLocalizationModal
                 isLocalizationEnabled={rest.isLocalizationEnabled}
@@ -376,9 +404,13 @@ function ForwardShortcuts() {
 }
 
 export function useTopFrameState({
+  appCtx,
+  project,
   forceUpdate,
   toggleAdminMode,
 }: {
+  appCtx: AppCtx;
+  project: ApiProject | undefined;
   forceUpdate: () => void;
   toggleAdminMode: (val: boolean) => Promise<void>;
 }) {
@@ -398,6 +430,7 @@ export function useTopFrameState({
     React.useState(false);
   const [showProjectNameModal, setShowProjectNameModal] = React.useState(false);
   const [showHostModal, setShowHostModal] = React.useState(false);
+  const [showUiConfigModal, setShowUiConfigModal] = React.useState(false);
   const [showLocalizationModal, setShowLocalizationModal] =
     React.useState(false);
   const [
@@ -500,6 +533,7 @@ export function useTopFrameState({
       setShowCloneProjectModal: asyncWrapper(setShowCloneProjectModal),
       setShowHostModal: asyncWrapper(setShowHostModal),
       setShowLocalizationModal: asyncWrapper(setShowLocalizationModal),
+      setShowUiConfigModal: asyncWrapper(setShowUiConfigModal),
       showRegenerateSecretTokenModal: async () =>
         setShouldShowRegenerateSecretTokenModal(true),
       setShowUpsellForm: asyncWrapper(setShowUpsellForm),
@@ -513,8 +547,33 @@ export function useTopFrameState({
         ) as TopFrameApiReturnType<"pickDataSource">;
       },
       toggleAdminMode,
+      getCurrentTeam: async () => {
+        if (!project) {
+          return undefined;
+        }
+        return appCtx.getAllTeams().find((team) => team.id === project.teamId);
+      },
+      canEditProjectUiConfig: async () => {
+        const team = appCtx.getAllTeams().find((t) => t.id === project?.teamId);
+        if (!team || !project) {
+          return false;
+        }
+        return canEditUiConfig(
+          team,
+          { type: "project", resource: project },
+          appCtx.selfInfo,
+          appCtx.perms
+        );
+      },
+      promptBilling: async () => {
+        const team = appCtx.getAllTeams().find((t) => t.id === project?.teamId);
+        if (!team || !project) {
+          return;
+        }
+        await getTiersAndPromptBilling(appCtx, team);
+      },
     }),
-    []
+    [appCtx, project]
   );
 
   return {
@@ -535,6 +594,7 @@ export function useTopFrameState({
     showCloneProjectModal,
     showHostModal,
     showLocalizationModal,
+    showUiConfigModal,
     showUpsellForm,
     setShowUpsellForm,
     showAppAuthModal,

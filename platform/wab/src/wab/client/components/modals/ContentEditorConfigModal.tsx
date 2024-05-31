@@ -16,7 +16,7 @@ import {
   UiConfig,
 } from "@/wab/shared/ui-config-utils";
 import { capitalizeFirst } from "@/wab/strs";
-import { Form, Input } from "antd";
+import { Alert, Form, Input } from "antd";
 import { capitalize, omit, uniqBy } from "lodash";
 import React from "react";
 
@@ -26,7 +26,7 @@ export function ContentEditorConfigModal(props: {
   appCtx: AppCtx;
   config: UiConfig;
   title: React.ReactNode;
-  level: "team" | "workspace" | "content-editor";
+  level: "team" | "workspace" | "project" | "content-editor";
   onSubmit: (config: UiConfig) => void;
   onCancel: () => void;
 }) {
@@ -75,6 +75,13 @@ export function ContentEditorConfigModal(props: {
         }}
       >
         <div className="ph-xxlg overflow-scroll">
+          {level === "project" && (
+            <Alert
+              className="mt-sm"
+              type={"info"}
+              message={`Changes to the project UI configuration will only take place after refreshing the page.`}
+            />
+          )}
           <h3 className="mv-xlg">Insertion</h3>
           <Form.Item name={["canInsertBasics"]} noStyle>
             <BooleanPreferencesControl

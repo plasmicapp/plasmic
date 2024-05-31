@@ -108,6 +108,18 @@ export async function promptBilling(
   ));
 }
 
+export async function getTiersAndPromptBilling(appCtx: AppCtx, team: ApiTeam) {
+  const { tiers } = await appCtx.api.listCurrentFeatureTiers();
+  await promptBilling({
+    appCtx,
+    title: "",
+    target: {
+      team,
+    },
+    availableTiers: tiers,
+  });
+}
+
 export async function showUpsellConfirm(
   teamSettingsUrl: string
 ): Promise<void> {

@@ -37,11 +37,13 @@ import {
   ApiDirectoryEndUserGroup,
   ApiEndUser,
   ApiEndUserDirectory,
+  ApiEntityBase,
   ApiExecuteDataSourceStudioOpRequest,
   ApiFeatureTier,
   ApiNotificationSettings,
   ApiPermission,
   ApiProject,
+  ApiProjectMeta,
   ApiProjectRepository,
   ApiProjectRevision,
   ApiProjectWebhook,
@@ -176,12 +178,12 @@ import {
   UpdateHostUrlResponse,
   UpdateNotificationSettingsRequest,
   UpdatePasswordResponse,
+  UpdateProjectMetaRequest,
   UpdateProjectResponse,
   UpdateSelfAdminModeRequest,
   UpdateSelfRequest,
   UpdateTeamRequest,
   UpdateWorkspaceRequest,
-  UserId,
   UsersResponse,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
@@ -252,14 +254,8 @@ export interface PkgInfo {
   projectId;
 }
 
-export interface PkgVersionInfoMeta {
+export interface PkgVersionInfoMeta extends ApiEntityBase {
   id: string;
-  createdAt: string | Date;
-  createdById: UserId | null;
-  updatedAt: string | Date;
-  updatedById: UserId | null;
-  deletedAt: string | Date | null;
-  deletedById: string | null;
   pkgId: string;
   version: string;
   tags?: string[];
@@ -277,6 +273,7 @@ export interface PkgVersionInfoMeta {
 export type PkgVersionInfo = PkgVersionInfoMeta & {
   model: Bundle;
 };
+
 export type WrappedStorageEvent = Pick<StorageEvent, "key" | "newValue">;
 
 export abstract class SharedApi {
@@ -535,6 +532,13 @@ export abstract class SharedApi {
     data: SetSiteInfoReq
   ): Promise<MayTriggerPaywall<UpdateProjectResponse>> {
     return this.put(`/projects/${siteId}`, data);
+  }
+
+  updateProjectMeta(
+    projectId: string,
+    data: UpdateProjectMetaRequest
+  ): Promise<ApiProjectMeta> {
+    return this.put(`/projects/${projectId}/meta`, data);
   }
 
   setShowHostingBadge(projectId: ProjectId, showBadge: boolean) {
