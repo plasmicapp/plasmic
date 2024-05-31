@@ -3520,14 +3520,17 @@
     lucide-react "^0.279.0"
     remeda "^1.27.0"
 
-"@plasmicpkgs/react-aria@^0.0.22":
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.22.tgz#6069807c4018c55da0ca41009cf9809a347d8dc9"
-  integrity sha512-zMfV1B2cCpLcKNoLcATukFXMWZ/AsbK6SP6zuUIxa/xbhyeBGZUcE2EifCVGJd59xOab/qcEXT2jXXoOYN+B4w==
+"@plasmicpkgs/react-aria@^0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.23.tgz#e280c084a30ff05b9d7144ccdbaf1a03483aa93d"
+  integrity sha512-A1syqv+nr0kUXU/gMic+1Sz+p5TD3b0AqXYbUYgos4DSaEP7Bv0VUG6aUG9Tgtfg9D+Qv/WmTbCVHwuHBclTaQ==
   dependencies:
     "@react-aria/i18n" "^3.11.0"
     "@react-aria/utils" "^3.24.0"
+    react-aria "^3.33.0"
     react-aria-components "^1.2.0"
+    react-keyed-flatten-children "^3.0.0"
+    react-stately "^3.31.0"
 
 "@plasmicpkgs/react-awesome-reveal@^3.8.197":
   version "3.8.197"
@@ -11011,6 +11014,13 @@ react-is@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
+
+react-keyed-flatten-children@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-keyed-flatten-children/-/react-keyed-flatten-children-3.0.0.tgz#b6ad0bde437d3ab86c8af3a1902d164be2a29d67"
+  integrity sha512-tSH6gvOyQjt3qtjG+kU9sTypclL1672yjpVufcE3aHNM0FhvjBUQZqsb/awIux4zEuVC3k/DP4p0GdTT/QUt/Q==
+  dependencies:
+    react-is "^18.2.0"
 
 react-lifecycles-compat@^3.0.4:
   version "3.0.4"
