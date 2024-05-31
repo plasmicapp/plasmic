@@ -1,7 +1,3 @@
-export function resolveUrl(url: string, fromUrl: string) {
-  return new URL(url, fromUrl).href;
-}
-
 /**
  * https://stackoverflow.com/questions/10687099/how-to-test-if-a-url-string-is-absolute-or-relative
  */

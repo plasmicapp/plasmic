@@ -109,9 +109,6 @@ import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-event
 import { trackEvent } from "@/wab/client/tracking";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import {
-  createIframeFromNamedDomSnap,
-  DomSnap,
-  domSnapIframeToTpl,
   WIElement,
   wiTreeToTpl,
   WI_IMPORTER_HEADER,
@@ -219,7 +216,6 @@ type PastableItem =
     }
   | { type: "text"; text: string }
   | { type: "presets"; text: string }
-  | { type: "domsnap"; snap: DomSnap; iframe: HTMLIFrameElement }
   | { type: "wi-importer"; tree: WIElement }
   | { type: "copy-reference"; extraInfo: CopyStateExtraInfo }
   | undefined;
@@ -1162,23 +1158,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       return;
     }
 
-    if (itemToPaste.type === "domsnap") {
-      const { iframe, snap } = itemToPaste;
-      try {
-        const tpl = domSnapIframeToTpl(
-          snap,
-          iframe,
-          vc.variantTplMgr(),
-          this.siteOps(),
-          vc.appCtx
-        );
-        vc.getViewOps().pasteNode(tpl);
-      } finally {
-        iframe.remove();
-      }
-      return;
-    }
-
     if (itemToPaste.type === "wi-importer") {
       const tpl = wiTreeToTpl(
         itemToPaste.tree,
@@ -1242,17 +1221,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
   ): Promise<PastableItem> {
     const sc = this.props.studioCtx;
     const plasmicDataStr = clipboardData.getData(PLASMIC_CLIPBOARD_FORMAT);
-    const viewCtx = this.viewCtx();
-    if (viewCtx && DEVFLAGS.pasteSnap) {
-      const { iframe, snap } = await createIframeFromNamedDomSnap(
-        DEVFLAGS.pasteSnap
-      );
-      return {
-        type: "domsnap",
-        snap: snap,
-        iframe: iframe,
-      };
-    }
     if (plasmicDataStr) {
       const plasmicData = JSON.parse(plasmicDataStr);
       // We've 2 different behavior when performing a copy/paste:

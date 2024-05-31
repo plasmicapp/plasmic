@@ -545,7 +545,6 @@ const DEFAULT_DEVFLAGS = {
   sso: false,
   omnibar: false,
   orderVariantsByUid: false,
-  pasteSnap: "",
   paywalls: false,
   showCondVariants: false,
   showIntroSplash: false,
