@@ -222,6 +222,7 @@ import {
   isPseudoElementVariantForTpl,
   isScreenVariant,
   isStyleVariant,
+  isTplRootWithCCInteractionVariants,
   VariantCombo,
   variantHasPrivatePseudoElementSelector,
 } from "@/wab/shared/Variants";
@@ -330,6 +331,10 @@ export interface RenderingCtx {
 
   plasmicInvalidate: ReturnType<typeof usePlasmicInvalidate> | undefined;
   stateSpecs: $StateSpec<any>[];
+
+  // This is used to enable code components interaction variants in the canvas
+  $ccInteractions: Record<string, boolean>;
+  updateInteractionVariant: (key: string, value: boolean) => void;
 }
 
 interface CanvasComponentProps
@@ -688,6 +693,13 @@ const mkTriggers = computedFn(
             ...ctx.activeVariants.keys(),
             ...component.variants.filter((variant) => {
               if (isStyleVariant(variant)) {
+                if (isTplRootWithCCInteractionVariants(component.tplTree)) {
+                  return variant.selectors.reduce(
+                    (prev, key) => prev && ctx.$ccInteractions[key],
+                    true
+                  );
+                }
+
                 const hook = ctx.reactHookSpecs.find(
                   (spec) => spec.sv === variant
                 );
@@ -868,6 +880,22 @@ function useCtxFromInternalComponentProps(
   const refsRef = sub.React.useRef({});
   const $refs = refsRef.current;
 
+  // We will use $ccInteractions to store the interactions that are triggered
+  // by the code component root, to keep the number of hooks stable. We will
+  // always create these values during the canvas component initialization.
+  const [$ccInteractions, setDollarCcInteractions] = sub.React.useState({});
+  const updateInteractionVariant = sub.React.useCallback(
+    (key: string, value: boolean) => {
+      setDollarCcInteractions((prev) => {
+        if (prev[key] === value) {
+          return prev;
+        }
+        return { ...prev, [key]: value };
+      });
+    },
+    []
+  );
+
   const $globalActions = sub.useGlobalActions?.();
 
   const env = {
@@ -962,6 +990,8 @@ function useCtxFromInternalComponentProps(
       viewState.forceValComponentKeysWithDefaultSlotContents,
     setDollarQueries,
     stateSpecs,
+    $ccInteractions,
+    updateInteractionVariant,
   };
   return ctx;
 }
@@ -1169,6 +1199,8 @@ function makeEmptyRenderingCtx(viewCtx: ViewCtx, valKey: string): RenderingCtx {
     setDollarQueries: () => {},
     stateSpecs: [],
     plasmicInvalidate: undefined,
+    $ccInteractions: {},
+    updateInteractionVariant: () => {},
   };
 }
 
@@ -1384,6 +1416,10 @@ function renderTplComponent(
       ctx.valKey
     );
 
+    if (isComponentRoot && isTplRootWithCCInteractionVariants(node)) {
+      props["updateInteractionVariant"] = ctx.updateInteractionVariant;
+    }
+
     if (meta) {
       for (const [prop, propMeta] of Object.entries(meta.meta.props)) {
         const isSlotProp =
@@ -1572,6 +1608,7 @@ function renderTplComponent(
       );
     }
   });
+
   if (tplHasRef(node)) {
     const refProp = node.component.codeComponentMeta?.refProp ?? "ref";
     props[refProp] = (ref: any) =>
@@ -1579,6 +1616,7 @@ function renderTplComponent(
         ensure(ctx.nodeNamer?.(node), `Only named tpls can have ref`)
       ] = ref);
   }
+
   if (
     meta &&
     ctx.ownerComponent &&

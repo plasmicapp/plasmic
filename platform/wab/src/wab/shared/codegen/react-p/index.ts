@@ -2223,7 +2223,12 @@ export function serializeInteractionVariantsTriggers(tplRoot: TplNode) {
       ${interactionVariantKeys.map((key) => `${key}: false`).join(",\n")}
     });
     const updateInteractionVariant = React.useCallback((key: string, value: boolean) => {
-      setDollarCcInteractions((prev) => ({ ...prev, [key]: value }));
+      setDollarCcInteractions((prev) => {
+        if (prev[key] === value) {
+          return prev;
+        }
+        return { ...prev, [key]: value }
+      });
     }, []);
   `;
 }
