@@ -1,11 +1,11 @@
 /** @format */
 
 import { ensureIsTopFrame, isHostFrame } from "@/wab/client/cli-routes";
+import { LocalClipboardAction } from "@/wab/client/clipboard/local";
 import {
-  ClipboardAction,
-  parseClipboardItems,
-  ParsedClipboardData,
-} from "@/wab/client/clipboard";
+  SerializableClipboardData,
+  serializeClipboardItems,
+} from "@/wab/client/clipboard/ReadableClipboard";
 import { storageViewAsKey } from "@/wab/client/components/app-auth/ViewAsButton";
 import {
   assert,
@@ -308,8 +308,8 @@ export class Api extends SharedApi {
   }
 
   async readNavigatorClipboard(
-    lastAction: ClipboardAction
-  ): Promise<ParsedClipboardData> {
+    lastAction: LocalClipboardAction
+  ): Promise<SerializableClipboardData> {
     assert(!isHostFrame(), "Should only run in the top frame");
 
     let permission: PermissionStatus;
@@ -330,10 +330,10 @@ export class Api extends SharedApi {
       "Your browser does not support Clipboard API"
     );
     const items = await navigator.clipboard.read();
-    return await parseClipboardItems(items, lastAction);
+    return await serializeClipboardItems(items, lastAction);
   }
 
-  async whiltelistProjectIdToCopy(projectId: string) {
+  async whitelistProjectIdToCopy(projectId: string) {
     assert(!isHostFrame(), "Should only run in the top frame");
 
     this.addStorageItem(`copy/${projectId}`, JSON.stringify(+new Date()));
@@ -619,7 +619,7 @@ export function filteredApi(
         });
       },
     setMainBranchProtection: checkProjectIdInFirstArg,
-    whiltelistProjectIdToCopy: checkProjectIdInFirstArg,
+    whitelistProjectIdToCopy: checkProjectIdInFirstArg,
   };
 
   // Start with all methods marked as forbidden

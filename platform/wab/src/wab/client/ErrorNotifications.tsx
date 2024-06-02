@@ -163,7 +163,13 @@ export function shouldIgnoreError(error: Error, source?: string) {
 }
 
 export function reportError(error: Error, eventName?: string) {
-  console.log("Error: ", eventName ?? error.name, error.message);
+  if (error instanceof UserError) {
+    if (DEVFLAGS.debug) {
+      console.log("UserError: ", eventName ?? error.name, error.message, error);
+    }
+    return;
+  }
+  console.log("Error: ", eventName ?? error.name, error.message, error);
   Sentry.captureException(error);
   analytics.track(eventName ?? error.name, {
     name: error.name,

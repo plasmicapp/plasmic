@@ -1,21 +1,11 @@
 /** @format */
 import PageSettings from "@/PageSettings";
-import { ImageBackground, mkBackgroundLayer } from "@/wab/bg-styles";
-import {
-  ArenaFrame,
-  ImageAsset,
-  isKnownTplComponent,
-  isKnownTplTag,
-} from "@/wab/classes";
-import { CENTERED_FRAME_PADDING } from "@/wab/client/ClientConstants";
-import {
-  ClipboardAction,
-  ClipboardData,
-  Clippable,
-  FrameClip,
-  isFrameClip,
-  PLASMIC_CLIPBOARD_FORMAT,
-} from "@/wab/client/clipboard";
+import { ArenaFrame, isKnownTplComponent, isKnownTplTag } from "@/wab/classes";
+import { PLASMIC_CLIPBOARD_FORMAT } from "@/wab/client/clipboard/common";
+import { LocalClipboardAction } from "@/wab/client/clipboard/local";
+import { paste } from "@/wab/client/clipboard/paste";
+import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
+import { WritableClipboard } from "@/wab/client/clipboard/WritableClipboard";
 import { BottomModals } from "@/wab/client/components/BottomModal";
 import { CanvasArenaShell } from "@/wab/client/components/canvas/canvas-arena";
 import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
@@ -34,10 +24,7 @@ import RichTextToolbar from "@/wab/client/components/canvas/RichText/RichTextToo
 import { Spotlight } from "@/wab/client/components/canvas/Spotlight";
 import { closestTaggedNonTextDomElt } from "@/wab/client/components/canvas/studio-canvas-util";
 import { VariantsBar } from "@/wab/client/components/canvas/VariantsBar";
-import {
-  getMergedTextArg,
-  InsertRelLoc,
-} from "@/wab/client/components/canvas/view-ops";
+import { getMergedTextArg } from "@/wab/client/components/canvas/view-ops";
 import CommentsTab from "@/wab/client/components/comments/CommentsTab";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import { DevContainer } from "@/wab/client/components/dev";
@@ -45,7 +32,6 @@ import InsertPanelWrapper from "@/wab/client/components/insert-panel/InsertPanel
 import { PreviewCtx } from "@/wab/client/components/live/PreviewCtx";
 import { makeFrameSizeMenu } from "@/wab/client/components/menus/FrameSizeMenu";
 import { OmnibarOverlay } from "@/wab/client/components/omnibar/OmnibarOverlay";
-import { confirm } from "@/wab/client/components/quick-modals";
 import { OldSettingsTab } from "@/wab/client/components/sidebar-tabs/old-settings-tab";
 import { SettingsTab } from "@/wab/client/components/sidebar-tabs/SettingsTab";
 import {
@@ -74,30 +60,9 @@ import {
 } from "@/wab/client/definitions/events";
 import { DndAdoptee, DndMarkers, DragMoveManager } from "@/wab/client/Dnd";
 import { isArrowKey } from "@/wab/client/dom";
-import {
-  getElementBounds,
-  ImageAssetOpts,
-  isCanvasIframeEvent,
-  maybeUploadImage,
-  readImageFromClipboard,
-  ResizableImage,
-} from "@/wab/client/dom-utils";
-import { reportError } from "@/wab/client/ErrorNotifications";
-import {
-  denormalizeFigmaData,
-  figmaClipIdFromStr,
-  figmaDataFromStr,
-  tplNodeFromFigmaData,
-  uploadFigmaImages,
-  uploadNodeImages,
-} from "@/wab/client/figma";
+import { getElementBounds, isCanvasIframeEvent } from "@/wab/client/dom-utils";
 import { DragMoveFrameManager } from "@/wab/client/FreestyleManipulator";
-import {
-  buildCopyStateExtraInfo,
-  getCopyState,
-  isCopyState,
-  postInsertableTemplate,
-} from "@/wab/client/insertable-templates";
+import { getCopyState } from "@/wab/client/insertable-templates";
 import { PLATFORM } from "@/wab/client/platform";
 import { bindShortcutHandlers } from "@/wab/client/shortcuts/shortcut-handler";
 import { shouldHandleStudioShortcut } from "@/wab/client/shortcuts/studio/studio-shortcut-handlers";
@@ -107,39 +72,26 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import { trackEvent } from "@/wab/client/tracking";
-import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
-import {
-  WIElement,
-  wiTreeToTpl,
-  WI_IMPORTER_HEADER,
-} from "@/wab/client/WebImporter";
 import {
   assert,
-  assertNever,
   ensure,
   ensureArray,
   maybe,
   maybeInstance,
   spawn,
-  swallowAsync,
   tuple,
   unexpected,
   withoutNils,
 } from "@/wab/common";
 import {
-  ComponentType,
   isCodeComponent,
   isFrameComponent,
   isPageComponent,
 } from "@/wab/components";
-import { parseCssNumericNew } from "@/wab/css";
 import { dbg } from "@/wab/dbg";
 import { DEVFLAGS } from "@/wab/devflags";
-import { SceneNode } from "@/wab/figmaTypes";
 import { Box, Pt } from "@/wab/geom";
-import { mkImageAssetRef } from "@/wab/image-assets";
 import {
-  FrameViewMode,
   getArenaFrames,
   getFrameHeight,
   isComponentArena,
@@ -148,24 +100,9 @@ import {
   isPageArena,
   isPositionManagedFrame,
 } from "@/wab/shared/Arenas";
-import { extractUsedFontsFromComponents } from "@/wab/shared/codegen/fonts";
 import { isBaseVariantFrame } from "@/wab/shared/component-arenas";
-import {
-  GlobalVariantFrame,
-  RootComponentVariantFrame,
-} from "@/wab/shared/component-frame";
-import { cloneCopyState } from "@/wab/shared/insertable-templates";
-import { CopyStateExtraInfo } from "@/wab/shared/insertable-templates/types";
-import {
-  ARENAS_DESCRIPTION,
-  ARENA_LOWER,
-  FRAME_CAP,
-} from "@/wab/shared/Labels";
+import { ARENAS_DESCRIPTION, ARENA_LOWER } from "@/wab/shared/Labels";
 import { PositionLayoutType } from "@/wab/shared/layoututils";
-import { RSH } from "@/wab/shared/RuleSetHelpers";
-import { WaitForClipError } from "@/wab/shared/UserError";
-import { getBaseVariant } from "@/wab/shared/Variants";
-import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { TplVisibility } from "@/wab/shared/visibility-utils";
 import { getSiteArenas } from "@/wab/sites";
 import {
@@ -174,51 +111,19 @@ import {
   isTplComponent,
   isTplSlot,
   isTplTextBlock,
-  isTplVariantable,
-  trackComponentRoot,
 } from "@/wab/tpls";
 import { ValComponent, ValNode, ValTag } from "@/wab/val-nodes";
 import { Alert, notification } from "antd";
 import { ArgsProps } from "antd/lib/notification";
 import { default as cn, default as cx } from "classnames";
 import $ from "jquery";
-import L, { throttle } from "lodash";
+import { throttle } from "lodash";
 import { observable, runInAction } from "mobx";
 import { observer } from "mobx-react";
 import React, { createRef } from "react";
 import { createPortal } from "react-dom";
 import ResizeObserver from "resize-observer-polyfill";
 import { SignalBinding } from "signals";
-
-type UIEventBase = JQuery.UIEventBase;
-
-type PastableItem =
-  | { type: "clip"; clip: Clippable }
-  | {
-      type: "figma";
-      nodes: Array<SceneNode>;
-      uploadedImages: Map<
-        string,
-        { imageResult: ResizableImage; opts: ImageAssetOpts }
-      >;
-      nodeImages: Map<
-        SceneNode,
-        { imageResult: ResizableImage; opts: ImageAssetOpts }
-      >;
-      imagesToRename: Map<string, string>;
-      replaceComponentInstances: boolean;
-    }
-  | {
-      type: "image";
-      image: ResizableImage;
-      opts: ImageAssetOpts;
-      as: "tpl" | "background";
-    }
-  | { type: "text"; text: string }
-  | { type: "presets"; text: string }
-  | { type: "wi-importer"; tree: WIElement }
-  | { type: "copy-reference"; extraInfo: CopyStateExtraInfo }
-  | undefined;
 
 const minDragPx = 4;
 interface DragState {
@@ -263,7 +168,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
   // "paste as sibling" because Clipboard API only lets us know about the
   // existence of "application/vnd.plasmic.clipboardjson" but does not let
   // us read data from it.
-  private clipboardAction: ClipboardAction = "copy";
+  private clipboardAction: LocalClipboardAction = "copy";
 
   constructor(props: ViewEditorProps) {
     super(props);
@@ -386,70 +291,40 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       }
     });
 
-    this.registerListener("copy", (e: ClipboardEvent) => {
-      trackEvent("Copy");
-      console.log("Copy event", e);
-      this.hotkey(() => {
-        if (e.clipboardData) {
-          const viewCtx = this.viewCtx();
+    this.registerListener("copy", async (e: ClipboardEvent) => {
+      const vc = this.viewCtx();
+      if (!vc || !this.isFocusedOnCanvas() || !this.props.studioCtx.isDevMode) {
+        return;
+      }
 
-          if (viewCtx) {
-            viewCtx.enforcePastingAsSibling = true;
-          }
-
-          const copyObj = this.viewOps().copy();
-
-          if (viewCtx) {
-            const copyState = getCopyState(viewCtx, copyObj);
-            spawn(
-              viewCtx.appCtx.api.whiltelistProjectIdToCopy(copyState.projectId)
-            );
-            if (copyState.references.length > 0) {
-              e.clipboardData.setData(
-                PLASMIC_CLIPBOARD_FORMAT,
-                JSON.stringify(copyState)
-              );
-              return;
-            }
-          }
-
-          e.clipboardData.setData(
-            PLASMIC_CLIPBOARD_FORMAT,
-            JSON.stringify({ action: "copy" })
-          );
-          this.clipboardAction = "copy";
-        }
-      })(e);
-    });
-    this.registerListener("cut", (e: ClipboardEvent) => {
-      trackEvent("Cut");
-      console.log("Cut event", e);
-      this.hotkey(async () => {
-        if (e.clipboardData) {
-          await this.viewOps().cut();
-          e.clipboardData.setData(
-            PLASMIC_CLIPBOARD_FORMAT,
-            JSON.stringify({ action: "cut" })
-          );
-          this.clipboardAction = "cut";
-        }
-      })(e);
-    });
-    this.registerListener("paste", async (e) => {
-      trackEvent("Paste");
-      this.hotkey(async () => {
-        if (!e.clipboardData) {
-          return;
-        }
-        const itemToPaste = await this.extractItemToPaste(e.clipboardData);
-        if (!itemToPaste) {
-          return;
-        }
-        console.log("Pasting", itemToPaste);
-        spawn(
-          this.props.studioCtx.changeUnsafe(() => this.pasteItem(itemToPaste))
+      if (e.clipboardData) {
+        e.preventDefault();
+        await this.copy(
+          WritableClipboard.fromDataTransfer(e.clipboardData),
+          vc
         );
-      }, false)(e);
+      }
+    });
+    this.registerListener("cut", async (e: ClipboardEvent) => {
+      const vc = this.viewCtx();
+      if (!vc || !this.isFocusedOnCanvas() || !this.props.studioCtx.isDevMode) {
+        return;
+      }
+
+      if (e.clipboardData) {
+        e.preventDefault();
+        await this.cut(WritableClipboard.fromDataTransfer(e.clipboardData), vc);
+      }
+    });
+    this.registerListener("paste", async (e: ClipboardEvent) => {
+      if (!this.isFocusedOnCanvas() || !this.props.studioCtx.isDevMode) {
+        return;
+      }
+
+      if (e.clipboardData) {
+        e.preventDefault();
+        await this.paste(ReadableClipboard.fromDataTransfer(e.clipboardData));
+      }
     });
 
     const initArena = this.props.studioCtx.currentArena;
@@ -888,7 +763,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
           )
         ),
       PASTE_AS_SIBLING: (e: KeyboardEvent) =>
-        this.handleHotkey(e, async () => this.tryPasteAsSibling()),
+        this.handleHotkey(e, async () => this.pasteAsSibling()),
       BOLD: (e) =>
         this.handleHotkey(e, async () =>
           this.props.studioCtx.changeUnsafe(() => this.viewOps().toggleBold())
@@ -971,30 +846,12 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
     );
   }
 
-  private hotkey = (f: (e: UIEventBase) => any, requireViewCtx = true) => {
-    return (e) => {
-      if (requireViewCtx && !this.viewCtx()) {
-        return;
-      }
-      if (this.viewCtx() && this.viewOps().isEditing()) {
-        return;
-      }
-      // We don't handle hotkeys (copy|cut|paste) if we are in the DocsPortal
-      if (window.location.pathname.includes("docs")) {
-        return;
-      }
-      if (this.props.studioCtx.isDevMode && this.isFocusedOnCanvas()) {
-        e.preventDefault();
-        return f(e);
-      }
-    };
-  };
-
   private handleHotkey(
     e: KeyboardEvent,
     f: (e: KeyboardEvent) => Promise<void>
   ) {
-    if (this.shouldHandleHotkey(e)) {
+    const vc = this.viewCtx();
+    if (vc && !vc.viewOps.isEditing() && this.props.studioCtx.isDevMode) {
       spawn(f(e));
       return true;
     } else {
@@ -1018,405 +875,60 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
     return this.handleHotkey(e, f);
   }
 
-  private shouldHandleHotkey(_e: KeyboardEvent) {
-    return (
-      this.viewCtx() &&
-      !this.viewOps().isEditing() &&
-      this.props.studioCtx.isDevMode
-    );
+  async copy(clipboard: WritableClipboard, viewCtx: ViewCtx) {
+    trackEvent("Copy");
+    viewCtx.enforcePastingAsSibling = true;
+    const copyObj = viewCtx.viewOps.copy();
+    const copyState = getCopyState(viewCtx, copyObj);
+    spawn(viewCtx.appCtx.api.whitelistProjectIdToCopy(copyState.projectId));
+    if (copyState.references.length > 0) {
+      clipboard.setData(copyState);
+    } else {
+      clipboard.setData({ action: "copy" });
+    }
+    this.clipboardAction = "copy";
   }
 
-  async tryPasteAsSibling() {
+  // TODO: Feature parity with copy
+  async cut(clipboard: WritableClipboard, viewCtx: ViewCtx) {
+    trackEvent("Cut");
+    await viewCtx.viewOps.cut();
+    clipboard.setData({ action: "cut" });
+    this.clipboardAction = "cut";
+  }
+
+  async paste(clipboard: ReadableClipboard, as?: "sibling") {
+    trackEvent("Paste");
+    await paste({
+      clipboard: clipboard,
+      studioCtx: this.props.studioCtx,
+      cursorClientPt: this.cursorClientPt,
+      as,
+    });
+  }
+
+  async pasteAsSibling() {
     const sc = this.props.studioCtx;
-    const data = new ClipboardData();
+    let clipboard: ReadableClipboard;
 
     try {
       const clipboardData = await sc.appCtx.api.readNavigatorClipboard(
         this.clipboardAction
       );
-      await data.setParsedData(sc.appCtx, clipboardData);
+      clipboard = ReadableClipboard.fromData(clipboardData);
     } catch (e) {
       console.error(e);
 
       // If unable to read data from the clipboard, assume that it
       // contains a paste from Plasmic.
-      await data.setParsedData(sc.appCtx, {
-        map: {
-          [PLASMIC_CLIPBOARD_FORMAT]: JSON.stringify({
-            action: this.clipboardAction,
-          }),
-        },
+      clipboard = ReadableClipboard.fromData({
+        [PLASMIC_CLIPBOARD_FORMAT]: JSON.stringify({
+          action: this.clipboardAction,
+        }),
       });
     }
 
-    const itemToPaste = await this.extractItemToPaste(data);
-    if (itemToPaste) {
-      await this.props.studioCtx.changeUnsafe(() => {
-        this.pasteItem(itemToPaste, "sibling");
-      });
-    }
-  }
-
-  pasteItem(itemToPaste: PastableItem, as?: "child" | "sibling") {
-    const vc = this.viewCtx();
-
-    // If "as" is not specified, we check if we should enforce pasting as sibling
-    as = as ?? vc?.enforcePastingAsSibling ? "sibling" : "child";
-
-    // After pasting (and selecting the new node),
-    // we always enforce next pasting to be as sibling
-    // so the user can paste multiple times.
-    // We stop enforcing that when they intentionally change selection.
-    L.defer(() => {
-      if (vc) {
-        vc.enforcePastingAsSibling = true;
-      }
-    });
-
-    if (!itemToPaste) {
-      return;
-    }
-
-    const sc = this.props.studioCtx;
-
-    // Item to paste: Frame clip.
-    if (itemToPaste.type === "clip" && isFrameClip(itemToPaste.clip)) {
-      sc.siteOps().pasteFrameClip(itemToPaste.clip as FrameClip);
-      return;
-    }
-
-    let relLoc: InsertRelLoc | undefined;
-    if (as === "sibling") {
-      relLoc = InsertRelLoc.after;
-    }
-
-    if (itemToPaste.type === "figma") {
-      pasteFromFigma(vc, sc, itemToPaste, relLoc, this.cursorClientPt);
-      return;
-    }
-
-    if (!vc) {
-      notification.error({
-        message: "Cannot paste item",
-        description: `You must have an ${FRAME_CAP} in focus in order to paste.`,
-      });
-      return;
-    }
-    // Item to paste: Non-frame clip.
-    if (itemToPaste.type === "clip") {
-      vc.getViewOps().pasteClip({
-        clip: itemToPaste.clip,
-        cursorClientPt: this.cursorClientPt,
-        target: undefined,
-        loc: relLoc,
-      });
-      return;
-    }
-
-    const vtm = vc.variantTplMgr();
-
-    // Item to paste: Text.
-    if (itemToPaste.type === "text") {
-      const node = vtm.mkTplInlinedText(itemToPaste.text);
-      vc.getViewOps().pasteNode(node, this.cursorClientPt, undefined, relLoc);
-      return;
-    }
-
-    // Item to paste: Presets.
-    if (itemToPaste.type === "presets") {
-      // vc.getViewOps().pastePresets(itemToPaste.text);
-      return;
-    }
-
-    // Item to paste: Image.
-    if (itemToPaste.type === "image") {
-      const asset = sc
-        .siteOps()
-        .createImageAsset(itemToPaste.image, itemToPaste.opts);
-      if (asset) {
-        if (itemToPaste.as === "background") {
-          vc.getViewOps().pasteClip({
-            clip: {
-              type: "style",
-              cssProps: makeBackgroundImageProps(asset.asset),
-            },
-            cursorClientPt: this.cursorClientPt,
-          });
-        } else {
-          const node = vtm.mkTplImage({
-            asset: asset.asset,
-            iconColor: asset.iconColor,
-          });
-          vc.getViewOps().pasteNode(
-            node,
-            this.cursorClientPt,
-            undefined,
-            relLoc
-          );
-        }
-      }
-      return;
-    }
-
-    if (itemToPaste.type === "wi-importer") {
-      const tpl = wiTreeToTpl(
-        itemToPaste.tree,
-        vc,
-        vc.variantTplMgr(),
-        this.siteOps(),
-        vc.appCtx
-      );
-
-      if (tpl) {
-        vc.getViewOps().pasteNode(tpl);
-      }
-      return;
-    }
-
-    if (itemToPaste.type === "copy-reference") {
-      const currentComponent = vc.currentComponent();
-
-      try {
-        const { nodesToPaste, seenFonts } = cloneCopyState(
-          vc.studioCtx.site,
-          itemToPaste.extraInfo,
-          getBaseVariant(currentComponent),
-          vc.studioCtx.getPlumeSite(),
-          currentComponent,
-          vc.viewOps.adaptTplNodeForPaste
-        );
-
-        if (nodesToPaste.length > 0) {
-          // `cloneCopyState` only handles a single node for now
-          vc.getViewOps().pasteNode(nodesToPaste[0]);
-          postInsertableTemplate(vc.studioCtx, seenFonts);
-          // Infer that only the design has been pasted as content
-          // related to data or dynamic binding have been striped
-          notification.success({
-            message: "Elements pasted",
-            description: "Designs have been successfully pasted.",
-          });
-        }
-      } catch (err) {
-        notification.error({
-          message: "Cannot paste elements",
-          description: <StandardMarkdown>{err.message}</StandardMarkdown>,
-        });
-      }
-
-      return;
-    }
-
-    assertNever(itemToPaste);
-  }
-
-  /**
-   * Returns a variety of things that could be pasted from the clipboard, or
-   * undefined if nothing can be pasted.  Note that this method is called
-   * outside of studioCtx.change(), so do not make any changes to the
-   * data model from here.
-   */
-  private async extractItemToPaste(
-    clipboardData: DataTransfer | ClipboardData
-  ): Promise<PastableItem> {
-    const sc = this.props.studioCtx;
-    const plasmicDataStr = clipboardData.getData(PLASMIC_CLIPBOARD_FORMAT);
-    if (plasmicDataStr) {
-      const plasmicData = JSON.parse(plasmicDataStr);
-      // We've 2 different behavior when performing a copy/paste:
-      //
-      // - Copy/paste inside the project
-      // This has a different handling because it allows to do more direct surgery in the tree
-      // which will be pasted, as we can reference existing content more easily, but this actually
-      // can be troublesome inside the own project if it involves different branches or versions
-      //
-      // - Copy/paste cross projects
-      // This is a more limited copy/paste as in many cases some references will be removed, as
-      // an example, global variants, data source exprs, page references, state references,
-      // which we can't be sure to perform an attachment in between projects.
-
-      function shouldPerformCrossTabCopy() {
-        if (!isCopyState(plasmicData)) {
-          return false;
-        }
-        // If we are dealing with a different project, then we can only
-        // perform a cross-tab copy
-        if (plasmicData.projectId !== sc.siteInfo.id) {
-          return true;
-        }
-        // We are in the same project, dealing with different branches
-        // perform a cross-tab copy, since we are not sure about references
-        if (plasmicData.branchId !== sc.dbCtx().branchInfo?.id) {
-          return true;
-        }
-        // We are dealing with the same project and branch, but an older version
-        // perform a cross-tab copy, since we are not sure about references
-        if (plasmicData.bundleRef.type === "pkg") {
-          return true;
-        }
-        // It may be the case that we are dealing with a different revisionNum here
-        // but we will assume it's fine, considering the expected time for user to copy/paste
-        return false;
-      }
-
-      if (shouldPerformCrossTabCopy()) {
-        try {
-          const extraInfo = await buildCopyStateExtraInfo(sc, plasmicData);
-          return {
-            type: "copy-reference",
-            extraInfo,
-          };
-        } catch (err) {
-          reportError(err);
-          notification.error({
-            message: "Cannot paste elements",
-            description: err.message,
-          });
-          return undefined;
-        }
-      } else if (
-        sc.clipboard.isSet() &&
-        ["copy", "cut", "cross-tab-copy"].includes(plasmicData.action)
-      ) {
-        console.log("Pasting plasmic-clipboard tpl");
-        return { type: "clip", clip: sc.clipboard.paste() };
-      }
-    } else {
-      // Figma paste check needs to come before the image check, as it contains
-      // SVG data and will return a false positive from `readImageFromClipboard`
-      const textContent = clipboardData.getData("text/plain");
-      if (textContent) {
-        const figmaPasteInput = await sc.app.withSpinner(
-          (async () => {
-            const getFigmaData = async () => {
-              const figmaData = figmaDataFromStr(textContent);
-              if (figmaData) {
-                return figmaData;
-              }
-
-              const clipId = figmaClipIdFromStr(textContent);
-              if (!clipId) {
-                return undefined;
-              }
-
-              const getClipResponse = await swallowAsync(
-                sc.appCtx.api.getClip(clipId)
-              );
-              if (!getClipResponse) {
-                throw new WaitForClipError();
-              }
-
-              const { content: clipContent } = getClipResponse;
-              return figmaDataFromStr(clipContent);
-            };
-            const figmaData = await getFigmaData();
-            if (!figmaData) {
-              return undefined;
-            }
-            console.log("Pasting figma layers");
-            const uploadedImages = await uploadFigmaImages(
-              figmaData,
-              sc.appCtx
-            );
-            const { nodes, imagesToRename } = denormalizeFigmaData(figmaData);
-            const nodeImages = await uploadNodeImages(nodes, sc.appCtx);
-
-            return {
-              type: "figma" as const,
-              nodes,
-              uploadedImages,
-              nodeImages,
-              imagesToRename,
-            };
-          })()
-        );
-        if (figmaPasteInput) {
-          const replaceComponentInstances = !!(await confirm({
-            message: (
-              <>
-                <p>
-                  Figma components instances can be converted into existing
-                  components of the same name, in your Plasmic project,
-                  including code components. If there's no component of the same
-                  name, it will be converted into basic elements.
-                </p>
-                <p>Try converting Figma components to Plasmic components?</p>
-                <a
-                  href="https://docs.plasmic.app/learn/importing-from-figma/#converting-component-instances"
-                  target="_blank"
-                >
-                  {"Learn more."}
-                </a>
-              </>
-            ),
-            confirmLabel: "Yes, use existing Plasmic components",
-            cancelLabel: "No, use basic elements",
-          }));
-          return { replaceComponentInstances, ...figmaPasteInput };
-        }
-      }
-
-      if (textContent.startsWith(WI_IMPORTER_HEADER)) {
-        return {
-          type: "wi-importer",
-          tree: JSON.parse(textContent.substring(WI_IMPORTER_HEADER.length)),
-        };
-      }
-
-      const presetsHeader = "__wab_plasmic_presets;";
-      if (textContent.startsWith(presetsHeader)) {
-        return {
-          type: "presets",
-          text: textContent.substr(presetsHeader.length),
-        };
-      }
-
-      /**
-       * Something weird happens across the iframe boundary,
-       * we lose type information!
-       * Even when clipboardData is clearly a DataTransfer:
-       * - `clipboardData instanceof DataTransfer` returns false
-       * - `typeof clipboardData` returns "object";
-       * So here, we check for ClipboardData instead
-       **/
-      const image =
-        clipboardData instanceof ClipboardData
-          ? clipboardData.getImage()
-          : await readImageFromClipboard(sc.appCtx, clipboardData);
-
-      if (image) {
-        return await sc.app.withSpinner(
-          (async () => {
-            const { imageResult, opts } = await maybeUploadImage(
-              this.props.studioCtx.appCtx,
-              image,
-              undefined,
-              undefined
-            );
-            return {
-              type: "image" as const,
-              as: "tpl" as const, // For now, we only support pasting as tpl
-              image: ensure(
-                imageResult,
-                () => "Expected imageResult to be not null"
-              ),
-              opts: ensure(opts, () => "Expected opts to be not null"),
-            };
-          })()
-        );
-      }
-
-      if (textContent) {
-        // TODO: work with rich text as well
-        console.log("Pasting plain content", textContent);
-        return { type: "text", text: textContent };
-      }
-    }
-
-    notification.warn({
-      message: "Nothing to paste - the clipboard is empty",
-    });
-    return undefined;
+    await this.paste(clipboard, "sibling");
   }
 
   /**
@@ -1477,12 +989,9 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
     e.preventDefault();
     this.dndOverlayOpts.visible = false;
     this.dragDepth = 0;
-    if (!e.dataTransfer) {
-      return;
+    if (e.dataTransfer) {
+      await this.paste(ReadableClipboard.fromDataTransfer(e.dataTransfer));
     }
-    const itemToPaste = await this.extractItemToPaste(e.dataTransfer);
-    console.log("Drag-n-drop", itemToPaste);
-    spawn(this.props.studioCtx.changeUnsafe(() => this.pasteItem(itemToPaste)));
   }
 
   private async handleMouseDown(
@@ -2652,127 +2161,3 @@ const RightPane = observer(function RightPane(props: {
     </DevContainer>
   );
 });
-
-function pasteFromFigma(
-  vc: ViewCtx | undefined,
-  sc: StudioCtx,
-  itemToPaste: PastableItem,
-  relLoc: InsertRelLoc | undefined,
-  cursorClientPt: Pt | undefined
-) {
-  assert(
-    itemToPaste?.type === "figma",
-    "Should only be called if this is a figma paste"
-  );
-  const showFigmaError = () => {
-    notification.error({
-      message: "No Figma layers to paste",
-      description:
-        "This could happen if (for example) the entire selection was invisible in Figma. If you aren't expecting this behavior, please share the Figma file with team@plasmic.app.",
-    });
-  };
-  if (vc) {
-    const vtm = vc.variantTplMgr();
-    const maybeNode = tplNodeFromFigmaData(
-      vtm,
-      sc.site,
-      sc.siteOps(),
-      itemToPaste.nodes,
-      itemToPaste.uploadedImages,
-      itemToPaste.nodeImages,
-      itemToPaste.imagesToRename,
-      itemToPaste.replaceComponentInstances
-    );
-    if (maybeNode) {
-      vc.getViewOps().pasteNode(maybeNode, cursorClientPt, undefined, relLoc);
-      extractUsedFontsFromComponents(sc.site, [vc.component]).forEach((usage) =>
-        sc.fontManager.useFont(sc, usage.fontFamily)
-      );
-    } else {
-      showFigmaError();
-    }
-  } else {
-    // No existing artboard, so paste the Figma content as its own artboard
-    const arena = sc.currentArena;
-    if (!isMixedArena(arena)) {
-      notification.error({
-        message: `Please select where you want to paste. (If you want to paste multiple Figma artboards, create a ${ARENA_LOWER}.)`,
-      });
-      return;
-    }
-    const newComponent = sc
-      .tplMgr()
-      .addComponent({ type: ComponentType.Frame });
-    const newFrame = sc.siteOps().createNewFrameForMixedArena(newComponent);
-    const tplMgr = sc.tplMgr();
-    const vtm = new VariantTplMgr(
-      [new RootComponentVariantFrame(newFrame)],
-      sc.site,
-      sc.tplMgr(),
-      new GlobalVariantFrame(sc.site, newFrame)
-    );
-    const maybeNode = tplNodeFromFigmaData(
-      vtm,
-      sc.site,
-      sc.siteOps(),
-      itemToPaste.nodes,
-      itemToPaste.uploadedImages,
-      itemToPaste.nodeImages,
-      itemToPaste.imagesToRename,
-      itemToPaste.replaceComponentInstances
-    );
-    if (!maybeNode) {
-      // Paste was unsuccessful, so delete the new frame / component we made :-/
-      showFigmaError();
-      tplMgr.removeExistingArenaFrame(arena, newFrame, {
-        pruneUnnamedComponent: true,
-      });
-      return;
-    }
-    newComponent.tplTree = maybeNode;
-    trackComponentRoot(newComponent);
-    if (isTplVariantable(newComponent.tplTree)) {
-      const rsh = RSH(
-        vtm.ensureBaseVariantSetting(newComponent.tplTree).rs,
-        newComponent.tplTree
-      );
-      const widthParsed = parseCssNumericNew(rsh.get("width"));
-      const heightParsed = parseCssNumericNew(rsh.get("height"));
-      if (
-        widthParsed &&
-        widthParsed.units === "px" &&
-        heightParsed &&
-        heightParsed.units === "px"
-      ) {
-        const width = widthParsed.num;
-        const height = heightParsed.num;
-        const area = width * height;
-        if (area >= 400 * 700) {
-          // We're just going to guess that a frame of at least iphone size
-          // is a "page". We set frame to stretch mode, and set the root
-          // element dimensions to stretch instead
-          newFrame.width = width;
-          newFrame.height = height;
-          newFrame.viewMode = FrameViewMode.Stretch;
-          rsh.set("width", "stretch");
-          rsh.set("height", "stretch");
-        } else {
-          newFrame.width = width + CENTERED_FRAME_PADDING * 2;
-          newFrame.height = height + CENTERED_FRAME_PADDING * 2;
-        }
-      }
-    }
-    sc.setStudioFocusOnFrame({ frame: newFrame, autoZoom: true });
-    extractUsedFontsFromComponents(sc.site, [newComponent]).forEach((usage) =>
-      sc.fontManager.useFont(sc, usage.fontFamily)
-    );
-  }
-}
-
-function makeBackgroundImageProps(asset: ImageAsset) {
-  return {
-    background: mkBackgroundLayer(
-      new ImageBackground({ url: mkImageAssetRef(asset) })
-    ).showCss(),
-  };
-}

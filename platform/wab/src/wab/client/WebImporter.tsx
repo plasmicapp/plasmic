@@ -1,17 +1,21 @@
 import { RawText, TplNode } from "@/wab/classes";
-import { AppCtx } from "@/wab/client/app-ctx";
-import { SiteOps } from "@/wab/client/components/canvas/site-ops";
+import {
+  ensureViewCtxOrThrowUserError,
+  PasteArgs,
+  PasteResult,
+} from "@/wab/client/clipboard/common";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { assertNever, withoutNils } from "@/wab/common";
+import { unwrap } from "@/wab/commons/failable-utils";
 import { code } from "@/wab/exprs";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { TplTagType } from "@/wab/tpls";
 
-export type WIStyles = Record<string, Record<string, string>>;
+type WIStyles = Record<string, Record<string, string>>;
 
-export type SanitizedWIStyles = Record<
+type SanitizedWIStyles = Record<
   string,
   {
     safe: Record<string, string>;
@@ -19,47 +23,79 @@ export type SanitizedWIStyles = Record<
   }
 >;
 
-export interface WIBase {
+interface WIBase {
   type: string;
   tag: string;
   unsanitizedStyles: WIStyles;
   styles: SanitizedWIStyles;
 }
 
-export interface WIContainer extends WIBase {
+interface WIContainer extends WIBase {
   type: "container";
   children: WIElement[];
   attrs: Record<string, string>;
 }
 
-export interface WIText extends WIBase {
+interface WIText extends WIBase {
   type: "text";
   text: string;
 }
 
-export interface WISVG extends WIBase {
+interface WISVG extends WIBase {
   type: "svg";
   outerHtml: string;
   width: number;
   height: number;
 }
 
-export interface WIComponent extends WIBase {
+interface WIComponent extends WIBase {
   type: "component";
   component: string;
 }
 
-export type WIElement = WIContainer | WIText | WISVG | WIComponent;
+type WIElement = WIContainer | WIText | WISVG | WIComponent;
 
-export const WI_IMPORTER_HEADER = "__wab_plasmic_wi_importer;";
+const WI_IMPORTER_HEADER = "__wab_plasmic_wi_importer;";
 
-export function wiTreeToTpl(
-  wiTree: WIElement,
-  vc: ViewCtx,
-  vtm: VariantTplMgr,
-  siteOps: SiteOps,
-  appCtx: AppCtx
-) {
+export async function pasteFromWebImporter(
+  text,
+  { studioCtx, cursorClientPt, insertRelLoc }: PasteArgs
+): Promise<PasteResult> {
+  if (!text.startsWith(WI_IMPORTER_HEADER)) {
+    return {
+      handled: false,
+    };
+  }
+
+  const viewCtx = ensureViewCtxOrThrowUserError(studioCtx);
+
+  const wiTree = JSON.parse(
+    text.substring(WI_IMPORTER_HEADER.length)
+  ) as WIElement;
+
+  return {
+    handled: true,
+    success: unwrap(
+      await studioCtx.change(({ success }) => {
+        const tpl = wiTreeToTpl(wiTree, viewCtx, viewCtx.variantTplMgr());
+        if (!tpl) {
+          return success(false);
+        }
+
+        return success(
+          viewCtx.viewOps.pasteNode(
+            tpl,
+            cursorClientPt,
+            undefined,
+            insertRelLoc
+          )
+        );
+      })
+    ),
+  };
+}
+
+function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
   const site = vc.studioCtx.site;
   const activeScreenVariantGroup = site.activeScreenVariantGroup;
   const screenVariant = activeScreenVariantGroup?.variants?.[0];

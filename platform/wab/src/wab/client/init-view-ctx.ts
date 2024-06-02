@@ -1,6 +1,5 @@
 import { meta } from "@/wab/classes-metas";
 import { AppCtx } from "@/wab/client/app-ctx";
-import { Clipboard } from "@/wab/client/clipboard";
 import { DbCtx } from "@/wab/client/db";
 import { loadSiteDbCtx } from "@/wab/client/init-ctx";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -23,7 +22,6 @@ export function createStudioCtx({
     (window as any).dbg.studioCtx =
       new StudioCtx({
         dbCtx,
-        clipboard: new Clipboard(),
       }));
 
   (window as any).__PLASMIC_EXECUTE_DATA_OP = studioCtx.executePlasmicDataOp;

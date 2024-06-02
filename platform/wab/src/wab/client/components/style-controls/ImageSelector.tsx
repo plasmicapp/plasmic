@@ -1,4 +1,5 @@
 import { ImageAsset, isKnownImageAsset } from "@/wab/classes";
+import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
 import { ImageAssetSidebarPopup } from "@/wab/client/components/sidebar/image-asset-controls";
 import { FileUploader, PlainLinkButton } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -8,7 +9,6 @@ import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   maybeUploadImage,
   readAndSanitizeFileAsImage,
-  readImageFromClipboard,
   ResizableImage,
 } from "@/wab/client/dom-utils";
 import ArrowRightIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ArrowRight";
@@ -504,10 +504,17 @@ export function ImagePaster(props: {
   const ref = React.useRef<HTMLTextAreaElement>(null);
 
   React.useEffect(() => {
-    const handler = spawnWrapper(async (event) => {
+    const handler = spawnWrapper(async (event: ClipboardEvent) => {
+      if (!event.clipboardData) {
+        return;
+      }
+
+      event.preventDefault();
       event.stopPropagation();
       setProcessing(true);
-      const image = await readImageFromClipboard(appCtx, event.clipboardData);
+      const image = await ReadableClipboard.fromDataTransfer(
+        event.clipboardData
+      ).getImage(appCtx);
       if (image) {
         props.onPasted(image);
       } else {

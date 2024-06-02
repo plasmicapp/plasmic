@@ -21,17 +21,24 @@ import {
   VariantsRef,
 } from "@/wab/classes";
 import { AppCtx } from "@/wab/client/app-ctx";
-import { PLASMIC_CLIPBOARD_FORMAT } from "@/wab/client/clipboard";
+import { CENTERED_FRAME_PADDING } from "@/wab/client/ClientConstants";
+import {
+  PasteArgs,
+  PasteResult,
+  PLASMIC_CLIPBOARD_FORMAT,
+} from "@/wab/client/clipboard/common";
 import {
   SiteOps,
   uploadSvgImage,
 } from "@/wab/client/components/canvas/site-ops";
+import { confirm } from "@/wab/client/components/quick-modals";
 import {
   ImageAssetOpts,
   maybeUploadImage,
   parseImage,
   ResizableImage,
 } from "@/wab/client/dom-utils";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { unzip } from "@/wab/collections";
 import {
   arrayEqIgnoreOrder,
@@ -40,18 +47,22 @@ import {
   ensure,
   rad2deg,
   swallow,
+  swallowAsync,
   tuple,
   uniqueName,
   withoutNils,
   withoutNilTuples,
 } from "@/wab/common";
 import { arrayReversed } from "@/wab/commons/collections";
+import { unwrap } from "@/wab/commons/failable-utils";
 import { Matrix as AltMatrix } from "@/wab/commons/transformation-matrix";
 import {
+  ComponentType,
   getComponentDisplayName,
   isContextCodeComponent,
   isReusableComponent,
 } from "@/wab/components";
+import { parseCssNumericNew } from "@/wab/css";
 import { codeLit } from "@/wab/exprs";
 import {
   ComponentNode,
@@ -71,8 +82,16 @@ import {
 } from "@/wab/figmaTypes";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import { mkImageAssetRef } from "@/wab/image-assets";
+import { FrameViewMode, isMixedArena } from "@/wab/shared/Arenas";
+import { extractUsedFontsFromComponents } from "@/wab/shared/codegen/fonts";
 import { toVarName } from "@/wab/shared/codegen/util";
+import {
+  GlobalVariantFrame,
+  RootComponentVariantFrame,
+} from "@/wab/shared/component-frame";
+import { ARENA_LOWER } from "@/wab/shared/Labels";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
+import { WaitForClipError } from "@/wab/shared/UserError";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import {
@@ -83,10 +102,12 @@ import {
   MkTplTagOpts,
   mkTplTagX,
   TplTagType,
+  trackComponentRoot,
 } from "@/wab/tpls";
 import { getBoundingRect } from "@figma-plugin/helpers";
+import { notification } from "antd";
 import { isString, keys, omit } from "lodash";
-import { CSSProperties } from "react";
+import React, { CSSProperties } from "react";
 import {
   applyToPoint,
   compose,
@@ -105,6 +126,232 @@ type Serializable =
 
 interface JSONObject {
   [key: string]: Serializable;
+}
+
+export type FigmaClipboard = {
+  nodes: Array<SceneNode>;
+  uploadedImages: Map<
+    string,
+    { imageResult: ResizableImage; opts: ImageAssetOpts }
+  >;
+  nodeImages: Map<
+    SceneNode,
+    { imageResult: ResizableImage; opts: ImageAssetOpts }
+  >;
+  imagesToRename: Map<string, string>;
+};
+
+export async function pasteFromFigma(
+  text: string,
+  { studioCtx, cursorClientPt, insertRelLoc }: PasteArgs
+): Promise<PasteResult> {
+  const figmaData = await studioCtx.app.withSpinner(
+    readFigmaClipboard(studioCtx, text)
+  );
+  if (!figmaData) {
+    return {
+      handled: false,
+    };
+  }
+
+  const replaceComponentInstances = !!(await confirm({
+    message: (
+      <>
+        <p>
+          Figma components instances can be converted into existing components
+          of the same name, in your Plasmic project, including code components.
+          If there's no component of the same name, it will be converted into
+          basic elements.
+        </p>
+        <p>Try converting Figma components to Plasmic components?</p>
+        <a
+          href="https://docs.plasmic.app/learn/importing-from-figma/#converting-component-instances"
+          target="_blank"
+        >
+          Learn more.
+        </a>
+      </>
+    ),
+    confirmLabel: "Yes, use existing Plasmic components",
+    cancelLabel: "No, use basic elements",
+  }));
+
+  const showFigmaError = () => {
+    notification.error({
+      message: "No Figma layers to paste",
+      description:
+        "This could happen if (for example) the entire selection was invisible in Figma. If you aren't expecting this behavior, please share the Figma file with team@plasmic.app.",
+    });
+  };
+  const vc = studioCtx.focusedViewCtx();
+  if (vc) {
+    return {
+      handled: true,
+      success: unwrap(
+        await studioCtx.change(({ success }) => {
+          const maybeNode = tplNodeFromFigmaData(
+            vc.variantTplMgr(),
+            studioCtx.site,
+            studioCtx.siteOps(),
+            figmaData.nodes,
+            figmaData.uploadedImages,
+            figmaData.nodeImages,
+            figmaData.imagesToRename,
+            replaceComponentInstances
+          );
+          if (maybeNode) {
+            const pasteSuccess = vc
+              .getViewOps()
+              .pasteNode(maybeNode, cursorClientPt, undefined, insertRelLoc);
+            if (pasteSuccess) {
+              extractUsedFontsFromComponents(studioCtx.site, [
+                vc.component,
+              ]).forEach((usage) =>
+                studioCtx.fontManager.useFont(studioCtx, usage.fontFamily)
+              );
+              return success(true);
+            } else {
+              return success(false);
+            }
+          } else {
+            showFigmaError();
+            return success(false);
+          }
+        })
+      ),
+    };
+  } else {
+    // No existing artboard, so paste the Figma content as its own artboard
+    const arena = studioCtx.currentArena;
+    if (!isMixedArena(arena)) {
+      notification.error({
+        message: `Please select where you want to paste. (If you want to paste multiple Figma artboards, create a ${ARENA_LOWER}.)`,
+      });
+      return {
+        handled: true,
+        success: false,
+      };
+    }
+
+    return {
+      handled: true,
+      success: unwrap(
+        await studioCtx.change(({ success }) => {
+          const newComponent = studioCtx
+            .tplMgr()
+            .addComponent({ type: ComponentType.Frame });
+          const newFrame = studioCtx
+            .siteOps()
+            .createNewFrameForMixedArena(newComponent);
+          const tplMgr = studioCtx.tplMgr();
+          const vtm = new VariantTplMgr(
+            [new RootComponentVariantFrame(newFrame)],
+            studioCtx.site,
+            studioCtx.tplMgr(),
+            new GlobalVariantFrame(studioCtx.site, newFrame)
+          );
+          const maybeNode = tplNodeFromFigmaData(
+            vtm,
+            studioCtx.site,
+            studioCtx.siteOps(),
+            figmaData.nodes,
+            figmaData.uploadedImages,
+            figmaData.nodeImages,
+            figmaData.imagesToRename,
+            replaceComponentInstances
+          );
+          if (!maybeNode) {
+            // Paste was unsuccessful, so delete the new frame / component we made :-/
+            tplMgr.removeExistingArenaFrame(arena, newFrame, {
+              pruneUnnamedComponent: true,
+            });
+            showFigmaError();
+            return success(false);
+          }
+          newComponent.tplTree = maybeNode;
+          trackComponentRoot(newComponent);
+          if (isTplVariantable(newComponent.tplTree)) {
+            const rsh = RSH(
+              vtm.ensureBaseVariantSetting(newComponent.tplTree).rs,
+              newComponent.tplTree
+            );
+            const widthParsed = parseCssNumericNew(rsh.get("width"));
+            const heightParsed = parseCssNumericNew(rsh.get("height"));
+            if (
+              widthParsed &&
+              widthParsed.units === "px" &&
+              heightParsed &&
+              heightParsed.units === "px"
+            ) {
+              const width = widthParsed.num;
+              const height = heightParsed.num;
+              const area = width * height;
+              if (area >= 400 * 700) {
+                // We're just going to guess that a frame of at least iphone size
+                // is a "page". We set frame to stretch mode, and set the root
+                // element dimensions to stretch instead
+                newFrame.width = width;
+                newFrame.height = height;
+                newFrame.viewMode = FrameViewMode.Stretch;
+                rsh.set("width", "stretch");
+                rsh.set("height", "stretch");
+              } else {
+                newFrame.width = width + CENTERED_FRAME_PADDING * 2;
+                newFrame.height = height + CENTERED_FRAME_PADDING * 2;
+              }
+            }
+          }
+          studioCtx.setStudioFocusOnFrame({ frame: newFrame, autoZoom: true });
+          extractUsedFontsFromComponents(studioCtx.site, [
+            newComponent,
+          ]).forEach((usage) =>
+            studioCtx.fontManager.useFont(studioCtx, usage.fontFamily)
+          );
+          return success(true);
+        })
+      ),
+    };
+  }
+}
+
+async function readFigmaClipboard(
+  sc: StudioCtx,
+  clipboardText: string
+): Promise<FigmaClipboard | null> {
+  const figmaData = await getFigmaData(sc, clipboardText);
+  if (!figmaData) {
+    return null;
+  }
+
+  const uploadedImages = await uploadFigmaImages(figmaData, sc.appCtx);
+  const { nodes, imagesToRename } = denormalizeFigmaData(figmaData);
+  const nodeImages = await uploadNodeImages(nodes, sc.appCtx);
+
+  return {
+    nodes,
+    uploadedImages,
+    nodeImages,
+    imagesToRename,
+  };
+}
+
+async function getFigmaData(sc: StudioCtx, clipboardText: string) {
+  const figmaData = figmaDataFromStr(clipboardText);
+  if (figmaData) {
+    return figmaData;
+  }
+
+  const clipId = figmaClipIdFromStr(clipboardText);
+  if (!clipId) {
+    return undefined;
+  }
+
+  const getClipResponse = await swallowAsync(sc.appCtx.api.getClip(clipId));
+  if (!getClipResponse) {
+    throw new WaitForClipError();
+  }
+
+  return figmaDataFromStr(getClipResponse.content);
 }
 
 function mkBackgroundLayer(image: BackgroundLayer["image"]) {
@@ -126,7 +373,7 @@ function _getBoundingRect(nodes: SceneNode[]) {
   );
 }
 
-export function figmaClipIdFromStr(clipboardText: string): string | undefined {
+function figmaClipIdFromStr(clipboardText: string): string | undefined {
   const maybeFigmaKey = swallow(() => JSON.parse(clipboardText));
   if (!maybeFigmaKey) {
     return undefined;
@@ -137,9 +384,7 @@ export function figmaClipIdFromStr(clipboardText: string): string | undefined {
   return maybeFigmaKey.clipId;
 }
 
-export const figmaDataFromStr = (
-  figmaDataStr: string
-): FigmaData | undefined => {
+const figmaDataFromStr = (figmaDataStr: string): FigmaData | undefined => {
   try {
     const maybeFigmaData = JSON.parse(figmaDataStr);
     if (isFigmaData(maybeFigmaData)) {
@@ -162,19 +407,14 @@ export const uploadFigmaImages = async (
   for (const hash of [...keys(figmaData.i)]) {
     const imageData = figmaData.i[hash];
     const image = await parseImage(appCtx, imageData);
-    const url = `data:${image.type};base64,${imageData}`;
-    const img = new ResizableImage(
-      url,
-      image.width,
-      image.height,
-      image.aspectRatio
-    );
-    const { imageResult, opts } = await maybeUploadImage(
-      appCtx,
-      img,
-      ImageAssetType.Picture,
-      "(unnamed)"
-    );
+    const { imageResult, opts } = image
+      ? await maybeUploadImage(
+          appCtx,
+          image,
+          ImageAssetType.Picture,
+          "(unnamed)"
+        )
+      : { imageResult: undefined, opts: undefined };
     uploadedImages.set(hash, {
       imageResult: ensure(
         imageResult,
@@ -1873,7 +2113,7 @@ export async function uploadNodeImages(nodes: SceneNode[], appCtx: AppCtx) {
   return nodeImages;
 }
 
-export function createNodeAssets(
+function createNodeAssets(
   nodeImages: Map<
     SceneNode,
     { imageResult: ResizableImage; opts: ImageAssetOpts }
@@ -1890,7 +2130,7 @@ export function createNodeAssets(
   return nodeAssets;
 }
 
-export function getMainComponentName(node: InstanceNode) {
+function getMainComponentName(node: InstanceNode) {
   if (!node.mainComponent) {
     return undefined;
   }
@@ -1898,13 +2138,6 @@ export function getMainComponentName(node: InstanceNode) {
     return node.mainComponent;
   }
   return node.mainComponent.name;
-}
-
-export function getMainComponentId(node: InstanceNode) {
-  if (!node.mainComponent || isString(node.mainComponent)) {
-    return undefined;
-  }
-  return node.mainComponent.id;
 }
 
 function findMappedComponent(node: InstanceNode, components: Component[]) {

@@ -1,12 +1,12 @@
 import { TplTag } from "@/wab/classes";
-import { Clipboard, TplClip } from "@/wab/client/clipboard";
+import { LocalClipboard, TplClip } from "@/wab/client/clipboard/local";
 import { ComponentType, mkComponent } from "@/wab/components";
 import { withoutUids } from "@/wab/model/model-meta";
 import { mkTplTestText } from "@/wab/test/tpls";
 import { mkTplTagX } from "@/wab/tpls";
 
-describe("clipboard", function () {
-  let src: TplTag, cb: Clipboard;
+describe("LocalClipboard", function () {
+  let src: TplTag, cb: LocalClipboard;
   const component = mkComponent({
     name: "Component",
     tplTree: mkTplTagX("div"),
@@ -14,7 +14,7 @@ describe("clipboard", function () {
   });
   const mutate = (x) => (x.text = "goodbye world");
   beforeEach(function () {
-    cb = new Clipboard();
+    cb = new LocalClipboard();
     src = mkTplTestText("hello");
     cb.copy({
       type: "tpl",
@@ -29,7 +29,7 @@ describe("clipboard", function () {
     expect(cb.isSet()).toBe(false);
     expect(cb.isEmpty()).toBe(true);
     expect(() => cb.paste()).toThrow();
-    cb = new Clipboard();
+    cb = new LocalClipboard();
     expect(cb.isSet()).toBe(false);
     expect(cb.isEmpty()).toBe(true);
     expect(() => cb.paste()).toThrow();

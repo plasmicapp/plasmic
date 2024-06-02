@@ -116,15 +116,11 @@ import pluralize from "pluralize";
 import React from "react";
 
 import {
-  Clippable,
   FrameClip,
-  isFrameClip,
   isStyleClip,
-  isTplClip,
-  isTplsClip,
   StyleClip,
   TplClip,
-} from "@/wab/client/clipboard";
+} from "@/wab/client/clipboard/local";
 import { closestTaggedNonTextDomElt } from "@/wab/client/components/canvas/studio-canvas-util";
 import { toast } from "@/wab/client/components/Messages";
 import { promptExtractComponent } from "@/wab/client/components/modals/ExtractComponentModal";
@@ -2151,10 +2147,7 @@ export class ViewOps {
         )
       ) {
         // Only duplicate custom frames
-        this.pasteClip({
-          clip: this.createFrameClip(item),
-          originalItem: item,
-        });
+        this.pasteFrameClip(this.createFrameClip(item), item);
       } else {
         // TODO: maybe we can?
         notification.error({
@@ -2162,9 +2155,7 @@ export class ViewOps {
         });
       }
     } else if (this.isRootNodeOfStretchFrame(item)) {
-      this.pasteClip({
-        clip: this.createFrameClip(this.viewCtx().arenaFrame()),
-      });
+      this.pasteFrameClip(this.createFrameClip(this.viewCtx().arenaFrame()));
     } else if (isKnownTplNode(item) && canAddSiblings(item, item)) {
       this.pasteNode(Tpls.clone(item), undefined, item, InsertRelLoc.after);
     } else if (isKnownTplNode(item) && Tpls.isTplTextBlock(item.parent)) {
@@ -2211,20 +2202,20 @@ export class ViewOps {
     this.pasteStyleClip(clip, targetTpl, cssProps);
   }
 
-  pasteStyleClip(clip: Clippable, targetTpl?: TplNode, cssProps?: string[]) {
-    assert(
-      isStyleClip(clip),
-      "Unexpected type for clip when trying to paste StyleClip"
-    );
+  pasteStyleClip(
+    clip: StyleClip,
+    targetTpl?: TplNode,
+    cssProps?: string[]
+  ): boolean {
     targetTpl = targetTpl || this.viewCtx().focusedTpl() || undefined;
     if (
       !Tpls.isTplTag(targetTpl) &&
       !(Tpls.isTplComponent(targetTpl) && isCodeComponent(targetTpl.component))
     ) {
       notification.warn({
-        message: "Can not paste - must select an element to paste",
+        message: "Cannot paste styles - must select an element",
       });
-      return;
+      return false;
     }
 
     const exp = RSH(
@@ -2239,6 +2230,7 @@ export class ViewOps {
     for (const [prop, val] of Object.entries(propsToCopy)) {
       exp.set(prop, val);
     }
+    return true;
   }
 
   copyBgImageStyle(tpl?: TplNode) {
@@ -2424,172 +2416,92 @@ export class ViewOps {
     return newTree;
   };
 
-  /**
-   * Note that this changes focus whether the paste succeeds or not.
-   */
-  pasteClip({
+  pasteTplClip({
     clip,
     cursorClientPt,
     target,
     loc,
-    originalItem,
   }: {
-    clip: Clippable;
+    clip: TplClip;
     cursorClientPt?: Pt;
     target?: TplNode | Selectable;
     loc?: InsertRelLoc;
-    originalItem?: ArenaFrame | TplNode | StyleClip["cssProps"];
-  }): TplNode | TplNode[] | undefined {
-    if (isFrameClip(clip)) {
-      this.studioCtx()
-        .siteOps()
-        .pasteFrameClip(clip, originalItem as ArenaFrame);
-      return undefined;
-    } else if (isTplClip(clip)) {
-      this.maybeFocus(target);
-      if (clip.component === this.viewCtx().currentComponent()) {
-        const node = Tpls.clone(clip.node);
-        // We are pasting a node in the same component context, so we only need
-        // to prune deleted variants.
-        if (Tpls.isTplVariantable(node)) {
-          const existingVariants = new Set([
-            ...allGlobalVariants(this.site()),
-            ...Components.allComponentVariants(clip.component),
-          ]);
-          node.vsettings = node.vsettings.filter((vs) =>
-            vs.variants.every((v) => existingVariants.has(v))
-          );
-        }
-        if (this.pasteNode(node, cursorClientPt, target, loc)) {
-          return node;
-        } else {
-          return undefined;
-        }
+  }) {
+    this.maybeFocus(target);
+    if (clip.component === this.viewCtx().currentComponent()) {
+      const node = Tpls.clone(clip.node);
+      // We are pasting a node in the same component context, so we only need
+      // to prune deleted variants.
+      if (Tpls.isTplVariantable(node)) {
+        const existingVariants = new Set([
+          ...allGlobalVariants(this.site()),
+          ...Components.allComponentVariants(clip.component),
+        ]);
+        node.vsettings = node.vsettings.filter((vs) =>
+          vs.variants.every((v) => existingVariants.has(v))
+        );
+      }
+      if (this.pasteNode(node, cursorClientPt, target, loc)) {
+        return node;
       } else {
-        // Else, we are pasting a node from one component to another, so we need to do some
-        // surgery.  Specifically, we want to take the effective variant settings from
-        // when the node was copied, and store them as the base variant settings for the
-        // target viewCtx.  Why the base variant settings instead of the current variant
-        // settings?  It's hard to know what the user intended, but it seems better to populate
-        // the base than the current so that we don't end up with an empty base settings with
-        // no styling at all.
-        //
-        // The new node should still be conditionally visible in the current
-        // variant (in the standard way all newly created TplNodes are), via
-        // pasteNode.
-        const newTree = this.adaptTplForPaste(clip);
-        if (newTree) {
-          if (this.pasteNode(newTree, cursorClientPt, target, loc)) {
-            return newTree;
-          }
-        }
         return undefined;
       }
-    } else if (isStyleClip(clip)) {
-      this.pasteStyleClip(clip);
-      return undefined;
     } else {
-      assert(isTplsClip(clip), "Expected multi-selection clip");
-      const newTpls: TplNode[] = [];
-      let curTarget = target;
-      let curLoc = loc;
-      for (const c of clip) {
-        const clipResult = this.pasteClip({
-          clip: c,
-          cursorClientPt,
-          target: curTarget,
-          loc: curLoc,
-          originalItem,
-        });
-        if (clipResult && !isArray(clipResult)) {
-          newTpls.push(clipResult);
-          curTarget = clipResult;
-          curLoc = InsertRelLoc.after;
+      // Else, we are pasting a node from one component to another, so we need to do some
+      // surgery.  Specifically, we want to take the effective variant settings from
+      // when the node was copied, and store them as the base variant settings for the
+      // target viewCtx.  Why the base variant settings instead of the current variant
+      // settings?  It's hard to know what the user intended, but it seems better to populate
+      // the base than the current so that we don't end up with an empty base settings with
+      // no styling at all.
+      //
+      // The new node should still be conditionally visible in the current
+      // variant (in the standard way all newly created TplNodes are), via
+      // pasteNode.
+      const newTree = this.adaptTplForPaste(clip);
+      if (newTree) {
+        if (this.pasteNode(newTree, cursorClientPt, target, loc)) {
+          return newTree;
         }
       }
-      this.viewCtx().selectNewTpls(newTpls);
-      return newTpls;
+      return undefined;
     }
   }
 
-  /*
-  pastePresets(presetsJson: string) {
-    if (!this.studioCtx().prepareSavingPresets(true)) {
-      return;
-    }
-    const focusedTpl = ensure(this.viewCtx().focusedTpl());
-    assert(
-      isTplTag(focusedTpl) && focusedTpl.tag === "div",
-      "must paste into a div tag"
-    );
-
-    const presets = JSON.parse(presetsJson) as ExampleJson;
-    const allExamples = presets.flatMap((ent) =>
-      ent[1].map((example) => tuple(ent[0], example))
-    );
-
-    let nextExample = 0;
-    const maxExamples = allExamples.length;
-
-    const tryScheduleNext = () => {
-      nextExample += 1;
-      if (nextExample < Math.min(allExamples.length, maxExamples)) {
-        setTimeout(pasteOne, 1);
-      } else {
-        this.viewCtx().stopUnlogged();
-        this.studioCtx().screenshotting = false;
-      }
-    };
-
-    this.studioCtx().screenshotting = true;
-    this.viewCtx().startUnlogged();
-
-    const pasteOne = () => {
-      this.viewCtx().change(() => {
-        const tplExample = exampleToTpl(
-          this.viewCtx(),
-          allExamples[nextExample]
-        );
-        if (!tplExample) {
-          tryScheduleNext();
-          return;
-        }
-        const { component, tpl, exampleSchema } = tplExample;
-        tpl.parent = focusedTpl;
-        // replace all children
-        focusedTpl.children.splice(0, focusedTpl.children.length, tpl);
-        setTimeout(async () => {
-          // save snapshots
-          const instances = flattenTpls(tpl).filter(
-            (node) => isTplComponent(node) && node.component === component
-          );
-          // For more than one instances, we paste each instance; otherwise,
-          // we paste entire tpl tree as the example.
-          for (const instance of instances.length > 1 ? instances : [tpl]) {
-            const clip = this.createTplClip(instance);
-            const tplClone = this.adaptTplForPaste(clip, [
-              this.site().globalVariant,
-            ]);
-            const [valNode, doms] = ensure(
-              this.viewCtx().maybeDomsForTpl(instance)
-            );
-            await savePresetAsync(
-              this.studioCtx(),
-              this.viewCtx().canvasCtx.viewport(),
-              assertAtMostOne(doms),
-              ensure(tplClone),
-              exampleSchema.exampleName,
-              exampleSchema.exampleName,
-              true
-            );
-          }
-          tryScheduleNext();
-        }, 1);
+  pasteTplClips({
+    clips,
+    cursorClientPt,
+    target,
+    loc,
+  }: {
+    clips: TplClip[];
+    cursorClientPt?: Pt;
+    target?: TplNode | Selectable;
+    loc?: InsertRelLoc;
+  }) {
+    const newTpls: TplNode[] = [];
+    let curTarget = target;
+    let curLoc = loc;
+    for (const c of clips) {
+      const clipResult = this.pasteTplClip({
+        clip: c,
+        cursorClientPt,
+        target: curTarget,
+        loc: curLoc,
       });
-    };
-    setTimeout(pasteOne, 1);
+      if (clipResult && !isArray(clipResult)) {
+        newTpls.push(clipResult);
+        curTarget = clipResult;
+        curLoc = InsertRelLoc.after;
+      }
+    }
+    this.viewCtx().selectNewTpls(newTpls);
+    return newTpls;
   }
-  */
+
+  pasteFrameClip(clip: FrameClip, originalFrame?: ArenaFrame) {
+    this.studioCtx().siteOps().pasteFrameClip(clip, originalFrame);
+  }
 
   /**
    * Paste the given item.  The item is assumed to be the actual instance to

@@ -1,25 +1,22 @@
 import { assert } from "@/wab/common";
-import {
-  DOMParser as NodeDOMParser,
-  XMLSerializer as NodeXMLSerializer,
-} from "@xmldom/xmldom";
+import { DOMParser as NodeDOMParser } from "@xmldom/xmldom";
 import * as _parseDataUrl from "parse-data-url";
 
 // nodejs doesn't have DOMParser, so we need to polyfill with xmldom :-/
 const DOMParser: typeof window.DOMParser =
   typeof window !== "undefined" ? window.DOMParser : NodeDOMParser;
 
-const XMLSerializer: typeof window.XMLSerializer =
-  typeof window !== "undefined" ? window.XMLSerializer : NodeXMLSerializer;
-
-export const parseDataUrl: (dataUrl: string) => {
+type ParseDataUrlResult = {
   mediaType: string; // 'image/svg+xml;charset=utf-8'
   contentType: string; // 'image/svg+xml'
   charset: string; // 'utf-8'
   base64: boolean;
   data: string;
   toBuffer: () => Buffer;
-} = _parseDataUrl.default || _parseDataUrl;
+};
+
+export const parseDataUrl: (dataUrl: string) => ParseDataUrlResult =
+  _parseDataUrl.default || _parseDataUrl;
 
 export const SVG_MEDIA_TYPE = "image/svg+xml";
 
@@ -41,15 +38,12 @@ export function parseSvgXml(xml: string, _domParser?: DOMParser) {
   return svg as unknown as SVGSVGElement;
 }
 
-export function serializeSvgXml(svg: SVGSVGElement) {
-  return new XMLSerializer().serializeToString(svg);
+export function getParsedDataUrlBuffer(parsed: ParseDataUrlResult) {
+  return Buffer.from(parsed.data, parsed.base64 ? "base64" : "utf-8");
 }
 
-export function getParsedDataUrlData(parsed: any) {
-  return Buffer.from(
-    parsed.data,
-    parsed.base64 ? "base64" : "utf-8"
-  ).toString();
+export function getParsedDataUrlData(parsed: ParseDataUrlResult) {
+  return getParsedDataUrlBuffer(parsed).toString();
 }
 
 export function parseDataUrlToSvgXml(dataUrl: string) {

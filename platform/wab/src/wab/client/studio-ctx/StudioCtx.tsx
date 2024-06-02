@@ -30,7 +30,6 @@ import {
   UU,
 } from "@/wab/client/cli-routes";
 import { LEFT_PANE_INIT_WIDTH } from "@/wab/client/ClientConstants";
-import { Clipboard } from "@/wab/client/clipboard";
 import { syncCodeComponentsAndHandleErrors } from "@/wab/client/code-components/code-components";
 import { CodeFetchersRegistry } from "@/wab/client/code-fetchers";
 import { storageViewAsKey } from "@/wab/client/components/app-auth/ViewAsButton";
@@ -371,6 +370,8 @@ import * as Signals from "signals";
 import { mutate } from "swr";
 import { failable, FailableArgParams, IFailable } from "ts-failable";
 
+import { LocalClipboard } from "@/wab/client/clipboard/local";
+
 (window as any).dbg.classes = classes;
 
 const MAX_SAVE_RETRIES = 300; // Saves every 2 seconds means retry for 10 minutes
@@ -378,7 +379,6 @@ const DEFAULT_ZOOM_PADDING = 40;
 
 interface StudioCtxArgs {
   dbCtx: DbCtx;
-  clipboard: Clipboard;
 }
 
 interface ZoomState {
@@ -565,7 +565,7 @@ export class StudioCtx extends WithDbCtx {
   private static ALT = 18;
   private disposals: (() => void)[] = [];
   _dbCtx: DbCtx;
-  clipboard: Clipboard;
+  readonly clipboard = new LocalClipboard();
   fontManager: FontManager;
   popupCodesandboxWindow: Window | null = null;
   previewCtx: PreviewCtx | undefined;
@@ -606,7 +606,7 @@ export class StudioCtx extends WithDbCtx {
       _isUnlogged: observable,
     });
 
-    ({ dbCtx: this._dbCtx, clipboard: this.clipboard } = args);
+    ({ dbCtx: this._dbCtx } = args);
 
     this.rightTabKey = this.appCtx.appConfig.rightTabs
       ? RightTabKey.settings

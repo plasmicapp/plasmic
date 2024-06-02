@@ -1,5 +1,4 @@
 import { Expr, isKnownTplNode, isKnownTplSlot, TplNode } from "@/wab/classes";
-import { TplClip } from "@/wab/client/clipboard";
 import {
   getPreferredInsertLocs,
   InsertRelLoc,
@@ -110,6 +109,7 @@ import pluralize from "pluralize";
 import * as React from "react";
 import { FixedSizeList } from "react-window";
 
+import { TplClip } from "@/wab/client/clipboard/local";
 import { isElementWithComments } from "@/wab/client/components/comments/utils";
 import {
   getNodeSummary,
@@ -1470,7 +1470,7 @@ export class TreeDndManager {
             insertedNodes.push(tplClip.node);
           }
         } else {
-          const pastedNode = target.viewCtx.getViewOps().pasteClip({
+          const pastedNode = target.viewCtx.getViewOps().pasteTplClip({
             clip: {
               ...tplClip,
               node:

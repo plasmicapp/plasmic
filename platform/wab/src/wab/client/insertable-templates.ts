@@ -1,5 +1,4 @@
 import {
-  Component,
   isKnownArenaFrame,
   isKnownTplNode,
   ProjectDependency,
@@ -55,14 +54,14 @@ export const getPageTemplatesGroups = (studioCtx: StudioCtx) => {
   return pageTemplatesGroups as InsertableTemplatesGroup[];
 };
 
-export const getPageTemplates = (studioCtx: StudioCtx) => {
+const getPageTemplates = (studioCtx: StudioCtx) => {
   const pageTemplates = flatten(
     getPageTemplatesGroups(studioCtx).map((g) => g.items)
   ).filter((i) => i.type === "insertable-templates-item");
   return pageTemplates as InsertableTemplatesItem[];
 };
 
-export const getInsertableTemplatesGroups = (studioCtx: StudioCtx) => {
+const getInsertableTemplatesGroups = (studioCtx: StudioCtx) => {
   const insertableTemplates =
     maybe(studioCtx.getCurrentUiConfig()?.insertableTemplates, (x) =>
       normalizeTemplateSpec(x, false)
@@ -76,7 +75,7 @@ export const getInsertableTemplatesGroups = (studioCtx: StudioCtx) => {
   return insertableTemplatesGrups as InsertableTemplatesGroup[];
 };
 
-export const getInsertableTemplates = (studioCtx: StudioCtx) => {
+const getInsertableTemplates = (studioCtx: StudioCtx) => {
   const insertableTemplates = flatten(
     getInsertableTemplatesGroups(studioCtx).map((g) => g.items)
   ).filter(
@@ -87,50 +86,8 @@ export const getInsertableTemplates = (studioCtx: StudioCtx) => {
   return insertableTemplates as InsertableTemplatesItem[];
 };
 
-export const getAllTemplates = (studioCtx: StudioCtx) => {
+const getAllTemplates = (studioCtx: StudioCtx) => {
   return [...getInsertableTemplates(studioCtx), ...getPageTemplates(studioCtx)];
-};
-
-export const getPageTemplate = (
-  studioCtx: StudioCtx,
-  projectId: string,
-  componentName: string
-) => {
-  const pageTemplates = getPageTemplates(studioCtx);
-  const pageTemplate = pageTemplates.find(
-    (tmpl) =>
-      tmpl.projectId === projectId && tmpl.componentName === componentName
-  );
-  return pageTemplate;
-};
-
-export const getInsertablePageTemplateComponent = (
-  studioCtx: StudioCtx,
-  chosenTemplate: {
-    componentName?: string;
-    projectId?: string;
-  }
-) => {
-  if (!chosenTemplate.componentName || !chosenTemplate.projectId) {
-    return;
-  }
-
-  const pageTemplate = getPageTemplate(
-    studioCtx,
-    chosenTemplate.projectId,
-    chosenTemplate.componentName
-  );
-  if (!pageTemplate) {
-    return;
-  }
-
-  const it =
-    studioCtx.projectDependencyManager.getInsertableTemplate(pageTemplate);
-  if (!it) {
-    return;
-  }
-
-  return it;
 };
 
 export const replaceWithPageTemplate = (
@@ -211,20 +168,6 @@ export const getScreenVariantToInsertableTemplate = async (
   }
 };
 
-export const getVariantsToInsertableTemplate = async (
-  studioCtx: StudioCtx,
-  component: Component
-) => {
-  const baseVariant = getBaseVariant(component);
-  const { screenVariant } = await getScreenVariantToInsertableTemplate(
-    studioCtx
-  );
-  return {
-    baseVariant,
-    screenVariant,
-  };
-};
-
 export const getHostLessDependenciesToInsertableTemplate = async (
   studioCtx: StudioCtx,
   sourceSite: Site
@@ -301,7 +244,7 @@ export async function buildInsertableExtraInfo(
   };
 }
 
-export function getInsertableTemplateComponentItems(studioCtx: StudioCtx) {
+function getInsertableTemplateComponentItems(studioCtx: StudioCtx) {
   return flattenInsertableTemplatesByType(
     studioCtx.appCtx.appConfig.insertableTemplates,
     "insertable-templates-component"
@@ -317,7 +260,7 @@ export function getInsertableTemplateComponentItem(
   );
 }
 
-export function createCopyableElementsReferences(
+function createCopyableElementsReferences(
   viewCtx: ViewCtx,
   copyObj: ReturnType<ViewOps["copy"]>
 ): CopyElementsReference[] {
@@ -351,8 +294,6 @@ export function createCopyableElementsReferences(
   }
   unexpected("Unknown copyable element type");
 }
-
-export const PLASMIC_COPY_PREFIX = "pl-copy;";
 
 export function getCopyState(
   viewCtx: ViewCtx,

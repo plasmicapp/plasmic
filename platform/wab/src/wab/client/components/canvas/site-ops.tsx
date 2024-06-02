@@ -20,7 +20,7 @@ import {
 } from "@/wab/classes";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { U } from "@/wab/client/cli-routes";
-import { FrameClip } from "@/wab/client/clipboard";
+import { FrameClip } from "@/wab/client/clipboard/local";
 import { toast } from "@/wab/client/components/Messages";
 import { promptRemapCodeComponent } from "@/wab/client/components/modals/codeComponentModals";
 import {
@@ -220,7 +220,7 @@ export class SiteOps {
     this.addScreenSizeToPageArenas(matchingSize);
   }
 
-  pasteFrameClip(clip: FrameClip, originalFrame?: ArenaFrame) {
+  pasteFrameClip(clip: FrameClip, originalFrame?: ArenaFrame): boolean {
     const arena = ensure(
       this.studioCtx.currentArena,
       "studioCtx should have a currentArena to allow pasting a frame clip"
@@ -234,6 +234,7 @@ export class SiteOps {
       );
       this.studioCtx.setStudioFocusOnFrame({ frame: newFrame, autoZoom: true });
       this.studioCtx.centerFocusedFrame();
+      return true;
     } else if (isComponentArena(arena)) {
       if (arena.component === newFrame.container.component) {
         const originalFramePosition =
@@ -255,16 +256,20 @@ export class SiteOps {
           autoZoom: true,
         });
         this.studioCtx.centerFocusedFrame(this.studioCtx.zoom);
+        return true;
       } else {
         notification.error({
           message: `You cannot paste an artboard for "${newFrame.container.component.name}" here.`,
         });
+        return false;
       }
     } else if (isPageArena(arena)) {
       notification.error({
         message: `You cannot paste an artboard here.`,
       });
+      return false;
     }
+    return false;
   }
 
   clearFrameComboSettings(frame: ArenaFrame) {
