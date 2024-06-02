@@ -1234,6 +1234,21 @@ function refreshCodeComponentMeta(
       }
       c.codeComponentMeta.hasRef = !!(meta as any).refActions;
 
+      if (hackyCast(meta).interactionVariant) {
+        const interactionVariants =
+          mkCodeComponentInteractionVariantsFromMeta(meta);
+        if (
+          !c.codeComponentMeta.interactionVariantMeta ||
+          !instUtil.deepEquals(
+            c.codeComponentMeta.interactionVariantMeta,
+            interactionVariants,
+            true
+          )
+        ) {
+          c.codeComponentMeta.interactionVariantMeta = interactionVariants;
+        }
+      }
+
       // Explicitly not handling defaultSlotContents, which is handled by
       // refreshDefaultSlotContents()
       if (meta.componentHelpers) {
@@ -3583,6 +3598,23 @@ export function mkCodeComponentHelperFromMeta(
         ? meta.componentHelpers.isDefaultExport
         : false,
   });
+}
+
+export function mkCodeComponentInteractionVariantsFromMeta(
+  meta: ComponentMeta<any> | GlobalContextMeta<any>
+) {
+  if (!hackyCast(meta).interactionVariant) {
+    return {};
+  }
+
+  return Object.fromEntries(
+    Object.entries(hackyCast(meta).interactionVariant ?? {}).map(
+      ([selector, { cssSelector, displayName }]: any) => [
+        selector,
+        new CodeComponentInteractionVariantMeta({ cssSelector, displayName }),
+      ]
+    )
+  );
 }
 
 export function ensurePropTypeToWabType(site: Site, type: StudioPropType<any>) {

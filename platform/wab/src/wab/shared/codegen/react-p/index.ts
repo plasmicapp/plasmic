@@ -284,6 +284,7 @@ import {
   isScreenVariant,
   isStandaloneVariantGroup,
   isStyleVariant,
+  isTplRootWithCCInteractionVariants,
   VariantCombo,
   VariantGroupType,
 } from "@/wab/shared/Variants";
@@ -1318,6 +1319,14 @@ export function makeVariantComboChecker(
 
   const variantChecker = (variant: Variant) => {
     if (isStyleVariant(variant)) {
+      const tplRoot = component.tplTree;
+      if (isTplRootWithCCInteractionVariants(tplRoot)) {
+        return variant.selectors
+          .map((sel) => {
+            return `$ccInteractions[${jsString(sel)}]`;
+          })
+          .join(" && ");
+      }
       // One should only call variantChecker on style variants for non-css
       // variantSettings.
       const hook = ensure(
@@ -2066,6 +2075,9 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
   const { component } = ctx;
 
   const treeTriggers = serializeLocalStyleTriggers(ctx);
+  const ccInteractionTriggers = serializeInteractionVariantsTriggers(
+    component.tplTree
+  );
   const globalTriggers = serializeGlobalVariantValues(
     ctx.usedGlobalVariantGroups
   );
@@ -2173,6 +2185,7 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
 
     ${treeTriggers}
     ${globalTriggers}
+    ${ccInteractionTriggers}
   `;
 }
 
@@ -2194,6 +2207,25 @@ export function serializeLocalStyleTriggers(ctx: SerializerBaseContext) {
           .join(",\n")}
       };
       `;
+}
+
+export function serializeInteractionVariantsTriggers(tplRoot: TplNode) {
+  if (!isTplRootWithCCInteractionVariants(tplRoot)) {
+    return "";
+  }
+
+  const interactionVariantKeys = Object.keys(
+    tplRoot.component.codeComponentMeta.interactionVariantMeta
+  );
+
+  return `
+    const [$ccInteractions, setDollarCcInteractions] = React.useState<Record<string, boolean>>({
+      ${interactionVariantKeys.map((key) => `${key}: false`).join(",\n")}
+    });
+    const updateInteractionVariant = React.useCallback((key: string, value: boolean) => {
+      setDollarCcInteractions((prev) => ({ ...prev, [key]: value }));
+    }, []);
+  `;
 }
 
 /**
@@ -2617,7 +2649,9 @@ export function getOrderedExplicitVSettings(
   const res = vsettings.filter(
     (vs) =>
       shouldGenVariantSetting(ctx, vs) &&
-      (!hasStyleVariant(vs.variants) || shouldGenReactHook(vs, ctx.component))
+      (!hasStyleVariant(vs.variants) ||
+        shouldGenReactHook(vs, ctx.component) ||
+        isTplRootWithCCInteractionVariants(ctx.component.tplTree))
   );
   if (interpreterMeta) {
     interpreterMeta.nodeUuidToOrderedVsettings[node.uuid] =
@@ -3535,6 +3569,7 @@ function serializeTplComponent(ctx: SerializerBaseContext, node: TplComponent) {
   const nodeName = nodeNamer(node);
   const { attrs, orderedCondStr, serializedChildren, triggeredHooks } =
     serializeTplComponentBase(ctx, node);
+  const isRoot = node === ctx.component.tplTree;
 
   const baseVs = node.vsettings.find((vs) => isBaseVariant(vs.variants));
   if (baseVs?.dataRep && !("key" in attrs)) {
@@ -3547,6 +3582,10 @@ function serializeTplComponent(ctx: SerializerBaseContext, node: TplComponent) {
     ] = `(ref) => { $refs[${jsLiteral(nodeName)}] = ref; }`;
   }
 
+  if (isRoot && isTplRootWithCCInteractionVariants(node)) {
+    attrs["updateInteractionVariant"] = `updateInteractionVariant`;
+  }
+
   let componentStr = makeCreatePlasmicElement(
     ctx,
     node,
@@ -3556,7 +3595,7 @@ function serializeTplComponent(ctx: SerializerBaseContext, node: TplComponent) {
     serializedChildren,
     undefined,
     triggeredHooks,
-    node === ctx.component.tplTree
+    isRoot
   );
 
   componentStr = serializeDataReps(ctx, node, componentStr);

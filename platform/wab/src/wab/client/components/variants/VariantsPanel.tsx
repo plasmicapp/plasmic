@@ -1,7 +1,7 @@
 import {
   Component,
   ComponentVariantGroup,
-  ensureKnownTplTag,
+  isKnownTplTag,
   ObjectPath,
   ProjectDependency,
   TplComponent,
@@ -70,6 +70,7 @@ import { VariantPinState } from "@/wab/shared/PinManager";
 import { getPlumeVariantDef } from "@/wab/shared/plume/plume-registry";
 import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import {
+  canHaveInteractionVariant,
   getBaseVariant,
   isBaseVariant,
   isGlobalVariantGroup,
@@ -85,7 +86,6 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 import { useSessionStorage } from "react-use";
-import { isTplTag } from "src/wab/tpls";
 
 interface VariantsPanelProps {
   studioCtx: StudioCtx;
@@ -477,61 +477,62 @@ export const VariantsPanel = observer(
                 )
               )}
             </SimpleReorderableList>
-            {isTplTag(root) && !isPageComponent(component) && (
-              <VariantSection
-                showIcon
-                icon={<Icon icon={BoltIcon} />}
-                title="Interaction Variants"
-                emptyAddButtonText="Add variant"
-                emptyAddButtonTooltip="Interaction variants are automatically activated when the user interacts with the component -- by hovering, focusing, pressing, etc."
-                onAddNewVariant={() =>
-                  studioCtx.change(({ success }) => {
-                    studioCtx.siteOps().createStyleVariant(component);
-                    return success();
-                  })
-                }
-                isQuiet
-              >
-                {styleVariants.map((variant) => (
-                  <ComponentStyleVariantRow
-                    key={variant.uuid}
-                    variant={variant}
-                    component={component}
-                    studioCtx={studioCtx}
-                    viewCtx={viewCtx}
-                    pinState={vcontroller.getPinState(variant)}
-                    onClick={() =>
-                      justAddedVariant !== variant &&
-                      studioCtx.change(({ success }) => {
-                        vcontroller.onClickVariant(variant);
-                        return success();
-                      })
-                    }
-                    onTarget={
-                      canChangeVariants ||
-                      vcontroller.canToggleTargeting(variant)
-                        ? (target) =>
-                            studioCtx.change(({ success }) => {
-                              vcontroller.onTargetVariant(variant, target);
-                              return success();
-                            })
-                        : undefined
-                    }
-                    onToggle={
-                      canChangeVariants
-                        ? () =>
-                            studioCtx.change(({ success }) => {
-                              vcontroller.onToggleVariant(variant);
-                              return success();
-                            })
-                        : undefined
-                    }
-                    defaultEditing={variant === justAddedVariant}
-                    onEdited={() => setJustAddedVariant(undefined)}
-                  />
-                ))}
-              </VariantSection>
-            )}
+            {canHaveInteractionVariant(component) &&
+              !isPageComponent(component) && (
+                <VariantSection
+                  showIcon
+                  icon={<Icon icon={BoltIcon} />}
+                  title="Interaction Variants"
+                  emptyAddButtonText="Add variant"
+                  emptyAddButtonTooltip="Interaction variants are automatically activated when the user interacts with the component -- by hovering, focusing, pressing, etc."
+                  onAddNewVariant={() =>
+                    studioCtx.change(({ success }) => {
+                      studioCtx.siteOps().createStyleVariant(component);
+                      return success();
+                    })
+                  }
+                  isQuiet
+                >
+                  {styleVariants.map((variant) => (
+                    <ComponentStyleVariantRow
+                      key={variant.uuid}
+                      variant={variant}
+                      component={component}
+                      studioCtx={studioCtx}
+                      viewCtx={viewCtx}
+                      pinState={vcontroller.getPinState(variant)}
+                      onClick={() =>
+                        justAddedVariant !== variant &&
+                        studioCtx.change(({ success }) => {
+                          vcontroller.onClickVariant(variant);
+                          return success();
+                        })
+                      }
+                      onTarget={
+                        canChangeVariants ||
+                        vcontroller.canToggleTargeting(variant)
+                          ? (target) =>
+                              studioCtx.change(({ success }) => {
+                                vcontroller.onTargetVariant(variant, target);
+                                return success();
+                              })
+                          : undefined
+                      }
+                      onToggle={
+                        canChangeVariants
+                          ? () =>
+                              studioCtx.change(({ success }) => {
+                                vcontroller.onToggleVariant(variant);
+                                return success();
+                              })
+                          : undefined
+                      }
+                      defaultEditing={variant === justAddedVariant}
+                      onEdited={() => setJustAddedVariant(undefined)}
+                    />
+                  ))}
+                </VariantSection>
+              )}
 
             {superComps.map((superComp) => (
               <SuperComponentVariantsSection
@@ -945,6 +946,7 @@ const ComponentStyleVariantRow = observer(
       onToggle,
     } = props;
     const ref = React.useRef<EditableLabelHandles>(null);
+
     return (
       <VariantRow
         key={variant.uuid}
@@ -986,7 +988,9 @@ const ComponentStyleVariantRow = observer(
         label={
           <StyleVariantLabel
             variant={variant}
-            forTag={ensureKnownTplTag(component.tplTree).tag}
+            forTag={
+              isKnownTplTag(component.tplTree) ? component.tplTree.tag : ""
+            }
             forRoot={true}
             ref={ref}
             onSelectorsChange={(sels) =>

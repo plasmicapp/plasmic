@@ -421,6 +421,20 @@ export function cloneCodeComponentHelpers(
     : null;
 }
 
+export function cloneCodeComponentInteractionVariantMeta(interactionVariantMeta: {
+  [key: string]: CodeComponentInteractionVariantMeta;
+}) {
+  return Object.fromEntries(
+    Object.entries(interactionVariantMeta).map(([selector, meta]) => [
+      selector,
+      new CodeComponentInteractionVariantMeta({
+        cssSelector: meta.cssSelector,
+        displayName: meta.displayName,
+      }),
+    ])
+  );
+}
+
 export function cloneCodeComponentMeta(
   codeMeta: CodeComponentMeta | null | undefined
 ) {
@@ -447,16 +461,8 @@ export function cloneCodeComponentMeta(
         styleSections: codeMeta.styleSections,
         helpers: cloneCodeComponentHelpers(codeMeta.helpers),
         defaultSlotContents: cloneDeep(codeMeta.defaultSlotContents),
-        interactionVariantMeta: Object.fromEntries(
-          Object.entries(codeMeta.interactionVariantMeta).map(
-            ([selector, meta]) => [
-              selector,
-              new CodeComponentInteractionVariantMeta({
-                cssSelector: meta.cssSelector,
-                displayName: meta.displayName,
-              }),
-            ]
-          )
+        interactionVariantMeta: cloneCodeComponentInteractionVariantMeta(
+          codeMeta.interactionVariantMeta
         ),
       })
     : null;

@@ -47,13 +47,13 @@ import {
 } from "@/wab/shared/Labels";
 import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import {
+  canHaveInteractionVariant,
   isGlobalVariantGroup,
   isScreenVariantGroup,
   isStandaloneVariantGroup,
   VariantCombo,
 } from "@/wab/shared/Variants";
 import { allGlobalVariantGroups } from "@/wab/sites";
-import { isTplTag } from "@/wab/tpls";
 import { Button, Form, Menu, Popover } from "antd";
 import cn from "classnames";
 import { observer } from "mobx-react";
@@ -226,8 +226,7 @@ export const ComponentArenaLayout = observer(
           rowEndControls={(row) => {
             const group = ensureMaybeKnownVariantGroup(row.rowKey);
             if (!group) {
-              // If the root is not a TplTag we don't allow interaction variants
-              if (!isTplTag(component.tplTree)) {
+              if (!canHaveInteractionVariant(component)) {
                 return null;
               }
               return (

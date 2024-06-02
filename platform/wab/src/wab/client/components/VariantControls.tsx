@@ -20,7 +20,7 @@ import {
   isStyleVariant,
   makeVariantName,
 } from "@/wab/shared/Variants";
-import { isTplTag } from "@/wab/tpls";
+import { isTplCodeComponent, isTplTag } from "@/wab/tpls";
 import { Menu } from "antd";
 import { default as classNames, default as cn } from "classnames";
 import { sumBy } from "lodash";
@@ -180,6 +180,8 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
     setChosenSelectors(variant.selectors || []);
   }, [variant.selectors?.join(",")]);
 
+  const tplRoot = component.tplTree;
+
   return (
     <div
       style={{
@@ -193,12 +195,13 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
         selectors={chosenSelectors}
         onChange={(sels) => setChosenSelectors(sels)}
         forPrivateStyleVariant={false}
-        forTag={
-          isKnownTplTag(component.tplTree) ? component.tplTree.tag : "div"
-        }
+        forTag={isKnownTplTag(tplRoot) ? tplRoot.tag : "div"}
         className="textbox--listitem focused-input-bg"
         focusedClassName="focused"
         forRoot={true}
+        codeComponent={
+          isTplCodeComponent(tplRoot) ? tplRoot.component : undefined
+        }
       />
       <Button
         data-test-id="variant-selector-button"

@@ -1,7 +1,7 @@
 import { Matcher } from "@/wab/client/components/view-common";
 import { XMultiSelect } from "@/wab/client/components/XMultiSelect";
-import { filterFalsy } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { ensure, filterFalsy } from "@/wab/common";
+import { CodeComponent } from "@/wab/components";
 import {
   getApplicableSelectors,
   getPseudoSelector,
@@ -23,6 +23,7 @@ export interface SelectorsInputProps {
   className?: string;
   focusedClassName?: string;
   forRoot?: boolean;
+  codeComponent?: CodeComponent;
 }
 
 export function SelectorsInput({
@@ -37,24 +38,41 @@ export function SelectorsInput({
   className,
   focusedClassName,
   forRoot,
+  codeComponent,
 }: SelectorsInputProps) {
-  const nativeOptions = getApplicableSelectors(
-    forTag,
-    forPrivateStyleVariant,
-    forRoot ?? false
-  ).map((op) => op.displayName);
+  const nativeOptions = !codeComponent
+    ? getApplicableSelectors(
+        forTag,
+        forPrivateStyleVariant,
+        forRoot ?? false
+      ).map((op) => op.displayName)
+    : [];
+
+  const interactionVariantsMeta = codeComponent
+    ? codeComponent.codeComponentMeta.interactionVariantMeta
+    : {};
+
+  const codeComponentOptions = Object.values(interactionVariantsMeta).map(
+    (e) => e.displayName
+  );
+
+  const codeComponentDisplayNameToKey = Object.entries(
+    interactionVariantsMeta
+  ).reduce((acc, [key, value]) => {
+    acc[value.displayName] = key;
+    return acc;
+  }, {} as Record<string, string>);
 
   const [text, setText] = useState("");
   const matcher = new Matcher(text);
   const dynOptions = filterFalsy([
-    ...nativeOptions
+    ...[...nativeOptions, ...codeComponentOptions]
       .filter(
         (opt) =>
           !selectors.includes(opt) &&
           !selectors.includes(oppositeSelectorDisplayName(opt))
       )
       .filter((opt) => matcher.matches(opt)),
-    DEVFLAGS.demo ? !nativeOptions.includes(text) && text : undefined,
   ]);
 
   const [keepOpen, setKeepOpen] = useState(false);
@@ -62,6 +80,26 @@ export function SelectorsInput({
   useLayoutEffect(() => {
     setKeepOpen(true);
   }, []);
+
+  function getSelectorKey(sel: string) {
+    if (!codeComponent) {
+      // If we are dealing with native options, we will just use the selector itself as the key
+      return sel;
+    }
+    // If we are dealing with code component options, we will convert the display name to a key
+    const key = ensure(
+      codeComponentDisplayNameToKey[sel],
+      `Expected to find an key for the selector ${sel} in the code component meta`
+    );
+    return key;
+  }
+
+  function getCssSelector(sel: string) {
+    if (!codeComponent) {
+      return getPseudoSelector(sel).cssSelector;
+    }
+    return interactionVariantsMeta[getSelectorKey(sel)].cssSelector;
+  }
 
   return (
     <XMultiSelect
@@ -85,29 +123,16 @@ export function SelectorsInput({
       onInputValueChange={(text) => setText(text)}
       className={className}
       focusedClassName={focusedClassName}
-      renderOption={(sel) =>
-        nativeOptions.includes(sel) ? (
-          <Tooltip
-            title={`This is the ${
-              getPseudoSelector(sel).cssSelector
-            } selector in CSS`}
-          >
-            {matcher.boldSnippets(sel)}
-          </Tooltip>
-        ) : (
-          <>
-            {matcher.boldSnippets(sel)}{" "}
-            <span className={"SelectorsControl__CustomOptionLabel"}>
-              custom selector
-            </span>
-          </>
-        )
-      }
+      renderOption={(sel) => (
+        <Tooltip title={`This is the ${getCssSelector(sel)} selector in CSS`}>
+          {matcher.boldSnippets(sel)}
+        </Tooltip>
+      )}
       onSelect={(sel) => {
-        onChange([...selectors, sel]);
+        onChange([...selectors, getSelectorKey(sel)]);
         return true;
       }}
-      onUnselect={(sel) => onChange(L.without(selectors, sel))}
+      onUnselect={(sel) => onChange(L.without(selectors, getSelectorKey(sel)))}
       filterOptions={(options, input) =>
         !input
           ? options

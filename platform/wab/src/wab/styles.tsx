@@ -144,6 +144,7 @@ import {
 } from "@/wab/shared/variant-sort";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
+  getCodeComponentInteractionVariantMeta,
   getGlobalVariants,
   hasScreenVariant,
   isBaseRuleVariant,
@@ -1756,6 +1757,15 @@ function showPseudoClassSelector(
         if (pseudoSelectors.find((opt) => opt.displayName === sel)) {
           return getPseudoSelector(sel);
         } else {
+          // This is either an arbitrary selector or a code component interaction variant
+          // we can only validate if it's an code component interaction variant
+          const codeComponentInteractionMeta =
+            isRoot &&
+            isTplCodeComponent(tpl) &&
+            getCodeComponentInteractionVariantMeta(tpl, sel);
+          if (codeComponentInteractionMeta) {
+            return codeComponentInteractionMeta.cssSelector;
+          }
           return sel;
         }
       })

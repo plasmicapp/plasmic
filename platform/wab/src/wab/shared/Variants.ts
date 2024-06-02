@@ -1,6 +1,7 @@
 import {
   ArenaFrame,
   Arg,
+  CodeComponentInteractionVariantMeta,
   Component,
   ComponentVariantGroup,
   CustomCode,
@@ -30,6 +31,7 @@ import {
 import {
   allSuperComponentVariants,
   getNamespacedComponentName,
+  isCodeComponent,
 } from "@/wab/components";
 import { code } from "@/wab/exprs";
 import { toVarName } from "@/wab/shared/codegen/util";
@@ -55,7 +57,13 @@ import {
   mkRuleSet,
   pseudoSelectors,
 } from "@/wab/styles";
-import { summarizeTplTag } from "@/wab/tpls";
+import {
+  isComponentRoot,
+  isTplComponent,
+  isTplTag,
+  summarizeTplTag,
+  TplCodeComponent,
+} from "@/wab/tpls";
 import { arrayContains } from "class-validator";
 import L, { orderBy, uniqBy } from "lodash";
 
@@ -111,6 +119,38 @@ interface _VariantPath {
   // Component wise variant group and its order with regard to its peer groups
   vg: [VariantGroup, number] | undefined;
   path: Array<[Variant, number]>;
+}
+
+export function isCodeComponentWithInteractionVariants(component: Component) {
+  return isCodeComponent(component)
+    ? Object.keys(component.codeComponentMeta.interactionVariantMeta).length > 0
+    : false;
+}
+
+export function isTplRootWithCCInteractionVariants(
+  tpl: TplNode
+): tpl is TplCodeComponent {
+  return (
+    isTplComponent(tpl) &&
+    isComponentRoot(tpl) &&
+    isCodeComponentWithInteractionVariants(tpl.component)
+  );
+}
+
+export function getCodeComponentInteractionVariantMeta(
+  tpl: TplCodeComponent,
+  key: string
+): CodeComponentInteractionVariantMeta | null {
+  const metas = tpl.component.codeComponentMeta.interactionVariantMeta;
+  if (key in metas) {
+    return metas[key];
+  }
+  return null;
+}
+
+export function canHaveInteractionVariant(component: Component) {
+  const tplRoot = component.tplTree;
+  return isTplTag(tplRoot) || isTplRootWithCCInteractionVariants(tplRoot);
 }
 
 export function isStandaloneVariantGroup(
@@ -233,7 +273,9 @@ export function isArbitraryCssSelector(variant: Variant) {
   );
 }
 
-export function isStyleVariant(variant: Variant) {
+export function isStyleVariant(
+  variant: Variant
+): variant is Variant & { selectors: string[] } {
   return !!variant.selectors;
 }
 
