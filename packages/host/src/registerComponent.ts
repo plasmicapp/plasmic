@@ -332,6 +332,18 @@ export interface CodeComponentMeta<P> {
    * slot. Clicking again will deep-select the slot content.
    */
   trapsFocus?: boolean;
+
+  /**
+   * An object describing the component interaction variants that should be allowed in Studio, when the component is
+   * used as the root of a Studio component.
+   */
+  interactionVariants?: Record<
+    string,
+    {
+      cssSelector: string;
+      displayName: string;
+    }
+  >;
 }
 
 export type CodeComponentMode =
