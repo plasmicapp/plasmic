@@ -1559,7 +1559,7 @@ export class TplMgr {
         }
       }
     }
-    setPageSizeType(component, "stretch");
+    setPageSizeType(component as PageComponent, "stretch");
 
     // Turn all containing artboards into stretchy artboards
     for (const frame of getReferencingFrames(this.site(), component)) {

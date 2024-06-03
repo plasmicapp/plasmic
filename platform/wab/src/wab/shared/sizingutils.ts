@@ -12,6 +12,7 @@ import { isTokenRef } from "@/wab/commons/StyleToken";
 import {
   getEffectiveVariantSettingOfDeepRootElement,
   isPageComponent,
+  PageComponent,
 } from "@/wab/components";
 import { parseCssNumericNew } from "@/wab/css";
 import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
@@ -600,10 +601,9 @@ export type PageSizeType = "fixed" | "stretch" | "wrap";
 
 export function getPageFrameSizeType(pageFrame: ArenaFrame): PageSizeType {
   const activeVariants = getArenaFrameActiveVariants(pageFrame);
-  return getPageComponentSizeType(
-    pageFrame.container.component,
-    activeVariants
-  );
+  const component = pageFrame.container.component;
+  assert(isPageComponent(component), "Must be a PageComponent");
+  return getPageComponentSizeType(component, activeVariants);
 }
 
 /**
@@ -623,11 +623,9 @@ export function getPageFrameSizeType(pageFrame: ArenaFrame): PageSizeType {
  * Components, these settings still make sense.
  */
 export function getPageComponentSizeType(
-  component: Component,
+  component: PageComponent,
   activeVariants: VariantCombo = []
 ) {
-  assert(component.pageMeta, "Must be a PageComponent");
-
   const rootEffectiveVS = getEffectiveVariantSettingOfDeepRootElement(
     component,
     activeVariants
@@ -645,7 +643,10 @@ export function getPageComponentSizeType(
   }
 }
 
-export function setPageSizeType(component: Component, sizeType: PageSizeType) {
+export function setPageSizeType(
+  component: PageComponent,
+  sizeType: PageSizeType
+) {
   assert(component.pageMeta, "Must be a PageComponent");
   const root = component.tplTree as TplNode;
   const exp = RSH(

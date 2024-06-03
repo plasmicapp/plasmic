@@ -748,9 +748,9 @@ export const PageSizePanelSection = observer(
               valueSetState={sizeType === "fixed" ? "isSet" : undefined}
               tooltip={
                 <>
-                  If your page component has scrollable containers inside, you
-                  can fix the page component height to window height, so that
-                  the window does not scroll.
+                  If your page has scrollable containers inside, you can fix the
+                  page height to the window height, so that the window does not
+                  scroll.
                 </>
               }
             >

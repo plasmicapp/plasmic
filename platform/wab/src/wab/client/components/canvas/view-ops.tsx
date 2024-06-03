@@ -2076,15 +2076,9 @@ export class ViewOps {
     const obj = this.viewCtx().focusedTplOrSlotSelection();
     if (obj) {
       if (isKnownTplNode(obj)) {
-        if (this.isRootNodeOfStretchFrame(obj)) {
-          this.clipboard().copy(
-            this.createFrameClip(this.viewCtx().arenaFrame())
-          );
-          return this.viewCtx().arenaFrame();
-        } else {
-          this.clipboard().copy(this.createTplClip(obj));
-          return obj;
-        }
+        const tplClip = this.createTplClip(obj);
+        this.clipboard().copy(tplClip);
+        return obj;
       } else {
         // obj is a SlotSelection; when you copy/paste SlotSelection, you probably
         // intended to copy/paste the content?

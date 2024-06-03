@@ -75,6 +75,7 @@ import {
   isCodeComponent,
   isHostLessCodeComponent,
   isPageComponent,
+  PageComponent,
   tryGetVariantGroupValueFromArg,
 } from "@/wab/components";
 import { getCssRulesFromRs, tryGetBrowserCssInitial } from "@/wab/css";
@@ -1743,7 +1744,7 @@ function renderFullViewportStyle(ctx: SerializerBaseContext): string {
 
 export function renderPage(
   ctx: SerializerBaseContext,
-  page: Component,
+  page: PageComponent,
   renderBody: string
 ): string {
   const sizeType = getPageComponentSizeType(page);
