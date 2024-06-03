@@ -250,7 +250,9 @@ export default defineConfig({
           PUBLICPATH: JSON.stringify(publicUrl),
           COMMITHASH: JSON.stringify(commitHash),
           DEPLOYENV: JSON.stringify(buildEnv),
-          "process.env": JSON.stringify(process.env),
+          "process.env": JSON.stringify({
+            NODE_ENV: "production",
+          }),
         }),
         new MonacoWebpackPlugin(),
         new HtmlWebpackPlugin(
