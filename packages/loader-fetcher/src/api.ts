@@ -108,6 +108,7 @@ interface ApiLoaderBundleOutput {
   activeSplits: Split[];
   bundleKey: string | null;
   deferChunksByDefault: boolean;
+  disableRootLoadingBoundaryByDefault: boolean;
 }
 
 export interface LoaderBundleOutput extends ApiLoaderBundleOutput {

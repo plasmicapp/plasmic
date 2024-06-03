@@ -284,6 +284,7 @@ export function PlasmicRootProvider(props: {
     pageParams?: Record<string, string | string[] | undefined>;
     pageQuery?: Record<string, string | string[] | undefined>;
     disableLoadingBoundary?: boolean;
+    disableRootLoadingBoundary?: boolean;
     suspenseFallback?: React_2.ReactNode;
 } & PlasmicDataSourceContextValue): React_2.JSX.Element;
 

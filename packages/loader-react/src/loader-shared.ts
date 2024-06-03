@@ -336,6 +336,7 @@ export abstract class BaseInternalPlasmicComponentLoader {
     activeSplits: [],
     bundleKey: null,
     deferChunksByDefault: false,
+    disableRootLoadingBoundaryByDefault: false,
     filteredIds: {},
   };
 
@@ -532,6 +533,7 @@ ${this.bundle.bundleKey}`
       activeSplits: [],
       bundleKey: null,
       deferChunksByDefault: false,
+      disableRootLoadingBoundaryByDefault: false,
       filteredIds: {},
     };
     this.registry.clear();

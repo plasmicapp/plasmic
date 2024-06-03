@@ -97,6 +97,7 @@ export interface LoaderBundleOutput {
   bundleKey: string | null;
   // Store this configuration here so we can easily change it
   deferChunksByDefault: boolean;
+  disableRootLoadingBoundaryByDefault: boolean;
 }
 
 export interface CodeModule {
@@ -781,6 +782,7 @@ function makeLoaderBundleOutput(
     // Populated in `upsertS3CacheEntry` call
     bundleKey: null,
     deferChunksByDefault: true,
+    disableRootLoadingBoundaryByDefault: true,
   };
   return output;
 }

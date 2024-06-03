@@ -192,6 +192,11 @@ export function mergeBundles(
   target.deferChunksByDefault =
     target.deferChunksByDefault ?? from.deferChunksByDefault ?? false;
 
+  target.disableRootLoadingBoundaryByDefault =
+    target.disableRootLoadingBoundaryByDefault ??
+    from.disableRootLoadingBoundaryByDefault ??
+    false;
+
   return target;
 }
 

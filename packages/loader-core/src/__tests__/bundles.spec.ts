@@ -16,6 +16,7 @@ const EMPTY_BUNDLE: LoaderBundleOutput = {
   activeSplits: [],
   bundleKey: null,
   deferChunksByDefault: false,
+  disableRootLoadingBoundaryByDefault: false,
   filteredIds: {},
 };
 

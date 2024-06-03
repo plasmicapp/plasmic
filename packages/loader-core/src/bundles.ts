@@ -53,6 +53,8 @@ export function getBundleSubset(
     activeSplits: bundle.activeSplits,
     bundleKey: bundle.bundleKey ?? null,
     deferChunksByDefault: bundle.deferChunksByDefault,
+    disableRootLoadingBoundaryByDefault:
+      bundle.disableRootLoadingBoundaryByDefault,
     filteredIds,
   };
 }

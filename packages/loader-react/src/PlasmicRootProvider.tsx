@@ -137,11 +137,15 @@ export function PlasmicRootProvider(
      */
     pageQuery?: Record<string, string | string[] | undefined>;
     /**
-     * Whether the React.Suspense boundaries should be removed
+     * Whether the internal Plasmic React.Suspense boundaries should be removed
      */
     disableLoadingBoundary?: boolean;
     /**
-     * Fallback value for the root-level React.Suspense
+     * Whether the root React.Suspense boundary should be removed
+     */
+    disableRootLoadingBoundary?: boolean;
+    /**
+     * Fallback value for React.Suspense boundary
      */
     suspenseFallback?: React.ReactNode;
   } & PlasmicDataSourceContextValue
@@ -164,6 +168,7 @@ export function PlasmicRootProvider(
     pageQuery,
     suspenseFallback,
     disableLoadingBoundary,
+    disableRootLoadingBoundary,
   } = props;
   const loader = (props.loader as any)
     .__internal as InternalPlasmicComponentLoader;
@@ -278,6 +283,10 @@ export function PlasmicRootProvider(
 
   const reactMajorVersion = +React.version.split(".")[0];
 
+  const shouldDisableRootLoadingBoundary =
+    disableRootLoadingBoundary ??
+    loader.getBundle().disableRootLoadingBoundaryByDefault;
+
   return (
     <PlasmicQueryDataProvider
       prefetchedCache={prefetchedQueryData}
@@ -297,7 +306,7 @@ export function PlasmicRootProvider(
           query={pageQuery}
         >
           <MaybeWrap
-            cond={!disableLoadingBoundary && reactMajorVersion >= 18}
+            cond={!shouldDisableRootLoadingBoundary && reactMajorVersion >= 18}
             wrapper={(contents) => (
               <React.Suspense fallback={suspenseFallback ?? "Loading..."}>
                 {contents}
