@@ -2050,6 +2050,7 @@ export class ViewOps {
         });
       }
     }
+    return copied;
   }
   copy() {
     const frame = this.viewCtx().studioCtx.focusedFrame();

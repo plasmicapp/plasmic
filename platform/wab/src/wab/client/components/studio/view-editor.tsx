@@ -889,11 +889,16 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
     this.clipboardAction = "copy";
   }
 
-  // TODO: Feature parity with copy
   async cut(clipboard: WritableClipboard, viewCtx: ViewCtx) {
     trackEvent("Cut");
-    await viewCtx.viewOps.cut();
-    clipboard.setData({ action: "cut" });
+    const copyObj = await viewCtx.viewOps.cut();
+    const copyState = getCopyState(viewCtx, copyObj);
+    spawn(viewCtx.appCtx.api.whitelistProjectIdToCopy(copyState.projectId));
+    if (copyState.references.length > 0) {
+      clipboard.setData(copyState);
+    } else {
+      clipboard.setData({ action: "cut" });
+    }
     this.clipboardAction = "cut";
   }
 
