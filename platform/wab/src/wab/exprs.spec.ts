@@ -1,6 +1,12 @@
 import { CompositeExpr, TemplatedString } from "@/wab/classes";
 import { getProjectFlags } from "@/wab/devflags";
-import { asCode, code, customCode, ExprCtx } from "@/wab/exprs";
+import {
+  asCode,
+  code,
+  customCode,
+  ExprCtx,
+  getCodeExpressionWithFallback,
+} from "@/wab/exprs";
 import { createSite } from "@/wab/sites";
 
 describe("asCode", () => {
@@ -9,13 +15,30 @@ describe("asCode", () => {
     inStudio: true,
     projectFlags: getProjectFlags(createSite()),
   };
+
+  it("works for TemplatedString with only CustomCode fallback", () => {
+    const wrongExpr = '"test".not.possible';
+    const testValue = "`${'eval'}Value`";
+    const templatedString = new TemplatedString({
+      text: [customCode(wrongExpr, customCode(testValue))],
+    });
+    const result = getCodeExpressionWithFallback(
+      asCode(templatedString, exprCtxFixture),
+      exprCtxFixture
+    );
+    expect(eval(result)).toEqual("evalValue");
+  });
+
   it("works for TemplatedString with only IIFE", () => {
     const testValue = "const test = 'evalValue';\ntest";
     const templatedString = new TemplatedString({
       text: [customCode(testValue)],
     });
-    const result = asCode(templatedString, exprCtxFixture);
-    expect(eval(result.code)).toEqual("evalValue");
+    const result = getCodeExpressionWithFallback(
+      asCode(templatedString, exprCtxFixture),
+      exprCtxFixture
+    );
+    expect(eval(result)).toEqual("evalValue");
   });
 
   it("works for TemplatedString with only CustomCode", () => {
@@ -23,8 +46,11 @@ describe("asCode", () => {
     const templatedString = new TemplatedString({
       text: [customCode(testValue)],
     });
-    const result = asCode(templatedString, exprCtxFixture);
-    expect(eval(result.code)).toEqual("evalValue");
+    const result = getCodeExpressionWithFallback(
+      asCode(templatedString, exprCtxFixture),
+      exprCtxFixture
+    );
+    expect(eval(result)).toEqual("evalValue");
   });
 
   it("works for TemplatedString with only text", () => {
@@ -32,8 +58,11 @@ describe("asCode", () => {
     const templatedString = new TemplatedString({
       text: [testValue],
     });
-    const result = asCode(templatedString, exprCtxFixture);
-    expect(eval(result.code)).toEqual("evalValue");
+    const result = getCodeExpressionWithFallback(
+      asCode(templatedString, exprCtxFixture),
+      exprCtxFixture
+    );
+    expect(eval(result)).toEqual("evalValue");
   });
 
   it("works for TemplatedString with IIFE, CustomCode and text", () => {
@@ -49,9 +78,11 @@ describe("asCode", () => {
         customCode(iifeValue),
       ],
     });
-    const result = asCode(templatedString, exprCtxFixture);
-    console.log(result.code);
-    expect(eval(result.code)).toEqual("evalValue, evalValue, evalValue");
+    const result = getCodeExpressionWithFallback(
+      asCode(templatedString, exprCtxFixture),
+      exprCtxFixture
+    );
+    expect(eval(result)).toEqual("evalValue, evalValue, evalValue");
   });
 
   it("works for CompositeExpr", () => {
