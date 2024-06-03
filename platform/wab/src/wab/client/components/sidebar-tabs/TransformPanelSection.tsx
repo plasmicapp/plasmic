@@ -101,8 +101,9 @@ export const TransformPanelSection = observer(
 
     const updateSelfPerspective = (newSelfPerspective: string | undefined) => {
       const transformString = transforms.map(fromTransformObjToString);
-      if (newSelfPerspective)
+      if (newSelfPerspective) {
         transformString.unshift(`perspective(${newSelfPerspective})`);
+      }
       setsProp("transform", maybeArrayNone(transformString));
     };
 

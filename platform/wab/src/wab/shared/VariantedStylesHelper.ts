@@ -72,7 +72,9 @@ export class VariantedStylesHelper {
 
   private sortedActiveVariantedStyles(style: StyleToken | Mixin) {
     const activeVariantedValues = this.activeVariantedStyles(style);
-    if (activeVariantedValues.length === 0) return activeVariantedValues;
+    if (activeVariantedValues.length === 0) {
+      return activeVariantedValues;
+    }
 
     const sorter = makeGlobalVariantComboSorter(
       ensure(this.site, "site must exist to sort variants")

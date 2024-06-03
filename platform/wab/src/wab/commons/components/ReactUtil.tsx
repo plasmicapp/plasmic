@@ -41,7 +41,9 @@ export const swallowingClick =
   <T extends HTMLElement>(f?: (event: React.MouseEvent<T>) => void) =>
   (event: React.MouseEvent<T>) => {
     event.stopPropagation();
-    if (f) f(event);
+    if (f) {
+      f(event);
+    }
   };
 
 export function joinReactNodes(

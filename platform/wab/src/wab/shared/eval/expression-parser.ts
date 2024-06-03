@@ -176,7 +176,9 @@ export function parseCodeExpression(code: string): ParsedExprInfo {
         break;
       case "ArrayPattern":
         node.elements.forEach((elt) => {
-          if (elt) declarePattern(elt, parent);
+          if (elt) {
+            declarePattern(elt, parent);
+          }
         });
         break;
       case "RestElement":
@@ -249,7 +251,9 @@ export function parseCodeExpression(code: string): ParsedExprInfo {
     },
     Class: declareClass,
     TryStatement: (node) => {
-      if (node.handler == null || node.handler.param === null) return;
+      if (node.handler == null || node.handler.param === null) {
+        return;
+      }
       const handler: WithLocals<ast.CatchClause> = node.handler;
       handler.locals = handler.locals || {};
       declarePattern(node.handler.param, node.handler);
@@ -263,7 +267,9 @@ export function parseCodeExpression(code: string): ParsedExprInfo {
     parents: WithLocals<ast.Node>[]
   ) => {
     const name = node.name;
-    if (name === "undefined") return;
+    if (name === "undefined") {
+      return;
+    }
     for (const parent of parents) {
       if (name === "arguments" && declaresArguments(parent)) {
         return;

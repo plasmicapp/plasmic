@@ -14,7 +14,9 @@ import { turnOffDesignMode } from "../support/util";
  */
 function addCalendar(defaultValue?: string) {
   cy.insertFromAddDrawer("hostless-rich-calendar");
-  if (!defaultValue) return;
+  if (!defaultValue) {
+    return;
+  }
   cy.get(`[data-test-id="prop-editor-row-value"] label`)
     .contains("Value")
     .rightclick();

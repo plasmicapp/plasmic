@@ -271,7 +271,9 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
         type: "choice",
         displayName: "Operation",
         options: ({ vgroup: vgroupVarRef }, ctx: InteractionContextData) => {
-          if (!vgroupVarRef) return [];
+          if (!vgroupVarRef) {
+            return [];
+          }
           const vgroup = ctx.component?.variantGroups.find(
             (vg) => vg.param.variable === vgroupVarRef?.variable
           );

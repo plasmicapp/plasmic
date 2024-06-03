@@ -193,7 +193,7 @@ export const ComponentArenaLayout = observer(
                   [sty.groupLabel__editable]: row.rowKey,
                 })}
                 onContextMenu={(e) => {
-                  if (isKnownVariantGroup(row.rowKey))
+                  if (isKnownVariantGroup(row.rowKey)) {
                     maybeShowContextMenu(
                       e as any,
                       <Menu>
@@ -208,6 +208,7 @@ export const ComponentArenaLayout = observer(
                         </Menu.Item>
                       </Menu>
                     );
+                  }
                 }}
               >
                 {getComponentArenaRowLabel(component, row)}

@@ -129,7 +129,9 @@ class _XDraggable extends React.Component<XDraggableProps, XDraggableState> {
         Math.sqrt(dx ** 2 + dy ** 2) >= this.props.minPx
       ) {
         xevent = { ...xevent, data: { ...xevent.data, started: true } };
-        if (this.props.onStart) this.props.onStart(xevent);
+        if (this.props.onStart) {
+          this.props.onStart(xevent);
+        }
       }
       if (lastEvent.data.started && this.props.onDrag) {
         this.props.onDrag(xevent);

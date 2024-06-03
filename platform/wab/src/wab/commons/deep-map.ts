@@ -9,8 +9,11 @@ class DeepMapEntry<T> {
     let i = 0;
     for (; i < this.args.length - 1; i++) {
       current = current!.get(args[i]);
-      if (current) this.closest = current;
-      else break;
+      if (current) {
+        this.closest = current;
+      } else {
+        break;
+      }
     }
     this.closestIdx = i;
   }
@@ -23,7 +26,9 @@ class DeepMapEntry<T> {
 
   get(): T {
     this.assertNotDisposed();
-    if (!this.exists()) throw new Error("Entry doesn't exist");
+    if (!this.exists()) {
+      throw new Error("Entry doesn't exist");
+    }
     return this.closest.get(this.args[this.args.length - 1]);
   }
 
@@ -44,7 +49,9 @@ class DeepMapEntry<T> {
 
   delete() {
     this.assertNotDisposed();
-    if (!this.exists()) throw new Error("Entry doesn't exist");
+    if (!this.exists()) {
+      throw new Error("Entry doesn't exist");
+    }
     const l = this.args.length;
     this.closest.delete(this.args[l - 1]);
     // clean up remaining maps if needed (reconstruct stack first)
@@ -55,14 +62,18 @@ class DeepMapEntry<T> {
       maps.push(c);
     }
     for (let i = maps.length - 1; i > 0; i--) {
-      if (maps[i].size === 0) maps[i - 1].delete(this.args[i - 1]);
+      if (maps[i].size === 0) {
+        maps[i - 1].delete(this.args[i - 1]);
+      }
     }
     this.isDisposed = true;
   }
 
   private assertNotDisposed() {
     // TODO: once this becomes annoying, we should introduce a reset method to re-run the constructor logic
-    if (this.isDisposed) throw new Error("Concurrent modification exception");
+    if (this.isDisposed) {
+      throw new Error("Concurrent modification exception");
+    }
   }
 }
 
@@ -72,12 +83,16 @@ export class DeepMap<T> {
   private last: DeepMapEntry<T> | undefined;
 
   entry(args: any[]): DeepMapEntry<T> {
-    if (this.argsLength === -1) this.argsLength = args.length;
-    else if (this.argsLength !== args.length)
+    if (this.argsLength === -1) {
+      this.argsLength = args.length;
+    } else if (this.argsLength !== args.length) {
       throw new Error(
         `DeepMap should be used with functions with a consistent length, expected: ${this.argsLength}, got: ${args.length}`
       );
-    if (this.last) this.last.isDisposed = true;
+    }
+    if (this.last) {
+      this.last.isDisposed = true;
+    }
 
     return (this.last = new DeepMapEntry(this.store, args));
   }

@@ -98,7 +98,9 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
           const arg = interaction.args.find(
             (iarg) => iarg.name === parameters[i]
           );
-          if (!arg) continue;
+          if (!arg) {
+            continue;
+          }
           newInteractionArgs.exprs[i] = new StrongFunctionArg({
             argType: functionType.params[i],
             expr: arg.expr,

@@ -1027,7 +1027,9 @@ function getFolderItemMenuRenderer({
         getSiteItemTypeName(folderItem.item),
         folderItem.name
       );
-      if (!confirmation) return;
+      if (!confirmation) {
+        return;
+      }
       await studioCtx.changeObserved(
         () => {
           return isDedicatedArena(folderItem.item) &&
@@ -1383,7 +1385,7 @@ function BranchPanelTop_(
   }
 
   async function handleCreateBranch(sourceBranchId?: BranchId) {
-    if (studioCtx.appCtx.appConfig.disableBranching)
+    if (studioCtx.appCtx.appConfig.disableBranching) {
       return notification.error({
         message: "Branch creation in maintenance",
         duration: 0,
@@ -1411,6 +1413,7 @@ function BranchPanelTop_(
           </>
         ),
       });
+    }
 
     // If we're cloning the main branch but the main branch was never committed....
     if (!sourceBranchId && !(await checkMainCommitted())) {
@@ -1508,12 +1511,13 @@ function BranchPanelTop_(
               type?: DefaultFolderItemProps["type"];
             };
 
-            if (!currentItem.type)
+            if (!currentItem.type) {
               return (
                 <div className={styles.sectionHeader} style={style}>
                   {currentItem.label}
                 </div>
               );
+            }
 
             const branch = currentItem.branch;
             const onSwitch = async () => {

@@ -652,7 +652,7 @@ export function makeImageMenu({
       }
 
       if (isCustomCode) {
-        if (fallback && !fallback.showFallback)
+        if (fallback && !fallback.showFallback) {
           push(
             <Menu.Item
               key={"fallback"}
@@ -661,6 +661,7 @@ export function makeImageMenu({
               Change fallback value
             </Menu.Item>
           );
+        }
         push(
           <Menu.Item
             key={"!customCode"}

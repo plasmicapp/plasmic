@@ -720,7 +720,9 @@ export function notifyCodeLibraryInsertion(
   jsIdentifier: string,
   type: string
 ) {
-  if (!name) return;
+  if (!name) {
+    return;
+  }
   const commonOpts = { duration: 0 };
   switch (type) {
     case "function":

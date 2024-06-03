@@ -21,7 +21,9 @@ interface Props {
 }
 
 function applyZoom(spacingValues: SpacingValues, zoom: number) {
-  if (spacingValues === EMPTY_SPACING) return EMPTY_SPACING;
+  if (spacingValues === EMPTY_SPACING) {
+    return EMPTY_SPACING;
+  }
 
   const values = { ...spacingValues };
   Object.keys(values).forEach((side) => {

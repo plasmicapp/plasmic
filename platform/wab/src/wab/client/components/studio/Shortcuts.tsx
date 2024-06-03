@@ -97,7 +97,9 @@ function ShortcutSection(props: {
     (chunk) => chunk.shortcuts.length > 0
   );
 
-  if (!isSectionShowing) return null;
+  if (!isSectionShowing) {
+    return null;
+  }
 
   return (
     <div className="mb-xlg">

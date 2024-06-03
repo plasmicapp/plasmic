@@ -206,7 +206,9 @@ const PageRow = observer(function PageRow(props: {
           key="delete"
           onClick={async () => {
             const confirmation = await promptDeleteComponent("page", page.name);
-            if (!confirmation) return;
+            if (!confirmation) {
+              return;
+            }
             await studioCtx.changeObserved(
               () => {
                 return Array.from(

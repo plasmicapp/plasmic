@@ -180,7 +180,9 @@ export async function getProducts(req: Request, res: Response) {
     ),
   });
   res.json({ html });
-  if (always) return;
+  if (always) {
+    return;
+  }
 
   const { client } = await getShopifyClient(req);
   const products = await client.get({ path: "products" });

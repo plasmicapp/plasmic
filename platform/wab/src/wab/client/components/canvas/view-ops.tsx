@@ -1605,7 +1605,9 @@ export class ViewOps {
       (sq: /*TWZ*/ SelQuery) => sq.firstChild(),
       true
     );
-    if (!firstChild) return undefined;
+    if (!firstChild) {
+      return undefined;
+    }
 
     return this.isSelectableVisible(firstChild)
       ? firstChild
@@ -3979,10 +3981,11 @@ export class ViewOps {
           .children()
           .toArrayOfTplNodes()
           .forEach((nchild) => {
-            if (Tpls.isTplVariantable(nchild))
+            if (Tpls.isTplVariantable(nchild)) {
               this.adoptParentContainerStyle(nchild, new_child, {
                 keepFree: true,
               });
+            }
           });
       });
 

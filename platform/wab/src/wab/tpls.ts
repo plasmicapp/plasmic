@@ -2594,7 +2594,7 @@ export function setEventHandlerByEventKey(
     const arg = baseVs.args.find((iarg) => iarg.param === key.param);
     if (arg) {
       arg.expr = expr;
-    } else
+    } else {
       [
         baseVs.args.push(
           new Arg({
@@ -2603,6 +2603,7 @@ export function setEventHandlerByEventKey(
           })
         ),
       ];
+    }
   } else {
     unexpected();
   }

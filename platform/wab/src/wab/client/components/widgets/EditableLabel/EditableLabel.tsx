@@ -84,7 +84,9 @@ const EditableLabel_: ForwardRefRenderFunction<
   } = props;
 
   React.useLayoutEffect(() => {
-    if (!labelRef.current) return;
+    if (!labelRef.current) {
+      return;
+    }
     setShowTooltip(
       (labelRef.current as HTMLSpanElement).scrollWidth >
         (labelRef.current as HTMLSpanElement).offsetWidth

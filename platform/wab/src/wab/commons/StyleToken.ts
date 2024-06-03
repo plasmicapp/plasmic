@@ -141,7 +141,9 @@ export const tryParseTokenRef = (
     | Map<string, StyleToken>
 ) => {
   const m = ref.match(RE_TOKENREF);
-  if (!m) return undefined;
+  if (!m) {
+    return undefined;
+  }
   const tokenId = m[1];
   if (L.isArray(tokensProvider) || L.isFunction(tokensProvider)) {
     const tokens = L.isArray(tokensProvider)
@@ -256,7 +258,9 @@ export const tryParseMixinPropRef = (
   mixins: Mixin[] | Map<string, Mixin>
 ) => {
   const m = ref.match(/var\(--mixin-(.+)_(.*)\)$/);
-  if (!m) return undefined;
+  if (!m) {
+    return undefined;
+  }
   const mixin = Array.isArray(mixins)
     ? mixins.find((t) => t.uuid === m[1])
     : mixins.get(m[1]);

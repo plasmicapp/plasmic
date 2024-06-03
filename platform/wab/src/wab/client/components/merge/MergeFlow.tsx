@@ -367,15 +367,24 @@ function MergeFlow_(
       : [];
 
   function getTypeName(typeName: string, mergedInst: ObjInst) {
-    if (isKnownStateParam(mergedInst)) return "State";
-    if (isKnownStateChangeHandlerParam(mergedInst))
+    if (isKnownStateParam(mergedInst)) {
+      return "State";
+    }
+    if (isKnownStateChangeHandlerParam(mergedInst)) {
       return "State change handler";
-    if (isKnownPropParam(mergedInst)) return "Prop";
-    if (isKnownSlotParam(mergedInst)) return "Slot";
-    if (isKnownGlobalVariantGroupParam(mergedInst))
+    }
+    if (isKnownPropParam(mergedInst)) {
+      return "Prop";
+    }
+    if (isKnownSlotParam(mergedInst)) {
+      return "Slot";
+    }
+    if (isKnownGlobalVariantGroupParam(mergedInst)) {
       return "Global variant group";
-    if (isKnownComponent(mergedInst) && mergedInst.type === "page")
+    }
+    if (isKnownComponent(mergedInst) && mergedInst.type === "page") {
       return "Page";
+    }
     return typeName;
   }
 
@@ -589,7 +598,9 @@ function MergeFlow_(
           reconciliations={{
             children: Array.from(groupedReconciliations.entries()).map(
               ([key, items]) => {
-                if (!key) return items.map(renderReconciliation);
+                if (!key) {
+                  return items.map(renderReconciliation);
+                }
                 return renderReconciliationGroup(
                   items,
                   (items[0] as AutoReconciliationOfDuplicateNames).mergedParent

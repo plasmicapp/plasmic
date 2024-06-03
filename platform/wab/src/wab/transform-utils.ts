@@ -138,7 +138,9 @@ export const fromTransformStringToObj = (rawTransform: string): Transform => {
 export const fromTransformObjToString = (transform: Transform) => {
   return ["X", "Y", "Z"]
     .map((axis) => {
-      if (transform.type === "skew" && axis === "Z") return "";
+      if (transform.type === "skew" && axis === "Z") {
+        return "";
+      }
       return `${transformToFunction[transform.type]}${axis}(${
         transform[axis]
       })`;
@@ -173,11 +175,12 @@ const convertOriginKeyword = (value: string, dir: "left" | "top") => {
 };
 
 export const parseOrigin = (origin: string | undefined) => {
-  if (!origin)
+  if (!origin) {
     return {
       left: undefined,
       top: undefined,
     };
+  }
   const m = origin.split(" ");
   if (m.length === 1) {
     return {

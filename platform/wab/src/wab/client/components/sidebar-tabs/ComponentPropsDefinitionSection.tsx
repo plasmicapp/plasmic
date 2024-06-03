@@ -241,7 +241,9 @@ function makeParamMenu(
                 }. Are you sure you want to delete it?`,
                 confirmLabel: "Delete",
               });
-              if (!confirmed) return;
+              if (!confirmed) {
+                return;
+              }
             }
 
             await studioCtx.changeUnsafe(() => {

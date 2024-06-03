@@ -529,7 +529,9 @@ function ShareDialogContent(props: ShareDialogContentProps) {
     setCurrentTab(showEndUsersTab ? "end-users" : "collaborators");
   }, [loadingAuthConfig]);
 
-  if (loadingAuthConfig) return <Spinner />;
+  if (loadingAuthConfig) {
+    return <Spinner />;
+  }
 
   const TabsWrapper = () => {
     return (

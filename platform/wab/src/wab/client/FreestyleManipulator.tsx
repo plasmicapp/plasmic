@@ -338,7 +338,7 @@ export class FreestyleManipulator {
     for (const dimProp of dimProps) {
       if (state.lastOffsetRect[dimProp] !== desiredOffsetRect[dimProp]) {
         if (isStandardSide(dimProp)) {
-          if (exp.get(dimProp) !== "auto")
+          if (exp.get(dimProp) !== "auto") {
             this.updateDimProp(
               state,
               exp,
@@ -346,6 +346,7 @@ export class FreestyleManipulator {
               undefined,
               desiredOffsetRect[dimProp]
             );
+          }
         } else {
           // If a width/height already is set, we continue setting it.
 

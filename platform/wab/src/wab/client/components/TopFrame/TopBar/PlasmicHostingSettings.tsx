@@ -109,8 +109,9 @@ function PlasmicHostingSettings_(
       }
     }
 
-    if (debouncedSubdomain && debouncedSubdomain !== settings.subdomain)
+    if (debouncedSubdomain && debouncedSubdomain !== settings.subdomain) {
       spawn(checkSubdomain());
+    }
   }, [debouncedSubdomain, settings.subdomain]);
 
   async function handleCustomDomain() {

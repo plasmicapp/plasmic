@@ -412,7 +412,9 @@ export class BetterAutoComplete<P> extends React.Component<
       this.queryText(prevProps, prevState) !== this.queryText()
     ) {
       this.justSelected = false;
-      if (this.downshift.current!.state.isOpen) spawn(this.queryOptions());
+      if (this.downshift.current!.state.isOpen) {
+        spawn(this.queryOptions());
+      }
     }
   }
   private queryOptions = async () => {

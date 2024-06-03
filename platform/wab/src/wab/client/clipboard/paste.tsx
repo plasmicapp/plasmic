@@ -78,12 +78,16 @@ async function pasteRouter(
         shouldPerformCrossTabCopy(studioCtx, plasmicData)
       ) {
         const remoteResult = await pasteRemote(plasmicData, args);
-        if (remoteResult.handled) return remoteResult.success;
+        if (remoteResult.handled) {
+          return remoteResult.success;
+        }
       }
 
       if (studioCtx.clipboard.isSet()) {
         const localResult = await pasteLocal(studioCtx.clipboard.paste(), args);
-        if (localResult.handled) return localResult.success;
+        if (localResult.handled) {
+          return localResult.success;
+        }
       }
     }
 
@@ -92,22 +96,30 @@ async function pasteRouter(
     const textContent = clipboard.getText();
     if (textContent) {
       const figmaResult = await pasteFromFigma(textContent, args);
-      if (figmaResult.handled) return figmaResult.success;
+      if (figmaResult.handled) {
+        return figmaResult.success;
+      }
 
       const wiImporterResult = await pasteFromWebImporter(textContent, args);
-      if (wiImporterResult.handled) return wiImporterResult.success;
+      if (wiImporterResult.handled) {
+        return wiImporterResult.success;
+      }
     }
 
     const image = await clipboard.getImage(studioCtx.appCtx);
     if (image) {
       const imageResult = await pasteImage(image, args);
-      if (imageResult.handled) return imageResult.success;
+      if (imageResult.handled) {
+        return imageResult.success;
+      }
     }
 
     if (textContent) {
       // TODO: work with rich text as well
       const textResult = await pasteText(textContent, args);
-      if (textResult.handled) return textResult.success;
+      if (textResult.handled) {
+        return textResult.success;
+      }
     }
 
     notification.warn({

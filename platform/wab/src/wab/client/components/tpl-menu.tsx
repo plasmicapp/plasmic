@@ -356,7 +356,7 @@ export function makeTplMenu(
       !isTplColumn(tpl) &&
       !isInsideRichText &&
       !contentEditorMode
-    )
+    ) {
       pushEdit(
         <Menu.Item
           key="ungroup"
@@ -365,6 +365,7 @@ export function makeTplMenu(
           Ungroup
         </Menu.Item>
       );
+    }
 
     if (
       isTplComponent(tpl) &&

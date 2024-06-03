@@ -106,11 +106,12 @@ describe("text-slots", function () {
               .should("have.css", "font-size", "24px");
 
             cy.justLog("Expect Courier New on both.");
-            for (const msg of ["Hello", "Goodbye"])
+            for (const msg of ["Hello", "Goodbye"]) {
               framed2
                 .rootElt()
                 .contains(msg)
                 .should("have.css", "font-family", '"Courier New"');
+            }
 
             cy.checkNoErrors();
           };

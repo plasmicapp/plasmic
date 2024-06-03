@@ -16,6 +16,7 @@ import {
   RenderingCtx,
   renderTplNode,
 } from "@/wab/client/components/canvas/canvas-rendering";
+import { mkSlateString } from "@/wab/client/components/canvas/RichText/SlateString";
 import "@/wab/client/components/canvas/slate";
 import {
   mkTplTagElement,
@@ -26,7 +27,6 @@ import {
   SubDeps,
   tags as htmlTags,
 } from "@/wab/client/components/canvas/subdeps";
-import { mkSlateString } from "@/wab/client/components/canvas/RichText/SlateString";
 import {
   reactPrompt,
   ReactPromptOpts,
@@ -1147,34 +1147,48 @@ export const mkCanvasText = computedFn(
             onKeyUp: (e) => e.stopPropagation(),
             // Shouldn't leak click events in non-interactive mode only
             onClick: (e) => {
-              if (readOnly) return;
+              if (readOnly) {
+                return;
+              }
               // NOTE: we must not use e.preventDefault in any other event handler below, or the Slate cursor will stop moving on click events
               // Meanwhile, preventDefault here in the onCLick event handler is required to make stopPropagation work in other click event handlers
               e.stopPropagation();
               e.preventDefault();
             },
             onMouseDown: (e) => {
-              if (readOnly) return;
+              if (readOnly) {
+                return;
+              }
               e.stopPropagation();
             },
             onMouseUp: (e) => {
-              if (readOnly) return;
+              if (readOnly) {
+                return;
+              }
               e.stopPropagation();
             },
             onPointerDown: (e) => {
-              if (readOnly) return;
+              if (readOnly) {
+                return;
+              }
               e.stopPropagation();
             },
             onPointerUp: (e) => {
-              if (readOnly) return;
+              if (readOnly) {
+                return;
+              }
               e.stopPropagation();
             },
             onDoubleClick: (e) => {
-              if (readOnly) return;
+              if (readOnly) {
+                return;
+              }
               e.stopPropagation();
             },
             onDragStart: (e) => {
-              if (readOnly) return;
+              if (readOnly) {
+                return;
+              }
               e.stopPropagation();
             },
           }),

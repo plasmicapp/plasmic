@@ -1648,7 +1648,9 @@ const getNodeToTplNode = (
     const slotIdentifier = "slot: ";
     if (node.name.startsWith(slotIdentifier)) {
       const tplNode = nodeToTplNode(node);
-      if (tplNode) tplNode.name = undefined;
+      if (tplNode) {
+        tplNode.name = undefined;
+      }
       return [[node.name.substring(slotIdentifier.length), tplNode]];
     }
     switch (node.type) {
@@ -1793,8 +1795,9 @@ const getNodeToTplNode = (
               }
             }
             // Link props crashes studio if assigned an boolean
-            if (param.type.name === "href" && prop.type === "BOOLEAN")
+            if (param.type.name === "href" && prop.type === "BOOLEAN") {
               return null;
+            }
             // Parse text to number if param is number
             if (param.type.name === "num" && prop.type === "TEXT") {
               return [param.variable.name, Number(parsedValue)];

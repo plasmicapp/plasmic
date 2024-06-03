@@ -906,8 +906,9 @@ export function findPropUsages(component: Component, prop: Param) {
     if (
       expr.expr.typeTag === "TemplatedString" ||
       expr.expr.typeTag === "FunctionExpr"
-    )
+    ) {
       return false;
+    }
 
     // Usage in dynamic value (expressions) via $prop
     if (

@@ -61,8 +61,9 @@ export const TransitionPanel = observer(function TransitionPanel(
       s[idx] === "0" &&
       s[idx + 1] >= "0" &&
       s[idx + 1] <= "9"
-    )
+    ) {
       idx++;
+    }
     return s.substr(idx);
   };
 

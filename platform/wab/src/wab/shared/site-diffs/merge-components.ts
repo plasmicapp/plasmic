@@ -518,64 +518,70 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
 
       // Check for cycles of disconnected nodes after updating the parents
       const checkAndFixCycle = () => {
-        const reachableTplUuids = new Set(
-          flattenComponent(mergedComp).map((tpl) => tpl.uuid)
-        );
-        const tplInDisconnectedCycle = (tplAnc: TplNode) => {
-          if (
-            reachableTplUuids.has(tplAnc.uuid) ||
-            !tplInAByUuid.has(tplAnc.uuid) ||
-            !tplInBByUuid.has(tplAnc.uuid)
-          ) {
-            return false;
-          }
-          let tpl: TplNode | null | undefined = cloneInst(tplAnc, siteAncestor);
-          const seenUuids = new Set<string>();
-          while (tpl) {
-            if (seenUuids.has(tpl.uuid)) {
-              return true;
-            }
-            seenUuids.add(tpl.uuid);
-            tpl = tpl.parent;
-          }
-          return false;
-        };
-        let maybeDisconnectedTplInAnc = flattenComponent(ancestorComp).find(
-          tplInDisconnectedCycle
-        );
-        // `cloneInst` will just get the matching object in the merged site as
-        // it already existed
-        let maybeDisconnectedTpl =
-          maybeDisconnectedTplInAnc &&
-          cloneInst(maybeDisconnectedTplInAnc, siteAncestor);
-
-        // We need to find the first node in the cycle that has moved
-        while (
-          maybeDisconnectedTpl &&
-          maybeDisconnectedTplInAnc &&
-          maybeDisconnectedTpl.parent?.uuid ===
-            maybeDisconnectedTplInAnc.parent?.uuid
-        ) {
-          maybeDisconnectedTpl = maybeDisconnectedTpl.parent ?? undefined;
-          maybeDisconnectedTplInAnc =
-            maybeDisconnectedTplInAnc.parent ?? undefined;
-          continue;
-        }
-
-        if (
-          maybeDisconnectedTpl &&
-          maybeDisconnectedTplInAnc &&
-          tplInDisconnectedCycle(maybeDisconnectedTplInAnc)
-        ) {
-          // Undo the change so the node is no longer disconnected
-          updateParent(maybeDisconnectedTpl, maybeDisconnectedTplInAnc, (tpl) =>
-            cloneInst(tpl, siteAncestor)
+        while (true) {
+          const reachableTplUuids = new Set(
+            flattenComponent(mergedComp).map((tpl) => tpl.uuid)
           );
-          // Repeat the cycle check to see if there are more nodes to fix
-          return true;
-        }
+          const tplInDisconnectedCycle = (tplAnc: TplNode) => {
+            if (
+              reachableTplUuids.has(tplAnc.uuid) ||
+              !tplInAByUuid.has(tplAnc.uuid) ||
+              !tplInBByUuid.has(tplAnc.uuid)
+            ) {
+              return false;
+            }
+            let tpl: TplNode | null | undefined = cloneInst(
+              tplAnc,
+              siteAncestor
+            );
+            const seenUuids = new Set<string>();
+            while (tpl) {
+              if (seenUuids.has(tpl.uuid)) {
+                return true;
+              }
+              seenUuids.add(tpl.uuid);
+              tpl = tpl.parent;
+            }
+            return false;
+          };
+          let maybeDisconnectedTplInAnc = flattenComponent(ancestorComp).find(
+            tplInDisconnectedCycle
+          );
+          // `cloneInst` will just get the matching object in the merged site as
+          // it already existed
+          let maybeDisconnectedTpl =
+            maybeDisconnectedTplInAnc &&
+            cloneInst(maybeDisconnectedTplInAnc, siteAncestor);
 
-        return false;
+          // We need to find the first node in the cycle that has moved
+          while (
+            maybeDisconnectedTpl &&
+            maybeDisconnectedTplInAnc &&
+            maybeDisconnectedTpl.parent?.uuid ===
+              maybeDisconnectedTplInAnc.parent?.uuid
+          ) {
+            maybeDisconnectedTpl = maybeDisconnectedTpl.parent ?? undefined;
+            maybeDisconnectedTplInAnc =
+              maybeDisconnectedTplInAnc.parent ?? undefined;
+          }
+
+          if (
+            maybeDisconnectedTpl &&
+            maybeDisconnectedTplInAnc &&
+            tplInDisconnectedCycle(maybeDisconnectedTplInAnc)
+          ) {
+            // Undo the change so the node is no longer disconnected
+            updateParent(
+              maybeDisconnectedTpl,
+              maybeDisconnectedTplInAnc,
+              (tpl) => cloneInst(tpl, siteAncestor)
+            );
+            // Repeat the cycle check to see if there are more nodes to fix
+            continue;
+          }
+
+          break;
+        }
       };
 
       for (const tplMerged of flattenComponent(mergedComp)) {
@@ -607,7 +613,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
                     cloneObjInstToMergedSite(tpl, siteB, mergedSite, bundler)
                   );
                 }
-                while (checkAndFixCycle());
+                checkAndFixCycle();
               },
             };
 
@@ -636,7 +642,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
         }
       }
 
-      while (checkAndFixCycle());
+      checkAndFixCycle();
 
       const nodeToPathAnc = calcRootToNodesPaths(ancestorComp.tplTree, bundler);
       const nodeToPathA = calcRootToNodesPaths(compA.tplTree, bundler);

@@ -286,7 +286,9 @@ export function tryParseImageAssetRef(
   assets: ImageAsset[] | Record<string, ImageAsset>
 ) {
   const m = ref.match(RE_ASSETREF);
-  if (!m) return undefined;
+  if (!m) {
+    return undefined;
+  }
   return L.isArray(assets) ? assets.find((t) => t.uuid === m[1]) : assets[m[1]];
 }
 

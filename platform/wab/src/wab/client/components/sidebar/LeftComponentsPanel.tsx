@@ -456,7 +456,9 @@ const ComponentRow = observer(function ComponentRow(props: {
                 "component",
                 component.name
               );
-              if (!confirmation) return;
+              if (!confirmation) {
+                return;
+              }
               await studioCtx.changeUnsafe(() =>
                 studioCtx.siteOps().tryRemoveComponent(component)
               );

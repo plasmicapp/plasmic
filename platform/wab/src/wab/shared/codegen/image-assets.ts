@@ -526,7 +526,9 @@ export function makeIconImports(
     const name = makeAssetClassName(asset);
     if (usedNames.has(name)) {
       let count = 2;
-      while (usedNames.has(name + count)) count++;
+      while (usedNames.has(name + count)) {
+        count++;
+      }
       aliases.set(asset, name + count);
       usedNames.add(name + count);
     } else {
@@ -589,7 +591,9 @@ export function getImageFilename(asset: ImageAsset) {
   }
   let { contentType } = parseDataUrl(asset.dataUri);
 
-  if (contentType === "image/jpg") contentType = "image/jpeg";
+  if (contentType === "image/jpg") {
+    contentType = "image/jpeg";
+  }
 
   const extension = mime.getExtension(contentType);
   return `${asset.name}.${extension}`;

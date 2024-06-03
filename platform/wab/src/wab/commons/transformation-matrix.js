@@ -38,7 +38,9 @@ function Matrix(context, element) {
   me.b = me.c = me.e = me.f = 0;
 
   // sync context
-  if (context) (me.context = context).setTransform(1, 0, 0, 1, 0, 0);
+  if (context) {
+    (me.context = context).setTransform(1, 0, 0, 1, 0, 0);
+  }
 
   // sync DOM element
   Object.defineProperty(me, "element", {
@@ -55,7 +57,9 @@ function Matrix(context, element) {
     },
   });
 
-  if (element) me.element = element;
+  if (element) {
+    me.element = element;
+  }
 }
 
 /**
@@ -155,7 +159,9 @@ Matrix.fromSVGTransformList = function (tList, context, dom) {
   let m = new Matrix(context, dom),
     i = 0;
 
-  while (i < tList.length) m.multiply(tList[i++].matrix);
+  while (i < tList.length) {
+    m.multiply(tList[i++].matrix);
+  }
 
   return m;
 };
@@ -192,25 +198,34 @@ Matrix.from = function (a, b, c, d, e, f, context, dom) {
     dist,
     q;
 
-  if (typeof a === "number") m.setTransform(a, b, c, d, e, f);
-  else if (typeof a.x === "number") {
+  if (typeof a === "number") {
+    m.setTransform(a, b, c, d, e, f);
+  } else if (typeof a.x === "number") {
     // vector
 
     q = Math.sqrt(a.x * a.x + a.y * a.y);
     scale = dist = 1;
 
-    if (d) scale = q;
-    else dist = q;
+    if (d) {
+      scale = q;
+    } else {
+      dist = q;
+    }
 
     m.translate(b || 0, c || 0)
       .rotateFromVector(a)
       .scaleU(scale)
       .translate(dist, 0);
   } else {
-    if (typeof a.is2D === "boolean" && !a.is2D)
+    if (typeof a.is2D === "boolean" && !a.is2D) {
       throw new Error("Cannot use 3D DOMMatrix.");
-    if (b) m.context = b;
-    if (c) m.element = c;
+    }
+    if (b) {
+      m.context = b;
+    }
+    if (c) {
+      m.element = c;
+    }
     m.multiply(a);
   }
 
@@ -224,8 +239,11 @@ Matrix.prototype = {
       p,
       style = document.createElement("div").style;
 
-    while ((p = lst[i++]))
-      if (typeof style[p + "ransform"] !== "undefined") return p + "ransform";
+    while ((p = lst[i++])) {
+      if (typeof style[p + "ransform"] !== "undefined") {
+        return p + "ransform";
+      }
+    }
   },
 
   /**
@@ -547,7 +565,9 @@ Matrix.prototype = {
   divideScalar: function (d) {
     const me = this;
 
-    if (!d) throw new Error("Division on zero");
+    if (!d) {
+      throw new Error("Division on zero");
+    }
 
     me.a /= d;
     me.b /= d;
@@ -577,7 +597,9 @@ Matrix.prototype = {
       ),
       dt = me.determinant();
 
-    if (dt === 0) throw new Error("Matrix not invertible.");
+    if (dt === 0) {
+      throw new Error("Matrix not invertible.");
+    }
 
     m.a = me.d / dt;
     m.b = -me.b / dt;
@@ -839,7 +861,9 @@ Matrix.prototype = {
    */
   applyToElement: function (element, use3D) {
     const me = this;
-    if (!me._px) me._px = me._getPX();
+    if (!me._px) {
+      me._px = me._getPX();
+    }
     element.style[me._px] = use3D ? me.toCSS3D() : me.toCSS();
     return me;
   },
@@ -1113,13 +1137,19 @@ Matrix.prototype = {
   _x: function () {
     const me = this;
 
-    if (me.context) me.context.setTransform(me.a, me.b, me.c, me.d, me.e, me.f);
+    if (me.context) {
+      me.context.setTransform(me.a, me.b, me.c, me.d, me.e, me.f);
+    }
 
-    if (me._st) me._st[me._px] = me.useCSS3D ? me.toCSS3D() : me.toCSS(); // can be optimized pre-storing func ref.
+    if (me._st) {
+      me._st[me._px] = me.useCSS3D ? me.toCSS3D() : me.toCSS();
+    } // can be optimized pre-storing func ref.
 
     return me;
   },
 };
 
 // Node support
-if (typeof exports !== "undefined") exports.Matrix = Matrix;
+if (typeof exports !== "undefined") {
+  exports.Matrix = Matrix;
+}

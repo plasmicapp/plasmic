@@ -497,7 +497,9 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
               (c) => c.name === meta.entryPoint.name
             );
 
-            if (!arena) return undefined;
+            if (!arena) {
+              return undefined;
+            }
 
             return {
               ...commonInfo,
@@ -509,7 +511,9 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
             (c) => c.name === meta.entryPoint.name
           );
 
-          if (!component) return undefined;
+          if (!component) {
+            return undefined;
+          }
 
           return {
             ...commonInfo,
@@ -519,9 +523,13 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
       );
     },
     factory: (sc: StudioCtx, extraInfo: CreateAddInstallableExtraInfo) => {
-      if (!extraInfo) return undefined;
+      if (!extraInfo) {
+        return undefined;
+      }
       if (meta.entryPoint.type === "arena") {
-        if (!extraInfo.arena) return undefined;
+        if (!extraInfo.arena) {
+          return undefined;
+        }
         const { arena, seenFonts } = cloneInsertableTemplateArena(
           sc.site,
           extraInfo as InsertableTemplateArenaExtraInfo,
@@ -531,7 +539,9 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
         return arena;
       }
 
-      if (!extraInfo.component) return undefined;
+      if (!extraInfo.component) {
+        return undefined;
+      }
 
       const { component, seenFonts } = cloneInsertableTemplateComponent(
         sc.site,
@@ -964,9 +974,13 @@ export function createFakeHostLessComponent(
       ctx.dep.forEach((dep) => {
         const isCodeLibrary =
           dep.site.components.length === 0 && dep.site.codeLibraries.length > 0;
-        if (!isCodeLibrary) return;
+        if (!isCodeLibrary) {
+          return;
+        }
         dep.site.codeLibraries.forEach((lib) => {
-          if (!dep.site.hostLessPackageInfo?.name) return;
+          if (!dep.site.hostLessPackageInfo?.name) {
+            return;
+          }
           notifyCodeLibraryInsertion(
             dep.site.hostLessPackageInfo.name,
             lib.jsIdentifier,

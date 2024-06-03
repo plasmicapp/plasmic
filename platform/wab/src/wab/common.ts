@@ -603,7 +603,9 @@ export function maybe<T, U>(
   x: T | undefined | null,
   f: (y: T) => U
 ): U | undefined {
-  if (x === undefined || x === null) return undefined;
+  if (x === undefined || x === null) {
+    return undefined;
+  }
   return f(x);
 }
 
@@ -619,8 +621,11 @@ export function maybeInstance<T, U>(
   f?: (y: T) => any
 ): U | undefined {
   f = f || strictIdentity;
-  if (x instanceof cls) return f(x);
-  else return undefined;
+  if (x instanceof cls) {
+    return f(x);
+  } else {
+    return undefined;
+  }
 }
 
 /**
@@ -1172,16 +1177,28 @@ export function isNonNil<T>(value: T): value is NonNullable<T> {
  * @returns Returns true for strings in ISO 8601 format
  */
 export function isValidIsoDate(str: string | undefined, extendedOnly = false) {
-  if (!str) return false;
-  if (typeof str !== "string") return false;
-  if (str.includes(" ")) return false; // spaces not supported
+  if (!str) {
+    return false;
+  }
+  if (typeof str !== "string") {
+    return false;
+  }
+  if (str.includes(" ")) {
+    return false;
+  } // spaces not supported
   if (str.length === 10) {
-    if (extendedOnly) return false;
+    if (extendedOnly) {
+      return false;
+    }
     dayjs.extend(customParseFormat);
     return dayjs(str, "YYYY-MM-DD", true).isValid();
   }
-  if (!dayjs(str).isValid()) return false; // should be a valid dayjs date
-  if (isNaN(new Date(str).getTime())) return false; // should be a valid js date
+  if (!dayjs(str).isValid()) {
+    return false;
+  } // should be a valid dayjs date
+  if (isNaN(new Date(str).getTime())) {
+    return false;
+  } // should be a valid js date
   return true;
 }
 
@@ -2275,7 +2292,9 @@ export function simpleHash(text: string) {
   let hash = 0,
     i,
     chr;
-  if (text.length === 0) return hash;
+  if (text.length === 0) {
+    return hash;
+  }
   for (i = 0; i < text.length; i++) {
     chr = text.charCodeAt(i);
     hash = (hash << 5) - hash + chr;
