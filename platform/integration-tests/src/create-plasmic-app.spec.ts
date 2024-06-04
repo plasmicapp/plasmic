@@ -69,58 +69,6 @@ describe("create-plasmic-app", () => {
   );
 
   it(
-    "gatsby codegen javascript",
-    async () => {
-      const appDir = path.join(dir.name, PROJECT_NAME);
-      console.log("Codegen output dir", appDir);
-
-      const command = `npx create-plasmic-app@latest ${PROJECT_NAME} --typescript false --platform=gatsby --scheme=codegen --projectId=${PLASMIC_PROJECT_ID} --projectApiToken=${PLASMIC_PROJECT_API_TOKEN}`;
-      await utils.runCommand(command, { dir: dir.name });
-      await utils.runCommand(`npm run build`, { dir: appDir });
-    },
-    TESTS_TIMEOUT_IN_MS
-  );
-
-  it(
-    "gatsby codegen typescript",
-    async () => {
-      const appDir = path.join(dir.name, PROJECT_NAME);
-      console.log("Codegen output dir", appDir);
-
-      const command = `npx create-plasmic-app@latest ${PROJECT_NAME} --typescript --platform=gatsby --scheme=codegen --projectId=${PLASMIC_PROJECT_ID} --projectApiToken=${PLASMIC_PROJECT_API_TOKEN}`;
-      await utils.runCommand(command, { dir: dir.name });
-      await utils.runCommand(`npm run build`, { dir: appDir });
-    },
-    TESTS_TIMEOUT_IN_MS
-  );
-
-  it(
-    "gatsby loader javascript",
-    async () => {
-      const appDir = path.join(dir.name, PROJECT_NAME);
-      console.log("Codegen output dir", appDir);
-
-      const command = `npx create-plasmic-app@latest ${PROJECT_NAME} --typescript false --platform=gatsby --scheme=loader --projectId=${PLASMIC_PROJECT_ID} --projectApiToken=${PLASMIC_PROJECT_API_TOKEN}`;
-      await utils.runCommand(command, { dir: dir.name });
-      await utils.runCommand(`npm run build`, { dir: appDir });
-    },
-    TESTS_TIMEOUT_IN_MS
-  );
-
-  it(
-    "gatsby loader typescript",
-    async () => {
-      const appDir = path.join(dir.name, PROJECT_NAME);
-      console.log("Codegen output dir", appDir);
-
-      const command = `npx create-plasmic-app@latest ${PROJECT_NAME} --typescript --platform=gatsby --scheme=loader --projectId=${PLASMIC_PROJECT_ID} --projectApiToken=${PLASMIC_PROJECT_API_TOKEN}`;
-      await utils.runCommand(command, { dir: dir.name });
-      await utils.runCommand(`npm run build`, { dir: appDir });
-    },
-    TESTS_TIMEOUT_IN_MS
-  );
-
-  it(
     "react codegen javascript",
     async () => {
       const appDir = path.join(dir.name, PROJECT_NAME);

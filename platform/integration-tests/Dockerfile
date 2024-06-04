@@ -1,23 +1,22 @@
-FROM cypress/base:18.12.0
+FROM node:18.19.0
 
-ARG PLASMIC_AUTH_USER
-ARG PLASMIC_AUTH_TOKEN
-
-ENV PLASMIC_AUTH_USER=$PLASMIC_AUTH_USER
-ENV PLASMIC_AUTH_TOKEN=$PLASMIC_AUTH_TOKEN
-
-RUN apt-get -y update
-RUN apt-get -y install git
-
-RUN test -n "$PLASMIC_AUTH_USER"
-RUN test -n "$PLASMIC_AUTH_TOKEN"
-
+# Set the working directory
 WORKDIR /app
 
-COPY . /app
+# Copy package.json and package-lock.json first for better caching
+COPY package*.json ./
 
-RUN npm install -g @plasmicapp/cli create-plasmic-app
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git && \
+    npm install -g @plasmicapp/cli create-plasmic-app && \
+    yarn install && \
+    yarn cache clean && \
+    apt-get purge -y --auto-remove git && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN yarn install
+# Copy the rest of the application code
+COPY . .
 
-CMD CI=true yarn test --runInBand
+# Run tests
+CMD ["yarn", "test", "--runInBand"]

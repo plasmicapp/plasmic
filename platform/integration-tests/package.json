@@ -4,12 +4,12 @@
   "description": "",
   "private": true,
   "scripts": {
-    "test": "jest",
-    "cy:open": "cypress open"
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@plasmicapp/react-web": "^0.2.337",
     "execa": "^5.0.0"
   },
   "devDependencies": {
@@ -18,7 +18,6 @@
     "@types/jest": "^27.0.1",
     "@types/node": "^14.14.28",
     "@types/tmp": "^0.2.0",
-    "cypress": "^6.4.0",
     "jest": "^27.2.0",
     "tmp": "^0.2.1",
     "typescript": "^4.1.5"
