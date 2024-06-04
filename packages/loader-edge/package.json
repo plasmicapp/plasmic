@@ -1,5 +1,5 @@
 {
-  "version": "1.0.65",
+  "version": "1.0.66",
   "license": "MIT",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
@@ -39,10 +39,10 @@
     }
   ],
   "dependencies": {
-    "@plasmicapp/loader-splits": "1.0.60"
+    "@plasmicapp/loader-splits": "1.0.61"
   },
   "devDependencies": {
-    "@plasmicapp/loader-fetcher": "1.0.52"
+    "@plasmicapp/loader-fetcher": "1.0.53"
   },
   "publishConfig": {
     "access": "public"
