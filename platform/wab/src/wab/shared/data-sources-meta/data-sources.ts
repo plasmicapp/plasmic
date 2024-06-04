@@ -376,12 +376,14 @@ export function exprToDataSourceString(expr: Expr, exprCtx: ExprCtx) {
         .map((t) =>
           isString(t)
             ? t
-            : `{{ ${stripParensAndMaybeConvertToIife(
-                asCode(t, exprCtx).code
-              )} }}`
+            : `{{ ${stripParensAndMaybeConvertToIife(asCode(t, exprCtx).code, {
+                addParens: true,
+              })} }}`
         )
         .join("")
-    : `{{ ${stripParensAndMaybeConvertToIife(asCode(expr, exprCtx).code)} }}`;
+    : `{{ ${stripParensAndMaybeConvertToIife(asCode(expr, exprCtx).code, {
+        addParens: true,
+      })} }}`;
 }
 
 export type FiltersLogic =

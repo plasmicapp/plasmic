@@ -1839,9 +1839,7 @@ function computeTplComponentArgs(
       })
       .when(CustomCode, (_expr) => {
         return evalCodeWithEnv(
-          isRealCodeExpr(_expr)
-            ? getCodeExpressionWithFallback(_expr, exprCtx)
-            : _expr.code,
+          getCodeExpressionWithFallback(_expr, exprCtx),
           ctx.env,
           ctx.viewCtx.canvasCtx.win()
         );
@@ -1944,7 +1942,7 @@ function computeTplComponentArgs(
       })
       .when(TemplatedString, (templatedString) =>
         evalCodeWithEnv(
-          asCode(templatedString, exprCtx).code,
+          getRawCode(templatedString, exprCtx),
           ctx.env,
           ctx.viewCtx.canvasCtx.win()
         )

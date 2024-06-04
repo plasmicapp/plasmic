@@ -530,13 +530,7 @@ const _asCode = maybeComputedFn(
             // If TemplatedString contains only a single code chip and nothing
             // else, then let TemplatedString evaluate to whatever the code chip
             // evaluates to, instead of always coercing to string
-            const codeExpr = asCode(part, exprCtx);
-            return code(
-              stripParensAndMaybeConvertToIife(codeExpr.code, {
-                addParens: true,
-              }),
-              codeExpr.fallback
-            );
+            return asCode(part, exprCtx);
           }
         } else {
           return code(

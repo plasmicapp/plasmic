@@ -17,7 +17,7 @@ describe("exprToDataSourceString", () => {
       text: [customCode(testValue)],
     });
     const result = exprToDataSourceString(templatedString, exprCtxFixture);
-    expect(result).toEqual(`{{ ${maybeConvertToIife(testValue)} }}`);
+    expect(result).toEqual(`{{ (${maybeConvertToIife(testValue)}) }}`);
   });
 
   it("works for TemplatedString with only CustomCode", () => {
@@ -26,7 +26,7 @@ describe("exprToDataSourceString", () => {
       text: [customCode(testValue)],
     });
     const result = exprToDataSourceString(templatedString, exprCtxFixture);
-    expect(result).toEqual(`{{ ${testValue} }}`);
+    expect(result).toEqual(`{{ (${testValue}) }}`);
   });
 
   it("works for TemplatedString with only text", () => {
@@ -47,7 +47,7 @@ describe("exprToDataSourceString", () => {
     });
     const result = exprToDataSourceString(templatedString, exprCtxFixture);
     expect(result).toEqual(
-      `${textValue}{{ ${codeValue} }}{{ ${maybeConvertToIife(iifeValue)} }}`
+      `${textValue}{{ (${codeValue}) }}{{ (${maybeConvertToIife(iifeValue)}) }}`
     );
   });
 
@@ -55,14 +55,14 @@ describe("exprToDataSourceString", () => {
     const testValue = "const test = a;\ntest";
     const customCodeExpr = customCode(testValue);
     const result = exprToDataSourceString(customCodeExpr, exprCtxFixture);
-    expect(result).toEqual(`{{ ${maybeConvertToIife(testValue)} }}`);
+    expect(result).toEqual(`{{ (${maybeConvertToIife(testValue)}) }}`);
   });
 
   it("works for CustomCode code", () => {
     const testValue = "$props.name";
     const customCodeExpr = customCode(testValue);
     const result = exprToDataSourceString(customCodeExpr, exprCtxFixture);
-    expect(result).toEqual(`{{ ${testValue} }}`);
+    expect(result).toEqual(`{{ (${testValue}) }}`);
   });
 
   it("works for CustomCode string", () => {
