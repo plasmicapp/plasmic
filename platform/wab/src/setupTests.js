@@ -4,8 +4,6 @@ import "whatwg-fetch";
 
 import "./initTests";
 
-jest.mock("./wab/client/cli-routes");
-
 // Set a large default global timeout
 jest.setTimeout(60000);
 

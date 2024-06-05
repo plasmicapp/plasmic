@@ -1,27 +1,40 @@
-// jest.requireActual because we have mocks for cli-routes.ts
-import type {
-  ProjectLocationParams,
-  R as RouteType,
-} from "@/wab/client/cli-routes";
-import { LocationDescriptor } from "history";
-const {
-  R: RouteActual,
+import {
   mkProjectLocation,
-  parseProjectLocation,
-} = jest.requireActual("./cli-routes");
+  parseProjectLocation as parseProjectLocationActual,
+  ProjectLocationParams,
+  R,
+} from "@/wab/client/cli-routes";
+import { Location, LocationDescriptorObject } from "history";
 
 interface AB {
   a: string;
   b: string;
 }
 
-const abRoute: RouteType<AB> = new RouteActual("/:a/:b");
+const abRoute: R<AB> = new R("/:a/:b");
 
 interface ABRepeated {
   a: string;
   b: undefined | string | string[];
 }
-const abRepeatedRoute: RouteType<ABRepeated> = new RouteActual("/:a/:b*");
+const abRepeatedRoute: R<ABRepeated> = new R("/:a/:b*");
+
+/** parseProjectLocation that makes it easier to specify a Location object. */
+function parseProjectLocation({
+  pathname = "",
+  search = "",
+  hash = "",
+  key,
+  state,
+}: Partial<Location>) {
+  return parseProjectLocationActual({
+    pathname,
+    search,
+    hash,
+    key,
+    state,
+  });
+}
 
 describe("R", () => {
   it("fails to parse", () => {
@@ -69,12 +82,7 @@ describe("R", () => {
   it("fills and parses", () => {
     function expectFillParse<
       T extends Record<keyof T, string | undefined | string[]>
-    >(
-      route: RouteType<T>,
-      params: T,
-      expectedPath: string,
-      expectedParams?: T
-    ) {
+    >(route: R<T>, params: T, expectedPath: string, expectedParams?: T) {
       // sometimes the parsed params have a different shape than the input params
       expectedParams = expectedParams || params;
 
@@ -166,7 +174,7 @@ describe("mkProjectLocation/parseProjectLocation", () => {
   it("makes and parses project locations", () => {
     function expectMkParse(
       expectedParams: ProjectLocationParams,
-      expectedLocation: LocationDescriptor
+      expectedLocation: LocationDescriptorObject
     ) {
       expect(mkProjectLocation(expectedParams)).toEqual(expectedLocation);
       expect(parseProjectLocation(expectedLocation)).toEqual(expectedParams);
