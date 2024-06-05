@@ -16,6 +16,7 @@
 .cache-loader/
 .direnv
 .env
+.eslintcache
 .idea
 .ipynb_checkpoints/
 .venv/

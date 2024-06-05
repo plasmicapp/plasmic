@@ -1,4 +1,3 @@
-fail_fast: true
 repos:
   - repo: local
     hooks:
@@ -14,25 +13,6 @@ repos:
         files: ^platform/wab/src/wab/model/model-schema.ts$
         entry: platform/wab/node_modules/.bin/ts-node -P platform/wab/tsconfig.tools.json -r tsconfig-paths/register platform/wab/tools/checkWeakRefs.ts
         language: system
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.7.1
-    hooks:
-      - id: prettier
-        name: Run prettier on code written by humans
-        files: ^.*\.(js|jsx|cjs|mjs|ts|tsx|cts|mts|json|css|scss|md|toml|xml)$
-        exclude: (^.*/(plasmic|deps|static|\.yalc)/.*$)|(^loader-tests/data/.*\.json$)|(examples/hydrogen-.*)|(api/.*\.md$)
-        entry: env NODE_OPTIONS=--max-old-space-size=4096 prettier --write --ignore-unknown
-        additional_dependencies:
-          - prettier@2.8.8
-          - prettier-plugin-organize-imports@3.2.4
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.7.1
-    hooks:
-      - id: prettier
-        name: Run prettier on Plasmic-generated files
-        files: ^.*/plasmic/.*\.(js|jsx|ts|tsx|json|css|scss|md|toml|xml)$
-        additional_dependencies:
-          - prettier@2.8.8
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
@@ -44,11 +24,26 @@ repos:
   - repo: local
     hooks:
       - id: eslint
-        name: Lint ts/tsx files with eslint
+        name: Run eslint on ts/tsx files
         files: ^platform/wab/src/.*\.(ts|tsx)$
         types: [file]
-        entry: env NODE_OPTIONS=--max-old-space-size=4096 yarn eslint --fix
+        entry: env NODE_OPTIONS=--max-old-space-size=4096 yarn eslint --cache --fix
         language: system
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.7.1
+    hooks:
+      - id: prettier
+        name: Run prettier on code written by humans
+        files: ^.*\.(js|jsx|cjs|mjs|ts|tsx|cts|mts|json|css|scss|md|toml|xml)$
+        entry: env NODE_OPTIONS=--max-old-space-size=4096 prettier --write --ignore-unknown
+        additional_dependencies:
+          - prettier@2.8.8
+          - prettier-plugin-organize-imports@3.2.4
+      - id: prettier
+        name: Run prettier, without import sorting, on Plasmic-generated files
+        files: ^.*/plasmic/.*\.(js|jsx|ts|tsx|json|css|scss|md|toml|xml)$
+        additional_dependencies:
+          - prettier@2.8.8
   # From public-packages
   #  - repo: https://github.com/pre-commit/mirrors-eslint
   #    rev: v8.44.0
@@ -64,6 +59,12 @@ repos:
   #          - "eslint-config-prettier@8.8.0"
   #          - "eslint-config-react-app@7.0.1"
   #          - "eslint-plugin-prettier@4.2.1"
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint
+        name: Lint Dockerfiles
+        args: [--failure-threshold=warning]
   - repo: local
     hooks:
       - id: check-plume-version
@@ -78,9 +79,3 @@ repos:
         files: ^platform/wab/src/wab/server/bundle-migrations/.*$
         entry: platform/wab/tools/bundle-migration-check.sh
         language: system
-  - repo: https://github.com/hadolint/hadolint
-    rev: v2.12.0
-    hooks:
-      - id: hadolint
-        name: Lint Dockerfiles
-        args: [--failure-threshold=warning]
