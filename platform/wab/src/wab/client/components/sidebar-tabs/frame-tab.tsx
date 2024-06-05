@@ -66,8 +66,8 @@ export const FramePanel = observer(function FramePanel(props: FramePanelProps) {
               value={FrameViewMode.Stretch}
               tooltip={
                 <>
-                  Content fills entire {FRAME_CAP}; useful for full-screen
-                  designs.{" "}
+                  Stretch mode, where content fills entire {FRAME_CAP}. Useful
+                  for full-screen designs.{" "}
                   {!isStretchable && (
                     <strong>
                       Will also set your root width to <code>stretch</code>!
@@ -82,8 +82,8 @@ export const FramePanel = observer(function FramePanel(props: FramePanelProps) {
               value={FrameViewMode.Centered}
               tooltip={
                 <>
-                  Content centered in {FRAME_CAP}; useful for reusable
-                  components like buttons.
+                  Centered mode, where content is centered in {FRAME_CAP}.
+                  Useful for reusable components like buttons.
                 </>
               }
             >
@@ -175,28 +175,27 @@ const FrameSizeSection = observer(function FrameSizeSection(
   const containerType = getFrameContainerType(frame);
 
   const renderLabeledDimSpinner = (prop: "width" | "height", label: string) => {
+    const isPage = isPageFrame(frame);
+    const isStretchyComponent =
+      isStretchyComponentFrame(frame) &&
+      containerType !== ContainerLayoutType.free;
     return (
       <LabeledItemRow label={label}>
         <DimTokenSpinner
           allowedUnits={["px"]}
           value={`${prop === "width" ? frame[prop] : getFrameHeight(frame)}px`}
           noClear
-          disabled={
-            (isPageFrame(frame) ||
-              (isStretchyComponentFrame(frame) &&
-                containerType !== ContainerLayoutType.free)) &&
-            prop === "height"
-          }
           onChange={(val) =>
             changeSize(prop, ensure(val, "onChange only fires for valid val"))
           }
           extraOptions={[]}
           data-test-id={`artboard-size-${prop}`}
+          disabled={prop === "height" && (isPage || isStretchyComponent)}
           tooltip={
-            isStretchyComponentFrame(frame) &&
-            prop === "height" &&
-            containerType !== ContainerLayoutType.free
-              ? `In ${frame.viewMode} view mode the height is auto-sized`
+            prop === "height" && isPage
+              ? "Height is auto-sized in pages"
+              : prop === "height" && isStretchyComponent
+              ? "Height is auto-sized in stretch mode"
               : undefined
           }
         />
@@ -244,7 +243,7 @@ const FrameSizeSection = observer(function FrameSizeSection(
                     ).find(
                       (size) =>
                         size.width === frame.width &&
-                        size.height === getFrameHeight(frame)
+                        size.height <= getFrameHeight(frame)
                     );
                     if (!curSize) {
                       return "";
