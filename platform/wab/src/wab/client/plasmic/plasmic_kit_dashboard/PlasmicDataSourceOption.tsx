@@ -146,7 +146,7 @@ function PlasmicDataSourceOption__RenderFunc(props: {
 
   return (
     <Stack__
-      as={"a"}
+      as={PlasmicLink__}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
@@ -166,6 +166,7 @@ function PlasmicDataSourceOption__RenderFunc(props: {
         { [sty.rootselected]: hasVariant($state, "selected", "selected") }
       )}
       href={args.href}
+      platform={"react"}
     >
       <div
         data-plasmic-name={"freeBox"}

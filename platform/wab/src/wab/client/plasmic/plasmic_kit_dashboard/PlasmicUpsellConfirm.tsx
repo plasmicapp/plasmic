@@ -179,7 +179,7 @@ function PlasmicUpsellConfirm__RenderFunc(props: {
             "To make future changes to your subscription, visit your organization settings page:"
           }
         </div>
-        <a
+        <PlasmicLink__
           data-plasmic-name={"teamSettingsLink"}
           data-plasmic-override={overrides.teamSettingsLink}
           className={classNames(
@@ -189,10 +189,11 @@ function PlasmicUpsellConfirm__RenderFunc(props: {
             sty.teamSettingsLink
           )}
           href={"https://www.plasmic.app/"}
+          platform={"react"}
           target={"_blank"}
         >
           {"Visit organization settings ->"}
-        </a>
+        </PlasmicLink__>
         <div className={classNames(projectcss.all, sty.freeBox___65IXe)}>
           <div
             className={classNames(

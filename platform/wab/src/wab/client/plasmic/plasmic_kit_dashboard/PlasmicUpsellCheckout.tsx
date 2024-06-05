@@ -352,7 +352,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                   {"Select a new plan to upgrade. "}
                 </React.Fragment>
                 {
-                  <a
+                  <PlasmicLink__
                     className={classNames(
                       projectcss.all,
                       projectcss.a,
@@ -373,6 +373,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       }
                     )}
                     href={"https://www.plasmic.app/pricing/"}
+                    platform={"react"}
                     target={"_blank"}
                   >
                     {hasVariant($state, "tempPickOneModal", "tempPickOneModal")
@@ -380,7 +381,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       : hasVariant($state, "onFreeTrial", "onFreeTrial")
                       ? "Learn more."
                       : "Learn more."}
-                  </a>
+                  </PlasmicLink__>
                 }
                 <React.Fragment>{""}</React.Fragment>
               </React.Fragment>
@@ -392,7 +393,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                   }
                 </React.Fragment>
                 {
-                  <a
+                  <PlasmicLink__
                     className={classNames(
                       projectcss.all,
                       projectcss.a,
@@ -413,6 +414,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       }
                     )}
                     href={"https://www.plasmic.app/pricing/"}
+                    platform={"react"}
                     target={"_blank"}
                   >
                     {hasVariant($state, "tempPickOneModal", "tempPickOneModal")
@@ -420,7 +422,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       : hasVariant($state, "onFreeTrial", "onFreeTrial")
                       ? "Learn more."
                       : "Learn more."}
-                  </a>
+                  </PlasmicLink__>
                 }
                 <React.Fragment>{""}</React.Fragment>
               </React.Fragment>
@@ -453,7 +455,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                   {"Select a new plan to upgrade. "}
                 </React.Fragment>
                 {
-                  <a
+                  <PlasmicLink__
                     className={classNames(
                       projectcss.all,
                       projectcss.a,
@@ -474,6 +476,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       }
                     )}
                     href={"https://www.plasmic.app/pricing/"}
+                    platform={"react"}
                     target={"_blank"}
                   >
                     {hasVariant($state, "tempPickOneModal", "tempPickOneModal")
@@ -481,7 +484,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       : hasVariant($state, "onFreeTrial", "onFreeTrial")
                       ? "Learn more."
                       : "Learn more."}
-                  </a>
+                  </PlasmicLink__>
                 }
                 <React.Fragment>{""}</React.Fragment>
               </React.Fragment>
@@ -493,7 +496,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                   }
                 </React.Fragment>
                 {
-                  <a
+                  <PlasmicLink__
                     className={classNames(
                       projectcss.all,
                       projectcss.a,
@@ -514,6 +517,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       }
                     )}
                     href={"https://www.plasmic.app/pricing/"}
+                    platform={"react"}
                     target={"_blank"}
                   >
                     {hasVariant($state, "tempPickOneModal", "tempPickOneModal")
@@ -521,7 +525,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       : hasVariant($state, "onFreeTrial", "onFreeTrial")
                       ? "Learn more."
                       : "Learn more."}
-                  </a>
+                  </PlasmicLink__>
                 }
                 <React.Fragment>{""}</React.Fragment>
               </React.Fragment>
@@ -529,7 +533,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
               <React.Fragment>
                 <React.Fragment>{". "}</React.Fragment>
                 {
-                  <a
+                  <PlasmicLink__
                     className={classNames(
                       projectcss.all,
                       projectcss.a,
@@ -550,6 +554,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       }
                     )}
                     href={"https://www.plasmic.app/pricing/"}
+                    platform={"react"}
                     target={"_blank"}
                   >
                     {hasVariant($state, "tempPickOneModal", "tempPickOneModal")
@@ -557,7 +562,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       : hasVariant($state, "onFreeTrial", "onFreeTrial")
                       ? "Learn more."
                       : "Learn more."}
-                  </a>
+                  </PlasmicLink__>
                 }
                 <React.Fragment>{""}</React.Fragment>
               </React.Fragment>

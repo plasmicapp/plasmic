@@ -6,10 +6,7 @@ import {
   PlasmicTeamPicker,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamPicker";
 import { ApiTeam } from "@/wab/shared/ApiSchema";
-import {
-  getNewPriceTierType,
-  getPriceTierType,
-} from "@/wab/shared/pricing/pricing-utils";
+import { getNewPriceTierType } from "@/wab/shared/pricing/pricing-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 interface TeamPickerProps extends DefaultTeamPickerProps {
@@ -55,7 +52,6 @@ function TeamPicker_(props: TeamPickerProps, ref: HTMLElementRefOf<"div">) {
         <TeamPickerItem
           key={team.id}
           name={team.name}
-          tier={getPriceTierType(team.featureTier?.name)}
           newTier={getNewPriceTierType(team.featureTier?.name)}
           onClick={() => onSelect(team)}
         />

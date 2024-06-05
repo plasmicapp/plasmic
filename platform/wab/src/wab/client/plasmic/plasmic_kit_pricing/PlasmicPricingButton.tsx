@@ -249,13 +249,14 @@ function PlasmicPricingButton__RenderFunc(props: {
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
       {(hasVariant($state, "type", "link") ? true : false) ? (
-        <a
+        <PlasmicLink__
           data-plasmic-name={"link"}
           data-plasmic-override={overrides.link}
           className={classNames(projectcss.all, projectcss.a, sty.link, {
             [sty.linktype_link]: hasVariant($state, "type", "link"),
           })}
           href={args.link}
+          platform={"react"}
         />
       ) : null}
       <Stack__

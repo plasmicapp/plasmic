@@ -154,7 +154,7 @@ function PlasmicNavTeamButton__RenderFunc(props: {
 
   return (
     <Stack__
-      as={"a"}
+      as={PlasmicLink__}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
@@ -177,6 +177,7 @@ function PlasmicNavTeamButton__RenderFunc(props: {
         }
       )}
       href={args.href}
+      platform={"react"}
     >
       <div
         className={classNames(projectcss.all, sty.freeBox__vFql, {
@@ -276,7 +277,7 @@ function PlasmicNavTeamButton__RenderFunc(props: {
               {"\u2022"}
             </div>
           ) : null}
-          <a
+          <PlasmicLink__
             data-plasmic-name={"link"}
             data-plasmic-override={overrides.link}
             className={classNames(
@@ -293,9 +294,10 @@ function PlasmicNavTeamButton__RenderFunc(props: {
                 [sty.linkselected]: hasVariant($state, "selected", "selected"),
               }
             )}
+            platform={"react"}
           >
             {"Free trial"}
-          </a>
+          </PlasmicLink__>
         </Stack__>
       </div>
     </Stack__>

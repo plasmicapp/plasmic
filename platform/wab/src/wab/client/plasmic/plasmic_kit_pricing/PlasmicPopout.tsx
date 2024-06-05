@@ -186,7 +186,7 @@ function PlasmicPopout__RenderFunc(props: {
             className={classNames("__wab_instance", sty.elevatedCard__lyFaM)}
             menuContainer2={
               <div className={classNames(projectcss.all, sty.freeBox__dkPx6)}>
-                <a
+                <PlasmicLink__
                   className={classNames(
                     projectcss.all,
                     projectcss.a,
@@ -194,10 +194,11 @@ function PlasmicPopout__RenderFunc(props: {
                     sty.link___5Xafm
                   )}
                   href={"#"}
+                  platform={"react"}
                 >
                   {"Menu item 1"}
-                </a>
-                <a
+                </PlasmicLink__>
+                <PlasmicLink__
                   className={classNames(
                     projectcss.all,
                     projectcss.a,
@@ -205,10 +206,11 @@ function PlasmicPopout__RenderFunc(props: {
                     sty.link__kzr9C
                   )}
                   href={"#"}
+                  platform={"react"}
                 >
                   {"Menu item 1"}
-                </a>
-                <a
+                </PlasmicLink__>
+                <PlasmicLink__
                   className={classNames(
                     projectcss.all,
                     projectcss.a,
@@ -216,9 +218,10 @@ function PlasmicPopout__RenderFunc(props: {
                     sty.link__ydj8H
                   )}
                   href={"#"}
+                  platform={"react"}
                 >
                   {"Menu item 1"}
-                </a>
+                </PlasmicLink__>
               </div>
             }
           />

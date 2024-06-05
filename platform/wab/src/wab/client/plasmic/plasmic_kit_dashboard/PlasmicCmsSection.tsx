@@ -326,7 +326,7 @@ function PlasmicCmsSection__RenderFunc(props: {
               ),
             })}
           >
-            <a
+            <PlasmicLink__
               data-plasmic-name={"backNav"}
               data-plasmic-override={overrides.backNav}
               className={classNames(
@@ -343,9 +343,10 @@ function PlasmicCmsSection__RenderFunc(props: {
                 }
               )}
               href={"#"}
+              platform={"react"}
             >
               {"Back"}
-            </a>
+            </PlasmicLink__>
             <EditableResourceName
               data-plasmic-name={"editableName"}
               data-plasmic-override={overrides.editableName}

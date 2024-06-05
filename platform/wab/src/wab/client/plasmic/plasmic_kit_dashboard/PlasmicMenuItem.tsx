@@ -144,7 +144,7 @@ function PlasmicMenuItem__RenderFunc(props: {
   });
 
   return (
-    <a
+    <PlasmicLink__
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
@@ -163,6 +163,7 @@ function PlasmicMenuItem__RenderFunc(props: {
         { [sty.rootselected]: hasVariant($state, "selected", "selected") }
       )}
       href={args.href}
+      platform={"react"}
     >
       <Stack__
         as={"div"}
@@ -202,7 +203,7 @@ function PlasmicMenuItem__RenderFunc(props: {
           }),
         })}
       </Stack__>
-    </a>
+    </PlasmicLink__>
   ) as React.ReactElement | null;
 }
 

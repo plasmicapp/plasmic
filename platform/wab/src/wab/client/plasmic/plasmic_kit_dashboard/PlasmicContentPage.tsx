@@ -199,7 +199,7 @@ function PlasmicContentPage__RenderFunc(props: {
                     >
                       {"Types"}
                     </div>
-                    <a
+                    <PlasmicLink__
                       data-plasmic-name={"editModelsButton"}
                       data-plasmic-override={overrides.editModelsButton}
                       className={classNames(
@@ -207,6 +207,7 @@ function PlasmicContentPage__RenderFunc(props: {
                         projectcss.a,
                         sty.editModelsButton
                       )}
+                      platform={"react"}
                       title={"Manage Content Types"}
                     >
                       <SettingsSliderssvgIcon
@@ -215,7 +216,7 @@ function PlasmicContentPage__RenderFunc(props: {
                         className={classNames(projectcss.all, sty.svg)}
                         role={"img"}
                       />
-                    </a>
+                    </PlasmicLink__>
                   </div>
                   <Stack__
                     as={"div"}

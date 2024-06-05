@@ -270,7 +270,7 @@ function PlasmicTeamBilling__RenderFunc(props: {
               >
                 {"Pick a plan that fits your workflow."}
               </div>
-              <a
+              <PlasmicLink__
                 data-plasmic-name={"learnMore"}
                 data-plasmic-override={overrides.learnMore}
                 className={classNames(
@@ -280,10 +280,11 @@ function PlasmicTeamBilling__RenderFunc(props: {
                   sty.learnMore
                 )}
                 href={"https://www.plasmic.app/pricing"}
+                platform={"react"}
                 target={"_blank"}
               >
                 {"Learn more."}
-              </a>
+              </PlasmicLink__>
             </Stack__>
           </div>
           {(hasVariant($state, "tier", "free") ? true : false) ? (

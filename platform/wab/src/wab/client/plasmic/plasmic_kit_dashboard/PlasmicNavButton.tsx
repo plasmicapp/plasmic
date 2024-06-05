@@ -239,7 +239,7 @@ function PlasmicNavButton__RenderFunc(props: {
 
   return (
     <Stack__
-      as={"a"}
+      as={PlasmicLink__}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
@@ -282,6 +282,7 @@ function PlasmicNavButton__RenderFunc(props: {
         }
       )}
       href={args.href}
+      platform={"react"}
       target={args.target}
       data-plasmic-trigger-props={[
         triggerRootFocusVisibleWithinProps,

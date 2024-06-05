@@ -43,6 +43,12 @@
   line-height: 1.5;
   min-width: 0;
 }
+.h5simplified {
+  margin-top: calc(0px + 0px) !important;
+  margin-right: 0px;
+  margin-bottom: 0px;
+  margin-left: calc(0px + 0px) !important;
+}
 .slotTargetTier {
   line-height: 1.25rem;
   letter-spacing: -1%;

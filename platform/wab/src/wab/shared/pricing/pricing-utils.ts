@@ -1,5 +1,6 @@
 import { withoutFalsy } from "@/wab/common";
 import { ApiFeatureTier, ApiTeam } from "@/wab/shared/ApiSchema";
+import { capitalizeFirst } from "@/wab/strs";
 import { maxBy } from "lodash";
 
 export const featureTiers = ["Basic", "Growth", "Enterprise"] as const;
@@ -63,6 +64,22 @@ export const getNewPriceTierType = (name?: string): NewPriceTierType => {
   } else {
     return "legacy";
   }
+};
+
+/**
+ * Given a ApiFeatureTier name, return the external name used for the users
+ * @param name
+ * @returns
+ */
+export const getExternalPriceTier = (tier: NewPriceTierType): string => {
+  const getTierString = () => {
+    if (tier === "team") {
+      return "scale";
+    }
+    return tier;
+  };
+
+  return capitalizeFirst(getTierString());
 };
 
 /**

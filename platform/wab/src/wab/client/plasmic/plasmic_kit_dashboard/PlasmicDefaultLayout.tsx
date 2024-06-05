@@ -265,7 +265,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
             ),
           })}
         >
-          <a
+          <PlasmicLink__
             data-plasmic-name={"headerLogoLink"}
             data-plasmic-override={overrides.headerLogoLink}
             className={classNames(
@@ -274,6 +274,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
               sty.headerLogoLink
             )}
             href={"/"}
+            platform={"react"}
           >
             <MarkFullColorIcon
               data-plasmic-name={"headerLogo"}
@@ -281,7 +282,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
               className={classNames(projectcss.all, sty.headerLogo)}
               role={"img"}
             />
-          </a>
+          </PlasmicLink__>
           <Stack__
             as={"div"}
             data-plasmic-name={"headerActions"}

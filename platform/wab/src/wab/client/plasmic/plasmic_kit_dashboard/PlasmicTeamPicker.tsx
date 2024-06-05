@@ -185,7 +185,7 @@ function PlasmicTeamPicker__RenderFunc(props: {
         >
           {"Upgrade account to unlock more features."}
         </div>
-        <a
+        <PlasmicLink__
           data-plasmic-name={"link"}
           data-plasmic-override={overrides.link}
           className={classNames(
@@ -195,10 +195,11 @@ function PlasmicTeamPicker__RenderFunc(props: {
             sty.link
           )}
           href={"https://www.plasmic.app/pricing"}
+          platform={"react"}
           target={"_blank"}
         >
           {"Learn more."}
-        </a>
+        </PlasmicLink__>
       </Stack__>
       <div
         className={classNames(projectcss.all, sty.freeBox__zbduW, {

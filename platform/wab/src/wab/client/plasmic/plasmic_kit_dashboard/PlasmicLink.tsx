@@ -138,7 +138,7 @@ function PlasmicLink__RenderFunc(props: {
 
   return (
     <Stack__
-      as={"a"}
+      as={PlasmicLink__}
       data-plasmic-name={"viewDocs"}
       data-plasmic-override={overrides.viewDocs}
       data-plasmic-root={true}
@@ -158,6 +158,7 @@ function PlasmicLink__RenderFunc(props: {
         { [sty.viewDocsalt]: hasVariant($state, "alt", "alt") }
       )}
       href={"#"}
+      platform={"react"}
     >
       {renderPlasmicSlot({
         defaultContents: "View docs",

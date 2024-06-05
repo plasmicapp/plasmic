@@ -330,7 +330,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                 {"Select a new plan to upgrade. "}
               </React.Fragment>
               {
-                <a
+                <PlasmicLink__
                   data-plasmic-name={"link"}
                   data-plasmic-override={overrides.link}
                   className={classNames(
@@ -341,10 +341,11 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                     sty.link
                   )}
                   href={"https://www.plasmic.app/pricing/"}
+                  platform={"react"}
                   target={"_blank"}
                 >
                   {"Learn more."}
-                </a>
+                </PlasmicLink__>
               }
               <React.Fragment>{""}</React.Fragment>
             </React.Fragment>

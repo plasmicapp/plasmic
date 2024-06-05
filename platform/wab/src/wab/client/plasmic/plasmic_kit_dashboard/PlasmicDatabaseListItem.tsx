@@ -138,7 +138,7 @@ function PlasmicDatabaseListItem__RenderFunc(props: {
 
   return (
     <Stack__
-      as={"a"}
+      as={PlasmicLink__}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
@@ -158,6 +158,7 @@ function PlasmicDatabaseListItem__RenderFunc(props: {
         { [sty.root___focusVisible]: triggers.focusVisible_root }
       )}
       href={"#"}
+      platform={"react"}
       data-plasmic-trigger-props={[
         triggerRootFocusVisibleProps,
         triggerRootHoverProps,

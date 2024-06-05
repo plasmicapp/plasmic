@@ -199,7 +199,13 @@ function PlasmicTeamSettings__RenderFunc(props: {
       <TeamMemberList
         data-plasmic-name={"memberList"}
         data-plasmic-override={overrides.memberList}
-        className={classNames("__wab_instance", sty.memberList)}
+        className={classNames("__wab_instance", sty.memberList, {
+          [sty.memberListhideNewButton]: hasVariant(
+            $state,
+            "hideNewButton",
+            "hideNewButton"
+          ),
+        })}
       >
         <TeamMemberListItem
           className={classNames(
