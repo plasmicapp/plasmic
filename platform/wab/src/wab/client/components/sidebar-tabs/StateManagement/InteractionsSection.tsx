@@ -222,7 +222,7 @@ function InteractionsSection_(props: InteractionsSectionProps) {
   );
 }
 
-const InteractionsSection = observer(React.forwardRef(InteractionsSection_));
+const InteractionsSection = observer(InteractionsSection_);
 export default InteractionsSection;
 
 const AddHandlerFunctionButton = observer(
