@@ -5,11 +5,11 @@ import {
   uploadFigmaImages,
   uploadNodeImages,
 } from "@/wab/client/figma";
+import { fakeAppCtx } from "@/wab/client/test/fake-init-ctx";
 import * as common from "@/wab/common";
 import { Bundler } from "@/wab/shared/bundler";
 import { createSite } from "@/wab/sites";
 import {
-  createAppCtx,
   createSiteOps,
   createTplMgr,
   createVariantTplMgr,
@@ -53,7 +53,7 @@ describe("Figma module", function () {
         const tplMgr = createTplMgr(site);
         const vtm = createVariantTplMgr(site, tplMgr);
         const siteOps = createSiteOps(tplMgr);
-        const appCtx = createAppCtx();
+        const { appCtx } = fakeAppCtx();
 
         const figmaData = getTestFigmaData(id);
         const uploadedImages = await uploadFigmaImages(

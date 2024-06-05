@@ -24,8 +24,7 @@ repos:
         entry: env NODE_OPTIONS=--max-old-space-size=4096 prettier --write --ignore-unknown
         additional_dependencies:
           - prettier@2.8.8
-          - prettier-plugin-organize-imports@3.2.2
-          - typescript@4.7.4
+          - prettier-plugin-organize-imports@3.2.4
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v2.7.1
     hooks:

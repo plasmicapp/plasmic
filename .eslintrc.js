@@ -14,6 +14,7 @@ const testFiles = [
   "**/*.spec.tsx",
   "**/*-spec.ts",
   "**/*-spec.tsx",
+  "**/*.stories.tsx",
   "**/*.test.ts",
   "**/*.test.tsx",
   "**/test/**/*",
@@ -250,15 +251,7 @@ module.exports = {
         "import/no-extraneous-dependencies": [
           "error",
           {
-            devDependencies: [
-              "**/*.spec.ts",
-              "**/*.spec.tsx",
-              "**/*-spec.ts",
-              "**/*-spec.tsx",
-              "**/*.stories.tsx",
-              "**/*.test.ts",
-              "**/*.test.tsx",
-            ],
+            devDependencies: testFiles,
           },
         ],
         "no-relative-import-paths/no-relative-import-paths": [
