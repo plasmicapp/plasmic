@@ -8,6 +8,9 @@ import "./initTests";
 // Set a large default global timeout
 jest.setTimeout(60000);
 
+// Use mocks for code that doesn't work in JSDOM
+jest.mock("@/wab/client/image/metadata");
+
 DEVFLAGS.hostUrl = "http://localhost";
 
 // Web shims for APIs missing in JSDOM

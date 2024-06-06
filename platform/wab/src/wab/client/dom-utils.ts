@@ -1,17 +1,18 @@
 import { ImageBackground, mkBackgroundLayer } from "@/wab/bg-styles";
 import { AppCtx } from "@/wab/client/app-ctx";
+import { getImageSize } from "@/wab/client/image/metadata";
 import { ensure, ensureHTMLElt, ensureString } from "@/wab/common";
 import { Rect } from "@/wab/geom";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import {
+  SVG_MEDIA_TYPE as SVG_CONTENT_TYPE,
+  SVG_MEDIA_TYPE,
   asSvgDataUrl,
   getParsedDataUrlBuffer,
   getParsedDataUrlData,
   imageDataUriToBlob,
   parseDataUrl,
   parseSvgXml,
-  SVG_MEDIA_TYPE as SVG_CONTENT_TYPE,
-  SVG_MEDIA_TYPE,
 } from "@/wab/shared/data-urls";
 import {
   clearExplicitColors,
@@ -20,7 +21,6 @@ import {
   isSVG,
 } from "@/wab/shared/svg-utils";
 import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/tpls";
-import imageSize from "@coderosh/image-size";
 import { notification } from "antd";
 import * as downscale from "downscale";
 import { fileTypeFromBlob } from "file-type-browser";
@@ -151,7 +151,7 @@ export class ResizableImage {
     const sizeBeforeDownscale = this.url.length;
     try {
       this.url = await downscale(this.url, targetWidth, targetHeight);
-      const size = await imageSize(
+      const size = await getImageSize(
         getParsedDataUrlBuffer(parseDataUrl(this.url))
       );
       console.log(
@@ -214,7 +214,7 @@ export async function readAndSanitizeFileAsImage(
     );
   }
 
-  const size = await imageSize(getParsedDataUrlBuffer(parsed));
+  const size = await getImageSize(getParsedDataUrlBuffer(parsed));
   const img = new ResizableImage(dataUrl, size.width, size.height, undefined);
   return Promise.resolve(img);
 }
@@ -318,7 +318,7 @@ export async function parseImage(
   for (let i = 0; i < binary.length; i++) {
     bytes[i] = binary.charCodeAt(i);
   }
-  const meta = await imageSize(bytes.buffer);
+  const meta = await getImageSize(bytes);
   const fileType = ensure(
     await getFileType(bytes.buffer),
     "Unexpected undefined file type"

@@ -3,6 +3,7 @@ import { ensureArray, ensureString, ensureType } from "@/wab/common";
 import { uploadDataUriToS3 } from "@/wab/server/cdn/images";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { CmsDatabase } from "@/wab/server/entities/Entities";
+import { getImageSize } from "@/wab/server/image/metadata";
 import { userAnalytics, userDbMgr } from "@/wab/server/routes/util";
 import { mkApiWorkspace } from "@/wab/server/routes/workspaces";
 import { triggerWebhookOnly } from "@/wab/server/trigger-webhooks";
@@ -21,7 +22,6 @@ import {
   TeamId,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
-import imageSize from "@coderosh/image-size";
 import { UploadedFile } from "express-fileupload";
 import { Request, Response } from "express-serve-static-core";
 import { flatten, mapValues, pick } from "lodash";
@@ -345,7 +345,7 @@ async function upload(file: UploadedFile): Promise<CmsUploadedFile> {
   }
 
   const size = file.mimetype.startsWith("image/")
-    ? await imageSize(file.data)
+    ? await getImageSize(file.data)
     : undefined;
   const imageMeta =
     size?.width && size?.height

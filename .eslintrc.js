@@ -18,6 +18,7 @@ const testFiles = [
   "**/*.test.ts",
   "**/*.test.tsx",
   "**/test/**/*",
+  "**/__mocks__/**/*",
 ];
 
 module.exports = {

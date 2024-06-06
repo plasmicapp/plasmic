@@ -222,7 +222,6 @@
     "@babel/traverse": "^7.23.2",
     "@babel/types": "^7.23.0",
     "@clickhouse/client": "^0.2.1",
-    "@coderosh/image-size": "^2.0.1",
     "@dqbd/tiktoken": "^1.0.6",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
