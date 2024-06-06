@@ -488,10 +488,12 @@ const TplSlotMessage = observer(function TplSlotMessage(props: {
           showIcon={true}
           message={
             <div>
-              This is a slot target; instances of{" "}
+              This is a slot target - instances of{" "}
               <code>{getComponentDisplayName(component)}</code> can customize
               the content of this slot target. You can provide default text
-              styles to control how text and icons look in this slot.
+              styles to control how text and icons look in this slot. You cannot
+              reference dynamic values specific to this component, since the
+              owner of the slot content is the instance parent.
             </div>
           }
         />

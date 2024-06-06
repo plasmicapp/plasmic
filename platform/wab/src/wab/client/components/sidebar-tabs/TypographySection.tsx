@@ -101,6 +101,7 @@ function TypographySection_(props: {
             <Alert
               type="info"
               showIcon={true}
+              className="mb-sm"
               message={
                 <div>
                   This is default content for slot{" "}

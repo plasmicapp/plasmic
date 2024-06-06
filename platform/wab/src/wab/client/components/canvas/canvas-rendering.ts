@@ -3011,11 +3011,19 @@ function renderTplSlot(
     ctx.env.$props[varName] === undefined
   ) {
     // Render default contents if we are forced to do so, or if there's nothing
-    // passed in for the corresponding arg
+    // passed in for the corresponding arg.
+    // When the default contents, clear out component specific values to avoid
+    // user confusion.
     if (node.defaultContents.length > 0) {
       contents = node.defaultContents.flatMap((child) =>
         renderTplNode(child, {
           ...ctx,
+          env: {
+            ...ctx.env,
+            $props: {},
+            $queries: {},
+            $state: {},
+          },
           valKey: ctx.valKey + "." + child.uuid,
         })
       );

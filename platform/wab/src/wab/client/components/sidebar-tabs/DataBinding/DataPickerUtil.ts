@@ -2,6 +2,7 @@ import {
   Component,
   isKnownNamedState,
   State,
+  TplNode,
   VariantGroup,
 } from "@/wab/classes";
 import { ControlExtras } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
@@ -25,6 +26,7 @@ import {
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
+import { getAncestorTplSlot } from "@/wab/shared/SlotUtils";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { findStateIn$State } from "@/wab/states";
 import { isTplComponent } from "@/wab/tpls";
@@ -281,35 +283,37 @@ export function getExpectedValuesForVariantGroup(group: VariantGroup) {
 export function prepareEnvForDataPicker(
   viewCtx: ViewCtx | undefined,
   data?: Record<string, any>,
-  component?: Component
+  component?: Component,
+  tpl?: TplNode | null
 ) {
   if (!data || !component) {
     return data;
   }
   const fixedData = { ...data };
-  if ("$props" in fixedData) {
-    const realParams = getRealParams(component);
-    realParams.forEach((param) => {
-      const name = toVarName(param.variable.name);
-      if (!(name in data["$props"])) {
-        data["$props"][name] = undefined;
-      }
-    });
-  }
-  if ("$state" in fixedData && viewCtx) {
-    fixedData.$state = { ...fixedData.$state };
-    for (const state of component.states) {
-      if (state.tplNode) {
-        const { hidden, advanced } = getContextDependentValuesForImplicitState(
-          viewCtx,
-          state
-        );
-        if (advanced || hidden) {
-          for (const { obj, key } of findStateIn$State(
-            state,
-            fixedData.$state
-          )) {
-            obj[mkMetaName(key)] = { advanced, hidden };
+  const isFocusedTplInTplSlot = tpl ? getAncestorTplSlot(tpl, true) : false;
+  if (!isFocusedTplInTplSlot) {
+    if ("$props" in fixedData) {
+      const realParams = getRealParams(component);
+      realParams.forEach((param) => {
+        const name = toVarName(param.variable.name);
+        if (!(name in data["$props"])) {
+          data["$props"][name] = undefined;
+        }
+      });
+    }
+    if ("$state" in fixedData && viewCtx) {
+      fixedData.$state = { ...fixedData.$state };
+      for (const state of component.states) {
+        if (state.tplNode) {
+          const { hidden, advanced } =
+            getContextDependentValuesForImplicitState(viewCtx, state);
+          if (advanced || hidden) {
+            for (const { obj, key } of findStateIn$State(
+              state,
+              fixedData.$state
+            )) {
+              obj[mkMetaName(key)] = { advanced, hidden };
+            }
           }
         }
       }
