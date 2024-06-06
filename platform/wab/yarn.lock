@@ -4704,10 +4704,10 @@
     react-hook-form "^7.28.0"
     swr "^1.2.2"
 
-"@plasmicpkgs/plasmic-basic-components@^0.0.215":
-  version "0.0.215"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-basic-components/-/plasmic-basic-components-0.0.215.tgz#e8ade2b7b1fc56f0da394caaee206e39dda35c32"
-  integrity sha512-OyJJZHmPQQku5KV2Jq1y72v8yvPchZYkmik0Z5W0abvSDrqusBq7vZsX1jgCIzvUJyIvp9kEIkWK+F6ba5oYzw==
+"@plasmicpkgs/plasmic-basic-components@^0.0.216":
+  version "0.0.216"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-basic-components/-/plasmic-basic-components-0.0.216.tgz#f160039bffcb6f52810cf656ce29c7439f2c1273"
+  integrity sha512-4odMfuN65I9EEHLKKjYWtH918Zn/7qUp5Pthv3il/JNkz0WsP4bq7ziBOCAe432G1gKl3iwIteviFzgX+cW5Bw==
 
 "@plasmicpkgs/plasmic-embed-css@^0.1.181":
   version "0.1.181"

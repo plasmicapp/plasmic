@@ -3379,10 +3379,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/luxon-parser/-/luxon-parser-3.4.4.tgz#32150fc2c7bbad1e9e0242c897518680c6dc5fed"
   integrity sha512-VN/nwVehURL1TeHt7WlxuYXD7v9f87MG58YLrZeBQOcGDA9ck/gZNz7m1S1MeJ67gpnbpyJ3uFUPt+t1KnMQxw==
 
-"@plasmicpkgs/plasmic-basic-components@^0.0.215":
-  version "0.0.215"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-basic-components/-/plasmic-basic-components-0.0.215.tgz#e8ade2b7b1fc56f0da394caaee206e39dda35c32"
-  integrity sha512-OyJJZHmPQQku5KV2Jq1y72v8yvPchZYkmik0Z5W0abvSDrqusBq7vZsX1jgCIzvUJyIvp9kEIkWK+F6ba5oYzw==
+"@plasmicpkgs/plasmic-basic-components@^0.0.216":
+  version "0.0.216"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-basic-components/-/plasmic-basic-components-0.0.216.tgz#f160039bffcb6f52810cf656ce29c7439f2c1273"
+  integrity sha512-4odMfuN65I9EEHLKKjYWtH918Zn/7qUp5Pthv3il/JNkz0WsP4bq7ziBOCAe432G1gKl3iwIteviFzgX+cW5Bw==
 
 "@plasmicpkgs/plasmic-chakra-ui@^0.0.26":
   version "0.0.26"
