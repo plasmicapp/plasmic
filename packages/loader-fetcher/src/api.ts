@@ -142,12 +142,12 @@ export const isBrowser =
   window != null &&
   typeof window.document !== "undefined";
 
-function transformApiLoaderBundleOutput(
+export function transformApiLoaderBundleOutput(
   bundle: ApiLoaderBundleOutput
 ): LoaderBundleOutput {
   return {
     ...bundle,
-    filteredIds: {},
+    filteredIds: Object.fromEntries(bundle.projects.map((p) => [p.id, []])),
   };
 }
 

@@ -113,28 +113,31 @@ export function mergeBundles(
     if (!existingProjects.has(c.projectId)) {
       return true;
     }
-    if (!target.filteredIds[c.projectId]) {
-      return true;
-    }
     // If the component is present in the filteredIds of the project it belongs to,
     // in the target bundle, we consider that the component was not deleted in the target
     // bundle, so we can include it
-    return target.filteredIds[c.projectId].includes(c.id);
+    const targetBundleFilteredIds = target.filteredIds[c.projectId] ?? [];
+    return targetBundleFilteredIds.includes(c.id);
   }
 
   const newCompMetas = from.components.filter((m) =>
     shouldIncludeComponentInBundle(m)
   );
   if (newCompMetas.length > 0) {
-    target = { ...target, components: [...target.components, ...newCompMetas] };
+    target = {
+      ...target,
+      components: [...target.components, ...newCompMetas],
+    };
 
-    Object.entries(from.filteredIds).forEach(([projectId, ids]) => {
-      if (!target.filteredIds[projectId]) {
-        target.filteredIds[projectId] = [...ids];
+    from.projects.forEach((fromProject) => {
+      const projectId = fromProject.id;
+      const fromBundleFilteredIds = from.filteredIds[projectId] ?? [];
+      if (!existingProjects.has(projectId)) {
+        target.filteredIds[projectId] = [...fromBundleFilteredIds];
       } else {
         target.filteredIds[projectId] = intersect(
-          target.filteredIds[projectId],
-          ids
+          target.filteredIds[projectId] ?? [],
+          fromBundleFilteredIds
         );
       }
     });

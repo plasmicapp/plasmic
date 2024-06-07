@@ -147,6 +147,50 @@ describe("mergeBundles", () => {
     );
   });
 
+  it("should properly merge bundles that haven't been filtered", () => {
+    const mergedBundle = mergeBundles(
+      genBundle(
+        "target",
+        [genProjectMeta("p1"), genProjectMeta("p2")],
+        [genComponentMeta("p1c1", "p1"), genComponentMeta("p2c1", "p2")],
+        { browser: [], server: [] },
+        {},
+        []
+      ),
+      genBundle(
+        "from",
+        [genProjectMeta("p1"), genProjectMeta("p3")],
+        [
+          genComponentMeta("p1c1", "p1"),
+          genComponentMeta("p1c2", "p1"), // This component was deleted
+          genComponentMeta("p3c1", "p3"),
+        ],
+        { browser: [], server: [] },
+        {},
+        []
+      )
+    );
+
+    expect(mergedBundle).toMatchObject(
+      genBundle(
+        "target",
+        [genProjectMeta("p1"), genProjectMeta("p2"), genProjectMeta("p3")],
+        [
+          genComponentMeta("p1c1", "p1"),
+          genComponentMeta("p2c1", "p2"),
+          genComponentMeta("p3c1", "p3"),
+        ],
+        { browser: [], server: [] },
+        {},
+        []
+      )
+    );
+
+    expect(mergedBundle.filteredIds["p1"] ?? []).toMatchObject([]);
+    expect(mergedBundle.filteredIds["p2"] ?? []).toMatchObject([]);
+    expect(mergedBundle.filteredIds["p3"] ?? []).toMatchObject([]);
+  });
+
   it("should properly merge active splits", () => {
     expect(
       mergeBundles(
