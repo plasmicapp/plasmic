@@ -2105,7 +2105,9 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
         : ""
     }
 
-    const currentUser = useCurrentUser?.() || {};
+    ${
+      ctx.appAuthProvider ? `const currentUser = useCurrentUser?.() || {};` : ""
+    }
 
     ${
       ctx.usesComponentLevelQueries
@@ -3836,7 +3838,7 @@ function shouldWrapWithPageGuard(
     return false;
   }
   const roleId = component.pageMeta?.roleId;
-  return !!roleId || ctx.forceAllCsr;
+  return !!roleId;
 }
 
 function serializeWithPlasmicPageGuard(
