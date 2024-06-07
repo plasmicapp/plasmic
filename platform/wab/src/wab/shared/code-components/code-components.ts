@@ -9,7 +9,6 @@ import {
   ArgType,
   BoolType,
   Choice,
-  ClassNamePropType as ModelClassNamePropType,
   CodeComponentHelper,
   CodeComponentInteractionVariantMeta,
   CodeComponentMeta,
@@ -38,6 +37,8 @@ import {
   isKnownStateParam,
   isKnownStyleExpr,
   isKnownVirtualRenderExpr,
+  ClassNamePropType as ModelClassNamePropType,
+  StyleScopeClassNamePropType as ModelStyleScopeClassNamePropType,
   NamedState,
   Num,
   Param,
@@ -46,7 +47,6 @@ import {
   SelectorRuleSet,
   Site,
   State,
-  StyleScopeClassNamePropType as ModelStyleScopeClassNamePropType,
   StyleToken,
   TargetType,
   Text,
@@ -1234,7 +1234,7 @@ function refreshCodeComponentMeta(
       }
       c.codeComponentMeta.hasRef = !!(meta as any).refActions;
 
-      if (hackyCast(meta).interactionVariant) {
+      if (meta.interactionVariants) {
         const interactionVariants =
           mkCodeComponentInteractionVariantsFromMeta(meta);
         if (
@@ -3247,17 +3247,7 @@ export function mkCodeComponent(
       // explicitly not handling defaultSlotContents, which is done by
       // refreshDefaultSlotContents()
       defaultSlotContents: {},
-      interactionVariantMeta: Object.fromEntries(
-        Object.entries((meta as any).interactionVariant ?? {}).map(
-          ([selector, variantMeta]: any) => [
-            selector,
-            new CodeComponentInteractionVariantMeta({
-              cssSelector: variantMeta.cssSelector,
-              displayName: variantMeta.displayName,
-            }),
-          ]
-        )
-      ),
+      interactionVariantMeta: mkCodeComponentInteractionVariantsFromMeta(meta),
     }),
     figmaMappings: (isGlobalContextMeta(meta)
       ? []
@@ -3603,13 +3593,13 @@ export function mkCodeComponentHelperFromMeta(
 export function mkCodeComponentInteractionVariantsFromMeta(
   meta: ComponentMeta<any> | GlobalContextMeta<any>
 ) {
-  if (!hackyCast(meta).interactionVariant) {
+  if (!("interactionVariants" in meta) || !meta.interactionVariants) {
     return {};
   }
 
   return Object.fromEntries(
-    Object.entries(hackyCast(meta).interactionVariant ?? {}).map(
-      ([selector, { cssSelector, displayName }]: any) => [
+    Object.entries(meta.interactionVariants).map(
+      ([selector, { cssSelector, displayName }]) => [
         selector,
         new CodeComponentInteractionVariantMeta({ cssSelector, displayName }),
       ]
