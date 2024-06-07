@@ -64,257 +64,263 @@ function _TopBar({ preview }: TopBarProps) {
 
   const uiConfig = studioCtx.getCurrentUiConfig();
 
-  const menu = () => {
-    const builder = new MenuBuilder();
-    builder.genSection(undefined, (push) => {
-      builder.genSection(undefined, (push2) => {
-        if (
-          studioCtx.canEditProject() &&
-          canEditProjectConfig(uiConfig, "rename")
-        ) {
-          push2(
-            <Menu.Item
-              key="rename"
-              onClick={() => topFrameApi.setShowProjectNameModal(true)}
-            >
-              Rename project
-            </Menu.Item>
-          );
-        }
+  const menu = canEditProjectConfig(uiConfig)
+    ? () => {
+        const builder = new MenuBuilder();
+        builder.genSection(undefined, (push) => {
+          builder.genSection(undefined, (push2) => {
+            if (
+              studioCtx.canEditProject() &&
+              canEditProjectConfig(uiConfig, "rename")
+            ) {
+              push2(
+                <Menu.Item
+                  key="rename"
+                  onClick={() => topFrameApi.setShowProjectNameModal(true)}
+                >
+                  Rename project
+                </Menu.Item>
+              );
+            }
 
-        if (!isWhiteLabelUser) {
-          push2(
-            <Menu.Item
-              key="duplicate"
-              onClick={() => topFrameApi.setShowCloneProjectModal(true)}
-            >
-              Duplicate project
-            </Menu.Item>
-          );
-        }
-      });
+            if (!isWhiteLabelUser) {
+              push2(
+                <Menu.Item
+                  key="duplicate"
+                  onClick={() => topFrameApi.setShowCloneProjectModal(true)}
+                >
+                  Duplicate project
+                </Menu.Item>
+              );
+            }
+          });
 
-      if (studioCtx.canEditProject() && !studioCtx.contentEditorMode) {
-        builder.genSection("Configuration", (push2) => {
-          push2(
-            <Menu.Item
-              key="configure"
-              data-test-id="configure-project"
-              onClick={() => {
-                spawn(topFrameApi.setShowHostModal(true));
-              }}
-            >
-              Configure custom app host
-            </Menu.Item>
-          );
+          if (studioCtx.canEditProject() && !studioCtx.contentEditorMode) {
+            builder.genSection("Configuration", (push2) => {
+              push2(
+                <Menu.Item
+                  key="configure"
+                  data-test-id="configure-project"
+                  onClick={() => {
+                    spawn(topFrameApi.setShowHostModal(true));
+                  }}
+                >
+                  Configure custom app host
+                </Menu.Item>
+              );
 
-          if (appCtx.appConfig.appAuth && !isWhiteLabelUser) {
-            push2(
-              <Menu.Item
-                key="app-auth"
-                onClick={() => {
-                  spawn(topFrameApi.setShowAppAuthModal(true));
-                }}
-              >
-                Configure app authentication
-              </Menu.Item>
+              if (appCtx.appConfig.appAuth && !isWhiteLabelUser) {
+                push2(
+                  <Menu.Item
+                    key="app-auth"
+                    onClick={() => {
+                      spawn(topFrameApi.setShowAppAuthModal(true));
+                    }}
+                  >
+                    Configure app authentication
+                  </Menu.Item>
+                );
+              }
+
+              if (canEditProjectConfig(uiConfig, "localization")) {
+                push2(
+                  <Menu.Item
+                    key="localization"
+                    onClick={() => {
+                      spawn(topFrameApi.setShowLocalizationModal(true));
+                    }}
+                  >
+                    {studioCtx.site.flags.usePlasmicTranslation
+                      ? "Disable"
+                      : "Enable"}{" "}
+                    localization framework integration
+                  </Menu.Item>
+                );
+              }
+
+              if (
+                appCtx.appConfig.secretApiTokenTeams?.includes(
+                  studioCtx.siteInfo.teamId ?? ""
+                )
+              ) {
+                push2(
+                  <Menu.Item
+                    key="secret"
+                    onClick={() => {
+                      spawn(topFrameApi.showRegenerateSecretTokenModal());
+                    }}
+                  >
+                    Regenerate secret project API token
+                  </Menu.Item>
+                );
+              }
+
+              if (canEditUiConfig) {
+                push2(
+                  <Menu.Item
+                    key="ui-config"
+                    onClick={() => {
+                      spawn(topFrameApi.setShowUiConfigModal(true));
+                    }}
+                  >
+                    Configure Studio UI for project
+                  </Menu.Item>
+                );
+              }
+            });
+
+            const isPlasmicAdmin = isCoreTeamEmail(
+              appCtx.selfInfo?.email,
+              appCtx.appConfig
             );
-          }
+            if (isPlasmicAdmin || appCtx.appConfig.debug) {
+              builder.genSection("Debug", (push2) => {
+                builder.genSub("Optimization", (push3) => {
+                  push3(
+                    <Menu.Item
+                      key="cleanup"
+                      onClick={() => {
+                        spawn(
+                          studioCtx.change(({ success }) => {
+                            studioCtx.tplMgr().cleanRedundantOverrides();
+                            return success();
+                          })
+                        );
+                        notification.info({
+                          message: `Redundant overrides have been cleaned. You can run this again every time you want to clean them.`,
+                        });
+                      }}
+                    >
+                      Remove redundant overrides
+                    </Menu.Item>
+                  );
+                  push3(
+                    <Menu.Item
+                      key="prune-images"
+                      onClick={async () => {
+                        spawn(
+                          studioCtx.change(({ success }) => {
+                            const pruned = pruneUnusedImageAssets(
+                              studioCtx.site
+                            );
+                            notification.success({
+                              message: `Pruned ${pruned.size} assets`,
+                            });
+                            return success();
+                          })
+                        );
+                      }}
+                    >
+                      Remove unused image assets
+                    </Menu.Item>
+                  );
+                  push3(
+                    <Menu.Item
+                      key="cleanup-invisible"
+                      onClick={async () => {
+                        spawn(
+                          studioCtx.change(({ success }) => {
+                            const result = studioCtx
+                              .tplMgr()
+                              .lintElementVisibilities({
+                                performUpdates: true,
+                              });
 
-          if (canEditProjectConfig(uiConfig, "localization")) {
-            push2(
-              <Menu.Item
-                key="localization"
-                onClick={() => {
-                  spawn(topFrameApi.setShowLocalizationModal(true));
-                }}
-              >
-                {studioCtx.site.flags.usePlasmicTranslation
-                  ? "Disable"
-                  : "Enable"}{" "}
-                localization framework integration
-              </Menu.Item>
-            );
-          }
+                            console.log(result);
 
-          if (
-            appCtx.appConfig.secretApiTokenTeams?.includes(
-              studioCtx.siteInfo.teamId ?? ""
-            )
-          ) {
-            push2(
-              <Menu.Item
-                key="secret"
-                onClick={() => {
-                  spawn(topFrameApi.showRegenerateSecretTokenModal());
-                }}
-              >
-                Regenerate secret project API token
-              </Menu.Item>
-            );
-          }
+                            notification.success({
+                              message: `Fixed ${Object.keys(
+                                result.total
+                              )} invisible elements in ${
+                                Object.keys(result.changesByComponent).length
+                              }`,
+                            });
+                            return success();
+                          })
+                        );
+                      }}
+                    >
+                      Lint and fix invisible elements
+                    </Menu.Item>
+                  );
+                });
+                if (isPlasmicAdmin) {
+                  push2(
+                    <Menu.Item
+                      key="admin-mode"
+                      onClick={() => {
+                        spawn(
+                          topFrameApi.toggleAdminMode(
+                            !appCtx.selfInfo?.adminModeDisabled
+                          )
+                        );
+                      }}
+                    >
+                      <strong>
+                        {appCtx.selfInfo!.adminModeDisabled
+                          ? "Enable"
+                          : "Disable"}
+                      </strong>{" "}
+                      admin mode
+                    </Menu.Item>
+                  );
 
-          if (canEditUiConfig) {
-            push2(
-              <Menu.Item
-                key="ui-config"
-                onClick={() => {
-                  spawn(topFrameApi.setShowUiConfigModal(true));
-                }}
-              >
-                Configure Studio UI for project
-              </Menu.Item>
-            );
+                  push2(
+                    <Menu.SubMenu
+                      title={
+                        <span>
+                          <strong>Start</strong> onboarding tour
+                        </span>
+                      }
+                    >
+                      {STUDIO_ONBOARDING_TUTORIALS_LIST.map((tour) => {
+                        return (
+                          <Menu.Item
+                            key={tour}
+                            onClick={() => {
+                              studioCtx.setOnboardingTourState({
+                                run: true,
+                                stepIndex: 0,
+                                tour,
+                                flags: {},
+                                results: {},
+                                triggers: [],
+                              });
+                            }}
+                          >
+                            {tour} - {STUDIO_ONBOARDING_TUTORIALS[tour].length}{" "}
+                            steps
+                          </Menu.Item>
+                        );
+                      })}
+                    </Menu.SubMenu>
+                  );
+
+                  builder.genSub("Site-splitting utils", (push3) => {
+                    push3(
+                      <Menu.Item
+                        key="fix-page-hrefs-to-local"
+                        onClick={async () =>
+                          studioCtx.changeUnsafe(() => {
+                            fixPageHrefsToLocal(studioCtx.site);
+                          })
+                        }
+                      >
+                        Convert page hrefs to local pages
+                      </Menu.Item>
+                    );
+                  });
+                }
+              });
+            }
           }
         });
 
-        const isPlasmicAdmin = isCoreTeamEmail(
-          appCtx.selfInfo?.email,
-          appCtx.appConfig
-        );
-        if (isPlasmicAdmin || appCtx.appConfig.debug) {
-          builder.genSection("Debug", (push2) => {
-            builder.genSub("Optimization", (push3) => {
-              push3(
-                <Menu.Item
-                  key="cleanup"
-                  onClick={() => {
-                    spawn(
-                      studioCtx.change(({ success }) => {
-                        studioCtx.tplMgr().cleanRedundantOverrides();
-                        return success();
-                      })
-                    );
-                    notification.info({
-                      message: `Redundant overrides have been cleaned. You can run this again every time you want to clean them.`,
-                    });
-                  }}
-                >
-                  Remove redundant overrides
-                </Menu.Item>
-              );
-              push3(
-                <Menu.Item
-                  key="prune-images"
-                  onClick={async () => {
-                    spawn(
-                      studioCtx.change(({ success }) => {
-                        const pruned = pruneUnusedImageAssets(studioCtx.site);
-                        notification.success({
-                          message: `Pruned ${pruned.size} assets`,
-                        });
-                        return success();
-                      })
-                    );
-                  }}
-                >
-                  Remove unused image assets
-                </Menu.Item>
-              );
-              push3(
-                <Menu.Item
-                  key="cleanup-invisible"
-                  onClick={async () => {
-                    spawn(
-                      studioCtx.change(({ success }) => {
-                        const result = studioCtx
-                          .tplMgr()
-                          .lintElementVisibilities({
-                            performUpdates: true,
-                          });
-
-                        console.log(result);
-
-                        notification.success({
-                          message: `Fixed ${Object.keys(
-                            result.total
-                          )} invisible elements in ${
-                            Object.keys(result.changesByComponent).length
-                          }`,
-                        });
-                        return success();
-                      })
-                    );
-                  }}
-                >
-                  Lint and fix invisible elements
-                </Menu.Item>
-              );
-            });
-            if (isPlasmicAdmin) {
-              push2(
-                <Menu.Item
-                  key="admin-mode"
-                  onClick={() => {
-                    spawn(
-                      topFrameApi.toggleAdminMode(
-                        !appCtx.selfInfo?.adminModeDisabled
-                      )
-                    );
-                  }}
-                >
-                  <strong>
-                    {appCtx.selfInfo!.adminModeDisabled ? "Enable" : "Disable"}
-                  </strong>{" "}
-                  admin mode
-                </Menu.Item>
-              );
-
-              push2(
-                <Menu.SubMenu
-                  title={
-                    <span>
-                      <strong>Start</strong> onboarding tour
-                    </span>
-                  }
-                >
-                  {STUDIO_ONBOARDING_TUTORIALS_LIST.map((tour) => {
-                    return (
-                      <Menu.Item
-                        key={tour}
-                        onClick={() => {
-                          studioCtx.setOnboardingTourState({
-                            run: true,
-                            stepIndex: 0,
-                            tour,
-                            flags: {},
-                            results: {},
-                            triggers: [],
-                          });
-                        }}
-                      >
-                        {tour} - {STUDIO_ONBOARDING_TUTORIALS[tour].length}{" "}
-                        steps
-                      </Menu.Item>
-                    );
-                  })}
-                </Menu.SubMenu>
-              );
-
-              builder.genSub("Site-splitting utils", (push3) => {
-                push3(
-                  <Menu.Item
-                    key="fix-page-hrefs-to-local"
-                    onClick={async () =>
-                      studioCtx.changeUnsafe(() => {
-                        fixPageHrefsToLocal(studioCtx.site);
-                      })
-                    }
-                  >
-                    Convert page hrefs to local pages
-                  </Menu.Item>
-                );
-              });
-            }
-          });
-        }
+        return builder.build({
+          menuName: "project-menu",
+        });
       }
-    });
-
-    return builder.build({
-      menuName: "project-menu",
-    });
-  };
+    : undefined;
 
   const contextMenuProps = useContextMenu({ menu });
 
@@ -363,7 +369,7 @@ function _TopBar({ preview }: TopBarProps) {
         }}
         projectTitle={{
           onClick: () => {
-            if (studioCtx.canEditProject()) {
+            if (studioCtx.canEditProject() && canEditProjectConfig(uiConfig)) {
               spawn(topFrameApi.setShowProjectNameModal(true));
             }
           },
@@ -371,7 +377,10 @@ function _TopBar({ preview }: TopBarProps) {
         }}
         projectMenu={{
           props: { ...contextMenuProps, "data-test-id": "project-menu-btn" },
-          wrap: (n) => (studioCtx.canEditProject() ? n : null),
+          wrap: (n) =>
+            studioCtx.canEditProject() && canEditProjectConfig(uiConfig)
+              ? n
+              : null,
         }}
         saveIndicator={{
           wrap: (n) => (studioCtx.canEditProject() ? n : null),

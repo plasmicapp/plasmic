@@ -9,11 +9,11 @@ import { PublicStyleSection, TemplateSpec } from "@/wab/shared/ApiSchema";
 import {
   BASIC_ALIASES,
   COMPONENT_ALIASES,
-  LeftTabUiKey,
   LEFT_TAB_UI_KEYS,
-  makeNiceAliasName,
+  LeftTabUiKey,
   PROJECT_CONFIGS,
   UiConfig,
+  makeNiceAliasName,
 } from "@/wab/shared/ui-config-utils";
 import { capitalizeFirst } from "@/wab/strs";
 import { Alert, Form, Input } from "antd";
@@ -118,14 +118,12 @@ export function ContentEditorConfigModal(props: {
 
           <h3 className="mv-xlg">Project Configs</h3>
           <Form.Item name={["projectConfigs"]} noStyle>
-            <PreferencesControl
+            <BooleanPreferencesControl
               label={"Can edit project configurations?"}
               prefKeys={PROJECT_CONFIGS.map((t) => ({
                 value: t,
                 label: capitalizeFirst(t),
               })).sort((a, b) => a.label.localeCompare(b.label))}
-              options={[true, false]}
-              optionLabel={(op) => (op ? "Enabled" : "Disabled")}
             />
           </Form.Item>
 

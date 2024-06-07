@@ -167,7 +167,7 @@ export interface UiConfig {
   pageTemplates?: TemplateSpec[];
   insertableTemplates?: TemplateSpec[];
   leftTabs?: Record<LeftTabUiKey, UiAccess>;
-  projectConfigs?: Record<ProjectConfig, boolean>;
+  projectConfigs?: Record<ProjectConfig, boolean> | boolean;
   brand?: {
     logoImgSrc?: string;
     logoHref?: string;
@@ -247,7 +247,7 @@ export function mergeUiConfigs(
     ),
     pageTemplates: mergedFirst(configs.map((c) => c.pageTemplates)),
     insertableTemplates: mergedFirst(configs.map((c) => c.insertableTemplates)),
-    projectConfigs: mergeshallowObjs(configs.map((c) => c.projectConfigs)),
+    projectConfigs: mergeBooleanObjs(configs.map((c) => c.projectConfigs)),
     // Deep merge `brand`
     brand: merge({}, ...configs.map((c) => c.brand)),
   };
@@ -384,9 +384,12 @@ const LEFT_TAB_CONTENT_CREATOR_DEFAULT: Record<LeftTabUiKey, UiAccess> = {
 
 export function canEditProjectConfig(
   config: UiConfig,
-  projectConfig: ProjectConfig
+  projectConfig?: ProjectConfig
 ) {
-  if (!config.projectConfigs) {
+  if (typeof config.projectConfigs === "boolean") {
+    return config.projectConfigs;
+  }
+  if (!projectConfig || !config.projectConfigs) {
     return true;
   }
 
