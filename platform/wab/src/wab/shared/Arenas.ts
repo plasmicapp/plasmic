@@ -55,7 +55,6 @@ import {
 } from "@/wab/shared/component-arenas";
 import { parseScreenSpec, ScreenSizeSpec } from "@/wab/shared/Css";
 import { COMBINATIONS_CAP } from "@/wab/shared/Labels";
-import { ContainerLayoutType } from "@/wab/shared/layoututils";
 import {
   getPageArenaRowLabel,
   makePageArenaFrame,
@@ -79,7 +78,6 @@ import {
   allGlobalVariants,
   getAllSiteFrames,
   getComponentArena,
-  getFrameContainerType,
   getPageArena,
   getResponsiveStrategy,
   getSiteArenas,
@@ -115,7 +113,6 @@ export function mkArenaFrame({
   component,
   width,
   height,
-  viewportHeight,
   top,
   left,
   viewMode,
@@ -129,7 +126,6 @@ export function mkArenaFrame({
   component: Component;
   width: number;
   height: number;
-  viewportHeight?: number;
   top?: number;
   left?: number;
   viewMode?: FrameViewMode;
@@ -143,7 +139,6 @@ export function mkArenaFrame({
     uuid: mkShortId(),
     container: mkTplComponent(component, site.globalVariant),
     height,
-    viewportHeight,
     width,
     top,
     left,
@@ -223,7 +218,6 @@ export function setFocusedFrame(
   newFocusedFrame.name = "";
   newFocusedFrame.width = width;
   newFocusedFrame.height = height;
-  newFocusedFrame.viewportHeight = height;
   newFocusedFrame.top = 0;
   newFocusedFrame.left = 0;
   newFocusedFrame.viewMode = FrameViewMode.Stretch;
@@ -321,8 +315,7 @@ export function cloneArenaFrame(frame: ArenaFrame) {
   // Explicitly specify fields rather than use ...frame so that if fields get
   // added, we are forced to explicitly update this function and determine what
   // requires deep-cloning.
-  const { name, lang, width, height, viewportHeight, top, left, container } =
-    frame;
+  const { name, lang, width, height, top, left, container } = frame;
 
   return new ArenaFrame({
     name,
@@ -330,7 +323,6 @@ export function cloneArenaFrame(frame: ArenaFrame) {
     lang,
     width,
     height,
-    viewportHeight,
     top,
     left,
     container: clone(container),
@@ -370,11 +362,7 @@ export function updateAutoDerivedFrameHeight(
   arenaFrame: IArenaFrame,
   newHeight: number
 ) {
-  const minHeight = isPageFrame(arenaFrame)
-    ? arenaFrame.viewportHeight ?? 0
-    : getFrameContainerType(arenaFrame) === ContainerLayoutType.free
-    ? arenaFrame.height
-    : 0;
+  const minHeight = isPageFrame(arenaFrame) ? arenaFrame.height : 0;
   const height = Math.max(newHeight, minHeight);
   if (!arenaFrame._height) {
     arenaFrame._height = observable.box(height);
@@ -969,14 +957,9 @@ export function resizeFrameForScreenVariant(
   );
 }
 
-export const DEFAULT_INITIAL_PAGE_FRAME_SIZE = 800;
-
 export function getFrameHeight(arenaFrame: ArenaFrame) {
   if (isHeightAutoDerived(arenaFrame)) {
-    const height =
-      arenaFrame._height?.get() ??
-      arenaFrame.viewportHeight ??
-      DEFAULT_INITIAL_PAGE_FRAME_SIZE;
+    const height = arenaFrame._height?.get() ?? arenaFrame.height;
     if (!arenaFrame._height) {
       // Create the mobx and read from observable so we'll subscribe to updates
       arenaFrame._height = observable.box(height);

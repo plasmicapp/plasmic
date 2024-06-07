@@ -492,7 +492,6 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     top: "harmless",
     uuid: "unexpected",
     viewMode: "harmless",
-    viewportHeight: "harmless",
     width: "harmless",
   },
   RenderFuncType: {

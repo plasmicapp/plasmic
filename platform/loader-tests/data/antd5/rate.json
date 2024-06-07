@@ -27351,7 +27351,7 @@
         }
       },
       "deps": [],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ],
   [
@@ -28347,7 +28347,6 @@
           "uuid": "C-HUsTXXdIR_",
           "width": 800,
           "height": 800,
-          "viewportHeight": null,
           "container": { "__ref": "1bpHT9R3wCH-" },
           "lang": "English",
           "pinnedVariants": {},
@@ -28475,7 +28474,6 @@
           "uuid": "qTfVwSKmqcDD",
           "width": 1366,
           "height": 768,
-          "viewportHeight": 768,
           "container": { "__ref": "gw4zWmGOS3r_" },
           "lang": "English",
           "pinnedVariants": {},
@@ -28493,7 +28491,6 @@
           "uuid": "o3zoXlSCYO6g",
           "width": 414,
           "height": 736,
-          "viewportHeight": 736,
           "container": { "__ref": "SgeFyB1kA-qN" },
           "lang": "English",
           "pinnedVariants": {},
@@ -28985,7 +28982,7 @@
         }
       },
       "deps": ["5325bdab-f6eb-4f26-874d-07b1e74aeeab"],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ]
 ]

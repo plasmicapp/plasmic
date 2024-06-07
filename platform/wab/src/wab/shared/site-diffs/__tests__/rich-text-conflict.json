@@ -825,7 +825,6 @@
             "uuid": "bu3dBcyE0srJ",
             "width": 800,
             "height": 800,
-            "viewportHeight": null,
             "container": { "__ref": "Wb1MBtMfn2uj" },
             "lang": "English",
             "pinnedVariants": {},
@@ -1023,7 +1022,7 @@
           }
         },
         "deps": [],
-        "version": "231-add-interaction-variant-for-code-components"
+        "version": "232-remove-viewport-height"
       },
       "projectId": "aH1hFXMTo8YybdGp5ScZNk",
       "version": "0.0.1",
@@ -1866,7 +1865,6 @@
             "uuid": "bu3dBcyE0srJ",
             "width": 800,
             "height": 800,
-            "viewportHeight": null,
             "container": { "__ref": "Wb1MBtMfn2uj" },
             "lang": "English",
             "pinnedVariants": {},
@@ -2051,7 +2049,7 @@
           }
         },
         "deps": [],
-        "version": "231-add-interaction-variant-for-code-components"
+        "version": "232-remove-viewport-height"
       }
     },
     {
@@ -2878,7 +2876,6 @@
             "uuid": "bu3dBcyE0srJ",
             "width": 800,
             "height": 800,
-            "viewportHeight": null,
             "container": { "__ref": "Wb1MBtMfn2uj" },
             "lang": "English",
             "pinnedVariants": {},
@@ -3067,7 +3064,7 @@
           }
         },
         "deps": [],
-        "version": "231-add-interaction-variant-for-code-components"
+        "version": "232-remove-viewport-height"
       }
     }
   ]

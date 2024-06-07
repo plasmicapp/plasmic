@@ -44,6 +44,7 @@ import {
 import { createNumericSize, isValidUnit, showSizeCss } from "@/wab/shared/Css";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { notification, Tooltip } from "antd";
+import type { TooltipPlacement } from "antd/es/tooltip";
 import cn from "classnames";
 import { useCombobox, UseComboboxGetItemPropsOptions } from "downshift";
 import L from "lodash";
@@ -124,8 +125,9 @@ export const DimTokenSpinner = observer(
       onEscape?: (e: React.KeyboardEvent) => void;
       placeholder?: string;
       disabledTooltip?: React.ReactNode | (() => React.ReactNode);
-      "data-plasmic-prop"?: string;
       tooltip?: React.ReactNode | (() => React.ReactNode);
+      tooltipPlacement?: TooltipPlacement;
+      "data-plasmic-prop"?: string;
       onFocus?: () => void;
       onBlur?: () => void;
     } & DimValueOpts,
@@ -530,7 +532,9 @@ export const DimTokenSpinner = observer(
         <MaybeWrap
           cond={!!props.tooltip}
           wrapper={(x) => (
-            <Tooltip title={props.tooltip}>{x as React.ReactElement}</Tooltip>
+            <Tooltip title={props.tooltip} placement={props.tooltipPlacement}>
+              {x as React.ReactElement}
+            </Tooltip>
           )}
         >
           <PlasmicDimTokenSelector

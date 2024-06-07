@@ -27351,7 +27351,7 @@
         }
       },
       "deps": [],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ],
   [
@@ -28364,7 +28364,6 @@
           "uuid": "NT--qk70nFYH",
           "width": 800,
           "height": 800,
-          "viewportHeight": null,
           "container": { "__ref": "5mjWycgJRA5O" },
           "lang": "English",
           "pinnedVariants": {},
@@ -28496,7 +28495,6 @@
           "uuid": "zvfhVPud0Y0B",
           "width": 1366,
           "height": 768,
-          "viewportHeight": 768,
           "container": { "__ref": "y0Cp69muu8sr" },
           "lang": "English",
           "pinnedVariants": {},
@@ -28514,7 +28512,6 @@
           "uuid": "We8wDKYIwUHO",
           "width": 414,
           "height": 736,
-          "viewportHeight": 736,
           "container": { "__ref": "8WZSqb7daENp" },
           "lang": "English",
           "pinnedVariants": {},
@@ -29428,7 +29425,7 @@
         "aA9tyZnmtZAM": { "text": ["countries"], "__type": "TemplatedString" }
       },
       "deps": ["c37f5929-869b-409a-95d5-17c69bc4e9d3"],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ]
 ]

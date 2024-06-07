@@ -27061,7 +27061,7 @@
         }
       },
       "deps": [],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ],
   [
@@ -31119,7 +31119,7 @@
         }
       },
       "deps": [],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ],
   [
@@ -31426,7 +31426,7 @@
         }
       },
       "deps": [],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ],
   [
@@ -35518,7 +35518,6 @@
           "uuid": "gPrQEL_ifFe7",
           "width": 1440,
           "height": 768,
-          "viewportHeight": 1024,
           "container": { "__ref": "MBHLKWk9MRCp" },
           "lang": "English",
           "pinnedVariants": {},
@@ -35562,7 +35561,6 @@
           "uuid": "9yc_AwINXsPb",
           "width": 414,
           "height": 736,
-          "viewportHeight": 736,
           "container": { "__ref": "KAEPJ1o-e2L0" },
           "lang": "English",
           "pinnedVariants": {},
@@ -35630,7 +35628,6 @@
           "uuid": "kXkg8WPiFmv6",
           "width": 968,
           "height": 340,
-          "viewportHeight": null,
           "container": { "__ref": "TKhFX_MU_BGF" },
           "lang": "English",
           "pinnedVariants": {},
@@ -36051,7 +36048,7 @@
         "88b7de88-9046-4021-b08b-d5d7d1db6a8c",
         "0b5c4773-e201-48c2-86a4-c29335ea539b"
       ],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ]
 ]

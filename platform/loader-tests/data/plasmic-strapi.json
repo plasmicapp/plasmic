@@ -774,7 +774,7 @@
         }
       },
       "deps": [],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ],
   [
@@ -886,7 +886,6 @@
           "uuid": "W5icQf57hH",
           "width": 1366,
           "height": 768,
-          "viewportHeight": 768,
           "container": { "__ref": "954020" },
           "lang": "English",
           "pinnedVariants": {},
@@ -1868,7 +1867,7 @@
         }
       },
       "deps": ["c30818bb-2f70-4079-bc4d-65eaecf566f6"],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ]
 ]

@@ -89,7 +89,6 @@ export function makePageArenaFrame(
     name: "",
     width: width,
     height: height,
-    viewportHeight: height,
     component,
     targetVariants: [...locals],
     targetGlobalVariants: [...globals],
@@ -175,7 +174,6 @@ export function syncPageArenaFrameSize(
       const frame = row.cols[index].frame;
       frame.width = anchor.width;
       frame.height = anchor.height;
-      frame.viewportHeight = anchor.viewportHeight;
       if (isHeightAutoDerived(anchor) && anchor._height) {
         updateAutoDerivedFrameHeight(frame, anchor._height.get());
       }

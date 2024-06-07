@@ -360,7 +360,6 @@
           "uuid": "uNBGiQklqHWjy",
           "width": 1440,
           "height": 768,
-          "viewportHeight": 1024,
           "container": { "__ref": "34512054" },
           "lang": "English",
           "pinnedVariants": {},
@@ -1258,7 +1257,7 @@
         }
       },
       "deps": [],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ]
 ]

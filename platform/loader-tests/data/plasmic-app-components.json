@@ -4054,7 +4054,7 @@
         }
       },
       "deps": [],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ],
   [
@@ -31028,7 +31028,7 @@
         }
       },
       "deps": [],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ],
   [
@@ -31462,7 +31462,7 @@
         }
       },
       "deps": [],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ],
   [
@@ -31769,7 +31769,7 @@
         "5531023": { "values": {}, "mixins": [], "__type": "RuleSet" }
       },
       "deps": [],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ],
   [
@@ -35716,7 +35716,6 @@
           "uuid": "Ok1TGDDWr8k",
           "width": 1440,
           "height": 768,
-          "viewportHeight": 1024,
           "container": { "__ref": "5753235" },
           "lang": "English",
           "pinnedVariants": {},
@@ -35770,7 +35769,6 @@
           "uuid": "GATFSN5Q3eL",
           "width": 414,
           "height": 736,
-          "viewportHeight": 736,
           "container": { "__ref": "5753241" },
           "lang": "English",
           "pinnedVariants": {},
@@ -35829,7 +35827,6 @@
           "uuid": "5CSva78NmBZ",
           "width": 968,
           "height": 340,
-          "viewportHeight": null,
           "container": { "__ref": "5753249" },
           "lang": "English",
           "pinnedVariants": {},
@@ -36495,7 +36492,7 @@
         "65a542ff-c445-4eae-8300-db6b033274a2",
         "5878a35c-1286-432e-b733-feab6baae378"
       ],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ]
 ]

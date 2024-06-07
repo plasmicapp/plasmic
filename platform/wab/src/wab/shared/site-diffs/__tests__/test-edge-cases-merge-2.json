@@ -990,7 +990,6 @@
             "uuid": "nwztLgMhtp",
             "width": 834,
             "height": 1194,
-            "viewportHeight": null,
             "container": { "__ref": "53903053" },
             "lang": "English",
             "pinnedVariants": {},
@@ -1215,7 +1214,6 @@
             "uuid": "NjyMJmZRY2",
             "width": 340,
             "height": 340,
-            "viewportHeight": null,
             "container": { "__ref": "53903104" },
             "lang": "English",
             "pinnedVariants": {},
@@ -1908,7 +1906,6 @@
             "uuid": "Z7bv26rtLX",
             "width": 340,
             "height": 340,
-            "viewportHeight": null,
             "container": { "__ref": "53903256" },
             "lang": "English",
             "pinnedVariants": {},
@@ -2210,7 +2207,6 @@
             "uuid": "M5VXWk219U",
             "width": 340,
             "height": 340,
-            "viewportHeight": null,
             "container": { "__ref": "53903333" },
             "lang": "English",
             "pinnedVariants": {},
@@ -2343,7 +2339,6 @@
             "uuid": "iiERKW0rWO",
             "width": 340,
             "height": 340,
-            "viewportHeight": null,
             "container": { "__ref": "53903360" },
             "lang": "English",
             "pinnedVariants": {},
@@ -2496,7 +2491,7 @@
           }
         },
         "deps": [],
-        "version": "231-add-interaction-variant-for-code-components"
+        "version": "232-remove-viewport-height"
       },
       "projectId": "2YAtuqUruz4SscKrr5g25x",
       "version": "0.0.1",
@@ -3505,7 +3500,6 @@
             "uuid": "nwztLgMhtp",
             "width": 834,
             "height": 1194,
-            "viewportHeight": null,
             "container": { "__ref": "53903053" },
             "lang": "English",
             "pinnedVariants": {},
@@ -3730,7 +3724,6 @@
             "uuid": "NjyMJmZRY2",
             "width": 340,
             "height": 340,
-            "viewportHeight": null,
             "container": { "__ref": "53903104" },
             "lang": "English",
             "pinnedVariants": {},
@@ -4349,7 +4342,6 @@
             "uuid": "Z7bv26rtLX",
             "width": 340,
             "height": 340,
-            "viewportHeight": null,
             "container": { "__ref": "53903256" },
             "lang": "English",
             "pinnedVariants": {},
@@ -4647,7 +4639,6 @@
             "uuid": "iiERKW0rWO",
             "width": 340,
             "height": 340,
-            "viewportHeight": null,
             "container": { "__ref": "53903360" },
             "lang": "English",
             "pinnedVariants": {},
@@ -4684,7 +4675,7 @@
           "53903362": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "231-add-interaction-variant-for-code-components"
+        "version": "232-remove-viewport-height"
       }
     },
     {
@@ -5676,7 +5667,6 @@
             "uuid": "nwztLgMhtp",
             "width": 834,
             "height": 1194,
-            "viewportHeight": null,
             "container": { "__ref": "53903053" },
             "lang": "English",
             "pinnedVariants": {},
@@ -5901,7 +5891,6 @@
             "uuid": "NjyMJmZRY2",
             "width": 340,
             "height": 340,
-            "viewportHeight": null,
             "container": { "__ref": "53903104" },
             "lang": "English",
             "pinnedVariants": {},
@@ -6590,7 +6579,6 @@
             "uuid": "Z7bv26rtLX",
             "width": 340,
             "height": 340,
-            "viewportHeight": null,
             "container": { "__ref": "53903256" },
             "lang": "English",
             "pinnedVariants": {},
@@ -6888,7 +6876,6 @@
             "uuid": "M5VXWk219U",
             "width": 340,
             "height": 340,
-            "viewportHeight": null,
             "container": { "__ref": "53903333" },
             "lang": "English",
             "pinnedVariants": {},
@@ -7021,7 +7008,6 @@
             "uuid": "iiERKW0rWO",
             "width": 340,
             "height": 340,
-            "viewportHeight": null,
             "container": { "__ref": "53903360" },
             "lang": "English",
             "pinnedVariants": {},
@@ -7348,7 +7334,7 @@
           }
         },
         "deps": [],
-        "version": "231-add-interaction-variant-for-code-components"
+        "version": "232-remove-viewport-height"
       }
     }
   ]

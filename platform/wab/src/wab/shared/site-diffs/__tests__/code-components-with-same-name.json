@@ -733,7 +733,6 @@
             "uuid": "t1z9RGuZ9i",
             "width": 1366,
             "height": 768,
-            "viewportHeight": 768,
             "container": { "__ref": "43666020" },
             "lang": "English",
             "pinnedVariants": {},
@@ -751,7 +750,6 @@
             "uuid": "mdBtRoxBzh",
             "width": 414,
             "height": 736,
-            "viewportHeight": 736,
             "container": { "__ref": "43666021" },
             "lang": "English",
             "pinnedVariants": {},
@@ -1292,7 +1290,7 @@
           }
         },
         "deps": [],
-        "version": "231-add-interaction-variant-for-code-components"
+        "version": "232-remove-viewport-height"
       },
       "projectId": "cpkeUeeErCd6XAniAHq8xq",
       "version": "0.0.1",
@@ -1567,7 +1565,6 @@
             "uuid": "-bRkeNRR8r",
             "width": 340,
             "height": 340,
-            "viewportHeight": null,
             "container": { "__ref": "10673029" },
             "lang": "English",
             "pinnedVariants": {},
@@ -2259,7 +2256,6 @@
             "uuid": "t1z9RGuZ9i",
             "width": 1366,
             "height": 768,
-            "viewportHeight": 768,
             "container": { "__ref": "43666020" },
             "lang": "English",
             "pinnedVariants": {},
@@ -2277,7 +2273,6 @@
             "uuid": "mdBtRoxBzh",
             "width": 414,
             "height": 736,
-            "viewportHeight": 736,
             "container": { "__ref": "43666021" },
             "lang": "English",
             "pinnedVariants": {},
@@ -2819,7 +2814,7 @@
           }
         },
         "deps": [],
-        "version": "231-add-interaction-variant-for-code-components"
+        "version": "232-remove-viewport-height"
       }
     },
     {
@@ -3549,7 +3544,6 @@
             "uuid": "t1z9RGuZ9i",
             "width": 1366,
             "height": 768,
-            "viewportHeight": 768,
             "container": { "__ref": "43666020" },
             "lang": "English",
             "pinnedVariants": {},
@@ -3567,7 +3561,6 @@
             "uuid": "mdBtRoxBzh",
             "width": 414,
             "height": 736,
-            "viewportHeight": 736,
             "container": { "__ref": "43666021" },
             "lang": "English",
             "pinnedVariants": {},
@@ -4205,7 +4198,6 @@
             "uuid": "6DA4tPCMzJ",
             "width": 340,
             "height": 340,
-            "viewportHeight": null,
             "container": { "__ref": "55543018" },
             "lang": "English",
             "pinnedVariants": {},
@@ -4330,7 +4322,7 @@
           "55543038": { "text": ["arg3"], "__type": "TemplatedString" }
         },
         "deps": [],
-        "version": "231-add-interaction-variant-for-code-components"
+        "version": "232-remove-viewport-height"
       }
     }
   ]

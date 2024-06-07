@@ -1070,7 +1070,6 @@
             "uuid": "b4-h862E_9aR",
             "width": 1366,
             "height": 768,
-            "viewportHeight": 768,
             "container": { "__ref": "tWs-LyxsPG4i" },
             "lang": "English",
             "pinnedVariants": {},
@@ -1088,7 +1087,6 @@
             "uuid": "0ynsxQDC1VN5",
             "width": 414,
             "height": 736,
-            "viewportHeight": 736,
             "container": { "__ref": "RXEeg_VdeOJ_" },
             "lang": "English",
             "pinnedVariants": {},
@@ -1165,7 +1163,7 @@
           }
         },
         "deps": [],
-        "version": "231-add-interaction-variant-for-code-components"
+        "version": "232-remove-viewport-height"
       },
       "projectId": "jktPeioPm3Q1RvAsGWDSCe",
       "version": "3.0.0",
@@ -2281,7 +2279,6 @@
             "uuid": "b4-h862E_9aR",
             "width": 1366,
             "height": 768,
-            "viewportHeight": 768,
             "container": { "__ref": "tWs-LyxsPG4i" },
             "lang": "English",
             "pinnedVariants": {},
@@ -2299,7 +2296,6 @@
             "uuid": "0ynsxQDC1VN5",
             "width": 414,
             "height": 736,
-            "viewportHeight": 736,
             "container": { "__ref": "RXEeg_VdeOJ_" },
             "lang": "English",
             "pinnedVariants": {},
@@ -2367,7 +2363,7 @@
           }
         },
         "deps": [],
-        "version": "231-add-interaction-variant-for-code-components"
+        "version": "232-remove-viewport-height"
       }
     },
     {
@@ -3439,7 +3435,6 @@
             "uuid": "b4-h862E_9aR",
             "width": 1366,
             "height": 768,
-            "viewportHeight": 768,
             "container": { "__ref": "tWs-LyxsPG4i" },
             "lang": "English",
             "pinnedVariants": {},
@@ -3457,7 +3452,6 @@
             "uuid": "0ynsxQDC1VN5",
             "width": 414,
             "height": 736,
-            "viewportHeight": 736,
             "container": { "__ref": "RXEeg_VdeOJ_" },
             "lang": "English",
             "pinnedVariants": {},
@@ -3525,7 +3519,7 @@
           }
         },
         "deps": [],
-        "version": "231-add-interaction-variant-for-code-components"
+        "version": "232-remove-viewport-height"
       }
     }
   ]

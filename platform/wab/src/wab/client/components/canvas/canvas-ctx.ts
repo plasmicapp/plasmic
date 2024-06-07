@@ -19,11 +19,9 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import * as common from "@/wab/common";
 import { ensure, ensureInstance } from "@/wab/common";
-import { ComponentType, isPageComponent } from "@/wab/components";
 import { DEVFLAGS } from "@/wab/devflags";
 import { Box } from "@/wab/geom";
 import {
-  DEFAULT_INITIAL_PAGE_FRAME_SIZE,
   getFrameHeight,
   isHeightAutoDerived,
   updateAutoDerivedFrameHeight,
@@ -35,8 +33,6 @@ import {
 import { getBuiltinComponentRegistrations } from "@/wab/shared/code-components/builtin-code-components";
 import { CodeComponentsRegistry } from "@/wab/shared/code-components/code-components";
 import { CodeLibraryRegistration } from "@/wab/shared/register-library";
-import { getPageFrameSizeType } from "@/wab/shared/sizingutils";
-import { getFrameContainerType } from "@/wab/sites";
 import { getPublicUrl } from "@/wab/urls";
 import {
   ComponentRegistration,
@@ -595,20 +591,14 @@ export class CanvasCtx {
   private bridgeDispose: () => void | undefined;
   rerender(children: React.ReactNode, viewCtx: ViewCtx) {
     const frame = viewCtx.arenaFrame();
-    const component = frame.container.component;
 
     const makeFrameInfo = (): CanvasFrameInfo => ({
       viewMode: frame.viewMode as CanvasFrameInfo["viewMode"],
+      height: frame.height,
+      isHeightAutoDerived: isHeightAutoDerived(frame),
       bgColor: frame.bgColor
         ? makeTokenRefResolver(viewCtx.site)(frame.bgColor) ?? frame.bgColor
         : undefined,
-      viewportHeight: frame.viewportHeight ?? undefined,
-      pageSizeType: isPageComponent(component)
-        ? getPageFrameSizeType(frame)
-        : undefined,
-      containerType: getFrameContainerType(frame),
-      defaultInitialPageFrameSize: DEFAULT_INITIAL_PAGE_FRAME_SIZE,
-      componentType: component.type as ComponentType,
     });
 
     const frameInfo = observable.box<CanvasFrameInfo>(makeFrameInfo());

@@ -103,7 +103,6 @@ import { mkTokenRef } from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
 import {
   allComponentVariants,
-  ComponentType,
   getComponentDisplayName,
   getRepetitionElementName,
   getRepetitionIndexName,
@@ -3271,12 +3270,12 @@ function createPlasmicElementProxy(
 export interface CanvasFrameInfo {
   // Using constants to avoid pulling in Arenas.ts
   viewMode: "stretch" | "centered";
+  height: number;
+  isHeightAutoDerived: boolean;
   bgColor: string | undefined;
   pageSizeType?: PageSizeType;
-  viewportHeight?: number;
   containerType?: ContainerType;
   defaultInitialPageFrameSize?: number;
-  componentType?: ComponentType;
 }
 
 export const mkCanvas = computedFn(
@@ -3290,15 +3289,8 @@ export const mkCanvas = computedFn(
       return mkUseCanvasObserver(sub, vc)(
         () => {
           const { children, frameInfo } = props;
-          const {
-            viewMode,
-            bgColor,
-            pageSizeType,
-            viewportHeight,
-            containerType,
-            defaultInitialPageFrameSize,
-            componentType,
-          } = frameInfo.get();
+          const { viewMode, height, isHeightAutoDerived, bgColor } =
+            frameInfo.get();
 
           const appUserCtx = vc.studioCtx.currentAppUserCtx;
 
@@ -3314,33 +3306,11 @@ export const mkCanvas = computedFn(
                 "__wab_root--stretch": viewMode === "stretch",
                 "__wab_root--centered": viewMode === "centered",
                 "__wab_root--checkerboard": viewMode === "centered" && !bgColor,
-                "__wab_root--page-stretch":
-                  pageSizeType === "stretch" ||
-                  pageSizeType === "fixed" ||
-                  (viewMode === "stretch" && componentType === "plain"),
+                "__wab_root--page-stretch": isHeightAutoDerived,
               }),
               style: {
-                ...(pageSizeType === "stretch" ||
-                pageSizeType === "fixed" ||
-                (viewMode === "stretch" && componentType === "plain")
-                  ? {
-                      height: "auto",
-                      minHeight: (() => {
-                        if (viewportHeight) {
-                          return viewportHeight;
-                        } else if (containerType === "free") {
-                          return "100vh";
-                        } else if (componentType === "plain") {
-                          return `${defaultInitialPageFrameSize}px`;
-                        } else {
-                          return "100px";
-                        }
-                      })(),
-                    }
-                  : {}),
-                "--viewport-height": viewportHeight
-                  ? viewportHeight + "px"
-                  : "100vh",
+                minHeight: `${height}px`,
+                "--viewport-height": `${height}px`,
               },
             },
             children

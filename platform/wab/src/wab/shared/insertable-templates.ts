@@ -67,7 +67,6 @@ export function cloneInsertableTemplateArena(
         component,
         width: c.width,
         height: c.height,
-        viewportHeight: c.viewportHeight || undefined,
         top: c.top || undefined,
         left: c.left || undefined,
         viewMode: FrameViewMode[c.viewMode],

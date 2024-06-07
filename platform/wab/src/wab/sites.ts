@@ -1992,7 +1992,7 @@ export function getSiteScreenSizes(site: Site) {
       const firstRow = first.matrix.rows[0];
       return firstRow.cols.map((it) => ({
         width: it.frame.width,
-        height: it.frame.viewportHeight!,
+        height: it.frame.height!,
       }));
     }
   }

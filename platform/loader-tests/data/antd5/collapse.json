@@ -27351,7 +27351,7 @@
         }
       },
       "deps": [],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ],
   [
@@ -28351,7 +28351,6 @@
           "uuid": "FWyNLmsCJflV",
           "width": 800,
           "height": 800,
-          "viewportHeight": null,
           "container": { "__ref": "dCy1lUL3XXj6" },
           "lang": "English",
           "pinnedVariants": {},
@@ -28479,7 +28478,6 @@
           "uuid": "U4UDvSaU0jT3",
           "width": 1366,
           "height": 768,
-          "viewportHeight": 768,
           "container": { "__ref": "fVi8oSKRd1nZ" },
           "lang": "English",
           "pinnedVariants": {},
@@ -28497,7 +28495,6 @@
           "uuid": "Nb-ZDLz-Z-j7",
           "width": 414,
           "height": 736,
-          "viewportHeight": 736,
           "container": { "__ref": "aDQPwOEdKxLr" },
           "lang": "English",
           "pinnedVariants": {},
@@ -28965,7 +28962,6 @@
           "uuid": "U1nujX4CHpQk",
           "width": 1366,
           "height": 768,
-          "viewportHeight": 768,
           "container": { "__ref": "c2Q0hPaN3DRg" },
           "lang": "English",
           "pinnedVariants": {},
@@ -28983,7 +28979,6 @@
           "uuid": "7ZC47Ls-92Bq",
           "width": 414,
           "height": 736,
-          "viewportHeight": 736,
           "container": { "__ref": "fflwVa1Aj9pX" },
           "lang": "English",
           "pinnedVariants": {},
@@ -29761,7 +29756,7 @@
         "0C_x9nWtO9s1": { "tpl": [], "__type": "VirtualRenderExpr" }
       },
       "deps": ["2d9b4d39-3373-465f-8045-538cac45fce6"],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ]
 ]

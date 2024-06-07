@@ -171,9 +171,10 @@ ArenaChild
   left: Number?
   ArenaFrame
     @Const uuid: String
+    # Width of the viewport to preview the component. CSS vw units will respond to this.
     width: Number
+    # Height of the viewport to preview the component. CSS vh units will respond to this.
     height: Number
-    viewportHeight: Number?
 
     # This is what identifies which component we are rendering, which variant,
     # what args, etc.

@@ -1191,7 +1191,6 @@
           "uuid": "a2SeAdG-Lyq6",
           "width": 1440,
           "height": 768,
-          "viewportHeight": 1024,
           "container": { "__ref": "4Phx5eBpwdkH" },
           "lang": "English",
           "pinnedVariants": {},
@@ -1235,7 +1234,6 @@
           "uuid": "_cUarPpNKl40",
           "width": 414,
           "height": 736,
-          "viewportHeight": 736,
           "container": { "__ref": "Gmr0qWmzrw2e" },
           "lang": "English",
           "pinnedVariants": {},
@@ -1437,7 +1435,7 @@
         }
       },
       "deps": [],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ]
 ]

@@ -27351,7 +27351,7 @@
         }
       },
       "deps": [],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ],
   [
@@ -28351,7 +28351,6 @@
           "uuid": "XuLS5utkKk-M",
           "width": 800,
           "height": 800,
-          "viewportHeight": null,
           "container": { "__ref": "kbtDPOlD4KTI" },
           "lang": "English",
           "pinnedVariants": {},
@@ -28479,7 +28478,6 @@
           "uuid": "IsNFNLGHdeHD",
           "width": 1366,
           "height": 768,
-          "viewportHeight": 768,
           "container": { "__ref": "tb0qYIH9yQ3A" },
           "lang": "English",
           "pinnedVariants": {},
@@ -28497,7 +28495,6 @@
           "uuid": "98DS-87PQO1W",
           "width": 414,
           "height": 736,
-          "viewportHeight": 736,
           "container": { "__ref": "arMmjR5WWgxR" },
           "lang": "English",
           "pinnedVariants": {},
@@ -29148,7 +29145,6 @@
           "uuid": "KnaRrtifATaF",
           "width": 1366,
           "height": 768,
-          "viewportHeight": 768,
           "container": { "__ref": "nyrIiXTLZzqp" },
           "lang": "English",
           "pinnedVariants": {},
@@ -29166,7 +29162,6 @@
           "uuid": "BUT74joNBfy_",
           "width": 414,
           "height": 736,
-          "viewportHeight": 736,
           "container": { "__ref": "Z7OLwgld0mUK" },
           "lang": "English",
           "pinnedVariants": {},
@@ -30071,7 +30066,7 @@
         }
       },
       "deps": ["25fcf86f-fee5-488f-8a15-071b8212d1ab"],
-      "version": "231-add-interaction-variant-for-code-components"
+      "version": "232-remove-viewport-height"
     }
   ]
 ]

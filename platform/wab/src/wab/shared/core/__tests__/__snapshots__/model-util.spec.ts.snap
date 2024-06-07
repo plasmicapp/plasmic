@@ -73,7 +73,6 @@ exports[`model-util works 1`] = `
           "top": 0,
           "uuid": "90rMdBC74L",
           "viewMode": "stretch",
-          "viewportHeight": null,
           "width": 666,
         },
         {
@@ -134,7 +133,6 @@ exports[`model-util works 1`] = `
           "top": 388.8889,
           "uuid": "iDjkGvcr2J",
           "viewMode": "centered",
-          "viewportHeight": null,
           "width": 437,
         },
         {
@@ -196,7 +194,6 @@ exports[`model-util works 1`] = `
           "top": 398.3333,
           "uuid": "crw5-iASPC",
           "viewMode": "centered",
-          "viewportHeight": null,
           "width": 437,
         },
         {
@@ -255,7 +252,6 @@ exports[`model-util works 1`] = `
           "top": 589.8385,
           "uuid": "2majt56Igq",
           "viewMode": "centered",
-          "viewportHeight": null,
           "width": 528,
         },
         {
@@ -316,7 +312,6 @@ exports[`model-util works 1`] = `
           "top": 728.8309,
           "uuid": "OFde0UZTPo",
           "viewMode": "centered",
-          "viewportHeight": null,
           "width": 127,
         },
         {
@@ -375,7 +370,6 @@ exports[`model-util works 1`] = `
           "top": 15.6838,
           "uuid": "LVk6uksUV7",
           "viewMode": "centered",
-          "viewportHeight": null,
           "width": 438,
         },
       ],
@@ -446,7 +440,6 @@ exports[`model-util works 1`] = `
           "top": 0,
           "uuid": "SxFc90Ydke",
           "viewMode": "centered",
-          "viewportHeight": null,
           "width": 649,
         },
         {
@@ -510,7 +503,6 @@ exports[`model-util works 1`] = `
           "top": 0,
           "uuid": "fAdFTXkJcIb",
           "viewMode": "centered",
-          "viewportHeight": null,
           "width": 430,
         },
         {
@@ -574,7 +566,6 @@ exports[`model-util works 1`] = `
           "top": 176.3934,
           "uuid": "QbchpRc7yVa",
           "viewMode": "centered",
-          "viewportHeight": null,
           "width": 430,
         },
         {
@@ -638,7 +629,6 @@ exports[`model-util works 1`] = `
           "top": 359.3443,
           "uuid": "lvATWZmmQZB",
           "viewMode": "centered",
-          "viewportHeight": null,
           "width": 430,
         },
         {
@@ -702,7 +692,6 @@ exports[`model-util works 1`] = `
           "top": 359.3443,
           "uuid": "-DlqUxYhmcZ",
           "viewMode": "centered",
-          "viewportHeight": null,
           "width": 478,
         },
       ],
