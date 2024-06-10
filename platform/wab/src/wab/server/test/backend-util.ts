@@ -127,7 +127,6 @@ export async function createBackend(
         host: `http://localhost:${port}`,
         production: false,
         sessionSecret: "secret",
-        cluster: false,
         mailFrom: "",
         mailUserOps: "",
         mailBcc: "",

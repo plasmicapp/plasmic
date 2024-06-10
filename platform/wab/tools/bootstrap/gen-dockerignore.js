@@ -12,6 +12,8 @@ const ADDITIONAL_CONTENT = `
 create-react-app/
 create-react-app-new/
 
+**/.delivery/
+
 # Static assets from Jenkins:
 static-*.tgz
 `;

@@ -80,7 +80,6 @@ Send SIGINT to shutdown gracefully: kill -INT ${process.pid}
 export function setupServerCli(argv: string[] = process.argv) {
   const { Command } = require("commander");
   const opts = new Command("plasmic server")
-    .option("-c, --config <c>", "Server config")
     .option(
       "--freshDb <n>",
       "Start an ephemeral pg instance that self-terminates in n seconds",
@@ -88,7 +87,7 @@ export function setupServerCli(argv: string[] = process.argv) {
     )
     .parse(argv)
     .opts();
-  const config = loadConfig(opts.config);
+  const config = loadConfig();
 
   initializeGlobals();
   return { opts, config };

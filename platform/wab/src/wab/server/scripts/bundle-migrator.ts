@@ -10,11 +10,10 @@ import * as Sentry from "@sentry/browser";
 
 async function migrate() {
   const opts = new Command("bundle-migrator")
-    .option("-c, --config <c>", "Server config")
     .option("-db, --dburi <dburi>", "Database uri", DEFAULT_DATABASE_URI)
     .parse(process.argv)
     .opts();
-  const config = loadConfig(opts.config);
+  const config = loadConfig();
 
   Sentry.init({
     dsn: config.sentryDSN,

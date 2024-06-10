@@ -7,11 +7,15 @@
 create-react-app/
 create-react-app-new/
 
+**/.delivery/
+
 # Static assets from Jenkins:
 static-*.tgz
 
 # Generated
 .git/
+src/wab/shared/copilot/internal/types-content.json
+src/wab/shared/copilot/internal/validators/gen/
 deps/chrome/
 src/wab/gen/
 public/static/img/*.svg
@@ -43,30 +47,36 @@ src/wab/styles/css-variables.ts
 
 **/to-import-into-substack.csv
 
-**/bower_components/
-**/node_modules/
-**/**/.idea/workspace.xml
-**/*.pyc
+
+**/**/*.swp
 **/**/.idea/libraries/Generated_files.xml
 **/**/.idea/sqldialects.xml
-**/.ipynb_checkpoints/
-# Typedoc output
-sub/typedoc/
-sub/typedoc-*/
-sub/typedoc.json
-sub/typedoc.json.gz
-**/.cache-loader/
-**/.DS_Store
-**/**/.vscode/
-**/**/*.swp
-**/.cache
-**/.idea
-**/.env
-**/.venv/
-**/.direnv
+**/**/.idea/workspace.xml
 # Local .terraform directories
 **/**/.terraform/*
-
+**/**/.vscode/
+**/**/api/temp
+**/**/api/tsc
+**/*.pyc
 # .tfstate files
 **/*.tfstate
 **/*.tfstate.*
+**/.DS_Store
+**/.cache
+**/.cache-loader/
+**/.direnv
+**/.env
+**/.eslintcache
+**/.idea
+**/.ipynb_checkpoints/
+**/.venv/
+.direnv/
+# Typedoc output
+platform/sub/typedoc-*/
+platform/sub/typedoc.json
+platform/sub/typedoc.json.gz
+platform/sub/typedoc/
+**/bower_components/
+**/node_modules/
+**/storybook-static/
+**/.nx/
