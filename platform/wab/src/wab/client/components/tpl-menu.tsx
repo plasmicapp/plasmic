@@ -70,7 +70,7 @@ import {
   tryGetVariantSettingStoringText,
 } from "@/wab/tpls";
 import { ValComponent } from "@/wab/val-nodes";
-import { Menu, notification } from "antd";
+import { Menu, notification, Tooltip } from "antd";
 import React from "react";
 
 export function makeSelectableMenu(viewCtx: ViewCtx, node: Selectable) {
@@ -347,9 +347,8 @@ export function makeTplMenu(
       }
     }
 
-    // "Ungroup" may only be performed on a non-root TplTag with children.
+    // "Ungroup" may only be performed on a TplTag with children.
     if (
-      tpl.parent &&
       isTplTag(tpl) &&
       tpl.children.length > 0 &&
       !isTplColumns(tpl) &&
@@ -357,12 +356,26 @@ export function makeTplMenu(
       !isInsideRichText &&
       !contentEditorMode
     ) {
+      // Ungroup is disabled if the tpl is the root and has more than 1 child.
+      const ungroupDisabled = !tpl.parent && tpl.children.length !== 1;
       pushEdit(
         <Menu.Item
           key="ungroup"
           onClick={() => viewCtx.getViewOps().ungroup(tpl)}
+          disabled={ungroupDisabled}
         >
-          Ungroup
+          <Tooltip
+            open={
+              ungroupDisabled
+                ? undefined /* uncontrolled (show tooltip) */
+                : false
+            }
+            title={
+              "Root element can only be ungrouped if it contains a single element"
+            }
+          >
+            Ungroup
+          </Tooltip>
         </Menu.Item>
       );
     }

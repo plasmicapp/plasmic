@@ -37,7 +37,6 @@ import {
   maybe,
   omitNils,
   switchType,
-  todo,
   tuple,
   unexpected,
   withoutNils,
@@ -75,9 +74,9 @@ import {
 } from "@/wab/shared/columns-utils";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import {
-  contentLayoutChildProps,
   CONTENT_LAYOUT_FULL_BLEED,
   CONTENT_LAYOUT_WIDTH_OPTIONS,
+  contentLayoutChildProps,
   defaultCopyableStyleNames,
   flexChildProps,
   getAllDefinedStyles,
@@ -812,15 +811,6 @@ export class ViewOps {
       }
     });
     return newNode;
-  }
-
-  wrap() {
-    const _tpl = this.viewCtx().focusedTpl();
-    this.viewCtx().change(() => {
-      todo(
-        "Wrap not implemented.  Should be smart about the layout/position based on current selection."
-      );
-    });
   }
 
   getNextCycledAutoLayoutType(tpl: TplTag) {

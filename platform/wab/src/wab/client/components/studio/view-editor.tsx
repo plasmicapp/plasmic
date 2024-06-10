@@ -101,7 +101,7 @@ import {
   isPositionManagedFrame,
 } from "@/wab/shared/Arenas";
 import { isBaseVariantFrame } from "@/wab/shared/component-arenas";
-import { ARENAS_DESCRIPTION, ARENA_LOWER } from "@/wab/shared/Labels";
+import { ARENA_LOWER, ARENAS_DESCRIPTION } from "@/wab/shared/Labels";
 import { PositionLayoutType } from "@/wab/shared/layoututils";
 import { TplVisibility } from "@/wab/shared/visibility-utils";
 import { getSiteArenas } from "@/wab/sites";
@@ -798,7 +798,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
             this.viewOps().convertToLink();
           })
         ),
-      // WRAP: e => this.handleHotkey(e, async () => this.viewOps().wrap())
     };
     this.unbindShortcutHandlers = bindShortcutHandlers(
       document.body,

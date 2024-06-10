@@ -154,6 +154,9 @@ export class TplQuery {
         const owningComponent = getTplOwnerComponent(child);
         const content = [child];
         TplQuery.checkComponentCycles(owningComponent, newChildren);
+        for (const newChild of newChildren) {
+          newChild.parent = null;
+        }
         mutate(content);
         owningComponent.tplTree = only(content);
         trackComponentRoot(owningComponent);
@@ -476,7 +479,10 @@ export class TplQuery {
     for (const node_ of [...this.nodes]) {
       const node = ensureKnownTplTag(node_);
 
+      // We remove the children of `node` to avoid having them
+      // marked as deleted when we remove `node` from the model.
       const ungroupedItems = node.children;
+      node.children = [];
       TplQuery._updateParentSlotContaining(
         node,
         ungroupedItems,

@@ -4,6 +4,7 @@ import {
   ensureKnownTplTag,
   isKnownRenderExpr,
   RenderExpr,
+  TplTag,
 } from "@/wab/classes";
 import { ensure, tuple } from "@/wab/common";
 import * as Components from "@/wab/components";
@@ -67,15 +68,17 @@ describe("TplQuery", function () {
       null;
   // Run a common test pattern, where we have some component we operate on that
   // we expect to end up with children [a,b,c]
-  const testExpectingComponentChildrenAbc = function (setup) {
+  const testExpectingComponentChildrenAbc = function (
+    setup: (args: [TplTag, TplTag, TplTag]) => {
+      initChildren: TplTag[];
+      operation: (container: TplTag) => void;
+      slotName?: string;
+    }
+  ) {
     const a = tpls.mkTplTagX("div");
     const b = tpls.mkTplTagX("div");
     const c = tpls.mkTplTagX("div");
-    const obj = setup([a, b, c]),
-      { initChildren } = obj,
-      val = obj.slotName,
-      slotName = val != null ? val : "children",
-      { operation } = obj;
+    const { initChildren, operation, slotName = "children" } = setup([a, b, c]);
     container = tpls.mkTplComponentX({
       component: componentWithSlots,
       args: Object.fromEntries([
@@ -134,30 +137,18 @@ describe("TplQuery", function () {
       expect(uids([oneWrapped.parent])).toEqual(uids([wrapper]));
     });
     it("works on component root", () => {
-      const components = [
-        mkComponent({
-          name: "NumDisp",
-          params: [
-            mkParam({
-              name: "input",
-              type: typeFactory.num(),
-              exportType: ParamExportType.External,
-              paramType: "prop",
-            }),
-          ],
-          tplTree: mkTplTagX("div", {}),
-          type: ComponentType.Plain,
-        }),
-      ];
+      const component = mkComponent({
+        name: "SomeComponent",
+        tplTree: tpls.mkTplTag("div"),
+        type: ComponentType.Plain,
+      });
 
-      components.forEach((c) => tpls.trackComponentRoot(c));
-
-      const origRoot = ensure(components[0].tplTree, "Should exist");
-      const newRoot = mkTplTagX("div", {});
+      const origRoot = ensure(component.tplTree, "Should exist");
+      const newRoot = tpls.mkTplTag("div");
       $$$(origRoot).wrap(newRoot);
-      expect(uids([components[0].tplTree])).toEqual(uids([newRoot]));
+      expect(uids([component.tplTree])).toEqual(uids([newRoot]));
       expect(origRoot.parent).toBe(newRoot);
-      expect(tpls.getTplOwnerComponent(newRoot)).toBe(components[0]);
+      expect(tpls.getTplOwnerComponent(newRoot)).toBe(component);
       expect(uids(newRoot.children)).toEqual(uids([origRoot]));
     });
     it("should work on TplComponent wrapper", function () {
@@ -323,30 +314,17 @@ describe("TplQuery", function () {
       expect(b.parent).toBe(null);
     });
     it("works on component roots", function () {
-      let newRoot;
-      const components = [
-        mkComponent({
-          name: "NumDisp",
-          params: [
-            mkParam({
-              name: "input",
-              type: typeFactory.num(),
-              exportType: ParamExportType.External,
-              paramType: "prop",
-            }),
-          ],
-          tplTree: mkTplTagX("div", {}),
-          type: ComponentType.Plain,
-        }),
-      ];
-      components.forEach((c) => tpls.trackComponentRoot(c));
-      const origRoot = ensureKnownTplTag(components[0].tplTree);
-      $$$(origRoot).replaceWith(
-        (newRoot = tpls.mkTplTag("div", mkTplTestText("B")))
-      );
-      expect(uids([components[0].tplTree])).toEqual(uids([newRoot]));
+      const component = mkComponent({
+        name: "SomeComponent",
+        tplTree: tpls.mkTplTag("div"),
+        type: ComponentType.Plain,
+      });
+      const origRoot = ensureKnownTplTag(component.tplTree);
+      const newRoot = tpls.mkTplTag("div", mkTplTestText("B"));
+      $$$(origRoot).replaceWith(newRoot);
+      expect(uids([component.tplTree])).toEqual(uids([newRoot]));
       expect(origRoot.parent).toBe(null);
-      expect(tpls.getTplOwnerComponent(newRoot)).toBe(components[0]);
+      expect(tpls.getTplOwnerComponent(newRoot)).toBe(component);
     });
   });
   describe("remove", () =>
@@ -386,6 +364,18 @@ describe("TplQuery", function () {
       expect(root.children.length).toEqual(4);
       expect(root.children[1]).toBe(groupedItem1);
       expect(root.children[2]).toBe(groupedItem2);
+    });
+    it("works on component roots", () => {
+      const groupedItem = mkTplTestText("Hello, world!");
+      const containerGroup = tpls.mkTplTag("main", groupedItem);
+      const component = mkComponent({
+        name: "SomeComponent",
+        tplTree: containerGroup,
+        type: ComponentType.Plain,
+      });
+      $$$(containerGroup).ungroup();
+      expect(containerGroup.parent).toBeNull();
+      expect(component.tplTree).toBe(groupedItem);
     });
   });
   describe("beforeAfter", () => {
