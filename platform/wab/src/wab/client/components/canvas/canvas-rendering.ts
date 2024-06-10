@@ -334,7 +334,7 @@ export interface RenderingCtx {
 
   // This is used to enable code components interaction variants in the canvas
   $ccInteractions: Record<string, boolean>;
-  updateInteractionVariant: (key: string, value: boolean) => void;
+  updateInteractionVariant: (changes: Record<string, boolean>) => void;
 }
 
 interface CanvasComponentProps
@@ -885,12 +885,12 @@ function useCtxFromInternalComponentProps(
   // always create these values during the canvas component initialization.
   const [$ccInteractions, setDollarCcInteractions] = sub.React.useState({});
   const updateInteractionVariant = sub.React.useCallback(
-    (key: string, value: boolean) => {
+    (changes: Record<string, boolean>) => {
       setDollarCcInteractions((prev) => {
-        if (prev[key] === value) {
+        if (!Object.keys(changes).some((k) => prev[k] !== changes[k])) {
           return prev;
         }
-        return { ...prev, [key]: value };
+        return { ...prev, ...changes };
       });
     },
     []

@@ -86,7 +86,6 @@ import {
   getProjectFlags,
 } from "@/wab/devflags";
 import {
-  code as toCode,
   codeLit,
   ExprCtx,
   extractReferencedParam,
@@ -94,6 +93,7 @@ import {
   getRawCode,
   jsonLit,
   removeFallbackFromDataSourceOp,
+  code as toCode,
   tryExtractJson,
 } from "@/wab/exprs";
 import { ImageAssetType } from "@/wab/image-asset-type";
@@ -242,8 +242,8 @@ import {
   extractAllVariantCombosForText,
   genLocalizationString,
   isLocalizableTextBlock,
-  LocalizableStringSource,
   LOCALIZABLE_HTML_ATTRS,
+  LocalizableStringSource,
   LocalizationConfig,
   makeLocalizationStringKey,
 } from "@/wab/shared/localization";
@@ -2225,12 +2225,12 @@ export function serializeInteractionVariantsTriggers(tplRoot: TplNode) {
     const [$ccInteractions, setDollarCcInteractions] = React.useState<Record<string, boolean>>({
       ${interactionVariantKeys.map((key) => `${key}: false`).join(",\n")}
     });
-    const updateInteractionVariant = React.useCallback((key: string, value: boolean) => {
+    const updateInteractionVariant = React.useCallback((changes: Record<string, boolean>) => {
       setDollarCcInteractions((prev) => {
-        if (prev[key] === value) {
+        if (!Object.keys(changes).some((k) => prev[k] !== changes[k])) {
           return prev;
         }
-        return { ...prev, [key]: value }
+        return { ...prev, ...changes }
       });
     }, []);
   `;
