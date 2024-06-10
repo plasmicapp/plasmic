@@ -32,7 +32,7 @@ class FileCache {
   async clear() {
     const fs = await serverRequireFs();
     try {
-      fs.promises.unlink(this.filePath);
+      await fs.promises.unlink(this.filePath);
     } catch (err) {
       // noop
     }
