@@ -1199,6 +1199,12 @@ const styleForDefaultFrameMixin = (
       if (node.itemSpacing > 0) {
         style["flex-column-gap"] = `${node.itemSpacing}px`;
       }
+      if (node.layoutWrap === "WRAP") {
+        style["flex-wrap"] = "wrap";
+        style["flex-row-gap"] = `${
+          node.counterAxisSpacing ?? node.itemSpacing ?? 0
+        }px`;
+      }
     } else if (node.layoutMode === "VERTICAL") {
       if (node.primaryAxisSizingMode === "AUTO") {
         style.height = "wrap";

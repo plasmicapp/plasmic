@@ -483,15 +483,19 @@ interface BaseFrameMixin
   layoutMode: "NONE" | "HORIZONTAL" | "VERTICAL";
   primaryAxisSizingMode: "FIXED" | "AUTO"; // applicable only if layoutMode != "NONE"
   counterAxisSizingMode: "FIXED" | "AUTO"; // applicable only if layoutMode != "NONE"
+  layoutWrap: "NO_WRAP" | "WRAP"; // applicable only if layoutMode == "HORIZONTAL"
 
   primaryAxisAlignItems: "MIN" | "MAX" | "CENTER" | "SPACE_BETWEEN"; // applicable only if layoutMode != "NONE"
   counterAxisAlignItems: "MIN" | "MAX" | "CENTER"; // applicable only if layoutMode != "NONE"
+  counterAxisAlignContent: "AUTO" | "SPACE_BETWEEN"; // applicable only if layoutWrap == "WRAP"
 
   paddingLeft: number; // applicable only if layoutMode != "NONE"
   paddingRight: number; // applicable only if layoutMode != "NONE"
   paddingTop: number; // applicable only if layoutMode != "NONE"
   paddingBottom: number; // applicable only if layoutMode != "NONE"
   itemSpacing: number; // applicable only if layoutMode != "NONE"
+
+  counterAxisSpacing: number | null; // applicable only if layoutWrap == "WRAP"
 
   horizontalPadding: number; // DEPRECATED: use the individual paddings
   verticalPadding: number; // DEPRECATED: use the individual paddings
