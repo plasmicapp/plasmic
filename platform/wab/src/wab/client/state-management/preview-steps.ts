@@ -7,7 +7,7 @@ import { ensure } from "@/wab/common";
 import { ExprCtx, getRawCode } from "@/wab/exprs";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { evalCodeWithEnv } from "@/wab/shared/eval";
-import { parseJsCode } from "@/wab/shared/parser-utils";
+import { isValidJavaScriptCode, parseJsCode } from "@/wab/shared/parser-utils";
 import {
   extractEventArgsNameFromEventHandler,
   findKeyForEventHandler,
@@ -143,6 +143,11 @@ export function runInteractionCode(
   viewCtx: ViewCtx,
   tpl: TplComponent | TplTag
 ) {
+  ensure(
+    isValidJavaScriptCode(interactionCode),
+    "Invalid javascript code for interaction"
+  );
+
   const exprCtx: ExprCtx = {
     projectFlags: viewCtx.projectFlags(),
     component: viewCtx.currentComponent(),

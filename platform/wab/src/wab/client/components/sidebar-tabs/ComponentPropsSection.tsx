@@ -88,6 +88,7 @@ import { getExportedComponentName } from "@/wab/shared/codegen/react-p/utils";
 import { wabToTsType } from "@/wab/shared/core/model-util";
 import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { VARIABLE_LOWER } from "@/wab/shared/Labels";
+import { isValidJavaScriptCode } from "@/wab/shared/parser-utils";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import {
@@ -559,6 +560,13 @@ export function InteractionExprEditor(props: {
             currentInteraction,
             "should have an interaction to execute a run code action"
           );
+          if (!isValidJavaScriptCode(runValue)) {
+            notification.error({
+              message: "Invalid JavaScript code",
+              description: "Please check your code and try again.",
+            });
+            return;
+          }
           if (
             doesCodeDependsOnPreviousStepsOrEventArgs(
               runValue,
