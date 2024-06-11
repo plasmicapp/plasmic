@@ -474,7 +474,7 @@ export function mkEventHandlerEnv(
         return fn();
       } catch (error) {
         trapInteractionError(studioCtx, loc, error);
-        error.__wab_error_handled = true;
+        error.plasmicIgnoreError = true;
         throw error;
       }
     },
@@ -486,7 +486,7 @@ export function mkEventHandlerEnv(
         return await promise;
       } catch (error) {
         trapInteractionError(studioCtx, loc, error);
-        error.__wab_error_handled = true;
+        error.plasmicIgnoreError = true;
         throw error;
       }
     },

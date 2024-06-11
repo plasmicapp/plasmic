@@ -77,22 +77,16 @@ export function handleError(error: Error, source?: string) {
     return;
   }
   setTimeout(() => {
-    // @ts-ignore
-    if (!error.__wab_error_handled) {
-      if (DEVFLAGS.debug || shouldShowError(error)) {
-        showError(error);
-      }
+    if (DEVFLAGS.debug || shouldShowError(error)) {
+      showError(error);
     }
   }, 0);
   setTimeout(() => {
-    // @ts-ignore
-    if (!error.__wab_error_handled) {
-      stampObjectUuid(error);
-      Sentry.captureException(error);
-      analytics.track("Error", {
-        error: shallowJson(error),
-      });
-    }
+    stampObjectUuid(error);
+    Sentry.captureException(error);
+    analytics.track("Error", {
+      error: shallowJson(error),
+    });
   }, 0);
 }
 
@@ -156,6 +150,14 @@ export function shouldIgnoreError(error: Error, source?: string) {
     error.message?.toLowerCase().includes("debug failure") &&
     source?.toLowerCase().includes("monaco")
   ) {
+    return true;
+  }
+
+  // Errors in studio or in server that are considered out of our control are stamped
+  // with `plasmicIgnoreError`. This includes:
+  // - Errors thrown by event handlers created by the user
+  // - 403 errors from data sources
+  if (error["plasmicIgnoreError"]) {
     return true;
   }
 
