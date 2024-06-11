@@ -5,14 +5,13 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import * as Immutable from "immutable";
 import type { MemoizedFunction } from "lodash";
 import {
+  Truthy,
   assignIn,
   assignWith,
   camelCase,
-  chunk as lodashChunk,
   clamp,
   dropRight,
   flattenDeep,
-  get as lodashGet,
   identity,
   isArray,
   isBoolean,
@@ -24,14 +23,15 @@ import {
   isNumber,
   isObject,
   isString,
+  chunk as lodashChunk,
+  get as lodashGet,
+  range as lodashRange,
   memoize,
   mergeWith,
   pickBy,
-  range as lodashRange,
   reverse,
   split,
   takeWhile,
-  Truthy,
   uniqBy,
   uniqueId,
   upperFirst,
@@ -2785,13 +2785,17 @@ export class PromiseTimeoutError extends CustomError {
   }
 }
 
-export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+export function withTimeout<T>(
+  promise: Promise<T>,
+  msg: string,
+  ms: number = 60 * 1000 // 1 minute
+): Promise<T> {
   let timeoutId: NodeJS.Timeout;
   return Promise.race([
     promise.finally(() => clearTimeout(timeoutId!)),
     new Promise<never>(
       (_resolve, reject) =>
-        (timeoutId = setTimeout(() => reject(new PromiseTimeoutError()), ms))
+        (timeoutId = setTimeout(() => reject(new PromiseTimeoutError(msg)), ms))
     ),
   ]);
 }

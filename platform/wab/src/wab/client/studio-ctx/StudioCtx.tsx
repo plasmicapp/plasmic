@@ -4687,6 +4687,7 @@ export class StudioCtx extends WithDbCtx {
             branchId: this.dbCtx().branchInfo?.id,
             modifiedComponentIids,
           }),
+          "Saving project revision timed out",
           // Two-minute timeout
           120 * 1000
         );
@@ -4711,9 +4712,10 @@ export class StudioCtx extends WithDbCtx {
         return SaveResult.Success;
       } catch (e) {
         if (e.name === "ProjectRevisionError") {
-          return await withTimeout(this.fetchUpdates(), 60 * 1000).then(() =>
-            this.trySave(preferIncremental)
-          );
+          return await withTimeout(
+            this.fetchUpdates(),
+            "Sync with latest updates timed out"
+          ).then(() => this.trySave(preferIncremental));
         } else if (e.name === "ForbiddenError") {
           showForbiddenError();
           this.alertBannerState.set(AlertSpec.PermError);

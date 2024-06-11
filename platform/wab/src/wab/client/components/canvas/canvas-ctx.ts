@@ -14,11 +14,16 @@ import {
 import * as domMod from "@/wab/client/dom";
 import { NodeAndOffset } from "@/wab/client/dom";
 import { scriptExec, upsertJQSelector } from "@/wab/client/dom-utils";
-import { handleError, reportError } from "@/wab/client/ErrorNotifications";
+import { handleError } from "@/wab/client/ErrorNotifications";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import * as common from "@/wab/common";
-import { ensure, ensureInstance } from "@/wab/common";
+import {
+  ensure,
+  ensureInstance,
+  spawn,
+  spawnWrapper,
+  withTimeout,
+} from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
 import { Box } from "@/wab/geom";
 import {
@@ -49,6 +54,12 @@ import React from "react";
 declare const COMMITHASH: string;
 
 let gCanvasCtxIndex = 0;
+
+/**
+ * Timeout for waiting for canvas-ctx to be ready.
+ * We are generous here because we don't want to timeout too early
+ */
+const CANVAS_CTX_TIMEOUT_PERIOD = 3 * 60 * 1000; // 3 minutes
 
 export class CanvasCtx {
   /**
@@ -107,7 +118,7 @@ export class CanvasCtx {
     const previousFetch = this._hostLessPkgsLock;
     this.updatingCcRegistryCount++;
     this._hostLessPkgsLock = new Promise(
-      common.spawnWrapper(async (resolve: () => void) => {
+      spawnWrapper(async (resolve: () => void) => {
         await previousFetch;
         const pkgsData = await getSortedHostLessPkgs(pkgs);
         runInAction(() => {
@@ -136,7 +147,7 @@ export class CanvasCtx {
 
   private updatePkgsList(pkgs: string[]) {
     if (pkgs.some((pkg) => !this.installedHostLessPkgs.has(pkg))) {
-      common.spawn(this.updateCcRegistry(pkgs));
+      spawn(this.updateCcRegistry(pkgs));
     }
   }
 
@@ -155,19 +166,6 @@ export class CanvasCtx {
     arenaFrame: ArenaFrame,
     sc: StudioCtx
   ) {
-    async function awaitOrLog(promise: Promise<any>, errorMsg: string) {
-      let resolved = false;
-      promise
-        .then(() => (resolved = true))
-        .catch((error) => reportError(error));
-      setTimeout(() => {
-        if (!resolved) {
-          reportError(new Error(errorMsg));
-        }
-      }, 10000);
-      return await promise;
-    }
-
     this.installedHostLessPkgs.clear();
     this._$viewport = $viewport;
     this._win = ensure(
@@ -213,9 +211,10 @@ export class CanvasCtx {
       })
     );
     yield "user-body-wait";
-    this._$userBody = await awaitOrLog(
+    this._$userBody = await withTimeout(
       this.waitForUserBody(),
-      "Couldn't get userBody"
+      "Couldn't get userBody",
+      CANVAS_CTX_TIMEOUT_PERIOD
     );
     // We reinsert things because some frameworks (Remix Hydrogen dev server) blow away the entire document.
     // We also do it earlier so that we can intercept clicks as much as possible, rather than waiting for __wab_user_body first.
@@ -244,11 +243,19 @@ export class CanvasCtx {
     yield "script-wait";
     scriptExec(
       this._win,
-      await awaitOrLog(getCanvasPkgs(), "Couldn't get canvasPkgs.")
+      await withTimeout(
+        getCanvasPkgs(),
+        "Couldn't get canvasPkgs.",
+        CANVAS_CTX_TIMEOUT_PERIOD
+      )
     );
     scriptExec(
       this._win,
-      await awaitOrLog(getReactWebBundle(), "Couldn't get reactWebBundle.")
+      await withTimeout(
+        getReactWebBundle(),
+        "Couldn't get reactWebBundle.",
+        CANVAS_CTX_TIMEOUT_PERIOD
+      )
     );
 
     // Overwrite the default executePlasmicDataOp with a custom one for in-studio use
@@ -268,9 +275,10 @@ export class CanvasCtx {
       this.updatePkgsList(usedHostLessPkgs(sc.site))
     );
     yield "hostless-wait";
-    await awaitOrLog(
+    await withTimeout(
       this.hostLessPkgsLock,
-      "Couldn't acquire hostLessPkgsLock."
+      "Couldn't acquire hostLessPkgsLock.",
+      CANVAS_CTX_TIMEOUT_PERIOD
     );
 
     const hostWin = (DEVFLAGS.artboardEval ? this._win : window) as any;
@@ -339,7 +347,7 @@ export class CanvasCtx {
       { maxWait: 500 }
     );
 
-    common.spawn(
+    spawn(
       this.waitForUserBody().then(($userBody) => {
         // If there's already a resizeObserver, it might be from another frame
         // so we just disconnect it to then reconnect to a diff dom element
