@@ -7,6 +7,7 @@ import {
 import { Matcher } from "@/wab/client/components/view-common";
 import Button from "@/wab/client/components/widgets/Button";
 import Checkbox from "@/wab/client/components/widgets/Checkbox";
+import { Icon } from "@/wab/client/components/widgets/Icon";
 import Textbox from "@/wab/client/components/widgets/Textbox";
 import { getInvalidDomNesting } from "@/wab/client/lint-invalid-nesting-dom";
 import {
@@ -18,6 +19,7 @@ import {
   DefaultLeftLintIssuesPanelProps,
   PlasmicLeftLintIssuesPanel,
 } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftLintIssuesPanel";
+import EmojiHappysvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__EmojiHappysvg";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { maybe, xGroupBy } from "@/wab/common";
 import {
@@ -28,9 +30,8 @@ import { DEVFLAGS } from "@/wab/devflags";
 import { LintIssue, LintIssueType } from "@/wab/shared/linting/lint-types";
 import { lintSite as lintUnprotectedDataQueries } from "@/wab/shared/linting/lint-unprotected-data-queries";
 import { lintSite } from "@/wab/shared/linting/lint-utils";
-import { DownOutlined, SmileOutlined } from "@ant-design/icons";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { Empty, notification, Popover, Space } from "antd";
+import { Empty, Popover, Space, notification } from "antd";
 import { groupBy } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -208,10 +209,7 @@ const SiteIssuesList = observer(function SiteIssuesList() {
                 className={"flex-no-shrink"}
                 onClick={(e) => e.preventDefault()}
               >
-                <Space>
-                  Types
-                  <DownOutlined />
-                </Space>
+                <Space>Types</Space>
               </a>
             </Popover>
           </div>
@@ -240,8 +238,8 @@ const SiteIssuesList = observer(function SiteIssuesList() {
       ) : (
         <Empty
           className={"mt-xxlg"}
-          image={<SmileOutlined style={{ fontSize: 20 }} />}
-          imageStyle={{ height: "20px" }}
+          image={<Icon icon={EmojiHappysvgIcon} size={24} />}
+          imageStyle={{ height: "24px" }}
           description={"No issues!"}
         ></Empty>
       )}

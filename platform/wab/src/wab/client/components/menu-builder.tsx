@@ -1,11 +1,13 @@
 import { comboToKeyLabels } from "@/wab/client/components/studio/Shortcuts";
 import { extractEventProps, trackEvent } from "@/wab/client/tracking";
 import { ensure, filterFalsy } from "@/wab/common";
-import { joinReactNodes, MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { MaybeWrap, joinReactNodes } from "@/wab/commons/components/ReactUtil";
+import type { MenuProps } from "antd";
 import { Menu, Tooltip } from "antd";
 import L from "lodash";
-import { MenuInfo } from "rc-menu/lib/interface";
 import React from "react";
+
+type onMenuClick = MenuProps["onClick"];
 
 interface MenuBuilderFrame {
   type: "root" | "group" | "sub";
@@ -93,7 +95,7 @@ export class MenuBuilder {
 
   build(
     opts: {
-      onMenuClick?: (param: MenuInfo) => void;
+      onMenuClick?: onMenuClick;
       subMenuCloseDelay?: number;
       menuName?: string;
     } = {}

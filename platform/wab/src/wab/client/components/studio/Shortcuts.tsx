@@ -5,7 +5,7 @@ import {
   TEXT_ICON,
   VERT_STACK_ICON,
 } from "@/wab/client/icons";
-import { mkNoActionShortcuts, Shortcut } from "@/wab/client/shortcuts/shortcut";
+import { Shortcut, mkNoActionShortcuts } from "@/wab/client/shortcuts/shortcut";
 import {
   CHROME_SHORTCUT_GROUP,
   EDIT_SHORTCUT_GROUP,
@@ -15,7 +15,6 @@ import {
   VIEW_SHORTCUT_GROUP,
 } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { SearchOutlined } from "@ant-design/icons";
 import { Input, Tag } from "antd";
 import cn from "classnames";
 import L from "lodash";
@@ -49,7 +48,6 @@ export const ShortcutsModal = observer(
         >
           <div className={styles.scrollableShortcuts}>
             <Input
-              addonBefore={<SearchOutlined />}
               placeholder="Search shortcuts here..."
               onChange={(e) => setSearchQuery(e.target.value)}
               className={styles.searchInput}
