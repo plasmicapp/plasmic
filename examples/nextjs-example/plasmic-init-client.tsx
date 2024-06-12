@@ -13,10 +13,13 @@ import React from "react";
 // https://docs.plasmic.app/learn/app-hosting/#set-a-plasmic-project-to-use-your-app-host
 
 PLASMIC.registerComponent(CodeComponent, {
-  name: "CodeComponent",
+  name: "My Code Component",
   props: {
     children: "slot",
   },
+  section: "Example components",
+  thumbnailUrl:
+    "https://site-assets.plasmic.app/744209a6041e927f550afff230a012f5.svg",
 });
 
 /**
