@@ -463,7 +463,7 @@ const WarnChangeDep = observer(function WarnChangeDep_(props: {
     <>
       {heading}
       {diffs.length > 0 && (
-        <div>
+        <div className="mb-m">
           The changes are:
           <SiteDiffs diffs={diffs} />
         </div>
@@ -552,7 +552,7 @@ const WarnChangeDepForm = observer(function WarnChangeDepForm_(props: {
   return (
     <Form onFinish={() => onSubmit(true)}>
       {children}
-      <Form.Item>
+      <Form.Item className="m0">
         <Button
           className="mr-sm"
           type="primary"

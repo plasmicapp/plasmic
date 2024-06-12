@@ -26,8 +26,6 @@ import L, { uniq } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 
-React;
-
 export const SiteDiffs = observer(function SideDiffs(props: {
   diffs: ChangeLogEntry[];
 }) {

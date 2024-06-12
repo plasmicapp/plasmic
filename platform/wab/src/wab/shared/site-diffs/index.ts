@@ -56,6 +56,7 @@ import {
   isStandaloneVariantGroup,
   VariantGroupType,
 } from "@/wab/shared/Variants";
+import { isHostLessPackage } from "@/wab/sites";
 import { SplitStatus } from "@/wab/splits";
 import { isPrivateState } from "@/wab/states";
 import {
@@ -428,13 +429,15 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
 
   // site.globalVariantGroups
   // site.globalVariantGroups[i].variants
-  results.push(
-    ...checkVariantGroups(
-      prev.globalVariantGroups,
-      curr.globalVariantGroups,
-      "global"
-    )
-  );
+  if (!isHostLessPackage(prev) && !isHostLessPackage(curr)) {
+    results.push(
+      ...checkVariantGroups(
+        prev.globalVariantGroups,
+        curr.globalVariantGroups,
+        "global"
+      )
+    );
+  }
 
   // site.mixins
   results.push(
