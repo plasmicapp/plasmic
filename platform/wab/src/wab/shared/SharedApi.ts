@@ -1310,10 +1310,6 @@ export abstract class SharedApi {
     return this.post("/admin/upgrade-team", args);
   }
 
-  async updateCodeSandboxToken(token: string) {
-    return this.post("/admin/codesandbox-token", { token });
-  }
-
   async getAppConfig(): Promise<AppConfigResponse> {
     return this.get("/app-config");
   }

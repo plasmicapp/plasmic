@@ -85,8 +85,8 @@ import {
   deleteRow,
   deleteTable,
   getCmsDatabaseAndSecretTokenById,
-  getDatabaseMeta,
   getRow as getCmseRow,
+  getDatabaseMeta,
   getRowRevision,
   listDatabases,
   listDatabasesMeta,
@@ -223,7 +223,6 @@ import {
   deleteCommentInProject,
   deleteProject,
   deleteThreadInProject,
-  detachCodeSandbox,
   fmtCode,
   genCode,
   genIcons,
@@ -251,7 +250,6 @@ import {
   listProjects,
   listProjectVersionsWithoutData,
   postCommentInProject,
-  publishCodeSandbox,
   publishProject,
   removeReactionFromComment,
   removeSelfPerm,
@@ -260,7 +258,6 @@ import {
   revertToVersion,
   saveProjectRev,
   setMainBranchProtection,
-  shareCodeSandbox,
   tryMergeBranch,
   updateBranch,
   updateHostUrl,
@@ -1523,11 +1520,6 @@ export function addMainAppServerRoutes(
     withNext(adminRoutes.getSsoByTeam)
   );
   app.post(
-    "/api/v1/admin/codesandbox-token",
-    adminOnly,
-    withNext(adminRoutes.updateCodeSandboxToken)
-  );
-  app.post(
     "/api/v1/admin/create-tutorial-db",
     adminOnly,
     withNext(adminRoutes.createTutorialDb)
@@ -1653,18 +1645,6 @@ export function addMainAppServerRoutes(
     "/api/v1/projects/import",
     adminOrDevelopmentEnvOnly,
     withNext(importProject)
-  );
-  app.post(
-    "/api/v1/projects/:projectId/publish-codesandbox",
-    withNext(publishCodeSandbox)
-  );
-  app.post(
-    "/api/v1/projects/:projectId/share-codesandbox",
-    withNext(shareCodeSandbox)
-  );
-  app.post(
-    "/api/v1/projects/:projectId/detach-codesandbox",
-    withNext(detachCodeSandbox)
   );
   app.get(
     "/api/v1/projects/:projectId/meta",

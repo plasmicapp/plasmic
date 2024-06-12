@@ -27,7 +27,6 @@ interface Secrets {
   encryptionKey?: string;
   dataSourceOperationEncryptionKey?: string;
   smtpPass?: string;
-  codesandboxToken?: string;
   intercomToken?: string;
   /** Optional Segment write key. Should have this on prod. */
   segmentWriteKey?: string;
@@ -111,10 +110,6 @@ export function getSmtpPass() {
 
 export function getIntercomToken() {
   return loadSecrets().intercomToken;
-}
-
-export function getCodesandboxToken() {
-  return loadSecrets().codesandboxToken ?? "fake";
 }
 
 export function getGithubSecrets() {

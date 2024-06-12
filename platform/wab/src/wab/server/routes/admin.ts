@@ -1,4 +1,3 @@
-import { fetchUser, verifyUser } from "@/wab/codesandbox/api";
 import { assert, ensure, ensureType, uncheckedCast } from "@/wab/common";
 import {
   PkgVersion,
@@ -17,10 +16,9 @@ import {
   mkApiProject,
 } from "@/wab/server/routes/projects";
 import { getUser, superDbMgr, userDbMgr } from "@/wab/server/routes/util";
-import { updateSecrets } from "@/wab/server/secrets";
 import {
-  resetTutorialDb as doResetTutorialDb,
   TutorialType,
+  resetTutorialDb as doResetTutorialDb,
 } from "@/wab/server/tutorialdb/tutorialdb-utils";
 import { doLogin } from "@/wab/server/util/auth-util";
 import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
@@ -232,19 +230,6 @@ export async function getDevFlagVersions(req: Request, res: Response) {
   const mgr = superDbMgr(req);
   const versions = await mgr.getDevFlagVersions();
   res.json({ versions });
-}
-
-export async function updateCodeSandboxToken(req: Request, res: Response) {
-  const newToken = req.body.token;
-  // Make sure the new token works!  (If it doesn't, an error is thrown)
-  try {
-    const { token, user } = await verifyUser(newToken);
-    const csUser = await fetchUser(token);
-    updateSecrets({ codesandboxToken: token });
-    res.json({ user, token });
-  } catch (e) {
-    res.json({ error: `${e}` });
-  }
 }
 
 export async function cloneProject(req: Request, res: Response) {

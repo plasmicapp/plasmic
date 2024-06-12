@@ -6,13 +6,6 @@ import {
   Site,
 } from "@/wab/classes";
 import { modelSchemaHash } from "@/wab/classes-metas";
-import { getSandbox, shareSandbox } from "@/wab/codesandbox/api";
-import {
-  createNewSandbox,
-  getCodesandboxOpts,
-  getVersionTxt,
-  updateSandbox,
-} from "@/wab/codesandbox/utils";
 import { Dict, mkIdMap } from "@/wab/collections";
 import {
   arrayEqIgnoreOrder,
@@ -20,7 +13,6 @@ import {
   ensure,
   ensureType,
   maybe,
-  maybes,
   mkShortId,
   mkUuid,
   strictFind,
@@ -85,7 +77,6 @@ import {
   userAnalytics,
   userDbMgr,
 } from "@/wab/server/routes/util";
-import { getCodesandboxToken } from "@/wab/server/secrets";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
 import { TutorialType } from "@/wab/server/tutorialdb/tutorialdb-utils";
 import { withSpan } from "@/wab/server/util/apm-util";
@@ -160,7 +151,6 @@ import { exportStyleConfig } from "@/wab/shared/codegen/react-p";
 import { exportStyleTokens } from "@/wab/shared/codegen/style-tokens";
 import { ExportOpts } from "@/wab/shared/codegen/types";
 import { toClassName } from "@/wab/shared/codegen/util";
-import { CodeSandboxInfo } from "@/wab/shared/db-json-blobs";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { DomainValidator } from "@/wab/shared/hosting";
 import { createTaggedResourceId } from "@/wab/shared/perms";
@@ -177,7 +167,6 @@ import {
 } from "@/wab/sites";
 import { getCodegenUrl } from "@/wab/urls";
 import * as Sentry from "@sentry/node";
-import { ISandbox } from "codesandbox-import-util-types";
 import { Request, Response } from "express-serve-static-core";
 import {
   fromPairs,
@@ -2429,176 +2418,6 @@ async function getLatestRevisionSynced(
 ): Promise<number> {
   // Revision number starts from 1
   return (await mgr.tryGetLatestRevisionSynced(projectId))?.revision || 0;
-}
-
-// Security model - anyone with view permission can trigger publishProject.
-// If current user has edit permission, we share the edit permission with
-// current user.
-export async function publishCodeSandbox(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  const projectId = req.params.projectId;
-  await mgr.checkProjectPerms(
-    projectId,
-    "editor",
-    "create or update sandbox",
-    false,
-    "Please make sure you have edit access to the Plasmic project before trying again."
-  );
-  req.promLabels.projectId = projectId;
-  const token = getCodesandboxToken();
-  const project = await mgr.getProjectById(projectId);
-  const sandboxInfo: Partial<CodeSandboxInfo> = req.body;
-  const scheme =
-    maybes(sandboxInfo)((x) => x.code)((x) => x.scheme)() || "blackbox";
-
-  // Create the sandbox if one doesn't exist
-  const sandboxId =
-    sandboxInfo.id ?? (await createNewSandbox(project.name, token));
-  const existingSandbox = (await getSandbox(token, sandboxId)) as ISandbox;
-  const version = getVersionTxt(existingSandbox);
-  const codesandboxOpts = getCodesandboxOpts(version);
-
-  const resolution: VersionResolution = await doResolveSync(
-    mgr,
-    mgr,
-    req.bundler,
-    projectId,
-    undefined,
-    semver.latestTag,
-    undefined,
-    true
-  );
-  // there should be no conflicts when we resolve from a single top-level project
-  assert(
-    resolution.conflicts.length === 0,
-    `${resolution.conflicts.length} conflicts`
-  );
-
-  // Create a new sandbox if not specified
-  let totalComponents = 0;
-  const projectMetas = [
-    ...resolution.projects,
-    ...resolution.dependencies,
-  ].reverse();
-  for (const projectMeta of projectMetas) {
-    const currProject = await mgr.getProjectById(projectMeta.projectId);
-    const { output, site } = await req.workerpool.exec("codegen", [
-      {
-        scheme: "blackbox",
-        connectionOptions: getConnection().options,
-        projectId: currProject.id,
-        exportOpts: codesandboxOpts.codegenOpts,
-        componentIdOrNames: projectMeta.componentIds,
-        maybeVersionOrTag: projectMeta.version,
-        indirect: currProject.id !== projectId,
-      },
-    ]);
-    totalComponents += output.components.length;
-
-    const iconAssets = doGenIcons(site, projectMeta.iconIds);
-
-    // get or create sandbox
-    await updateSandbox(
-      site,
-      token,
-      sandboxId,
-      codesandboxOpts,
-      {
-        ...output,
-        iconAssets,
-        styleConfig: getFormattedStyleConfig({
-          targetEnv: codesandboxOpts.codegenOpts.targetEnv,
-          stylesOpts: codesandboxOpts.codegenOpts.stylesOpts,
-        }),
-      },
-      scheme
-    );
-  }
-
-  // If the sandboxId hasn't been saved in the project yet
-  if (!sandboxInfo.id) {
-    // save new sandboxId
-    const codeSandboxInfos = [
-      ...(project.codeSandboxInfos || []),
-      {
-        id: sandboxId,
-        code: {
-          lang: "ts",
-          scheme: scheme,
-        },
-      } as CodeSandboxInfo,
-    ];
-    await mgr.updateProject({ id: project.id, codeSandboxInfos });
-    // Send an invite to all users with editor permission.
-    const perms = await mgr.getPermissionsForProject(project.id);
-    for (const perm of perms) {
-      if (accessLevelRank(perm.accessLevel) >= accessLevelRank("editor")) {
-        const email = perm.user?.email || perm.email;
-        if (email) {
-          await shareSandbox(token, sandboxId, email, "WRITE_CODE", true);
-        }
-      }
-    }
-    if (project.createdById) {
-      const creator = await mgr.tryGetUserById(project.createdById);
-      if (creator?.email) {
-        await shareSandbox(token, sandboxId, creator.email, "WRITE_CODE", true);
-      }
-    }
-  }
-  userAnalytics(req).track({
-    event: "Codesandbox codegen",
-    properties: {
-      projectId: project.id,
-      projectName: project.name,
-      numComponents: totalComponents,
-      scheme,
-      sandboxId,
-    },
-  });
-  res.json({ id: sandboxId });
-}
-
-export async function shareCodeSandbox(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  await mgr.checkProjectPerms(
-    req.params.projectId,
-    "editor",
-    "create or update sandbox",
-    false,
-    "Please make sure you have edit access to the Plasmic project before trying again."
-  );
-  req.promLabels.projectId = req.params.projectId;
-  await mgr.getProjectById(req.params.projectId);
-  await shareSandbox(
-    getCodesandboxToken(),
-    req.body.sandboxId,
-    req.body.email,
-    "WRITE_CODE",
-    false
-  );
-  res.json({});
-}
-
-export async function detachCodeSandbox(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  await mgr.checkProjectPerms(
-    req.params.projectId,
-    "editor",
-    "create or update sandbox",
-    false,
-    "Please make sure you have edit access to the Plasmic project before trying again."
-  );
-  req.promLabels.projectId = req.params.projectId;
-  const project = await mgr.getProjectById(req.params.projectId);
-  const codeSandboxInfos = (project.codeSandboxInfos || []).filter(
-    (x) => x.id !== req.body.sandboxId
-  );
-  await mgr.updateProject({
-    id: req.params.projectId,
-    codeSandboxInfos,
-  });
-  res.json({});
 }
 
 export async function getProjectMeta(req: Request, res: Response) {

@@ -1319,35 +1319,6 @@
       "jsBundleThemes": []
     },
     {
-      "projectId": "8n4Jmw9HN2r6jnjKYgqsK4",
-      "projectName": "[PlasmicKit] Code Sandbox Dialog",
-      "version": ">=0.0.0",
-      "cssFilePath": "wab/client/plasmic/PP__plasmickit_code_sandbox_dialog.module.css",
-      "components": [
-        {
-          "id": "JH_eRAVS2Yo",
-          "name": "CodeSandboxDialogContent",
-          "type": "managed",
-          "projectId": "8n4Jmw9HN2r6jnjKYgqsK4",
-          "renderModuleFilePath": "wab/client/components/widgets/plasmic/PlasmicCodeSandboxDialogContent.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/widgets/plasmic/CodeSandboxDialogContent.tsx"
-          },
-          "cssFilePath": "wab/client/components/widgets/plasmic/PlasmicCodeSandboxDialogContent.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        }
-      ],
-      "icons": [],
-      "images": [],
-      "codeComponents": [],
-      "projectApiToken": "RFNg1VX0XAYBtGOrdQ1E9okOhgRQEaMzF9UynaHq37MYPWDAhcF0xC4VUmL31rgPR54A4T3hESDmLCIvtZFOfQ",
-      "jsBundleThemes": [],
-      "indirect": false,
-      "globalContextsFilePath": "",
-      "splitsProviderFilePath": ""
-    },
-    {
       "projectId": "kA1Hysr5ZeimtATHTDJz5B",
       "projectName": "[PlasmicKit] Share Dialog",
       "version": "latest",
@@ -10995,12 +10966,6 @@
         "name": "UnnamedGlobalVariantGroup",
         "projectId": "4dd7e277-5c92-4d86-86bc-a1bd1cd743f0",
         "contextFilePath": "wab/client/plasmic/PP__GlobalVariant__UnnamedGlobalVariantGroup.tsx"
-      },
-      {
-        "id": "060c7fb2-1964-471f-88ab-31809b3275e1",
-        "name": "Screen",
-        "projectId": "aBwbYpvCqht4V3F8CJNJX3",
-        "contextFilePath": "wab/client/plasmic/PP__GlobalVariant__Screen.tsx"
       },
       {
         "id": "2dzYbdw5Xtx",

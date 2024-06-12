@@ -2616,31 +2616,6 @@
       "codegenVersion": "0.0.1"
     },
     {
-      "projectId": "8n4Jmw9HN2r6jnjKYgqsK4",
-      "version": "latest",
-      "dependencies": {
-        "tXkSR39sgCDWSitZxC5xFV": "26.1.0"
-      },
-      "lang": "ts",
-      "fileLocks": [
-        {
-          "type": "renderModule",
-          "assetId": "JH_eRAVS2Yo",
-          "checksum": "b5a0e4fe87ef89b4b27f16563ce76032"
-        },
-        {
-          "type": "cssRules",
-          "assetId": "JH_eRAVS2Yo",
-          "checksum": "b5a0e4fe87ef89b4b27f16563ce76032"
-        },
-        {
-          "assetId": "8n4Jmw9HN2r6jnjKYgqsK4",
-          "type": "projectCss",
-          "checksum": "cdd4ddd0c9a34892e0bdc5881564a10a"
-        }
-      ]
-    },
-    {
       "projectId": "kA1Hysr5ZeimtATHTDJz5B",
       "version": "latest",
       "dependencies": {

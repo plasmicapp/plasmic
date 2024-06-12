@@ -567,7 +567,6 @@ export class StudioCtx extends WithDbCtx {
   _dbCtx: DbCtx;
   readonly clipboard = new LocalClipboard();
   fontManager: FontManager;
-  popupCodesandboxWindow: Window | null = null;
   previewCtx: PreviewCtx | undefined;
   _viewportCtx = observable.box<ViewportCtx | null>(null);
   get viewportCtx() {
