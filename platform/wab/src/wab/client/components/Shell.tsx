@@ -3,6 +3,7 @@ import { isProjectPath, isTopFrame } from "@/wab/client/cli-routes";
 import { initClientFlags } from "@/wab/client/client-dev-flags";
 import { Root } from "@/wab/client/components/root-view";
 import {
+  ERROR_PATTERNS_TO_IGNORE,
   handleError,
   shouldIgnoreError,
 } from "@/wab/client/ErrorNotifications";
@@ -150,6 +151,7 @@ export function main() {
         new Integrations.Dedupe(),
         new posthog.SentryIntegration(posthog, sentryOrgId, +sentryProjId),
       ],
+      ignoreErrors: ERROR_PATTERNS_TO_IGNORE,
       beforeSend(event, hint) {
         if (
           hint &&
