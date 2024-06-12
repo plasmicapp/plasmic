@@ -304,32 +304,6 @@
           "componentType": "component"
         },
         {
-          "id": "dpiIF1AKm9",
-          "name": "InlineAddDrawer",
-          "type": "managed",
-          "projectId": "aukbrhkegRkQ6KizvhdUPT",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicInlineAddDrawer.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/canvas/InlineAddDrawer/InlineAddDrawer.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicInlineAddDrawer.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "5cuG3IeJcb",
-          "name": "InlineInsertionPosition",
-          "type": "managed",
-          "projectId": "aukbrhkegRkQ6KizvhdUPT",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicInlineInsertionPosition.tsx",
-          "importSpec": {
-            "modulePath": "InlineInsertionPosition.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicInlineInsertionPosition.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
           "id": "wXKvVcr82I",
           "name": "LeftPagesPanel",
           "type": "managed",
@@ -4892,7 +4866,7 @@
     {
       "projectId": "fQPf2UiMEMhB52C8QQXwWe",
       "projectName": "[PlasmicKit] Omnibar",
-      "version": ">=0.0.0",
+      "version": "latest",
       "cssFilePath": "wab/client/plasmic/plasmic_kit_omnibar/plasmic_plasmic_kit_omnibar.module.css",
       "components": [
         {
@@ -4981,8 +4955,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "kdj5vahTyUKxznuR6rrtt6",
@@ -9890,7 +9863,7 @@
       "projectId": "caTPwKxj5ZrD9LQ7DMdK4Z",
       "projectApiToken": "vXGGQpdi9fhcncabBdg8DcMRUbkz0iRW6HS1jzQufQR6QH0MasPwr9SX7ap4SsK3xXwwXmzZtglWGe0Rm2nw",
       "projectName": "plasmic-basic-components",
-      "version": "3.6.0",
+      "version": "3.36.0",
       "cssFilePath": "wab/client/plasmic/plasmic_basic_components/plasmic_plasmic_basic_components.module.css",
       "components": [],
       "icons": [],
@@ -9901,26 +9874,49 @@
         {
           "id": "CMDBvOhaI4s",
           "name": "Iframe",
+          "displayName": "hostless-iframe",
           "componentImportPath": "@plasmicpkgs/plasmic-basic-components"
         },
         {
           "id": "RhitNJW5Zu-",
           "name": "Video",
+          "displayName": "hostless-html-video",
           "componentImportPath": "@plasmicpkgs/plasmic-basic-components"
         },
         {
           "id": "PKldDYkH42",
           "name": "Embed",
+          "displayName": "hostless-embed",
           "componentImportPath": "@plasmicpkgs/plasmic-basic-components"
         },
         {
           "id": "D4RbnlpRXg3",
           "name": "DataProvider",
+          "displayName": "hostless-data-provider",
+          "componentImportPath": "@plasmicpkgs/plasmic-basic-components"
+        },
+        {
+          "id": "zlBHsvkFlN",
+          "name": "ConditionGuard",
+          "displayName": "hostless-condition-guard",
+          "componentImportPath": "@plasmicpkgs/plasmic-basic-components"
+        },
+        {
+          "id": "K-mWGqrHefEp",
+          "name": "SideEffect",
+          "displayName": "hostless-side-effect",
+          "componentImportPath": "@plasmicpkgs/plasmic-basic-components"
+        },
+        {
+          "id": "SpkzmXJqg27p",
+          "name": "Timer",
+          "displayName": "hostless-timer",
           "componentImportPath": "@plasmicpkgs/plasmic-basic-components"
         }
       ],
-      "jsBundleThemes": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "eyjDfHaWPk4awNJAqhg4Cb",
@@ -10169,16 +10165,19 @@
         {
           "id": "DYgggqaBkt",
           "name": "PlasmicHead",
+          "displayName": "hostless-plasmic-head",
           "componentImportPath": "@plasmicapp/react-web"
         },
         {
           "id": "us9Q589t4B",
           "name": "Fetcher",
-          "componentImportPath": "@plasmicapp/data-sources"
+          "displayName": "plasmic-data-source-fetcher",
+          "componentImportPath": "@plasmicapp/react-web/lib/data-sources"
         }
       ],
-      "jsBundleThemes": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "BP7V3EkXPURJVwwMyWoHn",
@@ -10957,7 +10956,8 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "28e27syQUKgfkErJT9mxWA",

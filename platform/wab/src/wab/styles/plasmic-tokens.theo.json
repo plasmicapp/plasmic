@@ -863,7 +863,7 @@
     {
       "name": "TabItemSelectedBg",
       "type": "color",
-      "value": "#EBF6FF",
+      "value": "#E1F0FF",
       "category": "color",
       "meta": {
         "projectId": "4B48dRthR8uGgyaBYpWthR",
@@ -873,7 +873,7 @@
     {
       "name": "TabItemSelectedForeground",
       "type": "color",
-      "value": "#0091FF",
+      "value": "#000000E8",
       "category": "color",
       "meta": {
         "projectId": "4B48dRthR8uGgyaBYpWthR",
@@ -1273,7 +1273,7 @@
     {
       "name": "borderColor",
       "type": "color",
-      "value": "#E0E0E0",
+      "value": "#E3E3E0",
       "category": "color",
       "meta": {
         "projectId": "4B48dRthR8uGgyaBYpWthR",

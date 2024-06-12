@@ -20,7 +20,8 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultInsertPanelTabItemProps altogether and have
 // total control over the props for your component.
-export type InsertPanelTabItemProps = DefaultInsertPanelTabItemProps;
+export type InsertPanelTabItemProps = DefaultInsertPanelTabItemProps &
+  React.HTMLAttributes<HTMLDivElement>;
 
 function InsertPanelTabItem_(
   props: InsertPanelTabItemProps,

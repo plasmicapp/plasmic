@@ -9,11 +9,7 @@ import OmnibarCommandItem from "@/wab/client/components/omnibar/OmnibarCommandIt
 import { DraggableInsertable } from "@/wab/client/components/studio/add-drawer/DraggableInsertable";
 import { PlainLink } from "@/wab/client/components/widgets";
 import { isCommandItem } from "@/wab/client/definitions/commands";
-import {
-  AddItemType,
-  AddTplItem,
-  isAddItem,
-} from "@/wab/client/definitions/insertables";
+import { AddTplItem, isAddItem } from "@/wab/client/definitions/insertables";
 import {
   DefaultOmnibarGroupProps,
   PlasmicOmnibarGroup,
@@ -83,9 +79,6 @@ function OmnibarGroup(props: OmnibarGroupProps) {
         </div>
       ))}
       addChildren={addItems.map((i) => {
-        const hasImage =
-          (i.type === AddItemType.tpl || i.type === AddItemType.fake) &&
-          !!i.previewImage;
         return (
           <div
             key={i.key}
@@ -116,22 +109,8 @@ function OmnibarGroup(props: OmnibarGroupProps) {
             >
               <OmnibarAddItem
                 title={i.label}
-                icon={
-                  React.isValidElement(i.icon)
-                    ? React.cloneElement(i.icon, {
-                        className: "custom-svg-icon--xlg",
-                      })
-                    : i.icon
-                }
-                grayImageBackground={i["gray"]}
-                //size={"large"}
-                // Only show the
-                preview={hasImage ? "image" : "icon"}
-                previewImage={
-                  i.type === AddItemType.tpl || i.type === AddItemType.fake
-                    ? i.previewImage
-                    : null
-                }
+                preview={i["previewImageUrl"] ? "image" : undefined}
+                previewImageUrl={i["previewImageUrl"]}
                 focused={highlightedIndex === getItemIndex(i)}
                 data-test-id={`omnibar-add-${i.label}`}
               />

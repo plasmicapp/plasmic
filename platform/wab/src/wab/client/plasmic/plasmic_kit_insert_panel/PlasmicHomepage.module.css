@@ -3,11 +3,12 @@
   flex-direction: column;
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   justify-content: flex-start;
   align-items: flex-start;
   overflow: auto;
   min-width: 0;
+  min-height: 0;
 }
 .insertPanel:global(.__wab_instance) {
   max-width: 100%;

@@ -22,8 +22,6 @@ export const enum AddItemKey {
   screenFrame = "screenFrame",
   componentFrame = "componentFrame",
   pageFrame = "pageFrame",
-  openInsertModal = "openInsertModal",
-  openHostLessModal = "openHostLessModal",
 }
 
 export const enum WrapItemKey {

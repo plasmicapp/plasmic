@@ -1,8 +1,8 @@
 .root {
-  flex-direction: row;
   transition-property: all;
   transition-duration: 0.15s;
   display: flex;
+  flex-direction: row;
   width: 100%;
   height: auto;
   max-width: 100%;
@@ -16,8 +16,8 @@
 }
 .root > :global(.__wab_flex-container) {
   flex-direction: row;
-  justify-content: flex-start;
   align-items: center;
+  justify-content: flex-start;
   min-width: 0;
   margin-left: calc(0px - 4px);
   width: calc(100% + 4px);
@@ -32,10 +32,10 @@
   background: var(--token-ixk0760-E);
 }
 .root:hover {
-  background: #f0f0f0;
+  background: var(--token-bV4cCeIniS6);
 }
 .rootisSelected:hover {
-  background: var(--token-ixk0760-E);
+  background: var(--token-RhvOnhv_xIi);
 }
 .freeBox___7UjJc {
   position: relative;
@@ -73,4 +73,5 @@
 }
 .slotTargetChildrenisSelected {
   color: var(--token-9i-6NBfNr);
+  font-weight: 500;
 }

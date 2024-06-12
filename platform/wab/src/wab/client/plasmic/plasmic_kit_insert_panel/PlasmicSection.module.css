@@ -1,6 +1,6 @@
 .root {
-  flex-direction: column;
   display: flex;
+  flex-direction: column;
   width: 100%;
   height: auto;
   max-width: 100%;
@@ -10,8 +10,8 @@
 }
 .root > :global(.__wab_flex-container) {
   flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
+  justify-content: flex-start;
   min-width: 0;
   margin-top: calc(0px - 8px);
   height: calc(100% + 8px);
@@ -37,9 +37,9 @@
   color: var(--token-qKhMu66CwSx);
 }
 .freeBox__dxpUq {
-  flex-direction: column;
   display: flex;
   position: relative;
+  flex-direction: column;
   width: 100%;
   height: auto;
   max-width: 100%;
@@ -47,9 +47,9 @@
 }
 .freeBox__dxpUq > :global(.__wab_flex-container) {
   flex-direction: column;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
   align-items: stretch;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
   align-content: stretch;
   min-width: 0;
   margin-left: calc(0px - 8px);

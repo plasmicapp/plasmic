@@ -287,9 +287,9 @@ import { isSlot, tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
 import { addEmptyQuery } from "@/wab/shared/TplMgr";
 import {
   getLeftTabPermission,
+  LEFT_TAB_PANEL_KEYS,
   LeftTabKey,
   LeftTabUiKey,
-  LEFT_TAB_PANEL_KEYS,
   mergeUiConfigs,
   UiConfig,
 } from "@/wab/shared/ui-config-utils";
@@ -2584,17 +2584,6 @@ export class StudioCtx extends WithDbCtx {
   showOmnibar(): void {
     this._omnibarState.show = true;
     this._omnibarState.includedGroupKeys = undefined;
-  }
-  showInsertModal(): void {
-    this._omnibarState.show = true;
-    this._omnibarState.includedGroupKeys = [
-      "insertable-templates",
-      "insertable-icons",
-    ];
-  }
-  showHostLessModal(): void {
-    this._omnibarState.show = true;
-    this._omnibarState.includedGroupKeys = ["hostless"];
   }
   showPresetsModal(component: CodeComponent): void {
     this._omnibarState.show = true;

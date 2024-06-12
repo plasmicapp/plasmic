@@ -15,65 +15,31 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
-  PlasmicIcon as PlasmicIcon__,
   PlasmicImg as PlasmicImg__,
-  PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
   Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  generateOnMutateForSpec,
-  generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
-  generateStateValueProp,
-  get as $stateGet,
   hasVariant,
-  initializeCodeComponentStates,
-  initializePlasmicStates,
-  makeFragment,
-  omit,
-  pick,
   renderPlasmicSlot,
-  set as $stateSet,
-  useCurrentUser,
   useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName,
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions,
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
-import OmnibarCommandItem from "../../components/omnibar/OmnibarCommandItem"; // plasmic-import: A2li_iO_iw/component
 import OmnibarAddItem from "../../components/omnibar/OmnibarAddItem"; // plasmic-import: KnUjAGcQKT/component
+import OmnibarCommandItem from "../../components/omnibar/OmnibarCommandItem"; // plasmic-import: A2li_iO_iw/component
+import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "./plasmic_plasmic_kit_omnibar.module.css"; // plasmic-import: fQPf2UiMEMhB52C8QQXwWe/projectcss
 import sty from "./PlasmicOmnibarGroup.module.css"; // plasmic-import: qx4iENdAfF/css
+import projectcss from "./plasmic_plasmic_kit_omnibar.module.css"; // plasmic-import: fQPf2UiMEMhB52C8QQXwWe/projectcss
 
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 import AddPageIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__AddPage"; // plasmic-import: JuZ41tZRcH/icon
-import BlockIcon from "../plasmic_kit_design_system/PlasmicIcon__Block"; // plasmic-import: DYyeu-AtoO/icon
-import HStackBlockIcon from "../plasmic_kit/PlasmicIcon__HStackBlock"; // plasmic-import: vrE0GHgUiSGkm/icon
-import VStackBlockIcon from "../plasmic_kit/PlasmicIcon__VStackBlock"; // plasmic-import: DTUk351ydDQGv/icon
-import TextBlockIcon from "../plasmic_kit/PlasmicIcon__TextBlock"; // plasmic-import: nzc8B7oWFfsYG/icon
-import IconIcon from "../plasmic_kit_design_system/PlasmicIcon__Icon"; // plasmic-import: mZMZr0AmTY/icon
 import image49X6ZsC5Ww5 from "../plasmic_kit_design_system/images/image4.svg"; // plasmic-import: 9X6ZsC5ww5/picture
 
 createPlasmicElementProxy;
@@ -139,8 +105,6 @@ function PlasmicOmnibarGroup__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = useCurrentUser?.() || {};
 
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
@@ -282,13 +246,7 @@ function PlasmicOmnibarGroup__RenderFunc(props: {
                     "__wab_instance",
                     sty.omnibarAddItem___4Jpgu
                   )}
-                  icon={
-                    <BlockIcon
-                      className={classNames(projectcss.all, sty.svg__bW8Qd)}
-                      role={"img"}
-                    />
-                  }
-                  previewImage={
+                  previewNode={
                     <PlasmicImg__
                       alt={""}
                       className={classNames(sty.img__t22Ta)}
@@ -314,13 +272,7 @@ function PlasmicOmnibarGroup__RenderFunc(props: {
                     "__wab_instance",
                     sty.omnibarAddItem___1NgS
                   )}
-                  icon={
-                    <HStackBlockIcon
-                      className={classNames(projectcss.all, sty.svg__eYo6J)}
-                      role={"img"}
-                    />
-                  }
-                  previewImage={
+                  previewNode={
                     <PlasmicImg__
                       alt={""}
                       className={classNames(sty.img___38NlQ)}
@@ -346,13 +298,7 @@ function PlasmicOmnibarGroup__RenderFunc(props: {
                     "__wab_instance",
                     sty.omnibarAddItem__cqFYg
                   )}
-                  icon={
-                    <VStackBlockIcon
-                      className={classNames(projectcss.all, sty.svg___9UtXb)}
-                      role={"img"}
-                    />
-                  }
-                  previewImage={
+                  previewNode={
                     <PlasmicImg__
                       alt={""}
                       className={classNames(sty.img__gAwyT)}
@@ -378,13 +324,7 @@ function PlasmicOmnibarGroup__RenderFunc(props: {
                     "__wab_instance",
                     sty.omnibarAddItem__gm8SE
                   )}
-                  icon={
-                    <TextBlockIcon
-                      className={classNames(projectcss.all, sty.svg__eLc2J)}
-                      role={"img"}
-                    />
-                  }
-                  previewImage={
+                  previewNode={
                     <PlasmicImg__
                       alt={""}
                       className={classNames(sty.img__l4Slg)}
@@ -410,13 +350,7 @@ function PlasmicOmnibarGroup__RenderFunc(props: {
                     "__wab_instance",
                     sty.omnibarAddItem__sj7Zp
                   )}
-                  icon={
-                    <IconIcon
-                      className={classNames(projectcss.all, sty.svg__sWiN5)}
-                      role={"img"}
-                    />
-                  }
-                  previewImage={
+                  previewNode={
                     <PlasmicImg__
                       alt={""}
                       className={classNames(sty.img___5Uxh)}
