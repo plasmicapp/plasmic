@@ -415,7 +415,7 @@ function addSentry(app: express.Application, config: Config) {
     ],
     // We recommend adjusting this value in production, or using tracesSampler
     // for finer control
-    tracesSampleRate: 1.0,
+    tracesSampleRate: 0,
     // We need beforeSend because errors don't necessarily make their way through the Express pipeline - they can be
     // thrown from anywhere, in Express or outside (or from random async event loop iterations).
     async beforeSend(event: Sentry.Event): Promise<Sentry.Event | null> {
