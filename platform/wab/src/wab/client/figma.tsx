@@ -49,6 +49,7 @@ import {
 } from "@/wab/client/figma-importer/types";
 import {
   findMappedComponent,
+  getAllSlotsInNode,
   getLayoutParent,
   isFigmaData,
   transformToMatrix,
@@ -570,30 +571,6 @@ const getNodeToTplNode = (
     (comp) => isReusableComponent(comp) && !isContextCodeComponent(comp)
   );
 
-  const getSlots = (
-    node: SceneNode
-  ): [string, TplTag | TplComponent | undefined][] => {
-    const slotIdentifier = "slot: ";
-    if (node.name.startsWith(slotIdentifier)) {
-      const tplNode = nodeToTplNode(node);
-      if (tplNode) {
-        tplNode.name = undefined;
-      }
-      return [[node.name.substring(slotIdentifier.length), tplNode]];
-    }
-    switch (node.type) {
-      case "INSTANCE":
-      case "FRAME":
-      case "COMPONENT":
-      case "COMPONENT_SET":
-      case "GROUP":
-        return node.children
-          ? node.children.flatMap((child) => getSlots(child))
-          : [];
-      default:
-        return [];
-    }
-  };
   const nodeToTplNode = (
     node: SceneNode
   ): TplTag | TplComponent | undefined => {
@@ -737,16 +714,13 @@ const getNodeToTplNode = (
           })
         );
 
-        const slotsArgs = node.children
-          ? node.children
-              .flatMap((child) => getSlots(child))
-              .filter(([k, tpl]) => {
-                const param = component.params.find(
-                  (p) => p.variable.name === k
-                );
-                return !!param && !!tpl && param.type.name === "renderable";
-              })
-          : [];
+        const slotsArgs = Object.entries(
+          getAllSlotsInNode(node, nodeToTplNode)
+        ).filter(([key]) => {
+          const param = component.params.find((p) => p.variable.name === key);
+          return !!param && param.type.name === "renderable";
+        });
+
         const args = Object.fromEntries([...propsArgs, ...slotsArgs]);
         const tplComponent = mkTplComponentX({
           component,

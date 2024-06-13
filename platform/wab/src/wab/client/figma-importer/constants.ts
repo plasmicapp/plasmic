@@ -32,3 +32,7 @@ export const delimiters = {
   textShadow: ", ",
   transform: " ",
 };
+
+export const OLD_SLOT_IDENTIFIER = "slot: ";
+export const SLOT_CHILDREN_SHORTHAND = "[slot]";
+export const SLOT_IDENTIFIER_REGEX = /\[slot:\s*(\w+)\]$/;
