@@ -8,12 +8,12 @@ import {
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { Project } from "@/wab/server/entities/Entities";
 import {
-  genLatestLoaderCodeBundle,
-  genPublishedLoaderCodeBundle,
   LATEST_LOADER_VERSION,
   LOADER_ASSETS_BUCKET,
   LOADER_CACHE_BUST,
   LOADER_CODEGEN_OPTS_DEFAULTS,
+  genLatestLoaderCodeBundle,
+  genPublishedLoaderCodeBundle,
 } from "@/wab/server/loader/gen-code-bundle";
 import { genLoaderHtmlBundle } from "@/wab/server/loader/gen-html-bundle";
 import {
@@ -25,11 +25,11 @@ import {
   parseGlobalVariants,
 } from "@/wab/server/loader/parse-query-params";
 import {
+  VersionToSync,
   getResolvedProjectVersions,
   mkVersionToSync,
   parseProjectIdSpec,
   resolveLatestProjectRevisions,
-  VersionToSync,
 } from "@/wab/server/loader/resolve-projects";
 import {
   hasUser,
@@ -602,7 +602,7 @@ export async function genLoaderHtmlBundleSandboxed(
       : await execa(
           `bwrap`,
           [
-            ...`--unshare-user --unshare-pid --unshare-ipc --unshare-uts --unshare-cgroup --ro-bind /lib /lib --ro-bind /usr /usr --ro-bind /etc /etc --ro-bind /run /run ${
+            ...`--clearenv --setenv CODEGEN_HOST ${getCodegenUrl()} --unshare-user --unshare-pid --unshare-ipc --unshare-uts --unshare-cgroup --ro-bind /lib /lib --ro-bind /usr /usr --ro-bind /etc /etc --ro-bind /run /run ${
               process.env.BWRAP_ARGS || ""
             } --chdir ${process.cwd()} ${cmd}`.split(/\s+/g),
             JSON.stringify(args),
