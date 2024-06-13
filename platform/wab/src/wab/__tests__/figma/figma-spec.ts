@@ -1,10 +1,9 @@
 import * as domUtils from "@/wab/client/dom-utils";
+import { denormalizeFigmaData, tplNodeFromFigmaData } from "@/wab/client/figma";
 import {
-  denormalizeFigmaData,
-  tplNodeFromFigmaData,
   uploadFigmaImages,
   uploadNodeImages,
-} from "@/wab/client/figma";
+} from "@/wab/client/figma-importer/assets";
 import { fakeAppCtx } from "@/wab/client/test/fake-init-ctx";
 import * as common from "@/wab/common";
 import { Bundler } from "@/wab/shared/bundler";
