@@ -2338,6 +2338,9 @@ export function findExprsInComponent(component: Component) {
     if (param.defaultExpr) {
       pushExprs(componentExprs, param.defaultExpr);
     }
+    if (param.previewExpr) {
+      pushExprs(componentExprs, param.previewExpr);
+    }
   }
 
   for (const query of component.dataQueries) {
