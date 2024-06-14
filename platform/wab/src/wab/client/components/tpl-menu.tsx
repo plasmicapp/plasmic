@@ -67,6 +67,7 @@ import {
   isTplTag,
   isTplTagOrComponent,
   isTplTextBlock,
+  tplChildrenOnly,
   tryGetVariantSettingStoringText,
 } from "@/wab/tpls";
 import { ValComponent } from "@/wab/val-nodes";
@@ -347,17 +348,19 @@ export function makeTplMenu(
       }
     }
 
-    // "Ungroup" may only be performed on a TplTag with children.
+    // "Ungroup" may only be performed on a TplTag or TplComponent with children.
+    const children =
+      isTplTag(tpl) || isTplComponent(tpl) ? tplChildrenOnly(tpl) : false;
     if (
-      isTplTag(tpl) &&
-      tpl.children.length > 0 &&
+      children &&
+      children.length > 0 &&
       !isTplColumns(tpl) &&
       !isTplColumn(tpl) &&
       !isInsideRichText &&
       !contentEditorMode
     ) {
       // Ungroup is disabled if the tpl is the root and has more than 1 child.
-      const ungroupDisabled = !tpl.parent && tpl.children.length !== 1;
+      const ungroupDisabled = !tpl.parent && children.length !== 1;
       pushEdit(
         <Menu.Item
           key="ungroup"

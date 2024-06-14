@@ -350,7 +350,7 @@ describe("TplQuery", function () {
       );
     }));
   describe("ungroup", () => {
-    it("should work", () => {
+    it("works on TplTag", () => {
       const groupedItem1 = tpls.mkTplTag("span");
       const groupedItem2 = tpls.mkTplTag("span");
       const containerGroup = tpls.mkTplTag("div", [groupedItem1, groupedItem2]);
@@ -365,7 +365,33 @@ describe("TplQuery", function () {
       expect(root.children[1]).toBe(groupedItem1);
       expect(root.children[2]).toBe(groupedItem2);
     });
-    it("works on component roots", () => {
+    it("works on TplComponent", () => {
+      const groupedItem1 = tpls.mkTplTag("span");
+      const groupedItem2 = tpls.mkTplTag("span");
+      const containerGroup = tpls.mkTplComponentX({
+        component: componentWithSlots,
+        baseVariant: getBaseVariant(componentWithSlots),
+        args: {
+          children: new RenderExpr({
+            tpl: [groupedItem1, groupedItem2],
+          }),
+          altSlot: new RenderExpr({
+            tpl: [mkTplTestText("elements in non-children slots ignored")],
+          }),
+        },
+      });
+      const root = tpls.mkTplTag("div", [
+        tpls.mkTplTag("div"),
+        containerGroup,
+        tpls.mkTplTag("div"),
+      ]);
+      $$$(containerGroup).ungroup();
+      expect(containerGroup.parent).toBeNull();
+      expect(root.children.length).toEqual(4);
+      expect(root.children[1]).toBe(groupedItem1);
+      expect(root.children[2]).toBe(groupedItem2);
+    });
+    it("works on root node", () => {
       const groupedItem = mkTplTestText("Hello, world!");
       const containerGroup = tpls.mkTplTag("main", groupedItem);
       const component = mkComponent({

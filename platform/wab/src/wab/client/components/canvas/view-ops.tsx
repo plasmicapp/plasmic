@@ -1617,14 +1617,8 @@ export class ViewOps {
     return this.studioCtx().siteOps().clearFrameComboSettings(frame);
   }
 
-  ungroup(tpl?: TplNode) {
-    tpl = tpl || this.viewCtx().focusedTpl() || undefined;
-    if (!tpl) {
-      return false;
-    }
-
-    const nonNilTpl = tpl;
-    this.change(() => $$$(nonNilTpl).ungroup());
+  ungroup(tpl: TplNode) {
+    this.change(() => $$$(tpl).ungroup());
     return true;
   }
 

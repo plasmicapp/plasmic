@@ -1051,7 +1051,7 @@ export function checkTplIntegrity(
     const tpl = ensure(L.last(path), "Path should atleast have root");
     switchType(tpl)
       .when([TplTag, TplComponent], (_tpl) => {
-        const children = $$$(_tpl).allChildren().toArrayOfTplNodes();
+        const children = $$$(_tpl).children().toArrayOfTplNodes();
         children.forEach((child) => {
           if (!(child.parent === _tpl)) {
             const msg = `Parent of ${showPath(tuple(...path, child))} is ${
@@ -1147,13 +1147,33 @@ export function walkTplsAndArgs(
   return rec(tplRoot, []);
 }
 
+/**
+ * Returns direct child nodes, including ALL slots for TplComponents.
+ *
+ * See `childrenOnly()` to get only the "children" slot for TplComponents.
+ */
 export function tplChildren(node: TplNode) {
+  return tplChildrenInternal(node, false);
+}
+
+/**
+ * Returns direct child nodes, including the "children" slot for TplComponents.
+ *
+ * See `children()` to get ALL slots for TplComponents.
+ */
+export function tplChildrenOnly(node: TplNode) {
+  return tplChildrenInternal(node, true);
+}
+
+function tplChildrenInternal(node: TplNode, childrenOnly: boolean) {
   return switchType(node)
     .when(TplTag, (_node) => _node.children)
     .when(TplComponent, (_node) =>
-      getSlotArgs(_node).flatMap((arg) =>
-        isKnownRenderExpr(arg.expr) ? arg.expr.tpl : []
-      )
+      getSlotArgs(_node)
+        .filter((slot) =>
+          childrenOnly ? slot.param.variable.name === "children" : true
+        )
+        .flatMap((arg) => (isKnownRenderExpr(arg.expr) ? arg.expr.tpl : []))
     )
     .when(TplSlot, (_node) => _node.defaultContents)
     .result();

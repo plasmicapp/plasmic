@@ -45,7 +45,6 @@ import {
 } from "@/wab/components";
 import {
   getSlotArgs,
-  getSlotParams,
   getTplSlotDescendants,
   getTplSlotForParam,
   isSlot,
@@ -79,6 +78,8 @@ import {
   removeMarkersToTpl,
   summarizeSlotParam,
   summarizeTpl,
+  tplChildren,
+  tplChildrenOnly,
   trackComponentRoot,
   tryGetOwnerSite,
   tryGetTplOwnerComponent,
@@ -477,12 +478,15 @@ export class TplQuery {
   // Removes an element, but reattaches its children to its parent.
   ungroup() {
     for (const node_ of [...this.nodes]) {
-      const node = ensureKnownTplTag(node_);
+      const node = ensureKnownTplNode(node_);
+      const $node = $$$(node);
 
-      // We remove the children of `node` to avoid having them
+      const $ungroupedItems = $node.childrenOnly();
+      // We detach the children of `node` to avoid having them
       // marked as deleted when we remove `node` from the model.
-      const ungroupedItems = node.children;
-      node.children = [];
+      $ungroupedItems.detach();
+      const ungroupedItems = $ungroupedItems.toArrayOfTplNodes();
+
       TplQuery._updateParentSlotContaining(
         node,
         ungroupedItems,
@@ -575,32 +579,46 @@ export class TplQuery {
     return this;
   }
 
+  /**
+   * Returns direct child nodes, including ALL slots for TplComponents.
+   *
+   * See `childrenOnly()` to get only the "children" slot for TplComponents.
+   */
   children() {
+    return this.childrenInternal(false);
+  }
+
+  /**
+   * Returns direct child nodes, including the "children" slot for TplComponents.
+   *
+   * See `children()` to get ALL slots for TplComponents.
+   */
+  childrenOnly() {
+    return this.childrenInternal(true);
+  }
+
+  private childrenInternal(childrenOnly: boolean) {
     return $$$(
-      L.flatten(
-        [...this.nodes].map((node) => {
-          const result = switchType(node)
-            .when(
-              SlotSelection,
-              (ss) =>
-                maybe(
-                  $$$(
-                    ensure(ss.tpl, () => `Expected a tpl-backed SlotSelection`)
-                  ).getSlotArg(ss.slotParam.variable.name),
-                  (arg) => ensureKnownRenderExpr(arg.expr).tpl
-                ) || []
-            )
-            .when(TplTag, (n: /*TWZ*/ TplTag) => n.children)
-            .when(TplComponent, (n) => {
-              const slotArgs = getSlotArgs(n);
-              return slotArgs.flatMap((arg) =>
-                isKnownRenderExpr(arg.expr) ? arg.expr.tpl : []
-              );
-            })
-            .when(TplSlot, (n) => n.defaultContents)
-            .result();
-          return result;
-        })
+      this.nodes.flatMap((node) =>
+        switchType(node)
+          .when(
+            SlotSelection,
+            (ss) =>
+              maybe(
+                $$$(
+                  ensure(ss.tpl, () => `Expected a tpl-backed SlotSelection`)
+                ).getSlotArg(ss.slotParam.variable.name),
+                (arg) => ensureKnownRenderExpr(arg.expr).tpl
+              ) || []
+          )
+          .when(TplNode, (n) => {
+            if (childrenOnly) {
+              return tplChildrenOnly(n);
+            } else {
+              return tplChildren(n);
+            }
+          })
+          .result()
       )
     );
   }
@@ -1038,32 +1056,6 @@ export class TplQuery {
         slotParam: this.param(slotName),
       })
     );
-  }
-
-  /**
-   * Same as children, but for TplComponents, yield children across all
-   * slots, not just those in the slot named 'children'.
-   */
-  allChildren() {
-    const tpl = ensureKnownTplNode(only(this.nodes));
-    if (isKnownTplComponent(tpl)) {
-      const component = tpl.component;
-
-      function* genChildren() {
-        for (const slotParam of getSlotParams(component)) {
-          const arg = $$$(tpl).getSlotArg(slotParam.variable.name);
-          if (arg && isKnownRenderExpr(arg.expr)) {
-            for (const child of arg.expr.tpl) {
-              yield child;
-            }
-          }
-        }
-      }
-
-      return $$$([...genChildren()]);
-    } else {
-      return this.children();
-    }
   }
 
   siblings() {
