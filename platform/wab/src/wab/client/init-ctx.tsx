@@ -7,7 +7,6 @@ import {
   parseProjectLocation,
   UU,
 } from "@/wab/client/cli-routes";
-import { PublicLink } from "@/wab/client/components/PublicLink";
 import * as DbMod from "@/wab/client/db";
 import { asyncNever, spawn } from "@/wab/common";
 import { getProjectFlags } from "@/wab/devflags";
@@ -143,14 +142,14 @@ export async function checkDepPkgHosts(
           <p>
             This project is hosted by {siteInfo.hostUrl ?? "Plasmic"}, but it
             imports components from{" "}
-            <PublicLink
+            <a
               target="_blank"
               href={UU.project.fill({
                 projectId: pkgVersion.pkg.pkg?.projectId,
               })}
             >
               {pkgVersion.pkg.pkg?.name}
-            </PublicLink>
+            </a>
             , which is hosted by {pkgVersion.pkg.hostUrl}. <br />
             Notice this can prevent the canvas from rendering components
             correctly.
