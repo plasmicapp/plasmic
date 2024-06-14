@@ -118,9 +118,7 @@ import {
   isTplPicture,
   isTplVariantable,
 } from "@/wab/tpls";
-import L from "lodash";
-
-const { comparer, computed } = mobx;
+import { keyBy } from "lodash";
 
 export const flattenComponent = maybeComputedFn(function flattenComponent(
   component: Component
@@ -722,7 +720,7 @@ export const makeTokenRefResolver = maybeComputedFn(
 );
 
 export const siteToAllTokensDict = maybeComputedFn((site: Site) =>
-  L.keyBy(siteToAllTokens(site), (t) => t.uuid)
+  keyBy(siteToAllTokens(site), (t) => t.uuid)
 );
 
 export const siteToAllTokens = maybeComputedFn((site: Site) =>
@@ -739,7 +737,7 @@ export const siteToAllDirectTokensOfType = maybeComputedFn(
 );
 
 export const siteToAllImageAssetsDict = maybeComputedFn((site: Site) =>
-  L.keyBy(allImageAssets(site, { includeDeps: "all" }), (x) => x.uuid)
+  keyBy(allImageAssets(site, { includeDeps: "all" }), (x) => x.uuid)
 );
 
 export const componentToUsedTokens = maybeComputedFn(
@@ -1019,6 +1017,7 @@ export const findComponentsUsingComponentVariant = maybeComputedFn(
         results.add(comp);
       }
     }
+
     return results;
   }
 );
@@ -1029,7 +1028,7 @@ export const findComponentsUsingGlobalVariant = maybeComputedFn(
 
     const compUsesVariant = (comp: Component) => {
       for (const [vs] of extractComponentVariantSettings(site, comp, false)) {
-        if (vs.variants.includes(variant) && !isVariantSettingEmpty(vs)) {
+        if (vs.variants.includes(variant)) {
           return true;
         }
       }
@@ -1041,6 +1040,7 @@ export const findComponentsUsingGlobalVariant = maybeComputedFn(
         results.add(comp);
       }
     }
+
     return results;
   }
 );
