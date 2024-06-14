@@ -7,10 +7,6 @@ export const migrate: BundledMigrationFn = async (bundle) => {
       const oldViewportHeight = inst["viewportHeight"];
       const oldHeight = inst["height"];
       const newHeight = oldViewportHeight || oldHeight;
-      console.log(
-        `old height:${oldHeight} viewportHeight:${oldViewportHeight} => new height:${newHeight}`
-      );
-
       inst["height"] = newHeight;
       delete inst["viewportHeight"];
     }
