@@ -6,7 +6,6 @@ import {
   TplComponent,
   TplNode,
   TplTag,
-  VariantsRef,
 } from "@/wab/classes";
 import { CENTERED_FRAME_PADDING } from "@/wab/client/ClientConstants";
 import {
@@ -24,11 +23,8 @@ import {
   uploadFigmaImages,
   uploadNodeImages,
 } from "@/wab/client/figma-importer/assets";
-import {
-  ComponentPropertiesEntries,
-  InstanceNode,
-  SceneNode,
-} from "@/wab/client/figma-importer/plugin-types";
+import { SceneNode } from "@/wab/client/figma-importer/plugin-types";
+import { fromFigmaComponentToTplProps } from "@/wab/client/figma-importer/props";
 import {
   filterValidCodeComponentStyles,
   flattenStyles,
@@ -64,7 +60,6 @@ import {
   swallowAsync,
   tuple,
   uniqueName,
-  withoutNils,
   withoutNilTuples,
 } from "@/wab/common";
 import { unwrap } from "@/wab/commons/failable-utils";
@@ -87,7 +82,6 @@ import {
 import { ARENA_LOWER } from "@/wab/shared/Labels";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { WaitForClipError } from "@/wab/shared/UserError";
-import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import {
   flattenTpls,
@@ -152,6 +146,7 @@ export async function pasteFromFigma(
       success: unwrap(
         await studioCtx.change(({ success }) => {
           const maybeNode = tplNodeFromFigmaData(
+            studioCtx,
             vc.variantTplMgr(),
             studioCtx.site,
             studioCtx.siteOps(),
@@ -213,6 +208,7 @@ export async function pasteFromFigma(
             new GlobalVariantFrame(studioCtx.site, newFrame)
           );
           const maybeNode = tplNodeFromFigmaData(
+            studioCtx,
             vtm,
             studioCtx.site,
             studioCtx.siteOps(),
@@ -340,6 +336,7 @@ const figmaDataFromStr = (figmaDataStr: string): FigmaData | undefined => {
 };
 
 export const tplNodeFromFigmaData = (
+  studioCtx: StudioCtx,
   vtm: VariantTplMgr,
   site: Site,
   siteOps: SiteOps,
@@ -359,6 +356,7 @@ export const tplNodeFromFigmaData = (
   const nodeAssets = createNodeAssets(nodeImages, siteOps);
   renameImageAssets(siteOps, imagesToRename, imageAssets);
   const maker = getNodeToTplNode(
+    studioCtx,
     site,
     vtm,
     imageAssets,
@@ -454,6 +452,7 @@ function isIdentityTransform({ a, b, c, d }: Matrix) {
 }
 
 const getNodeToTplNode = (
+  studioCtx: StudioCtx,
   site: Site,
   vtm: VariantTplMgr,
   imageAssets: Map<string, ImageAsset>,
@@ -584,134 +583,10 @@ const getNodeToTplNode = (
     ) {
       const component = findMappedComponent(node, allComponents);
       if (component) {
-        function getAllProperties(
-          inst: InstanceNode
-        ): ComponentPropertiesEntries {
-          const localProps: ComponentPropertiesEntries = Object.entries(
-            inst.componentProperties ?? {}
-          );
-
-          const exposedInstances: InstanceNode[] = inst.exposedInstances ?? [];
-
-          const exposedProps = exposedInstances.reduce(
-            (acc, _inst): ComponentPropertiesEntries => {
-              return [...acc, ...getAllProperties(_inst)];
-            },
-            [] as ComponentPropertiesEntries
-          );
-
-          /*
-            When creating the nodes while denormalizing the data, we always create an
-            "parent" prop to every Object, which just points to its parent on the
-            entire tree, but that applies to every object (since we don't know before
-              which objects are nodes), so we also add the parent to the object
-              "ComponentProperties"... which is why we filter it here
-          */
-          return [...localProps, ...exposedProps].filter(
-            ([k]) => k !== "parent"
-          );
-        }
-
-        function getAllDescendants(inst: InstanceNode): InstanceNode[] {
-          const children = inst.children ?? [];
-          const descendants = children.flatMap((child) =>
-            child.type === "INSTANCE"
-              ? [child, ...getAllDescendants(child)]
-              : []
-          );
-          return descendants;
-        }
-
-        const allNodeProperties = getAllProperties(node);
-
-        const ACCEPTED_TYPES = ["TEXT", "BOOLEAN", "VARIANT", "INSTANCE_SWAP"];
-
-        const allDescendants = getAllDescendants(node);
-
-        function getChildComponentNameFromPropertyKey(key: string | undefined) {
-          if (!key) {
-            return undefined;
-          }
-          const refNode = allDescendants.find(
-            (child) => child.componentPropertyReferences?.mainComponent === key
-          );
-
-          const nodeName = refNode?.name;
-          if (!nodeName) {
-            return undefined;
-          }
-
-          // if the name contains `/` it means it uses group naming, so we will use the last part of the name
-          return nodeName.includes("/") ? nodeName.split("/").pop() : nodeName;
-        }
-
-        const propsArgs = withoutNils(
-          allNodeProperties.map(([k, prop]) => {
-            if (!ACCEPTED_TYPES.includes(prop.type)) {
-              return null;
-            }
-            // Fix property name, removing the suffix that figma adds to text and boolean properties
-            const key =
-              prop.type === "VARIANT" ? k : k.substring(0, k.lastIndexOf("#"));
-            const param = component.params.find(
-              (p) => toVarName(p.variable.name) === toVarName(key)
-            );
-
-            if (!param) {
-              return null;
-            }
-
-            // We don't handle slots here, they are handled in the next step
-            if (param?.type.name === "renderable") {
-              return null;
-            }
-
-            const parsedValue =
-              prop.type === "INSTANCE_SWAP"
-                ? getChildComponentNameFromPropertyKey(k)
-                : prop.value;
-
-            const variantGroup = component.variantGroups.find(
-              (group) => group.param === param
-            );
-            const isTrueishValue =
-              parsedValue === 1 ||
-              ["true", "on"].includes(`${parsedValue}`.trim().toLowerCase());
-            if (variantGroup) {
-              // Currently only will toggle single-variants if the Property and Value has the same name, the value has the name "on" or if its
-              // a boolean prop. For variant groups, works as expected (matches figma property with group name, and value with variant name)
-              if (isStandaloneVariantGroup(variantGroup)) {
-                return isTrueishValue
-                  ? [
-                      param.variable.name,
-                      new VariantsRef({ variants: [variantGroup.variants[0]] }),
-                    ]
-                  : null;
-              } else {
-                const variant = variantGroup.variants.find(
-                  (v) => toVarName(v.name) === toVarName(`${parsedValue}`)
-                );
-                return variant
-                  ? [
-                      param.variable.name,
-                      new VariantsRef({ variants: [variant] }),
-                    ]
-                  : null;
-              }
-            }
-            // Link props crashes studio if assigned an boolean
-            if (param.type.name === "href" && prop.type === "BOOLEAN") {
-              return null;
-            }
-            // Parse text to number if param is number
-            if (param.type.name === "num" && prop.type === "TEXT") {
-              return [param.variable.name, Number(parsedValue)];
-            }
-            if (param.type.name === "bool") {
-              return isTrueishValue ? [param.variable.name, true] : null;
-            }
-            return [param.variable.name, parsedValue];
-          })
+        const propsArgs = fromFigmaComponentToTplProps(
+          studioCtx,
+          component,
+          node
         );
 
         const slotsArgs = Object.entries(

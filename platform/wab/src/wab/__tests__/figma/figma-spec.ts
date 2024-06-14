@@ -4,6 +4,7 @@ import {
   uploadFigmaImages,
   uploadNodeImages,
 } from "@/wab/client/figma-importer/assets";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { fakeAppCtx } from "@/wab/client/test/fake-init-ctx";
 import * as common from "@/wab/common";
 import { Bundler } from "@/wab/shared/bundler";
@@ -63,6 +64,7 @@ describe("Figma module", function () {
         const nodeImages = await uploadNodeImages(nodes, appCtx as any);
 
         const node = tplNodeFromFigmaData(
+          {} as StudioCtx, // TODO: Figure out why fakeStudioCtx() breaks the test
           vtm,
           site,
           siteOps as any,

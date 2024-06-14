@@ -36,3 +36,10 @@ export const delimiters = {
 export const OLD_SLOT_IDENTIFIER = "slot: ";
 export const SLOT_CHILDREN_SHORTHAND = "[slot]";
 export const SLOT_IDENTIFIER_REGEX = /\[slot:\s*(\w+)\]$/;
+
+export const ACCEPTED_PROP_TYPES = [
+  "TEXT",
+  "BOOLEAN",
+  "VARIANT",
+  "INSTANCE_SWAP",
+];

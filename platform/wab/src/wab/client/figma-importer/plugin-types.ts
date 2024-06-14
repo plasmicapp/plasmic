@@ -1,3 +1,5 @@
+// Reference: https://www.figma.com/plugin-docs/api/data-types/
+
 // Forked from:
 // https://github.com/figma/plugin-typings/blob/master/index.d.ts
 
@@ -651,7 +653,9 @@ export interface ComponentNode extends DefaultFrameMixin, PublishableMixin {
 export interface ComponentProperties {
   [propertyName: string]: {
     type: "BOOLEAN" | "TEXT" | "INSTANCE_SWAP" | "VARIANT";
-    value: string | number;
+    // This doesn't match the Figma Plugin API, but it's what our exporter provides
+    // TODO: Update the exporter to match the Figma Plugin API
+    value: string | boolean | number;
   };
 }
 
@@ -675,9 +679,13 @@ export interface InstanceNode extends DefaultFrameMixin {
   scaleFactor: number;
 }
 
-export type ComponentPropertiesEntries = Array<
-  [string, NonNullable<InstanceNode["componentProperties"]>[string]]
->;
+export type ComponentProperty = NonNullable<
+  InstanceNode["componentProperties"]
+>[string];
+
+export type ComponentPropertyEntry = [string, ComponentProperty];
+
+export type ComponentPropertiesEntries = Array<ComponentPropertyEntry>;
 
 interface BooleanOperationNode
   extends DefaultShapeMixin,
