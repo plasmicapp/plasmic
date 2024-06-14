@@ -5,6 +5,14 @@ const isBrowser =
   window != null &&
   typeof window.document !== "undefined";
 
+function isModuleBundlePromiseSet(name: string) {
+  return (
+    (globalThis as any).__PlasmicBundlePromises &&
+    !!(globalThis as any).__PlasmicBundlePromises[name] &&
+    !!(globalThis as any).__PlasmicBundlePromises[name].then
+  );
+}
+
 export class Registry {
   private loadedModules: Record<string, any> = {};
   private registeredModules: Record<string, any> = {};
@@ -44,11 +52,7 @@ export class Registry {
       return true;
     }
 
-    if (
-      (globalThis as any).__PlasmicBundlePromises &&
-      !!typeof (globalThis as any).__PlasmicBundlePromises[name] &&
-      !!(globalThis as any).__PlasmicBundlePromises[name].then
-    ) {
+    if (isModuleBundlePromiseSet(name)) {
       return true;
     }
 
@@ -72,12 +76,7 @@ export class Registry {
       this.modules[name] = (globalThis as any).__PLASMIC_CHUNKS[name];
     }
 
-    if (
-      !this.modules[name] &&
-      (globalThis as any).__PlasmicBundlePromises &&
-      !!typeof (globalThis as any).__PlasmicBundlePromises[name] &&
-      !!(globalThis as any).__PlasmicBundlePromises[name].then
-    ) {
+    if (!this.modules[name] && isModuleBundlePromiseSet(name)) {
       throw (globalThis as any).__PlasmicBundlePromises[name];
     }
 
