@@ -60,6 +60,7 @@ import {
   EffectiveVariantSetting,
 } from "@/wab/shared/effective-variant-setting";
 import { CanvasEnv, tryEvalExpr } from "@/wab/shared/eval";
+import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { getAncestorTplSlot, isSlotVar } from "@/wab/shared/SlotUtils";
 import { ensureBaseVariant, TplMgr } from "@/wab/shared/TplMgr";
@@ -653,6 +654,7 @@ export class VariantTplMgr {
           tpl.parent?.uuid
         }`;
       });
+      ensureComponentsObserved([component]);
 
       tpl.vsettings.push(vs);
     }
