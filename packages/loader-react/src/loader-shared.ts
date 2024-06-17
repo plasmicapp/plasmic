@@ -1,7 +1,7 @@
 import type {
-  CodeComponentMeta as InternalCodeComponentMeta,
   ComponentHelpers,
   ComponentHelpers as InternalCodeComponentHelpers,
+  CodeComponentMeta as InternalCodeComponentMeta,
   CustomFunctionMeta as InternalCustomFunctionMeta,
   GlobalContextMeta as InternalGlobalContextMeta,
   StateHelpers,
@@ -23,14 +23,14 @@ import {
 import {
   CodeModule,
   ComponentMeta,
-  internal_getCachedBundleInNodeServer,
   LoaderBundleOutput,
+  internal_getCachedBundleInNodeServer,
 } from "@plasmicapp/loader-fetcher";
 import { getActiveVariation, getExternalIds } from "@plasmicapp/loader-splits";
 import type { useMutablePlasmicQueryData } from "@plasmicapp/query";
+import type { GlobalVariantSpec } from "./PlasmicRootProvider";
 import { mergeBundles, prepComponentData } from "./bundles";
 import { ComponentLookup } from "./component-lookup";
-import type { GlobalVariantSpec } from "./PlasmicRootProvider";
 import {
   ComponentLookupSpec,
   getCompMetas,
@@ -657,11 +657,9 @@ ${this.bundle.bundleKey}`
     this.tracker.trackConversion(value);
   }
 
-  public async getActiveVariation(opts: {
-    traits: Record<string, string | number | boolean>;
-    getKnownValue: (key: string) => string | undefined;
-    updateKnownValue: (key: string, value: string) => void;
-  }) {
+  public async getActiveVariation(
+    opts: Omit<Parameters<typeof getActiveVariation>[0], "splits">
+  ) {
     await this.fetchComponents();
     return getActiveVariation({
       ...opts,
@@ -855,11 +853,9 @@ export class PlasmicComponentLoader {
     return this.__internal.fetchComponents();
   }
 
-  protected async _getActiveVariation(opts: {
-    traits: Record<string, string | number | boolean>;
-    getKnownValue: (key: string) => string | undefined;
-    updateKnownValue: (key: string, value: string) => void;
-  }) {
+  protected async _getActiveVariation(
+    opts: Parameters<typeof this.__internal.getActiveVariation>[0]
+  ) {
     return this.__internal.getActiveVariation(opts);
   }
 

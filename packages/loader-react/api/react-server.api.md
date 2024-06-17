@@ -14,6 +14,7 @@ import { ComponentMeta } from '@plasmicapp/loader-core';
 import { ComponentMeta as ComponentMeta_2 } from '@plasmicapp/loader-fetcher';
 import type { CustomFunctionMeta as CustomFunctionMeta_2 } from '@plasmicapp/host';
 import { FontMeta } from '@plasmicapp/loader-core';
+import { getActiveVariation } from '@plasmicapp/loader-splits';
 import { getExternalIds } from '@plasmicapp/loader-splits';
 import type { GlobalContextMeta as GlobalContextMeta_2 } from '@plasmicapp/host';
 import { GlobalGroupMeta } from '@plasmicapp/loader-core';
@@ -149,11 +150,7 @@ export class PlasmicComponentLoader {
         traits: Record<string, string | number | boolean>;
     }): Promise<Record<string, string>>;
     // (undocumented)
-    protected _getActiveVariation(opts: {
-        traits: Record<string, string | number | boolean>;
-        getKnownValue: (key: string) => string | undefined;
-        updateKnownValue: (key: string, value: string) => void;
-    }): Promise<Record<string, string>>;
+    protected _getActiveVariation(opts: Parameters<typeof PlasmicComponentLoader.__internal.getActiveVariation>[0]): Promise<Record<string, string>>;
     // (undocumented)
     getChunksUrl(bundle: LoaderBundleOutput, modules: CodeModule[]): string;
     // (undocumented)

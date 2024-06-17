@@ -1,11 +1,11 @@
 import type { CodeModule } from "@plasmicapp/loader-core";
 import {
+  PlasmicRootProvider as CommonPlasmicRootProvider,
   ComponentLookupSpec,
-  extractPlasmicQueryData as internalExtractPlasmicQueryData,
   FetchComponentDataOpts as InternalFetchComponentDataOpts,
   InternalPlasmicComponentLoader,
   PlasmicComponentLoader,
-  PlasmicRootProvider as CommonPlasmicRootProvider,
+  extractPlasmicQueryData as internalExtractPlasmicQueryData,
 } from "@plasmicapp/loader-react";
 import { IncomingMessage, ServerResponse } from "http";
 export {
@@ -113,6 +113,7 @@ export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
     };
 
     return this._getActiveVariation({
+      enableUnseededExperiments: true,
       traits: {
         ...extractBuiltinTraits(),
         ...opts.traits,
