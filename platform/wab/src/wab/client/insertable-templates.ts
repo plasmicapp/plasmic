@@ -1,9 +1,11 @@
 import {
-  isKnownArenaFrame,
-  isKnownTplNode,
+  ArenaFrame,
   ProjectDependency,
   Site,
+  TplComponent,
   TplNode,
+  TplSlot,
+  TplTag,
   Variant,
 } from "@/wab/classes";
 import { ViewOps } from "@/wab/client/components/canvas/view-ops";
@@ -13,7 +15,7 @@ import {
   StudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, maybe, unexpected } from "@/wab/common";
+import { ensure, maybe, switchType } from "@/wab/common";
 import { PageComponent } from "@/wab/components";
 import {
   flattenInsertableTemplatesByType,
@@ -38,7 +40,7 @@ import { $$$ } from "@/wab/shared/TplQuery";
 import { getBaseVariant } from "@/wab/shared/Variants";
 import { unbundleProjectDependency, unbundleSite } from "@/wab/tagged-unbundle";
 import { deepTrackComponents } from "@/wab/tpls";
-import { flatten, fromPairs, isArray } from "lodash";
+import { flatten, fromPairs } from "lodash";
 
 export const getPageTemplatesGroups = (studioCtx: StudioCtx) => {
   const insertableTemplates =
@@ -262,42 +264,40 @@ export function getInsertableTemplateComponentItem(
 
 function createCopyableElementsReferences(
   viewCtx: ViewCtx,
-  copyObj: ReturnType<ViewOps["copy"]>
+  copyObj: NonNullable<ReturnType<ViewOps["copy"]>>
 ): CopyElementsReference[] {
-  // Copy paste will only handle single tplNodes for now
-  if (isArray(copyObj)) {
-    // No need for pasting multiple elements for now
-    return [];
-  } else {
-    function tplNodeRef(node: TplNode): CopyElementsReference {
-      const activeVariants = viewCtx
-        .variantTplMgr()
-        .getActivatedVariantsForNode(node);
-      return {
-        type: "tpl-node",
-        uuid: node.uuid,
-        activeVariantsUuids: [...activeVariants].map((v) => v.uuid),
-      };
-    }
-
-    if (isKnownTplNode(copyObj)) {
-      return [tplNodeRef(copyObj)];
-    } else if (isKnownArenaFrame(copyObj)) {
-      // We have some options here:
-      // 1. Copy the entire frame as a frame
-      // 2. Import the component which the frame is based on
-      // 3. Copy the tree of the component
-      // For now, the most natural thing to do is to copy the tree of the component
-      const node = copyObj.container.component.tplTree;
-      return [tplNodeRef(node)];
-    }
+  function tplNodeRef(node: TplNode): CopyElementsReference {
+    const activeVariants = viewCtx
+      .variantTplMgr()
+      .getActivatedVariantsForNode(node);
+    return {
+      type: "tpl-node",
+      uuid: node.uuid,
+      activeVariantsUuids: [...activeVariants].map((v) => v.uuid),
+    };
   }
-  unexpected("Unknown copyable element type");
+
+  return (
+    switchType(copyObj)
+      // Copy paste will only handle single tplNodes for now
+      .when(Array<TplTag | TplComponent | TplSlot>, () => [])
+      .when(TplNode, (node) => [tplNodeRef(node)])
+      .when(ArenaFrame, (frame) => {
+        // We have some options here:
+        // 1. Copy the entire frame as a frame
+        // 2. Import the component which the frame is based on
+        // 3. Copy the tree of the component
+        // For now, the most natural thing to do is to copy the tree of the component
+        const node = frame.container.component.tplTree;
+        return [tplNodeRef(node)];
+      })
+      .result()
+  );
 }
 
 export function getCopyState(
   viewCtx: ViewCtx,
-  copyObj: ReturnType<ViewOps["copy"]>
+  copyObj: NonNullable<ReturnType<ViewOps["copy"]>>
 ): CopyState {
   const references = createCopyableElementsReferences(viewCtx, copyObj);
 

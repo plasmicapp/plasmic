@@ -876,8 +876,11 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
 
   async copy(clipboard: WritableClipboard, viewCtx: ViewCtx) {
     trackEvent("Copy");
-    viewCtx.enforcePastingAsSibling = true;
     const copyObj = viewCtx.viewOps.copy();
+    if (!copyObj) {
+      return;
+    }
+    viewCtx.enforcePastingAsSibling = true;
     const copyState = getCopyState(viewCtx, copyObj);
     spawn(viewCtx.appCtx.api.whitelistProjectIdToCopy(copyState.projectId));
     if (copyState.references.length > 0) {
@@ -891,6 +894,9 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
   async cut(clipboard: WritableClipboard, viewCtx: ViewCtx) {
     trackEvent("Cut");
     const copyObj = await viewCtx.viewOps.cut();
+    if (!copyObj) {
+      return;
+    }
     const copyState = getCopyState(viewCtx, copyObj);
     spawn(viewCtx.appCtx.api.whitelistProjectIdToCopy(copyState.projectId));
     if (copyState.references.length > 0) {
