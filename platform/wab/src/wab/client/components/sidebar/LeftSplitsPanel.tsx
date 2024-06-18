@@ -9,7 +9,7 @@ import {
   PlasmicLeftSplitsPanel,
 } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftSplitsPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/common";
+import { assert } from "@/wab/common";
 import { SplitStatus, SplitType } from "@/wab/splits";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { autorun } from "mobx";
@@ -85,17 +85,12 @@ function LeftSplitsPanel_(
     });
   };
 
-  const removeSplit = (split: Split) => {
-    return studioCtx.change(({ success }) => {
-      const content = split.slices[1].contents[0];
+  const removeSplit = async (split: Split) => {
+    const content = split.slices[1].contents[0];
 
-      if (isKnownGlobalVariantSplitContent(content)) {
-        spawn(
-          studioCtx.siteOps().removeSplitAndGlobalVariant(split, content.group)
-        );
-      }
-      return success();
-    });
+    assert(isKnownGlobalVariantSplitContent(content), "Unknown split content");
+
+    await studioCtx.siteOps().removeSplitAndGlobalVariant(split, content.group);
   };
 
   const displayedEffect = { transform: "translate3d(0%,0,0)" };
