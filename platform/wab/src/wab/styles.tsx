@@ -2662,7 +2662,9 @@ export function genCanvasRules(
     {
       targetEnv: "canvas",
       useCssModules: false,
-      onlyInteractiveCanvasPseudoClasses: false,
+      // We will generate the interactive pseudo classes but they only can be activated if the
+      // canvas is in interactive mode
+      onlyInteractiveCanvasPseudoClasses: true,
     }
   );
   return [...nonInteractiveRuleSet, ...interactiveRuleSet];

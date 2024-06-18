@@ -681,18 +681,26 @@ const mkTriggers = computedFn(
         sub,
         viewCtx
       )(() => {
+        const isInteractive = ctx.viewCtx.studioCtx.isInteractiveMode;
+
         const { triggers, triggerProps } = useTriggers(
           ctx.viewCtx.canvasCtx,
           ctx.reactHookSpecs,
-          ctx.viewCtx.studioCtx.isInteractiveMode
+          isInteractive
         );
+
         const newCtx: RenderingCtx = {
           ...ctx,
           triggerProps,
           activeVariants: new Set([
             ...ctx.activeVariants.keys(),
             ...component.variants.filter((variant) => {
-              if (isStyleVariant(variant)) {
+              // We include the style variants dynamically here to handle changes that require JS
+              // to be re-run. For handling changes that only require CSS, we generate the proper
+              // CSS classes in `genCanvasRules`. Those can only be applied in interactive mode,
+              // because we don't want the content to change when the user tries to edit rich text
+              // while in design mode.
+              if (isStyleVariant(variant) && isInteractive) {
                 if (isTplRootWithCCInteractionVariants(component.tplTree)) {
                   return variant.selectors.reduce(
                     (prev, key) => prev && ctx.$ccInteractions[key],
