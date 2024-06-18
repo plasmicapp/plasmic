@@ -381,6 +381,10 @@ export function createCodeComponentHelperModule(
   };
 }
 
+function codeComponentNotFoundMessage(name: string) {
+  return `[host-app-error] Code component '${name}' was not found in the current host app.`;
+}
+
 export function createCodeComponentModule(
   component: CodeComponent,
   opts?: { idFileNames?: boolean }
@@ -397,13 +401,25 @@ export function createCodeComponentModule(
         return (<div {...filteredProps}>{slotNames.map((name) => props[name]).filter((v) => v != null)}</div>);
       }`;
     } else {
-      return `([...(window as any).__PlasmicComponentRegistry, ...((window as any).__PlasmicContextRegistry ?? []), ...((window as any).__PlasmicBuiltinRegistry ?? [])]).find(
-        ({meta}) => meta.name === ${jsLiteral(component.name)}
-      ).component`;
+      return `ensure(
+        ([
+          ...(window as any).__PlasmicComponentRegistry,
+          ...((window as any).__PlasmicContextRegistry ?? []),
+          ...((window as any).__PlasmicBuiltinRegistry ?? [])
+        ]).find(
+          ({meta}) => meta.name === ${jsLiteral(component.name)}
+        )
+      , "${codeComponentNotFoundMessage(component.name)}").component`;
     }
   };
   const source = `
   ${DEVFLAGS.ccStubs ? `import React from "react";` : ""}
+  const ensure = (x: any, msg: string) => {
+    if (x === undefined || x === null) {
+      throw new Error(msg);
+    }
+    return x;
+  };
   ${
     component.codeComponentMeta.defaultExport ? "" : "export "
   }const ${importName} = ${mkImpl()};
@@ -653,9 +669,19 @@ export function updateModules(doc: Document, modules: CodeModule[]) {
       }, "*");
     }).catch(err => {
       console.log("oops, error refreshing", err);
-      window.__Sub.setPlasmicRootNode(
-        window.__Sub.React.createElement("div", {}, \`Failed to load the preview - please refresh the browser to try again. \n\nIf the problem persits, please report a bug to Plasmic team. Thank you!\n\n\${err}\`)
-      );
+
+      const setErrorMessage = (msg) => {
+        window.__Sub.setPlasmicRootNode(
+          window.__Sub.React.createElement("div", {}, msg)
+        );
+      };
+
+      if (err.message.startsWith("[host-app-error]")) {
+        setErrorMessage(err.message);
+      } else {
+        setErrorMessage(\`Failed to load the preview - please refresh the browser to try again. \n\nIf the problem persits, please report a bug to Plasmic team. Thank you!\n\n\${err}\`);
+      }
+
       window.postMessage({
         source: "plasmic-live",
         type: "error",
