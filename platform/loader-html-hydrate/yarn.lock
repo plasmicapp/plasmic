@@ -59,10 +59,10 @@
   dependencies:
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
 
-"@plasmicapp/loader-react@^1.0.357":
-  version "1.0.357"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-1.0.357.tgz#f03e0d21a50b38100115e2d4717e2818cc0616ec"
-  integrity sha512-L/41XC4dyTrpke62YHRBsAak97fJZFOxV8P6OrKbhzCrtQgHT2WOyR5uF05UOcqOiK1KfYn1nlGGRQBbqtSf+w==
+"@plasmicapp/loader-react@^1.0.358":
+  version "1.0.358"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-1.0.358.tgz#21b8ef610659df74021b8521968d2548fcc11d88"
+  integrity sha512-PyPyUgQHmWwKD4Jqom3giRNwbZzezXKBVIz9ahzhrXtt7LhbUN+ItYWROmr/l+Ljx/MiYgQPP9kp4Z2cApY/lQ==
   dependencies:
     "@plasmicapp/data-sources-context" "0.1.21"
     "@plasmicapp/host" "1.0.197"
