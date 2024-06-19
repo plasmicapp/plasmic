@@ -1,4 +1,5 @@
 import { stripParensAndMaybeConvertToIife } from "@/wab/exprs";
+import { stampIgnoreError } from "@/wab/shared/error-handling";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import { $State } from "@plasmicapp/react-web";
 
@@ -98,7 +99,9 @@ const _compileCodeExpr = maybeComputedFn(function _compileCodeExpr(
         } else if (key === "globalThis") {
           return currGlobalThis;
         } else if (!(key in target)) {
-          throw new ReferenceError(`${key.toString()} is not defined`);
+          throw stampIgnoreError(
+            new ReferenceError(`${key.toString()} is not defined`)
+          );
         } else {
           return target[key];
         }

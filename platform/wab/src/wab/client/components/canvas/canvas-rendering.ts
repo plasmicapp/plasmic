@@ -191,6 +191,7 @@ import {
   EffectiveVariantSetting,
   getEffectiveVariantSetting,
 } from "@/wab/shared/effective-variant-setting";
+import { stampIgnoreError } from "@/wab/shared/error-handling";
 import { CanvasEnv, evalCodeWithEnv } from "@/wab/shared/eval";
 import { exprUsesCtxOrFreeVars } from "@/wab/shared/eval/expression-parser";
 import { ContainerType } from "@/wab/shared/layoututils";
@@ -473,7 +474,7 @@ export function mkEventHandlerEnv(
         return fn();
       } catch (error) {
         trapInteractionError(studioCtx, loc, error);
-        error.plasmicIgnoreError = true;
+        stampIgnoreError(error);
         throw error;
       }
     },
@@ -485,7 +486,7 @@ export function mkEventHandlerEnv(
         return await promise;
       } catch (error) {
         trapInteractionError(studioCtx, loc, error);
-        error.plasmicIgnoreError = true;
+        stampIgnoreError(error);
         throw error;
       }
     },

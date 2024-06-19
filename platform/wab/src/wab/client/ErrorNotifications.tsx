@@ -8,6 +8,7 @@ import {
 } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
 import { UserError } from "@/wab/shared/UserError";
+import { isStampedIgnoreError } from "@/wab/shared/error-handling";
 import * as Sentry from "@sentry/browser";
 import { notification } from "antd";
 import { IconType } from "antd/lib/notification";
@@ -158,11 +159,7 @@ export function shouldIgnoreError(error: Error, source?: string) {
     return true;
   }
 
-  // Errors in studio or in server that are considered out of our control are stamped
-  // with `plasmicIgnoreError`. This includes:
-  // - Errors thrown by event handlers created by the user
-  // - 403 errors from data sources
-  if (error["plasmicIgnoreError"]) {
+  if (isStampedIgnoreError(error)) {
     return true;
   }
 
