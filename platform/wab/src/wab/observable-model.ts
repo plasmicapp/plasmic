@@ -1195,11 +1195,15 @@ export function observeModel(
         "Should observe an existing field"
       );
 
+      // If this inst was added in the same .change as we are trying to incrementally observe
+      // we need to make sure we mark the observed insts as new insts in the model too.
+      const isNewInst = possiblyNewlyAddedInsts.has(inst);
+
       addInstChildDispose(
         state.fieldValueDisposes,
         fieldToUpdate.name,
         visitFieldValue(inst, fieldToUpdate, inst[fieldToUpdate.name], {
-          incrementalObserve: true,
+          incrementalObserve: !isNewInst,
         })
       );
     },
