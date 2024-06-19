@@ -293,6 +293,15 @@ export interface CodeComponentMeta<P> {
   }[];
 
   /**
+   * If specified, then Figma components will have their properties transformed
+   * before being applied to this component. This is useful for transforming Figma
+   * properties to the format expected by the component.
+   */
+  figmaPropsTransform?: (
+    props: Record<string, string | number | boolean>
+  ) => Record<string, string | number | boolean>;
+
+  /**
    * If true, when an instance of this component is added, the element
    * will always be named by the name of this component.
    */
