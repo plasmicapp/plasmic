@@ -206,7 +206,7 @@ const FrameSizeSection = observer(function FrameSizeSection(
                     ).find(
                       (size) =>
                         size.width === frame.width &&
-                        size.height <= getFrameHeight(frame)
+                        size.height === frame.height
                     );
                     if (!curSize) {
                       return "Custom";
