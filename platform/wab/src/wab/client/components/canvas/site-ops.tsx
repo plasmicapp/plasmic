@@ -505,7 +505,7 @@ export class SiteOps {
         title: (
           <div>
             Are you sure you want to delete variant{" "}
-            <strong>{makeVariantName({ variant })}</strong>?
+            <strong>{makeVariantName({ variant, site: this.site })}</strong>?
           </div>
         ),
         message: (

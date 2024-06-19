@@ -34,6 +34,7 @@ import {
   isCodeComponent,
 } from "@/wab/components";
 import { code } from "@/wab/exprs";
+import { siteCCInteractionStyleVariantsToDisplayNames } from "@/wab/shared/cached-selectors";
 import { toVarName } from "@/wab/shared/codegen/util";
 import {
   ensureComponentArenaColsOrder,
@@ -273,9 +274,9 @@ export function isArbitraryCssSelector(variant: Variant) {
   );
 }
 
-export function isStyleVariant(
-  variant: Variant
-): variant is Variant & { selectors: string[] } {
+export type StyleVariant = Variant & { selectors: string[] };
+
+export function isStyleVariant(variant: Variant): variant is StyleVariant {
   return !!variant.selectors;
 }
 
@@ -849,6 +850,7 @@ export function getDisplayVariants({
     displayName: makeVariantName({
       variant,
       focusedTag: isPrivateStyleVariant(variant) ? focusedTag : undefined,
+      site,
     }),
     isSelected: pinManager.isSelected(variant),
     variant,
@@ -865,15 +867,31 @@ export function isFrameWithVariantCombo({
   return getDisplayVariants({ site, frame }).length > 1;
 }
 
+export function getStyleVariantSelectorsDisplayNames(
+  variant: StyleVariant,
+  site?: Site
+) {
+  if (site && siteCCInteractionStyleVariantsToDisplayNames(site).has(variant)) {
+    return siteCCInteractionStyleVariantsToDisplayNames(site).get(variant)!;
+  }
+  return variant.selectors;
+}
+
+export function makeStyleVariantName(variant: StyleVariant, site?: Site) {
+  return getStyleVariantSelectorsDisplayNames(variant, site).join(", ");
+}
+
 export function makeVariantName({
   variant,
   focusedTag,
   superComp,
+  site,
 }: {
   variant: Variant;
   focusedTag?: TplTag;
   includeGroupName?: boolean;
   superComp?: Component;
+  site?: Site;
 }) {
   return (
     (isPrivateStyleVariant(variant)
@@ -884,7 +902,7 @@ export function makeVariantName({
           .filter(Boolean)
           .join(": ")
       : isStyleVariant(variant)
-      ? variant.selectors?.join(", ")
+      ? makeStyleVariantName(variant, site)
       : superComp
       ? `${getNamespacedComponentName(superComp)} • ${variant.name}`
       : variant.name) || "UnnamedVariant"

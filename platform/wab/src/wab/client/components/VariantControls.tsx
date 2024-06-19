@@ -10,10 +10,11 @@ import {
   EditableLabelHandles,
 } from "@/wab/client/components/widgets/EditableLabel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, spawn } from "@/wab/common";
+import { assert, spawn } from "@/wab/common";
 import { InlineEdit } from "@/wab/commons/components/InlineEdit";
 import { VARIANT_CAP, VARIANT_LOWER } from "@/wab/shared/Labels";
 import {
+  getStyleVariantSelectorsDisplayNames,
   isBaseVariant,
   isGlobalVariant,
   isPrivateStyleVariant,
@@ -69,6 +70,7 @@ const VariantLabel_: ForwardRefRenderFunction<
       variant,
       superComp,
       ...(isTplTag(focusedTpl) && { focusedTag: focusedTpl }),
+      site: studioCtx.site,
     });
   })();
 
@@ -231,8 +233,13 @@ function StyleVariantLabel_(
   },
   ref: React.Ref<EditableLabelHandles>
 ) {
+  const studioCtx = useStudioCtx();
   const { defaultEditing, variant, forTag, onSelectorsChange, forRoot } = props;
-  const selectors = props.overrideSelectors ?? ensure(variant.selectors);
+  assert(isStyleVariant(variant), "Expected a style variant");
+  const selectors =
+    props.overrideSelectors ??
+    getStyleVariantSelectorsDisplayNames(variant, studioCtx.site);
+
   const isPrivate = isPrivateStyleVariant(variant);
   return (
     <div

@@ -178,6 +178,7 @@ const ScreenVariantOverrideLintIssueRow = observer(
     issue: NonCssScreenVariantOverrideLintIssue;
   }) {
     const { issue } = props;
+    const studioCtx = useStudioCtx();
     const content = (
       <>
         <TplLink component={issue.component} tpl={issue.tpl} /> overrides{" "}
@@ -188,10 +189,19 @@ const ScreenVariantOverrideLintIssueRow = observer(
           : "text content"}{" "}
         in responsive variant{" "}
         {issue.vs.variants.length === 1 ? (
-          <strong>{makeVariantName({ variant: issue.vs.variants[0] })}</strong>
+          <strong>
+            {makeVariantName({
+              variant: issue.vs.variants[0],
+              site: studioCtx.site,
+            })}
+          </strong>
         ) : (
           `combination ${issue.vs.variants
-            .map((v) => <strong>{makeVariantName({ variant: v })}</strong>)
+            .map((v) => (
+              <strong>
+                {makeVariantName({ variant: v, site: studioCtx.site })}
+              </strong>
+            ))
             .join(", ")}`
         )}
         .

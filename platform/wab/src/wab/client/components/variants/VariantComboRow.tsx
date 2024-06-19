@@ -76,7 +76,9 @@ const VariantComboRow = observer(function VariantComboRow(
   return (
     <PlasmicVariantComboRow
       labelContainer={combo.map((v) => (
-        <Chip key={v.uuid}>{makeVariantName({ variant: v })}</Chip>
+        <Chip key={v.uuid}>
+          {makeVariantName({ variant: v, site: viewCtx.site })}
+        </Chip>
       ))}
       root={{ onClick, ...contextMenuProps }}
       visibleButton={

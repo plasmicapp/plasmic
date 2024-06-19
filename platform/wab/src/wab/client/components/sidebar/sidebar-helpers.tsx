@@ -21,7 +21,7 @@ import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
 import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
 import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
 import { PlasmicStyleToggleButtonGroup__VariantsArgs } from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicStyleToggleButtonGroup";
-import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import {
   cx,
@@ -859,6 +859,7 @@ export function TargetBlockedTooltip(props: {
   displayName?: React.ReactNode;
   combo: VariantCombo;
 }) {
+  const studioCtx = useStudioCtx();
   const { displayName, combo } = props;
   return (
     <>
@@ -867,7 +868,9 @@ export function TargetBlockedTooltip(props: {
         in variant{" "}
         <strong>
           {combo
-            .map((variant) => makeVariantName({ variant: variant }))
+            .map((variant) =>
+              makeVariantName({ variant: variant, site: studioCtx.site })
+            )
             .join(" + ")}
         </strong>
         .

@@ -100,11 +100,16 @@ const VariantsDrawer = observer(function VariantsDrawer(props: {
           ? `Element state ${makeVariantName({
               variant: variant,
               focusedTag: tpl,
+              site: viewCtx.site,
             })}`
           : isComponentStyleVariant(variant)
-          ? `Component interaction ${makeVariantName({ variant })}`
+          ? `Component interaction ${makeVariantName({
+              variant,
+              site: viewCtx.site,
+            })}`
           : `${ensure(variant.parent).param.variable.name} = ${makeVariantName({
               variant: variant,
+              site: viewCtx.site,
             })}`
       }
       role="option"

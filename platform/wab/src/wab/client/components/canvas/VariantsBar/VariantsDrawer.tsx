@@ -221,6 +221,7 @@ function VariantsDrawer_({
     makeVariantName({
       variant,
       ...(isTplTag(focusedTpl) && { focusedTag: focusedTpl }),
+      site: studioCtx.site,
     })!;
 
   useEffect(() => {
