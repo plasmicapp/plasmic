@@ -545,7 +545,12 @@ export class TplMgr {
 
     removeVariantsFromArenas(this.site(), variants, component);
 
-    // Now actually detach the Variant from the model tree
+    this.tryRemoveVariantFromVariantedRuleSets(variants);
+    this.tryRemoveVariantFromVariantedValue(variants);
+
+    // The last thing we do is detach the variants from their parent groups
+    // This is to ensure that we are able to use the parent in the previous
+    // steps
     for (const v of variants) {
       if (isStyleVariant(v)) {
         tryRemove(
@@ -557,9 +562,6 @@ export class TplMgr {
         remove(group.variants, v);
       }
     }
-
-    this.tryRemoveVariantFromVariantedRuleSets(variants);
-    this.tryRemoveVariantFromVariantedValue(variants);
 
     ensureScreenVariantsOrderOnMatrices(this.site());
   }
@@ -831,7 +833,10 @@ export class TplMgr {
   }
 
   removeGlobalVariantGroup(group: VariantGroup) {
-    this.tryRemoveVariant(group.variants, undefined);
+    // Create a copy of the group's variants, since removing variants
+    // will detach them from the group. Ensure that we pass a stable
+    // reference
+    this.tryRemoveVariant([...group.variants], undefined);
     removeVariantGroupFromArenas(this.site(), group, undefined);
     remove(this.site().globalVariantGroups, group);
     removeVariantGroupFromSplits(this.site(), group);

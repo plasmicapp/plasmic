@@ -105,3 +105,27 @@ export function removeVariantGroupFromSplits(site: Site, group: VariantGroup) {
     )
   );
 }
+
+export function isGlobalVariantGroupUsedInSplits(
+  site: Site,
+  group: VariantGroup
+) {
+  return site.splits.some((split) =>
+    split.slices.some((slice) =>
+      slice.contents.some((content) =>
+        switchType(content)
+          .when(
+            GlobalVariantSplitContent,
+            (variantContent) => variantContent.group === group
+          )
+          .elseUnsafe(() => false)
+      )
+    )
+  );
+}
+
+export function isVariantUsedInSplits(site: Site, variant: Variant) {
+  return (
+    variant.parent && isGlobalVariantGroupUsedInSplits(site, variant.parent)
+  );
+}

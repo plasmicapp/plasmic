@@ -1063,6 +1063,20 @@ export const findSplitsUsingVariantGroup = maybeComputedFn(
   }
 );
 
+export const findStyleTokensUsingVariantGroup = maybeComputedFn(
+  function findStyleTokensUsingVariantGroup(
+    site: Site,
+    variantGroup: VariantGroup
+  ) {
+    const groupVariants = new Set(variantGroup.variants);
+    return site.styleTokens.filter((token) =>
+      token.variantedValues.some((value) =>
+        value.variants.some((variant) => groupVariants.has(variant))
+      )
+    );
+  }
+);
+
 /**
  * Returns true if the argument tpl slot belonging to component
  * is visible when the `variants` are active.

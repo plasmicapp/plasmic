@@ -80,6 +80,10 @@ import {
   moveVariantGroup,
   variantComboKey,
 } from "@/wab/shared/Variants";
+import {
+  isGlobalVariantGroupUsedInSplits,
+  isVariantUsedInSplits,
+} from "@/wab/splits";
 import { Menu } from "antd";
 import sortBy from "lodash/sortBy";
 import { observer } from "mobx-react";
@@ -875,6 +879,9 @@ const GlobalVariantRow = observer(function GlobalVariantRow(props: {
     onToggle,
   } = props;
   const ref = React.useRef<EditableLabelHandles>(null);
+
+  const isSplitsVariant = isVariantUsedInSplits(studioCtx.site, variant);
+
   return (
     <VariantRow
       key={variant.uuid}
@@ -895,13 +902,17 @@ const GlobalVariantRow = observer(function GlobalVariantRow(props: {
               return success();
             })
           ),
-        onRemove: () =>
-          spawn(
-            studioCtx.change(({ success }) => {
-              spawn(studioCtx.siteOps().removeGlobalVariant(variant));
-              return success();
-            })
-          ),
+        // Splits variants can't be removed independently of the split if it's
+        // not through the split editor
+        onRemove: !isSplitsVariant
+          ? () =>
+              spawn(
+                studioCtx.change(({ success }) => {
+                  spawn(studioCtx.siteOps().removeGlobalVariant(variant));
+                  return success();
+                })
+              )
+          : undefined,
         onRename: () => ref.current && ref.current.setEditing(true),
       })}
       label={
@@ -1178,6 +1189,11 @@ const GlobalVariantGroupSection = observer(
       onRename,
     } = props;
 
+    const isSplitsGroup = isGlobalVariantGroupUsedInSplits(
+      studioCtx.site,
+      group
+    );
+
     const ref = React.useRef<EditableLabelHandles>(null);
     return (
       <VariantSection
@@ -1191,15 +1207,20 @@ const GlobalVariantGroupSection = observer(
             ref={ref}
           />
         }
-        onAddNewVariant={() =>
-          studioCtx.change(({ success }) => {
-            const variant = studioCtx.tplMgr().createGlobalVariant(group);
-            if (isScreenVariantGroup(group)) {
-              variant.mediaQuery = new ScreenSizeSpec(0).query();
-            }
-            onAddedVariant(variant);
-            return success();
-          })
+        // We don't allow adding new variants to split groups as they
+        // should be handled by the split editor
+        onAddNewVariant={
+          !isSplitsGroup
+            ? () =>
+                studioCtx.change(({ success }) => {
+                  const variant = studioCtx.tplMgr().createGlobalVariant(group);
+                  if (isScreenVariantGroup(group)) {
+                    variant.mediaQuery = new ScreenSizeSpec(0).query();
+                  }
+                  onAddedVariant(variant);
+                  return success();
+                })
+            : undefined
         }
         menu={makeVariantGroupMenu({
           group,

@@ -80,6 +80,7 @@ import {
   findComponentsUsingComponentVariant,
   findComponentsUsingGlobalVariant,
   findSplitsUsingVariantGroup,
+  findStyleTokensUsingVariantGroup,
   getComponentsUsingImageAsset,
 } from "@/wab/shared/cached-selectors";
 import { toVarName } from "@/wab/shared/codegen/util";
@@ -551,10 +552,25 @@ export class SiteOps {
   ) {
     const usingComps = this.findComponentsUsingVariantGroup(group, component);
     const usingSplits = findSplitsUsingVariantGroup(this.site, group);
+    const usingTokens = findStyleTokensUsingVariantGroup(this.site, group);
+
+    const renderUsageInfo = (objectType: string, names: React.ReactNode[]) => {
+      if (names.length > 0) {
+        return (
+          <p>
+            It is being used by {pluralize(objectType, names.length)}{" "}
+            {joinReactNodes(names, ", ")}.
+          </p>
+        );
+      }
+      return null;
+    };
+
     if (
       opts.confirm === "always" ||
       usingComps.size > 0 ||
-      usingSplits.length > 0
+      usingSplits.length > 0 ||
+      usingTokens.length > 0
     ) {
       return await reactConfirm({
         title: (
@@ -565,27 +581,17 @@ export class SiteOps {
         ),
         message: (
           <>
-            {usingComps.size > 0 && (
-              <p>
-                It is being used by {pluralize("component", usingComps.size)}{" "}
-                {joinReactNodes(
-                  [...usingComps].map((comp) =>
-                    makeComponentName(this.site, comp)
-                  ),
-                  ", "
-                )}
-                .
-              </p>
+            {renderUsageInfo(
+              "component",
+              [...usingComps].map((c) => makeComponentName(this.site, c))
             )}
-            {usingSplits.length > 0 && (
-              <p>
-                It is being used by content{" "}
-                {pluralize("split", usingSplits.length)}{" "}
-                {joinReactNodes(
-                  usingSplits.map((split) => split.name),
-                  ", "
-                )}
-              </p>
+            {renderUsageInfo(
+              "split",
+              usingSplits.map((split) => split.name)
+            )}
+            {renderUsageInfo(
+              "style token",
+              usingTokens.map((token) => token.name)
             )}
           </>
         ),
