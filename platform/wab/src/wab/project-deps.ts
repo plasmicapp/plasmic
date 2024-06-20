@@ -10,7 +10,6 @@ import {
   ImageAsset,
   isKnownArenaFrame,
   isKnownComponent,
-  isKnownCustomCode,
   isKnownEventHandler,
   isKnownImageAsset,
   isKnownImageAssetRef,
@@ -64,7 +63,7 @@ import {
   PageComponent,
   removeComponentParam,
 } from "@/wab/components";
-import { isFallbackableExpr } from "@/wab/exprs";
+import { isFallbackableExpr, isFallbackSet } from "@/wab/exprs";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import {
   hasAssetRefs,
@@ -440,8 +439,8 @@ function fixAssetRefForExpr(
 ) {
   if (isKnownImageAssetRef(expr) && oldToNewAsset.has(expr.asset)) {
     expr.asset = getOrCloneNewAsset(tplMgr, expr.asset, oldToNewAsset);
-  } else if (isKnownCustomCode(expr) && expr.fallback) {
-    fixAssetRefForExpr(tplMgr, expr.fallback, oldToNewAsset);
+  } else if (isFallbackSet(expr)) {
+    fixAssetRefForExpr(tplMgr, expr.fallback!, oldToNewAsset);
   }
 }
 
