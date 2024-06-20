@@ -1,14 +1,10 @@
+import { ensure, withoutNils } from "@/wab/common";
 import {
-  ensure,
-  mkShortUuid,
-  omitNils,
-  tuple,
-  withoutNils,
-} from "@/wab/common";
-import { transformBundlerErrors } from "@/wab/server/loader/error-handler";
+  transformBundlerErrors,
+  uploadErrorFiles,
+} from "@/wab/server/loader/error-handler";
 import { makeGlobalContextsProviderFileName } from "@/wab/server/loader/module-writer";
 import { withSpan } from "@/wab/server/util/apm-util";
-import { uploadFilesToS3 } from "@/wab/server/util/s3-util";
 import {
   CodegenOutputBundle,
   ComponentReference,
@@ -30,7 +26,7 @@ import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
 import sucrase from "@rollup/plugin-sucrase";
-import esbuild, { Metafile, Plugin as EsbuildPlugin } from "esbuild";
+import esbuild, { Plugin as EsbuildPlugin, Metafile } from "esbuild";
 import { promises as fs } from "fs";
 import { glob } from "glob";
 import { flatMap, kebabCase, sortBy } from "lodash";
@@ -939,52 +935,6 @@ function makeFontMetas(usages: FontUsage[]) {
     ];
   }
   return [];
-}
-
-const RE_TSX_FILE = /(\w+\.tsx)/g;
-async function uploadErrorFiles(err: Error, dir: string) {
-  const matches = Array.from(err.toString().matchAll(RE_TSX_FILE));
-  const files = matches.map((match) => match[0]);
-  if (files.length === 0) {
-    return;
-  }
-
-  const readFile = async (file: string) => {
-    const filePath = path.join(dir, file);
-    try {
-      return (await fs.readFile(filePath)).toString();
-    } catch (err2) {
-      console.log(`Error reading ${filePath}`, err2);
-      return undefined;
-    }
-  };
-
-  const fileContents = await Promise.all(
-    files.map(async (f) => tuple(f, await readFile(f)))
-  );
-
-  const filesDict = omitNils(Object.fromEntries(fileContents));
-
-  if (Object.keys(filesDict).length === 0) {
-    return;
-  }
-  const prefix = `bundling-errors/${mkShortUuid()}`;
-  await uploadFilesToS3({
-    bucket: "plasmic-errors",
-    key: prefix,
-    files: filesDict,
-  });
-
-  console.log(
-    `Error files: ${Object.keys(filesDict)
-      .map(
-        (f) =>
-          `https://plasmic-errors.s3-us-west-2.amazonaws.com/${prefix}/${f}`
-      )
-      .join(" , ")}`
-  );
-
-  return prefix;
 }
 
 async function findPkgDir(startDir: string, pkg: string) {
