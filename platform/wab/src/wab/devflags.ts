@@ -552,7 +552,6 @@ const DEFAULT_DEVFLAGS = {
   uncatchErrors: false,
   // Prefers loading state over expression fallback
   useLoadingState: false,
-  useLogrocket: false,
   showHiddenHostLessComponents: false,
   ccStubs: false,
   workspaces: false,

@@ -106,15 +106,6 @@ export function TopFrameCtxProvider({
             topFrameApi.registerLocationListener(locationListener)
           );
         },
-
-        toJSON() {
-          // When we do console.log(studioCtx) in the inner frame, fullstory
-          // tries to jsonify studioCtx, converting all descendant objects
-          // into json to record in fullstory, eventually calling api.toJSON().
-          // So we add that method here to prevent comlink from trying to call a
-          // non-existent function on our API object.
-          return "API";
-        },
       } as TopFrameFullApi;
       Comlink.expose(topFrameCtxApi, {
         ...hostFrameEndpoint,

@@ -51,14 +51,6 @@ export class StudioHtmlPlugin implements RspackPluginInstance {
             `<script id="ReactDevToolsScript" crossorigin="anonymous"></script>` // Replaced in studio.js
           );
 
-          // Specify that this iframe is the outermost root of the FullStory recording.
-          root
-            .querySelector("head")
-            .insertAdjacentHTML(
-              "afterbegin",
-              `<script>window['_fs_is_outer_script'] = true;</script>`
-            );
-
           // Allow our instrumentation to run when the host URL uses HTTP
           root
             .querySelector("head")

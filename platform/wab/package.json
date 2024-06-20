@@ -380,7 +380,6 @@
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
     "loglevel": "^1.6.8",
-    "logrocket": "^1.0.9",
     "lusca": "^1.6.1",
     "memoize-one": "^6.0.0",
     "mime": "^2.4.6",

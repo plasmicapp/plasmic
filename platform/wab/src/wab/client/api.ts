@@ -37,7 +37,6 @@ import * as Sentry from "@sentry/browser";
 import { proxy, ProxyMarked } from "comlink";
 import $ from "jquery";
 import L, { pick } from "lodash";
-import LogRocket from "logrocket";
 import io, { Socket } from "socket.io-client";
 
 const fullApiPath = (url: /*TWZ*/ string) => `/api/v1/${L.trimStart(url, "/")}`;
@@ -154,7 +153,6 @@ export class Api extends SharedApi {
     Sentry.configureScope((scope) => {
       scope.setUser({});
     });
-    LogRocket.startNewSession();
   }
 
   async req(
@@ -657,7 +655,6 @@ export function setUser(user: ApiUser) {
   Sentry.configureScope((scope) => {
     scope.setUser({ id, ...traits });
   });
-  LogRocket.identify(id, traits);
 }
 
 export function invalidationKey(method: string, ...args: any[]) {

@@ -1,5 +1,4 @@
 import L from "lodash";
-import LogRocket from "logrocket";
 import { useEffect } from "react";
 
 const reservedProps = [
@@ -40,7 +39,6 @@ export function trackEvent(eventName: string, eventData?: any) {
     }
   }
   analytics.track(eventName, eventData);
-  LogRocket.track(eventName);
 }
 
 export function useTracking() {
