@@ -11,8 +11,9 @@ import { getParamByVarName, isCodeComponent } from "@/wab/components";
 import { isSlot } from "@/wab/shared/SlotUtils";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
+import { isBoolType, isNumType } from "@/wab/shared/core/model-util";
 import { notification } from "antd";
-import { isBoolean, isObject, isString, omit } from "lodash";
+import { isBoolean, isNumber, isObject, isString, omit } from "lodash";
 
 function getChildComponentNameFromPropertyKey(
   allDescendants: InstanceNode[],
@@ -42,6 +43,16 @@ function fixComponentFigmaPropKey(key: string, prop: ComponentProperty) {
   return key;
 }
 
+function isFigmaTrueishValue(value: number | string | boolean) {
+  if (isBoolean(value)) {
+    return value;
+  }
+  if (isNumber(value)) {
+    return value === 1;
+  }
+  return ["true", "on"].includes(`${value}`.trim().toLowerCase());
+}
+
 function fixComponentFigmaPropValue(
   key: string,
   figmaProp: ComponentProperty,
@@ -57,10 +68,7 @@ function fixComponentFigmaPropValue(
     if (isBoolean(prop.value)) {
       return prop;
     }
-    const isTrueishValue =
-      prop.value === 1 ||
-      ["true", "on"].includes(`${prop.value}`.trim().toLowerCase());
-    return { ...prop, value: isTrueishValue };
+    return { ...prop, value: isFigmaTrueishValue(prop.value) };
   }
 
   if (prop.type === "INSTANCE_SWAP") {
@@ -193,8 +201,13 @@ function fromFigmaPropsToTplProps(
         return null;
       }
       // Parse text to number if param is number
-      if (param.type.name === "num" && isString(value)) {
+      if (isNumType(param.type) && isString(value)) {
         return [param.variable.name, Number(value)];
+      }
+      if (isBoolType(param.type)) {
+        // We may have to convert a string value to a boolean as we may be mapping a variant
+        // to a boolean prop
+        return isFigmaTrueishValue(value) ? [param.variable.name, true] : null;
       }
       return [param.variable.name, value];
     })
