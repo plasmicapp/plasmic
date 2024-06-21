@@ -46,6 +46,10 @@ import {
   customFunctionId,
 } from "@/wab/shared/code-components/code-components";
 import {
+  getInteractionVariantMeta,
+  isTplRootWithCodeComponentInteractionVariants,
+} from "@/wab/shared/code-components/interaction-variants";
+import {
   buildUidToNameMap,
   getNamedDescendantNodes,
   getParamNames,
@@ -96,7 +100,6 @@ import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   isPrivateStyleVariant,
   isStyleVariant,
-  isTplRootWithCCInteractionVariants,
   isVariantSettingEmpty,
   StyleVariant,
   VariantCombo,
@@ -1162,7 +1165,7 @@ export const siteToUsedDataSources = maybeComputedFn(
 const componentCCInteractionStyleVariantsToDisplayNames = maybeComputedFn(
   function ccStyleVariantToDisplayNames(component: Component) {
     const tplRoot = component.tplTree;
-    if (isTplRootWithCCInteractionVariants(tplRoot)) {
+    if (isTplRootWithCodeComponentInteractionVariants(tplRoot)) {
       const interactionVariantMeta =
         tplRoot.component.codeComponentMeta.interactionVariantMeta;
       return component.variants
@@ -1170,8 +1173,12 @@ const componentCCInteractionStyleVariantsToDisplayNames = maybeComputedFn(
         .map((variant): [StyleVariant, string[]] => {
           return [
             variant,
-            variant.selectors.map(
-              (selector) => interactionVariantMeta[selector].displayName
+            withoutNils(
+              variant.selectors.map(
+                (selector) =>
+                  getInteractionVariantMeta(interactionVariantMeta, selector)
+                    ?.displayName
+              )
             ),
           ];
         });

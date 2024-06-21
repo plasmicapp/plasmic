@@ -113,6 +113,10 @@ import {
   isPlainObjectPropType,
   tryGetStateHelpers,
 } from "@/wab/shared/code-components/code-components";
+import {
+  isTplRootWithCodeComponentInteractionVariants,
+  withoutInteractionVariantPrefix,
+} from "@/wab/shared/code-components/interaction-variants";
 import { toReactAttr } from "@/wab/shared/codegen/image-assets";
 import {
   deriveReactHookSpecs,
@@ -222,7 +226,6 @@ import {
   isPseudoElementVariantForTpl,
   isScreenVariant,
   isStyleVariant,
-  isTplRootWithCCInteractionVariants,
   VariantCombo,
   variantHasPrivatePseudoElementSelector,
 } from "@/wab/shared/Variants";
@@ -701,9 +704,15 @@ const mkTriggers = computedFn(
               // because we don't want the content to change when the user tries to edit rich text
               // while in design mode.
               if (isStyleVariant(variant) && isInteractive) {
-                if (isTplRootWithCCInteractionVariants(component.tplTree)) {
+                if (
+                  isTplRootWithCodeComponentInteractionVariants(
+                    component.tplTree
+                  )
+                ) {
                   return variant.selectors.reduce(
-                    (prev, key) => prev && ctx.$ccInteractions[key],
+                    (prev, key) =>
+                      prev &&
+                      ctx.$ccInteractions[withoutInteractionVariantPrefix(key)],
                     true
                   );
                 }
@@ -1424,7 +1433,10 @@ function renderTplComponent(
       ctx.valKey
     );
 
-    if (isComponentRoot && isTplRootWithCCInteractionVariants(node)) {
+    if (
+      isComponentRoot &&
+      isTplRootWithCodeComponentInteractionVariants(node)
+    ) {
       props["updateInteractionVariant"] = ctx.updateInteractionVariant;
     }
 

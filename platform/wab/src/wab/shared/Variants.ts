@@ -27,7 +27,6 @@ import {
 import {
   ArenaFrame,
   Arg,
-  CodeComponentInteractionVariantMeta,
   Component,
   ComponentVariantGroup,
   CustomCode,
@@ -67,6 +66,7 @@ import {
 } from "@/wab/shared/core/tpls";
 import { arrayContains } from "class-validator";
 import L, { orderBy, uniqBy } from "lodash";
+import { isTplRootWithCodeComponentInteractionVariants } from "@/wab/shared/code-components/interaction-variants";
 
 export const BASE_VARIANT_NAME = "base";
 
@@ -122,36 +122,11 @@ interface _VariantPath {
   path: Array<[Variant, number]>;
 }
 
-export function isCodeComponentWithInteractionVariants(component: Component) {
-  return isCodeComponent(component)
-    ? Object.keys(component.codeComponentMeta.interactionVariantMeta).length > 0
-    : false;
-}
-
-export function isTplRootWithCCInteractionVariants(
-  tpl: TplNode
-): tpl is TplCodeComponent {
-  return (
-    isTplComponent(tpl) &&
-    isComponentRoot(tpl) &&
-    isCodeComponentWithInteractionVariants(tpl.component)
-  );
-}
-
-export function getCodeComponentInteractionVariantMeta(
-  tpl: TplCodeComponent,
-  key: string
-): CodeComponentInteractionVariantMeta | null {
-  const metas = tpl.component.codeComponentMeta.interactionVariantMeta;
-  if (key in metas) {
-    return metas[key];
-  }
-  return null;
-}
-
 export function canHaveInteractionVariant(component: Component) {
   const tplRoot = component.tplTree;
-  return isTplTag(tplRoot) || isTplRootWithCCInteractionVariants(tplRoot);
+  return (
+    isTplTag(tplRoot) || isTplRootWithCodeComponentInteractionVariants(tplRoot)
+  );
 }
 
 export function isStandaloneVariantGroup(

@@ -16,6 +16,10 @@ import {
   customFunctionId,
   isCodeComponentWithHelpers,
 } from "@/wab/shared/code-components/code-components";
+import {
+  isTplRootWithCodeComponentInteractionVariants,
+  withoutInteractionVariantPrefix,
+} from "@/wab/shared/code-components/interaction-variants";
 import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import {
   extractUsedFontsFromComponents,
@@ -352,7 +356,6 @@ import {
   isScreenVariant,
   isStandaloneVariantGroup,
   isStyleVariant,
-  isTplRootWithCCInteractionVariants,
   VariantCombo,
   VariantGroupType,
 } from "@/wab/shared/Variants";
@@ -1328,10 +1331,12 @@ export function makeVariantComboChecker(
   const variantChecker = (variant: Variant) => {
     if (isStyleVariant(variant)) {
       const tplRoot = component.tplTree;
-      if (isTplRootWithCCInteractionVariants(tplRoot)) {
+      if (isTplRootWithCodeComponentInteractionVariants(tplRoot)) {
         return variant.selectors
           .map((sel) => {
-            return `$ccInteractions[${jsString(sel)}]`;
+            return `$ccInteractions[${jsString(
+              withoutInteractionVariantPrefix(sel)
+            )}]`;
           })
           .join(" && ");
       }
@@ -2220,7 +2225,7 @@ export function serializeLocalStyleTriggers(ctx: SerializerBaseContext) {
 }
 
 export function serializeInteractionVariantsTriggers(tplRoot: TplNode) {
-  if (!isTplRootWithCCInteractionVariants(tplRoot)) {
+  if (!isTplRootWithCodeComponentInteractionVariants(tplRoot)) {
     return "";
   }
 
@@ -2666,7 +2671,7 @@ export function getOrderedExplicitVSettings(
       shouldGenVariantSetting(ctx, vs) &&
       (!hasStyleVariant(vs.variants) ||
         shouldGenReactHook(vs, ctx.component) ||
-        isTplRootWithCCInteractionVariants(ctx.component.tplTree))
+        isTplRootWithCodeComponentInteractionVariants(ctx.component.tplTree))
   );
   if (interpreterMeta) {
     interpreterMeta.nodeUuidToOrderedVsettings[node.uuid] =
@@ -3599,7 +3604,7 @@ function serializeTplComponent(ctx: SerializerBaseContext, node: TplComponent) {
     ] = `(ref) => { $refs[${jsLiteral(nodeName)}] = ref; }`;
   }
 
-  if (isRoot && isTplRootWithCCInteractionVariants(node)) {
+  if (isRoot && isTplRootWithCodeComponentInteractionVariants(node)) {
     attrs["updateInteractionVariant"] = `updateInteractionVariant`;
   }
 

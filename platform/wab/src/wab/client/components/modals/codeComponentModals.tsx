@@ -3,6 +3,7 @@ import { ProjectDependency } from "@/wab/shared/model/classes";
 // This file is owned by you, feel free to edit as you see fit.
 import sty from "@/wab/client/components/modals/SiteDiffs.module.css";
 import {
+  confirm,
   reactConfirm,
   reactHardConfirm,
   showTemporaryPrompt,
@@ -218,6 +219,42 @@ export async function fixMissingCodeComponents(
         )
       );
     }
+    return success();
+  });
+}
+
+export async function confirmRemovedInteractiveVariants(
+  removedSelectorsByComponent: [Component, string[]][]
+) {
+  return failableAsync<void, never>(async ({ success }) => {
+    let shouldDelete: boolean | undefined;
+    do {
+      shouldDelete = await confirm({
+        title: "Some interaction variants have been removed",
+        message: (
+          <>
+            <p>
+              The following interaction variants have been removed. Please
+              confirm that the respective styles to each of those selectors are
+              no longer needed.
+            </p>
+            {removedSelectorsByComponent.map(([comp, selectors]) => (
+              <div key={comp.uuid}>
+                <h3>{getComponentDisplayName(comp)}</h3>
+                <ul>
+                  {selectors.map((selector) => (
+                    <li key={selector}>{selector}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </>
+        ),
+      });
+      // The only option that we have is to delete the associated styles, so we
+      // will just keep prompting until the user agrees to delete them
+    } while (!shouldDelete);
+
     return success();
   });
 }

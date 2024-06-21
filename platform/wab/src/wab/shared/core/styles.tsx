@@ -32,7 +32,6 @@ import { $$$ } from "@/wab/shared/TplQuery";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   VariantCombo,
-  getCodeComponentInteractionVariantMeta,
   getGlobalVariants,
   hasScreenVariant,
   isBaseRuleVariant,
@@ -49,6 +48,7 @@ import {
   makeTokenRefResolver,
   siteToAllTokensDict,
 } from "@/wab/shared/cached-selectors";
+import { getTplCodeComponentInteractionVariantMeta } from "@/wab/shared/code-components/interaction-variants";
 import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import { makeCssClassNameForVariantCombo } from "@/wab/shared/codegen/react-p";
 import {
@@ -1772,11 +1772,11 @@ function showPseudoClassSelector(
           return getPseudoSelector(sel);
         } else {
           // This is either an arbitrary selector or a code component interaction variant
-          // we can only validate if it's an code component interaction variant
+          // we validate if it's an code component interaction variant by looking at the root
+          // tpl of the current component
           const codeComponentInteractionMeta =
-            isRoot &&
-            isTplCodeComponent(tpl) &&
-            getCodeComponentInteractionVariantMeta(tpl, sel);
+            isTplCodeComponent(root) &&
+            getTplCodeComponentInteractionVariantMeta(root, sel);
           if (codeComponentInteractionMeta) {
             return codeComponentInteractionMeta.cssSelector;
           }

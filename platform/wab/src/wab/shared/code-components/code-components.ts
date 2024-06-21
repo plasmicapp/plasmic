@@ -66,6 +66,10 @@ import {
   isBuiltinCodeComponentImportPath,
 } from "@/wab/shared/code-components/builtin-code-components";
 import {
+  ensureOnlyValidInteractiveVariantsInComponent,
+  getInvalidInteractiveVariantsInComponent,
+} from "@/wab/shared/code-components/interaction-variants";
+import {
   paramToVarName,
   toVarName,
   validJsIdentifierChars,
@@ -605,6 +609,9 @@ export interface CodeComponentSyncCallbackFns {
     updatedLibraries: CodeLibrary[];
     removedLibraries: CodeLibrary[];
   }) => void;
+  confirmRemovedInteractiveVariants?: (
+    removedSelectorsByComponent: [Component, string[]][]
+  ) => Promise<IFailable<void, never>>;
 }
 
 export class DuplicateCodeComponentError extends CustomError {
@@ -662,8 +669,13 @@ export async function syncCodeComponents(
     run(checkUniqueCodeComponentNames(ctx));
     run(checkWhitespacesInImportNames(ctx, fns));
     const newComponents = run(await addNewRegisteredComponents(ctx, fns));
+    // The order here is important. We first sync interactions variants so that
+    // model operations like remove component and swap component can be applied
+    // based on the latest interaction variants.
+    run(await syncCodeComponentsInteractionVariants(ctx));
     run(await fixMissingCodeComponents(ctx, fns));
     run(await fixMissingDefaultComponents(ctx, fns));
+    run(await fixCodeComponentsInteractionVariants(ctx, fns));
 
     // At this point, we've added all the new components and removed
     // all the removed components.
@@ -1139,6 +1151,89 @@ export async function fixMissingCodeComponents(
   });
 }
 
+// Update interaction variants meta for all the code components in the site,
+// this is done separately from the other code component metas because we need
+// special handling for model elements that depend on it
+async function syncCodeComponentsInteractionVariants(ctx: SiteCtx) {
+  return failableAsync<void, never>(async ({ success, run }) => {
+    run(
+      await ctx.change(
+        ({ success: syncedInteractionVariantMeta }) => {
+          ctx.site.components.forEach((c) => {
+            if (isCodeComponent(c)) {
+              const meta = ctx.codeComponentsRegistry
+                .getRegisteredComponentsAndContextsMap()
+                .get(c.name)?.meta;
+              const interactionVariants = meta
+                ? mkCodeComponentInteractionVariantsFromMeta(meta)
+                : {};
+              if (
+                !instUtil.deepEquals(
+                  c.codeComponentMeta.interactionVariantMeta,
+                  interactionVariants,
+                  true
+                )
+              ) {
+                c.codeComponentMeta.interactionVariantMeta =
+                  interactionVariants;
+              }
+            }
+          });
+          return syncedInteractionVariantMeta();
+        },
+        { noUndoRecord: true }
+      )
+    );
+
+    return success();
+  });
+}
+
+async function fixCodeComponentsInteractionVariants(
+  ctx: SiteCtx,
+  fns: CodeComponentSyncCallbackFns
+) {
+  return failableAsync<void, never>(async ({ success, run }) => {
+    const removedSelectorsByComponent: [Component, string[]][] = [];
+
+    const componentsToObserve: Component[] = [];
+
+    ctx.site.components.forEach((c) => {
+      if (!isCodeComponent(c)) {
+        const { unregisterdSelectors } =
+          getInvalidInteractiveVariantsInComponent(c);
+
+        if (unregisterdSelectors.length > 0) {
+          removedSelectorsByComponent.push([c, unregisterdSelectors]);
+          componentsToObserve.push(c);
+        }
+      }
+    });
+
+    if (removedSelectorsByComponent.length > 0) {
+      await fns.confirmRemovedInteractiveVariants?.(
+        removedSelectorsByComponent
+      );
+    }
+
+    ctx.observeComponents(componentsToObserve);
+
+    run(
+      await ctx.change(
+        ({ success: removedInvalidInteractionVariants }) => {
+          componentsToObserve.forEach((c) => {
+            ensureOnlyValidInteractiveVariantsInComponent(ctx.site, c);
+          });
+          return removedInvalidInteractionVariants();
+        },
+        { noUndoRecord: true }
+      )
+    );
+
+    return success();
+  });
+}
+
 async function refreshCodeComponentMetas(
   ctx: SiteCtx,
   fns: CodeComponentSyncCallbackFns
@@ -1233,21 +1328,6 @@ function refreshCodeComponentMeta(
         mustBeNamed = true;
       }
       c.codeComponentMeta.hasRef = !!(meta as any).refActions;
-
-      if (meta.interactionVariants) {
-        const interactionVariants =
-          mkCodeComponentInteractionVariantsFromMeta(meta);
-        if (
-          !c.codeComponentMeta.interactionVariantMeta ||
-          !instUtil.deepEquals(
-            c.codeComponentMeta.interactionVariantMeta,
-            interactionVariants,
-            true
-          )
-        ) {
-          c.codeComponentMeta.interactionVariantMeta = interactionVariants;
-        }
-      }
 
       // Explicitly not handling defaultSlotContents, which is handled by
       // refreshDefaultSlotContents()
@@ -3599,7 +3679,10 @@ export function mkCodeComponentInteractionVariantsFromMeta(
 
   return Object.fromEntries(
     Object.entries(meta.interactionVariants).map(
-      ([selector, { cssSelector, displayName }]) => [
+      ([selector, { cssSelector, displayName }]): [
+        string,
+        CodeComponentInteractionVariantMeta
+      ] => [
         selector,
         new CodeComponentInteractionVariantMeta({ cssSelector, displayName }),
       ]

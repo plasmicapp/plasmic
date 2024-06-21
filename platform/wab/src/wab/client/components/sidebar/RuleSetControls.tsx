@@ -3,6 +3,10 @@ import { XMultiSelect } from "@/wab/client/components/XMultiSelect";
 import { ensure, filterFalsy } from "@/wab/shared/common";
 import { CodeComponent } from "@/wab/shared/core/components";
 import {
+  getInteractionVariantMeta,
+  mkCodeComponentInteractionVariantKey,
+} from "@/wab/shared/code-components/interaction-variants";
+import {
   getApplicableSelectors,
   getPseudoSelector,
   oppositeSelectorDisplayName,
@@ -59,7 +63,7 @@ export function SelectorsInput({
   const codeComponentDisplayNameToKey = Object.entries(
     interactionVariantsMeta
   ).reduce((acc, [key, value]) => {
-    acc[value.displayName] = key;
+    acc[value.displayName] = mkCodeComponentInteractionVariantKey(key);
     return acc;
   }, {} as Record<string, string>);
 
@@ -94,18 +98,33 @@ export function SelectorsInput({
     return key;
   }
 
-  function getCssSelector(sel: string) {
+  function ensureInteractionVariantMeta(selector: string) {
+    return ensure(
+      getInteractionVariantMeta(interactionVariantsMeta, selector),
+      `Expected interaction variant selector meta to selector="${selector}" in the code component ${codeComponent?.name}`
+    );
+  }
+
+  function getCssSelector(selector: string) {
     if (!codeComponent) {
-      return getPseudoSelector(sel).cssSelector;
+      return getPseudoSelector(selector).cssSelector;
     }
-    return interactionVariantsMeta[getSelectorKey(sel)].cssSelector;
+    return ensureInteractionVariantMeta(selector).cssSelector;
+  }
+
+  function getDisplayName(selector: string) {
+    if (!codeComponent) {
+      return selector;
+    }
+
+    return ensureInteractionVariantMeta(selector).displayName;
   }
 
   return (
     <XMultiSelect
       placeholder={"Enter CSS selectors"}
       autoFocus={autoFocus}
-      selectedItems={selectors}
+      selectedItems={selectors.map((sel) => getDisplayName(sel))}
       options={dynOptions}
       downshiftProps={{
         isOpen: keepOpen,
@@ -124,7 +143,11 @@ export function SelectorsInput({
       className={className}
       focusedClassName={focusedClassName}
       renderOption={(sel) => (
-        <Tooltip title={`This is the ${getCssSelector(sel)} selector in CSS`}>
+        <Tooltip
+          title={`This is the ${getCssSelector(
+            getSelectorKey(sel)
+          )} selector in CSS`}
+        >
           {matcher.boldSnippets(sel)}
         </Tooltip>
       )}
