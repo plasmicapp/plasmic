@@ -30,5 +30,5 @@ EOF
 EOF
 }
 
-yarn typeorm schema:sync
+yarn typeorm migration:run
 yarn seed
