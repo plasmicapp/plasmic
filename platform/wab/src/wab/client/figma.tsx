@@ -25,6 +25,7 @@ import {
 } from "@/wab/client/figma-importer/assets";
 import { SceneNode } from "@/wab/client/figma-importer/plugin-types";
 import { fromFigmaComponentToTplProps } from "@/wab/client/figma-importer/props";
+import { getAllSlotsInNode } from "@/wab/client/figma-importer/slots";
 import {
   filterValidCodeComponentStyles,
   flattenStyles,
@@ -45,7 +46,6 @@ import {
 } from "@/wab/client/figma-importer/types";
 import {
   findMappedComponent,
-  getAllSlotsInNode,
   getLayoutParent,
   isFigmaData,
   transformToMatrix,
@@ -590,7 +590,9 @@ const getNodeToTplNode = (
         );
 
         const slotsArgs = Object.entries(
-          getAllSlotsInNode(node, nodeToTplNode)
+          getAllSlotsInNode(node, nodeToTplNode, {
+            includeRoot: false,
+          })
         ).filter(([key]) => {
           const param = component.params.find((p) => p.variable.name === key);
           return !!param && param.type.name === "renderable";
