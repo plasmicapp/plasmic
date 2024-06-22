@@ -1,4 +1,31 @@
-import { ColorFill } from "@/wab/shared/core/bg-styles";
+import {
+  TokenType,
+  mkTokenRef,
+  replaceAllTokenRefs,
+} from "@/wab/commons/StyleToken";
+import { ArenaType } from "@/wab/shared/ApiSchema";
+import {
+  AnyArena,
+  cloneArena,
+  cloneArenaFrame,
+  getArenaFrames,
+  isComponentArena,
+  isPageArena,
+  mkMixedArena,
+} from "@/wab/shared/Arenas";
+import { ARENA_CAP } from "@/wab/shared/Labels";
+import { getSlotArgs } from "@/wab/shared/SlotUtils";
+import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
+import {
+  isGlobalVariant,
+  isGlobalVariantGroup,
+  mkBaseVariant,
+} from "@/wab/shared/Variants";
+import {
+  componentsReferecerToPageHref,
+  findAllDataSourceOpExprForComponent,
+  flattenComponent,
+} from "@/wab/shared/cached-selectors";
 import { Dict } from "@/wab/shared/collections";
 import {
   assert,
@@ -13,18 +40,16 @@ import {
   tuple,
   withoutNils,
 } from "@/wab/shared/common";
+import { ensureComponentArenaColsOrder } from "@/wab/shared/component-arenas";
+import { ColorFill } from "@/wab/shared/core/bg-styles";
 import {
-  mkTokenRef,
-  replaceAllTokenRefs,
-  TokenType,
-} from "@/wab/commons/StyleToken";
-import {
+  CodeComponent,
+  ComponentCloneResult,
+  PageComponent,
   allComponentVariants,
   cloneComponent,
   cloneVariant,
   cloneVariantGroup,
-  CodeComponent,
-  ComponentCloneResult,
   fixArgForCloneComponent,
   getComponentDisplayName,
   getEffectiveVariantSettingOfDeepRootElement,
@@ -33,37 +58,43 @@ import {
   isCodeComponent,
   isFrameComponent,
   isPageComponent,
-  PageComponent,
 } from "@/wab/shared/core/components";
-import { getCssInitial } from "@/wab/shared/css";
-import { DEVFLAGS } from "@/wab/shared/devflags";
-import { convertHrefExprToCodeExpr } from "@/wab/shared/core/exprs";
+import {
+  convertHrefExprToCodeExpr,
+  isFallbackableExpr,
+} from "@/wab/shared/core/exprs";
 import {
   cloneImageAsset,
   isIcon,
   mkImageAssetRef,
   replaceAllAssetRefs,
 } from "@/wab/shared/core/image-assets";
-import { DependencyWalkScope, walkDependencyTree } from "@/wab/shared/core/project-deps";
-import { ArenaType } from "@/wab/shared/ApiSchema";
 import {
-  AnyArena,
-  cloneArena,
-  cloneArenaFrame,
-  getArenaFrames,
-  isComponentArena,
-  isPageArena,
-  mkMixedArena,
-} from "@/wab/shared/Arenas";
-import {
-  componentsReferecerToPageHref,
-  findAllDataSourceOpExprForComponent,
-  flattenComponent,
-} from "@/wab/shared/cached-selectors";
-import { ensureComponentArenaColsOrder } from "@/wab/shared/component-arenas";
+  DependencyWalkScope,
+  walkDependencyTree,
+} from "@/wab/shared/core/project-deps";
 import { typographyCssProps } from "@/wab/shared/core/style-props";
+import {
+  cloneMixin,
+  cloneStyleToken,
+  cloneTheme,
+  cssPropsToRuleSet,
+  mkRuleSet,
+} from "@/wab/shared/core/styles";
+import {
+  clone,
+  findExprsInComponent,
+  findVariantSettingsUnderTpl,
+  flattenExprs,
+  flattenTpls,
+  isTplColumns,
+  isTplComponent,
+  isTplVariantable,
+  tryGetTplOwnerComponent,
+} from "@/wab/shared/core/tpls";
+import { getCssInitial } from "@/wab/shared/css";
 import { parseScreenSpec } from "@/wab/shared/css-size";
-import { ARENA_CAP } from "@/wab/shared/Labels";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { getRshContainerType } from "@/wab/shared/layoututils";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
@@ -80,10 +111,6 @@ import {
   CustomCode,
   CustomFunction,
   DataSourceOpExpr,
-  ensureKnownArenaFrame,
-  ensureKnownVariant,
-  ensureMaybeKnownGlobalVariantGroup,
-  ensureMaybeKnownVariantGroup,
   EventHandler,
   Expr,
   FunctionArg,
@@ -92,30 +119,10 @@ import {
   HostLessPackageInfo,
   ImageAsset,
   ImageAssetRef,
-  isKnownComponent,
-  isKnownComponentInstance,
-  isKnownCustomCode,
-  isKnownEventHandler,
-  isKnownExpr,
-  isKnownExprText,
-  isKnownFunctionType,
-  isKnownImageAsset,
-  isKnownMixin,
-  isKnownPageArena,
-  isKnownPageHref,
-  isKnownRenderExpr,
-  isKnownStrongFunctionArg,
-  isKnownStyleToken,
-  isKnownTplComponent,
-  isKnownTplNode,
-  isKnownTplTag,
-  isKnownVariant,
-  isKnownVariantedRuleSet,
-  isKnownVariantedValue,
   MapExpr,
   Mixin,
-  ObjectPath,
   ObjInst,
+  ObjectPath,
   PageArena,
   PageHref,
   Param,
@@ -136,49 +143,48 @@ import {
   TplNode,
   TplRef,
   Type,
+  VarRef,
   Variant,
-  VariantedRuleSet,
-  VariantedValue,
   VariantGroup,
   VariantSetting,
+  VariantedRuleSet,
+  VariantedValue,
   VariantsRef,
-  VarRef,
   VirtualRenderExpr,
+  ensureKnownArenaFrame,
+  ensureKnownVariant,
+  ensureMaybeKnownGlobalVariantGroup,
+  ensureMaybeKnownVariantGroup,
+  isKnownComponent,
+  isKnownComponentInstance,
+  isKnownCustomCode,
+  isKnownEventHandler,
+  isKnownExpr,
+  isKnownExprText,
+  isKnownFunctionType,
+  isKnownImageAsset,
+  isKnownMixin,
+  isKnownPageArena,
+  isKnownPageHref,
+  isKnownRenderExpr,
+  isKnownStrongFunctionArg,
+  isKnownStyleToken,
+  isKnownTplComponent,
+  isKnownTplNode,
+  isKnownTplTag,
+  isKnownVariant,
+  isKnownVariantedRuleSet,
+  isKnownVariantedValue,
 } from "@/wab/shared/model/classes";
 import {
-  isRenderableType,
   isRenderFuncType,
+  isRenderableType,
 } from "@/wab/shared/model/model-util";
 import {
-  defaultResponsiveSettings,
   ResponsiveStrategy,
+  defaultResponsiveSettings,
 } from "@/wab/shared/responsiveness";
-import { getSlotArgs } from "@/wab/shared/SlotUtils";
-import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
 import { getMatchingPagePathParams } from "@/wab/shared/utils/url-utils";
-import {
-  isGlobalVariant,
-  isGlobalVariantGroup,
-  mkBaseVariant,
-} from "@/wab/shared/Variants";
-import {
-  cloneMixin,
-  cloneStyleToken,
-  cloneTheme,
-  cssPropsToRuleSet,
-  mkRuleSet,
-} from "@/wab/shared/core/styles";
-import {
-  clone,
-  findExprsInComponent,
-  findVariantSettingsUnderTpl,
-  flattenExprs,
-  flattenTpls,
-  isTplColumns,
-  isTplComponent,
-  isTplVariantable,
-  tryGetTplOwnerComponent,
-} from "@/wab/shared/core/tpls";
 import keyBy from "lodash/keyBy";
 import keys from "lodash/keys";
 import orderBy from "lodash/orderBy";
@@ -1468,21 +1474,30 @@ export function removeReferencingLinks(
   const isHRefToPage = (expr: Expr | null | undefined): expr is PageHref =>
     isKnownPageHref(expr) && expr.page == page;
 
+  function getNewExprToReferenceExpr(component: Component, oldExpr: PageHref) {
+    if (opts?.convertPageHrefToCode) {
+      return convertHrefExprToCodeExpr(site, component, oldExpr);
+    }
+    return null;
+  }
+
   for (const c of componentsReferecerToPageHref(site, page)) {
     const removeFromEventHandler = (expr: EventHandler) => {
       for (const interaction of expr.interactions) {
         for (const arg of [...interaction.args]) {
-          if (isHRefToPage(arg.expr)) {
-            if (opts?.convertPageHrefToCode) {
-              const codeExpr = convertHrefExprToCodeExpr(site, c, arg.expr);
-              if (codeExpr) {
-                arg.expr = codeExpr;
-              } else {
-                remove(interaction.args, arg);
-              }
+          const argExpr = arg.expr;
+          if (isHRefToPage(argExpr)) {
+            const newExpr = getNewExprToReferenceExpr(c, argExpr);
+            if (newExpr) {
+              arg.expr = newExpr;
             } else {
               remove(interaction.args, arg);
             }
+          } else if (
+            isFallbackableExpr(argExpr) &&
+            isHRefToPage(argExpr.fallback)
+          ) {
+            argExpr.fallback = getNewExprToReferenceExpr(c, argExpr.fallback);
           }
         }
       }
