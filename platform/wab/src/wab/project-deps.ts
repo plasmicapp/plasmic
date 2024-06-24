@@ -872,18 +872,16 @@ function upgradeProjectDep(
   const oldGlobalVariants = allGlobalVariants(oldDep.site, {
     includeDeps: undefined,
   });
-  const newGlobalVariants = newDep
-    ? allGlobalVariants(newDep.site, {
-        includeDeps: undefined,
-      })
-    : [];
+  const newGlobalVariants = new Map(
+    (newDep
+      ? allGlobalVariants(newDep.site, {
+          includeDeps: undefined,
+        })
+      : []
+    ).map((variant) => tuple(variant.uuid, variant))
+  );
   const oldToNewGlobalVariant = new Map(
-    oldGlobalVariants.map((v) =>
-      tuple(
-        v,
-        newGlobalVariants.find((newV) => newV.uuid === v.uuid)
-      )
-    )
+    oldGlobalVariants.map((v) => tuple(v, newGlobalVariants.get(v.uuid)))
   );
 
   const getOrCloneOldGlobalVariant = (oldVariant: Variant) => {
@@ -1049,7 +1047,11 @@ function upgradeProjectDep(
    */
   const referencesHopelesslyDeletedGlobalVariant = (vs: VariantSetting) => {
     return vs.variants.some((v) => {
-      if (!v.parent || oldToNewGlobalVariant.get(v)) {
+      if (
+        !v.parent ||
+        oldToNewGlobalVariant.get(v) ||
+        newGlobalVariants.has(v.uuid)
+      ) {
         // Variant has not been deleted
         return false;
       }
