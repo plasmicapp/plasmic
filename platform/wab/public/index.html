@@ -163,9 +163,14 @@
 
       .placeholder_topBar {
         grid-area: topBar;
-        padding-left: 8px;
+        padding-left: 10px;
         display: flex;
         align-items: center;
+      }
+      .placeholder_icon {
+        width: 40px;
+        height: 40px;
+        color: #c8c7c1; /* sand8 color */
       }
       .placeholder_leftToolbar {
         grid-area: leftToolbar;
@@ -273,29 +278,24 @@
       <div class="placeholder_topBar">
         <svg
           xmlns="http://www.w3.org/2000/svg"
+          class="placeholder_icon"
           fill="none"
           viewBox="0 0 32 32"
-          height="40px"
-          width="40px"
           role="img"
         >
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M30.974 20.103C30.51 12.236 23.984 6 16 6 8.017 6 1.49 12.236 1.026 20.103c.027.339.082.589.192.805a2 2 0 00.874.874c.402.205.92.217 1.908.218v-1C4 14.373 9.373 9 16 9s12 5.373 12 12v1c.988 0 1.506-.013 1.908-.218a2 2 0 00.874-.874c.11-.216.165-.466.192-.805z"
-            fill="rgba(200,199,193)"
+            d="M3.2 22C3.2 14.93 8.93 9.2 16 9.2S28.8 14.93 28.8 22H32c0-8.837-7.163-16-16-16S0 13.163 0 22h3.2z"
+            fill="currentColor"
           ></path>
+
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M16 13a8 8 0 00-8 8v1H5v-1c0-6.075 4.925-11 11-11s11 4.925 11 11v1h-3v-1a8 8 0 00-8-8z"
-            fill="rgba(200,199,193)"
+            d="M24 22a8 8 0 10-16 0H4.8c0-6.185 5.015-11.2 11.2-11.2S27.2 15.815 27.2 22H24z"
+            fill="currentColor"
           ></path>
+
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M23 22v-1a7 7 0 10-14 0v1h2a1 1 0 001-1 4 4 0 018 0 1 1 0 001 1h2z"
-            fill="rgba(200,199,193)"
+            d="M12.8 22a3.2 3.2 0 016.4 0h3.2a6.4 6.4 0 10-12.8 0h3.2z"
+            fill="currentColor"
           ></path>
         </svg>
       </div>

@@ -4,6 +4,9 @@ __plasmicIframe.classList.add("__wab_studio-frame");
 __plasmicIframe.style.width = "100vw";
 __plasmicIframe.style.height = "100vh";
 __plasmicIframe.style.border = "none";
+__plasmicIframe.style.position = "absolute";
+__plasmicIframe.style.top = "0";
+__plasmicIframe.style.left = "0";
 // We must add this event listener first, before appending, since (at least in
 // Cypress) this would otherwise fire before the event listener gets to catch.
 __plasmicIframe.addEventListener("load", (ev) => {

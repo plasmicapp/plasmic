@@ -16,15 +16,13 @@ import DragGripIcon from "@/wab/client/plasmic/plasmic_kit_design_system/Plasmic
 import {
   cx,
   ensure,
-  ensureKey,
   isCurrentlyWithinPath,
-  isReactKey,
   makeCancelable,
   maybe,
 } from "@/wab/common";
 import {
-  createFakeEvent,
   MaybeWrap,
+  createFakeEvent,
   swallowClick,
   useReadablePromise,
 } from "@/wab/commons/components/ReactUtil";
@@ -43,8 +41,8 @@ import { CSSProperties, Key, ReactElement, ReactNode } from "react";
 import {
   DragDropContext,
   Draggable,
-  Droppable,
   DropResult,
+  Droppable,
 } from "react-beautiful-dnd";
 import { createPortal } from "react-dom";
 import { FaUpload } from "react-icons/fa";
@@ -158,45 +156,6 @@ interface Option<T extends {} = {}> {
   key?: Key;
   contents: () => ReactNode;
   value: T;
-}
-
-interface NormalizedOption<T extends {} = {}> {
-  key: Key;
-  contents: () => ReactNode;
-  value: T;
-}
-
-type OptionSpec<T = any> = string | Option<T>;
-
-function normalizeOptions(rawOptions: OptionSpec[]): NormalizedOption[] {
-  // Either keys are supplied, or values or valid keys, or we use indexes.
-  // If only some keys are supplied, throw an error.
-  // If only some values are valid keys, then always use indexes.
-  // This is too implicit for my taste, I think it would be cleaner to
-  // migrate all consumers to pass explicit keys.
-  const options = rawOptions.map((opt) =>
-    isReactKey(opt) ? { key: opt, value: opt, contents: () => opt } : opt
-  );
-  const alreadyKeyed = options.filter(
-    (opt): opt is NormalizedOption => !!opt.key
-  );
-  if (alreadyKeyed.length === options.length) {
-    return alreadyKeyed;
-  }
-  if (alreadyKeyed.length > 0) {
-    throw new Error(
-      "options should either all have keys or none of them" +
-        " should have keys, but only some of them have keys."
-    );
-  }
-  const useValuesAsKeys = options.every((opt) => isReactKey(opt.value));
-  if (useValuesAsKeys) {
-    return options.map((opt) => {
-      const key = ensureKey(opt.value);
-      return { ...opt, key };
-    });
-  }
-  return options.map((opt, i) => ({ ...opt, key: i }));
 }
 
 type ModalProps = {
@@ -1135,29 +1094,24 @@ export function StudioPlaceholder() {
       <div className="placeholder_topBar">
         <svg
           xmlns="http://www.w3.org/2000/svg"
+          className="placeholder_icon"
           fill="none"
           viewBox="0 0 32 32"
-          height="40px"
-          width="40px"
           role="img"
         >
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M30.974 20.103C30.51 12.236 23.984 6 16 6 8.017 6 1.49 12.236 1.026 20.103c.027.339.082.589.192.805a2 2 0 00.874.874c.402.205.92.217 1.908.218v-1C4 14.373 9.373 9 16 9s12 5.373 12 12v1c.988 0 1.506-.013 1.908-.218a2 2 0 00.874-.874c.11-.216.165-.466.192-.805z"
-            fill="rgba(200,199,193)"
+            d="M3.2 22C3.2 14.93 8.93 9.2 16 9.2S28.8 14.93 28.8 22H32c0-8.837-7.163-16-16-16S0 13.163 0 22h3.2z"
+            fill="currentColor"
           ></path>
+
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M16 13a8 8 0 00-8 8v1H5v-1c0-6.075 4.925-11 11-11s11 4.925 11 11v1h-3v-1a8 8 0 00-8-8z"
-            fill="rgba(200,199,193)"
+            d="M24 22a8 8 0 10-16 0H4.8c0-6.185 5.015-11.2 11.2-11.2S27.2 15.815 27.2 22H24z"
+            fill="currentColor"
           ></path>
+
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M23 22v-1a7 7 0 10-14 0v1h2a1 1 0 001-1 4 4 0 018 0 1 1 0 001 1h2z"
-            fill="rgba(200,199,193)"
+            d="M12.8 22a3.2 3.2 0 016.4 0h3.2a6.4 6.4 0 10-12.8 0h3.2z"
+            fill="currentColor"
           ></path>
         </svg>
       </div>

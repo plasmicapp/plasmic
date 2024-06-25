@@ -4,7 +4,6 @@ import {
   NonAuthComponentProps,
 } from "@/wab/client/app-ctx";
 import { UU } from "@/wab/client/cli-routes";
-import { PlasmicColorLogo } from "@/wab/client/components/PlasmicColorLogo";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import { HelpButton } from "@/wab/client/components/top-bar/HelpButton";
@@ -12,6 +11,7 @@ import * as widgets from "@/wab/client/components/widgets";
 import { InlineIcon } from "@/wab/client/components/widgets";
 import { BrowserAlertBanner } from "@/wab/client/components/widgets/BrowserAlertBanner";
 import { Icon } from "@/wab/client/components/widgets/Icon";
+import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
 import ChevronDownsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg";
 import { ensure } from "@/wab/common";
 import { Dropdown, Menu } from "antd";
@@ -37,7 +37,7 @@ class NormalLayoutComponent extends React.Component<
             >
               <widgets.PlainLink href={"/"} className={"home-logo"}>
                 <div className={"normal-layout__mark"}>
-                  <PlasmicColorLogo />
+                  <MarkFullColorIcon />
                 </div>
               </widgets.PlainLink>
 
