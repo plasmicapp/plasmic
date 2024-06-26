@@ -777,7 +777,7 @@ function makeLoaderBundleOutput(
     ),
     // Populated in `upsertS3CacheEntry` call
     bundleKey: null,
-    deferChunksByDefault: true,
+    deferChunksByDefault: false,
     disableRootLoadingBoundaryByDefault: true,
   };
   return output;
