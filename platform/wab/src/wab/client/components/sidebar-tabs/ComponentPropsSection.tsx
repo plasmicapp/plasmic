@@ -1011,7 +1011,7 @@ export const TplComponentNameSection = observer(TplComponentNameSection_);
 function TplComponentNameSection_(props: {
   tpl: TplComponent;
   viewCtx: ViewCtx;
-  menuOptions?: { label: string; onClick: () => void }[];
+  menuOptions: { label: string; onClick: () => void }[];
 }) {
   const { tpl, viewCtx, menuOptions } = props;
   const studioCtx = viewCtx.studioCtx;
@@ -1057,7 +1057,7 @@ function TplComponentNameSection_(props: {
         )}
         subtitle={subtitle}
         description={tpl.component.codeComponentMeta?.description ?? undefined}
-        suffix={menuOptions && <ApplyMenu items={menuOptions} />}
+        suffix={menuOptions.length > 0 && <ApplyMenu items={menuOptions} />}
       />
     </SidebarSection>
   );
@@ -1068,7 +1068,7 @@ export const TplTagNameSection = observer(TplTagNameSection_);
 function TplTagNameSection_(props: {
   tpl: TplTag;
   viewCtx: ViewCtx;
-  menuOptions?: { label: string; onClick: () => void }[];
+  menuOptions: { label: string; onClick: () => void }[];
 }) {
   const { viewCtx, tpl, menuOptions } = props;
   const vtm = viewCtx.variantTplMgr();
@@ -1085,7 +1085,7 @@ function TplTagNameSection_(props: {
           viewCtx.change(() => viewCtx.getViewOps().renameTpl(name, tpl))
         }
         placeholder={summarizeUnnamedTpl(tpl, effectiveVs.rsh())}
-        suffix={menuOptions && <ApplyMenu items={menuOptions} />}
+        suffix={menuOptions.length > 0 && <ApplyMenu items={menuOptions} />}
       />
     </SidebarSection>
   );
