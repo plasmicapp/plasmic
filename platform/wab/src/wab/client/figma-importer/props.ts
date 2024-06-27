@@ -5,11 +5,14 @@ import {
   InstanceNode,
 } from "@/wab/client/figma-importer/plugin-types";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { hackyCast, isJsonScalar, withoutNils } from "@/wab/shared/common";
-import { getParamByVarName, isCodeComponent } from "@/wab/shared/core/components";
 import { isSlot } from "@/wab/shared/SlotUtils";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
+import { isJsonScalar, withoutNils } from "@/wab/shared/common";
+import {
+  getParamByVarName,
+  isCodeComponent,
+} from "@/wab/shared/core/components";
 import { Component, VariantsRef } from "@/wab/shared/model/classes";
 import { isBoolType, isNumType } from "@/wab/shared/model/model-util";
 import { notification } from "antd";
@@ -37,7 +40,8 @@ function getChildComponentNameFromPropertyKey(
 
 function fixComponentFigmaPropKey(key: string, prop: ComponentProperty) {
   // Fix property name, removing the suffix that figma adds to text and boolean properties
-  if (prop.type === "TEXT" || prop.type === "BOOLEAN") {
+  if ((prop.type === "TEXT" || prop.type === "BOOLEAN") && key.includes("#")) {
+    // We only run to remove if it does have a "#" in the key
     return key.substring(0, key.lastIndexOf("#"));
   }
   return key;
@@ -122,7 +126,15 @@ function fromFigmaNodeToFigmaProps(
 ): ComponentPropertiesEntries {
   const localProps: ComponentPropertiesEntries = Object.entries(
     inst.componentProperties ?? {}
-  );
+  ).map(([key, prop]) => {
+    // We fix directly in the source, since running the fix functions twice can cause issues
+    // For example. If we have a key "text#other#id" and we run the fixComponentFigmaPropKey function
+    // twice, it will transform it to "text", which is not what we want
+    return [
+      fixComponentFigmaPropKey(key, prop),
+      fixComponentFigmaPropValue(key, prop, descendants),
+    ];
+  });
 
   const exposedInstances: InstanceNode[] = inst.exposedInstances ?? [];
 
@@ -144,12 +156,7 @@ function fromFigmaNodeToFigmaProps(
       // to the component in Plasmic, so that the user can transform them
       includePropsWithoutParam: true,
     }
-  ).map(([key, prop]) => {
-    return [
-      fixComponentFigmaPropKey(key, prop),
-      fixComponentFigmaPropValue(key, prop, descendants),
-    ];
-  });
+  );
 }
 
 function getAllDescendants(inst: InstanceNode): InstanceNode[] {
@@ -255,10 +262,10 @@ function maybeTransformFigmaProps(
 
   if (isCodeComponent(component)) {
     const meta = studioCtx.getCodeComponentMeta(component);
-    if (meta && hackyCast(meta).figmaPropsTransform) {
+    if (meta && meta.figmaPropsTransform) {
       const transformResult = safeTransformFigmaProps(
         component,
-        hackyCast(meta).figmaPropsTransform,
+        meta.figmaPropsTransform,
         componentProps
       );
 
