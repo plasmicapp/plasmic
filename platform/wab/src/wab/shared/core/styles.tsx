@@ -1,18 +1,3 @@
-import { BackgroundLayer, bgClipTextTag } from "@/wab/shared/core/bg-styles";
-import {
-  assert,
-  capCamelCase,
-  ensure,
-  ensureInstance,
-  maybe,
-  mkShortId,
-  tuple,
-  unreachable,
-  withoutNils,
-  xMapValues,
-  xpickBy,
-  xpickExists,
-} from "@/wab/shared/common";
 import {
   TokenType,
   extractAllReferencedTokenIds,
@@ -34,21 +19,7 @@ import {
   tryParseTokenRef,
 } from "@/wab/commons/StyleToken";
 import { DeepReadonly, DeepReadonlyArray } from "@/wab/commons/types";
-import { isCodeComponent, isFrameComponent } from "@/wab/shared/core/components";
-import * as css from "@/wab/shared/css";
-import {
-  getCssOverrides,
-  getTagsWithCssOverrides,
-  normProp,
-  showCssShorthand,
-} from "@/wab/shared/css";
-import { getProjectFlags } from "@/wab/shared/devflags";
-import { FallbackableExpr, codeLit, isFallbackableExpr } from "@/wab/shared/core/exprs";
 import * as cssPegParser from "@/wab/gen/cssPegParser";
-import { standardCorners, standardSides } from "@/wab/shared/geom";
-import { getGoogFontMeta } from "@/wab/shared/googfonts";
-import { getImageAssetVarName, resolveAllAssetRefs } from "@/wab/shared/core/image-assets";
-import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import { getArenaFrames } from "@/wab/shared/Arenas";
 import {
   RSH,
@@ -92,6 +63,39 @@ import {
 import { TargetEnv } from "@/wab/shared/codegen/types";
 import { toVarName } from "@/wab/shared/codegen/util";
 import {
+  assert,
+  capCamelCase,
+  ensure,
+  ensureInstance,
+  maybe,
+  mkShortId,
+  tuple,
+  unreachable,
+  withoutNils,
+  xMapValues,
+  xpickBy,
+  xpickExists,
+} from "@/wab/shared/common";
+import { BackgroundLayer, bgClipTextTag } from "@/wab/shared/core/bg-styles";
+import {
+  isCodeComponent,
+  isFrameComponent,
+} from "@/wab/shared/core/components";
+import {
+  FallbackableExpr,
+  codeLit,
+  isFallbackableExpr,
+} from "@/wab/shared/core/exprs";
+import {
+  getImageAssetVarName,
+  resolveAllAssetRefs,
+} from "@/wab/shared/core/image-assets";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
+import {
+  GeneralUsageSummary,
+  isHostLessPackage,
+} from "@/wab/shared/core/sites";
+import {
   ALWAYS_RESOLVE_MIXIN_PROPS,
   CONTENT_LAYOUT_DEFAULTS,
   CONTENT_LAYOUT_STANDARD_WIDTH_PROP,
@@ -109,8 +113,34 @@ import {
   transitionProps,
   typographyCssProps,
 } from "@/wab/shared/core/style-props";
+import {
+  canTagHaveChildren,
+  findVariantSettingsUnderTpl,
+  isComponentRoot,
+  isTplCodeComponent,
+  isTplColumns,
+  isTplComponent,
+  isTplIcon,
+  isTplPicture,
+  isTplSlot,
+  isTplTag,
+  isTplTextBlock,
+  isTplVariantable,
+  tryGetOwnerSite,
+} from "@/wab/shared/core/tpls";
+import { has3dComponent } from "@/wab/shared/core/transform-utils";
+import * as css from "@/wab/shared/css";
+import {
+  getCssOverrides,
+  getTagsWithCssOverrides,
+  normProp,
+  showCssShorthand,
+} from "@/wab/shared/css";
 import { imageDataUriToBlob } from "@/wab/shared/data-urls";
 import { ThemeTagSource } from "@/wab/shared/defined-indicator";
+import { getProjectFlags } from "@/wab/shared/devflags";
+import { standardCorners, standardSides } from "@/wab/shared/geom";
+import { getGoogFontMeta } from "@/wab/shared/googfonts";
 import {
   getNumericGap,
   isContentLayoutTpl,
@@ -158,23 +188,6 @@ import {
   partitionVariants,
 } from "@/wab/shared/variant-sort";
 import { appendVisibilityStylesForTpl } from "@/wab/shared/visibility-utils";
-import { GeneralUsageSummary, isHostLessPackage } from "@/wab/shared/core/sites";
-import {
-  canTagHaveChildren,
-  findVariantSettingsUnderTpl,
-  isComponentRoot,
-  isTplCodeComponent,
-  isTplColumns,
-  isTplComponent,
-  isTplIcon,
-  isTplPicture,
-  isTplSlot,
-  isTplTag,
-  isTplTextBlock,
-  isTplVariantable,
-  tryGetOwnerSite,
-} from "@/wab/shared/core/tpls";
-import { has3dComponent } from "@/wab/shared/core/transform-utils";
 import L, { camelCase, pick } from "lodash";
 import { CSSProperties } from "react";
 import { unquote } from "underscore.string";
@@ -193,6 +206,7 @@ export class CssVarResolver {
     private readonly opts: {
       keepAssetRefs?: boolean;
       useCssVariables?: boolean;
+      cssVariableInfix?: string;
     } = {},
     private readonly vsh: VariantedStylesHelper = new VariantedStylesHelper()
   ) {
@@ -243,7 +257,7 @@ export class CssVarResolver {
 
   resolveMixinProp(mixin: Mixin, prop: string) {
     if (this.opts.useCssVariables && mixin.forTheme) {
-      return mkMixinPropRef(mixin, prop, false);
+      return mkMixinPropRef(mixin, prop, false, this.opts.cssVariableInfix);
     }
 
     const rsh = new RuleSetHelpers(mixin.rs, "div");
@@ -2229,7 +2243,11 @@ const genMixinVarsRules = (
   mixin: Mixin,
   rs: RuleSet,
   vsh: VariantedStylesHelper,
-  opts?: { onlyBoxShadow?: boolean; whitespace?: "enforce" | "normal" }
+  opts?: {
+    onlyBoxShadow?: boolean;
+    whitespace?: "enforce" | "normal";
+    cssVariableInfix?: string;
+  }
 ) => {
   let values = opts?.onlyBoxShadow ? pick(rs.values, "box-shadow") : rs.values;
   if (opts?.whitespace === "enforce" && !("white-space" in values)) {
@@ -2239,7 +2257,12 @@ const genMixinVarsRules = (
   return Object.keys(values).map((rule) => {
     const val = values[rule];
     return {
-      varRule: `${getMixinPropVarName(mixin, rule, false)}: ${
+      varRule: `${getMixinPropVarName(
+        mixin,
+        rule,
+        false,
+        opts?.cssVariableInfix
+      )}: ${
         rule === "white-space" && opts?.whitespace === "normal"
           ? normalizeWhitespace(val)
           : rule === "font-family"
@@ -2265,6 +2288,7 @@ export const makeMixinVarsRules = (
     generateExternalCssVar?: boolean;
     onlyBoxShadow?: boolean;
     whitespace?: "enforce" | "normal";
+    cssVariableInfix?: string;
   }
 ) => {
   if (!opts.whitespace) {

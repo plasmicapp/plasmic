@@ -1,56 +1,5 @@
-import {
-  arrayEq,
-  assert,
-  ensure,
-  ensureArray,
-  isNonNil,
-  strict,
-  tuple,
-  UnexpectedTypeError,
-  uniqueName,
-  withDefault,
-  withDefaultFunc,
-  withoutNils,
-} from "@/wab/shared/common";
 import { arrayReversed } from "@/wab/commons/collections";
 import { DeepMap } from "@/wab/commons/deep-map";
-import {
-  findVariantGroupForParam,
-  getCodeComponentHelperImportName,
-  getComponentDisplayName,
-  getNonVariantParams,
-  getRealParams,
-  getRepetitionElementName,
-  getRepetitionIndexName,
-  getSuperComponents,
-  getSuperComponentVariantToComponent,
-  getVariantParams,
-  isCodeComponent,
-  isHostLessCodeComponent,
-  isPageComponent,
-  PageComponent,
-  tryGetVariantGroupValueFromArg,
-} from "@/wab/shared/core/components";
-import { getCssRulesFromRs, tryGetBrowserCssInitial } from "@/wab/shared/css";
-import {
-  applyPlasmicUserDevFlagOverrides,
-  DEVFLAGS,
-  DevFlagsType,
-  getProjectFlags,
-} from "@/wab/shared/devflags";
-import {
-  codeLit,
-  ExprCtx,
-  extractReferencedParam,
-  getCodeExpressionWithFallback,
-  getRawCode,
-  jsonLit,
-  removeFallbackFromDataSourceOp,
-  code as toCode,
-  tryExtractJson,
-} from "@/wab/shared/core/exprs";
-import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
-import { ParamExportType } from "@/wab/shared/core/lang";
 import { AppAuthProvider, ProjectId } from "@/wab/shared/ApiSchema";
 import {
   allCustomFunctions,
@@ -182,13 +131,130 @@ import {
   serializeVariantsArgsTypeContent,
 } from "@/wab/shared/codegen/variants";
 import {
+  arrayEq,
+  assert,
+  ensure,
+  ensureArray,
+  isNonNil,
+  strict,
+  tuple,
+  UnexpectedTypeError,
+  uniqueName,
+  withDefault,
+  withDefaultFunc,
+  withoutNils,
+} from "@/wab/shared/common";
+import {
+  findVariantGroupForParam,
+  getCodeComponentHelperImportName,
+  getComponentDisplayName,
+  getNonVariantParams,
+  getRealParams,
+  getRepetitionElementName,
+  getRepetitionIndexName,
+  getSuperComponents,
+  getSuperComponentVariantToComponent,
+  getVariantParams,
+  isCodeComponent,
+  isHostLessCodeComponent,
+  isPageComponent,
+  PageComponent,
+  tryGetVariantGroupValueFromArg,
+} from "@/wab/shared/core/components";
+import {
+  codeLit,
+  ExprCtx,
+  extractReferencedParam,
+  getCodeExpressionWithFallback,
+  getRawCode,
+  jsonLit,
+  removeFallbackFromDataSourceOp,
+  code as toCode,
+  tryExtractJson,
+} from "@/wab/shared/core/exprs";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { ParamExportType } from "@/wab/shared/core/lang";
+import {
   isTagInline,
   normalizeMarkers,
 } from "@/wab/shared/core/rich-text-util";
 import {
+  allImageAssets,
+  allImportedStyleTokensWithProjectInfo,
+  allMixins,
+  allStyleTokens,
+  allStyleTokensDict,
+  CssProjectDependencies,
+  isHostLessPackage,
+} from "@/wab/shared/core/sites";
+import { SplitStatus } from "@/wab/shared/core/splits";
+import {
+  DATA_SOURCE_ACTIONS,
+  getLastPartOfImplicitStateName,
+  getStateDisplayName,
+  getStateOnChangePropName,
+  getStateValuePropName,
+  getStateVarName,
+  getVirtualWritableStateInitialValue,
+  isOnChangeParam,
+  isReadonlyState,
+  isWritableState,
+  LOGIN_ACTIONS,
+} from "@/wab/shared/core/states";
+import {
   plasmicImgAttrStyles,
   TPL_COMPONENT_PROPS,
 } from "@/wab/shared/core/style-props";
+import {
+  CssVarResolver,
+  defaultStyleClassNames,
+  getRelevantVariantCombosForTheme,
+  getRelevantVariantCombosForToken,
+  getTriggerableSelectors,
+  hasClassnameOverride,
+  makeBaseRuleNamer,
+  makeCssTokenVarsRules,
+  makeDefaultStylesRules,
+  makeDefaultStyleValuesDict,
+  makeLayoutVarsRules,
+  makeMixinVarsRules,
+  makePseudoClassAwareRuleNamer,
+  makePseudoElementAwareRuleNamer,
+  makeStyleExprClassName,
+  makeStyleScopeClassName,
+  mkComponentRootResetRule,
+  mkThemeStyleRule,
+  showSimpleCssRuleSet,
+  tryAugmentRulesWithScreenVariant,
+} from "@/wab/shared/core/styles";
+import {
+  ancestorsUp,
+  findVariantSettingsUnderTpl,
+  flattenTpls,
+  getAllEventHandlersForTpl,
+  isAttrEventHandler,
+  isTplCodeComponent,
+  isTplComponent,
+  isTplImage,
+  isTplNamable,
+  isTplRepeated,
+  isTplSlot,
+  isTplTag,
+  isTplTagOrComponent,
+  isTplTextBlock,
+  summarizeTpl,
+  tplHasRef,
+  TplTagType,
+  TplTextTag,
+  walkTpls,
+} from "@/wab/shared/core/tpls";
+import { getCssRulesFromRs, tryGetBrowserCssInitial } from "@/wab/shared/css";
+import {
+  applyPlasmicUserDevFlagOverrides,
+  DEVFLAGS,
+  DevFlagsType,
+  getProjectFlags,
+} from "@/wab/shared/devflags";
 import { exprUsesCtxOrFreeVars } from "@/wab/shared/eval/expression-parser";
 import {
   extractAllVariantCombosForText,
@@ -265,6 +331,7 @@ import {
 } from "@/wab/shared/SlotUtils";
 import { ensureBaseVariant } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
+import { getIntegrationsUrl, getPublicUrl } from "@/wab/shared/urls";
 import {
   makeGlobalVariantComboSorter,
   makeVariantComboSorter,
@@ -289,73 +356,6 @@ import {
   VariantCombo,
   VariantGroupType,
 } from "@/wab/shared/Variants";
-import {
-  allImageAssets,
-  allImportedStyleTokensWithProjectInfo,
-  allMixins,
-  allStyleTokens,
-  allStyleTokensDict,
-  CssProjectDependencies,
-  isHostLessPackage,
-} from "@/wab/shared/core/sites";
-import { SplitStatus } from "@/wab/shared/core/splits";
-import {
-  DATA_SOURCE_ACTIONS,
-  getLastPartOfImplicitStateName,
-  getStateDisplayName,
-  getStateOnChangePropName,
-  getStateValuePropName,
-  getStateVarName,
-  getVirtualWritableStateInitialValue,
-  isOnChangeParam,
-  isReadonlyState,
-  isWritableState,
-  LOGIN_ACTIONS,
-} from "@/wab/shared/core/states";
-import {
-  CssVarResolver,
-  defaultStyleClassNames,
-  getRelevantVariantCombosForTheme,
-  getRelevantVariantCombosForToken,
-  getTriggerableSelectors,
-  hasClassnameOverride,
-  makeBaseRuleNamer,
-  makeCssTokenVarsRules,
-  makeDefaultStylesRules,
-  makeDefaultStyleValuesDict,
-  makeLayoutVarsRules,
-  makeMixinVarsRules,
-  makePseudoClassAwareRuleNamer,
-  makePseudoElementAwareRuleNamer,
-  makeStyleExprClassName,
-  makeStyleScopeClassName,
-  mkComponentRootResetRule,
-  mkThemeStyleRule,
-  showSimpleCssRuleSet,
-  tryAugmentRulesWithScreenVariant,
-} from "@/wab/shared/core/styles";
-import {
-  ancestorsUp,
-  findVariantSettingsUnderTpl,
-  flattenTpls,
-  getAllEventHandlersForTpl,
-  isAttrEventHandler,
-  isTplCodeComponent,
-  isTplComponent,
-  isTplImage,
-  isTplNamable,
-  isTplRepeated,
-  isTplSlot,
-  isTplTag,
-  isTplTagOrComponent,
-  isTplTextBlock,
-  summarizeTpl,
-  tplHasRef,
-  TplTagType,
-  TplTextTag,
-  walkTpls,
-} from "@/wab/shared/core/tpls";
-import { getIntegrationsUrl, getPublicUrl } from "@/wab/shared/urls";
 import L, { groupBy, sortBy } from "lodash";
 import memoizeOne from "memoize-one";
 import type { SetRequired } from "type-fest";
@@ -415,6 +415,11 @@ export function exportProjectConfig(
   const fontsCss =
     exportOpts?.fontOpts?.scheme === "none" ? "" : makeCssImports(fontUsages);
 
+  // For loader, infix the css variables from the default styles with the project id.
+  // This is to make sure each project uses the default style specified for it and not
+  // get it overwritten by another project.
+  const shortProjectId = projectId.slice(0, 5);
+
   const resolver = new CssVarResolver(
     allStyleTokens(site, { includeDeps: "all" }),
     allMixins(site, { includeDeps: "all" }),
@@ -422,6 +427,7 @@ export function exportProjectConfig(
     site.activeTheme,
     {
       useCssVariables: true,
+      cssVariableInfix: shortProjectId,
     }
   );
   const rootResetClass = makeRootResetClassName(projectId, {
@@ -444,6 +450,7 @@ export function exportProjectConfig(
         getProjectFlags(site).useWhitespaceNormal
           ? "normal"
           : "enforce",
+      cssVariableInfix: shortProjectId,
     }
   );
 

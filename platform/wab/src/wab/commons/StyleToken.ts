@@ -1,7 +1,4 @@
-import { ensure, tuple, unexpected, withoutNils } from "@/wab/shared/common";
-import { getLengthUnits } from "@/wab/shared/css";
 import * as cssPegParser from "@/wab/gen/cssPegParser";
-import { DependencyWalkScope } from "@/wab/shared/core/project-deps";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { UpsertTokenReq } from "@/wab/shared/ApiSchema";
 import { MIXIN_CAP } from "@/wab/shared/Labels";
@@ -9,8 +6,11 @@ import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { Mixin, Site, StyleToken } from "@/wab/shared/model/classes";
+import { ensure, tuple, unexpected, withoutNils } from "@/wab/shared/common";
+import { DependencyWalkScope } from "@/wab/shared/core/project-deps";
 import { allTokensOfType } from "@/wab/shared/core/sites";
+import { getLengthUnits } from "@/wab/shared/css";
+import { Mixin, Site, StyleToken } from "@/wab/shared/model/classes";
 import CSSEscape from "css.escape";
 import L from "lodash";
 import type { Opaque, SetOptional } from "type-fest";
@@ -245,11 +245,19 @@ export const getExternalMixinPropVarName = (mixin: Mixin, p: string) =>
 export const getMixinPropVarName = (
   mixin: Mixin,
   p: string,
-  tryIndirect: boolean
-) => `--mixin-${tryIndirect && mixin.forTheme ? "default" : mixin.uuid}_${p}`;
+  tryIndirect: boolean,
+  infix?: string
+) =>
+  `--mixin-${tryIndirect && mixin.forTheme ? "default" : mixin.uuid}${
+    infix ? `-${infix}` : ""
+  }_${p}`;
 
-export const mkMixinPropRef = (mixin: Mixin, p: string, tryIndirect: boolean) =>
-  `var(${getMixinPropVarName(mixin, p, tryIndirect)})`;
+export const mkMixinPropRef = (
+  mixin: Mixin,
+  p: string,
+  tryIndirect: boolean,
+  infix?: string
+) => `var(${getMixinPropVarName(mixin, p, tryIndirect, infix)})`;
 
 export const isMixinPropRef = (ref: string) => ref.startsWith("var(--mixin-");
 
