@@ -1,12 +1,3 @@
-import {
-  ensureKnownTplTag,
-  ImageAsset,
-  RawText,
-  Site,
-  TplComponent,
-  TplNode,
-  TplTag,
-} from "@/wab/classes";
 import { CENTERED_FRAME_PADDING } from "@/wab/client/ClientConstants";
 import {
   PasteArgs,
@@ -80,6 +71,15 @@ import {
   RootComponentVariantFrame,
 } from "@/wab/shared/component-frame";
 import { ARENA_LOWER } from "@/wab/shared/Labels";
+import {
+  ensureKnownTplTag,
+  ImageAsset,
+  RawText,
+  Site,
+  TplComponent,
+  TplNode,
+  TplTag,
+} from "@/wab/shared/model/classes";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { WaitForClipError } from "@/wab/shared/UserError";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";

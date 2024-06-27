@@ -1,5 +1,5 @@
 import { mkParam } from "@/wab/lang";
-import { typeFactory } from "@/wab/shared/core/model-util";
+import { typeFactory } from "@/wab/shared/model/model-util";
 import { mkGlobalVariantGroup, VariantGroupType } from "@/wab/shared/Variants";
 
 export const mkScreenVariantGroup = () => {

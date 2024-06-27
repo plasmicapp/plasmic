@@ -1,9 +1,9 @@
-import { ProjectDependency, Site } from "@/wab/classes";
 import { ensureInstance } from "@/wab/common";
-import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { loadDepPackages } from "@/wab/server/db/DbBundleLoader";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { Bundler } from "@/wab/shared/bundler";
+import { ProjectDependency, Site } from "@/wab/shared/model/classes";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const rsIids: string[] = [];

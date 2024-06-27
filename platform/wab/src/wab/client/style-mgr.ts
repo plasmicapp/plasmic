@@ -1,11 +1,3 @@
-import {
-  Component,
-  isKnownTplTag,
-  Mixin,
-  ProjectDependency,
-  TplNode,
-  VariantSetting,
-} from "@/wab/classes";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   assert,
@@ -20,7 +12,13 @@ import {
   isCodeComponent,
   isContextCodeComponent,
 } from "@/wab/components";
-import { ChangeSummary, CssVarsChangeType } from "@/wab/model-change-util";
+import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  VariantCombo,
+  isActiveVariantSetting,
+  isBaseVariant,
+  tryGetBaseVariantSetting,
+} from "@/wab/shared/Variants";
 import {
   componentToDeepReferenced,
   extractComponentVariantSettings,
@@ -30,18 +28,23 @@ import {
   ComponentGenHelper,
   SiteGenHelper,
 } from "@/wab/shared/codegen/codegen-helpers";
-import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  Component,
+  Mixin,
+  ProjectDependency,
+  TplNode,
+  VariantSetting,
+  isKnownTplTag,
+} from "@/wab/shared/model/classes";
+import {
+  ChangeSummary,
+  CssVarsChangeType,
+} from "@/wab/shared/model/model-change-util";
 import {
   getDependentVariantSettings,
   makeVariantComboSorter,
   sortedVariantSettings,
 } from "@/wab/shared/variant-sort";
-import {
-  isActiveVariantSetting,
-  isBaseVariant,
-  tryGetBaseVariantSetting,
-  VariantCombo,
-} from "@/wab/shared/Variants";
 import {
   allComponents,
   allImageAssets,

@@ -1,8 +1,7 @@
-import { RawText, TplNode } from "@/wab/classes";
 import {
-  ensureViewCtxOrThrowUserError,
   PasteArgs,
   PasteResult,
+  ensureViewCtxOrThrowUserError,
 } from "@/wab/client/clipboard/common";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { assertNever, withoutNils } from "@/wab/common";
@@ -11,6 +10,7 @@ import { code } from "@/wab/exprs";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
+import { RawText, TplNode } from "@/wab/shared/model/classes";
 import { TplTagType } from "@/wab/tpls";
 
 type WIStyles = Record<string, Record<string, string>>;

@@ -81,7 +81,7 @@ import {
   Variant,
   VariantSetting,
   VarRef,
-} from "@/wab/classes";
+} from "@/wab/shared/model/classes";
 /* eslint-disable
     no-fallthrough,
 */
@@ -133,7 +133,6 @@ import { mkVar } from "@/wab/lang";
 import { metaSvc } from "@/wab/metas";
 import { isAdvancedProp } from "@/wab/shared/code-components/code-components";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { isRenderableType, typeFactory } from "@/wab/shared/core/model-util";
 import { isTagInline } from "@/wab/shared/core/rich-text-util";
 import {
   ignoredConvertablePlainTextProps,
@@ -152,6 +151,7 @@ import {
   ContainerLayoutType,
   getRshContainerType,
 } from "@/wab/shared/layoututils";
+import { isRenderableType, typeFactory } from "@/wab/shared/model/model-util";
 import {
   getPlumeCodegenPlugin,
   getPlumeEditorPlugin,

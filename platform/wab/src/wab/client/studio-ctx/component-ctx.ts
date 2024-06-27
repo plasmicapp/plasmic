@@ -1,4 +1,4 @@
-import { Component, TplComponent } from "@/wab/classes";
+import { Component, TplComponent } from "@/wab/shared/model/classes";
 import { ValComponent } from "@/wab/val-nodes";
 
 export class ComponentCtx {

@@ -1,4 +1,3 @@
-import { ArenaFrame } from "@/wab/classes";
 import { FramePanel } from "@/wab/client/components/sidebar-tabs/frame-tab";
 import { getGlobalCssVariableValue } from "@/wab/client/components/studio/GlobalCssVariables";
 import { useOnIFrameMouseDown } from "@/wab/client/components/widgets";
@@ -6,6 +5,7 @@ import { useScaledElementRef } from "@/wab/client/hooks/useScaledElementRef";
 import GearIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Gear";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { getFrameHeight } from "@/wab/shared/Arenas";
+import { ArenaFrame } from "@/wab/shared/model/classes";
 import { gridSpacing, hoverBoxTagHeight } from "@/wab/styles/css-variables";
 import { Popover } from "antd";
 import cn from "classnames";

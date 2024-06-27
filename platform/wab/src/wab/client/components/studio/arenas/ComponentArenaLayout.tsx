@@ -1,15 +1,3 @@
-import {
-  ArenaFrame,
-  ArenaFrameRow,
-  Component,
-  ComponentArena,
-  ensureKnownComponentVariantGroup,
-  ensureMaybeKnownVariantGroup,
-  isKnownVariantGroup,
-  PageArena,
-  Site,
-  VariantGroup,
-} from "@/wab/classes";
 import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import ExperimentCanvasButton from "@/wab/client/components/splits/ExperimentCanvasButton";
@@ -42,9 +30,21 @@ import { getComponentArenaRowLabel } from "@/wab/shared/component-arenas";
 import {
   COMBINATIONS_CAP,
   FRAME_LOWER,
-  VARIANTS_LOWER,
   VARIANT_CAP,
+  VARIANTS_LOWER,
 } from "@/wab/shared/Labels";
+import {
+  ArenaFrame,
+  ArenaFrameRow,
+  Component,
+  ComponentArena,
+  ensureKnownComponentVariantGroup,
+  ensureMaybeKnownVariantGroup,
+  isKnownVariantGroup,
+  PageArena,
+  Site,
+  VariantGroup,
+} from "@/wab/shared/model/classes";
 import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import {
   canHaveInteractionVariant,

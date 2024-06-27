@@ -1,19 +1,24 @@
-import * as classes from "@/wab/classes";
-import { HostLessPackageInfo, ProjectDependency } from "@/wab/classes";
-import { meta } from "@/wab/classes-metas";
 import {
+  TypeStamped,
   assert,
   ensure,
   ensureInstance,
   switchType,
-  TypeStamped,
   unexpected,
 } from "@/wab/common";
 import { Leaves, Paths } from "@/wab/commons/types";
 import { isCodeComponent, isFrameComponent } from "@/wab/components";
-import { isWeakRefField, Type } from "@/wab/model/model-meta";
+import { isSlot } from "@/wab/shared/SlotUtils";
+import { TplMgr } from "@/wab/shared/TplMgr";
 import { Bundler } from "@/wab/shared/bundler";
-import { NodeCtx } from "@/wab/shared/core/model-tree-util";
+import * as classes from "@/wab/shared/model/classes";
+import {
+  HostLessPackageInfo,
+  ProjectDependency,
+} from "@/wab/shared/model/classes";
+import { meta } from "@/wab/shared/model/classes-metas";
+import { Type, isWeakRefField } from "@/wab/shared/model/model-meta";
+import { NodeCtx } from "@/wab/shared/model/model-tree-util";
 import {
   mergeComponentVariants,
   mergeTplNodeChildren,
@@ -26,8 +31,6 @@ import {
   DirectConflictPickMap,
   generateIidForInst,
 } from "@/wab/shared/site-diffs/merge-core";
-import { isSlot } from "@/wab/shared/SlotUtils";
-import { TplMgr } from "@/wab/shared/TplMgr";
 import { isString } from "lodash";
 
 export type MaybeWithPrefix<T extends string | null> = T extends null

@@ -1,8 +1,8 @@
-import { isKnownPageHref, PageHref, Site } from "@/wab/classes";
 import { ensure } from "@/wab/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import { isPageComponent } from "@/wab/components";
 import { convertHrefExprToCodeExpr } from "@/wab/exprs";
+import { isKnownPageHref, PageHref, Site } from "@/wab/shared/model/classes";
 import { flattenTpls } from "@/wab/tpls";
 
 /**

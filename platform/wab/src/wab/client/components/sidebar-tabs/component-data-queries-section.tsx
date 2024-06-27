@@ -1,11 +1,3 @@
-import {
-  Component,
-  ComponentDataQuery,
-  DataSourceOpExpr,
-  isKnownDataSourceOpExpr,
-  isKnownTemplatedString,
-  TplComponent,
-} from "@/wab/classes";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import {
   DataSourceOpExprSummary,
@@ -16,8 +8,8 @@ import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { DataQueriesTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
 import { Icon } from "@/wab/client/components/widgets/Icon";
-import { LabeledListItem } from "@/wab/client/components/widgets/LabeledListItem";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
+import { LabeledListItem } from "@/wab/client/components/widgets/LabeledListItem";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { RightTabKey, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
@@ -25,11 +17,19 @@ import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-event
 import { spawn } from "@/wab/common";
 import { isPageComponent } from "@/wab/components";
 import { asCode } from "@/wab/exprs";
+import { DATA_QUERY_LOWER, DATA_QUERY_PLURAL_CAP } from "@/wab/shared/Labels";
+import { addEmptyQuery } from "@/wab/shared/TplMgr";
 import { getTplComponentFetchers } from "@/wab/shared/cached-selectors";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { DATA_QUERY_LOWER, DATA_QUERY_PLURAL_CAP } from "@/wab/shared/Labels";
+import {
+  Component,
+  ComponentDataQuery,
+  DataSourceOpExpr,
+  TplComponent,
+  isKnownDataSourceOpExpr,
+  isKnownTemplatedString,
+} from "@/wab/shared/model/classes";
 import { renameQueryAndFixExprs } from "@/wab/shared/refactoring";
-import { addEmptyQuery } from "@/wab/shared/TplMgr";
 import { tryGetTplOwnerComponent } from "@/wab/tpls";
 import { PlasmicDataSourceContextProvider } from "@plasmicapp/react-web";
 import { Menu } from "antd";

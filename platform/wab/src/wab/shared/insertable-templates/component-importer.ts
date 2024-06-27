@@ -1,11 +1,3 @@
-import {
-  Component,
-  ComponentTemplateInfo,
-  Site,
-  TplComponent,
-  TplNode,
-  Variant,
-} from "@/wab/classes";
 import { assert, ensure } from "@/wab/common";
 import {
   cloneComponent,
@@ -14,6 +6,8 @@ import {
   isPlumeComponent,
 } from "@/wab/components";
 import { walkDependencyTree } from "@/wab/project-deps";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { getBaseVariant } from "@/wab/shared/Variants";
 import { siteToAllImageAssetsDict } from "@/wab/shared/cached-selectors";
 import {
   ensureValidClonedComponent,
@@ -21,9 +15,15 @@ import {
 } from "@/wab/shared/insertable-templates/fixers";
 import { ensureHostLessDepComponent } from "@/wab/shared/insertable-templates/inliners";
 import { HostLessDependencies } from "@/wab/shared/insertable-templates/types";
+import {
+  Component,
+  ComponentTemplateInfo,
+  Site,
+  TplComponent,
+  TplNode,
+  Variant,
+} from "@/wab/shared/model/classes";
 import { makeComponentSwapper } from "@/wab/shared/swap-components";
-import { TplMgr } from "@/wab/shared/TplMgr";
-import { getBaseVariant } from "@/wab/shared/Variants";
 import { allComponents } from "@/wab/sites";
 import { flattenTpls, isTplComponent } from "@/wab/tpls";
 

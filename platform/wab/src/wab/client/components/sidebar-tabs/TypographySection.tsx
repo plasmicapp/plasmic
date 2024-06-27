@@ -1,16 +1,3 @@
-import {
-  CustomCode,
-  ensureKnownTplTag,
-  ExprText,
-  isKnownCustomCode,
-  isKnownExprText,
-  isKnownRawText,
-  ObjectPath,
-  RawText,
-  RichText,
-  TplSlot,
-  TplTag,
-} from "@/wab/classes";
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
 import { StringPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
@@ -49,6 +36,19 @@ import {
   typographyCssProps,
 } from "@/wab/shared/core/style-props";
 import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
+import {
+  CustomCode,
+  ensureKnownTplTag,
+  ExprText,
+  isKnownCustomCode,
+  isKnownExprText,
+  isKnownRawText,
+  ObjectPath,
+  RawText,
+  RichText,
+  TplSlot,
+  TplTag,
+} from "@/wab/shared/model/classes";
 import {
   isCodeComponentSlot,
   isPlainTextTplSlot,

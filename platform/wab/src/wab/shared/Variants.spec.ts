@@ -1,4 +1,3 @@
-import { StateParam } from "@/wab/classes";
 import { ComponentType, mkComponent } from "@/wab/components";
 import {
   ensureValidCombo,
@@ -6,6 +5,7 @@ import {
   mkComponentVariantGroup,
   mkVariant,
 } from "@/wab/shared/Variants";
+import { StateParam } from "@/wab/shared/model/classes";
 import { mkTplTagX } from "@/wab/tpls";
 
 function getComponentWithVariantGroups() {

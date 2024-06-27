@@ -1,10 +1,10 @@
-import { Param } from "@/wab/classes";
 import { assert, ensure } from "@/wab/common";
-import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { loadDepPackages } from "@/wab/server/db/DbBundleLoader";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { PkgVersion } from "@/wab/server/entities/Entities";
 import { Bundler } from "@/wab/shared/bundler";
+import { Param } from "@/wab/shared/model/classes";
 import { cloneType } from "@/wab/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {

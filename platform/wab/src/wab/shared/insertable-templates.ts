@@ -1,7 +1,8 @@
-import { Component, Site, TplNode, Variant } from "@/wab/classes";
 import { withoutNils } from "@/wab/common";
 import { allComponentVariants } from "@/wab/components";
 import { FrameViewMode, mkArenaFrame } from "@/wab/shared/Arenas";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { VariantCombo } from "@/wab/shared/Variants";
 import { siteToAllImageAssetsDict } from "@/wab/shared/cached-selectors";
 import {
   importComponentsInTree,
@@ -25,9 +26,8 @@ import {
   InsertableTemplateArenaExtraInfo,
   InsertableTemplateComponentExtraInfo,
 } from "@/wab/shared/insertable-templates/types";
+import { Component, Site, TplNode, Variant } from "@/wab/shared/model/classes";
 import { assertSiteInvariants } from "@/wab/shared/site-invariants";
-import { TplMgr } from "@/wab/shared/TplMgr";
-import { VariantCombo } from "@/wab/shared/Variants";
 import { allGlobalVariants, allStyleTokens } from "@/wab/sites";
 import {
   clone as cloneTpl,

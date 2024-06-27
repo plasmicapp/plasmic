@@ -1,4 +1,3 @@
-import { StyleToken } from "@/wab/classes";
 import { ColorSwatch } from "@/wab/client/components/style-controls/ColorSwatch";
 import { Matcher } from "@/wab/client/components/view-common";
 import { PlainLinkButton } from "@/wab/client/components/widgets";
@@ -8,9 +7,10 @@ import { useToggleDisplayed } from "@/wab/client/dom-utils";
 import { PlusIcon } from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import SearchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
 import { cx } from "@/wab/common";
-import { TokenValueResolver } from "@/wab/shared/cached-selectors";
-import Chroma from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { TokenValueResolver } from "@/wab/shared/cached-selectors";
+import { StyleToken } from "@/wab/shared/model/classes";
+import Chroma from "@/wab/shared/utils/color-utils";
 import { Tooltip } from "antd";
 import Downshift from "downshift";
 import { observer } from "mobx-react";

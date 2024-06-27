@@ -1,7 +1,6 @@
-import { ImageAsset } from "@/wab/classes";
 import { U } from "@/wab/client/cli-routes";
-import { DocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
 import { PublicLink } from "@/wab/client/components/PublicLink";
+import { DocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
 import { ImagePreview } from "@/wab/client/components/style-controls/ImageSelector";
 import {
   DefaultImageListItemProps,
@@ -9,6 +8,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicImageListItem";
 import { asOne, ensure } from "@/wab/common";
 import { toClassName } from "@/wab/shared/codegen/util";
+import { ImageAsset } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import * as React from "react";
 

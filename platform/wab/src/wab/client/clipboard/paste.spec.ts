@@ -1,7 +1,6 @@
-import { Component } from "@/wab/classes";
+import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
 import { PLASMIC_CLIPBOARD_FORMAT } from "@/wab/client/clipboard/common";
 import { paste } from "@/wab/client/clipboard/paste";
-import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
 import {
   pngData,
   svgData,
@@ -12,6 +11,7 @@ import { fakeStudioCtx } from "@/wab/client/test/fake-init-ctx";
 import { ComponentType } from "@/wab/components";
 import * as ImageAssets from "@/wab/image-assets";
 import * as Variants from "@/wab/shared/Variants";
+import { Component } from "@/wab/shared/model/classes";
 import * as Tpls from "@/wab/tpls";
 import { TplImageTag } from "@/wab/tpls";
 

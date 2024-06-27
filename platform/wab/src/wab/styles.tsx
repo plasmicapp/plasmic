@@ -1,35 +1,5 @@
 import { BackgroundLayer, bgClipTextTag } from "@/wab/bg-styles";
 import {
-  ArenaFrame,
-  Arg,
-  Component,
-  ensureKnownStyleScopeClassNamePropType,
-  ensureKnownTplComponent,
-  ImageAsset,
-  isKnownClassNamePropType,
-  isKnownStyleExpr,
-  isKnownStyleScopeClassNamePropType,
-  isKnownStyleToken,
-  isKnownStyleTokenRef,
-  isKnownTplTag,
-  Mixin,
-  RuleSet,
-  SelectorRuleSet,
-  Site,
-  StyleExpr,
-  StyleToken,
-  Theme,
-  ThemeLayoutSettings,
-  ThemeStyle,
-  TplComponent,
-  TplNode,
-  TplTag,
-  Variant,
-  VariantedRuleSet,
-  VariantedValue,
-  VariantSetting,
-} from "@/wab/classes";
-import {
   assert,
   capCamelCase,
   ensure,
@@ -44,6 +14,7 @@ import {
   xpickExists,
 } from "@/wab/common";
 import {
+  TokenType,
   extractAllReferencedTokenIds,
   getExternalMixinPropVarName,
   getMixinPropVarName,
@@ -58,7 +29,6 @@ import {
   mkTokenRef,
   replaceAllTokenRefs,
   resolveAllTokenRefs,
-  TokenType,
   tokenTypeDefaults,
   tryParseMixinPropRef,
   tryParseTokenRef,
@@ -73,14 +43,37 @@ import {
   showCssShorthand,
 } from "@/wab/css";
 import { getProjectFlags } from "@/wab/devflags";
-import { codeLit, FallbackableExpr, isFallbackableExpr } from "@/wab/exprs";
+import { FallbackableExpr, codeLit, isFallbackableExpr } from "@/wab/exprs";
 import * as cssPegParser from "@/wab/gen/cssPegParser";
 import { standardCorners, standardSides } from "@/wab/geom";
 import { getGoogFontMeta } from "@/wab/googfonts";
 import { getImageAssetVarName, resolveAllAssetRefs } from "@/wab/image-assets";
 import { walkDependencyTree } from "@/wab/project-deps";
-import { AddItemKey } from "@/wab/shared/add-item-keys";
 import { getArenaFrames } from "@/wab/shared/Arenas";
+import {
+  RSH,
+  RuleSetHelpers,
+  readonlyRSH,
+  splitCssValue,
+} from "@/wab/shared/RuleSetHelpers";
+import { isStyledTplSlot } from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import {
+  VariantCombo,
+  getCodeComponentInteractionVariantMeta,
+  getGlobalVariants,
+  hasScreenVariant,
+  isBaseRuleVariant,
+  isBaseVariant,
+  isScreenVariant,
+  isStyleVariant,
+  tryGetBaseVariantSetting,
+  tryGetPrivateStyleVariant,
+  tryGetVariantSetting,
+  variantComboKey,
+} from "@/wab/shared/Variants";
+import { AddItemKey } from "@/wab/shared/add-item-keys";
 import {
   makeTokenRefResolver,
   siteToAllTokensDict,
@@ -100,19 +93,19 @@ import { TargetEnv } from "@/wab/shared/codegen/types";
 import { toVarName } from "@/wab/shared/codegen/util";
 import {
   ALWAYS_RESOLVE_MIXIN_PROPS,
-  componentRootResetProps,
   CONTENT_LAYOUT_DEFAULTS,
   CONTENT_LAYOUT_STANDARD_WIDTH_PROP,
   CONTENT_LAYOUT_VIEWPORT_GAP_PROP,
   CONTENT_LAYOUT_WIDE_WIDTH_PROP,
   FAKE_FLEX_CONTAINER_PROPS,
   GAP_PROPS,
+  TPL_COMPONENT_PROPS,
+  componentRootResetProps,
   getAllDefinedStyles,
   imageCssProps,
   inheritableCssProps,
   nonInheritableTypographCssProps,
   slotCssProps,
-  TPL_COMPONENT_PROPS,
   transitionProps,
   typographyCssProps,
 } from "@/wab/shared/core/style-props";
@@ -124,39 +117,46 @@ import {
   makeLayoutAwareRuleSet,
 } from "@/wab/shared/layoututils";
 import {
-  readonlyRSH,
-  RSH,
-  RuleSetHelpers,
-  splitCssValue,
-} from "@/wab/shared/RuleSetHelpers";
+  ArenaFrame,
+  Arg,
+  Component,
+  ImageAsset,
+  Mixin,
+  RuleSet,
+  SelectorRuleSet,
+  Site,
+  StyleExpr,
+  StyleToken,
+  Theme,
+  ThemeLayoutSettings,
+  ThemeStyle,
+  TplComponent,
+  TplNode,
+  TplTag,
+  Variant,
+  VariantSetting,
+  VariantedRuleSet,
+  VariantedValue,
+  ensureKnownStyleScopeClassNamePropType,
+  ensureKnownTplComponent,
+  isKnownClassNamePropType,
+  isKnownStyleExpr,
+  isKnownStyleScopeClassNamePropType,
+  isKnownStyleToken,
+  isKnownStyleTokenRef,
+  isKnownTplTag,
+} from "@/wab/shared/model/classes";
 import {
-  deriveSizeStylesForTpl,
   deriveSizeStyleValue,
+  deriveSizeStylesForTpl,
   getViewportAwareHeight,
   isExplicitSize,
   isSizeProp,
 } from "@/wab/shared/sizingutils";
-import { isStyledTplSlot } from "@/wab/shared/SlotUtils";
-import { $$$ } from "@/wab/shared/TplQuery";
 import {
   makeGlobalVariantComboSorter,
   partitionVariants,
 } from "@/wab/shared/variant-sort";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import {
-  getCodeComponentInteractionVariantMeta,
-  getGlobalVariants,
-  hasScreenVariant,
-  isBaseRuleVariant,
-  isBaseVariant,
-  isScreenVariant,
-  isStyleVariant,
-  tryGetBaseVariantSetting,
-  tryGetPrivateStyleVariant,
-  tryGetVariantSetting,
-  VariantCombo,
-  variantComboKey,
-} from "@/wab/shared/Variants";
 import { appendVisibilityStylesForTpl } from "@/wab/shared/visibility-utils";
 import { GeneralUsageSummary, isHostLessPackage } from "@/wab/sites";
 import {

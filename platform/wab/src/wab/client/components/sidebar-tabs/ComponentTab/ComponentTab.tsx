@@ -1,13 +1,12 @@
-import { Component, Variant, VariantGroup } from "@/wab/classes";
 import { PlumeMissingIngredientsPanel } from "@/wab/client/components/plume/PlumeComponentPanel";
-import { ComponentDataQueriesSection } from "@/wab/client/components/sidebar-tabs/component-data-queries-section";
 import { ComponentPropsDefinitionSection } from "@/wab/client/components/sidebar-tabs/ComponentPropsDefinitionSection";
 import S from "@/wab/client/components/sidebar-tabs/ComponentTab/ComponentTab.module.scss";
-import { LegacyComponentParamsSection } from "@/wab/client/components/sidebar-tabs/legacy-component-params-section";
 import VariablesSection from "@/wab/client/components/sidebar-tabs/StateManagement/VariablesSection";
-import { NamedPanelHeader } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { ComponentDataQueriesSection } from "@/wab/client/components/sidebar-tabs/component-data-queries-section";
+import { LegacyComponentParamsSection } from "@/wab/client/components/sidebar-tabs/legacy-component-params-section";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import { NamedPanelHeader } from "@/wab/client/components/sidebar/sidebar-helpers";
 import {
   VariantsPanel,
   VariantsPanelHandle,
@@ -21,6 +20,7 @@ import PlumeMarkIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { PublicStyleSection } from "@/wab/shared/ApiSchema";
+import { Component, Variant, VariantGroup } from "@/wab/shared/model/classes";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { canEditStyleSection } from "@/wab/shared/ui-config-utils";
 import { observer } from "mobx-react";

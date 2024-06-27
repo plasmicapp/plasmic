@@ -1,4 +1,3 @@
-import { Interaction } from "@/wab/classes";
 import {
   DefaultDataPickerColumnItemProps,
   PlasmicDataPickerColumnItem,
@@ -8,6 +7,7 @@ import {
   runInteraction,
 } from "@/wab/client/state-management/preview-steps";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { Interaction } from "@/wab/shared/model/classes";
 import { isTplTagOrComponent } from "@/wab/tpls";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";

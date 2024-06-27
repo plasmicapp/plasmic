@@ -1,4 +1,3 @@
-import { Component, Site } from "@/wab/classes";
 import { DocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
 import { DocsPortalEditor } from "@/wab/client/components/docs/DocsPortalEditor";
 import { DocsPreviewCanvas } from "@/wab/client/components/docs/DocsPreviewCanvas";
@@ -13,9 +12,10 @@ import {
 import { ensure, mkUuid } from "@/wab/common";
 import { isSubComponent } from "@/wab/components";
 import { getExportedComponentName } from "@/wab/shared/codegen/react-p/utils";
+import { Component, Site } from "@/wab/shared/model/classes";
 import {
-  getPlumeDocsPlugin,
   PlumeDocsExample,
+  getPlumeDocsPlugin,
 } from "@/wab/shared/plume/plume-registry";
 import { observable } from "mobx";
 import { observer } from "mobx-react";

@@ -1,5 +1,3 @@
-import { ObjInst, Site } from "@/wab/classes";
-import { meta } from "@/wab/classes-metas";
 import {
   assert,
   isLiteralObject,
@@ -7,9 +5,11 @@ import {
   tuple,
   unexpected,
 } from "@/wab/common";
-import { isWeakRefField } from "@/wab/model/model-meta";
 import { Bundler } from "@/wab/shared/bundler";
-import { instUtil } from "@/wab/shared/core/InstUtil";
+import { instUtil } from "@/wab/shared/model/InstUtil";
+import { ObjInst, Site } from "@/wab/shared/model/classes";
+import { meta } from "@/wab/shared/model/classes-metas";
+import { isWeakRefField } from "@/wab/shared/model/model-meta";
 import { zip } from "lodash";
 
 export function assertSameInstType(inst: ObjInst, ...others: ObjInst[]) {

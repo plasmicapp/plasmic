@@ -1,4 +1,3 @@
-import { withoutUids } from "@/wab/model/model-meta";
 import {
   unbundlePkgVersion,
   unbundleProjectFromData,
@@ -6,10 +5,11 @@ import {
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
+import { withoutUids } from "@/wab/shared/model/model-meta";
 import {
+  INITIAL_VERSION_NUMBER,
   calculateSemVer,
   compareSites,
-  INITIAL_VERSION_NUMBER,
 } from "@/wab/shared/site-diffs";
 import semver from "semver";
 

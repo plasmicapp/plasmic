@@ -1,10 +1,4 @@
 import {
-  Component,
-  ComponentDataQuery,
-  isKnownObjectPath,
-  isKnownTemplatedString,
-} from "@/wab/classes";
-import {
   useDataSourceOpExprBottomModal,
   useSource,
 } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
@@ -16,8 +10,8 @@ import {
 import Button from "@/wab/client/components/widgets/Button";
 import { PageQueryParamsTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
 import { Icon } from "@/wab/client/components/widgets/Icon";
-import { LabeledListItem } from "@/wab/client/components/widgets/LabeledListItem";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
+import { LabeledListItem } from "@/wab/client/components/widgets/LabeledListItem";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ensure, maybe, maybeFirst, swallow, unexpected } from "@/wab/common";
@@ -32,6 +26,12 @@ import {
   ensureDataSourceStandardQuery,
   extractFiltersFromDefaultDataSourceQueries,
 } from "@/wab/shared/data-sources-meta/data-sources";
+import {
+  Component,
+  ComponentDataQuery,
+  isKnownObjectPath,
+  isKnownTemplatedString,
+} from "@/wab/shared/model/classes";
 import { Input, InputRef, Menu, Popover, Tooltip } from "antd";
 import { isEqual, size } from "lodash";
 import { observer } from "mobx-react";

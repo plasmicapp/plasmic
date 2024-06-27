@@ -1,4 +1,3 @@
-import { Component, Param } from "@/wab/classes";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
 import { confirm } from "@/wab/client/components/quick-modals";
@@ -22,12 +21,13 @@ import {
   removeComponentParam,
 } from "@/wab/components";
 import { ParamExportType } from "@/wab/lang";
-import { toVarName } from "@/wab/shared/codegen/util";
 import {
   COMPONENT_PROP_LOWER,
   COMPONENT_PROP_PLURAL_CAP,
 } from "@/wab/shared/Labels";
 import { getSlotParams } from "@/wab/shared/SlotUtils";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { Component, Param } from "@/wab/shared/model/classes";
 import { Menu } from "antd";
 import { observer } from "mobx-react";
 import React from "react";

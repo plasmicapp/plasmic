@@ -1,5 +1,3 @@
-import { Component, Site } from "@/wab/classes";
-import { meta } from "@/wab/classes-metas";
 import { BundlingSiteApi } from "@/wab/client/api";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { App } from "@/wab/client/components/top-view";
@@ -11,9 +9,11 @@ import {
   IChangeRecorder,
 } from "@/wab/observable-model";
 import { ApiBranch } from "@/wab/shared/ApiSchema";
-import { instUtil } from "@/wab/shared/core/InstUtil";
 import { PkgVersionInfoMeta, SiteInfo } from "@/wab/shared/SharedApi";
 import { TplMgr } from "@/wab/shared/TplMgr";
+import { instUtil } from "@/wab/shared/model/InstUtil";
+import { Component, Site } from "@/wab/shared/model/classes";
+import { meta } from "@/wab/shared/model/classes-metas";
 import { trackComponentRoot, trackComponentSite } from "@/wab/tpls";
 import { uniqBy } from "lodash";
 import { IObservableValue, observable } from "mobx";

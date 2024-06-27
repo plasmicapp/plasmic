@@ -6,8 +6,8 @@
  * in some cases.
  */
 
-import type { Component, TplNode } from "@/wab/classes";
 import type { ConditionalOverrideDeep } from "@/wab/commons/types";
+import type { Component, TplNode } from "@/wab/shared/model/classes";
 import type { OverrideProperties, ReadonlyDeep } from "type-fest";
 
 export type Safe<T> = ConditionalOverrideDeep<T, Component, SafeComponent>;

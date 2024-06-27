@@ -1,13 +1,13 @@
 import { ensure, hackyCast } from "@/wab/common";
 import { removeFromArray } from "@/wab/commons/collections";
-import { parse, transform } from "@/wab/model/model-generator";
-import { MetaRuntime, ObjInstBase } from "@/wab/model/model-meta";
 import {
   ChangeRecorder,
   ModelChange,
   observeModel,
 } from "@/wab/observable-model";
-import { InstUtil } from "@/wab/shared/core/InstUtil";
+import { InstUtil } from "@/wab/shared/model/InstUtil";
+import { parse, transform } from "@/wab/shared/model/model-generator";
+import { MetaRuntime, ObjInstBase } from "@/wab/shared/model/model-meta";
 import L from "lodash";
 import { Lambda } from "mobx";
 

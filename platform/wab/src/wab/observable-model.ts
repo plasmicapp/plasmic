@@ -1,17 +1,4 @@
 import {
-  ArenaFrame,
-  Component,
-  ImageAsset,
-  isKnownSite,
-  ObjInst,
-  RuleSet,
-  Site,
-  StyleToken,
-  Variant,
-  VariantedValue,
-} from "@/wab/classes";
-import { meta } from "@/wab/classes-metas";
-import {
   assert,
   ensure,
   ensureArray,
@@ -27,20 +14,33 @@ import { allComponentVariants } from "@/wab/components";
 import { dbg } from "@/wab/dbg";
 import { hasAssetRefs, tryParseImageAssetRef } from "@/wab/image-assets";
 import {
-  Class,
-  Field,
-  isStrongRefField,
-  isWeakRefField,
-} from "@/wab/model/model-meta";
-import {
   componentToAllVariants,
   siteToAllGlobalVariants,
   siteToAllImageAssetsDict,
   siteToAllTokensDict,
 } from "@/wab/shared/cached-selectors";
-import { InstUtil, instUtil } from "@/wab/shared/core/InstUtil";
 import mobx from "@/wab/shared/import-mobx";
 import { mutateGlobalObservable } from "@/wab/shared/mobx-util";
+import {
+  ArenaFrame,
+  Component,
+  ImageAsset,
+  isKnownSite,
+  ObjInst,
+  RuleSet,
+  Site,
+  StyleToken,
+  Variant,
+  VariantedValue,
+} from "@/wab/shared/model/classes";
+import { meta } from "@/wab/shared/model/classes-metas";
+import { InstUtil, instUtil } from "@/wab/shared/model/InstUtil";
+import {
+  Class,
+  Field,
+  isStrongRefField,
+  isWeakRefField,
+} from "@/wab/shared/model/model-meta";
 import { allGlobalVariants, allImageAssets, allStyleTokens } from "@/wab/sites";
 import { undoChanges } from "@/wab/undo-util";
 import { Dictionary, memoize, once } from "lodash";

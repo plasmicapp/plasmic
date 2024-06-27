@@ -1,9 +1,3 @@
-import {
-  CustomCode,
-  ensureKnownCustomCode,
-  ObjectPath,
-  TplNode,
-} from "@/wab/classes";
 import { isTplCodeComponentStyleable } from "@/wab/client/code-components/code-components";
 import { useAppRoles } from "@/wab/client/components/app-auth/app-auth-contexts";
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
@@ -43,6 +37,12 @@ import {
   tryExtractJson,
 } from "@/wab/exprs";
 import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
+import {
+  CustomCode,
+  ensureKnownCustomCode,
+  ObjectPath,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import {
   isPrivateStyleVariant,
   tryGetVariantSetting,

@@ -1,4 +1,8 @@
-import type { Marker, NodeMarker, StyleMarker } from "@/wab/classes";
+import type {
+  Marker,
+  NodeMarker,
+  StyleMarker,
+} from "@/wab/shared/model/classes";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import "@/wab/client/components/canvas/slate";
 import type { MakeADT } from "ts-adt/MakeADT";

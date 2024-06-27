@@ -1,5 +1,3 @@
-import * as classesModule from "@/wab/classes";
-import { meta } from "@/wab/classes-metas";
 import {
   assert,
   check,
@@ -23,20 +21,22 @@ import {
 } from "@/wab/commons/failable-utils";
 import { DeepReadonly } from "@/wab/commons/types";
 import { DEVFLAGS } from "@/wab/devflags";
+import { Bundle, BundledInst, UnsafeBundle } from "@/wab/shared/bundles";
+import { InstUtil } from "@/wab/shared/model/InstUtil";
+import * as classesModule from "@/wab/shared/model/classes";
+import { meta } from "@/wab/shared/model/classes-metas";
 import {
-  checkEqKeys,
   Field,
+  MetaRuntime,
+  Type,
+  checkEqKeys,
   isStrongRefField,
   isWeakRefField,
-  MetaRuntime,
   toTs,
-  Type,
-} from "@/wab/model/model-meta";
-import { Bundle, BundledInst, UnsafeBundle } from "@/wab/shared/bundles";
-import { InstUtil } from "@/wab/shared/core/InstUtil";
-import { conformsToType } from "@/wab/shared/core/model-util";
+} from "@/wab/shared/model/model-meta";
+import { conformsToType } from "@/wab/shared/model/model-util";
 import { flatten, isArray, isEmpty, isNil, isObject, uniq } from "lodash";
-import { failable, IFailable } from "ts-failable";
+import { IFailable, failable } from "ts-failable";
 
 export type { Bundle, BundledInst };
 

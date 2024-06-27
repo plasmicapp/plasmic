@@ -1,21 +1,3 @@
-import {
-  Component,
-  CustomCode,
-  ensureKnownTplTag,
-  Expr,
-  ImageAssetRef,
-  isKnownCustomCode,
-  isKnownImageAsset,
-  isKnownImageAssetRef,
-  isKnownObjectPath,
-  isKnownVarRef,
-  ObjectPath,
-  TplSlot,
-  TplTag,
-  Var,
-  VariantSetting,
-  VarRef,
-} from "@/wab/classes";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
@@ -54,12 +36,30 @@ import {
 import { ImageAssetType } from "@/wab/image-asset-type";
 import { getTagAttrForImageAsset } from "@/wab/image-assets";
 import { mkParam } from "@/wab/lang";
-import { isImageType, typeFactory } from "@/wab/shared/core/model-util";
 import { typographyCssProps } from "@/wab/shared/core/style-props";
 import {
   computeDefinedIndicator,
   DefinedIndicatorType,
 } from "@/wab/shared/defined-indicator";
+import {
+  Component,
+  CustomCode,
+  ensureKnownTplTag,
+  Expr,
+  ImageAssetRef,
+  isKnownCustomCode,
+  isKnownImageAsset,
+  isKnownImageAssetRef,
+  isKnownObjectPath,
+  isKnownVarRef,
+  ObjectPath,
+  TplSlot,
+  TplTag,
+  Var,
+  VariantSetting,
+  VarRef,
+} from "@/wab/shared/model/classes";
+import { isImageType, typeFactory } from "@/wab/shared/model/model-util";
 import { isCodeComponentSlot } from "@/wab/shared/SlotUtils";
 import { unsetTplVariantableAttr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";

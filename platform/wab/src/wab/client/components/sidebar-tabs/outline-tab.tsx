@@ -1,6 +1,5 @@
-import { ArenaFrame, ComponentArena } from "@/wab/classes";
-import styles from "@/wab/client/components/sidebar-tabs/outline-tab.module.scss";
 import { OutlineCtx } from "@/wab/client/components/sidebar-tabs/OutlineCtx";
+import styles from "@/wab/client/components/sidebar-tabs/outline-tab.module.scss";
 import {
   ArenaTree,
   ArenaTreeRef,
@@ -20,6 +19,7 @@ import {
   isPageArena,
 } from "@/wab/shared/Arenas";
 import { getComponentArenaRowLabel } from "@/wab/shared/component-arenas";
+import { ArenaFrame, ComponentArena } from "@/wab/shared/model/classes";
 import { Dropdown, Menu } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";

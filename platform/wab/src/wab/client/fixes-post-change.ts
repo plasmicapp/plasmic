@@ -1,30 +1,14 @@
-import {
-  Arg,
-  isKnownTplComponent,
-  isKnownTplSlot,
-  isKnownVirtualRenderExpr,
-  RenderExpr,
-  Site,
-  TplComponent,
-  TplNode,
-  TplSlot,
-} from "@/wab/classes";
 import { DbCtx } from "@/wab/client/db";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { notNil, tuple } from "@/wab/common";
 import { isPageComponent } from "@/wab/components";
-import { ChangeSummary, summarizeChanges } from "@/wab/model-change-util";
-import { mergeRecordedChanges, RecordedChanges } from "@/wab/observable-model";
+import { RecordedChanges, mergeRecordedChanges } from "@/wab/observable-model";
 import { FrameViewMode } from "@/wab/shared/Arenas";
-import { getActiveVariantsForFrame } from "@/wab/shared/cached-selectors";
-import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import {
   adjustAllGridChildren,
   removeAllGridChildProps,
 } from "@/wab/shared/Grids";
-import { fixupForPlume } from "@/wab/shared/plume/plume-utils";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
-import { isStretchyComponent } from "@/wab/shared/sizingutils";
 import {
   fillVirtualSlotContents,
   findParentArgs,
@@ -34,6 +18,25 @@ import {
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { isBaseVariant } from "@/wab/shared/Variants";
+import { getActiveVariantsForFrame } from "@/wab/shared/cached-selectors";
+import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
+import {
+  Arg,
+  RenderExpr,
+  Site,
+  TplComponent,
+  TplNode,
+  TplSlot,
+  isKnownTplComponent,
+  isKnownTplSlot,
+  isKnownVirtualRenderExpr,
+} from "@/wab/shared/model/classes";
+import {
+  ChangeSummary,
+  summarizeChanges,
+} from "@/wab/shared/model/model-change-util";
+import { fixupForPlume } from "@/wab/shared/plume/plume-utils";
+import { isStretchyComponent } from "@/wab/shared/sizingutils";
 import { getAllSiteFrames } from "@/wab/sites";
 import { ensureCorrectImplicitStates } from "@/wab/states";
 import {

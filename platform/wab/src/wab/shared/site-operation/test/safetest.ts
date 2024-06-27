@@ -1,4 +1,9 @@
-import type { Arena, Component, Site, TplNode } from "@/wab/classes";
+import type {
+  Arena,
+  Component,
+  Site,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import type {
   Safe,
   SafeComponent,

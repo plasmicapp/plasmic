@@ -1,4 +1,3 @@
-import { ensureKnownStyleExpr, StyleExpr, TplComponent } from "@/wab/classes";
 import { BackgroundSection } from "@/wab/client/components/sidebar-tabs/background-section";
 import { EffectsPanelSection } from "@/wab/client/components/sidebar-tabs/EffectsSection";
 import { LayoutSection } from "@/wab/client/components/sidebar-tabs/LayoutSection";
@@ -27,6 +26,11 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ensure, mkShortId, spawn, withoutNils } from "@/wab/common";
 import { isCodeComponent } from "@/wab/components";
 import { PublicStyleSection } from "@/wab/shared/ApiSchema";
+import {
+  ensureKnownStyleExpr,
+  StyleExpr,
+  TplComponent,
+} from "@/wab/shared/model/classes";
 import { mkSelectorRuleSet } from "@/wab/styles";
 import { observer } from "mobx-react";
 import React from "react";

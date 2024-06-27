@@ -1,9 +1,9 @@
-import { VariantGroup } from "@/wab/classes";
 import {
   EditableLabel,
   EditableLabelHandles,
 } from "@/wab/client/components/widgets/EditableLabel";
 import { VARIANTS_CAP } from "@/wab/shared/Labels";
+import { VariantGroup } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import * as React from "react";
 

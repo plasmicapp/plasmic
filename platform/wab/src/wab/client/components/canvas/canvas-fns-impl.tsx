@@ -1,11 +1,3 @@
-import {
-  isKnownNodeMarker,
-  Marker,
-  NodeMarker,
-  RawText,
-  RuleSet,
-  StyleMarker,
-} from "@/wab/classes";
 import "@/wab/client/components/canvas/slate";
 import { assert } from "@/wab/common";
 import { normProp, parseCssNumericNew } from "@/wab/css";
@@ -14,6 +6,14 @@ import {
   isTagListContainer,
 } from "@/wab/shared/core/rich-text-util";
 import { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
+import {
+  isKnownNodeMarker,
+  Marker,
+  NodeMarker,
+  RawText,
+  RuleSet,
+  StyleMarker,
+} from "@/wab/shared/model/classes";
 import { mkBaseVariant } from "@/wab/shared/Variants";
 import * as Tpls from "@/wab/tpls";
 import { mkTplTag, TplTagType } from "@/wab/tpls";

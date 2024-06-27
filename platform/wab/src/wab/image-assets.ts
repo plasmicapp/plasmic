@@ -1,18 +1,4 @@
 import {
-  ArenaFrame,
-  Arg,
-  Component,
-  ImageAsset,
-  isKnownImageAssetRef,
-  Mixin,
-  PageMeta,
-  Param,
-  Site,
-  TplComponent,
-  TplNode,
-  VariantSetting,
-} from "@/wab/classes";
-import {
   ensure,
   findIndexes,
   mkShortId,
@@ -25,6 +11,20 @@ import { isFrameComponent, isPageComponent } from "@/wab/components";
 import { isFallbackSet, isRealCodeExpr } from "@/wab/exprs";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import { getArenaFrames } from "@/wab/shared/Arenas";
+import {
+  ArenaFrame,
+  Arg,
+  Component,
+  ImageAsset,
+  isKnownImageAssetRef,
+  Mixin,
+  PageMeta,
+  Param,
+  Site,
+  TplComponent,
+  TplNode,
+  VariantSetting,
+} from "@/wab/shared/model/classes";
 import { joinCssValues, splitCssValue } from "@/wab/shared/RuleSetHelpers";
 import { DefaultStyle } from "@/wab/styles";
 import {

@@ -1,3 +1,9 @@
+import { ensure, withoutNils, xAddAll } from "@/wab/common";
+import {
+  extractAllReferencedTokenIds,
+  tryParseTokenRef,
+} from "@/wab/commons/StyleToken";
+import { makeTokenValueResolver } from "@/wab/shared/cached-selectors";
 import {
   Component,
   isKnownStyleExpr,
@@ -7,13 +13,7 @@ import {
   StyleToken,
   TplNode,
   Variant,
-} from "@/wab/classes";
-import { ensure, withoutNils, xAddAll } from "@/wab/common";
-import {
-  extractAllReferencedTokenIds,
-  tryParseTokenRef,
-} from "@/wab/commons/StyleToken";
-import { makeTokenValueResolver } from "@/wab/shared/cached-selectors";
+} from "@/wab/shared/model/classes";
 import {
   ReadonlyIRuleSetHelpersX,
   readonlyRSH,

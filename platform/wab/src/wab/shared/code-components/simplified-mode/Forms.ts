@@ -1,3 +1,14 @@
+import { ensure, isNonNil } from "@/wab/common";
+import { unwrap } from "@/wab/commons/failable-utils";
+import {
+  clone as cloneExpr,
+  codeLit,
+  deserCompositeExprMaybe,
+  isRealCodeExpr,
+  isRealCodeExprEnsuringType,
+  tryExtractJson,
+} from "@/wab/exprs";
+import { elementSchemaToTpl } from "@/wab/shared/code-components/code-components";
 import {
   Arg,
   Component,
@@ -11,18 +22,7 @@ import {
   TplComponent,
   TplNode,
   Variant,
-} from "@/wab/classes";
-import { ensure, isNonNil } from "@/wab/common";
-import { unwrap } from "@/wab/commons/failable-utils";
-import {
-  clone as cloneExpr,
-  codeLit,
-  deserCompositeExprMaybe,
-  isRealCodeExpr,
-  isRealCodeExprEnsuringType,
-  tryExtractJson,
-} from "@/wab/exprs";
-import { elementSchemaToTpl } from "@/wab/shared/code-components/code-components";
+} from "@/wab/shared/model/classes";
 import { getSingleTplComponentFromArg } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";

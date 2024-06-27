@@ -1,11 +1,10 @@
-import { Param, TplComponent } from "@/wab/classes";
 import { assert } from "@/wab/common";
 import { internalCanvasElementProps } from "@/wab/shared/canvas-constants";
 import {
+  SerializerBaseContext,
   getExternalParams,
   getPlumePackageName,
   serializeParamType,
-  SerializerBaseContext,
 } from "@/wab/shared/codegen/react-p";
 import {
   getExportedComponentName,
@@ -17,6 +16,7 @@ import {
   paramToVarName,
   toVarName,
 } from "@/wab/shared/codegen/util";
+import { Param, TplComponent } from "@/wab/shared/model/classes";
 import { PlumePlugin } from "@/wab/shared/plume/plume-registry";
 import {
   ensureValidPlumeCodeMeta,

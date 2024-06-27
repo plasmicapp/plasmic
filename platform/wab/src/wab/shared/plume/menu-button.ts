@@ -1,12 +1,14 @@
-import { Component, Param, Site, TplComponent } from "@/wab/classes";
 import { assert, ensure } from "@/wab/common";
 import { getParamByVarName } from "@/wab/components";
+import { getTplSlotByName, getTplSlotForParam } from "@/wab/shared/SlotUtils";
+import { TplMgr, ensureBaseVariant } from "@/wab/shared/TplMgr";
+import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
 import { internalCanvasElementProps } from "@/wab/shared/canvas-constants";
 import {
+  SerializerBaseContext,
   getExternalParams,
   getPlumePackageName,
   serializeParamType,
-  SerializerBaseContext,
 } from "@/wab/shared/codegen/react-p";
 import {
   getExportedComponentName,
@@ -18,7 +20,13 @@ import {
   paramToVarName,
   toVarName,
 } from "@/wab/shared/codegen/util";
-import { typeFactory } from "@/wab/shared/core/model-util";
+import {
+  Component,
+  Param,
+  Site,
+  TplComponent,
+} from "@/wab/shared/model/classes";
+import { typeFactory } from "@/wab/shared/model/model-util";
 import { PlumePlugin } from "@/wab/shared/plume/plume-registry";
 import {
   createDefaultSlotContentsStub,
@@ -26,9 +34,6 @@ import {
   maybeIncludeSerializedDefaultSlotContent,
   serializeComponentSubstitutionCallsForDefaultContents,
 } from "@/wab/shared/plume/plume-utils";
-import { getTplSlotByName, getTplSlotForParam } from "@/wab/shared/SlotUtils";
-import { ensureBaseVariant, TplMgr } from "@/wab/shared/TplMgr";
-import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
 import { fixParentPointers, mkTplComponent } from "@/wab/tpls";
 import type { BaseMenuButtonProps, MenuButtonRef } from "@plasmicapp/react-web";
 import { omit, pick } from "lodash";

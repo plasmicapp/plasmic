@@ -1,4 +1,3 @@
-import { Component, TplNode } from "@/wab/classes";
 import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ensure } from "@/wab/common";
 import {
@@ -7,7 +6,8 @@ import {
   updatedAncestorInfo,
 } from "@/wab/shared/linting/invalid-nesting/reactValidateDomNesting";
 import { InvalidDomNestingLintIssue } from "@/wab/shared/linting/lint-types";
-import { isValNode, ValNode } from "@/wab/val-nodes";
+import { Component, TplNode } from "@/wab/shared/model/classes";
+import { ValNode, isValNode } from "@/wab/val-nodes";
 import $ from "jquery";
 
 const TYPE = "invalid-dom-nesting";

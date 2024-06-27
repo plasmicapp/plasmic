@@ -1,4 +1,3 @@
-import { ProjectDependency, Site } from "@/wab/classes";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { assertNever, spawn } from "@/wab/common";
 import { derefTokenRefs } from "@/wab/commons/StyleToken";
@@ -10,6 +9,7 @@ import {
   getFontSpec,
   toGoogleFontInstallSpec,
 } from "@/wab/shared/fonts";
+import { ProjectDependency, Site } from "@/wab/shared/model/classes";
 import { allStyleTokens } from "@/wab/sites";
 import { notification } from "antd";
 import $ from "jquery";

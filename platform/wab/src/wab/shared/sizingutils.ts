@@ -1,12 +1,3 @@
-import {
-  ArenaFrame,
-  Component,
-  isKnownTplTag,
-  TplComponent,
-  TplNode,
-  Variant,
-  VariantSetting,
-} from "@/wab/classes";
 import { assert, ensure } from "@/wab/common";
 import { isTokenRef } from "@/wab/commons/StyleToken";
 import {
@@ -36,6 +27,15 @@ import {
   getRshContainerType,
 } from "@/wab/shared/layoututils";
 import { keyedComputedFn } from "@/wab/shared/mobx-util";
+import {
+  ArenaFrame,
+  Component,
+  isKnownTplTag,
+  TplComponent,
+  TplNode,
+  Variant,
+  VariantSetting,
+} from "@/wab/shared/model/classes";
 import {
   getCssDefault,
   IRuleSetHelpersX,

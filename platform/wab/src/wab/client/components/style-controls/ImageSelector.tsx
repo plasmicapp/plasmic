@@ -1,4 +1,3 @@
-import { ImageAsset, isKnownImageAsset } from "@/wab/classes";
 import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
 import { ImageAssetSidebarPopup } from "@/wab/client/components/sidebar/image-asset-controls";
 import { FileUploader, PlainLinkButton } from "@/wab/client/components/widgets";
@@ -7,9 +6,9 @@ import { IconButton } from "@/wab/client/components/widgets/IconButton";
 import { Textbox, TextboxRef } from "@/wab/client/components/widgets/Textbox";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
+  ResizableImage,
   maybeUploadImage,
   readAndSanitizeFileAsImage,
-  ResizableImage,
 } from "@/wab/client/dom-utils";
 import ArrowRightIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ArrowRight";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
@@ -25,9 +24,10 @@ import {
 } from "@/wab/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { ImageAssetType } from "@/wab/image-asset-type";
+import { ImageAsset, isKnownImageAsset } from "@/wab/shared/model/classes";
 import { allImageAssets, isEditable } from "@/wab/sites";
 import { placeholderImgUrl } from "@/wab/urls";
-import { notification, Select, Tooltip } from "antd";
+import { Select, Tooltip, notification } from "antd";
 import L from "lodash";
 import { observer } from "mobx-react";
 import React, { CSSProperties } from "react";

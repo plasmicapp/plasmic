@@ -1,13 +1,13 @@
+import { tuple } from "@/wab/common";
+import { ComponentType, extractComponent } from "@/wab/components";
+import { tryExtractJson } from "@/wab/exprs";
 import {
   isKnownVariantsRef,
   RuleSet,
   TplTag,
   Variant,
   VariantSetting,
-} from "@/wab/classes";
-import { tuple } from "@/wab/common";
-import { ComponentType, extractComponent } from "@/wab/components";
-import { tryExtractJson } from "@/wab/exprs";
+} from "@/wab/shared/model/classes";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { assertSiteInvariants } from "@/wab/shared/site-invariants";
 import { TplMgr } from "@/wab/shared/TplMgr";

@@ -3,7 +3,7 @@
 // This file is owned by you, feel free to edit as you see fit.
 import { AuthData } from "@/AuthForm";
 import KeyValueRow from "@/KeyValueRow";
-import { RestQuery } from "@/wab/classes";
+import { RestQuery } from "@/wab/shared/model/classes";
 import * as React from "react";
 import { useMemo, useState } from "react";
 import {

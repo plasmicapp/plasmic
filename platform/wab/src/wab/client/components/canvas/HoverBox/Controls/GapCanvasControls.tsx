@@ -1,17 +1,17 @@
-import { TplTag } from "@/wab/classes";
 import S from "@/wab/client/components/canvas/HoverBox/Controls/GapCanvasControls.module.scss";
 import { prefixSum } from "@/wab/client/components/sidebar-tabs/ResponsiveColumns/tpl-columns-utils";
 import { getContentOnlyRect, getMarginRect } from "@/wab/client/dom";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
 import { ensure, parsePx } from "@/wab/common";
-import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
+import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
 import { parseCssNumericNew } from "@/wab/css";
 import {
   ContainerLayoutType,
   getRshContainerType,
 } from "@/wab/shared/layoututils";
+import { TplTag } from "@/wab/shared/model/classes";
 import { allImageAssets, allMixins, allStyleTokens } from "@/wab/sites";
 import { CssVarResolver, hasGapStyle } from "@/wab/styles";
 import { isTplColumns, isTplTag } from "@/wab/tpls";

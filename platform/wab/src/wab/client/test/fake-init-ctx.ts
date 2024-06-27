@@ -1,16 +1,16 @@
 import { mockDeepAuto } from "@/test/mock";
-import { ArenaFrame } from "@/wab/classes";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import { App } from "@/wab/client/components/top-view";
 import { DbCtx } from "@/wab/client/db";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { fakePromisifiedApi } from "@/wab/client/test/FakeApi";
 import { DEVFLAGS } from "@/wab/devflags";
-import { FastBundler } from "@/wab/shared/bundler";
 import { SiteInfo } from "@/wab/shared/SharedApi";
+import { FastBundler } from "@/wab/shared/bundler";
+import { ArenaFrame } from "@/wab/shared/model/classes";
 import { createSite } from "@/wab/sites";
 import { createMemoryHistory } from "history";
 

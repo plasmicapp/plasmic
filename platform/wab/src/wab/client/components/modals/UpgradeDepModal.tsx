@@ -1,10 +1,3 @@
-import {
-  isKnownComponent,
-  isKnownImageAsset,
-  isKnownMixin,
-  isKnownStyleToken,
-  ProjectDependency,
-} from "@/wab/classes";
 import { SiteDiffs } from "@/wab/client/components/modals/SiteDiffs";
 import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
 import Button from "@/wab/client/components/widgets/Button";
@@ -44,6 +37,13 @@ import {
   extractUsedTokensForMixins,
   extractUsedTokensForTokens,
 } from "@/wab/shared/codegen/style-tokens";
+import {
+  isKnownComponent,
+  isKnownImageAsset,
+  isKnownMixin,
+  isKnownStyleToken,
+  ProjectDependency,
+} from "@/wab/shared/model/classes";
 import {
   ChangeLogEntry,
   compareSites,

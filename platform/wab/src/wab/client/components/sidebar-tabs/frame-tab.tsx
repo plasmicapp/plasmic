@@ -1,7 +1,6 @@
-import { ArenaFrame } from "@/wab/classes";
 import { makeFrameSizeMenu } from "@/wab/client/components/menus/FrameSizeMenu";
-import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarModalProvider } from "@/wab/client/components/sidebar/SidebarModal";
+import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { ColorButton } from "@/wab/client/components/style-controls/ColorButton";
 import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggleButton";
 import StyleToggleButtonGroup from "@/wab/client/components/style-controls/StyleToggleButtonGroup";
@@ -21,6 +20,7 @@ import {
   isHeightAutoDerived,
 } from "@/wab/shared/Arenas";
 import { FRAME_CAP } from "@/wab/shared/Labels";
+import { ArenaFrame } from "@/wab/shared/model/classes";
 import { frameSizeGroups } from "@/wab/shared/responsiveness";
 import { getComponentDefaultSize } from "@/wab/shared/sizingutils";
 import { Chroma } from "@/wab/shared/utils/color-utils";

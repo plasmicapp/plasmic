@@ -1,4 +1,3 @@
-import { TplComponent, TplTag } from "@/wab/classes";
 import { FullRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SpacingControl } from "@/wab/client/components/style-controls/SpacingControl";
 import {
@@ -9,6 +8,7 @@ import {
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { isCodeComponent } from "@/wab/components";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { TplComponent, TplTag } from "@/wab/shared/model/classes";
 import {
   isComponentRoot,
   isTplColumn,

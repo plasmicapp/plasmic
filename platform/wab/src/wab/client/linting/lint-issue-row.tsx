@@ -1,11 +1,10 @@
-import { Component, TplNode } from "@/wab/classes";
 import ListItem from "@/wab/client/components/ListItem";
 import { DataSourceOpExprSummary } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { NOT_RENDERED_ICON } from "@/wab/client/icons";
 import TreeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Tree";
-import ResponsivenessIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Responsiveness";
 import UnlockIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Unlock";
+import ResponsivenessIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Responsiveness";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawn } from "@/wab/common";
 import { isPageComponent } from "@/wab/components";
@@ -18,6 +17,7 @@ import {
   NonCssScreenVariantOverrideLintIssue,
   UnprotectedDataQueryLintIssue,
 } from "@/wab/shared/linting/lint-types";
+import { Component, TplNode } from "@/wab/shared/model/classes";
 import { Popover } from "antd";
 import { observer } from "mobx-react";
 import React, { ReactNode } from "react";

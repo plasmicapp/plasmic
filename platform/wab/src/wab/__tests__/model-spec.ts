@@ -1,6 +1,6 @@
 import { ensure, tuple } from "@/wab/common";
-import { clean, parse, transform } from "@/wab/model/model-generator";
-import { Class, Field, Type, withoutUids } from "@/wab/model/model-meta";
+import { clean, parse, transform } from "@/wab/shared/model/model-generator";
+import { Class, Field, Type, withoutUids } from "@/wab/shared/model/model-meta";
 import L from "lodash";
 
 function trimIndent(x: string) {

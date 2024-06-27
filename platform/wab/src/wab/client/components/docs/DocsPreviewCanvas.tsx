@@ -1,4 +1,3 @@
-import { Component } from "@/wab/classes";
 import {
   showCanvasPageNavigationNotification,
   trapInteractionError,
@@ -20,6 +19,7 @@ import { usedHostLessPkgs } from "@/wab/shared/cached-selectors";
 import { nodeJsName } from "@/wab/shared/codegen/react-p";
 import { getExportedComponentName } from "@/wab/shared/codegen/react-p/utils";
 import { toJsIdentifier } from "@/wab/shared/codegen/util";
+import { Component } from "@/wab/shared/model/classes";
 import { TplNamable } from "@/wab/tpls";
 import { getPublicUrl } from "@/wab/urls";
 import { autorun } from "mobx";

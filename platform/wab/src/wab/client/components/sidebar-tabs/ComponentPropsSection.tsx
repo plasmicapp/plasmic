@@ -1,22 +1,4 @@
 /** @format */
-import {
-  Component,
-  CustomCode,
-  ensureKnownFunctionType,
-  EventHandler,
-  Expr,
-  FunctionExpr,
-  Interaction,
-  isKnownClassNamePropType,
-  isKnownEventHandler,
-  isKnownFunctionType,
-  ObjectPath,
-  Param,
-  State,
-  TplComponent,
-  TplRef,
-  TplTag,
-} from "@/wab/classes";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import { TextAndShortcut } from "@/wab/client/components/menu-builder";
 import { reactPrompt } from "@/wab/client/components/quick-modals";
@@ -85,9 +67,27 @@ import {
   StudioPropType,
 } from "@/wab/shared/code-components/code-components";
 import { getExportedComponentName } from "@/wab/shared/codegen/react-p/utils";
-import { wabToTsType } from "@/wab/shared/core/model-util";
 import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { VARIABLE_LOWER } from "@/wab/shared/Labels";
+import {
+  Component,
+  CustomCode,
+  ensureKnownFunctionType,
+  EventHandler,
+  Expr,
+  FunctionExpr,
+  Interaction,
+  isKnownClassNamePropType,
+  isKnownEventHandler,
+  isKnownFunctionType,
+  ObjectPath,
+  Param,
+  State,
+  TplComponent,
+  TplRef,
+  TplTag,
+} from "@/wab/shared/model/classes";
+import { wabToTsType } from "@/wab/shared/model/model-util";
 import { isValidJavaScriptCode } from "@/wab/shared/parser-utils";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { TplMgr } from "@/wab/shared/TplMgr";

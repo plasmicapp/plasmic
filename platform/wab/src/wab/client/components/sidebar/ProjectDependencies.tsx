@@ -1,4 +1,3 @@
-import { ProjectDependency } from "@/wab/classes";
 import { openNewTab, U } from "@/wab/client/cli-routes";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
@@ -26,6 +25,7 @@ import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawn } from "@/wab/common";
 import { swallowClick } from "@/wab/commons/components/ReactUtil";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { ProjectDependency } from "@/wab/shared/model/classes";
 import { isHostLessPackage } from "@/wab/sites";
 import { unbundleProjectDependency } from "@/wab/tagged-unbundle";
 import { extractProjectIdFromUrlOrId, getPublicUrl } from "@/wab/urls";

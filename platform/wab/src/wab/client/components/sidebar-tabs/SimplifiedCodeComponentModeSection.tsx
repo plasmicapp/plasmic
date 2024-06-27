@@ -1,4 +1,3 @@
-import { Expr, TplComponent } from "@/wab/classes";
 import { getControlModePropType } from "@/wab/client/code-components/code-components";
 import { updateComponentMode } from "@/wab/client/code-components/simplified-mode";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
@@ -9,6 +8,7 @@ import { ensure, spawn } from "@/wab/common";
 import { tryExtractJson } from "@/wab/exprs";
 import { getTplComponentArg } from "@/wab/shared/TplMgr";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
+import { Expr, TplComponent } from "@/wab/shared/model/classes";
 import type { CodeComponentMode } from "@plasmicapp/host";
 import { observer } from "mobx-react";
 import React from "react";

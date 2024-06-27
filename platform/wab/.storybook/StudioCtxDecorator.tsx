@@ -1,4 +1,3 @@
-import { Site } from "@/wab/classes";
 import { Api } from "@/wab/client/api";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { Clipboard } from "@/wab/client/clipboard";
@@ -9,6 +8,7 @@ import {
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { DEVFLAGS } from "@/wab/devflags";
 import { FastBundler } from "@/wab/shared/bundler";
+import { Site } from "@/wab/shared/model/classes";
 import { PkgInfo, SiteInfo } from "@/wab/shared/SharedApi";
 import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
 import { mkBaseVariant } from "@/wab/shared/Variants";

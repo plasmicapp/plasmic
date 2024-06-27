@@ -1,10 +1,10 @@
-import { RuleSet } from "@/wab/classes";
 import { DEVFLAGS } from "@/wab/devflags";
 import { AddItemKey, WrapItemKey } from "@/wab/shared/add-item-keys";
 import {
   CONTENT_LAYOUT,
   CONTENT_LAYOUT_FULL_BLEED,
 } from "@/wab/shared/core/style-props";
+import { RuleSet } from "@/wab/shared/model/classes";
 import { camelCase, isEmpty, mapKeys } from "lodash";
 
 const DEFAULT_INITIAL_STYLES = {

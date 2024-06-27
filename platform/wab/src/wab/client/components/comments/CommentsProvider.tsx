@@ -1,4 +1,3 @@
-import { ArenaFrame } from "@/wab/classes";
 import { apiKey } from "@/wab/client/api";
 import { CommentOverlaysContext } from "@/wab/client/components/comments/CommentOverlays";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
@@ -10,6 +9,7 @@ import {
   CommentThreadId,
   GetCommentsResponse,
 } from "@/wab/shared/ApiSchema";
+import { ArenaFrame } from "@/wab/shared/model/classes";
 import { uniq } from "lodash";
 import * as React from "react";
 import { ReactNode, useEffect } from "react";

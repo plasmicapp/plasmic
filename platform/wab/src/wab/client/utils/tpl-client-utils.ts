@@ -1,4 +1,3 @@
-import { TplNode } from "@/wab/classes";
 import { isTplCodeComponentStyleable } from "@/wab/client/code-components/code-components";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { switchType } from "@/wab/common";
@@ -9,6 +8,7 @@ import {
   ContainerLayoutType,
   getRshContainerType,
 } from "@/wab/shared/layoututils";
+import { TplNode } from "@/wab/shared/model/classes";
 import { TplVisibility } from "@/wab/shared/visibility-utils";
 import { SlotSelection } from "@/wab/slots";
 import {

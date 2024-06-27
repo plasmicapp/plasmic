@@ -1,9 +1,3 @@
-import {
-  ColumnsConfig,
-  isKnownTplTag,
-  ProjectDependency,
-  Site,
-} from "@/wab/classes";
 import { ensure, ensureInstance } from "@/wab/common";
 import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
@@ -13,6 +7,12 @@ import {
   equalColumnDistribution,
   hasMaxWidthVariant,
 } from "@/wab/shared/columns-utils";
+import {
+  ColumnsConfig,
+  isKnownTplTag,
+  ProjectDependency,
+  Site,
+} from "@/wab/shared/model/classes";
 import {
   tryGetBaseVariantSetting,
   tryGetVariantSetting,

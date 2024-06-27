@@ -1,11 +1,3 @@
-import {
-  Component,
-  ensureKnownProjectDependency,
-  ensureKnownSite,
-  ProjectDependency,
-  Site,
-} from "@/wab/classes";
-import { modelSchemaHash } from "@/wab/classes-metas";
 import { Dict, mkIdMap } from "@/wab/collections";
 import {
   arrayEqIgnoreOrder,
@@ -153,6 +145,14 @@ import { ExportOpts } from "@/wab/shared/codegen/types";
 import { toClassName } from "@/wab/shared/codegen/util";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { DomainValidator } from "@/wab/shared/hosting";
+import {
+  Component,
+  ensureKnownProjectDependency,
+  ensureKnownSite,
+  ProjectDependency,
+  Site,
+} from "@/wab/shared/model/classes";
+import { modelSchemaHash } from "@/wab/shared/model/classes-metas";
 import { createTaggedResourceId } from "@/wab/shared/perms";
 import { requiredPackageVersions } from "@/wab/shared/required-versions";
 import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";

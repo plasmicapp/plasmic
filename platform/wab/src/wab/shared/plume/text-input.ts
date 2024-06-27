@@ -1,4 +1,3 @@
-import { TplComponent } from "@/wab/classes";
 import { internalCanvasElementProps } from "@/wab/shared/canvas-constants";
 import {
   getExternalParams,
@@ -17,6 +16,7 @@ import {
   toVarName,
 } from "@/wab/shared/codegen/util";
 import { getInputTypeOptions } from "@/wab/shared/html-utils";
+import { TplComponent } from "@/wab/shared/model/classes";
 import { PlumePlugin } from "@/wab/shared/plume/plume-registry";
 import {
   ensureValidPlumeCodeMeta,

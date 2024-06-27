@@ -1,11 +1,11 @@
-import { TplNode } from "@/wab/classes";
 import styles from "@/wab/client/components/canvas/HoverBox/StackOfParents.module.scss";
 import { createNodeIcon } from "@/wab/client/components/sidebar-tabs/tpl-tree";
 import { FRAME_ICON, SLOT_ICON } from "@/wab/client/icons";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { getSlotSelectionDisplayName } from "@/wab/client/utils/tpl-client-utils";
-import { Selectable, SQ } from "@/wab/selection";
+import { SQ, Selectable } from "@/wab/selection";
 import { FrameViewMode } from "@/wab/shared/Arenas";
+import { TplNode } from "@/wab/shared/model/classes";
 import { SlotSelection } from "@/wab/slots";
 import * as cssVariables from "@/wab/styles/css-variables";
 import {

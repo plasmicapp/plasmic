@@ -1,19 +1,3 @@
-import {
-  ArenaFrame,
-  Component,
-  CustomFunction,
-  isKnownTplComponent,
-  Param,
-  RawText,
-  RichText,
-  State,
-  TplComponent,
-  TplNode,
-  TplSlot,
-  TplTag,
-  Variant,
-  VariantSetting,
-} from "@/wab/classes";
 import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import { RunFn } from "@/wab/client/components/canvas/CanvasText";
 import "@/wab/client/components/canvas/slate";
@@ -76,6 +60,22 @@ import {
   TransientComponentVariantFrame,
 } from "@/wab/shared/component-frame";
 import { CanvasEnv, evalCodeWithEnv } from "@/wab/shared/eval";
+import {
+  ArenaFrame,
+  Component,
+  CustomFunction,
+  isKnownTplComponent,
+  Param,
+  RawText,
+  RichText,
+  State,
+  TplComponent,
+  TplNode,
+  TplSlot,
+  TplTag,
+  Variant,
+  VariantSetting,
+} from "@/wab/shared/model/classes";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { isTplResizable } from "@/wab/shared/sizingutils";
 import { getAncestorSlotArg } from "@/wab/shared/SlotUtils";

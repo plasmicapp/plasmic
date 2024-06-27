@@ -1,4 +1,3 @@
-import { FunctionExpr, Interaction, TplComponent, TplTag } from "@/wab/classes";
 import { mkEventHandlerEnv } from "@/wab/client/components/canvas/canvas-rendering";
 import { extractDataCtx } from "@/wab/client/state-management/interactions-meta";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -7,6 +6,12 @@ import { ensure } from "@/wab/common";
 import { ExprCtx, getRawCode } from "@/wab/exprs";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { evalCodeWithEnv } from "@/wab/shared/eval";
+import {
+  FunctionExpr,
+  Interaction,
+  TplComponent,
+  TplTag,
+} from "@/wab/shared/model/classes";
 import { isValidJavaScriptCode, parseJsCode } from "@/wab/shared/parser-utils";
 import {
   extractEventArgsNameFromEventHandler,

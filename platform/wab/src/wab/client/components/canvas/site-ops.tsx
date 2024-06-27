@@ -1,23 +1,3 @@
-import {
-  Arena,
-  ArenaFrame,
-  Component,
-  ComponentArena,
-  ComponentDataQuery,
-  ComponentVariantGroup,
-  ImageAsset,
-  isKnownComponent,
-  isKnownComponentVariantGroup,
-  Mixin,
-  PageArena,
-  ProjectDependency,
-  Site,
-  Split,
-  State,
-  StyleToken,
-  Variant,
-  VariantGroup,
-} from "@/wab/classes";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { U } from "@/wab/client/cli-routes";
 import { FrameClip } from "@/wab/client/clipboard/local";
@@ -93,7 +73,6 @@ import {
   isGlobalVariantFrame,
   isSuperVariantFrame,
 } from "@/wab/shared/component-arenas";
-import { convertVariableTypeToWabType } from "@/wab/shared/core/model-util";
 import { parseScreenSpec } from "@/wab/shared/Css";
 import {
   asSvgDataUrl,
@@ -105,6 +84,27 @@ import {
   MIXIN_LOWER,
   TOKEN_LOWER,
 } from "@/wab/shared/Labels";
+import {
+  Arena,
+  ArenaFrame,
+  Component,
+  ComponentArena,
+  ComponentDataQuery,
+  ComponentVariantGroup,
+  ImageAsset,
+  isKnownComponent,
+  isKnownComponentVariantGroup,
+  Mixin,
+  PageArena,
+  ProjectDependency,
+  Site,
+  Split,
+  State,
+  StyleToken,
+  Variant,
+  VariantGroup,
+} from "@/wab/shared/model/classes";
+import { convertVariableTypeToWabType } from "@/wab/shared/model/model-util";
 import {
   getFrameColumnIndex,
   removeManagedFramesFromPageArenaForVariants,

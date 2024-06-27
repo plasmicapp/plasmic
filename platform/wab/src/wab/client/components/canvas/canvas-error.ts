@@ -1,4 +1,3 @@
-import { Component, isKnownComponent, TplNode } from "@/wab/classes";
 import {
   getEnvId,
   RenderingCtx,
@@ -13,6 +12,11 @@ import {
   valKeyProp,
   valOwnerProp,
 } from "@/wab/shared/canvas-constants";
+import {
+  Component,
+  isKnownComponent,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import { summarizeTpl } from "@/wab/tpls";
 import { debounce } from "lodash";
 import { computedFn } from "mobx-utils";

@@ -1,4 +1,36 @@
 import {
+  assert,
+  assertNever,
+  ensure,
+  mkShortId,
+  remove,
+  unexpected,
+  uniqueName,
+} from "@/wab/common";
+import {
+  getComponentDisplayName,
+  removeComponentParam,
+} from "@/wab/components";
+import { DevFlagsType } from "@/wab/devflags";
+import {
+  asCode,
+  code,
+  codeLit,
+  ExprCtx,
+  InteractionConditionalMode,
+  isFallbackSet,
+  isRealCodeExpr,
+  isRealCodeExprEnsuringType,
+  tryExtractJson,
+  tryExtractLit,
+} from "@/wab/exprs";
+import * as Lang from "@/wab/lang";
+import { ParamExportType } from "@/wab/lang";
+import { AddItemKey } from "@/wab/shared/add-item-keys";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { parseExpr } from "@/wab/shared/eval/expression-parser";
+import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
+import {
   Component,
   ComponentVariantGroup,
   CustomCode,
@@ -34,39 +66,7 @@ import {
   TplTag,
   VariantGroup,
   VariantGroupState,
-} from "@/wab/classes";
-import {
-  assert,
-  assertNever,
-  ensure,
-  mkShortId,
-  remove,
-  unexpected,
-  uniqueName,
-} from "@/wab/common";
-import {
-  getComponentDisplayName,
-  removeComponentParam,
-} from "@/wab/components";
-import { DevFlagsType } from "@/wab/devflags";
-import {
-  asCode,
-  code,
-  codeLit,
-  ExprCtx,
-  InteractionConditionalMode,
-  isFallbackSet,
-  isRealCodeExpr,
-  isRealCodeExprEnsuringType,
-  tryExtractJson,
-  tryExtractLit,
-} from "@/wab/exprs";
-import * as Lang from "@/wab/lang";
-import { ParamExportType } from "@/wab/lang";
-import { AddItemKey } from "@/wab/shared/add-item-keys";
-import { toVarName } from "@/wab/shared/codegen/util";
-import { parseExpr } from "@/wab/shared/eval/expression-parser";
-import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
+} from "@/wab/shared/model/classes";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {

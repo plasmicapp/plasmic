@@ -1,8 +1,7 @@
-import { Component, DataSourceOpExpr } from "@/wab/classes";
 import { useAppRoles } from "@/wab/client/components/app-auth/app-auth-contexts";
 import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
-import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import Button from "@/wab/client/components/widgets/Button";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
@@ -17,7 +16,8 @@ import {
   getTemplateFieldType,
   mkDataSourceTemplate,
 } from "@/wab/shared/data-sources-meta/data-sources";
-import { Form, notification, Select as AntSelect } from "antd";
+import { Component, DataSourceOpExpr } from "@/wab/shared/model/classes";
+import { Select as AntSelect, Form, notification } from "antd";
 import { Dictionary, keyBy, mapValues } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";

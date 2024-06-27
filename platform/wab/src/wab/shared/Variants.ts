@@ -1,4 +1,30 @@
 import {
+  arrayEqIgnoreOrder,
+  assert,
+  ensure,
+  mkShortId,
+  moveIndex,
+  tuple,
+  xAddAll,
+} from "@/wab/common";
+import {
+  allSuperComponentVariants,
+  getNamespacedComponentName,
+  isCodeComponent,
+} from "@/wab/components";
+import { code } from "@/wab/exprs";
+import { ScreenSizeSpec, parseScreenSpec } from "@/wab/shared/Css";
+import {
+  FramePinManager,
+  withoutIrrelevantScreenVariants,
+} from "@/wab/shared/PinManager";
+import { siteCCInteractionStyleVariantsToDisplayNames } from "@/wab/shared/cached-selectors";
+import { toVarName } from "@/wab/shared/codegen/util";
+import {
+  ensureComponentArenaColsOrder,
+  ensureComponentArenaRowsOrder,
+} from "@/wab/shared/component-arenas";
+import {
   ArenaFrame,
   Arg,
   CodeComponentInteractionVariantMeta,
@@ -18,38 +44,12 @@ import {
   VariantGroup,
   VariantGroupState,
   VariantSetting,
-} from "@/wab/classes";
-import {
-  arrayEqIgnoreOrder,
-  assert,
-  ensure,
-  mkShortId,
-  moveIndex,
-  tuple,
-  xAddAll,
-} from "@/wab/common";
-import {
-  allSuperComponentVariants,
-  getNamespacedComponentName,
-  isCodeComponent,
-} from "@/wab/components";
-import { code } from "@/wab/exprs";
-import { siteCCInteractionStyleVariantsToDisplayNames } from "@/wab/shared/cached-selectors";
-import { toVarName } from "@/wab/shared/codegen/util";
-import {
-  ensureComponentArenaColsOrder,
-  ensureComponentArenaRowsOrder,
-} from "@/wab/shared/component-arenas";
-import { parseScreenSpec, ScreenSizeSpec } from "@/wab/shared/Css";
-import {
-  FramePinManager,
-  withoutIrrelevantScreenVariants,
-} from "@/wab/shared/PinManager";
+} from "@/wab/shared/model/classes";
 import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
 import {
+  UNINITIALIZED_VALUE,
   allGlobalVariantGroups,
   getResponsiveStrategy,
-  UNINITIALIZED_VALUE,
   writeable,
 } from "@/wab/sites";
 import {
@@ -59,11 +59,11 @@ import {
   pseudoSelectors,
 } from "@/wab/styles";
 import {
+  TplCodeComponent,
   isComponentRoot,
   isTplComponent,
   isTplTag,
   summarizeTplTag,
-  TplCodeComponent,
 } from "@/wab/tpls";
 import { arrayContains } from "class-validator";
 import L, { orderBy, uniqBy } from "lodash";

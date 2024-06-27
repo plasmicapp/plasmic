@@ -1,4 +1,3 @@
-import { isKnownVariantedValue, StyleToken } from "@/wab/classes";
 import {
   getStylePropValue,
   SourceRow,
@@ -9,6 +8,7 @@ import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPic
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { isKnownVariantedValue, StyleToken } from "@/wab/shared/model/classes";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { BASE_VARIANT_NAME } from "@/wab/shared/Variants";
 import { capitalizeFirst } from "@/wab/strs";

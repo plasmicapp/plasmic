@@ -4,7 +4,6 @@
  */
 import * as _ from "lodash";
 import * as platform from "platform";
-import { HostLessPackageInfo, State } from "../../src/wab/classes";
 import { ACTIONS_META } from "../../src/wab/client/state-management/interactions-meta";
 import { StudioCtx } from "../../src/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "../../src/wab/client/studio-ctx/view-ctx";
@@ -27,6 +26,7 @@ import {
   ApiUpdateDataSourceRequest,
   CreateSiteRequest,
 } from "../../src/wab/shared/ApiSchema";
+import { HostLessPackageInfo, State } from "../../src/wab/shared/model/classes";
 import { StateAccessType, StateVariableType } from "../../src/wab/states";
 import bundles from "../bundles";
 

@@ -1,17 +1,3 @@
-import {
-  ArenaFrame,
-  ArenaFrameCell,
-  ArenaFrameGrid,
-  ArenaFrameRow,
-  Component,
-  ensureKnownVariant,
-  ensureMaybeKnownVariant,
-  isKnownVariant,
-  PageArena,
-  Site,
-  Variant,
-  VariantGroup,
-} from "@/wab/classes";
 import { ensure, ensureArrayOfInstances, partitions } from "@/wab/common";
 import { insertAt, removeFromArray } from "@/wab/commons/collections";
 import { allComponentVariants } from "@/wab/components";
@@ -28,6 +14,20 @@ import {
   ensureCellKey,
   makeComponentArenaCustomMatrix,
 } from "@/wab/shared/component-arenas";
+import {
+  ArenaFrame,
+  ArenaFrameCell,
+  ArenaFrameGrid,
+  ArenaFrameRow,
+  Component,
+  ensureKnownVariant,
+  ensureMaybeKnownVariant,
+  isKnownVariant,
+  PageArena,
+  Site,
+  Variant,
+  VariantGroup,
+} from "@/wab/shared/model/classes";
 import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
 import {
   ensureVariantSetting,

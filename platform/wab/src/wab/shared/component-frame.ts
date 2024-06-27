@@ -1,11 +1,4 @@
 import {
-  ArenaFrame,
-  Site,
-  TplComponent,
-  Variant,
-  VariantGroup,
-} from "@/wab/classes";
-import {
   arrayEqIgnoreOrder,
   filterMapKeys,
   mapsEq,
@@ -20,6 +13,13 @@ import {
 } from "@/wab/common";
 import { allComponentVariants } from "@/wab/components";
 import { ensureValidCombo, isPrivateStyleVariant } from "@/wab/shared/Variants";
+import {
+  ArenaFrame,
+  Site,
+  TplComponent,
+  Variant,
+  VariantGroup,
+} from "@/wab/shared/model/classes";
 import { allGlobalVariants } from "@/wab/sites";
 import L from "lodash";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports

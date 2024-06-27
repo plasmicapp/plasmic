@@ -1,31 +1,3 @@
-import {
-  ArenaFrame,
-  Component,
-  CustomCode,
-  ensureKnownEventHandler,
-  isKnownArenaFrame,
-  isKnownEventHandler,
-  isKnownExprText,
-  isKnownImageAssetRef,
-  isKnownNodeMarker,
-  isKnownRenderExpr,
-  isKnownTplComponent,
-  isKnownTplNode,
-  isKnownTplRef,
-  isKnownTplTag,
-  ObjectPath,
-  Param,
-  RawText,
-  RichText,
-  State,
-  StyleToken,
-  TplComponent,
-  TplNode,
-  TplSlot,
-  TplTag,
-  Variant,
-  VariantSetting,
-} from "@/wab/classes";
 import { getBoundingClientRect, getOffsetPoint } from "@/wab/client/dom";
 import * as common from "@/wab/common";
 import {
@@ -108,6 +80,34 @@ import {
   isContainerTypeVariantable,
   PositionLayoutType,
 } from "@/wab/shared/layoututils";
+import {
+  ArenaFrame,
+  Component,
+  CustomCode,
+  ensureKnownEventHandler,
+  isKnownArenaFrame,
+  isKnownEventHandler,
+  isKnownExprText,
+  isKnownImageAssetRef,
+  isKnownNodeMarker,
+  isKnownRenderExpr,
+  isKnownTplComponent,
+  isKnownTplNode,
+  isKnownTplRef,
+  isKnownTplTag,
+  ObjectPath,
+  Param,
+  RawText,
+  RichText,
+  State,
+  StyleToken,
+  TplComponent,
+  TplNode,
+  TplSlot,
+  TplTag,
+  Variant,
+  VariantSetting,
+} from "@/wab/shared/model/classes";
 import { notification } from "antd";
 import $ from "jquery";
 import L, { clamp, isArray, merge } from "lodash";

@@ -1,4 +1,42 @@
 import {
+  assert,
+  ensure,
+  ensureType,
+  generate,
+  hackyCast,
+  isJsonScalar,
+  jsonClone,
+  last,
+  mkShortId,
+  mkUuid,
+  only,
+  removeWhere,
+  sorted,
+  strictZip,
+  swallow,
+  tuple,
+} from "@/wab/common";
+import { removeFromArray } from "@/wab/commons/collections";
+import { mkTokenRef, TokenType } from "@/wab/commons/StyleToken";
+import {
+  addSlotParam,
+  ComponentType,
+  PageComponent,
+  removeVariantGroup,
+} from "@/wab/components";
+import { getProjectFlags } from "@/wab/devflags";
+import { asCode, codeLit, tryExtractJson } from "@/wab/exprs";
+import { Pt } from "@/wab/geom";
+import { ImageAssetType } from "@/wab/image-asset-type";
+import { mkParam, mkParamsForState } from "@/wab/lang";
+import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
+import { getLowestCommonAncestor } from "@/wab/server/db/DbMgr";
+import { ProjectFullDataResponse } from "@/wab/shared/ApiSchema";
+import { mkArenaFrame } from "@/wab/shared/Arenas";
+import { Bundler, FastBundler } from "@/wab/shared/bundler";
+import { createStyleTokenFromRegistration } from "@/wab/shared/code-components/code-components";
+import { mkDataSourceOpExpr } from "@/wab/shared/data-sources-meta/data-sources";
+import {
   Arg,
   Component,
   ComponentDataQuery,
@@ -35,53 +73,9 @@ import {
   TplSlot,
   TplTag,
   VariantedValue,
-} from "@/wab/classes";
-import {
-  assert,
-  ensure,
-  ensureType,
-  generate,
-  hackyCast,
-  isJsonScalar,
-  jsonClone,
-  last,
-  mkShortId,
-  mkUuid,
-  only,
-  removeWhere,
-  sorted,
-  strictZip,
-  swallow,
-  tuple,
-} from "@/wab/common";
-import { removeFromArray } from "@/wab/commons/collections";
-import { mkTokenRef, TokenType } from "@/wab/commons/StyleToken";
-import {
-  addSlotParam,
-  ComponentType,
-  PageComponent,
-  removeVariantGroup,
-} from "@/wab/components";
-import { getProjectFlags } from "@/wab/devflags";
-import { asCode, codeLit, tryExtractJson } from "@/wab/exprs";
-import { Pt } from "@/wab/geom";
-import { ImageAssetType } from "@/wab/image-asset-type";
-import { mkParam, mkParamsForState } from "@/wab/lang";
-import { withoutUids } from "@/wab/model/model-meta";
-import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
-import { getLowestCommonAncestor } from "@/wab/server/db/DbMgr";
-import { ProjectFullDataResponse } from "@/wab/shared/ApiSchema";
-import { mkArenaFrame } from "@/wab/shared/Arenas";
-import { Bundler, FastBundler } from "@/wab/shared/bundler";
-import { createStyleTokenFromRegistration } from "@/wab/shared/code-components/code-components";
-import { typeFactory } from "@/wab/shared/core/model-util";
-import { mkDataSourceOpExpr } from "@/wab/shared/data-sources-meta/data-sources";
-import {
-  BranchSide,
-  MergeDirectConflict,
-  MergeStep,
-  tryMerge,
-} from "@/wab/shared/site-diffs/merge-core";
+} from "@/wab/shared/model/classes";
+import { withoutUids } from "@/wab/shared/model/model-meta";
+import { typeFactory } from "@/wab/shared/model/model-util";
 import codeComponentsWithSameNameBundle from "@/wab/shared/site-diffs/__tests__/code-components-with-same-name.json";
 import globalContextBundle from "@/wab/shared/site-diffs/__tests__/global-context-merge.json";
 import richTextConflict from "@/wab/shared/site-diffs/__tests__/rich-text-conflict.json";
@@ -91,6 +85,12 @@ import edgeCasesBundle from "@/wab/shared/site-diffs/__tests__/test-edge-cases-m
 import mergeDepsBundle from "@/wab/shared/site-diffs/__tests__/test-merging-deps.json";
 import rerootBundle from "@/wab/shared/site-diffs/__tests__/test-reroot.json";
 import mergeTplsBundle from "@/wab/shared/site-diffs/__tests__/test-tpl-merge.json";
+import {
+  BranchSide,
+  MergeDirectConflict,
+  MergeStep,
+  tryMerge,
+} from "@/wab/shared/site-diffs/merge-core";
 import { assertSiteInvariants } from "@/wab/shared/site-invariants";
 import { fillVirtualSlotContents } from "@/wab/shared/SlotUtils";
 import {

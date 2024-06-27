@@ -21,8 +21,8 @@ src/wab/gen/
 public/static/img/*.svg
 public/static/img/icons/*.svg
 build/
-src/wab/classes.ts
-src/wab/classes-metas.ts
+src/wab/shared/model/classes.ts
+src/wab/shared/model/classes-metas.ts
 server/.cachedev-build/
 **/dev-build
 src/wab/styles/_tokens.sass

@@ -1,9 +1,9 @@
-import { Param, TplComponent } from "@/wab/classes";
 import { updateFormComponentMode } from "@/wab/client/code-components/simplified-mode/Forms";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { assert } from "@/wab/common";
 import { codeLit } from "@/wab/exprs";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
+import { Param, TplComponent } from "@/wab/shared/model/classes";
 import { isTplCodeComponent } from "@/wab/tpls";
 import type { CodeComponentMode } from "@plasmicapp/host";
 import {

@@ -1,11 +1,3 @@
-import {
-  CollectionExpr,
-  isKnownEventHandler,
-  isKnownFunctionType,
-  isKnownRenderableType,
-  NameArg,
-  StrongFunctionArg,
-} from "@/wab/classes";
 import { assert, mkShortId } from "@/wab/common";
 import {
   BundleMigrationType,
@@ -14,7 +6,15 @@ import {
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { Bundler } from "@/wab/shared/bundler";
 import { propTypeToWabType } from "@/wab/shared/code-components/code-components";
-import { isRenderFuncType, typeFactory } from "@/wab/shared/core/model-util";
+import {
+  CollectionExpr,
+  isKnownEventHandler,
+  isKnownFunctionType,
+  isKnownRenderableType,
+  NameArg,
+  StrongFunctionArg,
+} from "@/wab/shared/model/classes";
+import { isRenderFuncType, typeFactory } from "@/wab/shared/model/model-util";
 import { isGlobalAction } from "@/wab/states";
 import { findExprsInComponent } from "@/wab/tpls";
 

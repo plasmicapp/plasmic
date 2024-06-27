@@ -1,12 +1,5 @@
-import {
-  Component,
-  Site,
-  TplNode,
-  Variant,
-  VariantGroup,
-  VariantSetting,
-} from "@/wab/classes";
 import { xAddAll } from "@/wab/common";
+import { VariantGroupType, isGlobalVariant } from "@/wab/shared/Variants";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
 import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import { getReactWebPackageName } from "@/wab/shared/codegen/react-p";
@@ -29,7 +22,14 @@ import {
 } from "@/wab/shared/codegen/util";
 import { plasmicImgAttrStyles } from "@/wab/shared/core/style-props";
 import { makeLayoutAwareRuleSet } from "@/wab/shared/layoututils";
-import { isGlobalVariant, VariantGroupType } from "@/wab/shared/Variants";
+import {
+  Component,
+  Site,
+  TplNode,
+  Variant,
+  VariantGroup,
+  VariantSetting,
+} from "@/wab/shared/model/classes";
 import { createExpandedRuleSetMerger } from "@/wab/styles";
 import { isTplTag, isTplVariantable } from "@/wab/tpls";
 import L from "lodash";

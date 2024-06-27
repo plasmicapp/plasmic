@@ -49,7 +49,7 @@ import {
   VariantsRef,
   VarRef,
   VirtualRenderExpr,
-} from "@/wab/classes";
+} from "@/wab/shared/model/classes";
 /* eslint-disable
     no-this-before-super,
 */
@@ -77,7 +77,6 @@ import {
   toJsIdentifier,
   toVarName,
 } from "@/wab/shared/codegen/util";
-import { typeDisplayName } from "@/wab/shared/core/model-util";
 import {
   dataSourceTemplateToString,
   exprToDataSourceString,
@@ -93,6 +92,7 @@ import {
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { typeDisplayName } from "@/wab/shared/model/model-util";
 import { maybeConvertToIife } from "@/wab/shared/parser-utils";
 import {
   extractEventArgsNameFromEventHandler,

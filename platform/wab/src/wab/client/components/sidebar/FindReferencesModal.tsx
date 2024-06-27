@@ -1,4 +1,3 @@
-import { ArenaFrame, Component, Mixin, StyleToken } from "@/wab/classes";
 import ListSectionSeparator from "@/wab/client/components/ListSectionSeparator";
 import { menuSection } from "@/wab/client/components/menu-builder";
 import { MixinPopup } from "@/wab/client/components/sidebar/MixinControls";
@@ -14,6 +13,12 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ensure, spawn } from "@/wab/common";
 import { getComponentDisplayName, isPageComponent } from "@/wab/components";
 import { FRAME_LOWER } from "@/wab/shared/Labels";
+import {
+  ArenaFrame,
+  Component,
+  Mixin,
+  StyleToken,
+} from "@/wab/shared/model/classes";
 import { extractComponentUsages, getArenaFromFrame } from "@/wab/sites";
 import {
   DefaultStyle,

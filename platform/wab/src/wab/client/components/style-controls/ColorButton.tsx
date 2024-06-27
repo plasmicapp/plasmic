@@ -1,6 +1,5 @@
-import { StyleToken } from "@/wab/classes";
-import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { ColorPicker } from "@/wab/client/components/widgets/ColorPicker";
 import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
 import PlasmicColorButton from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicColorButton";
@@ -8,8 +7,9 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { zeroWidthSpace } from "@/wab/common";
 import { isTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import { TOKEN_CAP } from "@/wab/shared/Labels";
-import Chroma from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { StyleToken } from "@/wab/shared/model/classes";
+import Chroma from "@/wab/shared/utils/color-utils";
 import { allColorTokens } from "@/wab/sites";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";

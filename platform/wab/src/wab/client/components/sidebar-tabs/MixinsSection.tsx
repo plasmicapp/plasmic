@@ -1,4 +1,3 @@
-import { ensureKnownMixin, isKnownMixin, Mixin, TplNode } from "@/wab/classes";
 import { MixinPopup } from "@/wab/client/components/sidebar/MixinControls";
 import {
   SidebarSection,
@@ -14,7 +13,13 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ensure, removeAt } from "@/wab/common";
 import { insertAt } from "@/wab/commons/collections";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import { MIXINS_CAP, MIXIN_CAP } from "@/wab/shared/Labels";
+import { MIXIN_CAP, MIXINS_CAP } from "@/wab/shared/Labels";
+import {
+  ensureKnownMixin,
+  isKnownMixin,
+  Mixin,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import { tryGetVariantSetting } from "@/wab/shared/Variants";
 import { allMixins, isEditable } from "@/wab/sites";
 import { Tooltip } from "antd";

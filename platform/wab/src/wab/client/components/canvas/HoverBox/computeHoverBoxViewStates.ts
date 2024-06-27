@@ -1,10 +1,4 @@
 import {
-  ArenaFrame,
-  isKnownArenaFrame,
-  isKnownTplNode,
-  TplNode,
-} from "@/wab/classes";
-import {
   ContainerChildAlignment,
   SpaceEdgeType,
 } from "@/wab/client/components/canvas/HoverBox/draggable-edge";
@@ -41,6 +35,12 @@ import {
   ContainerLayoutType,
   getRshContainerType,
 } from "@/wab/shared/layoututils";
+import {
+  ArenaFrame,
+  isKnownArenaFrame,
+  isKnownTplNode,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import { ReadonlyIRuleSetHelpersX } from "@/wab/shared/RuleSetHelpers";
 import { isExplicitSize, isTplDefaultSized } from "@/wab/shared/sizingutils";
 import { $$$ } from "@/wab/shared/TplQuery";

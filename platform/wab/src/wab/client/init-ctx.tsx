@@ -1,21 +1,21 @@
-import { ProjectDependency } from "@/wab/classes";
 import * as Api from "@/wab/client/api";
 import { AppCtx, hideStarters } from "@/wab/client/app-ctx";
 import {
+  UU,
   getEmaiLVerificationRouteWithContinuation,
   getLoginRouteWithContinuation,
   parseProjectLocation,
-  UU,
 } from "@/wab/client/cli-routes";
 import * as DbMod from "@/wab/client/db";
 import { asyncNever, spawn } from "@/wab/common";
 import { getProjectFlags } from "@/wab/devflags";
 import * as exprs from "@/wab/exprs";
 import { ApiBranch, MainBranchId, ProjectId } from "@/wab/shared/ApiSchema";
-import { getBundle } from "@/wab/shared/bundles";
-import { instUtil } from "@/wab/shared/core/InstUtil";
 import { SiteInfo } from "@/wab/shared/SharedApi";
 import { $$$ } from "@/wab/shared/TplQuery";
+import { getBundle } from "@/wab/shared/bundles";
+import { instUtil } from "@/wab/shared/model/InstUtil";
+import { ProjectDependency } from "@/wab/shared/model/classes";
 import { fixPageHrefsToLocal } from "@/wab/shared/utils/split-site-utils";
 import { unbundleSite } from "@/wab/tagged-unbundle";
 import * as tpls from "@/wab/tpls";

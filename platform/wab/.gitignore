@@ -6,8 +6,8 @@
 /public/static/img/icons/*.svg
 /public/static/js/loader-hydrate.*
 /build/
-/src/wab/classes.ts
-/src/wab/classes-metas.ts
+/src/wab/shared/model/classes.ts
+/src/wab/shared/model/classes-metas.ts
 /src/wab/client/plasmic-deployed.json
 /server/.cachedev-build/
 dev-build

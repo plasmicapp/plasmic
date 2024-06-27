@@ -1,17 +1,22 @@
-import { NodeMarker, RawText, RenderExpr, StyleMarker } from "@/wab/classes";
 import { ensureType } from "@/wab/common";
 import { codeLit } from "@/wab/exprs";
-import { PlasmicElement } from "@/wab/shared/element-repr/element-repr-v2";
-import { tplToPlasmicElements } from "@/wab/shared/element-repr/gen-element-repr-v2";
 import { ensureBaseVariant } from "@/wab/shared/TplMgr";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
+import { PlasmicElement } from "@/wab/shared/element-repr/element-repr-v2";
+import { tplToPlasmicElements } from "@/wab/shared/element-repr/gen-element-repr-v2";
+import {
+  NodeMarker,
+  RawText,
+  RenderExpr,
+  StyleMarker,
+} from "@/wab/shared/model/classes";
 import { mkRuleSet } from "@/wab/styles";
 import { componentLib } from "@/wab/test/eval";
 import {
+  TplTagType,
   mkTplComponent,
   mkTplInlinedText,
   mkTplTagX,
-  TplTagType,
 } from "@/wab/tpls";
 
 describe("gen-element-types", () => {

@@ -7,15 +7,15 @@
  * or involved in the implicit states system.
  **/
 
+import { ensure } from "@/wab/common";
+import { codeLit, tryExtractJson } from "@/wab/exprs";
+import { generateTplsFromFormItems } from "@/wab/shared/code-components/simplified-mode/Forms";
 import {
   Component,
   isKnownDataSourceOpExpr,
   Site,
   TplNode,
-} from "@/wab/classes";
-import { ensure } from "@/wab/common";
-import { codeLit, tryExtractJson } from "@/wab/exprs";
-import { generateTplsFromFormItems } from "@/wab/shared/code-components/simplified-mode/Forms";
+} from "@/wab/shared/model/classes";
 import { getTplComponentArg, TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";

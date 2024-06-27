@@ -1,4 +1,3 @@
-import { Interaction } from "@/wab/classes";
 import {
   checkDisallowedUseOfLibs,
   checkStrSizeLimit,
@@ -34,8 +33,9 @@ import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { arrayEq, ensure, isPrefixArray, sortBy } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
 import { flattenedKeys } from "@/wab/exprs";
-import { pathToString } from "@/wab/shared/eval/expression-parser";
 import { DATA_QUERY_LOWER, VARIABLE_LOWER } from "@/wab/shared/Labels";
+import { pathToString } from "@/wab/shared/eval/expression-parser";
+import { Interaction } from "@/wab/shared/model/classes";
 import { getKeysToFlatForDollarState } from "@/wab/states";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { head, mapValues } from "lodash";

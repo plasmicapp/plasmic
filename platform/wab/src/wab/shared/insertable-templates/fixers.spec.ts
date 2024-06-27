@@ -1,18 +1,18 @@
+import { ensure } from "@/wab/common";
+import { codeLit } from "@/wab/exprs";
+import {
+  BASE_VARIANT_NAME,
+  mkVariant,
+  tryGetBaseVariantSetting,
+} from "@/wab/shared/Variants";
+import { fixTplTreeExprs } from "@/wab/shared/insertable-templates/fixers";
 import {
   CustomCode,
   EventHandler,
   ImageAsset,
   ImageAssetRef,
   Rep,
-} from "@/wab/classes";
-import { ensure } from "@/wab/common";
-import { codeLit } from "@/wab/exprs";
-import { fixTplTreeExprs } from "@/wab/shared/insertable-templates/fixers";
-import {
-  BASE_VARIANT_NAME,
-  mkVariant,
-  tryGetBaseVariantSetting,
-} from "@/wab/shared/Variants";
+} from "@/wab/shared/model/classes";
 import { mkRep, mkTplTag } from "@/wab/tpls";
 
 describe("Insertable templates fixers", () => {

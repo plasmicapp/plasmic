@@ -1,4 +1,3 @@
-import { Component, VariantsRef } from "@/wab/classes";
 import { ACCEPTED_PROP_TYPES } from "@/wab/client/figma-importer/constants";
 import {
   ComponentPropertiesEntries,
@@ -11,7 +10,8 @@ import { getParamByVarName, isCodeComponent } from "@/wab/components";
 import { isSlot } from "@/wab/shared/SlotUtils";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { isBoolType, isNumType } from "@/wab/shared/core/model-util";
+import { Component, VariantsRef } from "@/wab/shared/model/classes";
+import { isBoolType, isNumType } from "@/wab/shared/model/model-util";
 import { notification } from "antd";
 import { isBoolean, isNumber, isObject, isString, omit } from "lodash";
 

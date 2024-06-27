@@ -1,4 +1,3 @@
-import { isKnownImageAssetRef } from "@/wab/classes";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import S from "@/wab/client/components/sidebar-tabs/SizeSection.module.scss";
 import {
@@ -48,6 +47,7 @@ import {
 } from "@/wab/shared/core/style-props";
 import { parseDataUrl, SVG_MEDIA_TYPE } from "@/wab/shared/data-urls";
 import { isContentLayoutTpl } from "@/wab/shared/layoututils";
+import { isKnownImageAssetRef } from "@/wab/shared/model/classes";
 import {
   getPageFrameSizeType,
   isTplAutoSizable,

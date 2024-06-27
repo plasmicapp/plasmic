@@ -1,3 +1,11 @@
+import { assert, isPrefixArray, uniqueName } from "@/wab/common";
+import * as Exprs from "@/wab/exprs";
+import { toVarName } from "@/wab/shared/codegen/util";
+import {
+  parseExpr,
+  renameObjectKey,
+  replaceVarWithProp,
+} from "@/wab/shared/eval/expression-parser";
 import {
   Component,
   ComponentDataQuery,
@@ -11,15 +19,7 @@ import {
   Param,
   Site,
   TplNode,
-} from "@/wab/classes";
-import { assert, isPrefixArray, uniqueName } from "@/wab/common";
-import * as Exprs from "@/wab/exprs";
-import { toVarName } from "@/wab/shared/codegen/util";
-import {
-  parseExpr,
-  renameObjectKey,
-  replaceVarWithProp,
-} from "@/wab/shared/eval/expression-parser";
+} from "@/wab/shared/model/classes";
 import {
   findRecursiveImplicitStates,
   getStateVarName,

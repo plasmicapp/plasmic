@@ -1,45 +1,34 @@
-import * as classes from "@/wab/classes";
+import { LEFT_PANE_INIT_WIDTH } from "@/wab/client/ClientConstants";
+import { DragInsertManager } from "@/wab/client/Dnd";
 import {
-  Arena,
-  ArenaChild,
-  ArenaFrame,
-  Component,
-  ComponentArena,
-  DataSourceTemplate,
-  isKnownArenaFrame,
-  isKnownComponentArena,
-  isKnownProjectDependency,
-  isKnownVariantSetting,
-  ObjInst,
-  PageArena,
-  ProjectDependency,
-  TemplatedString,
-  TplComponent,
-  TplNode,
-  TplSlot,
-  TplTag,
-  Variant,
-  VariantGroup,
-} from "@/wab/classes";
-import { modelSchemaHash } from "@/wab/classes-metas";
+  handleError,
+  reportError,
+  showError,
+} from "@/wab/client/ErrorNotifications";
+import { ProjectDependencyManager } from "@/wab/client/ProjectDependencyManager";
+import { zoomJump } from "@/wab/client/Zoom";
 import { apiKey, invalidationKey } from "@/wab/client/api";
 import { getProjectReleases } from "@/wab/client/api-hooks";
 import {
+  UU,
   mkProjectLocation,
   parseProjectLocation,
-  UU,
 } from "@/wab/client/cli-routes";
-import { LEFT_PANE_INIT_WIDTH } from "@/wab/client/ClientConstants";
 import { syncCodeComponentsAndHandleErrors } from "@/wab/client/code-components/code-components";
 import { CodeFetchersRegistry } from "@/wab/client/code-fetchers";
+import {
+  showForbiddenError,
+  showReloadError,
+  showSaveErrorRecoveredNotice,
+} from "@/wab/client/components/Messages";
 import { storageViewAsKey } from "@/wab/client/components/app-auth/ViewAsButton";
 import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import { SiteOps } from "@/wab/client/components/canvas/site-ops";
 import { SubDeps } from "@/wab/client/components/canvas/subdeps";
 import {
+  InsertRelLoc,
   getFocusedInsertAnchor,
   getPreferredInsertLocs,
-  InsertRelLoc,
 } from "@/wab/client/components/canvas/view-ops";
 import {
   clearDarkMask,
@@ -47,13 +36,8 @@ import {
 } from "@/wab/client/components/darkMask";
 import { PreviewCtx } from "@/wab/client/components/live/PreviewCtx";
 import {
-  showForbiddenError,
-  showReloadError,
-  showSaveErrorRecoveredNotice,
-} from "@/wab/client/components/Messages";
-import {
-  maybeShowPaywall,
   PaywallError,
+  maybeShowPaywall,
 } from "@/wab/client/components/modals/PricingModal";
 import { OmnibarState } from "@/wab/client/components/omnibar/Omnibar";
 import {
@@ -76,7 +60,6 @@ import {
   AddTplItem,
   INSERTABLES_MAP,
 } from "@/wab/client/definitions/insertables";
-import { DragInsertManager } from "@/wab/client/Dnd";
 import {
   cachedJQSelector,
   getTextWidth,
@@ -84,30 +67,24 @@ import {
   scriptExec,
   setElementStyles,
 } from "@/wab/client/dom-utils";
-import {
-  handleError,
-  reportError,
-  showError,
-} from "@/wab/client/ErrorNotifications";
 import { fixupChrome, fixupForChanges } from "@/wab/client/fixes-post-change";
 import { FontManager } from "@/wab/client/fonts";
 import { checkDepPkgHosts } from "@/wab/client/init-ctx";
 import { postInsertableTemplate } from "@/wab/client/insertable-templates";
 import { PLATFORM } from "@/wab/client/platform";
-import { ProjectDependencyManager } from "@/wab/client/ProjectDependencyManager";
 import { requestIdleCallbackAsync } from "@/wab/client/requestidlecallback";
 import { plasmicExtensionAvailable } from "@/wab/client/screenshot-util";
+import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
 import { MultiplayerCtx } from "@/wab/client/studio-ctx/multiplayer-ctx";
 import {
   SpotlightAndVariantsInfo,
   ViewCtx,
 } from "@/wab/client/studio-ctx/view-ctx";
-import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import {
   StyleMgr,
-  summaryToStyleChanges,
   UpsertStyleChanges,
+  summaryToStyleChanges,
 } from "@/wab/client/style-mgr";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import { TutorialStateFlags } from "@/wab/client/tours/tutorials/tutorials-types";
@@ -117,12 +94,11 @@ import {
   getHostUrl,
   maybeToggleTrailingSlash,
 } from "@/wab/client/utils/app-hosting-utils";
-import { zoomJump } from "@/wab/client/Zoom";
 import {
+  AsyncCallable,
   arrayEqIgnoreOrder,
   asOne,
   assert,
-  AsyncCallable,
   asyncMaxAtATime,
   asyncOneAtATime,
   asyncTimeout,
@@ -138,8 +114,8 @@ import {
   swallow,
   switchType,
   tuple,
-  withoutNils,
   withTimeout,
+  withoutNils,
   xDifference,
   xGroupBy,
 } from "@/wab/common";
@@ -153,15 +129,15 @@ import { safeCallbackify } from "@/wab/commons/control";
 import { isLatest, latestTag, lt } from "@/wab/commons/semver";
 import { DeepReadonly } from "@/wab/commons/types";
 import {
-  allComponentVariants,
   CodeComponent,
   ComponentType,
+  PageComponent,
+  allComponentVariants,
   extractParamsFromPagePath,
   getRealParams,
   isCodeComponent,
   isPageComponent,
   isPlainComponent,
-  PageComponent,
 } from "@/wab/components";
 import {
   DEVFLAGS,
@@ -171,20 +147,14 @@ import {
 import { tryExtractJson } from "@/wab/exprs";
 import { Box, Pt } from "@/wab/geom";
 import {
-  ChangesType,
-  ChangeSummary,
-  summarizeChanges,
-} from "@/wab/model-change-util";
-import {
+  ModelChange,
+  RecordedChanges,
   emptyRecordedChanges,
   filterPersistentChanges,
   mergeRecordedChanges,
-  ModelChange,
-  RecordedChanges,
 } from "@/wab/observable-model";
 import { walkDependencyTree } from "@/wab/project-deps";
 import { isSelectable, makeSelectableFullKey } from "@/wab/selection";
-import { AddItemKey } from "@/wab/shared/add-item-keys";
 import { UnauthorizedError } from "@/wab/shared/ApiErrors/errors";
 import {
   ApiBranch,
@@ -203,17 +173,17 @@ import {
 } from "@/wab/shared/ApiSchema";
 import {
   AnyArena,
+  FrameViewMode,
+  IArenaFrame,
   cloneArenaFrame,
   ensureActivatedScreenVariantsForArena,
   ensureActivatedScreenVariantsForFrameByWidth,
-  FrameViewMode,
   getArenaFrames,
   getArenaName,
   getArenaType,
   getArenaUuidOrName,
   getFrameHeight,
   getGridRowLabels,
-  IArenaFrame,
   isComponentArena,
   isDedicatedArena,
   isHeightAutoDerived,
@@ -223,14 +193,24 @@ import {
   syncArenaFrameSize,
   updateAutoDerivedFrameHeight,
 } from "@/wab/shared/Arenas";
+import { accessLevelRank } from "@/wab/shared/EntUtil";
+import {
+  PkgVersionInfo,
+  PkgVersionInfoMeta,
+  SiteInfo,
+} from "@/wab/shared/SharedApi";
+import { isSlot, tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
+import { addEmptyQuery } from "@/wab/shared/TplMgr";
+import { isVariantSettingEmpty } from "@/wab/shared/Variants";
+import { AddItemKey } from "@/wab/shared/add-item-keys";
 import {
   Bundle,
   BundledInst,
+  FastBundler,
   checkBundleFields,
   checkRefsInBundle,
-  FastBundler,
 } from "@/wab/shared/bundler";
-import { getBundle, UnsafeBundle } from "@/wab/shared/bundles";
+import { UnsafeBundle, getBundle } from "@/wab/shared/bundles";
 import {
   allCodeLibraries,
   allCustomFunctions,
@@ -240,14 +220,13 @@ import {
 import { getBuiltinComponentRegistrations } from "@/wab/shared/code-components/builtin-code-components";
 import {
   CodeComponentsRegistry,
-  customFunctionId,
   HighlightInteractionRequest,
+  customFunctionId,
   registeredFunctionId,
   syncPlumeComponent,
 } from "@/wab/shared/code-components/code-components";
 import { ensureActivatedScreenVariantsForComponentArenaFrame } from "@/wab/shared/component-arenas";
 import { RootComponentVariantFrame } from "@/wab/shared/component-frame";
-import { instUtil } from "@/wab/shared/core/InstUtil";
 import {
   ALL_QUERIES,
   dataSourceTemplateToString,
@@ -257,9 +236,38 @@ import {
 import { AddItemPrefs, getSimplifiedStyles } from "@/wab/shared/default-styles";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { DataSourceUser } from "@/wab/shared/dynamic-bindings";
-import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { cloneInsertableTemplateComponent } from "@/wab/shared/insertable-templates";
 import { InsertableTemplateComponentExtraInfo } from "@/wab/shared/insertable-templates/types";
+import { instUtil } from "@/wab/shared/model/InstUtil";
+import * as classes from "@/wab/shared/model/classes";
+import {
+  Arena,
+  ArenaChild,
+  ArenaFrame,
+  Component,
+  ComponentArena,
+  DataSourceTemplate,
+  ObjInst,
+  PageArena,
+  ProjectDependency,
+  TemplatedString,
+  TplComponent,
+  TplNode,
+  TplSlot,
+  TplTag,
+  Variant,
+  VariantGroup,
+  isKnownArenaFrame,
+  isKnownComponentArena,
+  isKnownProjectDependency,
+  isKnownVariantSetting,
+} from "@/wab/shared/model/classes";
+import { modelSchemaHash } from "@/wab/shared/model/classes-metas";
+import {
+  ChangeSummary,
+  ChangesType,
+  summarizeChanges,
+} from "@/wab/shared/model/model-change-util";
 import { reorderPageArenaCols } from "@/wab/shared/page-arenas";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import {
@@ -269,31 +277,23 @@ import {
   updateSummaryFromDeletedInstances,
 } from "@/wab/shared/server-updates-utils";
 import {
-  PkgVersionInfo,
-  PkgVersionInfoMeta,
-  SiteInfo,
-} from "@/wab/shared/SharedApi";
-import {
+  INITIAL_VERSION_NUMBER,
   calculateSemVer,
   compareSites,
   extractSplitStatusDiff,
-  INITIAL_VERSION_NUMBER,
 } from "@/wab/shared/site-diffs";
 import {
-  assertSiteInvariants,
   InvariantError,
+  assertSiteInvariants,
 } from "@/wab/shared/site-invariants";
-import { isSlot, tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
-import { addEmptyQuery } from "@/wab/shared/TplMgr";
 import {
-  getLeftTabPermission,
   LEFT_TAB_PANEL_KEYS,
   LeftTabKey,
   LeftTabUiKey,
-  mergeUiConfigs,
   UiConfig,
+  getLeftTabPermission,
+  mergeUiConfigs,
 } from "@/wab/shared/ui-config-utils";
-import { isVariantSettingEmpty } from "@/wab/shared/Variants";
 import {
   allGlobalVariants,
   getAllSiteFrames,
@@ -312,8 +312,8 @@ import {
   unbundleSite,
 } from "@/wab/tagged-unbundle";
 import {
-  ancestorsUp,
   EventHandlerKeyType,
+  ancestorsUp,
   flattenTpls,
   isTplComponent,
   isTplContainer,
@@ -354,9 +354,9 @@ import defer from "lodash/defer";
 import isEqual from "lodash/isEqual";
 import orderBy from "lodash/orderBy";
 import {
+  IObservableValue,
   autorun,
   flow,
-  IObservableValue,
   makeObservable,
   observable,
   reaction,
@@ -368,7 +368,7 @@ import React, { useContext } from "react";
 import semver from "semver";
 import * as Signals from "signals";
 import { mutate } from "swr";
-import { failable, FailableArgParams, IFailable } from "ts-failable";
+import { FailableArgParams, IFailable, failable } from "ts-failable";
 
 import { LocalClipboard } from "@/wab/client/clipboard/local";
 

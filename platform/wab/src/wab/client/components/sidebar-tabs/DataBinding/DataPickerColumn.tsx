@@ -1,4 +1,3 @@
-import { ensureKnownInteraction } from "@/wab/classes";
 import DataPickerColumnItem from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerColumnItem";
 import {
   ColumnItem,
@@ -23,6 +22,7 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ensure, isTruthy } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
+import { ensureKnownInteraction } from "@/wab/shared/model/classes";
 import { isTplTagOrComponent } from "@/wab/tpls";
 import { mkMetaName } from "@plasmicapp/host";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";

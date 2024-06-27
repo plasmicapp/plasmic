@@ -1,13 +1,3 @@
-import {
-  CustomCode,
-  DataSourceOpExpr,
-  DataSourceTemplate,
-  Expr,
-  isKnownTemplatedString,
-  ObjectPath,
-  QueryInvalidationExpr,
-  TemplatedString,
-} from "@/wab/classes";
 import { assert, ensure, ensureString, mkUuid } from "@/wab/common";
 import {
   asCode,
@@ -18,6 +8,16 @@ import {
 import { ApiDataSource } from "@/wab/shared/ApiSchema";
 import type { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { substitutePlaceholder } from "@/wab/shared/dynamic-bindings";
+import {
+  CustomCode,
+  DataSourceOpExpr,
+  DataSourceTemplate,
+  Expr,
+  isKnownTemplatedString,
+  ObjectPath,
+  QueryInvalidationExpr,
+  TemplatedString,
+} from "@/wab/shared/model/classes";
 import {
   DataSourceSchema,
   Pagination,

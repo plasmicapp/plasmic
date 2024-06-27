@@ -1,7 +1,6 @@
-import { ensureKnownTplTag } from "@/wab/classes";
-import { clientToFramePt, clientToFrameRect } from "@/wab/client/coords";
 import { NodeTargeter } from "@/wab/client/Dnd";
 import { resizeRect } from "@/wab/client/FreestyleManipulator";
+import { clientToFramePt, clientToFrameRect } from "@/wab/client/coords";
 import { renderCantAddMsg } from "@/wab/client/messages/parenting-msgs";
 import {
   cssPropsForInvertTransform,
@@ -15,6 +14,7 @@ import {
 } from "@/wab/commons/components/XDraggable";
 import { Box, Pt, Rect, rectTopLeft } from "@/wab/geom";
 import { $$$ } from "@/wab/shared/TplQuery";
+import { ensureKnownTplTag } from "@/wab/shared/model/classes";
 import { isTplSlot, isTplTag, isTplTagOrComponent } from "@/wab/tpls";
 import { notification } from "antd";
 import $ from "jquery";

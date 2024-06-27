@@ -1,8 +1,7 @@
-import { ObjectPath, Rep, TplNode } from "@/wab/classes";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
 import { StringPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
-import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
@@ -15,6 +14,7 @@ import {
 } from "@/wab/exprs";
 import { mkVar } from "@/wab/lang";
 import { isBaseVariant } from "@/wab/shared/Variants";
+import { ObjectPath, Rep, TplNode } from "@/wab/shared/model/classes";
 import { tryGetTplOwnerComponent } from "@/wab/tpls";
 import { Menu } from "antd";
 import { observer } from "mobx-react";

@@ -1,23 +1,3 @@
-import {
-  Arg,
-  Component,
-  ensureKnownRenderExpr,
-  ensureKnownTplComponent,
-  ensureKnownTplNode,
-  ensureKnownTplTag,
-  Expr,
-  isKnownRawText,
-  isKnownRenderExpr,
-  isKnownTplComponent,
-  isKnownTplNode,
-  isKnownTplTag,
-  Param,
-  RenderExpr,
-  TplComponent,
-  TplNode,
-  TplSlot,
-  TplTag,
-} from "@/wab/classes";
 import * as common from "@/wab/common";
 import {
   assert,
@@ -43,6 +23,26 @@ import {
   isCodeComponent,
   removeComponentParam,
 } from "@/wab/components";
+import {
+  Arg,
+  Component,
+  ensureKnownRenderExpr,
+  ensureKnownTplComponent,
+  ensureKnownTplNode,
+  ensureKnownTplTag,
+  Expr,
+  isKnownRawText,
+  isKnownRenderExpr,
+  isKnownTplComponent,
+  isKnownTplNode,
+  isKnownTplTag,
+  Param,
+  RenderExpr,
+  TplComponent,
+  TplNode,
+  TplSlot,
+  TplTag,
+} from "@/wab/shared/model/classes";
 import {
   getSlotArgs,
   getTplSlotDescendants,

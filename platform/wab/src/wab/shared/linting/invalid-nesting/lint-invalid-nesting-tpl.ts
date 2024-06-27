@@ -7,13 +7,13 @@ import {
   TplNode,
   TplSlot,
   TplTag,
-} from "@/wab/classes";
+} from "@/wab/shared/model/classes";
 
 import { switchType } from "@/wab/common";
 import { isCodeComponent } from "@/wab/components";
 import {
-  AncestorInfo,
   ANCESTOR_INFO_KEYS,
+  AncestorInfo,
   findInvalidAncestorForTag,
   getInvalidAncestor,
   updatedAncestorInfo,

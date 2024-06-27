@@ -1,8 +1,8 @@
-import { Site } from "@/wab/classes";
 import { ResizableImage } from "@/wab/client/dom-utils";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
+import { Site } from "@/wab/shared/model/classes";
 import fs from "fs";
 import { map, split, uniq } from "lodash";
 import path from "path";

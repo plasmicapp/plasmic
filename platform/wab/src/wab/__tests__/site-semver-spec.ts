@@ -1,3 +1,9 @@
+import { mkShortId } from "@/wab/common";
+import { ComponentType, mkComponent } from "@/wab/components";
+import { ParamExportType, mkParam } from "@/wab/lang";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
+import { VariantGroupType, mkBaseVariant } from "@/wab/shared/Variants";
 import {
   ComponentVariantGroup,
   CustomCode,
@@ -10,20 +16,14 @@ import {
   StyleToken,
   TplTag,
   Variant,
-} from "@/wab/classes";
-import { mkShortId } from "@/wab/common";
-import { ComponentType, mkComponent } from "@/wab/components";
-import { mkParam, ParamExportType } from "@/wab/lang";
-import { typeFactory } from "@/wab/shared/core/model-util";
+} from "@/wab/shared/model/classes";
+import { typeFactory } from "@/wab/shared/model/model-util";
 import {
-  calculateSemVer,
   ChangeLogEntry,
+  calculateSemVer,
   compareSites,
 } from "@/wab/shared/site-diffs";
-import { $$$ } from "@/wab/shared/TplQuery";
-import { mkBaseVariant, VariantGroupType } from "@/wab/shared/Variants";
-import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
-import { createSite, UNINITIALIZED_VALUE } from "@/wab/sites";
+import { UNINITIALIZED_VALUE, createSite } from "@/wab/sites";
 import { mkTplTagX } from "@/wab/tpls";
 import L from "lodash";
 

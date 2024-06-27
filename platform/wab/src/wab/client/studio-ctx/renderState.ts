@@ -1,4 +1,3 @@
-import { TplNode } from "@/wab/classes";
 import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import { getRealClassNames } from "@/wab/client/components/canvas/styles-name";
 import { SubDeps } from "@/wab/client/components/canvas/subdeps";
@@ -14,8 +13,9 @@ import {
   xSetDefault,
 } from "@/wab/common";
 import { Selectable } from "@/wab/selection";
-import { makeSlotSelectionKey, SlotSelection } from "@/wab/slots";
-import { cloneValNode, ValComponent, ValNode, ValSlot } from "@/wab/val-nodes";
+import { TplNode } from "@/wab/shared/model/classes";
+import { SlotSelection, makeSlotSelectionKey } from "@/wab/slots";
+import { ValComponent, ValNode, ValSlot, cloneValNode } from "@/wab/val-nodes";
 import $ from "jquery";
 import { maxBy } from "lodash";
 

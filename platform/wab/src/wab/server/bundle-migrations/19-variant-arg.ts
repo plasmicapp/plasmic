@@ -1,3 +1,11 @@
+import { assert, ensure, ensureInstance } from "@/wab/common";
+import { DeepReadonly } from "@/wab/commons/types";
+import { findVariantGroupForParam } from "@/wab/components";
+import { tryExtractJson } from "@/wab/exprs";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { loadDepPackages } from "@/wab/server/db/DbBundleLoader";
+import { Bundler } from "@/wab/shared/bundler";
 import {
   Arg,
   Component,
@@ -7,15 +15,7 @@ import {
   Variant,
   VariantGroup,
   VariantsRef,
-} from "@/wab/classes";
-import { assert, ensure, ensureInstance } from "@/wab/common";
-import { DeepReadonly } from "@/wab/commons/types";
-import { findVariantGroupForParam } from "@/wab/components";
-import { tryExtractJson } from "@/wab/exprs";
-import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
-import { loadDepPackages } from "@/wab/server/db/DbBundleLoader";
-import { Bundler } from "@/wab/shared/bundler";
+} from "@/wab/shared/model/classes";
 import { isArray } from "lodash";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {

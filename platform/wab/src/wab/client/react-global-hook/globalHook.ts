@@ -1,12 +1,5 @@
-import {
-  RichText,
-  TplComponent,
-  TplNode,
-  TplSlot,
-  TplTag,
-} from "@/wab/classes";
-import { ExtraSlotCanvasEnvData } from "@/wab/client/components/canvas/canvas-rendering";
 import { handleError } from "@/wab/client/ErrorNotifications";
+import { ExtraSlotCanvasEnvData } from "@/wab/client/components/canvas/canvas-rendering";
 import { Fiber, FiberRoot } from "@/wab/client/react-global-hook/fiber";
 import {
   fiberChildren,
@@ -14,17 +7,17 @@ import {
   traverseUpdates,
 } from "@/wab/client/react-global-hook/traverseFiber";
 import {
-  getRenderState,
   RenderState,
+  getRenderState,
 } from "@/wab/client/studio-ctx/renderState";
 import {
+  MAKE_EMPTY_OBJECT,
   arrayEq,
   assert,
   ensure,
   ensureInstance,
   hackyCast,
   last,
-  MAKE_EMPTY_OBJECT,
   structuralMerge,
   structuralMerge2,
   switchType,
@@ -35,10 +28,10 @@ import {
 } from "@/wab/common";
 import { isCodeComponent, isPlumeComponent } from "@/wab/components";
 import {
+  NO_INDEX_COPY,
   classNameProp,
   dataCanvasEnvsProp,
   frameUidProp,
-  NO_INDEX_COPY,
   plasmicClonedIndex,
   richTextProp,
   slotArgCompKeyProp,
@@ -52,18 +45,25 @@ import {
 import { isPlainObjectPropType } from "@/wab/shared/code-components/code-components";
 import { CanvasEnv } from "@/wab/shared/eval";
 import { SlotInfo } from "@/wab/shared/eval/val-state";
+import {
+  RichText,
+  TplComponent,
+  TplNode,
+  TplSlot,
+  TplTag,
+} from "@/wab/shared/model/classes";
 import { SlotSelection } from "@/wab/slots";
 import { isTplComponent, isTplTextBlock } from "@/wab/tpls";
 import {
   InvalidArgMeta,
-  isValComponent,
   ValComponent,
-  ValidationType,
   ValNode,
   ValSlot,
   ValTag,
   ValTagParams,
   ValTextTag,
+  ValidationType,
+  isValComponent,
 } from "@/wab/val-nodes";
 import { isString, omit } from "lodash";
 import { observable, runInAction } from "mobx";

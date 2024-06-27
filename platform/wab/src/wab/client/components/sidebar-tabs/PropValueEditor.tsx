@@ -1,34 +1,3 @@
-import {
-  CollectionExpr,
-  Component,
-  ensureKnownCollectionExpr,
-  ensureKnownFunctionType,
-  ensureKnownVariantsRef,
-  ensureKnownVarRef,
-  Expr,
-  FunctionArg,
-  ImageAssetRef,
-  isKnownDataSourceOpExpr,
-  isKnownEventHandler,
-  isKnownExpr,
-  isKnownFunctionArg,
-  isKnownImageAsset,
-  isKnownImageAssetRef,
-  isKnownPageHref,
-  isKnownQueryInvalidationExpr,
-  isKnownStyleTokenRef,
-  isKnownTemplatedString,
-  isKnownTplComponent,
-  isKnownTplRef,
-  isKnownTplTag,
-  PageHref,
-  StrongFunctionArg,
-  StyleTokenRef,
-  TplComponent,
-  Variant,
-  VariantsRef,
-  VarRef,
-} from "@/wab/classes";
 import { ArrayPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/ArrayPropEditor";
 import { BoolPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/BoolPropEditor";
 import { CardPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/CardPickerEditor";
@@ -113,9 +82,40 @@ import {
   wabTypeToPropType,
 } from "@/wab/shared/code-components/code-components";
 import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
-import { typesEqual } from "@/wab/shared/core/model-util";
 import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { CanvasEnv, tryEvalExpr } from "@/wab/shared/eval";
+import {
+  CollectionExpr,
+  Component,
+  ensureKnownCollectionExpr,
+  ensureKnownFunctionType,
+  ensureKnownVariantsRef,
+  ensureKnownVarRef,
+  Expr,
+  FunctionArg,
+  ImageAssetRef,
+  isKnownDataSourceOpExpr,
+  isKnownEventHandler,
+  isKnownExpr,
+  isKnownFunctionArg,
+  isKnownImageAsset,
+  isKnownImageAssetRef,
+  isKnownPageHref,
+  isKnownQueryInvalidationExpr,
+  isKnownStyleTokenRef,
+  isKnownTemplatedString,
+  isKnownTplComponent,
+  isKnownTplRef,
+  isKnownTplTag,
+  PageHref,
+  StrongFunctionArg,
+  StyleTokenRef,
+  TplComponent,
+  Variant,
+  VariantsRef,
+  VarRef,
+} from "@/wab/shared/model/classes";
+import { typesEqual } from "@/wab/shared/model/model-util";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { smartHumanize } from "@/wab/strs";
 import { getDisplayNameOfEventHandlerKey, isTplComponent } from "@/wab/tpls";

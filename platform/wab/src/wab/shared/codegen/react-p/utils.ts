@@ -1,10 +1,3 @@
-import {
-  Component,
-  ImageAsset,
-  TplNode,
-  Variant,
-  VariantGroup,
-} from "@/wab/classes";
 import { ensure, maybe } from "@/wab/common";
 import {
   getCodeComponentImportName,
@@ -15,6 +8,7 @@ import {
 import { DEVFLAGS } from "@/wab/devflags";
 import { ExprCtx } from "@/wab/exprs";
 import { ImageAssetType } from "@/wab/image-asset-type";
+import { VariantGroupType } from "@/wab/shared/Variants";
 import { CodeComponentWithHelpers } from "@/wab/shared/code-components/code-components";
 import {
   CodegenScheme,
@@ -34,7 +28,13 @@ import {
   makeGlobalVariantGroupContextName,
   makeGlobalVariantGroupFileName,
 } from "@/wab/shared/codegen/variants";
-import { VariantGroupType } from "@/wab/shared/Variants";
+import {
+  Component,
+  ImageAsset,
+  TplNode,
+  Variant,
+  VariantGroup,
+} from "@/wab/shared/model/classes";
 import { CssProjectDependencies } from "@/wab/sites";
 import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/tpls";
 import L, { last, lowerFirst } from "lodash";

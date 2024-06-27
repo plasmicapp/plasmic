@@ -1,9 +1,8 @@
-import { TplTag, Variant } from "@/wab/classes";
-import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { StyleVariantLabel } from "@/wab/client/components/VariantControls";
-import { makeVariantMenu } from "@/wab/client/components/variants/variant-menu";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import VariantRow from "@/wab/client/components/variants/VariantRow";
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
+import { makeVariantMenu } from "@/wab/client/components/variants/variant-menu";
 import {
   IconLinkButton,
   useOnIFrameMouseDown,
@@ -16,6 +15,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { spawn } from "@/wab/common";
 import { getArbitraryCssSelectorsVariantsForTag } from "@/wab/shared/Variants";
+import { TplTag, Variant } from "@/wab/shared/model/classes";
 import { Popover, RefSelectProps, Select } from "antd";
 import { observer } from "mobx-react";
 import React from "react";

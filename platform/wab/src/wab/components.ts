@@ -1,3 +1,56 @@
+import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import {
+  arrayEqIgnoreOrder,
+  assert,
+  assertNever,
+  checkDistinct,
+  ensure,
+  ensureInstance,
+  filterFalsy,
+  insert,
+  mergeMaps,
+  mkShortId,
+  strictZip,
+  switchType,
+  tuple,
+  uniqueName,
+} from "@/wab/common";
+import { removeFromArray } from "@/wab/commons/collections";
+import { DeepReadonly } from "@/wab/commons/types";
+import { DEVFLAGS, HostLessPackageInfo } from "@/wab/devflags";
+import { clone as cloneExpr, isRealCodeExpr } from "@/wab/exprs";
+import * as Lang from "@/wab/lang";
+import { cloneParamAndVar } from "@/wab/lang";
+import { walkDependencyTree } from "@/wab/project-deps";
+import { removeVariantGroupFromArenas } from "@/wab/shared/Arenas";
+import {
+  findAllDataSourceOpExprForComponent,
+  findAllQueryInvalidationExprForComponent,
+} from "@/wab/shared/cached-selectors";
+import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
+import {
+  CodeComponentWithHelpers,
+  isCodeComponentWithHelpers,
+  makePlumeComponentMeta,
+} from "@/wab/shared/code-components/code-components";
+import {
+  paramToVarName,
+  toClassName,
+  toVarName,
+} from "@/wab/shared/codegen/util";
+import { EXTRACT_COMPONENT_PROPS } from "@/wab/shared/core/style-props";
+import {
+  EffectiveVariantSetting,
+  getEffectiveVariantSetting,
+  getTplComponentActiveVariants,
+} from "@/wab/shared/effective-variant-setting";
+import { CanvasEnv } from "@/wab/shared/eval";
+import {
+  mergeParsedExprInfos,
+  ParsedExprInfo,
+  parseExpr,
+} from "@/wab/shared/eval/expression-parser";
+import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import {
   ArenaFrame,
   Arg,
@@ -61,61 +114,8 @@ import {
   VariantGroupState,
   VariantsRef,
   VarRef,
-} from "@/wab/classes";
-import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import {
-  arrayEqIgnoreOrder,
-  assert,
-  assertNever,
-  checkDistinct,
-  ensure,
-  ensureInstance,
-  filterFalsy,
-  insert,
-  mergeMaps,
-  mkShortId,
-  strictZip,
-  switchType,
-  tuple,
-  uniqueName,
-} from "@/wab/common";
-import { removeFromArray } from "@/wab/commons/collections";
-import { DeepReadonly } from "@/wab/commons/types";
-import { DEVFLAGS, HostLessPackageInfo } from "@/wab/devflags";
-import { clone as cloneExpr, isRealCodeExpr } from "@/wab/exprs";
-import * as Lang from "@/wab/lang";
-import { cloneParamAndVar } from "@/wab/lang";
-import { walkDependencyTree } from "@/wab/project-deps";
-import { removeVariantGroupFromArenas } from "@/wab/shared/Arenas";
-import {
-  findAllDataSourceOpExprForComponent,
-  findAllQueryInvalidationExprForComponent,
-} from "@/wab/shared/cached-selectors";
-import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
-import {
-  CodeComponentWithHelpers,
-  isCodeComponentWithHelpers,
-  makePlumeComponentMeta,
-} from "@/wab/shared/code-components/code-components";
-import {
-  paramToVarName,
-  toClassName,
-  toVarName,
-} from "@/wab/shared/codegen/util";
-import { typeFactory } from "@/wab/shared/core/model-util";
-import { EXTRACT_COMPONENT_PROPS } from "@/wab/shared/core/style-props";
-import {
-  EffectiveVariantSetting,
-  getEffectiveVariantSetting,
-  getTplComponentActiveVariants,
-} from "@/wab/shared/effective-variant-setting";
-import { CanvasEnv } from "@/wab/shared/eval";
-import {
-  mergeParsedExprInfos,
-  ParsedExprInfo,
-  parseExpr,
-} from "@/wab/shared/eval/expression-parser";
-import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
+} from "@/wab/shared/model/classes";
+import { typeFactory } from "@/wab/shared/model/model-util";
 import {
   replaceQueryWithPropInCodeExprs,
   replaceStateWithPropInCodeExprs,

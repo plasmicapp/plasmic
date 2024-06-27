@@ -1,4 +1,3 @@
-import { ArenaFrame } from "@/wab/classes";
 import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import { ComponentArenaLayout } from "@/wab/client/components/studio/arenas/ComponentArenaLayout";
 import { FocusModeLayout } from "@/wab/client/components/studio/arenas/FocusModeLayout";
@@ -13,6 +12,7 @@ import {
   isMixedArena,
   isPageArena,
 } from "@/wab/shared/Arenas";
+import { ArenaFrame } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import React from "react";
 

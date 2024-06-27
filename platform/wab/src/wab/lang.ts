@@ -1,3 +1,7 @@
+import { Dict } from "@/wab/collections";
+import { assertNever, mkShortId, switchType, unexpected } from "@/wab/common";
+import * as exprs from "@/wab/exprs";
+import { codeLit } from "@/wab/exprs";
 import {
   Expr,
   GlobalVariantGroupParam,
@@ -9,15 +13,11 @@ import {
   StateChangeHandlerParam,
   StateParam,
   Var,
-} from "@/wab/classes";
-import { Dict } from "@/wab/collections";
-import { assertNever, mkShortId, switchType, unexpected } from "@/wab/common";
-import * as exprs from "@/wab/exprs";
-import { codeLit } from "@/wab/exprs";
+} from "@/wab/shared/model/classes";
 import {
   convertVariableTypeToWabType,
   typeFactory,
-} from "@/wab/shared/core/model-util";
+} from "@/wab/shared/model/model-util";
 import { UNINITIALIZED_VALUE } from "@/wab/sites";
 import { StateAccessType, StateVariableType } from "@/wab/states";
 import { cloneType } from "@/wab/tpls";

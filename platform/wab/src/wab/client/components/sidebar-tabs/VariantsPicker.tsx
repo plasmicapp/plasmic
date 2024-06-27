@@ -1,15 +1,3 @@
-import {
-  CustomCode,
-  ensureKnownVariantsRef,
-  isKnownCustomCode,
-  isKnownObjectPath,
-  isKnownVariantsRef,
-  ObjectPath,
-  TplComponent,
-  Variant,
-  VariantGroup,
-  VariantsRef,
-} from "@/wab/classes";
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
 import { FallbackEditor } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
@@ -39,6 +27,18 @@ import {
   isRealCodeExpr,
 } from "@/wab/exprs";
 import { VARIANTS_CAP } from "@/wab/shared/Labels";
+import {
+  CustomCode,
+  ensureKnownVariantsRef,
+  isKnownCustomCode,
+  isKnownObjectPath,
+  isKnownVariantsRef,
+  ObjectPath,
+  TplComponent,
+  Variant,
+  VariantGroup,
+  VariantsRef,
+} from "@/wab/shared/model/classes";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { tryGetTplOwnerComponent } from "@/wab/tpls";

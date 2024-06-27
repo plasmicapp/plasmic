@@ -1,4 +1,3 @@
-import { isKnownTplSlot, TplNode } from "@/wab/classes";
 import {
   assert,
   ensure,
@@ -8,6 +7,7 @@ import {
   switchType,
 } from "@/wab/common";
 import { ValState } from "@/wab/shared/eval/val-state";
+import { isKnownTplSlot, TplNode } from "@/wab/shared/model/classes";
 import {
   makeSlotSelectionFullKey,
   makeSlotSelectionKey,

@@ -1,7 +1,7 @@
-import { Type } from "@/wab/classes";
 import { ObserverLoadable } from "@/wab/client/components/widgets";
 import { stripParens } from "@/wab/exprs";
 import { Size } from "@/wab/geom";
+import { Type } from "@/wab/shared/model/classes";
 import React, { useState } from "react";
 
 let divSizer: HTMLDivElement | undefined = undefined;

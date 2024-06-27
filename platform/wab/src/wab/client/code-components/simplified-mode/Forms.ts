@@ -1,14 +1,3 @@
-import {
-  Arg,
-  Expr,
-  isKnownDataSourceOpExpr,
-  isKnownExpr,
-  isKnownRenderExpr,
-  Param,
-  TplComponent,
-  TplNode,
-  VariantSetting,
-} from "@/wab/classes";
 import { getComponentPropTypes } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { assert, ensure } from "@/wab/common";
@@ -33,6 +22,17 @@ import {
   createLabelRenderExprFromFormItem,
   inputTypeToElementSchema,
 } from "@/wab/shared/code-components/simplified-mode/Forms";
+import {
+  Arg,
+  Expr,
+  isKnownDataSourceOpExpr,
+  isKnownExpr,
+  isKnownRenderExpr,
+  Param,
+  TplComponent,
+  TplNode,
+  VariantSetting,
+} from "@/wab/shared/model/classes";
 import { getSingleTplComponentFromArg } from "@/wab/shared/SlotUtils";
 import { unsetTplComponentArg } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";

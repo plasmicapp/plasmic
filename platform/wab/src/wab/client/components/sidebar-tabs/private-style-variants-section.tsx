@@ -1,9 +1,8 @@
-import { TplTag, Variant } from "@/wab/classes";
-import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { StyleVariantLabel } from "@/wab/client/components/VariantControls";
-import { makeVariantMenu } from "@/wab/client/components/variants/variant-menu";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import VariantRow from "@/wab/client/components/variants/VariantRow";
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
+import { makeVariantMenu } from "@/wab/client/components/variants/variant-menu";
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { ElementStatesTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -14,6 +13,7 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { spawn } from "@/wab/common";
 import { PRIVATE_STYLE_VARIANTS_CAP } from "@/wab/shared/Labels";
 import { getPrivateStyleVariantsForTag } from "@/wab/shared/Variants";
+import { TplTag, Variant } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import React from "react";
 

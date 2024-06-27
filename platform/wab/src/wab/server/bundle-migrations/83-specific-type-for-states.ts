@@ -5,7 +5,7 @@ import {
 } from "@/wab/server/db/bundle-migration-utils";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { Bundler } from "@/wab/shared/bundler";
-import { convertVariableTypeToWabType } from "@/wab/shared/core/model-util";
+import { convertVariableTypeToWabType } from "@/wab/shared/model/model-util";
 import { StateVariableType } from "@/wab/states";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {

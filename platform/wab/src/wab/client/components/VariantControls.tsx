@@ -1,4 +1,3 @@
-import { Component, isKnownTplTag, Variant } from "@/wab/classes";
 import {
   SelectorsInput,
   SelectorTags,
@@ -13,6 +12,7 @@ import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { assert, spawn } from "@/wab/common";
 import { InlineEdit } from "@/wab/commons/components/InlineEdit";
 import { VARIANT_CAP, VARIANT_LOWER } from "@/wab/shared/Labels";
+import { Component, isKnownTplTag, Variant } from "@/wab/shared/model/classes";
 import {
   getStyleVariantSelectorsDisplayNames,
   isBaseVariant,

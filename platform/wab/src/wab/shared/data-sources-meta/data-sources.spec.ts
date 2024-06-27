@@ -1,7 +1,7 @@
-import { TemplatedString } from "@/wab/classes";
 import { getProjectFlags } from "@/wab/devflags";
 import { code, customCode, ExprCtx } from "@/wab/exprs";
 import { exprToDataSourceString } from "@/wab/shared/data-sources-meta/data-sources";
+import { TemplatedString } from "@/wab/shared/model/classes";
 import { maybeConvertToIife } from "@/wab/shared/parser-utils";
 import { createSite } from "@/wab/sites";
 

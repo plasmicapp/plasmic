@@ -1,4 +1,3 @@
-import { TplComponent } from "@/wab/classes";
 import {
   ComponentPropsSection,
   getComponentPropTypes,
@@ -8,15 +7,13 @@ import {
   TypographySection,
 } from "@/wab/client/components/sidebar-tabs/TypographySection";
 import {
+  TplExpsProvider,
   mkStyleComponent,
   providesStyleComponent,
-  TplExpsProvider,
 } from "@/wab/client/components/style-controls/StyleComponent";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { hackyCast } from "@/wab/common";
 import { getComponentDisplayName } from "@/wab/components";
-import { isPlainObjectPropType } from "@/wab/shared/code-components/code-components";
-import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
 import {
   getAncestorTplSlot,
   getSingleTextBlockFromArg,
@@ -24,6 +21,9 @@ import {
   getSlotParams,
 } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
+import { isPlainObjectPropType } from "@/wab/shared/code-components/code-components";
+import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
+import { TplComponent } from "@/wab/shared/model/classes";
 import { smartHumanize } from "@/wab/strs";
 import { observer } from "mobx-react";
 import React from "react";

@@ -1,15 +1,15 @@
-import { Mixin, Site, StyleToken } from "@/wab/classes";
 import { ensure, tuple, unexpected, withoutNils } from "@/wab/common";
 import { getLengthUnits } from "@/wab/css";
 import * as cssPegParser from "@/wab/gen/cssPegParser";
 import { DependencyWalkScope } from "@/wab/project-deps";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { UpsertTokenReq } from "@/wab/shared/ApiSchema";
-import { toVarName } from "@/wab/shared/codegen/util";
 import { MIXIN_CAP } from "@/wab/shared/Labels";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { Mixin, Site, StyleToken } from "@/wab/shared/model/classes";
 import { allTokensOfType } from "@/wab/sites";
 import CSSEscape from "css.escape";
 import L from "lodash";

@@ -1,11 +1,4 @@
 import {
-  ArenaFrame,
-  ArenaFrameCell,
-  isKnownVariant,
-  Site,
-  Variant,
-} from "@/wab/classes";
-import {
   makeClientPinManager,
   makeCurrentVariantEvalState,
   makeEmptyPinState,
@@ -26,6 +19,13 @@ import {
   getComponentArenaBaseFrame,
   isCustomComponentFrame,
 } from "@/wab/shared/component-arenas";
+import {
+  ArenaFrame,
+  ArenaFrameCell,
+  isKnownVariant,
+  Site,
+  Variant,
+} from "@/wab/shared/model/classes";
 import {
   ensureManagedRowForVariantInPageArena,
   getFrameColumnIndex,

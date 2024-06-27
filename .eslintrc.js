@@ -35,10 +35,10 @@ module.exports = {
     "platform/wab/create-react-app-new/",
     "platform/wab/deps/",
     "platform/wab/public/static/",
-    "platform/wab/src/wab/classes.ts",
-    "platform/wab/src/wab/classes-metas.ts",
     "platform/wab/src/wab/client/plasmic/",
     "platform/wab/src/wab/client/sandboxes/",
+    "platform/wab/src/wab/shared/model/classes.ts",
+    "platform/wab/src/wab/shared/model/classes-metas.ts",
   ],
   rules: {
     curly: "error",

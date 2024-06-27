@@ -1,4 +1,3 @@
-import { Variant } from "@/wab/classes";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { NewScreenVariantForm } from "@/wab/client/components/sidebar-tabs/ResponsivenessPanel/NewScreenVariantForm";
 import styles from "@/wab/client/components/sidebar-tabs/ResponsivenessPanel/ResponsivenessPanel.module.scss";
@@ -16,6 +15,7 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ensure, spawn, xGroupBy } from "@/wab/common";
 import { ScreenSizeSpec } from "@/wab/shared/Css";
 import { FRAMES_LOWER, FRAME_LOWER } from "@/wab/shared/Labels";
+import { Variant } from "@/wab/shared/model/classes";
 import {
   ResponsiveStrategy,
   screenVariantPresetGroups,

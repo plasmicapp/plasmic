@@ -1,11 +1,3 @@
-import {
-  Param,
-  RichText,
-  TplComponent,
-  TplNode,
-  TplSlot,
-  TplTag,
-} from "@/wab/classes";
 import type { Fiber } from "@/wab/client/react-global-hook/fiber";
 import {
   arrayEq,
@@ -20,19 +12,27 @@ import {
   tuple,
 } from "@/wab/common";
 import { isCodeComponent } from "@/wab/components";
-import { Selectable, SelQuery, SQ } from "@/wab/selection";
+import { SQ, SelQuery, Selectable } from "@/wab/selection";
+import { isBaseVariant } from "@/wab/shared/Variants";
 import { CanvasEnv } from "@/wab/shared/eval";
 import { SlotInfo, ValState } from "@/wab/shared/eval/val-state";
 import mobx from "@/wab/shared/import-mobx";
 import { makeLayoutAwareRuleSet } from "@/wab/shared/layoututils";
-import { isBaseVariant } from "@/wab/shared/Variants";
+import {
+  Param,
+  RichText,
+  TplComponent,
+  TplNode,
+  TplSlot,
+  TplTag,
+} from "@/wab/shared/model/classes";
 import { SlotSelection } from "@/wab/slots";
 import {
   classNameToRuleSetUid,
   createRuleSetMerger,
   expandRuleSets,
 } from "@/wab/styles";
-import { ancestors, TplTagType, TplTextTag } from "@/wab/tpls";
+import { TplTagType, TplTextTag, ancestors } from "@/wab/tpls";
 import L, { uniq } from "lodash";
 import type React from "react";
 

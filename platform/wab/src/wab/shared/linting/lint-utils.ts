@@ -1,9 +1,9 @@
-import { Site } from "@/wab/classes";
 import { lintSite as lintInvalidNesting } from "@/wab/shared/linting/invalid-nesting/lint-invalid-nesting-tpl";
 import { lintSite as lintInvisibleElements } from "@/wab/shared/linting/lint-invisible-elements";
 import { lintSite as lintScreenVariantOverrides } from "@/wab/shared/linting/lint-screen-variant-overrides";
 import { LintIssue } from "@/wab/shared/linting/lint-types";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { Site } from "@/wab/shared/model/classes";
 
 export function lintIssuesEquals(prev: LintIssue[], next: LintIssue[]) {
   if (prev.length !== next.length) {

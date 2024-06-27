@@ -1,9 +1,3 @@
-import {
-  Component,
-  ComponentTemplateInfo,
-  isKnownFunctionType,
-  Param,
-} from "@/wab/classes";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import promptForMetadata from "@/wab/client/components/modals/ComponentMetadataModal";
 import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
@@ -37,8 +31,14 @@ import {
 } from "@/wab/components";
 import { wabTypeToPropType } from "@/wab/shared/code-components/code-components";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { typeDisplayName } from "@/wab/shared/core/model-util";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import {
+  Component,
+  ComponentTemplateInfo,
+  isKnownFunctionType,
+  Param,
+} from "@/wab/shared/model/classes";
+import { typeDisplayName } from "@/wab/shared/model/model-util";
 import { getSlotParams } from "@/wab/shared/SlotUtils";
 import { extractLit } from "@/wab/states";
 import { Menu, notification, Tooltip } from "antd";

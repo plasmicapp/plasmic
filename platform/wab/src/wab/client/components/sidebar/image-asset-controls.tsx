@@ -1,9 +1,7 @@
-import { ImageAsset, ProjectDependency } from "@/wab/classes";
 import { AppCtx } from "@/wab/client/app-ctx";
 import ListItem from "@/wab/client/components/ListItem";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { FindReferencesModal } from "@/wab/client/components/sidebar/FindReferencesModal";
-import { useDepFilterButton } from "@/wab/client/components/sidebar/left-panel-utils";
 import MultiAssetsActions, {
   useMultiAssetsActions,
 } from "@/wab/client/components/sidebar/MultiAssetsActions";
@@ -12,6 +10,7 @@ import {
   ItemOrGroup,
   VirtualGroupedList,
 } from "@/wab/client/components/sidebar/VirtualGroupedList";
+import { useDepFilterButton } from "@/wab/client/components/sidebar/left-panel-utils";
 import { DraggableInsertable } from "@/wab/client/components/studio/add-drawer/DraggableInsertable";
 import {
   ImagePaster,
@@ -28,9 +27,9 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
 import { AddItemType } from "@/wab/client/definitions/insertables";
 import {
+  ResizableImage,
   maybeUploadImage,
   readAndSanitizeFileAsImage,
-  ResizableImage,
 } from "@/wab/client/dom-utils";
 import ImageBlockIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageBlock";
 import PlasmicLeftImagesPanel from "@/wab/client/plasmic/plasmic_kit/PlasmicLeftImagesPanel";
@@ -42,6 +41,7 @@ import { ImageAssetType } from "@/wab/image-asset-type";
 import { extractImageAssetUsages } from "@/wab/image-assets";
 import { ImageUploadResponse } from "@/wab/shared/ApiSchema";
 import { imageDataUriToBlob } from "@/wab/shared/data-urls";
+import { ImageAsset, ProjectDependency } from "@/wab/shared/model/classes";
 import { canRead, canWrite } from "@/wab/shared/ui-config-utils";
 import { Menu } from "antd";
 import { last, orderBy } from "lodash";

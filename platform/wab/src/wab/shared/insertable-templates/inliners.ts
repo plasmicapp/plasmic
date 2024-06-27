@@ -1,22 +1,4 @@
 import {
-  Arg,
-  Component,
-  CustomCode,
-  isKnownCustomCode,
-  isKnownRenderExpr,
-  isKnownTplTag,
-  isKnownVariantsRef,
-  RenderExpr,
-  Site,
-  StyleToken,
-  TplComponent,
-  TplNode,
-  TplSlot,
-  Variant,
-  VariantSetting,
-  VariantsRef,
-} from "@/wab/classes";
-import {
   arrayEqIgnoreOrder,
   assert,
   ensure,
@@ -44,6 +26,24 @@ import {
   InlineComponentContext,
   InsertableTemplateExtraInfo,
 } from "@/wab/shared/insertable-templates/types";
+import {
+  Arg,
+  Component,
+  CustomCode,
+  isKnownCustomCode,
+  isKnownRenderExpr,
+  isKnownTplTag,
+  isKnownVariantsRef,
+  RenderExpr,
+  Site,
+  StyleToken,
+  TplComponent,
+  TplNode,
+  TplSlot,
+  Variant,
+  VariantSetting,
+  VariantsRef,
+} from "@/wab/shared/model/classes";
 import { RSH, RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { getSlotArgs } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";

@@ -1,6 +1,5 @@
 /** @format */
 
-import { Arena, Component, TplNode, TplTag } from "@/wab/classes";
 import {
   ensureTplColumnsRs,
   getScreenVariant,
@@ -25,12 +24,18 @@ import TextBlockIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TextBlo
 import VStackBlockIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__VStackBlock";
 import BlockIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Block";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensureBaseRs, ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ViewCtx, ensureBaseRs } from "@/wab/client/studio-ctx/view-ctx";
 import { spawn } from "@/wab/common";
 import { ComponentType } from "@/wab/components";
 import { HostLessComponentInfo, HostLessPackageInfo } from "@/wab/devflags";
 import { Rect } from "@/wab/geom";
 import { ImageAssetType } from "@/wab/image-asset-type";
+import {
+  FREE_CONTAINER_CAP,
+  HORIZ_CONTAINER_CAP,
+  VERT_CONTAINER_CAP,
+} from "@/wab/shared/Labels";
+import { $$$ } from "@/wab/shared/TplQuery";
 import { AddItemKey, WrapItemKey } from "@/wab/shared/add-item-keys";
 import {
   adjustAllTplColumnsSizes,
@@ -41,13 +46,8 @@ import {
   CONTENT_LAYOUT_INITIALS,
   getSimplifiedStyles,
 } from "@/wab/shared/default-styles";
-import {
-  FREE_CONTAINER_CAP,
-  HORIZ_CONTAINER_CAP,
-  VERT_CONTAINER_CAP,
-} from "@/wab/shared/Labels";
-import { $$$ } from "@/wab/shared/TplQuery";
-import { reconnectChildren, TplColumnsTag, TplTagType } from "@/wab/tpls";
+import { Arena, Component, TplNode, TplTag } from "@/wab/shared/model/classes";
+import { TplColumnsTag, TplTagType, reconnectChildren } from "@/wab/tpls";
 import L from "lodash";
 import * as React from "react";
 import { FaListOl, FaListUl, FaPlus } from "react-icons/fa";

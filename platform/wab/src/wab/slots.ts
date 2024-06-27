@@ -1,5 +1,5 @@
-import type { Param, TplComponent } from "@/wab/classes";
 import { assert, ensure } from "@/wab/common";
+import type { Param, TplComponent } from "@/wab/shared/model/classes";
 import { ValComponent, ValNode } from "@/wab/val-nodes";
 
 /**

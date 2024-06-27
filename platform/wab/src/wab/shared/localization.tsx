@@ -1,12 +1,3 @@
-import {
-  Component,
-  Expr,
-  isKnownExprText,
-  isKnownRawText,
-  RichText,
-  Site,
-  TplNode,
-} from "@/wab/classes";
 import { assert, unexpected } from "@/wab/common";
 import {
   isCodeComponent,
@@ -28,6 +19,15 @@ import {
   normalizeMarkers,
 } from "@/wab/shared/core/rich-text-util";
 import { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
+import {
+  Component,
+  Expr,
+  isKnownExprText,
+  isKnownRawText,
+  RichText,
+  Site,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import {
   makeVariantComboSorter,
   sortedVariantSettings,

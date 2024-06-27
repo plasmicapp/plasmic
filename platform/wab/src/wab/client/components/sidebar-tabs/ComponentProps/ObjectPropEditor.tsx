@@ -1,4 +1,3 @@
-import { isKnownExpr, TemplatedString, TplComponent } from "@/wab/classes";
 import {
   ControlExtras,
   InnerPropEditorRow,
@@ -21,6 +20,11 @@ import {
   StudioPropType,
 } from "@/wab/shared/code-components/code-components";
 import { DefinedIndicatorType } from "@/wab/shared/defined-indicator";
+import {
+  isKnownExpr,
+  TemplatedString,
+  TplComponent,
+} from "@/wab/shared/model/classes";
 import { smartHumanize } from "@/wab/strs";
 import { summarizeVal } from "@/wab/vals";
 import { PropType } from "@plasmicapp/host";

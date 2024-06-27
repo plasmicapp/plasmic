@@ -1,4 +1,3 @@
-import { Variant, VariantGroup } from "@/wab/classes";
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
 import VariantsDrawerHeader from "@/wab/client/components/variants/VariantsDrawerHeader";
 import VariantsDrawerRow from "@/wab/client/components/variants/VariantsDrawerRow";
@@ -27,6 +26,7 @@ import {
   isStyleVariant,
   makeVariantName,
 } from "@/wab/shared/Variants";
+import { Variant, VariantGroup } from "@/wab/shared/model/classes";
 import { isTplTag } from "@/wab/tpls";
 import { useCombobox } from "downshift";
 import { observer } from "mobx-react";

@@ -1,13 +1,13 @@
-import { isKnownVarRef } from "@/wab/classes";
-import S from "@/wab/client/components/canvas/HoverBox/Controls/ImageCanvasControls.module.scss";
 import ContextMenu from "@/wab/client/components/ContextMenu";
+import S from "@/wab/client/components/canvas/HoverBox/Controls/ImageCanvasControls.module.scss";
 import { makeImageMenu } from "@/wab/client/components/sidebar-tabs/image-section";
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import GearIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Gear";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
 import { $$$ } from "@/wab/shared/TplQuery";
+import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
+import { isKnownVarRef } from "@/wab/shared/model/classes";
 import { TplImageTag } from "@/wab/tpls";
 import { observer } from "mobx-react";
 import React from "react";

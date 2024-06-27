@@ -1,4 +1,3 @@
-import { isKnownNamedState, isKnownTplTag, NamedState } from "@/wab/classes";
 import { ensure } from "@/wab/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import {
@@ -7,6 +6,11 @@ import {
 } from "@/wab/server/db/bundle-migration-utils";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { Bundler } from "@/wab/shared/bundler";
+import {
+  isKnownNamedState,
+  isKnownTplTag,
+  NamedState,
+} from "@/wab/shared/model/classes";
 import { groupBy } from "lodash";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {

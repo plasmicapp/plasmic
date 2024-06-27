@@ -1,4 +1,3 @@
-import { StyleToken } from "@/wab/classes";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { newTokenValueAllowed } from "@/wab/client/components/sidebar/token-controls";
 import { FontFamilySelector } from "@/wab/client/components/widgets/FontFamilySelector";
@@ -9,6 +8,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { assert } from "@/wab/common";
 import { TokenType } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { StyleToken } from "@/wab/shared/model/classes";
 import { allTokensOfType } from "@/wab/sites";
 import { observer } from "mobx-react";
 import * as React from "react";

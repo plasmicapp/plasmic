@@ -1,3 +1,8 @@
+import { assert, ensureInstance, objsEq, switchType } from "@/wab/common";
+import { Values } from "@/wab/commons/types";
+import { getComponentDisplayName } from "@/wab/components";
+import { StudioPropType } from "@/wab/shared/code-components/code-components";
+import { jsLiteral } from "@/wab/shared/codegen/util";
 import {
   AnyType,
   ArgType,
@@ -41,14 +46,9 @@ import {
   Text,
   TplNode,
   Type,
-} from "@/wab/classes";
-import { assert, ensureInstance, objsEq, switchType } from "@/wab/common";
-import { Values } from "@/wab/commons/types";
-import { getComponentDisplayName } from "@/wab/components";
-import { Type as ModelType } from "@/wab/model/model-meta";
-import { StudioPropType } from "@/wab/shared/code-components/code-components";
-import { jsLiteral } from "@/wab/shared/codegen/util";
-import { instUtil as defaultInstUtil } from "@/wab/shared/core/InstUtil";
+} from "@/wab/shared/model/classes";
+import { instUtil as defaultInstUtil } from "@/wab/shared/model/InstUtil";
+import { Type as ModelType } from "@/wab/shared/model/model-meta";
 import { StateVariableType } from "@/wab/states";
 import { isTplComponent, isTplFromComponent, isTplTextBlock } from "@/wab/tpls";
 import L, {

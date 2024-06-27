@@ -5,9 +5,9 @@ import {
   FieldAnnotation,
   FieldAnnotationValues,
   MetaRuntime,
-  toTs,
   Type,
-} from "@/wab/model/model-meta";
+  toTs,
+} from "@/wab/shared/model/model-meta";
 import fs from "fs";
 import assignIn from "lodash/assignIn";
 import difference from "lodash/difference";
@@ -269,8 +269,8 @@ export const ${cls.name} = ${isAbstract ? "Base" : "Cls"}${cls.name};
 `;
   });
   const classCode = `\
-import {meta} from "./classes-metas";
-import {assert, mkUnexpectedTypeMsg} from "./common";
+import {meta} from "@/wab/shared/model/classes-metas";
+import {assert, mkUnexpectedTypeMsg} from "@/wab/common";
 class Sentinel { tag: 'SENTINEL' = 'SENTINEL' };
 const sentinel = new Sentinel();
 import type { ReactElement } from "react";
@@ -306,7 +306,7 @@ export function writeClassesMetas(schema: string, outfile: string) {
     )
   );
   const metaCode = `
-  import {Class, Field, Type, MetaRuntime} from "./model/model-meta";
+  import {Class, Field, Type, MetaRuntime} from "@/wab/shared/model/model-meta";
   const CLASSES = [
     ${classes
       .map(

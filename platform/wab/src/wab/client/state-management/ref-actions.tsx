@@ -1,6 +1,6 @@
-import { TplNode } from "@/wab/classes";
 import { InteractionContextData } from "@/wab/client/state-management/interactions-meta";
 import { isCodeComponent } from "@/wab/components";
+import { TplNode } from "@/wab/shared/model/classes";
 import { isTplComponent, isTplTag, tplHasRef } from "@/wab/tpls";
 import { RefActionRegistration } from "@plasmicapp/host/registerComponent";
 

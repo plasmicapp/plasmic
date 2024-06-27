@@ -1,12 +1,12 @@
-import { CompositeExpr, TemplatedString } from "@/wab/classes";
 import { getProjectFlags } from "@/wab/devflags";
 import {
+  ExprCtx,
   asCode,
   code,
   customCode,
-  ExprCtx,
   getCodeExpressionWithFallback,
 } from "@/wab/exprs";
+import { CompositeExpr, TemplatedString } from "@/wab/shared/model/classes";
 import { createSite } from "@/wab/sites";
 
 describe("asCode", () => {

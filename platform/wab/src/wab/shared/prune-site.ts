@@ -1,10 +1,10 @@
-import { Site } from "@/wab/classes";
 import { mergeSets, removeWhere } from "@/wab/common";
+import { isVariantSettingEmpty } from "@/wab/shared/Variants";
 import {
   extractUsedIconAssetsForComponents,
   extractUsedPictureAssetsForComponents,
 } from "@/wab/shared/codegen/image-assets";
-import { isVariantSettingEmpty } from "@/wab/shared/Variants";
+import { Site } from "@/wab/shared/model/classes";
 
 export function pruneUnusedImageAssets(site: Site) {
   const icons = extractUsedIconAssetsForComponents(site, site.components);

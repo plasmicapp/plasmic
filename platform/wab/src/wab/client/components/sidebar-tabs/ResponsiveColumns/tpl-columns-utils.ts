@@ -1,19 +1,19 @@
-import { ColumnsConfig, TplTag, Variant } from "@/wab/classes";
 import {
+  ViewCtx,
   ensureBaseRs,
   ensureVariantRs,
-  ViewCtx,
 } from "@/wab/client/studio-ctx/view-ctx";
 import { assert } from "@/wab/common";
+import { $$$ } from "@/wab/shared/TplQuery";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import {
   COLUMNS_CONFIG_DEFAULTS,
   redistributeColumnsSizes,
 } from "@/wab/shared/columns-utils";
 import { AddItemPrefs, getSimplifiedStyles } from "@/wab/shared/default-styles";
-import { $$$ } from "@/wab/shared/TplQuery";
+import { ColumnsConfig, TplTag, Variant } from "@/wab/shared/model/classes";
 import { clearTplVisibility } from "@/wab/shared/visibility-utils";
-import { isTplColumn, TplColumnsTag, TplTagType } from "@/wab/tpls";
+import { TplColumnsTag, TplTagType, isTplColumn } from "@/wab/tpls";
 
 export const getScreenVariant = (viewCtx: ViewCtx): Variant | undefined => {
   const screenVariants =

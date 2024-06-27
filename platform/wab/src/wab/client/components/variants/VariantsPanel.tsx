@@ -1,14 +1,3 @@
-import {
-  Component,
-  ComponentVariantGroup,
-  isKnownTplTag,
-  ObjectPath,
-  ProjectDependency,
-  TplComponent,
-  TplTag,
-  Variant,
-  VariantGroup,
-} from "@/wab/classes";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import {
   SidebarSection,
@@ -66,6 +55,17 @@ import {
 } from "@/wab/components";
 import { findNonEmptyCombos } from "@/wab/shared/cached-selectors";
 import { ScreenSizeSpec } from "@/wab/shared/Css";
+import {
+  Component,
+  ComponentVariantGroup,
+  isKnownTplTag,
+  ObjectPath,
+  ProjectDependency,
+  TplComponent,
+  TplTag,
+  Variant,
+  VariantGroup,
+} from "@/wab/shared/model/classes";
 import { VariantPinState } from "@/wab/shared/PinManager";
 import { getPlumeVariantDef } from "@/wab/shared/plume/plume-registry";
 import { VariantOptionsType } from "@/wab/shared/TplMgr";

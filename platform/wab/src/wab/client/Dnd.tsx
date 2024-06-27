@@ -1,8 +1,13 @@
-import { Arena, Component, TplNode } from "@/wab/classes";
+import {
+  ManipState,
+  ManipulatorAbortedError,
+  ModifierStates,
+  mkFreestyleManipForFocusedDomElt,
+} from "@/wab/client/FreestyleManipulator";
 import { hasLinkedSelectable } from "@/wab/client/components/canvas/studio-canvas-util";
 import {
-  findRowColForMouse,
   MeasuredGrid,
+  findRowColForMouse,
 } from "@/wab/client/components/style-controls/GridEditor";
 import { useViewCtx } from "@/wab/client/contexts/StudioContexts";
 import {
@@ -21,12 +26,6 @@ import {
   getVisibleBoundingClientRect,
 } from "@/wab/client/dom-utils";
 import {
-  ManipState,
-  ManipulatorAbortedError,
-  mkFreestyleManipForFocusedDomElt,
-  ModifierStates,
-} from "@/wab/client/FreestyleManipulator";
-import {
   CONTENT_LAYOUT_ICON,
   ERROR_ICON,
   FREE_CONTAINER_ICON,
@@ -41,8 +40,8 @@ import {
 } from "@/wab/client/messages/parenting-msgs";
 import { computeNodeOutlineTagLayoutClass } from "@/wab/client/node-outline";
 import {
-  cssPropsForInvertTransform,
   StudioCtx,
+  cssPropsForInvertTransform,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { summarizeFocusObj } from "@/wab/client/utils/tpl-client-utils";
@@ -56,29 +55,30 @@ import {
   withoutNils,
 } from "@/wab/common";
 import { Box, Orientation, Pt, Rect, Side, sideToOrient } from "@/wab/geom";
-import { isSelectableLocked, Selectable, SelQuery, SQ } from "@/wab/selection";
+import { SQ, SelQuery, Selectable, isSelectableLocked } from "@/wab/selection";
 import { Area } from "@/wab/shared/Grids";
+import { getAncestorSlotArg } from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
 import {
   ContainerLayoutType,
   ContainerType,
   getRshContainerType,
   isFlexReverse,
 } from "@/wab/shared/layoututils";
+import { Arena, Component, TplNode } from "@/wab/shared/model/classes";
 import {
   canAddChildrenToSelectableAndWhy,
   canAddSiblings,
 } from "@/wab/shared/parenting";
-import { getAncestorSlotArg } from "@/wab/shared/SlotUtils";
-import { $$$ } from "@/wab/shared/TplQuery";
 import { SlotSelection } from "@/wab/slots";
 import { isTplVariantable, prepareFocusedTpls } from "@/wab/tpls";
 import {
-  getComputedStyleForVal,
-  isValTagOrComponent,
   ValComponent,
   ValNode,
   ValSlot,
   ValTag,
+  getComputedStyleForVal,
+  isValTagOrComponent,
 } from "@/wab/val-nodes";
 import { asVal } from "@/wab/vals";
 import classNames from "classnames";

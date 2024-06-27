@@ -1,3 +1,6 @@
+import { assert, isNonNil } from "@/wab/common";
+import { removeFromArray } from "@/wab/commons/collections";
+import { componentToDeepReferenced } from "@/wab/shared/cached-selectors";
 import {
   Component,
   isKnownCustomCode,
@@ -12,11 +15,8 @@ import {
   TplNode,
   Variant,
   VariantsRef,
-} from "@/wab/classes";
-import { assert, isNonNil } from "@/wab/common";
-import { removeFromArray } from "@/wab/commons/collections";
-import { componentToDeepReferenced } from "@/wab/shared/cached-selectors";
-import { wabToTsType } from "@/wab/shared/core/model-util";
+} from "@/wab/shared/model/classes";
+import { wabToTsType } from "@/wab/shared/model/model-util";
 import { isSlot } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { UserError } from "@/wab/shared/UserError";

@@ -1,18 +1,18 @@
-import { TextWidgetProps } from "@react-awesome-query-builder/antd";
-import React from "react";
-import {
-  CustomCode,
-  ensureKnownTemplatedString,
-  ObjectPath,
-  TemplatedString,
-} from "@/wab/classes";
-import { ExprCtx } from "@/wab/exprs";
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
 import {
   TemplatedTextEditor,
   TemplatedTextEditorProps,
 } from "@/wab/client/components/sidebar-tabs/ComponentProps/TemplatedTextEditor";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import { ExprCtx } from "@/wab/exprs";
+import {
+  CustomCode,
+  ensureKnownTemplatedString,
+  ObjectPath,
+  TemplatedString,
+} from "@/wab/shared/model/classes";
+import { TextWidgetProps } from "@react-awesome-query-builder/antd";
+import React from "react";
 
 interface TemplatedTextWidgetProps
   extends Pick<TextWidgetProps, "value" | "readonly"> {

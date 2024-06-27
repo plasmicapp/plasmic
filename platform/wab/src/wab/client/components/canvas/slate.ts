@@ -1,5 +1,5 @@
-import type { Expr } from "@/wab/classes";
 import type { tags } from "@/wab/client/components/canvas/subdeps";
+import type { Expr } from "@/wab/shared/model/classes";
 import { CSSProperties } from "react";
 import {
   BaseEditor,

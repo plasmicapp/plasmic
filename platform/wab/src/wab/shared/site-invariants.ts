@@ -1,19 +1,3 @@
-import {
-  ArenaFrame,
-  Component,
-  isKnownArenaFrame,
-  isKnownRenderExpr,
-  isKnownStateChangeHandlerParam,
-  isKnownStateParam,
-  isKnownVariantGroupState,
-  isKnownVariantsRef,
-  isKnownVarRef,
-  Site,
-  StyleToken,
-  TplNode,
-  Variant,
-} from "@/wab/classes";
-import { meta } from "@/wab/classes-metas";
 import { describeValueOrType, ensure, partitions, pathGet } from "@/wab/common";
 import { isTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import {
@@ -36,14 +20,30 @@ import {
   componentToUsedTokens,
   flattenComponent,
 } from "@/wab/shared/cached-selectors";
-import { instUtil } from "@/wab/shared/core/InstUtil";
-import {
-  createNodeCtx,
-  walkModelTree,
-} from "@/wab/shared/core/model-tree-util";
 import { isValidStyleProp } from "@/wab/shared/core/style-props";
 import { MIXIN_LOWER } from "@/wab/shared/Labels";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import {
+  ArenaFrame,
+  Component,
+  isKnownArenaFrame,
+  isKnownRenderExpr,
+  isKnownStateChangeHandlerParam,
+  isKnownStateParam,
+  isKnownVariantGroupState,
+  isKnownVariantsRef,
+  isKnownVarRef,
+  Site,
+  StyleToken,
+  TplNode,
+  Variant,
+} from "@/wab/shared/model/classes";
+import { meta } from "@/wab/shared/model/classes-metas";
+import { instUtil } from "@/wab/shared/model/InstUtil";
+import {
+  createNodeCtx,
+  walkModelTree,
+} from "@/wab/shared/model/model-tree-util";
 import { modelConflictsMeta } from "@/wab/shared/site-diffs/model-conflicts-meta";
 import { getTplSlot, isSlot } from "@/wab/shared/SlotUtils";
 import {

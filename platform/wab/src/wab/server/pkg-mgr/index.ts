@@ -1,4 +1,3 @@
-import { ProjectDependency } from "@/wab/classes";
 import { assert } from "@/wab/common";
 import { InsertableTemplatesGroup } from "@/wab/devflags";
 import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
@@ -6,6 +5,7 @@ import { unbundleWithDeps } from "@/wab/server/db/DbBundleLoader";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { Pkg, PkgVersion, User } from "@/wab/server/entities/Entities";
 import { Bundle, Bundler } from "@/wab/shared/bundler";
+import { ProjectDependency } from "@/wab/shared/model/classes";
 import fs from "fs";
 import path from "path";
 /**
@@ -193,22 +193,24 @@ export function getDevflagForInsertableTemplateItem(
    */
   const { bundle, projectId, site } = getBundleInfo(sysname);
   const defaultComponents = bundle.map[site.__ref].defaultComponents;
-  const items = Object.keys(defaultComponents).map((defaultKind): InsertableTemplatesGroup["items"][0] => {
-    /**
-     * NOTE: Currently, we require that the default components in the insertable template project are set. E.g. Plexus Button set as the default button component in the Plexus project
-     * That helps us to fetch the default component and create a template name for it that fits the required pattern (e.g. plexus/button)
-     */
-    const ref = defaultComponents[defaultKind].__ref;
-    const defaultComp = bundle.map[ref];
-    return {
-      type: "insertable-templates-component",
-      projectId,
-      componentName: defaultComp.name,
-      templateName: `${sysname}/${defaultKind}`,
-      imageUrl: `https://static1.plasmic.app/insertables/${defaultKind}.svg`,
-      tokenResolution: "reuse-by-name",
-    };
-  });
+  const items = Object.keys(defaultComponents).map(
+    (defaultKind): InsertableTemplatesGroup["items"][0] => {
+      /**
+       * NOTE: Currently, we require that the default components in the insertable template project are set. E.g. Plexus Button set as the default button component in the Plexus project
+       * That helps us to fetch the default component and create a template name for it that fits the required pattern (e.g. plexus/button)
+       */
+      const ref = defaultComponents[defaultKind].__ref;
+      const defaultComp = bundle.map[ref];
+      return {
+        type: "insertable-templates-component",
+        projectId,
+        componentName: defaultComp.name,
+        templateName: `${sysname}/${defaultKind}`,
+        imageUrl: `https://static1.plasmic.app/insertables/${defaultKind}.svg`,
+        tokenResolution: "reuse-by-name",
+      };
+    }
+  );
   return {
     type: "insertable-templates-group",
     name: "Components",

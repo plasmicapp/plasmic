@@ -1,4 +1,3 @@
-import { isKnownArenaFrame, Variant } from "@/wab/classes";
 import {
   getSpotlightDomInfo,
   getSpotlightInfo,
@@ -20,6 +19,7 @@ import {
 } from "@/wab/components";
 import { Box } from "@/wab/geom";
 import { isDedicatedArena, isMixedArena } from "@/wab/shared/Arenas";
+import { isKnownArenaFrame, Variant } from "@/wab/shared/model/classes";
 import { withoutIrrelevantScreenVariants } from "@/wab/shared/PinManager";
 import { getAllVariantsForTpl, isScreenVariant } from "@/wab/shared/Variants";
 import { Dropdown } from "antd";

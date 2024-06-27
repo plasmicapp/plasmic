@@ -1,6 +1,6 @@
-import type { Component } from "@/wab/classes";
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import mobx from "@/wab/shared/import-mobx";
+import type { Component } from "@/wab/shared/model/classes";
 import type {
   IComputedValue,
   IComputedValueOptions,

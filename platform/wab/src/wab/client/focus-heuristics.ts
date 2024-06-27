@@ -1,4 +1,3 @@
-import { Site, TplComponent } from "@/wab/classes";
 import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
 import {
   assert,
@@ -11,23 +10,24 @@ import {
 } from "@/wab/common";
 import { isContextCodeComponent } from "@/wab/components";
 import {
+  SQ,
+  Selectable,
   getFocusTrappingAncestor,
   getUnlockedAncestor,
-  Selectable,
-  SQ,
 } from "@/wab/selection";
-import { ValState } from "@/wab/shared/eval/val-state";
 import {
   isCodeComponentSlot,
   isPlainTextTplSlot,
 } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
+import { ValState } from "@/wab/shared/eval/val-state";
+import { Site, TplComponent } from "@/wab/shared/model/classes";
 import { SlotSelection } from "@/wab/slots";
 import {
-  slotHasDefaultContent,
   ValComponent,
   ValNode,
   ValSlot,
+  slotHasDefaultContent,
 } from "@/wab/val-nodes";
 import { asVal } from "@/wab/vals";
 import L from "lodash";

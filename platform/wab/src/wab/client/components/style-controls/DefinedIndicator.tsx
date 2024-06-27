@@ -1,15 +1,4 @@
 import { BackgroundLayer } from "@/wab/bg-styles";
-import {
-  Expr,
-  isKnownCustomCode,
-  isKnownExprText,
-  isKnownImageAssetRef,
-  isKnownRawText,
-  Site,
-  TplNode,
-  Variant,
-  VariantSetting,
-} from "@/wab/classes";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { resolvedBackgroundImageCss } from "@/wab/client/components/sidebar-tabs/background-section";
 import { EditMixinButton } from "@/wab/client/components/sidebar/MixinControls";
@@ -52,13 +41,24 @@ import {
   VariantSettingSourceStack,
 } from "@/wab/shared/defined-indicator";
 import {
-  MIXINS_CAP,
   MIXIN_CAP,
   MIXIN_LOWER,
+  MIXINS_CAP,
   SLOT_CAP,
-  VARIANTS_LOWER,
   VARIANT_LOWER,
+  VARIANTS_LOWER,
 } from "@/wab/shared/Labels";
+import {
+  Expr,
+  isKnownCustomCode,
+  isKnownExprText,
+  isKnownImageAssetRef,
+  isKnownRawText,
+  Site,
+  TplNode,
+  Variant,
+  VariantSetting,
+} from "@/wab/shared/model/classes";
 import { RSH, splitCssValue } from "@/wab/shared/RuleSetHelpers";
 import { Chroma } from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";

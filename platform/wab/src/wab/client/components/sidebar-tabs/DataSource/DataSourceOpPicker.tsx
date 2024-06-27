@@ -25,24 +25,6 @@ import React, {
 } from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
 // eslint-disable-next-line no-restricted-imports
-import {
-  Component,
-  ComponentDataQuery,
-  CustomCode,
-  DataSourceOpExpr,
-  ensureKnownTemplatedString,
-  Interaction,
-  isKnownComponentDataQuery,
-  isKnownDataSourceOpExpr,
-  isKnownExpr,
-  isKnownTemplatedString,
-  ObjectPath,
-  QueryInvalidationExpr,
-  QueryRef,
-  Site,
-  TemplatedString,
-  TplNode,
-} from "@/wab/classes";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { UU } from "@/wab/client/cli-routes";
 import { useAppRoles } from "@/wab/client/components/app-auth/app-auth-contexts";
@@ -181,6 +163,24 @@ import {
   DATA_SOURCE_OPERATION_LOWER,
   DATA_SOURCE_PLURAL_LOWER,
 } from "@/wab/shared/Labels";
+import {
+  Component,
+  ComponentDataQuery,
+  CustomCode,
+  DataSourceOpExpr,
+  ensureKnownTemplatedString,
+  Interaction,
+  isKnownComponentDataQuery,
+  isKnownDataSourceOpExpr,
+  isKnownExpr,
+  isKnownTemplatedString,
+  ObjectPath,
+  QueryInvalidationExpr,
+  QueryRef,
+  Site,
+  TemplatedString,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import { smartHumanize } from "@/wab/strs";
 import { EventHandlerKeyType } from "@/wab/tpls";
 import { explorerPlugin } from "@graphiql/plugin-explorer";

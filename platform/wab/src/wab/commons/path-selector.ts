@@ -1,4 +1,4 @@
-import { Site } from "@/wab/classes";
+import { Site } from "@/wab/shared/model/classes";
 
 export type Lookup<Path, T = Site> = Path extends []
   ? T extends infer U | undefined

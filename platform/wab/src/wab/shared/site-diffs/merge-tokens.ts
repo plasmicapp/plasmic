@@ -1,7 +1,11 @@
-import { ensureKnownStyleTokenRef, Site, StyleToken } from "@/wab/classes";
 import { unreachable } from "@/wab/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import { mkTokenRef, replaceAllTokenRefs } from "@/wab/commons/StyleToken";
+import {
+  ensureKnownStyleTokenRef,
+  Site,
+  StyleToken,
+} from "@/wab/shared/model/classes";
 import { extractTokenUsages } from "@/wab/styles";
 
 export function fixDuplicatedRegisteredTokens(mergedSite: Site) {

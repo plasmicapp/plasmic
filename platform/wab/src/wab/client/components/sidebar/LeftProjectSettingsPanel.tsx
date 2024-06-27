@@ -1,9 +1,3 @@
-import {
-  Component,
-  isKnownExpr,
-  ProjectDependency,
-  TplComponent,
-} from "@/wab/classes";
 import ListItem from "@/wab/client/components/ListItem";
 import { promptDeleteDep } from "@/wab/client/components/modals/UpgradeDepModal";
 import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
@@ -45,6 +39,12 @@ import {
 import { makeGlobalContextPropName } from "@/wab/shared/codegen/react-p/utils";
 import { paramToVarName } from "@/wab/shared/codegen/util";
 import { DefinedIndicatorType } from "@/wab/shared/defined-indicator";
+import {
+  Component,
+  isKnownExpr,
+  ProjectDependency,
+  TplComponent,
+} from "@/wab/shared/model/classes";
 import { isRenderFuncParam, isSlot } from "@/wab/shared/SlotUtils";
 import { tryGetTplOwnerComponent } from "@/wab/tpls";
 import { Menu, notification, Tooltip } from "antd";

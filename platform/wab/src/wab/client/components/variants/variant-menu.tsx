@@ -1,12 +1,3 @@
-import {
-  Component,
-  ComponentVariantGroup,
-  CustomCode,
-  isKnownComponentVariantGroup,
-  isKnownObjectPath,
-  Variant,
-  VariantGroup,
-} from "@/wab/classes";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import DataPicker from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { getExpectedValuesForVariantGroup } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
@@ -23,6 +14,15 @@ import {
 } from "@/wab/exprs";
 import { VARIANT_GROUP_LOWER } from "@/wab/shared/Labels";
 import {
+  Component,
+  ComponentVariantGroup,
+  CustomCode,
+  isKnownComponentVariantGroup,
+  isKnownObjectPath,
+  Variant,
+  VariantGroup,
+} from "@/wab/shared/model/classes";
+import {
   getBaseVariant,
   isBaseVariant,
   isPrivateStyleVariant,
@@ -32,8 +32,8 @@ import {
 } from "@/wab/shared/Variants";
 import {
   getAccessTypeDisplayName,
-  StateAccessType,
   STATE_ACCESS_TYPES,
+  StateAccessType,
 } from "@/wab/states";
 import { Menu, Popover } from "antd";
 import React from "react";

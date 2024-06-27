@@ -1,3 +1,7 @@
+import { arrayEq, unexpected, xUnion } from "@/wab/common";
+import { DEVFLAGS } from "@/wab/devflags";
+import { asCode, isRealCodeExpr } from "@/wab/exprs";
+import { ENABLED_GLOBALS } from "@/wab/shared/eval";
 import {
   Expr,
   isKnownCustomCode,
@@ -7,11 +11,7 @@ import {
   isKnownTemplatedString,
   ObjectPath,
   TemplatedString,
-} from "@/wab/classes";
-import { arrayEq, unexpected, xUnion } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
-import { asCode, isRealCodeExpr } from "@/wab/exprs";
-import { ENABLED_GLOBALS } from "@/wab/shared/eval";
+} from "@/wab/shared/model/classes";
 import {
   isBlockScope,
   isScope,

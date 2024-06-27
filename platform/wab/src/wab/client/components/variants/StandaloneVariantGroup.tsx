@@ -1,15 +1,19 @@
-import { Component, ComponentVariantGroup, ObjectPath } from "@/wab/classes";
 import { VariantLabel } from "@/wab/client/components/VariantControls";
-import {
-  makeVariantMenu,
-  VariantDataPicker,
-} from "@/wab/client/components/variants/variant-menu";
 import VariantRow from "@/wab/client/components/variants/VariantRow";
+import {
+  VariantDataPicker,
+  makeVariantMenu,
+} from "@/wab/client/components/variants/variant-menu";
 import { EditableLabelHandles } from "@/wab/client/components/widgets/EditableLabel";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ensure, spawn } from "@/wab/common";
 import { VariantPinState } from "@/wab/shared/PinManager";
+import {
+  Component,
+  ComponentVariantGroup,
+  ObjectPath,
+} from "@/wab/shared/model/classes";
 import { getPlumeVariantDef } from "@/wab/shared/plume/plume-registry";
 import { observer } from "mobx-react";
 import * as React from "react";

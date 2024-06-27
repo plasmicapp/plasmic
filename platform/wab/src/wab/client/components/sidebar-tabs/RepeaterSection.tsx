@@ -1,10 +1,10 @@
-import { isKnownTplComponent, TplNode } from "@/wab/classes";
 import { ComponentPropsSection } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
 import { RepeaterPropsTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { assert } from "@/wab/common";
+import { isKnownTplComponent, TplNode } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import React from "react";
 

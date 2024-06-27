@@ -1,11 +1,11 @@
-import { TplNode, TplTag } from "@/wab/classes";
 import { betweenInclusive, ensureString } from "@/wab/common";
-import { gridChildProps } from "@/wab/shared/core/style-props";
-import { autoSize, NumericSize, showSizeCss, Size } from "@/wab/shared/Css";
-import { convertToRelativePosition } from "@/wab/shared/layoututils";
+import { NumericSize, Size, autoSize, showSizeCss } from "@/wab/shared/Css";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { $$$ } from "@/wab/shared/TplQuery";
-import { ensureVariantSetting, VariantCombo } from "@/wab/shared/Variants";
+import { VariantCombo, ensureVariantSetting } from "@/wab/shared/Variants";
+import { gridChildProps } from "@/wab/shared/core/style-props";
+import { convertToRelativePosition } from "@/wab/shared/layoututils";
+import { TplNode, TplTag } from "@/wab/shared/model/classes";
 import * as L from "lodash";
 import { CSSProperties } from "react";
 

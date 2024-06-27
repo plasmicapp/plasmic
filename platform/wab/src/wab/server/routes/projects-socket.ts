@@ -1,4 +1,3 @@
-import { modelSchemaHash } from "@/wab/classes-metas";
 import {
   ensure,
   maybe,
@@ -14,9 +13,9 @@ import {
   ANON_USER,
   DbMgr,
   ForbiddenError,
-  normalActor,
   NotFoundError,
   SUPER_USER,
+  normalActor,
 } from "@/wab/server/db/DbMgr";
 import { SocketUser } from "@/wab/server/extensions";
 import { getApiTokenUser } from "@/wab/server/routes/auth";
@@ -29,11 +28,12 @@ import {
   UpdatePlayerViewRequest,
 } from "@/wab/shared/ApiSchema";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { modelSchemaHash } from "@/wab/shared/model/classes-metas";
 import { Request, Response } from "express";
 import { Server } from "http";
 import { get } from "lodash";
 import { Gauge } from "prom-client";
-import { Server as SocketIoServer, Socket } from "socket.io";
+import { Socket, Server as SocketIoServer } from "socket.io";
 import { getConnection } from "typeorm";
 
 export interface BroadcastPayload {

@@ -1,12 +1,3 @@
-import {
-  CustomCode,
-  ensureKnownRawText,
-  ensureKnownTplTag,
-  Marker,
-  ObjectPath,
-  TplNode,
-  TplTag,
-} from "@/wab/classes";
 import { withErrorDisplayFallback } from "@/wab/client/components/canvas/canvas-error";
 import { resolveNodesToMarkers } from "@/wab/client/components/canvas/canvas-fns-impl";
 import { mkUseCanvasObserver } from "@/wab/client/components/canvas/canvas-observer";
@@ -24,8 +15,8 @@ import {
   TplTagElement,
 } from "@/wab/client/components/canvas/slate";
 import {
-  SubDeps,
   tags as htmlTags,
+  SubDeps,
 } from "@/wab/client/components/canvas/subdeps";
 import {
   reactPrompt,
@@ -48,6 +39,15 @@ import {
 } from "@/wab/shared/core/rich-text-util";
 import { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import { CanvasEnv, evalCodeWithEnv } from "@/wab/shared/eval";
+import {
+  CustomCode,
+  ensureKnownRawText,
+  ensureKnownTplTag,
+  Marker,
+  ObjectPath,
+  TplNode,
+  TplTag,
+} from "@/wab/shared/model/classes";
 import { hasGapStyle } from "@/wab/styles";
 import { isExprText, walkTpls } from "@/wab/tpls";
 import isHotkey from "is-hotkey";
@@ -56,10 +56,10 @@ import { computedFn } from "mobx-utils";
 import React, { CSSProperties } from "react";
 import type {
   Descendant,
+  Path,
   Editor as SlateEditor,
   Element as SlateElement,
   Node as SlateNode,
-  Path,
 } from "slate";
 import type { RenderElementProps } from "slate-react";
 

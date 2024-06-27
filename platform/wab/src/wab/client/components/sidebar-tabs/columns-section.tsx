@@ -1,4 +1,4 @@
-import { ColumnsConfig } from "@/wab/classes";
+import { reportError } from "@/wab/client/ErrorNotifications";
 import S from "@/wab/client/components/sidebar-tabs/ColumnsSection.module.scss";
 import { FlexContainerControls } from "@/wab/client/components/sidebar-tabs/FlexContainerControls";
 import { ColumnsAlignControls } from "@/wab/client/components/sidebar-tabs/ResponsiveColumns/ColumnsAlignControls";
@@ -8,6 +8,7 @@ import {
   addNewColumn,
   removeLastColumn,
 } from "@/wab/client/components/sidebar-tabs/ResponsiveColumns/tpl-columns-utils";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
   DraggableDimLabel,
   FullRow,
@@ -15,7 +16,6 @@ import {
   LabeledStyleItemRow,
   shouldBeDisabled,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
-import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { DefinedIndicator } from "@/wab/client/components/style-controls/DefinedIndicator";
 import {
   ExpsProvider,
@@ -24,16 +24,16 @@ import {
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
 import { Icon } from "@/wab/client/components/widgets/Icon";
-import { reportError } from "@/wab/client/ErrorNotifications";
 import MinusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Minus";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, NullOrUndefinedValueError } from "@/wab/common";
+import { NullOrUndefinedValueError, ensure } from "@/wab/common";
 import { TokenType } from "@/wab/commons/StyleToken";
 import { equalColumnDistribution } from "@/wab/shared/columns-utils";
 import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
-import { TplColumnsTag, TplColumnTag } from "@/wab/tpls";
+import { ColumnsConfig } from "@/wab/shared/model/classes";
+import { TplColumnTag, TplColumnsTag } from "@/wab/tpls";
 import { Menu } from "antd";
 import cn from "classnames";
 import { observer } from "mobx-react";

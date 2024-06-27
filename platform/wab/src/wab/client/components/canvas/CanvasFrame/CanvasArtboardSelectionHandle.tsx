@@ -1,12 +1,12 @@
-import { ArenaFrame } from "@/wab/classes";
-import styles from "@/wab/client/components/canvas/CanvasFrame/CanvasFrame.module.scss";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
+import styles from "@/wab/client/components/canvas/CanvasFrame/CanvasFrame.module.scss";
 import { makeFrameMenu } from "@/wab/client/components/frame-menu";
 import { getGlobalCssVariableValue } from "@/wab/client/components/studio/GlobalCssVariables";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { useScaledElementRef } from "@/wab/client/hooks/useScaledElementRef";
 import PlasmicIcon__Frame from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Frame";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ArenaFrame } from "@/wab/shared/model/classes";
 import { gridSpacing, hoverBoxTagHeight } from "@/wab/styles/css-variables";
 import cn from "classnames";
 import { observer } from "mobx-react";

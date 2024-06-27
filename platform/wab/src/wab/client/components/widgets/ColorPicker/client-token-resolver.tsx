@@ -1,13 +1,13 @@
-import { StyleToken } from "@/wab/classes";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { TokenValue } from "@/wab/commons/StyleToken";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
-  makeTokenResolver,
   TokenResolver,
   TokenValueResolver,
+  makeTokenResolver,
 } from "@/wab/shared/cached-selectors";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { StyleToken } from "@/wab/shared/model/classes";
 
 const RE_VARIABLE_REF = /var\((--[^)]+)\)/;
 

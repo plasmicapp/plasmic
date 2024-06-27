@@ -1,12 +1,4 @@
 import {
-  Component,
-  Site,
-  TplComponent,
-  TplNode,
-  TplSlot,
-  TplTag,
-} from "@/wab/classes";
-import {
   getSuperComponents,
   isCodeComponent,
   isPageComponent,
@@ -47,8 +39,16 @@ import {
 import { jsLiteral } from "@/wab/shared/codegen/util";
 import { makeGlobalVariantGroupImportTemplate } from "@/wab/shared/codegen/variants";
 import {
-  getPlumeCodegenPlugin,
+  Component,
+  Site,
+  TplComponent,
+  TplNode,
+  TplSlot,
+  TplTag,
+} from "@/wab/shared/model/classes";
+import {
   PlumeType,
+  getPlumeCodegenPlugin,
 } from "@/wab/shared/plume/plume-registry";
 import { makeVariantComboSorter } from "@/wab/shared/variant-sort";
 import { allImageAssets, allMixins, allStyleTokens } from "@/wab/sites";
@@ -62,6 +62,8 @@ import {
 } from "@/wab/tpls";
 import L from "lodash";
 import {
+  SerializerBaseContext,
+  SerializerSiteContext,
   asOneNode,
   computeSerializerSiteContext,
   deriveReactHookSpecs,
@@ -87,8 +89,6 @@ import {
   serializeDataReps,
   serializeDefaultExternalProps,
   serializePlasmicSuperContext,
-  SerializerBaseContext,
-  SerializerSiteContext,
   serializeTplComponentBase,
   serializeTplSlotBase,
   serializeTplTagBase,

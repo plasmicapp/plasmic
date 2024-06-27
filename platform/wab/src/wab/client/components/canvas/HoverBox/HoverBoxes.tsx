@@ -1,9 +1,3 @@
-import {
-  ArenaFrame,
-  isKnownArena,
-  isKnownArenaFrame,
-  TplNode,
-} from "@/wab/classes";
 import { EditableNodeLabel } from "@/wab/client/components/canvas/EditableNodeLabel";
 import {
   computeHoverBoxTargets,
@@ -81,6 +75,12 @@ import {
   isPositionManagedFrame,
 } from "@/wab/shared/Arenas";
 import { createNumericSize, showSizeCss, Unit } from "@/wab/shared/Css";
+import {
+  ArenaFrame,
+  isKnownArena,
+  isKnownArenaFrame,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import { isTplAutoSizable, resetTplSize } from "@/wab/shared/sizingutils";
 import { SlotSelection } from "@/wab/slots";
 import {

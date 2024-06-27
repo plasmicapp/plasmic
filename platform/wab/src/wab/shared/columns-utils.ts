@@ -1,13 +1,13 @@
+import { ensure } from "@/wab/common";
+import { parseScreenSpec } from "@/wab/shared/Css";
+import { RSH, readonlyRSH } from "@/wab/shared/RuleSetHelpers";
+import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import {
   ColumnsConfig,
   ColumnsConfigParams,
   TplTag,
   Variant,
-} from "@/wab/classes";
-import { ensure } from "@/wab/common";
-import { parseScreenSpec } from "@/wab/shared/Css";
-import { readonlyRSH, RSH } from "@/wab/shared/RuleSetHelpers";
-import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
+} from "@/wab/shared/model/classes";
 import { expandRuleSets } from "@/wab/styles";
 import { TplColumnsTag } from "@/wab/tpls";
 import { clamp, isEqual, isUndefined, range, sum } from "lodash";

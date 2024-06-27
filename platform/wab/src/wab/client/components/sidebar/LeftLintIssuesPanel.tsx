@@ -1,4 +1,3 @@
-import { Component, isKnownComponent } from "@/wab/classes";
 import { useAppRoles } from "@/wab/client/components/app-auth/app-auth-contexts";
 import {
   ItemOrGroup,
@@ -30,6 +29,7 @@ import { DEVFLAGS } from "@/wab/devflags";
 import { LintIssue, LintIssueType } from "@/wab/shared/linting/lint-types";
 import { lintSite as lintUnprotectedDataQueries } from "@/wab/shared/linting/lint-unprotected-data-queries";
 import { lintSite } from "@/wab/shared/linting/lint-utils";
+import { Component, isKnownComponent } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Empty, Popover, Space, notification } from "antd";
 import { groupBy } from "lodash";

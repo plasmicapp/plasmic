@@ -1,9 +1,9 @@
-import { Component, Param } from "@/wab/classes";
 import { assert, strict } from "@/wab/common";
 import { isValidVariableName } from "@/wab/commons/codeutil";
 import { DeepReadonly } from "@/wab/commons/types";
 import { isCodeComponent, isVariantGroupParam } from "@/wab/components";
 import { isSlot } from "@/wab/shared/SlotUtils";
+import { Component, Param } from "@/wab/shared/model/classes";
 import { capitalizeFirst, decapitalizeFirst } from "@/wab/strs";
 import jsStringEscape from "js-string-escape";
 import camelCase from "lodash/camelCase";

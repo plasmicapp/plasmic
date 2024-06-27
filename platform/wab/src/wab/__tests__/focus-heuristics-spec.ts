@@ -1,28 +1,28 @@
-import { TplComponent, TplNode } from "@/wab/classes";
 import { FocusHeuristics } from "@/wab/client/focus-heuristics";
 import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
 import { ensure, ensureInstance, maybe, tuple } from "@/wab/common";
 import * as Components from "@/wab/components";
 import { ComponentType } from "@/wab/components";
 import * as Lang from "@/wab/lang";
-import { typeFactory } from "@/wab/shared/core/model-util";
-import { ValState } from "@/wab/shared/eval/val-state";
 import { TplMgr } from "@/wab/shared/TplMgr";
+import { ValState } from "@/wab/shared/eval/val-state";
+import { TplComponent, TplNode } from "@/wab/shared/model/classes";
+import { typeFactory } from "@/wab/shared/model/model-util";
 import { createSite } from "@/wab/sites";
 import {
+  TEST_GLOBAL_VARIANT,
   buildValTree,
   mkTplTestText,
   renderStateForTests,
-  TEST_GLOBAL_VARIANT,
 } from "@/wab/test/tpls";
 import * as Tpls from "@/wab/tpls";
 import { mkTplComponentX } from "@/wab/tpls";
 import * as ValNodes from "@/wab/val-nodes";
 import {
-  slotContentValNode,
   ValComponent,
   ValNode,
   ValSlot,
+  slotContentValNode,
 } from "@/wab/val-nodes";
 
 describe("FocusHeuristics", function () {

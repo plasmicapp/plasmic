@@ -1,4 +1,3 @@
-import { Component, Site } from "@/wab/classes";
 import {
   exportCodeComponentConfig,
   isCodeComponent,
@@ -20,6 +19,7 @@ import { exportReactPlain } from "@/wab/shared/codegen/react-p/plain";
 import { exportStyleTokens } from "@/wab/shared/codegen/style-tokens";
 import { ExportOpts, ProjectConfig } from "@/wab/shared/codegen/types";
 import { exportGlobalVariantGroup } from "@/wab/shared/codegen/variants";
+import { Component, Site } from "@/wab/shared/model/classes";
 import { CssVarResolver } from "@/wab/styles";
 import {
   computeSerializerSiteContext,

@@ -1,4 +1,3 @@
-import { Component } from "@/wab/classes";
 import { CodeSnippet } from "@/wab/client/components/coding/CodeDisplay";
 import { useDocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
 import { DocsTooltip } from "@/wab/client/components/docs/DocsTooltip";
@@ -9,6 +8,7 @@ import VariantProp from "@/wab/client/components/docs/VariantProp";
 import { SidebarModalProvider } from "@/wab/client/components/sidebar/SidebarModal";
 import { PlasmicComponentTogglesPanel } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicComponentTogglesPanel";
 import { ensure } from "@/wab/common";
+import { getTplSlots } from "@/wab/shared/SlotUtils";
 import {
   flattenTplsWithoutThrowawayNodes,
   makeNodeNamer,
@@ -17,8 +17,8 @@ import {
   getExportedComponentName,
   makePlasmicComponentName,
 } from "@/wab/shared/codegen/react-p/utils";
-import { getTplSlots } from "@/wab/shared/SlotUtils";
-import { isTplTagOrComponent, TplNamable } from "@/wab/tpls";
+import { Component } from "@/wab/shared/model/classes";
+import { TplNamable, isTplTagOrComponent } from "@/wab/tpls";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useLocalStorage } from "react-use";

@@ -1,24 +1,4 @@
 import {
-  Arg,
-  Component,
-  Expr,
-  ImageAsset,
-  ImageAssetRef,
-  isKnownTplNode,
-  isKnownTplSlot,
-  isKnownVariantsRef,
-  Mixin,
-  Param,
-  RawText,
-  Site,
-  SlotParam,
-  TplComponent,
-  TplNode,
-  Var,
-  Variant,
-  VariantSetting,
-} from "@/wab/classes";
-import {
   arrayEqIgnoreOrder,
   assert,
   check,
@@ -61,6 +41,26 @@ import {
 } from "@/wab/shared/effective-variant-setting";
 import { CanvasEnv, tryEvalExpr } from "@/wab/shared/eval";
 import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
+import {
+  Arg,
+  Component,
+  Expr,
+  ImageAsset,
+  ImageAssetRef,
+  isKnownTplNode,
+  isKnownTplSlot,
+  isKnownVariantsRef,
+  Mixin,
+  Param,
+  RawText,
+  Site,
+  SlotParam,
+  TplComponent,
+  TplNode,
+  Var,
+  Variant,
+  VariantSetting,
+} from "@/wab/shared/model/classes";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { getAncestorTplSlot, isSlotVar } from "@/wab/shared/SlotUtils";
 import { ensureBaseVariant, TplMgr } from "@/wab/shared/TplMgr";

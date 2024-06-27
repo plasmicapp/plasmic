@@ -1,11 +1,10 @@
-import { Component, Variant } from "@/wab/classes";
 import {
-  mkProjectLocation,
-  parseProjectLocation,
   R,
   SEARCH_PARAM_BRANCH,
   U,
   UU,
+  mkProjectLocation,
+  parseProjectLocation,
 } from "@/wab/client/cli-routes";
 import { showCanvasPageNavigationNotification } from "@/wab/client/components/canvas/studio-canvas-util";
 import { ClientPinManager } from "@/wab/client/components/variants/ClientPinManager";
@@ -19,18 +18,19 @@ import {
 } from "@/wab/components";
 import { MainBranchId, ProjectId } from "@/wab/shared/ApiSchema";
 import { getFrameHeight } from "@/wab/shared/Arenas";
-import { toVarName } from "@/wab/shared/codegen/util";
 import { FramePinManager } from "@/wab/shared/PinManager";
+import {
+  VariantCombo,
+  getReferencedVariantGroups,
+  isGlobalVariant,
+  isScreenVariant,
+} from "@/wab/shared/Variants";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { Component, Variant } from "@/wab/shared/model/classes";
 import {
   getMatchingPagePathParams,
   substituteUrlParams,
 } from "@/wab/shared/utils/url-utils";
-import {
-  getReferencedVariantGroups,
-  isGlobalVariant,
-  isScreenVariant,
-  VariantCombo,
-} from "@/wab/shared/Variants";
 import { allGlobalVariants } from "@/wab/sites";
 import * as Sentry from "@sentry/browser";
 import { notification } from "antd";

@@ -1,8 +1,13 @@
-import { Component, ComponentDataQuery, Param, Site } from "@/wab/classes";
 import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
 import Button from "@/wab/client/components/widgets/Button";
 import Textbox from "@/wab/client/components/widgets/Textbox";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
+import {
+  Component,
+  ComponentDataQuery,
+  Param,
+  Site,
+} from "@/wab/shared/model/classes";
 import { Form } from "antd";
 import { computed } from "mobx";
 import { useLocalStore, useObserver } from "mobx-react";

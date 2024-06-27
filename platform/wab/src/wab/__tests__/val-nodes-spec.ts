@@ -1,7 +1,11 @@
-import { ensureKnownTplTag, TplComponent, TplNode } from "@/wab/classes";
 import { ensure, ensureInstance } from "@/wab/common";
 import { SQ } from "@/wab/selection";
 import { ValState } from "@/wab/shared/eval/val-state";
+import {
+  ensureKnownTplTag,
+  TplComponent,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { getBaseVariant } from "@/wab/shared/Variants";
 import { createSite } from "@/wab/sites";

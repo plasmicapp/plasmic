@@ -1,8 +1,8 @@
-import { isKnownTplTag, TplNode } from "@/wab/classes";
 import { Matcher } from "@/wab/client/components/view-common";
 import Checkbox from "@/wab/client/components/widgets/Checkbox";
 import { Textbox } from "@/wab/client/components/widgets/Textbox";
 import { ViewComponent, ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { isKnownTplTag, TplNode } from "@/wab/shared/model/classes";
 import * as React from "react";
 /*
 type ModifyPanelSectionProps = {

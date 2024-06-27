@@ -9,7 +9,6 @@ import {
   RadialGradient,
   Stop,
 } from "@/wab/bg-styles";
-import { ImageAsset } from "@/wab/classes";
 import {
   boxShadowNodeTypes,
   delimiters,
@@ -36,6 +35,7 @@ import {
 import { assert, ensure, rad2deg } from "@/wab/common";
 import { Matrix as AltMatrix } from "@/wab/commons/transformation-matrix";
 import { mkImageAssetRef } from "@/wab/image-assets";
+import { ImageAsset } from "@/wab/shared/model/classes";
 import { omit } from "lodash";
 import { CSSProperties } from "react";
 import {

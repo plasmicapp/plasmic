@@ -1,9 +1,3 @@
-import {
-  ensureKnownProjectDependency,
-  ensureKnownSite,
-  Site,
-} from "@/wab/classes";
-import { meta } from "@/wab/classes-metas";
 import { assert, maybe, spawn } from "@/wab/common";
 import { observeModel } from "@/wab/observable-model";
 import { walkDependencyTree } from "@/wab/project-deps";
@@ -26,7 +20,13 @@ import {
   FastBundler,
 } from "@/wab/shared/bundler";
 import { isEmptyBundle } from "@/wab/shared/bundles";
-import { instUtil } from "@/wab/shared/core/InstUtil";
+import {
+  ensureKnownProjectDependency,
+  ensureKnownSite,
+  Site,
+} from "@/wab/shared/model/classes";
+import { meta } from "@/wab/shared/model/classes-metas";
+import { instUtil } from "@/wab/shared/model/InstUtil";
 import {
   assertSiteInvariants,
   InvariantError,

@@ -1,11 +1,11 @@
 import fs from "fs";
 import { last } from "lodash";
-import { Site } from "../../src/wab/classes";
-import { meta } from "../../src/wab/classes-metas";
 import { maybe, spawn } from "../../src/wab/common";
 import { ChangeRecorder } from "../../src/wab/observable-model";
 import { Bundler } from "../../src/wab/shared/bundler";
-import { instUtil } from "../../src/wab/shared/core/InstUtil";
+import { instUtil } from "../../src/wab/shared/model/InstUtil";
+import { Site } from "../../src/wab/shared/model/classes";
+import { meta } from "../../src/wab/shared/model/classes-metas";
 
 const prettyTime = (interval: number) => `${interval.toFixed(2)}ms`;
 const prettyMemory = (mem: number) => `${(mem / 1024 / 1024).toFixed(2)}MB`;

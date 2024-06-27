@@ -1,12 +1,12 @@
-import { StyleToken } from "@/wab/classes";
 import { useMultiAssetsActions } from "@/wab/client/components/sidebar/MultiAssetsActions";
 import { TokenDefinedIndicator } from "@/wab/client/components/style-controls/TokenDefinedIndicator";
 import { Matcher } from "@/wab/client/components/view-common";
 import Checkbox from "@/wab/client/components/widgets/Checkbox";
 import PlasmicGeneralTokenControl from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicGeneralTokenControl";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { TokenValueResolver } from "@/wab/shared/cached-selectors";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { TokenValueResolver } from "@/wab/shared/cached-selectors";
+import { StyleToken } from "@/wab/shared/model/classes";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";

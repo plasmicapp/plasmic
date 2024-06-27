@@ -1,22 +1,23 @@
-import {
-  Component,
-  Expr,
-  ObjectPath,
-  TplComponent,
-  TplNode,
-  Variant,
-  VariantSetting,
-} from "@/wab/classes";
 import { isNonNil } from "@/wab/common";
 import { isCodeComponent } from "@/wab/components";
 import { PLASMIC_DISPLAY_NONE } from "@/wab/css";
 import {
-  codeLit,
   ExprCtx,
+  codeLit,
   getCodeExpressionWithFallback,
   isCodeLitVal,
   isRealCodeExpr,
 } from "@/wab/exprs";
+import { RSH, RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
+import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  VariantCombo,
+  ensureVariantSetting,
+  getGlobalVariants,
+  isBaseVariant,
+  tryGetBaseVariantSetting,
+  tryGetVariantSetting,
+} from "@/wab/shared/Variants";
 import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import { CONTENT_LAYOUT } from "@/wab/shared/core/style-props";
 import {
@@ -25,16 +26,15 @@ import {
   getTplComponentActiveVariantsByVs,
 } from "@/wab/shared/effective-variant-setting";
 import { CanvasEnv, tryEvalExpr } from "@/wab/shared/eval";
-import { RSH, RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
-import { $$$ } from "@/wab/shared/TplQuery";
 import {
-  ensureVariantSetting,
-  getGlobalVariants,
-  isBaseVariant,
-  tryGetBaseVariantSetting,
-  tryGetVariantSetting,
-  VariantCombo,
-} from "@/wab/shared/Variants";
+  Component,
+  Expr,
+  ObjectPath,
+  TplComponent,
+  TplNode,
+  Variant,
+  VariantSetting,
+} from "@/wab/shared/model/classes";
 import { isTplComponent, isTplTag, isTplVariantable } from "@/wab/tpls";
 
 // When doing "DisplayNone" in css, we set `display: none`.  However,

@@ -1,4 +1,3 @@
-import { Arena, ArenaFrame } from "@/wab/classes";
 import {
   MenuBuilder,
   MenuItemContent,
@@ -13,12 +12,13 @@ import {
   isMixedArena,
   isPageArena,
 } from "@/wab/shared/Arenas";
+import { ARENA_LOWER, FRAME_LOWER } from "@/wab/shared/Labels";
+import { isFrameWithVariantCombo } from "@/wab/shared/Variants";
 import {
   isBaseVariantFrame,
   isGlobalVariantFrame,
 } from "@/wab/shared/component-arenas";
-import { ARENA_LOWER, FRAME_LOWER } from "@/wab/shared/Labels";
-import { isFrameWithVariantCombo } from "@/wab/shared/Variants";
+import { Arena, ArenaFrame } from "@/wab/shared/model/classes";
 import { Menu } from "antd";
 import * as React from "react";
 

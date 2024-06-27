@@ -1,3 +1,5 @@
+import { ensureInstance, switchType } from "@/wab/common";
+import { SlotInfo } from "@/wab/shared/eval/val-state";
 import {
   ensureKnownRenderExpr,
   Param,
@@ -5,9 +7,7 @@ import {
   TplNode,
   TplSlot,
   TplTag,
-} from "@/wab/classes";
-import { ensureInstance, switchType } from "@/wab/common";
-import { SlotInfo } from "@/wab/shared/eval/val-state";
+} from "@/wab/shared/model/classes";
 import { isSlot } from "@/wab/shared/SlotUtils";
 import { mkBaseVariant } from "@/wab/shared/Variants";
 import { mkTplInlinedText } from "@/wab/tpls";

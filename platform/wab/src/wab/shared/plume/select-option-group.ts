@@ -1,9 +1,8 @@
-import { Component, Param, TplComponent } from "@/wab/classes";
 import { internalCanvasElementProps } from "@/wab/shared/canvas-constants";
 import {
+  SerializerBaseContext,
   getExternalParams,
   serializeParamType,
-  SerializerBaseContext,
 } from "@/wab/shared/codegen/react-p";
 import {
   getExportedComponentName,
@@ -15,7 +14,8 @@ import {
   paramToVarName,
   toVarName,
 } from "@/wab/shared/codegen/util";
-import { typeFactory } from "@/wab/shared/core/model-util";
+import { Component, Param, TplComponent } from "@/wab/shared/model/classes";
+import { typeFactory } from "@/wab/shared/model/model-util";
 import { PlumePlugin } from "@/wab/shared/plume/plume-registry";
 import { makeComponentImportPath } from "@/wab/shared/plume/plume-utils";
 import { omit, pick } from "lodash";

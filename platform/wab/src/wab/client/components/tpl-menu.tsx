@@ -1,10 +1,3 @@
-import {
-  isKnownRawText,
-  isKnownRenderExpr,
-  isKnownVirtualRenderExpr,
-  RawText,
-  TplNode,
-} from "@/wab/classes";
 import { mkProjectLocation, openNewTab } from "@/wab/client/cli-routes";
 import { isStyleClip } from "@/wab/client/clipboard/local";
 import { makeFrameMenu } from "@/wab/client/components/frame-menu";
@@ -32,6 +25,13 @@ import {
   getContainerTypeName,
   PositionLayoutType,
 } from "@/wab/shared/layoututils";
+import {
+  isKnownRawText,
+  isKnownRenderExpr,
+  isKnownVirtualRenderExpr,
+  RawText,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import {
   isTplAutoSizable,
   isTplDefaultSized,

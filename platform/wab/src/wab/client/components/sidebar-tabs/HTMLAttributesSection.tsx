@@ -1,13 +1,4 @@
 import {
-  Component,
-  Expr,
-  isKnownEventHandler,
-  isKnownParam,
-  isKnownVarRef,
-  TplComponent,
-  TplTag,
-} from "@/wab/classes";
-import {
   inferPropTypeFromAttr,
   PropEditorRow,
 } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
@@ -47,6 +38,15 @@ import {
   DefinedIndicatorType,
 } from "@/wab/shared/defined-indicator";
 import { getInputTypeOptions } from "@/wab/shared/html-utils";
+import {
+  Component,
+  Expr,
+  isKnownEventHandler,
+  isKnownParam,
+  isKnownVarRef,
+  TplComponent,
+  TplTag,
+} from "@/wab/shared/model/classes";
 import { unsetTplVariantableAttr } from "@/wab/shared/TplMgr";
 import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
 import {

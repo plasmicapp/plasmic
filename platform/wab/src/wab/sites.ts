@@ -1,4 +1,71 @@
 import { ColorFill } from "@/wab/bg-styles";
+import { Dict } from "@/wab/collections";
+import {
+  assert,
+  ensure,
+  maybe,
+  mergeMaps,
+  mkShortId,
+  remove,
+  removeWhere,
+  strictZip,
+  switchType,
+  tuple,
+  withoutNils,
+} from "@/wab/common";
+import {
+  mkTokenRef,
+  replaceAllTokenRefs,
+  TokenType,
+} from "@/wab/commons/StyleToken";
+import {
+  allComponentVariants,
+  cloneComponent,
+  cloneVariant,
+  cloneVariantGroup,
+  CodeComponent,
+  ComponentCloneResult,
+  fixArgForCloneComponent,
+  getComponentDisplayName,
+  getEffectiveVariantSettingOfDeepRootElement,
+  getSuperComponentVariantGroupToComponent,
+  getSuperComponentVariantToComponent,
+  isCodeComponent,
+  isFrameComponent,
+  isPageComponent,
+  PageComponent,
+} from "@/wab/components";
+import { getCssInitial } from "@/wab/css";
+import { DEVFLAGS } from "@/wab/devflags";
+import { convertHrefExprToCodeExpr } from "@/wab/exprs";
+import {
+  cloneImageAsset,
+  isIcon,
+  mkImageAssetRef,
+  replaceAllAssetRefs,
+} from "@/wab/image-assets";
+import { DependencyWalkScope, walkDependencyTree } from "@/wab/project-deps";
+import { ArenaType } from "@/wab/shared/ApiSchema";
+import {
+  AnyArena,
+  cloneArena,
+  cloneArenaFrame,
+  getArenaFrames,
+  isComponentArena,
+  isPageArena,
+  mkMixedArena,
+} from "@/wab/shared/Arenas";
+import {
+  componentsReferecerToPageHref,
+  findAllDataSourceOpExprForComponent,
+  flattenComponent,
+} from "@/wab/shared/cached-selectors";
+import { ensureComponentArenaColsOrder } from "@/wab/shared/component-arenas";
+import { typographyCssProps } from "@/wab/shared/core/style-props";
+import { parseScreenSpec } from "@/wab/shared/Css";
+import { ARENA_CAP } from "@/wab/shared/Labels";
+import { getRshContainerType } from "@/wab/shared/layoututils";
+import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
   ArenaFrame,
   ArenaFrameCell,
@@ -77,78 +144,11 @@ import {
   VariantsRef,
   VarRef,
   VirtualRenderExpr,
-} from "@/wab/classes";
-import { Dict } from "@/wab/collections";
-import {
-  assert,
-  ensure,
-  maybe,
-  mergeMaps,
-  mkShortId,
-  remove,
-  removeWhere,
-  strictZip,
-  switchType,
-  tuple,
-  withoutNils,
-} from "@/wab/common";
-import {
-  mkTokenRef,
-  replaceAllTokenRefs,
-  TokenType,
-} from "@/wab/commons/StyleToken";
-import {
-  allComponentVariants,
-  cloneComponent,
-  cloneVariant,
-  cloneVariantGroup,
-  CodeComponent,
-  ComponentCloneResult,
-  fixArgForCloneComponent,
-  getComponentDisplayName,
-  getEffectiveVariantSettingOfDeepRootElement,
-  getSuperComponentVariantGroupToComponent,
-  getSuperComponentVariantToComponent,
-  isCodeComponent,
-  isFrameComponent,
-  isPageComponent,
-  PageComponent,
-} from "@/wab/components";
-import { getCssInitial } from "@/wab/css";
-import { DEVFLAGS } from "@/wab/devflags";
-import { convertHrefExprToCodeExpr } from "@/wab/exprs";
-import {
-  cloneImageAsset,
-  isIcon,
-  mkImageAssetRef,
-  replaceAllAssetRefs,
-} from "@/wab/image-assets";
-import { DependencyWalkScope, walkDependencyTree } from "@/wab/project-deps";
-import { ArenaType } from "@/wab/shared/ApiSchema";
-import {
-  AnyArena,
-  cloneArena,
-  cloneArenaFrame,
-  getArenaFrames,
-  isComponentArena,
-  isPageArena,
-  mkMixedArena,
-} from "@/wab/shared/Arenas";
-import {
-  componentsReferecerToPageHref,
-  findAllDataSourceOpExprForComponent,
-  flattenComponent,
-} from "@/wab/shared/cached-selectors";
-import { ensureComponentArenaColsOrder } from "@/wab/shared/component-arenas";
+} from "@/wab/shared/model/classes";
 import {
   isRenderableType,
   isRenderFuncType,
-} from "@/wab/shared/core/model-util";
-import { typographyCssProps } from "@/wab/shared/core/style-props";
-import { parseScreenSpec } from "@/wab/shared/Css";
-import { ARENA_CAP } from "@/wab/shared/Labels";
-import { getRshContainerType } from "@/wab/shared/layoututils";
-import { maybeComputedFn } from "@/wab/shared/mobx-util";
+} from "@/wab/shared/model/model-util";
 import {
   defaultResponsiveSettings,
   ResponsiveStrategy,

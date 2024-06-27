@@ -1,13 +1,4 @@
 import {
-  Component,
-  isKnownRenderExpr,
-  isKnownVirtualRenderExpr,
-  TplComponent,
-  TplNode,
-  TplSlot,
-  TplTag,
-} from "@/wab/classes";
-import {
   TplComponentNameSection,
   TplTagNameSection,
 } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
@@ -44,6 +35,15 @@ import {
 } from "@/wab/components";
 import { isDedicatedArena } from "@/wab/shared/Arenas";
 import { MIXINS_CAP } from "@/wab/shared/Labels";
+import {
+  Component,
+  isKnownRenderExpr,
+  isKnownVirtualRenderExpr,
+  TplComponent,
+  TplNode,
+  TplSlot,
+  TplTag,
+} from "@/wab/shared/model/classes";
 import {
   getAncestorTplSlot,
   isCodeComponentSlot,

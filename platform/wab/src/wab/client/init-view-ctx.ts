@@ -1,10 +1,10 @@
-import { meta } from "@/wab/classes-metas";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { DbCtx } from "@/wab/client/db";
 import { loadSiteDbCtx } from "@/wab/client/init-ctx";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { observeModel } from "@/wab/observable-model";
 import { SiteInfo } from "@/wab/shared/SharedApi";
+import { meta } from "@/wab/shared/model/classes-metas";
 import * as mobx from "mobx";
 
 (window as any).mobx = mobx;

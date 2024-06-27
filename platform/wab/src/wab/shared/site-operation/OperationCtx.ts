@@ -1,4 +1,4 @@
-import type { Site } from "@/wab/classes";
+import type { Site } from "@/wab/shared/model/classes";
 import type { Safe } from "@/wab/shared/site-operation/safe";
 
 export interface OperationCtx {

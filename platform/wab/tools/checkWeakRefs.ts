@@ -1,11 +1,11 @@
 import { memoize, uniq } from "lodash";
-import { isWeakRefField, Type } from "../src/wab/model/model-meta";
-import { instUtil } from "../src/wab/shared/core/InstUtil";
+import { instUtil } from "../src/wab/shared/model/InstUtil";
+import { Type, isWeakRefField } from "../src/wab/shared/model/model-meta";
 import {
   ClassNames,
-  handledWeakRefPaths,
   PartialPath,
   Path,
+  handledWeakRefPaths,
 } from "./handledWeakRefPaths";
 
 const builtinTypes = new Set([

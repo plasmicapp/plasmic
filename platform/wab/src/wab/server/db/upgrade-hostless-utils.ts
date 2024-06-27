@@ -1,4 +1,3 @@
-import { ensureKnownProjectDependency, ProjectDependency } from "@/wab/classes";
 import { upgradeProjectDeps } from "@/wab/project-deps";
 import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
 import {
@@ -9,6 +8,10 @@ import { DbMgr } from "@/wab/server/db/DbMgr";
 import { publishHostlessProject } from "@/wab/server/db/PublishHostless";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
+import {
+  ensureKnownProjectDependency,
+  ProjectDependency,
+} from "@/wab/shared/model/classes";
 import { isHostLessPackage } from "@/wab/sites";
 import { trackComponentRoot, trackComponentSite } from "@/wab/tpls";
 

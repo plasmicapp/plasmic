@@ -1,13 +1,12 @@
-import { Component } from "@/wab/classes";
 import type { SubDeps } from "@/wab/client/components/canvas/subdeps";
 import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { assert, unexpected } from "@/wab/common";
-import { ChangeSummary } from "@/wab/model-change-util";
+import { getTplSlotForParam, isSlot } from "@/wab/shared/SlotUtils";
 import { getPropTypeType } from "@/wab/shared/code-components/code-components";
 import {
+  SerializerBaseContext,
   asOneNode,
   generateSubstituteComponentCalls,
-  SerializerBaseContext,
   serializeTplSlotArgsAsArray,
 } from "@/wab/shared/codegen/react-p";
 import {
@@ -17,12 +16,13 @@ import {
   makePlasmicComponentName,
 } from "@/wab/shared/codegen/react-p/utils";
 import { jsLiteral, toVarName } from "@/wab/shared/codegen/util";
+import { Component } from "@/wab/shared/model/classes";
+import { ChangeSummary } from "@/wab/shared/model/model-change-util";
 import {
-  getPlumeEditorPlugin,
   PlumeCodeComponentMeta,
   PlumeType,
+  getPlumeEditorPlugin,
 } from "@/wab/shared/plume/plume-registry";
-import { getTplSlotForParam, isSlot } from "@/wab/shared/SlotUtils";
 import { flattenTpls, isTplComponent } from "@/wab/tpls";
 import React from "react";
 

@@ -1,10 +1,9 @@
-import { ArenaFrame } from "@/wab/classes";
-import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import { CanvasActions } from "@/wab/client/components/canvas/CanvasActions/CanvasActions";
 import { CanvasArtboardSelectionHandle } from "@/wab/client/components/canvas/CanvasFrame/CanvasArtboardSelectionHandle";
 import styles from "@/wab/client/components/canvas/CanvasFrame/CanvasFrame.module.scss";
 import { CanvasHeader } from "@/wab/client/components/canvas/CanvasFrame/CanvasHeader";
 import { headRegexp } from "@/wab/client/components/canvas/CanvasFrame/headRegexp";
+import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import {
   absorbLinkClick,
   closestTaggedNonTextDomElt,
@@ -23,6 +22,7 @@ import {
   toJsIdentifier,
   toVarName,
 } from "@/wab/shared/codegen/util";
+import { ArenaFrame } from "@/wab/shared/model/classes";
 import { getPublicUrl } from "@/wab/urls";
 import { Spin } from "antd";
 import $ from "jquery";

@@ -1,3 +1,8 @@
+import type { SubDeps } from "@/wab/client/components/canvas/subdeps";
+import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { isSlot } from "@/wab/shared/SlotUtils";
+import { SerializerBaseContext } from "@/wab/shared/codegen/react-p";
+import { toVarName } from "@/wab/shared/codegen/util";
 import {
   Component,
   Param,
@@ -6,11 +11,7 @@ import {
   TplNode,
   Type,
   Variant,
-} from "@/wab/classes";
-import type { SubDeps } from "@/wab/client/components/canvas/subdeps";
-import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { SerializerBaseContext } from "@/wab/shared/codegen/react-p";
-import { toVarName } from "@/wab/shared/codegen/util";
+} from "@/wab/shared/model/classes";
 import { ButtonPlugin } from "@/wab/shared/plume/button";
 import { CheckboxPlugin } from "@/wab/shared/plume/checkbox";
 import { MenuPlugin } from "@/wab/shared/plume/menu";
@@ -23,7 +24,6 @@ import { SelectOptionGroupPlugin } from "@/wab/shared/plume/select-option-group"
 import { SwitchPlugin } from "@/wab/shared/plume/switch";
 import { TextInputPlugin } from "@/wab/shared/plume/text-input";
 import { TriggeredOverlayPlugin } from "@/wab/shared/plume/triggered-overlay";
-import { isSlot } from "@/wab/shared/SlotUtils";
 import { isTplNamable } from "@/wab/tpls";
 import { ValComponent } from "@/wab/val-nodes";
 import { Action, CodeComponentMeta } from "@plasmicapp/host";

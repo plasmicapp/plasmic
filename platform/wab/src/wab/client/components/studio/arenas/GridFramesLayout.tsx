@@ -1,16 +1,16 @@
+import { CanvasFrame } from "@/wab/client/components/canvas/CanvasFrame";
+import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
+import sty from "@/wab/client/components/studio/arenas/GridFramesLayout.module.sass";
+import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { maybe, switchType } from "@/wab/common";
+import { AnyArena, getFrameHeight } from "@/wab/shared/Arenas";
 import {
   ArenaFrame,
   ArenaFrameGrid,
   ArenaFrameRow,
   ComponentArena,
   PageArena,
-} from "@/wab/classes";
-import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
-import { CanvasFrame } from "@/wab/client/components/canvas/CanvasFrame";
-import sty from "@/wab/client/components/studio/arenas/GridFramesLayout.module.sass";
-import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { maybe, switchType } from "@/wab/common";
-import { AnyArena, getFrameHeight } from "@/wab/shared/Arenas";
+} from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import React from "react";
 

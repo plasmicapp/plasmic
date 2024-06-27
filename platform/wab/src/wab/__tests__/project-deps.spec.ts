@@ -1,7 +1,11 @@
-import { ProjectDependency, Site, SiteParams } from "@/wab/classes";
 import { walkDependencyTree } from "@/wab/project-deps";
 import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
 import { mkBaseVariant } from "@/wab/shared/Variants";
+import {
+  ProjectDependency,
+  Site,
+  SiteParams,
+} from "@/wab/shared/model/classes";
 import { createDefaultTheme } from "@/wab/sites";
 
 describe("walkDependencyTree", () => {

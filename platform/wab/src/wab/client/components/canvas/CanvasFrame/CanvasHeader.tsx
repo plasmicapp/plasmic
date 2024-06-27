@@ -1,12 +1,11 @@
-import { ArenaFrame, Component, TplTag, Variant } from "@/wab/classes";
-import { CanvasConfigButton } from "@/wab/client/components/canvas/CanvasFrame/CanvasConfigButton";
-import styles from "@/wab/client/components/canvas/CanvasFrame/CanvasHeader.module.scss";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import {
-  makeCanvasVariantContextMenu,
   StyleVariantEditor,
   VariantLabel,
+  makeCanvasVariantContextMenu,
 } from "@/wab/client/components/VariantControls";
+import { CanvasConfigButton } from "@/wab/client/components/canvas/CanvasFrame/CanvasConfigButton";
+import styles from "@/wab/client/components/canvas/CanvasFrame/CanvasHeader.module.scss";
 import { EditableLabelHandles } from "@/wab/client/components/widgets/EditableLabel";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import {
@@ -26,6 +25,12 @@ import {
   isPageArena,
 } from "@/wab/shared/Arenas";
 import { getDisplayVariants, isStyleVariant } from "@/wab/shared/Variants";
+import {
+  ArenaFrame,
+  Component,
+  TplTag,
+  Variant,
+} from "@/wab/shared/model/classes";
 import { Popover, Tooltip } from "antd";
 import cn from "classnames";
 import { observer } from "mobx-react";

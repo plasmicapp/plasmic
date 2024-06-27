@@ -1,4 +1,3 @@
-import { ColumnsConfig } from "@/wab/classes";
 import S from "@/wab/client/components/sidebar-tabs/ResponsiveColumns/ColumnsSizeControls.module.scss";
 import {
   addNewColumn,
@@ -16,6 +15,7 @@ import {
   calcMovedColSizes,
   updateCurrentTplColumns,
 } from "@/wab/shared/columns-utils";
+import { ColumnsConfig } from "@/wab/shared/model/classes";
 import { allImageAssets, allMixins, allStyleTokens } from "@/wab/sites";
 import { CssVarResolver } from "@/wab/styles";
 import { TplColumnsTag } from "@/wab/tpls";

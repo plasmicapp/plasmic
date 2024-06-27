@@ -1,17 +1,17 @@
-import { Variant } from "@/wab/classes";
 import { ComponentType } from "@/wab/components";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
-  makeVariantComboSorter,
-  sortedVariantCombos,
-} from "@/wab/shared/variant-sort";
-import {
+  VariantCombo,
   getBaseVariant,
   isPrivateStyleVariant,
   isStyleVariant,
-  VariantCombo,
 } from "@/wab/shared/Variants";
+import { Variant } from "@/wab/shared/model/classes";
+import {
+  makeVariantComboSorter,
+  sortedVariantCombos,
+} from "@/wab/shared/variant-sort";
 import { createSite } from "@/wab/sites";
 import { mkTplTagX } from "@/wab/tpls";
 import L from "lodash";

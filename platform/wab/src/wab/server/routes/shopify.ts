@@ -1,4 +1,3 @@
-import { Site } from "@/wab/classes";
 import {
   ensure,
   ensureString,
@@ -17,6 +16,7 @@ import { getUser, superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import { getShopifySecrets } from "@/wab/server/secrets";
 import { UnauthorizedError } from "@/wab/shared/ApiErrors/errors";
 import { ProjectId, UserId } from "@/wab/shared/ApiSchema";
+import { Site } from "@/wab/shared/model/classes";
 import { getPublicUrl } from "@/wab/urls";
 import Shopify, {
   ApiVersion,

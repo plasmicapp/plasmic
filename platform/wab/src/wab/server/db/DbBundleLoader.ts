@@ -1,13 +1,13 @@
-import * as classes from "@/wab/classes";
 import { ensure, strictZip } from "@/wab/common";
 import {
-  getMigratedBundle,
   MigrationDbMgr,
+  getMigratedBundle,
 } from "@/wab/server/db/BundleMigrator";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
 import { Bundle, Bundler } from "@/wab/shared/bundler";
-import { parseBundle, UnsafeBundle } from "@/wab/shared/bundles";
+import { UnsafeBundle, parseBundle } from "@/wab/shared/bundles";
+import * as classes from "@/wab/shared/model/classes";
 import L from "lodash";
 
 /**

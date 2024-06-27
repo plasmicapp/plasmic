@@ -1,4 +1,3 @@
-import { Component, TplNode } from "@/wab/classes";
 import {
   ComponentNode,
   DefaultFrameMixin,
@@ -17,6 +16,7 @@ import { arrayReversed } from "@/wab/commons/collections";
 import { getComponentDisplayName } from "@/wab/components";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
+import { Component, TplNode } from "@/wab/shared/model/classes";
 import { MkTplTagOpts, isTplVariantable } from "@/wab/tpls";
 import { getBoundingRect } from "@figma-plugin/helpers";
 import { isString } from "lodash";

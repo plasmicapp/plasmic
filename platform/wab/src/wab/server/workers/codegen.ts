@@ -1,4 +1,3 @@
-import { Site } from "@/wab/classes";
 import { ensure, UnexpectedTypeError, withoutNils } from "@/wab/common";
 import { toOpaque } from "@/wab/commons/types";
 import { CodeComponentConfig, isPageComponent } from "@/wab/components";
@@ -44,6 +43,7 @@ import {
 import { GlobalVariantConfig } from "@/wab/shared/codegen/variants";
 import { asDataUrl } from "@/wab/shared/data-urls";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { Site } from "@/wab/shared/model/classes";
 import { allComponents } from "@/wab/sites";
 import { initBuiltinActions } from "@/wab/states";
 import { deepTrackComponents } from "@/wab/tpls";

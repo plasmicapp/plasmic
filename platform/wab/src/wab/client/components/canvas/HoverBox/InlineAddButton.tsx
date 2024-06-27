@@ -1,10 +1,10 @@
-import { isKnownTplNode, TplTag } from "@/wab/classes";
 import styles from "@/wab/client/components/canvas/HoverBox/InlineAddButton.module.scss";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { getContainerType } from "@/wab/client/utils/tpl-client-utils";
 import { ContainerLayoutType } from "@/wab/shared/layoututils";
+import { isKnownTplNode, TplTag } from "@/wab/shared/model/classes";
 import { SlotSelection } from "@/wab/slots";
 import {
   isComponentRoot,

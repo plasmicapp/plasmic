@@ -1,7 +1,5 @@
-import { Mixin, ProjectDependency, Variant } from "@/wab/classes";
 import ListItem from "@/wab/client/components/ListItem";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
-import { BackgroundSection } from "@/wab/client/components/sidebar-tabs/background-section";
 import { EffectsPanelSection } from "@/wab/client/components/sidebar-tabs/EffectsSection";
 import { LayoutSection } from "@/wab/client/components/sidebar-tabs/LayoutSection";
 import { ListStyleSection } from "@/wab/client/components/sidebar-tabs/ListStyleSection";
@@ -12,14 +10,15 @@ import { SpacingSection } from "@/wab/client/components/sidebar-tabs/SpacingSect
 import { TransformPanelSection } from "@/wab/client/components/sidebar-tabs/TransformPanelSection";
 import { TransitionsPanelSection } from "@/wab/client/components/sidebar-tabs/TransitionsSection";
 import { TypographySection } from "@/wab/client/components/sidebar-tabs/TypographySection";
+import { BackgroundSection } from "@/wab/client/components/sidebar-tabs/background-section";
 import { FindReferencesModal } from "@/wab/client/components/sidebar/FindReferencesModal";
-import { useDepFilterButton } from "@/wab/client/components/sidebar/left-panel-utils";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
   ItemOrGroup,
   VirtualGroupedList,
 } from "@/wab/client/components/sidebar/VirtualGroupedList";
+import { useDepFilterButton } from "@/wab/client/components/sidebar/left-panel-utils";
 import {
   BorderPanelSection,
   BorderRadiusSection,
@@ -40,10 +39,11 @@ import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ensure, spawn, tuple } from "@/wab/common";
 import { isTokenRef } from "@/wab/commons/StyleToken";
 import { extractTransitiveDepsFromMixins } from "@/wab/project-deps";
-import { makeTokenRefResolver } from "@/wab/shared/cached-selectors";
-import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import { MIXIN_LOWER } from "@/wab/shared/Labels";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { makeTokenRefResolver } from "@/wab/shared/cached-selectors";
+import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
+import { Mixin, ProjectDependency, Variant } from "@/wab/shared/model/classes";
 import { extractMixinUsages } from "@/wab/styles";
 import { Menu, notification } from "antd";
 import L, { orderBy } from "lodash";

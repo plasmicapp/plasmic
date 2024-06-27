@@ -1,4 +1,3 @@
-import { Expr, isKnownTplNode, isKnownTplSlot, TplNode } from "@/wab/classes";
 import {
   getPreferredInsertLocs,
   InsertRelLoc,
@@ -34,8 +33,8 @@ import {
   LINK_ICON,
   PASSWORD_INPUT_ICON,
   SLOT_ICON,
-  TEXTAREA_ICON,
   TEXT_ICON,
+  TEXTAREA_ICON,
   VERT_STACK_ICON,
 } from "@/wab/client/icons";
 import { renderCantAddMsg } from "@/wab/client/messages/parenting-msgs";
@@ -66,6 +65,12 @@ import {
   ContainerLayoutType,
   getRshContainerType,
 } from "@/wab/shared/layoututils";
+import {
+  Expr,
+  isKnownTplNode,
+  isKnownTplSlot,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import {
   canAddChildrenAndWhy,
   canAddSiblingsAndWhy,

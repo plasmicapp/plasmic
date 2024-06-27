@@ -1,4 +1,4 @@
-import { Site } from "@/wab/classes";
+import { Site } from "@/wab/shared/model/classes";
 import { OperationCtx } from "@/wab/shared/site-operation/OperationCtx";
 import { Safe } from "@/wab/shared/site-operation/safe";
 

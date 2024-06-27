@@ -1,4 +1,3 @@
-import { ComponentDataQuery } from "@/wab/classes";
 import DataPicker, {
   DataPickerTypesSchema,
   InitialMode,
@@ -8,6 +7,7 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { isNonNil, mkShortId, spawn, uniqueName } from "@/wab/common";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
+import { ComponentDataQuery } from "@/wab/shared/model/classes";
 import { Popover, Tooltip } from "antd";
 import { default as classNames } from "classnames";
 import { observer } from "mobx-react";

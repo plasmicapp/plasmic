@@ -1,4 +1,3 @@
-import { Component, ImageAsset, Param } from "@/wab/classes";
 import { U, UU } from "@/wab/client/cli-routes";
 import {
   resolveCollisionsForComponentProp,
@@ -15,6 +14,7 @@ import {
 } from "@/wab/components";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import { toClassName, toVarName } from "@/wab/shared/codegen/util";
+import { Component, ImageAsset, Param } from "@/wab/shared/model/classes";
 import { TplNamable } from "@/wab/tpls";
 import { History } from "history";
 import { action, makeObservable, observable } from "mobx";

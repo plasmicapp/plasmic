@@ -1,4 +1,3 @@
-import { Component, ObjInst, TplNode } from "@/wab/classes";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { xGroupBy, xMapValues } from "@/wab/common";
 import {
@@ -7,11 +6,12 @@ import {
   CommentThreadId,
 } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
+import { Component, ObjInst, TplNode } from "@/wab/shared/model/classes";
 import {
+  TplNamable,
   getTplOwnerComponent,
   isTplNamable,
   summarizeTplNamable,
-  TplNamable,
   tryGetTplOwnerComponent,
 } from "@/wab/tpls";
 import assert from "assert";

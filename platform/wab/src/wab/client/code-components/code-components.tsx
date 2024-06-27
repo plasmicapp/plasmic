@@ -1,4 +1,4 @@
-import { Component, HostLessPackageInfo, Site, TplNode } from "@/wab/classes";
+import { reportError } from "@/wab/client/ErrorNotifications";
 import {
   duplicateCodeComponentErrorDescription,
   fixInvalidReactVersion,
@@ -15,11 +15,11 @@ import {
   getSortedHostLessPkgs,
 } from "@/wab/client/components/studio/studio-bundles";
 import { scriptExec } from "@/wab/client/dom-utils";
-import { reportError } from "@/wab/client/ErrorNotifications";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { trackEvent } from "@/wab/client/tracking";
 import {
+  WritablePart,
   assert,
   assignReadonly,
   ensure,
@@ -28,7 +28,6 @@ import {
   safeCast,
   switchType,
   unexpected,
-  WritablePart,
   xDifference,
 } from "@/wab/common";
 import {
@@ -39,26 +38,32 @@ import {
 } from "@/wab/components";
 import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
 import {
-  appendCodeComponentMetaToModel,
   BadElementSchemaError,
   BadPresetSchemaError,
   CodeComponentRegistrationTypeError,
   CodeComponentSyncCallbackFns,
-  customFunctionId,
   CyclicComponentReferencesError,
   DuplicateCodeComponentError,
   DuplicatedComponentParamError,
-  elementSchemaToTpl,
-  getPropTypeType,
   InvalidCodeLibraryError,
   InvalidCustomFunctionError,
   InvalidTokenError,
   SelfReferencingComponent,
-  syncCodeComponents,
   UnknownComponentError,
   UnknownComponentPropError,
+  appendCodeComponentMetaToModel,
+  customFunctionId,
+  elementSchemaToTpl,
+  getPropTypeType,
+  syncCodeComponents,
 } from "@/wab/shared/code-components/code-components";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import {
+  Component,
+  HostLessPackageInfo,
+  Site,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import { isHostLessPackage } from "@/wab/sites";
 import { TplCodeComponent } from "@/wab/tpls";
 import {

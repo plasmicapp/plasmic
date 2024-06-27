@@ -1,11 +1,4 @@
 import {
-  ensureKnownTplComponent,
-  isKnownClassNamePropType,
-  TplComponent,
-  TplNode,
-  TplTag,
-} from "@/wab/classes";
-import {
   hasSimplifiedMode,
   isTplCodeComponentStyleable,
 } from "@/wab/client/code-components/code-components";
@@ -80,6 +73,13 @@ import { DEVFLAGS, DevFlagsType } from "@/wab/devflags";
 import { PublicStyleSection } from "@/wab/shared/ApiSchema";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import { isGridTag } from "@/wab/shared/grid-utils";
+import {
+  ensureKnownTplComponent,
+  isKnownClassNamePropType,
+  TplComponent,
+  TplNode,
+  TplTag,
+} from "@/wab/shared/model/classes";
 import {
   getAncestorSlotArg,
   getAncestorTplSlot,

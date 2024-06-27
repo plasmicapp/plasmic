@@ -1,4 +1,3 @@
-import { Component, isKnownVariant, Variant } from "@/wab/classes";
 import VariantRow from "@/wab/client/components/canvas/VariantsBar/VariantRow";
 import styles from "@/wab/client/components/canvas/VariantsBar/VariantsDrawer.module.scss";
 import VariantsGroupLabel from "@/wab/client/components/canvas/VariantsBar/VariantsGroupLabel";
@@ -14,6 +13,7 @@ import {
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { mod, partitions, spawn, xGroupBy } from "@/wab/common";
 import { VARIANTS_LOWER } from "@/wab/shared/Labels";
+import { Component, isKnownVariant, Variant } from "@/wab/shared/model/classes";
 import {
   getAllVariantsForTpl,
   isComponentStyleVariant,

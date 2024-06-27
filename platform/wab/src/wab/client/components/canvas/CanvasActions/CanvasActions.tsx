@@ -1,4 +1,3 @@
-import { ArenaFrame } from "@/wab/classes";
 import { CanvasTransformedBox } from "@/wab/client/components/canvas/CanvasTransformedBox";
 import { useRerenderOnUserBodyChange } from "@/wab/client/components/canvas/UserBodyObserver";
 import { hasLayoutBox } from "@/wab/client/dom";
@@ -14,12 +13,13 @@ import {
 } from "@/wab/components";
 import { AnyArena } from "@/wab/shared/Arenas";
 import { maybePropTypeToDisplayName } from "@/wab/shared/code-components/code-components";
+import { ArenaFrame } from "@/wab/shared/model/classes";
 import {
-  flattenVals,
   InvalidArgMeta,
-  isValComponent,
   ValComponent,
   ValidationType,
+  flattenVals,
+  isValComponent,
 } from "@/wab/val-nodes";
 import { Tooltip } from "antd";
 import $ from "jquery";

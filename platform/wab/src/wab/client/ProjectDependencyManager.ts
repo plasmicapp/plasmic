@@ -1,12 +1,3 @@
-import {
-  Component,
-  ImageAsset,
-  isKnownProjectDependency,
-  isKnownSite,
-  ProjectDependency,
-  Site,
-  Variant,
-} from "@/wab/classes";
 import { checkDepPkgHosts } from "@/wab/client/init-ctx";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { Dict } from "@/wab/collections";
@@ -33,6 +24,15 @@ import {
   inlineMixins,
   inlineTokens,
 } from "@/wab/shared/insertable-templates/inliners";
+import {
+  Component,
+  ImageAsset,
+  isKnownProjectDependency,
+  isKnownSite,
+  ProjectDependency,
+  Site,
+  Variant,
+} from "@/wab/shared/model/classes";
 import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
 import {
   allStyleTokens,

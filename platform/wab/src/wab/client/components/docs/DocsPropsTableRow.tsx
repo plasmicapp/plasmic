@@ -1,10 +1,10 @@
-import { Site } from "@/wab/classes";
 import {
   DefaultDocsPropsTableRowProps,
   PlasmicDocsPropsTableRow,
   PlasmicDocsPropsTableRow__OverridesType,
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsPropsTableRow";
 import { toVarName } from "@/wab/shared/codegen/util";
+import { Site } from "@/wab/shared/model/classes";
 import { PlumeDocsProp } from "@/wab/shared/plume/plume-registry";
 import * as React from "react";
 

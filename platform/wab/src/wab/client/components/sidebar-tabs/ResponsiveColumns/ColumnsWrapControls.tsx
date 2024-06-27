@@ -1,4 +1,3 @@
-import { ColumnsConfig } from "@/wab/classes";
 import S from "@/wab/client/components/sidebar-tabs/ColumnsSection.module.scss";
 import {
   FullRow,
@@ -18,6 +17,7 @@ import {
   redistributeColumns,
   updateCurrentTplColumns,
 } from "@/wab/shared/columns-utils";
+import { ColumnsConfig } from "@/wab/shared/model/classes";
 import { TplColumnsTag } from "@/wab/tpls";
 import cn from "classnames";
 import { clamp } from "lodash";

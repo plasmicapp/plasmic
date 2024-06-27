@@ -1,4 +1,3 @@
-import { ObjInst } from "@/wab/classes";
 import { apiKey } from "@/wab/client/api";
 import CommentPost from "@/wab/client/components/comments/CommentPost";
 import { getCommentsWithModelMetadata } from "@/wab/client/components/comments/utils";
@@ -27,6 +26,7 @@ import {
   CommentThreadId,
 } from "@/wab/shared/ApiSchema";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
+import { ObjInst } from "@/wab/shared/model/classes";
 import { mkSemVerSiteElement } from "@/wab/shared/site-diffs";
 import { isTplNamable } from "@/wab/tpls";
 import { Menu, Tooltip } from "antd";

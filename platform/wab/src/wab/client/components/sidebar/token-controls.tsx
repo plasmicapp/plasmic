@@ -1,5 +1,4 @@
 // eslint-disable-next-line no-restricted-imports
-import { StyleToken } from "@/wab/classes";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import ColorTokenControl from "@/wab/client/components/sidebar/ColorTokenControl";
 import GeneralTokenControl from "@/wab/client/components/sidebar/GeneralTokenControl";
@@ -13,8 +12,9 @@ import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawn } from "@/wab/common";
 import { TokenType } from "@/wab/commons/StyleToken";
-import { TokenValueResolver } from "@/wab/shared/cached-selectors";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { TokenValueResolver } from "@/wab/shared/cached-selectors";
+import { StyleToken } from "@/wab/shared/model/classes";
 import { allColorTokens } from "@/wab/sites";
 import { maybeTokenRefCycle } from "@/wab/styles";
 import { Menu, notification } from "antd";

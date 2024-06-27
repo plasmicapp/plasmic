@@ -1,8 +1,8 @@
 import {
   writeClassesMetas,
   writeTypescriptClasses,
-} from "../src/wab/model/model-generator";
-import { schema } from "../src/wab/model/model-schema";
+} from "../src/wab/shared/model/model-generator";
+import { schema } from "../src/wab/shared/model/model-schema";
 
-writeTypescriptClasses(schema, "src/wab/classes.ts");
-writeClassesMetas(schema, "src/wab/classes-metas.ts");
+writeTypescriptClasses(schema, "src/wab/shared/model/classes.ts");
+writeClassesMetas(schema, "src/wab/shared/model/classes-metas.ts");

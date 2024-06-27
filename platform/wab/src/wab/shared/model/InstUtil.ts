@@ -1,7 +1,7 @@
-import * as classes from "@/wab/classes";
-import { meta } from "@/wab/classes-metas";
 import { ensure, tuple, xor } from "@/wab/common";
-import { Class, Field, MetaRuntime } from "@/wab/model/model-meta";
+import * as classes from "@/wab/shared/model/classes";
+import { meta } from "@/wab/shared/model/classes-metas";
+import { Class, Field, MetaRuntime } from "@/wab/shared/model/model-meta";
 import L from "lodash";
 
 export class InstUtil {

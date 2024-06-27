@@ -1,6 +1,6 @@
-import { Split } from "@/wab/classes";
 import PlasmicExperimentRow from "@/wab/client/plasmic/plasmic_kit_optimize/PlasmicExperimentRow";
 import PlasmicExperimentRows from "@/wab/client/plasmic/plasmic_kit_optimize/PlasmicExperimentRows";
+import { Split } from "@/wab/shared/model/classes";
 import { SplitType } from "@/wab/splits";
 import { Menu } from "antd";
 import { observer } from "mobx-react";

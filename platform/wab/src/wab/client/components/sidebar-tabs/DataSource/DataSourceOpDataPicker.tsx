@@ -1,10 +1,3 @@
-import {
-  Component,
-  CustomCode,
-  Expr,
-  isKnownObjectPath,
-  ObjectPath,
-} from "@/wab/classes";
 import { ContextMenuContext } from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
 import { EnumPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/EnumPropEditor";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
@@ -12,6 +5,13 @@ import { useDataSourceOpExprBottomModals } from "@/wab/client/components/sidebar
 import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { DATA_QUERY_PLURAL_CAP } from "@/wab/shared/Labels";
+import {
+  Component,
+  CustomCode,
+  Expr,
+  isKnownObjectPath,
+  ObjectPath,
+} from "@/wab/shared/model/classes";
 import { renameQueryAndFixExprs } from "@/wab/shared/refactoring";
 import { addEmptyQuery } from "@/wab/shared/TplMgr";
 import React, { useContext } from "react";

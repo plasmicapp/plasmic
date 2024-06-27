@@ -18,7 +18,7 @@ import {
   Site,
   Variant,
   VariantGroup,
-} from "@/wab/classes";
+} from "@/wab/shared/model/classes";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {

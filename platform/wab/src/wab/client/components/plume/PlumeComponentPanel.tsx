@@ -1,10 +1,10 @@
-import { Component } from "@/wab/classes";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { HoverableDisclosure } from "@/wab/client/components/widgets/HoverableDisclosure";
 import { withoutNils } from "@/wab/common";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import { allComponentVariants } from "@/wab/components";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
+import { Component } from "@/wab/shared/model/classes";
 import {
   getPlumeEditorPlugin,
   getPlumeElementDef,

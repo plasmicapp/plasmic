@@ -1,22 +1,3 @@
-import * as classes from "@/wab/classes";
-import {
-  Arena,
-  ArenaChild,
-  Component,
-  ComponentArena,
-  ImageAsset,
-  Mixin,
-  ObjInst,
-  PageArena,
-  Param,
-  Site,
-  Split,
-  State,
-  StyleToken,
-  Variant,
-  VariantGroup,
-} from "@/wab/classes";
-import { meta } from "@/wab/classes-metas";
 import { spanWhile } from "@/wab/collections";
 import {
   arrayEq,
@@ -41,37 +22,56 @@ import {
 } from "@/wab/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import { Lookup, pathSelector } from "@/wab/commons/path-selector";
-import { getComponentDisplayName, PageComponent } from "@/wab/components";
+import { PageComponent, getComponentDisplayName } from "@/wab/components";
+import { ChangeRecorder } from "@/wab/observable-model";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { Bundler, addrKey } from "@/wab/shared/bundler";
+import { toVarName } from "@/wab/shared/codegen/util";
+import mobx from "@/wab/shared/import-mobx";
+import { instUtil } from "@/wab/shared/model/InstUtil";
+import * as classes from "@/wab/shared/model/classes";
+import {
+  Arena,
+  ArenaChild,
+  Component,
+  ComponentArena,
+  ImageAsset,
+  Mixin,
+  ObjInst,
+  PageArena,
+  Param,
+  Site,
+  Split,
+  State,
+  StyleToken,
+  Variant,
+  VariantGroup,
+} from "@/wab/shared/model/classes";
+import { meta } from "@/wab/shared/model/classes-metas";
 import {
   Class,
   Field,
   isWeakRefField,
   withoutUids,
-} from "@/wab/model/model-meta";
-import { ChangeRecorder } from "@/wab/observable-model";
-import { addrKey, Bundler } from "@/wab/shared/bundler";
-import { toVarName } from "@/wab/shared/codegen/util";
-import { instUtil } from "@/wab/shared/core/InstUtil";
+} from "@/wab/shared/model/model-meta";
 import {
+  NodeCtx,
+  NodeFieldCtx,
   areSameInstType,
   assertSameInstType,
   createNodeCtx,
   nextCtx,
-  NodeCtx,
-  NodeFieldCtx,
   walkModelTree,
-} from "@/wab/shared/core/model-tree-util";
-import mobx from "@/wab/shared/import-mobx";
+} from "@/wab/shared/model/model-tree-util";
 import {
   fixDanglingReferenceConflicts,
   getEmptyDeletedAssetsSummary,
   updateSummaryFromDeletedInstances,
 } from "@/wab/shared/server-updates-utils";
 import {
-  assertSiteInvariants,
   InvariantError,
+  assertSiteInvariants,
 } from "@/wab/shared/site-invariants";
-import { TplMgr } from "@/wab/shared/TplMgr";
 import { SplitType } from "@/wab/splits";
 import {
   flattenTpls,

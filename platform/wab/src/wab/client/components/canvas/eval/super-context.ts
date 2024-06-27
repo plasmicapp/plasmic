@@ -1,4 +1,4 @@
-import { Component } from "@/wab/classes";
+import { Component } from "@/wab/shared/model/classes";
 
 /**
  * React context value passed down from super component ancestors in the React tree

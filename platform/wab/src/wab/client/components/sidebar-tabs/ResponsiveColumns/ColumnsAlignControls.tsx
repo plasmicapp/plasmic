@@ -1,13 +1,13 @@
-import { TplNode } from "@/wab/classes";
 import { FullRow } from "@/wab/client/components/sidebar/sidebar-helpers";
-import { alignItemsIcons } from "@/wab/client/components/style-controls/align-items-controls";
-import { JustifyContentIcons } from "@/wab/client/components/style-controls/justify-content-controls";
 import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggleButton";
 import StyleToggleButtonGroup from "@/wab/client/components/style-controls/StyleToggleButtonGroup";
+import { alignItemsIcons } from "@/wab/client/components/style-controls/align-items-controls";
+import { JustifyContentIcons } from "@/wab/client/components/style-controls/justify-content-controls";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import InfoIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Info";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
+import { TplNode } from "@/wab/shared/model/classes";
 import { TplColumnsTag } from "@/wab/tpls";
 import { Popover } from "antd";
 import { observer } from "mobx-react";

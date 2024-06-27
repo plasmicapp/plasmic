@@ -1,14 +1,14 @@
-import {
-  DataSourceTemplate,
-  isKnownDataSourceOpExpr,
-  isKnownTemplatedString,
-} from "@/wab/classes";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { Bundler } from "@/wab/shared/bundler";
+import {
+  DataSourceTemplate,
+  isKnownDataSourceOpExpr,
+  isKnownTemplatedString,
+} from "@/wab/shared/model/classes";
 import { findExprsInComponent } from "@/wab/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {

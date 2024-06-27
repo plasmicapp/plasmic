@@ -1,12 +1,3 @@
-import {
-  Component,
-  ImageAsset,
-  isKnownImageAssetRef,
-  Param,
-  Site,
-  Variant,
-  VariantGroup,
-} from "@/wab/classes";
 import { CodePreviewCtx } from "@/wab/client/components/docs/CodePreviewSnippet";
 import {
   DocsPortalCtx,
@@ -53,6 +44,15 @@ import {
 } from "@/wab/shared/codegen/react-p/utils";
 import { jsLiteral, toVarName } from "@/wab/shared/codegen/util";
 import { extractUsedGlobalVariantsForComponents } from "@/wab/shared/codegen/variants";
+import {
+  Component,
+  ImageAsset,
+  isKnownImageAssetRef,
+  Param,
+  Site,
+  Variant,
+  VariantGroup,
+} from "@/wab/shared/model/classes";
 import { getPlumeDocsPlugin } from "@/wab/shared/plume/plume-registry";
 import {
   getReferencedVariantGroups,

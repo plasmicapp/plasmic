@@ -1,10 +1,3 @@
-import {
-  Component,
-  isKnownRawText,
-  isKnownStyleExpr,
-  isKnownStyleMarker,
-  Site,
-} from "@/wab/classes";
 import { assert, ensure } from "@/wab/common";
 import { isCodeComponent } from "@/wab/components";
 import { fontWeightNumber } from "@/wab/css";
@@ -13,6 +6,13 @@ import {
   makeTokenRefResolver,
 } from "@/wab/shared/cached-selectors";
 import { getFontSpec, GoogleFontInstallSpec } from "@/wab/shared/fonts";
+import {
+  Component,
+  isKnownRawText,
+  isKnownStyleExpr,
+  isKnownStyleMarker,
+  Site,
+} from "@/wab/shared/model/classes";
 import {
   ReadonlyIRuleSetHelpersX,
   RuleSetHelpers,

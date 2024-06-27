@@ -1,14 +1,3 @@
-import {
-  Component,
-  Expr,
-  FunctionType,
-  isKnownExpr,
-  isKnownFunctionType,
-  isKnownPageHref,
-  isKnownRenderableType,
-  isKnownRenderFuncType,
-  Param,
-} from "@/wab/classes";
 import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { IconLinkButton } from "@/wab/client/components/widgets";
@@ -27,8 +16,19 @@ import {
   getPropTypeType,
   wabTypeToPropType,
 } from "@/wab/shared/code-components/code-components";
-import { typeDisplayName, typeFactory } from "@/wab/shared/core/model-util";
 import { COMPONENT_PROP_CAP } from "@/wab/shared/Labels";
+import {
+  Component,
+  Expr,
+  FunctionType,
+  isKnownExpr,
+  isKnownFunctionType,
+  isKnownPageHref,
+  isKnownRenderableType,
+  isKnownRenderFuncType,
+  Param,
+} from "@/wab/shared/model/classes";
+import { typeDisplayName, typeFactory } from "@/wab/shared/model/model-util";
 import { smartHumanize } from "@/wab/strs";
 import { cloneType } from "@/wab/tpls";
 import { isNaN } from "lodash";

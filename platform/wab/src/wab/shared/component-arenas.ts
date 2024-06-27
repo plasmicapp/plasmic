@@ -1,22 +1,4 @@
 import {
-  ArenaFrame,
-  ArenaFrameCell,
-  ArenaFrameGrid,
-  ArenaFrameRow,
-  Component,
-  ComponentArena,
-  ComponentVariantGroup,
-  ensureKnownVariant,
-  ensureKnownVariantGroup,
-  ensureMaybeKnownVariantGroup,
-  isKnownVariant,
-  isKnownVariantGroup,
-  PageArena,
-  Site,
-  Variant,
-  VariantGroup,
-} from "@/wab/classes";
-import {
   assert,
   ensure,
   ensureArray,
@@ -49,6 +31,24 @@ import {
   usedGlobalVariantGroups,
 } from "@/wab/shared/cached-selectors";
 import { parseScreenSpec } from "@/wab/shared/Css";
+import {
+  ArenaFrame,
+  ArenaFrameCell,
+  ArenaFrameGrid,
+  ArenaFrameRow,
+  Component,
+  ComponentArena,
+  ComponentVariantGroup,
+  ensureKnownVariant,
+  ensureKnownVariantGroup,
+  ensureMaybeKnownVariantGroup,
+  isKnownVariant,
+  isKnownVariantGroup,
+  PageArena,
+  Site,
+  Variant,
+  VariantGroup,
+} from "@/wab/shared/model/classes";
 import { FramePinManager } from "@/wab/shared/PinManager";
 import {
   getComponentDefaultSize,

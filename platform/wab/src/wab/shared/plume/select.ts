@@ -1,9 +1,3 @@
-import {
-  Component,
-  isKnownVirtualRenderExpr,
-  Param,
-  TplComponent,
-} from "@/wab/classes";
 import { ensure, withoutNils } from "@/wab/common";
 import { codeLit } from "@/wab/exprs";
 import { internalCanvasElementProps } from "@/wab/shared/canvas-constants";
@@ -26,7 +20,13 @@ import {
   paramToVarName,
   toVarName,
 } from "@/wab/shared/codegen/util";
-import { typeFactory } from "@/wab/shared/core/model-util";
+import {
+  Component,
+  isKnownVirtualRenderExpr,
+  Param,
+  TplComponent,
+} from "@/wab/shared/model/classes";
+import { typeFactory } from "@/wab/shared/model/model-util";
 import { PlumePlugin } from "@/wab/shared/plume/plume-registry";
 import {
   ensureValidPlumeCodeMeta,

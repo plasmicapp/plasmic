@@ -1,13 +1,3 @@
-import {
-  Component,
-  ComponentArena,
-  ExprText,
-  isKnownArena,
-  isKnownComponentArena,
-  isKnownPageArena,
-  ObjectPath,
-  PageArena,
-} from "@/wab/classes";
 import { apiKey } from "@/wab/client/api";
 import { SEARCH_PARAM_BRANCH, UU } from "@/wab/client/cli-routes";
 import {
@@ -120,10 +110,20 @@ import {
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
 import {
+  ARENA_LOWER,
   ARENAS_CAP,
   ARENAS_DESCRIPTION,
-  ARENA_LOWER,
 } from "@/wab/shared/Labels";
+import {
+  Component,
+  ComponentArena,
+  ExprText,
+  isKnownArena,
+  isKnownComponentArena,
+  isKnownPageArena,
+  ObjectPath,
+  PageArena,
+} from "@/wab/shared/model/classes";
 import { tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
 import { addEmptyQuery } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";

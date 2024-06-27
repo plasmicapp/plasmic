@@ -1,18 +1,3 @@
-import {
-  DataSourceOpExpr,
-  DataSourceTemplate,
-  EventHandler,
-  isKnownCompositeExpr,
-  isKnownCustomCode,
-  isKnownObjectPath,
-  isKnownTplComponent,
-  isKnownTplSlot,
-  ObjectPath,
-  QueryInvalidationExpr,
-  TemplatedString,
-  TplComponent,
-  TplNode,
-} from "@/wab/classes";
 import { InsertRelLoc } from "@/wab/client/components/canvas/view-ops";
 import {
   createAddHostLessComponent,
@@ -41,6 +26,21 @@ import {
   mkDataSourceTemplate,
 } from "@/wab/shared/data-sources-meta/data-sources";
 import { DATA_SOURCE_LOWER } from "@/wab/shared/Labels";
+import {
+  DataSourceOpExpr,
+  DataSourceTemplate,
+  EventHandler,
+  isKnownCompositeExpr,
+  isKnownCustomCode,
+  isKnownObjectPath,
+  isKnownTplComponent,
+  isKnownTplSlot,
+  ObjectPath,
+  QueryInvalidationExpr,
+  TemplatedString,
+  TplComponent,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import { getTplComponentArg } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { mkInteraction } from "@/wab/states";

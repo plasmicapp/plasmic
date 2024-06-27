@@ -1,11 +1,4 @@
 import {
-  Component,
-  ImageAsset,
-  isKnownPropParam,
-  Site,
-  VariantGroup,
-} from "@/wab/classes";
-import {
   absorbLinkClick,
   showCanvasAuthNotification,
 } from "@/wab/client/components/canvas/studio-canvas-util";
@@ -69,6 +62,13 @@ import {
 } from "@/wab/shared/codegen/types";
 import { jsLiteral, toVarName } from "@/wab/shared/codegen/util";
 import { exportGlobalVariantGroup } from "@/wab/shared/codegen/variants";
+import {
+  Component,
+  ImageAsset,
+  isKnownPropParam,
+  Site,
+  VariantGroup,
+} from "@/wab/shared/model/classes";
 import { SiteInfo } from "@/wab/shared/SharedApi";
 import { getSlotParams } from "@/wab/shared/SlotUtils";
 import { isScreenVariantGroup, VariantCombo } from "@/wab/shared/Variants";

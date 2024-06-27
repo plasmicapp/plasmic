@@ -1,7 +1,7 @@
-import { TplTag } from "@/wab/classes";
 import { LocalClipboard, TplClip } from "@/wab/client/clipboard/local";
 import { ComponentType, mkComponent } from "@/wab/components";
-import { withoutUids } from "@/wab/model/model-meta";
+import { TplTag } from "@/wab/shared/model/classes";
+import { withoutUids } from "@/wab/shared/model/model-meta";
 import { mkTplTestText } from "@/wab/test/tpls";
 import { mkTplTagX } from "@/wab/tpls";
 

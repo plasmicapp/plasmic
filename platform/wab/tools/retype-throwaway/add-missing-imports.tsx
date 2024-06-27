@@ -4,18 +4,18 @@ import * as pathmod from "path";
 
 function main() {
   for (const path of glob.sync("src/wab/**/*.{ts,tsx}")) {
-    if (["src/wab/classes.ts"].includes(path)) {
+    if (["src/wab/shared/model/classes.ts"].includes(path)) {
       continue;
     }
     // This is a list of files that import Type from 'model-meta' instead of 'classes'.
     // Don't replace things like `instanceof Type` in these - that's a different Type than the one in classes!
     const pattern = [
       "src/wab/__tests__/model-spec.ts",
-      "src/wab/classes-metas.ts",
-      "src/wab/model-change-util.ts",
-      "src/wab/model/model-generator.ts",
+      "src/wab/shared/model/model-generator.ts",
       "src/wab/shared/bundler.ts",
-      "src/wab/shared/core/model-util.ts",
+      "src/wab/shared/model/classes-metas.ts",
+      "src/wab/shared/model/model-change-util.ts",
+      "src/wab/shared/model/model-util.ts",
       "src/wab/shared/site-diffs/model-conflicts-meta.ts",
     ].includes(path)
       ? // without Type
@@ -28,10 +28,10 @@ function main() {
     if (syms.size > 0) {
       let relativeClassesPath = pathmod.relative(
         pathmod.dirname(path),
-        "src/wab/classes"
+        "src/wab/shared/model/classes"
       );
       if (relativeClassesPath === "classes") {
-        relativeClassesPath = "./classes";
+        relativeClassesPath = "@/wab/shared/model/classes";
       }
       content = `import { ${Array.from(syms).join(
         ", "

@@ -1,13 +1,17 @@
-import { isKnownRenderExpr, isKnownTplNode, TplNode } from "@/wab/classes";
 import { switchType, unreachable } from "@/wab/common";
 import { Selectable } from "@/wab/selection";
+import {
+  isKnownRenderExpr,
+  isKnownTplNode,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import {
   isPlaceholderValue,
   UNINITIALIZED_BOOLEAN,
   UNINITIALIZED_NUMBER,
   UNINITIALIZED_OBJECT,
   UNINITIALIZED_STRING,
-} from "@/wab/shared/core/model-util";
+} from "@/wab/shared/model/model-util";
 import { SlotSelection } from "@/wab/slots";
 import { capitalizeFirst } from "@/wab/strs";
 import { ValNode } from "@/wab/val-nodes";

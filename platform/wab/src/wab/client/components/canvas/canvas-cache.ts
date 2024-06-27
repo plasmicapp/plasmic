@@ -1,4 +1,3 @@
-import { TplNode } from "@/wab/classes";
 import { RenderingCtx } from "@/wab/client/components/canvas/canvas-rendering";
 import {
   arrayEq,
@@ -10,13 +9,14 @@ import {
 } from "@/wab/common";
 import { DeepMap } from "@/wab/commons/deep-map";
 import { ReactHookSpec } from "@/wab/shared/codegen/react-p/react-hook-spec";
+import { TplNode } from "@/wab/shared/model/classes";
 import { isEqual, uniq } from "lodash";
 import {
+  _isComputingDerivation,
   computed,
   IComputedValue,
   IComputedValueOptions,
   onBecomeUnobserved,
-  _isComputingDerivation,
 } from "mobx";
 import { CanvasEnv } from "src/wab/shared/eval";
 

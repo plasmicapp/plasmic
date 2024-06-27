@@ -1,3 +1,7 @@
+import { ensureInstance } from "@/wab/common";
+import { ComponentType, mkComponent } from "@/wab/components";
+import { code } from "@/wab/exprs";
+import { mkParam, mkVar, ParamExportType } from "@/wab/lang";
 import {
   ensureKnownSlotParam,
   ensureKnownTplTag,
@@ -5,12 +9,8 @@ import {
   TplComponent,
   TplTag,
   VarRef,
-} from "@/wab/classes";
-import { ensureInstance } from "@/wab/common";
-import { ComponentType, mkComponent } from "@/wab/components";
-import { code } from "@/wab/exprs";
-import { mkParam, mkVar, ParamExportType } from "@/wab/lang";
-import { typeFactory } from "@/wab/shared/core/model-util";
+} from "@/wab/shared/model/classes";
+import { typeFactory } from "@/wab/shared/model/model-util";
 import { assertSiteInvariants } from "@/wab/shared/site-invariants";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import {

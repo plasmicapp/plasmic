@@ -1,11 +1,11 @@
-import { ArenaFrameGrid, ArenaFrameRow } from "@/wab/classes";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { Bundler } from "@/wab/shared/bundler";
 import { makeComponentArenaCustomMatrix } from "@/wab/shared/component-arenas";
+import { ArenaFrameGrid, ArenaFrameRow } from "@/wab/shared/model/classes";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();

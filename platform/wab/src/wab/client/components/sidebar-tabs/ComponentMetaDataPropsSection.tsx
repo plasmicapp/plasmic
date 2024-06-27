@@ -1,4 +1,3 @@
-import { Component } from "@/wab/classes";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import promptForMetadata from "@/wab/client/components/modals/ComponentMetadataModal";
 import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
@@ -17,6 +16,7 @@ import {
   removeComponentMetadata,
 } from "@/wab/components";
 import { toVarName } from "@/wab/shared/codegen/util";
+import { Component } from "@/wab/shared/model/classes";
 import { Menu, notification } from "antd";
 import { observer } from "mobx-react";
 import React from "react";

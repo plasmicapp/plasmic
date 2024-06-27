@@ -1,9 +1,3 @@
-import {
-  Component,
-  ProjectDependency,
-  TplComponent,
-  TplNode,
-} from "@/wab/classes";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { checkAndNotifyUnsupportedHostVersion } from "@/wab/client/components/modals/codeComponentModals";
 import S from "@/wab/client/components/sidebar-tabs/CustomBehaviorsSection.module.scss";
@@ -28,6 +22,12 @@ import { DEVFLAGS } from "@/wab/devflags";
 import { CUSTOM_BEHAVIORS_CAP } from "@/wab/shared/Labels";
 import { getSlotParams } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  Component,
+  ProjectDependency,
+  TplComponent,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import { isHostLessPackage } from "@/wab/sites";
 import { SlotSelection } from "@/wab/slots";
 import { isTplComponent } from "@/wab/tpls";

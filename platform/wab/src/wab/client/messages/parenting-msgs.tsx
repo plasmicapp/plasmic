@@ -1,6 +1,6 @@
-import { TplSlot } from "@/wab/classes";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
-import { typeDisplayName } from "@/wab/shared/core/model-util";
+import { TplSlot } from "@/wab/shared/model/classes";
+import { typeDisplayName } from "@/wab/shared/model/model-util";
 import { CantAddChildMsg, CantAddSiblingMsg } from "@/wab/shared/parenting";
 import React from "react";
 

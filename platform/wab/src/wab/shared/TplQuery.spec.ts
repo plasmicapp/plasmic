@@ -1,3 +1,7 @@
+import { ensure, tuple } from "@/wab/common";
+import * as Components from "@/wab/components";
+import { ComponentType, mkComponent } from "@/wab/components";
+import { mkParam, ParamExportType } from "@/wab/lang";
 import {
   Arg,
   ensureKnownRenderExpr,
@@ -5,13 +9,9 @@ import {
   isKnownRenderExpr,
   RenderExpr,
   TplTag,
-} from "@/wab/classes";
-import { ensure, tuple } from "@/wab/common";
-import * as Components from "@/wab/components";
-import { ComponentType, mkComponent } from "@/wab/components";
-import { mkParam, ParamExportType } from "@/wab/lang";
-import { withoutUids } from "@/wab/model/model-meta";
-import { typeFactory } from "@/wab/shared/core/model-util";
+} from "@/wab/shared/model/classes";
+import { withoutUids } from "@/wab/shared/model/model-meta";
+import { typeFactory } from "@/wab/shared/model/model-util";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { getBaseVariant } from "@/wab/shared/Variants";

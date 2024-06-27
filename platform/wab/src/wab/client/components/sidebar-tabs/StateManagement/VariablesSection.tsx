@@ -1,4 +1,3 @@
-import { Component, State } from "@/wab/classes";
 import ImplicitVariablesSection from "@/wab/client/components/sidebar-tabs/StateManagement/ImplicitVariablesSection";
 import { VariableEditingModal } from "@/wab/client/components/sidebar-tabs/StateManagement/VariableEditingModal";
 import VariableRow from "@/wab/client/components/sidebar-tabs/StateManagement/VariableRow";
@@ -14,11 +13,12 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ensure, spawn } from "@/wab/common";
 import { mkParamsForState } from "@/wab/lang";
 import { VARIABLE_PLURAL_CAP } from "@/wab/shared/Labels";
+import { Component, State } from "@/wab/shared/model/classes";
 import {
-  addComponentState,
   DEFAULT_STATE_ACCESS_TYPE,
   DEFAULT_STATE_VARIABLE_NAME,
   DEFAULT_STATE_VARIABLE_TYPE,
+  addComponentState,
   genOnChangeParamName,
   getDefaultValueForStateVariableType,
   mkState,

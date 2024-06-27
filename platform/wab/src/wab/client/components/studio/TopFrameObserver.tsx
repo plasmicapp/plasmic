@@ -1,4 +1,3 @@
-import { Component } from "@/wab/classes";
 import { usePreviewCtx } from "@/wab/client/components/live/PreviewCtx";
 import { HostFrameApi } from "@/wab/client/frame-ctx/host-frame-api";
 import { useHostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
@@ -13,6 +12,7 @@ import { ApiBranch } from "@/wab/shared/ApiSchema";
 import { isComponentArena, isPageArena } from "@/wab/shared/Arenas";
 import { findAllDataSourceOpExprForComponent } from "@/wab/shared/cached-selectors";
 import { getNormalizedComponentName } from "@/wab/shared/codegen/react-p/utils";
+import { Component } from "@/wab/shared/model/classes";
 import { notification } from "antd";
 import { sortBy } from "lodash";
 import { autorun, computed } from "mobx";

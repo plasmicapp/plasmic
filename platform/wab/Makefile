@@ -3,7 +3,7 @@ SUBDIRS := $(wildcard src/wab/shared/copilot/internal/.)
 all: \
 	src/wab/gen/modelPegParser.js \
 	src/wab/gen/funcTplParser.js \
-	src/wab/classes.ts \
+	src/wab/shared/model/classes.ts \
 	src/wab \
 	src/wab/gen/cssPegParser.js \
 	src/wab/gen/GridStyleParser.js \
@@ -19,9 +19,9 @@ all: \
 	$(SUBDIRS)
 $(SUBDIRS):
 	$(MAKE) -C $@
-src/wab/classes.ts: src/wab/gen/modelPegParser.js src/wab/model/model-schema.ts tools/gen-models.ts src/wab/model/model-generator.ts
+src/wab/shared/model/classes.ts: src/wab/gen/modelPegParser.js src/wab/shared/model/model-schema.ts tools/gen-models.ts src/wab/shared/model/model-generator.ts
 	yarn gen:models
-src/wab/classes-metas.ts: src/wab/gen/modelPegParser.js src/wab/model/model-schema.ts tools/gen-models.ts src/wab/model/model-generator.ts
+src/wab/shared/model/classes-metas.ts: src/wab/gen/modelPegParser.js src/wab/shared/model/model-schema.ts tools/gen-models.ts src/wab/shared/model/model-generator.ts
 	yarn gen:models
 src/wab/styles/_tokens.sass: src/wab/styles/plasmic-tokens.theo.json
 	yarn run theo src/wab/styles/plasmic-tokens.theo.json --transform web --format sass --dest src/wab/styles

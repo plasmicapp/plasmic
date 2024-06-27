@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import { escapeRegExp, without } from "lodash";
-import { instUtil } from "../src/wab/shared/core/InstUtil";
+import { instUtil } from "../src/wab/shared/model/InstUtil";
 
 function main() {
   const content: string = fs.readFileSync(".eslintrc.js", "utf8").toString();

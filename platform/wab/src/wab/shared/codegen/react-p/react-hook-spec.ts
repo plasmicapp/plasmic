@@ -11,19 +11,19 @@
 //      pressed: boolean
 //    }
 
-import { Component, TplNode, Variant } from "@/wab/classes";
 import { ensure } from "@/wab/common";
 import { tryExtractLit } from "@/wab/exprs";
-import { NodeNamer } from "@/wab/shared/codegen/react-p/utils";
-import { jsLiteral } from "@/wab/shared/codegen/util";
 import {
   isPrivateStyleVariant,
   tryGetBaseVariantSetting,
 } from "@/wab/shared/Variants";
+import { NodeNamer } from "@/wab/shared/codegen/react-p/utils";
+import { jsLiteral } from "@/wab/shared/codegen/util";
+import { Component, TplNode, Variant } from "@/wab/shared/model/classes";
 import {
-  getTriggerableSelectors,
   PseudoSelectorOption,
   TriggerCondition,
+  getTriggerableSelectors,
 } from "@/wab/styles";
 import { flattenTpls, isTplTag } from "@/wab/tpls";
 import L from "lodash";

@@ -1,11 +1,11 @@
-import { Component } from "@/wab/classes";
 import ListSectionHeader from "@/wab/client/components/ListSectionHeader";
-import { VariantsController } from "@/wab/client/components/variants/VariantsController";
 import { makeReadOnlySection } from "@/wab/client/components/variants/VariantSection";
+import { VariantsController } from "@/wab/client/components/variants/VariantsController";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import VariantGroupIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__VariantGroup";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { Component } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import React from "react";
 

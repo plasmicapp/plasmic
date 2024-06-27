@@ -1,11 +1,16 @@
-import type { ArenaFrame, Component, Mixin, StyleToken } from "@/wab/classes";
 import Button from "@/wab/client/components/widgets/Button";
 import Textbox from "@/wab/client/components/widgets/Textbox";
 import { zIndex } from "@/wab/client/z-index";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import { getComponentDisplayName } from "@/wab/components";
+import { FRAMES_CAP, FRAME_LOWER, MIXINS_CAP } from "@/wab/shared/Labels";
 import type { AddItemKey } from "@/wab/shared/add-item-keys";
-import { FRAME_LOWER, FRAMES_CAP, MIXINS_CAP } from "@/wab/shared/Labels";
+import type {
+  ArenaFrame,
+  Component,
+  Mixin,
+  StyleToken,
+} from "@/wab/shared/model/classes";
 import type { DefaultStyle } from "@/wab/styles";
 import { Form } from "antd";
 import { Rule } from "antd/lib/form";

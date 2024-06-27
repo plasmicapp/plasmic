@@ -1,6 +1,6 @@
-import { Site } from "@/wab/classes";
 import { Bundler } from "@/wab/shared/bundler";
-import { toJson } from "@/wab/shared/core/model-tree-util";
+import { Site } from "@/wab/shared/model/classes";
+import { toJson } from "@/wab/shared/model/model-tree-util";
 import { readFileSync } from "fs";
 
 describe("model-util", () => {

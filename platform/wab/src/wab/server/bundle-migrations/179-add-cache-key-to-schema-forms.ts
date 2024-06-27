@@ -1,10 +1,13 @@
-import { isKnownDataSourceOpExpr, TemplatedString } from "@/wab/classes";
 import {
   BundleMigrationType,
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { Bundler } from "@/wab/shared/bundler";
+import {
+  isKnownDataSourceOpExpr,
+  TemplatedString,
+} from "@/wab/shared/model/classes";
 import { flattenTpls, isTplCodeComponent } from "@/wab/tpls";
 import { formComponentName } from "@plasmicpkgs/antd5";
 

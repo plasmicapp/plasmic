@@ -1,3 +1,9 @@
+import { ensure, switchType, withoutNils } from "@/wab/common";
+import { getParamDisplayName, isReusableComponent } from "@/wab/components";
+import { asCode, ExprCtx } from "@/wab/exprs";
+import { ImageAssetType } from "@/wab/image-asset-type";
+import { computedProjectFlags } from "@/wab/shared/cached-selectors";
+import { makeNodeNamer } from "@/wab/shared/codegen/react-p";
 import {
   CollectionExpr,
   Component,
@@ -45,13 +51,7 @@ import {
   VariantSetting,
   VariantsRef,
   VarRef,
-} from "@/wab/classes";
-import { ensure, switchType, withoutNils } from "@/wab/common";
-import { getParamDisplayName, isReusableComponent } from "@/wab/components";
-import { asCode, ExprCtx } from "@/wab/exprs";
-import { ImageAssetType } from "@/wab/image-asset-type";
-import { computedProjectFlags } from "@/wab/shared/cached-selectors";
-import { makeNodeNamer } from "@/wab/shared/codegen/react-p";
+} from "@/wab/shared/model/classes";
 import {
   isStandaloneVariantGroup,
   VariantGroupType,

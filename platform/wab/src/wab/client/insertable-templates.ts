@@ -1,30 +1,23 @@
-import {
-  ArenaFrame,
-  ProjectDependency,
-  Site,
-  TplComponent,
-  TplNode,
-  TplSlot,
-  TplTag,
-  Variant,
-} from "@/wab/classes";
 import { ViewOps } from "@/wab/client/components/canvas/view-ops";
 import { promptChooseItem } from "@/wab/client/components/modals/ChooseItemModal";
 import {
-  normalizeTemplateSpec,
   StudioCtx,
+  normalizeTemplateSpec,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ensure, maybe, switchType } from "@/wab/common";
 import { PageComponent } from "@/wab/components";
 import {
-  flattenInsertableTemplatesByType,
   InsertableTemplateComponentResolution,
+  InsertableTemplateTokenResolution,
   InsertableTemplatesGroup,
   InsertableTemplatesItem,
-  InsertableTemplateTokenResolution,
+  flattenInsertableTemplatesByType,
 } from "@/wab/devflags";
 import { BranchId } from "@/wab/shared/ApiSchema";
+import { PkgInfo, PkgVersionInfo } from "@/wab/shared/SharedApi";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { getBaseVariant } from "@/wab/shared/Variants";
 import { FastBundler } from "@/wab/shared/bundler";
 import { Bundle, getBundle } from "@/wab/shared/bundles";
 import { cloneInsertableTemplate } from "@/wab/shared/insertable-templates";
@@ -35,9 +28,16 @@ import {
   CopyStateExtraInfo,
   InsertableTemplateComponentExtraInfo,
 } from "@/wab/shared/insertable-templates/types";
-import { PkgInfo, PkgVersionInfo } from "@/wab/shared/SharedApi";
-import { $$$ } from "@/wab/shared/TplQuery";
-import { getBaseVariant } from "@/wab/shared/Variants";
+import {
+  ArenaFrame,
+  ProjectDependency,
+  Site,
+  TplComponent,
+  TplNode,
+  TplSlot,
+  TplTag,
+  Variant,
+} from "@/wab/shared/model/classes";
 import { unbundleProjectDependency, unbundleSite } from "@/wab/tagged-unbundle";
 import { deepTrackComponents } from "@/wab/tpls";
 import { flatten, fromPairs } from "lodash";

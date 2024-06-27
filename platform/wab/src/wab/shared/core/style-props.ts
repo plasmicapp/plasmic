@@ -1,4 +1,3 @@
-import { RuleSet } from "@/wab/classes";
 import { DeepReadonly } from "@/wab/commons/types";
 import {
   FAKE_CSS_PROPS,
@@ -6,6 +5,7 @@ import {
   tryGetCssInitial,
 } from "@/wab/css";
 import { standardCorners, standardSides } from "@/wab/geom";
+import { RuleSet } from "@/wab/shared/model/classes";
 import L from "lodash";
 
 export const POSITIONING_PROPS = [

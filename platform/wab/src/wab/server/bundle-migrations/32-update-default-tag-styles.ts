@@ -1,4 +1,3 @@
-import { isKnownTplTag, TplTag } from "@/wab/classes";
 import { ensure } from "@/wab/common";
 import {
   BundleMigrationType,
@@ -7,6 +6,7 @@ import {
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { ProjectRevision } from "@/wab/server/entities/Entities";
 import { Bundler } from "@/wab/shared/bundler";
+import { isKnownTplTag, TplTag } from "@/wab/shared/model/classes";
 import { createDefaultTheme } from "@/wab/sites";
 import { cloneMixin, cloneThemeStyle } from "@/wab/styles";
 import { flattenTpls } from "@/wab/tpls";

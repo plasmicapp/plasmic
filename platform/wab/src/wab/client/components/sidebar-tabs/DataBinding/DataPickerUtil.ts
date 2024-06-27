@@ -1,10 +1,3 @@
-import {
-  Component,
-  isKnownNamedState,
-  State,
-  TplNode,
-  VariantGroup,
-} from "@/wab/classes";
 import { ControlExtras } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import { PlasmicDataPickerColumnItem__VariantMembers } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerColumnItem";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
@@ -17,14 +10,21 @@ import {
 import { alwaysOmitKeys, flattenedKeys, omittedKeysIfEmpty } from "@/wab/exprs";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
+import { tryEvalExpr } from "@/wab/shared/eval";
+import { pathToString } from "@/wab/shared/eval/expression-parser";
+import {
+  Component,
+  isKnownNamedState,
+  State,
+  TplNode,
+  VariantGroup,
+} from "@/wab/shared/model/classes";
 import {
   UNINITIALIZED_BOOLEAN,
   UNINITIALIZED_NUMBER,
   UNINITIALIZED_OBJECT,
   UNINITIALIZED_STRING,
-} from "@/wab/shared/core/model-util";
-import { tryEvalExpr } from "@/wab/shared/eval";
-import { pathToString } from "@/wab/shared/eval/expression-parser";
+} from "@/wab/shared/model/model-util";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { getAncestorTplSlot } from "@/wab/shared/SlotUtils";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";

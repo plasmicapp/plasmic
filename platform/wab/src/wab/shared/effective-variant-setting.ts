@@ -2,23 +2,6 @@ import L from "lodash";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { computed, isObservable, makeObservable } from "mobx";
 
-import {
-  Arg,
-  Component,
-  CustomCode,
-  ensureKnownTplComponent,
-  Expr,
-  isKnownVariantsRef,
-  ObjectPath,
-  Param,
-  Rep,
-  RuleSet,
-  Site,
-  TplComponent,
-  TplNode,
-  Variant,
-  VariantSetting,
-} from "@/wab/classes";
 import { arrayEq, assert, ensure, withoutNils } from "@/wab/common";
 import { arrayReversed } from "@/wab/commons/collections";
 import { DeepReadonly, DeepReadonlyArray } from "@/wab/commons/types";
@@ -35,6 +18,23 @@ import {
   VisibilitySource,
 } from "@/wab/shared/defined-indicator";
 import { makeLayoutAwareRuleSet } from "@/wab/shared/layoututils";
+import {
+  Arg,
+  Component,
+  CustomCode,
+  ensureKnownTplComponent,
+  Expr,
+  isKnownVariantsRef,
+  ObjectPath,
+  Param,
+  Rep,
+  RuleSet,
+  Site,
+  TplComponent,
+  TplNode,
+  Variant,
+  VariantSetting,
+} from "@/wab/shared/model/classes";
 import {
   ReadonlyIRuleSetHelpersX,
   readonlyRSH,

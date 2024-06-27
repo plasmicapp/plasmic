@@ -1,12 +1,12 @@
+import { ComponentType, mkComponent } from "@/wab/components";
+import { ScreenSizeSpec } from "@/wab/shared/Css";
 import {
   Arg,
   ensureKnownTplTag,
   TplComponent,
   VariantGroup,
   VariantsRef,
-} from "@/wab/classes";
-import { ComponentType, mkComponent } from "@/wab/components";
-import { ScreenSizeSpec } from "@/wab/shared/Css";
+} from "@/wab/shared/model/classes";
 import { ensureBaseVariant, TplMgr, uniquePagePath } from "@/wab/shared/TplMgr";
 import { mkVariantSetting } from "@/wab/shared/Variants";
 import { createSite } from "@/wab/sites";

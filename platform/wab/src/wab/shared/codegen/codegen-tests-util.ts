@@ -1,4 +1,3 @@
-import { Site } from "@/wab/classes";
 import { jsonClone } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
 import {
@@ -6,6 +5,7 @@ import {
   exportStyleConfig,
 } from "@/wab/shared/codegen/react-p";
 import { exportSiteComponents } from "@/wab/shared/codegen/react-p/gen-site-bundle";
+import { Site } from "@/wab/shared/model/classes";
 import { initBuiltinActions } from "@/wab/states";
 import { deepTrackComponents } from "@/wab/tpls";
 import { exec } from "child_process";

@@ -1,3 +1,30 @@
+import { getTplRefActions } from "@/wab/client/state-management/ref-actions";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { assert, ensure, ensureInstance } from "@/wab/common";
+import { DEVFLAGS } from "@/wab/devflags";
+import {
+  codeLit,
+  customCode,
+  summarizePath,
+  tryExtractJson,
+  tryExtractString,
+} from "@/wab/exprs";
+import { ParamExportType } from "@/wab/lang";
+import { ApiDataSource } from "@/wab/shared/ApiSchema";
+import {
+  isPlainObjectPropType,
+  propTypeToWabType,
+  StudioPropType,
+} from "@/wab/shared/code-components/code-components";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
+import { ALL_QUERIES } from "@/wab/shared/data-sources-meta/data-sources";
+import { CanvasEnv } from "@/wab/shared/eval";
+import {
+  DATA_SOURCE_LOWER,
+  DATA_SOURCE_OPERATION_LOWER,
+  VARIABLE_LOWER,
+} from "@/wab/shared/Labels";
 import {
   CollectionExpr,
   Component,
@@ -22,39 +49,12 @@ import {
   TplTag,
   VariantsRef,
   VarRef,
-} from "@/wab/classes";
-import { getTplRefActions } from "@/wab/client/state-management/ref-actions";
-import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { assert, ensure, ensureInstance } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
-import {
-  codeLit,
-  customCode,
-  summarizePath,
-  tryExtractJson,
-  tryExtractString,
-} from "@/wab/exprs";
-import { ParamExportType } from "@/wab/lang";
-import { ApiDataSource } from "@/wab/shared/ApiSchema";
-import {
-  isPlainObjectPropType,
-  propTypeToWabType,
-  StudioPropType,
-} from "@/wab/shared/code-components/code-components";
-import { toVarName } from "@/wab/shared/codegen/util";
-import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
+} from "@/wab/shared/model/classes";
 import {
   getPlaceholderValueToWabType,
   isRenderFuncType,
   typeFactory,
-} from "@/wab/shared/core/model-util";
-import { ALL_QUERIES } from "@/wab/shared/data-sources-meta/data-sources";
-import { CanvasEnv } from "@/wab/shared/eval";
-import {
-  DATA_SOURCE_LOWER,
-  DATA_SOURCE_OPERATION_LOWER,
-  VARIABLE_LOWER,
-} from "@/wab/shared/Labels";
+} from "@/wab/shared/model/model-util";
 import { SiteInfo } from "@/wab/shared/SharedApi";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import {

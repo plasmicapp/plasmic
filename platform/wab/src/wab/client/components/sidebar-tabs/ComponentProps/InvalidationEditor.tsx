@@ -1,4 +1,3 @@
-import { Component, QueryInvalidationExpr, QueryRef } from "@/wab/classes";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
 import styles from "@/wab/client/components/sidebar-tabs/ComponentProps/InvalidationEditor.module.scss";
 import { MultiSelectEnumPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/MultiSelectEnumPropEditor";
@@ -18,6 +17,11 @@ import {
   ALL_QUERIES,
   SHOW_INVALIDATION_KEYS,
 } from "@/wab/shared/data-sources-meta/data-sources";
+import {
+  Component,
+  QueryInvalidationExpr,
+  QueryRef,
+} from "@/wab/shared/model/classes";
 import { Menu } from "antd";
 import { isString } from "lodash";
 import { observer } from "mobx-react";

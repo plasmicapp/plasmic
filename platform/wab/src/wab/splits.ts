@@ -1,3 +1,4 @@
+import { mkShortId, removeWhere, switchType } from "@/wab/common";
 import {
   ComponentSwapSplitContent,
   ComponentVariantSplitContent,
@@ -10,8 +11,7 @@ import {
   SplitSlice,
   Variant,
   VariantGroup,
-} from "@/wab/classes";
-import { mkShortId, removeWhere, switchType } from "@/wab/common";
+} from "@/wab/shared/model/classes";
 
 export enum SplitType {
   Experiment = "experiment",

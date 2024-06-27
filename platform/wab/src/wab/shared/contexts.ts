@@ -1,15 +1,15 @@
+import { arrayEq, assert, ensure } from "@/wab/common";
+import {
+  ContextFactory,
+  observeRelevantFields,
+} from "@/wab/shared/code-components/context-factory";
 import {
   Arg,
   isKnownRenderExpr,
   RenderExpr,
   TplComponent,
   TplNode,
-} from "@/wab/classes";
-import { arrayEq, assert, ensure } from "@/wab/common";
-import {
-  ContextFactory,
-  observeRelevantFields,
-} from "@/wab/shared/code-components/context-factory";
+} from "@/wab/shared/model/classes";
 import { getSlotArgs } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 

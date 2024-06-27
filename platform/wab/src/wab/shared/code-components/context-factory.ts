@@ -1,8 +1,12 @@
-import { isKnownTplComponent, Site, TplComponent } from "@/wab/classes";
 import { removeWhere } from "@/wab/common";
 import * as exprs from "@/wab/exprs";
 import { computedProjectFlags } from "@/wab/shared/cached-selectors";
 import mobx from "@/wab/shared/import-mobx";
+import {
+  isKnownTplComponent,
+  Site,
+  TplComponent,
+} from "@/wab/shared/model/classes";
 import { isSlot } from "@/wab/shared/SlotUtils";
 import { clone, cloneArgs } from "@/wab/tpls";
 

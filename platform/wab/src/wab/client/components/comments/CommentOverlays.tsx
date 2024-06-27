@@ -1,4 +1,3 @@
-import { ArenaFrame, TplNode } from "@/wab/classes";
 import { CanvasTransformedBox } from "@/wab/client/components/canvas/CanvasTransformedBox";
 import { useRerenderOnUserBodyChange } from "@/wab/client/components/canvas/UserBodyObserver";
 import { useCommentViews } from "@/wab/client/components/comments/CommentViews";
@@ -18,12 +17,13 @@ import {
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import { ApiComment, CommentThreadId } from "@/wab/shared/ApiSchema";
 import { AnyArena } from "@/wab/shared/Arenas";
+import { ArenaFrame, TplNode } from "@/wab/shared/model/classes";
 import Chroma from "@/wab/shared/utils/color-utils";
 import { isTplVariantable } from "@/wab/tpls";
 import classNames from "classnames";
 import $ from "jquery";
 import { observer } from "mobx-react";
-import React, { createContext, ReactNode, useContext } from "react";
+import React, { ReactNode, createContext, useContext } from "react";
 import { createPortal } from "react-dom";
 
 interface CommentOverlaysContextData {

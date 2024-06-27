@@ -1,9 +1,3 @@
-import {
-  Component,
-  isKnownComponent,
-  isKnownPageHref,
-  PageHref,
-} from "@/wab/classes";
 import { Matcher } from "@/wab/client/components/view-common";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import PageIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Page";
@@ -12,6 +6,12 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { BetterAutoComplete } from "@/wab/commons/components/inputs/BetterAutoComplete";
 import { isPageComponent } from "@/wab/components";
 import { codeLit, isPageHref } from "@/wab/exprs";
+import {
+  Component,
+  isKnownComponent,
+  isKnownPageHref,
+  PageHref,
+} from "@/wab/shared/model/classes";
 import TextArea from "antd/lib/input/TextArea";
 import { defer } from "lodash";
 import React from "react";

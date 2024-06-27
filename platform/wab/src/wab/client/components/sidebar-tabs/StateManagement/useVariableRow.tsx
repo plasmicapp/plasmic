@@ -1,4 +1,3 @@
-import { Component, Expr, isKnownTplSlot, State } from "@/wab/classes";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { PropEditorRow } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import { VariableEditingModal } from "@/wab/client/components/sidebar-tabs/StateManagement/VariableEditingModal";
@@ -9,12 +8,18 @@ import { assert, ensure, spawn } from "@/wab/common";
 import { canDeleteState } from "@/wab/components";
 import { codeLit, getRawCode, tryExtractJson } from "@/wab/exprs";
 import { wabTypeToPropType } from "@/wab/shared/code-components/code-components";
+import { evalCodeWithEnv } from "@/wab/shared/eval";
+import { VARIABLE_LOWER } from "@/wab/shared/Labels";
+import {
+  Component,
+  Expr,
+  isKnownTplSlot,
+  State,
+} from "@/wab/shared/model/classes";
 import {
   convertVariableTypeToPropType,
   convertVariableTypeToWabType,
-} from "@/wab/shared/core/model-util";
-import { evalCodeWithEnv } from "@/wab/shared/eval";
-import { VARIABLE_LOWER } from "@/wab/shared/Labels";
+} from "@/wab/shared/model/model-util";
 import {
   getStateDisplayName,
   isPrivateState,

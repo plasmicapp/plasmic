@@ -1,9 +1,9 @@
-import { ComponentArena } from "@/wab/classes";
 import { useCurrentRecordingTarget } from "@/wab/client/hooks/useCurrentRecordingTarget";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { switchType } from "@/wab/common";
-import * as cssVariables from "@/wab/styles/css-variables";
+import { ComponentArena } from "@/wab/shared/model/classes";
 import * as tokens from "@/wab/styles/_tokens";
+import * as cssVariables from "@/wab/styles/css-variables";
 import { observer } from "mobx-react";
 import { useEffect } from "react";
 

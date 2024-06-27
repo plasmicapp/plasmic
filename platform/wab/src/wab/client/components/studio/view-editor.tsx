@@ -1,14 +1,14 @@
 /** @format */
 import PageSettings from "@/PageSettings";
-import { ArenaFrame, isKnownTplComponent, isKnownTplTag } from "@/wab/classes";
+import { DndAdoptee, DndMarkers, DragMoveManager } from "@/wab/client/Dnd";
+import { DragMoveFrameManager } from "@/wab/client/FreestyleManipulator";
+import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
+import { WritableClipboard } from "@/wab/client/clipboard/WritableClipboard";
 import { PLASMIC_CLIPBOARD_FORMAT } from "@/wab/client/clipboard/common";
 import { LocalClipboardAction } from "@/wab/client/clipboard/local";
 import { paste } from "@/wab/client/clipboard/paste";
-import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
-import { WritableClipboard } from "@/wab/client/clipboard/WritableClipboard";
 import { BottomModals } from "@/wab/client/components/BottomModal";
-import { CanvasArenaShell } from "@/wab/client/components/canvas/canvas-arena";
-import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
+import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import { CanvasDndOverlay } from "@/wab/client/components/canvas/CanvasDndOverlay";
 import { isCanvasOverlay } from "@/wab/client/components/canvas/CanvasFrame";
 import { FreestyleBox } from "@/wab/client/components/canvas/FreestyleBox";
@@ -22,30 +22,31 @@ import { PlayerBoxes } from "@/wab/client/components/canvas/Multiplayer/PlayerBo
 import { PlayerCursors } from "@/wab/client/components/canvas/Multiplayer/PlayerCursors";
 import RichTextToolbar from "@/wab/client/components/canvas/RichText/RichTextToolbar";
 import { Spotlight } from "@/wab/client/components/canvas/Spotlight";
-import { closestTaggedNonTextDomElt } from "@/wab/client/components/canvas/studio-canvas-util";
 import { VariantsBar } from "@/wab/client/components/canvas/VariantsBar";
+import { CanvasArenaShell } from "@/wab/client/components/canvas/canvas-arena";
+import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
+import { closestTaggedNonTextDomElt } from "@/wab/client/components/canvas/studio-canvas-util";
 import { getMergedTextArg } from "@/wab/client/components/canvas/view-ops";
 import CommentsTab from "@/wab/client/components/comments/CommentsTab";
-import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import { DevContainer } from "@/wab/client/components/dev";
 import InsertPanelWrapper from "@/wab/client/components/insert-panel/InsertPanelWrapper";
 import { PreviewCtx } from "@/wab/client/components/live/PreviewCtx";
 import { makeFrameSizeMenu } from "@/wab/client/components/menus/FrameSizeMenu";
 import { OmnibarOverlay } from "@/wab/client/components/omnibar/OmnibarOverlay";
-import { OldSettingsTab } from "@/wab/client/components/sidebar-tabs/old-settings-tab";
 import { SettingsTab } from "@/wab/client/components/sidebar-tabs/SettingsTab";
+import { OldSettingsTab } from "@/wab/client/components/sidebar-tabs/old-settings-tab";
 import {
   ComponentOrPageTab,
-  getFocusedComponentFromViewCtxOrArena,
   StyleTab,
   StyleTabContext,
+  getFocusedComponentFromViewCtxOrArena,
 } from "@/wab/client/components/sidebar-tabs/style-tab";
-import { CodePreviewPanel } from "@/wab/client/components/studio/code-preview/CodePreviewPanel";
 import { FocusedModeToolbar } from "@/wab/client/components/studio/FocusedModeToolbar/FocusedModeToolbar";
 import { GlobalCssVariables } from "@/wab/client/components/studio/GlobalCssVariables";
 import LeftPane from "@/wab/client/components/studio/LeftPane";
 import { TopFrameObserver } from "@/wab/client/components/studio/TopFrameObserver";
 import { TopModal } from "@/wab/client/components/studio/TopModal";
+import { CodePreviewPanel } from "@/wab/client/components/studio/code-preview/CodePreviewPanel";
 import { providesSidebarPopupSetting } from "@/wab/client/components/style-controls/StyleComponent";
 import { TopBar } from "@/wab/client/components/top-bar";
 import { getContextMenuForFocusedTpl } from "@/wab/client/components/tpl-menu";
@@ -58,18 +59,16 @@ import {
   plasmicIFrameMouseDownEvent,
   plasmicIFrameWheelEvent,
 } from "@/wab/client/definitions/events";
-import { DndAdoptee, DndMarkers, DragMoveManager } from "@/wab/client/Dnd";
 import { isArrowKey } from "@/wab/client/dom";
 import { getElementBounds, isCanvasIframeEvent } from "@/wab/client/dom-utils";
-import { DragMoveFrameManager } from "@/wab/client/FreestyleManipulator";
 import { getCopyState } from "@/wab/client/insertable-templates";
 import { PLATFORM } from "@/wab/client/platform";
 import { bindShortcutHandlers } from "@/wab/client/shortcuts/shortcut-handler";
 import { shouldHandleStudioShortcut } from "@/wab/client/shortcuts/studio/studio-shortcut-handlers";
 import { STUDIO_SHORTCUTS } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { RightTabKey, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import { trackEvent } from "@/wab/client/tracking";
 import {
@@ -100,9 +99,14 @@ import {
   isPageArena,
   isPositionManagedFrame,
 } from "@/wab/shared/Arenas";
+import { ARENAS_DESCRIPTION, ARENA_LOWER } from "@/wab/shared/Labels";
 import { isBaseVariantFrame } from "@/wab/shared/component-arenas";
-import { ARENA_LOWER, ARENAS_DESCRIPTION } from "@/wab/shared/Labels";
 import { PositionLayoutType } from "@/wab/shared/layoututils";
+import {
+  ArenaFrame,
+  isKnownTplComponent,
+  isKnownTplTag,
+} from "@/wab/shared/model/classes";
 import { TplVisibility } from "@/wab/shared/visibility-utils";
 import { getSiteArenas } from "@/wab/sites";
 import {

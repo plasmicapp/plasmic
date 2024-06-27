@@ -1,3 +1,7 @@
+import { ensure, ensureInstance } from "@/wab/common";
+import { findVarRefs, isCodeComponent } from "@/wab/components";
+import { Selectable } from "@/wab/selection";
+import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import {
   isKnownSlotParam,
   isKnownTplSlot,
@@ -7,12 +11,8 @@ import {
   TplTag,
   Type,
   Var,
-} from "@/wab/classes";
-import { ensure, ensureInstance } from "@/wab/common";
-import { findVarRefs, isCodeComponent } from "@/wab/components";
-import { Selectable } from "@/wab/selection";
-import { nodeConformsToType } from "@/wab/shared/core/model-util";
-import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
+} from "@/wab/shared/model/classes";
+import { nodeConformsToType } from "@/wab/shared/model/model-util";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { getParentOrSlotSelection } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";

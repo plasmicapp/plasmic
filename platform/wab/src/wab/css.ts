@@ -1,4 +1,3 @@
-import { RuleSet } from "@/wab/classes";
 import {
   chunkPairs,
   ensure,
@@ -9,6 +8,7 @@ import {
 } from "@/wab/common";
 import { horizontalSides, standardSides, verticalSides } from "@/wab/geom";
 import { createNumericSize, ensureUnit, showSizeCss } from "@/wab/shared/Css";
+import { RuleSet } from "@/wab/shared/model/classes";
 import CssInitials from "css-initials";
 import {
   camelCase,

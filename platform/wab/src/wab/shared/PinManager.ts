@@ -1,4 +1,3 @@
-import { ArenaFrame, Component, Site, Variant } from "@/wab/classes";
 import {
   arrayEqIgnoreOrder,
   butLast,
@@ -15,11 +14,6 @@ import {
 } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
 import {
-  componentToAllVariants,
-  siteToAllGlobalVariants,
-} from "@/wab/shared/cached-selectors";
-import { toVarName } from "@/wab/shared/codegen/util";
-import {
   ensureValidCombo,
   getOrderedScreenVariants,
   getPartitionedScreenVariants,
@@ -30,6 +24,17 @@ import {
   isScreenVariant,
   isStandaloneVariantGroup,
 } from "@/wab/shared/Variants";
+import {
+  componentToAllVariants,
+  siteToAllGlobalVariants,
+} from "@/wab/shared/cached-selectors";
+import { toVarName } from "@/wab/shared/codegen/util";
+import {
+  ArenaFrame,
+  Component,
+  Site,
+  Variant,
+} from "@/wab/shared/model/classes";
 import { getStateVarName } from "@/wab/states";
 import { $State } from "@plasmicapp/react-web";
 import L from "lodash";

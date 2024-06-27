@@ -1,14 +1,4 @@
 import {
-  isKnownStyleToken,
-  Mixin,
-  RuleSet,
-  Site,
-  StyleToken,
-  Variant,
-  VariantedRuleSet,
-  VariantedValue,
-} from "@/wab/classes";
-import {
   arrayEqIgnoreOrder,
   ensure,
   ensureArray,
@@ -17,6 +7,16 @@ import {
 } from "@/wab/common";
 import { TokenValue } from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
+import {
+  isKnownStyleToken,
+  Mixin,
+  RuleSet,
+  Site,
+  StyleToken,
+  Variant,
+  VariantedRuleSet,
+  VariantedValue,
+} from "@/wab/shared/model/classes";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import {
   isAncestorCombo,

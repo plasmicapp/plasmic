@@ -1,12 +1,12 @@
-import { Arg, isKnownTplComponent } from "@/wab/classes";
 import { codeLit } from "@/wab/exprs";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
-import { Bundler } from "@/wab/shared/bundler";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
+import { Bundler } from "@/wab/shared/bundler";
+import { Arg, isKnownTplComponent } from "@/wab/shared/model/classes";
 import { flattenTpls } from "@/wab/tpls";
 import { formComponentName } from "@plasmicpkgs/antd5";
 

@@ -1,11 +1,11 @@
+import { ensureInstance } from "@/wab/common";
+import { Bundle, FastBundler } from "@/wab/shared/bundler";
 import {
   ensureKnownProjectDependency,
   isKnownSite,
   ProjectDependency,
   Site,
-} from "@/wab/classes";
-import { ensureInstance } from "@/wab/common";
-import { Bundle, FastBundler } from "@/wab/shared/bundler";
+} from "@/wab/shared/model/classes";
 import { PkgVersionInfo } from "@/wab/shared/SharedApi";
 
 export function unbundleSite(

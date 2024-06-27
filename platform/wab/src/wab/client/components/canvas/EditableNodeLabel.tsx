@@ -1,4 +1,3 @@
-import { ArenaFrame, isKnownArenaFrame, TplSlot } from "@/wab/classes";
 import styles from "@/wab/client/components/canvas/EditableNodeLabel.module.sass";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { Textbox } from "@/wab/client/components/widgets/Textbox";
@@ -8,6 +7,11 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { cx, ensure, spawn } from "@/wab/common";
 import { InlineEdit } from "@/wab/commons/components/InlineEdit";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
+import {
+  ArenaFrame,
+  isKnownArenaFrame,
+  TplSlot,
+} from "@/wab/shared/model/classes";
 import * as Tpls from "@/wab/tpls";
 import { isTplNamable, isTplSlot } from "@/wab/tpls";
 import { Tooltip } from "antd";

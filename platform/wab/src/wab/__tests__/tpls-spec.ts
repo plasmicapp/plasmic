@@ -1,7 +1,7 @@
-import { TplNode } from "@/wab/classes";
 import * as Components from "@/wab/components";
 import { ComponentType } from "@/wab/components";
-import { withoutUids } from "@/wab/model/model-meta";
+import { TplNode } from "@/wab/shared/model/classes";
+import { withoutUids } from "@/wab/shared/model/model-meta";
 import * as STpls from "@/wab/test/tpls";
 import * as Tpls from "@/wab/tpls";
 

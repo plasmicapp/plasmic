@@ -1,4 +1,3 @@
-import { isKnownNamedState, State } from "@/wab/classes";
 import { ensure } from "@/wab/common";
 import {
   BundleMigrationType,
@@ -7,6 +6,7 @@ import {
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { Bundler } from "@/wab/shared/bundler";
 import { toVarName } from "@/wab/shared/codegen/util";
+import { isKnownNamedState, State } from "@/wab/shared/model/classes";
 import { renameObjectInExpr } from "@/wab/shared/refactoring";
 import { getStateVarName } from "@/wab/states";
 import * as Tpls from "@/wab/tpls";

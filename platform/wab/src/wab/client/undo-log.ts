@@ -1,15 +1,15 @@
-import { ArenaFrame, Site, TplNode } from "@/wab/classes";
-import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
 import { logChangedNodes } from "@/wab/client/studio-ctx/StudioCtx";
+import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
 import { assert } from "@/wab/common";
 import {
   IChangeRecorder,
-  mergeRecordedChanges,
   RecordedChanges,
+  mergeRecordedChanges,
 } from "@/wab/observable-model";
 import { Selectable } from "@/wab/selection";
 import { AnyArena } from "@/wab/shared/Arenas";
 import { ComponentVariantFrame } from "@/wab/shared/component-frame";
+import { ArenaFrame, Site, TplNode } from "@/wab/shared/model/classes";
 import {
   DeletedAssetsSummary,
   undoChangesAndResolveConflicts,

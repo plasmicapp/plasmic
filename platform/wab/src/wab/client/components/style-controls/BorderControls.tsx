@@ -1,4 +1,3 @@
-import { isKnownTplTag, TplNode } from "@/wab/classes";
 import {
   LabeledStyleColorItemRow,
   LabeledStyleDimItem,
@@ -33,6 +32,7 @@ import { ensure, spawn, unanimousVal } from "@/wab/common";
 import { TokenType } from "@/wab/commons/StyleToken";
 import { parseCssShorthand, showCssShorthand } from "@/wab/css";
 import { Corner, Side, standardCorners, standardSides } from "@/wab/geom";
+import { isKnownTplTag, TplNode } from "@/wab/shared/model/classes";
 import cn from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";

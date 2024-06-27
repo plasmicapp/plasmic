@@ -1,12 +1,3 @@
-import {
-  Component,
-  isKnownArena,
-  isKnownComponent,
-  isKnownTplNode,
-  ProjectDependency,
-  TplNode,
-  TplTag,
-} from "@/wab/classes";
 import { getComponentPresets } from "@/wab/client/code-components/code-presets";
 import { useFocusManager } from "@/wab/client/components/aria-utils";
 import {
@@ -106,6 +97,15 @@ import { ImageAssetType } from "@/wab/image-asset-type";
 import { isIcon } from "@/wab/image-assets";
 import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
 import { FRAMES_CAP } from "@/wab/shared/Labels";
+import {
+  Component,
+  isKnownArena,
+  isKnownComponent,
+  isKnownTplNode,
+  ProjectDependency,
+  TplNode,
+  TplTag,
+} from "@/wab/shared/model/classes";
 import {
   canInsertAlias,
   canInsertHostlessPackage,

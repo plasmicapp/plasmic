@@ -10,7 +10,6 @@ import {
   RadialGradient,
   Stop,
 } from "@/wab/bg-styles";
-import { isKnownImageAsset, Site } from "@/wab/classes";
 import { EllipseControl } from "@/wab/client/components/EllipseControl";
 import {
   FullRow,
@@ -37,6 +36,7 @@ import { StyleWrapper } from "@/wab/client/components/style-controls/StyleWrappe
 import { UnloggedDragCatcher } from "@/wab/client/components/style-controls/UnloggedDragCatcher";
 import * as widgets from "@/wab/client/components/widgets";
 import { ColorPicker } from "@/wab/client/components/widgets/ColorPicker";
+import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
 import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import IconButton from "@/wab/client/components/widgets/IconButton";
@@ -72,6 +72,7 @@ import { isStandardSide, oppSides } from "@/wab/geom";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import { mkImageAssetRef, tryParseImageAssetRef } from "@/wab/image-assets";
 import { TokenValueResolver } from "@/wab/shared/cached-selectors";
+import { isKnownImageAsset, Site } from "@/wab/shared/model/classes";
 import { joinCssValues, splitCssValue } from "@/wab/shared/RuleSetHelpers";
 import Chroma from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
@@ -82,7 +83,6 @@ import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import { basename } from "path";
 import React, { useState } from "react";
-import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
 
 export const resolvedBackgroundImageCss = (
   bgImg: BackgroundLayer["image"],

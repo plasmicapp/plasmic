@@ -1,14 +1,3 @@
-import {
-  Component,
-  Expr,
-  ImageAsset,
-  isKnownImageAsset,
-  isKnownImageAssetRef,
-  isKnownVarRef,
-  Mixin,
-  Site,
-  TplNode,
-} from "@/wab/classes";
 import { assert, ensure, isNumeric, tuple } from "@/wab/common";
 import { isPageComponent } from "@/wab/components";
 import { ImageAssetType } from "@/wab/image-asset-type";
@@ -38,6 +27,17 @@ import {
   parseDataUrlToSvgXml,
   parseSvgXml,
 } from "@/wab/shared/data-urls";
+import {
+  Component,
+  Expr,
+  ImageAsset,
+  isKnownImageAsset,
+  isKnownImageAssetRef,
+  isKnownVarRef,
+  Mixin,
+  Site,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import {
   ReadonlyIRuleSetHelpersX,
   readonlyRSH,

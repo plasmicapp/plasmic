@@ -1,25 +1,30 @@
-import { Component, Site, TplNode, VariantSetting } from "@/wab/classes";
 import { DeepMap, deepMapMemoized } from "@/wab/commons/deep-map";
 import { buildObjToDepMap } from "@/wab/project-deps";
-import { makeTokenRefResolver } from "@/wab/shared/cached-selectors";
-import { extractUsedTokensForTheme } from "@/wab/shared/codegen/style-tokens";
-import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
-import { makeLayoutAwareRuleSet } from "@/wab/shared/layoututils";
 import { readonlyRSH } from "@/wab/shared/RuleSetHelpers";
 import {
   isTextArgNodeOfSlot,
   shouldWrapSlotContentInDataCtxReader,
 } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
+import { VariantCombo, isBaseVariant } from "@/wab/shared/Variants";
+import { makeTokenRefResolver } from "@/wab/shared/cached-selectors";
+import { extractUsedTokensForTheme } from "@/wab/shared/codegen/style-tokens";
+import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
+import { makeLayoutAwareRuleSet } from "@/wab/shared/layoututils";
+import {
+  Component,
+  Site,
+  TplNode,
+  VariantSetting,
+} from "@/wab/shared/model/classes";
 import {
   makeVariantComboSorter,
   sortedVariantSettings,
 } from "@/wab/shared/variant-sort";
-import { isBaseVariant, VariantCombo } from "@/wab/shared/Variants";
 import { allImageAssets, allMixins, allStyleTokens } from "@/wab/sites";
 import {
-  createExpandedRuleSetMerger,
   CssVarResolver,
+  createExpandedRuleSetMerger,
   hasGapStyle,
 } from "@/wab/styles";
 import { flattenTpls } from "@/wab/tpls";

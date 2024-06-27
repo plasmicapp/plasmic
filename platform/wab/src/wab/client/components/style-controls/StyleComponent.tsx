@@ -1,15 +1,4 @@
 import {
-  ensureKnownTplTag,
-  isKnownTplTag,
-  Mixin,
-  RuleSet,
-  StyleToken,
-  TplComponent,
-  TplSlot,
-  TplTag,
-  Variant,
-} from "@/wab/classes";
-import {
   maybeShowContextMenu,
   WithContextMenu,
 } from "@/wab/client/components/ContextMenu";
@@ -69,11 +58,11 @@ import {
 } from "@/wab/shared/defined-indicator";
 import { makeExpProxy, makeMergedExpProxy } from "@/wab/shared/exprs";
 import {
-  MIXINS_CAP,
   MIXIN_CAP,
   MIXIN_LOWER,
-  TOKENS_CAP,
+  MIXINS_CAP,
   TOKEN_CAP,
+  TOKENS_CAP,
   VARIANTS_CAP,
 } from "@/wab/shared/Labels";
 import {
@@ -82,6 +71,17 @@ import {
   getRshContainerType,
   PositionLayoutType,
 } from "@/wab/shared/layoututils";
+import {
+  ensureKnownTplTag,
+  isKnownTplTag,
+  Mixin,
+  RuleSet,
+  StyleToken,
+  TplComponent,
+  TplSlot,
+  TplTag,
+  Variant,
+} from "@/wab/shared/model/classes";
 import {
   IRuleSetHelpers,
   IRuleSetHelpersX,

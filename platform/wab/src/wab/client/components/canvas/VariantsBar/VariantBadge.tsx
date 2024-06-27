@@ -1,11 +1,10 @@
-import { Component, Variant } from "@/wab/classes";
-import styles from "@/wab/client/components/canvas/VariantsBar/VariantBadge.module.scss";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import {
-  makeCanvasVariantContextMenu,
   StyleVariantEditor,
   VariantLabel,
+  makeCanvasVariantContextMenu,
 } from "@/wab/client/components/VariantControls";
+import styles from "@/wab/client/components/canvas/VariantsBar/VariantBadge.module.scss";
 import { EditableLabelHandles } from "@/wab/client/components/widgets/EditableLabel";
 import {
   DefaultVariantBadgeProps,
@@ -14,6 +13,7 @@ import {
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { isStyleVariant } from "@/wab/shared/Variants";
+import { Component, Variant } from "@/wab/shared/model/classes";
 import { Popover } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";

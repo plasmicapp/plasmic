@@ -1,12 +1,12 @@
-import { Component } from "@/wab/classes";
 import VariantComboRow from "@/wab/client/components/variants/VariantComboRow";
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
 import { VariantCombosTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
 import { PlasmicVariantCombosSection } from "@/wab/client/plasmic/plasmic_kit_variants/PlasmicVariantCombosSection";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ensure, partitions } from "@/wab/common";
-import { findNonEmptyCombos } from "@/wab/shared/cached-selectors";
 import { VariantCombo, variantComboKey } from "@/wab/shared/Variants";
+import { findNonEmptyCombos } from "@/wab/shared/cached-selectors";
+import { Component } from "@/wab/shared/model/classes";
 import L from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";

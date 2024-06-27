@@ -1,18 +1,3 @@
-import {
-  ArenaFrame,
-  Component,
-  ensureKnownRenderExpr,
-  isKnownArenaFrame,
-  isKnownNodeMarker,
-  isKnownRawText,
-  isKnownRenderExpr,
-  isKnownTplComponent,
-  isKnownTplNode,
-  TplComponent,
-  TplNode,
-  TplSlot,
-  TplTag,
-} from "@/wab/classes";
 import { isElementWithComments } from "@/wab/client/components/comments/utils";
 import { Matcher } from "@/wab/client/components/view-common";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -41,6 +26,21 @@ import {
   INTERACTIVE_CAP,
   REPEATED_CAP,
 } from "@/wab/shared/Labels";
+import {
+  ArenaFrame,
+  Component,
+  ensureKnownRenderExpr,
+  isKnownArenaFrame,
+  isKnownNodeMarker,
+  isKnownRawText,
+  isKnownRenderExpr,
+  isKnownTplComponent,
+  isKnownTplNode,
+  TplComponent,
+  TplNode,
+  TplSlot,
+  TplTag,
+} from "@/wab/shared/model/classes";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { ReadonlyIRuleSetHelpersX } from "@/wab/shared/RuleSetHelpers";
 import {

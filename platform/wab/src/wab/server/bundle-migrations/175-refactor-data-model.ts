@@ -1,5 +1,3 @@
-import { isKnownNamedState, Site, State } from "@/wab/classes";
-import { meta } from "@/wab/classes-metas";
 import {
   assert,
   ensure,
@@ -11,7 +9,6 @@ import {
 } from "@/wab/common";
 import { isPlumeComponent, PlumeComponent } from "@/wab/components";
 import { mkOnChangeParamForState } from "@/wab/lang";
-import { Class, Field, MetaRuntime, Type } from "@/wab/model/model-meta";
 import {
   BundleMigrationType,
   unbundleSite,
@@ -23,6 +20,9 @@ import {
   Bundler,
   FastBundler,
 } from "@/wab/shared/bundler";
+import { isKnownNamedState, Site, State } from "@/wab/shared/model/classes";
+import { meta } from "@/wab/shared/model/classes-metas";
+import { Class, Field, MetaRuntime, Type } from "@/wab/shared/model/model-meta";
 import { writeable } from "@/wab/sites";
 import {
   genOnChangeParamName,

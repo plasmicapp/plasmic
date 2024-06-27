@@ -1,9 +1,3 @@
-import {
-  ensureKnownPropParam,
-  HostLessPackageInfo,
-  Param,
-  Site,
-} from "@/wab/classes";
 import { assert, ensure } from "@/wab/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import {
@@ -29,6 +23,12 @@ import {
   mkCodeComponent,
   syncCodeComponents,
 } from "@/wab/shared/code-components/code-components";
+import {
+  ensureKnownPropParam,
+  HostLessPackageInfo,
+  Param,
+  Site,
+} from "@/wab/shared/model/classes";
 import { isSlot } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { createSite, writeable } from "@/wab/sites";
