@@ -1,5 +1,5 @@
 import sty from "@/wab/client/components/BottomModal.module.sass";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { useConstant } from "@/wab/commons/components/ReactUtil";
 import classNames from "classnames";
 import { omit, size } from "lodash";

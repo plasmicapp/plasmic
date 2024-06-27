@@ -19,7 +19,7 @@ import { Typography } from "@/wab/client/components/style-controls/Typography";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { assert, cx, ensureInstance } from "@/wab/common";
+import { assert, cx, ensureInstance } from "@/wab/shared/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import {
   asCode,
@@ -30,7 +30,7 @@ import {
   extractValueSavedFromDataPicker,
   isFallbackSet,
   tryExtractJson,
-} from "@/wab/exprs";
+} from "@/wab/shared/core/exprs";
 import {
   inheritableTypographyCssProps,
   typographyCssProps,
@@ -55,7 +55,7 @@ import {
 } from "@/wab/shared/SlotUtils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { isBaseVariant } from "@/wab/shared/Variants";
-import { getRichTextContent, isTplTextBlock } from "@/wab/tpls";
+import { getRichTextContent, isTplTextBlock } from "@/wab/shared/core/tpls";
 import { Alert, Menu, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import React from "react";

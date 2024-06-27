@@ -17,7 +17,7 @@ import {
 import { Popover } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { XDraggable } from "src/wab/commons/components/XDraggable";
+import { XDraggable } from "@/wab/commons/components/XDraggable";
 
 export type ArenaSwitcherProps = DefaultArenaSwitcherProps
 

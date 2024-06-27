@@ -3,7 +3,7 @@ import type { Config } from "jest";
 const config: Config = {
   roots: ["<rootDir>/src"],
   collectCoverageFrom: ["src/**/*.{js,jsx,ts,tsx}", "!src/**/*.d.ts"],
-  setupFilesAfterEnv: ["<rootDir>/src/setupTests.js"],
+  setupFilesAfterEnv: ["<rootDir>/src/wab/client/test/setupTests.js"],
   snapshotSerializers: ["enzyme-to-json/serializer"],
   testMatch: [
     "<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}",

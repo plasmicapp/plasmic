@@ -13,21 +13,24 @@ import {
   updateVariantOperations,
 } from "../../src/wab/client/test-helpers/test-state-management";
 import {
+  ApiDataSource,
+  ApiUpdateDataSourceRequest,
+  CreateSiteRequest,
+} from "../../src/wab/shared/ApiSchema";
+import {
   ensureArray,
   ensureType,
   mkShortId,
   spawnWrapper,
   unexpected,
   withoutNils,
-} from "../../src/wab/common";
-import { DevFlagsType } from "../../src/wab/devflags";
+} from "../../src/wab/shared/common";
 import {
-  ApiDataSource,
-  ApiUpdateDataSourceRequest,
-  CreateSiteRequest,
-} from "../../src/wab/shared/ApiSchema";
+  StateAccessType,
+  StateVariableType,
+} from "../../src/wab/shared/core/states";
+import { DevFlagsType } from "../../src/wab/shared/devflags";
 import { HostLessPackageInfo, State } from "../../src/wab/shared/model/classes";
-import { StateAccessType, StateVariableType } from "../../src/wab/states";
 import bundles from "../bundles";
 
 // Attention: we ban cy.window, cy.document, cy.focused, Cypress.$.

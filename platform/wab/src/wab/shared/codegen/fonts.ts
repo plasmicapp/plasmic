@@ -1,6 +1,6 @@
-import { assert, ensure } from "@/wab/common";
-import { isCodeComponent } from "@/wab/components";
-import { fontWeightNumber } from "@/wab/css";
+import { assert, ensure } from "@/wab/shared/common";
+import { isCodeComponent } from "@/wab/shared/core/components";
+import { fontWeightNumber } from "@/wab/shared/css";
 import {
   flattenComponent,
   makeTokenRefResolver,
@@ -18,7 +18,7 @@ import {
   RuleSetHelpers,
 } from "@/wab/shared/RuleSetHelpers";
 import { isTypographyNode } from "@/wab/shared/SlotUtils";
-import { createExpandedRuleSetMerger } from "@/wab/styles";
+import { createExpandedRuleSetMerger } from "@/wab/shared/core/styles";
 import L from "lodash";
 
 export interface FontUsage {

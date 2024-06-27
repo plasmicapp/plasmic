@@ -22,8 +22,8 @@ import {
   tuple,
   undefinedToDefault,
   xOmitNils,
-} from "@/wab/common";
-import { allComponentVariants, isContextCodeComponent } from "@/wab/components";
+} from "@/wab/shared/common";
+import { allComponentVariants, isContextCodeComponent } from "@/wab/shared/core/components";
 import { getImplicitlyActivatedStyleVariants } from "@/wab/shared/Variants";
 import { ContextFactory } from "@/wab/shared/code-components/context-factory";
 import {
@@ -33,8 +33,8 @@ import {
 import { wrapWithContext } from "@/wab/shared/contexts";
 import { ValState } from "@/wab/shared/eval/val-state";
 import { TplNode, Variant } from "@/wab/shared/model/classes";
-import { allGlobalVariants } from "@/wab/sites";
-import { ValComponent, ValNode } from "@/wab/val-nodes";
+import { allGlobalVariants } from "@/wab/shared/core/sites";
+import { ValComponent, ValNode } from "@/wab/shared/core/val-nodes";
 import { autorun, observable } from "mobx";
 import React from "react";
 import defer = setTimeout;

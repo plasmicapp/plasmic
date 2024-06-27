@@ -15,7 +15,7 @@ import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
 import { trackEvent } from "@/wab/client/tracking";
 import { ApiUser } from "@/wab/shared/ApiSchema";
-import { getPublicUrl } from "@/wab/urls";
+import { getPublicUrl } from "@/wab/shared/urls";
 import { Button, Divider, Input, notification, Spin, Tooltip } from "antd";
 import $ from "jquery";
 import React from "react";

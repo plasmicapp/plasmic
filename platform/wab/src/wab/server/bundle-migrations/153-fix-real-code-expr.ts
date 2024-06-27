@@ -3,9 +3,9 @@
  * check if the expression starts with `(`.
  * Ideally, we should have a specific expression for the data picker code.
  */
-import { unexpected } from "@/wab/common";
-import { isCodeComponent } from "@/wab/components";
-import { isRealCodeExpr, isRealCodeExprEnsuringType } from "@/wab/exprs";
+import { unexpected } from "@/wab/shared/common";
+import { isCodeComponent } from "@/wab/shared/core/components";
+import { isRealCodeExpr, isRealCodeExprEnsuringType } from "@/wab/shared/core/exprs";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
@@ -21,7 +21,7 @@ import {
   isKnownMapExpr,
   isKnownObjectPath,
 } from "@/wab/shared/model/classes";
-import { flattenTpls, isTplComponent } from "@/wab/tpls";
+import { flattenTpls, isTplComponent } from "@/wab/shared/core/tpls";
 
 export function hasSyntaxError(val: string) {
   try {

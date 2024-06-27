@@ -34,9 +34,9 @@ import WarningTrianglesvgIcon from "@/wab/client/plasmic/q_4_icons/icons/Plasmic
 import { PlayerData } from "@/wab/client/studio-ctx/multiplayer-ctx";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
-import { spawn, unexpected } from "@/wab/common";
+import { spawn, unexpected } from "@/wab/shared/common";
 import { Stated } from "@/wab/commons/components/Stated";
-import { DEVFLAGS } from "@/wab/devflags";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { BASE_URL } from "@/wab/shared/discourse/config";
 import { MIXINS_CAP } from "@/wab/shared/Labels";
 import {

@@ -1,4 +1,4 @@
-import { assert } from "@/wab/common";
+import { assert } from "@/wab/shared/common";
 import { getTplSlotByName } from "@/wab/shared/SlotUtils";
 import { internalCanvasElementProps } from "@/wab/shared/canvas-constants";
 import {

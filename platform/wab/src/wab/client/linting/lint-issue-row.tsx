@@ -6,8 +6,8 @@ import TreeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Tree";
 import UnlockIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Unlock";
 import ResponsivenessIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Responsiveness";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/common";
-import { isPageComponent } from "@/wab/components";
+import { spawn } from "@/wab/shared/common";
+import { isPageComponent } from "@/wab/shared/core/components";
 import {
   InvalidDomNestingLintIssue,
   InvalidTplNestingLintIssue,
@@ -21,9 +21,9 @@ import { Component, TplNode } from "@/wab/shared/model/classes";
 import { Popover } from "antd";
 import { observer } from "mobx-react";
 import React, { ReactNode } from "react";
-import { makeVariantName } from "src/wab/shared/Variants";
-import { capitalizeFirst } from "src/wab/strs";
-import { isTplNamable, isTplSlot, summarizeTpl } from "src/wab/tpls";
+import { makeVariantName } from "@/wab/shared/Variants";
+import { capitalizeFirst } from "@/wab/shared/strs";
+import { isTplNamable, isTplSlot, summarizeTpl } from "@/wab/shared/core/tpls";
 
 export function renderLintIssue(issue: LintIssue) {
   if (issue.type === "non-css-screen-variant-override") {

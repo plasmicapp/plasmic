@@ -5,9 +5,9 @@ import {
   safeCast,
   swallowAsync,
   tuple,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { bytesToStringUTF8, hexToBytes } from "@/wab/commons/string-encodings";
-import { isPageComponent } from "@/wab/components";
+import { isPageComponent } from "@/wab/shared/core/components";
 import { Config } from "@/wab/server/config";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { User } from "@/wab/server/entities/Entities";
@@ -17,7 +17,7 @@ import { getShopifySecrets } from "@/wab/server/secrets";
 import { UnauthorizedError } from "@/wab/shared/ApiErrors/errors";
 import { ProjectId, UserId } from "@/wab/shared/ApiSchema";
 import { Site } from "@/wab/shared/model/classes";
-import { getPublicUrl } from "@/wab/urls";
+import { getPublicUrl } from "@/wab/shared/urls";
 import Shopify, {
   ApiVersion,
   DataType,

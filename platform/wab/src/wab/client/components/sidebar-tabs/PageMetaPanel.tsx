@@ -3,7 +3,7 @@ import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers"
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { PageComponent } from "@/wab/components";
+import { PageComponent } from "@/wab/shared/core/components";
 import { observer } from "mobx-react";
 import React from "react";
 

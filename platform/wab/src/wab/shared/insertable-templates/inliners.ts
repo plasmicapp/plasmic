@@ -5,16 +5,16 @@ import {
   isSubList,
   strictFind,
   withoutNils,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { resolveAllTokenRefs } from "@/wab/commons/StyleToken";
 import {
   isCodeComponent,
   isHostLessCodeComponent,
   isPlumeComponent,
   PlumeComponent,
-} from "@/wab/components";
-import { clone as cloneExpr } from "@/wab/exprs";
-import { syncGlobalContexts } from "@/wab/project-deps";
+} from "@/wab/shared/core/components";
+import { clone as cloneExpr } from "@/wab/shared/core/exprs";
+import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
 import {
   adaptEffectiveVariantSetting,
   EffectiveVariantSetting,
@@ -53,8 +53,8 @@ import {
   mkVariantSetting,
   tryGetBaseVariantSetting,
 } from "@/wab/shared/Variants";
-import { allStyleTokens, isHostLessPackage } from "@/wab/sites";
-import { createExpandedRuleSetMerger } from "@/wab/styles";
+import { allStyleTokens, isHostLessPackage } from "@/wab/shared/core/sites";
+import { createExpandedRuleSetMerger } from "@/wab/shared/core/styles";
 import {
   clone as cloneTpl,
   findVariantSettingsUnderTpl,
@@ -66,7 +66,7 @@ import {
   isTplTag,
   isTplVariantable,
   walkTpls,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import { flatten } from "lodash";
 
 /**

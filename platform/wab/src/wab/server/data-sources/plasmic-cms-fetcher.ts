@@ -1,4 +1,4 @@
-import { ensure, withoutNils } from "@/wab/common";
+import { ensure, withoutNils } from "@/wab/shared/common";
 import {
   ApiCmsDatabase,
   ApiCmsQuery,
@@ -13,7 +13,7 @@ import {
   PlasmicCMSDataSource,
   QueryBuilderPlasmicCMSConfig,
 } from "@/wab/shared/data-sources-meta/plasmic-cms-meta";
-import { getPublicUrl } from "@/wab/urls";
+import { getPublicUrl } from "@/wab/shared/urls";
 import type { CrudSorting } from "@pankod/refine-core";
 import {
   DataSourceSchema,

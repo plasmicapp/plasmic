@@ -13,8 +13,8 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { useStudioCtx } from "src/wab/client/studio-ctx/StudioCtx";
-import { isLiteralObjectByName, withoutNils } from "src/wab/common";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { isLiteralObjectByName, withoutNils } from "@/wab/shared/common";
 
 export interface DataPickerCodeEditorLayoutProps
   extends Omit<DefaultDataPickerCodeEditorLayoutProps, "envPanel"> {

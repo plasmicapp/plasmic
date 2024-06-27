@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { ControlExtras } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
-import { swallow } from "@/wab/common";
+import { swallow } from "@/wab/shared/common";
 import { ContextDependentConfig } from "@plasmicapp/host";
 
 export function getContextDependentValue<P>(

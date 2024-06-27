@@ -15,14 +15,14 @@ import {
   omitNils,
   swallow,
   truncateText,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { PushPullQueue } from "@/wab/commons/asyncutil";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import {
   DEVFLAGS,
   flattenInsertableIconGroups,
   flattenInsertableTemplates,
-} from "@/wab/devflags";
+} from "@/wab/shared/devflags";
 import { transformErrors } from "@/wab/shared/ApiErrors/errors";
 import { ApiUser } from "@/wab/shared/ApiSchema";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";

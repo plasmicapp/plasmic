@@ -11,7 +11,7 @@ import { Component, State } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { getStateVarName } from "src/wab/states";
+import { getStateVarName } from "@/wab/shared/core/states";
 
 export interface VariableRowProps extends DefaultVariableRowProps {
   component: Component;

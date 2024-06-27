@@ -1,4 +1,4 @@
-import { ensureArray } from "@/wab/common";
+import { ensureArray } from "@/wab/shared/common";
 import {
   getResolvedProjectVersions,
   mkVersionToSync,

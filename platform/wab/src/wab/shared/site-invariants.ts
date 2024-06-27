@@ -1,4 +1,4 @@
-import { describeValueOrType, ensure, partitions, pathGet } from "@/wab/common";
+import { describeValueOrType, ensure, partitions, pathGet } from "@/wab/shared/common";
 import { isTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import {
   allComponentVariants,
@@ -9,10 +9,10 @@ import {
   isPageComponent,
   isPlumeComponent,
   tryGetVariantGroupValueFromArg,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import * as cssPegParser from "@/wab/gen/cssPegParser";
-import { ParamExportType } from "@/wab/lang";
-import { ImportableObject } from "@/wab/project-deps";
+import { ParamExportType } from "@/wab/shared/core/lang";
+import { ImportableObject } from "@/wab/shared/core/project-deps";
 import { AnyArena, getArenaFrames, isMixedArena } from "@/wab/shared/Arenas";
 import {
   componentToUsedImageAssets,
@@ -64,9 +64,9 @@ import {
   allMixins,
   allStyleTokens,
   getSiteArenas,
-} from "@/wab/sites";
-import { isPrivateState } from "@/wab/states";
-import { parseCssValue } from "@/wab/styles";
+} from "@/wab/shared/core/sites";
+import { isPrivateState } from "@/wab/shared/core/states";
+import { parseCssValue } from "@/wab/shared/core/styles";
 import {
   ancestorsUp,
   isTplComponent,
@@ -74,7 +74,7 @@ import {
   isTplTag,
   isTplVariantable,
   tplChildren,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import L, { uniqBy } from "lodash";
 
 export class InvariantError extends Error {

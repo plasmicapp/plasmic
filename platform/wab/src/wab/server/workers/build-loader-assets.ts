@@ -1,4 +1,4 @@
-import { spawnWrapper } from "@/wab/common";
+import { spawnWrapper } from "@/wab/shared/common";
 import {
   bundleModules,
   LoaderBundleOutput,

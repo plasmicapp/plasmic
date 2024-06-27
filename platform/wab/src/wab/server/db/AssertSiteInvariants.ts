@@ -1,6 +1,6 @@
-import { assert, maybe, spawn } from "@/wab/common";
-import { observeModel } from "@/wab/observable-model";
-import { walkDependencyTree } from "@/wab/project-deps";
+import { assert, maybe, spawn } from "@/wab/shared/common";
+import { observeModel } from "@/wab/shared/core/observable-model";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
 import { getMigratedBundle } from "@/wab/server/db/BundleMigrator";
 import { getOrderedDepBundleIds } from "@/wab/server/db/DbBundleLoader";
@@ -31,7 +31,7 @@ import {
   assertSiteInvariants,
   InvariantError,
 } from "@/wab/shared/site-invariants";
-import { taggedUnbundle } from "@/wab/tagged-unbundle";
+import { taggedUnbundle } from "@/wab/shared/core/tagged-unbundle";
 import L from "lodash";
 const { Command } = require("commander");
 

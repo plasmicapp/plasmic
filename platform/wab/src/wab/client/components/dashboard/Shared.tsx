@@ -6,7 +6,7 @@ import {
   DefaultSharedProps,
   PlasmicShared,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicShared";
-import { filterMapTruthy } from "@/wab/common";
+import { filterMapTruthy } from "@/wab/shared/common";
 import { ApiPermission, ApiResource } from "@/wab/shared/ApiSchema";
 import {
   convertToTaggedResourceId,
@@ -15,7 +15,7 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as L from "lodash";
 import * as React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 interface SharedProps extends DefaultSharedProps {
   resource: ApiResource;

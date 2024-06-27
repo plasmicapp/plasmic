@@ -1,5 +1,5 @@
-import { assert, assertNever } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { assert, assertNever } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ApiFeatureTier,
   ApiTeam,

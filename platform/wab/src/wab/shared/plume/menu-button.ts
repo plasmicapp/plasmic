@@ -1,5 +1,5 @@
-import { assert, ensure } from "@/wab/common";
-import { getParamByVarName } from "@/wab/components";
+import { assert, ensure } from "@/wab/shared/common";
+import { getParamByVarName } from "@/wab/shared/core/components";
 import { getTplSlotByName, getTplSlotForParam } from "@/wab/shared/SlotUtils";
 import { TplMgr, ensureBaseVariant } from "@/wab/shared/TplMgr";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
@@ -34,7 +34,7 @@ import {
   maybeIncludeSerializedDefaultSlotContent,
   serializeComponentSubstitutionCallsForDefaultContents,
 } from "@/wab/shared/plume/plume-utils";
-import { fixParentPointers, mkTplComponent } from "@/wab/tpls";
+import { fixParentPointers, mkTplComponent } from "@/wab/shared/core/tpls";
 import type { BaseMenuButtonProps, MenuButtonRef } from "@plasmicapp/react-web";
 import { omit, pick } from "lodash";
 import type React from "react";

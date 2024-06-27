@@ -1,10 +1,10 @@
 import styles from "@/wab/client/components/style-controls/GridEditor.module.scss";
 import { getRect } from "@/wab/client/dom";
-import { Dict } from "@/wab/collections";
-import { ensure, parsePx, zipWithIndex } from "@/wab/common";
-import { ClientRect } from "@/wab/geom";
+import { Dict } from "@/wab/shared/collections";
+import { ensure, parsePx, zipWithIndex } from "@/wab/shared/common";
+import { ClientRect } from "@/wab/shared/geom";
 import { Axis, Offset } from "@/wab/shared/Grids";
-import { px } from "@/wab/styles";
+import { px } from "@/wab/shared/core/styles";
 import $ from "jquery";
 import L from "lodash";
 import { CSSProperties } from "react";

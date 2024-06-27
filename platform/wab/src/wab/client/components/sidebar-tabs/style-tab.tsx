@@ -26,13 +26,13 @@ import { useCurrentRecordingTarget } from "@/wab/client/hooks/useCurrentRecordin
 import SlotIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Slot";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { cx, spawn } from "@/wab/common";
+import { cx, spawn } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
   isCodeComponent,
   isFrameComponent,
   isPageComponent,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import { isDedicatedArena } from "@/wab/shared/Arenas";
 import { MIXINS_CAP } from "@/wab/shared/Labels";
 import {
@@ -55,15 +55,15 @@ import {
   getPrivateStyleVariantsForTag,
   isBaseVariant,
 } from "@/wab/shared/Variants";
-import { isTplAttachedToSite } from "@/wab/sites";
-import { SlotSelection } from "@/wab/slots";
+import { isTplAttachedToSite } from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import { selectionControlsColor } from "@/wab/styles/css-variables";
 import {
   isTplComponent,
   isTplSlot,
   isTplTag,
   isTplVariantable,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import { Alert, Button } from "antd";
 import * as mobx from "mobx";
 import { observer } from "mobx-react";

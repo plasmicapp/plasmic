@@ -1,5 +1,5 @@
-import { ensure } from "@/wab/common";
-import { ScreenSizeSpec } from "@/wab/shared/Css";
+import { ensure } from "@/wab/shared/common";
+import { ScreenSizeSpec } from "@/wab/shared/css-size";
 
 export interface FrameSize {
   name: string;

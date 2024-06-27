@@ -46,21 +46,21 @@ import {
   filterFalsy,
   removeWhere,
   spawn,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import {
   getComponentDisplayName,
   isCodeComponent,
   isReusableComponent,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import {
   DEVFLAGS,
   HostLessPackageInfo,
   InsertableTemplatesGroup,
   flattenInsertableIconGroups,
   flattenInsertableTemplates,
-} from "@/wab/devflags";
-import { ImageAssetType } from "@/wab/image-asset-type";
-import { isIcon } from "@/wab/image-assets";
+} from "@/wab/shared/devflags";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { isIcon } from "@/wab/shared/core/image-assets";
 import { getArenaFrameDesc, getArenaFrames } from "@/wab/shared/Arenas";
 import {
   Arena,
@@ -71,8 +71,8 @@ import {
   Site,
   TplNode,
 } from "@/wab/shared/model/classes";
-import { allComponents } from "@/wab/sites";
-import { SlotSelection } from "@/wab/slots";
+import { allComponents } from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import { useCombobox } from "downshift";
 import L from "lodash";
 import { observer } from "mobx-react";

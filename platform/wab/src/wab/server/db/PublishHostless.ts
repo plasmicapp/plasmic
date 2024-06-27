@@ -1,5 +1,5 @@
-import { assert, ensure, spawn } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { assert, ensure, spawn } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { updateHostlessPackage } from "@/wab/server/code-components/code-components";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
 import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";

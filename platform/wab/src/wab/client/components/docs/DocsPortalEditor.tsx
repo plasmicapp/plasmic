@@ -7,8 +7,8 @@ import {
   serializeToggledIcon,
 } from "@/wab/client/components/docs/serialize-docs-preview";
 import { fixWorkerUrl } from "@/wab/client/monaco-worker-url";
-import { ensure } from "@/wab/common";
-import { isCodeComponent, isPlumeComponent } from "@/wab/components";
+import { ensure } from "@/wab/shared/common";
+import { isCodeComponent, isPlumeComponent } from "@/wab/shared/core/components";
 import {
   makeAssetClassName,
   makeIconAssetFileNameWithoutExt,

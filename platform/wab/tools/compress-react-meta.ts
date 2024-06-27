@@ -1,6 +1,6 @@
 import * as fs from "fs";
-import { arrayEqIgnoreOrder, assert, ensure } from "../src/wab/common";
 import { componentMetasStr as ReactMetasStr } from "../src/wab/component-metas/react-meta-gen";
+import { arrayEqIgnoreOrder, assert, ensure } from "../src/wab/shared/common";
 
 /**
  * Group of tags and props such that all of those props

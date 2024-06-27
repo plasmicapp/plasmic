@@ -16,10 +16,10 @@ import {
 } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { arrayMoveIndex } from "@/wab/collections";
-import { assert, ensure, maybe, tuple, uniqueKey } from "@/wab/common";
+import { arrayMoveIndex } from "@/wab/shared/collections";
+import { assert, ensure, maybe, tuple, uniqueKey } from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
-import { getCssInitial } from "@/wab/css";
+import { getCssInitial } from "@/wab/shared/css";
 import { transitionProps } from "@/wab/shared/core/style-props";
 import { joinCssValues, RSH, splitCssValue } from "@/wab/shared/RuleSetHelpers";
 import { isBaseVariant, tryGetBaseVariantSetting } from "@/wab/shared/Variants";

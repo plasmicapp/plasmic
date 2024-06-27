@@ -1,4 +1,4 @@
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
@@ -8,8 +8,8 @@ import { Bundler } from "@/wab/shared/bundler";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { State } from "@/wab/shared/model/classes";
 import { renameObjectInExpr } from "@/wab/shared/refactoring";
-import { getStateVarName } from "@/wab/states";
-import * as Tpls from "@/wab/tpls";
+import { getStateVarName } from "@/wab/shared/core/states";
+import * as Tpls from "@/wab/shared/core/tpls";
 
 export function getOldStateVarName(state: State) {
   const tpls: string[] = [];

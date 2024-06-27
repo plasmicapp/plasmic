@@ -1,5 +1,5 @@
-import { assert } from "@/wab/common";
-import { getPublicUrl } from "@/wab/urls";
+import { assert } from "@/wab/shared/common";
+import { getPublicUrl } from "@/wab/shared/urls";
 
 export interface Config {
   host: string;

@@ -53,7 +53,7 @@ import {
   replaceAll,
   spawn,
   withoutNils,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import {
   CodeComponent,
   DefaultComponentKind,
@@ -62,18 +62,18 @@ import {
   isCodeComponent,
   isPlumeComponent,
   sortComponentsByName,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import {
   HostLessComponentInfo,
   HostLessPackageInfo,
   InsertableTemplatesComponent,
   InsertableTemplatesItem,
   Installable,
-} from "@/wab/devflags";
-import { codeLit } from "@/wab/exprs";
-import { Rect } from "@/wab/geom";
-import { ImageAssetType } from "@/wab/image-asset-type";
-import { syncGlobalContexts } from "@/wab/project-deps";
+} from "@/wab/shared/devflags";
+import { codeLit } from "@/wab/shared/core/exprs";
+import { Rect } from "@/wab/shared/geom";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
 import { usedHostLessPkgs } from "@/wab/shared/cached-selectors";
 import {
   appendCodeComponentMetaToModel,
@@ -102,10 +102,10 @@ import {
   getSlotLikeType,
 } from "@/wab/shared/parenting";
 import { getParentOrSlotSelection } from "@/wab/shared/SlotUtils";
-import { allComponents } from "@/wab/sites";
-import { SlotSelection } from "@/wab/slots";
-import { unbundleProjectDependency } from "@/wab/tagged-unbundle";
-import * as Tpls from "@/wab/tpls";
+import { allComponents } from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import { unbundleProjectDependency } from "@/wab/shared/core/tagged-unbundle";
+import * as Tpls from "@/wab/shared/core/tpls";
 import { notification } from "antd";
 import { mapValues, uniqBy } from "lodash";
 import * as React from "react";
@@ -113,9 +113,9 @@ import {
   cloneInsertableTemplate,
   cloneInsertableTemplateArena,
   cloneInsertableTemplateComponent,
-} from "src/wab/shared/insertable-templates";
-import { getPlumeEditorPlugin } from "src/wab/shared/plume/plume-registry";
-import { getBaseVariant } from "src/wab/shared/Variants";
+} from "@/wab/shared/insertable-templates";
+import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
+import { getBaseVariant } from "@/wab/shared/Variants";
 
 export function createAddTplImage(asset: ImageAsset): AddTplItem {
   return {

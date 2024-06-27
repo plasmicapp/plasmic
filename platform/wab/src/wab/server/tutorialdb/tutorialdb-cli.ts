@@ -1,4 +1,4 @@
-import { assert, spawn } from "@/wab/common";
+import { assert, spawn } from "@/wab/shared/common";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
 import { createDbConnection } from "@/wab/server/db/dbcli-utils";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
@@ -7,7 +7,7 @@ import {
   TutorialType,
 } from "@/wab/server/tutorialdb/tutorialdb-utils";
 import { Command } from "commander";
-import { TutorialDbId } from "src/wab/shared/ApiSchema";
+import { TutorialDbId } from "@/wab/shared/ApiSchema";
 
 async function main() {
   const withDb = async (opts: any, func: (db: DbMgr) => Promise<void>) => {

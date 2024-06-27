@@ -1,4 +1,4 @@
-import { ensureType, hackyCast } from "@/wab/common";
+import { ensureType, hackyCast } from "@/wab/shared/common";
 import { fetchBases } from "@/wab/server/data-sources/airtable-fetcher";
 import {
   executeDataSourceOperation,

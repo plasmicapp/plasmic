@@ -5,7 +5,7 @@ import {
   PlasmicExperimentEternalIds,
 } from "@/wab/client/plasmic/plasmic_kit_optimize/PlasmicExperimentEternalIds";
 import { Split } from "@/wab/shared/model/classes";
-import { SplitType } from "@/wab/splits";
+import { SplitType } from "@/wab/shared/core/splits";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 

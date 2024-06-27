@@ -1,8 +1,8 @@
 import { DropdownArrow, IconLinkButton } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
-import { arrayMoveIndex } from "@/wab/collections";
-import { cx, ensure, ensureHTMLElt, tuple } from "@/wab/common";
+import { arrayMoveIndex } from "@/wab/shared/collections";
+import { cx, ensure, ensureHTMLElt, tuple } from "@/wab/shared/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { Dropdown, Menu, Tooltip } from "antd";
 import classNames from "classnames";

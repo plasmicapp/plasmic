@@ -1,4 +1,4 @@
-import { tryCatchElseAsync, unexpected } from "@/wab/common";
+import { tryCatchElseAsync, unexpected } from "@/wab/shared/common";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { ProjectRepository } from "@/wab/server/entities/Entities";
 import { getGithubApp } from "@/wab/server/github/app";

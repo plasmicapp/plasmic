@@ -10,7 +10,7 @@
  */
 
 import { useDisplayed } from "@/wab/client/dom-utils";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import {
   combineProps,

@@ -5,7 +5,7 @@ import { LinkButton } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { ApiUser, ConfirmEmailResponse } from "@/wab/shared/ApiSchema";
 import { Button, notification, Spin, Tooltip } from "antd";
 import * as React from "react";

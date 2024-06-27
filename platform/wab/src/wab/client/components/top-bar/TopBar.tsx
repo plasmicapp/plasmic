@@ -20,20 +20,20 @@ import {
   STUDIO_ONBOARDING_TUTORIALS,
   STUDIO_ONBOARDING_TUTORIALS_LIST,
 } from "@/wab/client/tours/tutorials/tutorials-meta";
-import { ensure, sortBy, spawn, withoutNils } from "@/wab/common";
+import { ensure, sortBy, spawn, withoutNils } from "@/wab/shared/common";
 import {
   isCodeComponent,
   isFrameComponent,
   isPageComponent,
   isReusableComponent,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { canEditProjectConfig } from "@/wab/shared/ui-config-utils";
 import { Menu, notification, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
-import { pruneUnusedImageAssets } from "src/wab/shared/prune-site";
-import { fixPageHrefsToLocal } from "src/wab/shared/utils/split-site-utils";
+import { pruneUnusedImageAssets } from "@/wab/shared/prune-site";
+import { fixPageHrefsToLocal } from "@/wab/shared/utils/split-site-utils";
 import useSWR from "swr";
 
 export const outlineModes = ["blocks", "inlines", "all"];

@@ -5,8 +5,8 @@ import {
 } from "@/wab/client/components/variants/ClientPinManager";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { assert, ensure } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { assert, ensure } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ensureCustomFrameForActivatedVariants,
   isComponentArena,

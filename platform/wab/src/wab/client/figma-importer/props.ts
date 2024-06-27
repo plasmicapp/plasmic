@@ -5,8 +5,8 @@ import {
   InstanceNode,
 } from "@/wab/client/figma-importer/plugin-types";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { hackyCast, isJsonScalar, withoutNils } from "@/wab/common";
-import { getParamByVarName, isCodeComponent } from "@/wab/components";
+import { hackyCast, isJsonScalar, withoutNils } from "@/wab/shared/common";
+import { getParamByVarName, isCodeComponent } from "@/wab/shared/core/components";
 import { isSlot } from "@/wab/shared/SlotUtils";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";

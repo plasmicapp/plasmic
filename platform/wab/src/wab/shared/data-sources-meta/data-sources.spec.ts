@@ -1,9 +1,9 @@
-import { getProjectFlags } from "@/wab/devflags";
-import { code, customCode, ExprCtx } from "@/wab/exprs";
+import { getProjectFlags } from "@/wab/shared/devflags";
+import { code, customCode, ExprCtx } from "@/wab/shared/core/exprs";
 import { exprToDataSourceString } from "@/wab/shared/data-sources-meta/data-sources";
 import { TemplatedString } from "@/wab/shared/model/classes";
 import { maybeConvertToIife } from "@/wab/shared/parser-utils";
-import { createSite } from "@/wab/sites";
+import { createSite } from "@/wab/shared/core/sites";
 
 describe("exprToDataSourceString", () => {
   const exprCtxFixture: ExprCtx = {

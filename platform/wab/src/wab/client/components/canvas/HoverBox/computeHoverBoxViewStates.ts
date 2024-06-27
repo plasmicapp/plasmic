@@ -12,19 +12,19 @@ import { computeNodeOutlineTagLayoutClass } from "@/wab/client/node-outline";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { summarizeFocusObj } from "@/wab/client/utils/tpl-client-utils";
-import { asOne, assert, withoutNils } from "@/wab/common";
+import { asOne, assert, withoutNils } from "@/wab/shared/common";
 import { removeAllFromArray } from "@/wab/commons/collections";
 import { isTokenRef } from "@/wab/commons/StyleToken";
-import { isFrameComponent, isPageComponent } from "@/wab/components";
-import { Box, Orient, Side } from "@/wab/geom";
-import { Selectable } from "@/wab/selection";
+import { isFrameComponent, isPageComponent } from "@/wab/shared/core/components";
+import { Box, Orient, Side } from "@/wab/shared/geom";
+import { Selectable } from "@/wab/shared/core/selection";
 import {
   FrameViewMode,
   getFrameHeight,
   isHeightAutoDerived,
 } from "@/wab/shared/Arenas";
 import { makeTokenRefResolver } from "@/wab/shared/cached-selectors";
-import { NumericSize, tryParseNumericSize } from "@/wab/shared/Css";
+import { NumericSize, tryParseNumericSize } from "@/wab/shared/css-size";
 import {
   computeDefinedIndicator,
   DefinedIndicatorType,
@@ -45,7 +45,7 @@ import { ReadonlyIRuleSetHelpersX } from "@/wab/shared/RuleSetHelpers";
 import { isExplicitSize, isTplDefaultSized } from "@/wab/shared/sizingutils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
-import { SlotSelection } from "@/wab/slots";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   isTplColumn,
   isTplComponent,
@@ -53,8 +53,8 @@ import {
   isTplInput,
   isTplTagOrComponent,
   isTplVariantable,
-} from "@/wab/tpls";
-import { ValComponent, ValNode, ValSlot } from "@/wab/val-nodes";
+} from "@/wab/shared/core/tpls";
+import { ValComponent, ValNode, ValSlot } from "@/wab/shared/core/val-nodes";
 import { uniq } from "lodash";
 import * as React from "react";
 

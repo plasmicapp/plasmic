@@ -1,6 +1,6 @@
 import { PLAYER_COLORS } from "@/wab/client/components/studio/GlobalCssVariables";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { asyncOneAtATime, ensure, xDifference } from "@/wab/common";
+import { asyncOneAtATime, ensure, xDifference } from "@/wab/shared/common";
 import {
   ApiUser,
   PlayerViewInfo,

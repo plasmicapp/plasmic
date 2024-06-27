@@ -8,7 +8,7 @@ import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Tr
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ifDevFlag } from "@/wab/client/utils/ifDevFlag";
 import { zIndex } from "@/wab/client/z-index";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { ApiAppRole } from "@/wab/shared/ApiSchema";
 import { findAllDataSourceOpExprForComponent } from "@/wab/shared/cached-selectors";
 import {
@@ -21,7 +21,7 @@ import { Select as AntSelect, Form, notification } from "antd";
 import { Dictionary, keyBy, mapValues } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 // const LOGIN_NEEDED =
 //   "If checked, only logged in user will be able to see this page";

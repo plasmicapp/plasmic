@@ -1,8 +1,8 @@
 import { isTopFrame } from "@/wab/client/cli-routes";
 import { getPlasmicStudioArgs } from "@/wab/client/frame-ctx/plasmic-studio-args";
-import { assert, withoutNils } from "@/wab/common";
-import { dbg } from "@/wab/dbg";
-import { applyDevFlagOverrides, DEVFLAGS, DevFlagsType } from "@/wab/devflags";
+import { assert, withoutNils } from "@/wab/shared/common";
+import { dbg } from "@/wab/shared/dbg";
+import { applyDevFlagOverrides, DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
 import { isPlainObject } from "lodash";
 
 export function getClientDevFlagOverrides(): DevFlagsType {

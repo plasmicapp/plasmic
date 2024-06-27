@@ -1,4 +1,4 @@
-import { ensureType } from "@/wab/common";
+import { ensureType } from "@/wab/shared/common";
 import { checkFreeTrialDuration } from "@/wab/server/routes/team-plans";
 import { mkApiTeam } from "@/wab/server/routes/teams";
 import { userDbMgr } from "@/wab/server/routes/util";

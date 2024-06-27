@@ -1,7 +1,7 @@
 import { CodeSnippet } from "@/wab/client/components/coding/CodeDisplay";
 import { confirm } from "@/wab/client/components/quick-modals";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawnWrapper } from "@/wab/common";
+import { spawnWrapper } from "@/wab/shared/common";
 import { notification } from "antd";
 import React from "react";
 

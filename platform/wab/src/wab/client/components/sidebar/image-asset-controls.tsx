@@ -35,10 +35,10 @@ import ImageBlockIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageB
 import PlasmicLeftImagesPanel from "@/wab/client/plasmic/plasmic_kit/PlasmicLeftImagesPanel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
-import { ImageAssetType } from "@/wab/image-asset-type";
-import { extractImageAssetUsages } from "@/wab/image-assets";
+import { ensure } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { extractImageAssetUsages } from "@/wab/shared/core/image-assets";
 import { ImageUploadResponse } from "@/wab/shared/ApiSchema";
 import { imageDataUriToBlob } from "@/wab/shared/data-urls";
 import { ImageAsset, ProjectDependency } from "@/wab/shared/model/classes";
@@ -48,7 +48,7 @@ import { last, orderBy } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
-import { isHostLessPackage } from "src/wab/sites";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
 
 type ImageAssetTypeExpanded = {
   [ImageAssetType.Icon]: boolean;

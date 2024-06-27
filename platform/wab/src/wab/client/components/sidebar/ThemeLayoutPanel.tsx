@@ -12,7 +12,7 @@ import {
   PlasmicThemeLayoutPanel,
 } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicThemeLayoutPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { getLengthUnits } from "@/wab/css";
+import { getLengthUnits } from "@/wab/shared/css";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import {
   CONTENT_LAYOUT_DEFAULTS,

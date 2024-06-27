@@ -1,4 +1,4 @@
-import { arrayEq, assert, ensure } from "@/wab/common";
+import { arrayEq, assert, ensure } from "@/wab/shared/common";
 import {
   ContextFactory,
   observeRelevantFields,

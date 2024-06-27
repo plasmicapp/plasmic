@@ -1,7 +1,7 @@
 import { elementSchemaToTplAndLogErrors } from "@/wab/client/code-components/code-components";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { withoutNils } from "@/wab/common";
-import { CodeComponent, getComponentDisplayName } from "@/wab/components";
+import { withoutNils } from "@/wab/shared/common";
+import { CodeComponent, getComponentDisplayName } from "@/wab/shared/core/components";
 import { TplComponent } from "@/wab/shared/model/classes";
 import { CodeComponentElement } from "@plasmicapp/host/dist/element-types";
 import { notification } from "antd";

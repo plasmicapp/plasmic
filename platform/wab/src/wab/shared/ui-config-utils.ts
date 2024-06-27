@@ -1,6 +1,6 @@
-import { withoutNils } from "@/wab/common";
+import { withoutNils } from "@/wab/shared/common";
 import { arrayReversed } from "@/wab/commons/collections";
-import { HostLessPackageInfo } from "@/wab/devflags";
+import { HostLessPackageInfo } from "@/wab/shared/devflags";
 import {
   ApiPermission,
   ApiResource,
@@ -20,7 +20,7 @@ import {
 } from "@/wab/shared/Labels";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { isEnterprise } from "@/wab/shared/pricing/pricing-utils";
-import { smartHumanize } from "@/wab/strs";
+import { smartHumanize } from "@/wab/shared/strs";
 import { merge } from "lodash";
 
 export const BASIC_ALIASES = [

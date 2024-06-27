@@ -55,7 +55,7 @@ import {
   useGlobalActions,
 } from "@plasmicapp/react-web/lib/host";
 
-import Modal from "../../../../Modal"; // plasmic-import: rD0wOVzSnE/component
+import Modal from "../../components/Modal"; // plasmic-import: rD0wOVzSnE/component
 import StarterGroup from "../../components/StarterGroup"; // plasmic-import: u6dq5eydCj/component
 import StarterProject from "../../components/StarterProject"; // plasmic-import: CCsDeqqYeoM/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component

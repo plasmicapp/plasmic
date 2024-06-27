@@ -8,7 +8,7 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
 import { isKnownVarRef } from "@/wab/shared/model/classes";
-import { TplImageTag } from "@/wab/tpls";
+import { TplImageTag } from "@/wab/shared/core/tpls";
 import { observer } from "mobx-react";
 import React from "react";
 

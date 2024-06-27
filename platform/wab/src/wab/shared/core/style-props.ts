@@ -3,8 +3,8 @@ import {
   FAKE_CSS_PROPS,
   PLASMIC_DISPLAY_NONE,
   tryGetCssInitial,
-} from "@/wab/css";
-import { standardCorners, standardSides } from "@/wab/geom";
+} from "@/wab/shared/css";
+import { standardCorners, standardSides } from "@/wab/shared/geom";
 import { RuleSet } from "@/wab/shared/model/classes";
 import L from "lodash";
 

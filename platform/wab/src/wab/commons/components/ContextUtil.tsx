@@ -3,7 +3,7 @@ import {
   getComponentName,
   UnwrappableComponent,
 } from "@/wab/commons/components/HocUtil";
-import { capitalizeFirst } from "@/wab/strs";
+import { capitalizeFirst } from "@/wab/shared/strs";
 import * as React from "react";
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;

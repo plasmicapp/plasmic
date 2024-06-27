@@ -1,7 +1,7 @@
 import { fixWorkerUrl } from "@/wab/client/monaco-worker-url";
-import { ensure, maybe, mkUuid } from "@/wab/common";
-import { dbg } from "@/wab/dbg";
-import { Size } from "@/wab/geom";
+import { ensure, maybe, mkUuid } from "@/wab/shared/common";
+import { dbg } from "@/wab/shared/dbg";
+import { Size } from "@/wab/shared/geom";
 import * as monaco from "monaco-editor";
 import { editor } from "monaco-editor";
 import React, { useEffect, useRef } from "react";

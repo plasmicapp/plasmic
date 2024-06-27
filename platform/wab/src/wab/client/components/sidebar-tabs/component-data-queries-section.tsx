@@ -14,9 +14,9 @@ import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { RightTabKey, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
-import { spawn } from "@/wab/common";
-import { isPageComponent } from "@/wab/components";
-import { asCode } from "@/wab/exprs";
+import { spawn } from "@/wab/shared/common";
+import { isPageComponent } from "@/wab/shared/core/components";
+import { asCode } from "@/wab/shared/core/exprs";
 import { DATA_QUERY_LOWER, DATA_QUERY_PLURAL_CAP } from "@/wab/shared/Labels";
 import { addEmptyQuery } from "@/wab/shared/TplMgr";
 import { getTplComponentFetchers } from "@/wab/shared/cached-selectors";
@@ -30,7 +30,7 @@ import {
   isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
 import { renameQueryAndFixExprs } from "@/wab/shared/refactoring";
-import { tryGetTplOwnerComponent } from "@/wab/tpls";
+import { tryGetTplOwnerComponent } from "@/wab/shared/core/tpls";
 import { PlasmicDataSourceContextProvider } from "@plasmicapp/react-web";
 import { Menu } from "antd";
 import { autorun } from "mobx";

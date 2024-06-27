@@ -1,5 +1,5 @@
-import { ensure } from "@/wab/common";
-import { ImageAssetType } from "@/wab/image-asset-type";
+import { ensure } from "@/wab/shared/common";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { BundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { svgoProcess } from "@/wab/server/svgo";
@@ -9,7 +9,7 @@ import {
   parseDataUrl,
   SVG_MEDIA_TYPE,
 } from "@/wab/shared/data-urls";
-import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/tpls";
+import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/shared/core/tpls";
 import S3 from "aws-sdk/clients/s3";
 
 const siteAssetsBucket = process.env.SITE_ASSETS_BUCKET as string;

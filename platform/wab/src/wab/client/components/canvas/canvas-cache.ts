@@ -6,7 +6,7 @@ import {
   isLiteralObjectByName,
   objsEq,
   removeWhere,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { DeepMap } from "@/wab/commons/deep-map";
 import { ReactHookSpec } from "@/wab/shared/codegen/react-p/react-hook-spec";
 import { TplNode } from "@/wab/shared/model/classes";
@@ -18,7 +18,7 @@ import {
   IComputedValueOptions,
   onBecomeUnobserved,
 } from "mobx";
-import { CanvasEnv } from "src/wab/shared/eval";
+import { CanvasEnv } from "@/wab/shared/eval";
 
 export type IComputedFnOptions<F extends (...args: any[]) => any> = {
   onCleanup?: (

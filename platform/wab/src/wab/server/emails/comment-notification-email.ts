@@ -1,6 +1,6 @@
 import { Project, User } from "@/wab/server/entities/Entities";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
-import { createProjectUrl } from "@/wab/urls";
+import { createProjectUrl } from "@/wab/shared/urls";
 import { Request } from "express-serve-static-core";
 
 export async function sendCommentNotificationEmail(

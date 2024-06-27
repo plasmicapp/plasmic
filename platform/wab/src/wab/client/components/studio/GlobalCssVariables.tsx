@@ -1,6 +1,6 @@
 import { useCurrentRecordingTarget } from "@/wab/client/hooks/useCurrentRecordingTarget";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { switchType } from "@/wab/common";
+import { switchType } from "@/wab/shared/common";
 import { ComponentArena } from "@/wab/shared/model/classes";
 import * as tokens from "@/wab/styles/_tokens";
 import * as cssVariables from "@/wab/styles/css-variables";

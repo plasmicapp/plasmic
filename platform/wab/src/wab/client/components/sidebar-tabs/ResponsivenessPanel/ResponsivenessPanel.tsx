@@ -12,15 +12,15 @@ import PlasmicIcon__Trash2 from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__T
 import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
 import PlasmicIcon__Alert from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__WarningTrianglesvg";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, spawn, xGroupBy } from "@/wab/common";
-import { ScreenSizeSpec } from "@/wab/shared/Css";
+import { ensure, spawn, xGroupBy } from "@/wab/shared/common";
+import { ScreenSizeSpec } from "@/wab/shared/css-size";
 import { FRAMES_LOWER, FRAME_LOWER } from "@/wab/shared/Labels";
 import { Variant } from "@/wab/shared/model/classes";
 import {
   ResponsiveStrategy,
   screenVariantPresetGroups,
 } from "@/wab/shared/responsiveness";
-import { getSiteScreenSizes } from "@/wab/sites";
+import { getSiteScreenSizes } from "@/wab/shared/core/sites";
 import {
   Col,
   Dropdown,

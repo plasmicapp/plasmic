@@ -5,8 +5,8 @@ import {
   NullOrUndefinedValueError,
   shallowJson,
   stampObjectUuid,
-} from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+} from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { UserError } from "@/wab/shared/UserError";
 import { isStampedIgnoreError } from "@/wab/shared/error-handling";
 import * as Sentry from "@sentry/browser";

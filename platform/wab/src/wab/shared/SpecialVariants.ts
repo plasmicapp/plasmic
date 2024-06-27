@@ -1,4 +1,4 @@
-import { mkParam } from "@/wab/lang";
+import { mkParam } from "@/wab/shared/core/lang";
 import { typeFactory } from "@/wab/shared/model/model-util";
 import { mkGlobalVariantGroup, VariantGroupType } from "@/wab/shared/Variants";
 

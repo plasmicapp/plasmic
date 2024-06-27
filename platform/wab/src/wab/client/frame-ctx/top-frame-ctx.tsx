@@ -11,7 +11,7 @@ import {
   TopFrameApi,
   TopFrameFullApi,
 } from "@/wab/client/frame-ctx/top-frame-api";
-import { assert } from "@/wab/common";
+import { assert } from "@/wab/shared/common";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import { bindMethods } from "@/wab/commons/proxies";
 import * as Comlink from "comlink";

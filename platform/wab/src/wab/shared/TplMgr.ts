@@ -17,7 +17,7 @@ import {
   withoutNils,
   xDifference,
   xGroupBy,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import {
   arrayReversed,
   removeFromArray,
@@ -44,22 +44,22 @@ import {
   PageComponent,
   removeVariantGroup,
   tryGetVariantGroupValueFromArg,
-} from "@/wab/components";
-import { DEVFLAGS } from "@/wab/devflags";
-import { clone } from "@/wab/exprs";
-import { findSpaceForRectSweepRight, Pt, Rect } from "@/wab/geom";
-import { ImageAssetType } from "@/wab/image-asset-type";
+} from "@/wab/shared/core/components";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { clone } from "@/wab/shared/core/exprs";
+import { findSpaceForRectSweepRight, Pt, Rect } from "@/wab/shared/geom";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import {
   extractImageAssetUsages,
   mkImageAsset,
   removeImageAssetUsage,
-} from "@/wab/image-assets";
-import { mkOnChangeParamForState, mkParam } from "@/wab/lang";
+} from "@/wab/shared/core/image-assets";
+import { mkOnChangeParamForState, mkParam } from "@/wab/shared/core/lang";
 import {
   fixImageAssetRefsForClonedTemplateComponent,
   upgradeProjectDeps,
   walkDependencyTree,
-} from "@/wab/project-deps";
+} from "@/wab/shared/core/project-deps";
 import {
   cloneArenaFrame,
   ensureActivatedScreenVariantsForArena,
@@ -95,7 +95,7 @@ import {
   removeSuperOrGlobalVariantComponentFrame,
 } from "@/wab/shared/component-arenas";
 import { SIZE_PROPS } from "@/wab/shared/core/style-props";
-import { ScreenSizeSpec } from "@/wab/shared/Css";
+import { ScreenSizeSpec } from "@/wab/shared/css-size";
 import { CONTENT_LAYOUT_INITIALS } from "@/wab/shared/default-styles";
 import {
   ARENA_CAP,
@@ -217,13 +217,13 @@ import {
   isFrameRootTplComponent,
   removeReferencingLinks,
   removeReferencingTypeInstances,
-} from "@/wab/sites";
+} from "@/wab/shared/core/sites";
 import {
   mkGlobalVariantSplit,
   removeVariantGroupFromSplits,
   SplitStatus,
   SplitType,
-} from "@/wab/splits";
+} from "@/wab/shared/core/splits";
 import {
   genOnChangeParamName,
   isPrivateState,
@@ -231,14 +231,14 @@ import {
   mkState,
   removeComponentState,
   updateStateAccessType,
-} from "@/wab/states";
+} from "@/wab/shared/core/states";
 import {
   changeTokenUsage,
   cloneMixin,
   cloneStyleToken,
   extractTokenUsages,
   mkRuleSet,
-} from "@/wab/styles";
+} from "@/wab/shared/core/styles";
 import {
   cloneVariantSetting,
   findExprsInComponent,
@@ -265,7 +265,7 @@ import {
   TplNamable,
   trackComponentSite,
   walkTpls,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import { isString, memoize, pickBy, uniqBy } from "lodash";
 import flatten from "lodash/flatten";
 import has from "lodash/has";

@@ -10,11 +10,11 @@ import VariantGroupIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Vari
 import ScreenIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Screen";
 import { PlasmicVariantsDrawer } from "@/wab/client/plasmic/plasmic_kit_variants/PlasmicVariantsDrawer";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, partitions, xGroupBy } from "@/wab/common";
+import { ensure, partitions, xGroupBy } from "@/wab/shared/common";
 import {
   getNamespacedComponentName,
   getSuperComponentVariantGroupToComponent,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import {
   getAllVariantsForTpl,
   isComponentStyleVariant,
@@ -27,7 +27,7 @@ import {
   makeVariantName,
 } from "@/wab/shared/Variants";
 import { Variant, VariantGroup } from "@/wab/shared/model/classes";
-import { isTplTag } from "@/wab/tpls";
+import { isTplTag } from "@/wab/shared/core/tpls";
 import { useCombobox } from "downshift";
 import { observer } from "mobx-react";
 import * as React from "react";

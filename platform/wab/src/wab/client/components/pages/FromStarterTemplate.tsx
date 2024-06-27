@@ -1,8 +1,8 @@
 import { AppCtx } from "@/wab/client/app-ctx";
 import { U, UU } from "@/wab/client/cli-routes";
 import { Spinner } from "@/wab/client/components/widgets";
-import { spawn } from "@/wab/common";
-import { StarterProjectConfig } from "@/wab/devflags";
+import { spawn } from "@/wab/shared/common";
+import { StarterProjectConfig } from "@/wab/shared/devflags";
 import { WorkspaceId } from "@/wab/shared/ApiSchema";
 import * as React from "react";
 

@@ -19,7 +19,7 @@ import {
   PlasmicActivityTab,
 } from "@/wab/client/plasmic/plasmic_kit_end_user_management/PlasmicActivityTab";
 import Refresh2SvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Refresh2Svg";
-import { withoutNils } from "@/wab/common";
+import { withoutNils } from "@/wab/shared/common";
 import { ApiAppAccessRegistry, ApiAppRole } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, Table, Tooltip } from "antd";

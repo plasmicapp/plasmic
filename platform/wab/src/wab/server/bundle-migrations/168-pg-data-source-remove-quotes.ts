@@ -9,7 +9,7 @@ import {
   isKnownDataSourceOpExpr,
   isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
-import { findExprsInComponent } from "@/wab/tpls";
+import { findExprsInComponent } from "@/wab/shared/core/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();

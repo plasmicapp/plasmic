@@ -10,13 +10,13 @@ import {
 import { ACTIONS_META } from "@/wab/client/state-management/interactions-meta";
 import { RightTabKey, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { CustomError, delay, hackyCast, unexpected } from "@/wab/common";
+import { CustomError, delay, hackyCast, unexpected } from "@/wab/shared/common";
 import { isAbsoluteUrl } from "@/wab/commons/urls";
-import { PageComponent } from "@/wab/components";
-import { InteractionArgLoc, InteractionLoc } from "@/wab/exprs";
+import { PageComponent } from "@/wab/shared/core/components";
+import { InteractionArgLoc, InteractionLoc } from "@/wab/shared/core/exprs";
 import { maybePropTypeToDisplayName } from "@/wab/shared/code-components/code-components";
 import { getMatchingPagePathParams } from "@/wab/shared/utils/url-utils";
-import { getDisplayNameOfEventHandlerKey } from "@/wab/tpls";
+import { getDisplayNameOfEventHandlerKey } from "@/wab/shared/core/tpls";
 import { notification } from "antd";
 import { when } from "mobx";
 import React from "react";

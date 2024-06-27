@@ -11,6 +11,6 @@
     "acceptance-tests",
     "webpack",
     "jest",
-    "src/setupTests.ts"
+    "src/wab/client/test/setupTests.ts"
   ]
 }

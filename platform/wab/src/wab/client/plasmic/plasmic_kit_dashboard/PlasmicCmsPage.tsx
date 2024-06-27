@@ -56,8 +56,8 @@ import {
 } from "@plasmicapp/react-web/lib/host";
 
 import DefaultLayout from "../../components/dashboard/DefaultLayout"; // plasmic-import: nSkQWLjK-B/component
-import CmsSection from "../../../../CmsSection"; // plasmic-import: 54ykx6A8G6T/component
-import CmsListItem from "../../../../CmsListItem"; // plasmic-import: DEllwXrn27Q/component
+import CmsSection from "../../components/CmsSection"; // plasmic-import: 54ykx6A8G6T/component
+import CmsListItem from "../../components/CmsListItem"; // plasmic-import: DEllwXrn27Q/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 

@@ -1,4 +1,4 @@
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { useEffect } from "react";
 
 /**

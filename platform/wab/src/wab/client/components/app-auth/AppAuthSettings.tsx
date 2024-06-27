@@ -14,10 +14,10 @@ import { Spinner, Tab, Tabs } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
 import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
 import { trackEvent } from "@/wab/client/tracking";
-import { uniqueName, withoutNils } from "@/wab/common";
+import { uniqueName, withoutNils } from "@/wab/shared/common";
 import { ApiEndUserDirectory, ApiProject } from "@/wab/shared/ApiSchema";
 import React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 interface AppAuthSettingsModalProps {
   appCtx: AppCtx;

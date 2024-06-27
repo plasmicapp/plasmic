@@ -1,5 +1,5 @@
-import { unexpected } from "@/wab/common";
-import { getGoogFontMeta, GoogFontMeta } from "@/wab/googfonts";
+import { unexpected } from "@/wab/shared/common";
+import { getGoogFontMeta, GoogFontMeta } from "@/wab/shared/googfonts";
 
 export interface FontVariant {
   italic: boolean;

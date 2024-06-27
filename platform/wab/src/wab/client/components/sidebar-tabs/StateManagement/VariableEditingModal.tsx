@@ -1,7 +1,7 @@
 import VariableEditingForm from "@/wab/client/components/sidebar-tabs/StateManagement/VariableEditingForm";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { VARIABLE_CAP } from "@/wab/shared/Labels";
 import { Component, State } from "@/wab/shared/model/classes";
 import startCase from "lodash/startCase";

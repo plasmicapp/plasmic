@@ -4,7 +4,7 @@ import {
   plasmicIFrameWheelEvent,
 } from "@/wab/client/definitions/events";
 import { hasAncestorElement } from "@/wab/client/dom-utils";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { Dropdown } from "antd";
 import { MenuProps } from "antd/lib/menu";
 import L from "lodash";

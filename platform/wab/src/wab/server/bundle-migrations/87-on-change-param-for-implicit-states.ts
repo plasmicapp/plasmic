@@ -1,7 +1,7 @@
-import { mkShortId, mkUuid } from "@/wab/common";
+import { mkShortId, mkUuid } from "@/wab/shared/common";
 import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { BundledMigrationFn } from "@/wab/server/db/BundleMigrator";
-import { StateVariableType } from "@/wab/states";
+import { StateVariableType } from "@/wab/shared/core/states";
 
 export function convertVariableTypeToWabType(variableType: StateVariableType) {
   switch (variableType) {

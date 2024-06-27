@@ -7,7 +7,7 @@ import {
   DefaultDocsPortalHeaderProps,
   PlasmicDocsPortalHeader,
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsPortalHeader";
-import { asOne } from "@/wab/common";
+import { asOne } from "@/wab/shared/common";
 import { Observer } from "mobx-react";
 import * as React from "react";
 import { useHistory } from "react-router-dom";

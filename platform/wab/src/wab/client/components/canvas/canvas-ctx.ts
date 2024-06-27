@@ -22,9 +22,9 @@ import {
   spawn,
   spawnWrapper,
   withTimeout,
-} from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
-import { Box } from "@/wab/geom";
+} from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { Box } from "@/wab/shared/geom";
 import {
   getFrameHeight,
   isHeightAutoDerived,
@@ -38,7 +38,7 @@ import { getBuiltinComponentRegistrations } from "@/wab/shared/code-components/b
 import { CodeComponentsRegistry } from "@/wab/shared/code-components/code-components";
 import { ArenaFrame } from "@/wab/shared/model/classes";
 import { CodeLibraryRegistration } from "@/wab/shared/register-library";
-import { getPublicUrl } from "@/wab/urls";
+import { getPublicUrl } from "@/wab/shared/urls";
 import {
   ComponentRegistration,
   CustomFunctionRegistration,

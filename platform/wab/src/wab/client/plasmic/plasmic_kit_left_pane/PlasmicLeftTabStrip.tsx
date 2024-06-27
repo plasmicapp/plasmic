@@ -55,7 +55,7 @@ import {
   useGlobalActions,
 } from "@plasmicapp/react-web/lib/host";
 
-import AddButton from "../../../../AddButton"; // plasmic-import: ss1yYyG4Pi/component
+import AddButton from "../../components/AddButton"; // plasmic-import: ss1yYyG4Pi/component
 import LeftTabButton from "../../components/studio/LeftTabButton"; // plasmic-import: 1q_JapBg7U/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 

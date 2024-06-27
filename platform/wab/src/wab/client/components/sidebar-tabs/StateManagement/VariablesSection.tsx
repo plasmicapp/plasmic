@@ -10,8 +10,8 @@ import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { DefaultVariablesSectionProps } from "@/wab/client/plasmic/plasmic_kit_state_management/PlasmicVariablesSection";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, spawn } from "@/wab/common";
-import { mkParamsForState } from "@/wab/lang";
+import { ensure, spawn } from "@/wab/shared/common";
+import { mkParamsForState } from "@/wab/shared/core/lang";
 import { VARIABLE_PLURAL_CAP } from "@/wab/shared/Labels";
 import { Component, State } from "@/wab/shared/model/classes";
 import {
@@ -22,14 +22,14 @@ import {
   genOnChangeParamName,
   getDefaultValueForStateVariableType,
   mkState,
-} from "@/wab/states";
+} from "@/wab/shared/core/states";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import cn from "classnames";
 import { groupBy } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
-import { codeLit } from "src/wab/exprs";
+import { codeLit } from "@/wab/shared/core/exprs";
 
 export function mkInitialState(sc: StudioCtx, component: Component) {
   const name = sc

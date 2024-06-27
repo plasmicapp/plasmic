@@ -1,4 +1,4 @@
-import { CustomError } from "@/wab/common";
+import { CustomError } from "@/wab/shared/common";
 import * as React from "react";
 import { isValidElement } from "react";
 import { failable, IFailable } from "ts-failable";

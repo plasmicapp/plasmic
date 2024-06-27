@@ -21,7 +21,7 @@ import {
   DefaultDirectoryConfigProps,
   PlasmicDirectoryConfig,
 } from "@/wab/client/plasmic/plasmic_kit_end_user_management/PlasmicDirectoryConfig";
-import { mkUuid, uniqueName } from "@/wab/common";
+import { mkUuid, uniqueName } from "@/wab/shared/common";
 import {
   ApiEndUser,
   ApiEndUserDirectory,
@@ -31,7 +31,7 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, notification } from "antd";
 import * as React from "react";
 import { FocusScope } from "react-aria";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import { KeyedMutator } from "swr";
 import validator from "validator";
 

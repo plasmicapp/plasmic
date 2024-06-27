@@ -1,8 +1,8 @@
 import { Api } from "@/wab/client/api";
 import { ConnectOAuthButton } from "@/wab/client/components/auth/ConnectOAuth";
-import { mkShortId, spawn } from "@/wab/common";
+import { mkShortId, spawn } from "@/wab/shared/common";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
-import { DEVFLAGS } from "@/wab/devflags";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import React from "react";
 
 const githubOAuthURL = "https://github.com/login/oauth/authorize";

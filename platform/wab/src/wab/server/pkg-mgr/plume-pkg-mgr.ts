@@ -1,4 +1,4 @@
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
 import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";

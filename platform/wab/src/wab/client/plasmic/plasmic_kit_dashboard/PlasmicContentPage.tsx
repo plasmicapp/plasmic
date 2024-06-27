@@ -57,9 +57,9 @@ import {
 
 import DefaultLayout from "../../components/dashboard/DefaultLayout"; // plasmic-import: nSkQWLjK-B/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
-import MenuItem from "../../../../MenuItem"; // plasmic-import: Ts79yZbRFG/component
-import CmsSection from "../../../../CmsSection"; // plasmic-import: 54ykx6A8G6T/component
-import CmsListItem from "../../../../CmsListItem"; // plasmic-import: DEllwXrn27Q/component
+import MenuItem from "../../components/MenuItem"; // plasmic-import: Ts79yZbRFG/component
+import CmsSection from "../../components/CmsSection"; // plasmic-import: 54ykx6A8G6T/component
+import CmsListItem from "../../components/CmsListItem"; // plasmic-import: DEllwXrn27Q/component
 import NavTeamSection from "../../components/dashboard/NavTeamSection"; // plasmic-import: VqaN_WL-stA/component
 import NavWorkspaceButton from "../../components/dashboard/NavWorkspaceButton"; // plasmic-import: Cma6XahJmS/component
 

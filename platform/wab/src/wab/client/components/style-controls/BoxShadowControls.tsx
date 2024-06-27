@@ -1,4 +1,4 @@
-import { BoxShadow, Dim } from "@/wab/bg-styles";
+import { BoxShadow, Dim } from "@/wab/shared/core/bg-styles";
 import {
   FullRow,
   LabeledItem,
@@ -11,8 +11,8 @@ import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggl
 import StyleToggleButtonGroup from "@/wab/client/components/style-controls/StyleToggleButtonGroup";
 import { ColorPicker } from "@/wab/client/components/widgets/ColorPicker";
 import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
-import { ensure } from "@/wab/common";
-import { parseCssNumericNew } from "@/wab/css";
+import { ensure } from "@/wab/shared/common";
+import { parseCssNumericNew } from "@/wab/shared/css";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { observer } from "mobx-react";
 import React from "react";

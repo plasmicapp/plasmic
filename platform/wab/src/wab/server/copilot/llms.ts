@@ -2,7 +2,7 @@
  * Wrappers around LLM APIs. Currently just for caching and simple logging.
  */
 
-import { last, mkShortId } from "@/wab/common";
+import { last, mkShortId } from "@/wab/shared/common";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { getAnthropicApiKey, getOpenaiApiKey } from "@/wab/server/secrets";
 import { DynamoDbCache, SimpleCache } from "@/wab/server/simple-cache";

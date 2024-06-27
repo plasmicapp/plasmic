@@ -1,4 +1,4 @@
-import { ensure, withoutNils } from "@/wab/common";
+import { ensure, withoutNils } from "@/wab/shared/common";
 import {
   transformBundlerErrors,
   uploadErrorFiles,

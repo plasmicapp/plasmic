@@ -7,7 +7,7 @@ import SlotProp from "@/wab/client/components/docs/SlotProp";
 import VariantProp from "@/wab/client/components/docs/VariantProp";
 import { SidebarModalProvider } from "@/wab/client/components/sidebar/SidebarModal";
 import { PlasmicComponentTogglesPanel } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicComponentTogglesPanel";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { getTplSlots } from "@/wab/shared/SlotUtils";
 import {
   flattenTplsWithoutThrowawayNodes,
@@ -18,7 +18,7 @@ import {
   makePlasmicComponentName,
 } from "@/wab/shared/codegen/react-p/utils";
 import { Component } from "@/wab/shared/model/classes";
-import { TplNamable, isTplTagOrComponent } from "@/wab/tpls";
+import { TplNamable, isTplTagOrComponent } from "@/wab/shared/core/tpls";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useLocalStorage } from "react-use";

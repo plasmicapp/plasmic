@@ -2,8 +2,8 @@ import { mkEventHandlerEnv } from "@/wab/client/components/canvas/canvas-renderi
 import { extractDataCtx } from "@/wab/client/state-management/interactions-meta";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure } from "@/wab/common";
-import { ExprCtx, getRawCode } from "@/wab/exprs";
+import { ensure } from "@/wab/shared/common";
+import { ExprCtx, getRawCode } from "@/wab/shared/core/exprs";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { evalCodeWithEnv } from "@/wab/shared/eval";
 import {
@@ -17,7 +17,7 @@ import {
   extractEventArgsNameFromEventHandler,
   findKeyForEventHandler,
   serializeActionArg,
-} from "@/wab/states";
+} from "@/wab/shared/core/states";
 import { ancestor as traverse } from "acorn-walk";
 import { notification } from "antd";
 import { findLast, isString } from "lodash";

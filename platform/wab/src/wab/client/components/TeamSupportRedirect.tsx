@@ -1,5 +1,5 @@
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { TeamId } from "@/wab/shared/ApiSchema";
 import { useEffect } from "react";
 

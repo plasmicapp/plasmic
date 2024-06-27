@@ -1,4 +1,4 @@
-import { arrayEqIgnoreOrder, ensure } from "@/wab/common";
+import { arrayEqIgnoreOrder, ensure } from "@/wab/shared/common";
 import { VariantCombo } from "@/wab/shared/Variants";
 import {
   Arg,
@@ -11,7 +11,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { makeVariantComboSorter } from "@/wab/shared/variant-sort";
 import { TplVisibility } from "@/wab/shared/visibility-utils";
-import { SlotSelection } from "@/wab/slots";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import L from "lodash";
 
 // The stack of variant settings (from lowest priority to highest) and the

@@ -28,14 +28,14 @@ import {
   mkShortId,
   pairwise,
   switchType,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { arrayReversed, removeFromArray } from "@/wab/commons/collections";
 import {
   allComponentVariants,
   isPageComponent,
   isPageFrame,
-} from "@/wab/components";
-import { Pt } from "@/wab/geom";
+} from "@/wab/shared/core/components";
+import { Pt } from "@/wab/shared/geom";
 import { ArenaType, arenaTypes } from "@/wab/shared/ApiSchema";
 import {
   deriveDefaultFrameSize,
@@ -53,7 +53,7 @@ import {
   removeManagedFramesFromComponentArenaForVariantGroup,
   syncComponentArenaFrameSize,
 } from "@/wab/shared/component-arenas";
-import { parseScreenSpec, ScreenSizeSpec } from "@/wab/shared/Css";
+import { parseScreenSpec, ScreenSizeSpec } from "@/wab/shared/css-size";
 import { COMBINATIONS_CAP } from "@/wab/shared/Labels";
 import {
   getPageArenaRowLabel,
@@ -82,9 +82,9 @@ import {
   getResponsiveStrategy,
   getSiteArenas,
   getSiteScreenSizes,
-} from "@/wab/sites";
-import { capitalizeFirst } from "@/wab/strs";
-import { clone, mkTplComponent } from "@/wab/tpls";
+} from "@/wab/shared/core/sites";
+import { capitalizeFirst } from "@/wab/shared/strs";
+import { clone, mkTplComponent } from "@/wab/shared/core/tpls";
 import { has, isArray, isEmpty, keyBy, orderBy } from "lodash";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { IObservableValue, observable } from "mobx";

@@ -10,7 +10,7 @@ import { LabeledListItem } from "@/wab/client/components/widgets/LabeledListItem
 import { SimpleReorderableList } from "@/wab/client/components/widgets/SimpleReorderableList";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { moveIndex, spawn } from "@/wab/common";
+import { moveIndex, spawn } from "@/wab/shared/common";
 import {
   canChangeParamExportType,
   canDeleteParam,
@@ -19,8 +19,8 @@ import {
   getRealParams,
   isCodeComponent,
   removeComponentParam,
-} from "@/wab/components";
-import { ParamExportType } from "@/wab/lang";
+} from "@/wab/shared/core/components";
+import { ParamExportType } from "@/wab/shared/core/lang";
 import {
   COMPONENT_PROP_LOWER,
   COMPONENT_PROP_PLURAL_CAP,

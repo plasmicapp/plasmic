@@ -1,8 +1,8 @@
 import fs from "fs";
 import { last } from "lodash";
-import { maybe, spawn } from "../../src/wab/common";
 import { ChangeRecorder } from "../../src/wab/observable-model";
 import { Bundler } from "../../src/wab/shared/bundler";
+import { maybe, spawn } from "../../src/wab/shared/common";
 import { instUtil } from "../../src/wab/shared/model/InstUtil";
 import { Site } from "../../src/wab/shared/model/classes";
 import { meta } from "../../src/wab/shared/model/classes-metas";

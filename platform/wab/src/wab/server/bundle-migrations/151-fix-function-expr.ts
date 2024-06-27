@@ -5,9 +5,9 @@
  * Fortunately, these two were not part of the public API and were only used internally for
  * form validation rules and custom code in interactions.
  */
-import { unexpected } from "@/wab/common";
-import { isCodeComponent } from "@/wab/components";
-import { isRealCodeExpr } from "@/wab/exprs";
+import { unexpected } from "@/wab/shared/common";
+import { isCodeComponent } from "@/wab/shared/core/components";
+import { isRealCodeExpr } from "@/wab/shared/core/exprs";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
@@ -23,7 +23,7 @@ import {
   isKnownFunctionExpr,
   isKnownMapExpr,
 } from "@/wab/shared/model/classes";
-import { flattenTpls, isTplComponent } from "@/wab/tpls";
+import { flattenTpls, isTplComponent } from "@/wab/shared/core/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();

@@ -1,4 +1,4 @@
-import { getComponentDisplayName } from "@/wab/components";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
 import {
   BundleMigrationType,
   unbundleSite,
@@ -6,8 +6,8 @@ import {
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { Bundler } from "@/wab/shared/bundler";
 import { TplMgr } from "@/wab/shared/TplMgr";
-import { isPrivateState } from "@/wab/states";
-import { flattenTpls, isTplComponent } from "@/wab/tpls";
+import { isPrivateState } from "@/wab/shared/core/states";
+import { flattenTpls, isTplComponent } from "@/wab/shared/core/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();

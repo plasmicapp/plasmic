@@ -1,4 +1,4 @@
-import { ensure, withoutNils } from "@/wab/common";
+import { ensure, withoutNils } from "@/wab/shared/common";
 import { filtersToRefineFilters } from "@/wab/server/data-sources/data-source-utils";
 import { base64StringToBuffer } from "@/wab/server/data-sources/data-utils";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";

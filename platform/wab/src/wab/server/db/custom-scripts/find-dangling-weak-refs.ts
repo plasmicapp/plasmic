@@ -1,4 +1,4 @@
-import { assert, ensure, jsonClone, maybeOne } from "@/wab/common";
+import { assert, ensure, jsonClone, maybeOne } from "@/wab/shared/common";
 import {
   getLastBundleVersion,
   getMigratedBundle,

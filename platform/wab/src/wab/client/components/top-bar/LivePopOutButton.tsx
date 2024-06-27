@@ -14,9 +14,9 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicLivePopOutButton";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { getFrameHeight } from "@/wab/shared/Arenas";
-import { getPublicUrl } from "@/wab/urls";
+import { getPublicUrl } from "@/wab/shared/urls";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useHistory } from "react-router";

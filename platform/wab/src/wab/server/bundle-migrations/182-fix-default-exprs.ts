@@ -1,4 +1,4 @@
-import { isAllowedDefaultExpr } from "@/wab/exprs";
+import { isAllowedDefaultExpr } from "@/wab/shared/core/exprs";
 import {
   BundleMigrationType,
   unbundleSite,

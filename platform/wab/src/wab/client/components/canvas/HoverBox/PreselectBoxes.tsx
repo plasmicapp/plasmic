@@ -16,10 +16,10 @@ import {
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { summarizeFocusObj } from "@/wab/client/utils/tpl-client-utils";
-import { ensure, maybe } from "@/wab/common";
-import { makeSelectableFullKey, Selectable, SQ } from "@/wab/selection";
+import { ensure, maybe } from "@/wab/shared/common";
+import { makeSelectableFullKey, Selectable, SQ } from "@/wab/shared/core/selection";
 import { getArenaFrames } from "@/wab/shared/Arenas";
-import { isTplTagOrComponent, isTplVariantable } from "@/wab/tpls";
+import { isTplTagOrComponent, isTplVariantable } from "@/wab/shared/core/tpls";
 import cn from "classnames";
 import $ from "jquery";
 import { observer } from "mobx-react";

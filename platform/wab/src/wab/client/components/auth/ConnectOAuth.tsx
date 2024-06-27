@@ -2,7 +2,7 @@ import { useNonAuthCtx } from "@/wab/client/app-ctx";
 import styles from "@/wab/client/components/auth/ConnectOAuth.module.scss";
 import Button from "@/wab/client/components/widgets/Button";
 import { PlasmicButton__VariantsArgs } from "@/wab/client/plasmic/PlasmicButton";
-import { mkUuid, spawn } from "@/wab/common";
+import { mkUuid, spawn } from "@/wab/shared/common";
 import GLogo from "@/wab/commons/images/g-logo.png";
 import OktaLogo from "@/wab/commons/images/okta-logo.png";
 import { WrappedStorageEvent } from "@/wab/shared/SharedApi";

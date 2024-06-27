@@ -2,7 +2,7 @@ import { XMultiSelect } from "@/wab/client/components/XMultiSelect";
 import { DocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
 import Select from "@/wab/client/components/widgets/Select";
 import { PlasmicVariantProp } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicVariantProp";
-import { ensureArray } from "@/wab/common";
+import { ensureArray } from "@/wab/shared/common";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { serializeVariantGroupMembersType } from "@/wab/shared/codegen/variants";

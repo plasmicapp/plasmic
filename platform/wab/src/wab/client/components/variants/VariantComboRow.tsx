@@ -12,7 +12,7 @@ import {
 import Chip from "@/wab/client/components/widgets/Chip";
 import { PlasmicVariantComboRow } from "@/wab/client/plasmic/plasmic_kit_variants/PlasmicVariantComboRow";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { maybe } from "@/wab/common";
+import { maybe } from "@/wab/shared/common";
 import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import {
   isVariantSettingEmpty,
@@ -20,7 +20,7 @@ import {
   tryGetVariantSetting,
   VariantCombo,
 } from "@/wab/shared/Variants";
-import { isTplVariantable, summarizeTpl } from "@/wab/tpls";
+import { isTplVariantable, summarizeTpl } from "@/wab/shared/core/tpls";
 import { Menu } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";

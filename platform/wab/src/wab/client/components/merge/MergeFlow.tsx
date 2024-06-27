@@ -25,8 +25,8 @@ import {
   tuple,
   withoutNils,
   xGroupBy,
-} from "@/wab/common";
-import { getComponentDisplayName } from "@/wab/components";
+} from "@/wab/shared/common";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { ApiBranch, ApiProject, MergeResult } from "@/wab/shared/ApiSchema";
 import { isMainBranchId } from "@/wab/shared/ApiSchemaUtil";
 import { FastBundler } from "@/wab/shared/bundler";
@@ -57,9 +57,9 @@ import {
   tryMerge,
 } from "@/wab/shared/site-diffs/merge-core";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
-import { capitalizeFirst } from "@/wab/strs";
-import { unbundleProjectDependency, unbundleSite } from "@/wab/tagged-unbundle";
-import { isTplVariantable } from "@/wab/tpls";
+import { capitalizeFirst } from "@/wab/shared/strs";
+import { unbundleProjectDependency, unbundleSite } from "@/wab/shared/core/tagged-unbundle";
+import { isTplVariantable } from "@/wab/shared/core/tpls";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
 import { observer } from "mobx-react";

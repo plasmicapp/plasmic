@@ -1,4 +1,4 @@
-import { ensure, uncheckedCast } from "@/wab/common";
+import { ensure, uncheckedCast } from "@/wab/shared/common";
 import fs from "fs";
 import * as os from "os";
 

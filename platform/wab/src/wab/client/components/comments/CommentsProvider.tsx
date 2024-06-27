@@ -2,8 +2,8 @@ import { apiKey } from "@/wab/client/api";
 import { CommentOverlaysContext } from "@/wab/client/components/comments/CommentOverlays";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { mkIdMap } from "@/wab/collections";
-import { ensure, tuple } from "@/wab/common";
+import { mkIdMap } from "@/wab/shared/collections";
+import { ensure, tuple } from "@/wab/shared/common";
 import {
   ApiUser,
   CommentThreadId,

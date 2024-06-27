@@ -1,4 +1,4 @@
-import { mkUuid, xSetDefault } from "@/wab/common";
+import { mkUuid, xSetDefault } from "@/wab/shared/common";
 import { TplNode } from "@/wab/shared/model/classes";
 
 export class Annotation {

@@ -25,7 +25,7 @@
     "alwaysStrict": true,
     "baseUrl": "./",
     "paths": {
-      // Absolute import paths like "@/wab/common"
+      // Absolute import paths like "@/wab/shared/common"
       // Should match "resolve.alias" in webpack.config.js
       "@/*": ["./src/*"]
     },
@@ -60,7 +60,7 @@
     "acceptance-tests",
     "webpack",
     "jest",
-    "src/setupTests.ts",
+    "src/wab/client/test/setupTests.ts",
     "__tests__"
   ]
 }

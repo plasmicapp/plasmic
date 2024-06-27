@@ -1,13 +1,13 @@
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import GridStyleParser from "@/wab/gen/GridStyleParser";
-import { NumericSize, Size } from "@/wab/shared/Css";
+import { NumericSize, Size } from "@/wab/shared/css-size";
 import {
   ReadonlyIRuleSetHelpers,
   readonlyRSH,
 } from "@/wab/shared/RuleSetHelpers";
 import { TplNode } from "@/wab/shared/model/classes";
-import { CssVarResolver, expandRuleSets } from "@/wab/styles";
-import { isTplTag } from "@/wab/tpls";
+import { CssVarResolver, expandRuleSets } from "@/wab/shared/core/styles";
+import { isTplTag } from "@/wab/shared/core/tpls";
 import { isArray, last } from "lodash";
 
 export interface FlexibleSize {

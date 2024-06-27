@@ -5,9 +5,9 @@ import {
   ensureInstance,
   switchType,
   unexpected,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { Leaves, Paths } from "@/wab/commons/types";
-import { isCodeComponent, isFrameComponent } from "@/wab/components";
+import { isCodeComponent, isFrameComponent } from "@/wab/shared/core/components";
 import { isSlot } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { Bundler } from "@/wab/shared/bundler";

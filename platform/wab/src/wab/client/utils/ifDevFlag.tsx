@@ -1,4 +1,4 @@
-import { DEVFLAGS } from "@/wab/devflags";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import React from "react";
 
 type DevFlagKeys = keyof typeof DEVFLAGS;

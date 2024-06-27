@@ -1,5 +1,5 @@
-import { Dict } from "@/wab/collections";
-import { ensureArray, ensureString, ensureType } from "@/wab/common";
+import { Dict } from "@/wab/shared/collections";
+import { ensureArray, ensureString, ensureType } from "@/wab/shared/common";
 import { uploadDataUriToS3 } from "@/wab/server/cdn/images";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { CmsDatabase } from "@/wab/server/entities/Entities";

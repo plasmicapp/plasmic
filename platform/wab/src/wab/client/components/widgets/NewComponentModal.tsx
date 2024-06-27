@@ -17,8 +17,8 @@ import {
   PlasmicNewComponentModal,
 } from "@/wab/client/plasmic/plasmic_kit_new_component/PlasmicNewComponentModal";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { assert, ensure } from "@/wab/common";
-import { flattenInsertableTemplatesByType } from "@/wab/devflags";
+import { assert, ensure } from "@/wab/shared/common";
+import { flattenInsertableTemplatesByType } from "@/wab/shared/devflags";
 import { InsertableTemplateComponentExtraInfo } from "@/wab/shared/insertable-templates/types";
 import { getPlumeEditorPluginByType } from "@/wab/shared/plume/plume-registry";
 import { Tooltip } from "antd";

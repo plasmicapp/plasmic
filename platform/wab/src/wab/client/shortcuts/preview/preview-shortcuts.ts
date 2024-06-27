@@ -1,7 +1,7 @@
 import {
   mkShortcutGroup,
   shortcutGroupToDict,
-} from "src/wab/client/shortcuts/shortcut";
+} from "@/wab/client/shortcuts/shortcut";
 
 export const PREVIEW_SHORTCUTS = shortcutGroupToDict(
   mkShortcutGroup("Preview", {

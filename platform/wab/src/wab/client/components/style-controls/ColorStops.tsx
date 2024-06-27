@@ -1,4 +1,4 @@
-import { Dim, LinearGradient, Stop } from "@/wab/bg-styles";
+import { Dim, LinearGradient, Stop } from "@/wab/shared/core/bg-styles";
 import { getHTMLElt } from "@/wab/client/components/view-common";
 import { ColorPicker } from "@/wab/client/components/widgets/ColorPicker";
 import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
@@ -15,12 +15,12 @@ import {
   removeAt,
   tuple,
   withoutNils,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
 import { tryParseTokenRef } from "@/wab/commons/StyleToken";
 import { Chroma } from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { allStyleTokens } from "@/wab/sites";
+import { allStyleTokens } from "@/wab/shared/core/sites";
 import classNames from "classnames";
 import $ from "jquery";
 import L from "lodash";

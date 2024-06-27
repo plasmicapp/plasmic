@@ -2,7 +2,7 @@
 import Dial from "@/wab/client/components/style-controls/Dial.svg";
 import { PlainLinkButton } from "@/wab/client/components/widgets";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { deg2rad, ensure, rad2deg } from "@/wab/common";
+import { deg2rad, ensure, rad2deg } from "@/wab/shared/common";
 import {
   XDraggable,
   XDraggableEvent,

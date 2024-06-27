@@ -1,6 +1,6 @@
 import { comboToKeyLabels } from "@/wab/client/components/studio/Shortcuts";
 import { extractEventProps, trackEvent } from "@/wab/client/tracking";
-import { ensure, filterFalsy } from "@/wab/common";
+import { ensure, filterFalsy } from "@/wab/shared/common";
 import { MaybeWrap, joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import type { MenuProps } from "antd";
 import { Menu, Tooltip } from "antd";

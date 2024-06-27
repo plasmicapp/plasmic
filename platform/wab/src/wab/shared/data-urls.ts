@@ -1,4 +1,4 @@
-import { assert } from "@/wab/common";
+import { assert } from "@/wab/shared/common";
 import { DOMParser as NodeDOMParser } from "@xmldom/xmldom";
 import * as _parseDataUrl from "parse-data-url";
 

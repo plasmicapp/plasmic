@@ -3,7 +3,7 @@ import { makeVariantsController } from "@/wab/client/components/variants/Variant
 import { VariantCombosTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
 import { PlasmicVariantCombosSection } from "@/wab/client/plasmic/plasmic_kit_variants/PlasmicVariantCombosSection";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, partitions } from "@/wab/common";
+import { ensure, partitions } from "@/wab/shared/common";
 import { VariantCombo, variantComboKey } from "@/wab/shared/Variants";
 import { findNonEmptyCombos } from "@/wab/shared/cached-selectors";
 import { Component } from "@/wab/shared/model/classes";

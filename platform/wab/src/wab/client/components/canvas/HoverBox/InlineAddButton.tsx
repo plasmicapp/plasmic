@@ -5,13 +5,13 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { getContainerType } from "@/wab/client/utils/tpl-client-utils";
 import { ContainerLayoutType } from "@/wab/shared/layoututils";
 import { isKnownTplNode, TplTag } from "@/wab/shared/model/classes";
-import { SlotSelection } from "@/wab/slots";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   isComponentRoot,
   isTplColumn,
   isTplContainer,
   isTplTextBlock,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import cn from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";

@@ -11,7 +11,7 @@ import {
   withDefault,
   withDefaultFunc,
   withoutNils,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { arrayReversed } from "@/wab/commons/collections";
 import { DeepMap } from "@/wab/commons/deep-map";
 import {
@@ -30,14 +30,14 @@ import {
   isPageComponent,
   PageComponent,
   tryGetVariantGroupValueFromArg,
-} from "@/wab/components";
-import { getCssRulesFromRs, tryGetBrowserCssInitial } from "@/wab/css";
+} from "@/wab/shared/core/components";
+import { getCssRulesFromRs, tryGetBrowserCssInitial } from "@/wab/shared/css";
 import {
   applyPlasmicUserDevFlagOverrides,
   DEVFLAGS,
   DevFlagsType,
   getProjectFlags,
-} from "@/wab/devflags";
+} from "@/wab/shared/devflags";
 import {
   codeLit,
   ExprCtx,
@@ -48,9 +48,9 @@ import {
   removeFallbackFromDataSourceOp,
   code as toCode,
   tryExtractJson,
-} from "@/wab/exprs";
-import { ImageAssetType } from "@/wab/image-asset-type";
-import { ParamExportType } from "@/wab/lang";
+} from "@/wab/shared/core/exprs";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { ParamExportType } from "@/wab/shared/core/lang";
 import { AppAuthProvider, ProjectId } from "@/wab/shared/ApiSchema";
 import {
   allCustomFunctions,
@@ -297,8 +297,8 @@ import {
   allStyleTokensDict,
   CssProjectDependencies,
   isHostLessPackage,
-} from "@/wab/sites";
-import { SplitStatus } from "@/wab/splits";
+} from "@/wab/shared/core/sites";
+import { SplitStatus } from "@/wab/shared/core/splits";
 import {
   DATA_SOURCE_ACTIONS,
   getLastPartOfImplicitStateName,
@@ -311,7 +311,7 @@ import {
   isReadonlyState,
   isWritableState,
   LOGIN_ACTIONS,
-} from "@/wab/states";
+} from "@/wab/shared/core/states";
 import {
   CssVarResolver,
   defaultStyleClassNames,
@@ -333,7 +333,7 @@ import {
   mkThemeStyleRule,
   showSimpleCssRuleSet,
   tryAugmentRulesWithScreenVariant,
-} from "@/wab/styles";
+} from "@/wab/shared/core/styles";
 import {
   ancestorsUp,
   findVariantSettingsUnderTpl,
@@ -354,8 +354,8 @@ import {
   TplTagType,
   TplTextTag,
   walkTpls,
-} from "@/wab/tpls";
-import { getIntegrationsUrl, getPublicUrl } from "@/wab/urls";
+} from "@/wab/shared/core/tpls";
+import { getIntegrationsUrl, getPublicUrl } from "@/wab/shared/urls";
 import L, { groupBy, sortBy } from "lodash";
 import memoizeOne from "memoize-one";
 import type { SetRequired } from "type-fest";

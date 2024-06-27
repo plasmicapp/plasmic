@@ -7,17 +7,17 @@ import {
   PlasmicDefaultStylesPanel,
 } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicDefaultStylesPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, mkShortId } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { ensure, mkShortId } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { isScreenVariant } from "@/wab/shared/Variants";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import { Mixin, ThemeStyle, Variant } from "@/wab/shared/model/classes";
-import { THEMABLE_TAGS, getApplicableSelectors, mkRuleSet } from "@/wab/styles";
+import { THEMABLE_TAGS, getApplicableSelectors, mkRuleSet } from "@/wab/shared/core/styles";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { RuleSetHelpers } from "src/wab/shared/RuleSetHelpers";
-import { DEFAULT_THEME_STYLES } from "src/wab/sites";
+import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
+import { DEFAULT_THEME_STYLES } from "@/wab/shared/core/sites";
 
 export type DefaultStylesPanelProps = DefaultDefaultStylesPanelProps;
 

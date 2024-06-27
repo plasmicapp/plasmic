@@ -9,7 +9,7 @@ import {
   TplExpsProvider,
 } from "@/wab/client/components/style-controls/StyleComponent";
 import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { parseGridChildCssProps } from "@/wab/shared/grid-utils";
 import { observer } from "mobx-react";
 import React from "react";

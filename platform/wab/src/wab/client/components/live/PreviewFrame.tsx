@@ -11,21 +11,21 @@ import {
 import { getSortedHostLessPkgs } from "@/wab/client/components/studio/studio-bundles";
 import { scriptExec } from "@/wab/client/dom-utils";
 import { maybeToggleTrailingSlash } from "@/wab/client/utils/app-hosting-utils";
-import { assert, ensure, spawn } from "@/wab/common";
-import { isPageComponent } from "@/wab/components";
+import { assert, ensure, spawn } from "@/wab/shared/common";
+import { isPageComponent } from "@/wab/shared/core/components";
 import {
   InteractionArgLoc,
   InteractionLoc,
   isInteractionLoc,
-} from "@/wab/exprs";
+} from "@/wab/shared/core/exprs";
 import { isComponentArena } from "@/wab/shared/Arenas";
 import { usedHostLessPkgs } from "@/wab/shared/cached-selectors";
 import {
   getCustomFrameForActivatedVariants,
   getFrameForActivatedVariants,
 } from "@/wab/shared/component-arenas";
-import { getDedicatedArena } from "@/wab/sites";
-import { getPublicUrl } from "@/wab/urls";
+import { getDedicatedArena } from "@/wab/shared/core/sites";
+import { getPublicUrl } from "@/wab/shared/urls";
 import { autorun } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";

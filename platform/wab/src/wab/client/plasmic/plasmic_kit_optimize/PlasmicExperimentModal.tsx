@@ -32,7 +32,7 @@ import {
   ensureGlobalVariants,
 } from "@plasmicapp/react-web";
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
-import InlineEditable from "../../../../InlineEditable"; // plasmic-import: btpz7A3thO/component
+import InlineEditable from "../../components/InlineEditable"; // plasmic-import: btpz7A3thO/component
 import ExperimentToggle from "../../components/splits/ExperimentToggle"; // plasmic-import: b4qqi4IFfg/component
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
 import ExperimentPanel from "../../components/splits/ExperimentPanel"; // plasmic-import: HtHxjHknmj_/component

@@ -1,7 +1,7 @@
-import { unexpected } from "@/wab/common";
+import { unexpected } from "@/wab/shared/common";
 import { isMixinPropRef, isTokenRef } from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
-import { parseCssNumericNew } from "@/wab/css";
+import { parseCssNumericNew } from "@/wab/shared/css";
 import { createGridSpec, showGridCss } from "@/wab/shared/Grids";
 import { HORIZ_CONTAINER_CAP, VERT_CONTAINER_CAP } from "@/wab/shared/Labels";
 import {
@@ -26,7 +26,7 @@ import {
   TplTag,
   VariantSetting,
 } from "@/wab/shared/model/classes";
-import { getTplTagRoot, isTplComponent, isTplVariantable } from "@/wab/tpls";
+import { getTplTagRoot, isTplComponent, isTplVariantable } from "@/wab/shared/core/tpls";
 
 export type ContainerType =
   | "free"

@@ -1,4 +1,4 @@
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import {
   JSON_LOGIC_REVERSE_OPERATORS,
   toJsonLogicFormat,

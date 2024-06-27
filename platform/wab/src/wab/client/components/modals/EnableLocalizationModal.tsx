@@ -13,7 +13,7 @@ import { notification } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
 import { FocusScope } from "react-aria";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 export interface EnableLocalizationModalProps {
   onDone: () => void;

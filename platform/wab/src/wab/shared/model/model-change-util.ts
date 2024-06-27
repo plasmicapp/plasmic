@@ -5,16 +5,16 @@ import {
   tuple,
   TypeStamped,
   xDifference,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { arrayReversed } from "@/wab/commons/collections";
-import { allComponentVariants } from "@/wab/components";
-import { PLASMIC_DISPLAY_NONE } from "@/wab/css";
+import { allComponentVariants } from "@/wab/shared/core/components";
+import { PLASMIC_DISPLAY_NONE } from "@/wab/shared/css";
 import {
   ChangeNode,
   mkArrayBeforeSplice,
   ModelChange,
   RecordedChanges,
-} from "@/wab/observable-model";
+} from "@/wab/shared/core/observable-model";
 import {
   componentToTplComponents,
   deepComponentToReferencers,
@@ -71,7 +71,7 @@ import {
   isStyleVariant,
   tryGetBaseVariantSetting,
 } from "@/wab/shared/Variants";
-import { createRuleSetMerger } from "@/wab/styles";
+import { createRuleSetMerger } from "@/wab/shared/core/styles";
 import {
   findVariantSettingsUnderTpl,
   flattenTpls,
@@ -81,7 +81,7 @@ import {
   isTplSlot,
   isTplTag,
   isTplVariantable,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import L, { omit } from "lodash";
 
 export enum ChangesType {

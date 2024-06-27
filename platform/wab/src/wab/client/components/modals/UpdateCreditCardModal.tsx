@@ -2,7 +2,7 @@ import { AppCtx } from "@/wab/client/app-ctx";
 import UpsellCreditCard from "@/wab/client/components/modals/UpsellCreditCard";
 import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
 import { getStripePromise } from "@/wab/client/deps-client";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { ApiTeam } from "@/wab/shared/ApiSchema";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { isUpgradableTier } from "@/wab/shared/pricing/pricing-utils";
@@ -13,7 +13,7 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import * as React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import { MakeADT } from "ts-adt/MakeADT";
 
 export const canIEditTeam = (appCtx: AppCtx, t: ApiTeam) =>

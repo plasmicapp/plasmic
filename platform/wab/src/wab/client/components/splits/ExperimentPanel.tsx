@@ -11,9 +11,9 @@ import {
   PlasmicExperimentPanel,
 } from "@/wab/client/plasmic/plasmic_kit_optimize/PlasmicExperimentPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { Split, Variant } from "@/wab/shared/model/classes";
-import { SplitStatus, SplitType } from "@/wab/splits";
+import { SplitStatus, SplitType } from "@/wab/shared/core/splits";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { observer } from "mobx-react";
 import * as React from "react";

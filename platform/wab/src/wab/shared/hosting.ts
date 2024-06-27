@@ -1,4 +1,4 @@
-import { maybeOne } from "@/wab/common";
+import { maybeOne } from "@/wab/shared/common";
 import L from "lodash";
 
 export class DomainValidator {

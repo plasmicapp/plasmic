@@ -7,8 +7,8 @@ import {
   maybes,
   spreadLog,
   StandardCallback,
-} from "@/wab/common";
-import { DevFlagsType } from "@/wab/devflags";
+} from "@/wab/shared/common";
+import { DevFlagsType } from "@/wab/shared/devflags";
 import { Config } from "@/wab/server/config";
 import { setupCustomPassport } from "@/wab/server/custom-passport-cfg";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
@@ -30,7 +30,7 @@ import {
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { SsoConfigId, UserId } from "@/wab/shared/ApiSchema";
 import { findGoogleAuthRequiredEmailDomain } from "@/wab/shared/devflag-utils";
-import { getPublicUrl } from "@/wab/urls";
+import { getPublicUrl } from "@/wab/shared/urls";
 import {
   MultiSamlStrategy,
   Profile as SamlProfile,

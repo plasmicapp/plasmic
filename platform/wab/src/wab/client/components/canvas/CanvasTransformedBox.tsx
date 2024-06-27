@@ -3,7 +3,7 @@ import { frameToScalerRect } from "@/wab/client/coords";
 import { hasLayoutBox } from "@/wab/client/dom";
 import { cssPropsForInvertTransform } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { unexpected } from "@/wab/common";
+import { unexpected } from "@/wab/shared/common";
 import $ from "jquery";
 import { omit } from "lodash";
 import { observer } from "mobx-react";

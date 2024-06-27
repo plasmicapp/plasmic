@@ -2,9 +2,9 @@
 // This file is owned by you, feel free to edit as you see fit.
 import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
 import { PlasmicScreenVariantSpec } from "@/wab/client/plasmic/plasmic_kit_variants/PlasmicScreenVariantSpec";
-import { ensure } from "@/wab/common";
-import { parseCssNumericNew } from "@/wab/css";
-import { parseScreenSpec, ScreenSizeSpec } from "@/wab/shared/Css";
+import { ensure } from "@/wab/shared/common";
+import { parseCssNumericNew } from "@/wab/shared/css";
+import { parseScreenSpec, ScreenSizeSpec } from "@/wab/shared/css-size";
 import { notification } from "antd";
 import * as React from "react";
 

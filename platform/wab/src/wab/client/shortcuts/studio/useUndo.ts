@@ -1,6 +1,6 @@
 import { STUDIO_SHORTCUTS } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { StudioCtxContext } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { isKeyHotkey } from "is-hotkey";
 import React, { useCallback, useContext, useState } from "react";
 

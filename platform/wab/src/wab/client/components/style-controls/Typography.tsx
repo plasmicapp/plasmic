@@ -36,19 +36,19 @@ import {
   isValidFontWeight,
 } from "@/wab/client/typography-utils";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
-import { ensure, filterMapTruthy, maybe } from "@/wab/common";
+import { ensure, filterMapTruthy, maybe } from "@/wab/shared/common";
 import {
   derefTokenRefs,
   TokenType,
   tokenTypeDimOpts,
 } from "@/wab/commons/StyleToken";
-import { fontWeightNumber, parseCssNumericNew } from "@/wab/css";
-import { allStyleTokens } from "@/wab/sites";
+import { fontWeightNumber, parseCssNumericNew } from "@/wab/shared/css";
+import { allStyleTokens } from "@/wab/shared/core/sites";
 import { notification } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { ReactElement } from "react";
-import { VariantedStylesHelper } from "src/wab/shared/VariantedStylesHelper";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 
 interface TypographyContentProps {
   onChange: (cssPropName: string, newValue: string) => void;

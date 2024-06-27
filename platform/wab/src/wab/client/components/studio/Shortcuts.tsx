@@ -27,7 +27,7 @@ import {
   FaArrowUp,
   FaRegHandRock,
 } from "react-icons/fa";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 export const ShortcutsModal = observer(
   ({ children }: { children: React.ReactNode }) => {

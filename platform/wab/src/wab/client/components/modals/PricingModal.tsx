@@ -10,8 +10,8 @@ import {
 } from "@/wab/client/components/quick-modals";
 import { getStripePromise } from "@/wab/client/deps-client";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
-import { assert, assertNever, ensure } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { assert, assertNever, ensure } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ApiFeatureTier,
   ApiTeam,
@@ -31,7 +31,7 @@ import {
 import { PaymentIntentResult, SetupIntentResult } from "@stripe/stripe-js";
 import { Alert, Form } from "antd";
 import * as React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import { MakeADT } from "ts-adt/MakeADT";
 
 const DEFAULT_BILLING_FREQUENCY = "year";

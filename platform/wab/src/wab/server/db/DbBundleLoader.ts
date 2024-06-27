@@ -1,4 +1,4 @@
-import { ensure, strictZip } from "@/wab/common";
+import { ensure, strictZip } from "@/wab/shared/common";
 import {
   MigrationDbMgr,
   getMigratedBundle,

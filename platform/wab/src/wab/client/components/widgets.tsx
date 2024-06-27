@@ -19,7 +19,7 @@ import {
   isCurrentlyWithinPath,
   makeCancelable,
   maybe,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import {
   MaybeWrap,
   createFakeEvent,

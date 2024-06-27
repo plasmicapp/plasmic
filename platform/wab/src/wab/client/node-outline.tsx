@@ -1,5 +1,5 @@
-import { DEVFLAGS } from "@/wab/devflags";
-import { Rect } from "@/wab/geom";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { Rect } from "@/wab/shared/geom";
 
 export const tagHeight = 25;
 

@@ -11,9 +11,9 @@ import {
   withoutNils,
   xIntersect,
   xSetDefault,
-} from "@/wab/common";
-import { CodeComponent, isCodeComponent } from "@/wab/components";
-import { ChangeRecorder } from "@/wab/observable-model";
+} from "@/wab/shared/common";
+import { CodeComponent, isCodeComponent } from "@/wab/shared/core/components";
+import { ChangeRecorder } from "@/wab/shared/core/observable-model";
 import { Bundler } from "@/wab/shared/bundler";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
 import {
@@ -78,14 +78,14 @@ import {
   mkVariantSetting,
   tryGetBaseVariantSetting,
 } from "@/wab/shared/Variants";
-import { visitComponentRefs } from "@/wab/sites";
+import { visitComponentRefs } from "@/wab/shared/core/sites";
 import {
   fixParentPointers,
   mkTplComponentX,
   tplChildren,
   trackComponentRoot,
   trackComponentSite,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import {
   findLastIndex,
   groupBy,

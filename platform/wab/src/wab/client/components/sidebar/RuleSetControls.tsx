@@ -1,12 +1,12 @@
 import { Matcher } from "@/wab/client/components/view-common";
 import { XMultiSelect } from "@/wab/client/components/XMultiSelect";
-import { ensure, filterFalsy } from "@/wab/common";
-import { CodeComponent } from "@/wab/components";
+import { ensure, filterFalsy } from "@/wab/shared/common";
+import { CodeComponent } from "@/wab/shared/core/components";
 import {
   getApplicableSelectors,
   getPseudoSelector,
   oppositeSelectorDisplayName,
-} from "@/wab/styles";
+} from "@/wab/shared/core/styles";
 import { Tooltip } from "antd";
 import L from "lodash";
 import { default as React, useLayoutEffect, useState } from "react";

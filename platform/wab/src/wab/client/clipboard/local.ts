@@ -3,12 +3,12 @@ import {
   PasteResult,
   ensureViewCtxOrThrowUserError,
 } from "@/wab/client/clipboard/common";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { unwrap } from "@/wab/commons/failable-utils";
 import { cloneArenaFrame } from "@/wab/shared/Arenas";
 import { VariantCombo } from "@/wab/shared/Variants";
 import { ArenaFrame, Component, TplNode } from "@/wab/shared/model/classes";
-import * as Tpls from "@/wab/tpls";
+import * as Tpls from "@/wab/shared/core/tpls";
 
 export interface StyleClip {
   type: "style";

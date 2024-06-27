@@ -4,7 +4,7 @@ import {
   DefaultStyleToggleButtonProps,
   PlasmicStyleToggleButton,
 } from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicStyleToggleButton";
-import { capitalizeFirst } from "@/wab/strs";
+import { capitalizeFirst } from "@/wab/shared/strs";
 import Tooltip, { TooltipPlacement } from "antd/lib/tooltip";
 import * as React from "react";
 

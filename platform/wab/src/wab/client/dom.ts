@@ -6,8 +6,8 @@ import {
   maybe,
   parsePx,
   tuple,
-} from "@/wab/common";
-import { Box, ClientRect, Pt } from "@/wab/geom";
+} from "@/wab/shared/common";
+import { Box, ClientRect, Pt } from "@/wab/shared/geom";
 import * as Immutable from "immutable";
 import $ from "jquery";
 

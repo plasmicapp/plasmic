@@ -1,7 +1,7 @@
 // Must initialize globals early so that imported code can detect what
 // environment we're running in.
-import { ensureType, spawn } from "@/wab/common";
-import { InsertableTemplatesGroup, Installable } from "@/wab/devflags";
+import { ensureType, spawn } from "@/wab/shared/common";
+import { InsertableTemplatesGroup, Installable } from "@/wab/shared/devflags";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
 import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { ensureDbConnection } from "@/wab/server/db/DbCon";
@@ -17,7 +17,7 @@ import {
 import { initializeGlobals } from "@/wab/server/svr-init";
 import { Bundler } from "@/wab/shared/bundler";
 import { DEFAULT_INSERTABLE } from "@/wab/shared/constants";
-import { createSite } from "@/wab/sites";
+import { createSite } from "@/wab/shared/core/sites";
 import { EntityManager } from "typeorm";
 
 initializeGlobals();

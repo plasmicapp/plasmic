@@ -10,7 +10,7 @@ import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelW
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { PRIVATE_STYLE_VARIANTS_CAP } from "@/wab/shared/Labels";
 import { getPrivateStyleVariantsForTag } from "@/wab/shared/Variants";
 import { TplTag, Variant } from "@/wab/shared/model/classes";

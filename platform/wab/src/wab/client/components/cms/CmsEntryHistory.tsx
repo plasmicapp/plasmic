@@ -1,4 +1,4 @@
-import MenuItem from "@/MenuItem";
+import MenuItem from "@/wab/client/components/MenuItem";
 import { useUsersMap } from "@/wab/client/api-hooks";
 import { useRRouteMatch, UU } from "@/wab/client/cli-routes";
 import {
@@ -14,7 +14,7 @@ import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { Spinner } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
 import { useApi } from "@/wab/client/contexts/AppContexts";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { CmsDatabaseId, CmsRowId, CmsTableId } from "@/wab/shared/ApiSchema";
 import { Form, message } from "antd";
 import React from "react";

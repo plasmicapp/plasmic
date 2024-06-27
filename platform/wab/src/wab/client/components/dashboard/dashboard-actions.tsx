@@ -12,7 +12,7 @@ import Button from "@/wab/client/components/widgets/Button";
 import { Modal } from "@/wab/client/components/widgets/Modal";
 import Select from "@/wab/client/components/widgets/Select";
 import Textbox from "@/wab/client/components/widgets/Textbox";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import {
   ApiPermission,
   ApiTeam,

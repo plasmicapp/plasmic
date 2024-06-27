@@ -9,7 +9,7 @@ import {
   isCodeComponent,
   isFrameComponent,
   isSubComponent,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import { Alert } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";

@@ -9,7 +9,7 @@ import {
   EditableLabelHandles,
 } from "@/wab/client/components/widgets/EditableLabel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { assert, spawn } from "@/wab/common";
+import { assert, spawn } from "@/wab/shared/common";
 import { InlineEdit } from "@/wab/commons/components/InlineEdit";
 import { VARIANT_CAP, VARIANT_LOWER } from "@/wab/shared/Labels";
 import { Component, isKnownTplTag, Variant } from "@/wab/shared/model/classes";
@@ -21,7 +21,7 @@ import {
   isStyleVariant,
   makeVariantName,
 } from "@/wab/shared/Variants";
-import { isTplCodeComponent, isTplTag } from "@/wab/tpls";
+import { isTplCodeComponent, isTplTag } from "@/wab/shared/core/tpls";
 import { Menu } from "antd";
 import { default as classNames, default as cn } from "classnames";
 import { sumBy } from "lodash";

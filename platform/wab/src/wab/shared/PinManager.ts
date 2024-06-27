@@ -11,8 +11,8 @@ import {
   tuple,
   xExtend,
   xOmit,
-} from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+} from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ensureValidCombo,
   getOrderedScreenVariants,
@@ -35,7 +35,7 @@ import {
   Site,
   Variant,
 } from "@/wab/shared/model/classes";
-import { getStateVarName } from "@/wab/states";
+import { getStateVarName } from "@/wab/shared/core/states";
 import { $State } from "@plasmicapp/react-web";
 import L from "lodash";
 

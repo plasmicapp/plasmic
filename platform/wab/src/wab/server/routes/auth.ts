@@ -7,7 +7,7 @@ import {
   isValidEmail,
   spawn,
   uncheckedCast,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import {
   DbMgr,
   generateSecretToken,

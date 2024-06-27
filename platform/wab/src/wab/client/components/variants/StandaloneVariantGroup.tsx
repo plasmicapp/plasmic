@@ -7,7 +7,7 @@ import {
 import { EditableLabelHandles } from "@/wab/client/components/widgets/EditableLabel";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, spawn } from "@/wab/common";
+import { ensure, spawn } from "@/wab/shared/common";
 import { VariantPinState } from "@/wab/shared/PinManager";
 import {
   Component,

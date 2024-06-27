@@ -31,7 +31,7 @@ import {
   deriveRenderOpts,
   ensureGlobalVariants,
 } from "@plasmicapp/react-web";
-import Select__Option from "../../../../Select__Option"; // plasmic-import: rOWcW5xKB81/component
+import Select__Option from "../../components/Select__Option"; // plasmic-import: rOWcW5xKB81/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 

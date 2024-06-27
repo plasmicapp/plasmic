@@ -36,8 +36,8 @@ import {
   TopFrameTours,
   TopFrameTourState,
 } from "@/wab/client/tours/tutorials/TutorialTours";
-import { assert, asyncWrapper, mkUuid, spawn } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { assert, asyncWrapper, mkUuid, spawn } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ApiBranch,
   ApiPermission,

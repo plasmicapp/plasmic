@@ -1,4 +1,4 @@
-import { unreachable } from "@/wab/common";
+import { unreachable } from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import { mkTokenRef, replaceAllTokenRefs } from "@/wab/commons/StyleToken";
 import {
@@ -6,7 +6,7 @@ import {
   Site,
   StyleToken,
 } from "@/wab/shared/model/classes";
-import { extractTokenUsages } from "@/wab/styles";
+import { extractTokenUsages } from "@/wab/shared/core/styles";
 
 export function fixDuplicatedRegisteredTokens(mergedSite: Site) {
   const tokensByRegKey: Record<string, StyleToken[]> = {};

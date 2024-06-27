@@ -1,4 +1,4 @@
-import { normProp } from "@/wab/css";
+import { normProp } from "@/wab/shared/css";
 import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { BundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 

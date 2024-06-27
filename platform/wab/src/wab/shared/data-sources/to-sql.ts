@@ -1,4 +1,4 @@
-import { assert, ensure, substringOccurrencesCount } from "@/wab/common";
+import { assert, ensure, substringOccurrencesCount } from "@/wab/shared/common";
 import {
   DATA_SOURCE_QUERY_BUILDER_CONFIG,
   GenericDataSource,

@@ -2,7 +2,7 @@ import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
 import Button from "@/wab/client/components/widgets/Button";
 import { Form, Radio } from "antd";
 import * as React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 export interface NamedItem<T> {
   name: string;

@@ -8,15 +8,15 @@ import {
   removeWhere,
   switchType,
   tryRemove,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import { resolveAllTokenRefs } from "@/wab/commons/StyleToken";
-import { hasImageAssetRef } from "@/wab/image-assets";
+import { hasImageAssetRef } from "@/wab/shared/core/image-assets";
 import {
   IChangeRecorder,
   ModelChange,
   RecordedChanges,
-} from "@/wab/observable-model";
+} from "@/wab/shared/core/observable-model";
 import { getArenaFrames } from "@/wab/shared/Arenas";
 import {
   ArenaFrame,
@@ -112,8 +112,8 @@ import {
   trackComponentRoot,
   trackComponentSite,
   tryGetTplOwnerComponent,
-} from "@/wab/tpls";
-import { undoChanges } from "@/wab/undo-util";
+} from "@/wab/shared/core/tpls";
+import { undoChanges } from "@/wab/shared/core/undo-util";
 import { uniq } from "lodash";
 
 export interface DeletedAssetsSummary {

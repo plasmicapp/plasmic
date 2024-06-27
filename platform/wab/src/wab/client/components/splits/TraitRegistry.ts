@@ -1,4 +1,4 @@
-import { uncheckedCast } from "@/wab/common";
+import { uncheckedCast } from "@/wab/shared/common";
 import { TraitRegistration } from "@plasmicapp/host";
 import memoizeOne from "memoize-one";
 

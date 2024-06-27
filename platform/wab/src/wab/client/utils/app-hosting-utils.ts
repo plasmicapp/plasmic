@@ -1,5 +1,5 @@
 import { reportError } from "@/wab/client/ErrorNotifications";
-import { DEVFLAGS, DevFlagsType } from "@/wab/devflags";
+import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
 import { ApiBranch, ApiProject } from "@/wab/shared/ApiSchema";
 
 export function getHostUrl(

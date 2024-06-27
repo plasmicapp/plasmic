@@ -25,7 +25,7 @@ import {
   DefaultSettingsTabProps,
   PlasmicSettingsTab,
 } from "@/wab/client/plasmic/plasmic_kit_end_user_management/PlasmicSettingsTab";
-import { mkUuid, uniqueName, withoutNils } from "@/wab/common";
+import { mkUuid, uniqueName, withoutNils } from "@/wab/shared/common";
 import {
   ApiAppAuthConfig,
   ApiEndUserDirectory,

@@ -1,4 +1,4 @@
-import { ensure, tuple, xor } from "@/wab/common";
+import { ensure, tuple, xor } from "@/wab/shared/common";
 import * as classes from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
 import { Class, Field, MetaRuntime } from "@/wab/shared/model/model-meta";

@@ -9,7 +9,7 @@ import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { ApiEndUser } from "@/wab/shared/ApiSchema";
 import { Table } from "antd";
 import React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 export default function DirectoryUsers(props: {
   teamId: string;

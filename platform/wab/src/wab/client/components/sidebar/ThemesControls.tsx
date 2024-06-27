@@ -1,9 +1,9 @@
 import PlasmicLeftThemesPanel from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftThemesPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, withoutNils } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { ensure, withoutNils } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
-import { isHostLessPackage } from "@/wab/sites";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { uniq } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";

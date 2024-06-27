@@ -20,7 +20,7 @@ import {
   TutorialStateFlags,
 } from "@/wab/client/tours/tutorials/tutorials-types";
 import { zIndex } from "@/wab/client/z-index";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 
 const OPEN_INTERACTION_MODAL_FLAGS: Partial<TutorialStateFlags> = {
   keepActionBuilderUncollapsed: true,

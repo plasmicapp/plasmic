@@ -1,7 +1,6 @@
 import * as fs from "fs";
 import * as repl from "repl";
 import { getConnection } from "typeorm";
-import { ensure, spawn } from "../src/wab/common";
 import {
   bytesToHex,
   stringToUTF8Bytes,
@@ -14,6 +13,7 @@ import {
   getShopifyClientForUserId,
   shopifyPostInstallSetup,
 } from "../src/wab/server/routes/shopify";
+import { ensure, spawn } from "../src/wab/shared/common";
 
 async function getClientFor(db: DbMgr, email: string) {
   const user = await db.getUserByEmail(email);

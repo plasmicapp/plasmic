@@ -4,7 +4,7 @@ import {
   DefaultDomainCardProps,
   PlasmicDomainCard,
 } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicDomainCard";
-import { spawn, spawnWrapper } from "@/wab/common";
+import { spawn, spawnWrapper } from "@/wab/shared/common";
 import { ApiProject, CheckDomainResponse } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";

@@ -16,7 +16,7 @@ import Select from "@/wab/client/components/widgets/Select";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { PlasmicLeftGeneralTokensPanel } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftGeneralTokensPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import {
   TokenType,
   TokenValue,
@@ -26,12 +26,12 @@ import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { isScreenVariant } from "@/wab/shared/Variants";
 import { ProjectDependency, StyleToken } from "@/wab/shared/model/classes";
 import Chroma from "@/wab/shared/utils/color-utils";
-import { extractTokenUsages } from "@/wab/styles";
+import { extractTokenUsages } from "@/wab/shared/core/styles";
 import { Tooltip } from "antd";
 import { orderBy } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { isHostLessPackage } from "src/wab/sites";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
 
 type TokenTypeExpanded = {
   [TokenType.Color]: boolean;

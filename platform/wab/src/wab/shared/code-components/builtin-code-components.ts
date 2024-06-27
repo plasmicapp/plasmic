@@ -1,6 +1,6 @@
-import { isCodeComponent } from "@/wab/components";
+import { isCodeComponent } from "@/wab/shared/core/components";
 import { Component, TplNode } from "@/wab/shared/model/classes";
-import { TplCodeComponent, isTplComponent } from "@/wab/tpls";
+import { TplCodeComponent, isTplComponent } from "@/wab/shared/core/tpls";
 import type * as PlasmicDataSourcesContext from "@plasmicapp/data-sources-context";
 import type { ComponentRegistration } from "@plasmicapp/host";
 import type * as ReactWeb from "@plasmicapp/react-web";

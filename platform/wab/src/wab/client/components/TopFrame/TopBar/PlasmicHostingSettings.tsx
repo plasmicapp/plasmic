@@ -10,8 +10,8 @@ import {
   DefaultPlasmicHostingSettingsProps,
   PlasmicPlasmicHostingSettings,
 } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicPlasmicHostingSettings";
-import { spawn, spawnWrapper, strictIdentity } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { spawn, spawnWrapper, strictIdentity } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ApiProject } from "@/wab/shared/ApiSchema";
 import { imageDataUriToBlob } from "@/wab/shared/data-urls";
 import { DomainValidator } from "@/wab/shared/hosting";

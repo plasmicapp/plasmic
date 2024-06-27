@@ -1,7 +1,7 @@
 import { ICruiseResult } from "dependency-cruiser";
 import * as fs from "fs";
 import * as readline from "readline";
-import { ensure, multimap, pairwise, tuple } from "../src/wab/common";
+import { ensure, multimap, pairwise, tuple } from "../src/wab/shared/common";
 
 function cleanup(path: string) {
   return `"${path.replace("src/wab/", "")}"`;

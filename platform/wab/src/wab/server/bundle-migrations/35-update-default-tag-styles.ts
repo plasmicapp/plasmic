@@ -1,4 +1,4 @@
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import {
   BundleMigrationType,
   unbundleSite,
@@ -8,9 +8,9 @@ import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
 import { Bundler } from "@/wab/shared/bundler";
 import { UnsafeBundle } from "@/wab/shared/bundles";
 import { isKnownTplTag, TplTag } from "@/wab/shared/model/classes";
-import { createDefaultTheme } from "@/wab/sites";
-import { cloneMixin, cloneThemeStyle } from "@/wab/styles";
-import { flattenTpls } from "@/wab/tpls";
+import { createDefaultTheme } from "@/wab/shared/core/sites";
+import { cloneMixin, cloneThemeStyle } from "@/wab/shared/core/styles";
+import { flattenTpls } from "@/wab/shared/core/tpls";
 
 const defaultTagStyles = createDefaultTheme().styles;
 

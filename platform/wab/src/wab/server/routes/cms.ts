@@ -1,4 +1,4 @@
-import { ensure, ensureString } from "@/wab/common";
+import { ensure, ensureString } from "@/wab/shared/common";
 import { toOpaque } from "@/wab/commons/types";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { CmsRow } from "@/wab/server/entities/Entities";

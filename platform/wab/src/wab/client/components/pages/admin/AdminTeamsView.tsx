@@ -8,8 +8,8 @@ import { AdminUserSelect } from "@/wab/client/components/pages/admin/AdminUserSe
 import { AdminUserTable } from "@/wab/client/components/pages/admin/AdminUserTable";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
-import { notNil, uncheckedCast } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { notNil, uncheckedCast } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ApiFeatureTier,
   ApiPermission,

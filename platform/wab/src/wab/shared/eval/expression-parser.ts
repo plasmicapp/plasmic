@@ -1,6 +1,6 @@
-import { arrayEq, unexpected, xUnion } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
-import { asCode, isRealCodeExpr } from "@/wab/exprs";
+import { arrayEq, unexpected, xUnion } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { asCode, isRealCodeExpr } from "@/wab/shared/core/exprs";
 import { ENABLED_GLOBALS } from "@/wab/shared/eval";
 import {
   Expr,

@@ -1,4 +1,4 @@
-import { ensureInstance, ensureType } from "@/wab/common";
+import { ensureInstance, ensureType } from "@/wab/shared/common";
 import "@/wab/server/extensions";
 import { userAnalytics } from "@/wab/server/routes/util";
 import { GetClipResponse } from "@/wab/shared/ApiSchema";

@@ -10,7 +10,7 @@ import {
   DefaultChartViewProps,
   PlasmicChartView,
 } from "@/wab/client/plasmic/plasmic_kit_analytics/PlasmicChartView";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import moment from "moment";
 import * as React from "react";

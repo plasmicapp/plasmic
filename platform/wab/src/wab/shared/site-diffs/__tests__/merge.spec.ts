@@ -15,7 +15,7 @@ import {
   strictZip,
   swallow,
   tuple,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import { mkTokenRef, TokenType } from "@/wab/commons/StyleToken";
 import {
@@ -23,12 +23,12 @@ import {
   ComponentType,
   PageComponent,
   removeVariantGroup,
-} from "@/wab/components";
-import { getProjectFlags } from "@/wab/devflags";
-import { asCode, codeLit, tryExtractJson } from "@/wab/exprs";
-import { Pt } from "@/wab/geom";
-import { ImageAssetType } from "@/wab/image-asset-type";
-import { mkParam, mkParamsForState } from "@/wab/lang";
+} from "@/wab/shared/core/components";
+import { getProjectFlags } from "@/wab/shared/devflags";
+import { asCode, codeLit, tryExtractJson } from "@/wab/shared/core/exprs";
+import { Pt } from "@/wab/shared/geom";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { mkParam, mkParamsForState } from "@/wab/shared/core/lang";
 import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { getLowestCommonAncestor } from "@/wab/server/db/DbMgr";
 import { ProjectFullDataResponse } from "@/wab/shared/ApiSchema";
@@ -106,8 +106,8 @@ import {
   mkVariantSetting,
 } from "@/wab/shared/Variants";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
-import { createSite } from "@/wab/sites";
-import { addComponentState, mkState } from "@/wab/states";
+import { createSite } from "@/wab/shared/core/sites";
+import { addComponentState, mkState } from "@/wab/shared/core/states";
 import {
   flattenTpls,
   mkSlot,
@@ -118,7 +118,7 @@ import {
   TplTagType,
   trackComponentRoot,
   trackComponentSite,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import { isArray, isString, pick, range, sortBy } from "lodash";
 import type { PartialDeep } from "type-fest";
 

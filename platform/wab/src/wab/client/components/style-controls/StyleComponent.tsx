@@ -25,7 +25,7 @@ import {
   mapify,
   tuple,
   unexpected,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import {
   withConsumer,
   withProvider,
@@ -40,7 +40,7 @@ import {
   tokenTypeLabel,
 } from "@/wab/commons/StyleToken";
 import { isEmptyReactNode } from "@/wab/commons/ViewUtil";
-import { isCodeComponent } from "@/wab/components";
+import { isCodeComponent } from "@/wab/shared/core/components";
 import {
   colorProps,
   filterExtractableStyles,
@@ -99,13 +99,13 @@ import {
   VariantCombo,
 } from "@/wab/shared/Variants";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
-import { allStyleTokens } from "@/wab/sites";
+import { allStyleTokens } from "@/wab/shared/core/sites";
 import {
   isComponentRoot,
   isTplComponent,
   isTplTagOrComponent,
   isTplTextBlock,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import { Menu, Tooltip } from "antd";
 import SubMenu from "antd/lib/menu/SubMenu";
 import classNames from "classnames";

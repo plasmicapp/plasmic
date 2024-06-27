@@ -4,7 +4,7 @@ import Textbox from "@/wab/client/components/widgets/Textbox";
 import { Component } from "@/wab/shared/model/classes";
 import { Form } from "antd";
 import React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 export default async function promptForMetadata(
   component: Component

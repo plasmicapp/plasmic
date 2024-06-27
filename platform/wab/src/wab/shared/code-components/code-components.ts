@@ -3,7 +3,7 @@ import {
   BackgroundLayer,
   ColorFill,
   NoneBackground,
-} from "@/wab/bg-styles";
+} from "@/wab/shared/core/bg-styles";
 import {
   CustomError,
   assert,
@@ -22,7 +22,7 @@ import {
   unexpected,
   withoutNils,
   xDifference,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { TokenType } from "@/wab/commons/StyleToken";
 import { removeFromArray } from "@/wab/commons/collections";
 import {
@@ -40,13 +40,13 @@ import {
   isPlumeComponent,
   mkComponent,
   removeComponentParam,
-} from "@/wab/components";
-import { getCssInitial, normProp, parseCssShorthand } from "@/wab/css";
-import { ExprCtx, asCode } from "@/wab/exprs";
+} from "@/wab/shared/core/components";
+import { getCssInitial, normProp, parseCssShorthand } from "@/wab/shared/css";
+import { ExprCtx, asCode } from "@/wab/shared/core/exprs";
 import * as cssPegParser from "@/wab/gen/cssPegParser";
-import { standardCorners, standardSides } from "@/wab/geom";
-import { ParamExportType, mkParam, mkParamsForState } from "@/wab/lang";
-import { walkDependencyTree } from "@/wab/project-deps";
+import { standardCorners, standardSides } from "@/wab/shared/geom";
+import { ParamExportType, mkParam, mkParamsForState } from "@/wab/shared/core/lang";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { getSlotParams, isSlot } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
@@ -143,7 +143,7 @@ import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { canComponentTakeRef } from "@/wab/shared/react-utils";
 import { CodeLibraryRegistration } from "@/wab/shared/register-library";
 import { validJsIdentifierRegex } from "@/wab/shared/utils/regex-valid-js-identifier";
-import { allComponents, isHostLessPackage, writeable } from "@/wab/sites";
+import { allComponents, isHostLessPackage, writeable } from "@/wab/shared/core/sites";
 import {
   StateAccessType,
   StateVariableType,
@@ -151,13 +151,13 @@ import {
   mkNamedState,
   removeComponentStateOnly,
   updateStateAccessType,
-} from "@/wab/states";
+} from "@/wab/shared/core/states";
 import {
   changeTokenUsage,
   extractTokenUsages,
   mkRuleSet,
   parseCssValue,
-} from "@/wab/styles";
+} from "@/wab/shared/core/styles";
 import {
   EventHandlerKeyType,
   TplTagType,
@@ -174,7 +174,7 @@ import {
   mkTplComponentX,
   mkTplInlinedText,
   mkTplTagX,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import type {
   ComponentMeta,
   ComponentRegistration,

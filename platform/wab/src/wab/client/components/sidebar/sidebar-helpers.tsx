@@ -30,11 +30,11 @@ import {
   maybe,
   spawn,
   withoutNils,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
 import { TokenType } from "@/wab/commons/StyleToken";
-import { parseCssNumericNew, roundedCssNumeric } from "@/wab/css";
+import { parseCssNumericNew, roundedCssNumeric } from "@/wab/shared/css";
 import {
   DefinedIndicatorType,
   getTargetBlockingCombo,

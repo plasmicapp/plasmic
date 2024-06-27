@@ -24,8 +24,8 @@ import {
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { trackEvent } from "@/wab/client/tracking";
-import { ifEmpty, spawn } from "@/wab/common";
-import { isValidCurrentUserPropsExpr } from "@/wab/exprs";
+import { ifEmpty, spawn } from "@/wab/shared/common";
+import { isValidCurrentUserPropsExpr } from "@/wab/shared/core/exprs";
 import { ApiAppUser } from "@/wab/shared/ApiSchema";
 import { DATA_SOURCE_OPERATION_LOWER } from "@/wab/shared/Labels";
 import { Bundle, FastBundler } from "@/wab/shared/bundler";

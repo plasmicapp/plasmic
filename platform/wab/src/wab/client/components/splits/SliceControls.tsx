@@ -3,7 +3,7 @@
 import ScheduleControls from "@/wab/client/components/splits/ScheduleControls";
 import SegmentControls from "@/wab/client/components/splits/SegmentControls";
 import { Split } from "@/wab/shared/model/classes";
-import { SplitType } from "@/wab/splits";
+import { SplitType } from "@/wab/shared/core/splits";
 import { DatePicker, Slider } from "antd";
 import { observer } from "mobx-react";
 import moment from "moment";

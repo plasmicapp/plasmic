@@ -55,8 +55,8 @@ import {
   useGlobalActions,
 } from "@plasmicapp/react-web/lib/host";
 
-import HostProtocolSelect from "../../../../HostProtocolSelect"; // plasmic-import: 6_CfQ5GVLku/component
-import HostProtocolSelect__Option from "../../../../HostProtocolSelect__Option"; // plasmic-import: aHgWgR3OVni/component
+import HostProtocolSelect from "../../components//HostProtocolSelect"; // plasmic-import: 6_CfQ5GVLku/component
+import HostProtocolSelect__Option from "../../components/HostProtocolSelect__Option"; // plasmic-import: aHgWgR3OVni/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";

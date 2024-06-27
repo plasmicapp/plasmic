@@ -57,12 +57,12 @@ import { providesAppCtx, useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useHostFrameCtxIfHostFrame } from "@/wab/client/frame-ctx/host-frame-ctx";
 import deployedVersions from "@/wab/client/plasmic-deployed.json";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
-import { ensure, hackyCast, spawn } from "@/wab/common";
+import { ensure, hackyCast, spawn } from "@/wab/shared/common";
 import {
   promisifyMethods,
   PromisifyMethods,
 } from "@/wab/commons/promisify-methods";
-import { StarterSectionConfig } from "@/wab/devflags";
+import { StarterSectionConfig } from "@/wab/shared/devflags";
 import { CmsDatabaseId } from "@/wab/shared/ApiSchema";
 import { isArenaType } from "@/wab/shared/Arenas";
 import { FastBundler } from "@/wab/shared/bundler";

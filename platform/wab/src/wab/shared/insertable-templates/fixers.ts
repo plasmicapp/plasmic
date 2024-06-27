@@ -5,7 +5,7 @@ import {
   switchType,
   unexpected,
   withoutNils,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import {
   derefToken,
   derefTokenRefs,
@@ -15,11 +15,11 @@ import {
   replaceAllTokenRefs,
   TokenType,
 } from "@/wab/commons/StyleToken";
-import { isCodeComponent, isPlumeComponent } from "@/wab/components";
-import { InsertableTemplateTokenResolution } from "@/wab/devflags";
-import { code, isFallbackableExpr } from "@/wab/exprs";
-import { ImageAssetType } from "@/wab/image-asset-type";
-import { mkImageAssetRef } from "@/wab/image-assets";
+import { isCodeComponent, isPlumeComponent } from "@/wab/shared/core/components";
+import { InsertableTemplateTokenResolution } from "@/wab/shared/devflags";
+import { code, isFallbackableExpr } from "@/wab/shared/core/exprs";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { mkImageAssetRef } from "@/wab/shared/core/image-assets";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { getEffectiveVariantSettingForInsertable } from "@/wab/shared/effective-variant-setting";
 import {
@@ -77,7 +77,7 @@ import {
   isTplTextBlock,
   TplTextTag,
   walkTpls,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import { isString } from "lodash";
 
 export function ensureTplWithBaseAndScreenVariants(

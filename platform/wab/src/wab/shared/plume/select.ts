@@ -1,5 +1,5 @@
-import { ensure, withoutNils } from "@/wab/common";
-import { codeLit } from "@/wab/exprs";
+import { ensure, withoutNils } from "@/wab/shared/common";
+import { codeLit } from "@/wab/shared/core/exprs";
 import { internalCanvasElementProps } from "@/wab/shared/canvas-constants";
 import {
   generateSubstituteComponentCalls,

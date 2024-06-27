@@ -5,14 +5,14 @@ import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
 import { StarterGroupProps } from "@/wab/client/components/StarterGroup";
 import { App } from "@/wab/client/components/top-view";
 import { TopFrameApi } from "@/wab/client/frame-ctx/top-frame-api";
-import { ensure, swallowAsync } from "@/wab/common";
+import { ensure, swallowAsync } from "@/wab/shared/common";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import {
   applyDevFlagOverrides,
   applyPlasmicUserDevFlagOverrides,
   DEVFLAGS,
   DevFlagsType,
-} from "@/wab/devflags";
+} from "@/wab/shared/devflags";
 import {
   ApiPermission,
   ApiTeam,

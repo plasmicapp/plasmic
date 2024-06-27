@@ -1,4 +1,4 @@
-import { ensureInstance } from "@/wab/common";
+import { ensureInstance } from "@/wab/shared/common";
 import * as migration15 from "@/wab/server/bundle-migrations/15-remove-override";
 import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { loadDepPackages } from "@/wab/server/db/DbBundleLoader";

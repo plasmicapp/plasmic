@@ -5,7 +5,7 @@ import {
   DefaultCmsLeftTabsProps,
   PlasmicCmsLeftTabs,
 } from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsLeftTabs";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";

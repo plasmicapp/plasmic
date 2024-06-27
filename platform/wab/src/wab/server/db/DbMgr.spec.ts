@@ -1,4 +1,4 @@
-import { ensure, filterMapTruthy } from "@/wab/common";
+import { ensure, filterMapTruthy } from "@/wab/shared/common";
 import { seedTestDb } from "@/wab/server/db/DbInit";
 import { ANON_USER, DbMgr, SkipSafeDelete } from "@/wab/server/db/DbMgr";
 import {

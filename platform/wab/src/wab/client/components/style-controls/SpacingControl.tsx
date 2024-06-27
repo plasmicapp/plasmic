@@ -13,7 +13,7 @@ import {
   toggleSet,
   tuple,
   unexpected,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import {
   INTERACT_OUTSIDE_EXCEPTION_SELECTORS,
   OnClickAwayExcept,
@@ -24,14 +24,14 @@ import {
   lazyDerefTokenRefsWithDeps,
   TokenType,
 } from "@/wab/commons/StyleToken";
-import { getCssInitial, parseCssShorthand, showCssShorthand } from "@/wab/css";
-import { oppSide, Side, standardSides } from "@/wab/geom";
+import { getCssInitial, parseCssShorthand, showCssShorthand } from "@/wab/shared/css";
+import { oppSide, Side, standardSides } from "@/wab/shared/geom";
 import {
   createNumericSize,
   NumericSize,
   parseNumericSize,
   showSizeCss,
-} from "@/wab/shared/Css";
+} from "@/wab/shared/css-size";
 import { Popover, Tooltip } from "antd";
 import { TooltipPlacement } from "antd/lib/tooltip";
 import cn from "classnames";

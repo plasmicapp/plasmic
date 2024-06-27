@@ -1,11 +1,11 @@
-import { assert, ensure } from "@/wab/common";
+import { assert, ensure } from "@/wab/shared/common";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { loadDepPackages } from "@/wab/server/db/DbBundleLoader";
 import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { PkgVersion } from "@/wab/server/entities/Entities";
 import { Bundler } from "@/wab/shared/bundler";
 import { Param } from "@/wab/shared/model/classes";
-import { cloneType } from "@/wab/tpls";
+import { cloneType } from "@/wab/shared/core/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   // Unbundle Site / ProjectDependency:

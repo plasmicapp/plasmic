@@ -8,7 +8,7 @@ import InfoIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Info";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { TplNode } from "@/wab/shared/model/classes";
-import { TplColumnsTag } from "@/wab/tpls";
+import { TplColumnsTag } from "@/wab/shared/core/tpls";
 import { Popover } from "antd";
 import { observer } from "mobx-react";
 import React from "react";

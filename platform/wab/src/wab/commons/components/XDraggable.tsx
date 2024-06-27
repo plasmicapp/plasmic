@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { App, withAppContext } from "@/wab/client/components/top-view";
-import { ensure, safeCast } from "@/wab/common";
+import { ensure, safeCast } from "@/wab/shared/common";
 import L from "lodash";
 import * as React from "react";
 import { MouseEvent, ReactNode } from "react";

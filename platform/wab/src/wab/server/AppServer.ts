@@ -11,8 +11,8 @@
 //   }
 //   return origOn.apply(this, args);
 // };
-import { mkShortId, safeCast, spawn } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { mkShortId, safeCast, spawn } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import Analytics from "analytics-node";

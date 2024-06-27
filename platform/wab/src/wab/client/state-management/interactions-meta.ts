@@ -1,15 +1,15 @@
 import { getTplRefActions } from "@/wab/client/state-management/ref-actions";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { assert, ensure, ensureInstance } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { assert, ensure, ensureInstance } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   codeLit,
   customCode,
   summarizePath,
   tryExtractJson,
   tryExtractString,
-} from "@/wab/exprs";
-import { ParamExportType } from "@/wab/lang";
+} from "@/wab/shared/core/exprs";
+import { ParamExportType } from "@/wab/shared/core/lang";
 import { ApiDataSource } from "@/wab/shared/ApiSchema";
 import {
   isPlainObjectPropType,
@@ -64,13 +64,13 @@ import {
   updateVariableOperations,
   UpdateVariantOperations,
   updateVariantOperations,
-} from "@/wab/states";
+} from "@/wab/shared/core/states";
 import {
   EventHandlerKeyType,
   isEventHandlerKeyForAttr,
   isEventHandlerKeyForFuncType,
   isEventHandlerKeyForParam,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import { mkMetaName } from "@plasmicapp/host";
 import { GlobalActionRegistration } from "@plasmicapp/host/registerGlobalContext";
 import { get, startCase } from "lodash";

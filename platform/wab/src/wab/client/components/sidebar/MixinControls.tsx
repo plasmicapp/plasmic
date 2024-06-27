@@ -36,21 +36,21 @@ import MixinIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Mixin";
 import ThemeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Theme";
 import PlasmicLeftMixinsPanel from "@/wab/client/plasmic/plasmic_kit/PlasmicLeftMixinsPanel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, spawn, tuple } from "@/wab/common";
+import { ensure, spawn, tuple } from "@/wab/shared/common";
 import { isTokenRef } from "@/wab/commons/StyleToken";
-import { extractTransitiveDepsFromMixins } from "@/wab/project-deps";
+import { extractTransitiveDepsFromMixins } from "@/wab/shared/core/project-deps";
 import { MIXIN_LOWER } from "@/wab/shared/Labels";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { makeTokenRefResolver } from "@/wab/shared/cached-selectors";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import { Mixin, ProjectDependency, Variant } from "@/wab/shared/model/classes";
-import { extractMixinUsages } from "@/wab/styles";
+import { extractMixinUsages } from "@/wab/shared/core/styles";
 import { Menu, notification } from "antd";
 import L, { orderBy } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
-import { isHostLessPackage } from "src/wab/sites";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
 
 function _MixinPreview(props: {
   sc: StudioCtx;

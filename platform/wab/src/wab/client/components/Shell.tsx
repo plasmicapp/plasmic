@@ -20,9 +20,9 @@ import {
   swallow,
   tuple,
   withoutFalsy,
-} from "@/wab/common";
-import DeploymentFlags from "@/wab/DeploymentFlags";
-import { applyDevFlagOverrides, DEVFLAGS } from "@/wab/devflags";
+} from "@/wab/shared/common";
+import DeploymentFlags from "@/wab/shared/DeploymentFlags";
+import { applyDevFlagOverrides, DEVFLAGS } from "@/wab/shared/devflags";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { getMaximumTier } from "@/wab/shared/pricing/pricing-utils";
 import { UserError } from "@/wab/shared/UserError";

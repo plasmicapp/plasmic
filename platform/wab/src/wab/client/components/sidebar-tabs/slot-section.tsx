@@ -6,8 +6,8 @@ import {
 } from "@/wab/client/components/style-controls/StyleComponent";
 import StyleSwitch from "@/wab/client/components/style-controls/StyleSwitch";
 import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
-import { spawn } from "@/wab/common";
-import { isTplSlot } from "@/wab/tpls";
+import { spawn } from "@/wab/shared/common";
+import { isTplSlot } from "@/wab/shared/core/tpls";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import React from "react";

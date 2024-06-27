@@ -2,10 +2,10 @@ import L from "lodash";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { computed, isObservable, makeObservable } from "mobx";
 
-import { arrayEq, assert, ensure, withoutNils } from "@/wab/common";
+import { arrayEq, assert, ensure, withoutNils } from "@/wab/shared/common";
 import { arrayReversed } from "@/wab/commons/collections";
 import { DeepReadonly, DeepReadonlyArray } from "@/wab/commons/types";
-import { clone } from "@/wab/exprs";
+import { clone } from "@/wab/shared/core/exprs";
 import {
   ArgSource,
   AttrSource,
@@ -65,14 +65,14 @@ import {
   getVariantSettingVisibility,
   hasVisibilitySetting,
 } from "@/wab/shared/visibility-utils";
-import { SlotSelection } from "@/wab/slots";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   cloneRuleSet,
   createExpandedRuleSetMerger,
   createRuleSetMerger,
   expandRuleSets,
   tplMatchThemeStyle,
-} from "@/wab/styles";
+} from "@/wab/shared/core/styles";
 import {
   cloneArgs,
   cloneAttrs,
@@ -85,7 +85,7 @@ import {
   isTplTag,
   isTplTextBlock,
   reconnectChildren,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 
 /**
  * A class that helps with reading VariantSettings from a stack of

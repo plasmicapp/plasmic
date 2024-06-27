@@ -1,4 +1,4 @@
-import { hackyCast, spanLast } from "@/wab/common";
+import { hackyCast, spanLast } from "@/wab/shared/common";
 import {
   failableAsync,
   FailableAsyncArg,

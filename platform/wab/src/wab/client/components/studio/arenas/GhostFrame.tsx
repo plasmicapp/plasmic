@@ -6,7 +6,7 @@ import {
   useZoomStyledRef,
 } from "@/wab/client/hooks/useScaledElementRef";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { cx, mkShortId } from "@/wab/common";
+import { cx, mkShortId } from "@/wab/shared/common";
 import { Dropdown, Popover, Tooltip } from "antd";
 import { isString } from "lodash";
 import React, {

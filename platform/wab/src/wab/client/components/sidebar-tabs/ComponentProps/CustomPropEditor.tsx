@@ -1,5 +1,5 @@
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { CustomControl } from "@plasmicapp/host/dist/prop-types";
 import domAlign from "dom-align";
 import $ from "jquery";

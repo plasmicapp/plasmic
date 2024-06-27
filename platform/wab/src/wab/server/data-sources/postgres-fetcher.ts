@@ -1,4 +1,4 @@
-import { assert, ensure } from "@/wab/common";
+import { assert, ensure } from "@/wab/shared/common";
 import { asyncTimed } from "@/wab/server/timing-util";
 import { NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import {

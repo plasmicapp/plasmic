@@ -7,7 +7,7 @@ import {
   PlasmicEditOverrideToggleButton,
 } from "@/wab/client/plasmic/plasmic_kit_optimize/PlasmicEditOverrideToggleButton";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { isDedicatedArena } from "@/wab/shared/Arenas";
 import { SplitSlice } from "@/wab/shared/model/classes";
 import * as React from "react";

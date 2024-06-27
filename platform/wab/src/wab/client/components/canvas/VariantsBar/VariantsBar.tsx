@@ -11,13 +11,13 @@ import { plasmicCanvasTransformEvent } from "@/wab/client/definitions/events";
 import PlasmicVariantsBar from "@/wab/client/plasmic/plasmic_kit_variants_bar/PlasmicVariantsBar";
 import { StudioCtx, usePlasmicCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
 import {
   getSuperComponentVariantGroupToComponent,
   isFrameComponent,
-} from "@/wab/components";
-import { Box } from "@/wab/geom";
+} from "@/wab/shared/core/components";
+import { Box } from "@/wab/shared/geom";
 import { isDedicatedArena, isMixedArena } from "@/wab/shared/Arenas";
 import { isKnownArenaFrame, Variant } from "@/wab/shared/model/classes";
 import { withoutIrrelevantScreenVariants } from "@/wab/shared/PinManager";

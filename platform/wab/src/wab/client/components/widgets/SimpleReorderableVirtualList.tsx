@@ -1,5 +1,5 @@
 import { axisLockedStyle } from "@/wab/client/components/widgets/SimpleReorderableList";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import React from "react";
 import {
   DragDropContext,

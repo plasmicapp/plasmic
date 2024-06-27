@@ -2,7 +2,7 @@
 import { observer } from "mobx-react";
 // Feel free to edit as you see fit.
 import React, { useEffect } from "react";
-import { assert } from "@/wab/common";
+import { assert } from "@/wab/shared/common";
 import { U } from "@/wab/client/cli-routes";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { createDarkMask } from "@/wab/client/components/darkMask";

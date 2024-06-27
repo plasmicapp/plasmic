@@ -1,7 +1,7 @@
 // TODO note that cursorPosition logic is broken / not correctly being
 //  tracked, since the use case hasn't come up.
 
-import { Cancelable, ensure, makeCancelable, spawn } from "@/wab/common";
+import { Cancelable, ensure, makeCancelable, spawn } from "@/wab/shared/common";
 import sty from "@/wab/commons/components/inputs/BetterAutoComplete.module.css";
 import {
   callEventHandlers,

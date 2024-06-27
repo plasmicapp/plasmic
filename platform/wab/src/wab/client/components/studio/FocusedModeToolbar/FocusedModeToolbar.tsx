@@ -6,7 +6,7 @@ import IconButton from "@/wab/client/components/widgets/IconButton";
 import Switch from "@/wab/client/components/widgets/Switch";
 import RefreshsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Refreshsvg";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { DEVFLAGS } from "@/wab/devflags";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { observer } from "mobx-react";
 import React from "react";
 

@@ -1,4 +1,4 @@
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import {
   DataSourceMeta,
   FilterArgMeta,
@@ -8,7 +8,7 @@ import {
   TableArgMeta,
 } from "@/wab/shared/data-sources-meta/data-sources";
 import { QueryBuilderPostgresConfig } from "@/wab/shared/data-sources-meta/postgres-meta";
-import { capitalizeFirst } from "@/wab/strs";
+import { capitalizeFirst } from "@/wab/shared/strs";
 import { DataSourceSchema, TableFieldType } from "@plasmicapp/data-sources";
 import { cloneDeep } from "lodash";
 

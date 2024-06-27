@@ -22,17 +22,17 @@ import PlasmicLeftImportsPanel, {
 import AlertIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__WarningTrianglesvg";
 import { ProjectDependencyData } from "@/wab/client/ProjectDependencyManager";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { swallowClick } from "@/wab/commons/components/ReactUtil";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { ProjectDependency } from "@/wab/shared/model/classes";
-import { isHostLessPackage } from "@/wab/sites";
-import { unbundleProjectDependency } from "@/wab/tagged-unbundle";
-import { extractProjectIdFromUrlOrId, getPublicUrl } from "@/wab/urls";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
+import { unbundleProjectDependency } from "@/wab/shared/core/tagged-unbundle";
+import { extractProjectIdFromUrlOrId, getPublicUrl } from "@/wab/shared/urls";
 import { Menu, notification, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
-import { areEquivalentScreenVariants } from "src/wab/shared/Variants";
+import { areEquivalentScreenVariants } from "@/wab/shared/Variants";
 
 function isDevUser(studioCtx: StudioCtx) {
   return (

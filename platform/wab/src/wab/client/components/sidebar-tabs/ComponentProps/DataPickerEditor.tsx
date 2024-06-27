@@ -4,7 +4,7 @@ import DataPicker, {
 } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { RightTabKey } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { isNonNil, mkShortId, spawn, uniqueName } from "@/wab/common";
+import { isNonNil, mkShortId, spawn, uniqueName } from "@/wab/shared/common";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
 import { ComponentDataQuery } from "@/wab/shared/model/classes";

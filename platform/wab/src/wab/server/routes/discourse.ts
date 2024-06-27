@@ -1,4 +1,4 @@
-import { ensure, ensureString, omitNils } from "@/wab/common";
+import { ensure, ensureString, omitNils } from "@/wab/shared/common";
 import { getUser, userDbMgr } from "@/wab/server/routes/util";
 import { getDiscourseConnectSecret } from "@/wab/server/secrets";
 import crypto from "crypto";

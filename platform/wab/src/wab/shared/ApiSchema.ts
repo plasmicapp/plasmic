@@ -2,13 +2,13 @@
 // place.  We use it to type the API and to ensure the voluntarily ensure server
 // responses conform.
 
-import { Dict } from "@/wab/collections";
+import { Dict } from "@/wab/shared/collections";
 import { TokenType } from "@/wab/commons/StyleToken";
 import {
   DEVFLAGS,
   InsertableTemplateComponentResolution,
   InsertableTemplateTokenResolution,
-} from "@/wab/devflags";
+} from "@/wab/shared/devflags";
 import { Bundle } from "@/wab/shared/bundles";
 import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {

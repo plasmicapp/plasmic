@@ -11,9 +11,9 @@ import CenterAndPadIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Cent
 import FrameStretchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__FrameStretch";
 import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
 import { ViewComponentProps, ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, parsePx } from "@/wab/common";
+import { ensure, parsePx } from "@/wab/shared/common";
 import { isTokenRef } from "@/wab/commons/StyleToken";
-import { isPageComponent, isPageFrame } from "@/wab/components";
+import { isPageComponent, isPageFrame } from "@/wab/shared/core/components";
 import {
   FrameViewMode,
   getFrameHeight,

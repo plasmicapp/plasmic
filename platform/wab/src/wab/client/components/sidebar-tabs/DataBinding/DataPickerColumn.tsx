@@ -19,11 +19,11 @@ import {
   runInteraction,
 } from "@/wab/client/state-management/preview-steps";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, isTruthy } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { ensure, isTruthy } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
 import { ensureKnownInteraction } from "@/wab/shared/model/classes";
-import { isTplTagOrComponent } from "@/wab/tpls";
+import { isTplTagOrComponent } from "@/wab/shared/core/tpls";
 import { mkMetaName } from "@plasmicapp/host";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";

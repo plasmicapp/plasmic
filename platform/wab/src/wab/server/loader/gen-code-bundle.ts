@@ -1,5 +1,5 @@
-import { unzip3 } from "@/wab/collections";
-import { tuple } from "@/wab/common";
+import { unzip3 } from "@/wab/shared/collections";
+import { tuple } from "@/wab/shared/common";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import {
   mkVersionToSync,
@@ -12,8 +12,8 @@ import { PlasmicWorkerPool } from "@/wab/server/workers/pool";
 import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
 import { ExportOpts, ExportPlatformOptions } from "@/wab/shared/codegen/types";
 import { createHash } from "crypto";
-import { ProjectId } from "src/wab/shared/ApiSchema";
-import { LocalizationKeyScheme } from "src/wab/shared/localization";
+import { ProjectId } from "@/wab/shared/ApiSchema";
+import { LocalizationKeyScheme } from "@/wab/shared/localization";
 import { getConnection } from "typeorm";
 
 /**

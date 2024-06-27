@@ -1,4 +1,4 @@
-import { getCodegenUrl } from "@/wab/urls";
+import { getCodegenUrl } from "@/wab/shared/urls";
 import {
   extractPlasmicQueryDataFromElement,
   GlobalVariantSpec,

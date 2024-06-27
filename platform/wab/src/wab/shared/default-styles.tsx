@@ -1,4 +1,4 @@
-import { DEVFLAGS } from "@/wab/devflags";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { AddItemKey, WrapItemKey } from "@/wab/shared/add-item-keys";
 import {
   CONTENT_LAYOUT,

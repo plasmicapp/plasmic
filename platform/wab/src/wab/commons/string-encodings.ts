@@ -1,6 +1,6 @@
 // From https://stackoverflow.com/a/57391629/43118
 
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 
 export function stringToUTF8Bytes(string: string) {
   return new TextEncoder().encode(string);

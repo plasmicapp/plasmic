@@ -4,7 +4,7 @@ import {
 } from "@/wab/server/db/bundle-migration-utils";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { Bundler } from "@/wab/shared/bundler";
-import { mkState } from "@/wab/states";
+import { mkState } from "@/wab/shared/core/states";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();

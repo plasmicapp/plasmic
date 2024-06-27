@@ -1,5 +1,5 @@
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { BASE_URL } from "@/wab/shared/discourse/config";
 import { useEffect } from "react";
 

@@ -1,10 +1,10 @@
-import { assert, ensure, isNumeric, tuple } from "@/wab/common";
-import { isPageComponent } from "@/wab/components";
-import { ImageAssetType } from "@/wab/image-asset-type";
+import { assert, ensure, isNumeric, tuple } from "@/wab/shared/common";
+import { isPageComponent } from "@/wab/shared/core/components";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import {
   extractAllAssetRefs,
   getTagAttrForImageAsset,
-} from "@/wab/image-assets";
+} from "@/wab/shared/core/image-assets";
 import possibleStandardNames from "@/wab/shared/codegen/react-attrs";
 import {
   getReactWebPackageName,
@@ -43,15 +43,15 @@ import {
   readonlyRSH,
   RuleSetHelpers,
 } from "@/wab/shared/RuleSetHelpers";
-import { allImageAssets } from "@/wab/sites";
-import { expandRuleSets } from "@/wab/styles";
+import { allImageAssets } from "@/wab/shared/core/sites";
+import { expandRuleSets } from "@/wab/shared/core/styles";
 import {
   flattenTpls,
   isTplComponent,
   isTplIcon,
   isTplPicture,
   pushExprs,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import L, { last } from "lodash";
 import mime from "mime/lite";
 

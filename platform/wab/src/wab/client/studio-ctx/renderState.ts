@@ -11,11 +11,11 @@ import {
   removeWhere,
   withoutNils,
   xSetDefault,
-} from "@/wab/common";
-import { Selectable } from "@/wab/selection";
+} from "@/wab/shared/common";
+import { Selectable } from "@/wab/shared/core/selection";
 import { TplNode } from "@/wab/shared/model/classes";
-import { SlotSelection, makeSlotSelectionKey } from "@/wab/slots";
-import { ValComponent, ValNode, ValSlot, cloneValNode } from "@/wab/val-nodes";
+import { SlotSelection, makeSlotSelectionKey } from "@/wab/shared/core/slots";
+import { ValComponent, ValNode, ValSlot, cloneValNode } from "@/wab/shared/core/val-nodes";
 import $ from "jquery";
 import { maxBy } from "lodash";
 

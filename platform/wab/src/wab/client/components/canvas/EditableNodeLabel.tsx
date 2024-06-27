@@ -4,7 +4,7 @@ import { Textbox } from "@/wab/client/components/widgets/Textbox";
 import RepeatingsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Repeatingsvg";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { cx, ensure, spawn } from "@/wab/common";
+import { cx, ensure, spawn } from "@/wab/shared/common";
 import { InlineEdit } from "@/wab/commons/components/InlineEdit";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import {
@@ -12,8 +12,8 @@ import {
   isKnownArenaFrame,
   TplSlot,
 } from "@/wab/shared/model/classes";
-import * as Tpls from "@/wab/tpls";
-import { isTplNamable, isTplSlot } from "@/wab/tpls";
+import * as Tpls from "@/wab/shared/core/tpls";
+import { isTplNamable, isTplSlot } from "@/wab/shared/core/tpls";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";

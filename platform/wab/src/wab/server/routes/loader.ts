@@ -4,7 +4,7 @@ import {
   ensureInstance,
   hackyCast,
   tuple,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { Project } from "@/wab/server/entities/Entities";
 import {
@@ -44,15 +44,15 @@ import { ExportOpts } from "@/wab/shared/codegen/types";
 import { toClassName } from "@/wab/shared/codegen/util";
 import { tplToPlasmicElements } from "@/wab/shared/element-repr/gen-element-repr-v2";
 import { toJson } from "@/wab/shared/model/model-tree-util";
-import { getCodegenUrl } from "@/wab/urls";
+import { getCodegenUrl } from "@/wab/shared/urls";
 import S3 from "aws-sdk/clients/s3";
 import execa from "execa";
 import { Request, Response } from "express-serve-static-core";
 import fs from "fs";
 import { isString } from "lodash";
 import path from "path";
-import { ProjectId } from "src/wab/shared/ApiSchema";
-import { LocalizationKeyScheme } from "src/wab/shared/localization";
+import { ProjectId } from "@/wab/shared/ApiSchema";
+import { LocalizationKeyScheme } from "@/wab/shared/localization";
 import { getConnection } from "typeorm";
 
 /**

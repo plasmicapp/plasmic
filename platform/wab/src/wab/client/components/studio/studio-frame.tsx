@@ -1,6 +1,6 @@
 /** @format */
 
-import HostUrlInput from "@/HostUrlInput";
+import HostUrlInput from "@/wab/client/components/HostUrlInput";
 import {
   getLoginRouteWithContinuation,
   parseProjectLocation,
@@ -20,8 +20,8 @@ import { usePreventDefaultBrowserPinchToZoomBehavior } from "@/wab/client/hooks/
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
 import { getHostUrl } from "@/wab/client/utils/app-hosting-utils";
 import { useBrowserNotification } from "@/wab/client/utils/useBrowserNotification";
-import { maybeOne, spawn, swallow } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { maybeOne, spawn, swallow } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ForbiddenError } from "@/wab/shared/ApiErrors/errors";
 import {
   ApiBranch,

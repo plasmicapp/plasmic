@@ -1,5 +1,5 @@
 import { getBoundingClientRect, getOffsetPoint } from "@/wab/client/dom";
-import * as common from "@/wab/common";
+import * as common from "@/wab/shared/common";
 import {
   assert,
   ensure,
@@ -12,25 +12,25 @@ import {
   tuple,
   unexpected,
   withoutNils,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import { derefTokenRefs, isTokenRef } from "@/wab/commons/StyleToken";
-import * as Components from "@/wab/components";
+import * as Components from "@/wab/shared/core/components";
 import {
   cloneVariant,
   ComponentType,
   isCodeComponent,
   isFrameComponent,
   isPageComponent,
-} from "@/wab/components";
-import { getCssInitial, parseCssNumericNew, tryGetCssInitial } from "@/wab/css";
-import { DEVFLAGS } from "@/wab/devflags";
-import * as exprs from "@/wab/exprs";
-import { codeLit } from "@/wab/exprs";
-import { Box, isStandardSide, Pt, Rect, Side, sideToOrient } from "@/wab/geom";
-import { mkImageAssetRef } from "@/wab/image-assets";
-import { isSelectable, Selectable, SelQuery, SQ } from "@/wab/selection";
+} from "@/wab/shared/core/components";
+import { getCssInitial, parseCssNumericNew, tryGetCssInitial } from "@/wab/shared/css";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import * as exprs from "@/wab/shared/core/exprs";
+import { codeLit } from "@/wab/shared/core/exprs";
+import { Box, isStandardSide, Pt, Rect, Side, sideToOrient } from "@/wab/shared/geom";
+import { mkImageAssetRef } from "@/wab/shared/core/image-assets";
+import { isSelectable, Selectable, SelQuery, SQ } from "@/wab/shared/core/selection";
 import { AddItemKey, WrapItemKey } from "@/wab/shared/add-item-keys";
 import {
   FrameViewMode,
@@ -223,19 +223,19 @@ import {
   DEFAULT_THEME_TYPOGRAPHY,
   isTplAttachedToSite,
   writeable,
-} from "@/wab/sites";
-import { SlotSelection } from "@/wab/slots";
+} from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   findImplicitStatesOfNodesInTree,
   findImplicitUsages,
   getStateDisplayName,
   isPrivateState,
   isStateUsedInExpr,
-} from "@/wab/states";
-import { px } from "@/wab/styles";
-import * as Tpls from "@/wab/tpls";
-import { isTplComponent, isTplVariantable, RawTextLike } from "@/wab/tpls";
-import * as ValNodes from "@/wab/val-nodes";
+} from "@/wab/shared/core/states";
+import { px } from "@/wab/shared/core/styles";
+import * as Tpls from "@/wab/shared/core/tpls";
+import { isTplComponent, isTplVariantable, RawTextLike } from "@/wab/shared/core/tpls";
+import * as ValNodes from "@/wab/shared/core/val-nodes";
 import {
   isSelectableValNode,
   slotContentValNode,
@@ -243,12 +243,12 @@ import {
   ValNode,
   ValSlot,
   ValTag,
-} from "@/wab/val-nodes";
+} from "@/wab/shared/core/val-nodes";
 import {
   asTpl,
   asTplOrSlotSelection,
   equivTplOrSlotSelection,
-} from "@/wab/vals";
+} from "@/wab/shared/core/vals";
 
 export class ViewOps {
   _viewCtx: ViewCtx;

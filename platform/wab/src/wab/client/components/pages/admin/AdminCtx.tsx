@@ -1,7 +1,7 @@
 import { useNonAuthCtx } from "@/wab/client/app-ctx";
 import { UU } from "@/wab/client/cli-routes";
 import { AsyncState, useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
-import { ensure, unexpected } from "@/wab/common";
+import { ensure, unexpected } from "@/wab/shared/common";
 import { ApiFeatureTier, ApiUser, TeamId } from "@/wab/shared/ApiSchema";
 import React, { useCallback, useContext, useMemo } from "react";
 import { useHistory } from "react-router";

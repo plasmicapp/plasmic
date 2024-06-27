@@ -1,5 +1,5 @@
-import { restrictBetweenInclusive } from "@/wab/common";
-import { Box, Pt, Transformable } from "@/wab/geom";
+import { restrictBetweenInclusive } from "@/wab/shared/common";
+import { Box, Pt, Transformable } from "@/wab/shared/geom";
 import { AnyArena, getArenaFrames } from "@/wab/shared/Arenas";
 import { equalsComparer, getter, setter } from "@/wab/shared/mobx-util";
 import debounce from "lodash/debounce";

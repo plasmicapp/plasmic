@@ -32,8 +32,8 @@ import {
   spawn,
   tuple,
   uniqueName,
-} from "@/wab/common";
-import { extractParamsFromPagePath } from "@/wab/components";
+} from "@/wab/shared/common";
+import { extractParamsFromPagePath } from "@/wab/shared/core/components";
 import {
   ApiCmsDatabase,
   CmsDatabaseId,

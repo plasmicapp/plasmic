@@ -1,4 +1,4 @@
-import { ensureType } from "@/wab/common";
+import { ensureType } from "@/wab/shared/common";
 import { Workspace } from "@/wab/server/entities/Entities";
 import { doSafelyDeleteProject } from "@/wab/server/routes/projects";
 import {

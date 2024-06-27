@@ -11,7 +11,7 @@ import PlasmicSegmentModal from "@/wab/client/plasmic/plasmic_kit_optimize/Plasm
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 import { FocusScope } from "react-aria";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 // Your component props start with props for variants and slots you defined
 // in Plasmic, but you can add more here, like event handlers that you can

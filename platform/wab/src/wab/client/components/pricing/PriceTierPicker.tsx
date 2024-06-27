@@ -7,7 +7,7 @@ import {
   DefaultPriceTierPickerProps,
   PlasmicPriceTierPicker,
 } from "@/wab/client/plasmic/plasmic_kit_pricing/PlasmicPriceTierPicker";
-import { DEVFLAGS } from "@/wab/devflags";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ApiFeatureTier, BillingFrequency } from "@/wab/shared/ApiSchema";
 import {
   isEnterprise,

@@ -4,7 +4,7 @@ import {
   ensureArray,
   last,
   remove,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { TokenValue } from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
 import {
@@ -22,7 +22,7 @@ import {
   isAncestorCombo,
   makeGlobalVariantComboSorter,
 } from "@/wab/shared/variant-sort";
-import { cloneRuleSet } from "@/wab/styles";
+import { cloneRuleSet } from "@/wab/shared/core/styles";
 
 export class VariantedStylesHelper {
   constructor(

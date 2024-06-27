@@ -6,7 +6,7 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import { getTeamInviteLink } from "@/wab/client/components/widgets/plasmic/ShareDialogContent";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
-import { ensure, isValidEmail, spawn } from "@/wab/common";
+import { ensure, isValidEmail, spawn } from "@/wab/shared/common";
 import { ApiTeam, Grant } from "@/wab/shared/ApiSchema";
 import { Button, Form, Input, notification, Select, Tooltip } from "antd";
 import copy from "copy-to-clipboard";

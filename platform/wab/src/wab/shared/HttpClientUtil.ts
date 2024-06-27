@@ -1,4 +1,4 @@
-import { assert } from "@/wab/common";
+import { assert } from "@/wab/shared/common";
 
 export const httpMethods = ["GET", "POST", "PUT", "DELETE", "PATCH"] as const;
 

@@ -9,8 +9,8 @@ import {
   PAGE_ICON,
 } from "@/wab/client/icons";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { assert } from "@/wab/common";
-import { ComponentType } from "@/wab/components";
+import { assert } from "@/wab/shared/common";
+import { ComponentType } from "@/wab/shared/core/components";
 import L from "lodash";
 import * as React from "react";
 

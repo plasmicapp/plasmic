@@ -1,1 +1,0 @@
-import "@/wab/main";

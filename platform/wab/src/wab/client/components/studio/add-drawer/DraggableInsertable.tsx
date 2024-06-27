@@ -2,8 +2,8 @@ import { DragItem } from "@/wab/client/components/widgets";
 import { AddTplItem } from "@/wab/client/definitions/insertables";
 import { DragInsertManager } from "@/wab/client/Dnd";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure } from "@/wab/common";
-import { Box, Pt } from "@/wab/geom";
+import { ensure } from "@/wab/shared/common";
+import { Box, Pt } from "@/wab/shared/geom";
 import * as React from "react";
 
 export function DraggableInsertable(props: {

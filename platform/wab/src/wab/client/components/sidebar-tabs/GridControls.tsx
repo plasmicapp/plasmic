@@ -19,8 +19,8 @@ import {
   isTrackTemplate,
   parseGridCssPropsToSpec,
 } from "@/wab/shared/grid-utils";
-import { allImageAssets, allMixins } from "@/wab/sites";
-import { CssVarResolver } from "@/wab/styles";
+import { allImageAssets, allMixins } from "@/wab/shared/core/sites";
+import { CssVarResolver } from "@/wab/shared/core/styles";
 import { observer } from "mobx-react";
 import React from "react";
 

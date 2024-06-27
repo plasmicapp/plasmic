@@ -6,7 +6,7 @@ import {
   DefaultDataPickerGlobalSearchResultsItemProps,
   PlasmicDataPickerGlobalSearchResultsItem,
 } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerGlobalSearchResultsItem";
-import { flattenedKeys } from "@/wab/exprs";
+import { flattenedKeys } from "@/wab/shared/core/exprs";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { isArray } from "lodash";
 import * as React from "react";

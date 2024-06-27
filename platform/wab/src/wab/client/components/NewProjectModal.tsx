@@ -1,4 +1,4 @@
-import StartersSection from "@/StartersSection";
+import StartersSection from "@/wab/client/components/StartersSection";
 import StarterGroup from "@/wab/client/components/StarterGroup";
 import { BareModal } from "@/wab/client/components/studio/BareModal";
 import { Tab, Tabs } from "@/wab/client/components/widgets";

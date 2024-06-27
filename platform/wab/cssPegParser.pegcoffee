@@ -1,7 +1,7 @@
 {
   _ = require 'lodash'
   @_ = _
-  bgStylesMod = require '../bg-styles'
+  bgStylesMod = require '@/wab/shared/core/bg-styles'
   _.extend(@, bgStylesMod)
 }
 

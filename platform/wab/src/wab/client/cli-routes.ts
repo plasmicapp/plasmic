@@ -1,9 +1,9 @@
 /** @format */
 
-import { ensure, uncheckedCast } from "@/wab/common";
+import { ensure, uncheckedCast } from "@/wab/shared/common";
 import { latestTag } from "@/wab/commons/semver";
 import { encodeUriParams } from "@/wab/commons/urls";
-import { DEVFLAGS } from "@/wab/devflags";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ArenaType,
   CmsDatabaseId,
@@ -13,7 +13,7 @@ import {
   MainBranchId,
 } from "@/wab/shared/ApiSchema";
 import { isArenaType } from "@/wab/shared/Arenas";
-import { getPublicUrl } from "@/wab/urls";
+import { getPublicUrl } from "@/wab/shared/urls";
 import {
   createPath,
   History,

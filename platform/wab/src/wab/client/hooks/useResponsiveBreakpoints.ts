@@ -4,7 +4,7 @@ import {
   getOrderedScreenVariantSpecs,
   isScreenVariantGroup,
 } from "@/wab/shared/Variants";
-import { allGlobalVariantGroups, getResponsiveStrategy } from "@/wab/sites";
+import { allGlobalVariantGroups, getResponsiveStrategy } from "@/wab/shared/core/sites";
 
 export function useResponsiveBreakpoints() {
   const studioCtx = useStudioCtx();

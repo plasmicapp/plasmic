@@ -1,4 +1,4 @@
-import { xGroupBy } from "@/wab/common";
+import { xGroupBy } from "@/wab/shared/common";
 import type { DataSource } from "@/wab/server/entities/Entities";
 import {
   DataSourceMeta,
@@ -11,7 +11,7 @@ import {
   SortArgMeta,
   TableArgMeta,
 } from "@/wab/shared/data-sources-meta/data-sources";
-import { capitalizeFirst } from "@/wab/strs";
+import { capitalizeFirst } from "@/wab/shared/strs";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import moment from "moment";
 import SqlString from "sqlstring";

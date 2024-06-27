@@ -4,9 +4,9 @@
  * by default from now on, so this fixes existing Plume buttons to
  * retain their existing behavior.
  */
-import { isCodeComponent } from "@/wab/components";
-import { codeLit } from "@/wab/exprs";
-import { mkParam } from "@/wab/lang";
+import { isCodeComponent } from "@/wab/shared/core/components";
+import { codeLit } from "@/wab/shared/core/exprs";
+import { mkParam } from "@/wab/shared/core/lang";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
@@ -16,7 +16,7 @@ import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
 import { Bundler } from "@/wab/shared/bundler";
 import { Arg } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
-import { flattenTpls, isTplComponent } from "@/wab/tpls";
+import { flattenTpls, isTplComponent } from "@/wab/shared/core/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();

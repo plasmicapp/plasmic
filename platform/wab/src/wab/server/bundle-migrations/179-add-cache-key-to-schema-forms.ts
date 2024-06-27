@@ -8,7 +8,7 @@ import {
   isKnownDataSourceOpExpr,
   TemplatedString,
 } from "@/wab/shared/model/classes";
-import { flattenTpls, isTplCodeComponent } from "@/wab/tpls";
+import { flattenTpls, isTplCodeComponent } from "@/wab/shared/core/tpls";
 import { formComponentName } from "@plasmicpkgs/antd5";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {

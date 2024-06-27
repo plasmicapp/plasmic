@@ -2,7 +2,7 @@
 // This file is owned by you, feel free to edit as you see fit.
 import { AddItem } from "@/wab/client/definitions/insertables";
 import { PlasmicAddDrawerSection } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicAddDrawerSection";
-import { HostLessPackageInfo } from "@/wab/devflags";
+import { HostLessPackageInfo } from "@/wab/shared/devflags";
 import * as React from "react";
 import { useListBoxSection } from "react-aria";
 

@@ -1,4 +1,4 @@
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import {
   BundleMigrationType,
   unbundleSite,
@@ -7,9 +7,9 @@ import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { ProjectRevision } from "@/wab/server/entities/Entities";
 import { Bundler } from "@/wab/shared/bundler";
 import { isKnownTplTag, TplTag } from "@/wab/shared/model/classes";
-import { createDefaultTheme } from "@/wab/sites";
-import { cloneMixin, cloneThemeStyle } from "@/wab/styles";
-import { flattenTpls } from "@/wab/tpls";
+import { createDefaultTheme } from "@/wab/shared/core/sites";
+import { cloneMixin, cloneThemeStyle } from "@/wab/shared/core/styles";
+import { flattenTpls } from "@/wab/shared/core/tpls";
 
 const ids = new Set([
   // Projects in "Starter projects" workspace and their pkgs.

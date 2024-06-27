@@ -16,7 +16,7 @@ import {
   StudioTutorialStep,
   TutorialStepFunctionality,
 } from "@/wab/client/tours/tutorials/tutorials-types";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 
 const CONFIGURE_TABLE_STEP_FUNC: TutorialStepFunctionality<OnNextCtx> = {
   target: STUDIO_ELEMENTS_TARGETS.componentPropsData,

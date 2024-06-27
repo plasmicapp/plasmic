@@ -47,20 +47,20 @@ import {
 } from "@/wab/client/state-management/preview-steps";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { assert, ensure, hackyCast, maybe, spawn } from "@/wab/common";
+import { assert, ensure, hackyCast, maybe, spawn } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
   getRealParams,
   isCodeComponent,
   isHostLessCodeComponent,
   isPlumeComponent,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import {
   createExprForDataPickerValue,
   ExprCtx,
   extractValueSavedFromDataPicker,
-} from "@/wab/exprs";
-import { ComponentPropOrigin } from "@/wab/lang";
+} from "@/wab/shared/core/exprs";
+import { ComponentPropOrigin } from "@/wab/shared/core/lang";
 import {
   HighlightInteractionRequest,
   isAdvancedProp,
@@ -95,7 +95,7 @@ import {
   addComponentState,
   getStateVarName,
   StateVariableType,
-} from "@/wab/states";
+} from "@/wab/shared/core/states";
 import {
   EventHandlerKeyType,
   getDisplayNameOfEventHandlerKey,
@@ -106,15 +106,15 @@ import {
   isTplNamable,
   summarizeUnnamedTpl,
   tplHasRef,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import { Dropdown, Input, Menu, notification, Tooltip } from "antd";
 import L, { defer, isArray, sortBy } from "lodash";
 import { autorun } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
-import { flattenComponent } from "src/wab/shared/cached-selectors";
-import { paramToVarName } from "src/wab/shared/codegen/util";
-import { DefinedIndicatorType } from "src/wab/shared/defined-indicator";
+import { flattenComponent } from "@/wab/shared/cached-selectors";
+import { paramToVarName } from "@/wab/shared/codegen/util";
+import { DefinedIndicatorType } from "@/wab/shared/defined-indicator";
 
 export const ComponentPropsSection = observer(
   function ComponentPropsSection(props: {

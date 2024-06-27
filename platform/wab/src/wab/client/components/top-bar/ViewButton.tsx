@@ -16,7 +16,7 @@ import {
 import Refresh2SvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Refresh2Svg";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { DEVFLAGS } from "@/wab/devflags";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { isDedicatedArena } from "@/wab/shared/Arenas";
 import { Menu, Tooltip } from "antd";
 import { observer } from "mobx-react";

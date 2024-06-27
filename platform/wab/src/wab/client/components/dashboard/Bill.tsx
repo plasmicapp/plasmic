@@ -2,11 +2,11 @@ import {
   DefaultBillProps,
   PlasmicBill,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicBill";
-import { assert } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { assert } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
-import { ApiFeatureTier, BillingFrequency } from "src/wab/shared/ApiSchema";
+import { ApiFeatureTier, BillingFrequency } from "@/wab/shared/ApiSchema";
 
 interface BillProps extends DefaultBillProps {
   tier: ApiFeatureTier;

@@ -33,7 +33,7 @@ import {
 import { PlasmicPublishFlowDialog__VariantMembers } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicPublishFlowDialog";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import { trackEvent } from "@/wab/client/tracking";
-import { spawn, waitUntil } from "@/wab/common";
+import { spawn, waitUntil } from "@/wab/shared/common";
 import {
   ApiBranch,
   ApiProject,

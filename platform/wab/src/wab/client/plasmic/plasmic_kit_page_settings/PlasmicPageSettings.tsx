@@ -35,7 +35,7 @@ import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22N
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
 import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
 import Select__OptionGroup from "../../components/widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
-import Switch from "../../../../Switch"; // plasmic-import: ntKkcfMNg2s/component
+import Switch from "../../components/Switch"; // plasmic-import: ntKkcfMNg2s/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 

@@ -118,7 +118,7 @@ import {
   withoutNils,
   xDifference,
   xGroupBy,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { drainQueue } from "@/wab/commons/asyncutil";
 import { arrayReversed, removeFromArray } from "@/wab/commons/collections";
 import {
@@ -138,23 +138,23 @@ import {
   isCodeComponent,
   isPageComponent,
   isPlainComponent,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import {
   DEVFLAGS,
   InsertableTemplatesGroup,
   InsertableTemplatesItem,
-} from "@/wab/devflags";
-import { tryExtractJson } from "@/wab/exprs";
-import { Box, Pt } from "@/wab/geom";
+} from "@/wab/shared/devflags";
+import { tryExtractJson } from "@/wab/shared/core/exprs";
+import { Box, Pt } from "@/wab/shared/geom";
 import {
   ModelChange,
   RecordedChanges,
   emptyRecordedChanges,
   filterPersistentChanges,
   mergeRecordedChanges,
-} from "@/wab/observable-model";
-import { walkDependencyTree } from "@/wab/project-deps";
-import { isSelectable, makeSelectableFullKey } from "@/wab/selection";
+} from "@/wab/shared/core/observable-model";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
+import { isSelectable, makeSelectableFullKey } from "@/wab/shared/core/selection";
 import { UnauthorizedError } from "@/wab/shared/ApiErrors/errors";
 import {
   ApiBranch,
@@ -303,14 +303,14 @@ import {
   isHostLessPackage,
   isTplAttachedToSite,
   siteIsEmpty,
-} from "@/wab/sites";
-import { SlotSelection } from "@/wab/slots";
-import { SplitStatus } from "@/wab/splits";
+} from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import { SplitStatus } from "@/wab/shared/core/splits";
 import {
   taggedUnbundle,
   unbundleProjectDependency,
   unbundleSite,
-} from "@/wab/tagged-unbundle";
+} from "@/wab/shared/core/tagged-unbundle";
 import {
   EventHandlerKeyType,
   ancestorsUp,
@@ -322,9 +322,9 @@ import {
   tplChildren,
   trackComponentRoot,
   trackComponentSite,
-} from "@/wab/tpls";
-import { undoChanges } from "@/wab/undo-util";
-import { ValComponent, ValNode } from "@/wab/val-nodes";
+} from "@/wab/shared/core/tpls";
+import { undoChanges } from "@/wab/shared/core/undo-util";
+import { ValComponent, ValNode } from "@/wab/shared/core/val-nodes";
 import {
   DataOp,
   executePlasmicDataOp,

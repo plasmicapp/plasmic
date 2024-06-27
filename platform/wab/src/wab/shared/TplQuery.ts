@@ -1,4 +1,4 @@
-import * as common from "@/wab/common";
+import * as common from "@/wab/shared/common";
 import {
   assert,
   check,
@@ -17,12 +17,12 @@ import {
   replaceMultiple,
   switchType,
   tryRemove,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import {
   allComponentStyleVariants,
   isCodeComponent,
   removeComponentParam,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import {
   Arg,
   Component,
@@ -55,11 +55,11 @@ import {
   NestedTplSlotsError,
 } from "@/wab/shared/UserError";
 import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
-import { SlotSelection } from "@/wab/slots";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   ensureCorrectImplicitStates,
   removeImplicitStatesAfterRemovingTplNode,
-} from "@/wab/states";
+} from "@/wab/shared/core/states";
 import {
   ancestorsUp,
   ancestorsUpWithSlotSelections,
@@ -83,7 +83,7 @@ import {
   trackComponentRoot,
   tryGetOwnerSite,
   tryGetTplOwnerComponent,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import { notification } from "antd";
 import L from "lodash";
 

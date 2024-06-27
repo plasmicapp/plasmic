@@ -12,12 +12,12 @@ import {
   PlasmicLeftPagesPanel,
 } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftPagesPanel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { moveIndex } from "@/wab/common";
+import { moveIndex } from "@/wab/shared/common";
 import {
   isCodeComponent,
   isPageComponent,
   PageComponent,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import { isMixedArena } from "@/wab/shared/Arenas";
 import { componentsReferecerToPageHref } from "@/wab/shared/cached-selectors";
 import { FRAME_CAP } from "@/wab/shared/Labels";

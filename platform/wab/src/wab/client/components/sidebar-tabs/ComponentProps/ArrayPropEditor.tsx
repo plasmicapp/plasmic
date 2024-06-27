@@ -15,8 +15,8 @@ import {
   arrayMoveIndex,
   arrayRemoveAt,
   arrayReplaceAt,
-} from "@/wab/collections";
-import { ensure, uncheckedCast } from "@/wab/common";
+} from "@/wab/shared/collections";
+import { ensure, uncheckedCast } from "@/wab/shared/common";
 import {
   StudioPropType,
   getPropTypeDefaultValue,

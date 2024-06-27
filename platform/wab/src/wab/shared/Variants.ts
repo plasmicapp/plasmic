@@ -6,14 +6,14 @@ import {
   moveIndex,
   tuple,
   xAddAll,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import {
   allSuperComponentVariants,
   getNamespacedComponentName,
   isCodeComponent,
-} from "@/wab/components";
-import { code } from "@/wab/exprs";
-import { ScreenSizeSpec, parseScreenSpec } from "@/wab/shared/Css";
+} from "@/wab/shared/core/components";
+import { code } from "@/wab/shared/core/exprs";
+import { ScreenSizeSpec, parseScreenSpec } from "@/wab/shared/css-size";
 import {
   FramePinManager,
   withoutIrrelevantScreenVariants,
@@ -51,20 +51,20 @@ import {
   allGlobalVariantGroups,
   getResponsiveStrategy,
   writeable,
-} from "@/wab/sites";
+} from "@/wab/shared/core/sites";
 import {
   getLessSelector,
   getPseudoSelector,
   mkRuleSet,
   pseudoSelectors,
-} from "@/wab/styles";
+} from "@/wab/shared/core/styles";
 import {
   TplCodeComponent,
   isComponentRoot,
   isTplComponent,
   isTplTag,
   summarizeTplTag,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import { arrayContains } from "class-validator";
 import L, { orderBy, uniqBy } from "lodash";
 

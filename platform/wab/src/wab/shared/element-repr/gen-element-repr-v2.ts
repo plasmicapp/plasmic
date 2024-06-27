@@ -17,8 +17,8 @@ import { isKnownRawText, isKnownRenderExpr } from "@/wab/shared/model/classes";
  * - Data bindings/dynamic values
  */
 
-import { ensureType, switchType, tuple, withoutNils } from "@/wab/common";
-import { tryExtractJson } from "@/wab/exprs";
+import { ensureType, switchType, tuple, withoutNils } from "@/wab/shared/common";
+import { tryExtractJson } from "@/wab/shared/core/exprs";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
 import {
@@ -32,7 +32,7 @@ import {
   StyleMarker,
   TplNode,
 } from "@/wab/shared/model/classes";
-import { isTplComponent, isTplContainer, isTplTextBlock } from "@/wab/tpls";
+import { isTplComponent, isTplContainer, isTplTextBlock } from "@/wab/shared/core/tpls";
 
 const rulesetToStyles = (rs: RuleSet) => {
   const rsh = new RuleSetHelpers(rs, "div");

@@ -47,14 +47,14 @@ import ScreenIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIc
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { testIds } from "@/wab/client/test-helpers/test-ids";
-import { ensure, ensureInstance, partitions, spawn } from "@/wab/common";
+import { ensure, ensureInstance, partitions, spawn } from "@/wab/shared/common";
 import {
   allComponentStyleVariants,
   getSuperComponents,
   isPageComponent,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import { findNonEmptyCombos } from "@/wab/shared/cached-selectors";
-import { ScreenSizeSpec } from "@/wab/shared/Css";
+import { ScreenSizeSpec } from "@/wab/shared/css-size";
 import {
   Component,
   ComponentVariantGroup,
@@ -83,7 +83,7 @@ import {
 import {
   isGlobalVariantGroupUsedInSplits,
   isVariantUsedInSplits,
-} from "@/wab/splits";
+} from "@/wab/shared/core/splits";
 import { Menu } from "antd";
 import sortBy from "lodash/sortBy";
 import { observer } from "mobx-react";

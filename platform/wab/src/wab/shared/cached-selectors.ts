@@ -9,7 +9,7 @@ import {
   withoutNils,
   xAddAll,
   xSetDefault,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import {
   extractAllReferencedTokenIds,
   ResolvedToken,
@@ -27,16 +27,16 @@ import {
   isPlumeComponent,
   PageComponent,
   tryGetVariantGroupValueFromArg,
-} from "@/wab/components";
-import { getProjectFlags } from "@/wab/devflags";
-import { isRealCodeExpr } from "@/wab/exprs";
-import { ImageAssetType } from "@/wab/image-asset-type";
+} from "@/wab/shared/core/components";
+import { getProjectFlags } from "@/wab/shared/devflags";
+import { isRealCodeExpr } from "@/wab/shared/core/exprs";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import {
   extractAllAssetRefs,
   getTagAttrForImageAsset,
-} from "@/wab/image-assets";
-import { ParamExportType } from "@/wab/lang";
-import { walkDependencyTree } from "@/wab/project-deps";
+} from "@/wab/shared/core/image-assets";
+import { ParamExportType } from "@/wab/shared/core/lang";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import {
   getBuiltinComponentRegistrations,
   isBuiltinCodeComponent,
@@ -109,9 +109,9 @@ import {
   allImageAssets,
   allStyleTokens,
   isHostLessPackage,
-} from "@/wab/sites";
-import { isOnChangeParam } from "@/wab/states";
-import { expandRuleSets } from "@/wab/styles";
+} from "@/wab/shared/core/sites";
+import { isOnChangeParam } from "@/wab/shared/core/states";
+import { expandRuleSets } from "@/wab/shared/core/styles";
 import {
   findExprsInComponent,
   findExprsInNode,
@@ -120,7 +120,7 @@ import {
   isTplIcon,
   isTplPicture,
   isTplVariantable,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import { keyBy } from "lodash";
 
 export const flattenComponent = maybeComputedFn(function flattenComponent(

@@ -7,13 +7,13 @@ import {
   replaceAll,
   setsEq,
   sortAs,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import {
   getSuperComponentVariantGroupToComponent,
   isPageComponent,
   isPlainComponent,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import {
   ensurePositionManagedFrame,
   FrameViewMode,
@@ -30,7 +30,7 @@ import {
   findNonEmptyCombos,
   usedGlobalVariantGroups,
 } from "@/wab/shared/cached-selectors";
-import { parseScreenSpec } from "@/wab/shared/Css";
+import { parseScreenSpec } from "@/wab/shared/css-size";
 import {
   ArenaFrame,
   ArenaFrameCell,
@@ -67,7 +67,7 @@ import {
   isScreenVariant,
   isScreenVariantGroup,
 } from "@/wab/shared/Variants";
-import { getComponentArena } from "@/wab/sites";
+import { getComponentArena } from "@/wab/shared/core/sites";
 import orderBy from "lodash/orderBy";
 import pick from "lodash/pick";
 import uniqBy from "lodash/uniqBy";

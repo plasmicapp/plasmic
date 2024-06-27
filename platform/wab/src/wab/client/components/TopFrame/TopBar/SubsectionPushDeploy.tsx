@@ -15,7 +15,7 @@ import {
   DefaultSubsectionPushDeployProps,
   PlasmicSubsectionPushDeploy,
 } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicSubsectionPushDeploy";
-import { ensure, spawn } from "@/wab/common";
+import { ensure, spawn } from "@/wab/shared/common";
 import {
   ApiProject,
   ApiProjectRepository,

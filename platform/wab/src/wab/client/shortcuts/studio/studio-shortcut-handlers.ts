@@ -1,12 +1,12 @@
 import { LeftTabKey } from "@/wab/shared/ui-config-utils";
 import L from "lodash";
-import { makeVariantsController } from "src/wab/client/components/variants/VariantsController";
-import { bindShortcutHandlers } from "src/wab/client/shortcuts/shortcut-handler";
-import { STUDIO_SHORTCUTS } from "src/wab/client/shortcuts/studio/studio-shortcuts";
-import { RightTabKey, StudioCtx } from "src/wab/client/studio-ctx/StudioCtx";
-import { assert, mod } from "src/wab/common";
-import { getArenaFrames } from "src/wab/shared/Arenas";
-import { getSiteArenas } from "src/wab/sites";
+import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
+import { bindShortcutHandlers } from "@/wab/client/shortcuts/shortcut-handler";
+import { STUDIO_SHORTCUTS } from "@/wab/client/shortcuts/studio/studio-shortcuts";
+import { RightTabKey, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { assert, mod } from "@/wab/shared/common";
+import { getArenaFrames } from "@/wab/shared/Arenas";
+import { getSiteArenas } from "@/wab/shared/core/sites";
 
 /**
  * Shortcuts should only get handled if this function returns true.

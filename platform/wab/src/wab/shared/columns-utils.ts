@@ -1,5 +1,5 @@
-import { ensure } from "@/wab/common";
-import { parseScreenSpec } from "@/wab/shared/Css";
+import { ensure } from "@/wab/shared/common";
+import { parseScreenSpec } from "@/wab/shared/css-size";
 import { RSH, readonlyRSH } from "@/wab/shared/RuleSetHelpers";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import {
@@ -8,8 +8,8 @@ import {
   TplTag,
   Variant,
 } from "@/wab/shared/model/classes";
-import { expandRuleSets } from "@/wab/styles";
-import { TplColumnsTag } from "@/wab/tpls";
+import { expandRuleSets } from "@/wab/shared/core/styles";
+import { TplColumnsTag } from "@/wab/shared/core/tpls";
 import { clamp, isEqual, isUndefined, range, sum } from "lodash";
 
 export const hasMaxWidthVariant = (variant: Variant): boolean => {

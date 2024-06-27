@@ -4,8 +4,8 @@ import PageIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/Plasm
 import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { BetterAutoComplete } from "@/wab/commons/components/inputs/BetterAutoComplete";
-import { isPageComponent } from "@/wab/components";
-import { codeLit, isPageHref } from "@/wab/exprs";
+import { isPageComponent } from "@/wab/shared/core/components";
+import { codeLit, isPageHref } from "@/wab/shared/core/exprs";
 import {
   Component,
   isKnownComponent,

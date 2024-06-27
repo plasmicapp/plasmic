@@ -1,8 +1,8 @@
 import { DbCtx } from "@/wab/client/db";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { notNil, tuple } from "@/wab/common";
-import { isPageComponent } from "@/wab/components";
-import { RecordedChanges, mergeRecordedChanges } from "@/wab/observable-model";
+import { notNil, tuple } from "@/wab/shared/common";
+import { isPageComponent } from "@/wab/shared/core/components";
+import { RecordedChanges, mergeRecordedChanges } from "@/wab/shared/core/observable-model";
 import { FrameViewMode } from "@/wab/shared/Arenas";
 import {
   adjustAllGridChildren,
@@ -37,8 +37,8 @@ import {
 } from "@/wab/shared/model/model-change-util";
 import { fixupForPlume } from "@/wab/shared/plume/plume-utils";
 import { isStretchyComponent } from "@/wab/shared/sizingutils";
-import { getAllSiteFrames } from "@/wab/sites";
-import { ensureCorrectImplicitStates } from "@/wab/states";
+import { getAllSiteFrames } from "@/wab/shared/core/sites";
+import { ensureCorrectImplicitStates } from "@/wab/shared/core/states";
 import {
   buildParamToComponent as buildParamToComponentMap,
   flattenTpls,
@@ -50,7 +50,7 @@ import {
   isTplTagOrComponent,
   isTplVariantable,
   tryGetOwnerSite,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 
 /**
  * Applies various fixes to the tpl trees based on the argument changes.

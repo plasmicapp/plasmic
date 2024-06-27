@@ -1,4 +1,4 @@
-import { assert, isNonNil } from "@/wab/common";
+import { assert, isNonNil } from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import { componentToDeepReferenced } from "@/wab/shared/cached-selectors";
 import {
@@ -25,8 +25,8 @@ import {
   ensureCorrectImplicitStates,
   isPublicState,
   removeComponentState,
-} from "@/wab/states";
-import { isTplComponent } from "@/wab/tpls";
+} from "@/wab/shared/core/states";
+import { isTplComponent } from "@/wab/shared/core/tpls";
 
 export function makeComponentSwapper(
   site: Site,

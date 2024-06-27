@@ -11,8 +11,8 @@
 //      pressed: boolean
 //    }
 
-import { ensure } from "@/wab/common";
-import { tryExtractLit } from "@/wab/exprs";
+import { ensure } from "@/wab/shared/common";
+import { tryExtractLit } from "@/wab/shared/core/exprs";
 import {
   isPrivateStyleVariant,
   tryGetBaseVariantSetting,
@@ -24,8 +24,8 @@ import {
   PseudoSelectorOption,
   TriggerCondition,
   getTriggerableSelectors,
-} from "@/wab/styles";
-import { flattenTpls, isTplTag } from "@/wab/tpls";
+} from "@/wab/shared/core/styles";
+import { flattenTpls, isTplTag } from "@/wab/shared/core/tpls";
 import L from "lodash";
 
 // The usage of the hook, however, should check if all ancestors are active.

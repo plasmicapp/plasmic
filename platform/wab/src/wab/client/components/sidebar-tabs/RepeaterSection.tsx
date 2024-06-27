@@ -3,7 +3,7 @@ import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleCom
 import { RepeaterPropsTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { assert } from "@/wab/common";
+import { assert } from "@/wab/shared/common";
 import { isKnownTplComponent, TplNode } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import React from "react";

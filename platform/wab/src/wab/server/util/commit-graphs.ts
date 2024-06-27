@@ -1,4 +1,4 @@
-import { tuple } from "@/wab/common";
+import { tuple } from "@/wab/shared/common";
 import { CommitParentGraph, PkgVersionId } from "@/wab/shared/ApiSchema";
 import { countBy, uniq } from "lodash";
 

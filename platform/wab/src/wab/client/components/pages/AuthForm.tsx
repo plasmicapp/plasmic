@@ -8,7 +8,7 @@ import "@/wab/client/components/pages/AuthForm.sass";
 import { IntakeFlowForm } from "@/wab/client/components/pages/IntakeFlowForm";
 import { LinkButton } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
-import { mkUuid, spawnWrapper } from "@/wab/common";
+import { mkUuid, spawnWrapper } from "@/wab/shared/common";
 import { ApiUser, UserId } from "@/wab/shared/ApiSchema";
 import { Button, Divider, Input, notification } from "antd";
 import $ from "jquery";

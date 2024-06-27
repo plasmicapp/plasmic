@@ -7,14 +7,14 @@ import { ColorPicker } from "@/wab/client/components/widgets/ColorPicker";
 import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
 import Select from "@/wab/client/components/widgets/Select";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { cx, ensure } from "@/wab/common";
-import { parseCssNumericNew } from "@/wab/css";
+import { cx, ensure } from "@/wab/shared/common";
+import { parseCssNumericNew } from "@/wab/shared/css";
 import {
   defaultFilterEffects,
   FilterEffect,
   filterEffectEditorConfig,
   getFilterEffectLabel,
-} from "@/wab/filter-effect-utils";
+} from "@/wab/shared/core/filter-effect-utils";
 import { Slider } from "antd";
 import { observer } from "mobx-react";
 import React, { useEffect } from "react";

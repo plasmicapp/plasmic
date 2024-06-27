@@ -1,4 +1,4 @@
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { PostgresFetcher } from "@/wab/server/data-sources/postgres-fetcher";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import {

@@ -1,5 +1,5 @@
-import { assert } from "@/wab/common";
-import { InsertableTemplatesGroup } from "@/wab/devflags";
+import { assert } from "@/wab/shared/common";
+import { InsertableTemplatesGroup } from "@/wab/shared/devflags";
 import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { unbundleWithDeps } from "@/wab/server/db/DbBundleLoader";
 import { DbMgr } from "@/wab/server/db/DbMgr";

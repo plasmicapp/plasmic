@@ -1,4 +1,4 @@
-import { coalesce, simpleHash, simpleWords, tuple } from "@/wab/common";
+import { coalesce, simpleHash, simpleWords, tuple } from "@/wab/shared/common";
 import {
   Class,
   Field,
@@ -270,7 +270,7 @@ export const ${cls.name} = ${isAbstract ? "Base" : "Cls"}${cls.name};
   });
   const classCode = `\
 import {meta} from "@/wab/shared/model/classes-metas";
-import {assert, mkUnexpectedTypeMsg} from "@/wab/common";
+import {assert, mkUnexpectedTypeMsg} from "@/wab/shared/common";
 class Sentinel { tag: 'SENTINEL' = 'SENTINEL' };
 const sentinel = new Sentinel();
 import type { ReactElement } from "react";

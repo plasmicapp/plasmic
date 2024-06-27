@@ -1,4 +1,4 @@
-import { ensureInstance, switchType } from "@/wab/common";
+import { ensureInstance, switchType } from "@/wab/shared/common";
 import { SlotInfo } from "@/wab/shared/eval/val-state";
 import {
   ensureKnownRenderExpr,
@@ -10,14 +10,14 @@ import {
 } from "@/wab/shared/model/classes";
 import { isSlot } from "@/wab/shared/SlotUtils";
 import { mkBaseVariant } from "@/wab/shared/Variants";
-import { mkTplInlinedText } from "@/wab/tpls";
+import { mkTplInlinedText } from "@/wab/shared/core/tpls";
 import {
   ValComponent,
   ValNode,
   ValSlot,
   ValTag,
   writeableValNode,
-} from "@/wab/val-nodes";
+} from "@/wab/shared/core/val-nodes";
 
 export const TEST_GLOBAL_VARIANT = mkBaseVariant();
 

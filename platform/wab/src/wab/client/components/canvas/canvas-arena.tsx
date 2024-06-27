@@ -4,7 +4,7 @@ import { FocusModeLayout } from "@/wab/client/components/studio/arenas/FocusMode
 import { FreeFramesLayout } from "@/wab/client/components/studio/arenas/FreeFramesLayout";
 import { PageArenaLayout } from "@/wab/client/components/studio/arenas/PageArenaLayout";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { cx, unexpected } from "@/wab/common";
+import { cx, unexpected } from "@/wab/shared/common";
 import {
   AnyArena,
   isComponentArena,

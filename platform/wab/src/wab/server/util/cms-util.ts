@@ -1,5 +1,5 @@
-import { Dict } from "@/wab/collections";
-import { assert, withoutNils } from "@/wab/common";
+import { Dict } from "@/wab/shared/collections";
+import { assert, withoutNils } from "@/wab/shared/common";
 import { CmsTable } from "@/wab/server/entities/Entities";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {

@@ -1,5 +1,5 @@
 import { Component, TplComponent } from "@/wab/shared/model/classes";
-import { ValComponent } from "@/wab/val-nodes";
+import { ValComponent } from "@/wab/shared/core/val-nodes";
 
 export class ComponentCtx {
   private _component: Component;

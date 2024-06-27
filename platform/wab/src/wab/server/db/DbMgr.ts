@@ -1,6 +1,6 @@
 /** @format */
 
-import { Dict, mkIdMap, safeHas } from "@/wab/collections";
+import { Dict, mkIdMap, safeHas } from "@/wab/shared/collections";
 import {
   assert,
   assertNever,
@@ -26,12 +26,12 @@ import {
   unreachable,
   withoutNils,
   xor,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { sequentially } from "@/wab/commons/asyncutil";
 import { removeFromArray } from "@/wab/commons/collections";
 import * as semver from "@/wab/commons/semver";
 import { toOpaque } from "@/wab/commons/types";
-import { DEVFLAGS } from "@/wab/devflags";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { adminEmails } from "@/wab/server/admin";
 import { createSiteForHostlessProject } from "@/wab/server/code-components/code-components";
 import {
@@ -243,8 +243,8 @@ import {
   cloneSite,
   fixAppAuthRefs,
   getAllOpExprSourceIdsUsedInSite,
-} from "@/wab/sites";
-import { SplitStatus } from "@/wab/splits";
+} from "@/wab/shared/core/sites";
+import { SplitStatus } from "@/wab/shared/core/splits";
 import { captureMessage } from "@sentry/node";
 import bcrypt from "bcrypt";
 import crypto from "crypto";

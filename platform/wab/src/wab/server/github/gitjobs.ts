@@ -1,4 +1,4 @@
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { Config } from "@/wab/server/config";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { ProjectRepository, User } from "@/wab/server/entities/Entities";

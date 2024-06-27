@@ -4,7 +4,7 @@ import {
   TemplatedTextEditorProps,
 } from "@/wab/client/components/sidebar-tabs/ComponentProps/TemplatedTextEditor";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
-import { ExprCtx } from "@/wab/exprs";
+import { ExprCtx } from "@/wab/shared/core/exprs";
 import {
   CustomCode,
   ensureKnownTemplatedString,

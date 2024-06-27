@@ -3,7 +3,7 @@
 import InsertPanel from "@/wab/client/components/insert-panel/InsertPanel";
 import { useDismissibleStudioOverlay } from "@/wab/client/hooks/useDismissibleStudioOverlay";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawnWrapper } from "@/wab/common";
+import { spawnWrapper } from "@/wab/shared/common";
 import { LeftTabKey } from "@/wab/shared/ui-config-utils";
 import { observer } from "mobx-react";
 import * as React from "react";

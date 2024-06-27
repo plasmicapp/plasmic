@@ -50,7 +50,7 @@ import {
   unexpected,
   withDefaultFunc,
   withoutNils,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { mkTokenRef } from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
 import {
@@ -60,9 +60,9 @@ import {
   getRepetitionIndexName,
   isCodeComponent,
   isHostLessCodeComponent,
-} from "@/wab/components";
-import { uniqifyClassName } from "@/wab/css";
-import { DEVFLAGS, DevFlagsType } from "@/wab/devflags";
+} from "@/wab/shared/core/components";
+import { uniqifyClassName } from "@/wab/shared/css";
+import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
 import {
   asCode,
   code,
@@ -75,9 +75,9 @@ import {
   isInteractionLoc,
   isRealCodeExpr,
   removeFallbackFromDataSourceOp,
-} from "@/wab/exprs";
-import { mkParam } from "@/wab/lang";
-import { makeSelectableKey } from "@/wab/selection";
+} from "@/wab/shared/core/exprs";
+import { mkParam } from "@/wab/shared/core/lang";
+import { makeSelectableKey } from "@/wab/shared/core/selection";
 import {
   componenToNonVariantParamNames,
   componentToElementNames,
@@ -237,7 +237,7 @@ import {
   isWritableState,
   shouldHaveImplicitState,
   StateVariableType,
-} from "@/wab/states";
+} from "@/wab/shared/core/states";
 import {
   classNameForRuleSet,
   defaultStyleClassNames,
@@ -248,7 +248,7 @@ import {
   makeStyleExprClassName,
   makeStyleScopeClassName,
   studioDefaultStylesClassNameBase,
-} from "@/wab/styles";
+} from "@/wab/shared/core/styles";
 import {
   ancestorsUp,
   getOwnerSite,
@@ -267,8 +267,8 @@ import {
   summarizeTpl,
   tplHasRef,
   TplTextTag,
-} from "@/wab/tpls";
-import { placeholderImgUrl } from "@/wab/urls";
+} from "@/wab/shared/core/tpls";
+import { placeholderImgUrl } from "@/wab/shared/urls";
 import type { usePlasmicInvalidate } from "@plasmicapp/data-sources";
 import { DataDict, mkMetaName } from "@plasmicapp/host";
 import { $StateSpec } from "@plasmicapp/react-web";

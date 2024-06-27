@@ -1,4 +1,4 @@
-import { assert } from "@/wab/common";
+import { assert } from "@/wab/shared/common";
 import { Config } from "@/wab/server/config";
 import { Project, User } from "@/wab/server/entities/Entities";
 import { Octokit } from "@octokit/core";

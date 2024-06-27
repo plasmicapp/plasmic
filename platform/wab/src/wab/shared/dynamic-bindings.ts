@@ -1,6 +1,6 @@
 // Borrowed from Appsmith
 
-import { isPrimitive } from "@/wab/common";
+import { isPrimitive } from "@/wab/shared/common";
 import { ApiAppUser } from "@/wab/shared/ApiSchema";
 import {
   isBoolean,

@@ -13,7 +13,7 @@ import {
   DefaultTeamPageProps,
   PlasmicTeamPage,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamPage";
-import { isNonNil } from "@/wab/common";
+import { isNonNil } from "@/wab/shared/common";
 import { TeamId } from "@/wab/shared/ApiSchema";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";

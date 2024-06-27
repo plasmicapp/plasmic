@@ -5,7 +5,7 @@ import {
   PlasmicPriceTier,
   PlasmicPriceTier__VariantsArgs,
 } from "@/wab/client/plasmic/plasmic_kit_pricing/PlasmicPriceTier";
-import { assertNever } from "@/wab/common";
+import { assertNever } from "@/wab/shared/common";
 import { ApiFeatureTier, BillingFrequency } from "@/wab/shared/ApiSchema";
 import {
   getNewPriceTierType,

@@ -9,7 +9,7 @@ import {
   PlasmicVariantsMenu,
 } from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicVariantsMenu";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, mod, spawn } from "@/wab/common";
+import { ensure, mod, spawn } from "@/wab/shared/common";
 import { VARIANTS_LOWER } from "@/wab/shared/Labels";
 import {
   getAllVariantsForTpl,

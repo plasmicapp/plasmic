@@ -1,5 +1,5 @@
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { cx } from "@/wab/common";
+import { cx } from "@/wab/shared/common";
 import $ from "jquery";
 import * as React from "react";
 

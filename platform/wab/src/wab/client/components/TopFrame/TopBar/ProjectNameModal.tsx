@@ -4,12 +4,12 @@ import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
 import Textbox from "@/wab/client/components/widgets/Textbox";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { ApiProject } from "@/wab/shared/ApiSchema";
 import { Button, Form } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 interface ProjectNameModalProps {
   project: ApiProject;

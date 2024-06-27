@@ -18,7 +18,7 @@ import { accessLevelRank, GrantableAccessLevel } from "@/wab/shared/EntUtil";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { sortBy } from "lodash";
 import * as React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 interface TeamMemberListProps extends DefaultTeamMemberListProps {
   team?: ApiTeam;

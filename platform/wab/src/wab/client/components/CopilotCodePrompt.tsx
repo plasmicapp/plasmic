@@ -12,7 +12,7 @@ import {
   swallow,
   unexpected,
   withoutNils,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { CopilotResponseData } from "@/wab/shared/ApiSchema";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import { Popover, Tooltip } from "antd";

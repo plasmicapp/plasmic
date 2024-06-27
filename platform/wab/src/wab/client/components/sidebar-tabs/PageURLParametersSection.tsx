@@ -14,13 +14,13 @@ import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelW
 import { LabeledListItem } from "@/wab/client/components/widgets/LabeledListItem";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, maybe, maybeFirst, swallow, unexpected } from "@/wab/common";
+import { ensure, maybe, maybeFirst, swallow, unexpected } from "@/wab/shared/common";
 import { valueAsString } from "@/wab/commons/values";
-import { extractParamsFromPagePath } from "@/wab/components";
+import { extractParamsFromPagePath } from "@/wab/shared/core/components";
 import {
   getSingleDynExprFromTemplatedString,
   tryCoerceString,
-} from "@/wab/exprs";
+} from "@/wab/shared/core/exprs";
 import { getDataSourceMeta } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
   ensureDataSourceStandardQuery,

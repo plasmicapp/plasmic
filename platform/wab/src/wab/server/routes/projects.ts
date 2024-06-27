@@ -1,4 +1,4 @@
-import { Dict, mkIdMap } from "@/wab/collections";
+import { Dict, mkIdMap } from "@/wab/shared/collections";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -11,7 +11,7 @@ import {
   uncheckedCast,
   withoutNils,
   xGroupBy,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import * as semver from "@/wab/commons/semver";
 import { addOrUpsertTokens } from "@/wab/commons/StyleToken";
 import { toOpaque } from "@/wab/commons/types";
@@ -20,9 +20,9 @@ import {
   ComponentType,
   isPageComponent,
   isPlasmicComponent,
-} from "@/wab/components";
-import { DEVFLAGS } from "@/wab/devflags";
-import { syncGlobalContexts } from "@/wab/project-deps";
+} from "@/wab/shared/core/components";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
 import { createBranchFromBase } from "@/wab/server/branch";
 import { reevaluateDataSourceExprOpIds } from "@/wab/server/data-sources/data-source-utils";
 import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
@@ -164,8 +164,8 @@ import {
   getAllOpExprSourceIdsUsedInSite,
   localComponents,
   localIcons,
-} from "@/wab/sites";
-import { getCodegenUrl } from "@/wab/urls";
+} from "@/wab/shared/core/sites";
+import { getCodegenUrl } from "@/wab/shared/urls";
 import * as Sentry from "@sentry/node";
 import { Request, Response } from "express-serve-static-core";
 import {

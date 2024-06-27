@@ -1,6 +1,6 @@
-import { sortAs } from "@/wab/common";
-import { fstPartyHostLessComponents } from "@/wab/hostless-components";
-import { getPublicUrl } from "@/wab/urls";
+import { sortAs } from "@/wab/shared/common";
+import { fstPartyHostLessComponents } from "@/wab/shared/core/hostless-components";
+import { getPublicUrl } from "@/wab/shared/urls";
 import { memoize } from "lodash";
 import memoizeOne from "memoize-one";
 

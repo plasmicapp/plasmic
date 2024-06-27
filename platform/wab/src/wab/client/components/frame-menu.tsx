@@ -5,7 +5,7 @@ import {
 import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import {
   FrameViewMode,
   isDuplicatableFrame,

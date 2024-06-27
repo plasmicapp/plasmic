@@ -12,7 +12,7 @@ import {
   tuple,
   withoutNils,
   xSetDefault,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import {
   allSuccess,
   firstResult,
@@ -20,7 +20,7 @@ import {
   mapSomeSuccess,
 } from "@/wab/commons/failable-utils";
 import { DeepReadonly } from "@/wab/commons/types";
-import { DEVFLAGS } from "@/wab/devflags";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Bundle, BundledInst, UnsafeBundle } from "@/wab/shared/bundles";
 import { InstUtil } from "@/wab/shared/model/InstUtil";
 import * as classesModule from "@/wab/shared/model/classes";

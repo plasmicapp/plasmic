@@ -23,8 +23,8 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_end_user_management/PlasmicPermissionsTab";
 import { isUserProjectEditor } from "@/wab/client/studio-ctx/StudioCtx";
 import { trackEvent } from "@/wab/client/tracking";
-import { ensure, isValidEmail, withoutFalsy, withoutNils } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { ensure, isValidEmail, withoutFalsy, withoutNils } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ApiAppEndUserAccessRule, ApiProject } from "@/wab/shared/ApiSchema";
 import { DomainValidator } from "@/wab/shared/hosting";
 import { prodUrlForProject } from "@/wab/shared/project-urls";

@@ -1,4 +1,4 @@
-import { assert } from "@/wab/common";
+import { assert } from "@/wab/shared/common";
 import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { BundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { PkgVersion } from "@/wab/server/entities/Entities";

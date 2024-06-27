@@ -1,4 +1,4 @@
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { OperationCtx } from "@/wab/shared/site-operation/OperationCtx";
 
 export type Operation<CtxType, ArgsType, ReturnType = void> = {

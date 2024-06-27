@@ -1,7 +1,7 @@
 import {
   InsertableTemplateComponentResolution,
   InsertableTemplateTokenResolution,
-} from "@/wab/devflags";
+} from "@/wab/shared/devflags";
 import { PkgInfo } from "@/wab/shared/SharedApi";
 import { VariantCombo } from "@/wab/shared/Variants";
 import {

@@ -1,7 +1,7 @@
-import { ensure, switchType, withoutNils } from "@/wab/common";
-import { getParamDisplayName, isReusableComponent } from "@/wab/components";
-import { asCode, ExprCtx } from "@/wab/exprs";
-import { ImageAssetType } from "@/wab/image-asset-type";
+import { ensure, switchType, withoutNils } from "@/wab/shared/common";
+import { getParamDisplayName, isReusableComponent } from "@/wab/shared/core/components";
+import { asCode, ExprCtx } from "@/wab/shared/core/exprs";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { computedProjectFlags } from "@/wab/shared/cached-selectors";
 import { makeNodeNamer } from "@/wab/shared/codegen/react-p";
 import {
@@ -56,15 +56,15 @@ import {
   isStandaloneVariantGroup,
   VariantGroupType,
 } from "@/wab/shared/Variants";
-import { isHostLessPackage } from "@/wab/sites";
-import { SplitStatus } from "@/wab/splits";
-import { isPrivateState } from "@/wab/states";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
+import { SplitStatus } from "@/wab/shared/core/splits";
+import { isPrivateState } from "@/wab/shared/core/states";
 import {
   flattenTpls,
   isTplNamable,
   isTplSlot,
   isTplVariantable,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import L, { isString, mapValues } from "lodash";
 
 export const INITIAL_VERSION_NUMBER = "0.0.1";

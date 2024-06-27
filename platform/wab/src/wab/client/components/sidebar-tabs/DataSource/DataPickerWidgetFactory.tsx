@@ -6,13 +6,13 @@ import DataPicker, {
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
-import { cx } from "@/wab/common";
+import { cx } from "@/wab/shared/common";
 import {
   ExprCtx,
   createExprForDataPickerValue,
   extractValueSavedFromDataPicker,
   summarizeExpr,
-} from "@/wab/exprs";
+} from "@/wab/shared/core/exprs";
 import { isDynamicValue } from "@/wab/shared/dynamic-bindings";
 import {
   CustomCode,

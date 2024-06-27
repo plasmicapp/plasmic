@@ -1,4 +1,4 @@
-import { ensureType } from "@/wab/common";
+import { ensureType } from "@/wab/shared/common";
 import { userDbMgr } from "@/wab/server/routes/util";
 import { UsersResponse } from "@/wab/shared/ApiSchema";
 import { Request, Response } from "express-serve-static-core";

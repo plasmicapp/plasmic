@@ -4,7 +4,7 @@ import path from "path";
 import yargs from "yargs";
 // pre-commit cannot understand "@/path" imports
 // eslint-disable-next-line
-import { arrayEq, ensure, spawn, spawnWrapper } from "../../common";
+import { arrayEq, ensure, spawn, spawnWrapper } from "../../shared/common";
 
 interface CheckArgs {
   files: string[];

@@ -1,5 +1,5 @@
-import { removeWhere } from "@/wab/common";
-import * as exprs from "@/wab/exprs";
+import { removeWhere } from "@/wab/shared/common";
+import * as exprs from "@/wab/shared/core/exprs";
 import { computedProjectFlags } from "@/wab/shared/cached-selectors";
 import mobx from "@/wab/shared/import-mobx";
 import {
@@ -8,7 +8,7 @@ import {
   TplComponent,
 } from "@/wab/shared/model/classes";
 import { isSlot } from "@/wab/shared/SlotUtils";
-import { clone, cloneArgs } from "@/wab/tpls";
+import { clone, cloneArgs } from "@/wab/shared/core/tpls";
 
 export class ContextFactory {
   private knownContexts: Record<string, TplComponent> = {};

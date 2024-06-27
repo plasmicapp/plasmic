@@ -1,4 +1,4 @@
-import { ensure, tuple, uncheckedCast } from "@/wab/common";
+import { ensure, tuple, uncheckedCast } from "@/wab/shared/common";
 import {
   Fetcher,
   FetcherMeta,

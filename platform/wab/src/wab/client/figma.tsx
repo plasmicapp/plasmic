@@ -52,17 +52,17 @@ import {
   tuple,
   uniqueName,
   withoutNilTuples,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { unwrap } from "@/wab/commons/failable-utils";
 import {
   ComponentType,
   isContextCodeComponent,
   isReusableComponent,
-} from "@/wab/components";
-import { parseCssNumericNew } from "@/wab/css";
-import { codeLit } from "@/wab/exprs";
-import { ImageAssetType } from "@/wab/image-asset-type";
-import { mkImageAssetRef } from "@/wab/image-assets";
+} from "@/wab/shared/core/components";
+import { parseCssNumericNew } from "@/wab/shared/css";
+import { codeLit } from "@/wab/shared/core/exprs";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { mkImageAssetRef } from "@/wab/shared/core/image-assets";
 import { FrameViewMode, isMixedArena } from "@/wab/shared/Arenas";
 import { extractUsedFontsFromComponents } from "@/wab/shared/codegen/fonts";
 import { toVarName } from "@/wab/shared/codegen/util";
@@ -91,7 +91,7 @@ import {
   mkTplTagX,
   TplTagType,
   trackComponentRoot,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import { notification } from "antd";
 import { isString } from "lodash";
 import React from "react";

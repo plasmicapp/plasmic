@@ -1,4 +1,4 @@
-import { Corner, Side } from "@/wab/geom";
+import { Corner, Side } from "@/wab/shared/geom";
 import L from "lodash";
 import * as React from "react";
 import { ReactNode } from "react";

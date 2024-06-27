@@ -4,7 +4,7 @@ import {
   omitNils,
   tuple,
   withoutNils,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { uploadFilesToS3 } from "@/wab/server/util/s3-util";
 import { ComponentReference } from "@/wab/server/workers/codegen";
 import { promises as fs } from "fs";

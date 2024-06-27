@@ -169,6 +169,11 @@ export default defineConfig({
       "/api": `http://localhost:${backendPort}`,
     },
   },
+  source: {
+    entry: {
+      index: "src/wab/client/main.tsx"
+    }
+  },
   output: {
     distPath: {
       root: "build",

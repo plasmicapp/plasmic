@@ -20,7 +20,7 @@ import {
 } from "@/wab/shared/Labels";
 import { Form } from "antd";
 import React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import useSWR from "swr";
 
 interface DataSourcePickerProps {

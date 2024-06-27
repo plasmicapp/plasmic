@@ -1,10 +1,10 @@
-import { Dict } from "@/wab/collections";
+import { Dict } from "@/wab/shared/collections";
 import {
   assert,
   ensureType,
   NotImplementedError,
   omitNils,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { toOpaque } from "@/wab/commons/types";
 import { AuthError } from "@/wab/shared/ApiErrors/errors";
 import {

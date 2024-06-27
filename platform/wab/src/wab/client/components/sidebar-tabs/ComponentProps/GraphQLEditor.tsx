@@ -2,7 +2,7 @@ import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { ObserverLoadable } from "@/wab/client/components/widgets";
 import Chip from "@/wab/client/components/widgets/Chip";
 import React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 export interface GraphQLValue {
   query: string;

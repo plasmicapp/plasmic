@@ -4,7 +4,7 @@ import {
   filterMapTruthy,
   multimap,
   tuple,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import isObject from "lodash/isObject";
 import omit from "lodash/omit";
 import pick from "lodash/pick";

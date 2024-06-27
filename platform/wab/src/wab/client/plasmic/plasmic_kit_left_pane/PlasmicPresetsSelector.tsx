@@ -56,8 +56,8 @@ import {
 } from "@plasmicapp/react-web/lib/host";
 
 import LeftSearchPanel from "../../components/studio/LeftSearchPanel"; // plasmic-import: TqAPn0srTq/component
-import PresetGroup from "../../../../PresetGroup"; // plasmic-import: kZ3Ar3RnLt/component
-import Preset from "../../../../Preset"; // plasmic-import: eS_Bw5U3wr/component
+import PresetGroup from "../../components/PresetGroup"; // plasmic-import: kZ3Ar3RnLt/component
+import Preset from "../../components/Preset"; // plasmic-import: eS_Bw5U3wr/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 

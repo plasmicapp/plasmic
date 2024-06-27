@@ -1,6 +1,6 @@
-import { assert, ensure, ensureInstance } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
-import { upgradeProjectDeps, walkDependencyTree } from "@/wab/project-deps";
+import { assert, ensure, ensureInstance } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { upgradeProjectDeps, walkDependencyTree } from "@/wab/shared/core/project-deps";
 import { updateHostlessPackage } from "@/wab/server/code-components/code-components";
 import {
   getMigratedBundle,
@@ -19,8 +19,8 @@ import {
   Site,
 } from "@/wab/shared/model/classes";
 import { InvariantError } from "@/wab/shared/site-invariants";
-import { isHostLessPackage } from "@/wab/sites";
-import { trackComponentRoot, trackComponentSite } from "@/wab/tpls";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
+import { trackComponentRoot, trackComponentSite } from "@/wab/shared/core/tpls";
 import semver from "semver";
 
 export async function unbundleSite(

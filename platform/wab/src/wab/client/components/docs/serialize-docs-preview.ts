@@ -15,14 +15,14 @@ import {
   createProjectOutput,
   updateModules,
 } from "@/wab/client/components/live/live-syncer";
-import { assert, ensure, removeAt, spawn } from "@/wab/common";
+import { assert, ensure, removeAt, spawn } from "@/wab/shared/common";
 import { safeCallbackify } from "@/wab/commons/control";
 import {
   getSubComponents,
   isCodeComponent,
   isPlumeComponent,
-} from "@/wab/components";
-import { ImageAssetType } from "@/wab/image-asset-type";
+} from "@/wab/shared/core/components";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { componentToDeepReferenced } from "@/wab/shared/cached-selectors";
 import { isCodeComponentWithHelpers } from "@/wab/shared/code-components/code-components";
 import {
@@ -58,7 +58,7 @@ import {
   getReferencedVariantGroups,
   isStandaloneVariantGroup,
 } from "@/wab/shared/Variants";
-import { allImageAssets } from "@/wab/sites";
+import { allImageAssets } from "@/wab/shared/core/sites";
 import generate from "@babel/generator";
 import * as parser from "@babel/parser";
 import * as t from "@babel/types";

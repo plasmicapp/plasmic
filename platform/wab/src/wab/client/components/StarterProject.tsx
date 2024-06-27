@@ -9,7 +9,7 @@ import {
   PlasmicStarterProject,
   PlasmicStarterProject__VariantsArgs,
 } from "@/wab/client/plasmic/plasmic_kit/PlasmicStarterProject";
-import { ensure, interleave, unexpected } from "@/wab/common";
+import { ensure, interleave, unexpected } from "@/wab/shared/common";
 import { WorkspaceId } from "@/wab/shared/ApiSchema";
 import { getExtraData, updateExtraDataJson } from "@/wab/shared/ApiSchemaUtil";
 import { Tooltip } from "antd";

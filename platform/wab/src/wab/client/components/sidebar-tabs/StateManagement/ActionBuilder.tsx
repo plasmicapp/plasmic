@@ -27,11 +27,11 @@ import {
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
-import { assert, ensureInstance, spawn } from "@/wab/common";
+import { assert, ensureInstance, spawn } from "@/wab/shared/common";
 import { HighlightBlinker } from "@/wab/commons/components/HighlightBlinker";
 import { combineProps } from "@/wab/commons/components/ReactUtil";
-import { codeLit, InteractionConditionalMode } from "@/wab/exprs";
-import { mkNameArg } from "@/wab/lang";
+import { codeLit, InteractionConditionalMode } from "@/wab/shared/core/exprs";
+import { mkNameArg } from "@/wab/shared/core/lang";
 import {
   HighlightInteractionRequest,
   isPlainObjectPropType,
@@ -52,7 +52,7 @@ import {
   TplTag,
 } from "@/wab/shared/model/classes";
 import { renameInteractionAndFixExprs } from "@/wab/shared/refactoring";
-import { EventHandlerKeyType } from "@/wab/tpls";
+import { EventHandlerKeyType } from "@/wab/shared/core/tpls";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Popover } from "antd";
 import { isEmpty } from "lodash";

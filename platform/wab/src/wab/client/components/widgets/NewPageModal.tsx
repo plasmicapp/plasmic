@@ -10,7 +10,7 @@ import {
   PlasmicNewComponentModal,
 } from "@/wab/client/plasmic/plasmic_kit_new_component/PlasmicNewComponentModal";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { InsertableTemplatesItem } from "@/wab/devflags";
+import { InsertableTemplatesItem } from "@/wab/shared/devflags";
 import { Tooltip } from "antd";
 import * as React from "react";
 import { useState } from "react";

@@ -1,13 +1,13 @@
-import { isNonNil } from "@/wab/common";
-import { isCodeComponent } from "@/wab/components";
-import { PLASMIC_DISPLAY_NONE } from "@/wab/css";
+import { isNonNil } from "@/wab/shared/common";
+import { isCodeComponent } from "@/wab/shared/core/components";
+import { PLASMIC_DISPLAY_NONE } from "@/wab/shared/css";
 import {
   ExprCtx,
   codeLit,
   getCodeExpressionWithFallback,
   isCodeLitVal,
   isRealCodeExpr,
-} from "@/wab/exprs";
+} from "@/wab/shared/core/exprs";
 import { RSH, RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
@@ -35,7 +35,7 @@ import {
   Variant,
   VariantSetting,
 } from "@/wab/shared/model/classes";
-import { isTplComponent, isTplTag, isTplVariantable } from "@/wab/tpls";
+import { isTplComponent, isTplTag, isTplVariantable } from "@/wab/shared/core/tpls";
 
 // When doing "DisplayNone" in css, we set `display: none`.  However,
 // we don't actually want to set that in our RuleSet, because

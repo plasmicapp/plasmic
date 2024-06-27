@@ -8,9 +8,9 @@ import {
   PlasmicLeftSplitsPanel,
 } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftSplitsPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { assert } from "@/wab/common";
+import { assert } from "@/wab/shared/common";
 import { Split } from "@/wab/shared/model/classes";
-import { SplitStatus, SplitType } from "@/wab/splits";
+import { SplitStatus, SplitType } from "@/wab/shared/core/splits";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { autorun } from "mobx";
 import * as React from "react";

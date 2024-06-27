@@ -1,4 +1,4 @@
-import { upgradeProjectDeps } from "@/wab/project-deps";
+import { upgradeProjectDeps } from "@/wab/shared/core/project-deps";
 import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
 import {
   getLastBundleVersion,
@@ -12,8 +12,8 @@ import {
   ensureKnownProjectDependency,
   ProjectDependency,
 } from "@/wab/shared/model/classes";
-import { isHostLessPackage } from "@/wab/sites";
-import { trackComponentRoot, trackComponentSite } from "@/wab/tpls";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
+import { trackComponentRoot, trackComponentSite } from "@/wab/shared/core/tpls";
 
 /**
  * Upgrades the hostless projects imported by `projectId` by running the

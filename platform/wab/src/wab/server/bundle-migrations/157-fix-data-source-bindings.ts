@@ -1,4 +1,4 @@
-import { randUint16 } from "@/wab/common";
+import { randUint16 } from "@/wab/shared/common";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
@@ -15,7 +15,7 @@ import {
   isKnownDataSourceOpExpr,
   isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
-import { findExprsInComponent } from "@/wab/tpls";
+import { findExprsInComponent } from "@/wab/shared/core/tpls";
 
 function mkBindingId() {
   return `{{${randUint16().toString()}}}`;

@@ -1,5 +1,5 @@
-import { assert, mkShortId, unexpected } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { assert, mkShortId, unexpected } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   bundleHasStaleHostlessDeps,
   upgradeHostlessProject,

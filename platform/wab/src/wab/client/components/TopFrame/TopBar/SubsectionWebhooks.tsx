@@ -14,7 +14,7 @@ import {
   DefaultSubsectionWebhooksProps,
   PlasmicSubsectionWebhooks,
 } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicSubsectionWebhooks";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import {
   ApiProject,
   ApiProjectWebhook,

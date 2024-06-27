@@ -1,7 +1,7 @@
 import Mousetrap, { ExtendedKeyboardEvent } from "mousetrap";
 import { useEffect, useState } from "react";
-import { Shortcuts } from "src/wab/client/shortcuts/shortcut";
-import { extractEventProps, trackEvent } from "src/wab/client/tracking";
+import { Shortcuts } from "@/wab/client/shortcuts/shortcut";
+import { extractEventProps, trackEvent } from "@/wab/client/tracking";
 
 /** Always allow these combos, no matter where the focus is. */
 const ALWAYS_ALLOWED_COMBOS = new Set(["esc"]);

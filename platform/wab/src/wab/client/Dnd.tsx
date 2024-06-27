@@ -53,9 +53,9 @@ import {
   maybe,
   tuple,
   withoutNils,
-} from "@/wab/common";
-import { Box, Orientation, Pt, Rect, Side, sideToOrient } from "@/wab/geom";
-import { SQ, SelQuery, Selectable, isSelectableLocked } from "@/wab/selection";
+} from "@/wab/shared/common";
+import { Box, Orientation, Pt, Rect, Side, sideToOrient } from "@/wab/shared/geom";
+import { SQ, SelQuery, Selectable, isSelectableLocked } from "@/wab/shared/core/selection";
 import { Area } from "@/wab/shared/Grids";
 import { getAncestorSlotArg } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
@@ -70,8 +70,8 @@ import {
   canAddChildrenToSelectableAndWhy,
   canAddSiblings,
 } from "@/wab/shared/parenting";
-import { SlotSelection } from "@/wab/slots";
-import { isTplVariantable, prepareFocusedTpls } from "@/wab/tpls";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import { isTplVariantable, prepareFocusedTpls } from "@/wab/shared/core/tpls";
 import {
   ValComponent,
   ValNode,
@@ -79,8 +79,8 @@ import {
   ValTag,
   getComputedStyleForVal,
   isValTagOrComponent,
-} from "@/wab/val-nodes";
-import { asVal } from "@/wab/vals";
+} from "@/wab/shared/core/val-nodes";
+import { asVal } from "@/wab/shared/core/vals";
 import classNames from "classnames";
 import $ from "jquery";
 import L from "lodash";

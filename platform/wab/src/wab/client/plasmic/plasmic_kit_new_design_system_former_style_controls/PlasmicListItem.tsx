@@ -32,7 +32,7 @@ import {
   deriveRenderOpts,
   ensureGlobalVariants,
 } from "@plasmicapp/react-web";
-import TextboxLike from "../../../../TextboxLike"; // plasmic-import: 1OCmfT86EB3/component
+import TextboxLike from "../../components/TextboxLike"; // plasmic-import: 1OCmfT86EB3/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 import Indicator from "../../components/style-controls/Indicator"; // plasmic-import: KRNHR6lpj1/component
 

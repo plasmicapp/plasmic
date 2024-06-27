@@ -6,7 +6,7 @@ import {
   DefaultDataSourceProps,
   PlasmicDataSource,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicDataSource";
-import { assert } from "@/wab/common";
+import { assert } from "@/wab/shared/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { ApiDataSource } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";

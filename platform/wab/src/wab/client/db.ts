@@ -1,20 +1,20 @@
 import { BundlingSiteApi } from "@/wab/client/api";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { App } from "@/wab/client/components/top-view";
-import { maybe } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { maybe } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ChangeRecorder,
   FakeChangeRecorder,
   IChangeRecorder,
-} from "@/wab/observable-model";
+} from "@/wab/shared/core/observable-model";
 import { ApiBranch } from "@/wab/shared/ApiSchema";
 import { PkgVersionInfoMeta, SiteInfo } from "@/wab/shared/SharedApi";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { instUtil } from "@/wab/shared/model/InstUtil";
 import { Component, Site } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
-import { trackComponentRoot, trackComponentSite } from "@/wab/tpls";
+import { trackComponentRoot, trackComponentSite } from "@/wab/shared/core/tpls";
 import { uniqBy } from "lodash";
 import { IObservableValue, observable } from "mobx";
 

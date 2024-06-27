@@ -12,12 +12,12 @@ import NewPageModal, {
 } from "@/wab/client/components/widgets/NewPageModal";
 import Textbox from "@/wab/client/components/widgets/Textbox";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { maybe, nullToUndefined } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { maybe, nullToUndefined } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Form, notification, Select } from "antd";
 import L from "lodash";
 import React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 const { Option } = Select;
 
 export interface HasName {

@@ -1,4 +1,4 @@
-import { tuple } from "@/wab/common";
+import { tuple } from "@/wab/shared/common";
 import {
   getLastBundleVersion,
   getMigratedBundle,

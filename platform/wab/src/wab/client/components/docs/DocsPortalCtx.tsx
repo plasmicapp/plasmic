@@ -5,17 +5,17 @@ import {
   updateComponentCode,
 } from "@/wab/client/components/docs/serialize-docs-preview";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, spawn } from "@/wab/common";
+import { ensure, spawn } from "@/wab/shared/common";
 import { withProvider } from "@/wab/commons/components/ContextUtil";
 import {
   isCodeComponent,
   isFrameComponent,
   isSubComponent,
-} from "@/wab/components";
-import { ImageAssetType } from "@/wab/image-asset-type";
+} from "@/wab/shared/core/components";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { toClassName, toVarName } from "@/wab/shared/codegen/util";
 import { Component, ImageAsset, Param } from "@/wab/shared/model/classes";
-import { TplNamable } from "@/wab/tpls";
+import { TplNamable } from "@/wab/shared/core/tpls";
 import { History } from "history";
 import { action, makeObservable, observable } from "mobx";
 import React from "react";

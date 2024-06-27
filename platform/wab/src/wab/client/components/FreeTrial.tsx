@@ -7,7 +7,7 @@ import {
   DefaultFreeTrialProps,
   PlasmicFreeTrial,
 } from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicFreeTrial";
-import { ensure, spawn } from "@/wab/common";
+import { ensure, spawn } from "@/wab/shared/common";
 import { ApiTeam } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { round } from "lodash";

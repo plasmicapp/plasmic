@@ -1,8 +1,8 @@
-import { ensure, UnexpectedTypeError, withoutNils } from "@/wab/common";
+import { ensure, UnexpectedTypeError, withoutNils } from "@/wab/shared/common";
 import { toOpaque } from "@/wab/commons/types";
-import { CodeComponentConfig, isPageComponent } from "@/wab/components";
-import { DEVFLAGS, getProjectFlags } from "@/wab/devflags";
-import { ImageAssetType } from "@/wab/image-asset-type";
+import { CodeComponentConfig, isPageComponent } from "@/wab/shared/core/components";
+import { DEVFLAGS, getProjectFlags } from "@/wab/shared/devflags";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { uploadDataUriToS3 } from "@/wab/server/cdn/images";
 import {
   ensureDbConnections,
@@ -44,9 +44,9 @@ import { GlobalVariantConfig } from "@/wab/shared/codegen/variants";
 import { asDataUrl } from "@/wab/shared/data-urls";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { Site } from "@/wab/shared/model/classes";
-import { allComponents } from "@/wab/sites";
-import { initBuiltinActions } from "@/wab/states";
-import { deepTrackComponents } from "@/wab/tpls";
+import { allComponents } from "@/wab/shared/core/sites";
+import { initBuiltinActions } from "@/wab/shared/core/states";
+import { deepTrackComponents } from "@/wab/shared/core/tpls";
 import S3 from "aws-sdk/clients/s3";
 import fs from "fs";
 import { ConnectionOptions } from "typeorm";

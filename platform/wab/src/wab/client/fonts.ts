@@ -1,8 +1,8 @@
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { assertNever, spawn } from "@/wab/common";
+import { assertNever, spawn } from "@/wab/shared/common";
 import { derefTokenRefs } from "@/wab/commons/StyleToken";
-import { getGoogFontsMeta, makeGoogleFontApiUrl } from "@/wab/googfonts";
-import { walkDependencyTree } from "@/wab/project-deps";
+import { getGoogFontsMeta, makeGoogleFontApiUrl } from "@/wab/shared/googfonts";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import { extractUsedFontsFromComponents } from "@/wab/shared/codegen/fonts";
 import {
   FontInstallSpec,
@@ -10,7 +10,7 @@ import {
   toGoogleFontInstallSpec,
 } from "@/wab/shared/fonts";
 import { ProjectDependency, Site } from "@/wab/shared/model/classes";
-import { allStyleTokens } from "@/wab/sites";
+import { allStyleTokens } from "@/wab/shared/core/sites";
 import { notification } from "antd";
 import $ from "jquery";
 import L from "lodash";

@@ -1,7 +1,7 @@
 /**
  * Like 148, but deals with imported buttons too
  */
-import { codeLit } from "@/wab/exprs";
+import { codeLit } from "@/wab/shared/core/exprs";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
@@ -11,7 +11,7 @@ import { TplMgr } from "@/wab/shared/TplMgr";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
 import { Bundler } from "@/wab/shared/bundler";
 import { Arg } from "@/wab/shared/model/classes";
-import { isTplComponent } from "@/wab/tpls";
+import { isTplComponent } from "@/wab/shared/core/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();

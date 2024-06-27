@@ -5,15 +5,15 @@ import {
   normalizeTemplateSpec,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, maybe, switchType } from "@/wab/common";
-import { PageComponent } from "@/wab/components";
+import { ensure, maybe, switchType } from "@/wab/shared/common";
+import { PageComponent } from "@/wab/shared/core/components";
 import {
   InsertableTemplateComponentResolution,
   InsertableTemplateTokenResolution,
   InsertableTemplatesGroup,
   InsertableTemplatesItem,
   flattenInsertableTemplatesByType,
-} from "@/wab/devflags";
+} from "@/wab/shared/devflags";
 import { BranchId } from "@/wab/shared/ApiSchema";
 import { PkgInfo, PkgVersionInfo } from "@/wab/shared/SharedApi";
 import { $$$ } from "@/wab/shared/TplQuery";
@@ -38,8 +38,8 @@ import {
   TplTag,
   Variant,
 } from "@/wab/shared/model/classes";
-import { unbundleProjectDependency, unbundleSite } from "@/wab/tagged-unbundle";
-import { deepTrackComponents } from "@/wab/tpls";
+import { unbundleProjectDependency, unbundleSite } from "@/wab/shared/core/tagged-unbundle";
+import { deepTrackComponents } from "@/wab/shared/core/tpls";
 import { flatten, fromPairs } from "lodash";
 
 export const getPageTemplatesGroups = (studioCtx: StudioCtx) => {

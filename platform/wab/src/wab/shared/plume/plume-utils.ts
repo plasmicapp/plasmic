@@ -1,6 +1,6 @@
 import type { SubDeps } from "@/wab/client/components/canvas/subdeps";
 import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { assert, unexpected } from "@/wab/common";
+import { assert, unexpected } from "@/wab/shared/common";
 import { getTplSlotForParam, isSlot } from "@/wab/shared/SlotUtils";
 import { getPropTypeType } from "@/wab/shared/code-components/code-components";
 import {
@@ -23,7 +23,7 @@ import {
   PlumeType,
   getPlumeEditorPlugin,
 } from "@/wab/shared/plume/plume-registry";
-import { flattenTpls, isTplComponent } from "@/wab/tpls";
+import { flattenTpls, isTplComponent } from "@/wab/shared/core/tpls";
 import React from "react";
 
 /**

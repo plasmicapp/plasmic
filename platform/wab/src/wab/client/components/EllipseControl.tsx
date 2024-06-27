@@ -1,4 +1,4 @@
-import { ensure, spreadLog } from "@/wab/common";
+import { ensure, spreadLog } from "@/wab/shared/common";
 import {
   XDraggable,
   XDraggableEvent,

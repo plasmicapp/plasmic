@@ -23,7 +23,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 // eslint-disable-next-line no-restricted-imports
 import { AppCtx } from "@/wab/client/app-ctx";
 import { UU } from "@/wab/client/cli-routes";
@@ -119,7 +119,7 @@ import {
   swallow,
   unreachable,
   withoutFalsy,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { Stated } from "@/wab/commons/components/Stated";
 import {
@@ -129,7 +129,7 @@ import {
   extractValueSavedFromDataPicker,
   getRawCode,
   hasUnsafeCurrentUserBinding,
-} from "@/wab/exprs";
+} from "@/wab/shared/core/exprs";
 import {
   DataSourceType,
   getDataSourceMeta,
@@ -181,8 +181,8 @@ import {
   TemplatedString,
   TplNode,
 } from "@/wab/shared/model/classes";
-import { smartHumanize } from "@/wab/strs";
-import { EventHandlerKeyType } from "@/wab/tpls";
+import { smartHumanize } from "@/wab/shared/strs";
+import { EventHandlerKeyType } from "@/wab/shared/core/tpls";
 import { explorerPlugin } from "@graphiql/plugin-explorer";
 import { PrettifyIcon, QueryEditor, usePrettifyEditors } from "@graphiql/react";
 import { Fetcher } from "@graphiql/toolkit";
@@ -190,9 +190,9 @@ import { PlasmicDataSourceContextProvider } from "@plasmicapp/react-web";
 import cx from "classnames";
 import constate from "constate";
 import { useMountedState } from "react-use";
-import SearchIcon from "src/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
-import { ApiDataSource } from "src/wab/shared/ApiSchema";
-import { siteToUsedDataSources } from "src/wab/shared/cached-selectors";
+import SearchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
+import { ApiDataSource } from "@/wab/shared/ApiSchema";
+import { siteToUsedDataSources } from "@/wab/shared/cached-selectors";
 import useSWR from "swr";
 
 interface DataSourceOpPickerInputs {

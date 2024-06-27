@@ -1,4 +1,4 @@
-import TextWithInfo from "@/TextWithInfo";
+import TextWithInfo from "@/wab/client/components/TextWithInfo";
 import { Matcher } from "@/wab/client/components/view-common";
 import { ClickStopper } from "@/wab/client/components/widgets";
 import {

@@ -7,10 +7,10 @@ import {
 import { PlainLinkButton } from "@/wab/client/components/widgets";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import { ImageAssetType } from "@/wab/image-asset-type";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { ImageAsset, isKnownImageAsset } from "@/wab/shared/model/classes";
-import { isEditable } from "@/wab/sites";
-import { placeholderImgUrl } from "@/wab/urls";
+import { isEditable } from "@/wab/shared/core/sites";
+import { placeholderImgUrl } from "@/wab/shared/urls";
 import { Tooltip } from "antd";
 import L from "lodash";
 import { observer } from "mobx-react";

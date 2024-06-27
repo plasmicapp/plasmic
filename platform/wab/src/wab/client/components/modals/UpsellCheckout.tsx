@@ -3,7 +3,7 @@ import {
   DefaultUpsellCheckoutProps,
   PlasmicUpsellCheckout,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicUpsellCheckout";
-import { DEVFLAGS } from "@/wab/devflags";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ApiFeatureTier, BillingFrequency } from "@/wab/shared/ApiSchema";
 import {
   featureTiers,

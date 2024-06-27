@@ -10,10 +10,10 @@ import {
   switchType,
   tuple,
   withoutNils,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { toOpaque } from "@/wab/commons/types";
-import { isCodeComponent } from "@/wab/components";
-import { getOnlyAssetRef } from "@/wab/image-assets";
+import { isCodeComponent } from "@/wab/shared/core/components";
+import { getOnlyAssetRef } from "@/wab/shared/core/image-assets";
 import { FrameViewMode } from "@/wab/shared/Arenas";
 import { isTplSlotVisible } from "@/wab/shared/cached-selectors";
 import { isPlainObjectPropType } from "@/wab/shared/code-components/code-components";
@@ -53,16 +53,16 @@ import {
   isVisibilityHidden,
   TplVisibility,
 } from "@/wab/shared/visibility-utils";
-import { isTplAttachedToSite } from "@/wab/sites";
-import { SlotSelection } from "@/wab/slots";
-import * as Tpls from "@/wab/tpls";
+import { isTplAttachedToSite } from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import * as Tpls from "@/wab/shared/core/tpls";
 import {
   isTplImage,
   isTplTagOrComponent,
   summarizeSlotParam,
-} from "@/wab/tpls";
-import { ValComponent } from "@/wab/val-nodes";
-import { asTpl, asTplOrSlotSelection } from "@/wab/vals";
+} from "@/wab/shared/core/tpls";
+import { ValComponent } from "@/wab/shared/core/val-nodes";
+import { asTpl, asTplOrSlotSelection } from "@/wab/shared/core/vals";
 import * as Immutable from "immutable";
 import debounce from "lodash/debounce";
 import {

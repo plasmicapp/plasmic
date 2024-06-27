@@ -11,7 +11,7 @@ import PlasmicOutlineTab from "@/wab/client/plasmic/project_panel/PlasmicOutline
 import PlasmicSearchInput from "@/wab/client/plasmic/project_panel/PlasmicSearchInput";
 import ChevronDownsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { switchType } from "@/wab/common";
+import { switchType } from "@/wab/shared/common";
 import {
   getArenaFrameDesc,
   getArenaFrames,

@@ -7,8 +7,8 @@ import {
   PlasmicSubsectionSaveVersion,
 } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicSubsectionSaveVersion";
 import type { PublishResult } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { spawn } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ApiProject } from "@/wab/shared/ApiSchema";
 import {
   INITIAL_VERSION_NUMBER,

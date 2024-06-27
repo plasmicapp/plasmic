@@ -1,4 +1,4 @@
-import { assert, ensure, ensureType, uncheckedCast } from "@/wab/common";
+import { assert, ensure, ensureType, uncheckedCast } from "@/wab/shared/common";
 import {
   PkgVersion,
   ProjectRevision,

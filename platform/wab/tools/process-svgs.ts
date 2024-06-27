@@ -11,8 +11,8 @@
 import fs from "fs";
 import glob from "glob";
 import Path from "path";
-import { capCamelCase } from "../src/wab/common";
-import { L } from "../src/wab/deps";
+import { capCamelCase } from "../src/wab/shared/common";
+import { L } from "../src/wab/shared/core/deps";
 
 async function main() {
   for (const path of glob.sync("src/wab/client/icons/*.svg")) {

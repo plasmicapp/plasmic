@@ -2,7 +2,7 @@ import { LocalClipboardData } from "@/wab/client/clipboard/local";
 import type { InsertRelLoc } from "@/wab/client/components/canvas/view-ops";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import type { Pt } from "@/wab/geom";
+import type { Pt } from "@/wab/shared/geom";
 import { CopyState } from "@/wab/shared/insertable-templates/types";
 import { FRAME_CAP } from "@/wab/shared/Labels";
 import { UserError } from "@/wab/shared/UserError";

@@ -5,10 +5,10 @@ import { getElementBounds } from "@/wab/client/dom-utils";
 import { reportError } from "@/wab/client/ErrorNotifications";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
-import { ensure, NullOrUndefinedValueError } from "@/wab/common";
+import { ensure, NullOrUndefinedValueError } from "@/wab/shared/common";
 import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
 import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
-import { isTplColumns, TplColumnsTag } from "@/wab/tpls";
+import { isTplColumns, TplColumnsTag } from "@/wab/shared/core/tpls";
 import { observer } from "mobx-react";
 import * as React from "react";
 

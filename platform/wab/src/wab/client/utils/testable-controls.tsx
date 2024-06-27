@@ -1,5 +1,5 @@
-import { dbg } from "@/wab/dbg";
-import { DEVFLAGS } from "@/wab/devflags";
+import { dbg } from "@/wab/shared/dbg";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { reactNodeToString } from "@/wab/shared/react-utils";
 import * as React from "react";
 import { ReactNode } from "react";

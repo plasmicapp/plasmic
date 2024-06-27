@@ -28,16 +28,16 @@ import MinusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Minus";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
-import { ensure, spawn, unanimousVal } from "@/wab/common";
+import { ensure, spawn, unanimousVal } from "@/wab/shared/common";
 import { TokenType } from "@/wab/commons/StyleToken";
-import { parseCssShorthand, showCssShorthand } from "@/wab/css";
-import { Corner, Side, standardCorners, standardSides } from "@/wab/geom";
+import { parseCssShorthand, showCssShorthand } from "@/wab/shared/css";
+import { Corner, Side, standardCorners, standardSides } from "@/wab/shared/geom";
 import { isKnownTplTag, TplNode } from "@/wab/shared/model/classes";
 import cn from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useEffect, useRef } from "react";
-import { VariantedStylesHelper } from "src/wab/shared/VariantedStylesHelper";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import defer = setTimeout;
 
 enum BorderType {

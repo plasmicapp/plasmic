@@ -1,4 +1,4 @@
-import { metaSvc } from "@/wab/metas";
+import { metaSvc } from "@/wab/shared/core/metas";
 import { internalCanvasElementProps } from "@/wab/shared/canvas-constants";
 import {
   getExternalParams,

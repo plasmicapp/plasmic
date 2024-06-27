@@ -56,7 +56,7 @@ import {
 } from "@plasmicapp/react-web/lib/host";
 
 import * as pp from "@plasmicapp/react-web";
-import HostProtocolSelect__Option from "../../../../HostProtocolSelect__Option"; // plasmic-import: aHgWgR3OVni/component
+import HostProtocolSelect__Option from "../../components/HostProtocolSelect__Option"; // plasmic-import: aHgWgR3OVni/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 

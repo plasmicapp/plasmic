@@ -6,7 +6,7 @@ import {
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { Bundler } from "@/wab/shared/bundler";
 import { TplNode } from "@/wab/shared/model/classes";
-import { flattenTpls, isTplNamable, isTplVariantable } from "@/wab/tpls";
+import { flattenTpls, isTplNamable, isTplVariantable } from "@/wab/shared/core/tpls";
 
 /**
  * This is fixing https://app.shortcut.com/plasmic/story/20351/urgent-plume-button-component-click-not-working

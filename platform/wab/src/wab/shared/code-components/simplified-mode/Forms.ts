@@ -1,4 +1,4 @@
-import { ensure, isNonNil } from "@/wab/common";
+import { ensure, isNonNil } from "@/wab/shared/common";
 import { unwrap } from "@/wab/commons/failable-utils";
 import {
   clone as cloneExpr,
@@ -7,7 +7,7 @@ import {
   isRealCodeExpr,
   isRealCodeExprEnsuringType,
   tryExtractJson,
-} from "@/wab/exprs";
+} from "@/wab/shared/core/exprs";
 import { elementSchemaToTpl } from "@/wab/shared/code-components/code-components";
 import {
   Arg,
@@ -27,8 +27,8 @@ import { getSingleTplComponentFromArg } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
-import { allComponents as getAllComponents } from "@/wab/sites";
-import { SlotSelection } from "@/wab/slots";
+import { allComponents as getAllComponents } from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   clone as cloneTpl,
   getParamVariable,
@@ -36,7 +36,7 @@ import {
   mkTplComponent,
   mkTplInlinedText,
   TplCodeComponent,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import {
   buttonComponentName,
   formItemComponentName,

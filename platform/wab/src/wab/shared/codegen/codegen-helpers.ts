@@ -1,5 +1,5 @@
 import { DeepMap, deepMapMemoized } from "@/wab/commons/deep-map";
-import { buildObjToDepMap } from "@/wab/project-deps";
+import { buildObjToDepMap } from "@/wab/shared/core/project-deps";
 import { readonlyRSH } from "@/wab/shared/RuleSetHelpers";
 import {
   isTextArgNodeOfSlot,
@@ -21,13 +21,13 @@ import {
   makeVariantComboSorter,
   sortedVariantSettings,
 } from "@/wab/shared/variant-sort";
-import { allImageAssets, allMixins, allStyleTokens } from "@/wab/sites";
+import { allImageAssets, allMixins, allStyleTokens } from "@/wab/shared/core/sites";
 import {
   CssVarResolver,
   createExpandedRuleSetMerger,
   hasGapStyle,
-} from "@/wab/styles";
-import { flattenTpls } from "@/wab/tpls";
+} from "@/wab/shared/core/styles";
+import { flattenTpls } from "@/wab/shared/core/tpls";
 import { keyBy } from "lodash";
 
 export class SiteGenHelper {

@@ -1,4 +1,4 @@
-import { ensureInstance } from "@/wab/common";
+import { ensureInstance } from "@/wab/shared/common";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { loadDepPackages } from "@/wab/server/db/DbBundleLoader";
 import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";

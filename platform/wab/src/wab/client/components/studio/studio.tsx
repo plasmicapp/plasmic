@@ -14,7 +14,7 @@ import { bindStudioShortcutHandlers } from "@/wab/client/shortcuts/studio/studio
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TopProjectNavTour } from "@/wab/client/tours/TopProjectNavTour";
 import { StudioTutorialTours } from "@/wab/client/tours/tutorials/TutorialTours";
-import { mkShortId, spawn } from "@/wab/common";
+import { mkShortId, spawn } from "@/wab/shared/common";
 import { notification } from "antd";
 import * as React from "react";
 

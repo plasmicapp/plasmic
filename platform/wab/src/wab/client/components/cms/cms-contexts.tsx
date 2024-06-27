@@ -1,5 +1,5 @@
 import { useApi } from "@/wab/client/contexts/AppContexts";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import {
   ApiCmseRow,
   CmsDatabaseId,

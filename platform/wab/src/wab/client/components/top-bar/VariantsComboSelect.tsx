@@ -5,7 +5,7 @@ import {
   PlasmicVariantsComboSelect,
 } from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicVariantsComboSelect";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, xGroupBy } from "@/wab/common";
+import { ensure, xGroupBy } from "@/wab/shared/common";
 import {
   getAllVariantsForTpl,
   isBaseVariant,

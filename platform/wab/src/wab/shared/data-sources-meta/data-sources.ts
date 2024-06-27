@@ -1,10 +1,10 @@
-import { assert, ensure, ensureString, mkUuid } from "@/wab/common";
+import { assert, ensure, ensureString, mkUuid } from "@/wab/shared/common";
 import {
   asCode,
   clone,
   ExprCtx,
   stripParensAndMaybeConvertToIife,
-} from "@/wab/exprs";
+} from "@/wab/shared/core/exprs";
 import { ApiDataSource } from "@/wab/shared/ApiSchema";
 import type { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { substitutePlaceholder } from "@/wab/shared/dynamic-bindings";

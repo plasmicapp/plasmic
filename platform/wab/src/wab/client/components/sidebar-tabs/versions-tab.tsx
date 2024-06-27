@@ -14,16 +14,16 @@ import PlasmicLeftVersionsPanel from "@/wab/client/plasmic/plasmic_kit/PlasmicLe
 import { promptTagsAndDesc } from "@/wab/client/prompts";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { MaybeWrap, swallowClick } from "@/wab/commons/components/ReactUtil";
-import { DEVFLAGS } from "@/wab/devflags";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
 import { Alert, Form, Menu, Spin, Tag, Tooltip } from "antd";
 import L from "lodash";
 import { observer } from "mobx-react";
 import moment from "moment";
 import React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
-import { ApiUser, BranchId } from "src/wab/shared/ApiSchema";
-import { getUserEmail } from "src/wab/shared/ApiSchemaUtil";
+import { Modal } from "@/wab/client/components/widgets/Modal";
+import { ApiUser, BranchId } from "@/wab/shared/ApiSchema";
+import { getUserEmail } from "@/wab/shared/ApiSchemaUtil";
 
 async function publishProject(
   studioCtx: StudioCtx,

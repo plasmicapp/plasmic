@@ -1,4 +1,4 @@
-import { omitNils } from "@/wab/common";
+import { omitNils } from "@/wab/shared/common";
 import { getClickHouseConnection } from "@/wab/server/clickhouse";
 import { groupBy, mapValues } from "lodash";
 import moment from "moment";

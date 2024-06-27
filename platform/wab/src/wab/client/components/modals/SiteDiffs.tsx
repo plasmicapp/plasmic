@@ -15,13 +15,13 @@ import VariantGroupIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Vari
 import TextInputIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__TextInput";
 import VariantIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Variant";
 import RocketsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Rocketsvg";
-import { ensure, withoutNils, xSetDefault } from "@/wab/common";
+import { ensure, withoutNils, xSetDefault } from "@/wab/shared/common";
 import { MIXIN_CAP } from "@/wab/shared/Labels";
 import type {
   ChangeLogEntry,
   SemVerSiteElement,
 } from "@/wab/shared/site-diffs";
-import { SplitType } from "@/wab/splits";
+import { SplitType } from "@/wab/shared/core/splits";
 import L, { uniq } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";

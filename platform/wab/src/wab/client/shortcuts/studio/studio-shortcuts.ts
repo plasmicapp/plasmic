@@ -2,8 +2,8 @@ import {
   ActionOf,
   mkShortcutGroup,
   ShortcutsMerger,
-} from "src/wab/client/shortcuts/shortcut";
-import { asOne, ensure } from "src/wab/common";
+} from "@/wab/client/shortcuts/shortcut";
+import { asOne, ensure } from "@/wab/shared/common";
 import {
   ARENA_LOWER,
   FRAME_CAP,
@@ -11,7 +11,7 @@ import {
   HORIZ_CONTAINER_LOWER,
   VARIANT_LOWER,
   VERT_CONTAINER_LOWER,
-} from "src/wab/shared/Labels";
+} from "@/wab/shared/Labels";
 
 export const TOOLS_SHORTCUT_GROUP = mkShortcutGroup("Tools", {
   RECT: {

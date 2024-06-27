@@ -1,15 +1,15 @@
 import { checkDepPkgHosts } from "@/wab/client/init-ctx";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { Dict } from "@/wab/collections";
+import { Dict } from "@/wab/shared/collections";
 import {
   assert,
   ensure,
   ensureClientMemoizedFunction,
   spawn,
-} from "@/wab/common";
-import { isFrameComponent, isReusableComponent } from "@/wab/components";
-import { InsertableIconsGroup } from "@/wab/devflags";
-import { isIcon } from "@/wab/image-assets";
+} from "@/wab/shared/common";
+import { isFrameComponent, isReusableComponent } from "@/wab/shared/core/components";
+import { InsertableIconsGroup } from "@/wab/shared/devflags";
+import { isIcon } from "@/wab/shared/core/image-assets";
 import {
   extractTransitiveDepsFromComponentDefaultSlots,
   extractTransitiveHostLessPackages,
@@ -17,7 +17,7 @@ import {
   ImportableObject,
   syncGlobalContexts,
   walkDependencyTree,
-} from "@/wab/project-deps";
+} from "@/wab/shared/core/project-deps";
 import { FastBundler } from "@/wab/shared/bundler";
 import { getUsedDataSourcesFromDep } from "@/wab/shared/cached-selectors";
 import {
@@ -37,9 +37,9 @@ import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
 import {
   allStyleTokens,
   getNonTransitiveDepDefaultComponents,
-} from "@/wab/sites";
-import { unbundleProjectDependency } from "@/wab/tagged-unbundle";
-import { trackComponentRoot, trackComponentSite } from "@/wab/tpls";
+} from "@/wab/shared/core/sites";
+import { unbundleProjectDependency } from "@/wab/shared/core/tagged-unbundle";
+import { trackComponentRoot, trackComponentSite } from "@/wab/shared/core/tpls";
 import L, { last } from "lodash";
 import { computed, observable } from "mobx";
 

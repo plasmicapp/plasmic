@@ -18,7 +18,7 @@ import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelW
 import Textbox from "@/wab/client/components/widgets/Textbox";
 import { VERT_MENU_ICON } from "@/wab/client/icons";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import {
   addOrEditComponentMetadata,
   canDeleteParam,
@@ -28,7 +28,7 @@ import {
   isReusableComponent,
   removeComponentMetadata,
   removeComponentParam,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import { wabTypeToPropType } from "@/wab/shared/code-components/code-components";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
@@ -40,7 +40,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { typeDisplayName } from "@/wab/shared/model/model-util";
 import { getSlotParams } from "@/wab/shared/SlotUtils";
-import { extractLit } from "@/wab/states";
+import { extractLit } from "@/wab/shared/core/states";
 import { Menu, notification, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import React from "react";

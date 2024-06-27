@@ -1,5 +1,5 @@
-import { ensure } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { ensure } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   AirtableDataSource,
   AIRTABLE_META,

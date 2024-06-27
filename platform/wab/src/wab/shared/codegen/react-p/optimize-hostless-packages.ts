@@ -7,8 +7,8 @@
  * or involved in the implicit states system.
  **/
 
-import { ensure } from "@/wab/common";
-import { codeLit, tryExtractJson } from "@/wab/exprs";
+import { ensure } from "@/wab/shared/common";
+import { codeLit, tryExtractJson } from "@/wab/shared/core/exprs";
 import { generateTplsFromFormItems } from "@/wab/shared/code-components/simplified-mode/Forms";
 import {
   Component,
@@ -19,14 +19,14 @@ import {
 import { getTplComponentArg, TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
-import { allComponents } from "@/wab/sites";
+import { allComponents } from "@/wab/shared/core/sites";
 import {
   filterTpls,
   flattenTpls,
   getParamVariable,
   isTplCodeComponent,
   TplCodeComponent,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import { formComponentName, OPTIMIZED_FORM_IMPORT } from "@plasmicpkgs/antd5";
 import { SerializerBaseContext } from ".";
 

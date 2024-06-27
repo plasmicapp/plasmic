@@ -23,7 +23,7 @@ import { ensureNumber, nudgeIntoRange } from "@/wab/client/number-utils";
 import { CloseIcon } from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import {
   TokenType,
   derefTokenRefs,
@@ -39,7 +39,7 @@ import {
   allColorTokens,
   allStyleTokens,
   isStyleTokenEditable,
-} from "@/wab/sites";
+} from "@/wab/shared/core/sites";
 import Pickr from "@simonwep/pickr";
 import "@simonwep/pickr/dist/themes/nano.min.css";
 import { Input, InputRef, Select, Tooltip } from "antd";

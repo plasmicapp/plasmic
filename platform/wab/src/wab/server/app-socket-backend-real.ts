@@ -14,7 +14,7 @@
  *
  * Runs on port 3020 or SOCKET_PORT.
  */
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { addLoggingMiddleware } from "@/wab/server/AppServer";
 import { Config } from "@/wab/server/config";
 import {

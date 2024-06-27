@@ -5,9 +5,9 @@ import {
   PlasmicExperimentToggle,
 } from "@/wab/client/plasmic/plasmic_kit_optimize/PlasmicExperimentToggle";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { Split } from "@/wab/shared/model/classes";
-import { SplitStatus } from "@/wab/splits";
+import { SplitStatus } from "@/wab/shared/core/splits";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { observer } from "mobx-react";
 import * as React from "react";

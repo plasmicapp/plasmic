@@ -12,7 +12,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_variants/PlasmicVariantSection";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, spawn } from "@/wab/common";
+import { ensure, spawn } from "@/wab/shared/common";
 import { isStyleVariant } from "@/wab/shared/Variants";
 import { Component, Variant } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";

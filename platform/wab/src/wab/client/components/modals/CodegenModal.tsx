@@ -1,11 +1,11 @@
 import { usePersonalApiTokens } from "@/wab/client/components/pages/UserSettingsPage";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, spawn } from "@/wab/common";
-import { isFrameComponent } from "@/wab/components";
+import { ensure, spawn } from "@/wab/shared/common";
+import { isFrameComponent } from "@/wab/shared/core/components";
 import { Spin } from "antd";
 import { observer } from "mobx-react";
 import React, { useEffect, useState } from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 export const CodegenModal = observer(function CodegenModal(props: {
   onCancel: () => void;

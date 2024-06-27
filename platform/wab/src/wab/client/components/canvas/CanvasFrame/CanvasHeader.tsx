@@ -15,9 +15,9 @@ import {
 import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
 import PageIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Page";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { cx } from "@/wab/common";
+import { cx } from "@/wab/shared/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import { isFrameComponent, isPageComponent } from "@/wab/components";
+import { isFrameComponent, isPageComponent } from "@/wab/shared/core/components";
 import {
   AnyArena,
   isComponentArena,

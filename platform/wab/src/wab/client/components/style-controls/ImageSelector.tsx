@@ -21,12 +21,12 @@ import {
   ensure,
   makeCancelable,
   spawnWrapper,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import { ImageAssetType } from "@/wab/image-asset-type";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { ImageAsset, isKnownImageAsset } from "@/wab/shared/model/classes";
-import { allImageAssets, isEditable } from "@/wab/sites";
-import { placeholderImgUrl } from "@/wab/urls";
+import { allImageAssets, isEditable } from "@/wab/shared/core/sites";
+import { placeholderImgUrl } from "@/wab/shared/urls";
 import { Select, Tooltip, notification } from "antd";
 import L from "lodash";
 import { observer } from "mobx-react";

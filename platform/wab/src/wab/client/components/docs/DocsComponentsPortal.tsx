@@ -5,7 +5,7 @@ import {
   DefaultDocsComponentsPortalProps,
   PlasmicDocsComponentsPortal,
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsComponentsPortal";
-import { isPlumeComponent } from "@/wab/components";
+import { isPlumeComponent } from "@/wab/shared/core/components";
 import { observer } from "mobx-react";
 import * as React from "react";
 

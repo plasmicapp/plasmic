@@ -21,10 +21,10 @@ import {
 } from "@plasmicapp/react-web";
 import "@plasmicapp/react-web/lib/plasmic.css";
 import * as React from "react";
-import AuthForm from "../../../../AuthForm"; // plasmic-import: 1ooaehe0m9/component
-import KeyValueRow from "../../../../KeyValueRow"; // plasmic-import: udG9wNYCNL/component
-import ListBuilder from "../../../../ListBuilder"; // plasmic-import: _VRtHiszCx/component
-import TextWithInfo from "../../../../TextWithInfo"; // plasmic-import: -EsDm7v023/component
+import AuthForm from "../../components/AuthForm"; // plasmic-import: 1ooaehe0m9/component
+import KeyValueRow from "../../components/KeyValueRow"; // plasmic-import: udG9wNYCNL/component
+import ListBuilder from "../../components/ListBuilder"; // plasmic-import: _VRtHiszCx/component
+import TextWithInfo from "../../components/TextWithInfo"; // plasmic-import: -EsDm7v023/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Checkbox from "../../components/widgets/Checkbox"; // plasmic-import: W-rO7NZqPjZ/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component

@@ -2,7 +2,7 @@ import Button from "@/wab/client/components/widgets/Button";
 import Textbox from "@/wab/client/components/widgets/Textbox";
 import { zIndex } from "@/wab/client/z-index";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
-import { getComponentDisplayName } from "@/wab/components";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { FRAMES_CAP, FRAME_LOWER, MIXINS_CAP } from "@/wab/shared/Labels";
 import type { AddItemKey } from "@/wab/shared/add-item-keys";
 import type {
@@ -11,12 +11,12 @@ import type {
   Mixin,
   StyleToken,
 } from "@/wab/shared/model/classes";
-import type { DefaultStyle } from "@/wab/styles";
+import type { DefaultStyle } from "@/wab/shared/core/styles";
 import { Form } from "antd";
 import { Rule } from "antd/lib/form";
 import React from "react";
 import ReactDOM from "react-dom";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 /**
  * Shows a React element appended to the end of document.  As such, it is outside of

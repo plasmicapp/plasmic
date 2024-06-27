@@ -20,7 +20,7 @@ import {
   PlasmicDefaultLayout__OverridesType,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicDefaultLayout";
 import { useBrowserNotification } from "@/wab/client/utils/useBrowserNotification";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { TeamId, WorkspaceId } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Dropdown, Menu } from "antd";

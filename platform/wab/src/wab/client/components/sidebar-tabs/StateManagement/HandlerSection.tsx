@@ -12,7 +12,7 @@ import {
 import { mkDefaultInteraction } from "@/wab/client/state-management/interactions-meta";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { moveIndex, remove, spawn } from "@/wab/common";
+import { moveIndex, remove, spawn } from "@/wab/shared/common";
 import {
   Component,
   EventHandler,
@@ -32,11 +32,11 @@ import {
   isEventHandlerKeyForParam,
   isTplComponent,
   KeyedEventHandler,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Alert, Menu } from "antd";
 import { observer } from "mobx-react";
-import { HighlightInteractionRequest } from "src/wab/shared/code-components/code-components";
+import { HighlightInteractionRequest } from "@/wab/shared/code-components/code-components";
 
 export interface HandlerSectionProps extends DefaultHandlerSectionProps {
   sc: StudioCtx;

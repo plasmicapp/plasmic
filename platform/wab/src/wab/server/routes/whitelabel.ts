@@ -1,4 +1,4 @@
-import { ensure, ensureType } from "@/wab/common";
+import { ensure, ensureType } from "@/wab/shared/common";
 import { User } from "@/wab/server/entities/Entities";
 import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import { doLogin } from "@/wab/server/util/auth-util";

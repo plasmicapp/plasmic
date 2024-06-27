@@ -7,7 +7,7 @@ import {
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
-import { maybe } from "@/wab/common";
+import { maybe } from "@/wab/shared/common";
 import { getArenaFrames } from "@/wab/shared/Arenas";
 import $ from "jquery";
 import { observer } from "mobx-react";

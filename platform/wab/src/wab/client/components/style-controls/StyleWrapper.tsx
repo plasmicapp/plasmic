@@ -6,7 +6,7 @@ import {
   withStyleComponent,
   WithStyleContextMenu,
 } from "@/wab/client/components/style-controls/StyleComponent";
-import { ensure, ensureArray } from "@/wab/common";
+import { ensure, ensureArray } from "@/wab/shared/common";
 import classNames from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";

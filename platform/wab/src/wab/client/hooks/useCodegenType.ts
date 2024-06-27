@@ -1,5 +1,5 @@
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
-import { mkUuid, spawn } from "@/wab/common";
+import { mkUuid, spawn } from "@/wab/shared/common";
 import { proxy } from "comlink";
 import { useEffect, useState } from "react";
 

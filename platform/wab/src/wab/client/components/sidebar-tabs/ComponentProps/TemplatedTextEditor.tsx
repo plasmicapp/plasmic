@@ -14,7 +14,7 @@ import {
   randUint16,
   spawn,
   xSetDefault,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
 import { DropFirst } from "@/wab/commons/types";
 import {
@@ -27,7 +27,7 @@ import {
   extractValueSavedFromDataPicker,
   isRealCodeExpr,
   summarizeExpr,
-} from "@/wab/exprs";
+} from "@/wab/shared/core/exprs";
 import {
   getDynamicBindings,
   isDynamicValue,

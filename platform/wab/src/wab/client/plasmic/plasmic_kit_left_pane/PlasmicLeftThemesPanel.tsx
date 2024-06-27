@@ -56,7 +56,7 @@ import {
 } from "@plasmicapp/react-web/lib/host";
 
 import LeftPaneHeader from "../../components/studio/LeftPaneHeader"; // plasmic-import: XLa52PvduIy/component
-import TextWithInfo from "../../../../TextWithInfo"; // plasmic-import: -EsDm7v023/component
+import TextWithInfo from "../../components/TextWithInfo"; // plasmic-import: -EsDm7v023/component
 import StyleSelect from "../../components/style-controls/StyleSelect"; // plasmic-import: E0bKgamUEin/component
 import HiliteTabs from "../../components/widgets/HiliteTabs"; // plasmic-import: a0-WHzk-U8/component
 import DefaultStylesPanel from "../../components/sidebar/DefaultStylesPanel"; // plasmic-import: nmt_YiclQJk/component

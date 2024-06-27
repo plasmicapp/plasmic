@@ -12,8 +12,8 @@ import {
   DefaultTeamSettingsProps,
   PlasmicTeamSettings,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamSettings";
-import { ensure } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { ensure } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { TeamId } from "@/wab/shared/ApiSchema";
 import { accessLevelRank, GrantableAccessLevel } from "@/wab/shared/EntUtil";
 import { getAccessLevelToResource } from "@/wab/shared/perms";

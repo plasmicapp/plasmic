@@ -1,4 +1,4 @@
-import { getPublicUrl } from "@/wab/urls";
+import { getPublicUrl } from "@/wab/shared/urls";
 import memoizeOne from "memoize-one";
 
 /**

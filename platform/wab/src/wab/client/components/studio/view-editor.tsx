@@ -1,5 +1,5 @@
 /** @format */
-import PageSettings from "@/PageSettings";
+import PageSettings from "@/wab/client/components/PageSettings";
 import { DndAdoptee, DndMarkers, DragMoveManager } from "@/wab/client/Dnd";
 import { DragMoveFrameManager } from "@/wab/client/FreestyleManipulator";
 import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
@@ -81,15 +81,15 @@ import {
   tuple,
   unexpected,
   withoutNils,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import {
   isCodeComponent,
   isFrameComponent,
   isPageComponent,
-} from "@/wab/components";
-import { dbg } from "@/wab/dbg";
-import { DEVFLAGS } from "@/wab/devflags";
-import { Box, Pt } from "@/wab/geom";
+} from "@/wab/shared/core/components";
+import { dbg } from "@/wab/shared/dbg";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { Box, Pt } from "@/wab/shared/geom";
 import {
   getArenaFrames,
   getFrameHeight,
@@ -108,15 +108,15 @@ import {
   isKnownTplTag,
 } from "@/wab/shared/model/classes";
 import { TplVisibility } from "@/wab/shared/visibility-utils";
-import { getSiteArenas } from "@/wab/sites";
+import { getSiteArenas } from "@/wab/shared/core/sites";
 import {
   canConvertToSlot,
   canToggleVisibility,
   isTplComponent,
   isTplSlot,
   isTplTextBlock,
-} from "@/wab/tpls";
-import { ValComponent, ValNode, ValTag } from "@/wab/val-nodes";
+} from "@/wab/shared/core/tpls";
+import { ValComponent, ValNode, ValTag } from "@/wab/shared/core/val-nodes";
 import { Alert, notification } from "antd";
 import { ArgsProps } from "antd/lib/notification";
 import { default as cn, default as cx } from "classnames";

@@ -1,5 +1,5 @@
-import { betweenInclusive, ensureString } from "@/wab/common";
-import { NumericSize, Size, autoSize, showSizeCss } from "@/wab/shared/Css";
+import { betweenInclusive, ensureString } from "@/wab/shared/common";
+import { NumericSize, Size, autoSize, showSizeCss } from "@/wab/shared/css-size";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { VariantCombo, ensureVariantSetting } from "@/wab/shared/Variants";

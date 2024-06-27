@@ -14,8 +14,8 @@ import {
   DefaultTeamBillingProps,
   PlasmicTeamBilling,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamBilling";
-import { ensure } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { ensure } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ApiFeatureTier,
   ApiTeam,

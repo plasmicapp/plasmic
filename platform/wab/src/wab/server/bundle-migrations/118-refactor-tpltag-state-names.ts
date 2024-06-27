@@ -1,4 +1,4 @@
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import {
   BundleMigrationType,
   unbundleSite,
@@ -8,8 +8,8 @@ import { Bundler } from "@/wab/shared/bundler";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { isKnownNamedState, State } from "@/wab/shared/model/classes";
 import { renameObjectInExpr } from "@/wab/shared/refactoring";
-import { getStateVarName } from "@/wab/states";
-import * as Tpls from "@/wab/tpls";
+import { getStateVarName } from "@/wab/shared/core/states";
+import * as Tpls from "@/wab/shared/core/tpls";
 
 function getOldLastPartOfImplicitStateName(state: State) {
   return isKnownNamedState(state.implicitState)

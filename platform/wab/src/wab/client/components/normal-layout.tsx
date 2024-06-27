@@ -13,7 +13,7 @@ import { BrowserAlertBanner } from "@/wab/client/components/widgets/BrowserAlert
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
 import ChevronDownsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { Dropdown, Menu } from "antd";
 import * as React from "react";
 import { ReactNode } from "react";

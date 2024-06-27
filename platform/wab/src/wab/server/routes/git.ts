@@ -4,7 +4,7 @@ import {
   ensureString,
   ensureType,
   uncheckedCast,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import {
   coalesceErrorsAsync,
   liftErrorsAsync,

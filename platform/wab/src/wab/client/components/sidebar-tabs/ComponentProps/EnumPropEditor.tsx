@@ -1,6 +1,6 @@
 import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
-import { ensureArray, filterMapTruthy } from "@/wab/common";
+import { ensureArray, filterMapTruthy } from "@/wab/shared/common";
 import { Select } from "antd";
 import L, { isObject, isString } from "lodash";
 import React from "react";

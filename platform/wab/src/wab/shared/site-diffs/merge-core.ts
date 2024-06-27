@@ -1,4 +1,4 @@
-import { spanWhile } from "@/wab/collections";
+import { spanWhile } from "@/wab/shared/collections";
 import {
   arrayEq,
   assert,
@@ -19,11 +19,11 @@ import {
   xIntersect,
   xKeyBy,
   xUnion,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import { Lookup, pathSelector } from "@/wab/commons/path-selector";
-import { PageComponent, getComponentDisplayName } from "@/wab/components";
-import { ChangeRecorder } from "@/wab/observable-model";
+import { PageComponent, getComponentDisplayName } from "@/wab/shared/core/components";
+import { ChangeRecorder } from "@/wab/shared/core/observable-model";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { Bundler, addrKey } from "@/wab/shared/bundler";
 import { toVarName } from "@/wab/shared/codegen/util";
@@ -72,13 +72,13 @@ import {
   InvariantError,
   assertSiteInvariants,
 } from "@/wab/shared/site-invariants";
-import { SplitType } from "@/wab/splits";
+import { SplitType } from "@/wab/shared/core/splits";
 import {
   flattenTpls,
   isTplNamable,
   trackComponentRoot,
   trackComponentSite,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import {
   countBy,
   difference,

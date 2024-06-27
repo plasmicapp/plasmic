@@ -1,5 +1,5 @@
 const { Command } = require("commander");
-import { assert, ensure, spawn } from "@/wab/common";
+import { assert, ensure, spawn } from "@/wab/shared/common";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
 import {
   ensureDbConnections,

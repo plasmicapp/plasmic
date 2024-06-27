@@ -29,13 +29,13 @@ import {
   switchType,
   unexpected,
   xDifference,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import {
   CodeComponent,
   ComponentType,
   isCodeComponent,
   isDefaultComponent,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
 import {
   BadElementSchemaError,
@@ -64,8 +64,8 @@ import {
   Site,
   TplNode,
 } from "@/wab/shared/model/classes";
-import { isHostLessPackage } from "@/wab/sites";
-import { TplCodeComponent } from "@/wab/tpls";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
+import { TplCodeComponent } from "@/wab/shared/core/tpls";
 import {
   ComponentMeta,
   GlobalContextMeta,

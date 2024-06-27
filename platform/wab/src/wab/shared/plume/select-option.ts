@@ -1,4 +1,4 @@
-import { assert } from "@/wab/common";
+import { assert } from "@/wab/shared/common";
 import { internalCanvasElementProps } from "@/wab/shared/canvas-constants";
 import {
   SerializerBaseContext,

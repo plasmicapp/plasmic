@@ -1,4 +1,4 @@
-import { isValidEmail } from "@/wab/common";
+import { isValidEmail } from "@/wab/shared/common";
 import { getIntercomToken } from "@/wab/server/secrets";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import axios from "axios";

@@ -4,8 +4,8 @@ import {
   isFrameComponent,
   isHostLessCodeComponent,
   isPageComponent,
-} from "@/wab/components";
-import { ImageAssetType } from "@/wab/image-asset-type";
+} from "@/wab/shared/core/components";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { AppAuthProvider } from "@/wab/shared/ApiSchema";
 import {
   ComponentGenHelper,
@@ -20,7 +20,7 @@ import { exportStyleTokens } from "@/wab/shared/codegen/style-tokens";
 import { ExportOpts, ProjectConfig } from "@/wab/shared/codegen/types";
 import { exportGlobalVariantGroup } from "@/wab/shared/codegen/variants";
 import { Component, Site } from "@/wab/shared/model/classes";
-import { CssVarResolver } from "@/wab/styles";
+import { CssVarResolver } from "@/wab/shared/core/styles";
 import {
   computeSerializerSiteContext,
   exportCustomFunctionConfig,

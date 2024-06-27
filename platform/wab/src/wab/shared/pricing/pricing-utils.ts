@@ -1,6 +1,6 @@
-import { withoutFalsy } from "@/wab/common";
+import { withoutFalsy } from "@/wab/shared/common";
 import { ApiFeatureTier, ApiTeam } from "@/wab/shared/ApiSchema";
-import { capitalizeFirst } from "@/wab/strs";
+import { capitalizeFirst } from "@/wab/shared/strs";
 import { maxBy } from "lodash";
 
 export const featureTiers = ["Basic", "Growth", "Enterprise"] as const;

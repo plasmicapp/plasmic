@@ -8,12 +8,12 @@ import {
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { fakeStudioCtx } from "@/wab/client/test/fake-init-ctx";
-import { ComponentType } from "@/wab/components";
-import * as ImageAssets from "@/wab/image-assets";
+import { ComponentType } from "@/wab/shared/core/components";
+import * as ImageAssets from "@/wab/shared/core/image-assets";
 import * as Variants from "@/wab/shared/Variants";
 import { Component } from "@/wab/shared/model/classes";
-import * as Tpls from "@/wab/tpls";
-import { TplImageTag } from "@/wab/tpls";
+import * as Tpls from "@/wab/shared/core/tpls";
+import { TplImageTag } from "@/wab/shared/core/tpls";
 
 let studioCtx: StudioCtx;
 let api: ReturnType<typeof fakeStudioCtx>["api"];

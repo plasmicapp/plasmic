@@ -5,7 +5,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicShareButton";
 import { ApiPermission, ApiResource } from "@/wab/shared/ApiSchema";
 import * as React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 interface ShareButtonProps extends DefaultShareButtonProps {
   resource: ApiResource;

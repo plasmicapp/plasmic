@@ -1,4 +1,4 @@
-import { ensureInstance } from "@/wab/common";
+import { ensureInstance } from "@/wab/shared/common";
 import S3 from "aws-sdk/clients/s3";
 import path from "path";
 

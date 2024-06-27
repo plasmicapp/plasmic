@@ -6,7 +6,7 @@ import {
   DefaultDirectoryUserRowProps,
   PlasmicDirectoryUserRow,
 } from "@/wab/client/plasmic/plasmic_kit_end_user_management/PlasmicDirectoryUserRow";
-import { cx, spawn } from "@/wab/common";
+import { cx, spawn } from "@/wab/shared/common";
 import { ApiDirectoryEndUserGroup, ApiEndUser } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";

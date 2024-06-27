@@ -5,7 +5,7 @@ import {
   readUploadedFileAsDataUrl,
   ResizableImage,
 } from "@/wab/client/dom-utils";
-import { swallow } from "@/wab/common";
+import { swallow } from "@/wab/shared/common";
 
 import {
   PlasmicClipboardData,

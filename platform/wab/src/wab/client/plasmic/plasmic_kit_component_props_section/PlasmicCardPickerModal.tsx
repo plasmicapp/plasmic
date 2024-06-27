@@ -31,7 +31,7 @@ import {
   deriveRenderOpts,
   ensureGlobalVariants,
 } from "@plasmicapp/react-web";
-import Modal from "../../../../Modal"; // plasmic-import: rD0wOVzSnE/component
+import Modal from "../../components/Modal"; // plasmic-import: rD0wOVzSnE/component
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
 import CardPickerItem from "../../components/sidebar-tabs/ComponentProps/CardPickerItem"; // plasmic-import: -ZWJykIq5V-3F/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component

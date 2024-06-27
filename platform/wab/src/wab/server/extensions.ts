@@ -1,4 +1,4 @@
-import { DEVFLAGS } from "@/wab/devflags";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Config } from "@/wab/server/config";
 import { Actor } from "@/wab/server/db/DbMgr";
 import { Mailer } from "@/wab/server/emails/Mailer";

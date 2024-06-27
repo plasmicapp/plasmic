@@ -7,7 +7,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_optimize/PlasmicExperimentCanvasButton";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { Split, VariantGroup } from "@/wab/shared/model/classes";
-import { SplitType } from "@/wab/splits";
+import { SplitType } from "@/wab/shared/core/splits";
 import * as React from "react";
 
 // Your component props start with props for variants and slots you defined

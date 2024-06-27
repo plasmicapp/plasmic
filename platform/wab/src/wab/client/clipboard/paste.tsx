@@ -10,7 +10,7 @@ import { pasteFromFigma } from "@/wab/client/figma";
 import { isCopyState } from "@/wab/client/insertable-templates";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { pasteFromWebImporter } from "@/wab/client/WebImporter";
-import { Pt } from "@/wab/geom";
+import { Pt } from "@/wab/shared/geom";
 import { CopyState } from "@/wab/shared/insertable-templates/types";
 import { notification } from "antd";
 

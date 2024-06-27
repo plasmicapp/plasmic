@@ -4,7 +4,7 @@
 
 import * as fs from "fs";
 import L from "lodash";
-import { check } from "../src/wab/common";
+import { check } from "../src/wab/shared/common";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const JS = require("JSONStream");

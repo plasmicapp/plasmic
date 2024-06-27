@@ -5,7 +5,7 @@ import {
   DefaultImagesPanelProps,
   PlasmicImagesPanel,
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicImagesPanel";
-import { ImageAssetType } from "@/wab/image-asset-type";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { Alert } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";

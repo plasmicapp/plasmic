@@ -17,7 +17,7 @@ import { AddPresetIcon } from "@/wab/client/plasmic/plasmic_kit_design_system/Pl
 import BoxControlsIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__BoxControls";
 import { PlasmicAddDrawerItem } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicAddDrawerItem";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { isCodeComponent } from "@/wab/components";
+import { isCodeComponent } from "@/wab/shared/core/components";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";

@@ -1,11 +1,11 @@
-import { assert, ensure } from "@/wab/common";
+import { assert, ensure } from "@/wab/shared/common";
 import {
   cloneComponent,
   isCodeComponent,
   isHostLessCodeComponent,
   isPlumeComponent,
-} from "@/wab/components";
-import { walkDependencyTree } from "@/wab/project-deps";
+} from "@/wab/shared/core/components";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { getBaseVariant } from "@/wab/shared/Variants";
 import { siteToAllImageAssetsDict } from "@/wab/shared/cached-selectors";
@@ -24,8 +24,8 @@ import {
   Variant,
 } from "@/wab/shared/model/classes";
 import { makeComponentSwapper } from "@/wab/shared/swap-components";
-import { allComponents } from "@/wab/sites";
-import { flattenTpls, isTplComponent } from "@/wab/tpls";
+import { allComponents } from "@/wab/shared/core/sites";
+import { flattenTpls, isTplComponent } from "@/wab/shared/core/tpls";
 
 interface OriginInfo {
   projectId: string;

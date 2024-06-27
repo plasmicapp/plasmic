@@ -1,4 +1,4 @@
-import { assert, tuple } from "@/wab/common";
+import { assert, tuple } from "@/wab/shared/common";
 import * as _ from "lodash";
 const memoizeOne = ((m: any) => m.default || m)(require("memoize-one"));
 

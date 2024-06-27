@@ -1,6 +1,6 @@
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure } from "@/wab/common";
-import { standardSides } from "@/wab/geom";
+import { ensure } from "@/wab/shared/common";
+import { standardSides } from "@/wab/shared/geom";
 import $ from "jquery";
 
 export function createDarkMask(studioCtx: StudioCtx) {

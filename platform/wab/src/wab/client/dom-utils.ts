@@ -1,9 +1,9 @@
-import { ImageBackground, mkBackgroundLayer } from "@/wab/bg-styles";
+import { ImageBackground, mkBackgroundLayer } from "@/wab/shared/core/bg-styles";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { getImageSize } from "@/wab/client/image/metadata";
-import { ensure, ensureHTMLElt, ensureString } from "@/wab/common";
-import { Rect } from "@/wab/geom";
-import { ImageAssetType } from "@/wab/image-asset-type";
+import { ensure, ensureHTMLElt, ensureString } from "@/wab/shared/common";
+import { Rect } from "@/wab/shared/geom";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import {
   SVG_MEDIA_TYPE as SVG_CONTENT_TYPE,
   SVG_MEDIA_TYPE,
@@ -20,7 +20,7 @@ import {
   gatherSvgColors,
   isSVG,
 } from "@/wab/shared/svg-utils";
-import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/tpls";
+import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/shared/core/tpls";
 import { notification } from "antd";
 import * as downscale from "downscale";
 import { fileTypeFromBlob } from "file-type-browser";

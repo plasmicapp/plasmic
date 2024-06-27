@@ -12,7 +12,7 @@ import {
   DefaultTeamAnalyticsProps,
   PlasmicTeamAnalytics,
 } from "@/wab/client/plasmic/plasmic_kit_analytics/PlasmicTeamAnalytics";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { TeamId } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import moment from "moment";

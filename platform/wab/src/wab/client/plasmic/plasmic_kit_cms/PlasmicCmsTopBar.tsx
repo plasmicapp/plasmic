@@ -32,7 +32,7 @@ import {
   deriveRenderOpts,
   ensureGlobalVariants,
 } from "@plasmicapp/react-web";
-import InlineEditable from "../../../../InlineEditable"; // plasmic-import: btpz7A3thO/component
+import InlineEditable from "../../components/InlineEditable"; // plasmic-import: btpz7A3thO/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 

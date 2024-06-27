@@ -1,4 +1,4 @@
-import { sortBy, withoutNils } from "@/wab/common";
+import { sortBy, withoutNils } from "@/wab/shared/common";
 import {
   executeDataSourceOperation,
   getDataSourceOperation,

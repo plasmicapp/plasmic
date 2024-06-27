@@ -7,7 +7,7 @@ import {
   DefaultIconTogglesPanelProps,
   PlasmicIconTogglesPanel,
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicIconTogglesPanel";
-import { lengthCssUnits } from "@/wab/css";
+import { lengthCssUnits } from "@/wab/shared/css";
 import { makeAssetClassName } from "@/wab/shared/codegen/image-assets";
 import { observer } from "mobx-react";
 import * as React from "react";

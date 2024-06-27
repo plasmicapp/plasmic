@@ -9,19 +9,19 @@ import { onLoadInjectSystemJS } from "@/wab/client/components/live/live-syncer";
 import { getSortedHostLessPkgs } from "@/wab/client/components/studio/studio-bundles";
 import { scriptExec } from "@/wab/client/dom-utils";
 import { maybeToggleTrailingSlash } from "@/wab/client/utils/app-hosting-utils";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import {
   InteractionArgLoc,
   InteractionLoc,
   isInteractionLoc,
-} from "@/wab/exprs";
+} from "@/wab/shared/core/exprs";
 import { usedHostLessPkgs } from "@/wab/shared/cached-selectors";
 import { nodeJsName } from "@/wab/shared/codegen/react-p";
 import { getExportedComponentName } from "@/wab/shared/codegen/react-p/utils";
 import { toJsIdentifier } from "@/wab/shared/codegen/util";
 import { Component } from "@/wab/shared/model/classes";
-import { TplNamable } from "@/wab/tpls";
-import { getPublicUrl } from "@/wab/urls";
+import { TplNamable } from "@/wab/shared/core/tpls";
+import { getPublicUrl } from "@/wab/shared/urls";
 import { autorun } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";

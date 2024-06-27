@@ -1,5 +1,5 @@
-import { ensure } from "@/wab/common";
-import { codeLit } from "@/wab/exprs";
+import { ensure } from "@/wab/shared/common";
+import { codeLit } from "@/wab/shared/core/exprs";
 import {
   BASE_VARIANT_NAME,
   mkVariant,
@@ -13,7 +13,7 @@ import {
   ImageAssetRef,
   Rep,
 } from "@/wab/shared/model/classes";
-import { mkRep, mkTplTag } from "@/wab/tpls";
+import { mkRep, mkTplTag } from "@/wab/shared/core/tpls";
 
 describe("Insertable templates fixers", () => {
   describe("fixTplTreeExprs", () => {

@@ -1,5 +1,5 @@
 const { Command } = require("commander");
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
 import { cleanTutorialDbs } from "@/wab/server/db/custom-scripts/clean-tutorialdbs";
 import { findConflictNames } from "@/wab/server/db/custom-scripts/find-conflict-names";

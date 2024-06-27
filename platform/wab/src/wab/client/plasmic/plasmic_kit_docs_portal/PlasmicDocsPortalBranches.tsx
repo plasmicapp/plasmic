@@ -32,7 +32,7 @@ import {
   ensureGlobalVariants,
 } from "@plasmicapp/react-web";
 import DocsPortalHeader from "../../components/docs/DocsPortalHeader"; // plasmic-import: 6yrnCqYwJf/component
-import DocsPortalBranch from "../../../../DocsPortalBranch"; // plasmic-import: mJFZOBWGNu/component
+import DocsPortalBranch from "../../components/docs/DocsPortalBranch"; // plasmic-import: mJFZOBWGNu/component
 
 import {
   CodegenTypeValue,

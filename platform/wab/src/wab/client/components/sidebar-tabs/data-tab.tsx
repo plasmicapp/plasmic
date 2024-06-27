@@ -1,7 +1,7 @@
 import { ValueViewer } from "@/wab/client/components/coding/ValueViewer";
-import { cx } from "@/wab/common";
+import { cx } from "@/wab/shared/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import { ExprCtx, asCode, isDynamicExpr } from "@/wab/exprs";
+import { ExprCtx, asCode, isDynamicExpr } from "@/wab/shared/core/exprs";
 import { tryEvalExpr } from "@/wab/shared/eval";
 import {
   Expr,
@@ -9,7 +9,7 @@ import {
   isKnownTplNode,
 } from "@/wab/shared/model/classes";
 import { hashExpr } from "@/wab/shared/site-diffs";
-import { summarizeVal } from "@/wab/vals";
+import { summarizeVal } from "@/wab/shared/core/vals";
 import { Tooltip } from "antd";
 import L from "lodash";
 import * as React from "react";

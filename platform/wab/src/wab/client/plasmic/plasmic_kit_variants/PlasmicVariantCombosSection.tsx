@@ -32,7 +32,7 @@ import {
   ensureGlobalVariants,
 } from "@plasmicapp/react-web";
 import ListSectionHeader from "../../components/ListSectionHeader"; // plasmic-import: wNvxk7eOak/component
-import TextWithInfo from "../../../../TextWithInfo"; // plasmic-import: -EsDm7v023/component
+import TextWithInfo from "../../components/TextWithInfo"; // plasmic-import: -EsDm7v023/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import VariantComboRow from "../../components/variants/VariantComboRow"; // plasmic-import: FskUdXzKp5L/component
 import Chip from "../../components/widgets/Chip"; // plasmic-import: jW885tExwE/component

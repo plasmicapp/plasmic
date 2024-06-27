@@ -4,8 +4,8 @@ import {
   SLOT_IDENTIFIER_REGEX,
 } from "@/wab/client/figma-importer/constants";
 import { SceneNode } from "@/wab/client/figma-importer/plugin-types";
-import { assert, ensure } from "@/wab/common";
-import { TplNamable } from "@/wab/tpls";
+import { assert, ensure } from "@/wab/shared/common";
+import { TplNamable } from "@/wab/shared/core/tpls";
 
 type FigmaSlotInfo = Record<string, TplNamable[]>;
 

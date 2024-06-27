@@ -1,5 +1,5 @@
-import { ensure } from "@/wab/common";
-import { clone } from "@/wab/exprs";
+import { ensure } from "@/wab/shared/common";
+import { clone } from "@/wab/shared/core/exprs";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
@@ -10,7 +10,7 @@ import { TplMgr } from "@/wab/shared/TplMgr";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
 import { Bundler } from "@/wab/shared/bundler";
 import { isKnownDataSourceOpExpr } from "@/wab/shared/model/classes";
-import { flattenTpls, isTplCodeComponent } from "@/wab/tpls";
+import { flattenTpls, isTplCodeComponent } from "@/wab/shared/core/tpls";
 import { formComponentName } from "@plasmicpkgs/antd5";
 
 // migrates antd5 hostless, plasmic-rich-components

@@ -1,7 +1,7 @@
 // Copied from https://github.com/jakearchibald/svgomg/blob/master/src/js/svgo-worker/index.js
 
 "use strict";
-import { ensure, mkShortId } from "@/wab/common";
+import { ensure, mkShortId } from "@/wab/shared/common";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { ProcessSvgResponse } from "@/wab/shared/ApiSchema";
 import { parseSvgXml } from "@/wab/shared/data-urls";

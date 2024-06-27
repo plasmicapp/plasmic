@@ -23,7 +23,7 @@ import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Compone
 import { PlasmicLeftComponentsPanel } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftComponentsPanel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import {
   DefaultComponentKind,
   getComponentDisplayName,
@@ -37,7 +37,7 @@ import {
   isReusableComponent,
   isShownHostLessCodeComponent,
   sortComponentsByName,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import { MainBranchId } from "@/wab/shared/ApiSchema";
 import { isMixedArena } from "@/wab/shared/Arenas";
 import { FRAME_CAP } from "@/wab/shared/Labels";
@@ -46,14 +46,14 @@ import {
   isKnownProjectDependency,
   ProjectDependency,
 } from "@/wab/shared/model/classes";
-import { isHostLessPackage } from "@/wab/sites";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { Menu, Popover } from "antd";
 import { orderBy } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
-import { isBuiltinCodeComponent } from "src/wab/shared/code-components/builtin-code-components";
-import { isCoreTeamEmail } from "src/wab/shared/devflag-utils";
+import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
+import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 
 const LeftComponentsPanel = observer(function LeftComponentsPanel(props: {}) {
   const studioCtx = useStudioCtx();

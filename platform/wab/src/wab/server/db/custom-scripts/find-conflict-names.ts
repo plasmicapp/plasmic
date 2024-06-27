@@ -1,5 +1,5 @@
-import { assert } from "@/wab/common";
-import { getRealParams, getVariantParams } from "@/wab/components";
+import { assert } from "@/wab/shared/common";
+import { getRealParams, getVariantParams } from "@/wab/shared/core/components";
 import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
 import { getMigratedBundle } from "@/wab/server/db/BundleMigrator";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";

@@ -6,19 +6,19 @@ import {
   ensureArray,
   last,
   swallow,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { arrayReversed, removeFromArray } from "@/wab/commons/collections";
 import { ReplaceKey } from "@/wab/commons/types";
 import {
   allComponentVariants,
   getComponentDisplayName,
   isCodeComponent,
-} from "@/wab/components";
-import { PLASMIC_DISPLAY_NONE } from "@/wab/css";
-import { DEVFLAGS } from "@/wab/devflags";
-import { asCode } from "@/wab/exprs";
-import { ImageAssetType } from "@/wab/image-asset-type";
-import { getTagAttrForImageAsset } from "@/wab/image-assets";
+} from "@/wab/shared/core/components";
+import { PLASMIC_DISPLAY_NONE } from "@/wab/shared/css";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { asCode } from "@/wab/shared/core/exprs";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { getTagAttrForImageAsset } from "@/wab/shared/core/image-assets";
 import {
   computedProjectFlags,
   findNonEmptyCombos,
@@ -92,7 +92,7 @@ import {
   setTplVisibility,
   TplVisibility,
 } from "@/wab/shared/visibility-utils";
-import { allGlobalVariants, isFrameRootTplComponent } from "@/wab/sites";
+import { allGlobalVariants, isFrameRootTplComponent } from "@/wab/shared/core/sites";
 import {
   AttrsSpec,
   ChildSet,
@@ -109,7 +109,7 @@ import {
   mkTplTagX,
   summarizeTpl,
   TplTagType,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import L from "lodash";
 
 type StylePropOpts = { forVisibility?: boolean };

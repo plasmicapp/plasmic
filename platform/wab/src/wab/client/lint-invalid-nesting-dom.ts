@@ -1,5 +1,5 @@
 import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import {
   AncestorInfo,
   getInvalidAncestor,
@@ -7,7 +7,7 @@ import {
 } from "@/wab/shared/linting/invalid-nesting/reactValidateDomNesting";
 import { InvalidDomNestingLintIssue } from "@/wab/shared/linting/lint-types";
 import { Component, TplNode } from "@/wab/shared/model/classes";
-import { ValNode, isValNode } from "@/wab/val-nodes";
+import { ValNode, isValNode } from "@/wab/shared/core/val-nodes";
 import $ from "jquery";
 
 const TYPE = "invalid-dom-nesting";

@@ -19,8 +19,8 @@ import {
   OnNextCtx,
   StudioTutorialStep,
 } from "@/wab/client/tours/tutorials/tutorials-types";
-import { ensure } from "@/wab/common";
-import { RightTabKey } from "src/wab/client/studio-ctx/StudioCtx";
+import { ensure } from "@/wab/shared/common";
+import { RightTabKey } from "@/wab/client/studio-ctx/StudioCtx";
 
 export const DYNAMIC_PAGE_STEPS: StudioTutorialStep[] = [
   ADMIN_PANEL_WELCOME_TUTORIAL_STEP,

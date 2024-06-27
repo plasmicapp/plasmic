@@ -1,5 +1,5 @@
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import {
   withConsumer,
   withProvider,

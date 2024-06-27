@@ -1,7 +1,7 @@
 import { hasLayoutBox } from "@/wab/client/dom";
 import { getElementBounds } from "@/wab/client/dom-utils";
-import { ensureNonEmpty } from "@/wab/common";
-import { Box, Pt } from "@/wab/geom";
+import { ensureNonEmpty } from "@/wab/shared/common";
+import { Box, Pt } from "@/wab/shared/geom";
 import $ from "jquery";
 
 export function recomputeBounds($node: JQuery): Box {

@@ -1,4 +1,4 @@
-import { assert, ensure, sortBy, tuple } from "@/wab/common";
+import { assert, ensure, sortBy, tuple } from "@/wab/shared/common";
 import { TokenType } from "@/wab/commons/StyleToken";
 import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { DbMgr } from "@/wab/server/db/DbMgr";
@@ -14,7 +14,7 @@ import { Bundler } from "@/wab/shared/bundler";
 import { ProjectDependency, Site } from "@/wab/shared/model/classes";
 import { withoutUids } from "@/wab/shared/model/model-meta";
 import { BranchSide } from "@/wab/shared/site-diffs/merge-core";
-import { createSite } from "@/wab/sites";
+import { createSite } from "@/wab/shared/core/sites";
 import L, { omit } from "lodash";
 
 const bundler = new Bundler();

@@ -6,16 +6,16 @@ import { IconLinkButton } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import {
   code,
   createExprForDataPickerValue,
   extractValueSavedFromDataPicker,
-} from "@/wab/exprs";
-import { mkVar } from "@/wab/lang";
+} from "@/wab/shared/core/exprs";
+import { mkVar } from "@/wab/shared/core/lang";
 import { isBaseVariant } from "@/wab/shared/Variants";
 import { ObjectPath, Rep, TplNode } from "@/wab/shared/model/classes";
-import { tryGetTplOwnerComponent } from "@/wab/tpls";
+import { tryGetTplOwnerComponent } from "@/wab/shared/core/tpls";
 import { Menu } from "antd";
 import { observer } from "mobx-react";
 import React from "react";

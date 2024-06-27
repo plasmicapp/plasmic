@@ -1,4 +1,4 @@
-import DeploymentFlags from "@/wab/DeploymentFlags";
+import DeploymentFlags from "@/wab/shared/DeploymentFlags";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
 
 // Stripe

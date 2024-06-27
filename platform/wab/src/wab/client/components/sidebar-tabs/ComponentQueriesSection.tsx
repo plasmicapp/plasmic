@@ -1,6 +1,6 @@
 import { useViewCtx } from "@/wab/client/contexts/StudioContexts";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { observer } from "mobx-react";
 import React, { useState } from "react";
 

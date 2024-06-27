@@ -21,7 +21,7 @@ import {
   DefaultWorkspaceSectionProps,
   PlasmicWorkspaceSection,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicWorkspaceSection";
-import { asOne, ensure, filterMapTruthy, spawn } from "@/wab/common";
+import { asOne, ensure, filterMapTruthy, spawn } from "@/wab/shared/common";
 import { InlineEdit } from "@/wab/commons/components/InlineEdit";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import { Stated } from "@/wab/commons/components/Stated";

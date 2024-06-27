@@ -12,14 +12,14 @@ import { reportError } from "@/wab/client/ErrorNotifications";
 import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import {
   CodeComponent,
   getComponentDisplayName,
   getDefaultComponentKind,
   getDefaultComponentLabel,
   isHostLessCodeComponent,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import {
   compareComponentPropsWithMeta,
   UnknownComponentError,

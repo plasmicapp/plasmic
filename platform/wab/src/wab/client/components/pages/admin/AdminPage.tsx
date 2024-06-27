@@ -24,8 +24,8 @@ import CheckIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Check";
 import CircleCloseIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__CircleClose";
 import { stepsToCypress } from "@/wab/client/tours/tutorials/tutorials-helpers";
 import { STUDIO_ONBOARDING_TUTORIALS } from "@/wab/client/tours/tutorials/tutorials-meta";
-import { assert, spawn, tryRemove } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { assert, spawn, tryRemove } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ApiFeatureTier, ApiProjectRevision } from "@/wab/shared/ApiSchema";
 import { PkgVersionInfo } from "@/wab/shared/SharedApi";
 import {
@@ -44,7 +44,7 @@ import TextArea from "antd/lib/input/TextArea";
 import L from "lodash";
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import useSWR from "swr/immutable";
 
 export default function AdminPage({ nonAuthCtx }: { nonAuthCtx: NonAuthCtx }) {

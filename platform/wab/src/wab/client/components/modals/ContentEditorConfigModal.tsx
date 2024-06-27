@@ -3,7 +3,7 @@ import sty from "@/wab/client/components/modals/ContentEditorConfigModal.module.
 import Button from "@/wab/client/components/widgets/Button";
 import { Modal } from "@/wab/client/components/widgets/Modal";
 import Select from "@/wab/client/components/widgets/Select";
-import { ensureType, isOneOf, unreachable } from "@/wab/common";
+import { ensureType, isOneOf, unreachable } from "@/wab/shared/common";
 import { toOpaque } from "@/wab/commons/types";
 import { PublicStyleSection, TemplateSpec } from "@/wab/shared/ApiSchema";
 import {
@@ -15,7 +15,7 @@ import {
   UiConfig,
   makeNiceAliasName,
 } from "@/wab/shared/ui-config-utils";
-import { capitalizeFirst } from "@/wab/strs";
+import { capitalizeFirst } from "@/wab/shared/strs";
 import { Alert, Form, Input } from "antd";
 import { capitalize, omit, uniqBy } from "lodash";
 import React from "react";

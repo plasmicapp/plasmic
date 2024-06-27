@@ -1,6 +1,6 @@
 import { getComponentPropTypes } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { assert, ensure } from "@/wab/common";
+import { assert, ensure } from "@/wab/shared/common";
 import { unwrap } from "@/wab/commons/failable-utils";
 import {
   clone as cloneExpr,
@@ -11,8 +11,8 @@ import {
   mergeUserMinimalValueWithCompositeExpr,
   serCompositeExprMaybe,
   tryExtractJson,
-} from "@/wab/exprs";
-import { walkDependencyTree } from "@/wab/project-deps";
+} from "@/wab/shared/core/exprs";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import {
   elementSchemaToTpl,
   isPlainObjectPropType,
@@ -40,7 +40,7 @@ import {
   ensureBaseVariantSetting,
   getBaseVariant,
 } from "@/wab/shared/Variants";
-import { SlotSelection } from "@/wab/slots";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   clone as cloneTpl,
   findFirstTextBlockInBaseVariant,
@@ -51,7 +51,7 @@ import {
   mkTplComponent,
   tplChildren,
   TplCodeComponent,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import { CodeComponentMode } from "@plasmicapp/host";
 import { NormalizedData } from "@plasmicapp/react-web/lib/data-sources";
 import {

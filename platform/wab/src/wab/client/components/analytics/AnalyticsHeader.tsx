@@ -6,7 +6,7 @@ import {
   DefaultAnalyticsHeaderProps,
   PlasmicAnalyticsHeader,
 } from "@/wab/client/plasmic/plasmic_kit_analytics/PlasmicAnalyticsHeader";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { ORGANIZATION_CAP, ORGANIZATION_LOWER } from "@/wab/shared/Labels";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";

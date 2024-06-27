@@ -12,9 +12,9 @@ import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
 import Select from "@/wab/client/components/widgets/Select";
 import PlasmicExperimentModal from "@/wab/client/plasmic/plasmic_kit_optimize/PlasmicExperimentModal";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { Split, SplitSlice } from "@/wab/shared/model/classes";
-import { SplitType } from "@/wab/splits";
+import { SplitType } from "@/wab/shared/core/splits";
 import { observer } from "mobx-react";
 import * as React from "react";
 

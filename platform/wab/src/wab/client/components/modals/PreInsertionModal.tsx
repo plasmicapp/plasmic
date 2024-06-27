@@ -3,8 +3,8 @@ import {
   StudioCtx,
   providesStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
-import { hackyCast } from "@/wab/common";
-import { tryExtractJson } from "@/wab/exprs";
+import { hackyCast } from "@/wab/shared/common";
+import { tryExtractJson } from "@/wab/shared/core/exprs";
 import {
   StudioPropType,
   isPlainObjectPropType,
@@ -13,7 +13,7 @@ import {
 import { Component, Expr } from "@/wab/shared/model/classes";
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 export async function getPreInsertionProps(
   studioCtx: StudioCtx,

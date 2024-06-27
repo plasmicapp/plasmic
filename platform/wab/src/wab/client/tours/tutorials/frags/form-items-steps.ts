@@ -12,7 +12,7 @@ import {
   OnNextCtx,
   StudioTutorialStep,
 } from "@/wab/client/tours/tutorials/tutorials-types";
-import { tryExtractString } from "@/wab/exprs";
+import { tryExtractString } from "@/wab/shared/core/exprs";
 import { notification } from "antd";
 
 export const FORM_ITEMS_STEPS: StudioTutorialStep[] = [

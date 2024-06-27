@@ -4,8 +4,8 @@ import {
   removeWhere,
   spawnWrapper,
   withoutNils,
-} from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+} from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { makeExpressSessionMiddleware } from "@/wab/server/AppServer";
 import { Config } from "@/wab/server/config";
 import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";

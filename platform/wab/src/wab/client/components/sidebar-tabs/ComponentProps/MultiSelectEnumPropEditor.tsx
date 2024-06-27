@@ -1,8 +1,8 @@
 import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { XMultiSelect } from "@/wab/client/components/XMultiSelect";
 import React from "react";
-import { arrayMoveIndex } from "src/wab/collections";
-import { withoutNils } from "src/wab/common";
+import { arrayMoveIndex } from "@/wab/shared/collections";
+import { withoutNils } from "@/wab/shared/common";
 
 export function MultiSelectEnumPropEditor(props: {
   onChange: (value: any) => void;

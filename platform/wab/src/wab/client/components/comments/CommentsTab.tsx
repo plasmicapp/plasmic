@@ -20,7 +20,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentsTab";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { CommentThreadId } from "@/wab/shared/ApiSchema";
-import { isTplNamable, summarizeTplNamable } from "@/wab/tpls";
+import { isTplNamable, summarizeTplNamable } from "@/wab/shared/core/tpls";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";

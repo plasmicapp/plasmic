@@ -1,4 +1,4 @@
-import { asyncWrapper, omitNils } from "@/wab/common";
+import { asyncWrapper, omitNils } from "@/wab/shared/common";
 import { adminEmails } from "@/wab/server/admin";
 import {
   ANON_USER,

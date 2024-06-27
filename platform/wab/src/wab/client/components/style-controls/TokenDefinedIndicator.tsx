@@ -11,7 +11,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { isKnownVariantedValue, StyleToken } from "@/wab/shared/model/classes";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { BASE_VARIANT_NAME } from "@/wab/shared/Variants";
-import { capitalizeFirst } from "@/wab/strs";
+import { capitalizeFirst } from "@/wab/shared/strs";
 import { Popover } from "antd";
 import classNames from "classnames";
 import React from "react";

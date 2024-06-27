@@ -1,5 +1,5 @@
-import { ensure } from "@/wab/common";
-import { getCssInitial } from "@/wab/css";
+import { ensure } from "@/wab/shared/common";
+import { getCssInitial } from "@/wab/shared/css";
 import {
   getCssDefault,
   IRuleSetHelpersX,

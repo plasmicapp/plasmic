@@ -25,7 +25,7 @@ import UnorderedListsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIc
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { EditingTextContext } from "@/wab/client/studio-ctx/view-ctx";
 import { fontWeightOptions } from "@/wab/client/typography-utils";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { PublicStyleSection } from "@/wab/shared/ApiSchema";
 import { canEditStyleSection } from "@/wab/shared/ui-config-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";

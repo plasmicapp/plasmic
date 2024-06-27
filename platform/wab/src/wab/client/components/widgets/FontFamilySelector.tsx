@@ -3,7 +3,7 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
 import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { cx, withoutNils } from "@/wab/common";
+import { cx, withoutNils } from "@/wab/shared/common";
 import { derefToken, mkTokenRef, TokenType } from "@/wab/commons/StyleToken";
 import { siteToAllDirectTokensOfType } from "@/wab/shared/cached-selectors";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";

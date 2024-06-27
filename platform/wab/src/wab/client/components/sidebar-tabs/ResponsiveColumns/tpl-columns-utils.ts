@@ -3,7 +3,7 @@ import {
   ensureBaseRs,
   ensureVariantRs,
 } from "@/wab/client/studio-ctx/view-ctx";
-import { assert } from "@/wab/common";
+import { assert } from "@/wab/shared/common";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import {
@@ -13,7 +13,7 @@ import {
 import { AddItemPrefs, getSimplifiedStyles } from "@/wab/shared/default-styles";
 import { ColumnsConfig, TplTag, Variant } from "@/wab/shared/model/classes";
 import { clearTplVisibility } from "@/wab/shared/visibility-utils";
-import { TplColumnsTag, TplTagType, isTplColumn } from "@/wab/tpls";
+import { TplColumnsTag, TplTagType, isTplColumn } from "@/wab/shared/core/tpls";
 
 export const getScreenVariant = (viewCtx: ViewCtx): Variant | undefined => {
   const screenVariants =

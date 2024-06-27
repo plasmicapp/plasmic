@@ -6,7 +6,7 @@ import Textbox, { TextboxRef } from "@/wab/client/components/widgets/Textbox";
 import { useFocusOnDisplayed } from "@/wab/client/dom-utils";
 import { CloseIcon } from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import { PlasmicSearchbox } from "@/wab/client/plasmic/plasmic_kit/PlasmicSearchbox";
-import { maybe } from "@/wab/common";
+import { maybe } from "@/wab/shared/common";
 import {
   createFakeEvent,
   useForwardedRef,

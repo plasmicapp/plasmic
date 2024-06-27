@@ -1,4 +1,4 @@
-import { mergeSets, removeWhere } from "@/wab/common";
+import { mergeSets, removeWhere } from "@/wab/shared/common";
 import { isVariantSettingEmpty } from "@/wab/shared/Variants";
 import {
   extractUsedIconAssetsForComponents,

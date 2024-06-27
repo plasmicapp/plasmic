@@ -12,7 +12,7 @@ import { Form } from "antd";
 import { computed } from "mobx";
 import { useLocalStore, useObserver } from "mobx-react";
 import React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 export interface ExtractComponentResponse {
   name: string;

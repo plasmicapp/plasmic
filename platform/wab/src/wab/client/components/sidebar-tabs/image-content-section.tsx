@@ -7,9 +7,9 @@ import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleCom
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import ContainIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Contain";
 import CoverIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Cover";
-import { assert, ensure, spawn } from "@/wab/common";
+import { assert, ensure, spawn } from "@/wab/shared/common";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { isTplTagOrComponent } from "@/wab/tpls";
+import { isTplTagOrComponent } from "@/wab/shared/core/tpls";
 import { Alert, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import React from "react";

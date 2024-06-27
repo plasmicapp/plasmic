@@ -10,7 +10,7 @@ import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelW
 import { XMultiSelect } from "@/wab/client/components/XMultiSelect";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, removeAt } from "@/wab/common";
+import { ensure, removeAt } from "@/wab/shared/common";
 import { insertAt } from "@/wab/commons/collections";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { MIXIN_CAP, MIXINS_CAP } from "@/wab/shared/Labels";
@@ -21,7 +21,7 @@ import {
   TplNode,
 } from "@/wab/shared/model/classes";
 import { tryGetVariantSetting } from "@/wab/shared/Variants";
-import { allMixins, isEditable } from "@/wab/sites";
+import { allMixins, isEditable } from "@/wab/shared/core/sites";
 import { Tooltip } from "antd";
 import L from "lodash";
 import { observer } from "mobx-react";

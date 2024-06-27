@@ -24,8 +24,8 @@ import { SelectOptionGroupPlugin } from "@/wab/shared/plume/select-option-group"
 import { SwitchPlugin } from "@/wab/shared/plume/switch";
 import { TextInputPlugin } from "@/wab/shared/plume/text-input";
 import { TriggeredOverlayPlugin } from "@/wab/shared/plume/triggered-overlay";
-import { isTplNamable } from "@/wab/tpls";
-import { ValComponent } from "@/wab/val-nodes";
+import { isTplNamable } from "@/wab/shared/core/tpls";
+import { ValComponent } from "@/wab/shared/core/val-nodes";
 import { Action, CodeComponentMeta } from "@plasmicapp/host";
 import React from "react";
 

@@ -6,7 +6,7 @@ import {
   DefaultImageListItemProps,
   PlasmicImageListItem,
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicImageListItem";
-import { asOne, ensure } from "@/wab/common";
+import { asOne, ensure } from "@/wab/shared/common";
 import { toClassName } from "@/wab/shared/codegen/util";
 import { ImageAsset } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";

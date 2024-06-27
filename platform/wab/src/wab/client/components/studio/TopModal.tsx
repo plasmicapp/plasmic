@@ -1,6 +1,6 @@
 import sty from "@/wab/client/components/studio/TopModal.module.css";
 import React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 export function TopModal(props: {
   children?: React.ReactNode;

@@ -9,15 +9,15 @@ import {
 } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { arrayMoveIndex } from "@/wab/collections";
-import { cx, maybe, spawn, uniqueKey } from "@/wab/common";
+import { arrayMoveIndex } from "@/wab/shared/collections";
+import { cx, maybe, spawn, uniqueKey } from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import {
   defaultFilterEffects,
   FilterEffect,
   fromFilterObjToString,
   fromFilterStringToObj,
-} from "@/wab/filter-effect-utils";
+} from "@/wab/shared/core/filter-effect-utils";
 import { joinCssValues, splitCssValue } from "@/wab/shared/RuleSetHelpers";
 import { capitalize } from "lodash";
 import { observer } from "mobx-react";

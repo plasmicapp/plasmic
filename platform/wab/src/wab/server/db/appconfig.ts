@@ -1,5 +1,5 @@
-import { mergeSane } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { mergeSane } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 
 export async function getDevFlagsMergedWithOverrides(

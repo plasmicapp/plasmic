@@ -4,7 +4,7 @@ import {
   filterFalsy,
   uncheckedCast,
   xGroupBy,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { checkPermissions, ForbiddenError } from "@/wab/server/db/DbMgr";
 import { prepareTeamSupportUrls as doPrepareTeamSupportUrls } from "@/wab/server/discourse/prepareTeamSupportUrls";
 import { sendShareEmail } from "@/wab/server/emails/share-email";
@@ -58,7 +58,7 @@ import {
   createProjectUrl,
   createTeamUrl,
   createWorkspaceUrl,
-} from "@/wab/urls";
+} from "@/wab/shared/urls";
 import { Request, Response } from "express-serve-static-core";
 import L from "lodash";
 

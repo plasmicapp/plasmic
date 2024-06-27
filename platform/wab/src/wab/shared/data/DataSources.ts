@@ -1,7 +1,7 @@
-import { Dict } from "@/wab/collections";
-import { uncheckedCast, unexpected } from "@/wab/common";
+import { Dict } from "@/wab/shared/collections";
+import { uncheckedCast, unexpected } from "@/wab/shared/common";
 import { asReadablePromise } from "@/wab/commons/control";
-import { JsonScalar } from "@/wab/lang";
+import { JsonScalar } from "@/wab/shared/core/lang";
 import { LowerHttpMethod } from "@/wab/shared/HttpClientUtil";
 import SwaggerParser, { ResolverOptions } from "@apidevtools/swagger-parser";
 import memoizeOne from "memoize-one";

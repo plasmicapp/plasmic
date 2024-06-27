@@ -1,4 +1,4 @@
-import { assert, ensure, withoutNils } from "@/wab/common";
+import { assert, ensure, withoutNils } from "@/wab/shared/common";
 import {
   SqlalchemyClient,
   SQLITE_TO_BUILDER_TYPE,

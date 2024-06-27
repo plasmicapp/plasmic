@@ -1,5 +1,5 @@
-import { ensure, remove } from "@/wab/common";
-import { extractReferencedParam, isRealCodeExpr } from "@/wab/exprs";
+import { ensure, remove } from "@/wab/shared/common";
+import { extractReferencedParam, isRealCodeExpr } from "@/wab/shared/core/exprs";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
@@ -12,7 +12,7 @@ import {
   isKnownFunctionType,
   isKnownVarRef,
 } from "@/wab/shared/model/classes";
-import { flattenTpls, isAttrEventHandler } from "@/wab/tpls";
+import { flattenTpls, isAttrEventHandler } from "@/wab/shared/core/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();

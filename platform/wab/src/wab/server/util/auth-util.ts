@@ -1,4 +1,4 @@
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { User } from "@/wab/server/entities/Entities";
 import { makeUserTraits } from "@/wab/server/routes/util";
 import { disconnectUserSockets } from "@/wab/server/socket-util";

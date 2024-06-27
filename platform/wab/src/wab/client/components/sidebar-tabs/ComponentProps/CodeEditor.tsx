@@ -5,7 +5,7 @@ import {
 } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
 import { readUploadedFileAsText } from "@/wab/client/dom-utils";
-import { ensure, swallow } from "@/wab/common";
+import { ensure, swallow } from "@/wab/shared/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { validJsIdentifierChars } from "@/wab/shared/codegen/util";
 import { tryEvalExpr } from "@/wab/shared/eval";
@@ -16,7 +16,7 @@ import jsonrepair from "jsonrepair";
 import { observer } from "mobx-react";
 import React from "react";
 import { FocusScope } from "react-aria";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 const softStrSizeLimit = 500 * 1024; // 500KB
 const hardStrSizeLimit = 5000 * 1024; // 5MB

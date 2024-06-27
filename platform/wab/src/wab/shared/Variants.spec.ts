@@ -1,4 +1,4 @@
-import { ComponentType, mkComponent } from "@/wab/components";
+import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import {
   ensureValidCombo,
   mkBaseVariant,
@@ -6,7 +6,7 @@ import {
   mkVariant,
 } from "@/wab/shared/Variants";
 import { StateParam } from "@/wab/shared/model/classes";
-import { mkTplTagX } from "@/wab/tpls";
+import { mkTplTagX } from "@/wab/shared/core/tpls";
 
 function getComponentWithVariantGroups() {
   const singleChoiceVariants = [0, 1, 2].map((i) => {

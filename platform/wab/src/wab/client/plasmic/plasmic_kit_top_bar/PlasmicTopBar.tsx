@@ -46,7 +46,7 @@ import ZoomButton from "../../components/top-bar/ZoomButton"; // plasmic-import:
 import ViewButton from "../../components/top-bar/ViewButton"; // plasmic-import: -r2DBYss6/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import LivePopOutButton from "../../components/top-bar/LivePopOutButton"; // plasmic-import: ND5ZuEZMUe/component
-import CommentButton from "../../../../CommentButton"; // plasmic-import: JnxWw8hitac/component
+import CommentButton from "../../components/CommentButton"; // plasmic-import: JnxWw8hitac/component
 import CodeButton from "../../components/top-bar/CodeButton"; // plasmic-import: FCNHcPh1ZR/component
 import ShareButton from "../../components/top-bar/ShareButton"; // plasmic-import: mnPFthIw2I/component
 import PublishButton from "../../components/top-bar/PublishButton"; // plasmic-import: yXRcEjTceQ/component

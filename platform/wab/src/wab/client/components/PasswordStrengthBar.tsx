@@ -4,7 +4,7 @@ import {
   DefaultPasswordStrengthBarProps,
   PlasmicPasswordStrengthBar,
 } from "@/wab/client/plasmic/plasmic_kit_user_settings/PlasmicPasswordStrengthBar";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { ratePasswordStrength } from "@/wab/shared/password-strength";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { debounce } from "lodash";

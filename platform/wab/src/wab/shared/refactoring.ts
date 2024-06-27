@@ -1,5 +1,5 @@
-import { assert, isPrefixArray, uniqueName } from "@/wab/common";
-import * as Exprs from "@/wab/exprs";
+import { assert, isPrefixArray, uniqueName } from "@/wab/shared/common";
+import * as Exprs from "@/wab/shared/core/exprs";
 import { toVarName } from "@/wab/shared/codegen/util";
 import {
   parseExpr,
@@ -24,8 +24,8 @@ import {
   findRecursiveImplicitStates,
   getStateVarName,
   isStateUsedInExpr,
-} from "@/wab/states";
-import * as Tpls from "@/wab/tpls";
+} from "@/wab/shared/core/states";
+import * as Tpls from "@/wab/shared/core/tpls";
 
 /**
  * Returns boolean indicating whether `expr` is referencing `param`.

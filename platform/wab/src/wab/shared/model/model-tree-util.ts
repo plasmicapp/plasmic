@@ -4,7 +4,7 @@ import {
   isPrimitive,
   tuple,
   unexpected,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { Bundler } from "@/wab/shared/bundler";
 import { instUtil } from "@/wab/shared/model/InstUtil";
 import { ObjInst, Site } from "@/wab/shared/model/classes";

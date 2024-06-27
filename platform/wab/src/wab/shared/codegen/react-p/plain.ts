@@ -2,8 +2,8 @@ import {
   getSuperComponents,
   isCodeComponent,
   isPageComponent,
-} from "@/wab/components";
-import { getProjectFlags } from "@/wab/devflags";
+} from "@/wab/shared/core/components";
+import { getProjectFlags } from "@/wab/shared/devflags";
 import { componentToReferenced } from "@/wab/shared/cached-selectors";
 import {
   ComponentGenHelper,
@@ -51,15 +51,15 @@ import {
   getPlumeCodegenPlugin,
 } from "@/wab/shared/plume/plume-registry";
 import { makeVariantComboSorter } from "@/wab/shared/variant-sort";
-import { allImageAssets, allMixins, allStyleTokens } from "@/wab/sites";
-import { CssVarResolver } from "@/wab/styles";
+import { allImageAssets, allMixins, allStyleTokens } from "@/wab/shared/core/sites";
+import { CssVarResolver } from "@/wab/shared/core/styles";
 import {
   isTplComponent,
   isTplSlot,
   isTplTag,
   isTplTextBlock,
   summarizeTpl,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import L from "lodash";
 import {
   SerializerBaseContext,

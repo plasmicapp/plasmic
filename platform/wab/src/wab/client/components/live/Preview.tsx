@@ -6,7 +6,7 @@ import { fixStudioIframePositionAndOverflow } from "@/wab/client/dom-utils";
 import { PREVIEW_SHORTCUTS } from "@/wab/client/shortcuts/preview/preview-shortcuts";
 import { useBindShortcutHandlers } from "@/wab/client/shortcuts/shortcut-handler";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { observer } from "mobx-react";
 import * as React from "react";
 

@@ -1,4 +1,4 @@
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { getGithubSecrets } from "@/wab/server/secrets";
 import { App } from "@octokit/app";
 

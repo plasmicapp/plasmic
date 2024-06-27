@@ -4,7 +4,7 @@ import {
   PromptBillingArgs,
   showUpsellConfirm,
 } from "@/wab/client/components/modals/PricingModal";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import React from "react";
 
 export const UpsellModal = (

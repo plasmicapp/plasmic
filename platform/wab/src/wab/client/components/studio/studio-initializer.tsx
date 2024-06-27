@@ -20,12 +20,12 @@ import {
   providesStudioCtx,
   StudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { lt } from "@/wab/commons/semver";
 import { makeGlobalObservable } from "@/wab/shared/mobx-util";
 import { requiredPackageVersions } from "@/wab/shared/required-versions";
-import { isHostLessPackage } from "@/wab/sites";
-import { initBuiltinActions } from "@/wab/states";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
+import { initBuiltinActions } from "@/wab/shared/core/states";
 import { notification } from "antd";
 import { observer } from "mobx-react";
 import React from "react";

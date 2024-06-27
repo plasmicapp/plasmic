@@ -41,7 +41,7 @@ import {
   swallow,
   switchType,
   tuple,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { HighlightBlinker } from "@/wab/commons/components/HighlightBlinker";
 import { DeepReadonly } from "@/wab/commons/types";
 import {
@@ -54,7 +54,7 @@ import {
   isPageComponent,
   isPlainComponent,
   isPlumeComponent,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import {
   asCode,
   clone,
@@ -73,7 +73,7 @@ import {
   renderable,
   summarizeExpr,
   tryExtractLit,
-} from "@/wab/exprs";
+} from "@/wab/shared/core/exprs";
 import { getLinkedCodeProps } from "@/wab/shared/cached-selectors";
 import {
   ensurePropTypeToWabType,
@@ -147,7 +147,7 @@ import {
   isTplRawString,
   isTplTag,
   TplTagCodeGenType,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import { Menu } from "antd";
 import { capitalize, isString, keyBy } from "lodash";
 import { observer } from "mobx-react";

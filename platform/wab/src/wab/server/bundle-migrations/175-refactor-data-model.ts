@@ -6,9 +6,9 @@ import {
   unexpected,
   xDifference,
   xGroupBy,
-} from "@/wab/common";
-import { isPlumeComponent, PlumeComponent } from "@/wab/components";
-import { mkOnChangeParamForState } from "@/wab/lang";
+} from "@/wab/shared/common";
+import { isPlumeComponent, PlumeComponent } from "@/wab/shared/core/components";
+import { mkOnChangeParamForState } from "@/wab/shared/core/lang";
 import {
   BundleMigrationType,
   unbundleSite,
@@ -23,13 +23,13 @@ import {
 import { isKnownNamedState, Site, State } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
 import { Class, Field, MetaRuntime, Type } from "@/wab/shared/model/model-meta";
-import { writeable } from "@/wab/sites";
+import { writeable } from "@/wab/shared/core/sites";
 import {
   genOnChangeParamName,
   isPublicState,
   removeComponentState,
-} from "@/wab/states";
-import { trackComponentRoot, trackComponentSite } from "@/wab/tpls";
+} from "@/wab/shared/core/states";
+import { trackComponentRoot, trackComponentSite } from "@/wab/shared/core/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   for (const inst of Object.values(bundle.map)) {

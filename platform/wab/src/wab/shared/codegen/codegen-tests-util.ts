@@ -1,13 +1,13 @@
-import { jsonClone } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { jsonClone } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   exportProjectConfig,
   exportStyleConfig,
 } from "@/wab/shared/codegen/react-p";
 import { exportSiteComponents } from "@/wab/shared/codegen/react-p/gen-site-bundle";
 import { Site } from "@/wab/shared/model/classes";
-import { initBuiltinActions } from "@/wab/states";
-import { deepTrackComponents } from "@/wab/tpls";
+import { initBuiltinActions } from "@/wab/shared/core/states";
+import { deepTrackComponents } from "@/wab/shared/core/tpls";
 import { exec } from "child_process";
 import fs from "fs";
 import path from "path";

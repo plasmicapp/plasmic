@@ -17,7 +17,7 @@ import { DatePicker } from "antd";
 import moment, { Moment } from "moment";
 import * as React from "react";
 import { CSVLink } from "react-csv";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 type TimeRange = [Moment | null, Moment | null];
 export interface DataFiltersProps extends DefaultDataFiltersProps {

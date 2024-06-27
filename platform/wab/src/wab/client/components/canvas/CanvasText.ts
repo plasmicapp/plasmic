@@ -26,9 +26,9 @@ import type {
   EditingTextContext,
   ViewCtx,
 } from "@/wab/client/studio-ctx/view-ctx";
-import { cx, ensure, ensureInstance, spawn } from "@/wab/common";
-import { getCssRulesFromRs } from "@/wab/css";
-import { ExprCtx, getCodeExpressionWithFallback } from "@/wab/exprs";
+import { cx, ensure, ensureInstance, spawn } from "@/wab/shared/common";
+import { getCssRulesFromRs } from "@/wab/shared/css";
+import { ExprCtx, getCodeExpressionWithFallback } from "@/wab/shared/core/exprs";
 import { makeWabFlexContainerClassName } from "@/wab/shared/codegen/react-p/utils";
 import {
   isTagInline,
@@ -48,8 +48,8 @@ import {
   TplNode,
   TplTag,
 } from "@/wab/shared/model/classes";
-import { hasGapStyle } from "@/wab/styles";
-import { isExprText, walkTpls } from "@/wab/tpls";
+import { hasGapStyle } from "@/wab/shared/core/styles";
+import { isExprText, walkTpls } from "@/wab/shared/core/tpls";
 import isHotkey from "is-hotkey";
 import { camelCase, isEqual } from "lodash";
 import { computedFn } from "mobx-utils";

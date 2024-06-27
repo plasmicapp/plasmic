@@ -4,8 +4,8 @@ import { pinStateToPlasmicPinState } from "@/wab/client/components/variants/Vari
 import { Matcher } from "@/wab/client/components/view-common";
 import Chip from "@/wab/client/components/widgets/Chip";
 import { PlasmicVariantsDrawerRow } from "@/wab/client/plasmic/plasmic_kit_variants/PlasmicVariantsDrawerRow";
-import { ensure, maybe } from "@/wab/common";
-import { getNamespacedComponentName } from "@/wab/components";
+import { ensure, maybe } from "@/wab/shared/common";
+import { getNamespacedComponentName } from "@/wab/shared/core/components";
 import { VariantPinState } from "@/wab/shared/PinManager";
 import {
   isStandaloneVariant,
@@ -14,7 +14,7 @@ import {
   tryGetVariantSetting,
 } from "@/wab/shared/Variants";
 import { Component, TplNode, Variant } from "@/wab/shared/model/classes";
-import { isTplVariantable } from "@/wab/tpls";
+import { isTplVariantable } from "@/wab/shared/core/tpls";
 import { observer } from "mobx-react";
 import * as React from "react";
 

@@ -3,10 +3,10 @@ import EdgeHandleDownwardIcon from "@/wab/client/plasmic/plasmic_kit_design_syst
 import EdgeHandleLeftwardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__EdgeHandleLeftward";
 import EdgeHandleRightwardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__EdgeHandleRightward";
 import EdgeHandleUpwardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__EdgeHandleUpward";
-import { cx } from "@/wab/common";
+import { cx } from "@/wab/shared/common";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
-import { DEVFLAGS } from "@/wab/devflags";
-import { oppSide, Side, sideEdgeToOrient, standardSides } from "@/wab/geom";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { oppSide, Side, sideEdgeToOrient, standardSides } from "@/wab/shared/geom";
 import { clamp, isNil } from "lodash";
 import * as React from "react";
 

@@ -11,8 +11,8 @@ import {
   DefaultProjectListProps,
   PlasmicProjectList,
 } from "@/wab/client/plasmic/plasmic_kit/PlasmicProjectList";
-import { ensure } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { ensure } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { getExtraData, updateExtraDataJson } from "@/wab/shared/ApiSchemaUtil";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";

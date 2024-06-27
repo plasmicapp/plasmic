@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
-import { ensureString } from "../src/wab/common";
 import { getVercelSecrets } from "../src/wab/server/secrets";
+import { ensureString } from "../src/wab/shared/common";
 
 async function checkVercelDomain() {
   const domain = ensureString(process.argv[2]);

@@ -14,7 +14,7 @@ import {
   safeCast,
   spawn,
   tuple,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import {
   TokenType,
   lazyDerefTokenRefsWithDeps,
@@ -36,8 +36,8 @@ import {
   sideOrCornerToSides,
   sideToOrient,
   sizeAxisToSides,
-} from "@/wab/geom";
-import { Selectable } from "@/wab/selection";
+} from "@/wab/shared/geom";
+import { Selectable } from "@/wab/shared/core/selection";
 import {
   ensureActivatedScreenVariantsForFrameByWidth,
   getFrameHeight,
@@ -49,7 +49,7 @@ import {
   createNumericSize,
   parseAtomicSize,
   showSizeCss,
-} from "@/wab/shared/Css";
+} from "@/wab/shared/css-size";
 import { IRuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { makeMergedExpProxy } from "@/wab/shared/exprs";
 import {
@@ -58,7 +58,7 @@ import {
 } from "@/wab/shared/layoututils";
 import { ArenaFrame, Site } from "@/wab/shared/model/classes";
 import { isSpecialSizeVal } from "@/wab/shared/sizingutils";
-import { ValComponent, ValTag } from "@/wab/val-nodes";
+import { ValComponent, ValTag } from "@/wab/shared/core/val-nodes";
 import { failable } from "ts-failable";
 
 export interface ManipState {

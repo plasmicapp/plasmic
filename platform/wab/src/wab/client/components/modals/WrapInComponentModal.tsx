@@ -6,11 +6,11 @@ import Button from "@/wab/client/components/widgets/Button";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { getComponentDisplayName } from "@/wab/components";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
 import { Component } from "@/wab/shared/model/classes";
 import * as React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 type WrapInComponentResponse = Component | undefined;
 

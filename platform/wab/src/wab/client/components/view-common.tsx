@@ -8,7 +8,7 @@ import {
   reSplitAll,
   simpleWords,
   tuple,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { PropsOf } from "@/wab/commons/ComponentTypes";
 import L from "lodash";
 import * as React from "react";

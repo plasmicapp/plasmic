@@ -54,7 +54,7 @@ import {
   hasKey,
   mkShortId,
   uncheckedCast,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { unwrap } from "@/wab/commons/failable-utils";
 import { mkTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import {
@@ -70,8 +70,8 @@ import {
   mergeUserMinimalValueWithCompositeExpr,
   serCompositeExprMaybe,
   tryExtractJson,
-} from "@/wab/exprs";
-import { ImageAssetType } from "@/wab/image-asset-type";
+} from "@/wab/shared/core/exprs";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { siteToAllTokensDict } from "@/wab/shared/cached-selectors";
 import {
   getPropTypeType,
@@ -117,8 +117,8 @@ import {
 } from "@/wab/shared/model/classes";
 import { typesEqual } from "@/wab/shared/model/model-util";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
-import { smartHumanize } from "@/wab/strs";
-import { getDisplayNameOfEventHandlerKey, isTplComponent } from "@/wab/tpls";
+import { smartHumanize } from "@/wab/shared/strs";
+import { getDisplayNameOfEventHandlerKey, isTplComponent } from "@/wab/shared/core/tpls";
 import { ContextDependentConfig } from "@plasmicapp/host";
 import L, { isNil, isNumber } from "lodash";
 import { observer } from "mobx-react";

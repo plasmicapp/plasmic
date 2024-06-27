@@ -56,9 +56,9 @@ import {
 } from "@plasmicapp/react-web/lib/host";
 
 import * as pp from "@plasmicapp/react-web";
-import HostProtocolSelect__Overlay from "../../../../HostProtocolSelect__Overlay"; // plasmic-import: WAelYWWWRyr/component
-import HostProtocolSelect__Option from "../../../../HostProtocolSelect__Option"; // plasmic-import: aHgWgR3OVni/component
-import HostProtocolSelect__OptionGroup from "../../../../HostProtocolSelect__OptionGroup"; // plasmic-import: FB-WsFik1_I/component
+import HostProtocolSelect__Overlay from "../../components/HostProtocolSelect__Overlay"; // plasmic-import: WAelYWWWRyr/component
+import HostProtocolSelect__Option from "../../components/HostProtocolSelect__Option"; // plasmic-import: aHgWgR3OVni/component
+import HostProtocolSelect__OptionGroup from "../../components/HostProtocolSelect__OptionGroup"; // plasmic-import: FB-WsFik1_I/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 

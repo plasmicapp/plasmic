@@ -1,4 +1,4 @@
-import DocsPortalBranches from "@/DocsPortalBranches";
+import DocsPortalBranches from "@/wab/client/components/docs/DocsPortalBranches";
 import { UU } from "@/wab/client/cli-routes";
 import { BottomModalsProvider } from "@/wab/client/components/BottomModal";
 import {

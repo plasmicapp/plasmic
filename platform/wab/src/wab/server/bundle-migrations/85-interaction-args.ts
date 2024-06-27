@@ -1,4 +1,4 @@
-import { ensureArray, withoutNils } from "@/wab/common";
+import { ensureArray, withoutNils } from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import {
   BundleMigrationType,
@@ -11,7 +11,7 @@ import {
   VariantsRef,
   VarRef,
 } from "@/wab/shared/model/classes";
-import { findVariantSettingsUnderTpl } from "@/wab/tpls";
+import { findVariantSettingsUnderTpl } from "@/wab/shared/core/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();

@@ -10,11 +10,11 @@ import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { VERT_MENU_ICON } from "@/wab/client/icons";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import {
   addOrEditComponentMetadata,
   removeComponentMetadata,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { Component } from "@/wab/shared/model/classes";
 import { Menu, notification } from "antd";

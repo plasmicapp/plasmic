@@ -10,15 +10,15 @@ import {
 import { addGetManyQuery, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { StudioTutorialStep } from "@/wab/client/tours/tutorials/tutorials-types";
-import { ensure, ensureArray, waitUntil } from "@/wab/common";
-import { ComponentType, isPageComponent } from "@/wab/components";
-import { DEVFLAGS } from "@/wab/devflags";
+import { ensure, ensureArray, waitUntil } from "@/wab/shared/common";
+import { ComponentType, isPageComponent } from "@/wab/shared/core/components";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   code,
   deserCompositeExprMaybe,
   serCompositeExprMaybe,
   tryExtractJson,
-} from "@/wab/exprs";
+} from "@/wab/shared/core/exprs";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import {
   ALL_QUERIES,
@@ -43,13 +43,13 @@ import {
 } from "@/wab/shared/model/classes";
 import { getTplComponentArg } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
-import { mkInteraction } from "@/wab/states";
+import { mkInteraction } from "@/wab/shared/core/states";
 import {
   filterTpls,
   flattenTpls,
   isTplComponent,
   tryGetTplOwnerComponent,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import { capitalize, isEqual, mapValues } from "lodash";
 
 export const ONBOARDING_TUTORIALS_META = {

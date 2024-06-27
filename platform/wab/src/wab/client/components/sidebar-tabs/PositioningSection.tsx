@@ -24,9 +24,9 @@ import StyleToggleButtonGroup from "@/wab/client/components/style-controls/Style
 import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { isStylePropSet } from "@/wab/client/utils/style-utils";
-import { inspect, maybe } from "@/wab/common";
-import { isCodeComponent } from "@/wab/components";
-import { standardSides } from "@/wab/geom";
+import { inspect, maybe } from "@/wab/shared/common";
+import { isCodeComponent } from "@/wab/shared/core/components";
+import { standardSides } from "@/wab/shared/geom";
 import {
   Axis,
   parseGridChildAreaCss,
@@ -35,7 +35,7 @@ import {
 } from "@/wab/shared/Grids";
 import { ContainerType } from "@/wab/shared/layoututils";
 import { isBaseVariant } from "@/wab/shared/Variants";
-import { isTplComponent } from "@/wab/tpls";
+import { isTplComponent } from "@/wab/shared/core/tpls";
 import { produce } from "immer";
 import { observer } from "mobx-react";
 import React from "react";

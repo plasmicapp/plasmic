@@ -17,9 +17,9 @@ import {
   DefaultCmsEntryDetailsProps,
   PlasmicCmsEntryDetails,
 } from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsEntryDetails";
-import { Dict } from "@/wab/collections";
-import { spawn } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { Dict } from "@/wab/shared/collections";
+import { spawn } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ApiCmsDatabase,
   ApiCmseRow,

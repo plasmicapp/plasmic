@@ -5,11 +5,11 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { assert } from "@/wab/common";
+import { assert } from "@/wab/shared/common";
 import { TokenType, tokenTypeDimOpts } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { StyleToken } from "@/wab/shared/model/classes";
-import { allTokensOfType } from "@/wab/sites";
+import { allTokensOfType } from "@/wab/shared/core/sites";
 import { observer } from "mobx-react";
 import * as React from "react";
 

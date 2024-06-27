@@ -17,13 +17,13 @@ import PencilIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Pencil";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import TrashsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Trashsvg";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, filterFalsy, sortBy, spawn, withoutNils } from "@/wab/common";
+import { ensure, filterFalsy, sortBy, spawn, withoutNils } from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import {
   CodeComponent,
   getComponentDisplayName,
   isCodeComponent,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
 import {
   CodeComponentMetaDiffWithComponent,
@@ -34,7 +34,7 @@ import { typeDisplayName, typesEqual } from "@/wab/shared/model/model-util";
 import { Alert, Form, notification } from "antd";
 import * as React from "react";
 import semver from "semver";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import { failableAsync } from "ts-failable";
 
 type RemapComponentResponse = CodeComponent | "delete";

@@ -21,7 +21,7 @@ import { TutorialStateFlags } from "@/wab/client/tours/tutorials/tutorials-types
 import { trackEvent } from "@/wab/client/tracking";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { zIndex } from "@/wab/client/z-index";
-import { mkShortId, spawn, waitUntil } from "@/wab/common";
+import { mkShortId, spawn, waitUntil } from "@/wab/shared/common";
 import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import * as Sentry from "@sentry/browser";

@@ -1,4 +1,4 @@
-import { stripParensAndMaybeConvertToIife } from "@/wab/exprs";
+import { stripParensAndMaybeConvertToIife } from "@/wab/shared/core/exprs";
 import { stampIgnoreError } from "@/wab/shared/error-handling";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import { $State } from "@plasmicapp/react-web";

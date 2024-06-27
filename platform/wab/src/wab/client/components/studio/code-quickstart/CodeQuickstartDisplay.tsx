@@ -5,7 +5,7 @@ import {
   DefaultCodeQuickstartDisplayProps,
   PlasmicCodeQuickstartDisplay,
 } from "@/wab/client/plasmic/plasmic_kit_code_display_and_onboarding/PlasmicCodeQuickstartDisplay";
-import { tuple } from "@/wab/common";
+import { tuple } from "@/wab/shared/common";
 import { ApiProject } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";

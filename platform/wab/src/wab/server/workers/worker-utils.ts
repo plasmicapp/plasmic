@@ -1,4 +1,4 @@
-import { applyDevFlagOverrides, DEVFLAGS } from "@/wab/devflags";
+import { applyDevFlagOverrides, DEVFLAGS } from "@/wab/shared/devflags";
 import { MigrationDbMgr } from "@/wab/server/db/BundleMigrator";
 
 export async function ensureDevFlags(dbMgr: MigrationDbMgr) {

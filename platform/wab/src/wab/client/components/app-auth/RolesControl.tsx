@@ -8,7 +8,7 @@ import {
 import InlineEditableResource from "@/wab/client/components/app-auth/InlineEditableResource";
 import { ListBox, ListBoxItem } from "@/wab/client/components/widgets";
 import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
-import { arrayMoveIndex } from "@/wab/collections";
+import { arrayMoveIndex } from "@/wab/shared/collections";
 import { ApiProject } from "@/wab/shared/ApiSchema";
 import * as tokens from "@/wab/styles/_tokens";
 import { Menu, notification } from "antd";

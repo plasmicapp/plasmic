@@ -7,7 +7,7 @@ import {
   DefaultSettingsPageProps,
   PlasmicSettingsPage,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicSettingsPage";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { ApiTrustedHost } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import copy from "copy-to-clipboard";

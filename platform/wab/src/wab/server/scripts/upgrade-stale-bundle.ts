@@ -1,5 +1,5 @@
-import { assert, last, spawn } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
+import { assert, last, spawn } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
 import {
   getAllMigrations,

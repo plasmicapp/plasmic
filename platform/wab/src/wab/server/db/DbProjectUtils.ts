@@ -1,4 +1,4 @@
-import { spawn, spawnWrapper } from "@/wab/common";
+import { spawn, spawnWrapper } from "@/wab/shared/common";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
 import { createDbConnection } from "@/wab/server/db/dbcli-utils";
 import {

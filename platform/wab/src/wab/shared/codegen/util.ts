@@ -1,10 +1,10 @@
-import { assert, strict } from "@/wab/common";
+import { assert, strict } from "@/wab/shared/common";
 import { isValidVariableName } from "@/wab/commons/codeutil";
 import { DeepReadonly } from "@/wab/commons/types";
-import { isCodeComponent, isVariantGroupParam } from "@/wab/components";
+import { isCodeComponent, isVariantGroupParam } from "@/wab/shared/core/components";
 import { isSlot } from "@/wab/shared/SlotUtils";
 import { Component, Param } from "@/wab/shared/model/classes";
-import { capitalizeFirst, decapitalizeFirst } from "@/wab/strs";
+import { capitalizeFirst, decapitalizeFirst } from "@/wab/shared/strs";
 import jsStringEscape from "js-string-escape";
 import camelCase from "lodash/camelCase";
 import deburr from "lodash/deburr";

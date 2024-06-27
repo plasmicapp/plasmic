@@ -5,7 +5,7 @@ import { NormalLayout } from "@/wab/client/components/normal-layout";
 import SettingsContainer from "@/wab/client/components/pages/plasmic/SettingsContainer";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { ApiTrustedHost } from "@/wab/shared/ApiSchema";
 import copy from "copy-to-clipboard";
 import { observer } from "mobx-react";

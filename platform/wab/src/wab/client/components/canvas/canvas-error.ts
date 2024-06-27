@@ -4,8 +4,8 @@ import {
 } from "@/wab/client/components/canvas/canvas-rendering";
 import { handleError } from "@/wab/client/ErrorNotifications";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { getComponentDisplayName } from "@/wab/components";
-import { DEVFLAGS } from "@/wab/devflags";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   classNameProp,
   dataCanvasEnvsProp,
@@ -17,11 +17,11 @@ import {
   isKnownComponent,
   TplNode,
 } from "@/wab/shared/model/classes";
-import { summarizeTpl } from "@/wab/tpls";
+import { summarizeTpl } from "@/wab/shared/core/tpls";
 import { debounce } from "lodash";
 import { computedFn } from "mobx-utils";
 import type React from "react";
-import { getExportedComponentName } from "src/wab/shared/codegen/react-p/utils";
+import { getExportedComponentName } from "@/wab/shared/codegen/react-p/utils";
 
 export interface CanvasErrorBoundaryProps {
   nodeOrComponent: TplNode | Component;

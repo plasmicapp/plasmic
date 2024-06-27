@@ -6,7 +6,7 @@ import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { asCode } from "@/wab/exprs";
+import { asCode } from "@/wab/shared/core/exprs";
 import {
   Component,
   isKnownTemplatedString,

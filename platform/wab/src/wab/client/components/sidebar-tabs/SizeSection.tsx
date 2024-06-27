@@ -37,10 +37,10 @@ import WidthFullBleedIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/Pla
 import WidthStandardStretchIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WidthStandardStretch";
 import WidthWideIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WidthWide";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
-import { assert, spawn, withoutNils } from "@/wab/common";
+import { assert, spawn, withoutNils } from "@/wab/shared/common";
 import { TokenType, tokenTypeDimOpts } from "@/wab/commons/StyleToken";
-import { isPageComponent } from "@/wab/components";
-import { getLengthUnits } from "@/wab/css";
+import { isPageComponent } from "@/wab/shared/core/components";
+import { getLengthUnits } from "@/wab/shared/css";
 import {
   CONTENT_LAYOUT_FULL_BLEED,
   CONTENT_LAYOUT_WIDE,
@@ -56,8 +56,8 @@ import {
 } from "@/wab/shared/sizingutils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { capitalizeFirst } from "@/wab/strs";
-import { isComponentRoot, isTplComponent, isTplImage } from "@/wab/tpls";
+import { capitalizeFirst } from "@/wab/shared/strs";
+import { isComponentRoot, isTplComponent, isTplImage } from "@/wab/shared/core/tpls";
 import { Alert, Menu } from "antd";
 import cn from "classnames";
 import { observer } from "mobx-react";

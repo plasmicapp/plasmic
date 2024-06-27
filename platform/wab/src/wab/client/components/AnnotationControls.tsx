@@ -2,7 +2,7 @@ import { PanelSection } from "@/wab/client/components/sidebar/PanelSection";
 import { ListBox, ListBoxItem } from "@/wab/client/components/widgets";
 import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
 import { useViewCtx } from "@/wab/client/contexts/StudioContexts";
-import { ensure, zeroWidthSpace } from "@/wab/common";
+import { ensure, zeroWidthSpace } from "@/wab/shared/common";
 import {
   addAnnotation,
   Annotation,

@@ -53,13 +53,13 @@ import {
   ensureInstance,
   maybe,
   spawnWrapper,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import {
   XDraggable,
   XDraggableEvent,
 } from "@/wab/commons/components/XDraggable";
 import { sidesAndCorners, styleCase } from "@/wab/commons/ViewUtil";
-import { DEVFLAGS } from "@/wab/devflags";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   Corner,
   isAxisSide,
@@ -68,13 +68,13 @@ import {
   sideOrCornerToSides,
   sideToOrient,
   sideToSize,
-} from "@/wab/geom";
-import { isSelectableLocked, Selectable, SQ } from "@/wab/selection";
+} from "@/wab/shared/geom";
+import { isSelectableLocked, Selectable, SQ } from "@/wab/shared/core/selection";
 import {
   isHeightAutoDerived,
   isPositionManagedFrame,
 } from "@/wab/shared/Arenas";
-import { createNumericSize, showSizeCss, Unit } from "@/wab/shared/Css";
+import { createNumericSize, showSizeCss, Unit } from "@/wab/shared/css-size";
 import {
   ArenaFrame,
   isKnownArena,
@@ -82,20 +82,20 @@ import {
   TplNode,
 } from "@/wab/shared/model/classes";
 import { isTplAutoSizable, resetTplSize } from "@/wab/shared/sizingutils";
-import { SlotSelection } from "@/wab/slots";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   isTplColumns,
   isTplImage,
   isTplNodeNamable,
   isTplTextBlock,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import {
   isScrollableVal,
   ValComponent,
   ValNode,
   ValSlot,
   ValTag,
-} from "@/wab/val-nodes";
+} from "@/wab/shared/core/val-nodes";
 import { notification } from "antd";
 import { ArgsProps } from "antd/lib/notification";
 import cn from "classnames";

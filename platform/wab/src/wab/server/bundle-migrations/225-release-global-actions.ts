@@ -1,4 +1,4 @@
-import { assert, mkShortId } from "@/wab/common";
+import { assert, mkShortId } from "@/wab/shared/common";
 import {
   BundleMigrationType,
   unbundleSite,
@@ -15,8 +15,8 @@ import {
   StrongFunctionArg,
 } from "@/wab/shared/model/classes";
 import { isRenderFuncType, typeFactory } from "@/wab/shared/model/model-util";
-import { isGlobalAction } from "@/wab/states";
-import { findExprsInComponent } from "@/wab/tpls";
+import { isGlobalAction } from "@/wab/shared/core/states";
+import { findExprsInComponent } from "@/wab/shared/core/tpls";
 
 const GLOBAL_ACTIONS_FOR_COMMERCE_COMPONENTS = {
   addItem: ["productId", "variantId", "quantity"],

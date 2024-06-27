@@ -1,6 +1,6 @@
-import { assert, ensureInstance, objsEq, switchType } from "@/wab/common";
+import { assert, ensureInstance, objsEq, switchType } from "@/wab/shared/common";
 import { Values } from "@/wab/commons/types";
-import { getComponentDisplayName } from "@/wab/components";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { StudioPropType } from "@/wab/shared/code-components/code-components";
 import { jsLiteral } from "@/wab/shared/codegen/util";
 import {
@@ -49,8 +49,8 @@ import {
 } from "@/wab/shared/model/classes";
 import { instUtil as defaultInstUtil } from "@/wab/shared/model/InstUtil";
 import { Type as ModelType } from "@/wab/shared/model/model-meta";
-import { StateVariableType } from "@/wab/states";
-import { isTplComponent, isTplFromComponent, isTplTextBlock } from "@/wab/tpls";
+import { StateVariableType } from "@/wab/shared/core/states";
+import { isTplComponent, isTplFromComponent, isTplTextBlock } from "@/wab/shared/core/tpls";
 import L, {
   isArray,
   isBoolean,

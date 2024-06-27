@@ -7,12 +7,12 @@ import IconButton from "@/wab/client/components/widgets/IconButton";
 import Textbox from "@/wab/client/components/widgets/Textbox";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import { PlasmicSlotProp } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicSlotProp";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { isPlainTextTplSlot } from "@/wab/shared/SlotUtils";
 import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { TplSlot } from "@/wab/shared/model/classes";
-import { getRichTextContent } from "@/wab/tpls";
+import { getRichTextContent } from "@/wab/shared/core/tpls";
 import { observer } from "mobx-react";
 import * as React from "react";
 

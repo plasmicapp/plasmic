@@ -1,4 +1,4 @@
-import { ensure, ensureType, jsonClone, strictIdentity } from "@/wab/common";
+import { ensure, ensureType, jsonClone, strictIdentity } from "@/wab/shared/common";
 import jsonFetch from "@/wab/commons/json-fetch";
 import {
   fillPagination,

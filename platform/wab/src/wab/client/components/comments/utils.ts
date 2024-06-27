@@ -1,5 +1,5 @@
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { xGroupBy, xMapValues } from "@/wab/common";
+import { xGroupBy, xMapValues } from "@/wab/shared/common";
 import {
   ApiComment,
   CommentData,
@@ -13,7 +13,7 @@ import {
   isTplNamable,
   summarizeTplNamable,
   tryGetTplOwnerComponent,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import assert from "assert";
 import { partition, sortBy } from "lodash";
 

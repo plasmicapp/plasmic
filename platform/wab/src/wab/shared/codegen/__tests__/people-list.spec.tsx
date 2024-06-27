@@ -9,7 +9,7 @@ import { codegen } from "@/wab/shared/codegen/codegen-tests-util";
 import { Site } from "@/wab/shared/model/classes";
 import "core-js";
 import * as React from "react";
-import { last } from "src/wab/common";
+import { last } from "@/wab/shared/common";
 import tmp from "tmp";
 
 describe("todo app codegen", () => {

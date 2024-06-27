@@ -1,7 +1,7 @@
 /**
  * Like 148, but deals with imported buttons too
  */
-import { isPageComponent } from "@/wab/components";
+import { isPageComponent } from "@/wab/shared/core/components";
 import {
   BundleMigrationType,
   unbundleSite,

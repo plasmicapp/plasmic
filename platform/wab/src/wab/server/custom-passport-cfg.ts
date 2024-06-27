@@ -1,4 +1,4 @@
-import { DevFlagsType } from "@/wab/devflags";
+import { DevFlagsType } from "@/wab/shared/devflags";
 import { Config } from "@/wab/server/config";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 

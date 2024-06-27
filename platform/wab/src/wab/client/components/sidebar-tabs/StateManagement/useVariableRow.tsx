@@ -4,9 +4,9 @@ import { VariableEditingModal } from "@/wab/client/components/sidebar-tabs/State
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { assert, ensure, spawn } from "@/wab/common";
-import { canDeleteState } from "@/wab/components";
-import { codeLit, getRawCode, tryExtractJson } from "@/wab/exprs";
+import { assert, ensure, spawn } from "@/wab/shared/common";
+import { canDeleteState } from "@/wab/shared/core/components";
+import { codeLit, getRawCode, tryExtractJson } from "@/wab/shared/core/exprs";
 import { wabTypeToPropType } from "@/wab/shared/code-components/code-components";
 import { evalCodeWithEnv } from "@/wab/shared/eval";
 import { VARIABLE_LOWER } from "@/wab/shared/Labels";
@@ -26,7 +26,7 @@ import {
   isReadonlyState,
   StateAccessType,
   StateVariableType,
-} from "@/wab/states";
+} from "@/wab/shared/core/states";
 import { Menu } from "antd";
 import React from "react";
 

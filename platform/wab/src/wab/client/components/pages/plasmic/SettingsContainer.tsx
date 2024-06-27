@@ -1,7 +1,7 @@
 import * as React from "react";
 import PP__SettingsContainer from "@/wab/client/components/pages/plasmic/PlasmicSettingsContainer";
 import { ApiTrustedHost, PersonalApiToken } from "@/wab/shared/ApiSchema";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { Flex } from "@plasmicapp/react-web";
 import TrustedHost from "@/wab/client/components/TrustedHost";
 import { isArray } from "lodash";

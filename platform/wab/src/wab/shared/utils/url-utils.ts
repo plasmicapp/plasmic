@@ -1,4 +1,4 @@
-import { extractParamsFromPagePath } from "@/wab/components";
+import { extractParamsFromPagePath } from "@/wab/shared/core/components";
 import { matchesPagePath } from "@plasmicapp/loader-react";
 
 /**

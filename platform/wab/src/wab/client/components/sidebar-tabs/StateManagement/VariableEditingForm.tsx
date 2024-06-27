@@ -9,9 +9,9 @@ import {
   PlasmicNewVariable,
 } from "@/wab/client/plasmic/plasmic_kit_state_management/PlasmicNewVariable";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { assert, ensure } from "@/wab/common";
-import { isPageComponent } from "@/wab/components";
-import { codeLit } from "@/wab/exprs";
+import { assert, ensure } from "@/wab/shared/common";
+import { isPageComponent } from "@/wab/shared/core/components";
+import { codeLit } from "@/wab/shared/core/exprs";
 import { wabTypeToPropType } from "@/wab/shared/code-components/code-components";
 import { exprUsesDollarVars } from "@/wab/shared/eval/expression-parser";
 import { Component, isKnownTplSlot, State } from "@/wab/shared/model/classes";
@@ -22,7 +22,7 @@ import {
   STATE_VARIABLE_TYPES,
   StateAccessType,
   StateVariableType,
-} from "@/wab/states";
+} from "@/wab/shared/core/states";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
 import L from "lodash";

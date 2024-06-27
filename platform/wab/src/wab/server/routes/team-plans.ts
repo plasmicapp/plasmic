@@ -3,7 +3,7 @@
  * - This is the only place where we query Stripe on whether the subscription is still valid (e.g. expired, cancelled, etc)
  * - If it's invalid, let's just treat the subscription as cancelled and upsell them again.
  */
-import { DevFlagsType } from "@/wab/devflags";
+import { DevFlagsType } from "@/wab/shared/devflags";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { Team } from "@/wab/server/entities/Entities";
 import {

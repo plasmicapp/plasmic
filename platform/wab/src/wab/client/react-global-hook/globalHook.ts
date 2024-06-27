@@ -25,8 +25,8 @@ import {
   withDefault,
   withDefaultFunc,
   withoutNils,
-} from "@/wab/common";
-import { isCodeComponent, isPlumeComponent } from "@/wab/components";
+} from "@/wab/shared/common";
+import { isCodeComponent, isPlumeComponent } from "@/wab/shared/core/components";
 import {
   NO_INDEX_COPY,
   classNameProp,
@@ -52,8 +52,8 @@ import {
   TplSlot,
   TplTag,
 } from "@/wab/shared/model/classes";
-import { SlotSelection } from "@/wab/slots";
-import { isTplComponent, isTplTextBlock } from "@/wab/tpls";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import { isTplComponent, isTplTextBlock } from "@/wab/shared/core/tpls";
 import {
   InvalidArgMeta,
   ValComponent,
@@ -64,7 +64,7 @@ import {
   ValTextTag,
   ValidationType,
   isValComponent,
-} from "@/wab/val-nodes";
+} from "@/wab/shared/core/val-nodes";
 import { isString, omit } from "lodash";
 import { observable, runInAction } from "mobx";
 

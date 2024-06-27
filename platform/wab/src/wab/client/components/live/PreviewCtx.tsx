@@ -10,12 +10,12 @@ import { showCanvasPageNavigationNotification } from "@/wab/client/components/ca
 import { ClientPinManager } from "@/wab/client/components/variants/ClientPinManager";
 import { HostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, hackyCast, spawn, spawnWrapper, tuple } from "@/wab/common";
+import { ensure, hackyCast, spawn, spawnWrapper, tuple } from "@/wab/shared/common";
 import { withProvider } from "@/wab/commons/components/ContextUtil";
 import {
   allComponentNonStyleVariants,
   allComponentVariants,
-} from "@/wab/components";
+} from "@/wab/shared/core/components";
 import { MainBranchId, ProjectId } from "@/wab/shared/ApiSchema";
 import { getFrameHeight } from "@/wab/shared/Arenas";
 import { FramePinManager } from "@/wab/shared/PinManager";
@@ -31,7 +31,7 @@ import {
   getMatchingPagePathParams,
   substituteUrlParams,
 } from "@/wab/shared/utils/url-utils";
-import { allGlobalVariants } from "@/wab/sites";
+import { allGlobalVariants } from "@/wab/shared/core/sites";
 import * as Sentry from "@sentry/browser";
 import { notification } from "antd";
 import { Location, LocationDescriptorObject } from "history";

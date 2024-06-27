@@ -13,7 +13,7 @@ import Select from "@/wab/client/components/widgets/Select";
 import Switch from "@/wab/client/components/widgets/Switch";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { assert, ensure, ensureType } from "@/wab/common";
+import { assert, ensure, ensureType } from "@/wab/shared/common";
 import {
   ApiCmsDatabase,
   CmsDatabaseId,

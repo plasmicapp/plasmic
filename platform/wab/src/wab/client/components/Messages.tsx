@@ -1,4 +1,4 @@
-import * as common from "@/wab/common";
+import * as common from "@/wab/shared/common";
 import { notification } from "antd";
 import L from "lodash";
 import React, { ReactNode } from "react";

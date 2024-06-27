@@ -15,16 +15,16 @@ import {
   mergeSets,
   spawn,
   withoutNils,
-} from "@/wab/common";
-import { getComponentDisplayName } from "@/wab/components";
-import { DEVFLAGS } from "@/wab/devflags";
+} from "@/wab/shared/common";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   buildObjToDepMap,
   extractTransitiveDepsFromComponents,
   extractTransitiveDepsFromMixins,
   extractTransitiveDepsFromTokens,
   getTransitiveDepsFromObjs,
-} from "@/wab/project-deps";
+} from "@/wab/shared/core/project-deps";
 import { componentToReferenced } from "@/wab/shared/cached-selectors";
 import {
   extractUsedIconAssetsForComponents,
@@ -50,12 +50,12 @@ import {
   SemVerReleaseType,
 } from "@/wab/shared/site-diffs";
 import { filterUsefulDiffs } from "@/wab/shared/site-diffs/filter-useful-diffs";
-import { allStyleTokens, createSite, isHostLessPackage } from "@/wab/sites";
+import { allStyleTokens, createSite, isHostLessPackage } from "@/wab/shared/core/sites";
 import { Alert, Form, Select } from "antd";
 import L from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 
 const { Option } = Select;
 

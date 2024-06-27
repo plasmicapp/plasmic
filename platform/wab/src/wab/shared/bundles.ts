@@ -1,4 +1,4 @@
-import { spawn, unexpected } from "@/wab/common";
+import { spawn, unexpected } from "@/wab/shared/common";
 import { isArray, isPlainObject } from "lodash";
 
 export type BundledInst = {

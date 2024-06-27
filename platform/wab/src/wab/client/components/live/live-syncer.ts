@@ -10,7 +10,7 @@ import {
 import { scriptExec } from "@/wab/client/dom-utils";
 import { requestIdleCallback } from "@/wab/client/requestidlecallback";
 import { StudioAppUser, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, mkUuid, spawn } from "@/wab/common";
+import { ensure, mkUuid, spawn } from "@/wab/shared/common";
 import { safeCallbackify } from "@/wab/commons/control";
 import {
   CodeComponent,
@@ -18,9 +18,9 @@ import {
   getCodeComponentImportName,
   isCodeComponent,
   isPageComponent,
-} from "@/wab/components";
-import { DEVFLAGS } from "@/wab/devflags";
-import { ExprCtx, getRawCode } from "@/wab/exprs";
+} from "@/wab/shared/core/components";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { ExprCtx, getRawCode } from "@/wab/shared/core/exprs";
 import {
   allCodeLibraries,
   allCustomFunctions,
@@ -72,14 +72,14 @@ import {
 import { SiteInfo } from "@/wab/shared/SharedApi";
 import { getSlotParams } from "@/wab/shared/SlotUtils";
 import { isScreenVariantGroup, VariantCombo } from "@/wab/shared/Variants";
-import { allGlobalVariantGroups } from "@/wab/sites";
-import { CssVarResolver } from "@/wab/styles";
+import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
+import { CssVarResolver } from "@/wab/shared/core/styles";
 import * as Sentry from "@sentry/browser";
 import * as asynclib from "async";
 import L from "lodash";
 import { autorun, comparer, untracked } from "mobx";
 import { computedFn } from "mobx-utils";
-import { getPlumeEditorPlugin } from "src/wab/shared/plume/plume-registry";
+import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 
 export interface CodeModule {
   name?: string;

@@ -58,7 +58,7 @@ import {
 import EditableResourceName from "../../components/EditableResourceName"; // plasmic-import: UttGK3xVrb/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
-import CmsListItem from "../../../../CmsListItem"; // plasmic-import: DEllwXrn27Q/component
+import CmsListItem from "../../components/CmsListItem"; // plasmic-import: DEllwXrn27Q/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 

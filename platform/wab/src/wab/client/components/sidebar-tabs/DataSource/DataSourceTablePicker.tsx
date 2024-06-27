@@ -13,8 +13,8 @@ import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers"
 import { Spinner } from "@/wab/client/components/widgets";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
-import { ensure } from "@/wab/common";
-import { ExprCtx } from "@/wab/exprs";
+import { ensure } from "@/wab/shared/common";
+import { ExprCtx } from "@/wab/shared/core/exprs";
 import { getDataSourceMeta } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
   dataSourceHasRequiredStandardQueries,

@@ -7,7 +7,7 @@ import {
 import ClockIcon from "@/wab/client/plasmic/plasmic_kit_dashboard/icons/PlasmicIcon__Clock";
 import HatchIcon from "@/wab/client/plasmic/plasmic_kit_dashboard/icons/PlasmicIcon__Hatch";
 import JoystickIcon from "@/wab/client/plasmic/plasmic_kit_dashboard/icons/PlasmicIcon__Joystick";
-import { StarterProjectConfig, StarterSectionConfig } from "@/wab/devflags";
+import { StarterProjectConfig, StarterSectionConfig } from "@/wab/shared/devflags";
 import { WorkspaceId } from "@/wab/shared/ApiSchema";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { Tooltip } from "antd";

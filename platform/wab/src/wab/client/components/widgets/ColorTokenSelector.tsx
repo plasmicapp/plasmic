@@ -6,7 +6,7 @@ import { IconButton } from "@/wab/client/components/widgets/IconButton";
 import { useToggleDisplayed } from "@/wab/client/dom-utils";
 import { PlusIcon } from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import SearchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
-import { cx } from "@/wab/common";
+import { cx } from "@/wab/shared/common";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { TokenValueResolver } from "@/wab/shared/cached-selectors";
 import { StyleToken } from "@/wab/shared/model/classes";

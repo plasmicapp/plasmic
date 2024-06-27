@@ -55,7 +55,7 @@ import {
   useGlobalActions,
 } from "@plasmicapp/react-web/lib/host";
 
-import Preset from "../../../../Preset"; // plasmic-import: eS_Bw5U3wr/component
+import Preset from "../../components/Preset"; // plasmic-import: eS_Bw5U3wr/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 

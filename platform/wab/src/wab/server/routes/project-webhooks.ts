@@ -1,4 +1,4 @@
-import { ensureType } from "@/wab/common";
+import { ensureType } from "@/wab/shared/common";
 import { userDbMgr } from "@/wab/server/routes/util";
 import { triggerWebhook } from "@/wab/server/trigger-webhooks";
 import {

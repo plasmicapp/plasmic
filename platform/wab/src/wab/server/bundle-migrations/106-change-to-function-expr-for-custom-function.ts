@@ -12,7 +12,7 @@ import {
   isKnownEventHandler,
   isKnownFunctionType,
 } from "@/wab/shared/model/classes";
-import { flattenTpls, isAttrEventHandler } from "@/wab/tpls";
+import { flattenTpls, isAttrEventHandler } from "@/wab/shared/core/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();

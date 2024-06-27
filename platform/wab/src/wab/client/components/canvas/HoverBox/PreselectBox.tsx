@@ -14,9 +14,9 @@ import {
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { summarizeFocusObj } from "@/wab/client/utils/tpl-client-utils";
-import { ensure } from "@/wab/common";
+import { ensure } from "@/wab/shared/common";
 import { getArenaFrames } from "@/wab/shared/Arenas";
-import { isTplTagOrComponent, isTplVariantable } from "@/wab/tpls";
+import { isTplTagOrComponent, isTplVariantable } from "@/wab/shared/core/tpls";
 import cn from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";

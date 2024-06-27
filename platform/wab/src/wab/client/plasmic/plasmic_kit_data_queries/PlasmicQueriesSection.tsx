@@ -19,8 +19,8 @@ import {
 } from "@plasmicapp/react-web";
 import "@plasmicapp/react-web/lib/plasmic.css";
 import * as React from "react";
-import ListBuilder from "../../../../ListBuilder"; // plasmic-import: _VRtHiszCx/component
-import QueryRow from "../../../../QueryRow"; // plasmic-import: dtgx0NGfys/component
+import ListBuilder from "../../components/ListBuilder"; // plasmic-import: _VRtHiszCx/component
+import QueryRow from "../../components/QueryRow"; // plasmic-import: dtgx0NGfys/component
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
 import plasmic_plasmic_kit_q_4_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss

@@ -23,15 +23,15 @@ import Button from "@/wab/client/components/widgets/Button";
 import Select from "@/wab/client/components/widgets/Select";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, mkShortId, spawn, withoutNils } from "@/wab/common";
-import { isCodeComponent } from "@/wab/components";
+import { ensure, mkShortId, spawn, withoutNils } from "@/wab/shared/common";
+import { isCodeComponent } from "@/wab/shared/core/components";
 import { PublicStyleSection } from "@/wab/shared/ApiSchema";
 import {
   ensureKnownStyleExpr,
   StyleExpr,
   TplComponent,
 } from "@/wab/shared/model/classes";
-import { mkSelectorRuleSet } from "@/wab/styles";
+import { mkSelectorRuleSet } from "@/wab/shared/core/styles";
 import { observer } from "mobx-react";
 import React from "react";
 

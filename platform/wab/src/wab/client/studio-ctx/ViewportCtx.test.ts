@@ -1,8 +1,8 @@
 import { DomActions, ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
-import { ComponentType } from "@/wab/components";
-import { Box, Pt } from "@/wab/geom";
+import { ComponentType } from "@/wab/shared/core/components";
+import { Box, Pt } from "@/wab/shared/geom";
 import { TplMgr } from "@/wab/shared/TplMgr";
-import { createSite, getDedicatedArena } from "@/wab/sites";
+import { createSite, getDedicatedArena } from "@/wab/shared/core/sites";
 import { mock, MockProxy } from "jest-mock-extended";
 
 jest.useFakeTimers();

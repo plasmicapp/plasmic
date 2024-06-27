@@ -9,16 +9,16 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import DoubleDotsVertical from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__DoubleDotsVerticalsvg";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { spawn } from "@/wab/common";
+import { spawn } from "@/wab/shared/common";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
 import {
   calcMovedColSizes,
   updateCurrentTplColumns,
 } from "@/wab/shared/columns-utils";
 import { ColumnsConfig } from "@/wab/shared/model/classes";
-import { allImageAssets, allMixins, allStyleTokens } from "@/wab/sites";
-import { CssVarResolver } from "@/wab/styles";
-import { TplColumnsTag } from "@/wab/tpls";
+import { allImageAssets, allMixins, allStyleTokens } from "@/wab/shared/core/sites";
+import { CssVarResolver } from "@/wab/shared/core/styles";
+import { TplColumnsTag } from "@/wab/shared/core/tpls";
 import { Tooltip } from "antd";
 import cn from "classnames";
 import { isEqual, isUndefined } from "lodash";

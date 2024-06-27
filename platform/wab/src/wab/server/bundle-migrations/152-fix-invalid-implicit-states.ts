@@ -10,8 +10,8 @@ import { Bundler } from "@/wab/shared/bundler";
 import {
   ensureCorrectImplicitStates,
   removeComponentState,
-} from "@/wab/states";
-import { isTplComponent } from "@/wab/tpls";
+} from "@/wab/shared/core/states";
+import { isTplComponent } from "@/wab/shared/core/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();

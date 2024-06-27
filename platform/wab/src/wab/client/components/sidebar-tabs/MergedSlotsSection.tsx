@@ -12,8 +12,8 @@ import {
   providesStyleComponent,
 } from "@/wab/client/components/style-controls/StyleComponent";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { hackyCast } from "@/wab/common";
-import { getComponentDisplayName } from "@/wab/components";
+import { hackyCast } from "@/wab/shared/common";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
 import {
   getAncestorTplSlot,
   getSingleTextBlockFromArg,
@@ -24,7 +24,7 @@ import { $$$ } from "@/wab/shared/TplQuery";
 import { isPlainObjectPropType } from "@/wab/shared/code-components/code-components";
 import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
 import { TplComponent } from "@/wab/shared/model/classes";
-import { smartHumanize } from "@/wab/strs";
+import { smartHumanize } from "@/wab/shared/strs";
 import { observer } from "mobx-react";
 import React from "react";
 

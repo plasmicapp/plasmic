@@ -1,4 +1,4 @@
-import { assertNever, jsonClone, last, withoutNils } from "@/wab/common";
+import { assertNever, jsonClone, last, withoutNils } from "@/wab/shared/common";
 import type AcornTypes from "acorn";
 import { full as astTraversal } from "acorn-walk";
 import { generate } from "escodegen";

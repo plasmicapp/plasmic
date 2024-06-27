@@ -8,11 +8,11 @@ import {
 } from "@/wab/client/state-management/preview-steps";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { Interaction } from "@/wab/shared/model/classes";
-import { isTplTagOrComponent } from "@/wab/tpls";
+import { isTplTagOrComponent } from "@/wab/shared/core/tpls";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
 import * as React from "react";
-import { BLOCKED_RUN_INTERACTION_MESSAGE } from "src/wab/client/state-management/interactions-meta";
+import { BLOCKED_RUN_INTERACTION_MESSAGE } from "@/wab/client/state-management/interactions-meta";
 
 export interface DataPickerColumnItemProps
   extends DefaultDataPickerColumnItemProps {

@@ -7,7 +7,7 @@ import {
   SortArgMeta,
   TableArgMeta,
 } from "@/wab/shared/data-sources-meta/data-sources";
-import { capitalizeFirst } from "@/wab/strs";
+import { capitalizeFirst } from "@/wab/shared/strs";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import moment from "moment/moment";
 import SqlString from "sqlstring";

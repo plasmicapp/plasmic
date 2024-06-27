@@ -1,6 +1,6 @@
-import { assert, isLiteralObject, jsonClone, swallow } from "@/wab/common";
-import { DEVFLAGS, getProjectFlags } from "@/wab/devflags";
-import { ExprCtx } from "@/wab/exprs";
+import { assert, isLiteralObject, jsonClone, swallow } from "@/wab/shared/common";
+import { DEVFLAGS, getProjectFlags } from "@/wab/shared/devflags";
+import { ExprCtx } from "@/wab/shared/core/exprs";
 import { makeAirtableFetcher } from "@/wab/server/data-sources/airtable-fetcher";
 import { makeDynamoDbFetcher } from "@/wab/server/data-sources/dynamodb-fetcher";
 import { getMigratedUserPropsOpBundle } from "@/wab/server/data-sources/end-user-utils";

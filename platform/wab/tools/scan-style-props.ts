@@ -5,10 +5,10 @@
 
 import _ from "lodash";
 import { getConnection } from "typeorm";
-import { genAsync, multimap, tuple } from "../src/wab/common";
 import { ensureDbConnection } from "../src/wab/server/db/DbCon";
 import { withDbModels } from "../src/wab/server/db/Migrator";
 import { ProjectRevision } from "../src/wab/server/entities/Entities";
+import { genAsync, multimap, tuple } from "../src/wab/shared/common";
 import { isValidStyleProp } from "../src/wab/shared/core/style-props";
 
 async function main() {

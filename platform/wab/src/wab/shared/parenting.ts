@@ -1,6 +1,6 @@
-import { ensure, ensureInstance } from "@/wab/common";
-import { findVarRefs, isCodeComponent } from "@/wab/components";
-import { Selectable } from "@/wab/selection";
+import { ensure, ensureInstance } from "@/wab/shared/common";
+import { findVarRefs, isCodeComponent } from "@/wab/shared/core/components";
+import { Selectable } from "@/wab/shared/core/selection";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import {
   isKnownSlotParam,
@@ -16,7 +16,7 @@ import { nodeConformsToType } from "@/wab/shared/model/model-util";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { getParentOrSlotSelection } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
-import { SlotSelection } from "@/wab/slots";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   getComponentIfRoot,
   hasChildrenSlot,
@@ -30,8 +30,8 @@ import {
   isTplSlot,
   isTplTag,
   isTplTextBlock,
-} from "@/wab/tpls";
-import { ValNode } from "@/wab/val-nodes";
+} from "@/wab/shared/core/tpls";
+import { ValNode } from "@/wab/shared/core/val-nodes";
 
 export type CantAddChildMsg =
   | CantAddToTplComponentMsg

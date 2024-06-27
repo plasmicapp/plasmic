@@ -6,7 +6,7 @@ import {
 import { ensureBaseRuleVariantSetting } from "@/wab/shared/Variants";
 import { Bundler } from "@/wab/shared/bundler";
 import { TplNode } from "@/wab/shared/model/classes";
-import { flattenTpls, isTplVariantable } from "@/wab/tpls";
+import { flattenTpls, isTplVariantable } from "@/wab/shared/core/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();

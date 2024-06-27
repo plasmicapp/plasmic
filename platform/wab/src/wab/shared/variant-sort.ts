@@ -4,9 +4,9 @@ import {
   partitions,
   sortByKeys,
   xIndexMap,
-} from "@/wab/common";
-import { getSuperComponents } from "@/wab/components";
-import { parseScreenSpec } from "@/wab/shared/Css";
+} from "@/wab/shared/common";
+import { getSuperComponents } from "@/wab/shared/core/components";
+import { parseScreenSpec } from "@/wab/shared/css-size";
 import {
   VariantCombo,
   getBaseVariant,

@@ -29,7 +29,7 @@ import RowWrapSpaceBetweenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIco
 import RowWrapSpaceEvenlyIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__RowWrapSpaceEvenly";
 import RowWrapStartIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__RowWrapStart";
 import RowWrapStretchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__RowWrapStretch";
-import { cx } from "@/wab/common";
+import { cx } from "@/wab/shared/common";
 import { flexDirToArrangement, isFlexReverse } from "@/wab/shared/layoututils";
 import { observer } from "mobx-react";
 import React from "react";

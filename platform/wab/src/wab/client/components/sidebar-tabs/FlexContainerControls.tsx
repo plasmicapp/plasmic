@@ -22,20 +22,20 @@ import ChevronRightsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIco
 import ChevronUpsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronUpsvg";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
-import { reverseIf } from "@/wab/common";
+import { reverseIf } from "@/wab/shared/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { TokenType } from "@/wab/commons/StyleToken";
-import { isCodeComponent } from "@/wab/components";
+import { isCodeComponent } from "@/wab/shared/core/components";
 import { flexDirToArrangement } from "@/wab/shared/layoututils";
-import { isTplComponent } from "@/wab/tpls";
+import { isTplComponent } from "@/wab/shared/core/tpls";
 import { Menu } from "antd";
 import cn from "classnames";
 import { mapKeys, range } from "lodash";
 import { observer } from "mobx-react";
 import React, { useState } from "react";
-import { camelProp } from "src/wab/css";
-import { DefinedIndicatorType } from "src/wab/shared/defined-indicator";
-import { VariantedStylesHelper } from "src/wab/shared/VariantedStylesHelper";
+import { camelProp } from "@/wab/shared/css";
+import { DefinedIndicatorType } from "@/wab/shared/defined-indicator";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 
 type FlexArrangement = "row" | "column";
 

@@ -6,7 +6,7 @@ import {
 import { HostFrameApi } from "@/wab/client/frame-ctx/host-frame-api";
 import { getPlasmicStudioArgs } from "@/wab/client/frame-ctx/plasmic-studio-args";
 import { TopFrameFullApi } from "@/wab/client/frame-ctx/top-frame-api";
-import { ensure, spawn, spawnWrapper } from "@/wab/common";
+import { ensure, spawn, spawnWrapper } from "@/wab/shared/common";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import * as Comlink from "comlink";
 import {

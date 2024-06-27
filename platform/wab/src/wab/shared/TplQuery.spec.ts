@@ -1,7 +1,7 @@
-import { ensure, tuple } from "@/wab/common";
-import * as Components from "@/wab/components";
-import { ComponentType, mkComponent } from "@/wab/components";
-import { mkParam, ParamExportType } from "@/wab/lang";
+import { ensure, tuple } from "@/wab/shared/common";
+import * as Components from "@/wab/shared/core/components";
+import { ComponentType, mkComponent } from "@/wab/shared/core/components";
+import { mkParam, ParamExportType } from "@/wab/shared/core/lang";
 import {
   Arg,
   ensureKnownRenderExpr,
@@ -15,15 +15,15 @@ import { typeFactory } from "@/wab/shared/model/model-util";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { getBaseVariant } from "@/wab/shared/Variants";
-import { createSite } from "@/wab/sites";
+import { createSite } from "@/wab/shared/core/sites";
 import { mkTplTestText, TEST_GLOBAL_VARIANT } from "@/wab/test/tpls";
-import * as tpls from "@/wab/tpls";
+import * as tpls from "@/wab/shared/core/tpls";
 import {
   checkTplIntegrity,
   mkTplComponentX,
   mkTplTagSimple,
   mkTplTagX,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 
 describe("TplQuery", function () {
   let allWrapped,

@@ -13,13 +13,13 @@ import {
   ensureString,
   xGroupBy,
   xSymmetricDifference,
-} from "@/wab/common";
+} from "@/wab/shared/common";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import { ApiComment, CommentThreadId } from "@/wab/shared/ApiSchema";
 import { AnyArena } from "@/wab/shared/Arenas";
 import { ArenaFrame, TplNode } from "@/wab/shared/model/classes";
 import Chroma from "@/wab/shared/utils/color-utils";
-import { isTplVariantable } from "@/wab/tpls";
+import { isTplVariantable } from "@/wab/shared/core/tpls";
 import classNames from "classnames";
 import $ from "jquery";
 import { observer } from "mobx-react";

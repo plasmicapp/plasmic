@@ -1,6 +1,6 @@
 import { NonAuthCtx } from "@/wab/client/app-ctx";
-import { ensureArray, spawn } from "@/wab/common";
-import { DevFlagsType, InsertableTemplatesSelectable } from "@/wab/devflags";
+import { ensureArray, spawn } from "@/wab/shared/common";
+import { DevFlagsType, InsertableTemplatesSelectable } from "@/wab/shared/devflags";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { getBundle } from "@/wab/shared/bundles";
 import L from "lodash";

@@ -3,17 +3,17 @@ import { createNodeIcon } from "@/wab/client/components/sidebar-tabs/tpl-tree";
 import { FRAME_ICON, SLOT_ICON } from "@/wab/client/icons";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { getSlotSelectionDisplayName } from "@/wab/client/utils/tpl-client-utils";
-import { SQ, Selectable } from "@/wab/selection";
+import { SQ, Selectable } from "@/wab/shared/core/selection";
 import { FrameViewMode } from "@/wab/shared/Arenas";
 import { TplNode } from "@/wab/shared/model/classes";
-import { SlotSelection } from "@/wab/slots";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import * as cssVariables from "@/wab/styles/css-variables";
 import {
   isTplNamable,
   isTplTagOrComponent,
   isTplVariantable,
   summarizeTpl,
-} from "@/wab/tpls";
+} from "@/wab/shared/core/tpls";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RefObject, useEffect, useMemo, useRef } from "react";

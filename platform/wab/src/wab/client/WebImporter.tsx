@@ -4,14 +4,14 @@ import {
   ensureViewCtxOrThrowUserError,
 } from "@/wab/client/clipboard/common";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { assertNever, withoutNils } from "@/wab/common";
+import { assertNever, withoutNils } from "@/wab/shared/common";
 import { unwrap } from "@/wab/commons/failable-utils";
-import { code } from "@/wab/exprs";
-import { ImageAssetType } from "@/wab/image-asset-type";
+import { code } from "@/wab/shared/core/exprs";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { RawText, TplNode } from "@/wab/shared/model/classes";
-import { TplTagType } from "@/wab/tpls";
+import { TplTagType } from "@/wab/shared/core/tpls";
 
 type WIStyles = Record<string, Record<string, string>>;
 

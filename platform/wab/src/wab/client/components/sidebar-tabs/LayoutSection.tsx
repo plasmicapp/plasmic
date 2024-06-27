@@ -15,7 +15,7 @@ import GridIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Grid";
 import ArrowDownIcon from "@/wab/client/plasmic/plasmic_kit_style_controls/icons/PlasmicIcon__ArrowDown";
 import ArrowRightIcon from "@/wab/client/plasmic/plasmic_kit_style_controls/icons/PlasmicIcon__ArrowRight";
 import WildcardIcon from "@/wab/client/plasmic/plasmic_kit_style_controls/icons/PlasmicIcon__Wildcard";
-import { DEVFLAGS } from "@/wab/devflags";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ContainerLayoutType,
   ensureContainerType,

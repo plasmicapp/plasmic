@@ -1,6 +1,6 @@
-import { ensure, ensureArrayOfInstances, partitions } from "@/wab/common";
+import { ensure, ensureArrayOfInstances, partitions } from "@/wab/shared/common";
 import { insertAt, removeFromArray } from "@/wab/commons/collections";
-import { allComponentVariants } from "@/wab/components";
+import { allComponentVariants } from "@/wab/shared/core/components";
 import {
   ensureActivatedScreenVariantsForArena,
   ensureActivatedScreenVariantsForFrameByWidth,
@@ -41,7 +41,7 @@ import {
   allGlobalVariants,
   getResponsiveStrategy,
   getSiteScreenSizes,
-} from "@/wab/sites";
+} from "@/wab/shared/core/sites";
 import { orderBy } from "lodash";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { IObservableArray } from "mobx";
