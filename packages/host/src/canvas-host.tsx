@@ -145,7 +145,7 @@ function _PlasmicCanvasHost() {
       appDiv = document.createElement("div");
       appDiv.id = "plasmic-app";
       appDiv.classList.add("__wab_user-body");
-      document.body.appendChild(appDiv);
+      document.body.prepend(appDiv);
     }
     return ReactDOM.createPortal(
       <ErrorBoundary key={`${renderCount}`}>
