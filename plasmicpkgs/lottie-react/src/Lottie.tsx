@@ -1,9 +1,7 @@
 import { CodeComponentMeta, PlasmicCanvasContext } from "@plasmicapp/host";
 import registerComponent from "@plasmicapp/host/registerComponent";
+import Lottie from "lottie-react";
 import React, { useContext } from "react";
-
-// Lazy importing because of https://github.com/Gamote/lottie-react/issues/101
-const Lottie = React.lazy(() => import("lottie-react"));
 
 const isBrowser = typeof window !== "undefined";
 
