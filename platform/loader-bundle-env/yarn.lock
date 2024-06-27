@@ -3134,10 +3134,10 @@
   dependencies:
     framer-motion "^5.3.0"
 
-"@plasmicpkgs/lottie-react@^0.0.185":
-  version "0.0.185"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/lottie-react/-/lottie-react-0.0.185.tgz#fde207e38e25a3be2e1ca0bff3b2217e1dd6b8f1"
-  integrity sha512-JgvU4M09q8jmIXG3ub4V7PBJcnaTxnKvnaDQDUaUeLRNT7LDzn+cnM/Zms36Y0hFTrM6o3VVWJFjpLk9ragqAA==
+"@plasmicpkgs/lottie-react@^0.0.186":
+  version "0.0.186"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/lottie-react/-/lottie-react-0.0.186.tgz#ebae31cbfdfd1c95fd9cc003147ab70204820efb"
+  integrity sha512-s48AHMNXjTSbTes7dky5qh+4WPsa0e8NXJ2cG7GDjcAInlZiPf/7ULt2zXgtn+RqO0rrBqaY3tdI9c9CTmu8lw==
   dependencies:
     lottie-react "^2.1.0"
 
