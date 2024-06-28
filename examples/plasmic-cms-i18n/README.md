@@ -1,5 +1,7 @@
 # Plasmic CMS i18n
 
+Live demo: https://plasmic-cms-i18n.vercel.app/
+
 This is an example Next.js project demonstrating the localization/internationalization capabilities of Plasmic CMS.
 This project includes a locale selector UI and shows you how to dynamically set the locale.
 See the relevant code here: [pages/index.tsx](pages/index.tsx).
