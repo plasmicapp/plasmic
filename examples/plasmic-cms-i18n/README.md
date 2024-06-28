@@ -1,25 +1,10 @@
-This is a Next.js project bootstrapped with [`create-plasmic-app`](https://www.npmjs.com/package/create-plasmic-app).
+# Plasmic CMS i18n
 
-## Getting Started
+This is an example Next.js project demonstrating the localization/internationalization capabilities of Plasmic CMS.
+This project includes a locale selector UI and shows you how to dynamically set the locale.
+See the relevant code here: [pages/index.tsx](pages/index.tsx).
 
-First, run the development server:
+The Plasmic project is here: https://studio.plasmic.app/projects/mbmbKuYXsrojz2DccvPWPT
 
-```bash
-npm run dev
-```
-
-Open your browser to see the result.
-
-You can start editing your project in Plasmic Studio. The page auto-updates as you edit the project.
-
-## Learn More
-
-With Plasmic, you can enable non-developers on your team to publish pages and content into your website or app.
-
-To learn more about Plasmic, take a look at the following resources:
-
-- [Plasmic Website](https://www.plasmic.app/)
-- [Plasmic Documentation](https://docs.plasmic.app/learn/)
-- [Plasmic Community Forum](https://forum.plasmic.app/)
-
-You can check out [the Plasmic GitHub repository](https://github.com/plasmicapp/plasmic) - your feedback and contributions are welcome!
+There is also a CMS database backing this project, but it can't be shared publicly.
+You'll need to connect your own Plasmic CMS database to change any data.
