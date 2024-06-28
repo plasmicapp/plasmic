@@ -1,4 +1,5 @@
 import type { Fiber } from "@/wab/client/react-global-hook/fiber";
+import { isBaseVariant } from "@/wab/shared/Variants";
 import {
   arrayEq,
   assert,
@@ -13,7 +14,13 @@ import {
 } from "@/wab/shared/common";
 import { isCodeComponent } from "@/wab/shared/core/components";
 import { SQ, SelQuery, Selectable } from "@/wab/shared/core/selection";
-import { isBaseVariant } from "@/wab/shared/Variants";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import {
+  classNameToRuleSetUid,
+  createRuleSetMerger,
+  expandRuleSets,
+} from "@/wab/shared/core/styles";
+import { TplTagType, TplTextTag, ancestors } from "@/wab/shared/core/tpls";
 import { CanvasEnv } from "@/wab/shared/eval";
 import { SlotInfo, ValState } from "@/wab/shared/eval/val-state";
 import mobx from "@/wab/shared/import-mobx";
@@ -26,13 +33,6 @@ import {
   TplSlot,
   TplTag,
 } from "@/wab/shared/model/classes";
-import { SlotSelection } from "@/wab/shared/core/slots";
-import {
-  classNameToRuleSetUid,
-  createRuleSetMerger,
-  expandRuleSets,
-} from "@/wab/shared/core/styles";
-import { TplTagType, TplTextTag, ancestors } from "@/wab/shared/core/tpls";
 import L, { uniq } from "lodash";
 import type React from "react";
 
@@ -669,6 +669,10 @@ export function isValTag(val: any): val is ValTag {
 
 export function isValComponent(val: any): val is ValComponent {
   return val instanceof ValComponent;
+}
+
+export function isValSlot(val: any): val is ValSlot {
+  return val instanceof ValSlot;
 }
 
 export function representsSameValNode(val1: ValNode, val2: ValNode) {

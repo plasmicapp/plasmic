@@ -11,23 +11,6 @@ import {
   getRenderState,
 } from "@/wab/client/studio-ctx/renderState";
 import {
-  MAKE_EMPTY_OBJECT,
-  arrayEq,
-  assert,
-  ensure,
-  ensureInstance,
-  hackyCast,
-  last,
-  structuralMerge,
-  structuralMerge2,
-  switchType,
-  switchTypeUnsafe,
-  withDefault,
-  withDefaultFunc,
-  withoutNils,
-} from "@/wab/shared/common";
-import { isCodeComponent, isPlumeComponent } from "@/wab/shared/core/components";
-import {
   NO_INDEX_COPY,
   classNameProp,
   dataCanvasEnvsProp,
@@ -43,15 +26,26 @@ import {
   valOwnerProp,
 } from "@/wab/shared/canvas-constants";
 import { isPlainObjectPropType } from "@/wab/shared/code-components/code-components";
-import { CanvasEnv } from "@/wab/shared/eval";
-import { SlotInfo } from "@/wab/shared/eval/val-state";
 import {
-  RichText,
-  TplComponent,
-  TplNode,
-  TplSlot,
-  TplTag,
-} from "@/wab/shared/model/classes";
+  MAKE_EMPTY_OBJECT,
+  arrayEq,
+  assert,
+  ensure,
+  ensureInstance,
+  hackyCast,
+  last,
+  structuralMerge,
+  structuralMerge2,
+  switchType,
+  switchTypeUnsafe,
+  withDefault,
+  withDefaultFunc,
+  withoutNils,
+} from "@/wab/shared/common";
+import {
+  isCodeComponent,
+  isPlumeComponent,
+} from "@/wab/shared/core/components";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import { isTplComponent, isTplTextBlock } from "@/wab/shared/core/tpls";
 import {
@@ -64,7 +58,17 @@ import {
   ValTextTag,
   ValidationType,
   isValComponent,
+  isValSlot,
 } from "@/wab/shared/core/val-nodes";
+import { CanvasEnv } from "@/wab/shared/eval";
+import { SlotInfo } from "@/wab/shared/eval/val-state";
+import {
+  RichText,
+  TplComponent,
+  TplNode,
+  TplSlot,
+  TplTag,
+} from "@/wab/shared/model/classes";
 import { isString, omit } from "lodash";
 import { observable, runInAction } from "mobx";
 
@@ -834,8 +838,12 @@ if (officialHook) {
                         vs.map(({ nonCached }) => nonCached).forEach((v) => {
                           v.slotInfo = new SlotInfo(
                             p,
-                            // ValSlots only exist in Plasmic components
-                            !isCodeComponent(valComp.tpl.component)
+                            // ValSlots only exist in Plasmic components, since they are handled by us during the rendering,
+                            // but for code components, the slot is scoped by the code component itself. Directly checking if
+                            // the tpl.component is a PlasmicComponent may not be enough, since the user can re-expose the slot
+                            // of a code component through a Plasmic component.
+                            !isCodeComponent(valComp.tpl.component) &&
+                            isValSlot(v.parent)
                               ? ensureInstance(v.parent, ValSlot)
                               : undefined,
                             valComp
