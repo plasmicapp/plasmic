@@ -1,10 +1,3 @@
-import {
-  ensure,
-  ensureArray,
-  ensureInstance,
-  hackyCast,
-  tuple,
-} from "@/wab/shared/common";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { Project } from "@/wab/server/entities/Entities";
 import {
@@ -39,10 +32,19 @@ import {
 } from "@/wab/server/routes/util";
 import { prefillCloudfront } from "@/wab/server/workers/prefill-cloudfront";
 import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
 import { ExportOpts } from "@/wab/shared/codegen/types";
 import { toClassName } from "@/wab/shared/codegen/util";
+import {
+  ensure,
+  ensureArray,
+  ensureInstance,
+  hackyCast,
+  tuple,
+} from "@/wab/shared/common";
 import { tplToPlasmicElements } from "@/wab/shared/element-repr/gen-element-repr-v2";
+import { LocalizationKeyScheme } from "@/wab/shared/localization";
 import { toJson } from "@/wab/shared/model/model-tree-util";
 import { getCodegenUrl } from "@/wab/shared/urls";
 import S3 from "aws-sdk/clients/s3";
@@ -51,8 +53,6 @@ import { Request, Response } from "express-serve-static-core";
 import fs from "fs";
 import { isString } from "lodash";
 import path from "path";
-import { ProjectId } from "@/wab/shared/ApiSchema";
-import { LocalizationKeyScheme } from "@/wab/shared/localization";
 import { getConnection } from "typeorm";
 
 /**
@@ -484,6 +484,7 @@ export async function buildPublishedLoaderHtml(req: Request, res: Response) {
         "globalVariants",
         req.query.globalVariants ? (req.query.componentProps as string) : "[]",
       ],
+      ["prepass", req.query.prepass === "1" ? "1" : "0"],
     ]).toString()
   );
 }
