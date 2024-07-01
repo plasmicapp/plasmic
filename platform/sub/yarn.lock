@@ -64,10 +64,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@plasmicapp/host@^1.0.198":
-  version "1.0.198"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.198.tgz#770643dc0de5e38bac75b82f30da04a5dcd99d6a"
-  integrity sha512-VsGZyKE+BLuANaTg+6wiuWoqLROCX+gwn5WZ3AZ6PFarmIdVgVPB5HZjC4qDPIbCb58pgifJ+za8SOX4JUtpsw==
+"@plasmicapp/host@^1.0.199":
+  version "1.0.199"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.199.tgz#72aec63513b6560b2d6f08cd8072c59a77d95aaf"
+  integrity sha512-3ru0NF3cKnjp25LDDMI+9JVfHHFeI4a+6vGbHkeBnOO3zL9dbCofXqM4wVrfSdG8P2hoRuRjuHU/rszM+pPbtg==
   dependencies:
     "@plasmicapp/query" "0.1.79"
     csstype "^3.1.2"
