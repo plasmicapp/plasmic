@@ -22,7 +22,7 @@ function UpsellCreditCard_(
       root={{ ref }}
       {...rest}
       stripeCardElement={{
-        render: () => <CardElement />,
+        render: () => <CardElement options={{ hidePostalCode: true }} />,
       }}
       submitButton={{
         disabled,
