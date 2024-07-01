@@ -1,18 +1,20 @@
-import { AppCtx, hideStarters } from "@/wab/client/app-ctx";
-import { isProjectPath, isTopFrame } from "@/wab/client/cli-routes";
-import { initClientFlags } from "@/wab/client/client-dev-flags";
-import { Root } from "@/wab/client/components/root-view";
 import {
   ERROR_PATTERNS_TO_IGNORE,
   handleError,
   shouldIgnoreError,
 } from "@/wab/client/ErrorNotifications";
+import { AppCtx, hideStarters } from "@/wab/client/app-ctx";
+import { isProjectPath, isTopFrame } from "@/wab/client/cli-routes";
+import { initClientFlags } from "@/wab/client/client-dev-flags";
+import { Root } from "@/wab/client/components/root-view";
 import {
   HostFrameCtxProvider,
   useHostFrameCtxIfHostFrame,
 } from "@/wab/client/frame-ctx/host-frame-ctx";
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { useTracking } from "@/wab/client/tracking";
+import DeploymentFlags from "@/wab/shared/DeploymentFlags";
+import { UserError } from "@/wab/shared/UserError";
 import {
   CustomError,
   hackyCast,
@@ -21,11 +23,9 @@ import {
   tuple,
   withoutFalsy,
 } from "@/wab/shared/common";
-import DeploymentFlags from "@/wab/shared/DeploymentFlags";
-import { applyDevFlagOverrides, DEVFLAGS } from "@/wab/shared/devflags";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { DEVFLAGS, applyDevFlagOverrides } from "@/wab/shared/devflags";
 import { getMaximumTier } from "@/wab/shared/pricing/pricing-utils";
-import { UserError } from "@/wab/shared/UserError";
 import * as Sentry from "@sentry/browser";
 import * as Integrations from "@sentry/integrations";
 import { createBrowserHistory } from "history";
@@ -178,6 +178,10 @@ export function main() {
         const maybeProjectId = studioCtx?.siteInfo.id;
         if (maybeProjectId) {
           event.tags.projectId = maybeProjectId;
+          const maybeRevisionNum = studioCtx.dbCtx().revisionNum;
+          if (maybeRevisionNum) {
+            event.tags.revisionNum = maybeRevisionNum;
+          }
         }
 
         // Differentiate errors generated/known by Plasmic.
