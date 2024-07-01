@@ -1,31 +1,9 @@
-import { Dict, mkIdMap } from "@/wab/shared/collections";
-import {
-  arrayEqIgnoreOrder,
-  assert,
-  ensure,
-  ensureType,
-  maybe,
-  mkShortId,
-  mkUuid,
-  strictFind,
-  uncheckedCast,
-  withoutNils,
-  xGroupBy,
-} from "@/wab/shared/common";
-import * as semver from "@/wab/commons/semver";
 import { addOrUpsertTokens } from "@/wab/commons/StyleToken";
+import * as semver from "@/wab/commons/semver";
 import { toOpaque } from "@/wab/commons/types";
 import { ProjectVersionMeta, VersionResolution } from "@/wab/commons/versions";
-import {
-  ComponentType,
-  isPageComponent,
-  isPlasmicComponent,
-} from "@/wab/shared/core/components";
-import { DEVFLAGS } from "@/wab/shared/devflags";
-import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
 import { createBranchFromBase } from "@/wab/server/branch";
 import { reevaluateDataSourceExprOpIds } from "@/wab/server/data-sources/data-source-utils";
-import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
 import {
   getLastBundleVersion,
   getMigratedBundle,
@@ -41,6 +19,7 @@ import {
   ProofSafeDelete,
   SUPER_USER,
 } from "@/wab/server/db/DbMgr";
+import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
 import { onProjectDelete } from "@/wab/server/db/op-hooks";
 import { upgradeReferencedHostlessDeps } from "@/wab/server/db/upgrade-hostless-utils";
 import { sendCommentNotificationEmail } from "@/wab/server/emails/comment-notification-email";
@@ -118,6 +97,9 @@ import {
   UpdateProjectResponse,
 } from "@/wab/shared/ApiSchema";
 import { parseProjectBranchId } from "@/wab/shared/ApiSchemaUtil";
+import { accessLevelRank } from "@/wab/shared/EntUtil";
+import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
+import { TplMgr } from "@/wab/shared/TplMgr";
 import {
   Bundler,
   checkBundleFields,
@@ -128,10 +110,10 @@ import {
 } from "@/wab/shared/bundler";
 import {
   Bundle,
+  OutdatedBundleError,
   getBundle,
   getSerializedBundleSize,
   isExpectedBundleVersion,
-  OutdatedBundleError,
 } from "@/wab/shared/bundles";
 import { componentToDeepReferenced } from "@/wab/shared/cached-selectors";
 import { elementSchemaToTpl } from "@/wab/shared/code-components/code-components";
@@ -143,28 +125,46 @@ import { exportStyleConfig } from "@/wab/shared/codegen/react-p";
 import { exportStyleTokens } from "@/wab/shared/codegen/style-tokens";
 import { ExportOpts } from "@/wab/shared/codegen/types";
 import { toClassName } from "@/wab/shared/codegen/util";
-import { accessLevelRank } from "@/wab/shared/EntUtil";
-import { DomainValidator } from "@/wab/shared/hosting";
+import { Dict, mkIdMap } from "@/wab/shared/collections";
 import {
-  Component,
-  ensureKnownProjectDependency,
-  ensureKnownSite,
-  ProjectDependency,
-  Site,
-} from "@/wab/shared/model/classes";
-import { modelSchemaHash } from "@/wab/shared/model/classes-metas";
-import { createTaggedResourceId } from "@/wab/shared/perms";
-import { requiredPackageVersions } from "@/wab/shared/required-versions";
-import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
-import { assertSiteInvariants } from "@/wab/shared/site-invariants";
-import { TplMgr } from "@/wab/shared/TplMgr";
-import { mergeUiConfigs } from "@/wab/shared/ui-config-utils";
+  arrayEqIgnoreOrder,
+  assert,
+  ensure,
+  ensureType,
+  maybe,
+  mkShortId,
+  mkUuid,
+  strictFind,
+  uncheckedCast,
+  withoutNils,
+  xGroupBy,
+} from "@/wab/shared/common";
+import {
+  ComponentType,
+  isPageComponent,
+  isPlasmicComponent,
+} from "@/wab/shared/core/components";
+import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
 import {
   createSite,
   getAllOpExprSourceIdsUsedInSite,
   localComponents,
   localIcons,
 } from "@/wab/shared/core/sites";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { DomainValidator } from "@/wab/shared/hosting";
+import {
+  Component,
+  ProjectDependency,
+  Site,
+  ensureKnownProjectDependency,
+  ensureKnownSite,
+} from "@/wab/shared/model/classes";
+import { modelSchemaHash } from "@/wab/shared/model/classes-metas";
+import { createTaggedResourceId } from "@/wab/shared/perms";
+import { requiredPackageVersions } from "@/wab/shared/required-versions";
+import { assertSiteInvariants } from "@/wab/shared/site-invariants";
+import { mergeUiConfigs } from "@/wab/shared/ui-config-utils";
 import { getCodegenUrl } from "@/wab/shared/urls";
 import * as Sentry from "@sentry/node";
 import { Request, Response } from "express-serve-static-core";
@@ -182,7 +182,7 @@ import {
 import fetch from "node-fetch";
 import * as Prettier from "prettier";
 import type { SetRequired } from "type-fest";
-import { EntityManager, getConnection, MigrationExecutor } from "typeorm";
+import { EntityManager, MigrationExecutor, getConnection } from "typeorm";
 import { escapeHTML } from "underscore.string";
 
 export function mkApiProject(project: Project): ApiProject {
@@ -2580,9 +2580,11 @@ export async function updateProjectData(req: Request, res: Response) {
         tplMgr.changePagePath(component, compReq.path);
 
         const assignedPath = component.pageMeta.path;
-        warnings.push({
-          message: `Component ${component.name} was assigned path ${assignedPath} because the requested path ${compReq.path} was already used or invalid.`,
-        });
+        if (assignedPath !== compReq.path) {
+          warnings.push({
+            message: `Component ${component.name} was assigned path ${assignedPath} because the requested path ${compReq.path} was already used or invalid.`,
+          });
+        }
       }
     }
 

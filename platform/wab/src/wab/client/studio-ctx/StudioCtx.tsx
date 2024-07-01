@@ -94,31 +94,6 @@ import {
   getHostUrl,
   maybeToggleTrailingSlash,
 } from "@/wab/client/utils/app-hosting-utils";
-import {
-  AsyncCallable,
-  arrayEqIgnoreOrder,
-  asOne,
-  assert,
-  asyncMaxAtATime,
-  asyncOneAtATime,
-  asyncTimeout,
-  ensure,
-  ensureHTMLElt,
-  ensureType,
-  last,
-  maybe,
-  mkShortId,
-  removeWhere,
-  spawn,
-  spawnWrapper,
-  swallow,
-  switchType,
-  tuple,
-  withTimeout,
-  withoutNils,
-  xDifference,
-  xGroupBy,
-} from "@/wab/shared/common";
 import { drainQueue } from "@/wab/commons/asyncutil";
 import { arrayReversed, removeFromArray } from "@/wab/commons/collections";
 import {
@@ -128,33 +103,6 @@ import {
 import { safeCallbackify } from "@/wab/commons/control";
 import { isLatest, latestTag, lt } from "@/wab/commons/semver";
 import { DeepReadonly } from "@/wab/commons/types";
-import {
-  CodeComponent,
-  ComponentType,
-  PageComponent,
-  allComponentVariants,
-  extractParamsFromPagePath,
-  getRealParams,
-  isCodeComponent,
-  isPageComponent,
-  isPlainComponent,
-} from "@/wab/shared/core/components";
-import {
-  DEVFLAGS,
-  InsertableTemplatesGroup,
-  InsertableTemplatesItem,
-} from "@/wab/shared/devflags";
-import { tryExtractJson } from "@/wab/shared/core/exprs";
-import { Box, Pt } from "@/wab/shared/geom";
-import {
-  ModelChange,
-  RecordedChanges,
-  emptyRecordedChanges,
-  filterPersistentChanges,
-  mergeRecordedChanges,
-} from "@/wab/shared/core/observable-model";
-import { walkDependencyTree } from "@/wab/shared/core/project-deps";
-import { isSelectable, makeSelectableFullKey } from "@/wab/shared/core/selection";
 import { UnauthorizedError } from "@/wab/shared/ApiErrors/errors";
 import {
   ApiBranch,
@@ -225,8 +173,88 @@ import {
   registeredFunctionId,
   syncPlumeComponent,
 } from "@/wab/shared/code-components/code-components";
+import {
+  AsyncCallable,
+  arrayEqIgnoreOrder,
+  asOne,
+  assert,
+  asyncMaxAtATime,
+  asyncOneAtATime,
+  asyncTimeout,
+  ensure,
+  ensureHTMLElt,
+  ensureType,
+  last,
+  maybe,
+  mkShortId,
+  removeWhere,
+  spawn,
+  spawnWrapper,
+  swallow,
+  switchType,
+  tuple,
+  withTimeout,
+  withoutNils,
+  xDifference,
+  xGroupBy,
+} from "@/wab/shared/common";
 import { ensureActivatedScreenVariantsForComponentArenaFrame } from "@/wab/shared/component-arenas";
 import { RootComponentVariantFrame } from "@/wab/shared/component-frame";
+import {
+  CodeComponent,
+  ComponentType,
+  PageComponent,
+  allComponentVariants,
+  extractParamsFromPagePath,
+  getRealParams,
+  isCodeComponent,
+  isPageComponent,
+  isPlainComponent,
+} from "@/wab/shared/core/components";
+import { tryExtractJson } from "@/wab/shared/core/exprs";
+import {
+  ModelChange,
+  RecordedChanges,
+  emptyRecordedChanges,
+  filterPersistentChanges,
+  mergeRecordedChanges,
+} from "@/wab/shared/core/observable-model";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
+import {
+  isSelectable,
+  makeSelectableFullKey,
+} from "@/wab/shared/core/selection";
+import {
+  allGlobalVariants,
+  getAllSiteFrames,
+  getArenaByNameOrUuidOrPath,
+  getDedicatedArena,
+  getSiteArenas,
+  isHostLessPackage,
+  isTplAttachedToSite,
+  siteIsEmpty,
+} from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import { SplitStatus } from "@/wab/shared/core/splits";
+import {
+  taggedUnbundle,
+  unbundleProjectDependency,
+  unbundleSite,
+} from "@/wab/shared/core/tagged-unbundle";
+import {
+  EventHandlerKeyType,
+  ancestorsUp,
+  flattenTpls,
+  isTplComponent,
+  isTplContainer,
+  isTplNamable,
+  isTplSlot,
+  tplChildren,
+  trackComponentRoot,
+  trackComponentSite,
+} from "@/wab/shared/core/tpls";
+import { undoChanges } from "@/wab/shared/core/undo-util";
+import { ValComponent, ValNode } from "@/wab/shared/core/val-nodes";
 import {
   ALL_QUERIES,
   dataSourceTemplateToString,
@@ -235,7 +263,13 @@ import {
 } from "@/wab/shared/data-sources-meta/data-sources";
 import { AddItemPrefs, getSimplifiedStyles } from "@/wab/shared/default-styles";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import {
+  DEVFLAGS,
+  InsertableTemplatesGroup,
+  InsertableTemplatesItem,
+} from "@/wab/shared/devflags";
 import { DataSourceUser } from "@/wab/shared/dynamic-bindings";
+import { Box, Pt } from "@/wab/shared/geom";
 import { cloneInsertableTemplateComponent } from "@/wab/shared/insertable-templates";
 import { InsertableTemplateComponentExtraInfo } from "@/wab/shared/insertable-templates/types";
 import { instUtil } from "@/wab/shared/model/InstUtil";
@@ -294,37 +328,6 @@ import {
   getLeftTabPermission,
   mergeUiConfigs,
 } from "@/wab/shared/ui-config-utils";
-import {
-  allGlobalVariants,
-  getAllSiteFrames,
-  getArenaByNameOrUuidOrPath,
-  getDedicatedArena,
-  getSiteArenas,
-  isHostLessPackage,
-  isTplAttachedToSite,
-  siteIsEmpty,
-} from "@/wab/shared/core/sites";
-import { SlotSelection } from "@/wab/shared/core/slots";
-import { SplitStatus } from "@/wab/shared/core/splits";
-import {
-  taggedUnbundle,
-  unbundleProjectDependency,
-  unbundleSite,
-} from "@/wab/shared/core/tagged-unbundle";
-import {
-  EventHandlerKeyType,
-  ancestorsUp,
-  flattenTpls,
-  isTplComponent,
-  isTplContainer,
-  isTplNamable,
-  isTplSlot,
-  tplChildren,
-  trackComponentRoot,
-  trackComponentSite,
-} from "@/wab/shared/core/tpls";
-import { undoChanges } from "@/wab/shared/core/undo-util";
-import { ValComponent, ValNode } from "@/wab/shared/core/val-nodes";
 import {
   DataOp,
   executePlasmicDataOp,
@@ -5652,6 +5655,10 @@ export class StudioCtx extends WithDbCtx {
     );
   }
 
+  /**
+   * Never call this.change() inside this method without wrapping it
+   * in a spawn() to avoid deadlocks and/or breaking this.modelChangeQueue.
+   */
   private async fetchUpdatesInternal() {
     assert(
       !this._isChanging && !this._isUndoing,
@@ -5678,14 +5685,16 @@ export class StudioCtx extends WithDbCtx {
           getArenaType(this.currentArena)
         );
         if (newCurrentArena) {
-          await this.change(
-            ({ success }) => {
-              this.switchToArena(newCurrentArena);
-              return success();
-            },
-            {
-              noUndoRecord: true,
-            }
+          spawn(
+            this.change(
+              ({ success }) => {
+                this.switchToArena(newCurrentArena);
+                return success();
+              },
+              {
+                noUndoRecord: true,
+              }
+            )
           );
         }
       }
