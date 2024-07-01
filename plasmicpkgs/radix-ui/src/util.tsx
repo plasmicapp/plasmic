@@ -298,6 +298,7 @@ export const overlayProps = ({
     advanced: true,
     description:
       "Disable interaction with outside elements. Only popover content will be visible to screen readers.",
+    defaultValueHint: true,
   },
   onOpenChange: {
     type: "eventHandler",
