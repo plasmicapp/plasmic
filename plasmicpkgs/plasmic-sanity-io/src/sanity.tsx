@@ -191,7 +191,7 @@ export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
       options: (props, ctx) => ctx?.sanityFields ?? [],
       // Hide this if there's groq (so we're just using groq), or if there's
       // no docType selected yet
-      hidden: (props, ctx) => !!props.groq || !props.docType,
+      hidden: (props) => !!props.groq || !props.docType,
     },
     filterParameter: {
       type: "choice",
@@ -200,14 +200,14 @@ export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
         "Filter Option to filter by. Read more (https://www.sanity.io/docs/groq-operators#3b7211e976f6)",
       options: (props, ctx) => ctx?.queryOptions ?? [],
       // Hide if in groq mode, or if no filter field is selected yet
-      hidden: (props, ctx) => !!props.groq || !props.filterField,
+      hidden: (props) => !!props.groq || !props.filterField,
     },
     filterValue: {
       type: "string",
       displayName: "Filter value",
       description: "Value to filter by, should be of filter field type",
       // Hide if in groq mode, or if no filter field is selected yet
-      hidden: (props, ctx) => !!props.groq || !props.filterField,
+      hidden: (props) => !!props.groq || !props.filterField,
     },
     limit: {
       type: "string",
@@ -486,7 +486,7 @@ export function SanityFetcher({
     ? children
     : resultData.map((item, index) => {
         Object.keys(item).forEach((field) => {
-          if (item[field]._type === "image") {
+          if (item[field] != null && item[field]._type === "image") {
             item[field].imgUrl = imageBuilder
               .image(item[field])
               .ignoreImageParams()
@@ -568,8 +568,8 @@ export function SanityField({
   }
 
   // Getting only fields that aren't objects
-  const displayableFields = Object.keys(item).filter((field) => {
-    const value = get(item, field);
+  const displayableFields = Object.keys(item).filter((f) => {
+    const value = get(item, f);
     return typeof value !== "object" || value._type === "image";
   });
   setControlContextData?.({
