@@ -1,12 +1,15 @@
+import { uploadFilesToS3 } from "@/wab/server/util/s3-util";
+import { ComponentReference } from "@/wab/server/workers/codegen";
+import { LoaderEsbuildFatalError } from "@/wab/shared/ApiErrors/errors";
 import {
+  asyncTimeout,
   ensure,
   mkShortUuid,
   omitNils,
   tuple,
   withoutNils,
 } from "@/wab/shared/common";
-import { uploadFilesToS3 } from "@/wab/server/util/s3-util";
-import { ComponentReference } from "@/wab/server/workers/codegen";
+import * as Sentry from "@sentry/node";
 import { promises as fs } from "fs";
 import { uniq, uniqBy } from "lodash";
 import path from "path";
@@ -149,4 +152,29 @@ export async function uploadErrorFiles(err: Error, dir: string) {
   );
 
   return prefix;
+}
+
+/**
+ * This is a list of error messages that esbuild throws that will persist even in the
+ * next build attempt. If those errors are detected, we will kill this process so that
+ * the pod can be restarted and the build can be retried in a clean environment.
+ *
+ * Reference: https://github.com/evanw/esbuild/issues/2884
+ **/
+
+const ESBUILD_FATAL_ERROR_PATTERNS = [
+  "The service is no longer running",
+  "The service was stopped",
+];
+
+export async function checkEsbuildFatalError(msg: string) {
+  const isFatal = ESBUILD_FATAL_ERROR_PATTERNS.some((pattern) =>
+    msg.includes(pattern)
+  );
+
+  if (isFatal) {
+    Sentry.captureException(new LoaderEsbuildFatalError(msg));
+    await asyncTimeout(1000); // Give some time for the error to be logged
+    process.exit(1); // Exit the process to force a restart
+  }
 }

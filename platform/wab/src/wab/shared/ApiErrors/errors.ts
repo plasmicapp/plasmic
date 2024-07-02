@@ -81,6 +81,11 @@ export class LoaderDeprecatedVersionError extends ApiError {
     "An internal error occurred. Please upgrade your @plasmicapp/* packages.";
 }
 
+// This is not an ApiError by design, so that we consider it an unhandled error
+export class LoaderEsbuildFatalError extends Error {
+  name = "LoaderEsbuildFatalError";
+}
+
 /**
  * We can't simply use instanceof ApiError, since our build pipeline doesn't
  * handle extending Error correctly. class extends Error works fine with

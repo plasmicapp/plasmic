@@ -1,5 +1,5 @@
-import { ensure, withoutNils } from "@/wab/shared/common";
 import {
+  checkEsbuildFatalError,
   transformBundlerErrors,
   uploadErrorFiles,
 } from "@/wab/server/loader/error-handler";
@@ -13,13 +13,14 @@ import {
   LoaderBundlingError,
   LoaderDeprecatedVersionError,
 } from "@/wab/shared/ApiErrors/errors";
+import { VariantGroupType } from "@/wab/shared/Variants";
 import { FontUsage, makeGoogleFontUrl } from "@/wab/shared/codegen/fonts";
 import { ActiveSplit } from "@/wab/shared/codegen/splits";
 import {
   ComponentExportOutput,
   PageMetadata,
 } from "@/wab/shared/codegen/types";
-import { VariantGroupType } from "@/wab/shared/Variants";
+import { ensure, withoutNils } from "@/wab/shared/common";
 import alias from "@rollup/plugin-alias";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
@@ -621,6 +622,8 @@ export async function bundleModules(
           console.log(`transformedError: ${transformedBundleErrorStr}`);
           throw new LoaderBundlingError(transformedBundleErrorStr);
         }
+
+        await checkEsbuildFatalError(bundleErrorStr);
 
         throw new Error(`Error bundling with esbuild: ${bundleErrorStr}`);
       }
