@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/radix-ui",
-  "version": "0.0.54",
+  "version": "0.0.55",
   "description": "Radix UI components for Plasmic",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

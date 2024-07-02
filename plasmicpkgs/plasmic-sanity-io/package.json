@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-sanity-io",
-  "version": "1.0.177",
+  "version": "1.0.178",
   "description": "Plasmic Sanity.io components.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
