@@ -3226,10 +3226,10 @@
     fast-stringify "^2.0.0"
     lodash "^4.17.21"
 
-"@plasmicpkgs/plasmic-sanity-io@^1.0.177":
-  version "1.0.177"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-sanity-io/-/plasmic-sanity-io-1.0.177.tgz#49cb2a964af16594e3d73aeb5d578b24b28254f0"
-  integrity sha512-mf58RrSjMUFG2QY2jwxzw57yc6aihFfV5TLuwbVo0ntDCZep6SLNOGHQ0UZhuBa86jVBvjLiGdYztODtCOeS9Q==
+"@plasmicpkgs/plasmic-sanity-io@^1.0.178":
+  version "1.0.178"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-sanity-io/-/plasmic-sanity-io-1.0.178.tgz#3529e05249466dca55e2cb8d8abff9429efd8bde"
+  integrity sha512-CTHqTpDxZ0se/dgFybDDNr94i2vuxrWd0P2RRrHgJR/Sx7pgD25wjBOxAVI/cD9d+ayBd5jP1P5+K+9SA9MEpQ==
   dependencies:
     "@sanity/client" "^6.2.0"
     "@sanity/image-url" "^1.0.2"
@@ -3270,10 +3270,10 @@
     "@types/dlv" "^1.1.2"
     dlv "^1.1.3"
 
-"@plasmicpkgs/radix-ui@^0.0.54":
-  version "0.0.54"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/radix-ui/-/radix-ui-0.0.54.tgz#9c0f263935a6913246536b40173954c5c8132326"
-  integrity sha512-8ytY+kuZErt9SqtPaLwbikt9P9KL9lDBuhq1dFte7dc0N5DkafclPQ+quWCy5WKYDNh3bv8SMF7toPaHWFw8cw==
+"@plasmicpkgs/radix-ui@^0.0.55":
+  version "0.0.55"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/radix-ui/-/radix-ui-0.0.55.tgz#ad3d0d3e9eee81a9d2c163f3758838d9168b1396"
+  integrity sha512-ANcedhttxbZ5070uvRbEGz7kEZgYnNQrILR5JDwfoEkp8LS7iHp/KBWYRR0SS8scfVYIQMAu7a5Aufi98x7S7Q==
   dependencies:
     "@radix-ui/react-context-menu" "^2.1.4"
     "@radix-ui/react-dialog" "^1.0.5"
