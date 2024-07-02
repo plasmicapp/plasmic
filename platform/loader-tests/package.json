@@ -13,7 +13,7 @@
     "update-snapshots": "rm -rf cypress/snapshots && yarn test-docker",
     "docker-build": "docker build --no-cache -t loader-tests .",
     "docker-run": "docker run -v $PWD/cypress:/app/cypress --add-host host.docker.internal:host-gateway --rm loader-tests",
-    "test-playwright": "if [ -t 1 ]; then DOCKER_OPTS='-it'; fi && docker run --rm --add-host=host.docker.internal:host-gateway -v $(pwd):/work/ -w /work/ -e WAB_HOST -e NPM_REGISTRY -e CI -e WAB_USER_EMAIL -e WAB_USER_PASSWORD -e BUILD_NUMBER -e WITHIN_DOCKER=1 mcr.microsoft.com/playwright:v1.38.1-jammy npx playwright test"
+    "test-playwright": "npx playwright test"
   },
   "devDependencies": {
     "@types/cypress-image-snapshot": "^3.1.6",
@@ -27,7 +27,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@playwright/test": "^1.38.1",
+    "@playwright/test": "^1.45.1",
     "aws-sdk": "^2.985.0",
     "cypress": "^12.9.0",
     "cypress-image-snapshot": "^4.0.1",

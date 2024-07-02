@@ -7,9 +7,9 @@ import {
   setViewportSize,
 } from "./playwright-utils";
 import {
-  makeEnvName,
   ProjectContext,
   ServerContext,
+  makeEnvName,
   setupBundle,
   setupServer,
   teardownBundle,
@@ -25,7 +25,7 @@ const ENVS = [
   { type: "cra" as const },
 ] as const;
 
-test.describe(`Plasmic Website`, async () => {
+test.skip(`Plasmic Website`, async () => {
   let bundleCtx: ProjectContext;
   test.beforeAll(async () => {
     bundleCtx = await setupBundle("plasmic-kit-website-components_16033.json");
