@@ -1,7 +1,5 @@
 /** @format */
 
-import { assert, ensureType, mergeSane } from "@/wab/shared/common";
-import { DEFAULT_DEVFLAG_OVERRIDES } from "@/wab/shared/devflag-overrides";
 import {
   ApiFeatureTier,
   FeatureTierId,
@@ -9,7 +7,9 @@ import {
   TeamId,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
+import { assert, ensureType, mergeSane } from "@/wab/shared/common";
 import { DEFAULT_INSERTABLE } from "@/wab/shared/constants";
+import { DEFAULT_DEVFLAG_OVERRIDES } from "@/wab/shared/devflag-overrides";
 import {
   featureTiers,
   newFeatureTiers,
@@ -81,6 +81,7 @@ export interface InsertableTemplatesGroup {
   items: InsertableTemplatesSelectable[];
   imageUrl?: string;
   isPageTemplatesGroup?: boolean;
+  hidden?: boolean;
 }
 
 export interface Installable {
@@ -111,6 +112,7 @@ export interface InsertableTemplatesItem {
   onlyShownIn?: "old" | "new";
   tokenResolution?: InsertableTemplateTokenResolution;
   componentResolution?: InsertableTemplateComponentResolution;
+  hidden?: boolean;
 }
 
 /**
@@ -131,6 +133,7 @@ export interface InsertableTemplatesComponent {
   displayName?: string;
   tokenResolution?: InsertableTemplateTokenResolution;
   componentResolution?: InsertableTemplateComponentResolution;
+  hidden?: boolean;
 }
 
 /**
@@ -142,6 +145,7 @@ export interface InsertableIconsGroup {
   type: "insertable-icons-group";
   name: string;
   projectId: string;
+  hidden?: boolean;
 }
 
 export type InsertableTemplatesSelectable =

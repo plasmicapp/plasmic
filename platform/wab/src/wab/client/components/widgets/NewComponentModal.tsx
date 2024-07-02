@@ -52,7 +52,23 @@ function NewComponentModal(props: NewComponentModalProps) {
   const otherTemplates = flattenInsertableTemplatesByType(
     studioCtx.appCtx.appConfig.insertableTemplates,
     "insertable-templates-component"
-  );
+  ).filter((i) => {
+    if (!i.hidden) {
+      return true;
+    }
+    /**
+     * The following logic applies when the template is marked as hidden.
+     * The only condition under which a hidden template can be revealed is if it is included in the defaultInsertable set.
+     */
+    if (
+      studioCtx.site.flags.defaultInsertable &&
+      i.templateName.startsWith(`${studioCtx.site.flags.defaultInsertable}/`)
+    ) {
+      // show if the template component is part of the default insertable
+      return true;
+    }
+    return false;
+  });
 
   return (
     <PlasmicNewComponentModal
