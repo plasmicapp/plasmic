@@ -33,7 +33,10 @@ export function BaseTooltip(props: BaseTooltipProps) {
   const focusableChild = flattenChildren(children)[0];
 
   return (
-    <>
+    <div
+      // this is to ensure that the absolutely positioned tooltip can be positioned correctly within this relatively positioned container.
+      style={{ position: "relative" }}
+    >
       {React.isValidElement(focusableChild)
         ? React.cloneElement(focusableChild, {
             ref,
@@ -48,7 +51,7 @@ export function BaseTooltip(props: BaseTooltipProps) {
           {tooltipContent}
         </span>
       )}
-    </>
+    </div>
   );
 }
 
