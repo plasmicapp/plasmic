@@ -27,6 +27,7 @@ import { Spinner } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import { NewComponentInfo } from "@/wab/client/components/widgets/NewComponentModal";
 import {
   providesAppCtx,
@@ -50,38 +51,14 @@ import {
 } from "@/wab/client/prompts";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import {
+  StudioCtx,
   calculateNextVersionKey,
   providesStudioCtx,
-  StudioCtx,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { testIds } from "@/wab/client/test-helpers/test-ids";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
-import {
-  assert,
-  ensure,
-  maybe,
-  sortBy,
-  spawn,
-  spawnWrapper,
-  swallow,
-  withoutNils,
-} from "@/wab/shared/common";
 import { valueAsString } from "@/wab/commons/values";
-import {
-  ComponentType,
-  getSubComponents,
-  getSuperComponents,
-  isPageComponent,
-  isReusableComponent,
-  PageComponent,
-} from "@/wab/shared/core/components";
-import {
-  asCode,
-  code,
-  codeLit,
-  mkTemplatedStringOfOneDynExpr,
-} from "@/wab/shared/core/exprs";
 import {
   ApiBranch,
   BranchId,
@@ -97,36 +74,41 @@ import {
   isMixedArena,
   isPageArena,
 } from "@/wab/shared/Arenas";
-import { componentsReferecerToPageHref } from "@/wab/shared/cached-selectors";
-import { getHostLessComponents } from "@/wab/shared/code-components/code-components";
-import { toVarName } from "@/wab/shared/codegen/util";
-import { getDataSourceMeta } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
-  ensureDataSourceStandardQuery,
-  ensureLookupSpecFromDraft,
-  LookupSpec,
-  LookupSpecDraft,
-} from "@/wab/shared/data-sources-meta/data-sources";
-import { tryEvalExpr } from "@/wab/shared/eval";
-import { pathToString } from "@/wab/shared/eval/expression-parser";
-import {
-  ARENA_LOWER,
   ARENAS_CAP,
   ARENAS_DESCRIPTION,
+  ARENA_LOWER,
 } from "@/wab/shared/Labels";
-import {
-  Component,
-  ComponentArena,
-  ExprText,
-  isKnownArena,
-  isKnownComponentArena,
-  isKnownPageArena,
-  ObjectPath,
-  PageArena,
-} from "@/wab/shared/model/classes";
 import { tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
 import { addEmptyQuery } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
+import { componentsReferecerToPageHref } from "@/wab/shared/cached-selectors";
+import { getHostLessComponents } from "@/wab/shared/code-components/code-components";
+import { toVarName } from "@/wab/shared/codegen/util";
+import {
+  assert,
+  ensure,
+  maybe,
+  sortBy,
+  spawn,
+  spawnWrapper,
+  swallow,
+  withoutNils,
+} from "@/wab/shared/common";
+import {
+  ComponentType,
+  PageComponent,
+  getSubComponents,
+  getSuperComponents,
+  isPageComponent,
+  isReusableComponent,
+} from "@/wab/shared/core/components";
+import {
+  asCode,
+  code,
+  codeLit,
+  mkTemplatedStringOfOneDynExpr,
+} from "@/wab/shared/core/exprs";
 import {
   flattenTpls,
   isTplContainer,
@@ -135,9 +117,30 @@ import {
   mkTplComponentX,
   mkTplInlinedText,
 } from "@/wab/shared/core/tpls";
+import { getDataSourceMeta } from "@/wab/shared/data-sources-meta/data-source-registry";
+import {
+  LookupSpec,
+  LookupSpecDraft,
+  ensureDataSourceStandardQuery,
+  ensureLookupSpecFromDraft,
+} from "@/wab/shared/data-sources-meta/data-sources";
+import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { tryEvalExpr } from "@/wab/shared/eval";
+import { pathToString } from "@/wab/shared/eval/expression-parser";
+import { InsertableTemplateComponentExtraInfo } from "@/wab/shared/insertable-templates/types";
+import {
+  Component,
+  ComponentArena,
+  ExprText,
+  ObjectPath,
+  PageArena,
+  isKnownArena,
+  isKnownComponentArena,
+  isKnownPageArena,
+} from "@/wab/shared/model/classes";
 import { TableSchema } from "@plasmicapp/data-sources";
 import { executePlasmicDataOp } from "@plasmicapp/react-web/lib/data-sources";
-import { Dropdown, Menu, notification, Tooltip } from "antd";
+import { Dropdown, Menu, Tooltip, notification } from "antd";
 import { UseComboboxGetItemPropsOptions } from "downshift";
 import { orderBy, trimStart } from "lodash";
 import { observer } from "mobx-react";
@@ -146,9 +149,6 @@ import React, { ReactNode, useRef, useState } from "react";
 import { FocusScope } from "react-aria";
 import { useDebounce } from "react-use";
 import { FixedSizeList } from "react-window";
-import { Modal } from "@/wab/client/components/widgets/Modal";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
-import { InsertableTemplateComponentExtraInfo } from "@/wab/shared/insertable-templates/types";
 import useSWR, { mutate } from "swr";
 
 const enum SiteItemType {
@@ -1003,10 +1003,13 @@ function getFolderItemMenuRenderer({
         studioCtx.siteOps().createNewFrameForMixedArena(component!)
       );
 
-    const onConvertToComponent = () =>
-      studioCtx.changeUnsafe(() =>
-        studioCtx.siteOps().convertPageToComponent(component!)
+    const onConvertToComponent = () => {
+      assert(
+        component && isPageComponent(component),
+        "Can only convert Page to component if it exists"
       );
+      return studioCtx.siteOps().convertPageToComponent(component);
+    };
 
     const onConvertToPage = () =>
       studioCtx.changeObserved(
@@ -1156,11 +1159,23 @@ function getFolderItemMenuRenderer({
                     <Menu.Item
                       key="delete-preserve-links"
                       onClick={async () =>
-                        studioCtx.changeUnsafe(() => {
-                          studioCtx.tplMgr().removeComponentGroup([component], {
-                            convertPageHrefToCode: true,
-                          });
-                        })
+                        studioCtx.changeObserved(
+                          () => [
+                            component,
+                            ...componentsReferecerToPageHref(
+                              studioCtx.site,
+                              component
+                            ),
+                          ],
+                          ({ success }) => {
+                            studioCtx
+                              .tplMgr()
+                              .removeComponentGroup([component], {
+                                convertPageHrefToCode: true,
+                              });
+                            return success();
+                          }
+                        )
                       }
                     >
                       <strong>Delete</strong> page, but convert PageHref to

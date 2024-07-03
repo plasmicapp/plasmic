@@ -12,39 +12,14 @@ import { makeVariantsController } from "@/wab/client/components/variants/Variant
 import { NewComponentInfo } from "@/wab/client/components/widgets/NewComponentModal";
 import {
   ImageAssetOpts,
-  maybeUploadImage,
   ResizableImage,
+  maybeUploadImage,
 } from "@/wab/client/dom-utils";
 import { promptComponentTemplate, promptPageName } from "@/wab/client/prompts";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { trackEvent } from "@/wab/client/tracking";
-import {
-  assert,
-  ensure,
-  mkUuid,
-  removeAtIndexes,
-  removeWhere,
-  switchType,
-  uniqueName,
-  xAddAll,
-} from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
-import {
-  CodeComponent,
-  ComponentType,
-  DefaultComponentKind,
-  findStateForParam,
-  getComponentDisplayName,
-  getSubComponents,
-  isCodeComponent,
-  isPageComponent,
-  isPlumeComponent,
-  removeVariantGroup,
-} from "@/wab/shared/core/components";
-import { Pt } from "@/wab/shared/geom";
-import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
-import { extractTransitiveDepsFromComponents } from "@/wab/shared/core/project-deps";
 import {
   deriveInitFrameSettings,
   getActivatedVariantsForFrame,
@@ -56,73 +31,14 @@ import {
   isPageArena,
 } from "@/wab/shared/Arenas";
 import {
-  componentToReferencers,
-  findComponentsUsingComponentVariant,
-  findComponentsUsingGlobalVariant,
-  findSplitsUsingVariantGroup,
-  findStyleTokensUsingVariantGroup,
-  getComponentsUsingImageAsset,
-} from "@/wab/shared/cached-selectors";
-import { toVarName } from "@/wab/shared/codegen/util";
-import {
-  addCustomComponentFrame,
-  getComponentArenaBaseFrame,
-  getComponentArenaCustomFrames,
-  getManagedFrameForVariant,
-  isCustomComponentFrame,
-  isGlobalVariantFrame,
-  isSuperVariantFrame,
-} from "@/wab/shared/component-arenas";
-import { parseScreenSpec } from "@/wab/shared/css-size";
-import {
-  asSvgDataUrl,
-  parseDataUrlToSvgXml,
-  parseSvgXml,
-} from "@/wab/shared/data-urls";
-import {
   DATA_QUERY_LOWER,
   MIXIN_LOWER,
   TOKEN_LOWER,
 } from "@/wab/shared/Labels";
-import {
-  Arena,
-  ArenaFrame,
-  Component,
-  ComponentArena,
-  ComponentDataQuery,
-  ComponentVariantGroup,
-  ImageAsset,
-  isKnownComponent,
-  isKnownComponentVariantGroup,
-  Mixin,
-  PageArena,
-  ProjectDependency,
-  Site,
-  Split,
-  State,
-  StyleToken,
-  Variant,
-  VariantGroup,
-} from "@/wab/shared/model/classes";
-import { convertVariableTypeToWabType } from "@/wab/shared/model/model-util";
-import {
-  getFrameColumnIndex,
-  removeManagedFramesFromPageArenaForVariants,
-} from "@/wab/shared/page-arenas";
-import {
-  getPlumeEditorPlugin,
-  getPlumeVariantDef,
-} from "@/wab/shared/plume/plume-registry";
-import { isQueryUsedInExpr } from "@/wab/shared/refactoring";
-import {
-  FrameSize,
-  frameSizeGroups,
-  ResponsiveStrategy,
-} from "@/wab/shared/responsiveness";
-import { removeSvgIds } from "@/wab/shared/svg-utils";
 import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
+  VariantGroupType,
   ensureBaseRuleVariantSetting,
   getDisplayVariants,
   getOrderedScreenVariantSpecs,
@@ -133,13 +49,51 @@ import {
   makeVariantName,
   removeTplVariantSettings,
   removeTplVariantSettingsContaining,
-  VariantGroupType,
 } from "@/wab/shared/Variants";
 import {
-  getVariantSettingVisibility,
-  setTplVisibility,
-  TplVisibility,
-} from "@/wab/shared/visibility-utils";
+  componentToReferencers,
+  componentsReferecerToPageHref,
+  findComponentsUsingComponentVariant,
+  findComponentsUsingGlobalVariant,
+  findSplitsUsingVariantGroup,
+  findStyleTokensUsingVariantGroup,
+  getComponentsUsingImageAsset,
+} from "@/wab/shared/cached-selectors";
+import { toVarName } from "@/wab/shared/codegen/util";
+import {
+  assert,
+  ensure,
+  mkUuid,
+  removeAtIndexes,
+  removeWhere,
+  switchType,
+  uniqueName,
+  xAddAll,
+} from "@/wab/shared/common";
+import {
+  addCustomComponentFrame,
+  getComponentArenaBaseFrame,
+  getComponentArenaCustomFrames,
+  getManagedFrameForVariant,
+  isCustomComponentFrame,
+  isGlobalVariantFrame,
+  isSuperVariantFrame,
+} from "@/wab/shared/component-arenas";
+import {
+  CodeComponent,
+  ComponentType,
+  DefaultComponentKind,
+  PageComponent,
+  findStateForParam,
+  getComponentDisplayName,
+  getSubComponents,
+  isCodeComponent,
+  isPageComponent,
+  isPlumeComponent,
+  removeVariantGroup,
+} from "@/wab/shared/core/components";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { extractTransitiveDepsFromComponents } from "@/wab/shared/core/project-deps";
 import {
   getComponentArena,
   getPageArena,
@@ -149,10 +103,10 @@ import {
   visitComponentRefs,
 } from "@/wab/shared/core/sites";
 import {
+  StateType,
   findImplicitUsages,
   isStateUsedInExpr,
   removeComponentState,
-  StateType,
   updateStateAccessType,
 } from "@/wab/shared/core/states";
 import {
@@ -167,6 +121,54 @@ import {
   isTplVariantable,
   replaceTplTreeByEmptyBox,
 } from "@/wab/shared/core/tpls";
+import { parseScreenSpec } from "@/wab/shared/css-size";
+import {
+  asSvgDataUrl,
+  parseDataUrlToSvgXml,
+  parseSvgXml,
+} from "@/wab/shared/data-urls";
+import { Pt } from "@/wab/shared/geom";
+import {
+  Arena,
+  ArenaFrame,
+  Component,
+  ComponentArena,
+  ComponentDataQuery,
+  ComponentVariantGroup,
+  ImageAsset,
+  Mixin,
+  PageArena,
+  ProjectDependency,
+  Site,
+  Split,
+  State,
+  StyleToken,
+  Variant,
+  VariantGroup,
+  isKnownComponent,
+  isKnownComponentVariantGroup,
+} from "@/wab/shared/model/classes";
+import { convertVariableTypeToWabType } from "@/wab/shared/model/model-util";
+import {
+  getFrameColumnIndex,
+  removeManagedFramesFromPageArenaForVariants,
+} from "@/wab/shared/page-arenas";
+import {
+  getPlumeEditorPlugin,
+  getPlumeVariantDef,
+} from "@/wab/shared/plume/plume-registry";
+import { isQueryUsedInExpr } from "@/wab/shared/refactoring";
+import {
+  FrameSize,
+  ResponsiveStrategy,
+  frameSizeGroups,
+} from "@/wab/shared/responsiveness";
+import { removeSvgIds } from "@/wab/shared/svg-utils";
+import {
+  TplVisibility,
+  getVariantSettingVisibility,
+  setTplVisibility,
+} from "@/wab/shared/visibility-utils";
 import { notification } from "antd";
 import L from "lodash";
 import pluralize from "pluralize";
@@ -1463,16 +1465,22 @@ export class SiteOps {
     }
   }
 
-  convertPageToComponent(component: Component) {
+  async convertPageToComponent(component: PageComponent) {
     const curArena = this.studioCtx.currentArena;
     const isCurrentArena =
       curArena && isPageArena(curArena) && curArena.component === component;
-    this.tplMgr.convertPageToComponent(component);
-    toast("Page converted to reusable component.");
-    if (isCurrentArena) {
-      // Switch to the corresponding component arena!
-      this.studioCtx.switchToComponentArena(component);
-    }
+    await this.studioCtx.changeObserved(
+      () => [component, ...componentsReferecerToPageHref(this.site, component)],
+      ({ success }) => {
+        this.tplMgr.convertPageToComponent(component);
+        toast("Page converted to reusable component.");
+        if (isCurrentArena) {
+          // Switch to the corresponding component arena!
+          this.studioCtx.switchToComponentArena(component);
+        }
+        return success();
+      }
+    );
   }
 
   convertNonRenderedToInvisible() {

@@ -1,70 +1,14 @@
-import {
-  assert,
-  check,
-  ensure,
-  ensureArray,
-  ensureArrayOfInstances,
-  isSubList,
-  leftZip,
-  maybe,
-  maybeInstance,
-  mkShortId,
-  remove,
-  removeWhere,
-  strictFind,
-  tryRemove,
-  uniqueName,
-  withoutNils,
-  xDifference,
-  xGroupBy,
-} from "@/wab/shared/common";
+import { TokenType } from "@/wab/commons/StyleToken";
 import {
   arrayReversed,
   removeFromArray,
   tryRemoveFromArray,
 } from "@/wab/commons/collections";
-import { TokenType } from "@/wab/commons/StyleToken";
 import {
-  allComponentVariants,
-  cloneComponent,
-  clonePageMeta,
-  cloneVariant,
-  ComponentType,
-  extractParamsFromPagePath,
-  findStateForParam,
-  getComponentDisplayName,
-  getSubComponents,
-  isCodeComponent,
-  isContextCodeComponent,
-  isFrameComponent,
-  isPageComponent,
-  mkComponent,
-  mkPageMeta,
-  mkVariantGroupArgExpr,
-  PageComponent,
-  removeVariantGroup,
-  tryGetVariantGroupValueFromArg,
-} from "@/wab/shared/core/components";
-import { DEVFLAGS } from "@/wab/shared/devflags";
-import { clone } from "@/wab/shared/core/exprs";
-import { findSpaceForRectSweepRight, Pt, Rect } from "@/wab/shared/geom";
-import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
-import {
-  extractImageAssetUsages,
-  mkImageAsset,
-  removeImageAssetUsage,
-} from "@/wab/shared/core/image-assets";
-import { mkOnChangeParamForState, mkParam } from "@/wab/shared/core/lang";
-import {
-  fixImageAssetRefsForClonedTemplateComponent,
-  upgradeProjectDeps,
-  walkDependencyTree,
-} from "@/wab/shared/core/project-deps";
-import {
+  FrameViewMode,
   cloneArenaFrame,
   ensureActivatedScreenVariantsForArena,
   ensureFrameSizeForTargetScreenVariant,
-  FrameViewMode,
   getArenaFrames,
   getFrameHeight,
   isComponentArena,
@@ -76,28 +20,6 @@ import {
   removeVariantsFromArenas,
 } from "@/wab/shared/Arenas";
 import {
-  findAllQueryInvalidationExpr,
-  flattenComponent,
-} from "@/wab/shared/cached-selectors";
-import { toClassName, toVarName } from "@/wab/shared/codegen/util";
-import {
-  deriveDefaultFrameSize,
-  ensureManagedFrameForVariantInComponentArena,
-  ensureRowForVariantGroupInComponentArena,
-  isCustomComponentFrame,
-  isGlobalVariantFrame,
-  isSuperVariantFrame,
-  maybeEnsureManagedFrameForGlobalVariantInComponentArena,
-  mkComponentArena,
-  removeCustomComponentFrame,
-  removeFramesFromComponentArenaForVariants,
-  removeManagedFramesFromComponentArenaForVariantGroup,
-  removeSuperOrGlobalVariantComponentFrame,
-} from "@/wab/shared/component-arenas";
-import { SIZE_PROPS } from "@/wab/shared/core/style-props";
-import { ScreenSizeSpec } from "@/wab/shared/css-size";
-import { CONTENT_LAYOUT_INITIALS } from "@/wab/shared/default-styles";
-import {
   ARENA_CAP,
   FRAME_LOWER,
   MIXIN_CAP,
@@ -106,72 +28,17 @@ import {
   VARIANT_OPTION_LOWER,
 } from "@/wab/shared/Labels";
 import {
-  Arena,
-  ArenaFrame,
-  Arg,
-  Component,
-  ComponentArena,
-  ComponentDataQuery,
-  ComponentVariantGroup,
-  ensureKnownEventHandler,
-  ensureKnownVariantGroup,
-  ensureKnownVariantsRef,
-  Expr,
-  GlobalVariantGroup,
-  ImageAsset,
-  isKnownArenaFrame,
-  isKnownComponent,
-  isKnownEventHandler,
-  isKnownImageAsset,
-  isKnownMixin,
-  isKnownStyleToken,
-  isKnownTheme,
-  isKnownTplNode,
-  isKnownVariantsRef,
-  Mixin,
-  Param,
-  ProjectDependency,
-  Site,
-  Split,
-  State,
-  StyleToken,
-  Theme,
-  TplComponent,
-  TplNode,
-  TplTag,
-  Var,
-  Variant,
-  VariantedRuleSet,
-  VariantedValue,
-  VariantGroup,
-  VariantSetting,
-  VariantsRef,
-} from "@/wab/shared/model/classes";
-import { instUtil } from "@/wab/shared/model/InstUtil";
-import { typeFactory } from "@/wab/shared/model/model-util";
-import {
-  addScreenSizeToPageArenas,
-  ensureManagedRowForVariantInPageArena,
-  mkPageArena,
-  reorderPageArenaCols,
-} from "@/wab/shared/page-arenas";
-import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
-import {
-  renameParamAndFixExprs,
-  renameTplAndFixExprs,
-} from "@/wab/shared/refactoring";
-import { FrameSize } from "@/wab/shared/responsiveness";
-import {
-  extractStyles,
   IRuleSetHelpersX,
   RSH,
   RuleSetHelpers,
+  extractStyles,
 } from "@/wab/shared/RuleSetHelpers";
-import { setPageSizeType } from "@/wab/shared/sizingutils";
 import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
-import { makeComponentSwapper } from "@/wab/shared/swap-components";
 import { $$$ } from "@/wab/shared/TplQuery";
+import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
 import {
+  VariantCombo,
+  VariantGroupType,
   allVariantsInGroup,
   areEquivalentScreenVariants,
   ensureValidCombo,
@@ -195,17 +62,80 @@ import {
   mkVariant,
   mkVariantSetting,
   tryGetVariantSetting,
-  VariantCombo,
-  VariantGroupType,
 } from "@/wab/shared/Variants";
-import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
 import {
-  getVariantSettingVisibility,
-  hasVisibilitySetting,
-  isInvisible,
-  setTplVisibility,
-  TplVisibility,
-} from "@/wab/shared/visibility-utils";
+  findAllQueryInvalidationExpr,
+  flattenComponent,
+} from "@/wab/shared/cached-selectors";
+import { toClassName, toVarName } from "@/wab/shared/codegen/util";
+import {
+  assert,
+  check,
+  ensure,
+  ensureArray,
+  ensureArrayOfInstances,
+  isSubList,
+  leftZip,
+  maybe,
+  maybeInstance,
+  mkShortId,
+  remove,
+  removeWhere,
+  strictFind,
+  tryRemove,
+  uniqueName,
+  withoutNils,
+  xDifference,
+  xGroupBy,
+} from "@/wab/shared/common";
+import {
+  deriveDefaultFrameSize,
+  ensureManagedFrameForVariantInComponentArena,
+  ensureRowForVariantGroupInComponentArena,
+  isCustomComponentFrame,
+  isGlobalVariantFrame,
+  isSuperVariantFrame,
+  maybeEnsureManagedFrameForGlobalVariantInComponentArena,
+  mkComponentArena,
+  removeCustomComponentFrame,
+  removeFramesFromComponentArenaForVariants,
+  removeManagedFramesFromComponentArenaForVariantGroup,
+  removeSuperOrGlobalVariantComponentFrame,
+} from "@/wab/shared/component-arenas";
+import {
+  ComponentType,
+  PageComponent,
+  allComponentVariants,
+  cloneComponent,
+  clonePageMeta,
+  cloneVariant,
+  extractParamsFromPagePath,
+  findStateForParam,
+  getComponentDisplayName,
+  getSubComponents,
+  isCodeComponent,
+  isContextCodeComponent,
+  isFrameComponent,
+  isPageComponent,
+  mkComponent,
+  mkPageMeta,
+  mkVariantGroupArgExpr,
+  removeVariantGroup,
+  tryGetVariantGroupValueFromArg,
+} from "@/wab/shared/core/components";
+import { clone } from "@/wab/shared/core/exprs";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import {
+  extractImageAssetUsages,
+  mkImageAsset,
+  removeImageAssetUsage,
+} from "@/wab/shared/core/image-assets";
+import { mkOnChangeParamForState, mkParam } from "@/wab/shared/core/lang";
+import {
+  fixImageAssetRefsForClonedTemplateComponent,
+  upgradeProjectDeps,
+  walkDependencyTree,
+} from "@/wab/shared/core/project-deps";
 import {
   ensureScreenVariantsOrderOnMatrices,
   getAllSiteFrames,
@@ -219,10 +149,10 @@ import {
   removeReferencingTypeInstances,
 } from "@/wab/shared/core/sites";
 import {
-  mkGlobalVariantSplit,
-  removeVariantGroupFromSplits,
   SplitStatus,
   SplitType,
+  mkGlobalVariantSplit,
+  removeVariantGroupFromSplits,
 } from "@/wab/shared/core/splits";
 import {
   genOnChangeParamName,
@@ -232,6 +162,7 @@ import {
   removeComponentState,
   updateStateAccessType,
 } from "@/wab/shared/core/states";
+import { SIZE_PROPS } from "@/wab/shared/core/style-props";
 import {
   changeTokenUsage,
   cloneMixin,
@@ -240,6 +171,7 @@ import {
   mkRuleSet,
 } from "@/wab/shared/core/styles";
 import {
+  TplNamable,
   cloneVariantSetting,
   findExprsInComponent,
   findVariantSettingsUnderTpl,
@@ -262,10 +194,78 @@ import {
   mkTplTagX,
   reconnectChildren,
   summarizeTpl,
-  TplNamable,
   trackComponentSite,
   walkTpls,
 } from "@/wab/shared/core/tpls";
+import { ScreenSizeSpec } from "@/wab/shared/css-size";
+import { CONTENT_LAYOUT_INITIALS } from "@/wab/shared/default-styles";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { Pt, Rect, findSpaceForRectSweepRight } from "@/wab/shared/geom";
+import { instUtil } from "@/wab/shared/model/InstUtil";
+import {
+  Arena,
+  ArenaFrame,
+  Arg,
+  Component,
+  ComponentArena,
+  ComponentDataQuery,
+  ComponentVariantGroup,
+  Expr,
+  GlobalVariantGroup,
+  ImageAsset,
+  Mixin,
+  Param,
+  ProjectDependency,
+  Site,
+  Split,
+  State,
+  StyleToken,
+  Theme,
+  TplComponent,
+  TplNode,
+  TplTag,
+  Var,
+  Variant,
+  VariantGroup,
+  VariantSetting,
+  VariantedRuleSet,
+  VariantedValue,
+  VariantsRef,
+  ensureKnownEventHandler,
+  ensureKnownVariantGroup,
+  ensureKnownVariantsRef,
+  isKnownArenaFrame,
+  isKnownComponent,
+  isKnownEventHandler,
+  isKnownImageAsset,
+  isKnownMixin,
+  isKnownStyleToken,
+  isKnownTheme,
+  isKnownTplNode,
+  isKnownVariantsRef,
+} from "@/wab/shared/model/classes";
+import { typeFactory } from "@/wab/shared/model/model-util";
+import {
+  addScreenSizeToPageArenas,
+  ensureManagedRowForVariantInPageArena,
+  mkPageArena,
+  reorderPageArenaCols,
+} from "@/wab/shared/page-arenas";
+import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
+import {
+  renameParamAndFixExprs,
+  renameTplAndFixExprs,
+} from "@/wab/shared/refactoring";
+import { FrameSize } from "@/wab/shared/responsiveness";
+import { setPageSizeType } from "@/wab/shared/sizingutils";
+import { makeComponentSwapper } from "@/wab/shared/swap-components";
+import {
+  TplVisibility,
+  getVariantSettingVisibility,
+  hasVisibilitySetting,
+  isInvisible,
+  setTplVisibility,
+} from "@/wab/shared/visibility-utils";
 import { isString, memoize, pickBy, uniqBy } from "lodash";
 import flatten from "lodash/flatten";
 import has from "lodash/has";
@@ -1585,11 +1585,11 @@ export class TplMgr {
   }
 
   convertPageToComponent(component: Component) {
-    component.pageMeta = undefined;
-    component.type = ComponentType.Plain;
     if (isPageComponent(component)) {
       removeReferencingLinks(this.site(), component);
     }
+    component.pageMeta = undefined;
+    component.type = ComponentType.Plain;
 
     const existingPageArena = getPageArena(this.site(), component);
     if (existingPageArena) {

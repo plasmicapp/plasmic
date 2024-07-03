@@ -12,15 +12,15 @@ import {
   PlasmicLeftPagesPanel,
 } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftPagesPanel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { isMixedArena } from "@/wab/shared/Arenas";
+import { FRAME_CAP } from "@/wab/shared/Labels";
+import { componentsReferecerToPageHref } from "@/wab/shared/cached-selectors";
 import { moveIndex } from "@/wab/shared/common";
 import {
+  PageComponent,
   isCodeComponent,
   isPageComponent,
-  PageComponent,
 } from "@/wab/shared/core/components";
-import { isMixedArena } from "@/wab/shared/Arenas";
-import { componentsReferecerToPageHref } from "@/wab/shared/cached-selectors";
-import { FRAME_CAP } from "@/wab/shared/Labels";
 import { Menu } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -189,11 +189,7 @@ const PageRow = observer(function PageRow(props: {
       push(
         <Menu.Item
           key="convert_to_component"
-          onClick={() =>
-            studioCtx.changeUnsafe(() =>
-              studioCtx.siteOps().convertPageToComponent(page)
-            )
-          }
+          onClick={() => studioCtx.siteOps().convertComponentToPage(page)}
         >
           <strong>Convert</strong> to reusable component
         </Menu.Item>

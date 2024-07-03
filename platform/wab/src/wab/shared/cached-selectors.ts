@@ -1,42 +1,23 @@
 import {
-  customInsertMaps,
-  ensure,
-  ensureArray,
-  filterFalsy,
-  maybeMemoizeFn,
-  switchType,
-  tuple,
-  withoutNils,
-  xAddAll,
-  xSetDefault,
-} from "@/wab/shared/common";
-import {
-  extractAllReferencedTokenIds,
   ResolvedToken,
-  resolveToken,
   TokenType,
   TokenValue,
+  extractAllReferencedTokenIds,
+  resolveToken,
   tryParseTokenRef,
 } from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
+import { FramePinManager } from "@/wab/shared/PinManager";
+import { readonlyRSH } from "@/wab/shared/RuleSetHelpers";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
-  allComponentVariants,
-  getComponentDisplayName,
-  getNonVariantParams,
-  isCodeComponent,
-  isPlumeComponent,
-  PageComponent,
-  tryGetVariantGroupValueFromArg,
-} from "@/wab/shared/core/components";
-import { getProjectFlags } from "@/wab/shared/devflags";
-import { isRealCodeExpr } from "@/wab/shared/core/exprs";
-import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
-import {
-  extractAllAssetRefs,
-  getTagAttrForImageAsset,
-} from "@/wab/shared/core/image-assets";
-import { ParamExportType } from "@/wab/shared/core/lang";
-import { walkDependencyTree } from "@/wab/shared/core/project-deps";
+  StyleVariant,
+  VariantCombo,
+  isPrivateStyleVariant,
+  isStyleVariant,
+  isVariantSettingEmpty,
+  variantComboKey,
+} from "@/wab/shared/Variants";
 import {
   getBuiltinComponentRegistrations,
   isBuiltinCodeComponent,
@@ -57,55 +38,35 @@ import {
   nodeNameBackwardsCompatibility,
 } from "@/wab/shared/codegen/react-p";
 import { validJsIdentifierChars } from "@/wab/shared/codegen/util";
-import mobx from "@/wab/shared/import-mobx";
-import { keyedComputedFn, maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
-  ArenaFrame,
-  CodeLibrary,
-  Component,
-  ComponentSwapSplitContent,
-  ComponentVariantSplitContent,
-  CustomFunction,
-  DataSourceOpExpr,
-  Expr,
-  GlobalVariantSplitContent,
-  ImageAsset,
-  isKnownCustomCode,
-  isKnownDataSourceOpExpr,
-  isKnownImageAssetRef,
-  isKnownPageHref,
-  isKnownQueryInvalidationExpr,
-  isKnownVarRef,
-  Mixin,
-  PageHref,
-  Param,
-  QueryInvalidationExpr,
-  RuleSet,
-  Site,
-  StyleToken,
-  TplComponent,
-  TplNode,
-  TplSlot,
-  Variant,
-  VariantGroup,
-  VariantSetting,
-} from "@/wab/shared/model/classes";
-import { FramePinManager } from "@/wab/shared/PinManager";
-import { readonlyRSH } from "@/wab/shared/RuleSetHelpers";
+  customInsertMaps,
+  ensure,
+  ensureArray,
+  filterFalsy,
+  maybeMemoizeFn,
+  switchType,
+  tuple,
+  withoutNils,
+  xAddAll,
+  xSetDefault,
+} from "@/wab/shared/common";
 import {
-  makeVariantComboSorter,
-  sortedVariantSettings,
-} from "@/wab/shared/variant-sort";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+  PageComponent,
+  allComponentVariants,
+  getComponentDisplayName,
+  getNonVariantParams,
+  isCodeComponent,
+  isPlumeComponent,
+  tryGetVariantGroupValueFromArg,
+} from "@/wab/shared/core/components";
+import { isRealCodeExpr } from "@/wab/shared/core/exprs";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import {
-  isPrivateStyleVariant,
-  isStyleVariant,
-  isVariantSettingEmpty,
-  StyleVariant,
-  VariantCombo,
-  variantComboKey,
-} from "@/wab/shared/Variants";
-import { getTplVisibilityAsDescendant } from "@/wab/shared/visibility-utils";
+  extractAllAssetRefs,
+  getTagAttrForImageAsset,
+} from "@/wab/shared/core/image-assets";
+import { ParamExportType } from "@/wab/shared/core/lang";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import {
   allGlobalVariantGroups,
   allGlobalVariants,
@@ -124,6 +85,45 @@ import {
   isTplPicture,
   isTplVariantable,
 } from "@/wab/shared/core/tpls";
+import { getProjectFlags } from "@/wab/shared/devflags";
+import mobx from "@/wab/shared/import-mobx";
+import { keyedComputedFn, maybeComputedFn } from "@/wab/shared/mobx-util";
+import {
+  ArenaFrame,
+  CodeLibrary,
+  Component,
+  ComponentSwapSplitContent,
+  ComponentVariantSplitContent,
+  CustomFunction,
+  DataSourceOpExpr,
+  Expr,
+  GlobalVariantSplitContent,
+  ImageAsset,
+  Mixin,
+  PageHref,
+  Param,
+  QueryInvalidationExpr,
+  RuleSet,
+  Site,
+  StyleToken,
+  TplComponent,
+  TplNode,
+  TplSlot,
+  Variant,
+  VariantGroup,
+  VariantSetting,
+  isKnownCustomCode,
+  isKnownDataSourceOpExpr,
+  isKnownImageAssetRef,
+  isKnownPageHref,
+  isKnownQueryInvalidationExpr,
+  isKnownVarRef,
+} from "@/wab/shared/model/classes";
+import {
+  makeVariantComboSorter,
+  sortedVariantSettings,
+} from "@/wab/shared/variant-sort";
+import { getTplVisibilityAsDescendant } from "@/wab/shared/visibility-utils";
 import { keyBy } from "lodash";
 
 export const flattenComponent = maybeComputedFn(function flattenComponent(
@@ -493,7 +493,7 @@ const _componentToDeepReferenced = maybeComputedFn(
 export const componentsReferecerToPageHref = maybeComputedFn(
   function componentsReferecerToPageHref(site: Site, page: PageComponent) {
     const isHRefToPage = (expr: Expr | null | undefined): expr is PageHref =>
-      isKnownPageHref(expr) && expr.page == page;
+      isKnownPageHref(expr) && expr.page === page;
 
     const usingComponents = new Set<Component>();
 

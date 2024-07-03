@@ -1472,7 +1472,7 @@ export function removeReferencingLinks(
   }
 ) {
   const isHRefToPage = (expr: Expr | null | undefined): expr is PageHref =>
-    isKnownPageHref(expr) && expr.page == page;
+    isKnownPageHref(expr) && expr.page === page;
 
   function getNewExprToReferenceExpr(component: Component, oldExpr: PageHref) {
     if (opts?.convertPageHrefToCode) {
