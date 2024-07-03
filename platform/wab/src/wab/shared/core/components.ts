@@ -1,4 +1,51 @@
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { removeFromArray } from "@/wab/commons/collections";
+import { DeepReadonly } from "@/wab/commons/types";
+import { removeVariantGroupFromArenas } from "@/wab/shared/Arenas";
+import { RSH } from "@/wab/shared/RuleSetHelpers";
+import {
+  cloneSlotDefaultContents,
+  getTplSlot,
+  getTplSlots,
+  isSlot,
+} from "@/wab/shared/SlotUtils";
+import { TplMgr, setTplComponentArg } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  VariantCombo,
+  ensureBaseRuleVariantSetting,
+  ensureVariantSetting,
+  getBaseVariant,
+  getReferencedVariantGroups,
+  isBaseVariant,
+  isComponentStyleVariant,
+  isGlobalVariant,
+  isPrivateStyleVariant,
+  isPseudoElementVariant,
+  isStyleVariant,
+  isVariantSettingEmpty,
+  mkBaseVariant,
+  mkComponentVariantGroup,
+  mkGlobalVariantGroup,
+  mkVariant,
+  mkVariantSetting,
+  splitVariantCombo,
+} from "@/wab/shared/Variants";
+import {
+  findAllDataSourceOpExprForComponent,
+  findAllQueryInvalidationExprForComponent,
+} from "@/wab/shared/cached-selectors";
+import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
+import {
+  CodeComponentWithHelpers,
+  isCodeComponentWithHelpers,
+  makePlumeComponentMeta,
+} from "@/wab/shared/code-components/code-components";
+import {
+  paramToVarName,
+  toClassName,
+  toVarName,
+} from "@/wab/shared/codegen/util";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -15,30 +62,33 @@ import {
   tuple,
   uniqueName,
 } from "@/wab/shared/common";
-import { removeFromArray } from "@/wab/commons/collections";
-import { DeepReadonly } from "@/wab/commons/types";
-import { DEVFLAGS, HostLessPackageInfo } from "@/wab/shared/devflags";
 import { clone as cloneExpr, isRealCodeExpr } from "@/wab/shared/core/exprs";
 import * as Lang from "@/wab/shared/core/lang";
 import { cloneParamAndVar } from "@/wab/shared/core/lang";
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
-import { removeVariantGroupFromArenas } from "@/wab/shared/Arenas";
 import {
-  findAllDataSourceOpExprForComponent,
-  findAllQueryInvalidationExprForComponent,
-} from "@/wab/shared/cached-selectors";
-import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
+  UNINITIALIZED_VALUE,
+  isHostLessPackage,
+  writeable,
+} from "@/wab/shared/core/sites";
+import { removeVariantGroupFromSplits } from "@/wab/shared/core/splits";
 import {
-  CodeComponentWithHelpers,
-  isCodeComponentWithHelpers,
-  makePlumeComponentMeta,
-} from "@/wab/shared/code-components/code-components";
-import {
-  paramToVarName,
-  toClassName,
-  toVarName,
-} from "@/wab/shared/codegen/util";
+  genOnChangeParamName,
+  isOnChangeParam,
+  mkState,
+  removeComponentStateOnly,
+} from "@/wab/shared/core/states";
 import { EXTRACT_COMPONENT_PROPS } from "@/wab/shared/core/style-props";
+import { cloneRuleSet, mkRuleSet } from "@/wab/shared/core/styles";
+import * as Tpls from "@/wab/shared/core/tpls";
+import {
+  findExprsInNode,
+  findVariantSettingsUnderTpl,
+  flattenTpls,
+  isTplComponent,
+  isTplVariantable,
+} from "@/wab/shared/core/tpls";
+import { DEVFLAGS, HostLessPackageInfo } from "@/wab/shared/devflags";
 import {
   EffectiveVariantSetting,
   getEffectiveVariantSetting,
@@ -46,8 +96,8 @@ import {
 } from "@/wab/shared/effective-variant-setting";
 import { CanvasEnv } from "@/wab/shared/eval";
 import {
-  mergeParsedExprInfos,
   ParsedExprInfo,
+  mergeParsedExprInfos,
   parseExpr,
 } from "@/wab/shared/eval/expression-parser";
 import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
@@ -63,31 +113,10 @@ import {
   ComponentTemplateInfo,
   ComponentVariantGroup,
   DataSourceOpExpr,
-  ensureKnownArgType,
-  ensureKnownSlotParam,
-  ensureKnownStateParam,
-  ensureKnownTplComponent,
-  ensureKnownVariantGroup,
-  ensureKnownVariantGroupState,
   Expr,
   FigmaComponentMapping,
   GlobalVariantGroup,
   GlobalVariantGroupParam,
-  isKnownArgType,
-  isKnownComponentVariantGroup,
-  isKnownEventHandler,
-  isKnownFunctionArg,
-  isKnownFunctionType,
-  isKnownNamedState,
-  isKnownPageHref,
-  isKnownRenderExpr,
-  isKnownStateChangeHandlerParam,
-  isKnownStateParam,
-  isKnownStrongFunctionArg,
-  isKnownTplRef,
-  isKnownVariantGroupState,
-  isKnownVariantsRef,
-  isKnownVarRef,
   NameArg,
   NamedState,
   ObjectPath,
@@ -109,11 +138,32 @@ import {
   TplTag,
   Type,
   Var,
+  VarRef,
   Variant,
   VariantGroup,
   VariantGroupState,
   VariantsRef,
-  VarRef,
+  ensureKnownArgType,
+  ensureKnownSlotParam,
+  ensureKnownStateParam,
+  ensureKnownTplComponent,
+  ensureKnownVariantGroup,
+  ensureKnownVariantGroupState,
+  isKnownArgType,
+  isKnownComponentVariantGroup,
+  isKnownEventHandler,
+  isKnownFunctionArg,
+  isKnownFunctionType,
+  isKnownNamedState,
+  isKnownPageHref,
+  isKnownRenderExpr,
+  isKnownStateChangeHandlerParam,
+  isKnownStateParam,
+  isKnownStrongFunctionArg,
+  isKnownTplRef,
+  isKnownVarRef,
+  isKnownVariantGroupState,
+  isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
 import {
@@ -121,60 +171,14 @@ import {
   replaceStateWithPropInCodeExprs,
   replaceVarWithPropInCodeExprs,
 } from "@/wab/shared/refactoring";
-import { RSH } from "@/wab/shared/RuleSetHelpers";
+import { smartHumanize } from "@/wab/shared/strs";
 import {
-  cloneSlotDefaultContents,
-  getTplSlot,
-  getTplSlots,
-  isSlot,
-} from "@/wab/shared/SlotUtils";
-import { setTplComponentArg, TplMgr } from "@/wab/shared/TplMgr";
-import { $$$ } from "@/wab/shared/TplQuery";
-import {
-  ensureBaseRuleVariantSetting,
-  ensureVariantSetting,
-  getBaseVariant,
-  getReferencedVariantGroups,
-  isBaseVariant,
-  isComponentStyleVariant,
-  isGlobalVariant,
-  isPrivateStyleVariant,
-  isPseudoElementVariant,
-  isStyleVariant,
-  isVariantSettingEmpty,
-  mkBaseVariant,
-  mkComponentVariantGroup,
-  mkGlobalVariantGroup,
-  mkVariant,
-  mkVariantSetting,
-  splitVariantCombo,
-  VariantCombo,
-} from "@/wab/shared/Variants";
-import {
+  TplVisibility,
   clearTplVisibility,
   getEffectiveTplVisibility,
   hasVisibilitySetting,
   setTplVisibility,
-  TplVisibility,
 } from "@/wab/shared/visibility-utils";
-import { isHostLessPackage, UNINITIALIZED_VALUE, writeable } from "@/wab/shared/core/sites";
-import { removeVariantGroupFromSplits } from "@/wab/shared/core/splits";
-import {
-  genOnChangeParamName,
-  isOnChangeParam,
-  mkState,
-  removeComponentStateOnly,
-} from "@/wab/shared/core/states";
-import { smartHumanize } from "@/wab/shared/strs";
-import { cloneRuleSet, mkRuleSet } from "@/wab/shared/core/styles";
-import * as Tpls from "@/wab/shared/core/tpls";
-import {
-  findExprsInNode,
-  findVariantSettingsUnderTpl,
-  flattenTpls,
-  isTplComponent,
-  isTplVariantable,
-} from "@/wab/shared/core/tpls";
 import { CodeComponentMeta as ComponentRegistration } from "@plasmicapp/host/registerComponent";
 import L, { cloneDeep, orderBy, uniq, without } from "lodash";
 import memoizeOne from "memoize-one";
@@ -999,9 +1003,12 @@ export function extractComponent({
   // Always reset dataRep of the new root element
   clonedTpl.vsettings[0].dataRep = null;
 
-  const oldFlattenedVariantables = flattenTpls(tpl).filter(isTplVariantable);
+  const oldTpls = flattenTpls(tpl);
+  const newTpls = flattenTpls(clonedTpl);
+
+  const oldFlattenedVariantables = oldTpls.filter(isTplVariantable);
   const oldFlattenedVariantablesSet = new Set(oldFlattenedVariantables);
-  const flattenedVariantables = flattenTpls(clonedTpl).filter(isTplVariantable);
+  const flattenedVariantables = newTpls.filter(isTplVariantable);
   const oldToNewVariantables = new Map<TplNode, TplNode>(
     strictZip(oldFlattenedVariantables, flattenedVariantables)
   );
@@ -1295,7 +1302,7 @@ export function extractComponent({
       .when(GlobalVariantGroupParam, () => Lang.ParamTypes.GlobalVariantGroup)
       .result();
 
-  const tplSlots = Tpls.flattenTpls(clonedTpl).filter(Tpls.isTplSlot);
+  const tplSlots = oldTpls.filter(Tpls.isTplSlot);
   if (tplSlots.length > 0) {
     // For each TplSlot that we are extracting in clonedTpl, we need to create the
     // corresponding param for the new Component
@@ -1408,6 +1415,8 @@ export function extractComponent({
       }
     }
   }
+
+  Tpls.fixTplRefEpxrs(newTpls, oldTpls);
 
   const {
     params: paramsUsedInExprs,

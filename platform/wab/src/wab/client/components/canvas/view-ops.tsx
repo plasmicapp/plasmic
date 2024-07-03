@@ -1,4 +1,20 @@
 import { getBoundingClientRect, getOffsetPoint } from "@/wab/client/dom";
+import { removeFromArray } from "@/wab/commons/collections";
+import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
+import { derefTokenRefs, isTokenRef } from "@/wab/commons/StyleToken";
+import { AddItemKey, WrapItemKey } from "@/wab/shared/add-item-keys";
+import {
+  FrameViewMode,
+  isDuplicatableFrame,
+  isMixedArena,
+  isPositionManagedFrame,
+} from "@/wab/shared/Arenas";
+import { toVarName } from "@/wab/shared/codegen/util";
+import {
+  hasMaxWidthVariant,
+  hasNonResponsiveColumnsStyle,
+  redistributeColumnsSizes,
+} from "@/wab/shared/columns-utils";
 import * as common from "@/wab/shared/common";
 import {
   assert,
@@ -13,9 +29,6 @@ import {
   unexpected,
   withoutNils,
 } from "@/wab/shared/common";
-import { removeFromArray } from "@/wab/commons/collections";
-import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
-import { derefTokenRefs, isTokenRef } from "@/wab/commons/StyleToken";
 import * as Components from "@/wab/shared/core/components";
 import {
   cloneVariant,
@@ -24,27 +37,16 @@ import {
   isFrameComponent,
   isPageComponent,
 } from "@/wab/shared/core/components";
-import { getCssInitial, parseCssNumericNew, tryGetCssInitial } from "@/wab/shared/css";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import * as exprs from "@/wab/shared/core/exprs";
 import { codeLit } from "@/wab/shared/core/exprs";
-import { Box, isStandardSide, Pt, Rect, Side, sideToOrient } from "@/wab/shared/geom";
 import { mkImageAssetRef } from "@/wab/shared/core/image-assets";
-import { isSelectable, Selectable, SelQuery, SQ } from "@/wab/shared/core/selection";
-import { AddItemKey, WrapItemKey } from "@/wab/shared/add-item-keys";
-import {
-  FrameViewMode,
-  isDuplicatableFrame,
-  isMixedArena,
-  isPositionManagedFrame,
-} from "@/wab/shared/Arenas";
-import { toVarName } from "@/wab/shared/codegen/util";
-import {
-  hasMaxWidthVariant,
-  hasNonResponsiveColumnsStyle,
-  redistributeColumnsSizes,
-} from "@/wab/shared/columns-utils";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
+import {
+  isSelectable,
+  Selectable,
+  SelQuery,
+  SQ,
+} from "@/wab/shared/core/selection";
 import {
   CONTENT_LAYOUT_FULL_BLEED,
   CONTENT_LAYOUT_WIDTH_OPTIONS,
@@ -58,15 +60,29 @@ import {
   typographyCssProps,
   WRAP_AS_PARENT_PROPS,
 } from "@/wab/shared/core/style-props";
+import {
+  getCssInitial,
+  parseCssNumericNew,
+  tryGetCssInitial,
+} from "@/wab/shared/css";
 import { AddItemPrefs, getSimplifiedStyles } from "@/wab/shared/default-styles";
 import {
   computeDefinedIndicator,
   getTargetBlockingCombo,
 } from "@/wab/shared/defined-indicator";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   adaptEffectiveVariantSetting,
   EffectiveVariantSetting,
 } from "@/wab/shared/effective-variant-setting";
+import {
+  Box,
+  isStandardSide,
+  Pt,
+  Rect,
+  Side,
+  sideToOrient,
+} from "@/wab/shared/geom";
 import { FRAME_LOWER } from "@/wab/shared/Labels";
 import {
   ContainerLayoutType,
@@ -162,6 +178,42 @@ import {
   getContainerType,
 } from "@/wab/client/utils/tpl-client-utils";
 import {
+  allGlobalVariants,
+  allStyleTokens,
+  DEFAULT_THEME_TYPOGRAPHY,
+  isTplAttachedToSite,
+  writeable,
+} from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import {
+  findImplicitStatesOfNodesInTree,
+  findImplicitUsages,
+  getStateDisplayName,
+  isPrivateState,
+  isStateUsedInExpr,
+} from "@/wab/shared/core/states";
+import { px } from "@/wab/shared/core/styles";
+import * as Tpls from "@/wab/shared/core/tpls";
+import {
+  isTplComponent,
+  isTplVariantable,
+  RawTextLike,
+} from "@/wab/shared/core/tpls";
+import * as ValNodes from "@/wab/shared/core/val-nodes";
+import {
+  isSelectableValNode,
+  slotContentValNode,
+  ValComponent,
+  ValNode,
+  ValSlot,
+  ValTag,
+} from "@/wab/shared/core/val-nodes";
+import {
+  asTpl,
+  asTplOrSlotSelection,
+  equivTplOrSlotSelection,
+} from "@/wab/shared/core/vals";
+import {
   canAddChildren,
   canAddChildrenAndWhy,
   canAddChildrenToSlotSelection,
@@ -189,6 +241,7 @@ import {
   isPlainTextTplSlot,
   isTextBlockArg,
 } from "@/wab/shared/SlotUtils";
+import { capitalizeFirst } from "@/wab/shared/strs";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
   ComponentCycleUserError,
@@ -217,38 +270,6 @@ import {
   setTplVisibility,
   TplVisibility,
 } from "@/wab/shared/visibility-utils";
-import {
-  allGlobalVariants,
-  allStyleTokens,
-  DEFAULT_THEME_TYPOGRAPHY,
-  isTplAttachedToSite,
-  writeable,
-} from "@/wab/shared/core/sites";
-import { SlotSelection } from "@/wab/shared/core/slots";
-import {
-  findImplicitStatesOfNodesInTree,
-  findImplicitUsages,
-  getStateDisplayName,
-  isPrivateState,
-  isStateUsedInExpr,
-} from "@/wab/shared/core/states";
-import { px } from "@/wab/shared/core/styles";
-import * as Tpls from "@/wab/shared/core/tpls";
-import { isTplComponent, isTplVariantable, RawTextLike } from "@/wab/shared/core/tpls";
-import * as ValNodes from "@/wab/shared/core/val-nodes";
-import {
-  isSelectableValNode,
-  slotContentValNode,
-  ValComponent,
-  ValNode,
-  ValSlot,
-  ValTag,
-} from "@/wab/shared/core/val-nodes";
-import {
-  asTpl,
-  asTplOrSlotSelection,
-  equivTplOrSlotSelection,
-} from "@/wab/shared/core/vals";
 
 export class ViewOps {
   _viewCtx: ViewCtx;
@@ -2349,6 +2370,7 @@ export class ViewOps {
 
   private adaptTplForPaste = (clip: TplClip, targetVariants?: VariantCombo) => {
     const newTree = Tpls.clone(clip.node);
+    const newTpls = Tpls.flattenTplsBottomUp(newTree);
     if (
       isFrameComponent(this.viewCtx().currentComponent()) &&
       getTplSlotDescendants(newTree).length > 0
@@ -2383,7 +2405,13 @@ export class ViewOps {
       }
     }
 
-    Tpls.flattenTplsBottomUp(newTree).forEach((child) =>
+    Tpls.fixTplRefEpxrs(
+      newTpls,
+      clip.origNode ? Tpls.flattenTplsBottomUp(clip.origNode) : [],
+      (referencedTpl) => this.notifyMissingTplRef(null, referencedTpl)
+    );
+
+    newTpls.forEach((child) =>
       this.adaptTplNodeForPaste(
         child,
         clip.component,
@@ -2968,7 +2996,8 @@ export class ViewOps {
     }
 
     const containingComponent = $$$(tpl).owningComponent();
-    const tplSlots = Tpls.flattenTpls(tpl).filter(Tpls.isTplSlot);
+    const flattenedTpls = Tpls.flattenTpls(tpl);
+    const flattenedTplsSet = new Set(flattenedTpls);
     const varRefs = Array.from(Components.findVarRefs(tpl));
 
     const removedImplicitStates = new Set(
@@ -3077,10 +3106,22 @@ export class ViewOps {
       }
     }
 
+    for (const tplRef of tplExprs) {
+      const expr = tplRef.expr;
+      if (isKnownTplRef(expr)) {
+        if (!flattenedTplsSet.has(expr.tpl)) {
+          this.notifyMissingTplRef(tplRef.node ?? null, expr.tpl);
+          return;
+        }
+      }
+    }
+
     const { params: paramsUsedInExprs, queries: queriesToCreateProps } =
       Components.findObjectsUsedInExprs(containingComponent, tpl);
     const linkedParams = L.uniq([
-      ...tplSlots.map((slot) => slot.param),
+      ...flattenedTpls
+        .filter((t): t is TplSlot => Tpls.isTplSlot(t))
+        .map((slot) => slot.param),
       ...varRefs
         .map((r) => r.var)
         .map((v) => Components.getParamForVar(containingComponent, v)),
@@ -4797,6 +4838,37 @@ export class ViewOps {
     } else {
       nameable.name = name;
     }
+  }
+
+  private notifyMissingTplRef(
+    tplWithExpr: TplNode | null,
+    referencedTpl: TplNode
+  ) {
+    const name = Tpls.isTplNamable(referencedTpl)
+      ? referencedTpl.name
+      : undefined;
+    const key = common.mkUuid();
+    notification.error({
+      key,
+      message: "Cannot create component",
+      description: (
+        <>
+          Selected elements contain reference to "
+          {name ?? capitalizeFirst(Tpls.summarizeTpl(referencedTpl))}
+          ".{" "}
+          {tplWithExpr && (
+            <a
+              onClick={() => {
+                this.viewCtx().setStudioFocusByTpl(tplWithExpr);
+                notification.close(key);
+              }}
+            >
+              [Go to reference]
+            </a>
+          )}
+        </>
+      ),
+    });
   }
 }
 

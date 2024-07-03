@@ -46,6 +46,7 @@ import {
   isKnownTemplatedString,
   isKnownTplComponent,
   isKnownTplNode,
+  isKnownTplRef,
   isKnownTplSlot,
   isKnownTplTag,
   isKnownVarRef,
@@ -86,6 +87,13 @@ import {
     no-fallthrough,
 */
 import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { DeepReadonly } from "@/wab/commons/types";
+import {
+  TAG_TO_HTML_ATTRIBUTES,
+  TAG_TO_HTML_INTERFACE,
+} from "@/wab/component-metas/tag-to-html-interface";
+import { isAdvancedProp } from "@/wab/shared/code-components/code-components";
+import { toVarName } from "@/wab/shared/codegen/util";
 import {
   assert,
   check,
@@ -100,6 +108,7 @@ import {
   maybe,
   mkShortId,
   notNil,
+  strictZip,
   switchType,
   todo,
   tuple,
@@ -107,11 +116,6 @@ import {
   withoutNils,
   xDifference,
 } from "@/wab/shared/common";
-import { DeepReadonly } from "@/wab/commons/types";
-import {
-  TAG_TO_HTML_ATTRIBUTES,
-  TAG_TO_HTML_INTERFACE,
-} from "@/wab/component-metas/tag-to-html-interface";
 import {
   CodeComponent,
   findStateForOnChangeParam,
@@ -121,25 +125,27 @@ import {
   isHostLessCodeComponent,
   isPlumeComponent,
 } from "@/wab/shared/core/components";
-import { getCssInitial } from "@/wab/shared/css";
 import * as Exprs from "@/wab/shared/core/exprs";
 import {
   isRealCodeExpr,
   isRealCodeExprEnsuringType,
   tryExtractJson,
 } from "@/wab/shared/core/exprs";
-import * as Html from "@/wab/shared/html";
 import { mkVar } from "@/wab/shared/core/lang";
 import { metaSvc } from "@/wab/shared/core/metas";
-import { isAdvancedProp } from "@/wab/shared/code-components/code-components";
-import { toVarName } from "@/wab/shared/codegen/util";
 import { isTagInline } from "@/wab/shared/core/rich-text-util";
+import { extractComponentUsages, writeable } from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import { isOnChangeParam } from "@/wab/shared/core/states";
 import {
   ignoredConvertablePlainTextProps,
   typographyCssProps,
 } from "@/wab/shared/core/style-props";
+import * as styles from "@/wab/shared/core/styles";
+import { getCssInitial } from "@/wab/shared/css";
 import { CanvasEnv, evalCodeWithEnv } from "@/wab/shared/eval";
 import { parseExpr, pathToString } from "@/wab/shared/eval/expression-parser";
+import * as Html from "@/wab/shared/html";
 import {
   FREE_CONTAINER_LOWER,
   GRID_LOWER,
@@ -168,6 +174,7 @@ import {
   isCodeComponentSlot,
   isDescendantOfVirtualRenderExpr,
 } from "@/wab/shared/SlotUtils";
+import { smartHumanize } from "@/wab/shared/strs";
 import {
   getTplComponentArg,
   setTplComponentArg,
@@ -186,11 +193,6 @@ import {
   tryGetBaseVariantSetting,
   VariantCombo,
 } from "@/wab/shared/Variants";
-import { extractComponentUsages, writeable } from "@/wab/shared/core/sites";
-import { SlotSelection } from "@/wab/shared/core/slots";
-import { isOnChangeParam } from "@/wab/shared/core/states";
-import { smartHumanize } from "@/wab/shared/strs";
-import * as styles from "@/wab/shared/core/styles";
 import L, { uniq, uniqBy } from "lodash";
 import * as US from "underscore.string";
 
@@ -2427,6 +2429,31 @@ export function addFallbacksToCodeExpressions(
       }
     }
   });
+}
+
+export function fixTplRefEpxrs(
+  newTpls: TplNode[],
+  oldTpls: TplNode[],
+  errorFn?: (referencedTpl: TplNode) => void
+) {
+  const tplRefs = newTpls.flatMap((t) =>
+    findExprsInNode(t).filter((ref) => isKnownTplRef(ref.expr))
+  );
+  if (tplRefs.length > 0) {
+    const oldToNewTpls = new Map(strictZip(oldTpls, newTpls));
+    for (const tplRef of tplRefs) {
+      const expr = tplRef.expr;
+      assert(isKnownTplRef(expr), "Fix only appliable to TplRefs");
+      if (!oldToNewTpls.get(expr.tpl) && errorFn) {
+        errorFn?.(expr.tpl);
+        return;
+      }
+      expr.tpl = ensure(
+        oldToNewTpls.get(expr.tpl),
+        "Should only allow extracting if tplRefs are included"
+      );
+    }
+  }
 }
 
 export function hasChildrenSlot(tpl: TplComponent) {

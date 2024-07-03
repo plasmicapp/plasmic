@@ -53,6 +53,12 @@ import {
 /* eslint-disable
     no-this-before-super,
 */
+import { mkTokenRef } from "@/wab/commons/StyleToken";
+import {
+  jsLiteral,
+  toJsIdentifier,
+  toVarName,
+} from "@/wab/shared/codegen/util";
 import {
   assert,
   ensure,
@@ -69,14 +75,15 @@ import {
   unexpected,
   withoutNils,
 } from "@/wab/shared/common";
-import { mkTokenRef } from "@/wab/commons/StyleToken";
 import { cloneNameArg, cloneQueryRef } from "@/wab/shared/core/components";
-import { DevFlagsType, getProjectFlags } from "@/wab/shared/devflags";
 import {
-  jsLiteral,
-  toJsIdentifier,
-  toVarName,
-} from "@/wab/shared/codegen/util";
+  extractEventArgsNameFromEventHandler,
+  isGlobalAction,
+  serializeActionArg,
+  serializeActionFunction,
+} from "@/wab/shared/core/states";
+import { cloneRuleSet, makeStyleExprClassName } from "@/wab/shared/core/styles";
+import { clone as cloneTpl, cloneType } from "@/wab/shared/core/tpls";
 import {
   dataSourceTemplateToString,
   exprToDataSourceString,
@@ -84,6 +91,7 @@ import {
   isJsonType,
   mkDataSourceTemplate,
 } from "@/wab/shared/data-sources-meta/data-sources";
+import { DevFlagsType, getProjectFlags } from "@/wab/shared/devflags";
 import {
   getDynamicBindings,
   getDynamicSnippetsForExpr,
@@ -94,14 +102,6 @@ import { pathToString } from "@/wab/shared/eval/expression-parser";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import { typeDisplayName } from "@/wab/shared/model/model-util";
 import { maybeConvertToIife } from "@/wab/shared/parser-utils";
-import {
-  extractEventArgsNameFromEventHandler,
-  isGlobalAction,
-  serializeActionArg,
-  serializeActionFunction,
-} from "@/wab/shared/core/states";
-import { cloneRuleSet, makeStyleExprClassName } from "@/wab/shared/core/styles";
-import { clone as cloneTpl, cloneType } from "@/wab/shared/core/tpls";
 import L, { escapeRegExp, isString, mapValues, set } from "lodash";
 
 export interface ExprCtx {
