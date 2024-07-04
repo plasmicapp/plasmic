@@ -1,6 +1,3 @@
-import { assert, isLiteralObject, jsonClone, swallow } from "@/wab/shared/common";
-import { DEVFLAGS, getProjectFlags } from "@/wab/shared/devflags";
-import { ExprCtx } from "@/wab/shared/core/exprs";
 import { makeAirtableFetcher } from "@/wab/server/data-sources/airtable-fetcher";
 import { makeDynamoDbFetcher } from "@/wab/server/data-sources/dynamodb-fetcher";
 import { getMigratedUserPropsOpBundle } from "@/wab/server/data-sources/end-user-utils";
@@ -21,6 +18,13 @@ import { ProjectId } from "@/wab/shared/ApiSchema";
 import { FastBundler } from "@/wab/shared/bundler";
 import { findAllDataSourceOpExprForComponent } from "@/wab/shared/cached-selectors";
 import {
+  assert,
+  isLiteralObject,
+  jsonClone,
+  swallow,
+} from "@/wab/shared/common";
+import { ExprCtx } from "@/wab/shared/core/exprs";
+import {
   GenericDataSource,
   getDataSourceMeta,
 } from "@/wab/shared/data-sources-meta/data-source-registry";
@@ -37,6 +41,7 @@ import {
   isJsonType,
 } from "@/wab/shared/data-sources-meta/data-sources";
 import { buildSqlStringForFilterTemplateArg } from "@/wab/shared/data-sources/to-sql";
+import { DEVFLAGS, getProjectFlags } from "@/wab/shared/devflags";
 import {
   DataSourceUser,
   getDynamicStringSegments,
@@ -49,6 +54,7 @@ import {
   templateSubstituteDynamicValues,
   withCurrentUserValues,
 } from "@/wab/shared/dynamic-bindings";
+import { stampIgnoreError } from "@/wab/shared/error-handling";
 import { DataSourceOpExpr, Site } from "@/wab/shared/model/classes";
 import { CrudFilter, CrudFilters, LogicalFilter } from "@pankod/refine-core";
 import {
@@ -106,8 +112,7 @@ export async function executeDataSourceOperation(
     return result ?? null;
   } catch (err) {
     console.error("Integration Error: ", err);
-    err.plasmicIgnoreError = true;
-    throw err;
+    throw stampIgnoreError(err);
   }
 }
 

@@ -36,13 +36,13 @@ import { getConnection } from "typeorm";
 import v8 from "v8";
 // API keys and Passport configuration
 import { Config } from "@/wab/server/config";
-import { getDevFlagsMergedWithOverrides } from "@/wab/server/db/appconfig";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { getDevFlagsMergedWithOverrides } from "@/wab/server/db/appconfig";
 import { createMailer } from "@/wab/server/emails/Mailer";
 import { ExpressSession } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
 import { setupPassport } from "@/wab/server/passport-cfg";
-import { trackPostgresPool, WabPromStats } from "@/wab/server/promstats";
+import { WabPromStats, trackPostgresPool } from "@/wab/server/promstats";
 import * as adminRoutes from "@/wab/server/routes/admin";
 import {
   getAnalyticsBillingInfoForTeam,
@@ -98,8 +98,8 @@ import {
   updateTable,
 } from "@/wab/server/routes/cmse";
 import {
-  addInternalRoutes,
   ROUTES_WITH_TIMING,
+  addInternalRoutes,
 } from "@/wab/server/routes/custom-routes";
 import {
   allowProjectToDataSource,
@@ -247,8 +247,8 @@ import {
   latestCodegenVersion,
   listBranchesForProject,
   listPkgVersionsWithoutData,
-  listProjects,
   listProjectVersionsWithoutData,
+  listProjects,
   postCommentInProject,
   publishProject,
   removeReactionFromComment,
@@ -306,22 +306,23 @@ import {
 import { getSegmentWriteKey } from "@/wab/server/secrets";
 import { logError } from "@/wab/server/server-util";
 import { ASYNC_TIMING } from "@/wab/server/timing-util";
+import { TypeormStore } from "@/wab/server/util/TypeormSessionStore";
 import { doLogout } from "@/wab/server/util/auth-util";
 import {
   pruneOldBundleBackupsCache,
   prunePartialRevCache,
 } from "@/wab/server/util/pruneCache";
-import { TypeormStore } from "@/wab/server/util/TypeormSessionStore";
 import { createWorkerPool } from "@/wab/server/workers/pool";
 import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
 import {
   AuthError,
-  isApiError,
   NotFoundError,
+  isApiError,
   transformErrors,
 } from "@/wab/shared/ApiErrors/errors";
 import { Bundler } from "@/wab/shared/bundler";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { isStampedIgnoreError } from "@/wab/shared/error-handling";
 import fileUpload from "express-fileupload";
 
 const hotShots = require("hot-shots");
@@ -467,7 +468,7 @@ function addSentryError(app: express.Application, config: Config) {
     if (shouldIgnoreErrorByMessage(error.message || "")) {
       return false;
     }
-    if (error["plasmicIgnoreError"]) {
+    if (isStampedIgnoreError(error)) {
       return false;
     }
     if (error["request"]?.headers?.["user-agent"]?.startsWith("octokit")) {
