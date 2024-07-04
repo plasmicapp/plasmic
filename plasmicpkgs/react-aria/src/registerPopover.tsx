@@ -1,4 +1,3 @@
-import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import { mergeProps } from "@react-aria/utils";
 import React from "react";
 import { Popover, PopoverContext } from "react-aria-components";
@@ -9,34 +8,35 @@ import {
   registerComponentHelper,
 } from "./utils";
 
-export function BasePopover(props: {
+export interface BasePopoverProps extends React.ComponentProps<typeof Popover> {
   className?: string;
   resetClassName?: string;
-}) {
+}
+
+export function BasePopover(props: BasePopoverProps) {
   const { resetClassName, ...restProps } = props;
   const isStandalone = !React.useContext(PopoverContext);
   const contextProps = React.useContext(PlasmicPopoverContext);
-  const canvas = usePlasmicCanvasContext();
   const mergedProps = mergeProps(contextProps, restProps, {
     className: `${resetClassName}`,
   });
 
-  if (isStandalone) {
-    const triggerRef = React.useRef<any>(null);
-    return (
-      <>
-        <div ref={triggerRef} />
-        <Popover
-          {...mergedProps}
-          triggerRef={triggerRef}
-          isNonModal={true}
-          isOpen={true}
-        />
-      </>
-    );
-  } else {
-    return <Popover {...mergedProps} isNonModal={!!canvas} />;
-  }
+  const triggerRef = React.useRef<any>(null);
+
+  const standaloneProps = isStandalone
+    ? {
+        triggerRef,
+        isNonModal: true,
+        isOpen: true,
+      }
+    : {};
+
+  return (
+    <>
+      {isStandalone && <div ref={triggerRef} />}
+      <Popover {...mergedProps} {...standaloneProps} />
+    </>
+  );
 }
 
 export function registerPopover(
@@ -78,20 +78,6 @@ export function registerPopover(
         resetClassName: {
           type: "themeResetClass",
         },
-        // className: {
-        //   type: "class",
-        //   displayName: "Additional states",
-        //   selectors: [
-        //     {
-        //       selector: ":self[data-entering]",
-        //       label: "Entering",
-        //     },
-        //     {
-        //       selector: ":self[data-exiting]",
-        //       label: "Exiting",
-        //     },
-        //   ],
-        // },
       },
       styleSections: true,
     },

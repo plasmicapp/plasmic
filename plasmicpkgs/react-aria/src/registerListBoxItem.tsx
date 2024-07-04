@@ -1,6 +1,6 @@
 import { mergeProps } from "@react-aria/utils";
 import React from "react";
-import { Key, ListBoxItem } from "react-aria-components";
+import { ListBoxItem } from "react-aria-components";
 import { PlasmicItemContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
@@ -10,13 +10,15 @@ import {
 } from "./utils";
 
 export function BaseListBoxItem(
-  props: React.ComponentProps<typeof ListBoxItem> & {
-    key?: Key;
-  }
+  props: React.ComponentProps<typeof ListBoxItem>
 ) {
   const contextProps = React.useContext(PlasmicItemContext);
   const mergedProps = mergeProps(contextProps, props);
-  return <ListBoxItem id={mergedProps.key ?? undefined} {...mergedProps} />;
+  return (
+    <ListBoxItem {...mergedProps}>
+      {mergedProps.children as React.ReactNode}
+    </ListBoxItem>
+  );
 }
 
 export function registerListBoxItem(
@@ -32,23 +34,8 @@ export function registerListBoxItem(
       importPath: "@plasmicpkgs/react-aria/skinny/registerListBoxItem",
       importName: "BaseListBoxItem",
       props: {
-        className: {
-          type: "class",
-          displayName: "Additional states",
-          selectors: [
-            {
-              selector: ":self[data-selected]",
-              label: "Selected",
-            },
-            {
-              selector: ":self[data-focused], :self[data-hovered]",
-              label: "Focused",
-            },
-            {
-              selector: ":self[data-disabled]",
-              label: "Disabled",
-            },
-          ],
+        children: {
+          type: "slot",
         },
       },
     },

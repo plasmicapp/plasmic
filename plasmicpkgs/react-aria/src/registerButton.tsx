@@ -101,6 +101,10 @@ export function registerButton(
             "Whether clicking this button should reset the enclosing form.",
           advanced: true,
         },
+        onPress: {
+          type: "eventHandler",
+          argTypes: [{ name: "event", type: "object" }],
+        },
       },
       trapsFocus: true,
     },

@@ -23,29 +23,18 @@ export type ObjectOptionType<T extends object> =
 
 export interface HasOptions<T extends object> {
   options?: FlexOptionType<T>[];
-  optionInfo?: (option: FlexOptionType<T>) =>
-    | {
-        type?: "item";
-        value: string;
-        label?: string;
-        isDisabled?: boolean;
-      }
-    | {
-        type: "section";
-        label?: string;
-        items?: FlexOptionType<T>[];
-      };
+  optionInfo?: (option: FlexOptionType<T>) => StrictOptionType;
 }
 
 export interface StrictItemType {
-  type?: "item";
-  value: string;
+  type?: "option";
+  id: string;
   label?: string;
   isDisabled?: boolean;
 }
 
 export interface StrictSectionType {
-  type: "section";
+  type: "option-group";
   label?: string;
   items?: StrictItemType[];
   key: string;
@@ -62,7 +51,6 @@ export function useStrictOptions<T extends object>(props: HasOptions<T>) {
 
 export function deriveStrictOptions<T extends object>(props: HasOptions<T>) {
   const { options, optionInfo } = props;
-
   let sectionCount = 0;
 
   const makeStrict = (op: FlexOptionType<T>): StrictOptionType | undefined => {
@@ -70,28 +58,28 @@ export function deriveStrictOptions<T extends object>(props: HasOptions<T>) {
       return undefined;
     } else if (typeof op === "string" || typeof op === "number") {
       const item = {
-        value: op,
+        id: op,
       };
       return item;
     } else if (optionInfo) {
       const info = optionInfo(op);
-      if (info.type === "section") {
+      if (info.type === "option-group") {
         const section: StrictSectionType = {
-          type: "section",
+          type: "option-group",
           items: info.items
             ?.map?.((item) => makeStrict(item) as StrictItemType)
             ?.filter((x) => !!x),
           label: info.label,
-          key: `section-${sectionCount}`,
+          key: `option-group-${sectionCount}`,
         };
         sectionCount += 1;
         return section;
       } else {
         let item = info;
-        if (!("value" in item)) {
+        if (!("id" in item)) {
           item = {
-            type: "item",
-            value: JSON.stringify(item),
+            type: "option",
+            id: JSON.stringify(item),
           };
         }
         return item;
@@ -99,21 +87,21 @@ export function deriveStrictOptions<T extends object>(props: HasOptions<T>) {
     } else if (typeof op === "object") {
       if ("items" in op) {
         const section: StrictSectionType = {
-          type: "section",
+          type: "option-group",
           items: op.items
             ?.map?.((item) => makeStrict(item) as StrictItemType)
             ?.filter((x) => !!x),
           label: op.label,
-          key: `section-${sectionCount}`,
+          key: `option-group-${sectionCount}`,
         };
         sectionCount += 1;
         return section;
       } else {
         let item = op;
-        if (!("value" in item)) {
+        if (!("id" in item)) {
           item = {
-            type: "item",
-            value: JSON.stringify(item),
+            type: "option",
+            id: JSON.stringify(item),
           };
         }
         return item;
@@ -128,7 +116,7 @@ export function deriveStrictOptions<T extends object>(props: HasOptions<T>) {
     ?.filter((x): x is StrictOptionType => !!x);
 
   const optionText = (op: StrictItemType) => {
-    return op.label ?? op.value;
+    return op.label ?? op.id;
   };
 
   return { options: strictOptions, optionText };
@@ -141,7 +129,7 @@ export function flattenOptions(
     return [];
   } else {
     return options.flatMap((op) =>
-      op.type === "section" ? op.items ?? [] : op
+      op.type === "option-group" ? op.items ?? [] : op
     );
   }
 }
@@ -151,7 +139,7 @@ export function makeOptionsPropType() {
     type: "array",
     itemType: {
       type: "object",
-      nameFunc: (item: any) => item.label || item.value,
+      nameFunc: (item: any) => item.label || item.id,
       fields: {
         type: {
           type: "choice",
@@ -161,7 +149,7 @@ export function makeOptionsPropType() {
           ],
           defaultValue: "option",
         },
-        value: {
+        id: {
           type: "string",
           hidden: (_ps: any, _ctx: any, { item }: any) =>
             item.type !== "option",
@@ -175,9 +163,9 @@ export function makeOptionsPropType() {
           },
           itemType: {
             type: "object",
-            nameFunc: (item: any) => item.label || item.value,
+            nameFunc: (item: any) => item.label || item.id,
             fields: {
-              value: "string",
+              id: "string",
               label: "string",
             },
           },
@@ -186,12 +174,12 @@ export function makeOptionsPropType() {
     },
     defaultValue: [
       {
-        value: "option1",
+        id: "option1",
         label: "Option 1",
         type: "option",
       },
       {
-        value: "option2",
+        id: "option2",
         label: "Option 2",
         type: "option",
       },
@@ -203,10 +191,10 @@ export function makeOptionsPropType() {
 export function makeValuePropType() {
   const type: ChoiceType<HasOptions<any>> = {
     type: "choice",
-    options: (ps) => {
+    options: (ps: HasOptions<any>) => {
       const { options, optionText } = deriveStrictOptions(ps);
       return flattenOptions(options).map((op) => ({
-        value: op.value,
+        value: op.id,
         label: optionText(op),
       }));
     },

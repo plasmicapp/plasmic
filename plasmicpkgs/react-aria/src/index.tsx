@@ -2,6 +2,7 @@ import { registerButton } from "./registerButton";
 import { registerCheckbox } from "./registerCheckbox";
 import { registerCheckboxGroup } from "./registerCheckboxGroup";
 import { registerComboBox } from "./registerComboBox";
+import { registerDialogTrigger } from "./registerDialogTrigger";
 import { registerForm } from "./registerForm";
 import { registerInput } from "./registerInput";
 import { registerLabel } from "./registerLabel";
@@ -33,4 +34,5 @@ export function registerAll(loader?: Registerable) {
   registerTextField(loader);
   registerModal(loader);
   registerTooltip(loader);
+  registerDialogTrigger(loader);
 }

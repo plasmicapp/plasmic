@@ -62,7 +62,6 @@ export function BaseComboBox<T extends object>(props: BaseComboBoxProps<T>) {
     structure,
     name,
   } = props;
-
   const { options, optionText } = useStrictOptions(props);
   const { contains } = useFilter({ sensitivity: "base" });
   const [showAllOptions, setShowAllOptions] = React.useState(false);
@@ -79,7 +78,7 @@ export function BaseComboBox<T extends object>(props: BaseComboBoxProps<T>) {
     ): StrictOptionType[] | undefined => {
       return withoutNils(
         opts.map((op) => {
-          if (op.type === "section") {
+          if (op.type === "option-group") {
             return {
               ...op,
               items: op.items
@@ -97,7 +96,7 @@ export function BaseComboBox<T extends object>(props: BaseComboBoxProps<T>) {
       );
     };
     return filterOptions(options);
-  }, [options, filterValue, contains]);
+  }, [filterValue, options, contains, optionText]);
 
   const flattenedOptions = React.useMemo(
     () => flattenOptions(options),
@@ -106,7 +105,7 @@ export function BaseComboBox<T extends object>(props: BaseComboBoxProps<T>) {
 
   const disabledKeys = flattenedOptions
     .filter((op) => op.isDisabled)
-    .map((op) => op.value);
+    .map((op) => op.id);
 
   const onSelectionChange = React.useCallback(
     (key: Key | null) => {
@@ -114,7 +113,7 @@ export function BaseComboBox<T extends object>(props: BaseComboBoxProps<T>) {
         return;
       }
 
-      const selectedOption = flattenedOptions?.find((op) => op.value === key);
+      const selectedOption = flattenedOptions?.find((op) => op.id === key);
       if (valueType === "text") {
         if (selectedOption) {
           onChange?.(optionText(selectedOption));
@@ -126,7 +125,7 @@ export function BaseComboBox<T extends object>(props: BaseComboBoxProps<T>) {
         onFilterValueChange?.(optionText(selectedOption));
       }
     },
-    [onChange, onFilterValueChange, flattenedOptions, optionText]
+    [flattenedOptions, valueType, onChange, optionText, onFilterValueChange]
   );
 
   const onInputValueChange = React.useCallback(
@@ -161,7 +160,7 @@ export function BaseComboBox<T extends object>(props: BaseComboBoxProps<T>) {
     // to the selected option
     if (!allowsCustomValue) {
       const selectedOption = flattenedOptions?.find((op) =>
-        valueType === "text" ? optionText(op) === value : op.value === value
+        valueType === "text" ? optionText(op) === value : op.id === value
       );
       if (selectedOption) {
         const selectedOptionText = optionText(selectedOption);
@@ -172,10 +171,11 @@ export function BaseComboBox<T extends object>(props: BaseComboBoxProps<T>) {
     }
   }, [
     allowsCustomValue,
-    valueType,
     flattenedOptions,
-    value,
+    valueType,
     optionText,
+    value,
+    filterValue,
     onFilterValueChange,
   ]);
 
@@ -207,15 +207,6 @@ export function BaseComboBox<T extends object>(props: BaseComboBoxProps<T>) {
     >
       <PlasmicListBoxContext.Provider
         value={{
-          makeItemProps: (item) => ({
-            key: item.value,
-            textValue: optionText(item),
-            children: optionText(item),
-          }),
-          makeSectionProps: (section) => ({
-            section,
-            key: section.key,
-          }),
           getItemType: (option) =>
             option.type === "section" ? "section" : "item",
         }}

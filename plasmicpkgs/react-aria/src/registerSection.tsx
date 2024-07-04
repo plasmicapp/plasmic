@@ -8,7 +8,6 @@ import {
 } from "./contexts";
 import type { StrictSectionType } from "./option-utils";
 import { registerHeader } from "./registerHeader";
-import { BaseListBoxItem } from "./registerListBoxItem";
 import {
   CodeComponentMetaOverrides,
   makeChildComponentName,
@@ -22,32 +21,26 @@ export interface BaseSectionProps extends Styleable {
   // Configured via Studio
   renderHeader?: (section: any) => React.ReactNode;
 
-  // Passed down via context from Select, ComboBox
+  // Passed down via context from ListBox
+  renderItem?: (item?: any) => React.ReactNode;
   key?: Key;
   section?: StrictSectionType;
-
-  // Passed down via context from ListBox
-  makeItemProps?: (
-    item: any
-  ) => Partial<React.ComponentProps<typeof BaseListBoxItem>>;
-  renderItem?: (item?: any) => React.ReactNode;
 }
 
 export function BaseSection(props: BaseSectionProps) {
   const contextProps = React.useContext(PlasmicSectionContext);
   const mergedProps = mergeProps(contextProps, props);
-  const { section, renderHeader, key, makeItemProps, renderItem, ...rest } =
-    mergedProps;
+  const { section, renderHeader, key, renderItem } = mergedProps;
+
   return (
-    <Section id={key ?? undefined} {...rest}>
+    <Section id={key}>
       <PlasmicHeaderContext.Provider value={{ children: section?.label }}>
         {renderHeader?.(section)}
       </PlasmicHeaderContext.Provider>
       <Collection items={section?.items}>
         {(item) => {
-          const itemProps = makeItemProps?.(item);
           return (
-            <PlasmicItemContext.Provider key={itemProps?.key} value={itemProps}>
+            <PlasmicItemContext.Provider value={item}>
               {renderItem?.(item)}
             </PlasmicItemContext.Provider>
           );
@@ -73,7 +66,7 @@ export function registerSection(
         renderHeader: {
           type: "slot",
           displayName: "Render section header",
-          renderPropParams: ["section"],
+          renderPropParams: ["sectionProps"],
         },
       },
     },

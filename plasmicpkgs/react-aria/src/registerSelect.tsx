@@ -1,9 +1,9 @@
 import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import React from "react";
 import {
+  SelectValue as BaseSelectValue,
   Key,
   Select,
-  SelectValue as BaseSelectValue,
 } from "react-aria-components";
 import { PlasmicListBoxContext } from "./contexts";
 import {
@@ -60,18 +60,17 @@ export function BaseSelect<T extends object>(props: BaseSelectProps<T>) {
     className,
     style,
     structure,
-    renderOption,
     name,
     "aria-label": ariaLabel,
   } = props;
 
-  const { options, optionText } = useStrictOptions(props);
+  const { options } = useStrictOptions(props);
 
   const canvas = usePlasmicCanvasContext();
 
   const disabledKeys = flattenOptions(options)
     .filter((op) => op.isDisabled)
-    .map((op) => op.value);
+    .map((op) => op.id);
 
   return (
     <Select
@@ -91,17 +90,6 @@ export function BaseSelect<T extends object>(props: BaseSelectProps<T>) {
         value={{
           items: options,
           disabledKeys: disabledKeys,
-          makeItemProps: (item) => ({
-            key: item.value,
-            textValue: optionText(item),
-            children: renderOption ? renderOption(item) : optionText(item),
-          }),
-          makeSectionProps: (section) => ({
-            section,
-            key: section.key,
-          }),
-          getItemType: (option) =>
-            option.type === "section" ? "section" : "item",
         }}
       >
         {structure}
