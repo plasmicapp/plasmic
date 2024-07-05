@@ -1,13 +1,14 @@
 import { Matcher } from "@/wab/client/components/view-common";
 import { ListSpace } from "@/wab/client/components/widgets/ListStack";
 import * as React from "react";
-import { FixedSizeList, areEqual } from "react-window";
+import { VariableSizeList, areEqual } from "react-window";
 
 export interface RenderElementProps<T> {
   value: T;
   /** Tree state for the rendered component */
   treeState: {
     matcher: Matcher;
+    level: number;
     canOpen: boolean;
     isOpen: boolean;
   };
@@ -41,8 +42,8 @@ interface VirtualTreeProps<T> {
   getNodeKey: (node: T) => Key;
   getNodeChildren: (node: T) => T[];
   getNodeSearchText: (node: T) => string;
+  getNodeHeight: (node: T) => number;
   renderElement: RenderElement<T>;
-  rowHeight: number;
 }
 
 export function VirtualTree<T>(props: VirtualTreeProps<T>) {
@@ -52,34 +53,51 @@ export function VirtualTree<T>(props: VirtualTreeProps<T>) {
     getNodeKey,
     getNodeChildren,
     getNodeSearchText,
+    getNodeHeight,
     renderElement,
-    rowHeight,
   } = props;
 
-  const { nodeData, nodeKey } = useTreeData(
+  const ref = React.useRef<VariableSizeList>(null);
+
+  const { nodeData, nodeKey, nodeHeights } = useTreeData(
     rootNodes,
     query,
     renderElement,
     getNodeKey,
     getNodeChildren,
-    getNodeSearchText
+    getNodeSearchText,
+    getNodeHeight
   );
+
+  const getItemSize = React.useMemo(() => {
+    return (index: number) => {
+      return nodeHeights[index];
+    };
+  }, [JSON.stringify(nodeHeights)]);
+  React.useEffect(() => {
+    if (ref.current) {
+      // When the sizes of the items in the list change, we need to reset
+      // the cached state of the virtual list
+      ref.current.resetAfterIndex(0);
+    }
+  }, [JSON.stringify(nodeHeights)]);
 
   return (
     <ListSpace space={5000}>
       {({ height }) =>
         height > 0 && (
-          <FixedSizeList
+          <VariableSizeList
+            ref={ref}
             width={"100%"}
             height={height}
             itemCount={nodeData.treeData.nodes.length}
-            itemSize={rowHeight}
+            itemSize={getItemSize}
             overscanCount={2}
             itemData={nodeData}
             itemKey={nodeKey}
           >
             {Row}
-          </FixedSizeList>
+          </VariableSizeList>
         )
       }
     </ListSpace>
@@ -157,21 +175,18 @@ const TreeNodeRow = <T,>(props: TreeNodeRowProps<T>) => {
   const treeState = React.useMemo(() => {
     return {
       matcher,
+      level,
       canOpen: canOpen,
       isOpen: isOpen,
     };
-  }, [matcher, canOpen, isOpen]);
+  }, [matcher, level, canOpen, isOpen]);
   return (
-    <div
-      key={nodeKey}
-      style={{ paddingLeft: level * 12, ...style }}
-      onClick={onClickHandle}
-    >
+    <li className="flex" key={nodeKey} style={style} onClick={onClickHandle}>
       {renderElement({
         value,
         treeState,
       })}
-    </div>
+    </li>
   );
 };
 
@@ -181,7 +196,8 @@ function useTreeData<T>(
   renderElement: RenderElement<T>,
   getNodeKey: (node: T) => Key,
   getNodeChildren: (node: T) => T[],
-  getNodeSearchText: (node: T) => string
+  getNodeSearchText: (node: T) => string,
+  getNodeHeight: (node: T) => number
 ) {
   const matcher = React.useMemo(() => {
     return new Matcher(query?.trim() ?? "");
@@ -237,11 +253,15 @@ function useTreeData<T>(
       getNodeKey(data.treeData.nodes[index].value),
     [getNodeKey]
   );
+  const nodeHeights: number[] = React.useMemo(
+    () => visibleNodes.map((node) => getNodeHeight(node.value)),
+    [visibleNodes]
+  );
 
   return {
     nodeData,
-    visibleNodes,
     nodeKey,
+    nodeHeights,
   };
 }
 
@@ -259,7 +279,8 @@ function buildVisibleNodes<T>(
   const pushVisibleNodes = (
     node: T,
     parentKey: Key | undefined,
-    depth: number
+    depth: number,
+    addAllChildren: boolean
   ): boolean => {
     const key = getNodeKey(node);
     const children = getNodeChildren(node);
@@ -272,10 +293,16 @@ function buildVisibleNodes<T>(
       level: depth,
       parentKey: parentKey,
     });
-    let shouldAddNode = !hasQuery || matcher.matches(searchText);
+    const matchedText = matcher.matches(searchText);
+    let shouldAddNode = !hasQuery || matchedText || addAllChildren;
     if (expandedNodes.has(key) || hasQuery) {
       children.forEach((child) => {
-        const pushedChildren = pushVisibleNodes(child, key, depth + 1);
+        const pushedChildren = pushVisibleNodes(
+          child,
+          key,
+          depth + 1,
+          addAllChildren || matchedText
+        );
         shouldAddNode = shouldAddNode || pushedChildren;
       });
     }
@@ -285,6 +312,6 @@ function buildVisibleNodes<T>(
     return shouldAddNode;
   };
 
-  rootNodes.forEach((node) => pushVisibleNodes(node, undefined, 0));
+  rootNodes.forEach((node) => pushVisibleNodes(node, undefined, 0, false));
   return visibleNodes;
 }
