@@ -336,6 +336,9 @@ if (officialHook) {
   // Return true if this is a canvas frame's tree.
   const isCanvasFrame = (containerInfo: any) => {
     const doc = getDocFromContainerInfo(containerInfo);
+    if (!doc) {
+      return false;
+    }
     return !!doc.getElementById("plasmic-app");
   };
 
@@ -345,7 +348,7 @@ if (officialHook) {
     if (doc?.getElementById) {
       return doc;
     }
-    assert(false, "Unreachable code");
+    return null;
   };
 
   const knownRoots = new WeakSet<FiberRoot>();
