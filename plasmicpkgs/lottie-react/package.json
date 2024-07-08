@@ -37,7 +37,7 @@
     "tslib": "^2.2.0"
   },
   "dependencies": {
-    "lottie-react": "^2.1.0"
+    "lottie-react": "^2.4.0"
   },
   "peerDependencies": {
     "@plasmicapp/host": ">=1.0.0",
