@@ -37,7 +37,8 @@
     "tslib": "^2.2.0"
   },
   "dependencies": {
-    "react-awesome-reveal": "^3.8.0"
+    "@emotion/react": "^11.11.4",
+    "react-awesome-reveal": "^4.2.12"
   },
   "peerDependencies": {
     "@plasmicapp/host": ">=1.0.0",
