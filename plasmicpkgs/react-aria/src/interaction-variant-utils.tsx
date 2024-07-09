@@ -18,6 +18,10 @@ const ARIA_COMPONENTS_INTERACTION_VARIANTS = {
     cssSelector: "[data-focus-visible]",
     displayName: "Focus Visible",
   },
+  dragging: {
+    cssSelector: "[data-dragging]",
+    displayName: "Dragging",
+  },
 };
 
 type AriaInteractionVariant = keyof typeof ARIA_COMPONENTS_INTERACTION_VARIANTS;

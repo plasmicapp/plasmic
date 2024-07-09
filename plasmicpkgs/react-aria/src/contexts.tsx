@@ -6,6 +6,7 @@ import type { BaseListBoxProps } from "./registerListBox";
 import type { BaseListBoxItem } from "./registerListBoxItem";
 import type { BasePopover } from "./registerPopover";
 import type { BaseSection } from "./registerSection";
+import { BaseSlider } from "./registerSlider";
 
 // We pass down context props via our own Plasmic*Context instead of directly
 // using react-aria-component's *Context, because react-aria-component's
@@ -13,6 +14,10 @@ import type { BaseSection } from "./registerSection";
 // a context provider, it will just be overwritten by react-aria-component's
 // context provider.  So we do the merging within our own Base* components
 // instead.
+
+export const PlasmicSliderContext = React.createContext<
+  React.ComponentProps<typeof BaseSlider> | undefined
+>(undefined);
 
 export const PlasmicLabelContext = React.createContext<
   React.ComponentProps<typeof BaseLabel> | undefined

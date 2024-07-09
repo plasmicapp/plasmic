@@ -12,6 +12,7 @@ import { registerPopover } from "./registerPopover";
 import { registerRadioGroup } from "./registerRadioGroup";
 import { registerSection } from "./registerSection";
 import { registerSelect } from "./registerSelect";
+import { registerSlider } from "./registerSlider";
 import { registerSwitch } from "./registerSwitch";
 import { registerTextField } from "./registerTextField";
 import { registerTooltip } from "./registerTooltip";
@@ -35,4 +36,5 @@ export function registerAll(loader?: Registerable) {
   registerModal(loader);
   registerTooltip(loader);
   registerDialogTrigger(loader);
+  registerSlider(loader);
 }
