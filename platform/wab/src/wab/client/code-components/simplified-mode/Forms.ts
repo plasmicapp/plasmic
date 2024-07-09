@@ -1,18 +1,13 @@
 import { getComponentPropTypes } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { assert, ensure } from "@/wab/shared/common";
 import { unwrap } from "@/wab/commons/failable-utils";
+import { getSingleTplComponentFromArg } from "@/wab/shared/SlotUtils";
+import { unsetTplComponentArg } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
 import {
-  clone as cloneExpr,
-  codeLit,
-  deserCompositeExprMaybe,
-  ExprCtx,
-  isRealCodeExpr,
-  mergeUserMinimalValueWithCompositeExpr,
-  serCompositeExprMaybe,
-  tryExtractJson,
-} from "@/wab/shared/core/exprs";
-import { walkDependencyTree } from "@/wab/shared/core/project-deps";
+  ensureBaseVariantSetting,
+  getBaseVariant,
+} from "@/wab/shared/Variants";
 import {
   elementSchemaToTpl,
   isPlainObjectPropType,
@@ -22,26 +17,21 @@ import {
   createLabelRenderExprFromFormItem,
   inputTypeToElementSchema,
 } from "@/wab/shared/code-components/simplified-mode/Forms";
+import { assert, ensure } from "@/wab/shared/common";
 import {
-  Arg,
-  Expr,
-  isKnownDataSourceOpExpr,
-  isKnownExpr,
-  isKnownRenderExpr,
-  Param,
-  TplComponent,
-  TplNode,
-  VariantSetting,
-} from "@/wab/shared/model/classes";
-import { getSingleTplComponentFromArg } from "@/wab/shared/SlotUtils";
-import { unsetTplComponentArg } from "@/wab/shared/TplMgr";
-import { $$$ } from "@/wab/shared/TplQuery";
-import {
-  ensureBaseVariantSetting,
-  getBaseVariant,
-} from "@/wab/shared/Variants";
+  ExprCtx,
+  clone as cloneExpr,
+  codeLit,
+  deserCompositeExprMaybe,
+  isRealCodeExpr,
+  mergeUserMinimalValueWithCompositeExpr,
+  serCompositeExprMaybe,
+  tryExtractJson,
+} from "@/wab/shared/core/exprs";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import {
+  TplCodeComponent,
   clone as cloneTpl,
   findFirstTextBlockInBaseVariant,
   getParamVariable,
@@ -50,18 +40,28 @@ import {
   isTplComponent,
   mkTplComponent,
   tplChildren,
-  TplCodeComponent,
 } from "@/wab/shared/core/tpls";
+import {
+  Arg,
+  Expr,
+  Param,
+  TplComponent,
+  TplNode,
+  VariantSetting,
+  isKnownDataSourceOpExpr,
+  isKnownExpr,
+  isKnownRenderExpr,
+} from "@/wab/shared/model/classes";
 import { CodeComponentMode } from "@plasmicapp/host";
 import { NormalizedData } from "@plasmicapp/react-web/lib/data-sources";
 import {
+  InputType,
+  SimplifiedFormItemsProp,
   buttonComponentName,
   componentNameToInputType,
   deriveFormFieldConfigs,
   formItemComponentName,
-  InputType,
   inputTypeToComponentName as inputTypeToAntdComponentName,
-  SimplifiedFormItemsProp,
 } from "@plasmicpkgs/antd5";
 
 type FormItemProps = {
@@ -371,8 +371,7 @@ const extractFormItemsFromSchemaForm = (
     `"${DATA_FORMS_ITEM_PROP}" prop type should be an array`
   );
 
-  const { componentPropValues } =
-    viewCtx.getComponentPropValuesAndContextData(tpl);
+  const { componentPropValues } = viewCtx.getComponentEvalContext(tpl);
   const env = viewCtx.getCanvasEnvForTpl(tpl);
   const dataFormsItemsArg = baseVs.args.find(
     (arg) => arg.param.variable.name === DATA_FORMS_ITEM_PROP

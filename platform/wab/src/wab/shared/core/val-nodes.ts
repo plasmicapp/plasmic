@@ -311,6 +311,12 @@ export class ValTextTag extends ValTag {
   declare readonly text: RichText | undefined;
 }
 
+export interface ComponentEvalContext {
+  componentPropValues: Record<string, any>;
+  ccContextData: any;
+  invalidArgs: InvalidArgMeta[];
+}
+
 export function cloneValNode<T extends ValNode>(valNode: T): T {
   const commonParams = {
     className: valNode.className,
@@ -705,4 +711,10 @@ export function slotContentValNodeOrReactElement(
   child: ValNode | React.ReactElement
 ) {
   return child;
+}
+
+export function getInvalidArgErrorMessage(invalidArg: InvalidArgMeta) {
+  return invalidArg.validationType === ValidationType.Required
+    ? "Required"
+    : invalidArg.message ?? "Invalid Value";
 }

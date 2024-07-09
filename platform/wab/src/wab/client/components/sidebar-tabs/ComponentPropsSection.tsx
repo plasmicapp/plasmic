@@ -10,21 +10,21 @@ import {
   InitialMode,
 } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import {
-  isPropShown,
   PropEditorRowWrapper,
+  isPropShown,
 } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import ActionChip from "@/wab/client/components/sidebar-tabs/StateManagement/ActionChip";
 import HandlerSection from "@/wab/client/components/sidebar-tabs/StateManagement/HandlerSection";
 import VariableEditingForm from "@/wab/client/components/sidebar-tabs/StateManagement/VariableEditingForm";
 import { mkInitialState } from "@/wab/client/components/sidebar-tabs/StateManagement/VariablesSection";
 import { createNodeIcon } from "@/wab/client/components/sidebar-tabs/tpl-tree";
+import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
   LabeledItem,
   NamedPanelHeader,
   ValueSetState,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
-import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
-import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
 import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
 import StyleSwitch from "@/wab/client/components/style-controls/StyleSwitch";
@@ -47,6 +47,16 @@ import {
 } from "@/wab/client/state-management/preview-steps";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { VARIABLE_LOWER } from "@/wab/shared/Labels";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { flattenComponent } from "@/wab/shared/cached-selectors";
+import {
+  HighlightInteractionRequest,
+  StudioPropType,
+  isAdvancedProp,
+} from "@/wab/shared/code-components/code-components";
+import { getExportedComponentName } from "@/wab/shared/codegen/react-p/utils";
+import { paramToVarName } from "@/wab/shared/codegen/util";
 import { assert, ensure, hackyCast, maybe, spawn } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
@@ -56,45 +66,15 @@ import {
   isPlumeComponent,
 } from "@/wab/shared/core/components";
 import {
-  createExprForDataPickerValue,
   ExprCtx,
+  createExprForDataPickerValue,
   extractValueSavedFromDataPicker,
 } from "@/wab/shared/core/exprs";
 import { ComponentPropOrigin } from "@/wab/shared/core/lang";
 import {
-  HighlightInteractionRequest,
-  isAdvancedProp,
-  StudioPropType,
-} from "@/wab/shared/code-components/code-components";
-import { getExportedComponentName } from "@/wab/shared/codegen/react-p/utils";
-import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
-import { VARIABLE_LOWER } from "@/wab/shared/Labels";
-import {
-  Component,
-  CustomCode,
-  ensureKnownFunctionType,
-  EventHandler,
-  Expr,
-  FunctionExpr,
-  Interaction,
-  isKnownClassNamePropType,
-  isKnownEventHandler,
-  isKnownFunctionType,
-  ObjectPath,
-  Param,
-  State,
-  TplComponent,
-  TplRef,
-  TplTag,
-} from "@/wab/shared/model/classes";
-import { wabToTsType } from "@/wab/shared/model/model-util";
-import { isValidJavaScriptCode } from "@/wab/shared/parser-utils";
-import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
-import { TplMgr } from "@/wab/shared/TplMgr";
-import {
+  StateVariableType,
   addComponentState,
   getStateVarName,
-  StateVariableType,
 } from "@/wab/shared/core/states";
 import {
   EventHandlerKeyType,
@@ -107,14 +87,34 @@ import {
   summarizeUnnamedTpl,
   tplHasRef,
 } from "@/wab/shared/core/tpls";
-import { Dropdown, Input, Menu, notification, Tooltip } from "antd";
+import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
+import { DefinedIndicatorType } from "@/wab/shared/defined-indicator";
+import {
+  Component,
+  CustomCode,
+  EventHandler,
+  Expr,
+  FunctionExpr,
+  Interaction,
+  ObjectPath,
+  Param,
+  State,
+  TplComponent,
+  TplRef,
+  TplTag,
+  ensureKnownFunctionType,
+  isKnownClassNamePropType,
+  isKnownEventHandler,
+  isKnownFunctionType,
+} from "@/wab/shared/model/classes";
+import { wabToTsType } from "@/wab/shared/model/model-util";
+import { isValidJavaScriptCode } from "@/wab/shared/parser-utils";
+import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
+import { Dropdown, Input, Menu, Tooltip, notification } from "antd";
 import L, { defer, isArray, sortBy } from "lodash";
 import { autorun } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
-import { flattenComponent } from "@/wab/shared/cached-selectors";
-import { paramToVarName } from "@/wab/shared/codegen/util";
-import { DefinedIndicatorType } from "@/wab/shared/defined-indicator";
 
 export const ComponentPropsSection = observer(
   function ComponentPropsSection(props: {
@@ -148,7 +148,7 @@ export const ComponentPropsSection = observer(
     }
 
     const { componentPropValues, ccContextData } =
-      viewCtx.getComponentPropValuesAndContextData(tpl);
+      viewCtx.getComponentEvalContext(tpl);
     const propTypes = getComponentPropTypes(viewCtx, component);
 
     const maybeNormParam = (param: Param) => {

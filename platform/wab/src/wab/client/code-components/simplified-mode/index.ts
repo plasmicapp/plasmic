@@ -1,10 +1,10 @@
 import { updateFormComponentMode } from "@/wab/client/code-components/simplified-mode/Forms";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
 import { assert } from "@/wab/shared/common";
 import { codeLit } from "@/wab/shared/core/exprs";
-import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
-import { Param, TplComponent } from "@/wab/shared/model/classes";
 import { isTplCodeComponent } from "@/wab/shared/core/tpls";
+import { Param, TplComponent } from "@/wab/shared/model/classes";
 import type { CodeComponentMode } from "@plasmicapp/host";
 import {
   executePlasmicDataOp,
@@ -24,8 +24,7 @@ export async function updateComponentMode(
     assert(isTplCodeComponent(tpl), "tpl form should be a tpl code component");
     // We need to execute the plasmic data operation here because the viewCtx.change function
     // should be synchronous.
-    const { componentPropValues } =
-      viewCtx.getComponentPropValuesAndContextData(tpl);
+    const { componentPropValues } = viewCtx.getComponentEvalContext(tpl);
     const dataOp = componentPropValues.data;
     const maybeRawData = dataOp
       ? await executePlasmicDataOp(dataOp)

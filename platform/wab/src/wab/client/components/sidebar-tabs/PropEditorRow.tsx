@@ -13,6 +13,8 @@ import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { getInputTagType } from "@/wab/client/components/sidebar-tabs/HTMLAttributesSection";
 import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
+import WarningIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__WarningTrianglesvg";
+
 import {
   getValueSetState,
   InvariantablePropTooltip,
@@ -28,6 +30,21 @@ import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
+import { HighlightBlinker } from "@/wab/commons/components/HighlightBlinker";
+import { DeepReadonly } from "@/wab/commons/types";
+import { getLinkedCodeProps } from "@/wab/shared/cached-selectors";
+import {
+  ensurePropTypeToWabType,
+  getPropTypeLayout,
+  getPropTypeType,
+  isAllowedDefaultExprForPropType,
+  isDynamicValueDisabledInPropType,
+  isExprValuePropType,
+  isPlainObjectPropType,
+  maybePropTypeToAbout,
+  StudioPropType,
+  wabTypeToPropType,
+} from "@/wab/shared/code-components/code-components";
 import {
   assert,
   ensure,
@@ -42,8 +59,7 @@ import {
   switchType,
   tuple,
 } from "@/wab/shared/common";
-import { HighlightBlinker } from "@/wab/commons/components/HighlightBlinker";
-import { DeepReadonly } from "@/wab/commons/types";
+import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
 import {
   extractParamsFromPagePath,
   getComponentDisplayName,
@@ -74,20 +90,16 @@ import {
   summarizeExpr,
   tryExtractLit,
 } from "@/wab/shared/core/exprs";
-import { getLinkedCodeProps } from "@/wab/shared/cached-selectors";
 import {
-  ensurePropTypeToWabType,
-  getPropTypeLayout,
-  getPropTypeType,
-  isAllowedDefaultExprForPropType,
-  isDynamicValueDisabledInPropType,
-  isExprValuePropType,
-  isPlainObjectPropType,
-  maybePropTypeToAbout,
-  StudioPropType,
-  wabTypeToPropType,
-} from "@/wab/shared/code-components/code-components";
-import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
+  getTplTextBlockContent,
+  isTplRawString,
+  isTplTag,
+  TplTagCodeGenType,
+} from "@/wab/shared/core/tpls";
+import {
+  getInvalidArgErrorMessage,
+  InvalidArgMeta,
+} from "@/wab/shared/core/val-nodes";
 import {
   computeDefinedIndicator,
   DefinedIndicatorType,
@@ -142,13 +154,7 @@ import { getTplComponentArg, unsetTplComponentArg } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { isBaseVariant } from "@/wab/shared/Variants";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
-import {
-  getTplTextBlockContent,
-  isTplRawString,
-  isTplTag,
-  TplTagCodeGenType,
-} from "@/wab/shared/core/tpls";
-import { Menu } from "antd";
+import { Menu, Tooltip } from "antd";
 import { capitalize, isString, keyBy } from "lodash";
 import { observer } from "mobx-react";
 import React, { useMemo } from "react";
@@ -159,8 +165,9 @@ export interface ControlExtras {
 }
 
 interface PropEditorContextData {
-  componentPropValues: any;
+  componentPropValues: Record<string, any>;
   ccContextData: any;
+  invalidArg?: InvalidArgMeta;
   tpl?: TplTag | TplComponent;
   viewCtx?: ViewCtx;
   env: { [key: string]: any } | undefined;
@@ -438,8 +445,8 @@ function PropEditorRowWrapper_(props: {
     tpl,
     param
   );
-  const { componentPropValues, ccContextData } =
-    viewCtx.getComponentPropValuesAndContextData(tpl, param);
+  const { componentPropValues, ccContextData, invalidArgs } =
+    viewCtx.getComponentEvalContext(tpl, param);
   const controlExtras: ControlExtras = { path: [param.variable.name] };
   if (
     isPlainObjectPropType(propType) &&
@@ -530,6 +537,7 @@ function PropEditorRowWrapper_(props: {
       tpl={tpl}
       componentPropValues={componentPropValues}
       ccContextData={ccContextData}
+      invalidArg={invalidArgs.find((invalidArg) => invalidArg.param === param)}
     />
   );
 }
@@ -611,6 +619,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
   const {
     componentPropValues,
     ccContextData,
+    invalidArg,
     env: origCanvasEnv,
     tpl,
     viewCtx,
@@ -933,6 +942,13 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
             exprCtx,
           }}
         >
+          {invalidArg && (
+            <div className="invalid-arg-icon">
+              <Tooltip title={getInvalidArgErrorMessage(invalidArg)}>
+                <WarningIcon />
+              </Tooltip>
+            </div>
+          )}
           <LabeledItemRow
             data-test-id={`prop-editor-row-${attr ?? label}`}
             label={
@@ -1314,13 +1330,31 @@ function PropEditorRow_(
     schema?: DataPickerTypesSchema;
     componentPropValues?: Record<string, any>;
     ccContextData?: any;
+    invalidArg?: InvalidArgMeta;
   }
 ) {
   const { tpl, viewCtx, ...rest } = props;
-  const { componentPropValues, ccContextData } =
-    !!props.componentPropValues || !!props.ccContextData
-      ? props
-      : viewCtx.getComponentPropValuesAndContextData(tpl);
+  const getCurrentComponentEvalContext = () => {
+    if (
+      !!props.componentPropValues ||
+      !!props.ccContextData ||
+      !!props.invalidArg
+    ) {
+      return props;
+    }
+    const { componentPropValues, ccContextData, invalidArgs } =
+      viewCtx.getComponentEvalContext(tpl);
+    const invalidArg = invalidArgs.find(
+      (arg) => arg.param.variable.name === rest.attr
+    );
+    return {
+      componentPropValues,
+      ccContextData,
+      invalidArg,
+    };
+  };
+  const { componentPropValues, ccContextData, invalidArg } =
+    getCurrentComponentEvalContext();
   const env = !props.env ? viewCtx.getCanvasEnvForTpl(tpl) : props.env;
   const schema = !props.schema ? viewCtx.customFunctionsSchema() : props.schema;
 
@@ -1329,8 +1363,9 @@ function PropEditorRow_(
       value={{
         tpl,
         viewCtx,
-        componentPropValues,
+        componentPropValues: componentPropValues ?? {},
         ccContextData,
+        invalidArg,
         env,
         schema,
       }}

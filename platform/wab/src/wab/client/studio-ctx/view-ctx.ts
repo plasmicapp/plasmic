@@ -1,12 +1,12 @@
-import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
+import { Adoptee, InsertionSpec } from "@/wab/client/Dnd";
 import { RunFn } from "@/wab/client/components/canvas/CanvasText";
+import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import "@/wab/client/components/canvas/slate";
 import { ViewOps } from "@/wab/client/components/canvas/view-ops";
 import { makeClientPinManager } from "@/wab/client/components/variants/ClientPinManager";
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
 import { DevCliSvrEvaluator } from "@/wab/client/cseval";
 import { WithDbCtx } from "@/wab/client/db";
-import { Adoptee, InsertionSpec } from "@/wab/client/Dnd";
 import { Fiber } from "@/wab/client/react-global-hook/fiber";
 import {
   getMostRecentFiberVersion,
@@ -14,15 +14,28 @@ import {
   mkFrameValKeyToContextDataKey,
 } from "@/wab/client/react-global-hook/globalHook";
 import { requestIdleCallbackAsync } from "@/wab/client/requestidlecallback";
-import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
 import {
   FreestyleState,
   PointerState,
   StudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
+import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
 import { trackEvent } from "@/wab/client/tracking";
 import { ViewStateSnapshot } from "@/wab/client/undo-log";
+import { drainQueue } from "@/wab/commons/asyncutil";
+import { safeCallbackify } from "@/wab/commons/control";
+import { getArenaFrames } from "@/wab/shared/Arenas";
+import { RSH } from "@/wab/shared/RuleSetHelpers";
+import { getAncestorSlotArg } from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
+import { isBaseVariant } from "@/wab/shared/Variants";
+import {
+  allCustomFunctions,
+  getLinkedCodeProps,
+} from "@/wab/shared/cached-selectors";
+import { customFunctionId } from "@/wab/shared/code-components/code-components";
 import {
   arrayEq,
   assert,
@@ -39,32 +52,51 @@ import {
   tuple,
   withoutNils,
 } from "@/wab/shared/common";
-import { drainQueue } from "@/wab/commons/asyncutil";
-import { safeCallbackify } from "@/wab/commons/control";
-import {
-  CodeComponent,
-  isCodeComponent,
-  isFrameComponent,
-} from "@/wab/shared/core/components";
-import { DEVFLAGS } from "@/wab/shared/devflags";
-import { getRawCode } from "@/wab/shared/core/exprs";
-import { Pt, rectsIntersect } from "@/wab/shared/geom";
-import { metaSvc } from "@/wab/shared/core/metas";
-import { Selectable, SQ } from "@/wab/shared/core/selection";
-import { getArenaFrames } from "@/wab/shared/Arenas";
-import { customFunctionId } from "@/wab/shared/code-components/code-components";
 import {
   ComponentVariantFrame,
   GlobalVariantFrame,
   RootComponentVariantFrame,
   TransientComponentVariantFrame,
 } from "@/wab/shared/component-frame";
+import {
+  CodeComponent,
+  isCodeComponent,
+  isFrameComponent,
+} from "@/wab/shared/core/components";
+import { getRawCode } from "@/wab/shared/core/exprs";
+import { metaSvc } from "@/wab/shared/core/metas";
+import { SQ, Selectable } from "@/wab/shared/core/selection";
+import { isTplAttachedToSite } from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import {
+  StateVariableType,
+  getStateOnChangePropName,
+  getStateValuePropName,
+  getStateVarName,
+} from "@/wab/shared/core/states";
+import * as Tpls from "@/wab/shared/core/tpls";
+import { RawTextLike } from "@/wab/shared/core/tpls";
+import {
+  ComponentEvalContext,
+  ValComponent,
+  ValNode,
+  ValTag,
+  ValTextTag,
+  bestValForTpl,
+} from "@/wab/shared/core/val-nodes";
+import {
+  asTpl,
+  asVal,
+  isValSelectable,
+  tplFromSelectable,
+} from "@/wab/shared/core/vals";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { CanvasEnv, evalCodeWithEnv } from "@/wab/shared/eval";
+import { Pt, rectsIntersect } from "@/wab/shared/geom";
 import {
   ArenaFrame,
   Component,
   CustomFunction,
-  isKnownTplComponent,
   Param,
   RawText,
   RichText,
@@ -75,31 +107,9 @@ import {
   TplTag,
   Variant,
   VariantSetting,
+  isKnownTplComponent,
 } from "@/wab/shared/model/classes";
-import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { isTplResizable } from "@/wab/shared/sizingutils";
-import { getAncestorSlotArg } from "@/wab/shared/SlotUtils";
-import { $$$ } from "@/wab/shared/TplQuery";
-import { isBaseVariant } from "@/wab/shared/Variants";
-import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
-import { isTplAttachedToSite } from "@/wab/shared/core/sites";
-import { SlotSelection } from "@/wab/shared/core/slots";
-import {
-  getStateOnChangePropName,
-  getStateValuePropName,
-  getStateVarName,
-  StateVariableType,
-} from "@/wab/shared/core/states";
-import * as Tpls from "@/wab/shared/core/tpls";
-import { RawTextLike } from "@/wab/shared/core/tpls";
-import {
-  bestValForTpl,
-  ValComponent,
-  ValNode,
-  ValTag,
-  ValTextTag,
-} from "@/wab/shared/core/val-nodes";
-import { asTpl, asVal, isValSelectable, tplFromSelectable } from "@/wab/shared/core/vals";
 import {
   generateStateOnChangeProp,
   generateStateValueProp,
@@ -114,10 +124,6 @@ import { computedFn } from "mobx-utils";
 import * as React from "react";
 import { CSSProperties } from "react";
 import type { Editor as SlateEditor } from "slate";
-import {
-  allCustomFunctions,
-  getLinkedCodeProps,
-} from "@/wab/shared/cached-selectors";
 
 export class ViewMode {
   static live: ViewMode;
@@ -1215,10 +1221,10 @@ export class ViewCtx extends WithDbCtx {
     return plainCanvasEnv;
   };
 
-  getComponentPropValuesAndContextData(
+  getComponentEvalContext(
     tpl: TplTag | TplComponent,
     param?: Param
-  ) {
+  ): ComponentEvalContext {
     const linkedProps = isKnownTplComponent(tpl)
       ? getLinkedCodeProps(tpl.component)
       : undefined;
@@ -1226,18 +1232,20 @@ export class ViewCtx extends WithDbCtx {
       ? linkedProps?.get(param.variable.name)
       : undefined;
     const actualTpl = maybeLinkedProp ? maybeLinkedProp[0] : tpl;
-    const valComp = this.maybeTpl2ValsInContext(actualTpl, {
+    const valComps = this.maybeTpl2ValsInContext(actualTpl, {
       allowAnyContext: true,
     });
-    if (valComp && valComp[0] instanceof ValComponent) {
+    if (valComps && valComps[0] instanceof ValComponent) {
+      const valComp = valComps[0];
       return {
-        componentPropValues:
-          (valComp[0] as ValComponent).codeComponentProps ?? {},
-        ccContextData: this.getContextData(valComp[0] as ValComponent) ?? null,
+        componentPropValues: valComp.codeComponentProps ?? {},
+        invalidArgs: valComp.invalidArgs ?? [],
+        ccContextData: this.getContextData(valComp) ?? null,
       };
     }
     return {
       componentPropValues: {},
+      invalidArgs: [],
       ccContextData: undefined,
     };
   }

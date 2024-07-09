@@ -12,8 +12,6 @@ import {
   providesStyleComponent,
 } from "@/wab/client/components/style-controls/StyleComponent";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { hackyCast } from "@/wab/shared/common";
-import { getComponentDisplayName } from "@/wab/shared/core/components";
 import {
   getAncestorTplSlot,
   getSingleTextBlockFromArg,
@@ -22,7 +20,9 @@ import {
 } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { isPlainObjectPropType } from "@/wab/shared/code-components/code-components";
+import { hackyCast } from "@/wab/shared/common";
 import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { TplComponent } from "@/wab/shared/model/classes";
 import { smartHumanize } from "@/wab/shared/strs";
 import { observer } from "mobx-react";
@@ -95,7 +95,7 @@ export const MergedSlotsPropsSection = observer(
 
     const propTypes = getComponentPropTypes(viewCtx, tpl.component);
     const { componentPropValues, ccContextData } =
-      viewCtx.getComponentPropValuesAndContextData(tpl);
+      viewCtx.getComponentEvalContext(tpl);
 
     const slotParams = getSlotParams(tpl.component).filter((p) => {
       if (!p.mergeWithParent || !(p.variable.name in propTypes)) {

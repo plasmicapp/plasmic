@@ -5,31 +5,26 @@ import WarningIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Warni
 import { globalHookCtx } from "@/wab/client/react-global-hook/globalHook";
 import { RightTabKey, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { AnyArena } from "@/wab/shared/Arenas";
+import { maybePropTypeToDisplayName } from "@/wab/shared/code-components/code-components";
 import { assert } from "@/wab/shared/common";
 import {
   CodeComponent,
   getComponentDisplayName,
   isCodeComponent,
 } from "@/wab/shared/core/components";
-import { AnyArena } from "@/wab/shared/Arenas";
-import { maybePropTypeToDisplayName } from "@/wab/shared/code-components/code-components";
-import { ArenaFrame } from "@/wab/shared/model/classes";
 import {
   InvalidArgMeta,
   ValComponent,
-  ValidationType,
   flattenVals,
+  getInvalidArgErrorMessage,
   isValComponent,
 } from "@/wab/shared/core/val-nodes";
+import { ArenaFrame } from "@/wab/shared/model/classes";
 import { Tooltip } from "antd";
 import $ from "jquery";
 import { observer } from "mobx-react";
 import React from "react";
-
-const getErrorMessage = (invalidArg: InvalidArgMeta) =>
-  invalidArg.validationType === ValidationType.Required
-    ? "Required"
-    : invalidArg.message ?? "Invalid Value";
 
 const TooltipMessage = ({
   component,
@@ -51,7 +46,7 @@ const TooltipMessage = ({
               component._meta.props[invalidArg.param.variable.name]
             )) ??
             invalidArg.param.variable.name}
-          : {getErrorMessage(invalidArg)}
+          : {getInvalidArgErrorMessage(invalidArg)}
         </li>
       ))}
     </ul>

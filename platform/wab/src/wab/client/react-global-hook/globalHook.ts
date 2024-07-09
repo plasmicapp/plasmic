@@ -628,7 +628,8 @@ if (officialHook) {
                         return undefined;
                       }
                       if (
-                        hackyCast(propType).required &&
+                        "required" in propType &&
+                        propType.required &&
                         valNode.codeComponentProps[p.variable.name] == null
                       ) {
                         return {
@@ -636,7 +637,7 @@ if (officialHook) {
                           validationType: ValidationType.Required,
                         };
                       }
-                      if (hackyCast(propType).validator) {
+                      if ("validator" in propType && propType.validator) {
                         const res = hackyCast(propType).validator(
                           valNode.codeComponentProps[p.variable.name],
                           valNode.codeComponentProps,

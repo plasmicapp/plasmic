@@ -1,23 +1,31 @@
 import { ControlExtras } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import { PlasmicDataPickerColumnItem__VariantMembers } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerColumnItem";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { getAncestorTplSlot } from "@/wab/shared/SlotUtils";
+import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
+import { toVarName } from "@/wab/shared/codegen/util";
 import { assert, ensure, isNonNil, isPrefixArray } from "@/wab/shared/common";
+import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
 import {
   getRealParams,
   isCodeComponent,
   isPlumeComponent,
 } from "@/wab/shared/core/components";
-import { alwaysOmitKeys, flattenedKeys, omittedKeysIfEmpty } from "@/wab/shared/core/exprs";
-import { toVarName } from "@/wab/shared/codegen/util";
-import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
+import {
+  alwaysOmitKeys,
+  flattenedKeys,
+  omittedKeysIfEmpty,
+} from "@/wab/shared/core/exprs";
+import { findStateIn$State } from "@/wab/shared/core/states";
+import { isTplComponent } from "@/wab/shared/core/tpls";
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
 import {
   Component,
-  isKnownNamedState,
   State,
   TplNode,
   VariantGroup,
+  isKnownNamedState,
 } from "@/wab/shared/model/classes";
 import {
   UNINITIALIZED_BOOLEAN,
@@ -26,10 +34,6 @@ import {
   UNINITIALIZED_STRING,
 } from "@/wab/shared/model/model-util";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
-import { getAncestorTplSlot } from "@/wab/shared/SlotUtils";
-import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
-import { findStateIn$State } from "@/wab/shared/core/states";
-import { isTplComponent } from "@/wab/shared/core/tpls";
 import { DataMeta, mkMetaName } from "@plasmicapp/host";
 import { isArray, isPlainObject, partition } from "lodash";
 
@@ -336,7 +340,7 @@ export function getContextDependentValuesForImplicitState(
     return { hidden: false, advanced: false };
   }
   const { componentPropValues, ccContextData } =
-    viewCtx.getComponentPropValuesAndContextData(state.tplNode);
+    viewCtx.getComponentEvalContext(state.tplNode);
   const controlExtras: ControlExtras = {
     path: [state.implicitState.name],
   };

@@ -46,6 +46,18 @@ import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { ColorButton } from "@/wab/client/components/style-controls/ColorButton";
 import { extractDataCtx } from "@/wab/client/state-management/interactions-meta";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { mkTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
+import { unwrap } from "@/wab/commons/failable-utils";
+import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
+import { siteToAllTokensDict } from "@/wab/shared/cached-selectors";
+import {
+  StudioPropType,
+  getPropTypeType,
+  isCustomControlType,
+  isPlainObjectPropType,
+  propTypeToWabType,
+  wabTypeToPropType,
+} from "@/wab/shared/code-components/code-components";
 import {
   assert,
   ensure,
@@ -55,15 +67,14 @@ import {
   mkShortId,
   uncheckedCast,
 } from "@/wab/shared/common";
-import { unwrap } from "@/wab/commons/failable-utils";
-import { mkTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
+import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
 import {
+  ExprCtx,
   asCode,
   clone,
   codeLit,
   createExprForDataPickerValue,
   deserCompositeExprMaybe,
-  ExprCtx,
   getRawCode,
   isRealCodeExpr,
   isRealCodeExprEnsuringType,
@@ -72,28 +83,29 @@ import {
   tryExtractJson,
 } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
-import { siteToAllTokensDict } from "@/wab/shared/cached-selectors";
 import {
-  getPropTypeType,
-  isCustomControlType,
-  isPlainObjectPropType,
-  propTypeToWabType,
-  StudioPropType,
-  wabTypeToPropType,
-} from "@/wab/shared/code-components/code-components";
-import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
+  getDisplayNameOfEventHandlerKey,
+  isTplComponent,
+} from "@/wab/shared/core/tpls";
 import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { CanvasEnv, tryEvalExpr } from "@/wab/shared/eval";
 import {
   CollectionExpr,
   Component,
-  ensureKnownCollectionExpr,
-  ensureKnownFunctionType,
-  ensureKnownVariantsRef,
-  ensureKnownVarRef,
   Expr,
   FunctionArg,
   ImageAssetRef,
+  PageHref,
+  StrongFunctionArg,
+  StyleTokenRef,
+  TplComponent,
+  VarRef,
+  Variant,
+  VariantsRef,
+  ensureKnownCollectionExpr,
+  ensureKnownFunctionType,
+  ensureKnownVarRef,
+  ensureKnownVariantsRef,
   isKnownDataSourceOpExpr,
   isKnownEventHandler,
   isKnownExpr,
@@ -107,18 +119,9 @@ import {
   isKnownTplComponent,
   isKnownTplRef,
   isKnownTplTag,
-  PageHref,
-  StrongFunctionArg,
-  StyleTokenRef,
-  TplComponent,
-  Variant,
-  VariantsRef,
-  VarRef,
 } from "@/wab/shared/model/classes";
 import { typesEqual } from "@/wab/shared/model/model-util";
-import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { smartHumanize } from "@/wab/shared/strs";
-import { getDisplayNameOfEventHandlerKey, isTplComponent } from "@/wab/shared/core/tpls";
 import { ContextDependentConfig } from "@plasmicapp/host";
 import L, { isNil, isNumber } from "lodash";
 import { observer } from "mobx-react";
@@ -506,8 +509,9 @@ const PropValueEditor_ = (
     assert(functionType, "function type not found");
     const args = value ? ensureKnownCollectionExpr(value) : undefined;
 
-    let innerComponentPropValues = componentPropValues;
-    let innerCcContextData = ccContextData;
+    let innerComponentPropValues: Record<string, any> | undefined =
+      componentPropValues;
+    let innerCcContextData: any = ccContextData;
 
     if (propType.forExternal) {
       innerCcContextData = undefined;
@@ -521,7 +525,7 @@ const PropValueEditor_ = (
       ({
         componentPropValues: innerComponentPropValues,
         ccContextData: innerCcContextData,
-      } = viewCtx.getComponentPropValuesAndContextData(targetTpl));
+      } = viewCtx.getComponentEvalContext(targetTpl));
     }
     return (
       <>
