@@ -29,22 +29,22 @@ import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import { Shortcut } from "@/wab/client/shortcuts/shortcut";
 import { useBindShortcutHandlers } from "@/wab/client/shortcuts/shortcut-handler";
 import {
-  StudioShortcutAction,
   STUDIO_SHORTCUTS,
+  StudioShortcutAction,
 } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import {
   TopFrameTours,
   TopFrameTourState,
 } from "@/wab/client/tours/tutorials/TutorialTours";
-import { assert, asyncWrapper, mkUuid, spawn } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ApiBranch,
   ApiPermission,
   ApiProject,
   MergeSrcDst,
 } from "@/wab/shared/ApiSchema";
+import { assert, asyncWrapper, mkUuid, spawn } from "@/wab/shared/common";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { canEditUiConfig } from "@/wab/shared/ui-config-utils";
 import { message, notification } from "antd";
@@ -620,12 +620,12 @@ function validateNewLocation(
   if (UU.projectFullPreview.parse(previousLocation.pathname, false)) {
     assert(
       UU.projectFullPreview.parse(path, false),
-      "Cannot navigate from full preview mode to outside of it"
+      `Cannot navigate from full preview mode to outside of it, from ${previousLocation.pathname} to ${path}`
     );
   } else {
     assert(
       !UU.projectFullPreview.parse(path, false),
-      "Cannot navigate from studio to full preview mode"
+      `Cannot navigate from studio to full preview mode, from ${previousLocation.pathname} to ${path}`
     );
   }
 }
