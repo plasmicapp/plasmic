@@ -40,17 +40,36 @@ type WithObservedValues<T extends AriaInteractionVariant[]> = (
   updateInteractionVariant: UpdateInteractionVariant<T>
 ) => React.ReactNode;
 
-function realWithObservedValues<T extends AriaInteractionVariant[]>(
-  children: React.ReactNode,
-  changes: Partial<Record<ArrayElement<T>, boolean>>,
-  updateInteractionVariant?: UpdateInteractionVariant<T>
-) {
+function ChangesObserver<T extends AriaInteractionVariant[]>({
+  children,
+  changes,
+  updateInteractionVariant,
+}: {
+  children: React.ReactNode;
+  changes: Partial<Record<ArrayElement<T>, boolean>>;
+  updateInteractionVariant?: UpdateInteractionVariant<T>;
+}) {
   React.useEffect(() => {
     if (updateInteractionVariant) {
       updateInteractionVariant(changes);
     }
   }, [changes, updateInteractionVariant]);
   return children;
+}
+
+function realWithObservedValues<T extends AriaInteractionVariant[]>(
+  children: React.ReactNode,
+  changes: Partial<Record<ArrayElement<T>, boolean>>,
+  updateInteractionVariant?: UpdateInteractionVariant<T>
+) {
+  return (
+    <ChangesObserver
+      changes={changes}
+      updateInteractionVariant={updateInteractionVariant}
+    >
+      {children}
+    </ChangesObserver>
+  );
 }
 
 export function pickAriaComponentVariants<T extends AriaInteractionVariant[]>(
