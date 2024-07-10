@@ -5,11 +5,12 @@ This is a subset of code from:
 - packages/react-web/src/render/elements.ts
 - packages/react-web/src/render/global-variants.ts
 - packages/react-web/src/styles/plasmic.css
+- packages/react-web/render/triggers.ts
 
 @plasmicapp/react-web is still used in the exported code
 but this additional files are added to the project, so that
-it's possible to achieve functional screen variants without
-@plasmicapp/react-web dependency.
+it's possible to achieve functional screen or interaction variants
+without @plasmicapp/react-web dependency.
 */
 export const reactWebExportedFiles: ProjectConfig["reactWebExportedFiles"] = [
   {
@@ -258,6 +259,97 @@ export function createUseScreenVariants(
       return undefined;
     }
   };
+}
+`.trim(),
+  },
+  {
+    fileName: "triggers.ts",
+    content: `
+import * as React from "react";
+import { useFocusRing as useAriaFocusRing } from "@react-aria/focus";
+
+function useFocused(opts: { isTextInput?: boolean }) {
+  const { isFocused, focusProps } = useAriaFocusRing({
+    within: false,
+    isTextInput: opts.isTextInput,
+  });
+
+  return [isFocused, focusProps];
+}
+
+function useFocusVisible(opts: { isTextInput?: boolean }) {
+  const { isFocusVisible, focusProps } = useAriaFocusRing({
+    within: false,
+    isTextInput: opts.isTextInput,
+  });
+
+  return [isFocusVisible, focusProps];
+}
+
+function useFocusedWithin(opts: { isTextInput?: boolean }) {
+  const { isFocused, focusProps } = useAriaFocusRing({
+    within: true,
+    isTextInput: opts.isTextInput,
+  });
+
+  return [isFocused, focusProps];
+}
+
+function useFocusVisibleWithin(opts: { isTextInput?: boolean }) {
+  const { isFocusVisible, focusProps } = useAriaFocusRing({
+    within: true,
+    isTextInput: opts.isTextInput,
+  });
+
+  return [isFocusVisible, focusProps];
+}
+
+function useHover() {
+  const [isHover, setHover] = React.useState(false);
+  return [
+    isHover,
+    {
+      onMouseEnter: () => setHover(true),
+      onMouseLeave: () => setHover(false),
+    },
+  ];
+}
+
+function usePressed() {
+  const [isPressed, setPressed] = React.useState(false);
+  return [
+    isPressed,
+    {
+      onMouseDown: () => setPressed(true),
+      onMouseUp: () => setPressed(false),
+    },
+  ];
+}
+
+const TRIGGER_TO_HOOK = {
+  useHover,
+  useFocused,
+  useFocusVisible,
+  useFocusedWithin,
+  useFocusVisibleWithin,
+  usePressed,
+} as const;
+
+type TriggerType = keyof typeof TRIGGER_TO_HOOK;
+
+interface TriggerOpts {
+  isTextInput?: boolean;
+}
+
+/**
+  * Installs argment trigger. All the useTrigger calls must use hardcoded \`trigger\` arg,
+  * as it's not valid to install variable React hooks!
+  */
+export function useTrigger(trigger: TriggerType, opts: TriggerOpts) {
+  return TRIGGER_TO_HOOK[trigger](opts) as [
+    boolean,
+    React.HTMLAttributes<HTMLElement>
+  ];
 }
 `.trim(),
   },
