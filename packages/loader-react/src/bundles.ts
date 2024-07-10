@@ -88,6 +88,9 @@ export function prepComponentData(
   };
 }
 
+// It's important to deep clone any attributes that are going to be changed in the
+// target bundle, since the build of pages can be done in multiple stages/processes
+// we don't want to mutate the original bundle, which can impact other pages.
 export function mergeBundles(
   target: LoaderBundleOutput,
   from: LoaderBundleOutput
@@ -128,6 +131,11 @@ export function mergeBundles(
       ...target,
       components: [...target.components, ...newCompMetas],
     };
+
+    // Deep clone the filteredIds object to avoid mutating the original bundle
+    target.filteredIds = Object.fromEntries(
+      Object.entries(target.filteredIds).map(([k, v]) => [k, [...v]])
+    );
 
     from.projects.forEach((fromProject) => {
       const projectId = fromProject.id;

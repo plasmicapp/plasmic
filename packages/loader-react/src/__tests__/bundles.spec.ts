@@ -235,4 +235,30 @@ describe("mergeBundles", () => {
       )
     );
   });
+  it("should clone changed attributes", () => {
+    const targetBundle = genBundle(
+      "target",
+      [genProjectMeta("p1"), genProjectMeta("p2")],
+      [genComponentMeta("p1c1", "p1"), genComponentMeta("p2c1", "p2")],
+      { browser: [], server: [] },
+      {},
+      []
+    );
+    const fromBundle = genBundle(
+      "from",
+      [genProjectMeta("p1"), genProjectMeta("p3")],
+      [
+        genComponentMeta("p1c1", "p1"),
+        genComponentMeta("p1c2", "p1"), // This component was deleted
+        genComponentMeta("p3c1", "p3"),
+      ],
+      { browser: [], server: [] },
+      {},
+      []
+    );
+
+    const mergedBundle = mergeBundles(targetBundle, fromBundle);
+    expect(mergedBundle.components).not.toBe(targetBundle.components);
+    expect(mergedBundle.filteredIds).not.toBe(targetBundle.filteredIds);
+  });
 });
