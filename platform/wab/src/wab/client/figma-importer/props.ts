@@ -13,10 +13,16 @@ import {
   getParamByVarName,
   isCodeComponent,
 } from "@/wab/shared/core/components";
-import { Component, VariantsRef } from "@/wab/shared/model/classes";
-import { isBoolType, isNumType } from "@/wab/shared/model/model-util";
+import { code } from "@/wab/shared/core/exprs";
+import { Component, CustomCode, VariantsRef } from "@/wab/shared/model/classes";
+import {
+  isAnyType,
+  isBoolType,
+  isNumType,
+} from "@/wab/shared/model/model-util";
+import { CodeComponentMeta } from "@plasmicapp/host";
 import { notification } from "antd";
-import { isBoolean, isNumber, isObject, isString, omit } from "lodash";
+import { isArray, isBoolean, isNumber, isObject, isString, omit } from "lodash";
 
 function getChildComponentNameFromPropertyKey(
   allDescendants: InstanceNode[],
@@ -167,17 +173,21 @@ function getAllDescendants(inst: InstanceNode): InstanceNode[] {
   return descendants;
 }
 
-type ComponentPropsObject = Record<string, string | number | boolean>;
+type FigmaPropsTransform = CodeComponentMeta<any>["figmaPropsTransform"];
+type ComponentPropsObject = Parameters<NonNullable<FigmaPropsTransform>>[0];
+type ComponentPropsObjectExtended = ReturnType<
+  NonNullable<FigmaPropsTransform>
+>;
 
 function fromFigmaPropsToTplProps(
   component: Component,
-  figmaProps: ComponentPropsObject
-): Array<[string, VariantsRef | string | number | boolean]> {
+  figmaProps: ComponentPropsObjectExtended
+): Array<[string, VariantsRef | CustomCode | string | number | boolean]> {
   return withoutNils(
     Object.entries(figmaProps).map(([key, value]) => {
       const param = getParamByVarName(component, toVarName(key));
 
-      if (!param || isSlot(param) || !isJsonScalar(value)) {
+      if (!param || isSlot(param)) {
         return null;
       }
 
@@ -214,20 +224,31 @@ function fromFigmaPropsToTplProps(
       if (isBoolType(param.type)) {
         // We may have to convert a string value to a boolean as we may be mapping a variant
         // to a boolean prop
-        return isFigmaTrueishValue(value) ? [param.variable.name, true] : null;
+        return isJsonScalar(value) && isFigmaTrueishValue(value)
+          ? [param.variable.name, true]
+          : null;
       }
+
+      if (isAnyType(param.type) || isArray(value) || isObject(value)) {
+        // If the param we are dealing with is of any type or the value
+        // is an array or object, we will convert the value to a custom code
+        // This is because we want to ensure that the value passed is a valid
+        // scalar value
+        return [param.variable.name, code(JSON.stringify(value))];
+      }
+
       return [param.variable.name, value];
     })
   );
 }
 
-function safeTransformFigmaProps(
+function safeFigmaPropsTransform(
   component: Component,
-  transformFigmaProps: (props: ComponentPropsObject) => ComponentPropsObject,
+  figmaPropsTransform: FigmaPropsTransform,
   props: ComponentPropsObject
-): { props: ComponentPropsObject; success: true } | { success: false } {
+): { props: ComponentPropsObjectExtended; success: true } | { success: false } {
   try {
-    const transformedProps = transformFigmaProps(props);
+    const transformedProps = figmaPropsTransform?.(props);
     if (isObject(transformedProps)) {
       return {
         props: transformedProps,
@@ -251,11 +272,11 @@ function safeTransformFigmaProps(
   };
 }
 
-function maybeTransformFigmaProps(
+function maybeFigmaPropsTransform(
   studioCtx: StudioCtx,
   component: Component,
   figmaProps: ComponentPropertiesEntries
-): ComponentPropsObject {
+): ComponentPropsObjectExtended {
   const componentProps = Object.fromEntries(
     figmaProps.map(([key, prop]) => [key, prop.value])
   );
@@ -263,7 +284,7 @@ function maybeTransformFigmaProps(
   if (isCodeComponent(component)) {
     const meta = studioCtx.getCodeComponentMeta(component);
     if (meta && meta.figmaPropsTransform) {
-      const transformResult = safeTransformFigmaProps(
+      const transformResult = safeFigmaPropsTransform(
         component,
         meta.figmaPropsTransform,
         componentProps
@@ -288,6 +309,6 @@ export function fromFigmaComponentToTplProps(
 
   return fromFigmaPropsToTplProps(
     component,
-    maybeTransformFigmaProps(studioCtx, component, figmaProps)
+    maybeFigmaPropsTransform(studioCtx, component, figmaProps)
   );
 }

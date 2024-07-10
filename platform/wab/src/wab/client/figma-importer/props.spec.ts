@@ -4,6 +4,7 @@ import { fakeStudioCtx } from "@/wab/client/test/fake-init-ctx";
 import { mkComponentVariantGroup, mkVariant } from "@/wab/shared/Variants";
 import { hackyCast } from "@/wab/shared/common";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
+import { code } from "@/wab/shared/core/exprs";
 import { ParamExportType, mkParam, mkVar } from "@/wab/shared/core/lang";
 import { mkTplTagX } from "@/wab/shared/core/tpls";
 import { StateParam } from "@/wab/shared/model/classes";
@@ -131,6 +132,18 @@ function createFigmaTestData(getCodeComponentMeta: jest.FunctionLike) {
         paramType: "slot",
       }),
       TypeVariantParam,
+      mkParam({
+        name: "arrayParam",
+        type: typeFactory.any(),
+        exportType: ParamExportType.External,
+        paramType: "prop",
+      }),
+      mkParam({
+        name: "objectParam",
+        type: typeFactory.any(),
+        exportType: ParamExportType.External,
+        paramType: "prop",
+      }),
     ],
     variantGroups: [
       mkComponentVariantGroup({
@@ -216,6 +229,42 @@ describe("Figma importer slot handling", () => {
         Type: "ghost",
         "Exposed prop 1": "exposedProp1",
       });
+    });
+
+    it("should handle object and arrays", () => {
+      const anyTypeProps = {
+        arrayParam: ["value1", "value2"],
+        objectParam: {
+          key1: "value1",
+          key2: "value2",
+        },
+      };
+      const figmaPropsTransform = jest.fn().mockReturnValue(anyTypeProps);
+      const getCodeComponentMeta = jest.fn().mockReturnValue({
+        figmaPropsTransform,
+      });
+      const { studioCtx, component } =
+        createFigmaTestData(getCodeComponentMeta);
+      const node = {
+        type: "INSTANCE",
+        name: "Button",
+      } as Partial<InstanceNode> as InstanceNode;
+
+      expect(fromFigmaComponentToTplProps(studioCtx, component, node)).toEqual([
+        [
+          "arrayParam",
+          expect.objectContaining({
+            code: code(JSON.stringify(anyTypeProps.arrayParam)).code,
+          }),
+        ],
+        [
+          "objectParam",
+          expect.objectContaining({
+            code: code(JSON.stringify(anyTypeProps.objectParam)).code,
+          }),
+        ],
+      ]);
+      expect(getCodeComponentMeta).toHaveBeenCalledWith(component);
     });
   });
 });

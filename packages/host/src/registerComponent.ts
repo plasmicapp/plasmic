@@ -299,7 +299,10 @@ export interface CodeComponentMeta<P> {
    */
   figmaPropsTransform?: (
     props: Record<string, string | number | boolean>
-  ) => Record<string, string | number | boolean>;
+  ) => Record<
+    string,
+    string | number | boolean | unknown[] | Record<string, unknown>
+  >;
 
   /**
    * If true, when an instance of this component is added, the element
