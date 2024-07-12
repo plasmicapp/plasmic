@@ -1,37 +1,9 @@
 /** @format */
 
-import { Dict, mkIdMap, safeHas } from "@/wab/shared/collections";
-import {
-  assert,
-  assertNever,
-  assignAllowEmpty,
-  check,
-  ensure,
-  ensureString,
-  filterMapTruthy,
-  generate,
-  jsonClone,
-  last,
-  maybe,
-  maybeOne,
-  mergeSane,
-  mkShortId,
-  mkUuid,
-  only,
-  pairwise,
-  spawn,
-  strict,
-  tuple,
-  unexpected,
-  unreachable,
-  withoutNils,
-  xor,
-} from "@/wab/shared/common";
 import { sequentially } from "@/wab/commons/asyncutil";
 import { removeFromArray } from "@/wab/commons/collections";
 import * as semver from "@/wab/commons/semver";
 import { toOpaque } from "@/wab/commons/types";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { adminEmails } from "@/wab/server/admin";
 import { createSiteForHostlessProject } from "@/wab/server/code-components/code-components";
 import {
@@ -205,7 +177,40 @@ import {
 import { Bundler } from "@/wab/shared/bundler";
 import { getBundle } from "@/wab/shared/bundles";
 import { toVarName } from "@/wab/shared/codegen/util";
+import { Dict, mkIdMap, safeHas } from "@/wab/shared/collections";
+import {
+  assert,
+  assertNever,
+  assignAllowEmpty,
+  check,
+  ensure,
+  ensureString,
+  filterMapTruthy,
+  generate,
+  jsonClone,
+  last,
+  maybe,
+  maybeOne,
+  mergeSane,
+  mkShortId,
+  mkUuid,
+  only,
+  pairwise,
+  spawn,
+  strict,
+  tuple,
+  unexpected,
+  unreachable,
+  withoutNils,
+  xor,
+} from "@/wab/shared/common";
 import { DEFAULT_INSERTABLE } from "@/wab/shared/constants";
+import {
+  cloneSite,
+  fixAppAuthRefs,
+  getAllOpExprSourceIdsUsedInSite,
+} from "@/wab/shared/core/sites";
+import { SplitStatus } from "@/wab/shared/core/splits";
 import {
   DataSourceType,
   getDataSourceMeta,
@@ -213,6 +218,7 @@ import {
 import { OperationTemplate } from "@/wab/shared/data-sources-meta/data-sources";
 import { WebhookHeader } from "@/wab/shared/db-json-blobs";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { MIN_ACCESS_LEVEL_FOR_SUPPORT } from "@/wab/shared/discourse/config";
 import { LocalizationKeyScheme } from "@/wab/shared/localization";
 import {
@@ -239,12 +245,6 @@ import {
   compareVersionNumbers,
 } from "@/wab/shared/site-diffs";
 import { MergeStep, tryMerge } from "@/wab/shared/site-diffs/merge-core";
-import {
-  cloneSite,
-  fixAppAuthRefs,
-  getAllOpExprSourceIdsUsedInSite,
-} from "@/wab/shared/core/sites";
-import { SplitStatus } from "@/wab/shared/core/splits";
 import { captureMessage } from "@sentry/node";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
@@ -6047,13 +6047,11 @@ export class DbMgr implements MigrationDbMgr {
 
   async deleteTrustedHost(trustedHostId: string) {
     const trustedHost = await this.getTrustedHostById(trustedHostId);
-    const user = await this.getUserById(trustedHost.userId);
+    const _user = await this.getUserById(trustedHost.userId);
     checkPermissions(
       this.actor.type === "SuperUser" ||
         trustedHost.userId === this.checkNormalUser(),
-      `${await this.describeActor()} tried to edit trusted hosts list of ${
-        user.email
-      }`
+      `${await this.describeActor()} tried to edit trusted hosts list of another user`
     );
     Object.assign(trustedHost, this.stampDelete());
     await this.entMgr.save(trustedHost);
