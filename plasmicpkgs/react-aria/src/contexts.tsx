@@ -1,10 +1,13 @@
 import React from "react";
+import { BaseCheckboxGroup } from "./registerCheckboxGroup";
+import { BaseDialogTrigger } from "./registerDialogTrigger";
 import type { BaseHeader } from "./registerHeader";
 import type { BaseInput } from "./registerInput";
 import type { BaseLabel } from "./registerLabel";
 import type { BaseListBoxProps } from "./registerListBox";
 import type { BaseListBoxItem } from "./registerListBoxItem";
 import type { BasePopover } from "./registerPopover";
+import { BaseRadioGroup } from "./registerRadioGroup";
 import type { BaseSection } from "./registerSection";
 import { BaseSlider } from "./registerSlider";
 
@@ -14,6 +17,18 @@ import { BaseSlider } from "./registerSlider";
 // a context provider, it will just be overwritten by react-aria-component's
 // context provider.  So we do the merging within our own Base* components
 // instead.
+
+export const PlasmicCheckboxGroupContext = React.createContext<
+  React.ComponentProps<typeof BaseCheckboxGroup> | undefined
+>(undefined);
+
+export const PlasmicRadioGroupContext = React.createContext<
+  React.ComponentProps<typeof BaseRadioGroup> | undefined
+>(undefined);
+
+export const PlasmicDialogTriggerContext = React.createContext<
+  React.ComponentProps<typeof BaseDialogTrigger> | undefined
+>(undefined);
 
 export const PlasmicSliderContext = React.createContext<
   React.ComponentProps<typeof BaseSlider> | undefined

@@ -17,7 +17,7 @@ export function registerHeader(
   loader?: Registerable,
   overrides?: CodeComponentMetaOverrides<typeof BaseHeader>
 ) {
-  registerComponentHelper(
+  return registerComponentHelper(
     loader,
     BaseHeader,
     {
@@ -25,6 +25,10 @@ export function registerHeader(
       displayName: "Aria Header",
       importPath: "@plasmicpkgs/react-aria/skinny/registerHeader",
       importName: "BaseHeader",
+      defaultStyles: {
+        fontWeight: "bold",
+        fontSize: "20px",
+      },
       props: {},
     },
     overrides

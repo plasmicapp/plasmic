@@ -183,6 +183,22 @@ export function makeOptionsPropType() {
         label: "Option 2",
         type: "option",
       },
+      {
+        label: "Section 1",
+        type: "option-group",
+        items: [
+          {
+            id: "section-1-1",
+            label: "Section item 1",
+            type: "option",
+          },
+          {
+            id: "section-1-2",
+            label: "Section item 2",
+            type: "option",
+          },
+        ],
+      },
     ],
   };
   return type;

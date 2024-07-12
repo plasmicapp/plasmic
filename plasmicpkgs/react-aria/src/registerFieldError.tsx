@@ -38,19 +38,36 @@ export function BaseFieldError({
   return (
     <FieldError {...rest}>
       {({ validationDetails, validationErrors }) => {
-        if (validationDetails.badInput && badInput) return badInput;
-        if (validationDetails.customError && customError) return customError;
-        if (validationDetails.patternMismatch && patternMismatch)
+        if (validationDetails.badInput && badInput) {
+          return badInput;
+        }
+        if (validationDetails.customError && customError) {
+          return customError;
+        }
+        if (validationDetails.patternMismatch && patternMismatch) {
           return patternMismatch;
-        if (validationDetails.rangeOverflow && rangeOverflow)
+        }
+        if (validationDetails.rangeOverflow && rangeOverflow) {
           return rangeOverflow;
-        if (validationDetails.rangeUnderflow && rangeUnderflow)
+        }
+        if (validationDetails.rangeUnderflow && rangeUnderflow) {
           return rangeUnderflow;
-        if (validationDetails.stepMismatch && stepMismatch) return stepMismatch;
-        if (validationDetails.tooLong && tooLong) return tooLong;
-        if (validationDetails.tooShort && tooShort) return tooShort;
-        if (validationDetails.typeMismatch && typeMismatch) return typeMismatch;
-        if (validationDetails.valueMissing && valueMissing) return valueMissing;
+        }
+        if (validationDetails.stepMismatch && stepMismatch) {
+          return stepMismatch;
+        }
+        if (validationDetails.tooLong && tooLong) {
+          return tooLong;
+        }
+        if (validationDetails.tooShort && tooShort) {
+          return tooShort;
+        }
+        if (validationDetails.typeMismatch && typeMismatch) {
+          return typeMismatch;
+        }
+        if (validationDetails.valueMissing && valueMissing) {
+          return valueMissing;
+        }
         return validationErrors;
       }}
     </FieldError>

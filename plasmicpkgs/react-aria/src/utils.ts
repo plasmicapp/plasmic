@@ -2,15 +2,24 @@ import type { CodeComponentMeta } from "@plasmicapp/host";
 import registerComponent from "@plasmicapp/host/registerComponent";
 import React from "react";
 
+export type BaseControlContextData = {
+  isStandalone: boolean;
+};
+
 export type Registerable = {
   registerComponent: typeof registerComponent;
+};
+
+export type OtherCodeComponentsMeta = {
+  text: CodeComponentMeta<any>;
+  description: CodeComponentMeta<any>;
 };
 
 export type CodeComponentMetaOverrides<T extends React.ComponentType<any>> =
   Partial<
     Pick<
       CodeComponentMeta<React.ComponentProps<T>>,
-      "parentComponentName" | "props" | "displayName"
+      "parentComponentName" | "props" | "displayName" | "name"
     >
   >;
 
@@ -41,6 +50,7 @@ export function registerComponentHelper<T extends React.ComponentType<any>>(
   } else {
     registerComponent(component, meta);
   }
+  return meta;
 }
 
 export function makeComponentName(name: string) {

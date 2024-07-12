@@ -1,12 +1,16 @@
+import { PlasmicElement } from "@plasmicapp/host";
 import React from "react";
 import type { CheckboxProps } from "react-aria-components";
 import { Checkbox } from "react-aria-components";
 import { getCommonInputProps } from "./common";
+import { PlasmicCheckboxGroupContext } from "./contexts";
 import {
   UpdateInteractionVariant,
   pickAriaComponentVariants,
 } from "./interaction-variant-utils";
+import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import {
+  BaseControlContextData,
   CodeComponentMetaOverrides,
   Registerable,
   makeComponentName,
@@ -22,6 +26,7 @@ const CHECKBOX_INTERACTION_VARIANTS = [
 
 interface BaseCheckboxProps extends CheckboxProps {
   children: React.ReactNode;
+  setControlContextData?: (ctxData: BaseControlContextData) => void;
   // Optional callback to update the interaction variant state
   // as it's only provided if the component is the root of a Studio component
   updateInteractionVariant?: UpdateInteractionVariant<
@@ -34,7 +39,14 @@ const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
 );
 
 export function BaseCheckbox(props: BaseCheckboxProps) {
-  const { children, updateInteractionVariant, ...rest } = props;
+  const { children, updateInteractionVariant, setControlContextData, ...rest } =
+    props;
+  const contextProps = React.useContext(PlasmicCheckboxGroupContext);
+  const isStandalone = !contextProps;
+
+  setControlContextData?.({
+    isStandalone,
+  });
 
   return (
     <>
@@ -56,11 +68,69 @@ export function BaseCheckbox(props: BaseCheckboxProps) {
   );
 }
 
+export const makeDefaultCheckboxChildren = ({
+  label,
+  showDocs,
+}: {
+  label: string;
+  showDocs?: boolean;
+}): PlasmicElement => ({
+  type: "vbox",
+  styles: {
+    display: "flex",
+    alignItems: "center",
+    gap: "2px",
+    padding: 0,
+  },
+  children: [
+    {
+      type: "hbox",
+      styles: {
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+        padding: 0,
+      },
+      children: [
+        {
+          type: "box",
+          styles: {
+            width: "7px",
+            height: "7px",
+            borderRadius: "3px",
+            borderWidth: "1px",
+            borderStyle: "solid",
+            borderColor: "black",
+          },
+        },
+        {
+          type: "component",
+          name: LABEL_COMPONENT_NAME,
+          props: {
+            children: {
+              type: "text",
+              value: label,
+            },
+          },
+        },
+      ],
+    },
+    ...(showDocs
+      ? [
+          {
+            type: "text",
+            value: "Add interaction variants to see it in action...",
+          } as PlasmicElement,
+        ]
+      : []),
+  ],
+});
+
 export function registerCheckbox(
   loader?: Registerable,
   overrides?: CodeComponentMetaOverrides<typeof BaseCheckbox>
 ) {
-  registerComponentHelper(
+  return registerComponentHelper(
     loader,
     BaseCheckbox,
     {
@@ -75,10 +145,17 @@ export function registerCheckbox(
           "isDisabled",
           "isReadOnly",
           "aria-label",
-          "children",
           "isRequired",
           "autoFocus",
         ]),
+        children: {
+          type: "slot",
+          mergeWithParent: true as any,
+          defaultValue: makeDefaultCheckboxChildren({
+            label: "Label",
+            showDocs: true,
+          }),
+        },
         value: {
           type: "string",
           description:
@@ -90,6 +167,7 @@ export function registerCheckbox(
           uncontrolledProp: "defaultSelected",
           description: "Whether the checkbox is toggled on",
           defaultValueHint: false,
+          defaultValue: false,
         },
         isIndeterminate: {
           displayName: "Indeterminate",
@@ -122,6 +200,10 @@ export function registerCheckbox(
           valueProp: "isSelected",
           onChangeProp: "onChange",
           variableType: "boolean",
+          hidden: (
+            _ps: BaseCheckboxProps,
+            ctx: BaseControlContextData | null
+          ) => !ctx?.isStandalone,
         },
       },
       trapsFocus: true,

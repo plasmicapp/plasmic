@@ -2,10 +2,10 @@ import React, { ReactNode } from "react";
 import type { InputProps, TextFieldProps } from "react-aria-components";
 import { TextField } from "react-aria-components";
 import { getCommonInputProps } from "./common";
-import { registerDescription } from "./registerDescription";
+import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { registerFieldError } from "./registerFieldError";
-import { registerInput } from "./registerInput";
-import { registerLabel } from "./registerLabel";
+import { INPUT_COMPONENT_NAME, registerInput } from "./registerInput";
+import { LABEL_COMPONENT_NAME, registerLabel } from "./registerLabel";
 import { registerTextArea } from "./registerTextArea";
 import {
   CodeComponentMetaOverrides,
@@ -37,7 +37,7 @@ export function BaseTextField(props: BaseTextFieldProps) {
   );
 }
 
-const componentName = makeComponentName("textField");
+export const TEXT_FIELD_COMPONENT_NAME = makeComponentName("textField");
 
 export function registerTextField(
   loader?: Registerable,
@@ -47,7 +47,7 @@ export function registerTextField(
     loader,
     BaseTextField,
     {
-      name: componentName,
+      name: TEXT_FIELD_COMPONENT_NAME,
       displayName: "Aria TextField",
       importPath: "@plasmicpkgs/react-aria/skinny/registerTextField",
       importName: "BaseTextField",
@@ -59,9 +59,50 @@ export function registerTextField(
           "isReadOnly",
           "autoFocus",
           "aria-label",
-          "children",
           "isRequired",
         ]),
+        children: {
+          type: "slot",
+          mergeWithParent: true as any,
+          defaultValue: {
+            type: "vbox",
+            styles: {
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+              width: "300px",
+              gap: "5px",
+            },
+            children: [
+              {
+                type: "component",
+                name: LABEL_COMPONENT_NAME,
+                props: {
+                  children: {
+                    type: "text",
+                    value: "Label",
+                  },
+                },
+              },
+              {
+                type: "component",
+                name: INPUT_COMPONENT_NAME,
+                styles: {
+                  width: "100%",
+                },
+              },
+              {
+                type: "component",
+                name: DESCRIPTION_COMPONENT_NAME,
+                props: {
+                  children: {
+                    type: "text",
+                    value: "Type something...",
+                  },
+                },
+              },
+            ],
+          },
+        },
         value: {
           type: "string",
           editOnly: true,
@@ -287,12 +328,11 @@ export function registerTextField(
 
   const thisName = makeChildComponentName(
     overrides?.parentComponentName,
-    componentName
+    TEXT_FIELD_COMPONENT_NAME
   );
 
   registerFieldError(loader, { parentComponentName: thisName });
   registerInput(loader, { parentComponentName: thisName });
   registerLabel(loader, { parentComponentName: thisName });
-  registerDescription(loader, { parentComponentName: thisName });
   registerTextArea(loader, { parentComponentName: thisName });
 }

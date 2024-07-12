@@ -51,6 +51,8 @@ export function BaseInput(props: BaseInputProps) {
   );
 }
 
+export const INPUT_COMPONENT_NAME = makeComponentName("input");
+
 export function registerInput(
   loader?: Registerable,
   overrides?: CodeComponentMetaOverrides<typeof BaseInput>
@@ -59,11 +61,18 @@ export function registerInput(
     loader,
     BaseInput,
     {
-      name: makeComponentName("input"),
+      name: INPUT_COMPONENT_NAME,
       displayName: "Aria Input",
       importPath: "@plasmicpkgs/react-aria/skinny/registerInput",
       importName: "BaseInput",
       interactionVariants,
+      defaultStyles: {
+        width: "300px",
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderColor: "black",
+        padding: "2px 10px",
+      },
       props: {
         placeholder: {
           type: "string",

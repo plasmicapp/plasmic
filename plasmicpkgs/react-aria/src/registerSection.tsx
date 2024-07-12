@@ -33,7 +33,7 @@ export function BaseSection(props: BaseSectionProps) {
   const { section, renderHeader, key, renderItem } = mergedProps;
 
   return (
-    <Section id={key}>
+    <Section id={key} {...mergedProps}>
       <PlasmicHeaderContext.Provider value={{ children: section?.label }}>
         {renderHeader?.(section)}
       </PlasmicHeaderContext.Provider>
@@ -54,7 +54,16 @@ export function registerSection(
   loader?: Registerable,
   overrides?: CodeComponentMetaOverrides<typeof BaseSection>
 ) {
-  registerComponentHelper(
+  const thisName = makeChildComponentName(
+    overrides?.parentComponentName,
+    makeComponentName("section")
+  );
+
+  const headerMeta = registerHeader(loader, {
+    parentComponentName: thisName,
+  });
+
+  return registerComponentHelper(
     loader,
     BaseSection,
     {
@@ -62,23 +71,22 @@ export function registerSection(
       displayName: "Aria Section",
       importPath: "@plasmicpkgs/react-aria/skinny/registerSection",
       importName: "BaseSection",
+      defaultStyles: {
+        width: "stretch",
+        padding: "10px",
+      },
       props: {
         renderHeader: {
           type: "slot",
           displayName: "Render section header",
           renderPropParams: ["sectionProps"],
+          defaultValue: {
+            type: "component",
+            name: headerMeta.name,
+          },
         },
       },
     },
     overrides
   );
-
-  const thisName = makeChildComponentName(
-    overrides?.parentComponentName,
-    makeComponentName("section")
-  );
-
-  registerHeader(loader, {
-    parentComponentName: thisName,
-  });
 }

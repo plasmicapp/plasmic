@@ -12,17 +12,18 @@ import {
   StrictOptionType,
   useStrictOptions,
 } from "./option-utils";
-import { registerListBoxItem } from "./registerListBoxItem";
 import {
+  makeDefaultListBoxItemChildren,
+  registerListBoxItem,
+} from "./registerListBoxItem";
+import { registerSection } from "./registerSection";
+import {
+  BaseControlContextData,
   CodeComponentMetaOverrides,
   makeComponentName,
   Registerable,
   registerComponentHelper,
 } from "./utils";
-
-interface BaseListBoxControlContextData {
-  isStandalone: boolean;
-}
 
 export interface BaseListBoxProps
   extends React.ComponentProps<typeof ListBox>,
@@ -30,7 +31,7 @@ export interface BaseListBoxProps
   renderItem?: (item: any) => React.ReactNode;
   renderSection?: (section: any) => React.ReactNode;
   getItemType?: (thing: any) => "item" | "section";
-  setControlContextData?: (ctxData: BaseListBoxControlContextData) => void;
+  setControlContextData?: (ctxData: BaseControlContextData) => void;
 }
 
 export function BaseListBox(props: BaseListBoxProps) {
@@ -78,43 +79,69 @@ export function BaseListBox(props: BaseListBoxProps) {
   );
 }
 
+export const LIST_BOX_COMPONENT_NAME = makeComponentName("listbox");
+
 export function registerListBox(
   loader?: Registerable,
   overrides?: CodeComponentMetaOverrides<typeof BaseListBox>
 ) {
+  const listBoxItemMeta = registerListBoxItem(loader, {
+    parentComponentName: LIST_BOX_COMPONENT_NAME,
+  });
+  const sectionMeta = registerSection(loader, {
+    parentComponentName: LIST_BOX_COMPONENT_NAME,
+  });
+
   registerComponentHelper(
     loader,
     BaseListBox,
     {
-      name: makeComponentName("listbox"),
+      name: LIST_BOX_COMPONENT_NAME,
       displayName: "Aria ListBox",
       importPath: "@plasmicpkgs/react-aria/skinny/registerListBox",
       importName: "BaseListBox",
+      defaultStyles: {
+        width: "250px",
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderColor: "black",
+      },
       props: {
         options: {
           ...makeOptionsPropType(),
           displayName: "Items",
-          hidden: (
-            _ps: BaseListBoxProps,
-            ctx: BaseListBoxControlContextData | null
-          ) => !ctx?.isStandalone,
+          hidden: (_ps: BaseListBoxProps, ctx: BaseControlContextData | null) =>
+            !ctx?.isStandalone,
         },
         renderItem: {
           type: "slot",
           displayName: "Render Item",
           renderPropParams: ["itemProps"],
+          defaultValue: {
+            type: "component",
+            name: listBoxItemMeta.name,
+            props: {
+              children: makeDefaultListBoxItemChildren(
+                "Item (itemProps.label)",
+                "Connect with `itemProps` in the data picker to display list box items"
+              ),
+            },
+          },
         },
         renderSection: {
           type: "slot",
           displayName: "Render Section",
           renderPropParams: ["sectionProps"],
+          defaultValue: {
+            type: "component",
+            name: sectionMeta.name,
+            styles: {
+              backgroundColor: "#F4FAFF",
+            },
+          },
         },
       },
     },
     overrides
   );
-
-  registerListBoxItem(loader, {
-    parentComponentName: makeComponentName("listbox"),
-  });
 }

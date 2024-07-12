@@ -1,5 +1,8 @@
 import React from "react";
 import { DialogTrigger } from "react-aria-components";
+import { PlasmicDialogTriggerContext } from "./contexts";
+import { BUTTON_COMPONENT_NAME } from "./registerButton";
+import { MODAL_COMPONENT_NAME } from "./registerModal";
 import {
   CodeComponentMetaOverrides,
   Registerable,
@@ -7,7 +10,7 @@ import {
   registerComponentHelper,
 } from "./utils";
 
-interface BaseDialogTriggerProps
+export interface BaseDialogTriggerProps
   extends React.ComponentProps<typeof DialogTrigger> {
   trigger: React.ReactNode;
   dialog: React.ReactNode;
@@ -17,10 +20,12 @@ export function BaseDialogTrigger(props: BaseDialogTriggerProps) {
   const { trigger, dialog, ...rest } = props;
 
   return (
-    <DialogTrigger {...rest}>
-      {trigger}
-      {dialog}
-    </DialogTrigger>
+    <PlasmicDialogTriggerContext.Provider value={props}>
+      <DialogTrigger {...rest}>
+        {trigger}
+        {dialog}
+      </DialogTrigger>
+    </PlasmicDialogTriggerContext.Provider>
   );
 }
 
@@ -40,9 +45,23 @@ export function registerDialogTrigger(
       props: {
         trigger: {
           type: "slot",
+          defaultValue: {
+            type: "component",
+            name: BUTTON_COMPONENT_NAME,
+            props: {
+              children: {
+                type: "text",
+                value: "Open Dialog",
+              },
+            },
+          },
         },
         dialog: {
           type: "slot",
+          defaultValue: {
+            type: "component",
+            name: MODAL_COMPONENT_NAME,
+          },
         },
         isOpen: {
           type: "boolean",

@@ -11,6 +11,11 @@ import {
   StrictOptionType,
   useStrictOptions,
 } from "./option-utils";
+import { BUTTON_COMPONENT_NAME } from "./registerButton";
+import { INPUT_COMPONENT_NAME } from "./registerInput";
+import { LABEL_COMPONENT_NAME } from "./registerLabel";
+import { LIST_BOX_COMPONENT_NAME } from "./registerListBox";
+import { POPOVER_COMPONENT_NAME } from "./registerPopover";
 import {
   extractPlasmicDataProps,
   makeComponentName,
@@ -295,6 +300,99 @@ export function registerComboBox(loader?: Registerable) {
       },
       structure: {
         type: "slot",
+        defaultValue: [
+          {
+            type: "vbox",
+            styles: {
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+              width: "300px",
+              padding: 0,
+            },
+            children: [
+              {
+                type: "component",
+                name: LABEL_COMPONENT_NAME,
+                props: {
+                  children: {
+                    type: "text",
+                    value: "Label",
+                  },
+                },
+              },
+              {
+                type: "hbox",
+                styles: {
+                  width: "stretch",
+                  borderWidth: "1px",
+                  borderStyle: "solid",
+                  borderColor: "black",
+                  padding: 0,
+                  position: "relative",
+                },
+                children: [
+                  {
+                    type: "component",
+                    name: INPUT_COMPONENT_NAME,
+                    styles: {
+                      borderWidth: 0,
+                      width: "100%",
+                      padding: "2px 30px 2px 10px",
+                    },
+                  },
+                  {
+                    type: "component",
+                    name: BUTTON_COMPONENT_NAME,
+                    styles: {
+                      borderWidth: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      position: "absolute",
+                      right: "10px",
+                      top: 0,
+                      padding: 0,
+                      height: "100%",
+                    },
+                    props: {
+                      children: {
+                        type: "img",
+                        src: "https://static1.plasmic.app/arrow-up.svg",
+                        styles: {
+                          height: "20px",
+                          width: "20px",
+                          transform: "rotate(180deg)",
+                        },
+                      },
+                    },
+                  },
+                ],
+              },
+              {
+                type: "component",
+                name: POPOVER_COMPONENT_NAME,
+                styles: {
+                  backgroundColor: "white",
+                  width: "300px",
+                  padding: "10px",
+                  overflow: "scroll",
+                },
+                props: {
+                  children: [
+                    {
+                      type: "component",
+                      name: LIST_BOX_COMPONENT_NAME,
+                      styles: {
+                        borderWidth: 0,
+                        width: "stretch",
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        ],
       },
       previewOpen: {
         type: "boolean",

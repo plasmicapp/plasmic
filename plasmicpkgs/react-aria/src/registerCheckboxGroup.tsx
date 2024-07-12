@@ -1,10 +1,15 @@
+import React from "react";
 import type { CheckboxGroupProps } from "react-aria-components";
 import { CheckboxGroup } from "react-aria-components";
 import { getCommonInputProps } from "./common";
-import { registerCheckbox } from "./registerCheckbox";
-import { registerDescription } from "./registerDescription";
+import { PlasmicCheckboxGroupContext } from "./contexts";
+import {
+  makeDefaultCheckboxChildren,
+  registerCheckbox,
+} from "./registerCheckbox";
+import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { registerFieldError } from "./registerFieldError";
-import { registerLabel } from "./registerLabel";
+import { LABEL_COMPONENT_NAME, registerLabel } from "./registerLabel";
 import {
   CodeComponentMetaOverrides,
   makeChildComponentName,
@@ -13,7 +18,13 @@ import {
   registerComponentHelper,
 } from "./utils";
 
-export const BaseCheckboxGroup = CheckboxGroup;
+export function BaseCheckboxGroup(props: CheckboxGroupProps) {
+  return (
+    <PlasmicCheckboxGroupContext.Provider value={props}>
+      <CheckboxGroup {...props} />
+    </PlasmicCheckboxGroupContext.Provider>
+  );
+}
 
 const componentName = makeComponentName("checkboxGroup");
 
@@ -21,6 +32,17 @@ export function registerCheckboxGroup(
   loader?: Registerable,
   overrides?: CodeComponentMetaOverrides<typeof BaseCheckboxGroup>
 ) {
+  const thisName = makeChildComponentName(
+    overrides?.parentComponentName,
+    componentName
+  );
+
+  registerFieldError(loader, { parentComponentName: thisName });
+  const checkboxMeta = registerCheckbox(loader, {
+    parentComponentName: thisName,
+  });
+  registerLabel(loader, { parentComponentName: thisName });
+
   registerComponentHelper(
     loader,
     BaseCheckboxGroup,
@@ -38,6 +60,76 @@ export function registerCheckboxGroup(
           "children",
           "isRequired",
         ]),
+        children: {
+          type: "slot",
+          mergeWithParent: true as any,
+          defaultValue: [
+            {
+              type: "vbox",
+              styles: {
+                display: "flex",
+                gap: "5px",
+                padding: 0,
+                alignItems: "flex-start",
+              },
+              children: [
+                {
+                  type: "component",
+                  name: LABEL_COMPONENT_NAME,
+                  props: {
+                    children: {
+                      type: "text",
+                      value: "Checkbox Group",
+                    },
+                  },
+                },
+                {
+                  type: "component",
+                  name: checkboxMeta.name,
+                  props: {
+                    children: makeDefaultCheckboxChildren({
+                      label: "Checkbox 1",
+                      showDocs: false,
+                    }),
+                    value: "checkbox1",
+                  },
+                },
+                {
+                  type: "component",
+                  name: checkboxMeta.name,
+                  props: {
+                    children: makeDefaultCheckboxChildren({
+                      label: "Checkbox 2",
+                      showDocs: false,
+                    }),
+                    value: "checkbox2",
+                  },
+                },
+                {
+                  type: "component",
+                  name: checkboxMeta.name,
+                  props: {
+                    children: makeDefaultCheckboxChildren({
+                      label: "Checkbox 3",
+                      showDocs: false,
+                    }),
+                    value: "checkbox3",
+                  },
+                },
+                {
+                  type: "component",
+                  name: DESCRIPTION_COMPONENT_NAME,
+                  props: {
+                    children: {
+                      type: "text",
+                      value: "Add interaction variants to see it in action...",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
         value: {
           type: "array",
           editOnly: true,
@@ -74,16 +166,4 @@ export function registerCheckboxGroup(
     },
     overrides
   );
-
-  const thisName = makeChildComponentName(
-    overrides?.parentComponentName,
-    componentName
-  );
-
-  registerFieldError(loader, { parentComponentName: thisName });
-  registerCheckbox(loader, { parentComponentName: thisName });
-  registerLabel(loader, { parentComponentName: thisName });
-  registerDescription(loader, {
-    parentComponentName: thisName,
-  });
 }

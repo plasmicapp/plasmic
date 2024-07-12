@@ -1,10 +1,6 @@
 import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import React from "react";
-import {
-  SelectValue as BaseSelectValue,
-  Key,
-  Select,
-} from "react-aria-components";
+import { Key, Select, SelectValue } from "react-aria-components";
 import { PlasmicListBoxContext } from "./contexts";
 import {
   flattenOptions,
@@ -13,6 +9,10 @@ import {
   makeValuePropType,
   useStrictOptions,
 } from "./option-utils";
+import { BUTTON_COMPONENT_NAME } from "./registerButton";
+import { LABEL_COMPONENT_NAME } from "./registerLabel";
+import { LIST_BOX_COMPONENT_NAME } from "./registerListBox";
+import { POPOVER_COMPONENT_NAME } from "./registerPopover";
 import {
   extractPlasmicDataProps,
   makeComponentName,
@@ -21,7 +21,32 @@ import {
   Styleable,
 } from "./utils";
 
-export { BaseSelectValue };
+export interface BaseSelectValueProps
+  extends React.ComponentProps<typeof SelectValue> {
+  customize?: boolean;
+}
+
+export const BaseSelectValue = (props: BaseSelectValueProps) => {
+  const { children, customize } = props;
+  return (
+    <SelectValue>
+      {({ isPlaceholder, selectedText }) => (
+        <>
+          {isPlaceholder ? (
+            <span>Select an item</span>
+          ) : (
+            <>
+              <span>
+                {customize ? (children as React.ReactNode) : selectedText}
+              </span>
+            </>
+          )}
+          {}
+        </>
+      )}
+    </SelectValue>
+  );
+};
 
 const SELECT_NAME = makeComponentName("select");
 
@@ -99,6 +124,39 @@ export function BaseSelect<T extends object>(props: BaseSelectProps<T>) {
 }
 
 export function registerSelect(loader?: Registerable) {
+  const selectValueMeta = registerComponentHelper(loader, BaseSelectValue, {
+    name: makeComponentName("select-value"),
+    displayName: "Aria Selected Value",
+    importPath: "@plasmicpkgs/react-aria/registerSelect",
+    importName: "SelectValue",
+    parentComponentName: SELECT_NAME,
+    props: {
+      customize: {
+        type: "boolean",
+        advanced: true,
+        description: "Whether to customize the selected value display",
+      },
+      children: {
+        type: "slot",
+        defaultValue: [
+          {
+            type: "text",
+            value: "Selected value...",
+          },
+        ],
+      },
+      className: {
+        type: "class",
+        selectors: [
+          {
+            selector: ":self[data-placeholder]",
+            label: "Placeholder",
+          },
+        ],
+      },
+    },
+  });
+
   registerComponentHelper(loader, BaseSelect, {
     name: SELECT_NAME,
     displayName: "Aria Select",
@@ -163,6 +221,83 @@ export function registerSelect(loader?: Registerable) {
 
       structure: {
         type: "slot",
+        defaultValue: [
+          {
+            type: "vbox",
+            styles: {
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+              width: "300px",
+              padding: 0,
+            },
+            children: [
+              {
+                type: "component",
+                name: LABEL_COMPONENT_NAME,
+                props: {
+                  children: {
+                    type: "text",
+                    value: "Label",
+                  },
+                },
+              },
+              {
+                type: "component",
+                name: BUTTON_COMPONENT_NAME,
+                styles: {
+                  width: "100%",
+                },
+                props: {
+                  children: {
+                    type: "hbox",
+                    styles: {
+                      width: "stretch",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "2px 5px",
+                    },
+                    children: [
+                      {
+                        type: "component",
+                        name: selectValueMeta.name,
+                      },
+                      {
+                        type: "img",
+                        src: "https://static1.plasmic.app/arrow-up.svg",
+                        styles: {
+                          height: "20px",
+                          width: "20px",
+                          transform: "rotate(180deg)",
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
+              {
+                type: "component",
+                name: POPOVER_COMPONENT_NAME,
+                styles: {
+                  backgroundColor: "white",
+                  padding: "10px",
+                  overflow: "scroll",
+                },
+                props: {
+                  children: [
+                    {
+                      type: "component",
+                      name: LIST_BOX_COMPONENT_NAME,
+                      styles: {
+                        borderWidth: 0,
+                        width: "stretch",
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        ],
       },
 
       // renderOption: {
@@ -197,25 +332,6 @@ export function registerSelect(loader?: Registerable) {
         type: "readonly",
         onChangeProp: "onOpenChange",
         variableType: "boolean",
-      },
-    },
-  });
-
-  registerComponentHelper(loader, BaseSelectValue, {
-    name: makeComponentName("select-value"),
-    displayName: "Aria Selected Value",
-    importPath: "@plasmicpkgs/react-aria/registerSelect",
-    importName: "SelectValue",
-    parentComponentName: SELECT_NAME,
-    props: {
-      className: {
-        type: "class",
-        selectors: [
-          {
-            selector: ":self[data-placeholder]",
-            label: "Placeholder",
-          },
-        ],
       },
     },
   });

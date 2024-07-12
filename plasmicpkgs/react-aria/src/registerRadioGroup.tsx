@@ -1,10 +1,12 @@
+import React from "react";
 import type { RadioGroupProps } from "react-aria-components";
 import { RadioGroup } from "react-aria-components";
 import { getCommonInputProps } from "./common";
-import { registerDescription } from "./registerDescription";
+import { PlasmicRadioGroupContext } from "./contexts";
+import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { registerFieldError } from "./registerFieldError";
-import { registerLabel } from "./registerLabel";
-import { registerRadio } from "./registerRadio";
+import { LABEL_COMPONENT_NAME, registerLabel } from "./registerLabel";
+import { makeDefaultRadioChildren, registerRadio } from "./registerRadio";
 import {
   CodeComponentMetaOverrides,
   Registerable,
@@ -13,19 +15,34 @@ import {
   registerComponentHelper,
 } from "./utils";
 
-export const BaseRadioGroup = RadioGroup;
+export function BaseRadioGroup(props: React.ComponentProps<typeof RadioGroup>) {
+  return (
+    <PlasmicRadioGroupContext.Provider value={props}>
+      <RadioGroup {...props} />
+    </PlasmicRadioGroupContext.Provider>
+  );
+}
 
-const componentName = makeComponentName("radioGroup");
+const RADIO_GROUP_COMPONENT_NAME = makeComponentName("radioGroup");
 
 export function registerRadioGroup(
   loader?: Registerable,
   overrides?: CodeComponentMetaOverrides<typeof BaseRadioGroup>
 ) {
+  const thisName = makeChildComponentName(
+    overrides?.parentComponentName,
+    RADIO_GROUP_COMPONENT_NAME
+  );
+
+  registerFieldError(loader, { parentComponentName: thisName });
+  const radioMeta = registerRadio(loader, { parentComponentName: thisName });
+  registerLabel(loader, { parentComponentName: thisName });
+
   registerComponentHelper(
     loader,
     BaseRadioGroup,
     {
-      name: componentName,
+      name: RADIO_GROUP_COMPONENT_NAME,
       displayName: "Aria RadioGroup",
       importPath: "@plasmicpkgs/react-aria/skinny/registerRadioGroup",
       importName: "BaseRadioGroup",
@@ -35,9 +52,69 @@ export function registerRadioGroup(
           "isDisabled",
           "isReadOnly",
           "aria-label",
-          "children",
           "isRequired",
         ]),
+        children: {
+          type: "slot",
+          mergeWithParent: true as any,
+          defaultValue: [
+            {
+              type: "vbox",
+              styles: {
+                display: "flex",
+                gap: "5px",
+                padding: 0,
+                alignItems: "flex-start",
+              },
+              children: [
+                {
+                  type: "component",
+                  name: LABEL_COMPONENT_NAME,
+                  props: {
+                    children: {
+                      type: "text",
+                      value: "Radio Group",
+                    },
+                  },
+                },
+                {
+                  type: "component",
+                  name: radioMeta.name,
+                  props: {
+                    children: makeDefaultRadioChildren("Radio 1"),
+                    value: "radio1",
+                  },
+                },
+                {
+                  type: "component",
+                  name: radioMeta.name,
+                  props: {
+                    children: makeDefaultRadioChildren("Radio 2"),
+                    value: "radio2",
+                  },
+                },
+                {
+                  type: "component",
+                  name: radioMeta.name,
+                  props: {
+                    children: makeDefaultRadioChildren("Radio 3"),
+                    value: "radio3",
+                  },
+                },
+                {
+                  type: "component",
+                  name: DESCRIPTION_COMPONENT_NAME,
+                  props: {
+                    children: {
+                      type: "text",
+                      value: "Add interaction variants to see it in action...",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
         value: {
           type: "string",
           editOnly: true,
@@ -74,16 +151,4 @@ export function registerRadioGroup(
     },
     overrides
   );
-
-  const thisName = makeChildComponentName(
-    overrides?.parentComponentName,
-    componentName
-  );
-
-  registerFieldError(loader, { parentComponentName: thisName });
-  registerRadio(loader, { parentComponentName: thisName });
-  registerLabel(loader, { parentComponentName: thisName });
-  registerDescription(loader, {
-    parentComponentName: thisName,
-  });
 }

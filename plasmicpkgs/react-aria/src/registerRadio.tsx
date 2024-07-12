@@ -1,13 +1,17 @@
+import { PlasmicElement } from "@plasmicapp/host";
 import React from "react";
 import type { RadioProps } from "react-aria-components";
 import { Radio, RadioGroup } from "react-aria-components";
 import ErrorBoundary from "./ErrorBoundary";
 import { getCommonInputProps } from "./common";
+import { PlasmicRadioGroupContext } from "./contexts";
 import {
   UpdateInteractionVariant,
   pickAriaComponentVariants,
 } from "./interaction-variant-utils";
+import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import {
+  BaseControlContextData,
   CodeComponentMetaOverrides,
   Registerable,
   makeComponentName,
@@ -24,6 +28,7 @@ const RADIO_INTERACTION_VARIANTS = [
 export interface BaseRadioProps extends RadioProps {
   children: React.ReactNode;
   isSelected: boolean;
+  setControlContextData?: (ctxData: BaseControlContextData) => void;
   // Optional callback to update the interaction variant state
   // as it's only provided if the component is the root of a Studio component
   updateInteractionVariant?: UpdateInteractionVariant<
@@ -36,7 +41,9 @@ const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
 );
 
 export function BaseRadio(props: BaseRadioProps) {
-  const { children, updateInteractionVariant, ...rest } = props;
+  const { children, updateInteractionVariant, setControlContextData, ...rest } =
+    props;
+  const contextProps = React.useContext(PlasmicRadioGroupContext);
 
   const radio = (
     <Radio {...rest}>
@@ -55,6 +62,12 @@ export function BaseRadio(props: BaseRadioProps) {
     </Radio>
   );
 
+  const isStandalone = !contextProps;
+
+  setControlContextData?.({
+    isStandalone,
+  });
+
   return (
     <ErrorBoundary fallback={<RadioGroup>{radio}</RadioGroup>}>
       {radio}
@@ -62,11 +75,44 @@ export function BaseRadio(props: BaseRadioProps) {
   );
 }
 
+export const makeDefaultRadioChildren = (label: string): PlasmicElement => ({
+  type: "hbox",
+  styles: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    padding: 0,
+  },
+  children: [
+    {
+      type: "box",
+      styles: {
+        width: "7px",
+        height: "7px",
+        borderRadius: "100%",
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderColor: "black",
+      },
+    },
+    {
+      type: "component",
+      name: LABEL_COMPONENT_NAME,
+      props: {
+        children: {
+          type: "text",
+          value: label,
+        },
+      },
+    },
+  ],
+});
+
 export function registerRadio(
   loader?: Registerable,
   overrides?: CodeComponentMetaOverrides<typeof BaseRadio>
 ) {
-  registerComponentHelper(
+  return registerComponentHelper(
     loader,
     BaseRadio,
     {
@@ -80,8 +126,12 @@ export function registerRadio(
           "isDisabled",
           "autoFocus",
           "aria-label",
-          "children",
         ]),
+        children: {
+          type: "slot",
+          mergeWithParent: true as any,
+          defaultValue: makeDefaultRadioChildren("Radio"),
+        },
         value: {
           type: "string",
           description:
@@ -97,6 +147,8 @@ export function registerRadio(
           type: "readonly",
           onChangeProp: "onSelectionChange",
           variableType: "boolean",
+          hidden: (_ps: BaseRadioProps, ctx: BaseControlContextData | null) =>
+            !ctx?.isStandalone,
         },
       },
       trapsFocus: true,

@@ -6,6 +6,8 @@ import {
   UpdateInteractionVariant,
   pickAriaComponentVariants,
 } from "./interaction-variant-utils";
+import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
+import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import {
   CodeComponentMetaOverrides,
   Registerable,
@@ -67,6 +69,13 @@ export function registerSwitch(
       importPath: "@plasmicpkgs/react-aria/skinny/registerSwitch",
       importName: "BaseSwitch",
       interactionVariants,
+      defaultStyles: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        padding: 0,
+      },
       props: {
         ...getCommonInputProps<SwitchProps>("switch", [
           "name",
@@ -74,8 +83,78 @@ export function registerSwitch(
           "isReadOnly",
           "autoFocus",
           "aria-label",
-          "children",
         ]),
+        children: {
+          type: "slot",
+          mergeWithParent: true as any,
+          defaultValue: [
+            {
+              type: "hbox",
+              styles: {
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "10px",
+                padding: 0,
+              },
+              children: [
+                {
+                  // the track
+                  type: "hbox",
+                  styles: {
+                    width: "30px",
+                    height: "16px",
+                    padding: 0,
+                    backgroundColor: "#D5D5D5",
+                    cursor: "pointer",
+                    borderRadius: "999px",
+                  },
+                  children: {
+                    // the thumb
+                    type: "hbox",
+                    styles: {
+                      width: "12px",
+                      height: "12px",
+                      position: "absolute",
+                      top: "2px",
+                      left: "2px",
+                      borderRadius: "100%",
+                      backgroundColor: "#fff",
+                      padding: 0,
+                      transitionProperty: "all",
+                      transitionDuration: "0.5s",
+                      transitionTimingFunction: "ease-in-out",
+                    },
+                  },
+                },
+                {
+                  // the label
+                  type: "component",
+                  name: LABEL_COMPONENT_NAME,
+                  props: {
+                    children: {
+                      type: "text",
+                      value: "Label",
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              type: "component",
+              name: DESCRIPTION_COMPONENT_NAME,
+              styles: {
+                fontSize: "12px",
+              },
+              props: {
+                children: {
+                  type: "text",
+                  value: "Add interaction variants to see it in action...",
+                },
+              },
+            },
+          ],
+        },
         value: {
           type: "boolean",
           editOnly: true,

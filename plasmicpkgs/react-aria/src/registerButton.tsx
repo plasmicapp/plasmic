@@ -64,6 +64,8 @@ export function BaseButton(props: BaseButtonProps) {
   );
 }
 
+export const BUTTON_COMPONENT_NAME = makeComponentName("button");
+
 export function registerButton(
   loader?: Registerable,
   overrides?: CodeComponentMetaOverrides<typeof BaseButton>
@@ -72,17 +74,30 @@ export function registerButton(
     loader,
     BaseButton,
     {
-      name: makeComponentName("button"),
+      name: BUTTON_COMPONENT_NAME,
       displayName: "Aria Button",
       importPath: "@plasmicpkgs/react-aria/skinny/registerButton",
       importName: "BaseButton",
       interactionVariants,
+      defaultStyles: {
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderColor: "black",
+        padding: "2px 10px",
+      },
       props: {
         ...getCommonInputProps<BaseButtonProps>("button", [
           "isDisabled",
           "aria-label",
-          "children",
         ]),
+        children: {
+          type: "slot",
+          mergeWithParent: true as any,
+          defaultValue: {
+            type: "text",
+            value: "Button",
+          },
+        },
         submitsForm: {
           type: "boolean",
           displayName: "Submits form?",
