@@ -40,7 +40,7 @@ function WebhookEvent(props: WebhookEventProps) {
             status: `${event.status}`,
             createdAt: event.createdAt.toString(),
             response: event.response,
-            state: event.status >= 400 ? "failed" : undefined,
+            state: event.status >= 300 ? "failed" : undefined,
           }
         : webhook
         ? {
@@ -56,7 +56,7 @@ function WebhookEvent(props: WebhookEventProps) {
             response: webhook.event?.response,
             state: !webhook.event
               ? "loading"
-              : webhook.event.status >= 400
+              : webhook.event.status >= 300
               ? "failed"
               : undefined,
           }
