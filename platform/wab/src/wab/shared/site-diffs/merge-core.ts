@@ -1,3 +1,8 @@
+import { removeFromArray } from "@/wab/commons/collections";
+import { Lookup, pathSelector } from "@/wab/commons/path-selector";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { Bundler, addrKey } from "@/wab/shared/bundler";
+import { toVarName } from "@/wab/shared/codegen/util";
 import { spanWhile } from "@/wab/shared/collections";
 import {
   arrayEq,
@@ -20,13 +25,18 @@ import {
   xKeyBy,
   xUnion,
 } from "@/wab/shared/common";
-import { removeFromArray } from "@/wab/commons/collections";
-import { Lookup, pathSelector } from "@/wab/commons/path-selector";
-import { PageComponent, getComponentDisplayName } from "@/wab/shared/core/components";
+import {
+  PageComponent,
+  getComponentDisplayName,
+} from "@/wab/shared/core/components";
 import { ChangeRecorder } from "@/wab/shared/core/observable-model";
-import { TplMgr } from "@/wab/shared/TplMgr";
-import { Bundler, addrKey } from "@/wab/shared/bundler";
-import { toVarName } from "@/wab/shared/codegen/util";
+import { SplitType } from "@/wab/shared/core/splits";
+import {
+  flattenTpls,
+  isTplNamable,
+  trackComponentRoot,
+  trackComponentSite,
+} from "@/wab/shared/core/tpls";
 import mobx from "@/wab/shared/import-mobx";
 import { instUtil } from "@/wab/shared/model/InstUtil";
 import * as classes from "@/wab/shared/model/classes";
@@ -72,13 +82,6 @@ import {
   InvariantError,
   assertSiteInvariants,
 } from "@/wab/shared/site-invariants";
-import { SplitType } from "@/wab/shared/core/splits";
-import {
-  flattenTpls,
-  isTplNamable,
-  trackComponentRoot,
-  trackComponentSite,
-} from "@/wab/shared/core/tpls";
 import {
   countBy,
   difference,
@@ -1633,7 +1636,7 @@ function preFixTplNames(a: Site, b: Site, bundler: Bundler) {
           node,
         ])
       ),
-      names: tplMgr.getExistingTplAndExplicitStateNames(component),
+      names: tplMgr.getExistingTplAndParamNames(component),
     };
   };
 

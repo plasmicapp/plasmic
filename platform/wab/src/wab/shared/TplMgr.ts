@@ -333,13 +333,19 @@ export const enum VariantOptionsType {
   standalone = "standalone",
 }
 
+/**
+ * These variable names are reserved because they would conflict with generated TypeScript props.
+ * TODO: Consider changing codegen to not have name conflicts somehow?
+ */
 export const reservedVariableNames = [
   "args",
-  "variants",
-  "overrides",
+  "className",
   "key",
-  "root",
-];
+  "style",
+  "overrides",
+  "root", // allowed for root tpl
+  "variants",
+] as const;
 
 export function uniquePagePath(path: string, existingPaths: string[]): string {
   function normalize(p: string) {
@@ -1915,27 +1921,6 @@ export class TplMgr {
     }
   }
 
-  getExistingParamNames(component: Component, exclude?: Param) {
-    return [
-      // "className" and "style" are reserved param names
-      "className",
-      "style",
-      // Include tpl names as they will also be in prop names
-      ...this.getExistingTplNames(component),
-      ...component.params
-        .filter((p) => p !== exclude)
-        .map((p) => p.variable.name)
-        .concat(reservedVariableNames),
-    ];
-  }
-
-  getUniqueParamName(component: Component, name?: string, exclude?: Param) {
-    const existingNames = this.getExistingParamNames(component, exclude);
-    return uniqueName(existingNames, name || "Unnamed Prop", {
-      normalize: toVarName,
-    });
-  }
-
   getUniqueGlobalVariantGroupName(name?: string, exclude?: VariantGroup) {
     return uniqueName(
       this.site()
@@ -1947,23 +1932,26 @@ export class TplMgr {
     );
   }
 
-  getUniqueExplicitStateName(
-    component: Component,
-    name: string,
-    exclude?: State
-  ) {
-    const existingTplNames = this.getExistingTplAndExplicitStateNames(
-      component,
-      undefined,
-      exclude
-    );
-    const existingParamNames = this.getExistingParamNames(
-      component,
-      exclude?.param
-    );
-    return uniqueName([...existingTplNames, ...existingParamNames], name, {
+  getUniqueParamName(component: Component, name?: string, exclude?: Param) {
+    const existingNames = [
+      ...this.getExistingTplAndParamNames(component, undefined, exclude),
+      ...reservedVariableNames,
+    ];
+    return uniqueName(existingNames, name || "Unnamed Prop", {
       normalize: toVarName,
     });
+  }
+
+  getUniqueExplicitStateName(
+    component: Component,
+    name?: string,
+    exclude?: State
+  ) {
+    return this.getUniqueParamName(
+      component,
+      name || "Unnamed State",
+      exclude?.param
+    );
   }
 
   renameParam(component: Component, param: Param, name: string) {
@@ -1977,10 +1965,10 @@ export class TplMgr {
     renameParamAndFixExprs(this.site(), component, param, newName);
 
     if (maybeState?.onChangeParam) {
-      const newOnChangeParamName = this.getUniqueParamName(
+      const newOnChangeParamName = this.getUniqueExplicitStateName(
         component,
         genOnChangeParamName(newName),
-        maybeState.onChangeParam
+        maybeState
       );
       renameParamAndFixExprs(
         this.site(),
@@ -2030,33 +2018,37 @@ export class TplMgr {
     }
   }
 
-  getExistingTplAndExplicitStateNames(
+  /** Tpl and param names cannot conflict with each other due to code generation conflicts. */
+  getExistingTplAndParamNames(
     component: Component,
     nodeToExclude?: TplNamable,
-    stateToExclude?: State
+    paramToExclude?: Param
   ) {
-    return withoutNils([
+    return [
       ...this.getExistingTplNames(component, nodeToExclude),
-      // Include param names as they will also be in prop names
-      ...component.params.map((p) => p.variable.name),
-    ]);
+      ...this.getExistingParamNames(component, paramToExclude),
+    ];
   }
 
-  getExistingTplNames(component: Component, nodeToExclude?: TplNamable) {
-    // Explicitly blacklist some node names
-    const blacklist = ["children"];
-    if (!nodeToExclude || !isComponentRoot(nodeToExclude)) {
-      // Also don't allow "root", unless it is for the root element
-      blacklist.push("root");
-    }
+  getExistingTplNames(
+    component: Component,
+    nodeToExclude?: TplNamable
+  ): string[] {
     return withoutNils(
       flattenTpls(component.tplTree)
         .filter(isTplNamable)
         .filter((n) => n !== nodeToExclude)
         .map((n) => n.name)
-        .concat(reservedVariableNames)
-        .concat(blacklist)
     );
+  }
+
+  getExistingParamNames(
+    component: Component,
+    paramToExclude?: Param
+  ): string[] {
+    return component.params
+      .filter((p) => p !== paramToExclude)
+      .map((p) => p.variable.name);
   }
 
   getUniqueTplName(
@@ -2064,10 +2056,15 @@ export class TplMgr {
     name: string,
     nodeToExclude?: TplNamable
   ) {
-    const existingNames = this.getExistingTplAndExplicitStateNames(
-      component,
-      nodeToExclude
-    );
+    const existingNames = [
+      ...this.getExistingTplAndParamNames(component, nodeToExclude),
+      ...reservedVariableNames,
+    ];
+
+    if (nodeToExclude && isComponentRoot(nodeToExclude)) {
+      // Allow "root" only for root element
+      removeFromArray(existingNames, "root");
+    }
     return uniqueName(existingNames, name, { normalize: toVarName });
   }
 
