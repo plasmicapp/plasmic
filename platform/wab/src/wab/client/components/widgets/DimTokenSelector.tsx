@@ -1,7 +1,7 @@
-import { FieldAriaProps } from "@/wab/client/components/aria-utils";
 import ListItem from "@/wab/client/components/ListItem";
 import ListSectionHeader from "@/wab/client/components/ListSectionHeader";
 import ListSectionSeparator from "@/wab/client/components/ListSectionSeparator";
+import { FieldAriaProps } from "@/wab/client/components/aria-utils";
 import { GeneralTokenEditModal } from "@/wab/client/components/sidebar/GeneralTokenEditModal";
 import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { Matcher } from "@/wab/client/components/view-common";
@@ -18,6 +18,20 @@ import PlasmicDimTokenSelector, {
 import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
+  TokenType,
+  derefToken,
+  mkTokenRef,
+  tokenTypeDefaults,
+  tokenTypeLabel,
+  tryParseTokenRef,
+} from "@/wab/commons/StyleToken";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import {
+  TokenValueResolver,
+  siteToAllDirectTokensOfType,
+} from "@/wab/shared/cached-selectors";
+import {
   assert,
   ensure,
   filterFalsy,
@@ -25,29 +39,23 @@ import {
   spawn,
   unexpected,
 } from "@/wab/shared/common";
-import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import {
-  derefToken,
-  mkTokenRef,
-  TokenType,
-  tokenTypeDefaults,
-  tokenTypeLabel,
-  tryParseTokenRef,
-} from "@/wab/commons/StyleToken";
 import * as css from "@/wab/shared/css";
-import { lengthCssUnits, parseCssNumericNew, toShorthandVals } from "@/wab/shared/css";
 import {
-  siteToAllDirectTokensOfType,
-  TokenValueResolver,
-} from "@/wab/shared/cached-selectors";
-import { createNumericSize, isValidUnit, showSizeCss } from "@/wab/shared/css-size";
-import { isKnownStyleToken, StyleToken } from "@/wab/shared/model/classes";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { notification, Tooltip } from "antd";
+  lengthCssUnits,
+  parseCssNumericNew,
+  toShorthandVals,
+} from "@/wab/shared/css";
+import {
+  createNumericSize,
+  isValidUnit,
+  showSizeCss,
+} from "@/wab/shared/css-size";
+import { StyleToken, isKnownStyleToken } from "@/wab/shared/model/classes";
+import { Tooltip, notification } from "antd";
 import type { TooltipPlacement } from "antd/es/tooltip";
 import cn from "classnames";
-import { useCombobox, UseComboboxGetItemPropsOptions } from "downshift";
-import L from "lodash";
+import { UseComboboxGetItemPropsOptions, useCombobox } from "downshift";
+import L, { orderBy } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
 import {
@@ -288,9 +296,12 @@ export const DimTokenSpinner = observer(
           ({ type: "edit-token", token: editableTokens[0] } as const),
 
         // In number mode, always show all tokens; else only show tokens that match
-        ...tokens
-          .filter((t) => isNumberMode || matcher.matches(t.name))
-          .map((token) => ({ type: "token", token } as const)),
+        ...orderBy(
+          tokens
+            .filter((t) => isNumberMode || matcher.matches(t.name))
+            .map((token) => ({ type: "token", token } as const)),
+          (item) => item.token.name.toLowerCase()
+        ),
       ]);
     };
 
