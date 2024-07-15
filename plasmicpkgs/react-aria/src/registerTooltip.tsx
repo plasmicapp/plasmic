@@ -12,8 +12,9 @@ import {
 
 export interface BaseTooltipProps extends TooltipTriggerProps, TooltipProps {
   children?: React.ReactElement<HTMLElement>;
-  tooltipContent?: React.ReactNode;
+  tooltipContent?: React.ReactElement;
   resetClassName?: string;
+  className?: string;
 }
 
 export function BaseTooltip(props: BaseTooltipProps) {
@@ -26,6 +27,11 @@ export function BaseTooltip(props: BaseTooltipProps) {
     state,
     ref
   );
+
+  const hasContent =
+    tooltipContent &&
+    (tooltipContent.type as any).name !== "CanvasSlotPlaceholder";
+
   /** We are only accepting a single child here, so we can just use the first one.
    * This is because the trigger props will be applied to the child to enable the triggering of the tooltip.
    * If there has to be more than one things here, wrap them in a horizontal stack for instance.
@@ -36,6 +42,7 @@ export function BaseTooltip(props: BaseTooltipProps) {
     <div
       // this is to ensure that the absolutely positioned tooltip can be positioned correctly within this relatively positioned container.
       style={{ position: "relative" }}
+      className={resetClassName}
     >
       {React.isValidElement(focusableChild)
         ? React.cloneElement(focusableChild, {
@@ -47,9 +54,16 @@ export function BaseTooltip(props: BaseTooltipProps) {
           } as Record<string, any> & { ref?: React.Ref<HTMLElement> })
         : null}
       {state.isOpen && (
-        <span {...tooltipProps} className={`${className} ${resetClassName}`}>
-          {tooltipContent}
-        </span>
+        <>
+          {React.cloneElement(
+            hasContent ? (
+              tooltipContent
+            ) : (
+              <p>Add some content to the tooltip...</p>
+            ),
+            mergeProps(tooltipProps, tooltipContent?.props.attrs, { className })
+          )}
+        </>
       )}
     </div>
   );
