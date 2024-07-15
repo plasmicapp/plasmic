@@ -1,3 +1,10 @@
+import { arrayReversed, removeFromArray } from "@/wab/commons/collections";
+import { ReplaceKey } from "@/wab/commons/types";
+import {
+  computedProjectFlags,
+  findNonEmptyCombos,
+} from "@/wab/shared/cached-selectors";
+import { toVarName } from "@/wab/shared/codegen/util";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -7,34 +14,48 @@ import {
   last,
   swallow,
 } from "@/wab/shared/common";
-import { arrayReversed, removeFromArray } from "@/wab/commons/collections";
-import { ReplaceKey } from "@/wab/commons/types";
-import {
-  allComponentVariants,
-  getComponentDisplayName,
-  isCodeComponent,
-} from "@/wab/shared/core/components";
-import { PLASMIC_DISPLAY_NONE } from "@/wab/shared/css";
-import { DEVFLAGS } from "@/wab/shared/devflags";
-import { asCode } from "@/wab/shared/core/exprs";
-import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
-import { getTagAttrForImageAsset } from "@/wab/shared/core/image-assets";
-import {
-  computedProjectFlags,
-  findNonEmptyCombos,
-} from "@/wab/shared/cached-selectors";
-import { toVarName } from "@/wab/shared/codegen/util";
 import {
   ComponentVariantFrame,
   GlobalVariantFrame,
   TransientComponentVariantFrame,
 } from "@/wab/shared/component-frame";
+import {
+  allComponentVariants,
+  getComponentDisplayName,
+  isCodeComponent,
+} from "@/wab/shared/core/components";
+import { asCode } from "@/wab/shared/core/exprs";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { getTagAttrForImageAsset } from "@/wab/shared/core/image-assets";
+import {
+  allGlobalVariants,
+  isFrameRootTplComponent,
+} from "@/wab/shared/core/sites";
 import { getAllDefinedStyles } from "@/wab/shared/core/style-props";
+import {
+  AttrsSpec,
+  ChildSet,
+  flattenTplsWithoutVirtualDescendants,
+  getTplOwnerComponent,
+  isTplColumn,
+  isTplColumns,
+  isTplContainer,
+  isTplVariantable,
+  mkSlot,
+  MkTplComponentParams,
+  mkTplComponentX,
+  MkTplTagOpts,
+  mkTplTagX,
+  summarizeTpl,
+  TplTagType,
+} from "@/wab/shared/core/tpls";
+import { PLASMIC_DISPLAY_NONE } from "@/wab/shared/css";
 import {
   ArgSource,
   computeDefinedIndicator,
   DefinedIndicatorType,
 } from "@/wab/shared/defined-indicator";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   adaptEffectiveVariantSetting,
   EffectiveVariantSetting,
@@ -92,24 +113,6 @@ import {
   setTplVisibility,
   TplVisibility,
 } from "@/wab/shared/visibility-utils";
-import { allGlobalVariants, isFrameRootTplComponent } from "@/wab/shared/core/sites";
-import {
-  AttrsSpec,
-  ChildSet,
-  flattenTplsWithoutVirtualDescendants,
-  getTplOwnerComponent,
-  isTplColumn,
-  isTplColumns,
-  isTplContainer,
-  isTplVariantable,
-  mkSlot,
-  MkTplComponentParams,
-  mkTplComponentX,
-  MkTplTagOpts,
-  mkTplTagX,
-  summarizeTpl,
-  TplTagType,
-} from "@/wab/shared/core/tpls";
 import L from "lodash";
 
 type StylePropOpts = { forVisibility?: boolean };
@@ -851,10 +854,12 @@ export class VariantTplMgr {
         display: "flex",
       });
     }
-    // Initialize the position of new tpl to relative. If the parent is
-    // free container, it should then convert it into absolute later at
-    // insertion.
-    rsh.merge({ position: "relative" });
+    if (!rsh.get("position")) {
+      // Initialize the position of new tpl to relative. If the parent is
+      // free container, it should then convert it into absolute later at
+      // insertion.
+      rsh.merge({ position: "relative" });
+    }
 
     const curVs = this.ensureCurrentVariantSetting(
       tpl,
