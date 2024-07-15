@@ -55,6 +55,7 @@ import {
   ensureInstance,
   filterFalsy,
   insert,
+  last,
   mergeMaps,
   mkShortId,
   strictZip,
@@ -2289,10 +2290,21 @@ export function isComponentHiddenFromContentEditor(
 }
 
 export function getComponentDisplayName(component: Component) {
-  if (isCodeComponent(component)) {
-    return component.codeComponentMeta.displayName ?? component.name;
+  if (isCodeComponent(component) && component.codeComponentMeta.displayName) {
+    return component.codeComponentMeta.displayName;
   }
   return component.name || "unnamed artboard";
+}
+
+export function getFolderComponentDisplayName(component: Component) {
+  if (isCodeComponent(component) && component.codeComponentMeta.displayName) {
+    return component.codeComponentMeta.displayName;
+  }
+  if (!component.name) {
+    return "unnamed artboard";
+  }
+  const componentPath = component.name.split("/").filter((str) => !!str);
+  return componentPath.length > 0 ? last(componentPath) : component.name;
 }
 
 export function getCodeComponentDescription(component: CodeComponent) {
