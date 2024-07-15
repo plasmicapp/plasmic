@@ -95,18 +95,15 @@ export function BaseSliderTrack(props: BaseSliderTrackProps) {
    */
   const thumbs = useMemo(() => {
     const rawThumbs = flattenChildren(children);
-    if (mergedProps.value === undefined) {
-      return [];
-    }
-    if (!Array.isArray(mergedProps?.value)) {
-      return rawThumbs;
-    }
-    const difference = mergedProps.value.length - rawThumbs.length;
+    const values = Array.isArray(mergedProps?.value)
+      ? mergedProps.value
+      : [mergedProps.value].filter((v) => v !== undefined);
+    const difference = values.length - rawThumbs.length;
     if (!difference) {
       return rawThumbs;
     }
     if (difference < 0) {
-      return rawThumbs.slice(0, mergedProps.value.length);
+      return rawThumbs.slice(0, values.length);
     }
     const lastThumb = rawThumbs[rawThumbs.length - 1];
     return rawThumbs.concat(new Array(difference).fill(lastThumb));

@@ -100,7 +100,12 @@ export function registerSliderThumb(
       },
       interactionVariants,
       props: {
-        advanced: "boolean",
+        advanced: {
+          type: "boolean",
+          displayName: "Advanced",
+          description:
+            "Enables the children slot for creating a more customized thumb",
+        },
         children: {
           type: "slot",
           hidden: (ps: BaseSliderThumbProps) => !ps.advanced,
