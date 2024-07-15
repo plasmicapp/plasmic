@@ -36,9 +36,7 @@ class NormalLayoutComponent extends React.Component<
               className={"normal-layout-content normal-layout-content--top-bar"}
             >
               <widgets.PlainLink href={"/"} className={"home-logo"}>
-                <div className={"normal-layout__mark"}>
-                  <MarkFullColorIcon />
-                </div>
+                <MarkFullColorIcon className="normal-layout__mark" />
               </widgets.PlainLink>
 
               {topBar}
@@ -66,7 +64,7 @@ export class NormalLayout extends AppComponent {
     const menu = (
       <Menu>
         <Menu.Item>
-          <PublicLink href={UU.userSettings.fill({})}>Settings</PublicLink>
+          <PublicLink href={UU.settings.fill({})}>Settings</PublicLink>
         </Menu.Item>
         <Menu.Item
           onClick={async () => {

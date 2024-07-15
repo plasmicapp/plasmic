@@ -10,8 +10,8 @@ import { logger } from "../deps";
 import { CommonArgs } from "../index";
 import { HandledError } from "../utils/error";
 import {
-  AuthConfig,
   AUTH_FILE_NAME,
+  AuthConfig,
   DEFAULT_HOST,
   ENV_AUTH_HOST,
   ENV_AUTH_TOKEN,
@@ -80,7 +80,7 @@ function authByPrompt(host: string) {
     },
     {
       name: "token",
-      message: `Your personal access token (create one at ${host}/self/settings)`,
+      message: `Your personal access token (create one at ${host}/settings)`,
     },
   ]);
 

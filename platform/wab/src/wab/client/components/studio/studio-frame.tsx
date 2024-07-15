@@ -1,11 +1,11 @@
 /** @format */
 
-import HostUrlInput from "@/wab/client/components/HostUrlInput";
 import {
   getLoginRouteWithContinuation,
   parseProjectLocation,
   UU,
 } from "@/wab/client/cli-routes";
+import HostUrlInput from "@/wab/client/components/HostUrlInput";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { HostLoadTimeoutPrompt } from "@/wab/client/components/TopFrame/HostLoadTimeoutPrompt";
 import {
@@ -20,8 +20,6 @@ import { usePreventDefaultBrowserPinchToZoomBehavior } from "@/wab/client/hooks/
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
 import { getHostUrl } from "@/wab/client/utils/app-hosting-utils";
 import { useBrowserNotification } from "@/wab/client/utils/useBrowserNotification";
-import { maybeOne, spawn, swallow } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ForbiddenError } from "@/wab/shared/ApiErrors/errors";
 import {
   ApiBranch,
@@ -30,6 +28,8 @@ import {
   MainBranchId,
   ProjectId,
 } from "@/wab/shared/ApiSchema";
+import { maybeOne, spawn, swallow } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { notification } from "antd";
@@ -257,7 +257,7 @@ export function StudioFrame({
         <br />
         <br />
         Enter the domain <code>{hostOrigin}</code> to add it to your{" "}
-        <PublicLink href={UU.userSettings.fill({})}>trusted list</PublicLink>.
+        <PublicLink href={UU.settings.fill({})}>trusted list</PublicLink>.
         <HostUrlInput
           className="mv-xlg"
           hostProtocolSelect={{

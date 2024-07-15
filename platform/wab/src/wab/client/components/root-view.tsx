@@ -48,7 +48,6 @@ import {
 } from "@/wab/client/components/pages/StartShopifyAuth";
 import { SurveyForm } from "@/wab/client/components/pages/SurveyForm";
 import { TeamCreation } from "@/wab/client/components/pages/TeamCreation";
-import { UserSettingsPage } from "@/wab/client/components/pages/UserSettingsPage";
 import PromoBanner from "@/wab/client/components/PromoBanner";
 import { TeamSupportRedirect } from "@/wab/client/components/TeamSupportRedirect";
 import { AppView } from "@/wab/client/components/top-view";
@@ -57,16 +56,16 @@ import { providesAppCtx, useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useHostFrameCtxIfHostFrame } from "@/wab/client/frame-ctx/host-frame-ctx";
 import deployedVersions from "@/wab/client/plasmic-deployed.json";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
-import { ensure, hackyCast, spawn } from "@/wab/shared/common";
 import {
   promisifyMethods,
   PromisifyMethods,
 } from "@/wab/commons/promisify-methods";
-import { StarterSectionConfig } from "@/wab/shared/devflags";
 import { CmsDatabaseId } from "@/wab/shared/ApiSchema";
 import { isArenaType } from "@/wab/shared/Arenas";
 import { FastBundler } from "@/wab/shared/bundler";
+import { ensure, hackyCast, spawn } from "@/wab/shared/common";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { StarterSectionConfig } from "@/wab/shared/devflags";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { getMaximumTierFromTeams } from "@/wab/shared/pricing/pricing-utils";
 import posthog from "posthog-js";
@@ -393,11 +392,6 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                         <Redirect to={"/"} />
                       )
                     }
-                  />
-                  <Route
-                    exact
-                    path={UU.userSettings.pattern}
-                    render={() => <UserSettingsPage appCtx={appCtx} />}
                   />
                   <Route
                     exact

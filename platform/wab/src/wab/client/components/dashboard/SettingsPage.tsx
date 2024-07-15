@@ -2,13 +2,14 @@ import { AppCtx } from "@/wab/client/app-ctx";
 import { AddTrustedHostModal } from "@/wab/client/components/AddTrustedHostModal";
 import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
 import SettingsContainer from "@/wab/client/components/pages/plasmic/SettingsContainer";
-import { usePersonalApiTokens } from "@/wab/client/components/pages/UserSettingsPage";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import {
   DefaultSettingsPageProps,
   PlasmicSettingsPage,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicSettingsPage";
-import { ensure } from "@/wab/shared/common";
 import { ApiTrustedHost } from "@/wab/shared/ApiSchema";
+import { ensure } from "@/wab/shared/common";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import copy from "copy-to-clipboard";
 import { observer } from "mobx-react";
@@ -88,6 +89,22 @@ function SettingsPage_(props: SettingsPageProps, ref: HTMLElementRefOf<"div">) {
       />
     </>
   );
+}
+
+function usePersonalApiTokens() {
+  const appCtx = useAppCtx();
+  const tokens = appCtx.personalApiTokens;
+  const api = appCtx.api;
+
+  return useAsyncStrict(async () => {
+    if (tokens === null) {
+      const fetched = await api.listPersonalApiTokens();
+      appCtx.personalApiTokens = fetched;
+      return fetched;
+    } else {
+      return tokens;
+    }
+  }, [api, tokens, appCtx]);
 }
 
 const SettingsPage = observer(React.forwardRef(SettingsPage_));
