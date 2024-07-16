@@ -18,7 +18,8 @@ export type PropType<P> =
   | NumberType<P>
   | JSONLikeType<P>
   | ChoiceType<P>
-  | DataSourceType<P>;
+  | DataSourceType<P>
+  | CustomType<P>;
 
 type RestrictPropType<T, P> = T extends string
   ? StringType<P> | ChoiceType<P> | JSONLikeType<P> | CustomType<P>
