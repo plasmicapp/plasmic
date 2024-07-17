@@ -1887,7 +1887,10 @@ export function buildParamToComponent(components: Component[]) {
 // 3. Upon TplQuery operations
 const TPLROOT_TO_COMPONENT = new WeakMap<TplNode, Component>();
 export function getTplOwnerComponent(tpl: TplNode) {
-  return ensure(tryGetTplOwnerComponent(tpl), "Tpl must have owner component");
+  return ensure(
+    tryGetTplOwnerComponent(tpl),
+    `Tpl ${tpl.uuid} must have owner component`
+  );
 }
 
 export function tryGetTplOwnerComponent(tpl: TplNode) {
@@ -1900,7 +1903,10 @@ export function trackComponentRoot(component: Component) {
 
 const COMPONENT_TO_SITE = new WeakMap<Component, Site>();
 export function getOwnerSite(comp: Component) {
-  return ensure(tryGetOwnerSite(comp), "Component must have owner site");
+  return ensure(
+    tryGetOwnerSite(comp),
+    `Component ${comp.name} must have owner site`
+  );
 }
 
 export function tryGetOwnerSite(comp: Component) {
