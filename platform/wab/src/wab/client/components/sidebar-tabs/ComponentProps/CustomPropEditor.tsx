@@ -1,3 +1,4 @@
+import { getRootSub } from "@/wab/client/frame-ctx/windows";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ensure } from "@/wab/shared/common";
 import { CustomControl } from "@plasmicapp/host/dist/prop-types";
@@ -6,9 +7,9 @@ import $ from "jquery";
 import React, { useEffect } from "react";
 
 interface CustomPropEditorProps {
+  viewCtx?: ViewCtx;
   value: any;
   onChange: (v: any) => void;
-  viewCtx: ViewCtx;
   impl: CustomControl<any>;
   componentPropValues: any;
   ccContextData: any;
@@ -26,7 +27,7 @@ export function CustomPropEditor({
   propName,
 }: CustomPropEditorProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const sub = viewCtx.canvasCtx.Sub;
+  const sub = viewCtx ? viewCtx.canvasCtx.Sub : getRootSub();
   const FullscreenModal = React.useMemo(
     () =>
       sub.createModal({

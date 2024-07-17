@@ -9,12 +9,12 @@ import {
   isAsChildRelLoc,
   isAsSiblingRelLoc,
 } from "@/wab/client/components/canvas/view-ops";
+import { getPreInsertionProps } from "@/wab/client/components/modals/PreInsertionModal";
 import {
   checkAndNotifyUnsupportedHostVersion,
   checkAndNotifyUnsupportedReactVersion,
   notifyCodeLibraryInsertion,
 } from "@/wab/client/components/modals/codeComponentModals";
-import { getPreInsertionProps } from "@/wab/client/components/modals/PreInsertionModal";
 import {
   getPlumeComponentTemplates,
   getPlumeImage,
@@ -45,6 +45,14 @@ import PlumeMarkIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { trackEvent } from "@/wab/client/tracking";
+import { getParentOrSlotSelection } from "@/wab/shared/SlotUtils";
+import { getBaseVariant } from "@/wab/shared/Variants";
+import { usedHostLessPkgs } from "@/wab/shared/cached-selectors";
+import {
+  appendCodeComponentMetaToModel,
+  isPlainObjectPropType,
+  syncPlumeComponent,
+} from "@/wab/shared/code-components/code-components";
 import {
   assert,
   ensure,
@@ -63,6 +71,14 @@ import {
   isPlumeComponent,
   sortComponentsByName,
 } from "@/wab/shared/core/components";
+import { codeLit } from "@/wab/shared/core/exprs";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
+import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
+import { allComponents } from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import { unbundleProjectDependency } from "@/wab/shared/core/tagged-unbundle";
+import * as Tpls from "@/wab/shared/core/tpls";
 import {
   HostLessComponentInfo,
   HostLessPackageInfo,
@@ -70,17 +86,12 @@ import {
   InsertableTemplatesItem,
   Installable,
 } from "@/wab/shared/devflags";
-import { codeLit } from "@/wab/shared/core/exprs";
 import { Rect } from "@/wab/shared/geom";
-import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
-import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
-import { usedHostLessPkgs } from "@/wab/shared/cached-selectors";
 import {
-  appendCodeComponentMetaToModel,
-  isPlainObjectPropType,
-  syncPlumeComponent,
-} from "@/wab/shared/code-components/code-components";
-import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
+  cloneInsertableTemplate,
+  cloneInsertableTemplateArena,
+  cloneInsertableTemplateComponent,
+} from "@/wab/shared/insertable-templates";
 import {
   InsertableTemplateArenaExtraInfo,
   InsertableTemplateComponentExtraInfo,
@@ -91,9 +102,9 @@ import {
   Component,
   Expr,
   ImageAsset,
-  isKnownTplNode,
   ProjectDependency,
   TplNode,
+  isKnownTplNode,
 } from "@/wab/shared/model/classes";
 import { isRenderableType } from "@/wab/shared/model/model-util";
 import {
@@ -101,21 +112,10 @@ import {
   canAddSiblings,
   getSlotLikeType,
 } from "@/wab/shared/parenting";
-import { getParentOrSlotSelection } from "@/wab/shared/SlotUtils";
-import { allComponents } from "@/wab/shared/core/sites";
-import { SlotSelection } from "@/wab/shared/core/slots";
-import { unbundleProjectDependency } from "@/wab/shared/core/tagged-unbundle";
-import * as Tpls from "@/wab/shared/core/tpls";
+import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { notification } from "antd";
 import { mapValues, uniqBy } from "lodash";
 import * as React from "react";
-import {
-  cloneInsertableTemplate,
-  cloneInsertableTemplateArena,
-  cloneInsertableTemplateComponent,
-} from "@/wab/shared/insertable-templates";
-import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
-import { getBaseVariant } from "@/wab/shared/Variants";
 
 export function createAddTplImage(asset: ImageAsset): AddTplItem {
   return {
@@ -637,7 +637,7 @@ async function installHostlessPkgs(sc: StudioCtx, projectIds: string[]) {
     projectDependencies.push(projectDependency);
   }
 
-  if (checkAndNotifyUnsupportedReactVersion(sc, projectDependencies)) {
+  if (checkAndNotifyUnsupportedReactVersion(projectDependencies)) {
     return { deps: undefined };
   }
   await sc.updateCcRegistry([

@@ -1633,9 +1633,13 @@ export function isCodeComponentTpl(tpl: TplNode): tpl is TplComponent {
   return isTplComponent(tpl) && isCodeComponent(tpl.component);
 }
 
+interface ContextCodeComponent extends CodeComponent {
+  isContext: true;
+}
+
 export function isContextCodeComponent(
   component: Component
-): component is CodeComponent {
+): component is ContextCodeComponent {
   return isCodeComponent(component) && component.codeComponentMeta.isContext;
 }
 
@@ -1850,7 +1854,9 @@ export function removeComponentParam(
     for (const vs of inst.vsettings) {
       for (const arg of [...vs.args]) {
         if (arg.param === param) {
-          ensureComponentsObserved([$$$(inst).owningComponent()]);
+          if (!isContextCodeComponent(component)) {
+            ensureComponentsObserved([$$$(inst).owningComponent()]);
+          }
           // If we're removing a slot prop, we first explicitly remove
           // the tpl nodes passed in as arg, so that we can deal with invariants
           // maintained by $$$.remove() -- for example, if the slot prop

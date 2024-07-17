@@ -24,7 +24,6 @@ import {
 import { storageViewAsKey } from "@/wab/client/components/app-auth/ViewAsButton";
 import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import { SiteOps } from "@/wab/client/components/canvas/site-ops";
-import { SubDeps } from "@/wab/client/components/canvas/subdeps";
 import {
   InsertRelLoc,
   getFocusedInsertAnchor,
@@ -374,6 +373,10 @@ import { mutate } from "swr";
 import { FailableArgParams, IFailable, failable } from "ts-failable";
 
 import { LocalClipboard } from "@/wab/client/clipboard/local";
+import {
+  getRootSubHostVersion,
+  getRootSubReact,
+} from "@/wab/client/frame-ctx/windows";
 
 (window as any).dbg.classes = classes;
 
@@ -1085,12 +1088,11 @@ export class StudioCtx extends WithDbCtx {
     this.tryZoomToFitArena();
   }
 
-  getSubReactVersion() {
-    return ((window.parent as any).__Sub as SubDeps).React.version;
-  }
-
-  getRegisteredComponentsReact() {
-    return ((window.parent as any).__Sub as SubDeps).React;
+  /**
+   * @deprecated use {@link getRootSubReact} instead.
+   */
+  getRootSubReact() {
+    return getRootSubReact();
   }
 
   getPlumeSite() {
@@ -4461,7 +4463,7 @@ export class StudioCtx extends WithDbCtx {
     if (params.some((p) => p.startsWith("..."))) {
       // catch all routes only supported if host is greater than
       // 1.0.186
-      const hostVersion = (window.parent as any).__Sub.hostVersion;
+      const hostVersion = getRootSubHostVersion();
       if (!hostVersion || lt(hostVersion, "1.0.186")) {
         notification.error({
           message: "Catch-all routes are not supported for your host",

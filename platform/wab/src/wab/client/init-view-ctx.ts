@@ -1,9 +1,11 @@
 import { AppCtx } from "@/wab/client/app-ctx";
 import { DbCtx } from "@/wab/client/db";
+import { initRootCanvasPkgs } from "@/wab/client/frame-ctx/windows";
 import { loadSiteDbCtx } from "@/wab/client/init-ctx";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { observeModel } from "@/wab/shared/core/observable-model";
 import { SiteInfo } from "@/wab/shared/SharedApi";
+import { spawn } from "@/wab/shared/common";
+import { observeModel } from "@/wab/shared/core/observable-model";
 import { meta } from "@/wab/shared/model/classes-metas";
 import * as mobx from "mobx";
 
@@ -11,18 +13,15 @@ import * as mobx from "mobx";
 (window as any).meta = meta;
 (window as any).observeModel = observeModel;
 
-export function createStudioCtx({
-  dbCtx,
-}: {
-  dbCtx: DbCtx;
-  siteInfo: SiteInfo;
-}) {
+function createStudioCtx({ dbCtx }: { dbCtx: DbCtx; siteInfo: SiteInfo }) {
   const studioCtx =
     ((window as any).studioCtx =
     (window as any).dbg.studioCtx =
       new StudioCtx({
         dbCtx,
       }));
+
+  spawn(initRootCanvasPkgs());
 
   (window as any).__PLASMIC_EXECUTE_DATA_OP = studioCtx.executePlasmicDataOp;
   (window as any).__PLASMIC_MUTATE_DATA_OP =

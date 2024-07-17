@@ -1,19 +1,14 @@
-import { assert, ensure } from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
-import {
-  CodeComponent,
-  isCodeComponent,
-  isContextCodeComponent,
-  isHostLessCodeComponent,
-} from "@/wab/shared/core/components";
+import { isSlot } from "@/wab/shared/SlotUtils";
+import { TplMgr } from "@/wab/shared/TplMgr";
 import {
   getBuiltinComponentRegistrations,
   isBuiltinCodeComponent,
 } from "@/wab/shared/code-components/builtin-code-components";
 import {
-  attachRenderableTplSlots,
-  CodeComponentsRegistry,
   CodeComponentSyncCallbackFns,
+  CodeComponentsRegistry,
+  attachRenderableTplSlots,
   compareComponentPropsWithMeta,
   compareComponentStatesWithMeta,
   createStyleTokenFromRegistration,
@@ -23,17 +18,22 @@ import {
   mkCodeComponent,
   syncCodeComponents,
 } from "@/wab/shared/code-components/code-components";
+import { assert, ensure } from "@/wab/shared/common";
 import {
-  ensureKnownPropParam,
-  HostLessPackageInfo,
-  Param,
-  Site,
-} from "@/wab/shared/model/classes";
-import { isSlot } from "@/wab/shared/SlotUtils";
-import { TplMgr } from "@/wab/shared/TplMgr";
+  CodeComponent,
+  isCodeComponent,
+  isContextCodeComponent,
+  isHostLessCodeComponent,
+} from "@/wab/shared/core/components";
 import { createSite, writeable } from "@/wab/shared/core/sites";
 import { addComponentState } from "@/wab/shared/core/states";
 import { mkTplComponent } from "@/wab/shared/core/tpls";
+import {
+  HostLessPackageInfo,
+  Param,
+  Site,
+  ensureKnownPropParam,
+} from "@/wab/shared/model/classes";
 import {
   ComponentMeta,
   ComponentRegistration,
@@ -311,10 +311,9 @@ export async function updateHostlessPackage(
           getBuiltinComponentRegistrations()
         ),
         getPlumeSite: () => plumeSite,
-        getRegisteredComponentsReact: () => React,
+        getRootSubReact: () => React,
         site,
         tplMgr: () => tplMgr,
-        getSubReactVersion: () => React.version,
       },
       ccServerCallbackFns,
       { force: true }

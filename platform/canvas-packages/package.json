@@ -5,7 +5,6 @@
     "watch": "ESBUILD_WATCH=true node ./esbuild.js",
     "prepare": "node ./makePkgTypes.js",
     "size": "size-limit",
-    "analyze": "size-limit --why",
     "upgrade-aria": "yarn upgrade --latest react-aria && npx yarn-deduplicate@latest --scopes @react-aria @react-stately @react-types @internationalized && npx yarn-deduplicate@latest --packages react-aria @swc/helpers"
   },
   "dependenciesComments": {
@@ -110,7 +109,7 @@
     "@rollup/plugin-replace": "^4.0.0",
     "@rollup/plugin-sucrase": "^4.0.2",
     "@rollup/plugin-typescript": "^8.3.1",
-    "@size-limit/preset-app": "^7.0.8",
+    "@size-limit/preset-app": "^11.1.4",
     "@types/jquery": "^3.5.22",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",
@@ -119,13 +118,13 @@
     "esbuild": "^0.15.11",
     "esbuild-plugin-alias": "^0.2.1",
     "esbuild-plugin-external-global": "^1.0.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "rollup": "^2.70.1",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-terser": "^7.0.2",
     "sha256": "^0.2.0",
-    "size-limit": "^7.0.8",
+    "size-limit": "^11.1.4",
     "typescript": "^4.7.4"
   },
   "resolutions": {

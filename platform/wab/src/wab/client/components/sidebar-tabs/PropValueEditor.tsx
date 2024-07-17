@@ -223,12 +223,10 @@ const PropValueEditor_ = (
   }
 
   if (isCustomControlType(propType)) {
-    assert(viewCtx, "viewCtx is required for custom control prop type");
     // Custom control
     const impl = isPlainObjectPropType(propType) ? propType.control : propType;
     return (
       <CustomPropEditor
-        key={viewCtx.arenaFrame().uuid}
         value={value ?? defaultValueHint}
         onChange={onChange}
         viewCtx={viewCtx}

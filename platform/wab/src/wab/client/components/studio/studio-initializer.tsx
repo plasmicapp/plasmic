@@ -13,6 +13,7 @@ import * as widgets from "@/wab/client/components/widgets";
 import { AlertSpec } from "@/wab/client/components/widgets/plasmic/AlertBanner";
 import { providesViewCtx } from "@/wab/client/contexts/StudioContexts";
 import { HostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
+import { checkRootSubHostVersion } from "@/wab/client/frame-ctx/windows";
 import { initStudioCtx } from "@/wab/client/init-view-ctx";
 import "@/wab/client/react-global-hook/globalHook"; // Run once studio loads to inject our hook
 import { initializePlasmicExtension } from "@/wab/client/screenshot-util";
@@ -21,39 +22,14 @@ import {
   StudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawn } from "@/wab/shared/common";
-import { lt } from "@/wab/commons/semver";
-import { makeGlobalObservable } from "@/wab/shared/mobx-util";
-import { requiredPackageVersions } from "@/wab/shared/required-versions";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { initBuiltinActions } from "@/wab/shared/core/states";
+import { makeGlobalObservable } from "@/wab/shared/mobx-util";
 import { notification } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
 import { Helmet } from "react-helmet";
 import { Route, Switch } from "react-router";
-
-function checkHostVersion() {
-  const hostVersion = (window.parent as any).__Sub.hostVersion as
-    | string
-    | undefined;
-  if (
-    !hostVersion ||
-    lt(hostVersion, requiredPackageVersions["@plasmicapp/host"])
-  ) {
-    // TODO: Detect if the user is using loader-nextjs, loader-gatsby,
-    // loader-react or codegen to display a more directed message.
-    notification.warn({
-      message: "Unsupported host app detected",
-      description: (
-        <>
-          Please upgrade <code>@plasmicapp/*</code> packages in your host app to
-          continue using Plasmic Studio's latest features.
-        </>
-      ),
-      duration: 0,
-    });
-  }
-}
 
 type StudioInitializerProps = {
   projectId: string;
@@ -142,7 +118,7 @@ class StudioInitializer_ extends React.Component<
     }
 
     spawn(studioCtx.maybeShowGlobalContextNotificationForStarters());
-    checkHostVersion();
+    checkRootSubHostVersion();
 
     if (studioCtx.siteInfo.hasAppAuth) {
       const lastLoggedInAppUser = await appCtx.api.getStorageItem(

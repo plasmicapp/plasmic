@@ -202,6 +202,7 @@ export const tags = [
 ] as const;
 
 export interface SubDeps {
+  hostVersion: string | undefined;
   React: typeof React;
   ReactDOM: typeof ReactDOM;
   ResizeObserver: typeof ResizeObserver;

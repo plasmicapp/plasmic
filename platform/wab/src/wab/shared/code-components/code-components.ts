@@ -1,52 +1,6 @@
-import {
-  Background,
-  BackgroundLayer,
-  ColorFill,
-  NoneBackground,
-} from "@/wab/shared/core/bg-styles";
-import {
-  CustomError,
-  assert,
-  ensure,
-  ensureArray,
-  hackyCast,
-  isArrayOfStrings,
-  isNumeric,
-  maybe,
-  mkShortId,
-  objsEq,
-  removeWhere,
-  switchType,
-  tuple,
-  uncheckedCast,
-  unexpected,
-  withoutNils,
-  xDifference,
-} from "@/wab/shared/common";
 import { TokenType } from "@/wab/commons/StyleToken";
 import { removeFromArray } from "@/wab/commons/collections";
-import {
-  CodeComponent,
-  ComponentType,
-  getCodeComponentImportName,
-  getComponentDisplayName,
-  getDefaultComponent,
-  getDependencyComponents,
-  getRealParams,
-  isCodeComponent,
-  isContextCodeComponent,
-  isHostLessCodeComponent,
-  isPlainComponent,
-  isPlumeComponent,
-  mkComponent,
-  removeComponentParam,
-} from "@/wab/shared/core/components";
-import { getCssInitial, normProp, parseCssShorthand } from "@/wab/shared/css";
-import { ExprCtx, asCode } from "@/wab/shared/core/exprs";
 import * as cssPegParser from "@/wab/gen/cssPegParser";
-import { standardCorners, standardSides } from "@/wab/shared/geom";
-import { ParamExportType, mkParam, mkParamsForState } from "@/wab/shared/core/lang";
-import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { getSlotParams, isSlot } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
@@ -75,11 +29,97 @@ import {
   validJsIdentifierChars,
 } from "@/wab/shared/codegen/util";
 import {
+  CustomError,
+  assert,
+  ensure,
+  ensureArray,
+  hackyCast,
+  isArrayOfStrings,
+  isNumeric,
+  maybe,
+  mkShortId,
+  objsEq,
+  removeWhere,
+  switchType,
+  tuple,
+  uncheckedCast,
+  unexpected,
+  withoutNils,
+  xDifference,
+} from "@/wab/shared/common";
+import {
+  Background,
+  BackgroundLayer,
+  ColorFill,
+  NoneBackground,
+} from "@/wab/shared/core/bg-styles";
+import {
+  CodeComponent,
+  ComponentType,
+  getCodeComponentImportName,
+  getComponentDisplayName,
+  getDefaultComponent,
+  getDependencyComponents,
+  getRealParams,
+  isCodeComponent,
+  isContextCodeComponent,
+  isHostLessCodeComponent,
+  isPlainComponent,
+  isPlumeComponent,
+  mkComponent,
+  removeComponentParam,
+} from "@/wab/shared/core/components";
+import { ExprCtx, asCode } from "@/wab/shared/core/exprs";
+import {
+  ParamExportType,
+  mkParam,
+  mkParamsForState,
+} from "@/wab/shared/core/lang";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
+import {
+  allComponents,
+  isHostLessPackage,
+  writeable,
+} from "@/wab/shared/core/sites";
+import {
+  StateAccessType,
+  StateVariableType,
+  addComponentState,
+  mkNamedState,
+  removeComponentStateOnly,
+  updateStateAccessType,
+} from "@/wab/shared/core/states";
+import {
   CONTENT_LAYOUT_FULL_BLEED,
   CONTENT_LAYOUT_WIDE,
   isValidStyleProp,
 } from "@/wab/shared/core/style-props";
+import {
+  changeTokenUsage,
+  extractTokenUsages,
+  mkRuleSet,
+  parseCssValue,
+} from "@/wab/shared/core/styles";
+import {
+  EventHandlerKeyType,
+  TplTagType,
+  cloneType,
+  findAllInstancesOfComponent,
+  flattenTpls,
+  getTplComponentsInSite,
+  isEventHandlerKeyForAttr,
+  isEventHandlerKeyForFuncType,
+  isEventHandlerKeyForParam,
+  isTplComponent,
+  isTplSlot,
+  mkSlot,
+  mkTplComponentX,
+  mkTplInlinedText,
+  mkTplTagX,
+} from "@/wab/shared/core/tpls";
+import { getCssInitial, normProp, parseCssShorthand } from "@/wab/shared/css";
 import { AddItemPrefs, getDefaultStyles } from "@/wab/shared/default-styles";
+import { standardCorners, standardSides } from "@/wab/shared/geom";
 import { convertSelfContainerType } from "@/wab/shared/layoututils";
 import { instUtil } from "@/wab/shared/model/InstUtil";
 import {
@@ -147,38 +187,6 @@ import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { canComponentTakeRef } from "@/wab/shared/react-utils";
 import { CodeLibraryRegistration } from "@/wab/shared/register-library";
 import { validJsIdentifierRegex } from "@/wab/shared/utils/regex-valid-js-identifier";
-import { allComponents, isHostLessPackage, writeable } from "@/wab/shared/core/sites";
-import {
-  StateAccessType,
-  StateVariableType,
-  addComponentState,
-  mkNamedState,
-  removeComponentStateOnly,
-  updateStateAccessType,
-} from "@/wab/shared/core/states";
-import {
-  changeTokenUsage,
-  extractTokenUsages,
-  mkRuleSet,
-  parseCssValue,
-} from "@/wab/shared/core/styles";
-import {
-  EventHandlerKeyType,
-  TplTagType,
-  cloneType,
-  findAllInstancesOfComponent,
-  flattenTpls,
-  getTplComponentsInSite,
-  isEventHandlerKeyForAttr,
-  isEventHandlerKeyForFuncType,
-  isEventHandlerKeyForParam,
-  isTplComponent,
-  isTplSlot,
-  mkSlot,
-  mkTplComponentX,
-  mkTplInlinedText,
-  mkTplTagX,
-} from "@/wab/shared/core/tpls";
 import type {
   ComponentMeta,
   ComponentRegistration,
@@ -556,13 +564,12 @@ export class CodeComponentsRegistry {
 interface SiteCtx {
   site: Site;
   codeComponentsRegistry: CodeComponentsRegistry;
-  getSubReactVersion: () => string;
   change<E = never>(
     f: (args: FailableArgParams<void, E>) => IFailable<void, E>,
     opts?: { noUndoRecord?: boolean }
   ): Promise<IFailable<void, E>>;
   observeComponents(components: Component[]): boolean;
-  getRegisteredComponentsReact(): typeof React;
+  getRootSubReact(): typeof React;
   tplMgr(): TplMgr;
   getPlumeSite(): Site | undefined;
 }
@@ -765,11 +772,7 @@ function typeCheckRegistrations(ctx: SiteCtx) {
         const checkReactComponent = (val: React.ComponentType<any>) => {
           // Check for React component
           const hostWin = window.parent as typeof window;
-          const res = canComponentTakeRef(
-            val,
-            ctx.getRegisteredComponentsReact(),
-            hostWin
-          );
+          const res = canComponentTakeRef(val, ctx.getRootSubReact(), hostWin);
           return !res.result.isError;
         };
         const supportedTypes = [
@@ -1599,7 +1602,7 @@ async function checkReactVersion(
       if (
         dep.site.hostLessPackageInfo?.minimumReactVersion &&
         semver.lt(
-          ctx.getSubReactVersion(),
+          ctx.getRootSubReact().version,
           dep.site.hostLessPackageInfo.minimumReactVersion
         )
       ) {

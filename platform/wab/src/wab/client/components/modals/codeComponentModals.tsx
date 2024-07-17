@@ -10,32 +10,39 @@ import {
 } from "@/wab/client/components/quick-modals";
 import Button from "@/wab/client/components/widgets/Button";
 import { Icon } from "@/wab/client/components/widgets/Icon";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import Select from "@/wab/client/components/widgets/Select";
 import { Textbox } from "@/wab/client/components/widgets/Textbox";
+import { getRootSubReactVersion } from "@/wab/client/frame-ctx/windows";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import MinusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Minus";
 import PencilIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Pencil";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import TrashsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Trashsvg";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, filterFalsy, sortBy, spawn, withoutNils } from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
-import {
-  CodeComponent,
-  getComponentDisplayName,
-  isCodeComponent,
-} from "@/wab/shared/core/components";
 import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
 import {
   CodeComponentMetaDiffWithComponent,
   UnknownComponentError,
 } from "@/wab/shared/code-components/code-components";
+import {
+  ensure,
+  filterFalsy,
+  sortBy,
+  spawn,
+  withoutNils,
+} from "@/wab/shared/common";
+import {
+  CodeComponent,
+  getComponentDisplayName,
+  isCodeComponent,
+} from "@/wab/shared/core/components";
 import { Component } from "@/wab/shared/model/classes";
 import { typeDisplayName, typesEqual } from "@/wab/shared/model/model-util";
 import { Alert, Form, notification } from "antd";
 import * as React from "react";
 import semver from "semver";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 import { failableAsync } from "ts-failable";
 
 type RemapComponentResponse = CodeComponent | "delete";
@@ -795,14 +802,13 @@ export function notifyCodeLibraryInsertion(
 
 // Returns true if the user needs to upgrade their react version
 export function checkAndNotifyUnsupportedReactVersion(
-  sc: StudioCtx,
   deps: ProjectDependency[]
 ) {
   const invalidDep = deps.find(
     (dep) =>
       dep.site.hostLessPackageInfo?.minimumReactVersion &&
       semver.lt(
-        sc.getSubReactVersion(),
+        getRootSubReactVersion(),
         dep.site.hostLessPackageInfo?.minimumReactVersion
       )
   );
