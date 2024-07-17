@@ -1,0 +1,29 @@
+diff --git a/node_modules/esbuild-register/dist/node.js b/node_modules/esbuild-register/dist/node.js
+index e117be6..0e910c2 100644
+--- a/node_modules/esbuild-register/dist/node.js
++++ b/node_modules/esbuild-register/dist/node.js
+@@ -4752,13 +4752,14 @@ joycon.addLoader({
+   }
+ });
+ var getOptions = (cwd) => {
+-  var _a, _b, _c, _d;
++  var _a, _b, _c, _d, _e;
+   const {data, path} = joycon.loadSync(["tsconfig.json", "jsconfig.json"], cwd);
+   if (path && data) {
+     return {
+       jsxFactory: (_a = data.compilerOptions) == null ? void 0 : _a.jsxFactory,
+       jsxFragment: (_b = data.compilerOptions) == null ? void 0 : _b.jsxFragmentFactory,
+-      target: (_d = (_c = data.compilerOptions) == null ? void 0 : _c.target) == null ? void 0 : _d.toLowerCase()
++      target: (_d = (_c = data.compilerOptions) == null ? void 0 : _c.target) == null ? void 0 : _d.toLowerCase(),
++      experimentalDecorators: (_e = data.compilerOptions) == null ? void 0 : _e.experimentalDecorators
+     };
+   }
+   return {};
+@@ -4889,6 +4890,7 @@ function register(esbuildOptions = {}) {
+       format,
+       define,
+       banner,
++      tsconfigRaw: { compilerOptions: { experimentalDecorators: options.experimentalDecorators }},
+       ...overrides
+     });
+     const js = result.code;

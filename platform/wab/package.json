@@ -325,7 +325,7 @@
     "emoji-picker-react": "^4.9.3",
     "errorhandler": "^1.5.1",
     "es7-shim": "^6.0.0",
-    "esbuild": "^0.17.19",
+    "esbuild": "^0.18.0",
     "esbuild-register": "^3.5.0",
     "escodegen": "^2.1.0",
     "execa": "^5.1.1",

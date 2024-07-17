@@ -81,8 +81,8 @@ module.exports = {
     },
     {
       name: "socket-server",
-      script: "./src/wab/server/esbuild-runner.js",
-      args: ["src/wab/server/app-socket-backend-real.ts"],
+      script: "yarn",
+      args: ["socket-server"],
       wait_ready: true,
       time: true,
       env: {
