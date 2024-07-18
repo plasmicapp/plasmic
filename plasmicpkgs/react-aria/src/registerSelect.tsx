@@ -127,8 +127,8 @@ export function registerSelect(loader?: Registerable) {
   const selectValueMeta = registerComponentHelper(loader, BaseSelectValue, {
     name: makeComponentName("select-value"),
     displayName: "Aria Selected Value",
-    importPath: "@plasmicpkgs/react-aria/registerSelect",
-    importName: "SelectValue",
+    importPath: "@plasmicpkgs/react-aria/skinny/registerSelect",
+    importName: "BaseSelectValue",
     parentComponentName: SELECT_NAME,
     props: {
       customize: {

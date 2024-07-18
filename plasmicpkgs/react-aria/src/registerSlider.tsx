@@ -34,7 +34,7 @@ export interface BaseSliderProps
   onChange?: (value: number | number[], isMultiValue?: boolean) => void;
 }
 
-const sliderHelpers = {
+export const sliderHelpers = {
   states: {
     range: {
       onChangeArgsToValue: (value: number[], isMultiValue: boolean) => {
