@@ -1,4 +1,4 @@
-import { getSmtpAuth } from "@/wab/server/secrets";
+import { getSmtpPass } from "@/wab/server/secrets";
 import { createTransport, SentMessageInfo, Transporter } from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 
@@ -28,7 +28,10 @@ export function createMailer() {
       createTransport({
         host: "email-smtp.us-west-2.amazonaws.com",
         port: 587,
-        auth: getSmtpAuth(),
+        auth: {
+          user: "AKIA5VNZFKGRPSEJ6X6W",
+          pass: getSmtpPass(),
+        },
       })
     );
   } else {
