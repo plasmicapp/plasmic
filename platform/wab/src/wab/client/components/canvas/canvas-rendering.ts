@@ -1,4 +1,9 @@
 import {
+  SlateRenderNodeOpts,
+  mkCanvasText,
+  mkSlateChildren,
+} from "@/wab/client/components/canvas/CanvasText";
+import {
   cachedRenderTplNode,
   reactHookSpecsToKey,
 } from "@/wab/client/components/canvas/canvas-cache";
@@ -17,11 +22,6 @@ import {
   mkCanvasObserver,
   mkUseCanvasObserver,
 } from "@/wab/client/components/canvas/canvas-observer";
-import {
-  mkCanvasText,
-  mkSlateChildren,
-  SlateRenderNodeOpts,
-} from "@/wab/client/components/canvas/CanvasText";
 import { genRepeatedElement } from "@/wab/client/components/canvas/repeatedElement";
 import {
   showCanvasAuthNotification,
@@ -38,6 +38,24 @@ import { EditingTextContext, ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { mkTokenRef } from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
 import {
+  getSlotParams,
+  isLikelyTextTplSlot,
+  isStyledTplSlot,
+  shouldWrapSlotContentInDataCtxReader,
+} from "@/wab/shared/SlotUtils";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import {
+  VariantCombo,
+  getActiveVariantSettings,
+  isBaseVariant,
+  isDisabledPseudoSelectorVariantForTpl,
+  isGlobalVariant,
+  isPseudoElementVariantForTpl,
+  isScreenVariant,
+  isStyleVariant,
+  variantHasPrivatePseudoElementSelector,
+} from "@/wab/shared/Variants";
+import {
   componenToNonVariantParamNames,
   componentToElementNames,
   componentToVariantParamNames,
@@ -46,6 +64,7 @@ import {
   makeTokenValueResolver,
 } from "@/wab/shared/cached-selectors";
 import {
+  INTERNAL_CC_CANVAS_SELECTION_PROP,
   classNameProp,
   dataCanvasEnvsProp,
   frameUidProp,
@@ -88,6 +107,7 @@ import {
 } from "@/wab/shared/codegen/react-p";
 import { ReactHookSpec } from "@/wab/shared/codegen/react-p/react-hook-spec";
 import {
+  NodeNamer,
   getExportedComponentName,
   makeRootResetClassName,
   makeWabFlexContainerClassName,
@@ -96,7 +116,6 @@ import {
   makeWabSlotClassName,
   makeWabTextClassName,
   maybeMakePlasmicImgSrc,
-  NodeNamer,
 } from "@/wab/shared/codegen/react-p/utils";
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
 import {
@@ -124,21 +143,23 @@ import {
   isHostLessCodeComponent,
 } from "@/wab/shared/core/components";
 import {
+  ExprCtx,
+  InteractionArgLoc,
+  InteractionLoc,
   asCode,
   code,
-  ExprCtx,
   extractReferencedParam,
   getCodeExpressionWithFallback,
   getRawCode,
-  InteractionArgLoc,
-  InteractionLoc,
   isInteractionLoc,
   isRealCodeExpr,
   removeFallbackFromDataSourceOp,
 } from "@/wab/shared/core/exprs";
 import { mkParam } from "@/wab/shared/core/lang";
 import { makeSelectableKey } from "@/wab/shared/core/selection";
+import { isSlotSelection } from "@/wab/shared/core/slots";
 import {
+  StateVariableType,
   getLastPartOfImplicitStateName,
   getStateDisplayName,
   getStateOnChangePropName,
@@ -148,7 +169,6 @@ import {
   isReadonlyState,
   isWritableState,
   shouldHaveImplicitState,
-  StateVariableType,
 } from "@/wab/shared/core/states";
 import { plasmicImgAttrStyles } from "@/wab/shared/core/style-props";
 import {
@@ -163,6 +183,8 @@ import {
   studioDefaultStylesClassNameBase,
 } from "@/wab/shared/core/styles";
 import {
+  RawTextLike,
+  TplTextTag,
   ancestorsUp,
   getOwnerSite,
   isExprText,
@@ -176,10 +198,8 @@ import {
   isTplRepeated,
   isTplTag,
   isTplTextBlock,
-  RawTextLike,
   summarizeTpl,
   tplHasRef,
-  TplTextTag,
 } from "@/wab/shared/core/tpls";
 import { uniqifyClassName } from "@/wab/shared/css";
 import { parseDataUrlToSvgXml } from "@/wab/shared/data-urls";
@@ -199,23 +219,11 @@ import {
   CompositeExpr,
   CustomCode,
   DataSourceOpExpr,
-  ensureKnownNamedState,
   EventHandler,
   Expr,
   FunctionArg,
   FunctionExpr,
   ImageAssetRef,
-  isKnownColorPropType,
-  isKnownCustomCode,
-  isKnownDefaultStylesClassNamePropType,
-  isKnownDefaultStylesPropType,
-  isKnownEventHandler,
-  isKnownNamedState,
-  isKnownObjectPath,
-  isKnownStateParam,
-  isKnownStyleExpr,
-  isKnownStyleScopeClassNamePropType,
-  isKnownTplTag,
   MapExpr,
   Marker,
   ObjectPath,
@@ -234,11 +242,23 @@ import {
   TplRef,
   TplSlot,
   TplTag,
+  VarRef,
   Variant,
   VariantSetting,
   VariantsRef,
-  VarRef,
   VirtualRenderExpr,
+  ensureKnownNamedState,
+  isKnownColorPropType,
+  isKnownCustomCode,
+  isKnownDefaultStylesClassNamePropType,
+  isKnownDefaultStylesPropType,
+  isKnownEventHandler,
+  isKnownNamedState,
+  isKnownObjectPath,
+  isKnownStateParam,
+  isKnownStyleExpr,
+  isKnownStyleScopeClassNamePropType,
+  isKnownTplTag,
 } from "@/wab/shared/model/classes";
 import { isRenderFuncType, typeFactory } from "@/wab/shared/model/model-util";
 import { canAddChildren } from "@/wab/shared/parenting";
@@ -248,30 +268,12 @@ import {
   getPlumeEditorPlugin,
 } from "@/wab/shared/plume/plume-registry";
 import { hashExpr } from "@/wab/shared/site-diffs";
-import { deriveSizeStyleValue, PageSizeType } from "@/wab/shared/sizingutils";
-import {
-  getSlotParams,
-  isLikelyTextTplSlot,
-  isStyledTplSlot,
-  shouldWrapSlotContentInDataCtxReader,
-} from "@/wab/shared/SlotUtils";
+import { PageSizeType, deriveSizeStyleValue } from "@/wab/shared/sizingutils";
 import { placeholderImgUrl } from "@/wab/shared/urls";
 import {
   makeVariantComboSorter,
   sortedVariantSettings,
 } from "@/wab/shared/variant-sort";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import {
-  getActiveVariantSettings,
-  isBaseVariant,
-  isDisabledPseudoSelectorVariantForTpl,
-  isGlobalVariant,
-  isPseudoElementVariantForTpl,
-  isScreenVariant,
-  isStyleVariant,
-  VariantCombo,
-  variantHasPrivatePseudoElementSelector,
-} from "@/wab/shared/Variants";
 import type { usePlasmicInvalidate } from "@plasmicapp/data-sources";
 import { DataDict, mkMetaName } from "@plasmicapp/host";
 import { $StateSpec } from "@plasmicapp/react-web";
@@ -285,7 +287,7 @@ import {
   without,
   zipObject,
 } from "lodash";
-import { computed, IObservableValue, observable } from "mobx";
+import { IObservableValue, comparer, computed, observable } from "mobx";
 import { computedFn } from "mobx-utils";
 import type React from "react";
 import defer = setTimeout;
@@ -1657,6 +1659,67 @@ function renderTplComponent(
       }
     });
   }
+
+  if (isCodeComponent(node.component) && ctx.projectFlags.autoOpen) {
+    const codeComponentSelectionInfo = computedFn(
+      () => {
+        // Ensuring that the depencies are tracked
+        const isInteractive = ctx.viewCtx.studioCtx.isInteractiveMode;
+        const isAutoOpenMode = ctx.viewCtx.studioCtx.isAutoOpenMode;
+
+        // The reason why we are using the focusedTplDeepAncestorPath is because
+        // we can't rely on ValNodes or the dom to determine if a node is selected
+        // or not. Since code components are able to conditonally render content
+        // without our knowledge, even us being the ones that provide the content
+        // for the slot, we can't be sure wether the content is attached to the
+        // React tree. Our option is to rely on the model and based on the tpl nodes
+        // stretch the focused elements to include all the tpls that we are able to find.
+        //
+        // The reason for streching the selection is because code components can
+        // have the slot being proxied by a plasmic component, so we need to make sure
+        // that the selection is also handled through it.
+        const path = ctx.viewCtx.focusedTplAncestorsThroughComponents();
+        const nodeIdx = path?.findIndex((s) => s === node) ?? -1;
+
+        if (isInteractive || !isAutoOpenMode || !path || nodeIdx === -1) {
+          return {
+            id: node.uuid,
+            isSelected: false,
+            selectedSlotName: null,
+          };
+        }
+
+        // We now need to know whether this node is really selected or not since
+        // when dealing with proxied components the same node will be reused for
+        // rendering, we will then look into all tpl node ancestors and if they
+        // are present in the valKey
+        const nodeAncestors = path.slice(nodeIdx);
+        const isSelected = nodeAncestors.every((ancestor) => {
+          return (
+            isSlotSelection(ancestor) || ctx.valKey.includes(ancestor.uuid)
+          );
+        });
+
+        const descendant = nodeIdx > 0 ? path[nodeIdx - 1] : null;
+
+        return {
+          id: node.uuid,
+          isSelected,
+          selectedSlotName:
+            isSelected && isSlotSelection(descendant)
+              ? descendant?.slotParam?.variable.name
+              : null,
+        };
+      },
+      {
+        name: "canvasCodeComponentCtxValue",
+        equals: comparer.structural,
+      }
+    )();
+
+    props[INTERNAL_CC_CANVAS_SELECTION_PROP] = codeComponentSelectionInfo;
+  }
+
   let elt = createPlasmicElementProxy(node, ctx, ComponentImpl, props);
   if (isTplTag(node.parent) && isCodeComponent(node.component)) {
     // When we're rendering a code component, we wrap it in an error boundary,

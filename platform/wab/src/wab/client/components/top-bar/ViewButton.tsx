@@ -16,13 +16,13 @@ import {
 import Refresh2SvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Refresh2Svg";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { isDedicatedArena } from "@/wab/shared/Arenas";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Menu, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 
-type ViewButtonProps = DefaultViewButtonProps
+type ViewButtonProps = DefaultViewButtonProps;
 
 const contentCreatorModeHelp = (
   <>
@@ -159,6 +159,18 @@ const ViewButton = observer(function ViewButton(props: ViewButtonProps) {
                 >
                   {isFocusedMode ? "Turn on " : "Turn off "} design mode
                 </TextAndShortcut>
+              </Menu.Item>
+            );
+          }
+
+          if (appCtx.appConfig.autoOpen) {
+            const isAutoOpenMode = studioCtx.isAutoOpenMode;
+            push(
+              <Menu.Item
+                onClick={() => studioCtx.toggleAutoOpenMode()}
+                key="toggle-auto-open-mode"
+              >
+                {isAutoOpenMode ? "Turn off " : "Turn on "} auto-open mode
               </Menu.Item>
             );
           }

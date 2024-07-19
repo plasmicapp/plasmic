@@ -936,6 +936,7 @@ export function makeTplMenu(
               component: viewCtx.currentComponent(),
               tpl,
               dom: dom ? dom[0] : undefined,
+              val: maybeVal,
             });
           }}
         >
