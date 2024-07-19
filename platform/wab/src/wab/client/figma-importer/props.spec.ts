@@ -114,6 +114,13 @@ function createFigmaTestData(getCodeComponentMeta: jest.FunctionLike) {
         paramType: "prop",
       }),
       mkParam({
+        name: "swapChilds",
+        type: typeFactory.bool(),
+        exportType: ParamExportType.External,
+        paramType: "prop",
+        defaultExpr: customCode("true"),
+      }),
+      mkParam({
         name: "color",
         type: typeFactory.text(),
         exportType: ParamExportType.External,
@@ -265,6 +272,62 @@ describe("Figma importer slot handling", () => {
         ],
       ]);
       expect(getCodeComponentMeta).toHaveBeenCalledWith(component);
+    });
+
+    describe("match boolean prop against default value", () => {
+      it("should properly set false value", () => {
+        const getCodeComponentMeta = jest.fn().mockReturnValue({
+          figmaPropsTransform: () => ({
+            swapChilds: false,
+          }),
+        });
+        const { studioCtx, node, component } =
+          createFigmaTestData(getCodeComponentMeta);
+        expect(
+          fromFigmaComponentToTplProps(
+            studioCtx,
+            component,
+            node as InstanceNode
+          )
+        ).toEqual([["swapChilds", false]]);
+        expect(getCodeComponentMeta).toHaveBeenCalledWith(component);
+      });
+
+      it("shouldn't set default value", () => {
+        const getCodeComponentMeta = jest.fn().mockReturnValue({
+          figmaPropsTransform: () => ({
+            swapChilds: true,
+          }),
+        });
+        const { studioCtx, node, component } =
+          createFigmaTestData(getCodeComponentMeta);
+        expect(
+          fromFigmaComponentToTplProps(
+            studioCtx,
+            component,
+            node as InstanceNode
+          )
+        ).toEqual([]);
+        expect(getCodeComponentMeta).toHaveBeenCalledWith(component);
+      });
+
+      it("should properly set true value", () => {
+        const getCodeComponentMeta = jest.fn().mockReturnValue({
+          figmaPropsTransform: () => ({
+            isDisabled: true,
+          }),
+        });
+        const { studioCtx, node, component } =
+          createFigmaTestData(getCodeComponentMeta);
+        expect(
+          fromFigmaComponentToTplProps(
+            studioCtx,
+            component,
+            node as InstanceNode
+          )
+        ).toEqual([["isDisabled", true]]);
+        expect(getCodeComponentMeta).toHaveBeenCalledWith(component);
+      });
     });
   });
 });

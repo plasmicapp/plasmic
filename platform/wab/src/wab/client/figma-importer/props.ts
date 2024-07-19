@@ -14,7 +14,13 @@ import {
   isCodeComponent,
 } from "@/wab/shared/core/components";
 import { customCode } from "@/wab/shared/core/exprs";
-import { Component, CustomCode, VariantsRef } from "@/wab/shared/model/classes";
+import { tryEvalExpr } from "@/wab/shared/eval";
+import {
+  Component,
+  CustomCode,
+  VariantsRef,
+  isKnownCustomCode,
+} from "@/wab/shared/model/classes";
 import {
   isAnyType,
   isBoolType,
@@ -227,8 +233,16 @@ function fromFigmaPropsToTplProps(
       if (isBoolType(param.type)) {
         // We may have to convert a string value to a boolean as we may be mapping a variant
         // to a boolean prop
-        return isJsonScalar(value) && isFigmaTrueishValue(value)
-          ? [param.variable.name, true]
+        const propExpectedValue =
+          isJsonScalar(value) && isFigmaTrueishValue(value);
+        // We will attempt to evaluate the default expression of the param without additional data
+        // as we are only interested in "true" or "false" values
+        const propDefaultValue =
+          param.defaultExpr && isKnownCustomCode(param.defaultExpr)
+            ? tryEvalExpr(param.defaultExpr.code, {}).val
+            : false;
+        return propExpectedValue !== propDefaultValue
+          ? [param.variable.name, propExpectedValue]
           : null;
       }
 
