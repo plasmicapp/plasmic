@@ -1,6 +1,8 @@
 export {
+  PlasmicCanvasCodeComponentContext,
   PlasmicCanvasContext,
   PlasmicCanvasHost,
+  usePlasmicCanvasCodeComponentContext,
   usePlasmicCanvasContext,
 } from "./canvas-host";
 export * from "./data";
@@ -18,33 +20,33 @@ export {
   ComponentMeta,
   ComponentRegistration,
   ComponentTemplates,
-  default as registerComponent,
   StateHelpers,
-  stateHelpersKeys,
   StateSpec,
+  default as registerComponent,
+  stateHelpersKeys,
 } from "./registerComponent";
 export {
   CustomFunctionMeta,
   CustomFunctionRegistration,
-  default as registerFunction,
   ParamType,
+  default as registerFunction,
 } from "./registerFunction";
 export {
-  default as registerGlobalContext,
   GlobalContextMeta,
-  GlobalContextRegistration,
   PropType as GlobalContextPropType,
+  GlobalContextRegistration,
+  default as registerGlobalContext,
 } from "./registerGlobalContext";
 export {
-  default as registerToken,
   TokenRegistration,
   TokenType,
+  default as registerToken,
 } from "./registerToken";
 export {
   BasicTrait,
   ChoiceTrait,
-  default as registerTrait,
   TraitMeta,
   TraitRegistration,
+  default as registerTrait,
 } from "./registerTrait";
 export { default as repeatedElement } from "./repeatedElement";

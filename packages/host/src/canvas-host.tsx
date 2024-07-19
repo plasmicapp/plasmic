@@ -305,3 +305,23 @@ function deriveCanvasContextValue(): PlasmicCanvasContextValue | false {
   }
   return false;
 }
+
+interface PlasmicCanvasCodeComponentContextValue {
+  // An internal Plasmic ID for an instance of a code component
+  id: string;
+
+  // Whether this code component or some descendant of it is currently selected in Plasmic Studio
+  isSelected: boolean;
+
+  // If some descendant of this code component is selected, the name of the selected descendant
+  // slot ancestor.  Otherwise, null. For example, considering a modal with two slots ("header" and "body")
+  // if an element inside the "header" slot is selected, this value would be "header".
+  selectedSlotName: string | null;
+}
+
+export const PlasmicCanvasCodeComponentContext =
+  React.createContext<PlasmicCanvasCodeComponentContextValue | null>(null);
+
+export const usePlasmicCanvasCodeComponentContext = () => {
+  return React.useContext(PlasmicCanvasCodeComponentContext);
+};

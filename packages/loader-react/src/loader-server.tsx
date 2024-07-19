@@ -8,25 +8,25 @@ import React from "react";
 import ReactDOM from "react-dom";
 import * as jsxDevRuntime from "react/jsx-dev-runtime";
 import * as jsxRuntime from "react/jsx-runtime";
-import {
-  BaseInternalPlasmicComponentLoader,
-  CodeComponentMeta,
-  customFunctionImportAlias,
-  CustomFunctionMeta,
-  GlobalContextMeta,
-  InitOptions,
-  REGISTERED_CODE_COMPONENT_HELPERS,
-  REGISTERED_CUSTOM_FUNCTIONS,
-  ServerProvidedContext,
-  ServerProvidedData,
-  SUBSTITUTED_COMPONENTS,
-  SUBSTITUTED_GLOBAL_VARIANT_HOOKS,
-} from "./loader-shared";
 import type { PlasmicComponent } from "./PlasmicComponent";
 import type {
   PlasmicRootContextValue,
   PlasmicRootProvider,
 } from "./PlasmicRootProvider";
+import {
+  BaseInternalPlasmicComponentLoader,
+  CodeComponentMeta,
+  CustomFunctionMeta,
+  GlobalContextMeta,
+  InitOptions,
+  REGISTERED_CODE_COMPONENT_HELPERS,
+  REGISTERED_CUSTOM_FUNCTIONS,
+  SUBSTITUTED_COMPONENTS,
+  SUBSTITUTED_GLOBAL_VARIANT_HOOKS,
+  ServerProvidedContext,
+  ServerProvidedData,
+  customFunctionImportAlias,
+} from "./loader-shared";
 import { swrSerialize } from "./swr-util";
 import {
   getGlobalVariantsFromSplits,
@@ -59,6 +59,10 @@ const FakePlasmicComponentContext: React.Context<boolean> = {
 
 const FakePlasmicPrepassContext: React.Context<any> = {
   _currentValue: undefined,
+} as any;
+
+const FakePlasmicCanvasCodeComponentContext: React.Context<any> = {
+  _currentValue: undefined, // default value
 } as any;
 
 const mkMetaName = (name: string) => `__plasmic_meta_${name}`;
@@ -389,6 +393,9 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
             usePlasmicLinkMaybe: () => undefined,
             useSelector: fakeUseSelector,
             useSelectors: fakeUseSelectors,
+            PlasmicCanvasCodeComponentContext:
+              FakePlasmicCanvasCodeComponentContext,
+            usePlasmicCanvasCodeComponentContext: () => null,
           };
         })(),
         "@plasmicapp/loader-runtime-registry": {
