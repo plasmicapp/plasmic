@@ -26,7 +26,10 @@ interface Secrets {
   };
   encryptionKey?: string;
   dataSourceOperationEncryptionKey?: string;
-  smtpPass?: string;
+  smtpAuth?: {
+    user: string;
+    pass: string;
+  };
   intercomToken?: string;
   /** Optional Segment write key. Should have this on prod. */
   segmentWriteKey?: string;
@@ -104,8 +107,8 @@ export function getOktaClientSecret() {
   return loadSecrets().okta?.clientSecret ?? "fake";
 }
 
-export function getSmtpPass() {
-  return loadSecrets().smtpPass;
+export function getSmtpAuth() {
+  return loadSecrets().smtpAuth;
 }
 
 export function getIntercomToken() {

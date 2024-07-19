@@ -11,7 +11,10 @@ Write something like this in `~/.plasmic/secrets.json`:
     "clientId": "SEE_GOOGLE_INSTRUCTIONS_BELOW",
     "clientSecret": "SEE_GOOGLE_INSTRUCTIONS_BELOW"
   },
-  "smtpPass": "SET_THIS_TO_SMTP_KEY",
+  "smtpAuth": {
+    "user": "SET_THIS_TO_SMTP_USER",
+    "pass": "SET_THIS_TO_SMTP_KEY"
+  },
   "segmentWriteKey": "ignorethis"
 }
 ```
