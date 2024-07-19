@@ -341,6 +341,10 @@ button
 .focused
   @include focused
 
+// undo .focused style
+.monaco-editor .focused
+  box-shadow: none !important
+
 .focused-input-bg
   background-color: #fff !important
 
@@ -852,6 +856,10 @@ $fixed-centered-margin: 32px
   pointer-events: auto
 .top, .bottom, .left, .right
   background-color: $node-outline-color
+// undo .left, .right styles
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .left,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .right
+  background-color: inherit
 .top-left, .top-right, .bottom-left, .bottom-right
   background-color: white
   //border: 1px solid black
@@ -1859,12 +1867,6 @@ a.btn-link
       color: $purple9
     &.tpltree__label__icon--prop
       color: $purple9
-
-.monaco-editor .suggest-widget .monaco-list .monaco-list-row .left,
-.monaco-editor .suggest-widget .monaco-list .monaco-list-row .right
-  background-color: inherit
-.monaco-editor .focused
-  box-shadow: none !important
 
 .tpltree__label__menu
   opacity: 0

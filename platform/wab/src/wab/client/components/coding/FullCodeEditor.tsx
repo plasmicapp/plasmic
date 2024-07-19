@@ -28,7 +28,6 @@ export interface FullCodeEditorProps {
   enableMinimap?: boolean;
   editorHeight?: number;
   hideGlobalSuggestions?: boolean;
-  lightTheme?: boolean;
   folding?: boolean;
   schema?: DataPickerTypesSchema;
   /**
@@ -50,7 +49,6 @@ export const FullCodeEditor = React.forwardRef(
       enableMinimap = true,
       editorHeight,
       hideGlobalSuggestions,
-      lightTheme,
       folding = true,
       schema,
       autoFocus = true,
@@ -70,7 +68,7 @@ export const FullCodeEditor = React.forwardRef(
     }, [props.onChange, props.onSave]);
 
     const options: monaco.editor.IStandaloneEditorConstructionOptions = {
-      theme: lightTheme ? "vs" : "vs-dark",
+      theme: "vs",
       folding: folding,
       stickyScroll: {
         enabled: false, // doesn't work well with hidden wrapper lines

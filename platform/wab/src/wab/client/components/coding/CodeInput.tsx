@@ -59,7 +59,7 @@ export function CodeInput({
 }: CodeInputProps) {
   const options: IEditorConstructionOptions = {
     language,
-    theme: "vs-dark",
+    theme: "vs",
     lineNumbers: "off",
     lineDecorationsWidth: 0,
     lineNumbersMinChars: 0,

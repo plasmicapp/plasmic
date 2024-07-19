@@ -10,11 +10,11 @@ import {
   DefaultDataPickerCodeEditorLayoutProps,
   PlasmicDataPickerCodeEditorLayout,
 } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerCodeEditorLayout";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { isLiteralObjectByName, withoutNils } from "@/wab/shared/common";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { isLiteralObjectByName, withoutNils } from "@/wab/shared/common";
 
 export interface DataPickerCodeEditorLayoutProps
   extends Omit<DefaultDataPickerCodeEditorLayoutProps, "envPanel"> {
@@ -69,7 +69,6 @@ function DataPickerCodeEditorLayout_(
             onChange={(val: string) => setCurrentValue(val)}
             enableMinimap={false}
             hideGlobalSuggestions={true}
-            lightTheme={true}
             folding={false}
             schema={schema}
             autoFocus
