@@ -135,7 +135,7 @@ import { mkVar } from "@/wab/shared/core/lang";
 import { metaSvc } from "@/wab/shared/core/metas";
 import { isTagInline } from "@/wab/shared/core/rich-text-util";
 import { extractComponentUsages, writeable } from "@/wab/shared/core/sites";
-import { SlotSelection } from "@/wab/shared/core/slots";
+import { isSlotSelection, SlotSelection } from "@/wab/shared/core/slots";
 import { isOnChangeParam } from "@/wab/shared/core/states";
 import {
   ignoredConvertablePlainTextProps,
@@ -171,6 +171,7 @@ import {
   fillCodeComponentDefaultSlotContent,
   getSlotArgs,
   getSlotSelectionContainingTpl,
+  getTplSlotForParam,
   isCodeComponentSlot,
   isDescendantOfVirtualRenderExpr,
 } from "@/wab/shared/SlotUtils";
@@ -1314,6 +1315,63 @@ export function getParentTplOrSlotSelection(node: TplNode | SlotSelection) {
 export function ancestors(tpl: TplNode): TplNode[] {
   const tpls = ancestorsUp(tpl);
   return tpls.reverse();
+}
+
+/**
+ * Returns the full list of ancestors of a given tpl, including the tpl itself.
+ * Opposite of `ancestorsUp` will break through slot boundaries to include tpl nodes
+ * that are present in the `tplTree` of the component owning the slot, this makes
+ * the list of nodes returned by the function not necessarily respect the parent-child
+ * relationship of the nodes in the tree. But this is useful when we want to know about
+ * elements involved in the dom composition to render a given tpl.
+ */
+export function ancestorsThroughComponentsWithSlotSelections(
+  tpl: TplNode | SlotSelection,
+  opts: {
+    includeTplComponentRoot?: boolean;
+  } = {}
+): (TplNode | SlotSelection)[] {
+  const allAncestors: (TplNode | SlotSelection)[] = [];
+  let curNode: TplNode | SlotSelection | undefined | null = tpl;
+
+  if (
+    isTplComponent(tpl) &&
+    !isCodeComponent(tpl.component) &&
+    opts.includeTplComponentRoot
+  ) {
+    // We will consider the tpl component root as part of the ancestors chain even if it is not
+    // technically an ancestor of the tpl node, we may want to extend it later to go down in the
+    // chain of nodes until finding a code component or tpl tag
+    allAncestors.push(tpl.component.tplTree);
+  }
+
+  while (curNode) {
+    allAncestors.push(curNode);
+    if (isSlotSelection(curNode)) {
+      // If the current node is a slot selection, we need to check if we can break through the
+      // slot boundary to get to the tpl node that is present in the tplTree of the component owning the slot.
+      // This only happens if we are dealing with a plasmic component
+      const tplComponent = curNode.getTpl();
+      if (isCodeComponent(tplComponent.component)) {
+        curNode = tplComponent;
+      } else {
+        // Is unncessary to call getTplSlotParam here, but we call to validate what we are doing
+        const tplSlot = getTplSlotForParam(
+          tplComponent.component,
+          curNode.slotParam
+        );
+        // Before updating the current node, we include all the ancestors of the tpl slot going
+        // through the tpl tree of the component owning the slot
+        allAncestors.push(
+          ...ancestorsThroughComponentsWithSlotSelections(tplSlot)
+        );
+        curNode = tplComponent;
+      }
+    } else {
+      curNode = getParentTplOrSlotSelection(curNode);
+    }
+  }
+  return allAncestors;
 }
 
 export const summarizeTpl = (

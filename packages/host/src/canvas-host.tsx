@@ -306,22 +306,23 @@ function deriveCanvasContextValue(): PlasmicCanvasContextValue | false {
   return false;
 }
 
-interface PlasmicCanvasCodeComponentContextValue {
-  // An internal Plasmic ID for an instance of a code component
-  id: string;
+const INTERNAL_CC_CANVAS_SELECTION_PROP = "__plasmic_selection_prop__";
 
-  // Whether this code component or some descendant of it is currently selected in Plasmic Studio
-  isSelected: boolean;
-
-  // If some descendant of this code component is selected, the name of the selected descendant
-  // slot ancestor.  Otherwise, null. For example, considering a modal with two slots ("header" and "body")
-  // if an element inside the "header" slot is selected, this value would be "header".
-  selectedSlotName: string | null;
+export function usePlasmicCanvasComponentInfo(props: any) {
+  return React.useMemo(() => {
+    // Inside Plasmic Studio, code components will receive an additional prop
+    // that contains selection information for that specific code component.
+    // This hook will return that selection information which is useful for
+    // changing the behavior of the code component when it is selected, making
+    // it easier to interact with code components and slots that aren't always
+    // visible in the canvas. (e.g. automatically opening a modal when it's selected)
+    const selectionInfo = props?.[INTERNAL_CC_CANVAS_SELECTION_PROP];
+    if (selectionInfo) {
+      return {
+        isSelected: selectionInfo.isSelected as boolean,
+        selectedSlotName: selectionInfo.selectedSlotName as string | undefined,
+      };
+    }
+    return null;
+  }, [props]);
 }
-
-export const PlasmicCanvasCodeComponentContext =
-  React.createContext<PlasmicCanvasCodeComponentContextValue | null>(null);
-
-export const usePlasmicCanvasCodeComponentContext = () => {
-  return React.useContext(PlasmicCanvasCodeComponentContext);
-};

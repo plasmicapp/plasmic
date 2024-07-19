@@ -2453,6 +2453,17 @@ export class StudioCtx extends WithDbCtx {
     }
   }
 
+  private _isAutoOpenMode = observable.box(true);
+  get isAutoOpenMode() {
+    return this._isAutoOpenMode.get();
+  }
+  set isAutoOpenMode(autoOpen: boolean) {
+    this._isAutoOpenMode.set(autoOpen);
+  }
+  toggleAutoOpenMode() {
+    this.isAutoOpenMode = !this.isAutoOpenMode;
+  }
+
   //
   // Manage parent stack display
   //
@@ -6758,7 +6769,8 @@ function viewCtxInfoChanged(
     vcInfo.showDefaultSlotContents !== vcPreviousInfo.showDefaultSlotContents ||
     !isEqual(vcInfo.pinnedVariants, vcPreviousInfo.pinnedVariants) ||
     makeSelectableFullKey(vcInfo.focusedSelectable) !==
-      makeSelectableFullKey(vcPreviousInfo.focusedSelectable)
+      makeSelectableFullKey(vcPreviousInfo.focusedSelectable) ||
+    vcInfo.focusedTpl !== vcPreviousInfo.focusedTpl
   );
 }
 

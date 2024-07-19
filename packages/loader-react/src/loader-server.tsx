@@ -61,10 +61,6 @@ const FakePlasmicPrepassContext: React.Context<any> = {
   _currentValue: undefined,
 } as any;
 
-const FakePlasmicCanvasCodeComponentContext: React.Context<any> = {
-  _currentValue: undefined, // default value
-} as any;
-
 const mkMetaName = (name: string) => `__plasmic_meta_${name}`;
 
 function FakeDataCtxReader({ children }: { children: ($ctx: any) => any }) {
@@ -393,9 +389,7 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
             usePlasmicLinkMaybe: () => undefined,
             useSelector: fakeUseSelector,
             useSelectors: fakeUseSelectors,
-            PlasmicCanvasCodeComponentContext:
-              FakePlasmicCanvasCodeComponentContext,
-            usePlasmicCanvasCodeComponentContext: () => null,
+            usePlasmicCanvasComponentInfo: () => null,
           };
         })(),
         "@plasmicapp/loader-runtime-registry": {

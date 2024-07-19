@@ -1,8 +1,7 @@
 export {
-  PlasmicCanvasCodeComponentContext,
   PlasmicCanvasContext,
   PlasmicCanvasHost,
-  usePlasmicCanvasCodeComponentContext,
+  usePlasmicCanvasComponentInfo,
   usePlasmicCanvasContext,
 } from "./canvas-host";
 export * from "./data";
