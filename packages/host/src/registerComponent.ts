@@ -301,7 +301,7 @@ export interface CodeComponentMeta<P> {
     props: Record<string, string | number | boolean>
   ) => Record<
     string,
-    string | number | boolean | unknown[] | Record<string, unknown>
+    string | number | boolean | null | unknown[] | Record<string, unknown>
   >;
 
   /**

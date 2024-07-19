@@ -4,7 +4,7 @@ import { fakeStudioCtx } from "@/wab/client/test/fake-init-ctx";
 import { mkComponentVariantGroup, mkVariant } from "@/wab/shared/Variants";
 import { hackyCast } from "@/wab/shared/common";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
-import { code } from "@/wab/shared/core/exprs";
+import { customCode } from "@/wab/shared/core/exprs";
 import { ParamExportType, mkParam, mkVar } from "@/wab/shared/core/lang";
 import { mkTplTagX } from "@/wab/shared/core/tpls";
 import { StateParam } from "@/wab/shared/model/classes";
@@ -254,13 +254,13 @@ describe("Figma importer slot handling", () => {
         [
           "arrayParam",
           expect.objectContaining({
-            code: code(JSON.stringify(anyTypeProps.arrayParam)).code,
+            code: customCode(JSON.stringify(anyTypeProps.arrayParam)).code,
           }),
         ],
         [
           "objectParam",
           expect.objectContaining({
-            code: code(JSON.stringify(anyTypeProps.objectParam)).code,
+            code: customCode(JSON.stringify(anyTypeProps.objectParam)).code,
           }),
         ],
       ]);
