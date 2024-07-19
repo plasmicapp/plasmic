@@ -149,14 +149,13 @@ Cypress.Commands.add(
   (selector, pastePayload) => {
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/paste_event
     cy.wrap(selector).then(($destination) => {
-      const pasteEvent = Object.assign(
-        new Event("paste", { bubbles: true, cancelable: true }),
-        {
-          clipboardData: {
-            getData: () => pastePayload,
-          },
-        }
-      );
+      const dataTransfer = new DataTransfer();
+      dataTransfer.setData("text/plain", pastePayload);
+      const pasteEvent = new ClipboardEvent("paste", {
+        bubbles: true,
+        cancelable: true,
+        clipboardData: dataTransfer,
+      });
       $destination[0].dispatchEvent(pasteEvent);
     });
   }
