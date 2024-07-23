@@ -3,7 +3,6 @@ name: Sync, build and deploy Plasmic app
 
 permissions:
   contents: write
-  pages: write
   pull-requests: write
 
 on:
@@ -70,13 +69,6 @@ jobs:
           branch: ${{ github.event.client_payload.data.branch }}
           directory: ${{ github.event.client_payload.data.directory }}
           platform: ${{ github.event.client_payload.data.platform }}
-      - id: gh-pages
-        name: Publishing to GitHub Pages...
-        uses: JamesIves/github-pages-deploy-action@4.1.0
-        if: ${{ steps.build.outputs.publish_dir }}
-        with:
-          branch: gh-pages
-          folder: ${{ steps.build.outputs.publish_dir }}
       - id: pr
         name: Creating pull request...
         uses: repo-sync/pull-request@v2
