@@ -15,67 +15,50 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
-  PlasmicIcon as PlasmicIcon__,
-  PlasmicImg as PlasmicImg__,
-  PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
-  SingleBooleanChoiceArg,
   SingleChoiceArg,
   Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  generateOnMutateForSpec,
   generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
-  get as $stateGet,
   hasVariant,
-  initializeCodeComponentStates,
-  initializePlasmicStates,
-  makeFragment,
-  omit,
-  pick,
-  renderPlasmicSlot,
-  set as $stateSet,
-  useCurrentUser,
   useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName,
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions,
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import HostProtocolSelect from "../../components//HostProtocolSelect"; // plasmic-import: 6_CfQ5GVLku/component
+import HostProtocolSelect from "../../components/HostProtocolSelect"; // plasmic-import: 6_CfQ5GVLku/component
 import HostProtocolSelect__Option from "../../components/HostProtocolSelect__Option"; // plasmic-import: aHgWgR3OVni/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
+import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
+import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicHostUrlInput.module.css"; // plasmic-import: XxbnrpTDqu/css
 
+import InfoIcon from "../plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
 import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
 import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
-export type PlasmicHostUrlInput__VariantMembers = {};
-export type PlasmicHostUrlInput__VariantsArgs = {};
+export type PlasmicHostUrlInput__VariantMembers = {
+  urlValidationStatus: "invalid" | "valid";
+  urlPathStatus: "nonStandard" | "standard";
+};
+export type PlasmicHostUrlInput__VariantsArgs = {
+  urlValidationStatus?: SingleChoiceArg<"invalid" | "valid">;
+  urlPathStatus?: SingleChoiceArg<"nonStandard" | "standard">;
+};
 type VariantPropType = keyof PlasmicHostUrlInput__VariantsArgs;
-export const PlasmicHostUrlInput__VariantProps = new Array<VariantPropType>();
+export const PlasmicHostUrlInput__VariantProps = new Array<VariantPropType>(
+  "urlValidationStatus",
+  "urlPathStatus"
+);
 
 export type PlasmicHostUrlInput__ArgsType = {};
 type ArgPropType = keyof PlasmicHostUrlInput__ArgsType;
@@ -90,6 +73,8 @@ export type PlasmicHostUrlInput__OverridesType = {
 };
 
 export interface DefaultHostUrlInputProps {
+  urlValidationStatus?: SingleChoiceArg<"invalid" | "valid">;
+  urlPathStatus?: SingleChoiceArg<"nonStandard" | "standard">;
   className?: string;
 }
 
@@ -114,8 +99,6 @@ function PlasmicHostUrlInput__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = useCurrentUser?.() || {};
-
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
@@ -123,6 +106,25 @@ function PlasmicHostUrlInput__RenderFunc(props: {
         type: "private",
         variableType: "text",
         initFunc: ({ $props, $state, $queries, $ctx }) => "https://",
+      },
+      {
+        path: "urlInput.value",
+        type: "private",
+        variableType: "text",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
+      {
+        path: "urlValidationStatus",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) =>
+          $props.urlValidationStatus,
+      },
+      {
+        path: "urlPathStatus",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.urlPathStatus,
       },
     ],
     [$props, $ctx, $refs]
@@ -151,115 +153,318 @@ function PlasmicHostUrlInput__RenderFunc(props: {
         plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
-        sty.root
+        sty.root,
+        {
+          [sty.rooturlPathStatus_nonStandard]: hasVariant(
+            $state,
+            "urlPathStatus",
+            "nonStandard"
+          ),
+          [sty.rooturlValidationStatus_invalid]: hasVariant(
+            $state,
+            "urlValidationStatus",
+            "invalid"
+          ),
+          [sty.rooturlValidationStatus_valid]: hasVariant(
+            $state,
+            "urlValidationStatus",
+            "valid"
+          ),
+        }
       )}
     >
-      <div
-        className={classNames(
-          projectcss.all,
-          projectcss.__wab_text,
-          sty.text__g2NsR
-        )}
+      <Stack__
+        as={"div"}
+        hasGap={true}
+        className={classNames(projectcss.all, sty.freeBox__ycLvv, {
+          [sty.freeBoxurlValidationStatus_invalid__ycLvvVmYfF]: hasVariant(
+            $state,
+            "urlValidationStatus",
+            "invalid"
+          ),
+          [sty.freeBoxurlValidationStatus_valid__ycLvv0YpMn]: hasVariant(
+            $state,
+            "urlValidationStatus",
+            "valid"
+          ),
+        })}
       >
-        {"URL:"}
-      </div>
-      <HostProtocolSelect
-        data-plasmic-name={"hostProtocolSelect"}
-        data-plasmic-override={overrides.hostProtocolSelect}
-        className={classNames("__wab_instance", sty.hostProtocolSelect)}
-        onChange={(...eventArgs) => {
-          generateStateOnChangeProp($state, ["hostProtocolSelect", "value"])(
-            eventArgs[0]
-          );
-        }}
-        value={generateStateValueProp($state, ["hostProtocolSelect", "value"])}
-      >
-        <HostProtocolSelect__Option
-          className={classNames("__wab_instance", sty.option__jSgyS)}
-          textValue={"https://"}
-          value={"https://"}
+        <div
+          className={classNames(
+            projectcss.all,
+            projectcss.__wab_text,
+            sty.text__g2NsR,
+            {
+              [sty.texturlValidationStatus_invalid__g2NsRvmYfF]: hasVariant(
+                $state,
+                "urlValidationStatus",
+                "invalid"
+              ),
+              [sty.texturlValidationStatus_valid__g2NsR0YpMn]: hasVariant(
+                $state,
+                "urlValidationStatus",
+                "valid"
+              ),
+            }
+          )}
         >
-          {"https://"}
-        </HostProtocolSelect__Option>
-        <HostProtocolSelect__Option
-          className={classNames("__wab_instance", sty.option__nopaD)}
-          textValue={"http://"}
-          value={"http://"}
+          {"URL:"}
+        </div>
+        <HostProtocolSelect
+          data-plasmic-name={"hostProtocolSelect"}
+          data-plasmic-override={overrides.hostProtocolSelect}
+          className={classNames("__wab_instance", sty.hostProtocolSelect)}
+          onChange={(...eventArgs) => {
+            generateStateOnChangeProp($state, ["hostProtocolSelect", "value"])(
+              eventArgs[0]
+            );
+          }}
+          placeholder={"Select\u2026"}
+          value={generateStateValueProp($state, [
+            "hostProtocolSelect",
+            "value",
+          ])}
         >
-          {"http://"}
-        </HostProtocolSelect__Option>
-      </HostProtocolSelect>
-      <input
-        data-plasmic-name={"urlInput"}
-        data-plasmic-override={overrides.urlInput}
-        className={classNames(projectcss.all, projectcss.input, sty.urlInput)}
-        placeholder={"my-app.com/host"}
-        ref={(ref) => {
-          $refs["urlInput"] = ref;
-        }}
-        size={1}
-        type={"text"}
-      />
+          <HostProtocolSelect__Option
+            className={classNames("__wab_instance", sty.option__jSgyS)}
+            textValue={"https://"}
+            value={"https://"}
+          >
+            {"https://"}
+          </HostProtocolSelect__Option>
+          <HostProtocolSelect__Option
+            className={classNames("__wab_instance", sty.option__nopaD)}
+            textValue={"http://"}
+            value={"http://"}
+          >
+            {"http://"}
+          </HostProtocolSelect__Option>
+        </HostProtocolSelect>
+        <input
+          data-plasmic-name={"urlInput"}
+          data-plasmic-override={overrides.urlInput}
+          className={classNames(
+            projectcss.all,
+            projectcss.input,
+            sty.urlInput,
+            {
+              [sty.urlInputurlValidationStatus_invalid]: hasVariant(
+                $state,
+                "urlValidationStatus",
+                "invalid"
+              ),
+              [sty.urlInputurlValidationStatus_valid]: hasVariant(
+                $state,
+                "urlValidationStatus",
+                "valid"
+              ),
+            }
+          )}
+          onChange={(e) => {
+            generateStateOnChangeProp($state, ["urlInput", "value"])(
+              e.target.value
+            );
+          }}
+          placeholder={"my-app.com/host"}
+          ref={(ref) => {
+            $refs["urlInput"] = ref;
+          }}
+          size={1}
+          type={"text"}
+          value={generateStateValueProp($state, ["urlInput", "value"]) ?? ""}
+        />
 
-      <Button
-        data-plasmic-name={"clearButton"}
-        data-plasmic-override={overrides.clearButton}
-        className={classNames("__wab_instance", sty.clearButton)}
-        disabled={true}
-        endIcon={
-          <ChevronDownsvgIcon
-            className={classNames(projectcss.all, sty.svg__vgMoN)}
-            role={"img"}
-          />
-        }
-        size={"wide"}
-        startIcon={
-          <ArrowRightsvgIcon
-            className={classNames(projectcss.all, sty.svg__wNkJa)}
-            role={"img"}
-          />
-        }
-      >
-        <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text__sYxzC
-          )}
+        <Button
+          data-plasmic-name={"clearButton"}
+          data-plasmic-override={overrides.clearButton}
+          caption={"Caption"}
+          className={classNames("__wab_instance", sty.clearButton)}
+          disabled={true}
+          endIcon={
+            <ChevronDownsvgIcon
+              className={classNames(projectcss.all, sty.svg__vgMoN)}
+              role={"img"}
+            />
+          }
+          size={"wide"}
+          startIcon={
+            <ArrowRightsvgIcon
+              className={classNames(projectcss.all, sty.svg__wNkJa)}
+              role={"img"}
+            />
+          }
         >
-          {"Clear"}
-        </div>
-      </Button>
-      <Button
-        data-plasmic-name={"confirmButton"}
-        data-plasmic-override={overrides.confirmButton}
-        className={classNames("__wab_instance", sty.confirmButton)}
-        disabled={true}
-        endIcon={
-          <ChevronDownsvgIcon
-            className={classNames(projectcss.all, sty.svg__idqB)}
-            role={"img"}
-          />
-        }
-        size={"wide"}
-        startIcon={
-          <ArrowRightsvgIcon
-            className={classNames(projectcss.all, sty.svg__x95OL)}
-            role={"img"}
-          />
-        }
-        type={["primary"]}
-      >
-        <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text__ijKr
-          )}
+          <div
+            className={classNames(
+              projectcss.all,
+              projectcss.__wab_text,
+              sty.text__sYxzC
+            )}
+          >
+            {"Clear"}
+          </div>
+        </Button>
+        <Button
+          data-plasmic-name={"confirmButton"}
+          data-plasmic-override={overrides.confirmButton}
+          caption={"Caption"}
+          className={classNames("__wab_instance", sty.confirmButton)}
+          disabled={true}
+          endIcon={
+            <ChevronDownsvgIcon
+              className={classNames(projectcss.all, sty.svg__idqB)}
+              role={"img"}
+            />
+          }
+          size={"wide"}
+          startIcon={
+            <ArrowRightsvgIcon
+              className={classNames(projectcss.all, sty.svg__x95OL)}
+              role={"img"}
+            />
+          }
+          type={["primary"]}
         >
-          {"Confirm"}
-        </div>
-      </Button>
+          <div
+            className={classNames(
+              projectcss.all,
+              projectcss.__wab_text,
+              sty.text__ijKr
+            )}
+          >
+            {"Confirm"}
+          </div>
+        </Button>
+      </Stack__>
+      <Stack__
+        as={"div"}
+        hasGap={true}
+        className={classNames(projectcss.all, sty.freeBox__bFmsS)}
+      >
+        <Stack__
+          as={"div"}
+          hasGap={true}
+          className={classNames(projectcss.all, sty.freeBox__oOj3, {
+            [sty.freeBoxurlValidationStatus_invalid__oOj3VmYfF]: hasVariant(
+              $state,
+              "urlValidationStatus",
+              "invalid"
+            ),
+            [sty.freeBoxurlValidationStatus_valid__oOj30YpMn]: hasVariant(
+              $state,
+              "urlValidationStatus",
+              "valid"
+            ),
+          })}
+        >
+          <InfoIcon
+            className={classNames(projectcss.all, sty.svg__k9HiC, {
+              [sty.svgurlValidationStatus_invalid__k9HiCvmYfF]: hasVariant(
+                $state,
+                "urlValidationStatus",
+                "invalid"
+              ),
+              [sty.svgurlValidationStatus_valid__k9HiC0YpMn]: hasVariant(
+                $state,
+                "urlValidationStatus",
+                "valid"
+              ),
+            })}
+            role={"img"}
+          />
+
+          <div
+            className={classNames(
+              projectcss.all,
+              projectcss.__wab_text,
+              sty.text__dSWc,
+              {
+                [sty.texturlValidationStatus_invalid__dSWcvmYfF]: hasVariant(
+                  $state,
+                  "urlValidationStatus",
+                  "invalid"
+                ),
+                [sty.texturlValidationStatus_valid__dSWc0YpMn]: hasVariant(
+                  $state,
+                  "urlValidationStatus",
+                  "valid"
+                ),
+              }
+            )}
+          >
+            {"Please enter a valid URL. Note that spaces are not allowed."}
+          </div>
+        </Stack__>
+        <Stack__
+          as={"div"}
+          hasGap={true}
+          className={classNames(projectcss.all, sty.freeBox__g5LjN, {
+            [sty.freeBoxurlValidationStatus_invalid__g5LjNvmYfF]: hasVariant(
+              $state,
+              "urlValidationStatus",
+              "invalid"
+            ),
+            [sty.freeBoxurlValidationStatus_valid__g5LjN0YpMn]: hasVariant(
+              $state,
+              "urlValidationStatus",
+              "valid"
+            ),
+          })}
+        >
+          <InfoIcon
+            className={classNames(projectcss.all, sty.svg__pyf5U, {
+              [sty.svgurlPathStatus_nonStandard__pyf5UjMiBj]: hasVariant(
+                $state,
+                "urlPathStatus",
+                "nonStandard"
+              ),
+              [sty.svgurlPathStatus_standard__pyf5UQuOX]: hasVariant(
+                $state,
+                "urlPathStatus",
+                "standard"
+              ),
+            })}
+            role={"img"}
+          />
+
+          <div
+            className={classNames(
+              projectcss.all,
+              projectcss.__wab_text,
+              sty.text__tgz1I,
+              {
+                [sty.texturlPathStatus_nonStandard__tgz1IjMiBj]: hasVariant(
+                  $state,
+                  "urlPathStatus",
+                  "nonStandard"
+                ),
+                [sty.texturlPathStatus_standard__tgz1IQuOX]: hasVariant(
+                  $state,
+                  "urlPathStatus",
+                  "standard"
+                ),
+                [sty.texturlValidationStatus_valid__tgz1I0YpMn]: hasVariant(
+                  $state,
+                  "urlValidationStatus",
+                  "valid"
+                ),
+              }
+            )}
+          >
+            <React.Fragment>
+              <React.Fragment>
+                {"For standard configuration, the URL path should end with "}
+              </React.Fragment>
+              <span
+                className={"plasmic_default__all plasmic_default__span"}
+                style={{ fontWeight: 700 }}
+              >
+                {"/plasmic-host"}
+              </span>
+            </React.Fragment>
+          </div>
+        </Stack__>
+      </Stack__>
     </Stack__>
   ) as React.ReactElement | null;
 }
