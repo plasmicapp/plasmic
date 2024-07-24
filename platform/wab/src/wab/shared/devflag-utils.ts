@@ -7,11 +7,11 @@ export function isCoreTeamEmail(
   return !!email && email.endsWith("@" + devflags.coreTeamDomain);
 }
 
-export function findGoogleAuthRequiredEmailDomain(
+export function isGoogleAuthRequiredEmailDomain(
   email: string,
   devflags: DevFlagsType
-) {
-  return devflags.googleAuthRequiredEmailDomains.find((dom) =>
+): boolean {
+  return !!devflags.googleAuthRequiredEmailDomains.find((dom) =>
     email.endsWith("@" + dom)
   );
 }

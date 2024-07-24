@@ -1,19 +1,9 @@
 import {
-  ensure,
-  ensureString,
-  ensureType,
-  extractDomainFromEmail,
-  hackyCast,
-  isValidEmail,
-  spawn,
-  uncheckedCast,
-} from "@/wab/shared/common";
-import {
   DbMgr,
-  generateSecretToken,
   MismatchPasswordError,
   PwnedPasswordError,
   WeakPasswordError,
+  generateSecretToken,
 } from "@/wab/server/db/DbMgr";
 import { sendResetPasswordEmail } from "@/wab/server/emails/reset-password-email";
 import { sendEmailVerificationToUser } from "@/wab/server/emails/verification-email";
@@ -21,8 +11,8 @@ import { sendWelcomeEmail } from "@/wab/server/emails/welcome-email";
 import { OauthTokenProvider, User } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
 import {
-  extractSsoConfig,
   UserNotWhitelistedError,
+  extractSsoConfig,
 } from "@/wab/server/passport-cfg";
 import {
   customTeamApiAuth,
@@ -64,7 +54,17 @@ import {
   UpdatePasswordResponse,
   UpdateSelfRequest,
 } from "@/wab/shared/ApiSchema";
-import { findGoogleAuthRequiredEmailDomain } from "@/wab/shared/devflag-utils";
+import {
+  ensure,
+  ensureString,
+  ensureType,
+  extractDomainFromEmail,
+  hackyCast,
+  isValidEmail,
+  spawn,
+  uncheckedCast,
+} from "@/wab/shared/common";
+import { isGoogleAuthRequiredEmailDomain } from "@/wab/shared/devflag-utils";
 import * as Sentry from "@sentry/node";
 import Shopify, { AuthQuery } from "@shopify/shopify-api";
 import { NextFunction, Request, Response } from "express-serve-static-core";
@@ -192,7 +192,7 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
 
   await mgr.logSignUpAttempt(email);
 
-  if (findGoogleAuthRequiredEmailDomain(email, req.devflags)) {
+  if (isGoogleAuthRequiredEmailDomain(email, req.devflags)) {
     // plasmic.app users should sign up with Google.
     res.json(
       ensureType<SignUpResponse>({

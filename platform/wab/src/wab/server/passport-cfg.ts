@@ -1,14 +1,3 @@
-import {
-  assert,
-  asyncToCallback,
-  ensure,
-  extractDomainFromEmail,
-  isValidEmail,
-  maybes,
-  spreadLog,
-  StandardCallback,
-} from "@/wab/shared/common";
-import { DevFlagsType } from "@/wab/shared/devflags";
 import { Config } from "@/wab/server/config";
 import { setupCustomPassport } from "@/wab/server/custom-passport-cfg";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
@@ -29,12 +18,23 @@ import {
 } from "@/wab/server/util/passport-multi-oauth2";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { SsoConfigId, UserId } from "@/wab/shared/ApiSchema";
-import { findGoogleAuthRequiredEmailDomain } from "@/wab/shared/devflag-utils";
+import {
+  StandardCallback,
+  assert,
+  asyncToCallback,
+  ensure,
+  extractDomainFromEmail,
+  isValidEmail,
+  maybes,
+  spreadLog,
+} from "@/wab/shared/common";
+import { isGoogleAuthRequiredEmailDomain } from "@/wab/shared/devflag-utils";
+import { DevFlagsType } from "@/wab/shared/devflags";
 import { getPublicUrl } from "@/wab/shared/urls";
 import {
   MultiSamlStrategy,
-  Profile as SamlProfile,
   SamlConfig,
+  Profile as SamlProfile,
 } from "@node-saml/passport-saml";
 import { Request } from "express-serve-static-core";
 import { omit } from "lodash";
@@ -427,9 +427,9 @@ export async function upsertOauthUser(
   );
 
   const devflags = req.devflags;
-  const googleRequiredDom = findGoogleAuthRequiredEmailDomain(email, devflags);
+  const googleRequiredDom = isGoogleAuthRequiredEmailDomain(email, devflags);
   assert(
-    googleRequiredDom || provider === "google",
+    !googleRequiredDom || provider === "google",
     `${googleRequiredDom} users should sign in with Google`
   );
 
