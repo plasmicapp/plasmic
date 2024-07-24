@@ -273,6 +273,7 @@ export function TopFrameChrome({
               mergeModalContext={rest.mergeModalContext}
               setMergeModalContext={topFrameApi.setMergeModalContext}
               setShowCodeModal={topFrameApi.setShowCodeModal}
+              currentBranch={rest.activatedBranch}
             />
             <ShareModal
               refreshProjectAndPerms={refreshProjectAndPerms}

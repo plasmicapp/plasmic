@@ -42,4 +42,5 @@ export type HostFrameApi = {
   getUsedRolesInProject(): Promise<{ component: string; roleId: string }[]>;
   setDefaultPageRoleId(roleId: string | null | undefined): Promise<void>;
   logAsAppUser(appUser: StudioAppUser): Promise<void>;
+  handleBranchMerged(): Promise<void>;
 };

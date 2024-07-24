@@ -5614,6 +5614,11 @@ export class StudioCtx extends WithDbCtx {
     }
   }
 
+  async handleBranchMerged() {
+    // Ensure that we're up to date with the latest changes in the branch
+    await this.fetchUpdates();
+  }
+
   private async fetchUpdatesWatch() {
     const partial = await this.appCtx.api.getModelUpdates(
       this.siteInfo.id,
