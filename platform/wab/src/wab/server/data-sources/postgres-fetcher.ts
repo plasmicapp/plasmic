@@ -1,11 +1,11 @@
-import { assert, ensure } from "@/wab/shared/common";
 import { asyncTimed } from "@/wab/server/timing-util";
 import { NotFoundError } from "@/wab/shared/ApiErrors/errors";
+import { assert, ensure } from "@/wab/shared/common";
 import {
   DataSourceError,
-  fillPagination,
   ParameterizedField,
   RawPagination,
+  fillPagination,
 } from "@/wab/shared/data-sources-meta/data-sources";
 import { PostgresDataSource } from "@/wab/shared/data-sources-meta/postgres-meta";
 import type { CrudSorting } from "@pankod/refine-core";
@@ -778,7 +778,7 @@ SELECT
       FROM
         columns
     ),
-    '{}'
+    '{}'::json[]
   ) AS columns
 FROM
   tables
