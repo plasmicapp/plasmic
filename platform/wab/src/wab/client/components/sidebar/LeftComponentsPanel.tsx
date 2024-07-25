@@ -6,15 +6,10 @@ import {
   VirtualTree,
 } from "@/wab/client/components/grouping/VirtualTree";
 import { ComponentRow } from "@/wab/client/components/sidebar/ComponentRow";
-import {
-  Folder as InternalFolder,
-  createFolderTreeStructure,
-  isFolder,
-} from "@/wab/client/components/sidebar/folders/folders-util";
 import { PlasmicLeftComponentsPanel } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftComponentsPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
-import { isNonNil, unreachable } from "@/wab/shared/common";
+import { isNonNil } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
   isCodeComponent,
@@ -33,7 +28,7 @@ import { observer } from "mobx-react";
 import * as React from "react";
 
 interface Folder {
-  type: "folder" | "folder-component";
+  type: "folder";
   name: string;
   key: string;
   items: ComponentPanelRow[];
@@ -43,30 +38,11 @@ interface ComponentData {
   type: "component";
   key: string;
   component: Component;
+  readOnly: boolean;
   importedFrom?: string;
 }
 
 type ComponentPanelRow = Folder | ComponentData;
-
-function mapToComponentPanelRow(
-  item: Component | InternalFolder<Component>,
-  dep?: ProjectDependency
-): ComponentPanelRow {
-  if (!isFolder(item)) {
-    return {
-      type: "component" as const,
-      key: item.uuid,
-      component: item,
-      importedFrom: dep?.projectId,
-    };
-  }
-  return {
-    type: "folder-component" as const,
-    key: `$${dep?.uuid ?? ""}-folder${item.path}`,
-    name: item.name,
-    items: item.items.map((i) => mapToComponentPanelRow(i, dep)),
-  };
-}
 
 const LeftComponentsPanel = observer(function LeftComponentsPanel() {
   const studioCtx = useStudioCtx();
@@ -93,13 +69,10 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
     return row.name;
   }, []);
   const getRowHeight = React.useCallback((row: ComponentPanelRow) => {
-    switch (row.type) {
-      case "component":
-      case "folder-component":
-        return 32;
-      case "folder":
-        return 40;
+    if (row.type === "component") {
+      return 32;
     }
+    return 50;
   }, []);
 
   const readOnly = studioCtx.getLeftTabPermission("components") === "readable";
@@ -125,35 +98,37 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
           ))
     );
     comps = sortComponentsByName(comps);
-    const componentTree = createFolderTreeStructure(comps, (item) =>
-      mapToComponentPanelRow(item, dep)
-    );
-
-    return componentTree;
+    return comps.map((comp) => ({
+      type: "component" as const,
+      key: comp.uuid,
+      component: comp,
+      readOnly: readOnly,
+      importedFrom: dep?.projectId,
+    }));
   };
 
   const makeDepsItems = (deps: ProjectDependency[]): ComponentPanelRow[] => {
     deps = orderBy(deps, (dep) =>
       studioCtx.projectDependencyManager.getNiceDepName(dep)
     );
-    return deps
-      .map((dep) => ({
-        type: "folder" as const,
-        name: `${studioCtx.projectDependencyManager.getNiceDepName(dep)}`,
-        key: dep.uuid,
-        // For deps, we only show code components from hostless packages; for non-hostless
-        // packages, ony the code components from the current host page count, and they're
-        // shown in the Code components section
-        items: makeCompsItems(
-          dep.site.components.filter(
-            (c) =>
-              isReusableComponent(c) &&
-              (isHostLessPackage(dep.site) || !isCodeComponent(c))
-          ),
-          dep
+    return deps.map((dep) => ({
+      type: "folder" as const,
+      name: `Imported from "${studioCtx.projectDependencyManager.getNiceDepName(
+        dep
+      )}"`,
+      key: dep.uuid,
+      // For deps, we only show code components from hostless packages; for non-hostless
+      // packages, ony the code components from the current host page count, and they're
+      // shown in the Code components section
+      items: makeCompsItems(
+        dep.site.components.filter(
+          (c) =>
+            isReusableComponent(c) &&
+            (isHostLessPackage(dep.site) || !isCodeComponent(c))
         ),
-      }))
-      .filter((folder) => folder.items.length > 0);
+        dep
+      ),
+    }));
   };
 
   const plainComponents = studioCtx.site.components.filter(
@@ -178,25 +153,16 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
         ]
       : []),
     // Show non-hostless packages first, then hostless packages
-    ...[
-      {
-        type: "folder" as const,
-        name: "Imported",
-        key: "$imports-folder",
-        items: [
-          ...makeDepsItems(
-            studioCtx.site.projectDependencies.filter(
-              (d) => !isHostLessPackage(d.site)
-            )
-          ),
-          ...makeDepsItems(
-            studioCtx.site.projectDependencies.filter((d) =>
-              isHostLessPackage(d.site)
-            )
-          ),
-        ],
-      },
-    ].filter((folder) => folder.items.length > 0),
+    ...makeDepsItems(
+      studioCtx.site.projectDependencies.filter(
+        (d) => !isHostLessPackage(d.site)
+      )
+    ),
+    ...makeDepsItems(
+      studioCtx.site.projectDependencies.filter((d) =>
+        isHostLessPackage(d.site)
+      )
+    ),
     ...(isAdmin
       ? studioCtx.site.projectDependencies
           .filter((d) => !isHostLessPackage(d.site))
@@ -208,6 +174,7 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
                 component: comp,
                 key: comp.uuid,
                 importedFrom: dep.projectId,
+                readOnly: readOnly,
               }));
             if (pageComponents.length === 0) {
               return undefined;
@@ -268,30 +235,24 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
 
 const ComponentTreeRow = (props: RenderElementProps<ComponentPanelRow>) => {
   const { value, treeState } = props;
-  switch (value.type) {
-    case "folder":
-    case "folder-component":
-      return (
-        <ListSectionHeader
-          className={value.items.length > 0 ? "pointer" : undefined}
-          style={{ paddingLeft: (treeState.level + 1) * 16 }}
-          collapseState={!treeState.isOpen ? "collapsed" : "expanded"}
-        >
-          {treeState.matcher.boldSnippets(value.name)}
-        </ListSectionHeader>
-      );
-    case "component":
-      return (
-        <ComponentRow
-          component={value.component}
-          matcher={treeState.matcher}
-          importedFrom={value.importedFrom}
-          indentMultiplier={treeState.level}
-        />
-      );
-    default:
-      unreachable(value);
+  if (value.type === "folder") {
+    return (
+      <ListSectionHeader
+        className={value.items.length > 0 ? "pointer" : undefined}
+        collapseState={!treeState.isOpen ? "collapsed" : "expanded"}
+      >
+        {treeState.matcher.boldSnippets(value.name)}
+      </ListSectionHeader>
+    );
   }
+  return (
+    <ComponentRow
+      component={value.component}
+      readOnly={value.readOnly}
+      importedFrom={value.importedFrom}
+      matcher={treeState.matcher}
+    />
+  );
 };
 
 export default LeftComponentsPanel;

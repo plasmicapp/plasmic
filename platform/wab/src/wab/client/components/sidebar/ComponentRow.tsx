@@ -30,7 +30,6 @@ import {
   getComponentDisplayName,
   getDefaultComponentKind,
   getDefaultComponentLabel,
-  getFolderComponentDisplayName,
   getSuperComponents,
   isCodeComponent,
   isContextCodeComponent,
@@ -44,18 +43,17 @@ import * as React from "react";
 
 export const ComponentRow = observer(function ComponentRow(props: {
   component: Component;
-  matcher: Matcher;
-  indentMultiplier: number;
+  readOnly: boolean;
   importedFrom?: string;
+  matcher: Matcher;
 }) {
-  const { component, matcher, importedFrom, indentMultiplier } = props;
+  const { component, readOnly, importedFrom, matcher } = props;
   const studioCtx = useStudioCtx();
   const isPlainComponent =
     isReusableComponent(component) &&
     !isCodeComponent(component) &&
     !importedFrom;
   const isCodeComp = isCodeComponent(component);
-  const readOnly = studioCtx.getLeftTabPermission("components") === "readable";
 
   const overlay = () => {
     const builder = new MenuBuilder();
@@ -75,9 +73,7 @@ export const ComponentRow = observer(function ComponentRow(props: {
     return builder.build({ menuName: "component-item-menu" });
   };
 
-  const calcIndent = !matcher.hasQuery()
-    ? getSuperComponents(component).length + indentMultiplier
-    : indentMultiplier;
+  const indent = !matcher.hasQuery() ? getSuperComponents(component).length : 0;
 
   const defaultComponentKind = getDefaultComponentKind(
     studioCtx.site,
@@ -106,7 +102,7 @@ export const ComponentRow = observer(function ComponentRow(props: {
         icon={<Icon icon={ComponentIcon} />}
         menu={overlay}
         style={{
-          paddingLeft: calcIndent * 16,
+          paddingLeft: indent * 24,
         }}
         hasRightContents={isCodeComp}
         rightContent={
@@ -149,11 +145,11 @@ export const ComponentRow = observer(function ComponentRow(props: {
             }
           >
             <strong>
-              {matcher.boldSnippets(getFolderComponentDisplayName(component))}
+              {matcher.boldSnippets(getComponentDisplayName(component))}
             </strong>
           </Popover>
         ) : (
-          matcher.boldSnippets(getFolderComponentDisplayName(component))
+          matcher.boldSnippets(getComponentDisplayName(component))
         )}
       </ListItem>
     </DraggableInsertable>
