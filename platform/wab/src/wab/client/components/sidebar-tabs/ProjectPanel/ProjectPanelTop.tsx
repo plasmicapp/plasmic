@@ -89,7 +89,6 @@ import {
   assert,
   ensure,
   maybe,
-  sortBy,
   spawn,
   spawnWrapper,
   swallow,
@@ -138,11 +137,12 @@ import {
   isKnownComponentArena,
   isKnownPageArena,
 } from "@/wab/shared/model/classes";
+import { naturalSort } from "@/wab/shared/sort";
 import { TableSchema } from "@plasmicapp/data-sources";
 import { executePlasmicDataOp } from "@plasmicapp/react-web/lib/data-sources";
 import { Dropdown, Menu, Tooltip, notification } from "antd";
 import { UseComboboxGetItemPropsOptions } from "downshift";
-import { orderBy, trimStart } from "lodash";
+import { trimStart } from "lodash";
 import { observer } from "mobx-react";
 import { computedFn } from "mobx-utils";
 import React, { ReactNode, useRef, useState } from "react";
@@ -863,7 +863,7 @@ const getSortedComponentArenas = computedFn(function getSortedComponentArenas(
       }
     }
   };
-  for (const compArena of orderBy(
+  for (const compArena of naturalSort(
     studioCtx.site.componentArenas,
     (it) => it.component.name
   )) {
@@ -884,9 +884,10 @@ const getSortedComponentArenas = computedFn(function getSortedComponentArenas(
 const getSortedPageArenas = computedFn(function getSortedPageArenas(
   studioCtx: StudioCtx
 ) {
-  return orderBy(studioCtx.site.pageArenas, (it) => it.component.name).filter(
-    (arena) => studioCtx.canEditComponent(arena.component)
-  );
+  return naturalSort(
+    studioCtx.site.pageArenas,
+    (it) => it.component.name
+  ).filter((arena) => studioCtx.canEditComponent(arena.component));
 });
 
 const getSortedMixedArenas = computedFn(function getSortedMixedArenas(
@@ -944,13 +945,13 @@ function getFolderItemMenuRenderer({
 
     const replaceAllInstancesMenuItems = [
       ...menuSection(
-        ...sortBy(studioCtx.site.components, (c) => c.name.toLowerCase()).map(
-          (comp) => componentToReplaceAllInstancesItem(comp)
+        ...naturalSort(studioCtx.site.components, (c) => c.name).map((comp) =>
+          componentToReplaceAllInstancesItem(comp)
         )
       ),
       ...studioCtx.site.projectDependencies.flatMap((dep) =>
         menuSection(
-          ...dep.site.components.map((comp) =>
+          ...naturalSort(dep.site.components, (c) => c.name).map((comp) =>
             componentToReplaceAllInstancesItem(comp)
           )
         )

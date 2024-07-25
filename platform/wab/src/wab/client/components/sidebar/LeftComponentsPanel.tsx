@@ -23,7 +23,8 @@ import {
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { Component, ProjectDependency } from "@/wab/shared/model/classes";
-import { debounce, orderBy } from "lodash";
+import { naturalSort } from "@/wab/shared/sort";
+import { debounce } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -108,7 +109,7 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
   };
 
   const makeDepsItems = (deps: ProjectDependency[]): ComponentPanelRow[] => {
-    deps = orderBy(deps, (dep) =>
+    deps = naturalSort(deps, (dep) =>
       studioCtx.projectDependencyManager.getNiceDepName(dep)
     );
     return deps.map((dep) => ({

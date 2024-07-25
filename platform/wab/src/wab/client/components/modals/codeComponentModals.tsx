@@ -26,13 +26,7 @@ import {
   CodeComponentMetaDiffWithComponent,
   UnknownComponentError,
 } from "@/wab/shared/code-components/code-components";
-import {
-  ensure,
-  filterFalsy,
-  sortBy,
-  spawn,
-  withoutNils,
-} from "@/wab/shared/common";
+import { ensure, filterFalsy, spawn, withoutNils } from "@/wab/shared/common";
 import {
   CodeComponent,
   getComponentDisplayName,
@@ -40,6 +34,7 @@ import {
 } from "@/wab/shared/core/components";
 import { Component } from "@/wab/shared/model/classes";
 import { typeDisplayName, typesEqual } from "@/wab/shared/model/model-util";
+import { naturalSort } from "@/wab/shared/sort";
 import { Alert, Form, notification } from "antd";
 import * as React from "react";
 import semver from "semver";
@@ -54,7 +49,7 @@ export async function promptRemapCodeComponent(props: {
   title: string | React.ReactNode;
 }) {
   const { studioCtx, component, refComponents, title } = props;
-  const candidates = sortBy(
+  const candidates = naturalSort(
     withoutNils(
       studioCtx.codeComponentsRegistry
         .getRegisteredCodeComponents()

@@ -170,6 +170,7 @@ import {
   replaceStateWithPropInCodeExprs,
   replaceVarWithPropInCodeExprs,
 } from "@/wab/shared/refactoring";
+import { naturalSort } from "@/wab/shared/sort";
 import { smartHumanize } from "@/wab/shared/strs";
 import {
   TplVisibility,
@@ -179,7 +180,7 @@ import {
   setTplVisibility,
 } from "@/wab/shared/visibility-utils";
 import { CodeComponentMeta as ComponentRegistration } from "@plasmicapp/host/registerComponent";
-import L, { cloneDeep, orderBy, uniq } from "lodash";
+import L, { cloneDeep, uniq } from "lodash";
 import memoizeOne from "memoize-one";
 
 export enum ComponentType {
@@ -2263,7 +2264,7 @@ export function sortComponentsByName(comps: Component[]) {
   const addComp = (comp: Component) => {
     result.push(comp);
     // Also add all sub components
-    for (const subComp of orderBy(comp.subComps, (c) =>
+    for (const subComp of naturalSort(comp.subComps, (c) =>
       getComponentDisplayName(c)
     )) {
       addComp(subComp);
@@ -2271,7 +2272,7 @@ export function sortComponentsByName(comps: Component[]) {
   };
 
   // First order non-sub-components by name
-  for (const comp of orderBy(
+  for (const comp of naturalSort(
     comps.filter((c) => !c.superComp),
     (c) => getComponentDisplayName(c)
   )) {

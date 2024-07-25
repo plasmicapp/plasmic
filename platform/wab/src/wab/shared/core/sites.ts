@@ -184,6 +184,7 @@ import {
   ResponsiveStrategy,
   defaultResponsiveSettings,
 } from "@/wab/shared/responsiveness";
+import { naturalSort } from "@/wab/shared/sort";
 import { getMatchingPagePathParams } from "@/wab/shared/utils/url-utils";
 import keyBy from "lodash/keyBy";
 import keys from "lodash/keys";
@@ -2027,10 +2028,10 @@ export function getSiteArenas(
     ...site.arenas,
     ...(opts?.noSorting
       ? site.pageArenas
-      : orderBy(site.pageArenas, (it) => it.component.name)),
+      : naturalSort(site.pageArenas, (it) => it.component.name)),
     ...(opts?.noSorting
       ? site.componentArenas
-      : orderBy(site.componentArenas, (it) => it.component.name)),
+      : naturalSort(site.componentArenas, (it) => it.component.name)),
   ];
 }
 

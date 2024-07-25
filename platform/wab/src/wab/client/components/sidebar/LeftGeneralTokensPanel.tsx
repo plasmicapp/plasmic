@@ -16,7 +16,6 @@ import Select from "@/wab/client/components/widgets/Select";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { PlasmicLeftGeneralTokensPanel } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftGeneralTokensPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure } from "@/wab/shared/common";
 import {
   TokenType,
   TokenValue,
@@ -24,14 +23,15 @@ import {
 } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { isScreenVariant } from "@/wab/shared/Variants";
-import { ProjectDependency, StyleToken } from "@/wab/shared/model/classes";
-import Chroma from "@/wab/shared/utils/color-utils";
+import { ensure } from "@/wab/shared/common";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { extractTokenUsages } from "@/wab/shared/core/styles";
+import { ProjectDependency, StyleToken } from "@/wab/shared/model/classes";
+import { naturalSort } from "@/wab/shared/sort";
+import Chroma from "@/wab/shared/utils/color-utils";
 import { Tooltip } from "antd";
-import { orderBy } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { isHostLessPackage } from "@/wab/shared/core/sites";
 
 type TokenTypeExpanded = {
   [TokenType.Color]: boolean;
@@ -172,7 +172,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
             justAdded === token)
         );
       });
-      tokens = orderBy(tokens, (token) => token.name.toLowerCase());
+      tokens = naturalSort(tokens, (token) => token.name);
       return tokens.map((token) => ({
         type: "item" as const,
         item: token,
@@ -184,7 +184,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
       deps = deps.filter(
         (dep) => filterDeps.length === 0 || filterDeps.includes(dep)
       );
-      deps = orderBy(deps, (dep) =>
+      deps = naturalSort(deps, (dep) =>
         studioCtx.projectDependencyManager.getNiceDepName(dep)
       );
       return deps.map((dep) => ({

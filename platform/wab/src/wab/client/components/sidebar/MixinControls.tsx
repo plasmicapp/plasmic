@@ -36,21 +36,22 @@ import MixinIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Mixin";
 import ThemeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Theme";
 import PlasmicLeftMixinsPanel from "@/wab/client/plasmic/plasmic_kit/PlasmicLeftMixinsPanel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, spawn, tuple } from "@/wab/shared/common";
 import { isTokenRef } from "@/wab/commons/StyleToken";
-import { extractTransitiveDepsFromMixins } from "@/wab/shared/core/project-deps";
 import { MIXIN_LOWER } from "@/wab/shared/Labels";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { makeTokenRefResolver } from "@/wab/shared/cached-selectors";
+import { ensure, spawn, tuple } from "@/wab/shared/common";
+import { extractTransitiveDepsFromMixins } from "@/wab/shared/core/project-deps";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
-import { Mixin, ProjectDependency, Variant } from "@/wab/shared/model/classes";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { extractMixinUsages } from "@/wab/shared/core/styles";
+import { Mixin, ProjectDependency, Variant } from "@/wab/shared/model/classes";
+import { naturalSort } from "@/wab/shared/sort";
 import { Menu, notification } from "antd";
-import L, { orderBy } from "lodash";
+import L from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
-import { isHostLessPackage } from "@/wab/shared/core/sites";
 
 function _MixinPreview(props: {
   sc: StudioCtx;
@@ -352,7 +353,7 @@ function _MixinsPanel() {
     mixins = mixins.filter(
       (mixin) => matcher.matches(mixin.name) || justAdded === mixin
     );
-    mixins = orderBy(mixins, (mixin) => mixin.name);
+    mixins = naturalSort(mixins, (mixin) => mixin.name);
     return mixins.map((mixin) => ({
       type: "item" as const,
       item: mixin,
@@ -364,7 +365,7 @@ function _MixinsPanel() {
     deps = deps.filter(
       (dep) => filterDeps.length === 0 || filterDeps.includes(dep)
     );
-    deps = orderBy(deps, (dep) =>
+    deps = naturalSort(deps, (dep) =>
       sc.projectDependencyManager.getNiceDepName(dep)
     );
     return deps.map((dep) => ({

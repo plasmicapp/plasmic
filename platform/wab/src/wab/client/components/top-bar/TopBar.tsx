@@ -1,12 +1,12 @@
 /** @format */
 import { U } from "@/wab/client/cli-routes";
 import { useContextMenu } from "@/wab/client/components/ContextMenu";
+import { PublicLink } from "@/wab/client/components/PublicLink";
 import { usePreviewCtx } from "@/wab/client/components/live/PreviewCtx";
 import {
   MenuBuilder,
   TextAndShortcut,
 } from "@/wab/client/components/menu-builder";
-import { PublicLink } from "@/wab/client/components/PublicLink";
 import { AvatarGallery } from "@/wab/client/components/studio/Avatar";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import Select from "@/wab/client/components/widgets/Select";
@@ -20,7 +20,7 @@ import {
   STUDIO_ONBOARDING_TUTORIALS,
   STUDIO_ONBOARDING_TUTORIALS_LIST,
 } from "@/wab/client/tours/tutorials/tutorials-meta";
-import { ensure, sortBy, spawn, withoutNils } from "@/wab/shared/common";
+import { ensure, spawn, withoutNils } from "@/wab/shared/common";
 import {
   isCodeComponent,
   isFrameComponent,
@@ -28,12 +28,13 @@ import {
   isReusableComponent,
 } from "@/wab/shared/core/components";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { pruneUnusedImageAssets } from "@/wab/shared/prune-site";
+import { naturalSort } from "@/wab/shared/sort";
 import { canEditProjectConfig } from "@/wab/shared/ui-config-utils";
-import { Menu, notification, Tooltip } from "antd";
+import { fixPageHrefsToLocal } from "@/wab/shared/utils/split-site-utils";
+import { Menu, Tooltip, notification } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
-import { pruneUnusedImageAssets } from "@/wab/shared/prune-site";
-import { fixPageHrefsToLocal } from "@/wab/shared/utils/split-site-utils";
 import useSWR from "swr";
 
 export const outlineModes = ["blocks", "inlines", "all"];
@@ -470,42 +471,37 @@ function _TopBar({ preview }: TopBarProps) {
                   <>
                     {previewPages.length > 0 && (
                       <Select.OptionGroup title="Pages">
-                        {sortBy(previewPages, (c) => c.name.toLowerCase()).map(
-                          (c) => (
-                            <Select.Option key={c.uuid} value={c.uuid}>
-                              <Icon
-                                icon={PageIcon}
-                                style={{ marginRight: 4 }}
-                              />
-                              {c.name}{" "}
-                              <span style={{ fontSize: "0.9em", opacity: 0.7 }}>
-                                (
-                                {
-                                  ensure(
-                                    c.pageMeta,
-                                    "Page component is expected to have page meta"
-                                  ).path
-                                }
-                                )
-                              </span>
-                            </Select.Option>
-                          )
-                        )}
+                        {naturalSort(previewPages, (c) => c.name).map((c) => (
+                          <Select.Option key={c.uuid} value={c.uuid}>
+                            <Icon icon={PageIcon} style={{ marginRight: 4 }} />
+                            {c.name}{" "}
+                            <span style={{ fontSize: "0.9em", opacity: 0.7 }}>
+                              (
+                              {
+                                ensure(
+                                  c.pageMeta,
+                                  "Page component is expected to have page meta"
+                                ).path
+                              }
+                              )
+                            </span>
+                          </Select.Option>
+                        ))}
                       </Select.OptionGroup>
                     )}
                     {previewComponents.length > 0 && (
                       <Select.OptionGroup title="Components">
-                        {sortBy(previewComponents, (c) =>
-                          c.name.toLowerCase()
-                        ).map((c) => (
-                          <Select.Option key={c.uuid} value={c.uuid}>
-                            <Icon
-                              icon={ComponentIcon}
-                              style={{ marginRight: 4 }}
-                            />
-                            {c.name}
-                          </Select.Option>
-                        ))}
+                        {naturalSort(previewComponents, (c) => c.name).map(
+                          (c) => (
+                            <Select.Option key={c.uuid} value={c.uuid}>
+                              <Icon
+                                icon={ComponentIcon}
+                                style={{ marginRight: 4 }}
+                              />
+                              {c.name}
+                            </Select.Option>
+                          )
+                        )}
                       </Select.OptionGroup>
                     )}
                     {previewArtboards.length > 0 && (

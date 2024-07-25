@@ -35,20 +35,21 @@ import ImageBlockIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageB
 import PlasmicLeftImagesPanel from "@/wab/client/plasmic/plasmic_kit/PlasmicLeftImagesPanel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ImageUploadResponse } from "@/wab/shared/ApiSchema";
 import { ensure } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { extractImageAssetUsages } from "@/wab/shared/core/image-assets";
-import { ImageUploadResponse } from "@/wab/shared/ApiSchema";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { imageDataUriToBlob } from "@/wab/shared/data-urls";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ImageAsset, ProjectDependency } from "@/wab/shared/model/classes";
+import { naturalSort } from "@/wab/shared/sort";
 import { canRead, canWrite } from "@/wab/shared/ui-config-utils";
 import { Menu } from "antd";
-import { last, orderBy } from "lodash";
+import { last } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
-import { isHostLessPackage } from "@/wab/shared/core/sites";
 
 type ImageAssetTypeExpanded = {
   [ImageAssetType.Icon]: boolean;
@@ -127,7 +128,7 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
           asset.type === type &&
           (matcher.matches(asset.name) || justAdded === asset)
       );
-      assets = orderBy(assets, (asset) => asset.name);
+      assets = naturalSort(assets, (asset) => asset.name);
       return assets.map((asset) => ({
         type: "item" as const,
         item: asset,
@@ -139,7 +140,7 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
       deps = deps.filter(
         (dep) => filterDeps.length === 0 || filterDeps.includes(dep)
       );
-      deps = orderBy(deps, (dep) =>
+      deps = naturalSort(deps, (dep) =>
         studioCtx.projectDependencyManager.getNiceDepName(dep)
       );
       return deps.map((dep) => ({

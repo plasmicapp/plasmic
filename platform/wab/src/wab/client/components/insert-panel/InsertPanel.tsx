@@ -55,6 +55,8 @@ import {
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import { isFlexContainer } from "@/wab/client/utils/tpl-client-utils";
+import { HighlightBlinker } from "@/wab/commons/components/HighlightBlinker";
+import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
 import { createMapFromObject } from "@/wab/shared/collections";
 import {
   assertNever,
@@ -67,10 +69,8 @@ import {
   mergeSane,
   only,
   sliding,
-  sortBy,
   spawnWrapper,
 } from "@/wab/shared/common";
-import { HighlightBlinker } from "@/wab/commons/components/HighlightBlinker";
 import {
   CodeComponent,
   getSubComponents,
@@ -86,6 +86,16 @@ import {
   sortComponentsByName,
   tryGetDefaultComponent,
 } from "@/wab/shared/core/components";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { isIcon } from "@/wab/shared/core/image-assets";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import {
+  isComponentRoot,
+  isTplColumn,
+  isTplContainer,
+  isTplTextBlock,
+} from "@/wab/shared/core/tpls";
 import {
   DEVFLAGS,
   flattenInsertableTemplates,
@@ -93,9 +103,6 @@ import {
   HostLessPackageInfo,
   InsertableTemplatesGroup,
 } from "@/wab/shared/devflags";
-import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
-import { isIcon } from "@/wab/shared/core/image-assets";
-import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
 import { FRAMES_CAP } from "@/wab/shared/Labels";
 import {
   Component,
@@ -106,19 +113,12 @@ import {
   TplNode,
   TplTag,
 } from "@/wab/shared/model/classes";
+import { naturalSort } from "@/wab/shared/sort";
 import {
   canInsertAlias,
   canInsertHostlessPackage,
   InsertPanelConfig,
 } from "@/wab/shared/ui-config-utils";
-import { isHostLessPackage } from "@/wab/shared/core/sites";
-import { SlotSelection } from "@/wab/shared/core/slots";
-import {
-  isComponentRoot,
-  isTplColumn,
-  isTplContainer,
-  isTplTextBlock,
-} from "@/wab/shared/core/tpls";
 import cn from "classnames";
 import { UseComboboxGetItemPropsOptions } from "downshift";
 import L, { groupBy, last, uniq } from "lodash";
@@ -933,7 +933,7 @@ function getCodeComponentsGroups(studioCtx: StudioCtx): AddItemGroup[] {
       isCodeComponentWithSection(c) && !isSubComponent(c)
   );
   const groups = groupBy(components, (c) => c.codeComponentMeta.section);
-  return sortBy(
+  return naturalSort(
     Object.entries(groups)
       .map(([section, sectionComponents]) => {
         const subGroups = groupBy(sectionComponents, (c) => {
@@ -1266,7 +1266,7 @@ export function buildAddItemGroups({
         sectionLabel: "Headless components",
         familyKey: "imported-packages",
         familyLabel: "Imported packages",
-        items: sortBy(
+        items: naturalSort(
           [
             ...sortComponentsByName(
               studioCtx.site.components.filter((c) => c.plumeInfo)
@@ -1276,7 +1276,7 @@ export function buildAddItemGroups({
               previewImageUrl: undefined,
             })),
           ],
-          (item) => item.label.toLowerCase()
+          (item) => item.label
         ),
       },
 

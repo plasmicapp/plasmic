@@ -51,11 +51,12 @@ import {
   showSizeCss,
 } from "@/wab/shared/css-size";
 import { StyleToken, isKnownStyleToken } from "@/wab/shared/model/classes";
+import { naturalSort } from "@/wab/shared/sort";
 import { Tooltip, notification } from "antd";
 import type { TooltipPlacement } from "antd/es/tooltip";
 import cn from "classnames";
 import { UseComboboxGetItemPropsOptions, useCombobox } from "downshift";
-import L, { orderBy } from "lodash";
+import L from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
 import {
@@ -296,11 +297,11 @@ export const DimTokenSpinner = observer(
           ({ type: "edit-token", token: editableTokens[0] } as const),
 
         // In number mode, always show all tokens; else only show tokens that match
-        ...orderBy(
+        ...naturalSort(
           tokens
             .filter((t) => isNumberMode || matcher.matches(t.name))
             .map((token) => ({ type: "token", token } as const)),
-          (item) => item.token.name.toLowerCase()
+          (item) => item.token.name
         ),
       ]);
     };
