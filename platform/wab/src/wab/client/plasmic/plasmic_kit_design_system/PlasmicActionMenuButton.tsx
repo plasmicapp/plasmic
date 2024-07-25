@@ -13,25 +13,24 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
   classNames,
-  wrapWithClassName,
   createPlasmicElementProxy,
-  makeFragment,
+  deriveRenderOpts,
+  Flex as Flex__,
+  hasVariant,
   MultiChoiceArg,
+  PlasmicIcon as PlasmicIcon__,
+  renderPlasmicSlot,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
-  deriveRenderOpts,
-  ensureGlobalVariants,
+  useDollarState,
+  useTrigger,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -40,9 +39,9 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicActionMenuButton.module.css"; // plasmic-import: VNi6NC2QOI/css
 
-import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
 import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 import ChevronUpsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronUpsvg"; // plasmic-import: i9D87DzsX/icon
+import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -77,10 +76,10 @@ export const PlasmicActionMenuButton__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicActionMenuButton__OverridesType = {
-  root?: p.Flex<"div">;
-  actionButton?: p.Flex<"button">;
-  freeBox?: p.Flex<"div">;
-  menuTrigger?: p.Flex<typeof IconButton>;
+  root?: Flex__<"div">;
+  actionButton?: Flex__<"button">;
+  freeBox?: Flex__<"div">;
+  menuTrigger?: Flex__<typeof IconButton>;
 };
 
 export interface DefaultActionMenuButtonProps {
@@ -110,13 +109,11 @@ function PlasmicActionMenuButton__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "type",
@@ -145,7 +142,7 @@ function PlasmicActionMenuButton__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -189,7 +186,7 @@ function PlasmicActionMenuButton__RenderFunc(props: {
         }
       )}
     >
-      <p.Stack
+      <Stack__
         as={"button"}
         data-plasmic-name={"actionButton"}
         data-plasmic-override={overrides.actionButton}
@@ -231,7 +228,7 @@ function PlasmicActionMenuButton__RenderFunc(props: {
         }}
         data-plasmic-trigger-props={[triggerActionButtonFocusVisibleProps]}
       >
-        <p.Stack
+        <Stack__
           as={"div"}
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
@@ -241,7 +238,7 @@ function PlasmicActionMenuButton__RenderFunc(props: {
           })}
         >
           {(hasVariant($state, "hasIcon", "hasIcon") ? true : false)
-            ? p.renderPlasmicSlot({
+            ? renderPlasmicSlot({
                 defaultContents: (
                   <PlussvgIcon
                     className={classNames(projectcss.all, sty.svg__bZnf)}
@@ -267,7 +264,7 @@ function PlasmicActionMenuButton__RenderFunc(props: {
                 }),
               })
             : null}
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: "Action",
             value: args.children,
             className: classNames(sty.slotTargetChildren, {
@@ -308,8 +305,8 @@ function PlasmicActionMenuButton__RenderFunc(props: {
             className={classNames(projectcss.all, sty.svg___09Mtk)}
             role={"img"}
           />
-        </p.Stack>
-      </p.Stack>
+        </Stack__>
+      </Stack__>
       <IconButton
         data-plasmic-name={"menuTrigger"}
         data-plasmic-override={overrides.menuTrigger}
@@ -352,7 +349,7 @@ function PlasmicActionMenuButton__RenderFunc(props: {
           hasVariant($state, "type", "noDivider") ? true : undefined
         }
       >
-        <p.PlasmicIcon
+        <PlasmicIcon__
           PlasmicIconType={
             hasVariant($state, "isOpen", "isOpen")
               ? ChevronUpsvgIcon

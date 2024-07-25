@@ -307,6 +307,9 @@
   background: #ffffff00;
   outline: none;
 }
+.rooterror .textboxerror:focus {
+  outline: none;
+}
 .root .textbox::placeholder {
   color: var(--token-UunsGa2Y3t3);
 }

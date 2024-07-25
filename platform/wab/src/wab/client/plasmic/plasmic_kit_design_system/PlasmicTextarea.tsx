@@ -13,25 +13,14 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
   classNames,
-  wrapWithClassName,
   createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
-  StrictProps,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  Flex as Flex__,
+  StrictProps,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -51,8 +40,8 @@ type ArgPropType = keyof PlasmicTextarea__ArgsType;
 export const PlasmicTextarea__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicTextarea__OverridesType = {
-  root?: p.Flex<"div">;
-  textarea?: p.Flex<"textarea">;
+  root?: Flex__<"div">;
+  textarea?: Flex__<"textarea">;
 };
 
 export interface DefaultTextareaProps {
@@ -76,11 +65,9 @@ function PlasmicTextarea__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = p.useCurrentUser?.() || {};
 
   return (
     <div

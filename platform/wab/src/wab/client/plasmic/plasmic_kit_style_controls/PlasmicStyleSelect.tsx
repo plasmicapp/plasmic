@@ -13,36 +13,33 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
-import * as pp from "@plasmicapp/react-web";
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
+  Flex as Flex__,
+  PlasmicIcon as PlasmicIcon__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
 } from "@plasmicapp/react-web";
-import StyleSelect__Overlay from "../../components/style-controls/StyleSelect__Overlay"; // plasmic-import: 4xhJ1XtuOem/component
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import * as pp from "@plasmicapp/react-web";
 import StyleSelect__Option from "../../components/style-controls/StyleSelect__Option"; // plasmic-import: fVzKJ6hzd6u/component
 import StyleSelect__OptionGroup from "../../components/style-controls/StyleSelect__OptionGroup"; // plasmic-import: pQfj4ZYSnAW/component
+import StyleSelect__Overlay from "../../components/style-controls/StyleSelect__Overlay"; // plasmic-import: 4xhJ1XtuOem/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicStyleSelect.module.css"; // plasmic-import: E0bKgamUEin/css
+import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 
 import TriangleBottomIcon from "../plasmic_kit/PlasmicIcon__TriangleBottom"; // plasmic-import: A8NQUZ7Lg1OHO/icon
 import TriangleTopIcon from "../plasmic_kit/PlasmicIcon__TriangleTop"; // plasmic-import: lVRstDPlZX8da/icon
@@ -97,12 +94,12 @@ export const PlasmicStyleSelect__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicStyleSelect__OverridesType = {
-  root?: p.Flex<"div">;
-  trigger?: p.Flex<"button">;
-  contentContainer?: p.Flex<"div">;
-  dropdownIcon?: p.Flex<"svg">;
-  overlay?: p.Flex<typeof StyleSelect__Overlay>;
-  optionsContainer?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  trigger?: Flex__<"button">;
+  contentContainer?: Flex__<"div">;
+  dropdownIcon?: Flex__<"svg">;
+  overlay?: Flex__<typeof StyleSelect__Overlay>;
+  optionsContainer?: Flex__<"div">;
 };
 
 export interface DefaultStyleSelectProps extends pp.BaseSelectProps {
@@ -138,13 +135,11 @@ function PlasmicStyleSelect__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "showPlaceholder",
@@ -193,7 +188,7 @@ function PlasmicStyleSelect__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -231,7 +226,7 @@ function PlasmicStyleSelect__RenderFunc(props: {
           }
         )}
       >
-        <p.Stack
+        <Stack__
           as={"button"}
           data-plasmic-name={"trigger"}
           data-plasmic-override={overrides.trigger}
@@ -304,7 +299,7 @@ function PlasmicStyleSelect__RenderFunc(props: {
                 ? false
                 : true
             )
-              ? p.renderPlasmicSlot({
+              ? renderPlasmicSlot({
                   defaultContents: "Selected",
                   value: args.selectedContent,
                   className: classNames(sty.slotTargetSelectedContent, {
@@ -332,7 +327,7 @@ function PlasmicStyleSelect__RenderFunc(props: {
                 ? true
                 : false
             )
-              ? p.renderPlasmicSlot({
+              ? renderPlasmicSlot({
                   defaultContents: "Placeholder\u2026",
                   value: args.placeholder,
                   className: classNames(sty.slotTargetPlaceholder, {
@@ -354,7 +349,7 @@ function PlasmicStyleSelect__RenderFunc(props: {
                 })
               : null}
           </div>
-          <p.PlasmicIcon
+          <PlasmicIcon__
             data-plasmic-name={"dropdownIcon"}
             data-plasmic-override={overrides.dropdownIcon}
             PlasmicIconType={
@@ -367,7 +362,7 @@ function PlasmicStyleSelect__RenderFunc(props: {
             })}
             role={"img"}
           />
-        </p.Stack>
+        </Stack__>
         {(hasVariant($state, "isOpen", "isOpen") ? true : false) ? (
           <StyleSelect__Overlay
             data-plasmic-name={"overlay"}
@@ -393,7 +388,7 @@ function PlasmicStyleSelect__RenderFunc(props: {
                 ),
               })}
             >
-              {p.renderPlasmicSlot({
+              {renderPlasmicSlot({
                 defaultContents: null,
                 value: args.children,
               })}

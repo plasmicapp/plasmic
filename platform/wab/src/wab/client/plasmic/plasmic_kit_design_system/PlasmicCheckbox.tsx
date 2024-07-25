@@ -13,26 +13,24 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
-import * as pp from "@plasmicapp/react-web";
 import {
-  hasVariant,
   classNames,
-  wrapWithClassName,
   createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
+  deriveRenderOpts,
+  Flex as Flex__,
+  hasVariant,
+  PlasmicIcon as PlasmicIcon__,
+  renderPlasmicSlot,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
-  deriveRenderOpts,
-  ensureGlobalVariants,
+  useDollarState,
+  useTrigger,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import * as pp from "@plasmicapp/react-web";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -40,9 +38,9 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicCheckbox.module.css"; // plasmic-import: W-rO7NZqPjZ/css
 
-import SquaresvgIcon from "../q_4_icons/icons/PlasmicIcon__Squaresvg"; // plasmic-import: zkj00JjZV/icon
 import CheckTrueIcon from "../plasmic_kit/PlasmicIcon__CheckTrue"; // plasmic-import: ckLkdbD6DMjvM/icon
 import SquareMinussvgIcon from "../q_4_icons/icons/PlasmicIcon__SquareMinussvg"; // plasmic-import: 6a2Ojnos7/icon
+import SquaresvgIcon from "../q_4_icons/icons/PlasmicIcon__Squaresvg"; // plasmic-import: zkj00JjZV/icon
 
 createPlasmicElementProxy;
 
@@ -91,9 +89,9 @@ export const PlasmicCheckbox__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicCheckbox__OverridesType = {
-  root?: p.Flex<"div">;
-  svg?: p.Flex<"svg">;
-  labelContainer?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  svg?: Flex__<"svg">;
+  labelContainer?: Flex__<"div">;
 };
 
 export interface DefaultCheckboxProps extends pp.CheckboxProps {
@@ -121,13 +119,11 @@ function PlasmicCheckbox__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "noLabel",
@@ -171,7 +167,7 @@ function PlasmicCheckbox__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -192,7 +188,7 @@ function PlasmicCheckbox__RenderFunc(props: {
   };
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -309,7 +305,7 @@ function PlasmicCheckbox__RenderFunc(props: {
         triggerRootNotFocusVisibleWithinProps,
       ]}
     >
-      <p.PlasmicIcon
+      <PlasmicIcon__
         data-plasmic-name={"svg"}
         data-plasmic-override={overrides.svg}
         PlasmicIconType={
@@ -386,7 +382,7 @@ function PlasmicCheckbox__RenderFunc(props: {
             ),
           })}
         >
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: "Enter some text",
             value: args.children,
             className: classNames(sty.slotTargetChildren, {
@@ -426,7 +422,7 @@ function PlasmicCheckbox__RenderFunc(props: {
           })}
         </div>
       ) : null}
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 

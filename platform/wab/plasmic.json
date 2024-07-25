@@ -1371,7 +1371,8 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "aaggSgVS8yYsAwQffVQB4p",
@@ -3419,7 +3420,7 @@
     {
       "projectId": "gYEVvAzCcLMHDVPvuYxkFh",
       "projectName": "[PlasmicKit] New Design System (former \"Style Controls\")",
-      "version": "latest",
+      "version": ">=0.0.0",
       "cssFilePath": "wab/client/plasmic/plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css",
       "components": [
         {
@@ -3688,6 +3689,32 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicCollapsableSection.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "gkx-PRZnjFPo",
+          "name": "RowItem",
+          "type": "managed",
+          "projectId": "gYEVvAzCcLMHDVPvuYxkFh",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicRowItem.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/RowItem.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicRowItem.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "fgHLE_9XtAei",
+          "name": "RowGroup",
+          "type": "managed",
+          "projectId": "gYEVvAzCcLMHDVPvuYxkFh",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicRowGroup.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/RowGroup.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicRowGroup.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
@@ -3742,8 +3769,7 @@
       "indirect": false,
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "dyzP6dbCdycwJpqiR2zkwe",
@@ -5582,7 +5608,20 @@
       "components": [],
       "icons": [],
       "images": [],
-      "codeComponents": [],
+      "codeComponents": [
+        {
+          "id": "g9Es4bt3-h",
+          "name": "PlasmicHead",
+          "displayName": "hostless-plasmic-head",
+          "componentImportPath": "@plasmicapp/react-web"
+        },
+        {
+          "id": "3QMYyAfbYR",
+          "name": "Fetcher",
+          "displayName": "plasmic-data-source-fetcher",
+          "componentImportPath": "@plasmicapp/react-web/lib/data-sources"
+        }
+      ],
       "projectApiToken": "WZnqNPTrQWzh5I8cONNBKCxmEf6EHRATFi0toD2IS019rO2Lk6XuFRZFQ3y7JBhKPWhROn9mnR7VjJiVFtw",
       "indirect": false,
       "globalContextsFilePath": "",
@@ -11087,6 +11126,6 @@
   "postSyncCommands": [
     "git ls-files -m | xargs pre-commit run prettier --files"
   ],
-  "cliVersion": "0.1.330",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.330/dist/plasmic.schema.json"
+  "cliVersion": "0.1.331",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.331/dist/plasmic.schema.json"
 }

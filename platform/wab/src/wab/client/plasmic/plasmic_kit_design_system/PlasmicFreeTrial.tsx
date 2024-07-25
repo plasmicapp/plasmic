@@ -13,25 +13,20 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
   classNames,
-  wrapWithClassName,
   createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
-  StrictProps,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  Flex as Flex__,
+  hasVariant,
+  PlasmicLink as PlasmicLink__,
+  renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -69,9 +64,9 @@ export const PlasmicFreeTrial__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicFreeTrial__OverridesType = {
-  root?: p.Flex<"a">;
-  svg?: p.Flex<"svg">;
-  text?: p.Flex<"div">;
+  root?: Flex__<"a">;
+  svg?: Flex__<"svg">;
+  text?: Flex__<"div">;
 };
 
 export interface DefaultFreeTrialProps {
@@ -99,13 +94,11 @@ function PlasmicFreeTrial__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "topBar",
@@ -128,7 +121,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -136,7 +129,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
   });
 
   return (
-    <a
+    <PlasmicLink__
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
@@ -160,8 +153,9 @@ function PlasmicFreeTrial__RenderFunc(props: {
           [sty.roottrialEnded]: hasVariant($state, "trialEnded", "trialEnded"),
         }
       )}
+      platform={"react"}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__bx9A, {
@@ -197,7 +191,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
           role={"img"}
         />
 
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__wjeac, {
@@ -246,7 +240,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
               ? "Trial"
               : "Scale plan trial"}
           </div>
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: "0 days left",
             value: args.freeTrialTimeRemaining,
             className: classNames(sty.slotTargetFreeTrialTimeRemaining, {
@@ -265,9 +259,9 @@ function PlasmicFreeTrial__RenderFunc(props: {
               ),
             }),
           })}
-        </p.Stack>
-      </p.Stack>
-    </a>
+        </Stack__>
+      </Stack__>
+    </PlasmicLink__>
   ) as React.ReactElement | null;
 }
 

@@ -13,25 +13,19 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
   classNames,
-  wrapWithClassName,
   createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
-  StrictProps,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  Flex as Flex__,
+  hasVariant,
+  renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -61,8 +55,8 @@ type ArgPropType = keyof PlasmicTextWithInfo__ArgsType;
 export const PlasmicTextWithInfo__ArgProps = new Array<ArgPropType>("children");
 
 export type PlasmicTextWithInfo__OverridesType = {
-  root?: p.Flex<"div">;
-  icon?: p.Flex<"svg">;
+  root?: Flex__<"div">;
+  icon?: Flex__<"svg">;
 };
 
 export interface DefaultTextWithInfoProps {
@@ -88,13 +82,11 @@ function PlasmicTextWithInfo__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "medium",
@@ -105,7 +97,7 @@ function PlasmicTextWithInfo__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -113,7 +105,7 @@ function PlasmicTextWithInfo__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -131,7 +123,7 @@ function PlasmicTextWithInfo__RenderFunc(props: {
         { [sty.rootmedium]: hasVariant($state, "medium", "medium") }
       )}
     >
-      {p.renderPlasmicSlot({
+      {renderPlasmicSlot({
         defaultContents: "Enter some text",
         value: args.children,
       })}
@@ -143,7 +135,7 @@ function PlasmicTextWithInfo__RenderFunc(props: {
         })}
         role={"img"}
       />
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 

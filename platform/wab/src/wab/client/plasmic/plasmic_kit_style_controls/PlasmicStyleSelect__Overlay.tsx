@@ -13,33 +13,27 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
+import {
+  Flex as Flex__,
+  SingleChoiceArg,
+  StrictProps,
+  classNames,
+  createPlasmicElementProxy,
+  deriveRenderOpts,
+  hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
+} from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import * as pp from "@plasmicapp/react-web";
-import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
-  StrictProps,
-  deriveRenderOpts,
-  ensureGlobalVariants,
-} from "@plasmicapp/react-web";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicStyleSelect__Overlay.module.css"; // plasmic-import: 4xhJ1XtuOem/css
+import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 
 import SUPER__PlasmicStyleSelect from "./PlasmicStyleSelect"; // plasmic-import: E0bKgamUEin/render
 
@@ -64,13 +58,13 @@ export const PlasmicStyleSelect__Overlay__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicStyleSelect__Overlay__OverridesType = {
-  root?: p.Flex<"div">;
-  top?: p.Flex<"div">;
-  middle?: p.Flex<"div">;
-  left?: p.Flex<"div">;
-  main?: p.Flex<"div">;
-  right?: p.Flex<"div">;
-  bottom?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  top?: Flex__<"div">;
+  middle?: Flex__<"div">;
+  left?: Flex__<"div">;
+  main?: Flex__<"div">;
+  right?: Flex__<"div">;
+  bottom?: Flex__<"div">;
 };
 
 export interface DefaultStyleSelect__OverlayProps
@@ -95,13 +89,11 @@ function PlasmicStyleSelect__Overlay__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "relativePlacement",
@@ -113,7 +105,7 @@ function PlasmicStyleSelect__Overlay__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -201,7 +193,7 @@ function PlasmicStyleSelect__Overlay__RenderFunc(props: {
             ),
           })}
         >
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: null,
             value: args.children,
           })}

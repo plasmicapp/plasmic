@@ -13,29 +13,28 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
-import * as pp from "@plasmicapp/react-web";
 import {
-  hasVariant,
   classNames,
-  wrapWithClassName,
   createPlasmicElementProxy,
-  makeFragment,
+  deriveRenderOpts,
+  Flex as Flex__,
+  hasVariant,
   MultiChoiceArg,
+  PlasmicIcon as PlasmicIcon__,
+  renderPlasmicSlot,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
-  deriveRenderOpts,
-  ensureGlobalVariants,
+  useDollarState,
+  useTrigger,
 } from "@plasmicapp/react-web";
-import Select__Overlay from "../../components/widgets/Select__Overlay"; // plasmic-import: j2qDLcsq5qB/component
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import * as pp from "@plasmicapp/react-web";
 import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
 import Select__OptionGroup from "../../components/widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
+import Select__Overlay from "../../components/widgets/Select__Overlay"; // plasmic-import: j2qDLcsq5qB/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -43,9 +42,9 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicSelect.module.css"; // plasmic-import: j_4IQyOWK2b/css
 
-import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
 import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 import ChevronUpsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronUpsvg"; // plasmic-import: i9D87DzsX/icon
+import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -107,12 +106,12 @@ export const PlasmicSelect__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicSelect__OverridesType = {
-  root?: p.Flex<"div">;
-  trigger?: p.Flex<"button">;
-  contentContainer?: p.Flex<"div">;
-  dropdownIcon?: p.Flex<"svg">;
-  overlay?: p.Flex<typeof Select__Overlay>;
-  optionsContainer?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  trigger?: Flex__<"button">;
+  contentContainer?: Flex__<"div">;
+  dropdownIcon?: Flex__<"svg">;
+  overlay?: Flex__<typeof Select__Overlay>;
+  optionsContainer?: Flex__<"div">;
 };
 
 export interface DefaultSelectProps extends pp.BaseSelectProps {
@@ -150,13 +149,11 @@ function PlasmicSelect__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "showPlaceholder",
@@ -212,7 +209,7 @@ function PlasmicSelect__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -314,7 +311,7 @@ function PlasmicSelect__RenderFunc(props: {
             $refs["trigger"] = ref;
           }}
         >
-          <p.Stack
+          <Stack__
             as={"div"}
             data-plasmic-name={"contentContainer"}
             data-plasmic-override={overrides.contentContainer}
@@ -338,7 +335,7 @@ function PlasmicSelect__RenderFunc(props: {
             })}
           >
             {(hasVariant($state, "hasIcon", "hasIcon") ? true : false)
-              ? p.renderPlasmicSlot({
+              ? renderPlasmicSlot({
                   defaultContents: (
                     <PlussvgIcon
                       className={classNames(projectcss.all, sty.svg__dx11)}
@@ -364,7 +361,7 @@ function PlasmicSelect__RenderFunc(props: {
                 ? false
                 : true
             )
-              ? p.renderPlasmicSlot({
+              ? renderPlasmicSlot({
                   defaultContents: "Selected",
                   value: args.selectedContent,
                   className: classNames(sty.slotTargetSelectedContent, {
@@ -406,7 +403,7 @@ function PlasmicSelect__RenderFunc(props: {
                 ? true
                 : false
             )
-              ? p.renderPlasmicSlot({
+              ? renderPlasmicSlot({
                   defaultContents: "Select...",
                   value: args.placeholder,
                   className: classNames(sty.slotTargetPlaceholder, {
@@ -423,8 +420,8 @@ function PlasmicSelect__RenderFunc(props: {
                   }),
                 })
               : null}
-          </p.Stack>
-          <p.PlasmicIcon
+          </Stack__>
+          <PlasmicIcon__
             data-plasmic-name={"dropdownIcon"}
             data-plasmic-override={overrides.dropdownIcon}
             PlasmicIconType={
@@ -480,7 +477,7 @@ function PlasmicSelect__RenderFunc(props: {
                 ),
               })}
             >
-              {p.renderPlasmicSlot({
+              {renderPlasmicSlot({
                 defaultContents: (
                   <React.Fragment>
                     <Select__Option

@@ -13,25 +13,22 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
   classNames,
-  wrapWithClassName,
   createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
+  deriveRenderOpts,
+  Flex as Flex__,
+  hasVariant,
+  renderPlasmicSlot,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
-  deriveRenderOpts,
-  ensureGlobalVariants,
+  useDollarState,
+  useTrigger,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 
@@ -41,9 +38,9 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicListItem.module.css"; // plasmic-import: v31d9_ANqk/css
 
-import GripsvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Gripsvg"; // plasmic-import: jxIRSIMqs/icon
 import ComponentIcon from "../plasmic_kit/PlasmicIcon__Component"; // plasmic-import: nNWEF4jI3s5DI/icon
 import EyeIcon from "../plasmic_kit/PlasmicIcon__Eye"; // plasmic-import: A2FnGYgDh4e3U/icon
+import GripsvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Gripsvg"; // plasmic-import: jxIRSIMqs/icon
 import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
@@ -114,18 +111,18 @@ export const PlasmicListItem__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicListItem__OverridesType = {
-  root?: p.Flex<"div">;
-  main?: p.Flex<"div">;
-  dragHandle?: p.Flex<"div">;
-  svg?: p.Flex<"svg">;
-  iconContainer?: p.Flex<"div">;
-  labelContainer?: p.Flex<"div">;
-  leftContent?: p.Flex<"div">;
-  rightContentContainer?: p.Flex<"div">;
-  addendumContainer?: p.Flex<"div">;
-  actionsContainer?: p.Flex<"div">;
-  menuButton?: p.Flex<typeof MenuButton>;
-  additional?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  main?: Flex__<"div">;
+  dragHandle?: Flex__<"div">;
+  svg?: Flex__<"svg">;
+  iconContainer?: Flex__<"div">;
+  labelContainer?: Flex__<"div">;
+  leftContent?: Flex__<"div">;
+  rightContentContainer?: Flex__<"div">;
+  addendumContainer?: Flex__<"div">;
+  actionsContainer?: Flex__<"div">;
+  menuButton?: Flex__<typeof MenuButton>;
+  additional?: Flex__<"div">;
 };
 
 export interface DefaultListItemProps {
@@ -168,13 +165,11 @@ function PlasmicListItem__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isSelected",
@@ -260,7 +255,7 @@ function PlasmicListItem__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -366,7 +361,7 @@ function PlasmicListItem__RenderFunc(props: {
       )}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         data-plasmic-name={"main"}
         data-plasmic-override={overrides.main}
@@ -523,7 +518,7 @@ function PlasmicListItem__RenderFunc(props: {
               ),
             })}
           >
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: (
                 <ComponentIcon
                   className={classNames(projectcss.all, sty.svg__fBezd)}
@@ -558,7 +553,7 @@ function PlasmicListItem__RenderFunc(props: {
             })}
           </div>
         ) : null}
-        <p.Stack
+        <Stack__
           as={"div"}
           data-plasmic-name={"labelContainer"}
           data-plasmic-override={overrides.labelContainer}
@@ -626,6 +621,16 @@ function PlasmicListItem__RenderFunc(props: {
             data-plasmic-name={"leftContent"}
             data-plasmic-override={overrides.leftContent}
             className={classNames(projectcss.all, sty.leftContent, {
+              [sty.leftContentalwaysShowDragHandle]: hasVariant(
+                $state,
+                "alwaysShowDragHandle",
+                "alwaysShowDragHandle"
+              ),
+              [sty.leftContentcolor_variant]: hasVariant(
+                $state,
+                "color",
+                "variant"
+              ),
               [sty.leftContenthasMenu]: hasVariant(
                 $state,
                 "hasMenu",
@@ -641,6 +646,11 @@ function PlasmicListItem__RenderFunc(props: {
                 "isSelected",
                 "isSelected"
               ),
+              [sty.leftContentshowActions]: hasVariant(
+                $state,
+                "showActions",
+                "showActions"
+              ),
               [sty.leftContentshowAddendums]: hasVariant(
                 $state,
                 "showAddendums",
@@ -648,7 +658,7 @@ function PlasmicListItem__RenderFunc(props: {
               ),
             })}
           >
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: "Item name is pretty long",
               value: args.children,
               className: classNames(sty.slotTargetChildren, {
@@ -741,6 +751,11 @@ function PlasmicListItem__RenderFunc(props: {
               data-plasmic-name={"rightContentContainer"}
               data-plasmic-override={overrides.rightContentContainer}
               className={classNames(projectcss.all, sty.rightContentContainer, {
+                [sty.rightContentContaineralwaysShowDragHandle]: hasVariant(
+                  $state,
+                  "alwaysShowDragHandle",
+                  "alwaysShowDragHandle"
+                ),
                 [sty.rightContentContainerhasRightContents]: hasVariant(
                   $state,
                   "hasRightContents",
@@ -748,7 +763,7 @@ function PlasmicListItem__RenderFunc(props: {
                 ),
               })}
             >
-              {p.renderPlasmicSlot({
+              {renderPlasmicSlot({
                 defaultContents: "longer/path/to/code.tsx",
                 value: args.rightContent,
                 className: classNames(sty.slotTargetRightContent, {
@@ -792,7 +807,7 @@ function PlasmicListItem__RenderFunc(props: {
               })}
             </div>
           ) : null}
-        </p.Stack>
+        </Stack__>
         {(
           hasVariant($state, "showAddendums", "showAddendums") ? true : false
         ) ? (
@@ -832,7 +847,7 @@ function PlasmicListItem__RenderFunc(props: {
               ),
             })}
           >
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: "Blahblah",
               value: args.addendum,
               className: classNames(sty.slotTargetAddendum, {
@@ -934,7 +949,7 @@ function PlasmicListItem__RenderFunc(props: {
                 hasVariant($state, "showActions", "showActions"),
             })}
           >
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: (
                 <IconButton
                   children2={
@@ -1079,7 +1094,7 @@ function PlasmicListItem__RenderFunc(props: {
               hasVariant($state, "isHighlighted", "isHighlighted"),
           })}
         />
-      </p.Stack>
+      </Stack__>
       {(
         hasVariant($state, "showAdditionalRow", "showAdditionalRow")
           ? true
@@ -1104,6 +1119,11 @@ function PlasmicListItem__RenderFunc(props: {
               "hasRightContents",
               "hasRightContents"
             ),
+            [sty.additionalisDraggable]: hasVariant(
+              $state,
+              "isDraggable",
+              "isDraggable"
+            ),
             [sty.additionalisSelected_color_variant]:
               hasVariant($state, "color", "variant") &&
               hasVariant($state, "isSelected", "isSelected"),
@@ -1114,7 +1134,7 @@ function PlasmicListItem__RenderFunc(props: {
             ),
           })}
         >
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: null,
             value: args.additional,
           })}

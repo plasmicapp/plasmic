@@ -13,29 +13,24 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
   classNames,
-  wrapWithClassName,
   createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
+  deriveRenderOpts,
+  Flex as Flex__,
+  hasVariant,
+  renderPlasmicSlot,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
-  deriveRenderOpts,
-  ensureGlobalVariants,
+  useDollarState,
 } from "@plasmicapp/react-web";
-import ListSectionHeader from "../../components/ListSectionHeader"; // plasmic-import: wNvxk7eOak/component
-import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import ListItem from "../../components/ListItem"; // plasmic-import: v31d9_ANqk/component
+import ListSectionHeader from "../../components/ListSectionHeader"; // plasmic-import: wNvxk7eOak/component
 import ListSectionSeparator from "../../components/ListSectionSeparator"; // plasmic-import: uG5_fPM0sK/component
+import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -43,11 +38,11 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicListSection.module.css"; // plasmic-import: znioE83CPU/css
 
-import PlusCirclesvgIcon from "../q_4_icons/icons/PlasmicIcon__PlusCirclesvg"; // plasmic-import: tPPI666-2/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import VariantGroupIcon from "../plasmic_kit/PlasmicIcon__VariantGroup"; // plasmic-import: pyS6pK4Spx-QF/icon
 import ComponentIcon from "../plasmic_kit/PlasmicIcon__Component"; // plasmic-import: nNWEF4jI3s5DI/icon
 import EyeIcon from "../plasmic_kit/PlasmicIcon__Eye"; // plasmic-import: A2FnGYgDh4e3U/icon
+import VariantGroupIcon from "../plasmic_kit/PlasmicIcon__VariantGroup"; // plasmic-import: pyS6pK4Spx-QF/icon
+import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import PlusCirclesvgIcon from "../q_4_icons/icons/PlasmicIcon__PlusCirclesvg"; // plasmic-import: tPPI666-2/icon
 
 createPlasmicElementProxy;
 
@@ -76,11 +71,11 @@ export const PlasmicListSection__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicListSection__OverridesType = {
-  root?: p.Flex<"div">;
-  listSectionHeader?: p.Flex<typeof ListSectionHeader>;
-  iconButton?: p.Flex<typeof IconButton>;
-  itemsContainer?: p.Flex<"div">;
-  listSectionSeparator?: p.Flex<typeof ListSectionSeparator>;
+  root?: Flex__<"div">;
+  listSectionHeader?: Flex__<typeof ListSectionHeader>;
+  iconButton?: Flex__<typeof IconButton>;
+  itemsContainer?: Flex__<"div">;
+  listSectionSeparator?: Flex__<typeof ListSectionSeparator>;
 };
 
 export interface DefaultListSectionProps {
@@ -108,13 +103,11 @@ function PlasmicListSection__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isLast",
@@ -131,7 +124,7 @@ function PlasmicListSection__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -208,7 +201,7 @@ function PlasmicListSection__RenderFunc(props: {
           />
         }
       >
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: "List Item Section",
           value: args.title,
         })}
@@ -230,7 +223,7 @@ function PlasmicListSection__RenderFunc(props: {
             ),
           })}
         >
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: (
               <React.Fragment>
                 <ListItem

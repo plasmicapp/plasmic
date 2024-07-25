@@ -13,25 +13,18 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
+  Flex as Flex__,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -66,7 +59,7 @@ export const PlasmicHiliteTabButton__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicHiliteTabButton__OverridesType = {
-  root?: p.Flex<"button">;
+  root?: Flex__<"button">;
 };
 
 export interface DefaultHiliteTabButtonProps {
@@ -94,13 +87,11 @@ function PlasmicHiliteTabButton__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isSelected",
@@ -111,7 +102,7 @@ function PlasmicHiliteTabButton__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -163,7 +154,7 @@ function PlasmicHiliteTabButton__RenderFunc(props: {
       }}
       role={hasVariant($state, "isSelected", "isSelected") ? `` : "tab"}
     >
-      {p.renderPlasmicSlot({
+      {renderPlasmicSlot({
         defaultContents: "Tab",
         value: args.children,
         className: classNames(sty.slotTargetChildren, {

@@ -13,25 +13,19 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
+  set as $stateSet,
+  Flex as Flex__,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -62,11 +56,11 @@ type ArgPropType = keyof PlasmicTooltip__ArgsType;
 export const PlasmicTooltip__ArgProps = new Array<ArgPropType>("children");
 
 export type PlasmicTooltip__OverridesType = {
-  root?: p.Flex<"div">;
-  freeBox?: p.Flex<"div">;
-  invisibleRegion?: p.Flex<"div">;
-  floatingWindow?: p.Flex<"div">;
-  svg?: p.Flex<"svg">;
+  root?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
+  invisibleRegion?: Flex__<"div">;
+  floatingWindow?: Flex__<"div">;
+  svg?: Flex__<"svg">;
 };
 
 export interface DefaultTooltipProps {
@@ -92,13 +86,11 @@ function PlasmicTooltip__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isOpen",
@@ -115,7 +107,7 @@ function PlasmicTooltip__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -202,7 +194,7 @@ function PlasmicTooltip__RenderFunc(props: {
                       }
                       const { objRoot, variablePath } = variable;
 
-                      p.set(objRoot, variablePath, value);
+                      $stateSet(objRoot, variablePath, value);
                       return value;
                     })?.apply(null, [actionArgs]);
                   })()
@@ -232,7 +224,7 @@ function PlasmicTooltip__RenderFunc(props: {
                 ),
               })}
             >
-              {p.renderPlasmicSlot({
+              {renderPlasmicSlot({
                 defaultContents: (
                   <React.Fragment>
                     <div
@@ -299,7 +291,7 @@ function PlasmicTooltip__RenderFunc(props: {
                   }
                   const { objRoot, variablePath } = variable;
 
-                  p.set(objRoot, variablePath, value);
+                  $stateSet(objRoot, variablePath, value);
                   return value;
                 })?.apply(null, [actionArgs]);
               })()

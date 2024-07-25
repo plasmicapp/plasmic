@@ -2,8 +2,8 @@
 /* eslint-disable */
 /* tslint:disable */
 /* prettier-ignore-start */
-import React from "react";
 import { classNames } from "@plasmicapp/react-web";
+import React from "react";
 
 export type ChevronDownsvgIconProps = React.ComponentProps<"svg"> & {
   title?: string;
@@ -15,22 +15,25 @@ export function ChevronDownsvgIcon(props: ChevronDownsvgIconProps) {
     <svg
       xmlns={"http://www.w3.org/2000/svg"}
       fill={"none"}
+      stroke={"currentColor"}
+      strokeWidth={"2"}
+      strokeLinecap={"round"}
+      strokeLinejoin={"round"}
+      className={classNames(
+        "plasmic-default__svg",
+        className,
+        "icon icon-tabler icons-tabler-outline icon-tabler-chevron-down"
+      )}
       viewBox={"0 0 24 24"}
       height={"1em"}
-      width={"1em"}
-      className={classNames("plasmic-default__svg", className)}
       style={style}
       {...restProps}
     >
       {title && <title>{title}</title>}
 
-      <path
-        stroke={"currentColor"}
-        strokeLinecap={"round"}
-        strokeLinejoin={"round"}
-        strokeWidth={"1.5"}
-        d={"M15.25 10.75L12 14.25l-3.25-3.5"}
-      ></path>
+      <path d={"M0 0h24v24H0z"} fill={"none"} stroke={"none"}></path>
+
+      <path d={"M6 9l6 6 6-6"}></path>
     </svg>
   );
 }

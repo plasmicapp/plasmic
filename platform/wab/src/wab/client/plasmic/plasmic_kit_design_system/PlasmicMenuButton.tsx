@@ -13,35 +13,28 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
   classNames,
-  wrapWithClassName,
   createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
+  deriveRenderOpts,
+  Flex as Flex__,
+  hasVariant,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
-  deriveRenderOpts,
-  ensureGlobalVariants,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicMenuButton.module.css"; // plasmic-import: h69wHrrKtL/css
 
-import DotsVerticalsvgIcon from "../q_4_icons/icons/PlasmicIcon__DotsVerticalsvg"; // plasmic-import: joYBQwH-P/icon
 import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import DotsVerticalsvgIcon from "../q_4_icons/icons/PlasmicIcon__DotsVerticalsvg"; // plasmic-import: joYBQwH-P/icon
 
 createPlasmicElementProxy;
 
@@ -72,7 +65,7 @@ type ArgPropType = keyof PlasmicMenuButton__ArgsType;
 export const PlasmicMenuButton__ArgProps = new Array<ArgPropType>("hoverText");
 
 export type PlasmicMenuButton__OverridesType = {
-  root?: p.Flex<typeof IconButton>;
+  root?: Flex__<typeof IconButton>;
 };
 
 export interface DefaultMenuButtonProps {
@@ -101,13 +94,11 @@ function PlasmicMenuButton__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "stepUp",
@@ -137,7 +128,7 @@ function PlasmicMenuButton__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -187,6 +178,11 @@ function PlasmicMenuButton__RenderFunc(props: {
             $state,
             "type",
             "seamless"
+          ),
+          [sty.svgwithBackgroundHover__jeWc1Jm7Jz]: hasVariant(
+            $state,
+            "withBackgroundHover",
+            "withBackgroundHover"
           ),
         })}
         role={"img"}

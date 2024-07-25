@@ -13,25 +13,22 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import Chip from "../../components/widgets/Chip"; // plasmic-import: jW885tExwE/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
@@ -39,8 +36,8 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicDimTokenSelector.module.css"; // plasmic-import: s1ridHP4Z3T/css
+import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 
 import TriangleBottomIcon from "../plasmic_kit/PlasmicIcon__TriangleBottom"; // plasmic-import: A8NQUZ7Lg1OHO/icon
 import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
@@ -86,11 +83,11 @@ export const PlasmicDimTokenSelector__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicDimTokenSelector__OverridesType = {
-  root?: p.Flex<"div">;
-  existingTokensContainer?: p.Flex<"div">;
-  textbox?: p.Flex<"input">;
-  suffixContainer?: p.Flex<"div">;
-  dropdownToggle?: p.Flex<typeof IconButton>;
+  root?: Flex__<"div">;
+  existingTokensContainer?: Flex__<"div">;
+  textbox?: Flex__<"input">;
+  suffixContainer?: Flex__<"div">;
+  dropdownToggle?: Flex__<typeof IconButton>;
 };
 
 export interface DefaultDimTokenSelectorProps {
@@ -132,13 +129,11 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "disabled",
@@ -181,7 +176,7 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -235,7 +230,7 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
           ? true
           : false
       ) ? (
-        <p.Stack
+        <Stack__
           as={"div"}
           data-plasmic-name={"existingTokensContainer"}
           data-plasmic-override={overrides.existingTokensContainer}
@@ -253,7 +248,7 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
             ),
           })}
         >
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: (
               <React.Fragment>
                 <Chip className={classNames("__wab_instance", sty.chip__c3Yjo)}>
@@ -289,7 +284,7 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
               ),
             }),
           })}
-        </p.Stack>
+        </Stack__>
       ) : null}
       <input
         data-plasmic-name={"textbox"}

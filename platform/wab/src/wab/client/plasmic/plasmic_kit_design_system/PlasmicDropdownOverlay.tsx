@@ -13,25 +13,15 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
   classNames,
-  wrapWithClassName,
   createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
-  StrictProps,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  Flex as Flex__,
+  renderPlasmicSlot,
+  StrictProps,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -56,7 +46,7 @@ export const PlasmicDropdownOverlay__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicDropdownOverlay__OverridesType = {
-  root?: p.Flex<"div">;
+  root?: Flex__<"div">;
 };
 
 export interface DefaultDropdownOverlayProps {
@@ -81,11 +71,9 @@ function PlasmicDropdownOverlay__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = p.useCurrentUser?.() || {};
 
   return (
     <div
@@ -103,7 +91,7 @@ function PlasmicDropdownOverlay__RenderFunc(props: {
         sty.root
       )}
     >
-      {p.renderPlasmicSlot({
+      {renderPlasmicSlot({
         defaultContents: null,
         value: args.children,
       })}

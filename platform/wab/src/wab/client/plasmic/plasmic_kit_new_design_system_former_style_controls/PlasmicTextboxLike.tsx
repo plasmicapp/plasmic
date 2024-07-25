@@ -13,25 +13,18 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
+  Flex as Flex__,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -60,7 +53,7 @@ type ArgPropType = keyof PlasmicTextboxLike__ArgsType;
 export const PlasmicTextboxLike__ArgProps = new Array<ArgPropType>("children");
 
 export type PlasmicTextboxLike__OverridesType = {
-  controlContainer?: p.Flex<"div">;
+  controlContainer?: Flex__<"div">;
 };
 
 export interface DefaultTextboxLikeProps {
@@ -86,13 +79,11 @@ function PlasmicTextboxLike__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "color",
@@ -103,7 +94,7 @@ function PlasmicTextboxLike__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -134,7 +125,7 @@ function PlasmicTextboxLike__RenderFunc(props: {
         }
       )}
     >
-      {p.renderPlasmicSlot({
+      {renderPlasmicSlot({
         defaultContents: (
           <div
             className={classNames(

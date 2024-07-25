@@ -13,35 +13,29 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
   classNames,
-  wrapWithClassName,
   createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
+  deriveRenderOpts,
+  Flex as Flex__,
+  hasVariant,
+  PlasmicIcon as PlasmicIcon__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
-  deriveRenderOpts,
-  ensureGlobalVariants,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicExpandButton.module.css"; // plasmic-import: JJhv0MV9DH/css
 
-import ChevronLeftsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronLeftsvg"; // plasmic-import: 0-_N6JM-u/icon
 import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronLeftsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronLeftsvg"; // plasmic-import: 0-_N6JM-u/icon
 import ChevronRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronRightsvg"; // plasmic-import: HBGx-zeiX/icon
 
 createPlasmicElementProxy;
@@ -68,7 +62,7 @@ type ArgPropType = keyof PlasmicExpandButton__ArgsType;
 export const PlasmicExpandButton__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicExpandButton__OverridesType = {
-  root?: p.Flex<typeof IconButton>;
+  root?: Flex__<typeof IconButton>;
 };
 
 export interface DefaultExpandButtonProps {
@@ -95,13 +89,11 @@ function PlasmicExpandButton__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "right",
@@ -124,7 +116,7 @@ function PlasmicExpandButton__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -153,7 +145,7 @@ function PlasmicExpandButton__RenderFunc(props: {
       size={hasVariant($state, "size", "small") ? "small" : undefined}
       type={["roundClear"]}
     >
-      <p.PlasmicIcon
+      <PlasmicIcon__
         PlasmicIconType={
           hasVariant($state, "isExpanded", "isExpanded")
             ? ChevronDownsvgIcon

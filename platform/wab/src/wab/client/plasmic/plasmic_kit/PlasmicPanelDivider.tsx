@@ -13,25 +13,14 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
   classNames,
-  wrapWithClassName,
   createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
-  StrictProps,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  Flex as Flex__,
+  StrictProps,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -51,7 +40,7 @@ type ArgPropType = keyof PlasmicPanelDivider__ArgsType;
 export const PlasmicPanelDivider__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicPanelDivider__OverridesType = {
-  panelDivider?: p.Flex<"div">;
+  panelDivider?: Flex__<"div">;
 };
 
 export interface DefaultPanelDividerProps {
@@ -75,11 +64,9 @@ function PlasmicPanelDivider__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = p.useCurrentUser?.() || {};
 
   return (
     <div

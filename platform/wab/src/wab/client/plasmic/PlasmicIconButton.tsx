@@ -13,34 +13,31 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
+  useTrigger,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "./plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "./PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicIconButton.module.css"; // plasmic-import: LPry-TF4j22a/css
+import plasmic_plasmic_kit_color_tokens_css from "./plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 
-import PlussvgIcon from "./q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
 import ChevronDownsvgIcon from "./q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import PlussvgIcon from "./q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
 import WarningTrianglesvgIcon from "./q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
 
 createPlasmicElementProxy;
@@ -122,8 +119,8 @@ export const PlasmicIconButton__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicIconButton__OverridesType = {
-  root?: p.Flex<"button">;
-  svg?: p.Flex<"svg">;
+  root?: Flex__<"button">;
+  svg?: Flex__<"svg">;
 };
 
 export interface DefaultIconButtonProps {
@@ -174,13 +171,11 @@ function PlasmicIconButton__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "disabled",
@@ -242,7 +237,7 @@ function PlasmicIconButton__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -261,7 +256,7 @@ function PlasmicIconButton__RenderFunc(props: {
   };
 
   return (
-    <p.Stack
+    <Stack__
       as={"button"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -367,7 +362,7 @@ function PlasmicIconButton__RenderFunc(props: {
         triggerRootFocusVisibleProps,
       ]}
     >
-      {p.renderPlasmicSlot({
+      {renderPlasmicSlot({
         defaultContents: (
           <PlussvgIcon
             className={classNames(projectcss.all, sty.svg__vKQk)}
@@ -512,7 +507,7 @@ function PlasmicIconButton__RenderFunc(props: {
           ? false
           : false
       )
-        ? p.renderPlasmicSlot({
+        ? renderPlasmicSlot({
             defaultContents: (
               <ChevronDownsvgIcon
                 className={classNames(projectcss.all, sty.svg__vDdFm)}
@@ -617,7 +612,7 @@ function PlasmicIconButton__RenderFunc(props: {
           role={"img"}
         />
       ) : null}
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 

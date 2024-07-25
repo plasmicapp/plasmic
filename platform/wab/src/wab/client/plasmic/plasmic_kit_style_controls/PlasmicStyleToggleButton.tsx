@@ -13,32 +13,28 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
+  Flex as Flex__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
+  useTrigger,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicStyleToggleButton.module.css"; // plasmic-import: bqUvK9cs5w/css
+import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
 
@@ -84,9 +80,9 @@ export const PlasmicStyleToggleButton__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicStyleToggleButton__OverridesType = {
-  root?: p.Flex<"button">;
-  iconContainer?: p.Flex<"div">;
-  labelContainer?: p.Flex<"div">;
+  root?: Flex__<"button">;
+  iconContainer?: Flex__<"div">;
+  labelContainer?: Flex__<"div">;
 };
 
 export interface DefaultStyleToggleButtonProps {
@@ -119,13 +115,11 @@ function PlasmicStyleToggleButton__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "valueSetState",
@@ -166,7 +160,7 @@ function PlasmicStyleToggleButton__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -184,7 +178,7 @@ function PlasmicStyleToggleButton__RenderFunc(props: {
   };
 
   return (
-    <p.Stack
+    <Stack__
       as={"button"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -253,7 +247,7 @@ function PlasmicStyleToggleButton__RenderFunc(props: {
             }
           )}
         >
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: (
               <CloseIcon
                 className={classNames(projectcss.all, sty.svg__rqz6E)}
@@ -314,7 +308,7 @@ function PlasmicStyleToggleButton__RenderFunc(props: {
             ),
           })}
         >
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: "Label",
             value: args.label,
             className: classNames(sty.slotTargetLabel, {
@@ -355,7 +349,7 @@ function PlasmicStyleToggleButton__RenderFunc(props: {
           })}
         </div>
       ) : null}
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
