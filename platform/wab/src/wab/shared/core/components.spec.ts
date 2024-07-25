@@ -1,15 +1,4 @@
-import { tuple } from "@/wab/shared/common";
-import { ComponentType, extractComponent } from "@/wab/shared/core/components";
-import { tryExtractJson } from "@/wab/shared/core/exprs";
-import {
-  isKnownVariantsRef,
-  RuleSet,
-  TplTag,
-  Variant,
-  VariantSetting,
-} from "@/wab/shared/model/classes";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
-import { assertSiteInvariants } from "@/wab/shared/site-invariants";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
@@ -18,8 +7,24 @@ import {
   isStyleVariant,
   mkVariantSetting,
 } from "@/wab/shared/Variants";
+import { tuple } from "@/wab/shared/common";
+import {
+  ComponentType,
+  extractComponent,
+  getFolderComponentDisplayName,
+  mkComponent,
+} from "@/wab/shared/core/components";
+import { tryExtractJson } from "@/wab/shared/core/exprs";
 import { createSite } from "@/wab/shared/core/sites";
 import { mkTplTagX } from "@/wab/shared/core/tpls";
+import {
+  RuleSet,
+  TplTag,
+  Variant,
+  VariantSetting,
+  isKnownVariantsRef,
+} from "@/wab/shared/model/classes";
+import { assertSiteInvariants } from "@/wab/shared/site-invariants";
 import "jest-extended";
 
 describe("extractComponent", () => {
@@ -308,5 +313,46 @@ describe("extractComponent", () => {
     ]);
 
     assertSiteInvariants(site);
+  });
+});
+
+describe("getFolderComponentDisplayName", () => {
+  const makeComponentWithName = (name: string) =>
+    mkComponent({
+      name,
+      tplTree: mkTplTagX("div"),
+      type: ComponentType.Plain,
+    });
+  it("should return the correct display name for a component in a folder", () => {
+    const result = getFolderComponentDisplayName(
+      makeComponentWithName("components/buttons/PrimaryButton")
+    );
+    expect(result).toEqual("PrimaryButton");
+  });
+
+  it("should handle components in the root directory correctly", () => {
+    const result = getFolderComponentDisplayName(
+      makeComponentWithName("SecondaryButton")
+    );
+    expect(result).toEqual("SecondaryButton");
+  });
+
+  it("should trim leading and trailing slashes", () => {
+    const result = getFolderComponentDisplayName(
+      makeComponentWithName("/components/modals/ConfirmModal/")
+    );
+    expect(result).toEqual("ConfirmModal");
+  });
+
+  it("should trim leading and trailing spaces", () => {
+    const result = getFolderComponentDisplayName(
+      makeComponentWithName("components/modals/ ConfirmModal ")
+    );
+    expect(result).toEqual("ConfirmModal");
+  });
+
+  it("should handle paths with only slashes", () => {
+    const result = getFolderComponentDisplayName(makeComponentWithName("////"));
+    expect(result).toEqual("////");
   });
 });
