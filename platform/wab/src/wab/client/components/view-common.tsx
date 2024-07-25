@@ -1,3 +1,4 @@
+import { PropsOf } from "@/wab/commons/ComponentTypes";
 import {
   assert,
   check,
@@ -9,7 +10,6 @@ import {
   simpleWords,
   tuple,
 } from "@/wab/shared/common";
-import { PropsOf } from "@/wab/commons/ComponentTypes";
 import L from "lodash";
 import * as React from "react";
 import {
@@ -199,8 +199,8 @@ export function replaceLink(
   makeLink: (linkText: string) => ReactElement
 ) {
   // Replace the [text] with a link.
-  let { children, ...rest } = props;
-  children = ensureArray(children);
+  const { children: childOrChildren, ...rest } = props;
+  const children = ensureArray(childOrChildren);
   assert(L.isString(children[0]), "Unexpected not string children");
   const pat = /\[(.+?)\]/g;
   const match = pat.exec(children[0]);
