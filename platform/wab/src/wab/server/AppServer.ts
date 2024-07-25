@@ -1596,6 +1596,11 @@ export function addMainAppServerRoutes(
     adminOnly,
     withNext(adminRoutes.sendTeamSupportWelcomeEmail)
   );
+  app.get(
+    "/api/v1/admin/project-branches-metadata/:projectId",
+    adminOnly,
+    withNext(adminRoutes.getProjectBranchesMetadata)
+  );
 
   /**
    * Self routes

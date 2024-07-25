@@ -1466,9 +1466,14 @@ export async function getProjectRevWithoutData(req: Request, res: Response) {
 export async function getFullProjectData(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const projectId = req.params.projectId as ProjectId;
-  const branchIdOrNames = JSON.parse(req.query.branchIds as string) as string[];
+  const branchIdOrNamesVersioned = JSON.parse(
+    req.query.branchIds as string
+  ) as string[];
   const { branches, pkgVersions, project, revisions, commitGraph } =
-    await mgr.getProjectAndBranchesByIdOrNames(projectId, branchIdOrNames);
+    await mgr.getProjectAndBranchesByIdOrNames(
+      projectId,
+      branchIdOrNamesVersioned
+    );
   const revBundles = await Promise.all(
     revisions.map((rev) => getMigratedBundle(rev))
   );

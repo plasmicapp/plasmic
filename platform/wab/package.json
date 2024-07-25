@@ -272,6 +272,7 @@
     "@tinymce/tinymce-react": "^4.3.2",
     "@types/react": "^18.2.33",
     "@xmldom/xmldom": "^0.8.10",
+    "@xyflow/react": "^12.0.3",
     "@zxcvbn-ts/core": "^3.0.4",
     "@zxcvbn-ts/language-common": "^3.0.4",
     "@zxcvbn-ts/language-en": "^3.0.2",

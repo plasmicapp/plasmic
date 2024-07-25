@@ -1,10 +1,3 @@
-import { Dict } from "@/wab/shared/collections";
-import {
-  assert,
-  ensureType,
-  NotImplementedError,
-  omitNils,
-} from "@/wab/shared/common";
 import { toOpaque } from "@/wab/commons/types";
 import { AuthError } from "@/wab/shared/ApiErrors/errors";
 import {
@@ -74,6 +67,7 @@ import {
   CommentId,
   CommentReactionData,
   CommentReactionId,
+  CommitGraph,
   ConfirmEmailRequest,
   ConfirmEmailResponse,
   CreateBranchRequest,
@@ -188,6 +182,13 @@ import {
 } from "@/wab/shared/ApiSchema";
 import { showProjectBranchId } from "@/wab/shared/ApiSchemaUtil";
 import { Bundle } from "@/wab/shared/bundles";
+import { Dict } from "@/wab/shared/collections";
+import {
+  assert,
+  ensureType,
+  NotImplementedError,
+  omitNils,
+} from "@/wab/shared/common";
 import { OperationTemplate } from "@/wab/shared/data-sources-meta/data-sources";
 import { CodeSandboxInfo } from "@/wab/shared/db-json-blobs";
 import { GrantableAccessLevel } from "@/wab/shared/EntUtil";
@@ -2246,6 +2247,15 @@ export abstract class SharedApi {
 
   async getAppMeta(projectId: string): Promise<any> {
     return this.get(`/admin/project/${projectId}/app-meta`);
+  }
+
+  async getProjectBranchesMetadata(projectId: string): Promise<{
+    branches: ApiBranch[];
+    pkgVersions: PkgVersionInfoMeta[];
+    commitGraph: CommitGraph;
+    users: ApiUser[];
+  }> {
+    return this.get(`/admin/project-branches-metadata/${projectId}`);
   }
 
   async processSvg(data: ProcessSvgRequest): Promise<ProcessSvgResponse> {

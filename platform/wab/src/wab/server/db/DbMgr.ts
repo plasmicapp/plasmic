@@ -2828,60 +2828,129 @@ export class DbMgr implements MigrationDbMgr {
 
   async getProjectAndBranchesByIdOrNames(
     projectId: ProjectId,
-    branchIdOrNames: (BranchId | string)[]
+    branchIdOrNamesVersioned: (BranchId | string)[]
   ) {
     const project = await this.getProjectById(projectId);
     const commitGraph = await this.getCommitGraphForProject(projectId);
     const allBranches = await this.listBranchesForProject(projectId, true);
-    const branchIds = branchIdOrNames.map((branchIdOrName) => {
-      const maybeBranch = allBranches.find(
-        (branch) =>
-          branch.id === branchIdOrName || branch.name === branchIdOrName
-      );
-      if (maybeBranch) {
-        return maybeBranch.id;
+    const versionedBranches = branchIdOrNamesVersioned.map(
+      (branchIdOrNameVersioned) => {
+        const [branchIdOrName, version] = branchIdOrNameVersioned.split("@");
+        const maybeBranch = allBranches.find(
+          (branch) =>
+            branch.id === branchIdOrName || branch.name === branchIdOrName
+        );
+        if (maybeBranch) {
+          return {
+            id: maybeBranch.id,
+            version: version as PkgVersionId,
+          };
+        }
+
+        if (branchIdOrName === MainBranchId) {
+          return {
+            id: undefined,
+            version: version as PkgVersionId,
+          };
+        }
+
+        throw new NotFoundError("Couldn't find branch " + branchIdOrName);
       }
-      throw new NotFoundError("Couldn't find branch " + branchIdOrName);
-    });
-    const branchIdsIncludingMain = [...branchIds, undefined];
+    );
+
+    const versionedBranchesIncludingMain = [
+      ...versionedBranches,
+      ...(versionedBranches.some((b) => !b.id)
+        ? []
+        : [
+            {
+              id: undefined,
+              version: undefined,
+            },
+          ]),
+    ];
+
+    const branchIds = withoutNils(versionedBranches.map(({ id }) => id));
+
     const branches = await Promise.all(
       branchIds.map((branchId) => this.getBranchById(branchId, true))
     );
-    const revisions = await Promise.all(
-      branchIdsIncludingMain.map((branchId) =>
-        this.getLatestProjectRev(projectId, branchId ? { branchId } : undefined)
-      )
-    );
-    const pkgVersionsIds = uniq(
-      branchIdsIncludingMain.map(
-        (branchId) => commitGraph.branches[branchId ?? MainBranchId]
-      )
-    );
 
-    branchIdsIncludingMain.forEach((left, i) =>
-      branchIdsIncludingMain.slice(i + 1).forEach((right) => {
-        const ancestorPkgId = getLowestCommonAncestor(
-          projectId,
-          commitGraph,
-          left,
-          right
-        );
-        if (!pkgVersionsIds.includes(ancestorPkgId)) {
-          pkgVersionsIds.push(ancestorPkgId);
-        }
-      })
+    const pkgVersionsIds = uniq(
+      versionedBranchesIncludingMain.map(
+        ({ id: branchId, version }) =>
+          version ?? commitGraph.branches[branchId ?? MainBranchId]
+      )
     );
 
     const pkgVersions = await Promise.all(
       pkgVersionsIds.map((pkgVersionId) => this.getPkgVersionById(pkgVersionId))
     );
 
+    const revisions = await Promise.all(
+      versionedBranchesIncludingMain.map(({ id: branchId, version }) => {
+        if (!version) {
+          return this.getLatestProjectRev(
+            projectId,
+            branchId ? { branchId } : undefined
+          );
+        } else {
+          const pkgVersion = ensure(
+            pkgVersions.find((_pkgVersion) => _pkgVersion.id === version),
+            `Couldn't find pkgVersion with ID ${version}`
+          );
+          return this.getProjectRevisionById(
+            projectId,
+            pkgVersion.revisionId,
+            branchId
+          );
+        }
+      })
+    );
+
+    const additionalPkgVersionsIds: string[] = [];
+
+    versionedBranchesIncludingMain.forEach((left, i) =>
+      versionedBranchesIncludingMain.slice(i + 1).forEach((right) => {
+        const ancestorPkgId = getLowestCommonAncestor(
+          projectId,
+          commitGraph,
+          left.id,
+          right.id,
+          left.version,
+          right.version
+        );
+        if (
+          !pkgVersionsIds.includes(ancestorPkgId) &&
+          !additionalPkgVersionsIds.includes(ancestorPkgId)
+        ) {
+          additionalPkgVersionsIds.push(ancestorPkgId);
+        }
+      })
+    );
+
+    const additionalPkgVersions = await Promise.all(
+      additionalPkgVersionsIds.map((pkgVersionId) =>
+        this.getPkgVersionById(pkgVersionId)
+      )
+    );
+
     return {
       branches,
-      pkgVersions,
+      pkgVersions: [...pkgVersions, ...additionalPkgVersions],
       project,
       revisions,
-      commitGraph,
+      commitGraph: {
+        ...commitGraph,
+        branches: {
+          ...commitGraph.branches,
+          ...fromPairs(
+            versionedBranchesIncludingMain
+              .filter(({ version }) => !!version)
+              .map(({ id, version }) => [id ?? MainBranchId, version])
+          ),
+        },
+      },
     };
   }
 
@@ -7422,9 +7491,7 @@ export class DbMgr implements MigrationDbMgr {
   // Branches
   //
 
-  private async getCommitGraphForProject(
-    projectId: ProjectId
-  ): Promise<CommitGraph> {
+  async getCommitGraphForProject(projectId: ProjectId): Promise<CommitGraph> {
     let graph = mkCommitGraph();
     await this.maybeUpdateCommitGraphForProject(
       projectId,
@@ -10091,17 +10158,19 @@ export function getLowestCommonAncestor(
   projectId: ProjectId,
   graph: CommitGraph,
   fromBranchId?: BranchId,
-  toBranchId?: BranchId
+  toBranchId?: BranchId,
+  fromPkgVersionId?: PkgVersionId,
+  toPkgVersionId?: PkgVersionId
 ) {
   // Lowest common ancestors algorithm - find the "best" merge-base.
   // From https://git-scm.com/docs/git-merge-base: One common ancestor is better than another common ancestor if the latter is an ancestor of the former.
   const fromAncestors = ancestors(
     graph.parents,
-    graph.branches[fromBranchId ?? MainBranchId]
+    fromPkgVersionId ?? graph.branches[fromBranchId ?? MainBranchId]
   );
   const toAncestors = ancestors(
     graph.parents,
-    graph.branches[toBranchId ?? MainBranchId]
+    toPkgVersionId ?? graph.branches[toBranchId ?? MainBranchId]
   );
   const commonAncestors = intersection(fromAncestors, toAncestors);
   const ancestorsSubgraph = subgraph(graph.parents, commonAncestors);

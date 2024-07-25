@@ -1,4 +1,3 @@
-import { assert, ensure, ensureType, uncheckedCast } from "@/wab/shared/common";
 import {
   PkgVersion,
   ProjectRevision,
@@ -39,6 +38,13 @@ import {
   UserId,
 } from "@/wab/shared/ApiSchema";
 import { Bundle } from "@/wab/shared/bundler";
+import {
+  assert,
+  ensure,
+  ensureType,
+  uncheckedCast,
+  withoutNils,
+} from "@/wab/shared/common";
 import { DomainValidator } from "@/wab/shared/hosting";
 import { Request, Response } from "express-serve-static-core";
 import { omit, uniq } from "lodash";
@@ -531,4 +537,39 @@ export async function sendTeamSupportWelcomeEmail(req: Request, res: Response) {
       await doSendTeamSupportWelcomeEmail(req, teamId)
     )
   );
+}
+
+export async function getProjectBranchesMetadata(req: Request, res: Response) {
+  const projectId = req.params.projectId as ProjectId;
+  const mgr = superDbMgr(req);
+  const branches = await mgr.listBranchesForProject(projectId, true);
+  const pkg = ensure(
+    await mgr.getPkgByProjectId(projectId),
+    `No pkg for project ${projectId}`
+  );
+  const pkgVersions = (
+    await Promise.all([
+      mgr.listPkgVersions(pkg.id, {
+        includeData: false,
+      }),
+      ...branches.map((branch) =>
+        mgr.listPkgVersions(pkg.id, {
+          branchId: branch.id,
+          includeData: false,
+        })
+      ),
+    ])
+  ).flat();
+  const project = await mgr.getProjectById(projectId);
+  const commitGraph = await mgr.getCommitGraphForProject(projectId);
+  const usersIds = withoutNils(uniq(pkgVersions.map((v) => v.createdById)));
+  const users = await mgr.getUsersById(usersIds);
+
+  res.json({
+    branches,
+    pkgVersions,
+    project,
+    commitGraph,
+    users,
+  });
 }

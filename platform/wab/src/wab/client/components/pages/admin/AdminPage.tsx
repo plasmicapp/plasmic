@@ -7,6 +7,7 @@ import {
 import { U, UU } from "@/wab/client/cli-routes";
 import type FullCodeEditor from "@/wab/client/components/coding/FullCodeEditor";
 import { smartRender } from "@/wab/client/components/pages/admin/admin-util";
+import { AdminBranchingInspector } from "@/wab/client/components/pages/admin/AdminBranchingInspector";
 import {
   AdminCtxProvider,
   useAdminCtx,
@@ -18,15 +19,16 @@ import {
   SearchBox,
   Spinner,
 } from "@/wab/client/components/widgets";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import { downloadBlob, getUploadedFile } from "@/wab/client/dom-utils";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import CheckIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Check";
 import CircleCloseIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__CircleClose";
 import { stepsToCypress } from "@/wab/client/tours/tutorials/tutorials-helpers";
 import { STUDIO_ONBOARDING_TUTORIALS } from "@/wab/client/tours/tutorials/tutorials-meta";
+import { ApiFeatureTier, ApiProjectRevision } from "@/wab/shared/ApiSchema";
 import { assert, spawn, tryRemove } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { ApiFeatureTier, ApiProjectRevision } from "@/wab/shared/ApiSchema";
 import { PkgVersionInfo } from "@/wab/shared/SharedApi";
 import {
   Button,
@@ -44,7 +46,6 @@ import TextArea from "antd/lib/input/TextArea";
 import L from "lodash";
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 import useSWR from "swr/immutable";
 
 export default function AdminPage({ nonAuthCtx }: { nonAuthCtx: NonAuthCtx }) {
@@ -132,6 +133,15 @@ function AdminPageTabs() {
               <ImportProjectsFromProd />
               <CopilotFeedbackView />
               <AppAuthMetrics />
+            </div>
+          ),
+        },
+        {
+          key: "branching-inspect",
+          label: "Branching inspector",
+          children: (
+            <div className="flex-col gap-xxxlg">
+              <AdminBranchingInspector />
             </div>
           ),
         },
