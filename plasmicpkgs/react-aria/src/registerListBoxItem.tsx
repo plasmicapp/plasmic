@@ -1,8 +1,9 @@
 import { PlasmicElement } from "@plasmicapp/host";
 import { mergeProps } from "@react-aria/utils";
 import React from "react";
-import { ListBoxItem } from "react-aria-components";
+import { ListBox, ListBoxItem } from "react-aria-components";
 import { PlasmicItemContext } from "./contexts";
+import ErrorBoundary from "./ErrorBoundary";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { TEXT_COMPONENT_NAME } from "./registerText";
 import {
@@ -18,10 +19,15 @@ export function BaseListBoxItem(
   const contextProps = React.useContext(PlasmicItemContext);
   const mergedProps = mergeProps(contextProps, props);
 
-  return (
-    <ListBoxItem {...mergedProps} textValue={(contextProps as any).label}>
+  const listboxItem = (
+    <ListBoxItem {...mergedProps} textValue={contextProps?.label}>
       {mergedProps.children as React.ReactNode}
     </ListBoxItem>
+  );
+  return (
+    <ErrorBoundary fallback={<ListBox>{listboxItem}</ListBox>}>
+      {listboxItem}
+    </ErrorBoundary>
   );
 }
 

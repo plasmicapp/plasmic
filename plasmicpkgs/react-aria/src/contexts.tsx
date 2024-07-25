@@ -1,11 +1,11 @@
 import React from "react";
+import type { StrictItemType } from "./option-utils";
 import { BaseCheckboxGroup } from "./registerCheckboxGroup";
 import { BaseDialogTrigger } from "./registerDialogTrigger";
 import type { BaseHeader } from "./registerHeader";
 import type { BaseInput } from "./registerInput";
 import type { BaseLabel } from "./registerLabel";
 import type { BaseListBoxProps } from "./registerListBox";
-import type { BaseListBoxItem } from "./registerListBoxItem";
 import type { BasePopover } from "./registerPopover";
 import { BaseRadioGroup } from "./registerRadioGroup";
 import type { BaseSection } from "./registerSection";
@@ -47,7 +47,7 @@ export const PlasmicPopoverContext = React.createContext<
 >(undefined);
 
 export const PlasmicItemContext = React.createContext<
-  React.ComponentProps<typeof BaseListBoxItem> | undefined
+  StrictItemType | undefined
 >(undefined);
 
 export const PlasmicSectionContext = React.createContext<
