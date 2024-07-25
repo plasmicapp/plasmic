@@ -296,50 +296,36 @@ function initMonacoEditorJs(
   // These commands overlay the default ones, thus cancelling the default behaviour
   // @see https://github.com/microsoft/monaco-editor/issues/940
   editor.addCommand(monaco.KeyCode.Backspace, noopFn, "startOfEditable");
-  editor.addCommand(
-    monaco.KeyMod.CtrlCmd | monaco.KeyCode.Backspace,
-    noopFn,
-    "startOfEditable"
+  allModCombosOf(monaco.KeyCode.Backspace).forEach((modKey) =>
+    editor.addCommand(modKey, noopFn, "startOfEditable")
   );
-  editor.addCommand(
-    monaco.KeyMod.Shift | monaco.KeyCode.Backspace,
-    noopFn,
-    "startOfEditable"
+  editor.addCommand(monaco.KeyCode.Delete, noopFn, "endOfEditable");
+  allModCombosOf(monaco.KeyCode.Delete).forEach((modKey) =>
+    editor.addCommand(modKey, noopFn, "endOfEditable")
   );
+  // MacOS: Delete
   editor.addCommand(
-    monaco.KeyMod.Alt | monaco.KeyCode.Backspace,
-    noopFn,
-    "startOfEditable"
-  );
-  editor.addCommand(
-    monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.Backspace,
-    noopFn,
-    "startOfEditable"
-  );
-  editor.addCommand(
-    monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.Backspace,
-    noopFn,
-    "startOfEditable"
-  );
-  editor.addCommand(
-    monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.Backspace,
-    noopFn,
-    "startOfEditable"
-  );
-  editor.addCommand(
-    monaco.KeyMod.CtrlCmd |
-      monaco.KeyMod.Shift |
-      monaco.KeyMod.Alt |
-      monaco.KeyCode.Backspace,
-    noopFn,
-    "startOfEditable"
-  );
-  editor.addCommand(
-    monaco.KeyMod.CtrlCmd | monaco.KeyCode.Delete,
+    monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyD,
     noopFn,
     "endOfEditable"
   );
-  editor.addCommand(monaco.KeyCode.Delete, noopFn, "endOfEditable");
+  // MacOS: Delete Line
+  editor.addCommand(
+    monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyK,
+    noopFn,
+    "endOfEditable"
+  );
+  // MacOS: Transpose
+  editor.addCommand(
+    monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyT,
+    noopFn,
+    "startOfEditable"
+  );
+  editor.addCommand(
+    monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyT,
+    noopFn,
+    "endOfEditable"
+  );
 
   // These cheat on the replace widget so that it cannot replace anything in the wrapper.
   // Done by temporarily switching to "replace in selection" mode and back.
@@ -559,3 +545,31 @@ function getRange(
     model.getLineMaxColumn(endLineNumber)
   );
 }
+
+function allModCombosOf(key: monaco.KeyCode) {
+  return allModCombos.map((mod) => key | mod);
+}
+
+const allModCombos = [
+  monaco.KeyMod.Alt,
+  monaco.KeyMod.CtrlCmd,
+  monaco.KeyMod.Shift,
+  monaco.KeyMod.WinCtrl,
+
+  monaco.KeyMod.Alt | monaco.KeyMod.CtrlCmd,
+  monaco.KeyMod.Alt | monaco.KeyMod.Shift,
+  monaco.KeyMod.Alt | monaco.KeyMod.WinCtrl,
+  monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift,
+  monaco.KeyMod.CtrlCmd | monaco.KeyMod.WinCtrl,
+  monaco.KeyMod.Shift | monaco.KeyMod.WinCtrl,
+
+  monaco.KeyMod.Alt | monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift,
+  monaco.KeyMod.Alt | monaco.KeyMod.CtrlCmd | monaco.KeyMod.WinCtrl,
+  monaco.KeyMod.Alt | monaco.KeyMod.Shift | monaco.KeyMod.WinCtrl,
+  monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyMod.WinCtrl,
+
+  monaco.KeyMod.Alt |
+    monaco.KeyMod.CtrlCmd |
+    monaco.KeyMod.Shift |
+    monaco.KeyMod.WinCtrl,
+];
