@@ -62,6 +62,7 @@ import {
 } from "@/wab/client/components/style-controls/StyleComponent";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { PublicStyleSection } from "@/wab/shared/ApiSchema";
 import { asOne, assert, ensure, ensureArray } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
@@ -69,23 +70,7 @@ import {
   isCodeComponentTpl,
   isPageComponent,
 } from "@/wab/shared/core/components";
-import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
-import { PublicStyleSection } from "@/wab/shared/ApiSchema";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
-import { isGridTag } from "@/wab/shared/grid-utils";
-import {
-  ensureKnownTplComponent,
-  isKnownClassNamePropType,
-  TplComponent,
-  TplNode,
-  TplTag,
-} from "@/wab/shared/model/classes";
-import {
-  getAncestorSlotArg,
-  getAncestorTplSlot,
-  isTypographyNode,
-} from "@/wab/shared/SlotUtils";
-import { canEditStyleSection } from "@/wab/shared/ui-config-utils";
 import { getApplicableSelectors } from "@/wab/shared/core/styles";
 import {
   canToggleVisibility,
@@ -109,6 +94,21 @@ import {
   TplColumnTag,
 } from "@/wab/shared/core/tpls";
 import { ValComponent } from "@/wab/shared/core/val-nodes";
+import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
+import { isGridTag } from "@/wab/shared/grid-utils";
+import {
+  ensureKnownTplComponent,
+  isKnownClassNamePropType,
+  TplComponent,
+  TplNode,
+  TplTag,
+} from "@/wab/shared/model/classes";
+import {
+  getAncestorSlotArg,
+  getAncestorTplSlot,
+  isTypographyNode,
+} from "@/wab/shared/SlotUtils";
+import { canEditStyleSection } from "@/wab/shared/ui-config-utils";
 import { Alert } from "antd";
 import $ from "jquery";
 import { observer } from "mobx-react";
@@ -928,6 +928,7 @@ export function getRenderBySection(
                   component={component}
                   tpl={tpl}
                   vc={viewCtx}
+                  expsProvider={expsProvider}
                 />
               ),
           ],
