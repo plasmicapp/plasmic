@@ -4,8 +4,8 @@ import DataPicker, {
 } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { RightTabKey } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { isNonNil, mkShortId, spawn, uniqueName } from "@/wab/shared/common";
 import { toVarName } from "@/wab/shared/codegen/util";
+import { isNonNil, mkShortId, spawn, uniqueName } from "@/wab/shared/common";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
 import { ComponentDataQuery } from "@/wab/shared/model/classes";
 import { Popover, Tooltip } from "antd";
@@ -19,7 +19,6 @@ interface DataPickerEditorProps {
   viewCtx?: ViewCtx;
   data?: Record<string, any>;
   schema?: DataPickerTypesSchema;
-  showReactNamespace?: boolean;
   flatten?: boolean;
   onUnlink?: () => void;
   isDisabled?: boolean;
@@ -53,7 +52,6 @@ export const InternalDataPickerEditor = observer(
       viewCtx,
       data,
       schema,
-      showReactNamespace,
       flatten,
       onUnlink,
       isDisabled,
@@ -121,7 +119,6 @@ export const InternalDataPickerEditor = observer(
             onCancel={() => setVisible(false)}
             data={data}
             schema={schema}
-            showReactNamespace={showReactNamespace}
             flatten={flatten}
             hideStateSwitch={hideStateSwitch}
             onUnlink={

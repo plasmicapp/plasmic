@@ -604,7 +604,6 @@ export function ExprEditor(props: {
   onRunClick?: (code: string) => void;
   data: Record<string, any>;
   schema?: DataPickerTypesSchema;
-  showReactNamespace?: boolean;
   viewCtx?: ViewCtx;
   initialMode?: InitialMode;
   alwaysShowValuePathAsLabel?: boolean;
@@ -620,7 +619,6 @@ export function ExprEditor(props: {
     onChange,
     data,
     schema,
-    showReactNamespace,
     viewCtx,
     initialMode = "codeEditing",
     alwaysShowValuePathAsLabel,
@@ -639,7 +637,6 @@ export function ExprEditor(props: {
       flatten={true}
       data={data}
       schema={schema}
-      showReactNamespace={showReactNamespace}
       initialMode={initialMode}
       hidePreview={hidePreview}
       value={extractValueSavedFromDataPicker(value, {

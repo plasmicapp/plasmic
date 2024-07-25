@@ -30,13 +30,13 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPicker";
 import { PlasmicDataPickerColumnItem__VariantMembers } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerColumnItem";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
-import { arrayEq, ensure, isPrefixArray, sortBy } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
-import { flattenedKeys } from "@/wab/shared/core/exprs";
 import { DATA_QUERY_LOWER, VARIABLE_LOWER } from "@/wab/shared/Labels";
+import { arrayEq, ensure, isPrefixArray, sortBy } from "@/wab/shared/common";
+import { flattenedKeys } from "@/wab/shared/core/exprs";
+import { getKeysToFlatForDollarState } from "@/wab/shared/core/states";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
 import { Interaction } from "@/wab/shared/model/classes";
-import { getKeysToFlatForDollarState } from "@/wab/shared/core/states";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { head, mapValues } from "lodash";
 import deepGet from "lodash/get";
@@ -91,7 +91,6 @@ export interface DataPickerProps
   onCancel: () => void;
   data?: Record<string, any>;
   schema?: DataPickerTypesSchema;
-  showReactNamespace?: boolean;
   flatten?: boolean;
   onUnlink?: () => void;
   onDelete?: () => void;
@@ -115,7 +114,6 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
     onCancel,
     data,
     schema,
-    showReactNamespace,
     flatten = true,
     onUnlink,
     onDelete,
@@ -417,7 +415,6 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
             editorRef: editorRef,
             data: fixedData,
             schema,
-            showReactNamespace,
             defaultValue: draft ?? stringValue ?? "",
             onSave: trySave,
             hidePreview,

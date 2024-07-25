@@ -1,12 +1,14 @@
-import { resetNodes as doResetNodes } from "@/wab/client/components/canvas/slate";
 import { ContextMenuContext } from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
 import CopilotCodePrompt from "@/wab/client/components/CopilotCodePrompt";
+import { resetNodes as doResetNodes } from "@/wab/client/components/canvas/slate";
 import styles from "@/wab/client/components/sidebar-tabs/ComponentProps/TemplatedTextEditor.module.scss";
 import DataPicker, {
   DataPickerTypesSchema,
 } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { PropEditorRef } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
+import { DropFirst } from "@/wab/commons/types";
 import {
   arrayEqIgnoreOrder,
   cx,
@@ -15,15 +17,13 @@ import {
   spawn,
   xSetDefault,
 } from "@/wab/shared/common";
-import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
-import { DropFirst } from "@/wab/commons/types";
 import {
+  ExprCtx,
   asCode,
   clone,
   codeLit,
   createExprForDataPickerValue,
   customCode,
-  ExprCtx,
   extractValueSavedFromDataPicker,
   isRealCodeExpr,
   summarizeExpr,
@@ -36,10 +36,10 @@ import { tryEvalExpr } from "@/wab/shared/eval";
 import {
   Component,
   CustomCode,
-  isKnownCustomCode,
-  isKnownObjectPath,
   ObjectPath,
   TemplatedString,
+  isKnownCustomCode,
+  isKnownObjectPath,
 } from "@/wab/shared/model/classes";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import { Popover, Tooltip } from "antd";
@@ -58,7 +58,6 @@ import ReactDOM from "react-dom";
 import { usePrevious } from "react-use";
 import {
   BasePoint,
-  createEditor,
   Editor,
   Node,
   Range,
@@ -66,6 +65,7 @@ import {
   Element as SlateElement,
   Text,
   Transforms,
+  createEditor,
 } from "slate";
 import { withHistory } from "slate-history";
 import {
@@ -108,7 +108,6 @@ export interface TemplatedTextEditorProps {
   onChange: (value: TemplatedString) => void;
   data?: Record<string, any>;
   schema?: DataPickerTypesSchema;
-  reactNamespace?: boolean;
   placeholder?: string;
   readOnly?: boolean;
   disabled?: boolean;
@@ -159,7 +158,6 @@ export const TemplatedTextEditor = React.forwardRef<
       disabled,
       data,
       schema,
-      reactNamespace,
       onBlur,
       onKeyDown,
       scrollerContainerClassName,
@@ -257,12 +255,11 @@ export const TemplatedTextEditor = React.forwardRef<
           props,
           data,
           schema,
-          reactNamespace,
           showExpressionAsPreviewValue,
           prefix,
           disabled
         ),
-      [data, schema, reactNamespace, showExpressionAsPreviewValue, prefix]
+      [data, schema, showExpressionAsPreviewValue, prefix]
     );
 
     const decorate = useCallback(([node, path]) => {
@@ -516,7 +513,6 @@ function renderElement(
   props: RenderElementProps,
   data: Record<string, any> | undefined,
   schema: DataPickerTypesSchema | undefined,
-  reactNamespace: boolean | undefined,
   showExpressionAsPreviewValue: boolean | undefined,
   prefix: string | undefined,
   disabled: boolean | undefined
@@ -528,7 +524,6 @@ function renderElement(
           {...(props as any)}
           data={data}
           schema={schema}
-          reactNamespace={reactNamespace}
           showExpressionAsPreviewValue={showExpressionAsPreviewValue}
           disabled={disabled}
         />
@@ -712,7 +707,6 @@ interface CodeTagProps {
   children: React.ReactElement;
   data: Record<string, any> | undefined;
   schema?: DataPickerTypesSchema;
-  reactNamespace?: boolean;
   showExpressionAsPreviewValue?: boolean;
   disabled?: boolean;
   exprCtx: ExprCtx;
@@ -730,7 +724,6 @@ function CodeTag({
   element,
   data,
   schema,
-  reactNamespace,
   showExpressionAsPreviewValue,
   disabled,
   exprCtx,
@@ -839,7 +832,6 @@ function CodeTag({
           onCancel={() => setOpen(false)}
           data={data}
           schema={schema}
-          showReactNamespace={reactNamespace}
         />
       }
       open={open}

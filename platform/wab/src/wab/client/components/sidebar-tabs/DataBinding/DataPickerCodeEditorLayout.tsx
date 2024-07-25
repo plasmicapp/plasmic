@@ -26,7 +26,6 @@ export interface DataPickerCodeEditorLayoutProps
   onSave: (val: string) => boolean;
   schema?: DataPickerTypesSchema;
   context?: string;
-  showReactNamespace?: boolean;
   hideEnvPanel?: boolean;
 }
 
@@ -44,7 +43,6 @@ function DataPickerCodeEditorLayout_(
     defaultValue,
     onSave,
     schema,
-    showReactNamespace,
     hideEnvPanel,
     context,
     ...rest
@@ -74,7 +72,6 @@ function DataPickerCodeEditorLayout_(
             lightTheme={true}
             folding={false}
             schema={schema}
-            showReactNamespace={showReactNamespace}
             autoFocus
           />
         </React.Suspense>

@@ -3,7 +3,7 @@ import memoizeOne from "memoize-one";
 
 /**
  * We need to run this before using the Monaco Editor:
- * https://github.com/microsoft/monaco-editor/blob/main/docs/integrate-amd-cross.md
+ * https://github.com/microsoft/monaco-editor/blob/v0.50.0/docs/integrate-esm.md
  */
 export const fixWorkerUrl = memoizeOne(() => {
   (window as any).MonacoEnvironment.getWorkerUrl = function (
