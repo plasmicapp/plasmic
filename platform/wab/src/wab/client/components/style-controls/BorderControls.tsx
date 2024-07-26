@@ -28,16 +28,21 @@ import MinusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Minus";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
-import { ensure, spawn, unanimousVal } from "@/wab/shared/common";
 import { TokenType } from "@/wab/commons/StyleToken";
+import { ensure, spawn, unanimousVal } from "@/wab/shared/common";
 import { parseCssShorthand, showCssShorthand } from "@/wab/shared/css";
-import { Corner, Side, standardCorners, standardSides } from "@/wab/shared/geom";
+import {
+  Corner,
+  Side,
+  standardCorners,
+  standardSides,
+} from "@/wab/shared/geom";
 import { isKnownTplTag, TplNode } from "@/wab/shared/model/classes";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import cn from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useEffect, useRef } from "react";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import defer = setTimeout;
 
 enum BorderType {
@@ -419,6 +424,7 @@ const BorderLineControls = observer(function BorderLineControls(props: {
           styleName={effectiveSides().map((s) => `border-${s}-width`)}
           labelSize="small"
           displayStyleName="border-width"
+          tokenType={TokenType.Spacing}
           dimOpts={{
             value: getSelectedSidesWidth() || "--",
             onChange: (val) =>

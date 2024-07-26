@@ -638,6 +638,13 @@ export const DimTokenSpinner = observer(
               "data-test-id": props["data-test-id"] as any,
               "data-plasmic-prop": props["data-plasmic-prop"],
             }}
+            existingTokensContainer={{
+              props: {
+                key: `${parsedValues
+                  .map((val) => (isKnownStyleToken(val) ? val.uuid : val))
+                  .join("-")}`,
+              },
+            }}
             existingTokens={parsedValues.map((val) =>
               isKnownStyleToken(val) ? (
                 <Chip
