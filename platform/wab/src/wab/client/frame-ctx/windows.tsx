@@ -5,6 +5,7 @@ import { lt } from "@/wab/commons/semver";
 import { withTimeout } from "@/wab/shared/common";
 import { requiredPackageVersions } from "@/wab/shared/required-versions";
 import { notification } from "antd";
+import assert from "assert";
 import React from "react";
 
 /**
@@ -12,9 +13,13 @@ import React from "react";
  * where @plasmicapp/host is loaded.
  * We use this to get the SubDeps from the host app.
  */
-let rootSub: SubDeps = (window.parent as any).__Sub;
+let rootSub: SubDeps | undefined = undefined;
+try {
+  rootSub = (window.parent as any).__Sub;
+} catch {}
 
 export function getRootSub(): SubDeps {
+  assert(rootSub, "Should only get rootSub from host iframe");
   return rootSub;
 }
 
