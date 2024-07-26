@@ -121,7 +121,7 @@ import {
 } from "@/wab/shared/ui-config-utils";
 import cn from "classnames";
 import { UseComboboxGetItemPropsOptions } from "downshift";
-import L, { groupBy, last, uniq } from "lodash";
+import L, { capitalize, groupBy, last, uniq } from "lodash";
 import memoizeOne from "memoize-one";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -1025,6 +1025,19 @@ export function buildAddItemGroups({
     isContentCreator: contentEditorMode,
   };
 
+  function handleTemplateAlias(templateName: string, defaultKind?: string) {
+    const item = getTemplateComponents(studioCtx).find(
+      (i) => i.templateName === templateName
+    );
+    if (item) {
+      return {
+        ...createAddTemplateComponent(item, defaultKind),
+        isCompact: true,
+      };
+    }
+    return undefined;
+  }
+
   let groupedItems: AddItemGroup[] = filterFalsy([
     // This is the main section/groups.
     // It's meant to list all the basic, "built-in" components.
@@ -1126,22 +1139,6 @@ export function buildAddItemGroups({
                 } else {
                   return undefined;
                 }
-              }
-
-              function handleTemplateAlias(
-                templateName: string,
-                defaultKind?: string
-              ) {
-                const item = getTemplateComponents(studioCtx).find(
-                  (i) => i.templateName === templateName
-                );
-                if (item) {
-                  return {
-                    ...createAddTemplateComponent(item, defaultKind),
-                    isCompact: true,
-                  };
-                }
-                return undefined;
               }
 
               if (resolved.startsWith("template:")) {
@@ -1279,7 +1276,25 @@ export function buildAddItemGroups({
           (item) => item.label
         ),
       },
+    (() => {
+      const defaultInsertable = studioCtx.appCtx.appConfig.defaultInsertable;
 
+      return defaultInsertable
+        ? {
+            key: defaultInsertable,
+            sectionLabel: capitalize(defaultInsertable),
+            sectionKey: defaultInsertable,
+            items: getTemplateComponents(studioCtx)
+              .filter((item) => item.templateName.startsWith(defaultInsertable))
+              .map((item) => handleTemplateAlias(item.templateName)),
+          }
+        : undefined;
+    })(),
+
+    /**
+     * NOTE: The plexusEnabled flag can be removed once Plexus is released for all users.
+     * Its only here to hide the Plexus Design System for installation until it is ready for public use.
+     */
     studioCtx.appCtx.appConfig.plexusEnabled
       ? {
           key: "ui-kits",

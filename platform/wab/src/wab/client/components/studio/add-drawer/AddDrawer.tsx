@@ -319,6 +319,12 @@ export function createAddComponentPreset(
   };
 }
 
+/**
+ * Creates an Insert Panel entry that lets you add the "flattened contents" of a template component to the canvas. No new component is auto-created in the destination project.
+ * E.g. dragging in a Plexus Button should add the contents of the Plexus Button to the canvas. No new Plexus Button component is created in the destination project.
+ * @param meta
+ * @returns
+ */
 export function createAddInsertableTemplate(
   meta: InsertableTemplatesItem
 ): AddTplItem<InsertableTemplateComponentExtraInfo> {
@@ -372,6 +378,14 @@ type CreateAddTemplateComponentExtraInfo =
   | { type: "existing"; component: Component }
   | ({ type: "clone" } & InsertableTemplateComponentExtraInfo);
 
+/**
+ * Creates an Insert Panel entry that lets you add the template component to the canvas.
+ * A new component is auto-created in the destination project.
+ * Subsequent insertions will re-use this component, instead of creating a new one every time.
+ * E.g. dragging in a Plexus Button should create a new Plexus Button component (if it doesn't already exist), and then add it to the canvas.
+ * @param meta
+ * @returns
+ */
 export function createAddTemplateComponent(
   meta: InsertableTemplatesComponent,
   defaultKind?: string
