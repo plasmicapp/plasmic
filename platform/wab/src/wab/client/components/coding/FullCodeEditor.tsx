@@ -1,6 +1,6 @@
-import { makeMonacoAutoFocus } from "@/wab/client/components/coding/CodeInput";
 import {
   createFilePathWithExtension,
+  makeMonacoAutoFocus,
   upsertMonacoLib,
   useMonacoEditor,
 } from "@/wab/client/components/coding/monacoEditorUtil";

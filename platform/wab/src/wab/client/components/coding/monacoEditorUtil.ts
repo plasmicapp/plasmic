@@ -573,3 +573,19 @@ const allModCombos = [
     monaco.KeyMod.Shift |
     monaco.KeyMod.WinCtrl,
 ];
+
+/**
+ * From
+ * <https://github.com/Microsoft/monaco-editor/issues/115>.
+ * onDidCreateEditor doesn't work.
+ */
+export function makeMonacoAutoFocus(
+  codeEditor: monaco.editor.IStandaloneCodeEditor
+) {
+  let didScrollChangeDisposable;
+  codeEditor.focus();
+  didScrollChangeDisposable = codeEditor.onDidScrollChange((event) => {
+    didScrollChangeDisposable.dispose();
+    codeEditor.focus();
+  });
+}
