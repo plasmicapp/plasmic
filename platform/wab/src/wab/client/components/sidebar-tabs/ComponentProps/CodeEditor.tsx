@@ -1,13 +1,15 @@
+import type { FullCodeEditor } from "@/wab/client/components/coding/FullCodeEditor";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import {
   FileUploadLink,
   ObserverLoadable,
 } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import { readUploadedFileAsText } from "@/wab/client/dom-utils";
-import { ensure, swallow } from "@/wab/shared/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { validJsIdentifierChars } from "@/wab/shared/codegen/util";
+import { ensure, swallow } from "@/wab/shared/common";
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { isValidJavaScriptCode } from "@/wab/shared/parser-utils";
 import { notification, Tooltip } from "antd";
@@ -16,7 +18,6 @@ import jsonrepair from "jsonrepair";
 import { observer } from "mobx-react";
 import React from "react";
 import { FocusScope } from "react-aria";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 
 const softStrSizeLimit = 500 * 1024; // 500KB
 const hardStrSizeLimit = 5000 * 1024; // 5MB
@@ -134,9 +135,7 @@ export const CodeEditor = observer(function CodeEditor(props: {
       : (value as string | null | undefined);
   const [show, setShow] = React.useState(false);
   const [fullscreen, setFullscreen] = React.useState(defaultFullscreen);
-  const editor = React.useRef<{
-    getValue: () => string;
-  }>(null);
+  const editor = React.useRef<FullCodeEditor>(null);
   const [draft, setDraft] = React.useState<string>();
   const CodeModal = fullscreen ? Modal : SidebarModal;
   const codeModalRef = React.useRef(CodeModal);
@@ -297,6 +296,7 @@ export const CodeEditor = observer(function CodeEditor(props: {
                   setShow(false);
                   setDraft(undefined);
                   setFullscreen(defaultFullscreen);
+                  editor.current?.resetValue();
                 }}
               >
                 Cancel

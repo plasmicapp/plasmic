@@ -2,6 +2,7 @@ import {
   CodePreview,
   renderInspector,
 } from "@/wab/client/components/coding/CodePreview";
+import type { FullCodeEditor } from "@/wab/client/components/coding/FullCodeEditor";
 import {
   DataPickerRunCodeActionContext,
   DataPickerTypesSchema,
@@ -18,9 +19,7 @@ import { ErrorBoundary } from "react-error-boundary";
 
 export interface DataPickerCodeEditorLayoutProps
   extends Omit<DefaultDataPickerCodeEditorLayoutProps, "envPanel"> {
-  editorRef: React.RefObject<{
-    getValue: () => string;
-  }>;
+  editorRef: React.RefObject<FullCodeEditor>;
   data: object;
   defaultValue: string;
   onSave: (val: string) => boolean;

@@ -1,3 +1,4 @@
+import type { FullCodeEditor } from "@/wab/client/components/coding/FullCodeEditor";
 import {
   checkDisallowedUseOfLibs,
   checkStrSizeLimit,
@@ -171,9 +172,7 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
   );
   const itemsRef = React.useRef<HTMLDivElement>(null);
   const searchboxRef = React.useRef<TextboxRef>(null);
-  const editorRef = React.useRef<{
-    getValue: () => string;
-  }>(null);
+  const editorRef = React.useRef<FullCodeEditor>(null);
   const getFixedInitialColumns = (val: DataPickerValueType) => {
     const initialColumns = getInitialColumns(
       val,

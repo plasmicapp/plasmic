@@ -38,6 +38,8 @@ export interface FullCodeEditorProps {
 
 export interface FullCodeEditor {
   getValue: () => string;
+  /** Reset to the default value. */
+  resetValue: () => void;
 }
 
 export const FullCodeEditor = React.forwardRef(
@@ -142,6 +144,7 @@ export const FullCodeEditor = React.forwardRef(
       ref,
       () => ({
         getValue: () => editorActions?.getUserValue() ?? "",
+        resetValue: () => editorActions?.resetUserValue(defaultValue),
       }),
       [editorActions]
     );
