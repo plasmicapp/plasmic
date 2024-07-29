@@ -84,3 +84,7 @@ export function extractPlasmicDataProps(props: Record<string, any>) {
 export function withoutNils<T>(array: (T | undefined | null)[]) {
   return array.filter((x): x is T => x != null);
 }
+
+export function isDefined<T>(thing: T | undefined | null): thing is T {
+  return thing !== undefined && thing !== null;
+}

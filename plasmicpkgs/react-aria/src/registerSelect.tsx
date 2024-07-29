@@ -91,7 +91,7 @@ export function BaseSelect<T extends object>(props: BaseSelectProps<T>) {
 
   const { options } = useStrictOptions(props);
 
-  const canvas = usePlasmicCanvasContext();
+  const isEditMode = !!usePlasmicCanvasContext();
 
   const disabledKeys = flattenOptions(options)
     .filter((op) => op.isDisabled)
@@ -108,7 +108,7 @@ export function BaseSelect<T extends object>(props: BaseSelectProps<T>) {
       style={style}
       name={name}
       aria-label={ariaLabel}
-      {...(previewOpen && canvas ? { isOpen: previewOpen } : undefined)}
+      {...(isEditMode ? { isOpen: previewOpen } : undefined)}
       {...extractPlasmicDataProps(props)}
     >
       <PlasmicListBoxContext.Provider

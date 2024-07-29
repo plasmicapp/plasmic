@@ -1,27 +1,48 @@
-import { PlasmicElement } from "@plasmicapp/host";
+import { PlasmicElement, usePlasmicCanvasContext } from "@plasmicapp/host";
 import { mergeProps } from "@react-aria/utils";
 import React from "react";
-import { Popover, PopoverContext } from "react-aria-components";
+import { Popover, PopoverContext, SelectContext } from "react-aria-components";
 import { PlasmicPopoverContext } from "./contexts";
 import {
+  BaseControlContextData,
   CodeComponentMetaOverrides,
   Registerable,
+  isDefined,
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
 
+interface PopoverControlContextData extends BaseControlContextData {
+  isInsideSelect: boolean;
+}
+
 export interface BasePopoverProps extends React.ComponentProps<typeof Popover> {
   className?: string;
   resetClassName?: string;
+  setControlContextData?: (ctxData: PopoverControlContextData) => void;
 }
 
+const SHOULD_FLIP_INSIDE_SELECT = false;
+
 export function BasePopover(props: BasePopoverProps) {
-  const { resetClassName, ...restProps } = props;
+  const { resetClassName, setControlContextData, ...restProps } = props;
   const isStandalone = !React.useContext(PopoverContext);
   const contextProps = React.useContext(PlasmicPopoverContext);
-  const mergedProps = mergeProps(contextProps, restProps, {
-    className: `${resetClassName}`,
-  });
+  const isInsideSelect = !!React.useContext(SelectContext);
+
+  const mergedProps = mergeProps(
+    contextProps,
+    restProps,
+    {
+      className: `${resetClassName}`,
+    },
+    isInsideSelect &&
+      !isDefined<BasePopoverProps["shouldFlip"]>(restProps.shouldFlip)
+      ? { shouldFlip: SHOULD_FLIP_INSIDE_SELECT }
+      : undefined
+  );
+
+  const isEditMode = !!usePlasmicCanvasContext();
 
   const triggerRef = React.useRef<any>(null);
 
@@ -33,10 +54,19 @@ export function BasePopover(props: BasePopoverProps) {
       }
     : {};
 
+  setControlContextData?.({
+    isStandalone,
+    isInsideSelect,
+  });
+
   return (
     <>
       {isStandalone && <div ref={triggerRef} />}
-      <Popover {...mergedProps} {...standaloneProps} />
+      <Popover
+        isNonModal={isEditMode ? true : undefined}
+        {...mergedProps}
+        {...standaloneProps}
+      />
     </>
   );
 }
@@ -116,10 +146,20 @@ export function registerPopover(
             "Additional offset applied vertically between the popover and its trigger",
           defaultValueHint: 0,
         },
+        shouldFlip: {
+          type: "boolean",
+          description:
+            "Whether the element should flip its orientation (e.g. top to bottom or left to right) when there is insufficient room for it to render completely.",
+          defaultValueHint: (
+            _ps: BasePopoverProps,
+            ctx: PopoverControlContextData | null
+          ) => (ctx?.isInsideSelect ? SHOULD_FLIP_INSIDE_SELECT : true),
+        },
         placement: {
           type: "choice",
           description:
             "Default placement of the popover relative to the trigger, if there is enough space",
+          defaultValueHint: "bottom",
           options: [
             "bottom",
             "bottom left",
