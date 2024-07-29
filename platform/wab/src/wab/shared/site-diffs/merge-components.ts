@@ -1,4 +1,25 @@
 import {
+  fillVirtualSlotContents,
+  getSlotArgs,
+  getSlotParams,
+  getTplSlots,
+} from "@/wab/shared/SlotUtils";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  BASE_VARIANT_NAME,
+  isBaseVariant,
+  mkBaseVariant,
+  mkVariantSetting,
+  tryGetBaseVariantSetting,
+} from "@/wab/shared/Variants";
+import { Bundler } from "@/wab/shared/bundler";
+import { flattenComponent } from "@/wab/shared/cached-selectors";
+import {
+  attachRenderableTplSlots,
+  mkCodeComponent,
+} from "@/wab/shared/code-components/code-components";
+import {
   arrayEq,
   arrayEqIgnoreOrder,
   assert,
@@ -14,23 +35,18 @@ import {
 } from "@/wab/shared/common";
 import { CodeComponent, isCodeComponent } from "@/wab/shared/core/components";
 import { ChangeRecorder } from "@/wab/shared/core/observable-model";
-import { Bundler } from "@/wab/shared/bundler";
-import { flattenComponent } from "@/wab/shared/cached-selectors";
+import { visitComponentRefs } from "@/wab/shared/core/sites";
 import {
-  attachRenderableTplSlots,
-  mkCodeComponent,
-} from "@/wab/shared/code-components/code-components";
+  fixParentPointers,
+  mkTplComponentX,
+  tplChildren,
+  trackComponentRoot,
+  trackComponentSite,
+} from "@/wab/shared/core/tpls";
+import { instUtil } from "@/wab/shared/model/InstUtil";
 import {
   Arg,
   Component,
-  ensureKnownRenderExpr,
-  ensureKnownTplComponent,
-  ensureKnownTplSlot,
-  ensureKnownTplTag,
-  isKnownRenderExpr,
-  isKnownTplComponent,
-  isKnownTplTag,
-  isKnownVirtualRenderExpr,
   ObjInst,
   Param,
   RenderExpr,
@@ -42,50 +58,34 @@ import {
   Variant,
   VariantSetting,
   VirtualRenderExpr,
+  ensureKnownRenderExpr,
+  ensureKnownTplComponent,
+  ensureKnownTplSlot,
+  ensureKnownTplTag,
+  isKnownRenderExpr,
+  isKnownTplComponent,
+  isKnownTplTag,
+  isKnownVirtualRenderExpr,
 } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
-import { instUtil } from "@/wab/shared/model/InstUtil";
 import { Field } from "@/wab/shared/model/model-meta";
 import { assertSameInstType } from "@/wab/shared/model/model-tree-util";
 import {
   AutoReconciliation,
+  DirectConflict,
+  SpecialDirectConflict,
   cloneFieldValueToMergedSite,
   cloneObjInstToMergedSite,
   deriveKeyFunc,
-  DirectConflict,
   getArrayKey,
   getDirectConflicts,
-  SpecialDirectConflict,
 } from "@/wab/shared/site-diffs/merge-core";
 import {
   FieldConflictDescriptorMeta,
   MergeSpecialFieldHandler,
-  modelConflictsMeta,
   ModelConflictsMeta,
+  modelConflictsMeta,
 } from "@/wab/shared/site-diffs/model-conflicts-meta";
-import {
-  fillVirtualSlotContents,
-  getSlotArgs,
-  getSlotParams,
-  getTplSlots,
-} from "@/wab/shared/SlotUtils";
-import { TplMgr } from "@/wab/shared/TplMgr";
-import { $$$ } from "@/wab/shared/TplQuery";
-import {
-  BASE_VARIANT_NAME,
-  isBaseVariant,
-  mkBaseVariant,
-  mkVariantSetting,
-  tryGetBaseVariantSetting,
-} from "@/wab/shared/Variants";
-import { visitComponentRefs } from "@/wab/shared/core/sites";
-import {
-  fixParentPointers,
-  mkTplComponentX,
-  tplChildren,
-  trackComponentRoot,
-  trackComponentSite,
-} from "@/wab/shared/core/tpls";
 import {
   findLastIndex,
   groupBy,
@@ -258,10 +258,12 @@ function deriveKeyFuncFromClassNameAndField<
 function calcRootToNodesPaths(
   node: TplNode,
   bundler: Bundler,
+  processNode: (node: TplNode, path: string[]) => void = () => null,
   currPath = ["tplTree"] as string[],
   nodeToPath = new Map<TplNode, string[]>()
 ) {
   nodeToPath.set(node, currPath);
+  processNode(node, currPath);
 
   switchType(node)
     .when(TplTag, (_node) =>
@@ -269,6 +271,7 @@ function calcRootToNodesPaths(
         calcRootToNodesPaths(
           child,
           bundler,
+          processNode,
           [
             ...currPath,
             "children",
@@ -287,6 +290,7 @@ function calcRootToNodesPaths(
         calcRootToNodesPaths(
           child,
           bundler,
+          processNode,
           [
             ...currPath,
             "defaultContents",
@@ -321,6 +325,7 @@ function calcRootToNodesPaths(
             calcRootToNodesPaths(
               child,
               bundler,
+              processNode,
               [
                 ...currPath,
                 "vsettings",
@@ -647,60 +652,67 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
       const nodeToPathAnc = calcRootToNodesPaths(ancestorComp.tplTree, bundler);
       const nodeToPathA = calcRootToNodesPaths(compA.tplTree, bundler);
       const nodeToPathB = calcRootToNodesPaths(compB.tplTree, bundler);
-      const nodeToPathMerged = calcRootToNodesPaths(
-        mergedComp.tplTree,
-        bundler
-      );
 
-      for (const tplMerged of flattenComponent(mergedComp)) {
-        const tplA = tplInAByUuid.get(tplMerged.uuid);
-        const tplB = tplInBByUuid.get(tplMerged.uuid);
-        const tplAnc = tplInAncestorByUuid.get(tplMerged.uuid);
-        if (tplA && tplB && tplAnc) {
-          const nodePathAnc = ensure(
-            nodeToPathAnc.get(tplAnc),
-            "Path to tplNode must exist."
-          );
-          const nodePathA = ensure(
-            nodeToPathA.get(tplA),
-            "Path to tplNode must exist."
-          );
-          const nodePathB = ensure(
-            nodeToPathB.get(tplB),
-            "Path to tplNode must exist."
-          );
-          const nodePathMerged = ensure(
-            nodeToPathMerged.get(tplMerged),
-            "Path to tplNode must exist."
-          );
-          directConflicts.push(
-            ...getDirectConflicts(
-              {
-                node: tplAnc,
-                site: siteAncestorCtx.site,
-                path: [...getCompPath(ancestorComp, bundler), ...nodePathAnc],
-              },
-              {
-                node: tplA,
-                site: siteACtx.site,
-                path: [...getCompPath(compA, bundler), ...nodePathA],
-              },
-              {
-                node: tplB,
-                site: siteBCtx.site,
-                path: [...getCompPath(compB, bundler), ...nodePathB],
-              },
-              {
-                node: tplMerged,
-                site: mergedSiteCtx.site,
-                path: [...getCompPath(mergedComp, bundler), ...nodePathMerged],
-              },
-              bundler,
-              picks
-            )
-          );
+      // At the current moment of execution, we have changed instances of tplNodes present
+      // in mergedComp.tplTree to detach themselves from their parent and updated their parent
+      // to point to the correct parent. But we haven't attached new nodes to their parent in
+      // the mergedComp.tplTree. This will be done by `mergeTplNodeChildren` which is called through
+      // `getDirectConflicts`. Since it's possible that old components have moved to be children
+      // of new components we need to traverse the children of the new components and execute
+      // `getDirectConflicts`. We do it during the calculation of the rootToNodesPaths so that
+      // we update the tree and descend into the correct children
+      calcRootToNodesPaths(
+        mergedComp.tplTree,
+        bundler,
+        (tplMerged, nodePathMerged) => {
+          const tplA = tplInAByUuid.get(tplMerged.uuid);
+          const tplB = tplInBByUuid.get(tplMerged.uuid);
+          const tplAnc = tplInAncestorByUuid.get(tplMerged.uuid);
+          if (tplA && tplB && tplAnc) {
+            const nodePathAnc = ensure(
+              nodeToPathAnc.get(tplAnc),
+              "Path to tplNode must exist."
+            );
+            const nodePathA = ensure(
+              nodeToPathA.get(tplA),
+              "Path to tplNode must exist."
+            );
+            const nodePathB = ensure(
+              nodeToPathB.get(tplB),
+              "Path to tplNode must exist."
+            );
+            directConflicts.push(
+              ...getDirectConflicts(
+                {
+                  node: tplAnc,
+                  site: siteAncestorCtx.site,
+                  path: [...getCompPath(ancestorComp, bundler), ...nodePathAnc],
+                },
+                {
+                  node: tplA,
+                  site: siteACtx.site,
+                  path: [...getCompPath(compA, bundler), ...nodePathA],
+                },
+                {
+                  node: tplB,
+                  site: siteBCtx.site,
+                  path: [...getCompPath(compB, bundler), ...nodePathB],
+                },
+                {
+                  node: tplMerged,
+                  site: mergedSiteCtx.site,
+                  path: [
+                    ...getCompPath(mergedComp, bundler),
+                    ...nodePathMerged,
+                  ],
+                },
+                bundler,
+                picks
+              )
+            );
+          }
         }
-      }
+      );
 
       for (const tplMerged of flattenComponent(mergedComp)) {
         const tplA = tplInAByUuid.get(tplMerged.uuid);
