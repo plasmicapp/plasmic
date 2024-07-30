@@ -11,7 +11,8 @@ describe("createFolderTreeStructure", () => {
       { name: "folder1/file2" },
       { name: "/folder2/file3/" }, // leading and trailing slashes
       { name: " folder2 / folder3/ file4" }, // spaces
-      { name: "file5" },
+      { name: "folder2/folder3/file5" }, // nested
+      { name: "file6" },
     ];
 
     const expectedTree = [
@@ -21,6 +22,7 @@ describe("createFolderTreeStructure", () => {
         name: "folder1",
         path: "folder1",
         items: [{ name: "folder1/file1" }, { name: "folder1/file2" }],
+        count: 2,
       },
       {
         type: "folder",
@@ -32,11 +34,16 @@ describe("createFolderTreeStructure", () => {
             type: "folder",
             name: "folder3",
             path: "folder2-folder3",
-            items: [{ name: " folder2 / folder3/ file4" }],
+            items: [
+              { name: " folder2 / folder3/ file4" },
+              { name: "folder2/folder3/file5" },
+            ],
+            count: 2,
           },
         ],
+        count: 3,
       },
-      { name: "file5" },
+      { name: "file6" },
     ];
 
     const result = createFolderTreeStructure(items, (item) => item);
@@ -51,6 +58,7 @@ describe("isFolder", () => {
       name: "folder1",
       path: "folder1",
       items: [{ name: "folder1/file1" }],
+      count: 1,
     };
 
     expect(isFolder(folder)).toBe(true);

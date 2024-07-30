@@ -5,6 +5,7 @@ export interface Folder<T> {
   name: string;
   path: string;
   items: (T | Folder<T>)[];
+  count: number;
 }
 
 /**
@@ -62,9 +63,11 @@ function insertIntoTree<T extends { name: string }>(
       name: folders[index],
       path: newPath,
       items: [],
+      count: 0,
     });
     treeNode = children[len - 1] as Folder<T>;
   }
 
   insertIntoTree(item, treeNode.items, folders, index + 1, newPath);
+  treeNode.count++;
 }

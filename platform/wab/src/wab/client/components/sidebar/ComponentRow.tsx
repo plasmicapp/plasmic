@@ -1,5 +1,5 @@
 import { mkProjectLocation, openNewTab } from "@/wab/client/cli-routes";
-import ListItem from "@/wab/client/components/ListItem";
+import RowItem from "@/wab/client/components/RowItem";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { DefaultComponentKindModal } from "@/wab/client/components/modals/DefaultComponentKindModal";
 import { showModalToRefreshCodeComponentProps } from "@/wab/client/components/modals/codeComponentModals";
@@ -38,7 +38,7 @@ import {
   isReusableComponent,
 } from "@/wab/shared/core/components";
 import { Component } from "@/wab/shared/model/classes";
-import { Menu, Popover, Tooltip, notification } from "antd";
+import { Menu, Popover, notification } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -101,30 +101,14 @@ export const ComponentRow = observer(function ComponentRow(props: {
         type: AddItemType.tpl,
       }}
     >
-      <ListItem
-        isDraggable={!readOnly}
+      <RowItem
+        style={{
+          height: 32,
+          paddingLeft: calcIndent * 16 + 6,
+        }}
         icon={<Icon icon={ComponentIcon} />}
         menu={overlay}
-        style={{
-          paddingLeft: calcIndent * 16,
-        }}
-        hasRightContents={isCodeComp}
-        rightContent={
-          isCodeComp ? (
-            <Tooltip title={component.codeComponentMeta.importPath}>
-              <code
-                style={{
-                  textOverflow: "ellipsis",
-                  minWidth: 0,
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {component.codeComponentMeta.importPath}
-              </code>
-            </Tooltip>
-          ) : undefined
-        }
+        menuSize={"small"}
         onClick={
           isPlainComponent
             ? () => {
@@ -155,7 +139,7 @@ export const ComponentRow = observer(function ComponentRow(props: {
         ) : (
           matcher.boldSnippets(getFolderComponentDisplayName(component))
         )}
-      </ListItem>
+      </RowItem>
     </DraggableInsertable>
   );
 });
