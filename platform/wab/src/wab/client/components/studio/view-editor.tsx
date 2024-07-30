@@ -1,5 +1,4 @@
 /** @format */
-import PageSettings from "@/wab/client/components/PageSettings";
 import { DndAdoptee, DndMarkers, DragMoveManager } from "@/wab/client/Dnd";
 import { DragMoveFrameManager } from "@/wab/client/FreestyleManipulator";
 import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
@@ -9,6 +8,7 @@ import { LocalClipboardAction } from "@/wab/client/clipboard/local";
 import { paste } from "@/wab/client/clipboard/paste";
 import { BottomModals } from "@/wab/client/components/BottomModal";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
+import PageSettings from "@/wab/client/components/PageSettings";
 import { CanvasDndOverlay } from "@/wab/client/components/canvas/CanvasDndOverlay";
 import { isCanvasOverlay } from "@/wab/client/components/canvas/CanvasFrame";
 import { FreestyleBox } from "@/wab/client/components/canvas/FreestyleBox";
@@ -72,6 +72,16 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import { trackEvent } from "@/wab/client/tracking";
 import {
+  getArenaFrames,
+  getFrameHeight,
+  isComponentArena,
+  isDedicatedArena,
+  isMixedArena,
+  isPageArena,
+  isPositionManagedFrame,
+} from "@/wab/shared/Arenas";
+import { ARENAS_DESCRIPTION, ARENA_LOWER } from "@/wab/shared/Labels";
+import {
   assert,
   ensure,
   ensureArray,
@@ -82,32 +92,12 @@ import {
   unexpected,
   withoutNils,
 } from "@/wab/shared/common";
+import { isBaseVariantFrame } from "@/wab/shared/component-arenas";
 import {
   isCodeComponent,
   isFrameComponent,
   isPageComponent,
 } from "@/wab/shared/core/components";
-import { dbg } from "@/wab/shared/dbg";
-import { DEVFLAGS } from "@/wab/shared/devflags";
-import { Box, Pt } from "@/wab/shared/geom";
-import {
-  getArenaFrames,
-  getFrameHeight,
-  isComponentArena,
-  isDedicatedArena,
-  isMixedArena,
-  isPageArena,
-  isPositionManagedFrame,
-} from "@/wab/shared/Arenas";
-import { ARENAS_DESCRIPTION, ARENA_LOWER } from "@/wab/shared/Labels";
-import { isBaseVariantFrame } from "@/wab/shared/component-arenas";
-import { PositionLayoutType } from "@/wab/shared/layoututils";
-import {
-  ArenaFrame,
-  isKnownTplComponent,
-  isKnownTplTag,
-} from "@/wab/shared/model/classes";
-import { TplVisibility } from "@/wab/shared/visibility-utils";
 import { getSiteArenas } from "@/wab/shared/core/sites";
 import {
   canConvertToSlot,
@@ -117,6 +107,16 @@ import {
   isTplTextBlock,
 } from "@/wab/shared/core/tpls";
 import { ValComponent, ValNode, ValTag } from "@/wab/shared/core/val-nodes";
+import { dbg } from "@/wab/shared/dbg";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { Box, Pt } from "@/wab/shared/geom";
+import { PositionLayoutType } from "@/wab/shared/layoututils";
+import {
+  ArenaFrame,
+  isKnownTplComponent,
+  isKnownTplTag,
+} from "@/wab/shared/model/classes";
+import { TplVisibility } from "@/wab/shared/visibility-utils";
 import { Alert, notification } from "antd";
 import { ArgsProps } from "antd/lib/notification";
 import { default as cn, default as cx } from "classnames";
@@ -1056,9 +1056,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       const dragState = this.props.studioCtx.dragInsertState();
       const manager = dragState?.dragMgr;
       const vc = manager?.tentativeVc;
-      const extraInfo = dragState?.spec.asyncExtraInfo
-        ? await dragState?.spec.asyncExtraInfo(this.props.studioCtx)
-        : undefined;
+      const extraInfo = dragState?.dragMgr.extraInfo;
       if (extraInfo === false) {
         return;
       }

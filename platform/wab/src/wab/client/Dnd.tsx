@@ -45,6 +45,9 @@ import {
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { summarizeFocusObj } from "@/wab/client/utils/tpl-client-utils";
+import { Area } from "@/wab/shared/Grids";
+import { getAncestorSlotArg } from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
 import {
   assert,
   ensure,
@@ -54,22 +57,12 @@ import {
   tuple,
   withoutNils,
 } from "@/wab/shared/common";
-import { Box, Orientation, Pt, Rect, Side, sideToOrient } from "@/wab/shared/geom";
-import { SQ, SelQuery, Selectable, isSelectableLocked } from "@/wab/shared/core/selection";
-import { Area } from "@/wab/shared/Grids";
-import { getAncestorSlotArg } from "@/wab/shared/SlotUtils";
-import { $$$ } from "@/wab/shared/TplQuery";
 import {
-  ContainerLayoutType,
-  ContainerType,
-  getRshContainerType,
-  isFlexReverse,
-} from "@/wab/shared/layoututils";
-import { Arena, Component, TplNode } from "@/wab/shared/model/classes";
-import {
-  canAddChildrenToSelectableAndWhy,
-  canAddSiblings,
-} from "@/wab/shared/parenting";
+  SQ,
+  SelQuery,
+  Selectable,
+  isSelectableLocked,
+} from "@/wab/shared/core/selection";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import { isTplVariantable, prepareFocusedTpls } from "@/wab/shared/core/tpls";
 import {
@@ -81,6 +74,25 @@ import {
   isValTagOrComponent,
 } from "@/wab/shared/core/val-nodes";
 import { asVal } from "@/wab/shared/core/vals";
+import {
+  Box,
+  Orientation,
+  Pt,
+  Rect,
+  Side,
+  sideToOrient,
+} from "@/wab/shared/geom";
+import {
+  ContainerLayoutType,
+  ContainerType,
+  getRshContainerType,
+  isFlexReverse,
+} from "@/wab/shared/layoututils";
+import { Arena, Component, TplNode } from "@/wab/shared/model/classes";
+import {
+  canAddChildrenToSelectableAndWhy,
+  canAddSiblings,
+} from "@/wab/shared/parenting";
 import classNames from "classnames";
 import $ from "jquery";
 import L from "lodash";
@@ -744,6 +756,7 @@ export class DragMoveManager {
 export class DragInsertManager {
   private targeters: NodeTargeter[] = [];
   private tentativeInsertion?: InsertionSpec;
+  extraInfo?: any | false;
   tentativeVc?: ViewCtx;
   toInsert?: TplNode;
 
@@ -751,8 +764,13 @@ export class DragInsertManager {
    * @param factory zero-argument function that creates the TplNode to insert
    *   if the motion is successful.
    */
-  constructor(private studioCtx: StudioCtx, targeters: NodeTargeter[]) {
+  constructor(
+    private studioCtx: StudioCtx,
+    targeters: NodeTargeter[],
+    extraInfo?: any | false
+  ) {
     this.targeters.push(...targeters);
+    this.extraInfo = extraInfo;
   }
 
   /**
@@ -776,12 +794,12 @@ export class DragInsertManager {
     spec: AddTplItem
   ): Promise<DragInsertManager> {
     const targeters: NodeTargeter[] = [];
+    const extraInfo = spec.asyncExtraInfo
+      ? await spec.asyncExtraInfo(studioCtx, { isDragging: true })
+      : undefined;
     for (const vc of studioCtx.viewCtxs) {
       // Ignore ViewCtx whose root is invisible.
       if (vc.isVisible() && vc.valState().maybeValUserRoot()) {
-        const extraInfo = spec.asyncExtraInfo
-          ? await spec.asyncExtraInfo(studioCtx, { isDragging: true })
-          : undefined;
         await studioCtx.changeUnsafe(() => {
           const toInsert = spec.factory(vc, extraInfo);
           if (toInsert != null) {
@@ -790,12 +808,13 @@ export class DragInsertManager {
         });
       }
     }
-    return new DragInsertManager(studioCtx, targeters);
+    return new DragInsertManager(studioCtx, targeters, extraInfo);
   }
 
   clear() {
     this.tentativeVc = undefined;
     this.tentativeInsertion = undefined;
+    this.extraInfo = undefined;
     this.clearTargeters();
   }
 

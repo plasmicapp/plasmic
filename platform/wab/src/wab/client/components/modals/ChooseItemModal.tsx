@@ -1,8 +1,8 @@
 import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
 import Button from "@/wab/client/components/widgets/Button";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import { Form, Radio } from "antd";
 import * as React from "react";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 
 export interface NamedItem<T> {
   name: string;
@@ -58,13 +58,15 @@ function ChooseItemForm<T>(props: {
     >
       {description && <p>{description}</p>}
       <Form onFinish={() => onSubmit(chosen)}>
-        <Radio.Group onChange={onChange} value={chosen}>
-          {group.map((i) => (
-            <Radio style={radioStyle} value={i}>
-              {i.name}
-            </Radio>
-          ))}
-        </Radio.Group>
+        <Form.Item required>
+          <Radio.Group onChange={onChange} value={chosen}>
+            {group.map((i) => (
+              <Radio style={radioStyle} value={i}>
+                {i.name}
+              </Radio>
+            ))}
+          </Radio.Group>
+        </Form.Item>
         <Form.Item>
           <Button
             className="mr-sm"
