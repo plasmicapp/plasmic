@@ -1736,6 +1736,15 @@ export function fixVirtualSlotArgs(mergedSite: Site, recorder: ChangeRecorder) {
         const slots = getTplSlots(tpl.component);
         for (const slot of slots) {
           const arg = $$$(tpl).getSlotArgForParam(slot.param);
+          if (arg && isKnownRenderExpr(arg.expr)) {
+            // Since we try to fill only the tplSlots that were changed, it's possible that some slot expr
+            // was detached while processing the merge of the different sites. So we will ensure that the child
+            // nodes are properly parented to the tpl.
+            arg.expr.tpl.forEach((child) => {
+              child.parent = tpl;
+            });
+          }
+
           if (
             arg &&
             isKnownRenderExpr(arg.expr) &&
