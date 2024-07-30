@@ -547,19 +547,10 @@ export async function getProjectBranchesMetadata(req: Request, res: Response) {
     await mgr.getPkgByProjectId(projectId),
     `No pkg for project ${projectId}`
   );
-  const pkgVersions = (
-    await Promise.all([
-      mgr.listPkgVersions(pkg.id, {
-        includeData: false,
-      }),
-      ...branches.map((branch) =>
-        mgr.listPkgVersions(pkg.id, {
-          branchId: branch.id,
-          includeData: false,
-        })
-      ),
-    ])
-  ).flat();
+  const pkgVersions = await mgr.listPkgVersions(pkg.id, {
+    includeData: false,
+    unfiltered: true,
+  });
   const project = await mgr.getProjectById(projectId);
   const commitGraph = await mgr.getCommitGraphForProject(projectId);
   const usersIds = withoutNils(uniq(pkgVersions.map((v) => v.createdById)));

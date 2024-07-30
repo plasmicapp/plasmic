@@ -4418,12 +4418,13 @@ export class DbMgr implements MigrationDbMgr {
     opts: {
       includeData?: boolean;
       branchId?: BranchId;
+      unfiltered?: boolean;
     } = {}
   ) {
     await this.checkPkgPerms(pkgId, "viewer", "get");
-    const { branchId } = opts;
+    const { branchId, unfiltered } = opts;
     return (await this.listPkgVersionsRaw(pkgId, opts))
-      .filter((pkgVersion) => pkgVersion.branchId == branchId)
+      .filter((pkgVersion) => unfiltered || pkgVersion.branchId == branchId)
       .sort((a, b) => (semver.gt(a.version, b.version) ? -1 : +1));
   }
 
