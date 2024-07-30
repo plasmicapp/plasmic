@@ -12,18 +12,30 @@ import { computeNodeOutlineTagLayoutClass } from "@/wab/client/node-outline";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { summarizeFocusObj } from "@/wab/client/utils/tpl-client-utils";
-import { asOne, assert, withoutNils } from "@/wab/shared/common";
 import { removeAllFromArray } from "@/wab/commons/collections";
 import { isTokenRef } from "@/wab/commons/StyleToken";
-import { isFrameComponent, isPageComponent } from "@/wab/shared/core/components";
-import { Box, Orient, Side } from "@/wab/shared/geom";
-import { Selectable } from "@/wab/shared/core/selection";
 import {
   FrameViewMode,
   getFrameHeight,
   isHeightAutoDerived,
 } from "@/wab/shared/Arenas";
 import { makeTokenRefResolver } from "@/wab/shared/cached-selectors";
+import { asOne, assert, withoutNils } from "@/wab/shared/common";
+import {
+  isFrameComponent,
+  isPageComponent,
+} from "@/wab/shared/core/components";
+import { Selectable } from "@/wab/shared/core/selection";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import {
+  isTplColumn,
+  isTplComponent,
+  isTplImage,
+  isTplInput,
+  isTplTagOrComponent,
+  isTplVariantable,
+} from "@/wab/shared/core/tpls";
+import { ValComponent, ValNode, ValSlot } from "@/wab/shared/core/val-nodes";
 import { NumericSize, tryParseNumericSize } from "@/wab/shared/css-size";
 import {
   computeDefinedIndicator,
@@ -31,6 +43,7 @@ import {
   getTargetBlockingCombo,
 } from "@/wab/shared/defined-indicator";
 import { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
+import { Box, Orient, Side } from "@/wab/shared/geom";
 import {
   ContainerLayoutType,
   getRshContainerType,
@@ -45,16 +58,6 @@ import { ReadonlyIRuleSetHelpersX } from "@/wab/shared/RuleSetHelpers";
 import { isExplicitSize, isTplDefaultSized } from "@/wab/shared/sizingutils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
-import { SlotSelection } from "@/wab/shared/core/slots";
-import {
-  isTplColumn,
-  isTplComponent,
-  isTplImage,
-  isTplInput,
-  isTplTagOrComponent,
-  isTplVariantable,
-} from "@/wab/shared/core/tpls";
-import { ValComponent, ValNode, ValSlot } from "@/wab/shared/core/val-nodes";
 import { uniq } from "lodash";
 import * as React from "react";
 
@@ -260,7 +263,7 @@ function computeSpacingViewState(
     !tpl || !isTplVariantable(tpl)
       ? undefined
       : vtm.effectiveVariantSetting(tpl);
-  const effectiveExpr = effectiveVs ? effectiveVs.rsh() : undefined;
+  const effectiveExpr = effectiveVs ? effectiveVs.rshWithTheme() : undefined;
 
   const parentExpr = tpl
     ? maybeEffectiveExpr(vtm, $$$(tpl).layoutParent().maybeOneTpl())
