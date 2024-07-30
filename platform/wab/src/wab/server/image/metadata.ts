@@ -1,5 +1,16 @@
 import sharp from "sharp";
 
+const unsupportedImageMimeTypes = new Set([
+  "image/x-icon",
+  "image/vnd.microsoft.icon",
+]);
+
+export function isImageSupported(mimeType: string) {
+  return (
+    mimeType.startsWith("image/") && !unsupportedImageMimeTypes.has(mimeType)
+  );
+}
+
 /**
  * Given image data, returns the size.
  *
