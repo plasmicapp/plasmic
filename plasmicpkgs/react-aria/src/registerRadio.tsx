@@ -4,14 +4,12 @@ import type { RadioProps } from "react-aria-components";
 import { Radio, RadioGroup } from "react-aria-components";
 import ErrorBoundary from "./ErrorBoundary";
 import { getCommonInputProps } from "./common";
-import { PlasmicRadioGroupContext } from "./contexts";
 import {
   UpdateInteractionVariant,
   pickAriaComponentVariants,
 } from "./interaction-variant-utils";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import {
-  BaseControlContextData,
   CodeComponentMetaOverrides,
   Registerable,
   makeComponentName,
@@ -23,12 +21,11 @@ const RADIO_INTERACTION_VARIANTS = [
   "pressed" as const,
   "focused" as const,
   "focusVisible" as const,
+  "selected" as const,
 ];
 
 export interface BaseRadioProps extends RadioProps {
   children: React.ReactNode;
-  isSelected: boolean;
-  setControlContextData?: (ctxData: BaseControlContextData) => void;
   // Optional callback to update the interaction variant state
   // as it's only provided if the component is the root of a Studio component
   updateInteractionVariant?: UpdateInteractionVariant<
@@ -41,13 +38,11 @@ const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
 );
 
 export function BaseRadio(props: BaseRadioProps) {
-  const { children, updateInteractionVariant, setControlContextData, ...rest } =
-    props;
-  const contextProps = React.useContext(PlasmicRadioGroupContext);
+  const { children, updateInteractionVariant, ...rest } = props;
 
   const radio = (
     <Radio {...rest}>
-      {({ isHovered, isPressed, isFocused, isFocusVisible }) =>
+      {({ isHovered, isPressed, isFocused, isFocusVisible, isSelected }) =>
         withObservedValues(
           children,
           {
@@ -55,19 +50,13 @@ export function BaseRadio(props: BaseRadioProps) {
             pressed: isPressed,
             focused: isFocused,
             focusVisible: isFocusVisible,
+            selected: isSelected,
           },
           updateInteractionVariant
         )
       }
     </Radio>
   );
-
-  const isStandalone = !contextProps;
-
-  setControlContextData?.({
-    isStandalone,
-  });
-
   return (
     <ErrorBoundary fallback={<RadioGroup>{radio}</RadioGroup>}>
       {radio}
@@ -136,19 +125,6 @@ export function registerRadio(
           type: "string",
           description:
             "The value of the input element, used when submitting an HTML form.",
-        },
-        onSelectionChange: {
-          type: "eventHandler",
-          argTypes: [{ name: "isSelected", type: "boolean" }],
-        },
-      },
-      states: {
-        isSelected: {
-          type: "readonly",
-          onChangeProp: "onSelectionChange",
-          variableType: "boolean",
-          hidden: (_ps: BaseRadioProps, ctx: BaseControlContextData | null) =>
-            !ctx?.isStandalone,
         },
       },
       trapsFocus: true,

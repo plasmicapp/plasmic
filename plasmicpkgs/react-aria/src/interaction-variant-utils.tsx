@@ -22,6 +22,10 @@ const ARIA_COMPONENTS_INTERACTION_VARIANTS = {
     cssSelector: "[data-dragging]",
     displayName: "Dragging",
   },
+  selected: {
+    cssSelector: "[data-selected]",
+    displayName: "Selected",
+  },
 };
 
 type AriaInteractionVariant = keyof typeof ARIA_COMPONENTS_INTERACTION_VARIANTS;

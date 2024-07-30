@@ -84,6 +84,7 @@ export function registerButton(
         borderStyle: "solid",
         borderColor: "black",
         padding: "2px 10px",
+        cursor: "pointer",
       },
       props: {
         ...getCommonInputProps<BaseButtonProps>("button", [

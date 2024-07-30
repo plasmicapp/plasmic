@@ -36,7 +36,10 @@ export function registerText(
           },
         },
         slot: {
-          type: "string",
+          type: "choice",
+          options: ["label", "description"],
+          defaultValueHint: "label",
+          defaultValue: "label",
         },
       },
       trapsFocus: true,

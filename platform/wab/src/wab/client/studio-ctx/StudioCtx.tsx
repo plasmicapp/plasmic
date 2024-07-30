@@ -3354,7 +3354,7 @@ export class StudioCtx extends WithDbCtx {
       }
 
       const $focusedDom = vc.focusedDomElt();
-      if (!$focusedDom) {
+      if (!$focusedDom?.length) {
         return;
       }
 
