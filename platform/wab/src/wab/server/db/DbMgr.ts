@@ -7648,7 +7648,13 @@ export class DbMgr implements MigrationDbMgr {
     branchId: BranchId,
     includeDeleted = false
   ): Promise<Branch> {
-    await this.checkBranchPerms(branchId, "viewer", "get branch data", true);
+    await this.checkBranchPerms(
+      branchId,
+      "viewer",
+      "get branch data",
+      true,
+      includeDeleted
+    );
     return ensureFound<Branch>(
       await this.branches().findOne({
         where: { id: branchId, ...maybeIncludeDeleted(includeDeleted) },
