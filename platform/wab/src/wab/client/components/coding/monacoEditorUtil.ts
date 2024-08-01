@@ -80,7 +80,9 @@ export function useMonacoEditor(
      * For performing actions that need to happen before creating the editor
      * (e.g. adding libraries).
      */
-    onBeforeEditorCreate?: () => Generator<monaco.IDisposable>;
+    onBeforeEditorCreate?: () => Generator<
+      monaco.IDisposable | null | undefined
+    >;
     /**
      * For performing actions after the editor is ready to use
      * (e.g. bind event handlers).
@@ -88,7 +90,7 @@ export function useMonacoEditor(
     onAfterEditorCreate?: (
       editor: monaco.editor.IStandaloneCodeEditor,
       editorActions: MonacoEditorActions
-    ) => Generator<monaco.IDisposable>;
+    ) => Generator<monaco.IDisposable | null | undefined>;
   }
 ): MonacoEditorActions | undefined {
   const [editorActions, setEditorActions] = useState<MonacoEditorActions>();
@@ -103,7 +105,9 @@ export function useMonacoEditor(
 
     if (onBeforeEditorCreate) {
       for (const d of onBeforeEditorCreate()) {
-        disposables.push(d);
+        if (d) {
+          disposables.push(d);
+        }
       }
     }
 
@@ -121,7 +125,9 @@ export function useMonacoEditor(
 
     if (onAfterEditorCreate) {
       for (const d of onAfterEditorCreate(editor, actions)) {
-        disposables.push(d);
+        if (d) {
+          disposables.push(d);
+        }
       }
     }
 
@@ -428,32 +434,16 @@ export function upsertMonacoModel(
   }
 }
 
-export function* upsertMonacoLib(
-  filePath: string,
-  language: string,
-  content: string
-): Generator<monaco.IDisposable> {
-  yield* upsertMonacoExtraLib(
-    monaco.languages.typescript.javascriptDefaults,
-    filePath,
-    content
-  );
-  yield* upsertMonacoExtraLib(
-    monaco.languages.typescript.typescriptDefaults,
-    filePath,
-    content
-  );
-  yield upsertMonacoModel(filePath, language, content);
-}
-
-function* upsertMonacoExtraLib(
+export function upsertMonacoExtraLib(
   lang: monaco.languages.typescript.LanguageServiceDefaults,
   filePath: string,
   content: string
-): Generator<monaco.IDisposable> {
+): monaco.IDisposable | null {
   const existingLib = lang.getExtraLibs()[filePath];
-  if (!existingLib || existingLib.content !== content) {
-    yield lang.addExtraLib(content, filePath);
+  if (existingLib && existingLib.content === content) {
+    return null;
+  } else {
+    return lang.addExtraLib(content, filePath);
   }
 }
 

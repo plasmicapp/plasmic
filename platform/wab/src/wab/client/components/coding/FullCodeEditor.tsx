@@ -1,7 +1,8 @@
 import {
   createFilePathWithExtension,
   makeMonacoAutoFocus,
-  upsertMonacoLib,
+  upsertMonacoExtraLib,
+  upsertMonacoModel,
   useMonacoEditor,
 } from "@/wab/client/components/coding/monacoEditorUtil";
 import {
@@ -111,16 +112,27 @@ export const FullCodeEditor = React.forwardRef(
       onBeforeEditorCreate: function* () {
         // Add data as library so IntelliSense can use it for completions.
         if (data) {
-          const envLanguage =
+          // Add extra libs for the correct language.
+          const langDefaults =
+            language === "javascript"
+              ? monaco.languages.typescript.javascriptDefaults
+              : monaco.languages.typescript.typescriptDefaults;
+
+          // Not sure why dataLanguage is typescript if schema,
+          // but it was introduced in this CR:
+          // https://gerrit.aws.plasmic.app/c/plasmic/+/16651
+          const dataLanguage =
             language === "javascript" && schema ? "typescript" : language;
+
           const dataCode = dataObjToCode(data, schema);
-          const envUri = createFilePathWithExtension("env", envLanguage);
-          yield* upsertMonacoLib(envUri, envLanguage, dataCode);
+          const envUri = createFilePathWithExtension("env", dataLanguage);
+          yield upsertMonacoExtraLib(langDefaults, envUri, dataCode);
+          yield upsertMonacoModel(envUri, dataLanguage, dataCode);
 
           if (schema && schema[extraTsFilesSymbol]) {
             for (const { contents, fileName } of schema[extraTsFilesSymbol]) {
               const fullPath = `file:///${fileName.replace(/^\.\//, "")}`;
-              yield* upsertMonacoLib(fullPath, envLanguage, contents);
+              yield upsertMonacoExtraLib(langDefaults, fullPath, contents);
             }
           }
         }
