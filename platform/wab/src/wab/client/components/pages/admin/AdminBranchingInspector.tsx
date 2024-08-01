@@ -323,6 +323,8 @@ export function AdminBranchingInspector() {
               onNodeClick={(e, node) => {
                 setSelectedPkgVersionId(node.id);
               }}
+              panOnScroll
+              selectionOnDrag
             >
               <LazyControls />
               <LazyBackground gap={12} size={1} />

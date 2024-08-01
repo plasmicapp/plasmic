@@ -1797,14 +1797,14 @@ function runMergeFnAndApplyFixes(
     iidsToBeDeleted.has(bundler.addrOf(inst).iid);
 
   // Some operations can be harder to execute once we merge the elements in a single site, which
-  // we will process the before the merge, by directly changing `a` and `b` sites and then after
-  // merging we will have a simpler handling
+  // we will process before the merge, by directly changing a and b sites. This
+  // will make merging have a simpler handling
   //
   // It's possible to identify some cases by looking into `customRenameFn` in model-conflicts-meta.ts.
   //
   // An example of this case is the renaming a component.param referent to a state/variable, as those
   // elements can be referred by expr instances which only have the name, it's necessary to update
-  // the expr instances to refer to the new name instead of the old one, if we merge the sites first
+  // the expr instances to refer to the new name instead of the old one. If we merge the sites first
   // we may end up with duplicated names and it won't be clear which one requires being renamed.
   autoReconciliations.push(...preFixNames(a, b, bundler, isDeletedInst));
 
