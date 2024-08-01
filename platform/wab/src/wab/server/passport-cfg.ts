@@ -19,7 +19,6 @@ import {
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { SsoConfigId, UserId } from "@/wab/shared/ApiSchema";
 import {
-  StandardCallback,
   assert,
   asyncToCallback,
   ensure,
@@ -27,9 +26,11 @@ import {
   isValidEmail,
   maybes,
   spreadLog,
+  StandardCallback,
 } from "@/wab/shared/common";
 import { isGoogleAuthRequiredEmailDomain } from "@/wab/shared/devflag-utils";
 import { DevFlagsType } from "@/wab/shared/devflags";
+import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { getPublicUrl } from "@/wab/shared/urls";
 import {
   MultiSamlStrategy,
@@ -224,20 +225,33 @@ export async function setupPassport(
 
           const mgr = superDbMgr(req);
 
-          // Add user to team directly, and no need for the user to create
-          // their own team
-          const team = await mgr.getTeamById(row.teamId);
-          await mgr.grantTeamPermissionByEmail(
-            row?.teamId,
-            user.email,
-            team.defaultAccessLevel ?? "editor"
-          );
+          // No need for new users to create their own team
           if (user.needsTeamCreationPrompt) {
             user = await mgr.updateUser({
               id: user.id,
               needsTeamCreationPrompt: false,
             });
           }
+
+          // If the user is already on the team, don't do anything
+          const userCurrentAccessLevel = await mgr.getTeamAccessLevelByUser(
+            row.teamId,
+            user.id
+          );
+          if (
+            accessLevelRank(userCurrentAccessLevel) >=
+            accessLevelRank("commenter")
+          ) {
+            return user;
+          }
+
+          // Add user to team directly
+          const team = await mgr.getTeamById(row.teamId);
+          await mgr.grantTeamPermissionByEmail(
+            row?.teamId,
+            user.email,
+            team.defaultAccessLevel ?? "editor"
+          );
 
           return user;
         });

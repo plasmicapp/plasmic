@@ -1092,6 +1092,20 @@ export class DbMgr implements MigrationDbMgr {
       includeDeleted
     );
 
+  async getTeamAccessLevelByUser(
+    teamId: TeamId,
+    userId: UserId
+  ): Promise<AccessLevel> {
+    const existingPerm = await this.permissions().findOne({
+      where: {
+        teamId,
+        userId,
+        ...excludeDeleted(),
+      },
+    });
+    return existingPerm ? existingPerm.accessLevel : "blocked";
+  }
+
   private _queryTeams(where: FindConditions<Team>, includeDeleted = false) {
     const qb = this.teams()
       .createQueryBuilder("t")
