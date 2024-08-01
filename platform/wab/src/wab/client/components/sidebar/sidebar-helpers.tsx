@@ -1,5 +1,5 @@
-import { useLabel } from "@/wab/client/components/aria-utils";
 import { useContextMenu } from "@/wab/client/components/ContextMenu";
+import { useLabel } from "@/wab/client/components/aria-utils";
 import { ColorButton } from "@/wab/client/components/style-controls/ColorButton";
 import {
   DefinedIndicator,
@@ -7,8 +7,8 @@ import {
 } from "@/wab/client/components/style-controls/DefinedIndicator";
 import StyleCheckbox from "@/wab/client/components/style-controls/StyleCheckbox";
 import {
-  createStyleContextMenu,
   ExpsProvider,
+  createStyleContextMenu,
   useStyleComponent,
 } from "@/wab/client/components/style-controls/StyleComponent";
 import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
@@ -21,8 +21,14 @@ import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
 import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
 import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
 import { PlasmicStyleToggleButtonGroup__VariantsArgs } from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicStyleToggleButtonGroup";
-import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
+import { TokenType } from "@/wab/commons/StyleToken";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { XDraggable } from "@/wab/commons/components/XDraggable";
+import { IRuleSetHelpersX } from "@/wab/shared/RuleSetHelpers";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { VariantCombo, makeVariantName } from "@/wab/shared/Variants";
 import {
   cx,
   ensure,
@@ -31,17 +37,11 @@ import {
   spawn,
   withoutNils,
 } from "@/wab/shared/common";
-import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import { XDraggable } from "@/wab/commons/components/XDraggable";
-import { TokenType } from "@/wab/commons/StyleToken";
 import { parseCssNumericNew, roundedCssNumeric } from "@/wab/shared/css";
 import {
   DefinedIndicatorType,
   getTargetBlockingCombo,
 } from "@/wab/shared/defined-indicator";
-import { IRuleSetHelpersX } from "@/wab/shared/RuleSetHelpers";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { makeVariantName, VariantCombo } from "@/wab/shared/Variants";
 import { Select, Tooltip } from "antd";
 import cn from "classnames";
 import { observer } from "mobx-react";
@@ -858,8 +858,8 @@ function LabeledToggleButtonGroup_(
 export function TargetBlockedTooltip(props: {
   displayName?: React.ReactNode;
   combo: VariantCombo;
+  studioCtx?: StudioCtx;
 }) {
-  const studioCtx = useStudioCtx();
   const { displayName, combo } = props;
   return (
     <>
@@ -869,7 +869,7 @@ export function TargetBlockedTooltip(props: {
         <strong>
           {combo
             .map((variant) =>
-              makeVariantName({ variant: variant, site: studioCtx.site })
+              makeVariantName({ variant, site: props.studioCtx?.site })
             )
             .join(" + ")}
         </strong>
@@ -898,6 +898,7 @@ export function shouldBeDisabled(opts: {
   };
   label?: React.ReactNode;
   indicators: DefinedIndicatorType[];
+  studioCtx?: StudioCtx;
 }) {
   if (opts.props.isDisabled) {
     return {
@@ -913,6 +914,7 @@ export function shouldBeDisabled(opts: {
         <TargetBlockedTooltip
           displayName={opts.label}
           combo={targetBlockingCombo}
+          studioCtx={opts.studioCtx}
         />
       ),
     };

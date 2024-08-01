@@ -1216,7 +1216,11 @@ export class ViewOps {
     const targetBlockingCombo = getTargetBlockingCombo([indicator]);
     if (targetBlockingCombo) {
       return (
-        <TargetBlockedTooltip displayName="text" combo={targetBlockingCombo} />
+        <TargetBlockedTooltip
+          displayName="text"
+          combo={targetBlockingCombo}
+          studioCtx={this.studioCtx()}
+        />
       );
     }
 
