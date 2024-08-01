@@ -1,3 +1,25 @@
+import { TokenType, mkTokenRef } from "@/wab/commons/StyleToken";
+import { removeFromArray } from "@/wab/commons/collections";
+import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
+import { getLowestCommonAncestor } from "@/wab/server/db/DbMgr";
+import { ProjectFullDataResponse } from "@/wab/shared/ApiSchema";
+import { mkArenaFrame } from "@/wab/shared/Arenas";
+import { fillVirtualSlotContents } from "@/wab/shared/SlotUtils";
+import {
+  TplMgr,
+  VariantOptionsType,
+  ensureBaseVariant,
+} from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
+import {
+  ensureVariantSetting,
+  getBaseVariant,
+  isStyleVariant,
+  mkVariantSetting,
+} from "@/wab/shared/Variants";
+import { Bundler, FastBundler } from "@/wab/shared/bundler";
+import { createStyleTokenFromRegistration } from "@/wab/shared/code-components/code-components";
 import {
   assert,
   ensure,
@@ -16,31 +38,53 @@ import {
   swallow,
   tuple,
 } from "@/wab/shared/common";
-import { removeFromArray } from "@/wab/commons/collections";
-import { mkTokenRef, TokenType } from "@/wab/commons/StyleToken";
 import {
-  addSlotParam,
   ComponentType,
   PageComponent,
+  addSlotParam,
   removeVariantGroup,
 } from "@/wab/shared/core/components";
-import { getProjectFlags } from "@/wab/shared/devflags";
 import { asCode, codeLit, tryExtractJson } from "@/wab/shared/core/exprs";
-import { Pt } from "@/wab/shared/geom";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { mkParam, mkParamsForState } from "@/wab/shared/core/lang";
-import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
-import { getLowestCommonAncestor } from "@/wab/server/db/DbMgr";
-import { ProjectFullDataResponse } from "@/wab/shared/ApiSchema";
-import { mkArenaFrame } from "@/wab/shared/Arenas";
-import { Bundler, FastBundler } from "@/wab/shared/bundler";
-import { createStyleTokenFromRegistration } from "@/wab/shared/code-components/code-components";
+import { createSite } from "@/wab/shared/core/sites";
+import { addComponentState, mkState } from "@/wab/shared/core/states";
+import {
+  TplNamable,
+  TplTagType,
+  flattenTpls,
+  isTplNamable,
+  mkSlot,
+  mkTplComponentX,
+  mkTplInlinedText,
+  mkTplTagX,
+  tplChildren,
+  trackComponentRoot,
+  trackComponentSite,
+} from "@/wab/shared/core/tpls";
 import { mkDataSourceOpExpr } from "@/wab/shared/data-sources-meta/data-sources";
+import { getProjectFlags } from "@/wab/shared/devflags";
+import { Pt } from "@/wab/shared/geom";
 import {
   Arg,
   Component,
   ComponentDataQuery,
   CustomCode,
+  ExprText,
+  ImageAsset,
+  NodeMarker,
+  ObjInst,
+  ObjectPath,
+  QueryInvalidationExpr,
+  QueryRef,
+  RawText,
+  RenderExpr,
+  Site,
+  TplComponent,
+  TplNode,
+  TplSlot,
+  TplTag,
+  VariantedValue,
   ensureKnownChoice,
   ensureKnownCustomCode,
   ensureKnownExprText,
@@ -54,25 +98,10 @@ import {
   ensureKnownTplSlot,
   ensureKnownTplTag,
   ensureKnownVirtualRenderExpr,
-  ExprText,
-  ImageAsset,
   isKnownTplComponent,
   isKnownTplSlot,
   isKnownTplTag,
   isKnownVirtualRenderExpr,
-  NodeMarker,
-  ObjectPath,
-  ObjInst,
-  QueryInvalidationExpr,
-  QueryRef,
-  RawText,
-  RenderExpr,
-  Site,
-  TplComponent,
-  TplNode,
-  TplSlot,
-  TplTag,
-  VariantedValue,
 } from "@/wab/shared/model/classes";
 import { withoutUids } from "@/wab/shared/model/model-meta";
 import { typeFactory } from "@/wab/shared/model/model-util";
@@ -92,33 +121,6 @@ import {
   tryMerge,
 } from "@/wab/shared/site-diffs/merge-core";
 import { assertSiteInvariants } from "@/wab/shared/site-invariants";
-import { fillVirtualSlotContents } from "@/wab/shared/SlotUtils";
-import {
-  ensureBaseVariant,
-  TplMgr,
-  VariantOptionsType,
-} from "@/wab/shared/TplMgr";
-import { $$$ } from "@/wab/shared/TplQuery";
-import {
-  ensureVariantSetting,
-  getBaseVariant,
-  isStyleVariant,
-  mkVariantSetting,
-} from "@/wab/shared/Variants";
-import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
-import { createSite } from "@/wab/shared/core/sites";
-import { addComponentState, mkState } from "@/wab/shared/core/states";
-import {
-  flattenTpls,
-  mkSlot,
-  mkTplComponentX,
-  mkTplInlinedText,
-  mkTplTagX,
-  tplChildren,
-  TplTagType,
-  trackComponentRoot,
-  trackComponentSite,
-} from "@/wab/shared/core/tpls";
 import { isArray, isString, pick, range, sortBy } from "lodash";
 import type { PartialDeep } from "type-fest";
 
@@ -5155,5 +5157,79 @@ describe("merging", () => {
     ]);
     expect(mergedUuidSlotArg1).not.toBe(originalUuidSlotArg1);
     expect(mergedUuidSlotArg2).toBe(originalUuidSlotArg2);
+  });
+
+  it("Handles reparenting an element from ancestor to a newer elemenet", () => {
+    function findElementsInSite(site: Site, compName: string, tplName: string) {
+      const component = ensure(
+        site.components.find((c) => c.name === compName),
+        `Component ${compName} not found`
+      );
+      const tpls = flattenTpls(component.tplTree);
+      const tpl = ensure(
+        tpls.find(
+          (_tpl): _tpl is TplNamable =>
+            isTplNamable(_tpl) && _tpl.name === tplName
+        ),
+        `Tpl ${tplName} not found`
+      );
+      return {
+        component,
+        tpl,
+      };
+    }
+    const result = testMerge({
+      ancestorSite: basicSite(),
+      a: () => {},
+      b: (site, tplMgr) => {
+        const { tpl, component } = findElementsInSite(site, "Button", "A");
+        const baseVariant = getBaseVariant(component);
+
+        tpl.name = "Newer A";
+        tpl.vsettings[0].attrs["id"] = codeLit("Dynamic ID");
+        $$$(tpl).wrap(
+          mkTplTagX("div", {
+            name: "A-Wrapper",
+            baseVariant,
+            variants: [mkVariantSetting({ variants: [baseVariant] })],
+          })
+        );
+      },
+    });
+
+    const { mergedSite } = result;
+    const { tpl: tplWrapper, component } = findElementsInSite(
+      mergedSite,
+      "Button",
+      "A-Wrapper"
+    );
+    const { tpl: tplA } = findElementsInSite(mergedSite, "Button", "Newer A");
+    assert(isKnownTplTag(tplWrapper), "Expected wrapper to be a TplTag");
+    expect(tplWrapper.children.length).toBe(1);
+    expect(tplWrapper.parent).toBe(component.tplTree);
+    expect(tplA.parent).toBe(tplWrapper);
+    expect(tplA.vsettings[0].attrs["id"]).toBeInstanceOf(CustomCode);
+    expect((tplA.vsettings[0].attrs["id"] as CustomCode).code).toBe(
+      '"Dynamic ID"'
+    );
+  });
+
+  it("shouldn't consider rename elements if the repeated name was deleted", () => {
+    const result = testMerge({
+      ancestorSite: basicSite(),
+      a: () => {},
+      b: (site, tplMgr) => {
+        const button = ensure(
+          site.components.find((c) => c.name === "Button"),
+          "Button not found"
+        );
+        tplMgr.removeComponent(button);
+        tplMgr.addComponent({
+          name: "Button",
+          type: ComponentType.Plain,
+        });
+      },
+    });
+    expect(result.autoReconciliations.length).toBe(0);
   });
 });
