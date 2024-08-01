@@ -133,7 +133,6 @@ export function registerSelect(loader?: Registerable) {
     props: {
       customize: {
         type: "boolean",
-        advanced: true,
         description: "Whether to customize the selected value display",
       },
       children: {
@@ -144,6 +143,7 @@ export function registerSelect(loader?: Registerable) {
             value: "Selected value...",
           },
         ],
+        hidden: (ps) => !ps.customize,
       },
       className: {
         type: "class",

@@ -1,18 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { mergeProps } from "react-aria";
 import type { TextAreaProps } from "react-aria-components";
 import { TextArea } from "react-aria-components";
+import { PlasmicTextFieldContext } from "./contexts";
 import {
   pickAriaComponentVariants,
   UpdateInteractionVariant,
 } from "./interaction-variant-utils";
 import {
+  BaseControlContextData,
   CodeComponentMetaOverrides,
   makeComponentName,
   Registerable,
   registerComponentHelper,
 } from "./utils";
 
-const TEXTAREA_INTERACTION_VARIANTS = ["focused" as const, "hovered" as const];
+const TEXTAREA_INTERACTION_VARIANTS = [
+  "focused" as const,
+  "hovered" as const,
+  "disabled" as const,
+];
 
 const { interactionVariants } = pickAriaComponentVariants(
   TEXTAREA_INTERACTION_VARIANTS
@@ -24,10 +31,28 @@ export interface BaseTextAreaProps extends TextAreaProps {
   updateInteractionVariant?: UpdateInteractionVariant<
     typeof TEXTAREA_INTERACTION_VARIANTS
   >;
+  setControlContextData?: (ctxData: BaseControlContextData) => void;
 }
 
 export function BaseTextArea(props: BaseTextAreaProps) {
-  const { disabled, updateInteractionVariant, ...rest } = props;
+  const { disabled, updateInteractionVariant, setControlContextData, ...rest } =
+    props;
+
+  const context = React.useContext(PlasmicTextFieldContext);
+  const isStandalone = !context;
+
+  const mergedProps = mergeProps(rest, {
+    disabled: context?.isDisabled ?? disabled,
+  });
+
+  // NOTE: Aria <Input> does not support render props, neither does it provide an onDisabledChange event, so we have to manually update the disabled state
+  useEffect(() => {
+    updateInteractionVariant?.({
+      disabled: mergedProps.disabled,
+    });
+  }, [mergedProps.disabled, updateInteractionVariant]);
+
+  setControlContextData?.({ isStandalone });
 
   return (
     <TextArea
@@ -46,8 +71,7 @@ export function BaseTextArea(props: BaseTextAreaProps) {
           hovered: isHovered,
         });
       }}
-      disabled={disabled}
-      {...rest}
+      {...mergedProps}
     />
   );
 }
@@ -68,6 +92,15 @@ export function registerTextArea(
       props: {
         placeholder: {
           type: "string",
+        },
+        disabled: {
+          type: "boolean",
+          description: "Whether the input is disabled",
+          defaultValueHint: false,
+          hidden: (
+            _ps: BaseTextAreaProps,
+            ctx: BaseControlContextData | null
+          ) => !ctx?.isStandalone,
         },
         onKeyDown: {
           type: "eventHandler",

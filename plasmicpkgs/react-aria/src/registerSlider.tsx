@@ -3,6 +3,10 @@ import { mergeProps } from "react-aria";
 import { Slider, type SliderProps } from "react-aria-components";
 import { getCommonInputProps } from "./common";
 import { PlasmicSliderContext } from "./contexts";
+import {
+  UpdateInteractionVariant,
+  pickAriaComponentVariants,
+} from "./interaction-variant-utils";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import {
   SLIDER_OUTPUT_COMPONENT_NAME,
@@ -23,6 +27,8 @@ import {
 
 export const SLIDER_COMPONENT_NAME = makeComponentName("slider");
 
+const SLIDER_INTERACTION_VARIANTS = ["disabled" as const];
+
 export interface BaseSliderProps
   extends Omit<SliderProps<number | number[]>, "onChange"> {
   // Passed down to Slider Thumb via context
@@ -31,8 +37,18 @@ export interface BaseSliderProps
   isMultiValue?: boolean;
   range?: number[];
   defaultRange?: number[];
+  children?: React.ReactNode;
   onChange?: (value: number | number[], isMultiValue?: boolean) => void;
+  // Optional callback to update the interaction variant state
+  // as it's only provided if the component is the root of a Studio component
+  updateInteractionVariant?: UpdateInteractionVariant<
+    typeof SLIDER_INTERACTION_VARIANTS
+  >;
 }
+
+const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
+  SLIDER_INTERACTION_VARIANTS
+);
 
 export const sliderHelpers = {
   states: {
@@ -56,7 +72,16 @@ export const sliderHelpers = {
 };
 
 export function BaseSlider(props: BaseSliderProps) {
-  const { range, value, defaultRange, defaultValue, onChange, ...rest } = props;
+  const {
+    range,
+    value,
+    defaultRange,
+    children,
+    updateInteractionVariant,
+    defaultValue,
+    onChange,
+    ...rest
+  } = props;
   const isFirstRender = useRef(true);
 
   useEffect(() => {
@@ -89,7 +114,17 @@ export function BaseSlider(props: BaseSliderProps) {
           onChange?.(newValue, props.isMultiValue);
         }}
         {...mergedProps}
-      />
+      >
+        {({ isDisabled }) =>
+          withObservedValues(
+            children,
+            {
+              disabled: isDisabled,
+            },
+            updateInteractionVariant
+          )
+        }
+      </Slider>
     </PlasmicSliderContext.Provider>
   );
 }
@@ -106,6 +141,7 @@ export function registerSlider(
       displayName: "Aria Slider",
       importPath: "@plasmicpkgs/react-aria/skinny/registerSlider",
       importName: "BaseSlider",
+      interactionVariants,
       defaultStyles: {
         width: "300px",
       },

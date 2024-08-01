@@ -20,6 +20,9 @@ const SWITCH_INTERACTION_VARIANTS = [
   "pressed" as const,
   "focused" as const,
   "focusVisible" as const,
+  "selected" as const,
+  "disabled" as const,
+  "readonly" as const,
 ];
 
 const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
@@ -40,7 +43,15 @@ export function BaseSwitch(props: BaseSwitchProps) {
 
   return (
     <Switch {...rest}>
-      {({ isHovered, isPressed, isFocused, isFocusVisible }) =>
+      {({
+        isHovered,
+        isPressed,
+        isFocused,
+        isFocusVisible,
+        isSelected,
+        isDisabled,
+        isReadOnly,
+      }) =>
         withObservedValues(
           children,
           {
@@ -48,6 +59,9 @@ export function BaseSwitch(props: BaseSwitchProps) {
             pressed: isPressed,
             focused: isFocused,
             focusVisible: isFocusVisible,
+            selected: isSelected,
+            disabled: isDisabled,
+            readonly: isReadOnly,
           },
           updateInteractionVariant
         )

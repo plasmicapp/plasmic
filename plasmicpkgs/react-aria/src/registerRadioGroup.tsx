@@ -3,6 +3,10 @@ import type { RadioGroupProps } from "react-aria-components";
 import { RadioGroup } from "react-aria-components";
 import { getCommonInputProps } from "./common";
 import { PlasmicRadioGroupContext } from "./contexts";
+import {
+  UpdateInteractionVariant,
+  pickAriaComponentVariants,
+} from "./interaction-variant-utils";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { registerFieldError } from "./registerFieldError";
 import { LABEL_COMPONENT_NAME, registerLabel } from "./registerLabel";
@@ -15,10 +19,40 @@ import {
   registerComponentHelper,
 } from "./utils";
 
-export function BaseRadioGroup(props: React.ComponentProps<typeof RadioGroup>) {
+const RADIO_GROUP_INTERACTION_VARIANTS = [
+  "disabled" as const,
+  "readonly" as const,
+];
+
+export interface BaseRadioGroupProps extends RadioGroupProps {
+  children: React.ReactNode;
+  // Optional callback to update the interaction variant state
+  // as it's only provided if the component is the root of a Studio component
+  updateInteractionVariant?: UpdateInteractionVariant<
+    typeof RADIO_GROUP_INTERACTION_VARIANTS
+  >;
+}
+
+const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
+  RADIO_GROUP_INTERACTION_VARIANTS
+);
+
+export function BaseRadioGroup(props: BaseRadioGroupProps) {
+  const { children, updateInteractionVariant, ...rest } = props;
   return (
     <PlasmicRadioGroupContext.Provider value={props}>
-      <RadioGroup {...props} />
+      <RadioGroup {...rest}>
+        {({ isDisabled, isReadOnly }) =>
+          withObservedValues(
+            children,
+            {
+              disabled: isDisabled,
+              readonly: isReadOnly,
+            },
+            updateInteractionVariant
+          )
+        }
+      </RadioGroup>
     </PlasmicRadioGroupContext.Provider>
   );
 }
@@ -46,6 +80,7 @@ export function registerRadioGroup(
       displayName: "Aria RadioGroup",
       importPath: "@plasmicpkgs/react-aria/skinny/registerRadioGroup",
       importName: "BaseRadioGroup",
+      interactionVariants,
       props: {
         ...getCommonInputProps<RadioGroupProps>("radio group", [
           "name",

@@ -4,6 +4,10 @@ import { CheckboxGroup } from "react-aria-components";
 import { getCommonInputProps } from "./common";
 import { PlasmicCheckboxGroupContext } from "./contexts";
 import {
+  pickAriaComponentVariants,
+  UpdateInteractionVariant,
+} from "./interaction-variant-utils";
+import {
   makeDefaultCheckboxChildren,
   registerCheckbox,
 } from "./registerCheckbox";
@@ -18,10 +22,40 @@ import {
   registerComponentHelper,
 } from "./utils";
 
-export function BaseCheckboxGroup(props: CheckboxGroupProps) {
+const CHECKBOX_GROUP_INTERACTION_VARIANTS = [
+  "disabled" as const,
+  "readonly" as const,
+];
+
+export interface BaseCheckboxGroupProps extends CheckboxGroupProps {
+  children: React.ReactNode;
+  // Optional callback to update the interaction variant state
+  // as it's only provided if the component is the root of a Studio component
+  updateInteractionVariant?: UpdateInteractionVariant<
+    typeof CHECKBOX_GROUP_INTERACTION_VARIANTS
+  >;
+}
+
+const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
+  CHECKBOX_GROUP_INTERACTION_VARIANTS
+);
+
+export function BaseCheckboxGroup(props: BaseCheckboxGroupProps) {
+  const { children, updateInteractionVariant, ...rest } = props;
   return (
     <PlasmicCheckboxGroupContext.Provider value={props}>
-      <CheckboxGroup {...props} />
+      <CheckboxGroup {...props}>
+        {({ isDisabled, isReadOnly }) =>
+          withObservedValues(
+            children,
+            {
+              disabled: isDisabled,
+              readonly: isReadOnly,
+            },
+            updateInteractionVariant
+          )
+        }
+      </CheckboxGroup>
     </PlasmicCheckboxGroupContext.Provider>
   );
 }
@@ -51,6 +85,7 @@ export function registerCheckboxGroup(
       displayName: "Aria Checkbox Group",
       importPath: "@plasmicpkgs/react-aria/skinny/registerCheckboxGroup",
       importName: "BaseCheckboxGroup",
+      interactionVariants,
       props: {
         ...getCommonInputProps<CheckboxGroupProps>("checkbox group", [
           "name",

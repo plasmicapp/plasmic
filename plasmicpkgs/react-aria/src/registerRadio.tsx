@@ -19,10 +19,13 @@ import {
 } from "./utils";
 
 const RADIO_INTERACTION_VARIANTS = [
+  "selected" as const,
   "hovered" as const,
   "pressed" as const,
   "focused" as const,
   "focusVisible" as const,
+  "disabled" as const,
+  "readonly" as const,
 ];
 
 export interface BaseRadioProps extends RadioProps {
@@ -47,7 +50,15 @@ export function BaseRadio(props: BaseRadioProps) {
 
   const radio = (
     <Radio {...rest}>
-      {({ isHovered, isPressed, isFocused, isFocusVisible }) =>
+      {({
+        isHovered,
+        isPressed,
+        isFocused,
+        isFocusVisible,
+        isSelected,
+        isDisabled,
+        isReadOnly,
+      }) =>
         withObservedValues(
           children,
           {
@@ -55,6 +66,9 @@ export function BaseRadio(props: BaseRadioProps) {
             pressed: isPressed,
             focused: isFocused,
             focusVisible: isFocusVisible,
+            selected: isSelected,
+            disabled: isDisabled,
+            readonly: isReadOnly,
           },
           updateInteractionVariant
         )

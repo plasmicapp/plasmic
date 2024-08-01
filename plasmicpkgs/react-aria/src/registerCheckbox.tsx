@@ -22,6 +22,10 @@ const CHECKBOX_INTERACTION_VARIANTS = [
   "pressed" as const,
   "focused" as const,
   "focusVisible" as const,
+  "indeterminate" as const,
+  "disabled" as const,
+  "selected" as const,
+  "readonly" as const,
 ];
 
 interface BaseCheckboxProps extends CheckboxProps {
@@ -51,7 +55,16 @@ export function BaseCheckbox(props: BaseCheckboxProps) {
   return (
     <>
       <Checkbox {...rest}>
-        {({ isHovered, isPressed, isFocused, isFocusVisible }) =>
+        {({
+          isHovered,
+          isPressed,
+          isFocused,
+          isFocusVisible,
+          isDisabled,
+          isIndeterminate,
+          isSelected,
+          isReadOnly,
+        }) =>
           withObservedValues(
             children,
             {
@@ -59,6 +72,10 @@ export function BaseCheckbox(props: BaseCheckboxProps) {
               pressed: isPressed,
               focused: isFocused,
               focusVisible: isFocusVisible,
+              disabled: isDisabled,
+              indeterminate: isIndeterminate,
+              selected: isSelected,
+              readonly: isReadOnly,
             },
             updateInteractionVariant
           )

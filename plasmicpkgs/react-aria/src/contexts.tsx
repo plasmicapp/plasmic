@@ -10,6 +10,7 @@ import type { BasePopover } from "./registerPopover";
 import { BaseRadioGroup } from "./registerRadioGroup";
 import type { BaseSection } from "./registerSection";
 import { BaseSlider } from "./registerSlider";
+import { BaseTextField } from "./registerTextField";
 
 // We pass down context props via our own Plasmic*Context instead of directly
 // using react-aria-component's *Context, because react-aria-component's
@@ -17,6 +18,10 @@ import { BaseSlider } from "./registerSlider";
 // a context provider, it will just be overwritten by react-aria-component's
 // context provider.  So we do the merging within our own Base* components
 // instead.
+
+export const PlasmicTextFieldContext = React.createContext<
+  React.ComponentProps<typeof BaseTextField> | undefined
+>(undefined);
 
 export const PlasmicCheckboxGroupContext = React.createContext<
   React.ComponentProps<typeof BaseCheckboxGroup> | undefined

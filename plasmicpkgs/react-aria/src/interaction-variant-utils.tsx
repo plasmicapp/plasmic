@@ -22,6 +22,22 @@ const ARIA_COMPONENTS_INTERACTION_VARIANTS = {
     cssSelector: "[data-dragging]",
     displayName: "Dragging",
   },
+  selected: {
+    cssSelector: "[data-selected]",
+    displayName: "Selected",
+  },
+  readonly: {
+    cssSelector: "[data-readonly]",
+    displayName: "Read Only",
+  },
+  disabled: {
+    cssSelector: "[data-disabled]",
+    displayName: "Disabled",
+  },
+  indeterminate: {
+    cssSelector: "[data-indeterminate]",
+    displayName: "Indeterminate",
+  },
 };
 
 type AriaInteractionVariant = keyof typeof ARIA_COMPONENTS_INTERACTION_VARIANTS;

@@ -179,6 +179,7 @@ export function registerSliderTrack(
       displayName: "Aria Slider Track",
       importPath: "@plasmicpkgs/react-aria/skinny/registerSliderTrack",
       importName: "BaseSliderTrack",
+      interactionVariants,
       defaultStyles: {
         width: "stretch",
         backgroundColor: "#aaa",
@@ -186,7 +187,6 @@ export function registerSliderTrack(
         height: "10px",
         padding: 0,
       },
-      interactionVariants,
       props: {
         children: {
           type: "slot",
@@ -215,6 +215,18 @@ export function registerSliderTrack(
               },
             },
           ],
+        },
+        onHoverStart: {
+          type: "eventHandler",
+          argTypes: [{ name: "event", type: "object" }],
+        },
+        onHoverEnd: {
+          type: "eventHandler",
+          argTypes: [{ name: "event", type: "object" }],
+        },
+        onHoverChange: {
+          type: "eventHandler",
+          argTypes: [{ name: "isHovering", type: "boolean" }],
         },
       },
       trapsFocus: true,

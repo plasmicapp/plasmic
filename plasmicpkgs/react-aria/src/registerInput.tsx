@@ -1,18 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { mergeProps } from "react-aria";
 import type { InputProps } from "react-aria-components";
 import { Input } from "react-aria-components";
+import { PlasmicTextFieldContext } from "./contexts";
 import {
   pickAriaComponentVariants,
   UpdateInteractionVariant,
 } from "./interaction-variant-utils";
 import {
+  BaseControlContextData,
   CodeComponentMetaOverrides,
   makeComponentName,
   Registerable,
   registerComponentHelper,
 } from "./utils";
 
-const INPUT_INTERACTION_VARIANTS = ["focused" as const, "hovered" as const];
+const INPUT_INTERACTION_VARIANTS = [
+  "focused" as const,
+  "hovered" as const,
+  "disabled" as const,
+];
 
 const { interactionVariants } = pickAriaComponentVariants(
   INPUT_INTERACTION_VARIANTS
@@ -24,10 +31,27 @@ export interface BaseInputProps extends InputProps {
   updateInteractionVariant?: UpdateInteractionVariant<
     typeof INPUT_INTERACTION_VARIANTS
   >;
+  setControlContextData?: (ctxData: BaseControlContextData) => void;
 }
 
 export function BaseInput(props: BaseInputProps) {
-  const { updateInteractionVariant, ...rest } = props;
+  const context = React.useContext(PlasmicTextFieldContext);
+  const isStandalone = !context;
+  const { updateInteractionVariant, setControlContextData, disabled, ...rest } =
+    props;
+
+  const mergedProps = mergeProps(rest, {
+    disabled: context?.isDisabled ?? disabled,
+  });
+
+  // NOTE: Aria <Input> does not support render props, neither does it provide an onDisabledChange event, so we have to manually update the disabled state
+  useEffect(() => {
+    updateInteractionVariant?.({
+      disabled: mergedProps.disabled,
+    });
+  }, [mergedProps.disabled, updateInteractionVariant]);
+
+  setControlContextData?.({ isStandalone });
 
   return (
     <Input
@@ -46,7 +70,7 @@ export function BaseInput(props: BaseInputProps) {
           focused: false,
         });
       }}
-      {...rest}
+      {...mergedProps}
     />
   );
 }
@@ -76,6 +100,13 @@ export function registerInput(
       props: {
         placeholder: {
           type: "string",
+        },
+        disabled: {
+          type: "boolean",
+          description: "Whether the input is disabled",
+          defaultValueHint: false,
+          hidden: (_ps: BaseInputProps, ctx: BaseControlContextData | null) =>
+            !ctx?.isStandalone,
         },
       },
       trapsFocus: true,

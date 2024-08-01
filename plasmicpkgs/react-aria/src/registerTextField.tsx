@@ -2,6 +2,11 @@ import React, { ReactNode } from "react";
 import type { InputProps, TextFieldProps } from "react-aria-components";
 import { TextField } from "react-aria-components";
 import { getCommonInputProps } from "./common";
+import { PlasmicTextFieldContext } from "./contexts";
+import {
+  UpdateInteractionVariant,
+  pickAriaComponentVariants,
+} from "./interaction-variant-utils";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { registerFieldError } from "./registerFieldError";
 import { INPUT_COMPONENT_NAME, registerInput } from "./registerInput";
@@ -15,25 +20,56 @@ import {
   registerComponentHelper,
 } from "./utils";
 
-interface BaseTextFieldProps extends TextFieldProps {
+const TEXT_FIELD_INTERACTION_VARIANTS = [
+  "disabled" as const,
+  "readonly" as const,
+];
+
+export interface BaseTextFieldProps extends TextFieldProps {
   label?: ReactNode;
   description?: ReactNode;
   enableAutoComplete?: boolean;
   multiline?: boolean;
   inputProps?: InputProps;
   children: ReactNode;
+  // Optional callback to update the interaction variant state
+  // as it's only provided if the component is the root of a Studio component
+  updateInteractionVariant?: UpdateInteractionVariant<
+    typeof TEXT_FIELD_INTERACTION_VARIANTS
+  >;
 }
 
+const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
+  TEXT_FIELD_INTERACTION_VARIANTS
+);
+
 export function BaseTextField(props: BaseTextFieldProps) {
-  const { enableAutoComplete, autoComplete, children, ...rest } = props;
+  const {
+    enableAutoComplete,
+    autoComplete,
+    children,
+    updateInteractionVariant,
+    ...rest
+  } = props;
 
   return (
-    <TextField
-      autoComplete={enableAutoComplete ? autoComplete : undefined}
-      {...rest}
-    >
-      {children}
-    </TextField>
+    <PlasmicTextFieldContext.Provider value={props}>
+      <TextField
+        autoComplete={enableAutoComplete ? autoComplete : undefined}
+        {...rest}
+      >
+        {({ isDisabled, isReadOnly }) =>
+          withObservedValues(
+            children,
+            {
+              disabled: isDisabled,
+              readonly: isReadOnly,
+            },
+            updateInteractionVariant
+          )
+        }
+      </TextField>
+    </PlasmicTextFieldContext.Provider>
   );
 }
 
@@ -51,6 +87,7 @@ export function registerTextField(
       displayName: "Aria TextField",
       importPath: "@plasmicpkgs/react-aria/skinny/registerTextField",
       importName: "BaseTextField",
+      interactionVariants,
       // TODO: Support for validate prop
       props: {
         ...getCommonInputProps<BaseTextFieldProps>("input", [
