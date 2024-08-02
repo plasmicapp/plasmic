@@ -1056,7 +1056,9 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       const dragState = this.props.studioCtx.dragInsertState();
       const manager = dragState?.dragMgr;
       const vc = manager?.tentativeVc;
-      const extraInfo = dragState?.dragMgr.extraInfo;
+      const extraInfo = dragState?.spec.asyncExtraInfo
+        ? await dragState?.spec.asyncExtraInfo(this.props.studioCtx)
+        : undefined;
       if (extraInfo === false) {
         return;
       }

@@ -765,7 +765,9 @@ const TplTreeNode = observer(function TplTreeNode(props: {
         if (freestyleState || dragInsertState) {
           const loc = L.head(getPreferredInsertLocs(viewCtx, item));
           const state = freestyleState ?? (dragInsertState as DragInsertState);
-          const extraInfo = dragInsertState?.dragMgr.extraInfo;
+          const extraInfo = state.spec.asyncExtraInfo
+            ? await state.spec.asyncExtraInfo(viewCtx.studioCtx)
+            : undefined;
           if (extraInfo === false) {
             return;
           }

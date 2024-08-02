@@ -25,11 +25,6 @@ import VStackBlockIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__VStac
 import BlockIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Block";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx, ensureBaseRs } from "@/wab/client/studio-ctx/view-ctx";
-import { spawn } from "@/wab/shared/common";
-import { ComponentType } from "@/wab/shared/core/components";
-import { HostLessComponentInfo, HostLessPackageInfo } from "@/wab/shared/devflags";
-import { Rect } from "@/wab/shared/geom";
-import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import {
   FREE_CONTAINER_CAP,
   HORIZ_CONTAINER_CAP,
@@ -41,13 +36,25 @@ import {
   adjustAllTplColumnsSizes,
   hasMaxWidthVariant,
 } from "@/wab/shared/columns-utils";
+import { spawn } from "@/wab/shared/common";
+import { ComponentType } from "@/wab/shared/core/components";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { CONTENT_LAYOUT_FULL_BLEED } from "@/wab/shared/core/style-props";
+import {
+  TplColumnsTag,
+  TplTagType,
+  reconnectChildren,
+} from "@/wab/shared/core/tpls";
 import {
   CONTENT_LAYOUT_INITIALS,
   getSimplifiedStyles,
 } from "@/wab/shared/default-styles";
+import {
+  HostLessComponentInfo,
+  HostLessPackageInfo,
+} from "@/wab/shared/devflags";
+import { Rect } from "@/wab/shared/geom";
 import { Arena, Component, TplNode, TplTag } from "@/wab/shared/model/classes";
-import { TplColumnsTag, TplTagType, reconnectChildren } from "@/wab/shared/core/tpls";
 import L from "lodash";
 import * as React from "react";
 import { FaListOl, FaListUl, FaPlus } from "react-icons/fa";
@@ -109,8 +116,13 @@ export type AddTplItem<T = any> = AddItemCommon & {
     extraInfo: T,
     drawnRect?: Rect
   ) => TplNode | undefined;
-  // Assumed to be run just outside sc.change()
-  // This needs to be called before factory, passing the results in
+  /**
+   * Assumed to be run just outside sc.change().
+   * This will get called twice when user is dragging an item:
+   * 1. First will get called with isDragging = true at the beginning of the drag
+   * 2. Second will get called with isDragging = false at the end of the drag
+   * This needs to be called before factory, passing the results in
+   */
   asyncExtraInfo?: (
     studioCtx: StudioCtx,
     opts?: { isDragging: boolean }

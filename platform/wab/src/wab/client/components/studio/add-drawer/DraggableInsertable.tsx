@@ -79,7 +79,9 @@ export function DraggableInsertable(props: {
 
           const manager = dragManagerRef.current;
           const vc = manager?.tentativeVc;
-          const extraInfo = manager?.extraInfo;
+          const extraInfo = spec.asyncExtraInfo
+            ? await spec.asyncExtraInfo(sc)
+            : undefined;
           if (extraInfo === false) {
             return;
           }

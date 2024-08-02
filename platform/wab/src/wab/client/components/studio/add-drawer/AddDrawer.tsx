@@ -355,9 +355,12 @@ export function createAddInsertableTemplate(
       return tpl;
     },
     asyncExtraInfo: async (
-      sc
+      sc,
+      opts?: { isDragging: boolean }
     ): Promise<InsertableTemplateComponentExtraInfo> => {
-      const { screenVariant } = await getScreenVariantToInsertableTemplate(sc);
+      const screenVariant = !opts?.isDragging
+        ? (await getScreenVariantToInsertableTemplate(sc)).screenVariant
+        : undefined;
       return sc.app.withSpinner(
         (async () => {
           const info = await buildInsertableExtraInfo(

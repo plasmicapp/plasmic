@@ -756,7 +756,6 @@ export class DragMoveManager {
 export class DragInsertManager {
   private targeters: NodeTargeter[] = [];
   private tentativeInsertion?: InsertionSpec;
-  extraInfo?: any | false;
   tentativeVc?: ViewCtx;
   toInsert?: TplNode;
 
@@ -764,13 +763,8 @@ export class DragInsertManager {
    * @param factory zero-argument function that creates the TplNode to insert
    *   if the motion is successful.
    */
-  constructor(
-    private studioCtx: StudioCtx,
-    targeters: NodeTargeter[],
-    extraInfo?: any | false
-  ) {
+  constructor(private studioCtx: StudioCtx, targeters: NodeTargeter[]) {
     this.targeters.push(...targeters);
-    this.extraInfo = extraInfo;
   }
 
   /**
@@ -808,13 +802,12 @@ export class DragInsertManager {
         });
       }
     }
-    return new DragInsertManager(studioCtx, targeters, extraInfo);
+    return new DragInsertManager(studioCtx, targeters);
   }
 
   clear() {
     this.tentativeVc = undefined;
     this.tentativeInsertion = undefined;
-    this.extraInfo = undefined;
     this.clearTargeters();
   }
 
