@@ -1,20 +1,14 @@
 import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import React from "react";
 import { Key, Select, SelectProps, SelectValue } from "react-aria-components";
-import { PlasmicListBoxContext, PlasmicPopoverContext } from "./contexts";
-import {
-  flattenOptions,
-  HasOptions,
-  makeOptionsPropType,
-  makeValuePropType,
-  useStrictOptions,
-} from "./option-utils";
+import { PlasmicPopoverContext } from "./contexts";
 import { BUTTON_COMPONENT_NAME } from "./registerButton";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { LIST_BOX_COMPONENT_NAME } from "./registerListBox";
 import { POPOVER_COMPONENT_NAME } from "./registerPopover";
 import {
   extractPlasmicDataProps,
+  HasControlContextData,
   makeComponentName,
   Registerable,
   registerComponentHelper,
@@ -50,8 +44,8 @@ export const BaseSelectValue = (props: BaseSelectValueProps) => {
 const SELECT_NAME = makeComponentName("select");
 
 export interface BaseSelectProps<T extends object>
-  extends HasOptions<T>,
-    SelectProps<T> {
+  extends SelectProps<T>,
+    HasControlContextData {
   placeholder?: string;
   isDisabled?: boolean;
 
@@ -86,17 +80,12 @@ export function BaseSelect<T extends object>(props: BaseSelectProps<T>) {
     structure,
     name,
     isOpen,
+    setControlContextData: _setControlContextData,
     "aria-label": ariaLabel,
   } = props;
 
-  const { options } = useStrictOptions(props);
-
   const isEditMode = !!usePlasmicCanvasContext();
   const openProp = isEditMode && previewOpen ? true : isOpen;
-
-  const disabledKeys = flattenOptions(options)
-    .filter((op) => op.isDisabled)
-    .map((op) => op.id);
 
   return (
     <Select
@@ -113,14 +102,7 @@ export function BaseSelect<T extends object>(props: BaseSelectProps<T>) {
       {...extractPlasmicDataProps(props)}
     >
       <PlasmicPopoverContext.Provider value={{ isOpen: openProp }}>
-        <PlasmicListBoxContext.Provider
-          value={{
-            items: options,
-            disabledKeys: disabledKeys,
-          }}
-        >
-          {structure}
-        </PlasmicListBoxContext.Provider>
+        {structure}
       </PlasmicPopoverContext.Provider>
     </Select>
   );
@@ -166,14 +148,13 @@ export function registerSelect(loader?: Registerable) {
     importPath: "@plasmicpkgs/react-aria/skinny/registerSelect",
     importName: "BaseSelect",
     props: {
-      options: makeOptionsPropType(),
       placeholder: {
         type: "string",
       },
       isDisabled: {
         type: "boolean",
       },
-      value: makeValuePropType(),
+      value: "string",
       onChange: {
         type: "eventHandler",
         argTypes: [{ name: "value", type: "string" }],
@@ -183,9 +164,11 @@ export function registerSelect(loader?: Registerable) {
         displayName: "Preview opened?",
         description: "Preview opened state while designing in Plasmic editor",
         editOnly: true,
+        defaultValue: false,
       },
       isOpen: {
         type: "boolean",
+        defaultValue: false,
         // It doesn't make sense to make isOpen prop editable (it's controlled by user interaction and always closed by default), so we keep this prop hidden. We have listed the prop here in the meta only so we can expose a writeable state for it.
         hidden: () => true,
       },
@@ -193,39 +176,6 @@ export function registerSelect(loader?: Registerable) {
         type: "eventHandler",
         argTypes: [{ name: "isOpen", type: "boolean" }],
       },
-      // optionValue: {
-      //   type: "string",
-      //   displayName: "Field key for an option's value",
-      //   hidden: (ps) =>
-      //     !ps.options ||
-      //     !ps.options[0] ||
-      //     typeof ps.options[0] === "string" ||
-      //     "value" in ps.options[0],
-      //   exprHint:
-      //     "Return a function that takes in an option object, and returns the key to use",
-      // },
-      // optionText: {
-      //   type: "string",
-      //   displayName: "Field key for an option's text value",
-      //   hidden: (ps) =>
-      //     !ps.options ||
-      //     !ps.options[0] ||
-      //     typeof ps.options[0] === "string" ||
-      //     "value" in ps.options[0],
-      //   exprHint:
-      //     "Return a function that takes in an option object, and returns the text value to use",
-      // },
-      // optionDisabled: {
-      //   type: "string",
-      //   displayName: "Field key for whether an option is disabled",
-      //   hidden: (ps) =>
-      //     !ps.options ||
-      //     !ps.options[0] ||
-      //     typeof ps.options[0] === "string" ||
-      //     "value" in ps.options[0],
-      //   exprHint:
-      //     "Return a function that takes in an option object, and returns true if option should be disabled",
-      // },
 
       structure: {
         type: "slot",
@@ -295,6 +245,9 @@ export function registerSelect(loader?: Registerable) {
                     {
                       type: "component",
                       name: LIST_BOX_COMPONENT_NAME,
+                      props: {
+                        selectionMode: "single",
+                      },
                       styles: {
                         borderWidth: 0,
                         width: "stretch",

@@ -74,7 +74,7 @@ function ChangesObserver<T extends AriaInteractionVariant[]>({
       updateInteractionVariant(changes);
     }
   }, [changes, updateInteractionVariant]);
-  return children;
+  return <>{children}</>;
 }
 
 function realWithObservedValues<T extends AriaInteractionVariant[]>(

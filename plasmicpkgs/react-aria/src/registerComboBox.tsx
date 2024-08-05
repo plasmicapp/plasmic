@@ -1,7 +1,7 @@
 import { useFilter } from "@react-aria/i18n";
 import React from "react";
 import { ComboBox, ComboBoxStateContext, Key } from "react-aria-components";
-import { PlasmicInputContext, PlasmicListBoxContext } from "./contexts";
+import { PlasmicInputContext } from "./contexts";
 import {
   flattenOptions,
   HasOptions,
@@ -210,16 +210,9 @@ export function BaseComboBox<T extends object>(props: BaseComboBoxProps<T>) {
       name={name}
       {...extractPlasmicDataProps(props)}
     >
-      <PlasmicListBoxContext.Provider
-        value={{
-          getItemType: (option) =>
-            option.type === "section" ? "section" : "item",
-        }}
-      >
-        <PlasmicInputContext.Provider value={{ placeholder }}>
-          {structure}
-        </PlasmicInputContext.Provider>
-      </PlasmicListBoxContext.Provider>
+      <PlasmicInputContext.Provider value={{ placeholder }}>
+        {structure}
+      </PlasmicInputContext.Provider>
       <BaseComboBoxEffects previewOpen={previewOpen} />
     </ComboBox>
   );
