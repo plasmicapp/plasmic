@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import cp from "child_process";
+import { type ChildProcess } from "child_process";
+import { spawn } from "cross-spawn";
 import fkill from "fkill";
 import getPort from "get-port";
 import process from "process";
@@ -18,7 +19,7 @@ async function startDevServer(
     `Plasmic: starting prepass dev server at http://localhost:${port} via "npm run ${command}"...`
   );
 
-  const devServerProcess = cp.spawn(`npm`, ["run", command], {
+  const devServerProcess = spawn(`npm`, ["run", command], {
     env: {
       PLASMIC_PREPASS_SERVER: "true",
       ...process.env,
@@ -27,8 +28,8 @@ async function startDevServer(
   });
 
   let started = false;
-  return new Promise<cp.ChildProcess>((resolve, reject) => {
-    devServerProcess.stdout?.on("data", (data) => {
+  return new Promise<ChildProcess>((resolve, reject) => {
+    devServerProcess.stdout?.on("data", (data: any) => {
       if (!started && data.toString().toLowerCase().includes("ready")) {
         started = true;
         console.log(`Plasmic: Dev server started`);
@@ -82,7 +83,7 @@ async function main() {
 
   const command = argv._.map((x) => `${x}`);
   console.log(`Plasmic: Running command: ${command.join(" ")}`);
-  const commandProcess = cp.spawn(command[0], command.slice(1), {
+  const commandProcess = spawn(command[0], command.slice(1), {
     env: {
       ...process.env,
       PLASMIC_PREPASS_HOST: `http://localhost:${port}`,
@@ -91,7 +92,7 @@ async function main() {
   console.log(`Plasmic: Command running with pid ${commandProcess.pid}`);
   commandProcess.stdout?.pipe(process.stdout);
   commandProcess.stderr?.pipe(process.stderr);
-  commandProcess.on("error", (err) => {
+  commandProcess.on("error", (err: any) => {
     console.error(`Plasmic: Command error: ${err}`);
     killDevServer().then(() => {
       process.exit(commandProcess.exitCode ?? undefined);
