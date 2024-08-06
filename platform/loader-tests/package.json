@@ -27,7 +27,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@playwright/test": "^1.45.1",
+    "@playwright/test": "1.38.1",
     "aws-sdk": "^2.985.0",
     "cypress": "^12.9.0",
     "cypress-image-snapshot": "^4.0.1",
