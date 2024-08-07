@@ -85,7 +85,10 @@ export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
       )}
     >
       <PlasmicRootContext.Provider value={context}>
-        <SSRProvider>
+        <MaybeWrap
+          cond={reactMajorVersion < 18}
+          wrapper={(children) => <SSRProvider>{children}</SSRProvider>}
+        >
           <PlasmicDataSourceContextProvider value={dataSourceContextValue}>
             <PlasmicTranslatorContext.Provider
               value={props.i18n ?? props.translator}
@@ -99,7 +102,7 @@ export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
               </PlasmicHeadContext.Provider>
             </PlasmicTranslatorContext.Provider>
           </PlasmicDataSourceContextProvider>
-        </SSRProvider>
+        </MaybeWrap>
       </PlasmicRootContext.Provider>
     </MaybeWrap>
   );
