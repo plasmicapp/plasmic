@@ -15,6 +15,7 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  SingleBooleanChoiceArg,
   SingleChoiceArg,
   Stack as Stack__,
   StrictProps,
@@ -49,15 +50,18 @@ createPlasmicElementProxy;
 export type PlasmicHostUrlInput__VariantMembers = {
   urlValidationStatus: "invalid" | "valid";
   urlPathStatus: "nonStandard" | "standard";
+  showPlasmicHostValidations: "showPlasmicHostValidations";
 };
 export type PlasmicHostUrlInput__VariantsArgs = {
   urlValidationStatus?: SingleChoiceArg<"invalid" | "valid">;
   urlPathStatus?: SingleChoiceArg<"nonStandard" | "standard">;
+  showPlasmicHostValidations?: SingleBooleanChoiceArg<"showPlasmicHostValidations">;
 };
 type VariantPropType = keyof PlasmicHostUrlInput__VariantsArgs;
 export const PlasmicHostUrlInput__VariantProps = new Array<VariantPropType>(
   "urlValidationStatus",
-  "urlPathStatus"
+  "urlPathStatus",
+  "showPlasmicHostValidations"
 );
 
 export type PlasmicHostUrlInput__ArgsType = {};
@@ -75,6 +79,7 @@ export type PlasmicHostUrlInput__OverridesType = {
 export interface DefaultHostUrlInputProps {
   urlValidationStatus?: SingleChoiceArg<"invalid" | "valid">;
   urlPathStatus?: SingleChoiceArg<"nonStandard" | "standard">;
+  showPlasmicHostValidations?: SingleBooleanChoiceArg<"showPlasmicHostValidations">;
   className?: string;
 }
 
@@ -125,6 +130,13 @@ function PlasmicHostUrlInput__RenderFunc(props: {
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.urlPathStatus,
+      },
+      {
+        path: "showPlasmicHostValidations",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) =>
+          $props.showPlasmicHostValidations,
       },
     ],
     [$props, $ctx, $refs]
@@ -265,7 +277,7 @@ function PlasmicHostUrlInput__RenderFunc(props: {
               e.target.value
             );
           }}
-          placeholder={"my-app.com/host"}
+          placeholder={"my-app.com/plasmic-host"}
           ref={(ref) => {
             $refs["urlInput"] = ref;
           }}
@@ -339,7 +351,13 @@ function PlasmicHostUrlInput__RenderFunc(props: {
       <Stack__
         as={"div"}
         hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__bFmsS)}
+        className={classNames(projectcss.all, sty.freeBox__bFmsS, {
+          [sty.freeBoxshowPlasmicHostValidations__bFmsSiDwTg]: hasVariant(
+            $state,
+            "showPlasmicHostValidations",
+            "showPlasmicHostValidations"
+          ),
+        })}
       >
         <Stack__
           as={"div"}
@@ -379,6 +397,11 @@ function PlasmicHostUrlInput__RenderFunc(props: {
               projectcss.__wab_text,
               sty.text__dSWc,
               {
+                [sty.textshowPlasmicHostValidations__dSWCiDwTg]: hasVariant(
+                  $state,
+                  "showPlasmicHostValidations",
+                  "showPlasmicHostValidations"
+                ),
                 [sty.texturlValidationStatus_invalid__dSWcvmYfF]: hasVariant(
                   $state,
                   "urlValidationStatus",

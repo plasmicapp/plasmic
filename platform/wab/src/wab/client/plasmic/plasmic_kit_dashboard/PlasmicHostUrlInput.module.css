@@ -122,11 +122,11 @@
   height: 1em;
 }
 .freeBox__bFmsS {
-  display: flex;
   flex-direction: column;
   position: relative;
   width: 100%;
   min-width: 0;
+  display: none;
 }
 .freeBox__bFmsS > :global(.__wab_flex-container) {
   flex-direction: column;
@@ -145,6 +145,9 @@
   > picture
   > img {
   margin-top: 4px;
+}
+.freeBoxshowPlasmicHostValidations__bFmsSiDwTg {
+  display: flex;
 }
 .freeBox__oOj3 {
   width: 100%;

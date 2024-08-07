@@ -2129,12 +2129,12 @@
         {
           "type": "renderModule",
           "assetId": "XxbnrpTDqu",
-          "checksum": "048e109c0185068f4f1f1305028672d1"
+          "checksum": "41dd3dddc6c7f058de40ee5634e1c064"
         },
         {
           "type": "cssRules",
           "assetId": "XxbnrpTDqu",
-          "checksum": "048e109c0185068f4f1f1305028672d1"
+          "checksum": "41dd3dddc6c7f058de40ee5634e1c064"
         },
         {
           "type": "renderModule",
@@ -2603,7 +2603,7 @@
         }
       ],
       "projectId": "ooL7EhXDmFQWnW9sxtchhE",
-      "version": "61.4.2",
+      "version": "62.0.0",
       "dependencies": {
         "tXkSR39sgCDWSitZxC5xFV": "81.0.1",
         "sDniSX4oPUZFyk2sXXb3nh": "6.1.0",

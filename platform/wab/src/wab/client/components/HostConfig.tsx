@@ -188,6 +188,7 @@ export function HostConfig({
                     : {}),
                 },
               }}
+              showPlasmicHostValidations={true}
               urlValidationStatus={
                 !draft ? undefined : invalidInput ? "invalid" : "valid"
               }
