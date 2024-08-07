@@ -22,6 +22,7 @@ import {
   mkBaseVariant,
 } from "@/wab/shared/Variants";
 import {
+  componentToReferencers,
   componentsReferecerToPageHref,
   findAllDataSourceOpExprForComponent,
   flattenComponent,
@@ -84,6 +85,7 @@ import {
 import {
   clone,
   findExprsInComponent,
+  findExprsInNode,
   findVariantSettingsUnderTpl,
   flattenExprs,
   flattenTpls,
@@ -171,6 +173,7 @@ import {
   isKnownStyleToken,
   isKnownTplComponent,
   isKnownTplNode,
+  isKnownTplRef,
   isKnownTplTag,
   isKnownVariant,
   isKnownVariantedRuleSet,
@@ -1563,18 +1566,28 @@ export function removeReferencingLinks(
 export function visitComponentRefs(
   site: Site,
   component: Component,
-  fn: (tpl: TplComponent, owner?: Component) => void
+  tplInstanceFn: (tpl: TplComponent, owner?: Component) => void,
+  exprFn?: (expr: TplRef, ownerTpl: TplNode) => void
 ) {
-  for (const c of site.components) {
+  const componentRefs = ensure(
+    componentToReferencers(site).get(component),
+    `All site components should be mapped but ${component.name} was not found`
+  );
+  for (const c of componentRefs) {
     [...flattenTpls(c.tplTree)].forEach((tpl) => {
       if (isTplComponent(tpl) && tpl.component === component) {
-        fn(tpl, c);
+        tplInstanceFn(tpl, c);
       }
+      findExprsInNode(tpl).forEach(({ expr }) => {
+        if (isKnownTplRef(expr) && isTplComponent(expr.tpl)) {
+          exprFn?.(expr, tpl);
+        }
+      });
     });
   }
   for (const tpl of site.globalContexts) {
     if (tpl.component === component) {
-      fn(tpl);
+      tplInstanceFn(tpl);
     }
   }
 }

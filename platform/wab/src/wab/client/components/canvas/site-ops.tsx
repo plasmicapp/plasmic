@@ -116,6 +116,7 @@ import {
 } from "@/wab/shared/core/styles";
 import {
   findExprsInComponent,
+  findExprsInNode,
   flattenTpls,
   isTplSlot,
   isTplVariantable,
@@ -147,6 +148,7 @@ import {
   VariantGroup,
   isKnownComponent,
   isKnownComponentVariantGroup,
+  isKnownEventHandler,
 } from "@/wab/shared/model/classes";
 import { convertVariableTypeToWabType } from "@/wab/shared/model/model-util";
 import {
@@ -815,12 +817,15 @@ export class SiteOps {
     );
 
     if (!isPageComponent(component)) {
-      const refComps = getReferencingComponents(this.studioCtx.site, component);
+      const refComps = ensure(
+        componentToReferencers(this.studioCtx.site).get(component),
+        `All site components should be mapped but ${component.name} was not found`
+      );
 
-      if (refComps.length > 0) {
+      if (refComps.size > 0) {
         notification.error({
           message: `${component.name} is still being used by ${L.uniq(
-            refComps.map((c) => getComponentDisplayName(c))
+            Array.from(refComps).map((c) => getComponentDisplayName(c))
           ).join(", ")}.`,
         });
 
@@ -1005,6 +1010,19 @@ export class SiteOps {
                 } else {
                   $$$(tplComponent).remove({ deep: true });
                 }
+              },
+              (refExpr, ownerTpl) => {
+                findExprsInNode(ownerTpl).forEach(({ expr }) => {
+                  if (isKnownEventHandler(expr)) {
+                    expr.interactions.forEach((interaction) => {
+                      if (
+                        interaction.args.find((arg) => arg.expr === refExpr)
+                      ) {
+                        interaction.args = [];
+                      }
+                    });
+                  }
+                });
               }
             );
           } else {

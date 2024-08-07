@@ -117,6 +117,7 @@ import {
   isKnownImageAssetRef,
   isKnownPageHref,
   isKnownQueryInvalidationExpr,
+  isKnownTplRef,
   isKnownVarRef,
 } from "@/wab/shared/model/classes";
 import {
@@ -435,7 +436,7 @@ export const deepComponentToReferencers = maybeComputedFn(
 
 /**
  * Given a component, returns all other components that are used
- * directly as a TplComponent instance in its tree
+ * directly as a TplComponent instance or TplRef in its tree
  */
 export const componentToReferenced = maybeComputedFn(
   function componentToReferenced(component: Component) {
@@ -444,6 +445,11 @@ export const componentToReferenced = maybeComputedFn(
       if (isTplComponent(tpl)) {
         referenced.add(tpl.component);
       }
+      findExprsInNode(tpl).forEach(({ expr }) => {
+        if (isKnownTplRef(expr) && isTplComponent(expr.tpl)) {
+          referenced.add(expr.tpl.component);
+        }
+      });
     }
     return Array.from(referenced);
   }
