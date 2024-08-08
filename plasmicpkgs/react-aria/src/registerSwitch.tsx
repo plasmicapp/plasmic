@@ -1,7 +1,7 @@
 import React from "react";
 import type { SwitchProps } from "react-aria-components";
 import { Switch } from "react-aria-components";
-import { getCommonInputProps } from "./common";
+import { getCommonProps } from "./common";
 import {
   UpdateInteractionVariant,
   pickAriaComponentVariants,
@@ -40,7 +40,6 @@ interface BaseSwitchProps extends SwitchProps {
 
 export function BaseSwitch(props: BaseSwitchProps) {
   const { children, updateInteractionVariant, ...rest } = props;
-
   return (
     <Switch {...rest}>
       {({
@@ -91,7 +90,7 @@ export function registerSwitch(
         padding: 0,
       },
       props: {
-        ...getCommonInputProps<SwitchProps>("switch", [
+        ...getCommonProps<BaseSwitchProps>("switch", [
           "name",
           "isDisabled",
           "isReadOnly",
@@ -170,10 +169,17 @@ export function registerSwitch(
           ],
         },
         value: {
+          type: "string",
+          description:
+            'The value of the switch in "selected" state, used when submitting an HTML form.',
+          defaultValueHint: "on",
+        },
+        isSelected: {
           type: "boolean",
           editOnly: true,
+          displayName: "Default Selected",
           uncontrolledProp: "defaultSelected",
-          description: "Whether the switch is toggled on",
+          description: "Whether the switch should be selected by default",
           defaultValueHint: false,
         },
         onChange: {
@@ -184,7 +190,7 @@ export function registerSwitch(
       states: {
         isSelected: {
           type: "writable",
-          valueProp: "value",
+          valueProp: "isSelected",
           onChangeProp: "onChange",
           variableType: "boolean",
         },

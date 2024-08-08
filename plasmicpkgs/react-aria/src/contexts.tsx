@@ -6,7 +6,6 @@ import type { BaseHeader } from "./registerHeader";
 import type { BaseInput } from "./registerInput";
 import type { BaseLabel } from "./registerLabel";
 import type { BaseListBoxProps } from "./registerListBox";
-import type { BasePopover } from "./registerPopover";
 import { BaseRadioGroup } from "./registerRadioGroup";
 import type { BaseSection } from "./registerSection";
 import { BaseSlider } from "./registerSlider";
@@ -19,6 +18,7 @@ import { BaseTextField } from "./registerTextField";
 // context provider.  So we do the merging within our own Base* components
 // instead.
 
+// Creating the text field context here because input/textarea inside text field receive a null for the TextFieldContext
 export const PlasmicTextFieldContext = React.createContext<
   React.ComponentProps<typeof BaseTextField> | undefined
 >(undefined);
@@ -45,10 +45,6 @@ export const PlasmicLabelContext = React.createContext<
 
 export const PlasmicListBoxContext = React.createContext<
   BaseListBoxProps | undefined
->(undefined);
-
-export const PlasmicPopoverContext = React.createContext<
-  React.ComponentProps<typeof BasePopover> | undefined
 >(undefined);
 
 export const PlasmicItemContext = React.createContext<

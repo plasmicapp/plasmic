@@ -1,7 +1,7 @@
 import React from "react";
 import type { ButtonProps } from "react-aria-components";
 import { Button } from "react-aria-components";
-import { getCommonInputProps } from "./common";
+import { getCommonProps } from "./common";
 import {
   UpdateInteractionVariant,
   pickAriaComponentVariants,
@@ -89,7 +89,7 @@ export function registerButton(
         cursor: "pointer",
       },
       props: {
-        ...getCommonInputProps<BaseButtonProps>("button", [
+        ...getCommonProps<BaseButtonProps>("button", [
           "isDisabled",
           "aria-label",
         ]),

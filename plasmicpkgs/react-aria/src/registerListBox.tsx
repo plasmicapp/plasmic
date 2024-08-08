@@ -1,6 +1,7 @@
 import { mergeProps } from "@react-aria/utils";
 import React from "react";
 import { ListBox } from "react-aria-components";
+import { hasParent } from "./common";
 import {
   PlasmicItemContext,
   PlasmicListBoxContext,
@@ -18,8 +19,8 @@ import {
 } from "./registerListBoxItem";
 import { registerSection } from "./registerSection";
 import {
-  BaseControlContextData,
   CodeComponentMetaOverrides,
+  HasControlContextData,
   makeComponentName,
   Registerable,
   registerComponentHelper,
@@ -27,17 +28,17 @@ import {
 
 export interface BaseListBoxProps
   extends React.ComponentProps<typeof ListBox>,
-    HasOptions<any> {
+    HasOptions<any>,
+    HasControlContextData {
   renderItem?: (item: any) => React.ReactNode;
   renderSection?: (section: any) => React.ReactNode;
   getItemType?: (thing: any) => "item" | "section";
-  setControlContextData?: (ctxData: BaseControlContextData) => void;
 }
 
 export function BaseListBox(props: BaseListBoxProps) {
   const contextProps = React.useContext(PlasmicListBoxContext);
   const isStandalone: boolean = !contextProps;
-  const { options: _rawOptions, ...rest } = props;
+  const { options: _rawOptions, setControlContextData, ...rest } = props;
   const { options } = useStrictOptions(props);
   const { renderItem, renderSection, ...mergedProps } = mergeProps(
     contextProps,
@@ -46,8 +47,8 @@ export function BaseListBox(props: BaseListBoxProps) {
   );
 
   // Tell the prop control about whether the listbox is standalone or not, so it can hide/show the items prop
-  props.setControlContextData?.({
-    isStandalone,
+  setControlContextData?.({
+    parent: isStandalone ? undefined : {},
   });
 
   return (
@@ -110,8 +111,7 @@ export function registerListBox(
         options: {
           ...makeOptionsPropType(),
           displayName: "Items",
-          hidden: (_ps: BaseListBoxProps, ctx: BaseControlContextData | null) =>
-            !ctx?.isStandalone,
+          hidden: hasParent,
         },
         renderItem: {
           type: "slot",

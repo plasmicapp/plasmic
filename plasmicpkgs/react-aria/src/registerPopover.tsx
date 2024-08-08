@@ -2,71 +2,63 @@ import { PlasmicElement, usePlasmicCanvasContext } from "@plasmicapp/host";
 import { mergeProps } from "@react-aria/utils";
 import React from "react";
 import { Popover, PopoverContext, SelectContext } from "react-aria-components";
-import { PlasmicPopoverContext } from "./contexts";
 import {
-  BaseControlContextData,
   CodeComponentMetaOverrides,
-  Registerable,
-  isDefined,
+  HasControlContextData,
   makeComponentName,
+  Registerable,
   registerComponentHelper,
 } from "./utils";
 
-interface PopoverControlContextData extends BaseControlContextData {
-  isInsideSelect: boolean;
+export interface PopoverControlContextData {
+  defaultShouldFlip?: boolean;
 }
 
-export interface BasePopoverProps extends React.ComponentProps<typeof Popover> {
+export interface BasePopoverProps
+  extends React.ComponentProps<typeof Popover>,
+    HasControlContextData<PopoverControlContextData> {
   className?: string;
   resetClassName?: string;
-  setControlContextData?: (ctxData: PopoverControlContextData) => void;
 }
-
-const SHOULD_FLIP_INSIDE_SELECT = false;
 
 export function BasePopover(props: BasePopoverProps) {
   const { resetClassName, setControlContextData, ...restProps } = props;
   const isStandalone = !React.useContext(PopoverContext);
-  const contextProps = React.useContext(PlasmicPopoverContext);
   const isInsideSelect = !!React.useContext(SelectContext);
-
-  const mergedProps = mergeProps(
-    contextProps,
-    restProps,
-    {
-      className: `${resetClassName}`,
-    },
-    isInsideSelect &&
-      !isDefined<BasePopoverProps["shouldFlip"]>(restProps.shouldFlip)
-      ? { shouldFlip: SHOULD_FLIP_INSIDE_SELECT }
-      : undefined
-  );
-
+  const triggerRef = React.useRef<any>(null);
   const isEditMode = !!usePlasmicCanvasContext();
 
-  const triggerRef = React.useRef<any>(null);
+  // Select/Combobox popovers should not flip by default
+  const defaultShouldFlip = isInsideSelect ? false : true;
 
-  const standaloneProps = isStandalone
-    ? {
-        triggerRef,
-        isNonModal: true,
-        isOpen: true,
-      }
-    : {};
+  const mergedProps = mergeProps(
+    { shouldFlip: defaultShouldFlip },
+    /**
+     * isNonModal: Whether the popover is non-modal, i.e. elements outside the popover may be interacted with by assistive technologies. *
+     *
+     * Setting isNonModal to true in edit mode (canvas) means that the popover will not prevent the user from interacting with the canvas while the popover is open.
+     */
+    isEditMode ? { isNonModal: true } : null,
+    restProps,
+    { className: `${resetClassName}` },
+    // Override some props if the popover is standalone
+    isStandalone
+      ? {
+          triggerRef,
+          isNonModal: true,
+          isOpen: true,
+        }
+      : null
+  );
 
   setControlContextData?.({
-    isStandalone,
-    isInsideSelect,
+    defaultShouldFlip,
   });
 
   return (
     <>
       {isStandalone && <div ref={triggerRef} />}
-      <Popover
-        isNonModal={isEditMode ? true : undefined}
-        {...mergedProps}
-        {...standaloneProps}
-      />
+      <Popover {...mergedProps} />
     </>
   );
 }
@@ -153,7 +145,7 @@ export function registerPopover(
           defaultValueHint: (
             _ps: BasePopoverProps,
             ctx: PopoverControlContextData | null
-          ) => (ctx?.isInsideSelect ? SHOULD_FLIP_INSIDE_SELECT : true),
+          ) => ctx?.defaultShouldFlip ?? true,
         },
         placement: {
           type: "choice",

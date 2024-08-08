@@ -1,7 +1,7 @@
 import React from "react";
 import type { RadioGroupProps } from "react-aria-components";
 import { RadioGroup } from "react-aria-components";
-import { getCommonInputProps } from "./common";
+import { getCommonProps } from "./common";
 import { PlasmicRadioGroupContext } from "./contexts";
 import {
   UpdateInteractionVariant,
@@ -39,6 +39,7 @@ const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
 
 export function BaseRadioGroup(props: BaseRadioGroupProps) {
   const { children, updateInteractionVariant, ...rest } = props;
+
   return (
     <PlasmicRadioGroupContext.Provider value={props}>
       <RadioGroup {...rest}>
@@ -82,7 +83,7 @@ export function registerRadioGroup(
       importName: "BaseRadioGroup",
       interactionVariants,
       props: {
-        ...getCommonInputProps<RadioGroupProps>("radio group", [
+        ...getCommonProps<BaseRadioGroupProps>("radio group", [
           "name",
           "isDisabled",
           "isReadOnly",
@@ -153,6 +154,7 @@ export function registerRadioGroup(
         value: {
           type: "string",
           editOnly: true,
+          displayName: "Default Value",
           uncontrolledProp: "defaultValue",
           description: "The current value",
         },

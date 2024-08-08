@@ -8,20 +8,22 @@ import {
   ModalOverlay,
   ModalOverlayProps,
 } from "react-aria-components";
+import { hasParent } from "./common";
 import { PlasmicDialogTriggerContext } from "./contexts";
 import {
-  BaseControlContextData,
   CodeComponentMetaOverrides,
+  HasControlContextData,
   makeComponentName,
   Registerable,
   registerComponentHelper,
 } from "./utils";
 
-export interface BaseModalProps extends ModalOverlayProps {
+export interface BaseModalProps
+  extends ModalOverlayProps,
+    HasControlContextData {
   heading: React.ReactNode;
   modalOverlayClass: string;
   onOpenChange(isOpen: boolean): void;
-  setControlContextData?: (ctxData: BaseControlContextData) => void;
 }
 
 export interface BaseModalActions {
@@ -49,7 +51,7 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
     });
 
     setControlContextData?.({
-      isStandalone,
+      parent: isStandalone ? undefined : {},
     });
 
     // Expose close operation using useImperativeHandle
@@ -177,8 +179,7 @@ export function registerModal(
           uncontrolledProp: "defaultOpen",
           defaultValueHint: false,
           defaultValue: true,
-          hidden: (_ps: BaseModalProps, ctx: BaseControlContextData | null) =>
-            !ctx?.isStandalone,
+          hidden: hasParent,
         },
         isDismissable: {
           type: "boolean",
@@ -201,8 +202,7 @@ export function registerModal(
           valueProp: "isOpen",
           onChangeProp: "onOpenChange",
           variableType: "boolean",
-          hidden: (_ps: BaseModalProps, ctx: BaseControlContextData | null) =>
-            !ctx?.isStandalone,
+          hidden: hasParent,
         },
       },
       trapsFocus: true,

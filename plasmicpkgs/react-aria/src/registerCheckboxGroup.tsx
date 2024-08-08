@@ -1,7 +1,7 @@
 import React from "react";
 import type { CheckboxGroupProps } from "react-aria-components";
 import { CheckboxGroup } from "react-aria-components";
-import { getCommonInputProps } from "./common";
+import { getCommonProps } from "./common";
 import { PlasmicCheckboxGroupContext } from "./contexts";
 import {
   pickAriaComponentVariants,
@@ -28,7 +28,7 @@ const CHECKBOX_GROUP_INTERACTION_VARIANTS = [
 ];
 
 export interface BaseCheckboxGroupProps extends CheckboxGroupProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   // Optional callback to update the interaction variant state
   // as it's only provided if the component is the root of a Studio component
   updateInteractionVariant?: UpdateInteractionVariant<
@@ -42,9 +42,10 @@ const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
 
 export function BaseCheckboxGroup(props: BaseCheckboxGroupProps) {
   const { children, updateInteractionVariant, ...rest } = props;
+
   return (
-    <PlasmicCheckboxGroupContext.Provider value={props}>
-      <CheckboxGroup {...props}>
+    <PlasmicCheckboxGroupContext.Provider value={rest}>
+      <CheckboxGroup {...rest}>
         {({ isDisabled, isReadOnly }) =>
           withObservedValues(
             children,
@@ -87,7 +88,7 @@ export function registerCheckboxGroup(
       importName: "BaseCheckboxGroup",
       interactionVariants,
       props: {
-        ...getCommonInputProps<CheckboxGroupProps>("checkbox group", [
+        ...getCommonProps<BaseCheckboxGroupProps>("checkbox group", [
           "name",
           "isDisabled",
           "isReadOnly",

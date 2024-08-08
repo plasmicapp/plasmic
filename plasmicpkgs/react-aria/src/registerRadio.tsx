@@ -2,8 +2,7 @@ import { PlasmicElement } from "@plasmicapp/host";
 import React from "react";
 import type { RadioProps } from "react-aria-components";
 import { Radio, RadioGroup } from "react-aria-components";
-import ErrorBoundary from "./ErrorBoundary";
-import { getCommonInputProps } from "./common";
+import { getCommonProps } from "./common";
 import { PlasmicRadioGroupContext } from "./contexts";
 import {
   UpdateInteractionVariant,
@@ -11,8 +10,8 @@ import {
 } from "./interaction-variant-utils";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import {
-  BaseControlContextData,
   CodeComponentMetaOverrides,
+  HasControlContextData,
   Registerable,
   makeComponentName,
   registerComponentHelper,
@@ -26,12 +25,11 @@ const RADIO_INTERACTION_VARIANTS = [
   "focusVisible" as const,
   "disabled" as const,
   "readonly" as const,
+  "selected" as const,
 ];
 
-export interface BaseRadioProps extends RadioProps {
+export interface BaseRadioProps extends RadioProps, HasControlContextData {
   children: React.ReactNode;
-  isSelected: boolean;
-  setControlContextData?: (ctxData: BaseControlContextData) => void;
   // Optional callback to update the interaction variant state
   // as it's only provided if the component is the root of a Studio component
   updateInteractionVariant?: UpdateInteractionVariant<
@@ -44,9 +42,14 @@ const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
 );
 
 export function BaseRadio(props: BaseRadioProps) {
-  const { children, updateInteractionVariant, setControlContextData, ...rest } =
+  const { children, setControlContextData, updateInteractionVariant, ...rest } =
     props;
   const contextProps = React.useContext(PlasmicRadioGroupContext);
+  const isStandalone = !contextProps;
+
+  setControlContextData?.({
+    parent: contextProps,
+  });
 
   const radio = (
     <Radio {...rest}>
@@ -76,17 +79,11 @@ export function BaseRadio(props: BaseRadioProps) {
     </Radio>
   );
 
-  const isStandalone = !contextProps;
+  if (isStandalone) {
+    return <RadioGroup>{radio}</RadioGroup>;
+  }
 
-  setControlContextData?.({
-    isStandalone,
-  });
-
-  return (
-    <ErrorBoundary fallback={<RadioGroup>{radio}</RadioGroup>}>
-      {radio}
-    </ErrorBoundary>
-  );
+  return radio;
 }
 
 export const makeDefaultRadioChildren = (label: string): PlasmicElement => ({
@@ -136,7 +133,7 @@ export function registerRadio(
       importName: "BaseRadio",
       interactionVariants,
       props: {
-        ...getCommonInputProps<BaseRadioProps>("radio", [
+        ...getCommonProps<BaseRadioProps>("radio", [
           "isDisabled",
           "autoFocus",
           "aria-label",
@@ -150,21 +147,6 @@ export function registerRadio(
           type: "string",
           description:
             "The value of the input element, used when submitting an HTML form.",
-        },
-        // Keeping for backwards compatibility reasons
-        onSelectionChange: {
-          type: "eventHandler",
-          argTypes: [{ name: "isSelected", type: "boolean" }],
-          hidden: () => true,
-        },
-      },
-      states: {
-        // Keeping for backwards compatibility reasons
-        isSelected: {
-          type: "readonly",
-          onChangeProp: "onSelectionChange",
-          variableType: "boolean",
-          hidden: () => true,
         },
       },
       trapsFocus: true,

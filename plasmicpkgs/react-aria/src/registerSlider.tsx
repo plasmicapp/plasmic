@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { mergeProps } from "react-aria";
 import { Slider, type SliderProps } from "react-aria-components";
-import { getCommonInputProps } from "./common";
+import { getCommonProps } from "./common";
 import { PlasmicSliderContext } from "./contexts";
 import {
   UpdateInteractionVariant,
@@ -146,7 +146,7 @@ export function registerSlider(
         width: "300px",
       },
       props: {
-        ...getCommonInputProps<BaseSliderProps>("slider", [
+        ...getCommonProps<BaseSliderProps>("slider", [
           "isDisabled",
           "name",
           "autoFocus",

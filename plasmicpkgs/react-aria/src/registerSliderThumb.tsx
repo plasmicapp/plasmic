@@ -1,7 +1,7 @@
 import React from "react";
 import { mergeProps } from "react-aria";
 import { Slider, SliderThumb, SliderTrack } from "react-aria-components";
-import { getCommonInputProps } from "./common";
+import { getCommonProps } from "./common";
 import { PlasmicSliderContext } from "./contexts";
 import ErrorBoundary from "./ErrorBoundary";
 import {
@@ -103,7 +103,7 @@ export function registerSliderThumb(
       },
       interactionVariants,
       props: {
-        ...getCommonInputProps<BaseSliderThumbProps>("slider thumb", [
+        ...getCommonProps<BaseSliderThumbProps>("slider thumb", [
           "name",
           "isDisabled",
           "autoFocus",

@@ -2,8 +2,15 @@ import type { CodeComponentMeta } from "@plasmicapp/host";
 import registerComponent from "@plasmicapp/host/registerComponent";
 import React from "react";
 
+export type HasControlContextData<T = BaseControlContextData> = {
+  setControlContextData?: (ctxData: T) => void;
+};
+
 export type BaseControlContextData = {
-  isStandalone: boolean;
+  parent?: {
+    isDisabled?: boolean;
+    isReadOnly?: boolean;
+  };
 };
 
 export type Registerable = {

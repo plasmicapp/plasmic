@@ -1,15 +1,16 @@
-import React, { useEffect } from "react";
+import React, { ChangeEvent, useEffect } from "react";
 import { mergeProps } from "react-aria";
 import type { TextAreaProps } from "react-aria-components";
 import { TextArea } from "react-aria-components";
+import { getCommonProps } from "./common";
 import { PlasmicTextFieldContext } from "./contexts";
 import {
   pickAriaComponentVariants,
   UpdateInteractionVariant,
 } from "./interaction-variant-utils";
 import {
-  BaseControlContextData,
   CodeComponentMetaOverrides,
+  HasControlContextData,
   makeComponentName,
   Registerable,
   registerComponentHelper,
@@ -25,24 +26,34 @@ const { interactionVariants } = pickAriaComponentVariants(
   TEXTAREA_INTERACTION_VARIANTS
 );
 
-export interface BaseTextAreaProps extends TextAreaProps {
+export interface BaseTextAreaProps
+  extends TextAreaProps,
+    HasControlContextData {
   // Optional callback to update the interaction variant state
   // as it's only provided if the component is the root of a Studio component
   updateInteractionVariant?: UpdateInteractionVariant<
     typeof TEXTAREA_INTERACTION_VARIANTS
   >;
-  setControlContextData?: (ctxData: BaseControlContextData) => void;
 }
+
+export const inputHelpers = {
+  states: {
+    value: {
+      onChangeArgsToValue: (e: ChangeEvent<HTMLInputElement>) => {
+        return e.target.value;
+      },
+    },
+  },
+};
 
 export function BaseTextArea(props: BaseTextAreaProps) {
   const { disabled, updateInteractionVariant, setControlContextData, ...rest } =
     props;
 
-  const context = React.useContext(PlasmicTextFieldContext);
-  const isStandalone = !context;
+  const textFieldContext = React.useContext(PlasmicTextFieldContext);
 
   const mergedProps = mergeProps(rest, {
-    disabled: context?.isDisabled ?? disabled,
+    disabled: textFieldContext?.isDisabled ?? disabled,
   });
 
   // NOTE: Aria <Input> does not support render props, neither does it provide an onDisabledChange event, so we have to manually update the disabled state
@@ -52,7 +63,9 @@ export function BaseTextArea(props: BaseTextAreaProps) {
     });
   }, [mergedProps.disabled, updateInteractionVariant]);
 
-  setControlContextData?.({ isStandalone });
+  setControlContextData?.({
+    parent: textFieldContext,
+  });
 
   return (
     <TextArea
@@ -90,38 +103,47 @@ export function registerTextArea(
       importName: "BaseTextArea",
       interactionVariants,
       props: {
-        placeholder: {
-          type: "string",
+        ...getCommonProps<TextAreaProps>("Text Area", [
+          "name",
+          "disabled",
+          "readOnly",
+          "autoFocus",
+          "aria-label",
+          "required",
+          "placeholder",
+          "value",
+          "maxLength",
+          "minLength",
+          "inputMode",
+          "onChange",
+          "onFocus",
+          "onBlur",
+          "onKeyDown",
+          "onKeyUp",
+          "onCopy",
+          "onCut",
+          "onPaste",
+          "onCompositionStart",
+          "onCompositionEnd",
+          "onCompositionUpdate",
+          "onSelect",
+          "onBeforeInput",
+          "onInput",
+        ]),
+      },
+      states: {
+        value: {
+          type: "writable",
+          valueProp: "value",
+          onChangeProp: "onChange",
+          variableType: "text",
+          ...inputHelpers.states.value,
         },
-        disabled: {
-          type: "boolean",
-          description: "Whether the input is disabled",
-          defaultValueHint: false,
-          hidden: (
-            _ps: BaseTextAreaProps,
-            ctx: BaseControlContextData | null
-          ) => !ctx?.isStandalone,
-        },
-        onKeyDown: {
-          type: "eventHandler",
-          argTypes: [{ name: "keyboardEvent", type: "object" }],
-        },
-        onKeyUp: {
-          type: "eventHandler",
-          argTypes: [{ name: "keyboardEvent", type: "object" }],
-        },
-        onCopy: {
-          type: "eventHandler",
-          argTypes: [{ name: "clipbordEvent", type: "object" }],
-        },
-        onCut: {
-          type: "eventHandler",
-          argTypes: [{ name: "clipbordEvent", type: "object" }],
-        },
-        onPaste: {
-          type: "eventHandler",
-          argTypes: [{ name: "clipbordEvent", type: "object" }],
-        },
+      },
+      componentHelpers: {
+        helpers: inputHelpers,
+        importName: "inputHelpers",
+        importPath: "@plasmicpkgs/react-aria/skinny/registerTextArea",
       },
       trapsFocus: true,
     },
