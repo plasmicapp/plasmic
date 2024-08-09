@@ -62,6 +62,7 @@ import {
   uncheckedCast,
 } from "@/wab/shared/common";
 import { isGoogleAuthRequiredEmailDomain } from "@/wab/shared/devflag-utils";
+import { getPublicUrl } from "@/wab/shared/urls";
 import * as Sentry from "@sentry/node";
 import Shopify, { AuthQuery } from "@shopify/shopify-api";
 import { NextFunction, Request, Response } from "express-serve-static-core";
@@ -757,7 +758,12 @@ export async function ssoCallback(
 }
 
 function callbackHtml(_authStatus: string) {
+  const _publicUrl = getPublicUrl();
+
   // TODO Ideally we have something a bit safer.
+  // Call eval() on callback.html, which isn't actually HTML.
+  // callback.html is actually a template string, so it can access variables
+  // in the current scope. See the "${JSON.stringify(var)}" in the "HTML".
   return eval(
     "`" +
       fs.readFileSync(__dirname + "/callback.html", { encoding: "utf8" }) +

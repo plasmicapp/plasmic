@@ -1,19 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link
-      href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
+    <title>Redirecting to Plasmic...</title>
   </head>
   <body>
-    <div class="px-6 py-6" style="display: none">
-      <p class="my-4"><a class="text-blue-400" href="javascript: void 0" onclick="window.close()">Close</a></p>
-    </div>
     <script>
       const authStatus = ${JSON.stringify(_authStatus)};
+      const publicUrl = ${JSON.stringify(_publicUrl)};
+
       window.localStorage.setItem("authStatus", authStatus);
-      setTimeout(window.close, 0);
+
+      setTimeout(() => {
+        // Try to close the window if we opened it
+        if (window.opener) {
+          window.close();
+        }
+
+        // If the window is not closing for whatever reason, redirect to app
+        if (!window.closed) {
+          window.location.replace(publicUrl);
+        }
+      }, 0);
     </script>
   </body>
 </html>
