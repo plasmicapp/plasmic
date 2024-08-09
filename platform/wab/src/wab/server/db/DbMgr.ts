@@ -76,7 +76,6 @@ import {
   ProjectWebhookEvent,
   PromotionCode,
   ResetPassword,
-  SamlConfig,
   SignUpAttempt,
   SsoConfig,
   Team,
@@ -87,7 +86,6 @@ import {
   TrustedHost,
   TutorialDb,
   User,
-  UserlessOauthToken,
   Workspace,
   WorkspaceApiToken,
   WorkspaceAuthConfig,
@@ -827,14 +825,6 @@ export class DbMgr implements MigrationDbMgr {
 
   private oauthTokens() {
     return this.entMgr.getRepository(OauthToken);
-  }
-
-  private userlessOauthTokens() {
-    return this.entMgr.getRepository(UserlessOauthToken);
-  }
-
-  private samlConfigs() {
-    return this.entMgr.getRepository(SamlConfig);
   }
 
   private ssoConfigs() {
@@ -4960,16 +4950,6 @@ export class DbMgr implements MigrationDbMgr {
     });
   }
 
-  async tryGetUserlessOauthToken(email: string, provider: OauthTokenProvider) {
-    this.checkSuperUser();
-    return await getOneOrFailIfTooMany(
-      this.userlessOauthTokens()
-        .createQueryBuilder("tokens")
-        .where(`lower(tokens.email) = lower(:email)`, { email })
-        .andWhere("tokens.provider = :provider", { provider })
-    );
-  }
-
   async getUserTokenProviders() {
     const userId = this.checkNormalUser();
     return this.oauthTokens().find({
@@ -4990,26 +4970,6 @@ export class DbMgr implements MigrationDbMgr {
       this.tryGetOauthToken(userId, provider),
       this.oauthTokens(),
       { user: { id: userId } },
-      provider,
-      userInfo,
-      token,
-      ssoConfigId
-    );
-  }
-
-  async upsertUserlessOauthToken(
-    email: string,
-    provider: OauthTokenProvider,
-    token: TokenData,
-    userInfo: {},
-    ssoConfigId?: SsoConfigId
-  ) {
-    this.checkSuperUser();
-    email = email.toLowerCase();
-    return await this.upsertOauthTokenBase(
-      this.tryGetUserlessOauthToken(email, provider),
-      this.userlessOauthTokens(),
-      { email },
       provider,
       userInfo,
       token,
@@ -5044,56 +5004,6 @@ export class DbMgr implements MigrationDbMgr {
   }
 
   //
-  // SAML
-  //
-  async getSamlConfigByDomain(domain: string) {
-    // Explicitly not checking permission, as this is used in login flow
-    return await this.samlConfigs().findOne({
-      where: {
-        domains: Includes(domain),
-      },
-    });
-  }
-
-  async getSamlConfigByTenantId(tenantId: string) {
-    // Explicitly not checking permission, as this is used in login flow
-    return await this.samlConfigs().findOne({
-      where: {
-        tenantId,
-      },
-    });
-  }
-
-  async getSamlConfigByTeam(teamId: TeamId) {
-    await this.checkTeamPerms(teamId, "viewer", "read");
-    return await this.samlConfigs().findOne({
-      where: { teamId },
-    });
-  }
-
-  async upsertSamlConfig(opts: {
-    teamId: TeamId;
-    domains: string[];
-    entrypoint: string;
-    cert: string;
-    issuer: string;
-  }) {
-    await this.checkTeamPerms(opts.teamId, "owner", "write");
-    let config = await this.getSamlConfigByTeam(opts.teamId);
-    if (config) {
-      assignAllowEmpty(config, this.stampUpdate(), config);
-    } else {
-      config = this.samlConfigs().create({
-        ...this.stampNew(),
-        ...opts,
-        tenantId: generateId(),
-      });
-    }
-    await this.entMgr.save(config);
-    return config;
-  }
-
-  //
   // SSO
   //
   async getSsoConfigByDomain(domain: string) {
@@ -5124,7 +5034,7 @@ export class DbMgr implements MigrationDbMgr {
   async upsertSsoConfig(opts: {
     teamId: TeamId;
     domains: string[];
-    ssoType: "oidc" | "saml";
+    ssoType: "oidc";
     provider: KnownProvider;
     config: any;
   }) {
@@ -9972,7 +9882,6 @@ export class DbMgr implements MigrationDbMgr {
     await this.teamApiTokens().delete({ teamId: id });
     await this.temporaryTeamApiTokens().delete({ teamId: id });
     await this.permissions().delete({ teamId: id });
-    await this.samlConfigs().delete({ teamId: id });
     await this.ssoConfigs().delete({ teamId: id });
 
     // delete end user directories

@@ -22,7 +22,7 @@ EOF
   create database wab owner wab;
   create extension pgcrypto;
 EOF
-} || true
+}
 
 {
   $psql wab <<EOF

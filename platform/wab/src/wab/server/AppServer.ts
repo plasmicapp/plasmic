@@ -374,7 +374,6 @@ const isCsrfFreeRoute = (pathname: string, config: Config) => {
     pathname.includes("/api/v1/wl/") ||
     pathname.includes("/api/v1/cms/") ||
     pathname.match("/api/v1/projects/[^/]+$") ||
-    pathname.match("/api/v1/auth/saml/.*/consume") ||
     pathname.match("/api/v1/auth/sso/.*/consume") ||
     pathname.includes("/api/v1/app-auth/user") ||
     pathname.includes("/api/v1/app-auth/userinfo") ||
@@ -1366,12 +1365,6 @@ export function addMainAppServerRoutes(
     "/api/v1/oauth2/google/callback",
     withNext(authRoutes.googleCallback)
   );
-  app.get("/api/v1/auth/saml/login", withNext(authRoutes.samlLogin));
-  app.get("/api/v1/auth/saml/test", withNext(authRoutes.isValidSamlEmail));
-  app.post(
-    "/api/v1/auth/saml/:tenantId/consume",
-    withNext(authRoutes.samlCallback)
-  );
   app.get("/api/v1/auth/sso/test", withNext(authRoutes.isValidSsoEmail));
   app.get("/api/v1/auth/sso/:tenantId/login", withNext(authRoutes.ssoLogin));
   app.get(
@@ -1504,11 +1497,6 @@ export function addMainAppServerRoutes(
     "/api/v1/admin/devflags",
     adminOnly,
     withNext(adminRoutes.setDevFlagOverrides)
-  );
-  app.post(
-    "/api/v1/admin/upsert-saml",
-    adminOnly,
-    withNext(adminRoutes.upsertSamlConfig)
   );
   app.post(
     "/api/v1/admin/upsert-sso",

@@ -22,8 +22,6 @@ import {
   assert,
   asyncToCallback,
   ensure,
-  extractDomainFromEmail,
-  isValidEmail,
   maybes,
   spreadLog,
   StandardCallback,
@@ -32,11 +30,6 @@ import { isGoogleAuthRequiredEmailDomain } from "@/wab/shared/devflag-utils";
 import { DevFlagsType } from "@/wab/shared/devflags";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { getPublicUrl } from "@/wab/shared/urls";
-import {
-  MultiSamlStrategy,
-  SamlConfig,
-  Profile as SamlProfile,
-} from "@node-saml/passport-saml";
 import { Request } from "express-serve-static-core";
 import { omit } from "lodash";
 import passport, { Profile } from "passport";
@@ -48,8 +41,6 @@ import { getManager } from "typeorm";
 import * as util from "util";
 
 const LocalStrategy = passportLocal.Strategy;
-
-export class UserNotWhitelistedError extends Error {}
 
 export async function setupPassport(
   dbMgr: DbMgr,
@@ -125,54 +116,6 @@ export async function setupPassport(
             profile,
             { requireRefreshToken: true }
           );
-          return user;
-        })
-    )
-  );
-
-  passport.use(
-    new MultiSamlStrategy(
-      {
-        passReqToCallback: true,
-        getSamlOptions: (req, done) =>
-          asyncToCallback(done as StandardCallback<SamlConfig>, async () => {
-            const saml = await extractSamlConfig(req);
-            return {
-              callbackUrl: `${getPublicUrl()}/api/v1/auth/saml/${
-                saml.tenantId
-              }/consume`,
-              entryPoint: saml.entrypoint,
-              cert: saml.cert,
-              issuer: saml.issuer,
-            };
-          }),
-      },
-      (req, profile, done) =>
-        asyncToCallback(done as StandardCallback<User>, async () => {
-          if (!profile) {
-            throw new BadRequestError(`Unable to obtain SAML Profile`);
-          }
-          return await upsertSamlUser(req, profile);
-        }),
-      (req, profile, done) =>
-        asyncToCallback(done as StandardCallback<User>, async () => {
-          if (!profile) {
-            throw new BadRequestError(`Unable to obtain SAML Profile`);
-          }
-          const mgr = superDbMgr(req);
-          const email = profile.email;
-
-          if (!email) {
-            throw new BadRequestError(
-              `SAML Error: Unable to get profile email`
-            );
-          }
-
-          const user = await mgr.tryGetUserByEmail(email);
-          if (!user) {
-            throw new BadRequestError(`SAML Error: Invalid user`);
-          }
-
           return user;
         })
     )
@@ -330,43 +273,6 @@ export async function setupPassport(
   await setupCustomPassport(dbMgr, config, devflags);
 }
 
-async function extractSamlConfig(req: Request) {
-  if (req.method === "GET") {
-    const email = req.query.email;
-    if (!email || typeof email !== "string") {
-      throw new BadRequestError(`Unspecified email for SAML login`);
-    }
-
-    if (!isValidEmail(email)) {
-      throw new BadRequestError(`Invalid email ${email}`);
-    }
-
-    const domain = extractDomainFromEmail(email);
-
-    const db = userDbMgr(req);
-    const saml = await db.getSamlConfigByDomain(domain);
-    if (!saml) {
-      throw new BadRequestError(
-        `Domain ${domain} is not configured to use SAML`
-      );
-    }
-    return saml;
-  } else {
-    // Callback!
-    const tenantId = req.params.tenantId;
-    if (!tenantId) {
-      throw new BadRequestError(`Unknown Tenant ID`);
-    }
-
-    const db = userDbMgr(req);
-    const saml = await db.getSamlConfigByTenantId(tenantId);
-    if (!saml) {
-      throw new BadRequestError(`No SAML SSO configuration found`);
-    }
-    return saml;
-  }
-}
-
 export async function extractSsoConfig(req: Request) {
   const tenantId = req.params.tenantId;
   const db = userDbMgr(req);
@@ -375,45 +281,6 @@ export async function extractSsoConfig(req: Request) {
     throw new BadRequestError(`Not configured to use SSO`);
   }
   return sso;
-}
-
-async function upsertSamlUser(req: Request, profile: SamlProfile) {
-  const mgr = superDbMgr(req);
-  const email = profile.email;
-
-  if (!email) {
-    throw new BadRequestError(`SAML Error: Unable to get profile email`);
-  }
-  const emailUser = email.split("@")[0];
-
-  const userFields = {
-    firstName: (profile.firstName ?? emailUser) as string,
-    lastName: (profile.lastName ?? "") as string,
-  };
-
-  let user = await mgr.tryGetUserByEmail(email);
-  if (!user) {
-    user = await createUserFull({
-      mgr,
-      email,
-      ...userFields,
-      req,
-    });
-    if (!user) {
-      throw new UserNotWhitelistedError();
-    }
-  } else {
-    user = await mgr.updateUser({
-      id: user.id,
-      ...userFields,
-    });
-  }
-
-  // Must reset the session to prevent session fixation.
-  if (req.session) {
-    await util.promisify(req.session.regenerate).bind(req.session)();
-  }
-  return user;
 }
 
 export async function upsertOauthUser(
@@ -461,17 +328,6 @@ export async function upsertOauthUser(
       lastName: userFields.lastName ?? "",
       req,
     });
-    if (!user) {
-      // Log the oauth token in case it's helpful later.
-      await mgr.upsertUserlessOauthToken(
-        email,
-        provider,
-        { accessToken, refreshToken },
-        (profile as any)._json,
-        opts.ssoConfigId
-      );
-      throw new UserNotWhitelistedError();
-    }
   } else {
     // Prefer OAuth over password login
     await mgr.clearUserPassword(user.id);

@@ -361,19 +361,6 @@ export async function upgradeTeam(req: Request, res: Response) {
   res.json({});
 }
 
-export async function upsertSamlConfig(req: Request, res: Response) {
-  const mgr = superDbMgr(req);
-  const { teamId, domain, entrypoint, issuer, cert } = req.body;
-  const config = await mgr.upsertSamlConfig({
-    teamId,
-    domains: [domain],
-    entrypoint,
-    cert,
-    issuer,
-  });
-  res.json(config);
-}
-
 export async function upsertSsoConfig(req: Request, res: Response) {
   const mgr = superDbMgr(req);
   const { teamId, domain, provider, config } = req.body;

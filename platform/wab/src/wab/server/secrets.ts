@@ -18,11 +18,6 @@ interface Secrets {
     /** AKA consumer secret */
     clientSecret: string;
   };
-  okta?: {
-    domain: string;
-    clientId: string;
-    clientSecret: string;
-  };
   airtableSso?: {
     clientId: string;
     clientSecret: string;
@@ -98,22 +93,6 @@ export function getGoogleClientId() {
 
 export function getGoogleClientSecret() {
   return loadSecrets().google?.clientSecret ?? "fake";
-}
-
-export function hasOkta() {
-  return "okta" in loadSecrets();
-}
-
-export function getOktaDomain() {
-  return loadSecrets().okta?.domain ?? "fake";
-}
-
-export function getOktaClientId() {
-  return loadSecrets().okta?.clientId ?? "fake";
-}
-
-export function getOktaClientSecret() {
-  return loadSecrets().okta?.clientSecret ?? "fake";
 }
 
 export function getSmtpAuth() {

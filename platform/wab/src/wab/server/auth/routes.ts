@@ -2,10 +2,7 @@ import {
   customTeamApiAuth,
   customTeamApiUserAuth,
 } from "@/wab/server/auth/custom-api-auth";
-import {
-  UserNotWhitelistedError,
-  extractSsoConfig,
-} from "@/wab/server/auth/passport-cfg";
+import { extractSsoConfig } from "@/wab/server/auth/passport-cfg";
 import { doLogin, doLogout } from "@/wab/server/auth/util";
 import {
   DbMgr,
@@ -109,9 +106,6 @@ export async function login(req: Request, res: Response, next: NextFunction) {
   );
 }
 
-/**
- * @returns undefined if email was not whitelisted.
- */
 export async function createUserFull({
   mgr,
   email,
@@ -135,7 +129,7 @@ export async function createUserFull({
     appName: string;
     authorizationPath: string;
   };
-}) {
+}): Promise<User> {
   const signUpPromotionCode = getPromotionCodeCookie(req);
   const user = await mgr.createUser({
     email,
@@ -257,15 +251,6 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
       nextPath,
       appInfo,
     });
-    if (!user) {
-      res.json(
-        ensureType<SignUpResponse>({
-          status: false,
-          reason: "UserNotWhitelistedError",
-        })
-      );
-      return;
-    }
     await new Promise<void>((resolve) => {
       doLogin(req, user, (err2) => {
         if (err2) {
@@ -585,10 +570,7 @@ async function handleOauthCallback(
         (async () => {
           console.log("AUTH CALLBACK", { err, user, info });
           if (err || !user) {
-            const errName =
-              err instanceof UserNotWhitelistedError
-                ? "UserNotWhitelistedError"
-                : `${err}`;
+            const errName = `${err}`;
             console.error(`could not ${provider} auth due to error:`, errName);
             Sentry.captureException(err);
             res.send(callbackHtml(errName));
@@ -708,62 +690,6 @@ export function isPublicApiRequest(req: Request) {
     // Team API token
     req.headers?.["x-plasmic-team-token"] ||
     isCustomPublicApiRequest(req)
-  );
-}
-
-export async function isValidSamlEmail(req: Request, res: Response) {
-  if (
-    req.query.email &&
-    typeof req.query.email === "string" &&
-    isValidEmail(req.query.email)
-  ) {
-    const domain = extractDomainFromEmail(req.query.email);
-    const db = userDbMgr(req);
-    const config = await db.getSamlConfigByDomain(domain);
-    if (config) {
-      res.json({ valid: true });
-      return;
-    }
-  }
-  res.json({ valid: false });
-}
-
-export async function samlLogin(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  await new Promise<void>((resolve) =>
-    passport.authenticate("saml", {}, () => resolve())(req, res, next)
-  );
-}
-
-export async function samlCallback(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  await new Promise<void>((resolve) =>
-    passport.authenticate(
-      "saml",
-      async (err: Error, user: User, info: IVerifyOptions) =>
-        (async () => {
-          if (err || !user) {
-            console.error(`Could not log in via SAML: ${err}`);
-            Sentry.captureException(err);
-            res.send(callbackHtml(`${err}`));
-            return;
-          }
-
-          doLogin(req, user, (err2) => {
-            if (err2) {
-              return next(err2);
-            }
-            console.log(`Logged in as`, getUser(req).email);
-            res.send(callbackHtml("Success"));
-          });
-        })().then(() => resolve())
-    )(req, res, next)
   );
 }
 
@@ -1001,10 +927,7 @@ export async function airtableCallback(
         (async () => {
           console.log("AUTH CALLBACK", { err, row, info });
           if (err) {
-            const errName =
-              err instanceof UserNotWhitelistedError
-                ? "UserNotWhitelistedError"
-                : `${err}`;
+            const errName = `${err}`;
             console.error(`could not airtable auth due to error:`, errName);
             Sentry.captureException(err);
             res.send(callbackHtml(errName));
@@ -1052,10 +975,7 @@ export async function googleSheetsCallback(
         (async () => {
           console.log("AUTH CALLBACK", { err, row, info });
           if (err) {
-            const errName =
-              err instanceof UserNotWhitelistedError
-                ? "UserNotWhitelistedError"
-                : `${err}`;
+            const errName = `${err}`;
             console.error(`could not google-sheets due to error:`, errName);
             Sentry.captureException(err);
             res.send(callbackHtml(errName));

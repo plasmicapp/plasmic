@@ -1,9 +1,6 @@
-/** @format */
-
 // TODO Debug why explicit type strings are nec for Column() / why reflect-metadata doesn't work
 // TODO Use real UUID type, both in PG and in Typescript.
 
-import { Dict } from "@/wab/shared/collections";
 import { getEncryptionKey } from "@/wab/server/secrets";
 import type { TutorialDbInfo } from "@/wab/server/tutorialdb/tutorialdb-utils";
 import { makeStableEncryptor } from "@/wab/server/util/crypt";
@@ -38,6 +35,7 @@ import type {
   UserWhiteLabelInfo,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
+import { Dict } from "@/wab/shared/collections";
 import type { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import type { OperationTemplate } from "@/wab/shared/data-sources-meta/data-sources";
 import { CodeSandboxInfo, WebhookHeader } from "@/wab/shared/db-json-blobs";
@@ -708,16 +706,6 @@ export class OauthToken extends OauthTokenBase {
   userId: UserId;
 }
 
-/**
- * This really serves as just a log of collected oauth token data from users who
- * try to access us but were not whitelisted.
- */
-@Entity()
-export class UserlessOauthToken extends OauthTokenBase {
-  @Column("text")
-  email: string;
-}
-
 @Entity()
 export class PersonalApiToken extends Base<"PersonalApiTokenId"> {
   @ManyToOne((type) => User, { nullable: false })
@@ -985,34 +973,6 @@ export class DataSourceOperation extends Base<"DataSourceOperationId"> {
 }
 
 @Entity()
-export class SamlConfig extends Base<"SamlConfigId"> {
-  @Index()
-  @Column("text")
-  teamId: TeamId;
-
-  @OneToOne(() => Team)
-  @JoinColumn()
-  team: Team;
-
-  @Index()
-  @Column("text", { array: true })
-  domains: string[];
-
-  @Column("text")
-  entrypoint: string;
-
-  @Column("text")
-  issuer: string;
-
-  @Column("text")
-  cert: string;
-
-  @Index({ unique: true })
-  @Column("text")
-  tenantId: string;
-}
-
-@Entity()
 export class SsoConfig extends Base<"SsoConfigId"> {
   @Index()
   @Column("text")
@@ -1027,7 +987,7 @@ export class SsoConfig extends Base<"SsoConfigId"> {
   domains: string[];
 
   @Column("text")
-  ssoType: "oidc" | "saml";
+  ssoType: "oidc";
 
   @Column("text")
   provider: "okta";

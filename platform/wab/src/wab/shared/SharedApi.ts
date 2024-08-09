@@ -573,13 +573,6 @@ export abstract class SharedApi {
     return res;
   }
 
-  async isValidSamlEmail(email: string): Promise<boolean> {
-    const res = await this.get(
-      `/auth/saml/test?${new URLSearchParams({ email }).toString()}`
-    );
-    return res.valid;
-  }
-
   async isValidSsoEmail(
     email: string
   ): Promise<{ valid: boolean; tenantId?: string }> {
@@ -1146,10 +1139,6 @@ export abstract class SharedApi {
 
   async changeProjectOwner(projectId: string, ownerEmail: string): Promise<{}> {
     return this.post(`/admin/change-project-owner`, { projectId, ownerEmail });
-  }
-
-  async upsertSamlConfig(args: any): Promise<any> {
-    return await this.post(`/admin/upsert-saml`, args);
   }
 
   async upsertSsoConfig(args: any): Promise<any> {

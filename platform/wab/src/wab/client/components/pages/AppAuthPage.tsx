@@ -304,14 +304,10 @@ export function AppAuthForm({
               setSelfInfo(user);
             }}
             onFailure={(reason) => {
-              if (reason === "UserNotWhitelistedError") {
-                location.href = "https://plasmic.app/intake";
-              } else {
-                setOauthFeedback({
-                  type: "error",
-                  content: "Unexpected error occurred logging in.",
-                });
-              }
+              setOauthFeedback({
+                type: "error",
+                content: "Unexpected error occurred logging in.",
+              });
             }}
             googleAuthUrl={U.googleAuth({})}
           >
