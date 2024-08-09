@@ -1,4 +1,13 @@
 import {
+  customTeamApiAuth,
+  customTeamApiUserAuth,
+} from "@/wab/server/auth/custom-api-auth";
+import {
+  UserNotWhitelistedError,
+  extractSsoConfig,
+} from "@/wab/server/auth/passport-cfg";
+import { doLogin, doLogout } from "@/wab/server/auth/util";
+import {
   DbMgr,
   MismatchPasswordError,
   PwnedPasswordError,
@@ -10,14 +19,6 @@ import { sendEmailVerificationToUser } from "@/wab/server/emails/verification-em
 import { sendWelcomeEmail } from "@/wab/server/emails/welcome-email";
 import { OauthTokenProvider, User } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
-import {
-  UserNotWhitelistedError,
-  extractSsoConfig,
-} from "@/wab/server/passport-cfg";
-import {
-  customTeamApiAuth,
-  customTeamApiUserAuth,
-} from "@/wab/server/routes/custom-api-auth";
 import { isCustomPublicApiRequest } from "@/wab/server/routes/custom-routes";
 import { getPromotionCodeCookie } from "@/wab/server/routes/promo-code";
 import {
@@ -32,7 +33,6 @@ import {
   userAnalytics,
   userDbMgr,
 } from "@/wab/server/routes/util";
-import { doLogin, doLogout } from "@/wab/server/util/auth-util";
 import {
   NotFoundError,
   UnauthorizedError,

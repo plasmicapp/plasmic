@@ -1,3 +1,4 @@
+import { doLogin } from "@/wab/server/auth/util";
 import {
   PkgVersion,
   ProjectRevision,
@@ -19,7 +20,6 @@ import {
   TutorialType,
   resetTutorialDb as doResetTutorialDb,
 } from "@/wab/server/tutorialdb/tutorialdb-utils";
-import { doLogin } from "@/wab/server/util/auth-util";
 import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import {
   ApiFeatureTier,

@@ -1,9 +1,9 @@
+import { setupCustomPassport } from "@/wab/server/auth/custom-passport-cfg";
+import { createUserFull } from "@/wab/server/auth/routes";
 import { Config } from "@/wab/server/config";
-import { setupCustomPassport } from "@/wab/server/custom-passport-cfg";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { OauthTokenProvider, User } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
-import { createUserFull } from "@/wab/server/routes/auth";
 import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import {
   getAirtableSsoSecrets,

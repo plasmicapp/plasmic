@@ -1,3 +1,12 @@
+/**
+ * This module handles loading secrets from secrets.json.
+ *
+ * Plasmic should run without any secrets.json file.
+ * But for testing some features, you'll need to set up certain variables.
+ *
+ * By default, secrets are read from ~/.plasmic/secrets.json.
+ */
+
 import { ensure, uncheckedCast } from "@/wab/shared/common";
 import fs from "fs";
 import * as os from "os";

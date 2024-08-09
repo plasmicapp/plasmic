@@ -1,9 +1,9 @@
-import { spawn } from "@/wab/shared/common";
 import { User } from "@/wab/server/entities/Entities";
 import { makeUserTraits } from "@/wab/server/routes/util";
 import { disconnectUserSockets } from "@/wab/server/socket-util";
 import { ForbiddenError } from "@/wab/shared/ApiErrors/errors";
 import { TeamWhiteLabelInfo } from "@/wab/shared/ApiSchema";
+import { spawn } from "@/wab/shared/common";
 import OktaJwtVerifier from "@okta/jwt-verifier";
 import { Request } from "express-serve-static-core";
 
