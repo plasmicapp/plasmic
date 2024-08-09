@@ -1,10 +1,8 @@
-import { asyncWrapper, omitNils } from "@/wab/shared/common";
-import { adminEmails } from "@/wab/server/admin";
 import {
   ANON_USER,
   DbMgr,
-  normalActor,
   SUPER_USER,
+  normalActor,
   teamActor,
 } from "@/wab/server/db/DbMgr";
 import { User } from "@/wab/server/entities/Entities";
@@ -16,6 +14,7 @@ import {
   UnauthorizedError,
 } from "@/wab/shared/ApiErrors/errors";
 import { CmsIdAndToken, ProjectIdAndToken } from "@/wab/shared/ApiSchema";
+import { asyncWrapper, omitNils } from "@/wab/shared/common";
 import { NextFunction, Request, Response } from "express-serve-static-core";
 import L from "lodash";
 
@@ -215,7 +214,10 @@ function timingDbMgr(dbMgr: DbMgr) {
 
 export function adminOnly(req: Request, res: Response, next: NextFunction) {
   const user = req.user as User | undefined;
-  if (user?.email && adminEmails.includes(user.email.toLowerCase())) {
+  if (
+    user?.email &&
+    req.config.adminEmails.includes(user.email.toLowerCase())
+  ) {
     next();
   } else {
     next(new ForbiddenError());

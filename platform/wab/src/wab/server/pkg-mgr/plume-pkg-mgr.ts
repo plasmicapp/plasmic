@@ -1,9 +1,9 @@
-import { spawn } from "@/wab/shared/common";
-import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
+import { loadConfig } from "@/wab/server/config";
 import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { spawn } from "@/wab/shared/common";
 import yargs from "yargs";
-import { parseMasterPkg, PkgMgr } from ".";
+import { PkgMgr, parseMasterPkg } from ".";
 
 // This is the right Plume PkgVersion.version to use. You can publish
 // newer versions of Plume, but they will not be used until this
@@ -13,7 +13,8 @@ import { parseMasterPkg, PkgMgr } from ".";
 export const REAL_PLUME_VERSION = "19.4.2";
 
 async function updatePlumePkg() {
-  const con = await ensureDbConnection(DEFAULT_DATABASE_URI, "default");
+  const config = loadConfig();
+  const con = await ensureDbConnection(config.databaseUri, "default");
   await con.transaction(async (em) => {
     const db = new DbMgr(em, SUPER_USER);
     const mgr = new PkgMgr(db, "plume");

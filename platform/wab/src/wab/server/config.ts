@@ -1,10 +1,12 @@
 import { assert } from "@/wab/shared/common";
 import { getPublicUrl } from "@/wab/shared/urls";
+import memoizeOne from "memoize-one";
 
 export interface Config {
   host: string;
   production: boolean;
   databaseUri: string;
+  adminEmails: string[];
   sentryDSN?: string;
   sessionSecret: string;
   mailFrom: string;
@@ -23,9 +25,11 @@ const DEFAULT_CONFIG: Config = {
   mailFrom: "Plasmic <team@example.com>",
   mailUserOps: "ops@example.com",
   production: process.env.NODE_ENV === "production",
+  adminEmails:
+    process.env.NODE_ENV !== "production" ? ["admin@example.com"] : [],
 };
 
-export function loadConfig(): Config {
+export const loadConfig = memoizeOne((): Config => {
   const config = parseConfigFromEnv();
 
   // Validity checks on config
@@ -33,10 +37,11 @@ export function loadConfig(): Config {
     assert(process.env["SESSION_SECRET"], "Production missing Session Secret");
     assert(process.env["DATABASE_URI"], "Production missing DB Uri");
     assert(process.env["HOST"], "Production missing Host");
+    assert(process.env["ADMIN_EMAILS"], "Production missing Admin emails");
   }
 
   return config;
-}
+});
 
 function parseConfigFromEnv(): Config {
   const config = Object.assign({}, DEFAULT_CONFIG);
@@ -51,6 +56,11 @@ function parseConfigFromEnv(): Config {
     mailFrom: mailConfig?.mailFrom,
     mailUserOps: mailConfig?.mailUserOps,
     mailBcc: mailConfig?.mailBcc,
+    adminEmails: process.env["ADMIN_EMAILS"]
+      ? (JSON.parse(process.env["ADMIN_EMAILS"]) as string[]).map((email) =>
+          email.toLowerCase()
+        )
+      : undefined,
   };
 
   Object.entries(envConfig).forEach(([key, value]) => {

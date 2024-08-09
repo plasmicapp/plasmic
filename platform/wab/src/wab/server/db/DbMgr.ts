@@ -4,8 +4,8 @@ import { sequentially } from "@/wab/commons/asyncutil";
 import { removeFromArray } from "@/wab/commons/collections";
 import * as semver from "@/wab/commons/semver";
 import { toOpaque } from "@/wab/commons/types";
-import { adminEmails } from "@/wab/server/admin";
 import { createSiteForHostlessProject } from "@/wab/server/code-components/code-components";
+import { loadConfig } from "@/wab/server/config";
 import {
   normalizeOperationTemplate,
   reevaluateAppAuthUserPropsOpId,
@@ -1823,7 +1823,7 @@ export class DbMgr implements MigrationDbMgr {
   async updateAdminMode({ id, disabled }: { id: string; disabled: boolean }) {
     this.checkUserIdIsSelf(id);
     const user = await this.getUserById(id);
-    if (!adminEmails.includes(user.email)) {
+    if (!loadConfig().adminEmails.includes(user.email)) {
       return user;
     }
     mergeSane(user, this.stampUpdate(), { adminModeDisabled: disabled });

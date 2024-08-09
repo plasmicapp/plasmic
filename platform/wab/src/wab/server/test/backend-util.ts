@@ -1,10 +1,10 @@
-import { ensure } from "@/wab/shared/common";
 import { sequentially } from "@/wab/commons/asyncutil";
 import { runAppServer } from "@/wab/server/app-backend-real";
 import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { initDb } from "@/wab/server/db/DbInitUtil";
 import { DbMgr, normalActor, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { Project, User } from "@/wab/server/entities/Entities";
+import { ensure } from "@/wab/shared/common";
 import getPort from "get-port";
 import { customAlphabet } from "nanoid";
 import { alphanumeric } from "nanoid-dictionary";
@@ -125,6 +125,7 @@ export async function createBackend(
         databaseUri: dburi,
         port: port,
         host: `http://localhost:${port}`,
+        adminEmails: [],
         production: false,
         sessionSecret: "secret",
         mailFrom: "",
