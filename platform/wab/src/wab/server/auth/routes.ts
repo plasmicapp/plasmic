@@ -14,7 +14,7 @@ import {
 import { sendResetPasswordEmail } from "@/wab/server/emails/reset-password-email";
 import { sendEmailVerificationToUser } from "@/wab/server/emails/verification-email";
 import { sendWelcomeEmail } from "@/wab/server/emails/welcome-email";
-import { OauthTokenProvider, User } from "@/wab/server/entities/Entities";
+import { User } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
 import { isCustomPublicApiRequest } from "@/wab/server/routes/custom-routes";
 import { getPromotionCodeCookie } from "@/wab/server/routes/promo-code";
@@ -550,63 +550,61 @@ export async function googleLogin(
 }
 
 async function handleOauthCallback(
-  provider: OauthTokenProvider,
   req: Request,
   res: Response,
   next: NextFunction,
-  opts: {
-    requireRefreshToken?: boolean;
-
-    // provider is used as the strategy to pass to passport.authenticate,
-    // unless an override is specified here, where strategy differs from
-    // the provider
-    strategy?: string;
-  }
+  {
+    provider,
+    strategy,
+    beforeLogin,
+  }: {
+    /**
+     * Callback to do something before logging the user in.
+     *
+     * Return true to continue logging in.
+     * Return false to stop. Callback is expected to respond.
+     */
+    beforeLogin?: (user: User) => Promise<boolean>;
+  } & (
+    | {
+        strategy?: never;
+        provider: "google";
+      }
+    | {
+        strategy: "sso";
+        provider: "okta";
+      }
+  )
 ) {
+  const logPrefix = strategy
+    ? `auth: ${strategy}/${provider}`
+    : `auth: ${provider}`;
   await new Promise<void>((resolve) =>
     passport.authenticate(
-      opts.strategy ?? provider,
+      strategy ?? provider,
       async (err: Error, user: User, info: IVerifyOptions) =>
         (async () => {
-          console.log("AUTH CALLBACK", { err, user, info });
+          console.log(logPrefix, "AUTH CALLBACK", { err, user, info });
           if (err || !user) {
             const errName = `${err}`;
-            console.error(`could not ${provider} auth due to error:`, errName);
+            console.error(logPrefix, "could not auth due to error:", errName);
             Sentry.captureException(err);
             res.send(callbackHtml(errName));
             return;
           }
 
-          const mgr = superDbMgr(req);
-
-          // If after the login, we still don't have a refresh_token, then try again
-          // but this time forcing consent=prompt. This is pretty rare; normally, the first time
-          // a user goes through an auth flow, we will get a refresh_token; subsequent logins via
-          // oauth would not have refresh_token.  So that means we somehow missed storing the
-          // refresh token the first time (possibly due to, say, InvalidOrg error, etc.)
-          // In that case, we force the user to go through the oauth flow again with prompt=consent.
-          // prompt=consent means we'll definitely get a refresh_token, but we don't always want
-          // to do this because we don't want the user to have to go through the consent screen
-          // just to log in normally.
-          const oauthToken = await mgr.tryGetOauthToken(user.id, provider);
-          if (
-            opts.requireRefreshToken &&
-            (!oauthToken || !oauthToken.token.refreshToken)
-          ) {
-            console.log(`forcing ${provider} consent...`);
-            // Annoyingly, there's no "clean" way to trigger a redirect directly to
-            // the oauth provider, since passport.authenticate() reads req.query to
-            // determine whether this .authenticate() call is the initial request or
-            // the callback request.  So, we rely on redirecting to our own endpoint,
-            // which in turn redirects us to the oauth provider.
-            return res.redirect(`/api/v1/auth/${provider}?force=1`);
+          if (beforeLogin) {
+            const ok = await beforeLogin(user);
+            if (!ok) {
+              return;
+            }
           }
 
           doLogin(req, user, (err2) => {
             if (err2) {
               return next(err2);
             }
-            console.log("logged in as", getUser(req).email);
+            console.log(logPrefix, "logged in as:", user.email);
             res.send(callbackHtml("Success"));
           });
         })().then(() => resolve())
@@ -619,8 +617,34 @@ export async function googleCallback(
   res: Response,
   next: NextFunction
 ) {
-  await handleOauthCallback("google", req, res, next, {
-    requireRefreshToken: true,
+  await handleOauthCallback(req, res, next, {
+    provider: "google",
+    beforeLogin: async (user: User) => {
+      const mgr = superDbMgr(req);
+
+      // If after the login, we still don't have a refresh_token, then try again
+      // but this time forcing consent=prompt. This is pretty rare; normally, the first time
+      // a user goes through an auth flow, we will get a refresh_token; subsequent logins via
+      // oauth would not have refresh_token.  So that means we somehow missed storing the
+      // refresh token the first time (possibly due to, say, InvalidOrg error, etc.)
+      // In that case, we force the user to go through the oauth flow again with prompt=consent.
+      // prompt=consent means we'll definitely get a refresh_token, but we don't always want
+      // to do this because we don't want the user to have to go through the consent screen
+      // just to log in normally.
+      const oauthToken = await mgr.tryGetOauthToken(user.id, "google");
+      if (!oauthToken || !oauthToken.token.refreshToken) {
+        console.log(`auth: google: forcing consent...`);
+        // Annoyingly, there's no "clean" way to trigger a redirect directly to
+        // the oauth provider, since passport.authenticate() reads req.query to
+        // determine whether this .authenticate() call is the initial request or
+        // the callback request.  So, we rely on redirecting to our own endpoint,
+        // which in turn redirects us to the oauth provider.
+        res.redirect(`/api/v1/auth/google?force=1`);
+        return false;
+      }
+
+      return true;
+    },
   });
 }
 
@@ -726,9 +750,9 @@ export async function ssoCallback(
   next: NextFunction
 ) {
   const ssoConfig = await extractSsoConfig(req);
-  await handleOauthCallback(ssoConfig.provider, req, res, next, {
-    requireRefreshToken: false,
+  await handleOauthCallback(req, res, next, {
     strategy: "sso",
+    provider: ssoConfig.provider,
   });
 }
 
