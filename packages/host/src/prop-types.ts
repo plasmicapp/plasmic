@@ -496,6 +496,18 @@ export interface ModalProps {
   onClose: () => void;
   style?: CSSProperties;
 }
+
+export interface StudioOps {
+  showModal: (
+    modalProps: Omit<ModalProps, "onClose"> & { onClose?: () => void }
+  ) => void;
+  refreshQueryData: () => void;
+  appendToSlot: (element: PlasmicElement, slotName: string) => void;
+  removeFromSlotAt: (pos: number, slotName: string) => void;
+  updateProps: (newValues: any) => void;
+  updateStates: (newValues: any) => void;
+}
+
 export interface CustomControlProps<P> {
   componentProps: P;
   /**
@@ -504,6 +516,11 @@ export interface CustomControlProps<P> {
    * calls `setControlContextData`)
    */
   contextData: InferDataType<P> | null;
+  /**
+   * Operations available to the editor that allow modifying the entire component.
+   * Can be null if the custom prop is used in a global context.
+   */
+  studioOps: StudioOps | null;
   value: any;
   /**
    * Sets the value to be passed to the prop. Expects a JSON-compatible value.

@@ -68,6 +68,7 @@ export function CustomPropEditor({
           {
             className: "error-boundary",
           },
+          // TODO: Remove as any
           sub.React.createElement(impl, {
             value,
             componentProps: componentPropValues,
@@ -76,7 +77,8 @@ export function CustomPropEditor({
             FullscreenModal,
             SideModal,
             studioDocument: window.document,
-          })
+            studioOps: null,
+          } as any)
         ),
         node
       );

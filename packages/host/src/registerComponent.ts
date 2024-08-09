@@ -1,14 +1,10 @@
-import {
-  CodeComponentElement,
-  CSSProperties,
-  PlasmicElement,
-} from "./element-types";
+import { CodeComponentElement, CSSProperties } from "./element-types";
 import {
   ContextDependentConfig,
   InferDataType,
-  ModalProps,
   PropType,
   RestrictPropType,
+  StudioOps,
 } from "./prop-types";
 import { TupleUnion } from "./type-utils";
 export type * from "./prop-types";
@@ -23,16 +19,10 @@ export interface ActionProps<P> {
    * calls `setControlContextData`)
    */
   contextData: InferDataType<P> | null;
-  studioOps: {
-    showModal: (
-      modalProps: Omit<ModalProps, "onClose"> & { onClose?: () => void }
-    ) => void;
-    refreshQueryData: () => void;
-    appendToSlot: (element: PlasmicElement, slotName: string) => void;
-    removeFromSlotAt: (pos: number, slotName: string) => void;
-    updateProps: (newValues: any) => void;
-    updateStates: (newValues: any) => void;
-  };
+  /**
+   * Operations available to the editor that allow modifying the entire component.
+   */
+  studioOps: StudioOps;
   /**
    * The document that the component will be rendered into; instead of using
    * `document` directly (for, say, `document.querySelector()` etc.), you
