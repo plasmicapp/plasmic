@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/nextjs-app-router",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
@@ -27,11 +27,11 @@
   "dependencies": {
     "@plasmicapp/prepass": "1.0.17",
     "@plasmicapp/query": "0.1.79",
+    "cross-spawn": "^7.0.3",
     "fkill": "^8.1.0",
     "get-port": "^7.0.0",
     "node-html-parser": "^6.1.5",
-    "yargs": "^17.7.2",
-    "cross-spawn": "^7.0.3"
+    "yargs": "^17.7.2"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
@@ -66,10 +66,10 @@
     "access": "public"
   },
   "devDependencies": {
+    "@types/cross-spawn": "^6.0.6",
     "@types/node": "^20.8.9",
     "@types/react": "^18.0.27",
     "@types/yargs": "^17.0.32",
-    "@types/cross-spawn": "^6.0.6",
     "next": "^13.2.0",
     "react": "^18.2.0",
     "typescript": "^5.2.2"
