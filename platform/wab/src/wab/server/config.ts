@@ -37,7 +37,6 @@ export const loadConfig = memoizeOne((): Config => {
     assert(process.env["SESSION_SECRET"], "Production missing Session Secret");
     assert(process.env["DATABASE_URI"], "Production missing DB Uri");
     assert(process.env["HOST"], "Production missing Host");
-    assert(process.env["ADMIN_EMAILS"], "Production missing Admin emails");
   }
 
   return config;
