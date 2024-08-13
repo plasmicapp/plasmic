@@ -225,16 +225,17 @@ const PropValueEditor_ = (
   if (isCustomControlType(propType)) {
     // Custom control
     const impl = isPlainObjectPropType(propType) ? propType.control : propType;
+    ensure(isKnownTplComponent(tpl), "Custom control requires a tpl component");
     return (
       <CustomPropEditor
         value={value ?? defaultValueHint}
+        tpl={tpl as TplComponent}
         onChange={onChange}
         viewCtx={viewCtx}
         impl={impl}
         componentPropValues={componentPropValues}
         ccContextData={ccContextData}
         propName={label}
-        readOnly={readOnly}
       />
     );
   } else if (getPropTypeType(propType) === "target") {

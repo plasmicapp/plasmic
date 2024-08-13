@@ -9,14 +9,14 @@ import { updateOrCreateExpr } from "@/wab/client/components/sidebar-tabs/PropEdi
 import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
 import Button from "@/wab/client/components/widgets/Button";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, hackyCast, maybe } from "@/wab/shared/common";
-import { isCodeComponent } from "@/wab/shared/core/components";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { getSlotParams } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { elementSchemaToTpl } from "@/wab/shared/code-components/code-components";
-import { TplComponent } from "@/wab/shared/model/classes";
+import { ensure, hackyCast, maybe } from "@/wab/shared/common";
+import { isCodeComponent } from "@/wab/shared/core/components";
 import { SlotSelection } from "@/wab/shared/core/slots";
+import { TplComponent } from "@/wab/shared/model/classes";
 import { Action, ActionProps, PlasmicElement } from "@plasmicapp/host";
 import { notification } from "antd";
 import domAlign from "dom-align";
@@ -84,7 +84,7 @@ export const ComponentActionsSection = observer(
   }
 );
 
-function useStudioOps(
+export function useStudioOps(
   viewCtx: ViewCtx,
   node: HTMLDivElement | null,
   tplComp: TplComponent,
