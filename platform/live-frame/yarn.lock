@@ -112,21 +112,21 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources-context/-/data-sources-context-0.1.21.tgz#fcf7ead9d9576084ff9fdcc3eadc4a5856119866"
   integrity sha512-DF86rstDK2zs/aTbPOUTWwXiVmFG2GDxXYvztIfXUNtuCvNDJKAZK2thYaULv9bGTRitPKWlwcz0zAMjYRHavQ==
 
-"@plasmicapp/data-sources@0.1.162":
-  version "0.1.162"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources/-/data-sources-0.1.162.tgz#618965c72dae88fb202aac97ea9b9173b0282b85"
-  integrity sha512-w52eO82H1qmsNNoEwOovh/VIfKip/0chB978fStplzBwlQzHxMZGwLjB1Q2fBcoPR25V+ToI04ABy7zJIMC4Pw==
+"@plasmicapp/data-sources@0.1.163":
+  version "0.1.163"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources/-/data-sources-0.1.163.tgz#16a82eb14a9b48443038d7fe79c2f34ec81743fc"
+  integrity sha512-1yf2qMALwYMBzjd8k3UfgFaaVYkNgYVk6sHxeXUVhXSZsplTZisUMHjR9E3GOkLNtA5uamaA7Z25dI0WIzMgEg==
   dependencies:
     "@plasmicapp/data-sources-context" "0.1.21"
-    "@plasmicapp/host" "1.0.203"
+    "@plasmicapp/host" "1.0.204"
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
     "@plasmicapp/query" "0.1.79"
     fast-stringify "^2.0.0"
 
-"@plasmicapp/host@1.0.203":
-  version "1.0.203"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.203.tgz#cbd6396282cf6600e2390ce886a392ec9759b200"
-  integrity sha512-MPRypNz8xihrtVmbCkBj5qePdhSNBNERwJcX29v5aA4pcmC1jV+tNAQPmlwJv5OprHvh5nhVRoy12LVqIE5isg==
+"@plasmicapp/host@1.0.204":
+  version "1.0.204"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.204.tgz#59fcf2562d45cc2504751edd4801c88e6b1f603f"
+  integrity sha512-t74v0TqbCJ2yLCuxgAS9IDzM4u7TcPLnl9WLdB+B6XTSkhNFL0JwL2KY8vo+IhPhmK3s5UwHkORfQE0/wtwfyw==
   dependencies:
     "@plasmicapp/query" "0.1.79"
     csstype "^3.1.2"
@@ -146,13 +146,14 @@
   dependencies:
     json-logic-js "^2.0.2"
 
-"@plasmicapp/nextjs-app-router@1.0.11":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/nextjs-app-router/-/nextjs-app-router-1.0.11.tgz#6458b8fa13210f2db4a1d8ff57d48448e8b14f3b"
-  integrity sha512-A23zVQvGLf0aZN1WMewOlBX08WzQU49ic8hLJoBiSJwXjPykev5ph7IG0rDOHcKsQyW1yGq1d3h0INJyorb5kg==
+"@plasmicapp/nextjs-app-router@1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/nextjs-app-router/-/nextjs-app-router-1.0.12.tgz#98489dcf1b8113f845c6c9831b1c081bf59c0562"
+  integrity sha512-D3h90ie5eTCiaSEHoUumu/dJEgw+O7E+P1mZBqwj2QIETIWFhqa7lQAh4c4IlJEyqpLJd3Yvzsdsp2IamW/lmQ==
   dependencies:
     "@plasmicapp/prepass" "1.0.17"
     "@plasmicapp/query" "0.1.79"
+    cross-spawn "^7.0.3"
     fkill "^8.1.0"
     get-port "^7.0.0"
     node-html-parser "^6.1.5"

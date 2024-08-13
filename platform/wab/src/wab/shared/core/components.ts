@@ -2322,7 +2322,11 @@ export function getFolderComponentTrimmedName(component: Component) {
   if (!component.name) {
     return "unnamed artboard";
   }
-  return component.name
+  const componentName =
+    isCodeComponent(component) && component.codeComponentMeta.displayName
+      ? component.codeComponentMeta.displayName
+      : component.name;
+  return componentName
     .split("/")
     .map((str) => str.trim())
     .filter((str) => !!str)

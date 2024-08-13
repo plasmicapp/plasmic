@@ -9,18 +9,21 @@ export interface Folder<T> {
 }
 
 /**
- * Create a tree structure from given array by splitting the `name` in "/"
- * @param items the array to be grouped
- * @returns
+ * Create a tree structure from a given array by splitting the `name` in "/".
+ * @param items - The array of items to create the folder tree structure from.
+ * @param getName - A function that returns the `name` of an item.
+ * @param mapper - A function that maps an item or folder to the desired output type.
+ * @returns The array of items with the folder tree structure applied.
  */
 export function createFolderTreeStructure<T extends { name: string }, K>(
   items: T[],
+  getName: (item: T) => string,
   mapper: (item: T | Folder<T>) => K
 ): K[] {
   const tree: (T | Folder<T>)[] = [];
 
   items.forEach((item) => {
-    const folders = item.name
+    const folders = getName(item)
       .split("/")
       .map((str) => str.trim())
       .filter((str) => !!str);
@@ -39,7 +42,7 @@ export function isFolder<T>(item: T | Folder<T>): item is Folder<T> {
   );
 }
 
-function insertIntoTree<T extends { name: string }>(
+function insertIntoTree<T>(
   item: T,
   children: (T | Folder<T>)[],
   folders: string[],

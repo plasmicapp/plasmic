@@ -46,7 +46,11 @@ describe("createFolderTreeStructure", () => {
       { name: "file6" },
     ];
 
-    const result = createFolderTreeStructure(items, (item) => item);
+    const result = createFolderTreeStructure(
+      items,
+      (item) => item.name,
+      (item) => item
+    );
     expect(result).toEqual(expectedTree);
   });
 });

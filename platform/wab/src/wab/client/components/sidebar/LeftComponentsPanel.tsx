@@ -17,6 +17,7 @@ import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-cod
 import { isNonNil, unreachable } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
+  getFolderComponentTrimmedName,
   isCodeComponent,
   isContextCodeComponent,
   isHostLessCodeComponent,
@@ -123,8 +124,10 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
           ))
     );
     comps = sortComponentsByName(comps);
-    const componentTree = createFolderTreeStructure(comps, (item) =>
-      mapToComponentPanelRow(item, dep)
+    const componentTree = createFolderTreeStructure(
+      comps,
+      (item) => getFolderComponentTrimmedName(item),
+      (item) => mapToComponentPanelRow(item, dep)
     );
 
     return { items: componentTree, count: comps.length };
