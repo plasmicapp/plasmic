@@ -533,8 +533,11 @@ function HostLessPackageForm({
               <p>
                 Submitting this form will publish a new version of this hostless
                 project, which means new projects that import from this will be
-                using the new version, but existing projects will not. This can
-                cause issues!
+                using the new version, for the existing projects that import it,
+                they will be lazily upgraded to the new version if this project
+                belongs to the `hostlessWorkspaceId` (the process is not
+                immediate because of some intermediate caching, up to 10 minutes
+                delay, it will then happen when the user opens a project).
               </p>
               <p>
                 You should <strong>only use this form</strong> for:
@@ -547,15 +550,11 @@ function HostLessPackageForm({
                   , or updating a hostless project that is not public yet.
                 </li>
                 <li>
-                  <strong>You have a bundle migration</strong> that will
-                  upgradeHostlessProject() and you're are ready to deploy this
-                  to production RIGHT NOW.
+                  <strong>Triggering an upgrade for existing projects</strong>,
+                  if you are sure that the new version is compatible with the
+                  existing projects.
                 </li>
               </ul>
-              <p>
-                In general, you should use the Jenkins job to upgrade-hostless
-                instead.
-              </p>
             </div>
           }
         />
