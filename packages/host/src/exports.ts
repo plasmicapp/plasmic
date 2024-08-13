@@ -9,7 +9,13 @@ export { PlasmicElement } from "./element-types";
 export { registerFetcher as unstable_registerFetcher } from "./fetcher";
 export * from "./global-actions";
 export * from "./link";
-export { ContextDependentConfig, PropType } from "./prop-types";
+export {
+  ContextDependentConfig,
+  CustomControlProps,
+  ProjectData,
+  PropType,
+  StudioOps,
+} from "./prop-types";
 export {
   Action,
   ActionProps,

@@ -326,6 +326,7 @@ function ButtonAction<P>({
             componentProps: componentPropValues,
             contextData: ccContextData,
             studioOps: studioOps,
+            ...({ projectData: {} } as any),
             studioDocument: document,
           });
         }}
@@ -375,8 +376,8 @@ function CustomAction<P>({
             componentProps: componentPropValues,
             contextData: ccContextData,
             studioOps: studioOps,
-            // TODO: Remove `as any` once host is updated
-            ...({ studioDocument: window.document } as any),
+            ...({ studioCtx: {} } as any),
+            studioDocument: window.document,
           })
         ),
         node

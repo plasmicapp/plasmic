@@ -2,6 +2,7 @@ import { CodeComponentElement, CSSProperties } from "./element-types";
 import {
   ContextDependentConfig,
   InferDataType,
+  ProjectData,
   PropType,
   RestrictPropType,
   StudioOps,
@@ -23,6 +24,10 @@ export interface ActionProps<P> {
    * Operations available to the editor that allow modifying the entire component.
    */
   studioOps: StudioOps;
+  /**
+   * Metadata from the studio project.
+   */
+  projectData: ProjectData;
   /**
    * The document that the component will be rendered into; instead of using
    * `document` directly (for, say, `document.querySelector()` etc.), you

@@ -508,6 +508,11 @@ export interface StudioOps {
   updateStates: (newValues: any) => void;
 }
 
+export interface ProjectData {
+  components: { name: string }[];
+  pages: { name: string; pageMeta: { path: string } }[];
+}
+
 export interface CustomControlProps<P> {
   componentProps: P;
   /**
@@ -521,6 +526,10 @@ export interface CustomControlProps<P> {
    * Can be null if the custom prop is used in a global context.
    */
   studioOps: StudioOps | null;
+  /**
+   * Metadata from the studio project.
+   */
+  projectData: ProjectData;
   value: any;
   /**
    * Sets the value to be passed to the prop. Expects a JSON-compatible value.

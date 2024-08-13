@@ -153,6 +153,7 @@ function useCustomPropEditor(
             FullscreenModal,
             SideModal,
             studioOps,
+            ...({ projectData: {} } as any),
             studioDocument: window.document,
           } as any)
         ),
