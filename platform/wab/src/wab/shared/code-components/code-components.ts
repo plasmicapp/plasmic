@@ -702,7 +702,7 @@ export async function syncCodeComponents(
 
 function typeCheckRegistrations(ctx: SiteCtx) {
   return failable<void, CodeComponentRegistrationTypeError>(
-    ({ success, failure }) => {
+    ({ success, failure, run }) => {
       for (const {
         meta,
       } of ctx.codeComponentsRegistry.getRegisteredComponentsAndContexts()) {
@@ -747,6 +747,9 @@ function typeCheckRegistrations(ctx: SiteCtx) {
             );
           }
         }
+
+        run(typeCheckInteractionVariantsFromMeta(meta, errorPrefix));
+
         // PropTypes that can be represented as a string instead of object
         const supportedStringTypes = [
           "string",
@@ -3671,6 +3674,47 @@ export function mkCodeComponentHelperFromMeta(
         ? meta.componentHelpers.isDefaultExport
         : false,
   });
+}
+
+function typeCheckInteractionVariantsFromMeta(
+  meta: ComponentMeta<any> | GlobalContextMeta<any>,
+  errorPrefix: string
+) {
+  return failable<void, CodeComponentRegistrationTypeError>(
+    ({ success, failure }) => {
+      if (!("interactionVariants" in meta) || !meta.interactionVariants) {
+        return success();
+      }
+
+      if (!isObject(meta.interactionVariants)) {
+        return failure(
+          new CodeComponentRegistrationTypeError(
+            `${errorPrefix} interactionVariants must be an object`
+          )
+        );
+      }
+
+      const hasInvalidInteraction = Object.entries(
+        meta.interactionVariants
+      ).some(([selector, { cssSelector, displayName }]) => {
+        return (
+          !isString(selector) ||
+          !isString(cssSelector) ||
+          !isString(displayName)
+        );
+      });
+
+      if (hasInvalidInteraction) {
+        return failure(
+          new CodeComponentRegistrationTypeError(
+            `${errorPrefix} interactionVariants selector, cssSelector, displayName are required to be strings`
+          )
+        );
+      }
+
+      return success();
+    }
+  );
 }
 
 export function mkCodeComponentInteractionVariantsFromMeta(
