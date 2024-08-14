@@ -421,7 +421,8 @@ export function exportProjectConfig(
   // For loader, infix the css variables from the default styles with the project id.
   // This is to make sure each project uses the default style specified for it and not
   // get it overwritten by another project.
-  const shortProjectId = projectId.slice(0, 5);
+  const loaderCssInfix =
+    exportOpts?.targetEnv === "loader" ? projectId.slice(0, 5) : undefined;
 
   const resolver = new CssVarResolver(
     allStyleTokens(site, { includeDeps: "all" }),
@@ -430,7 +431,7 @@ export function exportProjectConfig(
     site.activeTheme,
     {
       useCssVariables: true,
-      cssVariableInfix: shortProjectId,
+      cssVariableInfix: loaderCssInfix,
     }
   );
   const rootResetClass = makeRootResetClassName(projectId, {
@@ -453,7 +454,7 @@ export function exportProjectConfig(
         getProjectFlags(site).useWhitespaceNormal
           ? "normal"
           : "enforce",
-      cssVariableInfix: shortProjectId,
+      cssVariableInfix: loaderCssInfix,
     }
   );
 
