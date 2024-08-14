@@ -13,30 +13,23 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
+  Flex as Flex__,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import Checkbox from "../../../widgets/Checkbox"; // plasmic-import: W-rO7NZqPjZ/component
-import Select from "../../../widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
-import Select__Option from "../../../widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
-import Select__OptionGroup from "../../../widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
 import MenuButton from "../../../widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
+import Select from "../../../widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
 import WebhookHeader from "../../WebhookHeader"; // plasmic-import: OkB-fXuJPc/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -68,14 +61,14 @@ type ArgPropType = keyof PlasmicWebhooksItem__ArgsType;
 export const PlasmicWebhooksItem__ArgProps = new Array<ArgPropType>("headers");
 
 export type PlasmicWebhooksItem__OverridesType = {
-  root?: p.Flex<"div">;
-  checkbox?: p.Flex<typeof Checkbox>;
-  method?: p.Flex<typeof Select>;
-  svg?: p.Flex<"svg">;
-  url?: p.Flex<"input">;
-  menuButton?: p.Flex<typeof MenuButton>;
-  text?: p.Flex<"div">;
-  payload?: p.Flex<"textarea">;
+  root?: Flex__<"div">;
+  checkbox?: Flex__<typeof Checkbox>;
+  method?: Flex__<typeof Select>;
+  svg?: Flex__<"svg">;
+  url?: Flex__<"input">;
+  menuButton?: Flex__<typeof MenuButton>;
+  text?: Flex__<"div">;
+  payload?: Flex__<"textarea">;
 };
 
 export interface DefaultWebhooksItemProps {
@@ -101,13 +94,11 @@ function PlasmicWebhooksItem__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "expanded",
@@ -118,7 +109,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -126,7 +117,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -145,17 +136,17 @@ function PlasmicWebhooksItem__RenderFunc(props: {
         { [sty.rootexpanded]: hasVariant($state, "expanded", "expanded") }
       )}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__simNc)}
       >
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox___0Jy6H)}
         >
-          <p.Stack
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox__ptuDx)}
@@ -180,7 +171,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
                 />
               }
             />
-          </p.Stack>
+          </Stack__>
           <input
             data-plasmic-name={"url"}
             data-plasmic-override={overrides.url}
@@ -199,10 +190,10 @@ function PlasmicWebhooksItem__RenderFunc(props: {
             data-plasmic-override={overrides.menuButton}
             className={classNames("__wab_instance", sty.menuButton)}
           />
-        </p.Stack>
-      </p.Stack>
+        </Stack__>
+      </Stack__>
       {(hasVariant($state, "expanded", "expanded") ? true : false) ? (
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__bbNTg, {
@@ -213,12 +204,12 @@ function PlasmicWebhooksItem__RenderFunc(props: {
             ),
           })}
         >
-          <p.Stack
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox__wL5I)}
           >
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: (
                 <React.Fragment>
                   <WebhookHeader showAdd={true} />
@@ -228,8 +219,8 @@ function PlasmicWebhooksItem__RenderFunc(props: {
               ),
               value: args.headers,
             })}
-          </p.Stack>
-          <p.Stack
+          </Stack__>
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox__wihbF, {
@@ -280,11 +271,11 @@ function PlasmicWebhooksItem__RenderFunc(props: {
               rows={5}
               value={""}
             />
-          </p.Stack>
-        </p.Stack>
+          </Stack__>
+        </Stack__>
       ) : null}
       <div className={classNames(projectcss.all, sty.freeBox__uuv93)} />
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -355,7 +346,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicWebhooksItem__ArgProps,
           internalVariantPropNames: PlasmicWebhooksItem__VariantProps,
         }),

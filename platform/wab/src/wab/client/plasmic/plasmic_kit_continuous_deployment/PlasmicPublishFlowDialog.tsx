@@ -13,47 +13,41 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
+  Flex as Flex__,
+  PlasmicLink as PlasmicLink__,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
 } from "@plasmicapp/react-web";
-import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
-import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
-import SubsectionSaveVersion from "../../components/TopFrame/TopBar/SubsectionSaveVersion"; // plasmic-import: 74wUdEnJhwr/component
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import SubsectionPlasmicHosting from "../../components/TopFrame/TopBar/SubsectionPlasmicHosting"; // plasmic-import: aeDQsBfp-eA/component
 import SubsectionPushDeploy from "../../components/TopFrame/TopBar/SubsectionPushDeploy"; // plasmic-import: 0HHLsxeAqF8/component
+import SubsectionSaveVersion from "../../components/TopFrame/TopBar/SubsectionSaveVersion"; // plasmic-import: 74wUdEnJhwr/component
 import SubsectionWebhooks from "../../components/TopFrame/TopBar/SubsectionWebhooks"; // plasmic-import: 9EUA-QZFp69/component
-import WebhooksItem from "../../components/webhooks/WebhooksItem"; // plasmic-import: mSgnlB96I5A/component
-import WebhookHeader from "../../components/webhooks/WebhookHeader"; // plasmic-import: OkB-fXuJPc/component
-import WebhooksHistory from "../../components/webhooks/WebhooksHistory"; // plasmic-import: Ynwp30ZgYk/component
 import WebhookEvent from "../../components/webhooks/WebhookEvent"; // plasmic-import: MtBpr4iNob/component
+import WebhooksHistory from "../../components/webhooks/WebhooksHistory"; // plasmic-import: Ynwp30ZgYk/component
+import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
+import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicPublishFlowDialog.module.css"; // plasmic-import: aXXfRDkhD-/css
 
-import ClosesvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
+import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ClosesvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
 
 createPlasmicElementProxy;
 
@@ -80,31 +74,31 @@ export const PlasmicPublishFlowDialog__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicPublishFlowDialog__OverridesType = {
-  root?: p.Flex<"div">;
-  dismissButton?: p.Flex<typeof IconButton>;
-  statusBar?: p.Flex<"div">;
-  destinationSection?: p.Flex<"div">;
-  destination?: p.Flex<"a">;
-  backPanel?: p.Flex<"div">;
-  backButton?: p.Flex<typeof Button>;
-  subsectionSaveVersion?: p.Flex<typeof SubsectionSaveVersion>;
-  subsectionPlasmicHosting?: p.Flex<typeof SubsectionPlasmicHosting>;
-  subsectionPushDeploy?: p.Flex<typeof SubsectionPushDeploy>;
-  subsectionWebhooks?: p.Flex<typeof SubsectionWebhooks>;
-  addActionsContainer?: p.Flex<"div">;
-  addWebsitePanel?: p.Flex<"div">;
-  addWebsiteButton?: p.Flex<typeof Button>;
-  addGithubPanel?: p.Flex<"div">;
-  addGithubButton?: p.Flex<typeof Button>;
-  addWebhooksPanel?: p.Flex<"div">;
-  addWebhooksButton?: p.Flex<typeof Button>;
-  webhooksDescription?: p.Flex<"div">;
-  container?: p.Flex<"div">;
-  webhooksHistory?: p.Flex<typeof WebhooksHistory>;
-  publishButton?: p.Flex<typeof Button>;
-  startOverButton?: p.Flex<typeof Button>;
-  cancelButton?: p.Flex<typeof Button>;
-  statusButton?: p.Flex<typeof Button>;
+  root?: Flex__<"div">;
+  dismissButton?: Flex__<typeof IconButton>;
+  statusBar?: Flex__<"div">;
+  destinationSection?: Flex__<"div">;
+  destination?: Flex__<"a">;
+  backPanel?: Flex__<"div">;
+  backButton?: Flex__<typeof Button>;
+  subsectionSaveVersion?: Flex__<typeof SubsectionSaveVersion>;
+  subsectionPlasmicHosting?: Flex__<typeof SubsectionPlasmicHosting>;
+  subsectionPushDeploy?: Flex__<typeof SubsectionPushDeploy>;
+  subsectionWebhooks?: Flex__<typeof SubsectionWebhooks>;
+  addActionsContainer?: Flex__<"div">;
+  addWebsitePanel?: Flex__<"div">;
+  addWebsiteButton?: Flex__<typeof Button>;
+  addGithubPanel?: Flex__<"div">;
+  addGithubButton?: Flex__<typeof Button>;
+  addWebhooksPanel?: Flex__<"div">;
+  addWebhooksButton?: Flex__<typeof Button>;
+  webhooksDescription?: Flex__<"div">;
+  container?: Flex__<"div">;
+  webhooksHistory?: Flex__<typeof WebhooksHistory>;
+  publishButton?: Flex__<typeof Button>;
+  startOverButton?: Flex__<typeof Button>;
+  cancelButton?: Flex__<typeof Button>;
+  statusButton?: Flex__<typeof Button>;
 };
 
 export interface DefaultPublishFlowDialogProps {
@@ -132,13 +126,11 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "publishState",
@@ -155,7 +147,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -220,7 +212,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             ),
           })}
         >
-          <p.Stack
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox___36Jc0)}
@@ -234,11 +226,11 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             >
               {"Publish"}
             </div>
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: "Project Acme",
               value: args.projectName,
             })}
-          </p.Stack>
+          </Stack__>
           <IconButton
             data-plasmic-name={"dismissButton"}
             data-plasmic-override={overrides.dismissButton}
@@ -284,7 +276,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             ),
           })}
         >
-          <p.Stack
+          <Stack__
             as={"div"}
             data-plasmic-name={"statusBar"}
             data-plasmic-override={overrides.statusBar}
@@ -299,7 +291,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             })}
           >
             <div className={classNames(projectcss.all, sty.freeBox__fbpu6)}>
-              {p.renderPlasmicSlot({
+              {renderPlasmicSlot({
                 defaultContents: (
                   <div
                     className={classNames(
@@ -329,7 +321,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
               data-plasmic-override={overrides.destinationSection}
               className={classNames(projectcss.all, sty.destinationSection)}
             >
-              <a
+              <PlasmicLink__
                 data-plasmic-name={"destination"}
                 data-plasmic-override={overrides.destination}
                 className={classNames(
@@ -353,9 +345,10 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                       hasVariant($state, "view", "status"),
                   }
                 )}
+                platform={"react"}
               >
                 {"n/a"}
-              </a>
+              </PlasmicLink__>
               <div
                 className={classNames(
                   projectcss.all,
@@ -366,7 +359,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                 {"Destination"}
               </div>
             </div>
-          </p.Stack>
+          </Stack__>
         </div>
       </div>
       {(
@@ -441,7 +434,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
           ? false
           : true
       ) ? (
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__h4IIk, {
@@ -560,7 +553,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             view={hasVariant($state, "view", "status") ? "status" : undefined}
           />
 
-          <p.Stack
+          <Stack__
             as={"div"}
             data-plasmic-name={"addActionsContainer"}
             data-plasmic-override={overrides.addActionsContainer}
@@ -584,12 +577,12 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             >
               {"Add publish actions"}
             </div>
-            <p.Stack
+            <Stack__
               as={"div"}
               hasGap={true}
               className={classNames(projectcss.all, sty.freeBox__t1Hp1)}
             >
-              <p.Stack
+              <Stack__
                 as={"div"}
                 data-plasmic-name={"addWebsitePanel"}
                 data-plasmic-override={overrides.addWebsitePanel}
@@ -628,8 +621,8 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                     "Just publish an app or site. Use a custom domain for free. No coding required."
                   }
                 </div>
-              </p.Stack>
-              <p.Stack
+              </Stack__>
+              <Stack__
                 as={"div"}
                 data-plasmic-name={"addGithubPanel"}
                 data-plasmic-override={overrides.addGithubPanel}
@@ -666,8 +659,8 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                 >
                   {"Generate a new Next.js / Gatsby / React repo."}
                 </div>
-              </p.Stack>
-              <p.Stack
+              </Stack__>
+              <Stack__
                 as={"div"}
                 data-plasmic-name={"addWebhooksPanel"}
                 data-plasmic-override={overrides.addWebhooksPanel}
@@ -711,10 +704,10 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                     "Trigger a build in Vercel, Netlify, Jenkins, or any other CI/CD pipeline. You should first [add Plasmic to your codebase]."
                   }
                 </div>
-              </p.Stack>
-            </p.Stack>
-          </p.Stack>
-        </p.Stack>
+              </Stack__>
+            </Stack__>
+          </Stack__>
+        </Stack__>
       ) : null}
       {(hasVariant($state, "view", "reviewChanges") ? true : false) ? (
         <div
@@ -816,7 +809,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
           />
         </div>
       ) : null}
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox___11T7Q, {
@@ -847,7 +840,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
           ),
         })}
       >
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__koqOo, {
@@ -1029,7 +1022,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
               </div>
             </Button>
           ) : null}
-        </p.Stack>
+        </Stack__>
         {(
           hasVariant($state, "view", "webhooksHistory")
             ? false
@@ -1045,7 +1038,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             ? true
             : false
         ) ? (
-          <p.Stack
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox___0MvLu, {
@@ -1168,9 +1161,9 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                 {"See more ->"}
               </div>
             </Button>
-          </p.Stack>
+          </Stack__>
         ) : null}
-      </p.Stack>
+      </Stack__>
     </div>
   ) as React.ReactElement | null;
 }
@@ -1306,7 +1299,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPublishFlowDialog__ArgProps,
           internalVariantPropNames: PlasmicPublishFlowDialog__VariantProps,
         }),

@@ -13,36 +13,32 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
+  Flex as Flex__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
 } from "@plasmicapp/react-web";
-import Checkbox from "../../components/widgets/Checkbox"; // plasmic-import: W-rO7NZqPjZ/component
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import Checkbox from "../../components/widgets/Checkbox"; // plasmic-import: W-rO7NZqPjZ/component
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
-import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
-import Select__OptionGroup from "../../components/widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
+import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicSubsectionSaveVersion.module.css"; // plasmic-import: 74wUdEnJhwr/css
 
 import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
@@ -83,15 +79,15 @@ export const PlasmicSubsectionSaveVersion__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicSubsectionSaveVersion__OverridesType = {
-  root?: p.Flex<"div">;
-  checkbox?: p.Flex<typeof Checkbox>;
-  img?: p.Flex<typeof p.PlasmicImg>;
-  learnMoreLink?: p.Flex<"a">;
-  reviewChangesButton?: p.Flex<typeof Button>;
-  viewHistoryButton?: p.Flex<typeof Button>;
-  description?: p.Flex<"textarea">;
-  tagsStack?: p.Flex<"div">;
-  tagsSelector?: p.Flex<typeof Select>;
+  root?: Flex__<"div">;
+  checkbox?: Flex__<typeof Checkbox>;
+  img?: Flex__<typeof PlasmicImg__>;
+  learnMoreLink?: Flex__<"a">;
+  reviewChangesButton?: Flex__<typeof Button>;
+  viewHistoryButton?: Flex__<typeof Button>;
+  description?: Flex__<"textarea">;
+  tagsStack?: Flex__<"div">;
+  tagsSelector?: Flex__<typeof Select>;
 };
 
 export interface DefaultSubsectionSaveVersionProps {
@@ -124,13 +120,11 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "collapse",
@@ -159,7 +153,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -167,7 +161,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -206,7 +200,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
           ),
         })}
       >
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__aHwL)}
@@ -235,7 +229,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
               />
             ) : null}
             {(hasVariant($state, "view", "status") ? true : false) ? (
-              <p.PlasmicImg
+              <PlasmicImg__
                 data-plasmic-name={"img"}
                 data-plasmic-override={overrides.img}
                 alt={""}
@@ -266,7 +260,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
           >
             {"Save a new version"}
           </div>
-        </p.Stack>
+        </Stack__>
       </div>
       {(
         hasVariant($state, "failed", "failed")
@@ -296,7 +290,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
             ),
           })}
         >
-          <p.Stack
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox__oMcN, {
@@ -318,7 +312,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 "Publishing a version lets you restore it later, and also lets other projects import this project to use its components/assets."
               }
             </div>
-            <a
+            <PlasmicLink__
               data-plasmic-name={"learnMoreLink"}
               data-plasmic-override={overrides.learnMoreLink}
               className={classNames(
@@ -328,11 +322,12 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 sty.learnMoreLink
               )}
               href={"https://www.plasmic.app/learn/publishing-importing/"}
+              platform={"react"}
             >
               {"Learn more."}
-            </a>
-          </p.Stack>
-          <p.Stack
+            </PlasmicLink__>
+          </Stack__>
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox__ks1K7, {
@@ -353,7 +348,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
               ),
             })}
           >
-            <p.Stack
+            <Stack__
               as={"div"}
               hasGap={true}
               className={classNames(projectcss.all, sty.freeBox__h5G6F, {
@@ -378,7 +373,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
               >
                 {"Changes"}
               </div>
-              <p.Stack
+              <Stack__
                 as={"div"}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.freeBox___0H0Cx, {
@@ -488,7 +483,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                       ),
                     })}
                   >
-                    {p.renderPlasmicSlot({
+                    {renderPlasmicSlot({
                       defaultContents: "",
                       value: args.changesSummary,
                       className: classNames(sty.slotTargetChangesSummary, {
@@ -566,8 +561,8 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                     {"Review all changes ->"}
                   </Button>
                 ) : null}
-              </p.Stack>
-            </p.Stack>
+              </Stack__>
+            </Stack__>
             {(
               hasVariant($state, "changesState", "major")
                 ? true
@@ -577,7 +572,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 ? true
                 : false
             ) ? (
-              <p.Stack
+              <Stack__
                 as={"div"}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.freeBox__zomOs, {
@@ -618,7 +613,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                   <div
                     className={classNames(projectcss.all, sty.freeBox___0E7Ii)}
                   >
-                    {p.renderPlasmicSlot({
+                    {renderPlasmicSlot({
                       defaultContents: "v0.0.1",
                       value: args.nextVersion,
                       className: classNames(sty.slotTargetNextVersion, {
@@ -660,7 +655,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                     </div>
                   </Button>
                 </div>
-              </p.Stack>
+              </Stack__>
             ) : null}
             {(
               hasVariant($state, "changesState", "major")
@@ -671,7 +666,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 ? true
                 : false
             ) ? (
-              <p.Stack
+              <Stack__
                 as={"div"}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.freeBox__pX75D, {
@@ -716,7 +711,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                   rows={2}
                   value={""}
                 />
-              </p.Stack>
+              </Stack__>
             ) : null}
             {(
               hasVariant($state, "changesState", "major")
@@ -727,7 +722,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 ? true
                 : false
             ) ? (
-              <p.Stack
+              <Stack__
                 as={"div"}
                 data-plasmic-name={"tagsStack"}
                 data-plasmic-override={overrides.tagsStack}
@@ -771,9 +766,9 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                   }
                   type={"bordered"}
                 />
-              </p.Stack>
+              </Stack__>
             ) : null}
-          </p.Stack>
+          </Stack__>
         </div>
       ) : null}
       {(
@@ -783,7 +778,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
           ? true
           : false
       ) ? (
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox___0V80Z, {
@@ -804,7 +799,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
             ),
           })}
         >
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: (
               <div
                 className={classNames(
@@ -839,9 +834,9 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
               ),
             }),
           })}
-        </p.Stack>
+        </Stack__>
       ) : null}
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -872,7 +867,7 @@ type DescendantsType<T extends NodeNameType> =
 type NodeDefaultElementType = {
   root: "div";
   checkbox: typeof Checkbox;
-  img: typeof p.PlasmicImg;
+  img: typeof PlasmicImg__;
   learnMoreLink: "a";
   reviewChangesButton: typeof Button;
   viewHistoryButton: typeof Button;
@@ -915,7 +910,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicSubsectionSaveVersion__ArgProps,
           internalVariantPropNames: PlasmicSubsectionSaveVersion__VariantProps,
         }),

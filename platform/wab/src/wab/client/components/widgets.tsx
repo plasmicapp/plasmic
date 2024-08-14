@@ -14,13 +14,6 @@ import SearchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
 import TrashIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Trash";
 import DragGripIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__DragGrip";
 import {
-  cx,
-  ensure,
-  isCurrentlyWithinPath,
-  makeCancelable,
-  maybe,
-} from "@/wab/shared/common";
-import {
   MaybeWrap,
   createFakeEvent,
   swallowClick,
@@ -31,6 +24,13 @@ import {
   XDraggableEventHandler,
 } from "@/wab/commons/components/XDraggable";
 import { ReadablePromise } from "@/wab/commons/control";
+import {
+  cx,
+  ensure,
+  isCurrentlyWithinPath,
+  makeCancelable,
+  maybe,
+} from "@/wab/shared/common";
 import { Dropdown, Table, Tooltip } from "antd";
 import classNames from "classnames";
 import { isKeyHotkey } from "is-hotkey";
@@ -573,7 +573,7 @@ export interface FileUploaderProps {
 }
 
 export function FileUploader(props: FileUploaderProps) {
-  const { onChange, accept, style, children } = props;
+  const { onChange, accept, style, children, disabled } = props;
   const [isDragOver, setDragOver] = React.useState(false);
   return (
     <Tooltip title={"Upload or drag a file here"}>
@@ -593,6 +593,7 @@ export function FileUploader(props: FileUploaderProps) {
           accept={accept}
           onDragEnter={() => setDragOver(true)}
           onDragLeave={() => setDragOver(false)}
+          disabled={disabled}
         />
       </PlainLinkButton>
     </Tooltip>

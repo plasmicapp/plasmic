@@ -15,6 +15,7 @@ import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import ImageBlockIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageBlock";
 import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import {
   Cancelable,
   cx,
@@ -22,10 +23,9 @@ import {
   makeCancelable,
   spawnWrapper,
 } from "@/wab/shared/common";
-import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
-import { ImageAsset, isKnownImageAsset } from "@/wab/shared/model/classes";
 import { allImageAssets, isEditable } from "@/wab/shared/core/sites";
+import { ImageAsset, isKnownImageAsset } from "@/wab/shared/model/classes";
 import { placeholderImgUrl } from "@/wab/shared/urls";
 import { Select, Tooltip, notification } from "antd";
 import L from "lodash";
@@ -470,9 +470,10 @@ export function ImageUploader(props: {
   onUploaded: (image: ResizableImage, file: File) => void;
   accept?: string;
   children?: React.ReactNode;
+  isDisabled?: boolean;
 }) {
   const appCtx = useAppCtx();
-  const { onUploaded, accept, children } = props;
+  const { onUploaded, accept, children, isDisabled } = props;
   const handleUploadChange = async (fileList: FileList | null) => {
     if (fileList === null || fileList.length === 0) {
       return;
@@ -492,6 +493,7 @@ export function ImageUploader(props: {
       onChange={handleUploadChange}
       accept={accept ?? ".gif,.jpg,.jpeg,.png,.tif,.svg,.webp"}
       children={children}
+      disabled={isDisabled}
     />
   );
 }

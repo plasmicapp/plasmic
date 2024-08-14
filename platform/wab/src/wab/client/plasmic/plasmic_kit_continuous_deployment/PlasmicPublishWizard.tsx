@@ -13,39 +13,31 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Flex as Flex__,
+  PlasmicImg as PlasmicImg__,
+  Stack as Stack__,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
 } from "@plasmicapp/react-web";
-import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
+import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicPublishWizard.module.css"; // plasmic-import: JhFt3V1Imn/css
 
-import ClosesvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
 import OpenIcon from "../plasmic_kit/PlasmicIcon__Open"; // plasmic-import: 7D0GDLdF72udM/icon
+import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ClosesvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
 import image3SqODPlYut from "./images/image3.svg"; // plasmic-import: sq-oDPlYUT/picture
 
 createPlasmicElementProxy;
@@ -60,11 +52,11 @@ type ArgPropType = keyof PlasmicPublishWizard__ArgsType;
 export const PlasmicPublishWizard__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicPublishWizard__OverridesType = {
-  root?: p.Flex<"div">;
-  img?: p.Flex<typeof p.PlasmicImg>;
-  closeButton?: p.Flex<typeof IconButton>;
-  laterButton?: p.Flex<typeof Button>;
-  connectButton?: p.Flex<typeof Button>;
+  root?: Flex__<"div">;
+  img?: Flex__<typeof PlasmicImg__>;
+  closeButton?: Flex__<typeof IconButton>;
+  laterButton?: Flex__<typeof Button>;
+  connectButton?: Flex__<typeof Button>;
 };
 
 export interface DefaultPublishWizardProps {
@@ -88,11 +80,9 @@ function PlasmicPublishWizard__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = p.useCurrentUser?.() || {};
 
   return (
     <div
@@ -111,12 +101,12 @@ function PlasmicPublishWizard__RenderFunc(props: {
         sty.root
       )}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__nOs1D)}
       >
-        <p.PlasmicImg
+        <PlasmicImg__
           data-plasmic-name={"img"}
           data-plasmic-override={overrides.img}
           alt={""}
@@ -136,17 +126,17 @@ function PlasmicPublishWizard__RenderFunc(props: {
           }}
         />
 
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__ybcji)}
         >
-          <p.Stack
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox__q75N)}
           >
-            <p.Stack
+            <Stack__
               as={"div"}
               hasGap={true}
               className={classNames(projectcss.all, sty.freeBox__nblJd)}
@@ -169,7 +159,7 @@ function PlasmicPublishWizard__RenderFunc(props: {
               >
                 {"Publish to a GitHub repo and JAMstack website."}
               </div>
-            </p.Stack>
+            </Stack__>
             <IconButton
               data-plasmic-name={"closeButton"}
               data-plasmic-override={overrides.closeButton}
@@ -187,8 +177,8 @@ function PlasmicPublishWizard__RenderFunc(props: {
                 role={"img"}
               />
             </IconButton>
-          </p.Stack>
-          <p.Stack
+          </Stack__>
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox___7H4GJ)}
@@ -243,9 +233,9 @@ function PlasmicPublishWizard__RenderFunc(props: {
             >
               {"Connect to GitHub"}
             </Button>
-          </p.Stack>
-        </p.Stack>
-      </p.Stack>
+          </Stack__>
+        </Stack__>
+      </Stack__>
     </div>
   ) as React.ReactElement | null;
 }
@@ -262,7 +252,7 @@ type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
-  img: typeof p.PlasmicImg;
+  img: typeof PlasmicImg__;
   closeButton: typeof IconButton;
   laterButton: typeof Button;
   connectButton: typeof Button;
@@ -302,7 +292,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPublishWizard__ArgProps,
           internalVariantPropNames: PlasmicPublishWizard__VariantProps,
         }),

@@ -13,42 +13,38 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
+  Flex as Flex__,
+  PlasmicLink as PlasmicLink__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
 } from "@plasmicapp/react-web";
-import Checkbox from "../../components/widgets/Checkbox"; // plasmic-import: W-rO7NZqPjZ/component
-import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
-import WebhooksItem from "../../components/webhooks/WebhooksItem"; // plasmic-import: mSgnlB96I5A/component
-import WebhookHeader from "../../components/webhooks/WebhookHeader"; // plasmic-import: OkB-fXuJPc/component
-import WebhooksHistory from "../../components/webhooks/WebhooksHistory"; // plasmic-import: Ynwp30ZgYk/component
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import WebhookEvent from "../../components/webhooks/WebhookEvent"; // plasmic-import: MtBpr4iNob/component
+import WebhooksHistory from "../../components/webhooks/WebhooksHistory"; // plasmic-import: Ynwp30ZgYk/component
+import WebhooksItem from "../../components/webhooks/WebhooksItem"; // plasmic-import: mSgnlB96I5A/component
+import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import Checkbox from "../../components/widgets/Checkbox"; // plasmic-import: W-rO7NZqPjZ/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
+import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicSubsectionWebhooks.module.css"; // plasmic-import: 9EUA-QZFp69/css
 
-import Icon4Icon from "./icons/PlasmicIcon__Icon4"; // plasmic-import: ICm0kU5OI3/icon
 import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
 import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import Icon4Icon from "./icons/PlasmicIcon__Icon4"; // plasmic-import: ICm0kU5OI3/icon
 
 createPlasmicElementProxy;
 
@@ -73,14 +69,14 @@ export const PlasmicSubsectionWebhooks__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicSubsectionWebhooks__OverridesType = {
-  root?: p.Flex<"div">;
-  checkbox?: p.Flex<typeof Checkbox>;
-  removeButton?: p.Flex<typeof Button>;
-  description?: p.Flex<"div">;
-  learnMoreLink?: p.Flex<"a">;
-  viewHistoryButton?: p.Flex<typeof Button>;
-  addButton?: p.Flex<typeof Button>;
-  history?: p.Flex<typeof WebhooksHistory>;
+  root?: Flex__<"div">;
+  checkbox?: Flex__<typeof Checkbox>;
+  removeButton?: Flex__<typeof Button>;
+  description?: Flex__<"div">;
+  learnMoreLink?: Flex__<"a">;
+  viewHistoryButton?: Flex__<typeof Button>;
+  addButton?: Flex__<typeof Button>;
+  history?: Flex__<typeof WebhooksHistory>;
 };
 
 export interface DefaultSubsectionWebhooksProps {
@@ -107,13 +103,11 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "collapse",
@@ -130,7 +124,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -138,7 +132,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -180,7 +174,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
           ),
         })}
       >
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__iatl5, {
@@ -226,7 +220,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
           >
             {"Call webhooks"}
           </div>
-        </p.Stack>
+        </Stack__>
         <div
           className={classNames(projectcss.all, sty.freeBox__aumpN, {
             [sty.freeBoxview_status__aumpNvFkKr]: hasVariant(
@@ -301,7 +295,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
             ),
           })}
         >
-          <p.Stack
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox__hd5L, {
@@ -325,7 +319,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                 "Trigger a build in Vercel, Netlify, Jenkins, or any other CI/CD pipeline. You should first [add Plasmic to your codebase]."
               }
             </div>
-            <a
+            <PlasmicLink__
               data-plasmic-name={"learnMoreLink"}
               data-plasmic-override={overrides.learnMoreLink}
               className={classNames(
@@ -335,11 +329,12 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                 sty.learnMoreLink
               )}
               href={"https://docs.plasmic.app/learn/publishing/#call-webhooks"}
+              platform={"react"}
               target={"_blank"}
             >
               {"Learn more."}
-            </a>
-          </p.Stack>
+            </PlasmicLink__>
+          </Stack__>
           <div
             className={classNames(projectcss.all, sty.freeBox__qQqjQ, {
               [sty.freeBoxview_status__qQqjQvFkKr]: hasVariant(
@@ -349,7 +344,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
               ),
             })}
           >
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: (
                 <React.Fragment>
                   <WebhooksItem
@@ -379,7 +374,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
               ),
             })}
           >
-            <p.Stack
+            <Stack__
               as={"div"}
               hasGap={true}
               className={classNames(projectcss.all, sty.freeBox__gzP9)}
@@ -434,7 +429,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
               >
                 {"New webhook"}
               </Button>
-            </p.Stack>
+            </Stack__>
           </div>
         </div>
       ) : null}
@@ -531,7 +526,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
           }
         />
       ) : null}
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -602,7 +597,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicSubsectionWebhooks__ArgProps,
           internalVariantPropNames: PlasmicSubsectionWebhooks__VariantProps,
         }),

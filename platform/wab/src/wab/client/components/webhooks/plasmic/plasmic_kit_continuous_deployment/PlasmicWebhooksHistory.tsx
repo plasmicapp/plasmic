@@ -13,25 +13,20 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
+  Flex as Flex__,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import WebhookEvent from "../../WebhookEvent"; // plasmic-import: MtBpr4iNob/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -63,9 +58,9 @@ export const PlasmicWebhooksHistory__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicWebhooksHistory__OverridesType = {
-  root?: p.Flex<"div">;
-  freeBox?: p.Flex<"div">;
-  text?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
+  text?: Flex__<"div">;
 };
 
 export interface DefaultWebhooksHistoryProps {
@@ -91,13 +86,11 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "loading",
@@ -108,7 +101,7 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -134,7 +127,7 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
       )}
     >
       {(hasVariant($state, "loading", "loading") ? false : true) ? (
-        <p.Stack
+        <Stack__
           as={"div"}
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
@@ -143,7 +136,7 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
             [sty.freeBoxloading]: hasVariant($state, "loading", "loading"),
           })}
         >
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: (
               <React.Fragment>
                 <WebhookEvent
@@ -199,7 +192,7 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
             ),
             value: args.events,
           })}
-        </p.Stack>
+        </Stack__>
       ) : null}
       {(hasVariant($state, "loading", "loading") ? true : false) ? (
         <div
@@ -269,7 +262,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicWebhooksHistory__ArgProps,
           internalVariantPropNames: PlasmicWebhooksHistory__VariantProps,
         }),

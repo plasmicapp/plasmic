@@ -13,29 +13,24 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicLink as PlasmicLink__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import Button from "../../../widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Select from "../../../widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
-import Select__Option from "../../../widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
-import Select__OptionGroup from "../../../widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
 import Switch from "../../../widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
 import ErrorFeedback from "../../ErrorFeedback"; // plasmic-import: 6ztKJ9-EG9Y/component
 
@@ -46,12 +41,12 @@ import plasmic_plasmic_kit_color_tokens_css from "../../../../plasmic/plasmic_ki
 import projectcss from "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicGithubIntegration.module.css"; // plasmic-import: FuvSZfvXL5/css
 
+import InfoIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
+import OpenIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Open"; // plasmic-import: 7D0GDLdF72udM/icon
 import ArrowRightsvgIcon from "../../../../plasmic/q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
+import ArrowUpRightsvgIcon from "../../../../plasmic/q_4_icons/icons/PlasmicIcon__ArrowUpRightsvg"; // plasmic-import: N_BtK6grX/icon
 import ChevronDownsvgIcon from "../../../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 import PlussvgIcon from "../../../../plasmic/q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
-import ArrowUpRightsvgIcon from "../../../../plasmic/q_4_icons/icons/PlasmicIcon__ArrowUpRightsvg"; // plasmic-import: N_BtK6grX/icon
-import OpenIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Open"; // plasmic-import: 7D0GDLdF72udM/icon
-import InfoIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
 
 createPlasmicElementProxy;
 
@@ -104,48 +99,48 @@ type ArgPropType = keyof PlasmicGithubIntegration__ArgsType;
 export const PlasmicGithubIntegration__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicGithubIntegration__OverridesType = {
-  root?: p.Flex<"div">;
-  newRepoButton?: p.Flex<typeof Button>;
-  existingRepoButton?: p.Flex<typeof Button>;
-  newBox?: p.Flex<"div">;
-  orgBox?: p.Flex<"div">;
-  org?: p.Flex<typeof Select>;
-  missingOrg?: p.Flex<typeof Button>;
-  nameBox?: p.Flex<"div">;
-  name?: p.Flex<"input">;
-  nameError?: p.Flex<"div">;
-  privateBox?: p.Flex<"div">;
-  privateRepo?: p.Flex<typeof Switch>;
-  existingBox?: p.Flex<"div">;
-  repositoryBox?: p.Flex<"div">;
-  repository?: p.Flex<typeof Select>;
-  missingRepo?: p.Flex<typeof Button>;
-  branchBox?: p.Flex<"div">;
-  branch?: p.Flex<typeof Select>;
-  directoryBox?: p.Flex<"div">;
-  directory?: p.Flex<"input">;
-  directoryError?: p.Flex<"div">;
-  opts?: p.Flex<"div">;
-  frameworkBox?: p.Flex<"div">;
-  framework?: p.Flex<typeof Select>;
-  languageBox?: p.Flex<"div">;
-  language?: p.Flex<typeof Select>;
-  modeBox?: p.Flex<"div">;
-  modeInfo?: p.Flex<"svg">;
-  mode?: p.Flex<typeof Select>;
-  actionBox?: p.Flex<"div">;
-  actionInfo?: p.Flex<"svg">;
-  action?: p.Flex<typeof Select>;
-  deployment?: p.Flex<"div">;
-  publishSiteLabel?: p.Flex<"div">;
-  publishSite?: p.Flex<typeof Switch>;
-  publishSiteError?: p.Flex<typeof ErrorFeedback>;
-  domainError2?: p.Flex<typeof ErrorFeedback>;
-  apparentSubdomainInput?: p.Flex<"div">;
-  subdomainInput?: p.Flex<"input">;
-  domainError?: p.Flex<typeof ErrorFeedback>;
-  moreProvidersLink?: p.Flex<"a">;
-  pushButton?: p.Flex<typeof Button>;
+  root?: Flex__<"div">;
+  newRepoButton?: Flex__<typeof Button>;
+  existingRepoButton?: Flex__<typeof Button>;
+  newBox?: Flex__<"div">;
+  orgBox?: Flex__<"div">;
+  org?: Flex__<typeof Select>;
+  missingOrg?: Flex__<typeof Button>;
+  nameBox?: Flex__<"div">;
+  name?: Flex__<"input">;
+  nameError?: Flex__<"div">;
+  privateBox?: Flex__<"div">;
+  privateRepo?: Flex__<typeof Switch>;
+  existingBox?: Flex__<"div">;
+  repositoryBox?: Flex__<"div">;
+  repository?: Flex__<typeof Select>;
+  missingRepo?: Flex__<typeof Button>;
+  branchBox?: Flex__<"div">;
+  branch?: Flex__<typeof Select>;
+  directoryBox?: Flex__<"div">;
+  directory?: Flex__<"input">;
+  directoryError?: Flex__<"div">;
+  opts?: Flex__<"div">;
+  frameworkBox?: Flex__<"div">;
+  framework?: Flex__<typeof Select>;
+  languageBox?: Flex__<"div">;
+  language?: Flex__<typeof Select>;
+  modeBox?: Flex__<"div">;
+  modeInfo?: Flex__<"svg">;
+  mode?: Flex__<typeof Select>;
+  actionBox?: Flex__<"div">;
+  actionInfo?: Flex__<"svg">;
+  action?: Flex__<typeof Select>;
+  deployment?: Flex__<"div">;
+  publishSiteLabel?: Flex__<"div">;
+  publishSite?: Flex__<typeof Switch>;
+  publishSiteError?: Flex__<typeof ErrorFeedback>;
+  domainError2?: Flex__<typeof ErrorFeedback>;
+  apparentSubdomainInput?: Flex__<"div">;
+  subdomainInput?: Flex__<"input">;
+  domainError?: Flex__<typeof ErrorFeedback>;
+  moreProvidersLink?: Flex__<"a">;
+  pushButton?: Flex__<typeof Button>;
 };
 
 export interface DefaultGithubIntegrationProps {
@@ -185,13 +180,11 @@ function PlasmicGithubIntegration__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "view",
@@ -234,7 +227,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -242,7 +235,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -273,7 +266,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
         }
       )}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__w2So6, {
@@ -408,7 +401,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
           </Button>
         </div>
         {(hasVariant($state, "view", "existingRepo") ? false : true) ? (
-          <p.Stack
+          <Stack__
             as={"div"}
             data-plasmic-name={"newBox"}
             data-plasmic-override={overrides.newBox}
@@ -428,7 +421,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               ),
             })}
           >
-            <p.Stack
+            <Stack__
               as={"div"}
               data-plasmic-name={"orgBox"}
               data-plasmic-override={overrides.orgBox}
@@ -480,8 +473,8 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 placeholder={"Select a GitHub organization..."}
                 type={"bordered"}
               />
-            </p.Stack>
-            <p.Stack
+            </Stack__>
+            <Stack__
               as={"div"}
               hasGap={true}
               className={classNames(projectcss.all, sty.freeBox__eK0Co, {
@@ -507,7 +500,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 })}
               />
 
-              <p.Stack
+              <Stack__
                 as={"div"}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.freeBox__m8Hum, {
@@ -581,9 +574,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     {"Adjust GitHub App permissions"}
                   </div>
                 </Button>
-              </p.Stack>
-            </p.Stack>
-            <p.Stack
+              </Stack__>
+            </Stack__>
+            <Stack__
               as={"div"}
               data-plasmic-name={"nameBox"}
               data-plasmic-override={overrides.nameBox}
@@ -637,9 +630,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 type={"text"}
                 value={""}
               />
-            </p.Stack>
+            </Stack__>
             {(hasVariant($state, "errors", "name") ? true : false) ? (
-              <p.Stack
+              <Stack__
                 as={"div"}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.freeBox__rQeIv, {
@@ -662,7 +655,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   />
                 ) : null}
                 {(hasVariant($state, "errors", "name") ? true : false) ? (
-                  <p.Stack
+                  <Stack__
                     as={"div"}
                     data-plasmic-name={"nameError"}
                     data-plasmic-override={overrides.nameError}
@@ -701,11 +694,11 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                         "There is already a repo with this name on this GitHub organization. Change to something that is not in use."
                       }
                     </div>
-                  </p.Stack>
+                  </Stack__>
                 ) : null}
-              </p.Stack>
+              </Stack__>
             ) : null}
-            <p.Stack
+            <Stack__
               as={"div"}
               data-plasmic-name={"privateBox"}
               data-plasmic-override={overrides.privateBox}
@@ -755,7 +748,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   className={classNames("__wab_instance", sty.privateRepo)}
                 />
               </div>
-            </p.Stack>
+            </Stack__>
             {(hasVariant($state, "errors", "name") ? false : false) ? (
               <div
                 className={classNames(projectcss.all, sty.freeBox__nkvAb, {
@@ -767,10 +760,10 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 })}
               />
             ) : null}
-          </p.Stack>
+          </Stack__>
         ) : null}
         {(hasVariant($state, "view", "existingRepo") ? true : false) ? (
-          <p.Stack
+          <Stack__
             as={"div"}
             data-plasmic-name={"existingBox"}
             data-plasmic-override={overrides.existingBox}
@@ -783,7 +776,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               ),
             })}
           >
-            <p.Stack
+            <Stack__
               as={"div"}
               data-plasmic-name={"repositoryBox"}
               data-plasmic-override={overrides.repositoryBox}
@@ -823,8 +816,8 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   />
                 }
               />
-            </p.Stack>
-            <p.Stack
+            </Stack__>
+            <Stack__
               as={"div"}
               hasGap={true}
               className={classNames(projectcss.all, sty.freeBox__u1Ph5, {
@@ -846,7 +839,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   })}
                 />
               ) : null}
-              <p.Stack
+              <Stack__
                 as={"div"}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.freeBox___49QEf, {
@@ -909,9 +902,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     {"Adjust GitHub App permissions"}
                   </div>
                 </Button>
-              </p.Stack>
-            </p.Stack>
-            <p.Stack
+              </Stack__>
+            </Stack__>
+            <Stack__
               as={"div"}
               data-plasmic-name={"branchBox"}
               data-plasmic-override={overrides.branchBox}
@@ -951,8 +944,8 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   />
                 }
               />
-            </p.Stack>
-            <p.Stack
+            </Stack__>
+            <Stack__
               as={"div"}
               data-plasmic-name={"directoryBox"}
               data-plasmic-override={overrides.directoryBox}
@@ -1014,9 +1007,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 type={"text"}
                 value={""}
               />
-            </p.Stack>
+            </Stack__>
             {(hasVariant($state, "errors", "directory") ? true : false) ? (
-              <p.Stack
+              <Stack__
                 as={"div"}
                 data-plasmic-name={"directoryError"}
                 data-plasmic-override={overrides.directoryError}
@@ -1060,9 +1053,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     "The specified directory does not contain a valid package.json."
                   }
                 </div>
-              </p.Stack>
+              </Stack__>
             ) : null}
-          </p.Stack>
+          </Stack__>
         ) : null}
         <div
           className={classNames(projectcss.all, sty.freeBox__w6Skl, {
@@ -1074,7 +1067,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
           })}
         />
 
-        <p.Stack
+        <Stack__
           as={"div"}
           data-plasmic-name={"opts"}
           data-plasmic-override={overrides.opts}
@@ -1088,7 +1081,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
             ),
           })}
         >
-          <p.Stack
+          <Stack__
             as={"div"}
             data-plasmic-name={"frameworkBox"}
             data-plasmic-override={overrides.frameworkBox}
@@ -1139,8 +1132,8 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               }
               type={"bordered"}
             />
-          </p.Stack>
-          <p.Stack
+          </Stack__>
+          <Stack__
             as={"div"}
             data-plasmic-name={"languageBox"}
             data-plasmic-override={overrides.languageBox}
@@ -1181,8 +1174,8 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               }
               type={"bordered"}
             />
-          </p.Stack>
-          <p.Stack
+          </Stack__>
+          <Stack__
             as={"div"}
             data-plasmic-name={"modeBox"}
             data-plasmic-override={overrides.modeBox}
@@ -1200,7 +1193,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               ),
             })}
           >
-            <p.Stack
+            <Stack__
               as={"div"}
               hasGap={true}
               className={classNames(projectcss.all, sty.freeBox__gdLb, {
@@ -1238,7 +1231,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 className={classNames(projectcss.all, sty.modeInfo)}
                 role={"img"}
               />
-            </p.Stack>
+            </Stack__>
             <Select
               data-plasmic-name={"mode"}
               data-plasmic-override={overrides.mode}
@@ -1251,9 +1244,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               }
               type={"bordered"}
             />
-          </p.Stack>
+          </Stack__>
           {(hasVariant($state, "hide", "action") ? false : true) ? (
-            <p.Stack
+            <Stack__
               as={"div"}
               data-plasmic-name={"actionBox"}
               data-plasmic-override={overrides.actionBox}
@@ -1276,7 +1269,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 ),
               })}
             >
-              <p.Stack
+              <Stack__
                 as={"div"}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.freeBox__krCQj, {
@@ -1309,7 +1302,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   className={classNames(projectcss.all, sty.actionInfo)}
                   role={"img"}
                 />
-              </p.Stack>
+              </Stack__>
               <Select
                 data-plasmic-name={"action"}
                 data-plasmic-override={overrides.action}
@@ -1322,9 +1315,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 }
                 type={"bordered"}
               />
-            </p.Stack>
+            </Stack__>
           ) : null}
-        </p.Stack>
+        </Stack__>
         {(
           hasVariant($state, "hideGithubPages", "hideGithubPages")
             ? false
@@ -1354,7 +1347,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
             ? false
             : true
         ) ? (
-          <p.Stack
+          <Stack__
             as={"div"}
             data-plasmic-name={"deployment"}
             data-plasmic-override={overrides.deployment}
@@ -1398,7 +1391,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               ),
             })}
           >
-            <p.Stack
+            <Stack__
               as={"div"}
               hasGap={true}
               className={classNames(projectcss.all, sty.freeBox__xKatJ, {
@@ -1414,7 +1407,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 ),
               })}
             >
-              <p.Stack
+              <Stack__
                 as={"div"}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.freeBox__uBi71, {
@@ -1506,7 +1499,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 >
                   {"Publish site?"}
                 </div>
-                <p.Stack
+                <Stack__
                   as={"div"}
                   hasGap={true}
                   className={classNames(projectcss.all, sty.freeBox__kvwzT, {
@@ -1589,9 +1582,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                       )}
                     />
                   ) : null}
-                </p.Stack>
-              </p.Stack>
-            </p.Stack>
+                </Stack__>
+              </Stack__>
+            </Stack__>
             {(
               hasVariant($state, "errors", "publishSiteWarning") &&
               hasVariant($state, "isPublishingSite", "isPublishingSite")
@@ -1693,7 +1686,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 ? true
                 : false
             ) ? (
-              <p.Stack
+              <Stack__
                 as={"div"}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.freeBox__lofOa, {
@@ -1707,7 +1700,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   ),
                 })}
               >
-                <p.Stack
+                <Stack__
                   as={"div"}
                   hasGap={true}
                   className={classNames(projectcss.all, sty.freeBox__uXh0V, {
@@ -1725,7 +1718,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     ),
                   })}
                 >
-                  <p.Stack
+                  <Stack__
                     as={"div"}
                     hasGap={true}
                     className={classNames(projectcss.all, sty.freeBox___8QGx, {
@@ -1866,7 +1859,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                         {".plasmic.site"}
                       </div>
                     </div>
-                  </p.Stack>
+                  </Stack__>
                   {(
                     hasVariant($state, "errors", "hasDomainError")
                       ? true
@@ -1907,7 +1900,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                         : "This subdomain is currently taken."}
                     </ErrorFeedback>
                   ) : null}
-                </p.Stack>
+                </Stack__>
                 <div
                   className={classNames(projectcss.all, sty.freeBox__yhpUs, {
                     [sty.freeBoxerrors_hasDomainError__yhpUSdbgyX]: hasVariant(
@@ -1971,7 +1964,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   >
                     {"Hosted by GitHub Pages. "}
                   </div>
-                  <a
+                  <PlasmicLink__
                     data-plasmic-name={"moreProvidersLink"}
                     data-plasmic-override={overrides.moreProvidersLink}
                     className={classNames(
@@ -1995,9 +1988,10 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                       }
                     )}
                     href={"https://www.plasmic.app/learn/publishing"}
+                    platform={"react"}
                   >
                     {"See more providers"}
-                  </a>
+                  </PlasmicLink__>
                   <div
                     className={classNames(
                       projectcss.all,
@@ -2008,11 +2002,11 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     {"."}
                   </div>
                 </div>
-              </p.Stack>
+              </Stack__>
             ) : null}
-          </p.Stack>
+          </Stack__>
         ) : null}
-      </p.Stack>
+      </Stack__>
       <div
         className={classNames(projectcss.all, sty.freeBox__esjpg, {
           [sty.freeBoxerrors_hasDomainError__esjpgdbgyX]: hasVariant(
@@ -2083,7 +2077,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
           </div>
         </Button>
       </div>
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -2298,7 +2292,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicGithubIntegration__ArgProps,
           internalVariantPropNames: PlasmicGithubIntegration__VariantProps,
         }),

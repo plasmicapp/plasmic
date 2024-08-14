@@ -13,25 +13,19 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
+  Flex as Flex__,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import IconButton from "../../../widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -42,8 +36,8 @@ import projectcss from "../../../modals/plasmic/plasmic_kit_project_settings/pla
 import sty from "./PlasmicWebhookHeader.module.css"; // plasmic-import: OkB-fXuJPc/css
 
 import PlusIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
-import ChevronDownsvgIcon from "../../../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 import TrashIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
+import ChevronDownsvgIcon from "../../../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -66,12 +60,12 @@ type ArgPropType = keyof PlasmicWebhookHeader__ArgsType;
 export const PlasmicWebhookHeader__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicWebhookHeader__OverridesType = {
-  root?: p.Flex<"div">;
-  text?: p.Flex<"div">;
-  keyInput?: p.Flex<"input">;
-  valueInput?: p.Flex<"input">;
-  addButton?: p.Flex<typeof IconButton>;
-  deleteButton?: p.Flex<typeof IconButton>;
+  root?: Flex__<"div">;
+  text?: Flex__<"div">;
+  keyInput?: Flex__<"input">;
+  valueInput?: Flex__<"input">;
+  addButton?: Flex__<typeof IconButton>;
+  deleteButton?: Flex__<typeof IconButton>;
 };
 
 export interface DefaultWebhookHeaderProps {
@@ -97,13 +91,11 @@ function PlasmicWebhookHeader__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "showAdd",
@@ -120,7 +112,7 @@ function PlasmicWebhookHeader__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -128,7 +120,7 @@ function PlasmicWebhookHeader__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -159,7 +151,7 @@ function PlasmicWebhookHeader__RenderFunc(props: {
       >
         {"Header"}
       </div>
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__ynHvD)}
@@ -193,8 +185,8 @@ function PlasmicWebhookHeader__RenderFunc(props: {
           type={"text"}
           value={""}
         />
-      </p.Stack>
-      <p.Stack
+      </Stack__>
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__pVez5, {
@@ -262,8 +254,8 @@ function PlasmicWebhookHeader__RenderFunc(props: {
             />
           </IconButton>
         ) : null}
-      </p.Stack>
-    </p.Stack>
+      </Stack__>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -321,7 +313,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicWebhookHeader__ArgProps,
           internalVariantPropNames: PlasmicWebhookHeader__VariantProps,
         }),

@@ -13,43 +13,39 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
-  SingleBooleanChoiceArg,
+  PlasmicLink as PlasmicLink__,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
-import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import ErrorFeedback from "../../components/github/ErrorFeedback"; // plasmic-import: 6ztKJ9-EG9Y/component
+import DomainCard from "../../components/TopFrame/TopBar/DomainCard"; // plasmic-import: eqF_n5a1-6b/component
 import Spinner from "../../components/TopFrame/TopBar/Spinner"; // plasmic-import: oo-lLDZ5qnA/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
-import DomainCard from "../../components/TopFrame/TopBar/DomainCard"; // plasmic-import: eqF_n5a1-6b/component
+import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import Switch from "../../components/widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
+import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicPlasmicHostingSettings.module.css"; // plasmic-import: aFapl-YUjv9/css
 
-import SharesvgIcon from "../q_4_icons/icons/PlasmicIcon__Sharesvg"; // plasmic-import: vRB2dtcKk/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 import EditsvgIcon from "../q_4_icons/icons/PlasmicIcon__Editsvg"; // plasmic-import: _Qa2gdunG/icon
+import SharesvgIcon from "../q_4_icons/icons/PlasmicIcon__Sharesvg"; // plasmic-import: vRB2dtcKk/icon
 import Trash2SvgIcon from "../q_4_icons/icons/PlasmicIcon__Trash2Svg"; // plasmic-import: nS4_I75qv/icon
 
 createPlasmicElementProxy;
@@ -57,49 +53,50 @@ createPlasmicElementProxy;
 export type PlasmicPlasmicHostingSettings__VariantMembers = {
   customDomain: "preliminaryError" | "added" | "invalid" | "loading";
   subdomain: "success" | "error" | "invalid" | "loading";
-  hideBadgeSwitch: "hideBadgeSwitch";
 };
 export type PlasmicPlasmicHostingSettings__VariantsArgs = {
   customDomain?: SingleChoiceArg<
     "preliminaryError" | "added" | "invalid" | "loading"
   >;
   subdomain?: MultiChoiceArg<"success" | "error" | "invalid" | "loading">;
-  hideBadgeSwitch?: SingleBooleanChoiceArg<"hideBadgeSwitch">;
 };
 type VariantPropType = keyof PlasmicPlasmicHostingSettings__VariantsArgs;
 export const PlasmicPlasmicHostingSettings__VariantProps =
-  new Array<VariantPropType>("customDomain", "subdomain", "hideBadgeSwitch");
+  new Array<VariantPropType>("customDomain", "subdomain");
 
 export type PlasmicPlasmicHostingSettings__ArgsType = {};
 type ArgPropType = keyof PlasmicPlasmicHostingSettings__ArgsType;
 export const PlasmicPlasmicHostingSettings__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicPlasmicHostingSettings__OverridesType = {
-  root?: p.Flex<"div">;
-  subdomainForm?: p.Flex<"form">;
-  subdomainLabel?: p.Flex<"div">;
-  iconButton?: p.Flex<typeof IconButton>;
-  subdomainInput?: p.Flex<"input">;
-  subdomainSuffix?: p.Flex<"div">;
-  messageActions4?: p.Flex<"div">;
-  subdomainErrorFeedback?: p.Flex<typeof ErrorFeedback>;
-  domainErrorMessage7?: p.Flex<"div">;
-  saveSubdomainButton?: p.Flex<typeof Button>;
-  messageActions5?: p.Flex<"div">;
-  errorFeedback?: p.Flex<typeof ErrorFeedback>;
-  domainErrorMessage8?: p.Flex<"div">;
-  refreshButton7?: p.Flex<typeof Button>;
-  refreshButton8?: p.Flex<typeof Button>;
-  customDomainForm?: p.Flex<"form">;
-  customDomainInput?: p.Flex<"input">;
-  customDomainPreliminaryErrorFeedback?: p.Flex<typeof ErrorFeedback>;
-  domainErrorMessage9?: p.Flex<"div">;
-  addCustomDomainButton?: p.Flex<typeof Button>;
-  domainCard?: p.Flex<typeof DomainCard>;
-  badgeForm?: p.Flex<"div">;
-  showBadge?: p.Flex<typeof Switch>;
-  faviconForm?: p.Flex<"div">;
-  faviconControlContainer?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  subdomainForm?: Flex__<"form">;
+  subdomainLabel?: Flex__<"div">;
+  iconButton?: Flex__<typeof IconButton>;
+  subdomainInput?: Flex__<"input">;
+  subdomainSuffix?: Flex__<"div">;
+  messageActions4?: Flex__<"div">;
+  subdomainErrorFeedback?: Flex__<typeof ErrorFeedback>;
+  domainErrorMessage7?: Flex__<"div">;
+  saveSubdomainButton?: Flex__<typeof Button>;
+  messageActions5?: Flex__<"div">;
+  errorFeedback?: Flex__<typeof ErrorFeedback>;
+  domainErrorMessage8?: Flex__<"div">;
+  refreshButton7?: Flex__<typeof Button>;
+  refreshButton8?: Flex__<typeof Button>;
+  customDomainForm?: Flex__<"form">;
+  customDomainInput?: Flex__<"input">;
+  customDomainPreliminaryErrorFeedback?: Flex__<typeof ErrorFeedback>;
+  domainErrorMessage9?: Flex__<"div">;
+  addCustomDomainButton?: Flex__<typeof Button>;
+  domainCard?: Flex__<typeof DomainCard>;
+  paidFeaturesInfoText?: Flex__<"div">;
+  link?: Flex__<"a">;
+  upgradeNowLink?: Flex__<"a">;
+  badgeForm?: Flex__<"div">;
+  showBadge?: Flex__<typeof Switch>;
+  faviconForm?: Flex__<"div">;
+  faviconControlContainer?: Flex__<"div">;
 };
 
 export interface DefaultPlasmicHostingSettingsProps {
@@ -107,7 +104,6 @@ export interface DefaultPlasmicHostingSettingsProps {
     "preliminaryError" | "added" | "invalid" | "loading"
   >;
   subdomain?: MultiChoiceArg<"success" | "error" | "invalid" | "loading">;
-  hideBadgeSwitch?: SingleBooleanChoiceArg<"hideBadgeSwitch">;
   className?: string;
 }
 
@@ -128,13 +124,11 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "customDomain",
@@ -148,17 +142,10 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.subdomain,
       },
-      {
-        path: "hideBadgeSwitch",
-        type: "private",
-        variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
-          $props.hideBadgeSwitch,
-      },
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -189,7 +176,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
         }
       )}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__spuop, {
@@ -220,7 +207,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
           ),
         })}
       >
-        <p.Stack
+        <Stack__
           as={"form"}
           data-plasmic-name={"subdomainForm"}
           data-plasmic-override={overrides.subdomainForm}
@@ -243,7 +230,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
             ),
           })}
         >
-          <p.Stack
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox__vElBp, {
@@ -375,7 +362,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                 {".plasmic.website"}
               </div>
             </div>
-          </p.Stack>
+          </Stack__>
           {(
             hasVariant($state, "subdomain", "error")
               ? true
@@ -383,7 +370,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
               ? true
               : false
           ) ? (
-            <p.Stack
+            <Stack__
               as={"div"}
               data-plasmic-name={"messageActions4"}
               data-plasmic-override={overrides.messageActions4}
@@ -425,9 +412,9 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                   {"{yoursite.com} is already taken."}
                 </div>
               </ErrorFeedback>
-            </p.Stack>
+            </Stack__>
           ) : null}
-          <p.Stack
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox__j9GqN, {
@@ -509,9 +496,9 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
             >
               {"Save subdomain"}
             </Button>
-          </p.Stack>
+          </Stack__>
           {(hasVariant($state, "subdomain", "success") ? true : false) ? (
-            <p.Stack
+            <Stack__
               as={"div"}
               data-plasmic-name={"messageActions5"}
               data-plasmic-override={overrides.messageActions5}
@@ -561,7 +548,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                   </div>
                 </ErrorFeedback>
               ) : null}
-              <p.Stack
+              <Stack__
                 as={"div"}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.freeBox__av12)}
@@ -619,10 +606,10 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                     {"Remove"}
                   </div>
                 </Button>
-              </p.Stack>
-            </p.Stack>
+              </Stack__>
+            </Stack__>
           ) : null}
-        </p.Stack>
+        </Stack__>
         <div
           className={classNames(projectcss.all, sty.freeBox__nRjqO, {
             [sty.freeBoxcustomDomain_preliminaryError__nRjqO7Zc9L]: hasVariant(
@@ -633,7 +620,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
           })}
         />
 
-        <p.Stack
+        <Stack__
           as={"form"}
           data-plasmic-name={"customDomainForm"}
           data-plasmic-override={overrides.customDomainForm}
@@ -661,7 +648,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
             ),
           })}
         >
-          <p.Stack
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox__usp8U, {
@@ -707,7 +694,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
               type={"text"}
               value={""}
             />
-          </p.Stack>
+          </Stack__>
           {(
             hasVariant($state, "customDomain", "preliminaryError")
               ? true
@@ -751,7 +738,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
               </div>
             </ErrorFeedback>
           ) : null}
-          <p.Stack
+          <Stack__
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox__m52, {
@@ -826,8 +813,8 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
             >
               {"Add custom domain"}
             </Button>
-          </p.Stack>
-        </p.Stack>
+          </Stack__>
+        </Stack__>
         {(hasVariant($state, "customDomain", "added") ? true : false) ? (
           <DomainCard
             data-plasmic-name={"domainCard"}
@@ -841,20 +828,86 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
               "customDomain",
               "preliminaryError"
             ),
-            [sty.freeBoxhideBadgeSwitch__nUd8PlnOCb]: hasVariant(
-              $state,
-              "hideBadgeSwitch",
-              "hideBadgeSwitch"
-            ),
           })}
         />
 
-        {(
-          hasVariant($state, "hideBadgeSwitch", "hideBadgeSwitch")
-            ? false
-            : true
-        ) ? (
-          <p.Stack
+        <Stack__
+          as={"div"}
+          hasGap={true}
+          className={classNames(projectcss.all, sty.freeBox__a7Yu5)}
+        >
+          <Stack__
+            as={"div"}
+            data-plasmic-name={"paidFeaturesInfoText"}
+            data-plasmic-override={overrides.paidFeaturesInfoText}
+            hasGap={true}
+            className={classNames(projectcss.all, sty.paidFeaturesInfoText)}
+          >
+            <div
+              className={classNames(
+                projectcss.all,
+                projectcss.__wab_text,
+                sty.text__arLZl
+              )}
+            >
+              <React.Fragment>
+                <React.Fragment>
+                  {"Below features are exclusive to paid plans. "}
+                </React.Fragment>
+                {
+                  <PlasmicLink__
+                    data-plasmic-name={"link"}
+                    data-plasmic-override={overrides.link}
+                    className={classNames(
+                      projectcss.all,
+                      projectcss.a,
+                      projectcss.__wab_text,
+                      projectcss.plasmic_default__inline,
+                      sty.link
+                    )}
+                    href={"https://www.plasmic.app/pricing#pricing-table"}
+                    platform={"react"}
+                    target={"_blank"}
+                  >
+                    <React.Fragment>
+                      <span
+                        className={"plasmic_default__all plasmic_default__span"}
+                        style={{ textDecorationLine: "underline" }}
+                      >
+                        {"Learn more"}
+                      </span>
+                    </React.Fragment>
+                  </PlasmicLink__>
+                }
+                <React.Fragment>{" or "}</React.Fragment>
+                {
+                  <PlasmicLink__
+                    data-plasmic-name={"upgradeNowLink"}
+                    data-plasmic-override={overrides.upgradeNowLink}
+                    className={classNames(
+                      projectcss.all,
+                      projectcss.a,
+                      projectcss.__wab_text,
+                      projectcss.plasmic_default__inline,
+                      sty.upgradeNowLink
+                    )}
+                    platform={"react"}
+                  >
+                    <React.Fragment>
+                      <span
+                        className={"plasmic_default__all plasmic_default__span"}
+                        style={{ textDecorationLine: "underline" }}
+                      >
+                        {"upgrade now"}
+                      </span>
+                    </React.Fragment>
+                  </PlasmicLink__>
+                }
+                <React.Fragment>{"."}</React.Fragment>
+              </React.Fragment>
+            </div>
+          </Stack__>
+          <Stack__
             as={"div"}
             data-plasmic-name={"badgeForm"}
             data-plasmic-override={overrides.badgeForm}
@@ -870,15 +923,15 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                 "customDomain",
                 "preliminaryError"
               ),
-              [sty.badgeFormhideBadgeSwitch]: hasVariant(
-                $state,
-                "hideBadgeSwitch",
-                "hideBadgeSwitch"
-              ),
               [sty.badgeFormsubdomain_error]: hasVariant(
                 $state,
                 "subdomain",
                 "error"
+              ),
+              [sty.badgeFormsubdomain_success]: hasVariant(
+                $state,
+                "subdomain",
+                "success"
               ),
             })}
           >
@@ -909,14 +962,8 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
               children={null}
               className={classNames("__wab_instance", sty.showBadge)}
             />
-          </p.Stack>
-        ) : null}
-        {(
-          hasVariant($state, "hideBadgeSwitch", "hideBadgeSwitch")
-            ? false
-            : true
-        ) ? (
-          <p.Stack
+          </Stack__>
+          <Stack__
             as={"div"}
             data-plasmic-name={"faviconForm"}
             data-plasmic-override={overrides.faviconForm}
@@ -931,11 +978,6 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                 $state,
                 "customDomain",
                 "preliminaryError"
-              ),
-              [sty.faviconFormhideBadgeSwitch]: hasVariant(
-                $state,
-                "hideBadgeSwitch",
-                "hideBadgeSwitch"
               ),
               [sty.faviconFormsubdomain_error]: hasVariant(
                 $state,
@@ -970,7 +1012,14 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
               data-plasmic-override={overrides.faviconControlContainer}
               className={classNames(
                 projectcss.all,
-                sty.faviconControlContainer
+                sty.faviconControlContainer,
+                {
+                  [sty.faviconControlContainersubdomain_success]: hasVariant(
+                    $state,
+                    "subdomain",
+                    "success"
+                  ),
+                }
               )}
             >
               <div
@@ -983,9 +1032,9 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                 {"hi"}
               </div>
             </div>
-          </p.Stack>
-        ) : null}
-      </p.Stack>
+          </Stack__>
+        </Stack__>
+      </Stack__>
     </div>
   ) as React.ReactElement | null;
 }
@@ -1013,6 +1062,9 @@ const PlasmicDescendants = {
     "domainErrorMessage9",
     "addCustomDomainButton",
     "domainCard",
+    "paidFeaturesInfoText",
+    "link",
+    "upgradeNowLink",
     "badgeForm",
     "showBadge",
     "faviconForm",
@@ -1072,6 +1124,9 @@ const PlasmicDescendants = {
   domainErrorMessage9: ["domainErrorMessage9"],
   addCustomDomainButton: ["addCustomDomainButton"],
   domainCard: ["domainCard"],
+  paidFeaturesInfoText: ["paidFeaturesInfoText", "link", "upgradeNowLink"],
+  link: ["link"],
+  upgradeNowLink: ["upgradeNowLink"],
   badgeForm: ["badgeForm", "showBadge"],
   showBadge: ["showBadge"],
   faviconForm: ["faviconForm", "faviconControlContainer"],
@@ -1102,6 +1157,9 @@ type NodeDefaultElementType = {
   domainErrorMessage9: "div";
   addCustomDomainButton: typeof Button;
   domainCard: typeof DomainCard;
+  paidFeaturesInfoText: "div";
+  link: "a";
+  upgradeNowLink: "a";
   badgeForm: "div";
   showBadge: typeof Switch;
   faviconForm: "div";
@@ -1142,7 +1200,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPlasmicHostingSettings__ArgProps,
           internalVariantPropNames: PlasmicPlasmicHostingSettings__VariantProps,
         }),
@@ -1190,6 +1248,9 @@ export const PlasmicPlasmicHostingSettings = Object.assign(
     domainErrorMessage9: makeNodeComponent("domainErrorMessage9"),
     addCustomDomainButton: makeNodeComponent("addCustomDomainButton"),
     domainCard: makeNodeComponent("domainCard"),
+    paidFeaturesInfoText: makeNodeComponent("paidFeaturesInfoText"),
+    link: makeNodeComponent("link"),
+    upgradeNowLink: makeNodeComponent("upgradeNowLink"),
     badgeForm: makeNodeComponent("badgeForm"),
     showBadge: makeNodeComponent("showBadge"),
     faviconForm: makeNodeComponent("faviconForm"),

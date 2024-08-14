@@ -13,25 +13,18 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
+  Flex as Flex__,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -60,8 +53,8 @@ type ArgPropType = keyof PlasmicConsoleOutput__ArgsType;
 export const PlasmicConsoleOutput__ArgProps = new Array<ArgPropType>("output");
 
 export type PlasmicConsoleOutput__OverridesType = {
-  root?: p.Flex<"div">;
-  outputBox?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  outputBox?: Flex__<"div">;
 };
 
 export interface DefaultConsoleOutputProps {
@@ -87,13 +80,11 @@ function PlasmicConsoleOutput__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "hidden",
@@ -104,7 +95,7 @@ function PlasmicConsoleOutput__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -135,7 +126,7 @@ function PlasmicConsoleOutput__RenderFunc(props: {
           data-plasmic-override={overrides.outputBox}
           className={classNames(projectcss.all, sty.outputBox)}
         >
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: (
               <div
                 className={classNames(
@@ -204,7 +195,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicConsoleOutput__ArgProps,
           internalVariantPropNames: PlasmicConsoleOutput__VariantProps,
         }),

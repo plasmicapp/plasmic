@@ -13,40 +13,35 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
+  Flex as Flex__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
-import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import ErrorFeedback from "../../components/github/ErrorFeedback"; // plasmic-import: 6ztKJ9-EG9Y/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
+import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicDomainCard.module.css"; // plasmic-import: eqF_n5a1-6b/css
 
-import SharesvgIcon from "../q_4_icons/icons/PlasmicIcon__Sharesvg"; // plasmic-import: vRB2dtcKk/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 import CheckCirclesvgIcon from "../q_4_icons/icons/PlasmicIcon__CheckCirclesvg"; // plasmic-import: h7sB2KeL-/icon
+import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 import RefreshsvgIcon from "../q_4_icons/icons/PlasmicIcon__Refreshsvg"; // plasmic-import: PEaq_S7gQ/icon
+import SharesvgIcon from "../q_4_icons/icons/PlasmicIcon__Sharesvg"; // plasmic-import: vRB2dtcKk/icon
 import Trash2SvgIcon from "../q_4_icons/icons/PlasmicIcon__Trash2Svg"; // plasmic-import: nS4_I75qv/icon
 
 createPlasmicElementProxy;
@@ -73,20 +68,20 @@ type ArgPropType = keyof PlasmicDomainCard__ArgsType;
 export const PlasmicDomainCard__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicDomainCard__OverridesType = {
-  root?: p.Flex<"div">;
-  label?: p.Flex<"div">;
-  customDomainLabel?: p.Flex<"div">;
-  openButton?: p.Flex<typeof IconButton>;
-  errorFeedback?: p.Flex<typeof ErrorFeedback>;
-  domainErrorMessage4?: p.Flex<"div">;
-  refreshButton?: p.Flex<typeof Button>;
-  removeButton?: p.Flex<typeof Button>;
-  cnameTab?: p.Flex<"button">;
-  apexTab?: p.Flex<"button">;
-  apexRow?: p.Flex<"div">;
-  name?: p.Flex<"div">;
-  value?: p.Flex<"div">;
-  cnameRow?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  label?: Flex__<"div">;
+  customDomainLabel?: Flex__<"div">;
+  openButton?: Flex__<typeof IconButton>;
+  errorFeedback?: Flex__<typeof ErrorFeedback>;
+  domainErrorMessage4?: Flex__<"div">;
+  refreshButton?: Flex__<typeof Button>;
+  removeButton?: Flex__<typeof Button>;
+  cnameTab?: Flex__<"button">;
+  apexTab?: Flex__<"button">;
+  apexRow?: Flex__<"div">;
+  name?: Flex__<"div">;
+  value?: Flex__<"div">;
+  cnameRow?: Flex__<"div">;
 };
 
 export interface DefaultDomainCardProps {
@@ -113,13 +108,11 @@ function PlasmicDomainCard__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "refreshing",
@@ -142,7 +135,7 @@ function PlasmicDomainCard__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -150,7 +143,7 @@ function PlasmicDomainCard__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -174,7 +167,7 @@ function PlasmicDomainCard__RenderFunc(props: {
         }
       )}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox___7Vjq, {
@@ -200,7 +193,7 @@ function PlasmicDomainCard__RenderFunc(props: {
         >
           {"Custom domain"}
         </div>
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__iNuFl)}
@@ -245,9 +238,9 @@ function PlasmicDomainCard__RenderFunc(props: {
               role={"img"}
             />
           </IconButton>
-        </p.Stack>
-      </p.Stack>
-      <p.Stack
+        </Stack__>
+      </Stack__>
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__gsDpH, {
@@ -343,7 +336,7 @@ function PlasmicDomainCard__RenderFunc(props: {
             )}
           </div>
         </ErrorFeedback>
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__nPfIi, {
@@ -385,8 +378,8 @@ function PlasmicDomainCard__RenderFunc(props: {
           >
             {"Correctly configured!"}
           </div>
-        </p.Stack>
-        <p.Stack
+        </Stack__>
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__j4DNt, {
@@ -471,8 +464,8 @@ function PlasmicDomainCard__RenderFunc(props: {
               {"Remove"}
             </div>
           </Button>
-        </p.Stack>
-      </p.Stack>
+        </Stack__>
+      </Stack__>
       <div
         className={classNames(projectcss.all, sty.freeBox__v8YX, {
           [sty.freeBoxerror_apex__v8YXWIbN7]: hasVariant(
@@ -533,7 +526,7 @@ function PlasmicDomainCard__RenderFunc(props: {
         >
           {"Set the following records on your DNS provider to continue:"}
         </div>
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__jmREj)}
@@ -592,7 +585,7 @@ function PlasmicDomainCard__RenderFunc(props: {
               </span>
             </React.Fragment>
           </button>
-        </p.Stack>
+        </Stack__>
         <div
           className={classNames(projectcss.all, sty.freeBox___7NWq, {
             [sty.freeBoxerror_apex___7NWqWIbN7]: hasVariant(
@@ -805,7 +798,7 @@ function PlasmicDomainCard__RenderFunc(props: {
           </div>
         </div>
       </div>
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -894,7 +887,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicDomainCard__ArgProps,
           internalVariantPropNames: PlasmicDomainCard__VariantProps,
         }),
