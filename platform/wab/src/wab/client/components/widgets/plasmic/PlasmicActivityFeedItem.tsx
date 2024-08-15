@@ -15,58 +15,32 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
-  PlasmicIcon as PlasmicIcon__,
   PlasmicImg as PlasmicImg__,
-  PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
   Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  generateOnMutateForSpec,
-  generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
-  generateStateValueProp,
-  get as $stateGet,
   hasVariant,
-  initializeCodeComponentStates,
-  initializePlasmicStates,
-  makeFragment,
-  omit,
-  pick,
   renderPlasmicSlot,
-  set as $stateSet,
-  useCurrentUser,
   useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName,
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions,
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import Button from "../Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_design_system_deprecated_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import projectcss from "../../../plasmic/PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../../../plasmic/plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import projectcss from "../../../plasmic/PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicActivityFeedItem.module.css"; // plasmic-import: kkbHZ8nmgGH/css
 
-import ChevronDownsvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 import dotsVerticalsvgR9AiOjxlk from "../../../plasmic/plasmic_kit_left_pane/images/dotsVerticalsvg.svg"; // plasmic-import: r9AiOJXLK/picture
+import ChevronDownsvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -115,7 +89,7 @@ export type PlasmicActivityFeedItem__OverridesType = {
   root?: Flex__<"div">;
   text?: Flex__<"div">;
   button?: Flex__<typeof Button>;
-  startIcon?: Flex__<"img">;
+  startIcon?: Flex__<typeof PlasmicImg__>;
   svg?: Flex__<"svg">;
 };
 
@@ -156,8 +130,6 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = useCurrentUser?.() || {};
 
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
@@ -382,13 +354,15 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
       {(hasVariant($state, "state", "anonymousVisited") ? false : true)
         ? renderPlasmicSlot({
             defaultContents: (
-              <img
+              <PlasmicImg__
                 alt={""}
-                className={classNames(
-                  projectcss.all,
-                  projectcss.img,
-                  sty.img___14Wx
-                )}
+                className={classNames(sty.img___14Wx)}
+                displayHeight={"48px"}
+                displayMaxHeight={"none"}
+                displayMaxWidth={"none"}
+                displayMinHeight={"0"}
+                displayMinWidth={"0"}
+                displayWidth={"48px"}
                 src={"http://localhost:3003/static/img/placeholder.png"}
               />
             ),
@@ -446,16 +420,23 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
             />
           }
           startIcon={
-            <img
+            <PlasmicImg__
               data-plasmic-name={"startIcon"}
               data-plasmic-override={overrides.startIcon}
               alt={""}
-              className={classNames(
-                projectcss.all,
-                projectcss.img,
-                sty.startIcon
-              )}
-              src={dotsVerticalsvgR9AiOjxlk}
+              className={classNames(sty.startIcon)}
+              displayHeight={"auto"}
+              displayMaxHeight={"none"}
+              displayMaxWidth={"none"}
+              displayMinHeight={"0"}
+              displayMinWidth={"0"}
+              displayWidth={"auto"}
+              src={{
+                src: dotsVerticalsvgR9AiOjxlk,
+                fullWidth: 150,
+                fullHeight: 150,
+                aspectRatio: 1,
+              }}
             />
           }
           type={["secondary"]}
@@ -482,7 +463,7 @@ type NodeDefaultElementType = {
   root: "div";
   text: "div";
   button: typeof Button;
-  startIcon: "img";
+  startIcon: typeof PlasmicImg__;
   svg: "svg";
 };
 

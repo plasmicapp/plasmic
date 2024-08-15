@@ -15,45 +15,19 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
-  PlasmicIcon as PlasmicIcon__,
   PlasmicImg as PlasmicImg__,
-  PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
   Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  generateOnMutateForSpec,
-  generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
-  generateStateValueProp,
-  get as $stateGet,
   hasVariant,
-  initializeCodeComponentStates,
-  initializePlasmicStates,
-  makeFragment,
-  omit,
-  pick,
   renderPlasmicSlot,
-  set as $stateSet,
-  useCurrentUser,
   useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName,
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions,
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import AddButton from "../../components/AddButton"; // plasmic-import: ss1yYyG4Pi/component
 import LeftTabButton from "../../components/studio/LeftTabButton"; // plasmic-import: 1q_JapBg7U/component
@@ -62,36 +36,36 @@ import IconButton from "../../components/widgets/IconButton"; // plasmic-import:
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftTabStrip.module.css"; // plasmic-import: l7y_rhJyMt2/css
 
-import WarningTrianglesvgIcon from "../q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
-import TreeIcon from "../plasmic_kit/PlasmicIcon__Tree"; // plasmic-import: 4KZjuPY_m0VTb/icon
-import ComponentssvgIcon from "../q_4_icons/icons/PlasmicIcon__Componentssvg"; // plasmic-import: coPzxnFyi/icon
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
-import DotsHorizontalCirclesvgIcon from "../q_4_icons/icons/PlasmicIcon__DotsHorizontalCirclesvg"; // plasmic-import: xdn8wiJBv/icon
-import WandIcon from "../plasmic_kit/PlasmicIcon__Wand"; // plasmic-import: vTVU9zQnDPZGl/icon
-import DiamondssvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Diamondssvg"; // plasmic-import: uzBbTcdyE/icon
 import MixinIcon from "../plasmic_kit/PlasmicIcon__Mixin"; // plasmic-import: XA82Nhrgqj98Z/icon
-import ComponentsvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Componentsvg"; // plasmic-import: vJVrKlrDD/icon
-import File2SvgIcon from "../q_4_icons/icons/PlasmicIcon__File2Svg"; // plasmic-import: zldfLXBdc/icon
-import PhotosvgIcon from "../q_4_icons/icons/PlasmicIcon__Photosvg"; // plasmic-import: BzQDBpjA9/icon
-import PaintbrushsvgIcon from "../q_4_icons/icons/PlasmicIcon__Paintbrushsvg"; // plasmic-import: WPHwb7V6d/icon
-import FontFamily2SvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__FontFamily2Svg"; // plasmic-import: mlYvYWbm5/icon
-import DevicessvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Devicessvg"; // plasmic-import: bbAxEiIwy/icon
-import IconIcon from "./icons/PlasmicIcon__Icon"; // plasmic-import: CD14l2YUnk/icon
-import DownloadsvgIcon from "../q_4_icons/icons/PlasmicIcon__Downloadsvg"; // plasmic-import: Bu7POPssl/icon
-import ClocksvgIcon from "../q_4_icons/icons/PlasmicIcon__Clocksvg"; // plasmic-import: 9MhqTIkUT/icon
-import Settings2SvgIcon from "../q_4_icons/icons/PlasmicIcon__Settings2Svg"; // plasmic-import: jFYH6BL9T/icon
-import PlugsvgIcon from "../q_4_icons/icons/PlasmicIcon__Plugsvg"; // plasmic-import: s2iV8XTPW/icon
-import HelpCirclesvgIcon from "../q_4_icons/icons/PlasmicIcon__HelpCirclesvg"; // plasmic-import: zY-2PPrFT/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import FigmasvgIcon from "../q_4_icons/icons/PlasmicIcon__Figmasvg"; // plasmic-import: cReVjwCaJ/icon
+import TreeIcon from "../plasmic_kit/PlasmicIcon__Tree"; // plasmic-import: 4KZjuPY_m0VTb/icon
+import WandIcon from "../plasmic_kit/PlasmicIcon__Wand"; // plasmic-import: vTVU9zQnDPZGl/icon
 import KeyboardIcon from "../plasmic_kit_design_system/PlasmicIcon__Keyboard"; // plasmic-import: tSLSUCy1RH/icon
+import FontFamily2SvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__FontFamily2Svg"; // plasmic-import: mlYvYWbm5/icon
+import ComponentsvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Componentsvg"; // plasmic-import: vJVrKlrDD/icon
+import DevicessvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Devicessvg"; // plasmic-import: bbAxEiIwy/icon
+import DiamondssvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Diamondssvg"; // plasmic-import: uzBbTcdyE/icon
+import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ClocksvgIcon from "../q_4_icons/icons/PlasmicIcon__Clocksvg"; // plasmic-import: 9MhqTIkUT/icon
+import ComponentssvgIcon from "../q_4_icons/icons/PlasmicIcon__Componentssvg"; // plasmic-import: coPzxnFyi/icon
+import DotsHorizontalCirclesvgIcon from "../q_4_icons/icons/PlasmicIcon__DotsHorizontalCirclesvg"; // plasmic-import: xdn8wiJBv/icon
+import DownloadsvgIcon from "../q_4_icons/icons/PlasmicIcon__Downloadsvg"; // plasmic-import: Bu7POPssl/icon
+import FigmasvgIcon from "../q_4_icons/icons/PlasmicIcon__Figmasvg"; // plasmic-import: cReVjwCaJ/icon
+import File2SvgIcon from "../q_4_icons/icons/PlasmicIcon__File2Svg"; // plasmic-import: zldfLXBdc/icon
+import HelpCirclesvgIcon from "../q_4_icons/icons/PlasmicIcon__HelpCirclesvg"; // plasmic-import: zY-2PPrFT/icon
+import PaintbrushsvgIcon from "../q_4_icons/icons/PlasmicIcon__Paintbrushsvg"; // plasmic-import: WPHwb7V6d/icon
+import PhotosvgIcon from "../q_4_icons/icons/PlasmicIcon__Photosvg"; // plasmic-import: BzQDBpjA9/icon
+import PlugsvgIcon from "../q_4_icons/icons/PlasmicIcon__Plugsvg"; // plasmic-import: s2iV8XTPW/icon
+import Settings2SvgIcon from "../q_4_icons/icons/PlasmicIcon__Settings2Svg"; // plasmic-import: jFYH6BL9T/icon
 import SpeechBubblesvgIcon from "../q_4_icons/icons/PlasmicIcon__SpeechBubblesvg"; // plasmic-import: nkJ1joJAv/icon
 import UsersvgIcon from "../q_4_icons/icons/PlasmicIcon__Usersvg"; // plasmic-import: ejczgMIkT/icon
+import WarningTrianglesvgIcon from "../q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
+import IconIcon from "./icons/PlasmicIcon__Icon"; // plasmic-import: CD14l2YUnk/icon
 import image9D5NIfkhj from "./images/image.svg"; // plasmic-import: 9D5nIFKHJ/picture
 
 createPlasmicElementProxy;
@@ -178,7 +152,7 @@ export type PlasmicLeftTabStrip__OverridesType = {
   slack?: Flex__<typeof IconButton>;
   help?: Flex__<typeof IconButton>;
   players?: Flex__<"div">;
-  avatar?: Flex__<"img">;
+  avatar?: Flex__<typeof PlasmicImg__>;
 };
 
 export interface DefaultLeftTabStripProps {
@@ -227,8 +201,6 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = useCurrentUser?.() || {};
 
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
@@ -990,20 +962,25 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           })}
         >
           {(hasVariant($state, "showAvatar", "showAvatar") ? true : false) ? (
-            <img
+            <PlasmicImg__
               alt={""}
-              className={classNames(
-                projectcss.all,
-                projectcss.img,
-                sty.img__fZbIh,
-                {
-                  [sty.imgshowAvatar__fZbIh9NVfe]: hasVariant(
-                    $state,
-                    "showAvatar",
-                    "showAvatar"
-                  ),
-                }
-              )}
+              className={classNames(sty.img__fZbIh, {
+                [sty.imgshowAvatar__fZbIh9NVfe]: hasVariant(
+                  $state,
+                  "showAvatar",
+                  "showAvatar"
+                ),
+              })}
+              displayHeight={
+                hasVariant($state, "showAvatar", "showAvatar") ? "24px" : "auto"
+              }
+              displayMaxHeight={"none"}
+              displayMaxWidth={"none"}
+              displayMinHeight={"0"}
+              displayMinWidth={"0"}
+              displayWidth={
+                hasVariant($state, "showAvatar", "showAvatar") ? "24px" : "auto"
+              }
               src={image9D5NIfkhj}
             />
           ) : null}
@@ -1020,53 +997,73 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
             />
           ) : null}
           {(hasVariant($state, "showAvatar", "showAvatar") ? true : false) ? (
-            <img
+            <PlasmicImg__
               alt={""}
-              className={classNames(
-                projectcss.all,
-                projectcss.img,
-                sty.img__hptuc,
-                {
-                  [sty.imgshowAvatar__hptuc9NVfe]: hasVariant(
-                    $state,
-                    "showAvatar",
-                    "showAvatar"
-                  ),
-                }
-              )}
+              className={classNames(sty.img__hptuc, {
+                [sty.imgshowAvatar__hptuc9NVfe]: hasVariant(
+                  $state,
+                  "showAvatar",
+                  "showAvatar"
+                ),
+              })}
+              displayHeight={
+                hasVariant($state, "showAvatar", "showAvatar") ? "24px" : "auto"
+              }
+              displayMaxHeight={"none"}
+              displayMaxWidth={"none"}
+              displayMinHeight={"0"}
+              displayMinWidth={"0"}
+              displayWidth={
+                hasVariant($state, "showAvatar", "showAvatar") ? "24px" : "auto"
+              }
               src={image9D5NIfkhj}
             />
           ) : null}
           {(hasVariant($state, "showAvatar", "showAvatar") ? true : false) ? (
-            <img
+            <PlasmicImg__
               alt={""}
-              className={classNames(
-                projectcss.all,
-                projectcss.img,
-                sty.img__l76QL,
-                {
-                  [sty.imgshowAvatar__l76QL9NVfe]: hasVariant(
-                    $state,
-                    "showAvatar",
-                    "showAvatar"
-                  ),
-                }
-              )}
+              className={classNames(sty.img__l76QL, {
+                [sty.imgshowAvatar__l76QL9NVfe]: hasVariant(
+                  $state,
+                  "showAvatar",
+                  "showAvatar"
+                ),
+              })}
+              displayHeight={
+                hasVariant($state, "showAvatar", "showAvatar") ? "24px" : "auto"
+              }
+              displayMaxHeight={"none"}
+              displayMaxWidth={"none"}
+              displayMinHeight={"0"}
+              displayMinWidth={"0"}
+              displayWidth={
+                hasVariant($state, "showAvatar", "showAvatar") ? "24px" : "auto"
+              }
               src={image9D5NIfkhj}
             />
           ) : null}
         </div>
-        <img
+        <PlasmicImg__
           data-plasmic-name={"avatar"}
           data-plasmic-override={overrides.avatar}
           alt={""}
-          className={classNames(projectcss.all, projectcss.img, sty.avatar, {
+          className={classNames(sty.avatar, {
             [sty.avatarshowAvatar]: hasVariant(
               $state,
               "showAvatar",
               "showAvatar"
             ),
           })}
+          displayHeight={
+            hasVariant($state, "showAvatar", "showAvatar") ? "32px" : "auto"
+          }
+          displayMaxHeight={"none"}
+          displayMaxWidth={"none"}
+          displayMinHeight={"0"}
+          displayMinWidth={"0"}
+          displayWidth={
+            hasVariant($state, "showAvatar", "showAvatar") ? "32px" : "auto"
+          }
           src={image9D5NIfkhj}
         />
       </div>
@@ -1152,7 +1149,7 @@ type NodeDefaultElementType = {
   slack: typeof IconButton;
   help: typeof IconButton;
   players: "div";
-  avatar: "img";
+  avatar: typeof PlasmicImg__;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";

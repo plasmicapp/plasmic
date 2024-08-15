@@ -15,74 +15,44 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
-  PlasmicIcon as PlasmicIcon__,
-  PlasmicImg as PlasmicImg__,
-  PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
-  SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  generateOnMutateForSpec,
-  generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
-  generateStateValueProp,
-  get as $stateGet,
   hasVariant,
-  initializeCodeComponentStates,
-  initializePlasmicStates,
-  makeFragment,
-  omit,
-  pick,
-  renderPlasmicSlot,
-  set as $stateSet,
-  useCurrentUser,
   useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName,
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions,
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import LeftTabStrip from "../../components/studio/LeftTabStrip"; // plasmic-import: l7y_rhJyMt2/component
-import LeftTabButton from "../../components/studio/LeftTabButton"; // plasmic-import: 1q_JapBg7U/component
-import LeftGeneralTokensPanel from "../../components/sidebar/LeftGeneralTokensPanel"; // plasmic-import: bDbzY5jXLz/component
-import { MixinsPanel as LeftMixinsPanel } from "../../components/sidebar/MixinControls"; // plasmic-import: ZsFxxgE4E8/component
-import { ImageAssetsPanel as LeftImagesPanel } from "../../components/sidebar/image-asset-controls"; // plasmic-import: ECu8FUyP0f3/component
-import LeftThemesPanel from "../../components/sidebar/ThemesControls"; // plasmic-import: 9I47RGPv62/component
-import { UserManagedFontsPanel as LeftFontsPanel } from "../../components/sidebar/UserManagedFonts"; // plasmic-import: 5oz1qmvGBe/component
-import { ProjectDependenciesPanel as LeftImportsPanel } from "../../components/sidebar/ProjectDependencies"; // plasmic-import: MeRxD_0BtJ/component
 import { VersionsTab as LeftVersionsPanel } from "../../components/sidebar-tabs/versions-tab"; // plasmic-import: YldGgVsq6N/component
 import LeftComponentsPanel from "../../components/sidebar/LeftComponentsPanel"; // plasmic-import: 7Wsvgu6cRd/component
+import LeftGeneralTokensPanel from "../../components/sidebar/LeftGeneralTokensPanel"; // plasmic-import: bDbzY5jXLz/component
+import LeftLintIssuesPanel from "../../components/sidebar/LeftLintIssuesPanel"; // plasmic-import: xymZo1AIeU/component
 import LeftPagesPanel from "../../components/sidebar/LeftPagesPanel"; // plasmic-import: wXKvVcr82I/component
 import LeftSettingsPanel from "../../components/sidebar/LeftSettingsPanel"; // plasmic-import: EeT-6P6YTW/component
 import LeftSplitsPanel from "../../components/sidebar/LeftSplitsPanel"; // plasmic-import: OzaoSbFLbl/component
-import LeftLintIssuesPanel from "../../components/sidebar/LeftLintIssuesPanel"; // plasmic-import: xymZo1AIeU/component
+import { MixinsPanel as LeftMixinsPanel } from "../../components/sidebar/MixinControls"; // plasmic-import: ZsFxxgE4E8/component
+import { ProjectDependenciesPanel as LeftImportsPanel } from "../../components/sidebar/ProjectDependencies"; // plasmic-import: MeRxD_0BtJ/component
+import LeftThemesPanel from "../../components/sidebar/ThemesControls"; // plasmic-import: 9I47RGPv62/component
+import { UserManagedFontsPanel as LeftFontsPanel } from "../../components/sidebar/UserManagedFonts"; // plasmic-import: 5oz1qmvGBe/component
+import { ImageAssetsPanel as LeftImagesPanel } from "../../components/sidebar/image-asset-controls"; // plasmic-import: ECu8FUyP0f3/component
+import LeftTabButton from "../../components/studio/LeftTabButton"; // plasmic-import: 1q_JapBg7U/component
+import LeftTabStrip from "../../components/studio/LeftTabStrip"; // plasmic-import: l7y_rhJyMt2/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftPane.module.css"; // plasmic-import: avrERxAp81S/css
 
-import WarningTrianglesvgIcon from "../q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
+import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
 import TreeIcon from "../plasmic_kit/PlasmicIcon__Tree"; // plasmic-import: 4KZjuPY_m0VTb/icon
 import ComponentssvgIcon from "../q_4_icons/icons/PlasmicIcon__Componentssvg"; // plasmic-import: coPzxnFyi/icon
-import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
 import DotsHorizontalCirclesvgIcon from "../q_4_icons/icons/PlasmicIcon__DotsHorizontalCirclesvg"; // plasmic-import: xdn8wiJBv/icon
+import WarningTrianglesvgIcon from "../q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
 
 createPlasmicElementProxy;
 
@@ -198,8 +168,6 @@ function PlasmicLeftPane__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = useCurrentUser?.() || {};
 
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [

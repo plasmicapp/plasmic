@@ -22,7 +22,7 @@
     {
       "projectId": "aukbrhkegRkQ6KizvhdUPT",
       "projectName": "[PlasmicKit] Left Pane",
-      "version": "latest",
+      "version": ">=0.0.0",
       "cssFilePath": "wab/client/plasmic/PP__plasmickit_left_pane.module.css",
       "components": [
         {
@@ -549,8 +549,7 @@
       "indirect": false,
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "ooL7EhXDmFQWnW9sxtchhE",
@@ -1315,7 +1314,8 @@
       "indirect": false,
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "kA1Hysr5ZeimtATHTDJz5B",
