@@ -1,19 +1,18 @@
+import { CodeComponentMeta } from "@plasmicapp/host";
 import React, { useMemo } from "react";
 import { mergeProps } from "react-aria";
 import { Slider, SliderThumbProps, SliderTrack } from "react-aria-components";
 import flattenChildren from "react-keyed-flatten-children";
 import { PlasmicSliderContext } from "./contexts";
-import ErrorBoundary from "./ErrorBoundary";
 import {
   UpdateInteractionVariant,
   pickAriaComponentVariants,
 } from "./interaction-variant-utils";
-import { SLIDER_COMPONENT_NAME } from "./registerSlider";
-import { SLIDER_THUMB_COMPONENT_NAME } from "./registerSliderThumb";
+import { BaseSliderThumbProps } from "./registerSliderThumb";
 import {
   CodeComponentMetaOverrides,
   Registerable,
-  makeChildComponentName,
+  isDefined,
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
@@ -40,48 +39,50 @@ export interface BaseSliderTrackProps
  * @param values
  * @returns
  */
-function findMinMaxIndices(values?: number | number[]): {
+function findMinMaxIndices(values: number[]): {
   minIndex: number;
   maxIndex: number;
 } {
-  if (
-    typeof values === "number" ||
-    values?.length === 0 ||
-    !Array.isArray(values)
-  ) {
-    return { minIndex: 0, maxIndex: 0 };
-  }
-
   let minIndex = 0;
   let maxIndex = 0;
 
-  for (let i = 1; i < values.length; i++) {
-    if (values[i] < values[minIndex]) {
-      minIndex = i;
-    }
-    if (values[i] > values[maxIndex]) {
-      maxIndex = i;
+  if (Array.isArray(values)) {
+    for (let i = 1; i < values.length; i++) {
+      if (values[i] < values[minIndex]) {
+        minIndex = i;
+      }
+      if (values[i] > values[maxIndex]) {
+        maxIndex = i;
+      }
     }
   }
 
   return { minIndex, maxIndex };
 }
 
+function isMultiValueGuard(value?: number | number[]): value is number[] {
+  return Array.isArray(value) && value.length > 1;
+}
+
 export function BaseSliderTrack(props: BaseSliderTrackProps) {
   const context = React.useContext(PlasmicSliderContext);
+  const isStandalone = !context;
   const mergedProps = mergeProps(context, props);
-  const {
-    children,
-    progressBar,
-    updateInteractionVariant,
-    isMultiValue,
-    ...rest
-  } = mergedProps;
+  const { children, progressBar, updateInteractionVariant, ...rest } =
+    mergedProps;
 
-  const { minIndex, maxIndex } = useMemo(
-    () => findMinMaxIndices(mergedProps.value),
-    [mergedProps.value]
-  );
+  const isMultiValue = isMultiValueGuard(mergedProps.value);
+
+  const { minIndex, maxIndex } = useMemo(() => {
+    if (
+      !context ||
+      !Array.isArray(context.value) ||
+      context.value.length <= 1
+    ) {
+      return { minIndex: 0, maxIndex: 0 };
+    }
+    return findMinMaxIndices(context.value);
+  }, [context?.value]);
 
   /**
    * Generates the thumb components based on the number of thumbs
@@ -94,20 +95,38 @@ export function BaseSliderTrack(props: BaseSliderTrackProps) {
    * the additional thumbs are omitted
    */
   const thumbs = useMemo(() => {
-    const rawThumbs = flattenChildren(children);
-    const values = Array.isArray(mergedProps?.value)
-      ? mergedProps.value
-      : [mergedProps.value].filter((v) => v !== undefined);
-    const difference = values.length - rawThumbs.length;
-    if (!difference) {
-      return rawThumbs;
+    const thumbNodes = flattenChildren(children);
+    if (!thumbNodes || thumbNodes.length === 0 || !isDefined(context?.value)) {
+      return [];
     }
-    if (difference < 0) {
-      return rawThumbs.slice(0, values.length);
-    }
-    const lastThumb = rawThumbs[rawThumbs.length - 1];
-    return rawThumbs.concat(new Array(difference).fill(lastThumb));
-  }, [children, mergedProps.value]);
+
+    const values = isDefined(context)
+      ? Array.isArray(context.value)
+        ? context.value
+        : [context.value]
+      : [];
+
+    // Last thumb be re-used if the number of thumbs is less than the number of values
+    const lastThumb = thumbNodes[thumbNodes.length - 1];
+
+    return values.map((v, i) => {
+      const currentThumb = thumbNodes[i];
+      // Re-use the last thumb if there are no more thumbs left ( this is for ease of use - the user can just add one more value to the initial-values array and see another thumb right away, without having to explicitly add a new thumb component )
+      if (i >= thumbNodes.length) {
+        if (React.isValidElement(lastThumb)) {
+          return React.cloneElement(lastThumb, {
+            index: i,
+          } as SliderThumbProps);
+        }
+      }
+      if (!React.isValidElement(currentThumb)) {
+        return null;
+      }
+      return React.cloneElement(currentThumb, {
+        index: i,
+      } as SliderThumbProps);
+    });
+  }, [children, context?.value]);
 
   const track = (
     <SliderTrack style={{ position: "relative" }} {...rest}>
@@ -133,14 +152,7 @@ export function BaseSliderTrack(props: BaseSliderTrackProps) {
               >
                 {progressBar}
               </div>
-              {thumbs.map(
-                (thumb, i) =>
-                  React.isValidElement(thumb) &&
-                  React.cloneElement(thumb, {
-                    // sets the index of the thumb, so that each thumb reflects the correct value
-                    index: i,
-                  } as SliderThumbProps)
-              )}
+              {thumbs}
             </>,
             {
               hovered: isHovered,
@@ -152,26 +164,21 @@ export function BaseSliderTrack(props: BaseSliderTrackProps) {
     </SliderTrack>
   );
 
-  return (
-    <ErrorBoundary
-      // If the Slider Track is the root of a Studio component, then we need to wrap the track in a slider
-      // to ensure that the track gets the required Slider context
-      fallback={
-        <Slider style={{ height: "100%", width: "100%" }}>{track}</Slider>
-      }
-    >
-      {track}
-    </ErrorBoundary>
-  );
+  if (isStandalone) {
+    return <Slider style={{ height: "100%", width: "100%" }}>{track}</Slider>;
+  }
+
+  return track;
 }
 
 export const SLIDER_TRACK_COMPONENT_NAME = makeComponentName("sliderTrack");
 
 export function registerSliderTrack(
+  sliderThumbMeta: CodeComponentMeta<BaseSliderThumbProps>,
   loader?: Registerable,
   overrides?: CodeComponentMetaOverrides<typeof BaseSliderTrack>
 ) {
-  registerComponentHelper(
+  return registerComponentHelper(
     loader,
     BaseSliderTrack,
     {
@@ -190,14 +197,14 @@ export function registerSliderTrack(
       props: {
         children: {
           type: "slot",
-          description: "The thumbs of the slider",
+          displayName: "Thumbs",
+          description:
+            "The thumbs of the slider. For range slider, you can add more than one thumb.",
+          allowedComponents: [sliderThumbMeta.name],
           defaultValue: [
             {
               type: "component",
-              name: makeChildComponentName(
-                SLIDER_COMPONENT_NAME,
-                SLIDER_THUMB_COMPONENT_NAME
-              ),
+              name: sliderThumbMeta.name,
             },
           ],
         },

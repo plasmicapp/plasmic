@@ -35,9 +35,12 @@ export const PlasmicDialogTriggerContext = React.createContext<
   React.ComponentProps<typeof BaseDialogTrigger> | undefined
 >(undefined);
 
-export const PlasmicSliderContext = React.createContext<
-  React.ComponentProps<typeof BaseSlider> | undefined
->(undefined);
+export type PlasmicSliderContextType<T extends number | number[]> =
+  | React.ComponentProps<typeof BaseSlider<T>>
+  | undefined;
+
+export const PlasmicSliderContext =
+  React.createContext<PlasmicSliderContextType<number | number[]>>(undefined);
 
 export const PlasmicLabelContext = React.createContext<
   React.ComponentProps<typeof BaseLabel> | undefined

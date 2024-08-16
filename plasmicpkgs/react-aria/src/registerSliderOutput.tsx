@@ -49,7 +49,7 @@ export function registerSliderOutput(
   loader?: Registerable,
   overrides?: CodeComponentMetaOverrides<typeof BaseSliderOutput>
 ) {
-  registerComponentHelper(
+  return registerComponentHelper(
     loader,
     BaseSliderOutput,
     {

@@ -26,7 +26,7 @@ const SLIDER_THUMB_INTERACTION_VARIANTS = [
 const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
   SLIDER_THUMB_INTERACTION_VARIANTS
 );
-interface BaseSliderThumbProps
+export interface BaseSliderThumbProps
   extends React.ComponentProps<typeof SliderThumb> {
   advanced?: boolean;
   // Optional callback to update the interaction variant state
@@ -84,7 +84,7 @@ export function registerSliderThumb(
   loader?: Registerable,
   overrides?: CodeComponentMetaOverrides<typeof BaseSliderThumb>
 ) {
-  registerComponentHelper(
+  return registerComponentHelper(
     loader,
     BaseSliderThumb,
     {
