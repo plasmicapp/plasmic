@@ -317,6 +317,7 @@ function ButtonAction<P>({
     tplComp,
     expsProvider
   );
+  const projectData = viewCtx.studioCtx.getProjectData();
 
   return (
     <>
@@ -326,7 +327,7 @@ function ButtonAction<P>({
             componentProps: componentPropValues,
             contextData: ccContextData,
             studioOps: studioOps,
-            ...({ projectData: {} } as any),
+            projectData: projectData,
             studioDocument: document,
           });
         }}
@@ -362,6 +363,7 @@ function CustomAction<P>({
     tplComp,
     expsProvider
   );
+  const projectData = viewCtx.studioCtx.getProjectData();
 
   React.useEffect(() => {
     const node = actionContainerRef.current;
@@ -376,7 +378,7 @@ function CustomAction<P>({
             componentProps: componentPropValues,
             contextData: ccContextData,
             studioOps: studioOps,
-            ...({ studioCtx: {} } as any),
+            projectData: projectData,
             studioDocument: window.document,
           })
         ),

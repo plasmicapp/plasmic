@@ -2,6 +2,7 @@ import { SubDeps } from "@/wab/client/components/canvas/subdeps";
 import { useStudioOps } from "@/wab/client/components/sidebar-tabs/ComponentActionsSection";
 import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
 import { getRootSub } from "@/wab/client/frame-ctx/windows";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ensure } from "@/wab/shared/common";
 import { TplComponent } from "@/wab/shared/model/classes";
@@ -104,6 +105,8 @@ function useCustomPropEditor(
   ccContextData: any,
   propName: string
 ) {
+  const studioCtx = useStudioCtx();
+  const projectData = studioCtx.getProjectData();
   const FullscreenModal = React.useMemo(
     () =>
       sub.createModal({
@@ -153,7 +156,7 @@ function useCustomPropEditor(
             FullscreenModal,
             SideModal,
             studioOps,
-            ...({ projectData: {} } as any),
+            projectData: projectData,
             studioDocument: window.document,
           } as any)
         ),

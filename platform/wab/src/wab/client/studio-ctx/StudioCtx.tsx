@@ -164,7 +164,10 @@ import {
   computedProjectFlags,
   usedHostLessPkgs,
 } from "@/wab/shared/cached-selectors";
-import { getBuiltinComponentRegistrations } from "@/wab/shared/code-components/builtin-code-components";
+import {
+  getBuiltinComponentRegistrations,
+  isBuiltinCodeComponent,
+} from "@/wab/shared/code-components/builtin-code-components";
 import {
   CodeComponentsRegistry,
   HighlightInteractionRequest,
@@ -183,6 +186,7 @@ import {
   ensure,
   ensureHTMLElt,
   ensureType,
+  isNonNil,
   last,
   maybe,
   mkShortId,
@@ -349,6 +353,7 @@ import {
   mapValues,
   maxBy,
   memoize,
+  partition,
   uniq,
 } from "lodash";
 import assign from "lodash/assign";
@@ -6154,6 +6159,25 @@ export class StudioCtx extends WithDbCtx {
   siteIsEmpty() {
     return siteIsEmpty(this.site);
   }
+
+  getProjectData = computedFn(
+    () => {
+      const [pages, comps] = partition(
+        this.site.components.filter((c) => !isBuiltinCodeComponent(c)),
+        (c) => {
+          return isNonNil(c.pageMeta);
+        }
+      );
+      return {
+        components: comps.map((c) => ({ name: c.name })),
+        pages: pages.map((c) => ({
+          name: c.name,
+          pageMeta: { path: c.pageMeta!.path },
+        })),
+      };
+    },
+    { name: "getProjectData" }
+  );
 
   private _copilotHistory = observable.map<string, CopilotInteraction[]>();
 
