@@ -7,8 +7,8 @@ import {
   DefaultPriceTierPickerProps,
   PlasmicPriceTierPicker,
 } from "@/wab/client/plasmic/plasmic_kit_pricing/PlasmicPriceTierPicker";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ApiFeatureTier, BillingFrequency } from "@/wab/shared/ApiSchema";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   isEnterprise,
   newTiers,
@@ -162,6 +162,7 @@ function PriceTierPicker_(
         newGrandfatheredTier={{
           featureTier: currentFeatureTier,
           status: "current",
+          billingFrequency: billingFrequency,
           valueProps: "You are on a grandfathered plan.",
           isLegacy: true,
         }}

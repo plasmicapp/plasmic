@@ -2,11 +2,11 @@ import {
   DefaultBillProps,
   PlasmicBill,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicBill";
+import { ApiFeatureTier, BillingFrequency } from "@/wab/shared/ApiSchema";
+import { calculateBill } from "@/wab/shared/billing/billing-util";
 import { assert } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
-import { ApiFeatureTier, BillingFrequency } from "@/wab/shared/ApiSchema";
 
 interface BillProps extends DefaultBillProps {
   tier: ApiFeatureTier;
@@ -20,34 +20,13 @@ function Bill_(props: BillProps, ref: HTMLElementRefOf<"div">) {
   const { tier, seats, setSeats, billingFreq, ...rest } = props;
   const minSeats = tier.minUsers;
   assert(seats >= minSeats, `There needs to be at least ${minSeats} seats`);
-  const additionalSeats = seats - minSeats;
-  const perSeatPrice =
-    billingFreq === "year" ? tier.annualSeatPrice : tier.monthlySeatPrice;
-  // This should reflect the minUsers (e.g. $480/mo for team of 8 seats)
-  const basePrice =
-    ((billingFreq === "year" ? tier.annualBasePrice : tier.monthlyBasePrice) ??
-      0) + (DEVFLAGS.useNewFeatureTiers ? 0 : perSeatPrice * minSeats);
-
-  const getSeatNoun = (s: number) => (s === 1 ? "seat" : "seats");
-  const baseTitle = `${tier.name} team plan`;
-  const baseDescription =
-    minSeats > 0 ? `${minSeats} ${getSeatNoun(minSeats)}` : "";
-  const baseSubtotal = basePrice;
-  const seatTitle = `${additionalSeats} ${
-    minSeats > 0 ? "additional" : tier.name
-  } ${getSeatNoun(additionalSeats)}`;
-  const seatDescription = `$${perSeatPrice} x ${additionalSeats} ${getSeatNoun(
-    additionalSeats
-  )}`;
-  const seatSubtotal = perSeatPrice * additionalSeats;
-  const total = (baseSubtotal ?? 0) + seatSubtotal;
-
+  const bill = calculateBill(tier, seats, billingFreq);
   return (
     <PlasmicBill
       root={{ ref }}
       {...rest}
-      hideBasePrice={basePrice <= 0}
-      hideSeatPrice={additionalSeats <= 0}
+      hideBasePrice={bill.baseSubtotal <= 0}
+      hideSeatPrice={bill.additionalSeats <= 0}
       type={billingFreq}
       numSeats={seats}
       seatNoun={getSeatNoun(seats)}
@@ -57,16 +36,30 @@ function Bill_(props: BillProps, ref: HTMLElementRefOf<"div">) {
       moreSeats={{
         onClick: () => setSeats(seats + 1),
       }}
-      baseTitle={baseTitle}
-      baseDescription={baseDescription}
-      baseSubtotal={`${baseSubtotal}.00`}
-      seatTitle={seatTitle}
-      seatDescription={seatDescription}
-      seatSubtotal={`${seatSubtotal}.00`}
-      total={`${total}.00`}
+      baseTitle={`${tier.name} plan`}
+      baseDescription={
+        minSeats > 0 ? `${minSeats} ${getSeatNoun(minSeats)}` : ""
+      }
+      baseSubtotal={`${bill.baseSubtotal}.00`}
+      seatTitle={`${bill.additionalSeats} ${
+        minSeats > 0 ? "additional" : tier.name
+      } ${getSeatNoun(bill.additionalSeats)}`}
+      seatDescription={`$${bill.seatPrice} x ${
+        bill.additionalSeats
+      } ${getSeatNoun(bill.additionalSeats)}`}
+      seatSubtotal={`${bill.seatSubtotal}.00`}
+      total={`${bill.total}.00`}
     />
   );
 }
 
 const Bill = React.forwardRef(Bill_);
 export default Bill;
+
+function getSeatNoun(n: number) {
+  if (n === 1) {
+    return "seat";
+  } else {
+    return "seats";
+  }
+}

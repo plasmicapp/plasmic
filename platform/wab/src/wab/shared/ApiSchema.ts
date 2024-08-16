@@ -2,20 +2,20 @@
 // place.  We use it to type the API and to ensure the voluntarily ensure server
 // responses conform.
 
-import { Dict } from "@/wab/shared/collections";
 import { TokenType } from "@/wab/commons/StyleToken";
-import {
-  DEVFLAGS,
-  InsertableTemplateComponentResolution,
-  InsertableTemplateTokenResolution,
-} from "@/wab/shared/devflags";
 import { Bundle } from "@/wab/shared/bundles";
+import { Dict } from "@/wab/shared/collections";
 import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
   LabeledValue,
   RawPagination,
 } from "@/wab/shared/data-sources-meta/data-sources";
 import { WebhookHeader } from "@/wab/shared/db-json-blobs";
+import {
+  DEVFLAGS,
+  InsertableTemplateComponentResolution,
+  InsertableTemplateTokenResolution,
+} from "@/wab/shared/devflags";
 import { AccessLevel, GrantableAccessLevel } from "@/wab/shared/EntUtil";
 import { PkgVersionInfo, RevInfo, SiteInfo } from "@/wab/shared/SharedApi";
 import {
@@ -206,13 +206,13 @@ export interface ApiFeatureTier extends ApiEntityBase {
   id: FeatureTierId;
   name: string;
   monthlySeatPrice: number;
-  monthlySeatStripePriceId: string;
+  monthlySeatStripePriceId: StripePriceId;
   monthlyBasePrice: number | null;
-  monthlyBaseStripePriceId: string | null;
+  monthlyBaseStripePriceId: StripePriceId | null;
   annualSeatPrice: number;
-  annualSeatStripePriceId: string;
+  annualSeatStripePriceId: StripePriceId;
   annualBasePrice: number | null;
-  annualBaseStripePriceId: string | null;
+  annualBaseStripePriceId: StripePriceId | null;
 
   minUsers: number;
   maxUsers: number | null;

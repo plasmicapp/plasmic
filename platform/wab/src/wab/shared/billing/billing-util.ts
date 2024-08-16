@@ -1,10 +1,11 @@
-import { assert, assertNever } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ApiFeatureTier,
   ApiTeam,
   BillingFrequency,
+  StripePriceId,
 } from "@/wab/shared/ApiSchema";
+import { assert, assertNever } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import Stripe from "stripe";
 import { MakeADT } from "ts-adt/MakeADT";
 
@@ -113,18 +114,55 @@ export const isValidSubscriptionStatus = (
   }
 };
 
-export function calculateRecurringBill(
+export function calculateBill(
   tier: ApiFeatureTier,
   seats: number,
-  billingFrequency: BillingFrequency,
-  basePriceIncludesSeats: boolean
+  billingFrequency: BillingFrequency
 ) {
-  const baseUnit =
-    billingFrequency === "year" ? tier.annualBasePrice : tier.monthlyBasePrice;
-  const seatUnit =
-    billingFrequency === "year" ? tier.annualSeatPrice : tier.monthlySeatPrice;
-  const recurringBillTotal =
-    (baseUnit ?? 0) +
-    seatUnit * (basePriceIncludesSeats ? seats - tier.minUsers : seats);
-  return recurringBillTotal;
+  let basePrice: number;
+  let stripeBasePriceId: StripePriceId | null; // null for plans without base price
+  let seatPrice: number;
+  let stripeSeatPriceId: StripePriceId;
+  if (billingFrequency === "year") {
+    basePrice = tier.annualBasePrice ?? 0;
+    stripeBasePriceId = tier.annualBaseStripePriceId;
+    seatPrice = tier.annualSeatPrice;
+    stripeSeatPriceId = tier.annualSeatStripePriceId;
+  } else {
+    basePrice = tier.monthlyBasePrice ?? 0;
+    stripeBasePriceId = tier.monthlyBaseStripePriceId;
+    seatPrice = tier.monthlySeatPrice;
+    stripeSeatPriceId = tier.monthlySeatStripePriceId;
+  }
+
+  let stripeSeatsToCharge: number;
+  let baseSubtotal: number;
+  if (tierIncludesMinSeats(tier)) {
+    stripeSeatsToCharge = seats - tier.minUsers;
+    baseSubtotal = basePrice;
+  } else {
+    stripeSeatsToCharge = seats;
+    baseSubtotal = basePrice + tier.minUsers * seatPrice;
+  }
+
+  const additionalSeats = seats - tier.minUsers;
+  const seatSubtotal = additionalSeats * seatPrice;
+  const total = baseSubtotal + seatSubtotal;
+
+  return {
+    seatPrice,
+    additionalSeats,
+
+    stripeBasePriceId,
+    stripeSeatPriceId,
+    stripeSeatsToCharge,
+
+    baseSubtotal,
+    seatSubtotal,
+    total,
+  };
+}
+
+function tierIncludesMinSeats(tier: ApiFeatureTier) {
+  return !["Basic", "Growth"].includes(tier.name);
 }

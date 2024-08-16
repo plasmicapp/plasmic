@@ -36,7 +36,6 @@ const enterpriseFt: FeatureTier = {
   annualSeatStripePriceId: "price_1Ji3EFHIopbCiFeiSj0U8o1K",
   minUsers: 30,
   maxUsers: 1_000,
-  maxWorkspaces: 10_000,
   monthlyViews: 1_000_000,
   versionHistoryDays: 180,
   analytics: true,
@@ -49,6 +48,7 @@ const enterpriseFt: FeatureTier = {
   maxPrivateUsers: null,
   publicUsersIncluded: null,
   maxPublicUsers: null,
+  maxWorkspaces: null,
 } as FeatureTier;
 
 /**
@@ -67,7 +67,6 @@ const teamFt: FeatureTier = {
   annualSeatStripePriceId: "price_1N9VlxHIopbCiFeicxycQNAp",
   minUsers: 8,
   maxUsers: 30,
-  maxWorkspaces: 300,
   monthlyViews: 500_000,
   versionHistoryDays: 180,
   analytics: true,
@@ -80,6 +79,7 @@ const teamFt: FeatureTier = {
   maxPrivateUsers: null,
   publicUsersIncluded: null,
   maxPublicUsers: null,
+  maxWorkspaces: null,
 } as FeatureTier;
 
 const proFt: FeatureTier = {
@@ -94,7 +94,6 @@ const proFt: FeatureTier = {
   annualSeatStripePriceId: "price_1N9VkpHIopbCiFeiMi50AFEk",
   minUsers: 4,
   maxUsers: 10,
-  maxWorkspaces: 100,
   monthlyViews: 250_000,
   versionHistoryDays: 90,
   analytics: false,
@@ -107,6 +106,7 @@ const proFt: FeatureTier = {
   maxPrivateUsers: null,
   publicUsersIncluded: null,
   maxPublicUsers: null,
+  maxWorkspaces: null,
 } as FeatureTier;
 
 /** Current feature tier. Min seats included in base price. */
@@ -120,11 +120,10 @@ const starterFt = {
   monthlySeatStripePriceId: "price_1N9VjhHIopbCiFeic0V8lDJX",
   annualSeatPrice: 0,
   annualSeatStripePriceId: "price_1N9VjhHIopbCiFeiViCs7zEH",
-  minUsers: 4,
-  maxUsers: 10,
-  maxWorkspaces: 100,
-  monthlyViews: 250_000,
-  versionHistoryDays: 90,
+  minUsers: 3,
+  maxUsers: 3,
+  monthlyViews: 100_000,
+  versionHistoryDays: 30,
   analytics: false,
   contentRole: false,
   designerRole: false,
@@ -135,6 +134,7 @@ const starterFt = {
   maxPrivateUsers: null,
   publicUsersIncluded: null,
   maxPublicUsers: null,
+  maxWorkspaces: null,
 } as FeatureTier;
 
 /** Legacy feature tier. Min seats not included in base price. */
@@ -150,7 +150,6 @@ const growthFt = {
   annualSeatStripePriceId: "price_1JLFuIHIopbCiFeiRc7HOmiM",
   minUsers: 8,
   maxUsers: 30,
-  maxWorkspaces: null,
   monthlyViews: 500_000,
   versionHistoryDays: 90,
   analytics: true,
@@ -163,6 +162,7 @@ const growthFt = {
   maxPrivateUsers: null,
   publicUsersIncluded: null,
   maxPublicUsers: null,
+  maxWorkspaces: null,
 } as FeatureTier;
 
 /** Legacy feature tier. Min seats not included in base price. */
@@ -178,7 +178,6 @@ const basicFt = {
   annualSeatStripePriceId: "price_1L996PHIopbCiFeiaAWzCX2L",
   minUsers: 4,
   maxUsers: 10,
-  maxWorkspaces: null,
   monthlyViews: 100_000,
   versionHistoryDays: 30,
   analytics: false,
@@ -191,6 +190,35 @@ const basicFt = {
   maxPrivateUsers: null,
   publicUsersIncluded: null,
   maxPublicUsers: null,
+  maxWorkspaces: null,
+} as FeatureTier;
+
+/** Legacy seats-only feature tier. No min users, no base price. */
+const basicSeatsOnly = {
+  name: "Basic",
+  monthlyBasePrice: null,
+  monthlyBaseStripePriceId: null,
+  annualBasePrice: null,
+  annualBaseStripePriceId: null,
+  monthlySeatPrice: 15,
+  monthlySeatStripePriceId: "price_1JKnrcHIopbCiFeifoHWd1h2",
+  annualSeatPrice: 144,
+  annualSeatStripePriceId: "price_1JLFtRHIopbCiFeiWxfflHKB",
+  minUsers: 0,
+  maxUsers: 10,
+  monthlyViews: 100_000,
+  versionHistoryDays: 30,
+  analytics: false,
+  contentRole: false,
+  designerRole: false,
+  editContentCreatorMode: false,
+  localization: false,
+  splitContent: false,
+  privateUsersIncluded: null,
+  maxPrivateUsers: null,
+  publicUsersIncluded: null,
+  maxPublicUsers: null,
+  maxWorkspaces: null,
 } as FeatureTier;
 
 export const _testonly = {
@@ -200,4 +228,5 @@ export const _testonly = {
   starterFt,
   growthFt,
   basicFt,
+  basicSeatsOnly,
 };

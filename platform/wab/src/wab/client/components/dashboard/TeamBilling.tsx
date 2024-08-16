@@ -14,8 +14,6 @@ import {
   DefaultTeamBillingProps,
   PlasmicTeamBilling,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamBilling";
-import { ensure } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ApiFeatureTier,
   ApiTeam,
@@ -23,10 +21,12 @@ import {
   TeamMember,
 } from "@/wab/shared/ApiSchema";
 import {
-  calculateRecurringBill,
+  calculateBill,
   getSubscriptionStatus,
 } from "@/wab/shared/billing/billing-util";
+import { ensure } from "@/wab/shared/common";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ORGANIZATION_CAP } from "@/wab/shared/Labels";
 import { isUpgradableTier } from "@/wab/shared/pricing/pricing-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
@@ -67,20 +67,22 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
 
   const billingError =
     subStatus?.type === "invalid" ? subStatus.errorMsg : undefined;
-  const recurringBillTotal =
-    !team || !team.featureTier || !team.seats || !team.billingFrequency
-      ? null
-      : calculateRecurringBill(
-          team.featureTier,
-          team.seats,
-          team.billingFrequency,
-          DEVFLAGS.useNewFeatureTiers
-        );
-  const recurringBillDesc = !recurringBillTotal
-    ? null
-    : team?.billingFrequency === "year"
-    ? `$${recurringBillTotal}/year`
-    : `$${recurringBillTotal}/month`;
+
+  const currentBill = React.useMemo(() => {
+    if (!team?.featureTier || !team?.seats || !team?.billingFrequency) {
+      return null;
+    }
+
+    const bill = calculateBill(
+      team.featureTier,
+      team.seats,
+      team.billingFrequency
+    );
+    return team.billingFrequency === "year"
+      ? `$${bill.total}/year`
+      : `$${bill.total}/month`;
+  }, [team?.featureTier, team?.seats, team?.billingFrequency]);
+
   const seatsUsed = members.filter(
     (m) => !isCoreTeamEmail(m.email, DEVFLAGS)
   ).length;
@@ -203,7 +205,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
           ? "enterprise"
           : undefined
       }
-      currentBill={recurringBillDesc}
+      currentBill={currentBill}
       seatsUsed={`${seatsUsed}`}
       seatsPurchased={`${team?.seats ?? appCtx.appConfig.freeTier.maxUsers}`}
       changeSeatsButton={{
