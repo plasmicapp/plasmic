@@ -1,12 +1,11 @@
 // Must initialize globals early so that imported code can detect what
 // environment we're running in.
-import { ensureType, spawn } from "@/wab/shared/common";
-import { InsertableTemplatesGroup, Installable } from "@/wab/shared/devflags";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
 import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { initDb } from "@/wab/server/db/DbInitUtil";
 import { DbMgr, normalActor, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { seedTestFeatureTiers } from "@/wab/server/db/seed/feature-tier";
 import { FeatureTier, Team, User } from "@/wab/server/entities/Entities";
 import {
   getAllSysnames,
@@ -16,8 +15,10 @@ import {
 } from "@/wab/server/pkg-mgr";
 import { initializeGlobals } from "@/wab/server/svr-init";
 import { Bundler } from "@/wab/shared/bundler";
+import { ensureType, spawn } from "@/wab/shared/common";
 import { DEFAULT_INSERTABLE } from "@/wab/shared/constants";
 import { createSite } from "@/wab/shared/core/sites";
+import { InsertableTemplatesGroup, Installable } from "@/wab/shared/devflags";
 import { EntityManager } from "typeorm";
 
 initializeGlobals();
@@ -179,120 +180,6 @@ async function seedTestUserAndProjects(
   );
 
   return { user, projects };
-}
-
-/**
- * These feature tiers have Stripe IDs that map to our Stripe testmode account.
- * See docs/contributing/platform/02-integrations.md
- */
-async function seedTestFeatureTiers(em: EntityManager) {
-  const db0 = new DbMgr(em, SUPER_USER);
-  return {
-    enterpriseFt: await db0.addFeatureTier({
-      name: "Enterprise",
-      monthlyBasePrice: null,
-      monthlyBaseStripePriceId: null,
-      annualBasePrice: null,
-      annualBaseStripePriceId: null,
-      monthlySeatPrice: 80,
-      monthlySeatStripePriceId: "price_1Ji3EFHIopbCiFeiUCtiVOyB",
-      annualSeatPrice: 768,
-      annualSeatStripePriceId: "price_1Ji3EFHIopbCiFeiSj0U8o1K",
-      minUsers: 30,
-      maxUsers: 1_000,
-      maxWorkspaces: 10_000,
-      monthlyViews: 1_000_000,
-      versionHistoryDays: 180,
-      analytics: true,
-      contentRole: true,
-      designerRole: true,
-      editContentCreatorMode: true,
-      localization: true,
-      splitContent: true,
-      privateUsersIncluded: null,
-      maxPrivateUsers: null,
-      publicUsersIncluded: null,
-      maxPublicUsers: null,
-    }),
-    teamFt: await db0.addFeatureTier({
-      name: "Team",
-      monthlyBasePrice: 499,
-      monthlyBaseStripePriceId: "price_1N9VlSHIopbCiFeiTU6RyL48",
-      annualBasePrice: 4_788,
-      annualBaseStripePriceId: "price_1N9VlSHIopbCiFeibn88Ezt0",
-      monthlySeatPrice: 40,
-      monthlySeatStripePriceId: "price_1N9VlxHIopbCiFeiLf3ngIwB",
-      annualSeatPrice: 384,
-      annualSeatStripePriceId: "price_1N9VlxHIopbCiFeicxycQNAp",
-      minUsers: 8,
-      maxUsers: 30,
-      maxWorkspaces: 300,
-      monthlyViews: 500_000,
-      versionHistoryDays: 180,
-      analytics: true,
-      contentRole: true,
-      designerRole: true,
-      editContentCreatorMode: true,
-      localization: true,
-      splitContent: true,
-      privateUsersIncluded: null,
-      maxPrivateUsers: null,
-      publicUsersIncluded: null,
-      maxPublicUsers: null,
-    }),
-    proFt: await db0.addFeatureTier({
-      name: "Pro",
-      monthlyBasePrice: 129,
-      monthlyBaseStripePriceId: "price_1N9VkLHIopbCiFeiSChtf6dV",
-      annualBasePrice: 1_236,
-      annualBaseStripePriceId: "price_1N9VkLHIopbCiFeiFsiEryvl",
-      monthlySeatPrice: 20,
-      monthlySeatStripePriceId: "price_1N9VkpHIopbCiFeiNptqZ2BR",
-      annualSeatPrice: 192,
-      annualSeatStripePriceId: "price_1N9VkpHIopbCiFeiMi50AFEk",
-      minUsers: 4,
-      maxUsers: 10,
-      maxWorkspaces: 100,
-      monthlyViews: 250_000,
-      versionHistoryDays: 90,
-      analytics: false,
-      contentRole: false,
-      designerRole: false,
-      editContentCreatorMode: false,
-      localization: false,
-      splitContent: false,
-      privateUsersIncluded: null,
-      maxPrivateUsers: null,
-      publicUsersIncluded: null,
-      maxPublicUsers: null,
-    }),
-    starterFt: await db0.addFeatureTier({
-      name: "Starter",
-      monthlyBasePrice: 49,
-      monthlyBaseStripePriceId: "price_1N9VirHIopbCiFeicbMYaVhb",
-      annualBasePrice: 468,
-      annualBaseStripePriceId: "price_1N9VirHIopbCiFeiPRRXpINo",
-      monthlySeatPrice: 0,
-      monthlySeatStripePriceId: "price_1N9VjhHIopbCiFeic0V8lDJX",
-      annualSeatPrice: 0,
-      annualSeatStripePriceId: "price_1N9VjhHIopbCiFeiViCs7zEH",
-      minUsers: 4,
-      maxUsers: 10,
-      maxWorkspaces: 100,
-      monthlyViews: 250_000,
-      versionHistoryDays: 90,
-      analytics: false,
-      contentRole: false,
-      designerRole: false,
-      editContentCreatorMode: false,
-      localization: false,
-      splitContent: false,
-      privateUsersIncluded: null,
-      maxPrivateUsers: null,
-      publicUsersIncluded: null,
-      maxPublicUsers: null,
-    }),
-  };
 }
 
 async function seedTeam(
