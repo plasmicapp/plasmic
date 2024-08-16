@@ -108,6 +108,11 @@ export function registerMenu(loader?: Registerable) {
         defaultValueHint: "hover",
         advanced: true,
       },
+      defaultSelectedKeys: {
+        type: 'array',
+        description: 'An array of Menu Item/s that will be selected when this component first loads, eg ["home", "about"]. Each item in the array should be one of the unique keys set in nested Menu Item component props. Useful when using the Menu component to build a website navigation bar.',
+        advanced: true,
+      },
       //   menuScopeClassName: {
       //     type: "styleScopeClass",
       //     scopeName: "menu",
