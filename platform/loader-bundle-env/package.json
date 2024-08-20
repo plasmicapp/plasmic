@@ -4,6 +4,9 @@
   "dependenciesComments": {
     "@ant-design/pro-components": "Must be 2.6.4. Earlier doesn't support newer antd, later incurs a disallowed dynamic require of antd/es/layout/Sider. https://app.shortcut.com/plasmic/story/37043/richlayout-always-initially-loads-with-dark-background"
   },
+  "scripts": {
+    "postinstall": "patch-package"
+  },
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
     "@ant-design/pro-components": "2.6.4",
@@ -87,5 +90,9 @@
     "@ant-design/pro-components/antd": "^5.0.0",
     "@ant-design/pro-table/antd": "^5.0.0",
     "@ant-design/pro-list/antd": "^5.0.0"
+  },
+  "devDependencies": {
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0"
   }
 }
