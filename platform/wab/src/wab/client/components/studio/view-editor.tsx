@@ -843,9 +843,25 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
   focusResetListener: SignalBinding | undefined = undefined;
 
   private isFocusedOnCanvas() {
+    // We ignore a set of specific class names that are scrollable elements, which we
+    // consider that shouldn't be focusable. The reason why they are focusable is because
+    // of the behavior of Chromium that makes scrollable elements click-focusable.
+    //
+    // Chromium decided to roll back the change that made scrollable elements focusable,
+    // but we will keep this workaround.
+    // https://issues.chromium.org/issues/361072782
+    // https://linear.app/plasmic/issue/PLA-11118
+    const ignorableClassNames = [
+      "tpltree-scroller",
+      "canvas-editor__canvas-clipper",
+    ];
+    const isActiveElementOnCanvas =
+      document.activeElement === document.body ||
+      ignorableClassNames.some((cls) =>
+        document.activeElement?.classList.contains(cls)
+      );
     return (
-      document.activeElement === document.body &&
-      !this.props.studioCtx.isBottomModalFocused()
+      isActiveElementOnCanvas && !this.props.studioCtx.isBottomModalFocused()
     );
   }
 

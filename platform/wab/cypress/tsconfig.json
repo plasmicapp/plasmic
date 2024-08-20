@@ -4,7 +4,7 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "target": "es2019",
-    "types": ["cypress"]
+    "types": ["cypress", "cypress-real-events"]
   },
   "include": ["**/*.ts"]
 }

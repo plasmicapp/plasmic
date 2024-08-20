@@ -12029,6 +12029,11 @@ cypress-mouse-position@^1.0.0:
   resolved "https://registry.yarnpkg.com/cypress-mouse-position/-/cypress-mouse-position-1.0.0.tgz#bca23346faa66d9b68fe8486355e9cedd51f2733"
   integrity sha512-MZI4qELdMr8dpXL7JczyH2uBA1otXMZ1gHg5CmTMgS4Q8mXp0XAQdtpJOlTiVhMfhH7iV8r2ksNEGzvXXCOxOg==
 
+cypress-real-events@^1.13.0:
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/cypress-real-events/-/cypress-real-events-1.13.0.tgz#6b7cd32dcac172db1493608f97a2576c7d0bd5af"
+  integrity sha512-LoejtK+dyZ1jaT8wGT5oASTPfsNV8/ClRp99ruN60oPj8cBJYod80iJDyNwfPAu4GCxTXOhhAv9FO65Hpwt6Hg==
+
 cypress@^13.4.0:
   version "13.4.0"
   resolved "https://registry.yarnpkg.com/cypress/-/cypress-13.4.0.tgz#7d91069983ba7c664c505abde84d3e3e20484344"

@@ -1,3 +1,4 @@
+import "cypress-real-events";
 import * as utils from "../support/util";
 import { cyRequestDefaultOptions } from "../support/util";
 import Chainable = Cypress.Chainable;

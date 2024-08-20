@@ -167,6 +167,7 @@
     "cypress": "^13.4.0",
     "cypress-log-to-output": "^1.1.2",
     "cypress-mouse-position": "^1.0.0",
+    "cypress-real-events": "^1.13.0",
     "depcheck": "^1.4.3",
     "dependency-cruiser": "^9.21.6",
     "diff": "^4.0.2",
