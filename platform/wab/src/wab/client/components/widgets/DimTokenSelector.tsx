@@ -52,6 +52,7 @@ import {
 } from "@/wab/shared/css-size";
 import { StyleToken, isKnownStyleToken } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
+import { canCreateAlias } from "@/wab/shared/ui-config-utils";
 import { Tooltip, notification } from "antd";
 import type { TooltipPlacement } from "antd/es/tooltip";
 import cn from "classnames";
@@ -328,10 +329,12 @@ export const DimTokenSpinner = observer(
       (x) => x.type === "action" && x.item.type === "add-token"
     );
 
+    const uiConfig = studioCtx?.getCurrentUiConfig() || {};
+    const canCreateToken = canCreateAlias(uiConfig, "token");
     if (addTokenIndex >= 0) {
       virtualItems.splice(
         addTokenIndex,
-        0,
+        canCreateToken ? 0 : 1,
         ...filterFalsy([
           addTokenIndex > 0 && ({ type: "separator" } as const),
           { type: "header" } as const,

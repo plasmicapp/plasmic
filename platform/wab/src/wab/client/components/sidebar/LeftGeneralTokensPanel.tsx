@@ -28,6 +28,7 @@ import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { extractTokenUsages } from "@/wab/shared/core/styles";
 import { ProjectDependency, StyleToken } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
+import { canCreateAlias } from "@/wab/shared/ui-config-utils";
 import Chroma from "@/wab/shared/utils/color-utils";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
@@ -46,7 +47,11 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   const studioCtx = useStudioCtx();
   const [query, setQuery] = React.useState("");
   const matcher = new Matcher(query);
-  const readOnly = studioCtx.getLeftTabPermission("tokens") === "readable";
+
+  const uiConfig = studioCtx.getCurrentUiConfig();
+  const canCreateToken = canCreateAlias(uiConfig, "token");
+  const readOnly =
+    !canCreateToken || studioCtx.getLeftTabPermission("tokens") === "readable";
 
   const { filterDeps, filterProps } = useDepFilterButton({
     studioCtx,

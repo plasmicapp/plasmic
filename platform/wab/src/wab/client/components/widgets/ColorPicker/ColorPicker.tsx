@@ -23,7 +23,6 @@ import { ensureNumber, nudgeIntoRange } from "@/wab/client/number-utils";
 import { CloseIcon } from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure } from "@/wab/shared/common";
 import {
   TokenType,
   derefTokenRefs,
@@ -33,13 +32,15 @@ import {
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { TokenValueResolver } from "@/wab/shared/cached-selectors";
-import { StyleToken } from "@/wab/shared/model/classes";
-import { Chroma } from "@/wab/shared/utils/color-utils";
+import { ensure } from "@/wab/shared/common";
 import {
   allColorTokens,
   allStyleTokens,
   isStyleTokenEditable,
 } from "@/wab/shared/core/sites";
+import { StyleToken } from "@/wab/shared/model/classes";
+import { canCreateAlias } from "@/wab/shared/ui-config-utils";
+import { Chroma } from "@/wab/shared/utils/color-utils";
 import Pickr from "@simonwep/pickr";
 import "@simonwep/pickr/dist/themes/nano.min.css";
 import { Input, InputRef, Select, Tooltip } from "antd";
@@ -99,6 +100,9 @@ function ColorPicker_({
   vsh = new VariantedStylesHelper(),
 }: ColorPickerProps) {
   const sc = useStudioCtx();
+  const uiConfig = sc.getCurrentUiConfig();
+  const canCreateToken = canCreateAlias(uiConfig, "token");
+
   const justAddedRef = React.useRef<StyleToken | undefined>(undefined);
   const justAddedValue = justAddedRef.current;
 
@@ -554,6 +558,7 @@ function ColorPicker_({
               }
             }}
             selectedToken={appliedToken}
+            hideAddToken={!canCreateToken}
             onAddToken={async () => {
               return sc.changeUnsafe(() => {
                 const newToken = sc.tplMgr().addToken({

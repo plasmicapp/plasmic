@@ -3,11 +3,13 @@ import sty from "@/wab/client/components/modals/ContentEditorConfigModal.module.
 import Button from "@/wab/client/components/widgets/Button";
 import { Modal } from "@/wab/client/components/widgets/Modal";
 import Select from "@/wab/client/components/widgets/Select";
-import { ensureType, isOneOf, unreachable } from "@/wab/shared/common";
 import { toOpaque } from "@/wab/commons/types";
 import { PublicStyleSection, TemplateSpec } from "@/wab/shared/ApiSchema";
+import { ensureType, isOneOf, unreachable } from "@/wab/shared/common";
+import { capitalizeFirst } from "@/wab/shared/strs";
 import {
   BASIC_ALIASES,
+  BASIC_ENTITY_ALIASES,
   COMPONENT_ALIASES,
   LEFT_TAB_UI_KEYS,
   LeftTabUiKey,
@@ -15,7 +17,6 @@ import {
   UiConfig,
   makeNiceAliasName,
 } from "@/wab/shared/ui-config-utils";
-import { capitalizeFirst } from "@/wab/shared/strs";
 import { Alert, Form, Input } from "antd";
 import { capitalize, omit, uniqBy } from "lodash";
 import React from "react";
@@ -82,6 +83,17 @@ export function ContentEditorConfigModal(props: {
               message={`Changes to the project UI configuration will only take place after refreshing the page.`}
             />
           )}
+          <h3 className="mv-xlg">Creation</h3>
+          <Form.Item name={["canCreateBasics"]} noStyle>
+            <BooleanPreferencesControl
+              label="Can create basic entities?"
+              prefKeys={BASIC_ENTITY_ALIASES.map((alias) => ({
+                value: alias,
+                label: makeNiceAliasName(alias),
+              })).sort((a, b) => a.label.localeCompare(b.label))}
+            />
+          </Form.Item>
+
           <h3 className="mv-xlg">Insertion</h3>
           <Form.Item name={["canInsertBasics"]} noStyle>
             <BooleanPreferencesControl

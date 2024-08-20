@@ -1,6 +1,4 @@
-import { withoutNils } from "@/wab/shared/common";
 import { arrayReversed } from "@/wab/commons/collections";
-import { HostLessPackageInfo } from "@/wab/shared/devflags";
 import {
   ApiPermission,
   ApiResource,
@@ -10,6 +8,8 @@ import {
   StyleSectionVisibilities,
   TemplateSpec,
 } from "@/wab/shared/ApiSchema";
+import { withoutNils } from "@/wab/shared/common";
+import { HostLessPackageInfo } from "@/wab/shared/devflags";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import {
   FRAME_CAP,
@@ -39,7 +39,9 @@ export const BASIC_ALIASES = [
   "vstack",
 ] as const;
 
-export function makeNiceAliasName(alias: InsertAlias) {
+export const BASIC_ENTITY_ALIASES = ["token"] as const;
+
+export function makeNiceAliasName(alias: InsertAlias | CreateAlias) {
   if (alias === "box") {
     return FREE_CONTAINER_CAP;
   } else if (alias === "hstack") {
@@ -57,6 +59,9 @@ export function makeNiceAliasName(alias: InsertAlias) {
 }
 
 export type InsertBasicAlias = (typeof BASIC_ALIASES)[number];
+
+export type CreateBasicEntityAlias = (typeof BASIC_ENTITY_ALIASES)[number];
+export type CreateAlias = CreateBasicEntityAlias;
 
 export const COMPONENT_ALIASES = [
   "accordion",
@@ -161,6 +166,7 @@ export function canWrite(...access: UiAccess[]) {
 export interface UiConfig {
   styleSectionVisibilities?: Partial<StyleSectionVisibilities>;
   canInsertBasics?: Record<InsertBasicAlias, boolean> | boolean;
+  canCreateBasics?: Record<CreateBasicEntityAlias, boolean> | boolean;
   canInsertBuiltinComponent?: Record<InsertComponentAlias, boolean> | boolean;
   canInsertHostless?: Record<string, boolean> | boolean;
   hideDefaultPageTemplates?: boolean;
@@ -235,6 +241,7 @@ export function mergeUiConfigs(
       configs.map((c) => c.styleSectionVisibilities)
     ) as Partial<StyleSectionVisibilities>,
     canInsertBasics: mergeBooleanObjs(configs.map((c) => c.canInsertBasics)),
+    canCreateBasics: mergeBooleanObjs(configs.map((c) => c.canCreateBasics)),
     canInsertBuiltinComponent: mergeBooleanObjs(
       configs.map((c) => c.canInsertBuiltinComponent)
     ),
@@ -342,6 +349,14 @@ export function canInsertAlias(
       defaultAnswer
     );
   }
+}
+
+export function canCreateAlias(config: UiConfig, alias: CreateAlias): boolean {
+  return resolveBooleanPreference(
+    config.canCreateBasics,
+    (basicPrefs) => basicPrefs[alias],
+    true
+  );
 }
 
 export function getLeftTabPermission(
