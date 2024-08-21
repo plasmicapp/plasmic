@@ -115,6 +115,7 @@ import {
 } from "@/wab/shared/codegen/types";
 import {
   cleanPlainText,
+  ensureJsIdentifier,
   jsLiteral,
   jsString,
   paramToVarName,
@@ -336,6 +337,7 @@ import {
 import { ensureBaseVariant } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { getIntegrationsUrl, getPublicUrl } from "@/wab/shared/urls";
+import { JsIdentifier } from "@/wab/shared/utils/regex-js-identifier";
 import {
   makeGlobalVariantComboSorter,
   makeVariantComboSorter,
@@ -2271,7 +2273,7 @@ export function makeCssClassNameForVariantCombo(
     prefix?: string;
     superComp?: Component;
   }
-) {
+): JsIdentifier | "" {
   const isBase = isBaseVariant(variantCombo);
   if (isBase || variantCombo.length == 0) {
     return "";
@@ -2279,46 +2281,54 @@ export function makeCssClassNameForVariantCombo(
   const { targetEnv, prefix, superComp } = opts;
 
   variantCombo = sortBy(variantCombo, (v) => v.uuid);
-  return `${prefix ?? ""}${variantCombo
-    .map((variant) => {
-      if (targetEnv === "loader") {
-        return variant.uuid.slice(0, 5);
-      }
-      const variantName = toJsIdentifier(variant.name);
-      if (!variant.parent) {
-        if (!variant.selectors?.length) {
-          throw new Error(
-            "Error naming variant. Requires either a parent or non-empty list of selectors."
+  return ensureJsIdentifier(
+    `${prefix ?? ""}${variantCombo
+      .map((variant) => {
+        if (targetEnv === "loader") {
+          return variant.uuid.slice(0, 5);
+        }
+        const variantName = toJsIdentifier(variant.name);
+        if (!variant.parent) {
+          if (!variant.selectors?.length) {
+            throw new Error(
+              "Error naming variant. Requires either a parent or non-empty list of selectors."
+            );
+          }
+          return `${variantName}__${variant.selectors
+            .map((selector) => toJsIdentifier(selector))
+            .join("__")}`;
+        }
+
+        const group = variant.parent;
+        const isStandalone = isStandaloneVariantGroup(group);
+        let parentName = toJsIdentifier(group.param.variable.name);
+        if (
+          superComp &&
+          superComp.variantGroups.includes(group as ComponentVariantGroup)
+        ) {
+          parentName = ensureJsIdentifier(
+            `${toClassName(superComp.name)}__${parentName}`
           );
         }
-        return `${variantName}__${variant.selectors
-          .map((selector) => toJsIdentifier(selector))
-          .join("__")}`;
-      }
 
-      const group = variant.parent;
-      const isStandalone = isStandaloneVariantGroup(group);
-      let parentName = toJsIdentifier(group.param.variable.name);
-      if (
-        superComp &&
-        superComp.variantGroups.includes(group as ComponentVariantGroup)
-      ) {
-        parentName = `${toClassName(superComp.name)}__${parentName}`;
-      }
-
-      switch (variant.parent.type) {
-        default:
-          throw new Error("Unknown variant group");
-        case VariantGroupType.Component:
-          return isStandalone ? parentName : `${parentName}_${variantName}`;
-        case VariantGroupType.GlobalScreen:
-        case VariantGroupType.GlobalUserDefined:
-          return isStandalone
-            ? `global_${parentName}`
-            : `global_${parentName}_${variantName}`;
-      }
-    })
-    .join("_")}`;
+        switch (variant.parent.type) {
+          default:
+            throw new Error("Unknown variant group");
+          case VariantGroupType.Component:
+            return ensureJsIdentifier(
+              isStandalone ? parentName : `${parentName}_${variantName}`
+            );
+          case VariantGroupType.GlobalScreen:
+          case VariantGroupType.GlobalUserDefined:
+            return ensureJsIdentifier(
+              isStandalone
+                ? `global_${parentName}`
+                : `global_${parentName}_${variantName}`
+            );
+        }
+      })
+      .join("_")}`
+  );
 }
 
 function makeCssClassName(
@@ -2330,7 +2340,7 @@ function makeCssClassName(
     targetEnv: TargetEnv;
     useSimpleClassname?: boolean;
   }
-) {
+): JsIdentifier {
   const nodeName = nodeNamer(node);
   const namePart = nodeName
     ? toJsIdentifier(nodeName)
@@ -2365,11 +2375,13 @@ function makeCssClassName(
   const localClassName = `${namePart}${variantPart}${idPart}`;
   if (targetEnv === "loader") {
     // Use shortest unique id possible
-    return `${shortPlasmicPrefix}${uniqId}`;
+    return ensureJsIdentifier(`${shortPlasmicPrefix}${uniqId}`);
   }
-  return useSimpleClassname
-    ? localClassName
-    : `${getExportedComponentName(component)}__${localClassName}`;
+  return ensureJsIdentifier(
+    useSimpleClassname
+      ? localClassName
+      : `${getExportedComponentName(component)}__${localClassName}`
+  );
 }
 
 function shouldGenVariant(ctx: SerializerBaseContext, v: Variant) {

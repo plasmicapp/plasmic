@@ -57,7 +57,7 @@ const PlumeComponentView = observer(function PlumeComponentView(props: {
     })),
   ];
 
-  const allPropNames = new Set(
+  const allPropNames = new Set<string>(
     component.params.map((p) => toVarName(p.variable.name))
   );
 
