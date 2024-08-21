@@ -1,9 +1,9 @@
+import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React, { useEffect, useRef } from "react";
 import { ensure } from "./common";
-import { usePlasmicCanvasContext } from "@plasmicapp/host";
 
 export interface EmbedProps {
   className?: string;
@@ -77,8 +77,7 @@ export const embedMeta: ComponentMeta<EmbedProps> = {
     code: {
       type: "code",
       lang: "html",
-      defaultValueHint:
-        "<div>Paste your embed code via the right sidebar</div>",
+      defaultValue: "<div>Paste your embed code via the right sidebar</div>",
       description: "The HTML code to be embedded",
     },
     hideInEditor: {
