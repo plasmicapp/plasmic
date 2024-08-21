@@ -1,10 +1,16 @@
-import { assert, strict } from "@/wab/shared/common";
-import { isValidVariableName } from "@/wab/commons/codeutil";
 import { DeepReadonly } from "@/wab/commons/types";
-import { isCodeComponent, isVariantGroupParam } from "@/wab/shared/core/components";
-import { isSlot } from "@/wab/shared/SlotUtils";
+import { assert, strict } from "@/wab/shared/common";
+import {
+  isCodeComponent,
+  isVariantGroupParam,
+} from "@/wab/shared/core/components";
 import { Component, Param } from "@/wab/shared/model/classes";
+import { isSlot } from "@/wab/shared/SlotUtils";
 import { capitalizeFirst, decapitalizeFirst } from "@/wab/shared/strs";
+import {
+  isValidJsIdentifier,
+  validJsIdentifierChars,
+} from "@/wab/shared/utils/regex-js-identifier";
 import jsStringEscape from "js-string-escape";
 import camelCase from "lodash/camelCase";
 import deburr from "lodash/deburr";
@@ -23,33 +29,8 @@ export const prefixOfInternalNamespace = "$";
 export const DEFAULT_CONTEXT_VALUE = "PLEASE_RENDER_INSIDE_PROVIDER";
 
 export const toJsIdentifier = memoize(toJsIdentifier_, (...args) => {
-  return `${args[0]}_${args[1]?.allowUnderscore}_${args[1]?.capitalizeFirst}_${args[1]?.camelCase}`;
+  return `${args[0]}_${args[1]?.capitalizeFirst}_${args[1]?.camelCase}`;
 });
-
-export function validJsIdentifierChars(opts?: {
-  allowUnderscore?: boolean;
-  allowSpace?: boolean;
-  allowMinusSign?: boolean;
-  allowDollarSign?: boolean;
-}) {
-  return [
-    "\\u0621-\\u064A", // arabic
-    "\\u3400-\\u4DB5", // chinese
-    "\\u4E00-\\u9FCC", // chinese
-    "\\u0400-\\u04FF", // cyrillic
-    "\\u0370-\\u03ff", // greek
-    "\\u1f00-\\u1fff", // greek
-    "\\u0900-\\u097F", // hindi
-    "\\u3041-\\u3094", // japanese
-    "\\u30A1-\\u30FB", // japanese
-    "\\u0E00-\\u0E7F", // thai
-    "\\w",
-    ...(opts?.allowSpace ? ["\\s"] : []),
-    ...(opts?.allowMinusSign ? ["-"] : []),
-    ...(opts?.allowUnderscore ? ["_"] : []),
-    ...(opts?.allowDollarSign ? ["$"] : []),
-  ];
-}
 
 /**
  * Converts a string to a valid javascript identifier
@@ -93,12 +74,12 @@ function toJsIdentifier_(
   }
 
   // Prepend with "_" if cannot use as a js keyword
-  if (!isValidVariableName(str)) {
+  if (!isValidJsIdentifier(str)) {
     str = `_${str}`;
   }
 
   assert(
-    isValidVariableName(str),
+    isValidJsIdentifier(str),
     `Couldn't transform "${original}" into a valid JS identifier.`
   );
 

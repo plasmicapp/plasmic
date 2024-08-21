@@ -37,7 +37,6 @@ import {
   makeNodeNamerFromMap,
   nodeNameBackwardsCompatibility,
 } from "@/wab/shared/codegen/react-p";
-import { validJsIdentifierChars } from "@/wab/shared/codegen/util";
 import {
   customInsertMaps,
   ensure,
@@ -120,6 +119,7 @@ import {
   isKnownTplRef,
   isKnownVarRef,
 } from "@/wab/shared/model/classes";
+import { parse$$PropertyAccesses } from "@/wab/shared/utils/regex-dollardollar";
 import {
   makeVariantComboSorter,
   sortedVariantSettings,
@@ -567,35 +567,9 @@ export const customFunctionsAndLibsUsedByComponent = maybeComputedFn(
         ({ expr }) => isKnownCustomCode(expr) && isRealCodeExpr(expr) && expr
       )
     );
-    const usedFunctionIds = new Set<string>();
-    const validVariableChars = validJsIdentifierChars({
-      allowUnderscore: true,
-      allowDollarSign: true,
-    });
-    const usedFunctionIdRegExp = new RegExp(
-      [
-        "\\$\\$\\s*\\.\\s*(",
-        "[",
-        ...validVariableChars,
-        "]+",
-        "(?:\\s*\\.\\s*[",
-        ...validVariableChars,
-        "]+)?",
-        ")",
-      ].join(""),
-      "g"
+    const usedFunctionIds = new Set<string>(
+      codeExprs.flatMap(({ code }) => parse$$PropertyAccesses(code))
     );
-    codeExprs.forEach(({ code }) => {
-      // Matches:
-      // - `$$.abc` -> `abc`
-      // - `$$.a.b` -> `a.b`
-      // - `$$\n\t.lodash\n\t .remove` -> `lodash.remove`
-      [...code.matchAll(usedFunctionIdRegExp)].forEach((m) => {
-        if (m?.[1]) {
-          usedFunctionIds.add(m[1].replace(/\s/g, ""));
-        }
-      });
-    });
     const codeLibraryByJsIdentifier = new Map(
       allCodeLibraries(site).map(({ codeLibrary }) => [
         codeLibrary.jsIdentifier,

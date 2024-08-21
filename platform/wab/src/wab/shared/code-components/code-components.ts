@@ -23,11 +23,7 @@ import {
   ensureOnlyValidInteractiveVariantsInComponent,
   getInvalidInteractiveVariantsInComponent,
 } from "@/wab/shared/code-components/interaction-variants";
-import {
-  paramToVarName,
-  toVarName,
-  validJsIdentifierChars,
-} from "@/wab/shared/codegen/util";
+import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
 import {
   CustomError,
   assert,
@@ -186,7 +182,10 @@ import {
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { canComponentTakeRef } from "@/wab/shared/react-utils";
 import { CodeLibraryRegistration } from "@/wab/shared/register-library";
-import { validJsIdentifierRegex } from "@/wab/shared/utils/regex-valid-js-identifier";
+import {
+  validJsIdentifierChars,
+  validJsIdentifierRegex,
+} from "@/wab/shared/utils/regex-js-identifier";
 import type {
   ComponentMeta,
   ComponentRegistration,

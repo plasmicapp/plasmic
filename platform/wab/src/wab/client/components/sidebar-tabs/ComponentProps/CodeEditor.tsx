@@ -8,10 +8,10 @@ import Button from "@/wab/client/components/widgets/Button";
 import { Modal } from "@/wab/client/components/widgets/Modal";
 import { readUploadedFileAsText } from "@/wab/client/dom-utils";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import { validJsIdentifierChars } from "@/wab/shared/codegen/util";
 import { ensure, swallow } from "@/wab/shared/common";
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { isValidJavaScriptCode } from "@/wab/shared/parser-utils";
+import { hasUnexpected$$Usage } from "@/wab/shared/utils/regex-dollardollar";
 import { notification, Tooltip } from "antd";
 import { default as classNames } from "classnames";
 import jsonrepair from "jsonrepair";
@@ -60,29 +60,7 @@ export function checkSyntaxError(val: string) {
 }
 
 export function checkDisallowedUseOfLibs(val: string) {
-  const validVariableChars = validJsIdentifierChars({
-    allowUnderscore: true,
-    allowDollarSign: true,
-  });
-  const unexpectedLibUsageRegExp = new RegExp(
-    [
-      "(^|((?![",
-      ...validVariableChars,
-      "])[\\s\\S]))",
-      "\\$\\$",
-      "(?!\\s*\\.\\s*",
-      "[",
-      ...validVariableChars,
-      "]+",
-      ")",
-      "($|((?![",
-      ...validVariableChars,
-      "])[\\s\\S]))",
-    ].join(""),
-    "g"
-  );
-
-  if (val.match(unexpectedLibUsageRegExp)) {
+  if (hasUnexpected$$Usage(val)) {
     notification.warn({
       message: (
         <>
