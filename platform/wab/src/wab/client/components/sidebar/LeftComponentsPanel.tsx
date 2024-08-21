@@ -66,7 +66,7 @@ function mapToComponentPanelRow(
 
   return {
     type: "folder-component" as const,
-    key: `$${dep?.uuid ?? ""}-folder${item.path}`,
+    key: item.path,
     name: item.name,
     items: item.items.map((i) => mapToComponentPanelRow(i, dep)),
     count: item.count,
@@ -110,6 +110,7 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
 
   const makeCompsItems = (
     comps: Component[],
+    pathPrefix: string,
     dep?: ProjectDependency
   ): { items: ComponentPanelRow[]; count: number } => {
     comps = comps.filter(
@@ -124,11 +125,11 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
           ))
     );
     comps = sortComponentsByName(comps);
-    const componentTree = createFolderTreeStructure(
-      comps,
-      (item) => getFolderComponentTrimmedName(item),
-      (item) => mapToComponentPanelRow(item, dep)
-    );
+    const componentTree = createFolderTreeStructure(comps, {
+      pathPrefix,
+      getName: (item) => getFolderComponentTrimmedName(item),
+      mapper: (item) => mapToComponentPanelRow(item, dep),
+    });
 
     return { items: componentTree, count: comps.length };
   };
@@ -146,6 +147,7 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
               isReusableComponent(c) &&
               (isHostLessPackage(dep.site) || !isCodeComponent(c))
           ),
+          `${dep.uuid}-`,
           dep
         );
         return {
@@ -187,14 +189,14 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
   ].filter((folder) => folder.count > 0);
 
   const items: ComponentPanelRow[] = [
-    ...makeCompsItems(plainComponents).items,
+    ...makeCompsItems(plainComponents, "").items,
     ...(codeComponents.length > 0
       ? [
           {
             type: "folder" as const,
             name: "Code components",
             key: `$code-components-folder`,
-            ...makeCompsItems(codeComponents),
+            ...makeCompsItems(codeComponents, "$code-components-folder-"),
           },
         ]
       : []),
@@ -256,7 +258,6 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
           },
           autoFocus: true,
         },
-        hasFilter: false,
       }}
       newComponentButton={
         readOnly

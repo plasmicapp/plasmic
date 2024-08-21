@@ -29,9 +29,69 @@
 .searchbox:global(.__wab_instance):global(.__wab_instance) {
   position: relative;
 }
+.freeBox {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: auto;
+  flex-shrink: 0;
+}
+.expandButton:global(.__wab_instance) {
+  display: none;
+}
+.expandButtonrightOptions_groupingControls:global(.__wab_instance) {
+  display: flex;
+}
+.svg__pHvlx {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.svg__uzldM {
+  object-fit: cover;
+  max-width: 100%;
+  width: 24px;
+  height: 24px;
+  display: none;
+}
+.svgrightOptions_groupingControls__uzldMwWi {
+  display: block;
+}
+.svg___0R83 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.collapseButtonrightOptions_groupingControls:global(.__wab_instance) {
+  display: flex;
+}
+.svg__stOqr {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.svg___65HqT {
+  object-fit: cover;
+  max-width: 100%;
+  width: 24px;
+  height: 24px;
+}
+.svg__zxCn1 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
 .filterButton:global(.__wab_instance):global(.__wab_instance) {
   position: relative;
 }
-.filterButtonhasFilter:global(.__wab_instance):global(.__wab_instance) {
+.filterButtonrightOptions_filterControls:global(.__wab_instance):global(
+    .__wab_instance
+  ) {
   display: block;
 }

@@ -104,7 +104,7 @@ function PlasmicLeftMixinsPanel__RenderFunc(props: {
         data-plasmic-name={"leftSearchPanel"}
         data-plasmic-override={overrides.leftSearchPanel}
         className={classNames("__wab_instance", sty.leftSearchPanel)}
-        hasFilter={true}
+        rightOptions={"filterControls"}
       />
 
       <LeftPaneHeader

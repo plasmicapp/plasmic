@@ -6,49 +6,39 @@ import { TokenDefinedIndicator } from "@/wab/client/components/style-controls/To
 import { Matcher } from "@/wab/client/components/view-common";
 import Checkbox from "@/wab/client/components/widgets/Checkbox";
 import { PlasmicColorTokenControl } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicColorTokenControl";
-import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { TokenValue } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { TokenValueResolver } from "@/wab/shared/cached-selectors";
+import { getFolderDisplayName } from "@/wab/shared/folders/folders-util";
 import { StyleToken } from "@/wab/shared/model/classes";
 import Chroma from "@/wab/shared/utils/color-utils";
 import { Tooltip } from "antd";
 import classNames from "classnames";
 import * as React from "react";
-import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 
 interface ColorTokenControlProps {
-  studioCtx: StudioCtx;
+  style?: React.CSSProperties;
   token: StyleToken;
-  readOnly?: boolean;
+  tokenValue: TokenValue;
   matcher: Matcher;
   menu: () => React.ReactElement;
-  isDragging?: boolean;
-  dragHandleProps?: DraggableProvidedDragHandleProps;
   onClick?: () => void;
-  resolver: TokenValueResolver;
   vsh?: VariantedStylesHelper;
 }
 
 function ColorTokenControl(props: ColorTokenControlProps) {
-  const {
-    studioCtx,
-    token,
-    readOnly,
-    matcher,
-    menu,
-    isDragging,
-    dragHandleProps,
-    onClick,
-    resolver,
-    vsh,
-  } = props;
+  const { style, token, tokenValue, matcher, menu, onClick, vsh } = props;
+
+  const studioCtx = useStudioCtx();
 
   const multiAssetsActions = useMultiAssetsActions();
 
   const isSelected = multiAssetsActions.isAssetSelected(token.uuid);
 
+  const tokenName = getFolderDisplayName(token.name);
+
   return (
-    <Tooltip title={token.name} mouseEnterDelay={0.5}>
+    <Tooltip title={tokenName} mouseEnterDelay={0.5}>
       <PlasmicColorTokenControl
         icon={
           <>
@@ -63,19 +53,17 @@ function ColorTokenControl(props: ColorTokenControlProps) {
                 className={classNames("mr-sm")}
               />
             )}
-            <ColorSwatch color={resolver(token, vsh)} />
+            <ColorSwatch color={tokenValue} />
           </>
         }
-        value={matcher.boldSnippets(Chroma.stringify(resolver(token, vsh)))}
-        isDraggable={!readOnly}
-        isDragging={isDragging}
+        value={matcher.boldSnippets(Chroma.stringify(tokenValue))}
         listItem={{
-          dragHandleProps,
+          style,
           menu,
           onClick,
         }}
       >
-        {matcher.boldSnippets(token.name)}
+        {matcher.boldSnippets(tokenName)}
       </PlasmicColorTokenControl>
     </Tooltip>
   );

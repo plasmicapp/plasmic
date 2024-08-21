@@ -105,6 +105,7 @@ export const ComponentRow = observer(function ComponentRow(props: {
         style={{
           height: 32,
           paddingLeft: calcIndent * 16 + 6,
+          paddingRight: 6,
         }}
         icon={<Icon icon={ComponentIcon} />}
         menu={overlay}

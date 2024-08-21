@@ -3,19 +3,16 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-  border-top-width: 0px;
-  border-top-style: none;
-  border-right-width: 0px;
-  border-right-style: none;
-  border-left-width: 0px;
-  border-left-style: none;
   position: relative;
   width: 100%;
   min-width: 0;
   padding: 8px 16px;
-  border-color: var(--token-hoA5qaM-91G);
+}
+.rootborder_top {
+  border-top: 1px solid var(--token-hoA5qaM-91G);
+}
+.rootborder_bottom {
+  border-bottom: 1px solid var(--token-hoA5qaM-91G);
 }
 .freeBox___2Aimk {
   display: flex;

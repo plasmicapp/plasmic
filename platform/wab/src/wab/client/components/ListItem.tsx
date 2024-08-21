@@ -21,17 +21,16 @@ interface ListItemProps
   menu?: MenuType;
   onClick?: () => void;
   onClickMain?: () => void;
-  height?: number;
 }
 
 function ListItem(props: ListItemProps) {
   const {
+    style,
     showActionsOnHover,
     dragHandleProps,
     menu,
     onClick,
     onClickMain,
-    height,
     ...rest
   } = props;
   const [hover, setHover] = React.useState(false);
@@ -47,9 +46,7 @@ function ListItem(props: ListItemProps) {
       }}
       main={{
         onClick: onClickMain,
-        style: {
-          height,
-        },
+        style,
       }}
       showActions={props.showActions || (showActionsOnHover && hover)}
       // react-beautiful-dnd complains if we don't always render the dragHandle,

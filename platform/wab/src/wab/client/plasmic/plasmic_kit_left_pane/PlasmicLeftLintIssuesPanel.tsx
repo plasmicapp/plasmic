@@ -23,7 +23,6 @@ import {
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import LeftPaneHeader from "../../components/studio/LeftPaneHeader"; // plasmic-import: XLa52PvduIy/component
-import LeftSearchPanel from "../../components/studio/LeftSearchPanel"; // plasmic-import: TqAPn0srTq/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -51,7 +50,6 @@ export const PlasmicLeftLintIssuesPanel__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicLeftLintIssuesPanel__OverridesType = {
   root?: Flex__<"div">;
-  leftSearchPanel?: Flex__<typeof LeftSearchPanel>;
   leftPaneHeader?: Flex__<typeof LeftPaneHeader>;
   description?: Flex__<"div">;
   newComponentButton?: Flex__<typeof Button>;
@@ -101,14 +99,6 @@ function PlasmicLeftLintIssuesPanel__RenderFunc(props: {
         sty.root
       )}
     >
-      {false ? (
-        <LeftSearchPanel
-          data-plasmic-name={"leftSearchPanel"}
-          data-plasmic-override={overrides.leftSearchPanel}
-          className={classNames("__wab_instance", sty.leftSearchPanel)}
-          hasFilter={true}
-        />
-      ) : null}
       <LeftPaneHeader
         data-plasmic-name={"leftPaneHeader"}
         data-plasmic-override={overrides.leftPaneHeader}
@@ -167,13 +157,11 @@ function PlasmicLeftLintIssuesPanel__RenderFunc(props: {
 const PlasmicDescendants = {
   root: [
     "root",
-    "leftSearchPanel",
     "leftPaneHeader",
     "description",
     "newComponentButton",
     "content",
   ],
-  leftSearchPanel: ["leftSearchPanel"],
   leftPaneHeader: ["leftPaneHeader", "description", "newComponentButton"],
   description: ["description"],
   newComponentButton: ["newComponentButton"],
@@ -184,7 +172,6 @@ type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
-  leftSearchPanel: typeof LeftSearchPanel;
   leftPaneHeader: typeof LeftPaneHeader;
   description: "div";
   newComponentButton: typeof Button;
@@ -251,7 +238,6 @@ export const PlasmicLeftLintIssuesPanel = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
-    leftSearchPanel: makeNodeComponent("leftSearchPanel"),
     leftPaneHeader: makeNodeComponent("leftPaneHeader"),
     description: makeNodeComponent("description"),
     newComponentButton: makeNodeComponent("newComponentButton"),

@@ -144,7 +144,7 @@ function PlasmicLeftImagesPanel__RenderFunc(props: {
             "compact"
           ),
         })}
-        hasFilter={true}
+        rightOptions={"filterControls"}
       />
 
       <LeftPaneHeader

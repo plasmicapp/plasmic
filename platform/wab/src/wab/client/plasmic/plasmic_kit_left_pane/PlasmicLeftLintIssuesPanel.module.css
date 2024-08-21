@@ -9,10 +9,6 @@
   min-width: 0;
   min-height: 0;
 }
-.leftSearchPanel:global(.__wab_instance) {
-  position: relative;
-  flex-shrink: 0;
-}
 .leftPaneHeader:global(.__wab_instance) {
   position: relative;
 }

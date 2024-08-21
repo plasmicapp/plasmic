@@ -15,6 +15,7 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
   SingleBooleanChoiceArg,
   StrictProps,
   classNames,
@@ -44,13 +45,16 @@ createPlasmicElementProxy;
 
 export type PlasmicTokenTypeHeader__VariantMembers = {
   isExpanded: "isExpanded";
+  border: "top" | "bottom";
 };
 export type PlasmicTokenTypeHeader__VariantsArgs = {
   isExpanded?: SingleBooleanChoiceArg<"isExpanded">;
+  border?: MultiChoiceArg<"top" | "bottom">;
 };
 type VariantPropType = keyof PlasmicTokenTypeHeader__VariantsArgs;
 export const PlasmicTokenTypeHeader__VariantProps = new Array<VariantPropType>(
-  "isExpanded"
+  "isExpanded",
+  "border"
 );
 
 export type PlasmicTokenTypeHeader__ArgsType = {
@@ -70,6 +74,7 @@ export type PlasmicTokenTypeHeader__OverridesType = {
 export interface DefaultTokenTypeHeaderProps {
   tokenType?: React.ReactNode;
   isExpanded?: SingleBooleanChoiceArg<"isExpanded">;
+  border?: MultiChoiceArg<"top" | "bottom">;
   className?: string;
 }
 
@@ -102,6 +107,12 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isExpanded,
       },
+      {
+        path: "border",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.border,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -128,7 +139,11 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         plasmic_plasmic_kit_new_design_system_former_style_controls_css.plasmic_tokens,
         sty.root,
-        { [sty.rootisExpanded]: hasVariant($state, "isExpanded", "isExpanded") }
+        {
+          [sty.rootborder_bottom]: hasVariant($state, "border", "bottom"),
+          [sty.rootborder_top]: hasVariant($state, "border", "top"),
+          [sty.rootisExpanded]: hasVariant($state, "isExpanded", "isExpanded"),
+        }
       )}
     >
       <div

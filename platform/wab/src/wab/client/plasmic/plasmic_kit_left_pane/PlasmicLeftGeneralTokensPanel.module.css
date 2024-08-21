@@ -104,92 +104,16 @@
   padding-right: 0px;
   margin: 0px;
 }
-.freeBox {
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  height: auto;
-  max-width: 100%;
-  overflow-x: visible;
-  overflow-y: visible;
-  min-width: 0;
-  padding: 0px;
-}
-.colorTokens {
+.content {
   display: flex;
   position: relative;
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
   width: 100%;
+  height: 100%;
+  flex-grow: 1;
+  overflow: hidden;
   min-width: 0;
-  border-bottom: 1px solid var(--token-hoA5qaM-91G);
-}
-.spacingTokenHeader:global(.__wab_instance) {
-  position: relative;
-}
-.spacingTokens {
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  width: 100%;
-  min-width: 0;
-  border-bottom: 1px solid var(--token-hoA5qaM-91G);
-}
-.fontFamilyTokenHeader:global(.__wab_instance) {
-  position: relative;
-}
-.fontFamilyTokens {
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  width: 100%;
-  min-width: 0;
-  border-bottom: 1px solid var(--token-hoA5qaM-91G);
-}
-.fontSizeTokenHeader:global(.__wab_instance) {
-  position: relative;
-}
-.fontSizeTokens {
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  width: 100%;
-  min-width: 0;
-  border-bottom: 1px solid var(--token-hoA5qaM-91G);
-}
-.lineHeightTokenHeader:global(.__wab_instance) {
-  position: relative;
-}
-.lineHeightTokens {
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  width: 100%;
-  min-width: 0;
-  border-bottom: 1px solid var(--token-hoA5qaM-91G);
-}
-.opacityTokenHeader:global(.__wab_instance) {
-  position: relative;
-}
-.opacityTokens {
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  width: 100%;
-  min-width: 0;
-  border-bottom: 1px solid var(--token-hoA5qaM-91G);
+  min-height: 0;
 }

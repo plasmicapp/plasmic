@@ -287,6 +287,7 @@ import {
   ObjInst,
   PageArena,
   ProjectDependency,
+  StyleToken,
   TemplatedString,
   TplComponent,
   TplNode,
@@ -6132,6 +6133,18 @@ export class StudioCtx extends WithDbCtx {
     this._findReferencesComponent.set(c);
     if (!this.leftTabKey) {
       this.leftTabKey = "components";
+    }
+  }
+  private _findReferencesToken = observable.box<StyleToken | undefined>(
+    undefined
+  );
+  get findReferencesToken() {
+    return this._findReferencesToken.get();
+  }
+  set findReferencesToken(c: StyleToken | undefined) {
+    this._findReferencesToken.set(c);
+    if (!this.leftTabKey) {
+      this.leftTabKey = "tokens";
     }
   }
 

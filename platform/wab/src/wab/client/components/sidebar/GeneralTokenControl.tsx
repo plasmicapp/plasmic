@@ -3,58 +3,43 @@ import { TokenDefinedIndicator } from "@/wab/client/components/style-controls/To
 import { Matcher } from "@/wab/client/components/view-common";
 import Checkbox from "@/wab/client/components/widgets/Checkbox";
 import PlasmicGeneralTokenControl from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicGeneralTokenControl";
-import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { TokenValue } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { TokenValueResolver } from "@/wab/shared/cached-selectors";
+import { getFolderDisplayName } from "@/wab/shared/folders/folders-util";
 import { StyleToken } from "@/wab/shared/model/classes";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 
 interface GeneralTokenControlProps {
+  style?: React.CSSProperties;
   token: StyleToken;
-  readOnly?: boolean;
+  tokenValue: TokenValue;
   matcher: Matcher;
-  studioCtx: StudioCtx;
   menu: () => React.ReactElement;
-  className?: string;
-  isDragging?: boolean;
-  dragHandleProps?: DraggableProvidedDragHandleProps;
   onClick?: () => void;
-  resolver: TokenValueResolver;
   vsh?: VariantedStylesHelper;
 }
 
 const GeneralTokenControl = observer(function GeneralTokenControl(
   props: GeneralTokenControlProps
 ) {
-  const {
-    token,
-    matcher,
-    menu,
-    readOnly,
-    isDragging,
-    dragHandleProps,
-    onClick,
-    resolver,
-    studioCtx,
-    vsh,
-  } = props;
-  const realValue = resolver(token, vsh);
+  const { style, token, tokenValue, matcher, menu, onClick, vsh } = props;
+  const studioCtx = useStudioCtx();
+
   const multiAssetsActions = useMultiAssetsActions();
 
   const isSelected = multiAssetsActions.isAssetSelected(token.uuid);
 
+  const tokenName = getFolderDisplayName(token.name);
+
   return (
-    <Tooltip title={token.name} mouseEnterDelay={0.5}>
+    <Tooltip title={tokenName} mouseEnterDelay={0.5}>
       <PlasmicGeneralTokenControl
-        value={matcher.boldSnippets(realValue)}
-        className={props.className}
-        isDraggable={!readOnly}
-        isDragging={isDragging}
+        value={matcher.boldSnippets(tokenValue)}
         listItem={{
-          dragHandleProps,
+          style,
           menu,
           onClick,
           icon: (
@@ -74,7 +59,7 @@ const GeneralTokenControl = observer(function GeneralTokenControl(
         }}
         showIcon={!!vsh || multiAssetsActions.isSelecting}
       >
-        {matcher.boldSnippets(token.name)}
+        {matcher.boldSnippets(tokenName)}
       </PlasmicGeneralTokenControl>
     </Tooltip>
   );

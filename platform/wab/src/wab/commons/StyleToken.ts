@@ -38,14 +38,14 @@ export const enum TokenType {
   FontSize = "FontSize",
 }
 
-const tokenTypes = [
+export const tokenTypes = [
   TokenType.Color,
   TokenType.FontFamily,
   TokenType.FontSize,
   TokenType.LineHeight,
   TokenType.Opacity,
   TokenType.Spacing,
-];
+] as const;
 
 export function tokenTypeLabel(type: TokenType) {
   switch (type) {

@@ -55,7 +55,6 @@ import {
   ensureInstance,
   filterFalsy,
   insert,
-  last,
   mergeMaps,
   mkShortId,
   strictZip,
@@ -100,6 +99,10 @@ import {
   mergeParsedExprInfos,
   parseExpr,
 } from "@/wab/shared/eval/expression-parser";
+import {
+  getFolderDisplayName,
+  getFolderTrimmed,
+} from "@/wab/shared/folders/folders-util";
 import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import {
   ArenaFrame,
@@ -2311,11 +2314,7 @@ export function getFolderComponentDisplayName(component: Component) {
       ? component.name
       : "unnamed artboard";
 
-  const componentPath = componentName
-    .split("/")
-    .map((str) => str.trim())
-    .filter((str) => !!str);
-  return componentPath.length > 0 ? last(componentPath) : componentName;
+  return getFolderDisplayName(componentName);
 }
 
 export function getFolderComponentTrimmedName(component: Component) {
@@ -2326,11 +2325,7 @@ export function getFolderComponentTrimmedName(component: Component) {
     isCodeComponent(component) && component.codeComponentMeta.displayName
       ? component.codeComponentMeta.displayName
       : component.name;
-  return componentName
-    .split("/")
-    .map((str) => str.trim())
-    .filter((str) => !!str)
-    .join("/");
+  return getFolderTrimmed(componentName);
 }
 
 export function getCodeComponentDescription(component: CodeComponent) {

@@ -28,7 +28,6 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import TokenTypeHeader from "../../components/sidebar/TokenTypeHeader"; // plasmic-import: eMjSZ8G7mG/component
 import LeftPaneHeader from "../../components/studio/LeftPaneHeader"; // plasmic-import: XLa52PvduIy/component
 import LeftSearchPanel from "../../components/studio/LeftSearchPanel"; // plasmic-import: TqAPn0srTq/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
@@ -71,19 +70,7 @@ export type PlasmicLeftGeneralTokensPanel__OverridesType = {
   globalVariantsSelectContainer?: Flex__<"div">;
   globalVariantSelect?: Flex__<typeof Select>;
   option?: Flex__<typeof Select__Option>;
-  freeBox?: Flex__<"div">;
-  colorTokenHeader?: Flex__<typeof TokenTypeHeader>;
-  colorTokens?: Flex__<"div">;
-  spacingTokenHeader?: Flex__<typeof TokenTypeHeader>;
-  spacingTokens?: Flex__<"div">;
-  fontFamilyTokenHeader?: Flex__<typeof TokenTypeHeader>;
-  fontFamilyTokens?: Flex__<"div">;
-  fontSizeTokenHeader?: Flex__<typeof TokenTypeHeader>;
-  fontSizeTokens?: Flex__<"div">;
-  lineHeightTokenHeader?: Flex__<typeof TokenTypeHeader>;
-  lineHeightTokens?: Flex__<"div">;
-  opacityTokenHeader?: Flex__<typeof TokenTypeHeader>;
-  opacityTokens?: Flex__<"div">;
+  content?: Flex__<"div">;
 };
 
 export interface DefaultLeftGeneralTokensPanelProps {
@@ -171,7 +158,7 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
             "isTargeting"
           ),
         })}
-        hasFilter={true}
+        rightOptions={"groupingControls"}
       />
 
       <LeftPaneHeader
@@ -295,93 +282,10 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
       />
 
       <div
-        data-plasmic-name={"freeBox"}
-        data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox, {
-          [sty.freeBoxisTargeting]: hasVariant(
-            $state,
-            "isTargeting",
-            "isTargeting"
-          ),
-        })}
-      >
-        <TokenTypeHeader
-          data-plasmic-name={"colorTokenHeader"}
-          data-plasmic-override={overrides.colorTokenHeader}
-          tokenType={"Colors"}
-        />
-
-        <div
-          data-plasmic-name={"colorTokens"}
-          data-plasmic-override={overrides.colorTokens}
-          className={classNames(projectcss.all, sty.colorTokens)}
-        />
-
-        <TokenTypeHeader
-          data-plasmic-name={"spacingTokenHeader"}
-          data-plasmic-override={overrides.spacingTokenHeader}
-          className={classNames("__wab_instance", sty.spacingTokenHeader)}
-          tokenType={"Spaces"}
-        />
-
-        <div
-          data-plasmic-name={"spacingTokens"}
-          data-plasmic-override={overrides.spacingTokens}
-          className={classNames(projectcss.all, sty.spacingTokens)}
-        />
-
-        <TokenTypeHeader
-          data-plasmic-name={"fontFamilyTokenHeader"}
-          data-plasmic-override={overrides.fontFamilyTokenHeader}
-          className={classNames("__wab_instance", sty.fontFamilyTokenHeader)}
-          tokenType={"Font Families"}
-        />
-
-        <div
-          data-plasmic-name={"fontFamilyTokens"}
-          data-plasmic-override={overrides.fontFamilyTokens}
-          className={classNames(projectcss.all, sty.fontFamilyTokens)}
-        />
-
-        <TokenTypeHeader
-          data-plasmic-name={"fontSizeTokenHeader"}
-          data-plasmic-override={overrides.fontSizeTokenHeader}
-          className={classNames("__wab_instance", sty.fontSizeTokenHeader)}
-          tokenType={"Font Sizes"}
-        />
-
-        <div
-          data-plasmic-name={"fontSizeTokens"}
-          data-plasmic-override={overrides.fontSizeTokens}
-          className={classNames(projectcss.all, sty.fontSizeTokens)}
-        />
-
-        <TokenTypeHeader
-          data-plasmic-name={"lineHeightTokenHeader"}
-          data-plasmic-override={overrides.lineHeightTokenHeader}
-          className={classNames("__wab_instance", sty.lineHeightTokenHeader)}
-          tokenType={"Line Heights"}
-        />
-
-        <div
-          data-plasmic-name={"lineHeightTokens"}
-          data-plasmic-override={overrides.lineHeightTokens}
-          className={classNames(projectcss.all, sty.lineHeightTokens)}
-        />
-
-        <TokenTypeHeader
-          data-plasmic-name={"opacityTokenHeader"}
-          data-plasmic-override={overrides.opacityTokenHeader}
-          className={classNames("__wab_instance", sty.opacityTokenHeader)}
-          tokenType={"Opacities"}
-        />
-
-        <div
-          data-plasmic-name={"opacityTokens"}
-          data-plasmic-override={overrides.opacityTokens}
-          className={classNames(projectcss.all, sty.opacityTokens)}
-        />
-      </div>
+        data-plasmic-name={"content"}
+        data-plasmic-override={overrides.content}
+        className={classNames(projectcss.all, sty.content)}
+      />
     </div>
   ) as React.ReactElement | null;
 }
@@ -395,19 +299,7 @@ const PlasmicDescendants = {
     "globalVariantsSelectContainer",
     "globalVariantSelect",
     "option",
-    "freeBox",
-    "colorTokenHeader",
-    "colorTokens",
-    "spacingTokenHeader",
-    "spacingTokens",
-    "fontFamilyTokenHeader",
-    "fontFamilyTokens",
-    "fontSizeTokenHeader",
-    "fontSizeTokens",
-    "lineHeightTokenHeader",
-    "lineHeightTokens",
-    "opacityTokenHeader",
-    "opacityTokens",
+    "content",
   ],
   leftSearchPanel: ["leftSearchPanel"],
   leftPaneHeader: [
@@ -425,33 +317,7 @@ const PlasmicDescendants = {
   ],
   globalVariantSelect: ["globalVariantSelect", "option"],
   option: ["option"],
-  freeBox: [
-    "freeBox",
-    "colorTokenHeader",
-    "colorTokens",
-    "spacingTokenHeader",
-    "spacingTokens",
-    "fontFamilyTokenHeader",
-    "fontFamilyTokens",
-    "fontSizeTokenHeader",
-    "fontSizeTokens",
-    "lineHeightTokenHeader",
-    "lineHeightTokens",
-    "opacityTokenHeader",
-    "opacityTokens",
-  ],
-  colorTokenHeader: ["colorTokenHeader"],
-  colorTokens: ["colorTokens"],
-  spacingTokenHeader: ["spacingTokenHeader"],
-  spacingTokens: ["spacingTokens"],
-  fontFamilyTokenHeader: ["fontFamilyTokenHeader"],
-  fontFamilyTokens: ["fontFamilyTokens"],
-  fontSizeTokenHeader: ["fontSizeTokenHeader"],
-  fontSizeTokens: ["fontSizeTokens"],
-  lineHeightTokenHeader: ["lineHeightTokenHeader"],
-  lineHeightTokens: ["lineHeightTokens"],
-  opacityTokenHeader: ["opacityTokenHeader"],
-  opacityTokens: ["opacityTokens"],
+  content: ["content"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -464,19 +330,7 @@ type NodeDefaultElementType = {
   globalVariantsSelectContainer: "div";
   globalVariantSelect: typeof Select;
   option: typeof Select__Option;
-  freeBox: "div";
-  colorTokenHeader: typeof TokenTypeHeader;
-  colorTokens: "div";
-  spacingTokenHeader: typeof TokenTypeHeader;
-  spacingTokens: "div";
-  fontFamilyTokenHeader: typeof TokenTypeHeader;
-  fontFamilyTokens: "div";
-  fontSizeTokenHeader: typeof TokenTypeHeader;
-  fontSizeTokens: "div";
-  lineHeightTokenHeader: typeof TokenTypeHeader;
-  lineHeightTokens: "div";
-  opacityTokenHeader: typeof TokenTypeHeader;
-  opacityTokens: "div";
+  content: "div";
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -547,19 +401,7 @@ export const PlasmicLeftGeneralTokensPanel = Object.assign(
     ),
     globalVariantSelect: makeNodeComponent("globalVariantSelect"),
     option: makeNodeComponent("option"),
-    freeBox: makeNodeComponent("freeBox"),
-    colorTokenHeader: makeNodeComponent("colorTokenHeader"),
-    colorTokens: makeNodeComponent("colorTokens"),
-    spacingTokenHeader: makeNodeComponent("spacingTokenHeader"),
-    spacingTokens: makeNodeComponent("spacingTokens"),
-    fontFamilyTokenHeader: makeNodeComponent("fontFamilyTokenHeader"),
-    fontFamilyTokens: makeNodeComponent("fontFamilyTokens"),
-    fontSizeTokenHeader: makeNodeComponent("fontSizeTokenHeader"),
-    fontSizeTokens: makeNodeComponent("fontSizeTokens"),
-    lineHeightTokenHeader: makeNodeComponent("lineHeightTokenHeader"),
-    lineHeightTokens: makeNodeComponent("lineHeightTokens"),
-    opacityTokenHeader: makeNodeComponent("opacityTokenHeader"),
-    opacityTokens: makeNodeComponent("opacityTokens"),
+    content: makeNodeComponent("content"),
 
     // Metadata about props expected for PlasmicLeftGeneralTokensPanel
     internalVariantProps: PlasmicLeftGeneralTokensPanel__VariantProps,

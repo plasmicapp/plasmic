@@ -11,7 +11,13 @@ export interface RenderElementProps<T> {
     level: number;
     canOpen: boolean;
     isOpen: boolean;
+    toggleExpand: () => void;
   };
+}
+
+export interface VirtualTreeRef {
+  expandAll: () => void;
+  collapseAll: () => void;
 }
 
 type Key = string;
@@ -46,7 +52,10 @@ interface VirtualTreeProps<T> {
   renderElement: RenderElement<T>;
 }
 
-export function VirtualTree<T>(props: VirtualTreeProps<T>) {
+export const VirtualTree = React.forwardRef(function <T>(
+  props: VirtualTreeProps<T>,
+  ref: React.ForwardedRef<VirtualTreeRef>
+) {
   const {
     rootNodes,
     query,
@@ -57,16 +66,26 @@ export function VirtualTree<T>(props: VirtualTreeProps<T>) {
     renderElement,
   } = props;
 
-  const ref = React.useRef<VariableSizeList>(null);
+  const listRef = React.useRef<VariableSizeList>(null);
 
-  const { nodeData, nodeKey, nodeHeights } = useTreeData(
-    rootNodes,
-    query,
-    renderElement,
-    getNodeKey,
-    getNodeChildren,
-    getNodeSearchText,
-    getNodeHeight
+  const { nodeData, nodeKey, nodeHeights, expandAll, collapseAll } =
+    useTreeData(
+      rootNodes,
+      query,
+      renderElement,
+      getNodeKey,
+      getNodeChildren,
+      getNodeSearchText,
+      getNodeHeight
+    );
+
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      expandAll,
+      collapseAll,
+    }),
+    [expandAll, collapseAll]
   );
 
   const getItemSize = React.useMemo(() => {
@@ -75,10 +94,10 @@ export function VirtualTree<T>(props: VirtualTreeProps<T>) {
     };
   }, [JSON.stringify(nodeHeights)]);
   React.useEffect(() => {
-    if (ref.current) {
+    if (listRef.current) {
       // When the sizes of the items in the list change, we need to reset
       // the cached state of the virtual list
-      ref.current.resetAfterIndex(0);
+      listRef.current.resetAfterIndex(0);
     }
   }, [JSON.stringify(nodeHeights)]);
 
@@ -87,7 +106,7 @@ export function VirtualTree<T>(props: VirtualTreeProps<T>) {
       {({ height }) =>
         height > 0 && (
           <VariableSizeList
-            ref={ref}
+            ref={listRef}
             width={"100%"}
             height={height}
             itemCount={nodeData.treeData.nodes.length}
@@ -102,7 +121,10 @@ export function VirtualTree<T>(props: VirtualTreeProps<T>) {
       }
     </ListSpace>
   );
-}
+}) as <T>(
+  props: VirtualTreeProps<T> & React.RefAttributes<VirtualTreeRef>
+) => React.JSX.Element;
+
 const genericMemo: <T>(
   component: T,
   propsAreEqual?: (
@@ -167,21 +189,24 @@ const TreeNodeRow = <T,>(props: TreeNodeRowProps<T>) => {
     renderElement,
   } = props;
   const onClickHandle = React.useMemo(() => {
-    if (!canOpen) {
-      return undefined;
-    }
     return () => toggleExpand(nodeKey);
-  }, [nodeKey, canOpen, toggleExpand]);
+  }, [nodeKey, toggleExpand]);
   const treeState = React.useMemo(() => {
     return {
       matcher,
       level,
       canOpen: canOpen,
       isOpen: isOpen,
+      toggleExpand: () => toggleExpand(nodeKey),
     };
-  }, [matcher, level, canOpen, isOpen]);
+  }, [matcher, level, canOpen, isOpen, toggleExpand]);
   return (
-    <li className="flex" key={nodeKey} style={style} onClick={onClickHandle}>
+    <li
+      className="flex"
+      key={nodeKey}
+      style={style}
+      onClick={canOpen ? onClickHandle : undefined}
+    >
       {renderElement({
         value,
         treeState,
@@ -237,6 +262,23 @@ function useTreeData<T>(
     ]
   );
 
+  // In case we delete the last children of a opened node,
+  // we need to remove the node from the expanded nodes set.
+  React.useEffect(() => {
+    const fixedExpandedNodes = new Set<Key>();
+    visibleNodes.forEach((node) => {
+      if (
+        getNodeChildren(node.value).length > 0 &&
+        expandedNodes.has(node.key)
+      ) {
+        fixedExpandedNodes.add(node.key);
+      }
+    });
+    if (fixedExpandedNodes.size !== expandedNodes.size) {
+      setExpandedNodes(fixedExpandedNodes);
+    }
+  }, [visibleNodes, expandedNodes]);
+
   const nodeData: TreeRowData<T> = React.useMemo(
     () => ({
       treeData: {
@@ -249,10 +291,17 @@ function useTreeData<T>(
     [visibleNodes, matcher, toggleExpand]
   );
   const nodeKey = React.useCallback(
-    (index: number, data: TreeRowData<T>) =>
-      getNodeKey(data.treeData.nodes[index].value),
-    [getNodeKey]
+    (index: number, data: TreeRowData<T>) => data.treeData.nodes[index].key,
+    []
   );
+  const expandAll = React.useCallback(() => {
+    setExpandedNodes(
+      new Set(getAllNodeKeys(nodes, getNodeKey, getNodeChildren))
+    );
+  }, [nodes, setExpandedNodes, getNodeKey, getNodeChildren]);
+  const collapseAll = React.useCallback(() => {
+    setExpandedNodes(new Set());
+  }, [setExpandedNodes]);
   const nodeHeights: number[] = React.useMemo(
     () => visibleNodes.map((node) => getNodeHeight(node.value)),
     [visibleNodes]
@@ -262,6 +311,8 @@ function useTreeData<T>(
     nodeData,
     nodeKey,
     nodeHeights,
+    expandAll,
+    collapseAll,
   };
 }
 
@@ -289,7 +340,7 @@ function buildVisibleNodes<T>(
       key,
       value: node,
       isOpen: hasQuery || expandedNodes.has(key),
-      canOpen: !(children.length === 0),
+      canOpen: children.length > 0,
       level: depth,
       parentKey: parentKey,
     });
@@ -314,4 +365,21 @@ function buildVisibleNodes<T>(
 
   rootNodes.forEach((node) => pushVisibleNodes(node, undefined, 0, false));
   return visibleNodes;
+}
+
+function getAllNodeKeys<T>(
+  rootNodes: T[],
+  getNodeKey: (node: T) => string,
+  getNodeChildren: (node: T) => T[]
+): string[] {
+  const keys: string[] = [];
+
+  const pushKeys = (node: T) => {
+    const children = getNodeChildren(node);
+    keys.push(getNodeKey(node));
+    children.forEach((child) => pushKeys(child));
+  };
+
+  rootNodes.forEach((node) => pushKeys(node));
+  return keys;
 }

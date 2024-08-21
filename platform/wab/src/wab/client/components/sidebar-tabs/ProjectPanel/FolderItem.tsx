@@ -65,7 +65,7 @@ const FolderItem = observer(
         listItem={{
           menu,
           style: {
-            paddingLeft: (indent ?? 0) * 24,
+            paddingLeft: (indent ?? 0) * 24 + 16,
           },
           isHighlighted,
           showActionsOnHover: !!onClickActions,
