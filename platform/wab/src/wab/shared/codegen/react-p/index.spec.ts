@@ -1,0 +1,242 @@
+import { makeCssClassNameForVariantCombo } from "@/wab/shared/codegen/react-p/index";
+import { ComponentType, mkComponent } from "@/wab/shared/core/components";
+import { mkParam, ParamTypes } from "@/wab/shared/core/lang";
+import { mkTplTagX, trackComponentRoot } from "@/wab/shared/core/tpls";
+import {
+  Component,
+  TplNode,
+  Variant,
+  VariantGroup,
+} from "@/wab/shared/model/classes";
+import { typeFactory } from "@/wab/shared/model/model-util";
+import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
+import { mkComponentVariantGroup } from "@/wab/shared/Variants";
+
+function expectMakeCssClassNameForVariantCombo(
+  variantCombo: Variant[],
+  { prefix, superComp }: { prefix?: string; superComp?: Component },
+  expected: {
+    loader: string;
+    nonLoader: string;
+  }
+) {
+  expect(
+    makeCssClassNameForVariantCombo(variantCombo, {
+      targetEnv: "loader",
+      prefix,
+      superComp,
+    })
+  ).toEqual(expected.loader);
+
+  ["canvas" as const, "codegen" as const, "preview" as const].forEach(
+    (targetEnv) => {
+      expect(
+        makeCssClassNameForVariantCombo(variantCombo, {
+          targetEnv,
+          prefix,
+          superComp,
+        })
+      ).toEqual(expected.nonLoader);
+    }
+  );
+}
+
+describe("makeCssClassNameForVariantCombo", () => {
+  it("works for empty variants", () => {
+    expectMakeCssClassNameForVariantCombo(
+      [],
+      {},
+      {
+        loader: "",
+        nonLoader: "",
+      }
+    );
+  });
+
+  it("works with prefix", () => {
+    expectMakeCssClassNameForVariantCombo(
+      [
+        mkVariant({
+          uuid: "abcdef",
+          name: "",
+          selectors: ["Hovered"],
+        }),
+      ],
+      {
+        prefix: "123",
+      },
+      {
+        loader: "123abcde", // BUG
+        nonLoader: "123___hovered", // BUG
+      }
+    );
+  });
+
+  describe("with variants with selectors", () => {
+    it("works for variant with 1 selector", () => {
+      expectMakeCssClassNameForVariantCombo(
+        [
+          mkVariant({
+            uuid: "12345678",
+            name: "",
+            selectors: ["Hovered"],
+          }),
+        ],
+        {},
+        {
+          loader: "12345", // BUG
+          nonLoader: "___hovered",
+        }
+      );
+    });
+    it("works for variant with 2 selectors", () => {
+      expectMakeCssClassNameForVariantCombo(
+        [
+          mkVariant({
+            uuid: "12345678",
+            name: "",
+            selectors: ["Hovered", "Focused Within"],
+          }),
+        ],
+        {},
+        {
+          loader: "12345", // BUG
+          nonLoader: "___hovered__focusedWithin",
+        }
+      );
+    });
+  });
+
+  describe("with component variants", () => {
+    let component: Component;
+    let variant1, variant2: Variant;
+    beforeEach(() => {
+      component = mkComponent({
+        name: "my component",
+        type: ComponentType.Plain,
+        tplTree: mkTplTagX("div", {}),
+      });
+      trackComponentRoot(component);
+
+      const variantGroup = mkComponentVariantGroup({
+        param: mkParam({
+          name: "component variant group",
+          type: typeFactory.text(),
+          paramType: ParamTypes.State,
+        }),
+      });
+      component.variantGroups.push(variantGroup);
+
+      variant1 = mkVariant({
+        uuid: "var1",
+        name: "Variant 1",
+        parent: variantGroup,
+      });
+      variant2 = mkVariant({
+        uuid: "var2",
+        name: "Variant 2",
+        parent: variantGroup,
+      });
+      component.variants.push(variant1, variant2);
+    });
+    it("works for 1 component variant", () => {
+      expectMakeCssClassNameForVariantCombo(
+        [variant1],
+        {
+          superComp: component,
+        },
+        {
+          loader: "var1",
+          nonLoader: "MyComponent__componentVariantGroup_variant1",
+        }
+      );
+    });
+    it("works for 2 component variants", () => {
+      expectMakeCssClassNameForVariantCombo(
+        [variant1, variant2],
+        {
+          superComp: component,
+        },
+        {
+          loader: "var1_var2",
+          nonLoader:
+            "MyComponent__componentVariantGroup_variant1_MyComponent__componentVariantGroup_variant2",
+        }
+      );
+    });
+  });
+
+  describe("with global variants", () => {
+    let mobileVariant, desktopVariant: Variant;
+    beforeEach(() => {
+      const screenVariantGroup = mkScreenVariantGroup();
+      mobileVariant = mkVariant({
+        uuid: "123mobile",
+        name: "Mobile",
+        parent: screenVariantGroup,
+      });
+      desktopVariant = mkVariant({
+        uuid: "456desktop",
+        name: "Desktop",
+        parent: screenVariantGroup,
+      });
+      screenVariantGroup.variants.push(mobileVariant);
+    });
+    it("works for 1 global variant", () => {
+      expectMakeCssClassNameForVariantCombo(
+        [mobileVariant],
+        {},
+        {
+          loader: "123mo", // BUG
+          nonLoader: "global_screen_mobile",
+        }
+      );
+      expectMakeCssClassNameForVariantCombo(
+        [desktopVariant],
+        {},
+        {
+          loader: "456de", // BUG
+          nonLoader: "global_screen_desktop",
+        }
+      );
+    });
+    it("works for 2 global variants by sorting uuid", () => {
+      expectMakeCssClassNameForVariantCombo(
+        [mobileVariant, desktopVariant],
+        {},
+        {
+          loader: "123mo_456de", // BUG
+          nonLoader: "global_screen_mobile_global_screen_desktop",
+        }
+      );
+    });
+  });
+});
+
+function mkVariant({
+  uuid,
+  name,
+  selectors,
+  parent,
+  mediaQuery,
+  description,
+  forTpl,
+}: {
+  uuid: string;
+  name: string;
+  selectors?: string[];
+  parent?: VariantGroup;
+  mediaQuery?: string | null;
+  description?: string | null;
+  forTpl?: TplNode | null;
+}) {
+  return new Variant({
+    uuid,
+    name,
+    selectors,
+    parent,
+    mediaQuery,
+    description,
+    forTpl,
+  });
+}
