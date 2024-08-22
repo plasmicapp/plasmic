@@ -234,7 +234,7 @@ describe("Figma importer slot handling", () => {
         color: "primary",
         swapChild: "ButtonSwap",
         Type: "ghost",
-        "Exposed prop 1": "exposedProp1",
+        "exposedInst.Exposed prop 1": "exposedProp1",
       });
     });
 

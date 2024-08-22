@@ -2,6 +2,7 @@ import { ACCEPTED_PROP_TYPES } from "@/wab/client/figma-importer/constants";
 import {
   ComponentPropertiesEntries,
   ComponentProperty,
+  ComponentPropertyEntry,
   InstanceNode,
 } from "@/wab/client/figma-importer/plugin-types";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -154,7 +155,11 @@ function fromFigmaNodeToFigmaProps(
   const exposedInstances: InstanceNode[] = inst.exposedInstances ?? [];
 
   const exposedProps = exposedInstances.flatMap((_inst) =>
-    fromFigmaNodeToFigmaProps(component, _inst, descendants)
+    fromFigmaNodeToFigmaProps(component, _inst, descendants).map(
+      ([key, value]): ComponentPropertyEntry => {
+        return [`${_inst.name}.${key}`, value];
+      }
+    )
   );
 
   // When creating the nodes while denormalizing the data, we always create an
