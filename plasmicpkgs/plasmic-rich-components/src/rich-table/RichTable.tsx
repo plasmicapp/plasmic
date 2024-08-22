@@ -101,8 +101,9 @@ export function RichTable(props: RichTableProps) {
     rowKey,
     scopeClassName,
   } = props;
+  const isClient = useIsClient();
 
-  const normalizedData = useNormalizedData(rawData);
+  const normalizedData = useNormalizedData(isClient ? rawData : []);
 
   const data = useMemo(() => {
     if (!normalizedData?.data) {
@@ -121,8 +122,6 @@ export function RichTable(props: RichTableProps) {
   );
 
   const rowSelectionProps = useRowSelectionProps(data, props);
-
-  const isClient = useIsClient();
 
   if (!isClient) {
     return null;
@@ -352,7 +351,7 @@ function useColumnDefinitions(
             return defaultRender(_);
           },
 
-          render: (value: any, record: any, rowIndex: any) => {
+          render: (_value: any, record: any, _rowIndex: any) => {
             return renderValue(record, cconfig);
           },
         };
