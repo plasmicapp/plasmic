@@ -3291,10 +3291,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-query/-/plasmic-query-0.0.224.tgz#bcb695afd772c1810835af88f36460d293641705"
   integrity sha512-3/GOKSREwq/ChZNMdLBLbPVtwla2PG2+JiJLKv/Kg/lHPMhup/n1cxDfhdSNt9H5oy6oKhzuAlnOm1XgX5WnJw==
 
-"@plasmicpkgs/plasmic-rich-components@^1.0.195":
-  version "1.0.195"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-rich-components/-/plasmic-rich-components-1.0.195.tgz#bc359ecf31d32a8a4a5656ac73761ec63d33d5f2"
-  integrity sha512-Czu8yBM9vfpzNyuYp48ALAHU5MK+k2yfB4uVyrlu2YTMYIR18bP9ydh0sh+xJy4S0rmwHrjgGlyFdly8yW/igQ==
+"@plasmicpkgs/plasmic-rich-components@^1.0.196":
+  version "1.0.196"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-rich-components/-/plasmic-rich-components-1.0.196.tgz#a9292c75fabc509ff3794997e2cbd30bf8584859"
+  integrity sha512-YGDeMgfnP2SLR3fadr5H7d5aONq7mJGpUvza+aCRdy0LQBEopzyqTWpfQjy2BgJ1VrBfo2I5QOL7MTzGIS/Yag==
   dependencies:
     "@ctrl/tinycolor" "^3.6.1"
     "@plasmicpkgs/luxon-parser" "^3.4.4"
