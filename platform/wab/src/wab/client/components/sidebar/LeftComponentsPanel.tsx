@@ -6,11 +6,6 @@ import {
 } from "@/wab/client/components/grouping/VirtualTree";
 import { ComponentFolderRow } from "@/wab/client/components/sidebar/ComponentFolderRow";
 import { ComponentRow } from "@/wab/client/components/sidebar/ComponentRow";
-import {
-  Folder as InternalFolder,
-  createFolderTreeStructure,
-  isFolder,
-} from "@/wab/client/components/sidebar/folders/folders-util";
 import { PlasmicLeftComponentsPanel } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftComponentsPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
@@ -28,6 +23,11 @@ import {
 } from "@/wab/shared/core/components";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import {
+  Folder as InternalFolder,
+  createFolderTreeStructure,
+  isFolder,
+} from "@/wab/shared/folders/folders-util";
 import { Component, ProjectDependency } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
 import { debounce } from "lodash";

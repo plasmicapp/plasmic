@@ -1,7 +1,7 @@
 import {
   createFolderTreeStructure,
   isFolder,
-} from "@/wab/client/components/sidebar/folders/folders-util";
+} from "@/wab/shared/folders/folders-util";
 
 describe("createFolderTreeStructure", () => {
   it("should create a tree structure from given array", () => {
