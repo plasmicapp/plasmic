@@ -1619,6 +1619,16 @@ export abstract class SharedApi {
     return res as ApiCmsDatabase;
   }
 
+  async cloneCmsDatabase(
+    databaseId: CmsDatabaseId,
+    data?: Partial<{
+      name: string;
+    }>
+  ) {
+    const res = await this.post(`/cms/databases/${databaseId}/clone`, data);
+    return res as ApiCmsDatabase;
+  }
+
   async deleteCmsDatabase(databaseId: CmsDatabaseId) {
     return await this.delete(`/cmse/databases/${databaseId}`);
   }

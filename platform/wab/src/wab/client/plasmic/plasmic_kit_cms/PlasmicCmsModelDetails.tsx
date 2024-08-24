@@ -13,39 +13,27 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Flex as Flex__,
+  Stack as Stack__,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  renderPlasmicSlot,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import InlineEditable from "../../components/InlineEditable"; // plasmic-import: btpz7A3thO/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
 import sty from "./PlasmicCmsModelDetails.module.css"; // plasmic-import: pLQf-lY112u/css
-
-import EditsvgIcon from "../q_4_icons/icons/PlasmicIcon__Editsvg"; // plasmic-import: _Qa2gdunG/icon
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -64,14 +52,14 @@ export const PlasmicCmsModelDetails__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicCmsModelDetails__OverridesType = {
-  root?: p.Flex<"div">;
-  left?: p.Flex<"div">;
-  modelName?: p.Flex<typeof InlineEditable>;
-  modelNameValue?: p.Flex<"div">;
-  text?: p.Flex<"div">;
-  right?: p.Flex<"div">;
-  saveButton?: p.Flex<typeof Button>;
-  menuButton?: p.Flex<typeof MenuButton>;
+  root?: Flex__<"div">;
+  left?: Flex__<"div">;
+  modelName?: Flex__<typeof InlineEditable>;
+  modelNameValue?: Flex__<"div">;
+  text?: Flex__<"div">;
+  right?: Flex__<"div">;
+  saveButton?: Flex__<typeof Button>;
+  menuButton?: Flex__<typeof MenuButton>;
 };
 
 export interface DefaultCmsModelDetailsProps {
@@ -96,11 +84,9 @@ function PlasmicCmsModelDetails__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = p.useCurrentUser?.() || {};
 
   return (
     <div
@@ -154,7 +140,7 @@ function PlasmicCmsModelDetails__RenderFunc(props: {
             {"Model schema"}
           </div>
         </div>
-        <p.Stack
+        <Stack__
           as={"div"}
           data-plasmic-name={"right"}
           data-plasmic-override={overrides.right}
@@ -175,11 +161,11 @@ function PlasmicCmsModelDetails__RenderFunc(props: {
             data-plasmic-override={overrides.menuButton}
             className={classNames("__wab_instance", sty.menuButton)}
           />
-        </p.Stack>
+        </Stack__>
       </div>
       <div className={classNames(projectcss.all, sty.freeBox__qDko6)}>
         <div className={classNames(projectcss.all, sty.freeBox__lCBih)}>
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: null,
             value: args.children,
           })}

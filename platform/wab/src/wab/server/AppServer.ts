@@ -68,6 +68,7 @@ import { getAppCtx } from "@/wab/server/routes/appctx";
 import { bigCommerceGraphql } from "@/wab/server/routes/bigcommerce";
 import {
   cachePublicCmsRead,
+  cloneDatabase,
   countTable,
   getDatabase,
   publicCreateRows,
@@ -827,6 +828,11 @@ export function addCmsPublicRoutes(app: express.Application) {
   app.post(
     "/api/v1/cms/databases/:dbId/tables/:tableIdentifier/rows",
     withNext(publicCreateRows)
+  );
+  app.post(
+    "/api/v1/cms/databases/:dbId/clone",
+    apiAuth,
+    withNext(cloneDatabase)
   );
   app.post("/api/v1/cms/rows/:rowId/publish", withNext(publicPublishRow));
   app.put("/api/v1/cms/rows/:rowId", withNext(publicUpdateRow));

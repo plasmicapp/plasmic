@@ -101,6 +101,7 @@ import {
   makeSqlCondition,
   makeTypedFieldSql,
   normalizeTableSchema,
+  traverseSchemaFields,
 } from "@/wab/server/util/cms-util";
 import { ancestors, leaves, subgraph } from "@/wab/server/util/commit-graphs";
 import { stringToPair } from "@/wab/server/util/hash";
@@ -6772,6 +6773,47 @@ export class DbMgr implements MigrationDbMgr {
     return db;
   }
 
+  async cloneCmsDatabase(databaseId: CmsDatabaseId, databaseName?: string) {
+    await this.checkCmsDatabasePerms(databaseId, "editor");
+
+    const existingDb = await this.getCmsDatabaseById(databaseId);
+    const newDb = await this.createCmsDatabase({
+      name: databaseName || `Copy of ${existingDb.name}`,
+      workspaceId: existingDb.workspaceId,
+    });
+
+    const tableIdMap = new Map<CmsTableId, CmsTableId>();
+    const existingTables = await this.listCmsTables(databaseId);
+    for (const table of existingTables) {
+      const newTable = await this.createCmsTable({
+        databaseId: newDb.id,
+        identifier: table.identifier,
+        name: table.name,
+        description: table.description,
+      });
+      tableIdMap.set(table.id, newTable.id);
+    }
+
+    for (const table of existingTables) {
+      const schemaFields = traverseSchemaFields(
+        table.schema.fields,
+        (field) => {
+          if (field.type === "ref") {
+            field.tableId = tableIdMap.get(field.tableId)!;
+          }
+        }
+      );
+
+      await this.updateCmsTable(tableIdMap.get(table.id)!, {
+        schema: {
+          fields: schemaFields,
+        },
+      });
+    }
+
+    return newDb;
+  }
+
   async listCmsTables(
     databaseId: CmsDatabaseId,
     includeArchived: boolean = false
@@ -6793,12 +6835,14 @@ export class DbMgr implements MigrationDbMgr {
     name: string;
     databaseId: CmsDatabaseId;
     schema?: CmsTableSchema;
+    description?: string | null;
   }): Promise<CmsTable> {
     await this.checkCmsDatabasePerms(opts.databaseId, "editor");
     const table = this.cmsTables().create({
       ...this.stampNew(true),
       name: opts.name,
       identifier: toVarName(opts.identifier),
+      description: opts.description,
       databaseId: opts.databaseId,
       schema: opts.schema
         ? normalizeTableSchema(opts.schema)

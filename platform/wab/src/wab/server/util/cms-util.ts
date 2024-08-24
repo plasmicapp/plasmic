@@ -1,5 +1,3 @@
-import { Dict } from "@/wab/shared/collections";
-import { assert, withoutNils } from "@/wab/shared/common";
 import { CmsTable } from "@/wab/server/entities/Entities";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
@@ -10,6 +8,23 @@ import {
   FilterCond,
 } from "@/wab/shared/ApiSchema";
 import { toVarName } from "@/wab/shared/codegen/util";
+import { Dict } from "@/wab/shared/collections";
+import { assert, withoutNils } from "@/wab/shared/common";
+
+export function traverseSchemaFields(
+  fields: CmsFieldMeta[],
+  processFieldCallback: (f: CmsFieldMeta) => void
+): CmsFieldMeta[] {
+  for (const field of fields) {
+    processFieldCallback(field);
+
+    if ("fields" in field && Array.isArray(field.fields)) {
+      field.fields = traverseSchemaFields(field.fields, processFieldCallback);
+    }
+  }
+
+  return fields;
+}
 
 export function makeFieldMetaMap(schema: CmsTableSchema, fields?: string[]) {
   const fieldsToUse = schema.fields.filter((f) => {

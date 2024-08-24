@@ -29,6 +29,8 @@ function CmsSettingsPage_(
   const api = useApi();
   const mutateDatabase = useMutateDatabase();
   const [submitting, setSubmitting] = React.useState(false);
+  const [duplicating, setDuplicating] = React.useState(false);
+
   if (!database) {
     return null;
   }
@@ -69,6 +71,39 @@ function CmsSettingsPage_(
           htmlType: "submit",
           disabled: submitting,
           children: submitting ? "Saving..." : "Save",
+        }}
+        duplicateButton={{
+          htmlType: "button",
+          disabled: duplicating,
+          children: duplicating ? "Duplicating..." : "Duplicate CMS Schema",
+          onClick: async () => {
+            setDuplicating(true);
+            try {
+              const newCmsDatabase = await api.cloneCmsDatabase(databaseId);
+              notification.success({
+                message: "CMS schema duplicated successfully.",
+                duration: 4000,
+                btn: (
+                  <Button
+                    type="link"
+                    onClick={() => {
+                      window.location.href = UU.cmsSettings.fill({
+                        databaseId: newCmsDatabase.id,
+                      });
+                    }}
+                  >
+                    Go to new CMS
+                  </Button>
+                ),
+              });
+            } catch (err) {
+              notification.error({
+                message: "Failed to duplicate CMS",
+              });
+            } finally {
+              setDuplicating(false);
+            }
+          },
         }}
         content={
           <div className="vlist-gap-xlg fill-width">

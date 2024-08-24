@@ -13,38 +13,30 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
+  Flex as Flex__,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import CmsEntryItem from "../../components/cms/CmsEntryItem"; // plasmic-import: girCdMST6R/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import Searchbox from "../../components/widgets/Searchbox"; // plasmic-import: po7gr0PX4_gWo/component
-import CmsEntryItem from "../../components/cms/CmsEntryItem"; // plasmic-import: girCdMST6R/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
 import sty from "./PlasmicCmsEntriesList.module.css"; // plasmic-import: k2vc2stl18/css
-
-import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -70,10 +62,10 @@ export const PlasmicCmsEntriesList__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicCmsEntriesList__OverridesType = {
-  root?: p.Flex<"div">;
-  addButton?: p.Flex<typeof IconButton>;
-  searchInput?: p.Flex<typeof Searchbox>;
-  text?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  addButton?: Flex__<typeof IconButton>;
+  searchInput?: Flex__<typeof Searchbox>;
+  text?: Flex__<"div">;
 };
 
 export interface DefaultCmsEntriesListProps {
@@ -100,13 +92,11 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isEmpty",
@@ -117,7 +107,7 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -125,7 +115,7 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -146,7 +136,7 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
     >
       <div className={classNames(projectcss.all, sty.freeBox___7Bhda)}>
         <div className={classNames(projectcss.all, sty.freeBox___0Ic4Y)}>
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: "FAQs",
             value: args.modelName,
             className: classNames(sty.slotTargetModelName),
@@ -168,7 +158,7 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
         />
       </div>
       {(hasVariant($state, "isEmpty", "isEmpty") ? false : true) ? (
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__zdChF, {
@@ -179,7 +169,7 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
             ),
           })}
         >
-          {p.renderPlasmicSlot({
+          {renderPlasmicSlot({
             defaultContents: (
               <React.Fragment>
                 <CmsEntryItem
@@ -199,7 +189,7 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
             ),
             value: args.children,
           })}
-        </p.Stack>
+        </Stack__>
       ) : null}
       <div
         data-plasmic-name={"text"}
@@ -210,7 +200,7 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
       >
         {"No entries have been created yet."}
       </div>
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 

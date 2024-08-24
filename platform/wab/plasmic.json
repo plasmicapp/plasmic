@@ -8817,7 +8817,7 @@
         {
           "id": "vvVTexRhlGWhm",
           "name": "image.png",
-          "filePath": "wab/client/plasmic/plasmic_kit_cms/images/imagepng.jpeg"
+          "filePath": "wab/client/plasmic/plasmic_kit_cms/images/imagePng.jpg"
         }
       ],
       "indirect": false,
@@ -8837,8 +8837,7 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "gtUDvxG6cmBbSzqLikNzoP",

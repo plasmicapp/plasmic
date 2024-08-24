@@ -1,4 +1,3 @@
-import { ensure, filterMapTruthy } from "@/wab/shared/common";
 import { seedTestDb } from "@/wab/server/db/DbInit";
 import { ANON_USER, DbMgr, SkipSafeDelete } from "@/wab/server/db/DbMgr";
 import {
@@ -9,10 +8,277 @@ import {
 } from "@/wab/server/entities/Entities";
 import { getTeamAndWorkspace, withDb } from "@/wab/server/test/backend-util";
 import { ApiCmsQuery, CmsTableId } from "@/wab/shared/ApiSchema";
+import { ensure, filterMapTruthy } from "@/wab/shared/common";
 import { AccessLevel } from "@/wab/shared/EntUtil";
 import L from "lodash";
 
 describe("DbMgr.CMS", () => {
+  it("can duplicate the database", () =>
+    withDb(async (sudo, [user1], [db1]) => {
+      const { team, workspace } = await getTeamAndWorkspace(db1());
+      const database1 = await db1().createCmsDatabase({
+        name: "database1",
+        workspaceId: workspace.id,
+      });
+
+      const postsTable = await db1().createCmsTable({
+        databaseId: database1.id,
+        identifier: "posts",
+        name: "Posts",
+        schema: {
+          fields: [
+            {
+              name: "",
+              type: "text",
+              label: "Post title",
+              hidden: false,
+              required: true,
+              localized: false,
+              helperText: "",
+              identifier: "title",
+              defaultValueByLocale: {},
+            },
+            {
+              name: "",
+              type: "text",
+              hidden: false,
+              required: false,
+              localized: false,
+              helperText: "",
+              identifier: "description",
+              defaultValueByLocale: {},
+            },
+          ],
+        },
+      });
+      const usersTable = await db1().createCmsTable({
+        databaseId: database1.id,
+        identifier: "users",
+        name: "Users",
+        schema: {
+          fields: [
+            {
+              name: "",
+              type: "text",
+              hidden: false,
+              required: false,
+              localized: false,
+              helperText: "",
+              identifier: "username",
+              defaultValueByLocale: {},
+            },
+          ],
+        },
+      });
+      const commentsTable = await db1().createCmsTable({
+        databaseId: database1.id,
+        identifier: "comments",
+        name: "Comments",
+        schema: {
+          fields: [
+            {
+              name: "",
+              type: "long-text",
+              hidden: false,
+              required: true,
+              localized: false,
+              helperText: "",
+              identifier: "comment",
+              defaultValueByLocale: {},
+            },
+            {
+              name: "",
+              type: "ref",
+              hidden: false,
+              tableId: postsTable.id,
+              required: true,
+              localized: false,
+              helperText: "",
+              identifier: "postId",
+              defaultValueByLocale: {},
+            },
+            {
+              name: "",
+              type: "list",
+              fields: [
+                {
+                  name: "",
+                  type: "ref",
+                  hidden: false,
+                  tableId: usersTable.id,
+                  required: false,
+                  localized: false,
+                  helperText: "",
+                  identifier: "username",
+                  defaultValueByLocale: {},
+                },
+                {
+                  name: "",
+                  type: "object",
+                  fields: [
+                    {
+                      name: "",
+                      type: "ref",
+                      hidden: false,
+                      tableId: postsTable.id,
+                      required: false,
+                      localized: false,
+                      helperText: "",
+                      identifier: "postId",
+                      defaultValueByLocale: {},
+                    },
+                    {
+                      name: "",
+                      type: "date-time",
+                      hidden: false,
+                      required: false,
+                      localized: false,
+                      helperText: "",
+                      identifier: "likedAt",
+                      defaultValueByLocale: {},
+                    },
+                  ],
+                  hidden: false,
+                  required: false,
+                  localized: false,
+                  helperText: "",
+                  identifier: "metadata",
+                  defaultValueByLocale: {},
+                },
+              ],
+              hidden: false,
+              required: false,
+              localized: false,
+              helperText: "",
+              identifier: "likes",
+              defaultValueByLocale: {},
+            },
+          ],
+        },
+      });
+
+      const duplicatedDb = await db1().cloneCmsDatabase(
+        database1.id,
+        "database2"
+      );
+      const duplicatedPostsTable = await db1().getCmsTableByIdentifier(
+        duplicatedDb.id,
+        postsTable.identifier
+      );
+      const duplicatedUsersTable = await db1().getCmsTableByIdentifier(
+        duplicatedDb.id,
+        usersTable.identifier
+      );
+      const duplicatedCommentsTable = await db1().getCmsTableByIdentifier(
+        duplicatedDb.id,
+        commentsTable.identifier
+      );
+
+      expect(duplicatedDb.name).toEqual("database2");
+      expect(duplicatedDb.workspaceId).toEqual(database1.workspaceId);
+
+      expect(duplicatedPostsTable.identifier).toEqual(postsTable.identifier);
+      expect(duplicatedPostsTable.name).toEqual(postsTable.name);
+      expect(duplicatedPostsTable.description).toEqual(postsTable.description);
+
+      expect(duplicatedUsersTable.identifier).toEqual(usersTable.identifier);
+      expect(duplicatedUsersTable.name).toEqual(usersTable.name);
+      expect(duplicatedUsersTable.description).toEqual(usersTable.description);
+
+      expect(duplicatedCommentsTable.identifier).toEqual(
+        commentsTable.identifier
+      );
+      expect(duplicatedCommentsTable.name).toEqual(commentsTable.name);
+      expect(duplicatedCommentsTable.description).toEqual(
+        commentsTable.description
+      );
+
+      // Check that the schema is the same. No refs used in the Posts and Users tables
+      expect(duplicatedPostsTable.schema).toEqual(postsTable.schema);
+      expect(duplicatedUsersTable.schema).toEqual(usersTable.schema);
+
+      // Check that the ref fields are updated in Comments table to point to the new tables
+      expect(duplicatedCommentsTable.schema.fields).toEqual([
+        expect.objectContaining({
+          name: "",
+          type: "long-text",
+          hidden: false,
+          required: true,
+          localized: false,
+          helperText: "",
+          identifier: "comment",
+          defaultValueByLocale: {},
+        }),
+        expect.objectContaining({
+          name: "",
+          type: "ref",
+          hidden: false,
+          tableId: duplicatedPostsTable.id,
+          required: true,
+          localized: false,
+          helperText: "",
+          identifier: "postId",
+          defaultValueByLocale: {},
+        }),
+        expect.objectContaining({
+          name: "",
+          type: "list",
+          fields: [
+            expect.objectContaining({
+              name: "",
+              type: "ref",
+              hidden: false,
+              tableId: duplicatedUsersTable.id,
+              required: false,
+              localized: false,
+              helperText: "",
+              identifier: "username",
+              defaultValueByLocale: {},
+            }),
+            expect.objectContaining({
+              name: "",
+              type: "object",
+              fields: [
+                expect.objectContaining({
+                  name: "",
+                  type: "ref",
+                  hidden: false,
+                  tableId: duplicatedPostsTable.id,
+                  required: false,
+                  localized: false,
+                  helperText: "",
+                  identifier: "postId",
+                  defaultValueByLocale: {},
+                }),
+                expect.objectContaining({
+                  name: "",
+                  type: "date-time",
+                  hidden: false,
+                  required: false,
+                  localized: false,
+                  helperText: "",
+                  identifier: "likedAt",
+                  defaultValueByLocale: {},
+                }),
+              ],
+              hidden: false,
+              required: false,
+              localized: false,
+              helperText: "",
+              identifier: "metadata",
+              defaultValueByLocale: {},
+            }),
+          ],
+          hidden: false,
+          required: false,
+          localized: false,
+          helperText: "",
+          identifier: "likes",
+          defaultValueByLocale: {},
+        }),
+      ]);
+    }));
+
   it("allows crud on database", () =>
     withDb(async (sudo, [user1], [db1]) => {
       const { team, workspace } = await getTeamAndWorkspace(db1());

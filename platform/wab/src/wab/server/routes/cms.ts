@@ -1,4 +1,3 @@
-import { ensure, ensureString } from "@/wab/shared/common";
 import { toOpaque } from "@/wab/commons/types";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { CmsRow } from "@/wab/server/entities/Entities";
@@ -18,6 +17,7 @@ import {
   CmsRowId,
   CmsTableSchema,
 } from "@/wab/shared/ApiSchema";
+import { ensure, ensureString } from "@/wab/shared/common";
 import { NextFunction } from "express";
 import { Request, Response } from "express-serve-static-core";
 import { differenceBy } from "lodash";
@@ -111,6 +111,16 @@ export async function upsertDatabaseTables(req: Request, res: Response) {
   }
 
   const updatedDb = await mgr.getCmsDatabaseById(databaseId as CmsDatabaseId);
+  res.json(await makeApiDatabase(mgr, updatedDb));
+}
+
+export async function cloneDatabase(req: Request, res: Response) {
+  const databaseId: CmsDatabaseId = toOpaque(req.params.dbId);
+  const databaseName = req.body.name as string;
+
+  const mgr = userDbMgr(req);
+  const newDb = await mgr.cloneCmsDatabase(databaseId, databaseName);
+  const updatedDb = await mgr.getCmsDatabaseById(newDb.id);
   res.json(await makeApiDatabase(mgr, updatedDb));
 }
 
