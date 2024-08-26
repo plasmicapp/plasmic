@@ -1,0 +1,72 @@
+diff --git a/node_modules/react-slick/lib/inner-slider.js b/node_modules/react-slick/lib/inner-slider.js
+index ab9c65f..e569d1d 100644
+--- a/node_modules/react-slick/lib/inner-slider.js
++++ b/node_modules/react-slick/lib/inner-slider.js
+@@ -59,6 +59,29 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
+
+ function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
++// We will be ignoring width changes in react-slick because of the following issue:
++// https://github.com/akiran/react-slick/issues/2368
++//
++// In mobile, while scrolling up and down the resize event is triggered and the slider attempts to recalculate
++// inner properties based on it. This is buggy and causes the slider to change speed.
++// https://stackoverflow.com/questions/17328742/mobile-chrome-fires-resize-event-on-scroll
++let __globalOuterWidth;
++
++function __hasChangedWidth() {
++  if (typeof window !== 'undefined') {
++    const width = window.outerWidth;
++
++    if (width !== __globalOuterWidth) {
++      __globalOuterWidth = width;
++      return true;
++    } else {
++      return false;
++    }
++  }
++
++  return false;
++}
++
+ var InnerSlider = /*#__PURE__*/function (_React$Component) {
+   _inherits(InnerSlider, _React$Component);
+
+@@ -142,9 +165,9 @@ var InnerSlider = /*#__PURE__*/function (_React$Component) {
+       });
+
+       if (window.addEventListener) {
+-        window.addEventListener("resize", _this.onWindowResized);
++        window.addEventListener("resize", _this.wrappedOnWindowResized);
+       } else {
+-        window.attachEvent("onresize", _this.onWindowResized);
++        window.attachEvent("onresize", _this.wrappedOnWindowResized);
+       }
+     });
+
+@@ -166,9 +189,9 @@ var InnerSlider = /*#__PURE__*/function (_React$Component) {
+       }
+
+       if (window.addEventListener) {
+-        window.removeEventListener("resize", _this.onWindowResized);
++        window.removeEventListener("resize", _this.wrappedOnWindowResized);
+       } else {
+-        window.detachEvent("onresize", _this.onWindowResized);
++        window.detachEvent("onresize", _this.wrappedOnWindowResized);
+       }
+
+       if (_this.autoplayTimer) {
+@@ -237,6 +260,13 @@ var InnerSlider = /*#__PURE__*/function (_React$Component) {
+       _this.debouncedResize();
+     });
+
++    _defineProperty(_assertThisInitialized(_this), "wrappedOnWindowResized", function (setTrackStyle) {
++      if (!__hasChangedWidth()) {
++        return;
++      }
++      _this.onWindowResized(setTrackStyle);
++    });
++
+     _defineProperty(_assertThisInitialized(_this), "resizeWindow", function () {
+       var setTrackStyle = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+       var isTrackMounted = Boolean(_this.track && _this.track.node); // prevent warning: setting state on unmounted component (server side rendering)

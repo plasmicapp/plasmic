@@ -70,11 +70,11 @@ packages:
   - platform/host-test
   - platform/integration-tests
   - platform/live-frame
-  - platform/loader-bundle-env
   - platform/loader-html-hydrate
   - platform/loader-tests
   - platform/react-web-bundle
   - platform/sub
   # wab still performs a postinstall patch-package which isn't kosher with pnpm. But can look into pnpm patch.
+  # - platform/loader-bundle-env
 #  - platform/wab
 #  - platform/wab/create-react-app-new/packages/*

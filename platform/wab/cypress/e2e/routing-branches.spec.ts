@@ -42,6 +42,7 @@ describe("routing", () => {
               .should("contain.text", "Main")
               .dblclick({ force: true });
             newBranchFramed.enterIntoTplTextBlock(branchName);
+            cy.wait(300);
           });
         }
 

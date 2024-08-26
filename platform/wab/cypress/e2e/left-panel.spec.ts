@@ -1,14 +1,15 @@
 import { VERT_CONTAINER_CAP } from "../../src/wab/shared/Labels";
+import { removeCurrentProject, setupNewProject } from "../support/util";
 
 describe("left-panel", function () {
   beforeEach(() => {
-    cy.setupNewProject({
+    setupNewProject({
       name: "left-panel",
     });
   });
 
   afterEach(() => {
-    cy.removeCurrentProject();
+    removeCurrentProject();
   });
 
   it("shows a blue indicator and popover to the left of an element if any non-default property", function () {
