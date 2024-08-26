@@ -41,6 +41,7 @@ import sty from "./PlasmicMultiAssetsActions.module.css"; // plasmic-import: d69
 
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
 import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
+import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -181,6 +182,12 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
         <IconButton
           data-plasmic-name={"deleteSelected"}
           data-plasmic-override={overrides.deleteSelected}
+          children2={
+            <ChevronDownsvgIcon
+              className={classNames(projectcss.all, sty.svg__fGucz)}
+              role={"img"}
+            />
+          }
           className={classNames("__wab_instance", sty.deleteSelected)}
           hoverText={"Delete selected assets"}
           withBackgroundHover={true}
@@ -193,6 +200,12 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
         <IconButton
           data-plasmic-name={"cancel"}
           data-plasmic-override={overrides.cancel}
+          children2={
+            <ChevronDownsvgIcon
+              className={classNames(projectcss.all, sty.svg___6Hnn5)}
+              role={"img"}
+            />
+          }
           className={classNames("__wab_instance", sty.cancel)}
           hoverText={"Cancel selection"}
           withBackgroundHover={true}

@@ -29,8 +29,6 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import Button from "../Button"; // plasmic-import: SEF-sRmSoqV5c/component
-
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_design_system_deprecated_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
@@ -38,9 +36,6 @@ import projectcss from "../../../plasmic/PP__plasmickit_left_pane.module.css"; /
 import plasmic_plasmic_kit_color_tokens_css from "../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../../../plasmic/plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicActivityFeedItem.module.css"; // plasmic-import: kkbHZ8nmgGH/css
-
-import dotsVerticalsvgR9AiOjxlk from "../../../plasmic/plasmic_kit_left_pane/images/dotsVerticalsvg.svg"; // plasmic-import: r9AiOJXLK/picture
-import ChevronDownsvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -88,9 +83,6 @@ export const PlasmicActivityFeedItem__ArgProps = new Array<ArgPropType>(
 export type PlasmicActivityFeedItem__OverridesType = {
   root?: Flex__<"div">;
   text?: Flex__<"div">;
-  button?: Flex__<typeof Button>;
-  startIcon?: Flex__<typeof PlasmicImg__>;
-  svg?: Flex__<"svg">;
 };
 
 export interface DefaultActivityFeedItemProps {
@@ -370,91 +362,13 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
             value: args.userPic,
           })
         : null}
-      {false ? (
-        <Button
-          data-plasmic-name={"button"}
-          data-plasmic-override={overrides.button}
-          className={classNames("__wab_instance", sty.button, {
-            [sty.buttonstate_anonymousVisited]: hasVariant(
-              $state,
-              "state",
-              "anonymousVisited"
-            ),
-            [sty.buttonstate_projectCreated]: hasVariant(
-              $state,
-              "state",
-              "projectCreated"
-            ),
-            [sty.buttonstate_projectForked]: hasVariant(
-              $state,
-              "state",
-              "projectForked"
-            ),
-            [sty.buttonstate_projectRenamed]: hasVariant(
-              $state,
-              "state",
-              "projectRenamed"
-            ),
-            [sty.buttonstate_projectShared]: hasVariant(
-              $state,
-              "state",
-              "projectShared"
-            ),
-            [sty.buttonstate_userVisited]: hasVariant(
-              $state,
-              "state",
-              "userVisited"
-            ),
-            [sty.buttonstate_versionPublished]: hasVariant(
-              $state,
-              "state",
-              "versionPublished"
-            ),
-          })}
-          endIcon={
-            <ChevronDownsvgIcon
-              data-plasmic-name={"svg"}
-              data-plasmic-override={overrides.svg}
-              className={classNames(projectcss.all, sty.svg)}
-              role={"img"}
-            />
-          }
-          startIcon={
-            <PlasmicImg__
-              data-plasmic-name={"startIcon"}
-              data-plasmic-override={overrides.startIcon}
-              alt={""}
-              className={classNames(sty.startIcon)}
-              displayHeight={"auto"}
-              displayMaxHeight={"none"}
-              displayMaxWidth={"none"}
-              displayMinHeight={"0"}
-              displayMinWidth={"0"}
-              displayWidth={"auto"}
-              src={{
-                src: dotsVerticalsvgR9AiOjxlk,
-                fullWidth: 150,
-                fullHeight: 150,
-                aspectRatio: 1,
-              }}
-            />
-          }
-          type={["secondary"]}
-          withIcons={["startIcon"]}
-        >
-          {""}
-        </Button>
-      ) : null}
     </Stack__>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root", "text", "button", "startIcon", "svg"],
+  root: ["root", "text"],
   text: ["text"],
-  button: ["button", "startIcon", "svg"],
-  startIcon: ["startIcon"],
-  svg: ["svg"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -462,9 +376,6 @@ type DescendantsType<T extends NodeNameType> =
 type NodeDefaultElementType = {
   root: "div";
   text: "div";
-  button: typeof Button;
-  startIcon: typeof PlasmicImg__;
-  svg: "svg";
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -528,9 +439,6 @@ export const PlasmicActivityFeedItem = Object.assign(
   {
     // Helper components rendering sub-elements
     text: makeNodeComponent("text"),
-    button: makeNodeComponent("button"),
-    startIcon: makeNodeComponent("startIcon"),
-    svg: makeNodeComponent("svg"),
 
     // Metadata about props expected for PlasmicActivityFeedItem
     internalVariantProps: PlasmicActivityFeedItem__VariantProps,

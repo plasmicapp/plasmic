@@ -24,6 +24,7 @@ import {
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
+  useTrigger,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
@@ -67,8 +68,8 @@ export const PlasmicTokenTypeHeader__ArgProps = new Array<ArgPropType>(
 
 export type PlasmicTokenTypeHeader__OverridesType = {
   root?: Flex__<"div">;
-  addButton?: Flex__<typeof IconButton>;
   expandButton?: Flex__<typeof ExpandButton>;
+  addButton?: Flex__<typeof IconButton>;
 };
 
 export interface DefaultTokenTypeHeaderProps {
@@ -123,6 +124,11 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
     $refs,
   });
 
+  const [isRootHover, triggerRootHoverProps] = useTrigger("useHover", {});
+  const triggers = {
+    hover_root: isRootHover,
+  };
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -145,6 +151,7 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
           [sty.rootisExpanded]: hasVariant($state, "isExpanded", "isExpanded"),
         }
       )}
+      data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
       <div
         className={classNames(projectcss.all, sty.freeBox___2Aimk, {
@@ -155,6 +162,32 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
           ),
         })}
       >
+        <div
+          className={classNames(projectcss.all, sty.freeBox__ghnta, {
+            [sty.freeBoxisExpanded__ghntAaTp]: hasVariant(
+              $state,
+              "isExpanded",
+              "isExpanded"
+            ),
+          })}
+        >
+          <ExpandButton
+            data-plasmic-name={"expandButton"}
+            data-plasmic-override={overrides.expandButton}
+            className={classNames("__wab_instance", sty.expandButton, {
+              [sty.expandButtonisExpanded]: hasVariant(
+                $state,
+                "isExpanded",
+                "isExpanded"
+              ),
+            })}
+            isExpanded={
+              hasVariant($state, "isExpanded", "isExpanded") ? true : undefined
+            }
+            right={true}
+            size={"small"}
+          />
+        </div>
         {renderPlasmicSlot({
           defaultContents: "Colors",
           value: args.tokenType,
@@ -193,38 +226,23 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
             role={"img"}
           />
         </IconButton>
-        <ExpandButton
-          data-plasmic-name={"expandButton"}
-          data-plasmic-override={overrides.expandButton}
-          className={classNames("__wab_instance", sty.expandButton, {
-            [sty.expandButtonisExpanded]: hasVariant(
-              $state,
-              "isExpanded",
-              "isExpanded"
-            ),
-          })}
-          isExpanded={
-            hasVariant($state, "isExpanded", "isExpanded") ? true : undefined
-          }
-          size={"small"}
-        />
       </div>
     </div>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root", "addButton", "expandButton"],
-  addButton: ["addButton"],
+  root: ["root", "expandButton", "addButton"],
   expandButton: ["expandButton"],
+  addButton: ["addButton"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
-  addButton: typeof IconButton;
   expandButton: typeof ExpandButton;
+  addButton: typeof IconButton;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -287,8 +305,8 @@ export const PlasmicTokenTypeHeader = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
-    addButton: makeNodeComponent("addButton"),
     expandButton: makeNodeComponent("expandButton"),
+    addButton: makeNodeComponent("addButton"),
 
     // Metadata about props expected for PlasmicTokenTypeHeader
     internalVariantProps: PlasmicTokenTypeHeader__VariantProps,

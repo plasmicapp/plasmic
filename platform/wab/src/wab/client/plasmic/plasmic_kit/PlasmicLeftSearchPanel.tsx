@@ -40,6 +40,8 @@ import sty from "./PlasmicLeftSearchPanel.module.css"; // plasmic-import: TqAPn0
 
 import CollapseAllIcon from "../plasmic_kit_design_system/PlasmicIcon__CollapseAll"; // plasmic-import: Bg-ZlWgLuQ/icon
 import ExpandAllIcon from "../plasmic_kit_design_system/PlasmicIcon__ExpandAll"; // plasmic-import: zCExKvD0Do/icon
+import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -160,9 +162,11 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
         })}
       />
 
-      <div
+      <Stack__
+        as={"div"}
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
+        hasGap={true}
         className={classNames(projectcss.all, sty.freeBox)}
       >
         <Button
@@ -175,8 +179,20 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
               "groupingControls"
             ),
           })}
+          endIcon={
+            <ChevronDownsvgIcon
+              className={classNames(projectcss.all, sty.svg___0R83)}
+              role={"img"}
+            />
+          }
           font={"dim"}
           size={"compact"}
+          startIcon={
+            <ArrowRightsvgIcon
+              className={classNames(projectcss.all, sty.svg__pHvlx)}
+              role={"img"}
+            />
+          }
           type={["clear"]}
         >
           <ExpandAllIcon
@@ -203,8 +219,20 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
                 "groupingControls"
               ),
             })}
+            endIcon={
+              <ChevronDownsvgIcon
+                className={classNames(projectcss.all, sty.svg__zxCn1)}
+                role={"img"}
+              />
+            }
             font={"dim"}
             size={"compact"}
+            startIcon={
+              <ArrowRightsvgIcon
+                className={classNames(projectcss.all, sty.svg__stOqr)}
+                role={"img"}
+              />
+            }
             type={["clear"]}
           >
             <CollapseAllIcon
@@ -234,7 +262,7 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
             })}
           />
         ) : null}
-      </div>
+      </Stack__>
     </Stack__>
   ) as React.ReactElement | null;
 }

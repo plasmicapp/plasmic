@@ -6,7 +6,7 @@
   position: relative;
   width: 100%;
   min-width: 0;
-  padding: 8px 16px;
+  padding: 8px 16px 8px 2px;
 }
 .rootborder_top {
   border-top: 1px solid var(--token-hoA5qaM-91G);
@@ -20,6 +20,23 @@
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
+}
+.freeBox__ghnta {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+}
+.expandButton:global(.__wab_instance):global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.expandButtonisExpanded:global(.__wab_instance):global(.__wab_instance) {
+  flex-shrink: 0;
 }
 .slotTargetTokenType {
   font-weight: 500;
@@ -42,6 +59,10 @@
   flex-shrink: 0;
   display: flex;
 }
+.root:hover .addButton:global(.__wab_instance) {
+  flex-shrink: 0;
+  display: flex;
+}
 .svg__ihGm1 {
   display: flex;
   position: relative;
@@ -57,11 +78,4 @@
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
   height: 1em;
-}
-.expandButton:global(.__wab_instance):global(.__wab_instance) {
-  position: relative;
-  flex-shrink: 0;
-}
-.expandButtonisExpanded:global(.__wab_instance):global(.__wab_instance) {
-  flex-shrink: 0;
 }

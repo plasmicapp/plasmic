@@ -93,17 +93,3 @@
   height: 48px;
   flex-shrink: 0;
 }
-.button:global(.__wab_instance) {
-  position: relative;
-}
-.startIcon {
-  display: flex !important;
-  cursor: pointer;
-}
-.svg {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  width: 16px;
-  height: 1em;
-}
