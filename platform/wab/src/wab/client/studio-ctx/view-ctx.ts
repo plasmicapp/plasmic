@@ -67,7 +67,7 @@ import { getRawCode } from "@/wab/shared/core/exprs";
 import { metaSvc } from "@/wab/shared/core/metas";
 import { SQ, Selectable } from "@/wab/shared/core/selection";
 import { isTplAttachedToSite } from "@/wab/shared/core/sites";
-import { SlotSelection, isSlotSelection } from "@/wab/shared/core/slots";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   StateVariableType,
   getStateOnChangePropName,
@@ -119,7 +119,7 @@ import asynclib from "async";
 import $ from "jquery";
 import L, { defer, groupBy, head } from "lodash";
 import * as mobx from "mobx";
-import { comparer, computed, observable } from "mobx";
+import { computed, observable } from "mobx";
 import { computedFn } from "mobx-utils";
 import * as React from "react";
 import { CSSProperties } from "react";
@@ -165,7 +165,6 @@ export interface SpotlightAndVariantsInfo {
   pinnedVariants: { [key: string]: boolean };
   showDefaultSlotContents: boolean;
   focusedSelectable: Selectable | undefined;
-  focusedTpl: TplNode | undefined;
 }
 
 export class ViewCtx extends WithDbCtx {
@@ -385,39 +384,6 @@ export class ViewCtx extends WithDbCtx {
       this._xFocusedTpls.set(tpls);
     }
   }
-
-  focusedTplAncestorsThroughComponents = computedFn(
-    () => {
-      const node = (() => {
-        const selectables = withoutNils(this.focusedSelectables());
-        if (selectables.length === 1) {
-          const selectable = selectables[0];
-          if (isSlotSelection(selectable)) {
-            return selectable;
-          } else {
-            return selectable.tpl;
-          }
-        }
-        const tpls = withoutNils(this.focusedTpls());
-        if (tpls.length === 1) {
-          return tpls[0];
-        }
-        return null;
-      })();
-      // Running `ancestorsThroughComponentsWithSlotSelections` every time focusedTpl changes may
-      // be expensive, can we do better?
-      return node
-        ? Tpls.ancestorsThroughComponentsWithSlotSelections(node, {
-            includeTplComponentRoot: true,
-          })
-        : [];
-    },
-    {
-      name: "ViewCtx.focusedTplAncestorsThroughComponents",
-      equals: comparer.structural,
-    }
-  );
-
   private _xFocusedSelectables = observable.box<(Selectable | null)[]>([], {
     name: "ViewCtx.focusedSelectables",
   });
@@ -2112,7 +2078,6 @@ export class ViewCtx extends WithDbCtx {
         ),
       },
       focusedSelectable: this.focusedSelectable() ?? undefined,
-      focusedTpl: this.focusedTpl() ?? undefined,
     };
   }
 

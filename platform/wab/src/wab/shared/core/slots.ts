@@ -1,6 +1,6 @@
 import { assert, ensure } from "@/wab/shared/common";
-import { ValComponent, ValNode } from "@/wab/shared/core/val-nodes";
 import type { Param, TplComponent } from "@/wab/shared/model/classes";
+import { ValComponent, ValNode } from "@/wab/shared/core/val-nodes";
 
 /**
  * This represents selecting a slot from the perspective of outside the
@@ -79,8 +79,4 @@ export function makeSlotSelectionKey(ss: SlotSelection) {
 
 export function makeSlotSelectionFullKey(ss: SlotSelection) {
   return ss.val ? `${ss.val.fullKey}~${ss.slotParam.uuid}` : "";
-}
-
-export function isSlotSelection(x: any): x is SlotSelection {
-  return x instanceof SlotSelection;
 }

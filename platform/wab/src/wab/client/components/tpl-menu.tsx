@@ -10,13 +10,33 @@ import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelW
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { getVisibilityChoicesForTpl } from "@/wab/client/utils/tpl-client-utils";
+import { asOne, ensure, ensureInstance, filterMapTruthy } from "@/wab/shared/common";
+import { isCodeComponent, isFrameComponent } from "@/wab/shared/core/components";
+import { Selectable } from "@/wab/shared/core/selection";
 import { MainBranchId } from "@/wab/shared/ApiSchema";
 import { isMixedArena } from "@/wab/shared/Arenas";
+import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import {
   FRAME_CAP,
   HORIZ_CONTAINER_CAP,
   VERT_CONTAINER_CAP,
 } from "@/wab/shared/Labels";
+import {
+  getContainerTypeName,
+  PositionLayoutType,
+} from "@/wab/shared/layoututils";
+import {
+  isKnownRawText,
+  isKnownRenderExpr,
+  isKnownVirtualRenderExpr,
+  RawText,
+  TplNode,
+} from "@/wab/shared/model/classes";
+import {
+  isTplAutoSizable,
+  isTplDefaultSized,
+  resetTplSize,
+} from "@/wab/shared/sizingutils";
 import {
   getAncestorSlotArg,
   isCodeComponentSlot,
@@ -25,16 +45,10 @@ import {
 import { $$$ } from "@/wab/shared/TplQuery";
 import { isBaseVariant } from "@/wab/shared/Variants";
 import {
-  asOne,
-  ensure,
-  ensureInstance,
-  filterMapTruthy,
-} from "@/wab/shared/common";
-import {
-  isCodeComponent,
-  isFrameComponent,
-} from "@/wab/shared/core/components";
-import { Selectable } from "@/wab/shared/core/selection";
+  clearTplVisibility,
+  getVisibilityLabel,
+  hasVisibilitySetting,
+} from "@/wab/shared/visibility-utils";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   areSiblings,
@@ -57,29 +71,7 @@ import {
   tryGetVariantSettingStoringText,
 } from "@/wab/shared/core/tpls";
 import { ValComponent } from "@/wab/shared/core/val-nodes";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
-import {
-  PositionLayoutType,
-  getContainerTypeName,
-} from "@/wab/shared/layoututils";
-import {
-  RawText,
-  TplNode,
-  isKnownRawText,
-  isKnownRenderExpr,
-  isKnownVirtualRenderExpr,
-} from "@/wab/shared/model/classes";
-import {
-  isTplAutoSizable,
-  isTplDefaultSized,
-  resetTplSize,
-} from "@/wab/shared/sizingutils";
-import {
-  clearTplVisibility,
-  getVisibilityLabel,
-  hasVisibilitySetting,
-} from "@/wab/shared/visibility-utils";
-import { Menu, Tooltip, notification } from "antd";
+import { Menu, notification, Tooltip } from "antd";
 import React from "react";
 
 export function makeSelectableMenu(viewCtx: ViewCtx, node: Selectable) {
@@ -936,7 +928,6 @@ export function makeTplMenu(
               component: viewCtx.currentComponent(),
               tpl,
               dom: dom ? dom[0] : undefined,
-              val: maybeVal,
             });
           }}
         >
