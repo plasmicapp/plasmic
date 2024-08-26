@@ -30,7 +30,6 @@ import { addComponentState } from "@/wab/shared/core/states";
 import { mkTplComponent } from "@/wab/shared/core/tpls";
 import {
   HostLessPackageInfo,
-  Param,
   Site,
   ensureKnownPropParam,
 } from "@/wab/shared/model/classes";
@@ -196,14 +195,12 @@ export async function createSiteForHostlessProject(
     );
 
     // add props and default value to slots
-    const newParams: { component: CodeComponent; param: Param }[] = [];
     site.components.filter(isCodeComponent).forEach((c) => {
       const meta = componentToMeta.get(c)!;
       const newProps = getNewProps(site, c, meta);
       if (!newProps.result.isError) {
-        c.params = newProps.result.value;
+        c.params = newProps.result.value.newProps;
         attachRenderableTplSlots(c);
-        newParams.push(...c.params.map((param) => ({ component: c, param })));
       } else {
         throw newProps.result.error;
       }

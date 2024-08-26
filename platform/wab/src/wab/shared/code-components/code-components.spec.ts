@@ -5,17 +5,10 @@ import { FastBundler } from "@/wab/shared/bundler";
 import {
   getNewProps,
   makePlumeComponentMeta,
-  maybeNormParamName,
 } from "@/wab/shared/code-components/code-components";
-import {
-  ComponentType,
-  mkComponent,
-  PlumeComponent,
-} from "@/wab/shared/core/components";
-import { mkParam, ParamExportType } from "@/wab/shared/core/lang";
+import { PlumeComponent } from "@/wab/shared/core/components";
 import { createSite } from "@/wab/shared/core/sites";
 import { unbundleSite } from "@/wab/shared/core/tagged-unbundle";
-import { mkTplTagX } from "@/wab/shared/core/tpls";
 import {
   Component,
   PropParam,
@@ -23,7 +16,6 @@ import {
   StateChangeHandlerParam,
   StateParam,
 } from "@/wab/shared/model/classes";
-import { typeFactory } from "@/wab/shared/model/model-util";
 import type { CodeComponentMeta } from "@plasmicapp/host";
 
 describe("code-components", () => {
@@ -104,14 +96,14 @@ describe("code-components", () => {
     it("returns no params for the full component", () => {
       const paramNames = unwrap(
         getNewProps(site, plumeComponent, plumePluginComponentMeta)
-      ).map((p) => p.variable.name);
+      ).newProps.map((p) => p.variable.name);
       expect(paramNames).toBeEmpty();
     });
     it("returns all params for a component with no params", () => {
       plumeComponent.params = [];
       const paramNames = unwrap(
         getNewProps(site, plumeComponent, plumePluginComponentMeta)
-      ).map((p) => p.variable.name);
+      ).newProps.map((p) => p.variable.name);
       expect(paramNames).toEqual([
         "value",
         "name",
@@ -126,60 +118,8 @@ describe("code-components", () => {
       removeFromArray(plumeComponent.params, plumeAriaLabelParam);
       const paramNames = unwrap(
         getNewProps(site, plumeComponent, plumePluginComponentMeta)
-      ).map((p) => p.variable.name);
+      ).newProps.map((p) => p.variable.name);
       expect(paramNames).toEqual(["value", "aria-label"]);
-    });
-  });
-
-  describe("maybeNormParamName", () => {
-    it("returns the name for plain components", () => {
-      const component = mkComponent({
-        name: "my component",
-        type: ComponentType.Plain,
-        tplTree: mkTplTagX("div", {}),
-      });
-      const param = mkParam({
-        name: "My slot",
-        type: typeFactory.renderable(),
-        exportType: ParamExportType.External,
-        paramType: "slot",
-      });
-      expect(maybeNormParamName(component, param)).toEqual("My slot");
-    });
-    it("returns the name for code components", () => {
-      const component = mkComponent({
-        name: "my code component",
-        type: ComponentType.Code,
-        tplTree: mkTplTagX("div", {}),
-      });
-      const param = mkParam({
-        name: "children",
-        type: typeFactory.renderable(),
-        exportType: ParamExportType.External,
-        paramType: "slot",
-      });
-      expect(maybeNormParamName(component, param)).toEqual("children");
-    });
-    describe("for Plume components", () => {
-      it("camelCases most Plume params", () => {
-        expect(maybeNormParamName(plumeComponent, plumeNameParam)).toEqual(
-          "name"
-        );
-        expect(
-          maybeNormParamName(plumeComponent, plumeIsDisabledParam)
-        ).toEqual("isDisabled");
-        expect(
-          maybeNormParamName(plumeComponent, plumeOnIsDisabledChangeParam)
-        ).toEqual("onIsDisabledChange");
-      });
-      it("does not touch aria- params", () => {
-        expect(maybeNormParamName(plumeComponent, plumeAriaLabelParam)).toEqual(
-          "aria-label"
-        );
-        expect(
-          maybeNormParamName(plumeComponent, plumeAriaLabelledByParam)
-        ).toEqual("aria-labelledby");
-      });
     });
   });
 });

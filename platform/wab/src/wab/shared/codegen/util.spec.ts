@@ -2,9 +2,8 @@ import { paramToVarName, toJsIdentifier } from "@/wab/shared/codegen/util";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import { mkParam, ParamExportType } from "@/wab/shared/core/lang";
 import { mkTplTagX } from "@/wab/shared/core/tpls";
-import { Component } from "@/wab/shared/model/classes";
+import { Component, PlumeInfo } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
-import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
 
 describe("toJsIdentifier", () => {
   it("should work", () => {
@@ -40,12 +39,12 @@ describe("toJsIdentifier", () => {
   });
 
   it("works with camelCase: false", () => {
-    expect(() => {
-      toJsIdentifier("Hello moto", { camelCase: false });
-    }).toThrow(); // BUG
+    expect(toJsIdentifier("Hello moto", { camelCase: false })).toEqual(
+      "Hellomoto"
+    );
     expect(toJsIdentifier("hello-moto", { camelCase: false })).toEqual(
-      "hello-moto"
-    ); // BUG
+      "hellomoto"
+    );
     expect(toJsIdentifier("HELLO_MOTO", { camelCase: false })).toEqual(
       "HELLO_MOTO"
     );
@@ -77,65 +76,61 @@ describe("toJsIdentifier", () => {
 });
 
 describe("paramToVarName", () => {
+  const childrenParam = mkParam({
+    name: "children",
+    type: typeFactory.renderable(),
+    exportType: ParamExportType.External,
+    paramType: "slot",
+  });
+  const onIsDisabledChangeParam = mkParam({
+    name: "On is disabled change",
+    type: typeFactory.func(),
+    exportType: ParamExportType.External,
+    paramType: "stateChangeHandler",
+  });
+  const ariaLabelParam = mkParam({
+    name: "aria-label",
+    type: typeFactory.text(),
+    exportType: ParamExportType.External,
+    paramType: "state",
+  });
+  const dataIdParam = mkParam({
+    name: "data-id",
+    type: typeFactory.num(),
+    exportType: ParamExportType.External,
+    paramType: "prop",
+  });
   describe("for non-code components (includes Plume)", () => {
-    let component: Component;
-    beforeEach(() => {
-      component = mkComponent({
-        name: "my component",
+    it("camelCases params for plain components", () => {
+      const plainComponent = mkComponent({
+        name: "plain component",
         type: ComponentType.Plain,
         tplTree: mkTplTagX("div", {}),
       });
-    });
-    it("works for GlobalVariantGroupParam", () => {
-      const screenVariantGroup = mkScreenVariantGroup();
-      expect(paramToVarName(component, screenVariantGroup.param)).toEqual(
-        "screen"
+      expect(paramToVarName(plainComponent, childrenParam)).toEqual("children");
+      expect(paramToVarName(plainComponent, onIsDisabledChangeParam)).toEqual(
+        "onIsDisabledChange"
       );
-    });
-    it("works for SlotParam", () => {
-      const param = mkParam({
-        name: "My slot",
-        type: typeFactory.renderable(),
-        exportType: ParamExportType.External,
-        paramType: "slot",
-      });
-      expect(paramToVarName(component, param)).toEqual("mySlot");
-    });
-    it("works for StateParam", () => {
-      const param = mkParam({
-        name: "Is selected",
-        type: typeFactory.bool(),
-        exportType: ParamExportType.External,
-        paramType: "state",
-      });
-      expect(paramToVarName(component, param)).toEqual("isSelected");
-    });
-    it("works and preserves aria- names for PropParam ", () => {
-      const ariaLabelParam = mkParam({
-        name: "aria-label",
-        type: typeFactory.text(),
-        exportType: ParamExportType.External,
-        paramType: "prop",
-      });
-      const ariaLabelledByParam = mkParam({
-        name: "aria-labelledby",
-        type: typeFactory.text(),
-        exportType: ParamExportType.External,
-        paramType: "prop",
-      });
-      expect(paramToVarName(component, ariaLabelParam)).toEqual("aria-label");
-      expect(paramToVarName(component, ariaLabelledByParam)).toEqual(
-        "aria-labelledby"
+      expect(paramToVarName(plainComponent, ariaLabelParam)).toEqual(
+        "ariaLabel"
       );
+      expect(paramToVarName(plainComponent, dataIdParam)).toEqual("dataId");
     });
-    it("works and preserves data- names for PropParam", () => {
-      const param = mkParam({
-        name: "data-focus-visible",
-        type: typeFactory.bool(),
-        exportType: ParamExportType.External,
-        paramType: "prop",
+    it("camelCases params for plume components, except aria- params", () => {
+      const plumeComponent = mkComponent({
+        name: "plume component",
+        type: ComponentType.Plain,
+        tplTree: mkTplTagX("input", {}),
+        plumeInfo: new PlumeInfo({ type: "text-input" }),
       });
-      expect(paramToVarName(component, param)).toEqual("data-focus-visible");
+      expect(paramToVarName(plumeComponent, childrenParam)).toEqual("children");
+      expect(paramToVarName(plumeComponent, onIsDisabledChangeParam)).toEqual(
+        "onIsDisabledChange"
+      );
+      expect(paramToVarName(plumeComponent, ariaLabelParam)).toEqual(
+        "aria-label"
+      );
+      expect(paramToVarName(plumeComponent, dataIdParam)).toEqual("dataId");
     });
   });
   describe("for code components", () => {
@@ -147,14 +142,16 @@ describe("paramToVarName", () => {
         tplTree: mkTplTagX("div", {}),
       });
     });
-    it("uses variable name for if no propEffect", () => {
-      const param = mkParam({
-        name: "variableName",
-        type: typeFactory.bool(),
-        exportType: ParamExportType.External,
-        paramType: "prop",
-      });
-      expect(paramToVarName(codeComponent, param)).toEqual("variableName");
+    it("uses variable name if no propEffect", () => {
+      expect(paramToVarName(codeComponent, childrenParam)).toEqual("children");
+      // "On is disabled change" is a valid React prop name
+      expect(paramToVarName(codeComponent, onIsDisabledChangeParam)).toEqual(
+        "On is disabled change"
+      );
+      expect(paramToVarName(codeComponent, ariaLabelParam)).toEqual(
+        "aria-label"
+      );
+      expect(paramToVarName(codeComponent, dataIdParam)).toEqual("data-id");
     });
     it("uses propEffect if present", () => {
       const param = mkParam({

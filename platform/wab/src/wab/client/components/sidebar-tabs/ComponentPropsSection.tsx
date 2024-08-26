@@ -1,4 +1,3 @@
-/** @format */
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import { TextAndShortcut } from "@/wab/client/components/menu-builder";
 import { reactPrompt } from "@/wab/client/components/quick-modals";
@@ -54,9 +53,9 @@ import {
   HighlightInteractionRequest,
   StudioPropType,
   isAdvancedProp,
-  maybeNormParamName,
 } from "@/wab/shared/code-components/code-components";
 import { getExportedComponentName } from "@/wab/shared/codegen/react-p/utils";
+import { paramToVarName } from "@/wab/shared/codegen/util";
 import { assert, ensure, hackyCast, spawn } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
@@ -167,8 +166,9 @@ export const ComponentPropsSection = observer(
       params = sortBy(
         params,
         (param) =>
-          paramNameToIndex[maybeNormParamName(component, param)] ??
-          param.variable.name
+          paramNameToIndex[
+            paramToVarName(component, param, { useControlledProp: true })
+          ] ?? param.variable.name
       );
     }
 

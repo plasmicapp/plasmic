@@ -1,11 +1,3 @@
-import { assert, unexpected } from "@/wab/shared/common";
-import {
-  isCodeComponent,
-  isPageComponent,
-  isPlainComponent,
-} from "@/wab/shared/core/components";
-import { getCssRulesFromRs } from "@/wab/shared/css";
-import { isFallbackableExpr, tryExtractJson } from "@/wab/shared/core/exprs";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
 import {
@@ -14,10 +6,29 @@ import {
   toClassName,
   toVarName,
 } from "@/wab/shared/codegen/util";
+import { assert, unexpected } from "@/wab/shared/common";
+import {
+  isCodeComponent,
+  isPageComponent,
+  isPlainComponent,
+} from "@/wab/shared/core/components";
+import { isFallbackableExpr, tryExtractJson } from "@/wab/shared/core/exprs";
 import {
   isTagInline,
   normalizeMarkers,
 } from "@/wab/shared/core/rich-text-util";
+import {
+  flattenTpls,
+  hasTextAncestor,
+  isTplComponent,
+  isTplNamable,
+  isTplTag,
+  isTplTextBlock,
+  isTplVariantable,
+  tplChildren,
+  TplTextTag,
+} from "@/wab/shared/core/tpls";
+import { getCssRulesFromRs } from "@/wab/shared/css";
 import { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import {
   Component,
@@ -40,17 +51,6 @@ import {
   tryGetBaseVariantSetting,
   VariantCombo,
 } from "@/wab/shared/Variants";
-import {
-  flattenTpls,
-  hasTextAncestor,
-  isTplComponent,
-  isTplNamable,
-  isTplTag,
-  isTplTextBlock,
-  isTplVariantable,
-  tplChildren,
-  TplTextTag,
-} from "@/wab/shared/core/tpls";
 import { genTranslatableString } from "@plasmicapp/react-web";
 import { isEmpty, sortBy, uniq } from "lodash";
 import React from "react";
@@ -285,7 +285,7 @@ export function makeLocalizationStringKey(
     return createLocalizationHashKey(str);
   } else if (opts.keyScheme === "path") {
     const { projectId, component } = source;
-    const parts = [projectId, toClassName(component.name)];
+    const parts: string[] = [projectId, toClassName(component.name)];
 
     if (source.type === "default-param-expr") {
       // Looks like PROJECT.COMPONENT.__defaults__.ATTR

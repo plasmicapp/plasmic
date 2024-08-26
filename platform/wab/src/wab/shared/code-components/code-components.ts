@@ -182,10 +182,7 @@ import {
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { canComponentTakeRef } from "@/wab/shared/react-utils";
 import { CodeLibraryRegistration } from "@/wab/shared/register-library";
-import {
-  validJsIdentifierChars,
-  validJsIdentifierRegex,
-} from "@/wab/shared/utils/regex-js-identifier";
+import { isValidJsIdentifier } from "@/wab/shared/utils/regex-js-identifier";
 import type {
   ComponentMeta,
   ComponentRegistration,
@@ -1430,9 +1427,7 @@ function checkWhitespacesInImportNames(
       .filter(isCodeComponent)
       .filter((c) => {
         const importName = getCodeComponentImportName(c);
-        return (
-          importName.length === 0 || !importName.match(validJsIdentifierRegex)
-        );
+        return importName.length === 0 || !isValidJsIdentifier(importName);
       });
     if (badComponents.length > 0) {
       fns.onInvalidComponentImportNames(
@@ -1622,10 +1617,6 @@ interface StateChanges {
     before: State;
     after: State;
   }[];
-}
-
-interface StateChangesWithComponent extends StateChanges {
-  component: Component;
 }
 
 export function compareComponentStatesWithMeta(
@@ -1999,21 +1990,17 @@ export function compareComponentPropsWithMeta(
     | BadElementSchemaError
     | DuplicatedComponentParamError
   >(({ run, success }) => {
-    const params = run(componentMetaToComponentParams(site, meta));
-    const registeredParams = new Map(
-      params.map((p) => tuple(p.variable.name, p))
-    );
-    const existingParams = new Map(
-      component.params.map((p) => tuple(maybeNormParamName(component, p), p))
-    );
+    const {
+      newProps: addedProps,
+      registeredParams,
+      existingParams,
+    } = run(getNewProps(site, component, meta));
 
     const exprCtx: ExprCtx = {
       projectFlags: computedProjectFlags(site),
       component,
       inStudio: true,
     };
-
-    const addedProps = run(getNewProps(site, component, meta));
     const updatedProps = [...existingParams.entries()]
       .filter(([name, p]) => {
         if (registeredParams.has(name)) {
@@ -2091,11 +2078,13 @@ export function compareComponentPropsWithMeta(
           "Couldn't find param " + name
         ),
       }));
+
     const removedProps = !isPlumeComponent(component)
       ? [...existingParams.entries()]
           .filter(([name]) => !registeredParams.has(name))
           .map(([_, p]) => p)
       : [];
+
     return success({
       addedProps,
       updatedProps,
@@ -2505,7 +2494,9 @@ export function elementSchemaToTpl(
                     }
                   } else {
                     const param = comp.params.find(
-                      (p) => maybeNormParamName(comp, p) === prop
+                      (p) =>
+                        paramToVarName(comp, p, { useControlledProp: true }) ===
+                        prop
                     );
                     if (!param || !isSlot(param)) {
                       warnings.push({
@@ -3945,23 +3936,6 @@ export function isAllowedDefaultExprForPropType(propType: StudioPropType<any>) {
   return true;
 }
 
-export function maybeNormParamName(comp: Component, param: Param) {
-  // Plume params are defined in the Plume project (e.g. plume-master-pkg.json).
-  // Plume components and their params are copied as users add Plume components
-  // to their projects. These param have names that are usually not proper JS
-  // identifiers (e.g. "Is disabled"), unlike their code component counterparts.
-  // However, in the Plume plugin system (wab/src/wab/shared/plume),
-  // the generated CodeComponentMetas all have proper JS identifiers
-  // (e.g. "isDisabled"). Therefore, to match these params, we need to give them
-  // special treatment by calling `paramToVarName`.
-  // Note during rendering, these params are also mapped via `paramToVarName`.
-  if (isPlumeComponent(comp)) {
-    return paramToVarName(comp, param);
-  } else {
-    return param.variable.name;
-  }
-}
-
 export function wabTypeToPropType(type: Type): StudioPropType<any> {
   return switchType(type)
     .when(Text, () => "string" as const)
@@ -4029,7 +4003,11 @@ export function getNewProps(
   meta: ComponentMeta<any>
 ) {
   return failable<
-    Param[],
+    {
+      newProps: Param[];
+      registeredParams: Map<string, Param>;
+      existingParams: Map<string, Param>;
+    },
     | UnknownComponentError
     | CodeComponentRegistrationTypeError
     | DuplicatedComponentParamError
@@ -4039,14 +4017,18 @@ export function getNewProps(
       params.map((p) => tuple(p.variable.name, p))
     );
     const existingParams = new Map(
-      component.params.map((p) => tuple(maybeNormParamName(component, p), p))
+      component.params.map((p) =>
+        tuple(paramToVarName(component, p, { useControlledProp: true }), p)
+      )
     );
 
-    return success(
-      [...registeredParams.entries()]
+    return success({
+      newProps: [...registeredParams.entries()]
         .filter(([name]) => !existingParams.has(name))
-        .map(([_, p]) => p)
-    );
+        .map(([_, p]) => p),
+      registeredParams,
+      existingParams,
+    });
   });
 }
 
@@ -4412,23 +4394,7 @@ async function upsertRegisteredFunctions(
         const errorPrefix = `Error registering custom function ${registeredFunctionId(
           functionReg
         )}:`;
-        if (
-          !functionReg.meta.name.match(
-            // We don't use `validJsIdentifierRegex` here because we're more
-            // our parser to detect used functions in custom code is more strict
-            new RegExp(
-              [
-                "^[",
-                ...validJsIdentifierChars({
-                  allowUnderscore: true,
-                  allowDollarSign: true,
-                }),
-                "]+$",
-              ].join("")
-            )
-          ) ||
-          functionReg.meta.name.match(/^[0-9]/)
-        ) {
+        if (!isValidJsIdentifier(functionReg.meta.name)) {
           return failure(
             new InvalidCustomFunctionError(
               `${errorPrefix} the function name must be a valid JavaScript identifier, but got: ${functionReg.meta.name}`
@@ -4437,19 +4403,7 @@ async function upsertRegisteredFunctions(
         }
         if (
           isString(functionReg.meta.namespace) &&
-          (!functionReg.meta.namespace.match(
-            new RegExp(
-              [
-                "^[",
-                ...validJsIdentifierChars({
-                  allowUnderscore: true,
-                  allowDollarSign: true,
-                }),
-                "]+$",
-              ].join("")
-            )
-          ) ||
-            functionReg.meta.namespace.match(/^[0-9]/))
+          !isValidJsIdentifier(functionReg.meta.namespace)
         ) {
           return failure(
             new InvalidCustomFunctionError(
@@ -4493,7 +4447,7 @@ async function upsertRegisteredFunctions(
             | BaseParam<any>
           )[]) {
             if (isString(param)) {
-              if (!param.match(validJsIdentifierRegex)) {
+              if (!isValidJsIdentifier(param)) {
                 return failure(
                   new InvalidCustomFunctionError(
                     `${errorPrefix} expected \`meta.params\` to be an array with param names, but the provided name is not a valid JavaScript identifier: ${param}`
@@ -4501,10 +4455,7 @@ async function upsertRegisteredFunctions(
                 );
               }
             } else {
-              if (
-                !isString(param.name) ||
-                !param.name.match(validJsIdentifierRegex)
-              ) {
+              if (!isString(param.name) || !isValidJsIdentifier(param.name)) {
                 return failure(
                   new InvalidCustomFunctionError(
                     `${errorPrefix} Param name is not a valid JavaScript identifier: ${param.name}`
