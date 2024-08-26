@@ -23,11 +23,7 @@ import {
   ensureOnlyValidInteractiveVariantsInComponent,
   getInvalidInteractiveVariantsInComponent,
 } from "@/wab/shared/code-components/interaction-variants";
-import {
-  paramToVarName,
-  toVarName
-} from "@/wab/shared/codegen/util";
-import { isValidJsIdentifier } from "@/wab/shared/utils/regex-js-identifier";
+import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
 import {
   CustomError,
   assert,
@@ -186,6 +182,10 @@ import {
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { canComponentTakeRef } from "@/wab/shared/react-utils";
 import { CodeLibraryRegistration } from "@/wab/shared/register-library";
+import {
+  validJsIdentifierChars,
+  validJsIdentifierRegex,
+} from "@/wab/shared/utils/regex-js-identifier";
 import type {
   ComponentMeta,
   ComponentRegistration,
@@ -1431,7 +1431,7 @@ function checkWhitespacesInImportNames(
       .filter((c) => {
         const importName = getCodeComponentImportName(c);
         return (
-          importName.length === 0 || !isValidJsIdentifier(importName)
+          importName.length === 0 || !importName.match(validJsIdentifierRegex)
         );
       });
     if (badComponents.length > 0) {
@@ -4403,7 +4403,23 @@ async function upsertRegisteredFunctions(
         const errorPrefix = `Error registering custom function ${registeredFunctionId(
           functionReg
         )}:`;
-        if (!isValidJsIdentifier(functionReg.meta.name)) {
+        if (
+          !functionReg.meta.name.match(
+            // We don't use `validJsIdentifierRegex` here because we're more
+            // our parser to detect used functions in custom code is more strict
+            new RegExp(
+              [
+                "^[",
+                ...validJsIdentifierChars({
+                  allowUnderscore: true,
+                  allowDollarSign: true,
+                }),
+                "]+$",
+              ].join("")
+            )
+          ) ||
+          functionReg.meta.name.match(/^[0-9]/)
+        ) {
           return failure(
             new InvalidCustomFunctionError(
               `${errorPrefix} the function name must be a valid JavaScript identifier, but got: ${functionReg.meta.name}`
@@ -4412,7 +4428,19 @@ async function upsertRegisteredFunctions(
         }
         if (
           isString(functionReg.meta.namespace) &&
-          !isValidJsIdentifier(functionReg.meta.namespace)
+          (!functionReg.meta.namespace.match(
+            new RegExp(
+              [
+                "^[",
+                ...validJsIdentifierChars({
+                  allowUnderscore: true,
+                  allowDollarSign: true,
+                }),
+                "]+$",
+              ].join("")
+            )
+          ) ||
+            functionReg.meta.namespace.match(/^[0-9]/))
         ) {
           return failure(
             new InvalidCustomFunctionError(
@@ -4456,7 +4484,7 @@ async function upsertRegisteredFunctions(
             | BaseParam<any>
           )[]) {
             if (isString(param)) {
-              if (!isValidJsIdentifier(param)) {
+              if (!param.match(validJsIdentifierRegex)) {
                 return failure(
                   new InvalidCustomFunctionError(
                     `${errorPrefix} expected \`meta.params\` to be an array with param names, but the provided name is not a valid JavaScript identifier: ${param}`
@@ -4466,7 +4494,7 @@ async function upsertRegisteredFunctions(
             } else {
               if (
                 !isString(param.name) ||
-                !isValidJsIdentifier(param.name)
+                !param.name.match(validJsIdentifierRegex)
               ) {
                 return failure(
                   new InvalidCustomFunctionError(

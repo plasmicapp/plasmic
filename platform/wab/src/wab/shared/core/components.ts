@@ -1351,7 +1351,7 @@ export function extractComponent({
     }
   }
 
-  const jsNamesOfParamsAlreadyExtracted = new Set<string>(
+  const jsNamesOfParamsAlreadyExtracted = new Set(
     component.params.map((param) => toVarName(param.variable.name))
   );
 
@@ -1527,7 +1527,7 @@ export function extractComponent({
       (t) => isTplVariantable(t) && t.vsettings[0].dataRep
     )
   );
-  const dataRepVars = new Set<string>(
+  const dataRepVars = new Set(
     filterFalsy(reps.flatMap((r) => [r.element.name, r.index?.name])).map((v) =>
       toVarName(v)
     )

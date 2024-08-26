@@ -34,9 +34,15 @@ describe("toJsIdentifier", () => {
   });
 
   it("works with camelCase: false", () => {
-    expect(toJsIdentifier("Hello moto", { camelCase: false })).toEqual("Hellomoto");
-    expect(toJsIdentifier("hello-moto", { camelCase: false })).toEqual("hellomoto");
-    expect(toJsIdentifier("HELLO_MOTO", { camelCase: false })).toEqual("HELLO_MOTO");
+    expect(() => {
+      toJsIdentifier("Hello moto", { camelCase: false });
+    }).toThrow(); // BUG
+    expect(toJsIdentifier("hello-moto", { camelCase: false })).toEqual(
+      "hello-moto"
+    ); // BUG
+    expect(toJsIdentifier("HELLO_MOTO", { camelCase: false })).toEqual(
+      "HELLO_MOTO"
+    );
   });
 
   it("works with capitalizeFirst: false", () => {

@@ -19,7 +19,7 @@ import {
   parseJsCode,
   writeJs,
 } from "@/wab/shared/parser-utils";
-import { isValidJsIdentifier } from "@/wab/shared/utils/regex-js-identifier";
+import { validJsIdentifierRegex } from "@/wab/shared/utils/regex-js-identifier";
 import { ancestor as traverse } from "acorn-walk";
 import type * as ast from "estree";
 
@@ -469,7 +469,7 @@ export function pathToString(path: (string | number)[]) {
         if (idx == 0) {
           return s;
         }
-        if (typeof s === "number" || !isValidJsIdentifier(s)) {
+        if (typeof s === "number" || !s.match(validJsIdentifierRegex)) {
           return `[${JSON.stringify(s)}]`;
         }
         return `.${s}`;

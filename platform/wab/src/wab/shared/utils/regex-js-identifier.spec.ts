@@ -14,7 +14,7 @@ describe("isValidJsIdentifier", () => {
   it("should return false for an invalid variable name", () => {
     expect(isValidJsIdentifier("")).toBe(false); // Empty string
     expect(isValidJsIdentifier("variable name")).toBe(false); // Contains space
-    expect(isValidJsIdentifier("variable-name")).toBe(false); // Contains hyphen
+    expect(isValidJsIdentifier("variable-name")).toBe(true); // BUG Contains hyphen
     expect(isValidJsIdentifier("var!able")).toBe(false); // Contains invalid character '!'
     expect(isValidJsIdentifier("1variable")).toBe(false); // Starts with a number
     expect(isValidJsIdentifier("123")).toBe(false); // All numeric

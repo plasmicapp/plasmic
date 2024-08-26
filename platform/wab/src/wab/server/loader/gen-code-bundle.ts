@@ -1,3 +1,5 @@
+import { unzip3 } from "@/wab/shared/collections";
+import { tuple } from "@/wab/shared/common";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import {
   mkVersionToSync,
@@ -8,12 +10,10 @@ import { withSpan } from "@/wab/server/util/apm-util";
 import { upsertS3CacheEntry } from "@/wab/server/util/s3-util";
 import { PlasmicWorkerPool } from "@/wab/server/workers/pool";
 import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
-import { ProjectId } from "@/wab/shared/ApiSchema";
 import { ExportOpts, ExportPlatformOptions } from "@/wab/shared/codegen/types";
-import { unzip3 } from "@/wab/shared/collections";
-import { tuple } from "@/wab/shared/common";
-import { LocalizationKeyScheme } from "@/wab/shared/localization";
 import { createHash } from "crypto";
+import { ProjectId } from "@/wab/shared/ApiSchema";
+import { LocalizationKeyScheme } from "@/wab/shared/localization";
 import { getConnection } from "typeorm";
 
 /**
@@ -30,9 +30,8 @@ import { getConnection } from "typeorm";
  *
  * 17 - bumped for using shortened css class names
  * 18 - started returning list of component refs in codegen response to handle errors
- * 19 - fix css class name generation
  */
-export const LOADER_CACHE_BUST = "19";
+export const LOADER_CACHE_BUST = "18";
 
 /**
  * This represents the version of the loader API wire format; should reflect the

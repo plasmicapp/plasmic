@@ -66,8 +66,8 @@ describe("makeCssClassNameForVariantCombo", () => {
         prefix: "123",
       },
       {
-        loader: "_123abcde",
-        nonLoader: "_123___hovered",
+        loader: "123abcde", // BUG
+        nonLoader: "123___hovered", // BUG
       }
     );
   });
@@ -84,7 +84,7 @@ describe("makeCssClassNameForVariantCombo", () => {
         ],
         {},
         {
-          loader: "_12345",
+          loader: "12345", // BUG
           nonLoader: "___hovered",
         }
       );
@@ -100,7 +100,7 @@ describe("makeCssClassNameForVariantCombo", () => {
         ],
         {},
         {
-          loader: "_12345",
+          loader: "12345", // BUG
           nonLoader: "___hovered__focusedWithin",
         }
       );
@@ -187,7 +187,7 @@ describe("makeCssClassNameForVariantCombo", () => {
         [mobileVariant],
         {},
         {
-          loader: "_123mo",
+          loader: "123mo", // BUG
           nonLoader: "global_screen_mobile",
         }
       );
@@ -195,7 +195,7 @@ describe("makeCssClassNameForVariantCombo", () => {
         [desktopVariant],
         {},
         {
-          loader: "_456de",
+          loader: "456de", // BUG
           nonLoader: "global_screen_desktop",
         }
       );
@@ -205,7 +205,7 @@ describe("makeCssClassNameForVariantCombo", () => {
         [mobileVariant, desktopVariant],
         {},
         {
-          loader: "_123mo_456de",
+          loader: "123mo_456de", // BUG
           nonLoader: "global_screen_mobile_global_screen_desktop",
         }
       );

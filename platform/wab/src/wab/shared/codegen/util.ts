@@ -9,76 +9,71 @@ import { isSlot } from "@/wab/shared/SlotUtils";
 import { capitalizeFirst, decapitalizeFirst } from "@/wab/shared/strs";
 import {
   isValidJsIdentifier,
-  JsIdentifier,
-  pNotJsIdentifierChar,
+  validJsIdentifierChars,
 } from "@/wab/shared/utils/regex-js-identifier";
 import jsStringEscape from "js-string-escape";
 import camelCase from "lodash/camelCase";
+import deburr from "lodash/deburr";
 import head from "lodash/head";
 import memoize from "lodash/memoize";
 import sortBy from "lodash/sortBy";
 import path from "path";
-import { regex } from "regex";
 
 export const jsString = (str: string) => `"${jsStringEscape(str)}"`;
 
+// This prefix is preserved for internal namespaces including
+//  - slot style wrapper, which starts with $slot
+//  - foreign component instance position wrapper, which starts with $pos
+//  - uuid, which starts with $auto.
+export const prefixOfInternalNamespace = "$";
 export const DEFAULT_CONTEXT_VALUE = "PLEASE_RENDER_INSIDE_PROVIDER";
 
-/**
- * First check if the string is a valid JavaScript identifier,
- * otherwise use {@link toJsIdentifier}.
- *
- * Use this method instead of {@link toJsIdentifier} when you're pretty sure
- * the string is already valid.
- */
-export function ensureJsIdentifier(str: string) {
-  if (isValidJsIdentifier(str)) {
-    return str;
-  } else {
-    return toJsIdentifier(str, { camelCase: false });
-  }
-}
+export const toJsIdentifier = memoize(toJsIdentifier_, (...args) => {
+  return `${args[0]}_${args[1]?.capitalizeFirst}_${args[1]?.camelCase}`;
+});
 
 /**
- * Converts user-generated string to a valid JavaScript identifier.
- *
- * By default, the string will be camelCased.
- * Optionally, skip camelCasing or set capitalization.
+ * Converts a string to a valid javascript identifier
  */
-export const toJsIdentifier = memoize(
-  toJsIdentifier_,
-  (...args: Parameters<typeof toJsIdentifier_>) => {
-    return `${args[0]}_${args[1]?.capitalizeFirst}_${args[1]?.camelCase}`;
-  }
-);
-
-const reNotJsIdentifierChar = regex("g")`${pNotJsIdentifierChar}`;
-
 function toJsIdentifier_(
   original: string,
   opts?: {
     capitalizeFirst?: boolean;
+    allowUnderscore?: boolean;
     camelCase?: boolean;
   }
-): JsIdentifier {
+) {
   let str = original;
+  opts = opts || {};
 
-  if (opts?.camelCase !== false) {
+  // Remove anything that's not alphanumeric, space, underscore, dash,
+  // arabic, chinese, cyrillic, greek, hindi, japanese and thai letters
+  const invalidCharactersRegex = new RegExp(
+    [
+      "[^",
+      ...validJsIdentifierChars({
+        allowUnderscore: opts?.allowUnderscore,
+        allowSpace: true,
+        allowMinusSign: true,
+      }),
+      "]",
+    ].join(""),
+    "g"
+  );
+
+  str = deburr(str).replace(invalidCharactersRegex, "");
+  if (opts.camelCase !== false) {
     str = camelCase(str);
   }
 
-  str = str.replaceAll(reNotJsIdentifierChar, "");
-
-  // capitalize/de-capitalize if requested
-  if (opts?.capitalizeFirst === true) {
+  // Capitalize if requested
+  if (opts.capitalizeFirst === true) {
     str = capitalizeFirst(str);
-  } else if (opts?.capitalizeFirst === false) {
+  } else if (opts.capitalizeFirst === false) {
     str = decapitalizeFirst(str);
   }
 
-  // If str is still not valid, it must begin with an illegal character such
-  // as a number, or it's a keyword.
-  // Either way, prepend with an underscore to fix the issue.
+  // Prepend with "_" if cannot use as a js keyword
   if (!isValidJsIdentifier(str)) {
     str = `_${str}`;
   }
@@ -106,7 +101,7 @@ export function sortedDict(
 export function jsLiteral(val: any) {
   // https://stackoverflow.com/questions/31649362/how-to-make-json-stringify-encode-non-ascii-characters-in-ascii-safe-escaped-for
   return JSON.stringify(val)?.replace(/[\u007F-\uFFFF]/g, function (chr) {
-    return "\\u" + ("0000" + chr.charCodeAt(0).toString(16)).slice(-4);
+    return "\\u" + ("0000" + chr.charCodeAt(0).toString(16)).substr(-4);
   });
 }
 

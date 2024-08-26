@@ -3,8 +3,8 @@ import { DocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
 import DocsPropsTableRow from "@/wab/client/components/docs/DocsPropsTableRow";
 import { typeString } from "@/wab/client/components/docs/VariantProp";
 import { PlasmicComponentView } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicComponentView";
-import { toVarName } from "@/wab/shared/codegen/util";
 import { isPlumeComponent } from "@/wab/shared/core/components";
+import { toVarName } from "@/wab/shared/codegen/util";
 import { wabToTsType } from "@/wab/shared/model/model-util";
 import {
   getPlumeDocsPlugin,
@@ -63,7 +63,7 @@ function PlumeComponentView(docsCtx: DocsPortalCtx) {
     })),
   ];
 
-  const allPropNames = new Set<string>(
+  const allPropNames = new Set(
     component.params.map((p) => toVarName(p.variable.name))
   );
 
