@@ -285,8 +285,9 @@ export function registerSlider(
         value: {
           type: "number",
           editOnly: true,
+          displayName: "Initial value",
           uncontrolledProp: "defaultValue",
-          description: "The default value of the slider",
+          description: "The initial value of the slider",
           defaultValueHint: 0,
           defaultValue: 0,
         },

@@ -95,7 +95,7 @@ function createAutoFocusProp<T>(componentName: string): PropType<T> {
 function createAriaLabelProp<T>(componentName: string): PropType<T> {
   return {
     type: "string",
-    displayName: "Aria Label",
+    displayName: "ARIA label",
     description: `Label for this ${componentName}, if no visible label is used, to identify the element to assistive technology`,
     advanced: true,
     hidden: hasParent,
@@ -128,7 +128,7 @@ export function getCommonProps<T>(
     value: {
       type: "string",
       editOnly: true,
-      displayName: "Default Value",
+      displayName: "Initial value",
       uncontrolledProp: "defaultValue",
       description: `The default value of the ${componentName}`,
       hidden: hasParent,

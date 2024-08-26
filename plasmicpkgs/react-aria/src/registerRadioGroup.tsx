@@ -154,7 +154,7 @@ export function registerRadioGroup(
         value: {
           type: "string",
           editOnly: true,
-          displayName: "Default Value",
+          displayName: "Initial value",
           uncontrolledProp: "defaultValue",
           description: "The current value",
         },

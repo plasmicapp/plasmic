@@ -316,7 +316,7 @@ export function registerSelect(loader?: Registerable) {
 
       "aria-label": {
         type: "string",
-        displayName: "Aria Label",
+        displayName: "ARIA label",
         description: "Label for this input, if no visible label is used",
         advanced: true,
       },

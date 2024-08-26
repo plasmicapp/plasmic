@@ -23,7 +23,6 @@ export interface BaseModalProps
     HasControlContextData {
   heading: React.ReactNode;
   modalOverlayClass: string;
-  onOpenChange(isOpen: boolean): void;
 }
 
 export interface BaseModalActions {
@@ -37,7 +36,6 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
       children,
       heading,
       modalOverlayClass,
-      onOpenChange,
       className,
       isOpen,
       setControlContextData,
@@ -57,10 +55,10 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
     // Expose close operation using useImperativeHandle
     useImperativeHandle(ref, () => ({
       close: () => {
-        onOpenChange(false);
+        mergedProps.onOpenChange?.(false);
       },
       open: () => {
-        onOpenChange(true);
+        mergedProps.onOpenChange?.(true);
       },
     }));
 
@@ -73,11 +71,7 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
     );
 
     return (
-      <ModalOverlay
-        {...mergedProps}
-        className={modalOverlayClass}
-        onOpenChange={onOpenChange}
-      >
+      <ModalOverlay {...mergedProps} className={modalOverlayClass}>
         <Modal className={className}>
           {isCanvas ? body : <Dialog>{body}</Dialog>}
         </Modal>
