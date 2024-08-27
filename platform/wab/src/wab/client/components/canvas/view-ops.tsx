@@ -3701,6 +3701,27 @@ export class ViewOps {
     }
     assert(!tpl.parent, "Unexpected tpl with parent");
 
+    // If we are dealing with a node element being wrapped, then we need to check that the relationship
+    // between the parent and the child is still valid after the wrap. So we need to check if the parent
+    // of the target can accept the new node as a child.
+    if (isKnownTplNode(target)) {
+      const parentOrSlotSelection = getParentOrSlotSelection(target);
+
+      // We may be wrapping the root node, in which case the parent won't exist
+      if (parentOrSlotSelection) {
+        const canAddToParent = canAddChildrenAndWhy(parentOrSlotSelection, tpl);
+        if (canAddToParent !== true) {
+          if (showErrorNotification) {
+            notification.error({
+              message: "Cannot wrap in container",
+              description: renderCantAddMsg(canAddToParent),
+            });
+          }
+          return false;
+        }
+      }
+    }
+
     if (isKnownTplNode(target) && Tpls.isTplColumn(target)) {
       if (showErrorNotification) {
         notification.error({
