@@ -105,14 +105,6 @@ export function jsLiteral(val: any) {
   });
 }
 
-function toArgParamName(str: string) {
-  const shouldCamelCase = !(str.startsWith("aria-") || str.startsWith("data-"));
-  return toJsIdentifier(str, {
-    capitalizeFirst: false,
-    camelCase: shouldCamelCase,
-  });
-}
-
 export function toVarName(str: string) {
   return toJsIdentifier(str, { capitalizeFirst: false });
 }
@@ -132,9 +124,16 @@ export function paramToVarName(
       return param.propEffect || param.variable.name;
     }
   } else if (isSlot(param) || isVariantGroupParam(component, param)) {
-    return toVarName(param.variable.name);
+    return toJsIdentifier(param.variable.name, { capitalizeFirst: false });
   } else {
-    return toArgParamName(param.variable.name);
+    const name = param.variable.name;
+    const shouldCamelCase = !(
+      name.startsWith("aria-") || name.startsWith("data-")
+    );
+    return toJsIdentifier(name, {
+      capitalizeFirst: false,
+      camelCase: shouldCamelCase,
+    });
   }
 }
 

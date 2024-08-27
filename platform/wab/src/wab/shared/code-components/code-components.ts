@@ -3945,7 +3945,16 @@ export function isAllowedDefaultExprForPropType(propType: StudioPropType<any>) {
   return true;
 }
 
-function maybeNormParamName(comp: Component, param: Param) {
+export function maybeNormParamName(comp: Component, param: Param) {
+  // Plume params are defined in the Plume project (e.g. plume-master-pkg.json).
+  // Plume components and their params are copied as users add Plume components
+  // to their projects. These param have names that are usually not proper JS
+  // identifiers (e.g. "Is disabled"), unlike their code component counterparts.
+  // However, in the Plume plugin system (wab/src/wab/shared/plume),
+  // the generated CodeComponentMetas all have proper JS identifiers
+  // (e.g. "isDisabled"). Therefore, to match these params, we need to give them
+  // special treatment by calling `paramToVarName`.
+  // Note during rendering, these params are also mapped via `paramToVarName`.
   if (isPlumeComponent(comp)) {
     return paramToVarName(comp, param);
   } else {

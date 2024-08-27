@@ -54,10 +54,10 @@ import {
   HighlightInteractionRequest,
   StudioPropType,
   isAdvancedProp,
+  maybeNormParamName,
 } from "@/wab/shared/code-components/code-components";
 import { getExportedComponentName } from "@/wab/shared/codegen/react-p/utils";
-import { paramToVarName } from "@/wab/shared/codegen/util";
-import { assert, ensure, hackyCast, maybe, spawn } from "@/wab/shared/common";
+import { assert, ensure, hackyCast, spawn } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
   getRealParams,
@@ -97,7 +97,6 @@ import {
   FunctionExpr,
   Interaction,
   ObjectPath,
-  Param,
   State,
   TplComponent,
   TplRef,
@@ -151,14 +150,6 @@ export const ComponentPropsSection = observer(
       viewCtx.getComponentEvalContext(tpl);
     const propTypes = getComponentPropTypes(viewCtx, component);
 
-    const maybeNormParam = (param: Param) => {
-      if (isPlumeComponent(component)) {
-        return paramToVarName(component, param);
-      } else {
-        return param.variable.name;
-      }
-    };
-
     if (isCodeComponent(component) || isPlumeComponent(component)) {
       params = params.filter((param) => {
         const propType = ensure(
@@ -176,7 +167,7 @@ export const ComponentPropsSection = observer(
       params = sortBy(
         params,
         (param) =>
-          maybe(paramNameToIndex[maybeNormParam(param)], (v) => v) ??
+          paramNameToIndex[maybeNormParamName(component, param)] ??
           param.variable.name
       );
     }
