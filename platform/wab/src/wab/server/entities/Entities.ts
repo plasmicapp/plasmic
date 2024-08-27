@@ -629,6 +629,13 @@ export class PkgVersion extends Base<"PkgVersionId"> {
 
   @Column("boolean", { nullable: true })
   isPrefilled: boolean;
+
+  // In case this version is the result of a branch merge with conflicts, we store how the user chose
+  // to resolve conflicts in the conflictPickMap.
+  @Column("text", { nullable: true })
+  @IsJSON()
+  @IsOptional()
+  conflictPickMap?: string | null;
 }
 
 @Entity()

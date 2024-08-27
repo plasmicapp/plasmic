@@ -242,7 +242,11 @@ import {
   compareSites,
   compareVersionNumbers,
 } from "@/wab/shared/site-diffs";
-import { MergeStep, tryMerge } from "@/wab/shared/site-diffs/merge-core";
+import {
+  DirectConflictPickMap,
+  MergeStep,
+  tryMerge,
+} from "@/wab/shared/site-diffs/merge-core";
 import { captureMessage } from "@sentry/node";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
@@ -3295,7 +3299,8 @@ export class DbMgr implements MigrationDbMgr {
     revisionNum?: number,
     hostLessPackage?: boolean,
     branchId?: BranchId,
-    secondMergeParentPkgVersionId?: PkgVersionId
+    secondMergeParentPkgVersionId?: PkgVersionId,
+    conflictPickMap?: DirectConflictPickMap
   ) {
     await this.checkProjectBranchPerms(
       { projectId, branchId },
@@ -3381,6 +3386,7 @@ export class DbMgr implements MigrationDbMgr {
       revisionId: rev.id,
       isPrefilled: false,
       branchId,
+      conflictPickMap: conflictPickMap ? JSON.stringify(conflictPickMap) : null,
     });
 
     await this.maybeUpdateCommitGraphForProject(projectId as ProjectId, (g) => {
@@ -8021,7 +8027,8 @@ export class DbMgr implements MigrationDbMgr {
       undefined,
       undefined,
       toBranchId,
-      finalFromCommit.id
+      finalFromCommit.id,
+      resolution?.picks
     );
 
     if (fromBranchId) {
