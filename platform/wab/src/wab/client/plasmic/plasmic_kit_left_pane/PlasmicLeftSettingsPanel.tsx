@@ -51,7 +51,6 @@ export type PlasmicLeftSettingsPanel__OverridesType = {
   leftPaneHeader?: Flex__<typeof LeftPaneHeader>;
   text?: Flex__<"div">;
   content?: Flex__<"div">;
-  globalVariableContent?: Flex__<"div">;
 };
 
 export interface DefaultLeftSettingsPanelProps {
@@ -131,30 +130,16 @@ function PlasmicLeftSettingsPanel__RenderFunc(props: {
         data-plasmic-override={overrides.content}
         className={classNames(projectcss.all, sty.content)}
       />
-
-      <div
-        data-plasmic-name={"globalVariableContent"}
-        data-plasmic-override={overrides.globalVariableContent}
-        className={classNames(projectcss.all, sty.globalVariableContent)}
-      />
     </div>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: [
-    "root",
-    "leftSearchPanel",
-    "leftPaneHeader",
-    "text",
-    "content",
-    "globalVariableContent",
-  ],
+  root: ["root", "leftSearchPanel", "leftPaneHeader", "text", "content"],
   leftSearchPanel: ["leftSearchPanel"],
   leftPaneHeader: ["leftPaneHeader", "text"],
   text: ["text"],
   content: ["content"],
-  globalVariableContent: ["globalVariableContent"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -165,7 +150,6 @@ type NodeDefaultElementType = {
   leftPaneHeader: typeof LeftPaneHeader;
   text: "div";
   content: "div";
-  globalVariableContent: "div";
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -232,7 +216,6 @@ export const PlasmicLeftSettingsPanel = Object.assign(
     leftPaneHeader: makeNodeComponent("leftPaneHeader"),
     text: makeNodeComponent("text"),
     content: makeNodeComponent("content"),
-    globalVariableContent: makeNodeComponent("globalVariableContent"),
 
     // Metadata about props expected for PlasmicLeftSettingsPanel
     internalVariantProps: PlasmicLeftSettingsPanel__VariantProps,

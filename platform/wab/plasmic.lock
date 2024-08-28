@@ -1610,7 +1610,7 @@
     },
     {
       "projectId": "aukbrhkegRkQ6KizvhdUPT",
-      "version": "30.0.2",
+      "version": "31.0.0",
       "dependencies": {
         "tXkSR39sgCDWSitZxC5xFV": "81.0.4",
         "oT38tGyqov9SPWHpf3Y2Rf": "5.5.3",
@@ -1869,12 +1869,12 @@
         {
           "type": "renderModule",
           "assetId": "EeT-6P6YTW",
-          "checksum": "80ddb7545513fc71b57271d2c1204e54"
+          "checksum": "510793e13f6e8b1f74b71502cd9e93d4"
         },
         {
           "type": "cssRules",
           "assetId": "EeT-6P6YTW",
-          "checksum": "80ddb7545513fc71b57271d2c1204e54"
+          "checksum": "510793e13f6e8b1f74b71502cd9e93d4"
         },
         {
           "type": "renderModule",
