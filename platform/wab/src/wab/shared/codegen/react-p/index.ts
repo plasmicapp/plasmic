@@ -2070,7 +2070,9 @@ function serializeRenderFunc(
           : ""
       }
 
-      const args = React.useMemo(() => Object.assign(${serializedArgs}, props.args),
+      const args = React.useMemo(() => Object.assign(${serializedArgs}, Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )),
         ${argsDependencyArray}
       );
 
