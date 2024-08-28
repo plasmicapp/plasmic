@@ -27,6 +27,7 @@ import { spawn } from "@/wab/shared/common";
 import {
   CodeComponent,
   DefaultComponentKind,
+  defaultComponentKinds,
   getComponentDisplayName,
   getDefaultComponentKind,
   getDefaultComponentLabel,
@@ -424,6 +425,28 @@ function buildCommonComponentMenuItems(
         Set as <strong>default component category</strong>
       </Menu.Item>
     );
+    const matchingDefaultComponent = Object.entries(
+      studioCtx.site.defaultComponents
+    ).find(([_, _component]) => _component === component);
+    if (matchingDefaultComponent) {
+      const [kind] = matchingDefaultComponent;
+      push(
+        <Menu.Item
+          key="demote-default-kind"
+          onClick={async () => {
+            await studioCtx.change(({ success }) => {
+              delete studioCtx.site.defaultComponents[kind];
+              return success();
+            });
+          }}
+        >
+          Unset as{" "}
+          <strong>
+            default component category {defaultComponentKinds[kind]}
+          </strong>
+        </Menu.Item>
+      );
+    }
     push(
       <Menu.Item
         key="set-page-wrapper"
