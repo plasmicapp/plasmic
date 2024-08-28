@@ -201,6 +201,7 @@ export function registerSliderTrack(
           description:
             "The thumbs of the slider. For range slider, you can add more than one thumb.",
           allowedComponents: [sliderThumbMeta.name],
+          allowRootWrapper: true,
           defaultValue: [
             {
               type: "component",
