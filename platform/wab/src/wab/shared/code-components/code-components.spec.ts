@@ -3,6 +3,7 @@ import { unwrap } from "@/wab/commons/failable-utils";
 import { parseMasterPkg } from "@/wab/server/pkg-mgr";
 import { FastBundler } from "@/wab/shared/bundler";
 import {
+  _testonly,
   getNewProps,
   makePlumeComponentMeta,
 } from "@/wab/shared/code-components/code-components";
@@ -17,6 +18,8 @@ import {
   StateParam,
 } from "@/wab/shared/model/classes";
 import type { CodeComponentMeta } from "@plasmicapp/host";
+
+const { findDuplicateAriaParams } = _testonly;
 
 describe("code-components", () => {
   // Unbundle plume-master-pkg.json and pick out TextInput
@@ -120,6 +123,59 @@ describe("code-components", () => {
         getNewProps(site, plumeComponent, plumePluginComponentMeta)
       ).newProps.map((p) => p.variable.name);
       expect(paramNames).toEqual(["value", "aria-label"]);
+    });
+  });
+
+  describe("findDuplicateAriaParams", () => {
+    it("returns empty array for 0 params", () => {
+      removeFromArray(plumeComponent.params, plumeAriaLabelParam);
+      removeFromArray(plumeComponent.params, plumeAriaLabelledByParam);
+      expect(findDuplicateAriaParams(plumeComponent)).toBeEmpty();
+    });
+    it("returns empty array for 1 params", () => {
+      expect(plumeComponent.params).toContain(plumeAriaLabelParam);
+      expect(plumeComponent.params).toContain(plumeAriaLabelledByParam);
+      expect(findDuplicateAriaParams(plumeComponent)).toBeEmpty();
+    });
+    it("returns the param with higher uid for 2 params", () => {
+      const dupAriaLabelParam = new PropParam({ ...plumeAriaLabelParam });
+      const dupAriaLabelledByParam = new PropParam({
+        ...plumeAriaLabelledByParam,
+      });
+      plumeComponent.params.push(dupAriaLabelParam);
+      plumeComponent.params.push(dupAriaLabelledByParam);
+      expect(findDuplicateAriaParams(plumeComponent)).toEqual([
+        dupAriaLabelParam,
+        dupAriaLabelledByParam,
+      ]);
+      expect(dupAriaLabelParam.uid).toBeGreaterThan(plumeAriaLabelParam.uid);
+      expect(dupAriaLabelledByParam.uid).toBeGreaterThan(
+        plumeAriaLabelledByParam.uid
+      );
+    });
+    it("returns the params with 2 highest uids for 3 params", () => {
+      const dupAriaLabelParams = [
+        new PropParam({ ...plumeAriaLabelParam }),
+        new PropParam({ ...plumeAriaLabelParam }),
+      ];
+      const dupAriaLabelledByParams = [
+        new PropParam({ ...plumeAriaLabelledByParam }),
+        new PropParam({ ...plumeAriaLabelledByParam }),
+      ];
+      plumeComponent.params.push(...dupAriaLabelParams);
+      plumeComponent.params.push(...dupAriaLabelledByParams);
+      expect(findDuplicateAriaParams(plumeComponent)).toEqual([
+        ...dupAriaLabelParams,
+        ...dupAriaLabelledByParams,
+      ]);
+      expect(
+        dupAriaLabelParams.every((p) => p.uid > plumeAriaLabelParam.uid)
+      ).toBeTrue();
+      expect(
+        dupAriaLabelledByParams.every(
+          (p) => p.uid > plumeAriaLabelledByParam.uid
+        )
+      ).toBeTrue();
     });
   });
 });

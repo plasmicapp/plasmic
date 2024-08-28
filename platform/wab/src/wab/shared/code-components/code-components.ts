@@ -52,6 +52,7 @@ import {
 import {
   CodeComponent,
   ComponentType,
+  PlumeComponent,
   getCodeComponentImportName,
   getComponentDisplayName,
   getDefaultComponent,
@@ -2079,11 +2080,11 @@ export function compareComponentPropsWithMeta(
         ),
       }));
 
-    const removedProps = !isPlumeComponent(component)
-      ? [...existingParams.entries()]
+    const removedProps = isPlumeComponent(component)
+      ? findDuplicateAriaParams(component)
+      : [...existingParams.entries()]
           .filter(([name]) => !registeredParams.has(name))
-          .map(([_, p]) => p)
-      : [];
+          .map(([_, p]) => p);
 
     return success({
       addedProps,
@@ -2093,7 +2094,32 @@ export function compareComponentPropsWithMeta(
   });
 }
 
-export function doUpdateComponentsProps(
+/**
+ * Finds duplicate aria- params.
+ * See https://linear.app/plasmic/issue/PLA-11130
+ */
+function findDuplicateAriaParams(plumeComponent: PlumeComponent): Param[] {
+  return [
+    ...findDuplicateParams(plumeComponent, "aria-label"),
+    ...findDuplicateParams(plumeComponent, "aria-labelledby"),
+  ];
+}
+
+/**
+ * Finds duplicate params in a component for the given name and returns all
+ * except the oldest param.
+ */
+function findDuplicateParams(component: Component, name: string) {
+  const params = component.params.filter((p) => p.variable.name === name);
+  if (params.length <= 1) {
+    return [];
+  }
+
+  params.sort((a, b) => a.uid - b.uid);
+  return params.slice(1);
+}
+
+function doUpdateComponentsProps(
   ctx: SiteCtx,
   changes: CodeComponentMetaDiffWithComponent[]
 ) {
@@ -2169,17 +2195,15 @@ function mergeComponentParams(
   before.required = after.required;
 }
 
-export function doUpdateComponentProps(
+function doUpdateComponentProps(
   ctx: SiteCtx,
   changes: CodeComponentMetaDiffWithComponent
 ) {
   return failable<void, never>(({ success }) => {
     const { component, addedProps, updatedProps, removedProps } = changes;
 
-    // Don't remove props for plume components
-    if (isCodeComponent(component)) {
-      removedProps.forEach((p) => removeComponentParam(ctx.site, component, p));
-    }
+    removedProps.forEach((p) => removeComponentParam(ctx.site, component, p));
+
     // When we update the type from/to slot, we need to clear the
     // existing args
     const hardUpdatedProps = updatedProps.filter(
@@ -4951,3 +4975,7 @@ export function appendCodeComponentMetaToModel(
     }
   }
 }
+
+export const _testonly = {
+  findDuplicateAriaParams,
+};
