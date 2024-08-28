@@ -23,6 +23,7 @@ export interface BaseModalProps
     HasControlContextData {
   heading: React.ReactNode;
   modalOverlayClass: string;
+  resetClassName?: string;
 }
 
 export interface BaseModalActions {
@@ -38,6 +39,7 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
       modalOverlayClass,
       className,
       isOpen,
+      resetClassName,
       setControlContextData,
       ...rest
     } = props;
@@ -71,7 +73,10 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
     );
 
     return (
-      <ModalOverlay {...mergedProps} className={modalOverlayClass}>
+      <ModalOverlay
+        {...mergedProps}
+        className={`${resetClassName} ${modalOverlayClass}`}
+      >
         <Modal className={className}>
           {isCanvas ? body : <Dialog>{body}</Dialog>}
         </Modal>
@@ -188,6 +193,9 @@ export function registerModal(
         onOpenChange: {
           type: "eventHandler",
           argTypes: [{ name: "isOpen", type: "boolean" }],
+        },
+        resetClassName: {
+          type: "themeResetClass",
         },
       },
       states: {
