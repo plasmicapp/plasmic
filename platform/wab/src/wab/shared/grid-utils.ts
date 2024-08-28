@@ -1,13 +1,13 @@
-import { ensure } from "@/wab/shared/common";
 import GridStyleParser from "@/wab/gen/GridStyleParser";
-import { NumericSize, Size } from "@/wab/shared/css-size";
 import {
   ReadonlyIRuleSetHelpers,
   readonlyRSH,
 } from "@/wab/shared/RuleSetHelpers";
-import { TplNode } from "@/wab/shared/model/classes";
+import { ensure } from "@/wab/shared/common";
 import { CssVarResolver, expandRuleSets } from "@/wab/shared/core/styles";
 import { isTplTag } from "@/wab/shared/core/tpls";
+import { NumericSize, Size } from "@/wab/shared/css-size";
+import { TplNode } from "@/wab/shared/model/classes";
 import { isArray, last } from "lodash";
 
 export interface FlexibleSize {
@@ -60,11 +60,6 @@ export function parseGridCssPropsToSpec(
   );
   return {
     gridTemplateRows: parseProp("grid-template-rows", "axisTemplate"),
-    // gridRowGap: parseProp("grid-row-gap", "numSize"), needs token handling
-    gridAutoRows: parseProp("grid-auto-rows", "size"),
-    gridTemplateColumns: parseProp("grid-template-columns", "axisTemplate"),
-    // gridColumnGap: parseProp("grid-column-gap", "numSize"), needs token handling
-    gridAutoColumns: parseProp("grid-auto-columns", "size"),
   };
 }
 
