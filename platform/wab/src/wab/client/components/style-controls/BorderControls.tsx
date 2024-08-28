@@ -2,33 +2,29 @@ import {
   LabeledStyleColorItemRow,
   LabeledStyleDimItem,
   LabeledStyleDimItemRow,
-  LabeledToggleButtonGroupItemRow,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
 import styles from "@/wab/client/components/style-controls/BorderControls.module.sass";
+import { LabeledLineStyleToggleButtonGroupItemRow } from "@/wab/client/components/style-controls/LineStyleControls";
 import {
   ExpsProvider,
   MixinExpsProvider,
   StylePanelSection,
   TplExpsProvider,
 } from "@/wab/client/components/style-controls/StyleComponent";
-import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggleButton";
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { DimTokenSpinnerRef } from "@/wab/client/components/widgets/DimTokenSelector";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { IconButton } from "@/wab/client/components/widgets/IconButton";
 import BorderAllIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__BorderAll";
-import BorderDashedIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__BorderDashed";
-import BorderDottedIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__BorderDotted";
 import BorderRadiusAllIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__BorderRadiusAll";
 import BorderRadiusSideIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__BorderRadiusSide";
 import BorderSideIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__BorderSide";
-import BorderSolidIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__BorderSolid";
-import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import MinusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Minus";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
 import { TokenType } from "@/wab/commons/StyleToken";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { ensure, spawn, unanimousVal } from "@/wab/shared/common";
 import { parseCssShorthand, showCssShorthand } from "@/wab/shared/css";
 import {
@@ -37,8 +33,7 @@ import {
   standardCorners,
   standardSides,
 } from "@/wab/shared/geom";
-import { isKnownTplTag, TplNode } from "@/wab/shared/model/classes";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { TplNode, isKnownTplTag } from "@/wab/shared/model/classes";
 import cn from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -434,7 +429,7 @@ const BorderLineControls = observer(function BorderLineControls(props: {
             min: 0,
           }}
         />
-        <LabeledToggleButtonGroupItemRow
+        <LabeledLineStyleToggleButtonGroupItemRow
           label="Style"
           styleName={effectiveSides().map((s) => `border-${s}-style`)}
           labelSize="small"
@@ -447,36 +442,7 @@ const BorderLineControls = observer(function BorderLineControls(props: {
               )
             )
           }
-        >
-          <StyleToggleButton
-            className="panel-popup--no-min-width"
-            value="none"
-            stretched
-          >
-            <Icon icon={CloseIcon} />
-          </StyleToggleButton>
-          <StyleToggleButton
-            className="panel-popup--no-min-width"
-            value="dotted"
-            stretched
-          >
-            <Icon icon={BorderDottedIcon} />
-          </StyleToggleButton>
-          <StyleToggleButton
-            className="panel-popup--no-min-width"
-            value="dashed"
-            stretched
-          >
-            <Icon icon={BorderDashedIcon} />
-          </StyleToggleButton>
-          <StyleToggleButton
-            className="panel-popup--no-min-width"
-            value="solid"
-            stretched
-          >
-            <Icon icon={BorderSolidIcon} />
-          </StyleToggleButton>
-        </LabeledToggleButtonGroupItemRow>
+        />
         <LabeledStyleColorItemRow
           label="Color"
           styleName={effectiveSides().map((s) => `border-${s}-color`)}

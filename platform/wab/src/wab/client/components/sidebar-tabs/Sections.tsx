@@ -3,11 +3,6 @@ import {
   isTplCodeComponentStyleable,
 } from "@/wab/client/code-components/code-components";
 import { ArbitraryCssSelectorsPanel } from "@/wab/client/components/sidebar-tabs/ArbitraryCssSelectorsSection";
-import { BackgroundSection } from "@/wab/client/components/sidebar-tabs/background-section";
-import {
-  ColumnSection,
-  ColumnsPanelSection,
-} from "@/wab/client/components/sidebar-tabs/columns-section";
 import { ComponentPropsSection } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import { CustomBehaviorsSection } from "@/wab/client/components/sidebar-tabs/CustomBehaviorsSection";
 import { EffectsPanelSection } from "@/wab/client/components/sidebar-tabs/EffectsSection";
@@ -16,10 +11,6 @@ import {
   HTMLAttributesSection,
   TplTagSection,
 } from "@/wab/client/components/sidebar-tabs/HTMLAttributesSection";
-import {
-  ImageSection,
-  ImageSectionForCodeComponent,
-} from "@/wab/client/components/sidebar-tabs/image-section";
 import { LayoutSection } from "@/wab/client/components/sidebar-tabs/LayoutSection";
 import { ListStyleSection } from "@/wab/client/components/sidebar-tabs/ListStyleSection";
 import {
@@ -29,7 +20,6 @@ import {
 import { MixinsSection } from "@/wab/client/components/sidebar-tabs/MixinsSection";
 import { OverflowSection } from "@/wab/client/components/sidebar-tabs/OverflowSection";
 import { PositioningPanelSection } from "@/wab/client/components/sidebar-tabs/PositioningSection";
-import { PrivateStyleVariantsPanel } from "@/wab/client/components/sidebar-tabs/private-style-variants-section";
 import { RepeaterSection } from "@/wab/client/components/sidebar-tabs/RepeaterSection";
 import { RepeatingElementSection } from "@/wab/client/components/sidebar-tabs/RepeatingElementSection";
 import { ShadowsPanelSection } from "@/wab/client/components/sidebar-tabs/ShadowsSection";
@@ -39,7 +29,6 @@ import {
   SizeSection,
   SizeWidthOnlySection,
 } from "@/wab/client/components/sidebar-tabs/SizeSection";
-import { SlotSettingsSection } from "@/wab/client/components/sidebar-tabs/slot-section";
 import { SpacingSection } from "@/wab/client/components/sidebar-tabs/SpacingSection";
 import InteractionsSection from "@/wab/client/components/sidebar-tabs/StateManagement/InteractionsSection";
 import { TransformPanelSection } from "@/wab/client/components/sidebar-tabs/TransformPanelSection";
@@ -50,19 +39,36 @@ import {
 } from "@/wab/client/components/sidebar-tabs/TypographySection";
 import { VariantsPickerPanel } from "@/wab/client/components/sidebar-tabs/VariantsPicker";
 import { VisibilitySection } from "@/wab/client/components/sidebar-tabs/VisibilitySection";
+import { BackgroundSection } from "@/wab/client/components/sidebar-tabs/background-section";
+import {
+  ColumnSection,
+  ColumnsPanelSection,
+} from "@/wab/client/components/sidebar-tabs/columns-section";
+import {
+  ImageSection,
+  ImageSectionForCodeComponent,
+} from "@/wab/client/components/sidebar-tabs/image-section";
+import { PrivateStyleVariantsPanel } from "@/wab/client/components/sidebar-tabs/private-style-variants-section";
+import { SlotSettingsSection } from "@/wab/client/components/sidebar-tabs/slot-section";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
   BorderPanelSection,
   BorderRadiusSection,
 } from "@/wab/client/components/style-controls/BorderControls";
+import { OutlinePanelSection } from "@/wab/client/components/style-controls/OutlineControls";
 import {
   ExpsProvider,
-  mkStyleComponent,
   TplExpsProvider,
+  mkStyleComponent,
 } from "@/wab/client/components/style-controls/StyleComponent";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { PublicStyleSection } from "@/wab/shared/ApiSchema";
+import {
+  getAncestorSlotArg,
+  getAncestorTplSlot,
+  isTypographyNode,
+} from "@/wab/shared/SlotUtils";
 import { asOne, assert, ensure, ensureArray } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
@@ -73,8 +79,10 @@ import {
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import { getApplicableSelectors } from "@/wab/shared/core/styles";
 import {
-  canToggleVisibility,
   EventHandlerKeyType,
+  TplColumnTag,
+  TplColumnsTag,
+  canToggleVisibility,
   getAllEventHandlerOptions,
   hasTextAncestor,
   isComponentRoot,
@@ -90,24 +98,17 @@ import {
   isTplTag,
   isTplTextBlock,
   isTplVariantable,
-  TplColumnsTag,
-  TplColumnTag,
 } from "@/wab/shared/core/tpls";
 import { ValComponent } from "@/wab/shared/core/val-nodes";
 import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
 import { isGridTag } from "@/wab/shared/grid-utils";
 import {
-  ensureKnownTplComponent,
-  isKnownClassNamePropType,
   TplComponent,
   TplNode,
   TplTag,
+  ensureKnownTplComponent,
+  isKnownClassNamePropType,
 } from "@/wab/shared/model/classes";
-import {
-  getAncestorSlotArg,
-  getAncestorTplSlot,
-  isTypographyNode,
-} from "@/wab/shared/SlotUtils";
 import { canEditStyleSection } from "@/wab/shared/ui-config-utils";
 import { Alert } from "antd";
 import $ from "jquery";
@@ -146,6 +147,7 @@ export enum Section {
   Overflow = "overflow",
   Background = "background",
   Border = "border",
+  Outline = "outline",
   ShadowsPanel = "shadows-panel",
   EffectsPanel = "effects-panel",
   TransitionsPanel = "transitions-panel",
@@ -207,6 +209,7 @@ const SECTION_SETTINGS: AllSectionsPresent<SectionSetting> = {
   [Section.TransitionsPanel]: { publicSection: PublicStyleSection.Transitions },
   [Section.Overflow]: { publicSection: PublicStyleSection.Overflow },
   [Section.Border]: { publicSection: PublicStyleSection.Border },
+  [Section.Outline]: { publicSection: PublicStyleSection.Outline },
   [Section.EffectsPanel]: { publicSection: PublicStyleSection.Effects },
   [Section.MissingPositionClass]: { publicSection: PublicStyleSection.Layout },
   [Section.Interactions]: { publicSection: PublicStyleSection.Interactions },
@@ -318,6 +321,7 @@ const styleSections = new Set([
   Section.Overflow,
   Section.Background,
   Section.Border,
+  Section.Outline,
   Section.ShadowsPanel,
   Section.EffectsPanel,
   Section.TransitionsPanel,
@@ -820,6 +824,14 @@ export function getRenderBySection(
         ),
     ],
     [
+      Section.Outline,
+      () =>
+        (isTag || codeComponentTpl) &&
+        showSection(Section.Outline) && (
+          <OutlinePanelSection key={`${tpl.uuid}-outline`} />
+        ),
+    ],
+    [
       Section.ShadowsPanel,
       () =>
         (isTag || codeComponentTpl) &&
@@ -1070,6 +1082,7 @@ function getOrderedSections(tpl: TplNode, viewCtx: ViewCtx): Set<Section> {
   pushIfNew(Section.Overflow);
   pushIfNew(Section.Background);
   pushIfNew(Section.Border);
+  pushIfNew(Section.Outline);
   pushIfNew(Section.ShadowsPanel);
   pushIfNew(Section.EffectsPanel);
   pushIfNew(Section.TransitionsPanel);

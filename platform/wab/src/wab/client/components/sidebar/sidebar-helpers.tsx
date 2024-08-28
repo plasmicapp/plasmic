@@ -14,7 +14,10 @@ import {
 import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
 import StyleSwitch from "@/wab/client/components/style-controls/StyleSwitch";
 import StyleToggleButtonGroup from "@/wab/client/components/style-controls/StyleToggleButtonGroup";
-import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
+import {
+  DimTokenSpinner,
+  DimValueOpts,
+} from "@/wab/client/components/widgets/DimTokenSelector";
 import { FontFamilySelector } from "@/wab/client/components/widgets/FontFamilySelector";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
@@ -446,6 +449,66 @@ export const LabeledStyleDimItem = observer(function LabeledStyleDimItem(
     </LabeledStyleItem>
   );
 });
+
+export const VerticalLabeledStyleDimItem = observer(
+  function VerticalLabeledStyleDimItem(props: {
+    expsProvider: ExpsProvider;
+    styleName: string;
+    label: string;
+    dimOpts?: Omit<DimValueOpts, "onChange" | "value">;
+    isDisabled?: boolean;
+  }) {
+    const { expsProvider, styleName, label } = props;
+
+    const sc = useStyleComponent();
+    const studioCtx = sc.studioCtx();
+    const exp = sc.exp();
+
+    const value = exp.get(styleName);
+
+    const indicators = sc.definedIndicators(styleName);
+
+    const { isDisabled } = shouldBeDisabled({
+      props,
+      indicators,
+    });
+
+    return (
+      <div className="flex flex-col" style={{ overflow: "auto" }}>
+        <DimTokenSpinner
+          value={value}
+          onChange={async (val) => {
+            if (val) {
+              await studioCtx.change(({ success }) => {
+                exp.set(styleName, val);
+                return success();
+              });
+            }
+          }}
+          disabled={isDisabled}
+          studioCtx={studioCtx}
+          tokenType={TokenType.Spacing}
+          minDropdownWidth={200}
+          {...props.dimOpts}
+        />
+        {isDisabled ? (
+          label
+        ) : (
+          <DraggableDimLabel
+            styleNames={[styleName]}
+            studioCtx={studioCtx}
+            label={label}
+            expsProvider={expsProvider}
+            defaultUnit="px"
+            fractionDigits={0}
+            {...props.dimOpts}
+            dragScale={"10"}
+          />
+        )}
+      </div>
+    );
+  }
+);
 
 export const LabeledStyleColorItem = observer(function LabeledStyleColorItem(
   props: Omit<React.ComponentProps<typeof LabeledStyleItem>, "children"> & {

@@ -273,6 +273,7 @@ export enum PublicStyleSection {
   Layout = "layout",
   Overflow = "overflow",
   Border = "border",
+  Outline = "outline",
   Shadows = "shadows",
   Effects = "effects",
   Interactions = "interactions",

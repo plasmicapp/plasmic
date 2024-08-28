@@ -10,10 +10,10 @@ import {
 } from "@/wab/client/components/sidebar-tabs/ResponsiveColumns/tpl-columns-utils";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
-  DraggableDimLabel,
   FullRow,
   LabeledItemRow,
   LabeledStyleItemRow,
+  VerticalLabeledStyleDimItem,
   shouldBeDisabled,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { DefinedIndicator } from "@/wab/client/components/style-controls/DefinedIndicator";
@@ -28,12 +28,11 @@ import MinusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Minus";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { NullOrUndefinedValueError, ensure } from "@/wab/shared/common";
-import { TokenType } from "@/wab/commons/StyleToken";
 import { equalColumnDistribution } from "@/wab/shared/columns-utils";
+import { NullOrUndefinedValueError, ensure } from "@/wab/shared/common";
+import { TplColumnTag, TplColumnsTag } from "@/wab/shared/core/tpls";
 import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
 import { ColumnsConfig } from "@/wab/shared/model/classes";
-import { TplColumnTag, TplColumnsTag } from "@/wab/shared/core/tpls";
 import { Menu } from "antd";
 import cn from "classnames";
 import { observer } from "mobx-react";
@@ -246,51 +245,6 @@ export const ColumnsStyleOnlySection = observer(
   }
 );
 
-const SingleGapControl = observer(function ColumnsGapControls(props: {
-  expsProvider: ExpsProvider;
-  studioCtx: StudioCtx;
-  isDisabled?: boolean;
-  label: string;
-  prop: string;
-  value: string;
-}) {
-  const { studioCtx, expsProvider, prop, label, value, isDisabled } = props;
-  const exp = expsProvider.mergedExp();
-  return (
-    <div className="flex flex-col flex-align-end" style={{ overflow: "auto" }}>
-      <DimTokenSpinner
-        value={value}
-        onChange={(val) =>
-          val &&
-          studioCtx.changeUnsafe(() => {
-            exp.set(prop, val);
-          })
-        }
-        noClear={true}
-        allowedUnits={["px"]}
-        disabled={isDisabled}
-        studioCtx={studioCtx}
-        tokenType={TokenType.Spacing}
-        minDropdownWidth={200}
-      />
-      {isDisabled ? (
-        label
-      ) : (
-        <DraggableDimLabel
-          styleNames={[prop]}
-          studioCtx={studioCtx}
-          label={label}
-          expsProvider={expsProvider}
-          defaultUnit={"px"}
-          min={0}
-          fractionDigits={0}
-          dragScale={"10"}
-        />
-      )}
-    </div>
-  );
-});
-
 export const ColumnsGapControls = observer(function ColumnsGapControls(props: {
   expsProvider: ExpsProvider;
   studioCtx: StudioCtx;
@@ -300,29 +254,33 @@ export const ColumnsGapControls = observer(function ColumnsGapControls(props: {
   const { expsProvider, studioCtx, isDisabled, includeRowGap } = props;
   const exp = expsProvider.mergedExp();
 
-  const rowGap = exp.get("flex-row-gap") || "";
-  const colGap = exp.get("flex-column-gap") || "";
   return (
     <LabeledStyleItemRow
       label={"Gaps"}
       styleName={["flex-column-gap", "flex-row-gap"]}
     >
       <FullRow twinCols>
-        <SingleGapControl
+        <VerticalLabeledStyleDimItem
+          label="Column"
+          styleName="flex-column-gap"
           expsProvider={expsProvider}
-          studioCtx={studioCtx}
+          dimOpts={{
+            min: 0,
+            allowedUnits: ["px"],
+            noClear: true,
+          }}
           isDisabled={isDisabled}
-          label={"Column"}
-          prop="flex-column-gap"
-          value={colGap}
         />
-        <SingleGapControl
+        <VerticalLabeledStyleDimItem
+          label="Row"
+          styleName="flex-row-gap"
           expsProvider={expsProvider}
-          studioCtx={studioCtx}
+          dimOpts={{
+            min: 0,
+            allowedUnits: ["px"],
+            noClear: true,
+          }}
           isDisabled={isDisabled || !includeRowGap}
-          label={"Row"}
-          prop="flex-row-gap"
-          value={rowGap}
         />
       </FullRow>
     </LabeledStyleItemRow>

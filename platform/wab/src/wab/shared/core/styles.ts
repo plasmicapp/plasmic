@@ -729,7 +729,7 @@ function deriveCssRuleSetStyles(
     vs.variants.some(
       (v) => isStyleVariant(v) && v.selectors?.some((s) => s.includes("Focus"))
     ) &&
-    !m.has("outline")
+    !hasOutlineStyle(m)
   ) {
     m.set("outline", "none");
   }
@@ -1125,6 +1125,15 @@ function ensureGapStyles(m: Map<string, string>) {
   return res;
 }
 
+function hasOutlineStyle(m: Map<string, string>) {
+  return (
+    m.has("outline-style") ||
+    m.has("outline-width") ||
+    m.has("outline-offset") ||
+    m.has("outline-color")
+  );
+}
+
 function showSelectorRuleSet(
   ruleName: string,
   srs: SelectorRuleSet,
@@ -1155,7 +1164,7 @@ function showSelectorRuleSet(
   }
 
   // Disable outline if any style has been set
-  if (m.size > 0 && !m.has("outline")) {
+  if (m.size > 0 && !hasOutlineStyle(m)) {
     m.set("outline", "none");
   }
 
