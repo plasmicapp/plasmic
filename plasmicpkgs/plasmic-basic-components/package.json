@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-basic-components",
-  "version": "0.0.226",
+  "version": "0.0.227",
   "description": "Plasmic registration call for the HTML5 video element",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
