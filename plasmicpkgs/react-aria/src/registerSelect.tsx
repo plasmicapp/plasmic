@@ -1,7 +1,7 @@
 import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import React from "react";
-import { Key, Select, SelectValue } from "react-aria-components";
-import { PlasmicListBoxContext } from "./contexts";
+import { Key, Select, SelectProps, SelectValue } from "react-aria-components";
+import { PlasmicListBoxContext, PlasmicPopoverContext } from "./contexts";
 import {
   flattenOptions,
   HasOptions,
@@ -18,7 +18,6 @@ import {
   makeComponentName,
   Registerable,
   registerComponentHelper,
-  Styleable,
 } from "./utils";
 
 export interface BaseSelectValueProps
@@ -52,7 +51,7 @@ const SELECT_NAME = makeComponentName("select");
 
 export interface BaseSelectProps<T extends object>
   extends HasOptions<T>,
-    Styleable {
+    SelectProps<T> {
   placeholder?: string;
   isDisabled?: boolean;
 
@@ -86,12 +85,14 @@ export function BaseSelect<T extends object>(props: BaseSelectProps<T>) {
     style,
     structure,
     name,
+    isOpen,
     "aria-label": ariaLabel,
   } = props;
 
   const { options } = useStrictOptions(props);
 
   const isEditMode = !!usePlasmicCanvasContext();
+  const openProp = isEditMode && previewOpen ? true : isOpen;
 
   const disabledKeys = flattenOptions(options)
     .filter((op) => op.isDisabled)
@@ -108,17 +109,19 @@ export function BaseSelect<T extends object>(props: BaseSelectProps<T>) {
       style={style}
       name={name}
       aria-label={ariaLabel}
-      {...(isEditMode ? { isOpen: previewOpen } : undefined)}
+      isOpen={openProp}
       {...extractPlasmicDataProps(props)}
     >
-      <PlasmicListBoxContext.Provider
-        value={{
-          items: options,
-          disabledKeys: disabledKeys,
-        }}
-      >
-        {structure}
-      </PlasmicListBoxContext.Provider>
+      <PlasmicPopoverContext.Provider value={{ isOpen: openProp }}>
+        <PlasmicListBoxContext.Provider
+          value={{
+            items: options,
+            disabledKeys: disabledKeys,
+          }}
+        >
+          {structure}
+        </PlasmicListBoxContext.Provider>
+      </PlasmicPopoverContext.Provider>
     </Select>
   );
 }
@@ -180,6 +183,11 @@ export function registerSelect(loader?: Registerable) {
         displayName: "Preview opened?",
         description: "Preview opened state while designing in Plasmic editor",
         editOnly: true,
+      },
+      isOpen: {
+        type: "boolean",
+        // It doesn't make sense to make isOpen prop editable (it's controlled by user interaction and always closed by default), so we keep this prop hidden. We have listed the prop here in the meta only so we can expose a writeable state for it.
+        hidden: () => true,
       },
       onOpenChange: {
         type: "eventHandler",
@@ -329,7 +337,8 @@ export function registerSelect(loader?: Registerable) {
         variableType: "text",
       },
       isOpen: {
-        type: "readonly",
+        type: "writable",
+        valueProp: "isOpen",
         onChangeProp: "onOpenChange",
         variableType: "boolean",
       },

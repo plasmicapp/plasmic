@@ -6,6 +6,7 @@ import type { BaseHeader } from "./registerHeader";
 import type { BaseInput } from "./registerInput";
 import type { BaseLabel } from "./registerLabel";
 import type { BaseListBoxProps } from "./registerListBox";
+import { BasePopover } from "./registerPopover";
 import { BaseRadioGroup } from "./registerRadioGroup";
 import type { BaseSection } from "./registerSection";
 import { BaseSlider } from "./registerSlider";
@@ -44,6 +45,10 @@ export const PlasmicSliderContext =
 
 export const PlasmicLabelContext = React.createContext<
   React.ComponentProps<typeof BaseLabel> | undefined
+>(undefined);
+
+export const PlasmicPopoverContext = React.createContext<
+  React.ComponentProps<typeof BasePopover> | undefined
 >(undefined);
 
 export const PlasmicListBoxContext = React.createContext<

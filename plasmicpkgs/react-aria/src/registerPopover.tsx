@@ -2,6 +2,7 @@ import { PlasmicElement, usePlasmicCanvasContext } from "@plasmicapp/host";
 import { mergeProps } from "@react-aria/utils";
 import React from "react";
 import { Popover, PopoverContext, SelectContext } from "react-aria-components";
+import { PlasmicPopoverContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
   HasControlContextData,
@@ -24,6 +25,7 @@ export interface BasePopoverProps
 export function BasePopover(props: BasePopoverProps) {
   const { resetClassName, setControlContextData, ...restProps } = props;
   const isStandalone = !React.useContext(PopoverContext);
+  const context = React.useContext(PlasmicPopoverContext);
   const isInsideSelect = !!React.useContext(SelectContext);
   const triggerRef = React.useRef<any>(null);
   const isEditMode = !!usePlasmicCanvasContext();
@@ -33,6 +35,7 @@ export function BasePopover(props: BasePopoverProps) {
 
   const mergedProps = mergeProps(
     { shouldFlip: defaultShouldFlip },
+    context,
     /**
      * isNonModal: Whether the popover is non-modal, i.e. elements outside the popover may be interacted with by assistive technologies. *
      *
