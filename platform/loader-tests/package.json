@@ -8,11 +8,12 @@
   "scripts": {
     "prepare": "playwright install chromium",
     "playwright-ui": "playwright test --ui",
-    "test": "bash tools/test.bash",
+    "test": "yarn test-playwright && yarn test-jest",
     "test-docker": "yarn docker-build && yarn docker-run",
     "update-snapshots": "rm -rf cypress/snapshots && yarn test-docker",
     "docker-build": "docker build --no-cache -t loader-tests .",
     "docker-run": "docker run -v $PWD/cypress:/app/cypress --add-host host.docker.internal:host-gateway --rm loader-tests",
+    "test-jest": "npx jest --runInBand",
     "test-playwright": "npx playwright test"
   },
   "devDependencies": {
