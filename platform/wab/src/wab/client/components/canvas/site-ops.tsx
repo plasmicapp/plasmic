@@ -55,6 +55,7 @@ import {
   componentsReferecerToPageHref,
   findComponentsUsingComponentVariant,
   findComponentsUsingGlobalVariant,
+  findQueryInvalidationExprWithRefs,
   findSplitsUsingVariantGroup,
   findStyleTokensUsingVariantGroup,
   getComponentsUsingImageAsset,
@@ -1189,9 +1190,16 @@ export class SiteOps {
       return;
     }
 
-    await this.change(() => {
-      this.tplMgr.removeComponentQuery(component, query);
-    });
+    const componentRef = findQueryInvalidationExprWithRefs(this.site, [
+      query.uuid,
+    ]);
+    await this.studioCtx.changeObserved(
+      () => componentRef.map(({ ownerComponent }) => ownerComponent),
+      ({ success }) => {
+        this.tplMgr.removeComponentQuery(component, query);
+        return success();
+      }
+    );
   }
 
   async removeVariantGroup(component: Component, group: ComponentVariantGroup) {

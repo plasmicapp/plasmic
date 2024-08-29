@@ -64,7 +64,7 @@ import {
   tryGetVariantSetting,
 } from "@/wab/shared/Variants";
 import {
-  findAllQueryInvalidationExpr,
+  findQueryInvalidationExprWithRefs,
   flattenComponent,
 } from "@/wab/shared/cached-selectors";
 import { toClassName, toVarName } from "@/wab/shared/codegen/util";
@@ -1244,9 +1244,13 @@ export class TplMgr {
   }
 
   clearReferencesToRemovedQueries(removedQueries: string[] | string) {
-    const removedQueriesSet = new Set(ensureArray(removedQueries));
-    const queryInvalidationExprs = findAllQueryInvalidationExpr(this.site());
-    queryInvalidationExprs.forEach((expr) => {
+    const removedQueriesArray = ensureArray(removedQueries);
+    const removedQueriesSet = new Set(removedQueriesArray);
+    const queryInvalidationExprs = findQueryInvalidationExprWithRefs(
+      this.site(),
+      removedQueriesArray
+    );
+    queryInvalidationExprs.forEach(({ expr }) => {
       expr.invalidationQueries = expr.invalidationQueries.filter(
         (key) => isString(key) || !removedQueriesSet.has(key.ref.uuid)
       );

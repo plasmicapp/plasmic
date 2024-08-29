@@ -116,6 +116,7 @@ import {
   isKnownImageAssetRef,
   isKnownPageHref,
   isKnownQueryInvalidationExpr,
+  isKnownQueryRef,
   isKnownTplRef,
   isKnownVarRef,
 } from "@/wab/shared/model/classes";
@@ -909,7 +910,10 @@ export const findAllQueryInvalidationExpr = maybeComputedFn(
       flattenTpls(c.tplTree).flatMap((tpl) =>
         findExprsInNode(tpl)
           .filter(({ expr }) => isKnownQueryInvalidationExpr(expr))
-          .map(({ expr }) => expr as QueryInvalidationExpr)
+          .map(({ expr }) => ({
+            expr: expr as QueryInvalidationExpr,
+            ownerComponent: c,
+          }))
       )
     );
   }
@@ -921,6 +925,17 @@ export const findAllQueryInvalidationExprForComponent = maybeComputedFn(
       findExprsInNode(tpl)
         .filter(({ expr }) => isKnownQueryInvalidationExpr(expr))
         .map(({ expr }) => expr as QueryInvalidationExpr)
+    );
+  }
+);
+
+export const findQueryInvalidationExprWithRefs = maybeComputedFn(
+  function findQueryInvalidationExprWithRefs(site: Site, queryRefs: string[]) {
+    const queryRefSet = new Set(queryRefs);
+    return findAllQueryInvalidationExpr(site).filter(({ expr }) =>
+      expr.invalidationQueries.some(
+        (key) => isKnownQueryRef(key) && queryRefSet.has(key.ref.uuid)
+      )
     );
   }
 );
