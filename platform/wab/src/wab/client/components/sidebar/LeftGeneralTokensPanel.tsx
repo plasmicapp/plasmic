@@ -38,7 +38,6 @@ import {
 } from "@/wab/shared/folders/folders-util";
 import { ProjectDependency, StyleToken } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
-import { canCreateAlias } from "@/wab/shared/ui-config-utils";
 import Chroma from "@/wab/shared/utils/color-utils";
 import { Tooltip } from "antd";
 import { debounce, groupBy, partition } from "lodash";
@@ -253,21 +252,23 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
         deps = naturalSort(deps, (dep) =>
           studioCtx.projectDependencyManager.getNiceDepName(dep)
         );
-        return deps.map((dep) => {
-          return {
-            type: "folder" as const,
-            name: studioCtx.projectDependencyManager.getNiceDepName(dep),
-            key: dep.uuid,
-            // We only include registered tokens if they're from a hostless
-            // package; otherwise, registered tokens from custom host will
-            // already show up in the RegisteredTokens section.
-            ...makeTokensItems(
-              isHostLessPackage(dep.site)
-                ? dep.site.styleTokens
-                : dep.site.styleTokens.filter((t) => !t.isRegistered)
-            ),
-          };
-        });
+        return deps
+          .map((dep) => {
+            return {
+              type: "folder" as const,
+              name: studioCtx.projectDependencyManager.getNiceDepName(dep),
+              key: dep.uuid,
+              // We only include registered tokens if they're from a hostless
+              // package; otherwise, registered tokens from custom host will
+              // already show up in the RegisteredTokens section.
+              ...makeTokensItems(
+                isHostLessPackage(dep.site)
+                  ? dep.site.styleTokens
+                  : dep.site.styleTokens.filter((t) => !t.isRegistered)
+              ),
+            };
+          })
+          .filter((dep) => dep.count > 0);
       };
 
       const tokens = tokensByType[tokenType] ?? [];
