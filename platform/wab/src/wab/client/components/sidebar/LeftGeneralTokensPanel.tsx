@@ -262,9 +262,10 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
               // package; otherwise, registered tokens from custom host will
               // already show up in the RegisteredTokens section.
               ...makeTokensItems(
-                isHostLessPackage(dep.site)
+                (isHostLessPackage(dep.site)
                   ? dep.site.styleTokens
                   : dep.site.styleTokens.filter((t) => !t.isRegistered)
+                ).filter((t) => t.type === tokenType)
               ),
             };
           })
