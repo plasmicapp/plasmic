@@ -1731,7 +1731,7 @@ function renderPageHead(ctx: SerializerBaseContext, page: Component): string {
     }
     ${
       canonical
-        ? strict`<link ref="canonical" href={${serializePageMetadataKey(
+        ? strict`<link rel="canonical" href={${serializePageMetadataKey(
             ctx,
             "canonical"
           )}} />`
