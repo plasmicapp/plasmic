@@ -17,7 +17,6 @@ import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import Analytics from "analytics-node";
 import * as bodyParser from "body-parser";
-import connectDatadog from "connect-datadog";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import errorHandler from "errorhandler";
@@ -325,14 +324,6 @@ import { Bundler } from "@/wab/shared/bundler";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { isStampedIgnoreError } from "@/wab/shared/error-handling";
 import fileUpload from "express-fileupload";
-
-const hotShots = require("hot-shots");
-
-const datadogMiddleware = connectDatadog({
-  response_code: true,
-  tags: ["app:my_app"],
-  dogstatsd: new hotShots.StatsD("localhost", 8126),
-});
 
 const csrfFreeStaticRoutes = [
   "/api/v1/admin/user",
@@ -2165,9 +2156,6 @@ export async function createApp(
 
   // Sentry setup needs to be first
   addSentry(app, config);
-
-  // Datadog docs say it needs to come before any routing.
-  app.use(datadogMiddleware);
 
   if (config.production) {
     app.enable("trust proxy");
