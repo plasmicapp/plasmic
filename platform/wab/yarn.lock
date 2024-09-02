@@ -23,6 +23,98 @@
   resolved "https://registry.yarnpkg.com/@adobe/css-tools/-/css-tools-4.3.1.tgz#abfccb8ca78075a2b6187345c26243c1a0842f28"
   integrity sha512-/62yikz7NLScCGAAST5SHdnjaDJQBDq0M2muyRTpf2VQhw6StBg2ALiu73zSJQ4fMVLA+0uBhBHAle7Wg+2kSg==
 
+"@amplitude/analytics-browser@2.11.1":
+  version "2.11.1"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-browser/-/analytics-browser-2.11.1.tgz#5ff681d29d6a295fefee4a51bbaeff3b9e0e90c0"
+  integrity sha512-dLej5BZLbnlOw40lQJs5KnJx6EQRwcUJJlnZsFH72LyBq8WvxnDb40yHqSxOl/b7tCJWRozBw75B3Fzkz5OOLw==
+  dependencies:
+    "@amplitude/analytics-client-common" "^2.3.1"
+    "@amplitude/analytics-core" "^2.5.0"
+    "@amplitude/analytics-remote-config" "^0.4.0"
+    "@amplitude/analytics-types" "^2.8.0"
+    "@amplitude/plugin-autocapture-browser" "^1.0.0"
+    "@amplitude/plugin-page-view-tracking-browser" "^2.2.20"
+    tslib "^2.4.1"
+
+"@amplitude/analytics-client-common@>=1 <3", "@amplitude/analytics-client-common@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-client-common/-/analytics-client-common-2.3.1.tgz#a46fc26a0a4e2a96f6e34b2e76cbef231127a291"
+  integrity sha512-HR5kdLkyz2niUqTA+9fP3MQgqixk5ToY0ohxNrsiqExFDftyKMplQenlFxjh/w5vb72lLf5gI3T2ssIUCkGuvw==
+  dependencies:
+    "@amplitude/analytics-connector" "^1.4.8"
+    "@amplitude/analytics-core" "^2.5.0"
+    "@amplitude/analytics-types" "^2.8.0"
+    tslib "^2.4.1"
+
+"@amplitude/analytics-connector@^1.4.8":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-connector/-/analytics-connector-1.5.0.tgz#89a78b8c6463abe4de1d621db4af6c62f0d62b0a"
+  integrity sha512-T8mOYzB9RRxckzhL0NTHwdge9xuFxXEOplC8B1Y3UX3NHa3BLh7DlBUZlCOwQgMc2nxDfnSweDL5S3bhC+W90g==
+
+"@amplitude/analytics-core@>=1 <3", "@amplitude/analytics-core@^2.5.0":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-core/-/analytics-core-2.5.0.tgz#e43d7340de044516ecf6702631d54445f29f9a81"
+  integrity sha512-WQSF6u2k+c+EvC0nVd1kVWvUV/dGyyU2fVBHlcqWtEadCFFZRgty94K5JDC3E+W41+PQeNnTbiH8Wkf98rPYdg==
+  dependencies:
+    "@amplitude/analytics-types" "^2.8.0"
+    tslib "^2.4.1"
+
+"@amplitude/analytics-core@^1.2.5":
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-core/-/analytics-core-1.2.5.tgz#f5fc39d93920f3e5447956b9a7525b924b5c0791"
+  integrity sha512-V7CVlHVN+1diKiOpdp2bCPZ0mbS4CmUYF+v+eXDwVfJL3M/t3sVcT1apXnmVYGYi14cGu9hQOD11rD6qKbUOsw==
+  dependencies:
+    "@amplitude/analytics-types" "^1.3.4"
+    tslib "^2.4.1"
+
+"@amplitude/analytics-node@1.3.6":
+  version "1.3.6"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-node/-/analytics-node-1.3.6.tgz#11b3252fa9b869cdfe6017d1f83c4efa4fb814f2"
+  integrity sha512-yZQKe2JR6UWIWAOF19OfKSGkJ/Fn9cqLOVtp5MVKMGL45T4pXdFwCQdw9L5gspmL2B4/MtergdBKq0WDRIRvCw==
+  dependencies:
+    "@amplitude/analytics-core" "^1.2.5"
+    "@amplitude/analytics-types" "^1.3.4"
+    tslib "^2.4.1"
+
+"@amplitude/analytics-remote-config@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-remote-config/-/analytics-remote-config-0.4.0.tgz#e9835836ef40c6b2e72bc8c7a88803dda5559556"
+  integrity sha512-ilp9Dz8Z92V9Wilmz8XIbvEbtuVaN65+jM06JP8I7wL8eNOHVIi4HcI151BzIyekjbprbS1w18Ps3dj2sHlFXA==
+  dependencies:
+    "@amplitude/analytics-client-common" ">=1 <3"
+    "@amplitude/analytics-core" ">=1 <3"
+    "@amplitude/analytics-types" ">=1 <3"
+    tslib "^2.4.1"
+
+"@amplitude/analytics-types@>=1 <3", "@amplitude/analytics-types@^2.8.0":
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-types/-/analytics-types-2.8.0.tgz#1ea7bb9c09739d9b75839c48fe9f517a31a6b6e1"
+  integrity sha512-LQ9XWtmv8n0qMGE/JfB0xOvwAc0swy63Xqz7fPhVinz/SUm2buUEKzUNAiq55tZJhEvGs/AsJRmJqu0G563Mgg==
+
+"@amplitude/analytics-types@^1.3.4":
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-types/-/analytics-types-1.3.4.tgz#9142a893313cc28a9c7a7a3e3360c33636fc9b7d"
+  integrity sha512-tR70gzqFkEzX9QpxvWYMfLCledT7vMhgd3d4/bkp3nnGXTOORaVUOCcSgOyxyuFdSx84T61aP/eZPKIcZcaP+A==
+
+"@amplitude/plugin-autocapture-browser@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@amplitude/plugin-autocapture-browser/-/plugin-autocapture-browser-1.0.0.tgz#05603c4a87d0919c1ba018fe74e171b63fe1ac93"
+  integrity sha512-qPlR5e1XMPvus32dJTsd8dgFyentR3ugiPv8obwe/bSqpD0Kem31DQic+JadPwG+L3e4UE4QO08hz2lEl9GHMg==
+  dependencies:
+    "@amplitude/analytics-client-common" ">=1 <3"
+    "@amplitude/analytics-types" ">=1 <3"
+    rxjs "^7.8.1"
+    tslib "^2.4.1"
+
+"@amplitude/plugin-page-view-tracking-browser@^2.2.20":
+  version "2.2.20"
+  resolved "https://registry.yarnpkg.com/@amplitude/plugin-page-view-tracking-browser/-/plugin-page-view-tracking-browser-2.2.20.tgz#e0d175c0481e1dfd081c059977d9b2d9625cf75f"
+  integrity sha512-/X2OAdqyGe4kEZGUFX6AcuBLEb2g3KcPIdHDXzGHRk7nxsJKv9pH1dqt3Z4RxHi0Ylhrh25ysr2NzZz4HOA/GQ==
+  dependencies:
+    "@amplitude/analytics-client-common" "^2.3.1"
+    "@amplitude/analytics-types" "^2.8.0"
+    tslib "^2.4.1"
+
 "@ampproject/remapping@^2.2.0":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@ampproject/remapping/-/remapping-2.2.1.tgz#99e8e11851128b8702cd57c33684f1d0f260b630"
@@ -25012,10 +25104,10 @@ tslib@^1.10.0, tslib@^1.11.1, tslib@^1.13.0, tslib@^1.9.0, tslib@^1.9.3:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^2.0.0, tslib@^2.0.1, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.3.1, tslib@^2.4.0, tslib@^2.5.0:
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.6.2.tgz#703ac29425e7b37cd6fd456e92404d46d1f3e4ae"
-  integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==
+tslib@^2.0.0, tslib@^2.0.1, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.3.1, tslib@^2.4.0, tslib@^2.4.1, tslib@^2.5.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.7.0.tgz#d9b40c5c40ab59e8738f297df3087bf1a2690c01"
+  integrity sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==
 
 tsscmp@1.0.6, tsscmp@^1.0.5:
   version "1.0.6"
