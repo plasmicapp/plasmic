@@ -27,7 +27,6 @@ import {
   getUser,
   makeUserTraits,
   superDbMgr,
-  userAnalytics,
   userDbMgr,
 } from "@/wab/server/routes/util";
 import {
@@ -167,15 +166,9 @@ export async function createUserFull({
     }
   }
 
-  req.app.analytics.identify({
-    userId: user.id,
-    traits: makeUserTraits(user),
-  });
-  userAnalytics(req, user.id).track({
-    event: "Create Plasmic user",
-    properties: {
-      method: password ? "password" : "oauth",
-    },
+  req.analytics.identify(user.id, makeUserTraits(user));
+  req.analytics.track("Create Plasmic user", {
+    method: password ? "password" : "oauth",
   });
   return user;
 }
@@ -318,10 +311,7 @@ export async function updateSelf(req: Request, res: Response) {
     id: getUser(req, { allowUnverifiedEmail: true }).id,
     ...uncheckedCast<UpdateSelfRequest>(req.body),
   });
-  req.app.analytics.identify({
-    userId: user.id,
-    traits: makeUserTraits(user),
-  });
+  req.analytics.identify(user.id, makeUserTraits(user));
   res.json({});
 }
 

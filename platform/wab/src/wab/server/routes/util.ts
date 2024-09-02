@@ -8,6 +8,7 @@ import {
 import { User } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
 import { asyncTimed, callsToServerTiming } from "@/wab/server/timing-util";
+import type { Properties } from "@/wab/shared/analytics/Analytics";
 import {
   BadRequestError,
   ForbiddenError,
@@ -123,42 +124,17 @@ export function superDbMgr(req: Request) {
   return dbMgr;
 }
 
+/** @deprecated use `request.analytics` directly */
 export class UserAnalytics {
-  /**
-   * guessedUserId is used when the request doesn't have an authenticated
-   * user but we can guess one for analytics purposes. An example is
-   * codegen using projectApiToken; in that case there's no authenticated
-   * user but we guess that it's the project creator. Note that we add a
-   * field "isActuallyAnonymous" when guessedUserId is used, so that we
-   * can make a distinction between authed and non-authed events.
-   */
-  constructor(private req: Request, private guessedUserId?: string) {}
-  private analytics() {
-    return this.req.app.analytics;
-  }
-  track(data: {
-    event: string;
-    properties?: any;
-    timestamp?: Date;
-    context?: any;
-  }) {
-    return this.analytics().track({
-      ...(hasUser(this.req)
-        ? { userId: getUser(this.req).id }
-        : this.guessedUserId
-        ? { userId: this.guessedUserId, isActuallyAnonymous: true }
-        : {
-            // We use a fixed value here rather than this.req.sessionID so that we don't keep incurring new MTUs in
-            // Segment for all our API calls which are anonymous.
-            anonymousId: "FIXED_ANONYMOUS_ID",
-          }),
-      ...data,
-    });
+  constructor(private req: Request) {}
+  track({ event, properties }: { event: string; properties?: Properties }) {
+    return this.req.analytics.track(event, properties);
   }
 }
 
-export function userAnalytics(req: Request, guessedUserId?: string) {
-  return new UserAnalytics(req, guessedUserId);
+/** @deprecated use `request.app.analytics` directly */
+export function userAnalytics(req: Request) {
+  return new UserAnalytics(req);
 }
 
 export function makeUserTraits(user: User) {

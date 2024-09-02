@@ -41,7 +41,6 @@ import {
 import { mkApiTeam } from "@/wab/server/routes/teams";
 import {
   getUser,
-  hasUser,
   parseMetadata,
   parseQueryParams,
   superDbMgr,
@@ -2332,10 +2331,7 @@ export async function genCode(req: Request, res: Response) {
 
   const metadata = parseMetadata(req.body.metadata);
 
-  const guessedUserId = hasUser(req)
-    ? undefined
-    : ensure(project.createdById, "Unexpected nullish project.createdById");
-  userAnalytics(req, guessedUserId).track({
+  userAnalytics(req).track({
     event: "Codegen",
     properties: {
       projectId: project.id,

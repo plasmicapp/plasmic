@@ -1,32 +1,25 @@
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { makeUserTraits } from "@/wab/server/routes/util";
-import { getSegmentWriteKey } from "@/wab/server/secrets";
-import Analytics from "analytics-node";
+import { AMPLITUDE_API_KEY } from "@/wab/shared/analytics/AmplitudeAnalytics";
+import { createInstance, Identify } from "@amplitude/analytics-node";
 import { EntityManager } from "typeorm";
 
 export async function reIdentifyUsers(em: EntityManager) {
   const dbMgr = new DbMgr(em, SUPER_USER);
   const users = await dbMgr.listAllUsers();
-  console.log(`Identifiying ${users.length} users...`);
-  const analytics = new Analytics(getSegmentWriteKey());
+
+  console.log(`Identifying ${users.length} users...`);
+  const amplitude = createInstance();
+  amplitude.init(AMPLITUDE_API_KEY);
   for (const user of users) {
-    analytics.identify({
-      userId: user.id,
-      traits: makeUserTraits(user),
+    const identify = new Identify();
+    for (const [key, value] of Object.entries(makeUserTraits(user))) {
+      identify.set(key, value);
+    }
+    amplitude.identify(identify, {
+      user_id: user.id,
     });
   }
 
-  await flush(analytics);
-}
-
-async function flush(analytics: Analytics) {
-  return new Promise<void>((resolve, reject) => {
-    analytics.flush((err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
+  await amplitude.flush().promise;
 }

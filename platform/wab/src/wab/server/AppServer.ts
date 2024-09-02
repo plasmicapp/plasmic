@@ -1,21 +1,6 @@
-// const origLog = console.error;
-// console.error = (...args: any[]) => {
-//   origLog(...args);
-//   origLog(new Error().stack);
-// };
-
-// const origOn = (process as any).on;
-// (process as any).on = function (...args) {
-//   if (args[0].toLowerCase() === "unhandledrejection") {
-//     debugger;
-//   }
-//   return origOn.apply(this, args);
-// };
-import { mkShortId, safeCast, spawn } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
+import { methodForwarder } from "@/wab/commons/methodForwarder";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
-import Analytics from "analytics-node";
 import * as bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -34,6 +19,7 @@ import * as path from "path";
 import { getConnection } from "typeorm";
 import v8 from "v8";
 // API keys and Passport configuration
+import { initAmplitudeNode } from "@/wab/server/analytics/amplitude-node";
 import { setupPassport } from "@/wab/server/auth/passport-cfg";
 import * as authRoutes from "@/wab/server/auth/routes";
 import {
@@ -304,7 +290,6 @@ import {
   getWorkspaces,
   updateWorkspace,
 } from "@/wab/server/routes/workspaces";
-import { getSegmentWriteKey } from "@/wab/server/secrets";
 import { logError } from "@/wab/server/server-util";
 import { ASYNC_TIMING } from "@/wab/server/timing-util";
 import { TypeormStore } from "@/wab/server/util/TypeormSessionStore";
@@ -320,8 +305,11 @@ import {
   isApiError,
   transformErrors,
 } from "@/wab/shared/ApiErrors/errors";
+import { ConsoleLogAnalytics } from "@/wab/shared/analytics/ConsoleLogAnalytics";
 import { Bundler } from "@/wab/shared/bundler";
+import { mkShortId, safeCast, spawn } from "@/wab/shared/common";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { isStampedIgnoreError } from "@/wab/shared/error-handling";
 import fileUpload from "express-fileupload";
 
@@ -516,6 +504,24 @@ function addMiddlewares(
   } else {
     console.log("Skipping session store setup...");
   }
+
+  const newRequestScopedAnalytics = initAmplitudeNode();
+  app.use(
+    safeCast<RequestHandler>(async (req, res, next) => {
+      const analytics = newRequestScopedAnalytics();
+      req.analytics = config.production
+        ? analytics
+        : methodForwarder(new ConsoleLogAnalytics(), analytics);
+      req.analytics.appendBaseEventProperties({
+        host: config.host,
+        production: config.production,
+      });
+      if (req.user) {
+        req.analytics.setUser(req.user.id);
+      }
+      next();
+    })
+  );
 
   app.use((req, res, next) => {
     // This is before we've loaded req.devflags - just use the hard-coded default for the core team email domain.
@@ -728,7 +734,6 @@ function addMiddlewares(
   } else {
     console.log("Skipping CSRF setup...");
   }
-  app.analytics = new Analytics(getSegmentWriteKey());
 
   // Parse body further down to prevent unauthorized users from incurring large parses.
   app.use(bodyParser.json({ limit: "400mb" }));

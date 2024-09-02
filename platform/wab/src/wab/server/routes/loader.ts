@@ -24,12 +24,7 @@ import {
   parseProjectIdSpec,
   resolveLatestProjectRevisions,
 } from "@/wab/server/loader/resolve-projects";
-import {
-  hasUser,
-  superDbMgr,
-  userAnalytics,
-  userDbMgr,
-} from "@/wab/server/routes/util";
+import { superDbMgr, userAnalytics, userDbMgr } from "@/wab/server/routes/util";
 import { prefillCloudfront } from "@/wab/server/workers/prefill-cloudfront";
 import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import { ProjectId } from "@/wab/shared/ApiSchema";
@@ -932,13 +927,7 @@ function trackLoaderCodegenEvent(
   }
 ) {
   const { versionType, platform } = opts;
-  const guessedUserId = hasUser(req)
-    ? undefined
-    : ensure(
-        projects[0].createdById,
-        "Unexpected nullish createdById in project"
-      );
-  userAnalytics(req, guessedUserId).track({
+  userAnalytics(req).track({
     event: "Codegen",
     properties: {
       newCompScheme: "blackbox",

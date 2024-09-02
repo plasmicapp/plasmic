@@ -35,8 +35,6 @@ interface Secrets {
     pass: string;
   };
   intercomToken?: string;
-  /** Optional Segment write key. Should have this on prod. */
-  segmentWriteKey?: string;
   openaiApiKey?: string;
   anthropicApiKey?: string;
   github?: {
@@ -144,15 +142,6 @@ export function getDiscourseConnectSecret() {
 
 export function getDiscourseApiKey() {
   return ensure(loadSecrets().discourse?.apiKey, "Discourse API key required");
-}
-
-/**
- * Return "XXX" if no Segment write key provided. This is fine with the
- * Analytics library; it will still make requests but these are just going to be
- * invalid and silently ignored (won't result in any console errors).
- */
-export function getSegmentWriteKey() {
-  return loadSecrets().segmentWriteKey || "XXX";
 }
 
 export function getVercelSecrets() {

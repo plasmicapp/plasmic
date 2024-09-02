@@ -3,7 +3,7 @@ import {
   getAppUserInfo,
   getUserRoleForApp,
 } from "@/wab/server/routes/end-user";
-import { superDbMgr, userAnalytics } from "@/wab/server/routes/util";
+import { superDbMgr } from "@/wab/server/routes/util";
 import { getEncryptionKey } from "@/wab/server/secrets";
 import { makeStableEncryptor } from "@/wab/server/util/crypt";
 import { ProjectId, UserId } from "@/wab/shared/ApiSchema";
@@ -276,12 +276,10 @@ export function trackAppUserActivity(
   // id for (appId, endUserId) pair in the database as their relationship is
   // implicit through the app access
   const appAuthUserId = `${appId}-${endUserId}`;
-  userAnalytics(req, appAuthUserId).track({
-    event: "App User Activity",
-    properties: {
-      type,
-      appId,
-    },
+  req.analytics.identify(appAuthUserId, { appId, endUserId });
+  req.analytics.track("App User Activity", {
+    type,
+    appId,
   });
 }
 

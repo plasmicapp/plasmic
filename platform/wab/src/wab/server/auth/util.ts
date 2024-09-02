@@ -14,11 +14,8 @@ export function doLogin(
 ) {
   spawn(
     disconnectUserSockets(request).then(() => {
-      request.app.analytics.identify({
-        userId: user.id,
-        traits: makeUserTraits(user),
-      });
       request.logIn(user, done);
+      request.analytics.identify(user.id, makeUserTraits(user));
     })
   );
 }

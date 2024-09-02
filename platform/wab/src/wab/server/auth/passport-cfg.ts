@@ -47,7 +47,6 @@ export async function setupPassport(
   config: Config,
   devflags: DevFlagsType
 ) {
-  // NOTE: devflags is loaded on startup, not per request!
   passport.serializeUser<User, any>((user: any, done: any) => {
     done(undefined, user.id);
   });
@@ -307,6 +306,7 @@ export async function upsertOauthUser(
     )}`
   );
 
+  // NOTE: devflags is loaded on startup, not per request!
   const devflags = req.devflags;
   const googleRequiredDom = isGoogleAuthRequiredEmailDomain(email, devflags);
   assert(
