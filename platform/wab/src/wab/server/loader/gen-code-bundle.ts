@@ -352,7 +352,8 @@ function makeBundleBucketPath(opts: {
   exportOpts: ExportOpts;
 }) {
   const projectSpecs = Object.entries(opts.projectVersions)
-    .map(([p, v]) => `${p}@${v.version}${v.indirect ? ":indirect" : ""}`)
+    .filter(([_, v]) => !v.indirect)
+    .map(([p, v]) => `${p}@${v.version}`)
     .sort();
   const key = `bundle/cb=${LOADER_CACHE_BUST}/loaderVersion=${
     opts.loaderVersion
