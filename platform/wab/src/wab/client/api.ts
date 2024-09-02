@@ -1,12 +1,24 @@
 /** @format */
 
 import { ensureIsTopFrame, isHostFrame } from "@/wab/client/cli-routes";
-import { LocalClipboardAction } from "@/wab/client/clipboard/local";
 import {
   SerializableClipboardData,
   serializeClipboardItems,
 } from "@/wab/client/clipboard/ReadableClipboard";
+import { LocalClipboardAction } from "@/wab/client/clipboard/local";
 import { storageViewAsKey } from "@/wab/client/components/app-auth/ViewAsButton";
+import { PushPullQueue } from "@/wab/commons/asyncutil";
+import { PromisifyMethods } from "@/wab/commons/promisify-methods";
+import { transformErrors } from "@/wab/shared/ApiErrors/errors";
+import { ApiUser } from "@/wab/shared/ApiSchema";
+import { fullName } from "@/wab/shared/ApiSchemaUtil";
+import { LowerHttpMethod } from "@/wab/shared/HttpClientUtil";
+import {
+  PkgInfo,
+  SharedApi,
+  WrappedStorageEvent,
+} from "@/wab/shared/SharedApi";
+import { Bundler } from "@/wab/shared/bundler";
 import {
   assert,
   ensure,
@@ -16,25 +28,13 @@ import {
   swallow,
   truncateText,
 } from "@/wab/shared/common";
-import { PushPullQueue } from "@/wab/commons/asyncutil";
-import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import {
   DEVFLAGS,
   flattenInsertableIconGroups,
   flattenInsertableTemplates,
 } from "@/wab/shared/devflags";
-import { transformErrors } from "@/wab/shared/ApiErrors/errors";
-import { ApiUser } from "@/wab/shared/ApiSchema";
-import { fullName } from "@/wab/shared/ApiSchemaUtil";
-import { Bundler } from "@/wab/shared/bundler";
-import { LowerHttpMethod } from "@/wab/shared/HttpClientUtil";
-import {
-  PkgInfo,
-  SharedApi,
-  WrappedStorageEvent,
-} from "@/wab/shared/SharedApi";
 import * as Sentry from "@sentry/browser";
-import { proxy, ProxyMarked } from "comlink";
+import { ProxyMarked, proxy } from "comlink";
 import $ from "jquery";
 import L, { pick } from "lodash";
 import io, { Socket } from "socket.io-client";
@@ -104,9 +104,12 @@ export const ajax = async (
       .fail((xhr, txtStatus, err) => {
         const error =
           swallow(() => {
-            const { error: apiError } = JSON.parse(xhr.responseText);
-            let transformed = transformErrors(apiError);
-            if (!noErrorTransform && !(transformed instanceof Error)) {
+            const response = JSON.parse(xhr.responseText);
+            if (noErrorTransform) {
+              return response;
+            }
+            let transformed = transformErrors(response.error);
+            if (!(transformed instanceof Error)) {
               // The error was JSON-parsible, but not one of the known
               // ApiErrors. So it is now just a JSON object, not an Error.
               // We create an UnknownApiError for it instead.
