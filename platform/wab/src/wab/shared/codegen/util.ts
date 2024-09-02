@@ -51,7 +51,15 @@ export const toJsIdentifier = memoize(
   }
 );
 
-const reNotJsIdentifierChar = regex("g")`${pNotJsIdentifierChar}`;
+/**
+ * Matches an invalid JS identifier character and following mark characters.
+ *
+ * Mark characters combine with the character before it, so if we removed the
+ * base character, also remove mark characters following it. Examples:
+ * - \u0300 grave accent https://www.compart.com/en/unicode/U+0300
+ * - \uFE0F variation selector https://www.compart.com/en/unicode/U+FE0F
+ */
+const reInvalidJsSequence = regex("g")`${pNotJsIdentifierChar} \p{M}*`;
 
 function toJsIdentifier_(
   original: string,
@@ -66,7 +74,7 @@ function toJsIdentifier_(
     str = camelCase(str);
   }
 
-  str = str.replaceAll(reNotJsIdentifierChar, "");
+  str = str.replaceAll(reInvalidJsSequence, "");
 
   // capitalize/de-capitalize if requested
   if (opts?.capitalizeFirst === true) {

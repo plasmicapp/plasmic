@@ -4,7 +4,10 @@ import type { Tagged } from "type-fest";
 /** A validated JavaScript identifier. */
 export type JsIdentifier = Tagged<string, "JsIdentifier">;
 
-const rawJsIdentifierChars = String.raw`$\u200c\u200d\p{ID_Continue}`;
+// Technically, \u200C (zero-width non-joiner) and \u200D (zero-width joiner)
+// should be allowed as a JS identifier. However, we often run our code through
+// Prettier, which does not accept these characters.
+const rawJsIdentifierChars = String.raw`$\p{ID_Continue}`;
 /** Matches a valid identifier character. May not be valid at the start. */
 export const pJsIdentifierChar = pattern`[${rawJsIdentifierChars}]`;
 /** Matches an invalid identifier character. */
@@ -16,6 +19,9 @@ export const pNotJsIdentifierChar = pattern`[^${rawJsIdentifierChars}]`;
  * Regular expression for a valid identifier, according to MDN (with `u` flag)
  * [$_\p{ID_Start}][$\u200c\u200d\p{ID_Continue}]*
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#identifiers
+ *
+ * Note we currently don't support some characters due to limitations in
+ * downstream code processing. See comments in this file for more details.
  */
 export const pJsIdentifier = pattern`[$_\p{ID_Start}]${pJsIdentifierChar}*`;
 

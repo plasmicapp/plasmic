@@ -7,6 +7,7 @@ import { typeFactory } from "@/wab/shared/model/model-util";
 
 describe("toJsIdentifier", () => {
   it("should work", () => {
+    expect(toJsIdentifier("")).toEqual("_");
     expect(toJsIdentifier("hello")).toEqual("hello");
     expect(toJsIdentifier("Hello moto")).toEqual("helloMoto");
     expect(toJsIdentifier("hello-moto")).toEqual("helloMoto");
@@ -73,6 +74,77 @@ describe("toJsIdentifier", () => {
       "HelloMoto"
     );
   });
+
+  it("does not remove marks preceded by valid character", () => {
+    // \u03__ are all marks
+    testUnicode("a\u0300\u0308\u0304", {}, "a"); // camelCase removes these marks (not sure why)
+    testUnicode(
+      "a\u0300\u0308\u0304",
+      { camelCase: false },
+      "a\u0300\u0308\u0304"
+    );
+    // \u093E is a mark https://www.compart.com/en/unicode/U+093E
+    testUnicode("\u092C\u093E\u0930\u0924", {}, "\u092C\u093E\u0930\u0924");
+    testUnicode(
+      "\u092C\u093E\u0930\u0924",
+      { camelCase: false },
+      "\u092C\u093E\u0930\u0924"
+    );
+  });
+
+  it("removes marks preceded by invalid character \uD83D\uDE00", () => {
+    // \uD83D is emoji, \u03__ are all marks
+    testUnicode("a\uD83D\uDE00\u0300\u0308\u0304", {}, "a");
+    testUnicode("a\uD83D\uDE00\u0300\u0308\u0304", { camelCase: false }, "a");
+  });
+
+  it("removes \\u200C (zero-width non-joiner)", () => {
+    testUnicode("\u0644\u200C\u0627", {}, "\u0644\u0627"); // camelCase removes \u200C
+    testUnicode("\u0644\u200C\u0627", { camelCase: false }, "\u0644\u0627");
+  });
+
+  it("removes \\u200D (zero-width non-joiner)", () => {
+    testUnicode("\u0915\u094D\u200D\u0937", {}, "\u0915\u094D\u0937"); // camelCase removes \u200D
+    testUnicode(
+      "\u0915\u094D\u200D\u0937",
+      { camelCase: false },
+      "\u0915\u094D\u0937"
+    );
+  });
+
+  it("removes \\u200D (zero-width joiner) and \\uFE0F (variation selector)", () => {
+    testUnicode("emoji\uD83D\uDE4B\u200D\u2642\uFE0F", {}, "emoji");
+    testUnicode(
+      "emoji\uD83D\uDE4B\u200D\u2642\uFE0F",
+      { camelCase: false },
+      "emoji"
+    );
+  });
+
+  function testUnicode(
+    input: string,
+    opts: Parameters<typeof toJsIdentifier>[1],
+    expected: string
+  ) {
+    const result = toJsIdentifier(input, opts);
+    expect(escapeUnicode(result)).toEqual(escapeUnicode(expected));
+    expect(result).toEqual(expected);
+  }
+
+  // For debugging unicode with invisible characters
+  function escapeUnicode(str: string) {
+    return [...str]
+      .map((c: string) =>
+        // eslint-disable-next-line no-control-regex
+        /^[\x00-\x7F]$/.test(c)
+          ? c
+          : c
+              .split("")
+              .map((a) => "\\u" + a.charCodeAt(0).toString(16).padStart(4, "0"))
+              .join("")
+      )
+      .join("");
+  }
 });
 
 describe("paramToVarName", () => {
