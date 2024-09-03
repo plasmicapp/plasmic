@@ -1,7 +1,7 @@
+import { analytics } from "@/wab/client/analytics";
 import { comboToKeyLabels } from "@/wab/client/components/studio/Shortcuts";
-import { extractEventProps, trackEvent } from "@/wab/client/tracking";
-import { ensure, filterFalsy } from "@/wab/shared/common";
 import { MaybeWrap, joinReactNodes } from "@/wab/commons/components/ReactUtil";
+import { ensure, filterFalsy } from "@/wab/shared/common";
 import type { MenuProps } from "antd";
 import { Menu, Tooltip } from "antd";
 import L from "lodash";
@@ -108,11 +108,9 @@ export class MenuBuilder {
         onClick={(event) => {
           const target = event.domEvent.target;
           if (target) {
-            const extra = extractEventProps(target);
-            trackEvent("menu", {
+            analytics().track("menu", {
               item: event.key,
               menuName: opts.menuName,
-              ...extra,
             });
           }
           opts.onMenuClick?.(event);

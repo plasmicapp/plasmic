@@ -3,6 +3,8 @@ import {
   handleError,
   shouldIgnoreError,
 } from "@/wab/client/ErrorNotifications";
+import { analytics, initBrowserAnalytics } from "@/wab/client/analytics";
+import { initAmplitudeBrowser } from "@/wab/client/analytics/amplitude-browser";
 import { AppCtx, hideStarters } from "@/wab/client/app-ctx";
 import { isProjectPath, isTopFrame } from "@/wab/client/cli-routes";
 import { initClientFlags } from "@/wab/client/client-dev-flags";
@@ -12,9 +14,10 @@ import {
   useHostFrameCtxIfHostFrame,
 } from "@/wab/client/frame-ctx/host-frame-ctx";
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { useTracking } from "@/wab/client/tracking";
+import { methodForwarder } from "@/wab/commons/methodForwarder";
 import DeploymentFlags from "@/wab/shared/DeploymentFlags";
 import { UserError } from "@/wab/shared/UserError";
+import { ConsoleLogAnalytics } from "@/wab/shared/analytics/ConsoleLogAnalytics";
 import {
   CustomError,
   hackyCast,
@@ -115,7 +118,8 @@ export function main() {
 
   applyDevFlagOverrides(DEVFLAGS, initClientFlags(DEVFLAGS));
 
-  if (DeploymentFlags.DEPLOYENV === "production") {
+  const production = DeploymentFlags.DEPLOYENV === "production";
+  if (production) {
     if (DEVFLAGS.posthog) {
       posthog.init("phc_eaI1hFsPRIZkmwrXaSGRNDh4H9J3xdh1j9rgNy27NgP");
     }
@@ -213,6 +217,18 @@ export function main() {
     });
   }
 
+  // Initialize analytics
+  const amplitude = initAmplitudeBrowser();
+  initBrowserAnalytics(
+    production
+      ? amplitude
+      : methodForwarder(new ConsoleLogAnalytics(), amplitude)
+  );
+  analytics().appendBaseEventProperties({
+    production,
+    commitHash: COMMITHASH,
+  });
+
   (window as any).commithash = COMMITHASH;
 
   const appContainerElement = document.querySelector(".app-container");
@@ -259,8 +275,6 @@ export function main() {
 }
 
 export function Shell() {
-  useTracking();
-
   const hostFrameCtx = useHostFrameCtxIfHostFrame();
   const history = hostFrameCtx ? hostFrameCtx.history : createBrowserHistory();
 

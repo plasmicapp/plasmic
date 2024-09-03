@@ -1,7 +1,7 @@
+import { analytics } from "@/wab/client/analytics";
+import { Shortcuts } from "@/wab/client/shortcuts/shortcut";
 import Mousetrap, { ExtendedKeyboardEvent } from "mousetrap";
 import { useEffect, useState } from "react";
-import { Shortcuts } from "@/wab/client/shortcuts/shortcut";
-import { extractEventProps, trackEvent } from "@/wab/client/tracking";
 
 /** Always allow these combos, no matter where the focus is. */
 const ALWAYS_ALLOWED_COMBOS = new Set(["esc"]);
@@ -132,9 +132,8 @@ export function bindShortcutHandlers<Action extends string>(
         combos: shortcut.combos,
         action: shortcut.action,
         combo,
-        ...extractEventProps(event.target),
       };
-      trackEvent(eventName, eventProps);
+      analytics().track(eventName, eventProps);
 
       // Mousetrap calls `preventDefault` and `stopPropagation` if `false` is returned.
       // This is a bit confusing, because we return `true` on success.

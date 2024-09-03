@@ -1,23 +1,16 @@
-/** @format */
-
+import { analytics } from "@/wab/client/analytics";
 import { ensureIsTopFrame, isHostFrame } from "@/wab/client/cli-routes";
+import { LocalClipboardAction } from "@/wab/client/clipboard/local";
 import {
   SerializableClipboardData,
   serializeClipboardItems,
 } from "@/wab/client/clipboard/ReadableClipboard";
-import { LocalClipboardAction } from "@/wab/client/clipboard/local";
 import { storageViewAsKey } from "@/wab/client/components/app-auth/ViewAsButton";
 import { PushPullQueue } from "@/wab/commons/asyncutil";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import { transformErrors } from "@/wab/shared/ApiErrors/errors";
 import { ApiUser } from "@/wab/shared/ApiSchema";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
-import { LowerHttpMethod } from "@/wab/shared/HttpClientUtil";
-import {
-  PkgInfo,
-  SharedApi,
-  WrappedStorageEvent,
-} from "@/wab/shared/SharedApi";
 import { Bundler } from "@/wab/shared/bundler";
 import {
   assert,
@@ -33,6 +26,12 @@ import {
   flattenInsertableIconGroups,
   flattenInsertableTemplates,
 } from "@/wab/shared/devflags";
+import { LowerHttpMethod } from "@/wab/shared/HttpClientUtil";
+import {
+  PkgInfo,
+  SharedApi,
+  WrappedStorageEvent,
+} from "@/wab/shared/SharedApi";
 import * as Sentry from "@sentry/browser";
 import { ProxyMarked, proxy } from "comlink";
 import $ from "jquery";
@@ -152,7 +151,7 @@ export class Api extends SharedApi {
   setUser = setUser;
 
   clearUser() {
-    analytics.reset();
+    analytics().setAnonymousUser();
     Sentry.configureScope((scope) => {
       scope.setUser({});
     });
@@ -654,7 +653,7 @@ export function setUser(user: ApiUser) {
     fullName: fullName(user),
     domain: email.split("@")[1],
   });
-  analytics.identify(id, traits);
+  analytics().setUser(id);
   Sentry.configureScope((scope) => {
     scope.setUser({ id, ...traits });
   });

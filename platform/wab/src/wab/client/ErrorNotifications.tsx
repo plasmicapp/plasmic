@@ -1,3 +1,4 @@
+import { analytics } from "@/wab/client/analytics";
 import {
   AssertionError,
   FalsyValueError,
@@ -7,8 +8,8 @@ import {
   stampObjectUuid,
 } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { UserError } from "@/wab/shared/UserError";
 import { isStampedIgnoreError } from "@/wab/shared/error-handling";
+import { UserError } from "@/wab/shared/UserError";
 import * as Sentry from "@sentry/browser";
 import { notification } from "antd";
 import { IconType } from "antd/lib/notification";
@@ -85,7 +86,7 @@ export function handleError(error: Error, source?: string) {
   setTimeout(() => {
     stampObjectUuid(error);
     Sentry.captureException(error);
-    analytics.track("Error", {
+    analytics().track("Error", {
       error: shallowJson(error),
     });
   }, 0);
@@ -175,7 +176,7 @@ export function reportError(error: Error, eventName?: string) {
   }
   console.log("Error: ", eventName ?? error.name, error.message, error);
   Sentry.captureException(error);
-  analytics.track(eventName ?? error.name, {
+  analytics().track(eventName ?? error.name, {
     name: error.name,
     message: error.message,
   });
@@ -186,7 +187,7 @@ export function reportSilentErrorMessage(
   eventName = "Silent Error"
 ) {
   Sentry.captureMessage(msg);
-  analytics.track(eventName, {
+  analytics().track(eventName, {
     message: msg,
   });
 }

@@ -1,3 +1,4 @@
+import { analytics } from "@/wab/client/analytics";
 import { maybeConvertToHostLessProject } from "@/wab/client/code-components/code-components";
 import { BottomModalsProvider } from "@/wab/client/components/BottomModal";
 import { CommentsProvider } from "@/wab/client/components/comments/CommentsProvider";
@@ -35,8 +36,10 @@ export class Studio extends React.Component<StudioProps, {}> {
     const appConfig = studioCtx.appCtx.appConfig;
     fixStudioIframePositionAndOverflow();
 
-    document.body.dataset.eventProjectName = this.props.studioCtx.siteInfo.name;
-    document.body.dataset.eventProjectId = this.props.studioCtx.siteInfo.id;
+    analytics().appendBaseEventProperties({
+      ProjectId: this.props.studioCtx.siteInfo.id,
+      ProjectName: this.props.studioCtx.siteInfo.name,
+    });
 
     // Load all chunks we'll need in advance:
     spawn(getCanvasPkgs());

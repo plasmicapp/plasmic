@@ -1,6 +1,10 @@
-global.analytics = {
-  // eslint-disable-next-line no-undef
-  track: (...args) => console.log("analytics.track", ...args),
-};
 global.PUBLICPATH = "/";
 global.DEPLOYENV = "test";
+
+// Set global variables BEFORE importing modules.
+// Importing modules may have side-effects that depend on these variables.
+
+import { initBrowserAnalytics } from "@/wab/client/analytics";
+import { ConsoleLogAnalytics } from "@/wab/shared/analytics/ConsoleLogAnalytics";
+
+initBrowserAnalytics(new ConsoleLogAnalytics());

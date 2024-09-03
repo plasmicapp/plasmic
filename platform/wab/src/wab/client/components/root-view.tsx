@@ -461,9 +461,6 @@ export function Root() {
       hostFrameCtx?.topFrameApi || promisifyMethods(new Api());
     const topFrameApi = hostFrameCtx?.topFrameApi || null;
     const bundler = new FastBundler();
-    history.listen(() => {
-      analytics.page("studio");
-    });
 
     spawn(
       (async () => {
