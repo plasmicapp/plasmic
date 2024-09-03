@@ -5232,4 +5232,38 @@ describe("merging", () => {
     });
     expect(result.autoReconciliations.length).toBe(0);
   });
+
+  it("shouldn't rename tpl elements based on unchanged names from ancestor site", () => {
+    // If some tpl element kept the same name from the ancestor version, we don't need
+    // to consider this name when running `preFixTplNames` before the merge, this is because
+    // the invariants of name were mantained while the user made changes in the branches
+    const result = testMerge({
+      ancestorSite: basicSite(),
+      a: () => {},
+      b: (site, tplMgr) => {
+        const button = ensure(
+          site.components.find((c) => c.name === "Button"),
+          "Button not found"
+        );
+        const tpls = flattenTpls(button.tplTree);
+        const nodeA = ensure(
+          tpls.find(
+            (tpl): tpl is TplNamable => isTplNamable(tpl) && tpl.name === "A"
+          ),
+          "Tpl with name A not found"
+        );
+        nodeA.name = "OldA";
+
+        const baseVariant = getBaseVariant(button);
+        $$$(button.tplTree).append(
+          mkTplTagX("div", {
+            name: "A",
+            baseVariant,
+            variants: [mkVariantSetting({ variants: [baseVariant] })],
+          })
+        );
+      },
+    });
+    expect(result.autoReconciliations.length).toBe(0);
+  });
 });

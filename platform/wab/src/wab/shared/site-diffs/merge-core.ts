@@ -33,6 +33,7 @@ import {
 import { ChangeRecorder } from "@/wab/shared/core/observable-model";
 import { SplitType } from "@/wab/shared/core/splits";
 import {
+  TplNamable,
   flattenTpls,
   isTplNamable,
   trackComponentRoot,
@@ -1635,24 +1636,40 @@ function preFixNames(
 }
 
 type FlattenedTplNodes = {
-  nodes: Record<string, classes.TplNode>;
+  nodes: Record<string, TplNamable>;
   names: string[];
 };
 
 function preFixTplNames(
   a: Site,
   b: Site,
+  ancestor: Site,
   bundler: Bundler,
   isDeletedInst: (inst: ObjInst) => boolean
 ) {
   const autoReconciliations: AutoReconciliation[] = [];
 
   const getNodesAndNames = (
-    tplMgr: TplMgr,
-    component: classes.Component
+    component: classes.Component,
+    ancestorNodes: Record<string, TplNamable> = {}
   ): FlattenedTplNodes => {
     const nodes = flattenTpls(component.tplTree).filter(
-      (node) => !isDeletedInst(node)
+      (node): node is TplNamable => {
+        if (!isTplNamable(node)) {
+          return false;
+        }
+        if (isDeletedInst(node)) {
+          return false;
+        }
+
+        // This means it's a new node
+        const iid = bundler.addrOf(node).iid;
+        if (!(iid in ancestorNodes)) {
+          return true;
+        }
+
+        return node.name !== ancestorNodes[iid].name;
+      }
     );
     const params = component.params.filter((param) => !isDeletedInst(param));
     return {
@@ -1709,6 +1726,10 @@ function preFixTplNames(
 
   const aTplMgr = new TplMgr({ site: a });
   const bTplMgr = new TplMgr({ site: b });
+  const ancestorComponents: Record<number, classes.Component> = {};
+  for (const component of ancestor.components) {
+    ancestorComponents[bundler.addrOf(component).iid] = component;
+  }
   const aComponents: Record<number, classes.Component> = {};
   for (const component of a.components) {
     aComponents[bundler.addrOf(component).iid] = component;
@@ -1718,9 +1739,16 @@ function preFixTplNames(
     if (!(componentIid in aComponents)) {
       continue;
     }
+    // If the component exist in both branches, it should exist in the ancestor too
+    const ancestorComponent = ensure(
+      ancestorComponents[componentIid],
+      "Ancestor component must exist"
+    );
     const aComponent = aComponents[componentIid];
-    const aFlattened = getNodesAndNames(aTplMgr, aComponent);
-    const bFlattened = getNodesAndNames(bTplMgr, bComponent);
+    const ancestorFlattened = getNodesAndNames(ancestorComponent);
+
+    const aFlattened = getNodesAndNames(aComponent, ancestorFlattened.nodes);
+    const bFlattened = getNodesAndNames(bComponent, ancestorFlattened.nodes);
     fixSelfTplNames(aComponent, aFlattened, bFlattened);
     fixSelfTplNames(bComponent, bFlattened, aFlattened);
   }
@@ -1810,7 +1838,9 @@ function runMergeFnAndApplyFixes(
 
   // Similar to the previous case, the name of a element is used to create expr instances referent to
   // implicit states, so we update it prior to the merge to avoid duplicated names.
-  autoReconciliations.push(...preFixTplNames(a, b, bundler, isDeletedInst));
+  autoReconciliations.push(
+    ...preFixTplNames(a, b, ancestor, bundler, isDeletedInst)
+  );
 
   mobx.runInAction(() => {
     recorder.withRecording(() => {
