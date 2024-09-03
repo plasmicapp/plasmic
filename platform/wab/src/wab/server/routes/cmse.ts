@@ -1,3 +1,4 @@
+import { toOpaque } from "@/wab/commons/types";
 import { uploadDataUriToS3 } from "@/wab/server/cdn/images";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { CmsDatabase } from "@/wab/server/entities/Entities";
@@ -152,6 +153,16 @@ export async function createDatabase(req: Request, res: Response) {
     },
   });
   res.json(await makeApiDatabase(mgr, db));
+}
+
+export async function cloneDatabase(req: Request, res: Response) {
+  const databaseId: CmsDatabaseId = toOpaque(req.params.dbId);
+  const databaseName = req.body.name as string;
+
+  const mgr = userDbMgr(req);
+  const newDb = await mgr.cloneCmsDatabase(databaseId, databaseName);
+  const updatedDb = await mgr.getCmsDatabaseById(newDb.id);
+  res.json(await makeApiDatabase(mgr, updatedDb));
 }
 
 export async function createTable(req: Request, res: Response) {

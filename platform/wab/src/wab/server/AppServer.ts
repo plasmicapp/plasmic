@@ -68,7 +68,6 @@ import { getAppCtx } from "@/wab/server/routes/appctx";
 import { bigCommerceGraphql } from "@/wab/server/routes/bigcommerce";
 import {
   cachePublicCmsRead,
-  cloneDatabase,
   countTable,
   getDatabase,
   publicCreateRows,
@@ -79,6 +78,7 @@ import {
   upsertDatabaseTables,
 } from "@/wab/server/routes/cms";
 import {
+  cloneDatabase,
   cmsFileUpload,
   createDatabase,
   createRows,
@@ -829,11 +829,6 @@ export function addCmsPublicRoutes(app: express.Application) {
     "/api/v1/cms/databases/:dbId/tables/:tableIdentifier/rows",
     withNext(publicCreateRows)
   );
-  app.post(
-    "/api/v1/cms/databases/:dbId/clone",
-    apiAuth,
-    withNext(cloneDatabase)
-  );
   app.post("/api/v1/cms/rows/:rowId/publish", withNext(publicPublishRow));
   app.put("/api/v1/cms/rows/:rowId", withNext(publicUpdateRow));
   app.delete("/api/v1/cms/rows/:rowId", withNext(publicDeleteRow));
@@ -843,6 +838,7 @@ export function addCmsEditorRoutes(app: express.Application) {
   // CMS API for use by studio to crud; access by usual browser login
   app.get("/api/v1/cmse/databases", withNext(listDatabases));
   app.post("/api/v1/cmse/databases", withNext(createDatabase));
+  app.post("/api/v1/cmse/databases/:dbId/clone", withNext(cloneDatabase));
   app.get(
     "/api/v1/cmse/databases/:dbId",
     withNext(getCmsDatabaseAndSecretTokenById)

@@ -1625,7 +1625,7 @@ export abstract class SharedApi {
       name: string;
     }>
   ) {
-    const res = await this.post(`/cms/databases/${databaseId}/clone`, data);
+    const res = await this.post(`/cmse/databases/${databaseId}/clone`, data);
     return res as ApiCmsDatabase;
   }
 

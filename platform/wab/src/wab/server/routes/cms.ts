@@ -114,16 +114,6 @@ export async function upsertDatabaseTables(req: Request, res: Response) {
   res.json(await makeApiDatabase(mgr, updatedDb));
 }
 
-export async function cloneDatabase(req: Request, res: Response) {
-  const databaseId: CmsDatabaseId = toOpaque(req.params.dbId);
-  const databaseName = req.body.name as string;
-
-  const mgr = userDbMgr(req);
-  const newDb = await mgr.cloneCmsDatabase(databaseId, databaseName);
-  const updatedDb = await mgr.getCmsDatabaseById(newDb.id);
-  res.json(await makeApiDatabase(mgr, updatedDb));
-}
-
 function toWriteApiCmsRow(
   row: CmsRow,
   tableSchema: CmsTableSchema,
