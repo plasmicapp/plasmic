@@ -1011,6 +1011,39 @@ describe("DbMgr", () => {
       );
     }));
 
+  it("cascades permissions from team to sub teams", () =>
+    withDb(async (sudo, [user1, user2], [db1]) => {
+      const teams = await db1().getAffiliatedTeams();
+      const rootTeam = ensure(
+        teams.find((t) => (t.id as string) !== (user1.id as string)),
+        ""
+      );
+      const subTeam = await sudo.sudoUpdateTeam({
+        id: (await db1().createTeam("Sub Team")).id,
+        parentTeamId: rootTeam.id,
+      });
+
+      expect(await sudo.getTeamAccessLevelByUser(subTeam.id, user2.id)).toBe(
+        "blocked"
+      );
+      expect(await sudo.getTeamAccessLevelByUser(rootTeam.id, user2.id)).toBe(
+        "blocked"
+      );
+
+      await db1().grantTeamPermissionByEmail(
+        rootTeam.id,
+        user2.email,
+        "editor"
+      );
+
+      expect(await sudo.getTeamAccessLevelByUser(subTeam.id, user2.id)).toBe(
+        "editor"
+      );
+      expect(await sudo.getTeamAccessLevelByUser(rootTeam.id, user2.id)).toBe(
+        "editor"
+      );
+    }));
+
   // TODO This should probably change to be based on the specific invite so as not to be tied to the email. Esp. without email verification. But this is the current behavior.
   it.skip("when creating user, should claim pending invites by email", () =>
     withDb(async (sudo, [user1], [db1]) => {

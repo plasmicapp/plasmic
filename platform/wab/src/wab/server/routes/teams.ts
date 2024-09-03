@@ -1,11 +1,4 @@
-import {
-  ensure,
-  ensureType,
-  filterFalsy,
-  uncheckedCast,
-  xGroupBy,
-} from "@/wab/shared/common";
-import { checkPermissions, ForbiddenError } from "@/wab/server/db/DbMgr";
+import { ForbiddenError, checkPermissions } from "@/wab/server/db/DbMgr";
 import { prepareTeamSupportUrls as doPrepareTeamSupportUrls } from "@/wab/server/discourse/prepareTeamSupportUrls";
 import { sendShareEmail } from "@/wab/server/emails/share-email";
 import { Project, Team, Workspace } from "@/wab/server/entities/Entities";
@@ -40,8 +33,8 @@ import {
   JoinTeamResponse,
   ListFeatureTiersResponse,
   ListTeamProjectsResponse,
-  ListTeamsResponse,
   ListTeamWorkspacesResponse,
+  ListTeamsResponse,
   PurgeUserFromTeamRequest,
   Revoke,
   TeamId,
@@ -49,9 +42,17 @@ import {
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
 import {
-  createTaggedResourceId,
+  ensure,
+  ensureType,
+  filterFalsy,
+  uncheckedCast,
+  xGroupBy,
+} from "@/wab/shared/common";
+import {
   ResourceId,
   ResourceType,
+  createTaggedResourceId,
+  pluralizeResourceId,
 } from "@/wab/shared/perms";
 import { mergeUiConfigs } from "@/wab/shared/ui-config-utils";
 import {
@@ -258,8 +259,8 @@ export async function changeResourcePermissions(req: Request, res: Response) {
           : createTeamUrl(host, id);
 
       for (const { email, accessLevel } of toGrant) {
-        await mgr.grantResourcePermissionByEmail(
-          taggedResourceId,
+        await mgr.grantResourcesPermissionByEmail(
+          pluralizeResourceId(taggedResourceId),
           email,
           accessLevel,
           requireSignUp
@@ -312,7 +313,10 @@ export async function changeResourcePermissions(req: Request, res: Response) {
           : await mgr.getTeamById(taggedResourceId.id);
       resourcesById[taggedResourceId.id] = resource;
       const emails = toRevoke.map(({ email }) => email);
-      await mgr.revokeResourcePermissionsByEmail(taggedResourceId, emails);
+      await mgr.revokeResourcesPermissionsByEmail(
+        pluralizeResourceId(taggedResourceId),
+        emails
+      );
     }
   };
   await handleRevoke("project", (r) => r.projectId);
