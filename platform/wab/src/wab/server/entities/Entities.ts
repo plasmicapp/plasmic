@@ -200,6 +200,7 @@ export class Team extends Base<"TeamId"> {
   @Column("jsonb", { nullable: true })
   uiConfig: UiConfig | null;
 
+  @Index()
   @Column("text", { nullable: true })
   parentTeamId: TeamId | null;
 
