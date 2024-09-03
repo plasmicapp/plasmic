@@ -25,15 +25,10 @@ export interface Track {
 }
 
 export interface GridSpec {
-  readonly gridTemplateRows?: ReadonlyArray<Track> | FlexibleSize | FixedSize;
-  readonly gridRowGap?: NumericSize;
-  readonly gridAutoRows?: Size;
   readonly gridTemplateColumns?:
     | ReadonlyArray<Track>
     | FlexibleSize
     | FixedSize;
-  readonly gridColumnGap?: NumericSize;
-  readonly gridAutoColumns?: Size;
 }
 
 export const GRID_DEFAULT_TEMPLATE: FixedSize = {
@@ -59,7 +54,7 @@ export function parseGridCssPropsToSpec(
     "Grid element is expected to have display:grid"
   );
   return {
-    gridTemplateRows: parseProp("grid-template-rows", "axisTemplate"),
+    gridTemplateColumns: parseProp("grid-template-columns", "axisTemplate"),
   };
 }
 
