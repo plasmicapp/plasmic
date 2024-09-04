@@ -546,7 +546,7 @@ export async function writeConfig(
 ) {
   await writeFileContentRaw(
     configFile,
-    formatAsLocal(
+    await formatAsLocal(
       JSON.stringify(
         {
           ...config,
@@ -571,7 +571,11 @@ export async function writeLock(
 ) {
   await writeFileContentRaw(
     lockFile,
-    formatAsLocal(JSON.stringify(lock, undefined, 2), "/tmp/x.json", baseDir),
+    await formatAsLocal(
+      JSON.stringify(lock, undefined, 2),
+      "/tmp/x.json",
+      baseDir
+    ),
     {
       force: true,
     }
