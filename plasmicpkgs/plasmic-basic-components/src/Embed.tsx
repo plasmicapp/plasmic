@@ -3,7 +3,7 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React, { useEffect, useRef } from "react";
-import { ensure } from "./common";
+import { ensure, useFirstRender, useId } from "./common";
 
 export interface EmbedProps {
   className?: string;
@@ -30,8 +30,20 @@ export default function Embed({
 }: EmbedProps) {
   const rootElt = useRef<HTMLDivElement>(null);
   const inEditor = usePlasmicCanvasContext();
+  const htmlId = useId();
+  const firstRender = useFirstRender();
   useEffect(() => {
     if (hideInEditor && inEditor) {
+      return;
+    }
+    // If it's the first render and we already set the global id for this component, it means that
+    // the HTML is already present in the DOM from the server-rendered HTML. We don't want to re-run.
+    // If it's not the first render, then it can mean that some dependency changed.
+    if (
+      !inEditor &&
+      firstRender &&
+      (window as any)[makePlasmicVarName(htmlId)]
+    ) {
       return;
     }
     // Load scripts sequentially one at a time, since later scripts can depend on earlier ones.
@@ -56,8 +68,13 @@ export default function Embed({
         }
       }
     })();
-  }, [code, hideInEditor]);
-  const effectiveCode = hideInEditor && inEditor ? "" : code;
+  }, [htmlId, firstRender, code, hideInEditor, inEditor]);
+  const effectiveCode =
+    hideInEditor && inEditor
+      ? ""
+      : inEditor
+      ? code
+      : addIdentifierScript(htmlId, code);
   return (
     <div
       ref={rootElt}
@@ -66,6 +83,17 @@ export default function Embed({
       style={{ whiteSpace: "normal" }}
     />
   );
+}
+
+function makePlasmicVarName(id: string) {
+  return `__plasmic_${id.replace(/[^a-z0-9]/gi, "")}`;
+}
+
+function addIdentifierScript(id: string, code: string) {
+  return `<script>
+    var ${makePlasmicVarName(id)} = 1;
+  </script>
+  ${code}`;
 }
 
 export const embedMeta: ComponentMeta<EmbedProps> = {
