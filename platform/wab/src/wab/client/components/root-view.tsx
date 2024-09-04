@@ -496,20 +496,25 @@ export function Root() {
     const appCtx = await loadAppCtx(nonAuthCtx, true);
     hackyCast(window).gAppCtx = appCtx;
 
-    if (appCtx.selfInfo?.email) {
-      const email = appCtx.selfInfo.email;
+    if (appCtx.selfInfo) {
+      const tier = isCoreTeamEmail(appCtx.selfInfo.email, appCtx.appConfig)
+        ? "enterprise"
+        : getMaximumTierFromTeams(appCtx.teams);
+
       // TODO: Move identify to server when we can rely more on PostHog product analytics
       analytics().identify(appCtx.selfInfo.id, {
-        email,
+        email: appCtx.selfInfo.email,
         firstName: appCtx.selfInfo.firstName,
         lastName: appCtx.selfInfo.lastName,
         isWhiteLabel: appCtx.selfInfo.isWhiteLabel,
         whiteLabelId: appCtx.selfInfo.whiteLabelId,
         whiteLabelEmail: appCtx.selfInfo.whiteLabelInfo?.email,
-        tier: isCoreTeamEmail(email, appCtx.appConfig)
-          ? "core"
-          : getMaximumTierFromTeams(appCtx.teams),
+        tier,
       });
+
+      if (["enterprise", "team", "pro"].includes(tier)) {
+        analytics().recordSession();
+      }
     }
     return appCtx;
   };

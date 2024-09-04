@@ -14,6 +14,7 @@ export function initPosthogBrowser(
 ): PostHogAnalytics | null {
   const ph = posthog.init(POSTHOG_API_KEY, {
     api_host: "https://us.i.posthog.com",
+    disable_session_recording: true, // enable with `recordSession`
     ...config,
   });
   if (!ph) {
@@ -45,5 +46,9 @@ class PostHogAnalytics implements Analytics {
 
   track(eventName, eventProperties) {
     this.ph.capture(eventName, eventProperties);
+  }
+
+  recordSession() {
+    this.ph.startSessionRecording();
   }
 }

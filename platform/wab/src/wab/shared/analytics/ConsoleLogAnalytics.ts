@@ -32,4 +32,8 @@ export class ConsoleLogAnalytics implements Analytics {
       { ...this.baseEventProperties, ...eventProperties }
     );
   }
+
+  recordSession() {
+    console.log(`[analytics] recordSession`);
+  }
 }

@@ -23,4 +23,8 @@ export interface Analytics {
    * Tracks an event.
    */
   track(eventName: string, eventProperties?: Properties): void;
+  /**
+   * Starts recording a session for replay.
+   */
+  recordSession(): void;
 }

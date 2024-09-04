@@ -61,4 +61,6 @@ export class AmplitudeAnalytics implements Analytics {
       this.eventOptions
     );
   }
+
+  recordSession() {}
 }

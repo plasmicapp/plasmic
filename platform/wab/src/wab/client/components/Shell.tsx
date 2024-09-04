@@ -125,7 +125,6 @@ export function main() {
   const amplitudeAnalytics = initAmplitudeBrowser();
   const posthogAnalytics = initPosthogBrowser({
     debug: !production,
-    disable_session_recording: !production,
   });
   initBrowserAnalytics(
     production
