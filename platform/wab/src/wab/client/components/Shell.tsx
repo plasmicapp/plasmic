@@ -5,6 +5,7 @@ import {
 } from "@/wab/client/ErrorNotifications";
 import { analytics, initBrowserAnalytics } from "@/wab/client/analytics";
 import { initAmplitudeBrowser } from "@/wab/client/analytics/amplitude-browser";
+import { initPosthogBrowser } from "@/wab/client/analytics/posthog-browser";
 import { AppCtx, hideStarters } from "@/wab/client/app-ctx";
 import { isProjectPath, isTopFrame } from "@/wab/client/cli-routes";
 import { initClientFlags } from "@/wab/client/client-dev-flags";
@@ -33,7 +34,7 @@ import * as Sentry from "@sentry/browser";
 import * as Integrations from "@sentry/integrations";
 import { createBrowserHistory } from "history";
 import { onReactionError } from "mobx";
-import posthog from "posthog-js";
+import { posthog } from "posthog-js";
 import * as React from "react";
 import { OverlayProvider } from "react-aria";
 import * as ReactDOM from "react-dom";
@@ -119,17 +120,39 @@ export function main() {
   applyDevFlagOverrides(DEVFLAGS, initClientFlags(DEVFLAGS));
 
   const production = DeploymentFlags.DEPLOYENV === "production";
-  if (production) {
-    if (DEVFLAGS.posthog) {
-      posthog.init("phc_eaI1hFsPRIZkmwrXaSGRNDh4H9J3xdh1j9rgNy27NgP");
-    }
 
+  // Initialize analytics
+  const amplitudeAnalytics = initAmplitudeBrowser();
+  const posthogAnalytics = initPosthogBrowser({
+    debug: !production,
+    disable_session_recording: !production,
+  });
+  initBrowserAnalytics(
+    production
+      ? methodForwarder(amplitudeAnalytics, posthogAnalytics)
+      : methodForwarder(
+          new ConsoleLogAnalytics(),
+          amplitudeAnalytics,
+          posthogAnalytics
+        )
+  );
+  analytics().appendBaseEventProperties({
+    production,
+    commitHash: COMMITHASH,
+  });
+
+  // Initialize Sentry
+  if (production) {
     Sentry.init({
       dsn: `https://dd4fc160e1a548609dc8db7e6c9f7a08@sentry.io/${sentryProjId}`,
       release: COMMITHASH,
       integrations: [
         new Integrations.Dedupe(),
-        new posthog.SentryIntegration(posthog, sentryOrgId, +sentryProjId),
+        new posthog.SentryIntegration(
+          posthogAnalytics?.ph ?? posthog,
+          sentryOrgId,
+          +sentryProjId
+        ),
       ],
       ignoreErrors: ERROR_PATTERNS_TO_IGNORE,
       beforeSend(event, hint) {
@@ -216,18 +239,6 @@ export function main() {
       Sentry.captureException(error);
     });
   }
-
-  // Initialize analytics
-  const amplitude = initAmplitudeBrowser();
-  initBrowserAnalytics(
-    production
-      ? amplitude
-      : methodForwarder(new ConsoleLogAnalytics(), amplitude)
-  );
-  analytics().appendBaseEventProperties({
-    production,
-    commitHash: COMMITHASH,
-  });
 
   (window as any).commithash = COMMITHASH;
 

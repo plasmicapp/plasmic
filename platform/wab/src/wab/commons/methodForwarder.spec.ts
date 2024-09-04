@@ -22,7 +22,13 @@ const logger3 = {
 
 describe("methodForwarder", () => {
   it("should forward method calls to all valid targets", () => {
-    const composedLogger = methodForwarder(logger1, logger2, logger3);
+    const composedLogger = methodForwarder(
+      null,
+      logger1,
+      logger2,
+      logger3,
+      undefined
+    );
 
     composedLogger.log("foo");
     expect(logger1.log).toHaveBeenCalledWith("foo");

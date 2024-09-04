@@ -11,7 +11,7 @@ type RequiresVoidMethodsObject<T> = {
  * Only objects with methods that return void are accepted.
  */
 export function methodForwarder<T extends RequiresVoidMethodsObject<T>>(
-  ...targets: T[]
+  ...targets: (T | null | undefined)[]
 ): T {
   return new Proxy(
     {},
@@ -19,9 +19,11 @@ export function methodForwarder<T extends RequiresVoidMethodsObject<T>>(
       get(_, propName: string | symbol) {
         return (...args: any[]) => {
           for (const target of targets) {
-            const method = target[propName];
-            if (typeof method === "function") {
-              method.apply(target, args);
+            if (target) {
+              const method = target[propName];
+              if (typeof method === "function") {
+                method.apply(target, args);
+              }
             }
           }
         };

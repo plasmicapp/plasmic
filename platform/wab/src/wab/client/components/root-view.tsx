@@ -1,5 +1,4 @@
-/** @format */
-
+import { analytics } from "@/wab/client/analytics";
 import { Api } from "@/wab/client/api";
 import {
   AppCtx,
@@ -68,7 +67,6 @@ import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { StarterSectionConfig } from "@/wab/shared/devflags";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { getMaximumTierFromTeams } from "@/wab/shared/pricing/pricing-utils";
-import posthog from "posthog-js";
 import * as React from "react";
 import { Redirect, Route, Switch, useHistory, useLocation } from "react-router";
 
@@ -500,7 +498,8 @@ export function Root() {
 
     if (appCtx.selfInfo?.email) {
       const email = appCtx.selfInfo.email;
-      posthog.identify(appCtx.selfInfo.id, {
+      // TODO: Move identify to server when we can rely more on PostHog product analytics
+      analytics().identify(appCtx.selfInfo.id, {
         email,
         firstName: appCtx.selfInfo.firstName,
         lastName: appCtx.selfInfo.lastName,
