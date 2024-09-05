@@ -1,6 +1,7 @@
 import type { CodeComponentMeta } from "@plasmicapp/host";
 import registerComponent from "@plasmicapp/host/registerComponent";
 import React from "react";
+import { defaultStyles } from "./common";
 
 export type HasControlContextData<T = BaseControlContextData> = {
   setControlContextData?: (ctxData: T) => void;
@@ -36,6 +37,13 @@ export function registerComponentHelper<T extends React.ComponentType<any>>(
   meta: CodeComponentMeta<React.ComponentProps<T>>,
   overrides?: CodeComponentMetaOverrides<T>
 ) {
+  meta = {
+    ...meta,
+    defaultStyles: {
+      ...defaultStyles,
+      ...(meta.defaultStyles ?? {}),
+    },
+  };
   if (overrides) {
     meta = {
       ...meta,

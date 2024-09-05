@@ -5,6 +5,10 @@ import {
   isDefined,
 } from "./utils";
 
+export const defaultStyles: React.CSSProperties = {
+  boxSizing: "border-box",
+};
+
 export function hasParent<T>(_props: T, ctx: ConditionalContext<T>): boolean {
   return isDefined(ctx?.parent) === true;
 }
