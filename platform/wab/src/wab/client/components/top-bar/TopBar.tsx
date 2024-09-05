@@ -30,7 +30,10 @@ import {
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { pruneUnusedImageAssets } from "@/wab/shared/prune-site";
 import { naturalSort } from "@/wab/shared/sort";
-import { canEditProjectConfig } from "@/wab/shared/ui-config-utils";
+import {
+  canEditProjectConfig,
+  canPublishProject,
+} from "@/wab/shared/ui-config-utils";
 import { fixPageHrefsToLocal } from "@/wab/shared/utils/split-site-utils";
 import { Menu, Tooltip, notification } from "antd";
 import { observer } from "mobx-react";
@@ -394,7 +397,7 @@ function _TopBar({ preview }: TopBarProps) {
         }}
         publishButton={{
           props: {
-            enable: studioCtx.canEditProject(),
+            enable: studioCtx.canEditProject() && canPublishProject(uiConfig),
           },
         }}
         avatar={{

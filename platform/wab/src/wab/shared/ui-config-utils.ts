@@ -180,6 +180,7 @@ export interface UiConfig {
     logoAlt?: string;
     logoTooltip?: string;
   };
+  canPublishProject?: boolean;
 }
 
 /**
@@ -257,6 +258,7 @@ export function mergeUiConfigs(
     projectConfigs: mergeBooleanObjs(configs.map((c) => c.projectConfigs)),
     // Deep merge `brand`
     brand: merge({}, ...configs.map((c) => c.brand)),
+    canPublishProject: mergedFirst(configs.map((c) => c.canPublishProject)),
   };
 }
 
@@ -422,4 +424,12 @@ export function canEditUiConfig(
   }
   const accessLevel = getAccessLevelToResource(resource, user, perms);
   return accessLevelRank(accessLevel) >= accessLevelRank("editor");
+}
+
+export function canPublishProject(config: UiConfig) {
+  if (typeof config.canPublishProject === "boolean") {
+    return config.canPublishProject;
+  }
+
+  return true;
 }

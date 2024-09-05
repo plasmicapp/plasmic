@@ -138,6 +138,9 @@ export function ContentEditorConfigModal(props: {
               })).sort((a, b) => a.label.localeCompare(b.label))}
             />
           </Form.Item>
+          <Form.Item name={["canPublishProject"]} label="Can publish project?">
+            <BooleanControl trueLabel="Allowed" falseLabel="Disallowed" />
+          </Form.Item>
 
           <h3 className="mv-xlg">Left tabs</h3>
           <Form.Item name={["leftTabs"]} noStyle>
