@@ -1387,7 +1387,11 @@ export class TplMgr {
     return component;
   }
 
-  attachComponent(component: Component, originalComponent?: Component) {
+  attachComponent(
+    component: Component,
+    originalComponent?: Component,
+    originalComponentSite?: Site
+  ) {
     // First track all the sub components
     for (const comp of [component, ...getSubComponents(component)]) {
       if (!this.site().components.includes(comp)) {
@@ -1405,7 +1409,7 @@ export class TplMgr {
         ? [originalComponent, ...getSubComponents(originalComponent)]
         : []
     )) {
-      this.ensureDedicatedArena(comp, originalComp);
+      this.ensureDedicatedArena(comp, originalComp, originalComponentSite);
     }
 
     if (isContextCodeComponent(component)) {
@@ -1506,7 +1510,8 @@ export class TplMgr {
 
   private ensureDedicatedArena(
     component: Component,
-    originalComponent?: Component
+    originalComponent?: Component,
+    originalComponentSite?: Site
   ) {
     if (isFrameComponent(component) || isCodeComponent(component)) {
       // No dedicated arenas for scratch and code components
@@ -1521,10 +1526,13 @@ export class TplMgr {
       this.site().pageArenas.push(pageArena);
       return pageArena;
     } else {
+      const componentArenaSite = originalComponentSite || this.site();
       const originalComponentArenaAndSite = originalComponent
         ? [
-            this.site(),
-            ...walkDependencyTree(this.site(), "all").map((dep) => dep.site),
+            componentArenaSite,
+            ...walkDependencyTree(componentArenaSite, "all").map(
+              (dep) => dep.site
+            ),
           ]
             .flatMap((site) =>
               site.componentArenas.map((arena) => ({ site, arena }))

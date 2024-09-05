@@ -1,3 +1,4 @@
+import { siteToAllImageAssetsDict } from "@/wab/shared/cached-selectors";
 import { assert, ensure } from "@/wab/shared/common";
 import {
   cloneComponent,
@@ -6,9 +7,8 @@ import {
   isPlumeComponent,
 } from "@/wab/shared/core/components";
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
-import { TplMgr } from "@/wab/shared/TplMgr";
-import { getBaseVariant } from "@/wab/shared/Variants";
-import { siteToAllImageAssetsDict } from "@/wab/shared/cached-selectors";
+import { allComponents } from "@/wab/shared/core/sites";
+import { flattenTpls, isTplComponent } from "@/wab/shared/core/tpls";
 import {
   ensureValidClonedComponent,
   makeImageAssetFixer,
@@ -24,8 +24,8 @@ import {
   Variant,
 } from "@/wab/shared/model/classes";
 import { makeComponentSwapper } from "@/wab/shared/swap-components";
-import { allComponents } from "@/wab/shared/core/sites";
-import { flattenTpls, isTplComponent } from "@/wab/shared/core/tpls";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { getBaseVariant } from "@/wab/shared/Variants";
 
 interface OriginInfo {
   projectId: string;
@@ -214,7 +214,7 @@ export function mkInsertableComponentImporter(
       projectId: info.projectId,
       componentId: comp.uuid,
     });
-    tplMgr.attachComponent(newComp);
+    tplMgr.attachComponent(newComp, comp, info.site);
     return newComp;
   };
 
