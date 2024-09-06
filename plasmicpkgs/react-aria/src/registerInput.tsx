@@ -120,7 +120,7 @@ export function registerInput(
         borderWidth: "1px",
         borderStyle: "solid",
         borderColor: "black",
-        padding: "2px 10px",
+        padding: "4px 10px",
       },
       props: {
         ...getCommonProps<BaseInputProps>("Input", [

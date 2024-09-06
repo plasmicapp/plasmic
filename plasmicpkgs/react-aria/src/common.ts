@@ -5,10 +5,6 @@ import {
   isDefined,
 } from "./utils";
 
-export const defaultStyles: React.CSSProperties = {
-  boxSizing: "border-box",
-};
-
 export function hasParent<T>(_props: T, ctx: ConditionalContext<T>): boolean {
   return isDefined(ctx?.parent) === true;
 }
@@ -49,6 +45,7 @@ function createNameProp<T>(): PropType<T> {
   return {
     type: "string",
     description: "Name for this field if it is part of a form",
+    displayName: "Form field key",
     hidden: hasParent,
     advanced: true,
   };

@@ -1,7 +1,6 @@
 import type { CodeComponentMeta } from "@plasmicapp/host";
 import registerComponent from "@plasmicapp/host/registerComponent";
 import React from "react";
-import { defaultStyles } from "./common";
 
 export type HasControlContextData<T = BaseControlContextData> = {
   setControlContextData?: (ctxData: T) => void;
@@ -40,7 +39,7 @@ export function registerComponentHelper<T extends React.ComponentType<any>>(
   meta = {
     ...meta,
     defaultStyles: {
-      ...defaultStyles,
+      boxSizing: "border-box",
       ...(meta.defaultStyles ?? {}),
     },
   };

@@ -1,10 +1,9 @@
 import React from "react";
-import type { StrictItemType } from "./option-utils";
+import { ListBoxItemIdManager } from "./ListBoxItemIdManager";
 import { BaseCheckboxGroup } from "./registerCheckboxGroup";
 import { BaseDialogTrigger } from "./registerDialogTrigger";
 import type { BaseInput } from "./registerInput";
 import type { BaseLabel } from "./registerLabel";
-import { ListBoxItemIdManager } from "./registerListBox";
 import { BasePopover } from "./registerPopover";
 import { BaseRadioGroup } from "./registerRadioGroup";
 import type { BaseSection } from "./registerSection";
@@ -55,10 +54,6 @@ export const PlasmicListBoxContext = React.createContext<
       idManager: ListBoxItemIdManager;
     }
   | undefined
->(undefined);
-
-export const PlasmicItemContext = React.createContext<
-  StrictItemType | undefined
 >(undefined);
 
 export const PlasmicSectionContext = React.createContext<

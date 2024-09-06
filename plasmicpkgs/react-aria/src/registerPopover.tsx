@@ -69,7 +69,6 @@ export function BasePopover(props: BasePopoverProps) {
 export const POPOVER_COMPONENT_NAME = makeComponentName("popover");
 export const POPOVER_ARROW_IMG: PlasmicElement = {
   type: "img",
-  // TODO: Replace with the image of an arrow pointing up, like: https://icon-sets.iconify.design/mdi/triangle/
   src: "https://static1.plasmic.app/arrow-up.svg",
   styles: {
     position: "absolute",
@@ -139,7 +138,7 @@ export function registerPopover(
           displayName: "Offset",
           description:
             "Additional offset applied vertically between the popover and its trigger",
-          defaultValueHint: 0,
+          defaultValueHint: 8,
         },
         shouldFlip: {
           type: "boolean",

@@ -1,6 +1,7 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Key, ListBox } from "react-aria-components";
 import { PlasmicListBoxContext } from "./contexts";
+import { ListBoxItemIdManager } from "./ListBoxItemIdManager";
 import {
   makeDefaultListBoxItemChildren,
   registerListBoxItem,
@@ -16,6 +17,7 @@ import {
 
 export interface BaseListBoxControlContextData {
   itemIds: string[];
+  isStandalone: boolean;
 }
 
 export interface BaseListBoxProps
@@ -40,54 +42,6 @@ export const listboxHelpers = {
   },
 };
 
-export class ListBoxItemIdManager {
-  private readonly ids: Set<string> = new Set();
-
-  constructor(private readonly onIdsChanged: (ids: string[]) => void) {}
-
-  private generateDuplicateId(id: string, count = 1): string {
-    const dupId = `${id} duplicate(${count})`;
-    if (this.ids.has(dupId)) {
-      return this.generateDuplicateId(id, count + 1);
-    } else {
-      return dupId;
-    }
-  }
-
-  private generateMissingId(count = 1): string {
-    const missingId = `missing(${count})`;
-    if (this.ids.has(missingId)) {
-      return this.generateMissingId(count + 1);
-    } else {
-      return missingId;
-    }
-  }
-
-  register(id?: string): string {
-    let newId: string;
-    if (!id) {
-      // No id is provided, so generate one
-      newId = this.generateMissingId();
-    } else if (this.ids.has(id)) {
-      // The provided id is already registered with another uuid (i.e. it's not unique), so just generate a new one
-      newId = this.generateDuplicateId(id);
-    } else {
-      // The provided id is not already registered, so use it
-      newId = id;
-    }
-
-    this.ids.add(newId);
-    console.log("sarah", this.ids);
-    this.onIdsChanged(Array.from(this.ids));
-    return newId;
-  }
-
-  unregister(id: string) {
-    this.ids.delete(id);
-    this.onIdsChanged(Array.from(this.ids));
-  }
-}
-
 function normalizeSelectedKeys(selectedKeys: string | string[] | undefined) {
   // Listbox expects it to be of type "all" | Iterable
   return typeof selectedKeys === "string" && selectedKeys !== "all"
@@ -103,32 +57,51 @@ export function BaseListBox(props: BaseListBoxProps) {
     defaultSelectedKeys,
     ...rest
   } = props;
+  const context = React.useContext(PlasmicListBoxContext);
+  const isStandalone = !context;
+  const [ids, setIds] = useState<string[]>([]);
 
   const idManager = useMemo(
-    () =>
-      new ListBoxItemIdManager((ids: string[]) => {
-        setControlContextData?.({
-          itemIds: ids,
-        });
-      }),
+    () => context?.idManager ?? new ListBoxItemIdManager(),
     []
   );
 
-  return (
-    <PlasmicListBoxContext.Provider
-      value={{
-        idManager,
-      }}
+  useEffect(() => {
+    setControlContextData?.({
+      itemIds: ids,
+      isStandalone,
+    });
+  }, [ids, isStandalone]);
+
+  useEffect(() => {
+    idManager.subscribe((_ids: string[]) => {
+      setIds(_ids);
+    });
+  }, []);
+
+  const listbox = (
+    <ListBox
+      selectedKeys={normalizeSelectedKeys(selectedKeys)}
+      defaultSelectedKeys={normalizeSelectedKeys(defaultSelectedKeys)}
+      {...rest}
     >
-      <ListBox
-        selectedKeys={normalizeSelectedKeys(selectedKeys)}
-        defaultSelectedKeys={normalizeSelectedKeys(defaultSelectedKeys)}
-        {...rest}
-      >
-        {children}
-      </ListBox>
-    </PlasmicListBoxContext.Provider>
+      {children}
+    </ListBox>
   );
+
+  if (isStandalone) {
+    return (
+      <PlasmicListBoxContext.Provider
+        value={{
+          idManager,
+        }}
+      >
+        {listbox}
+      </PlasmicListBoxContext.Provider>
+    );
+  }
+
+  return listbox;
 }
 
 export const LIST_BOX_COMPONENT_NAME = makeComponentName("listbox");
@@ -267,6 +240,7 @@ export function registerListBox(
           description: "The selection mode of the listbox",
           options: ["none", "single"],
           defaultValue: "none",
+          hidden: (_props, ctx) => !ctx?.isStandalone,
         },
         selectedKeys: {
           type: "choice",
@@ -274,11 +248,10 @@ export function registerListBox(
           editOnly: true,
           uncontrolledProp: "defaultSelectedKeys",
           displayName: "Initial selected key",
-          options: (
-            _props: BaseListBoxProps,
-            ctx: BaseListBoxControlContextData | null
-          ) => (ctx?.itemIds ? Array.from(ctx.itemIds) : []),
-          hidden: (props) => props.selectionMode === "none",
+          options: (_props, ctx) =>
+            ctx?.itemIds ? Array.from(ctx.itemIds) : [],
+          hidden: (props, ctx) =>
+            !ctx?.isStandalone || props.selectionMode === "none",
           // We do not support multiple selections yet (Because React Aria select and combobox only support single selections).
           multiSelect: false,
         },

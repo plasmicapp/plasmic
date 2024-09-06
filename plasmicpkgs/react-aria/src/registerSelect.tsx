@@ -1,7 +1,9 @@
 import { usePlasmicCanvasContext } from "@plasmicapp/host";
-import React from "react";
-import { Key, Select, SelectProps, SelectValue } from "react-aria-components";
-import { PlasmicPopoverContext } from "./contexts";
+import React, { useEffect, useMemo } from "react";
+import { Select, SelectProps, SelectValue } from "react-aria-components";
+import { getCommonProps } from "./common";
+import { PlasmicListBoxContext, PlasmicPopoverContext } from "./contexts";
+import { ListBoxItemIdManager } from "./ListBoxItemIdManager";
 import { BUTTON_COMPONENT_NAME } from "./registerButton";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { LIST_BOX_COMPONENT_NAME } from "./registerListBox";
@@ -43,55 +45,52 @@ export const BaseSelectValue = (props: BaseSelectValueProps) => {
 
 const SELECT_NAME = makeComponentName("select");
 
-export interface BaseSelectProps<T extends object>
-  extends SelectProps<T>,
-    HasControlContextData {
-  placeholder?: string;
-  isDisabled?: boolean;
-
-  value?: Key;
-  onChange?: (value: Key) => void;
-
-  previewOpen?: boolean;
-  onOpenChange?: (open: boolean) => void;
-
-  structure?: React.ReactNode;
-
-  name?: string;
-  "aria-label"?: string;
-
-  renderOption?: (item: {
-    value: string;
-    label?: string;
-    isDisabled?: boolean;
-  }) => React.ReactNode;
+export interface BaseSelectControlContextData {
+  itemIds: string[];
 }
 
-export function BaseSelect<T extends object>(props: BaseSelectProps<T>) {
+export interface BaseSelectProps
+  extends SelectProps<{}>, // NOTE: We don't need generic type here since we don't use items prop (that needs it). We just need to make the type checker happy
+    HasControlContextData<BaseSelectControlContextData> {
+  previewOpen?: boolean;
+  children?: React.ReactNode;
+}
+
+export function BaseSelect(props: BaseSelectProps) {
   const {
-    value,
-    onChange,
+    selectedKey,
+    onSelectionChange,
     placeholder,
     previewOpen,
     onOpenChange,
     isDisabled,
     className,
     style,
-    structure,
+    children,
     name,
     isOpen,
-    setControlContextData: _setControlContextData,
+    setControlContextData,
     "aria-label": ariaLabel,
   } = props;
 
   const isEditMode = !!usePlasmicCanvasContext();
   const openProp = isEditMode && previewOpen ? true : isOpen;
 
+  let idManager = useMemo(() => new ListBoxItemIdManager(), []);
+
+  useEffect(() => {
+    idManager.subscribe((ids: string[]) => {
+      setControlContextData?.({
+        itemIds: ids,
+      });
+    });
+  }, []);
+
   return (
     <Select
       placeholder={placeholder}
-      selectedKey={value}
-      onSelectionChange={onChange}
+      selectedKey={selectedKey}
+      onSelectionChange={onSelectionChange}
       onOpenChange={onOpenChange}
       isDisabled={isDisabled}
       className={className}
@@ -102,7 +101,13 @@ export function BaseSelect<T extends object>(props: BaseSelectProps<T>) {
       {...extractPlasmicDataProps(props)}
     >
       <PlasmicPopoverContext.Provider value={{ isOpen: openProp }}>
-        {structure}
+        <PlasmicListBoxContext.Provider
+          value={{
+            idManager,
+          }}
+        >
+          {children}
+        </PlasmicListBoxContext.Provider>
       </PlasmicPopoverContext.Provider>
     </Select>
   );
@@ -148,16 +153,40 @@ export function registerSelect(loader?: Registerable) {
     importPath: "@plasmicpkgs/react-aria/skinny/registerSelect",
     importName: "BaseSelect",
     props: {
-      placeholder: {
-        type: "string",
+      ...getCommonProps<BaseSelectProps>("Select", [
+        "name",
+        "aria-label",
+        "placeholder",
+        "isDisabled",
+        "autoFocus",
+      ]),
+      selectedKey: {
+        type: "choice",
+        description: "The selected keys of the listbox",
+        editOnly: true,
+        uncontrolledProp: "defaultSelectedKey",
+        displayName: "Initial selected key",
+        options: (
+          _props: BaseSelectProps,
+          ctx: BaseSelectControlContextData | null
+        ) => (ctx?.itemIds ? Array.from(ctx.itemIds) : []),
+        // React Aria Select do not support multiple selections yet
+        multiSelect: false,
       },
-      isDisabled: {
-        type: "boolean",
-      },
-      value: "string",
-      onChange: {
+      onSelectionChange: {
         type: "eventHandler",
         argTypes: [{ name: "value", type: "string" }],
+      },
+      disabledKeys: {
+        type: "choice",
+        description:
+          "The item keys that are disabled. These items cannot be selected, focused, or otherwise interacted with.",
+        options: (
+          _props: BaseSelectProps,
+          ctx: BaseSelectControlContextData | null
+        ) => (ctx?.itemIds ? Array.from(ctx.itemIds) : []),
+        multiSelect: true,
+        advanced: true,
       },
       previewOpen: {
         type: "boolean",
@@ -176,8 +205,7 @@ export function registerSelect(loader?: Registerable) {
         type: "eventHandler",
         argTypes: [{ name: "isOpen", type: "boolean" }],
       },
-
-      structure: {
+      children: {
         type: "slot",
         defaultValue: [
           {
@@ -260,33 +288,12 @@ export function registerSelect(loader?: Registerable) {
           },
         ],
       },
-
-      // renderOption: {
-      //   type: "slot",
-      //   displayName: "Custom render option",
-      //   renderPropParams: ["item"],
-      //   hidePlaceholder: true
-      // },
-
-      name: {
-        type: "string",
-        displayName: "Form field key",
-        description: "Name of the input, when submitting in an HTML form",
-        advanced: true,
-      },
-
-      "aria-label": {
-        type: "string",
-        displayName: "ARIA label",
-        description: "Label for this input, if no visible label is used",
-        advanced: true,
-      },
     },
     states: {
-      value: {
+      selectedKey: {
         type: "writable",
-        valueProp: "value",
-        onChangeProp: "onChange",
+        valueProp: "selectedKey",
+        onChangeProp: "onSelectionChange",
         variableType: "text",
       },
       isOpen: {
