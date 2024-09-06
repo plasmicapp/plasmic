@@ -245,7 +245,7 @@
     "@plasmicapp/react-web": "^0.2.350",
     "@plasmicpkgs/antd5": "^0.0.249",
     "@plasmicpkgs/commerce-local": "^0.0.204",
-    "@plasmicpkgs/plasmic-basic-components": "^0.0.227",
+    "@plasmicpkgs/plasmic-basic-components": "^0.0.228",
     "@plasmicpkgs/plasmic-embed-css": "^0.1.191",
     "@popperjs/core": "2.11.6",
     "@qualifyze/airtable-formulator": "^1.3.1",
