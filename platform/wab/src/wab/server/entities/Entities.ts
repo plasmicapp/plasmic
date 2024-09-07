@@ -248,7 +248,7 @@ export class User extends OrgChild<"UserId"> {
   @Column("text", { unique: true })
   @IsEmail({ ignore_max_length: true })
   email: string;
-  @Column("text", { select: false }) bcrypt: string;
+  @Column("text", { select: false }) bcrypt: string | undefined;
   @Column("timestamptz", { nullable: true })
   permanentlyDeletedAt: Date | null;
 

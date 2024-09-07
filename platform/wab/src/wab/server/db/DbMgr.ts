@@ -1067,6 +1067,7 @@ export class DbMgr implements MigrationDbMgr {
   // Team methods.
   //
 
+  /** Throws `ForbiddenError` if user does not have required level in the team. */
   checkTeamPerms = (
     teamId: TeamId,
     requireLevel: AccessLevel,
@@ -1080,6 +1081,7 @@ export class DbMgr implements MigrationDbMgr {
       includeDeleted
     );
 
+  /** Throws `ForbiddenError` if user does not have required level in any team. */
   checkTeamsPerms = (
     teamIds: TeamId[],
     requireLevel: AccessLevel,
@@ -1097,6 +1099,7 @@ export class DbMgr implements MigrationDbMgr {
     teamId: TeamId,
     userId: UserId
   ): Promise<AccessLevel> {
+    this.checkSuperUser();
     const existingPerm = await this.permissions().findOne({
       where: {
         teamId,
@@ -1308,7 +1311,25 @@ export class DbMgr implements MigrationDbMgr {
   async getAffiliatedTeams() {
     const userId = this.checkNormalUser();
     return this._queryTeams({}, false)
-      .leftJoin(Permission, "perm", "perm.teamId = t.id")
+      .innerJoin(Permission, "perm", "perm.teamId = t.id")
+      .andWhere(
+        `
+          t.deletedAt is null
+          and
+          perm.userId = :userId
+          and
+          perm.deletedAt is null
+          `,
+        { userId }
+      )
+      .getMany();
+  }
+
+  async getAffiliatedTeamPermissions() {
+    const userId = this.checkNormalUser();
+    return await this.permissions()
+      .createQueryBuilder("perm")
+      .innerJoin(Team, "t", "t.id = perm.teamId")
       .andWhere(
         `
           t.deletedAt is null
@@ -1828,6 +1849,10 @@ export class DbMgr implements MigrationDbMgr {
         teamId: team.id,
       });
     }
+
+    // This column is marked as select: false, but TypeORM's create() call
+    // doesn't respect it. Manually remove it here.
+    user.bcrypt = undefined;
     return user;
   }
 
@@ -1959,13 +1984,18 @@ export class DbMgr implements MigrationDbMgr {
   }
 
   private async _getUserBcrypt(id: string) {
-    return ensureFound<User>(
+    const user = ensureFound<User>(
       await this.users().findOne({
         where: { id, ...excludeDeleted() },
         select: ["bcrypt", "id"],
       }),
       `User with ID ${id}`
-    ).bcrypt;
+    );
+
+    // `User.bcrypt` normally has type `string | undefined`,
+    // because it is marked `select: false`.
+    // Use `!` since we explicitly selected it and the column is not nullable.
+    return user.bcrypt!;
   }
 
   async comparePassword(
@@ -2190,7 +2220,7 @@ export class DbMgr implements MigrationDbMgr {
   async getAffiliatedWorkspaces(teamId?: TeamId, userId?: UserId) {
     userId = userId ?? this.checkNormalUser();
     let qb = this._queryWorkspaces({})
-      .leftJoin(
+      .innerJoin(
         Permission,
         "perm",
         `

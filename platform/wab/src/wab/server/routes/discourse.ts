@@ -1,6 +1,8 @@
-import { ensure, ensureString, omitNils } from "@/wab/shared/common";
 import { getUser, userDbMgr } from "@/wab/server/routes/util";
 import { getDiscourseConnectSecret } from "@/wab/server/secrets";
+import { ensure, ensureString, notNil, omitNils } from "@/wab/shared/common";
+import { MIN_ACCESS_LEVEL_FOR_SUPPORT } from "@/wab/shared/discourse/config";
+import { accessLevelRank } from "@/wab/shared/EntUtil";
 import crypto from "crypto";
 import { Request, Response } from "express-serve-static-core";
 import L from "lodash";
@@ -46,12 +48,19 @@ export async function discourseConnect(req: Request, res: Response) {
   const dbMgr = userDbMgr(req);
 
   // Figure out which groups they should be added to for private support.
-  // `getAffiliatedTeams` may return teams with access lower than "content".
-  // `getDiscourseOrgsByTeamIds` will return teams with "content" or higher.
-  const teams = await dbMgr.getAffiliatedTeams();
-  const discourseInfo = await dbMgr.getDiscourseInfosByTeamIds(
-    teams.map((t) => t.id)
-  );
+  // `getAffiliatedTeamPermissions` may return teams with access < min level.
+  // Filter teams with access >= min level.
+  // `getDiscourseInfosByTeamIds` checks teams for access >= min level.
+  const perms = await dbMgr.getAffiliatedTeamPermissions();
+  const teamIds = perms
+    .filter(
+      (p) =>
+        accessLevelRank(p.accessLevel) >=
+        accessLevelRank(MIN_ACCESS_LEVEL_FOR_SUPPORT)
+    )
+    .map((p) => p.teamId)
+    .filter(notNil);
+  const discourseInfo = await dbMgr.getDiscourseInfosByTeamIds(teamIds);
   const groupsCommaDelimited = discourseInfo.map((org) => org.slug).join(",");
 
   console.log(

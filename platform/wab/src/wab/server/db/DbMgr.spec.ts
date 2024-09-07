@@ -1,5 +1,10 @@
 import { seedTestDb } from "@/wab/server/db/DbInit";
-import { ANON_USER, DbMgr, SkipSafeDelete } from "@/wab/server/db/DbMgr";
+import {
+  ANON_USER,
+  DbMgr,
+  normalActor,
+  SkipSafeDelete,
+} from "@/wab/server/db/DbMgr";
 import {
   CmsRow,
   FeatureTier,
@@ -1416,4 +1421,67 @@ describe("DbMgr", () => {
       });
       expect(updatedTeam.uiConfig?.hideDefaultPageTemplates).toBe(true);
     }));
+});
+
+describe("DbMgr.user", () => {
+  it("creates user with 2 teams/workspaces if needsTeamCreationPrompt: false", async () => {
+    await withDb(async (sudo, _users, _dbs, _project, em) => {
+      const user = await sudo.createUser({
+        email: "user@domain.com",
+        password: "!53kr3tz!",
+        firstName: "Firstname",
+        lastName: "Lastname",
+        needsTeamCreationPrompt: false,
+      });
+
+      // matches getUserById
+      const userDbMgr = new DbMgr(em, normalActor(user.id));
+      const getUser = await userDbMgr.getUserById(user.id);
+      expect(getUser).toEqual(user);
+
+      // creates 2 teams: personal team and organization
+      const teams = await userDbMgr.getAffiliatedTeams();
+      expect(teams).toHaveLength(2);
+      const personalTeam = teams.find(
+        (t) => t.personalTeamOwnerId === user.id
+      )!;
+      expect(personalTeam.name).toEqual("Personal team");
+      const orgTeam = teams.find((t) => t.personalTeamOwnerId === null)!;
+      expect(orgTeam.name).toEqual("Firstname's First Organization");
+
+      // team permissions should match
+      const teamPermissions = await userDbMgr.getAffiliatedTeamPermissions();
+      expect(teamPermissions).toHaveLength(2);
+      expect(teamPermissions).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            userId: user.id,
+            teamId: personalTeam.id,
+            accessLevel: "owner",
+          }),
+          expect.objectContaining({
+            userId: user.id,
+            teamId: orgTeam.id,
+            accessLevel: "owner",
+          }),
+        ])
+      );
+
+      // check workspaces
+      const workspaces = await userDbMgr.getAffiliatedWorkspaces();
+      expect(workspaces).toHaveLength(2);
+      expect(workspaces).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            name: "My playground",
+            teamId: personalTeam.id,
+          }),
+          expect.objectContaining({
+            name: "Firstname's First Workspace",
+            teamId: orgTeam.id,
+          }),
+        ])
+      );
+    });
+  });
 });
