@@ -7,9 +7,12 @@ import {
 import ClockIcon from "@/wab/client/plasmic/plasmic_kit_dashboard/icons/PlasmicIcon__Clock";
 import HatchIcon from "@/wab/client/plasmic/plasmic_kit_dashboard/icons/PlasmicIcon__Hatch";
 import JoystickIcon from "@/wab/client/plasmic/plasmic_kit_dashboard/icons/PlasmicIcon__Joystick";
-import { StarterProjectConfig, StarterSectionConfig } from "@/wab/shared/devflags";
 import { WorkspaceId } from "@/wab/shared/ApiSchema";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
+import {
+  StarterProjectConfig,
+  StarterSectionConfig,
+} from "@/wab/shared/devflags";
 import { Tooltip } from "antd";
 import * as React from "react";
 
@@ -28,7 +31,7 @@ export interface StarterGroupProps
 
 function StarterGroup(props: StarterGroupProps) {
   const appCtx = useAppCtx();
-  const showPlasmicOnlyProjects = isCoreTeamEmail(
+  const showPlasmicOnlyProjects = isAdminTeamEmail(
     appCtx.selfInfo?.email,
     appCtx.appConfig
   );

@@ -22,22 +22,22 @@ import PlasmicLeftImportsPanel, {
 import AlertIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__WarningTrianglesvg";
 import { ProjectDependencyData } from "@/wab/client/ProjectDependencyManager";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/shared/common";
 import { swallowClick } from "@/wab/commons/components/ReactUtil";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
-import { ProjectDependency } from "@/wab/shared/model/classes";
+import { spawn } from "@/wab/shared/common";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { unbundleProjectDependency } from "@/wab/shared/core/tagged-unbundle";
+import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
+import { ProjectDependency } from "@/wab/shared/model/classes";
 import { extractProjectIdFromUrlOrId, getPublicUrl } from "@/wab/shared/urls";
+import { areEquivalentScreenVariants } from "@/wab/shared/Variants";
 import { Menu, notification, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
-import { areEquivalentScreenVariants } from "@/wab/shared/Variants";
 
 function isDevUser(studioCtx: StudioCtx) {
   return (
     getPublicUrl().startsWith("http://localhost:3003") &&
-    isCoreTeamEmail(
+    isAdminTeamEmail(
       studioCtx.appCtx.selfInfo?.email,
       studioCtx.appCtx.appConfig
     )

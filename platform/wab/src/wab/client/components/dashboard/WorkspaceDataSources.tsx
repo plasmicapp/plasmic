@@ -7,7 +7,7 @@ import {
   PlasmicWorkspaceDataSources,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicWorkspaceDataSources";
 import { ApiDataSource, WorkspaceId } from "@/wab/shared/ApiSchema";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
@@ -34,7 +34,7 @@ function WorkspaceDataSources_(
   ref: HTMLElementRefOf<"div">
 ) {
   const [isEditing, setIsEditing] = React.useState<"new" | ApiDataSource>();
-  const showTutorialDBs = isCoreTeamEmail(
+  const showTutorialDBs = isAdminTeamEmail(
     appCtx.selfInfo?.email,
     appCtx.appConfig
   );

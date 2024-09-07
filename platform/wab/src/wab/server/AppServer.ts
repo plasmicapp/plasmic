@@ -308,7 +308,7 @@ import {
 import { ConsoleLogAnalytics } from "@/wab/shared/analytics/ConsoleLogAnalytics";
 import { Bundler } from "@/wab/shared/bundler";
 import { mkShortId, safeCast, spawn } from "@/wab/shared/common";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { isStampedIgnoreError } from "@/wab/shared/error-handling";
 import fileUpload from "express-fileupload";
@@ -526,7 +526,7 @@ function addMiddlewares(
   app.use((req, res, next) => {
     // This is before we've loaded req.devflags - just use the hard-coded default for the core team email domain.
     if (
-      isCoreTeamEmail(req.user?.email, DEVFLAGS) ||
+      isAdminTeamEmail(req.user?.email, DEVFLAGS) ||
       req.path.includes("/server-data") ||
       ROUTES_WITH_TIMING.some((route) => req.path.includes(route))
     ) {

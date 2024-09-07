@@ -7,7 +7,9 @@ describe("hostless-basic-components", function () {
     })
       .then((hostlessProjectId: string) => {
         // Create a project to use it
-        cy.setupNewProject()
+        cy.setupNewProject({
+          email: "admin@admin.example.com",
+        })
           .then(() => {
             cy.withinStudioIframe(() => {
               // Import the hostless project
@@ -45,13 +47,13 @@ describe("hostless-basic-components", function () {
             });
           })
           .then(() => {
-            cy.removeCurrentProject().then(() => {
+            cy.removeCurrentProject("admin@admin.example.com").then(() => {
               Cypress.env("projectId", hostlessProjectId);
             });
           });
       })
       .then(() => {
-        cy.removeCurrentProject("admin@example.com");
+        cy.removeCurrentProject("admin@admin.example.com");
       });
   });
 });

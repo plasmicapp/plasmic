@@ -237,7 +237,7 @@ export async function inviteUsersToApp(
     {},
     {
       roleId: nonAnonRoles[0].id,
-      emails: ["admin@example.com", "user@example.com"],
+      emails: ["admin@admin.example.com", "user@example.com"],
     }
   );
 

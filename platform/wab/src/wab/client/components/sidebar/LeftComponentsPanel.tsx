@@ -22,7 +22,7 @@ import {
   sortComponentsByName,
 } from "@/wab/shared/core/components";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import {
   Folder as InternalFolder,
   createFolderTreeStructure,
@@ -103,7 +103,7 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
 
   const readOnly = studioCtx.getLeftTabPermission("components") === "readable";
 
-  const isAdmin = isCoreTeamEmail(
+  const isAdmin = isAdminTeamEmail(
     studioCtx.appCtx.selfInfo?.email,
     studioCtx.appCtx.appConfig
   );

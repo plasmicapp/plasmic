@@ -64,11 +64,11 @@ describe("dynamic-bindings", () => {
       expect(
         extractValueFromCurrentUser(
           {
-            email: "admin@example.com",
+            email: "admin@admin.example.com",
           },
           "{{ (currentUser.email) }}"
         )
-      ).toBe("admin@example.com");
+      ).toBe("admin@admin.example.com");
 
       expect(
         extractValueFromCurrentUser(

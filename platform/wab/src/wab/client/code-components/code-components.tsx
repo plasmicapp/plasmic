@@ -19,24 +19,6 @@ import { scriptExec } from "@/wab/client/dom-utils";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { trackEvent } from "@/wab/client/tracking";
-import {
-  WritablePart,
-  assert,
-  assignReadonly,
-  ensure,
-  ensureInstance,
-  removeWhere,
-  safeCast,
-  switchType,
-  unexpected,
-  xDifference,
-} from "@/wab/shared/common";
-import {
-  CodeComponent,
-  ComponentType,
-  isCodeComponent,
-  isDefaultComponent,
-} from "@/wab/shared/core/components";
 import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
 import {
   BadElementSchemaError,
@@ -58,15 +40,33 @@ import {
   getPropTypeType,
   syncCodeComponents,
 } from "@/wab/shared/code-components/code-components";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import {
+  WritablePart,
+  assert,
+  assignReadonly,
+  ensure,
+  ensureInstance,
+  removeWhere,
+  safeCast,
+  switchType,
+  unexpected,
+  xDifference,
+} from "@/wab/shared/common";
+import {
+  CodeComponent,
+  ComponentType,
+  isCodeComponent,
+  isDefaultComponent,
+} from "@/wab/shared/core/components";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
+import { TplCodeComponent } from "@/wab/shared/core/tpls";
+import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import {
   Component,
   HostLessPackageInfo,
   Site,
   TplNode,
 } from "@/wab/shared/model/classes";
-import { isHostLessPackage } from "@/wab/shared/core/sites";
-import { TplCodeComponent } from "@/wab/shared/core/tpls";
 import {
   ComponentMeta,
   GlobalContextMeta,
@@ -343,7 +343,7 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
   if (
     (studioCtx.appCtx.appConfig.setHostLessProject ||
       isHostLessPackage(studioCtx.site)) &&
-    isCoreTeamEmail(
+    isAdminTeamEmail(
       studioCtx.appCtx.selfInfo?.email,
       studioCtx.appCtx.appConfig
     )

@@ -265,7 +265,7 @@ import {
   mkDataSourceTemplate,
 } from "@/wab/shared/data-sources-meta/data-sources";
 import { AddItemPrefs, getSimplifiedStyles } from "@/wab/shared/default-styles";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import {
   DEVFLAGS,
   InsertableTemplatesGroup,
@@ -3612,8 +3612,8 @@ export class StudioCtx extends WithDbCtx {
    */
   canSendMultiplayerInfo() {
     return (
-      isCoreTeamEmail(this.siteInfo.owner?.email, this.appCtx.appConfig) ||
-      !isCoreTeamEmail(this.appCtx.selfInfo?.email, this.appCtx.appConfig)
+      isAdminTeamEmail(this.siteInfo.owner?.email, this.appCtx.appConfig) ||
+      !isAdminTeamEmail(this.appCtx.selfInfo?.email, this.appCtx.appConfig)
     );
   }
 
@@ -6677,7 +6677,8 @@ function canUserEditProject(user: ApiUser | null, project: SiteInfo) {
     return false;
   }
   if (
-    (DEVFLAGS.allowPlasmicTeamEdits && isCoreTeamEmail(user.email, DEVFLAGS)) ||
+    (DEVFLAGS.allowPlasmicTeamEdits &&
+      isAdminTeamEmail(user.email, DEVFLAGS)) ||
     accessLevelRank(project.defaultAccessLevel) >= accessLevelRank("content")
   ) {
     return true;

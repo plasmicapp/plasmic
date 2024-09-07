@@ -26,7 +26,7 @@ const DEFAULT_CONFIG: Config = {
   mailUserOps: "ops@example.com",
   production: process.env.NODE_ENV === "production",
   adminEmails:
-    process.env.NODE_ENV !== "production" ? ["admin@example.com"] : [],
+    process.env.NODE_ENV !== "production" ? ["admin@admin.example.com"] : [],
 };
 
 export const loadConfig = memoizeOne((): Config => {

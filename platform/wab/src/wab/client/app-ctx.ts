@@ -5,14 +5,7 @@ import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
 import { StarterGroupProps } from "@/wab/client/components/StarterGroup";
 import { App } from "@/wab/client/components/top-view";
 import { TopFrameApi } from "@/wab/client/frame-ctx/top-frame-api";
-import { ensure, swallowAsync } from "@/wab/shared/common";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
-import {
-  applyDevFlagOverrides,
-  applyPlasmicUserDevFlagOverrides,
-  DEVFLAGS,
-  DevFlagsType,
-} from "@/wab/shared/devflags";
 import {
   ApiPermission,
   ApiTeam,
@@ -23,7 +16,14 @@ import {
 } from "@/wab/shared/ApiSchema";
 import { FastBundler } from "@/wab/shared/bundler";
 import { parseBundle } from "@/wab/shared/bundles";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { ensure, swallowAsync } from "@/wab/shared/common";
+import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
+import {
+  applyDevFlagOverrides,
+  applyPlasmicUserDevFlagOverrides,
+  DEVFLAGS,
+  DevFlagsType,
+} from "@/wab/shared/devflags";
 import { notification } from "antd";
 import { History } from "history";
 import $ from "jquery";
@@ -363,12 +363,12 @@ export function loadStarters(
     };
   }
 
-  const showCoreTeamOnlySections = isCoreTeamEmail(user.email, appConfig);
+  const showAdminTeamOnlySections = isAdminTeamEmail(user.email, appConfig);
 
   const filteredSections = appConfig.starterSections.filter(
     (s) =>
       s.tag === DEFAULT_STARTER_TAG &&
-      (!s.isPlasmicOnly || showCoreTeamOnlySections)
+      (!s.isPlasmicOnly || showAdminTeamOnlySections)
   );
 
   const tutorialSections = filteredSections.slice(0, 1) ?? [];
@@ -466,7 +466,7 @@ export async function loadAppCtx(
 
     // First apply default Plasmic overrides
     if (
-      isCoreTeamEmail(user?.email, dbConfigOverrides) &&
+      isAdminTeamEmail(user?.email, dbConfigOverrides) &&
       !user?.adminModeDisabled
     ) {
       applyPlasmicUserDevFlagOverrides(appConfigOverrides);

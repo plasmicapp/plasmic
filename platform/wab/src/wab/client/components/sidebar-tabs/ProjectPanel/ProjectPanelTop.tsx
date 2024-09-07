@@ -123,7 +123,7 @@ import {
   ensureDataSourceStandardQuery,
   ensureLookupSpecFromDraft,
 } from "@/wab/shared/data-sources-meta/data-sources";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
 import { InsertableTemplateComponentExtraInfo } from "@/wab/shared/insertable-templates/types";
@@ -922,7 +922,7 @@ function getFolderItemMenuRenderer({
 
     const isSubComp = !!component && !!component.superComp;
     const isSuperComp = !!component && component.subComps.length > 0;
-    const isAdmin = isCoreTeamEmail(
+    const isAdmin = isAdminTeamEmail(
       studioCtx.appCtx.selfInfo?.email,
       studioCtx.appCtx.appConfig
     );

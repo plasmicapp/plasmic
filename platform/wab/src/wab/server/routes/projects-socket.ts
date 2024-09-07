@@ -26,7 +26,7 @@ import {
   spawnWrapper,
   withoutNils,
 } from "@/wab/shared/common";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { modelSchemaHash } from "@/wab/shared/model/classes-metas";
 import { Request, Response } from "express";
@@ -389,13 +389,13 @@ async function shouldShowPlayer(socket: Socket, projectId: string) {
     return withDbMgr(user, async (mgr) => {
       if (
         // Note: just using the hardcoded default here, to avoid piping devflags down.
-        isCoreTeamEmail((await mgr.getUserById(actor.userId)).email, DEVFLAGS)
+        isAdminTeamEmail((await mgr.getUserById(actor.userId)).email, DEVFLAGS)
       ) {
         const ownerId = (await mgr.getProjectById(projectId)).createdById;
         if (!ownerId) {
           return true;
         }
-        return isCoreTeamEmail(
+        return isAdminTeamEmail(
           (await mgr.getUserById(ownerId)).email,
           DEVFLAGS
         );

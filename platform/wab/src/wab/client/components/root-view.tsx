@@ -63,7 +63,7 @@ import { CmsDatabaseId } from "@/wab/shared/ApiSchema";
 import { isArenaType } from "@/wab/shared/Arenas";
 import { FastBundler } from "@/wab/shared/bundler";
 import { ensure, hackyCast, spawn } from "@/wab/shared/common";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { StarterSectionConfig } from "@/wab/shared/devflags";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { getMaximumTierFromTeams } from "@/wab/shared/pricing/pricing-utils";
@@ -120,7 +120,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
 
   const selfEmail = selfInfo?.email;
   React.useEffect(() => {
-    if (isCoreTeamEmail(selfEmail, appCtx.appConfig)) {
+    if (isAdminTeamEmail(selfEmail, appCtx.appConfig)) {
       console.log("Deployed versions", deployedVersions);
     }
   }, [selfEmail]);
@@ -369,7 +369,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                     exact
                     path={[UU.admin.pattern, UU.adminTeams.pattern]}
                     render={() =>
-                      isCoreTeamEmail(selfInfo.email, appCtx.appConfig) ? (
+                      isAdminTeamEmail(selfInfo.email, appCtx.appConfig) ? (
                         <NormalLayout appCtx={appCtx}>
                           <LazyAdminPage nonAuthCtx={nonAuthCtx} />
                         </NormalLayout>
@@ -382,7 +382,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                     exact
                     path={UU.importProjectsFromProd.pattern}
                     render={() =>
-                      isCoreTeamEmail(selfInfo.email, appCtx.appConfig) ? (
+                      isAdminTeamEmail(selfInfo.email, appCtx.appConfig) ? (
                         <NormalLayout appCtx={appCtx}>
                           <ImportProjectsFromProd nonAuthCtx={nonAuthCtx} />
                         </NormalLayout>
@@ -497,7 +497,7 @@ export function Root() {
     hackyCast(window).gAppCtx = appCtx;
 
     if (appCtx.selfInfo) {
-      const tier = isCoreTeamEmail(appCtx.selfInfo.email, appCtx.appConfig)
+      const tier = isAdminTeamEmail(appCtx.selfInfo.email, appCtx.appConfig)
         ? "enterprise"
         : getMaximumTierFromTeams(appCtx.teams);
 

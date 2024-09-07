@@ -25,7 +25,7 @@ import {
   getSubscriptionStatus,
 } from "@/wab/shared/billing/billing-util";
 import { ensure } from "@/wab/shared/common";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ORGANIZATION_CAP } from "@/wab/shared/Labels";
 import { isUpgradableTier } from "@/wab/shared/pricing/pricing-utils";
@@ -84,7 +84,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
   }, [team?.featureTier, team?.seats, team?.billingFrequency]);
 
   const seatsUsed = members.filter(
-    (m) => !isCoreTeamEmail(m.email, DEVFLAGS)
+    (m) => !isAdminTeamEmail(m.email, DEVFLAGS)
   ).length;
 
   const upsell = async (tier: ApiFeatureTier, title?: string) => {

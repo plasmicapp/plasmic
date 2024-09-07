@@ -35,7 +35,9 @@ test.describe(`Plasmic Auth`, async () => {
 
       await page.waitForSelector('text="Authe2e"');
 
-      await page.getByPlaceholder("Email address").fill("admin@example.com");
+      await page
+        .getByPlaceholder("Email address")
+        .fill("admin@admin.example.com");
       await page.getByPlaceholder("Password").fill("!53kr3tz!");
 
       const waitForNormalUserPagePromise = page.waitForURL("**/normal-user**");
@@ -45,7 +47,7 @@ test.describe(`Plasmic Auth`, async () => {
       await page.waitForSelector("text=normal user role required");
 
       await page.waitForSelector('text="normal user role required"');
-      await page.waitForSelector('text="Email: admin@example.com"');
+      await page.waitForSelector('text="Email: admin@admin.example.com"');
     });
   });
 
@@ -104,7 +106,9 @@ test.describe(`Plasmic Auth`, async () => {
       await page.waitForSelector('text="Authe2e"');
 
       // Login
-      await page.getByPlaceholder("Email address").fill("admin@example.com");
+      await page
+        .getByPlaceholder("Email address")
+        .fill("admin@admin.example.com");
       await page.getByPlaceholder("Password").fill("!53kr3tz!");
 
       // Wait for page 2
@@ -113,7 +117,7 @@ test.describe(`Plasmic Auth`, async () => {
       await waitForPage2Promise;
 
       // Check that we are logged in
-      await page.waitForSelector("text=Current User: admin@example.com");
+      await page.waitForSelector("text=Current User: admin@admin.example.com");
 
       // Request another login, now just required to authorize
       const waitForAuthorizationPage2Promise =
@@ -129,7 +133,7 @@ test.describe(`Plasmic Auth`, async () => {
       await waitForPage3Promise;
 
       // Check that we are logged in
-      await page.waitForSelector("text=Current User: admin@example.com");
+      await page.waitForSelector("text=Current User: admin@admin.example.com");
 
       // Logout
       await page.getByRole("button", { name: "Logout" }).click();
@@ -149,7 +153,7 @@ test.describe(`Plasmic Auth`, async () => {
 
       // Check that we are back to page1 and logged in
       await page.waitForSelector("text=Page 1");
-      await page.waitForSelector("text=Current User: admin@example.com");
+      await page.waitForSelector("text=Current User: admin@admin.example.com");
     });
   });
 });

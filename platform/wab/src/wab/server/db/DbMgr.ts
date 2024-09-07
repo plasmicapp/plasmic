@@ -215,7 +215,7 @@ import {
 } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { OperationTemplate } from "@/wab/shared/data-sources-meta/data-sources";
 import { WebhookHeader } from "@/wab/shared/db-json-blobs";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { MIN_ACCESS_LEVEL_FOR_SUPPORT } from "@/wab/shared/discourse/config";
 import { LocalizationKeyScheme } from "@/wab/shared/localization";
@@ -1437,7 +1437,7 @@ export class DbMgr implements MigrationDbMgr {
     });
 
     if (excludePlasmicEmails) {
-      users = users.filter((u) => !isCoreTeamEmail(u.email, DEVFLAGS));
+      users = users.filter((u) => !isAdminTeamEmail(u.email, DEVFLAGS));
     }
 
     return _.uniqBy(users, (u) => `${u.userId}|${u.email}`);
@@ -3826,7 +3826,7 @@ export class DbMgr implements MigrationDbMgr {
         : (await unbundlePkgVersion(this, bundler, fromData)).site;
     const clonedSite = cloneSite(fromSite);
     // Devflag overrides at project creation time
-    if (isCoreTeamEmail(ownerEmail, DEVFLAGS) && updateDefaultInsertable) {
+    if (isAdminTeamEmail(ownerEmail, DEVFLAGS) && updateDefaultInsertable) {
       clonedSite.flags.defaultInsertable = DEFAULT_INSERTABLE;
     }
     const { project, rev } = await this.createProject({
@@ -5365,7 +5365,7 @@ export class DbMgr implements MigrationDbMgr {
     if (this.actor.type === "NormalUser") {
       const userId = this.checkNormalUser();
       const user = await this.getUserById(userId);
-      const isPlasmicTeam = user.email.endsWith("@" + DEVFLAGS.coreTeamDomain);
+      const isAdmin = isAdminTeamEmail(user.email, DEVFLAGS);
 
       const allPerms = (
         await this.sudo().getPermissionsForResources(taggedResourceIds, false)
@@ -5395,7 +5395,7 @@ export class DbMgr implements MigrationDbMgr {
         if (
           taggedResourceIds.type === "project" &&
           addPerms &&
-          !isPlasmicTeam &&
+          !isAdmin &&
           // Don't automatically update permission if acting as spy
           !this.actor.isSpy &&
           (!maxFromPerms ||
@@ -5419,7 +5419,7 @@ export class DbMgr implements MigrationDbMgr {
             [
               levels[resource.id],
               ...(maxFromPerms ? [maxFromPerms] : []),
-              ...(isPlasmicTeam ? ["editor" as AccessLevel] : []),
+              ...(isAdmin ? ["editor" as AccessLevel] : []),
             ],
             (lvl) => accessLevelRank(lvl)
           ),
@@ -7505,7 +7505,7 @@ export class DbMgr implements MigrationDbMgr {
     ownerEmail?: string;
   }) {
     // Devflag overrides at project creation time
-    if (isCoreTeamEmail(ownerEmail, DEVFLAGS)) {
+    if (isAdminTeamEmail(ownerEmail, DEVFLAGS)) {
       site.flags.defaultInsertable = DEFAULT_INSERTABLE;
     }
     const { project, rev } = await this.createProject({

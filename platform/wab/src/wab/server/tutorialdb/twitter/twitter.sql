@@ -55,7 +55,7 @@ create table trusted_users (
 create unique index user_username on users (username);
 create unique index user_email on users (email);
 
-insert into users (id, name, username, bio, avatar_url, email) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e10', 'Admin Account', 'admin', 'I am the admin account', 'https://ui-avatars.com/api/?name=Admin+Account', 'admin@example.com');
+insert into users (id, name, username, bio, avatar_url, email) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e10', 'Admin Account', 'admin', 'I am the admin account', 'https://ui-avatars.com/api/?name=Admin+Account', 'admin@admin.example.com');
 insert into users (id, name, username, bio, avatar_url, email) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1a', 'Bruce Wayne', 'batman', 'I am Batman, looking for the joker', 'https://ui-avatars.com/api/?name=Bruce+Wayne', 'batman@example.com');
 insert into users (id, name, username, bio, avatar_url, email) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1b', 'Clark Kent', 'superman', 'I am Superman, keep me away from kryptonite', 'https://ui-avatars.com/api/?name=Clark+Kent', 'superman@example.com');
 insert into users (id, name, username, bio, avatar_url, email) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1c', 'Diana Prince', 'wonderwoman', 'I am Wonder Woman, defender of truth and justice', 'https://ui-avatars.com/api/?name=Diana+Prince', 'wonderwoman@example.com');

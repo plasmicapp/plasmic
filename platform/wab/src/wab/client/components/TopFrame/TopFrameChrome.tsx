@@ -43,7 +43,7 @@ import {
   MergeSrcDst,
 } from "@/wab/shared/ApiSchema";
 import { assert, asyncWrapper, mkUuid, spawn } from "@/wab/shared/common";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { canEditUiConfig } from "@/wab/shared/ui-config-utils";
@@ -167,7 +167,7 @@ export function TopFrameChrome({
         perms.every(
           (perm) =>
             perm.accessLevel !== "owner" ||
-            !isCoreTeamEmail(perm.email, appCtx.appConfig)
+            !isAdminTeamEmail(perm.email, appCtx.appConfig)
         )
       ) {
         spawn(

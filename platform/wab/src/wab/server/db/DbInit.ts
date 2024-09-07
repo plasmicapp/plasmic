@@ -40,11 +40,16 @@ export async function seedTestDb(em: EntityManager) {
   const db = new DbMgr(em, SUPER_USER);
   const bundler = new Bundler();
 
+  // admin@admin.example.com is an admin user because of its admin.com domain name
+  // (see `isCoreTeamEmail`), meaning it will receive elevated privileges and
+  // doesn't behave like normal accounts.
+  // AVOID TESTING WITH THIS ACCOUNT.
   const { user: adminUser } = await seedTestUserAndProjects(em, bundler, {
-    email: "admin@example.com",
+    email: "admin@admin.example.com",
     firstName: "Plasmic",
     lastName: "Admin",
   });
+  // user@example.com and user2@example.com behave like normal accounts.
   const { user: user1 } = await seedTestUserAndProjects(em, bundler, {
     email: "user@example.com",
     firstName: "Plasmic",

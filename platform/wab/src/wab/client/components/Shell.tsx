@@ -27,7 +27,7 @@ import {
   tuple,
   withoutFalsy,
 } from "@/wab/shared/common";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS, applyDevFlagOverrides } from "@/wab/shared/devflags";
 import { getMaximumTier } from "@/wab/shared/pricing/pricing-utils";
 import * as Sentry from "@sentry/browser";
@@ -220,7 +220,7 @@ export function main() {
         // Tag errors with affected user tier(s).
         if (
           appCtx &&
-          isCoreTeamEmail(appCtx.selfInfo?.email, appCtx.appConfig)
+          isAdminTeamEmail(appCtx.selfInfo?.email, appCtx.appConfig)
         ) {
           event.tags.tier = "plasmic";
         } else {

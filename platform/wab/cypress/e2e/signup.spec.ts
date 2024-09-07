@@ -7,10 +7,16 @@
 import { v4 } from "uuid";
 import { logout, removeCurrentProject, setupNewProject } from "../support/util";
 
+// The test currently works but is visually broken by the new loading screen.
+// Related: https://linear.app/plasmic/issue/PLA-11151/
+// TODO: Update this test to not go through TeamCreation flow, which is hidden
+// by the loading screen.
+
 describe("Signup flow", function () {
   it("can sign up (password), take survey, continue to original project href", function () {
     setupNewProject({
       name: "signup",
+      inviteOnly: false,
       skipVisit: true,
     })
       .then((projectId) => {
@@ -18,7 +24,7 @@ describe("Signup flow", function () {
         cy.clearCookies();
 
         const randomUserId = v4();
-        const randomUserEmail = `fakeuser+${randomUserId}@example.com`;
+        const randomUserEmail = `fakeuser+${randomUserId}@gmail.com`;
 
         cy.openProject({ projectId });
 

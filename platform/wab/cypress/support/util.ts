@@ -12,10 +12,11 @@ import {
   updateVariableOperations,
   updateVariantOperations,
 } from "../../src/wab/client/test-helpers/test-state-management";
-import {
+import type {
   ApiDataSource,
   ApiUpdateDataSourceRequest,
   CreateSiteRequest,
+  SetSiteInfoReq,
 } from "../../src/wab/shared/ApiSchema";
 import {
   ensureArray,
@@ -30,6 +31,7 @@ import {
   StateVariableType,
 } from "../../src/wab/shared/core/states";
 import { DevFlagsType } from "../../src/wab/shared/devflags";
+import { GrantableAccessLevel } from "../../src/wab/shared/EntUtil";
 import { HostLessPackageInfo, State } from "../../src/wab/shared/model/classes";
 import bundles from "../bundles";
 
@@ -1333,12 +1335,16 @@ export function setupNewProject({
   devFlags = {},
   name,
   email = "user2@example.com",
+  defaultAccessLevel,
+  inviteOnly,
   skipTours = true,
 }: {
   skipVisit?: boolean;
   devFlags?: Partial<DevFlagsType>;
   name?: string;
   email?: string;
+  defaultAccessLevel?: GrantableAccessLevel;
+  inviteOnly?: boolean;
   skipTours?: boolean;
 } = {}): Cypress.Chainable<string> {
   return cy
@@ -1346,18 +1352,36 @@ export function setupNewProject({
     .request({
       url: "/api/v1/projects",
       method: "POST",
-      log: false,
       body: ensureType<CreateSiteRequest>({
         name: name ? `[cypress] ${name}` : undefined,
       }),
     })
     .its("body.project.id", { log: false })
     .then((projectId: string) => {
-      Cypress.log({
+      cy.log({
         name: "Project",
         message: projectId,
       });
       Cypress.env("projectId", projectId);
+    })
+    .then(() => {
+      const body: SetSiteInfoReq = {};
+      if (defaultAccessLevel !== undefined) {
+        body.defaultAccessLevel = defaultAccessLevel;
+      }
+      if (inviteOnly !== undefined) {
+        body.inviteOnly = inviteOnly;
+      }
+      if (Object.keys(body).length > 0) {
+        return cy.request({
+          url: `/api/v1/projects/${Cypress.env("projectId")}`,
+          method: "PUT",
+          body,
+        });
+      }
+    })
+    .then(() => {
+      const projectId = Cypress.env("projectId");
       if (!skipVisit) {
         openProject({ projectId, devFlags });
         if (skipTours) {
@@ -1460,7 +1484,7 @@ export function setupHostlessProject(props: {
     .setupNewProject({
       name: props.name,
       devFlags: { setHostLessProject: true },
-      email: "admin@example.com",
+      email: "admin@admin.example.com",
     })
     .then((hostlessProjectId: string) => {
       cy.withinStudioIframe(() => {
@@ -1493,7 +1517,6 @@ export function openProject({
 }) {
   Cypress.env("projectId", projectId);
   cy.visit(`/projects/${projectId}${appendPath}`, {
-    log: false,
     qs: { runningInCypress: true, ...qs, ...devFlags },
     timeout: 120000,
   });
@@ -2212,7 +2235,7 @@ export function switchInteractiveMode() {
 
 export function upsertDevFlags(devFlags: Partial<DevFlagsType>) {
   return cy
-    .login("admin@example.com")
+    .login("admin@admin.example.com")
     .request({
       url: "/api/v1/admin/devflags",
       method: "GET",
@@ -2237,7 +2260,7 @@ export function upsertDevFlags(devFlags: Partial<DevFlagsType>) {
 
 export function createTutorialDb(type: string) {
   return cy
-    .login("admin@example.com")
+    .login("admin@admin.example.com")
     .request({
       url: "/api/v1/admin/create-tutorial-db",
       method: "POST",
@@ -2295,7 +2318,7 @@ export function cloneProject(opts: {
 }
 
 export function deleteProjectAndRevisions(projectId: string) {
-  return cy.login("admin@example.com").request({
+  return cy.login("admin@admin.example.com").request({
     url: `/api/v1/admin/delete-project-and-revisions`,
     method: "DELETE",
     body: {

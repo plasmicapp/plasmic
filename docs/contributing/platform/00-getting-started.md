@@ -120,17 +120,17 @@ It will print out further instructions on activating your nodeenv, setting up th
 
   **NOTE**: To get the above config to work, you need to add your public SSH key to Gerrit user settings, if you haven't already:
 
-    - Ensure you have an `~/.ssh/id_rsa.pub`. If it does not already exist, you can create it by running the following command on your terminal:
+  - Ensure you have an `~/.ssh/id_rsa.pub`. If it does not already exist, you can create it by running the following command on your terminal:
 
-    ```
-    ssh-keygen -t rsa -C "your_email@mail.com"
-    ```
+  ```
+  ssh-keygen -t rsa -C "your_email@mail.com"
+  ```
 
-    This will create a private `~/.ssh/id_rsa` and a public key `~/.ssh/id_rsa.pub`.
+  This will create a private `~/.ssh/id_rsa` and a public key `~/.ssh/id_rsa.pub`.
 
-    - Go to Gerrit's SSH Keys section in User Settings.
-    - Paste the contents of the public key `~/.ssh/id_rsa.pub` into the New SSH Key text box.
-    - Click the 'ADD NEW SSH KEY' button.
+  - Go to Gerrit's SSH Keys section in User Settings.
+  - Paste the contents of the public key `~/.ssh/id_rsa.pub` into the New SSH Key text box.
+  - Click the 'ADD NEW SSH KEY' button.
 
 - Make sure you also have the gerrit commit-msg hook installed on this project, if you haven't already.
 
@@ -166,11 +166,19 @@ yarn dev
 
 The app runs on http://localhost:3003/.
 
-If you have freshly reset the DB, log in as one of the example users (see
-seed script for details):
+If you have freshly reset the DB, the following users will be created for you
+(see [seed script](/platform/wab/src/wab/server/db/DbInit.ts) for details):
 
-- **User:** `admin@example.com`
-- **Password:** `!53kr3tz!`
+- admin@admin.example.com
+- user@example.com
+- user2@example.com
+
+The password for these accounts is `!53kr3tz!`.
+
+WARNING: Avoid testing with the admin@admin.example.com user.
+By default, the admin.example.com domain is considered an admin and has
+elevated privileges (e.g. access to all teams, workspaces, projects, etc).
+For most development purposes, use a normal user such as user@example.com.
 
 ## Next steps
 
