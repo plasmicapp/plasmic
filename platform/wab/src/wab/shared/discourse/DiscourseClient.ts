@@ -58,6 +58,7 @@ export interface GroupData {
   mentionable_level: GroupAliasLevel;
   messageable_level: GroupAliasLevel;
   visibility_level: GroupVisibilityLevel;
+  grant_trust_level: 0 | 1 | 2 | 3 | 4;
 }
 
 export interface GroupCategoryDefaultNotifications {
@@ -77,7 +78,7 @@ export type Group = {
 
 export type GroupCreate = {
   group: { name: string } & Partial<
-    GroupData | GroupCategoryDefaultNotifications
+    GroupData & GroupCategoryDefaultNotifications
   >;
 };
 
@@ -90,7 +91,7 @@ export type GroupUpdate =
       group: Partial<GroupData>;
     }
   | {
-      group: Partial<GroupData | GroupCategoryDefaultNotifications>;
+      group: Partial<GroupData & GroupCategoryDefaultNotifications>;
       update_existing_users: TrueFalseString;
     };
 

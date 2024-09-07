@@ -5,8 +5,8 @@ import { PreconditionFailedError } from "@/wab/shared/ApiErrors/errors";
 import { TeamId } from "@/wab/shared/ApiSchema";
 import {
   BASE_URL,
-  FeatureTierConfig,
   FEATURE_TIERS,
+  FeatureTierConfig,
   PRIVATE_SUPPORT_CATEGORY_ID,
   SUPPORT_GROUP_NAME,
 } from "@/wab/shared/discourse/config";
@@ -89,6 +89,7 @@ async function upsertDiscourseGroup(ctx: Ctx) {
     mentionable_level: GroupAliasLevel.MEMBERS_MODS_AND_ADMINS,
     messageable_level: GroupAliasLevel.NOBODY,
     visibility_level: GroupVisibilityLevel.MEMBERS,
+    grant_trust_level: 2, // TL2 grants them more votes
   };
   if (existingInfo) {
     await systemDiscourseClient.groupUpdate(existingInfo.groupId, {
