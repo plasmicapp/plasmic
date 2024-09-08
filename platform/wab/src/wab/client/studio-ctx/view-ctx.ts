@@ -11,8 +11,8 @@ import { Fiber } from "@/wab/client/react-global-hook/fiber";
 import {
   getMostRecentFiberVersion,
   globalHookCtx,
-  mkFrameValKeyToContextDataKey,
 } from "@/wab/client/react-global-hook/globalHook";
+import { mkFrameValKeyToContextDataKey } from "@/wab/client/react-global-hook/utils";
 import { requestIdleCallbackAsync } from "@/wab/client/requestidlecallback";
 import {
   FreestyleState,
