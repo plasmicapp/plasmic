@@ -56,6 +56,7 @@ import {
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import { isFlexContainer } from "@/wab/client/utils/tpl-client-utils";
 import { HighlightBlinker } from "@/wab/commons/components/HighlightBlinker";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
 import { createMapFromObject } from "@/wab/shared/collections";
 import {
@@ -765,13 +766,20 @@ const Row = React.memo(function Row(props: {
                 maxWidth: width,
               }}
             >
-              <DraggableInsertable
-                key={item.key}
-                shouldInterceptInsert={shouldInterceptOnInsert}
-                sc={studioCtx}
-                spec={item as AddTplItem}
-                onDragStart={onDragStart}
-                onDragEnd={onDragEnd}
+              <MaybeWrap
+                cond={isTplAddItem(item)}
+                wrapper={(children) => (
+                  <DraggableInsertable
+                    key={item.key}
+                    shouldInterceptInsert={shouldInterceptOnInsert}
+                    sc={studioCtx}
+                    spec={item as AddTplItem}
+                    onDragStart={onDragStart}
+                    onDragEnd={onDragEnd}
+                  >
+                    {children}
+                  </DraggableInsertable>
+                )}
               >
                 {showPreview ? (
                   <OmnibarAddItem
@@ -808,7 +816,7 @@ const Row = React.memo(function Row(props: {
                     indent={indent}
                   />
                 )}
-              </DraggableInsertable>
+              </MaybeWrap>
             </li>
           );
         } else if (virtualItem.type === "separator") {

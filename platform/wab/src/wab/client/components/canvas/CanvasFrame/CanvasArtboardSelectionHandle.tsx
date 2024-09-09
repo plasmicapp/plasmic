@@ -21,6 +21,10 @@ export const CanvasArtboardSelectionHandle = observer(
     onClick: (e?: React.MouseEvent<HTMLElement>) => void;
   }) {
     const studioCtx = useStudioCtx();
+    const stopClickPropagation = React.useCallback(
+      (e?: React.MouseEvent<HTMLElement>) => e?.stopPropagation(),
+      []
+    );
     const hoverBoxObj = studioCtx.hoverBoxControlledObj;
     const isFocused = hoverBoxObj === frame;
     const isProminent =
@@ -55,7 +59,8 @@ export const CanvasArtboardSelectionHandle = observer(
           [styles.artboardSelectionHandle_focused]: isFocused,
         })}
         onContextMenu={handleContextMenu}
-        onClick={onClick}
+        onMouseDown={onClick}
+        onClick={stopClickPropagation}
       >
         <Icon icon={PlasmicIcon__Frame} />
       </div>
