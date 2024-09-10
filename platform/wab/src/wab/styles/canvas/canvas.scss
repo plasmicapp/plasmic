@@ -332,6 +332,10 @@ $placeholder-hue: black;
   right: 0;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 // Hide Google Translate toolbar
 
 .goog-te-banner-frame {
