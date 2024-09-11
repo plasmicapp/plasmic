@@ -589,6 +589,34 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
         }
       };
 
+      // In the context of the merge, we need to handle ancestors in a special way
+      // instead of only looking at the parent, we need to handle the case where
+      // the parent is a component and the tpl has moved between the slots that
+      // component has.
+      const isSameParent = (tplA: TplNode, tplB: TplNode) => {
+        // If the parent is different, the ancestor definitely changed
+        if (tplA.parent?.uuid !== tplB.parent?.uuid) {
+          return false;
+        }
+        // If we are dealing with elements without parent and they match in the previous
+        // condition, we can assume equality
+        if (!tplA.parent || !tplB.parent) {
+          return true;
+        }
+        // If neither of the parents are components, we can assume equality
+        if (
+          !isKnownTplComponent(tplA.parent) ||
+          !isKnownTplComponent(tplB.parent)
+        ) {
+          return true;
+        }
+        // If we are dealing with the same parent component, we will check the param
+        // that contains each of them to determine equality
+        const argContainingA = $$$(tplA.parent).getArgContainingTpl(tplA);
+        const argContainingB = $$$(tplB.parent).getArgContainingTpl(tplB);
+        return argContainingA.param.uuid === argContainingB.param.uuid;
+      };
+
       for (const tplMerged of flattenComponent(mergedComp)) {
         const tplA = tplInAByUuid.get(tplMerged.uuid);
         const tplB = tplInBByUuid.get(tplMerged.uuid);
@@ -596,9 +624,9 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
         if (tplA && tplB && tplAnc) {
           if (
             !!tplAnc.parent &&
-            tplAnc.parent?.uuid !== tplA.parent?.uuid &&
-            tplAnc.parent?.uuid !== tplB.parent?.uuid &&
-            tplA.parent?.uuid !== tplB.parent?.uuid
+            !isSameParent(tplAnc, tplA) &&
+            !isSameParent(tplAnc, tplB) &&
+            !isSameParent(tplA, tplB)
           ) {
             // Both branches moved the same element to different locations
             const pathStr = JSON.stringify(mergedSiteCtx.path);
@@ -633,15 +661,9 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
             } else {
               directConflicts.push(conf);
             }
-          } else if (
-            !!tplAnc.parent &&
-            tplA.parent?.uuid !== tplAnc.parent?.uuid
-          ) {
+          } else if (!!tplAnc.parent && !isSameParent(tplA, tplAnc)) {
             updateParent(tplMerged, tplA, (tpl) => cloneInst(tpl, siteA));
-          } else if (
-            !!tplAnc.parent &&
-            tplB.parent?.uuid !== tplAnc.parent?.uuid
-          ) {
+          } else if (!!tplAnc.parent && !isSameParent(tplB, tplAnc)) {
             updateParent(tplMerged, tplB, (tpl) => cloneInst(tpl, siteB));
           }
         }
