@@ -3,17 +3,14 @@ import type { ButtonProps } from "react-aria-components";
 import { Button } from "react-aria-components";
 import { getCommonProps } from "./common";
 import {
-  UpdateInteractionVariant,
-  pickAriaComponentVariants,
-} from "./interaction-variant-utils";
-import {
   CodeComponentMetaOverrides,
-  Registerable,
   makeComponentName,
+  Registerable,
   registerComponentHelper,
 } from "./utils";
+import { pickAriaComponentVariants, UpdateVariant } from "./variant-utils";
 
-const BUTTON_INTERACTION_VARIANTS = [
+const BUTTON_VARIANTS = [
   "hovered" as const,
   "pressed" as const,
   "focused" as const,
@@ -21,29 +18,20 @@ const BUTTON_INTERACTION_VARIANTS = [
   "disabled" as const,
 ];
 
-const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
-  BUTTON_INTERACTION_VARIANTS
-);
+const { variants, withObservedValues } =
+  pickAriaComponentVariants(BUTTON_VARIANTS);
 
 interface BaseButtonProps extends ButtonProps {
   children: React.ReactNode;
   resetsForm?: boolean;
   submitsForm?: boolean;
-  // Optional callback to update the interaction variant state
+  // Optional callback to update the CC variant state
   // as it's only provided if the component is the root of a Studio component
-  updateInteractionVariant?: UpdateInteractionVariant<
-    typeof BUTTON_INTERACTION_VARIANTS
-  >;
+  updateVariant?: UpdateVariant<typeof BUTTON_VARIANTS>;
 }
 
 export function BaseButton(props: BaseButtonProps) {
-  const {
-    submitsForm,
-    resetsForm,
-    children,
-    updateInteractionVariant,
-    ...rest
-  } = props;
+  const { submitsForm, resetsForm, children, updateVariant, ...rest } = props;
 
   const type = submitsForm ? "submit" : resetsForm ? "reset" : "button";
 
@@ -59,7 +47,7 @@ export function BaseButton(props: BaseButtonProps) {
             focusVisible: isFocusVisible,
             disabled: isDisabled,
           },
-          updateInteractionVariant
+          updateVariant
         )
       }
     </Button>
@@ -80,7 +68,8 @@ export function registerButton(
       displayName: "Aria Button",
       importPath: "@plasmicpkgs/react-aria/skinny/registerButton",
       importName: "BaseButton",
-      interactionVariants,
+      variants,
+      interactionVariants: variants,
       defaultStyles: {
         borderWidth: "1px",
         borderStyle: "solid",
@@ -126,7 +115,7 @@ export function registerButton(
         },
       },
       trapsFocus: true,
-    },
+    } as any,
     overrides
   );
 }

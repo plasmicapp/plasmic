@@ -3,10 +3,6 @@ import type { RadioGroupProps } from "react-aria-components";
 import { RadioGroup } from "react-aria-components";
 import { getCommonProps } from "./common";
 import { PlasmicRadioGroupContext } from "./contexts";
-import {
-  UpdateInteractionVariant,
-  pickAriaComponentVariants,
-} from "./interaction-variant-utils";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { registerFieldError } from "./registerFieldError";
 import { LABEL_COMPONENT_NAME, registerLabel } from "./registerLabel";
@@ -18,27 +14,22 @@ import {
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
+import { UpdateVariant, pickAriaComponentVariants } from "./variant-utils";
 
-const RADIO_GROUP_INTERACTION_VARIANTS = [
-  "disabled" as const,
-  "readonly" as const,
-];
+const RADIO_GROUP_VARIANTS = ["disabled" as const, "readonly" as const];
 
 export interface BaseRadioGroupProps extends RadioGroupProps {
   children: React.ReactNode;
-  // Optional callback to update the interaction variant state
+  // Optional callback to update the CC variant state
   // as it's only provided if the component is the root of a Studio component
-  updateInteractionVariant?: UpdateInteractionVariant<
-    typeof RADIO_GROUP_INTERACTION_VARIANTS
-  >;
+  updateVariant?: UpdateVariant<typeof RADIO_GROUP_VARIANTS>;
 }
 
-const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
-  RADIO_GROUP_INTERACTION_VARIANTS
-);
+const { variants, withObservedValues } =
+  pickAriaComponentVariants(RADIO_GROUP_VARIANTS);
 
 export function BaseRadioGroup(props: BaseRadioGroupProps) {
-  const { children, updateInteractionVariant, ...rest } = props;
+  const { children, updateVariant, ...rest } = props;
 
   return (
     <PlasmicRadioGroupContext.Provider value={props}>
@@ -50,7 +41,7 @@ export function BaseRadioGroup(props: BaseRadioGroupProps) {
               disabled: isDisabled,
               readonly: isReadOnly,
             },
-            updateInteractionVariant
+            updateVariant
           )
         }
       </RadioGroup>
@@ -81,7 +72,8 @@ export function registerRadioGroup(
       displayName: "Aria RadioGroup",
       importPath: "@plasmicpkgs/react-aria/skinny/registerRadioGroup",
       importName: "BaseRadioGroup",
-      interactionVariants,
+      variants,
+      interactionVariants: variants,
       props: {
         ...getCommonProps<BaseRadioGroupProps>("radio group", [
           "name",
@@ -143,7 +135,8 @@ export function registerRadioGroup(
                   props: {
                     children: {
                       type: "text",
-                      value: "Add interaction variants to see it in action...",
+                      value:
+                        "Use the registered variants to see it in action...",
                     },
                   },
                 },
@@ -185,7 +178,7 @@ export function registerRadioGroup(
         },
       },
       trapsFocus: true,
-    },
+    } as any,
     overrides
   );
 }

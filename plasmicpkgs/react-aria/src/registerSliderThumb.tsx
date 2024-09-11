@@ -5,17 +5,14 @@ import { getCommonProps } from "./common";
 import { PlasmicSliderContext } from "./contexts";
 import ErrorBoundary from "./ErrorBoundary";
 import {
-  UpdateInteractionVariant,
-  pickAriaComponentVariants,
-} from "./interaction-variant-utils";
-import {
   CodeComponentMetaOverrides,
   Registerable,
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
+import { UpdateVariant, pickAriaComponentVariants } from "./variant-utils";
 
-const SLIDER_THUMB_INTERACTION_VARIANTS = [
+const SLIDER_THUMB_VARIANTS = [
   "dragging" as const,
   "hovered" as const,
   "focused" as const,
@@ -23,23 +20,21 @@ const SLIDER_THUMB_INTERACTION_VARIANTS = [
   "disabled" as const,
 ];
 
-const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
-  SLIDER_THUMB_INTERACTION_VARIANTS
+const { variants, withObservedValues } = pickAriaComponentVariants(
+  SLIDER_THUMB_VARIANTS
 );
 export interface BaseSliderThumbProps
   extends React.ComponentProps<typeof SliderThumb> {
   advanced?: boolean;
-  // Optional callback to update the interaction variant state
+  // Optional callback to update the CC variant state
   // as it's only provided if the component is the root of a Studio component
-  updateInteractionVariant?: UpdateInteractionVariant<
-    typeof SLIDER_THUMB_INTERACTION_VARIANTS
-  >;
+  updateVariant?: UpdateVariant<typeof SLIDER_THUMB_VARIANTS>;
 }
 
 export function BaseSliderThumb({
   children,
   advanced,
-  updateInteractionVariant,
+  updateVariant,
   ...rest
 }: BaseSliderThumbProps) {
   const context = React.useContext(PlasmicSliderContext);
@@ -57,7 +52,7 @@ export function BaseSliderThumb({
             focusVisible: isFocusVisible,
             disabled: isDisabled,
           },
-          updateInteractionVariant
+          updateVariant
         )
       }
     </SliderThumb>
@@ -101,7 +96,8 @@ export function registerSliderThumb(
         borderRadius: "100%",
         cursor: "pointer",
       },
-      interactionVariants,
+      variants,
+      interactionVariants: variants,
       props: {
         ...getCommonProps<BaseSliderThumbProps>("slider thumb", [
           "name",
@@ -120,7 +116,7 @@ export function registerSliderThumb(
         },
       },
       trapsFocus: true,
-    },
+    } as any,
     overrides
   );
 }

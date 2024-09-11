@@ -5,35 +5,28 @@ import { Input } from "react-aria-components";
 import { getCommonProps, resolveAutoComplete } from "./common";
 import { PlasmicTextFieldContext } from "./contexts";
 import {
-  pickAriaComponentVariants,
-  UpdateInteractionVariant,
-} from "./interaction-variant-utils";
-import {
   CodeComponentMetaOverrides,
   HasControlContextData,
   makeComponentName,
   Registerable,
   registerComponentHelper,
 } from "./utils";
+import { pickAriaComponentVariants, UpdateVariant } from "./variant-utils";
 
-const INPUT_INTERACTION_VARIANTS = [
+const INPUT_VARIANTS = [
   "focused" as const,
   "hovered" as const,
   "disabled" as const,
 ];
 
-const { interactionVariants } = pickAriaComponentVariants(
-  INPUT_INTERACTION_VARIANTS
-);
+const { variants } = pickAriaComponentVariants(INPUT_VARIANTS);
 
 export interface BaseInputProps
   extends Omit<InputProps, "autoComplete">,
     HasControlContextData {
-  // Optional callback to update the interaction variant state
+  // Optional callback to update the CC variant state
   // as it's only provided if the component is the root of a Studio component
-  updateInteractionVariant?: UpdateInteractionVariant<
-    typeof INPUT_INTERACTION_VARIANTS
-  >;
+  updateVariant?: UpdateVariant<typeof INPUT_VARIANTS>;
   autoComplete?: string[];
 }
 
@@ -49,7 +42,7 @@ export const inputHelpers = {
 
 export function BaseInput(props: BaseInputProps) {
   const {
-    updateInteractionVariant,
+    updateVariant,
     setControlContextData,
     disabled,
     autoComplete,
@@ -65,33 +58,33 @@ export function BaseInput(props: BaseInputProps) {
     /**
      * While react-aria internally does the merging of the disabled prop,
      * we need to explicity do it here, because react-aria does it behind the scenes,
-     * whereas we need the calculated value of the disabled prop to be able to update the "disabled" interaction variant.
+     * whereas we need the calculated value of the disabled prop to be able to update the "disabled" CC variant.
      *  */
     disabled: textFieldContext?.isDisabled ?? disabled,
   });
 
   // NOTE: Aria <Input> does not support render props, neither does it provide an onDisabledChange event, so we have to manually update the disabled state
   useEffect(() => {
-    updateInteractionVariant?.({
+    updateVariant?.({
       disabled: mergedProps.disabled,
     });
-  }, [mergedProps.disabled, updateInteractionVariant]);
+  }, [mergedProps.disabled, updateVariant]);
 
   return (
     <Input
       autoComplete={resolveAutoComplete(autoComplete)}
       onHoverChange={(isHovered) => {
-        updateInteractionVariant?.({
+        updateVariant?.({
           hovered: isHovered,
         });
       }}
       onFocus={() => {
-        updateInteractionVariant?.({
+        updateVariant?.({
           focused: true,
         });
       }}
       onBlur={() => {
-        updateInteractionVariant?.({
+        updateVariant?.({
           focused: false,
         });
       }}
@@ -114,7 +107,8 @@ export function registerInput(
       displayName: "Aria Input",
       importPath: "@plasmicpkgs/react-aria/skinny/registerInput",
       importName: "BaseInput",
-      interactionVariants,
+      variants,
+      interactionVariants: variants,
       defaultStyles: {
         width: "300px",
         borderWidth: "1px",
@@ -169,7 +163,7 @@ export function registerInput(
         importPath: "@plasmicpkgs/react-aria/skinny/registerInput",
       },
       trapsFocus: true,
-    },
+    } as any,
     overrides
   );
 }

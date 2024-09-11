@@ -2242,7 +2242,7 @@ export function serializeInteractionVariantsTriggers(tplRoot: TplNode) {
     const [$ccInteractions, setDollarCcInteractions] = React.useState<Record<string, boolean>>({
       ${interactionVariantKeys.map((key) => `${key}: false`).join(",\n")}
     });
-    const updateInteractionVariant = React.useCallback((changes: Record<string, boolean>) => {
+    const updateVariant = React.useCallback((changes: Record<string, boolean>) => {
       setDollarCcInteractions((prev) => {
         if (!Object.keys(changes).some((k) => prev[k] !== changes[k])) {
           return prev;
@@ -3620,7 +3620,7 @@ function serializeTplComponent(ctx: SerializerBaseContext, node: TplComponent) {
   }
 
   if (isRoot && isTplRootWithCodeComponentInteractionVariants(node)) {
-    attrs["updateInteractionVariant"] = `updateInteractionVariant`;
+    attrs["updateVariant"] = `updateVariant`;
   }
 
   let componentStr = makeCreatePlasmicElement(

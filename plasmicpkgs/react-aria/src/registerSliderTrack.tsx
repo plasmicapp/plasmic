@@ -4,10 +4,6 @@ import { mergeProps } from "react-aria";
 import { Slider, SliderThumbProps, SliderTrack } from "react-aria-components";
 import flattenChildren from "react-keyed-flatten-children";
 import { PlasmicSliderContext } from "./contexts";
-import {
-  UpdateInteractionVariant,
-  pickAriaComponentVariants,
-} from "./interaction-variant-utils";
 import { BaseSliderThumbProps } from "./registerSliderThumb";
 import {
   CodeComponentMetaOverrides,
@@ -16,21 +12,20 @@ import {
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
+import { UpdateVariant, pickAriaComponentVariants } from "./variant-utils";
 
-const SLIDER_TRACK_INTERACTION_VARIANTS = ["hovered" as const];
+const SLIDER_TRACK_VARIANTS = ["hovered" as const];
 
-const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
-  SLIDER_TRACK_INTERACTION_VARIANTS
+const { variants, withObservedValues } = pickAriaComponentVariants(
+  SLIDER_TRACK_VARIANTS
 );
 
 export interface BaseSliderTrackProps
   extends React.ComponentProps<typeof SliderTrack> {
   progressBar?: React.ReactNode;
-  // Optional callback to update the interaction variant state
+  // Optional callback to update the CC variant state
   // as it's only provided if the component is the root of a Studio component
-  updateInteractionVariant?: UpdateInteractionVariant<
-    typeof SLIDER_TRACK_INTERACTION_VARIANTS
-  >;
+  updateVariant?: UpdateVariant<typeof SLIDER_TRACK_VARIANTS>;
   children?: React.ReactElement<HTMLElement>;
 }
 
@@ -68,8 +63,7 @@ export function BaseSliderTrack(props: BaseSliderTrackProps) {
   const context = React.useContext(PlasmicSliderContext);
   const isStandalone = !context;
   const mergedProps = mergeProps(context, props);
-  const { children, progressBar, updateInteractionVariant, ...rest } =
-    mergedProps;
+  const { children, progressBar, updateVariant, ...rest } = mergedProps;
 
   const isMultiValue = isMultiValueGuard(mergedProps.value);
 
@@ -157,7 +151,7 @@ export function BaseSliderTrack(props: BaseSliderTrackProps) {
             {
               hovered: isHovered,
             },
-            updateInteractionVariant
+            updateVariant
           )}
         </>
       )}
@@ -186,7 +180,8 @@ export function registerSliderTrack(
       displayName: "Aria Slider Track",
       importPath: "@plasmicpkgs/react-aria/skinny/registerSliderTrack",
       importName: "BaseSliderTrack",
-      interactionVariants,
+      variants,
+      interactionVariants: variants,
       defaultStyles: {
         width: "stretch",
         backgroundColor: "#aaa",
@@ -238,7 +233,7 @@ export function registerSliderTrack(
         },
       },
       trapsFocus: true,
-    },
+    } as any,
     overrides
   );
 }

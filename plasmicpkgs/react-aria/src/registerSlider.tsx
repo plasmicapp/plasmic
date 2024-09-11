@@ -3,10 +3,6 @@ import React from "react";
 import { Slider, type SliderProps } from "react-aria-components";
 import { getCommonProps } from "./common";
 import { PlasmicSliderContext } from "./contexts";
-import {
-  UpdateInteractionVariant,
-  pickAriaComponentVariants,
-} from "./interaction-variant-utils";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { registerSliderOutput } from "./registerSliderOutput";
 import { registerSliderThumb } from "./registerSliderThumb";
@@ -17,29 +13,27 @@ import {
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
+import { UpdateVariant, pickAriaComponentVariants } from "./variant-utils";
 
 const SLIDER_COMPONENT_NAME = makeComponentName("slider");
 const RANGE_SLIDER_COMPONENT_NAME = makeComponentName("range-slider");
-const SLIDER_INTERACTION_VARIANTS = ["disabled" as const];
+const SLIDER_VARIANTS = ["disabled" as const];
 
-const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
-  SLIDER_INTERACTION_VARIANTS
-);
+const { variants, withObservedValues } =
+  pickAriaComponentVariants(SLIDER_VARIANTS);
 
 export interface BaseSliderProps<T extends number | number[]>
   extends SliderProps<T> {
   children?: React.ReactNode;
-  // Optional callback to update the interaction variant state
+  // Optional callback to update the CC variant state
   // as it's only provided if the component is the root of a Studio component
-  updateInteractionVariant?: UpdateInteractionVariant<
-    typeof SLIDER_INTERACTION_VARIANTS
-  >;
+  updateVariant?: UpdateVariant<typeof SLIDER_VARIANTS>;
 }
 
 export function BaseSlider<T extends number | number[]>(
   props: BaseSliderProps<T>
 ) {
-  const { children, updateInteractionVariant, ...rest } = props;
+  const { children, updateVariant, ...rest } = props;
   return (
     <PlasmicSliderContext.Provider
       value={{
@@ -56,7 +50,7 @@ export function BaseSlider<T extends number | number[]>(
             {
               disabled: isDisabled,
             },
-            updateInteractionVariant
+            updateVariant
           )
         }
       </Slider>
@@ -116,7 +110,8 @@ export function registerSlider(
       displayName: "Aria Range Slider",
       importPath: "@plasmicpkgs/react-aria/skinny/registerSlider",
       importName: "BaseSlider",
-      interactionVariants,
+      variants,
+      interactionVariants: variants,
       defaultStyles: {
         width: "300px",
       },
@@ -133,7 +128,7 @@ export function registerSlider(
           uncontrolledProp: "defaultValue",
           description: "The intial value of the slider",
           defaultValue: [20, 50],
-          validator: (value) => {
+          validator: (value: any) => {
             if (!Array.isArray(value)) {
               return "Input must be an array.";
             }
@@ -219,7 +214,7 @@ export function registerSlider(
         },
       },
       trapsFocus: true,
-    },
+    } as any,
     {
       parentComponentName: SLIDER_COMPONENT_NAME,
     }
@@ -233,7 +228,8 @@ export function registerSlider(
       displayName: "Aria Slider",
       importPath: "@plasmicpkgs/react-aria/skinny/registerSlider",
       importName: "BaseSlider",
-      interactionVariants,
+      variants,
+      interactionVariants: variants,
       defaultStyles: {
         width: "300px",
       },
@@ -309,7 +305,7 @@ export function registerSlider(
         },
       },
       trapsFocus: true,
-    },
+    } as any,
     overrides
   );
 }

@@ -2,10 +2,6 @@ import { PlasmicElement } from "@plasmicapp/host";
 import React, { useEffect, useState } from "react";
 import { ListBox, ListBoxItem } from "react-aria-components";
 import { PlasmicListBoxContext } from "./contexts";
-import {
-  pickAriaComponentVariants,
-  UpdateInteractionVariant,
-} from "./interaction-variant-utils";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { TEXT_COMPONENT_NAME } from "./registerText";
 import {
@@ -15,8 +11,9 @@ import {
   Registerable,
   registerComponentHelper,
 } from "./utils";
+import { pickAriaComponentVariants, UpdateVariant } from "./variant-utils";
 
-const LIST_BOX_ITEM_INTERACTION_VARIANTS = [
+const LIST_BOX_ITEM_VARIANTS = [
   "hovered" as const,
   "pressed" as const,
   "focused" as const,
@@ -25,30 +22,26 @@ const LIST_BOX_ITEM_INTERACTION_VARIANTS = [
   "disabled" as const,
 ];
 
-const { interactionVariants, withObservedValues } = pickAriaComponentVariants(
-  LIST_BOX_ITEM_INTERACTION_VARIANTS
+const { variants, withObservedValues } = pickAriaComponentVariants(
+  LIST_BOX_ITEM_VARIANTS
 );
+
+export interface BaseListBoxControlContextData {
+  hasDuplicateId: boolean;
+}
 
 export interface BaseListBoxItemProps
   extends React.ComponentProps<typeof ListBoxItem>,
-    HasControlContextData<{ hasDuplicateId: boolean }> {
+    HasControlContextData<BaseListBoxControlContextData> {
   id?: string;
   children?: React.ReactNode;
-  // Optional callback to update the interaction variant state
+  // Optional callback to update the CC variant state
   // as it's only provided if the component is the root of a Studio component
-  updateInteractionVariant?: UpdateInteractionVariant<
-    typeof LIST_BOX_ITEM_INTERACTION_VARIANTS
-  >;
+  updateVariant?: UpdateVariant<typeof LIST_BOX_ITEM_VARIANTS>;
 }
 
 export function BaseListBoxItem(props: BaseListBoxItemProps) {
-  const {
-    children,
-    setControlContextData,
-    updateInteractionVariant,
-    id,
-    ...rest
-  } = props;
+  const { children, setControlContextData, updateVariant, id, ...rest } = props;
   const listboxContext = React.useContext(PlasmicListBoxContext);
   const isStandalone = !listboxContext;
 
@@ -101,7 +94,7 @@ export function BaseListBoxItem(props: BaseListBoxItemProps) {
             selected: isSelected,
             disabled: isDisabled,
           },
-          updateInteractionVariant
+          updateVariant
         )
       }
     </ListBoxItem>
@@ -168,13 +161,18 @@ export function registerListBoxItem(
       displayName: "Aria ListBoxItem",
       importPath: "@plasmicpkgs/react-aria/skinny/registerListBoxItem",
       importName: "BaseListBoxItem",
-      interactionVariants,
+      variants,
+      interactionVariants: variants,
       props: {
         id: {
           type: "string",
           description: "The id of the item",
           required: true,
-          validator: (_value, _props, ctx) => {
+          validator: (
+            _value: any,
+            _props: BaseListBoxItemProps,
+            ctx: BaseListBoxControlContextData
+          ) => {
             if (ctx?.hasDuplicateId) {
               return "Please make sure the id is unique!";
             }
@@ -191,7 +189,7 @@ export function registerListBoxItem(
           defaultValue: makeDefaultListBoxItemChildren("Item"),
         },
       },
-    },
+    } as any,
     overrides
   );
 }

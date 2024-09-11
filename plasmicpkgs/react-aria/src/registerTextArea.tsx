@@ -5,35 +5,28 @@ import { TextArea } from "react-aria-components";
 import { getCommonProps } from "./common";
 import { PlasmicTextFieldContext } from "./contexts";
 import {
-  pickAriaComponentVariants,
-  UpdateInteractionVariant,
-} from "./interaction-variant-utils";
-import {
   CodeComponentMetaOverrides,
   HasControlContextData,
   makeComponentName,
   Registerable,
   registerComponentHelper,
 } from "./utils";
+import { pickAriaComponentVariants, UpdateVariant } from "./variant-utils";
 
-const TEXTAREA_INTERACTION_VARIANTS = [
+const TEXTAREA_VARIANTS = [
   "focused" as const,
   "hovered" as const,
   "disabled" as const,
 ];
 
-const { interactionVariants } = pickAriaComponentVariants(
-  TEXTAREA_INTERACTION_VARIANTS
-);
+const { variants } = pickAriaComponentVariants(TEXTAREA_VARIANTS);
 
 export interface BaseTextAreaProps
   extends TextAreaProps,
     HasControlContextData {
-  // Optional callback to update the interaction variant state
+  // Optional callback to update the CC variant state
   // as it's only provided if the component is the root of a Studio component
-  updateInteractionVariant?: UpdateInteractionVariant<
-    typeof TEXTAREA_INTERACTION_VARIANTS
-  >;
+  updateVariant?: UpdateVariant<typeof TEXTAREA_VARIANTS>;
 }
 
 export const inputHelpers = {
@@ -47,8 +40,7 @@ export const inputHelpers = {
 };
 
 export function BaseTextArea(props: BaseTextAreaProps) {
-  const { disabled, updateInteractionVariant, setControlContextData, ...rest } =
-    props;
+  const { disabled, updateVariant, setControlContextData, ...rest } = props;
 
   const textFieldContext = React.useContext(PlasmicTextFieldContext);
 
@@ -58,10 +50,10 @@ export function BaseTextArea(props: BaseTextAreaProps) {
 
   // NOTE: Aria <Input> does not support render props, neither does it provide an onDisabledChange event, so we have to manually update the disabled state
   useEffect(() => {
-    updateInteractionVariant?.({
+    updateVariant?.({
       disabled: mergedProps.disabled,
     });
-  }, [mergedProps.disabled, updateInteractionVariant]);
+  }, [mergedProps.disabled, updateVariant]);
 
   setControlContextData?.({
     parent: textFieldContext,
@@ -70,17 +62,17 @@ export function BaseTextArea(props: BaseTextAreaProps) {
   return (
     <TextArea
       onFocus={() => {
-        updateInteractionVariant?.({
+        updateVariant?.({
           focused: true,
         });
       }}
       onBlur={() => {
-        updateInteractionVariant?.({
+        updateVariant?.({
           focused: false,
         });
       }}
       onHoverChange={(isHovered) => {
-        updateInteractionVariant?.({
+        updateVariant?.({
           hovered: isHovered,
         });
       }}
@@ -101,7 +93,8 @@ export function registerTextArea(
       displayName: "Aria TextArea",
       importPath: "@plasmicpkgs/react-aria/skinny/registerTextArea",
       importName: "BaseTextArea",
-      interactionVariants,
+      variants,
+      interactionVariants: variants,
       props: {
         ...getCommonProps<TextAreaProps>("Text Area", [
           "name",
@@ -146,7 +139,7 @@ export function registerTextArea(
         importPath: "@plasmicpkgs/react-aria/skinny/registerTextArea",
       },
       trapsFocus: true,
-    },
+    } as any,
     overrides
   );
 }

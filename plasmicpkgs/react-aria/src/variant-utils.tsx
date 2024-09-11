@@ -1,7 +1,7 @@
 import { CodeComponentMeta } from "@plasmicapp/host";
 import React from "react";
 
-const ARIA_COMPONENTS_INTERACTION_VARIANTS = {
+const ARIA_COMPONENTS_VARIANTS = {
   hovered: {
     cssSelector: "[data-hovered]",
     displayName: "Hovered",
@@ -40,68 +40,65 @@ const ARIA_COMPONENTS_INTERACTION_VARIANTS = {
   },
 };
 
-type AriaInteractionVariant = keyof typeof ARIA_COMPONENTS_INTERACTION_VARIANTS;
+type AriaVariant = keyof typeof ARIA_COMPONENTS_VARIANTS;
 
-type CodeComponentInteractionVariantsMeta = NonNullable<
+type CodeComponentVariantsMeta = NonNullable<
   CodeComponentMeta<unknown>["interactionVariants"]
 >;
 
-type InteractionVariantMeta = CodeComponentInteractionVariantsMeta[string];
+type VariantMeta = CodeComponentVariantsMeta[string];
 
 type ArrayElement<T> = T extends (infer U)[] ? U : never;
 
-export type UpdateInteractionVariant<T extends AriaInteractionVariant[]> =
+export type UpdateVariant<T extends AriaVariant[]> =
   | ((changes: Partial<Record<ArrayElement<T>, boolean>>) => void)
   | undefined;
 
-type WithObservedValues<T extends AriaInteractionVariant[]> = (
+type WithObservedValues<T extends AriaVariant[]> = (
   children: React.ReactNode,
   state: Record<ArrayElement<T>, boolean>,
-  updateInteractionVariant: UpdateInteractionVariant<T>
+  updateVariant: UpdateVariant<T>
 ) => React.ReactNode;
 
-function ChangesObserver<T extends AriaInteractionVariant[]>({
+function ChangesObserver<T extends AriaVariant[]>({
   children,
   changes,
-  updateInteractionVariant,
+  updateVariant,
 }: {
   children: React.ReactNode;
   changes: Partial<Record<ArrayElement<T>, boolean>>;
-  updateInteractionVariant?: UpdateInteractionVariant<T>;
+  updateVariant?: UpdateVariant<T>;
 }) {
   React.useEffect(() => {
-    if (updateInteractionVariant) {
-      updateInteractionVariant(changes);
+    if (updateVariant) {
+      updateVariant(changes);
     }
-  }, [changes, updateInteractionVariant]);
-  return <>{children}</>;
+  }, [changes, updateVariant]);
+  return children;
 }
 
-function realWithObservedValues<T extends AriaInteractionVariant[]>(
+function realWithObservedValues<T extends AriaVariant[]>(
   children: React.ReactNode,
   changes: Partial<Record<ArrayElement<T>, boolean>>,
-  updateInteractionVariant?: UpdateInteractionVariant<T>
+  updateVariant?: UpdateVariant<T>
 ) {
   return (
-    <ChangesObserver
-      changes={changes}
-      updateInteractionVariant={updateInteractionVariant}
-    >
+    <ChangesObserver changes={changes} updateVariant={updateVariant}>
       {children}
     </ChangesObserver>
   );
 }
 
-export function pickAriaComponentVariants<T extends AriaInteractionVariant[]>(
+export function pickAriaComponentVariants<T extends AriaVariant[]>(
   keys: T
 ): {
-  interactionVariants: Record<ArrayElement<T>, InteractionVariantMeta>;
+  variants: Record<ArrayElement<T>, VariantMeta>;
   withObservedValues: WithObservedValues<T>;
 } {
   return {
-    interactionVariants: Object.fromEntries(
-      keys.map((key) => [key, ARIA_COMPONENTS_INTERACTION_VARIANTS[key]])
-    ) as Record<ArrayElement<T>, InteractionVariantMeta>,
+    variants: Object.fromEntries(
+      keys.map((key) => [key, ARIA_COMPONENTS_VARIANTS[key]])
+    ) as Record<ArrayElement<T>, VariantMeta>,
     withObservedValues: realWithObservedValues<T>,
   };
 }
