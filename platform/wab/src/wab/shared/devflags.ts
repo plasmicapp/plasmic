@@ -1,5 +1,3 @@
-/** @format */
-
 import {
   ApiFeatureTier,
   FeatureTierId,
@@ -366,6 +364,8 @@ const INSERT_PANEL_CONTENT: InsertPanelConfig = {
   },
 };
 
+const production = process.env.NODE_ENV === "production";
+
 const DEFAULT_DEVFLAGS = {
   appContentBaseUrl: "https://docs.plasmic.app/app-content",
   artboardEval: true,
@@ -390,8 +390,7 @@ const DEFAULT_DEVFLAGS = {
     process.env.CODEGEN_ORIGIN_HOST ||
     process.env.CODEGEN_HOST ||
     "http://codegen-origin.plasmic.app",
-  adminTeamDomain:
-    process.env.NODE_ENV === "production" ? "plasmic.app" : "admin.example.com",
+  adminTeamDomain: production ? "plasmic.app" : "admin.example.com",
   defaultHostUrl:
     process.env.REACT_APP_DEFAULT_HOST_URL ||
     "https://host.plasmicdev.com/static/host.html",
@@ -595,9 +594,9 @@ const DEFAULT_DEVFLAGS = {
   framerTargeting: true,
 
   // debugging user projects
-  debug: false,
-  loadingDebug: false,
-  logToConsole: false,
+  debug: false, // turns on other debug flags in `normalizeDevFlags`
+  loadingDebug: false, // shows canvas frame loading debug UI
+  logToConsole: !production,
 
   // github settings
   githubClientId: "Iv1.8a4a47b0b0d4bf88",
