@@ -341,10 +341,10 @@ export interface CodeComponentMeta<P> {
   trapsFocus?: boolean;
 
   /**
-   * An object describing the component interaction variants that should be allowed in Studio, when the component is
+   * An object registering code component's variants that should be allowed in Studio, when the component is
    * used as the root of a Studio component.
    */
-  interactionVariants?: Record<
+  variants?: Record<
     string,
     {
       cssSelector: string;

@@ -3695,32 +3695,32 @@ function typeCheckInteractionVariantsFromMeta(
 ) {
   return failable<void, CodeComponentRegistrationTypeError>(
     ({ success, failure }) => {
-      if (!("interactionVariants" in meta) || !meta.interactionVariants) {
+      if (!("variants" in meta) || !meta.variants) {
         return success();
       }
 
-      if (!isObject(meta.interactionVariants)) {
+      if (!isObject(meta.variants)) {
         return failure(
           new CodeComponentRegistrationTypeError(
-            `${errorPrefix} interactionVariants must be an object`
+            `${errorPrefix} variants must be an object`
           )
         );
       }
 
-      const hasInvalidInteraction = Object.entries(
-        meta.interactionVariants
-      ).some(([selector, { cssSelector, displayName }]) => {
-        return (
-          !isString(selector) ||
-          !isString(cssSelector) ||
-          !isString(displayName)
-        );
-      });
+      const hasInvalidInteraction = Object.entries(meta.variants).some(
+        ([selector, { cssSelector, displayName }]) => {
+          return (
+            !isString(selector) ||
+            !isString(cssSelector) ||
+            !isString(displayName)
+          );
+        }
+      );
 
       if (hasInvalidInteraction) {
         return failure(
           new CodeComponentRegistrationTypeError(
-            `${errorPrefix} interactionVariants selector, cssSelector, displayName are required to be strings`
+            `${errorPrefix} variants selector, cssSelector, displayName are required to be strings`
           )
         );
       }
@@ -3733,12 +3733,12 @@ function typeCheckInteractionVariantsFromMeta(
 export function mkCodeComponentInteractionVariantsFromMeta(
   meta: ComponentMeta<any> | GlobalContextMeta<any>
 ) {
-  if (!("interactionVariants" in meta) || !meta.interactionVariants) {
+  if (!("variants" in meta) || !meta.variants) {
     return {};
   }
 
   return Object.fromEntries(
-    Object.entries(meta.interactionVariants).map(
+    Object.entries(meta.variants).map(
       ([selector, { cssSelector, displayName }]): [
         string,
         CodeComponentVariantMeta

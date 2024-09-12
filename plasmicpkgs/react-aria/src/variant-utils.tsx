@@ -43,7 +43,7 @@ const ARIA_COMPONENTS_VARIANTS = {
 type AriaVariant = keyof typeof ARIA_COMPONENTS_VARIANTS;
 
 type CodeComponentVariantsMeta = NonNullable<
-  CodeComponentMeta<unknown>["interactionVariants"]
+  CodeComponentMeta<unknown>["variants"]
 >;
 
 type VariantMeta = CodeComponentVariantsMeta[string];
