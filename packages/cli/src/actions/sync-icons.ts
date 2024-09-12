@@ -28,8 +28,7 @@ export async function syncProjectIconAssets(
   branchName: string,
   version: string,
   iconBundles: IconBundle[],
-  checksums: ChecksumBundle,
-  baseDir: string
+  checksums: ChecksumBundle
 ) {
   const project = getOrAddProjectConfig(context, projectId);
   if (!project.icons) {
@@ -108,7 +107,7 @@ export async function syncProjectIconAssets(
     await writeFileContent(
       context,
       iconConfig.moduleFilePath,
-      await formatAsLocal(bundle.module, iconConfig.moduleFilePath, baseDir),
+      await formatAsLocal(bundle.module, iconConfig.moduleFilePath),
       {
         force: !isNew,
       }

@@ -18,8 +18,7 @@ export async function syncGlobalVariants(
   projectMeta: ProjectMetaBundle,
   bundles: GlobalVariantBundle[],
   checksums: ChecksumBundle,
-  branchName: string,
-  baseDir: string
+  branchName: string
 ) {
   const projectId = projectMeta.projectId;
   const projectLock = getOrAddProjectLock(context, projectId, branchName);
@@ -101,11 +100,7 @@ export async function syncGlobalVariants(
     await writeFileContent(
       context,
       variantConfig.contextFilePath,
-      await formatAsLocal(
-        bundle.contextModule,
-        variantConfig.contextFilePath,
-        baseDir
-      ),
+      await formatAsLocal(bundle.contextModule, variantConfig.contextFilePath),
       { force: !isNew }
     );
   }
