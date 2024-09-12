@@ -125,8 +125,8 @@ import {
   BoolType,
   Choice,
   CodeComponentHelper,
-  CodeComponentInteractionVariantMeta,
   CodeComponentMeta,
+  CodeComponentVariantMeta,
   CodeLibrary,
   CollectionExpr,
   ColorPropType,
@@ -1172,13 +1172,12 @@ async function syncCodeComponentsInteractionVariants(ctx: SiteCtx) {
                 : {};
               if (
                 !instUtil.deepEquals(
-                  c.codeComponentMeta.interactionVariantMeta,
+                  c.codeComponentMeta.variants,
                   interactionVariants,
                   true
                 )
               ) {
-                c.codeComponentMeta.interactionVariantMeta =
-                  interactionVariants;
+                c.codeComponentMeta.variants = interactionVariants;
               }
             }
           });
@@ -3347,7 +3346,7 @@ export function mkCodeComponent(
       // explicitly not handling defaultSlotContents, which is done by
       // refreshDefaultSlotContents()
       defaultSlotContents: {},
-      interactionVariantMeta: mkCodeComponentInteractionVariantsFromMeta(meta),
+      variants: mkCodeComponentInteractionVariantsFromMeta(meta),
     }),
     figmaMappings: (isGlobalContextMeta(meta)
       ? []
@@ -3742,10 +3741,10 @@ export function mkCodeComponentInteractionVariantsFromMeta(
     Object.entries(meta.interactionVariants).map(
       ([selector, { cssSelector, displayName }]): [
         string,
-        CodeComponentInteractionVariantMeta
+        CodeComponentVariantMeta
       ] => [
         selector,
-        new CodeComponentInteractionVariantMeta({ cssSelector, displayName }),
+        new CodeComponentVariantMeta({ cssSelector, displayName }),
       ]
     )
   );

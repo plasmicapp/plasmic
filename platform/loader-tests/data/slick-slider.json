@@ -898,7 +898,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "ejSM67D97QE-": {
           "name": "renderable",
@@ -1282,7 +1282,7 @@
         }
       },
       "deps": [],
-      "version": "232-remove-viewport-height"
+      "version": "233-rename-interaction-variants-for-code-components"
     }
   ],
   [
@@ -1985,7 +1985,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "tyiDQptJ2skf": {
           "type": { "__ref": "JSvpuXAShe9I" },
@@ -2133,7 +2133,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "mkofqeljrS4N": { "name": "text", "__type": "Text" },
         "vWcWZgeUzczW": {
@@ -13845,7 +13845,7 @@
         }
       },
       "deps": ["1397401c-b15c-47b2-8659-9b44c397e887"],
-      "version": "232-remove-viewport-height"
+      "version": "233-rename-interaction-variants-for-code-components"
     }
   ]
 ]

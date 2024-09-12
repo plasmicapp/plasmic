@@ -2235,7 +2235,7 @@ export function serializeInteractionVariantsTriggers(tplRoot: TplNode) {
   }
 
   const interactionVariantKeys = Object.keys(
-    tplRoot.component.codeComponentMeta.interactionVariantMeta
+    tplRoot.component.codeComponentMeta.variants
   );
 
   return `

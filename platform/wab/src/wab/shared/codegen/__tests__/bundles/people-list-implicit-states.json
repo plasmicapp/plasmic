@@ -334,7 +334,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "5592022": {
           "uuid": "2hnzR1_1GXX",
@@ -585,7 +585,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "5592050": {
           "uuid": "qy36JdSFn7Z",
@@ -12318,7 +12318,7 @@
         }
       },
       "deps": [],
-      "version": "232-remove-viewport-height"
+      "version": "233-rename-interaction-variants-for-code-components"
     }
   ]
 ]

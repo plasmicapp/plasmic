@@ -1162,7 +1162,7 @@ const componentCCInteractionStyleVariantsToDisplayNames = maybeComputedFn(
     const tplRoot = component.tplTree;
     if (isTplRootWithCodeComponentInteractionVariants(tplRoot)) {
       const interactionVariantMeta =
-        tplRoot.component.codeComponentMeta.interactionVariantMeta;
+        tplRoot.component.codeComponentMeta.variants;
       return component.variants
         .filter(isStyleVariant)
         .map((variant): [StyleVariant, string[]] => {

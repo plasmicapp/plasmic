@@ -1,11 +1,11 @@
 import { Matcher } from "@/wab/client/components/view-common";
 import { XMultiSelect } from "@/wab/client/components/XMultiSelect";
-import { ensure, filterFalsy } from "@/wab/shared/common";
-import { CodeComponent } from "@/wab/shared/core/components";
 import {
   getInteractionVariantMeta,
   mkCodeComponentInteractionVariantKey,
 } from "@/wab/shared/code-components/interaction-variants";
+import { ensure, filterFalsy } from "@/wab/shared/common";
+import { CodeComponent } from "@/wab/shared/core/components";
 import {
   getApplicableSelectors,
   getPseudoSelector,
@@ -53,7 +53,7 @@ export function SelectorsInput({
     : [];
 
   const interactionVariantsMeta = codeComponent
-    ? codeComponent.codeComponentMeta.interactionVariantMeta
+    ? codeComponent.codeComponentMeta.variants
     : {};
 
   const codeComponentOptions = Object.values(interactionVariantsMeta).map(

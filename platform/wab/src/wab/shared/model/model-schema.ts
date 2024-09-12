@@ -350,7 +350,7 @@ CodeComponentHelper
   importPath: String
   importName: String
   defaultExport: Bool
-CodeComponentInteractionVariantMeta
+CodeComponentVariantMeta
   cssSelector: String
   displayName: String
 CodeComponentMeta
@@ -375,7 +375,7 @@ CodeComponentMeta
   helpers: CodeComponentHelper?
   # where Any is PlasmicElement|PlasmicElement[]
   defaultSlotContents: Map[String, Any]
-  interactionVariantMeta: Map[String, CodeComponentInteractionVariantMeta]
+  variants: Map[String, CodeComponentVariantMeta]
 Component
   @Const uuid: String
   name: String

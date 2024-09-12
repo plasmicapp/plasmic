@@ -12,6 +12,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_variants_bar/PlasmicVariantsDrawer";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { mod, partitions, spawn, xGroupBy } from "@/wab/shared/common";
+import { isTplTag } from "@/wab/shared/core/tpls";
 import { VARIANTS_LOWER } from "@/wab/shared/Labels";
 import { Component, isKnownVariant, Variant } from "@/wab/shared/model/classes";
 import {
@@ -24,7 +25,6 @@ import {
   isStyleVariant,
   makeVariantName,
 } from "@/wab/shared/Variants";
-import { isTplTag } from "@/wab/shared/core/tpls";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
@@ -267,7 +267,7 @@ function VariantsDrawer_({
               {baseLabel}
             </VariantRow>
           ) : (
-            variants.map((variant) => (
+            variants?.map((variant) => (
               <VariantRow
                 ref={getVariantRowRef(variant)}
                 isRecording={targetedVariantsSet.has(variant)}

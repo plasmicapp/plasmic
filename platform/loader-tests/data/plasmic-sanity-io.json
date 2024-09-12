@@ -214,7 +214,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "10603012": {
           "type": { "__ref": "10603037" },
@@ -281,7 +281,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "10603016": {
           "type": { "__ref": "16376005" },
@@ -449,7 +449,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "10603025": {
           "variants": [{ "__ref": "10867007" }],
@@ -918,7 +918,7 @@
         }
       },
       "deps": [],
-      "version": "232-remove-viewport-height"
+      "version": "233-rename-interaction-variants-for-code-components"
     }
   ],
   [
@@ -2048,7 +2048,7 @@
         }
       },
       "deps": ["4536e610-f7b7-43b7-b45e-172856a7e132"],
-      "version": "232-remove-viewport-height"
+      "version": "233-rename-interaction-variants-for-code-components"
     }
   ]
 ]

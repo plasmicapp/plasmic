@@ -180,7 +180,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "8246013": { "name": "host", "uuid": "-SRg14byEK", "__type": "Var" },
         "8246016": {
@@ -437,7 +437,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "21177036": {
           "type": { "__ref": "21970002" },
@@ -567,7 +567,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "21177092": { "name": "table", "uuid": "fT-JCfK2bZj", "__type": "Var" },
         "21177094": { "name": "field", "uuid": "jXgFZu9bLlN", "__type": "Var" },
@@ -1256,7 +1256,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "58829014": {
           "name": "dateFormat",
@@ -1558,7 +1558,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "60389013": {
           "type": { "__ref": "60389034" },
@@ -1686,7 +1686,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "60389021": {
           "name": "children",
@@ -1872,7 +1872,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "Z-t-81vAFTyY": {
           "uuid": "fFQWD7CEtltw",
@@ -2101,7 +2101,7 @@
         }
       },
       "deps": [],
-      "version": "232-remove-viewport-height"
+      "version": "233-rename-interaction-variants-for-code-components"
     }
   ],
   [
@@ -4541,7 +4541,7 @@
         }
       },
       "deps": ["7349d209-ded6-417a-aa97-05311f8b93c4"],
-      "version": "232-remove-viewport-height"
+      "version": "233-rename-interaction-variants-for-code-components"
     }
   ]
 ]

@@ -1,3 +1,5 @@
+import { Leaves, Paths } from "@/wab/commons/types";
+import { Bundler } from "@/wab/shared/bundler";
 import {
   TypeStamped,
   assert,
@@ -6,11 +8,10 @@ import {
   switchType,
   unexpected,
 } from "@/wab/shared/common";
-import { Leaves, Paths } from "@/wab/commons/types";
-import { isCodeComponent, isFrameComponent } from "@/wab/shared/core/components";
-import { isSlot } from "@/wab/shared/SlotUtils";
-import { TplMgr } from "@/wab/shared/TplMgr";
-import { Bundler } from "@/wab/shared/bundler";
+import {
+  isCodeComponent,
+  isFrameComponent,
+} from "@/wab/shared/core/components";
 import * as classes from "@/wab/shared/model/classes";
 import {
   HostLessPackageInfo,
@@ -31,6 +32,8 @@ import {
   DirectConflictPickMap,
   generateIidForInst,
 } from "@/wab/shared/site-diffs/merge-core";
+import { isSlot } from "@/wab/shared/SlotUtils";
+import { TplMgr } from "@/wab/shared/TplMgr";
 import { isString } from "lodash";
 
 export type MaybeWithPrefix<T extends string | null> = T extends null
@@ -648,7 +651,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     importPath: "generic",
     defaultExport: "generic",
   },
-  CodeComponentInteractionVariantMeta: {
+  CodeComponentVariantMeta: {
     cssSelector: "generic",
     displayName: "generic",
   },
@@ -673,7 +676,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     helpers: "generic",
     styleSections: "generic",
     defaultSlotContents: "contents",
-    interactionVariantMeta: "generic",
+    variants: "generic",
   },
   Component: {
     codeComponentMeta: "generic",

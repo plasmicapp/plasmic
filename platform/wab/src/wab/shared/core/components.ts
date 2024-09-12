@@ -108,8 +108,8 @@ import {
   ArenaFrame,
   Arg,
   CodeComponentHelper,
-  CodeComponentInteractionVariantMeta,
   CodeComponentMeta,
+  CodeComponentVariantMeta,
   Component,
   ComponentDataQuery,
   ComponentParams,
@@ -429,13 +429,13 @@ export function cloneCodeComponentHelpers(
     : null;
 }
 
-export function cloneCodeComponentInteractionVariantMeta(interactionVariantMeta: {
-  [key: string]: CodeComponentInteractionVariantMeta;
+export function cloneCodeComponentVariantMeta(variantMeta: {
+  [key: string]: CodeComponentVariantMeta;
 }) {
   return Object.fromEntries(
-    Object.entries(interactionVariantMeta).map(([selector, meta]) => [
+    Object.entries(variantMeta).map(([selector, meta]) => [
       selector,
-      new CodeComponentInteractionVariantMeta({
+      new CodeComponentVariantMeta({
         cssSelector: meta.cssSelector,
         displayName: meta.displayName,
       }),
@@ -469,9 +469,7 @@ export function cloneCodeComponentMeta(
         styleSections: codeMeta.styleSections,
         helpers: cloneCodeComponentHelpers(codeMeta.helpers),
         defaultSlotContents: cloneDeep(codeMeta.defaultSlotContents),
-        interactionVariantMeta: cloneCodeComponentInteractionVariantMeta(
-          codeMeta.interactionVariantMeta
-        ),
+        variants: cloneCodeComponentVariantMeta(codeMeta.variants),
       })
     : null;
 }
@@ -1888,6 +1886,8 @@ function removeComponentParamRefs(tpl: TplNode, param: Param) {
   for (const refInfo of findVarRefs(tpl)) {
     if (refInfo.var === param.variable) {
       switch (refInfo.type) {
+        /* The above code is a TypeScript switch statement that checks the type of `refInfo` and
+        performs different actions based on the type: */
         case "tag":
           delete refInfo.vs.attrs[refInfo.attr];
           break;

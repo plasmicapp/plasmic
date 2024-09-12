@@ -401,7 +401,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "5xd_u-JP1gew": {
           "uuid": "WxYff_NPVJvK",
@@ -659,7 +659,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "f2E7_tNnXWGs": {
           "uuid": "wzTkMnXfRlz9",
@@ -1435,7 +1435,7 @@
         }
       },
       "deps": [],
-      "version": "232-remove-viewport-height"
+      "version": "233-rename-interaction-variants-for-code-components"
     }
   ]
 ]

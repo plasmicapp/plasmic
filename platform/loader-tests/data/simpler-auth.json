@@ -930,7 +930,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "3tqRb4NEnzQU": {
           "type": { "__ref": "yAh_AWvSL8YF" },
@@ -1078,7 +1078,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "M-GZGqFbu66B": {
           "tag": "div",
@@ -9331,7 +9331,7 @@
         }
       },
       "deps": [],
-      "version": "232-remove-viewport-height"
+      "version": "233-rename-interaction-variants-for-code-components"
     }
   ]
 ]

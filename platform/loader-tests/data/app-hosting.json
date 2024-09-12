@@ -98,7 +98,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "30184006": { "name": "name", "uuid": "iy-0P5ktJM", "__type": "Var" },
         "30184007": { "name": "text", "__type": "Text" },
@@ -973,7 +973,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "35978008": {
           "type": { "__ref": "35978020" },
@@ -1061,7 +1061,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "35978013": {
           "variants": [{ "__ref": "34512056" }],
@@ -1257,7 +1257,7 @@
         }
       },
       "deps": [],
-      "version": "232-remove-viewport-height"
+      "version": "233-rename-interaction-variants-for-code-components"
     }
   ]
 ]

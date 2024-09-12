@@ -264,7 +264,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "53897022": {
             "uuid": "kd3zVeJf4r_",
@@ -519,7 +519,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "53897050": {
             "uuid": "gWxyex68plF",
@@ -1373,7 +1373,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "53897170": {
             "variants": [{ "__ref": "53897054" }],
@@ -6116,7 +6116,7 @@
           "53898074": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "232-remove-viewport-height"
+        "version": "233-rename-interaction-variants-for-code-components"
       },
       "projectId": "5txi3zd6hPLtbkzbV8p6jB",
       "version": "0.0.1",
@@ -6569,7 +6569,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "53897022": {
             "uuid": "kd3zVeJf4r_",
@@ -6824,7 +6824,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "53897050": {
             "uuid": "gWxyex68plF",
@@ -7643,7 +7643,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "53897170": {
             "variants": [{ "__ref": "53897054" }],
@@ -12295,7 +12295,7 @@
           "63532015": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "232-remove-viewport-height"
+        "version": "233-rename-interaction-variants-for-code-components"
       }
     },
     {
@@ -12552,7 +12552,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "53897022": {
             "uuid": "kd3zVeJf4r_",
@@ -12807,7 +12807,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "53897050": {
             "uuid": "gWxyex68plF",
@@ -13635,7 +13635,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "53897170": {
             "variants": [{ "__ref": "53897054" }],
@@ -18560,7 +18560,7 @@
           }
         },
         "deps": [],
-        "version": "232-remove-viewport-height"
+        "version": "233-rename-interaction-variants-for-code-components"
       }
     }
   ]

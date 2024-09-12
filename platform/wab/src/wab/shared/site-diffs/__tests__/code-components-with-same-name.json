@@ -100,7 +100,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "10466006": {
             "name": "param1",
@@ -343,7 +343,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "18650010": {
             "type": { "__ref": "18650028" },
@@ -491,7 +491,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "18650018": {
             "name": "title",
@@ -1290,7 +1290,7 @@
           }
         },
         "deps": [],
-        "version": "232-remove-viewport-height"
+        "version": "233-rename-interaction-variants-for-code-components"
       },
       "projectId": "cpkeUeeErCd6XAniAHq8xq",
       "version": "0.0.1",
@@ -1443,7 +1443,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "10673006": {
             "name": "param1",
@@ -1871,7 +1871,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "18650010": {
             "type": { "__ref": "18650028" },
@@ -2019,7 +2019,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "18650018": {
             "name": "title",
@@ -2814,7 +2814,7 @@
           }
         },
         "deps": [],
-        "version": "232-remove-viewport-height"
+        "version": "233-rename-interaction-variants-for-code-components"
       }
     },
     {
@@ -2916,7 +2916,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "10466006": {
             "name": "param1",
@@ -3159,7 +3159,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "18650010": {
             "type": { "__ref": "18650028" },
@@ -3307,7 +3307,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "18650018": {
             "name": "title",
@@ -4322,7 +4322,7 @@
           "55543038": { "text": ["arg3"], "__type": "TemplatedString" }
         },
         "deps": [],
-        "version": "232-remove-viewport-height"
+        "version": "233-rename-interaction-variants-for-code-components"
       }
     }
   ]

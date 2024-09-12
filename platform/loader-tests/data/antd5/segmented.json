@@ -3623,7 +3623,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "PxJuxrCsEItC": {
           "type": { "__ref": "fzHINR9jsz14" },
@@ -3711,7 +3711,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "MBYmMRPkwVk3": {
           "type": { "__ref": "FaT5qGMYuHoQ" },
@@ -3823,7 +3823,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "GO4yVrZOYcR0": {
           "type": { "__ref": "XYzQ4ztdssUw" },
@@ -4042,7 +4042,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "bmV9FDhpqyLM": {
           "type": { "__ref": "n3tk6MVOWtKH" },
@@ -4214,7 +4214,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "7rqi6qgzK_V8": {
           "type": { "__ref": "PSyfYzeOzOEk" },
@@ -4306,7 +4306,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "iy8w31Omo_tl": {
           "type": { "__ref": "ZEn4WF0sjfzv" },
@@ -4487,7 +4487,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "nd-D97FTtgrU": {
           "type": { "__ref": "_QfCC9GoTiyK" },
@@ -4626,7 +4626,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "GnxvOatYHa_l": {
           "type": { "__ref": "XOUE2xbm3y47" },
@@ -4764,7 +4764,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "i1zBSMdurFBw": {
           "type": { "__ref": "G5EyDcWH3FBW" },
@@ -4894,7 +4894,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "Qne_AY5uo-ZC": {
           "type": { "__ref": "vIuSazuIGtI1" },
@@ -5024,7 +5024,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "kJrJ3JgWNGQ1": {
           "type": { "__ref": "K8BrpyullDIv" },
@@ -5242,7 +5242,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "4I1s3BzRJzc4": {
           "type": { "__ref": "Lm1dXE3HnqCQ" },
@@ -5638,7 +5638,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "Ley-3E82VZbj": {
           "type": { "__ref": "0JuJuA_CwWBp" },
@@ -5952,7 +5952,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "SRibg7z_6Lt2": {
           "type": { "__ref": "He_6VZ6Juz7v" },
@@ -6137,7 +6137,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "3-48dTGndjJV": {
           "type": { "__ref": "UeAmDh7tUTsR" },
@@ -6307,7 +6307,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "ehT5UTR7iJEa": {
           "type": { "__ref": "gON9rhFjVKoK" },
@@ -6404,7 +6404,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "GtJDhfSZtw5a": {
           "type": { "__ref": "bJijRT_9BzMv" },
@@ -6471,7 +6471,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "5oaYRYJI1HmK": {
           "type": { "__ref": "dAjuDXYCsuNp" },
@@ -6643,7 +6643,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "UdBxoFtRpX-h": {
           "type": { "__ref": "oSbAq0T2EI2L" },
@@ -6955,7 +6955,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "pQM3WA8HLsDE": {
           "type": { "__ref": "qyFTsf4uLrmg" },
@@ -7388,7 +7388,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "8Q3Eaefr6ewT": {
           "type": { "__ref": "CcGjp95jkgi4" },
@@ -7823,7 +7823,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "Gm7wExmvY1w2": {
           "type": { "__ref": "dMyjR_dqoouc" },
@@ -7911,7 +7911,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "T7xaEQk8Lh9j": {
           "type": { "__ref": "W88jHYWMWVTK" },
@@ -8051,7 +8051,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "Cv2RwRenfvZo": {
           "type": { "__ref": "I8h8-5tZeyTH" },
@@ -8438,7 +8438,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "Wg7WQ6PJ63SK": {
           "type": { "__ref": "Qs4E5DM-5UDe" },
@@ -8636,7 +8636,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "EVmas4UxTaGu": {
           "type": { "__ref": "IOdLNlUt0j0i" },
@@ -8834,7 +8834,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "oZ6dS-KVlZmx": {
           "type": { "__ref": "oDCNT4y3IBE8" },
@@ -9261,7 +9261,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "KhLVtVZhgX1t": {
           "type": { "__ref": "cekE2jfFZGQW" },
@@ -9619,7 +9619,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "KkgFdBoKf8wJ": {
           "type": { "__ref": "nQJFTy8naLCD" },
@@ -9806,7 +9806,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "4GvF6ER-jCXJ": {
           "type": { "__ref": "FWZX58WX55Rj" },
@@ -10049,7 +10049,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "NuWokkQtHvL7": {
           "type": { "__ref": "GMfhrZNMO6Yp" },
@@ -10459,7 +10459,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "H8UmjF8YXNrg": {
           "type": { "__ref": "vTyf0A-oe3Vu" },
@@ -10717,7 +10717,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "V-eF04Ix8b1C": {
           "type": { "__ref": "s-D3j2_kMest" },
@@ -10894,7 +10894,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "GjK8db42cCbl": {
           "type": { "__ref": "uEqKV3aXO6h7" },
@@ -11061,7 +11061,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "-Mx60_uKQcod": {
           "type": { "__ref": "I835_MgYg3v5" },
@@ -11240,7 +11240,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "HhpaqSqEZWBH": {
           "type": { "__ref": "FOWzo8hAnyuK" },
@@ -11754,7 +11754,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "uQTO_QGhJi5s": {
           "type": { "__ref": "HC-k8Cse5JkP" },
@@ -12268,7 +12268,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "C5-bJa3vEVrM": {
           "type": { "__ref": "RIEtAAo49STy" },
@@ -12698,7 +12698,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "EjuzS8it63Mu": {
           "type": { "__ref": "29u2xxrBoHwY" },
@@ -13042,7 +13042,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "dzmh9B4PqJDi": {
           "type": { "__ref": "XAgM9MaSqArs" },
@@ -13299,7 +13299,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "mJgIoFM3Jzzf": {
           "type": { "__ref": "lMgiqORGPxL8" },
@@ -13668,7 +13668,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "XhkmgcJy5lPc": {
           "type": { "__ref": "Lv6gZ3lSRqgR" },
@@ -14214,7 +14214,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "3DId1BU3xrAz": {
           "type": { "__ref": "u9JB74Gy5igl" },
@@ -14366,7 +14366,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "ZfJ9nzqWY2J0": {
           "type": { "__ref": "TMThsK0RwDgq" },
@@ -14729,7 +14729,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "gXnaG4eG3k-T": {
           "type": { "__ref": "fSh26NpUlJ3B" },
@@ -15117,7 +15117,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "te0wbGvWy8qM": {
           "type": { "__ref": "CA7qFw5kSgOk" },
@@ -15707,7 +15707,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "JVXhowCsLkPX": {
           "type": { "__ref": "4OQ6CsQ4Buxn" },
@@ -16297,7 +16297,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "uDS5gPfvh3ZD": {
           "type": { "__ref": "wRFcomDsOuTe" },
@@ -16938,7 +16938,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "tqyxGsFPpEh6": {
           "type": { "__ref": "Vy8tHT0ffEuk" },
@@ -17026,7 +17026,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "nul0Ns5uFO-f": {
           "type": { "__ref": "WhtimjSQ_QyB" },
@@ -17114,7 +17114,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "G_aTpLFPZct5": {
           "type": { "__ref": "WlB1qL9wTAPs" },
@@ -17388,7 +17388,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "DyUH7qdntBqT": {
           "variants": [{ "__ref": "JrqPjRTkO9JE" }],
@@ -25964,7 +25964,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "36TVc6mgq4-Q": {
           "uuid": "eMvDK6iQKNEJ",
@@ -26075,7 +26075,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "qtKZyEy9m4HF": {
           "uuid": "EIHGhzzjnfSE",
@@ -27351,7 +27351,7 @@
         }
       },
       "deps": [],
-      "version": "232-remove-viewport-height"
+      "version": "233-rename-interaction-variants-for-code-components"
     }
   ],
   [
@@ -28042,7 +28042,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "UUWMIfOu2TP3": {
           "type": { "__ref": "Cv2vRiHl9dpu" },
@@ -28190,7 +28190,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "Wh1OKUbppZ_F": { "name": "text", "__type": "Text" },
         "__CASDYpgk7j": {
@@ -29489,7 +29489,7 @@
         }
       },
       "deps": ["530345ed-8f2a-4344-bc76-1cd18621bd88"],
-      "version": "232-remove-viewport-height"
+      "version": "233-rename-interaction-variants-for-code-components"
     }
   ]
 ]

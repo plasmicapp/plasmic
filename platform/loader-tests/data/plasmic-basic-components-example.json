@@ -231,7 +231,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "4418516": { "name": "name", "uuid": "s3uqiUNM3l", "__type": "Var" },
         "4418517": { "name": "text", "__type": "Text" },
@@ -404,7 +404,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "7682008": { "name": "code", "uuid": "ARXptWIBzB", "__type": "Var" },
         "7682011": {
@@ -576,7 +576,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "34442070": {
           "type": { "__ref": "34442179" },
@@ -783,7 +783,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "34442160": { "name": "src", "uuid": "6-acOUSDbVf", "__type": "Var" },
         "34442161": { "name": "text", "__type": "Text" },
@@ -905,7 +905,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "SWtwhJYgQ-3A": {
           "uuid": "byr_p-bc-_sU",
@@ -997,7 +997,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "9TiqKe8jPBG_": {
           "uuid": "YqgBoba3CyLl",
@@ -1314,7 +1314,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "6aTkH4AuJH5j": {
           "uuid": "vJ7yHsz9uCYO",
@@ -1467,7 +1467,7 @@
         }
       },
       "deps": [],
-      "version": "232-remove-viewport-height"
+      "version": "233-rename-interaction-variants-for-code-components"
     }
   ],
   [
@@ -1659,7 +1659,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "476910": {
           "type": { "__ref": "476928" },
@@ -1807,7 +1807,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "476918": { "name": "title", "uuid": "JuRqn_7eHM", "__type": "Var" },
         "476919": { "name": "text", "__type": "Text" },
@@ -2902,7 +2902,7 @@
         }
       },
       "deps": ["46daef11-1a70-4f74-b471-12e71963588c"],
-      "version": "232-remove-viewport-height"
+      "version": "233-rename-interaction-variants-for-code-components"
     }
   ]
 ]

@@ -9533,7 +9533,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "64092010": {
           "type": { "__ref": "64092028" },
@@ -9681,7 +9681,7 @@
           "__type": "CodeComponentMeta",
           "thumbnailUrl": null,
           "section": null,
-          "interactionVariantMeta": {}
+          "variants": {}
         },
         "64092018": { "name": "title", "uuid": "kQl2B_SpuJ", "__type": "Var" },
         "64092019": { "name": "text", "__type": "Text" },
@@ -20186,7 +20186,7 @@
         }
       },
       "deps": [],
-      "version": "232-remove-viewport-height"
+      "version": "233-rename-interaction-variants-for-code-components"
     }
   ]
 ]

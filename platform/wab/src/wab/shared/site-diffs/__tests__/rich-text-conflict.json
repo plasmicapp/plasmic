@@ -526,7 +526,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "4f5QJDTElPWj": {
             "type": { "__ref": "19-KO5WSIn9u" },
@@ -674,7 +674,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "8cyCagXbmfTU": { "name": "text", "__type": "Text" },
           "o5emTqYfAe8x": {
@@ -1022,7 +1022,7 @@
           }
         },
         "deps": [],
-        "version": "232-remove-viewport-height"
+        "version": "233-rename-interaction-variants-for-code-components"
       },
       "projectId": "aH1hFXMTo8YybdGp5ScZNk",
       "version": "0.0.1",
@@ -1566,7 +1566,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "4f5QJDTElPWj": {
             "type": { "__ref": "19-KO5WSIn9u" },
@@ -1714,7 +1714,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "8cyCagXbmfTU": { "name": "text", "__type": "Text" },
           "o5emTqYfAe8x": {
@@ -2049,7 +2049,7 @@
           }
         },
         "deps": [],
-        "version": "232-remove-viewport-height"
+        "version": "233-rename-interaction-variants-for-code-components"
       }
     },
     {
@@ -2577,7 +2577,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "4f5QJDTElPWj": {
             "type": { "__ref": "19-KO5WSIn9u" },
@@ -2725,7 +2725,7 @@
             "__type": "CodeComponentMeta",
             "thumbnailUrl": null,
             "section": null,
-            "interactionVariantMeta": {}
+            "variants": {}
           },
           "8cyCagXbmfTU": { "name": "text", "__type": "Text" },
           "o5emTqYfAe8x": {
@@ -3064,7 +3064,7 @@
           }
         },
         "deps": [],
-        "version": "232-remove-viewport-height"
+        "version": "233-rename-interaction-variants-for-code-components"
       }
     }
   ]

@@ -12,20 +12,19 @@ import {
   isTplComponent,
 } from "@/wab/shared/core/tpls";
 import {
-  CodeComponentInteractionVariantMeta,
   CodeComponentMeta,
+  CodeComponentVariantMeta,
   Component,
   Site,
   TplNode,
   Variant,
 } from "@/wab/shared/model/classes";
 
-export type InteractionVariantMetas =
-  CodeComponentMeta["interactionVariantMeta"];
+export type InteractionVariantMetas = CodeComponentMeta["variants"];
 
 // In the model, we include a prefix in the interaction variant selector to distinguish it from other selectors
 // This makes it easier to identify the interaction variant selectors when we need to process them in the code.
-const INTERACTION_VARIANT_PREFIX = "$cc-interaction$";
+const INTERACTION_VARIANT_PREFIX = "$cc-variant$";
 
 export function isCodeComponentInteractionVariantKey(key: string) {
   return key.startsWith(INTERACTION_VARIANT_PREFIX);
@@ -53,7 +52,7 @@ export function isCodeComponentInteractionVariant(
 export function getInteractionVariantMeta(
   interactionVariantsMetas: InteractionVariantMetas,
   key: string
-): CodeComponentInteractionVariantMeta | null {
+): CodeComponentVariantMeta | null {
   const keyWithoutPrefix = withoutInteractionVariantPrefix(key);
   if (keyWithoutPrefix in interactionVariantsMetas) {
     return interactionVariantsMetas[keyWithoutPrefix];
@@ -69,7 +68,7 @@ export function hasCodeComponentInteractionVariants(
 
 export function isCodeComponentWithInteractionVariants(component: Component) {
   return isCodeComponent(component)
-    ? Object.keys(component.codeComponentMeta.interactionVariantMeta).length > 0
+    ? Object.keys(component.codeComponentMeta.variants).length > 0
     : false;
 }
 
@@ -86,15 +85,15 @@ export function isTplRootWithCodeComponentInteractionVariants(
 export function getCodeComponentInteractionVariantMeta(
   component: CodeComponent,
   key: string
-): CodeComponentInteractionVariantMeta | null {
-  const metas = component.codeComponentMeta.interactionVariantMeta;
+): CodeComponentVariantMeta | null {
+  const metas = component.codeComponentMeta.variants;
   return getInteractionVariantMeta(metas, key);
 }
 
 export function getTplCodeComponentInteractionVariantMeta(
   tpl: TplCodeComponent,
   key: string
-): CodeComponentInteractionVariantMeta | null {
+): CodeComponentVariantMeta | null {
   return getCodeComponentInteractionVariantMeta(tpl.component, key);
 }
 
@@ -108,7 +107,7 @@ export function getInvalidInteractiveVariantsInComponent(component: Component) {
   const invalidVariants: Variant[] = [];
 
   const interactionVariantMeta = isTplCodeComponent(component.tplTree)
-    ? component.tplTree.component.codeComponentMeta.interactionVariantMeta
+    ? component.tplTree.component.codeComponentMeta.variants
     : {};
 
   codeComponentInteractionVariants.forEach((v) => {
