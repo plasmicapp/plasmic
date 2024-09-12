@@ -48,7 +48,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { testIds } from "@/wab/client/test-helpers/test-ids";
 import { findNonEmptyCombos } from "@/wab/shared/cached-selectors";
-import { isTplRootWithCodeComponentInteractionVariants } from "@/wab/shared/code-components/interaction-variants";
+import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
 import { ensure, ensureInstance, partitions, spawn } from "@/wab/shared/common";
 import {
   allComponentStyleVariants,
@@ -75,7 +75,7 @@ import { VariantPinState } from "@/wab/shared/PinManager";
 import { getPlumeVariantDef } from "@/wab/shared/plume/plume-registry";
 import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import {
-  canHaveInteractionVariant,
+  canHaveRegisteredVariant,
   getBaseVariant,
   isBaseVariant,
   isGlobalVariantGroup,
@@ -482,17 +482,19 @@ export const VariantsPanel = observer(
                 )
               )}
             </SimpleReorderableList>
-            {canHaveInteractionVariant(component) &&
+            {canHaveRegisteredVariant(component) &&
               !isPageComponent(component) && (
                 <VariantSection
                   showIcon
                   icon={<Icon icon={BoltIcon} />}
-                  title="Interaction Variants"
+                  title={
+                    isTplRootWithCodeComponentVariants(component.tplTree)
+                      ? "Registered Variants"
+                      : "Interaction Variants"
+                  }
                   emptyAddButtonText="Add variant"
                   emptyAddButtonTooltip={
-                    isTplRootWithCodeComponentInteractionVariants(
-                      component.tplTree
-                    )
+                    isTplRootWithCodeComponentVariants(component.tplTree)
                       ? "Registered variants are registered in code component meta"
                       : "Interaction variants are automatically activated when the user interacts with the component -- by hovering, focusing, pressing, etc."
                   }

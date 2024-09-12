@@ -16,17 +16,18 @@ import {
 import { useRefMap } from "@/wab/client/hooks/useRefMap";
 import { useResponsiveBreakpoints } from "@/wab/client/hooks/useResponsiveBreakpoints";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { maybe, spawn } from "@/wab/shared/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import {
-  allComponentVariants,
-  getSuperComponentVariantGroupToComponent,
-} from "@/wab/shared/core/components";
 import {
   ensureCustomFrameForActivatedVariants,
   getFrameHeight,
 } from "@/wab/shared/Arenas";
+import { maybe, spawn } from "@/wab/shared/common";
 import { getComponentArenaRowLabel } from "@/wab/shared/component-arenas";
+import {
+  allComponentVariants,
+  getSuperComponentVariantGroupToComponent,
+} from "@/wab/shared/core/components";
+import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
 import {
   COMBINATIONS_CAP,
   FRAME_LOWER,
@@ -47,13 +48,12 @@ import {
 } from "@/wab/shared/model/classes";
 import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import {
-  canHaveInteractionVariant,
+  canHaveRegisteredVariant,
   isGlobalVariantGroup,
   isScreenVariantGroup,
   isStandaloneVariantGroup,
   VariantCombo,
 } from "@/wab/shared/Variants";
-import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
 import { Button, Form, Menu, Popover } from "antd";
 import cn from "classnames";
 import { observer } from "mobx-react";
@@ -227,7 +227,7 @@ export const ComponentArenaLayout = observer(
           rowEndControls={(row) => {
             const group = ensureMaybeKnownVariantGroup(row.rowKey);
             if (!group) {
-              if (!canHaveInteractionVariant(component)) {
+              if (!canHaveRegisteredVariant(component)) {
                 return null;
               }
               return (

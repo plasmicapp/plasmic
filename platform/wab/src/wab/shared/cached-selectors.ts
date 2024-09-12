@@ -27,9 +27,9 @@ import {
   customFunctionId,
 } from "@/wab/shared/code-components/code-components";
 import {
-  getInteractionVariantMeta,
-  isTplRootWithCodeComponentInteractionVariants,
-} from "@/wab/shared/code-components/interaction-variants";
+  getVariantMeta,
+  isTplRootWithCodeComponentVariants,
+} from "@/wab/shared/code-components/variants";
 import {
   buildUidToNameMap,
   getNamedDescendantNodes,
@@ -1157,12 +1157,11 @@ export const siteToUsedDataSources = maybeComputedFn(
   }
 );
 
-const componentCCInteractionStyleVariantsToDisplayNames = maybeComputedFn(
+const componentCCVariantsToDisplayNames = maybeComputedFn(
   function ccStyleVariantToDisplayNames(component: Component) {
     const tplRoot = component.tplTree;
-    if (isTplRootWithCodeComponentInteractionVariants(tplRoot)) {
-      const interactionVariantMeta =
-        tplRoot.component.codeComponentMeta.variants;
+    if (isTplRootWithCodeComponentVariants(tplRoot)) {
+      const variantMeta = tplRoot.component.codeComponentMeta.variants;
       return component.variants
         .filter(isStyleVariant)
         .map((variant): [StyleVariant, string[]] => {
@@ -1170,9 +1169,7 @@ const componentCCInteractionStyleVariantsToDisplayNames = maybeComputedFn(
             variant,
             withoutNils(
               variant.selectors.map(
-                (selector) =>
-                  getInteractionVariantMeta(interactionVariantMeta, selector)
-                    ?.displayName
+                (selector) => getVariantMeta(variantMeta, selector)?.displayName
               )
             ),
           ];
@@ -1182,12 +1179,10 @@ const componentCCInteractionStyleVariantsToDisplayNames = maybeComputedFn(
   }
 );
 
-export const siteCCInteractionStyleVariantsToDisplayNames = maybeComputedFn(
-  function ccStyleVariantToDisplayNames(site: Site) {
+export const siteCCVariantsToDisplayNames = maybeComputedFn(
+  function ccVariantToDisplayNames(site: Site) {
     return new Map<StyleVariant, string[]>(
-      site.components.flatMap((comp) =>
-        componentCCInteractionStyleVariantsToDisplayNames(comp)
-      )
+      site.components.flatMap((comp) => componentCCVariantsToDisplayNames(comp))
     );
   }
 );

@@ -1,6 +1,6 @@
 import { reportError } from "@/wab/client/ErrorNotifications";
 import {
-  confirmRemovedInteractiveVariants,
+  confirmRemovedCodeComponentVariants,
   duplicateCodeComponentErrorDescription,
   fixInvalidReactVersion,
   fixMissingCodeComponents,
@@ -238,8 +238,8 @@ export const ccClientCallbackFns: CodeComponentSyncCallbackFns = {
       ),
     });
   },
-  confirmRemovedInteractiveVariants: (removedSelectorsByComponent) =>
-    confirmRemovedInteractiveVariants(removedSelectorsByComponent),
+  confirmRemovedCodeComponentVariants: (removedSelectorsByComponent) =>
+    confirmRemovedCodeComponentVariants(removedSelectorsByComponent),
 };
 
 export async function syncCodeComponentsAndHandleErrors(

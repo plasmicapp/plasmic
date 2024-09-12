@@ -225,18 +225,18 @@ export async function fixMissingCodeComponents(
   });
 }
 
-export async function confirmRemovedInteractiveVariants(
+export async function confirmRemovedCodeComponentVariants(
   removedSelectorsByComponent: [Component, string[]][]
 ) {
   return failableAsync<void, never>(async ({ success }) => {
     let shouldDelete: boolean | undefined;
     do {
       shouldDelete = await confirm({
-        title: "Some interaction variants have been removed",
+        title: "Some code component variants have been removed",
         message: (
           <>
             <p>
-              The following interaction variants have been removed. Please
+              The following code component variants have been removed. Please
               confirm that the respective styles to each of those selectors are
               no longer needed.
             </p>

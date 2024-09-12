@@ -1,6 +1,13 @@
-import { assert, isNonNil } from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import { componentToDeepReferenced } from "@/wab/shared/cached-selectors";
+import { ensureOnlyValidCodeComponentVariantsInComponent } from "@/wab/shared/code-components/variants";
+import { assert, isNonNil } from "@/wab/shared/common";
+import {
+  ensureCorrectImplicitStates,
+  isPublicState,
+  removeComponentState,
+} from "@/wab/shared/core/states";
+import { isTplComponent } from "@/wab/shared/core/tpls";
 import {
   Component,
   isKnownCustomCode,
@@ -21,13 +28,6 @@ import { isSlot } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { UserError } from "@/wab/shared/UserError";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
-import {
-  ensureCorrectImplicitStates,
-  isPublicState,
-  removeComponentState,
-} from "@/wab/shared/core/states";
-import { isTplComponent } from "@/wab/shared/core/tpls";
-import { ensureOnlyValidInteractiveVariantsInComponent } from "@/wab/shared/code-components/interaction-variants";
 
 export function makeComponentSwapper(
   site: Site,
@@ -187,10 +187,10 @@ export function makeComponentSwapper(
     // Finally, we make sure we create the implicit states we should have
     ensureCorrectImplicitStates(site, owner, tpl);
 
-    // If we are changing the root component, we ensure that the interaction variants
+    // If we are changing the root component, we ensure that the cc variants
     // are valid
     if (!tpl.parent) {
-      ensureOnlyValidInteractiveVariantsInComponent(site, owner);
+      ensureOnlyValidCodeComponentVariantsInComponent(site, owner);
     }
   };
 

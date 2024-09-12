@@ -48,7 +48,7 @@ import {
   makeTokenRefResolver,
   siteToAllTokensDict,
 } from "@/wab/shared/cached-selectors";
-import { getTplCodeComponentInteractionVariantMeta } from "@/wab/shared/code-components/interaction-variants";
+import { getTplCodeComponentVariantMeta } from "@/wab/shared/code-components/variants";
 import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import { makeCssClassNameForVariantCombo } from "@/wab/shared/codegen/react-p";
 import {
@@ -1780,14 +1780,14 @@ function showPseudoClassSelector(
         if (pseudoSelectors.find((opt) => opt.displayName === sel)) {
           return getPseudoSelector(sel);
         } else {
-          // This is either an arbitrary selector or a code component interaction variant
-          // we validate if it's an code component interaction variant by looking at the root
+          // This is either an arbitrary selector or a code component variant
+          // we validate if it's a code component variant by looking at the root
           // tpl of the current component
-          const codeComponentInteractionMeta =
+          const codeComponentVariantMeta =
             isTplCodeComponent(root) &&
-            getTplCodeComponentInteractionVariantMeta(root, sel);
-          if (codeComponentInteractionMeta) {
-            return codeComponentInteractionMeta.cssSelector;
+            getTplCodeComponentVariantMeta(root, sel);
+          if (codeComponentVariantMeta) {
+            return codeComponentVariantMeta.cssSelector;
           }
           return sel;
         }

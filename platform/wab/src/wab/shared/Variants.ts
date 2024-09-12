@@ -1,3 +1,6 @@
+import { siteCCVariantsToDisplayNames } from "@/wab/shared/cached-selectors";
+import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
+import { toVarName } from "@/wab/shared/codegen/util";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -8,22 +11,28 @@ import {
   xAddAll,
 } from "@/wab/shared/common";
 import {
-  allSuperComponentVariants,
-  getNamespacedComponentName,
-  isCodeComponent,
-} from "@/wab/shared/core/components";
-import { code } from "@/wab/shared/core/exprs";
-import { ScreenSizeSpec, parseScreenSpec } from "@/wab/shared/css-size";
-import {
-  FramePinManager,
-  withoutIrrelevantScreenVariants,
-} from "@/wab/shared/PinManager";
-import { siteCCInteractionStyleVariantsToDisplayNames } from "@/wab/shared/cached-selectors";
-import { toVarName } from "@/wab/shared/codegen/util";
-import {
   ensureComponentArenaColsOrder,
   ensureComponentArenaRowsOrder,
 } from "@/wab/shared/component-arenas";
+import {
+  allSuperComponentVariants,
+  getNamespacedComponentName,
+} from "@/wab/shared/core/components";
+import { code } from "@/wab/shared/core/exprs";
+import {
+  UNINITIALIZED_VALUE,
+  allGlobalVariantGroups,
+  getResponsiveStrategy,
+  writeable,
+} from "@/wab/shared/core/sites";
+import {
+  getLessSelector,
+  getPseudoSelector,
+  mkRuleSet,
+  pseudoSelectors,
+} from "@/wab/shared/core/styles";
+import { isTplTag, summarizeTplTag } from "@/wab/shared/core/tpls";
+import { ScreenSizeSpec, parseScreenSpec } from "@/wab/shared/css-size";
 import {
   ArenaFrame,
   Arg,
@@ -44,29 +53,13 @@ import {
   VariantGroupState,
   VariantSetting,
 } from "@/wab/shared/model/classes";
+import {
+  FramePinManager,
+  withoutIrrelevantScreenVariants,
+} from "@/wab/shared/PinManager";
 import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
-import {
-  UNINITIALIZED_VALUE,
-  allGlobalVariantGroups,
-  getResponsiveStrategy,
-  writeable,
-} from "@/wab/shared/core/sites";
-import {
-  getLessSelector,
-  getPseudoSelector,
-  mkRuleSet,
-  pseudoSelectors,
-} from "@/wab/shared/core/styles";
-import {
-  TplCodeComponent,
-  isComponentRoot,
-  isTplComponent,
-  isTplTag,
-  summarizeTplTag,
-} from "@/wab/shared/core/tpls";
 import { arrayContains } from "class-validator";
 import L, { orderBy, uniqBy } from "lodash";
-import { isTplRootWithCodeComponentInteractionVariants } from "@/wab/shared/code-components/interaction-variants";
 
 export const BASE_VARIANT_NAME = "base";
 
@@ -122,11 +115,9 @@ interface _VariantPath {
   path: Array<[Variant, number]>;
 }
 
-export function canHaveInteractionVariant(component: Component) {
+export function canHaveRegisteredVariant(component: Component) {
   const tplRoot = component.tplTree;
-  return (
-    isTplTag(tplRoot) || isTplRootWithCodeComponentInteractionVariants(tplRoot)
-  );
+  return isTplTag(tplRoot) || isTplRootWithCodeComponentVariants(tplRoot);
 }
 
 export function isStandaloneVariantGroup(
@@ -846,8 +837,8 @@ export function getStyleVariantSelectorsDisplayNames(
   variant: StyleVariant,
   site?: Site
 ) {
-  if (site && siteCCInteractionStyleVariantsToDisplayNames(site).has(variant)) {
-    return siteCCInteractionStyleVariantsToDisplayNames(site).get(variant)!;
+  if (site && siteCCVariantsToDisplayNames(site).has(variant)) {
+    return siteCCVariantsToDisplayNames(site).get(variant)!;
   }
   return variant.selectors;
 }

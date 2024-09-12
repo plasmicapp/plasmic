@@ -1,9 +1,9 @@
 import { Matcher } from "@/wab/client/components/view-common";
 import { XMultiSelect } from "@/wab/client/components/XMultiSelect";
 import {
-  getInteractionVariantMeta,
-  mkCodeComponentInteractionVariantKey,
-} from "@/wab/shared/code-components/interaction-variants";
+  getVariantMeta,
+  mkCodeComponentVariantKey,
+} from "@/wab/shared/code-components/variants";
 import { ensure, filterFalsy } from "@/wab/shared/common";
 import { CodeComponent } from "@/wab/shared/core/components";
 import {
@@ -52,20 +52,21 @@ export function SelectorsInput({
       ).map((op) => op.displayName)
     : [];
 
-  const interactionVariantsMeta = codeComponent
+  const variantsMeta = codeComponent
     ? codeComponent.codeComponentMeta.variants
     : {};
 
-  const codeComponentOptions = Object.values(interactionVariantsMeta).map(
+  const codeComponentOptions = Object.values(variantsMeta).map(
     (e) => e.displayName
   );
 
-  const codeComponentDisplayNameToKey = Object.entries(
-    interactionVariantsMeta
-  ).reduce((acc, [key, value]) => {
-    acc[value.displayName] = mkCodeComponentInteractionVariantKey(key);
-    return acc;
-  }, {} as Record<string, string>);
+  const codeComponentDisplayNameToKey = Object.entries(variantsMeta).reduce(
+    (acc, [key, value]) => {
+      acc[value.displayName] = mkCodeComponentVariantKey(key);
+      return acc;
+    },
+    {} as Record<string, string>
+  );
 
   const [text, setText] = useState("");
   const matcher = new Matcher(text);
@@ -98,10 +99,10 @@ export function SelectorsInput({
     return key;
   }
 
-  function ensureInteractionVariantMeta(selector: string) {
+  function ensureCodeComponentVariantMeta(selector: string) {
     return ensure(
-      getInteractionVariantMeta(interactionVariantsMeta, selector),
-      `Expected interaction variant selector meta to selector="${selector}" in the code component ${codeComponent?.name}`
+      getVariantMeta(variantsMeta, selector),
+      `Expected CC variant selector meta to selector="${selector}" in the code component ${codeComponent?.name}`
     );
   }
 
@@ -109,7 +110,7 @@ export function SelectorsInput({
     if (!codeComponent) {
       return getPseudoSelector(selector).cssSelector;
     }
-    return ensureInteractionVariantMeta(selector).cssSelector;
+    return ensureCodeComponentVariantMeta(selector).cssSelector;
   }
 
   function getDisplayName(selector: string) {
@@ -117,7 +118,7 @@ export function SelectorsInput({
       return selector;
     }
 
-    return ensureInteractionVariantMeta(selector).displayName;
+    return ensureCodeComponentVariantMeta(selector).displayName;
   }
 
   return (

@@ -73,9 +73,9 @@ import {
   tryGetStateHelpers,
 } from "@/wab/shared/code-components/code-components";
 import {
-  isTplRootWithCodeComponentInteractionVariants,
-  withoutInteractionVariantPrefix,
-} from "@/wab/shared/code-components/interaction-variants";
+  isTplRootWithCodeComponentVariants,
+  withoutCodeComponentVariantPrefix,
+} from "@/wab/shared/code-components/variants";
 import { toReactAttr } from "@/wab/shared/codegen/image-assets";
 import {
   deriveReactHookSpecs,
@@ -335,8 +335,8 @@ export interface RenderingCtx {
   plasmicInvalidate: ReturnType<typeof usePlasmicInvalidate> | undefined;
   stateSpecs: $StateSpec<any>[];
 
-  // This is used to enable code components interaction variants in the canvas
-  $ccInteractions: Record<string, boolean>;
+  // This is used to enable code components variants in the canvas
+  $ccVariants: Record<string, boolean>;
   updateVariant: (changes: Record<string, boolean>) => void;
 }
 
@@ -704,15 +704,11 @@ const mkTriggers = computedFn(
               // because we don't want the content to change when the user tries to edit rich text
               // while in design mode.
               if (isStyleVariant(variant) && isInteractive) {
-                if (
-                  isTplRootWithCodeComponentInteractionVariants(
-                    component.tplTree
-                  )
-                ) {
+                if (isTplRootWithCodeComponentVariants(component.tplTree)) {
                   return variant.selectors.reduce(
                     (prev, key) =>
                       prev &&
-                      ctx.$ccInteractions[withoutInteractionVariantPrefix(key)],
+                      ctx.$ccVariants[withoutCodeComponentVariantPrefix(key)],
                     true
                   );
                 }
@@ -897,13 +893,13 @@ function useCtxFromInternalComponentProps(
   const refsRef = sub.React.useRef({});
   const $refs = refsRef.current;
 
-  // We will use $ccInteractions to store the interactions that are triggered
+  // We will use $ccVariants to store the variants that are triggered
   // by the code component root, to keep the number of hooks stable. We will
   // always create these values during the canvas component initialization.
-  const [$ccInteractions, setDollarCcInteractions] = sub.React.useState({});
+  const [$ccVariants, setDollarCcVariants] = sub.React.useState({});
   const updateVariant = sub.React.useCallback(
     (changes: Record<string, boolean>) => {
-      setDollarCcInteractions((prev) => {
+      setDollarCcVariants((prev) => {
         if (!Object.keys(changes).some((k) => prev[k] !== changes[k])) {
           return prev;
         }
@@ -1007,8 +1003,8 @@ function useCtxFromInternalComponentProps(
       viewState.forceValComponentKeysWithDefaultSlotContents,
     setDollarQueries,
     stateSpecs,
-    $ccInteractions,
-    updateVariant,
+    $ccVariants,
+    updateVariant: updateVariant,
   };
   return ctx;
 }
@@ -1216,7 +1212,7 @@ function makeEmptyRenderingCtx(viewCtx: ViewCtx, valKey: string): RenderingCtx {
     setDollarQueries: () => {},
     stateSpecs: [],
     plasmicInvalidate: undefined,
-    $ccInteractions: {},
+    $ccVariants: {},
     updateVariant: () => {},
   };
 }
@@ -1433,10 +1429,7 @@ function renderTplComponent(
       ctx.valKey
     );
 
-    if (
-      isComponentRoot &&
-      isTplRootWithCodeComponentInteractionVariants(node)
-    ) {
+    if (isComponentRoot && isTplRootWithCodeComponentVariants(node)) {
       props["updateVariant"] = ctx.updateVariant;
     }
 

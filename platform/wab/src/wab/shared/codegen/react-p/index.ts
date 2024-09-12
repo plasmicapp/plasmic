@@ -17,9 +17,9 @@ import {
   isCodeComponentWithHelpers,
 } from "@/wab/shared/code-components/code-components";
 import {
-  isTplRootWithCodeComponentInteractionVariants,
-  withoutInteractionVariantPrefix,
-} from "@/wab/shared/code-components/interaction-variants";
+  isTplRootWithCodeComponentVariants,
+  withoutCodeComponentVariantPrefix,
+} from "@/wab/shared/code-components/variants";
 import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import {
   extractUsedFontsFromComponents,
@@ -1334,11 +1334,11 @@ export function makeVariantComboChecker(
   const variantChecker = (variant: Variant) => {
     if (isStyleVariant(variant)) {
       const tplRoot = component.tplTree;
-      if (isTplRootWithCodeComponentInteractionVariants(tplRoot)) {
+      if (isTplRootWithCodeComponentVariants(tplRoot)) {
         return variant.selectors
           .map((sel) => {
-            return `$ccInteractions[${jsString(
-              withoutInteractionVariantPrefix(sel)
+            return `$ccVariants[${jsString(
+              withoutCodeComponentVariantPrefix(sel)
             )}]`;
           })
           .join(" && ");
@@ -2093,7 +2093,7 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
   const { component } = ctx;
 
   const treeTriggers = serializeLocalStyleTriggers(ctx);
-  const ccInteractionTriggers = serializeInteractionVariantsTriggers(
+  const ccVariantTriggers = serializeCodeComponentVariantsTriggers(
     component.tplTree
   );
   const globalTriggers = serializeGlobalVariantValues(
@@ -2205,7 +2205,7 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
 
     ${treeTriggers}
     ${globalTriggers}
-    ${ccInteractionTriggers}
+    ${ccVariantTriggers}
   `;
 }
 
@@ -2229,21 +2229,21 @@ export function serializeLocalStyleTriggers(ctx: SerializerBaseContext) {
       `;
 }
 
-export function serializeInteractionVariantsTriggers(tplRoot: TplNode) {
-  if (!isTplRootWithCodeComponentInteractionVariants(tplRoot)) {
+export function serializeCodeComponentVariantsTriggers(tplRoot: TplNode) {
+  if (!isTplRootWithCodeComponentVariants(tplRoot)) {
     return "";
   }
 
-  const interactionVariantKeys = Object.keys(
+  const ccVariantKeys = Object.keys(
     tplRoot.component.codeComponentMeta.variants
   );
 
   return `
-    const [$ccInteractions, setDollarCcInteractions] = React.useState<Record<string, boolean>>({
-      ${interactionVariantKeys.map((key) => `${key}: false`).join(",\n")}
+    const [$ccVariants, setDollarCcVariants] = React.useState<Record<string, boolean>>({
+      ${ccVariantKeys.map((key) => `${key}: false`).join(",\n")}
     });
     const updateVariant = React.useCallback((changes: Record<string, boolean>) => {
-      setDollarCcInteractions((prev) => {
+      setDollarCcVariants((prev) => {
         if (!Object.keys(changes).some((k) => prev[k] !== changes[k])) {
           return prev;
         }
@@ -2686,7 +2686,7 @@ export function getOrderedExplicitVSettings(
       shouldGenVariantSetting(ctx, vs) &&
       (!hasStyleVariant(vs.variants) ||
         shouldGenReactHook(vs, ctx.component) ||
-        isTplRootWithCodeComponentInteractionVariants(ctx.component.tplTree))
+        isTplRootWithCodeComponentVariants(ctx.component.tplTree))
   );
   if (interpreterMeta) {
     interpreterMeta.nodeUuidToOrderedVsettings[node.uuid] =
@@ -3619,7 +3619,7 @@ function serializeTplComponent(ctx: SerializerBaseContext, node: TplComponent) {
     ] = `(ref) => { $refs[${jsLiteral(nodeName)}] = ref; }`;
   }
 
-  if (isRoot && isTplRootWithCodeComponentInteractionVariants(node)) {
+  if (isRoot && isTplRootWithCodeComponentVariants(node)) {
     attrs["updateVariant"] = `updateVariant`;
   }
 

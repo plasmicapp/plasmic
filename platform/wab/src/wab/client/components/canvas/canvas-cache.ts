@@ -58,7 +58,7 @@ function computeHashFromStableFields(node: TplNode, ctx: RenderingCtx) {
     reactHookSpecsToKey(ctx.reactHookSpecs),
     // ctx.triggers, // `triggers` keys can't change if `reactHookSpecs` hasn't changed
     JSON.stringify(ctx.triggerProps),
-    JSON.stringify(ctx.$ccInteractions),
+    JSON.stringify(ctx.$ccVariants),
     ctx.updateVariant,
   ];
 }
@@ -84,7 +84,7 @@ type HandledCtxFields =
   | "reactHookSpecs"
   | "triggers"
   | "triggerProps"
-  | "$ccInteractions"
+  | "$ccVariants"
   | "updateVariant";
 
 type NonStableFieldsFromCtx = Omit<Full<RenderingCtx>, HandledCtxFields> & {
