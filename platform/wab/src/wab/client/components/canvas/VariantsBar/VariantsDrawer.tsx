@@ -11,6 +11,7 @@ import {
   PlasmicVariantsDrawer,
 } from "@/wab/client/plasmic/plasmic_kit_variants_bar/PlasmicVariantsDrawer";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { isCodeComponentInteractionVariant } from "@/wab/shared/code-components/interaction-variants";
 import { mod, partitions, spawn, xGroupBy } from "@/wab/shared/common";
 import { isTplTag } from "@/wab/shared/core/tpls";
 import { VARIANTS_LOWER } from "@/wab/shared/Labels";
@@ -32,6 +33,7 @@ import defer = setTimeout;
 
 const elementInteractionsLabel = "Element Interactions";
 const interactionsLabel = "Component Interactions";
+const codeComponentVariantsLabel = "Registered Variants";
 const baseLabel = "Base";
 
 interface VariantsDrawerProps extends DefaultVariantsDrawerProps {
@@ -85,6 +87,11 @@ function VariantsDrawer_({
       v.parent !== studioCtx.site.activeScreenVariantGroup
     ) {
       return false;
+    } else if (isCodeComponentInteractionVariant(v)) {
+      return v.selectors?.some(
+        (sel) =>
+          matcher.matches(sel) || matcher.matches(codeComponentVariantsLabel)
+      );
     } else if (isStyleVariant(v)) {
       return v.selectors?.some(
         (sel) =>
@@ -304,11 +311,13 @@ function useGroupedVariants(
 ) {
   const [
     privateStyleVariants,
+    codeComponentVariants,
     compStyleVariants,
     compVariants,
     globalVariants,
   ] = partitions(filteredVariants, [
     isPrivateStyleVariant,
+    isCodeComponentInteractionVariant,
     isComponentStyleVariant,
     (v) => !isGlobalVariant(v),
   ]);
@@ -339,6 +348,16 @@ function useGroupedVariants(
             </>
           ),
           variants: shouldShowInteractions ? privateStyleVariants : [],
+        },
+        {
+          withDivider: true,
+          groupLabel: (
+            <>
+              {codeComponentVariantsLabel}
+              <Icon icon={PlasmicIcon__Bolt} />
+            </>
+          ),
+          variants: codeComponentVariants,
         },
         {
           withDivider: true,
