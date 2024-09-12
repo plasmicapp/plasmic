@@ -10,7 +10,7 @@ import {
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { UpdateVariant, pickAriaComponentVariants } from "./variant-utils";
+import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
 
 const SLIDER_THUMB_VARIANTS = [
   "dragging" as const,
@@ -24,11 +24,9 @@ const { variants, withObservedValues } = pickAriaComponentVariants(
   SLIDER_THUMB_VARIANTS
 );
 export interface BaseSliderThumbProps
-  extends React.ComponentProps<typeof SliderThumb> {
+  extends React.ComponentProps<typeof SliderThumb>,
+    WithVariants<typeof SLIDER_THUMB_VARIANTS> {
   advanced?: boolean;
-  // Optional callback to update the CC variant state
-  // as it's only provided if the component is the root of a Studio component
-  updateVariant?: UpdateVariant<typeof SLIDER_THUMB_VARIANTS>;
 }
 
 export function BaseSliderThumb({
@@ -97,7 +95,6 @@ export function registerSliderThumb(
         cursor: "pointer",
       },
       variants,
-      interactionVariants: variants,
       props: {
         ...getCommonProps<BaseSliderThumbProps>("slider thumb", [
           "name",
@@ -116,7 +113,7 @@ export function registerSliderThumb(
         },
       },
       trapsFocus: true,
-    } as any,
+    },
     overrides
   );
 }

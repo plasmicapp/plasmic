@@ -13,7 +13,7 @@ import {
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { UpdateVariant, pickAriaComponentVariants } from "./variant-utils";
+import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
 
 const SLIDER_COMPONENT_NAME = makeComponentName("slider");
 const RANGE_SLIDER_COMPONENT_NAME = makeComponentName("range-slider");
@@ -23,11 +23,9 @@ const { variants, withObservedValues } =
   pickAriaComponentVariants(SLIDER_VARIANTS);
 
 export interface BaseSliderProps<T extends number | number[]>
-  extends SliderProps<T> {
+  extends SliderProps<T>,
+    WithVariants<typeof SLIDER_VARIANTS> {
   children?: React.ReactNode;
-  // Optional callback to update the CC variant state
-  // as it's only provided if the component is the root of a Studio component
-  updateVariant?: UpdateVariant<typeof SLIDER_VARIANTS>;
 }
 
 export function BaseSlider<T extends number | number[]>(
@@ -111,7 +109,6 @@ export function registerSlider(
       importPath: "@plasmicpkgs/react-aria/skinny/registerSlider",
       importName: "BaseSlider",
       variants,
-      interactionVariants: variants,
       defaultStyles: {
         width: "300px",
       },
@@ -128,7 +125,7 @@ export function registerSlider(
           uncontrolledProp: "defaultValue",
           description: "The intial value of the slider",
           defaultValue: [20, 50],
-          validator: (value: any) => {
+          validator: (value) => {
             if (!Array.isArray(value)) {
               return "Input must be an array.";
             }
@@ -214,7 +211,7 @@ export function registerSlider(
         },
       },
       trapsFocus: true,
-    } as any,
+    },
     {
       parentComponentName: SLIDER_COMPONENT_NAME,
     }
@@ -229,7 +226,6 @@ export function registerSlider(
       importPath: "@plasmicpkgs/react-aria/skinny/registerSlider",
       importName: "BaseSlider",
       variants,
-      interactionVariants: variants,
       defaultStyles: {
         width: "300px",
       },
@@ -305,7 +301,7 @@ export function registerSlider(
         },
       },
       trapsFocus: true,
-    } as any,
+    },
     overrides
   );
 }

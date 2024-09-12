@@ -11,7 +11,7 @@ import {
   Registerable,
   registerComponentHelper,
 } from "./utils";
-import { pickAriaComponentVariants, UpdateVariant } from "./variant-utils";
+import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
 const INPUT_VARIANTS = [
   "focused" as const,
@@ -23,10 +23,8 @@ const { variants } = pickAriaComponentVariants(INPUT_VARIANTS);
 
 export interface BaseInputProps
   extends Omit<InputProps, "autoComplete">,
-    HasControlContextData {
-  // Optional callback to update the CC variant state
-  // as it's only provided if the component is the root of a Studio component
-  updateVariant?: UpdateVariant<typeof INPUT_VARIANTS>;
+    HasControlContextData,
+    WithVariants<typeof INPUT_VARIANTS> {
   autoComplete?: string[];
 }
 
@@ -108,7 +106,6 @@ export function registerInput(
       importPath: "@plasmicpkgs/react-aria/skinny/registerInput",
       importName: "BaseInput",
       variants,
-      interactionVariants: variants,
       defaultStyles: {
         width: "300px",
         borderWidth: "1px",
@@ -163,7 +160,7 @@ export function registerInput(
         importPath: "@plasmicpkgs/react-aria/skinny/registerInput",
       },
       trapsFocus: true,
-    } as any,
+    },
     overrides
   );
 }

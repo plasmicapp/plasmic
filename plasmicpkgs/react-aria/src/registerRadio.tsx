@@ -12,7 +12,7 @@ import {
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { UpdateVariant, pickAriaComponentVariants } from "./variant-utils";
+import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
 
 const RADIO_VARIANTS = [
   "selected" as const,
@@ -25,11 +25,11 @@ const RADIO_VARIANTS = [
   "selected" as const,
 ];
 
-export interface BaseRadioProps extends RadioProps, HasControlContextData {
+export interface BaseRadioProps
+  extends RadioProps,
+    HasControlContextData,
+    WithVariants<typeof RADIO_VARIANTS> {
   children: React.ReactNode;
-  // Optional callback to update the CC variant state
-  // as it's only provided if the component is the root of a Studio component
-  updateVariant?: UpdateVariant<typeof RADIO_VARIANTS>;
 }
 
 const { variants, withObservedValues } =
@@ -125,7 +125,6 @@ export function registerRadio(
       importPath: "@plasmicpkgs/react-aria/skinny/registerRadio",
       importName: "BaseRadio",
       variants,
-      interactionVariants: variants,
       props: {
         ...getCommonProps<BaseRadioProps>("radio", [
           "isDisabled",
@@ -144,7 +143,7 @@ export function registerRadio(
         },
       },
       trapsFocus: true,
-    } as any,
+    },
     overrides
   );
 }

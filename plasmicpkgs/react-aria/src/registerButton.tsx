@@ -8,7 +8,7 @@ import {
   Registerable,
   registerComponentHelper,
 } from "./utils";
-import { pickAriaComponentVariants, UpdateVariant } from "./variant-utils";
+import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
 const BUTTON_VARIANTS = [
   "hovered" as const,
@@ -21,13 +21,12 @@ const BUTTON_VARIANTS = [
 const { variants, withObservedValues } =
   pickAriaComponentVariants(BUTTON_VARIANTS);
 
-interface BaseButtonProps extends ButtonProps {
+interface BaseButtonProps
+  extends ButtonProps,
+    WithVariants<typeof BUTTON_VARIANTS> {
   children: React.ReactNode;
   resetsForm?: boolean;
   submitsForm?: boolean;
-  // Optional callback to update the CC variant state
-  // as it's only provided if the component is the root of a Studio component
-  updateVariant?: UpdateVariant<typeof BUTTON_VARIANTS>;
 }
 
 export function BaseButton(props: BaseButtonProps) {
@@ -69,7 +68,6 @@ export function registerButton(
       importPath: "@plasmicpkgs/react-aria/skinny/registerButton",
       importName: "BaseButton",
       variants,
-      interactionVariants: variants,
       defaultStyles: {
         borderWidth: "1px",
         borderStyle: "solid",
@@ -115,7 +113,7 @@ export function registerButton(
         },
       },
       trapsFocus: true,
-    } as any,
+    },
     overrides
   );
 }

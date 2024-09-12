@@ -12,7 +12,7 @@ import {
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { UpdateVariant, pickAriaComponentVariants } from "./variant-utils";
+import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
 
 const SLIDER_TRACK_VARIANTS = ["hovered" as const];
 
@@ -21,11 +21,9 @@ const { variants, withObservedValues } = pickAriaComponentVariants(
 );
 
 export interface BaseSliderTrackProps
-  extends React.ComponentProps<typeof SliderTrack> {
+  extends React.ComponentProps<typeof SliderTrack>,
+    WithVariants<typeof SLIDER_TRACK_VARIANTS> {
   progressBar?: React.ReactNode;
-  // Optional callback to update the CC variant state
-  // as it's only provided if the component is the root of a Studio component
-  updateVariant?: UpdateVariant<typeof SLIDER_TRACK_VARIANTS>;
   children?: React.ReactElement<HTMLElement>;
 }
 
@@ -181,7 +179,6 @@ export function registerSliderTrack(
       importPath: "@plasmicpkgs/react-aria/skinny/registerSliderTrack",
       importName: "BaseSliderTrack",
       variants,
-      interactionVariants: variants,
       defaultStyles: {
         width: "stretch",
         backgroundColor: "#aaa",
@@ -233,7 +230,7 @@ export function registerSliderTrack(
         },
       },
       trapsFocus: true,
-    } as any,
+    },
     overrides
   );
 }

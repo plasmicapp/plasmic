@@ -15,21 +15,19 @@ import {
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { UpdateVariant, pickAriaComponentVariants } from "./variant-utils";
+import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
 
 const TEXT_FIELD_VARIANTS = ["disabled" as const, "readonly" as const];
 
 export interface BaseTextFieldProps
-  extends Omit<TextFieldProps, "autoComplete"> {
+  extends Omit<TextFieldProps, "autoComplete">,
+    WithVariants<typeof TEXT_FIELD_VARIANTS> {
   label?: ReactNode;
   description?: ReactNode;
   multiline?: boolean;
   inputProps?: InputProps;
   autoComplete?: string[];
   children: ReactNode;
-  // Optional callback to update the CC variant state
-  // as it's only provided if the component is the root of a Studio component
-  updateVariant?: UpdateVariant<typeof TEXT_FIELD_VARIANTS>;
 }
 
 const { variants, withObservedValues } =
@@ -71,7 +69,6 @@ export function registerTextField(
       importPath: "@plasmicpkgs/react-aria/skinny/registerTextField",
       importName: "BaseTextField",
       variants,
-      interactionVariants: variants,
       // TODO: Support for validate prop
       props: {
         ...getCommonProps<BaseTextFieldProps>("Text Field", [
@@ -170,7 +167,7 @@ export function registerTextField(
         },
       },
       trapsFocus: true,
-    } as any,
+    },
     overrides
   );
 

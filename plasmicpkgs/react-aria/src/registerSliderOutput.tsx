@@ -6,15 +6,13 @@ import {
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { UpdateVariant, pickAriaComponentVariants } from "./variant-utils";
+import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
 
 const SLIDER_OUTPUT_VARIANTS = ["disabled" as const];
 export interface BaseSliderOutputProps
-  extends React.ComponentProps<typeof SliderOutput> {
+  extends React.ComponentProps<typeof SliderOutput>,
+    WithVariants<typeof SLIDER_OUTPUT_VARIANTS> {
   children?: React.ReactNode;
-  // Optional callback to update the CC variant state
-  // as it's only provided if the component is the root of a Studio component
-  updateVariant?: UpdateVariant<typeof SLIDER_OUTPUT_VARIANTS>;
 }
 
 const { variants, withObservedValues } = pickAriaComponentVariants(
@@ -53,12 +51,11 @@ export function registerSliderOutput(
       importPath: "@plasmicpkgs/react-aria/skinny/registerSliderOutput",
       importName: "BaseSliderOutput",
       variants,
-      interactionVariants: variants,
       props: {
         children: { type: "slot" },
       },
       trapsFocus: true,
-    } as any,
+    },
     overrides
   );
 }

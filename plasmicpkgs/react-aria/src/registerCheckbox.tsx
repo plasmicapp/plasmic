@@ -11,7 +11,7 @@ import {
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { UpdateVariant, pickAriaComponentVariants } from "./variant-utils";
+import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
 
 const CHECKBOX_VARIANTS = [
   "hovered" as const,
@@ -25,11 +25,11 @@ const CHECKBOX_VARIANTS = [
   "selected" as const,
 ];
 
-interface BaseCheckboxProps extends CheckboxProps, HasControlContextData {
+interface BaseCheckboxProps
+  extends CheckboxProps,
+    HasControlContextData,
+    WithVariants<typeof CHECKBOX_VARIANTS> {
   children: React.ReactNode;
-  // Optional callback to update the CC variant state
-  // as it's only provided if the component is the root of a Studio component
-  updateVariant?: UpdateVariant<typeof CHECKBOX_VARIANTS>;
 }
 
 const { variants, withObservedValues } =
@@ -141,7 +141,6 @@ export function registerCheckbox(
       importPath: "@plasmicpkgs/react-aria/skinny/registerCheckbox",
       importName: "BaseCheckbox",
       variants,
-      interactionVariants: variants,
       props: {
         ...getCommonProps<BaseCheckboxProps>("checkbox", [
           "name",
@@ -209,7 +208,7 @@ export function registerCheckbox(
         },
       },
       trapsFocus: true,
-    } as any,
+    },
     overrides
   );
 }

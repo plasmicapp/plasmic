@@ -11,7 +11,7 @@ import {
   Registerable,
   registerComponentHelper,
 } from "./utils";
-import { pickAriaComponentVariants, UpdateVariant } from "./variant-utils";
+import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
 const LIST_BOX_ITEM_VARIANTS = [
   "hovered" as const,
@@ -32,12 +32,10 @@ export interface BaseListBoxControlContextData {
 
 export interface BaseListBoxItemProps
   extends React.ComponentProps<typeof ListBoxItem>,
-    HasControlContextData<BaseListBoxControlContextData> {
+    HasControlContextData<BaseListBoxControlContextData>,
+    WithVariants<typeof LIST_BOX_ITEM_VARIANTS> {
   id?: string;
   children?: React.ReactNode;
-  // Optional callback to update the CC variant state
-  // as it's only provided if the component is the root of a Studio component
-  updateVariant?: UpdateVariant<typeof LIST_BOX_ITEM_VARIANTS>;
 }
 
 export function BaseListBoxItem(props: BaseListBoxItemProps) {
@@ -162,17 +160,12 @@ export function registerListBoxItem(
       importPath: "@plasmicpkgs/react-aria/skinny/registerListBoxItem",
       importName: "BaseListBoxItem",
       variants,
-      interactionVariants: variants,
       props: {
         id: {
           type: "string",
           description: "The id of the item",
           required: true,
-          validator: (
-            _value: any,
-            _props: BaseListBoxItemProps,
-            ctx: BaseListBoxControlContextData
-          ) => {
+          validator: (_value, _props, ctx) => {
             if (ctx?.hasDuplicateId) {
               return "Please make sure the id is unique!";
             }
@@ -189,7 +182,7 @@ export function registerListBoxItem(
           defaultValue: makeDefaultListBoxItemChildren("Item"),
         },
       },
-    } as any,
+    },
     overrides
   );
 }

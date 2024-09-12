@@ -10,7 +10,7 @@ import {
   Registerable,
   registerComponentHelper,
 } from "./utils";
-import { pickAriaComponentVariants, UpdateVariant } from "./variant-utils";
+import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
 const SWITCH_VARIANTS = [
   "hovered" as const,
@@ -25,11 +25,10 @@ const SWITCH_VARIANTS = [
 const { variants, withObservedValues } =
   pickAriaComponentVariants(SWITCH_VARIANTS);
 
-interface BaseSwitchProps extends SwitchProps {
+interface BaseSwitchProps
+  extends SwitchProps,
+    WithVariants<typeof SWITCH_VARIANTS> {
   children: React.ReactNode;
-  // Optional callback to update the CC variant state
-  // as it's only provided if the component is the root of a Studio component
-  updateVariant?: UpdateVariant<typeof SWITCH_VARIANTS>;
 }
 
 export function BaseSwitch(props: BaseSwitchProps) {
@@ -76,7 +75,6 @@ export function registerSwitch(
       importPath: "@plasmicpkgs/react-aria/skinny/registerSwitch",
       importName: "BaseSwitch",
       variants,
-      interactionVariants: variants,
       defaultStyles: {
         display: "flex",
         flexDirection: "column",
@@ -191,7 +189,7 @@ export function registerSwitch(
         },
       },
       trapsFocus: true,
-    } as any,
+    },
     overrides
   );
 }

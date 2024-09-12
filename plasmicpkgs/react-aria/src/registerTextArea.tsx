@@ -11,7 +11,7 @@ import {
   Registerable,
   registerComponentHelper,
 } from "./utils";
-import { pickAriaComponentVariants, UpdateVariant } from "./variant-utils";
+import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
 const TEXTAREA_VARIANTS = [
   "focused" as const,
@@ -23,11 +23,8 @@ const { variants } = pickAriaComponentVariants(TEXTAREA_VARIANTS);
 
 export interface BaseTextAreaProps
   extends TextAreaProps,
-    HasControlContextData {
-  // Optional callback to update the CC variant state
-  // as it's only provided if the component is the root of a Studio component
-  updateVariant?: UpdateVariant<typeof TEXTAREA_VARIANTS>;
-}
+    HasControlContextData,
+    WithVariants<typeof TEXTAREA_VARIANTS> {}
 
 export const inputHelpers = {
   states: {
@@ -94,7 +91,6 @@ export function registerTextArea(
       importPath: "@plasmicpkgs/react-aria/skinny/registerTextArea",
       importName: "BaseTextArea",
       variants,
-      interactionVariants: variants,
       props: {
         ...getCommonProps<TextAreaProps>("Text Area", [
           "name",
@@ -139,7 +135,7 @@ export function registerTextArea(
         importPath: "@plasmicpkgs/react-aria/skinny/registerTextArea",
       },
       trapsFocus: true,
-    } as any,
+    },
     overrides
   );
 }

@@ -17,15 +17,14 @@ import {
   Registerable,
   registerComponentHelper,
 } from "./utils";
-import { pickAriaComponentVariants, UpdateVariant } from "./variant-utils";
+import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
 const CHECKBOX_GROUP_VARIANTS = ["disabled" as const, "readonly" as const];
 
-export interface BaseCheckboxGroupProps extends CheckboxGroupProps {
+export interface BaseCheckboxGroupProps
+  extends CheckboxGroupProps,
+    WithVariants<typeof CHECKBOX_GROUP_VARIANTS> {
   children?: React.ReactNode;
-  // Optional callback to update the CC variant state
-  // as it's only provided if the component is the root of a Studio component
-  updateVariant?: UpdateVariant<typeof CHECKBOX_GROUP_VARIANTS>;
 }
 
 const { variants, withObservedValues } = pickAriaComponentVariants(
@@ -79,7 +78,6 @@ export function registerCheckboxGroup(
       importPath: "@plasmicpkgs/react-aria/skinny/registerCheckboxGroup",
       importName: "BaseCheckboxGroup",
       variants,
-      interactionVariants: variants,
       props: {
         ...getCommonProps<BaseCheckboxGroupProps>("checkbox group", [
           "name",
@@ -193,7 +191,7 @@ export function registerCheckboxGroup(
         },
       },
       trapsFocus: true,
-    } as any,
+    },
     overrides
   );
 }
