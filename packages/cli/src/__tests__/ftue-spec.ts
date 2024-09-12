@@ -2,7 +2,6 @@ jest.mock("../api");
 import { sync } from "../actions/sync";
 import {
   expectProject1Components,
-  expectProject1PlasmicJson,
   opts,
   standardTestSetup,
   standardTestTeardown,
@@ -35,9 +34,5 @@ describe("first-time-user-experience", () => {
     await expect(sync(opts)).resolves.toBeUndefined();
 
     expectProject1Components();
-
-    expect(tmpRepo.checkFile("./src/DepComponent.tsx")).toBeFalsy();
-
-    expectProject1PlasmicJson();
   });
 });

@@ -2,8 +2,8 @@ import fs from "fs";
 import * as path from "path";
 import * as tmp from "tmp";
 import {
-  AuthConfig,
   AUTH_FILE_NAME,
+  AuthConfig,
   CONFIG_FILE_NAME,
   PlasmicConfig,
 } from "../utils/config-utils";
@@ -50,30 +50,34 @@ export class TempRepo {
     }
   }
 
-  getComponentFileContents(
-    projectId: string,
-    componentId: string
-  ): string | undefined {
+  readGeneratedComponentFiles(projectId: string, componentId: string) {
     const plasmicJson: PlasmicConfig = JSON.parse(
       this.readFile(CONFIG_FILE_NAME)
     );
-    const srcDir = plasmicJson.srcDir;
-    const projectConfig = plasmicJson.projects.find(
-      (p) => p.projectId === projectId
-    );
-    if (!projectConfig) {
-      return;
-    }
-    const componentConfig = projectConfig.components.find(
-      (c) => c.id === componentId
-    );
+    const componentConfig = plasmicJson.projects
+      .find((p) => p.projectId === projectId)
+      ?.components.find((c) => c.id === componentId);
     if (!componentConfig) {
-      return;
+      throw new Error();
     }
-    const data = this.readFile(
-      path.join(srcDir, componentConfig.renderModuleFilePath)
+
+    const skeletonPath = path.join(
+      plasmicJson.srcDir,
+      componentConfig.importSpec.modulePath
     );
-    return data;
+    const renderPath = path.join(
+      plasmicJson.srcDir,
+      componentConfig.renderModuleFilePath
+    );
+    const cssPath = path.join(plasmicJson.srcDir, componentConfig.cssFilePath);
+    return {
+      skeletonPath,
+      skeleton: this.readFile(skeletonPath),
+      renderPath,
+      render: this.readFile(renderPath),
+      cssPath,
+      css: this.readFile(cssPath),
+    };
   }
 
   plasmicAuthPath(): string {

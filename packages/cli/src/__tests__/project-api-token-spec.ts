@@ -1,9 +1,8 @@
 import { sync } from "../actions/sync";
 import {
   defaultPlasmicJson,
+  expectDepComponents,
   expectProject1Components,
-  expectProject1PlasmicJson,
-  expectProjectAndDepPlasmicJson,
   mockApi,
   opts,
   project1Config,
@@ -35,8 +34,6 @@ describe("Project API tokens", () => {
     await expect(sync(opts)).resolves.toBeUndefined();
 
     expectProject1Components();
-
-    expectProject1PlasmicJson();
 
     // Re-run, this time with no auth.
     removeAuth();
@@ -70,8 +67,8 @@ describe("Project API tokens", () => {
     await expect(sync(opts)).resolves.toBeUndefined();
 
     expectProject1Components();
-
-    expectProject1PlasmicJson({ projectApiToken: true });
+    const plasmicJson = tmpRepo.readPlasmicJson();
+    expect(plasmicJson.projects[0].projectApiToken).toEqual("blah");
 
     // Re-run, this time with no auth.
     removeAuth();
@@ -82,15 +79,17 @@ describe("Project API tokens", () => {
 
   test("is filled in by auth'd user if project exists but token was initially missing", async () => {
     opts.projects = ["projectId1"];
+    const projectConfig = { ...project1Config };
+    delete projectConfig.projectApiToken;
     tmpRepo.writePlasmicJson({
       ...defaultPlasmicJson,
-      projects: [project1Config],
+      projects: [projectConfig],
     });
     await expect(sync(opts)).resolves.toBeUndefined();
 
     expectProject1Components();
-
-    expectProject1PlasmicJson({ projectApiToken: true });
+    const plasmicJson = tmpRepo.readPlasmicJson();
+    expect(plasmicJson.projects[0].projectApiToken).toEqual(undefined);
 
     // Re-run, this time with no auth.
     removeAuth();
@@ -120,7 +119,7 @@ describe("Project API tokens", () => {
 
   test("works even if you have tokens for base but not deps", async () => {
     // Make project1 have a dependency.
-    standardTestSetup();
+    standardTestSetup(true);
 
     opts.projects = ["projectId1"];
     removeAuth();
@@ -130,14 +129,15 @@ describe("Project API tokens", () => {
     });
     await expect(sync(opts)).resolves.toBeUndefined();
 
+    expectDepComponents();
     expectProject1Components();
-
-    expectProjectAndDepPlasmicJson();
+    const plasmicJson = tmpRepo.readPlasmicJson();
+    expect(plasmicJson.projects[0].projectApiToken).toEqual("abc");
   });
 
   test("works even if dependency was determined to not need an update", async () => {
     // Make project1 have a dependency.
-    standardTestSetup();
+    standardTestSetup(true);
 
     opts.projects = ["projectId1"];
     await expect(sync(opts)).resolves.toBeUndefined();

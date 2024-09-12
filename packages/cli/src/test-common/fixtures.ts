@@ -1,9 +1,8 @@
 /// <reference types="@types/jest" />
-import L from "lodash";
+import { MockProject } from "../__mocks__/api";
 import { SyncArgs } from "../actions/sync";
 import { PlasmicConfig, ProjectConfig } from "../utils/config-utils";
 import { TempRepo } from "../utils/test-utils";
-import { MockProject } from "../__mocks__/api";
 
 jest.mock("../api");
 
@@ -38,7 +37,7 @@ export const defaultPlasmicJson: PlasmicConfig = {
   wrapPagesWithGlobalContexts: true,
   cliVersion: "0.1.44",
 };
-export function standardTestSetup(includeDep = true) {
+export function standardTestSetup(includeDep = false) {
   process.env.PLASMIC_DISABLE_AUTH_SEARCH = "1";
 
   // Setup server-side mock data
@@ -109,26 +108,147 @@ export function standardTestTeardown() {
   delete process.env["PLASMIC_DISABLE_AUTH_SEARCH"];
 }
 
-export function expectProject1Components() {
+export function expectComponent({
+  expectInPlasmicJson = true,
+  projectId,
+  projectVersion,
+  id,
+  name,
+  cssPath,
+  renderPath,
+  skeletonPath,
+  skeletonVersion,
+  depComponents = [],
+}: {
+  expectInPlasmicJson?: boolean;
+  projectId: string;
+  projectVersion: string;
+  id: string;
+  name: string;
+  cssPath: string;
+  renderPath: string;
+  skeletonPath: string;
+  skeletonVersion: string;
+  depComponents?: {
+    id: string;
+    name: string;
+  }[];
+}) {
+  // Check component exists in plasmic.json
+  const plasmicJson = tmpRepo.readPlasmicJson();
+  expect(plasmicJson.projects).toContainEqual(
+    expect.objectContaining({
+      projectId,
+    })
+  );
+  const project = plasmicJson.projects.find((p) => p.projectId === projectId)!;
+  if (expectInPlasmicJson) {
+    expect(project.components).toContainEqual(
+      expect.objectContaining({
+        projectId,
+        id,
+        name,
+        importSpec: {
+          modulePath: skeletonPath,
+        },
+        renderModuleFilePath: renderPath,
+        cssFilePath: cssPath,
+        componentType: "component",
+        scheme: "blackbox",
+        type: "managed",
+      })
+    );
+  } else {
+    expect(project.components).not.toContainEqual(
+      expect.objectContaining({
+        projectId,
+        id,
+        name,
+      })
+    );
+  }
+
   // Check correct files exist
-  const button = mockApi.stringToMockComponent(
-    tmpRepo.getComponentFileContents("projectId1", "buttonId")
-  );
-  const container = mockApi.stringToMockComponent(
-    tmpRepo.getComponentFileContents("projectId1", "containerId")
-  );
-  expect(button).toBeTruthy();
-  expect(container).toBeTruthy();
-  expect(button?.name).toEqual("Button");
-  expect(button?.version).toEqual("1.2.3");
-  expect(container?.name).toEqual("Container");
-  expect(container?.version).toEqual("1.2.3");
+  const modules = tmpRepo.readGeneratedComponentFiles(projectId, id);
+  expect(modules.cssPath).toEqual(`src/${cssPath}`);
+  expect(modules.renderPath).toEqual(`src/${renderPath}`);
+  expect(modules.skeletonPath).toEqual(`src/${skeletonPath}`);
+
+  // Check component data (esp version) that files were generated from
+  // Render and CSS always gets rewritten, so use projectVersion
+  // Skeleton only gets written once, so it gets its own skeletonVersion
+  const cssData = mockApi.stringToMockComponent(modules.css);
+  expect(cssData.name).toEqual(name);
+  expect(cssData.version).toEqual(projectVersion);
+  const renderData = mockApi.stringToMockComponent(modules.render);
+  expect(renderData.name).toEqual(name);
+  expect(renderData.version).toEqual(projectVersion);
+  const skeletonData = mockApi.stringToMockComponent(modules.skeleton);
+  expect(skeletonData.name).toEqual(name);
+  expect(skeletonData.version).toEqual(skeletonVersion);
+
+  // Check imports in render file
+  for (const depComp of depComponents) {
+    expect(modules.render).toContain(
+      `import ${depComp.name} from "../../${depComp.name}"; // plasmic-import: ${depComp.id}/component`
+    );
+  }
+
+  // Check Plasmic import directives are removed from skeleton file
+  expect(modules.skeleton).not.toContain("// plasmic-import:");
+}
+
+export function expectProject1Components(opts?: { includeDep: boolean }) {
+  const depComponents = opts?.includeDep
+    ? [
+        {
+          id: "depComponentId",
+          name: "DepComponent",
+        },
+      ]
+    : undefined;
+  expectComponent({
+    projectId: "projectId1",
+    projectVersion: "1.2.3",
+    id: "buttonId",
+    name: "Button",
+    skeletonVersion: "1.2.3",
+    skeletonPath: "Button.tsx",
+    renderPath: "plasmic/project_id_1/PlasmicButton.tsx",
+    cssPath: "plasmic/project_id_1/PlasmicButton.css",
+    depComponents,
+  });
+  expectComponent({
+    projectId: "projectId1",
+    projectVersion: "1.2.3",
+    id: "containerId",
+    name: "Container",
+    skeletonVersion: "1.2.3",
+    skeletonPath: "Container.tsx",
+    renderPath: "plasmic/project_id_1/PlasmicContainer.tsx",
+    cssPath: "plasmic/project_id_1/PlasmicContainer.css",
+    depComponents,
+  });
+}
+
+export function expectDepComponents() {
+  expectComponent({
+    projectId: "dependencyId1",
+    projectVersion: "2.3.4",
+    id: "depComponentId",
+    name: "DepComponent",
+    skeletonVersion: "2.3.4",
+    skeletonPath: "DepComponent.tsx",
+    renderPath: "plasmic/dependency_id_1/PlasmicDepComponent.tsx",
+    cssPath: "plasmic/dependency_id_1/PlasmicDepComponent.css",
+  });
 }
 
 export const project1Config: ProjectConfig = {
   projectId: "projectId1",
   projectName: "Project 1",
   projectBranchName: "main",
+  projectApiToken: "abc",
   version: "latest",
   cssFilePath: "plasmic/PP__demo.css",
   components: [
@@ -153,35 +273,3 @@ export const project1Config: ProjectConfig = {
   globalContextsFilePath: "",
   splitsProviderFilePath: "",
 };
-
-export function expectProject1PlasmicJson(optional?: {
-  [k in keyof ProjectConfig]?: boolean;
-}) {
-  const plasmicJson = tmpRepo.readPlasmicJson();
-  expect(plasmicJson.projects.length).toEqual(1);
-  const projectConfig = plasmicJson.projects[0];
-  if (!optional?.projectApiToken) {
-    expect(projectConfig.projectApiToken).toBe("abc");
-  }
-  expect(projectConfig.components.length).toEqual(2);
-  const componentNames = projectConfig.components.map((c) => c.name);
-  expect(componentNames).toContain("Button");
-  expect(componentNames).toContain("Container");
-}
-
-export function expectProjectAndDepPlasmicJson() {
-  const plasmicJson = tmpRepo.readPlasmicJson();
-  expect(plasmicJson.projects.length).toEqual(2);
-  const projectConfigMap = L.keyBy(plasmicJson.projects, (p) => p.projectId);
-  expect(projectConfigMap["projectId1"]).toBeTruthy();
-  expect(projectConfigMap["dependencyId1"]).toBeTruthy();
-  const projectComponentNames = projectConfigMap["projectId1"].components.map(
-    (c) => c.name
-  );
-  const depComponentNames = projectConfigMap["dependencyId1"].components.map(
-    (c) => c.name
-  );
-  expect(projectComponentNames).toContain("Button");
-  expect(projectComponentNames).toContain("Container");
-  expect(depComponentNames).toContain("DepComponent");
-}
