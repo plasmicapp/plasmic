@@ -217,6 +217,7 @@ export interface SiteInfo {
   projectApiToken: string | null;
   workspaceId: WorkspaceId | null;
   workspaceName: string | null;
+  parentTeamId: TeamId | null;
   teamId: TeamId | null;
   teamName: string | null;
   featureTier: ApiFeatureTier | null;

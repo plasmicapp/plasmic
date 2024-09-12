@@ -1100,14 +1100,17 @@ export class DbMgr implements MigrationDbMgr {
     userId: UserId
   ): Promise<AccessLevel> {
     this.checkSuperUser();
-    const existingPerm = await this.permissions().findOne({
-      where: {
-        teamId,
-        userId,
-        ...excludeDeleted(),
-      },
-    });
-    return existingPerm ? existingPerm.accessLevel : "blocked";
+    const existingPerm = await this.getPermissionsForResources(
+      { type: "team", ids: [teamId] },
+      true,
+      { userId }
+    );
+    return existingPerm.length > 0
+      ? _.maxBy(
+          existingPerm.map((p) => p.accessLevel),
+          (lvl) => accessLevelRank(lvl)
+        )!
+      : "blocked";
   }
 
   private _queryTeams(where: FindConditions<Team>, includeDeleted = false) {
@@ -1199,6 +1202,35 @@ export class DbMgr implements MigrationDbMgr {
     );
 
     return this._queryTeams({ parentTeamId: In(ids) }).getMany();
+  }
+
+  async getParentTeamIds(ids: TeamId[]): Promise<TeamId[]> {
+    if (ids.length === 0 || this.actor.type === "AnonUser") {
+      return [];
+    }
+
+    const userId =
+      this.actor.type === "SuperUser" ? undefined : this.checkNormalUser();
+
+    let parentTeamQb = this.entMgr.createQueryBuilder();
+    parentTeamQb
+      .select("t.parentTeamId", "teamId")
+      .from(Team, "t")
+      .where(`t.id IN (:...ids)`, { ids });
+
+    if (userId) {
+      parentTeamQb = parentTeamQb
+        .innerJoin(Permission, "subperm", `subperm.teamId = t.parentTeamId`)
+        .andWhere(
+          `
+            subperm.userId = :userId
+            and subperm.accessLevel <> 'blocked'
+            and subperm.deletedAt is null
+          `,
+          { userId }
+        );
+    }
+    return (await parentTeamQb.getRawMany()).map((t) => t.teamId);
   }
 
   async updateTeam({
@@ -1311,7 +1343,11 @@ export class DbMgr implements MigrationDbMgr {
   async getAffiliatedTeams() {
     const userId = this.checkNormalUser();
     return this._queryTeams({}, false)
-      .innerJoin(Permission, "perm", "perm.teamId = t.id")
+      .innerJoin(
+        Permission,
+        "perm",
+        "perm.teamId = t.id or perm.teamId = pt.id"
+      )
       .andWhere(
         `
           t.deletedAt is null
@@ -2227,6 +2263,8 @@ export class DbMgr implements MigrationDbMgr {
           perm.workspaceId = w.id
           or
           perm.teamId = w.teamId
+          or
+          perm.teamId = t.parentTeamId
         `
       )
       .andWhere(
@@ -2671,6 +2709,8 @@ export class DbMgr implements MigrationDbMgr {
           perm.workspaceId = p.workspaceId
           or
           perm.teamId = :teamId
+          or
+          perm.teamId = t.parentTeamId
         `
       )
       .andWhere(
@@ -5124,7 +5164,8 @@ export class DbMgr implements MigrationDbMgr {
 
   private async getPermissionsForResources(
     taggedResourceIds: TaggedResourceIds,
-    directOnly: boolean
+    directOnly: boolean,
+    whereClause?: FindConditions<Permission>
   ): Promise<Permission[]> {
     await this._checkResourcesPerms(
       taggedResourceIds,
@@ -5132,29 +5173,50 @@ export class DbMgr implements MigrationDbMgr {
       "list permissions for"
     );
 
-    if (taggedResourceIds.ids.length === 0) {
+    const resourceIds = [...taggedResourceIds.ids];
+
+    if (resourceIds.length === 0) {
       return [];
+    }
+
+    if (this.actor.type === "AnonUser") {
+      return this.permissions()
+        .createQueryBuilder("perm")
+        .leftJoinAndSelect("perm.user", "u")
+        .where({
+          [taggedResourceIds.type]: { id: In(resourceIds) },
+          ...excludeDeleted(),
+          ...(whereClause ? whereClause : {}),
+        })
+        .getMany();
+    }
+
+    const userId =
+      this.actor.type === "SuperUser" ? undefined : this.checkNormalUser();
+
+    if (taggedResourceIds.type === "team") {
+      resourceIds.push(
+        ...(await await this.getParentTeamIds(resourceIds as TeamId[]))
+      );
     }
 
     let qb = this.permissions()
       .createQueryBuilder("perm")
       .leftJoinAndSelect("perm.user", "u")
       .where({
-        [taggedResourceIds.type]: { id: In(taggedResourceIds.ids) },
+        [taggedResourceIds.type]: { id: In(resourceIds) },
         ...excludeDeleted(),
+        ...(whereClause ? whereClause : {}),
       });
 
-    if (!directOnly && this.actor.type !== "AnonUser") {
-      const userId =
-        this.actor.type === "SuperUser" ? undefined : this.checkNormalUser();
-
+    if (!directOnly) {
       if (taggedResourceIds.type === "project") {
         let workspaceQb = this.entMgr
           .createQueryBuilder()
           .select("p.workspaceId", "workspaceId")
           .from(Project, "p")
           .innerJoin("p.workspace", "w")
-          .where(`p.id IN (:...ids)`, { ids: taggedResourceIds.ids });
+          .where(`p.id IN (:...ids)`, { ids: resourceIds });
         if (userId) {
           workspaceQb = workspaceQb
             .innerJoin(
@@ -5188,13 +5250,19 @@ export class DbMgr implements MigrationDbMgr {
 
         let teamQb = this.entMgr
           .createQueryBuilder()
-          .select("w.teamId", "teamId")
+          .select("t.id", "teamId")
+          .addSelect("t.parentTeamId", "parentTeamId")
           .from(Project, "p")
           .innerJoin("p.workspace", "w")
-          .where(`p.id IN (:...ids)`, { ids: taggedResourceIds.ids });
+          .innerJoin("w.team", "t")
+          .where(`p.id IN (:...ids)`, { ids: resourceIds });
         if (userId) {
           teamQb = teamQb
-            .innerJoin(Permission, "subperm", `subperm.teamId = w.teamId`)
+            .innerJoin(
+              Permission,
+              "subperm",
+              `subperm.teamId = t.id or subperm.teamId = t.parentTeamId`
+            )
             .andWhere(
               `
                 subperm.userId = :userId
@@ -5204,25 +5272,31 @@ export class DbMgr implements MigrationDbMgr {
               { userId }
             );
         }
-        const teamIds = (
-          await teamQb.setParameters(qb.getParameters()).getRawMany()
-        ).map((r) => r.teamId);
+        const teamIds = withoutNils(
+          (await teamQb.setParameters(qb.getParameters()).getRawMany()).flatMap(
+            (r) => [r.teamId, r.parentTeamId]
+          )
+        );
         if (teamIds.length > 0) {
           qb = qb
             .orWhere(`perm.deletedAt is null and perm.teamId in (:...teamId)`)
             .setParameter("teamId", teamIds);
         }
-      }
-
-      if (taggedResourceIds.type === "workspace") {
+      } else if (taggedResourceIds.type === "workspace") {
         let teamQb = this.entMgr
           .createQueryBuilder()
-          .select("w.teamId", "teamId")
+          .select("t.id", "teamId")
+          .addSelect("t.parentTeamId", "parentTeamId")
           .from(Workspace, "w")
-          .where(`w.id IN (:...ids)`, { ids: taggedResourceIds.ids });
+          .innerJoin("w.team", "t")
+          .where(`w.id IN (:...ids)`, { ids: resourceIds });
         if (userId) {
           teamQb = teamQb
-            .innerJoin(Permission, "subperm", `subperm.teamId = w.teamId`)
+            .innerJoin(
+              Permission,
+              "subperm",
+              `subperm.teamId = t.id or subperm.teamId = t.parentTeamId`
+            )
             .andWhere(
               `
                 subperm.userId = :userId
@@ -5232,9 +5306,12 @@ export class DbMgr implements MigrationDbMgr {
               { userId }
             );
         }
-        const teamIds = (
-          await teamQb.setParameters(qb.getParameters()).getRawMany()
-        ).map((r) => r.teamId);
+        const result = await teamQb
+          .setParameters(qb.getParameters())
+          .getRawMany();
+        const teamIds = withoutNils(
+          result.flatMap((r) => [r.teamId, r.parentTeamId])
+        );
         if (teamIds.length > 0) {
           qb = qb
             .orWhere(`perm.deletedAt is null and perm.teamId in (:...teamId)`)
@@ -5374,18 +5451,25 @@ export class DbMgr implements MigrationDbMgr {
       for (const resource of resources) {
         const resourcePerms =
           taggedResourceIds.type === "team"
-            ? allPerms.filter((p) => p.teamId === resource.id)
+            ? allPerms.filter(
+                (p) =>
+                  p.teamId === resource.id ||
+                  p.teamId === (resource as Team).parentTeamId
+              )
             : taggedResourceIds.type === "workspace"
             ? allPerms.filter(
                 (p) =>
                   p.workspaceId === resource.id ||
-                  p.teamId === (resource as Workspace).team.id
+                  p.teamId === (resource as Workspace).team.id ||
+                  p.teamId === (resource as Workspace).team.parentTeamId
               )
             : allPerms.filter(
                 (p) =>
                   p.projectId === resource.id ||
                   p.workspaceId === (resource as Project).workspace?.id ||
-                  p.teamId === (resource as Project).workspace?.team.id
+                  p.teamId === (resource as Project).workspace?.team.id ||
+                  p.teamId ===
+                    (resource as Project).workspace?.team.parentTeamId
               );
 
         const maxFromPerms = _.maxBy(
@@ -5559,27 +5643,6 @@ export class DbMgr implements MigrationDbMgr {
       }
     }
     await this.entMgr.save(perms);
-    await this.maybeRevokePermissionToSubResources(taggedResourceIds, emails);
-  }
-
-  private async maybeRevokePermissionToSubResources(
-    taggedResourceIds: TaggedResourceIds,
-    emails: string[]
-  ) {
-    if (taggedResourceIds.type !== "team") {
-      return;
-    }
-
-    const subTeams = await this.getTeamsByParentId(taggedResourceIds.ids);
-    if (subTeams.length !== 0) {
-      await this.revokeResourcesPermissionsByEmail(
-        {
-          type: "team",
-          ids: subTeams.map((t) => t.id),
-        },
-        emails
-      );
-    }
   }
 
   async grantProjectPermissionByEmail(
@@ -5718,13 +5781,11 @@ export class DbMgr implements MigrationDbMgr {
     if (!user && grantExistingUsersOnly) {
       throw new GrantUserNotFoundError();
     }
-    const existingPerms = await this.permissions().find({
-      where: {
-        [`${taggedResourceIds.type}Id`]: In(taggedResourceIds.ids),
-        ...excludeDeleted(),
-        ...(user ? { user } : { email }),
-      },
-    });
+    const existingPerms = await this.getPermissionsForResources(
+      taggedResourceIds,
+      true,
+      user ? { user } : { email }
+    );
 
     const resourcesAccessLevel = await this._getActorAccessLevelToResources(
       taggedResourceIds
@@ -5768,16 +5829,11 @@ export class DbMgr implements MigrationDbMgr {
         return this.permissions().create({
           ...this.stampNew(),
           ...(user ? { user } : { email }),
-          [`${taggedResourceIds.type}Id`]: id,
+          [taggedResourceIds.type]: { id: id },
           accessLevel: levelToGrant,
         });
       });
     await this.entMgr.save(perms);
-    await this.maybeGrantPermissionToSubResources(
-      taggedResourceIds,
-      email,
-      levelToGrant
-    );
 
     return { created: createdPerm };
   }
@@ -5826,24 +5882,6 @@ export class DbMgr implements MigrationDbMgr {
         )
         .join("\n")
     );
-  }
-
-  private async maybeGrantPermissionToSubResources(
-    taggedResourceIds: TaggedResourceIds,
-    email: string,
-    levelToGrant: AccessLevel
-  ) {
-    if (taggedResourceIds.type !== "team") {
-      return;
-    }
-    const subTeams = await this.getTeamsByParentId(taggedResourceIds.ids);
-    if (subTeams.length !== 0) {
-      await this.grantResourcesPermission(
-        { type: "team", ids: subTeams.map((team) => team.id) },
-        email,
-        levelToGrant
-      );
-    }
   }
 
   /**

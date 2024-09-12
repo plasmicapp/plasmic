@@ -21,7 +21,6 @@ import {
   DefaultWorkspaceSectionProps,
   PlasmicWorkspaceSection,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicWorkspaceSection";
-import { asOne, ensure, filterMapTruthy, spawn } from "@/wab/shared/common";
 import { InlineEdit } from "@/wab/commons/components/InlineEdit";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import { Stated } from "@/wab/commons/components/Stated";
@@ -31,6 +30,7 @@ import {
   ApiProject,
   ApiWorkspace,
 } from "@/wab/shared/ApiSchema";
+import { asOne, ensure, filterMapTruthy, spawn } from "@/wab/shared/common";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { DATA_SOURCE_PLURAL_LOWER } from "@/wab/shared/Labels";
 import {
@@ -115,13 +115,11 @@ function WorkspaceSection_(
 
     const readOnly =
       accessLevelRank(
-        appCtx.perms.find(
-          (p) =>
-            (p.teamId === workspace.team.id ||
-              p.workspaceId === workspace.id) &&
-            p.userId ===
-              ensure(appCtx.selfInfo, "Unexpected nullish selfInfo").id
-        )?.accessLevel || "blocked"
+        getAccessLevelToResource(
+          { type: "workspace", resource: workspace },
+          appCtx.selfInfo,
+          perms
+        )
       ) < accessLevelRank("editor");
 
     return {

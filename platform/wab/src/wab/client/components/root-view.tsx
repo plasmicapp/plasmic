@@ -66,6 +66,7 @@ import { ensure, hackyCast, spawn } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { StarterSectionConfig } from "@/wab/shared/devflags";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
+import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { getMaximumTierFromTeams } from "@/wab/shared/pricing/pricing-utils";
 import * as React from "react";
 import { Redirect, Route, Switch, useHistory, useLocation } from "react-router";
@@ -329,12 +330,16 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                     render={({ match, location }) => {
                       const teamId = match.params.teamId;
                       // Block viewers from seeing the settings page.
+                      const team = teamId
+                        ? appCtx.teams.find((t) => t.id === teamId)
+                        : undefined;
                       const userAccessLevel =
-                        (teamId
-                          ? appCtx.perms.find(
-                              (p) =>
-                                p.teamId === teamId && p.userId === selfInfo.id
-                            )?.accessLevel
+                        (team
+                          ? getAccessLevelToResource(
+                              { type: "team", resource: team },
+                              appCtx.selfInfo,
+                              appCtx.perms
+                            )
                           : undefined) ?? "blocked";
                       if (
                         accessLevelRank(userAccessLevel) <=

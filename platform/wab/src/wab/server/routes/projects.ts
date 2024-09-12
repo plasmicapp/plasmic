@@ -191,6 +191,7 @@ export function mkApiProject(project: Project): ApiProject {
   return {
     ...omit(project, "workspace"),
     workspaceName: project.workspace?.name || null,
+    parentTeamId: team?.parentTeamId || null,
     teamId: project.workspace?.teamId || null,
     teamName: team?.name || null,
     featureTier: team?.featureTier || null,

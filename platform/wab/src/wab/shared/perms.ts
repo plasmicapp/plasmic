@@ -131,6 +131,13 @@ export function getAccessLevelToParent(
         createTaggedResourceId("team", resource.resource.teamId),
         user?.id
       ),
+      ...(resource.resource.parentTeamId
+        ? filterDirectResourcePerms(
+            perms,
+            createTaggedResourceId("team", resource.resource.parentTeamId),
+            user?.id
+          )
+        : []),
     ];
   } else if (resource.type === "workspace") {
     filteredPerms = [
@@ -138,6 +145,22 @@ export function getAccessLevelToParent(
       ...filterDirectResourcePerms(
         perms,
         createTaggedResourceId("team", resource.resource.team.id),
+        user?.id
+      ),
+      ...(resource.resource.team.parentTeamId
+        ? filterDirectResourcePerms(
+            perms,
+            createTaggedResourceId("team", resource.resource.team.parentTeamId),
+            user?.id
+          )
+        : []),
+    ];
+  } else if (resource.type === "team" && resource.resource.parentTeamId) {
+    filteredPerms = [
+      ...filteredPerms,
+      ...filterDirectResourcePerms(
+        perms,
+        createTaggedResourceId("team", resource.resource.parentTeamId),
         user?.id
       ),
     ];

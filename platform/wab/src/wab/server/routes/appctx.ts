@@ -1,9 +1,9 @@
-import { ensureType } from "@/wab/shared/common";
 import { checkFreeTrialDuration } from "@/wab/server/routes/team-plans";
 import { mkApiTeam } from "@/wab/server/routes/teams";
 import { userDbMgr } from "@/wab/server/routes/util";
 import { mkApiWorkspace } from "@/wab/server/routes/workspaces";
 import { ApiTeam, ApiWorkspace, AppCtxResponse } from "@/wab/shared/ApiSchema";
+import { ensureType } from "@/wab/shared/common";
 import { Request, Response } from "express-serve-static-core";
 
 export async function getAppCtx(req: Request, res: Response) {

@@ -490,6 +490,7 @@ export interface ApiProject extends ApiEntityBase {
   defaultAccessLevel: GrantableAccessLevel;
   workspaceId: WorkspaceId | null;
   workspaceName: string | null;
+  parentTeamId: TeamId | null;
   teamId: TeamId | null;
   teamName: string | null;
   projectApiToken: string | null;
