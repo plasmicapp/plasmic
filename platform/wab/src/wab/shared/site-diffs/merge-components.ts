@@ -1067,8 +1067,12 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
       const previousOrder = computeOrderOfCommonNodes(ancArgs);
       const leftOrder = computeOrderOfCommonNodes(leftArgs);
       const rightOrder = computeOrderOfCommonNodes(rightArgs);
+
+      // Even tough merged is initialized with the ancestor state, at this point reparenting
+      // from `updateParent` was already done, so it's not recommended to assume any similarity
+      // with the previousOrder
       let finalOrder: typeof previousOrder | "conflict" =
-        computeOrderOfCommonNodes(getSlotArgs(merged));
+        computeOrderOfCommonNodes(getFilteredSlotArgs(merged));
 
       // Detect conflict if the relative order of the same elements changed in
       // more than one branch
@@ -1078,9 +1082,9 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
         !isEqual(leftOrder, rightOrder)
       ) {
         finalOrder = "conflict";
-      } else if (!isEqual(finalOrder, leftOrder)) {
+      } else if (!isEqual(previousOrder, leftOrder)) {
         finalOrder = leftOrder;
-      } else if (!isEqual(finalOrder, rightOrder)) {
+      } else if (!isEqual(previousOrder, rightOrder)) {
         finalOrder = rightOrder;
       }
 

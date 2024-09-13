@@ -5303,4 +5303,51 @@ describe("merging", () => {
       autoReconciliations: [],
     });
   });
+
+  it("merges reparenting element moved inside a slot arg and a new element is created", () => {
+    const result = testMerge({
+      ancestorSite: basicSite(),
+      a: (site) => {},
+      b: (site) => {
+        const comp = ensure(
+          site.components.find((c) => c.name === "InstantiateSlotArgs"),
+          () => "Couldn't find InstantiateSlotArgs"
+        );
+        let tplComp: TplComponent = undefined as any;
+        flattenTpls(comp.tplTree).forEach((tpl) => {
+          if (isKnownTplComponent(tpl) && tpl.name === "tplComp") {
+            tplComp = tpl;
+          }
+        });
+        const slot1 = ensure(
+          $$$(ensure(tplComp, () => `tplComp is undefined`)).getSlotArg(
+            "slot1"
+          ),
+          () => `No slot arg for slot1`
+        );
+        const slot2 = ensure(
+          $$$(tplComp).getSlotArg("slot2"),
+          () => `No slot arg for slot2`
+        );
+        const [node1] = ensureKnownRenderExpr(slot1.expr).tpl;
+        const [node2, node3] = ensureKnownRenderExpr(slot2.expr).tpl;
+        const node4 = mkTplTagX("div", {
+          name: "SlotArgNode4",
+          baseVariant: getBaseVariant(comp),
+          variants: [
+            mkVariantSetting({
+              variants: [getBaseVariant(comp)],
+            }),
+          ],
+        });
+        node4.parent = tplComp;
+        ensureKnownRenderExpr(slot1.expr).tpl = [node4];
+        ensureKnownRenderExpr(slot2.expr).tpl = [node1];
+      },
+    });
+    expect(result).toMatchObject({
+      status: "merged",
+      autoReconciliations: [],
+    });
+  });
 });
