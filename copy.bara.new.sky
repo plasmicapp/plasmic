@@ -4,7 +4,7 @@
 
 # Must use https for gerrit API calls to work (to create CRs).
 # The username and password for this should be stored in git-credentials.
-privateUrl: "ssh://git@github.com:plasmicapp/plasmic-internal.git"
+privateUrl = "ssh://git@github.com:plasmicapp/plasmic-internal.git"
 publicUrl = "ssh://git@github.com/plasmicapp/plasmic-copy-test.git"
 
 # Use existing local repo, to avoid a slow fresh clone on each run
