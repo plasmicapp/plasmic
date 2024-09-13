@@ -80,18 +80,22 @@ export const TokenRow = observer(function TokenRow(props: {
   token: StyleToken;
   tokenValue: TokenValue;
   matcher: Matcher;
+  isImported: boolean;
   indentMultiplier: number;
 }) {
-  const { token, tokenValue, matcher, indentMultiplier } = props;
+  const { token, tokenValue, matcher, isImported, indentMultiplier } = props;
   const studioCtx = useStudioCtx();
   const multiAssetsActions = useMultiAssetsActions();
   const { vsh, resolver, onDuplicate, onSelect } = useTokenControls();
 
   const uiConfig = studioCtx.getCurrentUiConfig();
   const canCreateToken = canCreateAlias(uiConfig, "token");
-  
+
   const readOnly =
-  token.isRegistered || !canCreateToken || studioCtx.getLeftTabPermission("tokens") === "readable";
+    isImported ||
+    token.isRegistered ||
+    !canCreateToken ||
+    studioCtx.getLeftTabPermission("tokens") === "readable";
 
   const onFindReferences = () => {
     spawn(

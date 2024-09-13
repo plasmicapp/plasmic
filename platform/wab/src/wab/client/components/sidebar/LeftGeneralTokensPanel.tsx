@@ -466,6 +466,7 @@ const TokenTreeRow = (props: RenderElementProps<TokenPanelRow>) => {
           token={value.token}
           tokenValue={value.value}
           matcher={treeState.matcher}
+          isImported={!!value.importedFrom}
           indentMultiplier={treeState.level - 1}
         />
       );
