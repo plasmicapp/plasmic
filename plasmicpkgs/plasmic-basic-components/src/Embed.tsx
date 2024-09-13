@@ -30,7 +30,7 @@ export default function Embed({
 }: EmbedProps) {
   const rootElt = useRef<HTMLDivElement>(null);
   const inEditor = usePlasmicCanvasContext();
-  const htmlId = useId();
+  const htmlId = useId?.();
   const firstRender = useFirstRender();
   useEffect(() => {
     if (hideInEditor && inEditor) {
@@ -40,6 +40,7 @@ export default function Embed({
     // the HTML is already present in the DOM from the server-rendered HTML. We don't want to re-run.
     // If it's not the first render, then it can mean that some dependency changed.
     if (
+      htmlId &&
       !inEditor &&
       firstRender &&
       (window as any)[makePlasmicVarName(htmlId)]
@@ -72,7 +73,7 @@ export default function Embed({
   const effectiveCode =
     hideInEditor && inEditor
       ? ""
-      : inEditor
+      : inEditor || !htmlId
       ? code
       : addIdentifierScript(htmlId, code);
   return (

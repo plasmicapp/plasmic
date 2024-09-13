@@ -24,8 +24,5 @@ export function useFirstRender() {
   return firstRender;
 }
 
-// Polyfill for React.useId
-// https://github.com/reactwg/react-18/discussions/111#discussioncomment-1517837
-let __globalId = 0;
-export const useId: () => string =
-  (React as any).useId ?? (() => React.useState(() => "" + __globalId++));
+// Fix for React.useId type since it's only available for React 18+
+export const useId: (() => string) | undefined = React.useId;
