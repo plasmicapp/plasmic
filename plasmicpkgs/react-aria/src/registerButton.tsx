@@ -90,6 +90,7 @@ export function registerButton(
       },
       props: {
         ...getCommonProps<BaseButtonProps>("button", [
+          "autoFocus",
           "isDisabled",
           "aria-label",
         ]),
