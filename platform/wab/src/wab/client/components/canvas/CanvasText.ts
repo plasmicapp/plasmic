@@ -26,10 +26,12 @@ import type {
   EditingTextContext,
   ViewCtx,
 } from "@/wab/client/studio-ctx/view-ctx";
-import { cx, ensure, ensureInstance, spawn } from "@/wab/shared/common";
-import { getCssRulesFromRs } from "@/wab/shared/css";
-import { ExprCtx, getCodeExpressionWithFallback } from "@/wab/shared/core/exprs";
 import { makeWabFlexContainerClassName } from "@/wab/shared/codegen/react-p/utils";
+import { cx, ensure, ensureInstance, spawn } from "@/wab/shared/common";
+import {
+  ExprCtx,
+  getCodeExpressionWithFallback,
+} from "@/wab/shared/core/exprs";
 import {
   isTagInline,
   isTagListContainer,
@@ -37,6 +39,9 @@ import {
   normalizeMarkers,
   textInlineTags,
 } from "@/wab/shared/core/rich-text-util";
+import { hasGapStyle } from "@/wab/shared/core/styles";
+import { isExprText, walkTpls } from "@/wab/shared/core/tpls";
+import { getCssRulesFromRs } from "@/wab/shared/css";
 import { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import { CanvasEnv, evalCodeWithEnv } from "@/wab/shared/eval";
 import {
@@ -48,8 +53,6 @@ import {
   TplNode,
   TplTag,
 } from "@/wab/shared/model/classes";
-import { hasGapStyle } from "@/wab/shared/core/styles";
-import { isExprText, walkTpls } from "@/wab/shared/core/tpls";
 import isHotkey from "is-hotkey";
 import { camelCase, isEqual } from "lodash";
 import { computedFn } from "mobx-utils";
@@ -343,6 +346,21 @@ const mkRichTextShortcuts: (sub: SubDeps) => Shortcut[] = computedFn(
       action: "SPAN",
       hotkey: isHotkey("mod+shift+s"),
       fn: wrapInInlineTag("span", sub),
+    },
+    {
+      action: "STRONG",
+      hotkey: isHotkey("mod+shift+b"),
+      fn: wrapInInlineTag("strong", sub),
+    },
+    {
+      action: "ITALIC",
+      hotkey: isHotkey("mod+shift+i"),
+      fn: wrapInInlineTag("i", sub),
+    },
+    {
+      action: "EMPHASIS",
+      hotkey: isHotkey("mod+shift+e"),
+      fn: wrapInInlineTag("em", sub),
     },
     {
       action: "WRAP_BLOCK",

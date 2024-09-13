@@ -7,17 +7,21 @@ import {
   PlasmicDefaultStylesPanel,
 } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicDefaultStylesPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, mkShortId } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
+import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { isScreenVariant } from "@/wab/shared/Variants";
+import { ensure, mkShortId } from "@/wab/shared/common";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
+import { DEFAULT_THEME_STYLES } from "@/wab/shared/core/sites";
+import {
+  THEMABLE_TAGS,
+  getApplicableSelectors,
+  mkRuleSet,
+} from "@/wab/shared/core/styles";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Mixin, ThemeStyle, Variant } from "@/wab/shared/model/classes";
-import { THEMABLE_TAGS, getApplicableSelectors, mkRuleSet } from "@/wab/shared/core/styles";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
-import { DEFAULT_THEME_STYLES } from "@/wab/shared/core/sites";
 
 export type DefaultStylesPanelProps = DefaultDefaultStylesPanelProps;
 
@@ -145,6 +149,7 @@ const DefaultStylesPanel = observer(
                   <>
                     Tag: <strong>{themeTag}</strong>
                     {themeTag === "a" && ` (links)`}
+                    {themeTag === "i" && ` (italic)`}
                   </>
                 ),
               })),

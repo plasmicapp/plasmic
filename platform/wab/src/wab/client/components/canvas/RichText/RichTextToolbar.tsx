@@ -15,8 +15,10 @@ import {
   DefaultRichTextToolbarProps,
   PlasmicRichTextToolbar,
 } from "@/wab/client/plasmic/plasmic_kit_rich_text_toolbar/PlasmicRichTextToolbar";
+import BoldsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Boldsvg";
 import CodesvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Codesvg";
 import HeadingsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Headingsvg";
+import ItalicsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Italicsvg";
 import LinksvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Linksvg";
 import OrderedListsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__OrderedListsvg";
 import TextsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Textsvg";
@@ -25,8 +27,8 @@ import UnorderedListsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIc
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { EditingTextContext } from "@/wab/client/studio-ctx/view-ctx";
 import { fontWeightOptions } from "@/wab/client/typography-utils";
-import { spawn } from "@/wab/shared/common";
 import { PublicStyleSection } from "@/wab/shared/ApiSchema";
+import { spawn } from "@/wab/shared/common";
 import { canEditStyleSection } from "@/wab/shared/ui-config-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, Popover } from "antd";
@@ -342,6 +344,27 @@ function RichTextToolbar_(
                 >
                   <Icon icon={TextsvgIcon} style={{ marginRight: 4 }} />
                   Span element
+                </Menu.Item>
+                <Menu.Item
+                  aria-label="Strong element"
+                  onClick={() => runInEditor("STRONG")}
+                >
+                  <Icon icon={BoldsvgIcon} style={{ marginRight: 4 }} />
+                  Strong element
+                </Menu.Item>
+                <Menu.Item
+                  aria-label="Italic element"
+                  onClick={() => runInEditor("ITALIC")}
+                >
+                  <Icon icon={ItalicsvgIcon} style={{ marginRight: 4 }} />
+                  Italic element
+                </Menu.Item>
+                <Menu.Item
+                  aria-label="Emphasis element"
+                  onClick={() => runInEditor("EMPHASIS")}
+                >
+                  <Icon icon={ItalicsvgIcon} style={{ marginRight: 4 }} />
+                  Emphasis element
                 </Menu.Item>
               </Menu>
             ),

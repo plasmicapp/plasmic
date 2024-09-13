@@ -16,8 +16,9 @@ import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelW
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, spawn, withoutNils } from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
+import { isAllowedDefaultExprForPropType } from "@/wab/shared/code-components/code-components";
+import { ensure, spawn, withoutNils } from "@/wab/shared/common";
 import {
   clone,
   codeLit,
@@ -27,12 +28,20 @@ import {
 } from "@/wab/shared/core/exprs";
 import { ComponentPropOrigin } from "@/wab/shared/core/lang";
 import { alwaysVisibleHTMLAttributes, metaSvc } from "@/wab/shared/core/metas";
-import { isAllowedDefaultExprForPropType } from "@/wab/shared/code-components/code-components";
 import {
   isTagInline,
   textBlockTags,
   textInlineTags,
 } from "@/wab/shared/core/rich-text-util";
+import {
+  EventHandlerKeyType,
+  getDisplayNameOfEventHandlerKey,
+  getEventHandlerByEventKey,
+  isAttrEventHandler,
+  isTplTag,
+  isTplTextBlock,
+  setEventHandlerByEventKey,
+} from "@/wab/shared/core/tpls";
 import {
   computeDefinedIndicator,
   DefinedIndicatorType,
@@ -49,15 +58,6 @@ import {
 } from "@/wab/shared/model/classes";
 import { unsetTplVariantableAttr } from "@/wab/shared/TplMgr";
 import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
-import {
-  EventHandlerKeyType,
-  getDisplayNameOfEventHandlerKey,
-  getEventHandlerByEventKey,
-  isAttrEventHandler,
-  isTplTag,
-  isTplTextBlock,
-  setEventHandlerByEventKey,
-} from "@/wab/shared/core/tpls";
 import { notification, Popover, Select } from "antd";
 import { RefSelectProps } from "antd/lib/select";
 import L, { keyBy, orderBy, uniq, without } from "lodash";
@@ -205,6 +205,9 @@ export const TAG_TO_DISPLAY_NAME = {
   span: "Span",
   input: "Input",
   textarea: "Text area",
+  strong: "Strong",
+  i: "Italic",
+  em: "Emphasis",
 };
 const nonContainerTags = ["ul", "ol", "li"];
 export const ALL_CONTAINER_TAGS = L.without(
