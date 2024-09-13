@@ -1,3 +1,4 @@
+import { MockComponent } from "../__mocks__/api";
 import { sync } from "../actions/sync";
 import {
   expectProject1Components,
@@ -10,7 +11,6 @@ import {
   standardTestTeardown,
   tmpRepo,
 } from "../test-common/fixtures";
-import { MockComponent } from "../__mocks__/api";
 
 jest.mock("../api");
 
