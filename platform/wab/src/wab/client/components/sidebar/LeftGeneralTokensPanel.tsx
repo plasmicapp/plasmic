@@ -257,7 +257,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
             return {
               type: "folder" as const,
               name: studioCtx.projectDependencyManager.getNiceDepName(dep),
-              key: dep.uuid,
+              key: `${tokenType}-dep.uuid`,
               // We only include registered tokens if they're from a hostless
               // package; otherwise, registered tokens from custom host will
               // already show up in the RegisteredTokens section.
