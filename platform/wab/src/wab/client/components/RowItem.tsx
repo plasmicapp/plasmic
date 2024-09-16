@@ -11,7 +11,6 @@ import * as React from "react";
 export interface RowItemProps extends DefaultRowItemProps {
   style?: React.CSSProperties;
   menu?: MenuType;
-  menuSize?: "small";
   onClick?: () => void;
 }
 

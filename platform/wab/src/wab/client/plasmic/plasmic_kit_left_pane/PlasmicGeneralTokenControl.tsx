@@ -23,11 +23,10 @@ import {
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
-  useTrigger,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import ListItem from "../../components/ListItem"; // plasmic-import: v31d9_ANqk/component
+import RowItem from "../../components/RowItem"; // plasmic-import: gkx-PRZnjFPo/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -37,24 +36,17 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicGeneralTokenControl.module.css"; // plasmic-import: 0LQGzuFK6d/css
 
-import ComponentIcon from "../plasmic_kit/PlasmicIcon__Component"; // plasmic-import: nNWEF4jI3s5DI/icon
-import EyeIcon from "../plasmic_kit/PlasmicIcon__Eye"; // plasmic-import: A2FnGYgDh4e3U/icon
-
 createPlasmicElementProxy;
 
 export type PlasmicGeneralTokenControl__VariantMembers = {
-  isDraggable: "isDraggable";
-  isDragging: "isDragging";
   showIcon: "showIcon";
 };
 export type PlasmicGeneralTokenControl__VariantsArgs = {
-  isDraggable?: SingleBooleanChoiceArg<"isDraggable">;
-  isDragging?: SingleBooleanChoiceArg<"isDragging">;
   showIcon?: SingleBooleanChoiceArg<"showIcon">;
 };
 type VariantPropType = keyof PlasmicGeneralTokenControl__VariantsArgs;
 export const PlasmicGeneralTokenControl__VariantProps =
-  new Array<VariantPropType>("isDraggable", "isDragging", "showIcon");
+  new Array<VariantPropType>("showIcon");
 
 export type PlasmicGeneralTokenControl__ArgsType = {
   children?: React.ReactNode;
@@ -68,15 +60,12 @@ export const PlasmicGeneralTokenControl__ArgProps = new Array<ArgPropType>(
 
 export type PlasmicGeneralTokenControl__OverridesType = {
   root?: Flex__<"div">;
-  listItem?: Flex__<typeof ListItem>;
-  freeBox?: Flex__<"div">;
+  rowItem?: Flex__<typeof RowItem>;
 };
 
 export interface DefaultGeneralTokenControlProps {
   children?: React.ReactNode;
   value?: React.ReactNode;
-  isDraggable?: SingleBooleanChoiceArg<"isDraggable">;
-  isDragging?: SingleBooleanChoiceArg<"isDragging">;
   showIcon?: SingleBooleanChoiceArg<"showIcon">;
   className?: string;
 }
@@ -91,7 +80,16 @@ function PlasmicGeneralTokenControl__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -104,18 +102,6 @@ function PlasmicGeneralTokenControl__RenderFunc(props: {
 
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
-      {
-        path: "isDraggable",
-        type: "private",
-        variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isDraggable,
-      },
-      {
-        path: "isDragging",
-        type: "private",
-        variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isDragging,
-      },
       {
         path: "showIcon",
         type: "private",
@@ -131,11 +117,6 @@ function PlasmicGeneralTokenControl__RenderFunc(props: {
     $queries: {},
     $refs,
   });
-
-  const [isRootHover, triggerRootHoverProps] = useTrigger("useHover", {});
-  const triggers = {
-    hover_root: isRootHover,
-  };
 
   return (
     <div
@@ -154,96 +135,40 @@ function PlasmicGeneralTokenControl__RenderFunc(props: {
         plasmic_plasmic_kit_new_design_system_former_style_controls_css.plasmic_tokens,
         sty.root
       )}
-      data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
-      <ListItem
-        data-plasmic-name={"listItem"}
-        data-plasmic-override={overrides.listItem}
-        actions={
-          <EyeIcon
-            className={classNames(projectcss.all, sty.svg__rzv74)}
-            role={"img"}
-          />
-        }
+      <RowItem
+        data-plasmic-name={"rowItem"}
+        data-plasmic-override={overrides.rowItem}
         addendum={renderPlasmicSlot({
-          defaultContents: "Blahblah",
+          defaultContents: "Big  Addendum",
           value: args.value,
         })}
-        className={classNames("__wab_instance", sty.listItem, {
-          [sty.listItemisDraggable]: hasVariant(
-            $state,
-            "isDraggable",
-            "isDraggable"
-          ),
-          [sty.listItemisDragging]: hasVariant(
-            $state,
-            "isDragging",
-            "isDragging"
-          ),
-          [sty.listItemshowIcon]: hasVariant($state, "showIcon", "showIcon"),
+        className={classNames("__wab_instance", sty.rowItem, {
+          [sty.rowItemshowIcon]: hasVariant($state, "showIcon", "showIcon"),
         })}
-        hasMenu={true}
         hideIcon={hasVariant($state, "showIcon", "showIcon") ? undefined : true}
-        icon={
-          <ComponentIcon
-            className={classNames(projectcss.all, sty.svg__kHmZ, {
-              [sty.svgshowIcon__kHmZPINtg]: hasVariant(
-                $state,
-                "showIcon",
-                "showIcon"
-              ),
-            })}
-            role={"img"}
-          />
-        }
-        isDraggable={
-          hasVariant($state, "isDraggable", "isDraggable") ? true : undefined
-        }
-        isDragging={
-          hasVariant($state, "isDragging", "isDragging") ? true : undefined
-        }
-        showAddendums={triggers.hover_root ? true : true}
+        menuSize={"small"}
+        showAddendum={true}
       >
-        <div
-          data-plasmic-name={"freeBox"}
-          data-plasmic-override={overrides.freeBox}
-          className={classNames(projectcss.all, sty.freeBox, {
-            [sty.freeBoxisDragging]: hasVariant(
-              $state,
-              "isDragging",
-              "isDragging"
-            ),
-          })}
-        >
-          {renderPlasmicSlot({
-            defaultContents: "small small",
-            value: args.children,
-            className: classNames(sty.slotTargetChildren, {
-              [sty.slotTargetChildrenisDragging]: hasVariant(
-                $state,
-                "isDragging",
-                "isDragging"
-              ),
-            }),
-          })}
-        </div>
-      </ListItem>
+        {renderPlasmicSlot({
+          defaultContents: "Some very long item label",
+          value: args.children,
+        })}
+      </RowItem>
     </div>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root", "listItem", "freeBox"],
-  listItem: ["listItem", "freeBox"],
-  freeBox: ["freeBox"],
+  root: ["root", "rowItem"],
+  rowItem: ["rowItem"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
-  listItem: typeof ListItem;
-  freeBox: "div";
+  rowItem: typeof RowItem;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -306,8 +231,7 @@ export const PlasmicGeneralTokenControl = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
-    listItem: makeNodeComponent("listItem"),
-    freeBox: makeNodeComponent("freeBox"),
+    rowItem: makeNodeComponent("rowItem"),
 
     // Metadata about props expected for PlasmicGeneralTokenControl
     internalVariantProps: PlasmicGeneralTokenControl__VariantProps,

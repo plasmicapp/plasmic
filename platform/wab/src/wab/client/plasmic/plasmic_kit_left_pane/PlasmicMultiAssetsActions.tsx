@@ -41,7 +41,7 @@ import sty from "./PlasmicMultiAssetsActions.module.css"; // plasmic-import: d69
 
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
 import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -88,7 +88,16 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -183,7 +192,7 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
           data-plasmic-name={"deleteSelected"}
           data-plasmic-override={overrides.deleteSelected}
           children2={
-            <ChevronDownsvgIcon
+            <ChevronDownSvgIcon
               className={classNames(projectcss.all, sty.svg__fGucz)}
               role={"img"}
             />
@@ -201,7 +210,7 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
           data-plasmic-name={"cancel"}
           data-plasmic-override={overrides.cancel}
           children2={
-            <ChevronDownsvgIcon
+            <ChevronDownSvgIcon
               className={classNames(projectcss.all, sty.svg___6Hnn5)}
               role={"img"}
             />

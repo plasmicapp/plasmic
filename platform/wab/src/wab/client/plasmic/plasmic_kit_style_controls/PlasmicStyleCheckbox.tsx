@@ -38,8 +38,8 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import sty from "./PlasmicStyleCheckbox.module.css"; // plasmic-import: nZHA7E5OiTx/css
 import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 
-import SquareCheckFilledsvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__SquareCheckFilledsvg"; // plasmic-import: p_Tng7_Oi/icon
-import SquaresvgIcon from "../q_4_icons/icons/PlasmicIcon__Squaresvg"; // plasmic-import: zkj00JjZV/icon
+import SquareCheckFilledSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__SquareCheckFilledsvg"; // plasmic-import: p_Tng7_Oi/icon
+import SquareSvgIcon from "../q_4_icons/icons/PlasmicIcon__Squaresvg"; // plasmic-import: zkj00JjZV/icon
 
 createPlasmicElementProxy;
 
@@ -107,7 +107,16 @@ function PlasmicStyleCheckbox__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -202,8 +211,8 @@ function PlasmicStyleCheckbox__RenderFunc(props: {
         data-plasmic-override={overrides.checkbox}
         PlasmicIconType={
           hasVariant($state, "isChecked", "isChecked")
-            ? SquareCheckFilledsvgIcon
-            : SquaresvgIcon
+            ? SquareCheckFilledSvgIcon
+            : SquareSvgIcon
         }
         className={classNames(projectcss.all, sty.checkbox, {
           [sty.checkboxisChecked]: hasVariant($state, "isChecked", "isChecked"),

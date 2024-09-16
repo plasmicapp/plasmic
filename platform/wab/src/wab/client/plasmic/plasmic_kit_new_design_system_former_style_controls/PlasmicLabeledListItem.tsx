@@ -40,9 +40,9 @@ import projectcss from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles
 import sty from "./PlasmicLabeledListItem.module.css"; // plasmic-import: -L2zZ5Mvmr/css
 
 import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
-import GripsvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Gripsvg"; // plasmic-import: jxIRSIMqs/icon
+import GripSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Gripsvg"; // plasmic-import: jxIRSIMqs/icon
 import WildcardIcon from "../plasmic_kit_style_controls/icons/PlasmicIcon__Wildcard"; // plasmic-import: 47qMNx3RV/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -194,7 +194,9 @@ function PlasmicLabeledListItem__RenderFunc(props: {
         {
           styleProp: "",
         },
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -421,7 +423,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
           ),
         })}
       >
-        <GripsvgIcon
+        <GripSvgIcon
           data-plasmic-name={"grip"}
           data-plasmic-override={overrides.grip}
           className={classNames(projectcss.all, sty.grip, {
@@ -805,7 +807,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
             data-plasmic-name={"deleteButton"}
             data-plasmic-override={overrides.deleteButton}
             children2={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg___9TaH7)}
                 role={"img"}
               />

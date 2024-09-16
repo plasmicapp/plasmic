@@ -33,8 +33,8 @@ import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-impo
 import sty from "./PlasmicFilterButton.module.css"; // plasmic-import: 93uVZfRMCA/css
 
 import FilterIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__Filter"; // plasmic-import: F0M2GWyw-k/icon
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightSvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -72,7 +72,16 @@ function PlasmicFilterButton__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -112,7 +121,7 @@ function PlasmicFilterButton__RenderFunc(props: {
       })}
       color={hasVariant($state, "isActive", "isActive") ? "green" : undefined}
       endIcon={
-        <ChevronDownsvgIcon
+        <ChevronDownSvgIcon
           className={classNames(projectcss.all, sty.svg__ydByj, {
             [sty.svgisActive__ydByjpuhxi]: hasVariant(
               $state,
@@ -126,7 +135,7 @@ function PlasmicFilterButton__RenderFunc(props: {
       font={"dim"}
       size={"compact"}
       startIcon={
-        <ArrowRightsvgIcon
+        <ArrowRightSvgIcon
           className={classNames(projectcss.all, sty.svg__h6NCv)}
           role={"img"}
         />

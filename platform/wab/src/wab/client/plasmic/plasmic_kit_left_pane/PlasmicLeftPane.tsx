@@ -50,9 +50,9 @@ import sty from "./PlasmicLeftPane.module.css"; // plasmic-import: avrERxAp81S/c
 
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
 import TreeIcon from "../plasmic_kit/PlasmicIcon__Tree"; // plasmic-import: 4KZjuPY_m0VTb/icon
-import ComponentssvgIcon from "../q_4_icons/icons/PlasmicIcon__Componentssvg"; // plasmic-import: coPzxnFyi/icon
-import DotsHorizontalCirclesvgIcon from "../q_4_icons/icons/PlasmicIcon__DotsHorizontalCirclesvg"; // plasmic-import: xdn8wiJBv/icon
-import WarningTrianglesvgIcon from "../q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
+import ComponentsSvgIcon from "../q_4_icons/icons/PlasmicIcon__Componentssvg"; // plasmic-import: coPzxnFyi/icon
+import DotsHorizontalCircleSvgIcon from "../q_4_icons/icons/PlasmicIcon__DotsHorizontalCirclesvg"; // plasmic-import: xdn8wiJBv/icon
+import WarningTriangleSvgIcon from "../q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
 
 createPlasmicElementProxy;
 
@@ -158,7 +158,16 @@ function PlasmicLeftPane__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -249,7 +258,7 @@ function PlasmicLeftPane__RenderFunc(props: {
               data-plasmic-override={overrides.lint}
               className={classNames("__wab_instance", sty.lint)}
               icon={
-                <WarningTrianglesvgIcon
+                <WarningTriangleSvgIcon
                   className={classNames(projectcss.all, sty.svg__zOfU0)}
                   role={"img"}
                 />
@@ -273,7 +282,7 @@ function PlasmicLeftPane__RenderFunc(props: {
               data-plasmic-override={overrides.assets}
               className={classNames("__wab_instance", sty.assets)}
               icon={
-                <ComponentssvgIcon
+                <ComponentsSvgIcon
                   className={classNames(projectcss.all, sty.svg___2I0R2)}
                   role={"img"}
                 />
@@ -297,7 +306,7 @@ function PlasmicLeftPane__RenderFunc(props: {
               data-plasmic-override={overrides.more}
               className={classNames("__wab_instance", sty.more)}
               icon={
-                <DotsHorizontalCirclesvgIcon
+                <DotsHorizontalCircleSvgIcon
                   className={classNames(projectcss.all, sty.svg___52RoI)}
                   role={"img"}
                 />

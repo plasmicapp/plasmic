@@ -38,7 +38,7 @@ const GeneralTokenControl = observer(function GeneralTokenControl(
     <Tooltip title={tokenName} mouseEnterDelay={0.5}>
       <PlasmicGeneralTokenControl
         value={matcher.boldSnippets(tokenValue)}
-        listItem={{
+        rowItem={{
           style,
           menu,
           onClick,

@@ -85,7 +85,9 @@ function PlasmicHiliteTabs__RenderFunc(props: {
             { tabKey: "tab3", content: "Tab 3" },
           ],
         },
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );

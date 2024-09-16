@@ -41,8 +41,8 @@ import sty from "./PlasmicAddDrawerSection.module.css"; // plasmic-import: U-NTS
 import AfterIcon from "../plasmic_kit/PlasmicIcon__After"; // plasmic-import: yzAFS1IyVvChx/icon
 import BeforeIcon from "../plasmic_kit/PlasmicIcon__Before"; // plasmic-import: VU26fT14NQttw/icon
 import image49X6ZsC5Ww5 from "../plasmic_kit_design_system/images/image4.svg"; // plasmic-import: 9X6ZsC5ww5/picture
-import ComponentsvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Componentsvg"; // plasmic-import: vJVrKlrDD/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ComponentSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Componentsvg"; // plasmic-import: vJVrKlrDD/icon
+import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -91,7 +91,16 @@ function PlasmicAddDrawerSection__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -172,7 +181,7 @@ function PlasmicAddDrawerSection__RenderFunc(props: {
                 <React.Fragment>
                   <IconButton
                     children2={
-                      <ChevronDownsvgIcon
+                      <ChevronDownSvgIcon
                         className={classNames(projectcss.all, sty.svg__yQySn)}
                         role={"img"}
                       />
@@ -185,7 +194,7 @@ function PlasmicAddDrawerSection__RenderFunc(props: {
                   </IconButton>
                   <IconButton
                     children2={
-                      <ChevronDownsvgIcon
+                      <ChevronDownSvgIcon
                         className={classNames(projectcss.all, sty.svg__dkbzg)}
                         role={"img"}
                       />
@@ -204,7 +213,7 @@ function PlasmicAddDrawerSection__RenderFunc(props: {
               }
               className={classNames("__wab_instance", sty.addDrawerItem__nKluR)}
               icon={
-                <ComponentsvgIcon
+                <ComponentSvgIcon
                   className={classNames(projectcss.all, sty.svg__nHj8T)}
                   role={"img"}
                 />

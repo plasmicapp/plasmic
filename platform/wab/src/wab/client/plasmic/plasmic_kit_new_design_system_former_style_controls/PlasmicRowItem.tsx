@@ -15,12 +15,16 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
   Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  hasVariant,
   renderPlasmicSlot,
+  useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -34,35 +38,54 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicRowItem.module.css"; // plasmic-import: gkx-PRZnjFPo/css
 
-import ComponentssvgIcon from "../q_4_icons/icons/PlasmicIcon__Componentssvg"; // plasmic-import: coPzxnFyi/icon
+import ComponentsSvgIcon from "../q_4_icons/icons/PlasmicIcon__Componentssvg"; // plasmic-import: coPzxnFyi/icon
 
 createPlasmicElementProxy;
 
-export type PlasmicRowItem__VariantMembers = {};
-export type PlasmicRowItem__VariantsArgs = {};
+export type PlasmicRowItem__VariantMembers = {
+  showAddendum: "showAddendum";
+  hideIcon: "hideIcon";
+  menuSize: "small";
+};
+export type PlasmicRowItem__VariantsArgs = {
+  showAddendum?: SingleBooleanChoiceArg<"showAddendum">;
+  hideIcon?: SingleBooleanChoiceArg<"hideIcon">;
+  menuSize?: SingleChoiceArg<"small">;
+};
 type VariantPropType = keyof PlasmicRowItem__VariantsArgs;
-export const PlasmicRowItem__VariantProps = new Array<VariantPropType>();
+export const PlasmicRowItem__VariantProps = new Array<VariantPropType>(
+  "showAddendum",
+  "hideIcon",
+  "menuSize"
+);
 
 export type PlasmicRowItem__ArgsType = {
   icon?: React.ReactNode;
   children?: React.ReactNode;
+  addendum?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicRowItem__ArgsType;
 export const PlasmicRowItem__ArgProps = new Array<ArgPropType>(
   "icon",
-  "children"
+  "children",
+  "addendum"
 );
 
 export type PlasmicRowItem__OverridesType = {
   root?: Flex__<"div">;
   iconContainer?: Flex__<"div">;
   labelContainer?: Flex__<"div">;
+  addendumContainer?: Flex__<"div">;
   menuButton?: Flex__<typeof MenuButton>;
 };
 
 export interface DefaultRowItemProps {
   icon?: React.ReactNode;
   children?: React.ReactNode;
+  addendum?: React.ReactNode;
+  showAddendum?: SingleBooleanChoiceArg<"showAddendum">;
+  hideIcon?: SingleBooleanChoiceArg<"hideIcon">;
+  menuSize?: SingleChoiceArg<"small">;
   className?: string;
 }
 
@@ -76,7 +99,16 @@ function PlasmicRowItem__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -86,6 +118,36 @@ function PlasmicRowItem__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
+
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
+    () => [
+      {
+        path: "showAddendum",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showAddendum,
+      },
+      {
+        path: "hideIcon",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideIcon,
+      },
+      {
+        path: "menuSize",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.menuSize,
+      },
+    ],
+    [$props, $ctx, $refs]
+  );
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $refs,
+  });
 
   const [isRootHover, triggerRootHoverProps] = useTrigger("useHover", {});
   const triggers = {
@@ -112,26 +174,45 @@ function PlasmicRowItem__RenderFunc(props: {
       )}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
-      <div
-        data-plasmic-name={"iconContainer"}
-        data-plasmic-override={overrides.iconContainer}
-        className={classNames(projectcss.all, sty.iconContainer)}
-      >
-        {renderPlasmicSlot({
-          defaultContents: (
-            <ComponentssvgIcon
-              className={classNames(projectcss.all, sty.svg___5Mr7N)}
-              role={"img"}
-            />
-          ),
+      {(hasVariant($state, "hideIcon", "hideIcon") ? false : true) ? (
+        <div
+          data-plasmic-name={"iconContainer"}
+          data-plasmic-override={overrides.iconContainer}
+          className={classNames(projectcss.all, sty.iconContainer, {
+            [sty.iconContainerhideIcon]: hasVariant(
+              $state,
+              "hideIcon",
+              "hideIcon"
+            ),
+          })}
+        >
+          {renderPlasmicSlot({
+            defaultContents: (
+              <ComponentsSvgIcon
+                className={classNames(projectcss.all, sty.svg___5Mr7N)}
+                role={"img"}
+              />
+            ),
 
-          value: args.icon,
-        })}
-      </div>
+            value: args.icon,
+          })}
+        </div>
+      ) : null}
       <div
         data-plasmic-name={"labelContainer"}
         data-plasmic-override={overrides.labelContainer}
-        className={classNames(projectcss.all, sty.labelContainer)}
+        className={classNames(projectcss.all, sty.labelContainer, {
+          [sty.labelContainermenuSize_small]: hasVariant(
+            $state,
+            "menuSize",
+            "small"
+          ),
+          [sty.labelContainershowAddendum]: hasVariant(
+            $state,
+            "showAddendum",
+            "showAddendum"
+          ),
+        })}
       >
         {renderPlasmicSlot({
           defaultContents: "Some very long item label",
@@ -139,10 +220,50 @@ function PlasmicRowItem__RenderFunc(props: {
           className: classNames(sty.slotTargetChildren),
         })}
       </div>
+      <div
+        data-plasmic-name={"addendumContainer"}
+        data-plasmic-override={overrides.addendumContainer}
+        className={classNames(projectcss.all, sty.addendumContainer, {
+          [sty.addendumContainershowAddendum]: hasVariant(
+            $state,
+            "showAddendum",
+            "showAddendum"
+          ),
+        })}
+      >
+        {renderPlasmicSlot({
+          defaultContents: (
+            <div
+              className={classNames(
+                projectcss.all,
+                projectcss.__wab_text,
+                sty.text__kNu3S
+              )}
+            >
+              {"Big  Addendum"}
+            </div>
+          ),
+          value: args.addendum,
+          className: classNames(sty.slotTargetAddendum, {
+            [sty.slotTargetAddendumshowAddendum]: hasVariant(
+              $state,
+              "showAddendum",
+              "showAddendum"
+            ),
+          }),
+        })}
+      </div>
       <MenuButton
         data-plasmic-name={"menuButton"}
         data-plasmic-override={overrides.menuButton}
-        className={classNames("__wab_instance", sty.menuButton)}
+        className={classNames("__wab_instance", sty.menuButton, {
+          [sty.menuButtonmenuSize_small]: hasVariant(
+            $state,
+            "menuSize",
+            "small"
+          ),
+        })}
+        size={hasVariant($state, "menuSize", "small") ? "small" : undefined}
         withBackgroundHover={true}
       />
     </Stack__>
@@ -150,9 +271,16 @@ function PlasmicRowItem__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root", "iconContainer", "labelContainer", "menuButton"],
+  root: [
+    "root",
+    "iconContainer",
+    "labelContainer",
+    "addendumContainer",
+    "menuButton",
+  ],
   iconContainer: ["iconContainer"],
   labelContainer: ["labelContainer"],
+  addendumContainer: ["addendumContainer"],
   menuButton: ["menuButton"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -162,6 +290,7 @@ type NodeDefaultElementType = {
   root: "div";
   iconContainer: "div";
   labelContainer: "div";
+  addendumContainer: "div";
   menuButton: typeof MenuButton;
 };
 
@@ -227,6 +356,7 @@ export const PlasmicRowItem = Object.assign(
     // Helper components rendering sub-elements
     iconContainer: makeNodeComponent("iconContainer"),
     labelContainer: makeNodeComponent("labelContainer"),
+    addendumContainer: makeNodeComponent("addendumContainer"),
     menuButton: makeNodeComponent("menuButton"),
 
     // Metadata about props expected for PlasmicRowItem

@@ -40,7 +40,7 @@ import sty from "./PlasmicDimTokenSelector.module.css"; // plasmic-import: s1rid
 import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 
 import TriangleBottomIcon from "../plasmic_kit/PlasmicIcon__TriangleBottom"; // plasmic-import: A8NQUZ7Lg1OHO/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -119,7 +119,9 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
         {
           placeholder: "",
         },
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -372,7 +374,7 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
             data-plasmic-name={"dropdownToggle"}
             data-plasmic-override={overrides.dropdownToggle}
             children2={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__womfz)}
                 role={"img"}
               />

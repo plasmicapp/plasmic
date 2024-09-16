@@ -38,8 +38,8 @@ import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../
 import sty from "./PlasmicLeftTabButton.module.css"; // plasmic-import: 1q_JapBg7U/css
 
 import TreeIcon from "../plasmic_kit/PlasmicIcon__Tree"; // plasmic-import: 4KZjuPY_m0VTb/icon
-import CirclesvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Circlesvg"; // plasmic-import: VBf-n64uS/icon
-import WarningTrianglesvgIcon from "../q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
+import CircleSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Circlesvg"; // plasmic-import: VBf-n64uS/icon
+import WarningTriangleSvgIcon from "../q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
 
 createPlasmicElementProxy;
 
@@ -94,7 +94,16 @@ function PlasmicLeftTabButton__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -206,8 +215,8 @@ function PlasmicLeftTabButton__RenderFunc(props: {
           data-plasmic-override={overrides.svg}
           PlasmicIconType={
             hasVariant($state, "showAlert", "showAlert")
-              ? WarningTrianglesvgIcon
-              : CirclesvgIcon
+              ? WarningTriangleSvgIcon
+              : CircleSvgIcon
           }
           className={classNames(projectcss.all, sty.svg, {
             [sty.svghasLabel]: hasVariant($state, "hasLabel", "hasLabel"),

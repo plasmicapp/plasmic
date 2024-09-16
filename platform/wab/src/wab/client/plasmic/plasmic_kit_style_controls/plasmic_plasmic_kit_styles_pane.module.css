@@ -24,58 +24,58 @@
 }
 
 .plasmic_default_styles {
-  --mixin-qP3g6Hd5AdC-gYEVv_text-decoration-line: none;
-  --mixin-qP3g6Hd5AdC-gYEVv_font-family: "Inter", sans-serif;
-  --mixin-qP3g6Hd5AdC-gYEVv_color: var(--token-0IloF6TmFvF);
-  --mixin-qP3g6Hd5AdC-gYEVv_font-size: 12px;
-  --mixin-qP3g6Hd5AdC-gYEVv_white-space: pre-wrap;
-  --mixin-qP3g6Hd5AdC-gYEVv_line-height: 1.5;
-  --mixin-2zEfljePq9P-gYEVv_color: var(--token-VUsIDivgUss);
-  --mixin-2zEfljePq9P-gYEVv_white-space: pre-wrap;
-  --mixin-EEKi5Tu2fbK-gYEVv_white-space: pre-wrap;
-  --mixin-YQD_Uc8Md_-gYEVv_font-family: "Inter", sans-serif;
-  --mixin-YQD_Uc8Md_-gYEVv_font-size: 72px;
-  --mixin-YQD_Uc8Md_-gYEVv_font-weight: 500;
-  --mixin-YQD_Uc8Md_-gYEVv_white-space: pre-wrap;
-  --mixin-vEOXQLfcbC-gYEVv_font-family: "Inter", sans-serif;
-  --mixin-vEOXQLfcbC-gYEVv_font-size: 48px;
-  --mixin-vEOXQLfcbC-gYEVv_font-weight: 500;
-  --mixin-vEOXQLfcbC-gYEVv_white-space: pre-wrap;
-  --mixin-EXCWDILscU-gYEVv_font-family: "Inter", sans-serif;
-  --mixin-EXCWDILscU-gYEVv_font-size: 32px;
-  --mixin-EXCWDILscU-gYEVv_font-weight: 500;
-  --mixin-EXCWDILscU-gYEVv_white-space: pre-wrap;
-  --mixin-N7cG0Ri48QP-gYEVv_font-family: "Inter", sans-serif;
-  --mixin-N7cG0Ri48QP-gYEVv_font-size: 24px;
-  --mixin-N7cG0Ri48QP-gYEVv_font-weight: 500;
-  --mixin-N7cG0Ri48QP-gYEVv_white-space: pre-wrap;
-  --mixin-__gfw12lSVA-gYEVv_font-family: "Inter", sans-serif;
-  --mixin-__gfw12lSVA-gYEVv_font-size: 20px;
-  --mixin-__gfw12lSVA-gYEVv_font-weight: 500;
-  --mixin-__gfw12lSVA-gYEVv_white-space: pre-wrap;
-  --mixin-eoQXVRNaCyL-gYEVv_font-family: "Inter", sans-serif;
-  --mixin-eoQXVRNaCyL-gYEVv_font-size: 16px;
-  --mixin-eoQXVRNaCyL-gYEVv_font-weight: 500;
-  --mixin-eoQXVRNaCyL-gYEVv_white-space: pre-wrap;
-  --mixin-fkU_lzw4PF5-gYEVv_white-space: pre-wrap;
-  --mixin-v9e0yiTlX_o-gYEVv_white-space: pre-wrap;
-  --mixin-MMatKfNT024-gYEVv_white-space: pre-wrap;
-  --mixin-EuhGUWboGh2-gYEVv_position: relative;
-  --mixin-EuhGUWboGh2-gYEVv_white-space: pre-wrap;
-  --mixin-_MYD1z_SMDp-gYEVv_position: relative;
-  --mixin-_MYD1z_SMDp-gYEVv_white-space: pre-wrap;
-  --mixin-Yot8xJYsc-gYEVv_white-space: pre-wrap;
-  --mixin-985HZFQW4-gYEVv_white-space: pre-wrap;
-  --mixin-3i6_2FI7G-gYEVv_white-space: pre-wrap;
-  --mixin-3HZrBcpB6-gYEVv_white-space: pre-wrap;
-  --mixin-n1REaG4FH-gYEVv_white-space: pre-wrap;
-  --mixin-Hk5zzHaLS-gYEVv_white-space: pre-wrap;
-  --mixin-B4DR1AgPG-gYEVv_white-space: pre-wrap;
-  --mixin-bhSle9dw7-gYEVv_white-space: pre-wrap;
-  --mixin-5d8gGYi39-gYEVv_white-space: pre-wrap;
-  --mixin-sxjZ0YFFF-gYEVv_white-space: pre-wrap;
-  --mixin-GZm4AQ_Ek-gYEVv_white-space: pre-wrap;
-  --mixin-qjB654aOL-gYEVv_white-space: pre-wrap;
+  --mixin-qP3g6Hd5AdC_text-decoration-line: none;
+  --mixin-qP3g6Hd5AdC_font-family: "Inter", sans-serif;
+  --mixin-qP3g6Hd5AdC_color: var(--token-0IloF6TmFvF);
+  --mixin-qP3g6Hd5AdC_font-size: 12px;
+  --mixin-qP3g6Hd5AdC_white-space: pre-wrap;
+  --mixin-qP3g6Hd5AdC_line-height: 1.5;
+  --mixin-2zEfljePq9P_color: var(--token-VUsIDivgUss);
+  --mixin-2zEfljePq9P_white-space: pre-wrap;
+  --mixin-EEKi5Tu2fbK_white-space: pre-wrap;
+  --mixin-YQD_Uc8Md__font-family: "Inter", sans-serif;
+  --mixin-YQD_Uc8Md__font-size: 72px;
+  --mixin-YQD_Uc8Md__font-weight: 500;
+  --mixin-YQD_Uc8Md__white-space: pre-wrap;
+  --mixin-vEOXQLfcbC_font-family: "Inter", sans-serif;
+  --mixin-vEOXQLfcbC_font-size: 48px;
+  --mixin-vEOXQLfcbC_font-weight: 500;
+  --mixin-vEOXQLfcbC_white-space: pre-wrap;
+  --mixin-EXCWDILscU_font-family: "Inter", sans-serif;
+  --mixin-EXCWDILscU_font-size: 32px;
+  --mixin-EXCWDILscU_font-weight: 500;
+  --mixin-EXCWDILscU_white-space: pre-wrap;
+  --mixin-N7cG0Ri48QP_font-family: "Inter", sans-serif;
+  --mixin-N7cG0Ri48QP_font-size: 24px;
+  --mixin-N7cG0Ri48QP_font-weight: 500;
+  --mixin-N7cG0Ri48QP_white-space: pre-wrap;
+  --mixin-__gfw12lSVA_font-family: "Inter", sans-serif;
+  --mixin-__gfw12lSVA_font-size: 20px;
+  --mixin-__gfw12lSVA_font-weight: 500;
+  --mixin-__gfw12lSVA_white-space: pre-wrap;
+  --mixin-eoQXVRNaCyL_font-family: "Inter", sans-serif;
+  --mixin-eoQXVRNaCyL_font-size: 16px;
+  --mixin-eoQXVRNaCyL_font-weight: 500;
+  --mixin-eoQXVRNaCyL_white-space: pre-wrap;
+  --mixin-fkU_lzw4PF5_white-space: pre-wrap;
+  --mixin-v9e0yiTlX_o_white-space: pre-wrap;
+  --mixin-MMatKfNT024_white-space: pre-wrap;
+  --mixin-EuhGUWboGh2_position: relative;
+  --mixin-EuhGUWboGh2_white-space: pre-wrap;
+  --mixin-_MYD1z_SMDp_position: relative;
+  --mixin-_MYD1z_SMDp_white-space: pre-wrap;
+  --mixin-Yot8xJYsc_white-space: pre-wrap;
+  --mixin-985HZFQW4_white-space: pre-wrap;
+  --mixin-3i6_2FI7G_white-space: pre-wrap;
+  --mixin-3HZrBcpB6_white-space: pre-wrap;
+  --mixin-n1REaG4FH_white-space: pre-wrap;
+  --mixin-Hk5zzHaLS_white-space: pre-wrap;
+  --mixin-B4DR1AgPG_white-space: pre-wrap;
+  --mixin-bhSle9dw7_white-space: pre-wrap;
+  --mixin-5d8gGYi39_white-space: pre-wrap;
+  --mixin-sxjZ0YFFF_white-space: pre-wrap;
+  --mixin-GZm4AQ_Ek_white-space: pre-wrap;
+  --mixin-qjB654aOL_white-space: pre-wrap;
 }
 
 .plasmic_mixins {
@@ -410,11 +410,11 @@
   white-space: normal;
 }
 :where(.root_reset) {
-  font-family: var(--mixin-qP3g6Hd5AdC-gYEVv_font-family);
-  font-size: var(--mixin-qP3g6Hd5AdC-gYEVv_font-size);
-  color: var(--mixin-qP3g6Hd5AdC-gYEVv_color);
-  line-height: var(--mixin-qP3g6Hd5AdC-gYEVv_line-height);
-  white-space: var(--mixin-qP3g6Hd5AdC-gYEVv_white-space);
+  font-family: var(--mixin-qP3g6Hd5AdC_font-family);
+  font-size: var(--mixin-qP3g6Hd5AdC_font-size);
+  color: var(--mixin-qP3g6Hd5AdC_color);
+  line-height: var(--mixin-qP3g6Hd5AdC_line-height);
+  white-space: var(--mixin-qP3g6Hd5AdC_white-space);
 }
 
 :where(.root_reset) a:where(.a),
@@ -422,7 +422,7 @@ a:where(.root_reset.a),
 :where(.root_reset .__wab_expr_html_text) a,
 :where(.root_reset_tags) a,
 a:where(.root_reset_tags) {
-  color: var(--mixin-2zEfljePq9P-gYEVv_color);
+  color: var(--mixin-2zEfljePq9P_color);
 }
 
 :where(.root_reset) a:where(.a):hover,
@@ -437,9 +437,9 @@ h1:where(.root_reset.h1),
 :where(.root_reset .__wab_expr_html_text) h1,
 :where(.root_reset_tags) h1,
 h1:where(.root_reset_tags) {
-  font-family: var(--mixin-YQD_Uc8Md_-gYEVv_font-family);
-  font-size: var(--mixin-YQD_Uc8Md_-gYEVv_font-size);
-  font-weight: var(--mixin-YQD_Uc8Md_-gYEVv_font-weight);
+  font-family: var(--mixin-YQD_Uc8Md__font-family);
+  font-size: var(--mixin-YQD_Uc8Md__font-size);
+  font-weight: var(--mixin-YQD_Uc8Md__font-weight);
 }
 
 :where(.root_reset) h2:where(.h2),
@@ -447,9 +447,9 @@ h2:where(.root_reset.h2),
 :where(.root_reset .__wab_expr_html_text) h2,
 :where(.root_reset_tags) h2,
 h2:where(.root_reset_tags) {
-  font-family: var(--mixin-vEOXQLfcbC-gYEVv_font-family);
-  font-size: var(--mixin-vEOXQLfcbC-gYEVv_font-size);
-  font-weight: var(--mixin-vEOXQLfcbC-gYEVv_font-weight);
+  font-family: var(--mixin-vEOXQLfcbC_font-family);
+  font-size: var(--mixin-vEOXQLfcbC_font-size);
+  font-weight: var(--mixin-vEOXQLfcbC_font-weight);
 }
 
 :where(.root_reset) h3:where(.h3),
@@ -457,9 +457,9 @@ h3:where(.root_reset.h3),
 :where(.root_reset .__wab_expr_html_text) h3,
 :where(.root_reset_tags) h3,
 h3:where(.root_reset_tags) {
-  font-family: var(--mixin-EXCWDILscU-gYEVv_font-family);
-  font-size: var(--mixin-EXCWDILscU-gYEVv_font-size);
-  font-weight: var(--mixin-EXCWDILscU-gYEVv_font-weight);
+  font-family: var(--mixin-EXCWDILscU_font-family);
+  font-size: var(--mixin-EXCWDILscU_font-size);
+  font-weight: var(--mixin-EXCWDILscU_font-weight);
 }
 
 :where(.root_reset) h4:where(.h4),
@@ -467,9 +467,9 @@ h4:where(.root_reset.h4),
 :where(.root_reset .__wab_expr_html_text) h4,
 :where(.root_reset_tags) h4,
 h4:where(.root_reset_tags) {
-  font-family: var(--mixin-N7cG0Ri48QP-gYEVv_font-family);
-  font-size: var(--mixin-N7cG0Ri48QP-gYEVv_font-size);
-  font-weight: var(--mixin-N7cG0Ri48QP-gYEVv_font-weight);
+  font-family: var(--mixin-N7cG0Ri48QP_font-family);
+  font-size: var(--mixin-N7cG0Ri48QP_font-size);
+  font-weight: var(--mixin-N7cG0Ri48QP_font-weight);
 }
 
 :where(.root_reset) h5:where(.h5),
@@ -477,9 +477,9 @@ h5:where(.root_reset.h5),
 :where(.root_reset .__wab_expr_html_text) h5,
 :where(.root_reset_tags) h5,
 h5:where(.root_reset_tags) {
-  font-family: var(--mixin-__gfw12lSVA-gYEVv_font-family);
-  font-size: var(--mixin-__gfw12lSVA-gYEVv_font-size);
-  font-weight: var(--mixin-__gfw12lSVA-gYEVv_font-weight);
+  font-family: var(--mixin-__gfw12lSVA_font-family);
+  font-size: var(--mixin-__gfw12lSVA_font-size);
+  font-weight: var(--mixin-__gfw12lSVA_font-weight);
 }
 
 :where(.root_reset) h6:where(.h6),
@@ -487,9 +487,9 @@ h6:where(.root_reset.h6),
 :where(.root_reset .__wab_expr_html_text) h6,
 :where(.root_reset_tags) h6,
 h6:where(.root_reset_tags) {
-  font-family: var(--mixin-eoQXVRNaCyL-gYEVv_font-family);
-  font-size: var(--mixin-eoQXVRNaCyL-gYEVv_font-size);
-  font-weight: var(--mixin-eoQXVRNaCyL-gYEVv_font-weight);
+  font-family: var(--mixin-eoQXVRNaCyL_font-family);
+  font-size: var(--mixin-eoQXVRNaCyL_font-size);
+  font-weight: var(--mixin-eoQXVRNaCyL_font-weight);
 }
 
 :where(.root_reset) blockquote:where(.blockquote),
@@ -518,7 +518,7 @@ ol:where(.root_reset.ol),
 :where(.root_reset .__wab_expr_html_text) ol,
 :where(.root_reset_tags) ol,
 ol:where(.root_reset_tags) {
-  position: var(--mixin-EuhGUWboGh2-gYEVv_position);
+  position: var(--mixin-EuhGUWboGh2_position);
 }
 
 :where(.root_reset) ul:where(.ul),
@@ -526,7 +526,7 @@ ul:where(.root_reset.ul),
 :where(.root_reset .__wab_expr_html_text) ul,
 :where(.root_reset_tags) ul,
 ul:where(.root_reset_tags) {
-  position: var(--mixin-_MYD1z_SMDp-gYEVv_position);
+  position: var(--mixin-_MYD1z_SMDp_position);
 }
 
 :where(.root_reset) a:where(.a):not(:hover),

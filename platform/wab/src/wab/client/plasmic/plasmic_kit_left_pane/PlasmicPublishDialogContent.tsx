@@ -39,7 +39,7 @@ import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../
 import sty from "./PlasmicPublishDialogContent.module.css"; // plasmic-import: V25hk8i--ck/css
 
 import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -88,7 +88,16 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -368,7 +377,7 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
                 data-plasmic-override={overrides.openButton}
                 className={classNames("__wab_instance", sty.openButton)}
                 endIcon={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__zwFhP)}
                     role={"img"}
                   />
@@ -418,7 +427,7 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
               hasVariant($state, "state", "disabled") ? true : undefined
             }
             endIcon={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__e8G4E)}
                 role={"img"}
               />

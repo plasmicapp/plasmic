@@ -3737,7 +3737,7 @@
         {
           "id": "r7sZ_Vt9G",
           "name": "transparent-background.svg",
-          "filePath": "wab/client/plasmic/plasmic_kit_style_controls/images/transparentBackgroundsvg.svg"
+          "filePath": "wab/client/plasmic/plasmic_kit_style_controls/images/transparentBackgroundSvg.svg"
         },
         {
           "id": "YQFHPdeAw",
@@ -3763,8 +3763,7 @@
       "indirect": false,
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "dyzP6dbCdycwJpqiR2zkwe",
@@ -4527,7 +4526,8 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "6CrqkTcB6gSAHoA8c8zpNz",
@@ -8837,7 +8837,8 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "gtUDvxG6cmBbSzqLikNzoP",

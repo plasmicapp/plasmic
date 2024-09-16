@@ -26,7 +26,7 @@
   box-shadow: none;
   flex-direction: row;
   overflow: hidden;
-  background: url("./images/transparentBackgroundsvg.svg") left 0% top 0% / 12px
+  background: url("./images/transparentBackgroundSvg.svg") left 0% top 0% / 12px
     12px repeat padding-box border-box scroll;
   min-width: 0;
   min-height: 0;

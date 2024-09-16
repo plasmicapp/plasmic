@@ -33,8 +33,8 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicLeftSplitsPanel.module.css"; // plasmic-import: OzaoSbFLbl/css
 
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
+import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import PlusSvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -76,7 +76,16 @@ function PlasmicLeftSplitsPanel__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -113,14 +122,14 @@ function PlasmicLeftSplitsPanel__RenderFunc(props: {
             data-plasmic-name={"newTestButton"}
             data-plasmic-override={overrides.newTestButton}
             endIcon={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__wnOv)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
-              <PlussvgIcon
+              <PlusSvgIcon
                 className={classNames(projectcss.all, sty.svg__va03F)}
                 role={"img"}
               />
@@ -150,14 +159,14 @@ function PlasmicLeftSplitsPanel__RenderFunc(props: {
             data-plasmic-name={"newSegmentButton"}
             data-plasmic-override={overrides.newSegmentButton}
             endIcon={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__bnPy)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
-              <PlussvgIcon
+              <PlusSvgIcon
                 className={classNames(projectcss.all, sty.svg__eacMt)}
                 role={"img"}
               />
@@ -199,14 +208,14 @@ function PlasmicLeftSplitsPanel__RenderFunc(props: {
             data-plasmic-name={"newScheduleButton"}
             data-plasmic-override={overrides.newScheduleButton}
             endIcon={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__uEtw)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
-              <PlussvgIcon
+              <PlusSvgIcon
                 className={classNames(projectcss.all, sty.svg__j3MPs)}
                 role={"img"}
               />

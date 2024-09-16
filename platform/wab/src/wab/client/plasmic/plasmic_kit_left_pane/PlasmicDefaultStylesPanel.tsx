@@ -39,8 +39,8 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicDefaultStylesPanel.module.css"; // plasmic-import: nmt_YiclQJk/css
 
-import GlobesvgIcon from "../q_4_icons/icons/PlasmicIcon__Globesvg"; // plasmic-import: gcxY0Mwvj/icon
-import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
+import GlobeSvgIcon from "../q_4_icons/icons/PlasmicIcon__Globesvg"; // plasmic-import: gcxY0Mwvj/icon
+import PlusSvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -88,7 +88,16 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -242,7 +251,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
               data-plasmic-override={overrides.globalVariantSelect}
               hasIcon={true}
               icon={
-                <GlobesvgIcon
+                <GlobeSvgIcon
                   className={classNames(projectcss.all, sty.svg__qOj9X)}
                   role={"img"}
                 />
@@ -301,7 +310,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
             ),
           })}
           icon={
-            <PlussvgIcon
+            <PlusSvgIcon
               className={classNames(projectcss.all, sty.svg__kRhm1)}
               role={"img"}
             />
@@ -340,7 +349,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
               ),
             })}
             icon={
-              <PlussvgIcon
+              <PlusSvgIcon
                 className={classNames(projectcss.all, sty.svg__iMz8C)}
                 role={"img"}
               />

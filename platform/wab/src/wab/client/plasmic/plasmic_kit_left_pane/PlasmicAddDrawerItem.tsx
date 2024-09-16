@@ -40,10 +40,10 @@ import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../
 import sty from "./PlasmicAddDrawerItem.module.css"; // plasmic-import: isQPD0RPCw/css
 
 import image49X6ZsC5Ww5 from "../plasmic_kit_design_system/images/image4.svg"; // plasmic-import: 9X6ZsC5ww5/picture
-import AftersvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Aftersvg"; // plasmic-import: RYZCFr_yc/icon
-import BeforesvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Beforesvg"; // plasmic-import: AobbKyfJE/icon
-import ComponentsvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Componentsvg"; // plasmic-import: vJVrKlrDD/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import AfterSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Aftersvg"; // plasmic-import: RYZCFr_yc/icon
+import BeforeSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Beforesvg"; // plasmic-import: AobbKyfJE/icon
+import ComponentSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Componentsvg"; // plasmic-import: vJVrKlrDD/icon
+import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -101,7 +101,16 @@ function PlasmicAddDrawerItem__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -203,27 +212,27 @@ function PlasmicAddDrawerItem__RenderFunc(props: {
             <React.Fragment>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg___6O2L)}
                     role={"img"}
                   />
                 }
               >
-                <BeforesvgIcon
+                <BeforeSvgIcon
                   className={classNames(projectcss.all, sty.svg__zc4N)}
                   role={"img"}
                 />
               </IconButton>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg___286BO)}
                     role={"img"}
                   />
                 }
                 className={classNames("__wab_instance", sty.iconButton__ol5Pp)}
               >
-                <AftersvgIcon
+                <AfterSvgIcon
                   className={classNames(projectcss.all, sty.svg__acGZq)}
                   role={"img"}
                 />
@@ -234,7 +243,7 @@ function PlasmicAddDrawerItem__RenderFunc(props: {
         })}
         icon={renderPlasmicSlot({
           defaultContents: (
-            <ComponentsvgIcon
+            <ComponentSvgIcon
               className={classNames(projectcss.all, sty.svg__xaCli)}
               role={"img"}
             />

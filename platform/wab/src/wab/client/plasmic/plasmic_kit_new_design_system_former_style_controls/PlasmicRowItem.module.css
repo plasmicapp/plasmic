@@ -27,10 +27,14 @@
 }
 .root:hover {
   background: var(--token-bV4cCeIniS6);
+  padding-right: 6px;
 }
 .root:hover > :global(.__wab_flex-container) {
   justify-content: flex-start;
   align-items: center;
+}
+.root:active {
+  background: var(--token-Ik3bdE1e1Uy);
 }
 .iconContainer {
   display: flex;
@@ -118,10 +122,95 @@
   > img {
   overflow: hidden;
 }
+.addendumContainer {
+  flex-direction: row;
+  position: relative;
+  align-items: stretch;
+  justify-content: flex-start;
+  display: none;
+}
+.addendumContainershowAddendum {
+  display: flex;
+}
+.slotTargetAddendum {
+  color: var(--token-UunsGa2Y3t3);
+  white-space: pre;
+}
+.slotTargetAddendum > :global(.__wab_text),
+.slotTargetAddendum > :global(.__wab_expr_html_text),
+.slotTargetAddendum > :global(.__wab_slot-string-wrapper),
+.slotTargetAddendum > :global(.__wab_slot) > :global(.__wab_text),
+.slotTargetAddendum > :global(.__wab_slot) > :global(.__wab_expr_html_text),
+.slotTargetAddendum
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper),
+.slotTargetAddendum
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_text),
+.slotTargetAddendum
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_expr_html_text),
+.slotTargetAddendum
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper),
+.slotTargetAddendum
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_text),
+.slotTargetAddendum
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_expr_html_text),
+.slotTargetAddendum
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper) {
+  text-overflow: ellipsis;
+}
+.slotTargetAddendum > *,
+.slotTargetAddendum > :global(.__wab_slot) > *,
+.slotTargetAddendum > :global(.__wab_slot) > :global(.__wab_slot) > *,
+.slotTargetAddendum
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.slotTargetAddendum > picture > img,
+.slotTargetAddendum > :global(.__wab_slot) > picture > img,
+.slotTargetAddendum
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.slotTargetAddendum
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  overflow: hidden;
+}
+.text__kNu3S {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  padding-bottom: 0px;
+  min-width: 0;
+}
 .menuButton:global(.__wab_instance):global(.__wab_instance) {
   max-width: 100%;
   flex-shrink: 0;
   display: none;
+}
+.menuButtonmenuSize_small:global(.__wab_instance):global(.__wab_instance) {
+  flex-shrink: 0;
 }
 .root:hover .menuButton:global(.__wab_instance):global(.__wab_instance) {
   flex-shrink: 0;

@@ -47,24 +47,24 @@ import TreeIcon from "../plasmic_kit/PlasmicIcon__Tree"; // plasmic-import: 4KZj
 import WandIcon from "../plasmic_kit/PlasmicIcon__Wand"; // plasmic-import: vTVU9zQnDPZGl/icon
 import KeyboardIcon from "../plasmic_kit_design_system/PlasmicIcon__Keyboard"; // plasmic-import: tSLSUCy1RH/icon
 import FontFamily2SvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__FontFamily2Svg"; // plasmic-import: mlYvYWbm5/icon
-import ComponentsvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Componentsvg"; // plasmic-import: vJVrKlrDD/icon
-import DevicessvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Devicessvg"; // plasmic-import: bbAxEiIwy/icon
-import DiamondssvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Diamondssvg"; // plasmic-import: uzBbTcdyE/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ClocksvgIcon from "../q_4_icons/icons/PlasmicIcon__Clocksvg"; // plasmic-import: 9MhqTIkUT/icon
-import ComponentssvgIcon from "../q_4_icons/icons/PlasmicIcon__Componentssvg"; // plasmic-import: coPzxnFyi/icon
-import DotsHorizontalCirclesvgIcon from "../q_4_icons/icons/PlasmicIcon__DotsHorizontalCirclesvg"; // plasmic-import: xdn8wiJBv/icon
-import DownloadsvgIcon from "../q_4_icons/icons/PlasmicIcon__Downloadsvg"; // plasmic-import: Bu7POPssl/icon
-import FigmasvgIcon from "../q_4_icons/icons/PlasmicIcon__Figmasvg"; // plasmic-import: cReVjwCaJ/icon
+import ComponentSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Componentsvg"; // plasmic-import: vJVrKlrDD/icon
+import DevicesSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Devicessvg"; // plasmic-import: bbAxEiIwy/icon
+import DiamondsSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Diamondssvg"; // plasmic-import: uzBbTcdyE/icon
+import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ClockSvgIcon from "../q_4_icons/icons/PlasmicIcon__Clocksvg"; // plasmic-import: 9MhqTIkUT/icon
+import ComponentsSvgIcon from "../q_4_icons/icons/PlasmicIcon__Componentssvg"; // plasmic-import: coPzxnFyi/icon
+import DotsHorizontalCircleSvgIcon from "../q_4_icons/icons/PlasmicIcon__DotsHorizontalCirclesvg"; // plasmic-import: xdn8wiJBv/icon
+import DownloadSvgIcon from "../q_4_icons/icons/PlasmicIcon__Downloadsvg"; // plasmic-import: Bu7POPssl/icon
+import FigmaSvgIcon from "../q_4_icons/icons/PlasmicIcon__Figmasvg"; // plasmic-import: cReVjwCaJ/icon
 import File2SvgIcon from "../q_4_icons/icons/PlasmicIcon__File2Svg"; // plasmic-import: zldfLXBdc/icon
-import HelpCirclesvgIcon from "../q_4_icons/icons/PlasmicIcon__HelpCirclesvg"; // plasmic-import: zY-2PPrFT/icon
-import PaintbrushsvgIcon from "../q_4_icons/icons/PlasmicIcon__Paintbrushsvg"; // plasmic-import: WPHwb7V6d/icon
-import PhotosvgIcon from "../q_4_icons/icons/PlasmicIcon__Photosvg"; // plasmic-import: BzQDBpjA9/icon
-import PlugsvgIcon from "../q_4_icons/icons/PlasmicIcon__Plugsvg"; // plasmic-import: s2iV8XTPW/icon
+import HelpCircleSvgIcon from "../q_4_icons/icons/PlasmicIcon__HelpCirclesvg"; // plasmic-import: zY-2PPrFT/icon
+import PaintbrushSvgIcon from "../q_4_icons/icons/PlasmicIcon__Paintbrushsvg"; // plasmic-import: WPHwb7V6d/icon
+import PhotoSvgIcon from "../q_4_icons/icons/PlasmicIcon__Photosvg"; // plasmic-import: BzQDBpjA9/icon
+import PlugSvgIcon from "../q_4_icons/icons/PlasmicIcon__Plugsvg"; // plasmic-import: s2iV8XTPW/icon
 import Settings2SvgIcon from "../q_4_icons/icons/PlasmicIcon__Settings2Svg"; // plasmic-import: jFYH6BL9T/icon
-import SpeechBubblesvgIcon from "../q_4_icons/icons/PlasmicIcon__SpeechBubblesvg"; // plasmic-import: nkJ1joJAv/icon
-import UsersvgIcon from "../q_4_icons/icons/PlasmicIcon__Usersvg"; // plasmic-import: ejczgMIkT/icon
-import WarningTrianglesvgIcon from "../q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
+import SpeechBubbleSvgIcon from "../q_4_icons/icons/PlasmicIcon__SpeechBubblesvg"; // plasmic-import: nkJ1joJAv/icon
+import UserSvgIcon from "../q_4_icons/icons/PlasmicIcon__Usersvg"; // plasmic-import: ejczgMIkT/icon
+import WarningTriangleSvgIcon from "../q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
 import IconIcon from "./icons/PlasmicIcon__Icon"; // plasmic-import: CD14l2YUnk/icon
 import image9D5NIfkhj from "./images/image.svg"; // plasmic-import: 9D5nIFKHJ/picture
 
@@ -191,7 +191,16 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -294,7 +303,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
                   sty.leftTabButton__xnfKt
                 )}
                 icon={
-                  <WarningTrianglesvgIcon
+                  <WarningTriangleSvgIcon
                     className={classNames(projectcss.all, sty.svg__fJuLy)}
                     role={"img"}
                   />
@@ -320,7 +329,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
                   sty.leftTabButton__uOnAi
                 )}
                 icon={
-                  <ComponentssvgIcon
+                  <ComponentsSvgIcon
                     className={classNames(projectcss.all, sty.svg__p2MgB)}
                     role={"img"}
                   />
@@ -346,7 +355,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
                   sty.leftTabButton___5AwUj
                 )}
                 icon={
-                  <DotsHorizontalCirclesvgIcon
+                  <DotsHorizontalCircleSvgIcon
                     className={classNames(projectcss.all, sty.svg___7Cd9B)}
                     role={"img"}
                   />
@@ -436,7 +445,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           ),
         })}
         icon={
-          <DiamondssvgIcon
+          <DiamondsSvgIcon
             className={classNames(projectcss.all, sty.svg__mn5Uf, {
               [sty.svgactiveTab_tokens__mn5UfdVhrq]: hasVariant(
                 $state,
@@ -494,7 +503,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           ),
         })}
         icon={
-          <ComponentsvgIcon
+          <ComponentSvgIcon
             className={classNames(projectcss.all, sty.svg__kca03, {
               [sty.svgshowAvatar__kca039NVfe]: hasVariant(
                 $state,
@@ -551,7 +560,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           ),
         })}
         icon={
-          <PhotosvgIcon
+          <PhotoSvgIcon
             className={classNames(projectcss.all, sty.svg___75XmC, {
               [sty.svgactiveTab_tokens___75XmCdVhrq]: hasVariant(
                 $state,
@@ -584,7 +593,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           ),
         })}
         icon={
-          <PaintbrushsvgIcon
+          <PaintbrushSvgIcon
             className={classNames(projectcss.all, sty.svg___15AOq)}
             role={"img"}
           />
@@ -630,7 +639,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           ),
         })}
         icon={
-          <DevicessvgIcon
+          <DevicesSvgIcon
             className={classNames(projectcss.all, sty.svg__qjH4W)}
             role={"img"}
           />
@@ -689,7 +698,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           ),
         })}
         icon={
-          <DownloadsvgIcon
+          <DownloadSvgIcon
             className={classNames(projectcss.all, sty.svg__c7UmG)}
             role={"img"}
           />
@@ -715,7 +724,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           ),
         })}
         icon={
-          <ClocksvgIcon
+          <ClockSvgIcon
             className={classNames(projectcss.all, sty.svg__pfWid)}
             role={"img"}
           />
@@ -768,7 +777,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           ),
         })}
         icon={
-          <PlugsvgIcon
+          <PlugSvgIcon
             className={classNames(projectcss.all, sty.svg__sZo1B, {
               [sty.svgactiveTab_endpoints__sZo1By0Hm3]: hasVariant(
                 $state,
@@ -793,7 +802,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
         data-plasmic-name={"helpGroup"}
         data-plasmic-override={overrides.helpGroup}
         children2={
-          <ChevronDownsvgIcon
+          <ChevronDownSvgIcon
             className={classNames(projectcss.all, sty.svg__b3F)}
             role={"img"}
           />
@@ -807,7 +816,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
         })}
         size={"large"}
       >
-        <HelpCirclesvgIcon
+        <HelpCircleSvgIcon
           className={classNames(projectcss.all, sty.svg__tupD, {
             [sty.svgshowAvatar__tupD9NVfe]: hasVariant(
               $state,
@@ -833,7 +842,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           data-plasmic-name={"figma"}
           data-plasmic-override={overrides.figma}
           children2={
-            <ChevronDownsvgIcon
+            <ChevronDownSvgIcon
               className={classNames(projectcss.all, sty.svg__gjOa1)}
               role={"img"}
             />
@@ -847,7 +856,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           })}
           size={"large"}
         >
-          <FigmasvgIcon
+          <FigmaSvgIcon
             className={classNames(projectcss.all, sty.svg__r87Op, {
               [sty.svgshowAvatar__r87Op9NVfe]: hasVariant(
                 $state,
@@ -867,7 +876,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           data-plasmic-name={"keyboard"}
           data-plasmic-override={overrides.keyboard}
           children2={
-            <ChevronDownsvgIcon
+            <ChevronDownSvgIcon
               className={classNames(projectcss.all, sty.svg__zTmmf)}
               role={"img"}
             />
@@ -890,7 +899,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           data-plasmic-name={"slack"}
           data-plasmic-override={overrides.slack}
           children2={
-            <ChevronDownsvgIcon
+            <ChevronDownSvgIcon
               className={classNames(projectcss.all, sty.svg__rPpbx)}
               role={"img"}
             />
@@ -905,7 +914,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           size={"large"}
         >
           <div className={classNames(projectcss.all, sty.freeBox__hJJr6)}>
-            <SpeechBubblesvgIcon
+            <SpeechBubbleSvgIcon
               className={classNames(projectcss.all, sty.svg__pqmVd)}
               role={"img"}
             />
@@ -915,7 +924,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           data-plasmic-name={"help"}
           data-plasmic-override={overrides.help}
           children2={
-            <ChevronDownsvgIcon
+            <ChevronDownSvgIcon
               className={classNames(projectcss.all, sty.svg__t8IHm)}
               role={"img"}
             />
@@ -929,7 +938,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           })}
           size={"large"}
         >
-          <HelpCirclesvgIcon
+          <HelpCircleSvgIcon
             className={classNames(projectcss.all, sty.svg__tlcC1, {
               [sty.svgshowAvatar__tlcC19NVfe]: hasVariant(
                 $state,
@@ -985,7 +994,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
             />
           ) : null}
           {(hasVariant($state, "showAvatar", "showAvatar") ? true : false) ? (
-            <UsersvgIcon
+            <UserSvgIcon
               className={classNames(projectcss.all, sty.svg__jFq8B, {
                 [sty.svgshowAvatar__jFq8B9NVfe]: hasVariant(
                   $state,

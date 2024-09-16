@@ -40,8 +40,8 @@ import sty from "./PlasmicLeftSearchPanel.module.css"; // plasmic-import: TqAPn0
 
 import CollapseAllIcon from "../plasmic_kit_design_system/PlasmicIcon__CollapseAll"; // plasmic-import: Bg-ZlWgLuQ/icon
 import ExpandAllIcon from "../plasmic_kit_design_system/PlasmicIcon__ExpandAll"; // plasmic-import: zCExKvD0Do/icon
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightSvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -84,7 +84,16 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -180,7 +189,7 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
             ),
           })}
           endIcon={
-            <ChevronDownsvgIcon
+            <ChevronDownSvgIcon
               className={classNames(projectcss.all, sty.svg___0R83)}
               role={"img"}
             />
@@ -188,7 +197,7 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
           font={"dim"}
           size={"compact"}
           startIcon={
-            <ArrowRightsvgIcon
+            <ArrowRightSvgIcon
               className={classNames(projectcss.all, sty.svg__pHvlx)}
               role={"img"}
             />
@@ -220,7 +229,7 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
               ),
             })}
             endIcon={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__zxCn1)}
                 role={"img"}
               />
@@ -228,7 +237,7 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
             font={"dim"}
             size={"compact"}
             startIcon={
-              <ArrowRightsvgIcon
+              <ArrowRightSvgIcon
                 className={classNames(projectcss.all, sty.svg__stOqr)}
                 role={"img"}
               />

@@ -51,8 +51,8 @@ import PassInputIcon from "../plasmic_kit/PlasmicIcon__PassInput"; // plasmic-im
 import TextBlockIcon from "../plasmic_kit/PlasmicIcon__TextBlock"; // plasmic-import: nzc8B7oWFfsYG/icon
 import VStackBlockIcon from "../plasmic_kit/PlasmicIcon__VStackBlock"; // plasmic-import: DTUk351ydDQGv/icon
 import image49X6ZsC5Ww5 from "../plasmic_kit_design_system/images/image4.svg"; // plasmic-import: 9X6ZsC5ww5/picture
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import PlusCirclesvgIcon from "../q_4_icons/icons/PlasmicIcon__PlusCirclesvg"; // plasmic-import: tPPI666-2/icon
+import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import PlusCircleSvgIcon from "../q_4_icons/icons/PlasmicIcon__PlusCirclesvg"; // plasmic-import: tPPI666-2/icon
 
 createPlasmicElementProxy;
 
@@ -101,7 +101,16 @@ function Plasmic_2__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -145,14 +154,14 @@ function Plasmic_2__RenderFunc(props: {
           actions={
             <IconButton
               children2={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__zvlc0)}
                   role={"img"}
                 />
               }
               className={classNames("__wab_instance", sty.iconButton__edwE)}
             >
-              <PlusCirclesvgIcon
+              <PlusCircleSvgIcon
                 className={classNames(projectcss.all, sty.svg__cv6Ny)}
                 role={"img"}
               />
@@ -169,7 +178,7 @@ function Plasmic_2__RenderFunc(props: {
                 data-plasmic-name={"prependButton"}
                 data-plasmic-override={overrides.prependButton}
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__lb4QJ)}
                     role={"img"}
                   />
@@ -184,7 +193,7 @@ function Plasmic_2__RenderFunc(props: {
                 data-plasmic-name={"appendButton"}
                 data-plasmic-override={overrides.appendButton}
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__pQdzg)}
                     role={"img"}
                   />
@@ -237,14 +246,14 @@ function Plasmic_2__RenderFunc(props: {
           actions={
             <IconButton
               children2={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__urvCn)}
                   role={"img"}
                 />
               }
               className={classNames("__wab_instance", sty.iconButton__gwGt)}
             >
-              <PlusCirclesvgIcon
+              <PlusCircleSvgIcon
                 className={classNames(projectcss.all, sty.svg__cpQ3K)}
                 role={"img"}
               />
@@ -259,7 +268,7 @@ function Plasmic_2__RenderFunc(props: {
             <React.Fragment>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__crt9J)}
                     role={"img"}
                   />
@@ -272,7 +281,7 @@ function Plasmic_2__RenderFunc(props: {
               </IconButton>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__tx92)}
                     role={"img"}
                   />
@@ -319,7 +328,7 @@ function Plasmic_2__RenderFunc(props: {
             <React.Fragment>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__uRXZ)}
                     role={"img"}
                   />
@@ -332,7 +341,7 @@ function Plasmic_2__RenderFunc(props: {
               </IconButton>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__hIbDh)}
                     role={"img"}
                   />
@@ -385,14 +394,14 @@ function Plasmic_2__RenderFunc(props: {
           actions={
             <IconButton
               children2={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__uR1A2)}
                   role={"img"}
                 />
               }
               className={classNames("__wab_instance", sty.iconButton__dj1U2)}
             >
-              <PlusCirclesvgIcon
+              <PlusCircleSvgIcon
                 className={classNames(projectcss.all, sty.svg___6TpUg)}
                 role={"img"}
               />
@@ -407,7 +416,7 @@ function Plasmic_2__RenderFunc(props: {
             <React.Fragment>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__z6Qfq)}
                     role={"img"}
                   />
@@ -420,7 +429,7 @@ function Plasmic_2__RenderFunc(props: {
               </IconButton>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__kBrEu)}
                     role={"img"}
                   />
@@ -467,7 +476,7 @@ function Plasmic_2__RenderFunc(props: {
             <React.Fragment>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__c8ChG)}
                     role={"img"}
                   />
@@ -480,7 +489,7 @@ function Plasmic_2__RenderFunc(props: {
               </IconButton>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__pv2MM)}
                     role={"img"}
                   />
@@ -527,7 +536,7 @@ function Plasmic_2__RenderFunc(props: {
             <React.Fragment>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__iaL5D)}
                     role={"img"}
                   />
@@ -540,7 +549,7 @@ function Plasmic_2__RenderFunc(props: {
               </IconButton>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__aDgol)}
                     role={"img"}
                   />
@@ -587,7 +596,7 @@ function Plasmic_2__RenderFunc(props: {
             <React.Fragment>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__h2Q1E)}
                     role={"img"}
                   />
@@ -600,7 +609,7 @@ function Plasmic_2__RenderFunc(props: {
               </IconButton>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__vfZnL)}
                     role={"img"}
                   />
@@ -647,7 +656,7 @@ function Plasmic_2__RenderFunc(props: {
             <React.Fragment>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__yda1R)}
                     role={"img"}
                   />
@@ -660,7 +669,7 @@ function Plasmic_2__RenderFunc(props: {
               </IconButton>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__sAqmK)}
                     role={"img"}
                   />
@@ -707,7 +716,7 @@ function Plasmic_2__RenderFunc(props: {
             <React.Fragment>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__pgFAf)}
                     role={"img"}
                   />
@@ -720,7 +729,7 @@ function Plasmic_2__RenderFunc(props: {
               </IconButton>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__tSZga)}
                     role={"img"}
                   />
@@ -773,14 +782,14 @@ function Plasmic_2__RenderFunc(props: {
           actions={
             <IconButton
               children2={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__eQ0Yz)}
                   role={"img"}
                 />
               }
               className={classNames("__wab_instance", sty.iconButton___8P9Bz)}
             >
-              <PlusCirclesvgIcon
+              <PlusCircleSvgIcon
                 className={classNames(projectcss.all, sty.svg__wD0Jw)}
                 role={"img"}
               />
@@ -795,7 +804,7 @@ function Plasmic_2__RenderFunc(props: {
             <React.Fragment>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__gzV2W)}
                     role={"img"}
                   />
@@ -808,7 +817,7 @@ function Plasmic_2__RenderFunc(props: {
               </IconButton>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__zsnM)}
                     role={"img"}
                   />
@@ -855,7 +864,7 @@ function Plasmic_2__RenderFunc(props: {
             <React.Fragment>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__cxcFc)}
                     role={"img"}
                   />
@@ -868,7 +877,7 @@ function Plasmic_2__RenderFunc(props: {
               </IconButton>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__msFJc)}
                     role={"img"}
                   />
@@ -921,14 +930,14 @@ function Plasmic_2__RenderFunc(props: {
           actions={
             <IconButton
               children2={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__qmFFn)}
                   role={"img"}
                 />
               }
               className={classNames("__wab_instance", sty.iconButton__aZWf)}
             >
-              <PlusCirclesvgIcon
+              <PlusCircleSvgIcon
                 className={classNames(projectcss.all, sty.svg__fq6YP)}
                 role={"img"}
               />
@@ -943,7 +952,7 @@ function Plasmic_2__RenderFunc(props: {
             <React.Fragment>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__njmc2)}
                     role={"img"}
                   />
@@ -956,7 +965,7 @@ function Plasmic_2__RenderFunc(props: {
               </IconButton>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__d4MIh)}
                     role={"img"}
                   />
@@ -1003,7 +1012,7 @@ function Plasmic_2__RenderFunc(props: {
             <React.Fragment>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__lkvzc)}
                     role={"img"}
                   />
@@ -1016,7 +1025,7 @@ function Plasmic_2__RenderFunc(props: {
               </IconButton>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg___6DNv)}
                     role={"img"}
                   />
@@ -1063,7 +1072,7 @@ function Plasmic_2__RenderFunc(props: {
             <React.Fragment>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__e96Id)}
                     role={"img"}
                   />
@@ -1076,7 +1085,7 @@ function Plasmic_2__RenderFunc(props: {
               </IconButton>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__dFsHk)}
                     role={"img"}
                   />
@@ -1123,7 +1132,7 @@ function Plasmic_2__RenderFunc(props: {
             <React.Fragment>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__maA3B)}
                     role={"img"}
                   />
@@ -1136,7 +1145,7 @@ function Plasmic_2__RenderFunc(props: {
               </IconButton>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg___7JdvS)}
                     role={"img"}
                   />
@@ -1183,7 +1192,7 @@ function Plasmic_2__RenderFunc(props: {
             <React.Fragment>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__bnaO)}
                     role={"img"}
                   />
@@ -1196,7 +1205,7 @@ function Plasmic_2__RenderFunc(props: {
               </IconButton>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg___4PVga)}
                     role={"img"}
                   />
@@ -1243,7 +1252,7 @@ function Plasmic_2__RenderFunc(props: {
             <React.Fragment>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__hP9O5)}
                     role={"img"}
                   />
@@ -1256,7 +1265,7 @@ function Plasmic_2__RenderFunc(props: {
               </IconButton>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__zNYlQ)}
                     role={"img"}
                   />
@@ -1309,14 +1318,14 @@ function Plasmic_2__RenderFunc(props: {
           actions={
             <IconButton
               children2={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__zATpN)}
                   role={"img"}
                 />
               }
               className={classNames("__wab_instance", sty.iconButton__pukfy)}
             >
-              <PlusCirclesvgIcon
+              <PlusCircleSvgIcon
                 className={classNames(projectcss.all, sty.svg__i66Xp)}
                 role={"img"}
               />
@@ -1331,7 +1340,7 @@ function Plasmic_2__RenderFunc(props: {
             <React.Fragment>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__w9HRn)}
                     role={"img"}
                   />
@@ -1344,7 +1353,7 @@ function Plasmic_2__RenderFunc(props: {
               </IconButton>
               <IconButton
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__nSwpr)}
                     role={"img"}
                   />
@@ -1397,14 +1406,14 @@ function Plasmic_2__RenderFunc(props: {
           actions={
             <IconButton
               children2={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg___69SD)}
                   role={"img"}
                 />
               }
               className={classNames("__wab_instance", sty.iconButton__odSi4)}
             >
-              <PlusCirclesvgIcon
+              <PlusCircleSvgIcon
                 className={classNames(projectcss.all, sty.svg__lnIbj)}
                 role={"img"}
               />
@@ -1421,7 +1430,7 @@ function Plasmic_2__RenderFunc(props: {
                 data-plasmic-name={"prependButton232222222222322"}
                 data-plasmic-override={overrides.prependButton232222222222322}
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__dHxuC)}
                     role={"img"}
                   />
@@ -1436,7 +1445,7 @@ function Plasmic_2__RenderFunc(props: {
                 data-plasmic-name={"appendButton232222222222322"}
                 data-plasmic-override={overrides.appendButton232222222222322}
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg___2Veyk)}
                     role={"img"}
                   />
@@ -1488,7 +1497,7 @@ function Plasmic_2__RenderFunc(props: {
                 data-plasmic-name={"prependButton2322222222223222"}
                 data-plasmic-override={overrides.prependButton2322222222223222}
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__ilYpE)}
                     role={"img"}
                   />
@@ -1503,7 +1512,7 @@ function Plasmic_2__RenderFunc(props: {
                 data-plasmic-name={"appendButton2322222222223222"}
                 data-plasmic-override={overrides.appendButton2322222222223222}
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg___3AaJa)}
                     role={"img"}
                   />
@@ -1555,7 +1564,7 @@ function Plasmic_2__RenderFunc(props: {
                 data-plasmic-name={"prependButton23222222222232222"}
                 data-plasmic-override={overrides.prependButton23222222222232222}
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__hEGqn)}
                     role={"img"}
                   />
@@ -1570,7 +1579,7 @@ function Plasmic_2__RenderFunc(props: {
                 data-plasmic-name={"appendButton23222222222232222"}
                 data-plasmic-override={overrides.appendButton23222222222232222}
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__oygbS)}
                     role={"img"}
                   />
@@ -1624,7 +1633,7 @@ function Plasmic_2__RenderFunc(props: {
                   overrides.prependButton232222222222322222
                 }
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg___6PnGf)}
                     role={"img"}
                   />
@@ -1639,7 +1648,7 @@ function Plasmic_2__RenderFunc(props: {
                 data-plasmic-name={"appendButton232222222222322222"}
                 data-plasmic-override={overrides.appendButton232222222222322222}
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__q4OAk)}
                     role={"img"}
                   />
@@ -1691,7 +1700,7 @@ function Plasmic_2__RenderFunc(props: {
                 data-plasmic-name={"prependButton23222222222232"}
                 data-plasmic-override={overrides.prependButton23222222222232}
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__kTv2D)}
                     role={"img"}
                   />
@@ -1706,7 +1715,7 @@ function Plasmic_2__RenderFunc(props: {
                 data-plasmic-name={"appendButton23222222222232"}
                 data-plasmic-override={overrides.appendButton23222222222232}
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__wQpQr)}
                     role={"img"}
                   />
@@ -1758,7 +1767,7 @@ function Plasmic_2__RenderFunc(props: {
                 data-plasmic-name={"prependButton232222222222"}
                 data-plasmic-override={overrides.prependButton232222222222}
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__pqWo)}
                     role={"img"}
                   />
@@ -1773,7 +1782,7 @@ function Plasmic_2__RenderFunc(props: {
                 data-plasmic-name={"appendButton232222222222"}
                 data-plasmic-override={overrides.appendButton232222222222}
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__bYu3)}
                     role={"img"}
                   />
@@ -1825,7 +1834,7 @@ function Plasmic_2__RenderFunc(props: {
                 data-plasmic-name={"prependButton22"}
                 data-plasmic-override={overrides.prependButton22}
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__bKMkJ)}
                     role={"img"}
                   />
@@ -1840,7 +1849,7 @@ function Plasmic_2__RenderFunc(props: {
                 data-plasmic-name={"appendButton22"}
                 data-plasmic-override={overrides.appendButton22}
                 children2={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__e58X1)}
                     role={"img"}
                   />

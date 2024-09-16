@@ -33,8 +33,8 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicCollapseToggle.module.css"; // plasmic-import: bobcNPtaTq/css
 
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ChevronUpsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronUpsvg"; // plasmic-import: i9D87DzsX/icon
+import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronUpSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronUpsvg"; // plasmic-import: i9D87DzsX/icon
 
 createPlasmicElementProxy;
 
@@ -72,7 +72,16 @@ function PlasmicCollapseToggle__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -126,7 +135,7 @@ function PlasmicCollapseToggle__RenderFunc(props: {
         }
       )}
     >
-      <ChevronDownsvgIcon
+      <ChevronDownSvgIcon
         className={classNames(projectcss.all, sty.svg__tRn5M, {
           [sty.svgcollapseState_expanded__tRn5M4HqP]: hasVariant(
             $state,
@@ -137,7 +146,7 @@ function PlasmicCollapseToggle__RenderFunc(props: {
         role={"img"}
       />
 
-      <ChevronUpsvgIcon
+      <ChevronUpSvgIcon
         className={classNames(projectcss.all, sty.svg__fDuU1, {
           [sty.svgcollapseState_expanded__fDuU14HqP]: hasVariant(
             $state,

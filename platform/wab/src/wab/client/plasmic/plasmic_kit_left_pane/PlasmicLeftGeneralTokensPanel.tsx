@@ -42,9 +42,9 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicLeftGeneralTokensPanel.module.css"; // plasmic-import: bDbzY5jXLz/css
 
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import DownloadsvgIcon from "../q_4_icons/icons/PlasmicIcon__Downloadsvg"; // plasmic-import: Bu7POPssl/icon
-import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
+import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import DownloadSvgIcon from "../q_4_icons/icons/PlasmicIcon__Downloadsvg"; // plasmic-import: Bu7POPssl/icon
+import PlusSvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -88,7 +88,16 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -169,14 +178,14 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
             data-plasmic-name={"importTokensButton"}
             data-plasmic-override={overrides.importTokensButton}
             endIcon={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__o0O5S)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
-              <DownloadsvgIcon
+              <DownloadSvgIcon
                 className={classNames(projectcss.all, sty.svg__e3TfD)}
                 role={"img"}
               />
@@ -231,7 +240,7 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
               data-plasmic-override={overrides.globalVariantSelect}
               className={classNames("__wab_instance", sty.globalVariantSelect)}
               icon={
-                <PlussvgIcon
+                <PlusSvgIcon
                   className={classNames(projectcss.all, sty.svg__ugBmB)}
                   role={"img"}
                 />

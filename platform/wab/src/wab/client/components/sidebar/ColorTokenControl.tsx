@@ -57,7 +57,7 @@ function ColorTokenControl(props: ColorTokenControlProps) {
           </>
         }
         value={matcher.boldSnippets(Chroma.stringify(tokenValue))}
-        listItem={{
+        rowItem={{
           style,
           menu,
           onClick,

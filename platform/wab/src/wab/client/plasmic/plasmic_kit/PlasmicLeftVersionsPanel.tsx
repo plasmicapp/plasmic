@@ -37,8 +37,8 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicLeftVersionsPanel.module.css"; // plasmic-import: YldGgVsq6N/css
 
-import StampsvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Stampsvg"; // plasmic-import: F2ZajSMKM/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import StampSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Stampsvg"; // plasmic-import: F2ZajSMKM/icon
+import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -79,7 +79,16 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -147,14 +156,14 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
             data-plasmic-name={"publishButton"}
             data-plasmic-override={overrides.publishButton}
             endIcon={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__mRQha)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
-              <StampsvgIcon
+              <StampSvgIcon
                 className={classNames(projectcss.all, sty.svg__g3KFb)}
                 role={"img"}
               />
