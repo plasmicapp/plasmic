@@ -3,13 +3,13 @@ import React, { forwardRef, useImperativeHandle } from "react";
 import { mergeProps } from "react-aria";
 import {
   Dialog,
-  Heading,
   Modal,
   ModalOverlay,
   ModalOverlayProps,
 } from "react-aria-components";
 import { hasParent } from "./common";
 import { PlasmicDialogTriggerContext } from "./contexts";
+import { HEADING_COMPONENT_NAME } from "./registerHeading";
 import {
   CodeComponentMetaOverrides,
   HasControlContextData,
@@ -24,6 +24,7 @@ export interface BaseModalProps
   heading: React.ReactNode;
   modalOverlayClass: string;
   resetClassName?: string;
+  children?: React.ReactNode;
 }
 
 export interface BaseModalActions {
@@ -35,7 +36,6 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
   function _BaseModal(props, ref) {
     const {
       children,
-      heading,
       modalOverlayClass,
       className,
       isOpen,
@@ -65,12 +65,13 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
     }));
 
     const isCanvas = usePlasmicCanvasContext();
-    const body = (
-      <>
-        {heading && <Heading slot="title">{heading}</Heading>}
-        {children}
-      </>
-    );
+
+    {
+      /* <Dialog> cannot be used in canvas, because while the dialog is open on the canvas, the focus is trapped inside it, so any Studio modals like the Color Picker modal would glitch due to focus jumping back and forth */
+    }
+    const bodyInCanvas = <div>{children}</div>;
+
+    const bodyInPreview = <Dialog>{children}</Dialog>;
 
     return (
       <ModalOverlay
@@ -78,7 +79,7 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
         className={`${resetClassName} ${modalOverlayClass}`}
       >
         <Modal className={className}>
-          {isCanvas ? body : <Dialog>{body}</Dialog>}
+          {isCanvas ? bodyInCanvas : bodyInPreview}
         </Modal>
       </ModalOverlay>
     );
@@ -125,18 +126,6 @@ export function registerModal(
         },
       },
       props: {
-        heading: {
-          type: "slot",
-          defaultValue: {
-            type: "text",
-            value: "Modal Heading",
-            styles: {
-              fontSize: "20px",
-              fontWeight: "bold",
-              marginBottom: "10px",
-            },
-          },
-        },
         children: {
           type: "slot",
           defaultValue: {
@@ -149,6 +138,10 @@ export function registerModal(
               alignItems: "flex-start",
             },
             children: [
+              {
+                type: "component",
+                name: HEADING_COMPONENT_NAME,
+              },
               {
                 type: "text",
                 value: "This is a Modal!",

@@ -5,6 +5,7 @@ import { registerComboBox } from "./registerComboBox";
 import { registerDescription } from "./registerDescription";
 import { registerDialogTrigger } from "./registerDialogTrigger";
 import { registerForm } from "./registerForm";
+import { registerHeading } from "./registerHeading";
 import { registerInput } from "./registerInput";
 import { registerLabel } from "./registerLabel";
 import { registerListBox } from "./registerListBox";
@@ -21,6 +22,7 @@ import { Registerable } from "./utils";
 
 export function registerAll(loader?: Registerable) {
   registerText(loader);
+  registerHeading(loader);
   registerDescription(loader);
   registerSelect(loader);
   registerComboBox(loader);

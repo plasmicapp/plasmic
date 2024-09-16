@@ -106,7 +106,7 @@ function createAriaLabelProp<T>(componentName: string): PropType<T> {
 function createChildrenProp<T>(): PropType<T> {
   return {
     type: "slot",
-    mergeWithParent: true as any,
+    mergeWithParent: true,
   };
 }
 
