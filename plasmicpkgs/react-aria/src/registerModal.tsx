@@ -32,6 +32,10 @@ export interface BaseModalActions {
   open(): void;
 }
 
+const INLINE_STYLES = {
+  outline: "none",
+};
+
 export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
   function _BaseModal(props, ref) {
     const {
@@ -69,9 +73,9 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
     {
       /* <Dialog> cannot be used in canvas, because while the dialog is open on the canvas, the focus is trapped inside it, so any Studio modals like the Color Picker modal would glitch due to focus jumping back and forth */
     }
-    const bodyInCanvas = <div>{children}</div>;
+    const bodyInCanvas = <div style={INLINE_STYLES}>{children}</div>;
 
-    const bodyInPreview = <Dialog>{children}</Dialog>;
+    const bodyInPreview = <Dialog style={INLINE_STYLES}>{children}</Dialog>;
 
     return (
       <ModalOverlay
