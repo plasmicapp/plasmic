@@ -1,6 +1,7 @@
 import {
   ERROR_PATTERNS_TO_IGNORE,
   handleError,
+  normalizeError,
   shouldIgnoreError,
 } from "@/wab/client/ErrorNotifications";
 import { analytics, initBrowserAnalytics } from "@/wab/client/analytics";
@@ -93,14 +94,7 @@ console.log = function () {};
 export function main() {
   if (!DEVFLAGS.uncatchErrors) {
     window.onunhandledrejection = (e: PromiseRejectionEvent) => {
-      const reason = e.reason;
-      const err =
-        reason instanceof Error
-          ? reason
-          : reason
-          ? new Error(reason)
-          : new Error(`Unknown error`);
-      handleError(err);
+      handleError(normalizeError(e.reason));
     };
     window.onerror = (
       event: Event | string,

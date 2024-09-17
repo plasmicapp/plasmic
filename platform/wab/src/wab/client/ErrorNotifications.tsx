@@ -191,3 +191,15 @@ export function reportSilentErrorMessage(
     message: msg,
   });
 }
+
+// Sometimes the handled variable is not of type Error, so we need to normalize it
+// https://linear.app/plasmic/issue/PLA-11224/captureexception-error
+export function normalizeError(error: any) {
+  return error instanceof Error
+    ? error
+    : error && error.error instanceof Error
+    ? (error.error as Error)
+    : error
+    ? new Error(error)
+    : new Error(`Unknown error`);
+}

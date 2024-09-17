@@ -1,5 +1,5 @@
 /// <reference types="@types/resize-observer-browser" />
-import { handleError } from "@/wab/client/ErrorNotifications";
+import { handleError, normalizeError } from "@/wab/client/ErrorNotifications";
 import { CodeFetchersRegistry } from "@/wab/client/code-fetchers";
 import {
   CanvasFrameInfo,
@@ -17,15 +17,6 @@ import { scriptExec, upsertJQSelector } from "@/wab/client/dom-utils";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
-  ensure,
-  ensureInstance,
-  spawn,
-  spawnWrapper,
-  withTimeout,
-} from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
-import { Box } from "@/wab/shared/geom";
-import {
   getFrameHeight,
   isHeightAutoDerived,
   updateAutoDerivedFrameHeight,
@@ -36,6 +27,15 @@ import {
 } from "@/wab/shared/cached-selectors";
 import { getBuiltinComponentRegistrations } from "@/wab/shared/code-components/builtin-code-components";
 import { CodeComponentsRegistry } from "@/wab/shared/code-components/code-components";
+import {
+  ensure,
+  ensureInstance,
+  spawn,
+  spawnWrapper,
+  withTimeout,
+} from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { Box } from "@/wab/shared/geom";
 import { ArenaFrame } from "@/wab/shared/model/classes";
 import { CodeLibraryRegistration } from "@/wab/shared/register-library";
 import { getPublicUrl } from "@/wab/shared/urls";
@@ -677,7 +677,7 @@ function handleCanvasError(err: any) {
     }
     if (proto === studioIframeProto) {
       // If so, handle the error
-      handleError(err);
+      handleError(normalizeError(err));
     }
   }
 }
