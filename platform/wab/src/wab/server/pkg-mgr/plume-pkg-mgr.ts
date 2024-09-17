@@ -2,6 +2,7 @@ import { loadConfig } from "@/wab/server/config";
 import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { spawn } from "@/wab/shared/common";
+import { PLUME_INSERTABLE_ID } from "@/wab/shared/insertables";
 import yargs from "yargs";
 import { PkgMgr, parseMasterPkg } from ".";
 
@@ -17,13 +18,13 @@ async function updatePlumePkg() {
   const con = await ensureDbConnection(config.databaseUri, "default");
   await con.transaction(async (em) => {
     const db = new DbMgr(em, SUPER_USER);
-    const mgr = new PkgMgr(db, "plume");
+    const mgr = new PkgMgr(db, PLUME_INSERTABLE_ID);
     await mgr.upgradePkg();
   });
 }
 
 async function checkPlumeVersion() {
-  const sysname = "plume";
+  const sysname = PLUME_INSERTABLE_ID;
   const { master: bundle } = parseMasterPkg(sysname);
   if (!bundle) {
     throw new Error(`Could not find ${sysname} project data`);

@@ -202,7 +202,6 @@ import {
   withoutNils,
   xor,
 } from "@/wab/shared/common";
-import { DEFAULT_INSERTABLE } from "@/wab/shared/constants";
 import {
   cloneSite,
   fixAppAuthRefs,
@@ -218,6 +217,7 @@ import { WebhookHeader } from "@/wab/shared/db-json-blobs";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { MIN_ACCESS_LEVEL_FOR_SUPPORT } from "@/wab/shared/discourse/config";
+import { PLEXUS_INSERTABLE_ID } from "@/wab/shared/insertables";
 import { LocalizationKeyScheme } from "@/wab/shared/localization";
 import {
   HostLessPackageInfo,
@@ -3827,7 +3827,7 @@ export class DbMgr implements MigrationDbMgr {
     const clonedSite = cloneSite(fromSite);
     // Devflag overrides at project creation time
     if (isAdminTeamEmail(ownerEmail, DEVFLAGS) && updateDefaultInsertable) {
-      clonedSite.flags.defaultInsertable = DEFAULT_INSERTABLE;
+      clonedSite.flags.defaultInsertable = PLEXUS_INSERTABLE_ID;
     }
     const { project, rev } = await this.createProject({
       name,
@@ -7506,7 +7506,7 @@ export class DbMgr implements MigrationDbMgr {
   }) {
     // Devflag overrides at project creation time
     if (isAdminTeamEmail(ownerEmail, DEVFLAGS)) {
-      site.flags.defaultInsertable = DEFAULT_INSERTABLE;
+      site.flags.defaultInsertable = PLEXUS_INSERTABLE_ID;
     }
     const { project, rev } = await this.createProject({
       name: name,

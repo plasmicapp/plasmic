@@ -425,7 +425,7 @@ function ImportProjectsFromProd() {
 function downloadForPkgMgr(
   pkg: PkgVersionInfo,
   depPkgs: PkgVersionInfo[] | undefined,
-  fileName
+  fileName: string
 ) {
   const blob = new Blob(
     [

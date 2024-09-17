@@ -8,7 +8,6 @@ import { DbMgr, normalActor, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { seedTestFeatureTiers } from "@/wab/server/db/seed/feature-tier";
 import { FeatureTier, Team, User } from "@/wab/server/entities/Entities";
 import {
-  getAllSysnames,
   getBundleInfo,
   getDevflagForInsertableTemplateItem,
   PkgMgr,
@@ -16,9 +15,13 @@ import {
 import { initializeGlobals } from "@/wab/server/svr-init";
 import { Bundler } from "@/wab/shared/bundler";
 import { ensureType, spawn } from "@/wab/shared/common";
-import { DEFAULT_INSERTABLE } from "@/wab/shared/constants";
 import { createSite } from "@/wab/shared/core/sites";
 import { InsertableTemplatesGroup, Installable } from "@/wab/shared/devflags";
+import {
+  InsertableId,
+  PLEXUS_INSERTABLE_ID,
+  PLUME_INSERTABLE_ID,
+} from "@/wab/shared/insertables";
 import { EntityManager } from "typeorm";
 
 initializeGlobals();
@@ -92,7 +95,7 @@ export async function seedTestDb(em: EntityManager) {
   await seedTestPromotionCodes(em);
 
   // Seed the special pkgs, which must be done after some users have been created
-  const sysnames = await getAllSysnames();
+  const sysnames: InsertableId[] = [PLUME_INSERTABLE_ID, PLEXUS_INSERTABLE_ID];
   await Promise.all(
     sysnames.map(async (sysname) => await new PkgMgr(db, sysname).seedPkg())
   );
@@ -106,7 +109,7 @@ export async function seedTestDb(em: EntityManager) {
             isInstallOnly: true,
             isNew: true,
             name: "Plasmic Design System",
-            projectId: getBundleInfo(DEFAULT_INSERTABLE).projectId,
+            projectId: getBundleInfo(PLEXUS_INSERTABLE_ID).projectId,
             imageUrl: "https://static1.plasmic.app/plasmic-logo.png",
             groupName: "PDS",
             entryPoint: {

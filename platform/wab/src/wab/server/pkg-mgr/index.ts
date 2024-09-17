@@ -1,10 +1,11 @@
-import { assert } from "@/wab/shared/common";
-import { InsertableTemplatesGroup } from "@/wab/shared/devflags";
 import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { unbundleWithDeps } from "@/wab/server/db/DbBundleLoader";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { Pkg, PkgVersion, User } from "@/wab/server/entities/Entities";
 import { Bundle, Bundler } from "@/wab/shared/bundler";
+import { assert } from "@/wab/shared/common";
+import { InsertableTemplatesGroup } from "@/wab/shared/devflags";
+import { InsertableId } from "@/wab/shared/insertables";
 import { ProjectDependency } from "@/wab/shared/model/classes";
 import fs from "fs";
 import path from "path";
@@ -17,7 +18,7 @@ import path from "path";
  * To download a project's data/*-master-pkg.json file from prod, use studio.plasmic.app/admin/dev -> Download Pkg as JSON for Pkg-mgr
  */
 export class PkgMgr {
-  constructor(private db: DbMgr, private sysname: string) {
+  constructor(private db: DbMgr, private sysname: InsertableId) {
     console.log("created with sysname", sysname);
   }
 
@@ -25,7 +26,7 @@ export class PkgMgr {
     bundle: Bundle,
     user: User,
     depPkgVersionId: string,
-    sysname?: string
+    sysname?: InsertableId
   ) {
     const name = bundle.map[bundle.root].name;
     const projectId = bundle.map[bundle.root].projectId;
@@ -161,7 +162,7 @@ export class PkgMgr {
     console.log(`inserted a pkg version ${pkgVersion.id}`);
   }
 
-  private async tryGetPkg(sysname: string) {
+  private async tryGetPkg(sysname: InsertableId) {
     return await this.db.getEntMgr().getRepository(Pkg).findOne({
       where: {
         sysname,
@@ -170,7 +171,7 @@ export class PkgMgr {
   }
 }
 
-export function getBundleInfo(sysname: string) {
+export function getBundleInfo(sysname: InsertableId) {
   const {
     master: [_, bundle],
   } = parseMasterPkg(sysname);
@@ -180,7 +181,7 @@ export function getBundleInfo(sysname: string) {
 }
 
 export function getDevflagForInsertableTemplateItem(
-  sysname: string
+  sysname: InsertableId
 ): InsertableTemplatesGroup {
   /**
    *  {
@@ -218,7 +219,7 @@ export function getDevflagForInsertableTemplateItem(
   };
 }
 
-export function parseMasterPkg(sysname: string) {
+export function parseMasterPkg(sysname: InsertableId) {
   const projectData = JSON.parse(
     fs
       .readFileSync(path.join(__dirname, "data", `${sysname}-master-pkg.json`))
@@ -229,26 +230,4 @@ export function parseMasterPkg(sysname: string) {
   const master = projectData.slice(-1)[0];
 
   return { master, deps };
-}
-
-export async function getAllSysnames(): Promise<string[]> {
-  return new Promise((resolve, reject) => {
-    fs.readdir(path.join(__dirname, "data"), (err, files) => {
-      if (err) {
-        console.error("Unable to scan directory: " + err);
-        reject(err);
-      }
-
-      // Filter out only files
-      files = files.filter((file) => {
-        const filePath = path.join(__dirname, "data", file);
-        return fs.lstatSync(filePath).isFile();
-      });
-
-      const sysnames = files.map((file) =>
-        file.replace("-master-pkg.json", "")
-      );
-      return resolve(sysnames);
-    });
-  });
 }
