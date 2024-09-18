@@ -1430,7 +1430,7 @@ function renderTplComponent(
     );
 
     if (isComponentRoot && isTplRootWithCodeComponentVariants(node)) {
-      props["updateVariant"] = ctx.updateVariant;
+      props["plasmicUpdateVariant"] = ctx.updateVariant;
     }
 
     if (meta) {

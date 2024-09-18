@@ -3620,7 +3620,7 @@ function serializeTplComponent(ctx: SerializerBaseContext, node: TplComponent) {
   }
 
   if (isRoot && isTplRootWithCodeComponentVariants(node)) {
-    attrs["updateVariant"] = `updateVariant`;
+    attrs["plasmicUpdateVariant"] = `updateVariant`;
   }
 
   let componentStr = makeCreatePlasmicElement(
