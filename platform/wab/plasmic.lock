@@ -2966,7 +2966,7 @@
         {
           "type": "image",
           "assetId": "r7sZ_Vt9G",
-          "checksum": "c8aa9653026887797f4633d3d36ed20c"
+          "checksum": "8b658645f025b581e9446fbabfdb1b3e"
         },
         {
           "type": "renderModule",
@@ -3155,12 +3155,12 @@
         }
       ],
       "projectId": "gYEVvAzCcLMHDVPvuYxkFh",
-      "version": "23.5.2",
+      "version": "24.0.0",
       "dependencies": {
         "tXkSR39sgCDWSitZxC5xFV": "81.0.4",
         "oT38tGyqov9SPWHpf3Y2Rf": "5.5.3",
         "95xp9cYcv7HrNWpFWWhbcv": "2.2.6",
-        "8PtdGodUbexNYgkuyBUcWu": "3.24.0"
+        "8PtdGodUbexNYgkuyBUcWu": "3.25.0"
       },
       "lang": "ts",
       "codegenVersion": "0.0.1"

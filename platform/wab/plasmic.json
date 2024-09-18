@@ -544,7 +544,8 @@
       "indirect": false,
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "ooL7EhXDmFQWnW9sxtchhE",
@@ -3736,8 +3737,8 @@
       "images": [
         {
           "id": "r7sZ_Vt9G",
-          "name": "transparent-background.svg",
-          "filePath": "wab/client/plasmic/plasmic_kit_style_controls/images/transparentBackgroundSvg.svg"
+          "name": "transparent-background",
+          "filePath": "wab/client/plasmic/plasmic_kit_style_controls/images/transparentBackground.svg"
         },
         {
           "id": "YQFHPdeAw",
