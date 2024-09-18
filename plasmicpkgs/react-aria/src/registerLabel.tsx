@@ -28,6 +28,11 @@ export function registerLabel(
       props: {
         children: {
           type: "slot",
+          mergeWithParent: true,
+          defaultValue: {
+            type: "text",
+            value: "Label",
+          },
         },
       },
       trapsFocus: true,

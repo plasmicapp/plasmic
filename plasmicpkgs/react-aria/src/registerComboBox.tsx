@@ -191,5 +191,6 @@ export function registerComboBox(loader?: Registerable) {
         variableType: "boolean",
       },
     },
+    trapsFocus: true,
   });
 }

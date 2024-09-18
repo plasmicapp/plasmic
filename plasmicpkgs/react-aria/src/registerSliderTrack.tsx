@@ -189,6 +189,11 @@ export function registerSliderTrack(
       props: {
         children: {
           type: "slot",
+          /**
+           * NOTE: We don't merge with parent here, because we want to allow the user to select the thumbs without having to first select the slider track.
+           * Also, there can be more than one thumbs (e.g. in a range slider), but `mergeWithParent` only shows prop controls of the slot content if there is only one direct descendant of the slot.
+           * */
+          // mergeWithParent: true,
           displayName: "Thumbs",
           description:
             "The thumbs of the slider. For range slider, you can add more than one thumb.",
@@ -203,6 +208,7 @@ export function registerSliderTrack(
         },
         progressBar: {
           type: "slot",
+          mergeWithParent: true,
           displayName: "Progress Bar",
           defaultValue: [
             {
@@ -229,7 +235,6 @@ export function registerSliderTrack(
           argTypes: [{ name: "isHovering", type: "boolean" }],
         },
       },
-      trapsFocus: true,
     },
     overrides
   );

@@ -159,7 +159,6 @@ export function registerInput(
         importName: "inputHelpers",
         importPath: "@plasmicpkgs/react-aria/skinny/registerInput",
       },
-      trapsFocus: true,
     },
     overrides
   );

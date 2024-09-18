@@ -29,7 +29,7 @@ export function registerText(
       props: {
         children: {
           type: "slot",
-          mergeWithParent: true as any,
+          mergeWithParent: true,
           defaultValue: {
             type: "text",
             value: "Some text...",

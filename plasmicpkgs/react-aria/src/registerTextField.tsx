@@ -104,7 +104,7 @@ export function registerTextField(
         ]),
         children: {
           type: "slot",
-          mergeWithParent: true as any,
+          mergeWithParent: true,
           defaultValue: {
             type: "vbox",
             styles: {

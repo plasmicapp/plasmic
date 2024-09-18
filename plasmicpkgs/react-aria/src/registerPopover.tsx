@@ -103,6 +103,7 @@ export function registerPopover(
       props: {
         children: {
           type: "slot",
+          mergeWithParent: true,
           defaultValue: [
             POPOVER_ARROW_IMG,
             {
@@ -110,7 +111,7 @@ export function registerPopover(
               styles: {
                 width: "stretch",
                 padding: 0,
-                gap: "10px",
+                rowGap: "10px",
               },
               children: [
                 {
@@ -168,6 +169,7 @@ export function registerPopover(
         },
       },
       styleSections: true,
+      trapsFocus: true,
     },
     overrides
   );

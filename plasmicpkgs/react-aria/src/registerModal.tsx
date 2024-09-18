@@ -132,6 +132,7 @@ export function registerModal(
       props: {
         children: {
           type: "slot",
+          mergeWithParent: true,
           defaultValue: {
             type: "vbox",
             styles: {

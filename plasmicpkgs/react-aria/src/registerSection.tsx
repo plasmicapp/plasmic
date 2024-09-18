@@ -48,6 +48,7 @@ export function registerSection(
       props: {
         header: {
           type: "slot",
+          mergeWithParent: true,
           defaultValue: [
             {
               type: "text",
@@ -57,8 +58,10 @@ export function registerSection(
         },
         items: {
           type: "slot",
+          mergeWithParent: true,
         },
       },
+      trapsFocus: true,
     },
     overrides
   );

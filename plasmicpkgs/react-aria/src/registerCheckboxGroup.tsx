@@ -84,12 +84,10 @@ export function registerCheckboxGroup(
           "isDisabled",
           "isReadOnly",
           "aria-label",
-          "children",
           "isRequired",
         ]),
         children: {
           type: "slot",
-          mergeWithParent: true as any,
           defaultValue: [
             {
               type: "vbox",

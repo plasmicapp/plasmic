@@ -133,7 +133,7 @@ export function registerRadio(
         ]),
         children: {
           type: "slot",
-          mergeWithParent: true as any,
+          mergeWithParent: true,
           defaultValue: makeDefaultRadioChildren("Radio"),
         },
         value: {

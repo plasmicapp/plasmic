@@ -45,6 +45,7 @@ export function registerDialogTrigger(
       props: {
         trigger: {
           type: "slot",
+          mergeWithParent: true,
           defaultValue: {
             type: "component",
             name: BUTTON_COMPONENT_NAME,
@@ -58,6 +59,7 @@ export function registerDialogTrigger(
         },
         dialog: {
           type: "slot",
+          mergeWithParent: true,
           defaultValue: {
             type: "component",
             name: MODAL_COMPONENT_NAME,

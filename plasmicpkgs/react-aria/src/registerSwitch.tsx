@@ -92,7 +92,7 @@ export function registerSwitch(
         ]),
         children: {
           type: "slot",
-          mergeWithParent: true as any,
+          mergeWithParent: true,
           defaultValue: [
             {
               type: "hbox",

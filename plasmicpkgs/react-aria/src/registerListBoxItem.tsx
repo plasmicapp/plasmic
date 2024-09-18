@@ -179,9 +179,11 @@ export function registerListBoxItem(
         },
         children: {
           type: "slot",
+          mergeWithParent: true,
           defaultValue: makeDefaultListBoxItemChildren("Item"),
         },
       },
+      trapsFocus: true,
     },
     overrides
   );

@@ -82,7 +82,6 @@ export function registerRadioGroup(
         ]),
         children: {
           type: "slot",
-          mergeWithParent: true as any,
           defaultValue: [
             {
               type: "vbox",

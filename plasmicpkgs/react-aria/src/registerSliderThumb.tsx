@@ -109,6 +109,7 @@ export function registerSliderThumb(
         },
         children: {
           type: "slot",
+          mergeWithParent: true,
           hidden: (ps: BaseSliderThumbProps) => !ps.advanced,
         },
       },

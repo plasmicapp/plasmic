@@ -62,6 +62,7 @@ export function registerForm(
       props: {
         children: {
           type: "slot",
+          mergeWithParent: true,
         },
         onSubmit: {
           type: "eventHandler",

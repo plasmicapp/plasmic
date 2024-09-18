@@ -134,7 +134,6 @@ export function registerTextArea(
         importName: "inputHelpers",
         importPath: "@plasmicpkgs/react-aria/skinny/registerTextArea",
       },
-      trapsFocus: true,
     },
     overrides
   );

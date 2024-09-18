@@ -152,7 +152,7 @@ export function registerCheckbox(
         ]),
         children: {
           type: "slot",
-          mergeWithParent: true as any,
+          mergeWithParent: true,
           defaultValue: makeDefaultCheckboxChildren({
             label: "Label",
             showDocs: true,

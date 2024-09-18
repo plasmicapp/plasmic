@@ -86,6 +86,7 @@ export function registerTooltip(
       props: {
         children: {
           type: "slot",
+          mergeWithParent: true,
           defaultValue: {
             type: "text",
             value: "Hover me!",
@@ -93,6 +94,7 @@ export function registerTooltip(
         },
         tooltipContent: {
           type: "slot",
+          mergeWithParent: true,
           displayName: "Tooltip Content",
           // NOTE: This is not applied in attachment
           defaultValue: {
@@ -142,6 +144,7 @@ export function registerTooltip(
           variableType: "boolean",
         },
       },
+      trapsFocus: true,
     },
     overrides
   );

@@ -52,7 +52,10 @@ export function registerSliderOutput(
       importName: "BaseSliderOutput",
       variants,
       props: {
-        children: { type: "slot" },
+        children: {
+          mergeWithParent: true,
+          type: "slot",
+        },
       },
       trapsFocus: true,
     },

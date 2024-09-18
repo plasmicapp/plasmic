@@ -145,6 +145,7 @@ export function registerSelect(loader?: Registerable) {
         ],
       },
     },
+    trapsFocus: true,
   });
 
   registerComponentHelper(loader, BaseSelect, {
@@ -207,6 +208,7 @@ export function registerSelect(loader?: Registerable) {
       },
       children: {
         type: "slot",
+        mergeWithParent: true,
         defaultValue: [
           {
             type: "vbox",
@@ -303,5 +305,6 @@ export function registerSelect(loader?: Registerable) {
         variableType: "boolean",
       },
     },
+    trapsFocus: true,
   });
 }
