@@ -37,7 +37,8 @@ export const inputHelpers = {
 };
 
 export function BaseTextArea(props: BaseTextAreaProps) {
-  const { disabled, updateVariant, setControlContextData, ...rest } = props;
+  const { disabled, plasmicUpdateVariant, setControlContextData, ...rest } =
+    props;
 
   const textFieldContext = React.useContext(PlasmicTextFieldContext);
 
@@ -47,10 +48,10 @@ export function BaseTextArea(props: BaseTextAreaProps) {
 
   // NOTE: Aria <Input> does not support render props, neither does it provide an onDisabledChange event, so we have to manually update the disabled state
   useEffect(() => {
-    updateVariant?.({
+    plasmicUpdateVariant?.({
       disabled: mergedProps.disabled,
     });
-  }, [mergedProps.disabled, updateVariant]);
+  }, [mergedProps.disabled, plasmicUpdateVariant]);
 
   setControlContextData?.({
     parent: textFieldContext,
@@ -59,17 +60,17 @@ export function BaseTextArea(props: BaseTextAreaProps) {
   return (
     <TextArea
       onFocus={() => {
-        updateVariant?.({
+        plasmicUpdateVariant?.({
           focused: true,
         });
       }}
       onBlur={() => {
-        updateVariant?.({
+        plasmicUpdateVariant?.({
           focused: false,
         });
       }}
       onHoverChange={(isHovered) => {
-        updateVariant?.({
+        plasmicUpdateVariant?.({
           hovered: isHovered,
         });
       }}

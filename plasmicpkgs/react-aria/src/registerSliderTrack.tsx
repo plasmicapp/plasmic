@@ -61,7 +61,7 @@ export function BaseSliderTrack(props: BaseSliderTrackProps) {
   const context = React.useContext(PlasmicSliderContext);
   const isStandalone = !context;
   const mergedProps = mergeProps(context, props);
-  const { children, progressBar, updateVariant, ...rest } = mergedProps;
+  const { children, progressBar, plasmicUpdateVariant, ...rest } = mergedProps;
 
   const isMultiValue = isMultiValueGuard(mergedProps.value);
 
@@ -149,7 +149,7 @@ export function BaseSliderTrack(props: BaseSliderTrackProps) {
             {
               hovered: isHovered,
             },
-            updateVariant
+            plasmicUpdateVariant
           )}
         </>
       )}

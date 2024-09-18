@@ -40,7 +40,7 @@ export const inputHelpers = {
 
 export function BaseInput(props: BaseInputProps) {
   const {
-    updateVariant,
+    plasmicUpdateVariant,
     setControlContextData,
     disabled,
     autoComplete,
@@ -63,26 +63,26 @@ export function BaseInput(props: BaseInputProps) {
 
   // NOTE: Aria <Input> does not support render props, neither does it provide an onDisabledChange event, so we have to manually update the disabled state
   useEffect(() => {
-    updateVariant?.({
+    plasmicUpdateVariant?.({
       disabled: mergedProps.disabled,
     });
-  }, [mergedProps.disabled, updateVariant]);
+  }, [mergedProps.disabled, plasmicUpdateVariant]);
 
   return (
     <Input
       autoComplete={resolveAutoComplete(autoComplete)}
       onHoverChange={(isHovered) => {
-        updateVariant?.({
+        plasmicUpdateVariant?.({
           hovered: isHovered,
         });
       }}
       onFocus={() => {
-        updateVariant?.({
+        plasmicUpdateVariant?.({
           focused: true,
         });
       }}
       onBlur={() => {
-        updateVariant?.({
+        plasmicUpdateVariant?.({
           focused: false,
         });
       }}

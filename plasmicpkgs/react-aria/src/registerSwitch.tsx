@@ -32,7 +32,7 @@ interface BaseSwitchProps
 }
 
 export function BaseSwitch(props: BaseSwitchProps) {
-  const { children, updateVariant, ...rest } = props;
+  const { children, plasmicUpdateVariant, ...rest } = props;
   return (
     <Switch {...rest}>
       {({
@@ -55,7 +55,7 @@ export function BaseSwitch(props: BaseSwitchProps) {
             disabled: isDisabled,
             readonly: isReadOnly,
           },
-          updateVariant
+          plasmicUpdateVariant
         )
       }
     </Switch>

@@ -57,7 +57,7 @@ export type UpdateVariant<T extends AriaVariant[]> =
 export interface WithVariants<T extends AriaVariant[]> {
   // Optional callback to update the CC variant state
   // as it's only provided if the component is the root of a Studio component
-  updateVariant?: UpdateVariant<T>;
+  plasmicUpdateVariant?: UpdateVariant<T>;
 }
 
 type WithObservedValues<T extends AriaVariant[]> = (

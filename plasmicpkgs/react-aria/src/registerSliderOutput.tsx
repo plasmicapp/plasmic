@@ -20,7 +20,7 @@ const { variants, withObservedValues } = pickAriaComponentVariants(
 );
 
 export function BaseSliderOutput(props: BaseSliderOutputProps) {
-  const { updateVariant, children, ...rest } = props;
+  const { plasmicUpdateVariant, children, ...rest } = props;
   return (
     <SliderOutput {...rest}>
       {({ isDisabled }) =>
@@ -29,7 +29,7 @@ export function BaseSliderOutput(props: BaseSliderOutputProps) {
           {
             disabled: isDisabled,
           },
-          updateVariant
+          plasmicUpdateVariant
         )
       }
     </SliderOutput>

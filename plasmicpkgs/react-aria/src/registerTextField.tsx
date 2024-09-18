@@ -34,7 +34,7 @@ const { variants, withObservedValues } =
   pickAriaComponentVariants(TEXT_FIELD_VARIANTS);
 
 export function BaseTextField(props: BaseTextFieldProps) {
-  const { children, updateVariant, autoComplete, ...rest } = props;
+  const { children, plasmicUpdateVariant, autoComplete, ...rest } = props;
 
   return (
     <PlasmicTextFieldContext.Provider value={props}>
@@ -46,7 +46,7 @@ export function BaseTextField(props: BaseTextFieldProps) {
               disabled: isDisabled,
               readonly: isReadOnly,
             },
-            updateVariant
+            plasmicUpdateVariant
           )
         }
       </TextField>

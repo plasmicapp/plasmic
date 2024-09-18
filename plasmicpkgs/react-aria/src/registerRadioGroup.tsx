@@ -28,7 +28,7 @@ const { variants, withObservedValues } =
   pickAriaComponentVariants(RADIO_GROUP_VARIANTS);
 
 export function BaseRadioGroup(props: BaseRadioGroupProps) {
-  const { children, updateVariant, ...rest } = props;
+  const { children, plasmicUpdateVariant, ...rest } = props;
 
   return (
     <PlasmicRadioGroupContext.Provider value={props}>
@@ -40,7 +40,7 @@ export function BaseRadioGroup(props: BaseRadioGroupProps) {
               disabled: isDisabled,
               readonly: isReadOnly,
             },
-            updateVariant
+            plasmicUpdateVariant
           )
         }
       </RadioGroup>

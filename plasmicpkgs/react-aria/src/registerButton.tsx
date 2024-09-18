@@ -30,7 +30,8 @@ interface BaseButtonProps
 }
 
 export function BaseButton(props: BaseButtonProps) {
-  const { submitsForm, resetsForm, children, updateVariant, ...rest } = props;
+  const { submitsForm, resetsForm, children, plasmicUpdateVariant, ...rest } =
+    props;
 
   const type = submitsForm ? "submit" : resetsForm ? "reset" : "button";
 
@@ -46,7 +47,7 @@ export function BaseButton(props: BaseButtonProps) {
             focusVisible: isFocusVisible,
             disabled: isDisabled,
           },
-          updateVariant
+          plasmicUpdateVariant
         )
       }
     </Button>

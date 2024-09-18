@@ -39,7 +39,8 @@ export interface BaseListBoxItemProps
 }
 
 export function BaseListBoxItem(props: BaseListBoxItemProps) {
-  const { children, setControlContextData, updateVariant, id, ...rest } = props;
+  const { children, setControlContextData, plasmicUpdateVariant, id, ...rest } =
+    props;
   const listboxContext = React.useContext(PlasmicListBoxContext);
   const isStandalone = !listboxContext;
 
@@ -92,7 +93,7 @@ export function BaseListBoxItem(props: BaseListBoxItemProps) {
             selected: isSelected,
             disabled: isDisabled,
           },
-          updateVariant
+          plasmicUpdateVariant
         )
       }
     </ListBoxItem>

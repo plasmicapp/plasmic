@@ -36,7 +36,8 @@ const { variants, withObservedValues } =
   pickAriaComponentVariants(CHECKBOX_VARIANTS);
 
 export function BaseCheckbox(props: BaseCheckboxProps) {
-  const { children, updateVariant, setControlContextData, ...rest } = props;
+  const { children, plasmicUpdateVariant, setControlContextData, ...rest } =
+    props;
   const contextProps = React.useContext(PlasmicCheckboxGroupContext);
 
   setControlContextData?.({
@@ -68,7 +69,7 @@ export function BaseCheckbox(props: BaseCheckboxProps) {
               selected: isSelected,
               readonly: isReadOnly,
             },
-            updateVariant
+            plasmicUpdateVariant
           )
         }
       </Checkbox>

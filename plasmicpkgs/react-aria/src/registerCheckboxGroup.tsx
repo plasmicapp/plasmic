@@ -32,7 +32,7 @@ const { variants, withObservedValues } = pickAriaComponentVariants(
 );
 
 export function BaseCheckboxGroup(props: BaseCheckboxGroupProps) {
-  const { children, updateVariant, ...rest } = props;
+  const { children, plasmicUpdateVariant, ...rest } = props;
 
   return (
     <PlasmicCheckboxGroupContext.Provider value={rest}>
@@ -44,7 +44,7 @@ export function BaseCheckboxGroup(props: BaseCheckboxGroupProps) {
               disabled: isDisabled,
               readonly: isReadOnly,
             },
-            updateVariant
+            plasmicUpdateVariant
           )
         }
       </CheckboxGroup>

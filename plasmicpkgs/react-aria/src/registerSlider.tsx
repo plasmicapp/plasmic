@@ -31,7 +31,7 @@ export interface BaseSliderProps<T extends number | number[]>
 export function BaseSlider<T extends number | number[]>(
   props: BaseSliderProps<T>
 ) {
-  const { children, updateVariant, ...rest } = props;
+  const { children, plasmicUpdateVariant, ...rest } = props;
   return (
     <PlasmicSliderContext.Provider
       value={{
@@ -48,7 +48,7 @@ export function BaseSlider<T extends number | number[]>(
             {
               disabled: isDisabled,
             },
-            updateVariant
+            plasmicUpdateVariant
           )
         }
       </Slider>

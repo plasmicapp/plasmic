@@ -36,7 +36,8 @@ const { variants, withObservedValues } =
   pickAriaComponentVariants(RADIO_VARIANTS);
 
 export function BaseRadio(props: BaseRadioProps) {
-  const { children, setControlContextData, updateVariant, ...rest } = props;
+  const { children, setControlContextData, plasmicUpdateVariant, ...rest } =
+    props;
   const contextProps = React.useContext(PlasmicRadioGroupContext);
   const isStandalone = !contextProps;
 
@@ -66,7 +67,7 @@ export function BaseRadio(props: BaseRadioProps) {
             disabled: isDisabled,
             readonly: isReadOnly,
           },
-          updateVariant
+          plasmicUpdateVariant
         )
       }
     </Radio>
