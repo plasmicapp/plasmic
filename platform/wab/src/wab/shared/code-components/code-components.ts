@@ -1384,7 +1384,8 @@ function refreshCodeComponentMeta(
       c.figmaMappings = figmaMappings;
     }
     c.alwaysAutoName = (meta as any).alwaysAutoName ?? false;
-    c.trapsFocus = (meta as any).trapsSelection ?? false;
+    // Keeping `trapsSelection` for backwards compatibility with Antd5/Plume which uses this name
+    c.trapsFocus = meta.trapsFocus ?? (meta as any).trapsSelection ?? false;
     return success(mustBeNamed);
   });
 }
@@ -3356,7 +3357,10 @@ export function mkCodeComponent(
         new FigmaComponentMapping({ figmaComponentName: m.figmaComponentName })
     ),
     alwaysAutoName: (meta as any).alwaysAutoName ?? false,
-    trapsFocus: (meta as any).trapsSelection ?? false,
+    // Keeping `trapsSelection` for backwards compatibility with Antd5/Plume which uses this name
+    trapsFocus: !isGlobalContextMeta(meta)
+      ? meta.trapsFocus ?? (meta as any).trapsSelection ?? false
+      : undefined,
   });
 
   // Now we make a fake code component tree, which is rooted by a div whose
