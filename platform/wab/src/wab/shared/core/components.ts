@@ -1636,7 +1636,7 @@ export function isCodeComponentTpl(tpl: TplNode): tpl is TplComponent {
   return isTplComponent(tpl) && isCodeComponent(tpl.component);
 }
 
-interface ContextCodeComponent extends CodeComponent {
+export interface ContextCodeComponent extends CodeComponent {
   isContext: true;
 }
 

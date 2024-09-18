@@ -1,17 +1,18 @@
 const { Command } = require("commander");
-import { spawn } from "@/wab/shared/common";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
-import { cleanTutorialDbs } from "@/wab/server/db/custom-scripts/clean-tutorialdbs";
-import { findConflictNames } from "@/wab/server/db/custom-scripts/find-conflict-names";
-import { findDanglingWeakRefs } from "@/wab/server/db/custom-scripts/find-dangling-weak-refs";
-import { findMissingImplicitStates } from "@/wab/server/db/custom-scripts/find-missing-implicit-states";
-import { fixInvalidImplicitStates } from "@/wab/server/db/custom-scripts/fix-invalid-implicit-states";
-import { profileCodegen } from "@/wab/server/db/custom-scripts/profile-codegen";
-import { reIdentifyUsers } from "@/wab/server/db/custom-scripts/re-identify-users";
 import {
   ensureDbConnections,
   getDefaultConnection,
 } from "@/wab/server/db/DbCon";
+import { cleanTutorialDbs } from "@/wab/server/db/custom-scripts/clean-tutorialdbs";
+import { findConflictNames } from "@/wab/server/db/custom-scripts/find-conflict-names";
+import { findDanglingWeakRefs } from "@/wab/server/db/custom-scripts/find-dangling-weak-refs";
+import { findMissingImplicitStates } from "@/wab/server/db/custom-scripts/find-missing-implicit-states";
+import { fixDuplicatedComponents } from "@/wab/server/db/custom-scripts/fix-duplicated-components";
+import { fixInvalidImplicitStates } from "@/wab/server/db/custom-scripts/fix-invalid-implicit-states";
+import { profileCodegen } from "@/wab/server/db/custom-scripts/profile-codegen";
+import { reIdentifyUsers } from "@/wab/server/db/custom-scripts/re-identify-users";
+import { spawn } from "@/wab/shared/common";
 import { exit } from "process";
 
 /**
@@ -68,6 +69,9 @@ async function main() {
     }
     if (opts.script === "clean-tutorialdbs") {
       await cleanTutorialDbs(em);
+    }
+    if (opts.script === "fix-duplicated-components") {
+      await fixDuplicatedComponents(em, opts.projectId);
     }
   });
 

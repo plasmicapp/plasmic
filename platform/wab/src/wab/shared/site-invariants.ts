@@ -1,50 +1,7 @@
-import { describeValueOrType, ensure, partitions, pathGet } from "@/wab/shared/common";
 import { isTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
-import {
-  allComponentVariants,
-  getComponentDisplayName,
-  isCodeComponent,
-  isContextCodeComponent,
-  isFrameComponent,
-  isPageComponent,
-  isPlumeComponent,
-  tryGetVariantGroupValueFromArg,
-} from "@/wab/shared/core/components";
 import * as cssPegParser from "@/wab/gen/cssPegParser";
-import { ParamExportType } from "@/wab/shared/core/lang";
-import { ImportableObject } from "@/wab/shared/core/project-deps";
 import { AnyArena, getArenaFrames, isMixedArena } from "@/wab/shared/Arenas";
-import {
-  componentToUsedImageAssets,
-  componentToUsedMixins,
-  componentToUsedTokens,
-  flattenComponent,
-} from "@/wab/shared/cached-selectors";
-import { isValidStyleProp } from "@/wab/shared/core/style-props";
 import { MIXIN_LOWER } from "@/wab/shared/Labels";
-import { maybeComputedFn } from "@/wab/shared/mobx-util";
-import {
-  ArenaFrame,
-  Component,
-  isKnownArenaFrame,
-  isKnownRenderExpr,
-  isKnownStateChangeHandlerParam,
-  isKnownStateParam,
-  isKnownVariantGroupState,
-  isKnownVariantsRef,
-  isKnownVarRef,
-  Site,
-  StyleToken,
-  TplNode,
-  Variant,
-} from "@/wab/shared/model/classes";
-import { meta } from "@/wab/shared/model/classes-metas";
-import { instUtil } from "@/wab/shared/model/InstUtil";
-import {
-  createNodeCtx,
-  walkModelTree,
-} from "@/wab/shared/model/model-tree-util";
-import { modelConflictsMeta } from "@/wab/shared/site-diffs/model-conflicts-meta";
 import { getTplSlot, isSlot } from "@/wab/shared/SlotUtils";
 import {
   isBaseRuleVariant,
@@ -58,6 +15,32 @@ import {
   tryGetVariantSetting,
 } from "@/wab/shared/Variants";
 import {
+  componentToUsedImageAssets,
+  componentToUsedMixins,
+  componentToUsedTokens,
+  flattenComponent,
+} from "@/wab/shared/cached-selectors";
+import {
+  describeValueOrType,
+  ensure,
+  partitions,
+  pathGet,
+} from "@/wab/shared/common";
+import {
+  ContextCodeComponent,
+  allComponentVariants,
+  getComponentDisplayName,
+  isCodeComponent,
+  isContextCodeComponent,
+  isFrameComponent,
+  isPageComponent,
+  isPlasmicComponent,
+  isPlumeComponent,
+  tryGetVariantGroupValueFromArg,
+} from "@/wab/shared/core/components";
+import { ParamExportType } from "@/wab/shared/core/lang";
+import { ImportableObject } from "@/wab/shared/core/project-deps";
+import {
   allComponents,
   allGlobalVariants,
   allImageAssets,
@@ -66,6 +49,7 @@ import {
   getSiteArenas,
 } from "@/wab/shared/core/sites";
 import { isPrivateState } from "@/wab/shared/core/states";
+import { isValidStyleProp } from "@/wab/shared/core/style-props";
 import { parseCssValue } from "@/wab/shared/core/styles";
 import {
   ancestorsUp,
@@ -75,6 +59,29 @@ import {
   isTplVariantable,
   tplChildren,
 } from "@/wab/shared/core/tpls";
+import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { instUtil } from "@/wab/shared/model/InstUtil";
+import {
+  ArenaFrame,
+  Component,
+  Site,
+  StyleToken,
+  TplNode,
+  Variant,
+  isKnownArenaFrame,
+  isKnownRenderExpr,
+  isKnownStateChangeHandlerParam,
+  isKnownStateParam,
+  isKnownVarRef,
+  isKnownVariantGroupState,
+  isKnownVariantsRef,
+} from "@/wab/shared/model/classes";
+import { meta } from "@/wab/shared/model/classes-metas";
+import {
+  createNodeCtx,
+  walkModelTree,
+} from "@/wab/shared/model/model-tree-util";
+import { modelConflictsMeta } from "@/wab/shared/site-diffs/model-conflicts-meta";
 import L, { uniqBy } from "lodash";
 
 export class InvariantError extends Error {
@@ -93,11 +100,20 @@ export function assertSiteInvariants(site: Site) {
 }
 
 export function* genSiteErrors(site: Site) {
+  const componentNames = new Set<string>();
   componentToVariants = new WeakMap();
   siteToGlobalVariants = new WeakMap();
   siteToValidRefs = new WeakMap();
   for (const component of site.components) {
     yield* genComponentErrors(site, component);
+    if (!isPlasmicComponent(component)) {
+      continue;
+    }
+    if (componentNames.has(component.name)) {
+      yield new InvariantError(`Duplicated component name: ${component.name}`);
+    } else {
+      componentNames.add(component.name);
+    }
   }
 
   yield* genGlobalContextErrors(site);
@@ -931,7 +947,7 @@ function* genGlobalContextErrors(site: Site) {
   }
   const seenComponents: Set<string> = new Set();
   for (const gc of globalContextsTpls) {
-    if (!registeredGlobalContexts.has(gc)) {
+    if (!registeredGlobalContexts.has(gc as ContextCodeComponent)) {
       yield new InvariantError(
         `Global Context ${gc.name} has tpl but no corresponding registered component`
       );
