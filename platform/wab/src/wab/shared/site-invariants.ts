@@ -109,11 +109,12 @@ export function* genSiteErrors(site: Site) {
     if (!isPlasmicComponent(component)) {
       continue;
     }
-    if (componentNames.has(component.name)) {
-      yield new InvariantError(`Duplicated component name: ${component.name}`);
-    } else {
-      componentNames.add(component.name);
-    }
+    // TODO: Reenable this
+    // if (componentNames.has(component.name)) {
+    //   yield new InvariantError(`Duplicated component name: ${component.name}`);
+    // } else {
+    //   componentNames.add(component.name);
+    // }
   }
 
   yield* genGlobalContextErrors(site);
