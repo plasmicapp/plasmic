@@ -197,9 +197,9 @@ export function reportSilentErrorMessage(
 export function normalizeError(error: any) {
   return error instanceof Error
     ? error
-    : error && error.error instanceof Error
+    : error && error.error
     ? (error.error as Error)
-    : error
+    : typeof error === "string"
     ? new Error(error)
-    : new Error(`Unknown error`);
+    : new Error("Unknown error", { cause: error });
 }
