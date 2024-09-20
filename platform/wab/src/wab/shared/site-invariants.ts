@@ -106,7 +106,8 @@ export function* genSiteErrors(site: Site) {
   siteToValidRefs = new WeakMap();
   for (const component of site.components) {
     yield* genComponentErrors(site, component);
-    if (!isPlasmicComponent(component)) {
+    // Only count Plasmic components that are not sub components
+    if (!isPlasmicComponent(component) || component.superComp) {
       continue;
     }
     // TODO: Reenable this

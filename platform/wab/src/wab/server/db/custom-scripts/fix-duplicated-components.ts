@@ -7,6 +7,7 @@ import {
   checkExistingReferences,
   checkRefsInBundle,
 } from "@/wab/shared/bundler";
+import { isCodeComponent } from "@/wab/shared/core/components";
 import { extractComponentUsages } from "@/wab/shared/core/sites";
 import { Component } from "@/wab/shared/model/classes";
 import { assertSiteInvariants } from "@/wab/shared/site-invariants";
@@ -27,6 +28,10 @@ export async function fixDuplicatedComponents(
   const duplicatedComponents = new Map<string, Component[]>();
   for (const component of site.components) {
     const key = component.name;
+    // Do not count code components or  sub components as duplicates.
+    if (isCodeComponent(component) || component.superComp) {
+      continue;
+    }
     if (!duplicatedComponents.has(key)) {
       duplicatedComponents.set(key, []);
     }
@@ -37,7 +42,6 @@ export async function fixDuplicatedComponents(
     if (components.length <= 1) {
       return;
     }
-
     // Sort in descending order. components[0] will have the most usages.
     components.sort(
       (a, b) =>
