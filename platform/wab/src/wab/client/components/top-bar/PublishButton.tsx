@@ -9,8 +9,8 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicPublishButton";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
-import { spawn, spawnWrapper } from "@/wab/shared/common";
 import { MainBranchId } from "@/wab/shared/ApiSchema";
+import { spawn, spawnWrapper } from "@/wab/shared/common";
 import { PlasmicIcon } from "@plasmicapp/react-web";
 import { Menu, Tooltip } from "antd";
 import L from "lodash";
@@ -85,6 +85,7 @@ export const PublishButton = observer(function PublishButton(
                 menu: () => (
                   <Menu>
                     {menuSection(
+                      "branch",
                       <Menu.Item
                         key="merge"
                         onClick={async () => {

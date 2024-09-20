@@ -945,12 +945,14 @@ function getFolderItemMenuRenderer({
 
     const replaceAllInstancesMenuItems = [
       ...menuSection(
+        "local",
         ...naturalSort(studioCtx.site.components, (c) => c.name).map((comp) =>
           componentToReplaceAllInstancesItem(comp)
         )
       ),
       ...studioCtx.site.projectDependencies.flatMap((dep) =>
         menuSection(
+          "imported",
           ...naturalSort(dep.site.components, (c) => c.name).map((comp) =>
             componentToReplaceAllInstancesItem(comp)
           )
@@ -989,12 +991,8 @@ function getFolderItemMenuRenderer({
     };
 
     const onDuplicate = () =>
-      studioCtx.changeUnsafe(() => {
-        spawn(
-          studioCtx.siteOps().tryDuplicatingComponent(component!, {
-            focusNewComponent: true,
-          })
-        );
+      studioCtx.siteOps().tryDuplicatingComponent(component!, {
+        focusNewComponent: true,
       });
 
     const onRename = () => setRenamingItem(folderItem.item);
@@ -1076,6 +1074,7 @@ function getFolderItemMenuRenderer({
         id="proj-item-menu"
       >
         {menuSection(
+          "references",
           <Menu.Item
             key="references"
             hidden={!shouldShowItem.findReferences}
@@ -1085,6 +1084,7 @@ function getFolderItemMenuRenderer({
           </Menu.Item>
         )}
         {menuSection(
+          "component-actions",
           <Menu.Item
             key="rename"
             onClick={(e) => {
@@ -1103,6 +1103,7 @@ function getFolderItemMenuRenderer({
           </Menu.Item>
         )}
         {menuSection(
+          "artboard-actions",
           <Menu.Item
             key="editInNewArtboard"
             hidden={!shouldShowItem.editInNewArtboard}
@@ -1127,6 +1128,7 @@ function getFolderItemMenuRenderer({
         )}
         {shouldShowItem.replaceAllInstances &&
           menuSection(
+            "replace",
             <Menu.SubMenu
               key="replaceAllInstances"
               title={
@@ -1140,6 +1142,7 @@ function getFolderItemMenuRenderer({
             </Menu.SubMenu>
           )}
         {menuSection(
+          "delete",
           <Menu.Item
             key="delete"
             onClick={onDelete}
@@ -1150,6 +1153,7 @@ function getFolderItemMenuRenderer({
         )}
         {isAdmin &&
           menuSection(
+            "debug",
             <Menu.SubMenu key="debug" title={"Debug"}>
               {component && (
                 <Menu.SubMenu
@@ -1654,6 +1658,7 @@ function getBranchMenuRenderer({
         id="proj-item-menu"
       >
         {menuSection(
+          "branch-protect",
           !branch && (
             <Menu.Item
               key="protect"
@@ -1671,11 +1676,13 @@ function getBranchMenuRenderer({
           )
         )}
         {menuSection(
+          "branch-switch",
           <Menu.Item key="switch" onClick={onSwitch}>
             <strong>Switch</strong> to branch
           </Menu.Item>
         )}
         {menuSection(
+          "branch-name",
           branch && (
             <Menu.Item
               key="rename"
@@ -1693,6 +1700,7 @@ function getBranchMenuRenderer({
         )}
         {branch &&
           menuSection(
+            "branch-state",
             <Menu.Item
               key="archive"
               onClick={async () => {

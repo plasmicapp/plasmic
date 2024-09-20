@@ -172,10 +172,20 @@ function normalizeCombo(combo: string) {
 }
 
 export function menuSection(
+  sectionName: string,
   ...items: (JSX.Element | undefined | false | null)[]
-) {
-  items = items.filter((it) => it && !it.props.hidden);
-  return items.length > 0
-    ? [...items, <Menu.Divider className="hiddenIfLastChild" key="divider" />]
-    : items;
+): JSX.Element[] {
+  const filteredItems = items.filter(
+    (it): it is JSX.Element => !!it && !it.props.hidden
+  );
+  if (filteredItems.length === 0) {
+    return [];
+  }
+  filteredItems.push(
+    <Menu.Divider
+      className="hiddenIfLastChild"
+      key={`${sectionName}-divider`}
+    />
+  );
+  return filteredItems;
 }

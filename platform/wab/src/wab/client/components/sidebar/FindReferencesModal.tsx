@@ -10,21 +10,27 @@ import MixinIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Mixin";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import PlasmicFindReferencesModal from "@/wab/client/plasmic/plasmic_kit_find_references_modal/PlasmicFindReferencesModal";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, spawn } from "@/wab/shared/common";
-import { getComponentDisplayName, isPageComponent } from "@/wab/shared/core/components";
 import { FRAME_LOWER } from "@/wab/shared/Labels";
+import { ensure, spawn } from "@/wab/shared/common";
+import {
+  getComponentDisplayName,
+  isPageComponent,
+} from "@/wab/shared/core/components";
+import {
+  extractComponentUsages,
+  getArenaFromFrame,
+} from "@/wab/shared/core/sites";
+import {
+  DefaultStyle,
+  extractMixinUsages,
+  extractTokenUsages,
+} from "@/wab/shared/core/styles";
 import {
   ArenaFrame,
   Component,
   Mixin,
   StyleToken,
 } from "@/wab/shared/model/classes";
-import { extractComponentUsages, getArenaFromFrame } from "@/wab/shared/core/sites";
-import {
-  DefaultStyle,
-  extractMixinUsages,
-  extractTokenUsages,
-} from "@/wab/shared/core/styles";
 import { Menu } from "antd";
 import L, { sortBy } from "lodash";
 import { observer } from "mobx-react";
@@ -312,6 +318,7 @@ function getReferenceItemMenuRenderer({
     return (
       <Menu onClick={(e) => e.domEvent.stopPropagation()}>
         {menuSection(
+          "references",
           <Menu.Item key="references" onClick={onFindReferences}>
             Find all references
           </Menu.Item>
