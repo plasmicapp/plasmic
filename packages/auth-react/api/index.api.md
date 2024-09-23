@@ -11,8 +11,8 @@ export function usePlasmicAuth(opts: {
     host?: string;
     appId?: string;
 }): {
-    user: PlasmicUser | null | undefined;
-    token: string | null | undefined;
+    user: PlasmicUser | null;
+    token: string | null;
     isUserLoading: boolean | undefined;
 };
 

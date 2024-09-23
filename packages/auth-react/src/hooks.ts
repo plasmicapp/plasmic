@@ -2,8 +2,8 @@ import {
   getPlasmicAppUser,
   getPlasmicAppUserFromToken,
   PlasmicUser,
-} from '@plasmicapp/auth-api';
-import { useMutablePlasmicQueryData } from '@plasmicapp/query';
+} from "@plasmicapp/auth-api";
+import { useMutablePlasmicQueryData } from "@plasmicapp/query";
 
 interface PlasmicAuthData {
   user: PlasmicUser | null;
@@ -12,13 +12,13 @@ interface PlasmicAuthData {
 
 const storageUserKey = (appId: string) => `$user.${appId}`;
 
-const isBrowser = typeof window !== 'undefined';
+const isBrowser = typeof window !== "undefined";
 
 function getCallbackParams() {
   const params = new URLSearchParams(window.location.search);
-  const error = params.get('error');
-  const code = params.get('code');
-  const state = params.get('state');
+  const error = params.get("error");
+  const code = params.get("code");
+  const state = params.get("state");
 
   return {
     isCallbackError: !!error,
@@ -31,7 +31,7 @@ function getCallbackParams() {
 
 function getCodeVerifier() {
   try {
-    return localStorage.getItem('code_verifier');
+    return localStorage.getItem("code_verifier");
   } catch (err) {
     return null;
   }
@@ -39,7 +39,7 @@ function getCodeVerifier() {
 
 function removeCallbackParams() {
   try {
-    window.history.replaceState({}, '', location.pathname);
+    window.history.replaceState({}, "", location.pathname);
   } catch (err) {
     console.error(`Error while removing callback params: ${err}`);
   }
@@ -63,7 +63,7 @@ async function handleCallback(opts: {
 }): Promise<PlasmicAuthData | undefined> {
   const { host, appId, code, state, codeVerifier } = opts;
 
-  let continueTo = '/';
+  let continueTo = "/";
   try {
     if (state) {
       const parsedState = JSON.parse(state);
@@ -151,7 +151,7 @@ export function usePlasmicAuth(opts: { host?: string; appId?: string }) {
             if (!codeVerifier) {
               // If there is no codeVerifier, we just remove the callback params
               removeCallbackParams();
-              console.error('No code verifier found');
+              console.error("No code verifier found");
               return { user: null, token: null };
             } else {
               // Perform code exchange, by the end of the callback handling we will either still be
@@ -191,8 +191,8 @@ export function usePlasmicAuth(opts: { host?: string; appId?: string }) {
   );
 
   return {
-    user: userData?.user,
-    token: userData?.token,
+    user: userData?.user ?? null,
+    token: userData?.token ?? null,
     isUserLoading: isLoading,
   };
 }
