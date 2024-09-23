@@ -1,8 +1,7 @@
-// eslint-disable-next-line no-restricted-imports
-import { Modal, Upload } from "antd";
+import { Image, Upload } from "antd";
 import type {
-  UploadChangeParam,
   UploadFile as AntdUploadFile,
+  UploadChangeParam,
   UploadProps,
 } from "antd/es/upload";
 import React, { useMemo, useRef, useState } from "react";
@@ -25,7 +24,9 @@ interface ExtendedUploadProps<T = any> extends UploadProps<T> {
 }
 
 function getThumbUrl(file?: UploadFile): string | undefined {
-  if (!file?.type?.startsWith("image")) return undefined;
+  if (!file?.type?.startsWith("image")) {
+    return undefined;
+  }
   return `data:${file.type};base64,${file.contents}`;
 }
 
@@ -36,6 +37,7 @@ export function UploadWrapper(props: ExtendedUploadProps) {
   filesRef.current = files;
 
   const [previewFileId, setPreviewFileId] = useState<string>();
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const handleChange = (info: UploadChangeParam) => {
     const { file } = info;
@@ -63,7 +65,9 @@ export function UploadWrapper(props: ExtendedUploadProps) {
     const reader = new FileReader();
 
     reader.onload = () => {
-      if (!filesRef.current?.map((f) => f.uid).includes(metadata.uid)) return;
+      if (!filesRef.current?.map((f) => f.uid).includes(metadata.uid)) {
+        return;
+      }
       onFilesChange?.([
         ...(filesRef.current ?? []).filter((f) => f.uid !== file.uid),
         {
@@ -77,8 +81,10 @@ export function UploadWrapper(props: ExtendedUploadProps) {
       ]);
     };
 
-    reader.onerror = (error) => {
-      if (!filesRef.current?.map((f) => f.uid).includes(metadata.uid)) return;
+    reader.onerror = () => {
+      if (!filesRef.current?.map((f) => f.uid).includes(metadata.uid)) {
+        return;
+      }
       onFilesChange?.([
         ...(filesRef.current ?? []).filter((f) => f.uid !== file.uid),
         {
@@ -97,6 +103,7 @@ export function UploadWrapper(props: ExtendedUploadProps) {
 
   const handlePreview = async (file: AntdUploadFile) => {
     setPreviewFileId(files?.filter((f) => file.uid === f.uid)[0]?.uid);
+    setPreviewOpen(true);
   };
 
   const handleCancel = () => setPreviewFileId(undefined);
@@ -130,18 +137,19 @@ export function UploadWrapper(props: ExtendedUploadProps) {
           handleRemove(file as UploadFile);
         }}
       />
-      <Modal
-        open={Boolean(previewFile)}
-        title={previewFile?.name}
-        footer={null}
-        onCancel={handleCancel}
-      >
-        <img
-          alt="example"
-          style={{ width: "100%" }}
+
+      {previewFile && (
+        <Image
+          wrapperStyle={{ display: "none" }}
+          preview={{
+            visible: previewOpen,
+            onVisibleChange: (visible) => setPreviewOpen(visible),
+            afterOpenChange: (visible) => !visible && handleCancel(),
+          }}
+          alt={previewFile?.name}
           src={getThumbUrl(previewFile)}
         />
-      </Modal>
+      )}
     </>
   );
 }
