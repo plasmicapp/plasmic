@@ -22,17 +22,19 @@ export class ListBoxItemIdManager {
     }
   }
 
-  register(id?: string): string {
+  register(id?: unknown): string {
+    const idStr = id === undefined ? undefined : String(id).trim();
     let newId: string;
-    if (!id) {
+
+    if (!idStr) {
       // No id is provided, so generate one
       newId = this.generateMissingId();
-    } else if (this._ids.has(id)) {
+    } else if (this._ids.has(idStr)) {
       // The provided id is already registered with another uuid (i.e. it's not unique), so just generate a new one
-      newId = this.generateDuplicateId(id);
+      newId = this.generateDuplicateId(idStr);
     } else {
       // The provided id is not already registered, so use it
-      newId = id;
+      newId = idStr;
     }
 
     this._ids.add(newId);

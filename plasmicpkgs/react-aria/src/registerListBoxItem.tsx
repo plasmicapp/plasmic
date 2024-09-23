@@ -27,7 +27,7 @@ const { variants, withObservedValues } = pickAriaComponentVariants(
 );
 
 export interface BaseListBoxControlContextData {
-  hasDuplicateId: boolean;
+  idError?: string;
 }
 
 export interface BaseListBoxItemProps
@@ -43,7 +43,6 @@ export function BaseListBoxItem(props: BaseListBoxItemProps) {
     props;
   const listboxContext = React.useContext(PlasmicListBoxContext);
   const isStandalone = !listboxContext;
-
   /**
    * Ids of each listboxitem inside a listbox have to be unique. Otherwise, the items won't show up in the listbox.
    * This is particularly important to ensure, because the most common use case would be to apply Repeat Element to the listbox item.
@@ -69,8 +68,21 @@ export function BaseListBoxItem(props: BaseListBoxItemProps) {
   }, [id]);
 
   setControlContextData?.({
-    // this means that a unique id was registered, different from the provided id
-    hasDuplicateId: !isStandalone && id !== registeredId,
+    idError: (() => {
+      if (id === undefined) {
+        return "ID must be defined";
+      }
+      if (typeof id !== "string") {
+        return "ID must be a string";
+      }
+      if (!id.trim()) {
+        return "ID must be defined";
+      }
+      if (!isStandalone && id != registeredId) {
+        return "ID must be unique";
+      }
+      return undefined;
+    })(),
   });
 
   const listboxItem = (
@@ -164,11 +176,11 @@ export function registerListBoxItem(
       props: {
         id: {
           type: "string",
-          description: "The id of the item",
+          description: "The ID of the item",
           required: true,
           validator: (_value, _props, ctx) => {
-            if (ctx?.hasDuplicateId) {
-              return "Please make sure the id is unique!";
+            if (ctx?.idError) {
+              return ctx.idError;
             }
             return true;
           },
