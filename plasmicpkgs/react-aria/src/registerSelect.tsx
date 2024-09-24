@@ -67,6 +67,7 @@ export function BaseSelect(props: BaseSelectProps) {
     className,
     style,
     children,
+    disabledKeys,
     name,
     isOpen,
     setControlContextData,
@@ -96,6 +97,7 @@ export function BaseSelect(props: BaseSelectProps) {
       className={className}
       style={style}
       name={name}
+      disabledKeys={disabledKeys}
       aria-label={ariaLabel}
       isOpen={openProp}
       {...extractPlasmicDataProps(props)}

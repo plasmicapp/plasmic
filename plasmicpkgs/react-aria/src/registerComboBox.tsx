@@ -83,6 +83,14 @@ export function registerComboBox(loader?: Registerable) {
         // React Aria ComboBox do not support multiple comboBoxions yet
         multiSelect: false,
       },
+      disabledKeys: {
+        type: "choice",
+        description:
+          "The item keys that are disabled. These items cannot be selected, focused, or otherwise interacted with.",
+        options: (_props, ctx) => (ctx?.itemIds ? Array.from(ctx.itemIds) : []),
+        multiSelect: true,
+        advanced: true,
+      },
       isOpen: {
         type: "boolean",
         defaultValue: false,
