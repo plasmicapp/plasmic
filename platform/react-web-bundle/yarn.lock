@@ -368,10 +368,10 @@
   dependencies:
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
 
-"@plasmicapp/auth-react@0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/auth-react/-/auth-react-0.0.21.tgz#4195898069973ebb60f5646de6bbb6bced030e36"
-  integrity sha512-7HaYy2i4wvlw63NhKz4Tg/8ljtQ+elHch/ufCdkFqCWXtKoRyZDeiknsWGX/O17Ovce2rsFCpMblI57xWgNhOQ==
+"@plasmicapp/auth-react@0.0.22":
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/auth-react/-/auth-react-0.0.22.tgz#ebf159b3c1a49031c7bf7c1c9090ae1e2149e0ab"
+  integrity sha512-0i2BSOPVPwdQlvUGPW6dvJcy16Jko7oJF9MmASf4sOUnOIK2CjfbkpLuzcHbHU13pqWvg/Dd/G9a2728KU5d2A==
   dependencies:
     "@plasmicapp/auth-api" "0.0.17"
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
@@ -449,12 +449,12 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.6.tgz#e36cc365a8ddb54e3c5caf0ce4ad6818c995b5a6"
   integrity sha512-D+/pxBSYV8/qiwuwVMRnASZMXmlxDYUKRjVnRGjf3Q9s7SC/KlRSB5ORIk81heOH5HaRq05TD47LPsmNFvhNiw==
 
-"@plasmicapp/react-web@^0.2.351":
-  version "0.2.351"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.351.tgz#fdcc79f70b666ad4e02964deae5ce78caf2a7f45"
-  integrity sha512-YMloshIL0q1wVCcfDH9gWI5fH3RlvNP6ObhA+cEbspaEv5+rWBk446rBuK95wxmUUHkoMB+/UrsAFwHdUd3E2g==
+"@plasmicapp/react-web@^0.2.352":
+  version "0.2.352"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.352.tgz#e7ad5eaeb9f39734cf52ea924f1fae949153e695"
+  integrity sha512-oJjCBz52ivHyN92u6Z5qG/2jQGvUiRj3/4yT3HHkqX+IaIQvXSp43ZxYAjHmfLBtB+s+FM7SEjJZbtCh5nDV/Q==
   dependencies:
-    "@plasmicapp/auth-react" "0.0.21"
+    "@plasmicapp/auth-react" "0.0.22"
     "@plasmicapp/data-sources" "0.1.166"
     "@plasmicapp/data-sources-context" "0.1.21"
     "@plasmicapp/host" "1.0.207"
