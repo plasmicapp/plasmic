@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-embed-css",
-  "version": "0.1.192",
+  "version": "0.1.193",
   "description": "Plasmic embed css code components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,7 +28,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.207",
+    "@plasmicapp/host": "1.0.208",
     "@size-limit/preset-small-lib": "^7.0.8",
     "@types/node": "^17.0.14",
     "@types/react": "^18.2.33",

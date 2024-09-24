@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-slick",
-  "version": "0.0.228",
+  "version": "0.0.229",
   "description": "Plasmic registration call for the React Slick Slider component",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,7 +28,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.207",
+    "@plasmicapp/host": "1.0.208",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
     "@types/react": "^18.2.33",

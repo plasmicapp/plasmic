@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-giphy",
-  "version": "0.0.39",
+  "version": "0.0.40",
   "description": "Plasmic Giphy components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -34,7 +34,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "1.0.207",
+    "@plasmicapp/host": "1.0.208",
     "@size-limit/preset-small-lib": "^7.0.8",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
