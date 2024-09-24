@@ -8,6 +8,7 @@ on:
 
 jobs:
   CLAAssistant:
+    if: github.repository == 'plasmicapp/plasmic'
     runs-on: ubuntu-latest
     steps:
       - name: "CLA Assistant"
