@@ -3122,10 +3122,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/airtable/-/airtable-0.0.221.tgz#f2408bdae771a00ef602e317bcb692f0111ea45e"
   integrity sha512-ref0b9d0622e77tfMOwqj1hkbwijkxNNiofEGHiUjTIjk0q/+0ibjztsfkQzgAYF5Z6csvEmTpvKAbZ67FvoYg==
 
-"@plasmicpkgs/antd5@^0.0.250":
-  version "0.0.250"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.250.tgz#ce94404fdd456c58630d704a960257e3b3574e88"
-  integrity sha512-i+QMeQdGoS0urrB25/2BM4Q6i9QSA70HkMrNk7U8GJNjp73wk5G9pLOjDmD8z4grkxloAxFxwLRWWaiV228AQA==
+"@plasmicpkgs/antd5@^0.0.251":
+  version "0.0.251"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.251.tgz#0c73be55114010e004b10600a9ffcc68d1d34171"
+  integrity sha512-y6pTg8W2K3kGQNiy+h+moED6tvR5i4YIFFRZfEr8YDGTRigAA4321ZILMYk0ueKH6AqsYWu9aD/WRTcCoPFUcQ==
   dependencies:
     antd "^5.12.7"
     classnames "^2.3.2"
@@ -3365,10 +3365,10 @@
     lucide-react "^0.279.0"
     remeda "^1.27.0"
 
-"@plasmicpkgs/react-aria@^0.0.55":
-  version "0.0.55"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.55.tgz#280f9b58e6c8e56f7b5a888abf66efd4de3c7304"
-  integrity sha512-M8PKuoa/ra3Yw9NSbwWNdgOJH7eG1OVn6LIbBiFhKicMzac/gvTImLJfLh9Q+beALhwOMcL+J5RKalWqIKWpHQ==
+"@plasmicpkgs/react-aria@^0.0.56":
+  version "0.0.56"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.56.tgz#98caa53b5f5358f8c8801dad75ddde955a32e008"
+  integrity sha512-oYCl+LWQKf7bl/aoTkT2QrIJucObnK3mcZ1Eakzc5MSCGCePy7E+bPjg4KkrIXkD5ZWv5DS3TX4x4efPQlbXaA==
   dependencies:
     "@react-aria/i18n" "^3.11.0"
     "@react-aria/utils" "^3.24.0"
