@@ -38,10 +38,8 @@ export class InternalPlasmicComponentLoader extends BaseInternalPlasmicComponent
 
   constructor(opts: InitOptions) {
     const tracker = new PlasmicTracker({
+      ...opts,
       projectIds: opts.projects.map((p) => p.id),
-      platform: opts.platform,
-      preview: opts.preview,
-      nativeFetch: opts.nativeFetch,
     });
     super({
       opts,

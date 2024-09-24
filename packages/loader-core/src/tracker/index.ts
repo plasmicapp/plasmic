@@ -91,6 +91,9 @@ export class PlasmicTracker {
   }
 
   private enqueue(event: Event) {
+    if ((this.opts as any).__plasmicTrackerDisabled) {
+      return;
+    }
     this.eventQueue.push(event);
 
     this.sendEvents("fetch");
