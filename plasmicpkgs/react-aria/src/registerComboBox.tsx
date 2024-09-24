@@ -76,10 +76,7 @@ export function registerComboBox(loader?: Registerable) {
         editOnly: true,
         uncontrolledProp: "defaultSelectedKey",
         displayName: "Initial selected key",
-        options: (
-          _props: BaseComboboxProps,
-          ctx: BaseComboboxControlContextData | null
-        ) => (ctx?.itemIds ? Array.from(ctx.itemIds) : []),
+        options: (_props, ctx) => (ctx?.itemIds ? Array.from(ctx.itemIds) : []),
         // React Aria ComboBox do not support multiple comboBoxions yet
         multiSelect: false,
       },

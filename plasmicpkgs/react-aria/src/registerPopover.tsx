@@ -145,10 +145,7 @@ export function registerPopover(
           type: "boolean",
           description:
             "Whether the element should flip its orientation (e.g. top to bottom or left to right) when there is insufficient room for it to render completely.",
-          defaultValueHint: (
-            _ps: BasePopoverProps,
-            ctx: PopoverControlContextData | null
-          ) => ctx?.defaultShouldFlip ?? true,
+          defaultValueHint: (_props, ctx) => ctx?.defaultShouldFlip ?? true,
         },
         placement: {
           type: "choice",

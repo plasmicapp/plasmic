@@ -94,7 +94,7 @@ export function registerButton(
           type: "boolean",
           displayName: "Submits form?",
           defaultValueHint: false,
-          hidden: (ps: BaseButtonProps) => Boolean(ps.resetsForm),
+          hidden: (props) => Boolean(props.resetsForm),
           description:
             "Whether clicking this button should submit the enclosing form.",
           advanced: true,
@@ -103,7 +103,7 @@ export function registerButton(
           type: "boolean",
           displayName: "Resets form?",
           defaultValueHint: false,
-          hidden: (ps: BaseButtonProps) => Boolean(ps.submitsForm),
+          hidden: (props) => Boolean(props.submitsForm),
           description:
             "Whether clicking this button should reset the enclosing form.",
           advanced: true,
