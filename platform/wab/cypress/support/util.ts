@@ -1147,7 +1147,7 @@ function toggleElementStates() {
     .click()
     .wait(200)
     .get(".ant-dropdown-menu")
-    .contains("Element States")
+    .contains("Element states")
     .click()
     .wait(200);
 }

@@ -276,6 +276,7 @@ function VariantsDrawer_({
           ) : (
             variants?.map((variant) => (
               <VariantRow
+                key={variant.uuid}
                 ref={getVariantRowRef(variant)}
                 isRecording={targetedVariantsSet.has(variant)}
                 highlight={flattenedVariants[highlightIndex] === variant}

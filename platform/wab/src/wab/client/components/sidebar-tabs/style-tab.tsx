@@ -5,7 +5,6 @@ import {
 import { ComponentTab } from "@/wab/client/components/sidebar-tabs/ComponentTab/ComponentTab";
 import { PageTab } from "@/wab/client/components/sidebar-tabs/PageTab/PageTab";
 import {
-  canRenderArbitraryCssSelectors,
   canRenderMixins,
   canRenderPrivateStyleVariants,
   getOrderedSectionRender,
@@ -26,6 +25,7 @@ import { useCurrentRecordingTarget } from "@/wab/client/hooks/useCurrentRecordin
 import SlotIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Slot";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { isDedicatedArena } from "@/wab/shared/Arenas";
 import { cx, spawn } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
@@ -33,8 +33,15 @@ import {
   isFrameComponent,
   isPageComponent,
 } from "@/wab/shared/core/components";
-import { isDedicatedArena } from "@/wab/shared/Arenas";
-import { MIXINS_CAP } from "@/wab/shared/Labels";
+import { isTplAttachedToSite } from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import {
+  isTplComponent,
+  isTplSlot,
+  isTplTag,
+  isTplVariantable,
+} from "@/wab/shared/core/tpls";
+import { MIXINS_CAP, PRIVATE_STYLE_VARIANTS_CAP } from "@/wab/shared/Labels";
 import {
   Component,
   isKnownRenderExpr,
@@ -51,19 +58,10 @@ import {
 } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
-  getArbitraryCssSelectorsVariantsForTag,
   getPrivateStyleVariantsForTag,
   isBaseVariant,
 } from "@/wab/shared/Variants";
-import { isTplAttachedToSite } from "@/wab/shared/core/sites";
-import { SlotSelection } from "@/wab/shared/core/slots";
 import { selectionControlsColor } from "@/wab/styles/css-variables";
-import {
-  isTplComponent,
-  isTplSlot,
-  isTplTag,
-  isTplVariantable,
-} from "@/wab/shared/core/tpls";
 import { Alert, Button } from "antd";
 import * as mobx from "mobx";
 import { observer } from "mobx-react";
@@ -80,9 +78,7 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
   const styleTabFilter = useContext(StyleTabContext);
   const [showMixins, setShowMixins] = React.useState(isMixinSet(tpl, viewCtx));
   const [showPrivateStyleVariants, setShowPrivateStyleVariants] =
-    React.useState(isPrivateStyleVariantSet(tpl, viewCtx));
-  const [showArbitraryCssSelectors, setShowArbitraryCssSelectors] =
-    React.useState(isArbitraryCssSelectorsVariantSet(tpl, viewCtx));
+    React.useState(hasPrivateStyleVariant(tpl, viewCtx));
   React.useEffect(() => {
     const mixinDisposal = mobx.reaction(
       () => {
@@ -100,7 +96,7 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
     const privateStyleVariantsDisposal = mobx.reaction(
       () => {
         const curTpl = viewCtx.focusedTpl(false);
-        return !!curTpl && isPrivateStyleVariantSet(curTpl, viewCtx);
+        return !!curTpl && hasPrivateStyleVariant(curTpl, viewCtx);
       },
       (privateStyleVariantsVisible) =>
         setShowPrivateStyleVariants(privateStyleVariantsVisible),
@@ -108,21 +104,9 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
         fireImmediately: true,
       }
     );
-    const arbitraryCssSelectorsDisposal = mobx.reaction(
-      () => {
-        const curTpl = viewCtx.focusedTpl(false);
-        return !!curTpl && isArbitraryCssSelectorsVariantSet(curTpl, viewCtx);
-      },
-      (arbitraryCssSelectorsVisible) =>
-        setShowArbitraryCssSelectors(arbitraryCssSelectorsVisible),
-      {
-        fireImmediately: true,
-      }
-    );
     return () => {
       mixinDisposal();
       privateStyleVariantsDisposal();
-      arbitraryCssSelectorsDisposal();
     };
   }, [tpl, viewCtx]);
   const isTag = isTplTag(tpl);
@@ -145,23 +129,12 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
     showStyleSections
   ) {
     applyMenu.push({
-      label: "Element States",
+      label: PRIVATE_STYLE_VARIANTS_CAP,
       onClick: () => setShowPrivateStyleVariants(true),
     });
   }
   if (canRenderMixins(tpl, viewCtx) && !showMixins && showStyleSections) {
     applyMenu.push({ label: MIXINS_CAP, onClick: () => setShowMixins(true) });
-  }
-  if (
-    canRenderArbitraryCssSelectors(tpl, viewCtx) &&
-    !showArbitraryCssSelectors &&
-    viewCtx.appCtx.appConfig.arbitraryCssSelectors &&
-    showStyleSections
-  ) {
-    applyMenu.push({
-      label: "Arbitraty CSS Selectors",
-      onClick: () => setShowArbitraryCssSelectors(true),
-    });
   }
 
   const orderedSections = getOrderedSectionRender(
@@ -170,9 +143,6 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
     new Map([
       [Section.Mixins, showMixins],
       [Section.PrivateStyleVariants, showPrivateStyleVariants],
-      ...(viewCtx.appCtx.appConfig.arbitraryCssSelectors
-        ? [[Section.ArbitraryCssSelectors, showArbitraryCssSelectors]]
-        : ([] as any)),
     ]),
     styleTabFilter
   );
@@ -575,23 +545,11 @@ function isMixinSet(tpl: TplNode, viewCtx: ViewCtx) {
   return effectiveVs.rs.mixins.length > 0;
 }
 
-function isPrivateStyleVariantSet(tpl: TplNode, viewCtx: ViewCtx) {
+function hasPrivateStyleVariant(tpl: TplNode, viewCtx: ViewCtx) {
   if (!isTplTag(tpl)) {
     return false;
   }
   const component = viewCtx.currentTplComponent().component;
   const privateStyleVariants = getPrivateStyleVariantsForTag(component, tpl);
   return privateStyleVariants.length > 0;
-}
-
-function isArbitraryCssSelectorsVariantSet(tpl: TplNode, viewCtx: ViewCtx) {
-  if (!isTplTag(tpl)) {
-    return false;
-  }
-  const component = viewCtx.currentTplComponent().component;
-  const arbitraryCssSelectors = getArbitraryCssSelectorsVariantsForTag(
-    component,
-    tpl
-  );
-  return arbitraryCssSelectors.length > 0;
 }

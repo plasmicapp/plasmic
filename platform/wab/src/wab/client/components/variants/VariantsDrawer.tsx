@@ -15,6 +15,9 @@ import {
   getNamespacedComponentName,
   getSuperComponentVariantGroupToComponent,
 } from "@/wab/shared/core/components";
+import { isTplTag } from "@/wab/shared/core/tpls";
+import { PRIVATE_STYLE_VARIANTS_CAP } from "@/wab/shared/Labels";
+import { Variant, VariantGroup } from "@/wab/shared/model/classes";
 import {
   getAllVariantsForTpl,
   isComponentStyleVariant,
@@ -26,8 +29,6 @@ import {
   isStyleVariant,
   makeVariantName,
 } from "@/wab/shared/Variants";
-import { Variant, VariantGroup } from "@/wab/shared/model/classes";
-import { isTplTag } from "@/wab/shared/core/tpls";
 import { useCombobox } from "downshift";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -239,7 +240,7 @@ const VariantsDrawer = observer(function VariantsDrawer(props: {
         {privateStyleVariants.length > 0 && (
           <>
             <VariantsDrawerHeader icon={<Icon icon={BoltIcon} />}>
-              Element States
+              {PRIVATE_STYLE_VARIANTS_CAP}
             </VariantsDrawerHeader>
             {privateStyleVariants.map(makeVariantRow)}
           </>

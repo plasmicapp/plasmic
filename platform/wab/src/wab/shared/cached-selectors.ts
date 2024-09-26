@@ -89,6 +89,7 @@ import mobx from "@/wab/shared/import-mobx";
 import { keyedComputedFn, maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
   ArenaFrame,
+  CodeComponentVariantMeta,
   CodeLibrary,
   Component,
   ComponentSwapSplitContent,
@@ -1157,32 +1158,40 @@ export const siteToUsedDataSources = maybeComputedFn(
   }
 );
 
-const componentCCVariantsToDisplayNames = maybeComputedFn(
-  function ccStyleVariantToDisplayNames(component: Component) {
+interface CCVariantInfo {
+  component: Component;
+  /** A code component style variant's selectors, mapped to thier metas. */
+  selectorsKeysToMetas: Map<string, CodeComponentVariantMeta>;
+}
+
+const componentCCVariantsToInfos = maybeComputedFn(
+  (component: Component): [StyleVariant, CCVariantInfo][] => {
     const tplRoot = component.tplTree;
     if (isTplRootWithCodeComponentVariants(tplRoot)) {
       const variantMeta = tplRoot.component.codeComponentMeta.variants;
-      return component.variants
-        .filter(isStyleVariant)
-        .map((variant): [StyleVariant, string[]] => {
-          return [
-            variant,
+      return component.variants.filter(isStyleVariant).map((variant) => [
+        variant,
+        {
+          component,
+          selectorsKeysToMetas: new Map(
             withoutNils(
-              variant.selectors.map(
-                (selector) => getVariantMeta(variantMeta, selector)?.displayName
-              )
-            ),
-          ];
-        });
+              variant.selectors.map((selector) => {
+                const meta = getVariantMeta(variantMeta, selector);
+                return meta ? [selector, meta] : null;
+              })
+            )
+          ),
+        },
+      ]);
     }
     return [];
   }
 );
 
-export const siteCCVariantsToDisplayNames = maybeComputedFn(
-  function ccVariantToDisplayNames(site: Site) {
-    return new Map<StyleVariant, string[]>(
-      site.components.flatMap((comp) => componentCCVariantsToDisplayNames(comp))
+export const siteCCVariantsToInfos = maybeComputedFn(
+  (site: Site): Map<StyleVariant, CCVariantInfo> => {
+    return new Map(
+      site.components.flatMap((comp) => componentCCVariantsToInfos(comp))
     );
   }
 );

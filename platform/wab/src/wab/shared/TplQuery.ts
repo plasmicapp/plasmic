@@ -19,10 +19,39 @@ import {
   tryRemove,
 } from "@/wab/shared/common";
 import {
-  allComponentStyleVariants,
+  allStyleVariants,
   isCodeComponent,
   removeComponentParam,
 } from "@/wab/shared/core/components";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import {
+  ensureCorrectImplicitStates,
+  removeImplicitStatesAfterRemovingTplNode,
+} from "@/wab/shared/core/states";
+import {
+  ancestorsUp,
+  ancestorsUpWithSlotSelections,
+  clone,
+  detectComponentCycle,
+  flattenTpls,
+  getOwnerSite,
+  getParentTplOrSlotSelection,
+  getTplOwnerComponent,
+  isTplComponent,
+  isTplSlot,
+  isTplTag,
+  isTplTextBlock,
+  isTplVariantable,
+  mkTplTagX,
+  removeMarkersToTpl,
+  summarizeSlotParam,
+  summarizeTpl,
+  tplChildren,
+  tplChildrenOnly,
+  trackComponentRoot,
+  tryGetOwnerSite,
+  tryGetTplOwnerComponent,
+} from "@/wab/shared/core/tpls";
 import {
   Arg,
   Component,
@@ -55,35 +84,6 @@ import {
   NestedTplSlotsError,
 } from "@/wab/shared/UserError";
 import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
-import { SlotSelection } from "@/wab/shared/core/slots";
-import {
-  ensureCorrectImplicitStates,
-  removeImplicitStatesAfterRemovingTplNode,
-} from "@/wab/shared/core/states";
-import {
-  ancestorsUp,
-  ancestorsUpWithSlotSelections,
-  clone,
-  detectComponentCycle,
-  flattenTpls,
-  getOwnerSite,
-  getParentTplOrSlotSelection,
-  getTplOwnerComponent,
-  isTplComponent,
-  isTplSlot,
-  isTplTag,
-  isTplTextBlock,
-  isTplVariantable,
-  mkTplTagX,
-  removeMarkersToTpl,
-  summarizeSlotParam,
-  summarizeTpl,
-  tplChildren,
-  tplChildrenOnly,
-  trackComponentRoot,
-  tryGetOwnerSite,
-  tryGetTplOwnerComponent,
-} from "@/wab/shared/core/tpls";
 import { notification } from "antd";
 import L from "lodash";
 
@@ -387,7 +387,7 @@ export class TplQuery {
 
     if (isTplVariantable(node)) {
       // Remove private variants referencing this node
-      const privateVariants = allComponentStyleVariants(component, true).filter(
+      const privateVariants = allStyleVariants(component).filter(
         (v) =>
           v.forTpl &&
           $$$(v.forTpl).ancestors().toArrayOfTplNodes().includes(node)

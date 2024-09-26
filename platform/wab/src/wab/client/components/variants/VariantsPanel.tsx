@@ -1,4 +1,5 @@
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import { selectorsToVariantSelectors } from "@/wab/client/components/sidebar/RuleSetControls";
 import {
   SidebarSection,
   SidebarSectionHandle,
@@ -76,6 +77,7 @@ import { getPlumeVariantDef } from "@/wab/shared/plume/plume-registry";
 import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import {
   canHaveRegisteredVariant,
+  ComponentStyleVariant,
   getBaseVariant,
   isBaseVariant,
   isGlobalVariantGroup,
@@ -946,7 +948,7 @@ const ComponentStyleVariantRow = observer(
     viewCtx?: ViewCtx;
     component: Component;
     pinState: VariantPinState | undefined;
-    variant: Variant;
+    variant: ComponentStyleVariant;
     defaultEditing?: boolean;
     onEdited: () => void;
     onClick?: () => void;
@@ -1015,7 +1017,7 @@ const ComponentStyleVariantRow = observer(
             ref={ref}
             onSelectorsChange={(sels) =>
               studioCtx.change(({ success }) => {
-                variant.selectors = sels;
+                variant.selectors = selectorsToVariantSelectors(sels);
                 onEdited();
                 return success();
               })

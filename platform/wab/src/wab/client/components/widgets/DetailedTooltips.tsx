@@ -1,5 +1,10 @@
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
-import { MIXINS_CAP, MIXIN_LOWER } from "@/wab/shared/Labels";
+import {
+  INTERACTION_VARIANTS_LOWER,
+  MIXINS_CAP,
+  MIXIN_LOWER,
+  PRIVATE_STYLE_VARIANTS_CAP,
+} from "@/wab/shared/Labels";
 import React, { ReactNode } from "react";
 
 export function MixinsTooltip({ preamble }: { preamble?: ReactNode }) {
@@ -167,29 +172,61 @@ export function PropsTooltip() {
 }
 
 export function ElementStatesTooltip() {
-  return (
-    <div>
-      <p className={"tooltip-title"}>Element States</p>
+  if (PRIVATE_STYLE_VARIANTS_CAP === "Element variants") {
+    return (
+      <div>
+        <p className={"tooltip-title"}>{PRIVATE_STYLE_VARIANTS_CAP}</p>
 
-      <p>
-        Element states are a convenience feature. They let you edit what the
-        element looks like in certain special interactive states - specifically,
-        hover, focused, pressed, and disabled (as applicable).
-      </p>
+        <p>
+          {PRIVATE_STYLE_VARIANTS_CAP} let you edit the styles of individual
+          elements in special interactive states, such as hovered, focused,
+          pressed.
+        </p>
 
-      <p>
-        (Component <em>interaction variants</em> are similar, but let you edit
-        anything in the component based on the hover/focused/pressed state of
-        the component's root element.)
-      </p>
+        <p>
+          {PRIVATE_STYLE_VARIANTS_CAP} can also target elements in a more
+          advanced way using{" "}
+          <a
+            href="https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes"
+            target="_blank"
+          >
+            CSS pseudo-classes
+          </a>
+          .
+        </p>
 
-      <p>
-        Element states also let you edit specific "sub-parts" of certain
-        elements. In particular, you can configure the style of the placeholder
-        on inputs.
-      </p>
-    </div>
-  );
+        <p>
+          (Component <em>{INTERACTION_VARIANTS_LOWER}</em> are similar, but let
+          you edit anything in the component based on the hover/focused/pressed
+          state of the component's root element.)
+        </p>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <p className={"tooltip-title"}>{PRIVATE_STYLE_VARIANTS_CAP}</p>
+
+        <p>
+          Element states are a convenience feature. They let you edit what the
+          element looks like in certain special interactive states -
+          specifically, hover, focused, pressed, and disabled (as applicable).
+        </p>
+
+        <p>
+          (Component <em>interaction variants</em> are similar, but let you edit
+          anything in the component based on the hover/focused/pressed state of
+          the component's root element.)
+        </p>
+
+        <p>
+          Element states also let you edit specific "sub-parts" of certain
+          elements. In particular, you can configure the style of the
+          placeholder on inputs.
+        </p>
+      </div>
+    );
+  }
 }
 
 export function ProjectDependenciesTooltip() {

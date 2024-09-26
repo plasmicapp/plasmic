@@ -1,8 +1,8 @@
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import {
+  makeCanvasVariantContextMenu,
   StyleVariantEditor,
   VariantLabel,
-  makeCanvasVariantContextMenu,
 } from "@/wab/client/components/VariantControls";
 import styles from "@/wab/client/components/canvas/VariantsBar/VariantBadge.module.scss";
 import { EditableLabelHandles } from "@/wab/client/components/widgets/EditableLabel";
@@ -12,7 +12,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_variants_bar/PlasmicVariantBadge";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import { isStyleVariant } from "@/wab/shared/Variants";
+import { isStyleVariant, StyleVariant } from "@/wab/shared/Variants";
 import { Component, Variant } from "@/wab/shared/model/classes";
 import { Popover } from "antd";
 import { observer } from "mobx-react";
@@ -94,7 +94,7 @@ const VariantBadge = observer(function VariantBadge_({
             visible={showStyleVariantEditor}
             content={() => (
               <StyleVariantEditor
-                variant={variant}
+                variant={variant as StyleVariant}
                 component={component}
                 onDismiss={() => setShowStyleVariantEditor(false)}
               />

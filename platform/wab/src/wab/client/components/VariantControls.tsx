@@ -1,6 +1,9 @@
 import {
+  Selector,
   SelectorsInput,
+  selectorsToVariantSelectors,
   SelectorTags,
+  styleVariantToSelectors,
 } from "@/wab/client/components/sidebar/RuleSetControls";
 import S from "@/wab/client/components/VariantControls.module.scss";
 import Button from "@/wab/client/components/widgets/Button";
@@ -9,19 +12,19 @@ import {
   EditableLabelHandles,
 } from "@/wab/client/components/widgets/EditableLabel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { assert, spawn } from "@/wab/shared/common";
 import { InlineEdit } from "@/wab/commons/components/InlineEdit";
+import { spawn } from "@/wab/shared/common";
+import { isTplCodeComponent, isTplTag } from "@/wab/shared/core/tpls";
 import { VARIANT_CAP, VARIANT_LOWER } from "@/wab/shared/Labels";
 import { Component, isKnownTplTag, Variant } from "@/wab/shared/model/classes";
 import {
-  getStyleVariantSelectorsDisplayNames,
   isBaseVariant,
   isGlobalVariant,
   isPrivateStyleVariant,
   isStyleVariant,
   makeVariantName,
+  StyleVariant,
 } from "@/wab/shared/Variants";
-import { isTplCodeComponent, isTplTag } from "@/wab/shared/core/tpls";
 import { Menu } from "antd";
 import { default as classNames, default as cn } from "classnames";
 import { sumBy } from "lodash";
@@ -148,18 +151,18 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
   onDismiss,
   variant,
 }: {
-  variant: Variant;
+  variant: StyleVariant;
   component: Component;
-  onDismiss?: (selectors: string[]) => void;
+  onDismiss?: () => void;
 }) {
-  const [chosenSelectors, setChosenSelectors] = useState<string[]>([]);
+  const [chosenSelectors, setChosenSelectors] = useState<Selector[]>([]);
   const studioCtx = useStudioCtx();
 
   const maybeSubmit = async (opts?: { force?: boolean }) => {
     if (chosenSelectors.length || opts?.force) {
       return studioCtx.changeUnsafe(() => {
-        variant.selectors = chosenSelectors;
-        onDismiss?.(chosenSelectors);
+        variant.selectors = selectorsToVariantSelectors(chosenSelectors);
+        onDismiss?.();
 
         if (isStyleVariant(variant) && variant.selectors?.length === 0) {
           spawn(studioCtx.siteOps().removeVariant(component, variant));
@@ -179,7 +182,7 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
   );
 
   useEffect(() => {
-    setChosenSelectors(variant.selectors || []);
+    setChosenSelectors(styleVariantToSelectors(variant, studioCtx.site));
   }, [variant.selectors?.join(",")]);
 
   const tplRoot = component.tplTree;
@@ -224,10 +227,9 @@ export const StyleVariantLabel = observer(forwardRef(StyleVariantLabel_));
 function StyleVariantLabel_(
   props: {
     defaultEditing?: boolean;
-    overrideSelectors?: any[];
-    variant: Variant;
+    variant: StyleVariant;
     forTag: string;
-    onSelectorsChange: (selectors: string[]) => void;
+    onSelectorsChange: (selectors: Selector[]) => void;
     onBlur?: () => void;
     forRoot?: boolean;
   },
@@ -235,10 +237,7 @@ function StyleVariantLabel_(
 ) {
   const studioCtx = useStudioCtx();
   const { defaultEditing, variant, forTag, onSelectorsChange, forRoot } = props;
-  assert(isStyleVariant(variant), "Expected a style variant");
-  const selectors =
-    props.overrideSelectors ??
-    getStyleVariantSelectorsDisplayNames(variant, studioCtx.site);
+  const selectors = styleVariantToSelectors(variant, studioCtx.site);
 
   const isPrivate = isPrivateStyleVariant(variant);
   return (
@@ -264,9 +263,7 @@ function StyleVariantLabel_(
                 props.onBlur && props.onBlur();
                 onDone();
               }}
-              onChange={(sels) => {
-                onSelectorsChange(sels);
-              }}
+              onChange={onSelectorsChange}
               forPrivateStyleVariant={isPrivate}
               forTag={forTag}
               className="textbox--listitem focused-input-bg"

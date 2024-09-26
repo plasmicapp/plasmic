@@ -46,6 +46,7 @@ async function checkBundleFiles({ files }: CheckArgs) {
     const maybeUnbundling =
       content.includes("upgradeHostlessProject(") ||
       content.includes("new Bundler") ||
+      content.includes("new FastBundler") ||
       content.includes("db.");
     if (content.includes(`= "bundled"`) && maybeUnbundling) {
       throw new Error(

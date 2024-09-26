@@ -1288,8 +1288,7 @@ export function extractComponent({
   $$$(tpl).replaceWith(tplComponent);
 
   // Remove private style variants for the old nodes
-  const allStyleVariants = allComponentStyleVariants(containingComponent, true);
-  allStyleVariants.forEach((v) => {
+  allStyleVariants(containingComponent).forEach((v) => {
     if (v.forTpl && oldFlattenedVariantablesSet.has(v.forTpl)) {
       tplMgr.tryRemoveVariant(v, containingComponent);
     }
@@ -1754,13 +1753,12 @@ export function allComponentVariants(
   return variants;
 }
 
-export function allComponentStyleVariants(
-  component: Component,
-  includePrivate = false
-) {
-  return component.variants.filter(
-    (v) => isStyleVariant(v) && (includePrivate || !isPrivateStyleVariant(v))
-  );
+export function allStyleVariants(component: Component) {
+  return component.variants.filter(isStyleVariant);
+}
+
+export function allComponentStyleVariants(component: Component) {
+  return component.variants.filter(isComponentStyleVariant);
 }
 
 export function allPrivateStyleVariants(component: Component, tpl: TplNode) {

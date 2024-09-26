@@ -1,8 +1,8 @@
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import {
+  makeCanvasVariantContextMenu,
   StyleVariantEditor,
   VariantLabel,
-  makeCanvasVariantContextMenu,
 } from "@/wab/client/components/VariantControls";
 import { CanvasConfigButton } from "@/wab/client/components/canvas/CanvasFrame/CanvasConfigButton";
 import styles from "@/wab/client/components/canvas/CanvasFrame/CanvasHeader.module.scss";
@@ -15,16 +15,23 @@ import {
 import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
 import PageIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Page";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { cx } from "@/wab/shared/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import { isFrameComponent, isPageComponent } from "@/wab/shared/core/components";
 import {
   AnyArena,
   isComponentArena,
   isMixedArena,
   isPageArena,
 } from "@/wab/shared/Arenas";
-import { getDisplayVariants, isStyleVariant } from "@/wab/shared/Variants";
+import {
+  getDisplayVariants,
+  isStyleVariant,
+  StyleVariant,
+} from "@/wab/shared/Variants";
+import { cx } from "@/wab/shared/common";
+import {
+  isFrameComponent,
+  isPageComponent,
+} from "@/wab/shared/core/components";
 import {
   ArenaFrame,
   Component,
@@ -228,7 +235,7 @@ export const VariantName = observer(function VariantName_({
             visible={showStyleVariantEditor}
             content={() => (
               <StyleVariantEditor
-                variant={variant}
+                variant={variant as StyleVariant}
                 component={component}
                 onDismiss={() => setShowStyleVariantEditor(false)}
               />

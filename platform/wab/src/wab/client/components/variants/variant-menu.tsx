@@ -12,7 +12,15 @@ import {
   createExprForDataPickerValue,
   extractValueSavedFromDataPicker,
 } from "@/wab/shared/core/exprs";
-import { VARIANT_GROUP_LOWER } from "@/wab/shared/Labels";
+import {
+  getAccessTypeDisplayName,
+  STATE_ACCESS_TYPES,
+  StateAccessType,
+} from "@/wab/shared/core/states";
+import {
+  PRIVATE_STYLE_VARIANTS_CAP,
+  VARIANT_GROUP_LOWER,
+} from "@/wab/shared/Labels";
 import {
   Component,
   ComponentVariantGroup,
@@ -30,11 +38,6 @@ import {
   isStandaloneVariantGroup,
   isStyleVariant,
 } from "@/wab/shared/Variants";
-import {
-  getAccessTypeDisplayName,
-  STATE_ACCESS_TYPES,
-  StateAccessType,
-} from "@/wab/shared/core/states";
 import { Menu, Popover } from "antd";
 import React from "react";
 
@@ -185,12 +188,7 @@ function genCopyToVariantMenu(
         disabled={isFromVariant}
       >
         {isStyleVariant(variant) ? (
-          <div className="ml-lg">
-            {ensure(
-              variant.selectors,
-              "Style variant is expected to have selectors"
-            ).join(", ")}
-          </div>
+          <div className="ml-lg">{variant.selectors.join(", ")}</div>
         ) : (
           variant.name
         )}
@@ -212,7 +210,7 @@ function genCopyToVariantMenu(
     genMenuForVariant(getBaseVariant(component), push);
 
     if (isPrivateStyleVariant(fromVariant)) {
-      builder.genSection(`Element States`, (push2) => {
+      builder.genSection(PRIVATE_STYLE_VARIANTS_CAP, (push2) => {
         allPrivateStyleVariants(
           component,
           ensure(

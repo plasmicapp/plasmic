@@ -351,7 +351,6 @@ import {
   getReferencedVariantGroups,
   hasStyleVariant,
   isActiveVariantSetting,
-  isArbitraryCssSelector,
   isBaseRuleVariant,
   isBaseVariant,
   isGlobalVariant,
@@ -1567,10 +1566,7 @@ export function nodeJsName(component: Component, node: TplNode) {
 export function shouldGenReactHook(vs: VariantSetting, _component: Component) {
   // Get all the triggerable StyleVariants from vs.variants
   const svs = vs.variants.filter(
-    (v) =>
-      isStyleVariant(v) &&
-      !isArbitraryCssSelector(v) &&
-      getTriggerableSelectors(v).length > 0
+    (v) => isStyleVariant(v) && getTriggerableSelectors(v).length > 0
   );
   if (svs.length === 0) {
     return false;

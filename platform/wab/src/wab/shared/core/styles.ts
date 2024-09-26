@@ -69,6 +69,7 @@ import {
   ensureInstance,
   maybe,
   mkShortId,
+  notNil,
   tuple,
   unreachable,
   withoutNils,
@@ -538,9 +539,9 @@ export function tplMatchThemeStyle(
   if (!stylePseudoClass) {
     return true;
   }
-  const elementPseudoClasses = vsettings
-    .flatMap((vs) => vs.variants.flatMap((v) => v.selectors || []))
-    .map((p) => getLessSelector(p));
+  const elementPseudoClasses = vsettings.flatMap((vs) =>
+    vs.variants.flatMap((v) => v.selectors || [])
+  );
   return elementPseudoClasses.includes(`:${stylePseudoClass}`);
 }
 
@@ -1692,7 +1693,6 @@ export function makePseudoElementAwareRuleNamer(
   const namer = (tpl: TplNode, vs: VariantSetting) => {
     const maybeSv = tryGetPrivateStyleVariant(vs.variants);
     const target = (maybeSv ? maybeSv.selectors || [] : [])
-      .map(getLessSelector)
       .filter((sel) => sel.startsWith("::"))
       .join("");
     return `${ruleNamer(tpl, vs)}${target}`;
@@ -1780,8 +1780,9 @@ function showPseudoClassSelector(
         )
       )
       .map((sel) => {
-        if (pseudoSelectors.find((opt) => opt.displayName === sel)) {
-          return getPseudoSelector(sel);
+        const pseudoSelectorOption = getPseudoSelector(sel);
+        if (pseudoSelectorOption) {
+          return pseudoSelectorOption;
         } else {
           // This is either an arbitrary selector or a code component variant
           // we validate if it's a code component variant by looking at the root
@@ -2045,16 +2046,15 @@ export function getTriggerableSelectors(sv: Variant) {
     sv.selectors,
     () => `Expected variant ${sv.name} (${sv.uuid}) to have selectors`
   )
-    .map((sel) =>
-      ensure(
-        pseudoSelectors.find((opt) => opt.displayName === sel),
-        () => `Couldn't find PseudoSelectorOption for ${sel}`
-      )
-    )
+    .map(getPseudoSelector)
+    .filter(notNil)
     .filter((opt) => !!opt.trigger);
 }
 
 export class PseudoSelectorOption {
+  // the opposite of this option e.g. "Not X"
+  opposite: PseudoSelectorOption | undefined = undefined;
+
   constructor(
     readonly displayName: string,
     readonly cssSelector: string,
@@ -2092,14 +2092,6 @@ export class PseudoSelectorOption {
   }
 }
 
-export function oppositeSelectorDisplayName(displayName: string) {
-  if (displayName.startsWith("Not ")) {
-    return displayName.substring("Not ".length);
-  } else {
-    return `Not ${displayName}`;
-  }
-}
-
 export const pseudoSelectors = (() => {
   const opts = new Array<PseudoSelectorOption>();
   const addSelector = (
@@ -2109,38 +2101,39 @@ export const pseudoSelectors = (() => {
     isWithin: boolean,
     trigger?: TriggerCondition
   ) => {
-    const isPseduoElement = cssSelector.startsWith("::");
+    const isPseudoElement = cssSelector.startsWith("::");
     const capitalName = capCamelCase(cssSelector);
-    opts.push(
-      new PseudoSelectorOption(
-        displayName,
-        `${cssSelector}`,
-        isPseduoElement,
+    const option = new PseudoSelectorOption(
+      displayName,
+      `${cssSelector}`,
+      isPseudoElement,
+      applicableTags,
+      isWithin,
+      capitalName,
+      trigger
+    );
+    opts.push(option);
+
+    if (!isPseudoElement) {
+      const oppositeOption = new PseudoSelectorOption(
+        `Not ${displayName}`,
+        `:not(${cssSelector})`,
+        false,
         applicableTags,
         isWithin,
-        capitalName,
+        `Not${capitalName}`,
         trigger
-      )
-    );
-    if (!isPseduoElement) {
-      opts.push(
-        new PseudoSelectorOption(
-          `Not ${displayName}`,
-          `:not(${cssSelector})`,
-          false,
-          applicableTags,
-          isWithin,
-          `Not${capitalName}`,
-          trigger
-            ? {
-                hookName: trigger.hookName,
-                isOpposite: true,
-                alwaysByHook: trigger.alwaysByHook,
-                eventPropNames: trigger.eventPropNames,
-              }
-            : undefined
-        )
+          ? {
+              hookName: trigger.hookName,
+              isOpposite: true,
+              alwaysByHook: trigger.alwaysByHook,
+              eventPropNames: trigger.eventPropNames,
+            }
+          : undefined
       );
+      oppositeOption.opposite = option;
+      option.opposite = oppositeOption;
+      opts.push(oppositeOption);
     }
   };
   // This is the order in which these selectors show up in selectors-building UI
@@ -2213,16 +2206,11 @@ export function getApplicableSelectors(
   );
 }
 
-export function getLessSelector(optDisplayName: string) {
-  const opt = pseudoSelectors.find((s) => s.displayName === optDisplayName);
-  return opt ? opt.cssSelector : optDisplayName;
-}
-
-export function getPseudoSelector(optDisplayName: string) {
-  return ensure(
-    pseudoSelectors.find((s) => s.displayName === optDisplayName),
-    () => `Couldn't find PseudoSelectorOption for ${optDisplayName}`
-  );
+/** Given a CSS selector, tries to find the preset option. */
+export function getPseudoSelector(
+  cssSelector: string
+): PseudoSelectorOption | undefined {
+  return pseudoSelectors.find((s) => s.cssSelector === cssSelector);
 }
 
 export const tryAugmentRulesWithScreenVariant = (

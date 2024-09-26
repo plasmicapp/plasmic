@@ -119,9 +119,9 @@ describe("component-ops - tricky operations", function () {
                 '[data-event="component-arena-add-interaction-variant"]'
               ).click();
             }).then((hoverFramed) => {
-              cy.get('input[placeholder="Enter CSS selectors"]').type(
-                "Hover{enter}"
-              );
+              cy.get(
+                'input[placeholder="e.g. :hover, :focus, :nth-child(odd)"]'
+              ).type("Hover{enter}");
               cy.contains("Done").click({ force: true });
               cy.focusFrameRoot(hoverFramed);
               cy.selectTreeNode(["vertical stack", "text2"]);
