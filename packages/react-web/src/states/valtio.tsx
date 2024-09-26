@@ -2,9 +2,9 @@ import clone from "clone";
 import get from "dlv";
 import React from "react";
 import {
-  getVersion as isValtioProxy,
   proxy as createValtioProxy,
-  ref,
+  ref as createValtioRef,
+  getVersion as isValtioProxy,
   subscribe,
   useSnapshot,
 } from "valtio";
@@ -15,10 +15,10 @@ import {
   UnknownError,
 } from "./errors";
 import {
+  StateSpecNode,
   buildTree,
   findStateCell,
   getSpecTreeLeaves,
-  StateSpecNode,
   updateTree,
 } from "./graph";
 import {
@@ -217,19 +217,31 @@ function initializeStateValue(
       ...(initialStateCell.overrideEnv ?? $$state.env),
     }
   );
-  initialStateCell.initialValue = clone(initialValue);
-
   const initialSpec = initialStateCell.node.getSpec();
-  const value = initialSpec.isImmutable
-    ? mkUntrackedValue(initialValue)
-    : clone(initialValue);
-  set(proxyRoot, initialStateCell.path, value);
+
+  // Try to clone initialValue. It can fail if it's a PlasmicUndefinedDataProxy
+  // and we still want to clear some states and return the initialValue.
+  try {
+    const clonedValue = clone(initialValue);
+    initialStateCell.initialValue = clonedValue;
+
+    const value = initialSpec.isImmutable
+      ? mkUntrackedValue(initialValue)
+      : clonedValue;
+    set(proxyRoot, initialStateCell.path, value);
+  } catch {
+    // Setting the state to undefined to make sure it gets re-initialized
+    // in case it changes values.
+    initialStateCell.initialValue = undefined;
+    set(proxyRoot, initialStateCell.path, undefined);
+  }
   //immediately fire onChange
   if (initialSpec.onChangeProp) {
     $$state.env.$props[initialSpec.onChangeProp]?.(initialValue);
   }
   $$state.stateInitializationEnv.visited.delete(initialStateName);
   $$state.stateInitializationEnv.stack.pop();
+
   return initialValue;
 }
 
@@ -348,7 +360,7 @@ function create$StateProxy(
 }
 
 const mkUntrackedValue = (o: any) =>
-  o != null && typeof o === "object" ? ref(o) : o;
+  o != null && typeof o === "object" ? createValtioRef(o) : o;
 
 const envFieldsAreNonNill = (
   env: DollarStateEnv
@@ -422,7 +434,9 @@ export function useDollarState(
 
   React.useEffect(() => {
     mountedRef.current = true;
-    return () => (mountedRef.current = false);
+    return () => {
+      mountedRef.current = false;
+    };
   }, []);
 
   const pendingUpdate = React.useRef(false);
@@ -470,9 +484,9 @@ export function useDollarState(
         }
         return {
           get() {
-            const spec = stateCell.node.getSpec();
-            if (spec.valueProp) {
-              const valueProp = $$state.env.$props[spec.valueProp];
+            const currSpec = stateCell.node.getSpec();
+            if (currSpec.valueProp) {
+              const valueProp = $$state.env.$props[currSpec.valueProp];
               subscribeToValtio($$state, stateCell.path, stateCell.node);
               return valueProp;
             } else {
@@ -494,10 +508,10 @@ export function useDollarState(
             repetitionIndex
           );
           const stateCell = getStateCellFrom$StateRoot($state, realPath);
-          const env = overrideEnv
+          const innerEnv = overrideEnv
             ? envFieldsAreNonNill(overrideEnv)
             : $$state.env;
-          if (!deepEqual(stateCell.initialValue, f({ $state, ...env }))) {
+          if (!deepEqual(stateCell.initialValue, f({ $state, ...innerEnv }))) {
             $$state.registrationsQueue.push({
               node,
               path: realPath,
@@ -514,7 +528,7 @@ export function useDollarState(
         },
         ...(opts?.inCanvas
           ? {
-              eagerInitializeStates: (specs: $StateSpec<any>[]) => {
+              eagerInitializeStates: (stateSpecs: $StateSpec<any>[]) => {
                 // we need to eager initialize all states in canvas to populate the data picker
                 $$state.specTreeLeaves.forEach((node) => {
                   const spec = node.getSpec();
@@ -525,7 +539,9 @@ export function useDollarState(
                     $state,
                     spec.pathObj as string[]
                   );
-                  const newSpec = specs.find((sp) => sp.path === spec.path);
+                  const newSpec = stateSpecs.find(
+                    (sp) => sp.path === spec.path
+                  );
                   if (
                     !newSpec ||
                     (stateCell.initFuncHash === (newSpec?.initFuncHash ?? "") &&
