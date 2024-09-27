@@ -1,7 +1,11 @@
 import React, { useEffect, useMemo } from "react";
 import { ComboBox, ComboBoxProps } from "react-aria-components";
 import { getCommonProps } from "./common";
-import { PlasmicListBoxContext, PlasmicPopoverContext } from "./contexts";
+import {
+  PlasmicInputContext,
+  PlasmicListBoxContext,
+  PlasmicPopoverContext,
+} from "./contexts";
 import { ListBoxItemIdManager } from "./ListBoxItemIdManager";
 import { BUTTON_COMPONENT_NAME } from "./registerButton";
 import { INPUT_COMPONENT_NAME } from "./registerInput";
@@ -50,7 +54,9 @@ export function BaseComboBox(props: BaseComboboxProps) {
             idManager,
           }}
         >
-          {children}
+          <PlasmicInputContext.Provider value={{ isUncontrolled: true }}>
+            {children}
+          </PlasmicInputContext.Provider>
         </PlasmicListBoxContext.Provider>
       </PlasmicPopoverContext.Provider>
     </ComboBox>

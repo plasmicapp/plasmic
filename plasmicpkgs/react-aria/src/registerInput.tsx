@@ -3,7 +3,7 @@ import { mergeProps } from "react-aria";
 import type { InputProps } from "react-aria-components";
 import { Input } from "react-aria-components";
 import { getCommonProps, resolveAutoComplete } from "./common";
-import { PlasmicTextFieldContext } from "./contexts";
+import { PlasmicInputContext, PlasmicTextFieldContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
   HasControlContextData,
@@ -26,6 +26,7 @@ export interface BaseInputProps
     HasControlContextData,
     WithVariants<typeof INPUT_VARIANTS> {
   autoComplete?: string[];
+  isUncontrolled?: boolean;
 }
 
 export const inputHelpers = {
@@ -44,22 +45,29 @@ export function BaseInput(props: BaseInputProps) {
     setControlContextData,
     disabled,
     autoComplete,
+    value,
     ...rest
   } = props;
   const textFieldContext = React.useContext(PlasmicTextFieldContext);
-
+  const context = React.useContext(PlasmicInputContext);
   setControlContextData?.({
     parent: textFieldContext,
   });
 
-  const mergedProps = mergeProps(rest, {
-    /**
-     * While react-aria internally does the merging of the disabled prop,
-     * we need to explicity do it here, because react-aria does it behind the scenes,
-     * whereas we need the calculated value of the disabled prop to be able to update the "disabled" CC variant.
-     *  */
-    disabled: textFieldContext?.isDisabled ?? disabled,
-  });
+  const mergedProps = mergeProps(
+    rest,
+    {
+      value: context?.isUncontrolled ? undefined : value,
+    },
+    {
+      /**
+       * While react-aria internally does the merging of the disabled prop,
+       * we need to explicity do it here, because react-aria does it behind the scenes,
+       * whereas we need the calculated value of the disabled prop to be able to update the "disabled" CC variant.
+       *  */
+      disabled: textFieldContext?.isDisabled ?? disabled,
+    }
+  );
 
   // NOTE: Aria <Input> does not support render props, neither does it provide an onDisabledChange event, so we have to manually update the disabled state
   useEffect(() => {
