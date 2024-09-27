@@ -1,13 +1,20 @@
-import { Label } from "react-aria-components";
+import React from "react";
+import { Label, LabelProps } from "react-aria-components";
 import {
   CodeComponentMetaOverrides,
+  extractPlasmicDataProps,
   makeComponentName,
   Registerable,
   registerComponentHelper,
 } from "./utils";
 
-export const BaseLabel = Label;
-
+export function BaseLabel({ children, className, ...rest }: LabelProps) {
+  return (
+    <Label {...extractPlasmicDataProps(rest)} className={className}>
+      {children}
+    </Label>
+  );
+}
 export const LABEL_COMPONENT_NAME = makeComponentName("label");
 
 export function registerLabel(

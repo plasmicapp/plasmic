@@ -3,13 +3,18 @@ import type { TextProps } from "react-aria-components";
 import { Text } from "react-aria-components";
 import {
   CodeComponentMetaOverrides,
+  extractPlasmicDataProps,
   makeComponentName,
   Registerable,
   registerComponentHelper,
 } from "./utils";
 
-export function BaseText({ children, ...rest }: TextProps) {
-  return <Text {...rest}>{children}</Text>;
+export function BaseText({ children, slot, className, ...rest }: TextProps) {
+  return (
+    <Text {...extractPlasmicDataProps(rest)} slot={slot} className={className}>
+      {children}
+    </Text>
+  );
 }
 
 export const TEXT_COMPONENT_NAME = makeComponentName("text");
