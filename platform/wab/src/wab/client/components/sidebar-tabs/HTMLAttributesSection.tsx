@@ -208,6 +208,8 @@ export const TAG_TO_DISPLAY_NAME = {
   strong: "Strong",
   i: "Italic",
   em: "Emphasis",
+  sub: "Subscript",
+  sup: "Superscript",
 };
 const nonContainerTags = ["ul", "ol", "li"];
 export const ALL_CONTAINER_TAGS = L.without(

@@ -376,6 +376,20 @@ function RichTextToolbar_(
                   <Icon icon={ItalicsvgIcon} style={{ marginRight: 4 }} />
                   Emphasis element
                 </Menu.Item>
+                <Menu.Item
+                  aria-label="Subscript element"
+                  onClick={() => runInEditor("SUBSCRIPT")}
+                >
+                  <Icon icon={BoldsvgIcon} style={{ marginRight: 4 }} />
+                  Subscript element
+                </Menu.Item>
+                <Menu.Item
+                  aria-label="Superscript element"
+                  onClick={() => runInEditor("SUPERSCRIPT")}
+                >
+                  <Icon icon={BoldsvgIcon} style={{ marginRight: 4 }} />
+                  Superscript element
+                </Menu.Item>
               </Menu>
             ),
           },

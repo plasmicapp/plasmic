@@ -364,6 +364,16 @@ const mkRichTextShortcuts: (sub: SubDeps) => Shortcut[] = computedFn(
       fn: wrapInInlineTag("em", sub),
     },
     {
+      action: "SUBSCRIPT",
+      hotkey: isHotkey("mod+shift+,"),
+      fn: wrapInInlineTag("sub", sub),
+    },
+    {
+      action: "SUPERSCRIPT",
+      hotkey: isHotkey("mod+shift+."),
+      fn: wrapInInlineTag("sup", sub),
+    },
+    {
       action: "WRAP_BLOCK",
       fn: async (editor, opts, sub2, tag: (typeof htmlTags)[number] | null) => {
         await wrapInBlockTag(tag, sub2)(editor, opts, sub2);

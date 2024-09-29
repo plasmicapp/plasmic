@@ -74,7 +74,16 @@ export function normalizeMarkers(
   return newMarkers;
 }
 
-export const textInlineTags = ["a", "code", "span", "strong", "i", "em"];
+export const textInlineTags = [
+  "a",
+  "code",
+  "span",
+  "strong",
+  "i",
+  "em",
+  "sub",
+  "sup",
+];
 export const textBlockTags = [
   "blockquote",
   "h1",
