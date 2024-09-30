@@ -112,6 +112,7 @@ import {
   extractParamsFromPagePath,
   findStateForParam,
   getComponentDisplayName,
+  getFolderComponentDisplayName,
   getSubComponents,
   isCodeComponent,
   isContextCodeComponent,
@@ -2021,7 +2022,7 @@ export class TplMgr {
             (isTplCodeComponent(descendant) &&
               descendant.component.codeComponentMeta.hasRef))
         ) {
-          elementName = getComponentDisplayName(descendant.component);
+          elementName = getFolderComponentDisplayName(descendant.component);
         }
         if (elementName) {
           this.renameTpl(component, descendant, elementName, tpl);
