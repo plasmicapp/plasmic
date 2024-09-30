@@ -4961,7 +4961,7 @@ export class StudioCtx extends WithDbCtx {
         persistentChanges.map((change) => change.changeNode)
       );
 
-      if (!DEVFLAGS.skipInvariants && Math.random() < 0.05) {
+      if (!DEVFLAGS.skipInvariants && Math.random() < 0.1) {
         // Random check to silently see if results match
         this.checkIfMatchesSlowBundle(_bundle, persistentChanges);
       }

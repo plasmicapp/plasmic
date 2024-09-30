@@ -82,6 +82,7 @@ import {
   walkModelTree,
 } from "@/wab/shared/model/model-tree-util";
 import { modelConflictsMeta } from "@/wab/shared/site-diffs/model-conflicts-meta";
+import * as Sentry from "@sentry/browser";
 import L, { uniqBy } from "lodash";
 
 export class InvariantError extends Error {
@@ -110,12 +111,13 @@ export function* genSiteErrors(site: Site) {
     if (!isPlasmicComponent(component) || component.superComp) {
       continue;
     }
-    // TODO: Reenable this
-    // if (componentNames.has(component.name)) {
-    //   yield new InvariantError(`Duplicated component name: ${component.name}`);
-    // } else {
-    //   componentNames.add(component.name);
-    // }
+    if (componentNames.has(component.name)) {
+      Sentry.captureException(
+        new InvariantError(`Duplicated component name: ${component.name}`)
+      );
+    } else {
+      componentNames.add(component.name);
+    }
   }
 
   yield* genGlobalContextErrors(site);
