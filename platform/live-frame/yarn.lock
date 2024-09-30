@@ -98,10 +98,10 @@
   dependencies:
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
 
-"@plasmicapp/auth-react@0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/auth-react/-/auth-react-0.0.21.tgz#4195898069973ebb60f5646de6bbb6bced030e36"
-  integrity sha512-7HaYy2i4wvlw63NhKz4Tg/8ljtQ+elHch/ufCdkFqCWXtKoRyZDeiknsWGX/O17Ovce2rsFCpMblI57xWgNhOQ==
+"@plasmicapp/auth-react@0.0.22":
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/auth-react/-/auth-react-0.0.22.tgz#ebf159b3c1a49031c7bf7c1c9090ae1e2149e0ab"
+  integrity sha512-0i2BSOPVPwdQlvUGPW6dvJcy16Jko7oJF9MmASf4sOUnOIK2CjfbkpLuzcHbHU13pqWvg/Dd/G9a2728KU5d2A==
   dependencies:
     "@plasmicapp/auth-api" "0.0.17"
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
@@ -112,21 +112,21 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources-context/-/data-sources-context-0.1.21.tgz#fcf7ead9d9576084ff9fdcc3eadc4a5856119866"
   integrity sha512-DF86rstDK2zs/aTbPOUTWwXiVmFG2GDxXYvztIfXUNtuCvNDJKAZK2thYaULv9bGTRitPKWlwcz0zAMjYRHavQ==
 
-"@plasmicapp/data-sources@0.1.165":
-  version "0.1.165"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources/-/data-sources-0.1.165.tgz#f0d57bd7aa3321cbb9b2bbd6ffb6fe786531c8cc"
-  integrity sha512-q4vlJyAGVDmrp3AhAh0odAtVgEZxV8KyEFseZteR8GEADlGBJdUNDrDuK1RHIBe+TD5ecvG9Kcj56/qpv6MKGQ==
+"@plasmicapp/data-sources@0.1.166":
+  version "0.1.166"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources/-/data-sources-0.1.166.tgz#88e1970f8f5840d2bf749d87f6247cdbc405d227"
+  integrity sha512-sw2oziZA87CW7yQcmxjIt5wDA8IAeoF8bJTSNvPMzGb4tq1Nlu5Fztzj/nQw9d1vQwEOpP49BjvAPe/E7YV9Kw==
   dependencies:
     "@plasmicapp/data-sources-context" "0.1.21"
-    "@plasmicapp/host" "1.0.206"
+    "@plasmicapp/host" "1.0.207"
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
     "@plasmicapp/query" "0.1.79"
     fast-stringify "^2.0.0"
 
-"@plasmicapp/host@1.0.206":
-  version "1.0.206"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.206.tgz#5ff5ca169b3f0216faaf001581344a065773c6c4"
-  integrity sha512-XPsbk+MPW+QIUZPZLz9L/1D3MlyggG7CNSFP6lXXMWgJDbEiklqNlIujVPp4JxnqdfOm1Sia7miOl8CwfVq6Qg==
+"@plasmicapp/host@1.0.207":
+  version "1.0.207"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.207.tgz#062bfa9272582b1f5469002df4384f2fbd1ff627"
+  integrity sha512-3Tb+BKB7rXJTMziQe1vxhmmNz8K2BTHK5cX/pb37oiTqrGJUYaOyXGB0f5u4+jwqRfGcCFrBa5POOgwJvDcOUQ==
   dependencies:
     "@plasmicapp/query" "0.1.79"
     csstype "^3.1.2"
