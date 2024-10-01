@@ -117,9 +117,7 @@ export function main() {
 
   // Initialize analytics
   const amplitudeAnalytics = initAmplitudeBrowser();
-  const posthogAnalytics = initPosthogBrowser({
-    debug: !production,
-  });
+  const posthogAnalytics = initPosthogBrowser({});
   initBrowserAnalytics(
     production
       ? methodForwarder(amplitudeAnalytics, posthogAnalytics)
