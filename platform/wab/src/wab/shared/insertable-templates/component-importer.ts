@@ -214,6 +214,7 @@ export function mkInsertableComponentImporter(
       projectId: info.projectId,
       componentId: comp.uuid,
     });
+    newComp.name = tplMgr.getUniqueComponentName(newComp.name);
     tplMgr.attachComponent(newComp, comp, info.site);
     return newComp;
   };

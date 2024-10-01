@@ -1,15 +1,7 @@
+import { mkBaseVariant } from "@/wab/shared/Variants";
+import { Bundle, Bundler } from "@/wab/shared/bundler";
 import { ensure } from "@/wab/shared/common";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
-import { Bundle, Bundler } from "@/wab/shared/bundler";
-import { cloneCopyState } from "@/wab/shared/insertable-templates";
-import copyAndPasteBundle from "@/wab/shared/insertable-templates/__tests__/bundles/copy-and-paste.json";
-import { CopyElementsReference } from "@/wab/shared/insertable-templates/types";
-import {
-  isKnownCustomCode,
-  isKnownObjectPath,
-  Site,
-} from "@/wab/shared/model/classes";
-import { mkBaseVariant } from "@/wab/shared/Variants";
 import { createSite } from "@/wab/shared/core/sites";
 import {
   findExprsInTree,
@@ -17,6 +9,14 @@ import {
   isTplNamable,
   mkTplTag,
 } from "@/wab/shared/core/tpls";
+import { cloneCopyState } from "@/wab/shared/insertable-templates";
+import copyAndPasteBundle from "@/wab/shared/insertable-templates/__tests__/bundles/copy-and-paste.json";
+import { CopyElementsReference } from "@/wab/shared/insertable-templates/types";
+import {
+  Site,
+  isKnownCustomCode,
+  isKnownObjectPath,
+} from "@/wab/shared/model/classes";
 
 describe("cloneCopyState", () => {
   const getBundleSite = async (projectBundle: Bundle) => {
@@ -114,5 +114,67 @@ describe("cloneCopyState", () => {
       source.styleTokens.map((token) => `${token.name}|${token.value}`).sort()
     );
     expect(target.imageAssets.length).toEqual(source.imageAssets.length);
+  });
+
+  it("can copy and paste components with same name from different sources", async () => {
+    const sources = await Promise.all([
+      getBundleSite(copyAndPasteBundle[0][1] as Bundle),
+      getBundleSite(copyAndPasteBundle[1][1] as Bundle),
+    ]);
+
+    const target = createSite();
+    const component = mkComponent({
+      type: ComponentType.Plain,
+      name: "Owner",
+      tplTree: mkTplTag("div", []),
+    });
+    const baseVariant = mkBaseVariant();
+
+    for (const source of sources) {
+      const homepage = ensure(
+        source.components.find((c) => c.name === "Homepage"),
+        "Homepage component not found"
+      );
+
+      const toCopy = ensure(
+        flattenTpls(homepage.tplTree).find(
+          (tpl) => isTplNamable(tpl) && tpl.name === "option0"
+        ),
+        "option0 tpl should exist"
+      );
+
+      cloneCopyState(
+        target,
+        {
+          site: source,
+          component: homepage,
+          screenVariant: undefined,
+          hostLessDependencies: {},
+          projectId: "source",
+          resolution: {
+            token: "reuse-by-name",
+            component: "reuse",
+          },
+          references: [
+            {
+              type: "tpl-node",
+              uuid: toCopy.uuid,
+              activeVariantsUuids: [],
+            },
+          ],
+        },
+        baseVariant,
+        undefined,
+        component,
+        () => null
+      );
+    }
+
+    expect(target.components.map((c) => c.name).sort()).toEqual([
+      "ComponentWithImagesAndProps",
+      "ComponentWithImagesAndProps2",
+      "ComponentWithTokens",
+      "StatefulComponent",
+    ]);
   });
 });
