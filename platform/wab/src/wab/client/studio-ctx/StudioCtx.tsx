@@ -216,6 +216,7 @@ import {
 } from "@/wab/shared/core/components";
 import { tryExtractJson } from "@/wab/shared/core/exprs";
 import {
+  ComponentContext,
   ModelChange,
   RecordedChanges,
   emptyRecordedChanges,
@@ -776,7 +777,10 @@ export class StudioCtx extends WithDbCtx {
                   : currentArena.children.map(
                       (child) => child.container.component
                     );
-                this.dbCtx().maybeObserveComponents(componentsToObserve);
+                this.dbCtx().maybeObserveComponents(
+                  componentsToObserve,
+                  ComponentContext.Arena
+                );
               },
               { name: "StudioCtx.observeCurrentArena" }
             ),
@@ -792,7 +796,10 @@ export class StudioCtx extends WithDbCtx {
                   currentViewCtxComponent
                 );
                 const componentsToObserve = [currentViewCtxComponent];
-                this.dbCtx().maybeObserveComponents(componentsToObserve);
+                this.dbCtx().maybeObserveComponents(
+                  componentsToObserve,
+                  ComponentContext.View
+                );
               },
               { name: "StudioCtx.observeCurrentViewCtx" }
             ),

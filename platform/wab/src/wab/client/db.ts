@@ -1,20 +1,21 @@
 import { BundlingSiteApi } from "@/wab/client/api";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { App } from "@/wab/client/components/top-view";
-import { maybe } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
-import {
-  ChangeRecorder,
-  FakeChangeRecorder,
-  IChangeRecorder,
-} from "@/wab/shared/core/observable-model";
 import { ApiBranch } from "@/wab/shared/ApiSchema";
 import { PkgVersionInfoMeta, SiteInfo } from "@/wab/shared/SharedApi";
 import { TplMgr } from "@/wab/shared/TplMgr";
+import { maybe } from "@/wab/shared/common";
+import {
+  ChangeRecorder,
+  ComponentContext,
+  FakeChangeRecorder,
+  IChangeRecorder,
+} from "@/wab/shared/core/observable-model";
+import { trackComponentRoot, trackComponentSite } from "@/wab/shared/core/tpls";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { instUtil } from "@/wab/shared/model/InstUtil";
 import { Component, Site } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
-import { trackComponentRoot, trackComponentSite } from "@/wab/shared/core/tpls";
 import { uniqBy } from "lodash";
 import { IObservableValue, observable } from "mobx";
 
@@ -139,11 +140,17 @@ export class DbCtx {
    * @param components the list of components to try to observe the tplTree of.
    * @returns true if any of the components in the list started being observed now, false otherwise.
    */
-  maybeObserveComponents(components: Component[]) {
+  maybeObserveComponents(
+    components: Component[],
+    componentContext?: ComponentContext
+  ) {
     if (!this.appCtx.appConfig.incrementalObservables) {
       return false;
     }
-    return this.recorder.maybeObserveComponents(uniqBy(components, "uuid"));
+    return this.recorder.maybeObserveComponents(
+      uniqBy(components, "uuid"),
+      componentContext
+    );
   }
 
   private createRecorder(site: Site) {

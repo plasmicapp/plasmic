@@ -1,3 +1,10 @@
+import { hasTokenRefs, tryParseAllTokenRefs } from "@/wab/commons/StyleToken";
+import {
+  componentToAllVariants,
+  siteToAllGlobalVariants,
+  siteToAllImageAssetsDict,
+  siteToAllTokensDict,
+} from "@/wab/shared/cached-selectors";
 import {
   assert,
   ensure,
@@ -9,16 +16,18 @@ import {
   withoutNils,
   xSetDefault,
 } from "@/wab/shared/common";
-import { hasTokenRefs, tryParseAllTokenRefs } from "@/wab/commons/StyleToken";
 import { allComponentVariants } from "@/wab/shared/core/components";
-import { dbg } from "@/wab/shared/dbg";
-import { hasAssetRefs, tryParseImageAssetRef } from "@/wab/shared/core/image-assets";
 import {
-  componentToAllVariants,
-  siteToAllGlobalVariants,
-  siteToAllImageAssetsDict,
-  siteToAllTokensDict,
-} from "@/wab/shared/cached-selectors";
+  hasAssetRefs,
+  tryParseImageAssetRef,
+} from "@/wab/shared/core/image-assets";
+import {
+  allGlobalVariants,
+  allImageAssets,
+  allStyleTokens,
+} from "@/wab/shared/core/sites";
+import { undoChanges } from "@/wab/shared/core/undo-util";
+import { dbg } from "@/wab/shared/dbg";
 import mobx from "@/wab/shared/import-mobx";
 import { mutateGlobalObservable } from "@/wab/shared/mobx-util";
 import {
@@ -41,8 +50,6 @@ import {
   isStrongRefField,
   isWeakRefField,
 } from "@/wab/shared/model/model-meta";
-import { allGlobalVariants, allImageAssets, allStyleTokens } from "@/wab/shared/core/sites";
-import { undoChanges } from "@/wab/shared/core/undo-util";
 import { Dictionary, memoize, once } from "lodash";
 import type { IObservableArray, Lambda } from "mobx";
 import type { Atom, IDerivation, IObjectDidChange } from "mobx/dist/internal";
@@ -1412,6 +1419,11 @@ function doMergeRecordedChanges(
   };
 }
 
+export enum ComponentContext {
+  View = 0,
+  Arena = 1,
+}
+
 export interface IChangeRecorder {
   prune(): void;
   getToBeDeletedInsts(): Set<ObjInst>;
@@ -1424,7 +1436,10 @@ export interface IChangeRecorder {
   withRecording<E>(f: () => IFailable<void, E>): IFailable<RecordedChanges, E>;
   dispose(): void;
   setExtraListener(newListener: (change: ModelChange) => void): void;
-  maybeObserveComponents(components: Component[]): boolean;
+  maybeObserveComponents(
+    components: Component[],
+    componentContext?: ComponentContext
+  ): boolean;
   isRecording: boolean;
 }
 
@@ -1439,6 +1454,7 @@ export class ChangeRecorder implements IChangeRecorder {
   private observableState: ObservableState;
   private _isRecording = false;
   private observedCompsCache: Map<Component, Date> = new Map();
+  private componentsInContext = new Array<Component>(2);
 
   constructor(
     inst: ObjInst,
@@ -1471,7 +1487,13 @@ export class ChangeRecorder implements IChangeRecorder {
    * @param components the list of components to try to observe the tplTree of.
    * @returns true if any of the components in the list started being observed now, false otherwise.
    */
-  maybeObserveComponents(components: Component[]) {
+  maybeObserveComponents(
+    components: Component[],
+    componentContext?: ComponentContext
+  ) {
+    if (componentContext != null) {
+      this.componentsInContext[componentContext] = components[0];
+    }
     const currentTime = new Date();
     const observedResult = components.reduce((observedNewComp, component) => {
       if (!mobxHack.isObserved(component)) {
@@ -1504,6 +1526,9 @@ export class ChangeRecorder implements IChangeRecorder {
       .subtract(this.observedCompsCache.size > 20 ? 5 : 10, "minute")
       .toDate();
     this.observedCompsCache.forEach((date, comp, map) => {
+      if (this.componentsInContext.includes(comp)) {
+        return;
+      }
       if (mobxHack.isObserved(comp.tplTree) && date < allowedLastTime) {
         console.log(`Tried to dispose ${comp.name}`);
         this.observableState.disposeInstField(
