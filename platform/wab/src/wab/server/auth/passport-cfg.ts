@@ -269,7 +269,7 @@ export async function setupPassport(
     refresh.use("google-sheets", googleStrategy);
   }
 
-  await setupCustomPassport(dbMgr, config, devflags);
+  await setupCustomPassport(dbMgr, config);
 }
 
 export async function extractSsoConfig(req: Request) {
