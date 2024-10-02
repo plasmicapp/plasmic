@@ -363,12 +363,13 @@ export async function upgradeTeam(req: Request, res: Response) {
 
 export async function upsertSsoConfig(req: Request, res: Response) {
   const mgr = superDbMgr(req);
-  const { teamId, domain, provider, config } = req.body;
+  const { teamId, domain, provider, config, whitelabelConfig } = req.body;
   const sso = await mgr.upsertSsoConfig({
     teamId,
     domains: [domain],
     ssoType: "oidc",
     config,
+    whitelabelConfig,
     provider,
   });
   res.json(sso);

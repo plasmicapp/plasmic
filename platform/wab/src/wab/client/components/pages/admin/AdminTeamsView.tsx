@@ -8,8 +8,6 @@ import { AdminUserSelect } from "@/wab/client/components/pages/admin/AdminUserSe
 import { AdminUserTable } from "@/wab/client/components/pages/admin/AdminUserTable";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
-import { notNil, uncheckedCast } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ApiFeatureTier,
   ApiPermission,
@@ -21,6 +19,8 @@ import {
   StripeSubscriptionId,
   TeamWhiteLabelInfo,
 } from "@/wab/shared/ApiSchema";
+import { notNil, uncheckedCast } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   BASE_URL,
   PUBLIC_SUPPORT_CATEGORY_ID,
@@ -747,11 +747,15 @@ function ConfigureSso({ team, refetch }: TeamProps) {
             ...existing,
             domain: existing.domains[0],
             config: JSON.stringify(existing.config, undefined, 2),
+            whitelabelConfig: existing.whitelabelConfig
+              ? JSON.stringify(existing.whitelabelConfig, undefined, 2)
+              : null,
           };
         }
 
         Modal.confirm({
           title: "Configure SSO",
+          width: "30%",
           okButtonProps: { style: { display: "none" } },
           content: (
             <Form
@@ -761,7 +765,13 @@ function ConfigureSso({ team, refetch }: TeamProps) {
                 console.log("FORM", event);
 
                 try {
-                  const data = { ...event, config: JSON.parse(event.config) };
+                  const data = {
+                    ...event,
+                    config: JSON.parse(event.config),
+                    whitelabelConfig: event.whitelabelConfig
+                      ? JSON.parse(event.whitelabelConfig)
+                      : null,
+                  };
                   console.log("Submitting", data);
                   const sso = await nonAuthCtx.api.upsertSsoConfig(data);
                   refetch();
@@ -793,6 +803,9 @@ function ConfigureSso({ team, refetch }: TeamProps) {
                 </Select>
               </Form.Item>
               <Form.Item name="config" label="Config">
+                <Input.TextArea autoSize={{ minRows: 4 }} className="code" />
+              </Form.Item>
+              <Form.Item name="whitelabelConfig" label="Whitelabel Config">
                 <Input.TextArea autoSize={{ minRows: 4 }} className="code" />
               </Form.Item>
               <Form.Item>

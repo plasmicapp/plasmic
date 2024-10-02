@@ -1006,6 +1006,9 @@ export class SsoConfig extends Base<"SsoConfigId"> {
 
   @Column("jsonb")
   config: Record<string, any>;
+
+  @Column("jsonb", { nullable: true })
+  whitelabelConfig: Record<string, any>;
 }
 
 export type KeyValueNamespace =
