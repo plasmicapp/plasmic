@@ -10041,7 +10041,7 @@
         "33381376": {
           "uuid": "sKY-QNq7S60",
           "name": "",
-          "selectors": ["Focused"],
+          "selectors": [":focus"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -10081,7 +10081,7 @@
         "33381380": {
           "uuid": "_K6a3oEdGV5",
           "name": "",
-          "selectors": ["Placeholder"],
+          "selectors": ["::placeholder"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -12367,7 +12367,7 @@
         }
       },
       "deps": [],
-      "version": "233-rename-interaction-variants-for-code-components"
+      "version": "234-variant-selectors-no-display-name"
     }
   ]
 ]

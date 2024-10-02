@@ -27061,7 +27061,7 @@
         }
       },
       "deps": [],
-      "version": "233-rename-interaction-variants-for-code-components"
+      "version": "234-variant-selectors-no-display-name"
     }
   ],
   [
@@ -31119,7 +31119,7 @@
         }
       },
       "deps": [],
-      "version": "233-rename-interaction-variants-for-code-components"
+      "version": "234-variant-selectors-no-display-name"
     }
   ],
   [
@@ -31426,7 +31426,7 @@
         }
       },
       "deps": [],
-      "version": "233-rename-interaction-variants-for-code-components"
+      "version": "234-variant-selectors-no-display-name"
     }
   ],
   [
@@ -36048,7 +36048,7 @@
         "88b7de88-9046-4021-b08b-d5d7d1db6a8c",
         "0b5c4773-e201-48c2-86a4-c29335ea539b"
       ],
-      "version": "233-rename-interaction-variants-for-code-components"
+      "version": "234-variant-selectors-no-display-name"
     }
   ]
 ]

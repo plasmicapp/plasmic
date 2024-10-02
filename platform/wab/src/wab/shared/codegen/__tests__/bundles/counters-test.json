@@ -9424,7 +9424,7 @@
         }
       },
       "deps": [],
-      "version": "233-rename-interaction-variants-for-code-components"
+      "version": "234-variant-selectors-no-display-name"
     }
   ]
 ]

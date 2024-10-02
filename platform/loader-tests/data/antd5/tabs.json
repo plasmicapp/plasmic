@@ -27351,7 +27351,7 @@
         }
       },
       "deps": [],
-      "version": "233-rename-interaction-variants-for-code-components"
+      "version": "234-variant-selectors-no-display-name"
     }
   ],
   [
@@ -30098,7 +30098,7 @@
         }
       },
       "deps": ["bbf34eb7-5aa4-44fe-af7b-9f0012f91a1f"],
-      "version": "233-rename-interaction-variants-for-code-components"
+      "version": "234-variant-selectors-no-display-name"
     }
   ]
 ]

@@ -1163,7 +1163,7 @@
           }
         },
         "deps": [],
-        "version": "233-rename-interaction-variants-for-code-components"
+        "version": "234-variant-selectors-no-display-name"
       },
       "projectId": "jktPeioPm3Q1RvAsGWDSCe",
       "version": "3.0.0",
@@ -2363,7 +2363,7 @@
           }
         },
         "deps": [],
-        "version": "233-rename-interaction-variants-for-code-components"
+        "version": "234-variant-selectors-no-display-name"
       }
     },
     {
@@ -3519,7 +3519,7 @@
           }
         },
         "deps": [],
-        "version": "233-rename-interaction-variants-for-code-components"
+        "version": "234-variant-selectors-no-display-name"
       }
     }
   ]

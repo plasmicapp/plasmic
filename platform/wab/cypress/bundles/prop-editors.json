@@ -27185,7 +27185,7 @@
         }
       },
       "deps": [],
-      "version": "233-rename-interaction-variants-for-code-components"
+      "version": "234-variant-selectors-no-display-name"
     }
   ],
   [
@@ -40775,7 +40775,7 @@
         "41233068": {
           "uuid": "QmutDIGaybs",
           "name": "",
-          "selectors": ["Hover"],
+          "selectors": [":hover"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -40785,7 +40785,7 @@
         "41233069": {
           "uuid": "6SpH_o-UdOP",
           "name": "",
-          "selectors": ["Pressed"],
+          "selectors": [":active"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -52363,7 +52363,7 @@
         "DuESJECNxPHt": { "tpl": [], "__type": "VirtualRenderExpr" }
       },
       "deps": ["968565bc-2862-4179-aa20-deebd3879e08"],
-      "version": "233-rename-interaction-variants-for-code-components"
+      "version": "234-variant-selectors-no-display-name"
     }
   ]
 ]

@@ -1282,7 +1282,7 @@
         }
       },
       "deps": [],
-      "version": "233-rename-interaction-variants-for-code-components"
+      "version": "234-variant-selectors-no-display-name"
     }
   ],
   [
@@ -9130,7 +9130,7 @@
         "qJxv_MUzvG8a": {
           "uuid": "NE58uuzrID9L",
           "name": "",
-          "selectors": ["Focused"],
+          "selectors": [":focus"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -9170,7 +9170,7 @@
         "iDrc8sPFxl9P": {
           "uuid": "2Ss7xvDrXvYG",
           "name": "",
-          "selectors": ["Placeholder"],
+          "selectors": ["::placeholder"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -13845,7 +13845,7 @@
         }
       },
       "deps": ["1397401c-b15c-47b2-8659-9b44c397e887"],
-      "version": "233-rename-interaction-variants-for-code-components"
+      "version": "234-variant-selectors-no-display-name"
     }
   ]
 ]

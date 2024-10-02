@@ -9781,7 +9781,7 @@
         "36693159": {
           "uuid": "cK7WSA0KGZ9",
           "name": "",
-          "selectors": ["Focused"],
+          "selectors": [":focus"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -9821,7 +9821,7 @@
         "36693163": {
           "uuid": "SpM_t9WZcXH",
           "name": "",
-          "selectors": ["Placeholder"],
+          "selectors": ["::placeholder"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -12496,7 +12496,7 @@
         }
       },
       "deps": [],
-      "version": "233-rename-interaction-variants-for-code-components"
+      "version": "234-variant-selectors-no-display-name"
     }
   ]
 ]

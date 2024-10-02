@@ -603,7 +603,7 @@
         "28832113": {
           "uuid": "MuDw8k-Pydt",
           "name": "",
-          "selectors": ["Focused"],
+          "selectors": [":focus"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -643,7 +643,7 @@
         "28832117": {
           "uuid": "yfJMH6MUqrS",
           "name": "",
-          "selectors": ["Placeholder"],
+          "selectors": ["::placeholder"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -11506,7 +11506,7 @@
         }
       },
       "deps": [],
-      "version": "233-rename-interaction-variants-for-code-components"
+      "version": "234-variant-selectors-no-display-name"
     }
   ]
 ]

@@ -20545,7 +20545,7 @@
         "26480356": {
           "uuid": "ducEqV5nZS",
           "name": "",
-          "selectors": ["Focused"],
+          "selectors": [":focus"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -20585,7 +20585,7 @@
         "26480360": {
           "uuid": "wYVW4toRrU",
           "name": "",
-          "selectors": ["Placeholder"],
+          "selectors": ["::placeholder"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -30213,7 +30213,7 @@
         "49229001": {
           "uuid": "HPmIUWGS1",
           "name": "",
-          "selectors": ["Hover"],
+          "selectors": [":hover"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -30241,7 +30241,7 @@
         "49229006": {
           "uuid": "b2GeTk3fo",
           "name": "",
-          "selectors": ["Pressed"],
+          "selectors": [":active"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -42756,7 +42756,7 @@
         }
       },
       "deps": [],
-      "version": "233-rename-interaction-variants-for-code-components"
+      "version": "234-variant-selectors-no-display-name"
     }
   ]
 ]
