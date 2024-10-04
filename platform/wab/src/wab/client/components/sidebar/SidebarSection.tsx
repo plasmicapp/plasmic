@@ -139,14 +139,12 @@ interface SidebarSectionProps
   noBottomPadding?: boolean;
   maxHeight?: number;
   style?: CSSProperties;
-  headerClass?: string;
   noBorder?: boolean;
   hasExtraContent?: boolean;
   scrollable?: boolean;
   defaultExpanded?: boolean;
   fullyCollapsible?: boolean;
   definedIndicator?: ReactNode;
-  onExpanded?: () => void;
   onHeaderClick?: MouseEventHandler;
   onExtraContentExpanded?: () => void;
   onCollapsed?: () => void;
@@ -178,10 +176,8 @@ export function SidebarSection_(
     scrollable,
     maxHeight,
     style,
-    // headerClass,
     noBorder,
     // onCollapsed,
-    // onExpanded,
     onExtraContentCollapsed,
     onExtraContentExpanded,
     defaultExpanded,

@@ -1,4 +1,3 @@
-import { BoxShadow, BoxShadows, Dim } from "@/wab/shared/core/bg-styles";
 import { shouldBeDisabled } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { BoxShadowPanel } from "@/wab/client/components/style-controls/BoxShadowControls";
@@ -18,14 +17,19 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
-import { arrayMoveIndex } from "@/wab/shared/collections";
 import { removeFromArray } from "@/wab/commons/collections";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { derefTokenRefs, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import * as cssPegParser from "@/wab/gen/cssPegParser";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { allColorTokens, allMixins, allStyleTokens } from "@/wab/shared/core/sites";
+import { arrayMoveIndex } from "@/wab/shared/collections";
+import { BoxShadow, BoxShadows, Dim } from "@/wab/shared/core/bg-styles";
+import {
+  allColorTokens,
+  allMixins,
+  allStyleTokens,
+} from "@/wab/shared/core/sites";
 import { CssVarResolver } from "@/wab/shared/core/styles";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
@@ -114,7 +118,7 @@ class _ShadowsPanelSection extends StyleComponent<
         expsProvider={this.props.expsProvider}
         title={"Shadows"}
         styleProps={["box-shadow"]}
-        onExpanded={() => {
+        onExtraContentExpanded={() => {
           if (boxShadows.shadows.length === 0) {
             addShadowLayer();
           }

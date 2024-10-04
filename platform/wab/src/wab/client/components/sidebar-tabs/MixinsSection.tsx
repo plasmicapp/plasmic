@@ -10,9 +10,10 @@ import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelW
 import { XMultiSelect } from "@/wab/client/components/XMultiSelect";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, removeAt } from "@/wab/shared/common";
 import { insertAt } from "@/wab/commons/collections";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { ensure, removeAt } from "@/wab/shared/common";
+import { allMixins, isEditable } from "@/wab/shared/core/sites";
 import { MIXIN_CAP, MIXINS_CAP } from "@/wab/shared/Labels";
 import {
   ensureKnownMixin,
@@ -21,7 +22,6 @@ import {
   TplNode,
 } from "@/wab/shared/model/classes";
 import { tryGetVariantSetting } from "@/wab/shared/Variants";
-import { allMixins, isEditable } from "@/wab/shared/core/sites";
 import { Tooltip } from "antd";
 import L from "lodash";
 import { observer } from "mobx-react";
@@ -95,7 +95,7 @@ export const MixinsSection = observer(function (props: {
           {MIXINS_CAP}
         </LabelWithDetailedTooltip>
       }
-      onExpanded={() => reveal()}
+      onExtraContentExpanded={() => reveal()}
       defaultExpanded={itemsLength > 0}
       isHeaderActive={itemsLength > 0}
       onHeaderClick={itemsLength === 0 ? reveal : undefined}

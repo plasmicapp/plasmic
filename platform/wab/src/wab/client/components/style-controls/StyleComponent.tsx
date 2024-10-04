@@ -17,16 +17,6 @@ import { Tab, Tabs } from "@/wab/client/components/widgets";
 import { StudioChangeOpts, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
-  arrayEq,
-  assert,
-  cx,
-  ensure,
-  generate,
-  mapify,
-  tuple,
-  unexpected,
-} from "@/wab/shared/common";
-import {
   withConsumer,
   withProvider,
 } from "@/wab/commons/components/ContextUtil";
@@ -40,7 +30,18 @@ import {
   tokenTypeLabel,
 } from "@/wab/commons/StyleToken";
 import { isEmptyReactNode } from "@/wab/commons/ViewUtil";
+import {
+  arrayEq,
+  assert,
+  cx,
+  ensure,
+  generate,
+  mapify,
+  tuple,
+  unexpected,
+} from "@/wab/shared/common";
 import { isCodeComponent } from "@/wab/shared/core/components";
+import { allStyleTokens } from "@/wab/shared/core/sites";
 import {
   colorProps,
   filterExtractableStyles,
@@ -52,6 +53,12 @@ import {
   spacingProps,
   typographyCssProps,
 } from "@/wab/shared/core/style-props";
+import {
+  isComponentRoot,
+  isTplComponent,
+  isTplTagOrComponent,
+  isTplTextBlock,
+} from "@/wab/shared/core/tpls";
 import {
   computeDefinedIndicator,
   DefinedIndicatorType,
@@ -99,13 +106,6 @@ import {
   VariantCombo,
 } from "@/wab/shared/Variants";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
-import { allStyleTokens } from "@/wab/shared/core/sites";
-import {
-  isComponentRoot,
-  isTplComponent,
-  isTplTagOrComponent,
-  isTplTextBlock,
-} from "@/wab/shared/core/tpls";
 import { Menu, Tooltip } from "antd";
 import SubMenu from "antd/lib/menu/SubMenu";
 import classNames from "classnames";
@@ -712,12 +712,11 @@ interface StylePanelSectionProps extends StyleComponentProps {
   emptyBody?: boolean;
   fullyCollapsible?: boolean;
   oneLiner?: boolean;
-  headerClass?: string;
   unremovableStyleProps?: string[];
   extraMenuItems?: (builder: MenuBuilder) => void;
   defaultHeaderAction?: () => void;
   onHeaderClick?: MouseEventHandler<HTMLDivElement>;
-  onExpanded?: () => void;
+  onExtraContentExpanded?: () => void;
 }
 
 export const StylePanelSection = observer(forwardRef(StylePanelSection_));
@@ -733,12 +732,10 @@ function StylePanelSection_(
     oneLiner,
     controls,
     emptyBody,
-    headerClass,
     styleProps,
     defaultHeaderAction,
     expsProvider,
     unremovableStyleProps,
-    onExpanded,
     onHeaderClick,
     extraMenuItems,
     ...otherProps
@@ -820,7 +817,6 @@ function StylePanelSection_(
       oneLiner={oneLiner}
       makeHeaderMenu={headerOverlay}
       isHeaderActive={getValueSetState(...definedIndicators) === "isSet"}
-      onExpanded={onExpanded}
       onHeaderClick={onHeaderClick}
       definedIndicator={
         definedIndicators &&
@@ -834,7 +830,6 @@ function StylePanelSection_(
           />
         )
       }
-      headerClass={headerClass}
       controls={controls}
       emptyBody={emptyBody}
       {...otherProps}
@@ -882,11 +877,6 @@ export const TabbedStylePanelSection = observer(
           styleProps={styleProps}
           unremovableStyleProps={this.props.unremovableStyleProps}
           emptyBody={emptyBody}
-          headerClass={
-            isEmptyReactNode(children) || tabs.length === 0
-              ? ""
-              : "SidebarSection__Header--tabs"
-          }
           controls={
             <Tabs
               tabKey={activeKey}
