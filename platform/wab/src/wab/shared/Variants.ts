@@ -58,6 +58,7 @@ import {
   withoutIrrelevantScreenVariants,
 } from "@/wab/shared/PinManager";
 import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
+import { $$$ } from "@/wab/shared/TplQuery";
 import { arrayContains } from "class-validator";
 import L, { orderBy, uniqBy } from "lodash";
 
@@ -603,6 +604,10 @@ export function allVariantsInGroup(vg: VariantGroup) {
 
 export function ensureVariantSetting(tpl: TplNode, variants: Variant[]) {
   let vs = tryGetVariantSetting(tpl, variants);
+  const rootTpl = $$$(tpl).root().maybeOneTpl();
+  if (rootTpl) {
+    ensureBaseRuleVariantSetting(tpl, variants, rootTpl);
+  }
   if (!vs) {
     vs = mkVariantSetting({ variants });
     assert(
