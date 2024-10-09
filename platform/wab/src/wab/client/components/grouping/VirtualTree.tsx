@@ -265,13 +265,13 @@ function useTreeData<T>(
   // In case we delete the last children of a opened node,
   // we need to remove the node from the expanded nodes set.
   React.useEffect(() => {
-    const fixedExpandedNodes = new Set<Key>();
+    const fixedExpandedNodes = new Set<Key>(expandedNodes);
     visibleNodes.forEach((node) => {
       if (
-        getNodeChildren(node.value).length > 0 &&
+        getNodeChildren(node.value).length === 0 &&
         expandedNodes.has(node.key)
       ) {
-        fixedExpandedNodes.add(node.key);
+        fixedExpandedNodes.delete(node.key);
       }
     });
     if (fixedExpandedNodes.size !== expandedNodes.size) {
