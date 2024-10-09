@@ -265,7 +265,8 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
                 (isHostLessPackage(dep.site)
                   ? dep.site.styleTokens
                   : dep.site.styleTokens.filter((t) => !t.isRegistered)
-                ).filter((t) => t.type === tokenType)
+                ).filter((t) => t.type === tokenType),
+                dep
               ),
             };
           })
