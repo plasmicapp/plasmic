@@ -611,6 +611,8 @@ const DEFAULT_DEVFLAGS = {
 
   imageControls: false,
 
+  componentThumbnails: false,
+
   // Enables the margin and padding spacing visualizer improvements
   spacingVisualizer202209: true,
   gapControls: false,
@@ -741,6 +743,7 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     advancedAppAuth: true,
     posthog: true,
     linting: true,
+    componentThumbnails: true,
     authUsersTab: true,
     warningsInCanvas: true,
     previewSteps: true,

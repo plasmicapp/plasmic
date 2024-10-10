@@ -1,15 +1,3 @@
-From 018c24b7d020e8d0d8e5f4c12139251d57b5a079 Mon Sep 17 00:00:00 2001
-From: Yang Zhang <yang@plasmic.app>
-Date: Tue, 31 Oct 2023 11:57:21 -0700
-Subject: [PATCH] new
-
-Change-Id: Ia3c0981dd29aaff7cbbfa35ead5865be8925c00a
----
- platform/canvas-packages/esbuild.js                           | 4 ++--
- .../canvas-packages/internal_pkgs/react-slick/package.json    | 2 +-
- platform/canvas-packages/package.json                         | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
-
 diff --git a/platform/canvas-packages/esbuild.js b/platform/canvas-packages/esbuild.js
 index 7721ea4440..a5eb41d4e5 100644
 --- a/platform/canvas-packages/esbuild.js
@@ -40,18 +28,15 @@ index c0a0970158..e5139e4ff5 100644
    "description": " React port of slick carousel",
    "main": "./lib",
 diff --git a/platform/canvas-packages/package.json b/platform/canvas-packages/package.json
-index 3700709681..6c1253bd9e 100644
+index bb5f8ec885..04f47acf29 100644
 --- a/platform/canvas-packages/package.json
 +++ b/platform/canvas-packages/package.json
-@@ -64,7 +64,7 @@
-     "fast-stringify": "^2.0.0",
+@@ -76,7 +76,7 @@
      "framer-motion": "^7.6.1",
+     "html-to-image": "^1.11.11",
      "immer": "^10.0.3",
 -    "internal-react-slick": "link:./internal_pkgs/react-slick",
 +    "@plasmicforks/react-slick": "*",
      "isomorphic-fetch": "^3.0.0",
      "jquery": "^3.7.1",
      "lodash": "^4.17.21",
---
-2.38.1
-

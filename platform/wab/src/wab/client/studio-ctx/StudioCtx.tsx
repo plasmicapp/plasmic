@@ -14,6 +14,7 @@ import {
   mkProjectLocation,
   parseProjectLocation,
 } from "@/wab/client/cli-routes";
+import { LocalClipboard } from "@/wab/client/clipboard/local";
 import { syncCodeComponentsAndHandleErrors } from "@/wab/client/code-components/code-components";
 import { CodeFetchersRegistry } from "@/wab/client/code-fetchers";
 import {
@@ -68,6 +69,10 @@ import {
 } from "@/wab/client/dom-utils";
 import { fixupChrome, fixupForChanges } from "@/wab/client/fixes-post-change";
 import { FontManager } from "@/wab/client/fonts";
+import {
+  getRootSubHostVersion,
+  getRootSubReact,
+} from "@/wab/client/frame-ctx/windows";
 import { checkDepPkgHosts } from "@/wab/client/init-ctx";
 import { postInsertableTemplate } from "@/wab/client/insertable-templates";
 import { PLATFORM } from "@/wab/client/platform";
@@ -364,6 +369,7 @@ import isEqual from "lodash/isEqual";
 import orderBy from "lodash/orderBy";
 import {
   IObservableValue,
+  ObservableMap,
   autorun,
   flow,
   makeObservable,
@@ -378,12 +384,6 @@ import semver from "semver";
 import * as Signals from "signals";
 import { mutate } from "swr";
 import { FailableArgParams, IFailable, failable } from "ts-failable";
-
-import { LocalClipboard } from "@/wab/client/clipboard/local";
-import {
-  getRootSubHostVersion,
-  getRootSubReact,
-} from "@/wab/client/frame-ctx/windows";
 
 (window as any).dbg.classes = classes;
 
@@ -566,6 +566,8 @@ export enum RightTabKey {
   component = "component",
 }
 
+const THUMBNAIL_DURATION = 1000 * 60 * 5; // 5 minutes to recompute thumbnail
+
 export class StudioCtx extends WithDbCtx {
   //
   // Keep track of modifier keys and space keys as they are pressed
@@ -693,6 +695,35 @@ export class StudioCtx extends WithDbCtx {
       this.appCtx.history.listen((location) => {
         spawn(this.handleRouteChange(location));
       }),
+      autorun(
+        async () => {
+          const arenaFrames = getArenaFrames(this.previousArena);
+          if (!isKnownComponentArena(this.previousArena)) {
+            return;
+          }
+          if (arenaFrames.length === 0) {
+            return;
+          }
+          const arenaFrame = arenaFrames[0];
+          const viewCtx = this.tryGetViewCtxForFrame(arenaFrame);
+          if (!viewCtx || !isPlainComponent(viewCtx.component)) {
+            return;
+          }
+          const currentComponent = viewCtx.currentComponent();
+
+          if (!this.hasCachedThumbnail(currentComponent.uuid)) {
+            try {
+              const thumbnail = await viewCtx.canvasCtx.getThumbnail();
+              this.saveThumbnail(currentComponent.uuid, thumbnail);
+            } catch (e) {
+              debugger;
+            }
+          }
+        },
+        {
+          name: "StudioCtx.setComponentThumbnails",
+        }
+      ),
       autorun(
         async () => {
           const projectName = this.siteInfo.name;
@@ -1629,9 +1660,23 @@ export class StudioCtx extends WithDbCtx {
   //
 
   private _currentArena = observable.box<AnyArena | null>(null);
+  private _previousArena = observable.box<AnyArena | null>(null);
 
   get currentArena() {
     return this._currentArena.get();
+  }
+
+  set currentArena(arena: AnyArena | null) {
+    this.previousArena = this.currentArena;
+    this._currentArena.set(arena);
+  }
+
+  get previousArena() {
+    return this._previousArena.get();
+  }
+
+  set previousArena(arena: AnyArena | null) {
+    this._previousArena.set(arena);
   }
 
   get currentComponent() {
@@ -2002,7 +2047,7 @@ export class StudioCtx extends WithDbCtx {
       }
 
       this.viewportCtx?.setArena(arena);
-      this._currentArena.set(arena);
+      this.currentArena = arena;
       if (!arena) {
         return;
       }
@@ -2813,6 +2858,30 @@ export class StudioCtx extends WithDbCtx {
       this._contentEditorMode.set(false);
     }
   }
+
+  // Component thumbnail management
+
+  private _thumbnailsCache: ObservableMap<string, [string, number]> =
+    observable.map(new Map());
+
+  saveThumbnail = (componentUuid: string, thumbnail: string) => {
+    this._thumbnailsCache.set(componentUuid, [thumbnail, Date.now()]);
+  };
+
+  getCachedThumbnail = (componentUuid: string) => {
+    return this._thumbnailsCache.get(componentUuid)?.[0];
+  };
+
+  hasCachedThumbnail = (componentUuid: string) => {
+    const cachedThumbnail = this._thumbnailsCache.get(componentUuid);
+    if (
+      !cachedThumbnail ||
+      Date.now() - cachedThumbnail[1] > THUMBNAIL_DURATION
+    ) {
+      return false;
+    }
+    return true;
+  };
 
   //
   // Managing the Variants switcher drawer

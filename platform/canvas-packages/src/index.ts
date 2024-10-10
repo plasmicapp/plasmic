@@ -5,6 +5,7 @@
 // evaluate the generated javascript when each frame loads (but we can fetch the
 // code only once when the project loads and store it as a string).
 
+import { toPng } from "html-to-image";
 import ResizeObserver from "resize-observer-polyfill";
 import * as slate from "slate";
 import * as slateReact from "slate-react";
@@ -18,4 +19,5 @@ import { createModal } from "./modals";
   slateReact,
   localElement: typeof window !== "undefined" ? Element : undefined,
   createModal,
+  createThumbnail: toPng,
 };

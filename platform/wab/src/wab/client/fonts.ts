@@ -1,16 +1,16 @@
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { assertNever, spawn } from "@/wab/shared/common";
 import { derefTokenRefs } from "@/wab/commons/StyleToken";
-import { getGoogFontsMeta, makeGoogleFontApiUrl } from "@/wab/shared/googfonts";
-import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import { extractUsedFontsFromComponents } from "@/wab/shared/codegen/fonts";
+import { assertNever, spawn } from "@/wab/shared/common";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
+import { allStyleTokens } from "@/wab/shared/core/sites";
 import {
   FontInstallSpec,
   getFontSpec,
   toGoogleFontInstallSpec,
 } from "@/wab/shared/fonts";
+import { getGoogFontsMeta, makeGoogleFontApiUrl } from "@/wab/shared/googfonts";
 import { ProjectDependency, Site } from "@/wab/shared/model/classes";
-import { allStyleTokens } from "@/wab/shared/core/sites";
 import { notification } from "antd";
 import $ from "jquery";
 import L from "lodash";
@@ -228,6 +228,7 @@ export class FontManager {
         const $link = $("<link />", {
           rel: "stylesheet",
           href: url,
+          crossOrigin: "anonymous",
         });
         $head.append($link);
       });

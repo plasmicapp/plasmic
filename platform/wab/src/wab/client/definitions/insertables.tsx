@@ -129,6 +129,7 @@ export type AddTplItem<T = any> = AddItemCommon & {
   ) => Promise<T | false>;
   canWrap?: boolean;
   component?: Component;
+  previewImageUrl?: string;
 };
 
 export type AddFakeItem<T = any> = AddItemCommon & {

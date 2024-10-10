@@ -14,6 +14,7 @@ import {
   getRenderState,
 } from "@/wab/client/studio-ctx/renderState";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ContextFactory } from "@/wab/shared/code-components/context-factory";
 import {
   ensure,
   ensureInstance,
@@ -23,18 +24,20 @@ import {
   undefinedToDefault,
   xOmitNils,
 } from "@/wab/shared/common";
-import { allComponentVariants, isContextCodeComponent } from "@/wab/shared/core/components";
-import { getImplicitlyActivatedStyleVariants } from "@/wab/shared/Variants";
-import { ContextFactory } from "@/wab/shared/code-components/context-factory";
 import {
   ComponentVariantFrame,
   GlobalVariantFrame,
 } from "@/wab/shared/component-frame";
 import { wrapWithContext } from "@/wab/shared/contexts";
-import { ValState } from "@/wab/shared/eval/val-state";
-import { TplNode, Variant } from "@/wab/shared/model/classes";
+import {
+  allComponentVariants,
+  isContextCodeComponent,
+} from "@/wab/shared/core/components";
 import { allGlobalVariants } from "@/wab/shared/core/sites";
 import { ValComponent, ValNode } from "@/wab/shared/core/val-nodes";
+import { ValState } from "@/wab/shared/eval/val-state";
+import { TplNode, Variant } from "@/wab/shared/model/classes";
+import { getImplicitlyActivatedStyleVariants } from "@/wab/shared/Variants";
 import { autorun, observable } from "mobx";
 import React from "react";
 import defer = setTimeout;

@@ -14,6 +14,7 @@ import {
 import * as domMod from "@/wab/client/dom";
 import { NodeAndOffset } from "@/wab/client/dom";
 import { scriptExec, upsertJQSelector } from "@/wab/client/dom-utils";
+import { reduceImageSize } from "@/wab/client/image/transform";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
@@ -61,6 +62,8 @@ let gCanvasCtxIndex = 0;
  */
 const CANVAS_CTX_TIMEOUT_PERIOD = 3 * 60 * 1000; // 3 minutes
 
+const MAX_THUMBNAIL_SIZE = 120;
+
 export class CanvasCtx {
   /**
    * Simply for debugging purposes - give each a CanvasCtx a number.
@@ -104,6 +107,27 @@ export class CanvasCtx {
     this._$viewport = $viewport;
     this._name = name;
     this._keyAdjustment = null;
+  }
+
+  async getThumbnail(): Promise<string> {
+    const domNode = this.$eltForTplRoot()[0];
+    if (!domNode) {
+      return "";
+    }
+    const { width, height } = reduceImageSize(
+      domNode.clientWidth,
+      domNode.clientHeight,
+      MAX_THUMBNAIL_SIZE,
+      MAX_THUMBNAIL_SIZE
+    );
+    return this.Sub.createThumbnail(domNode, {
+      filter: (node) =>
+        node.tagName !== "SOURCE" &&
+        !node.classList?.contains("__wab_placeholder"),
+      includeQueryParams: true,
+      canvasWidth: width,
+      canvasHeight: height,
+    });
   }
 
   private _updatingCcRegistryCount = observable.box(0);
@@ -199,6 +223,7 @@ export class CanvasCtx {
             rel: "stylesheet",
             type: "text/css",
             href: `${getPublicUrl()}/static/styles/canvas/canvas.${COMMITHASH}.css`,
+            crossOrigin: "anonymous",
           })
         ),
       this._$head
@@ -228,6 +253,7 @@ export class CanvasCtx {
             rel: "stylesheet",
             type: "text/css",
             href: `${getPublicUrl()}/static/styles/canvas/canvas.${COMMITHASH}.css`,
+            crossOrigin: "anonymous",
           })
         ),
       this._$head
@@ -268,6 +294,7 @@ export class CanvasCtx {
       sc.refreshFetchedDataFromPlasmicQuery;
     (this._win as any).__PLASMIC_GET_ALL_CACHE_KEYS = sc.getAllDataOpCacheKeys;
     (this._win as any).__PLASMIC_STUDIO_PATH = sc.getCurrentPathName;
+
     if (this.usedPkgsDispose) {
       this.usedPkgsDispose();
     }
@@ -632,22 +659,7 @@ export class CanvasCtx {
       children
     );
 
-    let wrapped: React.ReactElement = node;
-
-    if (this.Sub.StudioFetcherContext) {
-      wrapped = r(
-        this.Sub.StudioFetcherContext.Provider,
-        {
-          value: {
-            fetchJson: async (url: string) =>
-              viewCtx.appCtx.api.queryDataSource(url),
-          },
-        },
-        node
-      );
-    }
-
-    this.Sub.setPlasmicRootNode(wrapped);
+    this.Sub.setPlasmicRootNode(node);
   }
   dispose() {
     this._resizeObserver?.disconnect();

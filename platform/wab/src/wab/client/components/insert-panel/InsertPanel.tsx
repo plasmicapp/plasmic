@@ -120,6 +120,7 @@ import {
   canInsertHostlessPackage,
   InsertPanelConfig,
 } from "@/wab/shared/ui-config-utils";
+import { placeholderImgUrl } from "@/wab/shared/urls";
 import cn from "classnames";
 import { UseComboboxGetItemPropsOptions } from "downshift";
 import L, { capitalize, groupBy, last, uniq } from "lodash";
@@ -1215,7 +1216,16 @@ export function buildAddItemGroups({
             ) &&
             !isBuiltinCodeComponent(c)
         )
-      ).map((comp) => createAddTplComponent(comp)),
+      ).map((comp) => ({
+        ...createAddTplComponent(
+          comp,
+          // TODO: improve placeholder image!
+          studioCtx.appCtx.appConfig.componentThumbnails
+            ? studioCtx.getCachedThumbnail(comp.uuid) ?? placeholderImgUrl()
+            : undefined
+        ),
+        isCompact: studioCtx.appCtx.appConfig.componentThumbnails,
+      })),
     },
 
     // Insertable Templates

@@ -74,6 +74,7 @@
     "dayjs": "^1.11.10",
     "fast-stringify": "^2.0.0",
     "framer-motion": "^7.6.1",
+    "html-to-image": "^1.11.11",
     "immer": "^10.0.3",
     "internal-react-slick": "link:./internal_pkgs/react-slick",
     "isomorphic-fetch": "^3.0.0",
