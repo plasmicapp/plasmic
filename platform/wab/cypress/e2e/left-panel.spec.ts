@@ -42,7 +42,7 @@ describe("left-panel", function () {
         cy.getSelectedTreeNode().trigger("copy", {
           clipboardData: dataTransfer,
         });
-        cy.wait(100);
+        cy.wait(500);
 
         const PASTES_COUNT = 20;
 
@@ -51,7 +51,7 @@ describe("left-panel", function () {
           cy.getSelectedTreeNode().trigger("paste", {
             clipboardData: dataTransfer,
           });
-          cy.wait(50);
+          cy.wait(200);
         }
 
         // Click again to emulate the make the scroller receive the focus
@@ -62,13 +62,13 @@ describe("left-panel", function () {
         cy.getSelectedTreeNode().trigger("copy", {
           clipboardData: dataTransfer2,
         });
-        cy.wait(100);
+        cy.wait(200);
 
         cy.getSelectedTreeNode().trigger("paste", {
           clipboardData: dataTransfer2,
         });
 
-        cy.wait(100);
+        cy.wait(200);
 
         cy.curWindow().then((win) => {
           // Checking directly in the model, because the dom will not include elements that aren't visible
