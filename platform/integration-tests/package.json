@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@plasmicapp/react-web": "^0.2.337",
     "execa": "^5.0.0"
   },
   "devDependencies": {

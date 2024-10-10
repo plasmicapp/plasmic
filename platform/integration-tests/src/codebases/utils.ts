@@ -5,8 +5,12 @@ export async function runCommand(
   command: string,
   opts: { dir?: string; env?: Record<string, string> } = {}
 ) {
-  if (!opts.dir) opts.dir = process.cwd();
-  if (!opts.env) opts.env = {};
+  if (!opts.dir) {
+    opts.dir = process.cwd();
+  }
+  if (!opts.env) {
+    opts.env = {};
+  }
   return execa.command(command, {
     cwd: opts.dir,
     env: {
