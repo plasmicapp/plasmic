@@ -47,14 +47,8 @@ export const nextjsStrategy: CPAStrategy = {
     }
   },
   overwriteConfig: async (args) => {
-    const { projectPath, scheme, platformOptions } = args;
-    const nextjsConfigFile = path.join(projectPath, "next.config.js");
-    const appDirOption = platformOptions.nextjs?.appDir
-      ? `
-  experimental: {
-    appDir: true,
-  }`
-      : "";
+    const { projectPath, scheme } = args;
+    const nextjsConfigFile = path.join(projectPath, "next.config.mjs");
     if (scheme === "codegen") {
       await fs.writeFile(
         nextjsConfigFile,
@@ -64,24 +58,11 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  trailingSlash: true,${appDirOption}
+  trailingSlash: true,
+  reactStrictMode: true,
 };
 
-module.exports = nextConfig;`
-      );
-    } else {
-      await fs.writeFile(
-        nextjsConfigFile,
-        `
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  // Turn off React StrictMode for now, as react-aria (used by Plasmic)
-  // has some troubles with it. See
-  // https://github.com/adobe/react-spectrum/labels/strict%20mode
-  reactStrictMode: false,${appDirOption}
-};
-
-module.exports = nextConfig;`
+export default nextConfig;`
       );
     }
   },

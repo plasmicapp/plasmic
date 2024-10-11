@@ -18,7 +18,7 @@ export default function PlasmicLoaderPage(props${ifTs(
     jsOrTs,
     `: {
   plasmicData?: ComponentRenderData;
-  queryCache?: Record<string, any>;
+  queryCache?: Record<string, unknown>;
 }`
   )}) {
   const { plasmicData, queryCache } = props;
