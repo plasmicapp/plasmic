@@ -14,7 +14,6 @@ import { isCanvasOverlay } from "@/wab/client/components/canvas/CanvasFrame";
 import { FreestyleBox } from "@/wab/client/components/canvas/FreestyleBox";
 import { CloneBoxes } from "@/wab/client/components/canvas/HoverBox/CloneBoxes";
 import { HoverBoxes } from "@/wab/client/components/canvas/HoverBox/HoverBoxes";
-import { PreselectBox } from "@/wab/client/components/canvas/HoverBox/PreselectBox";
 import { PreselectBoxes } from "@/wab/client/components/canvas/HoverBox/PreselectBoxes";
 import { MeasureTool } from "@/wab/client/components/canvas/MeasureTool";
 import MultiplayerFollowingBorder from "@/wab/client/components/canvas/Multiplayer/MultiplayerFollowingBorder";
@@ -1983,11 +1982,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                         )}
                         <PlayerBoxes />
                         {!studioCtx.isInteractiveMode && <CloneBoxes />}
-                        {!DEVFLAGS.ancestorsBoxes &&
-                          !studioCtx.isInteractiveMode &&
-                          !studioCtx.appCtx.appConfig.ancestorsBoxes && (
-                            <PreselectBox />
-                          )}
                         {!studioCtx.isInteractiveMode &&
                           (DEVFLAGS.ancestorsBoxes ||
                             studioCtx.appCtx.appConfig.ancestorsBoxes) && (

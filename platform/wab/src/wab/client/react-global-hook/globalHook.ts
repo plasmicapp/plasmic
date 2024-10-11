@@ -1,6 +1,7 @@
 import { handleError } from "@/wab/client/ErrorNotifications";
 import { validateCodeComponentParams } from "@/wab/client/react-global-hook/code-components";
 import { Fiber, FiberRoot } from "@/wab/client/react-global-hook/fiber";
+import { FAKE_NODE_CHILD_PARAM } from "@/wab/client/react-global-hook/globalHookConstants";
 import {
   fiberChildren,
   traverseTree,
@@ -118,6 +119,7 @@ if (officialHook) {
     fiberToVal: new WeakMap(),
     fiberToSlotPlaceholderKeys: new WeakMap(),
     uuidToTplNode: new Map(),
+    valKeyToOwnerKey: new Map(),
     frameUidToValRoot: observable.map({}, { deep: false }),
     frameUidToRenderState: new Map(),
     envIdToEnvs: new Map(),
@@ -339,6 +341,7 @@ if (officialHook) {
           const instanceKeyStack: {
             valKey: string;
             cloneIndex: number | undefined;
+            isFake?: boolean;
           }[] = [];
 
           // The stack of Fiber nodes and the ValNode we created for it. Used for
@@ -346,6 +349,7 @@ if (officialHook) {
           const valStack: {
             node: Fiber;
             val: ValNode;
+            isFake?: boolean;
           }[] = [];
 
           // This keeps track of how many clones of for a ValNode exists in the tree
@@ -452,6 +456,8 @@ if (officialHook) {
             const cloneIndex = deriveCloneIndex();
 
             try {
+              const currentFrameUid = ensure(frameUid, "Frame uid not defined");
+
               if (instanceKey) {
                 ancestorKeys.set(instanceKey, node);
 
@@ -466,6 +472,101 @@ if (officialHook) {
                   // Nothing to do here for now!
                 }
 
+                function deriveValOwner(ownerKey: string) {
+                  const ownerCandidates = valStack.filter(
+                    ({ val }) => val.key === ownerKey
+                  );
+                  if (ownerCandidates.length > 0) {
+                    return ensureInstance(
+                      last(ownerCandidates).val,
+                      ValComponent
+                    );
+                  }
+
+                  // We're in a situation that we're sure that something unexpected is happening,
+                  // since we are traversing the tree in a depth-first manner, and we should have
+                  // seen the owner before the current node. This is likely an abnormal behavior
+                  // likely due to code component not keeping a stable fiber tree while rendering.
+
+                  // Let's extract uuid, renderingCtx, tpl that represent the owner
+                  const ownerUuid = last(ownerKey.split("."));
+                  const ownerOwnerKey =
+                    officialHook?.plasmic.valKeyToOwnerKey.get(ownerKey);
+
+                  const ownerTplNode = ensure(
+                    officialHook?.plasmic.uuidToTplNode.get(ownerUuid)?.deref(),
+                    () => `Couldn't find TplNode from uuid ${ownerUuid}`
+                  );
+
+                  // We derive the valOwner first, since deriving the valOwner may mutate the valStack
+                  // and the instanceKeyStack, which are used to compute the fullKey.
+                  const fakeNodeValOwner = ownerOwnerKey
+                    ? deriveValOwner(ownerOwnerKey)
+                    : undefined;
+
+                  // fakeNodeValOwner not existing is another weird scenario, but this may be possible by
+                  // using the component that triggered this current weird scenario as the root of a Plasmic
+                  // component.
+                  const fakeCloneIndex = fakeNodeValOwner
+                    ? updateArgValCount(
+                        fakeNodeValOwner.key,
+                        // Figuring it out the exact param is not simple, one way would be to include this value
+                        // inside the rendering-ctx, but since this is an unexpected scenario, we're just going
+                        // to use a stable value
+                        FAKE_NODE_CHILD_PARAM,
+                        ownerKey
+                      )
+                    : 0;
+
+                  // We push into the stack before computing the full key, so that this fake node is considered
+                  instanceKeyStack.push({
+                    valKey: ownerKey,
+                    cloneIndex: fakeCloneIndex,
+                    isFake: true,
+                  });
+
+                  const fakeNodeFullKey = computeFullKey(ownerKey);
+
+                  const renderState = getRenderState(currentFrameUid);
+
+                  // Since we will be creating a fake node, we don't want this node to be registered in the renderState
+                  // along with any real nodes. So we will clean up everything for the full key of the fake node.
+                  renderState.unregisterFromKey(fakeNodeFullKey);
+
+                  const fakeValOwner = createValNode({
+                    globalHookCtx,
+                    // We will just use the `node` of the current node, which makes this fake node to use this fiber node
+                    // to render selection information, it may be possible that the selection needs to be represented by
+                    // multiple nodes, but this should be an even rarer case.
+                    node,
+                    tplNode: ownerTplNode,
+                    instanceKey: ownerKey,
+                    fullKey: fakeNodeFullKey,
+                    valOwner: fakeNodeValOwner,
+                    // We don't have a className so we're just going to use the one present in `node` which matches
+                    // the `node` in valNode
+                    className: tryGetPlasmicClassName(node),
+                    frameUid: currentFrameUid,
+                  });
+
+                  renderState.registerVal(fakeValOwner);
+
+                  valStack.push({
+                    node,
+                    val: ensureInstance(fakeValOwner, ValComponent),
+                    isFake: true,
+                  });
+
+                  return ensureInstance(fakeValOwner, ValComponent);
+                }
+
+                const ownerKey = tryGetOwnerKey(node);
+
+                // We derive the valOwner first, since deriving the valOwner may mutate the valStack/instanceKeyStack
+                const nodeValOwner = ownerKey
+                  ? deriveValOwner(ownerKey)
+                  : undefined;
+
                 instanceKeyStack.push({ valKey: instanceKey, cloneIndex });
 
                 // Note we need to compute fullKey _after_ we push onto instanceKeyStack
@@ -477,23 +578,15 @@ if (officialHook) {
                   () => `Couldn't find TplNode from uuid ${tplUuid}`
                 );
 
-                const ownerKey = tryGetOwnerKey(node);
-                const ownerCandidates = valStack.filter(
-                  ({ val }) => val.key === ownerKey
-                );
-                const valOwner = ownerKey
-                  ? ensureInstance(last(ownerCandidates).val, ValComponent)
-                  : undefined;
-
                 const valNode = createValNode({
                   globalHookCtx,
                   node,
                   tplNode,
                   instanceKey,
                   fullKey,
-                  valOwner,
+                  valOwner: nodeValOwner,
                   className: tryGetPlasmicClassName(node),
-                  frameUid: ensure(frameUid, () => `Couldn't find frame UID`),
+                  frameUid: currentFrameUid,
                 });
 
                 const cachedValNode = ensure(
@@ -525,7 +618,7 @@ if (officialHook) {
                   cloneIndex ?? 0
                 }]`;
                 officialHook.plasmic.fiberToSlotPlaceholderKeys.set(node, {
-                  frameUid: ensure(frameUid, () => `Couldn't find frame UID`),
+                  frameUid: currentFrameUid,
                   fullKey: slotPlaceholderFullkey,
                   key: slotPlaceholderKey,
                   toSlotSelection: () => {
@@ -547,9 +640,7 @@ if (officialHook) {
                     return undefined;
                   },
                 });
-                getRenderState(
-                  ensure(frameUid, () => `Couldn't find frame UID`)
-                ).registerSlotPlaceholder(
+                getRenderState(currentFrameUid).registerSlotPlaceholder(
                   slotPlaceholderKey,
                   slotPlaceholderFullkey,
                   node
@@ -635,8 +726,25 @@ if (officialHook) {
 
             instanceKeyStack.pop();
 
+            assert(
+              valStack.length === 0 || !last(valStack).isFake,
+              "The last val node in valStack should be a real one"
+            );
+
             if (valStack.length > 0 && last(valStack).node === node) {
               valStack.pop();
+
+              // We only start popping after the real node that made the fake ones to be pushed gets popped
+              while (valStack.length > 0 && last(valStack).isFake) {
+                const key = valStack.pop()!.val.key;
+                delete valCompToArgToValKeyToCount[key];
+
+                assert(
+                  instanceKeyStack.length > 0 && last(instanceKeyStack).isFake,
+                  "While popping fake nodes, instanceKeyStack should have a respective fake node"
+                );
+                instanceKeyStack.pop();
+              }
             }
 
             const cachedVal = ensure(
@@ -908,6 +1016,7 @@ if (officialHook) {
 
 export const globalHookCtx: GlobalHookCtx = officialHook?.plasmic ?? {
   uuidToTplNode: new Map(),
+  valKeyToOwnerKey: new Map(),
   fiberToVal: new WeakMap(),
   fiberToSlotPlaceholderKeys: new WeakMap(),
   frameUidToValRoot: new Map(),

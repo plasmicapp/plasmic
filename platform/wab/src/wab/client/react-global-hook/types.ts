@@ -7,6 +7,7 @@ import { TplNode } from "@/wab/shared/model/classes";
 
 export interface GlobalHookCtx {
   uuidToTplNode: Map<string, WeakRef<TplNode>>;
+  valKeyToOwnerKey: Map<string, string | undefined>;
   fiberToVal: WeakMap<Fiber, ValNode | undefined>;
   fiberToSlotPlaceholderKeys: WeakMap<Fiber, SlotPlaceholderData | undefined>;
   frameUidToValRoot: Map<number, ValComponent | null>;

@@ -13,9 +13,14 @@ import {
   xSetDefault,
 } from "@/wab/shared/common";
 import { Selectable } from "@/wab/shared/core/selection";
-import { TplNode } from "@/wab/shared/model/classes";
 import { SlotSelection, makeSlotSelectionKey } from "@/wab/shared/core/slots";
-import { ValComponent, ValNode, ValSlot, cloneValNode } from "@/wab/shared/core/val-nodes";
+import {
+  ValComponent,
+  ValNode,
+  ValSlot,
+  cloneValNode,
+} from "@/wab/shared/core/val-nodes";
+import { TplNode } from "@/wab/shared/model/classes";
 import $ from "jquery";
 import { maxBy } from "lodash";
 
@@ -90,6 +95,12 @@ class RenderStateImpl {
   }
 
   private cachedValNodes = new Map<string, WeakRef<ValNode>>();
+
+  unregisterFromKey(fullKey: string) {
+    this.cachedValNodes.delete(fullKey);
+    this._valKey2fullKeys.delete(fullKey);
+    this._fullKey2vals.delete(fullKey);
+  }
 
   recomputeCachedVal(fullKey: string): ValNode | undefined {
     const registeredValsSet = this._fullKey2vals.get(fullKey);

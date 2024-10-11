@@ -1221,6 +1221,7 @@ function makeEmptyRenderingCtx(viewCtx: ViewCtx, valKey: string): RenderingCtx {
 
 export function renderTplNode(node: TplNode, ctx: RenderingCtx) {
   globalHookCtx.uuidToTplNode.set(node.uuid, new WeakRef(node));
+  globalHookCtx.valKeyToOwnerKey.set(ctx.valKey, ctx.ownerKey);
   return withErrorDisplayFallback(
     ctx.sub.React,
     ctx,
