@@ -26,7 +26,7 @@
       "projectApiToken": "7BRFratDxPLMGZHnd2grV5QP6mlHcZ1AK3BJSIeh7xzUlHgWh25XpgXvUaKAqHXFMXQQuzpADqboibF6nqNWQ",
       "projectName": "create-plasmic-app",
       "version": "latest",
-      "cssFilePath": "plasmic/create_plasmic_app/plasmic_create_plasmic_app.module.css",
+      "cssFilePath": "plasmic/create_plasmic_app/plasmic.module.css",
       "components": [
         {
           "id": "6uuAAE1jiCew",
@@ -39,7 +39,8 @@
           },
           "cssFilePath": "plasmic/create_plasmic_app/PlasmicHomepage.module.css",
           "scheme": "blackbox",
-          "componentType": "page"
+          "componentType": "page",
+          "path": "/"
         },
         {
           "id": "AO44A-w7hh",
@@ -52,7 +53,8 @@
           },
           "cssFilePath": "plasmic/create_plasmic_app/PlasmicDynamicPage.module.css",
           "scheme": "blackbox",
-          "componentType": "page"
+          "componentType": "page",
+          "path": "/dynamic/[slug]"
         },
         {
           "id": "TQcvW_pSKi3",
@@ -85,8 +87,8 @@
       "icons": [
         {
           "id": "gj-_D7n31Ho",
-          "name": "ChecksvgIcon",
-          "moduleFilePath": "plasmic/create_plasmic_app/icons/PlasmicIcon__Checksvg.tsx"
+          "name": "CheckSvgIcon",
+          "moduleFilePath": "plasmic/create_plasmic_app/icons/PlasmicIcon__CheckSvg.tsx"
         },
         {
           "id": "6PNxx3YMyDQ",
@@ -97,18 +99,22 @@
       "images": [],
       "indirect": false,
       "globalContextsFilePath": "",
+      "splitsProviderFilePath": "",
       "codeComponents": [
         {
           "id": "P6aGdYWZ2R",
           "name": "PlasmicHead",
+          "displayName": "hostless-plasmic-head",
           "componentImportPath": "@plasmicapp/react-web"
         },
         {
           "id": "8G2A-uTjGa",
           "name": "Fetcher",
+          "displayName": "plasmic-data-source-fetcher",
           "componentImportPath": "@plasmicapp/react-web/lib/data-sources"
         }
-      ]
+      ],
+      "customFunctions": []
     }
   ],
   "globalVariants": {
@@ -125,6 +131,6 @@
   "nextjsConfig": {
     "pagesDir": "../pages"
   },
-  "cliVersion": "0.1.231",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.231/dist/plasmic.schema.json"
+  "cliVersion": "0.1.331",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.331/dist/plasmic.schema.json"
 }

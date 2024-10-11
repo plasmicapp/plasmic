@@ -17,34 +17,59 @@ import Head from "next/head";
 import Link, { LinkProps } from "next/link";
 import { useRouter } from "next/router";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
+
 import Button from "../../Button"; // plasmic-import: TQcvW_pSKi3/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import projectcss from "./plasmic_create_plasmic_app.module.css"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
+import projectcss from "./plasmic.module.css"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
 import sty from "./PlasmicRandomDynamicPageButton.module.css"; // plasmic-import: Q23H1_1M_P/css
 
-import ChecksvgIcon from "./icons/PlasmicIcon__Checksvg"; // plasmic-import: gj-_D7n31Ho/icon
+import CheckSvgIcon from "./icons/PlasmicIcon__CheckSvg"; // plasmic-import: gj-_D7n31Ho/icon
 import IconIcon from "./icons/PlasmicIcon__Icon"; // plasmic-import: 6PNxx3YMyDQ/icon
+
+createPlasmicElementProxy;
 
 export type PlasmicRandomDynamicPageButton__VariantMembers = {};
 export type PlasmicRandomDynamicPageButton__VariantsArgs = {};
@@ -58,20 +83,14 @@ export const PlasmicRandomDynamicPageButton__ArgProps =
   new Array<ArgPropType>();
 
 export type PlasmicRandomDynamicPageButton__OverridesType = {
-  root?: p.Flex<typeof Button>;
+  root?: Flex__<typeof Button>;
 };
 
 export interface DefaultRandomDynamicPageButtonProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function useNextRouter() {
   try {
@@ -87,20 +106,27 @@ function PlasmicRandomDynamicPageButton__RenderFunc(props: {
   forNode?: string;
 }) {
   const { variants, overrides, forNode } = props;
-  const __nextRouter = useNextRouter();
 
-  const $ctx = ph.useDataEnv?.() || {};
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants
   };
+
+  const __nextRouter = useNextRouter();
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = p.useCurrentUser?.() || {};
-  const [$queries, setDollarQueries] = React.useState({});
 
   return (
     <Button
@@ -111,60 +137,47 @@ function PlasmicRandomDynamicPageButton__RenderFunc(props: {
       className={classNames("__wab_instance", sty.root)}
       onClick={async event => {
         const $steps = {};
+
         $steps["goToDynamicPage"] = true
           ? (() => {
               const actionArgs = {
-                destination: __wrapUserFunction(
-                  {
-                    type: "InteractionArgLoc",
-                    actionName: "navigation",
-                    interactionUuid: "9Y3jL0zxjA",
-                    componentUuid: "Q23H1_1M_P",
-                    argName: "destination"
-                  },
-                  () =>
-                    `/dynamic/${(() => {
-                      try {
-                        return Math.random().toString(36).slice(2);
-                      } catch (e) {
-                        if (e instanceof TypeError) {
-                          return "value";
-                        }
-                        throw e;
-                      }
-                    })()}`
-                )
+                destination: `/dynamic/${(() => {
+                  try {
+                    return Math.random().toString(36).slice(2);
+                  } catch (e) {
+                    if (
+                      e instanceof TypeError ||
+                      e?.plasmicType === "PlasmicUndefinedDataError"
+                    ) {
+                      return "value";
+                    }
+                    throw e;
+                  }
+                })()}`
               };
-              return __wrapUserFunction(
-                {
-                  type: "InteractionLoc",
-                  actionName: "navigation",
-                  interactionUuid: "9Y3jL0zxjA",
-                  componentUuid: "Q23H1_1M_P"
-                },
-                () =>
-                  (({ destination }) => {
-                    __nextRouter?.push(destination);
-                  })?.apply(null, [actionArgs]),
-                actionArgs
-              );
+              return (({ destination }) => {
+                if (
+                  typeof destination === "string" &&
+                  destination.startsWith("#")
+                ) {
+                  document
+                    .getElementById(destination.substr(1))
+                    .scrollIntoView({ behavior: "smooth" });
+                } else {
+                  __nextRouter?.push(destination);
+                }
+              })?.apply(null, [actionArgs]);
             })()
           : undefined;
         if (
+          $steps["goToDynamicPage"] != null &&
           typeof $steps["goToDynamicPage"] === "object" &&
           typeof $steps["goToDynamicPage"].then === "function"
         ) {
-          $steps["goToDynamicPage"] = await __wrapUserPromise(
-            {
-              type: "InteractionLoc",
-              actionName: "navigation",
-              interactionUuid: "9Y3jL0zxjA",
-              componentUuid: "Q23H1_1M_P"
-            },
-            $steps["goToDynamicPage"]
-          );
+          $steps["goToDynamicPage"] = await $steps["goToDynamicPage"];
         }
       }}
+      submitsForm={true}
     >
       {"Random Dynamic Page"}
     </Button>
@@ -215,7 +228,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicRandomDynamicPageButton__ArgProps,
           internalVariantPropNames: PlasmicRandomDynamicPageButton__VariantProps
         }),
