@@ -8,8 +8,8 @@ COPY package*.json ./
 
 # Install dependencies
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git && \
-    npm install -g @plasmicapp/cli create-plasmic-app && \
+    apt-get install -y --no-install-recommends git=2.93.3 && \
+    npm install -g @plasmicapp/cli@latest create-plasmic-app@latest && \
     yarn install && \
     yarn cache clean && \
     apt-get purge -y --auto-remove git && \
@@ -19,4 +19,4 @@ RUN apt-get update && \
 COPY . .
 
 # Run tests
-CMD ["yarn", "test", "--runInBand"]
+CMD ["yarn", "test"]
