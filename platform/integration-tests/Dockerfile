@@ -8,7 +8,7 @@ COPY package*.json ./
 
 # Install dependencies
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git=2.93.3 && \
+    apt-get install -y --no-install-recommends git && \
     npm install -g @plasmicapp/cli@latest create-plasmic-app@latest && \
     yarn install && \
     yarn cache clean && \
