@@ -164,7 +164,7 @@ yarn dev
 
 ## Using the app
 
-The app runs on http://localhost:3003/.
+The app runs on http://localhost:3003/ and the admin server sits at http://localhost:3003/admin .
 
 If you have freshly reset the DB, the following users will be created for you
 (see [seed script](/platform/wab/src/wab/server/db/DbInit.ts) for details):
