@@ -512,7 +512,7 @@ export class CodeComponentsRegistry {
       ])
   );
 
-  getRegisteredTokens = memoizeOne(() => {
+  getRegisteredTokens = memoizeOne((burstCache?: number) => {
     const tokens = uncheckedCast<any>(this.win).__PlasmicTokenRegistry ?? [];
     return [...tokens] as TokenRegistration[];
   });
@@ -616,6 +616,9 @@ export interface CodeComponentSyncCallbackFns {
   confirmRemovedCodeComponentVariants?: (
     removedSelectorsByComponent: [Component, string[]][]
   ) => Promise<IFailable<void, never>>;
+  confirmRemovedTokens?: (
+    removedSelectorsByComponent: StyleToken[]
+  ) => Promise<boolean | undefined>;
 }
 
 export class DuplicateCodeComponentError extends CustomError {
@@ -4245,58 +4248,70 @@ async function upsertRegisteredTokens(
       const existingTokens = new Map(
         site.styleTokens.map((token) => [token.regKey, token])
       );
-      const registeredTokens = new Map(
-        ctx.codeComponentsRegistry
-          .getRegisteredTokens()
-          .map((token) => [token.name, token])
-      );
+      let cacheBurst = 0;
+      let shouldDelete: boolean | undefined = false;
+      let newTokenRegs: TokenRegistration[] = [];
+      let updatedTokenRegs: TokenRegistration[] = [];
+      let removedTokens: StyleToken[] = [];
 
-      const newTokenRegs: TokenRegistration[] = [];
-      const updatedTokenRegs: TokenRegistration[] = [];
-      const removedTokens: StyleToken[] = [];
-      for (const tokenReg of registeredTokens.values()) {
-        let regType: TokenType;
-        try {
-          regType = registeredTypeToTokenType(tokenReg.type);
-        } catch (err) {
-          return failure(
-            new InvalidTokenError(
-              tokenReg.name,
-              `Invalid token type for token "${tokenReg.name}": ${tokenReg.type}`
-            )
-          );
-        }
-        const existing = existingTokens.get(tokenReg.name);
-        if (existing) {
-          if (existing.isRegistered) {
-            if (
-              existing.value !== tokenReg.value ||
-              existing.type !== regType
-            ) {
-              updatedTokenRegs.push(tokenReg);
-            }
-          } else {
+      do {
+        newTokenRegs = [];
+        updatedTokenRegs = [];
+        removedTokens = [];
+        const registeredTokens = new Map(
+          ctx.codeComponentsRegistry
+            .getRegisteredTokens(cacheBurst++)
+            .map((token) => [token.name, token])
+        );
+
+        for (const tokenReg of registeredTokens.values()) {
+          let regType: TokenType;
+          try {
+            regType = registeredTypeToTokenType(tokenReg.type);
+          } catch (err) {
             return failure(
               new InvalidTokenError(
                 tokenReg.name,
-                `Cannot register a token named "${tokenReg.name}" because there is already a token with that name.`
+                `Invalid token type for token "${tokenReg.name}": ${tokenReg.type}`
               )
             );
           }
-        } else {
-          newTokenRegs.push(tokenReg);
+          const existing = existingTokens.get(tokenReg.name);
+          if (existing) {
+            if (existing.isRegistered) {
+              if (
+                existing.value !== tokenReg.value ||
+                existing.type !== regType
+              ) {
+                updatedTokenRegs.push(tokenReg);
+              }
+            } else {
+              return failure(
+                new InvalidTokenError(
+                  tokenReg.name,
+                  `Cannot register a token named "${tokenReg.name}" because there is already a token with that name.`
+                )
+              );
+            }
+          } else {
+            newTokenRegs.push(tokenReg);
+          }
         }
-      }
 
-      for (const token of site.styleTokens) {
-        if (
-          token.isRegistered &&
-          token.regKey &&
-          !registeredTokens.has(token.regKey)
-        ) {
-          removedTokens.push(token);
+        for (const token of site.styleTokens) {
+          if (
+            token.isRegistered &&
+            token.regKey &&
+            !registeredTokens.has(token.regKey)
+          ) {
+            removedTokens.push(token);
+          }
         }
-      }
+
+        if (removedTokens.length > 0) {
+          shouldDelete = await fns.confirmRemovedTokens?.(removedTokens);
+        }
+      } while (!shouldDelete && removedTokens.length > 0);
 
       if (
         newTokenRegs.length > 0 ||

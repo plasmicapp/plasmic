@@ -1,6 +1,7 @@
 import { reportError } from "@/wab/client/ErrorNotifications";
 import {
   confirmRemovedCodeComponentVariants,
+  confirmRemovedTokens,
   duplicateCodeComponentErrorDescription,
   fixInvalidReactVersion,
   fixMissingCodeComponents,
@@ -240,6 +241,7 @@ export const ccClientCallbackFns: CodeComponentSyncCallbackFns = {
   },
   confirmRemovedCodeComponentVariants: (removedSelectorsByComponent) =>
     confirmRemovedCodeComponentVariants(removedSelectorsByComponent),
+  confirmRemovedTokens: (removedTokens) => confirmRemovedTokens(removedTokens),
 };
 
 export async function syncCodeComponentsAndHandleErrors(
