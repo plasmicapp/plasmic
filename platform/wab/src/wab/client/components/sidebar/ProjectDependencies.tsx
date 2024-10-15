@@ -276,13 +276,11 @@ async function trySwitchScreenVariant(
   }
 
   if (switchGroup) {
-    await studioCtx.changeUnsafe(() =>
-      studioCtx
-        .tplMgr()
-        .updateActiveScreenVariantGroup(
-          dependency.site.activeScreenVariantGroup!
-        )
-    );
+    await studioCtx
+      .siteOps()
+      .updateActiveScreenVariantGroup(
+        dependency.site.activeScreenVariantGroup!
+      );
   }
 }
 

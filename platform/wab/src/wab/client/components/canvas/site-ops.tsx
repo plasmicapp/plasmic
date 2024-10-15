@@ -22,6 +22,7 @@ import { removeFromArray } from "@/wab/commons/collections";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import {
   deriveInitFrameSettings,
+  ensureActivatedScreenVariantsForArena,
   getActivatedVariantsForFrame,
   getArenaFrames,
   getArenaName,
@@ -39,11 +40,13 @@ import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
   VariantGroupType,
+  areEquivalentScreenVariants,
   ensureBaseRuleVariantSetting,
   getDisplayVariants,
   getOrderedScreenVariantSpecs,
   isBaseVariant,
   isGlobalVariantGroup,
+  isScreenVariantGroup,
   isStandaloneVariantGroup,
   isStyleVariant,
   makeVariantName,
@@ -58,6 +61,7 @@ import {
   findQueryInvalidationExprWithRefs,
   findSplitsUsingVariantGroup,
   findStyleTokensUsingVariantGroup,
+  flattenComponent,
   getComponentsUsingImageAsset,
 } from "@/wab/shared/cached-selectors";
 import { toVarName } from "@/wab/shared/codegen/util";
@@ -79,6 +83,8 @@ import {
   isCustomComponentFrame,
   isGlobalVariantFrame,
   isSuperVariantFrame,
+  removeFramesFromComponentArenaForVariants,
+  removeManagedFramesFromComponentArenaForVariantGroup,
 } from "@/wab/shared/component-arenas";
 import {
   CodeComponent,
@@ -96,6 +102,7 @@ import {
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { extractTransitiveDepsFromComponents } from "@/wab/shared/core/project-deps";
 import {
+  ensureScreenVariantsOrderOnMatrices,
   getComponentArena,
   getPageArena,
   getReferencingComponents,
@@ -137,6 +144,7 @@ import {
   ComponentArena,
   ComponentDataQuery,
   ComponentVariantGroup,
+  GlobalVariantGroup,
   ImageAsset,
   Mixin,
   PageArena,
@@ -184,6 +192,63 @@ import React from "react";
  */
 export class SiteOps {
   constructor(private studioCtx: StudioCtx) {}
+
+  async updateActiveScreenVariantGroup(group: GlobalVariantGroup) {
+    assert(
+      isScreenVariantGroup(group),
+      "Expected given variant group to be a screen variant group"
+    );
+    const prevGroup = this.site.activeScreenVariantGroup;
+
+    await this.studioCtx.changeObserved(
+      () => this.site.components,
+      ({ success }) => {
+        this.site.activeScreenVariantGroup = group;
+        if (prevGroup) {
+          const oldToNewVariant = new Map(
+            prevGroup.variants.map((prevV) => [
+              prevV,
+              group.variants.find((newV) =>
+                areEquivalentScreenVariants(newV, prevV)
+              ),
+            ])
+          );
+          for (const component of this.site.components) {
+            for (const tpl of flattenComponent(component)) {
+              if (isTplVariantable(tpl)) {
+                for (const vs of tpl.vsettings) {
+                  if (vs.variants.some((v) => oldToNewVariant.get(v))) {
+                    vs.variants = vs.variants.map(
+                      (v) => oldToNewVariant.get(v) ?? v
+                    );
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        for (const arena of getSiteArenas(this.site)) {
+          if (isComponentArena(arena)) {
+            if (prevGroup) {
+              removeFramesFromComponentArenaForVariants(
+                arena,
+                prevGroup.variants
+              );
+              removeManagedFramesFromComponentArenaForVariantGroup(
+                arena,
+                prevGroup
+              );
+            }
+          } else {
+            ensureActivatedScreenVariantsForArena(this.site, arena);
+          }
+        }
+        ensureScreenVariantsOrderOnMatrices(this.site);
+        return success();
+      }
+    );
+  }
 
   addMatchingArenaFrame(screenVariant?: Variant) {
     const strategy = getResponsiveStrategy(this.site);

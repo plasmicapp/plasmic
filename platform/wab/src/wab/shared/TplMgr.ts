@@ -98,8 +98,6 @@ import {
   maybeEnsureManagedFrameForGlobalVariantInComponentArena,
   mkComponentArena,
   removeCustomComponentFrame,
-  removeFramesFromComponentArenaForVariants,
-  removeManagedFramesFromComponentArenaForVariantGroup,
   removeSuperOrGlobalVariantComponentFrame,
 } from "@/wab/shared/component-arenas";
 import {
@@ -947,54 +945,6 @@ export class TplMgr {
         }
       }
     }
-  }
-
-  updateActiveScreenVariantGroup(group: GlobalVariantGroup) {
-    assert(
-      isScreenVariantGroup(group),
-      "Expected given variant group to be a screen variant group"
-    );
-    const prevGroup = this.site().activeScreenVariantGroup;
-    this.site().activeScreenVariantGroup = group;
-
-    if (prevGroup) {
-      const oldToNewVariant = new Map(
-        prevGroup.variants.map((prevV) => [
-          prevV,
-          group.variants.find((newV) =>
-            areEquivalentScreenVariants(newV, prevV)
-          ),
-        ])
-      );
-      for (const component of this.site().components) {
-        for (const tpl of flattenComponent(component)) {
-          if (isTplVariantable(tpl)) {
-            for (const vs of tpl.vsettings) {
-              if (vs.variants.some((v) => oldToNewVariant.get(v))) {
-                vs.variants = vs.variants.map(
-                  (v) => oldToNewVariant.get(v) ?? v
-                );
-              }
-            }
-          }
-        }
-      }
-    }
-
-    for (const arena of getSiteArenas(this.site())) {
-      if (isComponentArena(arena)) {
-        if (prevGroup) {
-          removeFramesFromComponentArenaForVariants(arena, prevGroup.variants);
-          removeManagedFramesFromComponentArenaForVariantGroup(
-            arena,
-            prevGroup
-          );
-        }
-      } else {
-        ensureActivatedScreenVariantsForArena(this.site(), arena);
-      }
-    }
-    ensureScreenVariantsOrderOnMatrices(this.site());
   }
 
   ensureBaseVariant(comp: Component) {
