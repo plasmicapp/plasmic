@@ -40,7 +40,7 @@ function NewPageModal(props: NewPageModalProps) {
   const [projectId, setProjectId] = React.useState<string | undefined>(
     undefined
   );
-  const [name, setName] = React.useState("NewPage");
+  const [name, setName] = React.useState("");
   const nameRef = React.useRef<TextboxRef>(null);
 
   const isApp = studioCtx.siteInfo.hasAppAuth;
@@ -73,6 +73,7 @@ function NewPageModal(props: NewPageModalProps) {
       nameInput={{
         props: {
           autoFocus: true,
+          isDelayedFocus: true,
           "data-test-id": "prompt",
           ref: nameRef,
           value: name,

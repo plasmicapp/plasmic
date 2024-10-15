@@ -113,6 +113,7 @@ function NewComponentModal(props: NewComponentModalProps) {
       nameInput={{
         props: {
           autoFocus: true,
+          isDelayedFocus: true,
           "data-test-id": "prompt",
           ref: nameRef,
           value: name,
