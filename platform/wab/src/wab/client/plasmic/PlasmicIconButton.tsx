@@ -16,29 +16,54 @@ import * as React from "react";
 import {
   Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
   Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
   useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
+import plasmic_plasmic_kit_color_tokens_css from "./plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "./PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicIconButton.module.css"; // plasmic-import: LPry-TF4j22a/css
-import plasmic_plasmic_kit_color_tokens_css from "./plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 
-import ChevronDownsvgIcon from "./q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import PlussvgIcon from "./q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
-import WarningTrianglesvgIcon from "./q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
+import PlusSvgIcon from "./q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
+import ChevronDownSvgIcon from "./q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import WarningTriangleSvgIcon from "./q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
 
 createPlasmicElementProxy;
 
@@ -164,11 +189,20 @@ function PlasmicIconButton__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -181,59 +215,59 @@ function PlasmicIconButton__RenderFunc(props: {
         path: "disabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.disabled,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.disabled
       },
       {
         path: "size",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.size,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.size
       },
       {
         path: "type",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.type
       },
       {
         path: "isActive",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isActive,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isActive
       },
       {
         path: "showAlert",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showAlert,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showAlert
       },
       {
         path: "withBackgroundHover",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) =>
-          $props.withBackgroundHover,
+          $props.withBackgroundHover
       },
       {
         path: "withRedBackgroundHover",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) =>
-          $props.withRedBackgroundHover,
+          $props.withRedBackgroundHover
       },
       {
         path: "withGreenBackgroundHover",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) =>
-          $props.withGreenBackgroundHover,
+          $props.withGreenBackgroundHover
       },
       {
         path: "withDropdown",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withDropdown,
-      },
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withDropdown
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -241,18 +275,18 @@ function PlasmicIconButton__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
-    $refs,
+    $refs
   });
 
   const [isRootFocus, triggerRootFocusProps] = useTrigger("useFocused", {});
   const [isRootFocusVisible, triggerRootFocusVisibleProps] = useTrigger(
     "useFocusVisible",
     {
-      isTextInput: false,
+      isTextInput: false
     }
   );
   const triggers = {
-    focusFocusVisible_root: isRootFocus && isRootFocusVisible,
+    focusFocusVisible_root: isRootFocus && isRootFocusVisible
   };
 
   return (
@@ -352,19 +386,19 @@ function PlasmicIconButton__RenderFunc(props: {
             $state,
             "withRedBackgroundHover",
             "withRedBackgroundHover"
-          ),
+          )
         }
       )}
       disabled={hasVariant($state, "disabled", "disabled") ? true : undefined}
       title={args.hoverText}
       data-plasmic-trigger-props={[
         triggerRootFocusProps,
-        triggerRootFocusVisibleProps,
+        triggerRootFocusVisibleProps
       ]}
     >
       {renderPlasmicSlot({
         defaultContents: (
-          <PlussvgIcon
+          <PlusSvgIcon
             className={classNames(projectcss.all, sty.svg__vKQk)}
             role={"img"}
           />
@@ -497,8 +531,8 @@ function PlasmicIconButton__RenderFunc(props: {
             $state,
             "withRedBackgroundHover",
             "withRedBackgroundHover"
-          ),
-        }),
+          )
+        })
       })}
       {(
         hasVariant($state, "withDropdown", "withDropdown")
@@ -509,7 +543,7 @@ function PlasmicIconButton__RenderFunc(props: {
       )
         ? renderPlasmicSlot({
             defaultContents: (
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__vDdFm)}
                 role={"img"}
               />
@@ -596,18 +630,18 @@ function PlasmicIconButton__RenderFunc(props: {
                 $state,
                 "withRedBackgroundHover",
                 "withRedBackgroundHover"
-              ),
-            }),
+              )
+            })
           })
         : null}
       {(hasVariant($state, "showAlert", "showAlert") ? true : false) ? (
-        <WarningTrianglesvgIcon
+        <WarningTriangleSvgIcon
           data-plasmic-name={"svg"}
           data-plasmic-override={overrides.svg}
           className={classNames(projectcss.all, sty.svg, {
             [sty.svgisActive]: hasVariant($state, "isActive", "isActive"),
             [sty.svgshowAlert]: hasVariant($state, "showAlert", "showAlert"),
-            [sty.svgtype_purple]: hasVariant($state, "type", "purple"),
+            [sty.svgtype_purple]: hasVariant($state, "type", "purple")
           })}
           role={"img"}
         />
@@ -618,7 +652,7 @@ function PlasmicIconButton__RenderFunc(props: {
 
 const PlasmicDescendants = {
   root: ["root", "svg"],
-  svg: ["svg"],
+  svg: ["svg"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -664,7 +698,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicIconButton__ArgProps,
-          internalVariantPropNames: PlasmicIconButton__VariantProps,
+          internalVariantPropNames: PlasmicIconButton__VariantProps
         }),
       [props, nodeName]
     );
@@ -672,7 +706,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -692,7 +726,7 @@ export const PlasmicIconButton = Object.assign(
 
     // Metadata about props expected for PlasmicIconButton
     internalVariantProps: PlasmicIconButton__VariantProps,
-    internalArgProps: PlasmicIconButton__ArgProps,
+    internalArgProps: PlasmicIconButton__ArgProps
   }
 );
 

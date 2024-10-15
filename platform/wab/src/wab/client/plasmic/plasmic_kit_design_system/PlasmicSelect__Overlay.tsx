@@ -14,17 +14,46 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  SingleChoiceArg,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import * as pp from "@plasmicapp/react-web";
 
@@ -82,11 +111,20 @@ function PlasmicSelect__Overlay__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -100,8 +138,8 @@ function PlasmicSelect__Overlay__RenderFunc(props: {
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) =>
-          $props.relativePlacement,
-      },
+          $props.relativePlacement
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -109,11 +147,11 @@ function PlasmicSelect__Overlay__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
-    $refs,
+    $refs
   });
 
   const superContexts = {
-    Select: React.useContext(SUPER__PlasmicSelect.Context),
+    Select: React.useContext(SUPER__PlasmicSelect.Context)
   };
 
   return (
@@ -151,7 +189,7 @@ function PlasmicSelect__Overlay__RenderFunc(props: {
               $state,
               "relativePlacement",
               "top"
-            ),
+            )
           })}
         />
       ) : null}
@@ -168,7 +206,7 @@ function PlasmicSelect__Overlay__RenderFunc(props: {
             $state,
             "relativePlacement",
             "bottom"
-          ),
+          )
         })}
       >
         {(hasVariant($state, "relativePlacement", "right") ? true : false) ? (
@@ -185,7 +223,7 @@ function PlasmicSelect__Overlay__RenderFunc(props: {
                 $state,
                 "relativePlacement",
                 "right"
-              ),
+              )
             })}
           />
         ) : null}
@@ -197,12 +235,12 @@ function PlasmicSelect__Overlay__RenderFunc(props: {
               (superContexts.Select && superContexts.Select.variants) || {},
               "type",
               "seamless"
-            ),
+            )
           })}
         >
           {renderPlasmicSlot({
             defaultContents: null,
-            value: args.children,
+            value: args.children
           })}
         </div>
         {(hasVariant($state, "relativePlacement", "left") ? true : false) ? (
@@ -219,7 +257,7 @@ function PlasmicSelect__Overlay__RenderFunc(props: {
                 $state,
                 "relativePlacement",
                 "right"
-              ),
+              )
             })}
           />
         ) : null}
@@ -248,7 +286,7 @@ function PlasmicSelect__Overlay__RenderFunc(props: {
               $state,
               "relativePlacement",
               "top"
-            ),
+            )
           })}
         />
       ) : null}
@@ -269,7 +307,7 @@ function useBehavior<P extends pp.BaseTriggeredOverlayProps>(
       isPlacedLeftVariant: { group: "relativePlacement", variant: "left" },
       isPlacedRightVariant: { group: "relativePlacement", variant: "right" },
       contentSlot: "children",
-      root: "root",
+      root: "root"
     },
     ref
   );
@@ -282,7 +320,7 @@ const PlasmicDescendants = {
   left: ["left"],
   main: ["main"],
   right: ["right"],
-  bottom: ["bottom"],
+  bottom: ["bottom"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -333,7 +371,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicSelect__Overlay__ArgProps,
-          internalVariantPropNames: PlasmicSelect__Overlay__VariantProps,
+          internalVariantPropNames: PlasmicSelect__Overlay__VariantProps
         }),
       [props, nodeName]
     );
@@ -341,7 +379,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -368,7 +406,7 @@ export const PlasmicSelect__Overlay = Object.assign(
     internalVariantProps: PlasmicSelect__Overlay__VariantProps,
     internalArgProps: PlasmicSelect__Overlay__ArgProps,
 
-    useBehavior,
+    useBehavior
   }
 );
 

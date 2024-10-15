@@ -2,15 +2,15 @@
 /* eslint-disable */
 /* tslint:disable */
 /* prettier-ignore-start */
-import { classNames } from "@plasmicapp/react-web";
 import React from "react";
+import { classNames } from "@plasmicapp/react-web";
 
-export type DoubleDotsVerticalsvgIconProps = React.ComponentProps<"svg"> & {
+export type DoubleDotsVerticalSvgIconProps = React.ComponentProps<"svg"> & {
   title?: string;
 };
 
-export function DoubleDotsVerticalsvgIcon(
-  props: DoubleDotsVerticalsvgIconProps
+export function DoubleDotsVerticalSvgIcon(
+  props: DoubleDotsVerticalSvgIconProps
 ) {
   const { className, style, title, ...restProps } = props;
   return (
@@ -42,5 +42,5 @@ export function DoubleDotsVerticalsvgIcon(
   );
 }
 
-export default DoubleDotsVerticalsvgIcon;
+export default DoubleDotsVerticalSvgIcon;
 /* prettier-ignore-end */

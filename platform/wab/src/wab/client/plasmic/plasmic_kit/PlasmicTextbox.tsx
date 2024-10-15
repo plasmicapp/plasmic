@@ -14,19 +14,46 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
-  MultiChoiceArg,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -34,8 +61,8 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicTextbox.module.css"; // plasmic-import: pA22NEzDCsn_/css
 
-import ClosesvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
-import SearchsvgIcon from "../q_4_icons/icons/PlasmicIcon__Searchsvg"; // plasmic-import: R5DLz11OA/icon
+import SearchSvgIcon from "../q_4_icons/icons/PlasmicIcon__Searchsvg"; // plasmic-import: R5DLz11OA/icon
+import CloseSvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
 
 createPlasmicElementProxy;
 
@@ -176,16 +203,18 @@ function PlasmicTextbox__RenderFunc(props: {
     () =>
       Object.assign(
         {
-          placeholder: "",
+          placeholder: ""
         },
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -198,57 +227,56 @@ function PlasmicTextbox__RenderFunc(props: {
         path: "disabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.disabled,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.disabled
       },
       {
         path: "styleType",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.styleType,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.styleType
       },
       {
         path: "withIcons",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withIcons,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withIcons
       },
       {
         path: "error",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.error,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.error
       },
       {
         path: "fontSize",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.fontSize,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.fontSize
       },
       {
         path: "fontStyle",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.fontStyle,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.fontStyle
       },
       {
         path: "noOutline",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noOutline,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noOutline
       },
       {
         path: "whiteBackground",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
-          $props.whiteBackground,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.whiteBackground
       },
       {
         path: "extraPadding",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.extraPadding,
-      },
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.extraPadding
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -256,7 +284,7 @@ function PlasmicTextbox__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
-    $refs,
+    $refs
   });
 
   return (
@@ -345,7 +373,7 @@ function PlasmicTextbox__RenderFunc(props: {
           ),
           [sty.rootwithIcons_withSuffix_styleType_medium]:
             hasVariant($state, "withIcons", "withSuffix") &&
-            hasVariant($state, "styleType", "medium"),
+            hasVariant($state, "styleType", "medium")
         }
       )}
     >
@@ -402,12 +430,12 @@ function PlasmicTextbox__RenderFunc(props: {
             ),
             [sty.prefixContainerwithIcons_withSuffix_withIcons_withPrefix]:
               hasVariant($state, "withIcons", "withPrefix") &&
-              hasVariant($state, "withIcons", "withSuffix"),
+              hasVariant($state, "withIcons", "withSuffix")
           })}
         >
           {renderPlasmicSlot({
             defaultContents: (
-              <SearchsvgIcon
+              <SearchSvgIcon
                 className={classNames(projectcss.all, sty.svg__soWu)}
                 role={"img"}
               />
@@ -452,8 +480,8 @@ function PlasmicTextbox__RenderFunc(props: {
                 $state,
                 "withIcons",
                 "withPrefix"
-              ),
-            }),
+              )
+            })
           })}
         </div>
       ) : null}
@@ -562,10 +590,10 @@ function PlasmicTextbox__RenderFunc(props: {
           ),
           [sty.textboxwithIcons_withSuffix_styleType_medium]:
             hasVariant($state, "withIcons", "withSuffix") &&
-            hasVariant($state, "styleType", "medium"),
+            hasVariant($state, "styleType", "medium")
         })}
         placeholder={args.placeholder}
-        ref={(ref) => {
+        ref={ref => {
           $refs["textbox"] = ref;
         }}
         size={1}
@@ -646,12 +674,12 @@ function PlasmicTextbox__RenderFunc(props: {
               $state,
               "withIcons",
               "withSuffix"
-            ),
+            )
           })}
         >
           {renderPlasmicSlot({
             defaultContents: (
-              <ClosesvgIcon
+              <CloseSvgIcon
                 className={classNames(projectcss.all, sty.svg__nNaeY)}
                 role={"img"}
               />
@@ -694,8 +722,8 @@ function PlasmicTextbox__RenderFunc(props: {
                 hasVariant($state, "styleType", "medium"),
               [sty.slotTargetSuffixIconwithIcons_withSuffix_withIcons_withPrefix]:
                 hasVariant($state, "withIcons", "withSuffix") &&
-                hasVariant($state, "withIcons", "withPrefix"),
-            }),
+                hasVariant($state, "withIcons", "withPrefix")
+            })
           })}
         </div>
       ) : null}
@@ -707,7 +735,7 @@ const PlasmicDescendants = {
   root: ["root", "prefixContainer", "textbox", "suffixContainer"],
   prefixContainer: ["prefixContainer"],
   textbox: ["textbox"],
-  suffixContainer: ["suffixContainer"],
+  suffixContainer: ["suffixContainer"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -755,7 +783,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicTextbox__ArgProps,
-          internalVariantPropNames: PlasmicTextbox__VariantProps,
+          internalVariantPropNames: PlasmicTextbox__VariantProps
         }),
       [props, nodeName]
     );
@@ -763,7 +791,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -785,7 +813,7 @@ export const PlasmicTextbox = Object.assign(
 
     // Metadata about props expected for PlasmicTextbox
     internalVariantProps: PlasmicTextbox__VariantProps,
-    internalArgProps: PlasmicTextbox__ArgProps,
+    internalArgProps: PlasmicTextbox__ArgProps
   }
 );
 

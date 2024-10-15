@@ -5,11 +5,11 @@
 import React from "react";
 import { classNames } from "@plasmicapp/react-web";
 
-export type PlaysvgIconProps = React.ComponentProps<"svg"> & {
+export type PlaySvgIconProps = React.ComponentProps<"svg"> & {
   title?: string;
 };
 
-export function PlaysvgIcon(props: PlaysvgIconProps) {
+export function PlaySvgIcon(props: PlaySvgIconProps) {
   const { className, style, title, ...restProps } = props;
   return (
     <svg
@@ -35,5 +35,5 @@ export function PlaysvgIcon(props: PlaysvgIconProps) {
   );
 }
 
-export default PlaysvgIcon;
+export default PlaySvgIcon;
 /* prettier-ignore-end */

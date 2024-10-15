@@ -2042,8 +2042,8 @@
         },
         {
           "id": "j39GoLwZnf7-v",
-          "name": "PlaysvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit/PlasmicIcon__Playsvg.tsx"
+          "name": "PlaySvgIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit/PlasmicIcon__PlaySvg.tsx"
         },
         {
           "id": "BGTwDE0-XM3EQ",
@@ -3142,8 +3142,8 @@
         },
         {
           "id": "cRhITljQuV",
-          "name": "DoubleDotsVerticalsvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__DoubleDotsVerticalsvg.tsx"
+          "name": "DoubleDotsVerticalSvgIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__DoubleDotsVerticalSvg.tsx"
         },
         {
           "id": "eayXbyej4Q",
@@ -3175,12 +3175,12 @@
         {
           "id": "CnSA9ESJHWP4n",
           "name": "Alert.svg",
-          "filePath": "wab/client/plasmic/plasmic_kit_design_system/images/alertsvg.svg"
+          "filePath": "wab/client/plasmic/plasmic_kit_design_system/images/alertSvg.svg"
         },
         {
           "id": "Zx-kyHRa6Q6PA",
           "name": "Eye.svg",
-          "filePath": "wab/client/plasmic/plasmic_kit_design_system/images/eyesvg.svg"
+          "filePath": "wab/client/plasmic/plasmic_kit_design_system/images/eyeSvg.svg"
         },
         {
           "id": "tU5tnPRdetL29",
@@ -3226,8 +3226,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "customFunctions": [],
-      "splitsProviderFilePath": "",
-      "jsBundleThemes": []
+      "splitsProviderFilePath": ""
     },
     {
       "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
@@ -3764,7 +3763,8 @@
       "indirect": false,
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "dyzP6dbCdycwJpqiR2zkwe",

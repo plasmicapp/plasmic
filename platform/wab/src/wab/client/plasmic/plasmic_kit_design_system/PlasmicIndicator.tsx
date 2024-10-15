@@ -14,16 +14,46 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
-  SingleChoiceArg,
-  StrictProps,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -68,11 +98,20 @@ function PlasmicIndicator__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -85,8 +124,8 @@ function PlasmicIndicator__RenderFunc(props: {
         path: "color",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.color,
-      },
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.color
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -94,7 +133,7 @@ function PlasmicIndicator__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
-    $refs,
+    $refs
   });
 
   return (
@@ -113,7 +152,7 @@ function PlasmicIndicator__RenderFunc(props: {
         sty.root,
         {
           [sty.rootcolor_purple]: hasVariant($state, "color", "purple"),
-          [sty.rootcolor_red]: hasVariant($state, "color", "red"),
+          [sty.rootcolor_red]: hasVariant($state, "color", "red")
         }
       )}
     >
@@ -124,7 +163,7 @@ function PlasmicIndicator__RenderFunc(props: {
           [sty.dotcolor_gray]: hasVariant($state, "color", "gray"),
           [sty.dotcolor_green]: hasVariant($state, "color", "green"),
           [sty.dotcolor_purple]: hasVariant($state, "color", "purple"),
-          [sty.dotcolor_red]: hasVariant($state, "color", "red"),
+          [sty.dotcolor_red]: hasVariant($state, "color", "red")
         })}
       />
     </div>
@@ -133,7 +172,7 @@ function PlasmicIndicator__RenderFunc(props: {
 
 const PlasmicDescendants = {
   root: ["root", "dot"],
-  dot: ["dot"],
+  dot: ["dot"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -179,7 +218,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicIndicator__ArgProps,
-          internalVariantPropNames: PlasmicIndicator__VariantProps,
+          internalVariantPropNames: PlasmicIndicator__VariantProps
         }),
       [props, nodeName]
     );
@@ -187,7 +226,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -207,7 +246,7 @@ export const PlasmicIndicator = Object.assign(
 
     // Metadata about props expected for PlasmicIndicator
     internalVariantProps: PlasmicIndicator__VariantProps,
-    internalArgProps: PlasmicIndicator__ArgProps,
+    internalArgProps: PlasmicIndicator__ArgProps
   }
 );
 

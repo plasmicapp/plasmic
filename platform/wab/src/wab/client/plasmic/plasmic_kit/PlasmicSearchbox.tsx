@@ -14,26 +14,57 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
-  SingleBooleanChoiceArg,
-  StrictProps,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
+import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicSearchbox.module.css"; // plasmic-import: po7gr0PX4_gWo/css
 
-import ClosesvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
-import SearchsvgIcon from "../q_4_icons/icons/PlasmicIcon__Searchsvg"; // plasmic-import: R5DLz11OA/icon
+import SearchSvgIcon from "../q_4_icons/icons/PlasmicIcon__Searchsvg"; // plasmic-import: R5DLz11OA/icon
+import CloseSvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
 
 createPlasmicElementProxy;
 
@@ -97,16 +128,18 @@ function PlasmicSearchbox__RenderFunc(props: {
     () =>
       Object.assign(
         {
-          placeholder: "Search...",
+          placeholder: "Search..."
         },
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -119,39 +152,38 @@ function PlasmicSearchbox__RenderFunc(props: {
         path: "hasValue",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasValue,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasValue
       },
       {
         path: "bordered",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.bordered,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.bordered
       },
       {
         path: "noOutline",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noOutline,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noOutline
       },
       {
         path: "whiteBackground",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
-          $props.whiteBackground,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.whiteBackground
       },
       {
         path: "extraPadding",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.extraPadding,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.extraPadding
       },
       {
         path: "medium",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.medium,
-      },
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.medium
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -159,7 +191,7 @@ function PlasmicSearchbox__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
-    $refs,
+    $refs
   });
 
   return (
@@ -182,7 +214,7 @@ function PlasmicSearchbox__RenderFunc(props: {
           $state,
           "whiteBackground",
           "whiteBackground"
-        ),
+        )
       })}
       extraPadding={
         hasVariant($state, "extraPadding", "extraPadding") ? true : undefined
@@ -192,14 +224,14 @@ function PlasmicSearchbox__RenderFunc(props: {
       }
       placeholder={args.placeholder}
       prefixIcon={
-        <SearchsvgIcon
+        <SearchSvgIcon
           className={classNames(projectcss.all, sty.svg__unKzu, {
             [sty.svghasValue__unKzuuzQ8L]: hasVariant(
               $state,
               "hasValue",
               "hasValue"
             ),
-            [sty.svgmedium__unKzuKYp1]: hasVariant($state, "medium", "medium"),
+            [sty.svgmedium__unKzuKYp1]: hasVariant($state, "medium", "medium")
           })}
           role={"img"}
         />
@@ -213,13 +245,13 @@ function PlasmicSearchbox__RenderFunc(props: {
       }
       suffixIcon={
         (hasVariant($state, "hasValue", "hasValue") ? true : false) ? (
-          <ClosesvgIcon
+          <CloseSvgIcon
             className={classNames(projectcss.all, sty.svg___2K8R, {
               [sty.svghasValue___2K8RuzQ8L]: hasVariant(
                 $state,
                 "hasValue",
                 "hasValue"
-              ),
+              )
             })}
             role={"img"}
           />
@@ -240,7 +272,7 @@ function PlasmicSearchbox__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root"],
+  root: ["root"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -285,7 +317,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicSearchbox__ArgProps,
-          internalVariantPropNames: PlasmicSearchbox__VariantProps,
+          internalVariantPropNames: PlasmicSearchbox__VariantProps
         }),
       [props, nodeName]
     );
@@ -293,7 +325,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -312,7 +344,7 @@ export const PlasmicSearchbox = Object.assign(
 
     // Metadata about props expected for PlasmicSearchbox
     internalVariantProps: PlasmicSearchbox__VariantProps,
-    internalArgProps: PlasmicSearchbox__ArgProps,
+    internalArgProps: PlasmicSearchbox__ArgProps
   }
 );
 

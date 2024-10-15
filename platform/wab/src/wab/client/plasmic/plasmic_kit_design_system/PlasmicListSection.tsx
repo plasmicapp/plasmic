@@ -14,23 +14,51 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import ListItem from "../../components/ListItem"; // plasmic-import: v31d9_ANqk/component
 import ListSectionHeader from "../../components/ListSectionHeader"; // plasmic-import: wNvxk7eOak/component
-import ListSectionSeparator from "../../components/ListSectionSeparator"; // plasmic-import: uG5_fPM0sK/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import ListItem from "../../components/ListItem"; // plasmic-import: v31d9_ANqk/component
+import ListSectionSeparator from "../../components/ListSectionSeparator"; // plasmic-import: uG5_fPM0sK/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -38,11 +66,11 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicListSection.module.css"; // plasmic-import: znioE83CPU/css
 
+import PlusCircleSvgIcon from "../q_4_icons/icons/PlasmicIcon__PlusCirclesvg"; // plasmic-import: tPPI666-2/icon
+import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import VariantGroupIcon from "../plasmic_kit/PlasmicIcon__VariantGroup"; // plasmic-import: pyS6pK4Spx-QF/icon
 import ComponentIcon from "../plasmic_kit/PlasmicIcon__Component"; // plasmic-import: nNWEF4jI3s5DI/icon
 import EyeIcon from "../plasmic_kit/PlasmicIcon__Eye"; // plasmic-import: A2FnGYgDh4e3U/icon
-import VariantGroupIcon from "../plasmic_kit/PlasmicIcon__VariantGroup"; // plasmic-import: pyS6pK4Spx-QF/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import PlusCirclesvgIcon from "../q_4_icons/icons/PlasmicIcon__PlusCirclesvg"; // plasmic-import: tPPI666-2/icon
 
 createPlasmicElementProxy;
 
@@ -96,11 +124,20 @@ function PlasmicListSection__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -113,14 +150,14 @@ function PlasmicListSection__RenderFunc(props: {
         path: "isLast",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isLast,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isLast
       },
       {
         path: "collapseState",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.collapseState,
-      },
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.collapseState
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -128,7 +165,7 @@ function PlasmicListSection__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
-    $refs,
+    $refs
   });
 
   return (
@@ -150,7 +187,7 @@ function PlasmicListSection__RenderFunc(props: {
             $state,
             "collapseState",
             "collapsed"
-          ),
+          )
         }
       )}
     >
@@ -162,14 +199,14 @@ function PlasmicListSection__RenderFunc(props: {
             data-plasmic-name={"iconButton"}
             data-plasmic-override={overrides.iconButton}
             children2={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__oLuZm)}
                 role={"img"}
               />
             }
             className={classNames("__wab_instance", sty.iconButton)}
           >
-            <PlusCirclesvgIcon
+            <PlusCircleSvgIcon
               className={classNames(projectcss.all, sty.svg__m72P3)}
               role={"img"}
             />
@@ -185,7 +222,7 @@ function PlasmicListSection__RenderFunc(props: {
             $state,
             "collapseState",
             "expanded"
-          ),
+          )
         })}
         collapseState={
           hasVariant($state, "collapseState", "expanded")
@@ -203,7 +240,7 @@ function PlasmicListSection__RenderFunc(props: {
       >
         {renderPlasmicSlot({
           defaultContents: "List Item Section",
-          value: args.title,
+          value: args.title
         })}
       </ListSectionHeader>
       {(hasVariant($state, "collapseState", "collapsed") ? false : true) ? (
@@ -220,7 +257,7 @@ function PlasmicListSection__RenderFunc(props: {
               $state,
               "collapseState",
               "expanded"
-            ),
+            )
           })}
         >
           {renderPlasmicSlot({
@@ -278,7 +315,7 @@ function PlasmicListSection__RenderFunc(props: {
                 </ListItem>
               </React.Fragment>
             ),
-            value: args.children,
+            value: args.children
           })}
         </div>
       ) : null}
@@ -296,7 +333,7 @@ function PlasmicListSection__RenderFunc(props: {
               $state,
               "isLast",
               "isLast"
-            ),
+            )
           })}
         />
       ) : null}
@@ -310,12 +347,12 @@ const PlasmicDescendants = {
     "listSectionHeader",
     "iconButton",
     "itemsContainer",
-    "listSectionSeparator",
+    "listSectionSeparator"
   ],
   listSectionHeader: ["listSectionHeader", "iconButton"],
   iconButton: ["iconButton"],
   itemsContainer: ["itemsContainer"],
-  listSectionSeparator: ["listSectionSeparator"],
+  listSectionSeparator: ["listSectionSeparator"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -364,7 +401,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicListSection__ArgProps,
-          internalVariantPropNames: PlasmicListSection__VariantProps,
+          internalVariantPropNames: PlasmicListSection__VariantProps
         }),
       [props, nodeName]
     );
@@ -372,7 +409,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -395,7 +432,7 @@ export const PlasmicListSection = Object.assign(
 
     // Metadata about props expected for PlasmicListSection
     internalVariantProps: PlasmicListSection__VariantProps,
-    internalArgProps: PlasmicListSection__ArgProps,
+    internalArgProps: PlasmicListSection__ArgProps
   }
 );
 

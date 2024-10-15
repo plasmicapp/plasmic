@@ -14,27 +14,51 @@
 import * as React from "react";
 
 import {
-  classNames,
-  createPlasmicElementProxy,
-  deriveRenderOpts,
   Flex as Flex__,
-  hasVariant,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
   PlasmicIcon as PlasmicIcon__,
-  renderPlasmicSlot,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
   Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
+  deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
   useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import * as pp from "@plasmicapp/react-web";
+import Select__Overlay from "../../components/widgets/Select__Overlay"; // plasmic-import: j2qDLcsq5qB/component
 import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
 import Select__OptionGroup from "../../components/widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
-import Select__Overlay from "../../components/widgets/Select__Overlay"; // plasmic-import: j2qDLcsq5qB/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -42,9 +66,9 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicSelect.module.css"; // plasmic-import: j_4IQyOWK2b/css
 
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ChevronUpsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronUpsvg"; // plasmic-import: i9D87DzsX/icon
-import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
+import PlusSvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
+import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronUpSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronUpsvg"; // plasmic-import: i9D87DzsX/icon
 
 createPlasmicElementProxy;
 
@@ -142,11 +166,20 @@ function PlasmicSelect__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -159,44 +192,43 @@ function PlasmicSelect__RenderFunc(props: {
         path: "showPlaceholder",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
-          $props.showPlaceholder,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showPlaceholder
       },
       {
         path: "isOpen",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isOpen,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isOpen
       },
       {
         path: "isDisabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isDisabled,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isDisabled
       },
       {
         path: "type",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.type
       },
       {
         path: "hasIcon",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasIcon,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasIcon
       },
       {
         path: "size",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.size,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.size
       },
       {
         path: "font",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.font,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.font
       },
       {
         path: "value",
@@ -204,8 +236,8 @@ function PlasmicSelect__RenderFunc(props: {
         variableType: "text",
 
         valueProp: "value",
-        onChangeProp: "onChange",
-      },
+        onChangeProp: "onChange"
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -213,15 +245,15 @@ function PlasmicSelect__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
-    $refs,
+    $refs
   });
 
   const [isRootFocusVisibleWithin, triggerRootFocusVisibleWithinProps] =
     useTrigger("useFocusVisibleWithin", {
-      isTextInput: false,
+      isTextInput: false
     });
   const triggers = {
-    focusVisibleWithin_root: isRootFocusVisibleWithin,
+    focusVisibleWithin_root: isRootFocusVisibleWithin
   };
 
   return (
@@ -259,7 +291,7 @@ function PlasmicSelect__RenderFunc(props: {
             [sty.roottype_bordered]: hasVariant($state, "type", "bordered"),
             [sty.roottype_hugging]: hasVariant($state, "type", "hugging"),
             [sty.roottype_seamless]: hasVariant($state, "type", "seamless"),
-            [sty.roottype_wide]: hasVariant($state, "type", "wide"),
+            [sty.roottype_wide]: hasVariant($state, "type", "wide")
           }
         )}
         data-plasmic-trigger-props={[triggerRootFocusVisibleWithinProps]}
@@ -304,10 +336,10 @@ function PlasmicSelect__RenderFunc(props: {
                 "type",
                 "seamless"
               ),
-              [sty.triggertype_wide]: hasVariant($state, "type", "wide"),
+              [sty.triggertype_wide]: hasVariant($state, "type", "wide")
             }
           )}
-          ref={(ref) => {
+          ref={ref => {
             $refs["trigger"] = ref;
           }}
         >
@@ -331,13 +363,13 @@ function PlasmicSelect__RenderFunc(props: {
                 $state,
                 "showPlaceholder",
                 "showPlaceholder"
-              ),
+              )
             })}
           >
             {(hasVariant($state, "hasIcon", "hasIcon") ? true : false)
               ? renderPlasmicSlot({
                   defaultContents: (
-                    <PlussvgIcon
+                    <PlusSvgIcon
                       className={classNames(projectcss.all, sty.svg__dx11)}
                       role={"img"}
                     />
@@ -352,8 +384,8 @@ function PlasmicSelect__RenderFunc(props: {
                     ),
                     [sty.slotTargetIconhasIcon_isOpen]:
                       hasVariant($state, "isOpen", "isOpen") &&
-                      hasVariant($state, "hasIcon", "hasIcon"),
-                  }),
+                      hasVariant($state, "hasIcon", "hasIcon")
+                  })
                 })
               : null}
             {(
@@ -394,8 +426,8 @@ function PlasmicSelect__RenderFunc(props: {
                       $state,
                       "type",
                       "seamless"
-                    ),
-                  }),
+                    )
+                  })
                 })
               : null}
             {(
@@ -416,8 +448,8 @@ function PlasmicSelect__RenderFunc(props: {
                       $state,
                       "showPlaceholder",
                       "showPlaceholder"
-                    ),
-                  }),
+                    )
+                  })
                 })
               : null}
           </Stack__>
@@ -426,8 +458,8 @@ function PlasmicSelect__RenderFunc(props: {
             data-plasmic-override={overrides.dropdownIcon}
             PlasmicIconType={
               hasVariant($state, "isOpen", "isOpen")
-                ? ChevronUpsvgIcon
-                : ChevronDownsvgIcon
+                ? ChevronUpSvgIcon
+                : ChevronDownSvgIcon
             }
             className={classNames(projectcss.all, sty.dropdownIcon, {
               [sty.dropdownIcon___focusVisibleWithin]:
@@ -452,7 +484,7 @@ function PlasmicSelect__RenderFunc(props: {
                 $state,
                 "type",
                 "medium"
-              ),
+              )
             })}
             role={"img"}
           />
@@ -462,7 +494,7 @@ function PlasmicSelect__RenderFunc(props: {
             data-plasmic-name={"overlay"}
             data-plasmic-override={overrides.overlay}
             className={classNames("__wab_instance", sty.overlay, {
-              [sty.overlayisOpen]: hasVariant($state, "isOpen", "isOpen"),
+              [sty.overlayisOpen]: hasVariant($state, "isOpen", "isOpen")
             })}
             relativePlacement={"bottom"}
           >
@@ -474,7 +506,7 @@ function PlasmicSelect__RenderFunc(props: {
                   $state,
                   "isOpen",
                   "isOpen"
-                ),
+                )
               })}
             >
               {renderPlasmicSlot({
@@ -560,7 +592,7 @@ function PlasmicSelect__RenderFunc(props: {
                     </Select__Option>
                   </React.Fragment>
                 ),
-                value: args.children,
+                value: args.children
               })}
             </div>
           </Select__Overlay>
@@ -632,7 +664,7 @@ function useBehavior<P extends pp.BaseSelectProps>(
               {"Option 3"}
             </Select__Option>
           </React.Fragment>
-        ),
+        )
       };
     }
   }
@@ -644,7 +676,7 @@ function useBehavior<P extends pp.BaseSelectProps>(
         isOpenVariant: { group: "isOpen", variant: "isOpen" },
         placeholderVariant: {
           group: "showPlaceholder",
-          variant: "showPlaceholder",
+          variant: "showPlaceholder"
         },
         isDisabledVariant: { group: "isDisabled", variant: "isDisabled" },
         triggerContentSlot: "selectedContent",
@@ -653,10 +685,10 @@ function useBehavior<P extends pp.BaseSelectProps>(
         root: "root",
         trigger: "trigger",
         overlay: "overlay",
-        optionsContainer: "optionsContainer",
+        optionsContainer: "optionsContainer"
       },
       OptionComponent: Select__Option,
-      OptionGroupComponent: Select__OptionGroup,
+      OptionGroupComponent: Select__OptionGroup
     },
     ref
   );
@@ -669,13 +701,13 @@ const PlasmicDescendants = {
     "contentContainer",
     "dropdownIcon",
     "overlay",
-    "optionsContainer",
+    "optionsContainer"
   ],
   trigger: ["trigger", "contentContainer", "dropdownIcon"],
   contentContainer: ["contentContainer"],
   dropdownIcon: ["dropdownIcon"],
   overlay: ["overlay", "optionsContainer"],
-  optionsContainer: ["optionsContainer"],
+  optionsContainer: ["optionsContainer"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -725,7 +757,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicSelect__ArgProps,
-          internalVariantPropNames: PlasmicSelect__VariantProps,
+          internalVariantPropNames: PlasmicSelect__VariantProps
         }),
       [props, nodeName]
     );
@@ -733,7 +765,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -762,7 +794,7 @@ export const PlasmicSelect = Object.assign(
     // Context for sub components
     Context: PlasmicSelectContext,
 
-    useBehavior,
+    useBehavior
   }
 );
 
