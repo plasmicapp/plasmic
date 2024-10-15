@@ -85,6 +85,7 @@ interface ContentfulFetcherProps {
   limit?: number;
   include?: number;
   order?: string;
+  reverseOrder?: boolean;
   filterField?: string;
   searchParameter?: string;
   filterValue?: string | number;
@@ -143,7 +144,7 @@ export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps> = {
       displayName: "Filter field",
       description: "Field (from Collection) to filter by.",
       options: (props, ctx) => ctx?.fields ?? [],
-      hidden: (props, ctx) => !props.contentType,
+      hidden: (props) => !props.contentType,
     },
     searchParameter: {
       type: "choice",
@@ -151,13 +152,31 @@ export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps> = {
       description:
         "Search Parameter to filter by (see Contentful Content Delivery API documentation for details).",
       options: (props, ctx) => ctx?.queryOptions ?? [],
-      hidden: (props, ctx) => !props.filterField,
+      hidden: (props) => !props.filterField,
     },
     filterValue: {
       type: "string",
       displayName: "Filter value",
       description: "Value to filter by, should be of filter field type.",
-      hidden: (props, ctx) => !props.searchParameter,
+      hidden: (props) => !props.searchParameter,
+    },
+    order: {
+      type: "choice",
+      displayName: "Order",
+      description: "Field that the entries should be ordered by.",
+      options: (props, ctx) => [
+        ...(ctx?.fields ?? []),
+        "sys.createdAt",
+        "sys.updatedAt",
+      ],
+      hidden: (props) => !props.contentType,
+    },
+    reverseOrder: {
+      type: "boolean",
+      displayName: "Reverse order",
+      description: "Reverse the order of the entries.",
+      defaultValue: false,
+      hidden: (props) => !props.order,
     },
     limit: {
       type: "number",
@@ -197,6 +216,8 @@ export function ContentfulFetcher({
   contentType,
   children,
   className,
+  order,
+  reverseOrder,
   limit,
   include,
   noLayout,
@@ -208,6 +229,8 @@ export function ContentfulFetcher({
   );
   const cacheKey = JSON.stringify({
     include,
+    order,
+    reverseOrder,
     limit,
     filterField,
     filterValue,
@@ -230,17 +253,34 @@ export function ContentfulFetcher({
     types: contentTypes?.items ?? [],
   });
 
+  function setOrderField(searchParams: URLSearchParams) {
+    if (order) {
+      searchParams.set(
+        "order",
+        `${reverseOrder ? "-" : ""}${
+          order.startsWith("sys.") ? order : `fields.${order}`
+        }`
+      );
+    }
+  }
+
   const { data: entriesData } = usePlasmicQueryData<any | null>(
     contentType ? `${cacheKey}/${contentType}/entriesData` : null,
     async () => {
-      let query = `/spaces/${creds.space}/environments/${creds.environment}/entries?access_token=${creds.accessToken}&content_type=${contentType}`;
+      const path = `/spaces/${creds.space}/environments/${creds.environment}/entries`;
+
+      const searchParams = new URLSearchParams();
+      searchParams.set("access_token", creds.accessToken);
+      searchParams.set("content_type", contentType);
       if (limit) {
-        query = `${query}&limit=${limit}`;
+        searchParams.set("limit", limit.toString());
       }
+      setOrderField(searchParams);
       if (include) {
-        query = `${query}&include=${include}`;
+        searchParams.set("include", include.toString());
       }
-      const resp = await fetch(`${baseUrl}${query}`);
+
+      const resp = await fetch(`${baseUrl}${path}?${searchParams.toString()}`);
       return resp.json();
     }
   );
@@ -250,11 +290,28 @@ export function ContentfulFetcher({
       ? `${cacheKey}/${contentType}/filteredData`
       : null,
     async () => {
-      let query = `/spaces/${creds.space}/environments/${creds.environment}/entries?access_token=${creds.accessToken}&content_type=${contentType}&fields.${filterField}${searchParameter}=${filterValue}`;
-      if (include) {
-        query = `${query}&include=${include}`;
+      const path = `/spaces/${creds.space}/environments/${creds.environment}/entries`;
+
+      const searchParams = new URLSearchParams();
+      searchParams.set("access_token", creds.accessToken);
+      searchParams.set("content_type", contentType);
+      if (limit) {
+        searchParams.set("limit", limit.toString());
       }
-      const resp = await fetch(`${baseUrl}${query}`);
+      setOrderField(searchParams);
+
+      if (include) {
+        searchParams.set("include", include.toString());
+      }
+
+      if (filterField && searchParameter && filterValue) {
+        searchParams.set(
+          `fields.${filterField}${searchParameter}`,
+          filterValue.toString()
+        );
+      }
+
+      const resp = await fetch(`${baseUrl}${path}?${searchParams.toString()}`);
       return resp.json();
     }
   );
