@@ -1080,11 +1080,6 @@ export function buildAddItemGroups({
               if (!resolved) {
                 const insertable = INSERTABLES_MAP[alias];
                 if (!insertable) {
-                  console.warn(
-                    "Could not create AddItem for " +
-                      alias +
-                      " looking in built-in insertables"
-                  );
                   return undefined;
                 }
                 return { ...insertable, isCompact: true };
@@ -1110,7 +1105,6 @@ export function buildAddItemGroups({
               if (resolved.startsWith("default:")) {
                 const kind = resolved.split(":")[1];
                 if (!isDefaultComponentKind(kind)) {
-                  console.warn("Could not find default component " + alias);
                   return undefined;
                 }
                 const existingComponent = tryGetDefaultComponent(
@@ -1174,12 +1168,6 @@ export function buildAddItemGroups({
                 }
               }
 
-              console.warn(
-                "Could not create AddItem for " +
-                  alias +
-                  " resolved to " +
-                  resolved
-              );
               return undefined;
             })
           ),
