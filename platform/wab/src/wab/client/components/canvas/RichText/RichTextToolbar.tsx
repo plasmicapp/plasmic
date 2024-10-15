@@ -11,6 +11,8 @@ import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPic
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import Select from "@/wab/client/components/widgets/Select";
 import StrikeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Strike";
+import SubscriptIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Subscript";
+import SuperscriptIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Superscript";
 import {
   DefaultRichTextToolbarProps,
   PlasmicRichTextToolbar,
@@ -176,6 +178,50 @@ function RichTextToolbar_(
       defaultContentEditorVisible: false, // matches what's chosen in Sections.tsx
     }
   );
+
+  const inlineMenuItems = [
+    {
+      label: "Link",
+      action: "LINK",
+      icon: LinksvgIcon,
+    },
+    {
+      label: "Inline code",
+      action: "CODE",
+      icon: CodesvgIcon,
+    },
+    {
+      label: "Span element",
+      action: "SPAN",
+      icon: TextsvgIcon,
+    },
+    {
+      label: "Strong element",
+      action: "STRONG",
+      icon: BoldsvgIcon,
+    },
+    {
+      label: "Italic element",
+      action: "ITALIC",
+      icon: ItalicsvgIcon,
+    },
+    {
+      label: "Emphasis element",
+      action: "EMPHASIS",
+      icon: ItalicsvgIcon,
+    },
+    {
+      label: "Subscript element",
+      action: "SUBSCRIPT",
+      icon: SubscriptIcon,
+    },
+    {
+      label: "Superscript element",
+      action: "SUPERSCRIPT",
+      icon: SuperscriptIcon,
+    },
+  ].sort((a, b) => a.label.localeCompare(b.label));
+
   return (
     <SidebarModalProvider>
       <PlasmicRichTextToolbar
@@ -329,67 +375,22 @@ function RichTextToolbar_(
           },
         }}
         inline={{
+          // TODO: Make button active if selection has link, code or span.
           props: {
             "aria-label": "Link",
             onClick: () => runInEditor("LINK"),
             menu: () => (
               <Menu>
-                <Menu.Item
-                  aria-label="Link"
-                  onClick={() => runInEditor("LINK")}
-                >
-                  <Icon icon={LinksvgIcon} style={{ marginRight: 4 }} />
-                  Link
-                </Menu.Item>
-                <Menu.Item
-                  aria-label="Inline code"
-                  onClick={() => runInEditor("CODE")}
-                >
-                  <Icon icon={CodesvgIcon} style={{ marginRight: 4 }} />
-                  Inline code
-                </Menu.Item>
-                <Menu.Item
-                  aria-label="Span element"
-                  onClick={() => runInEditor("SPAN")}
-                >
-                  <Icon icon={TextsvgIcon} style={{ marginRight: 4 }} />
-                  Span element
-                </Menu.Item>
-                <Menu.Item
-                  aria-label="Strong element"
-                  onClick={() => runInEditor("STRONG")}
-                >
-                  <Icon icon={BoldsvgIcon} style={{ marginRight: 4 }} />
-                  Strong element
-                </Menu.Item>
-                <Menu.Item
-                  aria-label="Italic element"
-                  onClick={() => runInEditor("ITALIC_TAG")}
-                >
-                  <Icon icon={ItalicsvgIcon} style={{ marginRight: 4 }} />
-                  Italic element
-                </Menu.Item>
-                <Menu.Item
-                  aria-label="Emphasis element"
-                  onClick={() => runInEditor("EMPHASIS")}
-                >
-                  <Icon icon={ItalicsvgIcon} style={{ marginRight: 4 }} />
-                  Emphasis element
-                </Menu.Item>
-                <Menu.Item
-                  aria-label="Subscript element"
-                  onClick={() => runInEditor("SUBSCRIPT")}
-                >
-                  <Icon icon={BoldsvgIcon} style={{ marginRight: 4 }} />
-                  Subscript element
-                </Menu.Item>
-                <Menu.Item
-                  aria-label="Superscript element"
-                  onClick={() => runInEditor("SUPERSCRIPT")}
-                >
-                  <Icon icon={BoldsvgIcon} style={{ marginRight: 4 }} />
-                  Superscript element
-                </Menu.Item>
+                {inlineMenuItems.map((item) => (
+                  <Menu.Item
+                    key={item.action}
+                    aria-label={item.label}
+                    onClick={() => runInEditor(item.action)}
+                  >
+                    <Icon icon={item.icon} style={{ marginRight: 4 }} />
+                    {item.label}
+                  </Menu.Item>
+                ))}
               </Menu>
             ),
           },
