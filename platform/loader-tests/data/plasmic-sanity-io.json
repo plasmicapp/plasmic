@@ -918,7 +918,7 @@
         }
       },
       "deps": [],
-      "version": "234-variant-selectors-no-display-name"
+      "version": "235-variant-selectors-no-display-name-corrected"
     }
   ],
   [
@@ -2048,7 +2048,7 @@
         }
       },
       "deps": ["4536e610-f7b7-43b7-b45e-172856a7e132"],
-      "version": "234-variant-selectors-no-display-name"
+      "version": "235-variant-selectors-no-display-name-corrected"
     }
   ]
 ]

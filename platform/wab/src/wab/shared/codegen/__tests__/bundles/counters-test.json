@@ -1154,7 +1154,7 @@
         "14363110": {
           "uuid": "cS6qD5ku0Qh",
           "name": "",
-          "selectors": ["Focus Visible Within"],
+          "selectors": [":focus-visible-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -1164,7 +1164,7 @@
         "14363111": {
           "uuid": "yvWMMiwA2R_",
           "name": "",
-          "selectors": ["Focused Within"],
+          "selectors": [":focus-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -1174,7 +1174,7 @@
         "14363112": {
           "uuid": "7DL-e9lna8l",
           "name": "",
-          "selectors": ["Hover"],
+          "selectors": [":hover"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -1184,7 +1184,7 @@
         "14363113": {
           "uuid": "A1rz3WiPfCc",
           "name": "",
-          "selectors": ["Pressed"],
+          "selectors": [":active"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -9424,7 +9424,7 @@
         }
       },
       "deps": [],
-      "version": "234-variant-selectors-no-display-name"
+      "version": "235-variant-selectors-no-display-name-corrected"
     }
   ]
 ]

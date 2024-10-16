@@ -1705,7 +1705,7 @@
         "7JaZkaz7FKrX": {
           "uuid": "aUExF6eJ4rnv",
           "name": "",
-          "selectors": ["Focus Visible Within"],
+          "selectors": [":focus-visible-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -1715,7 +1715,7 @@
         "ccD0O-b22xgL": {
           "uuid": "Fxt2X3wP7MpU",
           "name": "",
-          "selectors": ["Focused Within"],
+          "selectors": [":focus-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -1725,7 +1725,7 @@
         "aMV_xZLTjaiR": {
           "uuid": "o3_eL4iVBP2X",
           "name": "",
-          "selectors": ["Hover"],
+          "selectors": [":hover"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -1735,7 +1735,7 @@
         "MkyOndX3NfEk": {
           "uuid": "ceA2E9ruHbDb",
           "name": "",
-          "selectors": ["Pressed"],
+          "selectors": [":active"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -9331,7 +9331,7 @@
         }
       },
       "deps": [],
-      "version": "234-variant-selectors-no-display-name"
+      "version": "235-variant-selectors-no-display-name-corrected"
     }
   ]
 ]

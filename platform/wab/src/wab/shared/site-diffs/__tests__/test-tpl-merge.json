@@ -4940,7 +4940,7 @@
           }
         },
         "deps": [],
-        "version": "234-variant-selectors-no-display-name"
+        "version": "235-variant-selectors-no-display-name-corrected"
       },
       "projectId": "dNoM99U17XFRGCXZ5SUbc1",
       "version": "0.0.1",
@@ -10146,7 +10146,7 @@
           "65055094": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "234-variant-selectors-no-display-name"
+        "version": "235-variant-selectors-no-display-name-corrected"
       }
     },
     {
@@ -15189,7 +15189,7 @@
           "52044046": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "234-variant-selectors-no-display-name"
+        "version": "235-variant-selectors-no-display-name-corrected"
       }
     }
   ]

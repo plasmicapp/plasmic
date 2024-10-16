@@ -2491,7 +2491,7 @@
           }
         },
         "deps": [],
-        "version": "234-variant-selectors-no-display-name"
+        "version": "235-variant-selectors-no-display-name-corrected"
       },
       "projectId": "2YAtuqUruz4SscKrr5g25x",
       "version": "0.0.1",
@@ -4675,7 +4675,7 @@
           "53903362": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "234-variant-selectors-no-display-name"
+        "version": "235-variant-selectors-no-display-name-corrected"
       }
     },
     {
@@ -7334,7 +7334,7 @@
           }
         },
         "deps": [],
-        "version": "234-variant-selectors-no-display-name"
+        "version": "235-variant-selectors-no-display-name-corrected"
       }
     }
   ]

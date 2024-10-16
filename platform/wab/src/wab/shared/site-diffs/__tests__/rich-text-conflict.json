@@ -1022,7 +1022,7 @@
           }
         },
         "deps": [],
-        "version": "234-variant-selectors-no-display-name"
+        "version": "235-variant-selectors-no-display-name-corrected"
       },
       "projectId": "aH1hFXMTo8YybdGp5ScZNk",
       "version": "0.0.1",
@@ -2049,7 +2049,7 @@
           }
         },
         "deps": [],
-        "version": "234-variant-selectors-no-display-name"
+        "version": "235-variant-selectors-no-display-name-corrected"
       }
     },
     {
@@ -3064,7 +3064,7 @@
           }
         },
         "deps": [],
-        "version": "234-variant-selectors-no-display-name"
+        "version": "235-variant-selectors-no-display-name-corrected"
       }
     }
   ]

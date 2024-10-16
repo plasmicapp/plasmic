@@ -1016,7 +1016,7 @@
     "196": {
       "uuid": "CeGgGNdBKL5",
       "name": "",
-      "selectors": ["Hover"],
+      "selectors": [":hover"],
       "parent": null,
       "mediaQuery": null,
       "description": null,
@@ -2681,7 +2681,7 @@
     "561": {
       "uuid": "9_a2YxXirvS",
       "name": "",
-      "selectors": ["Hover"],
+      "selectors": [":hover"],
       "parent": null,
       "mediaQuery": null,
       "description": null,
@@ -4878,5 +4878,5 @@
     }
   },
   "deps": [],
-  "version": "234-variant-selectors-no-display-name"
+  "version": "235-variant-selectors-no-display-name-corrected"
 }

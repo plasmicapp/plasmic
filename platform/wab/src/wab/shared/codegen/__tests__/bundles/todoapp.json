@@ -2471,7 +2471,7 @@
         "33380087": {
           "uuid": "eMiWfcIhwBH",
           "name": "",
-          "selectors": ["Focus Visible Within"],
+          "selectors": [":focus-visible-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -2481,7 +2481,7 @@
         "33380088": {
           "uuid": "8PQWfYAmClG",
           "name": "",
-          "selectors": ["Focused Within"],
+          "selectors": [":focus-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -2491,7 +2491,7 @@
         "33380089": {
           "uuid": "FgHOg1wGPtF",
           "name": "",
-          "selectors": ["Hover"],
+          "selectors": [":hover"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -2501,7 +2501,7 @@
         "33380090": {
           "uuid": "f4teH1FRo8r",
           "name": "",
-          "selectors": ["Pressed"],
+          "selectors": [":active"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -8193,7 +8193,7 @@
         "33381035": {
           "uuid": "dXVfU33JeMn",
           "name": "",
-          "selectors": ["Hover"],
+          "selectors": [":hover"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -8203,7 +8203,7 @@
         "33381036": {
           "uuid": "__r_t29xvCm",
           "name": "",
-          "selectors": ["Focus Visible Within"],
+          "selectors": [":focus-visible-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -8213,7 +8213,7 @@
         "33381037": {
           "uuid": "d4YyvCOa6LK",
           "name": "",
-          "selectors": ["Focused Within"],
+          "selectors": [":focus-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -8223,7 +8223,7 @@
         "33381038": {
           "uuid": "VpbqskYgWID",
           "name": "",
-          "selectors": ["Pressed"],
+          "selectors": [":active"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -10051,7 +10051,7 @@
         "33381377": {
           "uuid": "3ffYQydg3VU",
           "name": "",
-          "selectors": ["Hover"],
+          "selectors": [":hover"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -10061,7 +10061,7 @@
         "33381378": {
           "uuid": "-3bI-lJ59mq",
           "name": "",
-          "selectors": ["Focused Within"],
+          "selectors": [":focus-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -10071,7 +10071,7 @@
         "33381379": {
           "uuid": "Twj9vna-rWM",
           "name": "",
-          "selectors": ["Focus Visible Within"],
+          "selectors": [":focus-visible-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -12367,7 +12367,7 @@
         }
       },
       "deps": [],
-      "version": "234-variant-selectors-no-display-name"
+      "version": "235-variant-selectors-no-display-name-corrected"
     }
   ]
 ]

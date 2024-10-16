@@ -1282,7 +1282,7 @@
         }
       },
       "deps": [],
-      "version": "234-variant-selectors-no-display-name"
+      "version": "235-variant-selectors-no-display-name-corrected"
     }
   ],
   [
@@ -3067,7 +3067,7 @@
         "3aIdJRYyilVr": {
           "uuid": "TvExhE7v6SJP",
           "name": "",
-          "selectors": ["Focus Visible Within"],
+          "selectors": [":focus-visible-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -3077,7 +3077,7 @@
         "-PxzIgp4Gipn": {
           "uuid": "mA0RAMqaCfuU",
           "name": "",
-          "selectors": ["Focused Within"],
+          "selectors": [":focus-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -3087,7 +3087,7 @@
         "Gf2SAp8FjA8g": {
           "uuid": "SQuVbDKUbDVg",
           "name": "",
-          "selectors": ["Hover"],
+          "selectors": [":hover"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -3097,7 +3097,7 @@
         "FBRFKN3-GALk": {
           "uuid": "Ze8uNuGvFl6S",
           "name": "",
-          "selectors": ["Pressed"],
+          "selectors": [":active"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -9140,7 +9140,7 @@
         "ffBjCjPNoy24": {
           "uuid": "D3rclBD4DM_D",
           "name": "",
-          "selectors": ["Hover"],
+          "selectors": [":hover"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -9150,7 +9150,7 @@
         "Vej_jrCtd-af": {
           "uuid": "33fHB0tm1QHG",
           "name": "",
-          "selectors": ["Focused Within"],
+          "selectors": [":focus-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -9160,7 +9160,7 @@
         "AzTg488qrmzK": {
           "uuid": "11bO1d8gPEX3",
           "name": "",
-          "selectors": ["Focus Visible Within"],
+          "selectors": [":focus-visible-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -13845,7 +13845,7 @@
         }
       },
       "deps": ["1397401c-b15c-47b2-8659-9b44c397e887"],
-      "version": "234-variant-selectors-no-display-name"
+      "version": "235-variant-selectors-no-display-name-corrected"
     }
   ]
 ]

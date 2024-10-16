@@ -1499,7 +1499,7 @@
         }
       },
       "deps": [],
-      "version": "234-variant-selectors-no-display-name"
+      "version": "235-variant-selectors-no-display-name-corrected"
     }
   ],
   [
@@ -3413,7 +3413,7 @@
         "Lm_Y4jYRxbu0": {
           "uuid": "bFZTfOcZ4Zwu",
           "name": "",
-          "selectors": ["Focus Visible Within"],
+          "selectors": [":focus-visible-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -3423,7 +3423,7 @@
         "fLNraCYnhsPw": {
           "uuid": "zmjVSYv4gIDf",
           "name": "",
-          "selectors": ["Focused Within"],
+          "selectors": [":focus-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -3433,7 +3433,7 @@
         "rXS3ClnNzXCb": {
           "uuid": "LZX7QRpWwuVe",
           "name": "",
-          "selectors": ["Hover"],
+          "selectors": [":hover"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -3443,7 +3443,7 @@
         "QClRYrh3WRQd": {
           "uuid": "yYIg_CDIuTQT",
           "name": "",
-          "selectors": ["Pressed"],
+          "selectors": [":active"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -10210,7 +10210,7 @@
         "mZ61Fzq6V8wx": {
           "uuid": "WaD5GmZ_c_dC",
           "name": "",
-          "selectors": ["Hover"],
+          "selectors": [":hover"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -10220,7 +10220,7 @@
         "vE-s9RcGBOxA": {
           "uuid": "6-QDt-6pTxcN",
           "name": "",
-          "selectors": ["Focused Within"],
+          "selectors": [":focus-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -10230,7 +10230,7 @@
         "QjPLchsmNmoh": {
           "uuid": "p81OYgmXYh-5",
           "name": "",
-          "selectors": ["Focus Visible Within"],
+          "selectors": [":focus-visible-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -12098,7 +12098,7 @@
         "ppmsVxHk1e_-": { "text": ["interval"], "__type": "TemplatedString" }
       },
       "deps": ["a3a6a4ab-6ef7-466e-8589-a26854d0253c"],
-      "version": "234-variant-selectors-no-display-name"
+      "version": "235-variant-selectors-no-display-name-corrected"
     }
   ]
 ]

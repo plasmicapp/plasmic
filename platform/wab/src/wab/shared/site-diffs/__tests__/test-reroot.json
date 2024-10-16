@@ -1150,7 +1150,7 @@
           }
         },
         "deps": [],
-        "version": "234-variant-selectors-no-display-name"
+        "version": "235-variant-selectors-no-display-name-corrected"
       },
       "projectId": "3Ly8WyuoJ263bQVv2eUgq7",
       "version": "0.0.1",
@@ -2294,7 +2294,7 @@
           }
         },
         "deps": [],
-        "version": "234-variant-selectors-no-display-name"
+        "version": "235-variant-selectors-no-display-name-corrected"
       },
       "projectId": "3Ly8WyuoJ263bQVv2eUgq7",
       "version": "0.0.1",
@@ -3462,7 +3462,7 @@
           }
         },
         "deps": [],
-        "version": "234-variant-selectors-no-display-name"
+        "version": "235-variant-selectors-no-display-name-corrected"
       }
     },
     {
@@ -4594,7 +4594,7 @@
           }
         },
         "deps": [],
-        "version": "234-variant-selectors-no-display-name"
+        "version": "235-variant-selectors-no-display-name-corrected"
       }
     }
   ]

@@ -27351,7 +27351,7 @@
         }
       },
       "deps": [],
-      "version": "234-variant-selectors-no-display-name"
+      "version": "235-variant-selectors-no-display-name-corrected"
     }
   ],
   [
@@ -29252,7 +29252,7 @@
         "u-XSWqiMHVo1": {
           "uuid": "o1ylxqpzaoRT",
           "name": "",
-          "selectors": ["Focus Visible Within"],
+          "selectors": [":focus-visible-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -29262,7 +29262,7 @@
         "9DQ7PI9boZwg": {
           "uuid": "uuSXoSXraQO-",
           "name": "",
-          "selectors": ["Focused Within"],
+          "selectors": [":focus-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -29272,7 +29272,7 @@
         "QIoqvHFB6Gru": {
           "uuid": "rpgNCkBUbMon",
           "name": "",
-          "selectors": ["Hover"],
+          "selectors": [":hover"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -29282,7 +29282,7 @@
         "gMFktmjSLi1a": {
           "uuid": "eaSS5VNahUvp",
           "name": "",
-          "selectors": ["Pressed"],
+          "selectors": [":active"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -36002,7 +36002,7 @@
         }
       },
       "deps": ["b40f6e19-d463-42da-8612-be48dc88c549"],
-      "version": "234-variant-selectors-no-display-name"
+      "version": "235-variant-selectors-no-display-name-corrected"
     }
   ]
 ]

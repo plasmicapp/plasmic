@@ -613,7 +613,7 @@
         "28832114": {
           "uuid": "GPPXznkX_ay",
           "name": "",
-          "selectors": ["Hover"],
+          "selectors": [":hover"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -623,7 +623,7 @@
         "28832115": {
           "uuid": "Ot494l42APV",
           "name": "",
-          "selectors": ["Focused Within"],
+          "selectors": [":focus-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -633,7 +633,7 @@
         "28832116": {
           "uuid": "tDV-ZXIJzIT",
           "name": "",
-          "selectors": ["Focus Visible Within"],
+          "selectors": [":focus-visible-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -2622,7 +2622,7 @@
         "28832499": {
           "uuid": "8uWRv3HKoag",
           "name": "",
-          "selectors": ["Focus Visible Within"],
+          "selectors": [":focus-visible-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -2632,7 +2632,7 @@
         "28832500": {
           "uuid": "bPgfFks0Nhj",
           "name": "",
-          "selectors": ["Focused Within"],
+          "selectors": [":focus-within"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -2642,7 +2642,7 @@
         "28832501": {
           "uuid": "e_DdQ6Dqc79",
           "name": "",
-          "selectors": ["Hover"],
+          "selectors": [":hover"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -2652,7 +2652,7 @@
         "28832502": {
           "uuid": "nhRPQyR8WOz",
           "name": "",
-          "selectors": ["Pressed"],
+          "selectors": [":active"],
           "parent": null,
           "mediaQuery": null,
           "description": null,
@@ -11506,7 +11506,7 @@
         }
       },
       "deps": [],
-      "version": "234-variant-selectors-no-display-name"
+      "version": "235-variant-selectors-no-display-name-corrected"
     }
   ]
 ]

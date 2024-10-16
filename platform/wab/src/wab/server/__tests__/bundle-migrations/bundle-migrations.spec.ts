@@ -47,7 +47,7 @@ describe("bundle-migrations", () => {
         }
 
         expect(Prettier.format(outputBundle, PRETTIER_OPTS)).toEqual(
-          expectedBundle
+          Prettier.format(expectedBundle, PRETTIER_OPTS)
         );
       });
     });
