@@ -4541,7 +4541,7 @@ exports[`model-util works 1`] = `
           "name": "",
           "parent": null,
           "selectors": [
-            "Hover",
+            ":hover",
           ],
           "uuid": "CeGgGNdBKL5",
         },
@@ -6185,7 +6185,7 @@ exports[`model-util works 1`] = `
           "name": "",
           "parent": null,
           "selectors": [
-            "Hover",
+            ":hover",
           ],
           "uuid": "9_a2YxXirvS",
         },
