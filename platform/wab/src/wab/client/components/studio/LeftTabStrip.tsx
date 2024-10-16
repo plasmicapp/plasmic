@@ -434,7 +434,9 @@ Help
       )}
       players={{
         render: (_props) => {
-          const { children, ...otherProps } = _props;
+          // Exclude 'children' from props to avoid React warnings about missing keys,
+          // as they are already omitted inside Player and not needed here.
+          const { children: _children, ...otherProps } = _props;
           return <Players {...otherProps} studioCtx={studioCtx} />;
         },
       }}
