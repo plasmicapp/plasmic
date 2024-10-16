@@ -434,7 +434,8 @@ Help
       )}
       players={{
         render: (_props) => {
-          return <Players {..._props} studioCtx={studioCtx} />;
+          const { children, ...otherProps } = _props;
+          return <Players {...otherProps} studioCtx={studioCtx} />;
         },
       }}
       avatar={{
