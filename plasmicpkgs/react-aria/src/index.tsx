@@ -4,7 +4,7 @@ import { registerCheckboxGroup } from "./registerCheckboxGroup";
 import { registerComboBox } from "./registerComboBox";
 import { registerDescription } from "./registerDescription";
 import { registerDialogTrigger } from "./registerDialogTrigger";
-import { registerForm } from "./registerForm";
+// import { registerForm } from "./registerForm";
 import { registerHeading } from "./registerHeading";
 import { registerInput } from "./registerInput";
 import { registerLabel } from "./registerLabel";
@@ -32,7 +32,7 @@ export function registerAll(loader?: Registerable) {
   registerPopover(loader);
   registerInput(loader);
   registerSwitch(loader);
-  registerForm(loader);
+  // registerForm(loader);
   registerCheckbox(loader);
   registerCheckboxGroup(loader);
   registerRadioGroup(loader);
