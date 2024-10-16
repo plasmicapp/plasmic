@@ -15,6 +15,7 @@ describe("hostless-cms", function () {
     cy.contains("Integrations").click();
     cy.contains("New CMS").click();
     cy.get(`[data-test-id="prompt"]`).click();
+    cy.wait(200);
     cy.justType(cmsName);
     cy.contains("Add").click();
 
@@ -77,6 +78,7 @@ describe("hostless-cms", function () {
             cy.switchToProjectSettingsTab();
             cy.contains("CMS Credentials Provider").click();
             cy.get(`#sidebar-modal button[data-test-id="collapse"]`).click();
+            cy.wait(200);
             cy.setSelectedDimStyle(
               "host",
               `{selectall}${Cypress.config("baseUrl")}`
