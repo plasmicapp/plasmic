@@ -188,6 +188,8 @@
           "displayName": "Strapi Collection",
           "importName": "StrapiCollection",
           "description": "Fetches Strapi data of a given collection, and repeats `children` slot content for each row fetched. [See tutorial video](https://www.youtube.com/watch?v=1SLoVY3hkQ4).",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "26311033" },
@@ -206,10 +208,8 @@
               "children": { "type": "component", "name": "StrapiField" }
             }
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "26311012": {
           "type": { "__ref": "26311035" },
@@ -260,6 +260,8 @@
           "displayName": "Strapi Field",
           "importName": "StrapiField",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -273,10 +275,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "26311016": {
           "type": { "__ref": "cvecJliDifJb" },
@@ -368,6 +368,8 @@
           "displayName": "Strapi Credentials Provider",
           "importName": "StrapiCredentialsProvider",
           "description": "[See tutorial video](https://www.youtube.com/watch?v=1SLoVY3hkQ4).\n\nAPI token is needed only if data is not publicly readable.\n\nLearn how to [get your API token](https://docs.strapi.io/user-docs/latest/settings/managing-global-settings.html#managing-api-tokens).",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -381,10 +383,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "26311022": {
           "variants": [{ "__ref": "60773007" }],
@@ -405,8 +405,8 @@
         "26311024": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "26311025": { "name": "name", "uuid": "6NuQ2KC7XyN", "__type": "Var" },
         "26311026": { "name": "text", "__type": "Text" },
@@ -484,8 +484,8 @@
         "26311044": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "26311045": {
           "param": { "__ref": "26311018" },
@@ -600,9 +600,9 @@
           "defaultStyle": { "__ref": "60773010" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "60773010": {
           "name": "Default Typography",
@@ -774,7 +774,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -1428,9 +1428,9 @@
             { "__ref": "31846155" }
           ],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "31846010": {
           "name": "Default Typography",
@@ -1867,7 +1867,7 @@
         }
       },
       "deps": ["c30818bb-2f70-4079-bc4d-65eaecf566f6"],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ]
 ]

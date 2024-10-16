@@ -834,8 +834,8 @@
     "165": {
       "name": "renderable",
       "params": [],
-      "__type": "RenderableType",
-      "allowRootWrapper": null
+      "allowRootWrapper": null,
+      "__type": "RenderableType"
     },
     "166": {
       "tag": "div",
@@ -2199,8 +2199,8 @@
     "484": {
       "name": "renderable",
       "params": [],
-      "__type": "RenderableType",
-      "allowRootWrapper": null
+      "allowRootWrapper": null,
+      "__type": "RenderableType"
     },
     "485": {
       "tag": "div",
@@ -2590,8 +2590,8 @@
     "548": {
       "name": "renderable",
       "params": [],
-      "__type": "RenderableType",
-      "allowRootWrapper": null
+      "allowRootWrapper": null,
+      "__type": "RenderableType"
     },
     "549": {
       "tag": "div",
@@ -4234,9 +4234,9 @@
         { "__ref": "18255131" }
       ],
       "layout": null,
+      "addItemPrefs": {},
       "active": true,
-      "__type": "Theme",
-      "addItemPrefs": {}
+      "__type": "Theme"
     },
     "915": {
       "name": "Default Theme",
@@ -4878,5 +4878,5 @@
     }
   },
   "deps": [],
-  "version": "235-variant-selectors-no-display-name-corrected"
+  "version": "236-rename-duplicated-components"
 }

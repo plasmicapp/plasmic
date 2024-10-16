@@ -119,9 +119,9 @@
               { "__ref": "8615154" }
             ],
             "layout": { "__ref": "8615165" },
+            "addItemPrefs": {},
             "active": true,
-            "__type": "Theme",
-            "addItemPrefs": {}
+            "__type": "Theme"
           },
           "8615009": {
             "name": "Default Typography",
@@ -841,8 +841,8 @@
           "20279103": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279104": {
             "tag": "div",
@@ -1181,8 +1181,8 @@
           "20279241": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279243": {
             "variants": [{ "__ref": "20279160" }],
@@ -1341,8 +1341,8 @@
           "20279283": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279284": {
             "tag": "div",
@@ -1487,8 +1487,8 @@
           "20279303": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279304": {
             "tpl": [{ "__ref": "20279307" }],
@@ -1906,8 +1906,8 @@
           "20279425": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279426": {
             "variants": [{ "__ref": "20279391" }],
@@ -2540,8 +2540,8 @@
           "20279639": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279640": {
             "variants": [{ "__ref": "20279605" }],
@@ -2984,8 +2984,8 @@
           "20279732": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279733": {
             "variants": [{ "__ref": "20279698" }],
@@ -3540,8 +3540,8 @@
           "20279901": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279902": {
             "variants": [{ "__ref": "20279867" }],
@@ -4360,7 +4360,7 @@
           "20280256": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "20280271": {
             "uuid": "WYVm22mkEy",
-            "name": "",
+            "name": "Unnamed Component",
             "params": [],
             "states": [],
             "tplTree": { "__ref": "20280273" },
@@ -4642,6 +4642,8 @@
             "displayName": "Head",
             "importName": "PlasmicHead",
             "description": "Used to add page metadata to HTML <head />.",
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -4655,10 +4657,8 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "52044010": {
             "type": { "__ref": "52044028" },
@@ -4790,6 +4790,8 @@
             "displayName": "Data Fetcher",
             "importName": "Fetcher",
             "description": null,
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -4803,10 +4805,8 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "52044018": {
             "name": "title",
@@ -4864,8 +4864,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "52044040" }],
             "allowed": [],
-            "__type": "RenderFuncType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderFuncType"
           },
           "52044033": {
             "name": "pageSize",
@@ -4940,7 +4940,7 @@
           }
         },
         "deps": [],
-        "version": "235-variant-selectors-no-display-name-corrected"
+        "version": "236-rename-duplicated-components"
       },
       "projectId": "dNoM99U17XFRGCXZ5SUbc1",
       "version": "0.0.1",
@@ -5082,9 +5082,9 @@
               { "__ref": "8615154" }
             ],
             "layout": { "__ref": "8615165" },
+            "addItemPrefs": {},
             "active": true,
-            "__type": "Theme",
-            "addItemPrefs": {}
+            "__type": "Theme"
           },
           "8615009": {
             "name": "Default Typography",
@@ -5801,8 +5801,8 @@
           "20279103": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279104": {
             "tag": "div",
@@ -6141,8 +6141,8 @@
           "20279241": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279243": {
             "variants": [{ "__ref": "20279160" }],
@@ -6233,8 +6233,8 @@
           "20279283": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279284": {
             "tag": "div",
@@ -6379,8 +6379,8 @@
           "20279303": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279304": {
             "tpl": [{ "__ref": "20279307" }],
@@ -6798,8 +6798,8 @@
           "20279425": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279426": {
             "variants": [{ "__ref": "20279391" }],
@@ -7424,8 +7424,8 @@
           "20279639": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279640": {
             "variants": [{ "__ref": "20279605" }],
@@ -7832,8 +7832,8 @@
           "20279732": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279733": {
             "variants": [{ "__ref": "20279698" }],
@@ -8349,8 +8349,8 @@
           "20279901": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279902": {
             "variants": [{ "__ref": "20279867" }],
@@ -9157,7 +9157,7 @@
           "20280256": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "20280271": {
             "uuid": "WYVm22mkEy",
-            "name": "",
+            "name": "Unnamed Component",
             "params": [],
             "states": [],
             "tplTree": { "__ref": "20280273" },
@@ -9439,6 +9439,8 @@
             "displayName": "Head",
             "importName": "PlasmicHead",
             "description": "Used to add page metadata to HTML <head />.",
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -9452,10 +9454,8 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "52044010": {
             "type": { "__ref": "52044028" },
@@ -9587,6 +9587,8 @@
             "displayName": "Data Fetcher",
             "importName": "Fetcher",
             "description": null,
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -9600,10 +9602,8 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "52044018": {
             "name": "title",
@@ -9661,8 +9661,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "52044040" }],
             "allowed": [],
-            "__type": "RenderFuncType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderFuncType"
           },
           "52044033": {
             "name": "pageSize",
@@ -9968,8 +9968,8 @@
           "65055065": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "65055066": {
             "variants": [{ "__ref": "20280181" }],
@@ -10028,7 +10028,7 @@
           },
           "65055080": {
             "uuid": "6t5YbX67gc",
-            "name": "",
+            "name": "Unnamed Component2",
             "params": [],
             "states": [],
             "tplTree": { "__ref": "65055082" },
@@ -10146,7 +10146,7 @@
           "65055094": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "235-variant-selectors-no-display-name-corrected"
+        "version": "236-rename-duplicated-components"
       }
     },
     {
@@ -10267,9 +10267,9 @@
               { "__ref": "8615154" }
             ],
             "layout": { "__ref": "8615165" },
+            "addItemPrefs": {},
             "active": true,
-            "__type": "Theme",
-            "addItemPrefs": {}
+            "__type": "Theme"
           },
           "8615009": {
             "name": "Default Typography",
@@ -10989,8 +10989,8 @@
           "20279103": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279104": {
             "tag": "div",
@@ -11329,8 +11329,8 @@
           "20279241": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279243": {
             "variants": [{ "__ref": "20279160" }],
@@ -11489,8 +11489,8 @@
           "20279283": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279284": {
             "tag": "div",
@@ -11635,8 +11635,8 @@
           "20279303": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279304": {
             "tpl": [{ "__ref": "20279307" }],
@@ -12054,8 +12054,8 @@
           "20279425": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279426": {
             "variants": [{ "__ref": "20279391" }],
@@ -12684,8 +12684,8 @@
           "20279639": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279640": {
             "variants": [{ "__ref": "20279605" }],
@@ -13092,8 +13092,8 @@
           "20279732": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279733": {
             "variants": [{ "__ref": "20279698" }],
@@ -13609,8 +13609,8 @@
           "20279901": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "20279902": {
             "variants": [{ "__ref": "20279867" }],
@@ -14422,7 +14422,7 @@
           "20280256": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "20280271": {
             "uuid": "WYVm22mkEy",
-            "name": "",
+            "name": "Unnamed Component",
             "params": [],
             "states": [],
             "tplTree": { "__ref": "20280273" },
@@ -14900,6 +14900,8 @@
             "displayName": "Head",
             "importName": "PlasmicHead",
             "description": "Used to add page metadata to HTML <head />.",
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -14913,10 +14915,8 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "52044010": {
             "type": { "__ref": "52044028" },
@@ -15048,6 +15048,8 @@
             "displayName": "Data Fetcher",
             "importName": "Fetcher",
             "description": null,
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -15061,10 +15063,8 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "52044018": {
             "name": "title",
@@ -15122,8 +15122,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "52044040" }],
             "allowed": [],
-            "__type": "RenderFuncType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderFuncType"
           },
           "52044033": {
             "name": "pageSize",
@@ -15189,7 +15189,7 @@
           "52044046": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "235-variant-selectors-no-display-name-corrected"
+        "version": "236-rename-duplicated-components"
       }
     }
   ]

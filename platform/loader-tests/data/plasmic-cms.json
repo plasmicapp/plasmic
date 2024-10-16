@@ -164,6 +164,8 @@
           "displayName": "CMS Credentials Provider",
           "importName": "CmsCredentialsProvider",
           "description": "\nFind (or create) your CMS in the [dashboard](https://studio.plasmic.app), and go to its Settings view for the ID and token.\n\n[See tutorial video](https://docs.plasmic.app/learn/plasmic-cms/).",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -177,10 +179,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "8246013": { "name": "host", "uuid": "-SRg14byEK", "__type": "Var" },
         "8246016": {
@@ -205,8 +205,8 @@
         "8246023": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "8246024": {
           "param": { "__ref": "8246008" },
@@ -421,6 +421,8 @@
           "displayName": "CMS Entry Field",
           "importName": "CmsRowField",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "RiLj3ZeAGQQ1" },
@@ -434,10 +436,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "21177036": {
           "type": { "__ref": "21970002" },
@@ -549,6 +549,8 @@
           "displayName": "CMS Entry Link",
           "importName": "CmsRowLink",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -564,10 +566,8 @@
           "defaultSlotContents": {
             "children": { "type": "text", "tag": "a", "value": "Link" }
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "21177092": { "name": "table", "uuid": "fT-JCfK2bZj", "__type": "Var" },
         "21177094": { "name": "field", "uuid": "jXgFZu9bLlN", "__type": "Var" },
@@ -660,26 +660,26 @@
         "21970002": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "21970003": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "21970004": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "21970005": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "28075001": {
           "type": { "__ref": "21970004" },
@@ -894,9 +894,9 @@
           "defaultStyle": { "__ref": "44330065" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "44330065": {
           "name": "Default Typography",
@@ -1225,6 +1225,8 @@
           "displayName": "CMS Data Fetcher",
           "importName": "CmsQueryRepeater",
           "description": "Fetches CMS data. Repeats `children` slot content for each row fetched. [See tutorial video](https://docs.plasmic.app/learn/plasmic-cms/).",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "21970001" },
@@ -1253,10 +1255,8 @@
             },
             "loadingMessage": { "type": "text", "value": "Loading..." }
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "58829014": {
           "name": "dateFormat",
@@ -1537,6 +1537,8 @@
           "displayName": "CMS Entry Image",
           "importName": "CmsRowImage",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -1555,10 +1557,8 @@
               "src": "https://studio.plasmic.app/static/img/placeholder-full.png"
             }
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "60389013": {
           "type": { "__ref": "60389034" },
@@ -1670,6 +1670,8 @@
           "displayName": "CMS Entry Value",
           "importName": "CmsRowFieldValue",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -1683,10 +1685,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "60389021": {
           "name": "children",
@@ -1696,8 +1696,8 @@
         "60389022": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "60389023": { "name": "table", "uuid": "IkOy36FfaR", "__type": "Var" },
         "60389025": { "name": "field", "uuid": "PyA2ZIyiMR", "__type": "Var" },
@@ -1745,8 +1745,8 @@
         "60389034": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "60389035": { "name": "table", "uuid": "qivKAbekC6q", "__type": "Var" },
         "60389037": { "name": "field", "uuid": "uTB7brETrG3", "__type": "Var" },
@@ -1856,6 +1856,8 @@
           "displayName": "CMS Entries Count",
           "importName": "CmsCount",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -1869,10 +1871,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "Z-t-81vAFTyY": {
           "uuid": "fFQWD7CEtltw",
@@ -2101,7 +2101,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -2928,9 +2928,9 @@
             { "__ref": "14598216" }
           ],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "14598065": {
           "name": "Default Typography",
@@ -4541,7 +4541,7 @@
         }
       },
       "deps": ["7349d209-ded6-417a-aa97-05311f8b93c4"],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ]
 ]

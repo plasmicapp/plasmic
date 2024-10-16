@@ -318,6 +318,8 @@
           "displayName": "Head",
           "importName": "PlasmicHead",
           "description": "Used to add page metadata to HTML <head />.",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -331,10 +333,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "5592022": {
           "uuid": "2hnzR1_1GXX",
@@ -440,8 +440,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "5592032" }],
           "allowed": [],
-          "__type": "RenderFuncType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
         },
         "5592032": {
           "name": "arg",
@@ -569,6 +569,8 @@
           "displayName": "Data Source Fetcher",
           "importName": "Fetcher",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -582,10 +584,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "5592050": {
           "uuid": "qy36JdSFn7Z",
@@ -1072,8 +1072,8 @@
         "5592112": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "5592113": {
           "param": { "__ref": "5592102" },
@@ -1214,8 +1214,8 @@
         "5592122": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "5592123": {
           "type": { "__ref": "5592125" },
@@ -1246,8 +1246,8 @@
         "5592125": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "5592126": {
           "type": { "__ref": "5592128" },
@@ -3404,8 +3404,8 @@
         "5592546": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "5592547": {
           "type": { "__ref": "5592549" },
@@ -3490,8 +3490,8 @@
         "5592555": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "5592556": {
           "type": { "__ref": "5592558" },
@@ -3522,8 +3522,8 @@
         "5592558": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "5592559": {
           "type": { "__ref": "5592561" },
@@ -10905,9 +10905,9 @@
             { "__ref": "5594297" }
           ],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "5594152": {
           "name": "Default Typography",
@@ -12318,7 +12318,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ]
 ]

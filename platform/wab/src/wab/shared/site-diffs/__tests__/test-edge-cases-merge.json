@@ -248,6 +248,8 @@
             "displayName": "Head",
             "importName": "PlasmicHead",
             "description": "Used to add page metadata to HTML <head />.",
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -261,10 +263,8 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "53897022": {
             "uuid": "kd3zVeJf4r_",
@@ -374,8 +374,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "53897032" }],
             "allowed": [],
-            "__type": "RenderFuncType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderFuncType"
           },
           "53897032": {
             "name": "arg",
@@ -503,6 +503,8 @@
             "displayName": "Data Fetcher",
             "importName": "Fetcher",
             "description": null,
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -516,10 +518,8 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "53897050": {
             "uuid": "gWxyex68plF",
@@ -683,8 +683,8 @@
           "53897063": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897064": {
             "type": { "__ref": "53897066" },
@@ -715,8 +715,8 @@
           "53897066": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897067": {
             "type": { "__ref": "53897069" },
@@ -747,8 +747,8 @@
           "53897069": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897070": {
             "tag": "div",
@@ -1357,6 +1357,8 @@
             "displayName": null,
             "importName": null,
             "description": null,
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -1370,10 +1372,8 @@
             "styleSections": null,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "53897170": {
             "variants": [{ "__ref": "53897054" }],
@@ -1606,8 +1606,8 @@
           "53897205": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897206": {
             "tag": "div",
@@ -1988,8 +1988,8 @@
           "53897274": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897275": {
             "tag": "div",
@@ -2329,8 +2329,8 @@
           "53897332": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897333": {
             "tag": "div",
@@ -2710,8 +2710,8 @@
           "53897399": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897400": {
             "tag": "div",
@@ -3088,8 +3088,8 @@
           "53897466": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897467": {
             "tag": "div",
@@ -4252,8 +4252,8 @@
           "53897665": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897666": {
             "tag": "div",
@@ -4620,8 +4620,8 @@
           "53897731": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897732": {
             "type": { "__ref": "53897734" },
@@ -4652,8 +4652,8 @@
           "53897734": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897735": {
             "tag": "div",
@@ -5719,9 +5719,9 @@
               { "__ref": "53898062" }
             ],
             "layout": { "__ref": "53898073" },
+            "addItemPrefs": {},
             "active": true,
-            "__type": "Theme",
-            "addItemPrefs": {}
+            "__type": "Theme"
           },
           "53897917": {
             "name": "Default Typography",
@@ -6116,7 +6116,7 @@
           "53898074": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "235-variant-selectors-no-display-name-corrected"
+        "version": "236-rename-duplicated-components"
       },
       "projectId": "5txi3zd6hPLtbkzbV8p6jB",
       "version": "0.0.1",
@@ -6553,6 +6553,8 @@
             "displayName": "Head",
             "importName": "PlasmicHead",
             "description": "Used to add page metadata to HTML <head />.",
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -6566,10 +6568,8 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "53897022": {
             "uuid": "kd3zVeJf4r_",
@@ -6679,8 +6679,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "53897032" }],
             "allowed": [],
-            "__type": "RenderFuncType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderFuncType"
           },
           "53897032": {
             "name": "arg",
@@ -6808,6 +6808,8 @@
             "displayName": "Data Fetcher",
             "importName": "Fetcher",
             "description": null,
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -6821,10 +6823,8 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "53897050": {
             "uuid": "gWxyex68plF",
@@ -6988,8 +6988,8 @@
           "53897063": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897064": {
             "type": { "__ref": "53897066" },
@@ -7020,8 +7020,8 @@
           "53897066": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897067": {
             "type": { "__ref": "53897069" },
@@ -7052,8 +7052,8 @@
           "53897069": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897070": {
             "tag": "div",
@@ -7627,6 +7627,8 @@
             "displayName": null,
             "importName": null,
             "description": null,
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -7640,10 +7642,8 @@
             "styleSections": null,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "53897170": {
             "variants": [{ "__ref": "53897054" }],
@@ -7876,8 +7876,8 @@
           "53897205": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897206": {
             "tag": "div",
@@ -8242,8 +8242,8 @@
           "53897274": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897275": {
             "tag": "div",
@@ -8579,8 +8579,8 @@
           "53897332": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897333": {
             "tag": "div",
@@ -8956,8 +8956,8 @@
           "53897399": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897400": {
             "tag": "div",
@@ -9260,8 +9260,8 @@
           "53897466": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897467": {
             "tag": "div",
@@ -10685,8 +10685,8 @@
           "53897731": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897732": {
             "type": { "__ref": "53897734" },
@@ -10717,8 +10717,8 @@
           "53897734": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897735": {
             "tag": "div",
@@ -11780,9 +11780,9 @@
               { "__ref": "53898062" }
             ],
             "layout": { "__ref": "53898073" },
+            "addItemPrefs": {},
             "active": true,
-            "__type": "Theme",
-            "addItemPrefs": {}
+            "__type": "Theme"
           },
           "53897917": {
             "name": "Default Typography",
@@ -12177,7 +12177,7 @@
           "53898074": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "63532001": {
             "uuid": "eBQLxM7jlx",
-            "name": "",
+            "name": "Unnamed Component",
             "params": [],
             "states": [],
             "tplTree": { "__ref": "63532003" },
@@ -12295,7 +12295,7 @@
           "63532015": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "235-variant-selectors-no-display-name-corrected"
+        "version": "236-rename-duplicated-components"
       }
     },
     {
@@ -12536,6 +12536,8 @@
             "displayName": "Head",
             "importName": "PlasmicHead",
             "description": "Used to add page metadata to HTML <head />.",
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -12549,10 +12551,8 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "53897022": {
             "uuid": "kd3zVeJf4r_",
@@ -12662,8 +12662,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "53897032" }],
             "allowed": [],
-            "__type": "RenderFuncType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderFuncType"
           },
           "53897032": {
             "name": "arg",
@@ -12791,6 +12791,8 @@
             "displayName": "Data Fetcher",
             "importName": "Fetcher",
             "description": null,
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -12804,10 +12806,8 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "53897050": {
             "uuid": "gWxyex68plF",
@@ -12971,8 +12971,8 @@
           "53897063": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897064": {
             "type": { "__ref": "53897066" },
@@ -13003,8 +13003,8 @@
           "53897066": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897067": {
             "type": { "__ref": "53897069" },
@@ -13035,8 +13035,8 @@
           "53897069": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897070": {
             "tag": "div",
@@ -13619,6 +13619,8 @@
             "displayName": null,
             "importName": null,
             "description": null,
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -13632,10 +13634,8 @@
             "styleSections": null,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "53897170": {
             "variants": [{ "__ref": "53897054" }],
@@ -13868,8 +13868,8 @@
           "53897205": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897206": {
             "tag": "div",
@@ -14250,8 +14250,8 @@
           "53897274": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897275": {
             "tag": "div",
@@ -14591,8 +14591,8 @@
           "53897332": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897333": {
             "tag": "div",
@@ -14972,8 +14972,8 @@
           "53897399": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897400": {
             "tag": "div",
@@ -15334,8 +15334,8 @@
           "53897466": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897467": {
             "tag": "div",
@@ -16483,8 +16483,8 @@
           "53897665": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897666": {
             "tag": "div",
@@ -16851,8 +16851,8 @@
           "53897731": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897732": {
             "type": { "__ref": "53897734" },
@@ -16883,8 +16883,8 @@
           "53897734": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderableType"
           },
           "53897735": {
             "tag": "div",
@@ -17950,9 +17950,9 @@
               { "__ref": "53898062" }
             ],
             "layout": { "__ref": "53898073" },
+            "addItemPrefs": {},
             "active": true,
-            "__type": "Theme",
-            "addItemPrefs": {}
+            "__type": "Theme"
           },
           "53897917": {
             "name": "Default Typography",
@@ -18560,7 +18560,7 @@
           }
         },
         "deps": [],
-        "version": "235-variant-selectors-no-display-name-corrected"
+        "version": "236-rename-duplicated-components"
       }
     }
   ]

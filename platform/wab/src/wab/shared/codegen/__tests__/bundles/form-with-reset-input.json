@@ -741,8 +741,8 @@
         "28832132": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "28832133": {
           "name": "start icon",
@@ -752,8 +752,8 @@
         "28832134": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "28832135": {
           "name": "Show Start Icon",
@@ -2772,8 +2772,8 @@
         "28832514": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "28832515": {
           "name": "Show Start Icon",
@@ -2795,8 +2795,8 @@
         "28832520": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "28832521": {
           "name": "end icon",
@@ -2806,8 +2806,8 @@
         "28832522": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "28832523": {
           "name": "Is Disabled",
@@ -8446,9 +8446,9 @@
             { "__ref": "39598154" }
           ],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "39598009": {
           "name": "Default Typography",
@@ -10406,6 +10406,8 @@
           "displayName": "Head",
           "importName": "PlasmicHead",
           "description": "Used to add page metadata to HTML <head />.",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -10419,10 +10421,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "63011010": {
           "type": { "__ref": "63011028" },
@@ -10554,6 +10554,8 @@
           "displayName": "Data Source Fetcher",
           "importName": "Fetcher",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -10567,10 +10569,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "63011018": { "name": "title", "uuid": "FabHFh-IiQ", "__type": "Var" },
         "63011019": { "name": "text", "__type": "Text" },
@@ -10612,8 +10612,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "63011040" }],
           "allowed": [],
-          "__type": "RenderFuncType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
         },
         "63011033": {
           "name": "pageSize",
@@ -11506,7 +11506,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ]
 ]

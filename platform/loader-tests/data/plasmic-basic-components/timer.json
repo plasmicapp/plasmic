@@ -23,9 +23,9 @@
           "defaultStyle": { "__ref": "vC7ZNDVPHgBS" },
           "styles": [],
           "layout": { "__ref": "COSiiltazPgR" },
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "cszq9QSLKRwZ": {
           "uuid": "Ef4k0RTOUSvo",
@@ -306,6 +306,8 @@
           "displayName": "Iframe",
           "importName": "Iframe",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "2JucG_Ld3Zdi" },
@@ -319,10 +321,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "WUDj0RM3vV48": {
           "type": { "__ref": "1KaJxutOa_J5" },
@@ -513,6 +513,8 @@
           "displayName": "HTML Video",
           "importName": "Video",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "dvYZupE8h_8H" },
@@ -526,10 +528,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "CKBtARqpD7tj": {
           "type": { "__ref": "HCAXUQT2TgYW" },
@@ -600,6 +600,8 @@
           "displayName": "Embed HTML",
           "importName": "Embed",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "PJwtbpUt3gc7" },
@@ -613,10 +615,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "VDTDvYhGib6J": {
           "type": { "__ref": "eEHvH4elOi1R" },
@@ -708,6 +708,8 @@
           "displayName": "Data Provider",
           "importName": "DataProvider",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -721,10 +723,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "sNx5Qldg9Nab": {
           "type": { "__ref": "g_UMhhObU_hY" },
@@ -836,6 +836,8 @@
           "displayName": "Condition Guard",
           "importName": "ConditionGuard",
           "description": "Ensure some condition, or else run an interaction. Examples: ensure all users have a database row, or require new users to setup a profile.",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -849,10 +851,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "kkpcXDSfHMg7": {
           "type": { "__ref": "MLvTIts4j9G6" },
@@ -943,6 +943,8 @@
           "displayName": "Side Effect",
           "importName": "SideEffect",
           "description": "Run actions on load, unload, and when data changes.",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -956,10 +958,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "Y8jIe067p742": { "name": "text", "__type": "Text" },
         "Dq-O_5-MpDWf": {
@@ -1129,8 +1129,8 @@
         "73rL38D_jMBO": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "XwkHUh50q0_3": {
           "name": "children",
@@ -1160,8 +1160,8 @@
         "g_UMhhObU_hY": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "yCxlvsxUw36s": {
           "name": "children",
@@ -1403,6 +1403,8 @@
           "displayName": "Timer",
           "importName": "Timer",
           "description": "Run something periodically",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -1416,10 +1418,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "jEpoTKUq5x4p": {
           "name": "func",
@@ -1499,7 +1499,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -1916,9 +1916,9 @@
             { "__ref": "JUPHVla_AGqM" }
           ],
           "layout": { "__ref": "xQeBO3UhLaTD" },
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "ahAn10eFjpYS": { "name": "text", "__type": "Text" },
         "mxv9WV8x0hcC": {
@@ -2186,6 +2186,8 @@
           "displayName": "Page Metadata Override",
           "importName": "PlasmicHead",
           "description": "Set page metadata (HTML <head />) to dynamic values.",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -2199,10 +2201,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "uUDZiFhtjqZb": {
           "type": { "__ref": "yPVxoY4xuAC4" },
@@ -2334,6 +2334,8 @@
           "displayName": "Data Fetcher",
           "importName": "Fetcher",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -2347,10 +2349,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "1vuvbD0cJ4Up": { "name": "text", "__type": "Text" },
         "SHDlsS19Tf72": {
@@ -2403,8 +2403,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "Hh3UX8UesF4o" }],
           "allowed": [],
-          "__type": "RenderFuncType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
         },
         "TYsbvENlBFAb": {
           "name": "children",
@@ -3560,8 +3560,8 @@
         "CZic9HAuZ6eO": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "fXFoV5D1A77W": {
           "name": "children",
@@ -3583,8 +3583,8 @@
         "Od8vjdBmlqnU": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "rimoV9sUjLkz": {
           "name": "start icon",
@@ -3594,8 +3594,8 @@
         "tW4AKuMmIgCR": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "ppZZ0v_7c4mL": {
           "name": "end icon",
@@ -10345,8 +10345,8 @@
         "1WnCdi80HFEr": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "zHhnyaK0-51-": {
           "name": "end icon",
@@ -10356,8 +10356,8 @@
         "VERpwvKqDlfv": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1VljIh3nslKH": {
           "name": "start icon",
@@ -12098,7 +12098,7 @@
         "ppmsVxHk1e_-": { "text": ["interval"], "__type": "TemplatedString" }
       },
       "deps": ["a3a6a4ab-6ef7-466e-8589-a26854d0253c"],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ]
 ]

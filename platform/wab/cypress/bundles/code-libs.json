@@ -18,9 +18,9 @@
           "defaultStyle": { "__ref": "9DQpdp26V81I" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "OmtBUmj0nGd7": {
           "uuid": "QIcNIXhlzrpm",
@@ -87,7 +87,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -109,9 +109,9 @@
           "defaultStyle": { "__ref": "OZ_btUzqjPF5" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "X_yDTZJQWR96": {
           "uuid": "P6JzkGokSLSp",
@@ -178,7 +178,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -200,9 +200,9 @@
           "defaultStyle": { "__ref": "-2dJzCBUSv8z" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "iio2m_jx__ic": {
           "uuid": "BLbShoUWiWWh",
@@ -269,7 +269,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -291,9 +291,9 @@
           "defaultStyle": { "__ref": "eTjlvi_jYdeh" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "qTaF_bFqvCXU": {
           "uuid": "-x4WqJTOfRUn",
@@ -360,7 +360,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -382,9 +382,9 @@
           "defaultStyle": { "__ref": "obRkPpBAKpaq" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "l3wyAVaUohe2": {
           "uuid": "lJpS406iw3U_",
@@ -451,7 +451,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -473,9 +473,9 @@
           "defaultStyle": { "__ref": "DXXMxQyQ67GG" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "ga6vkkjoy1Hz": {
           "uuid": "Dp_Vmt_bCXNr",
@@ -542,7 +542,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -564,9 +564,9 @@
           "defaultStyle": { "__ref": "FzNl1v8A3WSe" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "52j-rHexq18o": {
           "uuid": "amZ-zax6wCza",
@@ -633,7 +633,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -655,9 +655,9 @@
           "defaultStyle": { "__ref": "_yifD1KTrRru" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "uWFEcIn6Gqbp": {
           "uuid": "ow7DaPyzbQkm",
@@ -736,7 +736,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -758,9 +758,9 @@
           "defaultStyle": { "__ref": "mTtFUZhil0Is" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "gPuotvzgf9XA": {
           "uuid": "-ohsa6ehLi69",
@@ -839,7 +839,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -861,9 +861,9 @@
           "defaultStyle": { "__ref": "8toNjfF3wlW6" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "BvFU6ZnbB6fE": {
           "uuid": "RvgvnhvUUdmj",
@@ -930,7 +930,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -952,9 +952,9 @@
           "defaultStyle": { "__ref": "CcuVOzVSOyoW" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "RXcSoE_YEa0f": {
           "uuid": "q5rUDCm8a-dm",
@@ -1021,7 +1021,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -1043,9 +1043,9 @@
           "defaultStyle": { "__ref": "khZ_kGVNJ88I" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "vE7sNZ6erZjh": {
           "uuid": "OjsIUK9fBaqw",
@@ -1112,7 +1112,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -1134,9 +1134,9 @@
           "defaultStyle": { "__ref": "rbfIn12dtTfE" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "Q0rNbUWGhaAi": {
           "uuid": "jf8Tm1dWSxmw",
@@ -1203,7 +1203,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -1225,9 +1225,9 @@
           "defaultStyle": { "__ref": "NyaqjH-_cx0R" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "wiDAcIpyrpIt": {
           "uuid": "jMge8mCZKoCH",
@@ -1294,7 +1294,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -1316,9 +1316,9 @@
           "defaultStyle": { "__ref": "RJZ4Te7P1E8g" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "vkHCZzI44LVK": {
           "uuid": "PxCR-JNW3OLm",
@@ -1397,7 +1397,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -1419,9 +1419,9 @@
           "defaultStyle": { "__ref": "LwzQIuq6jJFs" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "ttQHQwUs8gb2": {
           "uuid": "c73zsXYBl1zD",
@@ -1488,7 +1488,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -1510,9 +1510,9 @@
           "defaultStyle": { "__ref": "dXB1W5qaYprf" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "2huIDl_a0_ow": {
           "uuid": "3lcXmQV6MUm7",
@@ -1579,7 +1579,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -1601,9 +1601,9 @@
           "defaultStyle": { "__ref": "eDX2rKZPdjqE" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "gIwSjShPjAY5": {
           "uuid": "qLRv6Rlf_Y_L",
@@ -1670,7 +1670,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -1692,9 +1692,9 @@
           "defaultStyle": { "__ref": "XK9lfwRkqVJm" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "mj6LfX2--GWQ": {
           "uuid": "aYp3DIbQaRKh",
@@ -1761,7 +1761,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -1783,9 +1783,9 @@
           "defaultStyle": { "__ref": "N68wRUqg0jEF" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "-CVGhMBkm39j": {
           "uuid": "Yh91xc6bzKH6",
@@ -1852,7 +1852,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -1921,8 +1921,8 @@
         "3091304": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "3091305": {
           "type": { "__ref": "3091307" },
@@ -2068,6 +2068,8 @@
           "displayName": "Condition Guard",
           "importName": "ConditionGuard",
           "description": "Ensure some condition, or else run an interaction. Examples: ensure all users have a database row, or require new users to setup a profile.",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -2081,10 +2083,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "3935001": {
           "components": [
@@ -2134,9 +2134,9 @@
           "defaultStyle": { "__ref": "3935062" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "3935062": {
           "name": "Default Typography",
@@ -2241,6 +2241,8 @@
           "displayName": "Embed HTML",
           "importName": "Embed",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "7682015" },
@@ -2254,10 +2256,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "7682008": { "name": "code", "uuid": "ARXptWIBzB", "__type": "Var" },
         "7682011": {
@@ -2405,6 +2405,8 @@
           "displayName": "Data Provider",
           "importName": "DataProvider",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -2418,10 +2420,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "11490009": { "name": "name", "uuid": "GXFVFWfyxZl", "__type": "Var" },
         "11490010": { "name": "text", "__type": "Text" },
@@ -2445,8 +2445,8 @@
         "11490016": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "11490017": {
           "param": { "__ref": "11490005" },
@@ -2615,6 +2615,8 @@
           "displayName": "Iframe",
           "importName": "Iframe",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "34442167" },
@@ -2628,10 +2630,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "34442070": {
           "type": { "__ref": "34442179" },
@@ -2822,6 +2822,8 @@
           "displayName": "HTML Video",
           "importName": "Video",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "39447001" },
@@ -2835,10 +2837,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "34442160": { "name": "src", "uuid": "6-acOUSDbVf", "__type": "Var" },
         "34442161": { "name": "text", "__type": "Text" },
@@ -2950,6 +2950,8 @@
           "displayName": "Side Effect",
           "importName": "SideEffect",
           "description": "Run actions on load, unload, and when data changes.",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -2963,10 +2965,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "169KSwIlWIPK": {
           "uuid": "5HCry2LpS1FS",
@@ -3143,6 +3143,8 @@
           "displayName": "Timer",
           "importName": "Timer",
           "description": "Run something periodically",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -3156,10 +3158,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "tY8MGiZAhddF": {
           "uuid": "R6jVl64am4sX",
@@ -3396,7 +3396,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -3418,9 +3418,9 @@
           "defaultStyle": { "__ref": "Lil7EmBu70nR" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "YaH5yOkOuXCR": {
           "uuid": "nnfejcEYApPs",
@@ -3761,6 +3761,8 @@
           "displayName": "Page Metadata Override",
           "importName": "PlasmicHead",
           "description": "Set page metadata (HTML <head />) to dynamic values.",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -3774,10 +3776,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "hKsdzIkEtrB3": {
           "type": { "__ref": "iGlqXTrzjUdI" },
@@ -3909,6 +3909,8 @@
           "displayName": "Data Fetcher",
           "importName": "Fetcher",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -3922,10 +3924,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "L6NdkzTQ3wv5": { "name": "text", "__type": "Text" },
         "5xMdqYO-29iq": {
@@ -3978,8 +3978,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "fRX6i9xWeQeD" }],
           "allowed": [],
-          "__type": "RenderFuncType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
         },
         "g2JO4s11woP8": {
           "name": "children",
@@ -5084,8 +5084,8 @@
         "-vaHlI4w3CtU": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "feiKaLSDUy8K": {
           "name": "children",
@@ -5107,8 +5107,8 @@
         "Bv_aTzNajWUx": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "X0FIQw9WhmmB": {
           "name": "start icon",
@@ -5118,8 +5118,8 @@
         "IdLEfAUeaxxO": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "FRHt0pDC4wxX": {
           "name": "end icon",
@@ -11881,7 +11881,7 @@
         "ea54091c-dcfb-47e2-86b4-fe360c62f6ec",
         "7bfdcdde-66e0-469e-9022-02955a3f8f15"
       ],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ]
 ]

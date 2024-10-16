@@ -394,9 +394,9 @@
             { "__ref": "39429232" }
           ],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "39429079": {
           "name": "Default Typography",
@@ -1235,6 +1235,8 @@
           "displayName": "Head",
           "importName": "PlasmicHead",
           "description": "Used to add page metadata to HTML <head />.",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -1248,10 +1250,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "62876009": { "name": "title", "uuid": "VyIm0_aYsK", "__type": "Var" },
         "62876010": { "name": "text", "__type": "Text" },
@@ -1474,7 +1474,7 @@
         "62876048": { "values": {}, "mixins": [], "__type": "RuleSet" }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ]
 ]

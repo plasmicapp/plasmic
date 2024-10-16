@@ -4111,33 +4111,33 @@
         "1037": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1038": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1041": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1048": { "name": "text", "__type": "Text" },
         "1050": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1051": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1059": { "name": "text", "__type": "Text" },
         "1060": {
@@ -4639,8 +4639,8 @@
         "1174": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1175": {
           "variants": [{ "__ref": "1065" }],
@@ -4940,8 +4940,8 @@
         "1227": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1228": {
           "tag": "div",
@@ -5144,8 +5144,8 @@
         "1267": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1268": {
           "variants": [{ "__ref": "1107" }],
@@ -5193,8 +5193,8 @@
         "1279": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1280": {
           "tag": "div",
@@ -5856,8 +5856,8 @@
         "1410": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1411": {
           "tag": "div",
@@ -5938,8 +5938,8 @@
         "1422": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1423": {
           "variants": [{ "__ref": "1354" }],
@@ -6668,8 +6668,8 @@
         "1641": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1642": {
           "variants": [{ "__ref": "1566" }],
@@ -7199,8 +7199,8 @@
         "1849": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1850": {
           "name": "Relative placement",
@@ -7993,8 +7993,8 @@
         "1985": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1986": {
           "name": "Relative placement",
@@ -11929,7 +11929,7 @@
         "3474": { "values": {}, "mixins": [], "__type": "RuleSet" },
         "460001": {
           "uuid": "EgwaekvNLJd",
-          "name": "",
+          "name": "Unnamed Component",
           "params": [
             { "__ref": "1115735" },
             { "__ref": "1115736" },
@@ -12783,29 +12783,29 @@
         "1115713": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1115714": { "name": "text", "__type": "Text" },
         "1115715": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1115716": { "name": "bool", "__type": "BoolType" },
         "1115717": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1115718": { "name": "bool", "__type": "BoolType" },
         "1115719": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1115720": { "name": "bool", "__type": "BoolType" },
         "1115721": { "code": "\"\"", "fallback": null, "__type": "CustomCode" },
@@ -12813,8 +12813,8 @@
         "1115723": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1115724": { "name": "bool", "__type": "BoolType" },
         "1115725": {
@@ -14125,8 +14125,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "7772002" }],
           "allowed": [],
-          "__type": "RenderFuncType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
         },
         "7772002": {
           "name": "arg",
@@ -15374,8 +15374,8 @@
         "11429041": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "11429042": {
           "name": "end icon",
@@ -15385,8 +15385,8 @@
         "11429043": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "11429044": {
           "name": "Is Disabled",
@@ -20653,8 +20653,8 @@
         "26480373": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "26480374": {
           "name": "start icon",
@@ -20664,8 +20664,8 @@
         "26480375": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "26480376": {
           "name": "Show Start Icon",
@@ -24990,6 +24990,8 @@
           "displayName": "Page Metadata Override",
           "importName": "PlasmicHead",
           "description": "Set page metadata (HTML <head />) to dynamic values.",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -25003,10 +25005,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "39001010": {
           "type": { "__ref": "39001029" },
@@ -25138,6 +25138,8 @@
           "displayName": "Data Fetcher",
           "importName": "Fetcher",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -25151,10 +25153,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "39001019": { "name": "title", "uuid": "48yL8HFO_K", "__type": "Var" },
         "39001020": { "name": "text", "__type": "Text" },
@@ -33033,8 +33033,8 @@
         "64969253": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "64969254": {
           "name": "end icon",
@@ -33044,8 +33044,8 @@
         "64969255": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "64969256": {
           "name": "Is Disabled",
@@ -42756,7 +42756,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ]
 ]

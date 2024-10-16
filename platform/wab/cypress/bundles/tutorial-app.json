@@ -141,6 +141,8 @@
           "displayName": "Loading Boundary",
           "importName": "LoadingBoundary",
           "description": "Handle the loading state of queries and integrations",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -156,10 +158,8 @@
           "defaultSlotContents": {
             "loadingState": { "type": "text", "value": "Loading..." }
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "5092209": {
           "name": "children",
@@ -169,8 +169,8 @@
         "5092210": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "5092211": {
           "name": "loadingState",
@@ -180,8 +180,8 @@
         "5092212": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "5092213": {
           "name": "forceLoading",
@@ -287,9 +287,9 @@
           "defaultStyle": { "__ref": "5531022" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "5531022": {
           "name": "Default Typography",
@@ -303,7 +303,7 @@
         "5531023": { "values": {}, "mixins": [], "__type": "RuleSet" }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -341,8 +341,8 @@
         "147204": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "147205": {
           "param": { "__ref": "147202" },
@@ -545,6 +545,8 @@
           "displayName": "Data details",
           "importName": "RichDetails",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "242227" },
@@ -558,10 +560,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "242214": { "name": "data", "uuid": "naE7-HV9sWFy", "__type": "Var" },
         "242215": { "name": "queryData", "__type": "QueryData" },
@@ -627,8 +627,8 @@
         "2311404": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "2438603": {
           "name": "choice",
@@ -1609,6 +1609,8 @@
           "displayName": "Data List",
           "importName": "RichList",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "6124956" },
@@ -1622,10 +1624,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "6124922": { "name": "data", "uuid": "TrEBmS785Epx", "__type": "Var" },
         "6124923": { "name": "queryData", "__type": "QueryData" },
@@ -1646,8 +1646,8 @@
         "6124927": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "6124928": {
           "name": "footer",
@@ -1657,8 +1657,8 @@
         "6124929": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "6124930": { "name": "title", "uuid": "fmK5eHizWYk4", "__type": "Var" },
         "6124932": {
@@ -1966,9 +1966,9 @@
           "defaultStyle": { "__ref": "11866076" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "11866076": {
           "name": "Default Typography",
@@ -2282,6 +2282,8 @@
           "displayName": "Rich App Layout",
           "importName": "RichLayout",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "2701005" },
@@ -2300,10 +2302,8 @@
               "src": "https://static1.plasmic.app/fake-logo.svg"
             }
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "33147169": {
           "type": { "__ref": "6124902" },
@@ -2414,6 +2414,8 @@
           "displayName": "Table",
           "importName": "RichTable",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "4730004" },
@@ -2427,10 +2429,8 @@
           "styleSections": null,
           "helpers": { "__ref": "5217129" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "33147176": {
           "name": "children",
@@ -2445,8 +2445,8 @@
         "33147179": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "33147180": {
           "name": "title",
@@ -2979,6 +2979,8 @@
           "displayName": "Calendar",
           "importName": "RichCalendar",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -2992,10 +2994,8 @@
           "styleSections": null,
           "helpers": { "__ref": "CpYdEbX4j98H" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "7pxKb4N2hgmM": { "name": "any", "__type": "AnyType" },
         "csEgA_czIFU2": {
@@ -3063,8 +3063,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "GjnLNyeamgo_" }],
           "allowed": [],
-          "__type": "RenderFuncType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
         },
         "D4augVNYkd5m": {
           "name": "headerRender",
@@ -3075,8 +3075,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "U9gOLIgvklIq" }],
           "allowed": [],
-          "__type": "RenderFuncType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
         },
         "lY465Y-0krqd": {
           "name": "dateCellRender",
@@ -3087,8 +3087,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "bS3mMhya-qxj" }],
           "allowed": [],
-          "__type": "RenderFuncType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
         },
         "p4RqptM6UaiX": {
           "name": "dateFullCellRender",
@@ -3099,8 +3099,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "S3aPmzxLyjB2" }],
           "allowed": [],
-          "__type": "RenderFuncType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
         },
         "Zqe2TI0JFlIf": {
           "name": "monthCellRender",
@@ -3111,8 +3111,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "A6Exc9hRG-nS" }],
           "allowed": [],
-          "__type": "RenderFuncType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
         },
         "c36ZukMQGn4G": {
           "name": "monthFullCellRender",
@@ -4361,7 +4361,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -4427,8 +4427,8 @@
         "859503": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "859504": {
           "param": { "__ref": "859502" },
@@ -4485,8 +4485,8 @@
         "859508": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "859509": {
           "name": "showText",
@@ -4759,6 +4759,8 @@
           "displayName": "Color Picker",
           "importName": "AntdColorPicker",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -4772,10 +4774,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "859545": {
           "uuid": "Nb0bEUV6vm",
@@ -4944,8 +4944,8 @@
         "859559": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "859560": {
           "param": { "__ref": "859558" },
@@ -5007,8 +5007,8 @@
         "859564": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "859565": { "name": "title", "uuid": "Uo1B8BZbrFE", "__type": "Var" },
         "859566": {
@@ -5066,8 +5066,8 @@
         "859571": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "859572": { "name": "footer", "uuid": "1O9O1GHdA1n", "__type": "Var" },
         "859573": {
@@ -5115,8 +5115,8 @@
         "859577": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "859578": {
           "name": "closeIcon",
@@ -5285,6 +5285,8 @@
           "displayName": "Drawer",
           "importName": "AntdDrawer",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -5301,10 +5303,8 @@
             "children": { "type": "vbox", "children": ["Drawer content"] },
             "title": "Drawer title"
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "859606": {
           "uuid": "uIwOvA8Rbo",
@@ -5667,6 +5667,8 @@
           "displayName": "Steps",
           "importName": "AntdSteps",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -5680,10 +5682,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "859649": {
           "uuid": "rdsGm3tzUj",
@@ -5740,8 +5740,8 @@
         "859651": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "859652": {
           "param": { "__ref": "859650" },
@@ -5798,8 +5798,8 @@
         "859656": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "859657": { "name": "title", "uuid": "R5m6kYUQPH9", "__type": "Var" },
         "859658": {
@@ -5963,6 +5963,8 @@
           "displayName": "Tooltip",
           "importName": "AntdTooltip",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -5981,10 +5983,8 @@
               "value": "This text element is wrapped in a Tooltip component"
             }
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "859679": {
           "uuid": "nqcsn8n56U",
@@ -6207,6 +6207,8 @@
           "displayName": "Avatar",
           "importName": "AntdAvatar",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -6220,10 +6222,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "859706": {
           "uuid": "GuSPoNm_cBy",
@@ -6278,8 +6278,8 @@
         "859708": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "859709": {
           "param": { "__ref": "859707" },
@@ -6435,6 +6435,8 @@
           "displayName": "AvatarGroup",
           "importName": "AntdAvatarGroup",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -6499,10 +6501,8 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "1053701": {
           "uuid": "GDiBhO1FaQ",
@@ -7106,8 +7106,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "1053771" }],
           "allowed": [],
-          "__type": "RenderFuncType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
         },
         "1053771": {
           "name": "arg",
@@ -7306,6 +7306,8 @@
           "displayName": "Tree",
           "importName": "AntdTree",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -7319,10 +7321,8 @@
           "styleSections": null,
           "helpers": { "__ref": "1053799" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "1053799": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerTree",
@@ -7936,8 +7936,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "1053870" }],
           "allowed": [],
-          "__type": "RenderFuncType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
         },
         "1053870": {
           "name": "arg",
@@ -8136,6 +8136,8 @@
           "displayName": "Directory Tree",
           "importName": "AntdDirectoryTree",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -8149,10 +8151,8 @@
           "styleSections": null,
           "helpers": { "__ref": "1053898" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "1053898": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerTree",
@@ -8163,8 +8163,8 @@
         "1271601": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1271602": {
           "name": "renderFunc",
@@ -8174,8 +8174,8 @@
             { "__ref": "1271607" }
           ],
           "allowed": [],
-          "__type": "RenderFuncType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
         },
         "1271603": {
           "name": "arg",
@@ -8204,20 +8204,20 @@
         "1271609": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1271610": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1271611": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1271612": {
           "type": { "__ref": "1271614" },
@@ -8330,14 +8330,14 @@
         "1271635": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1271636": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1271637": {
           "name": "renderFunc",
@@ -8348,8 +8348,8 @@
             { "__ref": "1271640" },
             { "__ref": "1271641" }
           ],
-          "__type": "RenderFuncType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
         },
         "1271638": {
           "name": "instance",
@@ -8383,8 +8383,8 @@
         "1271643": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1271644": {
           "type": { "__ref": "1271646" },
@@ -8446,14 +8446,14 @@
         "1271651": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1271652": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1271653": {
           "type": { "__ref": "1271655" },
@@ -8928,6 +8928,8 @@
           "displayName": "Date/Time Picker",
           "importName": "AntdDatePicker",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -8941,10 +8943,8 @@
           "styleSections": null,
           "helpers": { "__ref": "gzxLDH9v9TQI" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "1462101": { "name": "any", "__type": "AnyType" },
         "1462102": {
@@ -9028,8 +9028,8 @@
         "1462112": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1462113": {
           "param": { "__ref": "1462110" },
@@ -9249,6 +9249,8 @@
           "displayName": "Switch",
           "importName": "AntdSwitch",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -9262,10 +9264,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "1692101": {
           "type": { "__ref": "1692103" },
@@ -9306,8 +9306,8 @@
         "1692104": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "2012101": { "name": "href", "__type": "HrefType" },
         "2012102": { "name": "bool", "__type": "BoolType" },
@@ -9535,8 +9535,8 @@
         "5764207": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "6111301": {
           "name": "System: Primary",
@@ -10672,8 +10672,8 @@
         "15330001": {
           "name": "renderable",
           "params": [{ "__ref": "15330002" }, { "__ref": "15330003" }],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "15330002": {
           "name": "instance",
@@ -10760,8 +10760,8 @@
         "15330010": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "15330011": {
           "tag": "div",
@@ -10850,6 +10850,8 @@
           "displayName": "Option Group",
           "importName": "AntdOptionGroup",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -10883,10 +10885,8 @@
             ],
             "label": "Group label"
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "15330062": {
           "type": { "__ref": "1462101" },
@@ -10973,8 +10973,8 @@
             { "__ref": "15330089" },
             { "__ref": "15330110" }
           ],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "15330073": {
           "name": "instance",
@@ -11032,8 +11032,8 @@
             { "__ref": "15330099" },
             { "__ref": "15330100" }
           ],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "15330097": {
           "name": "instance",
@@ -12207,8 +12207,8 @@
         "15330312": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "15330313": {
           "type": { "__ref": "15330315" },
@@ -12239,8 +12239,8 @@
         "15330315": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "15330316": {
           "type": { "__ref": "15330318" },
@@ -12271,8 +12271,8 @@
         "15330318": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "15330319": {
           "type": { "__ref": "15330321" },
@@ -12303,8 +12303,8 @@
         "15330321": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "15330322": {
           "type": { "__ref": "15330324" },
@@ -12526,6 +12526,8 @@
           "displayName": "Input",
           "importName": "AntdInput",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -12539,10 +12541,8 @@
           "styleSections": null,
           "helpers": { "__ref": "15330352" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "15330352": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerInput",
@@ -12814,6 +12814,8 @@
           "displayName": "Password Input",
           "importName": "AntdPassword",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -12827,10 +12829,8 @@
           "styleSections": null,
           "helpers": { "__ref": "15330387" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "15330387": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerInput",
@@ -13102,6 +13102,8 @@
           "displayName": "Text Area",
           "importName": "AntdTextArea",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -13115,10 +13117,8 @@
           "styleSections": null,
           "helpers": { "__ref": "15330422" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "15330422": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerInput",
@@ -13339,8 +13339,8 @@
         "15330447": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "15330448": {
           "type": { "__ref": "15330450" },
@@ -13371,8 +13371,8 @@
         "15330450": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "15330451": {
           "type": { "__ref": "15330453" },
@@ -13403,8 +13403,8 @@
         "15330453": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "15330454": {
           "type": { "__ref": "15330456" },
@@ -13435,8 +13435,8 @@
         "15330456": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "15330457": {
           "type": { "__ref": "15330459" },
@@ -13788,6 +13788,8 @@
           "displayName": "Number Input",
           "importName": "AntdInputNumber",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -13801,10 +13803,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "15330514": {
           "variants": [{ "__ref": "15330271" }],
@@ -13840,6 +13840,8 @@
           "displayName": "Form Field",
           "importName": "FormItemWrapper",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "2705235" },
@@ -13856,10 +13858,8 @@
             "label": { "type": "text", "value": "Label" },
             "children": { "type": "component", "name": "plasmic-antd5-input" }
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "15330525": {
           "uuid": "Q_cXymEaPO",
@@ -13905,6 +13905,8 @@
           "displayName": "Form",
           "importName": "FormWrapper",
           "description": "[Learn how to use forms](https://docs.plasmic.app/learn/forms/)",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "2705205" },
@@ -13928,10 +13930,8 @@
               }
             }
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "15330608": {
           "uuid": "zEXrWX9naj",
@@ -14007,8 +14007,8 @@
         "15330614": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "15330615": {
           "tag": "div",
@@ -14076,6 +14076,8 @@
           "displayName": "Form Field Group",
           "importName": "FormGroup",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -14089,10 +14091,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "15330625": {
           "uuid": "M2mN_XzxO4",
@@ -14272,6 +14272,8 @@
           "displayName": "Form List",
           "importName": "FormListWrapper",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -14317,22 +14319,20 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "23535001": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "23535081": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "23535082": {
           "name": "renderable",
@@ -14342,8 +14342,8 @@
             { "__ref": "23535085" },
             { "__ref": "23535086" }
           ],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "23535083": {
           "name": "instance",
@@ -14368,14 +14368,14 @@
         "23535087": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "23535289": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "25511001": {
           "type": { "__ref": "25511003" },
@@ -14668,6 +14668,8 @@
           "displayName": "Checkbox",
           "importName": "AntdCheckbox",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -14683,10 +14685,8 @@
           "defaultSlotContents": {
             "children": [{ "type": "text", "value": "Checkbox" }]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "25511047": {
           "uuid": "2bM6vBkaxc",
@@ -14799,8 +14799,8 @@
         "25511056": {
           "name": "renderable",
           "params": [{ "__ref": "25511057" }],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "25511057": {
           "name": "instance",
@@ -14911,6 +14911,8 @@
           "displayName": "Checkbox Group",
           "importName": "AntdCheckboxGroup",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -14924,10 +14926,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "25511074": {
           "uuid": "-CXVV9tXtP",
@@ -15124,6 +15124,8 @@
           "displayName": "Radio",
           "importName": "AntdRadio",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -15139,10 +15141,8 @@
           "defaultSlotContents": {
             "children": [{ "type": "text", "value": "Radio" }]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "25511105": {
           "uuid": "PZQhrvIGy1",
@@ -15258,8 +15258,8 @@
         "25511114": {
           "name": "renderable",
           "params": [{ "__ref": "25511115" }, { "__ref": "25511116" }],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "25511115": {
           "name": "instance",
@@ -15466,6 +15466,8 @@
           "displayName": "Radio Button",
           "importName": "AntdRadioButton",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -15481,10 +15483,8 @@
           "defaultSlotContents": {
             "children": [{ "type": "text", "value": "Radio" }]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "25511148": {
           "type": { "__ref": "25511150" },
@@ -15590,6 +15590,8 @@
           "displayName": "Radio Group",
           "importName": "AntdRadioGroup",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "1271622" },
@@ -15622,10 +15624,8 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "25511164": {
           "uuid": "xx93QbkHH5i",
@@ -15722,8 +15722,8 @@
         "25511170": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "25511171": {
           "type": { "__ref": "25511173" },
@@ -15750,8 +15750,8 @@
         "25511173": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "25511174": {
           "type": { "__ref": "25511176" },
@@ -15782,8 +15782,8 @@
         "25511176": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "25511177": {
           "type": { "__ref": "25511179" },
@@ -15814,8 +15814,8 @@
         "25511179": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "25511180": {
           "type": { "__ref": "25511182" },
@@ -16175,6 +16175,8 @@
           "displayName": "Modal",
           "importName": "AntdModal",
           "description": "[See tutorial video](https://www.youtube.com/watch?v=TkjxNJIFun8)",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -16196,10 +16198,8 @@
               "props": { "children": { "type": "text", "value": "Show modal" } }
             }
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "25511254": {
           "uuid": "bx9Xzvf5_eu",
@@ -16508,8 +16508,8 @@
         "25511287": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "25511288": {
           "tag": "div",
@@ -16598,6 +16598,8 @@
           "displayName": "Button",
           "importName": "AntdButton",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -16613,10 +16615,8 @@
           "defaultSlotContents": {
             "children": [{ "type": "text", "value": "Button" }]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "25511309": {
           "uuid": "fo-n3xHvdqt",
@@ -16683,8 +16683,8 @@
         "25511312": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "25511313": {
           "type": { "__ref": "25511315" },
@@ -17012,6 +17012,8 @@
           "displayName": "Menu Item",
           "importName": "AntdMenuItem",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -17027,10 +17029,8 @@
           "defaultSlotContents": {
             "children": [{ "type": "text", "value": "Menu item" }]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "25511362": {
           "uuid": "pwJcAbVYC4M",
@@ -17127,6 +17127,8 @@
           "displayName": "Menu Divider",
           "importName": "AntdMenuDivider",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -17140,10 +17142,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "25511374": {
           "uuid": "nL-8oPEfDNL",
@@ -17429,6 +17429,8 @@
           "displayName": "Item Group",
           "importName": "AntdMenuItemGroup",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -17447,10 +17449,8 @@
               { "type": "component", "name": "plasmic-antd5-menu-item" }
             ]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "25511438": {
           "tag": "div",
@@ -17539,6 +17539,8 @@
           "displayName": "Sub Menu",
           "importName": "AntdSubMenu",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -17572,10 +17574,8 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "25511493": {
           "type": { "__ref": "25511495" },
@@ -17702,6 +17702,8 @@
           "displayName": "Menu",
           "importName": "AntdMenu",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -17728,10 +17730,8 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "25511541": {
           "uuid": "zIDEYq9RgLG",
@@ -18057,6 +18057,8 @@
           "displayName": "Dropdown",
           "importName": "AntdDropdown",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -18090,10 +18092,8 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "32119001": {
           "components": [
@@ -18293,9 +18293,9 @@
           "defaultStyle": { "__ref": "32119076" },
           "styles": [],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "32119076": {
           "name": "Default Typography",
@@ -18624,6 +18624,8 @@
           "displayName": "Upload",
           "importName": "UploadWrapper",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -18645,10 +18647,8 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "56569001": {
           "variableType": "text",
@@ -19337,6 +19337,8 @@
           "displayName": "Select",
           "importName": "AntdSelect",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -19350,10 +19352,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": { "placeholder": "Select..." },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "57463186": {
           "type": { "__ref": "1271601" },
@@ -19425,6 +19425,8 @@
           "displayName": "Option",
           "importName": "AntdOption",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -19438,10 +19440,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": { "children": "Option" },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "57463191": {
           "type": { "__ref": "57463288" },
@@ -19634,6 +19634,8 @@
           "displayName": "Table",
           "importName": "AntdTable",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -19647,10 +19649,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "57463203": {
           "type": { "__ref": "57463306" },
@@ -19803,6 +19803,8 @@
           "displayName": "Column",
           "importName": "AntdColumn",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -19816,10 +19818,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": { "title": "Column Name" },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "57463212": {
           "type": { "__ref": "57463321" },
@@ -19892,6 +19892,8 @@
           "displayName": "Column Group",
           "importName": "AntdColumnGroup",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -19905,10 +19907,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": { "title": "Column Group Name" },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "57463217": {
           "type": { "__ref": "57463328" },
@@ -20220,6 +20220,8 @@
           "displayName": "Ant Design System Settings",
           "importName": "AntdConfigProvider",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -20233,10 +20235,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "57463235": {
           "variants": [{ "__ref": "32119068" }],
@@ -20262,8 +20262,8 @@
         "57463239": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "57463240": {
           "name": "suffixIcon",
@@ -20273,8 +20273,8 @@
         "57463241": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "57463242": { "name": "open", "uuid": "Rh-vHb9iHBzX", "__type": "Var" },
         "57463243": { "name": "bool", "__type": "BoolType" },
@@ -20352,8 +20352,8 @@
         "57463263": {
           "name": "className",
           "selectors": [{ "__ref": "57463374" }, { "__ref": "57463375" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "57463264": {
           "name": "popupScopeClassName",
@@ -20373,8 +20373,8 @@
         "57463267": {
           "name": "className",
           "selectors": [],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "57463268": {
           "name": "optionClassName",
@@ -20388,8 +20388,8 @@
             { "__ref": "57463377" },
             { "__ref": "57463378" }
           ],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "57463270": {
           "name": "placeholderClassName",
@@ -20399,8 +20399,8 @@
         "57463271": {
           "name": "className",
           "selectors": [{ "__ref": "57463379" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "57463272": {
           "name": "defaultStylesClassName",
@@ -20491,8 +20491,8 @@
         "57463290": {
           "name": "renderable",
           "params": [{ "__ref": "57463390" }, { "__ref": "57463391" }],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "57463291": {
           "name": "bordered",
@@ -20578,8 +20578,8 @@
         "57463306": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "57463307": {
           "name": "dataIndex",
@@ -20655,8 +20655,8 @@
         "57463321": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "57463322": {
           "name": "children",
@@ -20666,8 +20666,8 @@
         "57463323": {
           "name": "renderable",
           "params": [{ "__ref": "57463403" }],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "57463324": {
           "param": { "__ref": "57463212" },
@@ -20851,8 +20851,8 @@
         "57463368": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "57463369": {
           "param": { "__ref": "57463231" },
@@ -20892,38 +20892,38 @@
         "57463374": {
           "selector": ":component .ant-select-selector.ant-select-selector",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "57463375": {
           "selector": ":component .ant-select-selector:hover",
           "label": "Hovered",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "57463376": {
           "selector": ":popup.ant-select-dropdown .ant-select-item-option",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "57463377": {
           "selector": ":popup.ant-select-dropdown .ant-select-item-option-active",
           "label": "Focused",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "57463378": {
           "selector": ":popup.ant-select-dropdown .ant-select-item-option-selected",
           "label": "Selected",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "57463379": {
           "selector": ":component .ant-select-selector .ant-select-selection-placeholder",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "57463381": {
           "variants": [{ "__ref": "57463184" }],
@@ -21119,6 +21119,8 @@
           "displayName": "Accordion",
           "importName": "AntdAccordion",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "IbYnhhGzYKoy" },
@@ -21153,10 +21155,8 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "_0GsXtWBZnZK": {
           "uuid": "KBAh3cPLLMJZ",
@@ -21244,6 +21244,8 @@
           "displayName": "Accordion Item",
           "importName": "AntdAccordionItem",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -21260,10 +21262,8 @@
             "label2": "Collapse Header",
             "children": "Collapsible text..."
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "alFPuW3XKSuv": {
           "uuid": "_SGBaCbxh2xU",
@@ -21447,8 +21447,8 @@
         "BQ-mMX9F1Rqi": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "RRS5yVGCECYF": {
           "name": "expandIcon",
@@ -21590,8 +21590,8 @@
         "UPH5lNxupOxC": {
           "name": "renderable",
           "params": [{ "__ref": "HQWL3oMtIaOp" }],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "PpvgZb0ynHbL": {
           "name": "items",
@@ -21810,8 +21810,8 @@
         "SWZEqCNIAFWE": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "aYOfqJOoUksn": {
           "name": "extra",
@@ -21943,6 +21943,8 @@
           "displayName": "Collapse",
           "importName": "AntdSingleCollapse",
           "description": "Accordion, but with a single collapsible block.",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "G1lWfjMP75X-" },
@@ -21959,10 +21961,8 @@
             "label2": "Collapse Header",
             "children": "Collapsible text..."
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "l7qEHBd0zKPZ": {
           "uuid": "fiFcuLmybR1n",
@@ -22057,6 +22057,8 @@
           "displayName": "Popover",
           "importName": "AntdPopover",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -22074,10 +22076,8 @@
             "content": "Popover contents",
             "title": "Popover title"
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "BkInrlOmDhZd": {
           "uuid": "IRpbd7awq0CZ",
@@ -22173,6 +22173,8 @@
           "displayName": "Tabs",
           "importName": "AntdTabs",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "hGWDA2Qw4Mln" },
@@ -22207,10 +22209,8 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "U-bADC1IzsCC": {
           "uuid": "C4umAGfLNUZ4",
@@ -22309,6 +22309,8 @@
           "displayName": "Tab Item",
           "importName": "AntdTabItem",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -22322,10 +22324,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": { "label": "Tab" },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "Tt2Vm7j1xYPA": {
           "uuid": "mLcJ4xdEqieG",
@@ -22516,8 +22516,8 @@
         "XY_cIPUC1Hfb": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "JVGqg6ubhmkK": {
           "name": "extra",
@@ -22579,8 +22579,8 @@
         "vavEhYDof9GP": {
           "name": "className",
           "selectors": [],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "jrih8O1fzodo": {
           "name": "headerClass",
@@ -22610,8 +22610,8 @@
         "bJO45P12OCXD": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "U3O1q3cQGR7O": {
           "name": "children",
@@ -22699,8 +22699,8 @@
         "Ghq5UhpyIMEN": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "5vPZgDfks4XR": {
           "name": "expandIcon",
@@ -23012,8 +23012,8 @@
         "JaJwJ9CCeB4D": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "IEFyPmwSVPOM": {
           "name": "children",
@@ -23074,14 +23074,14 @@
         "M1vu6xwhpOWw": {
           "selector": ":popover.ant-popover .ant-popover-inner",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "WB_vrE2RSWCI": {
           "name": "className",
           "selectors": [{ "__ref": "M1vu6xwhpOWw" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "BPGWWNre7c-D": {
           "name": "popoverContentClassName",
@@ -23111,8 +23111,8 @@
         "aeuyhUyQgqTu": {
           "name": "className",
           "selectors": [],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "S3-6MXab10IP": {
           "name": "overlayClassName",
@@ -23142,8 +23142,8 @@
         "bcUTQaaug9jb": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "GCIrO5oJE0ki": {
           "name": "content",
@@ -23205,8 +23205,8 @@
         "Wd4vezwo6rbl": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "87I2PuiJvX2K": {
           "name": "title",
@@ -23698,8 +23698,8 @@
         "FLhxBtYuIgcE": {
           "name": "renderable",
           "params": [{ "__ref": "WEzVZSzk4eVf" }],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "KBB6zX6vG0kb": {
           "name": "items",
@@ -23760,8 +23760,8 @@
         "rWJ797-OzU_F": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "zOgnCnhaxVnR": {
           "name": "tabBarExtraContentLeft",
@@ -23792,8 +23792,8 @@
         "aOuoJbPeNnRg": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "E2i9hwwPODeP": {
           "name": "tabBarExtraContentRight",
@@ -24028,14 +24028,14 @@
         "BvKik9V7Yz0S": {
           "selector": ":tabs.ant-tabs .ant-tabs-nav",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "Z3PvJY8JPCgm": {
           "name": "className",
           "selectors": [{ "__ref": "BvKik9V7Yz0S" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "iTRaOhKAcEmu": {
           "name": "tabBarClassName",
@@ -24095,14 +24095,14 @@
         "qZ8vhcZRuBas": {
           "selector": ":tabsDropdown.ant-tabs-dropdown .ant-tabs-dropdown-menu",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "o7OW6BrF8dAV": {
           "name": "className",
           "selectors": [{ "__ref": "qZ8vhcZRuBas" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "XCztGMMATfjV": {
           "name": "tabsDropdownClassName",
@@ -24405,8 +24405,8 @@
         "HEHJP2I8pmAB": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "5DaMcNskCBS6": {
           "name": "label",
@@ -24437,8 +24437,8 @@
         "ExnjgYSNE6rF": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "hp_jPhmTdvh5": {
           "name": "children",
@@ -24517,14 +24517,14 @@
         "1Fp6vYUJuW9v": {
           "selector": ":modal .ant-modal-close",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "FvK4k8XCoFeD": {
           "name": "className",
           "selectors": [{ "__ref": "1Fp6vYUJuW9v" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "2A4Ouxk4v2yc": {
           "name": "wrapClassName",
@@ -24554,14 +24554,14 @@
         "9KHijZfZhENm": {
           "selector": ":modal .ant-modal-content",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "oIPOCDG1J0LV": {
           "name": "className",
           "selectors": [{ "__ref": "9KHijZfZhENm" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "NHXuj1IYaLvs": {
           "name": "modalContentClassName",
@@ -24591,8 +24591,8 @@
         "0cQtEQ2LB8oP": {
           "name": "className",
           "selectors": [],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "JNdM_C74EbPX": {
           "name": "popupClassName",
@@ -24652,14 +24652,14 @@
         "DpZWq_6v9zTM": {
           "selector": ":dropdownMenu.ant-dropdown-menu",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "B_0quU7Bx2lQ": {
           "name": "className",
           "selectors": [{ "__ref": "DpZWq_6v9zTM" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "yobQ5amOWa-R": {
           "name": "menuClassName",
@@ -24689,14 +24689,14 @@
         "SRRcLZqM5ULC": {
           "selector": ":dropdownMenu.ant-dropdown-menu .ant-dropdown-menu-item",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "WUeRiB2NJBSm": {
           "selector": ":dropdownMenu.ant-dropdown-menu .ant-dropdown-menu-item-active",
           "label": "Focused",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "xP9vFalkDKqE": {
           "name": "className",
@@ -24704,8 +24704,8 @@
             { "__ref": "SRRcLZqM5ULC" },
             { "__ref": "WUeRiB2NJBSm" }
           ],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "zLPcQtXewgow": {
           "name": "menuItemClassName",
@@ -24765,14 +24765,14 @@
         "EXCnBlRgSuTK": {
           "selector": ":datePickerPopup .ant-picker-panel-container",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "8KpybmYF6kg2": {
           "name": "className",
           "selectors": [{ "__ref": "EXCnBlRgSuTK" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "Qxq--r9nBFap": {
           "name": "popupClassName",
@@ -24802,14 +24802,14 @@
         "wVSEA-2y7pdu": {
           "selector": ":datePickerPopup .ant-picker-header",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "6W8SOKRnCD9X": {
           "name": "className",
           "selectors": [{ "__ref": "wVSEA-2y7pdu" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "zRHLQrmuZskD": {
           "name": "popupHeaderClassName",
@@ -24839,14 +24839,14 @@
         "b0K5KEVN34Ai": {
           "selector": ":datePickerPopup .ant-picker-body",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "yOIUF4AZMBG5": {
           "name": "className",
           "selectors": [{ "__ref": "b0K5KEVN34Ai" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "Qt6Bs-9xuonj": {
           "name": "popupBodyClassName",
@@ -24876,14 +24876,14 @@
         "LTqwm5Y6XnT-": {
           "selector": ":datePickerPopup .ant-picker-footer",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "L6T4fcNcWt-F": {
           "name": "className",
           "selectors": [{ "__ref": "LTqwm5Y6XnT-" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "oFW6YwoH4JGV": {
           "name": "popupFooterClassName",
@@ -24913,26 +24913,26 @@
         "52f3kkVzX5Uz": {
           "selector": ":drawer .ant-drawer-close",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "GLU-Bh-fYX3P": {
           "name": "className",
           "selectors": [{ "__ref": "52f3kkVzX5Uz" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "_p9Rs52yDl4Y": {
           "selector": ":drawer .ant-drawer-header",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "RUmwgMNYyM9C": {
           "name": "className",
           "selectors": [{ "__ref": "_p9Rs52yDl4Y" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "8Uss6tEUSzlm": {
           "name": "drawerHeaderClassName",
@@ -24962,14 +24962,14 @@
         "Eesw2znJPiI-": {
           "selector": ":drawer .ant-drawer-body",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "xZN_IvoPpaVm": {
           "name": "className",
           "selectors": [{ "__ref": "Eesw2znJPiI-" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "doQS6mzaC-Ca": {
           "name": "drawerBodyClassName",
@@ -24999,14 +24999,14 @@
         "SufWgaqcOrLo": {
           "selector": ":drawer .ant-drawer-footer",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "GfL1JffwaHAO": {
           "name": "className",
           "selectors": [{ "__ref": "SufWgaqcOrLo" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "8u1RvnM-aGy9": {
           "name": "drawerFooterClassName",
@@ -25036,14 +25036,14 @@
         "nVeKwSzqRJ7p": {
           "selector": ":drawer .ant-drawer-title",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "FC8lx_9ob2vi": {
           "name": "className",
           "selectors": [{ "__ref": "nVeKwSzqRJ7p" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "Ivg3Oj1cmiqG": {
           "name": "drawerTitleClassName",
@@ -25073,14 +25073,14 @@
         "Hb2TXgNIAejc": {
           "selector": ":drawer .ant-drawer-mask",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "TPtUToHh3Hb-": {
           "name": "className",
           "selectors": [{ "__ref": "Hb2TXgNIAejc" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "z2Q_JTEr7vRh": {
           "name": "drawerMaskClassName",
@@ -25110,14 +25110,14 @@
         "VQ6yLbvupVtx": {
           "selector": ":drawer .ant-drawer-content-wrapper",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "dH3jRQe3IUT4": {
           "name": "className",
           "selectors": [{ "__ref": "VQ6yLbvupVtx" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "EhsBg9JqJLAO": {
           "name": "drawerContentWrapperClassName",
@@ -25147,8 +25147,8 @@
         "d1lqc452xMRS": {
           "name": "className",
           "selectors": [],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "bgOJpBRLOHg4": {
           "name": "overlayClassName",
@@ -25259,14 +25259,14 @@
         "JJ54xFkVtbGa": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "2wSX0LG2V6ja": {
           "name": "className",
           "selectors": [],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "m5bcrwfRk9tC": {
           "name": "headerClass",
@@ -25309,6 +25309,8 @@
           "displayName": "Rate",
           "importName": "AntdRate",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -25322,10 +25324,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": { "symbols": ["1", "2", "3", "4", "5"] },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "JAO2uAvvHgBD": {
           "uuid": "Ia38424DrMFf",
@@ -25490,8 +25490,8 @@
         "ZjinIVwOVOAU": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "eT6Qt9GDggaW": {
           "name": "character",
@@ -25548,8 +25548,8 @@
         "k0VeIndcPI5t": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "zrESXXOuX4iY": {
           "name": "symbols",
@@ -25944,8 +25944,8 @@
         "5vHxNIK6W465": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "85cXqNPxtFxA": {
           "name": "label2",
@@ -25977,8 +25977,8 @@
         "UqYnb2_mhG7I": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "IHXMNOq9iQJs": {
           "name": "label2",
@@ -26069,6 +26069,8 @@
           "displayName": "Date Range Picker",
           "importName": "AntdDateRangePicker",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -26082,10 +26084,8 @@
           "styleSections": null,
           "helpers": { "__ref": "NC38rRa6Fxme" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "3ahBOoNT9HKi": {
           "uuid": "jo_hetUA_krU",
@@ -26188,6 +26188,8 @@
           "displayName": "Slider",
           "importName": "AntdSingleSlider",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "t7FOL7kfsmuN" },
@@ -26212,10 +26214,8 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "c1WT35ZMzbsC": {
           "uuid": "7GpWC7fgilLJ",
@@ -26324,6 +26324,8 @@
           "displayName": "Range Slider",
           "importName": "AntdRangeSlider",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "5YZkKecVaiU-" },
@@ -26348,10 +26350,8 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "TiEwuzpAaWBc": {
           "uuid": "usMK2QDFv4rE",
@@ -26451,6 +26451,8 @@
           "displayName": "Slider Mark",
           "importName": "AntdSliderMark",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -26464,10 +26466,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "Uwx8NA5CHcTm": {
           "uuid": "HuZoPn_Lfn3O",
@@ -27039,8 +27039,8 @@
         "iOaLrm8Z_syv": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "6F94IIdWSY6J": {
           "name": "renderExtraFooter",
@@ -27127,14 +27127,14 @@
         "N2eUqzkVD76p": {
           "selector": ":dateRangePickerPopup .ant-picker-panel-container",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "gvIgzqq4NW5t": {
           "name": "className",
           "selectors": [{ "__ref": "N2eUqzkVD76p" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "-el8l2CQXJsS": {
           "name": "popupClassName",
@@ -27164,14 +27164,14 @@
         "YDhWJWV5c818": {
           "selector": ":dateRangePickerPopup .ant-picker-header",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "wU6J40arfdK9": {
           "name": "className",
           "selectors": [{ "__ref": "YDhWJWV5c818" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "-OHymFnI2WD1": {
           "name": "popupHeaderClassName",
@@ -27201,14 +27201,14 @@
         "3N_SSTwDNsXZ": {
           "selector": ":dateRangePickerPopup .ant-picker-body",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "d4CLpZ7agHaB": {
           "name": "className",
           "selectors": [{ "__ref": "3N_SSTwDNsXZ" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "vzymOc6qvMw-": {
           "name": "popupBodyClassName",
@@ -27238,14 +27238,14 @@
         "KlPa5eTg-6Dk": {
           "selector": ":dateRangePickerPopup .ant-picker-footer",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "xOIdkMeRJQDW": {
           "name": "className",
           "selectors": [{ "__ref": "KlPa5eTg-6Dk" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "M1LQEZRA0koH": {
           "name": "popupFooterClassName",
@@ -27592,8 +27592,8 @@
         "DRoJFrExn9hz": {
           "name": "renderable",
           "params": [{ "__ref": "ss8TpZF-cUIF" }],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "9vmIn3dZnlRO": {
           "name": "stylableMarks",
@@ -27944,14 +27944,14 @@
         "VaGLBSYdhaxn": {
           "selector": ":slider.ant-slider .ant-slider-rail",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "3JeSPWmka_zb": {
           "name": "className",
           "selectors": [{ "__ref": "VaGLBSYdhaxn" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "ZycS13UX32Q-": {
           "name": "railClassName",
@@ -27981,14 +27981,14 @@
         "wfk6nsPMtxxE": {
           "selector": ":slider.ant-slider .ant-slider-track",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "OfeQtbeJOeO3": {
           "name": "className",
           "selectors": [{ "__ref": "wfk6nsPMtxxE" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "L7SpUw57hYv6": {
           "name": "trackClassName",
@@ -28018,14 +28018,14 @@
         "r3Z6SHye255B": {
           "selector": ":slider.ant-slider .ant-slider-handle::after",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "0-TijOk5VW4p": {
           "name": "className",
           "selectors": [{ "__ref": "r3Z6SHye255B" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "YMTN2QuvzH_4": {
           "name": "handleClassName",
@@ -28055,14 +28055,14 @@
         "8YV6fm38Zdcl": {
           "selector": ":slider.ant-slider .ant-slider-dot",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "4ufGGL_-KQGg": {
           "name": "className",
           "selectors": [{ "__ref": "8YV6fm38Zdcl" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "HMPSnyXAPNUN": {
           "name": "dotClassName",
@@ -28092,14 +28092,14 @@
         "KDickIuVn62_": {
           "selector": ":slider.ant-slider .ant-slider-dot.ant-slider-dot-active",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "ft1arbqivqx7": {
           "name": "className",
           "selectors": [{ "__ref": "KDickIuVn62_" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "MIH10Ufea8dX": {
           "name": "activeDotClassName",
@@ -28129,14 +28129,14 @@
         "vy6PPcFbArQa": {
           "selector": ":slider.ant-slider .ant-slider-tooltip",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "MoSPdKhg96f2": {
           "name": "className",
           "selectors": [{ "__ref": "vy6PPcFbArQa" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "aVDxAt-PVCf2": {
           "name": "tooltipClassName",
@@ -28488,8 +28488,8 @@
         "sz0yJcQ61afa": {
           "name": "renderable",
           "params": [{ "__ref": "6DtZ_7gULeOB" }],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "8Z-FjXfXy3aD": {
           "name": "stylableMarks",
@@ -28840,14 +28840,14 @@
         "YQlMHBd_SPGC": {
           "selector": ":slider.ant-slider .ant-slider-rail",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "hClBrqXmCLn8": {
           "name": "className",
           "selectors": [{ "__ref": "YQlMHBd_SPGC" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "V8qFV-3iXfy_": {
           "name": "railClassName",
@@ -28877,14 +28877,14 @@
         "Yy4vC727_eF6": {
           "selector": ":slider.ant-slider .ant-slider-track",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "SgPIA7CyK4CP": {
           "name": "className",
           "selectors": [{ "__ref": "Yy4vC727_eF6" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "FB-n5FctkXEM": {
           "name": "trackClassName",
@@ -28914,14 +28914,14 @@
         "zZ7RQEvYE1hu": {
           "selector": ":slider.ant-slider .ant-slider-handle::after",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "d9sE6pLw-fWH": {
           "name": "className",
           "selectors": [{ "__ref": "zZ7RQEvYE1hu" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "ERIxmnOX0Pa0": {
           "name": "handleClassName",
@@ -28951,14 +28951,14 @@
         "HtCOs4RMVswt": {
           "selector": ":slider.ant-slider .ant-slider-dot",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "OVVaGRJexvo0": {
           "name": "className",
           "selectors": [{ "__ref": "HtCOs4RMVswt" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "lIC7kA0OfbZh": {
           "name": "dotClassName",
@@ -28988,14 +28988,14 @@
         "OhmIgs35PNB9": {
           "selector": ":slider.ant-slider .ant-slider-dot.ant-slider-dot-active",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "rp4W0u0DzlsD": {
           "name": "className",
           "selectors": [{ "__ref": "OhmIgs35PNB9" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "4JaY7u2eFlU7": {
           "name": "activeDotClassName",
@@ -29025,14 +29025,14 @@
         "Uh2ZT7slzl2R": {
           "selector": ":slider.ant-slider .ant-slider-tooltip",
           "label": "Base",
-          "__type": "LabeledSelector",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "LabeledSelector"
         },
         "Of42UJwJLKRo": {
           "name": "className",
           "selectors": [{ "__ref": "Uh2ZT7slzl2R" }],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "PEL9YIxIkQkS": {
           "name": "tooltipClassName",
@@ -29129,8 +29129,8 @@
         "qeudhLL8pTSR": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "HQkGNL2puX1m": {
           "name": "children",
@@ -29291,6 +29291,8 @@
           "displayName": "Segmented Option",
           "importName": "AntdSegmentedOption",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -29304,10 +29306,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "nqdsUzL9afbx": {
           "uuid": "uy8LAOYysfnz",
@@ -29378,6 +29378,8 @@
           "displayName": "Segmented",
           "importName": "AntdSegmented",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -29446,10 +29448,8 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "lcZpwrLZR_Ve": {
           "uuid": "AIhXbAirKZNK",
@@ -29552,8 +29552,8 @@
         "mb3Vcv-_Jvpx": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "pNEJFa1AQStf": {
           "name": "children",
@@ -29785,8 +29785,8 @@
         "qFnQo8K1DtTv": {
           "name": "renderable",
           "params": [{ "__ref": "7wYWv0-z9vCK" }],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "9o93wmYFGq8J": {
           "name": "optionsSlot",
@@ -29896,6 +29896,8 @@
           "displayName": "Progress",
           "importName": "AntdProgress",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -29909,10 +29911,8 @@
           "styleSections": null,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "tBrhaiwnSqmi": {
           "uuid": "mMI6RXoUEvDV",
@@ -30007,6 +30007,8 @@
           "displayName": "Pagination",
           "importName": "AntdPagination",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -30020,10 +30022,8 @@
           "styleSections": null,
           "helpers": { "__ref": "fa3TRQRYOVRy" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "KGmpdF862t6_": {
           "uuid": "m840CPpNWrci",
@@ -31133,8 +31133,8 @@
         "wvntAowdx3C1": {
           "name": "className",
           "selectors": [],
-          "__type": "ClassNamePropType",
-          "defaultStyles": {}
+          "defaultStyles": {},
+          "__type": "ClassNamePropType"
         },
         "rZUppbe6dS-E": { "name": "text", "__type": "Text" },
         "wP6ReauPwAay": {
@@ -31165,8 +31165,8 @@
         "2EqWziw3zsyd": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "Y_wcDVcel8EA": {
           "name": "trigger",
@@ -31299,7 +31299,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -31760,6 +31760,8 @@
           "displayName": "Page Metadata Override",
           "importName": "PlasmicHead",
           "description": "Set page metadata (HTML <head />) to dynamic values.",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -31773,10 +31775,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "CRBtySQjDvV3": {
           "uuid": "FLOJnNqnFJOf",
@@ -31876,8 +31876,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "BbQCI-7C4baH" }],
           "allowed": [],
-          "__type": "RenderFuncType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
         },
         "Qk4GQ5vUNqW9": {
           "type": { "__ref": "m88aFfS5cZR4" },
@@ -32018,6 +32018,8 @@
           "displayName": "Data Fetcher",
           "importName": "Fetcher",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -32031,10 +32033,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "rqzVkPwiiD0x": {
           "uuid": "KuttsqxRrJj8",
@@ -32074,8 +32074,8 @@
         "vOvept9qRB8X": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "FZKoEQqg_EdN": {
           "type": { "__ref": "vOvept9qRB8X" },
@@ -33020,9 +33020,9 @@
             { "__ref": "B0qmNELDR4OM" }
           ],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "zL8-8JQnkFpM": {
           "name": "Screen",
@@ -33418,7 +33418,7 @@
         "9c488568-819f-4186-896f-d32559c8714f",
         "ea14a8ed-7ed0-46bb-b4b3-ff4cbfd151c3"
       ],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ]
 ]

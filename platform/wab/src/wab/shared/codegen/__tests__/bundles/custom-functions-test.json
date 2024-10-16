@@ -385,6 +385,8 @@
           "displayName": "Page Metadata Override",
           "importName": "PlasmicHead",
           "description": "Set page metadata (HTML <head />) to dynamic values.",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -398,10 +400,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "5xd_u-JP1gew": {
           "uuid": "WxYff_NPVJvK",
@@ -643,6 +643,8 @@
           "displayName": "Data Fetcher",
           "importName": "Fetcher",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -656,10 +658,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "f2E7_tNnXWGs": {
           "uuid": "wzTkMnXfRlz9",
@@ -1321,43 +1321,42 @@
           "__type": "Site"
         },
         "yzbvhnx54CVG": {
-          "__type": "CustomFunction",
           "importPath": "./functions",
           "importName": "sum",
           "defaultExport": false,
-          "namespace": "math"
+          "namespace": "math",
+          "__type": "CustomFunction"
         },
         "-hD0qzX8Rbv7": {
-          "__type": "CustomFunction",
           "importPath": "./functions",
           "importName": "subtract",
           "defaultExport": true,
-          "namespace": "math"
+          "namespace": "math",
+          "__type": "CustomFunction"
         },
         "1wavIcOhMzR6": {
-          "__type": "CustomFunction",
           "importPath": "./functions",
           "importName": "greeting",
           "defaultExport": false,
-          "namespace": null
+          "namespace": null,
+          "__type": "CustomFunction"
         },
         "SOeWExDqMzIL": {
-          "__type": "ExprText",
           "expr": { "__ref": "Q2V4gWoP0oq8" },
-          "html": false
+          "html": false,
+          "__type": "ExprText"
         },
         "Q2V4gWoP0oq8": {
-          "__type": "CustomCode",
           "code": "(`The result is: ${$$.math.sum(8, $$.math.subtract(5, 3))}`)",
-          "fallback": { "__ref": "5lWxTnHYNIgP" }
+          "fallback": { "__ref": "5lWxTnHYNIgP" },
+          "__type": "CustomCode"
         },
         "5lWxTnHYNIgP": {
-          "__type": "CustomCode",
           "code": "\"The result is:\"",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "yJGa6L-wfi1T": {
-          "__type": "TplTag",
           "tag": "div",
           "name": null,
           "children": [],
@@ -1367,10 +1366,10 @@
           "uuid": "7GBoEhTqyoIt",
           "parent": { "__ref": "YOhlM2-5xBk0" },
           "locked": null,
-          "vsettings": [{ "__ref": "-zod0aN5KDg2" }]
+          "vsettings": [{ "__ref": "-zod0aN5KDg2" }],
+          "__type": "TplTag"
         },
         "-zod0aN5KDg2": {
-          "__type": "VariantSetting",
           "variants": [{ "__ref": "oI4d-P0LkUkL" }],
           "args": [],
           "attrs": { "title": { "__ref": "q3DKf9TsONfd" } },
@@ -1378,64 +1377,65 @@
           "dataCond": null,
           "dataRep": null,
           "text": { "__ref": "L45PyY41A5gC" },
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "gXXaVc6_CDZp": {
-          "__type": "RuleSet",
           "values": {
             "position": "relative",
             "width": "stretch",
             "height": "wrap",
             "max-width": "100%"
           },
-          "mixins": []
+          "mixins": [],
+          "__type": "RuleSet"
         },
         "L45PyY41A5gC": {
-          "__type": "ExprText",
           "expr": { "__ref": "YbKly-IyRXkq" },
-          "html": false
+          "html": false,
+          "__type": "ExprText"
         },
         "YbKly-IyRXkq": {
-          "__type": "CustomCode",
           "code": "($$.greeting(\"Plasmic\"))",
-          "fallback": { "__ref": "ZTnunf3FuRmO" }
+          "fallback": { "__ref": "ZTnunf3FuRmO" },
+          "__type": "CustomCode"
         },
         "ZTnunf3FuRmO": {
-          "__type": "CustomCode",
           "code": "\"\"",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "vBDF8MKT2Fx7": {
-          "__type": "CustomCode",
           "code": "(`The result is: ${$$.math.sum(8, $$.math.subtract(5, 3))}`)",
-          "fallback": { "__ref": "xRiVByjRNm-Y" }
+          "fallback": { "__ref": "xRiVByjRNm-Y" },
+          "__type": "CustomCode"
         },
         "xRiVByjRNm-Y": {
-          "__type": "CustomCode",
           "code": "undefined",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "N2ZWGkrkpfs9": {
-          "__type": "TemplatedString",
-          "text": ["", { "__ref": "vBDF8MKT2Fx7" }, ""]
+          "text": ["", { "__ref": "vBDF8MKT2Fx7" }, ""],
+          "__type": "TemplatedString"
         },
         "ATXNrSamomu4": {
-          "__type": "CustomCode",
           "code": "($$.greeting(\"Plasmic\"))",
-          "fallback": { "__ref": "F94Te9MRXDfV" }
+          "fallback": { "__ref": "F94Te9MRXDfV" },
+          "__type": "CustomCode"
         },
         "F94Te9MRXDfV": {
-          "__type": "CustomCode",
           "code": "undefined",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "q3DKf9TsONfd": {
-          "__type": "TemplatedString",
-          "text": ["", { "__ref": "ATXNrSamomu4" }, ""]
+          "text": ["", { "__ref": "ATXNrSamomu4" }, ""],
+          "__type": "TemplatedString"
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ]
 ]

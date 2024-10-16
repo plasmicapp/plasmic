@@ -215,6 +215,8 @@
           "displayName": "Head",
           "importName": "PlasmicHead",
           "description": "Used to add page metadata to HTML <head />.",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -228,10 +230,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "14363010": {
           "type": { "__ref": "14363028" },
@@ -363,6 +363,8 @@
           "displayName": "Data Source Fetcher",
           "importName": "Fetcher",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -376,10 +378,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "14363018": { "name": "title", "uuid": "B20rzmZ_36", "__type": "Var" },
         "14363019": { "name": "text", "__type": "Text" },
@@ -421,8 +421,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "14363040" }],
           "allowed": [],
-          "__type": "RenderFuncType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
         },
         "14363033": {
           "name": "pageSize",
@@ -1305,8 +1305,8 @@
         "14363125": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "14363126": {
           "name": "Show Start Icon",
@@ -1328,8 +1328,8 @@
         "14363131": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "14363132": {
           "name": "end icon",
@@ -1339,8 +1339,8 @@
         "14363133": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "14363134": {
           "name": "Is Disabled",
@@ -6761,8 +6761,8 @@
         "14364017": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "14364018": {
           "variants": [{ "__ref": "14363052" }],
@@ -8540,9 +8540,9 @@
             { "__ref": "62885229" }
           ],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "62885076": {
           "name": "Default Typography",
@@ -9424,7 +9424,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ]
 ]

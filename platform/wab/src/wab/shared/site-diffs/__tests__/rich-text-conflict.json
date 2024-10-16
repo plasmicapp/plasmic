@@ -510,6 +510,8 @@
             "displayName": "Page Metadata Override",
             "importName": "PlasmicHead",
             "description": "Set page metadata (HTML <head />) to dynamic values.",
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -523,10 +525,8 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "4f5QJDTElPWj": {
             "type": { "__ref": "19-KO5WSIn9u" },
@@ -658,6 +658,8 @@
             "displayName": "Data Fetcher",
             "importName": "Fetcher",
             "description": null,
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -671,10 +673,8 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "8cyCagXbmfTU": { "name": "text", "__type": "Text" },
           "o5emTqYfAe8x": {
@@ -727,8 +727,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "aA60ZqW9wiOR" }],
             "allowed": [],
-            "__type": "RenderFuncType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderFuncType"
           },
           "3dqxWrMGaFXF": {
             "name": "children",
@@ -1022,7 +1022,7 @@
           }
         },
         "deps": [],
-        "version": "235-variant-selectors-no-display-name-corrected"
+        "version": "236-rename-duplicated-components"
       },
       "projectId": "aH1hFXMTo8YybdGp5ScZNk",
       "version": "0.0.1",
@@ -1550,6 +1550,8 @@
             "displayName": "Page Metadata Override",
             "importName": "PlasmicHead",
             "description": "Set page metadata (HTML <head />) to dynamic values.",
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -1563,10 +1565,8 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "4f5QJDTElPWj": {
             "type": { "__ref": "19-KO5WSIn9u" },
@@ -1698,6 +1698,8 @@
             "displayName": "Data Fetcher",
             "importName": "Fetcher",
             "description": null,
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -1711,10 +1713,8 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "8cyCagXbmfTU": { "name": "text", "__type": "Text" },
           "o5emTqYfAe8x": {
@@ -1767,8 +1767,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "aA60ZqW9wiOR" }],
             "allowed": [],
-            "__type": "RenderFuncType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderFuncType"
           },
           "3dqxWrMGaFXF": {
             "name": "children",
@@ -2049,7 +2049,7 @@
           }
         },
         "deps": [],
-        "version": "235-variant-selectors-no-display-name-corrected"
+        "version": "236-rename-duplicated-components"
       }
     },
     {
@@ -2561,6 +2561,8 @@
             "displayName": "Page Metadata Override",
             "importName": "PlasmicHead",
             "description": "Set page metadata (HTML <head />) to dynamic values.",
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -2574,10 +2576,8 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "4f5QJDTElPWj": {
             "type": { "__ref": "19-KO5WSIn9u" },
@@ -2709,6 +2709,8 @@
             "displayName": "Data Fetcher",
             "importName": "Fetcher",
             "description": null,
+            "section": null,
+            "thumbnailUrl": null,
             "classNameProp": null,
             "refProp": null,
             "defaultStyles": null,
@@ -2722,10 +2724,8 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "__type": "CodeComponentMeta",
-            "thumbnailUrl": null,
-            "section": null,
-            "variants": {}
+            "variants": {},
+            "__type": "CodeComponentMeta"
           },
           "8cyCagXbmfTU": { "name": "text", "__type": "Text" },
           "o5emTqYfAe8x": {
@@ -2778,8 +2778,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "aA60ZqW9wiOR" }],
             "allowed": [],
-            "__type": "RenderFuncType",
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderFuncType"
           },
           "3dqxWrMGaFXF": {
             "name": "children",
@@ -3064,7 +3064,7 @@
           }
         },
         "deps": [],
-        "version": "235-variant-selectors-no-display-name-corrected"
+        "version": "236-rename-duplicated-components"
       }
     }
   ]

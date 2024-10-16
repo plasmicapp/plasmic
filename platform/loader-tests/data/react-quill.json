@@ -23,9 +23,9 @@
           "defaultStyle": { "__ref": "SHG-ZaOleOje" },
           "styles": [],
           "layout": { "__ref": "Dyvj5ViGZIA-" },
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "pn48FXinGJiS": {
           "uuid": "HYzjsp1TstIa",
@@ -401,6 +401,8 @@
           "displayName": "Rich Text Editor",
           "importName": "Quill",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": "containerClassName",
           "refProp": null,
           "defaultStyles": { "__ref": "Ko7mhg1mzEXU" },
@@ -414,10 +416,8 @@
           "styleSections": null,
           "helpers": { "__ref": "vaRg84Qpwlre" },
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "9nGE7_S0fwMs": { "name": "text", "__type": "Text" },
         "eMlxI621enHl": {
@@ -735,7 +735,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -1152,9 +1152,9 @@
             { "__ref": "7nX4QBcCqLdm" }
           ],
           "layout": { "__ref": "Eb4BF8L1gv7u" },
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "-At_00oYrG3d": { "name": "text", "__type": "Text" },
         "T_33XK0l7i2G": {
@@ -1410,6 +1410,8 @@
           "displayName": "Page Metadata Override",
           "importName": "PlasmicHead",
           "description": "Set page metadata (HTML <head />) to dynamic values.",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -1423,10 +1425,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "foM50D4gZAnk": {
           "type": { "__ref": "iEzUBJRG0-7W" },
@@ -1558,6 +1558,8 @@
           "displayName": "Data Fetcher",
           "importName": "Fetcher",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -1571,10 +1573,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "DQOIIrFQ41yT": { "name": "text", "__type": "Text" },
         "7es968uy0OmS": {
@@ -1627,8 +1627,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "s0gY8o2gv2ri" }],
           "allowed": [],
-          "__type": "RenderFuncType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
         },
         "ejjtjSSlWKkA": {
           "name": "children",
@@ -2106,7 +2106,7 @@
         "tkbX31iChEAr": { "text": ["quill-state"], "__type": "TemplatedString" }
       },
       "deps": ["b911462e-59ce-455d-b8d3-0d84f50a35dd"],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ]
 ]

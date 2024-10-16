@@ -23,9 +23,9 @@
           "defaultStyle": { "__ref": "MjSCeVR3_3Hq" },
           "styles": [],
           "layout": { "__ref": "u7JAC32LSb-b" },
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "4XJEuEac9uPH": {
           "uuid": "LLZpJNz2A-ob",
@@ -855,6 +855,8 @@
           "displayName": "Slider Carousel",
           "importName": "SliderWrapper",
           "description": "[See tutorial video](https://www.youtube.com/watch?v=GMgXLbNHX8c)",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": { "__ref": "pVD2xi5KF87W" },
@@ -895,16 +897,14 @@
               }
             ]
           },
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "ejSM67D97QE-": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "-Jl8LJi4HATR": {
           "name": "children",
@@ -1282,7 +1282,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ],
   [
@@ -1699,9 +1699,9 @@
             { "__ref": "fWQTIm4crJko" }
           ],
           "layout": { "__ref": "R8enDqA15WC2" },
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "8VN47wSZvJB3": { "name": "text", "__type": "Text" },
         "bzdWAWU54w0B": {
@@ -1969,6 +1969,8 @@
           "displayName": "Page Metadata Override",
           "importName": "PlasmicHead",
           "description": "Set page metadata (HTML <head />) to dynamic values.",
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -1982,10 +1984,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "tyiDQptJ2skf": {
           "type": { "__ref": "JSvpuXAShe9I" },
@@ -2117,6 +2117,8 @@
           "displayName": "Data Fetcher",
           "importName": "Fetcher",
           "description": null,
+          "section": null,
+          "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
           "defaultStyles": null,
@@ -2130,10 +2132,8 @@
           "styleSections": false,
           "helpers": null,
           "defaultSlotContents": {},
-          "__type": "CodeComponentMeta",
-          "thumbnailUrl": null,
-          "section": null,
-          "variants": {}
+          "variants": {},
+          "__type": "CodeComponentMeta"
         },
         "mkofqeljrS4N": { "name": "text", "__type": "Text" },
         "vWcWZgeUzczW": {
@@ -2186,8 +2186,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "MgF_FZCbldme" }],
           "allowed": [],
-          "__type": "RenderFuncType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
         },
         "Q83aWr3hwOHh": {
           "name": "children",
@@ -3199,8 +3199,8 @@
         "bEwAJzn4ynZP": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "7GIvy8a1qDOG": {
           "name": "children",
@@ -3222,8 +3222,8 @@
         "FJEykkIv_kRs": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "luIiebJieIdE": {
           "name": "start icon",
@@ -3233,8 +3233,8 @@
         "TXDm70PXNeuY": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "1PobtVuUU8sd": {
           "name": "end icon",
@@ -9242,8 +9242,8 @@
         "FND4XsxD25M4": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "vJ-onWU0SojN": {
           "name": "end icon",
@@ -9253,8 +9253,8 @@
         "S1K71nxCSFXr": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "OThPoZjreuw-": {
           "name": "start icon",
@@ -13716,7 +13716,6 @@
           "__type": "CustomCode"
         },
         "KZC_mHpkY-mp": {
-          "__type": "State",
           "param": { "__ref": "PFQ10r8suLTv" },
           "accessType": "private",
           "variableType": "number",
@@ -13727,10 +13726,10 @@
               "uuid": "1397401c-b15c-47b2-8659-9b44c397e887",
               "iid": "biSqrpHXFLwK"
             }
-          }
+          },
+          "__type": "State"
         },
         "PFQ10r8suLTv": {
-          "__type": "StateParam",
           "type": { "__ref": "C6gKXMgyQDUR" },
           "state": { "__ref": "KZC_mHpkY-mp" },
           "variable": { "__ref": "4iOYDOoygTlV" },
@@ -13748,10 +13747,10 @@
           "isMainContentSlot": false,
           "required": false,
           "mergeWithParent": false,
-          "isLocalizable": false
+          "isLocalizable": false,
+          "__type": "StateParam"
         },
         "IemXgdpbSkOM": {
-          "__type": "StateChangeHandlerParam",
           "type": { "__ref": "mm3mN3nmZInZ" },
           "state": { "__ref": "KZC_mHpkY-mp" },
           "variable": { "__ref": "LPjaeBsi76kL" },
@@ -13769,34 +13768,34 @@
           "isMainContentSlot": false,
           "required": false,
           "mergeWithParent": false,
-          "isLocalizable": false
+          "isLocalizable": false,
+          "__type": "StateChangeHandlerParam"
         },
-        "C6gKXMgyQDUR": { "__type": "Num", "name": "num" },
+        "C6gKXMgyQDUR": { "name": "num", "__type": "Num" },
         "4iOYDOoygTlV": {
-          "__type": "Var",
           "name": "Slider Carousel initialSlide",
-          "uuid": "3i7MHOIovSSp"
+          "uuid": "3i7MHOIovSSp",
+          "__type": "Var"
         },
         "mm3mN3nmZInZ": {
-          "__type": "FunctionType",
           "name": "func",
-          "params": [{ "__ref": "fA_ET0a0012s" }]
+          "params": [{ "__ref": "fA_ET0a0012s" }],
+          "__type": "FunctionType"
         },
         "LPjaeBsi76kL": {
-          "__type": "Var",
           "name": "On Slider Carousel initialSlide change",
-          "uuid": "aZqZMcFyctLw"
+          "uuid": "aZqZMcFyctLw",
+          "__type": "Var"
         },
         "fA_ET0a0012s": {
-          "__type": "ArgType",
           "name": "arg",
           "argName": "val",
           "displayName": null,
-          "type": { "__ref": "szE9gvLNYXJr" }
+          "type": { "__ref": "szE9gvLNYXJr" },
+          "__type": "ArgType"
         },
-        "szE9gvLNYXJr": { "__type": "Num", "name": "num" },
+        "szE9gvLNYXJr": { "name": "num", "__type": "Num" },
         "pc80HsOmoeS2": {
-          "__type": "TplTag",
           "tag": "div",
           "name": null,
           "children": [],
@@ -13806,10 +13805,10 @@
           "uuid": "5RAodgr8XWF-",
           "parent": { "__ref": "Y7fjLAMILdxu" },
           "locked": null,
-          "vsettings": [{ "__ref": "re8lLnitTHcy" }]
+          "vsettings": [{ "__ref": "re8lLnitTHcy" }],
+          "__type": "TplTag"
         },
         "re8lLnitTHcy": {
-          "__type": "VariantSetting",
           "variants": [{ "__ref": "UBLrIWhgqr4b" }],
           "args": [],
           "attrs": { "id": { "__ref": "hn0XJ114mf5C" } },
@@ -13817,35 +13816,36 @@
           "dataCond": null,
           "dataRep": null,
           "text": { "__ref": "rLvTG5MeAZR5" },
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "DlELWxD254L5": {
-          "__type": "RuleSet",
           "values": { "position": "relative" },
-          "mixins": []
+          "mixins": [],
+          "__type": "RuleSet"
         },
         "rLvTG5MeAZR5": {
-          "__type": "ExprText",
           "expr": { "__ref": "KVSBusPh1Qmn" },
-          "html": false
+          "html": false,
+          "__type": "ExprText"
         },
         "KVSBusPh1Qmn": {
-          "__type": "ObjectPath",
           "path": ["$state", "sliderCarousel", "currentSlide"],
-          "fallback": { "__ref": "xqkZrTKJuCcI" }
+          "fallback": { "__ref": "xqkZrTKJuCcI" },
+          "__type": "ObjectPath"
         },
         "xqkZrTKJuCcI": {
-          "__type": "CustomCode",
           "code": "\"\"",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "hn0XJ114mf5C": {
-          "__type": "TemplatedString",
-          "text": ["slider-state-text"]
+          "text": ["slider-state-text"],
+          "__type": "TemplatedString"
         }
       },
       "deps": ["1397401c-b15c-47b2-8659-9b44c397e887"],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ]
 ]

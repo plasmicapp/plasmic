@@ -610,9 +610,9 @@
             { "__ref": "52785155" }
           ],
           "layout": null,
+          "addItemPrefs": {},
           "active": true,
-          "__type": "Theme",
-          "addItemPrefs": {}
+          "__type": "Theme"
         },
         "52785010": {
           "name": "Default Typography",
@@ -2394,8 +2394,8 @@
         "61747054": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType",
-          "allowRootWrapper": null
+          "allowRootWrapper": null,
+          "__type": "RenderableType"
         },
         "61747055": {
           "variants": [{ "__ref": "61747004" }],
@@ -2417,7 +2417,7 @@
         }
       },
       "deps": [],
-      "version": "235-variant-selectors-no-display-name-corrected"
+      "version": "236-rename-duplicated-components"
     }
   ]
 ]
