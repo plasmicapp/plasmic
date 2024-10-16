@@ -287,7 +287,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
               {
                 type: "folder" as const,
                 name: "Registered tokens",
-                key: "$registered-folder",
+                key: `$${tokenType}-registered-folder`,
                 ...makeTokensItems(registeredTokens),
               },
             ]
