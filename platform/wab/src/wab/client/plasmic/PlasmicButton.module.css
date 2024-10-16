@@ -223,14 +223,35 @@
 .root:hover {
   background: var(--token-bV4cCeIniS6);
 }
+.root:focus {
+  box-shadow: 0px 0px 0px 2px #0091ff80;
+}
+.root:active {
+  background: var(--token-Ik3bdE1e1Uy);
+}
 .roottype_primary:hover {
   background: var(--token-mu3x63xzJRW);
+}
+.roottype_primary:focus {
+  box-shadow: 0px 0px 0px 2px #0091ff80;
+}
+.roottype_primary:active {
+  background: var(--token-VUsIDivgUss);
 }
 .roottype_link:hover {
   background: #ffffff00;
 }
+.roottype_link:active {
+  background: none;
+}
 .roottype_backlitError:hover {
   background: var(--token-HKVCQ5ZKovK);
+}
+.roottype_backlitError:active {
+  background: var(--token-5kjtdCiiOPB);
+}
+.roottype_backlitInfo:active {
+  background: var(--token-RhvOnhv_xIi);
 }
 .roottype_backlitInfo:hover {
   background: var(--token-dqEx_KxIoYV);
@@ -247,7 +268,16 @@
 .roottype_clearPrimary:hover {
   background: var(--token-dqEx_KxIoYV);
 }
+.roottype_clearPrimary:active {
+  background: var(--token-RhvOnhv_xIi);
+}
 .roottype_seamless:hover {
+  background: none;
+}
+.roottype_seamless:active {
+  background: none;
+}
+.roottype_noPressed:active {
   background: none;
 }
 .rootwithIcons_endIconOnHover:hover {
@@ -277,74 +307,35 @@
   margin-left: 0px;
   margin-top: 0px;
 }
-.rootcolor_blue:hover {
-  background: var(--token-dqEx_KxIoYV);
-}
-.rootcolor_green:hover {
-  background: var(--token-dv0BWWyaHl7H);
-}
-.rootcolor_red:hover {
-  background: var(--token-HKVCQ5ZKovK);
-}
-.rootcolor_purple:hover {
-  background: var(--token-oPrqrxbKHqk);
-}
-.rootcolor_darkRed:hover {
-  background: var(--token-Y2CWh0ci95a);
-}
-.root:focus {
-  box-shadow: 0px 0px 0px 2px #0091ff80;
-  outline: none;
-}
-.roottype_primary:focus {
-  box-shadow: 0px 0px 0px 2px #0091ff80;
-  outline: none;
-}
-.roottype_link:focus {
-  outline: none;
-}
-.roottype_clearPrimary:focus {
-  outline: none;
-}
 .rootwithIcons_endIconOnHover:focus {
   box-shadow: none;
-  outline: none;
 }
-.root:active {
-  background: var(--token-Ik3bdE1e1Uy);
-}
-.roottype_primary:active {
-  background: var(--token-VUsIDivgUss);
-}
-.roottype_link:active {
-  background: none;
-}
-.roottype_backlitError:active {
-  background: var(--token-5kjtdCiiOPB);
-}
-.roottype_backlitInfo:active {
-  background: var(--token-RhvOnhv_xIi);
-}
-.roottype_clearPrimary:active {
-  background: var(--token-RhvOnhv_xIi);
-}
-.roottype_seamless:active {
-  background: none;
-}
-.roottype_noPressed:active {
-  background: none;
+.rootcolor_blue:hover {
+  background: var(--token-dqEx_KxIoYV);
 }
 .rootcolor_blue:active {
   background: var(--token-RhvOnhv_xIi);
 }
+.rootcolor_green:hover {
+  background: var(--token-dv0BWWyaHl7H);
+}
 .rootcolor_green:active {
   background: var(--token-3AptjBfMqvPS);
+}
+.rootcolor_red:hover {
+  background: var(--token-HKVCQ5ZKovK);
 }
 .rootcolor_red:active {
   background: var(--token-5kjtdCiiOPB);
 }
+.rootcolor_purple:hover {
+  background: var(--token-oPrqrxbKHqk);
+}
 .rootcolor_purple:active {
   background: var(--token-I2zAJ678hbp);
+}
+.rootcolor_darkRed:hover {
+  background: var(--token-Y2CWh0ci95a);
 }
 .rootcolor_darkRed:active {
   background: var(--token-Y2CWh0ci95a);
@@ -620,215 +611,6 @@
   > :global(.__wab_slot-string-wrapper) {
   text-decoration-line: underline;
 }
-.root:focus .slotTargetChildren > *,
-.root:focus .slotTargetChildren > :global(.__wab_slot) > *,
-.root:focus
-  .slotTargetChildren
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.root:focus
-  .slotTargetChildren
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.root:focus .slotTargetChildren > picture > img,
-.root:focus .slotTargetChildren > :global(.__wab_slot) > picture > img,
-.root:focus
-  .slotTargetChildren
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.root:focus
-  .slotTargetChildren
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  outline: none;
-}
-.roottype_primary:focus .slotTargetChildrentype_primary > *,
-.roottype_primary:focus
-  .slotTargetChildrentype_primary
-  > :global(.__wab_slot)
-  > *,
-.roottype_primary:focus
-  .slotTargetChildrentype_primary
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.roottype_primary:focus
-  .slotTargetChildrentype_primary
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.roottype_primary:focus .slotTargetChildrentype_primary > picture > img,
-.roottype_primary:focus
-  .slotTargetChildrentype_primary
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.roottype_primary:focus
-  .slotTargetChildrentype_primary
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.roottype_primary:focus
-  .slotTargetChildrentype_primary
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  outline: none;
-}
-.roottype_link:focus .slotTargetChildrentype_link > *,
-.roottype_link:focus .slotTargetChildrentype_link > :global(.__wab_slot) > *,
-.roottype_link:focus
-  .slotTargetChildrentype_link
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.roottype_link:focus
-  .slotTargetChildrentype_link
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.roottype_link:focus .slotTargetChildrentype_link > picture > img,
-.roottype_link:focus
-  .slotTargetChildrentype_link
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.roottype_link:focus
-  .slotTargetChildrentype_link
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.roottype_link:focus
-  .slotTargetChildrentype_link
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  outline: none;
-}
-.rootcolor_green:focus .slotTargetChildrencolor_green > *,
-.rootcolor_green:focus
-  .slotTargetChildrencolor_green
-  > :global(.__wab_slot)
-  > *,
-.rootcolor_green:focus
-  .slotTargetChildrencolor_green
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.rootcolor_green:focus
-  .slotTargetChildrencolor_green
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.rootcolor_green:focus .slotTargetChildrencolor_green > picture > img,
-.rootcolor_green:focus
-  .slotTargetChildrencolor_green
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.rootcolor_green:focus
-  .slotTargetChildrencolor_green
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.rootcolor_green:focus
-  .slotTargetChildrencolor_green
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  outline: none;
-}
-.rootcolor_red:focus .slotTargetChildrencolor_red > *,
-.rootcolor_red:focus .slotTargetChildrencolor_red > :global(.__wab_slot) > *,
-.rootcolor_red:focus
-  .slotTargetChildrencolor_red
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.rootcolor_red:focus
-  .slotTargetChildrencolor_red
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.rootcolor_red:focus .slotTargetChildrencolor_red > picture > img,
-.rootcolor_red:focus
-  .slotTargetChildrencolor_red
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.rootcolor_red:focus
-  .slotTargetChildrencolor_red
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.rootcolor_red:focus
-  .slotTargetChildrencolor_red
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  outline: none;
-}
-.rootcolor_purple:focus .slotTargetChildrencolor_purple > *,
-.rootcolor_purple:focus
-  .slotTargetChildrencolor_purple
-  > :global(.__wab_slot)
-  > *,
-.rootcolor_purple:focus
-  .slotTargetChildrencolor_purple
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.rootcolor_purple:focus
-  .slotTargetChildrencolor_purple
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.rootcolor_purple:focus .slotTargetChildrencolor_purple > picture > img,
-.rootcolor_purple:focus
-  .slotTargetChildrencolor_purple
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.rootcolor_purple:focus
-  .slotTargetChildrencolor_purple
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.rootcolor_purple:focus
-  .slotTargetChildrencolor_purple
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  outline: none;
-}
 .slotTargetCaption {
   font-size: 11px;
   line-height: 1.5;
@@ -1002,70 +784,6 @@
   > :global(.__wab_slot)
   > :global(.__wab_slot-string-wrapper) {
   text-decoration-line: underline;
-}
-.root:focus .slotTargetCaption > *,
-.root:focus .slotTargetCaption > :global(.__wab_slot) > *,
-.root:focus
-  .slotTargetCaption
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.root:focus
-  .slotTargetCaption
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.root:focus .slotTargetCaption > picture > img,
-.root:focus .slotTargetCaption > :global(.__wab_slot) > picture > img,
-.root:focus
-  .slotTargetCaption
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.root:focus
-  .slotTargetCaption
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  outline: none;
-}
-.roottype_link:focus .slotTargetCaptiontype_link > *,
-.roottype_link:focus .slotTargetCaptiontype_link > :global(.__wab_slot) > *,
-.roottype_link:focus
-  .slotTargetCaptiontype_link
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.roottype_link:focus
-  .slotTargetCaptiontype_link
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.roottype_link:focus .slotTargetCaptiontype_link > picture > img,
-.roottype_link:focus
-  .slotTargetCaptiontype_link
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.roottype_link:focus
-  .slotTargetCaptiontype_link
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.roottype_link:focus
-  .slotTargetCaptiontype_link
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  outline: none;
 }
 .endIconContainer {
   display: flex;

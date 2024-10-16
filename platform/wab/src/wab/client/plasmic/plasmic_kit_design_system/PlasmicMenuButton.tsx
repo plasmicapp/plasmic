@@ -15,56 +15,26 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
-  PlasmicIcon as PlasmicIcon__,
-  PlasmicImg as PlasmicImg__,
-  PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  generateOnMutateForSpec,
-  generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
-  generateStateValueProp,
-  get as $stateGet,
   hasVariant,
-  initializeCodeComponentStates,
-  initializePlasmicStates,
-  makeFragment,
-  omit,
-  pick,
-  renderPlasmicSlot,
-  set as $stateSet,
-  useCurrentUser,
   useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicMenuButton.module.css"; // plasmic-import: h69wHrrKtL/css
 
-import DotsVerticalSvgIcon from "../q_4_icons/icons/PlasmicIcon__DotsVerticalsvg"; // plasmic-import: joYBQwH-P/icon
 import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import DotsVerticalSvgIcon from "../q_4_icons/icons/PlasmicIcon__DotsVerticalsvg"; // plasmic-import: joYBQwH-P/icon
 
 createPlasmicElementProxy;
 
@@ -130,7 +100,7 @@ function PlasmicMenuButton__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants
+    ...variants,
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -143,27 +113,27 @@ function PlasmicMenuButton__RenderFunc(props: {
         path: "stepUp",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.stepUp
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.stepUp,
       },
       {
         path: "withBackgroundHover",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) =>
-          $props.withBackgroundHover
+          $props.withBackgroundHover,
       },
       {
         path: "type",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.type
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
       },
       {
         path: "size",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.size
-      }
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.size,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -171,7 +141,7 @@ function PlasmicMenuButton__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
-    $refs
+    $refs,
   });
 
   return (
@@ -194,7 +164,7 @@ function PlasmicMenuButton__RenderFunc(props: {
           $state,
           "withBackgroundHover",
           "withBackgroundHover"
-        )
+        ),
       })}
       hoverText={args.hoverText}
       size={hasVariant($state, "size", "small") ? "small" : "vertical"}
@@ -222,7 +192,7 @@ function PlasmicMenuButton__RenderFunc(props: {
             $state,
             "withBackgroundHover",
             "withBackgroundHover"
-          )
+          ),
         })}
         role={"img"}
       />
@@ -231,7 +201,7 @@ function PlasmicMenuButton__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root"]
+  root: ["root"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -276,7 +246,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicMenuButton__ArgProps,
-          internalVariantPropNames: PlasmicMenuButton__VariantProps
+          internalVariantPropNames: PlasmicMenuButton__VariantProps,
         }),
       [props, nodeName]
     );
@@ -284,7 +254,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName
+      forNode: nodeName,
     });
   };
   if (nodeName === "root") {
@@ -303,7 +273,7 @@ export const PlasmicMenuButton = Object.assign(
 
     // Metadata about props expected for PlasmicMenuButton
     internalVariantProps: PlasmicMenuButton__VariantProps,
-    internalArgProps: PlasmicMenuButton__ArgProps
+    internalArgProps: PlasmicMenuButton__ArgProps,
   }
 );
 

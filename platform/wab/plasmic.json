@@ -3226,7 +3226,8 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "customFunctions": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "jsBundleThemes": []
     },
     {
       "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
@@ -8493,8 +8494,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "sZNLVjiaeNGLXmdsrbRQAX",
@@ -8617,8 +8617,7 @@
       ],
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "ieacQ3Z46z4gwo1FnaB5vY",

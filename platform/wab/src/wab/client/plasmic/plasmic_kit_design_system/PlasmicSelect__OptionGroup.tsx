@@ -15,26 +15,11 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
-  PlasmicIcon as PlasmicIcon__,
-  PlasmicImg as PlasmicImg__,
-  PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  generateOnMutateForSpec,
-  generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
-  generateStateValueProp,
-  get as $stateGet,
   hasVariant,
   initializeCodeComponentStates,
   initializePlasmicStates,
@@ -42,17 +27,15 @@ import {
   omit,
   pick,
   renderPlasmicSlot,
-  set as $stateSet,
-  useCurrentUser,
   useDollarState,
   usePlasmicTranslator,
   useTrigger,
-  wrapWithClassName
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
 import {
   DataCtxReader as DataCtxReader__,
   useDataEnv,
-  useGlobalActions
+  useGlobalActions,
 } from "@plasmicapp/react-web/lib/host";
 
 import * as pp from "@plasmicapp/react-web";
@@ -129,7 +112,7 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants
+    ...variants,
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -142,20 +125,20 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
         path: "noTitle",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noTitle
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noTitle,
       },
       {
         path: "isFirst",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isFirst
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isFirst,
       },
       {
         path: "isLast",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isLast
-      }
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isLast,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -163,11 +146,11 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
-    $refs
+    $refs,
   });
 
   const superContexts = {
-    Select: React.useContext(SUPER__PlasmicSelect.Context)
+    Select: React.useContext(SUPER__PlasmicSelect.Context),
   };
 
   return (
@@ -187,7 +170,7 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
         {
           [sty.rootisFirst]: hasVariant($state, "isFirst", "isFirst"),
           [sty.rootisLast]: hasVariant($state, "isLast", "isLast"),
-          [sty.rootnoTitle]: hasVariant($state, "noTitle", "noTitle")
+          [sty.rootnoTitle]: hasVariant($state, "noTitle", "noTitle"),
         }
       )}
     >
@@ -206,13 +189,13 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
               $state,
               "noTitle",
               "noTitle"
-            )
+            ),
           })}
         >
           {renderPlasmicSlot({
             defaultContents: "Group Name",
             value: args.title,
-            className: classNames(sty.slotTargetTitle)
+            className: classNames(sty.slotTargetTitle),
           })}
         </div>
       ) : null}
@@ -236,7 +219,7 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
               </Select__Option>
             </React.Fragment>
           ),
-          value: args.children
+          value: args.children,
         })}
       </div>
       <div
@@ -244,7 +227,7 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
         data-plasmic-override={overrides.separator2}
         className={classNames(projectcss.all, sty.separator2, {
           [sty.separator2isFirst]: hasVariant($state, "isFirst", "isFirst"),
-          [sty.separator2isLast]: hasVariant($state, "isLast", "isLast")
+          [sty.separator2isLast]: hasVariant($state, "isLast", "isLast"),
         })}
       />
     </div>
@@ -260,7 +243,7 @@ function useBehavior<P extends pp.BaseSelectOptionGroupProps>(props: P) {
     root: "root",
     separator: "separator",
     titleContainer: "titleContainer",
-    optionsContainer: "optionsContainer"
+    optionsContainer: "optionsContainer",
   });
 }
 
@@ -268,7 +251,7 @@ const PlasmicDescendants = {
   root: ["root", "titleContainer", "optionsContainer", "separator2"],
   titleContainer: ["titleContainer"],
   optionsContainer: ["optionsContainer"],
-  separator2: ["separator2"]
+  separator2: ["separator2"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -316,7 +299,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicSelect__OptionGroup__ArgProps,
-          internalVariantPropNames: PlasmicSelect__OptionGroup__VariantProps
+          internalVariantPropNames: PlasmicSelect__OptionGroup__VariantProps,
         }),
       [props, nodeName]
     );
@@ -324,7 +307,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName
+      forNode: nodeName,
     });
   };
   if (nodeName === "root") {
@@ -348,7 +331,7 @@ export const PlasmicSelect__OptionGroup = Object.assign(
     internalVariantProps: PlasmicSelect__OptionGroup__VariantProps,
     internalArgProps: PlasmicSelect__OptionGroup__ArgProps,
 
-    useBehavior
+    useBehavior,
   }
 );
 

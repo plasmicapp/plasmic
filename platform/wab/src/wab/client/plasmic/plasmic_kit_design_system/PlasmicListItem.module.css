@@ -28,17 +28,17 @@
 .root:hover {
   background: var(--token-bV4cCeIniS6);
 }
+.root:active {
+  background: var(--token-Ik3bdE1e1Uy);
+}
 .rootisSelected:hover {
+  background: var(--token-dqEx_KxIoYV);
+}
+.rootisSelected:active {
   background: var(--token-dqEx_KxIoYV);
 }
 .rootcolor_variant:hover {
   background: var(--token-HKVCQ5ZKovK);
-}
-.root:active {
-  background: var(--token-Ik3bdE1e1Uy);
-}
-.rootisSelected:active {
-  background: var(--token-dqEx_KxIoYV);
 }
 .rootcolor_variant:active {
   background: var(--token-5kjtdCiiOPB);

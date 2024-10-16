@@ -15,44 +15,23 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
-  PlasmicIcon as PlasmicIcon__,
-  PlasmicImg as PlasmicImg__,
-  PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
   Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  generateOnMutateForSpec,
-  generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
-  generateStateValueProp,
-  get as $stateGet,
   hasVariant,
-  initializeCodeComponentStates,
-  initializePlasmicStates,
-  makeFragment,
-  omit,
-  pick,
   renderPlasmicSlot,
-  set as $stateSet,
-  useCurrentUser,
   useDollarState,
   usePlasmicTranslator,
   useTrigger,
-  wrapWithClassName
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
 import {
   DataCtxReader as DataCtxReader__,
   useDataEnv,
-  useGlobalActions
+  useGlobalActions,
 } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -116,7 +95,7 @@ function PlasmicTextWithInfo__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants
+    ...variants,
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -129,8 +108,8 @@ function PlasmicTextWithInfo__RenderFunc(props: {
         path: "medium",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.medium
-      }
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.medium,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -138,7 +117,7 @@ function PlasmicTextWithInfo__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
-    $refs
+    $refs,
   });
 
   return (
@@ -162,13 +141,13 @@ function PlasmicTextWithInfo__RenderFunc(props: {
     >
       {renderPlasmicSlot({
         defaultContents: "Enter some text",
-        value: args.children
+        value: args.children,
       })}
       <InformationSvgIcon
         data-plasmic-name={"icon"}
         data-plasmic-override={overrides.icon}
         className={classNames(projectcss.all, sty.icon, {
-          [sty.iconmedium]: hasVariant($state, "medium", "medium")
+          [sty.iconmedium]: hasVariant($state, "medium", "medium"),
         })}
         role={"img"}
       />
@@ -178,7 +157,7 @@ function PlasmicTextWithInfo__RenderFunc(props: {
 
 const PlasmicDescendants = {
   root: ["root", "icon"],
-  icon: ["icon"]
+  icon: ["icon"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -224,7 +203,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicTextWithInfo__ArgProps,
-          internalVariantPropNames: PlasmicTextWithInfo__VariantProps
+          internalVariantPropNames: PlasmicTextWithInfo__VariantProps,
         }),
       [props, nodeName]
     );
@@ -232,7 +211,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName
+      forNode: nodeName,
     });
   };
   if (nodeName === "root") {
@@ -252,7 +231,7 @@ export const PlasmicTextWithInfo = Object.assign(
 
     // Metadata about props expected for PlasmicTextWithInfo
     internalVariantProps: PlasmicTextWithInfo__VariantProps,
-    internalArgProps: PlasmicTextWithInfo__ArgProps
+    internalArgProps: PlasmicTextWithInfo__ArgProps,
   }
 );
 

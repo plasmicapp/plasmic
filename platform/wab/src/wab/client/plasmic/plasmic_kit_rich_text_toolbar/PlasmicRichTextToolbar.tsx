@@ -15,52 +15,21 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
-  PlasmicIcon as PlasmicIcon__,
-  PlasmicImg as PlasmicImg__,
-  PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
   Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  generateOnMutateForSpec,
-  generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
-  generateStateValueProp,
-  get as $stateGet,
   hasVariant,
-  initializeCodeComponentStates,
-  initializePlasmicStates,
-  makeFragment,
-  omit,
-  pick,
-  renderPlasmicSlot,
-  set as $stateSet,
-  useCurrentUser,
   useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName,
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions,
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
-import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
-import Select__OptionGroup from "../../components/widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
 import RichTextToolbarDivider from "../../components/canvas/RichText/RichTextToolbarDivider"; // plasmic-import: kVTvUj4Wyf/component
-import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import ActionMenuButton from "../../components/widgets/ActionMenuButton"; // plasmic-import: VNi6NC2QOI/component
+import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -69,13 +38,13 @@ import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_syst
 import projectcss from "./plasmic_plasmic_kit_rich_text_toolbar.module.css"; // plasmic-import: uLddf5fC1aQbF7tmV1WQ1a/projectcss
 import sty from "./PlasmicRichTextToolbar.module.css"; // plasmic-import: GzEy-XDJM8/css
 
-import TextsvgIcon from "../q_4_icons/icons/PlasmicIcon__Textsvg"; // plasmic-import: e3P4cMPJR/icon
-import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import BoldsvgIcon from "../q_4_icons/icons/PlasmicIcon__Boldsvg"; // plasmic-import: OiX2-qUyR/icon
-import ItalicsvgIcon from "../q_4_icons/icons/PlasmicIcon__Italicsvg"; // plasmic-import: taSQD6Nog/icon
-import UnderlinesvgIcon from "../q_4_icons/icons/PlasmicIcon__Underlinesvg"; // plasmic-import: LSpOu6_w3/icon
-import LinksvgIcon from "../q_4_icons/icons/PlasmicIcon__Linksvg"; // plasmic-import: cu6SQ9NY6/icon
+import BoldSvgIcon from "../q_4_icons/icons/PlasmicIcon__Boldsvg"; // plasmic-import: OiX2-qUyR/icon
+import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ItalicSvgIcon from "../q_4_icons/icons/PlasmicIcon__Italicsvg"; // plasmic-import: taSQD6Nog/icon
+import LinkSvgIcon from "../q_4_icons/icons/PlasmicIcon__Linksvg"; // plasmic-import: cu6SQ9NY6/icon
+import PlusSvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
+import TextSvgIcon from "../q_4_icons/icons/PlasmicIcon__Textsvg"; // plasmic-import: e3P4cMPJR/icon
+import UnderlineSvgIcon from "../q_4_icons/icons/PlasmicIcon__Underlinesvg"; // plasmic-import: LSpOu6_w3/icon
 
 createPlasmicElementProxy;
 
@@ -125,7 +94,16 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -135,8 +113,6 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = useCurrentUser?.() || {};
 
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
@@ -189,7 +165,7 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
           data-plasmic-override={overrides.block}
           className={classNames("__wab_instance", sty.block)}
           icon={
-            <PlussvgIcon
+            <PlusSvgIcon
               className={classNames(projectcss.all, sty.svg__pVkd)}
               role={"img"}
             />
@@ -202,7 +178,7 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
               hasGap={true}
               className={classNames(projectcss.all, sty.freeBox)}
             >
-              <TextsvgIcon
+              <TextSvgIcon
                 className={classNames(projectcss.all, sty.svg__sk6N)}
                 role={"img"}
               />
@@ -236,16 +212,18 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
         )}
       />
 
-      <div
+      <Stack__
+        as={"div"}
         data-plasmic-name={"styleControls"}
         data-plasmic-override={overrides.styleControls}
+        hasGap={true}
         className={classNames(projectcss.all, sty.styleControls)}
       >
         <IconButton
           data-plasmic-name={"color"}
           data-plasmic-override={overrides.color}
           children2={
-            <ChevronDownsvgIcon
+            <ChevronDownSvgIcon
               className={classNames(projectcss.all, sty.svg__vD2V)}
               role={"img"}
             />
@@ -259,7 +237,7 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
             className={classNames(projectcss.all, sty.currentColor)}
           />
 
-          <ChevronDownsvgIcon
+          <ChevronDownSvgIcon
             className={classNames(projectcss.all, sty.svg__yx6RJ)}
             role={"img"}
           />
@@ -270,7 +248,7 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
           children={null}
           hasIcon={true}
           icon={
-            <BoldsvgIcon
+            <BoldSvgIcon
               className={classNames(projectcss.all, sty.svg__myNmc)}
               role={"img"}
             />
@@ -283,7 +261,7 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
           data-plasmic-name={"fontStyle"}
           data-plasmic-override={overrides.fontStyle}
           children2={
-            <ChevronDownsvgIcon
+            <ChevronDownSvgIcon
               className={classNames(projectcss.all, sty.svg__wlHtu)}
               role={"img"}
             />
@@ -291,7 +269,7 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
           className={classNames("__wab_instance", sty.fontStyle)}
           withBackgroundHover={true}
         >
-          <ItalicsvgIcon
+          <ItalicSvgIcon
             className={classNames(projectcss.all, sty.svg__ium02)}
             role={"img"}
           />
@@ -303,7 +281,7 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
           className={classNames("__wab_instance", sty.textDecoration)}
           hasIcon={true}
           icon={
-            <UnderlinesvgIcon
+            <UnderlineSvgIcon
               className={classNames(projectcss.all, sty.svg__kB86G)}
               role={"img"}
             />
@@ -311,7 +289,7 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
           size={"small"}
           type={["noDivider"]}
         />
-      </div>
+      </Stack__>
       <RichTextToolbarDivider
         className={classNames(
           "__wab_instance",
@@ -331,7 +309,7 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
           className={classNames("__wab_instance", sty.inline)}
           hasIcon={true}
           icon={
-            <LinksvgIcon
+            <LinkSvgIcon
               className={classNames(projectcss.all, sty.svg__zu5On)}
               role={"img"}
             />

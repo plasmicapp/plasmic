@@ -44,7 +44,6 @@
 }
 .root:focus {
   box-shadow: 0px 0px 0px 2px #0091ff80;
-  outline: none;
 }
 .slotTargetChildren {
   font-size: 12px;

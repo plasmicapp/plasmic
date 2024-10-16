@@ -54,7 +54,7 @@ import {
   TplTag,
 } from "@/wab/shared/model/classes";
 import isHotkey from "is-hotkey";
-import { camelCase, isEqual } from "lodash";
+import { camelCase, isEqual, kebabCase } from "lodash";
 import { computedFn } from "mobx-utils";
 import React, { CSSProperties } from "react";
 import type {
@@ -119,7 +119,8 @@ function wrapInStyleMarker(
     // Slate uses "Marks" to keep track of all the formats.
     // We use it to store CSS properties.
     const marks = Editor.marks(editor)!;
-    Object.entries(props).forEach(([name, value]) => {
+    Object.entries(props).forEach(([key, value]) => {
+      const name = kebabCase(key);
       if ((toggle && value && marks[name] === value) || value === undefined) {
         Editor.removeMark(editor, name);
       } else {

@@ -15,26 +15,11 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
-  PlasmicIcon as PlasmicIcon__,
-  PlasmicImg as PlasmicImg__,
-  PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  generateOnMutateForSpec,
-  generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
-  generateStateValueProp,
-  get as $stateGet,
   hasVariant,
   initializeCodeComponentStates,
   initializePlasmicStates,
@@ -42,17 +27,15 @@ import {
   omit,
   pick,
   renderPlasmicSlot,
-  set as $stateSet,
-  useCurrentUser,
   useDollarState,
   usePlasmicTranslator,
   useTrigger,
-  wrapWithClassName
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
 import {
   DataCtxReader as DataCtxReader__,
   useDataEnv,
-  useGlobalActions
+  useGlobalActions,
 } from "@plasmicapp/react-web/lib/host";
 
 import * as pp from "@plasmicapp/react-web";
@@ -131,7 +114,7 @@ function PlasmicSelect__Option__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants
+    ...variants,
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -144,26 +127,26 @@ function PlasmicSelect__Option__RenderFunc(props: {
         path: "isSelected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isSelected
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isSelected,
       },
       {
         path: "isHighlighted",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isHighlighted
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isHighlighted,
       },
       {
         path: "isDisabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isDisabled
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isDisabled,
       },
       {
         path: "isUnsetOption",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isUnsetOption
-      }
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isUnsetOption,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -171,11 +154,11 @@ function PlasmicSelect__Option__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
-    $refs
+    $refs,
   });
 
   const superContexts = {
-    Select: React.useContext(SUPER__PlasmicSelect.Context)
+    Select: React.useContext(SUPER__PlasmicSelect.Context),
   };
 
   return (
@@ -236,7 +219,7 @@ function PlasmicSelect__Option__RenderFunc(props: {
             $state,
             "isUnsetOption",
             "isUnsetOption"
-          )
+          ),
         }
       )}
     >
@@ -263,7 +246,7 @@ function PlasmicSelect__Option__RenderFunc(props: {
             $state,
             "isUnsetOption",
             "isUnsetOption"
-          )
+          ),
         })}
       >
         {renderPlasmicSlot({
@@ -289,8 +272,8 @@ function PlasmicSelect__Option__RenderFunc(props: {
               $state,
               "isUnsetOption",
               "isUnsetOption"
-            )
-          })
+            ),
+          }),
         })}
       </div>
     </div>
@@ -309,11 +292,11 @@ function useBehavior<P extends pp.BaseSelectOptionProps>(
       isDisabledVariant: { group: "isDisabled", variant: "isDisabled" },
       isHighlightedVariant: {
         group: "isHighlighted",
-        variant: "isHighlighted"
+        variant: "isHighlighted",
       },
       labelSlot: "children",
       root: "root",
-      labelContainer: "labelContainer"
+      labelContainer: "labelContainer",
     },
     ref
   );
@@ -321,7 +304,7 @@ function useBehavior<P extends pp.BaseSelectOptionProps>(
 
 const PlasmicDescendants = {
   root: ["root", "labelContainer"],
-  labelContainer: ["labelContainer"]
+  labelContainer: ["labelContainer"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -367,7 +350,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicSelect__Option__ArgProps,
-          internalVariantPropNames: PlasmicSelect__Option__VariantProps
+          internalVariantPropNames: PlasmicSelect__Option__VariantProps,
         }),
       [props, nodeName]
     );
@@ -375,7 +358,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName
+      forNode: nodeName,
     });
   };
   if (nodeName === "root") {
@@ -397,7 +380,7 @@ export const PlasmicSelect__Option = Object.assign(
     internalVariantProps: PlasmicSelect__Option__VariantProps,
     internalArgProps: PlasmicSelect__Option__ArgProps,
 
-    useBehavior
+    useBehavior,
   }
 );
 

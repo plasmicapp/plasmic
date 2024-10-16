@@ -2,8 +2,8 @@
 /* eslint-disable */
 /* tslint:disable */
 /* prettier-ignore-start */
-import React from "react";
 import { classNames } from "@plasmicapp/react-web";
+import React from "react";
 
 export type PlaySvgIconProps = React.ComponentProps<"svg"> & {
   title?: string;

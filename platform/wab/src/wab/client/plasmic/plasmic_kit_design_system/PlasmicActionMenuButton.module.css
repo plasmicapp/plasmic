@@ -47,21 +47,27 @@
   padding-bottom: 6px;
   border-radius: 6px 0px 0px 6px;
 }
+.actionButtontype_noDivider_type_primary {
+  background: var(--token-D666zt2IZPL);
+}
+.actionButtontype_noDivider_type_secondary {
+  background: var(--token-O4S7RMTqZ3);
+}
+.roottype_noDivider_type_primary_hasIcon:hover
+  .actionButtontype_noDivider_type_primary_hasIcon {
+  background: var(--token-mu3x63xzJRW);
+}
 .root .actionButton:hover {
   background: var(--token-Ik3bdE1e1Uy);
 }
-.roottype_primary .actionButtontype_primary:hover {
-  background: var(--token-mu3x63xzJRW);
-}
 .root .actionButton___focusVisible {
   box-shadow: 0px 0px 0px 2px #0091ff80;
-  outline: none;
-}
-.roottype_primary .actionButtontype_primary____focusVisible {
-  outline: none;
 }
 .root .actionButton:active {
   background: var(--token-hoA5qaM-91G);
+}
+.roottype_primary .actionButtontype_primary:hover {
+  background: var(--token-mu3x63xzJRW);
 }
 .roottype_primary .actionButtontype_primary:active {
   background: var(--token-VUsIDivgUss);
@@ -99,10 +105,20 @@
   color: var(--token-UunsGa2Y3t3);
 }
 .slotTargetIcontype_primary_hasIcon {
-  color: rgb(255, 255, 255);
+  color: #ffffff;
+}
+.slotTargetIcontype_noDivider_type_primary_hasIcon {
+  color: #ffffff;
 }
 .roothasIcon:hover .slotTargetIconhasIcon {
   color: var(--token-UunsGa2Y3t3);
+}
+.roottype_primary_hasIcon:hover .slotTargetIcontype_primary_hasIcon {
+  color: #ffffff;
+}
+.roottype_noDivider_type_primary_hasIcon:hover
+  .slotTargetIcontype_noDivider_type_primary_hasIcon {
+  color: #ffffff;
 }
 .svg__bZnf {
   position: relative;
@@ -198,6 +214,8 @@
 .menuTrigger:global(.__wab_instance) {
   max-width: 100%;
   position: relative;
+  height: 100%;
+  min-height: 0;
 }
 .menuTriggersize_small:global(.__wab_instance) {
   min-height: 1.75rem;

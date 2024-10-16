@@ -15,44 +15,21 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
-  PlasmicIcon as PlasmicIcon__,
-  PlasmicImg as PlasmicImg__,
-  PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  generateOnMutateForSpec,
-  generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
-  generateStateValueProp,
-  get as $stateGet,
   hasVariant,
-  initializeCodeComponentStates,
-  initializePlasmicStates,
-  makeFragment,
-  omit,
-  pick,
-  renderPlasmicSlot,
-  set as $stateSet,
-  useCurrentUser,
   useDollarState,
   usePlasmicTranslator,
   useTrigger,
-  wrapWithClassName
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
 import {
   DataCtxReader as DataCtxReader__,
   useDataEnv,
-  useGlobalActions
+  useGlobalActions,
 } from "@plasmicapp/react-web/lib/host";
 
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
@@ -63,8 +40,8 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicSearchbox.module.css"; // plasmic-import: po7gr0PX4_gWo/css
 
-import SearchSvgIcon from "../q_4_icons/icons/PlasmicIcon__Searchsvg"; // plasmic-import: R5DLz11OA/icon
 import CloseSvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
+import SearchSvgIcon from "../q_4_icons/icons/PlasmicIcon__Searchsvg"; // plasmic-import: R5DLz11OA/icon
 
 createPlasmicElementProxy;
 
@@ -128,7 +105,7 @@ function PlasmicSearchbox__RenderFunc(props: {
     () =>
       Object.assign(
         {
-          placeholder: "Search..."
+          placeholder: "Search...",
         },
         Object.fromEntries(
           Object.entries(props.args).filter(([_, v]) => v !== undefined)
@@ -139,7 +116,7 @@ function PlasmicSearchbox__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants
+    ...variants,
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -152,38 +129,39 @@ function PlasmicSearchbox__RenderFunc(props: {
         path: "hasValue",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasValue
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasValue,
       },
       {
         path: "bordered",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.bordered
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.bordered,
       },
       {
         path: "noOutline",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noOutline
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noOutline,
       },
       {
         path: "whiteBackground",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.whiteBackground
+        initFunc: ({ $props, $state, $queries, $ctx }) =>
+          $props.whiteBackground,
       },
       {
         path: "extraPadding",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.extraPadding
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.extraPadding,
       },
       {
         path: "medium",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.medium
-      }
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.medium,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -191,7 +169,7 @@ function PlasmicSearchbox__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
-    $refs
+    $refs,
   });
 
   return (
@@ -214,7 +192,7 @@ function PlasmicSearchbox__RenderFunc(props: {
           $state,
           "whiteBackground",
           "whiteBackground"
-        )
+        ),
       })}
       extraPadding={
         hasVariant($state, "extraPadding", "extraPadding") ? true : undefined
@@ -231,7 +209,7 @@ function PlasmicSearchbox__RenderFunc(props: {
               "hasValue",
               "hasValue"
             ),
-            [sty.svgmedium__unKzuKYp1]: hasVariant($state, "medium", "medium")
+            [sty.svgmedium__unKzuKYp1]: hasVariant($state, "medium", "medium"),
           })}
           role={"img"}
         />
@@ -251,7 +229,7 @@ function PlasmicSearchbox__RenderFunc(props: {
                 $state,
                 "hasValue",
                 "hasValue"
-              )
+              ),
             })}
             role={"img"}
           />
@@ -272,7 +250,7 @@ function PlasmicSearchbox__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root"]
+  root: ["root"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -317,7 +295,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicSearchbox__ArgProps,
-          internalVariantPropNames: PlasmicSearchbox__VariantProps
+          internalVariantPropNames: PlasmicSearchbox__VariantProps,
         }),
       [props, nodeName]
     );
@@ -325,7 +303,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName
+      forNode: nodeName,
     });
   };
   if (nodeName === "root") {
@@ -344,7 +322,7 @@ export const PlasmicSearchbox = Object.assign(
 
     // Metadata about props expected for PlasmicSearchbox
     internalVariantProps: PlasmicSearchbox__VariantProps,
-    internalArgProps: PlasmicSearchbox__ArgProps
+    internalArgProps: PlasmicSearchbox__ArgProps,
   }
 );
 

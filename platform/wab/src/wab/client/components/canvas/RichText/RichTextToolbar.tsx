@@ -117,6 +117,9 @@ function RichTextToolbar_(
 
   // Current marks (i.e. CSS props applied to current selection).
   const [marks, setMarks] = React.useState<Omit<Text, "text">>({});
+  const fontWeight = marks["font-weight"];
+  const fontStyle = marks["font-style"];
+  const textDecorationLine = marks["text-decoration-line"];
 
   // Current block tag (e.g. "h1", "ul" or undefined for no block).
   const [block, setBlock] = React.useState<(typeof tags)[number] | undefined>(
@@ -255,9 +258,15 @@ function RichTextToolbar_(
         }}
         fontWeight={{
           props: {
-            // TODO: Make button active if selection is bold according to marks.
             "aria-label": "Bold",
-            onClick: () => runInEditor("BOLD"),
+            type: fontWeight ? ["noDivider", "secondary"] : "noDivider",
+            onClick: () => {
+              if (fontWeight) {
+                markCss({ fontWeight });
+              } else {
+                runInEditor("BOLD");
+              }
+            },
             menu: () => (
               <Menu>
                 {fontWeightOptions.map((option) => (
@@ -273,7 +282,7 @@ function RichTextToolbar_(
                 ))}
                 <Menu.Item
                   aria-label="Unset"
-                  onClick={() => markCss({ fontWeight: undefined })}
+                  onClick={() => markCss({ fontWeight })}
                 >
                   Unset
                 </Menu.Item>
@@ -282,26 +291,28 @@ function RichTextToolbar_(
           },
         }}
         fontStyle={{
-          // TODO: Make button active if selection is italic according to marks.
           props: {
+            type: fontStyle ? "secondary" : undefined,
             onClick: () => runInEditor("ITALIC"),
           },
         }}
         textDecoration={{
-          // TODO: Make button active if selection has text-decoration according
-          // to marks.
           props: {
             "aria-label": "Underline",
+            type: textDecorationLine ? ["noDivider", "secondary"] : "noDivider",
             onClick: () => runInEditor("UNDERLINE"),
             menu: () => (
               <Menu>
                 <Menu.Item
+                  key="underline"
                   aria-label="Underline"
                   onClick={() => runInEditor("UNDERLINE")}
                 >
-                  <Icon icon={UnderlinesvgIcon} /> Underline
+                  <Icon icon={UnderlinesvgIcon} />
+                  Underline
                 </Menu.Item>
                 <Menu.Item
+                  key="line-through"
                   aria-label="Strikethrough"
                   onClick={() => runInEditor("STRIKETHROUGH")}
                 >
@@ -309,7 +320,7 @@ function RichTextToolbar_(
                 </Menu.Item>
                 <Menu.Item
                   aria-label="Unset"
-                  onClick={() => markCss({ textDecorationLine: undefined })}
+                  onClick={() => markCss({ textDecorationLine })}
                 >
                   Unset
                 </Menu.Item>
@@ -318,7 +329,6 @@ function RichTextToolbar_(
           },
         }}
         inline={{
-          // TODO: Make button active if selection has link, code or span.
           props: {
             "aria-label": "Link",
             onClick: () => runInEditor("LINK"),

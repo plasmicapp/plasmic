@@ -49,87 +49,71 @@
 }
 .root:focus-within {
   box-shadow: 0px 0px 0px 2px #0091ff80;
-  outline: none;
 }
 .rootstyleType_gray:focus-within {
   background: var(--token-iR8SeEwQZ);
-  outline: none;
-}
-.rootstyleType_red:focus-within {
-  background: var(--token-iR8SeEwQZ);
-  outline: none;
-}
-.rootstyleType_green:focus-within {
-  background: var(--token-iR8SeEwQZ);
-  outline: none;
-}
-.rootstyleType_blue:focus-within {
-  background: var(--token-iR8SeEwQZ);
-  outline: none;
-}
-.rootstyleType_purple:focus-within {
-  background: var(--token-iR8SeEwQZ);
-  outline: none;
-}
-.rootnoOutline:focus-within {
-  box-shadow: none;
-  outline: none;
-}
-.rootextraPadding:focus-within {
-  box-shadow: none;
-  outline: none;
 }
 .rootstyleType_gray:active {
   background: var(--token-Ik3bdE1e1Uy);
 }
+.rootstyleType_red:focus-within {
+  background: var(--token-iR8SeEwQZ);
+}
 .rootstyleType_red:active {
   background: var(--token-5kjtdCiiOPB);
+}
+.rootstyleType_green:focus-within {
+  background: var(--token-iR8SeEwQZ);
 }
 .rootstyleType_green:active {
   background: var(--token-Tc_ZOUnBuGQ_);
 }
+.rootstyleType_blue:focus-within {
+  background: var(--token-iR8SeEwQZ);
+}
 .rootstyleType_blue:active {
   background: var(--token-RhvOnhv_xIi);
+}
+.rootstyleType_purple:focus-within {
+  background: var(--token-iR8SeEwQZ);
 }
 .rootstyleType_purple:active {
   background: var(--token-I2zAJ678hbp);
 }
+.rootnoOutline:focus-within {
+  box-shadow: none;
+}
+.rootextraPadding:focus-within {
+  box-shadow: none;
+}
 .root:hover:not(:focus-within) {
   box-shadow: inset 0px 0px 0px 1px var(--token-eBt2ZgqRUCz);
-  outline: none;
 }
 .rootstyleType_gray:hover:not(:focus-within) {
   box-shadow: none;
   background: var(--token-bV4cCeIniS6);
-  outline: none;
 }
 .rootstyleType_red:hover:not(:focus-within) {
   box-shadow: none;
   background: var(--token-HKVCQ5ZKovK);
-  outline: none;
 }
 .rootstyleType_green:hover:not(:focus-within) {
   box-shadow: none;
   background: var(--token-5TSkL5SqnvBt);
-  outline: none;
 }
 .rootstyleType_blue:hover:not(:focus-within) {
   box-shadow: none;
   background: var(--token-dqEx_KxIoYV);
-  outline: none;
 }
 .rootstyleType_purple:hover:not(:focus-within) {
   box-shadow: none;
   background: var(--token-oPrqrxbKHqk);
-  outline: none;
 }
 .rootnoOutline:hover:not(:focus-within) {
   box-shadow: none;
-  outline: none;
 }
 .rootextraPadding:hover:not(:focus-within) {
   box-shadow: none;
-  outline: none;
 }
 .prefixContainer {
   display: flex;
@@ -141,16 +125,6 @@
 }
 .prefixContainerextraPadding_withIcons_withPrefix {
   padding-left: 16px;
-}
-.rootstyleType_gray:hover:not(:focus-within) .prefixContainerstyleType_gray {
-  outline: none;
-}
-.rootstyleType_red:hover:not(:focus-within) .prefixContainerstyleType_red {
-  outline: none;
-}
-.rootstyleType_purple:hover:not(:focus-within)
-  .prefixContainerstyleType_purple {
-  outline: none;
 }
 .slotTargetPrefixIcon {
   color: var(--token-UunsGa2Y3t3);
@@ -169,48 +143,6 @@
 }
 .slotTargetPrefixIconstyleType_medium_withIcons_withPrefix {
   font-size: 1.25rem;
-}
-.rootstyleType_gray:hover:not(:focus-within)
-  .slotTargetPrefixIconstyleType_gray
-  > *,
-.rootstyleType_gray:hover:not(:focus-within)
-  .slotTargetPrefixIconstyleType_gray
-  > :global(.__wab_slot)
-  > *,
-.rootstyleType_gray:hover:not(:focus-within)
-  .slotTargetPrefixIconstyleType_gray
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.rootstyleType_gray:hover:not(:focus-within)
-  .slotTargetPrefixIconstyleType_gray
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.rootstyleType_gray:hover:not(:focus-within)
-  .slotTargetPrefixIconstyleType_gray
-  > picture
-  > img,
-.rootstyleType_gray:hover:not(:focus-within)
-  .slotTargetPrefixIconstyleType_gray
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.rootstyleType_gray:hover:not(:focus-within)
-  .slotTargetPrefixIconstyleType_gray
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.rootstyleType_gray:hover:not(:focus-within)
-  .slotTargetPrefixIconstyleType_gray
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  outline: none;
 }
 .svg__soWu {
   display: flex;
@@ -287,31 +219,12 @@
 .textboxextraPadding_withIcons_withPrefix {
   padding-left: 4px;
 }
-.root:focus-within .textbox {
-  outline: none;
-}
-.rootnoOutline:focus-within .textboxnoOutline {
-  outline: none;
-}
-.rootextraPadding:focus-within .textboxextraPadding {
-  outline: none;
-}
-.root:hover:not(:focus-within) .textbox {
-  outline: none;
-}
-.root .textbox:focus {
-  outline: none;
+.root .textbox::placeholder {
+  color: var(--token-UunsGa2Y3t3);
 }
 .rootstyleType_seamless .textboxstyleType_seamless:focus {
   box-shadow: none;
   background: #ffffff00;
-  outline: none;
-}
-.rooterror .textboxerror:focus {
-  outline: none;
-}
-.root .textbox::placeholder {
-  color: var(--token-UunsGa2Y3t3);
 }
 .rootstyleType_red .textboxstyleType_red::placeholder {
   color: var(--token-hIvqQBCxyWwX);
@@ -325,24 +238,8 @@
 .rootstyleType_purple .textboxstyleType_purple::placeholder {
   color: var(--token-hIvqQBCxyWwX);
 }
-.root .textbox:hover:not(:focus) {
-  outline: none;
-}
 .rootstyleType_seamless .textboxstyleType_seamless:hover:not(:focus) {
   box-shadow: none;
-  outline: none;
-}
-.rootstyleType_red .textboxstyleType_red:hover:not(:focus) {
-  outline: none;
-}
-.rootstyleType_green .textboxstyleType_green:hover:not(:focus) {
-  outline: none;
-}
-.rootstyleType_blue .textboxstyleType_blue:hover:not(:focus) {
-  outline: none;
-}
-.rootstyleType_purple .textboxstyleType_purple:hover:not(:focus) {
-  outline: none;
 }
 .suffixContainer {
   display: flex;
@@ -373,82 +270,6 @@
 }
 .slotTargetSuffixIconwithIcons_withSuffix_styleType_medium {
   font-size: 1.25rem;
-}
-.root:hover:not(:focus-within) .slotTargetSuffixIcon > *,
-.root:hover:not(:focus-within) .slotTargetSuffixIcon > :global(.__wab_slot) > *,
-.root:hover:not(:focus-within)
-  .slotTargetSuffixIcon
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.root:hover:not(:focus-within)
-  .slotTargetSuffixIcon
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.root:hover:not(:focus-within) .slotTargetSuffixIcon > picture > img,
-.root:hover:not(:focus-within)
-  .slotTargetSuffixIcon
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.root:hover:not(:focus-within)
-  .slotTargetSuffixIcon
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.root:hover:not(:focus-within)
-  .slotTargetSuffixIcon
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  outline: none;
-}
-.rootstyleType_blue:hover:not(:focus-within)
-  .slotTargetSuffixIconstyleType_blue
-  > *,
-.rootstyleType_blue:hover:not(:focus-within)
-  .slotTargetSuffixIconstyleType_blue
-  > :global(.__wab_slot)
-  > *,
-.rootstyleType_blue:hover:not(:focus-within)
-  .slotTargetSuffixIconstyleType_blue
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.rootstyleType_blue:hover:not(:focus-within)
-  .slotTargetSuffixIconstyleType_blue
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.rootstyleType_blue:hover:not(:focus-within)
-  .slotTargetSuffixIconstyleType_blue
-  > picture
-  > img,
-.rootstyleType_blue:hover:not(:focus-within)
-  .slotTargetSuffixIconstyleType_blue
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.rootstyleType_blue:hover:not(:focus-within)
-  .slotTargetSuffixIconstyleType_blue
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.rootstyleType_blue:hover:not(:focus-within)
-  .slotTargetSuffixIconstyleType_blue
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  outline: none;
 }
 .svg__nNaeY {
   display: flex;

@@ -15,45 +15,20 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
   PlasmicIcon as PlasmicIcon__,
-  PlasmicImg as PlasmicImg__,
-  PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
   Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  generateOnMutateForSpec,
-  generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
-  generateStateValueProp,
-  get as $stateGet,
   hasVariant,
-  initializeCodeComponentStates,
-  initializePlasmicStates,
-  makeFragment,
-  omit,
-  pick,
   renderPlasmicSlot,
-  set as $stateSet,
-  useCurrentUser,
   useDollarState,
-  usePlasmicTranslator,
   useTrigger,
-  wrapWithClassName
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import * as pp from "@plasmicapp/react-web";
 
@@ -63,9 +38,9 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicCheckbox.module.css"; // plasmic-import: W-rO7NZqPjZ/css
 
-import SquareSvgIcon from "../q_4_icons/icons/PlasmicIcon__Squaresvg"; // plasmic-import: zkj00JjZV/icon
 import CheckTrueIcon from "../plasmic_kit/PlasmicIcon__CheckTrue"; // plasmic-import: ckLkdbD6DMjvM/icon
 import SquareMinusSvgIcon from "../q_4_icons/icons/PlasmicIcon__SquareMinussvg"; // plasmic-import: 6a2Ojnos7/icon
+import SquareSvgIcon from "../q_4_icons/icons/PlasmicIcon__Squaresvg"; // plasmic-import: zkj00JjZV/icon
 
 createPlasmicElementProxy;
 
@@ -150,7 +125,7 @@ function PlasmicCheckbox__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants
+    ...variants,
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -163,13 +138,13 @@ function PlasmicCheckbox__RenderFunc(props: {
         path: "noLabel",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noLabel
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noLabel,
       },
       {
         path: "isDisabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isDisabled
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isDisabled,
       },
       {
         path: "isChecked",
@@ -177,26 +152,27 @@ function PlasmicCheckbox__RenderFunc(props: {
         variableType: "boolean",
 
         valueProp: "isChecked",
-        onChangeProp: "onChange"
+        onChangeProp: "onChange",
       },
       {
         path: "isIndeterminate",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isIndeterminate
+        initFunc: ({ $props, $state, $queries, $ctx }) =>
+          $props.isIndeterminate,
       },
       {
         path: "medium",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.medium
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.medium,
       },
       {
         path: "color",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.color
-      }
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.color,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -204,7 +180,7 @@ function PlasmicCheckbox__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
-    $refs
+    $refs,
   });
 
   const [isRootFocusWithin, triggerRootFocusWithinProps] = useTrigger(
@@ -213,11 +189,11 @@ function PlasmicCheckbox__RenderFunc(props: {
   );
   const [isRootNotFocusVisibleWithin, triggerRootNotFocusVisibleWithinProps] =
     useTrigger("useFocusVisibleWithin", {
-      isTextInput: false
+      isTextInput: false,
     });
   const triggers = {
     focusWithinNotFocusVisibleWithin_root:
-      isRootFocusWithin && !isRootNotFocusVisibleWithin
+      isRootFocusWithin && !isRootNotFocusVisibleWithin,
   };
 
   return (
@@ -237,7 +213,7 @@ function PlasmicCheckbox__RenderFunc(props: {
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         sty.root,
         {
-          [sty.root___focusedWithin__notFocusVisibleWithin]:
+          [sty.root___focusWithin__notFocusVisibleWithin]:
             triggers.focusWithinNotFocusVisibleWithin_root,
           [sty.rootcolor_blue]: hasVariant($state, "color", "blue"),
           [sty.rootcolor_blue_medium]:
@@ -282,7 +258,7 @@ function PlasmicCheckbox__RenderFunc(props: {
             "isIndeterminate"
           ),
           [sty.rootmedium]: hasVariant($state, "medium", "medium"),
-          [sty.rootmedium____focusedWithin__notFocusVisibleWithin]:
+          [sty.rootmedium____focusWithin__notFocusVisibleWithin]:
             hasVariant($state, "medium", "medium") &&
             triggers.focusWithinNotFocusVisibleWithin_root,
           [sty.rootmedium_color_green]:
@@ -330,12 +306,12 @@ function PlasmicCheckbox__RenderFunc(props: {
             hasVariant($state, "color", "red") &&
             hasVariant($state, "medium", "medium") &&
             hasVariant($state, "noLabel", "noLabel"),
-          [sty.rootnoLabel]: hasVariant($state, "noLabel", "noLabel")
+          [sty.rootnoLabel]: hasVariant($state, "noLabel", "noLabel"),
         }
       )}
       data-plasmic-trigger-props={[
         triggerRootFocusWithinProps,
-        triggerRootNotFocusVisibleWithinProps
+        triggerRootNotFocusVisibleWithinProps,
       ]}
     >
       <PlasmicIcon__
@@ -349,7 +325,7 @@ function PlasmicCheckbox__RenderFunc(props: {
             : SquareSvgIcon
         }
         className={classNames(projectcss.all, sty.svg, {
-          [sty.svg___focusedWithin__notFocusVisibleWithin]:
+          [sty.svg___focusWithin__notFocusVisibleWithin]:
             triggers.focusWithinNotFocusVisibleWithin_root,
           [sty.svgcolor_blue_medium]:
             hasVariant($state, "color", "blue") &&
@@ -368,7 +344,7 @@ function PlasmicCheckbox__RenderFunc(props: {
             "isIndeterminate"
           ),
           [sty.svgmedium]: hasVariant($state, "medium", "medium"),
-          [sty.svgmedium____focusedWithin__notFocusVisibleWithin]:
+          [sty.svgmedium____focusWithin__notFocusVisibleWithin]:
             hasVariant($state, "medium", "medium") &&
             triggers.focusWithinNotFocusVisibleWithin_root,
           [sty.svgmedium_color_green]:
@@ -392,7 +368,7 @@ function PlasmicCheckbox__RenderFunc(props: {
             hasVariant($state, "color", "red") &&
             hasVariant($state, "medium", "medium") &&
             hasVariant($state, "isChecked", "isChecked"),
-          [sty.svgnoLabel]: hasVariant($state, "noLabel", "noLabel")
+          [sty.svgnoLabel]: hasVariant($state, "noLabel", "noLabel"),
         })}
         role={"img"}
       />
@@ -402,7 +378,7 @@ function PlasmicCheckbox__RenderFunc(props: {
           data-plasmic-name={"labelContainer"}
           data-plasmic-override={overrides.labelContainer}
           className={classNames(projectcss.all, sty.labelContainer, {
-            [sty.labelContainer___focusedWithin__notFocusVisibleWithin]:
+            [sty.labelContainer___focusWithin__notFocusVisibleWithin]:
               triggers.focusWithinNotFocusVisibleWithin_root,
             [sty.labelContainermedium]: hasVariant($state, "medium", "medium"),
             [sty.labelContainermedium_color_red]:
@@ -412,14 +388,14 @@ function PlasmicCheckbox__RenderFunc(props: {
               $state,
               "noLabel",
               "noLabel"
-            )
+            ),
           })}
         >
           {renderPlasmicSlot({
             defaultContents: "Enter some text",
             value: args.children,
             className: classNames(sty.slotTargetChildren, {
-              [sty.slotTargetChildren___focusedWithin__notFocusVisibleWithin]:
+              [sty.slotTargetChildren___focusWithin__notFocusVisibleWithin]:
                 triggers.focusWithinNotFocusVisibleWithin_root,
               [sty.slotTargetChildrencolor_blue_medium]:
                 hasVariant($state, "color", "blue") &&
@@ -434,7 +410,7 @@ function PlasmicCheckbox__RenderFunc(props: {
                 "medium",
                 "medium"
               ),
-              [sty.slotTargetChildrenmedium____focusedWithin__notFocusVisibleWithin]:
+              [sty.slotTargetChildrenmedium____focusWithin__notFocusVisibleWithin]:
                 hasVariant($state, "medium", "medium") &&
                 triggers.focusWithinNotFocusVisibleWithin_root,
               [sty.slotTargetChildrenmedium_color_green]:
@@ -450,8 +426,8 @@ function PlasmicCheckbox__RenderFunc(props: {
                 $state,
                 "noLabel",
                 "noLabel"
-              )
-            })
+              ),
+            }),
           })}
         </div>
       ) : null}
@@ -466,7 +442,7 @@ function useBehavior<P extends pp.CheckboxProps>(
   if (!("children" in props)) {
     props = {
       ...props,
-      children: "Enter some text"
+      children: "Enter some text",
     };
   }
 
@@ -477,12 +453,12 @@ function useBehavior<P extends pp.CheckboxProps>(
       isCheckedVariant: { group: "isChecked", variant: "isChecked" },
       isIndeterminateVariant: {
         group: "isIndeterminate",
-        variant: "isIndeterminate"
+        variant: "isIndeterminate",
       },
       isDisabledVariant: { group: "isDisabled", variant: "isDisabled" },
       noLabelVariant: { group: "noLabel", variant: "noLabel" },
       labelSlot: "children",
-      root: "root"
+      root: "root",
     },
     ref
   );
@@ -491,7 +467,7 @@ function useBehavior<P extends pp.CheckboxProps>(
 const PlasmicDescendants = {
   root: ["root", "svg", "labelContainer"],
   svg: ["svg"],
-  labelContainer: ["labelContainer"]
+  labelContainer: ["labelContainer"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -538,7 +514,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCheckbox__ArgProps,
-          internalVariantPropNames: PlasmicCheckbox__VariantProps
+          internalVariantPropNames: PlasmicCheckbox__VariantProps,
         }),
       [props, nodeName]
     );
@@ -546,7 +522,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName
+      forNode: nodeName,
     });
   };
   if (nodeName === "root") {
@@ -569,7 +545,7 @@ export const PlasmicCheckbox = Object.assign(
     internalVariantProps: PlasmicCheckbox__VariantProps,
     internalArgProps: PlasmicCheckbox__ArgProps,
 
-    useBehavior
+    useBehavior,
   }
 );
 

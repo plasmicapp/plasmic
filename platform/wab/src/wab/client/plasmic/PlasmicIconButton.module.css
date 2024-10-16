@@ -143,6 +143,9 @@
     ),
     var(--token-brSQU2ryS);
 }
+.roottype_secondary {
+  background: var(--token-O4S7RMTqZ3);
+}
 .rootisActive {
   background: var(--token-Ik3bdE1e1Uy);
 }
@@ -179,6 +182,9 @@
 .rootisActive_type_dividedRight {
   background: var(--token-Ik3bdE1e1Uy);
 }
+.rootwithBackgroundHover_type_secondary {
+  background: var(--token-Ik3bdE1e1Uy);
+}
 .rootisActive_type_primary_type_dividedRight {
   background: var(--token-mu3x63xzJRW);
 }
@@ -186,11 +192,23 @@
   background: var(--token-Ik3bdE1e1Uy);
   border-color: #ffffff00;
 }
+.roottype_round:active {
+  background: var(--token-Ik3bdE1e1Uy);
+}
+.roottype_roundClear:active {
+  background: var(--token-Ik3bdE1e1Uy);
+}
 .roottype_roundClear:hover {
   background: var(--token-bV4cCeIniS6);
 }
 .roottype_dividedRight:hover {
   background: var(--token-Ik3bdE1e1Uy);
+}
+.roottype_dividedRight:active {
+  background: var(--token-Ik3bdE1e1Uy);
+}
+.roottype_primary:active {
+  background: var(--token-VUsIDivgUss);
 }
 .roottype_primary:hover {
   background: var(--token-mu3x63xzJRW);
@@ -198,13 +216,26 @@
 .roottype_noDivider:hover {
   background: var(--token-Ik3bdE1e1Uy);
 }
+.roottype_noDivider:active {
+  background: var(--token-Ik3bdE1e1Uy);
+}
 .roottype_stepUp:hover {
   background: var(--token-Ik3bdE1e1Uy);
+}
+.roottype_stepUp:active {
+  background: var(--token-hoA5qaM-91G);
 }
 .roottype_red:hover {
   background: linear-gradient(
       var(--token-HKVCQ5ZKovK),
       var(--token-HKVCQ5ZKovK)
+    ),
+    var(--token-brSQU2ryS);
+}
+.roottype_red:active {
+  background: linear-gradient(
+      var(--token-5kjtdCiiOPB),
+      var(--token-5kjtdCiiOPB)
     ),
     var(--token-brSQU2ryS);
 }
@@ -215,65 +246,17 @@
     ),
     var(--token-brSQU2ryS);
 }
-.roottype_blue:hover {
-  background: linear-gradient(
-      var(--token-dqEx_KxIoYV),
-      var(--token-dqEx_KxIoYV)
-    ),
-    var(--token-brSQU2ryS);
-}
-.roottype_purple:hover {
-  background: linear-gradient(
-      var(--token-oPrqrxbKHqk),
-      var(--token-oPrqrxbKHqk)
-    ),
-    var(--token-brSQU2ryS);
-}
-.rootisActive:hover {
-  background: var(--token-hoA5qaM-91G);
-  border-color: rgb(201, 204, 209);
-}
-.rootwithBackgroundHover:hover {
-  background: var(--token-Ik3bdE1e1Uy);
-}
-.rootwithRedBackgroundHover:hover {
-  background: var(--token-HKVCQ5ZKovK);
-}
-.rootwithGreenBackgroundHover:hover {
-  background: var(--token-dv0BWWyaHl7H);
-}
-.roottype_primary_type_dividedRight:hover {
-  background: var(--token-mu3x63xzJRW);
-}
-.roottype_round:active {
-  background: var(--token-Ik3bdE1e1Uy);
-}
-.roottype_roundClear:active {
-  background: var(--token-Ik3bdE1e1Uy);
-}
-.roottype_dividedRight:active {
-  background: var(--token-Ik3bdE1e1Uy);
-}
-.roottype_primary:active {
-  background: var(--token-VUsIDivgUss);
-}
-.roottype_noDivider:active {
-  background: var(--token-Ik3bdE1e1Uy);
-}
-.roottype_stepUp:active {
-  background: var(--token-hoA5qaM-91G);
-}
-.roottype_red:active {
-  background: linear-gradient(
-      var(--token-5kjtdCiiOPB),
-      var(--token-5kjtdCiiOPB)
-    ),
-    var(--token-brSQU2ryS);
-}
 .roottype_green:active {
   background: linear-gradient(
       var(--token-3AptjBfMqvPS),
       var(--token-3AptjBfMqvPS)
+    ),
+    var(--token-brSQU2ryS);
+}
+.roottype_blue:hover {
+  background: linear-gradient(
+      var(--token-dqEx_KxIoYV),
+      var(--token-dqEx_KxIoYV)
     ),
     var(--token-brSQU2ryS);
 }
@@ -284,6 +267,13 @@
     ),
     var(--token-brSQU2ryS);
 }
+.roottype_purple:hover {
+  background: linear-gradient(
+      var(--token-oPrqrxbKHqk),
+      var(--token-oPrqrxbKHqk)
+    ),
+    var(--token-brSQU2ryS);
+}
 .roottype_purple:active {
   background: linear-gradient(
       var(--token-I2zAJ678hbp),
@@ -291,21 +281,42 @@
     ),
     var(--token-brSQU2ryS);
 }
+.rootisActive:hover {
+  background: var(--token-hoA5qaM-91G);
+  border-color: rgb(201, 204, 209);
+}
+.rootwithBackgroundHover:hover {
+  background: var(--token-Ik3bdE1e1Uy);
+}
 .rootwithBackgroundHover:active {
   background: var(--token-Ik3bdE1e1Uy);
+}
+.rootwithRedBackgroundHover:hover {
+  background: var(--token-HKVCQ5ZKovK);
 }
 .rootwithRedBackgroundHover:active {
   background: var(--token-5kjtdCiiOPB);
 }
+.rootwithGreenBackgroundHover:hover {
+  background: var(--token-dv0BWWyaHl7H);
+}
 .rootwithGreenBackgroundHover:active {
   background: var(--token-3AptjBfMqvPS);
+}
+.roottype_primary_type_dividedRight:hover {
+  background: var(--token-mu3x63xzJRW);
 }
 .roottype_primary_type_dividedRight:active {
   background: var(--token-VUsIDivgUss);
 }
-.root___focused__focusVisible:focus {
+.roottype_noDivider_type_primary:hover {
+  background: var(--token-VUsIDivgUss);
+}
+.rootwithBackgroundHover_type_primary:hover {
+  background: var(--token-VUsIDivgUss);
+}
+.root___focus__focusVisible:focus {
   box-shadow: 0px 0px 0px 2px #0091ff80;
-  outline: none;
 }
 .slotTargetChildren {
   font-size: 1rem;
@@ -404,6 +415,12 @@
 .root:hover .slotTargetChildren {
   color: var(--token-0IloF6TmFvF);
 }
+.root:active .slotTargetChildren {
+  color: var(--token-0IloF6TmFvF);
+}
+.roottype_primary:active .slotTargetChildrentype_primary {
+  color: var(--token-iR8SeEwQZ);
+}
 .roottype_primary:hover .slotTargetChildrentype_primary {
   color: var(--token-iR8SeEwQZ);
 }
@@ -422,101 +439,16 @@
 .rootwithRedBackgroundHover:hover .slotTargetChildrenwithRedBackgroundHover {
   color: var(--token-Y2CWh0ci95a);
 }
+.rootwithRedBackgroundHover:active .slotTargetChildrenwithRedBackgroundHover {
+  color: var(--token-Y2CWh0ci95a);
+}
 .rootwithGreenBackgroundHover:hover
   .slotTargetChildrenwithGreenBackgroundHover {
   color: var(--token-hIvqQBCxyWwX);
 }
-.root:active .slotTargetChildren {
-  color: var(--token-0IloF6TmFvF);
-}
-.roottype_primary:active .slotTargetChildrentype_primary {
-  color: var(--token-iR8SeEwQZ);
-}
-.rootwithRedBackgroundHover:active .slotTargetChildrenwithRedBackgroundHover {
-  color: var(--token-Y2CWh0ci95a);
-}
 .rootwithGreenBackgroundHover:active
   .slotTargetChildrenwithGreenBackgroundHover {
   color: var(--token-hIvqQBCxyWwX);
-}
-.root:focus .slotTargetChildren___focused__focusVisible > *,
-.root:focus
-  .slotTargetChildren___focused__focusVisible
-  > :global(.__wab_slot)
-  > *,
-.root:focus
-  .slotTargetChildren___focused__focusVisible
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.root:focus
-  .slotTargetChildren___focused__focusVisible
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.root:focus .slotTargetChildren___focused__focusVisible > picture > img,
-.root:focus
-  .slotTargetChildren___focused__focusVisible
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.root:focus
-  .slotTargetChildren___focused__focusVisible
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.root:focus
-  .slotTargetChildren___focused__focusVisible
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  outline: none;
-}
-.roottype_primary:focus
-  .slotTargetChildren___focused__focusVisible_type_primary
-  > *,
-.roottype_primary:focus
-  .slotTargetChildren___focused__focusVisible_type_primary
-  > :global(.__wab_slot)
-  > *,
-.roottype_primary:focus
-  .slotTargetChildren___focused__focusVisible_type_primary
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.roottype_primary:focus
-  .slotTargetChildren___focused__focusVisible_type_primary
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.roottype_primary:focus
-  .slotTargetChildren___focused__focusVisible_type_primary
-  > picture
-  > img,
-.roottype_primary:focus
-  .slotTargetChildren___focused__focusVisible_type_primary
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.roottype_primary:focus
-  .slotTargetChildren___focused__focusVisible_type_primary
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.roottype_primary:focus
-  .slotTargetChildren___focused__focusVisible_type_primary
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  outline: none;
 }
 .svg__vKQk {
   display: flex;

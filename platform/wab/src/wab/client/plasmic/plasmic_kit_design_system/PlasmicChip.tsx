@@ -15,45 +15,18 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
-  PlasmicIcon as PlasmicIcon__,
-  PlasmicImg as PlasmicImg__,
-  PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
   Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  generateOnMutateForSpec,
-  generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
-  generateStateValueProp,
-  get as $stateGet,
   hasVariant,
-  initializeCodeComponentStates,
-  initializePlasmicStates,
-  makeFragment,
-  omit,
-  pick,
   renderPlasmicSlot,
-  set as $stateSet,
-  useCurrentUser,
   useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -120,7 +93,7 @@ function PlasmicChip__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants
+    ...variants,
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -133,14 +106,14 @@ function PlasmicChip__RenderFunc(props: {
         path: "deletable",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.deletable
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.deletable,
       },
       {
         path: "size",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.size
-      }
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.size,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -148,7 +121,7 @@ function PlasmicChip__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
-    $refs
+    $refs,
   });
 
   return (
@@ -174,7 +147,7 @@ function PlasmicChip__RenderFunc(props: {
             $state,
             "size",
             "normalControl"
-          )
+          ),
         }
       )}
     >
@@ -201,8 +174,8 @@ function PlasmicChip__RenderFunc(props: {
             $state,
             "size",
             "normalControl"
-          )
-        })
+          ),
+        }),
       })}
       {(hasVariant($state, "deletable", "deletable") ? true : false) ? (
         <CloseSvgIcon
@@ -213,7 +186,7 @@ function PlasmicChip__RenderFunc(props: {
               $state,
               "deletable",
               "deletable"
-            )
+            ),
           })}
           role={"img"}
         />
@@ -224,7 +197,7 @@ function PlasmicChip__RenderFunc(props: {
 
 const PlasmicDescendants = {
   root: ["root", "closeIcon"],
-  closeIcon: ["closeIcon"]
+  closeIcon: ["closeIcon"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -270,7 +243,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicChip__ArgProps,
-          internalVariantPropNames: PlasmicChip__VariantProps
+          internalVariantPropNames: PlasmicChip__VariantProps,
         }),
       [props, nodeName]
     );
@@ -278,7 +251,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName
+      forNode: nodeName,
     });
   };
   if (nodeName === "root") {
@@ -298,7 +271,7 @@ export const PlasmicChip = Object.assign(
 
     // Metadata about props expected for PlasmicChip
     internalVariantProps: PlasmicChip__VariantProps,
-    internalArgProps: PlasmicChip__ArgProps
+    internalArgProps: PlasmicChip__ArgProps,
   }
 );
 

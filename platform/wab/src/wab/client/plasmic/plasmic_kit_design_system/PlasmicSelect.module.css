@@ -14,12 +14,6 @@
   width: auto;
   display: inline-flex;
 }
-.root:focus-within {
-  outline: none;
-}
-.root___focusVisibleWithin {
-  outline: none;
-}
 .trigger {
   position: relative;
   display: flex;
@@ -59,22 +53,20 @@
 .triggersize_tiny {
   padding: 4px 2px 4px 4px;
 }
+.root:focus-within .trigger {
+  box-shadow: 0px 0px 0px 2px #0091ff80;
+}
 .root:hover .trigger {
   background: var(--token-bV4cCeIniS6);
 }
-.roottype_bordered:hover .triggertype_bordered {
-  border-color: var(--token-PTyaboLP9ZK);
-}
-.root:focus-within .trigger {
-  box-shadow: 0px 0px 0px 2px #0091ff80;
-  outline: none;
-}
 .root .trigger___focusVisibleWithin {
   box-shadow: 0px 0px 0px 2px #0091ff80;
-  outline: none;
 }
 .root:active .trigger {
   background: var(--token-Ik3bdE1e1Uy);
+}
+.roottype_bordered:hover .triggertype_bordered {
+  border-color: var(--token-PTyaboLP9ZK);
 }
 .root .trigger:active {
   background: var(--token-hoA5qaM-91G);
@@ -197,40 +189,6 @@
 .slotTargetSelectedContentfont_bold {
   font-weight: 600;
 }
-.root:focus-within .slotTargetSelectedContent > *,
-.root:focus-within .slotTargetSelectedContent > :global(.__wab_slot) > *,
-.root:focus-within
-  .slotTargetSelectedContent
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.root:focus-within
-  .slotTargetSelectedContent
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.root:focus-within .slotTargetSelectedContent > picture > img,
-.root:focus-within
-  .slotTargetSelectedContent
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.root:focus-within
-  .slotTargetSelectedContent
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.root:focus-within
-  .slotTargetSelectedContent
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  outline: none;
-}
 .slotTargetPlaceholder {
   white-space: pre;
   color: var(--token-UunsGa2Y3t3);
@@ -295,40 +253,6 @@
   > img {
   overflow: hidden;
 }
-.root:focus-within .slotTargetPlaceholder > *,
-.root:focus-within .slotTargetPlaceholder > :global(.__wab_slot) > *,
-.root:focus-within
-  .slotTargetPlaceholder
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.root:focus-within
-  .slotTargetPlaceholder
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.root:focus-within .slotTargetPlaceholder > picture > img,
-.root:focus-within
-  .slotTargetPlaceholder
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.root:focus-within
-  .slotTargetPlaceholder
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.root:focus-within
-  .slotTargetPlaceholder
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  outline: none;
-}
 .dropdownIcon {
   position: relative;
   object-fit: cover;
@@ -344,12 +268,6 @@
   width: 1.25rem;
   height: 1.25rem;
   flex-shrink: 0;
-}
-.root:focus-within .dropdownIcon {
-  outline: none;
-}
-.root .dropdownIcon___focusVisibleWithin {
-  outline: none;
 }
 .overlay:global(.__wab_instance) {
   position: absolute;

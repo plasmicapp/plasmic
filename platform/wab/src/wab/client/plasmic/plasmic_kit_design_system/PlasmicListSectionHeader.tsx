@@ -15,44 +15,24 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
-  PlasmicIcon as PlasmicIcon__,
-  PlasmicImg as PlasmicImg__,
-  PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
   Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  generateOnMutateForSpec,
-  generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
-  generateStateValueProp,
-  get as $stateGet,
   hasVariant,
-  initializeCodeComponentStates,
-  initializePlasmicStates,
-  makeFragment,
-  omit,
-  pick,
   renderPlasmicSlot,
-  set as $stateSet,
-  useCurrentUser,
   useDollarState,
   usePlasmicTranslator,
   useTrigger,
-  wrapWithClassName
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
 import {
   DataCtxReader as DataCtxReader__,
   useDataEnv,
-  useGlobalActions
+  useGlobalActions,
 } from "@plasmicapp/react-web/lib/host";
 
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
@@ -65,8 +45,8 @@ import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-
 import sty from "./PlasmicListSectionHeader.module.css"; // plasmic-import: wNvxk7eOak/css
 
 import VariantGroupIcon from "../plasmic_kit/PlasmicIcon__VariantGroup"; // plasmic-import: pyS6pK4Spx-QF/icon
-import PlusCircleSvgIcon from "../q_4_icons/icons/PlasmicIcon__PlusCirclesvg"; // plasmic-import: tPPI666-2/icon
 import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import PlusCircleSvgIcon from "../q_4_icons/icons/PlasmicIcon__PlusCirclesvg"; // plasmic-import: tPPI666-2/icon
 
 createPlasmicElementProxy;
 
@@ -138,7 +118,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants
+    ...variants,
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -151,20 +131,20 @@ function PlasmicListSectionHeader__RenderFunc(props: {
         path: "collapseState",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.collapseState
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.collapseState,
       },
       {
         path: "showActions",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showActions
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showActions,
       },
       {
         path: "showIcon",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showIcon
-      }
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showIcon,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -172,7 +152,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
-    $refs
+    $refs,
   });
 
   return (
@@ -207,7 +187,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
             "showActions",
             "showActions"
           ),
-          [sty.rootshowIcon]: hasVariant($state, "showIcon", "showIcon")
+          [sty.rootshowIcon]: hasVariant($state, "showIcon", "showIcon"),
         }
       )}
     >
@@ -225,7 +205,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
               $state,
               "showIcon",
               "showIcon"
-            )
+            ),
           })}
         >
           {renderPlasmicSlot({
@@ -242,8 +222,8 @@ function PlasmicListSectionHeader__RenderFunc(props: {
                 $state,
                 "showIcon",
                 "showIcon"
-              )
-            })
+              ),
+            }),
           })}
         </div>
       ) : null}
@@ -260,7 +240,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
             $state,
             "showActions",
             "showActions"
-          )
+          ),
         })}
       >
         {renderPlasmicSlot({
@@ -276,8 +256,8 @@ function PlasmicListSectionHeader__RenderFunc(props: {
               $state,
               "showIcon",
               "showIcon"
-            )
-          })
+            ),
+          }),
         })}
       </div>
       {(hasVariant($state, "showActions", "showActions") ? true : false) ? (
@@ -289,7 +269,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
               $state,
               "showActions",
               "showActions"
-            )
+            ),
           })}
         >
           {renderPlasmicSlot({
@@ -310,7 +290,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
                 />
               </IconButton>
             ),
-            value: args.actions
+            value: args.actions,
           })}
         </div>
       ) : null}
@@ -334,7 +314,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
               $state,
               "collapseState",
               "expanded"
-            )
+            ),
           })}
         >
           <ExpandButton
@@ -350,7 +330,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
                 $state,
                 "collapseState",
                 "expanded"
-              )
+              ),
             })}
             isExpanded={
               hasVariant($state, "collapseState", "expanded") ? true : undefined
@@ -370,13 +350,13 @@ const PlasmicDescendants = {
     "titleContainer",
     "actionsContainer",
     "collapseIndicator",
-    "expandButton"
+    "expandButton",
   ],
   iconContainer: ["iconContainer"],
   titleContainer: ["titleContainer"],
   actionsContainer: ["actionsContainer"],
   collapseIndicator: ["collapseIndicator", "expandButton"],
-  expandButton: ["expandButton"]
+  expandButton: ["expandButton"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -426,7 +406,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicListSectionHeader__ArgProps,
-          internalVariantPropNames: PlasmicListSectionHeader__VariantProps
+          internalVariantPropNames: PlasmicListSectionHeader__VariantProps,
         }),
       [props, nodeName]
     );
@@ -434,7 +414,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName
+      forNode: nodeName,
     });
   };
   if (nodeName === "root") {
@@ -458,7 +438,7 @@ export const PlasmicListSectionHeader = Object.assign(
 
     // Metadata about props expected for PlasmicListSectionHeader
     internalVariantProps: PlasmicListSectionHeader__VariantProps,
-    internalArgProps: PlasmicListSectionHeader__ArgProps
+    internalArgProps: PlasmicListSectionHeader__ArgProps,
   }
 );
 
