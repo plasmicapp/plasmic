@@ -534,7 +534,8 @@ async function buildLoader(
     throw new BadRequestError(`A component name was not specified`);
   }
 
-  const { projectId, version } = parseProjectIdSpec(projectIdSpec);
+  const { projectId, version, tag } = parseProjectIdSpec(projectIdSpec);
+  const versionOrTag = version ?? tag;
 
   if (!version && versionType !== "preview") {
     throw new BadRequestError(
@@ -556,7 +557,7 @@ async function buildLoader(
   if (versionType === "preview") {
     const projectRev = (
       await resolveLatestProjectRevisions(mgr, [
-        { id: projectId, branchName: version },
+        { id: projectId, branchName: versionOrTag },
       ])
     )[projectId];
     const prefix = `${LOADER_CACHE_BUST}-${projectId}@${projectRev}`;
@@ -577,7 +578,7 @@ async function buildLoader(
   await func({
     projectId,
     component: hackyCast(component),
-    version,
+    version: versionOrTag,
     token,
     mgr,
     project,
@@ -697,8 +698,7 @@ async function genReprV3(
   res: Response,
   props: ProjectLoaderProps
 ) {
-  console.log("!!entering reprv3");
-  const { projectId, project } = props;
+  const { projectId } = props;
 
   const mgr = superDbMgr(req);
 
@@ -727,7 +727,6 @@ async function genReprV3(
       },
     }),
   };
-  console.log("!!middle reprv3");
   const res2: any = await req.workerpool.exec("codegen", [
     {
       scheme: "blackbox",
@@ -741,7 +740,6 @@ async function genReprV3(
   // Remove circular stuff
   delete res2["site"];
 
-  console.log("!!leaving reprv3", res2);
   res.json({ site: toJson(site, bundler), interpreterExtras: res2 });
 }
 

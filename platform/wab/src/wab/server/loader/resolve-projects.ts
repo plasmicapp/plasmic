@@ -208,7 +208,7 @@ export async function getResolvedProjectVersions(
     };
     const newProjectIdSpecs = sortBy(
       Object.entries(newProjectIdSpecsMap),
-      ([projectId, version]) => projectId
+      ([projectId]) => projectId
     ).map(([projectId, version]) => `${projectId}@${version}`);
     return newProjectIdSpecs;
   }
