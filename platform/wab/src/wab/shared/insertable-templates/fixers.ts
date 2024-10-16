@@ -1,4 +1,27 @@
 import {
+  TokenType,
+  derefToken,
+  derefTokenRefs,
+  hasTokenRefs,
+  maybeDerefToken,
+  mkTokenRef,
+  replaceAllTokenRefs,
+} from "@/wab/commons/StyleToken";
+import {
+  RSH,
+  RuleSetHelpers,
+  joinCssValues,
+  splitCssValue,
+} from "@/wab/shared/RuleSetHelpers";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import {
+  isBaseVariant,
+  isGlobalVariant,
+  isScreenVariant,
+} from "@/wab/shared/Variants";
+import { toVarName } from "@/wab/shared/codegen/util";
+import {
   arrayEqIgnoreOrder,
   assert,
   remove,
@@ -7,20 +30,22 @@ import {
   withoutNils,
 } from "@/wab/shared/common";
 import {
-  derefToken,
-  derefTokenRefs,
-  hasTokenRefs,
-  maybeDerefToken,
-  mkTokenRef,
-  replaceAllTokenRefs,
-  TokenType,
-} from "@/wab/commons/StyleToken";
-import { isCodeComponent, isPlumeComponent } from "@/wab/shared/core/components";
-import { InsertableTemplateTokenResolution } from "@/wab/shared/devflags";
+  isCodeComponent,
+  isPlumeComponent,
+} from "@/wab/shared/core/components";
 import { code, isFallbackableExpr } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { mkImageAssetRef } from "@/wab/shared/core/image-assets";
-import { toVarName } from "@/wab/shared/codegen/util";
+import {
+  TplTextTag,
+  findVariantSettingsUnderTpl,
+  flattenTpls,
+  isTplComponent,
+  isTplSlot,
+  isTplTextBlock,
+  walkTpls,
+} from "@/wab/shared/core/tpls";
+import { InsertableTemplateTokenResolution } from "@/wab/shared/devflags";
 import { getEffectiveVariantSettingForInsertable } from "@/wab/shared/effective-variant-setting";
 import {
   inlineMixins,
@@ -35,11 +60,6 @@ import {
   Expr,
   ImageAsset,
   ImageAssetRef,
-  isKnownCustomCode,
-  isKnownExprText,
-  isKnownObjectPath,
-  isKnownTemplatedString,
-  isKnownTplTag,
   ObjectPath,
   PageHref,
   RenderExpr,
@@ -49,35 +69,18 @@ import {
   StyleToken,
   TemplatedString,
   TplNode,
-  Variant,
-  VariantedValue,
-  VariantSetting,
-  VariantsRef,
   VarRef,
+  Variant,
+  VariantSetting,
+  VariantedValue,
+  VariantsRef,
   VirtualRenderExpr,
+  isKnownCustomCode,
+  isKnownExprText,
+  isKnownObjectPath,
+  isKnownTemplatedString,
+  isKnownTplTag,
 } from "@/wab/shared/model/classes";
-import {
-  joinCssValues,
-  RSH,
-  RuleSetHelpers,
-  splitCssValue,
-} from "@/wab/shared/RuleSetHelpers";
-import { TplMgr } from "@/wab/shared/TplMgr";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import {
-  isBaseVariant,
-  isGlobalVariant,
-  isScreenVariant,
-} from "@/wab/shared/Variants";
-import {
-  findVariantSettingsUnderTpl,
-  flattenTpls,
-  isTplComponent,
-  isTplSlot,
-  isTplTextBlock,
-  TplTextTag,
-  walkTpls,
-} from "@/wab/shared/core/tpls";
 import { isString } from "lodash";
 
 export function ensureTplWithBaseAndScreenVariants(
@@ -501,6 +504,21 @@ function getFixedExpr(
   helpers: Pick<ContextHelpers, "getNewImageAsset">
 ) {
   const { isOwned, invalidExprNames } = ctx;
+
+  if (isOwned) {
+    // If we are dealing with an owned tree, we just need to fix image assets references to be sure
+    // that they are included in the new site
+    return switchType(expr)
+      .when([ImageAssetRef], (_expr) => {
+        const newAsset = helpers.getNewImageAsset(_expr.asset);
+        if (newAsset) {
+          return new ImageAssetRef({ asset: newAsset });
+        }
+        return null;
+      })
+      .elseUnsafe(() => expr);
+  }
+
   return (
     switchType(expr)
       .when([CustomCode, ObjectPath, TemplatedString], (_expr) => {
@@ -526,8 +544,7 @@ function getFixedExpr(
         }
         return null;
       })
-      // If we are dealing with an owned tree, we can keep variable references
-      .when([VarRef], (_expr) => (isOwned ? expr : null))
+      .when([VarRef], (_expr) => null)
       // TODO: handle event handlers, this may depend on `isOwned`
       .when([EventHandler], (_expr) => {
         return null;
