@@ -4,7 +4,6 @@ import {
   LATEST_LOADER_VERSION,
   LOADER_ASSETS_BUCKET,
   LOADER_CACHE_BUST,
-  LOADER_CODEGEN_OPTS_DEFAULTS,
   genLatestLoaderCodeBundle,
   genPublishedLoaderCodeBundle,
 } from "@/wab/server/loader/gen-code-bundle";
@@ -29,7 +28,6 @@ import { prefillCloudfront } from "@/wab/server/workers/prefill-cloudfront";
 import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
-import { ExportOpts } from "@/wab/shared/codegen/types";
 import { toClassName } from "@/wab/shared/codegen/util";
 import {
   ensure,
@@ -48,7 +46,6 @@ import { Request, Response } from "express-serve-static-core";
 import fs from "fs";
 import { isString } from "lodash";
 import path from "path";
-import { getConnection } from "typeorm";
 
 /**
  * Loader version is used for backwards compatibility (otherwise we could
@@ -703,44 +700,13 @@ async function genReprV3(
   const mgr = superDbMgr(req);
 
   const bundler = new Bundler();
-  const { site, version } = await mgr.tryGetPkgVersionByProjectVersionOrTag(
+  const { site } = await mgr.tryGetPkgVersionByProjectVersionOrTag(
     bundler,
     projectId,
     props.version || "latest"
   );
 
-  // This is a temporary hack to piggyback some additional details on the reprV3 API, generated from a run of codegen. This is for the model renderer.
-  const opts = {} as any;
-  const exportOpts: ExportOpts = {
-    ...LOADER_CODEGEN_OPTS_DEFAULTS,
-    platform: (opts.platform ??
-      LOADER_CODEGEN_OPTS_DEFAULTS.platform) as ExportOpts["platform"],
-    platformOptions: opts.platformOptions,
-    defaultExportHostLessComponents: opts.loaderVersion > 2 ? false : true,
-    useComponentSubstitutionApi: opts.loaderVersion >= 6 ? true : false,
-    useGlobalVariantsSubstitutionApi: opts.loaderVersion >= 7 ? true : false,
-    useCodeComponentHelpersRegistry: opts.loaderVersion >= 10 ? true : false,
-    ...(opts.i18nKeyScheme && {
-      localization: {
-        keyScheme: opts.i18nKeyScheme ?? "content",
-        tagPrefix: opts.i18nTagPrefix,
-      },
-    }),
-  };
-  const res2: any = await req.workerpool.exec("codegen", [
-    {
-      scheme: "blackbox",
-      connectionOptions: getConnection().options,
-      projectId,
-      exportOpts: exportOpts,
-      maybeVersionOrTag: version,
-      indirect: false,
-    },
-  ]);
-  // Remove circular stuff
-  delete res2["site"];
-
-  res.json({ site: toJson(site, bundler), interpreterExtras: res2 });
+  res.json({ site: toJson(site, bundler) });
 }
 
 async function buildPublishedLoaderRedirect(
