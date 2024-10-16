@@ -354,7 +354,7 @@ function RichTextToolbar_(
                 </Menu.Item>
                 <Menu.Item
                   aria-label="Italic element"
-                  onClick={() => runInEditor("ITALIC")}
+                  onClick={() => runInEditor("ITALIC_TAG")}
                 >
                   <Icon icon={ItalicsvgIcon} style={{ marginRight: 4 }} />
                   Italic element

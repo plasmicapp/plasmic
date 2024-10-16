@@ -353,7 +353,7 @@ const mkRichTextShortcuts: (sub: SubDeps) => Shortcut[] = computedFn(
       fn: wrapInInlineTag("strong", sub),
     },
     {
-      action: "ITALIC",
+      action: "ITALIC_TAG",
       hotkey: isHotkey("mod+shift+i"),
       fn: wrapInInlineTag("i", sub),
     },
