@@ -282,7 +282,7 @@ function RichTextToolbar_(
                 ))}
                 <Menu.Item
                   aria-label="Unset"
-                  onClick={() => markCss({ fontWeight })}
+                  onClick={() => markCss({ fontWeight: undefined })}
                 >
                   Unset
                 </Menu.Item>
@@ -320,7 +320,7 @@ function RichTextToolbar_(
                 </Menu.Item>
                 <Menu.Item
                   aria-label="Unset"
-                  onClick={() => markCss({ textDecorationLine })}
+                  onClick={() => markCss({ textDecorationLine: undefined })}
                 >
                   Unset
                 </Menu.Item>
