@@ -37,6 +37,7 @@ import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { getTagAttrForImageAsset } from "@/wab/shared/core/image-assets";
 import { mkParam } from "@/wab/shared/core/lang";
 import { typographyCssProps } from "@/wab/shared/core/style-props";
+import { getTplComponentsInSite } from "@/wab/shared/core/tpls";
 import {
   computeDefinedIndicator,
   DefinedIndicatorType,
@@ -64,7 +65,6 @@ import { isCodeComponentSlot } from "@/wab/shared/SlotUtils";
 import { unsetTplVariantableAttr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { ensureVariantSetting, isGlobalVariant } from "@/wab/shared/Variants";
-import { getTplComponentsInSite } from "@/wab/shared/core/tpls";
 import { Alert, Menu, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
@@ -587,13 +587,7 @@ export function makeImageMenu({
           }
         };
         push(
-          <Menu.SubMenu
-            title={
-              <span>
-                Link to a prop for component <code>{ownerComponent.name}</code>
-              </span>
-            }
-          >
+          <Menu.SubMenu title={<span>Allow external access</span>}>
             {getRealParams(ownerComponent)
               .filter((p) => p.type.name === "img")
               .map((param) => (
