@@ -706,6 +706,7 @@ interface StylePanelSectionProps extends StyleComponentProps {
     | ReactNode
     | ((renderMaybeCollapsibleRows: MaybeCollapsibleRowsRenderer) => ReactNode);
   styleProps: string[];
+  collapsableIndicatorNames?: string[];
   defaultExpanded?: boolean;
   hasMore?: boolean;
   controls?: ReactNode;
@@ -733,6 +734,7 @@ function StylePanelSection_(
     controls,
     emptyBody,
     styleProps,
+    collapsableIndicatorNames = [],
     defaultHeaderAction,
     expsProvider,
     unremovableStyleProps,
@@ -746,6 +748,10 @@ function StylePanelSection_(
     unremovableStyleProps && !isMixin ? unremovableStyleProps : [];
 
   const definedIndicators = styleProps
+    .map((p) => expsProvider.definedIndicator(p))
+    .filter((x) => x.source !== "none");
+
+  const collapsableDefinedIndicators = collapsableIndicatorNames
     .map((p) => expsProvider.definedIndicator(p))
     .filter((x) => x.source !== "none");
 
@@ -815,6 +821,9 @@ function StylePanelSection_(
       title={title}
       hasExtraContent={hasMore}
       oneLiner={oneLiner}
+      defaultExtraContentExpanded={
+        getValueSetState(...collapsableDefinedIndicators) === "isSet"
+      }
       makeHeaderMenu={headerOverlay}
       isHeaderActive={getValueSetState(...definedIndicators) === "isSet"}
       onHeaderClick={onHeaderClick}

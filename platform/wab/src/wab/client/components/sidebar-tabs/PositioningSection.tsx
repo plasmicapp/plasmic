@@ -132,6 +132,8 @@ export const PositioningPanelSection = observer(
         "justify-self",
         "align-self",
       ];
+
+      const collapsableIndicatorNames = ["z-index", ...standardSides];
       return (
         <>
           <StylePanelSection
@@ -146,6 +148,7 @@ export const PositioningPanelSection = observer(
                 : []
             }
             styleProps={styleProps}
+            collapsableIndicatorNames={collapsableIndicatorNames}
             controls={
               <StyleToggleButtonGroup
                 value={curPosition}
