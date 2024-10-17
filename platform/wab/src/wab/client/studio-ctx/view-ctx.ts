@@ -117,7 +117,7 @@ import {
 } from "@plasmicapp/react-web";
 import asynclib from "async";
 import $ from "jquery";
-import L, { defer, groupBy, head } from "lodash";
+import L, { defer, groupBy, head, isEqual } from "lodash";
 import * as mobx from "mobx";
 import { comparer, computed, observable } from "mobx";
 import { computedFn } from "mobx-utils";
@@ -314,6 +314,10 @@ export class ViewCtx extends WithDbCtx {
 
   createSetContextDataFn = computedFn((valKey: string) => {
     return (value: any) => {
+      const oldValue = this._codeComponentValKeyToContextData.get(valKey);
+      if (isEqual(oldValue, value)) {
+        return;
+      }
       globalHookCtx.frameValKeyToContextData.set(
         mkFrameValKeyToContextDataKey(this.arenaFrame().uid, valKey),
         value
