@@ -262,7 +262,7 @@ function RichTextToolbar_(
             type: fontWeight ? ["noDivider", "secondary"] : "noDivider",
             onClick: () => {
               if (fontWeight) {
-                markCss({ fontWeight });
+                markCss({ fontWeight: undefined });
               } else {
                 runInEditor("BOLD");
               }
