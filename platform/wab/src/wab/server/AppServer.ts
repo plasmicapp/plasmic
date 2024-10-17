@@ -50,7 +50,6 @@ import {
   upsertEndUser,
 } from "@/wab/server/routes/app-oauth";
 import { getAppCtx } from "@/wab/server/routes/appctx";
-import { bigCommerceGraphql } from "@/wab/server/routes/bigcommerce";
 import {
   cachePublicCmsRead,
   countTable,
@@ -323,7 +322,6 @@ const csrfFreeStaticRoutes = [
   "/api/v1/admin/clone",
   "/api/v1/admin/deactivate-user",
   "/api/v1/admin/revert-project-revision",
-  "/api/v1/bigcommerce/graphql",
   "/api/v1/mail/subscribe",
   "/api/v1/plume-pkg/versions",
   "/api/v1/localization/gen-texts",
@@ -1917,14 +1915,6 @@ export function addMainAppServerRoutes(
   app.get("/api/v1/demodata/blurbs", withNext(getFakeBlurbs));
   app.get("/api/v1/demodata/posts", withNext(getFakePosts));
   app.get("/api/v1/demodata/testimonials", withNext(getFakeTestimonials));
-
-  /**
-   * BigCommerce proxy for demos
-   */
-  // allow pre-flight request for CORS
-  // https://stackoverflow.com/questions/33483675/getting-express-server-to-accept-cors-request
-  app.options("/api/v1/bigcommerce/graphql", cors() as any);
-  app.post("/api/v1/bigcommerce/graphql", cors(), withNext(bigCommerceGraphql));
 
   /**
    * Discourse SSO
