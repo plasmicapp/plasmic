@@ -2623,7 +2623,10 @@ export class DbMgr implements MigrationDbMgr {
     regenerateSecretApiToken = false
   ) {
     fields = _.pick(fields, updatableProjectFields);
-    if (editorOnlyUpdatableProjectFields.some((f) => fields[f] !== undefined)) {
+    if (
+      editorOnlyUpdatableProjectFields.some((f) => fields[f] !== undefined) ||
+      regenerateSecretApiToken
+    ) {
       await this.checkProjectPerms(id, "editor", "update", true);
     } else {
       await this.checkProjectPerms(id, "content", "update", true);
