@@ -1,3 +1,4 @@
+import { usePlasmicCanvasComponentInfo } from "@plasmicapp/host";
 import React from "react";
 import { DialogTrigger } from "react-aria-components";
 import { PlasmicDialogTriggerContext } from "./contexts";
@@ -12,16 +13,25 @@ import {
 
 export interface BaseDialogTriggerProps
   extends React.ComponentProps<typeof DialogTrigger> {
-  trigger: React.ReactNode;
-  dialog: React.ReactNode;
+  trigger?: React.ReactNode;
+  dialog?: React.ReactNode;
 }
 
 export function BaseDialogTrigger(props: BaseDialogTriggerProps) {
-  const { trigger, dialog, ...rest } = props;
+  const { trigger, dialog, isOpen, ...rest } = props;
+
+  const { isSelected, selectedSlotName } =
+    usePlasmicCanvasComponentInfo(props) ?? {};
+  const isAutoOpen = selectedSlotName !== "trigger" && isSelected;
+
+  const mergedProps = {
+    ...rest,
+    isOpen: (isAutoOpen || isOpen) ?? false,
+  };
 
   return (
-    <PlasmicDialogTriggerContext.Provider value={props}>
-      <DialogTrigger {...rest}>
+    <PlasmicDialogTriggerContext.Provider value={mergedProps}>
+      <DialogTrigger {...mergedProps}>
         {trigger}
         {dialog}
       </DialogTrigger>
@@ -42,6 +52,10 @@ export function registerDialogTrigger(
       importPath: "@plasmicpkgs/react-aria/skinny/registerDialogTrigger",
       importName: "BaseDialogTrigger",
       isAttachment: true,
+      defaultStyles: {
+        width: 0,
+        height: 0,
+      },
       props: {
         trigger: {
           type: "slot",

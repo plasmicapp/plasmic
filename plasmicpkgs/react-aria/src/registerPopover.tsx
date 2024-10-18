@@ -1,4 +1,8 @@
-import { PlasmicElement, usePlasmicCanvasContext } from "@plasmicapp/host";
+import {
+  PlasmicElement,
+  usePlasmicCanvasComponentInfo,
+  usePlasmicCanvasContext,
+} from "@plasmicapp/host";
 import { mergeProps } from "@react-aria/utils";
 import React from "react";
 import { Popover, PopoverContext } from "react-aria-components";
@@ -25,10 +29,13 @@ export interface BasePopoverProps
 
 export function BasePopover(props: BasePopoverProps) {
   const { resetClassName, setControlContextData, ...restProps } = props;
+  // Popover can be inside DialogTrigger, Select, Combobox, etc. So we can't just use a particular context like DialogTrigger (like we do in Modal) to decide if it is standalone
   const isStandalone = !React.useContext(PopoverContext);
   const context = React.useContext(PlasmicPopoverContext);
   const triggerRef = React.useRef<any>(null);
   const isEditMode = !!usePlasmicCanvasContext();
+
+  const { isSelected } = usePlasmicCanvasComponentInfo(props) ?? {};
 
   const mergedProps = mergeProps(
     {
@@ -48,7 +55,7 @@ export function BasePopover(props: BasePopoverProps) {
       ? {
           triggerRef,
           isNonModal: true,
-          isOpen: true,
+          isOpen: isSelected ?? false,
         }
       : null
   );
@@ -164,6 +171,7 @@ export function registerPopover(
           type: "themeResetClass",
         },
       },
+      // No isOpen state for popover, because we assume that its open state is always going to be controlled by a parent like Select, Combobox, DialogTrigger, etc.
       styleSections: true,
       trapsFocus: true,
     },

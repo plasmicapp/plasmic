@@ -1,5 +1,10 @@
+import { usePlasmicCanvasComponentInfo } from "@plasmicapp/host";
 import React, { useEffect, useMemo } from "react";
-import { ComboBox, ComboBoxProps } from "react-aria-components";
+import {
+  ComboBox,
+  ComboBoxProps,
+  ComboBoxStateContext,
+} from "react-aria-components";
 import { getCommonProps } from "./common";
 import {
   PlasmicInputContext,
@@ -33,6 +38,30 @@ export interface BaseComboboxProps
   isOpen?: boolean;
 }
 
+/**
+ * This React Hook is used to help with auto-opening the combobox when the canvas component is selected.
+ * Currently, there is a bug in react-aria combobox (https://github.com/adobe/react-spectrum/issues/7149) where, when the combobox's popover is auto-opened, it is unable to render any listbox items.
+ * Setting popover's open state to true in not enough unless, unless it has previously been opened via user interaction with combobox.
+ * Also, <Combobox> does not support an `isOpen` prop either.
+ *
+ * So, we use this custom hook to access the combobox's internal state via ComboBoxStateContext and change the `open` state manually via tha available `open` method.
+ *  */
+function ComboboxAutoOpen(props: any) {
+  const { isSelected } = usePlasmicCanvasComponentInfo(props) ?? {};
+  let { open, close } = React.useContext(ComboBoxStateContext) ?? {};
+
+  useEffect(() => {
+    if (isSelected) {
+      open?.(undefined, "manual");
+    } else {
+      close?.();
+    }
+    // Not putting open and close in the useEffect dependencies array, because it causes a re-render loop.
+  }, [isSelected]);
+
+  return null;
+}
+
 export function BaseComboBox(props: BaseComboboxProps) {
   const { children, setControlContextData, isOpen, ...rest } = props;
 
@@ -57,6 +86,7 @@ export function BaseComboBox(props: BaseComboboxProps) {
           }}
         >
           <PlasmicInputContext.Provider value={{ isUncontrolled: true }}>
+            <ComboboxAutoOpen {...props} />
             {children}
           </PlasmicInputContext.Provider>
         </PlasmicListBoxContext.Provider>

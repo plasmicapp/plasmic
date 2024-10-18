@@ -1,4 +1,4 @@
-import { usePlasmicCanvasContext } from "@plasmicapp/host";
+import { usePlasmicCanvasComponentInfo } from "@plasmicapp/host";
 import React, { useEffect, useMemo } from "react";
 import { Select, SelectProps, SelectValue } from "react-aria-components";
 import { getCommonProps } from "./common";
@@ -52,7 +52,6 @@ export interface BaseSelectControlContextData {
 export interface BaseSelectProps
   extends SelectProps<{}>, // NOTE: We don't need generic type here since we don't use items prop (that needs it). We just need to make the type checker happy
     HasControlContextData<BaseSelectControlContextData> {
-  previewOpen?: boolean;
   children?: React.ReactNode;
 }
 
@@ -61,7 +60,6 @@ export function BaseSelect(props: BaseSelectProps) {
     selectedKey,
     onSelectionChange,
     placeholder,
-    previewOpen,
     onOpenChange,
     isDisabled,
     className,
@@ -74,8 +72,8 @@ export function BaseSelect(props: BaseSelectProps) {
     "aria-label": ariaLabel,
   } = props;
 
-  const isEditMode = !!usePlasmicCanvasContext();
-  const openProp = isEditMode && previewOpen ? true : isOpen;
+  const { isSelected } = usePlasmicCanvasComponentInfo(props) ?? {};
+  const _isOpen = (isSelected || isOpen) ?? false;
 
   let idManager = useMemo(() => new ListBoxItemIdManager(), []);
 
@@ -99,11 +97,11 @@ export function BaseSelect(props: BaseSelectProps) {
       name={name}
       disabledKeys={disabledKeys}
       aria-label={ariaLabel}
-      isOpen={openProp}
+      isOpen={_isOpen}
       {...extractPlasmicDataProps(props)}
     >
       <PlasmicPopoverContext.Provider
-        value={{ isOpen: openProp, defaultShouldFlip: false }}
+        value={{ isOpen: _isOpen, defaultShouldFlip: false }}
       >
         <PlasmicListBoxContext.Provider
           value={{
@@ -186,13 +184,6 @@ export function registerSelect(loader?: Registerable) {
         options: (_props, ctx) => (ctx?.itemIds ? Array.from(ctx.itemIds) : []),
         multiSelect: true,
         advanced: true,
-      },
-      previewOpen: {
-        type: "boolean",
-        displayName: "Preview opened?",
-        description: "Preview opened state while designing in Plasmic editor",
-        editOnly: true,
-        defaultValue: false,
       },
       isOpen: {
         type: "boolean",

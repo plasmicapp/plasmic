@@ -1,3 +1,4 @@
+import { usePlasmicCanvasComponentInfo } from "@plasmicapp/host";
 import { mergeProps } from "@react-aria/utils";
 import React from "react";
 import { useTooltipTrigger } from "react-aria";
@@ -20,6 +21,11 @@ export interface BaseTooltipProps extends TooltipTriggerProps, TooltipProps {
 export function BaseTooltip(props: BaseTooltipProps) {
   const { children, tooltipContent, className, resetClassName, ...restProps } =
     props;
+
+  const { isSelected, selectedSlotName } =
+    usePlasmicCanvasComponentInfo(props) ?? {};
+  const isAutoOpen = selectedSlotName !== "children" && isSelected;
+
   const state = useTooltipTriggerState(restProps);
   const ref = React.useRef(null);
   const { triggerProps, tooltipProps } = useTooltipTrigger(
@@ -53,7 +59,7 @@ export function BaseTooltip(props: BaseTooltipProps) {
             ),
           } as Record<string, any> & { ref?: React.Ref<HTMLElement> })
         : null}
-      {state.isOpen && (
+      {(isAutoOpen || state.isOpen) && (
         <>
           {React.cloneElement(
             hasContent ? (
@@ -86,6 +92,7 @@ export function registerTooltip(
       props: {
         children: {
           type: "slot",
+          displayName: "Trigger",
           mergeWithParent: true,
           defaultValue: {
             type: "text",
@@ -130,6 +137,7 @@ export function registerTooltip(
           uncontrolledProp: "defaultOpen",
           description: "Whether the overlay is open by default",
           defaultValueHint: false,
+          hidden: () => true, // after the introduction of useCanvasComponentInfo, this prop is no longer needed to preview open
         },
         onOpenChange: {
           type: "eventHandler",
