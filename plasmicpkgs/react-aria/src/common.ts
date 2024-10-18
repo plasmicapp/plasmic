@@ -151,7 +151,7 @@ export function getCommonProps<T>(
       description:
         "Regex pattern that the value of the input must match to be valid",
       helpText:
-        "For more information about writing Regular Expressions (regex), check out https://regexr.com/",
+        "For more information about writing Regular Expressions (regex), visit [Regexr](https://regexr.com/)",
       validator: (value: string) => {
         try {
           new RegExp(value);
@@ -195,7 +195,7 @@ export function getCommonProps<T>(
       hidden: hasParent,
       description: "Guidance as to the type of data expected in the field",
       helpText:
-        "For explanations on what each of the values mean, check https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values",
+        "Learn more about the available options on the [MDN guide](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values)",
       options: [
         "on",
         "off",
