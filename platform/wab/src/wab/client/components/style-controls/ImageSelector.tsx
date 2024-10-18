@@ -427,7 +427,7 @@ export const ImageAssetOrUrlPicker = observer(
             onUploaded={handleImageUploaded}
             accept={
               type === ImageAssetType.Picture
-                ? ".gif,.jpg,.jpeg,.png,.tif,.svg"
+                ? ".gif,.jpg,.jpeg,.png,.avif,.tif,.svg"
                 : ".svg"
             }
           />
@@ -491,7 +491,7 @@ export function ImageUploader(props: {
   return (
     <FileUploader
       onChange={handleUploadChange}
-      accept={accept ?? ".gif,.jpg,.jpeg,.png,.tif,.svg,.webp"}
+      accept={accept ?? ".gif,.jpg,.jpeg,.png,.avif,.tif,.svg,.webp"}
       children={children}
       disabled={isDisabled}
     />

@@ -515,7 +515,7 @@ export const ImageAssetSidebarPopup = observer(
               <ImageUploader
                 accept={
                   asset.type === ImageAssetType.Picture
-                    ? ".gif,.jpg,.jpeg,.png,.tif,.svg"
+                    ? ".gif,.jpg,.jpeg,.png,.avif,.tif,.svg"
                     : ".svg"
                 }
                 onUploaded={handleUploaded}
@@ -531,7 +531,7 @@ export const ImageAssetSidebarPopup = observer(
   }
 );
 
-export const IMAGE_ACCEPT = ".gif,.jpg,.jpeg,.png,.tif,.svg,.webp";
+export const IMAGE_ACCEPT = ".gif,.jpg,.jpeg,.png,.avif,.tif,.svg,.webp";
 export async function promptFileUpload(
   appCtx: AppCtx,
   opts?: {

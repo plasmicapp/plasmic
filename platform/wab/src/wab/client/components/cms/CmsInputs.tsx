@@ -13,7 +13,6 @@ import Select from "@/wab/client/components/widgets/Select";
 import Switch from "@/wab/client/components/widgets/Switch";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { assert, ensure, ensureType } from "@/wab/shared/common";
 import {
   ApiCmsDatabase,
   CmsDatabaseId,
@@ -23,6 +22,7 @@ import {
   CmsTypeObject,
   CmsUploadedFile,
 } from "@/wab/shared/ApiSchema";
+import { assert, ensure, ensureType } from "@/wab/shared/common";
 import { PlasmicImg } from "@plasmicapp/react-web";
 import Pickr from "@simonwep/pickr";
 import "@simonwep/pickr/dist/themes/nano.min.css";
@@ -373,7 +373,7 @@ export function CmsImageInput(props: {
             setUploading(false);
             onChange?.(result.files[0]);
           }}
-          accept={".gif,.jpg,.jpeg,.png,.tif,.svg,.webp"}
+          accept={".gif,.jpg,.jpeg,.png,.avif,.tif,.svg,.webp"}
         />
       )}
       {isUploading && <em>Uploading...</em>}

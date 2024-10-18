@@ -1995,7 +1995,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                         <input
                           className="hidden-image-selector"
                           type="file"
-                          accept={".gif,.jpg,.jpeg,.png,.tif,.svg"}
+                          accept={".gif,.jpg,.jpeg,.png,.avif,.tif,.svg"}
                         />
                         <>
                           {!studioCtx.isInteractiveMode &&
