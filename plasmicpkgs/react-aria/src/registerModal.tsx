@@ -56,9 +56,7 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
     const contextProps = React.useContext(PlasmicDialogTriggerContext);
     const isStandalone = !contextProps;
     const mergedProps = mergeProps(contextProps, rest, {
-      isOpen: isStandalone
-        ? (isSelected || isOpen) ?? false
-        : contextProps.isOpen,
+      isOpen: isStandalone ? isSelected || isOpen : contextProps.isOpen,
     });
 
     setControlContextData?.({
@@ -181,7 +179,7 @@ export function registerModal(
           type: "boolean",
           editOnly: true,
           uncontrolledProp: "defaultOpen",
-          defaultValueHint: false,
+          defaultValueHint: true,
           defaultValue: true,
           hidden: hasParent,
         },

@@ -1,8 +1,4 @@
-import {
-  PlasmicElement,
-  usePlasmicCanvasComponentInfo,
-  usePlasmicCanvasContext,
-} from "@plasmicapp/host";
+import { PlasmicElement, usePlasmicCanvasContext } from "@plasmicapp/host";
 import { mergeProps } from "@react-aria/utils";
 import React from "react";
 import { Popover, PopoverContext } from "react-aria-components";
@@ -35,8 +31,6 @@ export function BasePopover(props: BasePopoverProps) {
   const triggerRef = React.useRef<any>(null);
   const isEditMode = !!usePlasmicCanvasContext();
 
-  const { isSelected } = usePlasmicCanvasComponentInfo(props) ?? {};
-
   const mergedProps = mergeProps(
     {
       isOpen: context?.isOpen,
@@ -55,7 +49,12 @@ export function BasePopover(props: BasePopoverProps) {
       ? {
           triggerRef,
           isNonModal: true,
-          isOpen: isSelected ?? false,
+          /**
+           * Always true, because we assume that popover is always going to be controlled by a parent like Select, Combobox, DialogTrigger, etc, and its only really standalone in component view
+           * In component view, we never want to start with an empty artboard, so isOpen has to be true
+           *  */
+
+          isOpen: true,
         }
       : null
   );
