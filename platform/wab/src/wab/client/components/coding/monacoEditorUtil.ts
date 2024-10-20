@@ -361,9 +361,11 @@ function initMonacoEditorJs(
       };
       find._state.change(
         {
-          searchScope: {
-            ...scope,
-          },
+          searchScope: [
+            {
+              ...scope,
+            },
+          ],
         },
         true
       );
