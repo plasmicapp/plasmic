@@ -1,7 +1,7 @@
 import { PlasmicElement, usePlasmicCanvasContext } from "@plasmicapp/host";
 import { mergeProps } from "@react-aria/utils";
 import React from "react";
-import { Popover, PopoverContext, SelectContext } from "react-aria-components";
+import { Popover, PopoverContext } from "react-aria-components";
 import { PlasmicPopoverContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
@@ -20,22 +20,21 @@ export interface BasePopoverProps
     HasControlContextData<PopoverControlContextData> {
   className?: string;
   resetClassName?: string;
+  defaultShouldFlip?: boolean;
 }
 
 export function BasePopover(props: BasePopoverProps) {
   const { resetClassName, setControlContextData, ...restProps } = props;
   const isStandalone = !React.useContext(PopoverContext);
   const context = React.useContext(PlasmicPopoverContext);
-  const isInsideSelect = !!React.useContext(SelectContext);
   const triggerRef = React.useRef<any>(null);
   const isEditMode = !!usePlasmicCanvasContext();
 
-  // Select/Combobox popovers should not flip by default
-  const defaultShouldFlip = isInsideSelect ? false : true;
-
   const mergedProps = mergeProps(
-    { shouldFlip: defaultShouldFlip },
-    context,
+    {
+      isOpen: context?.isOpen,
+      shouldFlip: context?.defaultShouldFlip,
+    },
     /**
      * isNonModal: Whether the popover is non-modal, i.e. elements outside the popover may be interacted with by assistive technologies. *
      *
@@ -55,7 +54,7 @@ export function BasePopover(props: BasePopoverProps) {
   );
 
   setControlContextData?.({
-    defaultShouldFlip,
+    defaultShouldFlip: context?.defaultShouldFlip ?? true,
   });
 
   return (
@@ -145,7 +144,7 @@ export function registerPopover(
           type: "boolean",
           description:
             "Whether the element should flip its orientation (e.g. top to bottom or left to right) when there is insufficient room for it to render completely.",
-          defaultValueHint: (_props, ctx) => ctx?.defaultShouldFlip ?? true,
+          defaultValueHint: (_props, ctx) => ctx?.defaultShouldFlip,
         },
         placement: {
           type: "choice",
