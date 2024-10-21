@@ -171,7 +171,8 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
     (c) =>
       isReusableComponent(c) &&
       isCodeComponent(c) &&
-      !isHostLessCodeComponent(c)
+      !isHostLessCodeComponent(c) &&
+      !isContextCodeComponent(c)
   );
 
   // Show non-hostless packages first, then hostless packages
