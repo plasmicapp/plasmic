@@ -201,5 +201,9 @@ export function normalizeError(error: any) {
     ? (error.error as Error)
     : typeof error === "string"
     ? new Error(error)
-    : new Error("Unknown error", { cause: error });
+    : new Error(
+        `Unknown error: ${
+          typeof error === "object" ? JSON.stringify(error) : error
+        }`
+      );
 }
