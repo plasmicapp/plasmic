@@ -1,6 +1,6 @@
 import { CodeComponentMeta, PlasmicCanvasContext } from "@plasmicapp/host";
 import registerComponent from "@plasmicapp/host/registerComponent";
-import Lottie from "lottie-react";
+import Lottie, { InteractivityProps } from "lottie-react";
 import React, { useContext } from "react";
 
 const isBrowser = typeof window !== "undefined";
@@ -417,6 +417,7 @@ interface CommonLottieWrapperProps {
   loop?: boolean;
   autoplay?: boolean;
   preview?: boolean;
+  interactivity?: Omit<InteractivityProps, "lottieObj"> | undefined;
 }
 
 export interface LottieWrapperProps extends CommonLottieWrapperProps {
@@ -429,6 +430,7 @@ export interface AsyncLottieWrapperProps extends CommonLottieWrapperProps {
 export function LottieWrapper({
   className,
   animationData,
+  interactivity,
   loop = true,
   autoplay = true,
   preview = false,
@@ -446,6 +448,7 @@ export function LottieWrapper({
       <Lottie
         className={className}
         animationData={animationData}
+        interactivity={interactivity}
         loop={loop}
         autoplay={inEditor ? preview : autoplay}
       />
@@ -481,6 +484,7 @@ async function fetchAnimationData(url: string) {
 export function AsyncLottieWrapper({
   className,
   animationUrl,
+  interactivity,
   loop = true,
   autoplay = true,
   preview = false,
@@ -520,6 +524,7 @@ export function AsyncLottieWrapper({
       <Lottie
         className={className}
         animationData={data}
+        interactivity={interactivity}
         loop={loop}
         autoplay={inEditor ? preview : autoplay}
       />
@@ -531,6 +536,12 @@ export function registerLottieWrapper(loader?: {
   registerComponent: typeof registerComponent;
 }) {
   const commonProps: CodeComponentMeta<CommonLottieWrapperProps>["props"] = {
+    interactivity: {
+      type: "object",
+      description: "Animation interactivity JSON data",
+      helpText:
+        "For more information on interactivity, visit the Lottie React [documentation](https://lottiereact.com/components/Lottie#interactivity-1)",
+    },
     loop: {
       type: "boolean",
       description: "Whether to loop the animation",
