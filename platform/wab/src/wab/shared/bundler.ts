@@ -1,4 +1,12 @@
 import {
+  allSuccess,
+  firstResult,
+  mapAllSuccess,
+  mapSomeSuccess,
+} from "@/wab/commons/failable-utils";
+import { DeepReadonly } from "@/wab/commons/types";
+import { Bundle, BundledInst, UnsafeBundle } from "@/wab/shared/bundles";
+import {
   assert,
   check,
   coalesce,
@@ -13,15 +21,7 @@ import {
   withoutNils,
   xSetDefault,
 } from "@/wab/shared/common";
-import {
-  allSuccess,
-  firstResult,
-  mapAllSuccess,
-  mapSomeSuccess,
-} from "@/wab/commons/failable-utils";
-import { DeepReadonly } from "@/wab/commons/types";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { Bundle, BundledInst, UnsafeBundle } from "@/wab/shared/bundles";
 import { InstUtil } from "@/wab/shared/model/InstUtil";
 import * as classesModule from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
@@ -435,6 +435,14 @@ export function checkBundleFields(bundle: Bundle, iidsToCheck?: string[]) {
           .join("\n")
     );
   }
+}
+
+export function getProjectId(bundle: Bundle) {
+  return bundle.map[bundle.root].projectId;
+}
+
+export function getProjectName(bundle: Bundle) {
+  return bundle.map[bundle.root].name;
 }
 
 // TODO fix mem leak, should track entire bundles so that they can be wiped

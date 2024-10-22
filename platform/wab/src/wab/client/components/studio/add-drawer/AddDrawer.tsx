@@ -37,7 +37,6 @@ import {
 } from "@/wab/client/icons";
 import {
   buildInsertableExtraInfo,
-  getHostLessDependenciesToInsertableTemplate,
   getScreenVariantToInsertableTemplate,
   postInsertableTemplate,
 } from "@/wab/client/insertable-templates";
@@ -75,7 +74,7 @@ import { codeLit } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
-import { allComponents } from "@/wab/shared/core/sites";
+import { allComponents, isHostLessPackage } from "@/wab/shared/core/sites";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import { unbundleProjectDependency } from "@/wab/shared/core/tagged-unbundle";
 import * as Tpls from "@/wab/shared/core/tpls";
@@ -153,29 +152,66 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
       const { projectId, groupName } = meta;
       return sc.app.withSpinner(
         (async () => {
-          await sc.projectDependencyManager.fetchInsertableTemplate(
-            meta.projectId
+          // Get Plexus pkg info
+          const { pkg: pkgInfo } = await sc.appCtx.api.getPkgByProjectId(
+            projectId
           );
-          const site =
-            sc.projectDependencyManager.insertableSites[meta.projectId];
-          const missingDeps = site.projectDependencies
-            .filter(
-              (d) =>
-                !sc.site.projectDependencies.find((td) => d.pkgId === td.pkgId)
-            )
-            .map((d) => d.projectId);
 
-          for (const id of missingDeps) {
-            await sc.projectDependencyManager.addByProjectId(id);
+          /**
+           * Get Plexus pkg version info, and its deps' pkg version info
+           * (the respose for pkg versions is in kBs, so we don't want to make any unnecessary requests to fetch pkg versions again)
+           *
+           */
+          const resPkgVersion = pkgInfo
+            ? await sc.appCtx.api.getPkgVersion(pkgInfo.id)
+            : undefined;
+
+          assert(
+            pkgInfo &&
+              resPkgVersion &&
+              resPkgVersion.pkg &&
+              resPkgVersion.depPkgs,
+            "Unable to load insertable templates project"
+          );
+
+          const { projectDependency } = unbundleProjectDependency(
+            sc.bundler(), // try replace with new FastBundler(),
+            resPkgVersion.pkg,
+            resPkgVersion.depPkgs
+          );
+
+          const site = projectDependency.site;
+
+          await sc.projectDependencyManager.batchImportPkgs(
+            resPkgVersion.depPkgs
+          );
+
+          if (!site) {
+            throw new Error(`Unable to load installable ${meta.name}`);
           }
           const { screenVariant } = await getScreenVariantToInsertableTemplate(
             sc
           );
 
+          const hostLessDependencies = {};
+
+          site.projectDependencies
+            .filter((dep) => isHostLessPackage(dep.site))
+            .forEach((dep) => {
+              hostLessDependencies[dep.projectId] = {
+                projectDependency: dep,
+                pkg: {
+                  id: dep.pkgId,
+                  name: dep.name,
+                  projectId: dep.projectId,
+                },
+              };
+            });
+
           const commonInfo: InsertableTemplateExtraInfo = {
             site,
             screenVariant,
-            ...(await getHostLessDependenciesToInsertableTemplate(sc, site)),
+            hostLessDependencies,
             projectId,
             groupName,
             resolution: {
