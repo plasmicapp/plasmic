@@ -3609,10 +3609,10 @@
     lucide-react "^0.279.0"
     remeda "^1.27.0"
 
-"@plasmicpkgs/react-aria@^0.0.59":
-  version "0.0.59"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.59.tgz#e63b224934909324c8f73cbe20e2b200118ff47a"
-  integrity sha512-/wq9AIxVgJ6cIx1Q2gDHoTPLUlnjTwvB28f7RQrWZ1vl8a+q7YxXu23uK5U0PnccgbxBaU/nVhX/ayANGtl8BQ==
+"@plasmicpkgs/react-aria@^0.0.60":
+  version "0.0.60"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.60.tgz#5c0990b192b9b155902dd2abb3725fddbd498352"
+  integrity sha512-JpzccYYqkHI9NBZAFKw1bqyUaOW1VUyFTcQQYWOavWpD7wkGofYO4AljFNsEtVZ3fQOPY6MF0/DoKgD1CJ66FQ==
   dependencies:
     "@react-aria/i18n" "^3.11.0"
     "@react-aria/utils" "^3.24.0"
