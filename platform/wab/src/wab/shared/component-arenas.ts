@@ -67,6 +67,7 @@ import {
   isScreenVariant,
   isScreenVariantGroup,
 } from "@/wab/shared/Variants";
+import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
 import { getComponentArena } from "@/wab/shared/core/sites";
 import orderBy from "lodash/orderBy";
 import pick from "lodash/pick";
@@ -791,7 +792,11 @@ export function getComponentArenaRowLabel(
   const group = ensureMaybeKnownVariantGroup(row.rowKey);
 
   if (!group) {
-    return row.cols.length === 1 ? "Base" : "Base + Interactions";
+    return row.cols.length === 1
+      ? "Base"
+      : isTplRootWithCodeComponentVariants(component.tplTree)
+      ? "Base + Registered"
+      : "Base + Interactions";
   }
 
   if (component.variantGroups.includes(group as ComponentVariantGroup)) {
