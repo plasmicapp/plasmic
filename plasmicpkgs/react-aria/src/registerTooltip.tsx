@@ -131,14 +131,6 @@ export function registerTooltip(
           options: ["focus", "focus and hover"],
           defaultValueHint: "focus and hover",
         },
-        isOpen: {
-          type: "boolean",
-          editOnly: true,
-          uncontrolledProp: "defaultOpen",
-          description: "Whether the overlay is open by default",
-          defaultValueHint: false,
-          hidden: () => true, // after the introduction of useCanvasComponentInfo, this prop is no longer needed to preview open
-        },
         onOpenChange: {
           type: "eventHandler",
           argTypes: [{ name: "isOpen", type: "boolean" }],
@@ -146,8 +138,7 @@ export function registerTooltip(
       },
       states: {
         isOpen: {
-          type: "writable",
-          valueProp: "isOpen",
+          type: "readonly",
           onChangeProp: "onOpenChange",
           variableType: "boolean",
         },

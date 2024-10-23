@@ -1,4 +1,7 @@
-import { usePlasmicCanvasComponentInfo } from "@plasmicapp/host";
+import {
+  usePlasmicCanvasComponentInfo,
+  usePlasmicCanvasContext,
+} from "@plasmicapp/host";
 import React, { useEffect, useMemo } from "react";
 import {
   ComboBox,
@@ -47,17 +50,21 @@ export interface BaseComboboxProps
  * So, we use this custom hook to access the combobox's internal state via ComboBoxStateContext and change the `open` state manually via tha available `open` method.
  *  */
 function ComboboxAutoOpen(props: any) {
+  const isEditMode = !!usePlasmicCanvasContext();
   const { isSelected } = usePlasmicCanvasComponentInfo(props) ?? {};
-  let { open, close } = React.useContext(ComboBoxStateContext) ?? {};
+  const { open, close } = React.useContext(ComboBoxStateContext) ?? {};
 
   useEffect(() => {
+    if (!isEditMode) {
+      return;
+    }
     if (isSelected) {
       open?.(undefined, "manual");
     } else {
       close?.();
     }
     // Not putting open and close in the useEffect dependencies array, because it causes a re-render loop.
-  }, [isSelected]);
+  }, [isSelected, isEditMode]);
 
   return null;
 }
