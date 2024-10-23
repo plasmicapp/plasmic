@@ -438,7 +438,7 @@ export class ProjectDependencyManager {
     await this.addDependency(projectDependency);
 
     // Get any missing data
-    await this._fetchData();
+    spawn(this._fetchData());
 
     return projectDependency;
   }
