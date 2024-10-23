@@ -1,4 +1,9 @@
 import {
+  componentToAllVariants,
+  siteToAllGlobalVariants,
+} from "@/wab/shared/cached-selectors";
+import { toVarName } from "@/wab/shared/codegen/util";
+import {
   arrayEqIgnoreOrder,
   butLast,
   ensure,
@@ -12,7 +17,14 @@ import {
   xExtend,
   xOmit,
 } from "@/wab/shared/common";
+import { getStateVarName } from "@/wab/shared/core/states";
 import { DEVFLAGS } from "@/wab/shared/devflags";
+import {
+  ArenaFrame,
+  Component,
+  Site,
+  Variant,
+} from "@/wab/shared/model/classes";
 import {
   ensureValidCombo,
   getOrderedScreenVariants,
@@ -24,18 +36,6 @@ import {
   isScreenVariant,
   isStandaloneVariantGroup,
 } from "@/wab/shared/Variants";
-import {
-  componentToAllVariants,
-  siteToAllGlobalVariants,
-} from "@/wab/shared/cached-selectors";
-import { toVarName } from "@/wab/shared/codegen/util";
-import {
-  ArenaFrame,
-  Component,
-  Site,
-  Variant,
-} from "@/wab/shared/model/classes";
-import { getStateVarName } from "@/wab/shared/core/states";
 import { $State } from "@plasmicapp/react-web";
 import L from "lodash";
 
@@ -333,7 +333,7 @@ export function extractPinStateFromFrame(
       pinnedVariants.set(
         ensure(
           globalVariantMap[key],
-          "Pinned global variant must be in globalVariantMap"
+          `Pinned global variant ${key} must be in globalVariantMap`
         ),
         pin
       );
