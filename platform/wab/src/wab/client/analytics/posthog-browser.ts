@@ -11,7 +11,7 @@ const POSTHOG_API_KEY = "phc_eaI1hFsPRIZkmwrXaSGRNDh4H9J3xdh1j9rgNy27NgP";
  */
 export function initPosthogBrowser(
   config: Partial<PostHogConfig>
-): PostHogAnalytics | null {
+): PostHogAnalytics | undefined {
   const ph = posthog.init(POSTHOG_API_KEY, {
     api_host: "https://us.i.posthog.com",
     disable_session_recording: true, // enable with `recordSession`
@@ -19,13 +19,13 @@ export function initPosthogBrowser(
   });
   if (!ph) {
     console.warn("posthog.init failed");
-    return null;
+    return undefined;
   }
 
   return new PostHogAnalytics(ph);
 }
 
-class PostHogAnalytics implements Analytics {
+export class PostHogAnalytics implements Analytics {
   constructor(readonly ph: PostHog) {}
 
   appendBaseEventProperties(newProperties) {

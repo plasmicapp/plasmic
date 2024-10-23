@@ -1,13 +1,5 @@
-import {
-  ERROR_PATTERNS_TO_IGNORE,
-  handleError,
-  normalizeError,
-  shouldIgnoreError,
-} from "@/wab/client/ErrorNotifications";
-import { analytics, initBrowserAnalytics } from "@/wab/client/analytics";
-import { initAmplitudeBrowser } from "@/wab/client/analytics/amplitude-browser";
-import { initPosthogBrowser } from "@/wab/client/analytics/posthog-browser";
-import { AppCtx, hideStarters } from "@/wab/client/app-ctx";
+import { handleError, normalizeError } from "@/wab/client/ErrorNotifications";
+import { initAnalytics } from "@/wab/client/analytics/analytics";
 import { isProjectPath, isTopFrame } from "@/wab/client/cli-routes";
 import { initClientFlags } from "@/wab/client/client-dev-flags";
 import { Root } from "@/wab/client/components/root-view";
@@ -15,36 +7,18 @@ import {
   HostFrameCtxProvider,
   useHostFrameCtxIfHostFrame,
 } from "@/wab/client/frame-ctx/host-frame-ctx";
-import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { methodForwarder } from "@/wab/commons/methodForwarder";
+import { initMonitoring } from "@/wab/client/monitoring/monitoring";
 import DeploymentFlags from "@/wab/shared/DeploymentFlags";
-import { UserError } from "@/wab/shared/UserError";
-import { ConsoleLogAnalytics } from "@/wab/shared/analytics/ConsoleLogAnalytics";
-import {
-  CustomError,
-  hackyCast,
-  isLiteralObject,
-  swallow,
-  tuple,
-  withoutFalsy,
-} from "@/wab/shared/common";
-import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
+import { isLiteralObject, swallow, tuple } from "@/wab/shared/common";
 import { DEVFLAGS, applyDevFlagOverrides } from "@/wab/shared/devflags";
-import { getMaximumTier } from "@/wab/shared/pricing/pricing-utils";
 import * as Sentry from "@sentry/browser";
-import * as Integrations from "@sentry/integrations";
 import { createBrowserHistory } from "history";
-import { onReactionError } from "mobx";
-import { posthog } from "posthog-js";
 import * as React from "react";
 import { OverlayProvider } from "react-aria";
 import * as ReactDOM from "react-dom";
 import { Router } from "react-router-dom";
 
 declare const COMMITHASH: string;
-
-const sentryOrgId = "plasmicapp";
-const sentryProjId = "1840236";
 
 const localStoragePrefixesThatAreSafeToRemove = ["__mpq_"];
 
@@ -115,121 +89,8 @@ export function main() {
 
   const production = DeploymentFlags.DEPLOYENV === "production";
 
-  // Initialize analytics
-  const amplitudeAnalytics = initAmplitudeBrowser();
-  const posthogAnalytics = initPosthogBrowser({});
-  initBrowserAnalytics(
-    production
-      ? methodForwarder(amplitudeAnalytics, posthogAnalytics)
-      : methodForwarder(
-          new ConsoleLogAnalytics(),
-          amplitudeAnalytics,
-          posthogAnalytics
-        )
-  );
-  analytics().appendBaseEventProperties({
-    production,
-    commitHash: COMMITHASH,
-  });
-
-  // Initialize Sentry
-  if (production) {
-    Sentry.init({
-      dsn: `https://dd4fc160e1a548609dc8db7e6c9f7a08@sentry.io/${sentryProjId}`,
-      release: COMMITHASH,
-      integrations: [
-        new Integrations.Dedupe(),
-        new posthog.SentryIntegration(
-          posthogAnalytics?.ph ?? posthog,
-          sentryOrgId,
-          +sentryProjId
-        ),
-      ],
-      ignoreErrors: ERROR_PATTERNS_TO_IGNORE,
-      beforeSend(event, hint) {
-        if (
-          hint &&
-          hint.originalException instanceof Error &&
-          shouldIgnoreError(hint.originalException)
-        ) {
-          return null;
-        }
-
-        if (hint && hint.originalException instanceof UserError) {
-          return null;
-        }
-
-        if (
-          hint?.originalException instanceof Error &&
-          hint.originalException.message.includes("XHRStatus0Error")
-        ) {
-          // Do not log `xhr.status === 0` AJAX failures to Sentry, because
-          // that means the client stopped the request before it was fulfilled.
-          return null;
-        }
-
-        // Ignore errors loading corrupted projects for certain users.
-        const appCtx = hackyCast<AppCtx | undefined>(hackyCast(window).gAppCtx);
-        if (
-          hint &&
-          hint.originalException &&
-          appCtx &&
-          hideStarters(appCtx) &&
-          hint.originalException instanceof Error &&
-          hint.originalException.message.includes("__bundleInfo")
-        ) {
-          return null;
-        }
-
-        event.extra = event.extra || {};
-        event.tags = event.tags || {};
-
-        if (appCtx) {
-          const location = appCtx.history.location;
-          event.extra.location =
-            location.pathname + location.search + location.hash;
-        }
-
-        const studioCtx = hackyCast<StudioCtx | undefined>(
-          hackyCast(window).studioCtx
-        );
-        const maybeProjectId = studioCtx?.siteInfo.id;
-        if (maybeProjectId) {
-          event.tags.projectId = maybeProjectId;
-          const maybeRevisionNum = studioCtx.dbCtx().revisionNum;
-          if (maybeRevisionNum) {
-            event.tags.revisionNum = maybeRevisionNum;
-          }
-        }
-
-        // Differentiate errors generated/known by Plasmic.
-        if (hint && hint.originalException instanceof CustomError) {
-          event.tags.errorOrigin = "plasmic";
-        } else {
-          event.tags.errorOrigin = "unknown";
-        }
-
-        // Tag errors with affected user tier(s).
-        if (
-          appCtx &&
-          isAdminTeamEmail(appCtx.selfInfo?.email, appCtx.appConfig)
-        ) {
-          event.tags.tier = "plasmic";
-        } else {
-          const userTiers = withoutFalsy(
-            appCtx?.teams.map((t) => t.featureTier?.name) ?? []
-          );
-          event.tags.tier = getMaximumTier(userTiers);
-        }
-
-        return event;
-      },
-    });
-
-    onReactionError((error) => {
-      Sentry.captureException(error);
-    });
-  }
+  const { posthogAnalytics } = initAnalytics(production);
+  initMonitoring(production, { posthogAnalytics });
 
   (window as any).commithash = COMMITHASH;
 
