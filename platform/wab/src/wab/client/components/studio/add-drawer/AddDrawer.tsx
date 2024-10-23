@@ -176,20 +176,21 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
           );
 
           const { projectDependency } = unbundleProjectDependency(
-            sc.bundler(), // try replace with new FastBundler(),
+            sc.bundler(),
             resPkgVersion.pkg,
             resPkgVersion.depPkgs
           );
 
           const site = projectDependency.site;
 
+          if (!site) {
+            throw new Error(`Unable to load installable ${meta.name}`);
+          }
+
           await sc.projectDependencyManager.batchImportPkgs(
             resPkgVersion.depPkgs
           );
 
-          if (!site) {
-            throw new Error(`Unable to load installable ${meta.name}`);
-          }
           const { screenVariant } = await getScreenVariantToInsertableTemplate(
             sc
           );
