@@ -91,19 +91,19 @@ export function mkGlobalVariantSplit(opts: {
 }
 
 export function removeVariantGroupFromSplits(site: Site, group: VariantGroup) {
-  site.splits.forEach((split) =>
-    split.slices.forEach((slice) =>
-      removeWhere(slice.contents, (content) =>
-        switchType(content)
+  removeWhere(site.splits, (split) => {
+    return split.slices.some((slice) => {
+      return slice.contents.some((content) => {
+        return switchType(content)
           .when(ComponentSwapSplitContent, () => false)
           .when(
             [GlobalVariantSplitContent, ComponentVariantSplitContent],
             (variantContent) => variantContent.group === group
           )
-          .result()
-      )
-    )
-  );
+          .result();
+      });
+    });
+  });
 }
 
 export function isGlobalVariantGroupUsedInSplits(
