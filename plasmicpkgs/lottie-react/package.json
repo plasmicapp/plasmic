@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/lottie-react",
-  "version": "0.0.197",
+  "version": "0.0.198",
   "description": "Plasmic registration call for the HTML5 video element",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
