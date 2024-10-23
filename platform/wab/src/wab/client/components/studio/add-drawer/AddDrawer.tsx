@@ -37,6 +37,7 @@ import {
 } from "@/wab/client/icons";
 import {
   buildInsertableExtraInfo,
+  getHostLessDependenciesToInsertableTemplate,
   getScreenVariantToInsertableTemplate,
   postInsertableTemplate,
 } from "@/wab/client/insertable-templates";
@@ -74,7 +75,7 @@ import { codeLit } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
-import { allComponents, isHostLessPackage } from "@/wab/shared/core/sites";
+import { allComponents } from "@/wab/shared/core/sites";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import { unbundleProjectDependency } from "@/wab/shared/core/tagged-unbundle";
 import * as Tpls from "@/wab/shared/core/tpls";
@@ -159,7 +160,7 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
 
           /**
            * Get Plexus pkg version info, and its deps' pkg version info
-           * (the respose for pkg versions is in kBs, so we don't want to make any unnecessary requests to fetch pkg versions again)
+           * PkgVersionInfo objects are huge (100s of KB), so we don't want to make any unnecessary requests to fetch pkg versions again
            *
            */
           const resPkgVersion = pkgInfo
@@ -193,25 +194,10 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
             sc
           );
 
-          const hostLessDependencies = {};
-
-          site.projectDependencies
-            .filter((dep) => isHostLessPackage(dep.site))
-            .forEach((dep) => {
-              hostLessDependencies[dep.projectId] = {
-                projectDependency: dep,
-                pkg: {
-                  id: dep.pkgId,
-                  name: dep.name,
-                  projectId: dep.projectId,
-                },
-              };
-            });
-
           const commonInfo: InsertableTemplateExtraInfo = {
             site,
             screenVariant,
-            hostLessDependencies,
+            ...(await getHostLessDependenciesToInsertableTemplate(sc, site)),
             projectId,
             groupName,
             resolution: {
@@ -219,6 +205,7 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
               component: "reuse",
             },
           };
+
           if (meta.entryPoint.type === "arena") {
             const arena = site.arenas.find(
               (c) => c.name === meta.entryPoint.name
