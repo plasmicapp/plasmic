@@ -52,10 +52,6 @@ export function registerDialogTrigger(
       importPath: "@plasmicpkgs/react-aria/skinny/registerDialogTrigger",
       importName: "BaseDialogTrigger",
       isAttachment: true,
-      defaultStyles: {
-        width: 0,
-        height: 0,
-      },
       props: {
         trigger: {
           type: "slot",
