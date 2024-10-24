@@ -11,7 +11,7 @@ import { $$$ } from "@/wab/shared/TplQuery";
 import { getBaseVariant } from "@/wab/shared/Variants";
 import { FastBundler } from "@/wab/shared/bundler";
 import { Bundle, getBundle } from "@/wab/shared/bundles";
-import { ensure, maybe, switchType } from "@/wab/shared/common";
+import { assert, ensure, maybe, switchType } from "@/wab/shared/common";
 import { PageComponent } from "@/wab/shared/core/components";
 import {
   unbundleProjectDependency,
@@ -43,7 +43,6 @@ import {
   TplTag,
   Variant,
 } from "@/wab/shared/model/classes";
-import assert from "assert";
 import { Dictionary, flatten, fromPairs } from "lodash";
 
 export const getPageTemplatesGroups = (studioCtx: StudioCtx) => {
