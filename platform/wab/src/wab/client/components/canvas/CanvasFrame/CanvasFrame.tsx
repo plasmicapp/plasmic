@@ -10,7 +10,7 @@ import {
   closestTaggedNonTextDomElt,
   showCanvasPageNavigationNotification,
 } from "@/wab/client/components/canvas/studio-canvas-util";
-import { CommentOverlays } from "@/wab/client/components/comments/CommentOverlays";
+import { CanvasCommentMarkers } from "@/wab/client/components/comments/CanvasCommentMarkers";
 import { bindShortcutHandlers } from "@/wab/client/shortcuts/shortcut-handler";
 import { STUDIO_SHORTCUTS } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -684,9 +684,10 @@ export const CanvasFrame = observer(function CanvasFrame({
             />
           </span>
         </XDraggable>
-        {studioCtx.rightTabKey === "comments" && (
-          <CommentOverlays arena={arena} arenaFrame={arenaFrame} />
-        )}
+        {studioCtx.appCtx.appConfig.comments &&
+          studioCtx.showCommentsOverlay && (
+            <CanvasCommentMarkers arena={arena} arenaFrame={arenaFrame} />
+          )}
         {studioCtx.appCtx.appConfig.warningsInCanvas && (
           <CanvasActions arena={arena} arenaFrame={arenaFrame} />
         )}

@@ -1523,10 +1523,10 @@ interface ModelAddr {
   iid: string;
 }
 
-export interface CommentLocation {
+export type CommentLocation = {
   subject: ModelAddr;
   variants: ModelAddr[];
-}
+};
 
 export type CommentThreadId = Opaque<string, "CommentThreadId">;
 
@@ -1542,7 +1542,10 @@ export interface CommentReactionData {
 }
 
 export interface ApiComment extends ApiEntityBase<CommentId> {
-  data: CommentData;
+  location: CommentLocation;
+  body: string;
+  threadId: CommentThreadId;
+  resolved: boolean;
 }
 
 export interface ApiCommentReaction extends ApiEntityBase<CommentReactionId> {
@@ -1558,12 +1561,20 @@ export interface GetCommentsResponse {
   comments: ApiComment[];
   reactions: ApiCommentReaction[];
   selfNotificationSettings?: ApiNotificationSettings;
+  users: ApiUser[];
 }
 
 export type UpdateNotificationSettingsRequest = ApiNotificationSettings;
 
 export interface PostCommentRequest {
-  data: CommentData;
+  location: CommentLocation;
+  body: string;
+  threadId: CommentThreadId;
+}
+
+export interface EditCommentRequest {
+  body?: string;
+  resolved?: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -2048,4 +2059,8 @@ export interface ApiTeamSupportUrls {
 export interface SendEmailsResponse {
   sent: string[];
   failed: string[];
+}
+
+export enum StudioRoomMessageTypes {
+  commentsUpdate = "commentsUpdate",
 }

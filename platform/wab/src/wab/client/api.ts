@@ -33,7 +33,7 @@ import {
   WrappedStorageEvent,
 } from "@/wab/shared/SharedApi";
 import * as Sentry from "@sentry/browser";
-import { ProxyMarked, proxy } from "comlink";
+import { proxy, ProxyMarked } from "comlink";
 import $ from "jquery";
 import L, { pick } from "lodash";
 import io, { Socket } from "socket.io-client";
@@ -593,6 +593,7 @@ export function filteredApi(
     deleteBranch: checkProjectIdInFirstArg,
     getComments: checkProjectIdInFirstArg,
     postComment: checkProjectIdInFirstArg,
+    editComment: checkProjectIdInFirstArg,
     deleteComment: checkProjectIdInFirstArg,
     deleteThread: checkProjectIdInFirstArg,
     updateNotificationSettings: checkProjectIdInFirstArg,

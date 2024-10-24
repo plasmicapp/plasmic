@@ -175,6 +175,18 @@ const ViewButton = observer(function ViewButton(props: ViewButtonProps) {
             );
           }
 
+          if (appCtx.appConfig.comments) {
+            const showCommentsOverlay = studioCtx.showCommentsOverlay;
+            push(
+              <Menu.Item
+                onClick={() => studioCtx.toggleShowCommentsOverlay()}
+                key="toggle-show-comments-overlay"
+              >
+                {showCommentsOverlay ? "Hide " : "Show "} comments overlay
+              </Menu.Item>
+            );
+          }
+
           const canChangeContentEditorMode =
             !studioCtx.isContentEditor() && !DEVFLAGS.contentEditorMode;
           if (canChangeContentEditorMode) {

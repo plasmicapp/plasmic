@@ -78,6 +78,7 @@ import {
   CreateWorkspaceResponse,
   DeleteCommentResponse,
   DomainsForProjectResponse,
+  EditCommentRequest,
   ExistingGithubRepoRequest,
   FeatureTierId,
   ForgotPasswordRequest,
@@ -1821,9 +1822,8 @@ export abstract class SharedApi {
     projectId: ProjectId,
     branchId?: BranchId
   ): Promise<GetCommentsResponse> {
-    return this.get(
-      `/projects/${showProjectBranchId(toOpaque(projectId), branchId)}/comments`
-    );
+    const projectBranchId = showProjectBranchId(toOpaque(projectId), branchId);
+    return this.get(`/comments/${projectBranchId}`);
   }
 
   async postComment(
@@ -1831,12 +1831,28 @@ export abstract class SharedApi {
     branchId: BranchId | undefined,
     data: CommentData
   ): Promise<PostCommentResponse> {
+    const projectBranchId = showProjectBranchId(toOpaque(projectId), branchId);
     return this.post(
-      `/projects/${showProjectBranchId(
+      `/comments/${projectBranchId}`,
+      ensureType<PostCommentRequest>(data)
+    );
+  }
+
+  async editComment(
+    projectId: ProjectId,
+    branchId: BranchId | undefined,
+    commentId: CommentId,
+    data: {
+      body?: string;
+      resolved?: boolean;
+    }
+  ): Promise<{}> {
+    return this.put(
+      `/comments/${showProjectBranchId(
         toOpaque(projectId),
         branchId
-      )}/comments`,
-      ensureType<PostCommentRequest>({ data })
+      )}/comment/${commentId}`,
+      ensureType<EditCommentRequest>(data)
     );
   }
 
@@ -1845,12 +1861,8 @@ export abstract class SharedApi {
     branchId: BranchId | undefined,
     commentId: string
   ): Promise<DeleteCommentResponse> {
-    return this.delete(
-      `/projects/${showProjectBranchId(
-        toOpaque(projectId),
-        branchId
-      )}/comment/${commentId}`
-    );
+    const projectBranchId = showProjectBranchId(toOpaque(projectId), branchId);
+    return this.delete(`/comments/${projectBranchId}/comment/${commentId}`);
   }
 
   async deleteThread(
@@ -1858,39 +1870,46 @@ export abstract class SharedApi {
     branchId: BranchId | undefined,
     threadId: string
   ): Promise<DeleteCommentResponse> {
-    return this.delete(
-      `/projects/${showProjectBranchId(
-        toOpaque(projectId),
-        branchId
-      )}/thread/${threadId}`
-    );
+    const projectBranchId = showProjectBranchId(toOpaque(projectId), branchId);
+    return this.delete(`/comments/${projectBranchId}/thread/${threadId}`);
   }
+
   async updateNotificationSettings(
     projectId: ProjectId,
     branchId: BranchId | undefined,
     data: ApiNotificationSettings
   ): Promise<PostCommentResponse> {
+    const projectBranchId = showProjectBranchId(toOpaque(projectId), branchId);
     return this.put(
-      `/projects/${showProjectBranchId(
-        toOpaque(projectId),
-        branchId
-      )}/notification-settings`,
+      `/comments/${projectBranchId}/notification-settings`,
       ensureType<UpdateNotificationSettingsRequest>(data)
     );
   }
 
   async addReactionToComment(
+    projectId: ProjectId,
+    branchId: BranchId | undefined,
     commentId: CommentId,
     data: CommentReactionData
   ): Promise<AddCommentReactionResponse> {
+    const projectBranchId = showProjectBranchId(toOpaque(projectId), branchId);
     return this.post(
-      `/comments/${encodeURIComponent(commentId)}/reactions`,
+      `/comments/${projectBranchId}/comment/${encodeURIComponent(
+        commentId
+      )}/reactions`,
       ensureType<AddCommentReactionRequest>({ data })
     );
   }
 
-  async removeReactionFromComment(reactionId: CommentReactionId): Promise<{}> {
-    return this.delete(`/reactions/${encodeURIComponent(reactionId)}`);
+  async removeReactionFromComment(
+    projectId: ProjectId,
+    branchId: BranchId | undefined,
+    reactionId: CommentReactionId
+  ): Promise<{}> {
+    const projectBranchId = showProjectBranchId(toOpaque(projectId), branchId);
+    return this.delete(
+      `/comments/${projectBranchId}/reactions/${encodeURIComponent(reactionId)}`
+    );
   }
 
   async getTeamAnalytics(

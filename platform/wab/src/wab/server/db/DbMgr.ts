@@ -127,8 +127,8 @@ import {
   CmsTableId,
   CmsTableSchema,
   CmsTableSettings,
-  CommentData,
   CommentId,
+  CommentLocation,
   CommentReactionData,
   CommentReactionId,
   CommentThreadId,
@@ -9602,7 +9602,7 @@ export class DbMgr implements MigrationDbMgr {
 
   async postCommentInProject(
     { projectId, branchId }: ProjectAndBranchId,
-    data: CommentData
+    data: { location: CommentLocation; body: string; threadId: string }
   ): Promise<Comment> {
     await this.checkProjectBranchPerms(
       { projectId, branchId },
@@ -9614,9 +9614,28 @@ export class DbMgr implements MigrationDbMgr {
       ...this.stampNew(),
       projectId,
       branchId: branchId ?? null,
-      data,
+      resolved: false,
+      ...data,
     });
     await this.entMgr.save([comment]);
+    return comment;
+  }
+
+  async editCommentInProject(
+    commentId: CommentId,
+    data: {
+      body?: string;
+      resolved?: boolean;
+    }
+  ) {
+    const comment = await findExactlyOne(this.comments(), {
+      id: commentId,
+    });
+
+    this.checkUserIdIsSelf(comment.createdById ?? undefined);
+
+    Object.assign(comment, this.stampUpdate(), data);
+    await this.entMgr.save(comment);
     return comment;
   }
 
@@ -9642,29 +9661,29 @@ export class DbMgr implements MigrationDbMgr {
     return comment;
   }
 
+  async getFirstCommentInThread(
+    threadId: CommentThreadId
+  ): Promise<Comment | undefined> {
+    return await this.comments().findOne({
+      where: {
+        threadId,
+        ...excludeDeleted(),
+      },
+      order: {
+        createdAt: "ASC",
+      },
+    });
+  }
+
   async deleteThreadInProject(
     { projectId, branchId }: ProjectAndBranchId,
     threadId: CommentThreadId
   ): Promise<UpdateResult> {
-    const firstCommentQuery = this.comments()
-      .createQueryBuilder()
-      .select()
-      .where(`"projectId" = :projectId`, {
-        projectId,
-      });
-    if (branchId) {
-      firstCommentQuery.andWhere(`"branchId" = :branchId`, {
-        branchId: branchId,
-      });
-    }
-    const firstComment = ensureFound(
-      (await firstCommentQuery
-        .andWhere(`"data"->>'threadId' = :threadId`, { threadId })
-        .orderBy('"createdAt"', "DESC")
-        .limit(1)
-        .execute()) as Comment | undefined,
-      `Thread ${threadId}`
+    const firstComment = ensure(
+      await this.getFirstCommentInThread(threadId),
+      "Comment in thread should exist"
     );
+
     if (!this.isUserIdSelf(firstComment.createdById ?? undefined)) {
       await this.checkProjectBranchPerms(
         { projectId, branchId },
@@ -9678,13 +9697,10 @@ export class DbMgr implements MigrationDbMgr {
       .createQueryBuilder()
       .update()
       .set(this.stampDelete())
-      .where(`"projectId" = :projectId`, {
+      .where({
         projectId,
+        threadId,
       });
-    if (branchId) {
-      updateQuery.andWhere(`"branchId" = :branchId`, { branchId: branchId });
-    }
-    updateQuery.andWhere(`"data"->>'threadId' = :threadId`, { threadId });
 
     return updateQuery.execute();
   }

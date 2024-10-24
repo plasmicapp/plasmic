@@ -15,9 +15,10 @@ import type {
   CmsTableId,
   CmsTableSchema,
   CmsTableSettings,
-  CommentData,
   CommentId,
+  CommentLocation,
   CommentReactionData,
+  CommentThreadId,
   DataSourceId,
   FeatureTierId,
   GitSyncLanguage,
@@ -1265,8 +1266,18 @@ export class Comment extends Base<"CommentId"> {
   @Column("text", { nullable: true })
   branchId: BranchId | null;
 
+  @Column("boolean", { default: false })
+  resolved: boolean;
+
   @Column("jsonb")
-  data: CommentData;
+  location: CommentLocation;
+
+  @Column("text")
+  body: string;
+
+  @Index()
+  @Column("text")
+  threadId: CommentThreadId;
 }
 
 @Entity()

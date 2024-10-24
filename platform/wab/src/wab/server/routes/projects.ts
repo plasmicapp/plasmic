@@ -22,7 +22,6 @@ import {
 import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
 import { onProjectDelete } from "@/wab/server/db/op-hooks";
 import { upgradeReferencedHostlessDeps } from "@/wab/server/db/upgrade-hostless-utils";
-import { sendCommentNotificationEmail } from "@/wab/server/emails/comment-notification-email";
 import {
   Branch,
   PkgVersion,
@@ -40,7 +39,6 @@ import {
 } from "@/wab/server/routes/team-plans";
 import { mkApiTeam } from "@/wab/server/routes/teams";
 import {
-  getUser,
   parseMetadata,
   parseQueryParams,
   superDbMgr,
@@ -59,26 +57,19 @@ import {
   UnknownReferencesError,
 } from "@/wab/shared/ApiErrors/errors";
 import {
-  AddCommentReactionRequest,
-  ApiNotificationSettings,
   ApiProject,
   ApiProjectMeta,
   BranchId,
   CloneProjectRequest,
-  CommentId,
-  CommentThreadId,
   CreateBranchRequest,
   CreateBranchResponse,
   CreateSiteRequest,
   DataSourceId,
-  GetCommentsResponse,
   ListBranchesResponse,
   MainBranchId,
   NewComponentReq,
   NextPublishVersionRequest,
   PkgVersionId,
-  PostCommentRequest,
-  PostCommentResponse,
   ProjectFullDataResponse,
   ProjectId,
   ProjectRevWithoutDataResponse,
@@ -136,7 +127,6 @@ import {
   strictFind,
   uncheckedCast,
   withoutNils,
-  xGroupBy,
 } from "@/wab/shared/common";
 import {
   ComponentType,
@@ -176,13 +166,11 @@ import {
   pick,
   sortBy,
   uniq,
-  without,
 } from "lodash";
 import fetch from "node-fetch";
 import * as Prettier from "prettier";
 import type { SetRequired } from "type-fest";
 import { EntityManager, MigrationExecutor, getConnection } from "typeorm";
-import { escapeHTML } from "underscore.string";
 
 export function mkApiProject(project: Project): ApiProject {
   const team = project.workspace?.team
@@ -2728,157 +2716,6 @@ export async function listProjectVersionsWithoutData(
   res.json({ versions: pkgVersions });
 }
 
-export async function getCommentsForProject(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  const { projectId, branchId } = parseProjectBranchId(
-    req.params.projectBranchId
-  );
-  const comments = await mgr.getCommentsForProject({ projectId, branchId });
-  const reactions = await mgr.getReactionsForComments(comments);
-  const selfNotificationSettings = req.user
-    ? await mgr.tryGetNotificationSettings(req.user.id, toOpaque(projectId))
-    : undefined;
-  res.json(
-    ensureType<GetCommentsResponse>({
-      comments,
-      reactions,
-      selfNotificationSettings,
-    })
-  );
-}
-
-export async function postCommentInProject(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  const author = getUser(req);
-  const { projectId, branchId } = parseProjectBranchId(
-    req.params.projectBranchId
-  );
-  const { data } = uncheckedCast<PostCommentRequest>(req.body);
-  await mgr.postCommentInProject({ projectId, branchId }, data);
-
-  async function collectUsersToNotify() {
-    const project = await mgr.getProjectById(projectId as ProjectId);
-    const perms = await mgr.getPermissionsForProject(projectId);
-    const mates = await mgr.getUsersById(
-      uniq(
-        withoutNils(
-          without(
-            [project.createdById, ...perms.map((p) => p.userId)],
-            author.id
-          )
-        )
-      )
-    );
-    const allComments = await mgr.getCommentsForProject({
-      projectId,
-      branchId,
-    });
-    const commentsByThread = xGroupBy(
-      allComments,
-      (comment) => comment.data.threadId
-    );
-
-    const toNotifyEmails = new Set<string>();
-
-    for (const mate of mates) {
-      const notificationSettings = await mgr.tryGetNotificationSettings(
-        mate.id,
-        toOpaque(projectId)
-      );
-      const notifyAbout =
-        notificationSettings?.notifyAbout ?? "mentions-and-replies";
-      const isMentionOrReply = commentsByThread
-        .get(data.threadId)
-        ?.some((c) => c.createdById === mate.id);
-      if (
-        notifyAbout === "all" ||
-        (notifyAbout === "mentions-and-replies" && isMentionOrReply)
-      ) {
-        toNotifyEmails.add(mate.email);
-      }
-    }
-
-    return {
-      emails: Array.from(toNotifyEmails),
-      project,
-    };
-  }
-
-  // We just collect the emails and project here, and send the emails after resolving the
-  // request. This is to avoid blocking the request on sending emails.
-  const { emails, project } = await collectUsersToNotify();
-
-  res.json(ensureType<PostCommentResponse>({}));
-
-  // Resolving the transaction before broadcasting the new comment to other players and sending emails
-  await req.resolveTransaction();
-
-  await broadcastProjectsMessage({
-    room: `projects/${projectId}`,
-    type: "commentsUpdate",
-    message: {},
-  });
-
-  if (emails.length > 0) {
-    for (const email of emails) {
-      await sendCommentNotificationEmail(
-        req,
-        project,
-        author,
-        email,
-        escapeHTML(data.body)
-      );
-    }
-  }
-}
-
-export async function deleteCommentInProject(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  const { projectId, branchId } = parseProjectBranchId(
-    req.params.projectBranchId
-  );
-  const commentId = req.params.commentId as CommentId;
-  await mgr.deleteCommentInProject({ projectId, branchId }, commentId);
-
-  await broadcastProjectsMessage({
-    room: `projects/${projectId}`,
-    type: "commentsUpdate",
-    message: {},
-  });
-
-  res.json({});
-}
-
-export async function deleteThreadInProject(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  const { projectId, branchId } = parseProjectBranchId(
-    req.params.projectBranchId
-  );
-  const threadId = req.params.threadId as CommentThreadId;
-  await mgr.deleteThreadInProject({ projectId, branchId }, threadId);
-
-  await broadcastProjectsMessage({
-    room: `projects/${projectId}`,
-    type: "commentsUpdate",
-    message: {},
-  });
-
-  res.json({});
-}
-
-export async function addReactionToComment(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  const { data } = uncheckedCast<AddCommentReactionRequest>(req.body);
-  await mgr.addCommentReaction(toOpaque(req.params.commentId), data);
-  res.json(ensureType<PostCommentResponse>({}));
-}
-
-export async function removeReactionFromComment(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  await mgr.removeCommentReaction(toOpaque(req.params.reactionId));
-  res.json({});
-}
-
 let latestVersion: number | undefined = undefined;
 export async function checkAndNofityHostlessVersion(dbMgr: DbMgr) {
   const currentVersion = await dbMgr.getHostlessVersion();
@@ -2896,18 +2733,4 @@ export async function checkAndNofityHostlessVersion(dbMgr: DbMgr) {
       },
     });
   }
-}
-
-export async function updateNotificationSettings(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  const { projectId, branchId } = parseProjectBranchId(
-    req.params.projectBranchId
-  );
-  const settings: ApiNotificationSettings = req.body;
-  await mgr.updateNotificationSettings(
-    getUser(req).id,
-    toOpaque(projectId),
-    settings
-  );
-  res.json({});
 }

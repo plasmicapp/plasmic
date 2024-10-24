@@ -1,56 +1,116 @@
 import { apiKey } from "@/wab/client/api";
-import { CommentOverlaysContext } from "@/wab/client/components/comments/CommentOverlays";
+import {
+  TplComments,
+  getCommentsWithModelMetadata,
+} from "@/wab/client/components/comments/utils";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { mkIdMap } from "@/wab/shared/collections";
-import { ensure, tuple } from "@/wab/shared/common";
 import {
+  ApiCommentReaction,
+  ApiNotificationSettings,
   ApiUser,
+  BranchId,
+  CommentId,
   CommentThreadId,
   GetCommentsResponse,
+  ProjectId,
 } from "@/wab/shared/ApiSchema";
+import { FastBundler } from "@/wab/shared/bundler";
+import { mkIdMap } from "@/wab/shared/collections";
+import { ensure, sortBy, xGroupBy } from "@/wab/shared/common";
 import { ArenaFrame } from "@/wab/shared/model/classes";
-import { uniq } from "lodash";
 import * as React from "react";
-import { ReactNode, useEffect } from "react";
-import useSWR from "swr";
+import { ReactNode, createContext, useMemo } from "react";
+import useSWR, { KeyedMutator } from "swr";
 
-export function CommentsProvider({ children }: { children: ReactNode }) {
-  const appCtx = useAppCtx();
+interface CommentsContextData {
+  shownThreadId: CommentThreadId | undefined;
+  setShownThreadId: (threadId: CommentThreadId | undefined) => void;
+  shownArenaFrame: ArenaFrame | undefined;
+  setShownArenaFrame: (threadId: ArenaFrame | undefined) => void;
+  projectId: ProjectId;
+  branchId?: BranchId;
+  allComments: TplComments;
+  bundler: FastBundler;
+  reactionsByCommentId: Map<CommentId, ApiCommentReaction[]>;
+  refreshComments: KeyedMutator<GetCommentsResponse>;
+  selfNotificationSettings?: ApiNotificationSettings;
+  usersMap: Map<string, ApiUser>;
+}
+
+export const CommentsContext = createContext<CommentsContextData | undefined>(
+  undefined
+);
+
+export function useCommentsCtx() {
+  return ensure(
+    React.useContext(CommentsContext),
+    "CommentContext provider not found"
+  );
+}
+
+function useCommentsData() {
   const studioCtx = useStudioCtx();
+  const bundler = studioCtx.bundler();
+
+  const appCtx = useAppCtx();
   const api = appCtx.api;
+
   const projectId = studioCtx.siteInfo.id;
   const branchId = studioCtx.dbCtx().branchInfo?.id;
 
-  const { data: maybeResponse, isValidating } = useSWR<
-    [GetCommentsResponse, Map<string, ApiUser>]
-  >(
-    apiKey(`getComments`, projectId, branchId),
-    async () => {
-      const response = await api.getComments(projectId, branchId);
-      const { comments, reactions } = response;
-      const { users } =
-        comments.length > 0
-          ? await api.getUsersById(
-              uniq([
-                ...comments.map((comment) => ensure(comment.createdById, "")),
-                ...reactions.map((reaction) =>
-                  ensure(reaction.createdById, "")
-                ),
-              ])
-            )
-          : { users: [] };
-      const userMap = mkIdMap(users);
-      return tuple(response, userMap);
-    },
-    {
-      revalidateOnMount: true,
-      revalidateOnFocus: false,
-      dedupingInterval: 0,
-      focusThrottleInterval: 0,
-    }
-  );
+  const { data: maybeResponse, mutate: refreshComments } =
+    useSWR<GetCommentsResponse>(
+      apiKey(`getComments`, projectId, branchId),
+      async () => {
+        const response = await api.getComments(projectId, branchId);
+        return response;
+      },
+      {
+        revalidateOnMount: true,
+        revalidateOnFocus: false,
+        dedupingInterval: 0,
+        focusThrottleInterval: 0,
+      }
+    );
 
+  const parsedCommentsResponse = useMemo(() => {
+    if (!maybeResponse) {
+      return {
+        allComments: [],
+        usersMap: new Map<string, ApiUser>(),
+        reactionsByCommentId: new Map<CommentId, ApiCommentReaction[]>(),
+      };
+    }
+
+    const { comments, reactions, users, selfNotificationSettings } =
+      maybeResponse;
+
+    const allComments = getCommentsWithModelMetadata(bundler, comments);
+    const usersMap = mkIdMap(users);
+    const reactionsByCommentId = xGroupBy(
+      sortBy(reactions, (r) => +new Date(r.createdAt)),
+      (reaction) => reaction.commentId
+    );
+
+    return {
+      allComments,
+      usersMap,
+      reactionsByCommentId,
+      selfNotificationSettings,
+    };
+  }, [JSON.stringify(maybeResponse ?? null)]);
+
+  return {
+    bundler,
+    refreshComments,
+    projectId,
+    branchId,
+    ...parsedCommentsResponse,
+  };
+}
+
+export function CommentsProvider({ children }: { children: ReactNode }) {
   const [shownThreadId, setShownThreadId] = React.useState<
     CommentThreadId | undefined
   >(undefined);
@@ -58,22 +118,19 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
     ArenaFrame | undefined
   >(undefined);
 
-  useEffect(() => {
-    if (maybeResponse) {
-      studioCtx.commentsData = maybeResponse;
-    }
-  }, [JSON.stringify(maybeResponse ?? null)]);
+  const commentsData = useCommentsData();
 
   return (
-    <CommentOverlaysContext.Provider
+    <CommentsContext.Provider
       value={{
         shownThreadId,
         setShownThreadId,
         shownArenaFrame,
         setShownArenaFrame,
+        ...commentsData,
       }}
     >
       {children}
-    </CommentOverlaysContext.Provider>
+    </CommentsContext.Provider>
   );
 }

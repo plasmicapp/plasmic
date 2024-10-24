@@ -2,8 +2,10 @@
 // This file is owned by you, feel free to edit as you see fit.
 import { Dropdown, Menu } from "antd";
 
-import { apiKey } from "@/wab/client/api";
-import { useCommentViews } from "@/wab/client/components/comments/CommentViews";
+import CommentPost from "@/wab/client/components/comments/CommentPost";
+import CommentPostForm from "@/wab/client/components/comments/CommentPostForm";
+import { useCommentsCtx } from "@/wab/client/components/comments/CommentsProvider";
+import ThreadComments from "@/wab/client/components/comments/ThreadComments";
 import {
   getThreadsFromComments,
   getThreadsFromFocusedComponent,
@@ -24,7 +26,6 @@ import { isTplNamable, summarizeTplNamable } from "@/wab/shared/core/tpls";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
-import { mutate } from "swr";
 
 export const DEFAULT_NOTIFICATION_LEVEL = "mentions-and-replies";
 export const notifyAboutKeyToLabel = {
@@ -33,19 +34,6 @@ export const notifyAboutKeyToLabel = {
   none: "None",
 } as const;
 
-// Your component props start with props for variants and slots you defined
-// in Plasmic, but you can add more here, like event handlers that you can
-// attach to named nodes in your component.
-//
-// If you don't want to expose certain variants or slots as a prop, you can use
-// Omit to hide them:
-//
-// interface CommentsTabProps extends Omit<DefaultCommentsTabProps, "hideProps1"|"hideProp2"> {
-//   // etc.
-// }
-//
-// You can also stop extending from DefaultCommentsTabProps altogether and have
-// total control over the props for your component.
 export type CommentsTabProps = DefaultCommentsTabProps;
 
 export const CommentsTab = observer(function CommentsTab(
@@ -65,20 +53,12 @@ export const CommentsTab = observer(function CommentsTab(
 
   const currentComponent = studioCtx.currentComponent;
 
-  const maybeCommentViews = useCommentViews(studioCtx, viewCtx);
+  const { allComments, selfNotificationSettings, refreshComments } =
+    useCommentsCtx();
 
-  if (!maybeCommentViews || !currentComponent) {
+  if (!currentComponent) {
     return null;
   }
-
-  const {
-    allComments,
-    userMap,
-    renderComment,
-    renderFullThread,
-    renderPostForm,
-    getCurrentVariants,
-  } = maybeCommentViews;
 
   function renderRootComment(threadComments: TplComment[]) {
     const [comment] = threadComments;
@@ -86,29 +66,29 @@ export const CommentsTab = observer(function CommentsTab(
     const threadId = comment.threadId;
 
     return (
-      <>
-        {renderComment(
-          comment,
-          comment.label,
+      <CommentPost
+        comment={comment}
+        subjectLabel={comment.label}
+        isThread
+        repliesLinkLabel={
           threadComments.length > 1
             ? `${threadComments.length - 1} replies`
-            : "Reply",
-          async () => {
-            const ownerComponent = studioCtx
-              .tplMgr()
-              .findComponentContainingTpl(comment.subject);
-            if (ownerComponent) {
-              await studioCtx.setStudioFocusOnTpl(
-                ownerComponent,
-                comment.subject
-              );
-              studioCtx.centerFocusedFrame(1);
-            }
-            setShownThreadId(threadId);
-          },
-          true
-        )}
-      </>
+            : "Reply"
+        }
+        onClick={async () => {
+          const ownerComponent = studioCtx
+            .tplMgr()
+            .findComponentContainingTpl(comment.subject);
+          if (ownerComponent) {
+            await studioCtx.setStudioFocusOnTpl(
+              ownerComponent,
+              comment.subject
+            );
+            studioCtx.centerFocusedFrame(1);
+          }
+          setShownThreadId(threadId);
+        }}
+      />
     );
   }
 
@@ -128,14 +108,10 @@ export const CommentsTab = observer(function CommentsTab(
 
   const projectId = studioCtx.siteInfo.id;
   const branchId = studioCtx.branchInfo()?.id;
-  function refresh() {
-    return mutate(apiKey("getComments", projectId, branchId));
-  }
 
-  const selfNotificationSettings =
-    studioCtx.commentsData?.[0].selfNotificationSettings;
   const currentNotificationLevel =
     selfNotificationSettings?.notifyAbout ?? DEFAULT_NOTIFICATION_LEVEL;
+
   return (
     <div
       className={"comments-tab flex-even"}
@@ -169,7 +145,7 @@ export const CommentsTab = observer(function CommentsTab(
                                   notifyAbout: key as any,
                                 }
                               );
-                              await refresh();
+                              await refreshComments();
                             }}
                           >
                             {label}
@@ -207,7 +183,7 @@ export const CommentsTab = observer(function CommentsTab(
             ),
           }}
           newThreadForm={{
-            render: () => (focusedTpl ? renderPostForm() : null),
+            render: () => (focusedTpl ? <CommentPostForm /> : null),
           }}
           restThreadsSection={{
             wrap: (node) => otherComponentsThreads.length > 0 && node,
@@ -224,7 +200,10 @@ export const CommentsTab = observer(function CommentsTab(
             onClose={() => setShownThreadId(undefined)}
             title={threads.get(shownThreadId)?.[0]?.label}
           >
-            {renderFullThread(threads.get(shownThreadId) ?? [], shownThreadId)}
+            <ThreadComments
+              comments={threads.get(shownThreadId) ?? []}
+              threadId={shownThreadId}
+            />
           </SidebarModal>
         )}
       </SidebarModalProvider>

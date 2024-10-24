@@ -116,7 +116,6 @@ import {
   ArenaType,
   BranchId,
   CopilotInteractionId,
-  GetCommentsResponse,
   InitServerInfo,
   MainBranchId,
   ServerSessionsInfo,
@@ -145,7 +144,7 @@ import {
   syncArenaFrameSize,
   updateAutoDerivedFrameHeight,
 } from "@/wab/shared/Arenas";
-import { accessLevelRank } from "@/wab/shared/EntUtil";
+import { AccessLevel, accessLevelRank } from "@/wab/shared/EntUtil";
 import {
   PkgVersionInfo,
   PkgVersionInfoMeta,
@@ -2379,18 +2378,6 @@ export class StudioCtx extends WithDbCtx {
     this._showCommentsPanel.set(!this.showCommentsPanel);
   }
 
-  private _xCommentsData = observable.box<
-    [GetCommentsResponse, Map<string, ApiUser>] | undefined
-  >(undefined);
-  get commentsData() {
-    return this._xCommentsData.get();
-  }
-  set commentsData(
-    commentsData: [GetCommentsResponse, Map<string, ApiUser>] | undefined
-  ) {
-    this._xCommentsData.set(commentsData);
-  }
-
   private _xLeftPaneWidth = observable.box(LEFT_PANE_INIT_WIDTH);
   get leftPaneWidth() {
     if (!this.leftTabKey) {
@@ -2520,6 +2507,17 @@ export class StudioCtx extends WithDbCtx {
   }
   toggleAutoOpenMode() {
     this.isAutoOpenMode = !this.isAutoOpenMode;
+  }
+
+  private _showCommentsOverlay = observable.box(false);
+  get showCommentsOverlay() {
+    return this._showCommentsOverlay.get();
+  }
+  set showCommentsOverlay(show: boolean) {
+    this._showCommentsOverlay.set(show);
+  }
+  toggleShowCommentsOverlay() {
+    this.showCommentsOverlay = !this.showCommentsOverlay;
   }
 
   //
@@ -6795,10 +6793,11 @@ function isContentEditor(user: ApiUser | null, project: SiteInfo) {
   return accessLevel === "content";
 }
 
-export function isUserProjectEditor(
+export function checkAccessLevelRank(
   user: ApiUser | null,
   project: ApiProject,
-  perms: ApiPermission[]
+  perms: ApiPermission[],
+  rank: AccessLevel
 ) {
   if (!user) {
     return false;
@@ -6813,8 +6812,24 @@ export function isUserProjectEditor(
         user,
         perms
       )
-    ) >= accessLevelRank("editor")
+    ) >= accessLevelRank(rank)
   );
+}
+
+export function isUserProjectEditor(
+  user: ApiUser | null,
+  project: ApiProject,
+  perms: ApiPermission[]
+) {
+  return checkAccessLevelRank(user, project, perms, "editor");
+}
+
+export function isUserProjectOwner(
+  user: ApiUser | null,
+  project: ApiProject,
+  perms: ApiPermission[]
+) {
+  return checkAccessLevelRank(user, project, perms, "owner");
 }
 
 export function cssPropsForInvertTransform(

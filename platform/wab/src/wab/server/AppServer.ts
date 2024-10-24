@@ -83,6 +83,7 @@ import {
   updateRow,
   updateTable,
 } from "@/wab/server/routes/cmse";
+import { addCommentsRoutes } from "@/wab/server/routes/comments";
 import {
   ROUTES_WITH_TIMING,
   addInternalRoutes,
@@ -196,7 +197,6 @@ import {
   updateProjectWebhook,
 } from "@/wab/server/routes/project-webhooks";
 import {
-  addReactionToComment,
   checkAndNofityHostlessVersion,
   cloneProject,
   clonePublishedTemplate,
@@ -206,15 +206,12 @@ import {
   createProject,
   createProjectWithHostlessPackages,
   deleteBranch,
-  deleteCommentInProject,
   deleteProject,
-  deleteThreadInProject,
   fmtCode,
   genCode,
   genIcons,
   genStyleConfig,
   genStyleTokens,
-  getCommentsForProject,
   getFullProjectData,
   getLatestBundleVersion,
   getLatestPlumePkg,
@@ -235,9 +232,7 @@ import {
   listPkgVersionsWithoutData,
   listProjectVersionsWithoutData,
   listProjects,
-  postCommentInProject,
   publishProject,
-  removeReactionFromComment,
   removeSelfPerm,
   requiredPackages,
   resolveSync,
@@ -247,7 +242,6 @@ import {
   tryMergeBranch,
   updateBranch,
   updateHostUrl,
-  updateNotificationSettings,
   updatePkgVersion,
   updateProject,
   updateProjectData,
@@ -1740,37 +1734,7 @@ export function addMainAppServerRoutes(
 
   addInternalRoutes(app);
 
-  /**
-   * Comment routes
-   */
-  app.get(
-    "/api/v1/projects/:projectBranchId/comments",
-    withNext(getCommentsForProject)
-  );
-  app.post(
-    "/api/v1/projects/:projectBranchId/comments",
-    withNext(postCommentInProject)
-  );
-  app.delete(
-    "/api/v1/projects/:projectBranchId/comment/:commentId",
-    withNext(deleteCommentInProject)
-  );
-  app.delete(
-    "/api/v1/projects/:projectBranchId/thread/:threadId",
-    withNext(deleteThreadInProject)
-  );
-  app.post(
-    "/api/v1/comments/:commentId/reactions",
-    withNext(addReactionToComment)
-  );
-  app.delete(
-    "/api/v1/reactions/:reactionId",
-    withNext(removeReactionFromComment)
-  );
-  app.put(
-    "/api/v1/projects/:projectBranchId/notification-settings",
-    withNext(updateNotificationSettings)
-  );
+  addCommentsRoutes(app);
 
   /**
    * Teams / Users routes
