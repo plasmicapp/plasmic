@@ -1294,6 +1294,11 @@ export interface CmsTypeRichtext {
   type: "rich-text";
 }
 
+export interface CmsTypeEnum {
+  type: "enum";
+  options: string[];
+}
+
 ////
 
 export interface CmsRef extends CmsBaseType<string>, CmsTypeRef {}
@@ -1326,6 +1331,8 @@ export interface CmsColor extends CmsBaseType<string>, CmsTypeColor {}
 
 export interface CmsRichtext extends CmsBaseType<string>, CmsTypeRichtext {}
 
+export interface CmsEnum extends CmsBaseType<string>, CmsTypeEnum {}
+
 export type CmsFieldMeta =
   | CmsRef
   | CmsList
@@ -1338,7 +1345,8 @@ export type CmsFieldMeta =
   | CmsFile
   | CmsDateTime
   | CmsColor
-  | CmsRichtext;
+  | CmsRichtext
+  | CmsEnum;
 
 export type CmsTypeName = CmsFieldMeta["type"];
 
@@ -1354,7 +1362,8 @@ export type CmsTypeMeta =
   | CmsTypeFile
   | CmsTypeDateTime
   | CmsTypeColor
-  | CmsTypeRichtext;
+  | CmsTypeRichtext
+  | CmsTypeEnum;
 
 export const cmsTypes = [
   "text",
@@ -1369,6 +1378,7 @@ export const cmsTypes = [
   "ref",
   "list",
   "object",
+  "enum",
 ];
 
 export const cmsFieldMetaDefaults: CmsBaseType<unknown> = {

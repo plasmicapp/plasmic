@@ -131,6 +131,7 @@ export function conformsToType(val: any, type: CmsTypeName): boolean {
   switch (type) {
     case "text":
     case "long-text":
+    case "enum":
     case "ref":
       return typeof val === "string";
     case "list":

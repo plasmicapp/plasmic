@@ -20,6 +20,7 @@ import Select from "@/wab/client/components/widgets/Select";
 import Textbox from "@/wab/client/components/widgets/Textbox";
 import { useApi } from "@/wab/client/contexts/AppContexts";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import MinusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Minus";
 import Trash2Icon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Trash2";
 import {
   DefaultCmsModelDetailsProps,
@@ -221,6 +222,11 @@ function renderModelFieldForm(
           </React.Fragment>
         )}
       </Form.Item>
+      {selectedType === "enum" && (
+        <Form.Item label={"Options"} name={[...fieldPath, "options"]}>
+          <FieldOptions fieldsPath={[...fieldPath, "options"]} />
+        </Form.Item>
+      )}
       {selectedType !== "list" && selectedType !== "object" && (
         <Form.Item
           label={"Required"}
@@ -633,6 +639,38 @@ function ModelFields({
                 Add field
               </Button>
             </div>
+          </>
+        );
+      }}
+    </Form.List>
+  );
+}
+
+function FieldOptions({ fieldsPath }: { fieldsPath: any[] }) {
+  return (
+    <Form.List name={fieldsPath}>
+      {(fields, handles) => {
+        return (
+          <>
+            {fields?.map((_field, index) => (
+              <div className="cms-option-list" key={index}>
+                <Form.Item name={index} style={{ width: "100%" }}>
+                  <Textbox styleType={"bordered"} />
+                </Form.Item>
+                <Button onClick={() => handles.remove(index)}>
+                  <Icon icon={MinusIcon} />
+                </Button>
+              </div>
+            ))}
+            <Button
+              withIcons={"startIcon"}
+              startIcon={<Icon icon={PlusIcon} />}
+              onClick={() => {
+                handles.add("");
+              }}
+            >
+              Add option
+            </Button>
           </>
         );
       }}

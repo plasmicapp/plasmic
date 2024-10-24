@@ -506,6 +506,7 @@ export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
           "rich-text",
           "image",
           "file",
+          "enum",
         ]),
       defaultValueHint: (_, ctx) =>
         ctx?.fieldMeta?.name || ctx?.fieldMeta?.identifier,
@@ -746,6 +747,7 @@ function renderValue(value: any, type: CmsType, props: { className?: string }) {
     case "text":
     case "long-text":
     case "date-time":
+    case "enum":
     case "ref":
       return <div {...props}>{value}</div>;
     case "rich-text":

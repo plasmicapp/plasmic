@@ -510,6 +510,20 @@ export function CmsRichTextInput({
   );
 }
 
+export function CmsEnumInput(props: any) {
+  const { typeMeta } = useContentEntryFormContext();
+  return (
+    <Select {...props} type={"bordered"}>
+      <Select.Option value={undefined}>Unset</Select.Option>
+      {typeMeta?.options?.map((row) => (
+        <Select.Option key={row} value={row}>
+          {row}
+        </Select.Option>
+      ))}
+    </Select>
+  );
+}
+
 export function renderEntryField(type: CmsTypeName): ReactElement {
   switch (type as CmsTypeName) {
     case "ref":
@@ -536,6 +550,8 @@ export function renderEntryField(type: CmsTypeName): ReactElement {
       return <CmsColorInput />;
     case "rich-text":
       return <CmsRichTextInput />;
+    case "enum":
+      return <CmsEnumInput />;
   }
 }
 

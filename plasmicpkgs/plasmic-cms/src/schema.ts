@@ -57,6 +57,12 @@ export interface CmsRef extends CmsBaseType {
   defaultValue?: string;
 }
 
+export interface CmsEnum extends CmsBaseType {
+  type: "enum";
+  defaultValue?: string;
+  options: string[];
+}
+
 export type CmsFieldMeta =
   | CmsText
   | CmsLongText
@@ -66,7 +72,8 @@ export type CmsFieldMeta =
   | CmsFile
   | CmsDateTime
   | CmsRef
-  | CmsRichText;
+  | CmsRichText
+  | CmsEnum;
 
 export type CmsType = CmsFieldMeta["type"];
 
