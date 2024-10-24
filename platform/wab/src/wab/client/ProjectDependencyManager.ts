@@ -270,26 +270,6 @@ export class ProjectDependencyManager {
     }
   }
 
-  async canImportPkg(pkgInfo: PkgInfo) {
-    const { projectId } = pkgInfo;
-
-    assert(
-      projectId !== this._sc.siteInfo.id,
-      "You cannot import the current project."
-    );
-    assert(
-      !this.containsPkgId(pkgInfo.id),
-      `${projectId} has already been imported.`
-    );
-    const { isAuthEnabled } = await this._sc.appCtx.api.getAppAuthPubConfig(
-      projectId
-    );
-    assert(
-      !isAuthEnabled,
-      `You cannot import ${projectId} because it has auth enabled.`
-    );
-  }
-
   async addDependency(projectDependency: ProjectDependency) {
     // Create the Site model
     await this._sc.changeUnsafe(() => {
@@ -421,11 +401,15 @@ export class ProjectDependencyManager {
 
     assert(installableSite, `Unable to install ${name}`);
 
+    // ensure all dependencies are valid
+    installableSite.projectDependencies.forEach((importedDep) => {
+      this.canAddDependency(importedDep);
+    });
+
     await Promise.all(
-      installableSite.projectDependencies.map((importedDep) => {
-        this.canAddDependency(importedDep);
-        return this.addDependency(importedDep);
-      })
+      installableSite.projectDependencies
+        .filter((importedDep) => !this.containsPkgId(importedDep.pkgId))
+        .map((importedDep) => this.addDependency(importedDep))
     );
 
     return installableSite;

@@ -43,6 +43,7 @@ import {
   TplTag,
   Variant,
 } from "@/wab/shared/model/classes";
+import assert from "assert";
 import { Dictionary, flatten, fromPairs } from "lodash";
 
 export const getPageTemplatesGroups = (studioCtx: StudioCtx) => {
@@ -183,52 +184,62 @@ export const getHostLessDependenciesToInsertableTemplate = async (
   }>;
 }> => {
   const appCtx = studioCtx.appCtx;
-  const hostLessProjectIds = sourceSite.projectDependencies
-    .filter((dep) => dep.site.hostLessPackageInfo)
-    .map((dep) => dep.projectId);
+  const hostLessProjects = sourceSite.projectDependencies.filter(
+    (dep) => dep.site.hostLessPackageInfo
+  );
   const hostLessDependencies = fromPairs(
     await Promise.all(
-      hostLessProjectIds.map(async (hostLessProjectId) => {
-        const dep = studioCtx.site.projectDependencies.find(
-          (d) => d.projectId === hostLessProjectId
-        );
-        if (dep) {
+      hostLessProjects.map(
+        async ({
+          projectId: hostLessProjectId,
+          version: hostLessProjectVersion,
+          pkgId: hostLessPkgId,
+          name: hostLessPkgName,
+        }) => {
+          const dep = studioCtx.site.projectDependencies.find(
+            (d) => d.projectId === hostLessProjectId
+          );
+          if (dep) {
+            assert(
+              dep.version === hostLessProjectVersion,
+              `${dep.name} has version ${dep.version}, but expected ${hostLessProjectVersion}`
+            );
+            return [
+              hostLessProjectId,
+              {
+                pkg: {
+                  id: dep.pkgId,
+                  name: dep.name,
+                  projectId: dep.projectId,
+                },
+                projectDependency: dep,
+              },
+            ];
+          }
+          // You can't just use the projectDependency from the sourceSite, as it needs to be unbundled by studioCtx.bundler() to be usable here
+          const { pkg: latest, depPkgs } = await appCtx.api.getPkgVersion(
+            hostLessPkgId,
+            hostLessProjectVersion
+          );
+          const { projectDependency } = unbundleProjectDependency(
+            studioCtx.bundler(),
+            latest,
+            depPkgs
+          );
+
           return [
             hostLessProjectId,
             {
               pkg: {
-                id: dep.pkgId,
-                name: dep.name,
-                projectId: dep.projectId,
+                id: hostLessPkgId,
+                name: hostLessPkgName,
+                projectId: hostLessProjectId,
               },
-              projectDependency: dep,
+              projectDependency,
             },
           ];
         }
-        const { pkg: maybePkg } = await appCtx.api.getPkgByProjectId(
-          hostLessProjectId
-        );
-        const pkg = ensure(maybePkg, "Hostless package should exist");
-        /**
-         * PkgVersionInfo objects are huge (100s of KB), so we don't want to make any unnecessary requests to fetch pkg versions
-         * So above, we check if we can already find a project dependency for this hostless package,
-         * to avoid requesting pkg version info from the network.
-         */
-        const { pkg: latest, depPkgs } = await appCtx.api.getPkgVersion(pkg.id);
-        const { projectDependency } = unbundleProjectDependency(
-          studioCtx.bundler(),
-          latest,
-          depPkgs
-        );
-
-        return [
-          hostLessProjectId,
-          {
-            pkg,
-            projectDependency,
-          },
-        ];
-      })
+      )
     )
   );
 

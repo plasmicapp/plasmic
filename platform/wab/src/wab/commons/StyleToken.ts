@@ -346,13 +346,10 @@ export function maybeDerefToken(
   token: StyleToken,
   vsh?: VariantedStylesHelper
 ): TokenValue {
-  try {
-    // If its a token ref and the ref is present in the current project, then don't de-ref it, because the ref in value is known
-    if (isTokenRef(vsh?.getActiveTokenValue(token) ?? token.value)) {
-      parseTokenRef(token.value, currentTokens);
-    }
+  // If its a token ref and the ref is present in the current project, then don't de-ref it, because the ref in value is known
+  if (tryParseTokenRef(token.value, currentTokens)) {
     return token.value as TokenValue;
-  } catch (e) {
+  } else {
     // The ref in value is not known, so resolve the token to a primitive value
     return resolveToken(oldTokens, token, vsh).value;
   }
