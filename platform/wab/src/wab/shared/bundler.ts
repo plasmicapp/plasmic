@@ -437,14 +437,6 @@ export function checkBundleFields(bundle: Bundle, iidsToCheck?: string[]) {
   }
 }
 
-export function getProjectId(bundle: Bundle) {
-  return bundle.map[bundle.root].projectId;
-}
-
-export function getProjectName(bundle: Bundle) {
-  return bundle.map[bundle.root].name;
-}
-
 // TODO fix mem leak, should track entire bundles so that they can be wiped
 export class Bundler {
   protected _rt: MetaRuntime;

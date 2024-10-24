@@ -153,52 +153,23 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
       const { projectId, groupName } = meta;
       return sc.app.withSpinner(
         (async () => {
-          // Get Plexus pkg info
-          const { pkg: pkgInfo } = await sc.appCtx.api.getPkgByProjectId(
-            projectId
-          );
-
-          /**
-           * Get Plexus pkg version info, and its deps' pkg version info
-           * PkgVersionInfo objects are huge (100s of KB), so we don't want to make any unnecessary requests to fetch pkg versions again
-           *
-           */
-          const resPkgVersion = pkgInfo
-            ? await sc.appCtx.api.getPkgVersion(pkgInfo.id)
-            : undefined;
-
-          assert(
-            pkgInfo &&
-              resPkgVersion &&
-              resPkgVersion.pkg &&
-              resPkgVersion.depPkgs,
-            "Unable to load insertable templates project"
-          );
-
-          const { projectDependency } = unbundleProjectDependency(
-            sc.bundler(),
-            resPkgVersion.pkg,
-            resPkgVersion.depPkgs
-          );
-
-          const site = projectDependency.site;
-
-          if (!site) {
-            throw new Error(`Unable to load installable ${meta.name}`);
-          }
-
-          await sc.projectDependencyManager.batchImportPkgs(
-            resPkgVersion.depPkgs
-          );
+          const installableSite =
+            await sc.projectDependencyManager.addInstallable(
+              projectId,
+              meta.name
+            );
 
           const { screenVariant } = await getScreenVariantToInsertableTemplate(
             sc
           );
 
           const commonInfo: InsertableTemplateExtraInfo = {
-            site,
+            site: installableSite,
             screenVariant,
-            ...(await getHostLessDependenciesToInsertableTemplate(sc, site)),
+            ...(await getHostLessDependenciesToInsertableTemplate(
+              sc,
+              installableSite
+            )),
             projectId,
             groupName,
             resolution: {
@@ -208,7 +179,7 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
           };
 
           if (meta.entryPoint.type === "arena") {
-            const arena = site.arenas.find(
+            const arena = installableSite.arenas.find(
               (c) => c.name === meta.entryPoint.name
             );
 
@@ -222,7 +193,7 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
             };
           }
 
-          const component = site.components.find(
+          const component = installableSite.components.find(
             (c) => c.name === meta.entryPoint.name
           );
 

@@ -1,10 +1,6 @@
 import { checkDepPkgHosts } from "@/wab/client/init-ctx";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import {
-  FastBundler,
-  getProjectId,
-  getProjectName,
-} from "@/wab/shared/bundler";
+import { FastBundler } from "@/wab/shared/bundler";
 import { getUsedDataSourcesFromDep } from "@/wab/shared/cached-selectors";
 import { Dict } from "@/wab/shared/collections";
 import {
@@ -46,11 +42,7 @@ import {
   Site,
   Variant,
 } from "@/wab/shared/model/classes";
-import {
-  PkgInfo,
-  PkgVersionInfo,
-  PkgVersionInfoMeta,
-} from "@/wab/shared/SharedApi";
+import { PkgInfo, PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
 import L, { last } from "lodash";
 import { computed, observable } from "mobx";
 
@@ -276,7 +268,6 @@ export class ProjectDependencyManager {
         );
       }
     }
-    return true;
   }
 
   async canImportPkg(pkgInfo: PkgInfo) {
@@ -341,67 +332,17 @@ export class ProjectDependencyManager {
     return projectDependency;
   }
 
-  async importPkg(pkgVersionInfo: PkgVersionInfo, maybeMyPkg?: PkgInfo) {
-    await this.canImportPkg({
-      id: pkgVersionInfo.pkgId,
-      name: getProjectName(pkgVersionInfo.model),
-      projectId: getProjectId(pkgVersionInfo.model),
-    });
-
-    // Need pkg deps' pkg version info to unbundle the pkg
-    const depPkgs = (
-      await Promise.all(
-        pkgVersionInfo.model.deps.map((depPkgVersionId) =>
-          this._sc.appCtx.api.getPkgVersion(depPkgVersionId)
-        )
-      )
-    ).map((res) => res.pkg);
-
-    const { projectDependency, depPkgs: depProjectDependencies } =
-      unbundleProjectDependency(this._sc.bundler(), pkgVersionInfo, depPkgs);
-
-    spawn(
-      checkDepPkgHosts(this._sc.appCtx, this._sc.siteInfo, [
-        projectDependency,
-        ...depProjectDependencies.filter((dep): dep is ProjectDependency =>
-          isKnownProjectDependency(dep)
-        ),
-      ])
-    );
-
-    this.canAddDependency(projectDependency, maybeMyPkg);
-
-    await this.addDependency(projectDependency);
-
-    return projectDependency;
-  }
-
-  async batchImportPkgs(pkgInfos: PkgVersionInfo[]) {
-    // Download this local project's Pkg, to be used later to check for circular dependencies
-    const { pkg: maybeMyPkg } = await this._sc.appCtx.api.getPkgByProjectId(
-      this._sc.siteInfo.id
-    );
-
-    await Promise.all(
-      pkgInfos
-        // filter out pkgs that do not already exist in the site
-        .filter(
-          (pkg) =>
-            !this._sc.site.projectDependencies.find(
-              (td) => pkg.pkgId === td.pkgId
-            )
-        )
-        // Import each missing dep
-        .map((pkg) => this.importPkg(pkg, maybeMyPkg))
-    );
-  }
-
   /**
    * Adds a dependency
    * - This will update the StudioCtx Site model to be saved on next trySave
    * - it will also initiate a call to fetch additional data about the project.
    **/
   async addByProjectId(projectId: string) {
+    if (projectId === this._sc.siteInfo.id) {
+      // Check importing self
+      throw new Error("You cannot import the current project.");
+    }
+
     // Get the latest version
     const { pkg: maybePkg } = await this._sc.appCtx.api.getPkgByProjectId(
       projectId
@@ -411,7 +352,17 @@ export class ProjectDependencyManager {
     }
 
     const pkg = maybePkg;
-    await this.canImportPkg(pkg);
+    if (this.containsPkgId(pkg.id)) {
+      throw new Error(`${projectId} has already been imported.`);
+    }
+
+    const { isAuthEnabled: dependencyHasAppAuth } =
+      await this._sc.appCtx.api.getAppAuthPubConfig(projectId);
+    if (dependencyHasAppAuth) {
+      throw new Error(
+        `You cannot import ${projectId} because it has auth enabled.`
+      );
+    }
 
     // Download this local project's Pkg, to be used later to check for circular dependencies
     const { pkg: maybeMyPkg } = await this._sc.appCtx.api.getPkgByProjectId(
@@ -422,6 +373,7 @@ export class ProjectDependencyManager {
     const { pkg: latest, depPkgs } = await this._sc.appCtx.api.getPkgVersion(
       pkg.id
     );
+
     const { projectDependency, depPkgs: depPkgVersions } =
       unbundleProjectDependency(this._sc.bundler(), latest, depPkgs);
 
@@ -441,6 +393,42 @@ export class ProjectDependencyManager {
     spawn(this._fetchData());
 
     return projectDependency;
+  }
+
+  async addInstallable(projectId: string, name: string) {
+    // Get installable (e.g. Plexus) pkg info
+    const { pkg: pkgInfo } = await this._sc.appCtx.api.getPkgByProjectId(
+      projectId
+    );
+
+    /**
+     * Get installable (e.g. Plexus) pkg version info, and its deps' pkg version info
+     */
+    const { pkg, depPkgs } = await (pkgInfo
+      ? this._sc.appCtx.api.getPkgVersion(pkgInfo.id)
+      : {});
+
+    assert(
+      pkgInfo && pkg && depPkgs,
+      "Unable to load insertable templates project"
+    );
+
+    const { site: installableSite } = unbundleProjectDependency(
+      this._sc.bundler(),
+      pkg,
+      depPkgs
+    ).projectDependency;
+
+    assert(installableSite, `Unable to install ${name}`);
+
+    await Promise.all(
+      installableSite.projectDependencies.map((importedDep) => {
+        this.canAddDependency(importedDep);
+        return this.addDependency(importedDep);
+      })
+    );
+
+    return installableSite;
   }
 
   addTransitiveDepAsDirectDep(dep: ProjectDependency) {

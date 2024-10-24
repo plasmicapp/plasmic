@@ -1756,6 +1756,14 @@ export async function getPkgVersion(req: Request, res: Response) {
     undefined,
     branchId ? { branchId } : undefined
   );
+
+  const bundleVersion = await getLastBundleVersion();
+
+  const etag = `${pkg.id}-${pkg.version}-${bundleVersion}`;
+
+  if (checkEtagSkippable(req, res, etag)) {
+    return;
+  }
   res.json(await getPkgWithDeps(mgr, pkg, meta, { dontMigrateProject }));
 }
 
