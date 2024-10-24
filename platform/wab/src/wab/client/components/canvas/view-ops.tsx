@@ -2626,6 +2626,14 @@ export class ViewOps {
         });
       }
     }
+    // Remove all VarRefs that do not exist in the current context.
+    const componentVars = new Set(component.params.map((p) => p.variable));
+    const varRefs = Array.from(Components.findVarRefs(newItem));
+    varRefs.forEach((varRef) => {
+      if (!componentVars.has(varRef.var) && varRef.arg) {
+        common.removeWhere(varRef.vs.args, (arg) => arg === varRef.arg);
+      }
+    });
 
     // If this newItem is being pasted into a non-base context, then set the base variant setting
     // to invisible, just as we do when drawing a new node in a non-base context.
