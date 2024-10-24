@@ -12,9 +12,10 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_optimize/PlasmicExperimentPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawn } from "@/wab/shared/common";
-import { Split, Variant } from "@/wab/shared/model/classes";
 import { SplitStatus, SplitType } from "@/wab/shared/core/splits";
+import { Split, Variant } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import { notification } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -111,6 +112,11 @@ function ExperimentPanel_(
           tplMgr.copyToVariant(component, variant, base);
         });
         split.status = SplitStatus.Stopped;
+        notification.success({
+          message: `Successfully copied styles from ${
+            testVariant?.name ?? "variation"
+          } to the base variant`,
+        });
         return success();
       })
     );
