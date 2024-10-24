@@ -768,7 +768,7 @@ function StylePanelSection_(
             await studioCtx.changeUnsafe(() => {
               const exp = expsProvider.targetExp();
               for (const prop of L.without(styleProps, ...unremovableProps)) {
-                if (exp.has(prop)) {
+                if (exp.has(prop) && expsProvider.isPropRemovable(prop)) {
                   exp.clear(prop);
                 }
               }

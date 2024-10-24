@@ -31,7 +31,10 @@ const InitialsForm = observer(function InitialsForm(props: {
   addItemKey: AddItemKey;
 }) {
   const { studioCtx, rs, addItemKey } = props;
-  const expsProvider = new SingleRsExpsProvider(rs, studioCtx, ["display"]);
+  const expsProvider = new SingleRsExpsProvider(rs, studioCtx, [
+    "display",
+    "flex-direction",
+  ]);
   return providesStyleComponent(
     mkStyleComponent({ expsProvider }),
     `${rs.uid}`
