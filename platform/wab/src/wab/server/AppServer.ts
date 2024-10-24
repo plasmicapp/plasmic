@@ -406,6 +406,13 @@ function addSentry(app: express.Application, config: Config) {
       return event;
     },
   });
+
+  app.use(Sentry.Handlers.requestHandler());
+  app.use(Sentry.Handlers.tracingHandler());
+
+  // This anonymous handler uses Sentry.setTag() to modify the current scope.
+  // To ensure the global scope is not modified, the handler must be after
+  // Sentry.Handlers.requestHandler(), which creates a new scope per-request.
   app.use((req, _res, next) => {
     // Some routes get project ID as a path param (e.g.
     // /projects/:projectId/code/components) while others get it as query
@@ -416,8 +423,6 @@ function addSentry(app: express.Application, config: Config) {
     }
     next();
   });
-  app.use(Sentry.Handlers.requestHandler());
-  app.use(Sentry.Handlers.tracingHandler());
 }
 
 // Copied from @sentry: https://github.com/getsentry/sentry-javascript/blob/master/packages/node/src/handlers.ts
