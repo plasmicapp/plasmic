@@ -196,7 +196,7 @@ export function installCommand(
     } else if (opts.dev) {
       return `npm install --save-dev --ignore-scripts ${pkg}`;
     } else {
-      return `npm install --ignore-scripts ${pkg}`;
+      return `npm install --legacy-peer-deps --ignore-scripts ${pkg}`;
     }
   }
 }
