@@ -67,11 +67,12 @@ export function BaseListBox(props: BaseListBoxProps) {
   );
 
   useEffect(() => {
+    console.log("sarah useEffect", { setControlContextData, ids });
     setControlContextData?.({
       itemIds: ids,
       isStandalone,
     });
-  }, [ids, isStandalone]);
+  }, [ids, isStandalone, setControlContextData]);
 
   useEffect(() => {
     idManager.subscribe((_ids: string[]) => {
