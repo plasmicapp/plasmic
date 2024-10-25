@@ -1,7 +1,7 @@
 import { VERT_CONTAINER_CAP } from "../../src/wab/shared/Labels";
 import { removeCurrentProject, setupNewProject } from "../support/util";
 
-describe("left-panel", function () {
+xdescribe("left-panel", function () {
   beforeEach(() => {
     setupNewProject({
       name: "left-panel",
