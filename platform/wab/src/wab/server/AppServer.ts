@@ -411,7 +411,8 @@ function addSentry(app: express.Application, config: Config) {
     // Some routes get project ID as a path param (e.g.
     // /projects/:projectId/code/components) while others get it as query
     // (e.g. /loader/code/versioned?projectId=<>).
-    const projectId = req.params.projectId ?? req.query.projectId;
+    const projectId =
+      req.params.projectId ?? req.query.projectId ?? req.params.projectBranchId;
     if (projectId) {
       Sentry.setTag("projectId", String(projectId));
     }
@@ -1713,7 +1714,7 @@ export function addMainAppServerRoutes(
     "/api/v1/projects/:projectBranchId/revisions/:revision",
     withNext(saveProjectRev)
   );
-  app.post("/api/v1/merge", withNext(tryMergeBranch));
+  app.post("/api/v1/projects/:projectId/merge", withNext(tryMergeBranch));
   app.post(
     "/api/v1/projects/:projectId/code/project-sync-metadata",
     apiAuth,

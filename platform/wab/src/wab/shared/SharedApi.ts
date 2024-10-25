@@ -1085,8 +1085,11 @@ export abstract class SharedApi {
     return this.get(`/projects/${encodeURIComponent(projectId)}/branches`);
   }
 
-  async tryMergeBranch(data: TryMergeRequest): Promise<TryMergeResponse> {
-    return this.post(`/merge`, data);
+  async tryMergeBranch(
+    projectId: ProjectId,
+    data: TryMergeRequest
+  ): Promise<TryMergeResponse> {
+    return this.post(`/projects/${encodeURIComponent(projectId)}/merge`, data);
   }
 
   async createBranch(

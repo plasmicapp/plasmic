@@ -151,7 +151,7 @@ function MergeFlow_(
       const toSiteResponse = await api.getSiteInfo(projectId, {
         branchId: isMainBranchId(toBranchId) ? undefined : toBranchId,
       });
-      const pretendMergeResult = await api.tryMergeBranch({
+      const pretendMergeResult = await api.tryMergeBranch(projectId, {
         subject,
         pretend: true,
         autoCommitOnToBranch: !isMainBranchId(toBranchId),
@@ -701,7 +701,7 @@ function MergeFlow_(
                   genericPicks.concat(specialPicks)
                 );
 
-                const realMerge = await api.tryMergeBranch({
+                const realMerge = await api.tryMergeBranch(projectId, {
                   subject,
                   pretend: false,
                   autoCommitOnToBranch: !isMainBranchId(toBranchId),
