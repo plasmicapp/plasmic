@@ -6,14 +6,15 @@ import {
   useFrameCtx,
   useFrameCtxMaybe,
 } from "@/wab/client/frame-ctx/frame-ctx";
+import { FrameMessage } from "@/wab/client/frame-ctx/frame-message-types";
 import { HostFrameApi } from "@/wab/client/frame-ctx/host-frame-api";
 import {
   TopFrameApi,
   TopFrameFullApi,
 } from "@/wab/client/frame-ctx/top-frame-api";
-import { assert } from "@/wab/shared/common";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import { bindMethods } from "@/wab/commons/proxies";
+import { assert } from "@/wab/shared/common";
 import * as Comlink from "comlink";
 import { UnregisterCallback } from "history";
 import * as React from "react";
@@ -58,7 +59,7 @@ export function TopFrameCtxProvider({
         } = undefined;
     console.log("[TopFrame] Listening for PLASMIC_HOST_REGISTERED message");
     const listener = (ev: MessageEvent) => {
-      if (ev.data?.type !== "PLASMIC_HOST_REGISTER") {
+      if (ev.data?.type !== FrameMessage.PlasmicHostRegister) {
         return;
       }
 
@@ -161,4 +162,12 @@ export function useTopFrameCtx(): TopFrameCtx {
 /** Returns TopFrameCtx if TopFrameCtx provided, undefined otherwise. */
 export function useTopFrameCtxMaybe(): TopFrameCtx | undefined {
   return useFrameCtxMaybe();
+}
+
+export function handleIframeLoad() {
+  setTimeout(() => {
+    window.postMessage({
+      type: FrameMessage.StudioFrameLoaded,
+    });
+  }, 2000);
 }

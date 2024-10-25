@@ -3,6 +3,7 @@ import { initAnalytics } from "@/wab/client/analytics/analytics";
 import { isProjectPath, isTopFrame } from "@/wab/client/cli-routes";
 import { initClientFlags } from "@/wab/client/client-dev-flags";
 import { Root } from "@/wab/client/components/root-view";
+import { FrameMessage } from "@/wab/client/frame-ctx/frame-message-types";
 import {
   HostFrameCtxProvider,
   useHostFrameCtxIfHostFrame,
@@ -118,7 +119,10 @@ export function main() {
         // the skeleton visible in the top frame during this operations as it
         // would hiding those modals. So we hide the skeleton as soon as the
         // host frame is registered.
-        ["PLASMIC_HOST_REGISTER"].includes(data?.type)
+        [
+          FrameMessage.PlasmicHostRegister,
+          FrameMessage.StudioFrameLoaded,
+        ].includes(data?.type)
       ) {
         studioPlaceholder.classList.add("fadeOut");
       }

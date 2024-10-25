@@ -15,7 +15,10 @@ import {
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { reportError } from "@/wab/client/ErrorNotifications";
 import { buildPlasmicStudioArgsHash } from "@/wab/client/frame-ctx/plasmic-studio-args";
-import { TopFrameCtxProvider } from "@/wab/client/frame-ctx/top-frame-ctx";
+import {
+  handleIframeLoad,
+  TopFrameCtxProvider,
+} from "@/wab/client/frame-ctx/top-frame-ctx";
 import { usePreventDefaultBrowserPinchToZoomBehavior } from "@/wab/client/hooks/usePreventDefaultBrowserPinchToZoomBehavior";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
 import { getHostUrl } from "@/wab/client/utils/app-hosting-utils";
@@ -320,7 +323,11 @@ export function StudioFrame({
         refreshBranchData={refreshBranchData}
         {...topFrameChromeProps}
       />
-      <iframe className={"studio-frame"} src={src.toString()} />
+      <iframe
+        className={"studio-frame"}
+        src={src.toString()}
+        onLoad={handleIframeLoad}
+      />
     </TopFrameCtxProvider>
   );
 }
