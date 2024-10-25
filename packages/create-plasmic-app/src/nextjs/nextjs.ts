@@ -29,8 +29,9 @@ export const nextjsStrategy: CPAStrategy = {
       ? "--app"
       : "--no-app";
     const templateArg = template ? ` --template ${template}` : "";
+    // TODO: Change to latest when nextjs stops using react@19-rc
     const createCommand =
-      `npx create-next-app@latest ${projectPath} ${typescriptArg} ${experimentalAppArg} ${templateArg}` +
+      `npx create-next-app@14 ${projectPath} ${typescriptArg} ${experimentalAppArg} ${templateArg}` +
       ` --eslint --no-src-dir  --import-alias "@/*" --no-tailwind`;
 
     // Default Next.js starter already supports Typescript
