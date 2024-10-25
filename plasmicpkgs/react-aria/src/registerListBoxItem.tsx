@@ -176,8 +176,9 @@ export function registerListBoxItem(
       props: {
         id: {
           type: "string",
-          description: "The ID of the item",
+          description: "A unique key for tracking the selected item in state",
           required: true,
+          displayName: "Value",
           validator: (_value, _props, ctx) => {
             if (ctx?.idError) {
               return ctx.idError;
@@ -187,8 +188,9 @@ export function registerListBoxItem(
         },
         textValue: {
           type: "string",
+          displayName: "Label",
           description:
-            "A text representation of the item's contents, used for features like typeahead.",
+            "A user-friendly text representation of the item's contents, used for features like typeahead.",
         },
         children: {
           type: "slot",
