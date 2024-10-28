@@ -202,7 +202,7 @@ function RichTextToolbar_(
     },
     {
       label: "Italic element",
-      action: "ITALIC",
+      action: "ITALIC_TAG",
       icon: ItalicsvgIcon,
     },
     {
