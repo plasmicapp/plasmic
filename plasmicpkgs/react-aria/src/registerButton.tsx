@@ -29,30 +29,32 @@ interface BaseButtonProps
   submitsForm?: boolean;
 }
 
-export function BaseButton(props: BaseButtonProps) {
-  const { submitsForm, resetsForm, children, plasmicUpdateVariant, ...rest } =
-    props;
+const BaseButton = React.forwardRef(
+  (props: BaseButtonProps, ref: React.Ref<HTMLButtonElement>) => {
+    const { submitsForm, resetsForm, children, plasmicUpdateVariant, ...rest } =
+      props;
 
-  const type = submitsForm ? "submit" : resetsForm ? "reset" : "button";
+    const type = submitsForm ? "submit" : resetsForm ? "reset" : "button";
 
-  return (
-    <Button type={type} {...rest}>
-      {({ isHovered, isPressed, isFocused, isFocusVisible, isDisabled }) =>
-        withObservedValues(
-          children,
-          {
-            hovered: isHovered,
-            pressed: isPressed,
-            focused: isFocused,
-            focusVisible: isFocusVisible,
-            disabled: isDisabled,
-          },
-          plasmicUpdateVariant
-        )
-      }
-    </Button>
-  );
-}
+    return (
+      <Button type={type} ref={ref} {...rest}>
+        {({ isHovered, isPressed, isFocused, isFocusVisible, isDisabled }) =>
+          withObservedValues(
+            children,
+            {
+              hovered: isHovered,
+              pressed: isPressed,
+              focused: isFocused,
+              focusVisible: isFocusVisible,
+              disabled: isDisabled,
+            },
+            plasmicUpdateVariant
+          )
+        }
+      </Button>
+    );
+  }
+);
 
 export const BUTTON_COMPONENT_NAME = makeComponentName("button");
 

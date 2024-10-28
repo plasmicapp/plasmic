@@ -1,15 +1,18 @@
 import { usePlasmicCanvasComponentInfo } from "@plasmicapp/host";
-import { mergeProps } from "@react-aria/utils";
 import React from "react";
-import { useTooltipTrigger } from "react-aria";
-import { TooltipProps } from "react-aria-components";
+import { AriaButtonProps, useButton } from "react-aria";
+import { Tooltip, TooltipProps, TooltipTrigger } from "react-aria-components";
 import flattenChildren from "react-keyed-flatten-children";
-import { TooltipTriggerProps, useTooltipTriggerState } from "react-stately";
+import { TooltipTriggerProps } from "react-stately";
 import {
   CodeComponentMetaOverrides,
   Registerable,
   registerComponentHelper,
 } from "./utils";
+
+function isForwardRefComponent(element: any): element is React.ReactElement {
+  return element?.type?.$$typeof === Symbol.for("react.forward_ref");
+}
 
 export interface BaseTooltipProps extends TooltipTriggerProps, TooltipProps {
   children?: React.ReactElement<HTMLElement>;
@@ -18,60 +21,77 @@ export interface BaseTooltipProps extends TooltipTriggerProps, TooltipProps {
   className?: string;
 }
 
+function TooltipButton(props: AriaButtonProps) {
+  const ref = React.useRef<HTMLButtonElement | null>(null);
+  const { buttonProps } = useButton(props, ref);
+  const { children } = props;
+  if (!isForwardRefComponent(children)) {
+    // The tooltip will not be triggered because the trigger component needs to be a forward ref.
+    return children;
+  }
+
+  return React.cloneElement(children, {
+    ...buttonProps,
+    ref,
+  });
+}
+
 export function BaseTooltip(props: BaseTooltipProps) {
-  const { children, tooltipContent, className, resetClassName, ...restProps } =
-    props;
+  const {
+    children,
+    isDisabled,
+    delay,
+    closeDelay,
+    trigger,
+    isOpen,
+    defaultOpen,
+    tooltipContent,
+    resetClassName,
+    placement,
+    offset,
+    crossOffset,
+    shouldFlip,
+    arrowBoundaryOffset,
+    className,
+    onOpenChange,
+  } = props;
 
   const { isSelected, selectedSlotName } =
     usePlasmicCanvasComponentInfo(props) ?? {};
   const isAutoOpen = selectedSlotName !== "children" && isSelected;
-
-  const state = useTooltipTriggerState(restProps);
-  const ref = React.useRef(null);
-  const { triggerProps, tooltipProps } = useTooltipTrigger(
-    restProps,
-    state,
-    ref
-  );
-
-  const hasContent =
-    tooltipContent &&
-    (tooltipContent.type as any).name !== "CanvasSlotPlaceholder";
 
   /** We are only accepting a single child here, so we can just use the first one.
    * This is because the trigger props will be applied to the child to enable the triggering of the tooltip.
    * If there has to be more than one things here, wrap them in a horizontal stack for instance.
    * */
   const focusableChild = flattenChildren(children)[0];
+  const _isOpen = isAutoOpen || isOpen;
 
   return (
-    <div
-      // this is to ensure that the absolutely positioned tooltip can be positioned correctly within this relatively positioned container.
-      style={{ position: "relative" }}
-      className={resetClassName}
+    <TooltipTrigger
+      isDisabled={isDisabled}
+      delay={delay}
+      closeDelay={closeDelay}
+      trigger={trigger}
+      isOpen={_isOpen}
+      defaultOpen={defaultOpen}
+      onOpenChange={onOpenChange}
     >
-      {React.isValidElement(focusableChild)
-        ? React.cloneElement(focusableChild, {
-            ref,
-            ...mergeProps(
-              focusableChild.props as Record<string, any>,
-              triggerProps
-            ),
-          } as Record<string, any> & { ref?: React.Ref<HTMLElement> })
-        : null}
-      {(isAutoOpen || state.isOpen) && (
-        <>
-          {React.cloneElement(
-            hasContent ? (
-              tooltipContent
-            ) : (
-              <p>Add some content to the tooltip...</p>
-            ),
-            mergeProps(tooltipProps, tooltipContent?.props.attrs, { className })
-          )}
-        </>
-      )}
-    </div>
+      <TooltipButton>{focusableChild}</TooltipButton>
+      <Tooltip
+        isOpen={_isOpen}
+        offset={offset}
+        crossOffset={crossOffset}
+        shouldFlip={shouldFlip}
+        arrowBoundaryOffset={arrowBoundaryOffset}
+        defaultOpen={defaultOpen}
+        className={`${className} ${resetClassName}`}
+        onOpenChange={onOpenChange}
+        placement={placement}
+      >
+        {tooltipContent}
+      </Tooltip>
+    </TooltipTrigger>
   );
 }
 
@@ -92,11 +112,14 @@ export function registerTooltip(
       props: {
         children: {
           type: "slot",
-          displayName: "Trigger",
           mergeWithParent: true,
+          displayName: "Trigger",
           defaultValue: {
             type: "text",
             value: "Hover me!",
+            styles: {
+              width: "hug",
+            },
           },
         },
         tooltipContent: {
@@ -131,6 +154,21 @@ export function registerTooltip(
           options: ["focus", "focus and hover"],
           defaultValueHint: "focus and hover",
         },
+        placement: {
+          type: "choice",
+          description:
+            "Default placement of the popover relative to the trigger, if there is enough space",
+          defaultValueHint: "bottom",
+          options: ["top", "bottom", "left", "right"],
+        },
+        isOpen: {
+          type: "boolean",
+          editOnly: true,
+          uncontrolledProp: "defaultOpen",
+          description: "Whether the overlay is open by default",
+          defaultValueHint: false,
+          hidden: () => true,
+        },
         onOpenChange: {
           type: "eventHandler",
           argTypes: [{ name: "isOpen", type: "boolean" }],
@@ -138,7 +176,8 @@ export function registerTooltip(
       },
       states: {
         isOpen: {
-          type: "readonly",
+          type: "writable",
+          valueProp: "isOpen",
           onChangeProp: "onOpenChange",
           variableType: "boolean",
         },
