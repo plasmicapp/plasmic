@@ -157,6 +157,10 @@ export function registerTooltip(
           defaultValue: {
             type: "text",
             value: "Hello from Tooltip!",
+            styles: {
+              // So the text does not overlap with existing content
+              backgroundColor: "white",
+            },
           },
         },
         resetClassName: {
