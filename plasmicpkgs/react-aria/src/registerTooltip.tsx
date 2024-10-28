@@ -9,17 +9,31 @@ import {
   Registerable,
   registerComponentHelper,
 } from "./utils";
+import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
 function isForwardRefComponent(element: any): element is React.ReactElement {
   return element?.type?.$$typeof === Symbol.for("react.forward_ref");
 }
 
-export interface BaseTooltipProps extends TooltipTriggerProps, TooltipProps {
+const TOOLTIP_VARIANTS = [
+  "placementTop" as const,
+  "placementBottom" as const,
+  "placementLeft" as const,
+  "placementRight" as const,
+];
+
+export interface BaseTooltipProps
+  extends TooltipTriggerProps,
+    TooltipProps,
+    WithVariants<typeof TOOLTIP_VARIANTS> {
   children?: React.ReactElement<HTMLElement>;
   tooltipContent?: React.ReactElement;
   resetClassName?: string;
   className?: string;
 }
+
+const { variants, withObservedValues } =
+  pickAriaComponentVariants(TOOLTIP_VARIANTS);
 
 function TooltipButton(props: AriaButtonProps) {
   const ref = React.useRef<HTMLButtonElement | null>(null);
@@ -54,6 +68,7 @@ export function BaseTooltip(props: BaseTooltipProps) {
     arrowBoundaryOffset,
     className,
     onOpenChange,
+    plasmicUpdateVariant,
   } = props;
 
   const { isSelected, selectedSlotName } =
@@ -89,7 +104,18 @@ export function BaseTooltip(props: BaseTooltipProps) {
         onOpenChange={onOpenChange}
         placement={placement}
       >
-        {tooltipContent}
+        {({ placement: _placement }) =>
+          withObservedValues(
+            tooltipContent,
+            {
+              placementTop: _placement === "top",
+              placementBottom: _placement === "bottom",
+              placementLeft: _placement === "left",
+              placementRight: _placement === "right",
+            },
+            plasmicUpdateVariant
+          )
+        }
       </Tooltip>
     </TooltipTrigger>
   );
@@ -109,6 +135,7 @@ export function registerTooltip(
       importName: "BaseTooltip",
       isAttachment: true,
       styleSections: true,
+      variants,
       props: {
         children: {
           type: "slot",
@@ -158,7 +185,8 @@ export function registerTooltip(
           type: "choice",
           description:
             "Default placement of the popover relative to the trigger, if there is enough space",
-          defaultValueHint: "bottom",
+          defaultValueHint: "top",
+          // Not providing more options because https://github.com/adobe/react-spectrum/issues/6517
           options: ["top", "bottom", "left", "right"],
         },
         isOpen: {

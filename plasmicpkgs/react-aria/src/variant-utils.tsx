@@ -38,6 +38,22 @@ const ARIA_COMPONENTS_VARIANTS = {
     cssSelector: "[data-indeterminate]",
     displayName: "Indeterminate",
   },
+  placementLeft: {
+    cssSelector: "[data-placement]=left",
+    displayName: "Placement (Left)",
+  },
+  placementRight: {
+    cssSelector: "[data-placement]=right",
+    displayName: "Placement (Right)",
+  },
+  placementTop: {
+    cssSelector: "[data-placement]=top",
+    displayName: "Placement (Top)",
+  },
+  placementBottom: {
+    cssSelector: "[data-placement]=bottom",
+    displayName: "Placement (Bottom)",
+  },
 };
 
 type AriaVariant = keyof typeof ARIA_COMPONENTS_VARIANTS;
