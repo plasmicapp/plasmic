@@ -167,13 +167,17 @@ export function registerTooltip(
         },
         delay: {
           type: "number",
-          defaultValueHint: 1500,
+          // Default value is explicitly set to 0 to prevent users from mistakenly thinking the tooltip isn’t opening due to a delay.
+          defaultValue: 0,
+          defaultValueHint: 0,
           description:
             "The delay (in milliseconds) for the tooltip to show up.",
         },
         closeDelay: {
           type: "number",
-          defaultValueHint: 500,
+          // Default value is explicitly set to 0 to prevent users from mistakenly thinking the tooltip isn’t closing due to a delay.
+          defaultValue: 0,
+          defaultValueHint: 0,
           description: "The delay (in milliseconds) for the tooltip to close.",
         },
         trigger: {
