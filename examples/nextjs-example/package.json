@@ -10,8 +10,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@plasmicapp/loader-nextjs": "^1.0.393",
-    "next": "14.2.3",
+    "@plasmicapp/loader-nextjs": "^1.0.406",
+    "@plasmicapp/nextjs-app-router": "^1.0.12",
+    "next": "14.2.16",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
@@ -20,7 +21,7 @@
     "@types/react": "18.2.27",
     "@types/react-dom": "18.2.12",
     "eslint": "8.51.0",
-    "eslint-config-next": "14.2.3",
+    "eslint-config-next": "14.2.16",
     "typescript": "5.2.2"
   }
 }
