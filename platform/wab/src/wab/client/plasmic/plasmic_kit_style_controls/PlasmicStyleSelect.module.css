@@ -6,9 +6,6 @@
   justify-content: center;
   min-width: 0;
 }
-.root:focus-within {
-  outline: none;
-}
 .trigger {
   background: var(--token-O4S7RMTqZ3);
   position: relative;
@@ -48,10 +45,6 @@
 }
 .root:focus-within .trigger {
   box-shadow: inset 0px 0px 0px 1px var(--token-O9Cf1BVdg);
-  outline: none;
-}
-.root .trigger:focus {
-  outline: none;
 }
 .contentContainer {
   display: flex;

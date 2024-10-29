@@ -10,9 +10,6 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
-.root___focusVisibleWithin {
-  outline: none;
-}
 .toggle {
   display: flex;
   position: relative;
@@ -24,7 +21,6 @@
   flex-shrink: 0;
 }
 .root .toggle___focusVisibleWithin {
-  outline: none;
   border-style: dashed;
   border-color: #007aff;
 }
@@ -60,13 +56,12 @@
 .root:hover .track {
   background: var(--token-PTyaboLP9ZK);
 }
-.rootisChecked:hover .trackisChecked {
-  background: var(--token-mr2NiPmIlt2);
-}
 .root .track___focusVisibleWithin {
   box-shadow: inset 0px 0px 0px 1px #0091ff80;
-  outline: none;
   border-color: #007aff;
+}
+.rootisChecked:hover .trackisChecked {
+  background: var(--token-mr2NiPmIlt2);
 }
 .thumb {
   display: block;
@@ -92,9 +87,6 @@
   right: auto;
   background: var(--token-iR8SeEwQZ);
 }
-.root .thumb___focusVisibleWithin {
-  outline: none;
-}
 .labelContainer {
   display: flex;
   position: relative;
@@ -102,9 +94,6 @@
   align-items: stretch;
   justify-content: flex-start;
   margin-left: 8px;
-}
-.root .labelContainer___focusVisibleWithin {
-  outline: none;
 }
 .slotTargetChildren {
   white-space: pre;
@@ -177,38 +166,4 @@
 }
 .slotTargetChildrenvalueSetState_isInherited {
   color: var(--token-s0HBak9It);
-}
-.root .slotTargetChildren___focusVisibleWithin > *,
-.root .slotTargetChildren___focusVisibleWithin > :global(.__wab_slot) > *,
-.root
-  .slotTargetChildren___focusVisibleWithin
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.root
-  .slotTargetChildren___focusVisibleWithin
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > *,
-.root .slotTargetChildren___focusVisibleWithin > picture > img,
-.root
-  .slotTargetChildren___focusVisibleWithin
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.root
-  .slotTargetChildren___focusVisibleWithin
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img,
-.root
-  .slotTargetChildren___focusVisibleWithin
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  outline: none;
 }

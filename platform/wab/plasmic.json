@@ -3764,8 +3764,7 @@
       "indirect": false,
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "dyzP6dbCdycwJpqiR2zkwe",
@@ -4779,19 +4778,6 @@
       "cssFilePath": "wab/client/plasmic/project_panel/plasmic_project_panel.module.css",
       "components": [
         {
-          "id": "Kyrn_lAAwr",
-          "name": "ProjectPanel",
-          "type": "managed",
-          "projectId": "m8VxGcigeLAEXFe8c12w5Q",
-          "renderModuleFilePath": "wab/client/plasmic/project_panel/PlasmicProjectPanel.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/sidebar-tabs/ProjectPanel/ProjectPanelTop.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/project_panel/PlasmicProjectPanel.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
           "id": "iWeSjEMdI3",
           "name": "FolderItem",
           "type": "managed",
@@ -4828,6 +4814,19 @@
             "exportName": "OutlineTab"
           },
           "cssFilePath": "wab/client/plasmic/project_panel/PlasmicOutlineTab.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "Kyrn_lAAwr",
+          "name": "NavigationDropdown",
+          "type": "managed",
+          "projectId": "m8VxGcigeLAEXFe8c12w5Q",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_project_panel/PlasmicNavigationDropdown.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/sidebar-tabs/ProjectPanel/NavigationDropdown.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_project_panel/PlasmicNavigationDropdown.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         }

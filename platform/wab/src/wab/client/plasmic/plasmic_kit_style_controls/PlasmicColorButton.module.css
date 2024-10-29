@@ -31,7 +31,6 @@
 }
 .root:focus {
   box-shadow: inset 0px 0px 0px 1px #0091ff80;
-  outline: none;
 }
 .swatchContainer {
   display: flex;

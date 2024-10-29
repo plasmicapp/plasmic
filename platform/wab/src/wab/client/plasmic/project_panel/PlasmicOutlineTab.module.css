@@ -123,23 +123,11 @@
   object-fit: cover;
   height: 1em;
 }
-.svg__b5OLy {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  height: 1em;
-}
 .collapseAllButton:global(.__wab_instance) {
   position: relative;
   flex-shrink: 0;
 }
 .svg___3CdCg {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  height: 1em;
-}
-.svg__wVIwR {
   display: flex;
   position: relative;
   object-fit: cover;

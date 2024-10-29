@@ -64,12 +64,11 @@
 .root:hover {
   background: var(--token-bV4cCeIniS6);
 }
-.rootvalueSetState_isSet:hover {
-  background: var(--token-p-rw5DRJTx);
-}
 .root___focusVisible {
   box-shadow: inset 0px 0px 0px 1px #0091ff80;
-  outline: none;
+}
+.rootvalueSetState_isSet:hover {
+  background: var(--token-p-rw5DRJTx);
 }
 .iconContainer {
   display: flex;

@@ -37,6 +37,7 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicRowGroup.module.css"; // plasmic-import: fgHLE_9XtAei/css
 
+import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
 import ChevronRightSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronRightsvg"; // plasmic-import: HBGx-zeiX/icon
 
 createPlasmicElementProxy;
@@ -44,25 +45,30 @@ createPlasmicElementProxy;
 export type PlasmicRowGroup__VariantMembers = {
   isOpen: "isOpen";
   hasMenu: "hasMenu";
+  showActions: "showActions";
 };
 export type PlasmicRowGroup__VariantsArgs = {
   isOpen?: SingleBooleanChoiceArg<"isOpen">;
   hasMenu?: SingleBooleanChoiceArg<"hasMenu">;
+  showActions?: SingleBooleanChoiceArg<"showActions">;
 };
 type VariantPropType = keyof PlasmicRowGroup__VariantsArgs;
 export const PlasmicRowGroup__VariantProps = new Array<VariantPropType>(
   "isOpen",
-  "hasMenu"
+  "hasMenu",
+  "showActions"
 );
 
 export type PlasmicRowGroup__ArgsType = {
   children?: React.ReactNode;
   groupSize?: React.ReactNode;
+  actions?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicRowGroup__ArgsType;
 export const PlasmicRowGroup__ArgProps = new Array<ArgPropType>(
   "children",
-  "groupSize"
+  "groupSize",
+  "actions"
 );
 
 export type PlasmicRowGroup__OverridesType = {
@@ -71,14 +77,17 @@ export type PlasmicRowGroup__OverridesType = {
   svg?: Flex__<"svg">;
   labelContainer?: Flex__<"div">;
   sizeContainer?: Flex__<"div">;
+  actionsContainer?: Flex__<"div">;
   menuButton?: Flex__<typeof MenuButton>;
 };
 
 export interface DefaultRowGroupProps {
   children?: React.ReactNode;
   groupSize?: React.ReactNode;
+  actions?: React.ReactNode;
   isOpen?: SingleBooleanChoiceArg<"isOpen">;
   hasMenu?: SingleBooleanChoiceArg<"hasMenu">;
+  showActions?: SingleBooleanChoiceArg<"showActions">;
   className?: string;
 }
 
@@ -126,6 +135,12 @@ function PlasmicRowGroup__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasMenu,
       },
+      {
+        path: "showActions",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showActions,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -161,6 +176,11 @@ function PlasmicRowGroup__RenderFunc(props: {
         {
           [sty.roothasMenu]: hasVariant($state, "hasMenu", "hasMenu"),
           [sty.rootisOpen]: hasVariant($state, "isOpen", "isOpen"),
+          [sty.rootshowActions]: hasVariant(
+            $state,
+            "showActions",
+            "showActions"
+          ),
         }
       )}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
@@ -211,6 +231,38 @@ function PlasmicRowGroup__RenderFunc(props: {
           })}
         </div>
       </Stack__>
+      {(hasVariant($state, "showActions", "showActions") ? true : false) ? (
+        <Stack__
+          as={"div"}
+          data-plasmic-name={"actionsContainer"}
+          data-plasmic-override={overrides.actionsContainer}
+          hasGap={true}
+          className={classNames(projectcss.all, sty.actionsContainer, {
+            [sty.actionsContainerhasMenu]: hasVariant(
+              $state,
+              "hasMenu",
+              "hasMenu"
+            ),
+            [sty.actionsContainershowActions]: hasVariant(
+              $state,
+              "showActions",
+              "showActions"
+            ),
+          })}
+        >
+          {renderPlasmicSlot({
+            defaultContents: (
+              <PlusIcon
+                className={classNames(projectcss.all, sty.svg___7Gen4)}
+                role={"img"}
+              />
+            ),
+
+            value: args.actions,
+            className: classNames(sty.slotTargetActions),
+          })}
+        </Stack__>
+      ) : null}
       {(
         hasVariant($state, "hasMenu", "hasMenu") && triggers.hover_root
           ? true
@@ -238,12 +290,14 @@ const PlasmicDescendants = {
     "svg",
     "labelContainer",
     "sizeContainer",
+    "actionsContainer",
     "menuButton",
   ],
   iconContainer: ["iconContainer", "svg"],
   svg: ["svg"],
   labelContainer: ["labelContainer", "sizeContainer"],
   sizeContainer: ["sizeContainer"],
+  actionsContainer: ["actionsContainer"],
   menuButton: ["menuButton"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -255,6 +309,7 @@ type NodeDefaultElementType = {
   svg: "svg";
   labelContainer: "div";
   sizeContainer: "div";
+  actionsContainer: "div";
   menuButton: typeof MenuButton;
 };
 
@@ -322,6 +377,7 @@ export const PlasmicRowGroup = Object.assign(
     svg: makeNodeComponent("svg"),
     labelContainer: makeNodeComponent("labelContainer"),
     sizeContainer: makeNodeComponent("sizeContainer"),
+    actionsContainer: makeNodeComponent("actionsContainer"),
     menuButton: makeNodeComponent("menuButton"),
 
     // Metadata about props expected for PlasmicRowGroup

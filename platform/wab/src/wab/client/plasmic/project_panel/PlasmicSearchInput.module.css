@@ -27,16 +27,12 @@
   background: rgba(0, 0, 0, 0);
   box-shadow: none;
 }
-.searchInputContainer:hover {
-  box-shadow: 0px 0px 0px 1px var(--token-PTyaboLP9ZK);
-}
 .searchInputContainer:focus-within {
   box-shadow: 0px 0px 0px 2px #0091ff80;
   background: rgba(0, 0, 0, 0);
-  outline: none;
 }
-.searchInputContainer___focusVisibleWithin {
-  outline: none;
+.searchInputContainer:hover {
+  box-shadow: 0px 0px 0px 1px var(--token-PTyaboLP9ZK);
 }
 .svg {
   object-fit: cover;
@@ -52,9 +48,6 @@
 .searchInputContainercollapsed:hover .svgcollapsed {
   color: rgb(0, 0, 0);
 }
-.searchInputContainer:focus-within .svg {
-  outline: none;
-}
 .searchInput {
   transition-property: all;
   transition-duration: 200ms;
@@ -68,18 +61,11 @@
   border-radius: 4px;
   border: 1px solid rgba(0, 0, 0, 0);
 }
-.searchInputContainer:focus-within .searchInput {
-  outline: none;
-}
-.searchInputContainer .searchInput___focusVisibleWithin {
-  outline: none;
+.searchInputContainer .searchInput::placeholder {
+  color: var(--token-UunsGa2Y3t3);
 }
 .searchInputContainer .searchInput:focus {
   box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.5);
-  outline: none;
-}
-.searchInputContainer .searchInput::placeholder {
-  color: var(--token-UunsGa2Y3t3);
 }
 .freeBox {
   display: flex;
@@ -104,9 +90,6 @@
   top: auto;
   right: auto;
 }
-.searchInputContainer:focus-within .clearFieldIcon {
-  outline: none;
-}
 .searchInputContainer .clearFieldIcon:hover {
   color: rgb(102, 102, 102);
   top: auto;
@@ -123,10 +106,4 @@
 }
 .shortcutwithShortcut {
   display: block;
-}
-.searchInputContainer:focus-within .shortcut {
-  outline: none;
-}
-.searchInputContainer .shortcut___focusVisibleWithin {
-  outline: none;
 }

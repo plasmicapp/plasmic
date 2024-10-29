@@ -15,65 +15,38 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
   PlasmicIcon as PlasmicIcon__,
-  PlasmicImg as PlasmicImg__,
-  PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  generateOnMutateForSpec,
-  generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
-  generateStateValueProp,
-  get as $stateGet,
   hasVariant,
-  initializeCodeComponentStates,
-  initializePlasmicStates,
-  makeFragment,
-  omit,
-  pick,
   renderPlasmicSlot,
-  set as $stateSet,
-  useCurrentUser,
   useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName,
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions,
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import ListItem from "../../components/ListItem"; // plasmic-import: v31d9_ANqk/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_project_panel.module.css"; // plasmic-import: m8VxGcigeLAEXFe8c12w5Q/projectcss
 import sty from "./PlasmicFolderItem.module.css"; // plasmic-import: iWeSjEMdI3/css
 
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ChevronRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronRightsvg"; // plasmic-import: HBGx-zeiX/icon
-import ComponentsvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Componentsvg"; // plasmic-import: vJVrKlrDD/icon
-import File2SvgIcon from "../q_4_icons/icons/PlasmicIcon__File2Svg"; // plasmic-import: zldfLXBdc/icon
-import GridMasonrysvgIcon from "../q_4_icons/icons/PlasmicIcon__GridMasonrysvg"; // plasmic-import: f5dXpZvP5/icon
-import FoldersvgIcon from "../q_4_icons/icons/PlasmicIcon__Foldersvg"; // plasmic-import: zvkxMkUIX/icon
-import FolderIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__Folder"; // plasmic-import: hRo7v6cqW6/icon
-import GitBranchsvgIcon from "../q_4_icons/icons/PlasmicIcon__GitBranchsvg"; // plasmic-import: 4OBJfCUZH/icon
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
+import FolderIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__Folder"; // plasmic-import: hRo7v6cqW6/icon
+import ComponentSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Componentsvg"; // plasmic-import: vJVrKlrDD/icon
+import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronRightSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronRightsvg"; // plasmic-import: HBGx-zeiX/icon
+import File2SvgIcon from "../q_4_icons/icons/PlasmicIcon__File2Svg"; // plasmic-import: zldfLXBdc/icon
+import FolderSvgIcon from "../q_4_icons/icons/PlasmicIcon__Foldersvg"; // plasmic-import: zvkxMkUIX/icon
+import GitBranchSvgIcon from "../q_4_icons/icons/PlasmicIcon__GitBranchsvg"; // plasmic-import: 4OBJfCUZH/icon
+import GridMasonrySvgIcon from "../q_4_icons/icons/PlasmicIcon__GridMasonrysvg"; // plasmic-import: f5dXpZvP5/icon
 
 createPlasmicElementProxy;
 
@@ -82,15 +55,15 @@ export type PlasmicFolderItem__VariantMembers = {
     | "page"
     | "component"
     | "arena"
-    | "folderopen"
-    | "folderclosed"
+    | "folderOpen"
+    | "folderClosed"
     | "branch";
   selected: "selected";
   nested: "nested";
 };
 export type PlasmicFolderItem__VariantsArgs = {
   type?: SingleChoiceArg<
-    "page" | "component" | "arena" | "folderopen" | "folderclosed" | "branch"
+    "page" | "component" | "arena" | "folderOpen" | "folderClosed" | "branch"
   >;
   selected?: SingleBooleanChoiceArg<"selected">;
   nested?: SingleBooleanChoiceArg<"nested">;
@@ -117,7 +90,7 @@ export type PlasmicFolderItem__OverridesType = {
 export interface DefaultFolderItemProps {
   children?: React.ReactNode;
   type?: SingleChoiceArg<
-    "page" | "component" | "arena" | "folderopen" | "folderclosed" | "branch"
+    "page" | "component" | "arena" | "folderOpen" | "folderClosed" | "branch"
   >;
   selected?: SingleBooleanChoiceArg<"selected">;
   nested?: SingleBooleanChoiceArg<"nested">;
@@ -134,7 +107,16 @@ function PlasmicFolderItem__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -144,8 +126,6 @@ function PlasmicFolderItem__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = useCurrentUser?.() || {};
 
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
@@ -189,7 +169,7 @@ function PlasmicFolderItem__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
+        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         sty.root,
         {
@@ -197,12 +177,12 @@ function PlasmicFolderItem__RenderFunc(props: {
           [sty.rootselected]: hasVariant($state, "selected", "selected"),
           [sty.roottype_arena]: hasVariant($state, "type", "arena"),
           [sty.roottype_component]: hasVariant($state, "type", "component"),
-          [sty.roottype_folderclosed]: hasVariant(
+          [sty.roottype_folderClosed]: hasVariant(
             $state,
             "type",
-            "folderclosed"
+            "folderClosed"
           ),
-          [sty.roottype_folderopen]: hasVariant($state, "type", "folderopen"),
+          [sty.roottype_folderOpen]: hasVariant($state, "type", "folderOpen"),
           [sty.roottype_page]: hasVariant($state, "type", "page"),
         }
       )}
@@ -215,7 +195,7 @@ function PlasmicFolderItem__RenderFunc(props: {
             data-plasmic-name={"iconButton"}
             data-plasmic-override={overrides.iconButton}
             children2={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__i2ZUu)}
                 role={"img"}
               />
@@ -233,44 +213,49 @@ function PlasmicFolderItem__RenderFunc(props: {
           [sty.listItemnested]: hasVariant($state, "nested", "nested"),
           [sty.listItemselected]: hasVariant($state, "selected", "selected"),
           [sty.listItemtype_branch]: hasVariant($state, "type", "branch"),
-          [sty.listItemtype_folderclosed]: hasVariant(
+          [sty.listItemtype_folderClosed]: hasVariant(
             $state,
             "type",
-            "folderclosed"
+            "folderClosed"
           ),
           [sty.listItemtype_page]: hasVariant($state, "type", "page"),
         })}
         icon={
           <React.Fragment>
-            {(hasVariant($state, "type", "folderopen") ? true : false) ? (
-              <ChevronDownsvgIcon
+            {(hasVariant($state, "type", "folderOpen") ? true : false) ? (
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__q8HG, {
                   [sty.svgselected__q8HGz29Uf]: hasVariant(
                     $state,
                     "selected",
                     "selected"
                   ),
-                  [sty.svgtype_folderopen__q8HG7YhjV]: hasVariant(
+                  [sty.svgtype_folderOpen__q8HG7YhjV]: hasVariant(
                     $state,
                     "type",
-                    "folderopen"
+                    "folderOpen"
                   ),
                 })}
                 role={"img"}
               />
             ) : null}
-            {(hasVariant($state, "type", "folderclosed") ? true : false) ? (
-              <ChevronRightsvgIcon
+            {(hasVariant($state, "type", "folderClosed") ? true : false) ? (
+              <PlasmicIcon__
+                PlasmicIconType={
+                  hasVariant($state, "type", "folderClosed")
+                    ? ChevronRightSvgIcon
+                    : ChevronRightSvgIcon
+                }
                 className={classNames(projectcss.all, sty.svg__g3Nlv, {
-                  [sty.svgtype_folderclosed__g3Nlv1OX]: hasVariant(
+                  [sty.svgtype_folderClosed__g3Nlv1OX]: hasVariant(
                     $state,
                     "type",
-                    "folderclosed"
+                    "folderClosed"
                   ),
-                  [sty.svgtype_folderopen__g3Nlv7YhjV]: hasVariant(
+                  [sty.svgtype_folderOpen__g3Nlv7YhjV]: hasVariant(
                     $state,
                     "type",
-                    "folderopen"
+                    "folderOpen"
                   ),
                 })}
                 role={"img"}
@@ -279,16 +264,16 @@ function PlasmicFolderItem__RenderFunc(props: {
             <PlasmicIcon__
               PlasmicIconType={
                 hasVariant($state, "type", "branch")
-                  ? GitBranchsvgIcon
-                  : hasVariant($state, "type", "folderclosed")
+                  ? GitBranchSvgIcon
+                  : hasVariant($state, "type", "folderClosed")
                   ? FolderIcon
-                  : hasVariant($state, "type", "folderopen")
-                  ? FoldersvgIcon
+                  : hasVariant($state, "type", "folderOpen")
+                  ? FolderSvgIcon
                   : hasVariant($state, "type", "arena")
-                  ? GridMasonrysvgIcon
+                  ? GridMasonrySvgIcon
                   : hasVariant($state, "type", "page")
                   ? File2SvgIcon
-                  : ComponentsvgIcon
+                  : ComponentSvgIcon
               }
               className={classNames(projectcss.all, sty.svg__yn2Mk, {
                 [sty.svgselected__yn2MkZ29Uf]: hasVariant(
@@ -311,15 +296,15 @@ function PlasmicFolderItem__RenderFunc(props: {
                   "type",
                   "component"
                 ),
-                [sty.svgtype_folderclosed__yn2Mk1OX]: hasVariant(
+                [sty.svgtype_folderClosed__yn2Mk1OX]: hasVariant(
                   $state,
                   "type",
-                  "folderclosed"
+                  "folderClosed"
                 ),
-                [sty.svgtype_folderopen__yn2Mk7YhjV]: hasVariant(
+                [sty.svgtype_folderOpen__yn2Mk7YhjV]: hasVariant(
                   $state,
                   "type",
-                  "folderopen"
+                  "folderOpen"
                 ),
                 [sty.svgtype_page__yn2MkAFmgq]: hasVariant(
                   $state,
