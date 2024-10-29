@@ -35,6 +35,18 @@ export interface BaseTooltipProps
 const { variants, withObservedValues } =
   pickAriaComponentVariants(TOOLTIP_VARIANTS);
 
+/*
+
+React Aria's TooltipTrigger only allows Aria Button component to act as a trigger.
+https://react-spectrum.adobe.com/react-aria/Tooltip.html#example
+
+To bypass that limitation, we use useButton,
+so that anything we add to the slot can be treated as an Aria Button.
+That means we can use the ready-made components provided by react-aria-components (like <TooltipTrigger> and <Tooltip>)
+and still be able to use any other component as a trigger.
+
+*/
+
 function TooltipButton(props: AriaButtonProps) {
   const ref = React.useRef<HTMLButtonElement | null>(null);
   const { buttonProps } = useButton(props, ref);
