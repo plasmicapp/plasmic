@@ -49,6 +49,7 @@ export class ListBoxItemIdManager {
 
   subscribe(observer: Observer) {
     this._observers.add(observer);
+    observer(this.ids);
   }
 
   // Notify all observers about an event.
