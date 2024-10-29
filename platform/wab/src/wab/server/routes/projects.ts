@@ -1726,7 +1726,7 @@ export async function getPkgVersionByProjectId(req: Request, res: Response) {
     versionStrings.includes(chosenVersion),
     `Unknown version ${chosenVersion}`
   );
-  const etag = `${pkg.id}-${chosenVersion}-${bundleVersion}`;
+  const etag = `${req.devflags.eTagsVersionPrefix}-${pkg.id}-${chosenVersion}-${bundleVersion}`;
 
   if (checkEtagSkippable(req, res, etag)) {
     return;
@@ -1759,7 +1759,7 @@ export async function getPkgVersion(req: Request, res: Response) {
 
   const bundleVersion = await getLastBundleVersion();
 
-  const etag = `${pkg.id}-${pkg.version}-${bundleVersion}`;
+  const etag = `${req.devflags.eTagsVersionPrefix}-${pkg.id}-${pkg.version}-${bundleVersion}`;
 
   if (checkEtagSkippable(req, res, etag)) {
     return;

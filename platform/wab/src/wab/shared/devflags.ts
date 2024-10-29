@@ -401,6 +401,10 @@ const DEFAULT_DEVFLAGS = {
   defaultOpenStylePanels: true,
   dynamicPages: true,
   enablePlasmicHosting: true,
+  // Used to invalidate etag cacheing mechanism altogether
+  disableETagCaching: false,
+  // Used to invalidate etags that use it
+  eTagsVersionPrefix: "0",
   // The tiers to get dynamically retrieve from the server
   featureTierNames: featureTiers,
   useNewFeatureTiers: true,

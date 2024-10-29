@@ -851,6 +851,10 @@ function setAsCacheableResource(res: Response, maxAge = 31536000) {
 }
 
 export function checkEtagSkippable(req: Request, res: Response, etag: string) {
+  if (req.devflags.disableETagCaching) {
+    console.log("Etag mechanism is disabled");
+    return false;
+  }
   if (req.headers["x-plasmic-uptime-check"]) {
     // Never skip uptime checks
     return false;
