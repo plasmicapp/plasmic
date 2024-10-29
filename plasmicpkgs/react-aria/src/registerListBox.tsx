@@ -60,6 +60,7 @@ export function BaseListBox(props: BaseListBoxProps) {
   const context = React.useContext(PlasmicListBoxContext);
   const isStandalone = !context;
   const [ids, setIds] = useState<string[]>([]);
+  const [ready, setReady] = useState(false);
 
   const idManager = useMemo(
     () => context?.idManager ?? new ListBoxItemIdManager(),
@@ -67,7 +68,6 @@ export function BaseListBox(props: BaseListBoxProps) {
   );
 
   useEffect(() => {
-    console.log("sarah useEffect", { setControlContextData, ids });
     setControlContextData?.({
       itemIds: ids,
       isStandalone,
@@ -78,6 +78,12 @@ export function BaseListBox(props: BaseListBoxProps) {
     idManager.subscribe((_ids: string[]) => {
       setIds(_ids);
     });
+    // Ready after subscribing to the idManager
+    setReady(true);
+
+    return () => {
+      setReady(false);
+    };
   }, []);
 
   const listbox = (
@@ -89,6 +95,10 @@ export function BaseListBox(props: BaseListBoxProps) {
       {children}
     </ListBox>
   );
+
+  if (!ready) {
+    return null;
+  }
 
   if (isStandalone) {
     return (
