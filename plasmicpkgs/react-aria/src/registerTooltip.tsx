@@ -40,7 +40,10 @@ const { variants, withObservedValues } =
 React Aria's TooltipTrigger only allows Aria Button component to act as a trigger.
 https://react-spectrum.adobe.com/react-aria/Tooltip.html#example
 
-To bypass that limitation, we use useButton,
+To bypass that limitation, we originally used the useTooltipTrigger custom hooks for advanced customization, so the trigger could become anything we want.
+One of the limitations with that was the placement prop - the useTooltipTrigger did not provide placement prop, and that caused issues with tooltip positioning.
+
+We have a better fix now - instead of using useTooltipTrigger, we use useButton,
 so that anything we add to the slot can be treated as an Aria Button.
 That means we can use the ready-made components provided by react-aria-components (like <TooltipTrigger> and <Tooltip>)
 and still be able to use any other component as a trigger.
