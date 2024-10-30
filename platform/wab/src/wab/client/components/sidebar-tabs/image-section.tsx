@@ -349,7 +349,7 @@ export const ImageSection = observer(function ImageSection(props: {
           <DefinedIndicator type={definedIndicator} label="Image" />
           <ContextMenuIndicator
             menu={imageMenu}
-            showDynamicValueButton={true}
+            showDynamicValueButton={!isIcon}
             onIndicatorClickDefault={() => {
               switchToDynamic();
             }}
