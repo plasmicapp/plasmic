@@ -29,10 +29,10 @@ import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRm
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
+import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicCmsSettingsPage.module.css"; // plasmic-import: a5viGetjMi/css
+import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
 
 createPlasmicElementProxy;
 
@@ -54,7 +54,6 @@ export const PlasmicCmsSettingsPage__ArgProps = new Array<ArgPropType>();
 export type PlasmicCmsSettingsPage__OverridesType = {
   root?: Flex__<"div">;
   left?: Flex__<"div">;
-  text?: Flex__<"div">;
   details?: Flex__<"div">;
   right?: Flex__<"div">;
   duplicateButton?: Flex__<typeof Button>;
@@ -77,7 +76,16 @@ function PlasmicCmsSettingsPage__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -131,12 +139,10 @@ function PlasmicCmsSettingsPage__RenderFunc(props: {
             className={classNames(projectcss.all, sty.left)}
           >
             <div
-              data-plasmic-name={"text"}
-              data-plasmic-override={overrides.text}
               className={classNames(
                 projectcss.all,
                 projectcss.__wab_text,
-                sty.text
+                sty.text___6B6St
               )}
             >
               {"Settings"}
@@ -168,7 +174,15 @@ function PlasmicCmsSettingsPage__RenderFunc(props: {
               size={"compact"}
               type={["bordered"]}
             >
-              {"Duplicate CMS Database"}
+              <div
+                className={classNames(
+                  projectcss.all,
+                  projectcss.__wab_text,
+                  sty.text__luZtw
+                )}
+              >
+                {"Duplicate CMS Database"}
+              </div>
             </Button>
             <Button
               data-plasmic-name={"saveButton"}
@@ -197,15 +211,13 @@ const PlasmicDescendants = {
   root: [
     "root",
     "left",
-    "text",
     "details",
     "right",
     "duplicateButton",
     "saveButton",
     "content",
   ],
-  left: ["left", "text", "details"],
-  text: ["text"],
+  left: ["left", "details"],
   details: ["details"],
   right: ["right", "duplicateButton", "saveButton"],
   duplicateButton: ["duplicateButton"],
@@ -218,7 +230,6 @@ type DescendantsType<T extends NodeNameType> =
 type NodeDefaultElementType = {
   root: "div";
   left: "div";
-  text: "div";
   details: "div";
   right: "div";
   duplicateButton: typeof Button;
@@ -287,7 +298,6 @@ export const PlasmicCmsSettingsPage = Object.assign(
   {
     // Helper components rendering sub-elements
     left: makeNodeComponent("left"),
-    text: makeNodeComponent("text"),
     details: makeNodeComponent("details"),
     right: makeNodeComponent("right"),
     duplicateButton: makeNodeComponent("duplicateButton"),

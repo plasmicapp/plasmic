@@ -35,7 +35,7 @@
   position: relative;
   flex-direction: column;
 }
-.text {
+.text___6B6St {
   position: relative;
   width: 100%;
   height: auto;
@@ -71,6 +71,9 @@
   position: relative;
   object-fit: cover;
   height: 1em;
+}
+.text__luZtw {
+  height: auto;
 }
 .svg___9N6F {
   display: flex;
