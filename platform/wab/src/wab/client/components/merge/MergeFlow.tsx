@@ -719,12 +719,12 @@ function MergeFlow_(
                 await mutate(apiKey("listBranchesForProject", projectId));
                 const display = friendlyMergeResultDisplays[realMerge.status];
                 if (display.success) {
+                  await setMergeModalContext(undefined);
                   if (toBranchId === currentBranch?.id) {
                     await hostFrameApi.handleBranchMerged();
                   } else {
                     await hostFrameApi.switchToBranch(toBranch);
                   }
-                  await setMergeModalContext(undefined);
                   notification.info(display);
                 } else {
                   notification.error({ ...display, duration: 0 });
