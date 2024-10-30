@@ -25,13 +25,13 @@ import * as React from "react";
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
 import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ClosesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import SearchsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
 import plasmic_plasmic_kit_q_4_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ClosesvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
-import SearchsvgIcon from "../q_4_icons/icons/PlasmicIcon__Searchsvg"; // plasmic-import: R5DLz11OA/icon
-import sty from "./PlasmicKeyValueRow.module.css"; // plasmic-import: udG9wNYCNL/css
 import projectcss from "./plasmic_plasmic_kit_data_queries.module.css"; // plasmic-import: 9csusiyEETC5n9fFKLeYNK/projectcss
+import sty from "./PlasmicKeyValueRow.module.css"; // plasmic-import: udG9wNYCNL/css
 
 export type PlasmicKeyValueRow__VariantMembers = {
   readOnlyKey: "readOnlyKey";
@@ -270,7 +270,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
   keyInput: typeof Textbox;

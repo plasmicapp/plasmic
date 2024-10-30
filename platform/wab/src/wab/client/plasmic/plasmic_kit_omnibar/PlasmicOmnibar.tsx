@@ -111,6 +111,7 @@ function PlasmicOmnibar__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.tabless,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -611,6 +612,7 @@ function PlasmicOmnibar__RenderFunc(props: {
               />
             </React.Fragment>
           ),
+
           value: args.children,
         })}
       </div>
@@ -631,6 +633,7 @@ const PlasmicDescendants = {
     "text",
     "content",
   ],
+
   header: [
     "header",
     "allTab",
@@ -641,6 +644,7 @@ const PlasmicDescendants = {
     "query",
     "text",
   ],
+
   allTab: ["allTab"],
   insertTab: ["insertTab"],
   focusTab: ["focusTab"],
@@ -671,6 +675,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicOmnibar__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

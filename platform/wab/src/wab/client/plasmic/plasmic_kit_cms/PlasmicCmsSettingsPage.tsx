@@ -105,6 +105,7 @@ function PlasmicCmsSettingsPage__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.noModels,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -242,6 +243,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCmsSettingsPage__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

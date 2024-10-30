@@ -18,9 +18,9 @@ import {
   DefaultActivityTabProps,
   PlasmicActivityTab,
 } from "@/wab/client/plasmic/plasmic_kit_end_user_management/PlasmicActivityTab";
-import Refresh2SvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Refresh2Svg";
-import { withoutNils } from "@/wab/shared/common";
+import Refresh2SvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Refresh2Svg";
 import { ApiAppAccessRegistry, ApiAppRole } from "@/wab/shared/ApiSchema";
+import { withoutNils } from "@/wab/shared/common";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, Table, Tooltip } from "antd";
 import moment from "moment";

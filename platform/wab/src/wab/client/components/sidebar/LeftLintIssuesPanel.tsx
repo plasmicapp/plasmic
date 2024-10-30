@@ -14,11 +14,11 @@ import {
   getLintIssueTypeName,
   renderLintIssue,
 } from "@/wab/client/linting/lint-issue-row";
+import EmojiHappysvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__EmojiHappySvg";
 import {
   DefaultLeftLintIssuesPanelProps,
   PlasmicLeftLintIssuesPanel,
 } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftLintIssuesPanel";
-import EmojiHappysvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__EmojiHappysvg";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { maybe, xGroupBy } from "@/wab/shared/common";
 import {

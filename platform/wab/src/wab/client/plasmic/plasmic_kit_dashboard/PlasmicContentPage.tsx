@@ -40,7 +40,7 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicContentPage.module.css"; // plasmic-import: A4UIAN_FGs/css
 
-import SettingsSliderssvgIcon from "../q_4_icons/icons/PlasmicIcon__SettingsSliderssvg"; // plasmic-import: Y1oJwH9hP/icon
+import SettingsSliderssvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SettingsSlidersSvg"; // plasmic-import: Y1oJwH9hP/icon
 
 createPlasmicElementProxy;
 
@@ -199,6 +199,7 @@ function PlasmicContentPage__RenderFunc(props: {
                           <MenuItem href={"#"}>{"Gamma"}</MenuItem>
                         </React.Fragment>
                       ),
+
                       value: args.modelList,
                     })}
                   </Stack__>
@@ -287,6 +288,7 @@ const PlasmicDescendants = {
     "cmsSection",
     "navTeamSection",
   ],
+
   defaultLayout: [
     "defaultLayout",
     "moreButton",
@@ -296,6 +298,7 @@ const PlasmicDescendants = {
     "cmsSection",
     "navTeamSection",
   ],
+
   moreButton: ["moreButton"],
   modelNav: ["modelNav", "editModelsButton", "svg"],
   editModelsButton: ["editModelsButton", "svg"],
@@ -322,6 +325,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicContentPage__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

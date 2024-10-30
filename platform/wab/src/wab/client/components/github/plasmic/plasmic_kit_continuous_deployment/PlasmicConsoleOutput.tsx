@@ -93,6 +93,7 @@ function PlasmicConsoleOutput__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.hidden,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -140,6 +141,7 @@ function PlasmicConsoleOutput__RenderFunc(props: {
                 }
               </div>
             ),
+
             value: args.output,
             className: classNames(sty.slotTargetOutput),
           })}
@@ -166,6 +168,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicConsoleOutput__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -111,6 +111,7 @@ function PlasmicHostProtocolSelect__OptionGroup__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isFirst,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -200,6 +201,7 @@ function PlasmicHostProtocolSelect__OptionGroup__RenderFunc(props: {
               />
             </React.Fragment>
           ),
+
           value: args.children,
         })}
       </div>
@@ -245,6 +247,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicHostProtocolSelect__OptionGroup__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

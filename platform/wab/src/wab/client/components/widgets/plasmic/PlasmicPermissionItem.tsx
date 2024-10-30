@@ -44,9 +44,9 @@ import plasmic_plasmic_kit_color_tokens_css from "../../../plasmic/plasmic_kit_q
 import sty from "./PlasmicPermissionItem.module.css"; // plasmic-import: GFrmKeyhlA/css
 
 import ResetIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Reset"; // plasmic-import: Dj3u-HuPv94sN/icon
-import ChevronDownsvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import PlussvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
-import Trash2SvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__Trash2Svg"; // plasmic-import: nS4_I75qv/icon
+import ChevronDownsvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import PlussvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import Trash2SvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__Trash2Svg"; // plasmic-import: nS4_I75qv/icon
 
 createPlasmicElementProxy;
 
@@ -132,6 +132,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => "viewer",
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -312,6 +313,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPermissionItem__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

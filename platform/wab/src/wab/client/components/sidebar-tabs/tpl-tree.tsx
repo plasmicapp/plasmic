@@ -41,7 +41,7 @@ import { renderCantAddMsg } from "@/wab/client/messages/parenting-msgs";
 import LockIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Lock";
 import UnlockIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Unlock";
 import VerticalDashIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__VerticalDash";
-import RepeatingsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Repeatingsvg";
+import RepeatingsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__RepeatingSvg";
 import { DragInsertState, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
@@ -129,7 +129,7 @@ import {
   OutlineNodeKey,
 } from "@/wab/client/components/sidebar-tabs/OutlineCtx";
 import BoltIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Bolt";
-import SpeechBubblesvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__SpeechBubblesvg";
+import SpeechBubblesvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__SpeechBubbleSvg";
 import {
   COMMENTS_LOWER,
   INTERACTIVE_CAP,

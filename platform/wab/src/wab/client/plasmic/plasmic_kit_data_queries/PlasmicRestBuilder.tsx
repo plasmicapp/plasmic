@@ -33,16 +33,16 @@ import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22N
 import HelpIcon from "../plasmic_kit/PlasmicIcon__Help"; // plasmic-import: -9-68IGPdLG-5/icon
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
 import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
+import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ClosesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import SearchsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
+import WarningTrianglesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
 import plasmic_plasmic_kit_q_4_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ClosesvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
-import SearchsvgIcon from "../q_4_icons/icons/PlasmicIcon__Searchsvg"; // plasmic-import: R5DLz11OA/icon
-import WarningTrianglesvgIcon from "../q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
 import ChevronBottomIcon from "./icons/PlasmicIcon__ChevronBottom"; // plasmic-import: 6YWYAmDA19k/icon
-import sty from "./PlasmicRestBuilder.module.css"; // plasmic-import: hkmuxJmyM9/css
 import projectcss from "./plasmic_plasmic_kit_data_queries.module.css"; // plasmic-import: 9csusiyEETC5n9fFKLeYNK/projectcss
+import sty from "./PlasmicRestBuilder.module.css"; // plasmic-import: hkmuxJmyM9/css
 
 export type PlasmicRestBuilder__VariantMembers = {
   builtInDataSource: "builtInDataSource";
@@ -667,7 +667,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
   title: "div";

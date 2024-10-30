@@ -45,8 +45,8 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import sty from "./PlasmicTeamBilling.module.css"; // plasmic-import: MtL6MGlBxoy/css
 
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -146,6 +146,7 @@ function PlasmicTeamBilling__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => "isChecked",
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -641,6 +642,7 @@ const PlasmicDescendants = {
     "changeCreditCardButton",
     "cancelSubscriptionButton",
   ],
+
   learnMore: ["learnMore"],
   freeTrial: ["freeTrial"],
   billingFrequencyToggle: ["billingFrequencyToggle"],
@@ -654,6 +656,7 @@ const PlasmicDescendants = {
     "changeCreditCardButton",
     "cancelSubscriptionButton",
   ],
+
   h4: ["h4"],
   billingEmail: ["billingEmail"],
   updateBillingEmailButton: ["updateBillingEmailButton"],
@@ -684,6 +687,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicTeamBilling__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

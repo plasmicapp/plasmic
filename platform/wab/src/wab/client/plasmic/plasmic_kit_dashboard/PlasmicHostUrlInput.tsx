@@ -42,8 +42,8 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import sty from "./PlasmicHostUrlInput.module.css"; // plasmic-import: XxbnrpTDqu/css
 
 import InfoIcon from "../plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -139,6 +139,7 @@ function PlasmicHostUrlInput__RenderFunc(props: {
           $props.showPlasmicHostValidations,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -500,6 +501,7 @@ const PlasmicDescendants = {
     "clearButton",
     "confirmButton",
   ],
+
   hostProtocolSelect: ["hostProtocolSelect"],
   urlInput: ["urlInput"],
   clearButton: ["clearButton"],
@@ -521,6 +523,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicHostUrlInput__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

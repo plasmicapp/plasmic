@@ -47,10 +47,10 @@ import CheckCircleIcon from "../plasmic_kit/PlasmicIcon__CheckCircle"; // plasmi
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
 import OpenIcon from "../plasmic_kit/PlasmicIcon__Open"; // plasmic-import: 7D0GDLdF72udM/icon
 import TriangleBottomIcon from "../plasmic_kit/PlasmicIcon__TriangleBottom"; // plasmic-import: A8NQUZ7Lg1OHO/icon
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
-import WarningTrianglesvgIcon from "../q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
+import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import PlussvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import WarningTrianglesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
 import IconIcon from "./icons/PlasmicIcon__Icon"; // plasmic-import: vvFDLf-9Nl/icon
 import image2DAmIiITwd from "./images/image2.svg"; // plasmic-import: dAMIiI_twd/picture
 
@@ -178,6 +178,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.result,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -1329,6 +1330,7 @@ const PlasmicDescendants = {
     "steps",
     "githubPagesDelayNotice",
   ],
+
   checkbox: ["checkbox"],
   img: ["img"],
   removeButton: ["removeButton"],
@@ -1374,6 +1376,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSubsectionPushDeploy__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

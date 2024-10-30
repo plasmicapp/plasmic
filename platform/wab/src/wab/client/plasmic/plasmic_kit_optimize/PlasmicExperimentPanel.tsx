@@ -13,41 +13,31 @@
 import * as React from "react";
 
 import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/host";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
 } from "@plasmicapp/react-web";
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_optimize.module.css"; // plasmic-import: gtUDvxG6cmBbSzqLikNzoP/projectcss
 import sty from "./PlasmicExperimentPanel.module.css"; // plasmic-import: HtHxjHknmj_/css
 
+import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import AwardsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__AwardSvg"; // plasmic-import: 4BNOoe_IX/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import EditsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EditSvg"; // plasmic-import: _Qa2gdunG/icon
 import Icon4Icon from "./icons/PlasmicIcon__Icon4"; // plasmic-import: AKxTHEA6Rx/icon
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import EditsvgIcon from "../q_4_icons/icons/PlasmicIcon__Editsvg"; // plasmic-import: _Qa2gdunG/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import SearchsvgIcon from "../q_4_icons/icons/PlasmicIcon__Searchsvg"; // plasmic-import: R5DLz11OA/icon
-import ClosesvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
-import AwardsvgIcon from "../q_4_icons/icons/PlasmicIcon__Awardsvg"; // plasmic-import: 4BNOoe_IX/icon
 
 export type PlasmicExperimentPanel__VariantMembers = {
   isBase: "isBase";
@@ -755,7 +745,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
   baseVersionIcon: "svg";

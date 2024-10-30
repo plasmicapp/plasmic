@@ -163,6 +163,7 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.noLayout,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -460,6 +461,7 @@ const PlasmicDescendants = {
     "themeLayoutPanel",
     "themeInitialStylesPanel",
   ],
+
   themeHeader: ["themeHeader", "textWithInfo", "freeBox", "themeSelector"],
   textWithInfo: ["textWithInfo"],
   freeBox: ["freeBox", "themeSelector"],
@@ -489,6 +491,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftThemesPanel__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

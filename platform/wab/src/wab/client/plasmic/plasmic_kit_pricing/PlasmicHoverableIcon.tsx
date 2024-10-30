@@ -15,63 +15,33 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
-  PlasmicIcon as PlasmicIcon__,
-  PlasmicImg as PlasmicImg__,
-  PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
-  generateOnMutateForSpec,
-  generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
-  generateStateValueProp,
-  get as $stateGet,
   hasVariant,
-  initializeCodeComponentStates,
-  initializePlasmicStates,
-  makeFragment,
-  omit,
-  pick,
   renderPlasmicSlot,
-  set as $stateSet,
   useCurrentUser,
   useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName,
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions,
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import { PricingTooltip } from "../../components/pricing/Tooltip"; // plasmic-import: eAE4YEj_YxMC/codeComponent
-import Popout from "../../components/pricing/Popout"; // plasmic-import: XvpbI4g-IJWK/component
 import ElevatedCard from "../../components/pricing/ElevatedCard"; // plasmic-import: OOKbAz_EJ7Rm/component
+import Popout from "../../components/pricing/Popout"; // plasmic-import: XvpbI4g-IJWK/component
+import { PricingTooltip } from "../../components/pricing/Tooltip"; // plasmic-import: eAE4YEj_YxMC/codeComponent
 
-import {
-  EnvironmentValue,
-  useEnvironment,
-} from "./PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+import { useEnvironment } from "./PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
 import sty from "./PlasmicHoverableIcon.module.css"; // plasmic-import: 1T4UNMYLSC7u/css
 
-import InformationsvgIcon from "../q_4_icons/icons/PlasmicIcon__Informationsvg"; // plasmic-import: hqBNVBJWB/icon
+import InformationsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__InformationSvg"; // plasmic-import: hqBNVBJWB/icon
 
 createPlasmicElementProxy;
 
@@ -162,6 +132,7 @@ function PlasmicHoverableIcon__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.white,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -279,6 +250,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicHoverableIcon__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

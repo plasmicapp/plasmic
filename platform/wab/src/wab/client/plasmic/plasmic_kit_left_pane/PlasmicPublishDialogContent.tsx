@@ -39,7 +39,7 @@ import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../
 import sty from "./PlasmicPublishDialogContent.module.css"; // plasmic-import: V25hk8i--ck/css
 
 import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -117,6 +117,7 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.state,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -462,6 +463,7 @@ const PlasmicDescendants = {
     "img",
     "publishButton",
   ],
+
   closeButton: ["closeButton"],
   hint: ["hint"],
   title: ["title"],
@@ -489,6 +491,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPublishDialogContent__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

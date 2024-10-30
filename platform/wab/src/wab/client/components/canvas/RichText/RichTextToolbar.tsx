@@ -11,21 +11,21 @@ import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPic
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import Select from "@/wab/client/components/widgets/Select";
 import StrikeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Strike";
+import BoldsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__BoldSvg";
+import CodesvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CodeSvg";
+import HeadingsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__HeadingSvg";
+import ItalicsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ItalicSvg";
+import LinksvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__LinkSvg";
+import OrderedListsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__OrderedListSvg";
 import SubscriptIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Subscript";
 import SuperscriptIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Superscript";
+import TextsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__TextSvg";
+import UnderlinesvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__UnderlineSvg";
+import UnorderedListsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__UnorderedListSvg";
 import {
   DefaultRichTextToolbarProps,
   PlasmicRichTextToolbar,
 } from "@/wab/client/plasmic/plasmic_kit_rich_text_toolbar/PlasmicRichTextToolbar";
-import BoldsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Boldsvg";
-import CodesvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Codesvg";
-import HeadingsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Headingsvg";
-import ItalicsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Italicsvg";
-import LinksvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Linksvg";
-import OrderedListsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__OrderedListsvg";
-import TextsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Textsvg";
-import UnderlinesvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Underlinesvg";
-import UnorderedListsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__UnorderedListsvg";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { EditingTextContext } from "@/wab/client/studio-ctx/view-ctx";
 import { fontWeightOptions } from "@/wab/client/typography-utils";

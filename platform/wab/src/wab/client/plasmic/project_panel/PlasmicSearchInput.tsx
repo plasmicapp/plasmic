@@ -34,7 +34,7 @@ import projectcss from "./plasmic_project_panel.module.css"; // plasmic-import: 
 import sty from "./PlasmicSearchInput.module.css"; // plasmic-import: CHoUJxFMpo/css
 
 import SearchIcon from "../plasmic_kit/PlasmicIcon__Search"; // plasmic-import: sjONHoK61vpSz/icon
-import CloseCircleSvgIcon from "../q_4_icons/icons/PlasmicIcon__CloseCirclesvg"; // plasmic-import: fJk_6BdDE/icon
+import CloseCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseCircleSvg"; // plasmic-import: fJk_6BdDE/icon
 
 createPlasmicElementProxy;
 
@@ -116,6 +116,7 @@ function PlasmicSearchInput__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.withShortcut,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -269,6 +270,7 @@ const PlasmicDescendants = {
     "clearFieldIcon",
     "shortcut",
   ],
+
   svg: ["svg"],
   searchInput: ["searchInput"],
   freeBox: ["freeBox", "clearFieldIcon", "shortcut"],
@@ -292,6 +294,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSearchInput__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

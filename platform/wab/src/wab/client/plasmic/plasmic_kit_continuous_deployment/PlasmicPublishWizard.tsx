@@ -35,9 +35,9 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import sty from "./PlasmicPublishWizard.module.css"; // plasmic-import: JhFt3V1Imn/css
 
 import OpenIcon from "../plasmic_kit/PlasmicIcon__Open"; // plasmic-import: 7D0GDLdF72udM/icon
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ClosesvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
+import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ClosesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
 import image3SqODPlYut from "./images/image3.svg"; // plasmic-import: sq-oDPlYUT/picture
 
 createPlasmicElementProxy;
@@ -263,6 +263,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPublishWizard__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -25,18 +25,11 @@ import {
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName,
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions,
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import ExpandButton from "../../components/widgets/ExpandButton"; // plasmic-import: JJhv0MV9DH/component
+import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -45,8 +38,8 @@ import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-
 import sty from "./PlasmicListSectionHeader.module.css"; // plasmic-import: wNvxk7eOak/css
 
 import VariantGroupIcon from "../plasmic_kit/PlasmicIcon__VariantGroup"; // plasmic-import: pyS6pK4Spx-QF/icon
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import PlusCircleSvgIcon from "../q_4_icons/icons/PlasmicIcon__PlusCirclesvg"; // plasmic-import: tPPI666-2/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import PlusCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusCircleSvg"; // plasmic-import: tPPI666-2/icon
 
 createPlasmicElementProxy;
 
@@ -146,6 +139,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.showIcon,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -290,6 +284,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
                 />
               </IconButton>
             ),
+
             value: args.actions,
           })}
         </div>
@@ -352,6 +347,7 @@ const PlasmicDescendants = {
     "collapseIndicator",
     "expandButton",
   ],
+
   iconContainer: ["iconContainer"],
   titleContainer: ["titleContainer"],
   actionsContainer: ["actionsContainer"],
@@ -375,6 +371,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicListSectionHeader__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -99,6 +99,7 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.loading,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -190,6 +191,7 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
                 />
               </React.Fragment>
             ),
+
             value: args.events,
           })}
         </Stack__>
@@ -233,6 +235,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicWebhooksHistory__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

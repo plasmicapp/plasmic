@@ -48,11 +48,11 @@ import sty from "./PlasmicShareDialogContent.module.css"; // plasmic-import: cWs
 
 import LinkIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Link"; // plasmic-import: BQBWbw0fg66Lw/icon
 import ResetIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Reset"; // plasmic-import: Dj3u-HuPv94sN/icon
-import ArrowRightsvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ClosesvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
-import PlussvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
-import SearchsvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__Searchsvg"; // plasmic-import: R5DLz11OA/icon
+import ArrowRightsvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownsvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ClosesvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import PlussvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import SearchsvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
 
 createPlasmicElementProxy;
 
@@ -67,6 +67,7 @@ export type PlasmicShareDialogContent__VariantsArgs = {
   state?: SingleChoiceArg<
     "submitting" | "invalidEmail" | "unlogged" | "noPermToShare"
   >;
+
   shareByLinkAllowed?: SingleChoiceArg<"yes" | "no">;
   resourceType?: SingleChoiceArg<"project" | "workspace" | "team">;
   permsCascade?: MultiChoiceArg<"showWorkspace" | "showTeam">;
@@ -111,6 +112,7 @@ export interface DefaultShareDialogContentProps {
   state?: SingleChoiceArg<
     "submitting" | "invalidEmail" | "unlogged" | "noPermToShare"
   >;
+
   shareByLinkAllowed?: SingleChoiceArg<"yes" | "no">;
   resourceType?: SingleChoiceArg<"project" | "workspace" | "team">;
   permsCascade?: MultiChoiceArg<"showWorkspace" | "showTeam">;
@@ -213,6 +215,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.noShareByLink,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -1410,6 +1413,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   />
                 </React.Fragment>
               ),
+
               value: args.existingPermItems,
             })}
           </Stack__>
@@ -1435,6 +1439,7 @@ const PlasmicDescendants = {
     "loginLink",
     "permsContainer",
   ],
+
   shareByLinkSwitch: ["shareByLinkSwitch"],
   copyLink: ["copyLink"],
   shareByLinkPermDropdown: ["shareByLinkPermDropdown"],
@@ -1449,6 +1454,7 @@ const PlasmicDescendants = {
     "loginLink",
     "permsContainer",
   ],
+
   newUserEmail: ["newUserEmail"],
   newUserRoleDropdown: ["newUserRoleDropdown"],
   sendInviteButton: ["sendInviteButton"],
@@ -1480,6 +1486,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicShareDialogContent__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

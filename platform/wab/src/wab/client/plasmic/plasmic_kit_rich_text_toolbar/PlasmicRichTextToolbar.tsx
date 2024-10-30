@@ -38,13 +38,13 @@ import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_syst
 import projectcss from "./plasmic_plasmic_kit_rich_text_toolbar.module.css"; // plasmic-import: uLddf5fC1aQbF7tmV1WQ1a/projectcss
 import sty from "./PlasmicRichTextToolbar.module.css"; // plasmic-import: GzEy-XDJM8/css
 
-import BoldSvgIcon from "../q_4_icons/icons/PlasmicIcon__Boldsvg"; // plasmic-import: OiX2-qUyR/icon
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ItalicSvgIcon from "../q_4_icons/icons/PlasmicIcon__Italicsvg"; // plasmic-import: taSQD6Nog/icon
-import LinkSvgIcon from "../q_4_icons/icons/PlasmicIcon__Linksvg"; // plasmic-import: cu6SQ9NY6/icon
-import PlusSvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
-import TextSvgIcon from "../q_4_icons/icons/PlasmicIcon__Textsvg"; // plasmic-import: e3P4cMPJR/icon
-import UnderlineSvgIcon from "../q_4_icons/icons/PlasmicIcon__Underlinesvg"; // plasmic-import: LSpOu6_w3/icon
+import BoldSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BoldSvg"; // plasmic-import: OiX2-qUyR/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ItalicSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ItalicSvg"; // plasmic-import: taSQD6Nog/icon
+import LinkSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__LinkSvg"; // plasmic-import: cu6SQ9NY6/icon
+import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import TextSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__TextSvg"; // plasmic-import: e3P4cMPJR/icon
+import UnderlineSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UnderlineSvg"; // plasmic-import: LSpOu6_w3/icon
 
 createPlasmicElementProxy;
 
@@ -123,6 +123,7 @@ function PlasmicRichTextToolbar__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideBlock,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -338,6 +339,7 @@ const PlasmicDescendants = {
     "inlineControls",
     "inline",
   ],
+
   blockControls: ["blockControls", "block", "freeBox", "text"],
   block: ["block", "freeBox", "text"],
   freeBox: ["freeBox", "text"],
@@ -350,6 +352,7 @@ const PlasmicDescendants = {
     "fontStyle",
     "textDecoration",
   ],
+
   color: ["color", "currentColor"],
   currentColor: ["currentColor"],
   fontWeight: ["fontWeight"],
@@ -382,6 +385,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicRichTextToolbar__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

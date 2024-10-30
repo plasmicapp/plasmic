@@ -61,6 +61,7 @@ export interface DefaultSpinnerProps {
   customDomain?: SingleChoiceArg<
     "preliminaryError" | "added" | "invalid" | "loading"
   >;
+
   className?: string;
 }
 
@@ -94,6 +95,7 @@ function PlasmicSpinner__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.customDomain,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -146,6 +148,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSpinner__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -48,7 +48,7 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import sty from "./PlasmicWorkspaceSection.module.css"; // plasmic-import: 5cdjGaqBQ4/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -68,6 +68,7 @@ export type PlasmicWorkspaceSection__VariantsArgs = {
   canUseCmsAndDataSources?: SingleChoiceArg<
     "projects" | "dataSources" | "empty"
   >;
+
   personalWorkspace?: SingleBooleanChoiceArg<"personalWorkspace">;
 };
 type VariantPropType = keyof PlasmicWorkspaceSection__VariantsArgs;
@@ -126,6 +127,7 @@ export interface DefaultWorkspaceSectionProps {
   canUseCmsAndDataSources?: SingleChoiceArg<
     "projects" | "dataSources" | "empty"
   >;
+
   personalWorkspace?: SingleBooleanChoiceArg<"personalWorkspace">;
   className?: string;
 }
@@ -192,6 +194,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
           $props.personalWorkspace,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -693,6 +696,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                   {"This workspace has no projects."}
                 </div>
               ),
+
               value: args.noProjectsText,
               className: classNames(sty.slotTargetNoProjectsText, {
                 [sty.slotTargetNoProjectsTextnoProjects]: hasVariant(
@@ -785,6 +789,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                     />
                   </React.Fragment>
                 ),
+
                 value: args.children,
               })
             : null}
@@ -960,6 +965,7 @@ const PlasmicDescendants = {
     "cmsSection",
     "newCmsButton",
   ],
+
   header: [
     "header",
     "editableName",
@@ -969,6 +975,7 @@ const PlasmicDescendants = {
     "projectsFilter",
     "moreButton",
   ],
+
   editableName: ["editableName"],
   actions: [
     "actions",
@@ -977,6 +984,7 @@ const PlasmicDescendants = {
     "projectsFilter",
     "moreButton",
   ],
+
   newProjectButton: ["newProjectButton"],
   shareButton: ["shareButton"],
   projectsFilter: ["projectsFilter"],
@@ -990,6 +998,7 @@ const PlasmicDescendants = {
     "databases",
     "dataSources",
   ],
+
   projectsTab: ["projectsTab"],
   dataSourcesTab: ["dataSourcesTab"],
   h3: ["h3"],
@@ -1027,6 +1036,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicWorkspaceSection__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -38,8 +38,8 @@ import plasmic_plasmic_kit_color_tokens_css from "../../../../plasmic/plasmic_ki
 import projectcss from "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicWebhookEvent.module.css"; // plasmic-import: MtBpr4iNob/css
 
-import ChevronDownsvgIcon from "../../../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ChevronLeftsvgIcon from "../../../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronLeftsvg"; // plasmic-import: 0-_N6JM-u/icon
+import ChevronDownsvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronLeftsvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronLeftSvg"; // plasmic-import: 0-_N6JM-u/icon
 
 createPlasmicElementProxy;
 
@@ -126,6 +126,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.expanded,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -367,6 +368,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicWebhookEvent__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

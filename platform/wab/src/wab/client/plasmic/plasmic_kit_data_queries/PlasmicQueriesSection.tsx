@@ -24,8 +24,8 @@ import QueryRow from "../../components/QueryRow"; // plasmic-import: dtgx0NGfys/
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
 import plasmic_plasmic_kit_q_4_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import sty from "./PlasmicQueriesSection.module.css"; // plasmic-import: SsRHEyfw_M/css
 import projectcss from "./plasmic_plasmic_kit_data_queries.module.css"; // plasmic-import: 9csusiyEETC5n9fFKLeYNK/projectcss
+import sty from "./PlasmicQueriesSection.module.css"; // plasmic-import: SsRHEyfw_M/css
 
 export type PlasmicQueriesSection__VariantMembers = {};
 
@@ -109,7 +109,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
   queriesList: typeof ListBuilder;

@@ -50,9 +50,9 @@ import sty from "./PlasmicLeftPane.module.css"; // plasmic-import: avrERxAp81S/c
 
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
 import TreeIcon from "../plasmic_kit/PlasmicIcon__Tree"; // plasmic-import: 4KZjuPY_m0VTb/icon
-import ComponentsSvgIcon from "../q_4_icons/icons/PlasmicIcon__Componentssvg"; // plasmic-import: coPzxnFyi/icon
-import DotsHorizontalCircleSvgIcon from "../q_4_icons/icons/PlasmicIcon__DotsHorizontalCirclesvg"; // plasmic-import: xdn8wiJBv/icon
-import WarningTriangleSvgIcon from "../q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
+import ComponentsSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentsSvg"; // plasmic-import: coPzxnFyi/icon
+import DotsHorizontalCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DotsHorizontalCircleSvg"; // plasmic-import: xdn8wiJBv/icon
+import WarningTriangleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
 
 createPlasmicElementProxy;
 
@@ -145,6 +145,7 @@ export interface DefaultLeftPaneProps {
     | "copilot"
     | "lint"
   >;
+
   className?: string;
 }
 
@@ -187,6 +188,7 @@ function PlasmicLeftPane__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -676,6 +678,7 @@ const PlasmicDescendants = {
     "leftSplitsPanel",
     "leftLintIssuesPanel",
   ],
+
   leftTabStrip: [
     "leftTabStrip",
     "lint",
@@ -684,6 +687,7 @@ const PlasmicDescendants = {
     "settingsGroup",
     "more",
   ],
+
   lint: ["lint"],
   outline: ["outline"],
   assets: ["assets"],
@@ -705,6 +709,7 @@ const PlasmicDescendants = {
     "leftSplitsPanel",
     "leftLintIssuesPanel",
   ],
+
   paneContent: [
     "paneContent",
     "leftGeneralTokensPanel",
@@ -720,6 +725,7 @@ const PlasmicDescendants = {
     "leftSplitsPanel",
     "leftLintIssuesPanel",
   ],
+
   leftGeneralTokensPanel: ["leftGeneralTokensPanel"],
   leftMixinsPanel: ["leftMixinsPanel"],
   leftImagesPanel: ["leftImagesPanel"],
@@ -765,6 +771,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftPane__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

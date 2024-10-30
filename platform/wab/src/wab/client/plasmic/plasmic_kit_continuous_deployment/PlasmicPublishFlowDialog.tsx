@@ -45,9 +45,9 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import sty from "./PlasmicPublishFlowDialog.module.css"; // plasmic-import: aXXfRDkhD-/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ClosesvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
+import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ClosesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
 
 createPlasmicElementProxy;
 
@@ -145,6 +145,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.view,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -303,6 +304,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                     {"0.0.1"}
                   </div>
                 ),
+
                 value: args.currentVersionNumber,
                 className: classNames(sty.slotTargetCurrentVersionNumber),
               })}
@@ -1196,6 +1198,7 @@ const PlasmicDescendants = {
     "cancelButton",
     "statusButton",
   ],
+
   dismissButton: ["dismissButton"],
   statusBar: ["statusBar", "destinationSection", "destination"],
   destinationSection: ["destinationSection", "destination"],
@@ -1216,6 +1219,7 @@ const PlasmicDescendants = {
     "addWebhooksButton",
     "webhooksDescription",
   ],
+
   addWebsitePanel: ["addWebsitePanel", "addWebsiteButton"],
   addWebsiteButton: ["addWebsiteButton"],
   addGithubPanel: ["addGithubPanel", "addGithubButton"],
@@ -1225,6 +1229,7 @@ const PlasmicDescendants = {
     "addWebhooksButton",
     "webhooksDescription",
   ],
+
   addWebhooksButton: ["addWebhooksButton"],
   webhooksDescription: ["webhooksDescription"],
   container: ["container"],
@@ -1270,6 +1275,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPublishFlowDialog__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -38,7 +38,7 @@ import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import
 
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
 import PageIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__Page"; // plasmic-import: p8KOsO82kk/icon
-import BoxSvgIcon from "../q_4_icons/icons/PlasmicIcon__Boxsvg"; // plasmic-import: 0qLNxfRGB/icon
+import BoxSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BoxSvg"; // plasmic-import: 0qLNxfRGB/icon
 
 createPlasmicElementProxy;
 
@@ -109,6 +109,7 @@ function PlasmicCmsLeftTabs__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.activeTab,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -211,6 +212,7 @@ const PlasmicDescendants = {
     "listSectionSeparator",
     "settingsButton",
   ],
+
   contentButton: ["contentButton"],
   schemaButton: ["schemaButton"],
   listSectionSeparator: ["listSectionSeparator"],
@@ -232,6 +234,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCmsLeftTabs__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

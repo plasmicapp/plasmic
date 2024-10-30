@@ -17,20 +17,12 @@ import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/react-web/lib/host";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
 } from "@plasmicapp/react-web";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -111,6 +103,7 @@ function PlasmicMenuIndicator__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isRecording,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = p.useDollarState(stateSpecs, {
@@ -191,6 +184,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicMenuIndicator__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

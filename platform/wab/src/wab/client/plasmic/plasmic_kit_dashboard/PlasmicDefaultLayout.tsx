@@ -50,13 +50,13 @@ import HelpIcon from "../plasmic_kit/PlasmicIcon__Help"; // plasmic-import: -9-6
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
 import TriangleBottomIcon from "../plasmic_kit/PlasmicIcon__TriangleBottom"; // plasmic-import: A8NQUZ7Lg1OHO/icon
 import MarkFullColorIcon from "../plasmic_kit_design_system/PlasmicIcon__MarkFullColor"; // plasmic-import: l_n_OBLJg/icon
-import BooksvgIcon from "../q_4_icons/icons/PlasmicIcon__Booksvg"; // plasmic-import: hxRmy8Nhq/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import GolfsvgIcon from "../q_4_icons/icons/PlasmicIcon__Golfsvg"; // plasmic-import: U5dSOeF1P/icon
-import RocketsvgIcon from "../q_4_icons/icons/PlasmicIcon__Rocketsvg"; // plasmic-import: uRQfbBjV9/icon
-import SparklessvgIcon from "../q_4_icons/icons/PlasmicIcon__Sparklessvg"; // plasmic-import: 9Z0Cu-c5J/icon
-import UnorderedListsvgIcon from "../q_4_icons/icons/PlasmicIcon__UnorderedListsvg"; // plasmic-import: suHkgkKOX/icon
-import UsersPlussvgIcon from "../q_4_icons/icons/PlasmicIcon__UsersPlussvg"; // plasmic-import: OqMJdWElK/icon
+import BooksvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BookSvg"; // plasmic-import: hxRmy8Nhq/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import GolfsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GolfSvg"; // plasmic-import: U5dSOeF1P/icon
+import RocketsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__RocketSvg"; // plasmic-import: uRQfbBjV9/icon
+import SparklessvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SparklesSvg"; // plasmic-import: 9Z0Cu-c5J/icon
+import UnorderedListsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UnorderedListSvg"; // plasmic-import: suHkgkKOX/icon
+import UsersPlussvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UsersPlusSvg"; // plasmic-import: OqMJdWElK/icon
 
 createPlasmicElementProxy;
 
@@ -188,6 +188,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
           $props.newProjectButtonAsDropdown,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -747,6 +748,7 @@ const PlasmicDescendants = {
     "userButton",
     "main",
   ],
+
   header: [
     "header",
     "headerWrapper",
@@ -758,6 +760,7 @@ const PlasmicDescendants = {
     "upgradeButton",
     "freeTrial",
   ],
+
   headerWrapper: [
     "headerWrapper",
     "headerLogoLink",
@@ -768,6 +771,7 @@ const PlasmicDescendants = {
     "upgradeButton",
     "freeTrial",
   ],
+
   headerLogoLink: ["headerLogoLink", "headerLogo"],
   headerLogo: ["headerLogo"],
   headerActions: [
@@ -777,6 +781,7 @@ const PlasmicDescendants = {
     "upgradeButton",
     "freeTrial",
   ],
+
   newProjectButton: ["newProjectButton", "text"],
   text: ["text"],
   upgradeButton: ["upgradeButton"],
@@ -795,6 +800,7 @@ const PlasmicDescendants = {
     "userButton",
     "main",
   ],
+
   sidebar: [
     "sidebar",
     "nav",
@@ -807,6 +813,7 @@ const PlasmicDescendants = {
     "helpButton",
     "userButton",
   ],
+
   nav: ["nav", "allProjectsButton", "myProjectsButton", "startersButton"],
   allProjectsButton: ["allProjectsButton"],
   myProjectsButton: ["myProjectsButton"],
@@ -818,6 +825,7 @@ const PlasmicDescendants = {
     "helpButton",
     "userButton",
   ],
+
   newTeamButton: ["newTeamButton"],
   documentationButton: ["documentationButton"],
   helpButton: ["helpButton"],
@@ -857,6 +865,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDefaultLayout__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

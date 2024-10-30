@@ -39,8 +39,8 @@ import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-
 import sty from "./PlasmicCheckbox.module.css"; // plasmic-import: W-rO7NZqPjZ/css
 
 import CheckTrueIcon from "../plasmic_kit/PlasmicIcon__CheckTrue"; // plasmic-import: ckLkdbD6DMjvM/icon
-import SquareMinusSvgIcon from "../q_4_icons/icons/PlasmicIcon__SquareMinussvg"; // plasmic-import: 6a2Ojnos7/icon
-import SquareSvgIcon from "../q_4_icons/icons/PlasmicIcon__Squaresvg"; // plasmic-import: zkj00JjZV/icon
+import SquareMinusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SquareMinusSvg"; // plasmic-import: 6a2Ojnos7/icon
+import SquareSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SquareSvg"; // plasmic-import: zkj00JjZV/icon
 
 createPlasmicElementProxy;
 
@@ -174,6 +174,7 @@ function PlasmicCheckbox__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.color,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -483,6 +484,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCheckbox__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

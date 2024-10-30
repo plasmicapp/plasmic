@@ -34,7 +34,7 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicChip.module.css"; // plasmic-import: jW885tExwE/css
 
-import CloseSvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
+import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
 
 createPlasmicElementProxy;
 
@@ -115,6 +115,7 @@ function PlasmicChip__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.size,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -163,6 +164,7 @@ function PlasmicChip__RenderFunc(props: {
             {"Chip"}
           </div>
         ),
+
         value: args.children,
         className: classNames(sty.slotTargetChildren, {
           [sty.slotTargetChildrendeletable]: hasVariant(
@@ -212,6 +214,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicChip__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

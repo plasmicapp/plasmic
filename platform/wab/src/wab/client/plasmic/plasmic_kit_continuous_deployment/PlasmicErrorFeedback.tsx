@@ -34,7 +34,7 @@ import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_syst
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicErrorFeedback.module.css"; // plasmic-import: 6ztKJ9-EG9Y/css
 
-import WarningTrianglesvgIcon from "../q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
+import WarningTrianglesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
 
 createPlasmicElementProxy;
 
@@ -98,6 +98,7 @@ function PlasmicErrorFeedback__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.warning,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -148,6 +149,7 @@ function PlasmicErrorFeedback__RenderFunc(props: {
             {"Requires repo to be public."}
           </div>
         ),
+
         value: args.children,
         className: classNames(sty.slotTargetChildren, {
           [sty.slotTargetChildrenwarning]: hasVariant(
@@ -178,6 +180,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicErrorFeedback__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

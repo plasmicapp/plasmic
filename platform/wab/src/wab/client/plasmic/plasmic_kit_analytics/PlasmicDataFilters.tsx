@@ -12,24 +12,14 @@
 // Component: Dza4MqGNx4p
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/host";
+import * as p from "@plasmicapp/react-web";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
 } from "@plasmicapp/react-web";
 import LabeledSelect from "../../components/analytics/LabeledSelect"; // plasmic-import: bQ74QBVIbHI/component
 import PeriodPicker from "../../components/analytics/PeriodPicker"; // plasmic-import: Jt0CZzY1xy/component
@@ -37,13 +27,10 @@ import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRm
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_analytics.module.css"; // plasmic-import: cQnF1HuwK97HkvkrC6uRk2/projectcss
 import sty from "./PlasmicDataFilters.module.css"; // plasmic-import: Dza4MqGNx4p/css
-
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 export type PlasmicDataFilters__VariantMembers = {};
 
@@ -193,7 +180,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
   timeRangeFilter: typeof LabeledSelect;

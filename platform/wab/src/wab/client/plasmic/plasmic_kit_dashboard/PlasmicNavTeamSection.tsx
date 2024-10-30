@@ -106,6 +106,7 @@ function PlasmicNavTeamSection__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.selected,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -173,6 +174,7 @@ function PlasmicNavTeamSection__RenderFunc(props: {
               />
             </React.Fragment>
           ),
+
           value: args.children,
         })}
       </div>
@@ -199,6 +201,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicNavTeamSection__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

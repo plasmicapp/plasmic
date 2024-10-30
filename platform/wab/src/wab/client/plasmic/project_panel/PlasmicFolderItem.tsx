@@ -40,13 +40,13 @@ import sty from "./PlasmicFolderItem.module.css"; // plasmic-import: iWeSjEMdI3/
 
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
 import FolderIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__Folder"; // plasmic-import: hRo7v6cqW6/icon
-import ComponentSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Componentsvg"; // plasmic-import: vJVrKlrDD/icon
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ChevronRightSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronRightsvg"; // plasmic-import: HBGx-zeiX/icon
-import File2SvgIcon from "../q_4_icons/icons/PlasmicIcon__File2Svg"; // plasmic-import: zldfLXBdc/icon
-import FolderSvgIcon from "../q_4_icons/icons/PlasmicIcon__Foldersvg"; // plasmic-import: zvkxMkUIX/icon
-import GitBranchSvgIcon from "../q_4_icons/icons/PlasmicIcon__GitBranchsvg"; // plasmic-import: 4OBJfCUZH/icon
-import GridMasonrySvgIcon from "../q_4_icons/icons/PlasmicIcon__GridMasonrysvg"; // plasmic-import: f5dXpZvP5/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronRightSvg"; // plasmic-import: HBGx-zeiX/icon
+import ComponentSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentSvg"; // plasmic-import: vJVrKlrDD/icon
+import File2SvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__File2Svg"; // plasmic-import: zldfLXBdc/icon
+import FolderSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__FolderSvg"; // plasmic-import: zvkxMkUIX/icon
+import GitBranchSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GitBranchSvg"; // plasmic-import: 4OBJfCUZH/icon
+import GridMasonrySvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GridMasonrySvg"; // plasmic-import: f5dXpZvP5/icon
 
 createPlasmicElementProxy;
 
@@ -65,6 +65,7 @@ export type PlasmicFolderItem__VariantsArgs = {
   type?: SingleChoiceArg<
     "page" | "component" | "arena" | "folderOpen" | "folderClosed" | "branch"
   >;
+
   selected?: SingleBooleanChoiceArg<"selected">;
   nested?: SingleBooleanChoiceArg<"nested">;
 };
@@ -92,6 +93,7 @@ export interface DefaultFolderItemProps {
   type?: SingleChoiceArg<
     "page" | "component" | "arena" | "folderOpen" | "folderClosed" | "branch"
   >;
+
   selected?: SingleBooleanChoiceArg<"selected">;
   nested?: SingleBooleanChoiceArg<"nested">;
   className?: string;
@@ -148,6 +150,7 @@ function PlasmicFolderItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.nested,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -348,6 +351,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicFolderItem__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -41,9 +41,9 @@ import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_syst
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicSubsectionSaveVersion.module.css"; // plasmic-import: 74wUdEnJhwr/css
 
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
+import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import PlussvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 import imageXpXXn3D3XS from "./images/image.svg"; // plasmic-import: XpXXn3d3xS/picture
 
 createPlasmicElementProxy;
@@ -59,6 +59,7 @@ export type PlasmicSubsectionSaveVersion__VariantsArgs = {
   changesState?: SingleChoiceArg<
     "loading" | "none" | "patch" | "minor" | "major" | "first"
   >;
+
   view?: SingleChoiceArg<"setup" | "status">;
   failed?: SingleBooleanChoiceArg<"failed">;
 };
@@ -98,6 +99,7 @@ export interface DefaultSubsectionSaveVersionProps {
   changesState?: SingleChoiceArg<
     "loading" | "none" | "patch" | "minor" | "major" | "first"
   >;
+
   view?: SingleChoiceArg<"setup" | "status">;
   failed?: SingleBooleanChoiceArg<"failed">;
   className?: string;
@@ -151,6 +153,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.failed,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -820,6 +823,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 </React.Fragment>
               </div>
             ),
+
             value: args.feedback,
             className: classNames(sty.slotTargetFeedback, {
               [sty.slotTargetFeedbackfailed]: hasVariant(
@@ -852,6 +856,7 @@ const PlasmicDescendants = {
     "tagsStack",
     "tagsSelector",
   ],
+
   checkbox: ["checkbox"],
   img: ["img"],
   learnMoreLink: ["learnMoreLink"],
@@ -881,6 +886,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSubsectionSaveVersion__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

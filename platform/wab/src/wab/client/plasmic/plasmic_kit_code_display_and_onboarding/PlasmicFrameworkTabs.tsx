@@ -12,24 +12,14 @@
 // Component: tf_fQvs5kI8
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/host";
+import * as p from "@plasmicapp/react-web";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
 } from "@plasmicapp/react-web";
 import FrameworkTab from "../../components/studio/code-quickstart/FrameworkTab"; // plasmic-import: aSLlLoswhi/component
 
@@ -40,19 +30,19 @@ import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_syst
 import projectcss from "./plasmic_plasmic_kit_code_display_and_onboarding.module.css"; // plasmic-import: pTmuho7nuNtDcvZAf2kJgx/projectcss
 import sty from "./PlasmicFrameworkTabs.module.css"; // plasmic-import: tf_fQvs5kI8/css
 
-import ReactIcon from "./icons/PlasmicIcon__React"; // plasmic-import: iHJMrwqTt/icon
 import Icon2Icon from "./icons/PlasmicIcon__Icon2"; // plasmic-import: XYB65iJ0Dd/icon
-import Icon4Icon from "./icons/PlasmicIcon__Icon4"; // plasmic-import: 0QyD0vO4WB/icon
 import Icon3Icon from "./icons/PlasmicIcon__Icon3"; // plasmic-import: tVE40jlrgY/icon
+import Icon4Icon from "./icons/PlasmicIcon__Icon4"; // plasmic-import: 0QyD0vO4WB/icon
+import ReactIcon from "./icons/PlasmicIcon__React"; // plasmic-import: iHJMrwqTt/icon
+import image4AenVcuh9S from "./images/image.svg"; // plasmic-import: 4aenVcuh9S/picture
+import image25P4UXqwPj5 from "./images/image2.svg"; // plasmic-import: 5p4uXQWPj5/picture
 import image3HfAyqV1Qc2 from "./images/image3.svg"; // plasmic-import: HFAyqV1qc2/picture
+import image4NQxLvCN5T from "./images/image4.svg"; // plasmic-import: NQxLvC-N5t/picture
+import image5Sk5QCRrjj2 from "./images/image5.svg"; // plasmic-import: Sk5qCRrjj2/picture
+import image6GlPcV90N from "./images/image6.svg"; // plasmic-import: GLPcV-_90n/picture
+import image7X3GrcRbae1 from "./images/image7.svg"; // plasmic-import: X3GRCRbae1/picture
 import image8GyWGjPYh from "./images/image8.png"; // plasmic-import: gyW-GjPYh/picture
 import image9PuIajWxD from "./images/image9.png"; // plasmic-import: pu_IajWxD/picture
-import image4AenVcuh9S from "./images/image.svg"; // plasmic-import: 4aenVcuh9S/picture
-import image4NQxLvCN5T from "./images/image4.svg"; // plasmic-import: NQxLvC-N5t/picture
-import image25P4UXqwPj5 from "./images/image2.svg"; // plasmic-import: 5p4uXQWPj5/picture
-import image6GlPcV90N from "./images/image6.svg"; // plasmic-import: GLPcV-_90n/picture
-import image5Sk5QCRrjj2 from "./images/image5.svg"; // plasmic-import: Sk5qCRrjj2/picture
-import image7X3GrcRbae1 from "./images/image7.svg"; // plasmic-import: X3GRCRbae1/picture
 
 export type PlasmicFrameworkTabs__VariantMembers = {};
 
@@ -449,7 +439,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
   react: typeof FrameworkTab;

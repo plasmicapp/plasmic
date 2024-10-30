@@ -36,7 +36,7 @@ import sty from "./PlasmicCmsEntryDetails.module.css"; // plasmic-import: 9vM3ZF
 import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
 
 import HistoryIcon from "../plasmic_kit/PlasmicIcon__History"; // plasmic-import: 6ZOswzsUR/icon
-import ShareSvgIcon from "../q_4_icons/icons/PlasmicIcon__Sharesvg"; // plasmic-import: vRB2dtcKk/icon
+import ShareSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ShareSvg"; // plasmic-import: vRB2dtcKk/icon
 
 createPlasmicElementProxy;
 
@@ -251,6 +251,7 @@ const PlasmicDescendants = {
     "publishButton",
     "menuButton",
   ],
+
   left: ["left", "entryName", "entryNameValue", "saveStatus"],
   entryName: ["entryName", "entryNameValue"],
   entryNameValue: ["entryNameValue"],
@@ -262,6 +263,7 @@ const PlasmicDescendants = {
     "publishButton",
     "menuButton",
   ],
+
   historyButton: ["historyButton"],
   previewButton: ["previewButton"],
   publishButton: ["publishButton"],
@@ -288,6 +290,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCmsEntryDetails__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

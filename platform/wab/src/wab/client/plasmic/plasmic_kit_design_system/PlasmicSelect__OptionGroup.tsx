@@ -21,22 +21,10 @@ import {
   createPlasmicElementProxy,
   deriveRenderOpts,
   hasVariant,
-  initializeCodeComponentStates,
-  initializePlasmicStates,
-  makeFragment,
-  omit,
-  pick,
   renderPlasmicSlot,
   useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName,
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions,
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import * as pp from "@plasmicapp/react-web";
 import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
@@ -140,6 +128,7 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isLast,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -219,6 +208,7 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
               </Select__Option>
             </React.Fragment>
           ),
+
           value: args.children,
         })}
       </div>
@@ -268,6 +258,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSelect__OptionGroup__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

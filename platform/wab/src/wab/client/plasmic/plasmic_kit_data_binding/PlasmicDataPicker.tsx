@@ -17,40 +17,33 @@ import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/react-web/lib/host";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
 } from "@plasmicapp/react-web";
-import Searchbox from "../../components/widgets/Searchbox"; // plasmic-import: po7gr0PX4_gWo/component
+import DataPickerCodeEditorLayout from "../../components/sidebar-tabs/DataBinding/DataPickerCodeEditorLayout"; // plasmic-import: yN9xaawDlts/component
 import DataPickerColumn from "../../components/sidebar-tabs/DataBinding/DataPickerColumn"; // plasmic-import: xmF37LmWYE/component
 import DataPickerColumnItem from "../../components/sidebar-tabs/DataBinding/DataPickerColumnItem"; // plasmic-import: fa3uzsyXr0/component
 import DataPickerGlobalSearchResults from "../../components/sidebar-tabs/DataBinding/DataPickerGlobalSearchResults"; // plasmic-import: GDvL7J9P5V4/component
 import DataPickerGlobalSearchResultsItem from "../../components/sidebar-tabs/DataBinding/DataPickerGlobalSearchResultsItem"; // plasmic-import: nD2Ql_rEk6/component
-import DataPickerCodeEditorLayout from "../../components/sidebar-tabs/DataBinding/DataPickerCodeEditorLayout"; // plasmic-import: yN9xaawDlts/component
 import DataPickerSelectedItem from "../../components/sidebar-tabs/DataBinding/DataPickerSelectedItem"; // plasmic-import: PZbWryjVVD/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import Searchbox from "../../components/widgets/Searchbox"; // plasmic-import: po7gr0PX4_gWo/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicDataPicker.module.css"; // plasmic-import: cbEBf9RLgx/css
 
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import PlaysvgIcon from "../plasmic_kit/PlasmicIcon__Playsvg"; // plasmic-import: j39GoLwZnf7-v/icon
+import PlaysvgIcon from "../plasmic_kit/PlasmicIcon__PlaySvg"; // plasmic-import: j39GoLwZnf7-v/icon
+import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -255,6 +248,7 @@ function PlasmicDataPicker__RenderFunc(props: {
           $props.isRunCodeInteraction,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = p.useDollarState(stateSpecs, {
@@ -1100,6 +1094,7 @@ function PlasmicDataPicker__RenderFunc(props: {
                   </DataPickerColumn>
                 </React.Fragment>
               ),
+
               value: args.children,
             })
           : null}
@@ -1456,6 +1451,7 @@ function PlasmicDataPicker__RenderFunc(props: {
                         />
                       </React.Fragment>
                     ),
+
                     value: args.selectedItem,
                   })}
                 </p.Stack>
@@ -1759,6 +1755,7 @@ const PlasmicDescendants = {
     "cancelButton",
     "saveButton",
   ],
+
   header: [
     "header",
     "title",
@@ -1769,6 +1766,7 @@ const PlasmicDescendants = {
     "addVariableBtn",
     "link",
   ],
+
   title: ["title"],
   stateSwitch: ["stateSwitch"],
   advancedSwitch: ["advancedSwitch"],
@@ -1817,6 +1815,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDataPicker__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -109,6 +109,7 @@ function PlasmicHiliteTabButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isSelected,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -193,6 +194,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicHiliteTabButton__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

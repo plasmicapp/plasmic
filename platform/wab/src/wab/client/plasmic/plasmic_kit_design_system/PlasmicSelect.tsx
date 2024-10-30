@@ -42,9 +42,9 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicSelect.module.css"; // plasmic-import: j_4IQyOWK2b/css
 
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ChevronUpSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronUpsvg"; // plasmic-import: i9D87DzsX/icon
-import PlusSvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronUpSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronUpSvg"; // plasmic-import: i9D87DzsX/icon
+import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -64,6 +64,7 @@ export type PlasmicSelect__VariantsArgs = {
   type?: SingleChoiceArg<
     "hugging" | "seamless" | "bordered" | "wide" | "medium"
   >;
+
   hasIcon?: SingleBooleanChoiceArg<"hasIcon">;
   size?: SingleChoiceArg<"small" | "tiny">;
   font?: MultiChoiceArg<"bold">;
@@ -122,6 +123,7 @@ export interface DefaultSelectProps extends pp.BaseSelectProps {
   type?: SingleChoiceArg<
     "hugging" | "seamless" | "bordered" | "wide" | "medium"
   >;
+
   hasIcon?: SingleBooleanChoiceArg<"hasIcon">;
   size?: SingleChoiceArg<"small" | "tiny">;
   font?: MultiChoiceArg<"bold">;
@@ -216,6 +218,7 @@ function PlasmicSelect__RenderFunc(props: {
         onChangeProp: "onChange",
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -569,6 +572,7 @@ function PlasmicSelect__RenderFunc(props: {
                     </Select__Option>
                   </React.Fragment>
                 ),
+
                 value: args.children,
               })}
             </div>
@@ -680,6 +684,7 @@ const PlasmicDescendants = {
     "overlay",
     "optionsContainer",
   ],
+
   trigger: ["trigger", "contentContainer", "dropdownIcon"],
   contentContainer: ["contentContainer"],
   dropdownIcon: ["dropdownIcon"],
@@ -703,6 +708,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSelect__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

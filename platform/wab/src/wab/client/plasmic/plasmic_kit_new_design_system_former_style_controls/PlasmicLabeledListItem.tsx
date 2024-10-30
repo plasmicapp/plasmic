@@ -40,9 +40,9 @@ import projectcss from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles
 import sty from "./PlasmicLabeledListItem.module.css"; // plasmic-import: -L2zZ5Mvmr/css
 
 import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
-import GripSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Gripsvg"; // plasmic-import: jxIRSIMqs/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import GripSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GripSvg"; // plasmic-import: jxIRSIMqs/icon
 import WildcardIcon from "../plasmic_kit_style_controls/icons/PlasmicIcon__Wildcard"; // plasmic-import: 47qMNx3RV/icon
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -329,6 +329,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
           $props.contentAlignment,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -672,6 +673,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
                     {"Enter some text"}
                   </div>
                 ),
+
                 value: args.subtitle,
                 className: classNames(sty.slotTargetSubtitle, {
                   [sty.slotTargetSubtitlewithSubtitle]: hasVariant(
@@ -758,6 +760,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
               {"One line"}
             </div>
           ),
+
           value: args.children,
         })}
       </div>
@@ -910,6 +913,7 @@ const PlasmicDescendants = {
     "indicatorContainer",
     "indicator",
   ],
+
   dragHandle: ["dragHandle", "grip"],
   grip: ["grip"],
   labelContainer: [
@@ -920,6 +924,7 @@ const PlasmicDescendants = {
     "labelTextContainer",
     "spacer2",
   ],
+
   spacer: ["spacer"],
   freeBox: ["freeBox", "iconContainer", "labelTextContainer"],
   iconContainer: ["iconContainer"],
@@ -958,6 +963,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLabeledListItem__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

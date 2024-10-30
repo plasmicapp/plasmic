@@ -12,34 +12,27 @@
 // Component: -ZWJykIq5V-3F
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/host";
+import * as p from "@plasmicapp/react-web";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  useTrigger,
 } from "@plasmicapp/react-web";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_component_props_section.module.css"; // plasmic-import: 783YKJdyRRPxZbx3qiNi5Q/projectcss
 import sty from "./PlasmicCardPickerItem.module.css"; // plasmic-import: -ZWJykIq5V-3F/css
 
-import EyesvgIcon from "../q_4_icons/icons/PlasmicIcon__Eyesvg"; // plasmic-import: oFYcZi8LU/icon
+import EyesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EyeSvg"; // plasmic-import: oFYcZi8LU/icon
 
 export type PlasmicCardPickerItem__VariantMembers = {
   isSelected: "isSelected";
@@ -213,7 +206,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "button";
   image: "div";

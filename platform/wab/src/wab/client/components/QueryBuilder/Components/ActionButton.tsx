@@ -1,7 +1,7 @@
 import { Icon } from "@/wab/client/components/widgets/Icon";
-import PlussvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Plussvg";
-import TrashsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Trashsvg";
-import UnorderedListsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__UnorderedListsvg";
+import PlussvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg";
+import TrashsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__TrashSvg";
+import UnorderedListsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__UnorderedListSvg";
 import { ButtonProps } from "@react-awesome-query-builder/antd";
 import Button, { ButtonType } from "antd/lib/button";
 import React from "react";

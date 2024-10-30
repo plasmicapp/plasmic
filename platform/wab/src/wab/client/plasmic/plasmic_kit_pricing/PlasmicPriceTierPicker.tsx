@@ -15,62 +15,37 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
-  PlasmicIcon as PlasmicIcon__,
-  PlasmicImg as PlasmicImg__,
   PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
   Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
-  generateOnMutateForSpec,
   generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
-  get as $stateGet,
   hasVariant,
-  initializeCodeComponentStates,
-  initializePlasmicStates,
-  makeFragment,
-  omit,
-  pick,
   renderPlasmicSlot,
-  set as $stateSet,
   useCurrentUser,
   useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName,
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions,
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import Switch from "../../components/widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
+import HoverableIcon from "../../components/pricing/HoverableIcon"; // plasmic-import: 1T4UNMYLSC7u/component
+import HoverableText from "../../components/pricing/HoverableText"; // plasmic-import: aVJYhoS8iDMR/component
 import PriceTier from "../../components/pricing/PriceTier"; // plasmic-import: P7E8qtNzKrbM/component
 import PriceTierFeatureItem from "../../components/pricing/PriceTierFeatureItem"; // plasmic-import: Z40kBWC-Knbn/component
-import HoverableText from "../../components/pricing/HoverableText"; // plasmic-import: aVJYhoS8iDMR/component
-import HoverableIcon from "../../components/pricing/HoverableIcon"; // plasmic-import: 1T4UNMYLSC7u/component
+import Switch from "../../components/widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
 
-import {
-  EnvironmentValue,
-  useEnvironment,
-} from "./PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 import { useScreenVariants as useScreenVariantspbV7Vw3AiD6M } from "../plasmic_kit_responsive_breakpoints/PlasmicGlobalVariant__Screen"; // plasmic-import: PbV7vw3AiD6M/globalVariant
+import { useEnvironment } from "./PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
 import sty from "./PlasmicPriceTierPicker.module.css"; // plasmic-import: Xx_WsdQKli-S/css
 
@@ -206,6 +181,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => "isChecked",
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -347,6 +323,7 @@ function PlasmicPriceTierPicker__RenderFunc(props: {
                   {"Learn more."}
                 </PlasmicLink__>
               }
+
               <React.Fragment>{""}</React.Fragment>
             </React.Fragment>
           </div>
@@ -5669,6 +5646,7 @@ const PlasmicDescendants = {
     "newTeamTier",
     "newEnterpriseTier",
   ],
+
   link: ["link"],
   billingFrequencyToggle: ["billingFrequencyToggle"],
   newGrandfatheredTier: ["newGrandfatheredTier"],
@@ -5700,6 +5678,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPriceTierPicker__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

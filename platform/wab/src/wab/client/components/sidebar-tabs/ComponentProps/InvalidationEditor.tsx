@@ -5,10 +5,10 @@ import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/Data
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import IconButton from "@/wab/client/components/widgets/IconButton";
-import Trash2SvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Trash2Svg";
+import Trash2SvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Trash2Svg";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, notNil } from "@/wab/shared/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { ensure, notNil } from "@/wab/shared/common";
 import {
   createExprForDataPickerValue,
   extractValueSavedFromDataPicker,

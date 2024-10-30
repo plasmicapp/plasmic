@@ -34,8 +34,8 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicTextbox.module.css"; // plasmic-import: pA22NEzDCsn_/css
 
-import CloseSvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
-import SearchSvgIcon from "../q_4_icons/icons/PlasmicIcon__Searchsvg"; // plasmic-import: R5DLz11OA/icon
+import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import SearchSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
 
 createPlasmicElementProxy;
 
@@ -86,6 +86,7 @@ export type PlasmicTextbox__VariantsArgs = {
     | "purple"
     | "topLayout"
   >;
+
   withIcons?: MultiChoiceArg<"withPrefix" | "withSuffix">;
   error?: SingleBooleanChoiceArg<"error">;
   fontSize?: SingleChoiceArg<"xlarge">;
@@ -152,6 +153,7 @@ export interface DefaultTextboxProps {
     | "purple"
     | "topLayout"
   >;
+
   withIcons?: MultiChoiceArg<"withPrefix" | "withSuffix">;
   error?: SingleBooleanChoiceArg<"error">;
   fontSize?: SingleChoiceArg<"xlarge">;
@@ -252,6 +254,7 @@ function PlasmicTextbox__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.extraPadding,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -726,6 +729,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicTextbox__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -36,7 +36,7 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicCopyButton.module.css"; // plasmic-import: u7TII072Seb/css
 
-import CopysvgIcon from "../q_4_icons/icons/PlasmicIcon__Copysvg"; // plasmic-import: aGIZL6Ec9/icon
+import CopysvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CopySvg"; // plasmic-import: aGIZL6Ec9/icon
 
 createPlasmicElementProxy;
 
@@ -98,6 +98,7 @@ function PlasmicCopyButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.mode,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -169,6 +170,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCopyButton__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

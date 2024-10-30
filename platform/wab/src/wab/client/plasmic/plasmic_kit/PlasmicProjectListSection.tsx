@@ -39,10 +39,10 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicProjectListSection.module.css"; // plasmic-import: diKNfA_-roE/css
 
-import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyesvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
+import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyeSvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
 import image3YherfIxkolNxf from "../plasmic_kit_design_system/images/image3.svg"; // plasmic-import: yherfIxkolNXF/picture
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ChevronLeftsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronLeftsvg"; // plasmic-import: 0-_N6JM-u/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronLeftsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronLeftSvg"; // plasmic-import: 0-_N6JM-u/icon
 import CheckIcon from "./PlasmicIcon__Check"; // plasmic-import: pawp1H5YxB_3B/icon
 import LightBulbIcon from "./PlasmicIcon__LightBulb"; // plasmic-import: L1GrIYxdm_MJL/icon
 
@@ -123,6 +123,7 @@ function PlasmicProjectListSection__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -402,6 +403,7 @@ function PlasmicProjectListSection__RenderFunc(props: {
                 />
               </React.Fragment>
             ),
+
             value: args.container,
           })}
         </Stack__>
@@ -429,6 +431,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicProjectListSection__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

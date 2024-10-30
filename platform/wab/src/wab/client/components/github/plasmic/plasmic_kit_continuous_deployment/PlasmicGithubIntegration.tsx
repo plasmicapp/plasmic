@@ -43,10 +43,10 @@ import sty from "./PlasmicGithubIntegration.module.css"; // plasmic-import: FuvS
 
 import InfoIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
 import OpenIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Open"; // plasmic-import: 7D0GDLdF72udM/icon
-import ArrowRightsvgIcon from "../../../../plasmic/q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ArrowUpRightsvgIcon from "../../../../plasmic/q_4_icons/icons/PlasmicIcon__ArrowUpRightsvg"; // plasmic-import: N_BtK6grX/icon
-import ChevronDownsvgIcon from "../../../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import PlussvgIcon from "../../../../plasmic/q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
+import ArrowRightsvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ArrowUpRightsvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowUpRightSvg"; // plasmic-import: N_BtK6grX/icon
+import ChevronDownsvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import PlussvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -76,9 +76,11 @@ export type PlasmicGithubIntegration__VariantsArgs = {
     | "invalidDomainError"
     | "publishSiteWarning"
   >;
+
   loading?: MultiChoiceArg<
     "githubData" | "branches" | "detectedOptions" | "saving"
   >;
+
   hide?: MultiChoiceArg<"action">;
   isPublishingSite?: SingleBooleanChoiceArg<"isPublishingSite">;
   hideGithubPages?: SingleBooleanChoiceArg<"hideGithubPages">;
@@ -154,9 +156,11 @@ export interface DefaultGithubIntegrationProps {
     | "invalidDomainError"
     | "publishSiteWarning"
   >;
+
   loading?: MultiChoiceArg<
     "githubData" | "branches" | "detectedOptions" | "saving"
   >;
+
   hide?: MultiChoiceArg<"action">;
   isPublishingSite?: SingleBooleanChoiceArg<"isPublishingSite">;
   hideGithubPages?: SingleBooleanChoiceArg<"hideGithubPages">;
@@ -225,6 +229,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
           $props.hideGithubPages,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -2126,6 +2131,7 @@ const PlasmicDescendants = {
     "moreProvidersLink",
     "pushButton",
   ],
+
   newRepoButton: ["newRepoButton"],
   existingRepoButton: ["existingRepoButton"],
   newBox: [
@@ -2139,6 +2145,7 @@ const PlasmicDescendants = {
     "privateBox",
     "privateRepo",
   ],
+
   orgBox: ["orgBox", "org"],
   org: ["org"],
   missingOrg: ["missingOrg"],
@@ -2158,6 +2165,7 @@ const PlasmicDescendants = {
     "directory",
     "directoryError",
   ],
+
   repositoryBox: ["repositoryBox", "repository"],
   repository: ["repository"],
   missingRepo: ["missingRepo"],
@@ -2179,6 +2187,7 @@ const PlasmicDescendants = {
     "actionInfo",
     "action",
   ],
+
   frameworkBox: ["frameworkBox", "framework"],
   framework: ["framework"],
   languageBox: ["languageBox", "language"],
@@ -2200,6 +2209,7 @@ const PlasmicDescendants = {
     "domainError",
     "moreProvidersLink",
   ],
+
   publishSiteLabel: ["publishSiteLabel"],
   publishSite: ["publishSite"],
   publishSiteError: ["publishSiteError"],
@@ -2263,6 +2273,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicGithubIntegration__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

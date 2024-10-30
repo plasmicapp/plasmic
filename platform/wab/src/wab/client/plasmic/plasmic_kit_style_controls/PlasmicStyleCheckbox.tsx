@@ -38,8 +38,8 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicStyleCheckbox.module.css"; // plasmic-import: nZHA7E5OiTx/css
 
-import SquareCheckFilledSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__SquareCheckFilledsvg"; // plasmic-import: p_Tng7_Oi/icon
-import SquareSvgIcon from "../q_4_icons/icons/PlasmicIcon__Squaresvg"; // plasmic-import: zkj00JjZV/icon
+import SquareCheckFilledSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SquareCheckFilledSvg"; // plasmic-import: p_Tng7_Oi/icon
+import SquareSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SquareSvg"; // plasmic-import: zkj00JjZV/icon
 
 createPlasmicElementProxy;
 
@@ -163,6 +163,7 @@ function PlasmicStyleCheckbox__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.valueSetState,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -358,6 +359,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicStyleCheckbox__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

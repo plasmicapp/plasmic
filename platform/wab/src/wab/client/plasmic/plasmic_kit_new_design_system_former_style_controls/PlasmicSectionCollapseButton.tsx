@@ -32,7 +32,7 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicSectionCollapseButton.module.css"; // plasmic-import: 8AZoGEGjWc/css
 
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -104,6 +104,7 @@ function PlasmicSectionCollapseButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isExpanded,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -161,6 +162,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSectionCollapseButton__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

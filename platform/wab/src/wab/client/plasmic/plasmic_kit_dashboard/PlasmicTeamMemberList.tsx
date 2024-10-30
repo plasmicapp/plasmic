@@ -44,8 +44,8 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import sty from "./PlasmicTeamMemberList.module.css"; // plasmic-import: 3jXSiWKc1-/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import PlussvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -120,6 +120,7 @@ function PlasmicTeamMemberList__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -390,6 +391,7 @@ function PlasmicTeamMemberList__RenderFunc(props: {
             />
           </React.Fragment>
         ),
+
         value: args.children,
       })}
     </div>
@@ -406,6 +408,7 @@ const PlasmicDescendants = {
     "memberSearch",
     "header",
   ],
+
   freeBox: ["freeBox", "actions", "newButton", "filterSelect", "memberSearch"],
   actions: ["actions", "newButton", "filterSelect", "memberSearch"],
   newButton: ["newButton"],
@@ -431,6 +434,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicTeamMemberList__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

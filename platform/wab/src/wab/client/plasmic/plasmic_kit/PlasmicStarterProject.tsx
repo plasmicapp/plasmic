@@ -37,7 +37,7 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import sty from "./PlasmicStarterProject.module.css"; // plasmic-import: CCsDeqqYeoM/css
 
 import imageDQeKTjQst from "../plasmic_kit_dashboard/images/image.png"; // plasmic-import: dQeKTjQST/picture
-import EyesvgIcon from "../q_4_icons/icons/PlasmicIcon__Eyesvg"; // plasmic-import: oFYcZi8LU/icon
+import EyesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EyeSvg"; // plasmic-import: oFYcZi8LU/icon
 import CheckIcon from "./PlasmicIcon__Check"; // plasmic-import: pawp1H5YxB_3B/icon
 
 createPlasmicElementProxy;
@@ -168,6 +168,7 @@ function PlasmicStarterProject__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.withDropShadow,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -591,6 +592,7 @@ function PlasmicStarterProject__RenderFunc(props: {
                       {"3-Minute Codegen Quickstart"}
                     </div>
                   ),
+
                   value: args.name,
                   className: classNames(sty.slotTargetName, {
                     [sty.slotTargetNameicon_withIcon]: hasVariant(
@@ -839,6 +841,7 @@ const PlasmicDescendants = {
     "frame308",
     "bordersoutlinesstrokesPlaceholder",
   ],
+
   button: [
     "button",
     "divider",
@@ -846,6 +849,7 @@ const PlasmicDescendants = {
     "frame308",
     "bordersoutlinesstrokesPlaceholder",
   ],
+
   divider: ["divider"],
   frame317: ["frame317"],
   frame308: ["frame308"],
@@ -868,6 +872,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicStarterProject__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

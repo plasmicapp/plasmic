@@ -1,5 +1,5 @@
 import { Icon } from "@/wab/client/components/widgets/Icon";
-import DownloadsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Downloadsvg";
+import DownloadsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__DownloadSvg";
 import { observer } from "mobx-react";
 import * as React from "react";
 

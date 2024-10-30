@@ -34,7 +34,7 @@ import {
   useTopFrameApi,
 } from "@/wab/client/contexts/AppContexts";
 import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
-import ChevronDownsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg";
+import ChevronDownsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import {
   BLOCKED_RUN_INTERACTION_MESSAGE,

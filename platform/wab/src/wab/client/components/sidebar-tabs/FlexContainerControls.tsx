@@ -16,26 +16,26 @@ import {
 } from "@/wab/client/components/style-controls/StyleComponent";
 import { DropdownTooltip } from "@/wab/client/components/widgets/DropdownTooltip";
 import { Icon } from "@/wab/client/components/widgets/Icon";
-import ChevronDownsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg";
-import ChevronLeftsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronLeftsvg";
-import ChevronRightsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronRightsvg";
-import ChevronUpsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronUpsvg";
+import ChevronDownsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg";
+import ChevronLeftsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronLeftSvg";
+import ChevronRightsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronRightSvg";
+import ChevronUpsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronUpSvg";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
-import { reverseIf } from "@/wab/shared/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { TokenType } from "@/wab/commons/StyleToken";
+import { reverseIf } from "@/wab/shared/common";
 import { isCodeComponent } from "@/wab/shared/core/components";
-import { flexDirToArrangement } from "@/wab/shared/layoututils";
 import { isTplComponent } from "@/wab/shared/core/tpls";
+import { camelProp } from "@/wab/shared/css";
+import { DefinedIndicatorType } from "@/wab/shared/defined-indicator";
+import { flexDirToArrangement } from "@/wab/shared/layoututils";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Menu } from "antd";
 import cn from "classnames";
 import { mapKeys, range } from "lodash";
 import { observer } from "mobx-react";
 import React, { useState } from "react";
-import { camelProp } from "@/wab/shared/css";
-import { DefinedIndicatorType } from "@/wab/shared/defined-indicator";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 
 type FlexArrangement = "row" | "column";
 

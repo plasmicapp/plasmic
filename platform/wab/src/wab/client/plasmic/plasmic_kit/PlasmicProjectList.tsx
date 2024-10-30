@@ -46,9 +46,9 @@ import sty from "./PlasmicProjectList.module.css"; // plasmic-import: -k-p1OXXph
 import ClockIcon from "../plasmic_kit_dashboard/icons/PlasmicIcon__Clock"; // plasmic-import: Y08w-xNMit/icon
 import HatchIcon from "../plasmic_kit_dashboard/icons/PlasmicIcon__Hatch"; // plasmic-import: Hyn5Q6kuD9/icon
 import JoystickIcon from "../plasmic_kit_dashboard/icons/PlasmicIcon__Joystick"; // plasmic-import: ApYMo5LVK0/icon
-import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyesvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
+import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyeSvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
 import image3YherfIxkolNxf from "../plasmic_kit_design_system/images/image3.svg"; // plasmic-import: yherfIxkolNXF/picture
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import BoltPlusIcon from "./PlasmicIcon__BoltPlus"; // plasmic-import: -RXQcn1QrTqlQ/icon
 import CheckIcon from "./PlasmicIcon__Check"; // plasmic-import: pawp1H5YxB_3B/icon
 import LightBulbIcon from "./PlasmicIcon__LightBulb"; // plasmic-import: L1GrIYxdm_MJL/icon
@@ -166,6 +166,7 @@ function PlasmicProjectList__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideStarters,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -820,6 +821,7 @@ function PlasmicProjectList__RenderFunc(props: {
                   }
                 </div>
               ),
+
               value: args.noProjectsText,
             })
           : null}
@@ -1033,6 +1035,7 @@ const PlasmicDescendants = {
     "preview2",
     "preview3",
   ],
+
   frame321: [
     "frame321",
     "h1",
@@ -1054,6 +1057,7 @@ const PlasmicDescendants = {
     "preview2",
     "preview3",
   ],
+
   h1: ["h1"],
   newProjectButton: ["newProjectButton"],
   tutorials: [
@@ -1068,6 +1072,7 @@ const PlasmicDescendants = {
     "preview3524",
     "preview3525",
   ],
+
   preview22: ["preview22"],
   preview223: ["preview223"],
   preview222: ["preview222"],
@@ -1115,6 +1120,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicProjectList__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

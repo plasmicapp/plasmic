@@ -31,7 +31,7 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicUpsellBanner.module.css"; // plasmic-import: CpePZH2ffI/css
 
-import RocketsvgIcon from "../q_4_icons/icons/PlasmicIcon__Rocketsvg"; // plasmic-import: uRQfbBjV9/icon
+import RocketsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__RocketSvg"; // plasmic-import: uRQfbBjV9/icon
 
 createPlasmicElementProxy;
 
@@ -142,6 +142,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicUpsellBanner__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

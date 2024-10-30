@@ -109,6 +109,7 @@ function PlasmicCmsRoot__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.activeTab,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -258,6 +259,7 @@ const PlasmicDescendants = {
     "cmsSchemaPage",
     "cmsSettingsPage",
   ],
+
   cmsTopBar: ["cmsTopBar"],
   freeBox: [
     "freeBox",
@@ -266,6 +268,7 @@ const PlasmicDescendants = {
     "cmsSchemaPage",
     "cmsSettingsPage",
   ],
+
   cmsLeftTabs: ["cmsLeftTabs"],
   cmsContentPage: ["cmsContentPage"],
   cmsSchemaPage: ["cmsSchemaPage"],
@@ -289,6 +292,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCmsRoot__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

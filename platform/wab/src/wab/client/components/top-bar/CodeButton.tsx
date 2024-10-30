@@ -1,12 +1,12 @@
 import { U } from "@/wab/client/cli-routes";
 import { useAppCtx, useTopFrameApi } from "@/wab/client/contexts/AppContexts";
 import { useCodegenType } from "@/wab/client/hooks/useCodegenType";
-import CirclesvgIcon from "@/wab/client/plasmic/plasmic_kit_q_4_icons/icons/PlasmicIcon__Circlesvg";
+import CirclesvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CircleSvg";
 import PlasmicCodeButton from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicCodeButton";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { toClassName } from "@/wab/shared/codegen/util";
 import { spawn } from "@/wab/shared/common";
 import { isPlasmicComponent } from "@/wab/shared/core/components";
-import { toClassName } from "@/wab/shared/codegen/util";
 import { PlasmicIcon } from "@plasmicapp/react-web";
 import { Menu, Tooltip } from "antd";
 import { defer } from "lodash";

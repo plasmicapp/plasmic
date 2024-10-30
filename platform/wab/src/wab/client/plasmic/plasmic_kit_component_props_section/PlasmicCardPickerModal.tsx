@@ -12,42 +12,30 @@
 // Component: 6ODOBecfUs5
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/host";
+import * as p from "@plasmicapp/react-web";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
 } from "@plasmicapp/react-web";
 import Modal from "../../components/Modal"; // plasmic-import: rD0wOVzSnE/component
-import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
 import CardPickerItem from "../../components/sidebar-tabs/ComponentProps/CardPickerItem"; // plasmic-import: -ZWJykIq5V-3F/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "./plasmic_plasmic_kit_component_props_section.module.css"; // plasmic-import: 783YKJdyRRPxZbx3qiNi5Q/projectcss
 import sty from "./PlasmicCardPickerModal.module.css"; // plasmic-import: 6ODOBecfUs5/css
 
-import SearchsvgIcon from "../q_4_icons/icons/PlasmicIcon__Searchsvg"; // plasmic-import: R5DLz11OA/icon
-import ClosesvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
 import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
 import TriangleBottomIcon from "../plasmic_kit/PlasmicIcon__TriangleBottom"; // plasmic-import: A8NQUZ7Lg1OHO/icon
-import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyesvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
+import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyeSvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
 
 export type PlasmicCardPickerModal__VariantMembers = {
   showInput: "showInput";
@@ -336,7 +324,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: typeof Modal;
   textbox: typeof Textbox;

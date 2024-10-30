@@ -17,37 +17,27 @@ import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/react-web/lib/host";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
 } from "@plasmicapp/react-web";
-import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
-import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import ReactionButton from "../../components/comments/ReactionButton"; // plasmic-import: FOzDmFDbWm/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicCommentPost.module.css"; // plasmic-import: l_AKXl2AAu/css
 
-import EmojiHappysvgIcon from "../q_4_icons/icons/PlasmicIcon__EmojiHappysvg"; // plasmic-import: 1Vli2Q2_d/icon
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
+import EmojiHappysvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EmojiHappySvg"; // plasmic-import: 1Vli2Q2_d/icon
 import _69B43A437055B398Eff90A515Ed4F551Svg2AijDeIx4X from "./images/_69B43A437055B398Eff90A515Ed4F551Svg.svg"; // plasmic-import: 2aijDEIx4x/picture
 
 createPlasmicElementProxy;
@@ -121,6 +111,7 @@ function PlasmicCommentPost__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.thread,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = p.useDollarState(stateSpecs, {
@@ -207,6 +198,7 @@ function PlasmicCommentPost__RenderFunc(props: {
                 {"User Name"}
               </span>
             }
+
             <React.Fragment> </React.Fragment>
             {
               <span
@@ -223,6 +215,7 @@ function PlasmicCommentPost__RenderFunc(props: {
                 {"3 hours ago"}
               </span>
             }
+
             <React.Fragment>{""}</React.Fragment>
           </React.Fragment>
         </div>
@@ -397,6 +390,7 @@ const PlasmicDescendants = {
     "btnAddReaction2",
     "repliesLink",
   ],
+
   avatarContainer: ["avatarContainer", "img"],
   img: ["img"],
   text: ["text", "userFullName", "timestamp"],
@@ -436,6 +430,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCommentPost__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

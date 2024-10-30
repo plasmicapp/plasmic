@@ -41,7 +41,7 @@ import sty from "./PlasmicMultiAssetsActions.module.css"; // plasmic-import: d69
 
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
 import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -124,6 +124,7 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -242,6 +243,7 @@ const PlasmicDescendants = {
     "deleteSelected",
     "cancel",
   ],
+
   controlBar: [
     "controlBar",
     "numSelected",
@@ -249,6 +251,7 @@ const PlasmicDescendants = {
     "deleteSelected",
     "cancel",
   ],
+
   numSelected: ["numSelected"],
   selectAll: ["selectAll"],
   deleteSelected: ["deleteSelected"],
@@ -271,6 +274,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicMultiAssetsActions__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

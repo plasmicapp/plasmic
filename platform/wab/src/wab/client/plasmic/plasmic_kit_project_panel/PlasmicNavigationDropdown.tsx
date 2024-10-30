@@ -15,49 +15,18 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
-  PlasmicIcon as PlasmicIcon__,
-  PlasmicImg as PlasmicImg__,
-  PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
   Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  generateOnMutateForSpec,
-  generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
-  generateStateValueProp,
-  get as $stateGet,
-  hasVariant,
-  initializeCodeComponentStates,
-  initializePlasmicStates,
-  makeFragment,
-  omit,
-  pick,
   renderPlasmicSlot,
-  set as $stateSet,
-  useCurrentUser,
-  useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
-import SearchInput from "../../components/sidebar-tabs/ProjectPanel/SearchInput"; // plasmic-import: CHoUJxFMpo/component
 import FolderItem from "../../components/sidebar-tabs/ProjectPanel/FolderItem"; // plasmic-import: iWeSjEMdI3/component
+import SearchInput from "../../components/sidebar-tabs/ProjectPanel/SearchInput"; // plasmic-import: CHoUJxFMpo/component
+import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -66,11 +35,10 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../project_panel/plasmic_project_panel.module.css"; // plasmic-import: m8VxGcigeLAEXFe8c12w5Q/projectcss
 import sty from "./PlasmicNavigationDropdown.module.css"; // plasmic-import: Kyrn_lAAwr/css
 
-import PlusSvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ArrowRightSvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ExpandAllIcon from "../plasmic_kit_design_system/PlasmicIcon__ExpandAll"; // plasmic-import: zCExKvD0Do/icon
 import CollapseAllIcon from "../plasmic_kit_design_system/PlasmicIcon__CollapseAll"; // plasmic-import: Bg-ZlWgLuQ/icon
+import ExpandAllIcon from "../plasmic_kit_design_system/PlasmicIcon__ExpandAll"; // plasmic-import: zCExKvD0Do/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -126,7 +94,7 @@ function PlasmicNavigationDropdown__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants
+    ...variants,
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -278,7 +246,8 @@ function PlasmicNavigationDropdown__RenderFunc(props: {
               </FolderItem>
             </React.Fragment>
           ),
-          value: args.children
+
+          value: args.children,
         })}
       </div>
     </div>
@@ -293,14 +262,15 @@ const PlasmicDescendants = {
     "plusButton",
     "searchInput",
     "expandButton",
-    "collapseButton"
+    "collapseButton",
   ],
+
   text: ["text"],
   plusButtonContainer: ["plusButtonContainer", "plusButton"],
   plusButton: ["plusButton"],
   searchInput: ["searchInput"],
   expandButton: ["expandButton"],
-  collapseButton: ["collapseButton"]
+  collapseButton: ["collapseButton"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -320,6 +290,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicNavigationDropdown__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -351,7 +322,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicNavigationDropdown__ArgProps,
-          internalVariantPropNames: PlasmicNavigationDropdown__VariantProps
+          internalVariantPropNames: PlasmicNavigationDropdown__VariantProps,
         }),
       [props, nodeName]
     );
@@ -359,7 +330,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName
+      forNode: nodeName,
     });
   };
   if (nodeName === "root") {
@@ -384,7 +355,7 @@ export const PlasmicNavigationDropdown = Object.assign(
 
     // Metadata about props expected for PlasmicNavigationDropdown
     internalVariantProps: PlasmicNavigationDropdown__VariantProps,
-    internalArgProps: PlasmicNavigationDropdown__ArgProps
+    internalArgProps: PlasmicNavigationDropdown__ArgProps,
   }
 );
 

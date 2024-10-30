@@ -252,6 +252,7 @@ const PlasmicDescendants = {
     "text",
     "actionMenuButton",
   ],
+
   img: ["img"],
   actions: ["actions", "overlayBackground", "text", "actionMenuButton"],
   overlayBackground: ["overlayBackground"],
@@ -275,6 +276,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCard__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

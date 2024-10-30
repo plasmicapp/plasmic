@@ -36,7 +36,7 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicMenuItem.module.css"; // plasmic-import: Ts79yZbRFG/css
 
-import BoxsvgIcon from "../q_4_icons/icons/PlasmicIcon__Boxsvg"; // plasmic-import: 0qLNxfRGB/icon
+import BoxsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BoxSvg"; // plasmic-import: 0qLNxfRGB/icon
 
 createPlasmicElementProxy;
 
@@ -105,6 +105,7 @@ function PlasmicMenuItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.selected,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -199,6 +200,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicMenuItem__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

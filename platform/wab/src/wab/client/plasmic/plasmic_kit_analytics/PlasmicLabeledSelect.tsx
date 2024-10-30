@@ -12,24 +12,16 @@
 // Component: bQ74QBVIbHI
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/host";
+import * as p from "@plasmicapp/react-web";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
 } from "@plasmicapp/react-web";
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
 import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
@@ -37,13 +29,12 @@ import Select__OptionGroup from "../../components/widgets/Select__OptionGroup"; 
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_analytics.module.css"; // plasmic-import: cQnF1HuwK97HkvkrC6uRk2/projectcss
 import sty from "./PlasmicLabeledSelect.module.css"; // plasmic-import: bQ74QBVIbHI/css
 
 import InfoIcon from "../plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
-import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
 
 export type PlasmicLabeledSelect__VariantMembers = {
   withBottomBorder: "withBottomBorder";
@@ -244,7 +235,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
   freeBox: "div";

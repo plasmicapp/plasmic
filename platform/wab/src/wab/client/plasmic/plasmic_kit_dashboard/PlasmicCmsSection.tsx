@@ -43,7 +43,7 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import sty from "./PlasmicCmsSection.module.css"; // plasmic-import: 54ykx6A8G6T/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -184,6 +184,7 @@ function PlasmicCmsSection__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.subHeader,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -482,6 +483,7 @@ function PlasmicCmsSection__RenderFunc(props: {
                 {"This workspace has no projects."}
               </div>
             ),
+
             value: args.noProjectsText,
             className: classNames(sty.slotTargetNoProjectsText, {
               [sty.slotTargetNoProjectsTextnoProjects]: hasVariant(
@@ -543,6 +545,7 @@ function PlasmicCmsSection__RenderFunc(props: {
                   />
                 </React.Fragment>
               ),
+
               value: args.children,
             })}
           </div>
@@ -565,6 +568,7 @@ const PlasmicDescendants = {
     "newProjectButton",
     "moreButton",
   ],
+
   header: [
     "header",
     "backNav",
@@ -576,6 +580,7 @@ const PlasmicDescendants = {
     "newProjectButton",
     "moreButton",
   ],
+
   backNav: ["backNav"],
   editableName: ["editableName"],
   readonlyName: ["readonlyName"],
@@ -606,6 +611,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCmsSection__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

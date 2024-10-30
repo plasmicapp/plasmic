@@ -17,32 +17,23 @@ import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/react-web/lib/host";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
 } from "@plasmicapp/react-web";
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicCopilotLikeDislike.module.css"; // plasmic-import: -LDNJojbDZD/css
 
 import Icon4Icon from "./icons/PlasmicIcon__Icon4"; // plasmic-import: ZTW8iKylgI/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 import Icon5Icon from "./icons/PlasmicIcon__Icon5"; // plasmic-import: mPucsZbX6V/icon
 
 createPlasmicElementProxy;
@@ -104,6 +95,7 @@ function PlasmicCopilotLikeDislike__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.state,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = p.useDollarState(stateSpecs, {
@@ -200,6 +192,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCopilotLikeDislike__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -25,17 +25,17 @@ import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRm
 import NewComponentItem from "../../components/widgets/NewComponentItem"; // plasmic-import: csXhXQDIqh/component
 import NewComponentSection from "../../components/widgets/NewComponentSection"; // plasmic-import: 3_QVitiqMh/component
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
-import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyesvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
+import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyeSvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
+import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ClosesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import SearchsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
 import plasmic_plasmic_kit_q_4_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ClosesvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
-import SearchsvgIcon from "../q_4_icons/icons/PlasmicIcon__Searchsvg"; // plasmic-import: R5DLz11OA/icon
 import ChevronBottomIcon from "./icons/PlasmicIcon__ChevronBottom"; // plasmic-import: uSxcbtzK1j/icon
 import ChevronRightIcon from "./icons/PlasmicIcon__ChevronRight"; // plasmic-import: yV__Xr76s/icon
-import sty from "./PlasmicNewComponentModal.module.css"; // plasmic-import: ZDk8OKbbuW/css
 import projectcss from "./plasmic_plasmic_kit_new_component.module.css"; // plasmic-import: oermwjefjidrRRHcrxyCjQ/projectcss
+import sty from "./PlasmicNewComponentModal.module.css"; // plasmic-import: ZDk8OKbbuW/css
 
 export type PlasmicNewComponentModal__VariantMembers = {
   showTemplates: "showTemplates";
@@ -491,7 +491,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
   body: "div";

@@ -40,7 +40,7 @@ import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmi
 import sty from "./PlasmicDimTokenSelector.module.css"; // plasmic-import: s1ridHP4Z3T/css
 
 import TriangleBottomIcon from "../plasmic_kit/PlasmicIcon__TriangleBottom"; // plasmic-import: A8NQUZ7Lg1OHO/icon
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -176,6 +176,7 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.valueSetState,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -277,6 +278,7 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
                 </Chip>
               </React.Fragment>
             ),
+
             value: args.existingTokens,
             className: classNames(sty.slotTargetExistingTokens, {
               [sty.slotTargetExistingTokensshowCurrentTokens]: hasVariant(
@@ -413,6 +415,7 @@ const PlasmicDescendants = {
     "suffixContainer",
     "dropdownToggle",
   ],
+
   existingTokensContainer: ["existingTokensContainer"],
   textbox: ["textbox"],
   suffixContainer: ["suffixContainer", "dropdownToggle"],
@@ -434,6 +437,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDimTokenSelector__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

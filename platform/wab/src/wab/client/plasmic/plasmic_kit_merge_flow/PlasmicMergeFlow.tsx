@@ -15,66 +15,39 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
-  PlasmicIcon as PlasmicIcon__,
   PlasmicImg as PlasmicImg__,
-  PlasmicLink as PlasmicLink__,
-  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
   Stack as Stack__,
   StrictProps,
-  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
-  generateOnMutateForSpec,
   generateStateOnChangeProp,
-  generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
-  get as $stateGet,
   hasVariant,
-  initializeCodeComponentStates,
-  initializePlasmicStates,
-  makeFragment,
-  omit,
-  pick,
-  renderPlasmicSlot,
-  set as $stateSet,
   useCurrentUser,
   useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName,
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions,
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import Switch from "../../components/merge/Switch"; // plasmic-import: AJepyKzS-T-/component
 import Conflict from "../../components/merge/Conflict"; // plasmic-import: RM-Ya_c-mv/component
 import LineItem from "../../components/merge/LineItem"; // plasmic-import: VgvN9iOqwZ/component
+import Switch from "../../components/merge/Switch"; // plasmic-import: AJepyKzS-T-/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_merge_flow.module.css"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/projectcss
 import sty from "./PlasmicMergeFlow.module.css"; // plasmic-import: A4VINgKjc8/css
 
-import FramePlusIcon from "./icons/PlasmicIcon__FramePlus"; // plasmic-import: 9_qXsh2_0/icon
+import ArrowRightIcon from "./icons/PlasmicIcon__ArrowRight"; // plasmic-import: b32FQsRIZF/icon
 import ChevronDownIcon from "./icons/PlasmicIcon__ChevronDown"; // plasmic-import: eV4_yyuiy3/icon
 import CloseIcon from "./icons/PlasmicIcon__Close"; // plasmic-import: YCOFZmA9Gr/icon
-import ArrowRightIcon from "./icons/PlasmicIcon__ArrowRight"; // plasmic-import: b32FQsRIZF/icon
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import treeV2EVpmODo from "./images/tree.svg"; // plasmic-import: v2eVPM-oDO/picture
+import FramePlusIcon from "./icons/PlasmicIcon__FramePlus"; // plasmic-import: 9_qXsh2_0/icon
 import plusCnRm3QpPqQ from "./images/plus.svg"; // plasmic-import: CnRm3QPPqQ/picture
+import treeV2EVpmODo from "./images/tree.svg"; // plasmic-import: v2eVPM-oDO/picture
 
 createPlasmicElementProxy;
 
@@ -259,6 +232,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.blocked,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -1909,6 +1883,7 @@ const PlasmicDescendants = {
     "finishButton",
     "spinnerContainer",
   ],
+
   reviewAndMergeBranch: [
     "reviewAndMergeBranch",
     "frame8",
@@ -2009,6 +1984,7 @@ const PlasmicDescendants = {
     "cancelButton",
     "finishButton",
   ],
+
   frame8: [
     "frame8",
     "frame25",
@@ -2108,6 +2084,7 @@ const PlasmicDescendants = {
     "cancelButton",
     "finishButton",
   ],
+
   frame25: [
     "frame25",
     "frame1864",
@@ -2141,6 +2118,7 @@ const PlasmicDescendants = {
     "labelIconsContainer4",
     "endIconsContainer4",
   ],
+
   frame1864: [
     "frame1864",
     "button",
@@ -2158,6 +2136,7 @@ const PlasmicDescendants = {
     "labelIconsContainer2",
     "endIconsContainer2",
   ],
+
   button: [
     "button",
     "startIconsContainer",
@@ -2167,6 +2146,7 @@ const PlasmicDescendants = {
     "labelIconsContainer",
     "endIconsContainer",
   ],
+
   startIconsContainer: ["startIconsContainer"],
   labelsContainer: [
     "labelsContainer",
@@ -2174,6 +2154,7 @@ const PlasmicDescendants = {
     "label",
     "labelIconsContainer",
   ],
+
   labelText: ["labelText", "label"],
   label: ["label"],
   labelIconsContainer: ["labelIconsContainer"],
@@ -2187,6 +2168,7 @@ const PlasmicDescendants = {
     "labelIconsContainer2",
     "endIconsContainer2",
   ],
+
   startIconsContainer2: ["startIconsContainer2"],
   labelsContainer2: [
     "labelsContainer2",
@@ -2194,6 +2176,7 @@ const PlasmicDescendants = {
     "label2",
     "labelIconsContainer2",
   ],
+
   labelText2: ["labelText2", "label2"],
   label2: ["label2"],
   labelIconsContainer2: ["labelIconsContainer2"],
@@ -2215,6 +2198,7 @@ const PlasmicDescendants = {
     "labelIconsContainer4",
     "endIconsContainer4",
   ],
+
   sourceBranchChanges: [
     "sourceBranchChanges",
     "startIconsContainer3",
@@ -2224,6 +2208,7 @@ const PlasmicDescendants = {
     "labelIconsContainer3",
     "endIconsContainer3",
   ],
+
   startIconsContainer3: ["startIconsContainer3"],
   labelsContainer3: [
     "labelsContainer3",
@@ -2231,6 +2216,7 @@ const PlasmicDescendants = {
     "label3",
     "labelIconsContainer3",
   ],
+
   labelText3: ["labelText3", "label3"],
   label3: ["label3"],
   labelIconsContainer3: ["labelIconsContainer3"],
@@ -2244,6 +2230,7 @@ const PlasmicDescendants = {
     "labelIconsContainer4",
     "endIconsContainer4",
   ],
+
   startIconsContainer4: ["startIconsContainer4"],
   labelsContainer4: [
     "labelsContainer4",
@@ -2251,6 +2238,7 @@ const PlasmicDescendants = {
     "label4",
     "labelIconsContainer4",
   ],
+
   labelText4: ["labelText4", "label4"],
   label4: ["label4"],
   labelIconsContainer4: ["labelIconsContainer4"],
@@ -2301,6 +2289,7 @@ const PlasmicDescendants = {
     "name2",
     "name3",
   ],
+
   frame1857: [
     "frame1857",
     "button5",
@@ -2314,6 +2303,7 @@ const PlasmicDescendants = {
     "showAllSwitchContainer",
     "showAllSwitch",
   ],
+
   button5: [
     "button5",
     "startIconsContainer5",
@@ -2324,6 +2314,7 @@ const PlasmicDescendants = {
     "labelIconsContainer5",
     "endIconsContainer5",
   ],
+
   startIconsContainer5: ["startIconsContainer5"],
   labelsContainer5: [
     "labelsContainer5",
@@ -2332,6 +2323,7 @@ const PlasmicDescendants = {
     "label6",
     "labelIconsContainer5",
   ],
+
   labelText5: ["labelText5", "label5", "label6"],
   label5: ["label5"],
   label6: ["label6"],
@@ -2371,6 +2363,7 @@ const PlasmicDescendants = {
     "name2",
     "name3",
   ],
+
   frame1860: [
     "frame1860",
     "button7",
@@ -2396,6 +2389,7 @@ const PlasmicDescendants = {
     "labelIconsContainer9",
     "endIconsContainer9",
   ],
+
   button7: [
     "button7",
     "startIconsContainer7",
@@ -2405,6 +2399,7 @@ const PlasmicDescendants = {
     "labelIconsContainer7",
     "endIconsContainer7",
   ],
+
   startIconsContainer7: ["startIconsContainer7"],
   labelsContainer7: [
     "labelsContainer7",
@@ -2412,6 +2407,7 @@ const PlasmicDescendants = {
     "label8",
     "labelIconsContainer7",
   ],
+
   labelText7: ["labelText7", "label8"],
   label8: ["label8"],
   labelIconsContainer7: ["labelIconsContainer7"],
@@ -2433,6 +2429,7 @@ const PlasmicDescendants = {
     "labelIconsContainer9",
     "endIconsContainer9",
   ],
+
   button8: [
     "button8",
     "startIconsContainer8",
@@ -2442,6 +2439,7 @@ const PlasmicDescendants = {
     "labelIconsContainer8",
     "endIconsContainer8",
   ],
+
   startIconsContainer8: ["startIconsContainer8"],
   labelsContainer8: [
     "labelsContainer8",
@@ -2449,6 +2447,7 @@ const PlasmicDescendants = {
     "label9",
     "labelIconsContainer8",
   ],
+
   labelText8: ["labelText8", "label9"],
   label9: ["label9"],
   labelIconsContainer8: ["labelIconsContainer8"],
@@ -2462,6 +2461,7 @@ const PlasmicDescendants = {
     "labelIconsContainer9",
     "endIconsContainer9",
   ],
+
   startIconsContainer9: ["startIconsContainer9"],
   labelsContainer9: [
     "labelsContainer9",
@@ -2469,6 +2469,7 @@ const PlasmicDescendants = {
     "label10",
     "labelIconsContainer9",
   ],
+
   labelText9: ["labelText9", "label10"],
   label10: ["label10"],
   labelIconsContainer9: ["labelIconsContainer9"],
@@ -2493,6 +2494,7 @@ const PlasmicDescendants = {
     "endIconsContainer13",
     "reconciliations",
   ],
+
   frame18: [
     "frame18",
     "button13",
@@ -2503,6 +2505,7 @@ const PlasmicDescendants = {
     "labelIconsContainer13",
     "endIconsContainer13",
   ],
+
   button13: [
     "button13",
     "startIconsContainer13",
@@ -2512,6 +2515,7 @@ const PlasmicDescendants = {
     "labelIconsContainer13",
     "endIconsContainer13",
   ],
+
   startIconsContainer13: ["startIconsContainer13"],
   labelsContainer13: [
     "labelsContainer13",
@@ -2519,6 +2523,7 @@ const PlasmicDescendants = {
     "label15",
     "labelIconsContainer13",
   ],
+
   labelText13: ["labelText13", "label15"],
   label15: ["label15"],
   labelIconsContainer13: ["labelIconsContainer13"],
@@ -2529,6 +2534,7 @@ const PlasmicDescendants = {
     "mergeBlockedTitle",
     "mergeBlockedMsg",
   ],
+
   mergeBlockedTitle: ["mergeBlockedTitle"],
   mergeBlockedMsg: ["mergeBlockedMsg"],
   dividerSeparator5: ["dividerSeparator5", "frame9"],
@@ -2650,6 +2656,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicMergeFlow__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

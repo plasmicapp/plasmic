@@ -36,8 +36,8 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import sty from "./PlasmicGitJobStep.module.css"; // plasmic-import: JzpEJAQTjPX/css
 
 import DotBulletIcon from "../plasmic_kit/PlasmicIcon__DotBullet"; // plasmic-import: sABZLvi9xLkb_/icon
-import ChecksvgIcon from "../q_4_icons/icons/PlasmicIcon__Checksvg"; // plasmic-import: f0RrtBrXp/icon
-import WarningTrianglesvgIcon from "../q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
+import ChecksvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CheckSvg"; // plasmic-import: f0RrtBrXp/icon
+import WarningTrianglesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
 import ChevronRightIcon from "./icons/PlasmicIcon__ChevronRight"; // plasmic-import: 7rXqDBDnr6J/icon
 
 createPlasmicElementProxy;
@@ -101,6 +101,7 @@ function PlasmicGitJobStep__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.status,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -210,6 +211,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicGitJobStep__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

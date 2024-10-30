@@ -51,8 +51,8 @@ import PassInputIcon from "../plasmic_kit/PlasmicIcon__PassInput"; // plasmic-im
 import TextBlockIcon from "../plasmic_kit/PlasmicIcon__TextBlock"; // plasmic-import: nzc8B7oWFfsYG/icon
 import VStackBlockIcon from "../plasmic_kit/PlasmicIcon__VStackBlock"; // plasmic-import: DTUk351ydDQGv/icon
 import image49X6ZsC5Ww5 from "../plasmic_kit_design_system/images/image4.svg"; // plasmic-import: 9X6ZsC5ww5/picture
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import PlusCircleSvgIcon from "../q_4_icons/icons/PlasmicIcon__PlusCirclesvg"; // plasmic-import: tPPI666-2/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import PlusCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusCircleSvg"; // plasmic-import: tPPI666-2/icon
 
 createPlasmicElementProxy;
 
@@ -1918,6 +1918,7 @@ const PlasmicDescendants = {
     "prependButton22",
     "appendButton22",
   ],
+
   leftSearchPanel: ["leftSearchPanel"],
   content: [
     "content",
@@ -1938,6 +1939,7 @@ const PlasmicDescendants = {
     "prependButton22",
     "appendButton22",
   ],
+
   prependButton: ["prependButton"],
   appendButton: ["appendButton"],
   prependButton232222222222322: ["prependButton232222222222322"],
@@ -1985,6 +1987,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   Plasmic_2__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

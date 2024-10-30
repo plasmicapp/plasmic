@@ -224,6 +224,7 @@ const PlasmicDescendants = {
     "example16",
     "example162",
   ],
+
   freeBox: ["freeBox", "search", "text"],
   search: ["search"],
   text: ["text"],
@@ -249,6 +250,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPresetsSelector__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

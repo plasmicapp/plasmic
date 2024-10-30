@@ -42,9 +42,9 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicLeftGeneralTokensPanel.module.css"; // plasmic-import: bDbzY5jXLz/css
 
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import DownloadSvgIcon from "../q_4_icons/icons/PlasmicIcon__Downloadsvg"; // plasmic-import: Bu7POPssl/icon
-import PlusSvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import DownloadSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DownloadSvg"; // plasmic-import: Bu7POPssl/icon
+import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -123,6 +123,7 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => "",
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -310,6 +311,7 @@ const PlasmicDescendants = {
     "option",
     "content",
   ],
+
   leftSearchPanel: ["leftSearchPanel"],
   leftPaneHeader: [
     "leftPaneHeader",
@@ -318,12 +320,14 @@ const PlasmicDescendants = {
     "globalVariantSelect",
     "option",
   ],
+
   importTokensButton: ["importTokensButton"],
   globalVariantsSelectContainer: [
     "globalVariantsSelectContainer",
     "globalVariantSelect",
     "option",
   ],
+
   globalVariantSelect: ["globalVariantSelect", "option"],
   option: ["option"],
   content: ["content"],
@@ -347,6 +351,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftGeneralTokensPanel__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

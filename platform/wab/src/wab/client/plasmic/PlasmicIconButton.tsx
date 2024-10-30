@@ -36,9 +36,9 @@ import plasmic_plasmic_kit_color_tokens_css from "./plasmic_kit_q_4_color_tokens
 import sty from "./PlasmicIconButton.module.css"; // plasmic-import: LPry-TF4j22a/css
 import projectcss from "./PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 
-import ChevronDownSvgIcon from "./q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import PlusSvgIcon from "./q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
-import WarningTriangleSvgIcon from "./q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
+import ChevronDownSvgIcon from "./plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import PlusSvgIcon from "./plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import WarningTriangleSvgIcon from "./plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
 
 createPlasmicElementProxy;
 
@@ -88,6 +88,7 @@ export type PlasmicIconButton__VariantsArgs = {
     | "purple"
     | "secondary"
   >;
+
   isActive?: SingleBooleanChoiceArg<"isActive">;
   showAlert?: SingleBooleanChoiceArg<"showAlert">;
   withBackgroundHover?: SingleBooleanChoiceArg<"withBackgroundHover">;
@@ -148,6 +149,7 @@ export interface DefaultIconButtonProps {
     | "purple"
     | "secondary"
   >;
+
   isActive?: SingleBooleanChoiceArg<"isActive">;
   showAlert?: SingleBooleanChoiceArg<"showAlert">;
   withBackgroundHover?: SingleBooleanChoiceArg<"withBackgroundHover">;
@@ -247,6 +249,7 @@ function PlasmicIconButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.withDropdown,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -655,6 +658,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicIconButton__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

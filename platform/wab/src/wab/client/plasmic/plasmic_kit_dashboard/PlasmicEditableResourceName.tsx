@@ -37,7 +37,7 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicEditableResourceName.module.css"; // plasmic-import: UttGK3xVrb/css
 
-import EditsvgIcon from "../q_4_icons/icons/PlasmicIcon__Editsvg"; // plasmic-import: _Qa2gdunG/icon
+import EditsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EditSvg"; // plasmic-import: _Qa2gdunG/icon
 
 createPlasmicElementProxy;
 
@@ -119,6 +119,7 @@ function PlasmicEditableResourceName__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.size,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -238,6 +239,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicEditableResourceName__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

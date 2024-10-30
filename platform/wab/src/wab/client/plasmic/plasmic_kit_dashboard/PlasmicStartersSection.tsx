@@ -36,7 +36,7 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import sty from "./PlasmicStartersSection.module.css"; // plasmic-import: DWsPKkiyzx1/css
 
 import CheckIcon from "../plasmic_kit/PlasmicIcon__Check"; // plasmic-import: pawp1H5YxB_3B/icon
-import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyesvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
+import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyeSvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
 import image3YherfIxkolNxf from "../plasmic_kit_design_system/images/image3.svg"; // plasmic-import: yherfIxkolNXF/picture
 
 createPlasmicElementProxy;
@@ -581,6 +581,7 @@ function PlasmicStartersSection__RenderFunc(props: {
             />
           </React.Fragment>
         ),
+
         value: args.children,
       })}
     </Stack__>
@@ -602,6 +603,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicStartersSection__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

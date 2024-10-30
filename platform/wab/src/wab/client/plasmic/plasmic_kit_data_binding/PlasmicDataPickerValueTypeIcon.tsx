@@ -17,26 +17,18 @@ import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/react-web/lib/host";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
 } from "@plasmicapp/react-web";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicDataPickerValueTypeIcon.module.css"; // plasmic-import: gWylXtol8Lf/css
 
@@ -111,6 +103,7 @@ function PlasmicDataPickerValueTypeIcon__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isHovered,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = p.useDollarState(stateSpecs, {
@@ -196,6 +189,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDataPickerValueTypeIcon__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

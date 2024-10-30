@@ -17,30 +17,22 @@ import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/react-web/lib/host";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
 } from "@plasmicapp/react-web";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicCommentButton.module.css"; // plasmic-import: JnxWw8hitac/css
 
-import SpeechBubblesvgIcon from "../q_4_icons/icons/PlasmicIcon__SpeechBubblesvg"; // plasmic-import: nkJ1joJAv/icon
+import SpeechBubblesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SpeechBubbleSvg"; // plasmic-import: nkJ1joJAv/icon
 
 export type PlasmicCommentButton__VariantMembers = {
   active: "active";
@@ -171,6 +163,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCommentButton__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> = {
   // Explicitly specify variants, args, and overrides as objects
   variants?: PlasmicCommentButton__VariantsArgs;

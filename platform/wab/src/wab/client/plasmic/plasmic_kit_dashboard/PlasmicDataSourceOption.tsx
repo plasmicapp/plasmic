@@ -106,6 +106,7 @@ function PlasmicDataSourceOption__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.selected,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -188,6 +189,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDataSourceOption__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

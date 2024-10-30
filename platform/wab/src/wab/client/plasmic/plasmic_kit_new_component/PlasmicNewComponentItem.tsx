@@ -22,11 +22,11 @@ import {
 } from "@plasmicapp/react-web";
 import "@plasmicapp/react-web/lib/plasmic.css";
 import * as React from "react";
-import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyesvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
+import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyeSvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
 import plasmic_plasmic_kit_q_4_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import sty from "./PlasmicNewComponentItem.module.css"; // plasmic-import: csXhXQDIqh/css
 import projectcss from "./plasmic_plasmic_kit_new_component.module.css"; // plasmic-import: oermwjefjidrRRHcrxyCjQ/projectcss
+import sty from "./PlasmicNewComponentItem.module.css"; // plasmic-import: csXhXQDIqh/css
 
 export type PlasmicNewComponentItem__VariantMembers = {
   isSelected: "isSelected";
@@ -206,7 +206,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "button";
   image: "div";

@@ -195,6 +195,7 @@ function PlasmicStyleSelect__RenderFunc(props: {
         onChangeProp: "onChange",
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -450,6 +451,7 @@ const PlasmicDescendants = {
     "overlay",
     "optionsContainer",
   ],
+
   trigger: ["trigger", "contentContainer", "dropdownIcon"],
   contentContainer: ["contentContainer"],
   dropdownIcon: ["dropdownIcon"],
@@ -473,6 +475,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicStyleSelect__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

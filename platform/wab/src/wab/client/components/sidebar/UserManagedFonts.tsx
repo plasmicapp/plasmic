@@ -5,7 +5,7 @@ import { IFrameAwareDropdownMenu } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { VERT_MENU_ICON } from "@/wab/client/icons";
 import PlasmicLeftFontsPanel from "@/wab/client/plasmic/plasmic_kit/PlasmicLeftFontsPanel";
-import AlertIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__WarningTrianglesvg";
+import AlertIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { removeFromArray } from "@/wab/commons/collections";

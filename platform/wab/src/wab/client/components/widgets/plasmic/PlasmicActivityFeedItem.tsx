@@ -60,6 +60,7 @@ export type PlasmicActivityFeedItem__VariantsArgs = {
     | "anonymousVisited"
     | "versionPublished"
   >;
+
   selected?: SingleBooleanChoiceArg<"selected">;
 };
 type VariantPropType = keyof PlasmicActivityFeedItem__VariantsArgs;
@@ -98,6 +99,7 @@ export interface DefaultActivityFeedItemProps {
     | "anonymousVisited"
     | "versionPublished"
   >;
+
   selected?: SingleBooleanChoiceArg<"selected">;
   className?: string;
 }
@@ -147,6 +149,7 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.selected,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -392,6 +395,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicActivityFeedItem__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

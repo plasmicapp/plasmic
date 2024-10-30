@@ -17,29 +17,19 @@ import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/react-web/lib/host";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
 } from "@plasmicapp/react-web";
 import VariantRow from "../../components/canvas/VariantsBar/VariantRow"; // plasmic-import: 0Rv3wK0NN-/component
-import VariantsSectionDivider from "../../components/canvas/VariantsBar/VariantsSectionDivider"; // plasmic-import: GPePwGKSYX/component
 import VariantsGroupLabel from "../../components/canvas/VariantsBar/VariantsGroupLabel"; // plasmic-import: 73fZB1b9iN/component
+import VariantsSectionDivider from "../../components/canvas/VariantsBar/VariantsSectionDivider"; // plasmic-import: GPePwGKSYX/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_variants_bar.module.css"; // plasmic-import: kdj5vahTyUKxznuR6rrtt6/projectcss
 import sty from "./PlasmicVariantsDrawer.module.css"; // plasmic-import: 8q06bNJu0e/css
 
@@ -285,6 +275,7 @@ function PlasmicVariantsDrawer__RenderFunc(props: {
               </VariantRow>
             </React.Fragment>
           ),
+
           value: args.children,
         })}
       </div>
@@ -301,7 +292,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
   freeBox: "div";
@@ -315,6 +306,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicVariantsDrawer__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> = {
   // Explicitly specify variants, args, and overrides as objects
   variants?: PlasmicVariantsDrawer__VariantsArgs;

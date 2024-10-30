@@ -39,11 +39,11 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicStarterGroup.module.css"; // plasmic-import: u6dq5eydCj/css
 
-import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyesvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
+import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyeSvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
 import image3YherfIxkolNxf from "../plasmic_kit_design_system/images/image3.svg"; // plasmic-import: yherfIxkolNXF/picture
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ArrowUpRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowUpRightsvg"; // plasmic-import: N_BtK6grX/icon
-import InformationsvgIcon from "../q_4_icons/icons/PlasmicIcon__Informationsvg"; // plasmic-import: hqBNVBJWB/icon
+import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ArrowUpRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowUpRightSvg"; // plasmic-import: N_BtK6grX/icon
+import InformationsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__InformationSvg"; // plasmic-import: hqBNVBJWB/icon
 import CheckIcon from "./PlasmicIcon__Check"; // plasmic-import: pawp1H5YxB_3B/icon
 
 createPlasmicElementProxy;
@@ -133,6 +133,7 @@ function PlasmicStarterGroup__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.gridColumns,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -336,6 +337,7 @@ function PlasmicStarterGroup__RenderFunc(props: {
               </StarterProject>
             </React.Fragment>
           ),
+
           value: args.container,
         })}
       </div>
@@ -364,6 +366,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicStarterGroup__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

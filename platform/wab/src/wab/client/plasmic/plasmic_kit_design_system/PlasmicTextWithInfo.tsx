@@ -24,15 +24,8 @@ import {
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName,
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions,
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -40,7 +33,7 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicTextWithInfo.module.css"; // plasmic-import: -EsDm7v023/css
 
-import InformationSvgIcon from "../q_4_icons/icons/PlasmicIcon__Informationsvg"; // plasmic-import: hqBNVBJWB/icon
+import InformationSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__InformationSvg"; // plasmic-import: hqBNVBJWB/icon
 
 createPlasmicElementProxy;
 
@@ -111,6 +104,7 @@ function PlasmicTextWithInfo__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.medium,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -172,6 +166,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicTextWithInfo__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

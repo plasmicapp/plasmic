@@ -183,6 +183,7 @@ const PlasmicDescendants = {
     "middle",
     "right",
   ],
+
   left: ["left", "link", "svg", "cmsName", "cmsNameValue"],
   link: ["link", "svg"],
   svg: ["svg"],
@@ -210,6 +211,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCmsTopBar__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

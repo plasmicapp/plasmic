@@ -33,7 +33,7 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import sty from "./PlasmicCmsEntryItem.module.css"; // plasmic-import: girCdMST6R/css
 import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
 
-import PencilSvgIcon from "../q_4_icons/icons/PlasmicIcon__Pencilsvg"; // plasmic-import: 540duoJvb/icon
+import PencilSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PencilSvg"; // plasmic-import: 540duoJvb/icon
 
 createPlasmicElementProxy;
 
@@ -119,6 +119,7 @@ function PlasmicCmsEntryItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasDraft,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -231,6 +232,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCmsEntryItem__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

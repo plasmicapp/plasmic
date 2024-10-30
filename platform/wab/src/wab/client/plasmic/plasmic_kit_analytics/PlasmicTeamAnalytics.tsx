@@ -12,36 +12,27 @@
 // Component: RrG72JEyZOXn
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/host";
+import * as p from "@plasmicapp/react-web";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
 } from "@plasmicapp/react-web";
 import AnalyticsHeader from "../../components/analytics/AnalyticsHeader"; // plasmic-import: lpGYGncEBV/component
-import TeamFilters from "../../components/analytics/TeamFilters"; // plasmic-import: U5oM6fe0OlY/component
-import DataFilters from "../../components/analytics/DataFilters"; // plasmic-import: Dza4MqGNx4p/component
 import ChartView from "../../components/analytics/ChartView"; // plasmic-import: vSQc3cNg5Q/component
+import DataFilters from "../../components/analytics/DataFilters"; // plasmic-import: Dza4MqGNx4p/component
+import TeamFilters from "../../components/analytics/TeamFilters"; // plasmic-import: U5oM6fe0OlY/component
 
 import { useScreenVariants as useScreenVariantsnXbQfeebYy0 } from "../q_4_text_mixins_product/PlasmicGlobalVariant__Screen"; // plasmic-import: NXbQfeebYy0/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_analytics.module.css"; // plasmic-import: cQnF1HuwK97HkvkrC6uRk2/projectcss
 import sty from "./PlasmicTeamAnalytics.module.css"; // plasmic-import: RrG72JEyZOXn/css
 
@@ -159,7 +150,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
   header: typeof AnalyticsHeader;

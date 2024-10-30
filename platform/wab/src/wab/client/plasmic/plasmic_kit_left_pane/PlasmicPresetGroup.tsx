@@ -111,6 +111,7 @@ function PlasmicPresetGroup__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideGroupName,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -206,6 +207,7 @@ function PlasmicPresetGroup__RenderFunc(props: {
             />
           </React.Fragment>
         ),
+
         value: args.children,
       })}
     </Stack__>
@@ -229,6 +231,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPresetGroup__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -37,7 +37,7 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import sty from "./PlasmicBill.module.css"; // plasmic-import: sK-iPs7I1Z/css
 
 import MinusIcon from "../plasmic_kit/PlasmicIcon__Minus"; // plasmic-import: dHjXz96374PLA/icon
-import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
+import PlussvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -146,6 +146,7 @@ function PlasmicBill__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideSeatPrice,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -467,6 +468,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicBill__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

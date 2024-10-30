@@ -33,8 +33,8 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicMenuButton.module.css"; // plasmic-import: h69wHrrKtL/css
 
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import DotsVerticalSvgIcon from "../q_4_icons/icons/PlasmicIcon__DotsVerticalsvg"; // plasmic-import: joYBQwH-P/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import DotsVerticalSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DotsVerticalSvg"; // plasmic-import: joYBQwH-P/icon
 
 createPlasmicElementProxy;
 
@@ -135,6 +135,7 @@ function PlasmicMenuButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.size,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -215,6 +216,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicMenuButton__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

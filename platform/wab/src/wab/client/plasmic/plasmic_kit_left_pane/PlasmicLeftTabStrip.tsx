@@ -46,25 +46,25 @@ import MixinIcon from "../plasmic_kit/PlasmicIcon__Mixin"; // plasmic-import: XA
 import TreeIcon from "../plasmic_kit/PlasmicIcon__Tree"; // plasmic-import: 4KZjuPY_m0VTb/icon
 import WandIcon from "../plasmic_kit/PlasmicIcon__Wand"; // plasmic-import: vTVU9zQnDPZGl/icon
 import KeyboardIcon from "../plasmic_kit_design_system/PlasmicIcon__Keyboard"; // plasmic-import: tSLSUCy1RH/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ClockSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ClockSvg"; // plasmic-import: 9MhqTIkUT/icon
+import ComponentSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentSvg"; // plasmic-import: vJVrKlrDD/icon
+import ComponentsSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentsSvg"; // plasmic-import: coPzxnFyi/icon
+import DevicesSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DevicesSvg"; // plasmic-import: bbAxEiIwy/icon
+import DiamondsSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DiamondsSvg"; // plasmic-import: uzBbTcdyE/icon
+import DotsHorizontalCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DotsHorizontalCircleSvg"; // plasmic-import: xdn8wiJBv/icon
+import DownloadSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DownloadSvg"; // plasmic-import: Bu7POPssl/icon
+import FigmaSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__FigmaSvg"; // plasmic-import: cReVjwCaJ/icon
+import File2SvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__File2Svg"; // plasmic-import: zldfLXBdc/icon
 import FontFamily2SvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__FontFamily2Svg"; // plasmic-import: mlYvYWbm5/icon
-import ComponentSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Componentsvg"; // plasmic-import: vJVrKlrDD/icon
-import DevicesSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Devicessvg"; // plasmic-import: bbAxEiIwy/icon
-import DiamondsSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Diamondssvg"; // plasmic-import: uzBbTcdyE/icon
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ClockSvgIcon from "../q_4_icons/icons/PlasmicIcon__Clocksvg"; // plasmic-import: 9MhqTIkUT/icon
-import ComponentsSvgIcon from "../q_4_icons/icons/PlasmicIcon__Componentssvg"; // plasmic-import: coPzxnFyi/icon
-import DotsHorizontalCircleSvgIcon from "../q_4_icons/icons/PlasmicIcon__DotsHorizontalCirclesvg"; // plasmic-import: xdn8wiJBv/icon
-import DownloadSvgIcon from "../q_4_icons/icons/PlasmicIcon__Downloadsvg"; // plasmic-import: Bu7POPssl/icon
-import FigmaSvgIcon from "../q_4_icons/icons/PlasmicIcon__Figmasvg"; // plasmic-import: cReVjwCaJ/icon
-import File2SvgIcon from "../q_4_icons/icons/PlasmicIcon__File2Svg"; // plasmic-import: zldfLXBdc/icon
-import HelpCircleSvgIcon from "../q_4_icons/icons/PlasmicIcon__HelpCirclesvg"; // plasmic-import: zY-2PPrFT/icon
-import PaintbrushSvgIcon from "../q_4_icons/icons/PlasmicIcon__Paintbrushsvg"; // plasmic-import: WPHwb7V6d/icon
-import PhotoSvgIcon from "../q_4_icons/icons/PlasmicIcon__Photosvg"; // plasmic-import: BzQDBpjA9/icon
-import PlugSvgIcon from "../q_4_icons/icons/PlasmicIcon__Plugsvg"; // plasmic-import: s2iV8XTPW/icon
-import Settings2SvgIcon from "../q_4_icons/icons/PlasmicIcon__Settings2Svg"; // plasmic-import: jFYH6BL9T/icon
-import SpeechBubbleSvgIcon from "../q_4_icons/icons/PlasmicIcon__SpeechBubblesvg"; // plasmic-import: nkJ1joJAv/icon
-import UserSvgIcon from "../q_4_icons/icons/PlasmicIcon__Usersvg"; // plasmic-import: ejczgMIkT/icon
-import WarningTriangleSvgIcon from "../q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
+import HelpCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__HelpCircleSvg"; // plasmic-import: zY-2PPrFT/icon
+import PaintbrushSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PaintbrushSvg"; // plasmic-import: WPHwb7V6d/icon
+import PhotoSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PhotoSvg"; // plasmic-import: BzQDBpjA9/icon
+import PlugSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlugSvg"; // plasmic-import: s2iV8XTPW/icon
+import Settings2SvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__Settings2Svg"; // plasmic-import: jFYH6BL9T/icon
+import SpeechBubbleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SpeechBubbleSvg"; // plasmic-import: nkJ1joJAv/icon
+import UserSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UserSvg"; // plasmic-import: ejczgMIkT/icon
+import WarningTriangleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
 import IconIcon from "./icons/PlasmicIcon__Icon"; // plasmic-import: CD14l2YUnk/icon
 import image9D5NIfkhj from "./images/image.svg"; // plasmic-import: 9D5nIFKHJ/picture
 
@@ -112,6 +112,7 @@ export type PlasmicLeftTabStrip__VariantsArgs = {
     | "copilot"
     | "lint"
   >;
+
   showAvatar?: SingleBooleanChoiceArg<"showAvatar">;
   withInsertButton?: SingleBooleanChoiceArg<"withInsertButton">;
 };
@@ -176,6 +177,7 @@ export interface DefaultLeftTabStripProps {
     | "copilot"
     | "lint"
   >;
+
   showAvatar?: SingleBooleanChoiceArg<"showAvatar">;
   withInsertButton?: SingleBooleanChoiceArg<"withInsertButton">;
   className?: string;
@@ -233,6 +235,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           $props.withInsertButton,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -363,6 +366,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
               />
             </React.Fragment>
           ),
+
           value: args.buttons,
         })}
       </div>
@@ -1107,6 +1111,7 @@ const PlasmicDescendants = {
     "players",
     "avatar",
   ],
+
   insert: ["insert"],
   divider: ["divider"],
   copilot: ["copilot"],
@@ -1166,6 +1171,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftTabStrip__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

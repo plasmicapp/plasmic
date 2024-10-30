@@ -13,40 +13,28 @@
 import * as React from "react";
 
 import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/host";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
 } from "@plasmicapp/react-web";
-import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
-import Switch from "../../components/widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
-import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
-import Select__OptionGroup from "../../components/widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
+import Switch from "../../components/widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
+import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_docs_portal.module.css"; // plasmic-import: dyzP6dbCdycwJpqiR2zkwe/projectcss
 import sty from "./PlasmicDocsPropsTableRow.module.css"; // plasmic-import: MQ5YoyUM0K/css
 
-import SearchsvgIcon from "../q_4_icons/icons/PlasmicIcon__Searchsvg"; // plasmic-import: R5DLz11OA/icon
-import ClosesvgIcon from "../q_4_icons/icons/PlasmicIcon__Closesvg"; // plasmic-import: DhvEHyCHT/icon
-import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
+import ClosesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import SearchsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
 
 export type PlasmicDocsPropsTableRow__VariantMembers = {
   controlType: "boolean" | "text" | "choice" | "renderable" | "object";
@@ -645,7 +633,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
   textControl: typeof Textbox;

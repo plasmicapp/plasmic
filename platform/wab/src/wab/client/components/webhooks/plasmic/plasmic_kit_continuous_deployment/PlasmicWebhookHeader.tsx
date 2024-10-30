@@ -37,7 +37,7 @@ import sty from "./PlasmicWebhookHeader.module.css"; // plasmic-import: OkB-fXuJ
 
 import PlusIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
 import TrashIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
-import ChevronDownsvgIcon from "../../../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownsvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -110,6 +110,7 @@ function PlasmicWebhookHeader__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideDelete,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -284,6 +285,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicWebhookHeader__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

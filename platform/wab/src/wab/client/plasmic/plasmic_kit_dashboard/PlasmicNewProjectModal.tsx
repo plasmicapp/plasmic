@@ -35,10 +35,10 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import sty from "./PlasmicNewProjectModal.module.css"; // plasmic-import: s87vSHZpzQ/css
 
 import CheckIcon from "../plasmic_kit/PlasmicIcon__Check"; // plasmic-import: pawp1H5YxB_3B/icon
-import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyesvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
+import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyeSvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
 import image3YherfIxkolNxf from "../plasmic_kit_design_system/images/image3.svg"; // plasmic-import: yherfIxkolNXF/picture
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -624,6 +624,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
               />
             </React.Fragment>
           ),
+
           value: args.children,
         })}
       </Stack__>
@@ -652,6 +653,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicNewProjectModal__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

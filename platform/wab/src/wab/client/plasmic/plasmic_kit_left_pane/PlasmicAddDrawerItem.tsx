@@ -40,10 +40,10 @@ import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../
 import sty from "./PlasmicAddDrawerItem.module.css"; // plasmic-import: isQPD0RPCw/css
 
 import image49X6ZsC5Ww5 from "../plasmic_kit_design_system/images/image4.svg"; // plasmic-import: 9X6ZsC5ww5/picture
-import AfterSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Aftersvg"; // plasmic-import: RYZCFr_yc/icon
-import BeforeSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Beforesvg"; // plasmic-import: AobbKyfJE/icon
-import ComponentSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Componentsvg"; // plasmic-import: vJVrKlrDD/icon
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import AfterSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__AfterSvg"; // plasmic-import: RYZCFr_yc/icon
+import BeforeSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BeforeSvg"; // plasmic-import: AobbKyfJE/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ComponentSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentSvg"; // plasmic-import: vJVrKlrDD/icon
 
 createPlasmicElementProxy;
 
@@ -137,6 +137,7 @@ function PlasmicAddDrawerItem__RenderFunc(props: {
           $props.showPreviewImage,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -239,6 +240,7 @@ function PlasmicAddDrawerItem__RenderFunc(props: {
               </IconButton>
             </React.Fragment>
           ),
+
           value: args.actions,
         })}
         icon={renderPlasmicSlot({
@@ -292,6 +294,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicAddDrawerItem__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

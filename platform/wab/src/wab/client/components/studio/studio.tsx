@@ -10,7 +10,7 @@ import {
   getReactWebBundle,
 } from "@/wab/client/components/studio/studio-bundles";
 import { fixStudioIframePositionAndOverflow } from "@/wab/client/dom-utils";
-import RocketsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Rocketsvg";
+import RocketsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__RocketSvg";
 import { bindStudioShortcutHandlers } from "@/wab/client/shortcuts/studio/studio-shortcut-handlers";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TopProjectNavTour } from "@/wab/client/tours/TopProjectNavTour";

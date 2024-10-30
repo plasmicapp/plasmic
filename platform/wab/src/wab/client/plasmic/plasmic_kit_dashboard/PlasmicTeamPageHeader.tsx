@@ -43,8 +43,8 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import sty from "./PlasmicTeamPageHeader.module.css"; // plasmic-import: pcPdf_yULU3/css
 
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
-import AppssvgIcon from "../q_4_icons/icons/PlasmicIcon__Appssvg"; // plasmic-import: FzrInIPnx/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import AppssvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__AppsSvg"; // plasmic-import: FzrInIPnx/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -114,6 +114,7 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.accessLevel,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -405,6 +406,7 @@ const PlasmicDescendants = {
     "settingsButton",
     "filter",
   ],
+
   editableName: ["editableName"],
   newWorkspaceButton: ["newWorkspaceButton"],
   settingsButton: ["settingsButton"],
@@ -426,6 +428,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicTeamPageHeader__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

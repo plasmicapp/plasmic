@@ -41,8 +41,8 @@ import sty from "./PlasmicListSection.module.css"; // plasmic-import: znioE83CPU
 import ComponentIcon from "../plasmic_kit/PlasmicIcon__Component"; // plasmic-import: nNWEF4jI3s5DI/icon
 import EyeIcon from "../plasmic_kit/PlasmicIcon__Eye"; // plasmic-import: A2FnGYgDh4e3U/icon
 import VariantGroupIcon from "../plasmic_kit/PlasmicIcon__VariantGroup"; // plasmic-import: pyS6pK4Spx-QF/icon
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import PlusCircleSvgIcon from "../q_4_icons/icons/PlasmicIcon__PlusCirclesvg"; // plasmic-import: tPPI666-2/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import PlusCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusCircleSvg"; // plasmic-import: tPPI666-2/icon
 
 createPlasmicElementProxy;
 
@@ -131,6 +131,7 @@ function PlasmicListSection__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.collapseState,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -287,6 +288,7 @@ function PlasmicListSection__RenderFunc(props: {
                 </ListItem>
               </React.Fragment>
             ),
+
             value: args.children,
           })}
         </div>
@@ -321,6 +323,7 @@ const PlasmicDescendants = {
     "itemsContainer",
     "listSectionSeparator",
   ],
+
   listSectionHeader: ["listSectionHeader", "iconButton"],
   iconButton: ["iconButton"],
   itemsContainer: ["itemsContainer"],
@@ -342,6 +345,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicListSection__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -38,7 +38,7 @@ import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plas
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicDatabaseListItem.module.css"; // plasmic-import: G_RLd7TB5Ns/css
 
-import DatabasesvgIcon from "../q_4_icons/icons/PlasmicIcon__Databasesvg"; // plasmic-import: I6B50v8zj/icon
+import DatabasesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DatabaseSvg"; // plasmic-import: I6B50v8zj/icon
 
 createPlasmicElementProxy;
 
@@ -214,6 +214,7 @@ const PlasmicDescendants = {
     "menuButton",
     "updatedJustNow",
   ],
+
   left: ["left", "svg", "editableName"],
   svg: ["svg"],
   editableName: ["editableName"],
@@ -241,6 +242,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDatabaseListItem__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

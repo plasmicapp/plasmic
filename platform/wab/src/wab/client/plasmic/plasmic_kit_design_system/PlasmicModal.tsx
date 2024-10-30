@@ -24,15 +24,8 @@ import {
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName,
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions,
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
@@ -121,6 +114,7 @@ function PlasmicModal__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.tintBackground,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -256,6 +250,7 @@ function PlasmicModal__RenderFunc(props: {
                 </Button>
               </React.Fragment>
             ),
+
             value: args.footer,
           })}
         </Stack__>
@@ -279,6 +274,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicModal__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

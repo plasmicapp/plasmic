@@ -136,6 +136,7 @@ function PlasmicCmsModelsList__RenderFunc(props: {
           $props.hasArchivedModels,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -283,6 +284,7 @@ function PlasmicCmsModelsList__RenderFunc(props: {
                   />
                 </React.Fragment>
               ),
+
               value: args.children,
             })}
           </Stack__>
@@ -384,6 +386,7 @@ function PlasmicCmsModelsList__RenderFunc(props: {
                       />
                     </React.Fragment>
                   ),
+
                   value: args.archivedModels,
                 })}
               </Stack__>
@@ -432,6 +435,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCmsModelsList__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -1,7 +1,7 @@
 import { CanvasTransformedBox } from "@/wab/client/components/canvas/CanvasTransformedBox";
 import { useRerenderOnUserBodyChange } from "@/wab/client/components/canvas/UserBodyObserver";
 import { hasLayoutBox } from "@/wab/client/dom";
-import WarningIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__WarningTrianglesvg";
+import WarningIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
 import { globalHookCtx } from "@/wab/client/react-global-hook/globalHook";
 import { RightTabKey, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";

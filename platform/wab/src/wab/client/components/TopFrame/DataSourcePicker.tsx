@@ -4,9 +4,10 @@ import { Spinner } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import IconButton from "@/wab/client/components/widgets/IconButton";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import Select from "@/wab/client/components/widgets/Select";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
-import RefreshsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Refreshsvg";
+import RefreshsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__RefreshSvg";
 import { ApiProject, WorkspaceId } from "@/wab/shared/ApiSchema";
 import {
   DataSourceType,
@@ -20,7 +21,6 @@ import {
 } from "@/wab/shared/Labels";
 import { Form } from "antd";
 import React from "react";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 import useSWR from "swr";
 
 interface DataSourcePickerProps {

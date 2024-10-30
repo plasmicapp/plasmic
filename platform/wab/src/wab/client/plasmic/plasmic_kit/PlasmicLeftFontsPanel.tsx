@@ -35,7 +35,7 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicLeftFontsPanel.module.css"; // plasmic-import: 5oz1qmvGBe/css
 
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import PlusIcon from "./PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
 
 createPlasmicElementProxy;
@@ -182,6 +182,7 @@ const PlasmicDescendants = {
     "newFontButton",
     "content",
   ],
+
   leftSearchPanel: ["leftSearchPanel"],
   fontsHeader: ["fontsHeader", "link", "newFontButton"],
   link: ["link"],
@@ -205,6 +206,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftFontsPanel__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

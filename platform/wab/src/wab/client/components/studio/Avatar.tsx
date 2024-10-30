@@ -1,8 +1,8 @@
-import AnonymousIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Usersvg";
-import { nullToUndefined, simpleHash } from "@/wab/shared/common";
-import { Side } from "@/wab/shared/geom";
+import AnonymousIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__UserSvg";
 import { ApiUser } from "@/wab/shared/ApiSchema";
 import { fullNameAndEmail, getUserEmail } from "@/wab/shared/ApiSchemaUtil";
+import { nullToUndefined, simpleHash } from "@/wab/shared/common";
+import { Side } from "@/wab/shared/geom";
 import { Chroma } from "@/wab/shared/utils/color-utils";
 import { Tooltip } from "antd";
 import classNames from "classnames";

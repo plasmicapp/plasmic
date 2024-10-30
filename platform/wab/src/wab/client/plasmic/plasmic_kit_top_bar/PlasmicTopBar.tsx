@@ -17,56 +17,48 @@ import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/react-web/lib/host";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  useTrigger,
 } from "@plasmicapp/react-web";
-import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
-import SaveIndicator from "../../components/top-bar/SaveIndicator"; // plasmic-import: HYPZr2nWSgs/component
-import BranchSwitcher from "../../components/top-bar/BranchSwitcher"; // plasmic-import: IQWpmX8J3t/component
-import ArenaSwitcher from "../../components/top-bar/ArenaSwitcher"; // plasmic-import: OAMl2pw5C9W/component
-import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
-import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
-import Select__OptionGroup from "../../components/widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
-import VariantsComboSelect from "../../components/top-bar/VariantsComboSelect"; // plasmic-import: I6gjdy639O/component
+import CommentButton from "../../components/CommentButton"; // plasmic-import: JnxWw8hitac/component
 import FreeTrial from "../../components/FreeTrial"; // plasmic-import: p3GgKAlaQe/component
 import ViewAsButton from "../../components/app-auth/ViewAsButton"; // plasmic-import: MJoB9g7giNL/component
-import ZoomButton from "../../components/top-bar/ZoomButton"; // plasmic-import: UsJCR-Jtn5/component
-import ViewButton from "../../components/top-bar/ViewButton"; // plasmic-import: -r2DBYss6/component
-import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
-import LivePopOutButton from "../../components/top-bar/LivePopOutButton"; // plasmic-import: ND5ZuEZMUe/component
-import CommentButton from "../../components/CommentButton"; // plasmic-import: JnxWw8hitac/component
+import ArenaSwitcher from "../../components/top-bar/ArenaSwitcher"; // plasmic-import: OAMl2pw5C9W/component
+import BranchSwitcher from "../../components/top-bar/BranchSwitcher"; // plasmic-import: IQWpmX8J3t/component
 import CodeButton from "../../components/top-bar/CodeButton"; // plasmic-import: FCNHcPh1ZR/component
-import ShareButton from "../../components/top-bar/ShareButton"; // plasmic-import: mnPFthIw2I/component
+import LivePopOutButton from "../../components/top-bar/LivePopOutButton"; // plasmic-import: ND5ZuEZMUe/component
 import PublishButton from "../../components/top-bar/PublishButton"; // plasmic-import: yXRcEjTceQ/component
+import SaveIndicator from "../../components/top-bar/SaveIndicator"; // plasmic-import: HYPZr2nWSgs/component
+import ShareButton from "../../components/top-bar/ShareButton"; // plasmic-import: mnPFthIw2I/component
+import VariantsComboSelect from "../../components/top-bar/VariantsComboSelect"; // plasmic-import: I6gjdy639O/component
+import ViewButton from "../../components/top-bar/ViewButton"; // plasmic-import: -r2DBYss6/component
+import ZoomButton from "../../components/top-bar/ZoomButton"; // plasmic-import: UsJCR-Jtn5/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
+import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicTopBar.module.css"; // plasmic-import: tNBvs5bIAy/css
+import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 
+import InfoIcon from "../plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
 import MarkIcon from "../plasmic_kit_design_system/PlasmicIcon__Mark"; // plasmic-import: a6KJVu0om/icon
 import MarkFullColorIcon from "../plasmic_kit_design_system/PlasmicIcon__MarkFullColor"; // plasmic-import: l_n_OBLJg/icon
-import SegmentSeparatorIcon from "./icons/PlasmicIcon__SegmentSeparator"; // plasmic-import: yzguJQZL37/icon
-import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
-import InfoIcon from "../plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
+import ArrowLeftsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowLeftSvg"; // plasmic-import: -d8Kjj4sp/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import PlussvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 import IconIcon from "./icons/PlasmicIcon__Icon"; // plasmic-import: jnoWwmZ86t/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ArrowLeftsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowLeftsvg"; // plasmic-import: -d8Kjj4sp/icon
+import SegmentSeparatorIcon from "./icons/PlasmicIcon__SegmentSeparator"; // plasmic-import: yzguJQZL37/icon
 import imageAy93RhuWbc from "./images/image.svg"; // plasmic-import: ay93RhuWbc/picture
 
 export type PlasmicTopBar__VariantMembers = {
@@ -809,6 +801,7 @@ const PlasmicDescendants = {
     "stop",
     "avatar",
   ],
+
   left: [
     "left",
     "logoLink",
@@ -825,6 +818,7 @@ const PlasmicDescendants = {
     "previewSelect",
     "variantsComboSelect",
   ],
+
   logoLink: ["logoLink"],
   titleSegment: [
     "titleSegment",
@@ -832,6 +826,7 @@ const PlasmicDescendants = {
     "projectMenu",
     "saveIndicator",
   ],
+
   projectTitle: ["projectTitle"],
   projectMenu: ["projectMenu"],
   saveIndicator: ["saveIndicator"],
@@ -859,6 +854,7 @@ const PlasmicDescendants = {
     "stop",
     "avatar",
   ],
+
   freeTrial: ["freeTrial"],
   viewAsButton: ["viewAsButton"],
   zoomButton: ["zoomButton"],
@@ -912,6 +908,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicTopBar__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> = {
   // Explicitly specify variants, args, and overrides as objects
   variants?: PlasmicTopBar__VariantsArgs;

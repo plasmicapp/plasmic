@@ -40,8 +40,8 @@ import sty from "./PlasmicListItem.module.css"; // plasmic-import: v31d9_ANqk/cs
 
 import ComponentIcon from "../plasmic_kit/PlasmicIcon__Component"; // plasmic-import: nNWEF4jI3s5DI/icon
 import EyeIcon from "../plasmic_kit/PlasmicIcon__Eye"; // plasmic-import: A2FnGYgDh4e3U/icon
-import GripSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Gripsvg"; // plasmic-import: jxIRSIMqs/icon
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import GripSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GripSvg"; // plasmic-import: jxIRSIMqs/icon
 
 createPlasmicElementProxy;
 

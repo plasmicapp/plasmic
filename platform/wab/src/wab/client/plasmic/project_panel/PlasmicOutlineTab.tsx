@@ -40,7 +40,7 @@ import sty from "./PlasmicOutlineTab.module.css"; // plasmic-import: BSjTPez6aCj
 
 import CollapseAllIcon from "../plasmic_kit_design_system/PlasmicIcon__CollapseAll"; // plasmic-import: Bg-ZlWgLuQ/icon
 import ExpandAllIcon from "../plasmic_kit_design_system/PlasmicIcon__ExpandAll"; // plasmic-import: zCExKvD0Do/icon
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -119,6 +119,7 @@ function PlasmicOutlineTab__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.noHeader,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -183,6 +184,7 @@ function PlasmicOutlineTab__RenderFunc(props: {
                   {"Everything"}
                 </div>
               ),
+
               value: args.filterLabel,
               className: classNames(sty.slotTargetFilterLabel),
             })}
@@ -274,6 +276,7 @@ function PlasmicOutlineTab__RenderFunc(props: {
               </FolderItem>
             </React.Fragment>
           ),
+
           value: args.children,
         })}
       </div>
@@ -289,6 +292,7 @@ const PlasmicDescendants = {
     "expandAllButton",
     "collapseAllButton",
   ],
+
   headerFilter: ["headerFilter"],
   searchInput: ["searchInput"],
   expandAllButton: ["expandAllButton"],
@@ -310,6 +314,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicOutlineTab__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

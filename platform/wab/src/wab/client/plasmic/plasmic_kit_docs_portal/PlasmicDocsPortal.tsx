@@ -13,49 +13,37 @@
 import * as React from "react";
 
 import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/host";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  hasVariant,
 } from "@plasmicapp/react-web";
-import DocsPortalHeader from "../../components/docs/DocsPortalHeader"; // plasmic-import: 6yrnCqYwJf/component
-import DocsPortalTabs from "../../components/docs/DocsPortalTabs"; // plasmic-import: g_uMeV_Uh6/component
 import ComponentsPanel from "../../components/docs/ComponentsPanel"; // plasmic-import: c-G65M7vor/component
-import ComponentListItem from "../../components/docs/ComponentListItem"; // plasmic-import: vY12pF45uf/component
-import ImagesPanel from "../../components/docs/ImagesPanel"; // plasmic-import: p94ACk9Ka-/component
-import ImageListItem from "../../components/docs/ImageListItem"; // plasmic-import: tnA9SknzQ5/component
 import DocsComponentsPortal from "../../components/docs/DocsComponentsPortal"; // plasmic-import: MQIZtdluUpm/component
 import DocsImagesPortal from "../../components/docs/DocsImagesPortal"; // plasmic-import: UROUkkTIR8X/component
+import DocsPortalHeader from "../../components/docs/DocsPortalHeader"; // plasmic-import: 6yrnCqYwJf/component
 import DocsPortalIntro from "../../components/docs/DocsPortalIntro"; // plasmic-import: 13UGPPY1WI6/component
+import DocsPortalTabs from "../../components/docs/DocsPortalTabs"; // plasmic-import: g_uMeV_Uh6/component
+import ImageListItem from "../../components/docs/ImageListItem"; // plasmic-import: tnA9SknzQ5/component
+import ImagesPanel from "../../components/docs/ImagesPanel"; // plasmic-import: p94ACk9Ka-/component
 
-import {
-  CodegenTypeValue,
-  useCodegenType,
-} from "./PlasmicGlobalVariant__CodegenType"; // plasmic-import: IFgLgWglLv/globalVariant
+import { useCodegenType } from "./PlasmicGlobalVariant__CodegenType"; // plasmic-import: IFgLgWglLv/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_docs_portal.module.css"; // plasmic-import: dyzP6dbCdycwJpqiR2zkwe/projectcss
 import sty from "./PlasmicDocsPortal.module.css"; // plasmic-import: -491oma_4M/css
 
-import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
-import PlusCircleIcon from "../plasmic_kit/PlasmicIcon__PlusCircle"; // plasmic-import: miOAezEgkL3Po/icon
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
+import PlusCircleIcon from "../plasmic_kit/PlasmicIcon__PlusCircle"; // plasmic-import: miOAezEgkL3Po/icon
+import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
 
 export type PlasmicDocsPortal__VariantMembers = {
   activeTab: "intro" | "components" | "images";
@@ -491,7 +479,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
   docsPortalHeader: typeof DocsPortalHeader;

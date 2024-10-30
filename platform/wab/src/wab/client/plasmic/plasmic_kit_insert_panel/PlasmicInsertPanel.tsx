@@ -1350,6 +1350,7 @@ const PlasmicDescendants = {
     "section",
     "card",
   ],
+
   searchContainer: ["searchContainer", "leftSearchPanel", "addButton"],
   leftSearchPanel: ["leftSearchPanel"],
   addButton: ["addButton"],
@@ -1359,6 +1360,7 @@ const PlasmicDescendants = {
     "insertPanelTabGroup",
     "separator",
   ],
+
   sections: ["sections", "insertPanelTabGroup", "separator"],
   insertPanelTabGroup: ["insertPanelTabGroup"],
   separator: ["separator"],
@@ -1390,6 +1392,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicInsertPanel__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

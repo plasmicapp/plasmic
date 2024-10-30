@@ -38,8 +38,8 @@ import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../
 import sty from "./PlasmicLeftTabButton.module.css"; // plasmic-import: 1q_JapBg7U/css
 
 import TreeIcon from "../plasmic_kit/PlasmicIcon__Tree"; // plasmic-import: 4KZjuPY_m0VTb/icon
-import CircleSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Circlesvg"; // plasmic-import: VBf-n64uS/icon
-import WarningTriangleSvgIcon from "../q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
+import CircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CircleSvg"; // plasmic-import: VBf-n64uS/icon
+import WarningTriangleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
 
 createPlasmicElementProxy;
 
@@ -135,6 +135,7 @@ function PlasmicLeftTabButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasLabel,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -276,6 +277,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftTabButton__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

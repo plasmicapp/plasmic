@@ -35,7 +35,7 @@ import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../
 import sty from "./PlasmicLeftPagesPanel.module.css"; // plasmic-import: wXKvVcr82I/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -164,6 +164,7 @@ const PlasmicDescendants = {
     "newPageButton",
     "content",
   ],
+
   leftSearchPanel: ["leftSearchPanel"],
   leftPaneHeader: ["leftPaneHeader", "newPageButton"],
   newPageButton: ["newPageButton"],
@@ -185,6 +186,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftPagesPanel__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

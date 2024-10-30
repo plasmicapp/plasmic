@@ -22,8 +22,8 @@ import * as React from "react";
 import plasmic_plasmic_kit_q_4_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import image9IFo08KkR from "./images/image.png"; // plasmic-import: 9iFo08KkR/picture
-import sty from "./PlasmicDataSource.module.css"; // plasmic-import: _Lp0iIQjbN/css
 import projectcss from "./plasmic_plasmic_kit_data_queries.module.css"; // plasmic-import: 9csusiyEETC5n9fFKLeYNK/projectcss
+import sty from "./PlasmicDataSource.module.css"; // plasmic-import: _Lp0iIQjbN/css
 
 export type PlasmicDataSource__VariantMembers = {};
 
@@ -99,7 +99,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "button";
 };

@@ -9,11 +9,11 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import HidePlaceholderIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__HidePlaceholder";
 import ShowPlaceholderIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ShowPlaceholder";
+import Refresh2SvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Refresh2Svg";
 import {
   DefaultViewButtonProps,
   PlasmicViewButton,
 } from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicViewButton";
-import Refresh2SvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Refresh2Svg";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { isDedicatedArena } from "@/wab/shared/Arenas";

@@ -17,24 +17,17 @@ import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/react-web/lib/host";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  useTrigger,
 } from "@plasmicapp/react-web";
-import MenuIndicator from "../../components/ContextMenuIndicator/MenuIndicator"; // plasmic-import: 5RLoIE7-j5/component
 import BoundingBoxHighlighter from "../../components/ContextMenuIndicator/BoundingBoxHighlighter"; // plasmic-import: iKmOjRERju/component
 import ContextMenuIndicatorInner from "../../components/ContextMenuIndicator/ContextMenuIndicatorInner"; // plasmic-import: juosawBbMz/component
+import MenuIndicator from "../../components/ContextMenuIndicator/MenuIndicator"; // plasmic-import: 5RLoIE7-j5/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -130,6 +123,7 @@ function PlasmicContextMenuIndicator__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.fullWidth,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = p.useDollarState(stateSpecs, {
@@ -194,6 +188,7 @@ function PlasmicContextMenuIndicator__RenderFunc(props: {
             {"Test text"}
           </div>
         ),
+
         value: args.children,
       })}
       <ContextMenuIndicatorInner
@@ -260,6 +255,7 @@ const PlasmicDescendants = {
     "invisibleHoverTarget",
     "contextMenuContainer",
   ],
+
   menuIndicator: ["menuIndicator"],
   boundingBoxHighlighter: ["boundingBoxHighlighter"],
   contextMenuIndicatorInner: ["contextMenuIndicatorInner"],
@@ -283,6 +279,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicContextMenuIndicator__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

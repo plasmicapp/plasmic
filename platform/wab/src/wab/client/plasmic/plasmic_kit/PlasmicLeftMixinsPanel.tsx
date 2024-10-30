@@ -34,7 +34,7 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicLeftMixinsPanel.module.css"; // plasmic-import: ZsFxxgE4E8/css
 
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import PlusIcon from "./PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
 
 createPlasmicElementProxy;
@@ -166,6 +166,7 @@ const PlasmicDescendants = {
     "newMixinButton",
     "content",
   ],
+
   leftSearchPanel: ["leftSearchPanel"],
   mixinsHeader: ["mixinsHeader", "newMixinButton"],
   newMixinButton: ["newMixinButton"],
@@ -187,6 +188,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftMixinsPanel__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

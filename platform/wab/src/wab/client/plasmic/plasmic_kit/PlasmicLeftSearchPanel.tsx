@@ -40,8 +40,8 @@ import sty from "./PlasmicLeftSearchPanel.module.css"; // plasmic-import: TqAPn0
 
 import CollapseAllIcon from "../plasmic_kit_design_system/PlasmicIcon__CollapseAll"; // plasmic-import: Bg-ZlWgLuQ/icon
 import ExpandAllIcon from "../plasmic_kit_design_system/PlasmicIcon__ExpandAll"; // plasmic-import: zCExKvD0Do/icon
-import ArrowRightSvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -113,6 +113,7 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.rightOptions,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -285,6 +286,7 @@ const PlasmicDescendants = {
     "collapseButton",
     "filterButton",
   ],
+
   searchbox: ["searchbox"],
   freeBox: ["freeBox", "expandButton", "collapseButton", "filterButton"],
   expandButton: ["expandButton"],
@@ -308,6 +310,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftSearchPanel__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

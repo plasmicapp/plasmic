@@ -208,6 +208,7 @@ function PlasmicTeamPage__RenderFunc(props: {
                       </WorkspaceSection>
                     </React.Fragment>
                   ),
+
                   value: args.children,
                 })}
               </div>
@@ -242,6 +243,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicTeamPage__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

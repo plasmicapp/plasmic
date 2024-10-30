@@ -110,6 +110,7 @@ function PlasmicTeamSettings__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideNewButton,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -276,6 +277,7 @@ const PlasmicDescendants = {
     "navSeparator",
     "teamBilling",
   ],
+
   header: ["header", "freeBox", "teamMenuButton"],
   freeBox: ["freeBox"],
   teamMenuButton: ["teamMenuButton"],
@@ -301,6 +303,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicTeamSettings__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

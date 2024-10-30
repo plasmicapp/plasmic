@@ -7,17 +7,17 @@ import {
 } from "@/wab/client/components/sidebar-tabs/tpl-tree";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { useToggleDisplayed } from "@/wab/client/dom-utils";
+import ChevronDownsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg";
 import PlasmicOutlineTab from "@/wab/client/plasmic/project_panel/PlasmicOutlineTab";
 import PlasmicSearchInput from "@/wab/client/plasmic/project_panel/PlasmicSearchInput";
-import ChevronDownsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { switchType } from "@/wab/shared/common";
 import {
   getArenaFrameDesc,
   getArenaFrames,
   isComponentArena,
   isPageArena,
 } from "@/wab/shared/Arenas";
+import { switchType } from "@/wab/shared/common";
 import { getComponentArenaRowLabel } from "@/wab/shared/component-arenas";
 import { ArenaFrame, ComponentArena } from "@/wab/shared/model/classes";
 import { Dropdown, Menu } from "antd";

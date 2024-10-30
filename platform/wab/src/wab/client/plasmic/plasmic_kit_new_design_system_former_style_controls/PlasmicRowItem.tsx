@@ -39,7 +39,7 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicRowItem.module.css"; // plasmic-import: gkx-PRZnjFPo/css
 
-import ComponentsSvgIcon from "../q_4_icons/icons/PlasmicIcon__Componentssvg"; // plasmic-import: coPzxnFyi/icon
+import ComponentsSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentsSvg"; // plasmic-import: coPzxnFyi/icon
 
 createPlasmicElementProxy;
 
@@ -166,6 +166,7 @@ function PlasmicRowItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.showActions,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -284,6 +285,7 @@ function PlasmicRowItem__RenderFunc(props: {
               {"Big  Addendum"}
             </div>
           ),
+
           value: args.addendum,
           className: classNames(sty.slotTargetAddendum, {
             [sty.slotTargetAddendumshowAddendum]: hasVariant(
@@ -354,6 +356,7 @@ const PlasmicDescendants = {
     "actionsContainer",
     "menuButton",
   ],
+
   iconContainer: ["iconContainer"],
   labelContainer: ["labelContainer"],
   addendumContainer: ["addendumContainer"],
@@ -379,6 +382,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicRowItem__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -12,51 +12,43 @@
 // Component: bIuup7JdBZ
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/host";
+import * as p from "@plasmicapp/react-web";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
 } from "@plasmicapp/react-web";
-import TextWithInfo from "../../components/TextWithInfo"; // plasmic-import: -EsDm7v023/component
-import ActionMenuButton from "../../components/widgets/ActionMenuButton"; // plasmic-import: VNi6NC2QOI/component
-import VariantRow from "../../components/variants/VariantRow"; // plasmic-import: ZAqVPmZmi-/component
-import ListSectionSeparator from "../../components/ListSectionSeparator"; // plasmic-import: uG5_fPM0sK/component
-import VariantSection from "../../components/variants/VariantSection"; // plasmic-import: PDpx0GMKsd/component
-import Chip from "../../components/widgets/Chip"; // plasmic-import: jW885tExwE/component
 import ListSectionHeader from "../../components/ListSectionHeader"; // plasmic-import: wNvxk7eOak/component
-import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
-import VariantCombosSection from "../../components/variants/VariantCombosSection"; // plasmic-import: W8tzkAR80P/component
+import ListSectionSeparator from "../../components/ListSectionSeparator"; // plasmic-import: uG5_fPM0sK/component
+import TextWithInfo from "../../components/TextWithInfo"; // plasmic-import: -EsDm7v023/component
 import VariantComboRow from "../../components/variants/VariantComboRow"; // plasmic-import: FskUdXzKp5L/component
+import VariantCombosSection from "../../components/variants/VariantCombosSection"; // plasmic-import: W8tzkAR80P/component
+import VariantRow from "../../components/variants/VariantRow"; // plasmic-import: ZAqVPmZmi-/component
+import VariantSection from "../../components/variants/VariantSection"; // plasmic-import: PDpx0GMKsd/component
+import ActionMenuButton from "../../components/widgets/ActionMenuButton"; // plasmic-import: VNi6NC2QOI/component
+import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import Chip from "../../components/widgets/Chip"; // plasmic-import: jW885tExwE/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_variants.module.css"; // plasmic-import: wT5BWZPEc2fYxyqbTLXMt2/projectcss
 import sty from "./PlasmicVariantsPanel.module.css"; // plasmic-import: bIuup7JdBZ/css
 
-import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
-import VariantIcon from "../plasmic_kit_design_system/PlasmicIcon__Variant"; // plasmic-import: WBXMPcPdoM/icon
-import VariantGroupIcon from "../plasmic_kit/PlasmicIcon__VariantGroup"; // plasmic-import: pyS6pK4Spx-QF/icon
 import BoltIcon from "../plasmic_kit/PlasmicIcon__Bolt"; // plasmic-import: U5J4vI5vbfdiF/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import VariantsvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Variantsvg"; // plasmic-import: mSYwardqQ/icon
-import DevicessvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Devicessvg"; // plasmic-import: bbAxEiIwy/icon
 import GlobeIcon from "../plasmic_kit/PlasmicIcon__Globe"; // plasmic-import: fwZgbP_d3EbnX/icon
+import VariantGroupIcon from "../plasmic_kit/PlasmicIcon__VariantGroup"; // plasmic-import: pyS6pK4Spx-QF/icon
+import VariantIcon from "../plasmic_kit_design_system/PlasmicIcon__Variant"; // plasmic-import: WBXMPcPdoM/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import DevicessvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DevicesSvg"; // plasmic-import: bbAxEiIwy/icon
+import PlussvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import VariantsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__VariantSvg"; // plasmic-import: mSYwardqQ/icon
 
 export type PlasmicVariantsPanel__VariantMembers = {
   expandGlobals: "expandGlobals";
@@ -1444,7 +1436,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
   header: "div";

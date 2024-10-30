@@ -19,7 +19,7 @@ import { VERT_MENU_ICON } from "@/wab/client/icons";
 import PlasmicLeftImportsPanel, {
   PlasmicLeftImportsPanel__VariantsArgs,
 } from "@/wab/client/plasmic/plasmic_kit/PlasmicLeftImportsPanel";
-import AlertIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__WarningTrianglesvg";
+import AlertIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
 import { ProjectDependencyData } from "@/wab/client/ProjectDependencyManager";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { swallowClick } from "@/wab/commons/components/ReactUtil";

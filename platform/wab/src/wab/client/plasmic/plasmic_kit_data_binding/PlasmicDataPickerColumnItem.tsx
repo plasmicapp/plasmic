@@ -17,33 +17,27 @@ import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/react-web/lib/host";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  useTrigger,
 } from "@plasmicapp/react-web";
 import DataPickerValueTypeIcon from "../../components/sidebar-tabs/DataBinding/DataPickerValueTypeIcon"; // plasmic-import: gWylXtol8Lf/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicDataPickerColumnItem.module.css"; // plasmic-import: fa3uzsyXr0/css
 
-import ChevronRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronRightsvg"; // plasmic-import: HBGx-zeiX/icon
-import PlaysvgIcon from "../plasmic_kit/PlasmicIcon__Playsvg"; // plasmic-import: j39GoLwZnf7-v/icon
+import PlaysvgIcon from "../plasmic_kit/PlasmicIcon__PlaySvg"; // plasmic-import: j39GoLwZnf7-v/icon
 import ResetIcon from "../plasmic_kit/PlasmicIcon__Reset"; // plasmic-import: Dj3u-HuPv94sN/icon
+import ChevronRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronRightSvg"; // plasmic-import: HBGx-zeiX/icon
 
 createPlasmicElementProxy;
 
@@ -64,6 +58,7 @@ export type PlasmicDataPickerColumnItem__VariantsArgs = {
   variableType?: SingleChoiceArg<
     "string" | "number" | "boolean" | "object" | "array" | "undefined" | "func"
   >;
+
   isSelected?: SingleBooleanChoiceArg<"isSelected">;
 };
 type VariantPropType = keyof PlasmicDataPickerColumnItem__VariantsArgs;
@@ -89,6 +84,7 @@ export interface DefaultDataPickerColumnItemProps {
   variableType?: SingleChoiceArg<
     "string" | "number" | "boolean" | "object" | "array" | "undefined" | "func"
   >;
+
   isSelected?: SingleBooleanChoiceArg<"isSelected">;
   className?: string;
 }
@@ -137,6 +133,7 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.step,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = p.useDollarState(stateSpecs, {
@@ -575,6 +572,7 @@ const PlasmicDescendants = {
     "svg",
     "play",
   ],
+
   dataPickerValueTypeIcon: ["dataPickerValueTypeIcon", "text"],
   text: ["text"],
   itemName: ["itemName"],
@@ -600,6 +598,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDataPickerColumnItem__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

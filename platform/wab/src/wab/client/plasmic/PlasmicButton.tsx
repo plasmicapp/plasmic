@@ -36,8 +36,8 @@ import plasmic_plasmic_kit_color_tokens_css from "./plasmic_kit_q_4_color_tokens
 import sty from "./PlasmicButton.module.css"; // plasmic-import: SEF-sRmSoqV5c/css
 import projectcss from "./PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 
-import ArrowRightSvgIcon from "./q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownSvgIcon from "./q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightSvgIcon from "./plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "./plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -85,6 +85,7 @@ export type PlasmicButton__VariantsArgs = {
     | "bordered"
     | "leftAligned"
   >;
+
   withIcons?: MultiChoiceArg<"startIcon" | "endIcon" | "endIconOnHover">;
   font?: SingleChoiceArg<"bold" | "dim">;
   size?: SingleChoiceArg<"small" | "stretch" | "wide" | "compact" | "medium">;
@@ -150,6 +151,7 @@ export interface DefaultButtonProps {
     | "bordered"
     | "leftAligned"
   >;
+
   withIcons?: MultiChoiceArg<"startIcon" | "endIcon" | "endIconOnHover">;
   font?: SingleChoiceArg<"bold" | "dim">;
   size?: SingleChoiceArg<"small" | "stretch" | "wide" | "compact" | "medium">;
@@ -234,6 +236,7 @@ function PlasmicButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.color,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -1250,6 +1253,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicButton__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

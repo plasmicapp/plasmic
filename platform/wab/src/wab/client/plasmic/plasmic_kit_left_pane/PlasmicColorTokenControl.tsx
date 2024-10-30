@@ -34,7 +34,7 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicColorTokenControl.module.css"; // plasmic-import: JyqCOl0Ccj/css
 
-import ComponentsSvgIcon from "../q_4_icons/icons/PlasmicIcon__Componentssvg"; // plasmic-import: coPzxnFyi/icon
+import ComponentsSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentsSvg"; // plasmic-import: coPzxnFyi/icon
 
 createPlasmicElementProxy;
 
@@ -169,6 +169,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicColorTokenControl__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

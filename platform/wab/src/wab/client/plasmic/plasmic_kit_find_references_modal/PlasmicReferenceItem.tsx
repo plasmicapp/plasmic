@@ -32,8 +32,8 @@ import PageIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__Page"; // 
 import PresetsIcon from "../plasmic_kit_design_system/PlasmicIcon__Presets"; // plasmic-import: B_JznpDb3g/icon
 import ChevronBottomIcon from "./icons/PlasmicIcon__ChevronBottom"; // plasmic-import: QWzHJOf09S/icon
 import ChevronRightIcon from "./icons/PlasmicIcon__ChevronRight"; // plasmic-import: uFvmqTmkO9/icon
-import sty from "./PlasmicReferenceItem.module.css"; // plasmic-import: i-BferDjrAl/css
 import projectcss from "./plasmic_plasmic_kit_find_references_modal.module.css"; // plasmic-import: oB885NJtg5rwT11s7yCnwW/projectcss
+import sty from "./PlasmicReferenceItem.module.css"; // plasmic-import: i-BferDjrAl/css
 
 export type PlasmicReferenceItem__VariantMembers = {
   type: "page" | "component" | "token" | "mixin" | "preset" | "theme" | "frame";
@@ -210,7 +210,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
   listItem: typeof ListItem;

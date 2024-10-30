@@ -21,8 +21,8 @@ import {
 } from "@plasmicapp/react-web";
 import "@plasmicapp/react-web/lib/plasmic.css";
 import * as React from "react";
-import projectcss from "../../../plasmic/PP__plasmickit_init_token.module.css"; // plasmic-import: oYWs1jXLUht24zyQBdCd5F/projectcss
 import defaultcss from "../../../plasmic/PP__plasmic__default_style.module.css"; // plasmic-import: global/defaultcss
+import projectcss from "../../../plasmic/PP__plasmickit_init_token.module.css"; // plasmic-import: oYWs1jXLUht24zyQBdCd5F/projectcss
 import Button from "../../widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import sty from "./PlasmicInitTokenContainer.module.css"; // plasmic-import: dWRKivg8dUht/css
 
@@ -211,7 +211,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
   authorizeButton: typeof Button;

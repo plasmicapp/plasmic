@@ -43,8 +43,8 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicUpsellCheckout.module.css"; // plasmic-import: 5PfErhGRfT/css
 
-import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -148,6 +148,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => "isChecked",
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -356,6 +357,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       : "Learn more."}
                   </PlasmicLink__>
                 }
+
                 <React.Fragment>{""}</React.Fragment>
               </React.Fragment>
             ) : hasVariant($state, "onFreeTrial", "onFreeTrial") ? (
@@ -397,6 +399,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       : "Learn more."}
                   </PlasmicLink__>
                 }
+
                 <React.Fragment>{""}</React.Fragment>
               </React.Fragment>
             ) : (
@@ -459,6 +462,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       : "Learn more."}
                   </PlasmicLink__>
                 }
+
                 <React.Fragment>{""}</React.Fragment>
               </React.Fragment>
             ) : hasVariant($state, "onFreeTrial", "onFreeTrial") ? (
@@ -500,6 +504,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       : "Learn more."}
                   </PlasmicLink__>
                 }
+
                 <React.Fragment>{""}</React.Fragment>
               </React.Fragment>
             ) : (
@@ -537,6 +542,7 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       : "Learn more."}
                   </PlasmicLink__>
                 }
+
                 <React.Fragment>{""}</React.Fragment>
               </React.Fragment>
             )}
@@ -885,6 +891,7 @@ const PlasmicDescendants = {
     "cancelButton2",
     "confirmButton2",
   ],
+
   operationTitle: ["operationTitle"],
   operationDescription: ["operationDescription"],
   billingFrequencyToggle: ["billingFrequencyToggle"],
@@ -926,6 +933,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicUpsellCheckout__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -17,33 +17,25 @@ import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/react-web/lib/host";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
 } from "@plasmicapp/react-web";
 import Button from "../Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../../../plasmic/PP__plasmickit_alert_banner.module.css"; // plasmic-import: 29njzcsBEPR4koRddw4knF/projectcss
+import plasmic_plasmic_kit_design_system_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicAlertBanner.module.css"; // plasmic-import: DCWq1LLaJ6e/css
 
-import WarningTrianglesvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__WarningTrianglesvg"; // plasmic-import: S0L-xosWD/icon
-import ChevronDownsvgIcon from "../../../plasmic/plasmic_kit_alert_banner/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: Ou2BoyYzU/icon
 import CloseIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
+import ChevronDownsvgIcon from "../../../plasmic/plasmic_kit_alert_banner/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: Ou2BoyYzU/icon
+import WarningTrianglesvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
 
 createPlasmicElementProxy;
 
@@ -111,6 +103,7 @@ export interface DefaultAlertBannerProps {
     | "invariantError"
     | "protectedMainBranch"
   >;
+
   className?: string;
 }
 
@@ -146,6 +139,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.state,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = p.useDollarState(stateSpecs, {
@@ -895,6 +889,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicAlertBanner__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

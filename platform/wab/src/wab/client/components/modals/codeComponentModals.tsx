@@ -18,7 +18,7 @@ import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import MinusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Minus";
 import PencilIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Pencil";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
-import TrashsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Trashsvg";
+import TrashsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__TrashSvg";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { removeFromArray } from "@/wab/commons/collections";
 import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";

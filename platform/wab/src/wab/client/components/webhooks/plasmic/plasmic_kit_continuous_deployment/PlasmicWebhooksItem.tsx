@@ -39,7 +39,7 @@ import plasmic_plasmic_kit_color_tokens_css from "../../../../plasmic/plasmic_ki
 import projectcss from "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicWebhooksItem.module.css"; // plasmic-import: mSgnlB96I5A/css
 
-import PlussvgIcon from "../../../../plasmic/q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
+import PlussvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -107,6 +107,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.expanded,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -217,6 +218,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
                   <WebhookHeader />
                 </React.Fragment>
               ),
+
               value: args.headers,
             })}
           </Stack__>
@@ -290,6 +292,7 @@ const PlasmicDescendants = {
     "text",
     "payload",
   ],
+
   checkbox: ["checkbox"],
   method: ["method", "svg"],
   svg: ["svg"],
@@ -317,6 +320,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicWebhooksItem__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

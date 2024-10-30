@@ -42,8 +42,8 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicHostProtocolSelect.module.css"; // plasmic-import: 6_CfQ5GVLku/css
 
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import ChevronUpsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronUpsvg"; // plasmic-import: i9D87DzsX/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronUpsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronUpSvg"; // plasmic-import: i9D87DzsX/icon
 
 createPlasmicElementProxy;
 
@@ -159,6 +159,7 @@ function PlasmicHostProtocolSelect__RenderFunc(props: {
         onChangeProp: "onChange",
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -377,6 +378,7 @@ function PlasmicHostProtocolSelect__RenderFunc(props: {
                     </HostProtocolSelect__Option>
                   </React.Fragment>
                 ),
+
                 value: args.children,
               })}
             </div>
@@ -449,6 +451,7 @@ const PlasmicDescendants = {
     "overlay",
     "optionsContainer",
   ],
+
   trigger: ["trigger", "contentContainer", "dropdownIcon"],
   contentContainer: ["contentContainer"],
   dropdownIcon: ["dropdownIcon"],
@@ -472,6 +475,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicHostProtocolSelect__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

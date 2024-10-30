@@ -12,41 +12,31 @@
 // Component: Bj_efGpKWL
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/host";
+import * as p from "@plasmicapp/react-web";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
 } from "@plasmicapp/react-web";
-import Searchbox from "../../components/widgets/Searchbox"; // plasmic-import: po7gr0PX4_gWo/component
 import ListSectionSeparator from "../../components/ListSectionSeparator"; // plasmic-import: uG5_fPM0sK/component
 import VariantsDrawerHeader from "../../components/variants/VariantsDrawerHeader"; // plasmic-import: wv3xEE20Zw/component
 import VariantsDrawerRow from "../../components/variants/VariantsDrawerRow"; // plasmic-import: f-9OgqRi3D/component
 import Chip from "../../components/widgets/Chip"; // plasmic-import: jW885tExwE/component
+import Searchbox from "../../components/widgets/Searchbox"; // plasmic-import: po7gr0PX4_gWo/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_variants.module.css"; // plasmic-import: wT5BWZPEc2fYxyqbTLXMt2/projectcss
 import sty from "./PlasmicVariantsDrawer.module.css"; // plasmic-import: Bj_efGpKWL/css
 
-import BoltsvgIcon from "../q_4_icons/icons/PlasmicIcon__Boltsvg"; // plasmic-import: IRA31HnIa/icon
-import VariantGroupIcon from "../plasmic_kit/PlasmicIcon__VariantGroup"; // plasmic-import: pyS6pK4Spx-QF/icon
 import GlobeIcon from "../plasmic_kit/PlasmicIcon__Globe"; // plasmic-import: fwZgbP_d3EbnX/icon
+import VariantGroupIcon from "../plasmic_kit/PlasmicIcon__VariantGroup"; // plasmic-import: pyS6pK4Spx-QF/icon
+import BoltsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BoltSvg"; // plasmic-import: IRA31HnIa/icon
 
 export type PlasmicVariantsDrawer__VariantMembers = {};
 
@@ -496,7 +486,7 @@ const PlasmicDescendants = {
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
   searchContainer: "div";

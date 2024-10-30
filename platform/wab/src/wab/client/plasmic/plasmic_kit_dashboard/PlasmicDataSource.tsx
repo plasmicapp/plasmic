@@ -35,7 +35,7 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicDataSource.module.css"; // plasmic-import: B2dxgzfI6E/css
 
-import PencilsvgIcon from "../q_4_icons/icons/PlasmicIcon__Pencilsvg"; // plasmic-import: 540duoJvb/icon
+import PencilsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PencilSvg"; // plasmic-import: 540duoJvb/icon
 
 createPlasmicElementProxy;
 
@@ -98,6 +98,7 @@ function PlasmicDataSource__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.readOnly,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -183,6 +184,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDataSource__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

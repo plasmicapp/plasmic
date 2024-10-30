@@ -17,32 +17,24 @@ import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/react-web/lib/host";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
 } from "@plasmicapp/react-web";
 import ToggleRecordingButton from "../../components/canvas/VariantsBar/ToggleRecordingButton"; // plasmic-import: j_Jdg2E_a5/component
 import VariantBadge from "../../components/canvas/VariantsBar/VariantBadge"; // plasmic-import: 4OLKnpGnTY/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_variants_bar.module.css"; // plasmic-import: kdj5vahTyUKxznuR6rrtt6/projectcss
 import sty from "./PlasmicVariantsBar.module.css"; // plasmic-import: 98t4Edcdrb/css
 
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 export type PlasmicVariantsBar__VariantMembers = {
   isFocused: "isFocused";
@@ -516,6 +508,7 @@ const PlasmicDescendants = {
     "chevronDownIcon",
     "svg",
   ],
+
   recordingButton: ["recordingButton"],
   freeBox: [
     "freeBox",
@@ -525,6 +518,7 @@ const PlasmicDescendants = {
     "chevronDownIcon",
     "svg",
   ],
+
   variantsList: ["variantsList"],
   dropdownTrigger: [
     "dropdownTrigger",
@@ -532,13 +526,14 @@ const PlasmicDescendants = {
     "chevronDownIcon",
     "svg",
   ],
+
   emptyListMessage: ["emptyListMessage"],
   chevronDownIcon: ["chevronDownIcon", "svg"],
   svg: ["svg"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
-  typeof PlasmicDescendants[T][number];
+  (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
   recordingButton: typeof ToggleRecordingButton;
@@ -555,6 +550,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicVariantsBar__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> = {
   // Explicitly specify variants, args, and overrides as objects
   variants?: PlasmicVariantsBar__VariantsArgs;

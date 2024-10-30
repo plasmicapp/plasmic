@@ -17,39 +17,30 @@ import * as p from "@plasmicapp/react-web";
 import * as ph from "@plasmicapp/react-web/lib/host";
 
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  hasVariant,
+  useTrigger,
 } from "@plasmicapp/react-web";
-import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
-import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
-import Select__OptionGroup from "../../components/widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
+import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_end_user_management.module.css"; // plasmic-import: 2dMe7XWUq916KsPnra5vYj/projectcss
 import sty from "./PlasmicPermissionRule.module.css"; // plasmic-import: OKf_hhc2Skl/css
 
-import UsersvgIcon from "../q_4_icons/icons/PlasmicIcon__Usersvg"; // plasmic-import: ejczgMIkT/icon
-import UserssvgIcon from "../q_4_icons/icons/PlasmicIcon__Userssvg"; // plasmic-import: SQUWUgO0N/icon
 import LockIcon from "../plasmic_kit_design_system/PlasmicIcon__Lock"; // plasmic-import: xWjo2JPAc6/icon
-import InformationsvgIcon from "../q_4_icons/icons/PlasmicIcon__Informationsvg"; // plasmic-import: hqBNVBJWB/icon
-import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
+import InformationsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__InformationSvg"; // plasmic-import: hqBNVBJWB/icon
+import PlussvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import UserssvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UsersSvg"; // plasmic-import: SQUWUgO0N/icon
+import UsersvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UserSvg"; // plasmic-import: ejczgMIkT/icon
 
 createPlasmicElementProxy;
 
@@ -154,6 +145,7 @@ function PlasmicPermissionRule__RenderFunc(props: {
           $props.isGeneralAccess,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = p.useDollarState(stateSpecs, {
@@ -392,6 +384,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPermissionRule__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

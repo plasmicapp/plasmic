@@ -22,15 +22,8 @@ import {
   deriveRenderOpts,
   hasVariant,
   useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName,
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions,
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -104,6 +97,7 @@ function PlasmicIndicator__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.color,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -164,6 +158,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicIndicator__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

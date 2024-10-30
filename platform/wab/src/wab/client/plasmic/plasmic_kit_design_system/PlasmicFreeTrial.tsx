@@ -25,15 +25,8 @@ import {
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
-  usePlasmicTranslator,
-  useTrigger,
-  wrapWithClassName,
 } from "@plasmicapp/react-web";
-import {
-  DataCtxReader as DataCtxReader__,
-  useDataEnv,
-  useGlobalActions,
-} from "@plasmicapp/react-web/lib/host";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -41,7 +34,7 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicFreeTrial.module.css"; // plasmic-import: p3GgKAlaQe/css
 
-import BookmarkSvgIcon from "../q_4_icons/icons/PlasmicIcon__Bookmarksvg"; // plasmic-import: ifTRn8aE8/icon
+import BookmarkSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BookmarkSvg"; // plasmic-import: ifTRn8aE8/icon
 
 createPlasmicElementProxy;
 
@@ -135,6 +128,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.trialEnded,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -300,6 +294,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicFreeTrial__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

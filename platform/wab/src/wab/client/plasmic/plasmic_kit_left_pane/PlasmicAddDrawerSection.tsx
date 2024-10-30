@@ -41,8 +41,8 @@ import sty from "./PlasmicAddDrawerSection.module.css"; // plasmic-import: U-NTS
 import AfterIcon from "../plasmic_kit/PlasmicIcon__After"; // plasmic-import: yzAFS1IyVvChx/icon
 import BeforeIcon from "../plasmic_kit/PlasmicIcon__Before"; // plasmic-import: VU26fT14NQttw/icon
 import image49X6ZsC5Ww5 from "../plasmic_kit_design_system/images/image4.svg"; // plasmic-import: 9X6ZsC5ww5/picture
-import ComponentSvgIcon from "../plasmic_kit_q_4_icons/icons/PlasmicIcon__Componentsvg"; // plasmic-import: vJVrKlrDD/icon
-import ChevronDownSvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ComponentSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentSvg"; // plasmic-import: vJVrKlrDD/icon
 
 createPlasmicElementProxy;
 
@@ -120,6 +120,7 @@ function PlasmicAddDrawerSection__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isLast,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -240,6 +241,7 @@ function PlasmicAddDrawerSection__RenderFunc(props: {
               {"Component 1"}
             </AddDrawerItem>
           ),
+
           value: args.children,
         })}
       </div>
@@ -268,6 +270,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicAddDrawerSection__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

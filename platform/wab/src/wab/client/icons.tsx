@@ -33,11 +33,11 @@ import BlockIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIco
 import CombinationIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Combination";
 import GroupIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Group";
 import TextInputIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__TextInput";
+import ChevronDownsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg";
+import ChevronLeftsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronLeftSvg";
+import ChevronRightsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronRightSvg";
+import ChevronUpsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronUpSvg";
 import TableRowsPageSectionIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__TableRowsPageSection";
-import ChevronDownsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg";
-import ChevronLeftsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronLeftsvg";
-import ChevronRightsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronRightsvg";
-import ChevronUpsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronUpsvg";
 import { TplVisibility } from "@/wab/shared/visibility-utils";
 import React from "react";
 import { MdError } from "react-icons/md";

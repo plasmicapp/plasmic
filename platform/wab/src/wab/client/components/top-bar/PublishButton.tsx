@@ -2,7 +2,7 @@
 
 import { menuSection } from "@/wab/client/components/menu-builder";
 import { useAppCtx, useTopFrameApi } from "@/wab/client/contexts/AppContexts";
-import CirclesvgIcon from "@/wab/client/plasmic/plasmic_kit_q_4_icons/icons/PlasmicIcon__Circlesvg";
+import CirclesvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CircleSvg";
 import {
   DefaultPublishButtonProps,
   PlasmicPublishButton,

@@ -13,7 +13,7 @@ import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { getInputTagType } from "@/wab/client/components/sidebar-tabs/HTMLAttributesSection";
 import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
-import WarningIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__WarningTrianglesvg";
+import WarningIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
 
 import {
   getValueSetState,

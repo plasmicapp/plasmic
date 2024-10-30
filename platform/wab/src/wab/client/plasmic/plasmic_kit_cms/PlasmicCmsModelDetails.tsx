@@ -195,6 +195,7 @@ const PlasmicDescendants = {
     "saveButton",
     "menuButton",
   ],
+
   left: ["left", "modelName", "modelNameValue", "text"],
   modelName: ["modelName", "modelNameValue"],
   modelNameValue: ["modelNameValue"],
@@ -222,6 +223,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCmsModelDetails__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
