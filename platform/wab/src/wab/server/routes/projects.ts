@@ -1647,7 +1647,7 @@ export async function getLatestPlumePkg(req: Request, res: Response) {
 export async function getPlumePkg(req: Request, res: Response) {
   const mgr = superDbMgr(req);
   const version = await getLastBundleVersion();
-  const etag = `"plume-pkg-${REAL_PLUME_VERSION}-${version}"`;
+  const etag = `W/"plume-pkg-${REAL_PLUME_VERSION}-${version}"`;
 
   if (checkEtagSkippable(req, res, etag)) {
     return;
@@ -1726,7 +1726,7 @@ export async function getPkgVersionByProjectId(req: Request, res: Response) {
     versionStrings.includes(chosenVersion),
     `Unknown version ${chosenVersion}`
   );
-  const etag = `${req.devflags.eTagsVersionPrefix}-${pkg.id}-${chosenVersion}-${bundleVersion}`;
+  const etag = `W/"${req.devflags.eTagsVersionPrefix}-${pkg.id}-${chosenVersion}-${bundleVersion}"`;
 
   if (checkEtagSkippable(req, res, etag)) {
     return;
@@ -1759,7 +1759,7 @@ export async function getPkgVersion(req: Request, res: Response) {
 
   const bundleVersion = await getLastBundleVersion();
 
-  const etag = `${req.devflags.eTagsVersionPrefix}-${pkg.id}-${pkg.version}-${bundleVersion}`;
+  const etag = `W/"${req.devflags.eTagsVersionPrefix}-${pkg.id}-${pkg.version}-${bundleVersion}"`;
 
   if (checkEtagSkippable(req, res, etag)) {
     return;
