@@ -88,6 +88,11 @@ export const CodeEditor = observer(function CodeEditor(props: {
   value: string | {} | null | undefined;
   onChange: (value: string | null | undefined) => void;
   lang: "html" | "css" | "javascript" | "typescript" | "json" | "text";
+  /**
+   * Monaco file name to be used for this CodeEditor.
+   * This should be globally unique to prevent state issues.
+   */
+  fileName?: string;
   defaultFullscreen?: boolean;
   isCustomCode?: boolean;
   saveAsObject?: boolean;
@@ -106,6 +111,7 @@ export const CodeEditor = observer(function CodeEditor(props: {
     saveAsObject,
     requireObject,
     data,
+    fileName,
   } = props;
   const stringValue =
     (lang === "json" && saveAsObject) || (value && typeof value === "object")
@@ -134,6 +140,7 @@ export const CodeEditor = observer(function CodeEditor(props: {
       setShow(false);
       setDraft(undefined);
       setFullscreen(defaultFullscreen);
+      editor.current?.resetValue();
     } else {
       setDraft(editor.current?.getValue());
     }
@@ -265,20 +272,12 @@ export const CodeEditor = observer(function CodeEditor(props: {
                   data={data}
                   onSave={trySave}
                   editorHeight={fullscreen ? 396 : 310}
+                  fileName={fileName}
                 />
               )}
             />
             <div className="flex flex-right mt-lg mr-xlg">
-              <Button
-                onClick={() => {
-                  setShow(false);
-                  setDraft(undefined);
-                  setFullscreen(defaultFullscreen);
-                  editor.current?.resetValue();
-                }}
-              >
-                Cancel
-              </Button>
+              <Button onClick={onCancel}>Cancel</Button>
               <Button
                 className={"ml-lg"}
                 onClick={() => {

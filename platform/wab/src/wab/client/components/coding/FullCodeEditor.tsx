@@ -18,6 +18,7 @@ const BASE_FONT_SIZE = 12;
 
 export interface FullCodeEditorProps {
   language?: string;
+  fileName?: string;
   defaultValue: string;
   /**
    * Called if the user explicitly triggers the save shortcut, ctrl+s
@@ -55,6 +56,7 @@ export const FullCodeEditor = React.forwardRef(
       folding = true,
       schema,
       autoFocus = true,
+      fileName = "main",
     } = props;
 
     const handlersRef = React.useRef<
@@ -105,7 +107,7 @@ export const FullCodeEditor = React.forwardRef(
       null
     );
     const editorActions = useMonacoEditor(containerEl, {
-      modelFilePath: createFilePathWithExtension("main", language),
+      modelFilePath: createFilePathWithExtension(fileName, language),
       modelLanguage: language,
       modelDefaultValue: defaultValue,
       editorOptions: options,
@@ -158,7 +160,7 @@ export const FullCodeEditor = React.forwardRef(
         getValue: () => editorActions?.getUserValue() ?? "",
         resetValue: () => editorActions?.resetUserValue(defaultValue),
       }),
-      [editorActions]
+      [editorActions, defaultValue]
     );
 
     return (

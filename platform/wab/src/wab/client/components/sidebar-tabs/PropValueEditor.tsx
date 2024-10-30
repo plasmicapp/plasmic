@@ -1029,6 +1029,7 @@ const PropValueEditor_ = (
           lang="json"
           saveAsObject
           isDisabled={readOnly}
+          fileName={attr}
           defaultFullscreen
         />
       );
@@ -1078,6 +1079,7 @@ const PropValueEditor_ = (
           value={value === undefined ? defaultValueHint : value}
           title={label}
           lang="json"
+          fileName={attr}
           requireObject={
             isPlainObjectPropType(propType) && hackyCast(propType).requireObject
           }
@@ -1136,6 +1138,7 @@ const PropValueEditor_ = (
         }
         isDisabled={readOnly}
         data-plasmic-prop={attr}
+        fileName={attr}
       />
     );
   } else if (
@@ -1153,6 +1156,7 @@ const PropValueEditor_ = (
         lang={"text"}
         defaultFullscreen
         isDisabled={readOnly}
+        fileName={attr}
       />
     );
   } else if (getPropTypeType(propType) === "imageUrl") {
