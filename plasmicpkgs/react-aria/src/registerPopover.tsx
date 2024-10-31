@@ -10,28 +10,52 @@ import {
   Registerable,
   registerComponentHelper,
 } from "./utils";
+import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
 export interface PopoverControlContextData {
   defaultShouldFlip?: boolean;
 }
 
+/*
+    NOTE: Placement should be managed as variants, not just props.
+    When `shouldFlip` is true, the placement prop may not represent the final position
+    (e.g., if placement is set to "bottom" but lacks space, the popover may flip to "top").
+    However, data-selectors will consistently indicate the actual placement of the popover.
+  */
+const POPOVER_VARIANTS = [
+  "placementTop" as const,
+  "placementBottom" as const,
+  "placementLeft" as const,
+  "placementRight" as const,
+];
+
+const { variants, withObservedValues } =
+  pickAriaComponentVariants(POPOVER_VARIANTS);
+
 export interface BasePopoverProps
   extends React.ComponentProps<typeof Popover>,
+    WithVariants<typeof POPOVER_VARIANTS>,
     HasControlContextData<PopoverControlContextData> {
   className?: string;
   resetClassName?: string;
   defaultShouldFlip?: boolean;
+  children?: React.ReactNode;
 }
 
 export function BasePopover(props: BasePopoverProps) {
-  const { resetClassName, setControlContextData, ...restProps } = props;
+  const {
+    resetClassName,
+    setControlContextData,
+    plasmicUpdateVariant,
+    ...restProps
+  } = props;
   // Popover can be inside DialogTrigger, Select, Combobox, etc. So we can't just use a particular context like DialogTrigger (like we do in Modal) to decide if it is standalone
   const isStandalone = !React.useContext(PopoverContext);
   const context = React.useContext(PlasmicPopoverContext);
   const triggerRef = React.useRef<any>(null);
   const isEditMode = !!usePlasmicCanvasContext();
 
-  const mergedProps = mergeProps(
+  const { children, ...mergedProps } = mergeProps(
     {
       isOpen: context?.isOpen,
       shouldFlip: context?.defaultShouldFlip,
@@ -62,11 +86,23 @@ export function BasePopover(props: BasePopoverProps) {
   setControlContextData?.({
     defaultShouldFlip: context?.defaultShouldFlip ?? true,
   });
-
   return (
     <>
       {isStandalone && <div ref={triggerRef} />}
-      <Popover {...mergedProps} />
+      <Popover {...mergedProps}>
+        {({ placement }) =>
+          withObservedValues(
+            children,
+            {
+              placementTop: placement === "top",
+              placementBottom: placement === "bottom",
+              placementLeft: placement === "left",
+              placementRight: placement === "right",
+            },
+            plasmicUpdateVariant
+          )
+        }
+      </Popover>
     </>
   );
 }
@@ -97,6 +133,7 @@ export function registerPopover(
       displayName: "Aria Popover",
       importPath: "@plasmicpkgs/react-aria/skinny/registerPopover",
       importName: "BasePopover",
+      variants,
       defaultStyles: {
         borderWidth: "1px",
         borderStyle: "solid",
@@ -158,12 +195,11 @@ export function registerPopover(
             "Default placement of the popover relative to the trigger, if there is enough space",
           defaultValueHint: "bottom",
           options: [
-            "bottom",
-            "bottom left",
-            "bottom right",
+            // Not allowing other placement options here because of https://github.com/adobe/react-spectrum/issues/6825
             "top",
-            "top left",
-            "top right",
+            "bottom",
+            "left",
+            "right",
           ],
         },
         resetClassName: {

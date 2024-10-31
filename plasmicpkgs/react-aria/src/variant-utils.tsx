@@ -38,6 +38,12 @@ const ARIA_COMPONENTS_VARIANTS = {
     cssSelector: "[data-indeterminate]",
     displayName: "Indeterminate",
   },
+  /*
+    NOTE: Placement should be managed as variants, not just props.
+    When `shouldFlip` is true, the placement prop may not represent the final position
+    (e.g., if placement is set to "bottom" but lacks space, the popover/tooltip may flip to "top").
+    However, data-selectors will consistently indicate the actual placement of the popover/tooltip.
+  */
   placementLeft: {
     cssSelector: "[data-placement]=left",
     displayName: "Placement (Left)",

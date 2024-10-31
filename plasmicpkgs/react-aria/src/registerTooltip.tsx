@@ -15,6 +15,12 @@ function isForwardRefComponent(element: any): element is React.ReactElement {
   return element?.type?.$$typeof === Symbol.for("react.forward_ref");
 }
 
+/*
+  NOTE: Placement should be managed as variants, not just props.
+  When `shouldFlip` is true, the placement prop may not represent the final position
+  (e.g., if placement is set to "bottom" but lacks space, the tooltip may flip to "top").
+  However, data-selectors will consistently indicate the actual placement of the tooltip.
+*/
 const TOOLTIP_VARIANTS = [
   "placementTop" as const,
   "placementBottom" as const,
