@@ -236,6 +236,16 @@ export function isStyleVariant(variant: Variant): variant is StyleVariant {
   return !!variant.selectors;
 }
 
+export function isInteractiveStyleVariant(variant: Variant): boolean {
+  const interactionKeywords = ["hover", "focus", "press"];
+  return (
+    isStyleVariant(variant) &&
+    variant.selectors.some((s) =>
+      interactionKeywords.some((keyword) => s.toLowerCase().includes(keyword))
+    )
+  );
+}
+
 export function hasStyleVariant(variantCombo: VariantCombo) {
   return variantCombo.some((v) => isStyleVariant(v));
 }

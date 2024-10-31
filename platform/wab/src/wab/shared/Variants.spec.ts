@@ -1,12 +1,13 @@
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
+import { mkTplTagX } from "@/wab/shared/core/tpls";
+import { StateParam } from "@/wab/shared/model/classes";
 import {
   ensureValidCombo,
+  isInteractiveStyleVariant,
   mkBaseVariant,
   mkComponentVariantGroup,
   mkVariant,
 } from "@/wab/shared/Variants";
-import { StateParam } from "@/wab/shared/model/classes";
-import { mkTplTagX } from "@/wab/shared/core/tpls";
 
 function getComponentWithVariantGroups() {
   const singleChoiceVariants = [0, 1, 2].map((i) => {
@@ -60,6 +61,59 @@ function getComponentWithVariantGroups() {
 }
 
 describe("Variants", () => {
+  describe("isInteractiveStyleVariant", () => {
+    it("should return true for interactive style variants", () => {
+      const hoverVariant = mkVariant({
+        name: "",
+        selectors: ["HoveReffect"],
+      });
+      const pressedVariant = mkVariant({
+        name: "",
+        selectors: ["pressEd"],
+      });
+      const focusedVariant = mkVariant({
+        name: "",
+        selectors: ["12345", "focused"],
+      });
+      const focusVisibleVariant = mkVariant({
+        name: "",
+        selectors: ["wertrty", "focus-visible"],
+      });
+      const placementVariant = mkVariant({
+        name: "",
+        selectors: ["sdfghxcvb", "place-left"],
+      });
+      const indeterminateVariant = mkVariant({
+        name: "",
+        selectors: ["yuioijhgf", "indeterminate"],
+      });
+      const selectedVariant = mkVariant({
+        name: "",
+        selectors: ["jhgvfcvbn", "selected"],
+      });
+      const randomVariant = mkVariant({
+        name: "",
+        selectors: [
+          "dsgj ksdgj ksdjg ksdjgk jsdkgj sdkjg ksd",
+          "sdghjsdg",
+          "dshgjsdhgs",
+        ],
+      });
+      const noStyleVariant = mkVariant({
+        name: "",
+        selectors: [],
+      });
+      expect(isInteractiveStyleVariant(hoverVariant)).toBe(true);
+      expect(isInteractiveStyleVariant(pressedVariant)).toBe(true);
+      expect(isInteractiveStyleVariant(focusedVariant)).toBe(true);
+      expect(isInteractiveStyleVariant(focusVisibleVariant)).toBe(true);
+      expect(isInteractiveStyleVariant(placementVariant)).toBe(false);
+      expect(isInteractiveStyleVariant(indeterminateVariant)).toBe(false);
+      expect(isInteractiveStyleVariant(selectedVariant)).toBe(false);
+      expect(isInteractiveStyleVariant(randomVariant)).toBe(false);
+      expect(isInteractiveStyleVariant(noStyleVariant)).toBe(false);
+    });
+  });
   describe("ensureValidCombo", () => {
     it("should return a valid subset of variants", () => {
       const {

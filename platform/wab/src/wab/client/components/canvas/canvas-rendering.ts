@@ -50,6 +50,7 @@ import {
   isBaseVariant,
   isDisabledPseudoSelectorVariantForTpl,
   isGlobalVariant,
+  isInteractiveStyleVariant,
   isPseudoElementVariantForTpl,
   isScreenVariant,
   isStyleVariant,
@@ -688,6 +689,7 @@ const mkTriggers = computedFn(
       )(() => {
         const isInteractive = ctx.viewCtx.studioCtx.isInteractiveMode;
 
+        // triggers map is empty in non-interactive mode
         const { triggers, triggerProps } = useTriggers(
           ctx.viewCtx.canvasCtx,
           ctx.reactHookSpecs,
@@ -700,27 +702,35 @@ const mkTriggers = computedFn(
           activeVariants: new Set([
             ...ctx.activeVariants.keys(),
             ...component.variants.filter((variant) => {
+              if (!isStyleVariant(variant)) {
+                return false;
+              }
               // We include the style variants dynamically here to handle changes that require JS
               // to be re-run. For handling changes that only require CSS, we generate the proper
               // CSS classes in `genCanvasRules`. Those can only be applied in interactive mode,
               // because we don't want the content to change when the user tries to edit rich text
               // while in design mode.
-              if (isStyleVariant(variant) && isInteractive) {
-                if (isTplRootWithCodeComponentVariants(component.tplTree)) {
-                  return variant.selectors.reduce(
-                    (prev, key) =>
-                      prev &&
-                      ctx.$ccVariants[withoutCodeComponentVariantPrefix(key)],
-                    true
-                  );
-                }
 
+              // Style variants of built-in components (like vertical stack's hover)
+              if (!isTplRootWithCodeComponentVariants(component.tplTree)) {
                 const hook = ctx.reactHookSpecs.find(
                   (spec) => spec.sv === variant
                 );
                 return hook && triggers[hook.hookName];
               }
-              return false;
+
+              // Interactive registered variants (like a Button CC's hover) can not be applied in non-interactive mode
+              if (isInteractiveStyleVariant(variant) && !isInteractive) {
+                return false;
+              }
+
+              // Non-interactive registered variants (like Button CC's disabled) do no harm to rich-text editing and can be applied in non-interactive mode
+              return variant.selectors.reduce(
+                (prev, key) =>
+                  prev &&
+                  ctx.$ccVariants[withoutCodeComponentVariantPrefix(key)],
+                true
+              );
             }),
           ]),
         };
