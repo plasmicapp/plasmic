@@ -149,7 +149,11 @@ async function bundleModulesEsbuild(
         "root-provider.tsx",
         // Each component entry point
         ...codegenOutputs.flatMap((o) =>
-          o.components.map((c) => componentEntrypoint(c))
+          o.components
+            // We don't consider code component as entry points as we consider that the user
+            // will import them directly from the code component, and not from the loader
+            .filter((c) => !c.isCode)
+            .map((c) => componentEntrypoint(c))
         ),
         // Each global variant context file
         ...codegenOutputs.flatMap((o) =>
