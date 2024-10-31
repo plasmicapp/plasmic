@@ -195,7 +195,9 @@ export function reportSilentErrorMessage(
 // Sometimes the handled variable is not of type Error, so we need to normalize it
 // https://linear.app/plasmic/issue/PLA-11224/captureexception-error
 export function normalizeError(error: any) {
-  return error instanceof Error
+  return isStampedIgnoreError(error)
+    ? error
+    : error instanceof Error
     ? error
     : error && error.error
     ? (error.error as Error)
