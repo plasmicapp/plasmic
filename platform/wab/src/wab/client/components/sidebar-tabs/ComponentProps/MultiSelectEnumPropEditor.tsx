@@ -1,8 +1,8 @@
-import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { XMultiSelect } from "@/wab/client/components/XMultiSelect";
-import React from "react";
+import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { arrayMoveIndex } from "@/wab/shared/collections";
 import { withoutNils } from "@/wab/shared/common";
+import React from "react";
 
 export function MultiSelectEnumPropEditor(props: {
   onChange: (value: any) => void;
@@ -12,6 +12,7 @@ export function MultiSelectEnumPropEditor(props: {
   valueSetState?: ValueSetState;
   defaultValueHint?: string[];
   disabled?: boolean;
+  showDropdownArrow?: boolean;
 }) {
   const {
     value,
@@ -20,6 +21,7 @@ export function MultiSelectEnumPropEditor(props: {
     defaultValueHint,
     className,
     disabled,
+    showDropdownArrow,
     ...rest
   } = props;
 
@@ -61,6 +63,7 @@ export function MultiSelectEnumPropEditor(props: {
           onChange(arrayMoveIndex(value, fromIndex, toIndex));
         }
       }}
+      showDropdownArrow={showDropdownArrow}
       {...rest}
     />
   );

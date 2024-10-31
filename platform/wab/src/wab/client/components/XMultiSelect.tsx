@@ -1,9 +1,10 @@
-import { DropdownArrow, IconLinkButton } from "@/wab/client/components/widgets";
+import { IconLinkButton } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
+import { CHEVRON_BOTTOM_ICON } from "@/wab/client/icons";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { arrayMoveIndex } from "@/wab/shared/collections";
 import { cx, ensure, ensureHTMLElt, tuple } from "@/wab/shared/common";
-import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { Dropdown, Menu, Tooltip } from "antd";
 import classNames from "classnames";
 import Downshift, {
@@ -338,7 +339,9 @@ class _XMultiSelect<Item> extends React.Component<
                         })
                       )}{" "}
                       {this.props.showDropdownArrow ? (
-                        <DropdownArrow />
+                        <div className="align-self-center">
+                          {CHEVRON_BOTTOM_ICON}
+                        </div>
                       ) : undefined}
                     </div>
                   </div>

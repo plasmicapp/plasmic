@@ -60,6 +60,7 @@ export function ChoicePropEditor<T extends OptionValue>(
         )}
         value={value}
         defaultValueHint={defaultValueHint}
+        showDropdownArrow
       />
     );
   }
