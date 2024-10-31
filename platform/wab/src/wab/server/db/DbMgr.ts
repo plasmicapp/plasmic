@@ -7607,7 +7607,7 @@ export class DbMgr implements MigrationDbMgr {
   async setDomainsForProject(domains: string[], projectId: ProjectId) {
     await this.checkProjectPerms(
       projectId,
-      "owner",
+      "editor",
       "set domains",
       undefined,
       undefined,
