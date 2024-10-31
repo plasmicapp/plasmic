@@ -1080,6 +1080,7 @@ export function buildAddItemGroups({
                 return undefined;
               }
               const resolved = insertPanelAliases.get(alias as any);
+              const aliasImageUrl = `https://plasmic-static1.s3.us-west-2.amazonaws.com/insertables/${alias}.svg`;
 
               // Is this a built-in insertable?
               if (!resolved) {
@@ -1101,7 +1102,7 @@ export function buildAddItemGroups({
                 }
                 return {
                   ...createAddTplComponent(component),
-                  previewImageUrl: `https://plasmic-static1.s3.us-west-2.amazonaws.com/insertables/${alias}.svg`,
+                  previewImageUrl: aliasImageUrl,
                   isCompact: true,
                 };
               }
@@ -1134,10 +1135,13 @@ export function buildAddItemGroups({
 
                   // The template name needs to be of format "<PLEXUS_INSERTABLE_ID>/<kind>". E.g. For Plexus button, it will be "plexus/button".
                   // The template name will be fetched from devflags.insertableTemplates.
-                  return handleTemplateAlias(
-                    `${PLEXUS_INSERTABLE_ID}/${kind}`,
-                    kind
-                  );
+                  return {
+                    previewImageUrl: aliasImageUrl,
+                    ...handleTemplateAlias(
+                      `${PLEXUS_INSERTABLE_ID}/${kind}`,
+                      kind
+                    ),
+                  };
                 } else {
                   return undefined;
                 }
