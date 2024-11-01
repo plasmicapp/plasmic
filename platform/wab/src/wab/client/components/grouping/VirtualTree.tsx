@@ -50,6 +50,7 @@ interface VirtualTreeProps<T> {
   getNodeSearchText: (node: T) => string;
   getNodeHeight: (node: T) => number;
   renderElement: RenderElement<T>;
+  defaultOpenKeys?: "all" | Key[];
 }
 
 export const VirtualTree = React.forwardRef(function <T>(
@@ -64,6 +65,7 @@ export const VirtualTree = React.forwardRef(function <T>(
     getNodeSearchText,
     getNodeHeight,
     renderElement,
+    defaultOpenKeys,
   } = props;
 
   const listRef = React.useRef<VariableSizeList>(null);
@@ -76,7 +78,8 @@ export const VirtualTree = React.forwardRef(function <T>(
       getNodeKey,
       getNodeChildren,
       getNodeSearchText,
-      getNodeHeight
+      getNodeHeight,
+      defaultOpenKeys
     );
 
   React.useImperativeHandle(
@@ -222,12 +225,19 @@ function useTreeData<T>(
   getNodeKey: (node: T) => Key,
   getNodeChildren: (node: T) => T[],
   getNodeSearchText: (node: T) => string,
-  getNodeHeight: (node: T) => number
+  getNodeHeight: (node: T) => number,
+  defaultOpenKeys?: "all" | Key[]
 ) {
   const matcher = React.useMemo(() => {
     return new Matcher(query?.trim() ?? "");
   }, [query]);
-  const [expandedNodes, setExpandedNodes] = React.useState<Set<Key>>(new Set());
+  const [expandedNodes, setExpandedNodes] = React.useState<Set<Key>>(
+    new Set(
+      defaultOpenKeys === "all"
+        ? getAllNodeKeys(nodes, getNodeKey, getNodeChildren)
+        : defaultOpenKeys ?? []
+    )
+  );
   const toggleExpand = React.useCallback(
     (key: Key) => {
       setExpandedNodes((set) => {
