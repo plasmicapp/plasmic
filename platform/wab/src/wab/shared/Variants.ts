@@ -236,7 +236,7 @@ export function isStyleVariant(variant: Variant): variant is StyleVariant {
   return !!variant.selectors;
 }
 
-export function isInteractiveStyleVariant(variant: Variant): boolean {
+export function isMaybeInteractiveStyleVariant(variant: Variant): boolean {
   const interactionKeywords = ["hover", "focus", "press"];
   return (
     isStyleVariant(variant) &&

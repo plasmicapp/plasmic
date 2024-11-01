@@ -50,7 +50,7 @@ import {
   isBaseVariant,
   isDisabledPseudoSelectorVariantForTpl,
   isGlobalVariant,
-  isInteractiveStyleVariant,
+  isMaybeInteractiveStyleVariant,
   isPseudoElementVariantForTpl,
   isScreenVariant,
   isStyleVariant,
@@ -720,7 +720,7 @@ const mkTriggers = computedFn(
               }
 
               // Interactive registered variants (like a Button CC's hover) can not be applied in non-interactive mode
-              if (isInteractiveStyleVariant(variant) && !isInteractive) {
+              if (isMaybeInteractiveStyleVariant(variant) && !isInteractive) {
                 return false;
               }
 
