@@ -12,16 +12,26 @@ export interface RowItemProps extends DefaultRowItemProps {
   style?: React.CSSProperties;
   menu?: MenuType;
   onClick?: () => void;
+  showActionsOnHover?: boolean;
 }
 
 function RowItem_(props: RowItemProps, ref: HTMLElementRefOf<"div">) {
-  const { style, menu, menuSize, onClick, ...rest } = props;
+  const { style, menu, menuSize, onClick, showActionsOnHover, ...rest } = props;
+  const [hover, setHover] = React.useState(false);
   const contextMenuProps = useContextMenu({ menu });
 
   return (
     <PlasmicRowItem
       {...rest}
-      root={{ ref, style, onClick, ...contextMenuProps }}
+      root={{
+        ref,
+        style,
+        onMouseEnter: () => setHover(true),
+        onMouseLeave: () => setHover(false),
+        onClick,
+        ...contextMenuProps,
+      }}
+      showActions={props.showActions || (showActionsOnHover && hover)}
       menuButton={{ props: { ...contextMenuProps, size: menuSize } }}
     />
   );
