@@ -22,7 +22,10 @@ export function renderPlasmicSlot<
   const { as, defaultContents, value, ...rest } = opts;
 
   let content = value === undefined ? defaultContents : value;
-  if (!content || (Array.isArray(content) && content.length === 0)) {
+  if (
+    typeof content !== "number" &&
+    (!content || (Array.isArray(content) && content.length === 0))
+  ) {
     return null;
   }
 
