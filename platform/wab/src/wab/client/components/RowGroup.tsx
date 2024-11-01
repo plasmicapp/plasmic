@@ -15,7 +15,7 @@ export interface RowGroupProps extends Omit<DefaultRowGroupProps, "hasMenu"> {
 }
 
 function RowGroup_(props: RowGroupProps, ref: HTMLElementRefOf<"div">) {
-  const { style, menu, onClick, ...rest } = props;
+  const { style, menu, onClick, groupSize, ...rest } = props;
   const contextMenuProps = useContextMenu({ menu });
 
   return (
@@ -24,6 +24,9 @@ function RowGroup_(props: RowGroupProps, ref: HTMLElementRefOf<"div">) {
       root={{ ref, style, onClick, ...contextMenuProps }}
       hasMenu={!!menu}
       menuButton={{ props: { ...contextMenuProps } }}
+      groupSize={
+        typeof groupSize === "number" ? groupSize.toString() : groupSize
+      }
     />
   );
 }
