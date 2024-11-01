@@ -240,6 +240,7 @@ import {
   getSiteArenas,
   isHostLessPackage,
   isTplAttachedToSite,
+  isValidArena,
   siteIsEmpty,
 } from "@/wab/shared/core/sites";
 import { SlotSelection } from "@/wab/shared/core/slots";
@@ -566,6 +567,7 @@ export enum RightTabKey {
 }
 
 const THUMBNAIL_DURATION = 1000 * 60 * 5; // 5 minutes to recompute thumbnail
+const RECENT_ARENAS_LIMIT = 5;
 
 export class StudioCtx extends WithDbCtx {
   //
@@ -1659,23 +1661,34 @@ export class StudioCtx extends WithDbCtx {
   //
 
   private _currentArena = observable.box<AnyArena | null>(null);
-  private _previousArena = observable.box<AnyArena | null>(null);
+  private _recentArenas = observable.box<AnyArena[]>([]);
 
   get currentArena() {
     return this._currentArena.get();
   }
 
   set currentArena(arena: AnyArena | null) {
-    this.previousArena = this.currentArena;
+    if (arena) {
+      const fixedRecentArenas = this.recentArenas.filter((a) => {
+        return a !== arena && isValidArena(this.site, a);
+      });
+      fixedRecentArenas.push(arena);
+      if (fixedRecentArenas.length > RECENT_ARENAS_LIMIT) {
+        fixedRecentArenas.shift();
+      }
+      this._recentArenas.set(fixedRecentArenas);
+    }
+
     this._currentArena.set(arena);
   }
 
   get previousArena() {
-    return this._previousArena.get();
+    const recentLength = this.recentArenas.length;
+    return recentLength >= 2 ? this.recentArenas[recentLength - 1] : null;
   }
 
-  set previousArena(arena: AnyArena | null) {
-    this._previousArena.set(arena);
+  get recentArenas() {
+    return this._recentArenas.get();
   }
 
   get currentComponent() {

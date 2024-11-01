@@ -99,6 +99,7 @@ import { parseScreenSpec } from "@/wab/shared/css-size";
 import { getRshContainerType } from "@/wab/shared/layoututils";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
+  Arena,
   ArenaFrame,
   ArenaFrameCell,
   ArenaFrameGrid,
@@ -1438,6 +1439,21 @@ export function getArenaByNameOrUuidOrPath(
     );
   }
 }
+
+/**
+ * Returns whether the given arena still exists in the site
+ */
+export const isValidArena = maybeComputedFn((site: Site, arena: AnyArena) => {
+  return switchType(arena)
+    .when(ComponentArena, (componentArena) =>
+      site.componentArenas.find((it) => it === componentArena)
+    )
+    .when(PageArena, (pageArena) =>
+      site.pageArenas.find((it) => it === pageArena)
+    )
+    .when(Arena, (customArena) => site.arenas.find((it) => it === customArena))
+    .result();
+});
 
 /**
  * Traverse site.components and remove ComponentInstance types referencing a
