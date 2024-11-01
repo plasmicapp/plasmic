@@ -321,7 +321,10 @@ export function switchArena(name: string) {
   return cy.waitForNewFrame(
     () => {
       cy.get(`[id="proj-nav-button"]`).click({ force: true });
-      cy.get(`[data-test-id="panel-top-search-input"]`).type(name);
+      cy.get(`[data-test-id="nav-dropdown-clear-search"]`).click({
+        force: true,
+      });
+      cy.get(`[data-test-id="nav-dropdown-search-input"]`).type(name);
       cy.contains(name).click({ force: true }).wait(1000);
     },
     { skipWaitInit: true }
@@ -363,7 +366,7 @@ export function createNewPageInOwnArena(
   return waitForNewFrame(() => {
     // Create page
     cy.get("#proj-nav-button").click();
-    cy.get("#proj-panel-plus-btn").click();
+    cy.get("#nav-dropdown-plus-btn").click();
     cy.get(".ant-dropdown-menu-item").first().click();
     // Work around Cypress flaky input bug: https://github.com/cypress-io/cypress/issues/28172
     cy.get('[data-test-id="prompt"]:not([disabled])')
@@ -968,6 +971,8 @@ export function treeTab() {
 export function projectPanel() {
   switchToTreeTab();
   cy.get("#proj-nav-button").click();
+  cy.wait(500);
+  cy.get(`[data-test-id="nav-dropdown-expand-all"]`).click();
   cy.wait(500);
   return cy.get(testIds.projectPanel.selector);
 }

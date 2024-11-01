@@ -711,6 +711,9 @@ function NavigationDropdown_(
                 debouncedSetQuery(e.target.value);
               },
               onClear: () => setDebouncedQuery(""),
+              clearFieldIcon: {
+                "data-test-id": "nav-dropdown-clear-search",
+              },
               searchInput: {
                 ref: searchInputRef,
                 autoFocus: true,

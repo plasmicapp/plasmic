@@ -21,7 +21,8 @@ import { mergeProps } from "react-aria";
 // You can also stop extending from DefaultSearchInputProps altogether and have
 // total control over the props for your component.
 interface SearchInputProps extends DefaultSearchInputProps {
-  searchInput: React.InputHTMLAttributes<HTMLInputElement>;
+  searchInput?: React.InputHTMLAttributes<HTMLInputElement>;
+  clearFieldIcon?: { "data-test-id": string };
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onClear?: () => void;
 }
@@ -53,13 +54,13 @@ function SearchInput(props: SearchInputProps) {
           onChange?.(e);
         },
       })}
-      clearFieldIcon={{
+      clearFieldIcon={mergeProps(props.clearFieldIcon, {
         style: { display: value ? "block" : "none" },
         onClick: () => {
           setValue("");
           onClear?.();
         },
-      }}
+      })}
     />
   );
 }

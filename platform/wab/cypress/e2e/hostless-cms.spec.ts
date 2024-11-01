@@ -81,7 +81,7 @@ describe("hostless-cms", function () {
             cy.wait(200);
             cy.setSelectedDimStyle(
               "host",
-              `{selectall}${Cypress.config("baseUrl")}`
+              `{selectall}{backspace}${Cypress.config("baseUrl")}`
             );
             cy.setSelectedDimStyle("databaseId", cmsId);
             cy.setSelectedDimStyle("databaseToken", cmsPublicToken);

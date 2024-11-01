@@ -35,7 +35,7 @@ describe("routing", () => {
           `/-/MyComponent?arena_type=component&arena=`
         );
 
-        cy.projectPanel().contains("My/Page").click();
+        cy.projectPanel().contains("/my/page").click();
         cy.url().should("include", `/-/My-Page?arena_type=page&arena=`);
       });
 

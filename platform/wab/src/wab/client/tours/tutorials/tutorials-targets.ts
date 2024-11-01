@@ -38,7 +38,7 @@ export const STUDIO_ELEMENTS_TARGETS = {
   sidebarModalClose: `#sidebar-modal [data-test-id="close-sidebar-modal"]`,
   topBarPublishBtn: "#topbar-publish-btn",
   projNavBtn: "#proj-nav-button",
-  projPanelPlusBtn: "#proj-panel-plus-btn",
+  projPanelPlusBtn: "#nav-dropdown-plus-btn",
   pageSettings: "#sidebar-page-meta",
   pageSettingsUrl: `[data-test-id="page-path"]`,
   pageUrlParameters: "#sidebar-page-url-parameters",
