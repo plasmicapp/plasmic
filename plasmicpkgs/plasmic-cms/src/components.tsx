@@ -20,6 +20,7 @@ import {
   useRow,
   useTables,
   useTablesWithDataLoaded,
+  TableSchemaProvider,
 } from "./context";
 import { ApiCmsRow, ApiCmsTable, CmsFieldMeta, CmsType } from "./schema";
 import { mkFieldOptions, mkTableOptions } from "./util";
@@ -427,12 +428,16 @@ export function CmsQueryRepeater({
       forceLoadingState
     );
     return (
-      <CountProvider
-        table={table}
-        count={typeof maybeData?.data === "number" ? maybeData.data : undefined}
-      >
-        {node}
-      </CountProvider>
+      <TableSchemaProvider table={table}>
+        <CountProvider
+          table={table}
+          count={
+            typeof maybeData?.data === "number" ? maybeData.data : undefined
+          }
+        >
+          {node}
+        </CountProvider>
+      </TableSchemaProvider>
     );
   } else {
     const node = renderMaybeData<ApiCmsRow[]>(
@@ -456,12 +461,14 @@ export function CmsQueryRepeater({
       forceLoadingState
     );
     return (
-      <QueryResultProvider
-        rows={Array.isArray(maybeData?.data) ? maybeData.data : undefined}
-        table={table}
-      >
-        {noLayout ? <> {node} </> : <div className={className}> {node} </div>}
-      </QueryResultProvider>
+      <TableSchemaProvider table={table}>
+        <QueryResultProvider
+          rows={Array.isArray(maybeData?.data) ? maybeData.data : undefined}
+          table={table}
+        >
+          {noLayout ? <> {node} </> : <div className={className}> {node} </div>}
+        </QueryResultProvider>
+      </TableSchemaProvider>
     );
   }
 }
