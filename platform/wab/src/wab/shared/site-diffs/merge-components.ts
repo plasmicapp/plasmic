@@ -1511,12 +1511,36 @@ export function fixDuplicatedCodeComponents(mergedSite: Site) {
     const paramsByName = groupBy(component.params, (p) => p.variable.name);
     visitComponentRefs(mergedSite, component, (tplComponent) => {
       tplComponent.vsettings.forEach((vs) => {
+        // Since code components can be reinstantied and new instance of params can appear
+        // in the site, we can arrive at situations where a param is duplicated in the same
+        // variant setting. For the values where there is an already valid param, we keep it
+        // and remove the others. But if there is no valid param, we try to convert the old
+        // params to the new ones.
+        const validArgsVarNameSet = new Set(
+          vs.args
+            .filter(
+              (arg) => paramsByName[arg.param.variable.name]?.[0] === arg.param
+            )
+            .map((arg) => arg.param.variable.name)
+        );
+
+        removeWhere(vs.args, (arg) => {
+          const name = arg.param.variable.name;
+          const finalParam = paramsByName[name]?.[0];
+          return validArgsVarNameSet.has(name) && arg.param !== finalParam;
+        });
+
         vs.args.forEach((arg) => {
           const name = arg.param.variable.name;
           const finalParam = paramsByName[name]?.[0];
           if (finalParam && finalParam !== arg.param) {
             arg.param = finalParam;
           }
+        });
+
+        removeWhere(vs.args, (arg) => {
+          const name = arg.param.variable.name;
+          return !paramsByName[name]?.[0];
         });
       });
     });

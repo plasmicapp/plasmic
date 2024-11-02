@@ -19,7 +19,10 @@ import {
   mkVariantSetting,
 } from "@/wab/shared/Variants";
 import { Bundler, FastBundler } from "@/wab/shared/bundler";
-import { createStyleTokenFromRegistration } from "@/wab/shared/code-components/code-components";
+import {
+  createStyleTokenFromRegistration,
+  mkCodeComponent,
+} from "@/wab/shared/code-components/code-components";
 import {
   assert,
   ensure,
@@ -5349,5 +5352,110 @@ describe("merging", () => {
       status: "merged",
       autoReconciliations: [],
     });
+  });
+
+  it("merges slot params after swapping code components instances", () => {
+    const result = testMerge({
+      ancestorSite: basicSite(),
+      a: (site) => {},
+      b: (site) => {
+        const tplMgr = new TplMgr({ site });
+        const comp = ensure(
+          site.components.find((c) => c.name === "InstantiateSlotArgs"),
+          () => "Couldn't find InstantiateSlotArgs"
+        );
+        let tplComp: TplComponent = undefined as any;
+        flattenTpls(comp.tplTree).forEach((tpl) => {
+          if (isKnownTplComponent(tpl) && tpl.name === "tplComp") {
+            tplComp = tpl;
+          }
+        });
+        const slot1 = ensure(
+          $$$(ensure(tplComp, () => `tplComp is undefined`)).getSlotArg(
+            "slot1"
+          ),
+          () => `No slot arg for slot1`
+        );
+        const slot2 = ensure(
+          $$$(tplComp).getSlotArg("slot2"),
+          () => `No slot arg for slot2`
+        );
+        const [node1] = ensureKnownRenderExpr(slot1.expr).tpl;
+        const [node2, node3] = ensureKnownRenderExpr(slot2.expr).tpl;
+        const node4 = mkTplTagX("div", {
+          name: "SlotArgNode4",
+          baseVariant: getBaseVariant(comp),
+          variants: [
+            mkVariantSetting({
+              variants: [getBaseVariant(comp)],
+            }),
+          ],
+        });
+        node4.parent = tplComp;
+        ensureKnownRenderExpr(slot1.expr).tpl = [node4];
+        ensureKnownRenderExpr(slot2.expr).tpl = [node1];
+
+        const codeComponentWithSlots = mkCodeComponent(
+          "CodeComponentWithSlots",
+          {
+            name: "CodeComponentWithSlots",
+            props: {},
+            importPath: "",
+          },
+          {}
+        );
+        tplMgr.attachComponent(codeComponentWithSlots);
+        const baseVariantCcWithSlots = getBaseVariant(codeComponentWithSlots);
+
+        const slot1Param = addSlotParam(site, codeComponentWithSlots, "slot1");
+        const slot1cc = mkSlot(slot1Param, []);
+        ensureBaseVariantSetting(codeComponentWithSlots, slot1cc);
+
+        const slot2Param = addSlotParam(site, codeComponentWithSlots, "slot2");
+        const slot2cc = mkSlot(slot2Param, []);
+        ensureBaseVariantSetting(codeComponentWithSlots, slot2cc);
+
+        codeComponentWithSlots.tplTree = mkTplTagX(
+          "div",
+          {
+            attrs: {},
+            baseVariant: baseVariantCcWithSlots,
+          },
+          [slot1cc, slot2cc]
+        );
+
+        tplMgr.swapComponents(tplComp.component, codeComponentWithSlots);
+      },
+    });
+
+    expect(result).toMatchObject({
+      status: "merged",
+      autoReconciliations: [],
+    });
+
+    const { mergedSite: site } = result;
+
+    const comp = ensure(
+      site.components.find((c) => c.name === "InstantiateSlotArgs"),
+      () => "Couldn't find InstantiateSlotArgs"
+    );
+    let tplComp: TplComponent = undefined as any;
+    flattenTpls(comp.tplTree).forEach((tpl) => {
+      if (isKnownTplComponent(tpl) && tpl.name === "tplComp") {
+        tplComp = tpl;
+      }
+    });
+
+    expect(
+      tplComp.vsettings[0].args.filter(
+        (arg) => arg.param.variable.name === "slot1"
+      ).length
+    ).toEqual(1);
+
+    expect(
+      tplComp.vsettings[0].args.filter(
+        (arg) => arg.param.variable.name === "slot2"
+      ).length
+    ).toEqual(1);
   });
 });
