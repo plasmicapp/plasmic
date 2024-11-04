@@ -303,7 +303,11 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
           )
         ),
       ];
-      return items;
+      const totalCount = items.reduce(
+        (acc, item) => (item.type !== "token" ? acc + item.count : acc + 1),
+        0
+      );
+      return { items, count: totalCount };
     };
 
     const selectableTokens = studioCtx.site.styleTokens
@@ -321,13 +325,13 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
       })
       .map((t) => t.uuid);
 
-    const items = tokenTypes.map((tokenType) => {
+    const items = tokenTypes.map((tokenType): TokenPanelRow => {
       return {
         type: "header" as const,
         tokenType: tokenType,
         key: `$${tokenType}-folder`,
-        items: tokenSectionItems(tokenType),
-      } as TokenPanelRow;
+        ...tokenSectionItems(tokenType),
+      };
     });
 
     return (
@@ -448,6 +452,7 @@ const TokenTreeRow = (props: RenderElementProps<TokenPanelRow>) => {
           tokenType={value.tokenType}
           isExpanded={treeState.isOpen}
           toggleExpand={treeState.toggleExpand}
+          groupSize={value.count}
         />
       );
     case "folder":
