@@ -17,6 +17,7 @@ import {
   Flex as Flex__,
   MultiChoiceArg,
   SingleBooleanChoiceArg,
+  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -33,10 +34,10 @@ import IconButton from "../../components/widgets/IconButton"; // plasmic-import:
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
+import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicTokenTypeHeader.module.css"; // plasmic-import: eMjSZ8G7mG/css
 
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -60,10 +61,12 @@ export const PlasmicTokenTypeHeader__VariantProps = new Array<VariantPropType>(
 
 export type PlasmicTokenTypeHeader__ArgsType = {
   tokenType?: React.ReactNode;
+  groupSize?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicTokenTypeHeader__ArgsType;
 export const PlasmicTokenTypeHeader__ArgProps = new Array<ArgPropType>(
-  "tokenType"
+  "tokenType",
+  "groupSize"
 );
 
 export type PlasmicTokenTypeHeader__OverridesType = {
@@ -74,6 +77,7 @@ export type PlasmicTokenTypeHeader__OverridesType = {
 
 export interface DefaultTokenTypeHeaderProps {
   tokenType?: React.ReactNode;
+  groupSize?: React.ReactNode;
   isExpanded?: SingleBooleanChoiceArg<"isExpanded">;
   border?: MultiChoiceArg<"top" | "bottom">;
   className?: string;
@@ -124,7 +128,6 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.border,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -198,11 +201,24 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
             size={"small"}
           />
         </div>
-        {renderPlasmicSlot({
-          defaultContents: "Colors",
-          value: args.tokenType,
-          className: classNames(sty.slotTargetTokenType),
-        })}
+        <Stack__
+          as={"div"}
+          hasGap={true}
+          className={classNames(projectcss.all, sty.freeBox__cp1Xx)}
+        >
+          {renderPlasmicSlot({
+            defaultContents: "Colors",
+            value: args.tokenType,
+            className: classNames(sty.slotTargetTokenType),
+          })}
+          <div className={classNames(projectcss.all, sty.freeBox__etXdI)}>
+            {renderPlasmicSlot({
+              defaultContents: "0",
+              value: args.groupSize,
+              className: classNames(sty.slotTargetGroupSize),
+            })}
+          </div>
+        </Stack__>
       </div>
       <div
         className={classNames(projectcss.all, sty.freeBox___36Lfh, {
@@ -260,7 +276,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicTokenTypeHeader__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

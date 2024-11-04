@@ -141,18 +141,17 @@
   cursor: wait;
   background: var(--token-O4S7RMTqZ3);
 }
-.root .title:focus {
-  box-shadow: 0px 0px 0px 2px #0091ff80;
-  left: auto;
-  top: auto;
-  outline: none;
-}
 .root .title:disabled {
   left: auto;
   top: auto;
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
+}
+.root .title:focus {
+  box-shadow: 0px 0px 0px 2px #0091ff80;
+  left: auto;
+  top: auto;
 }
 .publishHint {
   display: flex;

@@ -35,10 +35,10 @@ import IconButton from "../../components/widgets/IconButton"; // plasmic-import:
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
+import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftTabStrip.module.css"; // plasmic-import: l7y_rhJyMt2/css
 
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
@@ -48,8 +48,8 @@ import WandIcon from "../plasmic_kit/PlasmicIcon__Wand"; // plasmic-import: vTVU
 import KeyboardIcon from "../plasmic_kit_design_system/PlasmicIcon__Keyboard"; // plasmic-import: tSLSUCy1RH/icon
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import ClockSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ClockSvg"; // plasmic-import: 9MhqTIkUT/icon
-import ComponentSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentSvg"; // plasmic-import: vJVrKlrDD/icon
 import ComponentsSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentsSvg"; // plasmic-import: coPzxnFyi/icon
+import ComponentSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentSvg"; // plasmic-import: vJVrKlrDD/icon
 import DevicesSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DevicesSvg"; // plasmic-import: bbAxEiIwy/icon
 import DiamondsSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DiamondsSvg"; // plasmic-import: uzBbTcdyE/icon
 import DotsHorizontalCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DotsHorizontalCircleSvg"; // plasmic-import: xdn8wiJBv/icon
@@ -112,7 +112,6 @@ export type PlasmicLeftTabStrip__VariantsArgs = {
     | "copilot"
     | "lint"
   >;
-
   showAvatar?: SingleBooleanChoiceArg<"showAvatar">;
   withInsertButton?: SingleBooleanChoiceArg<"withInsertButton">;
 };
@@ -177,7 +176,6 @@ export interface DefaultLeftTabStripProps {
     | "copilot"
     | "lint"
   >;
-
   showAvatar?: SingleBooleanChoiceArg<"showAvatar">;
   withInsertButton?: SingleBooleanChoiceArg<"withInsertButton">;
   className?: string;
@@ -235,7 +233,6 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           $props.withInsertButton,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -264,6 +261,11 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
         plasmic_plasmic_kit_new_design_system_former_style_controls_css.plasmic_tokens,
         sty.root,
         {
+          [sty.rootactiveTab_copilot]: hasVariant(
+            $state,
+            "activeTab",
+            "copilot"
+          ),
           [sty.rootactiveTab_mixins]: hasVariant($state, "activeTab", "mixins"),
           [sty.rootactiveTab_outline]: hasVariant(
             $state,
@@ -288,6 +290,11 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
         data-plasmic-name={"insert"}
         data-plasmic-override={overrides.insert}
         className={classNames("__wab_instance", sty.insert, {
+          [sty.insertactiveTab_copilot]: hasVariant(
+            $state,
+            "activeTab",
+            "copilot"
+          ),
           [sty.insertwithInsertButton]: hasVariant(
             $state,
             "withInsertButton",
@@ -296,7 +303,20 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
         })}
       />
 
-      <div className={classNames(projectcss.all, sty.freeBox__s2Zn2)}>
+      <div
+        className={classNames(projectcss.all, sty.freeBox__s2Zn2, {
+          [sty.freeBoxactiveTab_copilot__s2Zn2NzL96]: hasVariant(
+            $state,
+            "activeTab",
+            "copilot"
+          ),
+          [sty.freeBoxshowAvatar__s2Zn29NVfe]: hasVariant(
+            $state,
+            "showAvatar",
+            "showAvatar"
+          ),
+        })}
+      >
         {renderPlasmicSlot({
           defaultContents: (
             <React.Fragment>
@@ -366,7 +386,6 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
               />
             </React.Fragment>
           ),
-
           value: args.buttons,
         })}
       </div>
@@ -374,6 +393,11 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
         data-plasmic-name={"divider"}
         data-plasmic-override={overrides.divider}
         className={classNames(projectcss.all, sty.divider, {
+          [sty.divideractiveTab_copilot]: hasVariant(
+            $state,
+            "activeTab",
+            "copilot"
+          ),
           [sty.divideractiveTab_mixins]: hasVariant(
             $state,
             "activeTab",
@@ -432,6 +456,11 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
         data-plasmic-name={"tokens"}
         data-plasmic-override={overrides.tokens}
         className={classNames("__wab_instance", sty.tokens, {
+          [sty.tokensactiveTab_copilot]: hasVariant(
+            $state,
+            "activeTab",
+            "copilot"
+          ),
           [sty.tokensactiveTab_mixins]: hasVariant(
             $state,
             "activeTab",
@@ -469,6 +498,11 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
         data-plasmic-name={"mixins"}
         data-plasmic-override={overrides.mixins}
         className={classNames("__wab_instance", sty.mixins, {
+          [sty.mixinsactiveTab_copilot]: hasVariant(
+            $state,
+            "activeTab",
+            "copilot"
+          ),
           [sty.mixinsactiveTab_mixins]: hasVariant(
             $state,
             "activeTab",
@@ -956,6 +990,11 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
       </Stack__>
       <div
         className={classNames(projectcss.all, sty.freeBox__igmvF, {
+          [sty.freeBoxactiveTab_copilot__igmvFnzL96]: hasVariant(
+            $state,
+            "activeTab",
+            "copilot"
+          ),
           [sty.freeBoxshowAvatar__igmvF9NVfe]: hasVariant(
             $state,
             "showAvatar",
@@ -967,10 +1006,20 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           data-plasmic-name={"players"}
           data-plasmic-override={overrides.players}
           className={classNames(projectcss.all, sty.players, {
+            [sty.playersactiveTab_copilot]: hasVariant(
+              $state,
+              "activeTab",
+              "copilot"
+            ),
             [sty.playersshowAvatar]: hasVariant(
               $state,
               "showAvatar",
               "showAvatar"
+            ),
+            [sty.playerswithInsertButton]: hasVariant(
+              $state,
+              "withInsertButton",
+              "withInsertButton"
             ),
           })}
         >
@@ -982,6 +1031,11 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
                   $state,
                   "showAvatar",
                   "showAvatar"
+                ),
+                [sty.imgwithInsertButton__fZbIh9Mm6M]: hasVariant(
+                  $state,
+                  "withInsertButton",
+                  "withInsertButton"
                 ),
               })}
               displayHeight={
@@ -1004,6 +1058,11 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
                   $state,
                   "showAvatar",
                   "showAvatar"
+                ),
+                [sty.svgwithInsertButton__jFq8B9Mm6M]: hasVariant(
+                  $state,
+                  "withInsertButton",
+                  "withInsertButton"
                 ),
               })}
               role={"img"}
@@ -1061,6 +1120,11 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           data-plasmic-override={overrides.avatar}
           alt={""}
           className={classNames(sty.avatar, {
+            [sty.avataractiveTab_copilot]: hasVariant(
+              $state,
+              "activeTab",
+              "copilot"
+            ),
             [sty.avatarshowAvatar]: hasVariant(
               $state,
               "showAvatar",
@@ -1111,7 +1175,6 @@ const PlasmicDescendants = {
     "players",
     "avatar",
   ],
-
   insert: ["insert"],
   divider: ["divider"],
   copilot: ["copilot"],
@@ -1171,7 +1234,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftTabStrip__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

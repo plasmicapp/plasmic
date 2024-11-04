@@ -38,8 +38,47 @@
 .expandButtonisExpanded:global(.__wab_instance):global(.__wab_instance) {
   flex-shrink: 0;
 }
+.freeBox__cp1Xx {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+.freeBox__cp1Xx > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  margin-left: calc(0px - 8px);
+  width: calc(100% + 8px);
+}
+.freeBox__cp1Xx > :global(.__wab_flex-container) > *,
+.freeBox__cp1Xx > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox__cp1Xx > :global(.__wab_flex-container) > picture > img,
+.freeBox__cp1Xx
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 8px;
+}
 .slotTargetTokenType {
   font-weight: 500;
+}
+.freeBox__etXdI {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  background: var(--token-bV4cCeIniS6);
+  border-radius: 4px;
+  padding: 0px 6px;
+}
+.slotTargetGroupSize {
+  color: var(--token-UunsGa2Y3t3);
+  user-select: none;
 }
 .freeBox___36Lfh {
   display: flex;

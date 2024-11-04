@@ -21,9 +21,6 @@
 .root:hover {
   background: var(--token-mu3x63xzJRW);
 }
-.root___focusVisible {
-  outline: none;
-}
 .svg {
   position: relative;
   object-fit: cover;
@@ -31,9 +28,6 @@
   height: 24px;
   color: var(--token-iR8SeEwQZ);
   flex-shrink: 0;
-}
-.root .svg___focusVisible {
-  outline: none;
 }
 .focusRing {
   box-shadow: 0px 0px 0px 2px #0091ff80;
@@ -47,7 +41,4 @@
   bottom: -4px;
   pointer-events: none;
   border-radius: 24px;
-}
-.root .focusRing___focusVisible {
-  outline: none;
 }

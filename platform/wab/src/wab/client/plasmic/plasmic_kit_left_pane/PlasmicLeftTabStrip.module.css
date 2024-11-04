@@ -104,6 +104,9 @@
 .divideractiveTab_mixins {
   margin-top: calc(8px + 4px) !important;
 }
+.divideractiveTab_copilot {
+  margin-top: calc(8px + 4px) !important;
+}
 .dividerwithInsertButton {
   margin-top: calc(8px + 4px) !important;
 }
@@ -143,6 +146,9 @@
 .tokensactiveTab_mixins:global(.__wab_instance) {
   flex-shrink: 0;
 }
+.tokensactiveTab_copilot:global(.__wab_instance) {
+  flex-shrink: 0;
+}
 .tokenswithInsertButton:global(.__wab_instance) {
   flex-shrink: 0;
 }
@@ -157,6 +163,9 @@
   display: none;
 }
 .mixinsactiveTab_mixins:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.mixinsactiveTab_copilot:global(.__wab_instance) {
   flex-shrink: 0;
 }
 .svg__nxYe {
