@@ -3080,10 +3080,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.6.tgz#e36cc365a8ddb54e3c5caf0ce4ad6818c995b5a6"
   integrity sha512-D+/pxBSYV8/qiwuwVMRnASZMXmlxDYUKRjVnRGjf3Q9s7SC/KlRSB5ORIk81heOH5HaRq05TD47LPsmNFvhNiw==
 
-"@plasmicapp/react-web@^0.2.353":
-  version "0.2.353"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.353.tgz#bdf734ff9d44df2722288e4261086f307cda08a2"
-  integrity sha512-ps01CXWCQWAo5GuvaUmZAe/kKFMCLbEMpR5BPF6Y3agDgP1Cg35n3pjkc2kU+7GZ/8eJPBclIROrouIGvxcucA==
+"@plasmicapp/react-web@^0.2.354":
+  version "0.2.354"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.354.tgz#0e65f95130aa61678864b3b3c5a973e1c979767f"
+  integrity sha512-Ai0b/DS2pFBWYv0AD75OimZ/lSdHreDoewMP9gAkQmSJUa2z89VanM1Mp98OQVpeMw0WIZCsdHzNS+G4sRNnkA==
   dependencies:
     "@plasmicapp/auth-react" "0.0.22"
     "@plasmicapp/data-sources" "0.1.166"
@@ -3122,10 +3122,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/airtable/-/airtable-0.0.221.tgz#f2408bdae771a00ef602e317bcb692f0111ea45e"
   integrity sha512-ref0b9d0622e77tfMOwqj1hkbwijkxNNiofEGHiUjTIjk0q/+0ibjztsfkQzgAYF5Z6csvEmTpvKAbZ67FvoYg==
 
-"@plasmicpkgs/antd5@^0.0.253":
-  version "0.0.253"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.253.tgz#0ac0ebb7fec9edf7cc3df3a08b207480500e3308"
-  integrity sha512-vSVLPyuc5Qg/Ns5kQPtrMuT/sncFWsoEYLnSvS0X0taJchmZ9ebZtsuprjJZ43wAU4hXo5UjkMC5G1q31EGk4Q==
+"@plasmicpkgs/antd5@^0.0.254":
+  version "0.0.254"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.254.tgz#8c13b74b88914e89525bf180628e56f31b2cbdea"
+  integrity sha512-su1/LOJiU4k0HaeFCt/eUGBojonftLyME2UuyBGgP06uzDyhNStMwws9NhEH4+0Sn6kbHfdyA1ss22uEZEpWxw==
   dependencies:
     antd "^5.12.7"
     classnames "^2.3.2"
@@ -3236,10 +3236,10 @@
   dependencies:
     "@chakra-ui/react" "^2.8.1"
 
-"@plasmicpkgs/plasmic-cms@^0.0.269":
-  version "0.0.269"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-cms/-/plasmic-cms-0.0.269.tgz#2477851c88b1d8c04105d3d61df667f01bad2f6c"
-  integrity sha512-mkWgUkDYEDQovCEP2eCnasHiVK4oz2tyMtL/s3+dnWVP0sve23RQ/ZNncFqM+/x59U7u6vPoxJ+fB81GBeHSig==
+"@plasmicpkgs/plasmic-cms@^0.0.270":
+  version "0.0.270"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-cms/-/plasmic-cms-0.0.270.tgz#700e8bb730632da8f3fcbe9e1a578eb72bc43bd4"
+  integrity sha512-yPY2MYFYYDPEz1g8MaNWr4q0ZXqRReeUjuUk5Cv7q5NoFHJRoagVvIH/s/TcmJ6tAmqkqtaYwyIVwpIOtB8B7g==
   dependencies:
     dayjs "^1.10.7"
 
