@@ -14,7 +14,7 @@ import {
 import { sendResetPasswordEmail } from "@/wab/server/emails/reset-password-email";
 import { sendEmailVerificationToUser } from "@/wab/server/emails/verification-email";
 import { sendWelcomeEmail } from "@/wab/server/emails/welcome-email";
-import { User } from "@/wab/server/entities/Entities";
+import { SsoConfig, User } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
 import { isCustomPublicApiRequest } from "@/wab/server/routes/custom-routes";
 import { getPromotionCodeCookie } from "@/wab/server/routes/promo-code";
@@ -545,8 +545,7 @@ async function handleOauthCallback(
   res: Response,
   next: NextFunction,
   {
-    provider,
-    strategy,
+    ssoConfig,
     beforeLogin,
   }: {
     /**
@@ -556,23 +555,15 @@ async function handleOauthCallback(
      * Return false to stop. Callback is expected to respond.
      */
     beforeLogin?: (user: User) => Promise<boolean>;
-  } & (
-    | {
-        strategy?: never;
-        provider: "google";
-      }
-    | {
-        strategy: "sso";
-        provider: "okta";
-      }
-  )
+    ssoConfig?: SsoConfig;
+  }
 ) {
-  const logPrefix = strategy
-    ? `auth: ${strategy}/${provider}`
-    : `auth: ${provider}`;
+  const strategy = ssoConfig ? "sso" : "google";
+  const provider = ssoConfig ? ssoConfig.provider : "google";
+  const logPrefix = `auth: ${strategy}/${provider}`;
   await new Promise<void>((resolve) =>
     passport.authenticate(
-      strategy ?? provider,
+      strategy,
       async (err: Error, user: User, info: IVerifyOptions) =>
         (async () => {
           console.log(logPrefix, "AUTH CALLBACK", { err, user, info });
@@ -596,6 +587,14 @@ async function handleOauthCallback(
               return next(err2);
             }
             console.log(logPrefix, "logged in as:", user.email);
+            // Custom session time for specific sso configurations.
+            if (
+              !!ssoConfig &&
+              typeof ssoConfig.config.maxAge === "number" &&
+              ssoConfig.config.maxAge > 0
+            ) {
+              req.session.cookie.maxAge = ssoConfig.config.maxAge;
+            }
             res.send(callbackHtml("Success"));
           });
         })().then(() => resolve())
@@ -609,7 +608,6 @@ export async function googleCallback(
   next: NextFunction
 ) {
   await handleOauthCallback(req, res, next, {
-    provider: "google",
     beforeLogin: async (user: User) => {
       const mgr = superDbMgr(req);
 
@@ -742,8 +740,7 @@ export async function ssoCallback(
 ) {
   const ssoConfig = await extractSsoConfig(req);
   await handleOauthCallback(req, res, next, {
-    strategy: "sso",
-    provider: ssoConfig.provider,
+    ssoConfig,
   });
 }
 
