@@ -176,7 +176,7 @@ export function registerListBoxItem(
       props: {
         id: {
           type: "string",
-          description: "A unique key for tracking the selected item in state",
+          description: "A unique value for tracking the selected item in state",
           required: true,
           displayName: "Value",
           validator: (_value, _props, ctx) => {

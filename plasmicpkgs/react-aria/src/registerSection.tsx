@@ -1,6 +1,6 @@
 import { mergeProps } from "@react-aria/utils";
 import React from "react";
-import { Header, Key, Section } from "react-aria-components";
+import { Header, Section } from "react-aria-components";
 import { PlasmicListBoxContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
@@ -13,7 +13,6 @@ import {
 export interface BaseSectionProps extends Styleable {
   items: React.ReactNode;
   header: React.ReactNode;
-  key?: Key;
 }
 
 export function BaseSection(props: BaseSectionProps) {

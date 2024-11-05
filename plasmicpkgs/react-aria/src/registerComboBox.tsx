@@ -117,18 +117,18 @@ export function registerComboBox(loader?: Registerable) {
       ]),
       selectedKey: {
         type: "choice",
-        description: "The selected keys of the listbox",
         editOnly: true,
         uncontrolledProp: "defaultSelectedKey",
-        displayName: "Initial selected key",
+        displayName: "Initial selected item",
         options: (_props, ctx) => (ctx?.itemIds ? Array.from(ctx.itemIds) : []),
-        // React Aria ComboBox do not support multiple comboBoxions yet
+        // React Aria ComboBox do not support multiple selections yet
         multiSelect: false,
       },
       disabledKeys: {
         type: "choice",
+        displayName: "Disabled values",
         description:
-          "The item keys that are disabled. These items cannot be selected, focused, or otherwise interacted with.",
+          "The items that are disabled. These items cannot be selected, focused, or otherwise interacted with.",
         options: (_props, ctx) => (ctx?.itemIds ? Array.from(ctx.itemIds) : []),
         multiSelect: true,
         advanced: true,
@@ -141,7 +141,7 @@ export function registerComboBox(loader?: Registerable) {
       },
       onSelectionChange: {
         type: "eventHandler",
-        argTypes: [{ name: "selectedKey", type: "string" }],
+        argTypes: [{ name: "selectedValue", type: "string" }],
       },
       onOpenChange: {
         type: "eventHandler",
@@ -228,7 +228,7 @@ export function registerComboBox(loader?: Registerable) {
       },
     },
     states: {
-      selectedKey: {
+      selectedValue: {
         type: "writable",
         valueProp: "selectedKey",
         onChangeProp: "onSelectionChange",

@@ -33,7 +33,7 @@ export interface BaseListBoxProps
 
 export const listboxHelpers = {
   states: {
-    selectedKey: {
+    selectedValue: {
       onChangeArgsToValue: (value: Set<Key> | string[] | string) => {
         // only single selection is supported
         return Array.from(value)[0];
@@ -244,10 +244,9 @@ export function registerListBox(
         },
         selectedKeys: {
           type: "choice",
-          description: "The selected keys of the listbox",
           editOnly: true,
           uncontrolledProp: "defaultSelectedKeys",
-          displayName: "Initial selected key",
+          displayName: "Initial selected item",
           options: (_props, ctx) =>
             ctx?.itemIds ? Array.from(ctx.itemIds) : [],
           hidden: (props, ctx) =>
@@ -257,16 +256,18 @@ export function registerListBox(
         },
         onSelectionChange: {
           type: "eventHandler",
-          argTypes: [{ name: "itemIds", type: "object" }],
+          argTypes: [{ name: "selectedValues", type: "object" }],
         },
       },
       states: {
-        selectedKey: {
+        selectedValue: {
           type: "writable",
           valueProp: "selectedKeys",
+          hidden: (props, ctx) =>
+            !ctx?.isStandalone || props.selectionMode === "none",
           onChangeProp: "onSelectionChange",
           variableType: "text",
-          ...listboxHelpers.states.selectedKey,
+          ...listboxHelpers.states.selectedValue,
         },
       },
       componentHelpers: {
