@@ -100,9 +100,7 @@ export function BaseSelect(props: BaseSelectProps) {
       isOpen={_isOpen}
       {...extractPlasmicDataProps(props)}
     >
-      <PlasmicPopoverContext.Provider
-        value={{ isOpen: _isOpen, defaultShouldFlip: false }}
-      >
+      <PlasmicPopoverContext.Provider value={{ isOpen: _isOpen }}>
         <PlasmicListBoxContext.Provider
           value={{
             idManager,

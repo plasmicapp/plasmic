@@ -84,9 +84,7 @@ export function BaseComboBox(props: BaseComboboxProps) {
 
   return (
     <ComboBox {...rest}>
-      <PlasmicPopoverContext.Provider
-        value={{ isOpen, defaultShouldFlip: false }}
-      >
+      <PlasmicPopoverContext.Provider value={{ isOpen }}>
         <PlasmicListBoxContext.Provider
           value={{
             idManager,
