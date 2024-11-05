@@ -468,10 +468,34 @@ export class ProjectDependencyManager {
     return this._objToDep.get(thing);
   }
 
+  ensureCanUpgradeDeps(targetDeps: ProjectDependency[]) {
+    const localDepMap = this._buildDependencyMap(this._sc.site);
+    // Update localDepMap with all the dependencies that are going to be upgraded
+    targetDeps.forEach((dep) => {
+      localDepMap[dep.pkgId] = dep;
+    });
+    targetDeps.forEach((dep) => {
+      const { projectId } = dep;
+      // Check for conflicting versions in the dependency tree
+      const importedDepMap = this._buildDependencyMap(dep);
+      for (const pkgId in importedDepMap) {
+        if (
+          localDepMap[pkgId] &&
+          localDepMap[pkgId].version !== importedDepMap[pkgId].version
+        ) {
+          throw new Error(
+            `Upgrading '${dep.name}' (${projectId}) failed due to conflicting dependencies. The imported project depends on '${importedDepMap[pkgId].name}' (pkgId=${pkgId}) version ${importedDepMap[pkgId].version}, while this project uses version ${localDepMap[pkgId].version}. Please reconcile these versions before trying again.`
+          );
+        }
+      }
+    });
+  }
+
   async upgradeProjectDeps(
     targetDeps: ProjectDependency[],
     opts?: { noUndoRecord?: boolean }
   ) {
+    this.ensureCanUpgradeDeps(targetDeps);
     await this._sc.siteOps().upgradeProjectDeps(targetDeps, opts);
     await this._fetchData();
     // invalidate cache after upgrading dep
