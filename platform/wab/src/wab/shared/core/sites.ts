@@ -96,7 +96,6 @@ import {
 } from "@/wab/shared/core/tpls";
 import { getCssInitial } from "@/wab/shared/css";
 import { parseScreenSpec } from "@/wab/shared/css-size";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { getRshContainerType } from "@/wab/shared/layoututils";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
@@ -227,7 +226,6 @@ export function createSite({
     flags: {
       usePlasmicImg: true,
       useLoadingState: true,
-      defaultInsertable: DEVFLAGS.defaultInsertable,
     },
     hostLessPackageInfo: hostLessPackageInfo ?? null,
     globalContexts: [],

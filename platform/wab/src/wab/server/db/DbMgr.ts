@@ -217,7 +217,6 @@ import { WebhookHeader } from "@/wab/shared/db-json-blobs";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { MIN_ACCESS_LEVEL_FOR_SUPPORT } from "@/wab/shared/discourse/config";
-import { PLEXUS_INSERTABLE_ID } from "@/wab/shared/insertables";
 import { LocalizationKeyScheme } from "@/wab/shared/localization";
 import {
   HostLessPackageInfo,
@@ -3792,7 +3791,6 @@ export class DbMgr implements MigrationDbMgr {
       bundler,
       {
         ...opts,
-        updateDefaultInsertable: false, // we want to retain project settings (i.e. use the same defaultInsertables as the cloned project)
         name: opts.name ?? `Copy of ${fromProjectInfo.name}${nameSuffix}`,
         ...(fromProjectBranch
           ? { hostUrl: fromProjectBranch.hostUrl ?? null }
@@ -3835,7 +3833,6 @@ export class DbMgr implements MigrationDbMgr {
       bundler,
       {
         ...opts,
-        updateDefaultInsertable: true, // Existing published templates are used to scaffold new projects. In this case, we want to be able to modify project settings for the owner of the cloned project
         name: opts.name ?? fromProject.name,
       }
     );
@@ -3851,27 +3848,16 @@ export class DbMgr implements MigrationDbMgr {
       workspaceId?: WorkspaceId;
       hostUrl?: string | null;
       ownerEmail?: string;
-      updateDefaultInsertable?: boolean; // This is used to allow/prevent modifications to defaultInsertable flag
     }
   ) {
-    const {
-      name,
-      ownerId,
-      workspaceId,
-      hostUrl,
-      ownerEmail,
-      updateDefaultInsertable,
-    } = opts;
+    const { name, ownerId, workspaceId, hostUrl } = opts;
 
     const fromSite =
       fromData instanceof ProjectRevision
         ? await unbundleProjectFromData(this, bundler, fromData)
         : (await unbundlePkgVersion(this, bundler, fromData)).site;
     const clonedSite = cloneSite(fromSite);
-    // Devflag overrides at project creation time
-    if (isAdminTeamEmail(ownerEmail, DEVFLAGS) && updateDefaultInsertable) {
-      clonedSite.flags.defaultInsertable = PLEXUS_INSERTABLE_ID;
-    }
+
     const { project, rev } = await this.createProject({
       name,
       workspaceId,
@@ -7548,10 +7534,6 @@ export class DbMgr implements MigrationDbMgr {
     workspaceId?: WorkspaceId;
     ownerEmail?: string;
   }) {
-    // Devflag overrides at project creation time
-    if (isAdminTeamEmail(ownerEmail, DEVFLAGS)) {
-      site.flags.defaultInsertable = PLEXUS_INSERTABLE_ID;
-    }
     const { project, rev } = await this.createProject({
       name: name,
       workspaceId,

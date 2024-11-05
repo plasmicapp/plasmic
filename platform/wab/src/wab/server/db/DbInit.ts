@@ -103,6 +103,7 @@ export async function seedTestDb(em: EntityManager) {
   await db.setDevFlagOverrides(
     JSON.stringify(
       {
+        plexus: true,
         installables: ensureType<Installable[] | undefined>([
           {
             type: "ui-kit",

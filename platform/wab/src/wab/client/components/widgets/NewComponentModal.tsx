@@ -20,6 +20,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { assert, ensure } from "@/wab/shared/common";
 import { flattenInsertableTemplatesByType } from "@/wab/shared/devflags";
 import { InsertableTemplateComponentExtraInfo } from "@/wab/shared/insertable-templates/types";
+import { PLEXUS_INSERTABLE_ID } from "@/wab/shared/insertables";
 import { getPlumeEditorPluginByType } from "@/wab/shared/plume/plume-registry";
 import { Tooltip } from "antd";
 import * as React from "react";
@@ -49,26 +50,25 @@ function NewComponentModal(props: NewComponentModalProps) {
 
   const plumeSite = studioCtx.projectDependencyManager.plumeSite;
   const plumeTemplates = getPlumeComponentTemplates(studioCtx);
+
+  // This is a temporary flag to hide the Plexus Design System for installation until it is ready for public use.
+  // Once Plexus is released for all users, this flag can be removed.
+  const hasPlexus =
+    studioCtx.appCtx.appConfig["plexus"] || // Plexus has been officially released
+    // The user is a beta tester of Plexus
+    (studioCtx.appCtx.appConfig["plexus/beta"] &&
+      studioCtx.appCtx.appConfig["plexus/beta/whitelistTeams"]?.includes(
+        studioCtx.siteInfo.teamId
+      ));
+
   const otherTemplates = flattenInsertableTemplatesByType(
     studioCtx.appCtx.appConfig.insertableTemplates,
     "insertable-templates-component"
-  ).filter((i) => {
-    if (!i.hidden) {
-      return true;
-    }
-    /**
-     * The following logic applies when the template is marked as hidden.
-     * The only condition under which a hidden template can be revealed is if it is included in the defaultInsertable set.
-     */
-    if (
-      studioCtx.site.flags.defaultInsertable &&
-      i.templateName.startsWith(`${studioCtx.site.flags.defaultInsertable}/`)
-    ) {
-      // show if the template component is part of the default insertable
-      return true;
-    }
-    return false;
-  });
+  ).filter(
+    // Show Plexus components only to users who are allowed access to them
+    (i) =>
+      i.templateName.startsWith(`${PLEXUS_INSERTABLE_ID}/`) ? hasPlexus : true
+  );
 
   return (
     <PlasmicNewComponentModal
