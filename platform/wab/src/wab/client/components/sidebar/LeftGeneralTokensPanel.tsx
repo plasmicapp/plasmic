@@ -96,6 +96,7 @@ function mapToTokenPanelRow(
 
 const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   const studioCtx = useStudioCtx();
+  const [renderCount, setRenderCount] = React.useState(0);
   const [debouncedQuery, setDebouncedQuery] = React.useState("");
   const debouncedSetQuery = React.useCallback(
     debounce((value: string) => {
@@ -336,6 +337,13 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
         ...tokenSectionItems(tokenType),
       };
     });
+
+    React.useEffect(() => {
+      const timer = setTimeout(() => {
+        setRenderCount(renderCount + 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }, [studioCtx.focusedViewCtx()]);
 
     return (
       <MultiAssetsActions
