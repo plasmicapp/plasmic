@@ -186,6 +186,7 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
       body={
         <EditableLabel
           value={comment.body}
+          isTextSelectable={!isThread}
           doubleClickToEdit
           disabled={appCtx.selfInfo?.id !== comment.createdById}
           onEdit={(newBody) => {

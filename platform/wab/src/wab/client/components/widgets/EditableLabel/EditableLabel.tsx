@@ -39,6 +39,7 @@ export type EditableLabelProps = {
   children?: React.ReactNode;
   onAbort?: () => void;
   allowEmptyString?: boolean;
+  isTextSelectable?: boolean;
 };
 
 export type EditableLabelHandles = { setEditing(editing: boolean): void };
@@ -80,6 +81,7 @@ const EditableLabel_: ForwardRefRenderFunction<
     children,
     inputBoxClassName,
     allowEmptyString,
+    isTextSelectable = false,
     ...restProps
   } = props;
 
@@ -202,7 +204,8 @@ const EditableLabel_: ForwardRefRenderFunction<
     className: cn(
       "flex-fill",
       "text-ellipsis-wrappable",
-      _editing && styles.fullWidthLabelEditing
+      _editing && styles.fullWidthLabelEditing,
+      { "selectable-text": isTextSelectable }
     ),
     onClick: handleClick,
     onDoubleClick: handleDoubleClick,
