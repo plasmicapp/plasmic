@@ -339,6 +339,16 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     });
 
     React.useEffect(() => {
+      /*This is a hack to force a re-render of the tree when the focused view changes.
+        This is needed because the hostlessPkgs injected <style> tags are not yet loaded in the host iframe when this component is rendered.
+        This causes the color tokens to resolved incorrectly showing transparent color in the Tokens Panel.
+
+        Whenever we switch arena the viewCtx changes and host iframe loads the hostlessPkgs to inject the <style> tags again for that arena iframes.
+        So we force re-render whenever the focused viewCtx changes
+
+        The re-render is needed to ensure the tokens are resolved correctly. This is a temporary solution until we
+        find a better way to handle this.
+      */
       const timer = setTimeout(() => {
         setRenderCount(renderCount + 1);
       }, 1000);
