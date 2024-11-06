@@ -53,13 +53,7 @@ function NewComponentModal(props: NewComponentModalProps) {
 
   // This is a temporary flag to hide the Plexus Design System for installation until it is ready for public use.
   // Once Plexus is released for all users, this flag can be removed.
-  const hasPlexus =
-    studioCtx.appCtx.appConfig["plexus"] || // Plexus has been officially released
-    // The user is a beta tester of Plexus
-    (studioCtx.appCtx.appConfig["plexus/beta"] &&
-      studioCtx.appCtx.appConfig["plexus/beta/whitelistTeams"]?.includes(
-        studioCtx.siteInfo.teamId
-      ));
+  const hasPlexus = studioCtx.appCtx.appConfig.plexus;
 
   const otherTemplates = flattenInsertableTemplatesByType(
     studioCtx.appCtx.appConfig.insertableTemplates,

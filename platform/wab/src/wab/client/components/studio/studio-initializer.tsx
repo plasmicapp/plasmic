@@ -24,6 +24,7 @@ import {
 import { spawn } from "@/wab/shared/common";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { initBuiltinActions } from "@/wab/shared/core/states";
+import { PLEXUS_STORAGE_KEY } from "@/wab/shared/insertables";
 import { makeGlobalObservable } from "@/wab/shared/mobx-util";
 import { notification } from "antd";
 import { observer } from "mobx-react";
@@ -70,6 +71,23 @@ class StudioInitializer_ extends React.Component<
   init = async () => {
     initializePlasmicExtension();
     const { hostFrameCtx, appCtx, onRefreshUi, projectId } = this.props;
+
+    const plexusStorageKey = `${PLEXUS_STORAGE_KEY}.${projectId}`;
+    const plexusInStorage = await appCtx.api.getStorageItem(plexusStorageKey);
+    if (plexusInStorage) {
+      // The user has already opted into/out of Plexus
+      appCtx.appConfig.plexus = plexusInStorage === "true";
+    } else if (appCtx.appConfig.plexus) {
+      // The user wants to opt into Plexus either because:
+      // 1. Plasmic core team member
+      // 2. plexus=true in query param
+
+      // Store preference in local storage
+      spawn(
+        appCtx.api.addStorageItem(plexusStorageKey, appCtx.appConfig.plexus)
+      );
+    }
+
     if (appCtx.appConfig.incrementalObservables) {
       makeGlobalObservable();
     }

@@ -27,6 +27,7 @@ import {
   flattenInsertableTemplates,
 } from "@/wab/shared/devflags";
 import { LowerHttpMethod } from "@/wab/shared/HttpClientUtil";
+import { PLEXUS_STORAGE_KEY } from "@/wab/shared/insertables";
 import {
   PkgInfo,
   SharedApi,
@@ -449,6 +450,7 @@ export function filteredApi(
     storageViewAsKey(projectId),
   ];
   const whitelistedLocalStorageKeyPrefixes = [
+    PLEXUS_STORAGE_KEY,
     "plasmic.tours.",
     "plasmic.focused.",
     "plasmic.leftTabKey",
