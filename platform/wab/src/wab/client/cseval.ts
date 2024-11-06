@@ -163,6 +163,9 @@ export abstract class BaseCliSvrEvaluator {
     if (this.rootNode == null) {
       this.rootNode = this.renderRoot();
       viewCtx.canvasCtx.rerender(this.rootNode, viewCtx);
+      this.addPostEval(() => {
+        viewCtx.isFirstRenderComplete = true;
+      });
     }
   }
 

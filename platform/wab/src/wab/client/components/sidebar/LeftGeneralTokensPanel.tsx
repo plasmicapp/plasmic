@@ -96,7 +96,6 @@ function mapToTokenPanelRow(
 
 const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   const studioCtx = useStudioCtx();
-  const [renderCount, setRenderCount] = React.useState(0);
   const [debouncedQuery, setDebouncedQuery] = React.useState("");
   const debouncedSetQuery = React.useCallback(
     debounce((value: string) => {
@@ -124,8 +123,10 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   );
 
   const [isTargeting, setIsTargeting] = React.useState(false);
-
-  const resolver = useClientTokenResolver();
+  const viewCtx = studioCtx?.focusedViewCtx();
+  const resolver = React.useCallback(useClientTokenResolver(), [
+    viewCtx?.isFirstRenderComplete,
+  ]);
 
   const getTokenValue = React.useCallback(
     (token: StyleToken) => {
@@ -337,23 +338,6 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
         ...tokenSectionItems(tokenType),
       };
     });
-
-    React.useEffect(() => {
-      /*This is a hack to force a re-render of the tree when the focused view changes.
-        This is needed because the hostlessPkgs injected <style> tags are not yet loaded in the host iframe when this component is rendered.
-        This causes the color tokens to resolved incorrectly showing transparent color in the Tokens Panel.
-
-        Whenever we switch arena the viewCtx changes and host iframe loads the hostlessPkgs to inject the <style> tags again for that arena iframes.
-        So we force re-render whenever the focused viewCtx changes
-
-        The re-render is needed to ensure the tokens are resolved correctly. This is a temporary solution until we
-        find a better way to handle this.
-      */
-      const timer = setTimeout(() => {
-        setRenderCount(renderCount + 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }, [studioCtx.focusedViewCtx()]);
 
     return (
       <MultiAssetsActions
