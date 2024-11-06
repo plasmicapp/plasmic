@@ -1,6 +1,6 @@
 import { mergeProps } from "@react-aria/utils";
 import React from "react";
-import { Header, Section } from "react-aria-components";
+import { Header, ListBox, Section } from "react-aria-components";
 import { PlasmicListBoxContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
@@ -18,14 +18,28 @@ export interface BaseSectionProps extends Styleable {
 export function BaseSection(props: BaseSectionProps) {
   const { header, items, ...rest } = props;
   const contextProps = React.useContext(PlasmicListBoxContext);
+  const isStandalone = !contextProps;
   const mergedProps = mergeProps(contextProps, rest);
 
-  return (
+  const section = (
     <Section {...mergedProps}>
       <Header>{header}</Header>
       {items}
     </Section>
   );
+
+  if (isStandalone) {
+    // selection mode needs to be single/multiple to be able to trigger hover state on it.
+    return (
+      <ListBox selectionMode="single">
+        <PlasmicListBoxContext.Provider value={{}}>
+          {section}
+        </PlasmicListBoxContext.Provider>
+      </ListBox>
+    );
+  }
+
+  return section;
 }
 
 export function registerSection(
