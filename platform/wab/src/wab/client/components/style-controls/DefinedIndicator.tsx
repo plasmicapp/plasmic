@@ -54,6 +54,7 @@ import {
   isKnownExprText,
   isKnownImageAssetRef,
   isKnownRawText,
+  RawText,
   Site,
   TplNode,
   Variant,
@@ -858,7 +859,15 @@ export const VariantSettingPopoverContent = observer(
             key="text"
             title="Text"
             type="target"
-            onClear={() => viewCtx.change(() => (vs.text = null))}
+            onClear={() =>
+              viewCtx.change(
+                () =>
+                  (vs.text = new RawText({
+                    text: "",
+                    markers: [],
+                  }))
+              )
+            }
           >
             <SourceValue
               site={site}
