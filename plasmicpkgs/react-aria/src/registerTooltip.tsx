@@ -87,7 +87,6 @@ export function BaseTooltip(props: BaseTooltipProps) {
     crossOffset,
     shouldFlip,
     arrowBoundaryOffset,
-    className,
     onOpenChange,
     plasmicUpdateVariant,
   } = props;
@@ -121,7 +120,7 @@ export function BaseTooltip(props: BaseTooltipProps) {
         shouldFlip={shouldFlip}
         arrowBoundaryOffset={arrowBoundaryOffset}
         defaultOpen={defaultOpen}
-        className={`${className} ${resetClassName}`}
+        className={resetClassName}
         onOpenChange={onOpenChange}
         placement={placement}
       >
@@ -155,7 +154,7 @@ export function registerTooltip(
       importPath: "@plasmicpkgs/react-aria/skinny/registerTooltip",
       importName: "BaseTooltip",
       isAttachment: true,
-      styleSections: true,
+      styleSections: false,
       variants,
       props: {
         children: {

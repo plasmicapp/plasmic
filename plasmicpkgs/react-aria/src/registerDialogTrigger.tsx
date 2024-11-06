@@ -51,6 +51,7 @@ export function registerDialogTrigger(
       displayName: "Aria Dialog Trigger",
       importPath: "@plasmicpkgs/react-aria/skinny/registerDialogTrigger",
       importName: "BaseDialogTrigger",
+      styleSections: false,
       isAttachment: true,
       props: {
         trigger: {
