@@ -1,8 +1,13 @@
 import { usePlasmicCanvasComponentInfo } from "@plasmicapp/host";
 import React from "react";
 import { AriaButtonProps, useButton } from "react-aria";
-import { Tooltip, TooltipProps, TooltipTrigger } from "react-aria-components";
-import flattenChildren from "react-keyed-flatten-children";
+import {
+  Button,
+  Tooltip,
+  TooltipProps,
+  TooltipTrigger,
+} from "react-aria-components";
+import { isForwardRef } from "react-is";
 import { TooltipTriggerProps } from "react-stately";
 import {
   CodeComponentMetaOverrides,
@@ -10,10 +15,6 @@ import {
   registerComponentHelper,
 } from "./utils";
 import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
-
-function isForwardRefComponent(element: any): element is React.ReactElement {
-  return element?.type?.$$typeof === Symbol.for("react.forward_ref");
-}
 
 /*
   NOTE: Placement should be managed as variants, not just props.
@@ -41,29 +42,12 @@ export interface BaseTooltipProps
 const { variants, withObservedValues } =
   pickAriaComponentVariants(TOOLTIP_VARIANTS);
 
-/*
-
-React Aria's TooltipTrigger only allows Aria Button component to act as a trigger.
-https://react-spectrum.adobe.com/react-aria/Tooltip.html#example
-
-To bypass that limitation, we originally used the useTooltipTrigger custom hooks for advanced customization, so the trigger could become anything we want.
-One of the limitations with that was the placement prop - the useTooltipTrigger did not provide placement prop, and that caused issues with tooltip positioning.
-
-We have a better fix now - instead of using useTooltipTrigger, we use useButton,
-so that anything we add to the slot can be treated as an Aria Button.
-That means we can use the ready-made components provided by react-aria-components (like <TooltipTrigger> and <Tooltip>)
-and still be able to use any other component as a trigger.
-
-*/
-
-function TooltipButton(props: AriaButtonProps) {
+function TooltipButton({
+  children,
+  ...rest
+}: AriaButtonProps & { children: React.ReactElement }) {
   const ref = React.useRef<HTMLButtonElement | null>(null);
-  const { buttonProps } = useButton(props, ref);
-  const { children } = props;
-  if (!isForwardRefComponent(children)) {
-    // The tooltip will not be triggered because the trigger component needs to be a forward ref.
-    return children;
-  }
+  const { buttonProps } = useButton(rest, ref);
 
   return React.cloneElement(children, {
     ...buttonProps,
@@ -94,12 +78,6 @@ export function BaseTooltip(props: BaseTooltipProps) {
   const { isSelected, selectedSlotName } =
     usePlasmicCanvasComponentInfo(props) ?? {};
   const isAutoOpen = selectedSlotName !== "children" && isSelected;
-
-  /** We are only accepting a single child here, so we can just use the first one.
-   * This is because the trigger props will be applied to the child to enable the triggering of the tooltip.
-   * If there has to be more than one things here, wrap them in a horizontal stack for instance.
-   * */
-  const focusableChild = flattenChildren(children)[0];
   const _isOpen = isAutoOpen || isOpen;
 
   return (
@@ -112,7 +90,46 @@ export function BaseTooltip(props: BaseTooltipProps) {
       defaultOpen={defaultOpen}
       onOpenChange={onOpenChange}
     >
-      <TooltipButton>{focusableChild}</TooltipButton>
+      {
+        /*
+
+        React Aria's TooltipTrigger only allows Aria Button component to act as a trigger.
+        https://react-spectrum.adobe.com/react-aria/Tooltip.html#example
+
+        To bypass that limitation, we originally used the useTooltipTrigger custom hooks for advanced customization, so the trigger could become anything we want.
+        One of the limitations with that was the placement prop - the useTooltipTrigger did not provide placement prop, and that caused issues with tooltip positioning.
+
+        We have a better fix now - instead of using useTooltipTrigger, we use useButton,
+        so that anything we add to the slot can be treated as an Aria Button.
+        That means we can use the ready-made components provided by react-aria-components (like <TooltipTrigger> and <Tooltip>)
+        and still be able to use any other component as a trigger.
+
+        */
+        isForwardRef(children) ? (
+          <TooltipButton>{children}</TooltipButton>
+        ) : (
+          /*
+              NOTE: I don't encapsulate this ternary inside the <TooltipButton> component,
+              Because the presence of `useButton` hook inside <TooltipButton> somehow messes up the following <Button> component functionality.
+              It causes the Tooltip to no longer anchor to the button.
+
+              So to avoid usage of <Button> and `useButton` within the same encapsulation/component, I use the ternary here instead.
+            */
+          <Button
+            style={{
+              background: "unset",
+              border: "unset",
+              padding: "unset",
+              paddingBlock: "unset",
+              paddingInline: "unset",
+              color: "unset",
+              fontSize: "unset",
+            }}
+          >
+            {children}
+          </Button>
+        )
+      }
       <Tooltip
         isOpen={_isOpen}
         offset={offset}
