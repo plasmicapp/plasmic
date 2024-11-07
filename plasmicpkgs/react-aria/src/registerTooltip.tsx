@@ -33,7 +33,7 @@ export interface BaseTooltipProps
   extends TooltipTriggerProps,
     TooltipProps,
     WithVariants<typeof TOOLTIP_VARIANTS> {
-  children?: React.ReactElement<HTMLElement>;
+  children: React.ReactElement<HTMLElement>;
   tooltipContent?: React.ReactElement;
   resetClassName?: string;
   className?: string;
