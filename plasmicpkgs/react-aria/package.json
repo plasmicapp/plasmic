@@ -51,8 +51,7 @@
     "react-aria": "^3.33.0",
     "react-aria-components": "^1.2.0",
     "react-keyed-flatten-children": "^3.0.0",
-    "react-stately": "^3.31.0",
-    "react-is": "^18.2.0"
+    "react-stately": "^3.31.0"
   },
   "devDependencies": {
     "@plasmicapp/host": "1.0.207",
@@ -61,7 +60,6 @@
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
-    "@types/react-is": "^18.2.0",
     "glob": "^8.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
