@@ -58,6 +58,7 @@ import {
 import {
   isKnownRawText,
   isKnownRenderExpr,
+  isKnownTplSlot,
   isKnownVirtualRenderExpr,
   RawText,
   TplNode,
@@ -368,7 +369,12 @@ export function makeTplMenu(
       !contentEditorMode
     ) {
       // Ungroup is disabled if the tpl is the root and has more than 1 child.
-      const ungroupDisabled = !tpl.parent && children.length !== 1;
+      // If the only child is a known slot, it is also disabled, because slots can't
+      // be at the root of the component.
+      const ungroupDisabled =
+        !tpl.parent &&
+        (children.length !== 1 ||
+          (children.length === 1 && isKnownTplSlot(children[0])));
       pushEdit(
         <Menu.Item
           key="ungroup"

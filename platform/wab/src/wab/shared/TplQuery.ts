@@ -548,7 +548,7 @@ export class TplQuery {
     return this;
   }
 
-  insertAt(x, index: number) {
+  insertAt(x: TplNode, index: number) {
     assert(index >= 0, () => `Can only insert at positive location`);
     this.doInsertAt(x, index);
   }

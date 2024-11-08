@@ -1610,8 +1610,12 @@ export function replaceTplTreeByEmptyBox(component: Component) {
     "Root should have base vsetting"
   );
   RSH(baseVs.rs, root).set("display", "block");
+
   component.tplTree = root;
+  $$$(root).insertAt(oldTree, 0);
+  oldTree.parent = root;
   trackComponentRoot(component);
+  $$$(oldTree).remove({ deep: true });
 }
 
 export function* findVariantSettingsUnderTpl(
