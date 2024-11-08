@@ -36,22 +36,12 @@ export interface BaseSelectValueProps
 }
 
 export const BaseSelectValue = (props: BaseSelectValueProps) => {
-  const { children, customize } = props;
+  const { children, customize, className } = props;
+  const placeholder = customize ? children : "Select an item";
   return (
-    <SelectValue>
+    <SelectValue className={className}>
       {({ isPlaceholder, selectedText }) => (
-        <>
-          {isPlaceholder ? (
-            <span>Select an item</span>
-          ) : (
-            <>
-              <span>
-                {customize ? (children as React.ReactNode) : selectedText}
-              </span>
-            </>
-          )}
-          {}
-        </>
+        <>{isPlaceholder ? placeholder : selectedText}</>
       )}
     </SelectValue>
   );
@@ -144,15 +134,6 @@ export function registerSelect(loader?: Registerable) {
           },
         ],
         hidden: (props) => !props.customize,
-      },
-      className: {
-        type: "class",
-        selectors: [
-          {
-            selector: ":self[data-placeholder]",
-            label: "Placeholder",
-          },
-        ],
       },
     },
     trapsFocus: true,
