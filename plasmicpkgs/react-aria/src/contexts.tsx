@@ -51,7 +51,7 @@ export const PlasmicPopoverContext = React.createContext<
 
 export const PlasmicListBoxContext = React.createContext<
   | {
-      idManager?: ListBoxItemIdManager;
+      idManager: ListBoxItemIdManager;
     }
   | undefined
 >(undefined);

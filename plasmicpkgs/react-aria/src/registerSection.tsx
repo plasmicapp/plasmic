@@ -1,7 +1,8 @@
 import { mergeProps } from "@react-aria/utils";
 import React from "react";
-import { Header, ListBox, Section } from "react-aria-components";
+import { Header, Section } from "react-aria-components";
 import { PlasmicListBoxContext } from "./contexts";
+import { BaseListBox } from "./registerListBox";
 import {
   CodeComponentMetaOverrides,
   makeComponentName,
@@ -29,13 +30,10 @@ export function BaseSection(props: BaseSectionProps) {
   );
 
   if (isStandalone) {
-    // selection mode needs to be single/multiple to be able to trigger hover state on it.
     return (
-      <ListBox selectionMode="single">
-        <PlasmicListBoxContext.Provider value={{}}>
-          {section}
-        </PlasmicListBoxContext.Provider>
-      </ListBox>
+      // BaseListbox should give section a listbox context (that it can't be used without)
+      // as well as the id manager (that is needed to identify and warn about duplication of ids)
+      <BaseListBox>{section}</BaseListBox>
     );
   }
 

@@ -54,7 +54,7 @@ export function BaseListBoxItem(props: BaseListBoxItemProps) {
   const [registeredId, setRegisteredId] = useState<string | undefined>();
 
   useEffect(() => {
-    if (!listboxContext?.idManager) {
+    if (!listboxContext) {
       return;
     }
 
@@ -62,16 +62,13 @@ export function BaseListBoxItem(props: BaseListBoxItemProps) {
     setRegisteredId(localId);
 
     return () => {
-      listboxContext.idManager?.unregister(localId);
+      listboxContext.idManager.unregister(localId);
       setRegisteredId(undefined);
     };
   }, [id]);
 
   setControlContextData?.({
     idError: (() => {
-      if (!listboxContext?.idManager) {
-        return undefined;
-      }
       if (id === undefined) {
         return "ID must be defined";
       }
