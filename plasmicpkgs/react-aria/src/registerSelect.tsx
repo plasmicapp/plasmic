@@ -20,6 +20,7 @@ import {
   registerComponentHelper,
   useAutoOpen,
 } from "./utils";
+import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
 // It cannot be used as a hook like useAutoOpen() within the BaseSelect component
 // because it needs access to SelectStateContext, which is only created in the BaseSelect component's render function.
@@ -53,10 +54,17 @@ export interface BaseSelectControlContextData {
   itemIds: string[];
 }
 
+const SELECT_VARIANTS = ["disabled" as const];
+
+const { variants: SELECT_VARIANTS_DATA } =
+  pickAriaComponentVariants(SELECT_VARIANTS);
+
 export interface BaseSelectProps
   extends SelectProps<{}>, // NOTE: We don't need generic type here since we don't use items prop (that needs it). We just need to make the type checker happy
+    WithVariants<typeof SELECT_VARIANTS>,
     HasControlContextData<BaseSelectControlContextData> {
   children?: React.ReactNode;
+  className?: string;
 }
 
 export function BaseSelect(props: BaseSelectProps) {
@@ -72,10 +80,11 @@ export function BaseSelect(props: BaseSelectProps) {
     disabledKeys,
     name,
     setControlContextData,
+    plasmicUpdateVariant,
     "aria-label": ariaLabel,
   } = props;
 
-  let idManager = useMemo(() => new ListBoxItemIdManager(), []);
+  const idManager = useMemo(() => new ListBoxItemIdManager(), []);
 
   useEffect(() => {
     idManager.subscribe((ids: string[]) => {
@@ -85,6 +94,13 @@ export function BaseSelect(props: BaseSelectProps) {
     });
   }, []);
 
+  // NOTE: Aria <Select> does not support render props, neither does it provide an onDisabledChange event, so we have to manually update the disabled state.
+  useEffect(() => {
+    plasmicUpdateVariant?.({
+      disabled: isDisabled,
+    });
+  }, [isDisabled, plasmicUpdateVariant]);
+
   return (
     <Select
       placeholder={placeholder}
@@ -92,6 +108,7 @@ export function BaseSelect(props: BaseSelectProps) {
       onSelectionChange={onSelectionChange}
       onOpenChange={onOpenChange}
       isDisabled={isDisabled}
+      // Not calling plasmicUpdateVariant within className callback (which has access to render props) because it would then run on every render
       className={className}
       style={style}
       name={name}
@@ -144,6 +161,7 @@ export function registerSelect(loader?: Registerable) {
     displayName: "Aria Select",
     importPath: "@plasmicpkgs/react-aria/skinny/registerSelect",
     importName: "BaseSelect",
+    variants: SELECT_VARIANTS_DATA,
     props: {
       ...getCommonProps<BaseSelectProps>("Select", [
         "name",

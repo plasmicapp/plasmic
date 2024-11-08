@@ -23,6 +23,7 @@ import {
   registerComponentHelper,
   useAutoOpen,
 } from "./utils";
+import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
 const COMBOBOX_NAME = makeComponentName("combobox");
 
@@ -30,12 +31,19 @@ export interface BaseComboboxControlContextData {
   itemIds: string[];
 }
 
+const COMBOBOX_VARIANTS = ["disabled" as const];
+
+const { variants: COMBOBOX_VARIANTS_DATA } =
+  pickAriaComponentVariants(COMBOBOX_VARIANTS);
+
 export interface BaseComboboxProps
   extends ComboBoxProps<{}>,
+    WithVariants<typeof COMBOBOX_VARIANTS>,
     HasControlContextData<BaseComboboxControlContextData> {
   placeholder?: string;
   children?: React.ReactNode;
   isOpen?: boolean;
+  className?: string;
 }
 
 /*
@@ -61,6 +69,9 @@ export function BaseComboBox(props: BaseComboboxProps) {
   const {
     children,
     setControlContextData,
+    plasmicUpdateVariant,
+    className,
+    isDisabled,
     isOpen: _isOpen, // uncontrolled if not selected in canvas/edit mode
     ...rest
   } = props;
@@ -75,8 +86,20 @@ export function BaseComboBox(props: BaseComboboxProps) {
     });
   }, []);
 
+  // NOTE: Aria <Combobox> does not support render props, neither does it provide an onDisabledChange event, so we have to manually update the disabled state.
+  useEffect(() => {
+    plasmicUpdateVariant?.({
+      disabled: isDisabled,
+    });
+  }, [isDisabled, plasmicUpdateVariant]);
+
   return (
-    <ComboBox {...rest}>
+    <ComboBox
+      isDisabled={isDisabled}
+      // Not calling plasmicUpdateVariant within className callback (which has access to render props) because it would then run on every render
+      className={className}
+      {...rest}
+    >
       <PlasmicPopoverContext.Provider value={{}}>
         <PlasmicListBoxContext.Provider
           value={{
@@ -99,6 +122,7 @@ export function registerComboBox(loader?: Registerable) {
     displayName: "Aria ComboBox",
     importPath: "@plasmicpkgs/react-aria/skinny/registerComboBox",
     importName: "BaseComboBox",
+    variants: COMBOBOX_VARIANTS_DATA,
     props: {
       ...getCommonProps<BaseComboboxProps>("ComboBox", [
         "name",
