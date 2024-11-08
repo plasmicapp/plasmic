@@ -38,22 +38,16 @@ const { variants, withObservedValues } =
 
 /*
 
+  React Aria's TooltipTrigger TooltipTrigger requires a focusable element with ref.
+  To make sure that this requirement is fulfilled, wrap everything in a focusable div.
+  https://react-spectrum.adobe.com/react-aria/Tooltip.html#example
+  (In the example, Aria Button works as a trigger because it uses useFocusable behind the scenes)
+
   Discussion (React-aria-components TooltipTrigger with custom button):
   https://github.com/adobe/react-spectrum/discussions/5119#discussioncomment-7084661
 
-  React Aria's TooltipTrigger only allows Aria Button component to act as a trigger.
-  https://react-spectrum.adobe.com/react-aria/Tooltip.html#example
-
-  To bypass that limitation, we originally used the useTooltipTrigger custom hooks for advanced customization, so the trigger could become anything we want.
-  One of the limitations with that was the placement prop - the useTooltipTrigger did not provide placement prop, and that caused issues with tooltip positioning.
-
-  We have a better fix now - instead of using useTooltipTrigger, we use useFocusable,
-  so that anything we add to the slot can be treated as an Aria Button.
-  That means we can use the ready-made components provided by react-aria-components (like <TooltipTrigger> and <Tooltip>)
-  and still be able to use any other component as a trigger.
-
   */
-function TooltipButton({
+function TriggerWrapper({
   children,
   ...rest
 }: AriaButtonProps & { children: React.ReactElement }) {
@@ -101,7 +95,7 @@ export function BaseTooltip(props: BaseTooltipProps) {
       defaultOpen={defaultOpen}
       onOpenChange={onOpenChange}
     >
-      <TooltipButton>{children}</TooltipButton>
+      <TriggerWrapper>{children}</TriggerWrapper>
       <Tooltip
         isOpen={_isOpen}
         offset={offset}
