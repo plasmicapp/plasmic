@@ -28,6 +28,7 @@ import {
   CmsFieldMeta,
   CmsRowId,
   CmsTableId,
+  CmsMetaType,
 } from "@/wab/shared/ApiSchema";
 import { substituteUrlParams } from "@/wab/shared/utils/url-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
@@ -50,7 +51,7 @@ export function getRowIdentifierText(
     return { identifier };
   }
   const firstTextField = table.schema.fields.find((field, _) =>
-    ["text", "long-text"].includes(field.type)
+    [CmsMetaType.TEXT, CmsMetaType.LONG_TEXT].includes(field.type)
   )?.identifier;
   let placeholder: string | undefined = undefined;
   if (firstTextField) {
@@ -137,7 +138,9 @@ export function renderContentEntryFormFields(
                 formItemProps: deriveFormItemPropsFromField(field),
                 typeName: field.type,
                 required: field.required,
-                ...(field.type === "text" || field.type === "long-text"
+                ...([CmsMetaType.TEXT, CmsMetaType.LONG_TEXT].includes(
+                  field.type
+                )
                   ? {
                       maxChars: field.maxChars,
                       minChars: field.minChars,

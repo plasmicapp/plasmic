@@ -22,7 +22,13 @@ import {
   useTablesWithDataLoaded,
   TableSchemaProvider,
 } from "./context";
-import { ApiCmsRow, ApiCmsTable, CmsFieldMeta, CmsType } from "./schema";
+import {
+  ApiCmsRow,
+  ApiCmsTable,
+  CmsFieldMeta,
+  CmsType,
+  CmsMetaType,
+} from "./schema";
 import { mkFieldOptions, mkTableOptions } from "./util";
 
 const modulePath = "@plasmicpkgs/plasmic-cms";
@@ -253,11 +259,11 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
       description: "Field (from model schema) to filter by",
       options: ({ table }, ctx) =>
         mkFieldOptions(ctx?.tables, ctx?.table ?? table, [
-          "number",
-          "boolean",
-          "text",
-          "long-text",
-          "ref",
+          CmsMetaType.NUMBER,
+          CmsMetaType.BOOLEAN,
+          CmsMetaType.TEXT,
+          CmsMetaType.LONG_TEXT,
+          CmsMetaType.REF,
         ]),
     },
     filterValue: {
@@ -271,11 +277,11 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
       description: "Field to order by.",
       options: (_, ctx) =>
         mkFieldOptions(ctx?.tables, ctx?.table, [
-          "number",
-          "boolean",
-          "date-time",
-          "long-text",
-          "text",
+          CmsMetaType.NUMBER,
+          CmsMetaType.BOOLEAN,
+          CmsMetaType.DATE_TIME,
+          CmsMetaType.LONG_TEXT,
+          CmsMetaType.TEXT,
         ]),
       hidden: (ps) => ps.mode === "count",
     },
@@ -505,15 +511,15 @@ export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
       description: "Field (from model schema) to use.",
       options: ({ table }, ctx) =>
         mkFieldOptions(ctx?.tables, ctx?.table ?? table, [
-          "number",
-          "boolean",
-          "text",
-          "long-text",
-          "date-time",
-          "rich-text",
-          "image",
-          "file",
-          "enum",
+          CmsMetaType.NUMBER,
+          CmsMetaType.BOOLEAN,
+          CmsMetaType.TEXT,
+          CmsMetaType.LONG_TEXT,
+          CmsMetaType.DATE_TIME,
+          CmsMetaType.RICH_TEXT,
+          CmsMetaType.IMAGE,
+          CmsMetaType.FILE,
+          CmsMetaType.ENUM,
         ]),
       defaultValueHint: (_, ctx) =>
         ctx?.fieldMeta?.name || ctx?.fieldMeta?.identifier,
@@ -536,7 +542,7 @@ export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
         if (!fieldMeta) {
           return true;
         }
-        return fieldMeta.type !== "date-time";
+        return fieldMeta.type !== CmsMetaType.DATE_TIME;
       },
       options: [
         {
@@ -632,7 +638,11 @@ export function CmsRowField({
         table: res.table,
         tables,
         field,
-        typeFilters: ["text", "long-text", "rich-text"],
+        typeFilters: [
+          CmsMetaType.TEXT,
+          CmsMetaType.LONG_TEXT,
+          CmsMetaType.RICH_TEXT,
+        ],
       })
     : undefined;
 
@@ -662,7 +672,7 @@ export function CmsRowField({
   if (!data) {
     return null;
   }
-  if (fieldMeta.type === "date-time" && dateFormat) {
+  if (fieldMeta.type === CmsMetaType.DATE_TIME && dateFormat) {
     data = dayjs(data).format(dateFormat);
   }
   return data
@@ -725,7 +735,7 @@ export function CmsCount({
   }
 }
 
-const DEFAULT_TYPE_FILTERS = ["text"];
+const DEFAULT_TYPE_FILTERS = [CmsMetaType.TEXT];
 function deriveInferredTableField(opts: {
   table?: string;
   tables?: ApiCmsTable[];
@@ -749,15 +759,15 @@ function assertNever(_: never): never {
 
 function renderValue(value: any, type: CmsType, props: { className?: string }) {
   switch (type) {
-    case "number":
-    case "boolean":
-    case "text":
-    case "long-text":
-    case "date-time":
-    case "enum":
-    case "ref":
+    case CmsMetaType.NUMBER:
+    case CmsMetaType.BOOLEAN:
+    case CmsMetaType.TEXT:
+    case CmsMetaType.LONG_TEXT:
+    case CmsMetaType.DATE_TIME:
+    case CmsMetaType.ENUM:
+    case CmsMetaType.REF:
       return <div {...props}>{value}</div>;
-    case "rich-text":
+    case CmsMetaType.RICH_TEXT:
       return (
         <div
           dangerouslySetInnerHTML={{ __html: value }}
@@ -765,7 +775,7 @@ function renderValue(value: any, type: CmsType, props: { className?: string }) {
           {...props}
         />
       );
-    case "image":
+    case CmsMetaType.IMAGE:
       if (value && typeof value === "object" && value.url && value.imageMeta) {
         return (
           <img
@@ -777,7 +787,7 @@ function renderValue(value: any, type: CmsType, props: { className?: string }) {
         );
       }
       return null;
-    case "file":
+    case CmsMetaType.FILE:
       if (value && typeof value === "object" && value.url && value.name) {
         return (
           <a href={value.url} target="_blank" {...props}>
@@ -876,7 +886,7 @@ export function CmsRowLink({
     table: res.table,
     tables,
     field,
-    typeFilters: ["file", "text"],
+    typeFilters: [CmsMetaType.FILE, CmsMetaType.TEXT],
   });
 
   if (tables) {
@@ -901,7 +911,7 @@ export function CmsRowLink({
     if (React.isValidElement(child)) {
       return React.cloneElement(child, {
         [hrefProp]:
-          fieldMeta.type === "file"
+          fieldMeta.type === CmsMetaType.FILE
             ? value.url
             : prefix || suffix
             ? `${prefix || ""}${value}${suffix || ""}`
@@ -951,7 +961,7 @@ export const cmsRowImageMeta: ComponentMeta<CmsRowImageProps> = {
       displayName: "Field",
       description: "Field (from model schema) to use.",
       options: ({ table }: CmsRowImageProps, ctx: TableContextData | null) =>
-        mkFieldOptions(ctx?.tables, ctx?.table ?? table, ["image"]),
+        mkFieldOptions(ctx?.tables, ctx?.table ?? table, [CmsMetaType.IMAGE]),
       defaultValueHint: (_, ctx) =>
         ctx?.fieldMeta?.name || ctx?.fieldMeta?.identifier,
     },
@@ -982,7 +992,7 @@ export function CmsRowImage({
     table: res.table,
     tables,
     field,
-    typeFilters: ["image"],
+    typeFilters: [CmsMetaType.IMAGE],
   });
 
   if (tables) {
@@ -1086,7 +1096,7 @@ export function CmsRowFieldValue({
     table: res.table,
     tables,
     field,
-    typeFilters: ["text"],
+    typeFilters: [CmsMetaType.TEXT],
   });
 
   if (tables) {

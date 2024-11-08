@@ -21,6 +21,7 @@ import {
   CmsTypeName,
   CmsTypeObject,
   CmsUploadedFile,
+  CmsMetaType,
 } from "@/wab/shared/ApiSchema";
 import { assert, ensure, ensureType } from "@/wab/shared/common";
 import { PlasmicImg } from "@plasmicapp/react-web";
@@ -95,7 +96,7 @@ export function StringDateTimePicker(props: any) {
 
 export function CmsRefInput(props: any) {
   const { disabled, typeMeta, database } = useContentEntryFormContext();
-  assert(typeMeta.type === "ref", "");
+  assert(typeMeta.type === CmsMetaType.REF, "");
   const maybeTable = useCmsTableMaybe(database.id, typeMeta.tableId);
   const table = maybeTable?.table;
   const { rows, error } = useCmsRows(database.id, typeMeta.tableId);
@@ -140,7 +141,7 @@ export function CmsListInput(props: any) {
   );
   const form = Form.useFormInstance();
   const [expandedKeys, setExpandedKeys] = React.useState<string[] | string>([]);
-  assert(typeMeta.type === "list", "Must be rendering a list");
+  assert(typeMeta.type === CmsMetaType.LIST, "Must be rendering a list");
   return (
     <Form.List name={[...baseName]}>
       {(items, handles) => {
@@ -167,7 +168,7 @@ export function CmsListInput(props: any) {
                       handles.move(name, name + delta);
                     }
                     const subtype: CmsTypeObject = {
-                      type: "object",
+                      type: CmsMetaType.OBJECT,
                       fields: typeMeta.fields,
                     };
                     return (
@@ -248,14 +249,14 @@ function MaybeFormItem({
     { required: props.required, message: "Field is required" },
   ];
   const typeSpecificRules =
-    (typeName === "text" || typeName === "long-text") &&
+    [CmsMetaType.TEXT, CmsMetaType.RICH_TEXT].includes(typeName) &&
     (props.minChars !== undefined || props.maxChars !== undefined)
       ? [{ max: props.maxChars }, { min: props.minChars }]
       : [];
 
   const rules = [...commonRules, ...typeSpecificRules];
 
-  return typeName === "list" ? (
+  return typeName === CmsMetaType.LIST ? (
     <FormNameContext.Provider value={{ name, label }}>
       {props.children as any}
     </FormNameContext.Provider>
@@ -272,7 +273,7 @@ export function CmsObjectInput(props: any) {
     name,
     directlyInsideList = false,
   } = useContentEntryFormContext();
-  assert(typeMeta.type === "object", "Must be rendering an object");
+  assert(typeMeta.type === CmsMetaType.OBJECT, "Must be rendering an object");
   const form = Form.useFormInstance();
 
   return (
@@ -526,31 +527,31 @@ export function CmsEnumInput(props: any) {
 
 export function renderEntryField(type: CmsTypeName): ReactElement {
   switch (type as CmsTypeName) {
-    case "ref":
+    case CmsMetaType.REF:
       return <CmsRefInput />;
-    case "list":
+    case CmsMetaType.LIST:
       return <CmsListInput />;
-    case "object":
+    case CmsMetaType.OBJECT:
       return <CmsObjectInput />;
-    case "text":
+    case CmsMetaType.TEXT:
       return <CmsTextInput />;
-    case "long-text":
+    case CmsMetaType.LONG_TEXT:
       return <CmsLongTextInput />;
-    case "number":
+    case CmsMetaType.NUMBER:
       return <CmsNumberInput />;
-    case "boolean":
+    case CmsMetaType.BOOLEAN:
       return <CmsBooleanInput />;
-    case "date-time":
+    case CmsMetaType.DATE_TIME:
       return <CmsDateTimeInput />;
-    case "image":
+    case CmsMetaType.IMAGE:
       return <CmsImageInput />;
-    case "file":
+    case CmsMetaType.FILE:
       return <CmsFileInput />;
-    case "color":
+    case CmsMetaType.COLOR:
       return <CmsColorInput />;
-    case "rich-text":
+    case CmsMetaType.RICH_TEXT:
       return <CmsRichTextInput />;
-    case "enum":
+    case CmsMetaType.ENUM:
       return <CmsEnumInput />;
   }
 }
@@ -585,10 +586,12 @@ export function renderMaybeLocalizedInput({
           ...ensure(ctx_, "ContentEntryFormContext must be set"),
           directlyInsideList: false,
         };
-        const { maxChars, minChars } =
-          ctx.typeMeta.type === "text" || ctx.typeMeta.type === "long-text"
-            ? ctx.typeMeta
-            : { maxChars: undefined, minChars: undefined };
+        const { maxChars, minChars } = [
+          CmsMetaType.TEXT,
+          CmsMetaType.RICH_TEXT,
+        ].includes(ctx.typeMeta.type)
+          ? ctx.typeMeta
+          : { maxChars: undefined, minChars: undefined };
 
         return !localized ? (
           <ContentEntryFormContext.Provider

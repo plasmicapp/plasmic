@@ -44,7 +44,8 @@ import {
   CmsTableSettings,
   CmsTypeMeta,
   CmsTypeName,
-  cmsTypes,
+  CMS_TYPE_DISPLAY_NAMES,
+  CmsMetaType,
 } from "@/wab/shared/ApiSchema";
 import { httpMethods } from "@/wab/shared/HttpClientUtil";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
@@ -92,7 +93,7 @@ function renderTypeSpecificSubform(
           typeName: typeMeta.type,
         })}
       </ContentEntryFormContext.Provider>
-      {(typeName === "text" || typeName === "long-text") && (
+      {[CmsMetaType.TEXT, CmsMetaType.LONG_TEXT].includes(typeName) && (
         <>
           <Form.Item label={"Min chars"} name={[...fieldPath, "minChars"]}>
             <InputNumber />
@@ -164,7 +165,7 @@ function renderModelFieldForm(
                   )
                 : {}),
             };
-            if (meta.type === "list" || meta.type === "object") {
+            if ([CmsMetaType.LIST, CmsMetaType.OBJECT].includes(meta.type)) {
               meta.fields = [];
             }
             const blob = jsonClone(form.getFieldValue([]));
@@ -172,9 +173,9 @@ function renderModelFieldForm(
             form.setFieldsValue(blob);
           }}
         >
-          {cmsTypes.map((type) => (
-            <Select.Option key={type} value={type}>
-              {type}
+          {Object.keys(CMS_TYPE_DISPLAY_NAMES).map((key) => (
+            <Select.Option key={key} value={key}>
+              {CMS_TYPE_DISPLAY_NAMES[key]}
             </Select.Option>
           ))}
         </Select>
@@ -195,7 +196,7 @@ function renderModelFieldForm(
               localized: getFieldValue([...fullFieldPath, "localized"]),
             })}
           >
-            {getFieldValue([...fullFieldPath, "type"]) === "ref" && (
+            {getFieldValue([...fullFieldPath, "type"]) === CmsMetaType.REF && (
               <Form.Item label={"Model"} name={[...fieldPath, "tableId"]}>
                 <Select>
                   {database.tables.map((table) => (
@@ -204,8 +205,9 @@ function renderModelFieldForm(
                 </Select>
               </Form.Item>
             )}
-            {(getFieldValue([...fullFieldPath, "type"]) === "list" ||
-              getFieldValue([...fullFieldPath, "type"]) === "object") && (
+            {[CmsMetaType.LIST, CmsMetaType.OBJECT].includes(
+              getFieldValue([...fullFieldPath, "type"])
+            ) && (
               <Form.Item
                 label={"Nested fields"}
                 help={"Nested objects should have these fields"}
@@ -222,12 +224,12 @@ function renderModelFieldForm(
           </React.Fragment>
         )}
       </Form.Item>
-      {selectedType === "enum" && (
+      {selectedType === CmsMetaType.ENUM && (
         <Form.Item label={"Options"} name={[...fieldPath, "options"]}>
           <FieldOptions fieldsPath={[...fieldPath, "options"]} />
         </Form.Item>
       )}
-      {selectedType !== "list" && selectedType !== "object" && (
+      {![CmsMetaType.LIST, CmsMetaType.OBJECT].includes(selectedType) && (
         <Form.Item
           label={"Required"}
           name={[...fieldPath, "required"]}
@@ -583,7 +585,15 @@ function ModelFields({
                               ])}
                             </div>
                             <div>
-                              {getFieldValue([...fullFieldsPath, name, "type"])}
+                              {
+                                CMS_TYPE_DISPLAY_NAMES[
+                                  getFieldValue([
+                                    ...fullFieldsPath,
+                                    name,
+                                    "type",
+                                  ])
+                                ]
+                              }
                             </div>
                           </div>
                         )}
@@ -630,7 +640,7 @@ function ModelFields({
                       helperText: "",
                       required: false,
                       hidden: false,
-                      type: "text",
+                      type: CmsMetaType.TEXT,
                       defaultValueByLocale: {},
                     })
                   );

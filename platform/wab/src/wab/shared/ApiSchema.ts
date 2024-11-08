@@ -1205,6 +1205,22 @@ export type ImageUploadResponse = {
 // CMS
 //
 
+export const enum CmsMetaType {
+  TEXT = "text",
+  LONG_TEXT = "long-text",
+  NUMBER = "number",
+  IMAGE = "image",
+  FILE = "file",
+  DATE_TIME = "date-time",
+  BOOLEAN = "boolean",
+  COLOR = "color",
+  RICH_TEXT = "rich-text",
+  REF = "ref",
+  LIST = "list",
+  OBJECT = "object",
+  ENUM = "enum",
+}
+
 export interface CmsTableSchema {
   fields: CmsFieldMeta[];
 }
@@ -1243,59 +1259,59 @@ export interface CmsTextLike {
 }
 
 export interface CmsTypeRef {
-  type: "ref";
+  type: CmsMetaType.REF;
   tableId: CmsTableId;
 }
 
 export interface CmsTypeList {
-  type: "list";
+  type: CmsMetaType.LIST;
   fields: CmsFieldMeta[];
 }
 
 export interface CmsTypeObject {
-  type: "object";
+  type: CmsMetaType.OBJECT;
   fields: CmsFieldMeta[];
 }
 
 export interface CmsTypeText extends CmsTextLike {
-  type: "text";
+  type: CmsMetaType.TEXT;
 }
 
 export interface CmsTypeLongText extends CmsTextLike {
-  type: "long-text";
+  type: CmsMetaType.LONG_TEXT;
 }
 
 export interface CmsTypeNumber {
-  type: "number";
+  type: CmsMetaType.NUMBER;
 }
 
 export interface CmsTypeBoolean {
-  type: "boolean";
+  type: CmsMetaType.BOOLEAN;
 }
 
 export interface CmsTypeImage {
-  type: "image";
+  type: CmsMetaType.IMAGE;
 }
 
 export interface CmsTypeFile {
-  type: "file";
+  type: CmsMetaType.FILE;
 }
 
 export interface CmsTypeDateTime {
-  type: "date-time";
+  type: CmsMetaType.DATE_TIME;
 }
 
 export interface CmsTypeColor {
-  type: "color";
+  type: CmsMetaType.COLOR;
   defaultValue?: string;
 }
 
 export interface CmsTypeRichtext {
-  type: "rich-text";
+  type: CmsMetaType.RICH_TEXT;
 }
 
 export interface CmsTypeEnum {
-  type: "enum";
+  type: CmsMetaType.ENUM;
   options: string[];
 }
 
@@ -1365,21 +1381,21 @@ export type CmsTypeMeta =
   | CmsTypeRichtext
   | CmsTypeEnum;
 
-export const cmsTypes = [
-  "text",
-  "long-text",
-  "number",
-  "image",
-  "file",
-  "date-time",
-  "boolean",
-  "color",
-  "rich-text",
-  "ref",
-  "list",
-  "object",
-  "enum",
-];
+export const CMS_TYPE_DISPLAY_NAMES = {
+  [CmsMetaType.TEXT]: "Text",
+  [CmsMetaType.LONG_TEXT]: "Long Text",
+  [CmsMetaType.NUMBER]: "Number",
+  [CmsMetaType.IMAGE]: "Image",
+  [CmsMetaType.FILE]: "File",
+  [CmsMetaType.DATE_TIME]: "Date Time",
+  [CmsMetaType.BOOLEAN]: "Boolean",
+  [CmsMetaType.COLOR]: "Color",
+  [CmsMetaType.RICH_TEXT]: "Rich Text",
+  [CmsMetaType.REF]: "Ref",
+  [CmsMetaType.LIST]: "List",
+  [CmsMetaType.OBJECT]: "Object",
+  [CmsMetaType.ENUM]: "Enumeration",
+};
 
 export const cmsFieldMetaDefaults: CmsBaseType<unknown> = {
   identifier: "",

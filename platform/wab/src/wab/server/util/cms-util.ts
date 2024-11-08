@@ -6,6 +6,7 @@ import {
   CmsTypeName,
   FilterClause,
   FilterCond,
+  CmsMetaType,
 } from "@/wab/shared/ApiSchema";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { Dict } from "@/wab/shared/collections";
@@ -129,29 +130,29 @@ export function conformsToType(val: any, type: CmsTypeName): boolean {
   }
 
   switch (type) {
-    case "text":
-    case "long-text":
-    case "enum":
-    case "ref":
+    case CmsMetaType.TEXT:
+    case CmsMetaType.LONG_TEXT:
+    case CmsMetaType.ENUM:
+    case CmsMetaType.REF:
       return typeof val === "string";
-    case "list":
+    case CmsMetaType.LIST:
       return Array.isArray(val);
-    case "object":
+    case CmsMetaType.OBJECT:
       return typeof val === "object";
-    case "boolean":
+    case CmsMetaType.BOOLEAN:
       return typeof val === "boolean";
-    case "number":
+    case CmsMetaType.NUMBER:
       return typeof val === "number";
-    case "image":
+    case CmsMetaType.IMAGE:
       return typeof val === "object" && !!val.url && !!val.imageMeta;
-    case "file":
+    case CmsMetaType.FILE:
       return typeof val === "object" && !!val.url && !!val.mimetype;
-    case "date-time":
+    case CmsMetaType.DATE_TIME:
       // Just gonna check for string now
       return typeof val === "string";
-    case "color":
+    case CmsMetaType.COLOR:
       return typeof val === "string";
-    case "rich-text":
+    case CmsMetaType.RICH_TEXT:
       return typeof val === "string";
   }
 }
@@ -271,10 +272,10 @@ export function makeSqlCondition(
         const [objectField, nestedField] = key.split(".");
 
         const objectFieldMeta = table.schema.fields.find(
-          (f) => f.identifier === objectField && f.type === "object"
+          (f) => f.identifier === objectField && f.type === CmsMetaType.OBJECT
         );
 
-        if (objectFieldMeta && objectFieldMeta.type === "object") {
+        if (objectFieldMeta && objectFieldMeta.type === CmsMetaType.OBJECT) {
           const nestedFieldMeta = objectFieldMeta.fields.find(
             (f) => f.identifier === nestedField
           );
@@ -305,17 +306,17 @@ export function makeSqlCondition(
 
 const typeToPgType = (type: CmsTypeName) => {
   switch (type) {
-    case "text":
+    case CmsMetaType.TEXT:
       return "text";
-    case "long-text":
+    case CmsMetaType.LONG_TEXT:
       return "text";
-    case "boolean":
+    case CmsMetaType.BOOLEAN:
       return "boolean";
-    case "number":
+    case CmsMetaType.NUMBER:
       return "numeric";
-    case "date-time":
+    case CmsMetaType.DATE_TIME:
       return "timestamp";
-    case "ref":
+    case CmsMetaType.REF:
       return "text";
     default:
       throw new BadRequestError(`Cannot filter by a column of type ${type}`);
