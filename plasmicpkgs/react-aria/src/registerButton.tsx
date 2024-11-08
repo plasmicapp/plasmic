@@ -114,6 +114,10 @@ export function registerButton(
           type: "eventHandler",
           argTypes: [{ name: "event", type: "object" }],
         },
+        onFocus: {
+          type: "eventHandler",
+          argTypes: [{ name: "event", type: "object" }],
+        },
       },
       trapsFocus: true,
     },

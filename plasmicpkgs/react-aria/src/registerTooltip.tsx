@@ -1,13 +1,7 @@
 import { usePlasmicCanvasComponentInfo } from "@plasmicapp/host";
 import React from "react";
-import { AriaButtonProps, useButton } from "react-aria";
-import {
-  Button,
-  Tooltip,
-  TooltipProps,
-  TooltipTrigger,
-} from "react-aria-components";
-import { isForwardRef } from "react-is";
+import { AriaButtonProps, useFocusable } from "react-aria";
+import { Tooltip, TooltipProps, TooltipTrigger } from "react-aria-components";
 import { TooltipTriggerProps } from "react-stately";
 import {
   CodeComponentMetaOverrides,
@@ -42,17 +36,34 @@ export interface BaseTooltipProps
 const { variants, withObservedValues } =
   pickAriaComponentVariants(TOOLTIP_VARIANTS);
 
+/*
+
+  Discussion (React-aria-components TooltipTrigger with custom button):
+  https://github.com/adobe/react-spectrum/discussions/5119#discussioncomment-7084661
+
+  React Aria's TooltipTrigger only allows Aria Button component to act as a trigger.
+  https://react-spectrum.adobe.com/react-aria/Tooltip.html#example
+
+  To bypass that limitation, we originally used the useTooltipTrigger custom hooks for advanced customization, so the trigger could become anything we want.
+  One of the limitations with that was the placement prop - the useTooltipTrigger did not provide placement prop, and that caused issues with tooltip positioning.
+
+  We have a better fix now - instead of using useTooltipTrigger, we use useFocusable,
+  so that anything we add to the slot can be treated as an Aria Button.
+  That means we can use the ready-made components provided by react-aria-components (like <TooltipTrigger> and <Tooltip>)
+  and still be able to use any other component as a trigger.
+
+  */
 function TooltipButton({
   children,
   ...rest
 }: AriaButtonProps & { children: React.ReactElement }) {
-  const ref = React.useRef<HTMLButtonElement | null>(null);
-  const { buttonProps } = useButton(rest, ref);
-
-  return React.cloneElement(children, {
-    ...buttonProps,
-    ref,
-  });
+  const ref = React.useRef<HTMLDivElement | null>(null);
+  const { focusableProps } = useFocusable(rest, ref);
+  return (
+    <div ref={ref} {...focusableProps}>
+      {children}
+    </div>
+  );
 }
 
 export function BaseTooltip(props: BaseTooltipProps) {
@@ -90,46 +101,7 @@ export function BaseTooltip(props: BaseTooltipProps) {
       defaultOpen={defaultOpen}
       onOpenChange={onOpenChange}
     >
-      {
-        /*
-
-        React Aria's TooltipTrigger only allows Aria Button component to act as a trigger.
-        https://react-spectrum.adobe.com/react-aria/Tooltip.html#example
-
-        To bypass that limitation, we originally used the useTooltipTrigger custom hooks for advanced customization, so the trigger could become anything we want.
-        One of the limitations with that was the placement prop - the useTooltipTrigger did not provide placement prop, and that caused issues with tooltip positioning.
-
-        We have a better fix now - instead of using useTooltipTrigger, we use useButton,
-        so that anything we add to the slot can be treated as an Aria Button.
-        That means we can use the ready-made components provided by react-aria-components (like <TooltipTrigger> and <Tooltip>)
-        and still be able to use any other component as a trigger.
-
-        */
-        isForwardRef(children) ? (
-          <TooltipButton>{children}</TooltipButton>
-        ) : (
-          /*
-              NOTE: I don't encapsulate this ternary inside the <TooltipButton> component,
-              Because the presence of `useButton` hook inside <TooltipButton> somehow messes up the following <Button> component functionality.
-              It causes the Tooltip to no longer anchor to the button.
-
-              So to avoid usage of <Button> and `useButton` within the same encapsulation/component, I use the ternary here instead.
-            */
-          <Button
-            style={{
-              background: "unset",
-              border: "unset",
-              padding: "unset",
-              paddingBlock: "unset",
-              paddingInline: "unset",
-              color: "unset",
-              fontSize: "unset",
-            }}
-          >
-            {children}
-          </Button>
-        )
-      }
+      <TooltipButton>{children}</TooltipButton>
       <Tooltip
         isOpen={_isOpen}
         offset={offset}
