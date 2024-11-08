@@ -45,11 +45,8 @@ export function BasePopover(props: BasePopoverProps) {
   const { children, ...mergedProps } = mergeProps(
     {
       isOpen: context?.isOpen,
-      /**
-       * isNonModal: Whether the popover is non-modal, i.e. elements outside the popover may be interacted with by assistive technologies. *
-       *
-       * Setting isNonModal to true in edit mode (canvas) means that the popover will not prevent the user from interacting with the canvas while the popover is open.
-       */
+      // isNonModal: Whether the popover is non-modal, i.e. elements outside the popover may be interacted with by assistive technologies.
+      // Setting isNonModal to true in edit mode (canvas) means that the popover will not prevent the user from interacting with the canvas while the popover is open.
       isNonModal: canvasContext && !canvasContext.interactive,
     },
     restProps,
@@ -59,11 +56,8 @@ export function BasePopover(props: BasePopoverProps) {
       ? {
           triggerRef,
           isNonModal: true,
-          /**
-           * Always true, because we assume that popover is always going to be controlled by a parent like Select, Combobox, DialogTrigger, etc, and its only really standalone in component view
-           * In component view, we never want to start with an empty artboard, so isOpen has to be true
-           *  */
-
+          // Always true, because we assume that popover is always going to be controlled by a parent like Select, Combobox, DialogTrigger, etc, and its only really standalone in component view
+          // In component view, we never want to start with an empty artboard, so isOpen has to be true
           isOpen: true,
         }
       : null
