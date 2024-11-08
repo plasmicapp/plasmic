@@ -41,18 +41,17 @@ export function BasePopover(props: BasePopoverProps) {
   const isStandalone = !React.useContext(PopoverContext);
   const context = React.useContext(PlasmicPopoverContext);
   const triggerRef = React.useRef<any>(null);
-  const isEditMode = !!usePlasmicCanvasContext();
-
+  const canvasContext = usePlasmicCanvasContext();
   const { children, ...mergedProps } = mergeProps(
     {
       isOpen: context?.isOpen,
+      /**
+       * isNonModal: Whether the popover is non-modal, i.e. elements outside the popover may be interacted with by assistive technologies. *
+       *
+       * Setting isNonModal to true in edit mode (canvas) means that the popover will not prevent the user from interacting with the canvas while the popover is open.
+       */
+      isNonModal: canvasContext && !canvasContext.interactive,
     },
-    /**
-     * isNonModal: Whether the popover is non-modal, i.e. elements outside the popover may be interacted with by assistive technologies. *
-     *
-     * Setting isNonModal to true in edit mode (canvas) means that the popover will not prevent the user from interacting with the canvas while the popover is open.
-     */
-    isEditMode ? { isNonModal: true } : null,
     restProps,
     { className: `${resetClassName}` },
     // Override some props if the popover is standalone

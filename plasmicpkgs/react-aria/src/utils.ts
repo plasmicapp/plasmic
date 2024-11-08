@@ -1,6 +1,10 @@
-import { type CodeComponentMeta } from "@plasmicapp/host";
+import {
+  usePlasmicCanvasComponentInfo,
+  usePlasmicCanvasContext,
+  type CodeComponentMeta,
+} from "@plasmicapp/host";
 import registerComponent from "@plasmicapp/host/registerComponent";
-import React from "react";
+import React, { useEffect } from "react";
 
 export type HasControlContextData<T = BaseControlContextData> = {
   setControlContextData?: (ctxData: T) => void;
@@ -29,6 +33,32 @@ export type CodeComponentMetaOverrides<T extends React.ComponentType<any>> =
       "parentComponentName" | "props" | "displayName" | "name"
     >
   >;
+
+export function useAutoOpen({
+  props,
+  open,
+  close,
+}: {
+  props: any;
+  open?: () => void;
+  close?: () => void;
+}) {
+  const inPlasmicCanvas = !!usePlasmicCanvasContext();
+  const isSelected = usePlasmicCanvasComponentInfo(props)?.isSelected ?? false;
+
+  useEffect(() => {
+    // selection in outline tab only matters in canvas
+    if (!inPlasmicCanvas) {
+      return;
+    }
+    if (isSelected) {
+      open?.();
+    } else {
+      close?.();
+    }
+    // Not putting open and close in the useEffect dependencies array, because it causes a re-render loop.
+  }, [isSelected, inPlasmicCanvas]);
+}
 
 export function registerComponentHelper<T extends React.ComponentType<any>>(
   loader: Registerable | undefined,

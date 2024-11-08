@@ -1,6 +1,10 @@
-import { usePlasmicCanvasComponentInfo } from "@plasmicapp/host";
 import React, { useEffect, useMemo } from "react";
-import { Select, SelectProps, SelectValue } from "react-aria-components";
+import {
+  Select,
+  SelectProps,
+  SelectStateContext,
+  SelectValue,
+} from "react-aria-components";
 import { getCommonProps } from "./common";
 import { PlasmicListBoxContext, PlasmicPopoverContext } from "./contexts";
 import { ListBoxItemIdManager } from "./ListBoxItemIdManager";
@@ -14,7 +18,17 @@ import {
   makeComponentName,
   Registerable,
   registerComponentHelper,
+  useAutoOpen,
 } from "./utils";
+
+// It cannot be used as a hook like useAutoOpen() within the BaseSelect component
+// because it needs access to SelectStateContext, which is only created in the BaseSelect component's render function.
+function SelectAutoOpen(props: any) {
+  const { open, close } = React.useContext(SelectStateContext) ?? {};
+  useAutoOpen({ props, open, close });
+
+  return null;
+}
 
 export interface BaseSelectValueProps
   extends React.ComponentProps<typeof SelectValue> {
@@ -67,13 +81,9 @@ export function BaseSelect(props: BaseSelectProps) {
     children,
     disabledKeys,
     name,
-    isOpen,
     setControlContextData,
     "aria-label": ariaLabel,
   } = props;
-
-  const { isSelected } = usePlasmicCanvasComponentInfo(props) ?? {};
-  const _isOpen = (isSelected || isOpen) ?? false;
 
   let idManager = useMemo(() => new ListBoxItemIdManager(), []);
 
@@ -97,10 +107,10 @@ export function BaseSelect(props: BaseSelectProps) {
       name={name}
       disabledKeys={disabledKeys}
       aria-label={ariaLabel}
-      isOpen={_isOpen}
       {...extractPlasmicDataProps(props)}
     >
-      <PlasmicPopoverContext.Provider value={{ isOpen: _isOpen }}>
+      <SelectAutoOpen {...props} />
+      <PlasmicPopoverContext.Provider value={{}}>
         <PlasmicListBoxContext.Provider
           value={{
             idManager,

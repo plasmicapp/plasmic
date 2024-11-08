@@ -1,7 +1,3 @@
-import {
-  usePlasmicCanvasComponentInfo,
-  usePlasmicCanvasContext,
-} from "@plasmicapp/host";
 import React, { useEffect, useMemo } from "react";
 import {
   ComboBox,
@@ -25,6 +21,7 @@ import {
   makeComponentName,
   Registerable,
   registerComponentHelper,
+  useAutoOpen,
 } from "./utils";
 
 const COMBOBOX_NAME = makeComponentName("combobox");
@@ -41,36 +38,32 @@ export interface BaseComboboxProps
   isOpen?: boolean;
 }
 
-/**
- * This React Hook is used to help with auto-opening the combobox when the canvas component is selected.
- * Currently, there is a bug in react-aria combobox (https://github.com/adobe/react-spectrum/issues/7149) where, when the combobox's popover is auto-opened, it is unable to render any listbox items.
- * Setting popover's open state to true in not enough unless, unless it has previously been opened via user interaction with combobox.
- * Also, <Combobox> does not support an `isOpen` prop either.
- *
- * So, we use this custom hook to access the combobox's internal state via ComboBoxStateContext and change the `open` state manually via tha available `open` method.
- *  */
+/*
+  This React Hook is used to help with auto-opening the combobox when the canvas component is selected.
+  Currently, there is a bug in react-aria combobox (https://github.com/adobe/react-spectrum/issues/7149) where, when the combobox's popover is auto-opened, it is unable to render any listbox items.
+  Setting popover's open state to true in not enough unless, unless it has previously been opened via user interaction with combobox.
+  Also, <Combobox> does not support an `isOpen` prop either.
+
+  So, we use this custom hook to access the combobox's internal state via ComboBoxStateContext and change the `open` state manually via tha available `open` method.
+
+  Note: It cannot be used as a hook like useAutoOpen() within the BaseSelect component
+  because it needs access to SelectStateContext, which is only created in the BaseSelect component's render function.
+  */
 function ComboboxAutoOpen(props: any) {
-  const isEditMode = !!usePlasmicCanvasContext();
-  const { isSelected } = usePlasmicCanvasComponentInfo(props) ?? {};
   const { open, close } = React.useContext(ComboBoxStateContext) ?? {};
 
-  useEffect(() => {
-    if (!isEditMode) {
-      return;
-    }
-    if (isSelected) {
-      open?.(undefined, "manual");
-    } else {
-      close?.();
-    }
-    // Not putting open and close in the useEffect dependencies array, because it causes a re-render loop.
-  }, [isSelected, isEditMode]);
+  useAutoOpen({ props, open, close });
 
   return null;
 }
 
 export function BaseComboBox(props: BaseComboboxProps) {
-  const { children, setControlContextData, isOpen, ...rest } = props;
+  const {
+    children,
+    setControlContextData,
+    isOpen: _isOpen, // uncontrolled if not selected in canvas/edit mode
+    ...rest
+  } = props;
 
   const idManager = useMemo(() => new ListBoxItemIdManager(), []);
 
@@ -84,7 +77,7 @@ export function BaseComboBox(props: BaseComboboxProps) {
 
   return (
     <ComboBox {...rest}>
-      <PlasmicPopoverContext.Provider value={{ isOpen }}>
+      <PlasmicPopoverContext.Provider value={{}}>
         <PlasmicListBoxContext.Provider
           value={{
             idManager,
