@@ -174,20 +174,16 @@ export class ViewCtx extends WithDbCtx {
 
   csEvaluator: DevCliSvrEvaluator;
 
+  get isFirstRenderComplete() {
+    return this.csEvaluator.isFirstRenderComplete;
+  }
+
   private disposals: (() => void)[] = [];
   private _isDisposed = false;
 
   private _nextFocusedTpl: TplNode | undefined;
   nextFocusedTpl() {
     return this._nextFocusedTpl;
-  }
-
-  private _isFirstRenderComplete = observable.box(false);
-  get isFirstRenderComplete() {
-    return this._isFirstRenderComplete.get();
-  }
-  set isFirstRenderComplete(v) {
-    this._isFirstRenderComplete.set(v);
   }
 
   private _highlightParam = observable.box<

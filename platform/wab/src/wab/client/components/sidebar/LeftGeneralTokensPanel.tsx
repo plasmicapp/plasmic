@@ -123,10 +123,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   );
 
   const [isTargeting, setIsTargeting] = React.useState(false);
-  const viewCtx = studioCtx?.focusedViewCtx();
-  const resolver = React.useCallback(useClientTokenResolver(), [
-    viewCtx?.isFirstRenderComplete,
-  ]);
+  const resolver = useClientTokenResolver();
 
   const getTokenValue = React.useCallback(
     (token: StyleToken) => {

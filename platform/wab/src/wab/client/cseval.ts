@@ -75,6 +75,14 @@ export abstract class BaseCliSvrEvaluator {
   private _postEvalTasks: (() => any)[] = [];
   private _contextFactory: ContextFactory;
   private _renderState: RenderState;
+  private _isFirstRenderComplete = observable.box(false);
+
+  get isFirstRenderComplete() {
+    return this._isFirstRenderComplete.get();
+  }
+  set isFirstRenderComplete(v) {
+    this._isFirstRenderComplete.set(v);
+  }
 
   constructor({ viewCtx }: { viewCtx: ViewCtx }) {
     this._viewCtx = viewCtx;
@@ -164,7 +172,7 @@ export abstract class BaseCliSvrEvaluator {
       this.rootNode = this.renderRoot();
       viewCtx.canvasCtx.rerender(this.rootNode, viewCtx);
       this.addPostEval(() => {
-        viewCtx.isFirstRenderComplete = true;
+        this.isFirstRenderComplete = true;
       });
     }
   }
