@@ -148,9 +148,12 @@ export function NavigationArenaRow({
         height: isPage ? PAGE_HEIGHT : ROW_HEIGHT,
         paddingLeft: indentMultiplier * 16 + 12,
       }}
-      onClick={() => {
+      onClick={async () => {
         onClose();
-        studioCtx.switchToArena(arena);
+        await studioCtx.change(({ success }) => {
+          studioCtx.switchToArena(arena);
+          return success();
+        });
       }}
       icon={<Icon icon={getArenaIcon(arena)} />}
       isSelected={studioCtx.currentArena === arena}
