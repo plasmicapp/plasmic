@@ -31,8 +31,6 @@ export interface BaseSliderTrackProps
  * @param values
  * @returns
  */
-/* The commented out code block is a function named `findMinMaxIndices` that takes an array of numbers
-as input and returns an object with `minIndex` and `maxIndex` properties. */
 function findMinMaxIndices(values: number[]): {
   minIndex: number;
   maxIndex: number;
@@ -64,9 +62,7 @@ export function BaseSliderTrack(props: BaseSliderTrackProps) {
   const { children, progressBar, plasmicUpdateVariant, ...rest } = props;
 
   const thumbsLength =
-    !isStandalone && isMultiValueGuard(context.value)
-      ? context.value.length
-      : 1;
+    context && isMultiValueGuard(context.value) ? context.value.length : 1;
   const isMultiValue = thumbsLength > 1;
 
   const { minIndex, maxIndex } = useMemo(() => {
