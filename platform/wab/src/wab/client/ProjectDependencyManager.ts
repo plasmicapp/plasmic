@@ -170,7 +170,8 @@ export class ProjectDependencyManager {
    * Precondition: there must be only 1 version of any Pkg in our dependency tree
    */
   private _buildDependencyMap(
-    input: Site | ProjectDependency
+    input: Site | ProjectDependency,
+    opts: { strict: boolean } = { strict: true }
   ): Dict<ProjectDependency> {
     // pkgId => version
     const result: Dict<ProjectDependency> = {};
@@ -179,14 +180,16 @@ export class ProjectDependencyManager {
       const dep = ensure(queue.shift(), "Queue should not be empty");
       // If we've already seen this pkgId, make sure its the right version
       if (result[dep.pkgId]) {
-        assert(
-          result[dep.pkgId].version === dep.version,
-          `See pkgId=${dep.pkgId} name=${
-            dep.name
-          } with 2 conflicting versions:[${dep.version}, ${
-            result[dep.pkgId].version
-          }]`
-        );
+        if (opts.strict) {
+          assert(
+            result[dep.pkgId].version === dep.version,
+            `See pkgId=${dep.pkgId} name=${
+              dep.name
+            } with 2 conflicting versions:[${dep.version}, ${
+              result[dep.pkgId].version
+            }]`
+          );
+        }
         continue;
       }
       result[dep.pkgId] = dep;
@@ -469,7 +472,9 @@ export class ProjectDependencyManager {
   }
 
   ensureCanUpgradeDeps(targetDeps: ProjectDependency[]) {
-    const localDepMap = this._buildDependencyMap(this._sc.site);
+    const localDepMap = this._buildDependencyMap(this._sc.site, {
+      strict: false,
+    });
     // Update localDepMap with all the dependencies that are going to be upgraded
     targetDeps.forEach((dep) => {
       localDepMap[dep.pkgId] = dep;
