@@ -63,9 +63,10 @@ export function BaseSliderTrack(props: BaseSliderTrackProps) {
   const isStandalone = !context;
   const { children, progressBar, plasmicUpdateVariant, ...rest } = props;
 
-  const thumbsLength = isMultiValueGuard(context?.value)
-    ? context.value.length
-    : 1;
+  const thumbsLength =
+    !isStandalone && isMultiValueGuard(context.value)
+      ? context.value.length
+      : 1;
   const isMultiValue = thumbsLength > 1;
 
   const { minIndex, maxIndex } = useMemo(() => {
