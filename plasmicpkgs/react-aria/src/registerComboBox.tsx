@@ -100,7 +100,7 @@ export function BaseComboBox(props: BaseComboboxProps) {
       className={className}
       {...rest}
     >
-      <PlasmicPopoverContext.Provider value={{}}>
+      <PlasmicPopoverContext.Provider value={{ withTrigger: true }}>
         <PlasmicListBoxContext.Provider
           value={{
             idManager,
@@ -219,6 +219,7 @@ export function registerComboBox(loader?: Registerable) {
                   backgroundColor: "white",
                   padding: "10px",
                   overflow: "scroll",
+                  width: "default",
                 },
                 props: {
                   offset: 0,

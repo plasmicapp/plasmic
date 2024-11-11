@@ -117,7 +117,7 @@ export function BaseSelect(props: BaseSelectProps) {
       {...extractPlasmicDataProps(props)}
     >
       <SelectAutoOpen {...props} />
-      <PlasmicPopoverContext.Provider value={{}}>
+      <PlasmicPopoverContext.Provider value={{ withTrigger: true }}>
         <PlasmicListBoxContext.Provider
           value={{
             idManager,
@@ -265,6 +265,7 @@ export function registerSelect(loader?: Registerable) {
                   backgroundColor: "white",
                   padding: "10px",
                   overflow: "scroll",
+                  width: "default",
                 },
                 props: {
                   children: [

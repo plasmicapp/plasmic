@@ -4,7 +4,6 @@ import { BaseCheckboxGroup } from "./registerCheckboxGroup";
 import { BaseDialogTrigger } from "./registerDialogTrigger";
 import type { BaseInput } from "./registerInput";
 import type { BaseLabel } from "./registerLabel";
-import { BasePopover } from "./registerPopover";
 import { BaseRadioGroup } from "./registerRadioGroup";
 import type { BaseSection } from "./registerSection";
 import { BaseSlider } from "./registerSlider";
@@ -46,7 +45,7 @@ export const PlasmicLabelContext = React.createContext<
 >(undefined);
 
 export const PlasmicPopoverContext = React.createContext<
-  React.ComponentProps<typeof BasePopover> | undefined
+  { withTrigger: boolean } | undefined
 >(undefined);
 
 export const PlasmicListBoxContext = React.createContext<

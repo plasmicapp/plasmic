@@ -1,10 +1,11 @@
 import { PlasmicElement, usePlasmicCanvasContext } from "@plasmicapp/host";
 import { mergeProps } from "@react-aria/utils";
-import React from "react";
+import React, { useEffect } from "react";
 import { Popover, PopoverContext } from "react-aria-components";
 import { PlasmicPopoverContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
+  HasControlContextData,
   makeComponentName,
   Registerable,
   registerComponentHelper,
@@ -27,24 +28,35 @@ const POPOVER_VARIANTS = [
 const { variants, withObservedValues } =
   pickAriaComponentVariants(POPOVER_VARIANTS);
 
+export interface BasePopoverControlContextData {
+  withTrigger?: boolean;
+}
 export interface BasePopoverProps
   extends React.ComponentProps<typeof Popover>,
-    WithVariants<typeof POPOVER_VARIANTS> {
+    WithVariants<typeof POPOVER_VARIANTS>,
+    HasControlContextData<BasePopoverControlContextData> {
   className?: string;
   resetClassName?: string;
   children?: React.ReactNode;
+  matchTriggerWidth?: boolean;
 }
 
 export function BasePopover(props: BasePopoverProps) {
-  const { resetClassName, plasmicUpdateVariant, ...restProps } = props;
+  const {
+    resetClassName,
+    plasmicUpdateVariant,
+    setControlContextData,
+    matchTriggerWidth,
+    ...restProps
+  } = props;
   // Popover can be inside DialogTrigger, Select, Combobox, etc. So we can't just use a particular context like DialogTrigger (like we do in Modal) to decide if it is standalone
   const isStandalone = !React.useContext(PopoverContext);
   const context = React.useContext(PlasmicPopoverContext);
   const triggerRef = React.useRef<any>(null);
   const canvasContext = usePlasmicCanvasContext();
+  const matchTriggerWidthProp = context?.withTrigger && matchTriggerWidth;
   const { children, ...mergedProps } = mergeProps(
     {
-      isOpen: context?.isOpen,
       // isNonModal: Whether the popover is non-modal, i.e. elements outside the popover may be interacted with by assistive technologies.
       // Setting isNonModal to true in edit mode (canvas) means that the popover will not prevent the user from interacting with the canvas while the popover is open.
       isNonModal: canvasContext && !canvasContext.interactive,
@@ -63,10 +75,20 @@ export function BasePopover(props: BasePopoverProps) {
       : null
   );
 
+  useEffect(() => {
+    setControlContextData?.({
+      withTrigger: context?.withTrigger,
+    });
+  }, [context?.withTrigger, setControlContextData]);
+
   return (
     <>
       {isStandalone && <div ref={triggerRef} />}
-      <Popover {...mergedProps}>
+      <Popover
+        // more about `--trigger-width` here: https://react-spectrum.adobe.com/react-aria/Select.html#popover-1
+        style={matchTriggerWidthProp ? { width: `var(--trigger-width)` } : {}}
+        {...mergedProps}
+      >
         {({ placement }) =>
           withObservedValues(
             children,
@@ -181,6 +203,12 @@ export function registerPopover(
         },
         resetClassName: {
           type: "themeResetClass",
+        },
+        matchTriggerWidth: {
+          type: "boolean",
+          defaultValue: true,
+          defaultValueHint: true,
+          hidden: (_props, ctx) => !ctx?.withTrigger,
         },
       },
       // No isOpen state for popover, because we assume that its open state is always going to be controlled by a parent like Select, Combobox, DialogTrigger, etc.
