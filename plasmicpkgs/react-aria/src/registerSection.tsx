@@ -1,4 +1,3 @@
-import { mergeProps } from "@react-aria/utils";
 import React from "react";
 import { Header, Section } from "react-aria-components";
 import { PlasmicListBoxContext } from "./contexts";
@@ -20,10 +19,9 @@ export function BaseSection(props: BaseSectionProps) {
   const { header, items, ...rest } = props;
   const contextProps = React.useContext(PlasmicListBoxContext);
   const isStandalone = !contextProps;
-  const mergedProps = mergeProps(contextProps, rest);
 
   const section = (
-    <Section {...mergedProps}>
+    <Section {...rest}>
       <Header>{header}</Header>
       {items}
     </Section>

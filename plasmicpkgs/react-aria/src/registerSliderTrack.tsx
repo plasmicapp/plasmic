@@ -1,6 +1,5 @@
 import { CodeComponentMeta } from "@plasmicapp/host";
 import React, { useMemo } from "react";
-import { mergeProps } from "react-aria";
 import { Slider, SliderThumbProps, SliderTrack } from "react-aria-components";
 import flattenChildren from "react-keyed-flatten-children";
 import { PlasmicSliderContext } from "./contexts";
@@ -32,6 +31,8 @@ export interface BaseSliderTrackProps
  * @param values
  * @returns
  */
+/* The commented out code block is a function named `findMinMaxIndices` that takes an array of numbers
+as input and returns an object with `minIndex` and `maxIndex` properties. */
 function findMinMaxIndices(values: number[]): {
   minIndex: number;
   maxIndex: number;
@@ -60,10 +61,12 @@ function isMultiValueGuard(value?: number | number[]): value is number[] {
 export function BaseSliderTrack(props: BaseSliderTrackProps) {
   const context = React.useContext(PlasmicSliderContext);
   const isStandalone = !context;
-  const mergedProps = mergeProps(context, props);
-  const { children, progressBar, plasmicUpdateVariant, ...rest } = mergedProps;
+  const { children, progressBar, plasmicUpdateVariant, ...rest } = props;
 
-  const isMultiValue = isMultiValueGuard(mergedProps.value);
+  const thumbsLength = isMultiValueGuard(context?.value)
+    ? context.value.length
+    : 1;
+  const isMultiValue = thumbsLength > 1;
 
   const { minIndex, maxIndex } = useMemo(() => {
     if (
@@ -74,7 +77,7 @@ export function BaseSliderTrack(props: BaseSliderTrackProps) {
       return { minIndex: 0, maxIndex: 0 };
     }
     return findMinMaxIndices(context.value);
-  }, [context?.value]);
+  }, [thumbsLength]);
 
   /**
    * Generates the thumb components based on the number of thumbs

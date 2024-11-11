@@ -1,8 +1,6 @@
 import React from "react";
-import { mergeProps } from "react-aria";
 import { Slider, SliderThumb, SliderTrack } from "react-aria-components";
 import { getCommonProps } from "./common";
-import { PlasmicSliderContext } from "./contexts";
 import ErrorBoundary from "./ErrorBoundary";
 import {
   CodeComponentMetaOverrides,
@@ -35,11 +33,8 @@ export function BaseSliderThumb({
   plasmicUpdateVariant,
   ...rest
 }: BaseSliderThumbProps) {
-  const context = React.useContext(PlasmicSliderContext);
-  const mergedProps = mergeProps(context, rest);
-
   const thumb = (
-    <SliderThumb {...mergedProps}>
+    <SliderThumb {...rest}>
       {({ isDragging, isHovered, isFocused, isFocusVisible, isDisabled }) =>
         withObservedValues(
           <>{advanced ? children : undefined}</>,
