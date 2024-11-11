@@ -7,6 +7,7 @@
   width: 100%;
   min-width: 0;
   padding: 8px 16px 8px 2px;
+  border: 1px solid transparent;
 }
 .rootborder_top {
   border-top: 1px solid var(--token-hoA5qaM-91G);
@@ -18,25 +19,49 @@
   display: flex;
   position: relative;
   flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
 }
-.freeBox__ghnta {
-  display: flex;
-  position: relative;
+.freeBox___2Aimk > :global(.__wab_flex-container) {
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  width: auto;
-  height: auto;
-  max-width: 100%;
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
 }
-.expandButton:global(.__wab_instance):global(.__wab_instance) {
+.freeBox___2Aimk > :global(.__wab_flex-container) > *,
+.freeBox___2Aimk > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox___2Aimk > :global(.__wab_flex-container) > picture > img,
+.freeBox___2Aimk
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 4px;
+}
+.iconContainer {
+  display: flex;
+  flex-direction: column;
   position: relative;
-  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-start;
+  transition-property: all;
+  transition-duration: 0.3s;
+  cursor: pointer;
+  -webkit-transition-property: all;
+  -webkit-transition-duration: 0.3s;
 }
-.expandButtonisExpanded:global(.__wab_instance):global(.__wab_instance) {
+.svg__lV3Wg {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+  color: var(--token-UunsGa2Y3t3);
+  transition-property: all;
+  transition-duration: 0.5s;
   flex-shrink: 0;
+  -webkit-transition-property: all;
+  -webkit-transition-duration: 0.5s;
+}
+.svgisExpanded__lV3WgaTp {
+  transform: rotateX(0deg) rotateY(0deg) rotateZ(90deg);
 }
 .freeBox__cp1Xx {
   display: flex;

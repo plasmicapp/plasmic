@@ -29,7 +29,6 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import ExpandButton from "../../components/widgets/ExpandButton"; // plasmic-import: JJhv0MV9DH/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -41,6 +40,7 @@ import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-impo
 import sty from "./PlasmicTokenTypeHeader.module.css"; // plasmic-import: eMjSZ8G7mG/css
 
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronRightSvg"; // plasmic-import: HBGx-zeiX/icon
 import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
@@ -71,7 +71,7 @@ export const PlasmicTokenTypeHeader__ArgProps = new Array<ArgPropType>(
 
 export type PlasmicTokenTypeHeader__OverridesType = {
   root?: Flex__<"div">;
-  expandButton?: Flex__<typeof ExpandButton>;
+  iconContainer?: Flex__<"div">;
   addButton?: Flex__<typeof IconButton>;
 };
 
@@ -166,8 +166,15 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
       )}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
-      <div
+      <Stack__
+        as={"div"}
+        hasGap={true}
         className={classNames(projectcss.all, sty.freeBox___2Aimk, {
+          [sty.freeBoxborder_top___2AimkbxlKh]: hasVariant(
+            $state,
+            "border",
+            "top"
+          ),
           [sty.freeBoxisExpanded___2AimkaTp]: hasVariant(
             $state,
             "isExpanded",
@@ -176,29 +183,19 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(projectcss.all, sty.freeBox__ghnta, {
-            [sty.freeBoxisExpanded__ghntAaTp]: hasVariant(
-              $state,
-              "isExpanded",
-              "isExpanded"
-            ),
-          })}
+          data-plasmic-name={"iconContainer"}
+          data-plasmic-override={overrides.iconContainer}
+          className={classNames(projectcss.all, sty.iconContainer)}
         >
-          <ExpandButton
-            data-plasmic-name={"expandButton"}
-            data-plasmic-override={overrides.expandButton}
-            className={classNames("__wab_instance", sty.expandButton, {
-              [sty.expandButtonisExpanded]: hasVariant(
+          <ChevronRightSvgIcon
+            className={classNames(projectcss.all, sty.svg__lV3Wg, {
+              [sty.svgisExpanded__lV3WgaTp]: hasVariant(
                 $state,
                 "isExpanded",
                 "isExpanded"
               ),
             })}
-            isExpanded={
-              hasVariant($state, "isExpanded", "isExpanded") ? true : undefined
-            }
-            right={true}
-            size={"small"}
+            role={"img"}
           />
         </div>
         <Stack__
@@ -219,7 +216,7 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
             })}
           </div>
         </Stack__>
-      </div>
+      </Stack__>
       <div
         className={classNames(projectcss.all, sty.freeBox___36Lfh, {
           [sty.freeBoxisExpanded___36LfHaTp]: hasVariant(
@@ -258,8 +255,8 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root", "expandButton", "addButton"],
-  expandButton: ["expandButton"],
+  root: ["root", "iconContainer", "addButton"],
+  iconContainer: ["iconContainer"],
   addButton: ["addButton"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -267,7 +264,7 @@ type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
-  expandButton: typeof ExpandButton;
+  iconContainer: "div";
   addButton: typeof IconButton;
 };
 
@@ -331,7 +328,7 @@ export const PlasmicTokenTypeHeader = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
-    expandButton: makeNodeComponent("expandButton"),
+    iconContainer: makeNodeComponent("iconContainer"),
     addButton: makeNodeComponent("addButton"),
 
     // Metadata about props expected for PlasmicTokenTypeHeader
