@@ -170,8 +170,7 @@ export class ProjectDependencyManager {
    * Precondition: there must be only 1 version of any Pkg in our dependency tree
    */
   private _buildDependencyMap(
-    input: Site | ProjectDependency,
-    opts: { strict: boolean } = { strict: true }
+    input: Site | ProjectDependency
   ): Dict<ProjectDependency> {
     // pkgId => version
     const result: Dict<ProjectDependency> = {};
@@ -180,16 +179,14 @@ export class ProjectDependencyManager {
       const dep = ensure(queue.shift(), "Queue should not be empty");
       // If we've already seen this pkgId, make sure its the right version
       if (result[dep.pkgId]) {
-        if (opts.strict) {
-          assert(
-            result[dep.pkgId].version === dep.version,
-            `See pkgId=${dep.pkgId} name=${
-              dep.name
-            } with 2 conflicting versions:[${dep.version}, ${
-              result[dep.pkgId].version
-            }]`
-          );
-        }
+        assert(
+          result[dep.pkgId].version === dep.version,
+          `See pkgId=${dep.pkgId} name=${
+            dep.name
+          } with 2 conflicting versions:[${dep.version}, ${
+            result[dep.pkgId].version
+          }]`
+        );
         continue;
       }
       result[dep.pkgId] = dep;
@@ -472,28 +469,31 @@ export class ProjectDependencyManager {
   }
 
   ensureCanUpgradeDeps(targetDeps: ProjectDependency[]) {
-    const localDepMap = this._buildDependencyMap(this._sc.site, {
-      strict: false,
+    const result: Dict<ProjectDependency> = {};
+    const queue = this.directDeps.get().map((d) => {
+      const newDep = targetDeps.find((t) => t.pkgId === d.model.pkgId);
+      return newDep ?? d.model;
     });
-    // Update localDepMap with all the dependencies that are going to be upgraded
-    targetDeps.forEach((dep) => {
-      localDepMap[dep.pkgId] = dep;
-    });
-    targetDeps.forEach((dep) => {
-      const { projectId } = dep;
-      // Check for conflicting versions in the dependency tree
-      const importedDepMap = this._buildDependencyMap(dep);
-      for (const pkgId in importedDepMap) {
-        if (
-          localDepMap[pkgId] &&
-          localDepMap[pkgId].version !== importedDepMap[pkgId].version
-        ) {
+    while (queue.length > 0) {
+      const dep = ensure(queue.shift(), "Queue should not be empty");
+      // If we've already seen this pkgId, make sure its the right version
+      if (result[dep.pkgId]) {
+        if (result[dep.pkgId].version !== dep.version) {
           throw new Error(
-            `Upgrading '${dep.name}' (${projectId}) failed due to conflicting dependencies. The imported project depends on '${importedDepMap[pkgId].name}' (pkgId=${pkgId}) version ${importedDepMap[pkgId].version}, while this project uses version ${localDepMap[pkgId].version}. Please reconcile these versions before trying again.`
+            `Upgrading '${dep.name}' (${
+              dep.projectId
+            }) failed due to conflicting dependencies. ${
+              dep.name
+            } has two conflicting versions: ${dep.version} and ${
+              result[dep.pkgId].version
+            }. Please reconcile these versions before trying again.`
           );
         }
+        continue;
       }
-    });
+      result[dep.pkgId] = dep;
+      queue.push(...dep.site.projectDependencies);
+    }
   }
 
   async upgradeProjectDeps(
