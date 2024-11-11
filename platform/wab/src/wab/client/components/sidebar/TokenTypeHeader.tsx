@@ -8,6 +8,7 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TokenType, tokenTypeLabel } from "@/wab/commons/StyleToken";
 import { spawn } from "@/wab/shared/common";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
+import { MultiChoiceArg } from "@plasmicapp/react-web";
 import * as React from "react";
 
 interface TokenTypeHeaderProps extends DefaultTokenTypeHeaderProps {
@@ -16,10 +17,33 @@ interface TokenTypeHeaderProps extends DefaultTokenTypeHeaderProps {
   toggleExpand: () => void;
 }
 
+const PREVIOUS_TOKEN_TYPES: Record<TokenType, TokenType> = {
+  Color: TokenType.Color,
+  FontFamily: TokenType.Color,
+  FontSize: TokenType.FontFamily,
+  LineHeight: TokenType.FontSize,
+  Opacity: TokenType.LineHeight,
+  Spacing: TokenType.Opacity,
+};
+
 function TokenTypeHeader(props: TokenTypeHeaderProps) {
   const { isExpanded, tokenType, toggleExpand, ...rest } = props;
   const studioCtx = useStudioCtx();
   const tokenControls = useTokenControls();
+
+  React.useEffect(() => {
+    tokenControls.setExpandedHeaders((set) => {
+      if (isExpanded && !set.has(tokenType)) {
+        set.add(tokenType);
+      } else if (!isExpanded && set.has(tokenType)) {
+        set.delete(tokenType);
+      } else {
+        return set;
+      }
+
+      return new Set(set);
+    });
+  }, [isExpanded]);
 
   const uiConfig = studioCtx.getCurrentUiConfig();
   const canCreateToken = canCreateAlias(uiConfig, "token");
@@ -27,12 +51,13 @@ function TokenTypeHeader(props: TokenTypeHeaderProps) {
   const readOnly =
     !canCreateToken || studioCtx.getLeftTabPermission("tokens") === "readable";
 
-  const borders = [
-    ...(tokenType === TokenType.Spacing || isExpanded
-      ? ["bottom" as const]
+  const borders: MultiChoiceArg<"bottom" | "top"> = [
+    "bottom" as const,
+    ...(tokenType !== TokenType.Color &&
+    tokenControls.expandedHeaders.has(PREVIOUS_TOKEN_TYPES[tokenType])
+      ? ["top" as const]
       : []),
-    ...(tokenType !== TokenType.Color ? ["top" as const] : []),
-  ];
+  ] as const;
 
   return (
     <PlasmicTokenTypeHeader

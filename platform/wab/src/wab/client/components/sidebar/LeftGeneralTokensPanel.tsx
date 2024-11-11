@@ -103,6 +103,9 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     }, 500),
     [setDebouncedQuery]
   );
+  const [expandedHeaders, setExpandedHeaders] = React.useState<Set<TokenType>>(
+    new Set()
+  );
   const matcher = new Matcher(debouncedQuery);
 
   const treeRef = React.useRef<VirtualTreeRef>(null);
@@ -346,7 +349,15 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
         }}
       >
         <TokenControlsContext.Provider
-          value={{ vsh, resolver, onDuplicate, onSelect, onAdd }}
+          value={{
+            vsh,
+            resolver,
+            onDuplicate,
+            onSelect,
+            onAdd,
+            expandedHeaders,
+            setExpandedHeaders,
+          }}
         >
           <VirtualTree
             ref={treeRef}

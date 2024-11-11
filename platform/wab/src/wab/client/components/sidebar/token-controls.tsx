@@ -33,6 +33,8 @@ export const TokenControlsContext = React.createContext<{
   onDuplicate: (token: StyleToken) => Promise<void>;
   onSelect: (token: StyleToken) => void;
   onAdd: (tokenType: TokenType) => Promise<void>;
+  expandedHeaders: Set<TokenType>;
+  setExpandedHeaders: React.Dispatch<React.SetStateAction<Set<TokenType>>>;
 } | null>(null);
 
 export function useTokenControls() {
