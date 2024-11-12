@@ -1,9 +1,15 @@
-import { withoutNils } from "@/wab/shared/common";
-import { allComponentVariants } from "@/wab/shared/core/components";
 import { FrameViewMode, mkArenaFrame } from "@/wab/shared/Arenas";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { VariantCombo } from "@/wab/shared/Variants";
 import { siteToAllImageAssetsDict } from "@/wab/shared/cached-selectors";
+import { withoutNils } from "@/wab/shared/common";
+import { allComponentVariants } from "@/wab/shared/core/components";
+import { allGlobalVariants, allStyleTokens } from "@/wab/shared/core/sites";
+import {
+  clone as cloneTpl,
+  flattenTpls,
+  flattenTplsBottomUp,
+} from "@/wab/shared/core/tpls";
 import {
   importComponentsInTree,
   mkInsertableComponentImporter,
@@ -28,12 +34,6 @@ import {
 } from "@/wab/shared/insertable-templates/types";
 import { Component, Site, TplNode, Variant } from "@/wab/shared/model/classes";
 import { assertSiteInvariants } from "@/wab/shared/site-invariants";
-import { allGlobalVariants, allStyleTokens } from "@/wab/shared/core/sites";
-import {
-  clone as cloneTpl,
-  flattenTpls,
-  flattenTplsBottomUp,
-} from "@/wab/shared/core/tpls";
 
 export function cloneInsertableTemplateArena(
   site: Site,
@@ -67,8 +67,8 @@ export function cloneInsertableTemplateArena(
         component,
         width: c.width,
         height: c.height,
-        top: c.top || undefined,
-        left: c.left || undefined,
+        top: c.top ?? 0,
+        left: c.left ?? 0,
         viewMode: FrameViewMode[c.viewMode],
         targetVariants: withoutNils(
           c.targetVariants.map((v) =>
