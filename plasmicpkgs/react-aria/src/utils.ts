@@ -44,7 +44,8 @@ export function useAutoOpen({
   close?: () => void;
 }) {
   const inPlasmicCanvas = !!usePlasmicCanvasContext();
-  const isSelected = usePlasmicCanvasComponentInfo(props)?.isSelected ?? false;
+  const isSelected =
+    usePlasmicCanvasComponentInfo?.(props)?.isSelected ?? false;
 
   useEffect(() => {
     // selection in outline tab only matters in canvas

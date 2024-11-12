@@ -52,7 +52,8 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
       ...rest
     } = props;
 
-    const { isSelected } = usePlasmicCanvasComponentInfo(props) ?? {};
+    const isSelected =
+      usePlasmicCanvasComponentInfo?.(props)?.isSelected ?? false;
 
     const contextProps = React.useContext(PlasmicDialogTriggerContext);
     const isStandalone = !contextProps;

@@ -21,7 +21,7 @@ export function BaseDialogTrigger(props: BaseDialogTriggerProps) {
   const { trigger, dialog, isOpen, ...rest } = props;
 
   const { isSelected, selectedSlotName } =
-    usePlasmicCanvasComponentInfo(props) ?? {};
+    usePlasmicCanvasComponentInfo?.(props) ?? {};
   const isAutoOpen = selectedSlotName !== "trigger" && isSelected;
 
   const mergedProps = {
