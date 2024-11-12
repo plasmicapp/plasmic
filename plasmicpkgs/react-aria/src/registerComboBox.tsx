@@ -8,7 +8,7 @@ import { getCommonProps } from "./common";
 import {
   PlasmicInputContext,
   PlasmicListBoxContext,
-  PlasmicPopoverContext,
+  PlasmicPopoverTriggerContext,
 } from "./contexts";
 import { ListBoxItemIdManager } from "./ListBoxItemIdManager";
 import { BUTTON_COMPONENT_NAME } from "./registerButton";
@@ -100,7 +100,7 @@ export function BaseComboBox(props: BaseComboboxProps) {
       className={className}
       {...rest}
     >
-      <PlasmicPopoverContext.Provider value={{ withTrigger: true }}>
+      <PlasmicPopoverTriggerContext.Provider value={true}>
         <PlasmicListBoxContext.Provider
           value={{
             idManager,
@@ -111,7 +111,7 @@ export function BaseComboBox(props: BaseComboboxProps) {
             {children}
           </PlasmicInputContext.Provider>
         </PlasmicListBoxContext.Provider>
-      </PlasmicPopoverContext.Provider>
+      </PlasmicPopoverTriggerContext.Provider>
     </ComboBox>
   );
 }
@@ -219,7 +219,7 @@ export function registerComboBox(loader?: Registerable) {
                   backgroundColor: "white",
                   padding: "10px",
                   overflow: "scroll",
-                  width: "default",
+                  width: "unset",
                 },
                 props: {
                   offset: 0,

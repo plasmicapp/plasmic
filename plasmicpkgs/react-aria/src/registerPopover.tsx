@@ -2,7 +2,7 @@ import { PlasmicElement, usePlasmicCanvasContext } from "@plasmicapp/host";
 import { mergeProps } from "@react-aria/utils";
 import React, { useEffect } from "react";
 import { Popover, PopoverContext } from "react-aria-components";
-import { PlasmicPopoverContext } from "./contexts";
+import { PlasmicPopoverTriggerContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
   HasControlContextData,
@@ -29,7 +29,7 @@ const { variants, withObservedValues } =
   pickAriaComponentVariants(POPOVER_VARIANTS);
 
 export interface BasePopoverControlContextData {
-  withTrigger?: boolean;
+  canMatchTriggerWidth?: boolean;
 }
 export interface BasePopoverProps
   extends React.ComponentProps<typeof Popover>,
@@ -51,10 +51,10 @@ export function BasePopover(props: BasePopoverProps) {
   } = props;
   // Popover can be inside DialogTrigger, Select, Combobox, etc. So we can't just use a particular context like DialogTrigger (like we do in Modal) to decide if it is standalone
   const isStandalone = !React.useContext(PopoverContext);
-  const context = React.useContext(PlasmicPopoverContext);
+  const hasTrigger = !!React.useContext(PlasmicPopoverTriggerContext);
   const triggerRef = React.useRef<any>(null);
   const canvasContext = usePlasmicCanvasContext();
-  const matchTriggerWidthProp = context?.withTrigger && matchTriggerWidth;
+  const matchTriggerWidthProp = hasTrigger && matchTriggerWidth;
   const { children, ...mergedProps } = mergeProps(
     {
       // isNonModal: Whether the popover is non-modal, i.e. elements outside the popover may be interacted with by assistive technologies.
@@ -77,16 +77,18 @@ export function BasePopover(props: BasePopoverProps) {
 
   useEffect(() => {
     setControlContextData?.({
-      withTrigger: context?.withTrigger,
+      canMatchTriggerWidth: hasTrigger,
     });
-  }, [context?.withTrigger, setControlContextData]);
+  }, [hasTrigger, setControlContextData]);
 
   return (
     <>
       {isStandalone && <div ref={triggerRef} />}
       <Popover
         // more about `--trigger-width` here: https://react-spectrum.adobe.com/react-aria/Select.html#popover-1
-        style={matchTriggerWidthProp ? { width: `var(--trigger-width)` } : {}}
+        style={
+          matchTriggerWidthProp ? { width: `var(--trigger-width)` } : undefined
+        }
         {...mergedProps}
       >
         {({ placement }) =>
@@ -207,8 +209,7 @@ export function registerPopover(
         matchTriggerWidth: {
           type: "boolean",
           defaultValue: true,
-          defaultValueHint: true,
-          hidden: (_props, ctx) => !ctx?.withTrigger,
+          hidden: (_props, ctx) => !ctx?.canMatchTriggerWidth,
         },
       },
       // No isOpen state for popover, because we assume that its open state is always going to be controlled by a parent like Select, Combobox, DialogTrigger, etc.

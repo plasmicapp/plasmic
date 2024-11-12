@@ -6,7 +6,10 @@ import {
   SelectValue,
 } from "react-aria-components";
 import { getCommonProps } from "./common";
-import { PlasmicListBoxContext, PlasmicPopoverContext } from "./contexts";
+import {
+  PlasmicListBoxContext,
+  PlasmicPopoverTriggerContext,
+} from "./contexts";
 import { ListBoxItemIdManager } from "./ListBoxItemIdManager";
 import { BUTTON_COMPONENT_NAME } from "./registerButton";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
@@ -117,7 +120,7 @@ export function BaseSelect(props: BaseSelectProps) {
       {...extractPlasmicDataProps(props)}
     >
       <SelectAutoOpen {...props} />
-      <PlasmicPopoverContext.Provider value={{ withTrigger: true }}>
+      <PlasmicPopoverTriggerContext.Provider value={true}>
         <PlasmicListBoxContext.Provider
           value={{
             idManager,
@@ -125,7 +128,7 @@ export function BaseSelect(props: BaseSelectProps) {
         >
           {children}
         </PlasmicListBoxContext.Provider>
-      </PlasmicPopoverContext.Provider>
+      </PlasmicPopoverTriggerContext.Provider>
     </Select>
   );
 }
@@ -265,7 +268,7 @@ export function registerSelect(loader?: Registerable) {
                   backgroundColor: "white",
                   padding: "10px",
                   overflow: "scroll",
-                  width: "default",
+                  width: "unset",
                 },
                 props: {
                   children: [

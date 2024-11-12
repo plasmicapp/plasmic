@@ -44,8 +44,8 @@ export const PlasmicLabelContext = React.createContext<
   React.ComponentProps<typeof BaseLabel> | undefined
 >(undefined);
 
-export const PlasmicPopoverContext = React.createContext<
-  { withTrigger: boolean } | undefined
+export const PlasmicPopoverTriggerContext = React.createContext<
+  boolean | undefined
 >(undefined);
 
 export const PlasmicListBoxContext = React.createContext<
