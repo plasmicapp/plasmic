@@ -53,6 +53,7 @@ import {
   AlertSpec,
 } from "@/wab/client/components/widgets/plasmic/AlertBanner";
 import { personalProjectPaywallMessage } from "@/wab/client/components/widgets/plasmic/ShareDialogContent";
+import { CommentsData } from "@/wab/client/components/comments/CommentsProvider";
 import { frameToScalerRect } from "@/wab/client/coords";
 import { DbCtx, WithDbCtx } from "@/wab/client/db";
 import {
@@ -121,6 +122,7 @@ import {
   ServerSessionsInfo,
   TemplateSpec,
   UpdatePlayerViewRequest,
+  GetCommentsResponse,
 } from "@/wab/shared/ApiSchema";
 import {
   AnyArena,
@@ -2389,6 +2391,14 @@ export class StudioCtx extends WithDbCtx {
 
   toggleCommentsPanel() {
     this._showCommentsPanel.set(!this.showCommentsPanel);
+  }
+
+  private _xCommentsData = observable.box<CommentsData>(undefined);
+  get commentsData() {
+    return this._xCommentsData.get();
+  }
+  set commentsData(commentsData: CommentsData) {
+    this._xCommentsData.set(commentsData);
   }
 
   private _xLeftPaneWidth = observable.box(LEFT_PANE_INIT_WIDTH);

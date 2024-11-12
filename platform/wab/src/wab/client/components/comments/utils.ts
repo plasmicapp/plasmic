@@ -1,5 +1,9 @@
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import {
+  CommentsContextData,
+  CommentsData,
+} from "@/wab/client/components/comments/CommentsProvider";
 import { ApiComment } from "@/wab/shared/ApiSchema";
 import { Bundler, FastBundler } from "@/wab/shared/bundler";
 import {
@@ -131,12 +135,47 @@ export function getThreadsFromFocusedComponent(
   };
 }
 
-export function isElementWithComments(studioCtx: StudioCtx, element: ObjInst) {
+/** Number of threads and replies for an element */
+export interface CommentsStats {
+  /** Total number of threads associated with an element */
+  commentCount: number;
+  /** Total number of replies across all threads for an element, excluding the initial comment in each thread */
+  replyCount: number;
+}
+
+export function getElementCommentsStats(
+  commentsCtx: CommentsContextData,
+  element: ObjInst
+) {
+  const count: CommentsStats = {
+    commentCount: 0,
+    replyCount: 0,
+  };
+  if (!isTplNamable(element)) {
+    return count;
+  }
+  const threads = commentsCtx.threads;
+  const bundler = commentsCtx.bundler;
+  for (const thread of threads.values()) {
+    if (bundler.objByAddr(thread[0].location.subject) === element) {
+      count.commentCount += 1;
+      count.replyCount += thread.length - 1;
+    }
+  }
+  return count;
+}
+
+export function isElementWithComments(
+  commentsCtx: CommentsContextData | CommentsData,
+  element: ObjInst
+) {
   if (!isTplNamable(element)) {
     return false;
   }
-  // TODO: this is used to populate tpl-tree and the outline tree search context
-  return false;
+  const bundler = commentsCtx.bundler;
+  return commentsCtx.allComments.some(
+    (comment) => bundler.objByAddr(comment.location.subject) === element
+  );
 }
 
 export function getSetOfVariantsForViewCtx(

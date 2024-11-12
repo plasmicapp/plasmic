@@ -7,7 +7,6 @@ import CommentPostForm from "@/wab/client/components/comments/CommentPostForm";
 import { useCommentsCtx } from "@/wab/client/components/comments/CommentsProvider";
 import ThreadComments from "@/wab/client/components/comments/ThreadComments";
 import {
-  getThreadsFromComments,
   getThreadsFromFocusedComponent,
   TplComment,
 } from "@/wab/client/components/comments/utils";
@@ -53,7 +52,7 @@ export const CommentsTab = observer(function CommentsTab(
 
   const currentComponent = studioCtx.currentComponent;
 
-  const { allComments, selfNotificationSettings, refreshComments } =
+  const { selfNotificationSettings, refreshComments, threads } =
     useCommentsCtx();
 
   if (!currentComponent) {
@@ -91,8 +90,6 @@ export const CommentsTab = observer(function CommentsTab(
       />
     );
   }
-
-  const threads = getThreadsFromComments(allComments);
 
   const {
     focusedSubjectThreads,
