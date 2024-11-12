@@ -27,6 +27,7 @@ import {
 } from "@/wab/shared/model/classes";
 import * as React from "react";
 
+import { SwitchArenaCommand } from "@/wab/client/commands/SwitchArenaCommand";
 import { menuSection } from "@/wab/client/components/menu-builder";
 import promptDeleteComponent from "@/wab/client/components/modals/componentDeletionModal";
 import { NavigationDropdownContext } from "@/wab/client/components/sidebar-tabs/ProjectPanel/NavigationDropdown";
@@ -150,10 +151,8 @@ export function NavigationArenaRow({
       }}
       onClick={async () => {
         onClose();
-        await studioCtx.change(({ success }) => {
-          studioCtx.switchToArena(arena);
-          return success();
-        });
+        const command = new SwitchArenaCommand();
+        await command.execute({ studioCtx, arena });
       }}
       icon={<Icon icon={getArenaIcon(arena)} />}
       isSelected={studioCtx.currentArena === arena}
