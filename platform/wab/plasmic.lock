@@ -2,10 +2,10 @@
   "projects": [
     {
       "projectId": "tXkSR39sgCDWSitZxC5xFV",
-      "version": "82.1.0",
+      "version": "83.1.1",
       "dependencies": {
         "sDniSX4oPUZFyk2sXXb3nh": "6.1.0",
-        "oT38tGyqov9SPWHpf3Y2Rf": "5.5.1",
+        "oT38tGyqov9SPWHpf3Y2Rf": "5.7.0",
         "95xp9cYcv7HrNWpFWWhbcv": "2.2.6"
       },
       "lang": "ts",
@@ -3131,22 +3131,22 @@
         {
           "type": "renderModule",
           "assetId": "gkx-PRZnjFPo",
-          "checksum": "305b27347ecaa8284829b80d41d3f5e5"
+          "checksum": "f58cbc0354036e305a8847f84a6be52a"
         },
         {
           "type": "cssRules",
           "assetId": "gkx-PRZnjFPo",
-          "checksum": "305b27347ecaa8284829b80d41d3f5e5"
+          "checksum": "f58cbc0354036e305a8847f84a6be52a"
         },
         {
           "type": "renderModule",
           "assetId": "fgHLE_9XtAei",
-          "checksum": "37180151ade661de806bd1f7aae58361"
+          "checksum": "90b0e4c170efab6c482e85dcb7e2ec84"
         },
         {
           "type": "cssRules",
           "assetId": "fgHLE_9XtAei",
-          "checksum": "37180151ade661de806bd1f7aae58361"
+          "checksum": "90b0e4c170efab6c482e85dcb7e2ec84"
         },
         {
           "assetId": "gYEVvAzCcLMHDVPvuYxkFh",
@@ -3155,7 +3155,7 @@
         }
       ],
       "projectId": "gYEVvAzCcLMHDVPvuYxkFh",
-      "version": "24.4.0",
+      "version": "24.4.1",
       "dependencies": {
         "tXkSR39sgCDWSitZxC5xFV": "83.1.1",
         "oT38tGyqov9SPWHpf3Y2Rf": "5.7.0",

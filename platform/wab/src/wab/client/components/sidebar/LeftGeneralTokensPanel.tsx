@@ -39,7 +39,6 @@ import {
 import { ProjectDependency, StyleToken } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
 import Chroma from "@/wab/shared/utils/color-utils";
-import { Tooltip } from "antd";
 import { debounce, groupBy, partition } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -392,17 +391,6 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
           collapseProps: {
             onClick: treeRef.current?.collapseAll,
           },
-        }}
-        globalVariantsSelectContainer={{
-          wrap: (x) => (
-            <Tooltip
-              title={
-                "You can change the token value for different responsive breakpoints or global variants."
-              }
-            >
-              {x}
-            </Tooltip>
-          ),
         }}
         isTargeting={isTargeting}
         globalVariantSelect={{
