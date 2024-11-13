@@ -62,6 +62,8 @@ import {
 import {
   computeDefinedIndicator,
   DefinedIndicatorType,
+  isIndicatorExplicitlySet,
+  getPropAndValueFromIndicator,
 } from "@/wab/shared/defined-indicator";
 import { makeExpProxy, makeMergedExpProxy } from "@/wab/shared/exprs";
 import {
@@ -706,6 +708,8 @@ interface StylePanelSectionProps extends StyleComponentProps {
     | ReactNode
     | ((renderMaybeCollapsibleRows: MaybeCollapsibleRowsRenderer) => ReactNode);
   styleProps: string[];
+  ignorableStyleProps?: string[]; // Style to be excluded for definedIndicator
+  defaultStyleProps?: Map<string, string>; // definedIndicator will be excluded for style properties that match these default values
   collapsableIndicatorNames?: string[];
   defaultExpanded?: boolean;
   hasMore?: boolean;
@@ -735,6 +739,8 @@ function StylePanelSection_(
     emptyBody,
     styleProps,
     collapsableIndicatorNames = [],
+    ignorableStyleProps = [],
+    defaultStyleProps = new Map(),
     defaultHeaderAction,
     expsProvider,
     unremovableStyleProps,
@@ -743,13 +749,27 @@ function StylePanelSection_(
     ...otherProps
   } = props;
   const studioCtx = expsProvider.studioCtx;
+  const isEditingNonBaseVariant =
+    studioCtx.focusedViewCtx()?.isEditingNonBaseVariant;
   const isMixin = expsProvider instanceof SingleRsExpsProvider;
   const unremovableProps =
     unremovableStyleProps && !isMixin ? unremovableStyleProps : [];
 
   const definedIndicators = styleProps
     .map((p) => expsProvider.definedIndicator(p))
-    .filter((x) => x.source !== "none");
+    .filter((x) => {
+      // Filter definedIndicator for properties that are included in ignorableStyleProps or match the default style props
+      if (!isEditingNonBaseVariant && isIndicatorExplicitlySet(x)) {
+        const { prop, value } = getPropAndValueFromIndicator(x);
+        return !(
+          prop &&
+          value &&
+          (ignorableStyleProps.includes(prop) ||
+            defaultStyleProps.get(prop) === value)
+        );
+      }
+      return x.source !== "none";
+    });
 
   const collapsableDefinedIndicators = collapsableIndicatorNames
     .map((p) => expsProvider.definedIndicator(p))
@@ -771,6 +791,10 @@ function StylePanelSection_(
                 if (exp.has(prop) && expsProvider.isPropRemovable(prop)) {
                   exp.clear(prop);
                 }
+              }
+              // apply the default styles props on unset
+              for (const [key, value] of defaultStyleProps) {
+                exp.set(key, value);
               }
             });
           }}

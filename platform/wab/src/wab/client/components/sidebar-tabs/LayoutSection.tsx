@@ -168,6 +168,7 @@ export const LayoutSection = observer(function LayoutSection_(
         "grid-auto-rows",
         "grid-auto-columns",
       ]}
+      ignorableStyleProps={["display", "flex-direction"]}
       unremovableStyleProps={["display"]}
     >
       {(renderMaybeCollapsibleRows) =>

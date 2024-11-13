@@ -24,7 +24,7 @@ import StyleToggleButtonGroup from "@/wab/client/components/style-controls/Style
 import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { isStylePropSet } from "@/wab/client/utils/style-utils";
-import { inspect, maybe } from "@/wab/shared/common";
+import { inspect, maybe, mapify } from "@/wab/shared/common";
 import { isCodeComponent } from "@/wab/shared/core/components";
 import { standardSides } from "@/wab/shared/geom";
 import {
@@ -132,6 +132,7 @@ export const PositioningPanelSection = observer(
         "justify-self",
         "align-self",
       ];
+      const defaultStyleProps = mapify({ position: "relative" });
 
       const collapsableIndicatorNames = ["z-index", ...standardSides];
       return (
@@ -147,6 +148,7 @@ export const PositioningPanelSection = observer(
                 ? ["position"]
                 : []
             }
+            defaultStyleProps={defaultStyleProps}
             styleProps={styleProps}
             collapsableIndicatorNames={collapsableIndicatorNames}
             controls={
