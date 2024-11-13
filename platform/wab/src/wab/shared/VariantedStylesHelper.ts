@@ -1,12 +1,14 @@
+import { TokenValue } from "@/wab/commons/StyleToken";
+import { DeepReadonly } from "@/wab/commons/types";
 import {
   arrayEqIgnoreOrder,
+  assert,
   ensure,
   ensureArray,
   last,
   remove,
 } from "@/wab/shared/common";
-import { TokenValue } from "@/wab/commons/StyleToken";
-import { DeepReadonly } from "@/wab/commons/types";
+import { cloneRuleSet } from "@/wab/shared/core/styles";
 import {
   isKnownStyleToken,
   Mixin,
@@ -22,7 +24,7 @@ import {
   isAncestorCombo,
   makeGlobalVariantComboSorter,
 } from "@/wab/shared/variant-sort";
-import { cloneRuleSet } from "@/wab/shared/core/styles";
+import { isValidComboForToken } from "@/wab/shared/Variants";
 
 export class VariantedStylesHelper {
   constructor(
@@ -123,21 +125,36 @@ export class VariantedStylesHelper {
       token.value) as TokenValue;
   }
 
-  updateToken(token: StyleToken, value: string) {
-    const variantedValue = token.variantedValues.find((v) =>
-      arrayEqIgnoreOrder(v.variants, ensureArray(this.targetGlobalVariants))
+  canUpdateToken(): boolean {
+    return (
+      this.isTargetBaseVariant() ||
+      (!!this.targetGlobalVariants &&
+        isValidComboForToken(this.targetGlobalVariants))
     );
+  }
+
+  updateToken(token: StyleToken, value: string) {
     if (this.isTargetBaseVariant()) {
       token.value = value;
-    } else if (variantedValue) {
+      return;
+    }
+
+    assert(
+      this.canUpdateToken(),
+      `cannot update token "${token.name}" with target global variants "${
+        this.targetGlobalVariants?.map((v) => v.name).join(",") ?? "base"
+      }"`
+    );
+
+    const variantedValue = token.variantedValues.find((v) =>
+      arrayEqIgnoreOrder(v.variants, this.targetGlobalVariants)
+    );
+    if (variantedValue) {
       variantedValue.value = value;
     } else {
       token.variantedValues.push(
         new VariantedValue({
-          variants: ensure(
-            this.targetGlobalVariants,
-            "target global variants must be specified"
-          ),
+          variants: this.targetGlobalVariants,
           value,
         })
       );

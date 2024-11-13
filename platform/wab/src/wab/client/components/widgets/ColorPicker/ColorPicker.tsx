@@ -423,6 +423,9 @@ function ColorPicker_({
     }
   };
 
+  const isEditable =
+    appliedToken && isStyleTokenEditable(sc.site, appliedToken, vsh);
+
   return (
     <div>
       {!appliedToken && (
@@ -487,7 +490,7 @@ function ColorPicker_({
           {appliedToken && (
             <div className="flex flex-vcenter mb-sm">
               <MaybeWrap
-                cond={isStyleTokenEditable(sc.site, appliedToken)}
+                cond={isEditable}
                 wrapper={(x) => (
                   <Tooltip title="Edit color token">
                     {x as React.ReactElement}
@@ -496,7 +499,9 @@ function ColorPicker_({
               >
                 <Button
                   type="chip"
-                  onClick={() => setEditToken(appliedToken)}
+                  onClick={
+                    isEditable ? () => setEditToken(appliedToken) : undefined
+                  }
                   startIcon={
                     <ColorSwatch
                       color={realColor}
@@ -577,7 +582,7 @@ function ColorPicker_({
           />
         </div>
       )}
-      {editToken && isStyleTokenEditable(sc.site, editToken) && (
+      {editToken && (
         <ColorTokenPopup
           token={editToken}
           studioCtx={sc}

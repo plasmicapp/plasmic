@@ -16,6 +16,7 @@ import {
 import { ARENA_CAP } from "@/wab/shared/Labels";
 import { getSlotArgs } from "@/wab/shared/SlotUtils";
 import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   isGlobalVariant,
   isGlobalVariantGroup,
@@ -170,7 +171,6 @@ import {
   isKnownPageHref,
   isKnownRenderExpr,
   isKnownStrongFunctionArg,
-  isKnownStyleToken,
   isKnownTplComponent,
   isKnownTplNode,
   isKnownTplRef,
@@ -2007,13 +2007,12 @@ export function allImportedStyleTokensWithProjectInfo(site: Site) {
 // Only editable if owned in my site, not a dependency
 export function isEditable(
   site: Site,
-  asset: Component | StyleToken | Mixin | ImageAsset
+  asset: Component | Mixin | ImageAsset
 ): boolean {
   return (
     (isKnownComponent(asset) &&
       !isCodeComponent(asset) &&
       localComponents(site).includes(asset)) ||
-    (isKnownStyleToken(asset) && isStyleTokenEditable(site, asset)) ||
     (isKnownMixin(asset) && localMixins(site).includes(asset)) ||
     (isKnownImageAsset(asset) && localImageAssets(site).includes(asset))
   );
@@ -2021,10 +2020,13 @@ export function isEditable(
 
 export function isStyleTokenEditable(
   site: Site,
-  styleToken: StyleToken
+  styleToken: StyleToken,
+  vsh: VariantedStylesHelper | undefined
 ): boolean {
   return (
-    !styleToken.isRegistered && localStyleTokens(site).includes(styleToken)
+    !styleToken.isRegistered &&
+    localStyleTokens(site).includes(styleToken) &&
+    (vsh === undefined || vsh.canUpdateToken())
   );
 }
 

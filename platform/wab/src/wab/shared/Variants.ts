@@ -702,6 +702,11 @@ export function ensureValidCombo(component: Component, combo: VariantCombo) {
   return combo;
 }
 
+export function isValidComboForToken(combo: VariantCombo) {
+  // The Studio UI and codegen only support varianted tokens with 1 variant.
+  return combo.length === 1;
+}
+
 /**
  * Return style variants whose selectors are all active
  */

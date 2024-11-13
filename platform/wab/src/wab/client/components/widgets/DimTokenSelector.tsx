@@ -39,6 +39,7 @@ import {
   spawn,
   unexpected,
 } from "@/wab/shared/common";
+import { isStyleTokenEditable } from "@/wab/shared/core/sites";
 import * as css from "@/wab/shared/css";
 import {
   lengthCssUnits,
@@ -288,14 +289,17 @@ export const DimTokenSpinner = observer(
         return [];
       }
 
+      const selectedToken =
+        editableTokens.length > 0 ? editableTokens[0] : undefined;
+
       return filterFalsy([
         // Always show create token option
         { type: "add-token" } as const,
-        // Only show edit token option if a token is currently selected, and the user
-        // hasn't typed anything yet
-        inputValue.length === 0 &&
-          editableTokens.length > 0 &&
-          ({ type: "edit-token", token: editableTokens[0] } as const),
+        // Only show edit token option if , and
+        inputValue.length === 0 && // the user hasn't typed anything yet
+          selectedToken && // a token is currently selected
+          isStyleTokenEditable(studioCtx.site, selectedToken, vsh) && // the token is editable
+          ({ type: "edit-token", token: selectedToken } as const),
 
         // show tokens that match name or value
         ...naturalSort(

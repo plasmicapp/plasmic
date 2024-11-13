@@ -357,6 +357,7 @@ import {
   isScreenVariant,
   isStandaloneVariantGroup,
   isStyleVariant,
+  isValidComboForToken,
   VariantCombo,
   VariantGroupType,
 } from "@/wab/shared/Variants";
@@ -2473,7 +2474,7 @@ const makeCssClassExprsForVariantedTokens = (ctx: SerializerBaseContext) => {
         // the right css import
         const depMap = ctx.componentGenHelper.siteHelper.objToDepMap();
         assert(
-          vc.length === 1,
+          isValidComboForToken(vc),
           "Can only build varianted combos with one variant"
         );
         const variant = vc[0];
