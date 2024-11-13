@@ -1,4 +1,6 @@
+import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import React from "react";
+import { mergeProps } from "react-aria";
 import type { ButtonProps } from "react-aria-components";
 import { Button } from "react-aria-components";
 import { getCommonProps } from "./common";
@@ -34,10 +36,21 @@ export const BaseButton = React.forwardRef(
     const { submitsForm, resetsForm, children, plasmicUpdateVariant, ...rest } =
       props;
 
-    const type = submitsForm ? "submit" : resetsForm ? "reset" : "button";
+    const canvasContext = usePlasmicCanvasContext?.();
+    const isEditMode = canvasContext && canvasContext.interactive === false;
 
+    const type = submitsForm ? "submit" : resetsForm ? "reset" : "button";
+    // React-aria has not yet included `preventFocusOnPress` in types.
+    // To bypass the type error, I use `mergeProps` to add it.
+    const mergedProps = mergeProps(rest, {
+      type,
+      ref,
+      // The rich text editor can cancel effect of clicks/hover, but not of key strokes.
+      // When pressing space key, the button's "pressed" state is triggered, and the rich text editor loses focus as a result.
+      preventFocusOnPress: isEditMode,
+    });
     return (
-      <Button type={type} ref={ref} {...rest}>
+      <Button {...mergedProps}>
         {({ isHovered, isPressed, isFocused, isFocusVisible, isDisabled }) =>
           withObservedValues(
             children,
