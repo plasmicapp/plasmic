@@ -83,7 +83,7 @@ export function BaseTooltip(props: BaseTooltipProps) {
   const { isSelected, selectedSlotName } =
     usePlasmicCanvasComponentInfo?.(props) ?? {};
   const isAutoOpen = selectedSlotName !== "children" && isSelected;
-  const _isOpen = isAutoOpen || isOpen;
+  const _isOpen = (isAutoOpen || isOpen) ?? false;
 
   return (
     <TooltipTrigger
