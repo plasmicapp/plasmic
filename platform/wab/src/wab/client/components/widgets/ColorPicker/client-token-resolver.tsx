@@ -8,7 +8,6 @@ import {
   makeTokenResolver,
 } from "@/wab/shared/cached-selectors";
 import { StyleToken } from "@/wab/shared/model/classes";
-import * as React from "react";
 
 const RE_VARIABLE_REF = /var\((--[^)]+)\)/;
 
@@ -30,10 +29,9 @@ const RE_VARIABLE_REF = /var\((--[^)]+)\)/;
 export function useClientTokenResolver(): TokenValueResolver {
   const sc = useStudioCtx();
   const vc = sc.focusedViewCtx();
-
-  const resolver = React.useCallback(makeTokenResolver(sc.site), [
-    vc?.isFirstRenderComplete,
-  ]);
+  // depend on first render observable
+  vc?.isFirstRenderComplete;
+  const resolver = makeTokenResolver(sc.site);
   return makeClientTokenResolver(resolver, vc ?? sc);
 }
 
