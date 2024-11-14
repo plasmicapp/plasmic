@@ -1,6 +1,6 @@
 import { usePlasmicCanvasComponentInfo } from "@plasmicapp/host";
 import React from "react";
-import { AriaButtonProps, useFocusable } from "react-aria";
+import { useFocusable } from "react-aria";
 import { Tooltip, TooltipProps, TooltipTrigger } from "react-aria-components";
 import { TooltipTriggerProps } from "react-stately";
 import {
@@ -33,6 +33,11 @@ export interface BaseTooltipProps
   className?: string;
 }
 
+interface TriggerWrapperProps {
+  children: React.ReactElement;
+  className?: string;
+}
+
 const { variants, withObservedValues } =
   pickAriaComponentVariants(TOOLTIP_VARIANTS);
 
@@ -47,14 +52,11 @@ const { variants, withObservedValues } =
   https://github.com/adobe/react-spectrum/discussions/5119#discussioncomment-7084661
 
   */
-function TriggerWrapper({
-  children,
-  ...rest
-}: AriaButtonProps & { children: React.ReactElement }) {
+function TriggerWrapper({ children, className }: TriggerWrapperProps) {
   const ref = React.useRef<HTMLDivElement | null>(null);
-  const { focusableProps } = useFocusable(rest, ref);
+  const { focusableProps } = useFocusable({}, ref);
   return (
-    <div ref={ref} {...focusableProps}>
+    <div ref={ref} className={className} {...focusableProps}>
       {children}
     </div>
   );
@@ -95,7 +97,7 @@ export function BaseTooltip(props: BaseTooltipProps) {
       defaultOpen={defaultOpen}
       onOpenChange={onOpenChange}
     >
-      <TriggerWrapper>{children}</TriggerWrapper>
+      <TriggerWrapper className={resetClassName}>{children}</TriggerWrapper>
       <Tooltip
         isOpen={_isOpen}
         offset={offset}
