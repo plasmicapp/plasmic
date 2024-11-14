@@ -40,7 +40,6 @@ export interface BaseComboboxProps
   extends ComboBoxProps<{}>,
     WithVariants<typeof COMBOBOX_VARIANTS>,
     HasControlContextData<BaseComboboxControlContextData> {
-  placeholder?: string;
   children?: React.ReactNode;
   isOpen?: boolean;
   className?: string;
@@ -127,7 +126,6 @@ export function registerComboBox(loader?: Registerable) {
       ...getCommonProps<BaseComboboxProps>("ComboBox", [
         "name",
         "aria-label",
-        "placeholder",
         "isDisabled",
       ]),
       selectedKey: {
@@ -187,12 +185,16 @@ export function registerComboBox(loader?: Registerable) {
               },
               {
                 type: "hbox",
+                styles: {
+                  padding: 0,
+                },
                 children: [
                   {
                     type: "component",
                     name: INPUT_COMPONENT_NAME,
                     styles: {
                       width: "100%",
+                      borderRightWidth: 0,
                     },
                   },
                   {
@@ -206,6 +208,10 @@ export function registerComboBox(loader?: Registerable) {
                         styles: {
                           width: "15px",
                           transform: "rotate(180deg)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          padding: 0,
                         },
                       },
                     },

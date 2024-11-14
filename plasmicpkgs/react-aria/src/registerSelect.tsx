@@ -74,7 +74,6 @@ export function BaseSelect(props: BaseSelectProps) {
   const {
     selectedKey,
     onSelectionChange,
-    placeholder,
     onOpenChange,
     isDisabled,
     className,
@@ -106,7 +105,6 @@ export function BaseSelect(props: BaseSelectProps) {
 
   return (
     <Select
-      placeholder={placeholder}
       selectedKey={selectedKey}
       onSelectionChange={onSelectionChange}
       onOpenChange={onOpenChange}
@@ -143,14 +141,17 @@ export function registerSelect(loader?: Registerable) {
     props: {
       customize: {
         type: "boolean",
-        description: "Whether to customize the selected value display",
+        displayName: "Customize placeholder",
+        defaultValue: true,
+        description: "Customize the placeholder text and styles",
       },
       children: {
         type: "slot",
+        displayName: "Placeholder",
         defaultValue: [
           {
             type: "text",
-            value: "Selected value...",
+            value: "Select an item",
           },
         ],
         hidden: (props) => !props.customize,
@@ -169,7 +170,6 @@ export function registerSelect(loader?: Registerable) {
       ...getCommonProps<BaseSelectProps>("Select", [
         "name",
         "aria-label",
-        "placeholder",
         "isDisabled",
         "autoFocus",
       ]),
@@ -233,6 +233,8 @@ export function registerSelect(loader?: Registerable) {
                 name: BUTTON_COMPONENT_NAME,
                 styles: {
                   width: "100%",
+                  padding: "4px 10px",
+                  background: "white",
                 },
                 props: {
                   children: {
@@ -241,7 +243,7 @@ export function registerSelect(loader?: Registerable) {
                       width: "stretch",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      padding: "2px 5px",
+                      padding: 0,
                     },
                     children: [
                       {
@@ -252,8 +254,8 @@ export function registerSelect(loader?: Registerable) {
                         type: "img",
                         src: "https://static1.plasmic.app/arrow-up.svg",
                         styles: {
-                          height: "20px",
-                          width: "20px",
+                          height: "15px",
+                          width: "15px",
                           transform: "rotate(180deg)",
                         },
                       },

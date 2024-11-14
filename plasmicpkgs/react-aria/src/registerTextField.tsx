@@ -109,6 +109,7 @@ export function registerTextField(
               alignItems: "flex-start",
               width: "300px",
               gap: "5px",
+              padding: 0,
             },
             children: [
               {
