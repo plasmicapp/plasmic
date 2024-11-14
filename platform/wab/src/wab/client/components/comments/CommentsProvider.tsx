@@ -23,6 +23,8 @@ import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ArenaFrame } from "@/wab/shared/model/classes";
 import * as React from "react";
 import { ReactNode, createContext, useMemo } from "react";
+import { observer } from "mobx-react";
+import { computed } from "mobx";
 import useSWR, { KeyedMutator } from "swr";
 
 export interface CommentsContextData {
@@ -109,29 +111,34 @@ function useCommentsData(): CommentsData {
     );
 
   const parsedCommentsResponse = useMemo(() => {
-    if (!maybeResponse) {
-      return defaultCommentsData;
-    }
+    return computed(
+      () => {
+        if (!maybeResponse) {
+          return defaultCommentsData;
+        }
 
-    const { comments, reactions, users, selfNotificationSettings } =
-      maybeResponse;
+        const { comments, reactions, users, selfNotificationSettings } =
+          maybeResponse;
 
-    const allComments = getCommentsWithModelMetadata(bundler, comments);
-    const usersMap = mkIdMap(users);
-    const reactionsByCommentId = xGroupBy(
-      sortBy(reactions, (r) => +new Date(r.createdAt)),
-      (reaction) => reaction.commentId
+        const allComments = getCommentsWithModelMetadata(bundler, comments);
+        const usersMap = mkIdMap(users);
+        const reactionsByCommentId = xGroupBy(
+          sortBy(reactions, (r) => +new Date(r.createdAt)),
+          (reaction) => reaction.commentId
+        );
+        const threads = getThreadsFromComments(allComments);
+
+        return {
+          allComments,
+          usersMap,
+          reactionsByCommentId,
+          selfNotificationSettings,
+          threads,
+        };
+      },
+      { name: "commentsData" }
     );
-    const threads = getThreadsFromComments(allComments);
-
-    return {
-      allComments,
-      usersMap,
-      reactionsByCommentId,
-      selfNotificationSettings,
-      threads,
-    };
-  }, [JSON.stringify(maybeResponse ?? null)]);
+  }, [JSON.stringify(maybeResponse ?? null)]).get();
 
   return {
     bundler,
@@ -142,7 +149,11 @@ function useCommentsData(): CommentsData {
   };
 }
 
-export function CommentsProvider({ children }: { children: ReactNode }) {
+export const CommentsProvider = observer(function CommentsProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const [shownThreadId, setShownThreadId] = React.useState<
     CommentThreadId | undefined
   >(undefined);
@@ -172,4 +183,4 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
       {children}
     </CommentsContext.Provider>
   );
-}
+});
