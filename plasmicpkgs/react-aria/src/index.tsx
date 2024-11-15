@@ -16,6 +16,7 @@ import { registerSelect } from "./registerSelect";
 import { registerSlider } from "./registerSlider";
 import { registerSwitch } from "./registerSwitch";
 import { registerText } from "./registerText";
+import { registerTextArea } from "./registerTextArea";
 import { registerTextField } from "./registerTextField";
 import { registerTooltip } from "./registerTooltip";
 import { Registerable } from "./utils";
@@ -30,6 +31,7 @@ export function registerAll(loader?: Registerable) {
   registerLabel(loader);
   registerListBox(loader);
   registerPopover(loader);
+  registerTextArea(loader);
   registerInput(loader);
   registerSwitch(loader);
   // registerForm(loader);

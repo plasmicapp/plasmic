@@ -6,11 +6,9 @@ import { PlasmicTextFieldContext } from "./contexts";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { INPUT_COMPONENT_NAME } from "./registerInput";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
-import { registerTextArea } from "./registerTextArea";
 import {
   CodeComponentMetaOverrides,
   Registerable,
-  makeChildComponentName,
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
@@ -169,11 +167,4 @@ export function registerTextField(
     },
     overrides
   );
-
-  const thisName = makeChildComponentName(
-    overrides?.parentComponentName,
-    TEXT_FIELD_COMPONENT_NAME
-  );
-
-  registerTextArea(loader, { parentComponentName: thisName });
 }
