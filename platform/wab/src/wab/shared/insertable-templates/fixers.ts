@@ -217,7 +217,8 @@ export function makeImageAssetImporter(
       return oldToNew.get(asset)!;
     }
     const newAsset = tplMgr.addImageAsset({
-      name: asset.type === ImageAssetType.Icon ? "icon" : "image",
+      name:
+        asset.name ?? (asset.type === ImageAssetType.Icon ? "icon" : "image"),
       width: asset.width ?? undefined,
       height: asset.height ?? undefined,
       dataUri: asset.dataUri,
