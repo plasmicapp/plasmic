@@ -129,6 +129,8 @@ export const makeDefaultCheckboxChildren = ({
   ],
 });
 
+export const CHECKBOX_COMPONENT_NAME = makeComponentName("checkbox");
+
 export function registerCheckbox(
   loader?: Registerable,
   overrides?: CodeComponentMetaOverrides<typeof BaseCheckbox>
@@ -137,7 +139,7 @@ export function registerCheckbox(
     loader,
     BaseCheckbox,
     {
-      name: makeComponentName("checkbox"),
+      name: CHECKBOX_COMPONENT_NAME,
       displayName: "Aria Checkbox",
       importPath: "@plasmicpkgs/react-aria/skinny/registerCheckbox",
       importName: "BaseCheckbox",

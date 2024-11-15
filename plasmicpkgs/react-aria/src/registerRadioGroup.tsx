@@ -4,8 +4,7 @@ import { RadioGroup } from "react-aria-components";
 import { getCommonProps } from "./common";
 import { PlasmicRadioGroupContext } from "./contexts";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
-import { registerFieldError } from "./registerFieldError";
-import { LABEL_COMPONENT_NAME, registerLabel } from "./registerLabel";
+import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { makeDefaultRadioChildren, registerRadio } from "./registerRadio";
 import {
   CodeComponentMetaOverrides,
@@ -59,9 +58,7 @@ export function registerRadioGroup(
     RADIO_GROUP_COMPONENT_NAME
   );
 
-  registerFieldError(loader, { parentComponentName: thisName });
   const radioMeta = registerRadio(loader, { parentComponentName: thisName });
-  registerLabel(loader, { parentComponentName: thisName });
 
   registerComponentHelper(
     loader,

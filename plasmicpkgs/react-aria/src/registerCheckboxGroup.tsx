@@ -4,12 +4,11 @@ import { CheckboxGroup } from "react-aria-components";
 import { getCommonProps } from "./common";
 import { PlasmicCheckboxGroupContext } from "./contexts";
 import {
+  CHECKBOX_COMPONENT_NAME,
   makeDefaultCheckboxChildren,
-  registerCheckbox,
 } from "./registerCheckbox";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
-import { registerFieldError } from "./registerFieldError";
-import { LABEL_COMPONENT_NAME, registerLabel } from "./registerLabel";
+import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import {
   CodeComponentMetaOverrides,
   makeChildComponentName,
@@ -63,12 +62,6 @@ export function registerCheckboxGroup(
     componentName
   );
 
-  registerFieldError(loader, { parentComponentName: thisName });
-  const checkboxMeta = registerCheckbox(loader, {
-    parentComponentName: thisName,
-  });
-  registerLabel(loader, { parentComponentName: thisName });
-
   registerComponentHelper(
     loader,
     BaseCheckboxGroup,
@@ -110,7 +103,7 @@ export function registerCheckboxGroup(
                 },
                 {
                   type: "component",
-                  name: checkboxMeta.name,
+                  name: CHECKBOX_COMPONENT_NAME,
                   props: {
                     children: makeDefaultCheckboxChildren({
                       label: "Checkbox 1",
@@ -121,7 +114,7 @@ export function registerCheckboxGroup(
                 },
                 {
                   type: "component",
-                  name: checkboxMeta.name,
+                  name: CHECKBOX_COMPONENT_NAME,
                   props: {
                     children: makeDefaultCheckboxChildren({
                       label: "Checkbox 2",
@@ -132,7 +125,7 @@ export function registerCheckboxGroup(
                 },
                 {
                   type: "component",
-                  name: checkboxMeta.name,
+                  name: CHECKBOX_COMPONENT_NAME,
                   props: {
                     children: makeDefaultCheckboxChildren({
                       label: "Checkbox 3",

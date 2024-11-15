@@ -4,9 +4,8 @@ import { TextField } from "react-aria-components";
 import { getCommonProps, resolveAutoComplete } from "./common";
 import { PlasmicTextFieldContext } from "./contexts";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
-import { registerFieldError } from "./registerFieldError";
-import { INPUT_COMPONENT_NAME, registerInput } from "./registerInput";
-import { LABEL_COMPONENT_NAME, registerLabel } from "./registerLabel";
+import { INPUT_COMPONENT_NAME } from "./registerInput";
+import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { registerTextArea } from "./registerTextArea";
 import {
   CodeComponentMetaOverrides,
@@ -176,8 +175,5 @@ export function registerTextField(
     TEXT_FIELD_COMPONENT_NAME
   );
 
-  registerFieldError(loader, { parentComponentName: thisName });
-  registerInput(loader, { parentComponentName: thisName });
-  registerLabel(loader, { parentComponentName: thisName });
   registerTextArea(loader, { parentComponentName: thisName });
 }
