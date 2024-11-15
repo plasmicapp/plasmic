@@ -27,7 +27,6 @@ export interface BaseInputProps
     WithVariants<typeof INPUT_VARIANTS> {
   autoComplete?: string[];
   isUncontrolled?: boolean;
-  typographyClassName?: string;
 }
 
 export const inputHelpers = {
@@ -47,8 +46,6 @@ export function BaseInput(props: BaseInputProps) {
     disabled,
     autoComplete,
     value,
-    typographyClassName,
-    className,
     ...rest
   } = props;
   const textFieldContext = React.useContext(PlasmicTextFieldContext);
@@ -81,7 +78,6 @@ export function BaseInput(props: BaseInputProps) {
 
   return (
     <Input
-      className={`${typographyClassName} ${className}`}
       autoComplete={resolveAutoComplete(autoComplete)}
       onHoverChange={(isHovered) => {
         plasmicUpdateVariant?.({
@@ -118,20 +114,6 @@ export function registerInput(
       importPath: "@plasmicpkgs/react-aria/skinny/registerInput",
       importName: "BaseInput",
       variants,
-      // Excluding typography
-      styleSections: [
-        "visibility",
-        "sizing",
-        "spacing",
-        "background",
-        "transform",
-        "transitions",
-        "layout",
-        "overflow",
-        "border",
-        "shadows",
-        "effects",
-      ],
       defaultStyles: {
         width: "300px",
         borderWidth: "1px",
@@ -170,19 +152,6 @@ export function registerInput(
           "onBeforeInput",
           "onInput",
         ]),
-        typographyClassName: {
-          type: "class",
-          displayName: "Typography",
-          selectors: [
-            // Plasmic Studio user can also in addition style the button's
-            // hovered and pressed state
-            {
-              selector: ":self::placeholder",
-              label: "Placeholder",
-            },
-          ],
-          styleSections: ["typography"],
-        },
       },
       states: {
         value: {

@@ -24,9 +24,7 @@ const { variants } = pickAriaComponentVariants(TEXTAREA_VARIANTS);
 export interface BaseTextAreaProps
   extends TextAreaProps,
     HasControlContextData,
-    WithVariants<typeof TEXTAREA_VARIANTS> {
-  typographyClassName?: string;
-}
+    WithVariants<typeof TEXTAREA_VARIANTS> {}
 
 export const inputHelpers = {
   states: {
@@ -39,14 +37,8 @@ export const inputHelpers = {
 };
 
 export function BaseTextArea(props: BaseTextAreaProps) {
-  const {
-    disabled,
-    plasmicUpdateVariant,
-    setControlContextData,
-    typographyClassName,
-    className,
-    ...rest
-  } = props;
+  const { disabled, plasmicUpdateVariant, setControlContextData, ...rest } =
+    props;
 
   const textFieldContext = React.useContext(PlasmicTextFieldContext);
 
@@ -67,7 +59,6 @@ export function BaseTextArea(props: BaseTextAreaProps) {
 
   return (
     <TextArea
-      className={`${typographyClassName} ${className}`}
       onFocus={() => {
         plasmicUpdateVariant?.({
           focused: true,
@@ -101,20 +92,6 @@ export function registerTextArea(
       importPath: "@plasmicpkgs/react-aria/skinny/registerTextArea",
       importName: "BaseTextArea",
       variants,
-      // Excluding typography
-      styleSections: [
-        "visibility",
-        "sizing",
-        "spacing",
-        "background",
-        "transform",
-        "transitions",
-        "layout",
-        "overflow",
-        "border",
-        "shadows",
-        "effects",
-      ],
       props: {
         ...getCommonProps<TextAreaProps>("Text Area", [
           "name",
@@ -143,19 +120,6 @@ export function registerTextArea(
           "onBeforeInput",
           "onInput",
         ]),
-        typographyClassName: {
-          type: "class",
-          displayName: "Typography",
-          selectors: [
-            // Plasmic Studio user can also in addition style the button's
-            // hovered and pressed state
-            {
-              selector: ":self::placeholder",
-              label: "Placeholder",
-            },
-          ],
-          styleSections: ["typography"],
-        },
       },
       states: {
         value: {
