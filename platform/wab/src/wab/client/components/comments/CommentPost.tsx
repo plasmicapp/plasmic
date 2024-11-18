@@ -18,6 +18,7 @@ import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import { ApiCommentReaction, CommentId } from "@/wab/shared/ApiSchema";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
 import { ensure, ensureString, maybe, spawn } from "@/wab/shared/common";
+import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, Tooltip } from "antd";
 import Popover from "antd/lib/popover";
@@ -197,7 +198,7 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
             );
           }}
         >
-          {comment.body}
+          <StandardMarkdown>{comment.body}</StandardMarkdown>
         </EditableLabel>
       }
       timestamp={moment(comment.createdAt).fromNow()}
