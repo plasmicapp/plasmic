@@ -266,6 +266,9 @@ export function mkInsertableTokenImporter(
     if (oldToNewToken.has(oldToken)) {
       return oldToNewToken.get(oldToken)!;
     }
+    const namespacedTokenName = groupName
+      ? `${groupName}/${oldToken.name}`
+      : oldToken.name;
 
     // `targetTokens` won't consider tokens that have been added by `getOrAddToken`
     // but this is expected as if it would have a similarity from tokens that have
@@ -274,8 +277,7 @@ export function mkInsertableTokenImporter(
       if (targetToken.type !== oldToken.type) {
         return false;
       }
-
-      const isSameName = targetToken.name === oldToken.name;
+      const isSameName = targetToken.name === namespacedTokenName;
 
       if (
         tokenResolution === "reuse-by-name" ||
@@ -306,9 +308,7 @@ export function mkInsertableTokenImporter(
 
     const tplMgr = new TplMgr({ site: targetSite });
     const newToken = tplMgr.addToken({
-      name: tplMgr.getUniqueTokenName(
-        groupName ? `${groupName}/${oldToken.name}` : oldToken.name
-      ),
+      name: tplMgr.getUniqueTokenName(namespacedTokenName),
       tokenType: oldToken.type as TokenType,
       value: maybeDerefToken(targetTokens, oldTokens, oldToken),
     });
