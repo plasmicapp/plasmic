@@ -1,5 +1,7 @@
-import { NavigationCommands } from "@/wab/client/commands/navigation";
+import { switchArenaCommand } from "@/wab/client/commands/navigation/switchArena";
 
 export const COMMANDS = {
-  ...NavigationCommands,
+  navigation: {
+    switchArena: switchArenaCommand,
+  },
 };
