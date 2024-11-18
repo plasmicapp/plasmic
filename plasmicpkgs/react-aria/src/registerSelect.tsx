@@ -29,7 +29,16 @@ import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 // because it needs access to SelectStateContext, which is only created in the BaseSelect component's render function.
 function SelectAutoOpen(props: any) {
   const { open, close } = React.useContext(SelectStateContext) ?? {};
-  useAutoOpen({ props, open, close });
+  useAutoOpen({
+    props,
+    open: () => {
+      open?.();
+      setTimeout(() => {
+        (window.parent.document.activeElement as HTMLElement)?.blur?.();
+      });
+    },
+    close,
+  });
 
   return null;
 }
