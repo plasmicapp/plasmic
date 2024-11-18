@@ -109,6 +109,21 @@ async function performFetch({ url, method, body, headers }: FetchProps) {
   if (!url) {
     throw new Error("Please specify a URL to fetch");
   }
+
+  // Add default headers unless specified
+  if (!headers) {
+    headers = {};
+  }
+  const headerNamesLowercase = new Set(
+    Object.keys(headers).map((headerName) => headerName.toLowerCase())
+  );
+  if (!headerNamesLowercase.has("accept")) {
+    headers["Accept"] = "application/json";
+  }
+  if (body && !headerNamesLowercase.has("content-type")) {
+    headers["Content-Type"] = "application/json";
+  }
+
   const response = await fetch(url, {
     method,
     headers,
@@ -185,10 +200,7 @@ function mkFetchProps(
     headers: {
       type: "object",
       description: "Request headers (as JSON object) to send",
-      defaultValue: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
+      defaultValue: {},
     },
     queryKey: {
       type: "string",
@@ -248,12 +260,30 @@ export interface GraphqlFetcherProps
 
 export function GraphqlFetcher(props: GraphqlFetcherProps) {
   const { query, url, method, headers, queryKey, varOverrides } = props;
-  const fetchProps: FetchProps = {
-    body: { ...query, variables: { ...query?.variables, ...varOverrides } },
-    url,
-    method,
-    headers,
-  };
+
+  let fetchProps: FetchProps;
+  if (method === "GET") {
+    // https://graphql.org/learn/serving-over-http/#get-request-and-parameters
+    const urlWithQueryParams = new URL(url ?? "");
+    urlWithQueryParams.searchParams.set("query", query?.query ?? "{}");
+    urlWithQueryParams.searchParams.set(
+      "variables",
+      JSON.stringify({ ...query?.variables, ...varOverrides })
+    );
+    fetchProps = {
+      url: urlWithQueryParams.toString(),
+      method,
+      headers,
+    };
+  } else {
+    fetchProps = {
+      body: { ...query, variables: { ...query?.variables, ...varOverrides } },
+      url,
+      method,
+      headers,
+    };
+  }
+
   const result = usePlasmicQueryData(
     queryKey || JSON.stringify({ type: "GraphqlFetcher", ...fetchProps }),
     () => performFetch(fetchProps)
@@ -275,18 +305,22 @@ export const graphqlFetcherMeta: ComponentMeta<GraphqlFetcherProps> = {
         headers: (props) => props.headers,
         endpoint: (props) => props.url ?? "",
         defaultValue: {
-          query: `query MyQuery($name: String) {
-  characters(filter: {name: $name}) {
-    results {
-      name
-      species
-      image
+          query: `query ExampleQuery($personId: ID) {
+  person(id: $personId) {
+    id
+    name
+    skinColor
+    filmConnection {
+      films {
+        id
+        title
+      }
     }
   }
 }
 `,
           variables: {
-            name: "Rick Sanchez",
+            personId: "cGVvcGxlOjIw", // Yoda
           },
         },
       },
@@ -300,7 +334,10 @@ export const graphqlFetcherMeta: ComponentMeta<GraphqlFetcherProps> = {
     };
     // Reorder the props
     const { url, query, method, headers, queryKey, ...rest } = {
-      ...mkFetchProps("https://rickandmortyapi.com/graphql", "POST"),
+      ...mkFetchProps(
+        "https://swapi-graphql.netlify.app/.netlify/functions/index",
+        "POST"
+      ),
       ...gqlMetas,
       ...genericFetcherPropsMeta,
     };
