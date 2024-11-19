@@ -40,7 +40,7 @@ const INLINE_STYLES = {
 };
 
 export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
-  function _BaseModal(props, ref) {
+  function BaseModalInner(props, ref) {
     const {
       children,
       modalOverlayClass,
@@ -52,6 +52,8 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
       ...rest
     } = props;
 
+    const canvasCtx = usePlasmicCanvasContext();
+    const isEditMode = canvasCtx && canvasCtx.interactive === false;
     const isSelected =
       usePlasmicCanvasComponentInfo?.(props)?.isSelected ?? false;
 
@@ -67,7 +69,7 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
         To fix the above issue, we set an interim isDismissable state to false while the modal is auto-open (`isSelected` is true).
         Also note that `isSelected` can only be true in canvas (non-interactive mode), so we can safely (temporarily) set `isDismissable` to false in this case, because it only matters in interactive mode.
       */
-      isDismissable: isSelected ? false : isDismissable,
+      isDismissable: isEditMode ? false : isDismissable,
     });
 
     setControlContextData?.({
@@ -84,11 +86,7 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
       },
     }));
 
-    const isCanvas = usePlasmicCanvasContext();
-
-    {
-      /* <Dialog> cannot be used in canvas, because while the dialog is open on the canvas, the focus is trapped inside it, so any Studio modals like the Color Picker modal would glitch due to focus jumping back and forth */
-    }
+    /* <Dialog> cannot be used in canvas, because while the dialog is open on the canvas, the focus is trapped inside it, so any Studio modals like the Color Picker modal would glitch due to focus jumping back and forth */
     const bodyInCanvas = <div style={INLINE_STYLES}>{children}</div>;
 
     const bodyInPreview = <Dialog style={INLINE_STYLES}>{children}</Dialog>;
@@ -99,7 +97,7 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
         className={`${resetClassName} ${modalOverlayClass}`}
       >
         <Modal className={className}>
-          {isCanvas ? bodyInCanvas : bodyInPreview}
+          {canvasCtx ? bodyInCanvas : bodyInPreview}
         </Modal>
       </ModalOverlay>
     );
