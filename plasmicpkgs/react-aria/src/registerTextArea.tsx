@@ -15,6 +15,7 @@ import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
 const TEXTAREA_VARIANTS = [
   "focused" as const,
+  "focusVisible" as const,
   "hovered" as const,
   "disabled" as const,
 ];
@@ -59,14 +60,19 @@ export function BaseTextArea(props: BaseTextAreaProps) {
 
   return (
     <TextArea
-      onFocus={() => {
-        plasmicUpdateVariant?.({
-          focused: true,
+      onFocus={(e) => {
+        setTimeout(() => {
+          // using settimeout to update the variant, as it only gets the `data-focus-visible` attribute in the next tick
+          plasmicUpdateVariant?.({
+            focused: true,
+            focusVisible: !!e.target.getAttribute("data-focus-visible"),
+          });
         });
       }}
       onBlur={() => {
         plasmicUpdateVariant?.({
           focused: false,
+          focusVisible: false,
         });
       }}
       onHoverChange={(isHovered) => {

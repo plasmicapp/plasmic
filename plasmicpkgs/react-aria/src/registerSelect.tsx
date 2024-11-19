@@ -81,7 +81,11 @@ export interface BaseSelectControlContextData {
   itemIds: string[];
 }
 
-const SELECT_VARIANTS = ["disabled" as const];
+const SELECT_VARIANTS = [
+  "focused" as const,
+  "focusVisible" as const,
+  "disabled" as const,
+];
 
 const { variants: SELECT_VARIANTS_DATA } =
   pickAriaComponentVariants(SELECT_VARIANTS);
@@ -139,6 +143,21 @@ export function BaseSelect(props: BaseSelectProps) {
       name={name}
       disabledKeys={disabledKeys}
       aria-label={ariaLabel}
+      onFocus={(e) => {
+        setTimeout(() => {
+          // using settimeout to update the variant, as it only gets the `data-focus-visible` attribute in the next tick
+          plasmicUpdateVariant?.({
+            focused: true,
+            focusVisible: !!e.target.getAttribute("data-focus-visible"),
+          });
+        });
+      }}
+      onBlur={() => {
+        plasmicUpdateVariant?.({
+          focused: false,
+          focusVisible: false,
+        });
+      }}
       {...extractPlasmicDataProps(props)}
     >
       <SelectAutoOpen {...props} />

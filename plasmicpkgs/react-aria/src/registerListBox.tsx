@@ -14,18 +14,24 @@ import {
   Registerable,
   registerComponentHelper,
 } from "./utils";
+import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
 export interface BaseListBoxControlContextData {
   itemIds: string[];
   isStandalone: boolean;
 }
 
+const LISTBOX_VARIANTS = ["focused" as const, "focusVisible" as const];
+
+const { variants } = pickAriaComponentVariants(LISTBOX_VARIANTS);
+
 export interface BaseListBoxProps
   extends Omit<
       React.ComponentProps<typeof ListBox>,
       "selectedKeys" | "defaultSelectedKeys"
     >,
-    HasControlContextData<BaseListBoxControlContextData> {
+    HasControlContextData<BaseListBoxControlContextData>,
+    WithVariants<typeof LISTBOX_VARIANTS> {
   children?: React.ReactNode;
   selectedKeys?: string | string[] | undefined;
   defaultSelectedKeys?: string | string[] | undefined;
@@ -55,12 +61,12 @@ export function BaseListBox(props: BaseListBoxProps) {
     children,
     selectedKeys,
     defaultSelectedKeys,
+    plasmicUpdateVariant,
     ...rest
   } = props;
   const context = React.useContext(PlasmicListBoxContext);
   const isStandalone = !context;
   const [ids, setIds] = useState<string[]>([]);
-
   const idManager = useMemo(
     () => context?.idManager ?? new ListBoxItemIdManager(),
     []
@@ -83,6 +89,21 @@ export function BaseListBox(props: BaseListBoxProps) {
     <ListBox
       selectedKeys={normalizeSelectedKeys(selectedKeys)}
       defaultSelectedKeys={normalizeSelectedKeys(defaultSelectedKeys)}
+      onFocus={(e) => {
+        setTimeout(() => {
+          // using settimeout to update the variant, as it only gets the `data-focus-visible` attribute in the next tick
+          plasmicUpdateVariant?.({
+            focused: true,
+            focusVisible: !!e.target.getAttribute("data-focus-visible"),
+          });
+        });
+      }}
+      onBlur={() => {
+        plasmicUpdateVariant?.({
+          focused: false,
+          focusVisible: false,
+        });
+      }}
       {...rest}
     >
       {children}
@@ -174,6 +195,7 @@ export function registerListBox(
       displayName: "Aria ListBox",
       importPath: "@plasmicpkgs/react-aria/skinny/registerListBox",
       importName: "BaseListBox",
+      variants,
       defaultStyles: {
         width: "250px",
         borderWidth: "1px",

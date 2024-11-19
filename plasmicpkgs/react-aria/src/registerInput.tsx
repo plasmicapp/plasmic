@@ -15,6 +15,7 @@ import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
 const INPUT_VARIANTS = [
   "focused" as const,
+  "focusVisible" as const,
   "hovered" as const,
   "disabled" as const,
 ];
@@ -84,14 +85,19 @@ export function BaseInput(props: BaseInputProps) {
           hovered: isHovered,
         });
       }}
-      onFocus={() => {
-        plasmicUpdateVariant?.({
-          focused: true,
+      onFocus={(e) => {
+        setTimeout(() => {
+          // using settimeout to update the variant, as the input only gets the `data-focus-visible` attribute in the next tick
+          plasmicUpdateVariant?.({
+            focused: true,
+            focusVisible: !!e.target.getAttribute("data-focus-visible"),
+          });
         });
       }}
       onBlur={() => {
         plasmicUpdateVariant?.({
           focused: false,
+          focusVisible: false,
         });
       }}
       {...mergedProps}
