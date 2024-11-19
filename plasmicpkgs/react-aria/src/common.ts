@@ -99,7 +99,7 @@ function createAriaLabelProp<T>(componentName: string): PropType<T> {
   return {
     type: "string",
     displayName: "ARIA label",
-    description: `Label for this ${componentName}, if no visible label is used, to identify the element to assistive technology`,
+    description: `Assistive technology uses this if there is no visible label for this ${componentName}`,
     advanced: true,
     hidden: hasParent,
   };
