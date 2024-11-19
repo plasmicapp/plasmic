@@ -1,11 +1,8 @@
 import { makeAirtableFetcher } from "@/wab/server/data-sources/airtable-fetcher";
-import { makeDynamoDbFetcher } from "@/wab/server/data-sources/dynamodb-fetcher";
 import { getMigratedUserPropsOpBundle } from "@/wab/server/data-sources/end-user-utils";
 import { makeFakeFetcher } from "@/wab/server/data-sources/fake-fetcher";
-import { makeGoogleSheetsFetcher } from "@/wab/server/data-sources/google-sheets-fetcher";
 import { makeGraphqlFetcher } from "@/wab/server/data-sources/graphql-fetcher";
 import { makeHttpFetcher } from "@/wab/server/data-sources/http-fetcher";
-import { makePlasmicCMSFetcher } from "@/wab/server/data-sources/plasmic-cms-fetcher";
 import { makePostgresFetcher } from "@/wab/server/data-sources/postgres-fetcher";
 import { makeSupabaseFetcher } from "@/wab/server/data-sources/supabase-fetcher";
 import { makeTutorialDbFetcher } from "@/wab/server/data-sources/tutorialdb-fetcher";
@@ -128,22 +125,16 @@ export async function makeFetcher(
       return makeHttpFetcher(source);
     case "graphql":
       return makeGraphqlFetcher(source);
-    case "plasmic-cms":
-      return makePlasmicCMSFetcher(source);
     case "supabase":
       return makeSupabaseFetcher(source);
     case "postgres":
       return makePostgresFetcher(source);
-    case "google-sheets":
-      return await makeGoogleSheetsFetcher(dbCon, source);
     case "zapier":
       return makeZapierFetcher(source);
     case "tutorialdb":
       return await makeTutorialDbFetcher(dbCon, source);
     case "fake":
       return await makeFakeFetcher(source);
-    case "dynamodb":
-      return makeDynamoDbFetcher(source);
   }
 }
 
