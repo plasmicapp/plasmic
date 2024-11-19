@@ -26,7 +26,6 @@
     "setup:react-web-bundle": "cd platform/react-web-bundle && yarn && yarn build",
     "setup:sub": "cd platform/sub && yarn && yarn build",
     "setup:wab": "cd platform/wab && yarn",
-    "setup:pybackend": "cd platform/pybackend && bash ./setup.sh",
     "test": "jest $TEST_CWD",
     "typecheck": "cd platform/wab && yarn ts-watch",
     "upgrade-internal": "bash scripts/upgrade-internal.bash"
