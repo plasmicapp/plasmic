@@ -710,6 +710,7 @@ const inlineCursorFix = (key: number, sub: SubDeps) =>
 
 const isModEnter = isHotkey("mod+enter");
 const isEscape = isHotkey("escape");
+const isSpace = isHotkey("space");
 
 type PlasmicRichTextOpts = {
   inline: boolean;
@@ -1109,6 +1110,12 @@ export const mkCanvasText = computedFn(
             readOnly,
             onKeyDown: (event) => {
               event.stopPropagation();
+              if (isSpace(event.nativeEvent)) {
+                editor.insertText(" ");
+                // some accessible code components like button may trigger press events when pressing space
+                // `stopPropagation` alone does not stop propagation of events to code components, and thus events may leak
+                event.preventDefault();
+              }
               if (
                 isModEnter(event.nativeEvent) ||
                 isEscape(event.nativeEvent)
