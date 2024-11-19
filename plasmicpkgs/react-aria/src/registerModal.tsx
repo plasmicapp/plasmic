@@ -66,8 +66,7 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
         1. Clicking anywhere inside the modal dismisses it
         2. If the modal is auto-opened due to selection in outline tab, the modal stays open despite issue #1, but the text elements inside the modal are no longer selectable, and therefore the text or headings inside the modal are not editable.
 
-        To fix the above issue, we set an interim isDismissable state to false while the modal is auto-open (`isSelected` is true).
-        Also note that `isSelected` can only be true in canvas (non-interactive mode), so we can safely (temporarily) set `isDismissable` to false in this case, because it only matters in interactive mode.
+        To fix the above issue, we set an interim isDismissable state to false in edit mode, because it only matters in interactive mode.
       */
       isDismissable: isEditMode ? false : isDismissable,
     });
