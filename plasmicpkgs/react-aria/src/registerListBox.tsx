@@ -202,7 +202,6 @@ export function registerListBox(
         borderColor: "black",
       },
       props: {
-        autoFocus: "boolean",
         children: {
           type: "slot",
           displayName: "List Items",
