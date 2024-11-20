@@ -126,9 +126,13 @@ export function BaseSelect(props: BaseSelectProps) {
   }, []);
 
   const classNameProp = useCallback(
-    ({ isDisabled, isFocusVisible, isFocused }: SelectRenderProps) => {
+    ({
+      isDisabled: isDisabled2,
+      isFocusVisible,
+      isFocused,
+    }: SelectRenderProps) => {
       plasmicUpdateVariant?.({
-        disabled: isDisabled,
+        disabled: isDisabled2,
         focused: isFocused,
         focusVisible: isFocusVisible,
       });
@@ -148,21 +152,6 @@ export function BaseSelect(props: BaseSelectProps) {
       name={name}
       disabledKeys={disabledKeys}
       aria-label={ariaLabel}
-      onFocus={(e) => {
-        setTimeout(() => {
-          // using settimeout to update the variant, as it only gets the `data-focus-visible` attribute in the next tick
-          plasmicUpdateVariant?.({
-            focused: true,
-            focusVisible: !!e.target.getAttribute("data-focus-visible"),
-          });
-        });
-      }}
-      onBlur={() => {
-        plasmicUpdateVariant?.({
-          focused: false,
-          focusVisible: false,
-        });
-      }}
       {...extractPlasmicDataProps(props)}
     >
       <SelectAutoOpen {...props} />
