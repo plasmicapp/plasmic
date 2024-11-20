@@ -45,19 +45,19 @@ const ARIA_COMPONENTS_VARIANTS = {
     However, data-selectors will consistently indicate the actual placement of the popover/tooltip.
   */
   placementLeft: {
-    cssSelector: "[data-placement]=left",
+    cssSelector: "[data-placement=left]",
     displayName: "Placement (Left)",
   },
   placementRight: {
-    cssSelector: "[data-placement]=right",
+    cssSelector: "[data-placement=right]",
     displayName: "Placement (Right)",
   },
   placementTop: {
-    cssSelector: "[data-placement]=top",
+    cssSelector: "[data-placement=top]",
     displayName: "Placement (Top)",
   },
   placementBottom: {
-    cssSelector: "[data-placement]=bottom",
+    cssSelector: "[data-placement=bottom]",
     displayName: "Placement (Bottom)",
   },
 };
