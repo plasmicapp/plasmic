@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import {
   Select,
   SelectProps,
+  SelectRenderProps,
   SelectStateContext,
   SelectValue,
 } from "react-aria-components";
@@ -124,12 +125,17 @@ export function BaseSelect(props: BaseSelectProps) {
     });
   }, []);
 
-  // NOTE: Aria <Select> does not support render props, neither does it provide an onDisabledChange event, so we have to manually update the disabled state.
-  useEffect(() => {
-    plasmicUpdateVariant?.({
-      disabled: isDisabled,
-    });
-  }, [isDisabled, plasmicUpdateVariant]);
+  const classNameProp = useCallback(
+    ({ isDisabled, isFocusVisible, isFocused }: SelectRenderProps) => {
+      plasmicUpdateVariant?.({
+        disabled: isDisabled,
+        focused: isFocused,
+        focusVisible: isFocusVisible,
+      });
+      return className ?? "";
+    },
+    [className, plasmicUpdateVariant]
+  );
 
   return (
     <Select
@@ -137,8 +143,7 @@ export function BaseSelect(props: BaseSelectProps) {
       onSelectionChange={onSelectionChange}
       onOpenChange={onOpenChange}
       isDisabled={isDisabled}
-      // Not calling plasmicUpdateVariant within className callback (which has access to render props) because it would then run on every render
-      className={className}
+      className={classNameProp}
       style={style}
       name={name}
       disabledKeys={disabledKeys}

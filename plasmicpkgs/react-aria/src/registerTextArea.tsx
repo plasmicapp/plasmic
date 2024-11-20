@@ -1,6 +1,6 @@
-import React, { ChangeEvent, useEffect } from "react";
+import React, { ChangeEvent, useCallback } from "react";
 import { mergeProps } from "react-aria";
-import type { TextAreaProps } from "react-aria-components";
+import type { InputRenderProps, TextAreaProps } from "react-aria-components";
 import { TextArea } from "react-aria-components";
 import { getCommonProps } from "./common";
 import { PlasmicTextFieldContext } from "./contexts";
@@ -23,9 +23,11 @@ const TEXTAREA_VARIANTS = [
 const { variants } = pickAriaComponentVariants(TEXTAREA_VARIANTS);
 
 export interface BaseTextAreaProps
-  extends TextAreaProps,
+  extends Omit<TextAreaProps, "className">,
     HasControlContextData,
-    WithVariants<typeof TEXTAREA_VARIANTS> {}
+    WithVariants<typeof TEXTAREA_VARIANTS> {
+  className?: string;
+}
 
 export const inputHelpers = {
   states: {
@@ -38,51 +40,38 @@ export const inputHelpers = {
 };
 
 export function BaseTextArea(props: BaseTextAreaProps) {
-  const { disabled, plasmicUpdateVariant, setControlContextData, ...rest } =
+  const { className, plasmicUpdateVariant, setControlContextData, ...rest } =
     props;
 
   const textFieldContext = React.useContext(PlasmicTextFieldContext);
-
-  const mergedProps = mergeProps(rest, {
-    disabled: textFieldContext?.isDisabled ?? disabled,
-  });
-
-  // NOTE: Aria <Input> does not support render props, neither does it provide an onDisabledChange event, so we have to manually update the disabled state
-  useEffect(() => {
-    plasmicUpdateVariant?.({
-      disabled: mergedProps.disabled,
-    });
-  }, [mergedProps.disabled, plasmicUpdateVariant]);
 
   setControlContextData?.({
     parent: textFieldContext,
   });
 
-  return (
-    <TextArea
-      onFocus={(e) => {
-        setTimeout(() => {
-          // using settimeout to update the variant, as it only gets the `data-focus-visible` attribute in the next tick
-          plasmicUpdateVariant?.({
-            focused: true,
-            focusVisible: !!e.target.getAttribute("data-focus-visible"),
-          });
-        });
-      }}
-      onBlur={() => {
-        plasmicUpdateVariant?.({
-          focused: false,
-          focusVisible: false,
-        });
-      }}
-      onHoverChange={(isHovered) => {
-        plasmicUpdateVariant?.({
-          hovered: isHovered,
-        });
-      }}
-      {...mergedProps}
-    />
+  const classNameProp = useCallback(
+    ({
+      isDisabled,
+      isFocusVisible,
+      isFocused,
+      isHovered,
+    }: InputRenderProps) => {
+      plasmicUpdateVariant?.({
+        disabled: isDisabled,
+        focused: isFocused,
+        focusVisible: isFocusVisible,
+        hovered: isHovered,
+      });
+      return className ?? "";
+    },
+    [className, plasmicUpdateVariant]
   );
+
+  const mergedProps = mergeProps(rest, {
+    className: classNameProp,
+  });
+
+  return <TextArea {...mergedProps} />;
 }
 
 export function registerTextArea(
@@ -99,7 +88,7 @@ export function registerTextArea(
       importName: "BaseTextArea",
       variants,
       props: {
-        ...getCommonProps<TextAreaProps>("Text Area", [
+        ...getCommonProps<BaseTextAreaProps>("Text Area", [
           "name",
           "disabled",
           "readOnly",

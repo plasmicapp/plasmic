@@ -1,6 +1,6 @@
-import React, { ChangeEvent, useEffect } from "react";
+import React, { ChangeEvent, useCallback } from "react";
 import { mergeProps } from "react-aria";
-import type { InputProps } from "react-aria-components";
+import type { InputProps, InputRenderProps } from "react-aria-components";
 import { Input } from "react-aria-components";
 import { getCommonProps, resolveAutoComplete } from "./common";
 import { PlasmicInputContext, PlasmicTextFieldContext } from "./contexts";
@@ -23,11 +23,12 @@ const INPUT_VARIANTS = [
 const { variants } = pickAriaComponentVariants(INPUT_VARIANTS);
 
 export interface BaseInputProps
-  extends Omit<InputProps, "autoComplete">,
+  extends Omit<InputProps, "autoComplete" | "className">,
     HasControlContextData,
     WithVariants<typeof INPUT_VARIANTS> {
   autoComplete?: string[];
   isUncontrolled?: boolean;
+  className?: string;
 }
 
 export const inputHelpers = {
@@ -44,65 +45,43 @@ export function BaseInput(props: BaseInputProps) {
   const {
     plasmicUpdateVariant,
     setControlContextData,
-    disabled,
     autoComplete,
     value,
+    className,
     ...rest
   } = props;
   const textFieldContext = React.useContext(PlasmicTextFieldContext);
   const context = React.useContext(PlasmicInputContext);
+
   setControlContextData?.({
     parent: textFieldContext,
   });
 
-  const mergedProps = mergeProps(
-    rest,
-    {
-      value: context?.isUncontrolled ? undefined : value,
+  const classNameProp = useCallback(
+    ({
+      isDisabled,
+      isFocusVisible,
+      isFocused,
+      isHovered,
+    }: InputRenderProps) => {
+      plasmicUpdateVariant?.({
+        disabled: isDisabled,
+        focused: isFocused,
+        focusVisible: isFocusVisible,
+        hovered: isHovered,
+      });
+      return className ?? "";
     },
-    {
-      /**
-       * While react-aria internally does the merging of the disabled prop,
-       * we need to explicity do it here, because react-aria does it behind the scenes,
-       * whereas we need the calculated value of the disabled prop to be able to update the "disabled" CC variant.
-       *  */
-      disabled: textFieldContext?.isDisabled ?? disabled,
-    }
+    [className, plasmicUpdateVariant]
   );
 
-  // NOTE: Aria <Input> does not support render props, neither does it provide an onDisabledChange event, so we have to manually update the disabled state
-  useEffect(() => {
-    plasmicUpdateVariant?.({
-      disabled: mergedProps.disabled,
-    });
-  }, [mergedProps.disabled, plasmicUpdateVariant]);
+  const mergedProps = mergeProps(rest, {
+    value: context?.isUncontrolled ? undefined : value,
+    autoComplete: resolveAutoComplete(autoComplete),
+    className: classNameProp,
+  });
 
-  return (
-    <Input
-      autoComplete={resolveAutoComplete(autoComplete)}
-      onHoverChange={(isHovered) => {
-        plasmicUpdateVariant?.({
-          hovered: isHovered,
-        });
-      }}
-      onFocus={(e) => {
-        setTimeout(() => {
-          // using settimeout to update the variant, as the input only gets the `data-focus-visible` attribute in the next tick
-          plasmicUpdateVariant?.({
-            focused: true,
-            focusVisible: !!e.target.getAttribute("data-focus-visible"),
-          });
-        });
-      }}
-      onBlur={() => {
-        plasmicUpdateVariant?.({
-          focused: false,
-          focusVisible: false,
-        });
-      }}
-      {...mergedProps}
-    />
-  );
+  return <Input {...mergedProps} />;
 }
 
 export const INPUT_COMPONENT_NAME = makeComponentName("input");

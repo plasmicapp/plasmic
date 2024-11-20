@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Key, ListBox } from "react-aria-components";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Key, ListBox, ListBoxRenderProps } from "react-aria-components";
 import { PlasmicListBoxContext } from "./contexts";
 import { ListBoxItemIdManager } from "./ListBoxItemIdManager";
 import {
@@ -28,13 +28,14 @@ const { variants } = pickAriaComponentVariants(LISTBOX_VARIANTS);
 export interface BaseListBoxProps
   extends Omit<
       React.ComponentProps<typeof ListBox>,
-      "selectedKeys" | "defaultSelectedKeys"
+      "selectedKeys" | "defaultSelectedKeys" | "className"
     >,
     HasControlContextData<BaseListBoxControlContextData>,
     WithVariants<typeof LISTBOX_VARIANTS> {
   children?: React.ReactNode;
   selectedKeys?: string | string[] | undefined;
   defaultSelectedKeys?: string | string[] | undefined;
+  className?: string;
 }
 
 export const listboxHelpers = {
@@ -59,6 +60,7 @@ export function BaseListBox(props: BaseListBoxProps) {
   const {
     setControlContextData: setControlContextData,
     children,
+    className,
     selectedKeys,
     defaultSelectedKeys,
     plasmicUpdateVariant,
@@ -85,25 +87,22 @@ export function BaseListBox(props: BaseListBoxProps) {
     });
   }, []);
 
+  const classNameProp = useCallback(
+    ({ isFocusVisible, isFocused }: ListBoxRenderProps) => {
+      plasmicUpdateVariant?.({
+        focused: isFocused,
+        focusVisible: isFocusVisible,
+      });
+      return className ?? "";
+    },
+    [className, plasmicUpdateVariant]
+  );
+
   const listbox = (
     <ListBox
       selectedKeys={normalizeSelectedKeys(selectedKeys)}
       defaultSelectedKeys={normalizeSelectedKeys(defaultSelectedKeys)}
-      onFocus={(e) => {
-        setTimeout(() => {
-          // using settimeout to update the variant, as it only gets the `data-focus-visible` attribute in the next tick
-          plasmicUpdateVariant?.({
-            focused: true,
-            focusVisible: !!e.target.getAttribute("data-focus-visible"),
-          });
-        });
-      }}
-      onBlur={() => {
-        plasmicUpdateVariant?.({
-          focused: false,
-          focusVisible: false,
-        });
-      }}
+      className={classNameProp}
       {...rest}
     >
       {children}
@@ -203,6 +202,7 @@ export function registerListBox(
         borderColor: "black",
       },
       props: {
+        autoFocus: "boolean",
         children: {
           type: "slot",
           displayName: "List Items",
