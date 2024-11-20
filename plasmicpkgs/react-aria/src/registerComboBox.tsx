@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import {
   ComboBox,
   ComboBoxProps,
+  ComboBoxRenderProps,
   ComboBoxStateContext,
 } from "react-aria-components";
 import { getCommonProps } from "./common";
@@ -70,10 +71,19 @@ export function BaseComboBox(props: BaseComboboxProps) {
     setControlContextData,
     plasmicUpdateVariant,
     className,
-    isDisabled,
     isOpen: _isOpen, // uncontrolled if not selected in canvas/edit mode
     ...rest
   } = props;
+
+  const classNameProp = useCallback(
+    ({ isDisabled }: ComboBoxRenderProps) => {
+      plasmicUpdateVariant?.({
+        disabled: isDisabled,
+      });
+      return className ?? "";
+    },
+    [className, plasmicUpdateVariant]
+  );
 
   const idManager = useMemo(() => new ListBoxItemIdManager(), []);
 
@@ -85,20 +95,8 @@ export function BaseComboBox(props: BaseComboboxProps) {
     });
   }, []);
 
-  // NOTE: Aria <Combobox> does not support render props, neither does it provide an onDisabledChange event, so we have to manually update the disabled state.
-  useEffect(() => {
-    plasmicUpdateVariant?.({
-      disabled: isDisabled,
-    });
-  }, [isDisabled, plasmicUpdateVariant]);
-
   return (
-    <ComboBox
-      isDisabled={isDisabled}
-      // Not calling plasmicUpdateVariant within className callback (which has access to render props) because it would then run on every render
-      className={className}
-      {...rest}
-    >
+    <ComboBox className={classNameProp} {...rest}>
       <PlasmicPopoverTriggerContext.Provider value={true}>
         <PlasmicListBoxContext.Provider
           value={{
