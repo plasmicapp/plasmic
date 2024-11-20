@@ -517,6 +517,7 @@ function getFixedExpr(
         }
         return null;
       })
+      .when([PageHref], (_expr) => null)
       .elseUnsafe(() => expr);
   }
 

@@ -1,4 +1,7 @@
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { getBaseVariant } from "@/wab/shared/Variants";
 import { siteToAllImageAssetsDict } from "@/wab/shared/cached-selectors";
+import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
 import { assert, ensure } from "@/wab/shared/common";
 import {
   cloneComponent,
@@ -24,8 +27,6 @@ import {
   Variant,
 } from "@/wab/shared/model/classes";
 import { makeComponentSwapper } from "@/wab/shared/swap-components";
-import { TplMgr } from "@/wab/shared/TplMgr";
-import { getBaseVariant } from "@/wab/shared/Variants";
 
 interface OriginInfo {
   projectId: string;
@@ -99,6 +100,18 @@ export function mkInsertableComponentImporter(
   const getNewComponent = (comp: Component, tpl?: TplComponent) => {
     if (oldToNewComponent.has(comp)) {
       return oldToNewComponent.get(comp)!;
+    }
+
+    if (isBuiltinCodeComponent(comp)) {
+      // We need to check for builtin code components as they need to point to the same
+      // instance present in the site
+      const existing = site.components.find(
+        (c) => isHostLessCodeComponent(c) && c.name === comp.name
+      );
+      if (existing) {
+        oldToNewComponent.set(comp, existing);
+        return existing;
+      }
     }
 
     if (isHostLessCodeComponent(comp)) {
