@@ -28,16 +28,13 @@ export interface BaseModalProps
   modalOverlayClass: string;
   resetClassName?: string;
   children?: React.ReactNode;
+  className?: string;
 }
 
 export interface BaseModalActions {
   close(): void;
   open(): void;
 }
-
-const INLINE_STYLES = {
-  outline: "none",
-};
 
 export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
   function BaseModalInner(props, ref) {
@@ -86,18 +83,16 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
     }));
 
     /* <Dialog> cannot be used in canvas, because while the dialog is open on the canvas, the focus is trapped inside it, so any Studio modals like the Color Picker modal would glitch due to focus jumping back and forth */
-    const bodyInCanvas = <div style={INLINE_STYLES}>{children}</div>;
+    const dialogInCanvas = <div className={className}>{children}</div>;
 
-    const bodyInPreview = <Dialog style={INLINE_STYLES}>{children}</Dialog>;
+    const dialog = <Dialog className={className}>{children}</Dialog>;
 
     return (
       <ModalOverlay
         {...mergedProps}
         className={`${resetClassName} ${modalOverlayClass}`}
       >
-        <Modal className={className}>
-          {canvasCtx ? bodyInCanvas : bodyInPreview}
-        </Modal>
+        <Modal>{canvasCtx ? dialogInCanvas : dialog}</Modal>
       </ModalOverlay>
     );
   }
