@@ -200,7 +200,6 @@ function mkFetchProps(
     headers: {
       type: "object",
       description: "Request headers (as JSON object) to send",
-      defaultValue: {},
     },
     queryKey: {
       type: "string",
@@ -329,7 +328,6 @@ export const graphqlFetcherMeta: ComponentMeta<GraphqlFetcherProps> = {
         displayName: "Override variables",
         description:
           "Pass in dynamic values for your query variables, as an object of key-values",
-        defaultValue: {},
       },
     };
     // Reorder the props
