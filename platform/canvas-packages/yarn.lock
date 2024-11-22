@@ -3530,10 +3530,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-nav/-/plasmic-nav-0.0.177.tgz#edf55549b87c1179285af3fa7c6bbaec8ab933dc"
   integrity sha512-mfnRDGWA0/QQ9WUqAled8mbyXquumOO06hmmMBIX17/ByhUj1+do6PT9aMrS4dh+Fip7GhMgwoYEFG4EUMDtjQ==
 
-"@plasmicpkgs/plasmic-query@^0.0.225":
-  version "0.0.225"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-query/-/plasmic-query-0.0.225.tgz#f46ed88d3c99f7c1b0c5b643d27a2f16e06e641d"
-  integrity sha512-8WFvgcqFAZ/faLLWHVQET1anOsQKPx1lJ1AHc1qCi8STQwSYmzwEPPSreIezjSDKUoujNQqU9ixw5wWlVhqh5w==
+"@plasmicpkgs/plasmic-query@^0.0.226":
+  version "0.0.226"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-query/-/plasmic-query-0.0.226.tgz#9fa946a7ded30b56e1812884ae252ada54d0a92f"
+  integrity sha512-/G3LA5b7PTztlsYGdJ3ny2vdKwhtezouU8py3MbRD2X0DT4qDUVPSSfFDejCFw/gHdZYZ3NB6gm84erv2LZZbw==
 
 "@plasmicpkgs/plasmic-rich-components@^1.0.197":
   version "1.0.197"
