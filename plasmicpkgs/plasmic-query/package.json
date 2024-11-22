@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-query",
-  "version": "0.0.225",
+  "version": "0.0.226",
   "description": "Plasmic components and registration calls for data fetching",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
