@@ -1,7 +1,7 @@
-import { PlasmicElement, usePlasmicCanvasContext } from "@plasmicapp/host";
+import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import { mergeProps } from "@react-aria/utils";
 import React, { useEffect } from "react";
-import { Popover, PopoverContext } from "react-aria-components";
+import { OverlayArrow, Popover, PopoverContext } from "react-aria-components";
 import { PlasmicPopoverTriggerContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
@@ -39,6 +39,7 @@ export interface BasePopoverProps
   resetClassName?: string;
   children?: React.ReactNode;
   matchTriggerWidth?: boolean;
+  arrow?: React.ReactNode;
 }
 
 export function BasePopover(props: BasePopoverProps) {
@@ -55,7 +56,7 @@ export function BasePopover(props: BasePopoverProps) {
   const triggerRef = React.useRef<any>(null);
   const canvasContext = usePlasmicCanvasContext();
   const matchTriggerWidthProp = hasTrigger && matchTriggerWidth;
-  const { children, ...mergedProps } = mergeProps(
+  const { children, arrow, ...mergedProps } = mergeProps(
     {
       // isNonModal: Whether the popover is non-modal, i.e. elements outside the popover may be interacted with by assistive technologies.
       // Setting isNonModal to true in edit mode (canvas) means that the popover will not prevent the user from interacting with the canvas while the popover is open.
@@ -93,7 +94,13 @@ export function BasePopover(props: BasePopoverProps) {
       >
         {({ placement }) =>
           withObservedValues(
-            children,
+            <>
+              {arrow ? (
+                // We need to set display to flex to make sure the arrow is aligned correctly
+                <OverlayArrow style={{ display: "flex" }}>{arrow}</OverlayArrow>
+              ) : null}
+              {children}
+            </>,
             {
               placementTop: placement === "top",
               placementBottom: placement === "bottom",
@@ -109,18 +116,6 @@ export function BasePopover(props: BasePopoverProps) {
 }
 
 export const POPOVER_COMPONENT_NAME = makeComponentName("popover");
-export const POPOVER_ARROW_IMG: PlasmicElement = {
-  type: "img",
-  src: "https://static1.plasmic.app/arrow-up.svg",
-  styles: {
-    position: "absolute",
-    top: "-14px",
-    // center the arrow horizontally on the popover
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: "15px",
-  },
-};
 
 export function registerPopover(
   loader?: Registerable,
@@ -144,11 +139,21 @@ export function registerPopover(
         backgroundColor: "#FDE3C3",
       },
       props: {
+        arrow: {
+          type: "slot",
+          mergeWithParent: true,
+          defaultValue: {
+            type: "img",
+            src: "https://static1.plasmic.app/arrow-up.svg",
+            styles: {
+              width: "15px",
+            },
+          },
+        },
         children: {
           type: "slot",
           mergeWithParent: true,
           defaultValue: [
-            POPOVER_ARROW_IMG,
             {
               type: "vbox",
               styles: {
@@ -177,13 +182,6 @@ export function registerPopover(
             },
           ],
         },
-        offset: {
-          type: "number",
-          displayName: "Offset",
-          description:
-            "Additional offset applied vertically between the popover and its trigger",
-          defaultValueHint: 8,
-        },
         shouldFlip: {
           type: "boolean",
           description:
@@ -210,6 +208,28 @@ export function registerPopover(
           type: "boolean",
           defaultValue: true,
           hidden: (_props, ctx) => !ctx?.canMatchTriggerWidth,
+        },
+        offset: {
+          type: "number",
+          displayName: "Offset",
+          description:
+            "Additional offset applied vertically between the popover and its trigger",
+          defaultValueHint: 8,
+          advanced: true,
+        },
+        containerPadding: {
+          type: "number",
+          defaultValueHint: 12,
+          description:
+            "The padding that should be applied between the element and its surrounding container. This affects the positioning breakpoints that determine when it will attempt to flip.",
+          advanced: true,
+        },
+        crossOffset: {
+          type: "number",
+          defaultValueHint: 0,
+          description:
+            "The additional offset applied along the cross axis between the element and its anchor element.",
+          advanced: true,
         },
       },
       // No isOpen state for popover, because we assume that its open state is always going to be controlled by a parent like Select, Combobox, DialogTrigger, etc.
