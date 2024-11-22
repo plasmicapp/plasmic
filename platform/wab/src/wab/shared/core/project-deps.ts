@@ -1,11 +1,3 @@
-import {
-  assert,
-  assignReadonly,
-  ensure,
-  maybe,
-  tuple,
-  withoutNils,
-} from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import {
   derefToken,
@@ -14,6 +6,30 @@ import {
   replaceAllTokenRefs,
   TokenType,
 } from "@/wab/commons/StyleToken";
+import {
+  getArenaFrames,
+  isComponentArena,
+  isPageArena,
+} from "@/wab/shared/Arenas";
+import { flattenComponent } from "@/wab/shared/cached-selectors";
+import {
+  collectUsedIconAssetsForTpl,
+  collectUsedPictureAssetsForTpl,
+} from "@/wab/shared/codegen/image-assets";
+import { collectUsedMixinsForTpl } from "@/wab/shared/codegen/mixins";
+import {
+  collectUsedTokensForTpl,
+  extractUsedTokensForMixins,
+  extractUsedTokensForTokens,
+} from "@/wab/shared/codegen/style-tokens";
+import {
+  assert,
+  assignReadonly,
+  ensure,
+  maybe,
+  tuple,
+  withoutNils,
+} from "@/wab/shared/common";
 import {
   getComponentDisplayName,
   isCodeComponent,
@@ -31,21 +47,33 @@ import {
   replaceAllAssetRefs,
 } from "@/wab/shared/core/image-assets";
 import {
-  getArenaFrames,
-  isComponentArena,
-  isPageArena,
-} from "@/wab/shared/Arenas";
-import { flattenComponent } from "@/wab/shared/cached-selectors";
+  allGlobalVariants,
+  allImageAssets,
+  allStyleTokens,
+  getAllAttachedTpls,
+  getSiteArenas,
+  isHostLessPackage,
+} from "@/wab/shared/core/sites";
 import {
-  collectUsedIconAssetsForTpl,
-  collectUsedPictureAssetsForTpl,
-} from "@/wab/shared/codegen/image-assets";
-import { collectUsedMixinsForTpl } from "@/wab/shared/codegen/mixins";
+  ensureCorrectImplicitStates,
+  getStateDisplayName,
+  isPrivateState,
+  isStateUsedInExpr,
+  removeComponentState,
+} from "@/wab/shared/core/states";
+import { cloneMixin } from "@/wab/shared/core/styles";
 import {
-  collectUsedTokensForTpl,
-  extractUsedTokensForMixins,
-  extractUsedTokensForTokens,
-} from "@/wab/shared/codegen/style-tokens";
+  clone,
+  findExprsInComponent,
+  findExprsInNode,
+  flattenTpls,
+  isTplColumns,
+  isTplComponent,
+  isTplImage,
+  isTplNamable,
+  isTplVariantable,
+  replaceTplTreeByEmptyBox,
+} from "@/wab/shared/core/tpls";
 import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import {
   ArenaFrame,
@@ -108,34 +136,6 @@ import {
   isScreenVariantGroup,
   VariantGroupType,
 } from "@/wab/shared/Variants";
-import {
-  allGlobalVariants,
-  allImageAssets,
-  allStyleTokens,
-  getAllAttachedTpls,
-  getSiteArenas,
-  isHostLessPackage,
-} from "@/wab/shared/core/sites";
-import {
-  ensureCorrectImplicitStates,
-  getStateDisplayName,
-  isPrivateState,
-  isStateUsedInExpr,
-  removeComponentState,
-} from "@/wab/shared/core/states";
-import { cloneMixin } from "@/wab/shared/core/styles";
-import {
-  clone,
-  findExprsInComponent,
-  findExprsInNode,
-  flattenTpls,
-  isTplColumns,
-  isTplComponent,
-  isTplImage,
-  isTplNamable,
-  isTplVariantable,
-  replaceTplTreeByEmptyBox,
-} from "@/wab/shared/core/tpls";
 import L from "lodash";
 
 export type DependencyWalkScope = "all" | "direct";
@@ -1200,15 +1200,23 @@ function upgradeProjectDep(
           if (!newParam) {
             // This param has been deleted, so we delete the
             // corresponding arg.
-            // Search for slots and remove them from the parent component
-            if (isKnownRenderExpr(arg.expr) && isKnownComponent(owner)) {
+            if (isKnownRenderExpr(arg.expr)) {
               arg.expr.tpl.forEach((tplNode) => {
-                const slots = flattenTpls(tplNode).filter((t) =>
-                  isKnownTplSlot(t)
-                );
-                slots.forEach((tplSlot) => {
-                  removeComponentParam(site, owner, (tplSlot as TplSlot).param);
-                });
+                // Mark tpls from the slots as unnatached, as they are going to be removed from the site
+                attachedTpls.delete(tplNode);
+                // Search for slots and remove them from the parent component
+                if (isKnownComponent(owner)) {
+                  const slots = flattenTpls(tplNode).filter((t) =>
+                    isKnownTplSlot(t)
+                  );
+                  slots.forEach((tplSlot) => {
+                    removeComponentParam(
+                      site,
+                      owner,
+                      (tplSlot as TplSlot).param
+                    );
+                  });
+                }
               });
             }
             removeFromArray(vs.args, arg);
