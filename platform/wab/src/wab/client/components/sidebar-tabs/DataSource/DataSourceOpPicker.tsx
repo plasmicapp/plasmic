@@ -187,7 +187,12 @@ import {
 } from "@/wab/shared/model/classes";
 import { smartHumanize } from "@/wab/shared/strs";
 import { explorerPlugin } from "@graphiql/plugin-explorer";
-import { PrettifyIcon, QueryEditor, usePrettifyEditors } from "@graphiql/react";
+import {
+  PrettifyIcon,
+  QueryEditor,
+  usePrettifyEditors,
+  useTheme,
+} from "@graphiql/react";
 import { Fetcher } from "@graphiql/toolkit";
 import { PlasmicDataSourceContextProvider } from "@plasmicapp/react-web";
 import cx from "classnames";
@@ -3618,9 +3623,12 @@ function GraphqlQueryFieldInner(props: {
   onChange: (query: string, extraState: any) => void;
 }) {
   const { onClickReference, onChange } = props;
-  // We need GraphqlQueryFieldInner because usePrettifyEditors()
-  // needs to be in a component inside <GraphiQLProvider/>
+
+  // We need GraphqlQueryFieldInner because @graphiql/react hooks
+  // need to be in a component inside <GraphiQLProvider/>
+  const { theme } = useTheme("light");
   const prettify = usePrettifyEditors();
+
   return (
     <Stated defaultValue={true}>
       {(showExplorer, setShowExplorer) => (

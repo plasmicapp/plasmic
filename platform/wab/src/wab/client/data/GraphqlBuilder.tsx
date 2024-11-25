@@ -5,6 +5,10 @@ import GraphiQL from "graphiql";
 import "graphiql/graphiql.css";
 import React, { useMemo, useState } from "react";
 
+/**
+ * This fetcher is only used for GraphiQL and may differ from the fetcher
+ * implementation used during rendering.
+ */
 const createFetcher = ({
   url: urlStr,
   headers,
@@ -71,8 +75,8 @@ export default function GraphiqlWithExplorer({
   const [query, setQuery] = useState(defaultQuery ?? "");
   const [variables, setVariables] = useState(defaultVariables);
   return (
-    <div className="flex-col fill-height">
-      <div className={"fill-height standard-gql-ui"}>
+    <div className="fill-height flex-col">
+      <div className={"fill-height overflow-scroll standard-gql-ui"}>
         <GraphiQL
           fetcher={fetcher}
           query={query}
@@ -85,7 +89,7 @@ export default function GraphiqlWithExplorer({
         />
       </div>
 
-      <div className="flex-no-shrink flex flex-right mt-lg mr-xlg">
+      <div className="flex-no-shrink flex flex-right pv-lg ph-xlg bt-dim">
         <Button
           onClick={() => {
             onCancel?.();

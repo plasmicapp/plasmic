@@ -1,8 +1,8 @@
 import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { ObserverLoadable } from "@/wab/client/components/widgets";
 import Chip from "@/wab/client/components/widgets/Chip";
-import React from "react";
 import { Modal } from "@/wab/client/components/widgets/Modal";
+import React from "react";
 
 export interface GraphQLValue {
   query: string;
@@ -43,7 +43,11 @@ export const GraphQLEditor = (props: {
     visible: show,
     width: "80%",
     minWidth: 1024,
-    bodyStyle: { overflowX: "scroll" as any, padding: 8 },
+    bodyStyle: {
+      height: "75vh",
+      maxHeight: "75vh",
+      padding: 0,
+    },
     footer: null,
     onCancel,
   };
@@ -60,35 +64,27 @@ export const GraphQLEditor = (props: {
         // Unmount the GraphiQLExplorer component when the modal closes
         <Modal {...modalProps} title={title}>
           {show && (
-            <div
-              style={{
-                height: "80vh",
-                minHeight: 512,
-              }}
-              className="flex-col"
-            >
-              <ObserverLoadable
-                loader={() =>
-                  import("@/wab/client/data/GraphqlBuilder").then(
-                    ({ default: GraphiqlWithExplorer }) => GraphiqlWithExplorer
-                  )
-                }
-                contents={(GraphiqlWithExplorer) => (
-                  <GraphiqlWithExplorer
-                    url={endpoint}
-                    headers={headers}
-                    defaultQuery={value?.query ?? ""}
-                    defaultVariables={JSON.stringify(value?.variables ?? {})}
-                    method={method}
-                    onCancel={onCancel}
-                    onSave={(query, variables) => {
-                      onChange?.({ query, variables: tryJsonParse(variables) });
-                      setShow(false);
-                    }}
-                  />
-                )}
-              />
-            </div>
+            <ObserverLoadable
+              loader={() =>
+                import("@/wab/client/data/GraphqlBuilder").then(
+                  ({ default: GraphiqlWithExplorer }) => GraphiqlWithExplorer
+                )
+              }
+              contents={(GraphiqlWithExplorer) => (
+                <GraphiqlWithExplorer
+                  url={endpoint}
+                  headers={headers}
+                  defaultQuery={value?.query ?? ""}
+                  defaultVariables={JSON.stringify(value?.variables ?? {})}
+                  method={method}
+                  onCancel={onCancel}
+                  onSave={(query, variables) => {
+                    onChange?.({ query, variables: tryJsonParse(variables) });
+                    setShow(false);
+                  }}
+                />
+              )}
+            />
           )}
         </Modal>
       )}
