@@ -57,7 +57,7 @@ function TokenTypeHeader(props: TokenTypeHeaderProps) {
     tokenControls.expandedHeaders.has(PREVIOUS_TOKEN_TYPES[tokenType])
       ? ["top" as const]
       : []),
-  ] as const;
+  ];
 
   return (
     <PlasmicTokenTypeHeader

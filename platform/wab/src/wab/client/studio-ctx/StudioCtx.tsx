@@ -30,6 +30,7 @@ import {
   getFocusedInsertAnchor,
   getPreferredInsertLocs,
 } from "@/wab/client/components/canvas/view-ops";
+import { CommentsData } from "@/wab/client/components/comments/CommentsProvider";
 import {
   clearDarkMask,
   createDarkMask,
@@ -53,7 +54,6 @@ import {
   AlertSpec,
 } from "@/wab/client/components/widgets/plasmic/AlertBanner";
 import { personalProjectPaywallMessage } from "@/wab/client/components/widgets/plasmic/ShareDialogContent";
-import { CommentsData } from "@/wab/client/components/comments/CommentsProvider";
 import { frameToScalerRect } from "@/wab/client/coords";
 import { DbCtx, WithDbCtx } from "@/wab/client/db";
 import {
@@ -122,7 +122,6 @@ import {
   ServerSessionsInfo,
   TemplateSpec,
   UpdatePlayerViewRequest,
-  GetCommentsResponse,
 } from "@/wab/shared/ApiSchema";
 import {
   AnyArena,
@@ -2393,11 +2392,11 @@ export class StudioCtx extends WithDbCtx {
     this._showCommentsPanel.set(!this.showCommentsPanel);
   }
 
-  private _xCommentsData = observable.box<CommentsData>(undefined);
+  private _xCommentsData = observable.box<CommentsData | undefined>(undefined);
   get commentsData() {
     return this._xCommentsData.get();
   }
-  set commentsData(commentsData: CommentsData) {
+  set commentsData(commentsData: CommentsData | undefined) {
     this._xCommentsData.set(commentsData);
   }
 

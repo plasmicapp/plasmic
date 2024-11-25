@@ -12,24 +12,25 @@ import {
   renderEntryField,
   renderMaybeLocalizedInput,
 } from "@/wab/client/components/cms/CmsInputs";
+import { isCmsTextLike } from "@/wab/client/components/cms/utils";
 import { useApi, useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultCmsEntryDetailsProps,
   PlasmicCmsEntryDetails,
 } from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsEntryDetails";
-import { Dict } from "@/wab/shared/collections";
-import { spawn } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ApiCmsDatabase,
   ApiCmseRow,
   ApiCmsTable,
   CmsDatabaseId,
   CmsFieldMeta,
+  CmsMetaType,
   CmsRowId,
   CmsTableId,
-  CmsMetaType,
 } from "@/wab/shared/ApiSchema";
+import { Dict } from "@/wab/shared/collections";
+import { spawn } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { substituteUrlParams } from "@/wab/shared/utils/url-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Drawer, Form, Menu, message, notification, Tooltip } from "antd";
@@ -138,9 +139,7 @@ export function renderContentEntryFormFields(
                 formItemProps: deriveFormItemPropsFromField(field),
                 typeName: field.type,
                 required: field.required,
-                ...([CmsMetaType.TEXT, CmsMetaType.LONG_TEXT].includes(
-                  field.type
-                )
+                ...(isCmsTextLike(field)
                   ? {
                       maxChars: field.maxChars,
                       minChars: field.minChars,

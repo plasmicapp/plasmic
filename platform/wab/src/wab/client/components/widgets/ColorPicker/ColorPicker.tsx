@@ -490,7 +490,7 @@ function ColorPicker_({
           {appliedToken && (
             <div className="flex flex-vcenter mb-sm">
               <MaybeWrap
-                cond={isEditable}
+                cond={!!isEditable}
                 wrapper={(x) => (
                   <Tooltip title="Edit color token">
                     {x as React.ReactElement}

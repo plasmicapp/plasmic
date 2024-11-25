@@ -12,7 +12,7 @@ import {
   User,
 } from "@/wab/server/entities/Entities";
 import { getTeamAndWorkspace, withDb } from "@/wab/server/test/backend-util";
-import { ApiCmsQuery, CmsTableId } from "@/wab/shared/ApiSchema";
+import { ApiCmsQuery, CmsMetaType, CmsTableId } from "@/wab/shared/ApiSchema";
 import { ensure, filterMapTruthy } from "@/wab/shared/common";
 import { AccessLevel } from "@/wab/shared/EntUtil";
 import L from "lodash";
@@ -34,7 +34,7 @@ describe("DbMgr.CMS", () => {
           fields: [
             {
               name: "",
-              type: "text",
+              type: CmsMetaType.TEXT,
               label: "Post title",
               hidden: false,
               required: true,
@@ -45,7 +45,7 @@ describe("DbMgr.CMS", () => {
             },
             {
               name: "",
-              type: "text",
+              type: CmsMetaType.TEXT,
               hidden: false,
               required: false,
               localized: false,
@@ -64,7 +64,7 @@ describe("DbMgr.CMS", () => {
           fields: [
             {
               name: "",
-              type: "text",
+              type: CmsMetaType.TEXT,
               hidden: false,
               required: false,
               localized: false,
@@ -83,7 +83,7 @@ describe("DbMgr.CMS", () => {
           fields: [
             {
               name: "",
-              type: "long-text",
+              type: CmsMetaType.LONG_TEXT,
               hidden: false,
               required: true,
               localized: false,
@@ -93,7 +93,7 @@ describe("DbMgr.CMS", () => {
             },
             {
               name: "",
-              type: "ref",
+              type: CmsMetaType.REF,
               hidden: false,
               tableId: postsTable.id,
               required: true,
@@ -104,11 +104,11 @@ describe("DbMgr.CMS", () => {
             },
             {
               name: "",
-              type: "list",
+              type: CmsMetaType.LIST,
               fields: [
                 {
                   name: "",
-                  type: "ref",
+                  type: CmsMetaType.REF,
                   hidden: false,
                   tableId: usersTable.id,
                   required: false,
@@ -119,11 +119,11 @@ describe("DbMgr.CMS", () => {
                 },
                 {
                   name: "",
-                  type: "object",
+                  type: CmsMetaType.OBJECT,
                   fields: [
                     {
                       name: "",
-                      type: "ref",
+                      type: CmsMetaType.REF,
                       hidden: false,
                       tableId: postsTable.id,
                       required: false,
@@ -134,7 +134,7 @@ describe("DbMgr.CMS", () => {
                     },
                     {
                       name: "",
-                      type: "date-time",
+                      type: CmsMetaType.DATE_TIME,
                       hidden: false,
                       required: false,
                       localized: false,
@@ -330,7 +330,7 @@ describe("DbMgr.CMS", () => {
             {
               identifier: "quote",
               name: "Quote",
-              type: "text",
+              type: CmsMetaType.TEXT,
               helperText: "",
               required: false,
               hidden: false,
@@ -380,7 +380,7 @@ describe("DbMgr.CMS", () => {
             {
               identifier: "firstName",
               name: "First Name",
-              type: "text",
+              type: CmsMetaType.TEXT,
               helperText: "",
               required: false,
               hidden: false,
@@ -412,7 +412,7 @@ describe("DbMgr.CMS", () => {
             {
               identifier: "quote",
               name: "Quote",
-              type: "text",
+              type: CmsMetaType.TEXT,
               helperText: "",
               required: false,
               hidden: false,
@@ -431,7 +431,7 @@ describe("DbMgr.CMS", () => {
             {
               identifier: "firstName",
               name: "First Name",
-              type: "text",
+              type: CmsMetaType.TEXT,
               helperText: "",
               required: false,
               hidden: false,
@@ -441,7 +441,7 @@ describe("DbMgr.CMS", () => {
             {
               identifier: "lastName",
               name: "Last Name",
-              type: "text",
+              type: CmsMetaType.TEXT,
               helperText: "",
               required: false,
               hidden: false,
@@ -538,7 +538,7 @@ describe("DbMgr.CMS", () => {
             {
               identifier: "name",
               name: "Name",
-              type: "text",
+              type: CmsMetaType.TEXT,
               helperText: "",
               required: false,
               hidden: false,
@@ -548,7 +548,7 @@ describe("DbMgr.CMS", () => {
             {
               identifier: "age",
               name: "Age",
-              type: "number",
+              type: CmsMetaType.NUMBER,
               helperText: "",
               required: false,
               hidden: false,
@@ -558,7 +558,7 @@ describe("DbMgr.CMS", () => {
             {
               identifier: "gender",
               name: "Gender",
-              type: "text",
+              type: CmsMetaType.TEXT,
               helperText: "",
               required: false,
               hidden: false,
@@ -568,7 +568,7 @@ describe("DbMgr.CMS", () => {
             {
               identifier: "title",
               name: "Job Title",
-              type: "text",
+              type: CmsMetaType.TEXT,
               helperText: "",
               required: false,
               hidden: false,
@@ -578,7 +578,7 @@ describe("DbMgr.CMS", () => {
             {
               identifier: "color",
               name: "Favorite Color",
-              type: "text",
+              type: CmsMetaType.TEXT,
               helperText: "",
               required: false,
               hidden: false,
@@ -794,7 +794,7 @@ describe("DbMgr.CMS", () => {
             {
               identifier: "name",
               name: "Name",
-              type: "text",
+              type: CmsMetaType.TEXT,
               helperText: "",
               required: false,
               hidden: false,
@@ -804,7 +804,7 @@ describe("DbMgr.CMS", () => {
             {
               identifier: "age",
               name: "Age",
-              type: "number",
+              type: CmsMetaType.NUMBER,
               helperText: "",
               required: false,
               hidden: false,

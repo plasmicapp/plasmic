@@ -132,8 +132,10 @@ export const FullCodeEditor = React.forwardRef(
           yield upsertMonacoModel(envUri, dataLanguage, dataCode);
 
           if (schema && schema[extraTsFilesSymbol]) {
-            for (const { contents, fileName } of schema[extraTsFilesSymbol]) {
-              const fullPath = `file:///${fileName.replace(/^\.\//, "")}`;
+            for (const { contents, fileName: tsFileName } of schema[
+              extraTsFilesSymbol
+            ]) {
+              const fullPath = `file:///${tsFileName.replace(/^\.\//, "")}`;
               yield upsertMonacoExtraLib(langDefaults, fullPath, contents);
             }
           }

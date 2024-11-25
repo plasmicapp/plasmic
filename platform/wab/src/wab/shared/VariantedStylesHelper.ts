@@ -147,14 +147,14 @@ export class VariantedStylesHelper {
     );
 
     const variantedValue = token.variantedValues.find((v) =>
-      arrayEqIgnoreOrder(v.variants, this.targetGlobalVariants)
+      arrayEqIgnoreOrder(v.variants, ensureArray(this.targetGlobalVariants))
     );
     if (variantedValue) {
       variantedValue.value = value;
     } else {
       token.variantedValues.push(
         new VariantedValue({
-          variants: this.targetGlobalVariants,
+          variants: ensureArray(this.targetGlobalVariants),
           value,
         })
       );

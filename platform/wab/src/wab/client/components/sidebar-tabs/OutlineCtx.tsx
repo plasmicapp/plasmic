@@ -1,8 +1,12 @@
+import { CommentsData } from "@/wab/client/components/comments/CommentsProvider";
 import { isElementWithComments } from "@/wab/client/components/comments/utils";
 import { Matcher } from "@/wab/client/components/view-common";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { CommentsData } from "@/wab/client/components/comments/CommentsProvider";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { toOpaque } from "@/wab/commons/types";
+import { FrameViewMode } from "@/wab/shared/Arenas";
+import { isTplSlotVisible } from "@/wab/shared/cached-selectors";
+import { isPlainObjectPropType } from "@/wab/shared/code-components/code-components";
 import {
   eagerCoalesce,
   ensure,
@@ -12,12 +16,18 @@ import {
   tuple,
   withoutNils,
 } from "@/wab/shared/common";
-import { toOpaque } from "@/wab/commons/types";
 import { isCodeComponent } from "@/wab/shared/core/components";
 import { getOnlyAssetRef } from "@/wab/shared/core/image-assets";
-import { FrameViewMode } from "@/wab/shared/Arenas";
-import { isTplSlotVisible } from "@/wab/shared/cached-selectors";
-import { isPlainObjectPropType } from "@/wab/shared/code-components/code-components";
+import { isTplAttachedToSite } from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import * as Tpls from "@/wab/shared/core/tpls";
+import {
+  isTplImage,
+  isTplTagOrComponent,
+  summarizeSlotParam,
+} from "@/wab/shared/core/tpls";
+import { ValComponent } from "@/wab/shared/core/val-nodes";
+import { asTpl, asTplOrSlotSelection } from "@/wab/shared/core/vals";
 import {
   EffectiveVariantSetting,
   getTplComponentActiveVariants,
@@ -54,16 +64,6 @@ import {
   isVisibilityHidden,
   TplVisibility,
 } from "@/wab/shared/visibility-utils";
-import { isTplAttachedToSite } from "@/wab/shared/core/sites";
-import { SlotSelection } from "@/wab/shared/core/slots";
-import * as Tpls from "@/wab/shared/core/tpls";
-import {
-  isTplImage,
-  isTplTagOrComponent,
-  summarizeSlotParam,
-} from "@/wab/shared/core/tpls";
-import { ValComponent } from "@/wab/shared/core/val-nodes";
-import { asTpl, asTplOrSlotSelection } from "@/wab/shared/core/vals";
 import * as Immutable from "immutable";
 import debounce from "lodash/debounce";
 import {
@@ -424,7 +424,7 @@ export class OutlineCtx {
 function* getSearchableTexts(
   tpl: TplNode,
   viewCtx: ViewCtx,
-  commentsData: CommentsData,
+  commentsData?: CommentsData,
   vs?: EffectiveVariantSetting
 ) {
   if (Tpls.isTplRepeated(tpl)) {
@@ -435,7 +435,7 @@ function* getSearchableTexts(
     yield INTERACTIVE_CAP;
   }
 
-  if (isElementWithComments(commentsData, tpl)) {
+  if (commentsData && isElementWithComments(commentsData, tpl)) {
     yield COMMENTS_LOWER;
   }
 

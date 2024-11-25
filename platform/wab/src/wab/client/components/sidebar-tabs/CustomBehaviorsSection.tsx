@@ -18,19 +18,20 @@ import {
   isCodeComponent,
   isHostLessCodeComponent,
 } from "@/wab/shared/core/components";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import { isTplComponent } from "@/wab/shared/core/tpls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { CUSTOM_BEHAVIORS_CAP } from "@/wab/shared/Labels";
-import { getSlotParams } from "@/wab/shared/SlotUtils";
-import { $$$ } from "@/wab/shared/TplQuery";
 import {
   Component,
   ProjectDependency,
   TplComponent,
   TplNode,
+  isKnownTplNode,
 } from "@/wab/shared/model/classes";
-import { isHostLessPackage } from "@/wab/shared/core/sites";
-import { SlotSelection } from "@/wab/shared/core/slots";
-import { isTplComponent } from "@/wab/shared/core/tpls";
+import { getSlotParams } from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
 import { Dropdown, Menu } from "antd";
 import { findIndex } from "lodash";
 import { observer } from "mobx-react";
@@ -255,7 +256,9 @@ export function detachComp(viewCtx: ViewCtx, attachTpl: TplComponent) {
   viewCtx.change(() => {
     $$$(attachTpl).tryRemove({ deep: true });
     newChildren.forEach((child) => {
-      $$$(parent).insertAt(child, insertPos);
+      if (isKnownTplNode(child)) {
+        $$$(parent).insertAt(child, insertPos);
+      }
     });
   });
 }

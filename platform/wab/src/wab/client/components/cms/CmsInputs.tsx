@@ -4,6 +4,7 @@ import {
   useCmsTableMaybe,
 } from "@/wab/client/components/cms/cms-contexts";
 import { getRowIdentifierNode } from "@/wab/client/components/cms/CmsEntryDetails";
+import { isCmsTextLike } from "@/wab/client/components/cms/utils";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { FileUploader, Spinner } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
@@ -17,11 +18,11 @@ import {
   ApiCmsDatabase,
   CmsDatabaseId,
   CmsFieldMeta,
+  CmsMetaType,
   CmsTypeMeta,
   CmsTypeName,
   CmsTypeObject,
   CmsUploadedFile,
-  CmsMetaType,
 } from "@/wab/shared/ApiSchema";
 import { assert, ensure, ensureType } from "@/wab/shared/common";
 import { PlasmicImg } from "@plasmicapp/react-web";
@@ -513,6 +514,11 @@ export function CmsRichTextInput({
 
 export function CmsEnumInput(props: any) {
   const { typeMeta } = useContentEntryFormContext();
+
+  if (typeMeta.type !== CmsMetaType.ENUM) {
+    return null;
+  }
+
   return (
     <Select {...props} type={"bordered"}>
       <Select.Option value={undefined}>Unset</Select.Option>
@@ -586,10 +592,7 @@ export function renderMaybeLocalizedInput({
           ...ensure(ctx_, "ContentEntryFormContext must be set"),
           directlyInsideList: false,
         };
-        const { maxChars, minChars } = [
-          CmsMetaType.TEXT,
-          CmsMetaType.RICH_TEXT,
-        ].includes(ctx.typeMeta.type)
+        const { maxChars, minChars } = isCmsTextLike(ctx.typeMeta)
           ? ctx.typeMeta
           : { maxChars: undefined, minChars: undefined };
 
