@@ -31,7 +31,8 @@ export function BaseSection(props: BaseSectionProps) {
     return (
       // BaseListbox should give section a listbox context (that it can't be used without)
       // as well as the id manager (that is needed to identify and warn about duplication of ids)
-      <BaseListBox>{section}</BaseListBox>
+      // selection mode needs to be single/multiple to be able to trigger hover state on it.
+      <BaseListBox selectionMode="single">{section}</BaseListBox>
     );
   }
 
