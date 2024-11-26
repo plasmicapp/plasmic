@@ -6,7 +6,7 @@ import {
   SelectStateContext,
   SelectValue,
 } from "react-aria-components";
-import { getCommonProps } from "./common";
+import { arrowDown, getCommonProps } from "./common";
 import {
   PlasmicListBoxContext,
   PlasmicPopoverTriggerContext,
@@ -287,15 +287,7 @@ export function registerSelect(loader?: Registerable) {
                         type: "component",
                         name: selectValueMeta.name,
                       },
-                      {
-                        type: "img",
-                        src: "https://static1.plasmic.app/arrow-up.svg",
-                        styles: {
-                          height: "15px",
-                          width: "15px",
-                          transform: "rotate(180deg)",
-                        },
-                      },
+                      arrowDown,
                     ],
                   },
                 },

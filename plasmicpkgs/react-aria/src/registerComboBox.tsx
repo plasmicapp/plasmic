@@ -5,7 +5,7 @@ import {
   ComboBoxRenderProps,
   ComboBoxStateContext,
 } from "react-aria-components";
-import { getCommonProps } from "./common";
+import { arrowDown, getCommonProps } from "./common";
 import {
   PlasmicInputContext,
   PlasmicListBoxContext,
@@ -199,19 +199,7 @@ export function registerComboBox(loader?: Registerable) {
                     type: "component",
                     name: BUTTON_COMPONENT_NAME,
                     props: {
-                      children: {
-                        type: "img",
-                        // TODO: Replace with the image of an arrow pointing up, like: https://icon-sets.iconify.design/mdi/triangle/
-                        src: "https://static1.plasmic.app/arrow-up.svg",
-                        styles: {
-                          width: "15px",
-                          transform: "rotate(180deg)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          padding: 0,
-                        },
-                      },
+                      children: arrowDown,
                     },
                   },
                 ],

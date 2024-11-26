@@ -8,6 +8,7 @@ import {
   PopoverContext,
   TooltipContext,
 } from "react-aria-components";
+import { arrowDown } from "./common";
 import {
   CodeComponentMetaOverrides,
   makeComponentName,
@@ -79,23 +80,7 @@ export function registerOverlayArrow(
       props: {
         children: {
           type: "slot",
-          defaultValue: {
-            type: "hbox",
-            children: [],
-            styles: {
-              width: 0,
-              height: 0,
-              borderLeftWidth: "5px",
-              borderRightWidth: "5px",
-              borderBottomWidth: "5px",
-              borderLeftStyle: "solid",
-              borderRightStyle: "solid",
-              borderBottomStyle: "solid",
-              borderLeftColor: "transparent",
-              borderRightColor: "transparent",
-              borderBottomColor: "black",
-            },
-          },
+          defaultValue: arrowDown,
         },
       },
     },

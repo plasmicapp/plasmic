@@ -1,4 +1,4 @@
-import { PropType } from "@plasmicapp/host";
+import { PlasmicElement, PropType } from "@plasmicapp/host";
 import {
   BaseControlContextData,
   HasControlContextData,
@@ -451,3 +451,22 @@ export function getCommonOverlayProps<T>(
   };
   return commonProps;
 }
+
+export const arrowDown: PlasmicElement = {
+  type: "hbox",
+  children: [],
+  styles: {
+    width: 0,
+    height: 0,
+    padding: 0,
+    borderLeftWidth: "5px",
+    borderRightWidth: "5px",
+    borderTopWidth: "5px",
+    borderLeftStyle: "solid",
+    borderRightStyle: "solid",
+    borderTopStyle: "solid",
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
+    borderTopColor: "black",
+  },
+};
