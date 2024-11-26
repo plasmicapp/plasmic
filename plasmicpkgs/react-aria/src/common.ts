@@ -391,6 +391,8 @@ export function createPlacementProp<T>(
       "bottom",
       "start",
       "end",
+      "left",
+      "right",
     ],
     ...(overrides ?? {}),
   };
