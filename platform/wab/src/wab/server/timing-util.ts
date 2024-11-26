@@ -145,5 +145,9 @@ function makeCallName(path: string[], name: string) {
       .filter((x, i) => i === 0 || RE_UPPERCASE.test(x))
       .join("");
   };
+  // Only save the first/last 4 if it starts getting too big to avoid making the header too large
+  if (path.length > 12) {
+    path = [...path.slice(0, 4), "...", ...path.slice(-4)];
+  }
   return `${path.map((p) => abbreviated(p)).join("_")}_${name}`;
 }
