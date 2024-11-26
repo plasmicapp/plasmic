@@ -102,11 +102,11 @@ export abstract class Base<IdTag> {
   @Column("timestamptz", { nullable: true })
   deletedAt: Date | null;
 
-  @ManyToOne((type) => User)
+  @ManyToOne(() => User)
   createdBy: User | null;
-  @ManyToOne((type) => User)
+  @ManyToOne(() => User)
   updatedBy: User | null;
-  @ManyToOne((type) => User)
+  @ManyToOne(() => User)
   deletedBy: User | null;
 
   @Column("text", { nullable: true })
@@ -128,7 +128,7 @@ export abstract class Base<IdTag> {
 }
 
 abstract class OrgChild<IdTag> extends Base<IdTag> {
-  @ManyToOne((type) => Org, { eager: true })
+  @ManyToOne(() => Org, { eager: true })
   org: Org | null;
 
   @Column("text", { nullable: true })
@@ -156,7 +156,7 @@ export class Team extends Base<"TeamId"> {
   @JoinColumn()
   personalTeamOwner: User | null;
 
-  @OneToMany((type) => Permission, (perm) => perm.team)
+  @OneToMany(() => Permission, (perm) => perm.team)
   permissions: Permission[];
 
   // How many seats has the team paid for?
@@ -164,7 +164,7 @@ export class Team extends Base<"TeamId"> {
   @Column("integer", { nullable: true })
   seats: number | null;
 
-  @ManyToOne((type) => FeatureTier)
+  @ManyToOne(() => FeatureTier)
   featureTier: FeatureTier | null;
 
   @Column("text", { nullable: true })
@@ -214,7 +214,7 @@ export class Workspace extends Base<"WorkspaceId"> {
   @Column("text") name: string;
   @Column("text") description: string;
 
-  @ManyToOne((type) => Team)
+  @ManyToOne(() => Team)
   team: Team;
 
   @Index()
@@ -227,7 +227,7 @@ export class Workspace extends Base<"WorkspaceId"> {
   @Column("jsonb", { nullable: true })
   contentCreatorConfig: UiConfig | null;
 
-  @OneToMany((type) => Permission, (perm) => perm.workspace)
+  @OneToMany(() => Permission, (perm) => perm.workspace)
   permissions: Permission[];
 }
 
@@ -308,7 +308,7 @@ export class Project extends OrgChild<"ProjectId"> {
   @Column("jsonb", { nullable: true })
   uiConfig: UiConfig | null;
 
-  @ManyToOne((type) => Workspace)
+  @ManyToOne(() => Workspace)
   workspace: Workspace | null;
 
   @Index()
@@ -339,7 +339,7 @@ export class Project extends OrgChild<"ProjectId"> {
 export class Branch extends OrgChild<"BranchId"> {
   @Column("text") name: string;
 
-  @ManyToOne((type) => Project)
+  @ManyToOne(() => Project)
   project: Project;
 
   @Index()
@@ -365,13 +365,13 @@ const jsonTransformer = {
   where: `"branchId" is not null`,
 })
 export class ProjectRevision extends Base<"ProjectRevisionId"> {
-  @ManyToOne((type) => Project, { nullable: false })
+  @ManyToOne(() => Project, { nullable: false })
   project: Project | null;
 
   @Column("text")
   projectId: ProjectId;
 
-  @ManyToOne((type) => Branch)
+  @ManyToOne(() => Branch)
   branch: Branch | null;
 
   @Column("text", { nullable: true })
@@ -396,13 +396,13 @@ export class ProjectRevision extends Base<"ProjectRevisionId"> {
   where: `"branchId" is not null`,
 })
 export class PartialRevisionCache extends Base<"PartialRevisionCacheId"> {
-  @ManyToOne((type) => Project, { nullable: false })
+  @ManyToOne(() => Project, { nullable: false })
   project: Project | null;
 
   @Column("text")
   projectId: ProjectId;
 
-  @ManyToOne((type) => Branch)
+  @ManyToOne(() => Branch)
   branch: Branch | null;
 
   @Column("text", { nullable: true })
@@ -418,7 +418,7 @@ export class PartialRevisionCache extends Base<"PartialRevisionCacheId"> {
 
   @Column("integer") revision: number;
 
-  @ManyToOne((type) => ProjectRevision, { onDelete: "CASCADE" })
+  @ManyToOne(() => ProjectRevision, { onDelete: "CASCADE" })
   projectRevision: ProjectRevision | null;
 
   @Column("text", { array: true, nullable: true })
@@ -431,7 +431,7 @@ export class PartialRevisionCache extends Base<"PartialRevisionCacheId"> {
 
 @Entity()
 export class ProjectWebhook extends Base<"ProjectWebhookId"> {
-  @ManyToOne((type) => Project, { nullable: false })
+  @ManyToOne(() => Project, { nullable: false })
   project: Project | null;
 
   @Column("text")
@@ -452,7 +452,7 @@ export class ProjectWebhook extends Base<"ProjectWebhookId"> {
 
 @Entity()
 export class ProjectWebhookEvent extends Base<"ProjectWebhookEventId"> {
-  @ManyToOne((type) => Project, { nullable: false })
+  @ManyToOne(() => Project, { nullable: false })
   project: Project | null;
 
   @Column("text")
@@ -473,7 +473,7 @@ export class ProjectWebhookEvent extends Base<"ProjectWebhookEventId"> {
 
 @Entity()
 export class ProjectRepository extends Base<"ProjectRepositoryId"> {
-  @ManyToOne((type) => Project, { nullable: false })
+  @ManyToOne(() => Project, { nullable: false })
   project: Project | null;
 
   @Column("text")
@@ -481,7 +481,7 @@ export class ProjectRepository extends Base<"ProjectRepositoryId"> {
   projectId: ProjectId;
 
   // This is the user who set the repository.
-  @ManyToOne((type) => User, { nullable: false })
+  @ManyToOne(() => User, { nullable: false })
   user: User | null;
 
   @Column("text")
@@ -524,7 +524,7 @@ export class ProjectRepository extends Base<"ProjectRepositoryId"> {
 
 @Entity()
 export class TrustedHost extends Base<"TrustedHostId"> {
-  @ManyToOne((type) => User, { nullable: false })
+  @ManyToOne(() => User, { nullable: false })
   user: User | null;
 
   @Index()
@@ -538,7 +538,7 @@ export class TrustedHost extends Base<"TrustedHostId"> {
 @Entity()
 export class ResetPassword extends Base<"ResetPasswordId"> {
   @Index()
-  @ManyToOne((type) => User)
+  @ManyToOne(() => User)
   forUser: User | null;
 
   @Column("text", { nullable: true })
@@ -551,7 +551,7 @@ export class ResetPassword extends Base<"ResetPasswordId"> {
 @Entity()
 export class EmailVerification extends Base<"EmailVerificationid"> {
   @Index()
-  @ManyToOne((type) => User)
+  @ManyToOne(() => User)
   forUser: User | null;
 
   @Column("text", { nullable: true })
@@ -571,7 +571,7 @@ export class Pkg extends Base<"PkgId"> {
   @Column("text", { nullable: true })
   sysname: string | null;
 
-  @ManyToOne((type) => Project, { nullable: true })
+  @ManyToOne(() => Project, { nullable: true })
   project: Project | null;
 
   @Index()
@@ -586,14 +586,14 @@ export class Pkg extends Base<"PkgId"> {
   where: `"branchId" is not null`,
 })
 export class PkgVersion extends Base<"PkgVersionId"> {
-  @ManyToOne((type) => Pkg, { nullable: true })
+  @ManyToOne(() => Pkg, { nullable: true })
   pkg: Pkg | null;
 
   @Index()
   @Column("text", { nullable: true })
   pkgId: string;
 
-  @ManyToOne((type) => Branch, { nullable: true })
+  @ManyToOne(() => Branch, { nullable: true })
   branch: Branch | null;
 
   @Column("text", { nullable: true })
@@ -708,7 +708,7 @@ export abstract class OauthTokenBase extends Base<"OauthTokenBaseId"> {
 @Entity()
 @Unique(["user", "provider"])
 export class OauthToken extends OauthTokenBase {
-  @ManyToOne((type) => User, { nullable: false })
+  @ManyToOne(() => User, { nullable: false })
   user: User;
 
   @Column("text")
@@ -717,7 +717,7 @@ export class OauthToken extends OauthTokenBase {
 
 @Entity()
 export class PersonalApiToken extends Base<"PersonalApiTokenId"> {
-  @ManyToOne((type) => User, { nullable: false })
+  @ManyToOne(() => User, { nullable: false })
   user: User;
 
   @Index()
@@ -731,7 +731,7 @@ export class PersonalApiToken extends Base<"PersonalApiTokenId"> {
 
 @Entity()
 export class TeamApiToken extends Base<"TeamApiTokenId"> {
-  @ManyToOne((type) => Team, { nullable: false })
+  @ManyToOne(() => Team, { nullable: false })
   team: Team;
 
   @Index()
@@ -747,7 +747,7 @@ export class TeamApiToken extends Base<"TeamApiTokenId"> {
 
 @Entity()
 export class TemporaryTeamApiToken extends Base<"TemporaryTeamApiTokenId"> {
-  @ManyToOne((type) => Team, { nullable: false })
+  @ManyToOne(() => Team, { nullable: false })
   team: Team;
 
   @Index()
@@ -772,28 +772,28 @@ export type PermissionId = Opaque<string, "PermissionId">;
   `("projectId" is not null)::int + ("workspaceId" is not null)::int + ("teamId" is not null)::int = 1`
 )
 export class Permission extends Base<"PermissionId"> {
-  @ManyToOne((type) => Project)
+  @ManyToOne(() => Project)
   project: Project | null;
 
   @Index()
   @Column("text", { nullable: true })
   projectId: ProjectId | null;
 
-  @ManyToOne((type) => Workspace)
+  @ManyToOne(() => Workspace)
   workspace: Workspace | null;
 
   @Index()
   @Column("text", { nullable: true })
   workspaceId: WorkspaceId | null;
 
-  @ManyToOne((type) => Team)
+  @ManyToOne(() => Team)
   team: Team | null;
 
   @Index()
   @Column("text", { nullable: true })
   teamId: TeamId | null;
 
-  @ManyToOne((type) => User)
+  @ManyToOne(() => User)
   user: User | null;
 
   @Index()
@@ -853,20 +853,20 @@ export class BundleBackup extends Base<"BundleBackupId"> {
   @Index()
   migrationName: string;
 
-  @ManyToOne((type) => PkgVersion, { nullable: true, onDelete: "CASCADE" })
+  @ManyToOne(() => PkgVersion, { nullable: true, onDelete: "CASCADE" })
   pkgVersion: PkgVersion | null;
 
   @Column("text", { nullable: true })
   pkgVersionId: string;
 
-  @ManyToOne((type) => ProjectRevision, { nullable: true, onDelete: "CASCADE" })
+  @ManyToOne(() => ProjectRevision, { nullable: true, onDelete: "CASCADE" })
   projectRevision: ProjectRevision | null;
 
   @Index()
   @Column("text", { nullable: true })
   projectRevisionId: string;
 
-  @ManyToOne((type) => Project, { nullable: true, onDelete: "CASCADE" })
+  @ManyToOne(() => Project, { nullable: true, onDelete: "CASCADE" })
   project: Project | null;
 
   @Column("text", { nullable: true })
@@ -941,7 +941,7 @@ export class DataSource extends Base<"DataSourceId"> {
   @Index()
   workspaceId: WorkspaceId;
 
-  @ManyToOne((type) => Workspace, { nullable: false })
+  @ManyToOne(() => Workspace, { nullable: false })
   workspace: Workspace | null;
 
   @Column("text")
@@ -1074,7 +1074,7 @@ export class CopilotInteraction extends Base<"CopilotInteractionId"> {
   @Column("text")
   model: "gpt" | "claude";
 
-  @ManyToOne((type) => Project)
+  @ManyToOne(() => Project)
   project: Project | null;
 
   @Index()
@@ -1172,7 +1172,7 @@ export class CmsRow extends Base<"CmsRowId"> {
 
 @Entity()
 export class CmsRowRevision extends Base<"CmsRowRevisionId"> {
-  @ManyToOne((type) => CmsRow, { nullable: false })
+  @ManyToOne(() => CmsRow, { nullable: false })
   row: CmsRow | null;
 
   @Column("text")
@@ -1188,7 +1188,7 @@ export class CmsRowRevision extends Base<"CmsRowRevisionId"> {
 
 @Entity()
 export class WorkspaceApiToken extends Base<"WorkspaceApiTokenId"> {
-  @ManyToOne((type) => Workspace)
+  @ManyToOne(() => Workspace)
   workspace: Workspace | null;
 
   @Index()
@@ -1201,7 +1201,7 @@ export class WorkspaceApiToken extends Base<"WorkspaceApiTokenId"> {
 
 @Entity()
 export class WorkspaceAuthConfig extends Base<"WorkspaceAuthConfigId"> {
-  @ManyToOne((type) => Workspace)
+  @ManyToOne(() => Workspace)
   workspace: Workspace | null;
 
   @Index()
@@ -1221,7 +1221,7 @@ export class WorkspaceUser extends Base<"WorkspaceUserId"> {
   @Column("text")
   workspaceId: WorkspaceId;
 
-  @ManyToOne((type) => Workspace)
+  @ManyToOne(() => Workspace)
   workspace: Workspace | null;
 
   @Index()
@@ -1254,13 +1254,13 @@ export class HostlessVersion extends Base<"HostlessVersionId"> {
 @Entity()
 @Index("PROJECT_AND_BRANCH_IDX", ["projectId", "branchId"])
 export class Comment extends Base<"CommentId"> {
-  @ManyToOne((type) => Project, { nullable: false })
+  @ManyToOne(() => Project, { nullable: false })
   project: Project | null;
 
   @Column("text")
   projectId: ProjectId;
 
-  @ManyToOne((type) => Branch)
+  @ManyToOne(() => Branch)
   branch: Branch | null;
 
   @Column("text", { nullable: true })
@@ -1282,7 +1282,7 @@ export class Comment extends Base<"CommentId"> {
 
 @Entity()
 export class CommentReaction extends Base<"CommentReactionId"> {
-  @ManyToOne((type) => Comment, { nullable: false, onDelete: "CASCADE" })
+  @ManyToOne(() => Comment, { nullable: false, onDelete: "CASCADE" })
   comment: Comment | null;
 
   @Index()
@@ -1296,7 +1296,7 @@ export class CommentReaction extends Base<"CommentReactionId"> {
 // This table represents the directories that are configured for a team
 @Entity()
 export class EndUserDirectory extends Base<"EndUserDirectoryId"> {
-  @ManyToOne((type) => Team)
+  @ManyToOne(() => Team)
   team: Team | null;
 
   @Column("text")
@@ -1316,7 +1316,7 @@ export class EndUserDirectory extends Base<"EndUserDirectoryId"> {
 // This table represents the groups that are defined in a directory
 @Entity()
 export class DirectoryEndUserGroup extends Base<"DirectoryGroupId"> {
-  @ManyToOne((type) => EndUserDirectory)
+  @ManyToOne(() => EndUserDirectory)
   directory: EndUserDirectory | null;
 
   @Index()
@@ -1336,7 +1336,7 @@ export interface EndUserIdentifier {
 // This table represents end users that are associated with a directory
 @Entity()
 export class EndUser extends Base<"EndUserId"> {
-  @ManyToOne((type) => EndUserDirectory)
+  @ManyToOne(() => EndUserDirectory)
   directory: EndUserDirectory | null;
 
   @Index()
@@ -1351,7 +1351,7 @@ export class EndUser extends Base<"EndUserId"> {
   @Column("text", { nullable: true })
   externalId?: string;
 
-  @ManyToOne((type) => User)
+  @ManyToOne(() => User)
   user: User | null;
 
   @Index()
@@ -1378,14 +1378,14 @@ When a user tries to access an app through the auth flow, the access is going to
 */
 @Entity()
 export class AppAuthConfig extends Base<"AppAuthConfigId"> {
-  @ManyToOne((type) => Project)
+  @ManyToOne(() => Project)
   project: Project | null;
 
   @Index()
   @Column("text")
   projectId: ProjectId;
 
-  @ManyToOne((type) => EndUserDirectory)
+  @ManyToOne(() => EndUserDirectory)
   directory: EndUserDirectory | null;
 
   @Index()
@@ -1402,14 +1402,14 @@ export class AppAuthConfig extends Base<"AppAuthConfigId"> {
   @Column("text", { nullable: true })
   anonymousRoleId?: string | null;
 
-  @ManyToOne((type) => AppRole)
+  @ManyToOne(() => AppRole)
   anonymousRole: AppRole | null;
 
   @Index()
   @Column("text", { nullable: true })
   registeredRoleId?: string | null;
 
-  @ManyToOne((type) => AppRole)
+  @ManyToOne(() => AppRole)
   registeredRole: AppRole | null;
 
   @Column("text", { nullable: true })
@@ -1440,7 +1440,7 @@ the higher the order, the higher the priority
 */
 @Entity()
 export class AppRole extends Base<"AppRoleId"> {
-  @ManyToOne((type) => Project)
+  @ManyToOne(() => Project)
   project: Project | null;
 
   @Index()
@@ -1475,7 +1475,7 @@ Besides this rules:
 
 @Entity()
 export class AppEndUserAccess extends Base<"AppEndUserAccessId"> {
-  @ManyToOne((type) => Project)
+  @ManyToOne(() => Project)
   project: Project | null;
 
   @Index()
@@ -1494,14 +1494,14 @@ export class AppEndUserAccess extends Base<"AppEndUserAccessId"> {
   @Column("text", { nullable: true })
   externalId?: string;
 
-  @ManyToOne((type) => DirectoryEndUserGroup)
+  @ManyToOne(() => DirectoryEndUserGroup)
   directoryEndUserGroup: DirectoryEndUserGroup | null;
 
   @Index()
   @Column("text", { nullable: true })
   directoryEndUserGroupId?: string | null;
 
-  @ManyToOne((type) => AppRole)
+  @ManyToOne(() => AppRole)
   role: AppRole | null;
 
   @Index()
@@ -1515,14 +1515,14 @@ export class AppEndUserAccess extends Base<"AppEndUserAccessId"> {
 // This table is used to mantain which users are in which groups
 @Entity()
 export class AppEndUserGroup extends Base<"AppEndUserGroupId"> {
-  @ManyToOne((type) => EndUser)
+  @ManyToOne(() => EndUser)
   endUser: EndUser | null;
 
   @Index()
   @Column("text")
   endUserId: string;
 
-  @ManyToOne((type) => DirectoryEndUserGroup)
+  @ManyToOne(() => DirectoryEndUserGroup)
   directoryEndUserGroup: DirectoryEndUserGroup | null;
 
   @Index()
@@ -1533,14 +1533,14 @@ export class AppEndUserGroup extends Base<"AppEndUserGroupId"> {
 // This tables is used to track which users have accessed which apps
 @Entity()
 export class AppAccessRegistry extends Base<"AppAccessRegistryId"> {
-  @ManyToOne((type) => Project)
+  @ManyToOne(() => Project)
   project: Project | null;
 
   @Index()
   @Column("text")
   projectId: ProjectId;
 
-  @ManyToOne((type) => EndUser)
+  @ManyToOne(() => EndUser)
   endUser: EndUser | null;
 
   @Index()
