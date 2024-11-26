@@ -374,9 +374,13 @@ export function getCommonProps<T>(
   return filteredProps;
 }
 
+type Overrides = {
+  defaultValueHint?: any;
+};
+
 export function createPlacementProp<T>(
   componentName: string,
-  overrides: any
+  overrides: Overrides
 ): PropType<T> {
   return {
     type: "choice",
@@ -385,8 +389,8 @@ export function createPlacementProp<T>(
       // Not allowing other placement options here because of https://github.com/adobe/react-spectrum/issues/6825
       "top",
       "bottom",
-      "left",
-      "right",
+      "start",
+      "end",
     ],
     ...(overrides ?? {}),
   };
@@ -394,7 +398,7 @@ export function createPlacementProp<T>(
 
 export function createOffsetProp<T>(
   componentName: string,
-  overrides: any
+  overrides: Overrides
 ): PropType<T> {
   return {
     type: "number",
@@ -407,7 +411,7 @@ export function createOffsetProp<T>(
 
 export function createContainerPaddingProp<T>(
   componentName: string,
-  overrides: any
+  overrides: Overrides
 ): PropType<T> {
   return {
     type: "number",
@@ -419,7 +423,7 @@ export function createContainerPaddingProp<T>(
 
 export function createCrossOffsetProp<T>(
   componentName: string,
-  overrides: any
+  overrides: Overrides
 ): PropType<T> {
   return {
     type: "number",
@@ -431,7 +435,7 @@ export function createCrossOffsetProp<T>(
 
 export function getCommonOverlayProps<T>(
   componentName: string,
-  overrides: Record<string, Record<string, any>>
+  overrides: Record<string, Overrides>
 ) {
   const commonProps: Record<string, PropType<T>> = {
     placement: createPlacementProp<T>(componentName, overrides["placement"]),

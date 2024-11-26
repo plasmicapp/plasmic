@@ -99,7 +99,6 @@ export function BaseTooltip(props: BaseTooltipProps) {
     >
       <TriggerWrapper className={resetClassName}>{children}</TriggerWrapper>
       <Tooltip
-        arrowBoundaryOffset={0}
         isOpen={_isOpen}
         offset={offset}
         crossOffset={crossOffset}
