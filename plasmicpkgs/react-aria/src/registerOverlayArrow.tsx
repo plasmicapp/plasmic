@@ -40,7 +40,7 @@ export function BaseOverlayArrow({
   const tooltipContext = React.useContext(TooltipContext);
   const isStandalone = !popoverContext && !tooltipContext; // i.e. without a trigger to point to
   const overlayArrow = (
-    <OverlayArrow className={className}>
+    <OverlayArrow style={{ lineHeight: "0" }} className={className}>
       {({ placement }: OverlayArrowRenderProps) =>
         withObservedValues(
           <>{children}</>,
@@ -74,16 +74,26 @@ export function registerOverlayArrow(
       displayName: "Aria Overlay Arrow",
       importPath: "@plasmicpkgs/react-aria/skinny/registerOverlayArrow",
       importName: "BaseOverlayArrow",
-      styleSections: ["layout"],
+      styleSections: false,
       variants,
       props: {
         children: {
           type: "slot",
           defaultValue: {
-            type: "img",
-            src: "https://static1.plasmic.app/arrow-up.svg",
+            type: "hbox",
+            children: [],
             styles: {
-              width: "12px",
+              width: 0,
+              height: 0,
+              borderLeftWidth: "5px",
+              borderRightWidth: "5px",
+              borderBottomWidth: "5px",
+              borderLeftStyle: "solid",
+              borderRightStyle: "solid",
+              borderBottomStyle: "solid",
+              borderLeftColor: "transparent",
+              borderRightColor: "transparent",
+              borderBottomColor: "black",
             },
           },
         },
