@@ -10,6 +10,7 @@ import { registerInput } from "./registerInput";
 import { registerLabel } from "./registerLabel";
 import { registerListBox } from "./registerListBox";
 import { registerModal } from "./registerModal";
+import { registerOverlayArrow } from "./registerOverlayArrow";
 import { registerPopover } from "./registerPopover";
 import { registerRadioGroup } from "./registerRadioGroup";
 import { registerSelect } from "./registerSelect";
@@ -25,6 +26,7 @@ export function registerAll(loader?: Registerable) {
   registerText(loader);
   registerHeading(loader);
   registerDescription(loader);
+  registerOverlayArrow(loader);
   registerSelect(loader);
   registerComboBox(loader);
   registerButton(loader);

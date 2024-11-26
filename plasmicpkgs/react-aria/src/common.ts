@@ -373,3 +373,77 @@ export function getCommonProps<T>(
 
   return filteredProps;
 }
+
+export function createPlacementProp<T>(
+  componentName: string,
+  overrides: any
+): PropType<T> {
+  return {
+    type: "choice",
+    description: `Default placement of the ${componentName} relative to the trigger, if there is enough space`,
+    options: [
+      // Not allowing other placement options here because of https://github.com/adobe/react-spectrum/issues/6825
+      "top",
+      "bottom",
+      "left",
+      "right",
+    ],
+    ...(overrides ?? {}),
+  };
+}
+
+export function createOffsetProp<T>(
+  componentName: string,
+  overrides: any
+): PropType<T> {
+  return {
+    type: "number",
+    displayName: "Offset",
+    description: `Additional offset applied along the main axis between the ${componentName} and its trigger`,
+    advanced: true,
+    ...(overrides ?? {}),
+  };
+}
+
+export function createContainerPaddingProp<T>(
+  componentName: string,
+  overrides: any
+): PropType<T> {
+  return {
+    type: "number",
+    description: `The padding that should be applied between the ${componentName} and its surrounding container. This affects the positioning breakpoints that determine when it will attempt to flip.`,
+    advanced: true,
+    ...(overrides ?? {}),
+  };
+}
+
+export function createCrossOffsetProp<T>(
+  componentName: string,
+  overrides: any
+): PropType<T> {
+  return {
+    type: "number",
+    description: `The additional offset applied along the cross axis between the ${componentName} and its anchor element.`,
+    advanced: true,
+    ...(overrides ?? {}),
+  };
+}
+
+export function getCommonOverlayProps<T>(
+  componentName: string,
+  overrides: Record<string, Record<string, any>>
+) {
+  const commonProps: Record<string, PropType<T>> = {
+    placement: createPlacementProp<T>(componentName, overrides["placement"]),
+    offset: createOffsetProp<T>(componentName, overrides["offset"]),
+    containerPadding: createContainerPaddingProp<T>(
+      componentName,
+      overrides["containerPadding"]
+    ),
+    crossOffset: createCrossOffsetProp<T>(
+      componentName,
+      overrides["crossOffset"]
+    ),
+  };
+  return commonProps;
+}

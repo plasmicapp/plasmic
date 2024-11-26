@@ -3,6 +3,7 @@ import React from "react";
 import { useFocusable } from "react-aria";
 import { Tooltip, TooltipProps, TooltipTrigger } from "react-aria-components";
 import { TooltipTriggerProps } from "react-stately";
+import { getCommonOverlayProps } from "./common";
 import {
   CodeComponentMetaOverrides,
   Registerable,
@@ -77,7 +78,6 @@ export function BaseTooltip(props: BaseTooltipProps) {
     offset,
     crossOffset,
     shouldFlip,
-    arrowBoundaryOffset,
     onOpenChange,
     plasmicUpdateVariant,
   } = props;
@@ -99,11 +99,11 @@ export function BaseTooltip(props: BaseTooltipProps) {
     >
       <TriggerWrapper className={resetClassName}>{children}</TriggerWrapper>
       <Tooltip
+        arrowBoundaryOffset={0}
         isOpen={_isOpen}
         offset={offset}
         crossOffset={crossOffset}
         shouldFlip={shouldFlip}
-        arrowBoundaryOffset={arrowBoundaryOffset}
         defaultOpen={defaultOpen}
         className={resetClassName}
         onOpenChange={onOpenChange}
@@ -111,7 +111,7 @@ export function BaseTooltip(props: BaseTooltipProps) {
       >
         {({ placement: _placement }) =>
           withObservedValues(
-            tooltipContent,
+            <>{tooltipContent}</>,
             {
               placementTop: _placement === "top",
               placementBottom: _placement === "bottom",
@@ -163,8 +163,10 @@ export function registerTooltip(
             type: "text",
             value: "Hello from Tooltip!",
             styles: {
-              // So the text does not overlap with existing content
-              backgroundColor: "white",
+              background: "black",
+              color: "white",
+              padding: "7px",
+              borderRadius: "7px",
             },
           },
         },
@@ -194,14 +196,12 @@ export function registerTooltip(
           options: ["focus", "focus and hover"],
           defaultValueHint: "focus and hover",
         },
-        placement: {
-          type: "choice",
-          description:
-            "Default placement of the popover relative to the trigger, if there is enough space",
-          defaultValueHint: "top",
-          // Not providing more options because https://github.com/adobe/react-spectrum/issues/6517
-          options: ["top", "bottom", "left", "right"],
-        },
+        ...getCommonOverlayProps<BaseTooltipProps>("popover", {
+          placement: { defaultValueHint: "top" },
+          offset: { defaultValueHint: 0 },
+          containerPadding: { defaultValueHint: 12 },
+          crossOffset: { defaultValueHint: 0 },
+        }),
         isOpen: {
           type: "boolean",
           editOnly: true,
