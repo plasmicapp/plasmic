@@ -796,6 +796,15 @@ export class StudioCtx extends WithDbCtx {
         },
         { name: "StudioCtx.updateFocusPreference" }
       ),
+      reaction(
+        () => [getSiteArenas(this.site)],
+        () => {
+          this.recentArenas = this.recentArenas.filter((arena) =>
+            isValidArena(this.site, arena)
+          );
+        },
+        { name: "StudioCtx.fixRecentArenas" }
+      ),
       ...(this.appCtx.appConfig.incrementalObservables
         ? [
             autorun(
@@ -1677,9 +1686,8 @@ export class StudioCtx extends WithDbCtx {
       if (fixedRecentArenas.length > RECENT_ARENAS_LIMIT) {
         fixedRecentArenas.shift();
       }
-      this._recentArenas.set(fixedRecentArenas);
+      this.recentArenas = fixedRecentArenas;
     }
-
     this._currentArena.set(arena);
   }
 
@@ -1690,6 +1698,10 @@ export class StudioCtx extends WithDbCtx {
 
   get recentArenas() {
     return this._recentArenas.get();
+  }
+
+  set recentArenas(arenas: AnyArena[]) {
+    this._recentArenas.set(arenas);
   }
 
   get currentComponent() {
