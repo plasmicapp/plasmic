@@ -6,7 +6,6 @@ import PlasmicTokenTypeHeader, {
 } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicTokenTypeHeader";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TokenType, tokenTypeLabel } from "@/wab/commons/StyleToken";
-import { spawn } from "@/wab/shared/common";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
 import { MultiChoiceArg } from "@plasmicapp/react-web";
 import * as React from "react";
@@ -67,12 +66,12 @@ function TokenTypeHeader(props: TokenTypeHeaderProps) {
           ? { render: () => null }
           : {
               props: {
-                onClick: (e) => {
+                onClick: async (e) => {
                   e.stopPropagation();
+                  await tokenControls.onAdd(tokenType);
                   if (!isExpanded) {
                     toggleExpand();
                   }
-                  spawn(tokenControls.onAdd(tokenType));
                 },
               },
             }

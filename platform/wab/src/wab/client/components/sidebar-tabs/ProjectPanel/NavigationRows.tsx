@@ -66,10 +66,10 @@ export function NavigationHeaderRow({
         <IconButton
           onClick={async (e) => {
             e.stopPropagation();
+            await onAdd();
             if (!props.isOpen) {
               toggleExpand();
             }
-            await onAdd();
           }}
         >
           <Icon icon={PlusIcon} />
