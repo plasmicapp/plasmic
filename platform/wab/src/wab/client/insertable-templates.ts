@@ -283,7 +283,6 @@ export async function buildInsertableExtraInfo(
     screenVariant,
     ...(await getHostLessDependenciesToInsertableTemplate(studioCtx, it.site)),
     projectId,
-    groupName: template?.groupName,
     resolution: {
       token: template?.tokenResolution,
       component: template?.componentResolution,

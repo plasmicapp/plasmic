@@ -150,7 +150,7 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
     asyncExtraInfo: async (
       sc
     ): Promise<CreateAddInstallableExtraInfo | undefined> => {
-      const { projectId, groupName } = meta;
+      const { projectId } = meta;
       const { screenVariant } = await getScreenVariantToInsertableTemplate(sc);
       return sc.app.withSpinner(
         (async () => {
@@ -168,7 +168,6 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
               installableSite
             )),
             projectId,
-            groupName,
             resolution: {
               token: "reuse-by-name",
               component: "reuse",

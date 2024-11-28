@@ -257,7 +257,6 @@ export function mkInsertableTokenImporter(
   targetTokens: StyleToken[],
   tokenResolution: InsertableTemplateTokenResolution | undefined,
   screenVariant: Variant | undefined,
-  groupName: string | undefined,
   onFontSeen: (font: string) => void
 ) {
   const oldToNewToken = new Map<StyleToken, StyleToken>();
@@ -266,9 +265,6 @@ export function mkInsertableTokenImporter(
     if (oldToNewToken.has(oldToken)) {
       return oldToNewToken.get(oldToken)!;
     }
-    const namespacedTokenName = groupName
-      ? `${groupName}/${oldToken.name}`
-      : oldToken.name;
 
     // `targetTokens` won't consider tokens that have been added by `getOrAddToken`
     // but this is expected as if it would have a similarity from tokens that have
@@ -277,7 +273,7 @@ export function mkInsertableTokenImporter(
       if (targetToken.type !== oldToken.type) {
         return false;
       }
-      const isSameName = targetToken.name === namespacedTokenName;
+      const isSameName = targetToken.name === oldToken.name;
 
       if (
         tokenResolution === "reuse-by-name" ||
@@ -308,7 +304,7 @@ export function mkInsertableTokenImporter(
 
     const tplMgr = new TplMgr({ site: targetSite });
     const newToken = tplMgr.addToken({
-      name: tplMgr.getUniqueTokenName(namespacedTokenName),
+      name: tplMgr.getUniqueTokenName(oldToken.name),
       tokenType: oldToken.type as TokenType,
       value: maybeDerefToken(targetTokens, oldTokens, oldToken),
     });

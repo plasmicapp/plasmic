@@ -112,7 +112,6 @@ export async function seedTestDb(em: EntityManager) {
             name: "Plasmic Design System",
             projectId: getBundleInfo(PLEXUS_INSERTABLE_ID).projectId,
             imageUrl: "https://static1.plasmic.app/plasmic-logo.png",
-            groupName: "PDS",
             entryPoint: {
               type: "arena",
               name: "Entry",

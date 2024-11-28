@@ -88,7 +88,6 @@ export interface Installable {
   sectionLabel?: string;
   isInstallOnly: true;
   isNew?: boolean;
-  groupName: string; // Used to prefix imported assets
   projectId: string;
   imageUrl?: string;
   entryPoint: {
@@ -106,7 +105,6 @@ export interface InsertableTemplatesItem {
   componentName: string; // Name of component to insert
   imageUrl?: string; // A preview image
   displayName?: string;
-  groupName?: string;
   onlyShownIn?: "old" | "new";
   tokenResolution?: InsertableTemplateTokenResolution;
   componentResolution?: InsertableTemplateComponentResolution;
@@ -120,7 +118,6 @@ export interface InsertableTemplatesComponent {
   type: "insertable-templates-component";
   projectId: string; // Where to find the template
   componentName: string; // Name of component to insert
-  groupName?: string;
   /**
    * Globally unique name of the template; should match up with
    * Component.templateInfo.name of the corresponding component.

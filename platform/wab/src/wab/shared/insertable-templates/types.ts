@@ -2,8 +2,6 @@ import {
   InsertableTemplateComponentResolution,
   InsertableTemplateTokenResolution,
 } from "@/wab/shared/devflags";
-import { PkgInfo } from "@/wab/shared/SharedApi";
-import { VariantCombo } from "@/wab/shared/Variants";
 import {
   Arena,
   Component,
@@ -11,6 +9,8 @@ import {
   Site,
   Variant,
 } from "@/wab/shared/model/classes";
+import { PkgInfo } from "@/wab/shared/SharedApi";
+import { VariantCombo } from "@/wab/shared/Variants";
 
 export type HostLessDependencies = Record<
   string,
@@ -25,7 +25,6 @@ export interface InsertableTemplateExtraInfo {
   screenVariant: Variant | undefined;
   hostLessDependencies: HostLessDependencies;
   projectId: string;
-  groupName?: string;
   resolution: {
     token?: InsertableTemplateTokenResolution;
     component?: InsertableTemplateComponentResolution;
