@@ -125,6 +125,17 @@ export function postInsertableTemplate(
   }
 }
 
+/**
+ * Example: Consider an insertable template component "Button".
+ * Button has a width of 200px in Base variant. But a "Mobile Only" variant in the template component's project sets its width to 100%
+ *
+ * The origin project (the project that's importing the insertable template), on the other hand, does not have a "Mobile Only" variant. Instead, it has a responsive variant called "My Mobile".
+ * The function below decides which screen variant in the origin project should we map "Mobile Only" to.
+ *
+ * @param studioCtx
+ * @returns The current project (origin)'s screen variant, that can be used as a responsive breakpoint for the target (insertable template) component.
+ *
+ */
 export const getScreenVariantToInsertableTemplate = async (
   studioCtx: StudioCtx
 ) => {
