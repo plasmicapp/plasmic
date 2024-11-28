@@ -151,6 +151,7 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
       sc
     ): Promise<CreateAddInstallableExtraInfo | undefined> => {
       const { projectId, groupName } = meta;
+      const { screenVariant } = await getScreenVariantToInsertableTemplate(sc);
       return sc.app.withSpinner(
         (async () => {
           const installableSite =
@@ -158,10 +159,6 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
               projectId,
               meta.name
             );
-
-          const { screenVariant } = await getScreenVariantToInsertableTemplate(
-            sc
-          );
 
           const commonInfo: InsertableTemplateExtraInfo = {
             site: installableSite,
