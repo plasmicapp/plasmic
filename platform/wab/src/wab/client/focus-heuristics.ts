@@ -15,13 +15,6 @@ import {
   getFocusTrappingAncestor,
   getUnlockedAncestor,
 } from "@/wab/shared/core/selection";
-import {
-  isCodeComponentSlot,
-  isPlainTextTplSlot,
-} from "@/wab/shared/SlotUtils";
-import { TplMgr } from "@/wab/shared/TplMgr";
-import { ValState } from "@/wab/shared/eval/val-state";
-import { Site, TplComponent } from "@/wab/shared/model/classes";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   ValComponent,
@@ -30,6 +23,13 @@ import {
   slotHasDefaultContent,
 } from "@/wab/shared/core/val-nodes";
 import { asVal } from "@/wab/shared/core/vals";
+import { ValState } from "@/wab/shared/eval/val-state";
+import { Site, TplComponent } from "@/wab/shared/model/classes";
+import {
+  isCodeComponentSlot,
+  isPlainTextTplSlot,
+} from "@/wab/shared/SlotUtils";
+import { TplMgr } from "@/wab/shared/TplMgr";
 import L from "lodash";
 
 export class FocusHeuristics {
@@ -156,13 +156,19 @@ export class FocusHeuristics {
       exact: boolean;
     }
   ) {
-    if (!this.valState.maybeValUserRoot() || !valNode.valOwner) {
+    if (
+      !this.valState.maybeValUserRoot() ||
+      !valNode.valOwner ||
+      valNode.key.startsWith(".")
+    ) {
       // If we haven't rendered, or if valNode has no valOwner -- meaning it
       // is a detached val node, rendered by canvas component that is used
       // outside of the usual canvas-rendering -- for example, by handing a
       // component class to a code component, who renders it without attaching
       // any of the canvas internal props. In that case, we can't reason
       // about it at all, as it is not part of the current val stack.
+      // When the val key starts with '.' it means that this node is a child
+      // of a detached val node, meaning we won't be able to focus on it either.
       return { componentCtx: null, focusTarget: null };
     }
 
