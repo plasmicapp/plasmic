@@ -60,6 +60,7 @@ import {
   isPrivateState,
   isStateUsedInExpr,
   removeComponentState,
+  removeImplicitStatesAfterRemovingTplNode,
 } from "@/wab/shared/core/states";
 import { cloneMixin } from "@/wab/shared/core/styles";
 import {
@@ -1073,7 +1074,11 @@ function upgradeProjectDep(
   // the site for every tpl
   const attachedTpls = getAllAttachedTpls(site);
   const fixTpl = (tpl: TplNode, owner: Component | ArenaFrame) => {
+    // If the Tpl is not attached anymore, cleanup states and return
     if (!attachedTpls.has(tpl)) {
+      if (isKnownComponent(owner)) {
+        removeImplicitStatesAfterRemovingTplNode(site, owner, tpl);
+      }
       return;
     }
 
