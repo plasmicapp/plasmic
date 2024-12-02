@@ -396,6 +396,7 @@
     "nested-error-stacks": "^2.1.0",
     "netmask": "^2.0.2",
     "node-cleanup": "^2.1.2",
+    "node-cron": "^3.0.3",
     "node-fetch": "^2.6.1",
     "node-html-parser": "^3.3.3",
     "node-sql-parser": "^4.4.0",

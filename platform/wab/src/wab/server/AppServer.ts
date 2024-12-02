@@ -14,6 +14,7 @@ import session from "express-session";
 import * as lusca from "lusca";
 import morgan from "morgan";
 import { nanoid } from "nanoid";
+import cron from "node-cron";
 import passport from "passport";
 import * as path from "path";
 import { getConnection } from "typeorm";
@@ -2170,7 +2171,10 @@ export async function createApp(
   pruneCache();
 
   // Prune old cache every 2 hours
-  setInterval(() => pruneCache(), 1000 * 60 * 60 * 2);
+  cron.schedule("0 */2 * * *", () => {
+    console.log("Pruning cache");
+    pruneCache();
+  });
 
   // Don't leak infra info
   app.disable("x-powered-by");
