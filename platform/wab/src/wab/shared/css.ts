@@ -6,8 +6,16 @@ import {
   tryParseNumLit,
   tuple,
 } from "@/wab/shared/common";
-import { horizontalSides, standardSides, verticalSides } from "@/wab/shared/geom";
-import { createNumericSize, ensureUnit, showSizeCss } from "@/wab/shared/css-size";
+import {
+  createNumericSize,
+  ensureUnit,
+  showSizeCss,
+} from "@/wab/shared/css-size";
+import {
+  horizontalSides,
+  standardSides,
+  verticalSides,
+} from "@/wab/shared/geom";
 import { RuleSet } from "@/wab/shared/model/classes";
 import CssInitials from "css-initials";
 import {
@@ -214,9 +222,13 @@ export function getCssOverrides(tag: string, forExprText: boolean) {
       continue;
     }
     if (forExprText) {
-      // If getting CSS overrides for ExprText elements, don't generate
-      // `display` and `position`.
-      if (prop === "display" || prop === "position") {
+      // If getting CSS overrides for HTML ExprText elements, don't generate
+      // `display`, `position` and `text-decoration-line`.
+      if (
+        prop === "display" ||
+        prop === "position" ||
+        prop === "text-decoration-line"
+      ) {
         continue;
       }
       // Generate `white-space: normal` for ExprText.
