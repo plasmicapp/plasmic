@@ -1,8 +1,5 @@
 import { DbCtx } from "@/wab/client/db";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { notNil, tuple } from "@/wab/shared/common";
-import { isPageComponent } from "@/wab/shared/core/components";
-import { RecordedChanges, mergeRecordedChanges } from "@/wab/shared/core/observable-model";
 import { FrameViewMode } from "@/wab/shared/Arenas";
 import {
   adjustAllGridChildren,
@@ -19,7 +16,30 @@ import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { isBaseVariant } from "@/wab/shared/Variants";
 import { getActiveVariantsForFrame } from "@/wab/shared/cached-selectors";
+import { notNil, tuple } from "@/wab/shared/common";
+import { isPageComponent } from "@/wab/shared/core/components";
+import {
+  RecordedChanges,
+  mergeRecordedChanges,
+} from "@/wab/shared/core/observable-model";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
+import { getAllSiteFrames, isTplAttachedToSite } from "@/wab/shared/core/sites";
+import {
+  ensureCorrectImplicitStates,
+  removeImplicitStatesAfterRemovingTplNode,
+} from "@/wab/shared/core/states";
+import {
+  buildParamToComponent as buildParamToComponentMap,
+  flattenTpls,
+  getTplOwnerComponent,
+  isGrid,
+  isTplComponent,
+  isTplContainer,
+  isTplTag,
+  isTplTagOrComponent,
+  isTplVariantable,
+  tryGetOwnerSite,
+} from "@/wab/shared/core/tpls";
 import {
   Arg,
   RenderExpr,
@@ -37,20 +57,6 @@ import {
 } from "@/wab/shared/model/model-change-util";
 import { fixupForPlume } from "@/wab/shared/plume/plume-utils";
 import { isStretchyComponent } from "@/wab/shared/sizingutils";
-import { getAllSiteFrames } from "@/wab/shared/core/sites";
-import { ensureCorrectImplicitStates } from "@/wab/shared/core/states";
-import {
-  buildParamToComponent as buildParamToComponentMap,
-  flattenTpls,
-  getTplOwnerComponent,
-  isGrid,
-  isTplComponent,
-  isTplContainer,
-  isTplTag,
-  isTplTagOrComponent,
-  isTplVariantable,
-  tryGetOwnerSite,
-} from "@/wab/shared/core/tpls";
 
 /**
  * Applies various fixes to the tpl trees based on the argument changes.
@@ -252,8 +258,22 @@ function fixupIncorrectlyNamedNodes(
   }
 }
 
-// Ensure that all implicit states are properly exposed
+// Ensure that all implicit states are properly exposed/removed
 function fixupImplicitStates(summary: ChangeSummary) {
+  for (const component of summary.deepUpdatedComponents) {
+    const site = tryGetOwnerSite(component);
+    if (site) {
+      component.states.forEach((state) => {
+        if (state.tplNode && !isTplAttachedToSite(site, state.tplNode)) {
+          removeImplicitStatesAfterRemovingTplNode(
+            site,
+            component,
+            state.tplNode
+          );
+        }
+      });
+    }
+  }
   for (const tree of summary.newTrees) {
     const component = $$$(tree).tryGetOwningComponent();
     if (component) {

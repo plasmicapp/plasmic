@@ -1856,7 +1856,7 @@ export function isTplAttachedToSite(site: Site, tpl: TplNode) {
 }
 
 /**
- * Returns true if `tpl` is the descendant of some note whose parent is a
+ * Returns true if `tpl` is the descendant of some node whose parent is a
  * TplComponent, but the parent does not include tpl in any of its args.  This
  * can happen when a tpl has been detached but its parent pointer isn't
  * updated; and _that_ can happen because the parent pointer isn't "tracked" by
