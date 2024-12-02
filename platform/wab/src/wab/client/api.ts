@@ -1,11 +1,11 @@
 import { analytics } from "@/wab/client/analytics";
+import { storageViewAsKey } from "@/wab/client/app-auth/constants";
 import { ensureIsTopFrame, isHostFrame } from "@/wab/client/cli-routes";
 import { LocalClipboardAction } from "@/wab/client/clipboard/local";
 import {
   SerializableClipboardData,
   serializeClipboardItems,
 } from "@/wab/client/clipboard/ReadableClipboard";
-import { storageViewAsKey } from "@/wab/client/components/app-auth/ViewAsButton";
 import { PushPullQueue } from "@/wab/commons/asyncutil";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import { transformErrors } from "@/wab/shared/ApiErrors/errors";

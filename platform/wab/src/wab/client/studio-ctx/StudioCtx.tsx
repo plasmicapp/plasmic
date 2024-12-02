@@ -9,6 +9,7 @@ import { ProjectDependencyManager } from "@/wab/client/ProjectDependencyManager"
 import { zoomJump } from "@/wab/client/Zoom";
 import { apiKey, invalidationKey } from "@/wab/client/api";
 import { getProjectReleases } from "@/wab/client/api-hooks";
+import { storageViewAsKey } from "@/wab/client/app-auth/constants";
 import {
   UU,
   mkProjectLocation,
@@ -22,7 +23,6 @@ import {
   showReloadError,
   showSaveErrorRecoveredNotice,
 } from "@/wab/client/components/Messages";
-import { storageViewAsKey } from "@/wab/client/components/app-auth/ViewAsButton";
 import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import { SiteOps } from "@/wab/client/components/canvas/site-ops";
 import {

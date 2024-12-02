@@ -1,7 +1,7 @@
+import { storageViewAsKey } from "@/wab/client/app-auth/constants";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { isHostFrame, UU } from "@/wab/client/cli-routes";
 import { syncCodeComponentsAndHandleErrors } from "@/wab/client/code-components/code-components";
-import { storageViewAsKey } from "@/wab/client/components/app-auth/ViewAsButton";
 import importAndRetry from "@/wab/client/components/dynamic-import";
 import {
   PreviewCtx,
