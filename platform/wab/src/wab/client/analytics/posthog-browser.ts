@@ -14,6 +14,7 @@ export function initPosthogBrowser(
 ): PostHogAnalytics | undefined {
   const ph = posthog.init(POSTHOG_API_KEY, {
     api_host: "https://us.i.posthog.com",
+    autocapture: false, // disable because it causes too many events
     disable_session_recording: true, // enable with `recordSession`
     ...config,
   });
