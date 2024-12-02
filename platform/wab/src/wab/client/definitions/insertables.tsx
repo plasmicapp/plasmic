@@ -214,8 +214,6 @@ export const INSERTABLES: readonly AddItem[] = [
         display: "flex",
         flexDirection: "row",
         position: "relative",
-        alignItems: "stretch",
-        justifyContent: "flex-start",
         ...getSimplifiedStyles(
           AddItemKey.hstack,
           vc.studioCtx.getAddItemPrefs()
@@ -237,8 +235,6 @@ export const INSERTABLES: readonly AddItem[] = [
         display: "flex",
         flexDirection: "column",
         position: "relative",
-        alignItems: "stretch",
-        justifyContent: "flex-start",
         ...getSimplifiedStyles(
           AddItemKey.vstack,
           vc.studioCtx.getAddItemPrefs()

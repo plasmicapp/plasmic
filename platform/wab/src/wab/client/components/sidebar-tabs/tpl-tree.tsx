@@ -2,6 +2,7 @@ import {
   getPreferredInsertLocs,
   InsertRelLoc,
 } from "@/wab/client/components/canvas/view-ops";
+import { useCommentsCtx } from "@/wab/client/components/comments/CommentsProvider";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import { PlumyIcon } from "@/wab/client/components/plume/plume-markers";
 import {
@@ -9,7 +10,6 @@ import {
   VariantSettingPopoverContent,
   VariantSettingPopoverTitle,
 } from "@/wab/client/components/style-controls/DefinedIndicator";
-import { useCommentsCtx } from "@/wab/client/components/comments/CommentsProvider";
 import Indicator from "@/wab/client/components/style-controls/Indicator";
 import { makeTreeNodeMenu } from "@/wab/client/components/tpl-menu";
 import { DragItem } from "@/wab/client/components/widgets";
@@ -105,7 +105,10 @@ import {
   isPlainTextTplSlot,
 } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
-import { isBaseVariant, isVariantSettingEmpty } from "@/wab/shared/Variants";
+import {
+  isBaseVariant,
+  isVariantSettingEmptyExcludingDefaultIgnorableStyles,
+} from "@/wab/shared/Variants";
 import { TplVisibility } from "@/wab/shared/visibility-utils";
 import { selectionControlsColor } from "@/wab/styles/css-variables";
 import { notification, Tooltip } from "antd";
@@ -322,7 +325,9 @@ const TplTreeNode = observer(function TplTreeNode(props: {
         };
 
         const vs = getRelevantVs();
-        return !!vs && !isVariantSettingEmpty(vs) ? vs : undefined;
+        return !!vs && !isVariantSettingEmptyExcludingDefaultIgnorableStyles(vs)
+          ? vs
+          : undefined;
       }
       return undefined;
     },

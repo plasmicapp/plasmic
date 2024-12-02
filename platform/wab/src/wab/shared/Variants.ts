@@ -4,6 +4,7 @@ import {
   arrayEqIgnoreOrder,
   assert,
   ensure,
+  mapify,
   mkShortId,
   moveIndex,
   tuple,
@@ -537,9 +538,28 @@ export const unclearableBaseStyleProps = [
   "flex-direction",
 ];
 
-export function isVariantSettingEmpty(vs: VariantSetting) {
+export const DEFAULT_BASE_IGNORABLE_STYLES = mapify({
+  position: "relative",
+  display: "flex",
+  "flex-direction": ["row", "column"],
+});
+
+export function isDefaultIgnorableStyleValue(key: string, value: string) {
+  if (DEFAULT_BASE_IGNORABLE_STYLES.has(key)) {
+    const defaultValue = DEFAULT_BASE_IGNORABLE_STYLES.get(key);
+
+    if (
+      (Array.isArray(defaultValue) && defaultValue.includes(value)) ||
+      defaultValue === value
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isVariantSettingClean(vs: VariantSetting) {
   return (
-    Object.keys(vs.rs.values).length === 0 &&
     vs.rs.mixins.length === 0 &&
     vs.args.length === 0 &&
     L.isEmpty(vs.attrs) &&
@@ -547,6 +567,22 @@ export function isVariantSettingEmpty(vs: VariantSetting) {
     L.isNil(vs.dataRep) &&
     L.isNil(vs.text)
   );
+}
+
+export function isVariantSettingEmptyExcludingDefaultIgnorableStyles(
+  vs: VariantSetting
+) {
+  if (!isBaseVariant(vs.variants)) {
+    return isVariantSettingEmpty(vs);
+  }
+  const filteredValuesCount = Object.entries(vs.rs.values).filter(
+    ([key, value]) => !isDefaultIgnorableStyleValue(key, value)
+  ).length;
+
+  return filteredValuesCount === 0 && isVariantSettingClean(vs);
+}
+export function isVariantSettingEmpty(vs: VariantSetting) {
+  return Object.keys(vs.rs.values).length === 0 && isVariantSettingClean(vs);
 }
 
 export function clearVariantSetting(vs: VariantSetting) {

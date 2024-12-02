@@ -1,4 +1,3 @@
-import { BackgroundLayer } from "@/wab/shared/core/bg-styles";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { resolvedBackgroundImageCss } from "@/wab/client/components/sidebar-tabs/background-section";
 import { EditMixinButton } from "@/wab/client/components/sidebar/MixinControls";
@@ -23,17 +22,21 @@ import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import VariantGroupIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__VariantGroup";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { cx, ensure, ensureArray, swallow } from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import { derefTokenRefs, tryParseTokenRef } from "@/wab/commons/StyleToken";
-import { getComponentDisplayName } from "@/wab/shared/core/components";
-import { ExprCtx, summarizeExpr, tryExtractLit } from "@/wab/shared/core/exprs";
 import * as cssPegParser from "@/wab/gen/cssPegParser";
 import {
   computedProjectFlags,
   TokenValueResolver,
 } from "@/wab/shared/cached-selectors";
+import { cx, ensure, ensureArray, swallow } from "@/wab/shared/common";
+import { BackgroundLayer } from "@/wab/shared/core/bg-styles";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
+import { ExprCtx, summarizeExpr, tryExtractLit } from "@/wab/shared/core/exprs";
+import { allStyleTokens } from "@/wab/shared/core/sites";
+import { sourceMatchThemeStyle } from "@/wab/shared/core/styles";
+import { isTplComponent, isTplTag } from "@/wab/shared/core/tpls";
 import {
   DefinedIndicatorType,
   isTargetOverwritten,
@@ -66,6 +69,7 @@ import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   clearVariantSetting,
   isBaseVariant,
+  isDefaultIgnorableStyleValue,
   isGlobalVariant,
   isPrivateStyleVariant,
   isStyleVariant,
@@ -77,9 +81,6 @@ import {
   getVariantSettingVisibility,
   getVisibilityLabel,
 } from "@/wab/shared/visibility-utils";
-import { allStyleTokens } from "@/wab/shared/core/sites";
-import { sourceMatchThemeStyle } from "@/wab/shared/core/styles";
-import { isTplComponent, isTplTag } from "@/wab/shared/core/tpls";
 import { Alert, Menu, Popover, Tooltip } from "antd";
 import classNames from "classnames";
 import L from "lodash";
@@ -950,30 +951,37 @@ export const VariantSettingPopoverContent = observer(
             </Tooltip>
           </SourceRow>
         )}
-        {exp.props().map((prop) => (
-          <SourceRow
-            key={prop}
-            title={getLabelForStyleName(prop)}
-            type="target"
-            onClear={
+        {exp
+          .props()
+          .filter(
+            (prop) =>
               !isBaseVariant(vs.variants) ||
-              !unclearableBaseStyleProps.includes(prop)
-                ? () => viewCtx.change(() => exp.clear(prop))
-                : undefined
-            }
-          >
-            <SourceValue
-              site={site}
-              source={{
-                type: "style",
-                prop,
-                value: exp.get(prop),
-                combo: vs.variants,
-              }}
-              editable={false}
-            />
-          </SourceRow>
-        ))}
+              isDefaultIgnorableStyleValue(prop, exp.get(prop))
+          )
+          .map((prop) => (
+            <SourceRow
+              key={prop}
+              title={getLabelForStyleName(prop)}
+              type="target"
+              onClear={
+                !isBaseVariant(vs.variants) ||
+                !unclearableBaseStyleProps.includes(prop)
+                  ? () => viewCtx.change(() => exp.clear(prop))
+                  : undefined
+              }
+            >
+              <SourceValue
+                site={site}
+                source={{
+                  type: "style",
+                  prop,
+                  value: exp.get(prop),
+                  combo: vs.variants,
+                }}
+                editable={false}
+              />
+            </SourceRow>
+          ))}
       </>
     );
   }
