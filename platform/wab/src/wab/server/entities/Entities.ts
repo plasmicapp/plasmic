@@ -1267,6 +1267,9 @@ export class Comment extends Base<"CommentId"> {
   @Column("boolean", { default: false })
   resolved: boolean;
 
+  @Column("boolean", { default: false })
+  isEmailNotificationSent: boolean;
+
   @Column("jsonb")
   location: CommentLocation;
 
