@@ -956,7 +956,7 @@ export const VariantSettingPopoverContent = observer(
           .filter(
             (prop) =>
               !isBaseVariant(vs.variants) ||
-              isDefaultIgnorableStyleValue(prop, exp.get(prop))
+              !isDefaultIgnorableStyleValue(prop, exp.get(prop))
           )
           .map((prop) => (
             <SourceRow
