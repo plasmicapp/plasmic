@@ -375,44 +375,9 @@ export class ProjectDependencyManager {
     return projectDependency;
   }
 
-  async addInstallable(projectId: string, name: string) {
-    // Get installable (e.g. Plexus) pkg info
-    const { pkg: pkgInfo } = await this._sc.appCtx.api.getPkgByProjectId(
-      projectId
-    );
-
-    /**
-     * Get installable (e.g. Plexus) pkg version info, and its deps' pkg version info
-     */
-    const { pkg, depPkgs } = await (pkgInfo
-      ? this._sc.appCtx.api.getPkgVersion(pkgInfo.id)
-      : {});
-
-    assert(
-      pkgInfo && pkg && depPkgs,
-      "Unable to load insertable templates project"
-    );
-
-    const { site: installableSite } = unbundleProjectDependency(
-      this._sc.bundler(),
-      pkg,
-      depPkgs
-    ).projectDependency;
-
-    assert(installableSite, `Unable to install ${name}`);
-
-    // ensure all dependencies are valid
-    installableSite.projectDependencies.forEach((importedDep) => {
-      this.canAddDependency(importedDep);
-    });
-
-    await Promise.all(
-      installableSite.projectDependencies
-        .filter((importedDep) => !this.containsPkgId(importedDep.pkgId))
-        .map((importedDep) => this.addDependency(importedDep))
-    );
-
-    return installableSite;
+  async maybeAddDependency(dep: ProjectDependency) {
+    this.canAddDependency(dep);
+    return await this.addDependency(dep);
   }
 
   addTransitiveDepAsDirectDep(dep: ProjectDependency) {

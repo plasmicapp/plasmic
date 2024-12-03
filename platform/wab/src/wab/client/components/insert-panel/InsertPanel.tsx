@@ -418,8 +418,7 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
         try {
           const installed = await DragInsertManager.install(studioCtx, item);
           if (!installed) {
-            // Happens when maybe devflag does not have the right info. E.g. there is no arena named "Abc" for devflag installable item `entryPoint: {type: "arena", name: "abc"}`
-            throw new Error("Failed to fetch installable info");
+            return;
           }
           await studioCtx.changeUnsafe(() => {
             if (isKnownArena(installed)) {

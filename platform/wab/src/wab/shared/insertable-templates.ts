@@ -37,8 +37,7 @@ import { assertSiteInvariants } from "@/wab/shared/site-invariants";
 
 export function cloneInsertableTemplateArena(
   site: Site,
-  info: InsertableTemplateArenaExtraInfo,
-  plumeSite: Site | undefined
+  info: InsertableTemplateArenaExtraInfo
 ) {
   const { arena } = info;
   const tplMgr = new TplMgr({ site });
@@ -51,7 +50,7 @@ export function cloneInsertableTemplateArena(
         ...info,
         component: c.container.component,
       },
-      plumeSite
+      undefined
     );
 
     const newVariants = [

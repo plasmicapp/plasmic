@@ -1,9 +1,11 @@
 // Returns 'changed', 'unchanged', 'conflict'.  Case-insensitive.
+import { promptChooseItems } from "@/wab/client/components/modals/ChooseItemsModal";
 import {
   reactPrompt,
   showTemporaryPrompt,
 } from "@/wab/client/components/quick-modals";
 import Button from "@/wab/client/components/widgets/Button";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import NewComponentModal, {
   NewComponentInfo,
 } from "@/wab/client/components/widgets/NewComponentModal";
@@ -13,11 +15,13 @@ import NewPageModal, {
 import Textbox from "@/wab/client/components/widgets/Textbox";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { maybe, nullToUndefined } from "@/wab/shared/common";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { DEVFLAGS } from "@/wab/shared/devflags";
+import { InstallableOpts } from "@/wab/shared/insertable-templates/types";
+import { ProjectDependency, Site } from "@/wab/shared/model/classes";
 import { Form, notification, Select } from "antd";
-import L from "lodash";
+import L, { sortBy } from "lodash";
 import React from "react";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 const { Option } = Select;
 
 export interface HasName {
@@ -109,6 +113,49 @@ export async function promptPageName(
   });
 }
 
+export async function promptInstallablePrefs(
+  installableDeps: ProjectDependency[]
+) {
+  return await showTemporaryPrompt<InstallableOpts>((onSubmit, onCancel) => (
+    <Modal
+      visible={true}
+      onCancel={onCancel}
+      closable={false}
+      style={{
+        backgroundColor: "white",
+      }}
+      wrapClassName="prompt-modal"
+      modalRender={() => {
+        return (
+          <div>
+            <p>
+              This project would like to install the following dependencies:
+            </p>
+            <ul>
+              {installableDeps.map((dep) => (
+                <li key={dep.pkgId}>{dep.name}</li>
+              ))}
+            </ul>
+            <p>Would you like to install them?</p>
+            <div>
+              <Button
+                className="mr-sm"
+                type="primary"
+                htmlType="submit"
+                data-test-id="prompt-submit"
+                onClick={() => onSubmit({ flatten: false })}
+              >
+                {"Install"}
+              </Button>
+              <Button onClick={() => onSubmit({ flatten: true })}>No</Button>
+            </div>
+          </div>
+        );
+      }}
+    />
+  ));
+}
+
 export async function promptComponentTemplate(studioCtx: StudioCtx) {
   return await showTemporaryPrompt<NewComponentInfo>((onSubmit, onCancel) => (
     <Modal
@@ -148,6 +195,39 @@ export async function promptPageTemplate(studioCtx: StudioCtx) {
       )}
     />
   ));
+}
+
+export async function promptChooseInstallableDependencies(
+  studioCtx: StudioCtx,
+  site: Site
+) {
+  const res = await promptChooseItems({
+    title: "Choose additional dependencies",
+    description:
+      "This package comes with additional (optional) dependencies. Please choose the ones you would like to install.",
+    group: sortBy(
+      site.projectDependencies.map((dep) => {
+        const isAlreadyInstalled =
+          studioCtx.projectDependencyManager.containsPkgId(dep.pkgId);
+        const isRequired = isHostLessPackage(dep.site);
+        let label = dep.name;
+        if (isAlreadyInstalled) {
+          label += ` (installed)`;
+        } else if (isRequired) {
+          label += ` (required)`;
+        }
+        return {
+          value: dep.name,
+          label,
+          item: dep,
+          defaultChecked: isAlreadyInstalled || isRequired,
+          disabled: isAlreadyInstalled || isRequired,
+        };
+      }),
+      "disabled"
+    ),
+  });
+  return res?.map((i) => i.item);
 }
 
 interface DescAndTags {

@@ -184,6 +184,31 @@ export const getScreenVariantToInsertableTemplate = async (
   }
 };
 
+export const getSiteByProjectId = async (
+  studioCtx: StudioCtx,
+  projectId: string
+) => {
+  const { pkg: pkgInfo } = await studioCtx.appCtx.api.getPkgByProjectId(
+    projectId
+  );
+
+  const { pkg, depPkgs } = await (pkgInfo
+    ? studioCtx.appCtx.api.getPkgVersion(pkgInfo.id)
+    : {});
+
+  assert(pkgInfo && pkg && depPkgs, "Unable to load project");
+
+  const { site } = unbundleProjectDependency(
+    studioCtx.bundler(),
+    pkg,
+    depPkgs
+  ).projectDependency;
+
+  assert(site, `Unable to install ${pkgInfo.name}`);
+
+  return site;
+};
+
 export const getHostLessDependenciesToInsertableTemplate = async (
   studioCtx: StudioCtx,
   sourceSite: Site

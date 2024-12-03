@@ -39,9 +39,11 @@ import {
   buildInsertableExtraInfo,
   getHostLessDependenciesToInsertableTemplate,
   getScreenVariantToInsertableTemplate,
+  getSiteByProjectId,
   postInsertableTemplate,
 } from "@/wab/client/insertable-templates";
 import PlumeMarkIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__PlumeMark";
+import { promptChooseInstallableDependencies } from "@/wab/client/prompts";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { trackEvent } from "@/wab/client/tracking";
@@ -152,13 +154,23 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
     ): Promise<CreateAddInstallableExtraInfo | undefined> => {
       const { projectId } = meta;
       const { screenVariant } = await getScreenVariantToInsertableTemplate(sc);
+      const installableSite = await getSiteByProjectId(sc, projectId);
+      const deps = await promptChooseInstallableDependencies(
+        sc,
+        installableSite
+      );
+
+      if (!deps) {
+        return undefined;
+      }
+
       return sc.app.withSpinner(
         (async () => {
-          const installableSite =
-            await sc.projectDependencyManager.addInstallable(
-              projectId,
-              meta.name
-            );
+          await Promise.all(
+            deps.map((dep) =>
+              sc.projectDependencyManager.maybeAddDependency(dep)
+            )
+          );
 
           const commonInfo: InsertableTemplateExtraInfo = {
             site: installableSite,
@@ -206,23 +218,23 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
     },
     factory: (sc: StudioCtx, extraInfo: CreateAddInstallableExtraInfo) => {
       if (!extraInfo) {
-        return undefined;
+        return;
       }
       if (meta.entryPoint.type === "arena") {
         if (!extraInfo.arena) {
-          return undefined;
+          // Happens when maybe devflag does not have the right info. E.g. there is no arena named "Abc" for devflag installable item `entryPoint: {type: "arena", name: "abc"}`
+          throw new Error("Failed to fetch installable info");
         }
         const { arena, seenFonts } = cloneInsertableTemplateArena(
           sc.site,
-          extraInfo as InsertableTemplateArenaExtraInfo,
-          sc.projectDependencyManager.plumeSite
+          extraInfo as InsertableTemplateArenaExtraInfo
         );
         postInsertableTemplate(sc, seenFonts);
         return arena;
       }
 
       if (!extraInfo.component) {
-        return undefined;
+        throw new Error("Failed to fetch installable info");
       }
 
       const { component, seenFonts } = cloneInsertableTemplateComponent(
