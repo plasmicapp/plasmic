@@ -1,22 +1,7 @@
-import {
-  assert,
-  ensure,
-  ensureArray,
-  ensureArrayOfInstances,
-  partitions,
-  replaceAll,
-  setsEq,
-  sortAs,
-} from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
 import {
-  getSuperComponentVariantGroupToComponent,
-  isPageComponent,
-  isPlainComponent,
-} from "@/wab/shared/core/components";
-import {
-  ensurePositionManagedFrame,
   FrameViewMode,
+  ensurePositionManagedFrame,
   getActivatedVariantsForFrame,
   getArenaFrameCellsInGrid,
   getArenaFramesInGrid,
@@ -26,34 +11,7 @@ import {
   mkArenaFrame,
   resizeFrameForScreenVariant,
 } from "@/wab/shared/Arenas";
-import {
-  findNonEmptyCombos,
-  usedGlobalVariantGroups,
-} from "@/wab/shared/cached-selectors";
-import { parseScreenSpec } from "@/wab/shared/css-size";
-import {
-  ArenaFrame,
-  ArenaFrameCell,
-  ArenaFrameGrid,
-  ArenaFrameRow,
-  Component,
-  ComponentArena,
-  ComponentVariantGroup,
-  ensureKnownVariant,
-  ensureKnownVariantGroup,
-  ensureMaybeKnownVariantGroup,
-  isKnownVariant,
-  isKnownVariantGroup,
-  PageArena,
-  Site,
-  Variant,
-  VariantGroup,
-} from "@/wab/shared/model/classes";
 import { FramePinManager } from "@/wab/shared/PinManager";
-import {
-  getComponentDefaultSize,
-  isExplicitPixelSize,
-} from "@/wab/shared/sizingutils";
 import {
   ensureValidCombo,
   ensureVariantSetting,
@@ -67,8 +25,51 @@ import {
   isScreenVariant,
   isScreenVariantGroup,
 } from "@/wab/shared/Variants";
+import {
+  findNonEmptyCombos,
+  usedGlobalVariantGroups,
+} from "@/wab/shared/cached-selectors";
 import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
+import {
+  assert,
+  ensure,
+  ensureArray,
+  ensureArrayOfInstances,
+  partitions,
+  remove,
+  replaceAll,
+  setsEq,
+  sortAs,
+} from "@/wab/shared/common";
+import {
+  getSuperComponentVariantGroupToComponent,
+  isPageComponent,
+  isPlainComponent,
+} from "@/wab/shared/core/components";
 import { getComponentArena } from "@/wab/shared/core/sites";
+import { parseScreenSpec } from "@/wab/shared/css-size";
+import {
+  ArenaFrame,
+  ArenaFrameCell,
+  ArenaFrameGrid,
+  ArenaFrameRow,
+  Component,
+  ComponentArena,
+  ComponentVariantGroup,
+  PageArena,
+  Site,
+  Variant,
+  VariantGroup,
+  ensureKnownVariant,
+  ensureKnownVariantGroup,
+  ensureMaybeKnownVariantGroup,
+  isKnownVariant,
+  isKnownVariantGroup,
+} from "@/wab/shared/model/classes";
+import {
+  getComponentDefaultSize,
+  isExplicitPixelSize,
+} from "@/wab/shared/sizingutils";
 import orderBy from "lodash/orderBy";
 import pick from "lodash/pick";
 import uniqBy from "lodash/uniqBy";
@@ -769,6 +770,35 @@ export function ensureComponentArenaRowsOrder(
     );
     arenaRows.splice(0, arenaRows.length, ...orderedRows);
   }
+}
+
+export function moveVariantCellInComponentArena(
+  site: Site,
+  component: Component,
+  variant: Variant,
+  oldParent: VariantGroup,
+  newParent: VariantGroup
+) {
+  const arena = getComponentArena(site, component);
+
+  if (!arena) {
+    return;
+  }
+
+  const oldRow = getRowForVariantGroupInComponentArena(arena, oldParent);
+  const newRow = getRowForVariantGroupInComponentArena(arena, newParent);
+
+  const cell = oldRow?.cols.find((c) => c.cellKey === variant);
+
+  if (!cell) {
+    return;
+  }
+
+  remove(oldRow?.cols ?? [], cell);
+  newRow?.cols.push(cell);
+
+  ensureComponentArenaColsOrder(site, component, oldParent);
+  ensureComponentArenaColsOrder(site, component, newParent);
 }
 
 function getOrderedVariants(site: Site, group: VariantGroup) {

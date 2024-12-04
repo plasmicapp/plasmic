@@ -97,6 +97,7 @@ import {
   isSuperVariantFrame,
   maybeEnsureManagedFrameForGlobalVariantInComponentArena,
   mkComponentArena,
+  moveVariantCellInComponentArena,
   removeCustomComponentFrame,
   removeSuperOrGlobalVariantComponentFrame,
 } from "@/wab/shared/component-arenas";
@@ -2221,6 +2222,14 @@ export class TplMgr {
           }
         }
       }
+
+      moveVariantCellInComponentArena(
+        this.site(),
+        component,
+        variant,
+        oldParent,
+        newGroup
+      );
     }
   }
 
