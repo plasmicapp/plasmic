@@ -21,6 +21,7 @@ import {
   ensureCustomFrameForActivatedVariants,
   getFrameHeight,
 } from "@/wab/shared/Arenas";
+import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
 import { maybe, spawn } from "@/wab/shared/common";
 import { getComponentArenaRowLabel } from "@/wab/shared/component-arenas";
 import {
@@ -232,7 +233,11 @@ export const ComponentArenaLayout = observer(
               }
               return (
                 <GhostFrame
-                  tooltip="Add interaction variant"
+                  tooltip={`Add ${
+                    isTplRootWithCodeComponentVariants(component.tplTree)
+                      ? "registered"
+                      : "interaction"
+                  } variant`}
                   width={framesWidth}
                   height={framesHeight}
                   onClick={() =>

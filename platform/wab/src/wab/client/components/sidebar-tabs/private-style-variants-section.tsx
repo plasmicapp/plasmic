@@ -133,6 +133,7 @@ export const PrivateStyleVariantsPanel = observer(
                     variant={variant}
                     forTag={tpl.tag}
                     forRoot={tpl === component.tplTree}
+                    component={component}
                     onSelectorsChange={(sels) =>
                       viewCtx.change(() => {
                         variant.selectors = selectorsToVariantSelectors(sels);

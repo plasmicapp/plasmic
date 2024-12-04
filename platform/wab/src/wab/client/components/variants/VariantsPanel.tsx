@@ -1009,6 +1009,7 @@ const ComponentStyleVariantRow = observer(
         })}
         label={
           <StyleVariantLabel
+            component={component}
             variant={variant}
             forTag={
               isKnownTplTag(component.tplTree) ? component.tplTree.tag : ""

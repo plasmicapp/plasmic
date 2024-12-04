@@ -232,13 +232,22 @@ function StyleVariantLabel_(
     onSelectorsChange: (selectors: Selector[]) => void;
     onBlur?: () => void;
     forRoot?: boolean;
+    component: Component;
   },
   ref: React.Ref<EditableLabelHandles>
 ) {
   const studioCtx = useStudioCtx();
-  const { defaultEditing, variant, forTag, onSelectorsChange, forRoot } = props;
+  const {
+    defaultEditing,
+    variant,
+    forTag,
+    onSelectorsChange,
+    forRoot,
+    component,
+  } = props;
   const selectors = styleVariantToSelectors(variant, studioCtx.site);
 
+  const tplRoot = component.tplTree;
   const isPrivate = isPrivateStyleVariant(variant);
   return (
     <div
@@ -269,6 +278,9 @@ function StyleVariantLabel_(
               className="textbox--listitem focused-input-bg"
               focusedClassName="focused"
               forRoot={forRoot}
+              codeComponent={
+                isTplCodeComponent(tplRoot) ? tplRoot.component : undefined
+              }
             />
           )
         }
