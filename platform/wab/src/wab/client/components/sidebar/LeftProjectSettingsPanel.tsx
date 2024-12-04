@@ -18,7 +18,7 @@ import {
   isPlainObjectPropType,
   wabTypeToPropType,
 } from "@/wab/shared/code-components/code-components";
-import { makeGlobalContextPropName } from "@/wab/shared/codegen/react-p/utils";
+import { makeGlobalContextPropName } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { paramToVarName } from "@/wab/shared/codegen/util";
 import {
   ensure,

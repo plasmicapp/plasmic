@@ -1,12 +1,11 @@
-import { xAddAll } from "@/wab/shared/common";
 import { VariantGroupType, isGlobalVariant } from "@/wab/shared/Variants";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
 import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
-import { getReactWebPackageName } from "@/wab/shared/codegen/react-p";
 import {
   makeGlobalVariantIdFileName,
   makeUseClient,
-} from "@/wab/shared/codegen/react-p/utils";
+} from "@/wab/shared/codegen/react-p/serialize-utils";
+import { getReactWebPackageName } from "@/wab/shared/codegen/react-p/utils";
 import {
   extractUsedGlobalVariantsForTokens,
   extractUsedTokensForComponents,
@@ -20,7 +19,10 @@ import {
   toClassName,
   toVarName,
 } from "@/wab/shared/codegen/util";
+import { xAddAll } from "@/wab/shared/common";
 import { plasmicImgAttrStyles } from "@/wab/shared/core/style-props";
+import { createExpandedRuleSetMerger } from "@/wab/shared/core/styles";
+import { isTplTag, isTplVariantable } from "@/wab/shared/core/tpls";
 import { makeLayoutAwareRuleSet } from "@/wab/shared/layoututils";
 import {
   Component,
@@ -30,8 +32,6 @@ import {
   VariantGroup,
   VariantSetting,
 } from "@/wab/shared/model/classes";
-import { createExpandedRuleSetMerger } from "@/wab/shared/core/styles";
-import { isTplTag, isTplVariantable } from "@/wab/shared/core/tpls";
 import L from "lodash";
 
 export interface GlobalVariantConfig {

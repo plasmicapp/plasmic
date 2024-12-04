@@ -50,7 +50,7 @@ import {
 } from "@/wab/shared/cached-selectors";
 import { getTplCodeComponentVariantMeta } from "@/wab/shared/code-components/variants";
 import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
-import { makeCssClassNameForVariantCombo } from "@/wab/shared/codegen/react-p";
+import { makeCssClassNameForVariantCombo } from "@/wab/shared/codegen/react-p/class-names";
 import {
   makeRootResetClassName,
   makeWabFlexContainerClassName,
@@ -59,7 +59,7 @@ import {
   makeWabSlotClassName,
   makeWabSlotStringWrapperClassName,
   makeWabTextClassName,
-} from "@/wab/shared/codegen/react-p/utils";
+} from "@/wab/shared/codegen/react-p/serialize-utils";
 import { TargetEnv } from "@/wab/shared/codegen/types";
 import { toVarName } from "@/wab/shared/codegen/util";
 import {

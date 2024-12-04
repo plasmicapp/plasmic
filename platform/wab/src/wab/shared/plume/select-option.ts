@@ -1,21 +1,21 @@
-import { assert } from "@/wab/shared/common";
 import { internalCanvasElementProps } from "@/wab/shared/canvas-constants";
 import {
-  SerializerBaseContext,
   getExternalParams,
-  getPlumePackageName,
   serializeParamType,
-} from "@/wab/shared/codegen/react-p";
+} from "@/wab/shared/codegen/react-p/params";
 import {
   getExportedComponentName,
   makeDefaultExternalPropsName,
   makePlasmicComponentName,
-} from "@/wab/shared/codegen/react-p/utils";
+} from "@/wab/shared/codegen/react-p/serialize-utils";
+import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
+import { getPlumePackageName } from "@/wab/shared/codegen/react-p/utils";
 import {
   jsLiteral,
   paramToVarName,
   toVarName,
 } from "@/wab/shared/codegen/util";
+import { assert } from "@/wab/shared/common";
 import { Param, TplComponent } from "@/wab/shared/model/classes";
 import { PlumePlugin } from "@/wab/shared/plume/plume-registry";
 import {

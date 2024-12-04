@@ -26,7 +26,7 @@ import type {
   EditingTextContext,
   ViewCtx,
 } from "@/wab/client/studio-ctx/view-ctx";
-import { makeWabFlexContainerClassName } from "@/wab/shared/codegen/react-p/utils";
+import { makeWabFlexContainerClassName } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { cx, ensure, ensureInstance, spawn } from "@/wab/shared/common";
 import {
   ExprCtx,

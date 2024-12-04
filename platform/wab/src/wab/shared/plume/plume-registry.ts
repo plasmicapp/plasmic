@@ -1,8 +1,10 @@
 import type { SubDeps } from "@/wab/client/components/canvas/subdeps";
 import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { isSlot } from "@/wab/shared/SlotUtils";
-import { SerializerBaseContext } from "@/wab/shared/codegen/react-p";
+import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import { toVarName } from "@/wab/shared/codegen/util";
+import { isTplNamable } from "@/wab/shared/core/tpls";
+import { ValComponent } from "@/wab/shared/core/val-nodes";
 import {
   Component,
   Param,
@@ -24,8 +26,6 @@ import { SelectOptionGroupPlugin } from "@/wab/shared/plume/select-option-group"
 import { SwitchPlugin } from "@/wab/shared/plume/switch";
 import { TextInputPlugin } from "@/wab/shared/plume/text-input";
 import { TriggeredOverlayPlugin } from "@/wab/shared/plume/triggered-overlay";
-import { isTplNamable } from "@/wab/shared/core/tpls";
-import { ValComponent } from "@/wab/shared/core/val-nodes";
 import { Action, CodeComponentMeta } from "@plasmicapp/host";
 import React from "react";
 

@@ -1,9 +1,3 @@
-import {
-  getSuperComponents,
-  isCodeComponent,
-  isPageComponent,
-} from "@/wab/shared/core/components";
-import { getProjectFlags } from "@/wab/shared/devflags";
 import { componentToReferenced } from "@/wab/shared/cached-selectors";
 import {
   ComponentGenHelper,
@@ -13,8 +7,19 @@ import {
   makeIconImports,
   makePictureImports,
 } from "@/wab/shared/codegen/image-assets";
+import { serializeDataReps } from "@/wab/shared/codegen/react-p/data-reps";
+import { getUsedGlobalVariantGroups } from "@/wab/shared/codegen/react-p/global-variants";
 import { optimizeGeneratedCodeForHostlessPackages } from "@/wab/shared/codegen/react-p/optimize-hostless-packages";
+import { makePageMetadataOutput } from "@/wab/shared/codegen/react-p/page-metadata";
 import {
+  getArgParams,
+  getGenableVariantGroups,
+  serializeArgsDefaultValues,
+  serializeArgsType,
+  serializeVariantsArgsType,
+} from "@/wab/shared/codegen/react-p/params";
+import {
+  asOneNode,
   getExportedComponentName,
   getHostNamedImportsForRender,
   getHostNamedImportsForSkeleton,
@@ -30,6 +35,19 @@ import {
   makeVariantPropsName,
   makeVariantsArgTypeName,
   makeWabFlexContainerClassName,
+  maybeCondExpr,
+} from "@/wab/shared/codegen/react-p/serialize-utils";
+import { serializePlasmicSuperContext } from "@/wab/shared/codegen/react-p/super-context";
+import { serializeTplTextBlockContent } from "@/wab/shared/codegen/react-p/text";
+import {
+  SerializerBaseContext,
+  SerializerSiteContext,
+} from "@/wab/shared/codegen/react-p/types";
+import {
+  deriveReactHookSpecs,
+  generateReferencedImports,
+  getOrderedExplicitVSettings,
+  makeChildrenStr,
 } from "@/wab/shared/codegen/react-p/utils";
 import {
   ComponentExportOutput,
@@ -38,6 +56,27 @@ import {
 } from "@/wab/shared/codegen/types";
 import { jsLiteral } from "@/wab/shared/codegen/util";
 import { makeGlobalVariantGroupImportTemplate } from "@/wab/shared/codegen/variants";
+import {
+  getParamNames,
+  getSuperComponents,
+  hasDataSourceInteractions,
+  isCodeComponent,
+  isPageComponent,
+} from "@/wab/shared/core/components";
+import {
+  allImageAssets,
+  allMixins,
+  allStyleTokens,
+} from "@/wab/shared/core/sites";
+import { CssVarResolver } from "@/wab/shared/core/styles";
+import {
+  isTplComponent,
+  isTplSlot,
+  isTplTag,
+  isTplTextBlock,
+  summarizeTpl,
+} from "@/wab/shared/core/tpls";
+import { getProjectFlags } from "@/wab/shared/devflags";
 import {
   Component,
   Site,
@@ -51,49 +90,20 @@ import {
   getPlumeCodegenPlugin,
 } from "@/wab/shared/plume/plume-registry";
 import { makeVariantComboSorter } from "@/wab/shared/variant-sort";
-import { allImageAssets, allMixins, allStyleTokens } from "@/wab/shared/core/sites";
-import { CssVarResolver } from "@/wab/shared/core/styles";
-import {
-  isTplComponent,
-  isTplSlot,
-  isTplTag,
-  isTplTextBlock,
-  summarizeTpl,
-} from "@/wab/shared/core/tpls";
 import L from "lodash";
 import {
-  SerializerBaseContext,
-  SerializerSiteContext,
-  asOneNode,
   computeSerializerSiteContext,
-  deriveReactHookSpecs,
   exportProjectConfig,
-  generateReferencedImports,
-  getArgParams,
-  getGenableVariantGroups,
-  getOrderedExplicitVSettings,
-  getParamNames,
-  getUsedGlobalVariantGroups,
-  hasDataSourceInteractions,
-  makeChildrenStr,
   makeNodeNamer,
-  makePageMetadataOutput,
   makeVariantComboChecker,
-  maybeCondExpr,
   maybeSerializeAsStringProp,
   renderPage,
-  serializeArgsDefaultValues,
-  serializeArgsType,
   serializeComponentLocalVars,
   serializeCssRules,
-  serializeDataReps,
   serializeDefaultExternalProps,
-  serializePlasmicSuperContext,
   serializeTplComponentBase,
   serializeTplSlotBase,
   serializeTplTagBase,
-  serializeTplTextBlockContent,
-  serializeVariantsArgsType,
 } from ".";
 
 export const tplMarker = `/*__TPL_MARKER__*/`;
@@ -396,11 +406,6 @@ export default ${componentName};
       pageMetadata: makePageMetadataOutput(ctx),
     }),
     nameInIdToUuid: {},
-    interpreterMeta: {
-      nodeUuidToName: {},
-      nodeUuidToClassNames: {},
-      nodeUuidToOrderedVsettings: {},
-    },
   };
 }
 

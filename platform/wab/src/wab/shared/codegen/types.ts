@@ -1,22 +1,6 @@
 import { FontUsage } from "@/wab/shared/codegen/fonts";
 import { LocalizationKeyScheme } from "@/wab/shared/localization";
 
-export interface InterpClassNames {
-  unconditionalClasses: string[];
-  conditionalClasses: [string, string[]][];
-}
-
-/**
- * This is some metadata that we collect during codegen.
- * This lets the model-renderer (once called the "interpreter", as in we're just evaluating or interpreting TplNodes
- * into React directly, similar to canvas) reuse various logic that codegen has figured out, storing only the results.
- */
-export interface InterpreterMeta {
-  nodeUuidToName: Record<string, string>;
-  nodeUuidToClassNames: Record<string, InterpClassNames>;
-  nodeUuidToOrderedVsettings: Record<string, string[][]>;
-}
-
 export interface ImageExportOpts {
   scheme: "inlined" | "files" | "public-files" | "cdn";
 }
@@ -279,8 +263,6 @@ export interface ComponentExportOutput {
   pageMetadata?: PageMetadata;
 
   metadata: { [key: string]: string };
-
-  interpreterMeta: InterpreterMeta;
 }
 
 export interface CustomFunctionConfig {

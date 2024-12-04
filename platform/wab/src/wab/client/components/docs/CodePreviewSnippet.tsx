@@ -9,9 +9,9 @@ import {
   DefaultCodePreviewSnippetProps,
   PlasmicCodePreviewSnippet,
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicCodePreviewSnippet";
+import { getExportedComponentName } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { ensure, mkUuid } from "@/wab/shared/common";
 import { isSubComponent } from "@/wab/shared/core/components";
-import { getExportedComponentName } from "@/wab/shared/codegen/react-p/utils";
 import { Component, Site } from "@/wab/shared/model/classes";
 import {
   PlumeDocsExample,

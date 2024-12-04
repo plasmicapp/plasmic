@@ -1,22 +1,22 @@
-import { metaSvc } from "@/wab/shared/core/metas";
 import { internalCanvasElementProps } from "@/wab/shared/canvas-constants";
 import {
   getExternalParams,
-  getPlumePackageName,
   serializeParamType,
-  SerializerBaseContext,
-} from "@/wab/shared/codegen/react-p";
+} from "@/wab/shared/codegen/react-p/params";
 import {
   getExportedComponentName,
   isPageAwarePlatform,
   makeDefaultExternalPropsName,
   makePlasmicComponentName,
-} from "@/wab/shared/codegen/react-p/utils";
+} from "@/wab/shared/codegen/react-p/serialize-utils";
+import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
+import { getPlumePackageName } from "@/wab/shared/codegen/react-p/utils";
 import {
   jsLiteral,
   paramToVarName,
   toVarName,
 } from "@/wab/shared/codegen/util";
+import { metaSvc } from "@/wab/shared/core/metas";
 import { PlumePlugin } from "@/wab/shared/plume/plume-registry";
 import {
   ensureValidPlumeCodeMeta,

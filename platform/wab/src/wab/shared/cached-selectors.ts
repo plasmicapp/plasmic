@@ -33,10 +33,9 @@ import {
 import {
   buildUidToNameMap,
   getNamedDescendantNodes,
-  getParamNames,
   makeNodeNamerFromMap,
-  nodeNameBackwardsCompatibility,
 } from "@/wab/shared/codegen/react-p";
+import { nodeNameBackwardsCompatibility } from "@/wab/shared/codegen/react-p/constants";
 import {
   customInsertMaps,
   ensure,
@@ -54,6 +53,7 @@ import {
   allComponentVariants,
   getComponentDisplayName,
   getNonVariantParams,
+  getParamNames,
   isCodeComponent,
   isPlumeComponent,
   tryGetVariantGroupValueFromArg,

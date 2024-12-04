@@ -1,25 +1,26 @@
-import { assert, ensure } from "@/wab/shared/common";
-import { getParamByVarName } from "@/wab/shared/core/components";
 import { getTplSlotByName, getTplSlotForParam } from "@/wab/shared/SlotUtils";
 import { TplMgr, ensureBaseVariant } from "@/wab/shared/TplMgr";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
 import { internalCanvasElementProps } from "@/wab/shared/canvas-constants";
 import {
-  SerializerBaseContext,
   getExternalParams,
-  getPlumePackageName,
   serializeParamType,
-} from "@/wab/shared/codegen/react-p";
+} from "@/wab/shared/codegen/react-p/params";
 import {
   getExportedComponentName,
   makeDefaultExternalPropsName,
   makePlasmicComponentName,
-} from "@/wab/shared/codegen/react-p/utils";
+} from "@/wab/shared/codegen/react-p/serialize-utils";
+import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
+import { getPlumePackageName } from "@/wab/shared/codegen/react-p/utils";
 import {
   jsLiteral,
   paramToVarName,
   toVarName,
 } from "@/wab/shared/codegen/util";
+import { assert, ensure } from "@/wab/shared/common";
+import { getParamByVarName } from "@/wab/shared/core/components";
+import { fixParentPointers, mkTplComponent } from "@/wab/shared/core/tpls";
 import {
   Component,
   Param,
@@ -34,7 +35,6 @@ import {
   maybeIncludeSerializedDefaultSlotContent,
   serializeComponentSubstitutionCallsForDefaultContents,
 } from "@/wab/shared/plume/plume-utils";
-import { fixParentPointers, mkTplComponent } from "@/wab/shared/core/tpls";
 import type { BaseMenuButtonProps, MenuButtonRef } from "@plasmicapp/react-web";
 import { omit, pick } from "lodash";
 import type React from "react";

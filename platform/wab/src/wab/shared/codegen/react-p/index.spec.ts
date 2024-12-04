@@ -1,6 +1,8 @@
-import { makeCssClassNameForVariantCombo } from "@/wab/shared/codegen/react-p/index";
+import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
+import { mkComponentVariantGroup } from "@/wab/shared/Variants";
+import { makeCssClassNameForVariantCombo } from "@/wab/shared/codegen/react-p/class-names";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
-import { mkParam, ParamTypes } from "@/wab/shared/core/lang";
+import { ParamTypes, mkParam } from "@/wab/shared/core/lang";
 import { mkTplTagX, trackComponentRoot } from "@/wab/shared/core/tpls";
 import {
   Component,
@@ -9,8 +11,6 @@ import {
   VariantGroup,
 } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
-import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
-import { mkComponentVariantGroup } from "@/wab/shared/Variants";
 
 function expectMakeCssClassNameForVariantCombo(
   variantCombo: Variant[],

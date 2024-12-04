@@ -4,24 +4,24 @@ import {
 } from "@/wab/client/components/canvas/canvas-rendering";
 import { handleError } from "@/wab/client/ErrorNotifications";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { getComponentDisplayName } from "@/wab/shared/core/components";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   classNameProp,
   dataCanvasEnvsProp,
   valKeyProp,
   valOwnerProp,
 } from "@/wab/shared/canvas-constants";
+import { getExportedComponentName } from "@/wab/shared/codegen/react-p/serialize-utils";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
+import { summarizeTpl } from "@/wab/shared/core/tpls";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   Component,
   isKnownComponent,
   TplNode,
 } from "@/wab/shared/model/classes";
-import { summarizeTpl } from "@/wab/shared/core/tpls";
 import { debounce } from "lodash";
 import { computedFn } from "mobx-utils";
 import type React from "react";
-import { getExportedComponentName } from "@/wab/shared/codegen/react-p/utils";
 
 export interface CanvasErrorBoundaryProps {
   nodeOrComponent: TplNode | Component;

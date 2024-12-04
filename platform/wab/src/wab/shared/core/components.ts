@@ -72,6 +72,8 @@ import {
 } from "@/wab/shared/core/sites";
 import { removeVariantGroupFromSplits } from "@/wab/shared/core/splits";
 import {
+  DATA_SOURCE_ACTIONS,
+  LOGIN_ACTIONS,
   genOnChangeParamName,
   isOnChangeParam,
   mkState,
@@ -84,6 +86,7 @@ import {
   findExprsInNode,
   findVariantSettingsUnderTpl,
   flattenTpls,
+  getAllEventHandlersForTpl,
   isTplComponent,
   isTplVariantable,
 } from "@/wab/shared/core/tpls";
@@ -2472,4 +2475,36 @@ export function allGlobalVariantsReferencedByComponent(c: Component) {
       })
     ),
   ];
+}
+
+function hasInteractionsWithName(component: Component, names: string[]) {
+  return flattenTpls(component.tplTree)
+    .flatMap((tpl) =>
+      getAllEventHandlersForTpl(component, tpl).flatMap(({ expr }) => {
+        return isKnownEventHandler(expr) ? expr.interactions : [];
+      })
+    )
+    .some((interaction) => names.includes(interaction.actionName));
+}
+
+export function hasDataSourceInteractions(component: Component) {
+  return hasInteractionsWithName(component, DATA_SOURCE_ACTIONS);
+}
+
+export function hasLoginInteractions(component: Component) {
+  return hasInteractionsWithName(component, LOGIN_ACTIONS);
+}
+
+export function hasGlobalActions(component: Component) {
+  return flattenTpls(component.tplTree)
+    .flatMap((tpl) =>
+      getAllEventHandlersForTpl(component, tpl).flatMap(({ expr }) => {
+        return isKnownEventHandler(expr) ? expr.interactions : [];
+      })
+    )
+    .some((interaction) => interaction.actionName.includes("."));
+}
+
+export function getParamNames(component: Component, params: Param[]) {
+  return params.map((p) => paramToVarName(component, p));
 }

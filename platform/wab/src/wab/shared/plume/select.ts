@@ -1,30 +1,35 @@
-import { ensure, withoutNils } from "@/wab/shared/common";
-import { codeLit } from "@/wab/shared/core/exprs";
+import { getTplComponentArg, setTplComponentArg } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
 import { internalCanvasElementProps } from "@/wab/shared/canvas-constants";
 import {
-  generateSubstituteComponentCalls,
   getExternalParams,
-  getPlumePackageName,
-  makeComponentImportName,
   serializeParamType,
-  SerializerBaseContext,
-} from "@/wab/shared/codegen/react-p";
+} from "@/wab/shared/codegen/react-p/params";
 import {
   getExportedComponentName,
   getImportedComponentName,
   makeDefaultExternalPropsName,
   makePlasmicComponentName,
+} from "@/wab/shared/codegen/react-p/serialize-utils";
+import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
+import {
+  generateSubstituteComponentCalls,
+  getPlumePackageName,
+  makeComponentImportName,
 } from "@/wab/shared/codegen/react-p/utils";
 import {
   jsLiteral,
   paramToVarName,
   toVarName,
 } from "@/wab/shared/codegen/util";
+import { ensure, withoutNils } from "@/wab/shared/common";
+import { codeLit } from "@/wab/shared/core/exprs";
 import {
   Component,
-  isKnownVirtualRenderExpr,
   Param,
   TplComponent,
+  isKnownVirtualRenderExpr,
 } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
 import { PlumePlugin } from "@/wab/shared/plume/plume-registry";
@@ -35,9 +40,6 @@ import {
   maybeIncludeSerializedDefaultSlotContent,
   traverseReactEltTree,
 } from "@/wab/shared/plume/plume-utils";
-import { getTplComponentArg, setTplComponentArg } from "@/wab/shared/TplMgr";
-import { $$$ } from "@/wab/shared/TplQuery";
-import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
 import type { SelectRef } from "@plasmicapp/react-web";
 import { omit, pick } from "lodash";
 import { computedFn } from "mobx-utils";

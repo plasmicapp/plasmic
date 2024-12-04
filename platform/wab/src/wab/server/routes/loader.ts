@@ -300,7 +300,6 @@ export function makeGenPublishedLoaderCodeBundleOpts(opts: {
 
 export async function buildLatestLoaderAssets(req: Request, res: Response) {
   const mgr = userDbMgr(req);
-  console.log("!!req", req.url, "\n", req.headers);
   const {
     platform,
     nextjsAppDir,

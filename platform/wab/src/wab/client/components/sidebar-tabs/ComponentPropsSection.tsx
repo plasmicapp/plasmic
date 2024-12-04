@@ -54,7 +54,7 @@ import {
   StudioPropType,
   isAdvancedProp,
 } from "@/wab/shared/code-components/code-components";
-import { getExportedComponentName } from "@/wab/shared/codegen/react-p/utils";
+import { getExportedComponentName } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { paramToVarName } from "@/wab/shared/codegen/util";
 import { assert, ensure, hackyCast, spawn } from "@/wab/shared/common";
 import {

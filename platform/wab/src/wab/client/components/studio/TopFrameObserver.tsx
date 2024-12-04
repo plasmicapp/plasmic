@@ -5,7 +5,7 @@ import { StudioAppUser, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ApiBranch } from "@/wab/shared/ApiSchema";
 import { isComponentArena, isPageArena } from "@/wab/shared/Arenas";
 import { findAllDataSourceOpExprForComponent } from "@/wab/shared/cached-selectors";
-import { getNormalizedComponentName } from "@/wab/shared/codegen/react-p/utils";
+import { getNormalizedComponentName } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { filterFalsy, jsonClone, spawn } from "@/wab/shared/common";
 import {
   isFrameComponent,

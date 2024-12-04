@@ -31,7 +31,7 @@ import {
 import memoizeOne from "memoize-one";
 import { CSSProperties } from "react";
 
-// see visibility-utils.ts
+// see visibility-serialize-utils.ts
 export const PLASMIC_DISPLAY_NONE = "plasmic-display-none";
 
 /** Transforms "fontStyle" into "font-style". Keep leading - if specified. */

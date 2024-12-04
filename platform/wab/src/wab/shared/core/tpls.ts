@@ -174,6 +174,7 @@ import {
   getTplSlotForParam,
   isCodeComponentSlot,
   isDescendantOfVirtualRenderExpr,
+  isPlainTextArgNode,
 } from "@/wab/shared/SlotUtils";
 import { smartHumanize } from "@/wab/shared/strs";
 import {
@@ -3038,3 +3039,48 @@ export const getTplComponentArgByParamName = (
   const arg = getTplComponentArg(tpl, baseVs, param.variable);
   return arg;
 };
+
+/**
+ * Flattens TplNodes in the component tree, but filters out nodes that should
+ * not be serialized.
+ */
+export function flattenTplsWithoutThrowawayNodes(component: Component) {
+  const result: TplNode[] = [];
+  walkTpls(component.tplTree, {
+    pre(tpl) {
+      if (isThrowawayNode(tpl)) {
+        return false;
+      }
+      result.push(tpl);
+      return;
+    },
+  });
+  return result;
+}
+
+function isThrowawayNode(node: TplNode) {
+  if (isKnownTplSlot(node.parent)) {
+    // If this is default content for a TplSlot, we don't need to allow overrides;
+    // default content shouldn't really be used as-is.
+    return true;
+  }
+
+  if (isPlainTextArgNode(node) && !node.name) {
+    // Similarly, if this is text argument, then we also don't
+    // need to generate styles or overrides... unless it has a name,
+    // in which case, maybe the user intended to target it for
+    // overrides.
+    return true;
+  }
+
+  if (isDescendantOfVirtualRenderExpr(node)) {
+    // If this node is part of the virtual tree, then it's not actually part of
+    // this component and so won't be generated or named.
+    return true;
+  }
+  return false;
+}
+
+export function getNumberOfRepeatingAncestors(node: TplNode) {
+  return ancestorsUp(node).filter(isTplRepeated).length;
+}

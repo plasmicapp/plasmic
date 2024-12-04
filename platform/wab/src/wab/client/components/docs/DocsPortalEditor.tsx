@@ -7,8 +7,6 @@ import {
   serializeToggledIcon,
 } from "@/wab/client/components/docs/serialize-docs-preview";
 import { fixWorkerUrl } from "@/wab/client/monaco-worker-url";
-import { ensure } from "@/wab/shared/common";
-import { isCodeComponent, isPlumeComponent } from "@/wab/shared/core/components";
 import {
   makeAssetClassName,
   makeIconAssetFileNameWithoutExt,
@@ -16,7 +14,12 @@ import {
 import {
   getExportedComponentName,
   makePlasmicComponentName,
-} from "@/wab/shared/codegen/react-p/utils";
+} from "@/wab/shared/codegen/react-p/serialize-utils";
+import { ensure } from "@/wab/shared/common";
+import {
+  isCodeComponent,
+  isPlumeComponent,
+} from "@/wab/shared/core/components";
 import L from "lodash";
 import { autorun } from "mobx";
 import { observer } from "mobx-react";

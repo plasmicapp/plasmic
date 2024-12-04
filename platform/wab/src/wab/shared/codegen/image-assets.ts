@@ -1,19 +1,12 @@
-import { assert, ensure, isNumeric, tuple } from "@/wab/shared/common";
-import { isPageComponent } from "@/wab/shared/core/components";
-import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import {
-  extractAllAssetRefs,
-  getTagAttrForImageAsset,
-} from "@/wab/shared/core/image-assets";
+  ReadonlyIRuleSetHelpersX,
+  RuleSetHelpers,
+  readonlyRSH,
+} from "@/wab/shared/RuleSetHelpers";
 import possibleStandardNames from "@/wab/shared/codegen/react-attrs";
-import {
-  getReactWebPackageName,
-  ImportAliasesMap,
-} from "@/wab/shared/codegen/react-p";
-import {
-  makeAssetIdFileName,
-  makeImportedPictureRef,
-} from "@/wab/shared/codegen/react-p/utils";
+import { makeAssetIdFileName } from "@/wab/shared/codegen/react-p/serialize-utils";
+import { ImportAliasesMap } from "@/wab/shared/codegen/react-p/types";
+import { getReactWebPackageName } from "@/wab/shared/codegen/react-p/utils";
 import { ExportOpts } from "@/wab/shared/codegen/types";
 import {
   jsLiteral,
@@ -22,27 +15,13 @@ import {
   toClassName,
   toVarName,
 } from "@/wab/shared/codegen/util";
+import { assert, ensure, isNumeric, tuple } from "@/wab/shared/common";
+import { isPageComponent } from "@/wab/shared/core/components";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import {
-  parseDataUrl,
-  parseDataUrlToSvgXml,
-  parseSvgXml,
-} from "@/wab/shared/data-urls";
-import {
-  Component,
-  Expr,
-  ImageAsset,
-  isKnownImageAsset,
-  isKnownImageAssetRef,
-  isKnownVarRef,
-  Mixin,
-  Site,
-  TplNode,
-} from "@/wab/shared/model/classes";
-import {
-  ReadonlyIRuleSetHelpersX,
-  readonlyRSH,
-  RuleSetHelpers,
-} from "@/wab/shared/RuleSetHelpers";
+  extractAllAssetRefs,
+  getTagAttrForImageAsset,
+} from "@/wab/shared/core/image-assets";
 import { allImageAssets } from "@/wab/shared/core/sites";
 import { expandRuleSets } from "@/wab/shared/core/styles";
 import {
@@ -52,8 +31,25 @@ import {
   isTplPicture,
   pushExprs,
 } from "@/wab/shared/core/tpls";
+import {
+  parseDataUrl,
+  parseDataUrlToSvgXml,
+  parseSvgXml,
+} from "@/wab/shared/data-urls";
+import {
+  Component,
+  Expr,
+  ImageAsset,
+  Mixin,
+  Site,
+  TplNode,
+  isKnownImageAsset,
+  isKnownImageAssetRef,
+  isKnownVarRef,
+} from "@/wab/shared/model/classes";
 import L, { last } from "lodash";
 import mime from "mime/lite";
+import { makeImportedPictureRef } from "src/wab/shared/codegen/react-p/image";
 
 export function extractUsedIconAssetsForComponents(
   site: Site,

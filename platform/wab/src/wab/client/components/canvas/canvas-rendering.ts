@@ -97,15 +97,13 @@ import {
   withoutCodeComponentVariantPrefix,
 } from "@/wab/shared/code-components/variants";
 import { toReactAttr } from "@/wab/shared/codegen/image-assets";
+import { makeCssClassNameForVariantCombo } from "@/wab/shared/codegen/react-p/class-names";
+import { nodeNameBackwardsCompatibility } from "@/wab/shared/codegen/react-p/constants";
 import {
-  deriveReactHookSpecs,
-  getNumberOfRepeatingAncestors,
   getRepetitionIndexInternalName,
   getRepetitionItemInternalName,
-  makeCssClassNameForVariantCombo,
-  nodeNameBackwardsCompatibility,
   serializeDataRepsIndexName,
-} from "@/wab/shared/codegen/react-p";
+} from "@/wab/shared/codegen/react-p/data-reps";
 import { ReactHookSpec } from "@/wab/shared/codegen/react-p/react-hook-spec";
 import {
   NodeNamer,
@@ -116,8 +114,8 @@ import {
   makeWabInstanceClassName,
   makeWabSlotClassName,
   makeWabTextClassName,
-  maybeMakePlasmicImgSrc,
-} from "@/wab/shared/codegen/react-p/utils";
+} from "@/wab/shared/codegen/react-p/serialize-utils";
+import { deriveReactHookSpecs } from "@/wab/shared/codegen/react-p/utils";
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
 import {
   assert,
@@ -187,6 +185,7 @@ import {
   RawTextLike,
   TplTextTag,
   ancestorsUp,
+  getNumberOfRepeatingAncestors,
   getOwnerSite,
   isExprText,
   isGridChild,
@@ -291,6 +290,7 @@ import {
 import { IObservableValue, comparer, computed, observable } from "mobx";
 import { computedFn } from "mobx-utils";
 import type React from "react";
+import { maybeMakePlasmicImgSrc } from "src/wab/shared/codegen/react-p/image";
 import defer = setTimeout;
 
 export const hasLoadingBoundaryKey = "plasmicInternalHasLoadingBoundary";

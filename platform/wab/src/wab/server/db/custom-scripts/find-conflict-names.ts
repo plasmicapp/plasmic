@@ -1,16 +1,17 @@
-import { assert } from "@/wab/shared/common";
-import { getRealParams, getVariantParams } from "@/wab/shared/core/components";
-import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
 import { getMigratedBundle } from "@/wab/server/db/BundleMigrator";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
-import { Bundler } from "@/wab/shared/bundler";
-import {
-  flattenTplsWithoutThrowawayNodes,
-  getParamNames,
-  makeNodeNamer,
-} from "@/wab/shared/codegen/react-p";
-import { paramToVarName } from "@/wab/shared/codegen/util";
+import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
 import { isSlot } from "@/wab/shared/SlotUtils";
+import { Bundler } from "@/wab/shared/bundler";
+import { makeNodeNamer } from "@/wab/shared/codegen/react-p";
+import { paramToVarName } from "@/wab/shared/codegen/util";
+import { assert } from "@/wab/shared/common";
+import {
+  getParamNames,
+  getRealParams,
+  getVariantParams,
+} from "@/wab/shared/core/components";
+import { flattenTplsWithoutThrowawayNodes } from "@/wab/shared/core/tpls";
 import { EntityManager } from "typeorm";
 
 enum CONFLICT_TYPE {

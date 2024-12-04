@@ -10,17 +10,10 @@ import {
 import { scriptExec } from "@/wab/client/dom-utils";
 import { requestIdleCallback } from "@/wab/client/requestidlecallback";
 import { StudioAppUser, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, mkUuid, spawn } from "@/wab/shared/common";
 import { safeCallbackify } from "@/wab/commons/control";
-import {
-  CodeComponent,
-  getCodeComponentHelperImportName,
-  getCodeComponentImportName,
-  isCodeComponent,
-  isPageComponent,
-} from "@/wab/shared/core/components";
-import { DEVFLAGS } from "@/wab/shared/devflags";
-import { ExprCtx, getRawCode } from "@/wab/shared/core/exprs";
+import { SiteInfo } from "@/wab/shared/SharedApi";
+import { getSlotParams } from "@/wab/shared/SlotUtils";
+import { VariantCombo, isScreenVariantGroup } from "@/wab/shared/Variants";
 import {
   allCodeLibraries,
   allCustomFunctions,
@@ -40,20 +33,22 @@ import {
   extractUsedIconAssetsForComponents,
 } from "@/wab/shared/codegen/image-assets";
 import {
-  codeLibraryImportAlias,
   computeSerializerSiteContext,
-  customFunctionImportAlias,
   exportProjectConfig,
   exportReactPresentational,
   exportStyleConfig,
 } from "@/wab/shared/codegen/react-p";
+import {
+  codeLibraryImportAlias,
+  customFunctionImportAlias,
+} from "@/wab/shared/codegen/react-p/custom-functions";
 import {
   makeCodeComponentHelperSkeletonIdFileName,
   makeComponentSkeletonIdFileName,
   makeGlobalGroupImports,
   makePlasmicIsPreviewRootComponent,
   wrapGlobalProviderWithCustomValue,
-} from "@/wab/shared/codegen/react-p/utils";
+} from "@/wab/shared/codegen/react-p/serialize-utils";
 import {
   ComponentExportOutput,
   ExportOpts,
@@ -62,24 +57,31 @@ import {
 } from "@/wab/shared/codegen/types";
 import { jsLiteral, toVarName } from "@/wab/shared/codegen/util";
 import { exportGlobalVariantGroup } from "@/wab/shared/codegen/variants";
+import { ensure, mkUuid, spawn } from "@/wab/shared/common";
+import {
+  CodeComponent,
+  getCodeComponentHelperImportName,
+  getCodeComponentImportName,
+  isCodeComponent,
+  isPageComponent,
+} from "@/wab/shared/core/components";
+import { ExprCtx, getRawCode } from "@/wab/shared/core/exprs";
+import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
+import { CssVarResolver } from "@/wab/shared/core/styles";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   Component,
   ImageAsset,
-  isKnownPropParam,
   Site,
   VariantGroup,
+  isKnownPropParam,
 } from "@/wab/shared/model/classes";
-import { SiteInfo } from "@/wab/shared/SharedApi";
-import { getSlotParams } from "@/wab/shared/SlotUtils";
-import { isScreenVariantGroup, VariantCombo } from "@/wab/shared/Variants";
-import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
-import { CssVarResolver } from "@/wab/shared/core/styles";
+import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import * as Sentry from "@sentry/browser";
 import * as asynclib from "async";
 import L from "lodash";
 import { autorun, comparer, untracked } from "mobx";
 import { computedFn } from "mobx-utils";
-import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 
 export interface CodeModule {
   name?: string;
