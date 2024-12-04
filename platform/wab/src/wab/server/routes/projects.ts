@@ -19,7 +19,10 @@ import {
   ProofSafeDelete,
   SUPER_USER,
 } from "@/wab/server/db/DbMgr";
-import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
+import {
+  getHostlessDataVersionsHash,
+  unbundleSite,
+} from "@/wab/server/db/bundle-migration-utils";
 import { onProjectDelete } from "@/wab/server/db/op-hooks";
 import { upgradeReferencedHostlessDeps } from "@/wab/server/db/upgrade-hostless-utils";
 import {
@@ -1704,6 +1707,17 @@ async function getPkgWithDeps(
   return result;
 }
 
+async function getPkgVersionEtag(
+  req: Request,
+  pkgId: string,
+  pkgVersion: string
+) {
+  const mgr = superDbMgr(req);
+  const bundleVersion = await getLastBundleVersion();
+  const hostlessHash = await getHostlessDataVersionsHash(mgr);
+  return `W/"${req.devflags.eTagsVersionPrefix}-${pkgId}-${pkgVersion}-${bundleVersion}-${hostlessHash}"`;
+}
+
 export async function getPkgVersionByProjectId(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const { projectId } = req.params;
@@ -1718,7 +1732,6 @@ export async function getPkgVersionByProjectId(req: Request, res: Response) {
     throw new BadRequestError("Missing sysname or projectId");
   }
 
-  const bundleVersion = await getLastBundleVersion();
   const versionStrings = await mgr.getPkgVersionStrings(pkg.id);
   const chosenVersion =
     version === "latest" ? versionStrings.slice(-1)[0] : version;
@@ -1726,14 +1739,18 @@ export async function getPkgVersionByProjectId(req: Request, res: Response) {
     versionStrings.includes(chosenVersion),
     `Unknown version ${chosenVersion}`
   );
-  const etag = `W/"${req.devflags.eTagsVersionPrefix}-${pkg.id}-${chosenVersion}-${bundleVersion}"`;
+
+  const etag = await getPkgVersionEtag(req, pkg.id, chosenVersion);
 
   if (checkEtagSkippable(req, res, etag)) {
     return;
   }
 
   const pkgVersion = await mgr.getPkgVersion(pkg.id, chosenVersion);
-  res.json(await getPkgWithDeps(mgr, pkgVersion, false));
+  res.json({
+    ...(await getPkgWithDeps(mgr, pkgVersion, false)),
+    etag,
+  });
 }
 
 export async function getPkgVersion(req: Request, res: Response) {
@@ -1757,14 +1774,16 @@ export async function getPkgVersion(req: Request, res: Response) {
     branchId ? { branchId } : undefined
   );
 
-  const bundleVersion = await getLastBundleVersion();
-
-  const etag = `W/"${req.devflags.eTagsVersionPrefix}-${pkg.id}-${pkg.version}-${bundleVersion}"`;
+  const etag = await getPkgVersionEtag(req, pkgId, pkg.version);
 
   if (checkEtagSkippable(req, res, etag)) {
     return;
   }
-  res.json(await getPkgWithDeps(mgr, pkg, meta, { dontMigrateProject }));
+
+  res.json({
+    ...(await getPkgWithDeps(mgr, pkg, meta, { dontMigrateProject })),
+    etag,
+  });
 }
 
 export async function computeNextProjectVersion(req: Request, res: Response) {

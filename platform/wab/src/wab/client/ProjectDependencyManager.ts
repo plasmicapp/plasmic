@@ -61,6 +61,7 @@ export class ProjectDependencyManager {
 
   // Stores the Sites of "Insertable Templates" projects, keyed by projectId
   insertableSites: Record<string, Site> = {};
+  insertableVersions: Record<string, string> = {};
 
   // Which local screen variant will we use to map to the insertable template's screen variant?
   insertableSiteScreenVariant: Variant | undefined;
@@ -528,10 +529,6 @@ export class ProjectDependencyManager {
   }
 
   async fetchInsertableTemplate(projectId: string) {
-    if (this.insertableSites[projectId]) {
-      return;
-    }
-
     const bundler = new FastBundler();
     const { pkg } = await this._sc.appCtx.api.getPkgByProjectId(projectId);
     const latestPkgVersion = pkg
@@ -546,12 +543,18 @@ export class ProjectDependencyManager {
       console.warn(`Unable to load insertable templates project ${projectId}`);
       return;
     }
+
+    if (this.insertableVersions[projectId] === latestPkgVersion.etag) {
+      return;
+    }
+
     const insertableSite = unbundleProjectDependency(
       bundler,
       latestPkgVersion.pkg,
       latestPkgVersion.depPkgs
     ).projectDependency.site;
     this.insertableSites[projectId] = insertableSite;
+    this.insertableVersions[projectId] = latestPkgVersion.etag;
   }
 
   /**

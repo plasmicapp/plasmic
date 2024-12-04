@@ -1,26 +1,30 @@
-import { assert, ensure, ensureInstance } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
-import { upgradeProjectDeps, walkDependencyTree } from "@/wab/shared/core/project-deps";
 import { updateHostlessPackage } from "@/wab/server/code-components/code-components";
 import {
-  getMigratedBundle,
   MigrationDbMgr,
+  getMigratedBundle,
 } from "@/wab/server/db/BundleMigrator";
 import { loadDepPackages } from "@/wab/server/db/DbBundleLoader";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
+import { sha256 } from "@/wab/server/util/hash";
 import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
 import { Bundler } from "@/wab/shared/bundler";
 import { UnsafeBundle } from "@/wab/shared/bundles";
+import { assert, ensure, ensureInstance } from "@/wab/shared/common";
 import {
-  ensureKnownProjectDependency,
-  isKnownSite,
-  ProjectDependency,
-  Site,
-} from "@/wab/shared/model/classes";
-import { InvariantError } from "@/wab/shared/site-invariants";
+  upgradeProjectDeps,
+  walkDependencyTree,
+} from "@/wab/shared/core/project-deps";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { trackComponentRoot, trackComponentSite } from "@/wab/shared/core/tpls";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import {
+  ProjectDependency,
+  Site,
+  ensureKnownProjectDependency,
+  isKnownSite,
+} from "@/wab/shared/model/classes";
+import { InvariantError } from "@/wab/shared/site-invariants";
 import semver from "semver";
 
 export async function unbundleSite(
@@ -227,6 +231,14 @@ export const getHostlessData = (() => {
     return result;
   };
 })();
+
+export async function getHostlessDataVersionsHash(mgr: DbMgr) {
+  const hostlessData = await getHostlessData(mgr);
+  if (!hostlessData) {
+    return "NO_HOSTLESS_DATA";
+  }
+  return sha256(JSON.stringify(hostlessData));
+}
 
 export type BundleMigrationType = "bundled" | "unbundled";
 

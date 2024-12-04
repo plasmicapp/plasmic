@@ -681,7 +681,7 @@ export abstract class SharedApi {
   getPkgVersionByProjectId(
     projectId: string,
     version
-  ): Promise<{ pkg: PkgVersionInfo; depPkgs: PkgVersionInfo[] }> {
+  ): Promise<{ pkg: PkgVersionInfo; depPkgs: PkgVersionInfo[]; etag: string }> {
     return this.get(`/pkgs/projectId/${projectId}`, { version });
   }
 
@@ -695,7 +695,7 @@ export abstract class SharedApi {
     pkgId: string,
     version?: string,
     branchId?: string
-  ): Promise<{ pkg: PkgVersionInfo; depPkgs: PkgVersionInfo[] }> {
+  ): Promise<{ pkg: PkgVersionInfo; depPkgs: PkgVersionInfo[]; etag: string }> {
     return this.get(`/pkgs/${pkgId}`, {
       version: version ?? "latest",
       meta: false,
