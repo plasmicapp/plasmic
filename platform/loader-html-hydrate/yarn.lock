@@ -59,17 +59,17 @@
   dependencies:
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
 
-"@plasmicapp/loader-react@^1.0.370":
-  version "1.0.370"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-1.0.370.tgz#c7849eb153c0d187eb4b2e34dcf4e10107324821"
-  integrity sha512-Wj97lirb6+Zl0jaYzgdiretNXzl/phPQvokVcctvuhaDDB/sAkxkHxHji6oFBx+8Y8r9NLxbiIK+EdlHwz26+w==
+"@plasmicapp/loader-react@^1.0.371":
+  version "1.0.371"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-1.0.371.tgz#0050fa7cffedd7fa538ddf89434726b08bf7ecc7"
+  integrity sha512-pURXKuwm9yQkkAGpEBZwkOISFrHHqwh6KCOfhBo4fnpWy9yNqAhD13jpHWLv84uJ5fBKdnyxhDYFxhFReFodFA==
   dependencies:
     "@plasmicapp/data-sources-context" "0.1.21"
     "@plasmicapp/host" "1.0.207"
     "@plasmicapp/loader-core" "1.0.136"
     "@plasmicapp/loader-fetcher" "1.0.54"
     "@plasmicapp/loader-splits" "1.0.62"
-    "@plasmicapp/prepass" "1.0.18"
+    "@plasmicapp/prepass" "1.0.19"
     "@plasmicapp/query" "0.1.79"
     pascalcase "^1.0.0"
     server-only "0.0.1"
@@ -81,13 +81,13 @@
   dependencies:
     json-logic-js "^2.0.2"
 
-"@plasmicapp/prepass@1.0.18":
-  version "1.0.18"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/prepass/-/prepass-1.0.18.tgz#125294f7341be1b77937feedd549f84b99b6f042"
-  integrity sha512-PABSn+CLrCSMIO3xgWglxRg6xxbuEyxlXo1CSUOLb2CglMGYXYRJT8y1xbJuANLN4lCoTnipicP7oVXZ8jan8Q==
+"@plasmicapp/prepass@1.0.19":
+  version "1.0.19"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/prepass/-/prepass-1.0.19.tgz#dd2829a3830a4d3ad9e8d16b22c78b94523be41e"
+  integrity sha512-In8NIXotocOAVDZismfBzOxJnoHaQEKFDPGfr2VuVQ4z8cZ8S/MtccLXJLQe+bJPD0nOG4ZC8lyJOvq4KLbflg==
   dependencies:
     "@plasmicapp/query" "0.1.79"
-    "@plasmicapp/react-ssr-prepass" "^2.0.8"
+    "@plasmicapp/react-ssr-prepass" "^2.0.9"
 
 "@plasmicapp/query@0.1.79":
   version "0.1.79"
@@ -96,10 +96,10 @@
   dependencies:
     swr "^1.0.0"
 
-"@plasmicapp/react-ssr-prepass@^2.0.8":
-  version "2.0.8"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.8.tgz#0ff586f13bfc8c171d5c072776dd34e400e0e51a"
-  integrity sha512-bbCcmo4hly2SG2GJzvdfRU8wnOSxVt3W1JgfICL75CWh+WcUDAXG1Pje3cZWpzzIzPqC+U3ERjgW6/RUfOSvzg==
+"@plasmicapp/react-ssr-prepass@^2.0.9":
+  version "2.0.9"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.9.tgz#1cfdd8d4c0e90fd4fed7d7204f70c44914871d31"
+  integrity sha512-HO932uH/Y4otaDmjwzJbCLlokxNAdtU9VhDVUZUuVbzh0DhWaNyn/MINCu1oeZ4a6MIjdXFIm/U2VaxNxHYdsw==
 
 "@rollup/plugin-commonjs@^19.0.0":
   version "19.0.0"
