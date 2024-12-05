@@ -39,7 +39,6 @@ import {
   buildInsertableExtraInfo,
   getHostLessDependenciesToInsertableTemplate,
   getScreenVariantToInsertableTemplate,
-  getSiteByProjectId,
   postInsertableTemplate,
 } from "@/wab/client/insertable-templates";
 import PlumeMarkIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__PlumeMark";
@@ -140,6 +139,40 @@ type CreateAddInstallableExtraInfo = InsertableTemplateExtraInfo & {
   arena?: Arena;
 };
 
+export function isInsertableTemplateArenaExtraInfo(
+  extraInfo: CreateAddInstallableExtraInfo
+): extraInfo is InsertableTemplateArenaExtraInfo {
+  return !!extraInfo.arena;
+}
+
+export function isInsertableTemplateComponentExtraInfo(
+  extraInfo: CreateAddInstallableExtraInfo
+): extraInfo is InsertableTemplateComponentExtraInfo {
+  return !!extraInfo.component;
+}
+
+const getSiteByProjectId = async (studioCtx: StudioCtx, projectId: string) => {
+  const { pkg: pkgInfo } = await studioCtx.appCtx.api.getPkgByProjectId(
+    projectId
+  );
+
+  const { pkg, depPkgs } = await (pkgInfo
+    ? studioCtx.appCtx.api.getPkgVersion(pkgInfo.id)
+    : {});
+
+  assert(pkgInfo && pkg && depPkgs, "Unable to load project");
+
+  const { site } = unbundleProjectDependency(
+    studioCtx.bundler(),
+    pkg,
+    depPkgs
+  ).projectDependency;
+
+  assert(site, `Unable to install ${pkgInfo.name}`);
+
+  return site;
+};
+
 export function createAddInstallable(meta: Installable): AddInstallableItem {
   return {
     type: AddItemType.installable as const,
@@ -192,7 +225,10 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
             );
 
             if (!arena) {
-              return undefined;
+              // Happens when maybe devflag does not have the right info. E.g. there is no arena named "Abc" for devflag installable item `entryPoint: {type: "arena", name: "abc"}`
+              throw new Error(
+                `Failed to install ${meta.name} - Arena ${meta.entryPoint.name} was not found`
+              );
             }
 
             return {
@@ -206,7 +242,10 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
           );
 
           if (!component) {
-            return undefined;
+            // Happens when maybe devflag does not have the right info
+            throw new Error(
+              `Failed to install ${meta.name} - Component ${meta.entryPoint.name} was not found`
+            );
           }
 
           return {
@@ -220,31 +259,30 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
       if (!extraInfo) {
         return;
       }
-      if (meta.entryPoint.type === "arena") {
-        if (!extraInfo.arena) {
-          // Happens when maybe devflag does not have the right info. E.g. there is no arena named "Abc" for devflag installable item `entryPoint: {type: "arena", name: "abc"}`
-          throw new Error("Failed to fetch installable info");
-        }
+      if (
+        meta.entryPoint.type === "arena" &&
+        isInsertableTemplateArenaExtraInfo(extraInfo)
+      ) {
         const { arena, seenFonts } = cloneInsertableTemplateArena(
           sc.site,
-          extraInfo as InsertableTemplateArenaExtraInfo
+          extraInfo
         );
         postInsertableTemplate(sc, seenFonts);
         return arena;
+      } else if (
+        meta.entryPoint.type === "component" &&
+        isInsertableTemplateComponentExtraInfo(extraInfo)
+      ) {
+        const { component, seenFonts } = cloneInsertableTemplateComponent(
+          sc.site,
+          extraInfo,
+          sc.projectDependencyManager.plumeSite
+        );
+        postInsertableTemplate(sc, seenFonts);
+
+        return component;
       }
-
-      if (!extraInfo.component) {
-        throw new Error("Failed to fetch installable info");
-      }
-
-      const { component, seenFonts } = cloneInsertableTemplateComponent(
-        sc.site,
-        extraInfo as InsertableTemplateComponentExtraInfo,
-        sc.projectDependencyManager.plumeSite
-      );
-      postInsertableTemplate(sc, seenFonts);
-
-      return component;
+      return;
     },
   };
 }

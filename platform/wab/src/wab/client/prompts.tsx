@@ -17,10 +17,9 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { maybe, nullToUndefined } from "@/wab/shared/common";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { InstallableOpts } from "@/wab/shared/insertable-templates/types";
-import { ProjectDependency, Site } from "@/wab/shared/model/classes";
+import { Site } from "@/wab/shared/model/classes";
 import { Form, notification, Select } from "antd";
-import L, { sortBy } from "lodash";
+import L, { orderBy } from "lodash";
 import React from "react";
 const { Option } = Select;
 
@@ -113,49 +112,6 @@ export async function promptPageName(
   });
 }
 
-export async function promptInstallablePrefs(
-  installableDeps: ProjectDependency[]
-) {
-  return await showTemporaryPrompt<InstallableOpts>((onSubmit, onCancel) => (
-    <Modal
-      visible={true}
-      onCancel={onCancel}
-      closable={false}
-      style={{
-        backgroundColor: "white",
-      }}
-      wrapClassName="prompt-modal"
-      modalRender={() => {
-        return (
-          <div>
-            <p>
-              This project would like to install the following dependencies:
-            </p>
-            <ul>
-              {installableDeps.map((dep) => (
-                <li key={dep.pkgId}>{dep.name}</li>
-              ))}
-            </ul>
-            <p>Would you like to install them?</p>
-            <div>
-              <Button
-                className="mr-sm"
-                type="primary"
-                htmlType="submit"
-                data-test-id="prompt-submit"
-                onClick={() => onSubmit({ flatten: false })}
-              >
-                {"Install"}
-              </Button>
-              <Button onClick={() => onSubmit({ flatten: true })}>No</Button>
-            </div>
-          </div>
-        );
-      }}
-    />
-  ));
-}
-
 export async function promptComponentTemplate(studioCtx: StudioCtx) {
   return await showTemporaryPrompt<NewComponentInfo>((onSubmit, onCancel) => (
     <Modal
@@ -205,7 +161,7 @@ export async function promptChooseInstallableDependencies(
     title: "Choose additional dependencies",
     description:
       "This package comes with additional (optional) dependencies. Please choose the ones you would like to install.",
-    group: sortBy(
+    group: orderBy(
       site.projectDependencies.map((dep) => {
         const isAlreadyInstalled =
           studioCtx.projectDependencyManager.containsPkgId(dep.pkgId);
@@ -224,7 +180,8 @@ export async function promptChooseInstallableDependencies(
           disabled: isAlreadyInstalled || isRequired,
         };
       }),
-      "disabled"
+      ["disabled", "value"],
+      ["desc", "asc"]
     ),
   });
   return res?.map((i) => i.item);

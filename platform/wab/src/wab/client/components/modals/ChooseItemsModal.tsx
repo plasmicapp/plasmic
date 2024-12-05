@@ -41,12 +41,11 @@ function ChooseItemsForm<T>(props: {
   title: string;
   description?: string;
   group: ItemData<T>[];
-  onSubmit: (data: ItemData<T>[] | undefined) => void;
+  onSubmit: (data: ItemData<T>[]) => void;
   onCancel: () => void;
 }) {
   const { title, description, group, onSubmit, onCancel } = props;
-  const [chosen, setChosen] = React.useState<CheckboxValueType[] | undefined>();
-  console.log("sarah", { group });
+  const [chosen, setChosen] = React.useState<CheckboxValueType[]>([]);
   const handleSubmit = React.useCallback(() => {
     onSubmit(group.filter((i) => chosen?.includes(i.value)));
   }, [onSubmit, group, chosen]);
