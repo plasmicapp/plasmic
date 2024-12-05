@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader-react",
-  "version": "1.0.370",
+  "version": "1.0.371",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
@@ -57,7 +57,7 @@
     "@plasmicapp/loader-core": "1.0.136",
     "@plasmicapp/loader-fetcher": "1.0.54",
     "@plasmicapp/loader-splits": "1.0.62",
-    "@plasmicapp/prepass": "1.0.18",
+    "@plasmicapp/prepass": "1.0.19",
     "@plasmicapp/query": "0.1.79",
     "pascalcase": "^1.0.0",
     "server-only": "0.0.1"

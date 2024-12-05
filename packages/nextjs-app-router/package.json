@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/nextjs-app-router",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
@@ -25,7 +25,7 @@
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
   "dependencies": {
-    "@plasmicapp/prepass": "1.0.18",
+    "@plasmicapp/prepass": "1.0.19",
     "@plasmicapp/query": "0.1.79",
     "cross-spawn": "^7.0.3",
     "fkill": "^8.1.0",
