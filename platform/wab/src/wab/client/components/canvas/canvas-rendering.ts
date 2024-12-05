@@ -319,6 +319,10 @@ export interface RenderingCtx {
   wrappingEnv: CanvasEnv;
   viewCtx: ViewCtx;
   forceValComponentKeysWithDefaultSlotContents?: Set<string>;
+  visibilityOptions: {
+    showSlotPlaceholders: boolean;
+    showContainersPlaceholders: boolean;
+  };
 
   // $state is part of the tpl evaluation environment, which we use to
   // determine if we can cache a rendered tpl node. Since all elements
@@ -1220,6 +1224,10 @@ function makeEmptyRenderingCtx(viewCtx: ViewCtx, valKey: string): RenderingCtx {
     sub: viewCtx.canvasCtx.Sub,
     valKey: valKey,
     viewCtx,
+    visibilityOptions: {
+      showSlotPlaceholders: viewCtx.studioCtx.showSlotPlaceholder(),
+      showContainersPlaceholders: viewCtx.studioCtx.showContainerPlaceholder(),
+    },
     $stateSnapshot: {},
     setDollarQueries: () => {},
     stateSpecs: [],

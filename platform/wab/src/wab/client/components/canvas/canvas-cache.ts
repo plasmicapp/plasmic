@@ -60,6 +60,7 @@ function computeHashFromStableFields(node: TplNode, ctx: RenderingCtx) {
     JSON.stringify(ctx.triggerProps),
     JSON.stringify(ctx.$ccVariants),
     ctx.updateVariant,
+    JSON.stringify(ctx.visibilityOptions),
   ];
 }
 
@@ -85,7 +86,8 @@ type HandledCtxFields =
   | "triggers"
   | "triggerProps"
   | "$ccVariants"
-  | "updateVariant";
+  | "updateVariant"
+  | "visibilityOptions";
 
 type NonStableFieldsFromCtx = Omit<Full<RenderingCtx>, HandledCtxFields> & {
   $stateSnapshot: Record<string, any>;
