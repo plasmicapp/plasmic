@@ -6558,10 +6558,10 @@
   dependencies:
     swr "^1.0.0"
 
-"@plasmicapp/react-ssr-prepass@^2.0.8":
-  version "2.0.8"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.8.tgz#0ff586f13bfc8c171d5c072776dd34e400e0e51a"
-  integrity sha512-bbCcmo4hly2SG2GJzvdfRU8wnOSxVt3W1JgfICL75CWh+WcUDAXG1Pje3cZWpzzIzPqC+U3ERjgW6/RUfOSvzg==
+"@plasmicapp/react-ssr-prepass@^2.0.9":
+  version "2.0.9"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.9.tgz#1cfdd8d4c0e90fd4fed7d7204f70c44914871d31"
+  integrity sha512-HO932uH/Y4otaDmjwzJbCLlokxNAdtU9VhDVUZUuVbzh0DhWaNyn/MINCu1oeZ4a6MIjdXFIm/U2VaxNxHYdsw==
 
 "@plasmicpkgs/luxon-parser@^3.4.4":
   version "3.4.4"

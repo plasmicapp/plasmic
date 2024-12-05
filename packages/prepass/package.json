@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@plasmicapp/query": "0.1.79",
-    "@plasmicapp/react-ssr-prepass": "^2.0.8"
+    "@plasmicapp/react-ssr-prepass": "^2.0.9"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
