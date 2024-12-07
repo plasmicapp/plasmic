@@ -23,11 +23,7 @@ import v8 from "v8";
 import { initAmplitudeNode } from "@/wab/server/analytics/amplitude-node";
 import { setupPassport } from "@/wab/server/auth/passport-cfg";
 import * as authRoutes from "@/wab/server/auth/routes";
-import {
-  apiAuth,
-  shopifyAuthStart,
-  shopifyCallback,
-} from "@/wab/server/auth/routes";
+import { apiAuth } from "@/wab/server/auth/routes";
 import { doLogout } from "@/wab/server/auth/util";
 import { Config } from "@/wab/server/config";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
@@ -253,14 +249,6 @@ import {
   executeDataSourceOperationHandler,
   executeDataSourceOperationHandlerInStudio,
 } from "@/wab/server/routes/server-data";
-import {
-  emailWebhook,
-  getProducts,
-  probeCanAccessShopifyShop,
-  proxyToShopify,
-  publishShopifyPages,
-  updateShopifyStorePassword,
-} from "@/wab/server/routes/shopify";
 import { processSvgRoute } from "@/wab/server/routes/svg";
 import * as teamRoutes from "@/wab/server/routes/teams";
 import { getUsersById } from "@/wab/server/routes/users";
@@ -339,8 +327,6 @@ const isCsrfFreeRoute = (pathname: string, config: Config) => {
     pathname.includes("/code/") ||
     pathname.includes("/api/v1/loader/code") ||
     pathname.includes("/api/v1/loader/chunks") ||
-    pathname.includes("/api/v1/shopify/publish") ||
-    pathname.includes("/api/v1/shopify/webhooks/") ||
     pathname.includes("/jsbundle") ||
     pathname.includes("/api/v1/loader/") ||
     pathname.includes("/api/v1/server-data/") ||
@@ -768,24 +754,6 @@ function addMiddlewares(
 function addStaticRoutes(app: express.Application) {
   app.use(cors(), express.static("build"));
   app.use(cors(), express.static("public"));
-}
-
-export function addProxyRoutes(app: express.Application) {
-  // Only proxy to the Shopify store if we are using a recognized domain.
-  app.use("*", (req, res, next) => {
-    const hostname = req.hostname;
-    if (
-      !req.devflags.proxyDomainSuffixes.some((suffix) =>
-        hostname.endsWith(suffix)
-      )
-    ) {
-      return next();
-    }
-
-    return withNext((req2, res2, next2) => {
-      spawn(proxyToShopify(req2, res2, next2));
-    })(req, res, next);
-  });
 }
 
 export function addCmsPublicRoutes(app: express.Application) {
@@ -1906,34 +1874,6 @@ export function addMainAppServerRoutes(
   app.put("/api/v1/github/repos", withNext(setupExistingGithubRepo));
 
   /**
-   * Shopify integration.
-   */
-  app.get("/api/v1/auth/shopify", withNext(shopifyAuthStart));
-  app.get("/api/v1/oauth2/shopify/callback", withNext(shopifyCallback));
-  app.put("/api/v1/shopify/password", withNext(updateShopifyStorePassword));
-  app.get("/api/v1/shopify/probe-access", withNext(probeCanAccessShopifyShop));
-
-  app.get("/api/v1/shopify/products", apiAuth, withNext(getProducts));
-  app.post("/api/v1/shopify/publish", apiAuth, withNext(publishShopifyPages));
-
-  // Mandatory GDPR compliance webhooks.
-  app.post(
-    "/api/v1/shopify/webhooks/customer-data-request",
-    cors(),
-    withNext(emailWebhook)
-  );
-  app.post(
-    "/api/v1/shopify/webhooks/customer-data-erasure",
-    cors(),
-    withNext(emailWebhook)
-  );
-  app.post(
-    "/api/v1/shopify/webhooks/shop-data-erasure",
-    cors(),
-    withNext(emailWebhook)
-  );
-
-  /**
    * Project repositories.
    */
   app.get(
@@ -2026,8 +1966,6 @@ export function addMainAppServerRoutes(
    * End user management
    */
   addEndUserManagementRoutes(app);
-
-  addProxyRoutes(app);
 
   if (typeof jest === "undefined") {
     // Do not create the interval in unit tests, because it keeps running and

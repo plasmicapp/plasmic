@@ -19,11 +19,6 @@ import "@/wab/server/extensions";
 import { isCustomPublicApiRequest } from "@/wab/server/routes/custom-routes";
 import { getPromotionCodeCookie } from "@/wab/server/routes/promo-code";
 import {
-  addShopify,
-  getShopifyClientForUserId,
-  shopifyPostInstallSetup,
-} from "@/wab/server/routes/shopify";
-import {
   getUser,
   makeUserTraits,
   superDbMgr,
@@ -51,19 +46,14 @@ import {
   UpdateSelfRequest,
 } from "@/wab/shared/ApiSchema";
 import {
-  ensure,
-  ensureString,
   ensureType,
   extractDomainFromEmail,
-  hackyCast,
   isValidEmail,
-  spawn,
   uncheckedCast,
 } from "@/wab/shared/common";
 import { isGoogleAuthRequiredEmailDomain } from "@/wab/shared/devflag-utils";
 import { getPublicUrl } from "@/wab/shared/urls";
 import * as Sentry from "@sentry/node";
-import Shopify, { AuthQuery } from "@shopify/shopify-api";
 import { NextFunction, Request, Response } from "express-serve-static-core";
 import fs from "fs";
 import passport from "passport";
@@ -864,62 +854,6 @@ export async function getApiTokenUser(
   }
 
   return { apiToken, user };
-}
-
-/**
- * We use shopify-node-api instead of the passport plugin, but not for any
- * particular good reason.
- *
- * shopify-node-api is actually a bit opinionated in how it manages session
- * data. We'd eventually need to implement a custom session store, and the shape
- * of the data doesn't fit well with the current OAuthToken entity.
- *
- * Probably it would be better to use the passport plugin - although it wasn't
- * updated for a long time, it seems fine at a glance.
- */
-export async function shopifyAuthStart(req: Request, res: Response) {
-  const shop = ensureString(req.query.shop);
-  addShopify(req.config, shop);
-  const authRoute = await Shopify.Auth.beginAuth(
-    req,
-    res,
-    shop,
-    "/auth/shopify-callback",
-    false
-  );
-  return res.redirect(authRoute);
-}
-
-// Only by this point can we assume the user is authenticated into Plasmic.
-export async function shopifyCallback(req: Request, res: Response) {
-  // We assume that the query parameters are as specified in AuthQuery (assume
-  // that Shopify is always calling us back correctly). Must be type-cast to be
-  // accepted.
-  const authQuery = uncheckedCast<AuthQuery>(req.query);
-  addShopify(req.config, authQuery.shop);
-
-  await Shopify.Auth.validateAuthCallback(req, res, authQuery);
-
-  // We are using this because Shopify's node API client takes Sessions.
-  const session = ensure(
-    await Shopify.Utils.loadCurrentSession(req, res, false),
-    "Shopify load current session should exist"
-  );
-  const sudo = superDbMgr(req);
-  await sudo.upsertOauthToken(
-    getUser(req).id,
-    "shopify",
-    hackyCast(session),
-    {}
-  );
-
-  // We perform the post-installation Shopify setup here, but spawn it off into a thread.
-  const { client } = await getShopifyClientForUserId(sudo, getUser(req).id);
-  spawn(shopifyPostInstallSetup(client));
-
-  // Simply redirect back to the homepage - should at least show some
-  // confirmation.
-  return res.redirect("/");
 }
 
 export async function airtableLogin(

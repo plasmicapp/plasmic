@@ -499,7 +499,6 @@ const DEFAULT_DEVFLAGS = {
   imgOptimizerHost: "https://img.plasmic.app",
   introYoutubeId: "K_YzFBd7b2I",
   noFlipTags: true,
-  proxyDomainSuffixes: [".devtun.plasmic.app", ".prox1.plasmic.link"],
   revisionNum: undefined,
   richtext2: true,
   secretApiTokenTeams: ["teamId"],

@@ -72,18 +72,8 @@ export interface CustomHostConfig {
   headers?: Record<string, string>;
 }
 
-export interface ShopifySyncStateData {
-  /**
-   * Map from Plasmic ID to shop page ID.
-   */
-  pages: {
-    [pageUuid: string]: number;
-  };
-}
-
 export interface ProjectExtraData {
   commitGraph?: CommitGraph;
-  shopifySyncState?: ShopifySyncStateData;
   wasImported?: boolean;
   mainBranchProtection?: "enforce" | "encourage" | "none";
   customHostConfig?: CustomHostConfig;
@@ -1140,10 +1130,6 @@ export interface ExistingGithubRepoRequest {
   // We still support passing the `token` here so current sessions don't need
   // to be invalidated
   token?: string;
-}
-
-export interface PublishShopifyPage {
-  errors: [];
 }
 
 export interface ApiDataSource {

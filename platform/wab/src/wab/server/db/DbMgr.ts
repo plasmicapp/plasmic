@@ -149,7 +149,6 @@ import {
   ProjectId,
   ProjectIdAndToken,
   QueryCopilotFeedbackResponse,
-  ShopifySyncStateData,
   SsoConfigId,
   TeamId,
   TeamMember,
@@ -6318,27 +6317,6 @@ export class DbMgr implements MigrationDbMgr {
       await this.entMgr.save(project);
     }
     return project.projectApiToken;
-  }
-
-  async getShopifySyncState(
-    projectId: ProjectId
-  ): Promise<ShopifySyncStateData> {
-    const project = await this.getProjectById(projectId);
-    return project.extraData?.shopifySyncState ?? { pages: {} };
-  }
-
-  async upsertShopifySyncState(
-    projectId: ProjectId,
-    state: ShopifySyncStateData
-  ) {
-    const project = await this.getProjectById(projectId);
-    await this.updateProject({
-      id: projectId,
-      extraData: {
-        ...(project.extraData ?? {}),
-        shopifySyncState: state,
-      },
-    });
   }
 
   async showHostingBadgeForProject(projectId: ProjectId): Promise<boolean> {

@@ -246,8 +246,6 @@ export class RouteSet {
   teamCreation = new R("/team-creation");
   orgCreation = new R("/org-creation");
   githubCallback = new R("/github/callback");
-  startShopifyAuth = new R("/auth/shopify");
-  finishShopifyAuth = new R("/auth/shopify-callback");
   discourseConnectClient = new R("/auth/discourse-connect");
   webImporterSandbox = new R("/sandbox/web-importer");
   importProjectsFromProd = new R("/import-projects-from-prod");

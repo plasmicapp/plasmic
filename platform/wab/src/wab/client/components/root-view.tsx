@@ -41,10 +41,6 @@ import { FromStarterTemplate } from "@/wab/client/components/pages/FromStarterTe
 import { GithubCallback } from "@/wab/client/components/pages/GithubCallback";
 import { ImportProjectsFromProd } from "@/wab/client/components/pages/ImportProjectFromProd";
 import { InitTokenPage } from "@/wab/client/components/pages/InitTokenPage";
-import {
-  FinishShopifyAuth,
-  StartShopifyAuth,
-} from "@/wab/client/components/pages/StartShopifyAuth";
 import { SurveyForm } from "@/wab/client/components/pages/SurveyForm";
 import { TeamCreation } from "@/wab/client/components/pages/TeamCreation";
 import PromoBanner from "@/wab/client/components/PromoBanner";
@@ -403,11 +399,6 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                   />
                   <Route
                     exact
-                    path={UU.finishShopifyAuth.pattern}
-                    render={() => <FinishShopifyAuth />}
-                  />
-                  <Route
-                    exact
                     path={UU.plasmicInit.pattern}
                     render={({ match }) => (
                       <InitTokenPage
@@ -649,11 +640,6 @@ export function Root() {
                             <ResetPasswordForm />
                           </NormalNonAuthLayout>
                         )}
-                      />
-                      <Route
-                        exact
-                        path={UU.startShopifyAuth.pattern}
-                        render={() => <StartShopifyAuth />}
                       />
                       <Route
                         exact

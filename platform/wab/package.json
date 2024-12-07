@@ -262,7 +262,6 @@
     "@sentry/integrations": "^6.6.0",
     "@sentry/node": "^6.6.0",
     "@sentry/tracing": "^6.6.0",
-    "@shopify/shopify-api": "^1.4.1",
     "@simonwep/pickr": "^1.8.0",
     "@stripe/react-stripe-js": "^1.4.1",
     "@stripe/stripe-js": "^1.16.0",

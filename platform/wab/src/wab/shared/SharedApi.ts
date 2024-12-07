@@ -1489,10 +1489,6 @@ export abstract class SharedApi {
     return this.delete(`/hosts/${id}`);
   }
 
-  async setShopifyStorePassword(hostUrl: string, password: string) {
-    return this.put("/shopify/password", { hostUrl, password });
-  }
-
   async listDataSources(
     workspaceId?: string
   ): Promise<ListDataSourcesResponse> {

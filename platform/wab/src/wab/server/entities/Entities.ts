@@ -672,7 +672,6 @@ export type OauthTokenProvider =
   | "google"
   | "okta"
   | "ping"
-  | "shopify"
   | "airtable"
   | "google-sheets";
 
@@ -1013,7 +1012,6 @@ export class SsoConfig extends Base<"SsoConfigId"> {
 }
 
 export type KeyValueNamespace =
-  | "shopify-store-data"
   | "hosting-hit"
   | "copilot-cache"
   | "notification-settings";
