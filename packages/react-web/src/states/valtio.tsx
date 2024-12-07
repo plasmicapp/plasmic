@@ -235,10 +235,7 @@ function initializeStateValue(
     initialStateCell.initialValue = undefined;
     set(proxyRoot, initialStateCell.path, undefined);
   }
-  //immediately fire onChange
-  if (initialSpec.onChangeProp) {
-    $$state.env.$props[initialSpec.onChangeProp]?.(initialValue);
-  }
+
   $$state.stateInitializationEnv.visited.delete(initialStateName);
   $$state.stateInitializationEnv.stack.pop();
 
@@ -643,7 +640,9 @@ export function useDollarState(
           $state,
           spec.pathObj as ObjectPath
         );
-        initializeStateValue($$state, stateCell, $state);
+        if (stateCell.initialValue === UNINITIALIZED) {
+          initializeStateValue($$state, stateCell, $state);
+        }
       }
     });
   }, []);

@@ -691,9 +691,11 @@ NestedRepeatedCounter.play = async ({ canvasElement }) => {
         expected.slice(-1)[0]
       );
       await expect(
-        (canvas.getByTestId(
-          `counter[${i}][${j}]-label`
-        ) as HTMLParagraphElement).textContent
+        (
+          canvas.getByTestId(
+            `counter[${i}][${j}]-label`
+          ) as HTMLParagraphElement
+        ).textContent
       ).toEqual(`Counter: ${expected.slice(-1)[0]}`);
       await expect(
         (canvas.getByTestId(`parentLabel[${i}][${j}]`) as HTMLParagraphElement)
@@ -706,9 +708,11 @@ NestedRepeatedCounter.play = async ({ canvasElement }) => {
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
       await expect(
-        (canvas.getByTestId(
-          `counter[${i}][${j}]-label`
-        ) as HTMLParagraphElement).textContent
+        (
+          canvas.getByTestId(
+            `counter[${i}][${j}]-label`
+          ) as HTMLParagraphElement
+        ).textContent
       ).toEqual(`Counter: 0`);
       await expect(
         (canvas.getByTestId(`parentLabel[${i}][${j}]`) as HTMLParagraphElement)
@@ -723,9 +727,11 @@ NestedRepeatedCounter.play = async ({ canvasElement }) => {
       await userEvent.selectOptions(canvas.getByTestId("select_1"), [`${j}`]);
       await click(canvas.getByTestId(`increment-btn`), expected[i * 3 + j]);
       await expect(
-        (canvas.getByTestId(
-          `counter[${i}][${j}]-label`
-        ) as HTMLParagraphElement).textContent
+        (
+          canvas.getByTestId(
+            `counter[${i}][${j}]-label`
+          ) as HTMLParagraphElement
+        ).textContent
       ).toEqual(`Counter: ${expected[i * 3 + j]}`);
       await expect(
         (canvas.getByTestId(`parentLabel[${i}][${j}]`) as HTMLParagraphElement)
@@ -823,9 +829,11 @@ MatrixRepeatedCounter.play = async ({ canvasElement }) => {
         expected.slice(-1)[0]
       );
       await expect(
-        (canvas.getByTestId(
-          `counter[${i}][${j}]-label`
-        ) as HTMLParagraphElement).textContent
+        (
+          canvas.getByTestId(
+            `counter[${i}][${j}]-label`
+          ) as HTMLParagraphElement
+        ).textContent
       ).toEqual(`Counter: ${expected.slice(-1)[0]}`);
     }
   }
@@ -834,9 +842,11 @@ MatrixRepeatedCounter.play = async ({ canvasElement }) => {
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
       await expect(
-        (canvas.getByTestId(
-          `counter[${i}][${j}]-label`
-        ) as HTMLParagraphElement).textContent
+        (
+          canvas.getByTestId(
+            `counter[${i}][${j}]-label`
+          ) as HTMLParagraphElement
+        ).textContent
       ).toEqual(`Counter: 0`);
     }
   }
@@ -847,9 +857,11 @@ MatrixRepeatedCounter.play = async ({ canvasElement }) => {
       await userEvent.selectOptions(canvas.getByTestId("select_1"), [`${j}`]);
       await click(canvas.getByTestId(`increment-btn`), expected[i * 3 + j]);
       await expect(
-        (canvas.getByTestId(
-          `counter[${i}][${j}]-label`
-        ) as HTMLParagraphElement).textContent
+        (
+          canvas.getByTestId(
+            `counter[${i}][${j}]-label`
+          ) as HTMLParagraphElement
+        ).textContent
       ).toEqual(`Counter: ${expected[i * 3 + j]}`);
     }
   }
@@ -980,9 +992,8 @@ const products = [
   { name: "Shirt 2", price: 20 },
   { name: "Shirt 3", price: 30 },
 ];
-export const InitFuncFromInternalContextData = _InitFuncFromInternalContextData.bind(
-  {}
-);
+export const InitFuncFromInternalContextData =
+  _InitFuncFromInternalContextData.bind({});
 InitFuncFromInternalContextData.args = { products };
 InitFuncFromInternalContextData.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
@@ -1210,9 +1221,8 @@ const _InitFuncFromInternalContextDataWithDelay: Story<{
     </div>
   );
 };
-export const InitFuncFromInternalContextDataWithDelay = _InitFuncFromInternalContextDataWithDelay.bind(
-  {}
-);
+export const InitFuncFromInternalContextDataWithDelay =
+  _InitFuncFromInternalContextDataWithDelay.bind({});
 InitFuncFromInternalContextDataWithDelay.args = { products };
 InitFuncFromInternalContextDataWithDelay.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
@@ -2271,6 +2281,7 @@ const _IsOnChangePropImmediatelyFired: Story<{}> = (props) => {
     },
     []
   );
+
   const $state = useDollarState(
     [
       {
@@ -2283,16 +2294,35 @@ const _IsOnChangePropImmediatelyFired: Story<{}> = (props) => {
         type: "private",
         variableType: "boolean",
       },
+      {
+        path: "invocations",
+        type: "writable",
+        variableType: "array",
+        initVal: [],
+      },
     ],
     {
       $props: props,
     }
   );
+
+  if ($state.invocations.length > 1) {
+    throw new Error(
+      `onIsOddChange should only be invoked once, it was invoked ${$state.invocations.length} times`
+    );
+  }
+
   return (
     <div>
       <Counter
-        onCountChange={(val) => ($state.counter.count = val)}
-        onIsOddChange={(val) => ($state.counter.isOdd = val)}
+        onCountChange={generateStateOnChangeProp($state, ["counter", "count"])}
+        onIsOddChange={(...args: any) => {
+          generateStateOnChangeProp($state, ["counter", "isOdd"]).apply(
+            null,
+            args
+          );
+          $state.invocations.push(args);
+        }}
       />
       <br />
       <span data-testid="counter-span">{$state.counter.count}</span>
@@ -2304,9 +2334,8 @@ const _IsOnChangePropImmediatelyFired: Story<{}> = (props) => {
   );
 };
 
-export const IsOnChangePropImmediatelyFired = _IsOnChangePropImmediatelyFired.bind(
-  {}
-);
+export const IsOnChangePropImmediatelyFired =
+  _IsOnChangePropImmediatelyFired.bind({});
 IsOnChangePropImmediatelyFired.args = {};
 IsOnChangePropImmediatelyFired.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
@@ -2569,9 +2598,11 @@ const _InCanvasDollarState: Story<{}> = (props) => {
             setActiveVariables((curr) =>
               curr.map((currItem) =>
                 currItem.id ===
-                +(document.getElementById(
-                  "repeatable-select"
-                ) as HTMLSelectElement).value
+                +(
+                  document.getElementById(
+                    "repeatable-select"
+                  ) as HTMLSelectElement
+                ).value
                   ? {
                       id: currItem.id,
                       type: "repeated",
@@ -2630,9 +2661,11 @@ const _InCanvasDollarState: Story<{}> = (props) => {
               activeVars.filter(
                 ({ id }) =>
                   id !==
-                  +(document.getElementById(
-                    "delete-select"
-                  ) as HTMLSelectElement).value
+                  +(
+                    document.getElementById(
+                      "delete-select"
+                    ) as HTMLSelectElement
+                  ).value
               )
             );
           }}
