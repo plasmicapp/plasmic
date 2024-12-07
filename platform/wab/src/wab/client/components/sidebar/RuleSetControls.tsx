@@ -8,7 +8,11 @@ import {
   PseudoSelectorOption,
 } from "@/wab/shared/core/styles";
 import { Site } from "@/wab/shared/model/classes";
-import { StyleVariant } from "@/wab/shared/Variants";
+import {
+  isCodeComponentVariant,
+  isStyleVariant,
+  RegisteredVariant,
+} from "@/wab/shared/Variants";
 import { Tooltip } from "antd";
 import { default as React, useLayoutEffect, useState } from "react";
 import type { TaggedUnion } from "type-fest";
@@ -83,28 +87,33 @@ function areSelectorsEqual(a: Selector, b: Selector) {
  * TODO: write migration so code components use key, presets use selector
  */
 export function styleVariantToSelectors(
-  variant: StyleVariant,
+  variant: RegisteredVariant,
   site: Site
 ): Selector[] {
-  const info = siteCCVariantsToInfos(site).get(variant);
-  if (info) {
-    return [...info.selectorsKeysToMetas.entries()].map(([key, meta]) => ({
-      type: "CodeComponentSelector",
-      componentUuid: info.component.uuid,
-      componentName: info.component.name,
-      key,
-      displayName: meta.displayName,
-    }));
+  if (isCodeComponentVariant(variant)) {
+    const info = siteCCVariantsToInfos(site).get(variant);
+    if (info) {
+      return [...info.keysToMetas.entries()].map(([key, meta]) => ({
+        type: "CodeComponentSelector",
+        componentUuid: info.component.uuid,
+        componentName: info.component.name,
+        key,
+        displayName: meta.displayName,
+      }));
+    }
+  }
+  if (isStyleVariant(variant)) {
+    return variant.selectors.map<Selector>((cssSelector) => {
+      const preset = getPseudoSelector(cssSelector);
+      return {
+        type: "CssSelector",
+        cssSelector,
+        preset,
+      };
+    });
   }
 
-  return variant.selectors.map<Selector>((cssSelector) => {
-    const preset = getPseudoSelector(cssSelector);
-    return {
-      type: "CssSelector",
-      cssSelector,
-      preset,
-    };
-  });
+  return [];
 }
 
 export interface SelectorsInputProps {
@@ -192,7 +201,11 @@ export function SelectorsInput({
 
   return (
     <XMultiSelect
-      placeholder={"e.g. :hover, :focus, :nth-child(odd)"}
+      placeholder={
+        codeComponent
+          ? "Choose a variant"
+          : "e.g. :hover, :focus, :nth-child(odd)"
+      }
       autoFocus={autoFocus}
       selectedItems={selectors}
       itemKey={(selector: Selector | null) =>
@@ -262,12 +275,17 @@ export function SelectorsInput({
   );
 }
 
-export function SelectorTags(props: { selectors: Selector[] }) {
-  const { selectors } = props;
+export function SelectorTags(props: {
+  isCodeComponent: boolean;
+  selectors: Selector[];
+}) {
+  const { selectors, isCodeComponent } = props;
   if (selectors.length === 0) {
     return (
       <div key={"no-selector"} className={"no-selector-placeholder"}>
-        Double click to enter CSS selectors
+        {isCodeComponent
+          ? "Choose a variant"
+          : "Double click to enter CSS selectors"}
       </div>
     );
   }

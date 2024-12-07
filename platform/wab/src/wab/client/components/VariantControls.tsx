@@ -1,7 +1,6 @@
 import {
   Selector,
   SelectorsInput,
-  selectorsToVariantSelectors,
   SelectorTags,
   styleVariantToSelectors,
 } from "@/wab/client/components/sidebar/RuleSetControls";
@@ -19,10 +18,13 @@ import { VARIANT_CAP, VARIANT_LOWER } from "@/wab/shared/Labels";
 import { Component, isKnownTplTag, Variant } from "@/wab/shared/model/classes";
 import {
   isBaseVariant,
+  isCodeComponentVariant,
   isGlobalVariant,
   isPrivateStyleVariant,
+  isRegisteredVariant,
   isStyleVariant,
   makeVariantName,
+  RegisteredVariant,
   StyleVariant,
 } from "@/wab/shared/Variants";
 import { Menu } from "antd";
@@ -90,7 +92,7 @@ const VariantLabel_: ForwardRefRenderFunction<
     <EditableLabel
       ref={ref}
       value={variantName}
-      disabled={isBaseVariant(variant) || isStyleVariant(variant)}
+      disabled={isBaseVariant(variant) || isRegisteredVariant(variant)}
       onEdit={_onRename}
       defaultEditing={defaultEditing}
       programmaticallyTriggered={programmaticallyTriggered}
@@ -125,7 +127,7 @@ export function makeCanvasVariantContextMenu({
   return (
     <Menu>
       <Menu.Item onClick={onRequestEditing}>
-        {isStyleVariant(variant)
+        {isRegisteredVariant(variant)
           ? `Change ${VARIANT_LOWER} selectors`
           : `Rename ${VARIANT_LOWER}`}
       </Menu.Item>
@@ -161,8 +163,24 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
   const maybeSubmit = async (opts?: { force?: boolean }) => {
     if (chosenSelectors.length || opts?.force) {
       return studioCtx.changeUnsafe(() => {
-        variant.selectors = selectorsToVariantSelectors(chosenSelectors);
+        if (isTplCodeComponent(component.tplTree)) {
+          variant.codeComponentVariantKeys = chosenSelectors
+            .filter((sel) => sel.type === "CodeComponentSelector")
+            .map((sel) => sel.key);
+        } else {
+          variant.selectors = chosenSelectors
+            .filter((sel) => sel.type === "CssSelector")
+            .map((sel) => sel.cssSelector);
+        }
         onDismiss?.();
+
+        if (
+          isCodeComponentVariant(variant) &&
+          variant.codeComponentVariantKeys?.length === 0
+        ) {
+          spawn(studioCtx.siteOps().removeVariant(component, variant));
+          return;
+        }
 
         if (isStyleVariant(variant) && variant.selectors?.length === 0) {
           spawn(studioCtx.siteOps().removeVariant(component, variant));
@@ -227,7 +245,7 @@ export const StyleVariantLabel = observer(forwardRef(StyleVariantLabel_));
 function StyleVariantLabel_(
   props: {
     defaultEditing?: boolean;
-    variant: StyleVariant;
+    variant: RegisteredVariant;
     forTag: string;
     onSelectorsChange: (selectors: Selector[]) => void;
     onBlur?: () => void;
@@ -261,7 +279,10 @@ function StyleVariantLabel_(
         render={({ editing, onStart, onDone }) =>
           !editing ? (
             <div onDoubleClick={onStart}>
-              <SelectorTags selectors={selectors} />
+              <SelectorTags
+                isCodeComponent={isTplCodeComponent(tplRoot)}
+                selectors={selectors}
+              />
             </div>
           ) : (
             <SelectorsInput

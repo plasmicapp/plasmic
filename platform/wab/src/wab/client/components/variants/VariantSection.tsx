@@ -17,6 +17,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { isStyleVariant } from "@/wab/shared/Variants";
 import { spawn } from "@/wab/shared/common";
+import { isTplCodeComponent } from "@/wab/shared/core/tpls";
 import { Component, Variant } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -184,6 +185,7 @@ export function makeReadOnlySection(opts: {
           label={
             isStyleVariant(variant) ? (
               <SelectorTags
+                isCodeComponent={isTplCodeComponent(component?.tplTree)}
                 selectors={styleVariantToSelectors(variant, studioCtx.site)}
               />
             ) : (

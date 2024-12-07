@@ -29,6 +29,7 @@ import {
   getSuperComponentVariantGroupToComponent,
 } from "@/wab/shared/core/components";
 import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
+import { isTplCodeComponent } from "@/wab/shared/core/tpls";
 import {
   COMBINATIONS_CAP,
   FRAME_LOWER,
@@ -161,7 +162,7 @@ export const ComponentArenaLayout = observer(
     );
 
     const vController = makeVariantsController(studioCtx);
-
+    const tplRoot = component.tplTree;
     return (
       <div>
         <GridFramesLayout
@@ -242,7 +243,14 @@ export const ComponentArenaLayout = observer(
                   height={framesHeight}
                   onClick={() =>
                     studioCtx.changeUnsafe(() =>
-                      studioCtx.siteOps().createStyleVariant(component)
+                      isTplCodeComponent(tplRoot)
+                        ? studioCtx
+                            .siteOps()
+                            .createCodeComponentVariant(
+                              component,
+                              tplRoot.component.name
+                            )
+                        : studioCtx.siteOps().createStyleVariant(component)
                     )
                   }
                   data-event="component-arena-add-interaction-variant"

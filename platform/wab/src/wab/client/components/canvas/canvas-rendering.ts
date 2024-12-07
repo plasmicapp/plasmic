@@ -92,10 +92,7 @@ import {
   isPlainObjectPropType,
   tryGetStateHelpers,
 } from "@/wab/shared/code-components/code-components";
-import {
-  isTplRootWithCodeComponentVariants,
-  withoutCodeComponentVariantPrefix,
-} from "@/wab/shared/code-components/variants";
+import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
 import { toReactAttr } from "@/wab/shared/codegen/image-assets";
 import { makeCssClassNameForVariantCombo } from "@/wab/shared/codegen/react-p/class-names";
 import { nodeNameBackwardsCompatibility } from "@/wab/shared/codegen/react-p/constants";
@@ -730,9 +727,7 @@ const mkTriggers = computedFn(
 
               // Non-interactive registered variants (like Button CC's disabled) do no harm to rich-text editing and can be applied in non-interactive mode
               return variant.selectors.reduce(
-                (prev, key) =>
-                  prev &&
-                  ctx.$ccVariants[withoutCodeComponentVariantPrefix(key)],
+                (prev, key) => prev && ctx.$ccVariants[key],
                 true
               );
             }),

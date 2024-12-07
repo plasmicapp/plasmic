@@ -1607,6 +1607,14 @@ export class SiteOps {
     this.onVariantAdded(variant);
   }
 
+  createCodeComponentVariant(component: Component, codeComponentName: string) {
+    const variant = this.tplMgr.createCodeComponentVariant(
+      component,
+      codeComponentName
+    );
+    this.onVariantAdded(variant);
+  }
+
   createGlobalVariant(group: VariantGroup) {
     assert(isGlobalVariantGroup(group), "Expected a global variant group");
     const variant = this.tplMgr.createGlobalVariant(group);

@@ -12,7 +12,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_variants_bar/PlasmicVariantBadge";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import { isStyleVariant, StyleVariant } from "@/wab/shared/Variants";
+import { isRegisteredVariant, StyleVariant } from "@/wab/shared/Variants";
 import { Component, Variant } from "@/wab/shared/model/classes";
 import { Popover } from "antd";
 import { observer } from "mobx-react";
@@ -41,7 +41,7 @@ const VariantBadge = observer(function VariantBadge_({
 
   useLayoutEffect(() => {
     if (studioCtx.latestVariantCreated === variant) {
-      if (isStyleVariant(variant)) {
+      if (isRegisteredVariant(variant)) {
         setShowStyleVariantEditor(true);
       } else {
         variantLabelRef.current?.setEditing(true);
@@ -68,7 +68,7 @@ const VariantBadge = observer(function VariantBadge_({
               variant,
               component,
               onRequestEditing: () => {
-                if (isStyleVariant(variant)) {
+                if (isRegisteredVariant(variant)) {
                   setShowStyleVariantEditor(true);
                 } else {
                   variantLabelRef.current?.setEditing(true);
@@ -86,7 +86,7 @@ const VariantBadge = observer(function VariantBadge_({
       }}
     >
       <MaybeWrap
-        cond={isStyleVariant(variant)}
+        cond={isRegisteredVariant(variant)}
         wrapper={(children) => (
           <Popover
             placement="left"

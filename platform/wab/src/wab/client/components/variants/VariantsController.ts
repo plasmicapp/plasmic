@@ -5,20 +5,20 @@ import {
 } from "@/wab/client/components/variants/ClientPinManager";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { assert, ensure } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ensureCustomFrameForActivatedVariants,
   isComponentArena,
   isPageArena,
   resizeFrameForScreenVariant,
 } from "@/wab/shared/Arenas";
+import { assert, ensure } from "@/wab/shared/common";
 import {
   ensureManagedFrameForVariantInComponentArena,
   getCellKeyForFrame,
   getComponentArenaBaseFrame,
   isCustomComponentFrame,
 } from "@/wab/shared/component-arenas";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ArenaFrame,
   ArenaFrameCell,
@@ -41,10 +41,9 @@ import {
 import {
   getBaseVariant,
   isBaseVariant,
-  isComponentStyleVariant,
   isPrivateStyleVariant,
+  isRegisteredVariant,
   isScreenVariant,
-  isStyleVariant,
   VariantCombo,
 } from "@/wab/shared/Variants";
 import { $State } from "@plasmicapp/react-web";
@@ -690,14 +689,11 @@ function handleAddedVariant(pinManager: PinManager, variant: Variant) {
     // If only one variant is currently selected, assume we are replacing
     // the target combo
     pinManager.setSelectedVariants([variant]);
-  } else if (isComponentStyleVariant(variant)) {
-    // Else if this is a style variant, then we assume the user wants to
+  } else if (isRegisteredVariant(variant)) {
+    // Else if this is a registered variant, then we assume the user wants to
     // combine with existing combo
     pinManager.addSelectedVariants([variant]);
-  } else if (
-    !isStyleVariant(variant) &&
-    selectedVariants.some((v) => v.parent === variant.parent)
-  ) {
+  } else if (selectedVariants.some((v) => v.parent === variant.parent)) {
     // Else, if there already exists some variant in the same group as this
     // variant, deselect it first, even if this is a multi-group
     pinManager.setSelectedVariants([

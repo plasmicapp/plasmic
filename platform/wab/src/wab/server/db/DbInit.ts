@@ -114,7 +114,7 @@ export async function seedTestDb(em: EntityManager) {
             imageUrl: "https://static1.plasmic.app/plasmic-logo.png",
             entryPoint: {
               type: "arena",
-              name: "Entry",
+              name: "Index",
             },
           },
         ]),

@@ -75,6 +75,8 @@ export function mkVariant({
   mediaQuery,
   description,
   forTpl,
+  codeComponentName,
+  codeComponentVariantKeys,
 }: {
   name: string;
   selectors?: string[];
@@ -82,13 +84,15 @@ export function mkVariant({
   mediaQuery?: string | null;
   description?: string | null;
   forTpl?: TplNode | null;
+  codeComponentName?: string | null;
+  codeComponentVariantKeys?: string[] | null;
 }) {
   return new Variant({
     uuid: mkShortId(),
     name,
     selectors,
-    codeComponentName: null,
-    codeComponentVariantKeys: null,
+    codeComponentName,
+    codeComponentVariantKeys,
     parent,
     mediaQuery,
     description,
@@ -213,7 +217,10 @@ export function mkComponentVariantGroup({
 }
 
 type VariantWithSelectors = SetNonNullable<Variant, "selectors">;
-
+export type CodeComponentVariant = SetNonNullable<
+  Variant,
+  "codeComponentName" | "codeComponentVariantKeys"
+>;
 /**
  * A style-only variant that applies to the whole component.
  */
@@ -235,8 +242,22 @@ export type PrivateStyleVariant = SetNonNullable<
 /** Any style-only variant. */
 export type StyleVariant = ComponentStyleVariant | PrivateStyleVariant;
 
+export type RegisteredVariant = CodeComponentVariant | StyleVariant;
+
 export function isStyleVariant(variant: Variant): variant is StyleVariant {
   return !!variant.selectors;
+}
+
+export function isCodeComponentVariant(
+  variant: Variant
+): variant is CodeComponentVariant {
+  return !!variant.codeComponentName && !!variant.codeComponentVariantKeys;
+}
+
+export function isRegisteredVariant(
+  variant: Variant
+): variant is RegisteredVariant {
+  return isStyleVariant(variant) || isCodeComponentVariant(variant);
 }
 
 export function isMaybeInteractiveStyleVariant(variant: Variant): boolean {
@@ -807,6 +828,7 @@ export function getAllVariantsForTpl({
 }) {
   return component
     ? [
+        ...component.variants.filter(isCodeComponentVariant),
         ...component.variants.filter((v) => isComponentStyleVariant(v)),
         ...component.variants.filter(
           (v) => tpl && isPrivateStyleVariant(v) && v.forTpl === tpl
@@ -869,24 +891,29 @@ export function isFrameWithVariantCombo({
   return getDisplayVariants({ site, frame }).length > 1;
 }
 
-export function getStyleVariantSelectorsDisplayNames(
-  variant: StyleVariant,
+export function getRegisteredVariantDisplayNames(
+  variant: RegisteredVariant,
   site?: Site
 ) {
-  const info = site && siteCCVariantsToInfos(site).get(variant);
-  if (info) {
-    return [...info.selectorsKeysToMetas.values()].map(
-      (meta) => meta.displayName
-    );
-  } else {
+  if (isCodeComponentVariant(variant)) {
+    const info = site && siteCCVariantsToInfos(site).get(variant);
+    if (info) {
+      return [...info.keysToMetas.values()].map((meta) => meta.displayName);
+    }
+  }
+  if (isStyleVariant(variant)) {
     return variant.selectors.map(
       (sel) => getPseudoSelector(sel)?.displayName ?? sel
     );
   }
+  return [];
 }
 
-export function makeStyleVariantName(variant: StyleVariant, site?: Site) {
-  return getStyleVariantSelectorsDisplayNames(variant, site).join(", ");
+export function makeRegisteredVariantName(
+  variant: RegisteredVariant,
+  site?: Site
+) {
+  return getRegisteredVariantDisplayNames(variant, site).join(", ");
 }
 
 export function makeVariantName({
@@ -905,12 +932,12 @@ export function makeVariantName({
     (isPrivateStyleVariant(variant)
       ? [
           focusedTag ? focusedTag.name || summarizeTplTag(focusedTag) : "",
-          makeStyleVariantName(variant, site),
+          makeRegisteredVariantName(variant, site),
         ]
           .filter(Boolean)
           .join(": ")
-      : isStyleVariant(variant)
-      ? makeStyleVariantName(variant, site)
+      : isRegisteredVariant(variant)
+      ? makeRegisteredVariantName(variant, site)
       : superComp
       ? `${getNamespacedComponentName(superComp)} • ${variant.name}`
       : variant.name) || "UnnamedVariant"

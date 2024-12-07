@@ -2,6 +2,7 @@ import {
   VariantGroupType,
   isBaseRuleVariant,
   isBaseVariant,
+  isCodeComponentVariant,
   isScreenVariant,
   isStandaloneVariantGroup,
   isValidComboForToken,
@@ -84,13 +85,21 @@ export function makeCssClassNameForVariantCombo(
         }
         const variantName = toJsIdentifier(variant.name);
         if (!variant.parent) {
-          if (!variant.selectors?.length) {
+          let keys: string[] | null | undefined;
+          if (isCodeComponentVariant(variant)) {
+            keys = variant.codeComponentVariantKeys;
+          } else {
+            keys = variant.selectors;
+          }
+
+          if (!keys?.length) {
             throw new Error(
-              "Error naming variant. Requires either a parent or non-empty list of selectors."
+              "Error naming variant. Requires either a parent or non-empty list of selectors/variant keys."
             );
           }
-          return `${variantName}__${variant.selectors
-            .map((selector) => toJsIdentifier(selector))
+
+          return `${variantName}__${keys
+            .map((key) => toJsIdentifier(key))
             .join("__")}`;
         }
 

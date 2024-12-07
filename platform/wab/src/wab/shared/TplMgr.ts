@@ -50,6 +50,7 @@ import {
   isBaseVariant,
   isGlobalVariant,
   isGlobalVariantGroup,
+  isRegisteredVariant,
   isScreenVariant,
   isScreenVariantGroup,
   isStandaloneVariant,
@@ -558,7 +559,7 @@ export class TplMgr {
     // This is to ensure that we are able to use the parent in the previous
     // steps
     for (const v of variants) {
-      if (isStyleVariant(v)) {
+      if (isRegisteredVariant(v)) {
         tryRemove(
           ensure(component, "Expected component to be not null").variants,
           v
@@ -666,6 +667,21 @@ export class TplMgr {
     const variant = mkVariant({
       name: "",
       selectors,
+    });
+    component.variants.push(variant);
+
+    const arena = getComponentArena(this.site(), component);
+    if (arena) {
+      ensureManagedFrameForVariantInComponentArena(this.site(), arena, variant);
+    }
+    return variant;
+  }
+
+  createCodeComponentVariant(component: Component, codeComponentName: string) {
+    const variant = mkVariant({
+      name: "",
+      codeComponentName,
+      codeComponentVariantKeys: [],
     });
     component.variants.push(variant);
 

@@ -53,6 +53,7 @@ import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components
 import { ensure, ensureInstance, partitions, spawn } from "@/wab/shared/common";
 import {
   allComponentStyleVariants,
+  allRegisteredVariants,
   getSuperComponents,
   isPageComponent,
 } from "@/wab/shared/core/components";
@@ -60,6 +61,7 @@ import {
   isGlobalVariantGroupUsedInSplits,
   isVariantUsedInSplits,
 } from "@/wab/shared/core/splits";
+import { isTplCodeComponent } from "@/wab/shared/core/tpls";
 import { ScreenSizeSpec } from "@/wab/shared/css-size";
 import {
   Component,
@@ -77,7 +79,6 @@ import { getPlumeVariantDef } from "@/wab/shared/plume/plume-registry";
 import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import {
   canHaveRegisteredVariant,
-  ComponentStyleVariant,
   getBaseVariant,
   isBaseVariant,
   isGlobalVariantGroup,
@@ -85,6 +86,7 @@ import {
   isStandaloneVariantGroup,
   moveVariant,
   moveVariantGroup,
+  RegisteredVariant,
   variantComboKey,
 } from "@/wab/shared/Variants";
 import { Menu } from "antd";
@@ -185,6 +187,7 @@ export const VariantsPanel = observer(
     const superComps = getSuperComponents(component);
 
     const styleVariants = allComponentStyleVariants(component);
+    const registeredVariants = allRegisteredVariants(component);
     const baseVariant = getBaseVariant(component);
     const combos = findNonEmptyCombos(component);
     const selectedVariants = vcontroller.getTargetedVariants();
@@ -311,6 +314,8 @@ export const VariantsPanel = observer(
         vcontroller.onActivateCombo(combo);
         return success();
       });
+
+    const tplRoot = component.tplTree;
 
     return (
       <div
@@ -490,25 +495,32 @@ export const VariantsPanel = observer(
                   showIcon
                   icon={<Icon icon={BoltIcon} />}
                   title={
-                    isTplRootWithCodeComponentVariants(component.tplTree)
+                    isTplRootWithCodeComponentVariants(tplRoot)
                       ? "Registered Variants"
                       : "Interaction Variants"
                   }
                   emptyAddButtonText="Add variant"
                   emptyAddButtonTooltip={
-                    isTplRootWithCodeComponentVariants(component.tplTree)
+                    isTplRootWithCodeComponentVariants(tplRoot)
                       ? "Registered variants are registered in code component meta"
                       : "Interaction variants are automatically activated when the user interacts with the component -- by hovering, focusing, pressing, etc."
                   }
                   onAddNewVariant={() =>
                     studioCtx.change(({ success }) => {
-                      studioCtx.siteOps().createStyleVariant(component);
+                      isTplCodeComponent(tplRoot)
+                        ? studioCtx
+                            .siteOps()
+                            .createCodeComponentVariant(
+                              component,
+                              tplRoot.component.name
+                            )
+                        : studioCtx.siteOps().createStyleVariant(component);
                       return success();
                     })
                   }
                   isQuiet
                 >
-                  {styleVariants.map((variant) => (
+                  {registeredVariants.map((variant) => (
                     <ComponentStyleVariantRow
                       key={variant.uuid}
                       variant={variant}
@@ -948,7 +960,7 @@ const ComponentStyleVariantRow = observer(
     viewCtx?: ViewCtx;
     component: Component;
     pinState: VariantPinState | undefined;
-    variant: ComponentStyleVariant;
+    variant: RegisteredVariant;
     defaultEditing?: boolean;
     onEdited: () => void;
     onClick?: () => void;

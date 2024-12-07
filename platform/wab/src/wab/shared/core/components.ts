@@ -18,10 +18,12 @@ import {
   getBaseVariant,
   getReferencedVariantGroups,
   isBaseVariant,
+  isCodeComponentVariant,
   isComponentStyleVariant,
   isGlobalVariant,
   isPrivateStyleVariant,
   isPseudoElementVariant,
+  isRegisteredVariant,
   isStyleVariant,
   isVariantSettingEmpty,
   mkBaseVariant,
@@ -1762,6 +1764,14 @@ export function allStyleVariants(component: Component) {
 
 export function allComponentStyleVariants(component: Component) {
   return component.variants.filter(isComponentStyleVariant);
+}
+
+export function allCodeComponentVariants(component: Component) {
+  return component.variants.filter(isCodeComponentVariant);
+}
+
+export function allRegisteredVariants(component: Component) {
+  return component.variants.filter(isRegisteredVariant);
 }
 
 export function allPrivateStyleVariants(component: Component, tpl: TplNode) {

@@ -11,6 +11,7 @@ import {
   getBaseVariant,
   isActiveVariantSetting,
   isBaseVariant,
+  isCodeComponentVariant,
   isGlobalVariant,
   isStandaloneVariantGroup,
   isStyleVariant,
@@ -21,10 +22,7 @@ import {
   isBuiltinCodeComponent,
 } from "@/wab/shared/code-components/builtin-code-components";
 import { isCodeComponentWithHelpers } from "@/wab/shared/code-components/code-components";
-import {
-  isTplRootWithCodeComponentVariants,
-  withoutCodeComponentVariantPrefix,
-} from "@/wab/shared/code-components/variants";
+import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
 import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import {
   extractUsedFontsFromComponents,
@@ -923,16 +921,6 @@ export function makeVariantComboChecker(
 
   const variantChecker = (variant: Variant) => {
     if (isStyleVariant(variant)) {
-      const tplRoot = component.tplTree;
-      if (isTplRootWithCodeComponentVariants(tplRoot)) {
-        return variant.selectors
-          .map((sel) => {
-            return `$ccVariants[${jsString(
-              withoutCodeComponentVariantPrefix(sel)
-            )}]`;
-          })
-          .join(" && ");
-      }
       // One should only call variantChecker on style variants for non-css
       // variantSettings.
       const hook = ensure(
@@ -940,6 +928,13 @@ export function makeVariantComboChecker(
         `Missing reactHookSpec for variant ${variant.name} (uuid: ${variant.uuid})`
       );
       return hook.serializeIsTriggeredCheck(triggersRef);
+    }
+    if (isCodeComponentVariant(variant)) {
+      return variant.codeComponentVariantKeys
+        .map((key) => {
+          return `$ccVariants[${jsString(key)}]`;
+        })
+        .join(" && ");
     }
     return nonStyleVariantChecker(variant);
   };

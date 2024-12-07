@@ -11,10 +11,10 @@ import { FramePinManager } from "@/wab/shared/PinManager";
 import { readonlyRSH } from "@/wab/shared/RuleSetHelpers";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
-  StyleVariant,
+  CodeComponentVariant,
   VariantCombo,
+  isCodeComponentVariant,
   isPrivateStyleVariant,
-  isStyleVariant,
   isVariantSettingEmpty,
   variantComboKey,
 } from "@/wab/shared/Variants";
@@ -1161,35 +1161,37 @@ export const siteToUsedDataSources = maybeComputedFn(
 interface CCVariantInfo {
   component: Component;
   /** A code component style variant's selectors, mapped to thier metas. */
-  selectorsKeysToMetas: Map<string, CodeComponentVariantMeta>;
+  keysToMetas: Map<string, CodeComponentVariantMeta>;
 }
 
 const componentCCVariantsToInfos = maybeComputedFn(
-  (component: Component): [StyleVariant, CCVariantInfo][] => {
+  (component: Component): [CodeComponentVariant, CCVariantInfo][] => {
     const tplRoot = component.tplTree;
     if (isTplRootWithCodeComponentVariants(tplRoot)) {
       const variantMeta = tplRoot.component.codeComponentMeta.variants;
-      return component.variants.filter(isStyleVariant).map((variant) => [
-        variant,
-        {
-          component,
-          selectorsKeysToMetas: new Map(
-            withoutNils(
-              variant.selectors.map((selector) => {
-                const meta = getVariantMeta(variantMeta, selector);
-                return meta ? [selector, meta] : null;
-              })
-            )
-          ),
-        },
-      ]);
+      return component.variants
+        .filter(isCodeComponentVariant)
+        .map((variant) => [
+          variant,
+          {
+            component,
+            keysToMetas: new Map(
+              withoutNils(
+                variant.codeComponentVariantKeys.map((key) => {
+                  const meta = getVariantMeta(variantMeta, key);
+                  return meta ? [key, meta] : null;
+                })
+              )
+            ),
+          },
+        ]);
     }
     return [];
   }
 );
 
 export const siteCCVariantsToInfos = maybeComputedFn(
-  (site: Site): Map<StyleVariant, CCVariantInfo> => {
+  (site: Site): Map<CodeComponentVariant, CCVariantInfo> => {
     return new Map(
       site.components.flatMap((comp) => componentCCVariantsToInfos(comp))
     );

@@ -11,13 +11,13 @@ import {
   PlasmicVariantsDrawer,
 } from "@/wab/client/plasmic/plasmic_kit_variants_bar/PlasmicVariantsDrawer";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { isCodeComponentVariant } from "@/wab/shared/code-components/variants";
 import { mod, partitions, spawn, xGroupBy } from "@/wab/shared/common";
 import { isTplTag } from "@/wab/shared/core/tpls";
 import { VARIANTS_LOWER } from "@/wab/shared/Labels";
 import { Component, isKnownVariant, Variant } from "@/wab/shared/model/classes";
 import {
   getAllVariantsForTpl,
+  isCodeComponentVariant,
   isComponentStyleVariant,
   isGlobalVariant,
   isPrivateStyleVariant,
@@ -80,7 +80,6 @@ function VariantsDrawer_({
 
   const [query, setQuery] = useState("");
   const matcher = new Matcher(query, { matchMiddleOfWord: true });
-
   const filteredVariants = allVariants.filter((v) => {
     if (
       isScreenVariant(v) &&
@@ -88,9 +87,9 @@ function VariantsDrawer_({
     ) {
       return false;
     } else if (isCodeComponentVariant(v)) {
-      return v.selectors?.some(
-        (sel) =>
-          matcher.matches(sel) || matcher.matches(codeComponentVariantsLabel)
+      return v.codeComponentVariantKeys?.some(
+        (key) =>
+          matcher.matches(key) || matcher.matches(codeComponentVariantsLabel)
       );
     } else if (isStyleVariant(v)) {
       return v.selectors?.some(
@@ -258,42 +257,46 @@ function VariantsDrawer_({
       variantsList={{ ref: variantsListRef }}
       {...props}
     >
-      {groupedVariants.map(({ variants, isBase, groupLabel, withDivider }) => (
-        <Fragment key={isBase ? "base" : String(groupLabel)}>
-          <VariantsGroupLabel>{groupLabel}</VariantsGroupLabel>
-          {isBase ? (
-            <VariantRow
-              ref={baseVariantRef}
-              isBase
-              highlight={highlightIndex === 0}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={handleVariantClick(undefined)}
-              onMouseEnter={handleRowMouseEnter(0)}
-              onMouseLeave={handleRowMouseEnter(-1)}
-            >
-              {baseLabel}
-            </VariantRow>
-          ) : (
-            variants?.map((variant) => (
+      {groupedVariants.map(
+        ({ variants, key, isBase, groupLabel, withDivider }) => (
+          <Fragment key={key}>
+            <VariantsGroupLabel>{groupLabel}</VariantsGroupLabel>
+            {isBase ? (
               <VariantRow
-                key={variant.uuid}
-                ref={getVariantRowRef(variant)}
-                isRecording={targetedVariantsSet.has(variant)}
-                highlight={flattenedVariants[highlightIndex] === variant}
+                ref={baseVariantRef}
+                isBase
+                highlight={highlightIndex === 0}
                 onMouseDown={(e) => e.preventDefault()}
-                onClick={handleVariantClick(variant)}
-                onMouseEnter={handleRowMouseEnter(variantIndices.get(variant)!)}
+                onClick={handleVariantClick(undefined)}
+                onMouseEnter={handleRowMouseEnter(0)}
                 onMouseLeave={handleRowMouseEnter(-1)}
               >
-                {matcher.boldSnippets(getVariantName(variant))}
+                {baseLabel}
               </VariantRow>
-            ))
-          )}
-          {withDivider && (
-            <VariantsSectionDivider className={styles.sectionDivider} />
-          )}
-        </Fragment>
-      ))}
+            ) : (
+              variants?.map((variant) => (
+                <VariantRow
+                  key={variant.uuid}
+                  ref={getVariantRowRef(variant)}
+                  isRecording={targetedVariantsSet.has(variant)}
+                  highlight={flattenedVariants[highlightIndex] === variant}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={handleVariantClick(variant)}
+                  onMouseEnter={handleRowMouseEnter(
+                    variantIndices.get(variant)!
+                  )}
+                  onMouseLeave={handleRowMouseEnter(-1)}
+                >
+                  {matcher.boldSnippets(getVariantName(variant))}
+                </VariantRow>
+              ))
+            )}
+            {withDivider && (
+              <VariantsSectionDivider className={styles.sectionDivider} />
+            )}
+          </Fragment>
+        )
+      )}
 
       {!shouldShowBase && !groupedVariants.length && (
         <div className={styles.emptyResultsMessage}>
@@ -326,6 +329,7 @@ function useGroupedVariants(
   const groupedVariants = useMemo<
     {
       isBase?: boolean;
+      key: string;
       withDivider?: boolean;
       groupLabel?: React.ReactNode;
       variants?: Variant[];
@@ -335,6 +339,7 @@ function useGroupedVariants(
       [
         {
           show: shouldShowBase,
+          key: "base",
           get withDivider() {
             return groupedVariants.length > 1;
           },
@@ -342,6 +347,7 @@ function useGroupedVariants(
         },
         {
           withDivider: true,
+          key: elementInteractionsLabel,
           groupLabel: (
             <>
               {elementInteractionsLabel}
@@ -352,6 +358,7 @@ function useGroupedVariants(
         },
         {
           withDivider: true,
+          key: codeComponentVariantsLabel,
           groupLabel: (
             <>
               {codeComponentVariantsLabel}
@@ -362,6 +369,7 @@ function useGroupedVariants(
         },
         {
           withDivider: true,
+          key: styleVariantsLabel,
           groupLabel: (
             <>
               {styleVariantsLabel}
@@ -371,6 +379,7 @@ function useGroupedVariants(
           variants: shouldShowInteractions ? compStyleVariants : [],
         },
         {
+          key: "standalone variant groups",
           variants: compVariants.filter((it) =>
             isStandaloneVariantGroup(it.parent)
           ),
@@ -387,6 +396,7 @@ function useGroupedVariants(
             (v) => v.parent!
           ).entries(),
         ].map(([group, variants]) => ({
+          key: group.param.variable.name,
           groupLabel: group.param.variable.name,
           variants: variants as Variant[],
         })),

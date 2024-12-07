@@ -1,9 +1,5 @@
 import { TplMgr } from "@/wab/shared/TplMgr";
-import {
-  StyleVariant,
-  VariantCombo,
-  isStyleVariant,
-} from "@/wab/shared/Variants";
+import { VariantCombo, isCodeComponentVariant } from "@/wab/shared/Variants";
 import { CodeComponent, isCodeComponent } from "@/wab/shared/core/components";
 import {
   TplCodeComponent,
@@ -22,38 +18,12 @@ import {
 
 export type VariantMetas = CodeComponentMeta["variants"];
 
-// In the model, we include a prefix in the code component variant selector to distinguish it from other selectors
-// This makes it easier to identify the code component variant selectors when we need to process them in the code.
-const CC_VARIANT_PREFIX = "$cc-variant$";
-
-export function isCodeComponentVariantKey(key: string) {
-  return key.startsWith(CC_VARIANT_PREFIX);
-}
-
-export function mkCodeComponentVariantKey(key: string) {
-  return `${CC_VARIANT_PREFIX}${key}`;
-}
-
-export function withoutCodeComponentVariantPrefix(key: string) {
-  return key.replace(CC_VARIANT_PREFIX, "");
-}
-
-export function isCodeComponentVariant(
-  variant: Variant
-): variant is StyleVariant {
-  return (
-    isStyleVariant(variant) &&
-    variant.selectors.every((selector) => isCodeComponentVariantKey(selector))
-  );
-}
-
 export function getVariantMeta(
   variantsMetas: VariantMetas,
   key: string
 ): CodeComponentVariantMeta | null {
-  const keyWithoutPrefix = withoutCodeComponentVariantPrefix(key);
-  if (keyWithoutPrefix in variantsMetas) {
-    return variantsMetas[keyWithoutPrefix];
+  if (key in variantsMetas) {
+    return variantsMetas[key];
   }
   return null;
 }
@@ -101,7 +71,7 @@ export function getInvalidCodeComponentVariantsInComponent(
   const codeComponentVariants = component.variants.filter(
     isCodeComponentVariant
   );
-  const unregistredSelectors = new Set<string>();
+  const unregistredKeys = new Set<string>();
   const invalidVariants: Variant[] = [];
 
   const variantMeta = isTplCodeComponent(component.tplTree)
@@ -109,20 +79,17 @@ export function getInvalidCodeComponentVariantsInComponent(
     : {};
 
   codeComponentVariants.forEach((v) => {
-    const missingSelectors = v.selectors.filter(
-      (selector) => !getVariantMeta(variantMeta, selector)
+    const missingKeys = v.codeComponentVariantKeys.filter(
+      (key) => !getVariantMeta(variantMeta, key)
     );
-
-    if (missingSelectors.length > 0) {
+    if (missingKeys.length > 0) {
       invalidVariants.push(v);
-      missingSelectors.forEach((selector) =>
-        unregistredSelectors.add(selector)
-      );
+      missingKeys.forEach((key) => unregistredKeys.add(key));
     }
   });
 
   return {
-    unregisterdSelectors: Array.from(unregistredSelectors),
+    unregisterdKeys: Array.from(unregistredKeys),
     invalidVariants,
   };
 }
