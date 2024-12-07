@@ -770,6 +770,8 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     parent: "generic",
     selectors: "generic",
     uuid: "generic",
+    codeComponentName: "generic",
+    codeComponentVariantKeys: "generic",
   },
   GlobalVariantGroup: {
     multi: "generic",

@@ -1,6 +1,7 @@
 import {
   Selector,
   SelectorsInput,
+  selectorsToVariantSelectors,
   SelectorTags,
   styleVariantToSelectors,
 } from "@/wab/client/components/sidebar/RuleSetControls";
@@ -164,13 +165,10 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
     if (chosenSelectors.length || opts?.force) {
       return studioCtx.changeUnsafe(() => {
         if (isTplCodeComponent(component.tplTree)) {
-          variant.codeComponentVariantKeys = chosenSelectors
-            .filter((sel) => sel.type === "CodeComponentSelector")
-            .map((sel) => sel.key);
+          variant.codeComponentVariantKeys =
+            selectorsToVariantSelectors(chosenSelectors);
         } else {
-          variant.selectors = chosenSelectors
-            .filter((sel) => sel.type === "CssSelector")
-            .map((sel) => sel.cssSelector);
+          variant.selectors = selectorsToVariantSelectors(chosenSelectors);
         }
         onDismiss?.();
 

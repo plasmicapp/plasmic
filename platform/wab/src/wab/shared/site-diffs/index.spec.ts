@@ -1,9 +1,11 @@
-import { mkShortId } from "@/wab/shared/common";
-import { ComponentType, mkComponent } from "@/wab/shared/core/components";
-import { ParamExportType, mkParam } from "@/wab/shared/core/lang";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
 import { VariantGroupType, mkBaseVariant } from "@/wab/shared/Variants";
+import { mkShortId } from "@/wab/shared/common";
+import { ComponentType, mkComponent } from "@/wab/shared/core/components";
+import { ParamExportType, mkParam } from "@/wab/shared/core/lang";
+import { UNINITIALIZED_VALUE, createSite } from "@/wab/shared/core/sites";
+import { mkTplTagX } from "@/wab/shared/core/tpls";
 import {
   ComponentVariantGroup,
   CustomCode,
@@ -23,8 +25,6 @@ import {
   calculateSemVer,
   compareSites,
 } from "@/wab/shared/site-diffs";
-import { UNINITIALIZED_VALUE, createSite } from "@/wab/shared/core/sites";
-import { mkTplTagX } from "@/wab/shared/core/tpls";
 import L from "lodash";
 
 // Using it as a LIFO stack, where i=0 is the latest
@@ -121,6 +121,8 @@ describe("compareSites / calculateSemVer", () => {
         mediaQuery: null,
         description: "description",
         forTpl: null,
+        codeComponentName: null,
+        codeComponentVariantKeys: null,
       })
     );
     // site.components[i].tplTree
@@ -276,6 +278,8 @@ describe("compareSites / calculateSemVer", () => {
         mediaQuery: null,
         description: "description",
         forTpl: null,
+        codeComponentName: null,
+        codeComponentVariantKeys: null,
       })
     );
     compareCheck("minor", 1);
