@@ -1079,7 +1079,7 @@ export function buildAddItemGroups({
                 return undefined;
               }
               const resolved = insertPanelAliases.get(alias as any);
-              const aliasImageUrl = `https://plasmic-static1.s3.us-west-2.amazonaws.com/insertables/${alias}.svg`;
+              const aliasImageUrl = `https://static1.plasmic.app/insertables/${alias}.svg`;
 
               // Is this a built-in insertable?
               if (!resolved) {

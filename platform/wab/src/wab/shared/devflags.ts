@@ -475,8 +475,7 @@ const DEFAULT_DEVFLAGS = {
       syntheticPackage: true,
       sectionLabel: "Design systems",
       isInstallOnly: true,
-      imageUrl:
-        "https://plasmic-static1.s3.us-west-2.amazonaws.com/insertables/unstyled.png",
+      imageUrl: "https://static1.plasmic.app/insertables/unstyled.png",
       codeName: "unstyled",
       codeLink: "",
       onlyShownIn: "new",
@@ -485,8 +484,7 @@ const DEFAULT_DEVFLAGS = {
           type: "hostless-component",
           componentName: "Unstyled",
           displayName: "More HTML elements",
-          imageUrl:
-            "https://plasmic-static1.s3.us-west-2.amazonaws.com/insertables/unstyled.png",
+          imageUrl: "https://static1.plasmic.app/insertables/unstyled.png",
         },
       ],
       projectId: [],
