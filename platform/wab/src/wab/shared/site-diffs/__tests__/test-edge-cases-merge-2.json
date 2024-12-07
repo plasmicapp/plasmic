@@ -92,7 +92,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "36067008": {
             "defaultStyle": { "__ref": "36067009" },
@@ -667,7 +669,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903009": {
             "importPath": "@plasmicapp/react-web",
@@ -815,7 +819,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903017": {
             "importPath": "@plasmicapp/react-web/lib/data-sources",
@@ -1028,7 +1034,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903053": {
             "name": null,
@@ -1157,7 +1165,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903087": {
             "rows": [{ "__ref": "53903091" }],
@@ -1859,7 +1869,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903238": {
             "rows": [{ "__ref": "53903242" }],
@@ -2160,7 +2172,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903315": {
             "rows": [{ "__ref": "53903319" }],
@@ -2292,7 +2306,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903342": {
             "rows": [{ "__ref": "53903346" }],
@@ -2491,7 +2507,7 @@
           }
         },
         "deps": [],
-        "version": "236-rename-duplicated-components"
+        "version": "237-code-component-variants"
       },
       "projectId": "2YAtuqUruz4SscKrr5g25x",
       "version": "0.0.1",
@@ -2602,7 +2618,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "36067008": {
             "defaultStyle": { "__ref": "36067009" },
@@ -3177,7 +3195,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903009": {
             "importPath": "@plasmicapp/react-web",
@@ -3325,7 +3345,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903017": {
             "importPath": "@plasmicapp/react-web/lib/data-sources",
@@ -3538,7 +3560,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903053": {
             "name": null,
@@ -3667,7 +3691,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903087": {
             "rows": [{ "__ref": "53903091" }],
@@ -4295,7 +4321,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903238": {
             "rows": [{ "__ref": "53903242" }],
@@ -4592,7 +4620,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903342": {
             "rows": [{ "__ref": "53903346" }],
@@ -4675,7 +4705,7 @@
           "53903362": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "236-rename-duplicated-components"
+        "version": "237-code-component-variants"
       }
     },
     {
@@ -4769,7 +4799,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "36067008": {
             "defaultStyle": { "__ref": "36067009" },
@@ -5344,7 +5376,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903009": {
             "importPath": "@plasmicapp/react-web",
@@ -5492,7 +5526,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903017": {
             "importPath": "@plasmicapp/react-web/lib/data-sources",
@@ -5705,7 +5741,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903053": {
             "name": null,
@@ -5834,7 +5872,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903087": {
             "rows": [{ "__ref": "53903091" }],
@@ -6532,7 +6572,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903238": {
             "rows": [{ "__ref": "53903242" }],
@@ -6829,7 +6871,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903315": {
             "rows": [{ "__ref": "53903319" }],
@@ -6961,7 +7005,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53903342": {
             "rows": [{ "__ref": "53903346" }],
@@ -7334,7 +7380,7 @@
           }
         },
         "deps": [],
-        "version": "236-rename-duplicated-components"
+        "version": "237-code-component-variants"
       }
     }
   ]

@@ -418,8 +418,12 @@ ComponentTemplateInfo
 Variant
   @Const uuid: String
   name: String
-  # Set iff this is a style variant
+  # Set if this is a style variant
   selectors: [String]?
+  #Set if this is a code component variant
+  codeComponentName: String?
+  #Set if this is a code component variant
+  codeComponentVariantKeys: [String]?
   # The parent of the variant. A base variant doesn't have any parent.
   @WeakRef parent: VariantGroup?
   # Used for screen variant to specify the screen.

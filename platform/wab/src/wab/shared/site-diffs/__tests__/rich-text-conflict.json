@@ -305,7 +305,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "a07B4Ee6Rdtk": {
             "components": [
@@ -502,7 +504,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "rpidxz_QmQNn": {
             "importPath": "@plasmicapp/react-web",
@@ -650,7 +654,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "E_UWKgXAwu8W": {
             "importPath": "@plasmicapp/react-web/lib/data-sources",
@@ -859,7 +865,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "Wb1MBtMfn2uj": {
             "name": null,
@@ -1022,7 +1030,7 @@
           }
         },
         "deps": [],
-        "version": "236-rename-duplicated-components"
+        "version": "237-code-component-variants"
       },
       "projectId": "aH1hFXMTo8YybdGp5ScZNk",
       "version": "0.0.1",
@@ -1345,7 +1353,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "a07B4Ee6Rdtk": {
             "components": [
@@ -1542,7 +1552,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "rpidxz_QmQNn": {
             "importPath": "@plasmicapp/react-web",
@@ -1690,7 +1702,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "E_UWKgXAwu8W": {
             "importPath": "@plasmicapp/react-web/lib/data-sources",
@@ -1899,7 +1913,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "Wb1MBtMfn2uj": {
             "name": null,
@@ -2049,7 +2065,7 @@
           }
         },
         "deps": [],
-        "version": "236-rename-duplicated-components"
+        "version": "237-code-component-variants"
       }
     },
     {
@@ -2356,7 +2372,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "a07B4Ee6Rdtk": {
             "components": [
@@ -2553,7 +2571,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "rpidxz_QmQNn": {
             "importPath": "@plasmicapp/react-web",
@@ -2701,7 +2721,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "E_UWKgXAwu8W": {
             "importPath": "@plasmicapp/react-web/lib/data-sources",
@@ -2910,7 +2932,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "Wb1MBtMfn2uj": {
             "name": null,
@@ -3064,7 +3088,7 @@
           }
         },
         "deps": [],
-        "version": "236-rename-duplicated-components"
+        "version": "237-code-component-variants"
       }
     }
   ]

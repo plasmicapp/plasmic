@@ -99,7 +99,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "8615008": {
             "defaultStyle": { "__ref": "8615009" },
@@ -587,7 +589,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279005": {
             "name": null,
@@ -684,7 +688,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279056": {
             "rows": [{ "__ref": "20279060" }],
@@ -1003,7 +1009,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279161": {
             "rows": [{ "__ref": "20279169" }],
@@ -1727,7 +1735,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279392": {
             "rows": [{ "__ref": "20279396" }],
@@ -2361,7 +2371,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279606": {
             "rows": [{ "__ref": "20279610" }],
@@ -2805,7 +2817,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279699": {
             "rows": [{ "__ref": "20279703" }],
@@ -3361,7 +3375,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279868": {
             "rows": [{ "__ref": "20279872" }],
@@ -3988,7 +4004,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20280182": {
             "rows": [{ "__ref": "20280186" }],
@@ -4235,7 +4253,9 @@
             "mediaQuery": "(max-width:640px)",
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20280235": {
             "tpl": [{ "__ref": "20280224" }],
@@ -4420,7 +4440,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20280275": {
             "name": null,
@@ -4634,7 +4656,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "52044009": {
             "importPath": "@plasmicapp/react-web",
@@ -4782,7 +4806,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "52044017": {
             "importPath": "@plasmicapp/react-web/lib/data-sources",
@@ -4940,7 +4966,7 @@
           }
         },
         "deps": [],
-        "version": "236-rename-duplicated-components"
+        "version": "237-code-component-variants"
       },
       "projectId": "dNoM99U17XFRGCXZ5SUbc1",
       "version": "0.0.1",
@@ -5062,7 +5088,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "8615008": {
             "defaultStyle": { "__ref": "8615009" },
@@ -5550,7 +5578,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279005": {
             "name": null,
@@ -5647,7 +5677,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279056": {
             "rows": [{ "__ref": "20279060" }],
@@ -5963,7 +5995,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279161": {
             "rows": [{ "__ref": "20279169" }],
@@ -6619,7 +6653,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279392": {
             "rows": [{ "__ref": "20279396" }],
@@ -7245,7 +7281,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279606": {
             "rows": [{ "__ref": "20279610" }],
@@ -7650,7 +7688,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279699": {
             "rows": [{ "__ref": "20279703" }],
@@ -8170,7 +8210,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279868": {
             "rows": [{ "__ref": "20279872" }],
@@ -8789,7 +8831,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20280182": {
             "rows": [{ "__ref": "20280186" }],
@@ -9032,7 +9076,9 @@
             "mediaQuery": "(max-width:640px)",
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20280235": {
             "tpl": [{ "__ref": "20280224" }],
@@ -9217,7 +9263,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20280275": {
             "name": null,
@@ -9431,7 +9479,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "52044009": {
             "importPath": "@plasmicapp/react-web",
@@ -9579,7 +9629,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "52044017": {
             "importPath": "@plasmicapp/react-web/lib/data-sources",
@@ -10088,7 +10140,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "65055084": {
             "name": null,
@@ -10146,7 +10200,7 @@
           "65055094": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "236-rename-duplicated-components"
+        "version": "237-code-component-variants"
       }
     },
     {
@@ -10247,7 +10301,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "8615008": {
             "defaultStyle": { "__ref": "8615009" },
@@ -10735,7 +10791,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279005": {
             "name": null,
@@ -10832,7 +10890,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279056": {
             "rows": [{ "__ref": "20279060" }],
@@ -11151,7 +11211,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279161": {
             "rows": [{ "__ref": "20279169" }],
@@ -11875,7 +11937,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279392": {
             "rows": [{ "__ref": "20279396" }],
@@ -12505,7 +12569,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279606": {
             "rows": [{ "__ref": "20279610" }],
@@ -12910,7 +12976,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279699": {
             "rows": [{ "__ref": "20279703" }],
@@ -13430,7 +13498,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20279868": {
             "rows": [{ "__ref": "20279872" }],
@@ -14050,7 +14120,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20280182": {
             "rows": [{ "__ref": "20280186" }],
@@ -14297,7 +14369,9 @@
             "mediaQuery": "(max-width:640px)",
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20280235": {
             "tpl": [{ "__ref": "20280224" }],
@@ -14482,7 +14556,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "20280275": {
             "name": null,
@@ -14892,7 +14968,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "52044009": {
             "importPath": "@plasmicapp/react-web",
@@ -15040,7 +15118,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "52044017": {
             "importPath": "@plasmicapp/react-web/lib/data-sources",
@@ -15189,7 +15269,7 @@
           "52044046": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "236-rename-duplicated-components"
+        "version": "237-code-component-variants"
       }
     }
   ]

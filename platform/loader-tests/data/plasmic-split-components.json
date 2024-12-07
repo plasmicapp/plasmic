@@ -70,7 +70,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "46694005": {
           "path": "/custom",
@@ -249,7 +251,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "48582005": {
           "cond": "{}",
@@ -590,7 +594,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "52785009": {
           "defaultStyle": { "__ref": "52785010" },
@@ -1062,7 +1068,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "60943005": {
           "path": "/",
@@ -1321,7 +1329,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "60943049": {
           "cond": "{}",
@@ -1393,7 +1403,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "60943059": {
           "prob": 50,
@@ -1876,7 +1888,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "60943137": {
           "cond": "{}",
@@ -2121,7 +2135,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "61747005": {
           "path": "/external",
@@ -2417,7 +2433,7 @@
         }
       },
       "deps": [],
-      "version": "236-rename-duplicated-components"
+      "version": "237-code-component-variants"
     }
   ]
 ]

@@ -70,8 +70,8 @@ const paths = [
   "src/wab/shared/site-diffs/__tests__/global-context-merge.json",
   "src/wab/shared/site-diffs/__tests__/style-tokens-conflict.json",
   "src/wab/shared/insertable-templates/__tests__/bundles/copy-and-paste.json",
-  "src/wab/server/__tests__/bundle-migrations/fixtures/style-variants.json",
   "src/wab/server/__tests__/bundle-migrations/fixtures/style-variants.migrated.json",
+  "src/wab/server/__tests__/bundle-migrations/fixtures/code-component-variants.migrated.json",
 ];
 
 async function migrate() {

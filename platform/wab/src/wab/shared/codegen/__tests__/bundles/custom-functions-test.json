@@ -12,7 +12,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "9i96EdQdnOLh": {
           "markers": [],
@@ -348,7 +350,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "m483lBt1ztFC": {
           "values": { "display": "flex", "flex-direction": "row" },
@@ -585,7 +589,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "nLXGPbrOelu8": { "values": {}, "mixins": [], "__type": "RuleSet" },
         "v5z3L5mJm5tW": {
@@ -1156,7 +1162,9 @@
           "mediaQuery": "(min-width:0px) and (max-width:768px)",
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "vxxNGDGRgWjc": {
           "type": "global-screen",
@@ -1284,7 +1292,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "Q22M2ebLSpNE": {
           "components": [
@@ -1435,7 +1445,7 @@
         }
       },
       "deps": [],
-      "version": "236-rename-duplicated-components"
+      "version": "237-code-component-variants"
     }
   ]
 ]

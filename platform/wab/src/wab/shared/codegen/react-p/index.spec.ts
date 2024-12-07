@@ -234,6 +234,8 @@ function mkVariant({
     uuid,
     name,
     selectors,
+    codeComponentName: null,
+    codeComponentVariantKeys: null,
     parent,
     mediaQuery,
     description,

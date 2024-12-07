@@ -147,7 +147,9 @@
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant"
+      "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null
     },
     "11": {
       "values": {
@@ -184,7 +186,9 @@
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant"
+      "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null
     },
     "25": {
       "type": "global-user-defined",
@@ -370,7 +374,9 @@
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant"
+      "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null
     },
     "44": {
       "code": "\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAxMiA2IiBoZWlnaHQ9IjYiIHdpZHRoPSIxMiI+CjxwYXRoIGZpbGw9ImJsYWNrIiBkPSJNMC42MTIgMC4xMTJMNS44NDQgMy4yMkwxMS4wNzYgMC4xMTJWMi41TDUuODQ0IDUuNTI0TDAuNjEyIDIuNDg4VjAuMTEyWiIvPgo8L3N2Zz4K\"",
@@ -410,7 +416,9 @@
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant"
+      "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null
     },
     "57": {
       "type": "component",
@@ -429,7 +437,9 @@
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant"
+      "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null
     },
     "60": { "values": {}, "mixins": [], "__type": "RuleSet" },
     "61": { "code": "false", "fallback": null, "__type": "CustomCode" },
@@ -699,7 +709,9 @@
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant"
+      "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null
     },
     "149": {
       "type": "component",
@@ -926,7 +938,9 @@
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant"
+      "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null
     },
     "173": {
       "code": "\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgc3Ryb2tlLXdpZHRoPSIwIiBmaWxsPSJjdXJyZW50Q29sb3IiIHN0cm9rZT0iY3VycmVudENvbG9yIj48cGF0aCBkPSJNMTczLjg5OCA0MzkuNDA0bC0xNjYuNC0xNjYuNGMtOS45OTctOS45OTctOS45OTctMjYuMjA2IDAtMzYuMjA0bDM2LjIwMy0zNi4yMDRjOS45OTctOS45OTggMjYuMjA3LTkuOTk4IDM2LjIwNCAwTDE5MiAzMTIuNjkgNDMyLjA5NSA3Mi41OTZjOS45OTctOS45OTcgMjYuMjA3LTkuOTk3IDM2LjIwNCAwbDM2LjIwMyAzNi4yMDRjOS45OTcgOS45OTcgOS45OTcgMjYuMjA2IDAgMzYuMjA0bC0yOTQuNCAyOTQuNDAxYy05Ljk5OCA5Ljk5Ny0yNi4yMDcgOS45OTctMzYuMjA0LS4wMDF6Ii8+PC9zdmc+\"",
@@ -965,7 +979,9 @@
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant"
+      "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null
     },
     "185": {
       "type": "component",
@@ -984,7 +1000,9 @@
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant"
+      "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null
     },
     "188": {
       "code": "\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgc3Ryb2tlLXdpZHRoPSIwIiBmaWxsPSJjdXJyZW50Q29sb3IiIHN0cm9rZT0iY3VycmVudENvbG9yIiBzdHlsZT0iZmlsbDogcmdiKDQsIDE0MywgNjQpOyI+PHBhdGggZD0iTTE3My44OTggNDM5LjQwNGwtMTY2LjQtMTY2LjRjLTkuOTk3LTkuOTk3LTkuOTk3LTI2LjIwNiAwLTM2LjIwNGwzNi4yMDMtMzYuMjA0YzkuOTk3LTkuOTk4IDI2LjIwNy05Ljk5OCAzNi4yMDQgMEwxOTIgMzEyLjY5IDQzMi4wOTUgNzIuNTk2YzkuOTk3LTkuOTk3IDI2LjIwNy05Ljk5NyAzNi4yMDQgMGwzNi4yMDMgMzYuMjA0YzkuOTk3IDkuOTk3IDkuOTk3IDI2LjIwNiAwIDM2LjIwNGwtMjk0LjQgMjk0LjQwMWMtOS45OTggOS45OTctMjYuMjA3IDkuOTk3LTM2LjIwNC0uMDAxeiIvPjwvc3ZnPg==\"",
@@ -1021,7 +1039,9 @@
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant"
+      "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null
     },
     "198": { "values": {}, "mixins": [], "__type": "RuleSet" },
     "199": {
@@ -2274,7 +2294,9 @@
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant"
+      "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null
     },
     "492": { "values": {}, "mixins": [], "__type": "RuleSet" },
     "493": { "markers": [], "text": "2", "__type": "RawText" },
@@ -2313,7 +2335,9 @@
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant"
+      "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null
     },
     "500": {
       "type": "component",
@@ -2332,7 +2356,9 @@
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant"
+      "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null
     },
     "503": {
       "uuid": "rQSLhLe97YB",
@@ -2342,7 +2368,9 @@
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant"
+      "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null
     },
     "505": { "values": {}, "mixins": [], "__type": "RuleSet" },
     "506": {
@@ -2647,7 +2675,9 @@
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant"
+      "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null
     },
     "555": { "values": {}, "mixins": [], "__type": "RuleSet" },
     "556": { "markers": [], "text": "All", "__type": "RawText" },
@@ -2686,7 +2716,9 @@
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant"
+      "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null
     },
     "563": { "values": {}, "mixins": [], "__type": "RuleSet" },
     "564": {
@@ -2708,7 +2740,9 @@
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant"
+      "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null
     },
     "567": {
       "type": "component",
@@ -3622,7 +3656,9 @@
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant"
+      "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null
     },
     "851": { "values": {}, "mixins": [], "__type": "RuleSet" },
     "852": {
@@ -4878,5 +4914,5 @@
     }
   },
   "deps": [],
-  "version": "236-rename-duplicated-components"
+  "version": "237-code-component-variants"
 }

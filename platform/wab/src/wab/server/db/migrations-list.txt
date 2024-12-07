@@ -234,3 +234,4 @@ platform/wab/src/wab/server/bundle-migrations/233-rename-interaction-variants-fo
 platform/wab/src/wab/server/bundle-migrations/234-variant-selectors-no-display-name.ts
 platform/wab/src/wab/server/bundle-migrations/235-variant-selectors-no-display-name-corrected.ts
 platform/wab/src/wab/server/bundle-migrations/236-rename-duplicated-components.ts
+platform/wab/src/wab/server/bundle-migrations/237-code-component-variants.ts

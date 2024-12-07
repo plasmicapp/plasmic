@@ -459,7 +459,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "c3L9v_qZRs3F": {
           "components": [
@@ -906,7 +908,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "F_7MyoVvt6SJ": {
           "importPath": "@plasmicapp/react-web",
@@ -1054,7 +1058,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "zUFp_kXCGBfM": {
           "importPath": "@plasmicapp/react-web/lib/data-sources",
@@ -1104,7 +1110,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "m_Nh1eejQLue": {
           "path": "/",
@@ -1138,7 +1146,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "3rdHWhqpl7__": {
           "tag": "div",
@@ -1166,7 +1176,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "JsdiEM2psx6H": {
           "path": "/page-1",
@@ -1700,7 +1712,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "7JaZkaz7FKrX": {
           "uuid": "aUExF6eJ4rnv",
@@ -1710,7 +1724,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "ccD0O-b22xgL": {
           "uuid": "Fxt2X3wP7MpU",
@@ -1720,7 +1736,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "aMV_xZLTjaiR": {
           "uuid": "o3_eL4iVBP2X",
@@ -1730,7 +1748,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "MkyOndX3NfEk": {
           "uuid": "ceA2E9ruHbDb",
@@ -1740,7 +1760,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "9Wl6VZg3d1J-": {
           "type": "component",
@@ -1844,7 +1866,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "PeouyNVpN23L": {
           "path": "/page-2",
@@ -1883,7 +1907,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "vk7F7oxpfpue": {
           "path": "/page-3",
@@ -3124,7 +3150,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "fiZpOiUmqWUj": {
           "uuid": "QM4aKQL1ZRPM",
@@ -3134,7 +3162,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "3jNcACuRZH2N": {
           "uuid": "-5qxcNAiejVc",
@@ -3144,7 +3174,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "M7BJw2PREMmA": {
           "uuid": "7ROQKo01u84T",
@@ -3154,7 +3186,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "v558s9LW1FOf": {
           "uuid": "n-bXx31UXhmS",
@@ -3164,7 +3198,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "OrW3UwYyLXo2": {
           "uuid": "1WGnPYVINrRK",
@@ -3174,7 +3210,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "UlUyAvXIG8Ed": {
           "uuid": "f048DQAMqZ8l",
@@ -3184,7 +3222,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "YzEzC7zE3c0B": {
           "uuid": "_kxXdqbwDk4b",
@@ -3194,7 +3234,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "-4w4Dy07a9cq": {
           "uuid": "hX_XBc2D8SQO",
@@ -3204,7 +3246,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "_3z_P-NNtxuv": {
           "uuid": "CxJdwKJtpMPt",
@@ -3214,7 +3258,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "boNkne008VC3": {
           "uuid": "qtFk_pcfWbxR",
@@ -3224,7 +3270,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "8O-Ip7hwZDj3": {
           "uuid": "eHwfYkiHfGJS",
@@ -3234,7 +3282,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "vHnYd1i6wg4G": {
           "uuid": "HcfO9rj6fcna",
@@ -3244,7 +3294,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "jyyU9ZyH-Cnl": {
           "uuid": "VNX7huUnUzoI",
@@ -3254,7 +3306,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "x2ZuXQtQ7fsO": {
           "uuid": "FgRPgjOf_V3P",
@@ -3264,7 +3318,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "TMmVv5yI_Gl6": {
           "uuid": "gMLod8tWx378",
@@ -3274,7 +3330,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "r8t_K3NKv6FJ": {
           "uuid": "N6FuIllUAhuP",
@@ -3284,7 +3342,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "92QGXrl6wD1Q": {
           "uuid": "SNFyJA-IXgw9",
@@ -3294,7 +3354,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "bgUfLcScXBSM": {
           "uuid": "AskHxUtyC6OG",
@@ -3304,7 +3366,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "pLXcb85mRSWS": {
           "uuid": "t5YsSmixqExL",
@@ -3314,7 +3378,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "cEIRMhDKPhmd": {
           "uuid": "MJF5xZJFe13B",
@@ -3324,7 +3390,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "tpcTq70pG41Q": {
           "tag": "h1",
@@ -9331,7 +9399,7 @@
         }
       },
       "deps": [],
-      "version": "236-rename-duplicated-components"
+      "version": "237-code-component-variants"
     }
   ]
 ]

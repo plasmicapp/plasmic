@@ -156,7 +156,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "8246011": {
           "importPath": "@plasmicpkgs/plasmic-cms",
@@ -413,7 +415,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "21177035": {
           "importPath": "@plasmicpkgs/plasmic-cms",
@@ -541,7 +545,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "21177042": {
           "importPath": "@plasmicpkgs/plasmic-cms",
@@ -888,7 +894,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "44330064": {
           "defaultStyle": { "__ref": "44330065" },
@@ -1217,7 +1225,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "58829013": {
           "importPath": "@plasmicpkgs/plasmic-cms",
@@ -1529,7 +1539,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "60389012": {
           "importPath": "@plasmicpkgs/plasmic-cms",
@@ -1662,7 +1674,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "60389019": {
           "importPath": "@plasmicpkgs/plasmic-cms",
@@ -1882,7 +1896,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "ng0OHvPkesa9": {
           "tag": "div",
@@ -2101,7 +2117,7 @@
         }
       },
       "deps": [],
-      "version": "236-rename-duplicated-components"
+      "version": "237-code-component-variants"
     }
   ],
   [
@@ -2744,7 +2760,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "14598026": {
           "variants": [{ "__ref": "14598006" }],
@@ -2794,7 +2812,9 @@
           "mediaQuery": "(min-width:0px) and (max-width:768px)",
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "14598043": {
           "type": "global-screen",
@@ -2907,7 +2927,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "14598058": { "values": {}, "mixins": [], "__type": "RuleSet" },
         "14598064": {
@@ -4541,7 +4563,7 @@
         }
       },
       "deps": ["7349d209-ded6-417a-aa97-05311f8b93c4"],
-      "version": "236-rename-duplicated-components"
+      "version": "237-code-component-variants"
     }
   ]
 ]

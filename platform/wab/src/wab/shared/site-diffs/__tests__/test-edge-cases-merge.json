@@ -235,7 +235,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897018": {
             "values": { "display": "flex", "flex-direction": "row" },
@@ -478,7 +480,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897044": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897045": {
@@ -605,7 +609,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897055": {
             "values": { "position": "relative", "text-align": "center" },
@@ -821,7 +827,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897076": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897077": {
@@ -1344,7 +1352,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897166": {
             "values": { "display": "flex", "flex-direction": "row" },
@@ -1654,7 +1664,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897210": {
             "values": {
@@ -2045,7 +2057,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897280": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897281": {
@@ -2386,7 +2400,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897338": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897339": {
@@ -2758,7 +2774,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897404": {
             "values": {
@@ -3132,7 +3150,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897471": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897472": {
@@ -3441,7 +3461,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897517": {
             "values": {
@@ -3473,7 +3495,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897525": {
             "param": { "__ref": "53897510" },
@@ -4309,7 +4333,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897671": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897672": {
@@ -4709,7 +4735,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897740": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897741": {
@@ -4990,7 +5018,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897806": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897807": {
@@ -5699,7 +5729,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897916": {
             "defaultStyle": { "__ref": "53897917" },
@@ -6116,7 +6148,7 @@
           "53898074": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "236-rename-duplicated-components"
+        "version": "237-code-component-variants"
       },
       "projectId": "5txi3zd6hPLtbkzbV8p6jB",
       "version": "0.0.1",
@@ -6540,7 +6572,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897018": {
             "values": { "display": "flex", "flex-direction": "row" },
@@ -6783,7 +6817,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897044": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897045": {
@@ -6910,7 +6946,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897055": {
             "values": { "position": "relative", "text-align": "center" },
@@ -7126,7 +7164,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897076": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897077": {
@@ -7614,7 +7654,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897166": {
             "values": { "display": "flex", "flex-direction": "row" },
@@ -7924,7 +7966,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897216": {
             "tag": "div",
@@ -8299,7 +8343,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897280": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897281": {
@@ -8636,7 +8682,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897338": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897339": {
@@ -8980,7 +9028,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897410": {
             "tag": "div",
@@ -9304,7 +9354,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897471": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897472": {
@@ -9613,7 +9665,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897517": {
             "values": {
@@ -9645,7 +9699,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897527": {
             "values": { "width": "default", "height": "default" },
@@ -10419,7 +10475,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897672": {
             "variants": [{ "__ref": "53897670" }],
@@ -10774,7 +10832,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897740": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897741": {
@@ -11051,7 +11111,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897806": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897807": {
@@ -11760,7 +11822,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897916": {
             "defaultStyle": { "__ref": "53897917" },
@@ -12237,7 +12301,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "63532005": {
             "name": null,
@@ -12295,7 +12361,7 @@
           "63532015": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "236-rename-duplicated-components"
+        "version": "237-code-component-variants"
       }
     },
     {
@@ -12523,7 +12589,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897018": {
             "values": { "display": "flex", "flex-direction": "row" },
@@ -12766,7 +12834,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897044": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897045": {
@@ -12893,7 +12963,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897055": {
             "values": { "position": "relative", "text-align": "center" },
@@ -13109,7 +13181,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897076": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897077": {
@@ -13606,7 +13680,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897166": {
             "values": { "display": "flex", "flex-direction": "row" },
@@ -13916,7 +13992,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897210": {
             "values": {
@@ -14307,7 +14385,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897280": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897281": {
@@ -14648,7 +14728,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897338": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897339": {
@@ -15020,7 +15102,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897410": {
             "tag": "div",
@@ -15378,7 +15462,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897471": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897472": {
@@ -15686,7 +15772,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897517": {
             "values": {
@@ -15718,7 +15806,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897527": {
             "values": { "width": "default", "height": "default" },
@@ -16540,7 +16630,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897671": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897672": {
@@ -16940,7 +17032,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897740": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897741": {
@@ -17221,7 +17315,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897806": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "53897807": {
@@ -17930,7 +18026,9 @@
             "mediaQuery": null,
             "description": null,
             "forTpl": null,
-            "__type": "Variant"
+            "__type": "Variant",
+            "codeComponentName": null,
+            "codeComponentVariantKeys": null
           },
           "53897916": {
             "defaultStyle": { "__ref": "53897917" },
@@ -18560,7 +18658,7 @@
           }
         },
         "deps": [],
-        "version": "236-rename-duplicated-components"
+        "version": "237-code-component-variants"
       }
     }
   ]

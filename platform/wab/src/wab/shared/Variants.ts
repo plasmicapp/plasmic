@@ -87,6 +87,8 @@ export function mkVariant({
     uuid: mkShortId(),
     name,
     selectors,
+    codeComponentName: null,
+    codeComponentVariantKeys: null,
     parent,
     mediaQuery,
     description,

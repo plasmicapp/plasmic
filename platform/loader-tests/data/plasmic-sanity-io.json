@@ -184,7 +184,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "10603011": {
           "importPath": "@plasmicpkgs/plasmic-sanity-io",
@@ -257,7 +259,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "10603015": {
           "importPath": "@plasmicpkgs/plasmic-sanity-io",
@@ -425,7 +429,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "10603024": {
           "importPath": "@plasmicpkgs/plasmic-sanity-io",
@@ -646,7 +652,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "10867009": {
           "defaultStyle": { "__ref": "10867010" },
@@ -918,7 +926,7 @@
         }
       },
       "deps": [],
-      "version": "236-rename-duplicated-components"
+      "version": "237-code-component-variants"
     }
   ],
   [
@@ -1002,7 +1010,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "18175009": {
           "defaultStyle": { "__ref": "18175010" },
@@ -1552,7 +1562,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "24633008": {
           "path": "/",
@@ -2048,7 +2060,7 @@
         }
       },
       "deps": ["4536e610-f7b7-43b7-b45e-172856a7e132"],
-      "version": "236-rename-duplicated-components"
+      "version": "237-code-component-variants"
     }
   ]
 ]

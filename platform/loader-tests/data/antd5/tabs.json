@@ -35,7 +35,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "uyXQIaT-5H_E": {
           "components": [
@@ -3354,7 +3356,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "UIKTzPphJHVu": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerSelect",
@@ -3442,7 +3446,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "5G5mpdC3z96x": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerSelect",
@@ -3534,7 +3540,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "rcMN9l6ibe0u": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerSelect",
@@ -3773,7 +3781,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "i1-ogtuJJdlL": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerTable",
@@ -3945,7 +3955,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "UobXg8cB0aoB": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerTable",
@@ -4037,7 +4049,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "RJftqOFsZ-rk": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerTable",
@@ -4216,7 +4230,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "K4-Zp71-DJaE": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerCheckbox",
@@ -4357,7 +4373,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "9ZthlnuWwvFf": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerCheckbox",
@@ -4495,7 +4513,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "8CEpimp3c0TU": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerSwitch",
@@ -4623,7 +4643,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "ojdk-pt0dTz3": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerRadio",
@@ -4753,7 +4775,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "KI8WMolB0iWe": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerRadio",
@@ -4954,7 +4978,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "9eAo6yBjb33E": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerRadio",
@@ -5341,7 +5367,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "i44atg-JWRnx": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerModal",
@@ -5661,7 +5689,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "55Zaaesh3yO4": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerButton",
@@ -5835,7 +5865,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "uqHc9uvNX_8x": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerMenu",
@@ -6016,7 +6048,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "woCC2dW0fR-m": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerMenu",
@@ -6110,7 +6144,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "KTBGU0FUirOp": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerMenu",
@@ -6182,7 +6218,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "pKWJ4EMgo_UF": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerMenu",
@@ -6334,7 +6372,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "C283INNllGez": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerMenu",
@@ -6646,7 +6686,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "NOQG2WxrQzTG": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerDropdown",
@@ -7089,7 +7131,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "sGRnnStukkyP": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerForm",
@@ -7531,7 +7575,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "jIbyudYT7FWg": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerForm",
@@ -7622,7 +7668,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "EX1-Q7GSurqL": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerForm",
@@ -7730,7 +7778,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "Nr--oHoMeVB_": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerForm",
@@ -8149,7 +8199,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "BSFCF8HhZP_2": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerInput",
@@ -8347,7 +8399,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "25E-3AKAW6tT": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerInput",
@@ -8545,7 +8599,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "iSROpDtD2EOP": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerInput",
@@ -8972,7 +9028,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "NWUymDnIpYFb": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerInput",
@@ -9330,7 +9388,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "n6t0MyanrO-O": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerDatePicker",
@@ -9509,7 +9569,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "hwwdzRzRrIJn": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerUpload",
@@ -9760,7 +9822,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "C4nWsgOTuHP9": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerColorPicker",
@@ -10167,7 +10231,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "O2iJp1hKfT6N": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerDrawer",
@@ -10428,7 +10494,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "WLfDKqrtk7we": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerSteps",
@@ -10600,7 +10668,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "WIN24vD2arXJ": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerTooltip",
@@ -10772,7 +10842,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "quNZNX3wTA2F": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerAvatar",
@@ -10900,7 +10972,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "UL7fSjt9tTQt": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerAvatar",
@@ -11465,7 +11539,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "h_gvKpyhthHP": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerTree",
@@ -11979,7 +12055,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "f7MCY57EDgST": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerTree",
@@ -12406,7 +12484,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "uUC-efShIX6A": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerCollapse",
@@ -12732,7 +12812,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "l7pD_PGLnl3h": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerCollapse",
@@ -13007,7 +13089,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "GsSEgxPpRRVC": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerCollapse",
@@ -13375,7 +13459,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "7e7PtgAWzUOt": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerPopover",
@@ -13904,7 +13990,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "qtwcI3Abqew3": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerTabs",
@@ -14077,7 +14165,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "mSL2KHkm1Eev": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerTabs",
@@ -14440,7 +14530,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "4cht9SrsfFNa": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerRate",
@@ -14828,7 +14920,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "VDsaNcO0-crt": {
           "importPath": "@plasmicpkgs/antd5/skinny/registerConfigProvider",
@@ -22206,7 +22300,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "RnjBIK7iT38a": {
           "tag": "div",
@@ -22336,7 +22432,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "vj5a_eMuyHzI": {
           "tag": "div",
@@ -22472,7 +22570,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "DI9DP56KPAuD": {
           "tag": "div",
@@ -22588,7 +22688,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "MsH4UJx0P1Hj": {
           "tag": "div",
@@ -25369,7 +25471,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "mE5B5B8X8ixH": {
           "tag": "div",
@@ -25511,7 +25615,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "wKsN653X40-P": {
           "tag": "div",
@@ -25974,7 +26080,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "d1SGjehjl49k": {
           "tag": "div",
@@ -26085,7 +26193,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "tb_To6HiXmE_": {
           "tag": "div",
@@ -27351,7 +27461,7 @@
         }
       },
       "deps": [],
-      "version": "236-rename-duplicated-components"
+      "version": "237-code-component-variants"
     }
   ],
   [
@@ -27814,7 +27924,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "UOHqvuuhbpyw": {
           "components": [
@@ -28022,7 +28134,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "-cYWB4q8oMWT": {
           "importPath": "@plasmicapp/react-web",
@@ -28170,7 +28284,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "WcQ3IpKNUYdC": {
           "importPath": "@plasmicapp/react-web/lib/data-sources",
@@ -28421,7 +28537,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "7yTBzTVAeGO1": {
           "path": "/tabs-test",
@@ -29528,7 +29646,9 @@
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant"
+          "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null
         },
         "pcBe7pGmbfQF": {
           "path": "/one-tab-item-repeated",
@@ -30098,7 +30218,7 @@
         }
       },
       "deps": ["bbf34eb7-5aa4-44fe-af7b-9f0012f91a1f"],
-      "version": "236-rename-duplicated-components"
+      "version": "237-code-component-variants"
     }
   ]
 ]
