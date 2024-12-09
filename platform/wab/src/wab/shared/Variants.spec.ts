@@ -2,8 +2,9 @@ import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import { mkTplTagX } from "@/wab/shared/core/tpls";
 import { StateParam } from "@/wab/shared/model/classes";
 import {
+  CodeComponentVariant,
   ensureValidCombo,
-  isMaybeInteractiveStyleVariant,
+  isMaybeInteractiveCodeComponentVariant,
   mkBaseVariant,
   mkComponentVariantGroup,
   mkVariant,
@@ -61,82 +62,91 @@ function getComponentWithVariantGroups() {
 }
 
 describe("Variants", () => {
-  describe("isMaybeInteractiveStyleVariant", () => {
+  describe("isMaybeInteractiveCodeComponentVariant", () => {
     it("should return true for interactive style variants", () => {
       expect(
-        isMaybeInteractiveStyleVariant(
+        isMaybeInteractiveCodeComponentVariant(
           mkVariant({
             name: "",
-            selectors: ["HoveReffect"],
-          })
+            codeComponentName: "name",
+            codeComponentVariantKeys: ["HoveReffect"],
+          }) as CodeComponentVariant
         )
       ).toBe(true);
       expect(
-        isMaybeInteractiveStyleVariant(
+        isMaybeInteractiveCodeComponentVariant(
           mkVariant({
             name: "",
-            selectors: ["pressEd"],
-          })
+            codeComponentName: "name",
+            codeComponentVariantKeys: ["pressEd"],
+          }) as CodeComponentVariant
         )
       ).toBe(true);
       expect(
-        isMaybeInteractiveStyleVariant(
+        isMaybeInteractiveCodeComponentVariant(
           mkVariant({
             name: "",
-            selectors: ["12345", "focused"],
-          })
+            codeComponentName: "name",
+            codeComponentVariantKeys: ["12345", "focused"],
+          }) as CodeComponentVariant
         )
       ).toBe(true);
       expect(
-        isMaybeInteractiveStyleVariant(
+        isMaybeInteractiveCodeComponentVariant(
           mkVariant({
             name: "",
-            selectors: ["wertrty", "focus-visible"],
-          })
+            codeComponentName: "name",
+            codeComponentVariantKeys: ["wertrty", "focus-visible"],
+          }) as CodeComponentVariant
         )
       ).toBe(true);
       expect(
-        isMaybeInteractiveStyleVariant(
+        isMaybeInteractiveCodeComponentVariant(
           mkVariant({
             name: "",
-            selectors: ["sdfghxcvb", "place-left"],
-          })
+            codeComponentName: "name",
+            codeComponentVariantKeys: ["sdfghxcvb", "place-left"],
+          }) as CodeComponentVariant
         )
       ).toBe(false);
       expect(
-        isMaybeInteractiveStyleVariant(
+        isMaybeInteractiveCodeComponentVariant(
           mkVariant({
             name: "",
-            selectors: ["yuioijhgf", "indeterminate"],
-          })
+            codeComponentName: "name",
+            codeComponentVariantKeys: ["yuioijhgf", "indeterminate"],
+          }) as CodeComponentVariant
         )
       ).toBe(false);
       expect(
-        isMaybeInteractiveStyleVariant(
+        isMaybeInteractiveCodeComponentVariant(
           mkVariant({
             name: "",
-            selectors: ["jhgvfcvbn", "selected"],
-          })
+            codeComponentName: "name",
+            codeComponentVariantKeys: ["jhgvfcvbn", "selected"],
+          }) as CodeComponentVariant
         )
       ).toBe(false);
       expect(
-        isMaybeInteractiveStyleVariant(
+        isMaybeInteractiveCodeComponentVariant(
           mkVariant({
             name: "",
-            selectors: [
+            codeComponentName: "name",
+            codeComponentVariantKeys: [
               "dsgj ksdgj ksdjg ksdjgk jsdkgj sdkjg ksd",
               "sdghjsdg",
               "dshgjsdhgs",
             ],
-          })
+          }) as CodeComponentVariant
         )
       ).toBe(false);
       expect(
-        isMaybeInteractiveStyleVariant(
+        isMaybeInteractiveCodeComponentVariant(
           mkVariant({
             name: "",
-            selectors: [],
-          })
+            codeComponentName: "name",
+            codeComponentVariantKeys: [],
+          }) as CodeComponentVariant
         )
       ).toBe(false);
     });

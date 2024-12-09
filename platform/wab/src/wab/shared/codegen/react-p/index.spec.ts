@@ -54,6 +54,14 @@ describe("makeCssClassNameForVariantCombo", () => {
   });
 
   it("works with prefix", () => {
+    const opts = {
+      prefix: "123",
+    };
+    const expected = {
+      loader: "_123abcde",
+      nonLoader: "_123___hovered",
+    };
+
     expectMakeCssClassNameForVariantCombo(
       [
         mkVariant({
@@ -62,13 +70,20 @@ describe("makeCssClassNameForVariantCombo", () => {
           selectors: ["Hovered"],
         }),
       ],
-      {
-        prefix: "123",
-      },
-      {
-        loader: "_123abcde",
-        nonLoader: "_123___hovered",
-      }
+      opts,
+      expected
+    );
+    expectMakeCssClassNameForVariantCombo(
+      [
+        mkVariant({
+          uuid: "abcdef",
+          name: "",
+          codeComponentName: "name",
+          codeComponentVariantKeys: ["Hovered"],
+        }),
+      ],
+      opts,
+      expected
     );
   });
 
@@ -96,6 +111,43 @@ describe("makeCssClassNameForVariantCombo", () => {
             uuid: "12345678",
             name: "",
             selectors: ["Hovered", "Focused Within"],
+          }),
+        ],
+        {},
+        {
+          loader: "_12345",
+          nonLoader: "___hovered__focusedWithin",
+        }
+      );
+    });
+  });
+
+  describe("with code component variants", () => {
+    it("works for variant with 1 variant key", () => {
+      expectMakeCssClassNameForVariantCombo(
+        [
+          mkVariant({
+            uuid: "12345678",
+            name: "",
+            codeComponentName: "name",
+            codeComponentVariantKeys: ["Hovered"],
+          }),
+        ],
+        {},
+        {
+          loader: "_12345",
+          nonLoader: "___hovered",
+        }
+      );
+    });
+    it("works for variant with 2 varaint keys", () => {
+      expectMakeCssClassNameForVariantCombo(
+        [
+          mkVariant({
+            uuid: "12345678",
+            name: "",
+            codeComponentName: "name",
+            codeComponentVariantKeys: ["Hovered", "Focused Within"],
           }),
         ],
         {},
@@ -217,6 +269,8 @@ function mkVariant({
   uuid,
   name,
   selectors,
+  codeComponentName,
+  codeComponentVariantKeys,
   parent,
   mediaQuery,
   description,
@@ -225,6 +279,8 @@ function mkVariant({
   uuid: string;
   name: string;
   selectors?: string[];
+  codeComponentName?: string;
+  codeComponentVariantKeys?: string[] | null;
   parent?: VariantGroup;
   mediaQuery?: string | null;
   description?: string | null;
@@ -234,8 +290,8 @@ function mkVariant({
     uuid,
     name,
     selectors,
-    codeComponentName: null,
-    codeComponentVariantKeys: null,
+    codeComponentName,
+    codeComponentVariantKeys,
     parent,
     mediaQuery,
     description,

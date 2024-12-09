@@ -1668,6 +1668,8 @@ export function cloneVariant(variant: Variant) {
     mediaQuery: variant.mediaQuery,
     description: variant.description,
     forTpl: variant.forTpl,
+    codeComponentName: variant.codeComponentName,
+    codeComponentVariantKeys: variant.codeComponentVariantKeys,
   });
   return newV;
 }

@@ -260,12 +260,14 @@ export function isRegisteredVariant(
   return isStyleVariant(variant) || isCodeComponentVariant(variant);
 }
 
-export function isMaybeInteractiveStyleVariant(variant: Variant): boolean {
+export function isMaybeInteractiveCodeComponentVariant(
+  variant: CodeComponentVariant
+): boolean {
   const interactionKeywords = ["hover", "focus", "press"];
   return (
-    isStyleVariant(variant) &&
-    variant.selectors.some((s) =>
-      interactionKeywords.some((keyword) => s.toLowerCase().includes(keyword))
+    isCodeComponentVariant(variant) &&
+    variant.codeComponentVariantKeys.some((key) =>
+      interactionKeywords.some((keyword) => key.toLowerCase().includes(keyword))
     )
   );
 }
