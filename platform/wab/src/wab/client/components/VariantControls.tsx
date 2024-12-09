@@ -173,14 +173,10 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
         onDismiss?.();
 
         if (
-          isCodeComponentVariant(variant) &&
-          variant.codeComponentVariantKeys?.length === 0
+          (isCodeComponentVariant(variant) &&
+            variant.codeComponentVariantKeys?.length === 0) ||
+          (isStyleVariant(variant) && variant.selectors?.length === 0)
         ) {
-          spawn(studioCtx.siteOps().removeVariant(component, variant));
-          return;
-        }
-
-        if (isStyleVariant(variant) && variant.selectors?.length === 0) {
           spawn(studioCtx.siteOps().removeVariant(component, variant));
         }
       });
