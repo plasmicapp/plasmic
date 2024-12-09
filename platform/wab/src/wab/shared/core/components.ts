@@ -218,10 +218,20 @@ export function groupComponents(components: Component[]) {
 
 export const defaultComponentKinds = {
   button: "Button",
-  "text-input": "Text Input",
   checkbox: "Checkbox",
+  "checkbox-group": "Checkbox Group",
+  combobox: "Combobox",
+  drawer: "Drawer",
+  modal: "Modal",
+  popover: "Popover",
+  radio: "Radio",
+  "radio-group": "Radio Group",
+  "range-slider": "Range Slider",
   select: "Select",
+  slider: "Slider",
   switch: "Switch",
+  tooltip: "Tooltip",
+  "text-input": "Text Input",
   unauthorized: "Unauthorized",
 };
 
@@ -2416,16 +2426,7 @@ export function removeVariantGroup(
   removeVariantGroupFromSplits(site, group);
 }
 
-export function tryGetDefaultComponent(
-  site: Site,
-  kind:
-    | "button"
-    | "select"
-    | "text-input"
-    | "checkbox"
-    | "switch"
-    | "unauthorized"
-) {
+export function tryGetDefaultComponent(site: Site, kind: DefaultComponentKind) {
   return (
     site.defaultComponents[kind] ??
     site.components.find((c) => c.plumeInfo?.type === kind)

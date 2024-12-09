@@ -1058,122 +1058,127 @@ export function buildAddItemGroups({
     // This includes:
     //
     // - built-in elements from INSERTABLES
-    // - hostless components - moved a lot of free-floating components out of the component store and into here. So we don't put so much emphasis what components are from which packages, what's installed or not, etc.
-    // - antd5 hostless components - form, number/password input, etc. - we may later want to hide some of these if antd5 is not installed?
-    // - default-components, which can be Plume (for sites) and hostless antd5 (for apps)
+    // - starter components (Plexus)
+    // - built-in elements from @plasmicapp/react-web
     //
     // So ultimately we just want this to *feel* like a stable list of built-in components. Vs. the chaos before this of even basic things like Button mysteriously disappearing from the list once you insert it.
     //
     // We don't want to just call it "built-in" since you may swap in your own custom components using the default-components system (for a few specific kinds).
     // But generally later we may allow users to more fully customize this menu? TBD.
-    ...Object.entries(builtinSections["Default components"]).map(
-      ([group, aliases]) =>
-        !group.startsWith("__") && {
-          sectionKey: "Default components",
-          sectionLabel: "Default components",
-          key: group,
-          label: group,
-          items: filterFalsy(
-            aliases.map((alias) => {
-              if (!canInsertAlias(uiConfig, alias, canInsertContext)) {
-                return undefined;
-              }
-              const resolved = insertPanelAliases.get(alias as any);
-              const aliasImageUrl = `https://static1.plasmic.app/insertables/${alias}.svg`;
-
-              // Is this a built-in insertable?
-              if (!resolved) {
-                const insertable = INSERTABLES_MAP[alias];
-                if (!insertable) {
+    ...Object.entries(builtinSections).flatMap(([section, groups]) =>
+      Object.entries(groups).map(
+        ([group, aliases]) =>
+          !group.startsWith("__") && {
+            sectionKey: section,
+            sectionLabel: section,
+            key: group,
+            label: group,
+            items: filterFalsy(
+              aliases.map((alias) => {
+                if (!canInsertAlias(uiConfig, alias, canInsertContext)) {
                   return undefined;
                 }
-                return { ...insertable, isCompact: true };
-              }
+                const resolved = insertPanelAliases.get(alias as any);
+                const aliasImageUrl = `https://static1.plasmic.app/insertables/${alias}.svg`;
 
-              // Is this a built-in code component?
-              if (resolved.startsWith("builtincc:")) {
-                const componentName = resolved.split(":")[1];
-                const component = studioCtx.site.components
-                  .filter((c) => isBuiltinCodeComponent(c))
-                  .find((c) => c.name === componentName);
-                if (!component) {
-                  return undefined;
+                // Is this a built-in insertable?
+                if (!resolved) {
+                  const insertable = INSERTABLES_MAP[alias];
+                  if (!insertable) {
+                    return undefined;
+                  }
+                  return { ...insertable, isCompact: true };
                 }
-                return {
-                  ...createAddTplComponent(component),
-                  previewImageUrl: aliasImageUrl,
-                  isCompact: true,
-                };
-              }
 
-              // Is this a default component entry?
-              if (resolved.startsWith("default:")) {
-                const kind = resolved.split(":")[1];
-                if (!isDefaultComponentKind(kind)) {
-                  return undefined;
-                }
-                const existingComponent = tryGetDefaultComponent(
-                  studioCtx.site,
-                  kind
-                );
-                if (existingComponent) {
+                // Is this a built-in code component?
+                if (resolved.startsWith("builtincc:")) {
+                  const componentName = resolved.split(":")[1];
+                  const component = studioCtx.site.components
+                    .filter((c) => isBuiltinCodeComponent(c))
+                    .find((c) => c.name === componentName);
+                  if (!component) {
+                    return undefined;
+                  }
                   return {
-                    ...createAddTplComponent(existingComponent),
-                    previewImageUrl: getPlumeImage(kind),
+                    ...createAddTplComponent(component),
+                    previewImageUrl: aliasImageUrl,
                     isCompact: true,
                   };
-                } else if (
-                  canInsertHostlessPackage(uiConfig, "plume", canInsertContext)
-                ) {
-                  if (!hasPlexus || DEVFLAGS.runningInCypress) {
+                }
+
+                // Is this a default component entry?
+                if (resolved.startsWith("default:")) {
+                  const kind = resolved.split(":")[1];
+                  if (!isDefaultComponentKind(kind)) {
+                    return undefined;
+                  }
+                  const existingComponent = tryGetDefaultComponent(
+                    studioCtx.site,
+                    kind
+                  );
+                  if (existingComponent) {
                     return {
-                      ...only(makePlumeInsertables(studioCtx, kind)),
+                      ...createAddTplComponent(existingComponent),
+                      previewImageUrl: getPlumeImage(kind),
                       isCompact: true,
                     };
+                  } else if (
+                    canInsertHostlessPackage(
+                      uiConfig,
+                      "plume",
+                      canInsertContext
+                    )
+                  ) {
+                    if (!hasPlexus || DEVFLAGS.runningInCypress) {
+                      return {
+                        ...only(makePlumeInsertables(studioCtx, kind)),
+                        isCompact: true,
+                      };
+                    }
+
+                    // The template name needs to be of format "<PLEXUS_INSERTABLE_ID>/<kind>". E.g. For Plexus button, it will be "plexus/button".
+                    // The template name will be fetched from devflags.insertableTemplates.
+                    return {
+                      previewImageUrl: aliasImageUrl,
+                      ...handleTemplateAlias(
+                        `${PLEXUS_INSERTABLE_ID}/${kind}`,
+                        kind
+                      ),
+                    };
+                  } else {
+                    return undefined;
                   }
-
-                  // The template name needs to be of format "<PLEXUS_INSERTABLE_ID>/<kind>". E.g. For Plexus button, it will be "plexus/button".
-                  // The template name will be fetched from devflags.insertableTemplates.
-                  return {
-                    previewImageUrl: aliasImageUrl,
-                    ...handleTemplateAlias(
-                      `${PLEXUS_INSERTABLE_ID}/${kind}`,
-                      kind
-                    ),
-                  };
-                } else {
-                  return undefined;
                 }
-              }
 
-              if (resolved.startsWith("template:")) {
-                const templateName = resolved.split(":")[1];
-                // ASK: Previously, it only returned if a template was found. Is it OK to return undefined if the template isn't found?
-                return handleTemplateAlias(templateName);
-              }
+                if (resolved.startsWith("template:")) {
+                  const templateName = resolved.split(":")[1];
+                  // ASK: Previously, it only returned if a template was found. Is it OK to return undefined if the template isn't found?
+                  return handleTemplateAlias(templateName);
+                }
 
-              // Is this a hostless component entry?
-              for (const hostlessGroup of initHostLess(studioCtx) ?? []) {
-                if (
-                  canInsertHostlessPackage(
-                    uiConfig,
-                    hostlessGroup.codeName ?? "",
-                    canInsertContext
-                  )
-                ) {
-                  for (const item of hostlessGroup.items) {
-                    if (item.key === "hostless-component-" + resolved) {
-                      hostlessComponentsInDefaultMenu.add(item.key);
-                      return { ...item, isCompact: true };
+                // Is this a hostless component entry?
+                for (const hostlessGroup of initHostLess(studioCtx) ?? []) {
+                  if (
+                    canInsertHostlessPackage(
+                      uiConfig,
+                      hostlessGroup.codeName ?? "",
+                      canInsertContext
+                    )
+                  ) {
+                    for (const item of hostlessGroup.items) {
+                      if (item.key === "hostless-component-" + resolved) {
+                        hostlessComponentsInDefaultMenu.add(item.key);
+                        return { ...item, isCompact: true };
+                      }
                     }
                   }
                 }
-              }
 
-              return undefined;
-            })
-          ),
-        }
+                return undefined;
+              })
+            ),
+          }
+      )
     ),
 
     // Code components groups

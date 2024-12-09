@@ -1,16 +1,14 @@
 import Button from "@/wab/client/components/widgets/Button";
-import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import { defaultComponentKinds } from "@/wab/shared/core/components";
+import { naturalSort } from "@/wab/shared/sort";
 import { Form, Select } from "antd";
 import React from "react";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 
 export function DefaultComponentKindModal<T>({
-  studioCtx,
   onSubmit,
   onCancel,
 }: {
-  studioCtx: StudioCtx;
   onSubmit: (val: T) => void;
   onCancel: () => void;
 }) {
@@ -39,7 +37,10 @@ export function DefaultComponentKindModal<T>({
           ]}
         >
           <Select placeholder="Set as the default component for this category">
-            {Object.entries(defaultComponentKinds).map(([kind, label]) => (
+            {naturalSort(
+              Object.entries(defaultComponentKinds),
+              ([_kind, label]) => label
+            ).map(([kind, label]) => (
               <Select.Option value={kind}>{label}</Select.Option>
             ))}
           </Select>

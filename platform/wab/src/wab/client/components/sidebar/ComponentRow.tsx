@@ -405,7 +405,6 @@ function buildCommonComponentMenuItems(
             DefaultComponentKind | undefined
           >((onSubmit, onCancel) => (
             <DefaultComponentKindModal
-              studioCtx={studioCtx}
               onSubmit={onSubmit}
               onCancel={onCancel}
             />
