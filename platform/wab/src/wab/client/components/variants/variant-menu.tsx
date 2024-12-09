@@ -5,6 +5,7 @@ import { ClickStopper } from "@/wab/client/components/widgets";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ensure, spawn } from "@/wab/shared/common";
 import {
+  allCodeComponentVariants,
   allComponentStyleVariants,
   allPrivateStyleVariants,
 } from "@/wab/shared/core/components";
@@ -33,6 +34,7 @@ import {
 import {
   getBaseVariant,
   isBaseVariant,
+  isCodeComponentVariant,
   isPrivateStyleVariant,
   isScreenVariantGroup,
   isStandaloneVariantGroup,
@@ -86,7 +88,10 @@ export function makeVariantMenu(opts: {
         builder.genSection(undefined, (push) => {
           push(
             <Menu.Item key="edit-selectors" onClick={onEditSelectors}>
-              Edit interaction selectors
+              Edit{" "}
+              {isCodeComponentVariant(variant)
+                ? "registered keys"
+                : "interaction selectors"}
             </Menu.Item>
           );
         });
@@ -189,6 +194,10 @@ function genCopyToVariantMenu(
       >
         {isStyleVariant(variant) ? (
           <div className="ml-lg">{variant.selectors.join(", ")}</div>
+        ) : isCodeComponentVariant(variant) ? (
+          <div className="ml-lg">
+            {variant.codeComponentVariantKeys.join(", ")}
+          </div>
         ) : (
           variant.name
         )}
@@ -223,6 +232,12 @@ function genCopyToVariantMenu(
 
     builder.genSection(`Component Interaction States`, (push2) => {
       allComponentStyleVariants(component).forEach((v) =>
+        genMenuForVariant(v, push2)
+      );
+    });
+
+    builder.genSection(`Registered Variants`, (push2) => {
+      allCodeComponentVariants(component).forEach((v) =>
         genMenuForVariant(v, push2)
       );
     });

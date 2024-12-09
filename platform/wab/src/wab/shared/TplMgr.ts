@@ -48,6 +48,7 @@ import {
   hasScreenVariant,
   hasStyleVariant,
   isBaseVariant,
+  isCodeComponentVariant,
   isGlobalVariant,
   isGlobalVariantGroup,
   isRegisteredVariant,
@@ -601,10 +602,22 @@ export class TplMgr {
     });
   }
 
-  removeStyleVariantIfEmptyAndUnused(component: Component, variant: Variant) {
-    assert(isStyleVariant(variant), "Given variant should be a style variant");
+  removeRegisteredVariantIfEmptyAndUnused(
+    component: Component,
+    variant: Variant
+  ) {
+    assert(
+      isRegisteredVariant(variant),
+      "Given variant should be a registered variant"
+    );
+
+    if (isStyleVariant(variant) && variant.selectors.length > 0) {
+      return;
+    }
+
     if (
-      ensure(variant.selectors, "Style variant must have selectors").length > 0
+      isCodeComponentVariant(variant) &&
+      variant.codeComponentVariantKeys.length > 0
     ) {
       return;
     }
@@ -2257,8 +2270,8 @@ export class TplMgr {
       this.renameVariant(newVariant, newVariant.name);
     } else {
       assert(
-        isStyleVariant(variant),
-        "Variant with no parent is expected to be a style variant"
+        isRegisteredVariant(variant),
+        "Variant with no parent is expected to be a registered variant"
       );
       component.variants.push(newVariant);
     }

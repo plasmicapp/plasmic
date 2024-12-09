@@ -144,7 +144,7 @@ export const PrivateStyleVariantsPanel = observer(
                       studioCtx.changeUnsafe(() => {
                         studioCtx
                           .siteOps()
-                          .removeStyleVariantIfEmptyAndUnused(
+                          .removeRegisteredVariantIfEmptyAndUnused(
                             component,
                             variant
                           );

@@ -1039,7 +1039,7 @@ const ComponentStyleVariantRow = observer(
               studioCtx.change(({ success }) => {
                 studioCtx
                   .siteOps()
-                  .removeStyleVariantIfEmptyAndUnused(component, variant);
+                  .removeRegisteredVariantIfEmptyAndUnused(component, variant);
                 return success();
               })
             }

@@ -1494,8 +1494,11 @@ export class SiteOps {
     );
   }
 
-  removeStyleVariantIfEmptyAndUnused(component: Component, variant: Variant) {
-    this.tplMgr.removeStyleVariantIfEmptyAndUnused(component, variant);
+  removeRegisteredVariantIfEmptyAndUnused(
+    component: Component,
+    variant: Variant
+  ) {
+    this.tplMgr.removeRegisteredVariantIfEmptyAndUnused(component, variant);
     this.studioCtx.ensureComponentStackFramesHasOnlyValidVariants(component);
     this.studioCtx.pruneInvalidViewCtxs();
   }
