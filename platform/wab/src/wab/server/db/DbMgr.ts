@@ -9584,6 +9584,41 @@ export class DbMgr implements MigrationDbMgr {
     });
   }
 
+  async getCommentsForThread(threadId: CommentThreadId): Promise<Comment[]> {
+    return await this.comments().find({
+      where: {
+        threadId,
+        ...excludeDeleted(),
+      },
+      order: {
+        createdAt: "ASC", // Sort by createdAt in ascending order
+      },
+      relations: ["createdBy"],
+    });
+  }
+
+  async getUnnotifiedComments(): Promise<Comment[]> {
+    this.checkSuperUser();
+    return await this.comments().find({
+      where: {
+        isEmailNotificationSent: false,
+        ...excludeDeleted(),
+      },
+      order: {
+        createdAt: "ASC", // Sort by createdAt in ascending order
+      },
+      relations: ["createdBy"],
+    });
+  }
+
+  async markCommentsAsNotified(commentIds: string[]): Promise<void> {
+    this.checkSuperUser();
+    await this.comments().update(
+      { id: In(commentIds) }, // Match comments by their IDs
+      { isEmailNotificationSent: true } // Set the notification status to true
+    );
+  }
+
   async postCommentInProject(
     { projectId, branchId }: ProjectAndBranchId,
     data: { location: CommentLocation; body: string; threadId: string }

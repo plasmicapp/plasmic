@@ -272,6 +272,7 @@ import {
   getWorkspaces,
   updateWorkspace,
 } from "@/wab/server/routes/workspaces";
+import { sendCommentsNotificationEmails } from "@/wab/server/scripts/send-comments-notifications";
 import { logError } from "@/wab/server/server-util";
 import { ASYNC_TIMING } from "@/wab/server/timing-util";
 import { TypeormStore } from "@/wab/server/util/TypeormSessionStore";
@@ -2117,6 +2118,11 @@ export async function createApp(
   cron.schedule("0 */2 * * *", () => {
     console.log("Pruning cache");
     pruneCache();
+  });
+
+  // runs every 10 minutes
+  cron.schedule("*/10 * * * *", async () => {
+    await sendCommentsNotificationEmails(config);
   });
 
   // Don't leak infra info
