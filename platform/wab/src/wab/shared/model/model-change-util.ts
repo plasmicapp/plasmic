@@ -1,20 +1,5 @@
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import {
-  ensure,
-  ensureArrayOfInstances,
-  tuple,
-  TypeStamped,
-  xDifference,
-} from "@/wab/shared/common";
 import { arrayReversed } from "@/wab/commons/collections";
-import { allComponentVariants } from "@/wab/shared/core/components";
-import { PLASMIC_DISPLAY_NONE } from "@/wab/shared/css";
-import {
-  ChangeNode,
-  mkArrayBeforeSplice,
-  ModelChange,
-  RecordedChanges,
-} from "@/wab/shared/core/observable-model";
 import {
   componentToTplComponents,
   deepComponentToReferencers,
@@ -22,10 +7,36 @@ import {
   extractImageAssetRefsByAttrs,
 } from "@/wab/shared/cached-selectors";
 import {
+  ensure,
+  ensureArrayOfInstances,
+  tuple,
+  TypeStamped,
+  xDifference,
+} from "@/wab/shared/common";
+import { allComponentVariants } from "@/wab/shared/core/components";
+import {
+  ChangeNode,
+  mkArrayBeforeSplice,
+  ModelChange,
+  RecordedChanges,
+} from "@/wab/shared/core/observable-model";
+import {
   ALWAYS_RESOLVE_MIXIN_PROPS,
   plasmicImgAttrStyles,
   SIZE_PROPS,
 } from "@/wab/shared/core/style-props";
+import { createRuleSetMerger } from "@/wab/shared/core/styles";
+import {
+  findVariantSettingsUnderTpl,
+  flattenTpls,
+  isComponentRoot,
+  isTplColumns,
+  isTplComponent,
+  isTplSlot,
+  isTplTag,
+  isTplVariantable,
+} from "@/wab/shared/core/tpls";
+import { PLASMIC_DISPLAY_NONE } from "@/wab/shared/css";
 import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import { makeExpFromValues } from "@/wab/shared/exprs";
 import { isFlexContainerWithGap } from "@/wab/shared/layoututils";
@@ -71,17 +82,6 @@ import {
   isStyleVariant,
   tryGetBaseVariantSetting,
 } from "@/wab/shared/Variants";
-import { createRuleSetMerger } from "@/wab/shared/core/styles";
-import {
-  findVariantSettingsUnderTpl,
-  flattenTpls,
-  isComponentRoot,
-  isTplColumns,
-  isTplComponent,
-  isTplSlot,
-  isTplTag,
-  isTplVariantable,
-} from "@/wab/shared/core/tpls";
 import L, { omit } from "lodash";
 
 export enum ChangesType {
@@ -735,6 +735,7 @@ function changeChangesImgSize(change: ModelChange) {
  * If this is a change on Variant.selectors, then we need to regenerate the css rule
  * for all VariantSettings that reference this variant
  */
+// TODO: Change for registered variants (also function is probably named wrong)
 function getChangedRuleSetsByVariantSelectors(
   studioCtx: StudioCtx,
   change: ModelChange

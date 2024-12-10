@@ -18,14 +18,14 @@ import { isTplCodeComponent, isTplTag } from "@/wab/shared/core/tpls";
 import { VARIANT_CAP, VARIANT_LOWER } from "@/wab/shared/Labels";
 import { Component, isKnownTplTag, Variant } from "@/wab/shared/model/classes";
 import {
+  CodeComponentOrStyleVariant,
   isBaseVariant,
+  isCodeComponentOrStyleVariant,
   isCodeComponentVariant,
   isGlobalVariant,
   isPrivateStyleVariant,
-  isRegisteredVariant,
   isStyleVariant,
   makeVariantName,
-  RegisteredVariant,
   StyleVariant,
 } from "@/wab/shared/Variants";
 import { Menu } from "antd";
@@ -93,7 +93,9 @@ const VariantLabel_: ForwardRefRenderFunction<
     <EditableLabel
       ref={ref}
       value={variantName}
-      disabled={isBaseVariant(variant) || isRegisteredVariant(variant)}
+      disabled={
+        isBaseVariant(variant) || isCodeComponentOrStyleVariant(variant)
+      }
       onEdit={_onRename}
       defaultEditing={defaultEditing}
       programmaticallyTriggered={programmaticallyTriggered}
@@ -128,7 +130,7 @@ export function makeCanvasVariantContextMenu({
   return (
     <Menu>
       <Menu.Item onClick={onRequestEditing}>
-        {isRegisteredVariant(variant)
+        {isCodeComponentOrStyleVariant(variant)
           ? `Change ${VARIANT_LOWER} selectors`
           : `Rename ${VARIANT_LOWER}`}
       </Menu.Item>
@@ -175,7 +177,7 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
         if (
           (isCodeComponentVariant(variant) &&
             variant.codeComponentVariantKeys?.length === 0) ||
-          (isStyleVariant(variant) && variant.selectors?.length === 0)
+          (isStyleVariant(variant) && variant.selectors.length === 0)
         ) {
           spawn(studioCtx.siteOps().removeVariant(component, variant));
         }
@@ -239,7 +241,7 @@ export const StyleVariantLabel = observer(forwardRef(StyleVariantLabel_));
 function StyleVariantLabel_(
   props: {
     defaultEditing?: boolean;
-    variant: RegisteredVariant;
+    variant: CodeComponentOrStyleVariant;
     forTag: string;
     onSelectorsChange: (selectors: Selector[]) => void;
     onBlur?: () => void;

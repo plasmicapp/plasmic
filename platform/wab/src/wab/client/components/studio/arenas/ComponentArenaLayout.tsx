@@ -50,7 +50,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import {
-  canHaveRegisteredVariant,
+  canHaveCodeComponentOrStyleVariant,
   isGlobalVariantGroup,
   isScreenVariantGroup,
   isStandaloneVariantGroup,
@@ -229,7 +229,7 @@ export const ComponentArenaLayout = observer(
           rowEndControls={(row) => {
             const group = ensureMaybeKnownVariantGroup(row.rowKey);
             if (!group) {
-              if (!canHaveRegisteredVariant(component)) {
+              if (!canHaveCodeComponentOrStyleVariant(component)) {
                 return null;
               }
               return (

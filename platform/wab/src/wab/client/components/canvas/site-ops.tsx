@@ -48,7 +48,6 @@ import {
   isGlobalVariantGroup,
   isScreenVariantGroup,
   isStandaloneVariantGroup,
-  isStyleVariant,
   makeVariantName,
   removeTplVariantSettings,
   removeTplVariantSettingsContaining,
@@ -567,9 +566,7 @@ export class SiteOps {
   ) {
     const usingComps = !component
       ? findComponentsUsingGlobalVariant(this.site, variant)
-      : !isStyleVariant(variant)
-      ? findComponentsUsingComponentVariant(this.site, component, variant)
-      : new Set<Component>();
+      : findComponentsUsingComponentVariant(this.site, component, variant);
     if (opts.confirm === "always" || usingComps.size > 0) {
       return await reactConfirm({
         title: (
@@ -1399,9 +1396,7 @@ export class SiteOps {
     await this.studioCtx.changeObserved(
       () => {
         return Array.from(
-          !isStyleVariant(variant)
-            ? findComponentsUsingComponentVariant(this.site, component, variant)
-            : new Set<Component>()
+          findComponentsUsingComponentVariant(this.site, component, variant)
         );
       },
       ({ success }) => {
@@ -1494,11 +1489,14 @@ export class SiteOps {
     );
   }
 
-  removeRegisteredVariantIfEmptyAndUnused(
+  removeCodeComponentOrStyleVariantIfEmptyAndUnused(
     component: Component,
     variant: Variant
   ) {
-    this.tplMgr.removeRegisteredVariantIfEmptyAndUnused(component, variant);
+    this.tplMgr.removeCodeComponentOrStyleVariantIfEmptyAndUnused(
+      component,
+      variant
+    );
     this.studioCtx.ensureComponentStackFramesHasOnlyValidVariants(component);
     this.studioCtx.pruneInvalidViewCtxs();
   }

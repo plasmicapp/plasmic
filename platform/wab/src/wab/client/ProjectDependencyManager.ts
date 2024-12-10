@@ -113,17 +113,17 @@ export class ProjectDependencyManager {
     });
 
     // We no longer plan to make any updates to plume site. So its unnecessary to re-fetch it if it has already been fetched.
-    if (!this.plumeSite) {
-      const bundler = new FastBundler();
-      // Get Plume site
-      const plumePkg = await this._sc.appCtx.api.getPlumePkg();
-      const plumeSite = unbundleProjectDependency(
-        bundler,
-        plumePkg.pkg,
-        plumePkg.depPkgs
-      ).projectDependency.site;
-      this.plumeSite = this.inlineAssets(plumeSite);
-    }
+    // if (!this.plumeSite) {
+    //   const bundler = new FastBundler();
+    //   // Get Plume site
+    //   const plumePkg = await this._sc.appCtx.api.getPlumePkg();
+    //   const plumeSite = unbundleProjectDependency(
+    //     bundler,
+    //     plumePkg.pkg,
+    //     plumePkg.depPkgs
+    //   ).projectDependency.site;
+    //   this.plumeSite = this.inlineAssets(plumeSite);
+    // }
   }
 
   /**

@@ -1,19 +1,19 @@
 import { ComponentType } from "@/wab/shared/core/components";
+import { createSite } from "@/wab/shared/core/sites";
+import { mkTplTagX } from "@/wab/shared/core/tpls";
+import { Variant } from "@/wab/shared/model/classes";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  makeVariantComboSorter,
+  sortedVariantCombos,
+} from "@/wab/shared/variant-sort";
 import {
   VariantCombo,
   getBaseVariant,
   isPrivateStyleVariant,
   isStyleVariant,
 } from "@/wab/shared/Variants";
-import { Variant } from "@/wab/shared/model/classes";
-import {
-  makeVariantComboSorter,
-  sortedVariantCombos,
-} from "@/wab/shared/variant-sort";
-import { createSite } from "@/wab/shared/core/sites";
-import { mkTplTagX } from "@/wab/shared/core/tpls";
 import L from "lodash";
 
 describe("variant-sort", () => {
@@ -56,6 +56,7 @@ describe("variant-sort", () => {
 
   const sorter = makeVariantComboSorter(site, component);
 
+  // TODO: ADd a test for registered variants
   const variantName = (variant: Variant) => {
     if (isPrivateStyleVariant(variant)) {
       return `private-${variant.selectors?.join(":")}`;

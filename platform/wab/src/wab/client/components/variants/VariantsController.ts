@@ -41,8 +41,8 @@ import {
 import {
   getBaseVariant,
   isBaseVariant,
+  isCodeComponentOrStyleVariant,
   isPrivateStyleVariant,
-  isRegisteredVariant,
   isScreenVariant,
   VariantCombo,
 } from "@/wab/shared/Variants";
@@ -689,7 +689,7 @@ function handleAddedVariant(pinManager: PinManager, variant: Variant) {
     // If only one variant is currently selected, assume we are replacing
     // the target combo
     pinManager.setSelectedVariants([variant]);
-  } else if (isRegisteredVariant(variant)) {
+  } else if (isCodeComponentOrStyleVariant(variant)) {
     // Else if this is a registered variant, then we assume the user wants to
     // combine with existing combo
     pinManager.addSelectedVariants([variant]);

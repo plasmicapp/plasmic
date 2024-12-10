@@ -52,8 +52,8 @@ import { findNonEmptyCombos } from "@/wab/shared/cached-selectors";
 import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
 import { ensure, ensureInstance, partitions, spawn } from "@/wab/shared/common";
 import {
+  allCodeComponentOrStyleVariants,
   allComponentStyleVariants,
-  allRegisteredVariants,
   getSuperComponents,
   isPageComponent,
 } from "@/wab/shared/core/components";
@@ -78,7 +78,8 @@ import { VariantPinState } from "@/wab/shared/PinManager";
 import { getPlumeVariantDef } from "@/wab/shared/plume/plume-registry";
 import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import {
-  canHaveRegisteredVariant,
+  canHaveCodeComponentOrStyleVariant,
+  CodeComponentOrStyleVariant,
   getBaseVariant,
   isBaseVariant,
   isGlobalVariantGroup,
@@ -86,7 +87,6 @@ import {
   isStandaloneVariantGroup,
   moveVariant,
   moveVariantGroup,
-  RegisteredVariant,
   variantComboKey,
 } from "@/wab/shared/Variants";
 import { Menu } from "antd";
@@ -187,7 +187,8 @@ export const VariantsPanel = observer(
     const superComps = getSuperComponents(component);
 
     const styleVariants = allComponentStyleVariants(component);
-    const registeredVariants = allRegisteredVariants(component);
+    const codeComponentOrStyleVariants =
+      allCodeComponentOrStyleVariants(component);
     const baseVariant = getBaseVariant(component);
     const combos = findNonEmptyCombos(component);
     const selectedVariants = vcontroller.getTargetedVariants();
@@ -489,7 +490,7 @@ export const VariantsPanel = observer(
                 )
               )}
             </SimpleReorderableList>
-            {canHaveRegisteredVariant(component) &&
+            {canHaveCodeComponentOrStyleVariant(component) &&
               !isPageComponent(component) && (
                 <VariantSection
                   showIcon
@@ -520,7 +521,7 @@ export const VariantsPanel = observer(
                   }
                   isQuiet
                 >
-                  {registeredVariants.map((variant) => (
+                  {codeComponentOrStyleVariants.map((variant) => (
                     <ComponentStyleVariantRow
                       key={variant.uuid}
                       variant={variant}
@@ -960,7 +961,7 @@ const ComponentStyleVariantRow = observer(
     viewCtx?: ViewCtx;
     component: Component;
     pinState: VariantPinState | undefined;
-    variant: RegisteredVariant;
+    variant: CodeComponentOrStyleVariant;
     defaultEditing?: boolean;
     onEdited: () => void;
     onClick?: () => void;
@@ -1039,7 +1040,10 @@ const ComponentStyleVariantRow = observer(
               studioCtx.change(({ success }) => {
                 studioCtx
                   .siteOps()
-                  .removeRegisteredVariantIfEmptyAndUnused(component, variant);
+                  .removeCodeComponentOrStyleVariantIfEmptyAndUnused(
+                    component,
+                    variant
+                  );
                 return success();
               })
             }

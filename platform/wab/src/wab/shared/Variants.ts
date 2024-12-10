@@ -111,7 +111,7 @@ export function isBaseVariant(variants: Variant | VariantCombo) {
   return variants.name === BASE_VARIANT_NAME;
 }
 
-export function canHaveRegisteredVariant(component: Component) {
+export function canHaveCodeComponentOrStyleVariant(component: Component) {
   const tplRoot = component.tplTree;
   return isTplTag(tplRoot) || isTplRootWithCodeComponentVariants(tplRoot);
 }
@@ -242,7 +242,7 @@ export type PrivateStyleVariant = SetNonNullable<
 /** Any style-only variant. */
 export type StyleVariant = ComponentStyleVariant | PrivateStyleVariant;
 
-export type RegisteredVariant = CodeComponentVariant | StyleVariant;
+export type CodeComponentOrStyleVariant = CodeComponentVariant | StyleVariant;
 
 export function isStyleVariant(variant: Variant): variant is StyleVariant {
   return !!variant.selectors;
@@ -254,9 +254,9 @@ export function isCodeComponentVariant(
   return !!variant.codeComponentName && !!variant.codeComponentVariantKeys;
 }
 
-export function isRegisteredVariant(
+export function isCodeComponentOrStyleVariant(
   variant: Variant
-): variant is RegisteredVariant {
+): variant is CodeComponentOrStyleVariant {
   return isStyleVariant(variant) || isCodeComponentVariant(variant);
 }
 
@@ -272,6 +272,7 @@ export function isMaybeInteractiveCodeComponentVariant(
   );
 }
 
+// TODO: Check if this is still needed / check usages
 export function hasStyleVariant(variantCombo: VariantCombo) {
   return variantCombo.some((v) => isStyleVariant(v));
 }
@@ -693,6 +694,10 @@ export function isBaseRuleVariant(variant: Variant) {
     // screen variant will be triggered via media query
     return false;
   }
+  if (isCodeComponentVariant(variant)) {
+    // code component variant will be triggered via code component interactions
+    return false;
+  }
   if (isStyleVariant(variant) && !isHookTriggeredStyleVariant(variant)) {
     // a style variant that doesn't have to be triggered by js will just
     // be triggered by css selectors instead
@@ -723,7 +728,9 @@ export function ensureBaseRuleVariantSetting(
     // trigger the style variant (unless it's a private style variant)
     ensureVariantSetting(
       rootTpl,
-      variantCombo.filter((v) => !isStyleVariant(v) && !isScreenVariant(v))
+      variantCombo.filter(
+        (v) => !isCodeComponentOrStyleVariant(v) && !isScreenVariant(v)
+      )
     );
   }
 }
@@ -771,6 +778,7 @@ export function isValidComboForToken(combo: VariantCombo) {
 /**
  * Return style variants whose selectors are all active
  */
+// TODO: Change for registered variants
 export function getImplicitlyActivatedStyleVariants(
   variants: Variant[],
   activeVariants: Set<Variant>,
@@ -893,8 +901,8 @@ export function isFrameWithVariantCombo({
   return getDisplayVariants({ site, frame }).length > 1;
 }
 
-export function getRegisteredVariantDisplayNames(
-  variant: RegisteredVariant,
+export function getCodeComponentOrStyleVariantDisplayNames(
+  variant: CodeComponentOrStyleVariant,
   site?: Site
 ) {
   if (isCodeComponentVariant(variant)) {
@@ -911,11 +919,11 @@ export function getRegisteredVariantDisplayNames(
   return [];
 }
 
-export function makeRegisteredVariantName(
-  variant: RegisteredVariant,
+export function makeCodeComponentOrStyleVariantName(
+  variant: CodeComponentOrStyleVariant,
   site?: Site
 ) {
-  return getRegisteredVariantDisplayNames(variant, site).join(", ");
+  return getCodeComponentOrStyleVariantDisplayNames(variant, site).join(", ");
 }
 
 export function makeVariantName({
@@ -934,12 +942,12 @@ export function makeVariantName({
     (isPrivateStyleVariant(variant)
       ? [
           focusedTag ? focusedTag.name || summarizeTplTag(focusedTag) : "",
-          makeRegisteredVariantName(variant, site),
+          makeCodeComponentOrStyleVariantName(variant, site),
         ]
           .filter(Boolean)
           .join(": ")
-      : isRegisteredVariant(variant)
-      ? makeRegisteredVariantName(variant, site)
+      : isCodeComponentOrStyleVariant(variant)
+      ? makeCodeComponentOrStyleVariantName(variant, site)
       : superComp
       ? `${getNamespacedComponentName(superComp)} • ${variant.name}`
       : variant.name) || "UnnamedVariant"

@@ -731,7 +731,7 @@ function deriveCssRuleSetStyles(
   // Disable the outline when the element has a focused VariantSetting
   if (
     vs.variants.some(
-      (v) => isStyleVariant(v) && v.selectors?.some((s) => s.includes("Focus"))
+      (v) => isStyleVariant(v) && v.selectors?.some((s) => s.includes(":focus"))
     ) &&
     !hasOutlineStyle(m)
   ) {
@@ -1816,6 +1816,7 @@ function showPseudoClassSelector(
   };
 
   if (isRoot) {
+    // TODO: Investigate for registered variants (not launch blocking)
     const selectorVariants = vs.variants.filter(isStyleVariant);
     const baseRuleVariants = getBaseRuleVariants(vs.variants);
     const baseRuleVs = ensure(

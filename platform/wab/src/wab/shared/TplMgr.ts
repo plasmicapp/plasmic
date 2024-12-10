@@ -48,10 +48,10 @@ import {
   hasScreenVariant,
   hasStyleVariant,
   isBaseVariant,
+  isCodeComponentOrStyleVariant,
   isCodeComponentVariant,
   isGlobalVariant,
   isGlobalVariantGroup,
-  isRegisteredVariant,
   isScreenVariant,
   isScreenVariantGroup,
   isStandaloneVariant,
@@ -560,7 +560,7 @@ export class TplMgr {
     // This is to ensure that we are able to use the parent in the previous
     // steps
     for (const v of variants) {
-      if (isRegisteredVariant(v)) {
+      if (isCodeComponentOrStyleVariant(v)) {
         tryRemove(
           ensure(component, "Expected component to be not null").variants,
           v
@@ -602,12 +602,12 @@ export class TplMgr {
     });
   }
 
-  removeRegisteredVariantIfEmptyAndUnused(
+  removeCodeComponentOrStyleVariantIfEmptyAndUnused(
     component: Component,
     variant: Variant
   ) {
     assert(
-      isRegisteredVariant(variant),
+      isCodeComponentOrStyleVariant(variant),
       "Given variant should be a registered variant"
     );
 
@@ -2270,7 +2270,7 @@ export class TplMgr {
       this.renameVariant(newVariant, newVariant.name);
     } else {
       assert(
-        isRegisteredVariant(variant),
+        isCodeComponentOrStyleVariant(variant),
         "Variant with no parent is expected to be a registered variant"
       );
       component.variants.push(newVariant);

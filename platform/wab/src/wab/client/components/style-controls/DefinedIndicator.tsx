@@ -69,6 +69,7 @@ import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   clearVariantSetting,
   isBaseVariant,
+  isCodeComponentVariant,
   isDefaultIgnorableStyleValue,
   isGlobalVariant,
   isPrivateStyleVariant,
@@ -93,12 +94,16 @@ export const variantComboName = (combo: VariantCombo) => {
       return `element:${ensure(
         variant.selectors,
         "style variants have selectors"
-      ).join(":")}`;
+      ).join(", ")}`;
     } else if (isStyleVariant(variant)) {
-      return `:${ensure(
-        variant.selectors,
-        "style variants have selectors"
-      ).join(":")}`;
+      return `${ensure(variant.selectors, "style variants have selectors").join(
+        ", "
+      )}`;
+    } else if (isCodeComponentVariant(variant)) {
+      return `${ensure(
+        variant.codeComponentVariantKeys,
+        "code component variants have keys"
+      ).join(", ")}`;
     } else if (isBaseVariant(variant)) {
       return "Base";
     } else {

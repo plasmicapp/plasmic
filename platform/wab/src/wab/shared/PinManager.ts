@@ -30,9 +30,9 @@ import {
   getOrderedScreenVariants,
   getPartitionedScreenVariants,
   isBaseVariant,
+  isCodeComponentOrStyleVariant,
   isGlobalVariant,
   isPrivateStyleVariant,
-  isRegisteredVariant,
   isScreenVariant,
   isStandaloneVariantGroup,
 } from "@/wab/shared/Variants";
@@ -99,7 +99,9 @@ export class PinStateManager {
     // much value in allowing targeting a combo of component style variants.
     // Better to start strict than not!  We pick the last one, as that would
     // be the most-recently-added.
-    const registeredVariant = L.last(locals.filter(isRegisteredVariant));
+    const codeComponentOrStyleVariant = L.last(
+      locals.filter(isCodeComponentOrStyleVariant)
+    );
 
     // We also only allow targeting a single screen variant at a time.
     const screenVariant = L.last(globals.filter(isScreenVariant));
@@ -116,8 +118,10 @@ export class PinStateManager {
               ),
             ]
           : privates),
-        ...locals.filter((v) => !isBaseVariant(v) && !isRegisteredVariant(v)),
-        ...(registeredVariant ? [registeredVariant] : []),
+        ...locals.filter(
+          (v) => !isBaseVariant(v) && !isCodeComponentOrStyleVariant(v)
+        ),
+        ...(codeComponentOrStyleVariant ? [codeComponentOrStyleVariant] : []),
         ...globals.filter((v) => !isScreenVariant(v)),
         ...(screenVariant ? [screenVariant] : []),
       ]),

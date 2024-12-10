@@ -168,6 +168,7 @@ describe("extractComponent", () => {
     ),
   });
 
+  // TODO: same as variant-sort spec. Also update it to registered variants
   const variantName = (variant: Variant) => {
     if (isPrivateStyleVariant(variant)) {
       return `:private:${variant.selectors!.join(":")}`;

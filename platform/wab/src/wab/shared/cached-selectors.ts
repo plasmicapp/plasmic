@@ -13,7 +13,9 @@ import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   CodeComponentVariant,
   VariantCombo,
+  isCodeComponentOrStyleVariant,
   isCodeComponentVariant,
+  isGlobalVariant,
   isPrivateStyleVariant,
   isVariantSettingEmpty,
   variantComboKey,
@@ -994,6 +996,9 @@ export const findComponentsUsingComponentVariant = maybeComputedFn(
     component: Component,
     variant: Variant
   ) {
+    if (isCodeComponentOrStyleVariant(variant) || isGlobalVariant(variant)) {
+      return new Set<Component>();
+    }
     const results = new Set<Component>();
     const referencers =
       componentToReferencers(site).get(component) ?? new Set<Component>();

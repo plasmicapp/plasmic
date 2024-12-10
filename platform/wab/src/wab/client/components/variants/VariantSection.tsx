@@ -15,7 +15,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_variants/PlasmicVariantSection";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { isStyleVariant } from "@/wab/shared/Variants";
+import { isCodeComponentOrStyleVariant } from "@/wab/shared/Variants";
 import { spawn } from "@/wab/shared/common";
 import { isTplCodeComponent } from "@/wab/shared/core/tpls";
 import { Component, Variant } from "@/wab/shared/model/classes";
@@ -183,7 +183,7 @@ export function makeReadOnlySection(opts: {
               : undefined
           }
           label={
-            isStyleVariant(variant) ? (
+            isCodeComponentOrStyleVariant(variant) ? (
               <SelectorTags
                 isCodeComponent={isTplCodeComponent(component?.tplTree)}
                 selectors={styleVariantToSelectors(variant, studioCtx.site)}

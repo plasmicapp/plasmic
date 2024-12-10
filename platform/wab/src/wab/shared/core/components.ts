@@ -18,12 +18,12 @@ import {
   getBaseVariant,
   getReferencedVariantGroups,
   isBaseVariant,
+  isCodeComponentOrStyleVariant,
   isCodeComponentVariant,
   isComponentStyleVariant,
   isGlobalVariant,
   isPrivateStyleVariant,
   isPseudoElementVariant,
-  isRegisteredVariant,
   isStyleVariant,
   isVariantSettingEmpty,
   mkBaseVariant,
@@ -1211,7 +1211,7 @@ export function extractComponent({
   // Remove all the vsettings that referenced style variants, as they do not
   // get carried over as args we can pass onto the new component
   tplComponent.vsettings = tplComponent.vsettings.filter(
-    (vs) => !vs.variants.some(isStyleVariant)
+    (vs) => !vs.variants.some(isCodeComponentOrStyleVariant)
   );
 
   // Remove all width/height on the tplComponent; by default, we will defer
@@ -1249,7 +1249,9 @@ export function extractComponent({
   // specified in the old vsettings.
   const allUsedOldVariantCombo = L.uniqBy(
     [...findVariantSettingsUnderTpl(tpl)].map(([vs, _tpl]) =>
-      vs.variants.filter((v) => !isBaseVariant(v) && !isStyleVariant(v))
+      vs.variants.filter(
+        (v) => !isBaseVariant(v) && !isCodeComponentOrStyleVariant(v)
+      )
     ),
     (combo) =>
       combo
@@ -1293,7 +1295,7 @@ export function extractComponent({
   $$$(tpl).replaceWith(tplComponent);
 
   // Remove private style variants for the old nodes
-  allStyleVariants(containingComponent).forEach((v) => {
+  allCodeComponentOrStyleVariants(containingComponent).forEach((v) => {
     if (v.forTpl && oldFlattenedVariantablesSet.has(v.forTpl)) {
       tplMgr.tryRemoveVariant(v, containingComponent);
     }
@@ -1760,6 +1762,7 @@ export function allComponentVariants(
   return variants;
 }
 
+// TODO: Check usages of this and other helpers like this
 export function allStyleVariants(component: Component) {
   return component.variants.filter(isStyleVariant);
 }
@@ -1772,8 +1775,8 @@ export function allCodeComponentVariants(component: Component) {
   return component.variants.filter(isCodeComponentVariant);
 }
 
-export function allRegisteredVariants(component: Component) {
-  return component.variants.filter(isRegisteredVariant);
+export function allCodeComponentOrStyleVariants(component: Component) {
+  return component.variants.filter(isCodeComponentOrStyleVariant);
 }
 
 export function allPrivateStyleVariants(component: Component, tpl: TplNode) {

@@ -4549,6 +4549,7 @@ describe("merging", () => {
     );
     const tpl = ensureKnownTplTag(ensureKnownTplTag(cmp.tplTree).children[0]);
     expect(tpl.vsettings.length).toBe(2);
+    // TODO: Test for registered variants
     expect(cmp.variants.filter((v) => isStyleVariant(v)).length).toBe(1);
     expect(tpl.vsettings[1].rs.values).toMatchObject({
       color: "red",

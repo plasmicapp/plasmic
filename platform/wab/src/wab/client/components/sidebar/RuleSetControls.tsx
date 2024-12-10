@@ -9,9 +9,9 @@ import {
 } from "@/wab/shared/core/styles";
 import { Site } from "@/wab/shared/model/classes";
 import {
+  CodeComponentOrStyleVariant,
   isCodeComponentVariant,
   isStyleVariant,
-  RegisteredVariant,
 } from "@/wab/shared/Variants";
 import { Tooltip } from "antd";
 import { default as React, useLayoutEffect, useState } from "react";
@@ -87,7 +87,7 @@ function areSelectorsEqual(a: Selector, b: Selector) {
  * TODO: write migration so code components use key, presets use selector
  */
 export function styleVariantToSelectors(
-  variant: RegisteredVariant,
+  variant: CodeComponentOrStyleVariant,
   site: Site
 ): Selector[] {
   if (isCodeComponentVariant(variant)) {

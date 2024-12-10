@@ -7,6 +7,14 @@ import {
 } from "@/wab/shared/common";
 import { getSuperComponents } from "@/wab/shared/core/components";
 import { parseScreenSpec } from "@/wab/shared/css-size";
+import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import {
+  Component,
+  Site,
+  Variant,
+  VariantGroup,
+  VariantSetting,
+} from "@/wab/shared/model/classes";
 import {
   VariantCombo,
   getBaseVariant,
@@ -18,14 +26,6 @@ import {
   isScreenVariantGroup,
   isStyleVariant,
 } from "@/wab/shared/Variants";
-import { maybeComputedFn } from "@/wab/shared/mobx-util";
-import {
-  Component,
-  Site,
-  Variant,
-  VariantGroup,
-  VariantSetting,
-} from "@/wab/shared/model/classes";
 import L from "lodash";
 
 // See https://coda.io/d/Plasmic-Wiki_dHQygjmQczq/Targeting-Multiple-Component-Variants_suH6g#_luNNY
@@ -65,6 +65,7 @@ export function sortedVariantSettings(
  * - [primary] is an ancestor combo of [primary, small]
  * - [primary, :hover] is an ancestor combo of [primary, small, :hover:active]
  */
+// TODO: Test this in variant-sort.spec.ts. Also update it to registered variants
 export function isAncestorCombo(
   combo: VariantCombo,
   maybeAncestorCombo: VariantCombo

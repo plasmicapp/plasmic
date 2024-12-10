@@ -9,8 +9,8 @@ import { ensure, xGroupBy } from "@/wab/shared/common";
 import {
   getAllVariantsForTpl,
   isBaseVariant,
+  isCodeComponentOrStyleVariant,
   isPrivateStyleVariant,
-  isRegisteredVariant,
   isScreenVariant,
   isStandaloneVariant,
 } from "@/wab/shared/Variants";
@@ -47,7 +47,7 @@ const VariantsComboSelect = observer(function VariantsComboSelect(
     site: studioCtx.site,
   }).filter(
     (v) =>
-      !isRegisteredVariant(v) &&
+      !isCodeComponentOrStyleVariant(v) &&
       !isScreenVariant(v) &&
       !isPrivateStyleVariant(v) &&
       !isBaseVariant(v)
