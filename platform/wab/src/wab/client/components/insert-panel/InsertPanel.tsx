@@ -31,7 +31,6 @@ import {
   makePlumeInsertables,
 } from "@/wab/client/components/studio/add-drawer/AddDrawer";
 import AddDrawerItem from "@/wab/client/components/studio/add-drawer/AddDrawerItem";
-import { AddItemGroup } from "@/wab/client/components/studio/add-drawer/AddDrawerSection";
 import {
   DraggableInsertable,
   DraggableInsertableProps,
@@ -601,8 +600,10 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
                   );
                 }
               );
-              return someGroupInFamily.familyLabel ? (
-                <InsertPanelTabGroup title={someGroupInFamily.familyLabel}>
+              return someGroupInFamily.familyKey ? (
+                <InsertPanelTabGroup
+                  title={familyKeyToLabel[someGroupInFamily.familyKey]}
+                >
                   {children}
                 </InsertPanelTabGroup>
               ) : (
@@ -888,7 +889,6 @@ const getHostLess = memoizeOne((studioCtx: StudioCtx): AddItemGroup[] => {
         sectionKey: meta.sectionLabel,
         sectionLabel: meta.sectionLabel,
         familyKey: "hostless-packages",
-        familyLabel: "Browse component store",
         label: meta.name,
         codeName: meta.codeName,
         codeLink: meta.codeLink,
@@ -976,6 +976,32 @@ function getCodeComponentsGroups(studioCtx: StudioCtx): AddItemGroup[] {
       .flat(),
     (itemGroup) => itemGroup.key
   );
+}
+
+const familyKeyToLabel = {
+  "imported-packages": "Imported packages",
+  "hostless-packages": "Browse component store",
+};
+const familyKeyRank = new Map<
+  keyof typeof familyKeyToLabel | undefined,
+  number
+>([
+  [undefined, 0],
+  ["imported-packages", 1],
+  ["hostless-packages", 2],
+]);
+
+interface AddItemGroup {
+  key: string;
+  familyKey?: keyof typeof familyKeyToLabel;
+  sectionKey?: string;
+  sectionLabel?: string;
+  label: string;
+  items: AddItem[];
+  codeName?: string;
+  codeLink?: string;
+  hostLessPackageInfo?: HostLessPackageInfo;
+  isHeaderLess?: boolean;
 }
 
 export function buildAddItemGroups({
@@ -1200,17 +1226,6 @@ export function buildAddItemGroups({
     // Code components groups
     ...getCodeComponentsGroups(studioCtx),
 
-    includeFrames &&
-      canInsertAlias(uiConfig, "frame", canInsertContext) && {
-        key: "frames",
-        label: FRAMES_CAP,
-        items: [
-          INSERTABLES_MAP.pageFrame,
-          INSERTABLES_MAP.componentFrame,
-          INSERTABLES_MAP.screenFrame,
-        ],
-      },
-
     // Custom components includes all the components from the project
     {
       key: "components",
@@ -1271,6 +1286,17 @@ export function buildAddItemGroups({
         .map((asset) => createAddTplImage(asset)),
     },
 
+    includeFrames &&
+      canInsertAlias(uiConfig, "frame", canInsertContext) && {
+        key: "frames",
+        label: FRAMES_CAP,
+        items: [
+          INSERTABLES_MAP.pageFrame,
+          INSERTABLES_MAP.componentFrame,
+          INSERTABLES_MAP.screenFrame,
+        ],
+      },
+
     // Plume components.
     // List both un-materialized and all materialized Plume components.
     // We only show this section if the Plume design system was explicitly installed.
@@ -1289,7 +1315,6 @@ export function buildAddItemGroups({
         label: 'Customizable "headless" components',
         sectionLabel: "Headless components",
         familyKey: "imported-packages",
-        familyLabel: "Imported packages",
         items: naturalSort(
           [
             ...sortComponentsByName(
@@ -1310,7 +1335,6 @@ export function buildAddItemGroups({
           sectionLabel: "Design systems",
           sectionKey: "Design systems",
           familyKey: "hostless-packages",
-          familyLabel: "Browse component store",
           items: studioCtx.appCtx.appConfig.installables
             .filter((meta) => meta.type === "ui-kit")
             .map(createAddInstallable),
@@ -1322,7 +1346,6 @@ export function buildAddItemGroups({
         label: "More HTML elements",
         sectionLabel: "More HTML elements",
         familyKey: "imported-packages",
-        familyLabel: "Imported packages",
         items: [
           INSERTABLES_MAP.button,
           INSERTABLES_MAP.textbox,
@@ -1348,7 +1371,6 @@ export function buildAddItemGroups({
             : [];
         })[0] ?? dep.name,
       familyKey: "imported-packages",
-      familyLabel: "Imported packages",
       items: [
         ...sortComponentsByName(
           dep.site.components.filter(
@@ -1372,7 +1394,6 @@ export function buildAddItemGroups({
       ],
     })),
 
-    // We want to hide the listings that were shown in "Default components" - this is just a simple way to ensure things don't show up in both menus.
     ...(!!hostLessComponentsMeta
       ? getHostLess(studioCtx)
           .filter((group) =>
@@ -1385,6 +1406,8 @@ export function buildAddItemGroups({
           .map((group) => ({
             ...group,
             items: group.items.filter(
+              // We want to hide the listings that were shown in "Default components"
+              // This is just a simple way to ensure things don't show up in both menus.
               (item) => !hostlessComponentsInDefaultMenu.has(item.key)
             ),
           }))
@@ -1400,6 +1423,13 @@ export function buildAddItemGroups({
   // that can cause issues with react-window's lists.
   groupedItems.forEach((group) => {
     group.items = group.items.map((i) => L.clone(i));
+  });
+
+  groupedItems.sort((a, b) => {
+    return (
+      (familyKeyRank.get(a.familyKey) ?? 99) -
+      (familyKeyRank.get(b.familyKey) ?? 99)
+    );
   });
 
   if (matcher.hasQuery()) {

@@ -174,19 +174,6 @@
           "componentType": "component"
         },
         {
-          "id": "U-NTSLheNu",
-          "name": "AddDrawerSection",
-          "type": "managed",
-          "projectId": "aukbrhkegRkQ6KizvhdUPT",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicAddDrawerSection.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/studio/add-drawer/AddDrawerSection.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicAddDrawerSection.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
           "id": "yc4AfGXkNH",
           "name": "LeftActivitiesPanel",
           "type": "managed",
@@ -326,19 +313,6 @@
             "modulePath": "wab/client/components/PublishDialogContent.tsx"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicPublishDialogContent.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "cJ8w1eDWyZ",
-          "name": "_2",
-          "type": "managed",
-          "projectId": "aukbrhkegRkQ6KizvhdUPT",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/Plasmic_2.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/sidebar/_2.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/Plasmic_2.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         },
