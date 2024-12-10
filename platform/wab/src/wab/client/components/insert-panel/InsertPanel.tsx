@@ -1034,7 +1034,10 @@ export function buildAddItemGroups({
     isContentCreator: contentEditorMode,
   };
 
-  function handleTemplateAlias(templateName: string, defaultKind?: string) {
+  function handleTemplateAlias(
+    templateName: string,
+    defaultKind?: string
+  ): AddTplItem | undefined {
     const item = getTemplateComponents(studioCtx).find(
       (i) => i.templateName === templateName
     );
@@ -1130,21 +1133,31 @@ export function buildAddItemGroups({
                     )
                   ) {
                     if (!hasPlexus || DEVFLAGS.runningInCypress) {
-                      return {
-                        ...only(makePlumeInsertables(studioCtx, kind)),
-                        isCompact: true,
-                      };
+                      const plumeItem = makePlumeInsertables(studioCtx, kind);
+                      if (plumeItem.length > 0) {
+                        return {
+                          ...only(plumeItem),
+                          isCompact: true,
+                        };
+                      } else {
+                        return undefined;
+                      }
                     }
 
                     // The template name needs to be of format "<PLEXUS_INSERTABLE_ID>/<kind>". E.g. For Plexus button, it will be "plexus/button".
                     // The template name will be fetched from devflags.insertableTemplates.
-                    return {
-                      previewImageUrl: aliasImageUrl,
-                      ...handleTemplateAlias(
-                        `${PLEXUS_INSERTABLE_ID}/${kind}`,
-                        kind
-                      ),
-                    };
+                    const plexusItem = handleTemplateAlias(
+                      `${PLEXUS_INSERTABLE_ID}/${kind}`,
+                      kind
+                    );
+                    if (plexusItem) {
+                      return {
+                        previewImageUrl: aliasImageUrl,
+                        ...plexusItem,
+                      };
+                    } else {
+                      return undefined;
+                    }
                   } else {
                     return undefined;
                   }
