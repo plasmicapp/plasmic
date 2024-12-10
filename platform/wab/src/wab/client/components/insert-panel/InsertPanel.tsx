@@ -129,7 +129,7 @@ import {
 import { placeholderImgUrl } from "@/wab/shared/urls";
 import cn from "classnames";
 import { UseComboboxGetItemPropsOptions } from "downshift";
-import L, { capitalize, groupBy, last, uniq } from "lodash";
+import L, { groupBy, last, uniq } from "lodash";
 import memoizeOne from "memoize-one";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -1303,20 +1303,6 @@ export function buildAddItemGroups({
           (item) => item.label
         ),
       },
-    (() => {
-      return hasPlexus
-        ? {
-            key: PLEXUS_INSERTABLE_ID,
-            sectionLabel: capitalize(PLEXUS_INSERTABLE_ID),
-            sectionKey: PLEXUS_INSERTABLE_ID,
-            items: getTemplateComponents(studioCtx)
-              .filter((item) =>
-                item.templateName.startsWith(PLEXUS_INSERTABLE_ID)
-              )
-              .map((item) => handleTemplateAlias(item.templateName)),
-          }
-        : undefined;
-    })(),
 
     hasPlexus
       ? {
