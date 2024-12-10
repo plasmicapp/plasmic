@@ -420,9 +420,9 @@ Variant
   name: String
   # Set if this is a style variant
   selectors: [String]?
-  #Set if this is a code component variant
+  # For code component variants, both codeComponentName and codeComponentVariantKeys should be set.
+  # For other variants, both should be undefined
   codeComponentName: String?
-  #Set if this is a code component variant
   codeComponentVariantKeys: [String]?
   # The parent of the variant. A base variant doesn't have any parent.
   @WeakRef parent: VariantGroup?

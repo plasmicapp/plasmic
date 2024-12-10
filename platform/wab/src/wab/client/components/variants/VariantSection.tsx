@@ -2,8 +2,8 @@
 // This file is owned by you, feel free to edit as you see fit.
 import { useContextMenu } from "@/wab/client/components/ContextMenu";
 import {
+  codeComponentOrStyleVariantToSelectors,
   SelectorTags,
-  styleVariantToSelectors,
 } from "@/wab/client/components/sidebar/RuleSetControls";
 import VariantRow from "@/wab/client/components/variants/VariantRow";
 import { VariantsController } from "@/wab/client/components/variants/VariantsController";
@@ -186,7 +186,10 @@ export function makeReadOnlySection(opts: {
             isCodeComponentOrStyleVariant(variant) ? (
               <SelectorTags
                 isCodeComponent={isTplCodeComponent(component?.tplTree)}
-                selectors={styleVariantToSelectors(variant, studioCtx.site)}
+                selectors={codeComponentOrStyleVariantToSelectors(
+                  variant,
+                  studioCtx.site
+                )}
               />
             ) : (
               variant.name

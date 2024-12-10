@@ -1,5 +1,5 @@
-import { StyleVariantLabel } from "@/wab/client/components/VariantControls";
-import { selectorsToVariantSelectors } from "@/wab/client/components/sidebar/RuleSetControls";
+import { StyleOrCodeComponentVariantLabel } from "@/wab/client/components/VariantControls";
+import { getVariantIdentifier } from "@/wab/client/components/sidebar/RuleSetControls";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import VariantRow from "@/wab/client/components/variants/VariantRow";
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
@@ -129,14 +129,14 @@ export const PrivateStyleVariantsPanel = observer(
                     ),
                 })}
                 label={
-                  <StyleVariantLabel
+                  <StyleOrCodeComponentVariantLabel
                     variant={variant}
                     forTag={tpl.tag}
                     forRoot={tpl === component.tplTree}
                     component={component}
                     onSelectorsChange={(sels) =>
                       viewCtx.change(() => {
-                        variant.selectors = selectorsToVariantSelectors(sels);
+                        variant.selectors = sels.map(getVariantIdentifier);
                         setEditingVariant(undefined);
                       })
                     }

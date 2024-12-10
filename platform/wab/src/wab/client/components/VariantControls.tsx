@@ -1,9 +1,9 @@
 import {
+  codeComponentOrStyleVariantToSelectors,
+  getVariantIdentifier,
   Selector,
   SelectorsInput,
-  selectorsToVariantSelectors,
   SelectorTags,
-  styleVariantToSelectors,
 } from "@/wab/client/components/sidebar/RuleSetControls";
 import S from "@/wab/client/components/VariantControls.module.scss";
 import Button from "@/wab/client/components/widgets/Button";
@@ -26,7 +26,6 @@ import {
   isPrivateStyleVariant,
   isStyleVariant,
   makeVariantName,
-  StyleVariant,
 } from "@/wab/shared/Variants";
 import { Menu } from "antd";
 import { default as classNames, default as cn } from "classnames";
@@ -156,7 +155,7 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
   onDismiss,
   variant,
 }: {
-  variant: StyleVariant;
+  variant: CodeComponentOrStyleVariant;
   component: Component;
   onDismiss?: () => void;
 }) {
@@ -166,12 +165,13 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
   const maybeSubmit = async (opts?: { force?: boolean }) => {
     if (chosenSelectors.length || opts?.force) {
       return studioCtx.changeUnsafe(() => {
-        if (isTplCodeComponent(component.tplTree)) {
+        if (isCodeComponentVariant(variant)) {
           variant.codeComponentVariantKeys =
-            selectorsToVariantSelectors(chosenSelectors);
+            chosenSelectors.map(getVariantIdentifier);
         } else {
-          variant.selectors = selectorsToVariantSelectors(chosenSelectors);
+          variant.selectors = chosenSelectors.map(getVariantIdentifier);
         }
+
         onDismiss?.();
 
         if (
@@ -196,7 +196,9 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
   );
 
   useEffect(() => {
-    setChosenSelectors(styleVariantToSelectors(variant, studioCtx.site));
+    setChosenSelectors(
+      codeComponentOrStyleVariantToSelectors(variant, studioCtx.site)
+    );
   }, [variant.selectors?.join(",")]);
 
   const tplRoot = component.tplTree;
@@ -237,8 +239,10 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
   );
 });
 
-export const StyleVariantLabel = observer(forwardRef(StyleVariantLabel_));
-function StyleVariantLabel_(
+export const StyleOrCodeComponentVariantLabel = observer(
+  forwardRef(StyleOrCodeComponentVariantLabel_)
+);
+function StyleOrCodeComponentVariantLabel_(
   props: {
     defaultEditing?: boolean;
     variant: CodeComponentOrStyleVariant;
@@ -259,7 +263,10 @@ function StyleVariantLabel_(
     forRoot,
     component,
   } = props;
-  const selectors = styleVariantToSelectors(variant, studioCtx.site);
+  const selectors = codeComponentOrStyleVariantToSelectors(
+    variant,
+    studioCtx.site
+  );
 
   const tplRoot = component.tplTree;
   const isPrivate = isPrivateStyleVariant(variant);

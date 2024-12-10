@@ -690,11 +690,15 @@ export class TplMgr {
     return variant;
   }
 
-  createCodeComponentVariant(component: Component, codeComponentName: string) {
+  createCodeComponentVariant(
+    component: Component,
+    codeComponentName: string,
+    codeComponentVariantKeys: string[] = []
+  ) {
     const variant = mkVariant({
       name: "",
       codeComponentName,
-      codeComponentVariantKeys: [],
+      codeComponentVariantKeys,
     });
     component.variants.push(variant);
 

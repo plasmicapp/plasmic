@@ -1,11 +1,11 @@
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
-import { selectorsToVariantSelectors } from "@/wab/client/components/sidebar/RuleSetControls";
+import { getVariantIdentifier } from "@/wab/client/components/sidebar/RuleSetControls";
 import {
   SidebarSection,
   SidebarSectionHandle,
 } from "@/wab/client/components/sidebar/SidebarSection";
 import {
-  StyleVariantLabel,
+  StyleOrCodeComponentVariantLabel,
   VariantLabel,
 } from "@/wab/client/components/VariantControls";
 import { EditableGroupLabel } from "@/wab/client/components/variants/EditableGroupLabel";
@@ -82,6 +82,7 @@ import {
   CodeComponentOrStyleVariant,
   getBaseVariant,
   isBaseVariant,
+  isCodeComponentVariant,
   isGlobalVariantGroup,
   isScreenVariantGroup,
   isStandaloneVariantGroup,
@@ -1021,7 +1022,7 @@ const ComponentStyleVariantRow = observer(
           onEditSelectors: () => ref.current && ref.current.setEditing(true),
         })}
         label={
-          <StyleVariantLabel
+          <StyleOrCodeComponentVariantLabel
             component={component}
             variant={variant}
             forTag={
@@ -1031,7 +1032,12 @@ const ComponentStyleVariantRow = observer(
             ref={ref}
             onSelectorsChange={(sels) =>
               studioCtx.change(({ success }) => {
-                variant.selectors = selectorsToVariantSelectors(sels);
+                if (isCodeComponentVariant(variant)) {
+                  variant.codeComponentVariantKeys =
+                    sels.map(getVariantIdentifier);
+                } else {
+                  variant.selectors = sels.map(getVariantIdentifier);
+                }
                 onEdited();
                 return success();
               })

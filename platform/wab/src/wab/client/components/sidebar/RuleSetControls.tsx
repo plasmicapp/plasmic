@@ -34,7 +34,7 @@ export type Selector = TaggedUnion<
 >;
 
 function selectorToReactKey(selector: Selector): string {
-  return `${selector.type}-${selectorToVariantSelector(selector)}`;
+  return `${selector.type}-${getVariantIdentifier(selector)}`;
 }
 
 function selectorToDisplayName(
@@ -51,19 +51,13 @@ function selectorToDisplayName(
   }
 }
 
-/** Maps Selector to what should be stored in the Variant.selectors field. */
-function selectorToVariantSelector(selector: Selector): string {
+export function getVariantIdentifier(selector: Selector): string {
   switch (selector.type) {
     case "CodeComponentSelector":
       return selector.key;
     case "CssSelector":
       return selector.cssSelector;
   }
-}
-
-/** Maps Selectors to what should be stored in the Variant.selectors field. */
-export function selectorsToVariantSelectors(selectors: Selector[]) {
-  return selectors.map(selectorToVariantSelector);
 }
 
 function areSelectorsEqual(a: Selector, b: Selector) {
@@ -86,7 +80,7 @@ function areSelectorsEqual(a: Selector, b: Selector) {
  * - for custom selectors: selector
  * TODO: write migration so code components use key, presets use selector
  */
-export function styleVariantToSelectors(
+export function codeComponentOrStyleVariantToSelectors(
   variant: CodeComponentOrStyleVariant,
   site: Site
 ): Selector[] {
@@ -266,9 +260,7 @@ export function SelectorsInput({
             selectorToDisplayName(selector)
               .toLowerCase()
               .includes(inputLower) ||
-            selectorToVariantSelector(selector)
-              .toLowerCase()
-              .includes(inputLower)
+            getVariantIdentifier(selector).toLowerCase().includes(inputLower)
         );
       }}
     />
