@@ -841,9 +841,6 @@ const Row = React.memo(function Row(props: {
 },
 areEqual);
 
-type HostLessStuff = ReturnType<typeof getHostLess>;
-let cachedHostLess: HostLessStuff | undefined = undefined;
-
 const getTemplateComponents = memoizeOne(function getTemplateComponent(
   studioCtx: StudioCtx
 ) {
@@ -853,7 +850,7 @@ const getTemplateComponents = memoizeOne(function getTemplateComponent(
   );
 });
 
-function getHostLess(studioCtx: StudioCtx): AddItemGroup[] {
+const getHostLess = memoizeOne((studioCtx: StudioCtx): AddItemGroup[] => {
   const hostLessComponentsMeta =
     studioCtx.appCtx.appConfig.hostLessComponents ??
     DEVFLAGS.hostLessComponents ??
@@ -913,14 +910,7 @@ function getHostLess(studioCtx: StudioCtx): AddItemGroup[] {
       };
       return newVar;
     });
-}
-
-function initHostLess(studioCtx: StudioCtx) {
-  if (!cachedHostLess) {
-    cachedHostLess = getHostLess(studioCtx);
-  }
-  return cachedHostLess;
-}
+});
 
 /**
  * For hostless components and default components. Otherwise it's a built-in insertable.
@@ -1170,7 +1160,7 @@ export function buildAddItemGroups({
                 }
 
                 // Is this a hostless component entry?
-                for (const hostlessGroup of initHostLess(studioCtx) ?? []) {
+                for (const hostlessGroup of getHostLess(studioCtx)) {
                   if (
                     canInsertHostlessPackage(
                       uiConfig,
@@ -1385,9 +1375,9 @@ export function buildAddItemGroups({
       ],
     })),
 
-    ...(!!hostLessComponentsMeta && cachedHostLess
-      ? // We want to hide the listings that were shown in "Default components" - this is just a simple way to ensure things don't show up in both menus.
-        cachedHostLess
+    // We want to hide the listings that were shown in "Default components" - this is just a simple way to ensure things don't show up in both menus.
+    ...(!!hostLessComponentsMeta
+      ? getHostLess(studioCtx)
           .filter((group) =>
             canInsertHostlessPackage(
               uiConfig,
