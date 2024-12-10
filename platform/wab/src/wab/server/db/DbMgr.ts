@@ -2314,6 +2314,29 @@ export class DbMgr implements MigrationDbMgr {
     return workspace;
   }
 
+  async createWorkspaceWithId({
+    id,
+    name,
+    description,
+    teamId,
+  }: {
+    id: WorkspaceId;
+    name: string;
+    description: string;
+    teamId: TeamId;
+  }): Promise<Workspace> {
+    this.checkSuperUser();
+    const workspace = this.workspaces().create({
+      ...this.stampNew(true),
+      id,
+      name,
+      description,
+      team: { id: teamId },
+    });
+    await this.entMgr.save(workspace);
+    return workspace;
+  }
+
   async deleteWorkspace(id: WorkspaceId) {
     return this._deleteResource({ type: "workspace", id });
   }
@@ -2591,17 +2614,10 @@ export class DbMgr implements MigrationDbMgr {
       ...(ownerId ? { createdBy: { id: ownerId } } : {}),
       ...(projectId ? { id: projectId } : {}),
     });
-    const rev = this.entMgr.create(ProjectRevision, {
-      ...this.stampNew(),
-      revision: 1,
-      project: { id: project.id },
-      // This is a placeholder.  The first client to load this placeholder will save back a valid initial
-      // project.
-      //
-      // Longer-term, the project code will actually be running on the server.
-      data: "{}",
-    });
-    await this.entMgr.save([project, rev]);
+
+    await this.entMgr.save(project);
+    const rev = await this.createFirstProjectRev(project.id);
+
     if (project.createdById) {
       await this.sudo()._assignResourceOwner(
         { type: "project", id: project.id },
@@ -3286,6 +3302,21 @@ export class DbMgr implements MigrationDbMgr {
     const rev = await this.getProjectRevision(projectId, revisionNum, branchId);
     mergeSane(rev, this.stampUpdate(), { data });
     return await this.projectRevs().save(rev);
+  }
+
+  async createFirstProjectRev(projectId: ProjectId) {
+    const revision = this.entMgr.create(ProjectRevision, {
+      ...this.stampNew(),
+      revision: 1,
+      project: { id: projectId },
+      // This is a placeholder.  The first client to load this placeholder will save back a valid initial
+      // project.
+      data: "{}",
+    });
+
+    await this.entMgr.save(revision);
+
+    return revision;
   }
 
   async getPreviousPkgId(

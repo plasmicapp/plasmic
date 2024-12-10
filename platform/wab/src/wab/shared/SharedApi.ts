@@ -1079,6 +1079,15 @@ export abstract class SharedApi {
     return this.post(`/admin/projects`, { ownerId });
   }
 
+  async adminCreateWorkspace(data: {
+    id: WorkspaceId;
+    name: string;
+    description: string;
+    teamId: TeamId;
+  }) {
+    return this.post(`/admin/workspaces`, data);
+  }
+
   async listBranchesForProject(
     projectId: ProjectId
   ): Promise<ListBranchesResponse> {

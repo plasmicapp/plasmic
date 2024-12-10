@@ -12,9 +12,9 @@ import {
   AdminCtxProvider,
   useAdminCtx,
 } from "@/wab/client/components/pages/admin/AdminCtx";
+import { AdminImportProjectsFromProd } from "@/wab/client/components/pages/admin/AdminImportProjectsFromProd";
 import { AdminTeamsView } from "@/wab/client/components/pages/admin/AdminTeamsView";
 import { AdminUsersView } from "@/wab/client/components/pages/admin/AdminUsersView";
-import { ImportProjectsFromProd } from "@/wab/client/components/pages/admin/ImportProjectsFromProd";
 import {
   LinkButton,
   SearchBox,
@@ -131,7 +131,7 @@ function AdminPageTabs() {
               <TourCypressTest />
               <DownloadPkgForPkgMgr />
               <DownloadPlumePkg />
-              <ImportProjectsFromProd />
+              <AdminImportProjectsFromProd />
               <CopilotFeedbackView />
               <AppAuthMetrics />
             </div>
@@ -1272,7 +1272,7 @@ function EditPkgVersionBundle() {
                 onClick={async () => {
                   const data = editorRef.current?.getValue();
                   if (data && JSON.parse(data)) {
-                    const res = await nonAuthCtx.api.savePkgVersionAsAdmin({
+                    await nonAuthCtx.api.savePkgVersionAsAdmin({
                       pkgVersionId: pkgVersion.id,
                       data,
                     });

@@ -1414,6 +1414,11 @@ export function addMainAppServerRoutes(
     withNext(adminRoutes.listProjects)
   );
   app.post(
+    "/api/v1/admin/workspaces",
+    adminOnly,
+    withNext(adminRoutes.createWorkspace)
+  );
+  app.post(
     "/api/v1/admin/delete-project",
     adminOnly,
     withNext(adminRoutes.deleteProject)

@@ -53,6 +53,7 @@ import { getTeamDiscourseInfo as doGetTeamDiscourseInfo } from "@/wab/server/dis
 import { sendTeamSupportWelcomeEmail as doSendTeamSupportWelcomeEmail } from "@/wab/server/discourse/sendTeamSupportWelcomeEmail";
 import { syncTeamDiscourseInfo as doSyncTeamDiscourseInfo } from "@/wab/server/discourse/syncTeamDiscourseInfo";
 import { checkAndResetTeamTrial } from "@/wab/server/routes/team-plans";
+import { mkApiWorkspace } from "@/wab/server/routes/workspaces";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
 
 export async function createUser(req: Request, res: Response) {
@@ -130,6 +131,20 @@ export async function listProjects(req: Request, res: Response) {
     ? mgr.listProjectsForUser(ownerId)
     : mgr.listAllProjects());
   res.json({ projects: projects.map(mkApiProject) });
+}
+
+export async function createWorkspace(req: Request, res: Response) {
+  const mgr = superDbMgr(req);
+
+  const { id, name, description, teamId } = req.body;
+  const workspace = await mgr.createWorkspaceWithId({
+    id,
+    name,
+    description,
+    teamId,
+  });
+
+  res.json({ workspace: mkApiWorkspace(workspace) });
 }
 
 export async function deleteProjectAndRevisions(req: Request, res: Response) {

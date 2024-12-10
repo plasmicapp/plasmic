@@ -547,36 +547,70 @@ export async function doImportProject(
 
     let pkgVersion: PkgVersion;
     let newBundle: Bundle;
+
+    // If we are going to keep the project ids and names, we will keep the versions as well
+    const pkgVersionToUse = opts?.keepProjectIdsAndNames
+      ? projectDep.version
+      : "0.0.1";
+
+    const projectDepExists = await mgr.checkIfProjectIdExists(
+      projectDep.projectId
+    );
+
+    const currentPkg = projectDepExists
+      ? await mgr.getPkgByProjectId(projectDep.projectId)
+      : undefined;
+
     if (
-      !(await mgr.checkIfProjectIdExists(projectDep.projectId)) ||
+      !currentPkg ||
+      !(await mgr.tryGetPkgVersion(currentPkg.id, pkgVersionToUse)) ||
       !opts?.keepProjectIdsAndNames
     ) {
-      const { project, rev: fstRev } = await mgr.createProject({
-        name: !opts?.keepProjectIdsAndNames
-          ? `Imported Dep${depBundles.length > 1 ? ` ${i + 1}` : ""}`
-          : projectDep.name,
-        projectId: opts?.keepProjectIdsAndNames
-          ? projectDep.projectId
-          : undefined,
-      });
+      async function getOrCreateProject() {
+        if (projectDepExists && opts?.keepProjectIdsAndNames) {
+          return mgr.getProjectById(projectDep.projectId);
+        } else {
+          const { project } = await mgr.createProject({
+            name: !opts?.keepProjectIdsAndNames
+              ? `Imported Dep${depBundles.length > 1 ? ` ${i + 1}` : ""}`
+              : projectDep.name,
+            projectId: opts?.keepProjectIdsAndNames
+              ? projectDep.projectId
+              : undefined,
+          });
+          return project;
+        }
+      }
+
+      const project = await getOrCreateProject();
       const pkg = await mgr.createPkgByProjectId(project.id);
 
       projectDep.pkgId = pkg.id;
       projectDep.projectId = project.id;
-      projectDep.version = "0.0.1";
+      projectDep.version = pkgVersionToUse;
 
       const depSite = bundler.bundle(projectDep.site, tmpUuid, dep.version);
       newBundle = bundler.bundle(projectDep, tmpUuid, dep.version);
 
+      async function getNextRevisionNum() {
+        try {
+          const lastRev = await mgr.getLatestProjectRev(project.id);
+          return lastRev.revision + 1;
+        } catch (err) {
+          const rev = await mgr.createFirstProjectRev(project.id);
+          return rev.revision + 1;
+        }
+      }
+
       const rev = await mgr.saveProjectRev({
         projectId: project.id,
         data: JSON.stringify(depSite),
-        revisionNum: fstRev.revision + 1,
+        revisionNum: await getNextRevisionNum(),
       });
 
       pkgVersion = await mgr.insertPkgVersion(
         pkg.id,
-        "0.0.1",
+        pkgVersionToUse,
         JSON.stringify(newBundle),
         [],
         "",
@@ -584,10 +618,10 @@ export async function doImportProject(
       );
     } else {
       newBundle = bundler.bundle(projectDep, tmpUuid, dep.version);
-      const pkg = await mgr.getPkgByProjectId(projectDep.projectId);
-      assert(pkg, "Pkg not found");
-      pkgVersion = await mgr.getPkgVersion(pkg.id, "0.0.1");
+      assert(currentPkg, "Pkg not found");
+      pkgVersion = await mgr.getPkgVersion(currentPkg.id, pkgVersionToUse);
     }
+
     newPkgVersionById.set(pkgVersion.id, pkgVersion);
     // unbundle with the correct uuid
     ensureKnownProjectDependency(bundler.unbundle(newBundle, pkgVersion.id));
@@ -609,6 +643,18 @@ export async function doImportProject(
   const unbundledSite = ensureKnownSite(
     bundler.unbundle(siteBundle, project.id)
   );
+
+  if (unbundledSite.hostLessPackageInfo) {
+    const devflagsStr = (await mgr.tryGetDevFlagOverrides())?.data;
+    if (devflagsStr) {
+      const devflags = JSON.parse(devflagsStr);
+      const { hostLessWorkspaceId } = devflags;
+      await mgr.updateProject({
+        id: project.id,
+        workspaceId: hostLessWorkspaceId,
+      });
+    }
+  }
 
   if (opts?.dataSourceReplacement) {
     let oldToNewSourceIds: Record<string, string> = {};
