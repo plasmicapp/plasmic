@@ -20,6 +20,7 @@ import {
   getBaseVariant,
   getOrderedScreenVariants,
   isBaseVariant,
+  isCodeComponentVariant,
   isGlobalVariant,
   isPrivateStyleVariant,
   isScreenVariant,
@@ -234,6 +235,7 @@ export const makeVariantComboSorter = maybeComputedFn(
       const [
         privateStyleVariants,
         compStyleVariants,
+        codeComponentVariants,
         compVariants,
         globalVariants,
       ] = partitionVariants(component, combo, true);
@@ -264,11 +266,13 @@ export function partitionVariants(
   const [
     privateStyleVariants,
     compStyleVariants,
+    codeComponentVariants,
     compVariants,
     globalVariants,
   ] = partitions(variants, [
     isPrivateStyleVariant,
     isStyleVariant,
+    isCodeComponentVariant,
     (v) => !isGlobalVariant(v),
   ]);
 
@@ -282,6 +286,7 @@ export function partitionVariants(
   return [
     privateStyleVariants,
     compStyleVariants,
+    codeComponentVariants,
     compVariants,
     globalVariants,
   ];

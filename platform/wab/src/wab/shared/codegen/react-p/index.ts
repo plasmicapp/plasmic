@@ -928,15 +928,15 @@ export function makeVariantComboChecker(
         `Missing reactHookSpec for variant ${variant.name} (uuid: ${variant.uuid})`
       );
       return hook.serializeIsTriggeredCheck(triggersRef);
-    }
-    if (isCodeComponentVariant(variant)) {
+    } else if (isCodeComponentVariant(variant)) {
       return variant.codeComponentVariantKeys
         .map((key) => {
           return `$ccVariants[${jsString(key)}]`;
         })
         .join(" && ");
+    } else {
+      return nonStyleVariantChecker(variant);
     }
-    return nonStyleVariantChecker(variant);
   };
   return (variantCombo: VariantCombo, ignoreScreenVariant?: boolean) => {
     const res = variantCombo

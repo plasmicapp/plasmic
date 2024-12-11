@@ -36,6 +36,8 @@ import {
   hasScreenVariant,
   isBaseRuleVariant,
   isBaseVariant,
+  isCodeComponentOrStyleVariant,
+  isCodeComponentVariant,
   isScreenVariant,
   isStyleVariant,
   tryGetBaseVariantSetting,
@@ -1744,10 +1746,19 @@ function showPseudoClassSelector(
   // We don't need to deal with screen variants, as they are dealt with via
   // media query in the generated css
   const variants = vs.variants.filter((v) => !isScreenVariant(v));
-  const [privateStyleVariants, styleVariants, compVariants, globalVariants] =
-    partitionVariants(component, variants);
+  const [
+    privateStyleVariants,
+    styleVariants,
+    codeComponentVariants,
+    compVariants,
+    globalVariants,
+  ] = partitionVariants(component, variants);
 
-  if (privateStyleVariants.length === 0 && styleVariants.length === 0) {
+  if (
+    privateStyleVariants.length === 0 &&
+    styleVariants.length === 0 &&
+    codeComponentVariants.length === 0
+  ) {
     // No style variants are involved at all, the easy case!
     return ruleNamer(tpl, vs);
   }
@@ -1775,8 +1786,12 @@ function showPseudoClassSelector(
     return L(svs)
       .flatMap((sv) =>
         ensure(
-          sv.selectors,
-          () => `Expected variant ${sv.name} (${sv.uuid}) to have selectors`
+          isCodeComponentVariant(sv)
+            ? sv.codeComponentVariantKeys
+            : sv.selectors,
+          `Expected variant ${sv.name} (${sv.uuid}) to have ${
+            isCodeComponentVariant(sv) ? "variant keys" : "selectors"
+          }`
         )
       )
       .map((sel) => {
@@ -1816,8 +1831,9 @@ function showPseudoClassSelector(
   };
 
   if (isRoot) {
-    // TODO: Investigate for registered variants (not launch blocking)
-    const selectorVariants = vs.variants.filter(isStyleVariant);
+    const codeComponentOrStyleVariants = vs.variants.filter(
+      isCodeComponentOrStyleVariant
+    );
     const baseRuleVariants = getBaseRuleVariants(vs.variants);
     const baseRuleVs = ensure(
       tryGetVariantSetting(root, baseRuleVariants),
@@ -1826,7 +1842,7 @@ function showPseudoClassSelector(
         baseRuleVariants.map((v) => `${v.name} (${v.uuid})`).join(", ")
     );
     return `${ruleNamer(root, baseRuleVs)}${makeSelectorString(
-      selectorVariants
+      codeComponentOrStyleVariants
     )}`;
   }
 
@@ -1839,12 +1855,16 @@ function showPseudoClassSelector(
       nonStyleVariants.map((v) => `${v.name} (${v.uuid})`).join(", ")
   );
   parts.push(
-    `${ruleNamer(root, baseRootRuleVs)}${makeSelectorString(styleVariants)}`
+    `${ruleNamer(root, baseRootRuleVs)}${makeSelectorString([
+      ...styleVariants,
+      ...codeComponentVariants,
+    ])}`
   );
 
   const baseRuleVariants = getBaseRuleVariants([
     ...nonStyleVariants,
     ...styleVariants,
+    ...codeComponentVariants,
     ...privateStyleVariants,
   ]);
   const baseRuleVs = ensure(
