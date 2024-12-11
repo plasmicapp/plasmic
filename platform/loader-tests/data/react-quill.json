@@ -739,7 +739,7 @@
         }
       },
       "deps": [],
-      "version": "237-code-component-variants"
+      "version": "238-code-component-variants-new"
     }
   ],
   [
@@ -2118,7 +2118,7 @@
         "tkbX31iChEAr": { "text": ["quill-state"], "__type": "TemplatedString" }
       },
       "deps": ["b911462e-59ce-455d-b8d3-0d84f50a35dd"],
-      "version": "237-code-component-variants"
+      "version": "238-code-component-variants-new"
     }
   ]
 ]

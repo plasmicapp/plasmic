@@ -27461,7 +27461,7 @@
         }
       },
       "deps": [],
-      "version": "237-code-component-variants"
+      "version": "238-code-component-variants-new"
     }
   ],
   [
@@ -29543,7 +29543,7 @@
         "aA9tyZnmtZAM": { "text": ["countries"], "__type": "TemplatedString" }
       },
       "deps": ["c37f5929-869b-409a-95d5-17c69bc4e9d3"],
-      "version": "237-code-component-variants"
+      "version": "238-code-component-variants-new"
     }
   ]
 ]
