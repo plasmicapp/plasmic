@@ -1229,7 +1229,7 @@ export function buildAddItemGroups({
     // Custom components includes all the components from the project
     {
       key: "components",
-      label: "Custom components",
+      label: DEVFLAGS.insertPanelContent.componentsLabel,
       items: sortComponentsByName(
         studioCtx.site.components.filter(
           (c) =>

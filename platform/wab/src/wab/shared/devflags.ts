@@ -339,6 +339,7 @@ const DEFAULT_DEVFLAGS = {
   hideHelpForUsers: [".*@example.com"],
   hideStartersForUsers: [".*@example.com"],
   insertPanelContent: ensureType<InsertPanelConfig>({
+    componentsLabel: "Custom components",
     aliases: {},
     builtinSections: {},
     overrideSections: {},

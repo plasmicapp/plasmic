@@ -272,7 +272,17 @@ export function mergeUiConfigs(
 type SectionedAliases = Record<string, Record<string, InsertAlias[]>>;
 
 export interface InsertPanelConfig {
+  /** Label for section that contains local components and code components. */
+  componentsLabel: string;
+  /**
+   * Mappings from aliases to hostless component name or other special names
+   * (see InsertPanel.tsx).
+   */
   aliases: Partial<Record<InsertComponentAlias, string>>;
+  /**
+   * Sections of sections of aliases (2 levels of sections) that show on the
+   * top of the insert panel. The keys are displayed as the section titles.
+   */
   builtinSections: SectionedAliases;
   overrideSections: {
     website?: SectionedAliases;
