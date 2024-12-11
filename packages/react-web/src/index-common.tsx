@@ -1,5 +1,6 @@
 // Utilities used by generated code
 import _classNames from "classnames";
+export { PlasmicTranslator } from "@plasmicapp/host";
 export {
   PlasmicPageGuard,
   withPlasmicPageGuard,
@@ -7,15 +8,15 @@ export {
 export { omit, pick } from "./common";
 export { HTMLElementRefOf, StrictProps } from "./react-utils";
 export {
-  createPlasmicElementProxy,
-  deriveRenderOpts,
   Flex,
-  hasVariant,
-  makeFragment,
-  mergeVariantsWithStates,
   MultiChoiceArg,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
+  createPlasmicElementProxy,
+  deriveRenderOpts,
+  hasVariant,
+  makeFragment,
+  mergeVariantsWithStates,
   wrapWithClassName,
 } from "./render/elements";
 export { ensureGlobalVariants } from "./render/global-variants";
@@ -33,9 +34,8 @@ export {
 } from "./render/ssr";
 export { Stack } from "./render/Stack";
 export {
-  genTranslatableString,
-  PlasmicTranslator,
   Trans,
+  genTranslatableString,
   usePlasmicTranslator,
 } from "./render/translation";
 export { useTrigger } from "./render/triggers";

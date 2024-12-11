@@ -2,16 +2,17 @@ import {
   PlasmicDataSourceContextProvider,
   PlasmicDataSourceContextValue,
 } from "@plasmicapp/data-sources-context";
-import { DataProvider, PlasmicLinkProvider } from "@plasmicapp/host";
+import {
+  DataProvider,
+  PlasmicI18NContextValue,
+  PlasmicLinkProvider,
+  PlasmicTranslator,
+} from "@plasmicapp/host";
 import { SSRProvider, useIsSSR as useAriaIsSSR } from "@react-aria/ssr";
 import * as React from "react";
 import { PlasmicHeadContext } from "./PlasmicHead";
 import { PlasmicLinkInternal } from "./PlasmicLink";
-import {
-  PlasmicI18NContextValue,
-  PlasmicTranslator,
-  PlasmicTranslatorContext,
-} from "./translation";
+import { PlasmicTranslatorContext } from "./translation";
 export {
   PlasmicDataSourceContextProvider,
   useCurrentUser,
@@ -72,14 +73,14 @@ export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
   return (
     <MaybeWrap
       cond={!disableLoadingBoundary && reactMajorVersion >= 18}
-      wrapper={(children) => (
+      wrapper={(children_) => (
         <DataProvider
           name="plasmicInternalEnableLoadingBoundary"
           hidden
           data={true}
         >
           <React.Suspense fallback={suspenseFallback ?? "Loading..."}>
-            {children}
+            {children_}
           </React.Suspense>
         </DataProvider>
       )}
@@ -87,7 +88,7 @@ export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
       <PlasmicRootContext.Provider value={context}>
         <MaybeWrap
           cond={reactMajorVersion < 18}
-          wrapper={(children) => <SSRProvider>{children}</SSRProvider>}
+          wrapper={(children_) => <SSRProvider>{children_}</SSRProvider>}
         >
           <PlasmicDataSourceContextProvider value={dataSourceContextValue}>
             <PlasmicTranslatorContext.Provider

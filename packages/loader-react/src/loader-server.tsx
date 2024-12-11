@@ -384,6 +384,8 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
                   get: () => noop,
                 }
               ),
+            usePlasmicTranslator: () => undefined,
+            PlasmicTranslatorContext: { _currentValue: undefined } as any,
             usePlasmicCanvasContext: () => false,
             usePlasmicLink: () => (props) => <a {...props} />,
             usePlasmicLinkMaybe: () => undefined,

@@ -1,40 +1,33 @@
+import {
+  PlasmicTranslatorContext as HostPlasmicTranslatorContext,
+  PlasmicI18NContextValue,
+  PlasmicTranslator,
+  usePlasmicTranslator as useHostPlasmicTranslator,
+} from "@plasmicapp/host";
 import React from "react";
 
-export type PlasmicTranslator = (
-  str: string,
-  opts?: {
-    components?: {
-      [key: string]: React.ReactElement;
-    };
-  }
-) => React.ReactNode;
+// Make the refactor to host backwards compatible for loader
+export const PlasmicTranslatorContext =
+  HostPlasmicTranslatorContext ??
+  React.createContext<PlasmicI18NContextValue | PlasmicTranslator | undefined>(
+    undefined
+  );
 
-export interface PlasmicI18NContextValue {
-  translator?: PlasmicTranslator;
-  tagPrefix?: string;
-}
-
-export const PlasmicTranslatorContext = React.createContext<
-  PlasmicI18NContextValue | PlasmicTranslator | undefined
->(undefined);
+export const usePlasmicTranslator =
+  useHostPlasmicTranslator ??
+  (() => {
+    const _t = React.useContext(PlasmicTranslatorContext);
+    const translator = _t
+      ? typeof _t === "function"
+        ? _t
+        : _t.translator
+      : undefined;
+    return translator;
+  });
 
 export interface TransProps {
   transKey?: string;
   children?: React.ReactNode;
-}
-
-function isIterable(val: any): val is Iterable<any> {
-  return val != null && typeof val[Symbol.iterator] === "function";
-}
-
-export function usePlasmicTranslator() {
-  const _t = React.useContext(PlasmicTranslatorContext);
-  const translator = _t
-    ? typeof _t === "function"
-      ? _t
-      : _t.translator
-    : undefined;
-  return translator;
 }
 
 export function genTranslatableString(
@@ -134,4 +127,8 @@ function warnNoTranslationFunctionAtMostOnce() {
 
 function hasKey<K extends string>(v: any, key: K): v is Record<K, any> {
   return typeof v === "object" && v !== null && key in v;
+}
+
+function isIterable(val: any): val is Iterable<any> {
+  return val != null && typeof val[Symbol.iterator] === "function";
 }

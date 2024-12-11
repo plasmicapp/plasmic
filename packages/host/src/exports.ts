@@ -55,3 +55,4 @@ export {
   default as registerTrait,
 } from "./registerTrait";
 export { default as repeatedElement } from "./repeatedElement";
+export * from "./translation";
