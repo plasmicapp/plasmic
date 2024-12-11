@@ -27295,7 +27295,7 @@
         }
       },
       "deps": [],
-      "version": "237-code-component-variants"
+      "version": "238-code-component-variants-update-fields"
     }
   ],
   [
@@ -52711,7 +52711,7 @@
         "DuESJECNxPHt": { "tpl": [], "__type": "VirtualRenderExpr" }
       },
       "deps": ["968565bc-2862-4179-aa20-deebd3879e08"],
-      "version": "237-code-component-variants"
+      "version": "238-code-component-variants-update-fields"
     }
   ]
 ]

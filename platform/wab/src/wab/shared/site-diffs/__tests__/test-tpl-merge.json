@@ -4966,7 +4966,7 @@
           }
         },
         "deps": [],
-        "version": "237-code-component-variants"
+        "version": "238-code-component-variants-update-fields"
       },
       "projectId": "dNoM99U17XFRGCXZ5SUbc1",
       "version": "0.0.1",
@@ -10200,7 +10200,7 @@
           "65055094": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "237-code-component-variants"
+        "version": "238-code-component-variants-update-fields"
       }
     },
     {
@@ -15269,7 +15269,7 @@
           "52044046": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "237-code-component-variants"
+        "version": "238-code-component-variants-update-fields"
       }
     }
   ]

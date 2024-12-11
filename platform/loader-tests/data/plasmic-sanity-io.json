@@ -926,7 +926,7 @@
         }
       },
       "deps": [],
-      "version": "237-code-component-variants"
+      "version": "238-code-component-variants-update-fields"
     }
   ],
   [
@@ -2060,7 +2060,7 @@
         }
       },
       "deps": ["4536e610-f7b7-43b7-b45e-172856a7e132"],
-      "version": "237-code-component-variants"
+      "version": "238-code-component-variants-update-fields"
     }
   ]
 ]

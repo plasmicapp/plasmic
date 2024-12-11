@@ -42,6 +42,7 @@ const paths = [
   "../loader-tests/data/antd5/pagination.json",
   "../loader-tests/data/plasmic-basic-components/timer.json",
   "../loader-tests/data/plasmic-link-preview.json",
+  "../loader-tests/data/code-libs.json",
   "../loader-tests/data/app-hosting.json",
   "../loader-tests/data/plasmic-kit-website-components_16033.json",
   "../loader-tests/data/plasmic-website-2023-cypress_12.json",
@@ -69,13 +70,17 @@ const paths = [
   "src/wab/shared/site-diffs/__tests__/global-context-merge.json",
   "src/wab/shared/site-diffs/__tests__/style-tokens-conflict.json",
   "src/wab/shared/insertable-templates/__tests__/bundles/copy-and-paste.json",
+  "src/wab/server/__tests__/bundle-migrations/fixtures/style-variants.json",
   "src/wab/server/__tests__/bundle-migrations/fixtures/style-variants.migrated.json",
-  "src/wab/server/__tests__/bundle-migrations/fixtures/code-component-variants.migrated.json",
 ];
 
 async function migrate() {
   process.env["DEV_BUNDLE_MIGRATION"] = "true";
   for (const path of paths) {
+    /*
+      The stale-bundle.json is exempted from migration, because it is used to
+      test if the stale bundle (representing very old projects, revived) can be migrated to the latest no matter how old it is.
+    */
     assert(
       !path.includes("/stale-bundle.json"),
       () =>

@@ -1158,7 +1158,7 @@
           }
         },
         "deps": [],
-        "version": "237-code-component-variants"
+        "version": "238-code-component-variants-update-fields"
       },
       "projectId": "3Ly8WyuoJ263bQVv2eUgq7",
       "version": "0.0.1",
@@ -2310,7 +2310,7 @@
           }
         },
         "deps": [],
-        "version": "237-code-component-variants"
+        "version": "238-code-component-variants-update-fields"
       },
       "projectId": "3Ly8WyuoJ263bQVv2eUgq7",
       "version": "0.0.1",
@@ -3486,7 +3486,7 @@
           }
         },
         "deps": [],
-        "version": "237-code-component-variants"
+        "version": "238-code-component-variants-update-fields"
       }
     },
     {
@@ -4626,7 +4626,7 @@
           }
         },
         "deps": [],
-        "version": "237-code-component-variants"
+        "version": "238-code-component-variants-update-fields"
       }
     }
   ]

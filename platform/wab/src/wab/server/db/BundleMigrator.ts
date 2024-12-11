@@ -1,5 +1,3 @@
-import { assert, mkShortId, unexpected } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   bundleHasStaleHostlessDeps,
   upgradeHostlessProject,
@@ -27,6 +25,8 @@ import {
   setBundle,
   UnsafeBundle,
 } from "@/wab/shared/bundles";
+import { assert, mkShortId, unexpected } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import fs from "fs/promises";
 import { partition } from "lodash";
 import path from "path";
@@ -135,6 +135,19 @@ export async function getMigrationsToExecute(version: string) {
     todos,
     (todo) => todo.type === "bundled"
   );
+  /*
+
+    Bundled migrations: Migrations that do not unbundle the bundle. These migrations may update the model (e.g. add new fields).
+    Unbundled migrations: Migrations that unbundle the bundle. These migrations should not update the model.
+
+    Migrations should not run sequentially ("bundled" should run before "unbundled"),
+    because "bundled" migrations make sure that the bundle is updated to the latest model before any unbundling happens in the "unbundled" migrations.
+
+    If a migration is required to add new fields and also perform unbundling, then it should be broken into two migrations:
+    - First migration should add the new fields, but not unbundle the bundle.
+    - Second migration should unbundle the bundle to extract whatever data it needs from it.
+
+  */
   return [...bundled, ...unbundled];
 }
 
