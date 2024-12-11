@@ -2507,7 +2507,7 @@
           }
         },
         "deps": [],
-        "version": "238-code-component-variants-new"
+        "version": "237-code-component-variants"
       },
       "projectId": "2YAtuqUruz4SscKrr5g25x",
       "version": "0.0.1",
@@ -4705,7 +4705,7 @@
           "53903362": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "238-code-component-variants-new"
+        "version": "237-code-component-variants"
       }
     },
     {
@@ -7380,7 +7380,7 @@
           }
         },
         "deps": [],
-        "version": "238-code-component-variants-new"
+        "version": "237-code-component-variants"
       }
     }
   ]

@@ -1171,7 +1171,7 @@
           }
         },
         "deps": [],
-        "version": "238-code-component-variants-new"
+        "version": "237-code-component-variants"
       },
       "projectId": "jktPeioPm3Q1RvAsGWDSCe",
       "version": "3.0.0",
@@ -2379,7 +2379,7 @@
           }
         },
         "deps": [],
-        "version": "238-code-component-variants-new"
+        "version": "237-code-component-variants"
       }
     },
     {
@@ -3543,7 +3543,7 @@
           }
         },
         "deps": [],
-        "version": "238-code-component-variants-new"
+        "version": "237-code-component-variants"
       }
     }
   ]

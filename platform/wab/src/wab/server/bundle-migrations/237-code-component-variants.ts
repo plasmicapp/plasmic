@@ -8,6 +8,12 @@ import { isTplCodeComponent } from "@/wab/shared/core/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();
+  for (const inst of Object.values(bundle.map)) {
+    if (inst.__type === "Variant") {
+      inst["codeComponentName"] = null;
+      inst["codeComponentVariantKeys"] = null;
+    }
+  }
   const { site } = await unbundleSite(bundler, bundle, db, entity);
   for (const inst of Object.values(bundle.map)) {
     if (inst.__type === "Variant") {

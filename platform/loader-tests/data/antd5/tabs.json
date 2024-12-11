@@ -27461,7 +27461,7 @@
         }
       },
       "deps": [],
-      "version": "238-code-component-variants-new"
+      "version": "237-code-component-variants"
     }
   ],
   [
@@ -30218,7 +30218,7 @@
         }
       },
       "deps": ["bbf34eb7-5aa4-44fe-af7b-9f0012f91a1f"],
-      "version": "238-code-component-variants-new"
+      "version": "237-code-component-variants"
     }
   ]
 ]
