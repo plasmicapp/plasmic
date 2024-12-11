@@ -36,9 +36,9 @@ import {
   hasScreenVariant,
   isBaseRuleVariant,
   isBaseVariant,
-  isCodeComponentOrStyleVariant,
   isCodeComponentVariant,
   isScreenVariant,
+  isStyleOrCodeComponentVariant,
   isStyleVariant,
   tryGetBaseVariantSetting,
   tryGetPrivateStyleVariant,
@@ -1831,8 +1831,8 @@ function showPseudoClassSelector(
   };
 
   if (isRoot) {
-    const codeComponentOrStyleVariants = vs.variants.filter(
-      isCodeComponentOrStyleVariant
+    const styleOrCodeComponentVariants = vs.variants.filter(
+      isStyleOrCodeComponentVariant
     );
     const baseRuleVariants = getBaseRuleVariants(vs.variants);
     const baseRuleVs = ensure(
@@ -1842,7 +1842,7 @@ function showPseudoClassSelector(
         baseRuleVariants.map((v) => `${v.name} (${v.uuid})`).join(", ")
     );
     return `${ruleNamer(root, baseRuleVs)}${makeSelectorString(
-      codeComponentOrStyleVariants
+      styleOrCodeComponentVariants
     )}`;
   }
 

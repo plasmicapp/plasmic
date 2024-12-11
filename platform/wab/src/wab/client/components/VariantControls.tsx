@@ -1,9 +1,9 @@
 import {
-  codeComponentOrStyleVariantToSelectors,
   getVariantIdentifier,
   Selector,
   SelectorsInput,
   SelectorTags,
+  styleOrCodeComponentVariantToSelectors,
 } from "@/wab/client/components/sidebar/RuleSetControls";
 import S from "@/wab/client/components/VariantControls.module.scss";
 import Button from "@/wab/client/components/widgets/Button";
@@ -18,14 +18,14 @@ import { isTplCodeComponent, isTplTag } from "@/wab/shared/core/tpls";
 import { VARIANT_CAP, VARIANT_LOWER } from "@/wab/shared/Labels";
 import { Component, isKnownTplTag, Variant } from "@/wab/shared/model/classes";
 import {
-  CodeComponentOrStyleVariant,
   isBaseVariant,
-  isCodeComponentOrStyleVariant,
   isCodeComponentVariant,
   isGlobalVariant,
   isPrivateStyleVariant,
+  isStyleOrCodeComponentVariant,
   isStyleVariant,
   makeVariantName,
+  StyleOrCodeComponentVariant,
 } from "@/wab/shared/Variants";
 import { Menu } from "antd";
 import { default as classNames, default as cn } from "classnames";
@@ -93,7 +93,7 @@ const VariantLabel_: ForwardRefRenderFunction<
       ref={ref}
       value={variantName}
       disabled={
-        isBaseVariant(variant) || isCodeComponentOrStyleVariant(variant)
+        isBaseVariant(variant) || isStyleOrCodeComponentVariant(variant)
       }
       onEdit={_onRename}
       defaultEditing={defaultEditing}
@@ -129,7 +129,7 @@ export function makeCanvasVariantContextMenu({
   return (
     <Menu>
       <Menu.Item onClick={onRequestEditing}>
-        {isCodeComponentOrStyleVariant(variant)
+        {isStyleOrCodeComponentVariant(variant)
           ? `Change ${VARIANT_LOWER} selectors`
           : `Rename ${VARIANT_LOWER}`}
       </Menu.Item>
@@ -155,7 +155,7 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
   onDismiss,
   variant,
 }: {
-  variant: CodeComponentOrStyleVariant;
+  variant: StyleOrCodeComponentVariant;
   component: Component;
   onDismiss?: () => void;
 }) {
@@ -197,7 +197,7 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
 
   useEffect(() => {
     setChosenSelectors(
-      codeComponentOrStyleVariantToSelectors(variant, studioCtx.site)
+      styleOrCodeComponentVariantToSelectors(variant, studioCtx.site)
     );
   }, [variant.selectors?.join(",")]);
 
@@ -245,7 +245,7 @@ export const StyleOrCodeComponentVariantLabel = observer(
 function StyleOrCodeComponentVariantLabel_(
   props: {
     defaultEditing?: boolean;
-    variant: CodeComponentOrStyleVariant;
+    variant: StyleOrCodeComponentVariant;
     forTag: string;
     onSelectorsChange: (selectors: Selector[]) => void;
     onBlur?: () => void;
@@ -263,7 +263,7 @@ function StyleOrCodeComponentVariantLabel_(
     forRoot,
     component,
   } = props;
-  const selectors = codeComponentOrStyleVariantToSelectors(
+  const selectors = styleOrCodeComponentVariantToSelectors(
     variant,
     studioCtx.site
   );

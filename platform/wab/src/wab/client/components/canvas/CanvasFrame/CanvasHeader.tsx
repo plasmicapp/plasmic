@@ -24,7 +24,7 @@ import {
 } from "@/wab/shared/Arenas";
 import {
   getDisplayVariants,
-  isCodeComponentOrStyleVariant,
+  isStyleOrCodeComponentVariant,
   StyleVariant,
 } from "@/wab/shared/Variants";
 import { cx } from "@/wab/shared/common";
@@ -215,7 +215,7 @@ export const VariantName = observer(function VariantName_({
             variant,
             component,
             onRequestEditing: () => {
-              if (isCodeComponentOrStyleVariant(variant)) {
+              if (isStyleOrCodeComponentVariant(variant)) {
                 setShowStyleVariantEditor(true);
               } else {
                 variantLabelRef.current?.setEditing(true);
@@ -226,7 +226,7 @@ export const VariantName = observer(function VariantName_({
       }}
     >
       <MaybeWrap
-        cond={isCodeComponentOrStyleVariant(variant)}
+        cond={isStyleOrCodeComponentVariant(variant)}
         wrapper={(children) => (
           <Popover
             placement="left"

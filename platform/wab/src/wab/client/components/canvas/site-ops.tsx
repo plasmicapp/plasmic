@@ -1489,11 +1489,11 @@ export class SiteOps {
     );
   }
 
-  removeCodeComponentOrStyleVariantIfEmptyAndUnused(
+  removeStyleOrCodeComponentVariantIfEmptyAndUnused(
     component: Component,
     variant: Variant
   ) {
-    this.tplMgr.removeCodeComponentOrStyleVariantIfEmptyAndUnused(
+    this.tplMgr.removeStyleOrCodeComponentVariantIfEmptyAndUnused(
       component,
       variant
     );
@@ -1608,10 +1608,15 @@ export class SiteOps {
     this.onVariantAdded(variant);
   }
 
-  createCodeComponentVariant(component: Component, codeComponentName: string) {
+  createCodeComponentVariant(
+    component: Component,
+    codeComponentName: string,
+    codeComponentVariantKeys: string[] = []
+  ) {
     const variant = this.tplMgr.createCodeComponentVariant(
       component,
-      codeComponentName
+      codeComponentName,
+      codeComponentVariantKeys
     );
     this.onVariantAdded(variant);
   }

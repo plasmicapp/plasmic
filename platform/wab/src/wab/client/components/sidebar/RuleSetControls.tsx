@@ -9,9 +9,9 @@ import {
 } from "@/wab/shared/core/styles";
 import { Site } from "@/wab/shared/model/classes";
 import {
-  CodeComponentOrStyleVariant,
   isCodeComponentVariant,
   isStyleVariant,
+  StyleOrCodeComponentVariant,
 } from "@/wab/shared/Variants";
 import { Tooltip } from "antd";
 import { default as React, useLayoutEffect, useState } from "react";
@@ -75,13 +75,15 @@ function areSelectorsEqual(a: Selector, b: Selector) {
 
 /**
  * StyleVariant.selectors currently stores:
- * - for code components: display name
+ * - for code components: null
  * - for preset selectors in src/wab/shared/core/styles.ts: display name
  * - for custom selectors: selector
- * TODO: write migration so code components use key, presets use selector
+ * TODO: write migration so presets use selector
+ *
+ * CodeComponentVariant.codeComponentVariantKeys stores the key of the code component variant
  */
-export function codeComponentOrStyleVariantToSelectors(
-  variant: CodeComponentOrStyleVariant,
+export function styleOrCodeComponentVariantToSelectors(
+  variant: StyleOrCodeComponentVariant,
   site: Site
 ): Selector[] {
   if (isCodeComponentVariant(variant)) {

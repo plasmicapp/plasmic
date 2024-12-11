@@ -14,8 +14,8 @@ import { VARIANTS_LOWER } from "@/wab/shared/Labels";
 import {
   getAllVariantsForTpl,
   isBaseVariant,
-  isCodeComponentOrStyleVariant,
   isScreenVariant,
+  isStyleOrCodeComponentVariant,
 } from "@/wab/shared/Variants";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -147,7 +147,7 @@ function VariantsMenu_({
         site: studioCtx.site,
       }).filter(
         (v) =>
-          !isCodeComponentOrStyleVariant(v) &&
+          !isStyleOrCodeComponentVariant(v) &&
           !isScreenVariant(v) &&
           !isBaseVariant(v) &&
           uuidSet.has(v.uuid)

@@ -6,11 +6,11 @@ import { getTplSlot, isSlot } from "@/wab/shared/SlotUtils";
 import {
   isBaseRuleVariant,
   isBaseVariant,
-  isCodeComponentOrStyleVariant,
   isComponentStyleVariant,
   isGlobalVariant,
   isPrivateStyleVariant,
   isScreenVariant,
+  isStyleOrCodeComponentVariant,
   splitVariantCombo,
   tryGetVariantSetting,
 } from "@/wab/shared/Variants";
@@ -784,7 +784,7 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
 
         if (isTplVariantable(component.tplTree)) {
           const rootTplVariants = vs.variants.filter(
-            (v) => !isCodeComponentOrStyleVariant(v) && !isScreenVariant(v)
+            (v) => !isStyleOrCodeComponentVariant(v) && !isScreenVariant(v)
           );
           const rootTplVs = tryGetVariantSetting(
             component.tplTree,

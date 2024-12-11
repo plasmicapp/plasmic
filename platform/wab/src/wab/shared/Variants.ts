@@ -111,7 +111,7 @@ export function isBaseVariant(variants: Variant | VariantCombo) {
   return variants.name === BASE_VARIANT_NAME;
 }
 
-export function canHaveCodeComponentOrStyleVariant(component: Component) {
+export function canHaveStyleOrCodeComponentVariant(component: Component) {
   const tplRoot = component.tplTree;
   return isTplTag(tplRoot) || isTplRootWithCodeComponentVariants(tplRoot);
 }
@@ -242,7 +242,7 @@ export type PrivateStyleVariant = SetNonNullable<
 /** Any style-only variant. */
 export type StyleVariant = ComponentStyleVariant | PrivateStyleVariant;
 
-export type CodeComponentOrStyleVariant = CodeComponentVariant | StyleVariant;
+export type StyleOrCodeComponentVariant = CodeComponentVariant | StyleVariant;
 
 export function isStyleVariant(variant: Variant): variant is StyleVariant {
   return !!variant.selectors;
@@ -254,9 +254,9 @@ export function isCodeComponentVariant(
   return !!variant.codeComponentName && !!variant.codeComponentVariantKeys;
 }
 
-export function isCodeComponentOrStyleVariant(
+export function isStyleOrCodeComponentVariant(
   variant: Variant
-): variant is CodeComponentOrStyleVariant {
+): variant is StyleOrCodeComponentVariant {
   return isStyleVariant(variant) || isCodeComponentVariant(variant);
 }
 
@@ -729,7 +729,7 @@ export function ensureBaseRuleVariantSetting(
     ensureVariantSetting(
       rootTpl,
       variantCombo.filter(
-        (v) => !isCodeComponentOrStyleVariant(v) && !isScreenVariant(v)
+        (v) => !isStyleOrCodeComponentVariant(v) && !isScreenVariant(v)
       )
     );
   }
@@ -901,8 +901,8 @@ export function isFrameWithVariantCombo({
   return getDisplayVariants({ site, frame }).length > 1;
 }
 
-export function getCodeComponentOrStyleVariantDisplayNames(
-  variant: CodeComponentOrStyleVariant,
+export function getStyleOrCodeComponentVariantDisplayNames(
+  variant: StyleOrCodeComponentVariant,
   site?: Site
 ) {
   if (isCodeComponentVariant(variant)) {
@@ -919,11 +919,11 @@ export function getCodeComponentOrStyleVariantDisplayNames(
   return [];
 }
 
-export function makeCodeComponentOrStyleVariantName(
-  variant: CodeComponentOrStyleVariant,
+export function makeStyleOrCodeComponentVariantName(
+  variant: StyleOrCodeComponentVariant,
   site?: Site
 ) {
-  return getCodeComponentOrStyleVariantDisplayNames(variant, site).join(", ");
+  return getStyleOrCodeComponentVariantDisplayNames(variant, site).join(", ");
 }
 
 export function makeVariantName({
@@ -942,12 +942,12 @@ export function makeVariantName({
     (isPrivateStyleVariant(variant)
       ? [
           focusedTag ? focusedTag.name || summarizeTplTag(focusedTag) : "",
-          makeCodeComponentOrStyleVariantName(variant, site),
+          makeStyleOrCodeComponentVariantName(variant, site),
         ]
           .filter(Boolean)
           .join(": ")
-      : isCodeComponentOrStyleVariant(variant)
-      ? makeCodeComponentOrStyleVariantName(variant, site)
+      : isStyleOrCodeComponentVariant(variant)
+      ? makeStyleOrCodeComponentVariantName(variant, site)
       : superComp
       ? `${getNamespacedComponentName(superComp)} • ${variant.name}`
       : variant.name) || "UnnamedVariant"

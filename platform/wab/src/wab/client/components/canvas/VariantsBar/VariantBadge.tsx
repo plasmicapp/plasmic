@@ -13,7 +13,7 @@ import {
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import {
-  isCodeComponentOrStyleVariant,
+  isStyleOrCodeComponentVariant,
   StyleVariant,
 } from "@/wab/shared/Variants";
 import { Component, Variant } from "@/wab/shared/model/classes";
@@ -44,7 +44,7 @@ const VariantBadge = observer(function VariantBadge_({
 
   useLayoutEffect(() => {
     if (studioCtx.latestVariantCreated === variant) {
-      if (isCodeComponentOrStyleVariant(variant)) {
+      if (isStyleOrCodeComponentVariant(variant)) {
         setShowStyleVariantEditor(true);
       } else {
         variantLabelRef.current?.setEditing(true);
@@ -71,7 +71,7 @@ const VariantBadge = observer(function VariantBadge_({
               variant,
               component,
               onRequestEditing: () => {
-                if (isCodeComponentOrStyleVariant(variant)) {
+                if (isStyleOrCodeComponentVariant(variant)) {
                   setShowStyleVariantEditor(true);
                 } else {
                   variantLabelRef.current?.setEditing(true);
@@ -89,7 +89,7 @@ const VariantBadge = observer(function VariantBadge_({
       }}
     >
       <MaybeWrap
-        cond={isCodeComponentOrStyleVariant(variant)}
+        cond={isStyleOrCodeComponentVariant(variant)}
         wrapper={(children) => (
           <Popover
             placement="left"

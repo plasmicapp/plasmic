@@ -9,10 +9,10 @@ import { ensure, xGroupBy } from "@/wab/shared/common";
 import {
   getAllVariantsForTpl,
   isBaseVariant,
-  isCodeComponentOrStyleVariant,
   isPrivateStyleVariant,
   isScreenVariant,
   isStandaloneVariant,
+  isStyleOrCodeComponentVariant,
 } from "@/wab/shared/Variants";
 import { Dropdown } from "antd";
 import { defer } from "lodash";
@@ -47,7 +47,7 @@ const VariantsComboSelect = observer(function VariantsComboSelect(
     site: studioCtx.site,
   }).filter(
     (v) =>
-      !isCodeComponentOrStyleVariant(v) &&
+      !isStyleOrCodeComponentVariant(v) &&
       !isScreenVariant(v) &&
       !isPrivateStyleVariant(v) &&
       !isBaseVariant(v)

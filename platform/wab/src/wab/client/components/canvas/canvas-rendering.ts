@@ -48,13 +48,13 @@ import {
   VariantCombo,
   getActiveVariantSettings,
   isBaseVariant,
-  isCodeComponentOrStyleVariant,
   isCodeComponentVariant,
   isDisabledPseudoSelectorVariantForTpl,
   isGlobalVariant,
   isMaybeInteractiveCodeComponentVariant,
   isPseudoElementVariantForTpl,
   isScreenVariant,
+  isStyleOrCodeComponentVariant,
   variantHasPrivatePseudoElementSelector,
 } from "@/wab/shared/Variants";
 import {
@@ -704,7 +704,7 @@ const mkTriggers = computedFn(
           activeVariants: new Set([
             ...ctx.activeVariants.keys(),
             ...component.variants.filter((variant) => {
-              if (!isCodeComponentOrStyleVariant(variant)) {
+              if (!isStyleOrCodeComponentVariant(variant)) {
                 return false;
               }
               // We include the style variants dynamically here to handle changes that require JS

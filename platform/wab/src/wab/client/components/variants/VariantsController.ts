@@ -41,9 +41,9 @@ import {
 import {
   getBaseVariant,
   isBaseVariant,
-  isCodeComponentOrStyleVariant,
   isPrivateStyleVariant,
   isScreenVariant,
+  isStyleOrCodeComponentVariant,
   VariantCombo,
 } from "@/wab/shared/Variants";
 import { $State } from "@plasmicapp/react-web";
@@ -689,7 +689,7 @@ function handleAddedVariant(pinManager: PinManager, variant: Variant) {
     // If only one variant is currently selected, assume we are replacing
     // the target combo
     pinManager.setSelectedVariants([variant]);
-  } else if (isCodeComponentOrStyleVariant(variant)) {
+  } else if (isStyleOrCodeComponentVariant(variant)) {
     // Else if this is a registered variant, then we assume the user wants to
     // combine with existing combo
     pinManager.addSelectedVariants([variant]);

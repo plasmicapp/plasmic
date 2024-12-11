@@ -18,12 +18,12 @@ import {
   getBaseVariant,
   getReferencedVariantGroups,
   isBaseVariant,
-  isCodeComponentOrStyleVariant,
   isCodeComponentVariant,
   isComponentStyleVariant,
   isGlobalVariant,
   isPrivateStyleVariant,
   isPseudoElementVariant,
+  isStyleOrCodeComponentVariant,
   isStyleVariant,
   isVariantSettingEmpty,
   mkBaseVariant,
@@ -1211,7 +1211,7 @@ export function extractComponent({
   // Remove all the vsettings that referenced style variants, as they do not
   // get carried over as args we can pass onto the new component
   tplComponent.vsettings = tplComponent.vsettings.filter(
-    (vs) => !vs.variants.some(isCodeComponentOrStyleVariant)
+    (vs) => !vs.variants.some(isStyleOrCodeComponentVariant)
   );
 
   // Remove all width/height on the tplComponent; by default, we will defer
@@ -1250,7 +1250,7 @@ export function extractComponent({
   const allUsedOldVariantCombo = L.uniqBy(
     [...findVariantSettingsUnderTpl(tpl)].map(([vs, _tpl]) =>
       vs.variants.filter(
-        (v) => !isBaseVariant(v) && !isCodeComponentOrStyleVariant(v)
+        (v) => !isBaseVariant(v) && !isStyleOrCodeComponentVariant(v)
       )
     ),
     (combo) =>
@@ -1295,7 +1295,7 @@ export function extractComponent({
   $$$(tpl).replaceWith(tplComponent);
 
   // Remove private style variants for the old nodes
-  allCodeComponentOrStyleVariants(containingComponent).forEach((v) => {
+  allStyleOrCodeComponentVariants(containingComponent).forEach((v) => {
     if (v.forTpl && oldFlattenedVariantablesSet.has(v.forTpl)) {
       tplMgr.tryRemoveVariant(v, containingComponent);
     }
@@ -1775,8 +1775,8 @@ export function allCodeComponentVariants(component: Component) {
   return component.variants.filter(isCodeComponentVariant);
 }
 
-export function allCodeComponentOrStyleVariants(component: Component) {
-  return component.variants.filter(isCodeComponentOrStyleVariant);
+export function allStyleOrCodeComponentVariants(component: Component) {
+  return component.variants.filter(isStyleOrCodeComponentVariant);
 }
 
 export function allPrivateStyleVariants(component: Component, tpl: TplNode) {

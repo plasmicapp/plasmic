@@ -13,10 +13,10 @@ import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   CodeComponentVariant,
   VariantCombo,
-  isCodeComponentOrStyleVariant,
   isCodeComponentVariant,
   isGlobalVariant,
   isPrivateStyleVariant,
+  isStyleOrCodeComponentVariant,
   isVariantSettingEmpty,
   variantComboKey,
 } from "@/wab/shared/Variants";
@@ -996,7 +996,7 @@ export const findComponentsUsingComponentVariant = maybeComputedFn(
     component: Component,
     variant: Variant
   ) {
-    if (isCodeComponentOrStyleVariant(variant) || isGlobalVariant(variant)) {
+    if (isStyleOrCodeComponentVariant(variant) || isGlobalVariant(variant)) {
       return new Set<Component>();
     }
     const results = new Set<Component>();
