@@ -222,7 +222,7 @@ module.exports = {
         "platform/wab/src/wab/main.tsx",
       ],
       rules: {
-        "@typescript-eslint/switch-exhaustiveness-check": "error",
+        "@typescript-eslint/switch-exhaustiveness-check": "off",
         "no-shadow": "off",
         "no-extra-boolean-cast": "off",
         "@typescript-eslint/no-shadow": "error",

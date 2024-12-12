@@ -19,7 +19,7 @@ import {
   tryRemove,
 } from "@/wab/shared/common";
 import {
-  allStyleVariants,
+  allStyleOrCodeComponentVariants,
   isCodeComponent,
   removeComponentParam,
 } from "@/wab/shared/core/components";
@@ -387,7 +387,7 @@ export class TplQuery {
 
     if (isTplVariantable(node)) {
       // Remove private variants referencing this node
-      const privateVariants = allStyleVariants(component).filter(
+      const privateVariants = allStyleOrCodeComponentVariants(component).filter(
         (v) =>
           v.forTpl &&
           $$$(v.forTpl).ancestors().toArrayOfTplNodes().includes(node)

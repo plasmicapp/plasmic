@@ -3,6 +3,7 @@ import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
   getBaseVariant,
+  isCodeComponentVariant,
   isPrivateStyleVariant,
   isStyleVariant,
   mkVariantSetting,
@@ -56,6 +57,10 @@ describe("extractComponent", () => {
   const mild = tplMgr.createVariant(component, flavorGroup, "mild");
 
   const hover = tplMgr.createStyleVariant(component, ["Hover"]);
+  const hoverPressed = tplMgr.createCodeComponentVariant(component, "test-cc", [
+    "HoverCC",
+    "PressedCC",
+  ]);
 
   const root = component.tplTree! as TplTag;
   root.vsettings.push(
@@ -66,6 +71,10 @@ describe("extractComponent", () => {
     mkVariantSetting({
       variants: [hover],
       styles: { background: "linear-gradient(silver, silver)" },
+    }),
+    mkVariantSetting({
+      variants: [hoverPressed],
+      styles: { "margin-left": "10px" },
     }),
     mkVariantSetting({
       variants: [large],
@@ -85,6 +94,10 @@ describe("extractComponent", () => {
         mkVariantSetting({
           variants: [hover],
           styles: { background: "linear-gradient(steel, steel)" },
+        }),
+        mkVariantSetting({
+          variants: [hoverPressed],
+          styles: { color: "red" },
         }),
         mkVariantSetting({
           variants: [primary],
@@ -124,7 +137,7 @@ describe("extractComponent", () => {
           styles: { "font-style": "italic" },
         }),
         mkVariantSetting({
-          variants: [large],
+          variants: [large, hoverPressed],
           styles: { "font-size": "20px" },
         }),
         mkVariantSetting({
@@ -174,6 +187,8 @@ describe("extractComponent", () => {
       return `:private:${variant.selectors!.join(":")}`;
     } else if (isStyleVariant(variant)) {
       return `:${variant.selectors!.join(":")}`;
+    } else if (isCodeComponentVariant(variant)) {
+      return `cc-variant-${variant.codeComponentVariantKeys.join("/")}`;
     } else {
       return variant.name;
     }
@@ -194,6 +209,7 @@ describe("extractComponent", () => {
     expect(inner.variants.map(variantName)).toEqual([
       "base",
       ":Hover",
+      "cc-variant-HoverCC/PressedCC",
       ":private:Hover",
     ]);
     expect(inner.variantGroups.map((g) => g.param.variable.name)).toEqual([
@@ -208,17 +224,27 @@ describe("extractComponent", () => {
       "large",
       "small",
     ]);
-    const [newBase, newHover, newPrivateInputHover] = inner.variants;
+    const [newBase, newHover, ccHoverPressed, newPrivateInputHover] =
+      inner.variants;
     const [newPrimary, newSecondary] = inner.variantGroups[0].variants;
     const [newLarge, newSmall] = inner.variantGroups[1].variants;
     expect([
       newBase,
       newHover,
+      ccHoverPressed,
       newPrimary,
       newSecondary,
       newLarge,
       newSmall,
-    ]).not.toEqual([base, hover, primary, secondary, large, small]);
+    ]).not.toEqual([
+      base,
+      hover,
+      hoverPressed,
+      primary,
+      secondary,
+      large,
+      small,
+    ]);
     expect((inner.tplTree as TplTag).vsettings.map(simpleStyles)).toEqual([
       {
         variants: ["base"],
@@ -227,6 +253,11 @@ describe("extractComponent", () => {
       {
         variants: [":Hover"],
         styles: { background: "linear-gradient(steel, steel)" },
+      },
+
+      {
+        variants: ["cc-variant-HoverCC/PressedCC"],
+        styles: { color: "red" },
       },
       {
         variants: ["primary"],
@@ -249,6 +280,11 @@ describe("extractComponent", () => {
         variants: ["secondary"],
         styles: {},
       },
+      {
+        // from ensureBaseRuleVariantSetting()
+        variants: ["large"],
+        styles: {},
+      },
     ]);
     const innerInput = (inner.tplTree as TplTag).children[0] as TplTag;
     expect(innerInput.tag).toEqual("input");
@@ -262,21 +298,26 @@ describe("extractComponent", () => {
         styles: { "font-weight": "strong" },
       },
       {
-        // from ensureBaseRuleVariantSetting()
-        variants: ["secondary"],
-        styles: {},
-      },
-      {
         variants: ["secondary", ":Hover"],
         styles: { "font-style": "italic" },
       },
       {
-        variants: ["large"],
+        variants: ["large", "cc-variant-HoverCC/PressedCC"],
         styles: { "font-size": "20px" },
       },
       {
         variants: [":private:Hover"],
         styles: { "font-weight": "bold" },
+      },
+      {
+        // from ensureBaseRuleVariantSetting()
+        variants: ["secondary"],
+        styles: {},
+      },
+      {
+        // from ensureBaseRuleVariantSetting()
+        variants: ["large"],
+        styles: {},
       },
     ]);
 

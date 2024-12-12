@@ -49,19 +49,18 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { testIds } from "@/wab/client/test-helpers/test-ids";
 import { findNonEmptyCombos } from "@/wab/shared/cached-selectors";
-import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
 import { ensure, ensureInstance, partitions, spawn } from "@/wab/shared/common";
 import {
   allComponentStyleVariants,
   allStyleOrCodeComponentVariants,
   getSuperComponents,
+  hasCodeComponentRoot,
   isPageComponent,
 } from "@/wab/shared/core/components";
 import {
   isGlobalVariantGroupUsedInSplits,
   isVariantUsedInSplits,
 } from "@/wab/shared/core/splits";
-import { isTplCodeComponent } from "@/wab/shared/core/tpls";
 import { ScreenSizeSpec } from "@/wab/shared/css-size";
 import {
   Component,
@@ -317,8 +316,6 @@ export const VariantsPanel = observer(
         return success();
       });
 
-    const tplRoot = component.tplTree;
-
     return (
       <div
         className="pass-through"
@@ -497,25 +494,22 @@ export const VariantsPanel = observer(
                   showIcon
                   icon={<Icon icon={BoltIcon} />}
                   title={
-                    isTplRootWithCodeComponentVariants(tplRoot)
+                    hasCodeComponentRoot(component)
                       ? "Registered Variants"
                       : "Interaction Variants"
                   }
                   emptyAddButtonText="Add variant"
                   emptyAddButtonTooltip={
-                    isTplRootWithCodeComponentVariants(tplRoot)
+                    hasCodeComponentRoot(component)
                       ? "Registered variants are registered in code component meta"
                       : "Interaction variants are automatically activated when the user interacts with the component -- by hovering, focusing, pressing, etc."
                   }
                   onAddNewVariant={() =>
                     studioCtx.change(({ success }) => {
-                      isTplCodeComponent(tplRoot)
+                      hasCodeComponentRoot(component)
                         ? studioCtx
                             .siteOps()
-                            .createCodeComponentVariant(
-                              component,
-                              tplRoot.component.name
-                            )
+                            .createCodeComponentVariant(component)
                         : studioCtx.siteOps().createStyleVariant(component);
                       return success();
                     })

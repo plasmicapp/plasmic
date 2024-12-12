@@ -38846,6 +38846,8 @@ exports[`Figma module tplNodeFromFigmaData convert demo 1`] = `
     },
     "7": {
       "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "description": null,
       "forTpl": null,
       "mediaQuery": null,
@@ -44758,6 +44760,8 @@ exports[`Figma module tplNodeFromFigmaData convert img 1`] = `
     },
     "4": {
       "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "description": null,
       "forTpl": null,
       "mediaQuery": null,
@@ -52217,6 +52221,8 @@ Get more done.",
     },
     "5": {
       "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "description": null,
       "forTpl": null,
       "mediaQuery": null,
@@ -60130,6 +60136,8 @@ exports[`Figma module tplNodeFromFigmaData convert rect 1`] = `
     },
     "3": {
       "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "description": null,
       "forTpl": null,
       "mediaQuery": null,
@@ -60230,6 +60238,8 @@ exports[`Figma module tplNodeFromFigmaData convert rect2 1`] = `
     },
     "4": {
       "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "description": null,
       "forTpl": null,
       "mediaQuery": null,
@@ -60850,6 +60860,8 @@ exports[`Figma module tplNodeFromFigmaData convert svg 1`] = `
     },
     "4": {
       "__type": "Variant",
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "description": null,
       "forTpl": null,
       "mediaQuery": null,

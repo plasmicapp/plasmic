@@ -272,9 +272,18 @@ export function isMaybeInteractiveCodeComponentVariant(
   );
 }
 
-// TODO: Check if this is still needed / check usages
-export function hasStyleVariant(variantCombo: VariantCombo) {
-  return variantCombo.some((v) => isStyleVariant(v));
+export function getStyleOrCodeComponentVariantIdentifierName(
+  variant: StyleOrCodeComponentVariant
+) {
+  if (isCodeComponentVariant(variant)) {
+    return "codeComponentVariantKeys";
+  } else {
+    return "selectors";
+  }
+}
+
+export function hasStyleOrCodeComponentVariant(variantCombo: VariantCombo) {
+  return variantCombo.some(isStyleOrCodeComponentVariant);
 }
 
 export function tryGetPrivateStyleVariant(variantCombo: VariantCombo) {
@@ -778,7 +787,6 @@ export function isValidComboForToken(combo: VariantCombo) {
 /**
  * Return style variants whose selectors are all active
  */
-// TODO: Change for registered variants
 export function getImplicitlyActivatedStyleVariants(
   variants: Variant[],
   activeVariants: Set<Variant>,
@@ -788,7 +796,7 @@ export function getImplicitlyActivatedStyleVariants(
   const activePrivateSelectors = new Set<string>();
 
   for (const variant of activeVariants) {
-    if (!isStyleVariant(variant)) {
+    if (!isStyleOrCodeComponentVariant(variant)) {
       continue;
     }
 
@@ -805,7 +813,7 @@ export function getImplicitlyActivatedStyleVariants(
 
   const newActivatedVariants = new Set<Variant>();
   for (const variant of variants) {
-    if (!isStyleVariant(variant)) {
+    if (!isStyleOrCodeComponentVariant(variant)) {
       continue;
     }
     if (

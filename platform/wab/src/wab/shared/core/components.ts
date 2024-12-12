@@ -24,7 +24,6 @@ import {
   isPrivateStyleVariant,
   isPseudoElementVariant,
   isStyleOrCodeComponentVariant,
-  isStyleVariant,
   isVariantSettingEmpty,
   mkBaseVariant,
   mkComponentVariantGroup,
@@ -210,6 +209,16 @@ export interface CodeComponent extends Component {
   _meta?: ComponentRegistration<any> /* Unset when DEVFLAGS.ccStubs is set */;
 }
 
+export interface ComponentWithCodeComponentRoot extends Component {
+  tplTree: Tpls.TplCodeComponent;
+}
+
+export function hasCodeComponentRoot(
+  component: Component
+): component is ComponentWithCodeComponentRoot {
+  return Tpls.isTplCodeComponent(component.tplTree);
+}
+
 export function groupComponents(components: Component[]) {
   return {
     components: components.filter((it) => !isPageComponent(it) && it.name),
@@ -262,7 +271,6 @@ function mkRawComponent(props: Omit<ComponentParams, "uuid">) {
   }
   return component;
 }
-
 /**
  * If variants includes the base variant, it must be at index 0.  If it doesn't
  * include the base variant, a base variant will be automatically inserted at
@@ -1760,11 +1768,6 @@ export function allComponentVariants(
     variants.push(...allSuperComponentVariants(component.superComp));
   }
   return variants;
-}
-
-// TODO: Check usages of this and other helpers like this
-export function allStyleVariants(component: Component) {
-  return component.variants.filter(isStyleVariant);
 }
 
 export function allComponentStyleVariants(component: Component) {

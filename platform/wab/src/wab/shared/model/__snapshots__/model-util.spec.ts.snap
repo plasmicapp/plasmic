@@ -2283,6 +2283,8 @@ exports[`model-util works 1`] = `
             {
               "__iid": "147",
               "__type": "Variant",
+              "codeComponentName": null,
+              "codeComponentVariantKeys": null,
               "description": null,
               "forTpl": null,
               "mediaQuery": null,
@@ -2301,6 +2303,8 @@ exports[`model-util works 1`] = `
         {
           "__iid": "9",
           "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "description": null,
           "forTpl": null,
           "mediaQuery": null,
@@ -2921,6 +2925,8 @@ exports[`model-util works 1`] = `
             {
               "__iid": "55",
               "__type": "Variant",
+              "codeComponentName": null,
+              "codeComponentVariantKeys": null,
               "description": null,
               "forTpl": null,
               "mediaQuery": null,
@@ -2935,6 +2941,8 @@ exports[`model-util works 1`] = `
             {
               "__iid": "58",
               "__type": "Variant",
+              "codeComponentName": null,
+              "codeComponentVariantKeys": null,
               "description": null,
               "forTpl": null,
               "mediaQuery": null,
@@ -2953,6 +2961,8 @@ exports[`model-util works 1`] = `
         {
           "__iid": "42",
           "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "description": null,
           "forTpl": null,
           "mediaQuery": null,
@@ -4492,6 +4502,8 @@ exports[`model-util works 1`] = `
             {
               "__iid": "183",
               "__type": "Variant",
+              "codeComponentName": null,
+              "codeComponentVariantKeys": null,
               "description": null,
               "forTpl": null,
               "mediaQuery": null,
@@ -4506,6 +4518,8 @@ exports[`model-util works 1`] = `
             {
               "__iid": "186",
               "__type": "Variant",
+              "codeComponentName": null,
+              "codeComponentVariantKeys": null,
               "description": null,
               "forTpl": null,
               "mediaQuery": null,
@@ -4524,6 +4538,8 @@ exports[`model-util works 1`] = `
         {
           "__iid": "171",
           "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "description": null,
           "forTpl": null,
           "mediaQuery": null,
@@ -4535,6 +4551,8 @@ exports[`model-util works 1`] = `
         {
           "__iid": "196",
           "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "description": null,
           "forTpl": null,
           "mediaQuery": null,
@@ -5635,6 +5653,8 @@ exports[`model-util works 1`] = `
             {
               "__iid": "498",
               "__type": "Variant",
+              "codeComponentName": null,
+              "codeComponentVariantKeys": null,
               "description": null,
               "forTpl": null,
               "mediaQuery": null,
@@ -5649,6 +5669,8 @@ exports[`model-util works 1`] = `
             {
               "__iid": "501",
               "__type": "Variant",
+              "codeComponentName": null,
+              "codeComponentVariantKeys": null,
               "description": null,
               "forTpl": null,
               "mediaQuery": null,
@@ -5663,6 +5685,8 @@ exports[`model-util works 1`] = `
             {
               "__iid": "503",
               "__type": "Variant",
+              "codeComponentName": null,
+              "codeComponentVariantKeys": null,
               "description": null,
               "forTpl": null,
               "mediaQuery": null,
@@ -5681,6 +5705,8 @@ exports[`model-util works 1`] = `
         {
           "__iid": "490",
           "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "description": null,
           "forTpl": null,
           "mediaQuery": null,
@@ -6150,6 +6176,8 @@ exports[`model-util works 1`] = `
             {
               "__iid": "565",
               "__type": "Variant",
+              "codeComponentName": null,
+              "codeComponentVariantKeys": null,
               "description": null,
               "forTpl": null,
               "mediaQuery": null,
@@ -6168,6 +6196,8 @@ exports[`model-util works 1`] = `
         {
           "__iid": "553",
           "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "description": null,
           "forTpl": null,
           "mediaQuery": null,
@@ -6179,6 +6209,8 @@ exports[`model-util works 1`] = `
         {
           "__iid": "561",
           "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "description": null,
           "forTpl": null,
           "mediaQuery": null,
@@ -6202,6 +6234,8 @@ exports[`model-util works 1`] = `
   "globalVariant": {
     "__iid": "849",
     "__type": "Variant",
+    "codeComponentName": null,
+    "codeComponentVariantKeys": null,
     "description": null,
     "forTpl": null,
     "mediaQuery": null,
@@ -6289,6 +6323,8 @@ exports[`model-util works 1`] = `
         {
           "__iid": "23",
           "__type": "Variant",
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "description": null,
           "forTpl": null,
           "mediaQuery": null,

@@ -77,9 +77,10 @@ import { hasSpecialSizeVal } from "@/wab/shared/sizingutils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { isAncestorCombo } from "@/wab/shared/variant-sort";
 import {
+  getStyleOrCodeComponentVariantIdentifierName,
   isGlobalVariant,
   isGlobalVariantGroup,
-  isStyleVariant,
+  isStyleOrCodeComponentVariant,
   tryGetBaseVariantSetting,
 } from "@/wab/shared/Variants";
 import L, { omit } from "lodash";
@@ -735,17 +736,21 @@ function changeChangesImgSize(change: ModelChange) {
  * If this is a change on Variant.selectors, then we need to regenerate the css rule
  * for all VariantSettings that reference this variant
  */
-// TODO: Change for registered variants (also function is probably named wrong)
 function getChangedRuleSetsByVariantSelectors(
   studioCtx: StudioCtx,
   change: ModelChange
 ): [VariantSetting, TplNode][] | undefined {
   const last = change.changeNode;
-  if (
-    isKnownVariant(last.inst) &&
-    isStyleVariant(last.inst) &&
-    last.field === "selectors"
+
+  if (!isKnownVariant(last.inst)) {
+    return undefined;
+  } else if (!isStyleOrCodeComponentVariant(last.inst)) {
+    return undefined;
+  } else if (
+    last.field !== getStyleOrCodeComponentVariantIdentifierName(last.inst)
   ) {
+    return undefined;
+  } else {
     const variant = last.inst;
     const component = getChangedComponent(change);
     if (component) {
@@ -755,8 +760,8 @@ function getChangedRuleSetsByVariantSelectors(
         false
       ).filter(([vs, _tpl]) => vs.variants.includes(variant));
     }
+    return undefined;
   }
-  return undefined;
 }
 
 /**

@@ -51,7 +51,7 @@ import { PlumeType } from "@/wab/shared/plume/plume-registry";
 import { sortedVariantSettings } from "@/wab/shared/variant-sort";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
-  hasStyleVariant,
+  hasStyleOrCodeComponentVariant,
   isActiveVariantSetting,
   isBaseVariant,
   isStyleVariant,
@@ -166,7 +166,7 @@ export function getOrderedExplicitVSettings(
   const res = vsettings.filter(
     (vs) =>
       shouldGenVariantSetting(ctx, vs) &&
-      (!hasStyleVariant(vs.variants) ||
+      (!hasStyleOrCodeComponentVariant(vs.variants) ||
         shouldGenReactHook(vs, ctx.component) ||
         isTplRootWithCodeComponentVariants(ctx.component.tplTree))
   );

@@ -21,15 +21,14 @@ import {
   ensureCustomFrameForActivatedVariants,
   getFrameHeight,
 } from "@/wab/shared/Arenas";
-import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
 import { maybe, spawn } from "@/wab/shared/common";
 import { getComponentArenaRowLabel } from "@/wab/shared/component-arenas";
 import {
   allComponentVariants,
   getSuperComponentVariantGroupToComponent,
+  hasCodeComponentRoot,
 } from "@/wab/shared/core/components";
 import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
-import { isTplCodeComponent } from "@/wab/shared/core/tpls";
 import {
   COMBINATIONS_CAP,
   FRAME_LOWER,
@@ -162,7 +161,6 @@ export const ComponentArenaLayout = observer(
     );
 
     const vController = makeVariantsController(studioCtx);
-    const tplRoot = component.tplTree;
     return (
       <div>
         <GridFramesLayout
@@ -235,7 +233,7 @@ export const ComponentArenaLayout = observer(
               return (
                 <GhostFrame
                   tooltip={`Add ${
-                    isTplRootWithCodeComponentVariants(component.tplTree)
+                    hasCodeComponentRoot(component)
                       ? "registered"
                       : "interaction"
                   } variant`}
@@ -243,13 +241,10 @@ export const ComponentArenaLayout = observer(
                   height={framesHeight}
                   onClick={() =>
                     studioCtx.changeUnsafe(() =>
-                      isTplCodeComponent(tplRoot)
+                      hasCodeComponentRoot(component)
                         ? studioCtx
                             .siteOps()
-                            .createCodeComponentVariant(
-                              component,
-                              tplRoot.component.name
-                            )
+                            .createCodeComponentVariant(component)
                         : studioCtx.siteOps().createStyleVariant(component)
                     )
                   }

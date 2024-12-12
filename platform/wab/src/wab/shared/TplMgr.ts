@@ -46,7 +46,7 @@ import {
   getBaseVariant,
   getPartitionedScreenVariants,
   hasScreenVariant,
-  hasStyleVariant,
+  hasStyleOrCodeComponentVariant,
   isBaseVariant,
   isCodeComponentVariant,
   isGlobalVariant,
@@ -2562,7 +2562,8 @@ export class TplMgr {
     }[] = [];
 
     const isScreenOrStyleVS = (vs: VariantSetting) =>
-      hasScreenVariant(vs.variants) || hasStyleVariant(vs.variants);
+      hasScreenVariant(vs.variants) ||
+      hasStyleOrCodeComponentVariant(vs.variants);
 
     for (const component of this.site().components) {
       for (const tpl of flattenComponent(component)) {
