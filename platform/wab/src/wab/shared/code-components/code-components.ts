@@ -1348,6 +1348,8 @@ function refreshCodeComponentMeta(
         ) {
           c.codeComponentMeta.helpers = componentHelpers;
         }
+      } else {
+        c.codeComponentMeta.helpers = null;
       }
 
       const maybeStylesObj =
