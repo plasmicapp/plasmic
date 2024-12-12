@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-sanity-io",
-  "version": "1.0.186",
+  "version": "1.0.187",
   "description": "Plasmic Sanity.io components.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -26,7 +26,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.207",
+    "@plasmicapp/host": "1.0.208",
     "@plasmicapp/query": "0.1.79",
     "@size-limit/preset-small-lib": "^7.0.8",
     "@types/dlv": "^1.1.2",

@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce-local",
-  "version": "0.0.205",
+  "version": "0.0.206",
   "description": "Plasmic registration calls for local provider components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.207",
+    "@plasmicapp/host": "1.0.208",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/js-cookie": "^3.0.1",
     "@types/node": "^14.0.26",
@@ -33,7 +33,7 @@
     "react": ">=16.8.0"
   },
   "dependencies": {
-    "@plasmicpkgs/commerce": "0.0.205",
+    "@plasmicpkgs/commerce": "0.0.206",
     "@types/react": "^18.0.27"
   }
 }

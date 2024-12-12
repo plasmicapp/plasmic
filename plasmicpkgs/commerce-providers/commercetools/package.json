@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce-commercetools",
-  "version": "0.0.154",
+  "version": "0.0.155",
   "description": "Plasmic registration calls for commercetools commerce provider",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.207",
+    "@plasmicapp/host": "1.0.208",
     "@plasmicapp/query": "0.1.79",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/debounce": "^1.2.4",
@@ -38,7 +38,7 @@
     "@commercetools/platform-sdk": "^2.8.0",
     "@commercetools/sdk-client-v2": "^2.2.2",
     "@commercetools/ts-sdk-apm": "^1.0.2",
-    "@plasmicpkgs/commerce": "0.0.205",
+    "@plasmicpkgs/commerce": "0.0.206",
     "@types/react": "^18.0.27",
     "debounce": "^2.0.0",
     "js-cookie": "^3.0.5",

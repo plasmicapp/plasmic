@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce-saleor",
-  "version": "0.0.169",
+  "version": "0.0.170",
   "description": "Plasmic registration calls for saleor commerce provider",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicpkgs/commerce": "0.0.205",
+    "@plasmicpkgs/commerce": "0.0.206",
     "debounce": "^1.2.1",
     "js-cookie": "^3.0.5"
   },
@@ -27,7 +27,7 @@
     "react": ">=16.8.0"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.207",
+    "@plasmicapp/host": "1.0.208",
     "@size-limit/preset-small-lib": "^7.0.8",
     "@types/debounce": "^1.2.1",
     "@types/js-cookie": "^3.0.5",
