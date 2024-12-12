@@ -2,6 +2,7 @@ import { CodeComponentMeta } from "@plasmicapp/host";
 import React, { useMemo } from "react";
 import { Slider, SliderThumbProps, SliderTrack } from "react-aria-components";
 import flattenChildren from "react-keyed-flatten-children";
+import { COMMON_STYLES } from "./common";
 import { PlasmicSliderContext } from "./contexts";
 import { BaseSliderThumbProps } from "./registerSliderThumb";
 import {
@@ -127,7 +128,11 @@ export function BaseSliderTrack(props: BaseSliderTrackProps) {
   );
 
   if (isStandalone) {
-    return <Slider style={{ height: "100%", width: "100%" }}>{track}</Slider>;
+    return (
+      <Slider style={{ height: "100%", width: "100%", ...COMMON_STYLES }}>
+        {track}
+      </Slider>
+    );
   }
 
   return track;

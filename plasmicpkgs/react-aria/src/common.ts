@@ -1,4 +1,5 @@
 import { PlasmicElement, PropType } from "@plasmicapp/host";
+import { CSSProperties } from "react";
 import {
   BaseControlContextData,
   HasControlContextData,
@@ -472,3 +473,5 @@ export const arrowDown: PlasmicElement = {
     borderTopColor: "black",
   },
 };
+// Set border-box to the root element of the aria code component to align with Plasmic's default of using border-box for all root elements.
+export const COMMON_STYLES: CSSProperties = { boxSizing: "border-box" };

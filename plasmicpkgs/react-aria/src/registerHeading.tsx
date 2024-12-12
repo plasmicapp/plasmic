@@ -1,6 +1,7 @@
 import React from "react";
 import type { HeadingProps } from "react-aria-components";
 import { Heading } from "react-aria-components";
+import { COMMON_STYLES } from "./common";
 import {
   CodeComponentMetaOverrides,
   makeComponentName,
@@ -9,7 +10,11 @@ import {
 } from "./utils";
 
 export function BaseHeading({ children, ...rest }: HeadingProps) {
-  return <Heading {...rest}>{children}</Heading>;
+  return (
+    <Heading {...rest} style={COMMON_STYLES}>
+      {children}
+    </Heading>
+  );
 }
 
 export const HEADING_COMPONENT_NAME = makeComponentName("heading");

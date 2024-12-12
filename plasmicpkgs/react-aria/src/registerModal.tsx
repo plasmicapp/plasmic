@@ -10,7 +10,7 @@ import {
   ModalOverlay,
   ModalOverlayProps,
 } from "react-aria-components";
-import { hasParent } from "./common";
+import { COMMON_STYLES, hasParent } from "./common";
 import { PlasmicDialogTriggerContext } from "./contexts";
 import { HEADING_COMPONENT_NAME } from "./registerHeading";
 import {
@@ -83,9 +83,17 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
     }));
 
     /* <Dialog> cannot be used in canvas, because while the dialog is open on the canvas, the focus is trapped inside it, so any Studio modals like the Color Picker modal would glitch due to focus jumping back and forth */
-    const dialogInCanvas = <div className={className}>{children}</div>;
+    const dialogInCanvas = (
+      <div style={COMMON_STYLES} className={className}>
+        {children}
+      </div>
+    );
 
-    const dialog = <Dialog className={className}>{children}</Dialog>;
+    const dialog = (
+      <Dialog style={COMMON_STYLES} className={className}>
+        {children}
+      </Dialog>
+    );
 
     return (
       <ModalOverlay

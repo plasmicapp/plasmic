@@ -1,8 +1,8 @@
 import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import { mergeProps } from "@react-aria/utils";
 import React, { useEffect } from "react";
-import { Popover, PopoverContext } from "react-aria-components";
-import { getCommonOverlayProps } from "./common";
+import { Dialog, Popover, PopoverContext } from "react-aria-components";
+import { COMMON_STYLES, getCommonOverlayProps } from "./common";
 import { PlasmicPopoverTriggerContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
@@ -82,19 +82,25 @@ export function BasePopover(props: BasePopoverProps) {
     });
   }, [hasTrigger, setControlContextData]);
 
+  /* <Dialog> cannot be used in canvas, because while the dialog is open on the canvas, the focus is trapped inside it, so any Studio modals like the Color Picker modal would glitch due to focus jumping back and forth */
+  const dialogInCanvas = <div>{children}</div>;
+
+  const dialog = <Dialog>{children}</Dialog>;
+
   return (
     <>
       {isStandalone && <div ref={triggerRef} />}
       <Popover
         // more about `--trigger-width` here: https://react-spectrum.adobe.com/react-aria/Select.html#popover-1
-        style={
-          matchTriggerWidthProp ? { width: `var(--trigger-width)` } : undefined
-        }
+        style={{
+          ...(matchTriggerWidthProp ? { width: `var(--trigger-width)` } : {}),
+          ...COMMON_STYLES,
+        }}
         {...mergedProps}
       >
         {({ placement }) =>
           withObservedValues(
-            children,
+            canvasContext || isStandalone ? dialogInCanvas : dialog,
             {
               placementTop: placement === "top",
               placementBottom: placement === "bottom",

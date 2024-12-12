@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import type { InputProps, TextFieldProps } from "react-aria-components";
 import { TextField } from "react-aria-components";
-import { getCommonProps, resolveAutoComplete } from "./common";
+import { COMMON_STYLES, getCommonProps, resolveAutoComplete } from "./common";
 import { PlasmicTextFieldContext } from "./contexts";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { INPUT_COMPONENT_NAME } from "./registerInput";
@@ -35,7 +35,11 @@ export function BaseTextField(props: BaseTextFieldProps) {
 
   return (
     <PlasmicTextFieldContext.Provider value={props}>
-      <TextField autoComplete={resolveAutoComplete(autoComplete)} {...rest}>
+      <TextField
+        autoComplete={resolveAutoComplete(autoComplete)}
+        {...rest}
+        style={COMMON_STYLES}
+      >
         {({ isDisabled, isReadOnly }) =>
           withObservedValues(
             children,

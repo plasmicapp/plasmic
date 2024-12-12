@@ -2,7 +2,7 @@ import React from "react";
 import { mergeProps } from "react-aria";
 import type { ButtonProps } from "react-aria-components";
 import { Button } from "react-aria-components";
-import { getCommonProps } from "./common";
+import { COMMON_STYLES, getCommonProps } from "./common";
 import {
   CodeComponentMetaOverrides,
   makeComponentName,
@@ -45,7 +45,7 @@ export const BaseButton = React.forwardRef(function BaseButtonInner(
   });
 
   return (
-    <Button {...mergedProps}>
+    <Button {...mergedProps} style={COMMON_STYLES}>
       {({ isHovered, isPressed, isFocused, isFocusVisible, isDisabled }) =>
         withObservedValues(
           children,

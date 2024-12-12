@@ -3,7 +3,7 @@ import React from "react";
 import { useFocusable } from "react-aria";
 import { Tooltip, TooltipProps, TooltipTrigger } from "react-aria-components";
 import { TooltipTriggerProps } from "react-stately";
-import { getCommonOverlayProps } from "./common";
+import { COMMON_STYLES, getCommonOverlayProps } from "./common";
 import {
   CodeComponentMetaOverrides,
   Registerable,
@@ -57,7 +57,12 @@ function TriggerWrapper({ children, className }: TriggerWrapperProps) {
   const ref = React.useRef<HTMLDivElement | null>(null);
   const { focusableProps } = useFocusable({}, ref);
   return (
-    <div ref={ref} className={className} {...focusableProps}>
+    <div
+      ref={ref}
+      className={className}
+      {...focusableProps}
+      style={COMMON_STYLES}
+    >
       {children}
     </div>
   );

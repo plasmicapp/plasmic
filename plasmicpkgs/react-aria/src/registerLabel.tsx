@@ -1,5 +1,6 @@
 import React from "react";
 import { Label, LabelProps } from "react-aria-components";
+import { COMMON_STYLES } from "./common";
 import {
   CodeComponentMetaOverrides,
   extractPlasmicDataProps,
@@ -10,7 +11,11 @@ import {
 
 export function BaseLabel({ children, className, ...rest }: LabelProps) {
   return (
-    <Label {...extractPlasmicDataProps(rest)} className={className}>
+    <Label
+      {...extractPlasmicDataProps(rest)}
+      className={className}
+      style={COMMON_STYLES}
+    >
       {children}
     </Label>
   );

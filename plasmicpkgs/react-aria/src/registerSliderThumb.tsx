@@ -1,6 +1,6 @@
 import React from "react";
 import { Slider, SliderThumb, SliderTrack } from "react-aria-components";
-import { getCommonProps } from "./common";
+import { COMMON_STYLES, getCommonProps } from "./common";
 import ErrorBoundary from "./ErrorBoundary";
 import {
   CodeComponentMetaOverrides,
@@ -34,7 +34,7 @@ export function BaseSliderThumb({
   ...rest
 }: BaseSliderThumbProps) {
   const thumb = (
-    <SliderThumb {...rest}>
+    <SliderThumb {...rest} style={COMMON_STYLES}>
       {({ isDragging, isHovered, isFocused, isFocusVisible, isDisabled }) =>
         withObservedValues(
           <>{advanced ? children : undefined}</>,

@@ -1,7 +1,7 @@
 import { CodeComponentMeta } from "@plasmicapp/host";
 import React from "react";
 import { Slider, type SliderProps } from "react-aria-components";
-import { getCommonProps } from "./common";
+import { COMMON_STYLES, getCommonProps } from "./common";
 import { PlasmicSliderContext } from "./contexts";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { registerSliderOutput } from "./registerSliderOutput";
@@ -41,7 +41,7 @@ export function BaseSlider<T extends number | number[]>(
         onChangeEnd: rest.onChangeEnd as (value: number | number[]) => void,
       }}
     >
-      <Slider<T> {...rest}>
+      <Slider<T> {...rest} style={COMMON_STYLES}>
         {({ isDisabled }) =>
           withObservedValues(
             children,

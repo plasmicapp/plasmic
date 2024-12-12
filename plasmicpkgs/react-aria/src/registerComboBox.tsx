@@ -5,7 +5,7 @@ import {
   ComboBoxRenderProps,
   ComboBoxStateContext,
 } from "react-aria-components";
-import { arrowDown, getCommonProps } from "./common";
+import { arrowDown, COMMON_STYLES, getCommonProps } from "./common";
 import {
   PlasmicInputContext,
   PlasmicListBoxContext,
@@ -96,7 +96,7 @@ export function BaseComboBox(props: BaseComboboxProps) {
   }, []);
 
   return (
-    <ComboBox className={classNameProp} {...rest}>
+    <ComboBox className={classNameProp} {...rest} style={COMMON_STYLES}>
       <PlasmicPopoverTriggerContext.Provider value={true}>
         <PlasmicListBoxContext.Provider
           value={{

@@ -67,13 +67,6 @@ export function registerComponentHelper<T extends React.ComponentType<any>>(
   meta: CodeComponentMeta<React.ComponentProps<T>>,
   overrides?: CodeComponentMetaOverrides<T>
 ) {
-  meta = {
-    ...meta,
-    defaultStyles: {
-      boxSizing: "border-box",
-      ...(meta.defaultStyles ?? {}),
-    },
-  };
   if (overrides) {
     meta = {
       ...meta,

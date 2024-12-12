@@ -1,6 +1,7 @@
 import { PlasmicElement } from "@plasmicapp/host";
 import React, { useEffect, useState } from "react";
 import { ListBox, ListBoxItem } from "react-aria-components";
+import { COMMON_STYLES } from "./common";
 import { PlasmicListBoxContext } from "./contexts";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { TEXT_COMPONENT_NAME } from "./registerText";
@@ -86,7 +87,12 @@ export function BaseListBoxItem(props: BaseListBoxItemProps) {
   });
 
   const listboxItem = (
-    <ListBoxItem key={registeredId} id={registeredId} {...rest}>
+    <ListBoxItem
+      key={registeredId}
+      id={registeredId}
+      {...rest}
+      style={COMMON_STYLES}
+    >
       {({
         isHovered,
         isPressed,

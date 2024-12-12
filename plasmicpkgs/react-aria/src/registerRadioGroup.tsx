@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import type { RadioGroupProps } from "react-aria-components";
 import { RadioGroup } from "react-aria-components";
-import { getCommonProps } from "./common";
+import { COMMON_STYLES, getCommonProps } from "./common";
 import { PlasmicRadioGroupContext } from "./contexts";
 import { OptionsItemIdManager } from "./OptionsItemIdManager";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
@@ -54,7 +54,7 @@ export function BaseRadioGroup(props: BaseRadioGroupProps) {
 
   return (
     <PlasmicRadioGroupContext.Provider value={{ ...props, idManager }}>
-      <RadioGroup {...rest}>
+      <RadioGroup {...rest} style={COMMON_STYLES}>
         {({ isDisabled, isReadOnly }) =>
           withObservedValues(
             children,

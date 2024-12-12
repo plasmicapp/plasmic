@@ -1,6 +1,7 @@
 import React from "react";
 import type { TextProps } from "react-aria-components";
 import { Text } from "react-aria-components";
+import { COMMON_STYLES } from "./common";
 import {
   CodeComponentMetaOverrides,
   extractPlasmicDataProps,
@@ -11,7 +12,12 @@ import {
 
 export function BaseText({ children, slot, className, ...rest }: TextProps) {
   return (
-    <Text {...extractPlasmicDataProps(rest)} slot={slot} className={className}>
+    <Text
+      {...extractPlasmicDataProps(rest)}
+      slot={slot}
+      className={className}
+      style={COMMON_STYLES}
+    >
       {children}
     </Text>
   );

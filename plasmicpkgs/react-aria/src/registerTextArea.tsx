@@ -2,7 +2,7 @@ import React, { ChangeEvent, useCallback } from "react";
 import { mergeProps } from "react-aria";
 import type { InputRenderProps, TextAreaProps } from "react-aria-components";
 import { TextArea } from "react-aria-components";
-import { getCommonProps } from "./common";
+import { COMMON_STYLES, getCommonProps } from "./common";
 import { PlasmicTextFieldContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
@@ -71,7 +71,7 @@ export function BaseTextArea(props: BaseTextAreaProps) {
     className: classNameProp,
   });
 
-  return <TextArea {...mergedProps} />;
+  return <TextArea {...mergedProps} style={COMMON_STYLES} />;
 }
 
 export function registerTextArea(

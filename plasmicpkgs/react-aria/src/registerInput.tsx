@@ -2,7 +2,7 @@ import React, { ChangeEvent, useCallback } from "react";
 import { mergeProps } from "react-aria";
 import type { InputProps, InputRenderProps } from "react-aria-components";
 import { Input } from "react-aria-components";
-import { getCommonProps, resolveAutoComplete } from "./common";
+import { COMMON_STYLES, getCommonProps, resolveAutoComplete } from "./common";
 import { PlasmicInputContext, PlasmicTextFieldContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
@@ -81,7 +81,7 @@ export function BaseInput(props: BaseInputProps) {
     className: classNameProp,
   });
 
-  return <Input {...mergedProps} />;
+  return <Input {...mergedProps} style={COMMON_STYLES} />;
 }
 
 export const INPUT_COMPONENT_NAME = makeComponentName("input");

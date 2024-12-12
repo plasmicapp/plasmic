@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import type { CheckboxGroupProps } from "react-aria-components";
 import { CheckboxGroup } from "react-aria-components";
-import { getCommonProps } from "./common";
+import { COMMON_STYLES, getCommonProps } from "./common";
 import { PlasmicCheckboxGroupContext } from "./contexts";
 import { OptionsItemIdManager } from "./OptionsItemIdManager";
 import {
@@ -56,7 +56,7 @@ export function BaseCheckboxGroup(props: BaseCheckboxGroupProps) {
 
   return (
     <PlasmicCheckboxGroupContext.Provider value={{ ...rest, idManager }}>
-      <CheckboxGroup {...rest}>
+      <CheckboxGroup {...rest} style={COMMON_STYLES}>
         {({ isDisabled, isReadOnly }) =>
           withObservedValues(
             children,

@@ -2,7 +2,7 @@ import { PlasmicElement } from "@plasmicapp/host";
 import React, { useEffect, useState } from "react";
 import type { RadioProps } from "react-aria-components";
 import { Radio, RadioGroup } from "react-aria-components";
-import { getCommonProps } from "./common";
+import { COMMON_STYLES, getCommonProps } from "./common";
 import { PlasmicRadioGroupContext } from "./contexts";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import {
@@ -86,7 +86,12 @@ export function BaseRadio(props: BaseRadioProps) {
   });
 
   const radio = (
-    <Radio {...rest} value={registeredId} key={registeredId}>
+    <Radio
+      {...rest}
+      value={registeredId}
+      key={registeredId}
+      style={COMMON_STYLES}
+    >
       {({
         isHovered,
         isPressed,

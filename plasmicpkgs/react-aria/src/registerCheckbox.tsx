@@ -2,7 +2,7 @@ import { PlasmicElement } from "@plasmicapp/host";
 import React, { useEffect, useState } from "react";
 import type { CheckboxProps } from "react-aria-components";
 import { Checkbox } from "react-aria-components";
-import { getCommonProps, hasParent } from "./common";
+import { COMMON_STYLES, getCommonProps, hasParent } from "./common";
 import { PlasmicCheckboxGroupContext } from "./contexts";
 import {
   BaseControlContextData,
@@ -88,7 +88,12 @@ export function BaseCheckbox(props: BaseCheckboxProps) {
 
   return (
     <>
-      <Checkbox {...rest} value={registeredId} key={registeredId}>
+      <Checkbox
+        {...rest}
+        value={registeredId}
+        key={registeredId}
+        style={COMMON_STYLES}
+      >
         {({
           isHovered,
           isPressed,

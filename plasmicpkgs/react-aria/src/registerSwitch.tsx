@@ -1,7 +1,7 @@
 import React from "react";
 import type { SwitchProps } from "react-aria-components";
 import { Switch } from "react-aria-components";
-import { getCommonProps } from "./common";
+import { COMMON_STYLES, getCommonProps } from "./common";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import {
@@ -34,7 +34,7 @@ interface BaseSwitchProps
 export function BaseSwitch(props: BaseSwitchProps) {
   const { children, plasmicUpdateVariant, ...rest } = props;
   return (
-    <Switch {...rest}>
+    <Switch {...rest} style={COMMON_STYLES}>
       {({
         isHovered,
         isPressed,

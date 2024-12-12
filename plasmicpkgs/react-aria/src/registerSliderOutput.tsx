@@ -1,5 +1,6 @@
 import React from "react";
 import { SliderOutput } from "react-aria-components";
+import { COMMON_STYLES } from "./common";
 import {
   CodeComponentMetaOverrides,
   Registerable,
@@ -22,7 +23,7 @@ const { variants, withObservedValues } = pickAriaComponentVariants(
 export function BaseSliderOutput(props: BaseSliderOutputProps) {
   const { plasmicUpdateVariant, children, ...rest } = props;
   return (
-    <SliderOutput {...rest}>
+    <SliderOutput {...rest} style={COMMON_STYLES}>
       {({ isDisabled }) =>
         withObservedValues(
           children,

@@ -1,5 +1,6 @@
 import React from "react";
 import { Header, Section } from "react-aria-components";
+import { COMMON_STYLES } from "./common";
 import { PlasmicListBoxContext } from "./contexts";
 import { BaseListBox } from "./registerListBox";
 import {
@@ -21,7 +22,7 @@ export function BaseSection(props: BaseSectionProps) {
   const isStandalone = !contextProps;
 
   const section = (
-    <Section {...rest}>
+    <Section {...rest} style={COMMON_STYLES}>
       <Header>{header}</Header>
       {items}
     </Section>

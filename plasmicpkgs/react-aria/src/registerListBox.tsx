@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Key, ListBox, ListBoxRenderProps } from "react-aria-components";
+import { COMMON_STYLES } from "./common";
 import { PlasmicListBoxContext } from "./contexts";
 import { OptionsItemIdManager } from "./OptionsItemIdManager";
 import {
@@ -103,6 +104,7 @@ export function BaseListBox(props: BaseListBoxProps) {
       selectedKeys={normalizeSelectedKeys(selectedKeys)}
       defaultSelectedKeys={normalizeSelectedKeys(defaultSelectedKeys)}
       className={classNameProp}
+      style={COMMON_STYLES}
       {...rest}
     >
       {children}

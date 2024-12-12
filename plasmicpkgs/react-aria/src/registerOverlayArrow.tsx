@@ -8,7 +8,7 @@ import {
   PopoverContext,
   TooltipContext,
 } from "react-aria-components";
-import { arrowDown } from "./common";
+import { arrowDown, COMMON_STYLES } from "./common";
 import {
   CodeComponentMetaOverrides,
   makeComponentName,
@@ -41,7 +41,10 @@ export function BaseOverlayArrow({
   const tooltipContext = React.useContext(TooltipContext);
   const isStandalone = !popoverContext && !tooltipContext; // i.e. without a trigger to point to
   const overlayArrow = (
-    <OverlayArrow style={{ lineHeight: "0" }} className={className}>
+    <OverlayArrow
+      style={{ lineHeight: "0", ...COMMON_STYLES }}
+      className={className}
+    >
       {({ placement }: OverlayArrowRenderProps) =>
         withObservedValues(
           <>{children}</>,
