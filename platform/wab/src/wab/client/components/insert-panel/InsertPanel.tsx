@@ -1357,42 +1357,45 @@ export function buildAddItemGroups({
         ],
       },
 
-    ...projectDependencies.map((dep) => ({
-      key: isHostLessPackage(dep.site)
-        ? `hostless-packages--${dep.projectId}`
-        : dep.pkgId,
-      label:
-        hostLessComponentsMeta?.flatMap((pkg) => {
-          return getLeafProjectIdForHostLessPackageMeta(pkg) ===
-            dep.projectId &&
-            pkg.onlyShownIn !== "old" &&
-            shouldShowHostLessPackage(studioCtx, pkg)
-            ? [pkg.name]
-            : [];
-        })[0] ?? dep.name,
-      familyKey: "imported-packages",
-      items: [
-        ...sortComponentsByName(
-          dep.site.components.filter(
-            (c) =>
-              isReusableComponent(c) &&
-              (!isCodeComponent(c) ||
-                isShownHostLessCodeComponent(c, hostLessComponentsMeta)) &&
-              !isContextCodeComponent(c) &&
-              // There are certain packages, like plasmic-basic-components or plasmic-embed-css,
-              // that should feel like built-ins (in the "Default components") - it's confusing to suddenly show them as installed.
-              !(hostLessComponentsMeta ?? []).some(
-                (group) =>
-                  getLeafProjectIdForHostLessPackageMeta(group) ===
-                    dep.projectId && group.hiddenWhenInstalled
-              )
-          )
-        ).map((comp) => createAddTplComponent(comp)),
-        ...dep.site.imageAssets
-          .filter((asset) => asset.dataUri)
-          .map((asset) => createAddTplImage(asset)),
-      ],
-    })),
+    ...naturalSort(
+      projectDependencies.map((dep) => ({
+        key: isHostLessPackage(dep.site)
+          ? `hostless-packages--${dep.projectId}`
+          : dep.pkgId,
+        label:
+          hostLessComponentsMeta?.flatMap((pkg) => {
+            return getLeafProjectIdForHostLessPackageMeta(pkg) ===
+              dep.projectId &&
+              pkg.onlyShownIn !== "old" &&
+              shouldShowHostLessPackage(studioCtx, pkg)
+              ? [pkg.name]
+              : [];
+          })[0] ?? dep.name,
+        familyKey: "imported-packages",
+        items: [
+          ...sortComponentsByName(
+            dep.site.components.filter(
+              (c) =>
+                isReusableComponent(c) &&
+                (!isCodeComponent(c) ||
+                  isShownHostLessCodeComponent(c, hostLessComponentsMeta)) &&
+                !isContextCodeComponent(c) &&
+                // There are certain packages, like plasmic-basic-components or plasmic-embed-css,
+                // that should feel like built-ins (in the "Default components") - it's confusing to suddenly show them as installed.
+                !(hostLessComponentsMeta ?? []).some(
+                  (group) =>
+                    getLeafProjectIdForHostLessPackageMeta(group) ===
+                      dep.projectId && group.hiddenWhenInstalled
+                )
+            )
+          ).map((comp) => createAddTplComponent(comp)),
+          ...dep.site.imageAssets
+            .filter((asset) => asset.dataUri)
+            .map((asset) => createAddTplImage(asset)),
+        ],
+      })),
+      (item) => item.label
+    ),
 
     ...(!!hostLessComponentsMeta
       ? getHostLess(studioCtx)
