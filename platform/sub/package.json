@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@plasmicapp/host": "^1.0.207",
+    "@plasmicapp/host": "^1.0.208",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
