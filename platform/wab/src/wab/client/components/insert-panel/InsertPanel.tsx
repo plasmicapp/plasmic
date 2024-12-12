@@ -980,7 +980,7 @@ function getCodeComponentsGroups(studioCtx: StudioCtx): AddItemGroup[] {
 
 const familyKeyToLabel = {
   "imported-packages": "Imported packages",
-  "hostless-packages": "Browse component store",
+  "hostless-packages": "Component store",
 };
 const familyKeyRank = new Map<
   keyof typeof familyKeyToLabel | undefined,
