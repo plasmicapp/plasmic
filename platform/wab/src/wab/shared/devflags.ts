@@ -684,7 +684,7 @@ Object.assign(DEFAULT_DEVFLAGS, DEFAULT_DEVFLAG_OVERRIDES);
 export type DevFlagsType = typeof DEFAULT_DEVFLAGS;
 export const DEVFLAGS = cloneDeep(DEFAULT_DEVFLAGS);
 
-export function normalizeDevFlags(flags: DevFlagsType) {
+function normalizeDevFlags(flags: DevFlagsType) {
   if (flags.variants) {
     flags.unconditionalEdits = true;
     flags.ephemeralRecording = true;
@@ -698,10 +698,27 @@ export function normalizeDevFlags(flags: DevFlagsType) {
   }
 }
 
-export function applyDevFlagOverrides(
+/** Applies overrides to DEVFLAGS. */
+export function applyDevFlagOverrides(overrides: Partial<DevFlagsType>): void {
+  // Apply overrides to default devflags to avoid mergeSane persisting keys that
+  // were present on an old override but removed in a new override (see tests).
+  Object.assign(DEVFLAGS, applyDevFlagOverridesToDefaults(overrides));
+}
+
+/** Applies overrides to a copy of the default devflags and returns it. */
+export function applyDevFlagOverridesToDefaults(
+  overrides: Partial<DevFlagsType>
+): DevFlagsType {
+  const devflags = cloneDeep(DEFAULT_DEVFLAGS);
+  applyDevFlagOverridesToTarget(devflags, overrides);
+  return devflags;
+}
+
+/** Applies overrides to a target. */
+export function applyDevFlagOverridesToTarget(
   target: DevFlagsType,
   overrides: Partial<DevFlagsType>
-) {
+): void {
   mergeSane(target, overrides);
   normalizeDevFlags(target);
 }

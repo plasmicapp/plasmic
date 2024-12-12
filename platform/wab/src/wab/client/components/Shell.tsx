@@ -86,7 +86,7 @@ export function main() {
     };
   }
 
-  applyDevFlagOverrides(DEVFLAGS, initClientFlags(DEVFLAGS));
+  applyDevFlagOverrides(initClientFlags(DEVFLAGS));
 
   const production = DeploymentFlags.DEPLOYENV === "production";
 

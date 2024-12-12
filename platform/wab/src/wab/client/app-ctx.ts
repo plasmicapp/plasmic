@@ -20,6 +20,7 @@ import { ensure, swallowAsync } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import {
   applyDevFlagOverrides,
+  applyDevFlagOverridesToTarget,
   applyPlasmicUserDevFlagOverrides,
   DEVFLAGS,
   DevFlagsType,
@@ -475,10 +476,10 @@ export async function loadAppCtx(
     // Next apply client-specified overrides, via url params and
     // localStorage
     const clientConfigOverrides = getClientDevFlagOverrides();
-    applyDevFlagOverrides(appConfigOverrides, clientConfigOverrides);
+    applyDevFlagOverridesToTarget(appConfigOverrides, clientConfigOverrides);
 
     // Apply to DEVFLAGS
-    applyDevFlagOverrides(DEVFLAGS, appConfigOverrides);
+    applyDevFlagOverrides(appConfigOverrides);
 
     const starters = loadStarters(baseApi, user, dbConfigOverrides);
 

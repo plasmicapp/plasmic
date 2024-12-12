@@ -22,6 +22,7 @@ import {
   unbundleProjectFromBundle,
   unbundleProjectFromData,
 } from "@/wab/server/db/DbBundleLoader";
+import { getDevFlagsMergedWithOverrides } from "@/wab/server/db/appconfig";
 import {
   AppAccessRegistry,
   AppAuthConfig,
@@ -1137,11 +1138,7 @@ export class DbMgr implements MigrationDbMgr {
   ) {
     const userId = this.checkNormalUser();
     const user = await this.getUserById(userId);
-    const devflags = mergeSane(
-      {},
-      DEVFLAGS,
-      JSON.parse((await this.tryGetDevFlagOverrides())?.data ?? "{}")
-    ) as typeof DEVFLAGS;
+    const devflags = await getDevFlagsMergedWithOverrides(this);
     const team = this.teams().create({
       ...this.stampNew(true),
       name,
@@ -3368,11 +3365,7 @@ export class DbMgr implements MigrationDbMgr {
       "publish",
       true
     );
-    const devflags = mergeSane(
-      {},
-      DEVFLAGS,
-      JSON.parse((await this.tryGetDevFlagOverrides())?.data ?? "{}")
-    ) as typeof DEVFLAGS;
+    const devflags = await getDevFlagsMergedWithOverrides(this);
     if (!devflags.serverPublishProjectIds.includes(projectId)) {
       throw new UnauthorizedError("Access denied");
     }

@@ -2,7 +2,11 @@ import { isTopFrame } from "@/wab/client/cli-routes";
 import { getPlasmicStudioArgs } from "@/wab/client/frame-ctx/plasmic-studio-args";
 import { assert, withoutNils } from "@/wab/shared/common";
 import { dbg } from "@/wab/shared/dbg";
-import { applyDevFlagOverrides, DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
+import {
+  applyDevFlagOverrides,
+  DEVFLAGS,
+  DevFlagsType,
+} from "@/wab/shared/devflags";
 import { isPlainObject } from "lodash";
 
 export function getClientDevFlagOverrides(): DevFlagsType {
@@ -123,7 +127,7 @@ export function initClientFlags(flags: DevFlagsType): DevFlagsType {
     flags[key] = overrides[key] ?? value;
   });
 
-  applyDevFlagOverrides(DEVFLAGS, flags);
+  applyDevFlagOverrides(flags);
 
   return flags;
 }

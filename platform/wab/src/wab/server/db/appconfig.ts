@@ -1,11 +1,18 @@
-import { mergeSane } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { DbMgr } from "@/wab/server/db/DbMgr";
+import {
+  applyDevFlagOverridesToDefaults,
+  DevFlagsType,
+} from "@/wab/shared/devflags";
 
+/**
+ * WARNING: This function may return devflags inconsistent with the DEVFLAGS.
+ * DEVFLAGS is only computed once, when the server starts.
+ * If an override is submitted after the server starts, this function will
+ * include the new overrides, while DEVFLAGS will stay the same.
+ */
 export async function getDevFlagsMergedWithOverrides(
   mgr: DbMgr
-): Promise<typeof DEVFLAGS> {
+): Promise<DevFlagsType> {
   const overrides = await mgr.tryGetDevFlagOverrides();
-  const merged = mergeSane({}, DEVFLAGS, JSON.parse(overrides?.data ?? "{}"));
-  return merged;
+  return applyDevFlagOverridesToDefaults(JSON.parse(overrides?.data ?? "{}"));
 }

@@ -12,7 +12,7 @@ import {
 } from "@/wab/shared/data-sources-meta/data-sources";
 import { WebhookHeader } from "@/wab/shared/db-json-blobs";
 import {
-  DEVFLAGS,
+  DevFlagsType,
   InsertableTemplateComponentResolution,
   InsertableTemplateTokenResolution,
 } from "@/wab/shared/devflags";
@@ -897,7 +897,7 @@ export interface GetDevFlagOverridesVersionsResponse {
 export interface SetDevFlagOverridesResponse {}
 
 export interface AppConfigResponse {
-  config: typeof DEVFLAGS;
+  config: DevFlagsType;
 }
 
 export interface GetClipResponse {
