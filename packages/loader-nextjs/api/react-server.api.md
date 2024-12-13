@@ -34,6 +34,7 @@ import { PlasmicComponentLoader as PlasmicComponentLoader_2 } from '@plasmicapp/
 import { plasmicPrepass } from '@plasmicapp/loader-react';
 import { PlasmicRootProvider as PlasmicRootProvider_2 } from '@plasmicapp/loader-react';
 import { PlasmicTranslator } from '@plasmicapp/loader-react';
+import { PlasmicTranslatorContext } from '@plasmicapp/loader-react';
 import { PropType } from '@plasmicapp/loader-react';
 import { default as React_2 } from 'react';
 import * as React_3 from 'react';

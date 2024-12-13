@@ -36,6 +36,7 @@ import { PlasmicCanvasHost } from '@plasmicapp/host';
 import { PlasmicDataSourceContextValue } from '@plasmicapp/data-sources-context';
 import { PlasmicModulesFetcher } from '@plasmicapp/loader-core';
 import { PlasmicTracker } from '@plasmicapp/loader-core';
+import { PlasmicTranslatorContext } from '@plasmicapp/host';
 import { PropType } from '@plasmicapp/host';
 import { react } from 'react';
 import * as React_2 from 'react';
@@ -291,6 +292,8 @@ export type PlasmicTranslator = (str: string, opts?: {
         [key: string]: React_2.ReactElement | React_2.ReactFragment;
     };
 }) => React_2.ReactNode;
+
+export { PlasmicTranslatorContext }
 
 export { PropType }
 

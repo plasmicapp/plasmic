@@ -14,6 +14,7 @@ export {
   PageParamsProvider,
   PlasmicCanvasContext,
   PlasmicCanvasHost,
+  PlasmicTranslatorContext,
   repeatedElement,
   useDataEnv,
   usePlasmicCanvasContext,
@@ -38,9 +39,8 @@ export {
 export * from "./shared-exports";
 export { usePlasmicComponent } from "./usePlasmicComponent";
 export type { ComponentLookupSpec } from "./utils";
-export type { CodeComponentMeta };
-export type { FetchComponentDataOpts };
 export { InternalPlasmicComponentLoader, PlasmicComponentLoader };
+export type { CodeComponentMeta, FetchComponentDataOpts };
 
 export function initPlasmicLoader(opts: InitOptions): PlasmicComponentLoader {
   const internal = new InternalPlasmicComponentLoader(opts);

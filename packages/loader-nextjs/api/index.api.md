@@ -29,6 +29,7 @@ import { PlasmicComponentLoader } from '@plasmicapp/loader-react';
 import { plasmicPrepass } from '@plasmicapp/loader-react';
 import { PlasmicRootProvider as PlasmicRootProvider_2 } from '@plasmicapp/loader-react';
 import { PlasmicTranslator } from '@plasmicapp/loader-react';
+import { PlasmicTranslatorContext } from '@plasmicapp/loader-react';
 import { PropType } from '@plasmicapp/loader-react';
 import * as React_2 from 'react';
 import { repeatedElement } from '@plasmicapp/loader-react';
@@ -122,6 +123,8 @@ export function PlasmicRootProvider(props: Omit<React_2.ComponentProps<typeof Pl
 }): React_2.JSX.Element;
 
 export { PlasmicTranslator }
+
+export { PlasmicTranslatorContext }
 
 export { PropType }
 

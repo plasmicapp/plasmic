@@ -17,6 +17,7 @@ export {
   PlasmicCanvasContext,
   PlasmicCanvasHost,
   PlasmicComponent,
+  PlasmicTranslatorContext,
   plasmicPrepass,
   repeatedElement,
   useDataEnv,
