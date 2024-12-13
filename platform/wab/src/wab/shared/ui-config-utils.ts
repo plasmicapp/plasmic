@@ -9,7 +9,6 @@ import {
   TemplateSpec,
 } from "@/wab/shared/ApiSchema";
 import { withoutNils } from "@/wab/shared/common";
-import { HostLessPackageInfo } from "@/wab/shared/devflags";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import {
   FRAME_CAP,
@@ -284,6 +283,12 @@ export interface InsertPanelConfig {
    * top of the insert panel. The keys are displayed as the section titles.
    */
   builtinSections: SectionedAliases;
+  /**
+   * Mappings from 2nd level of builtinSections to a ui-kit project ID.
+   * The section will have a button prompting to install the installable,
+   * if any components are not installed.
+   */
+  builtinSectionsInstallables: Record<string, string>;
   overrideSections: {
     website?: SectionedAliases;
     app?: SectionedAliases;
@@ -330,8 +335,6 @@ export function canInsertHostlessPackage(
   config: UiConfig,
   pkgName: string,
   opts: {
-    insertPanel: InsertPanelConfig;
-    hostlessPackages: HostLessPackageInfo[];
     isContentCreator: boolean;
   }
 ) {
@@ -347,8 +350,6 @@ export function canInsertAlias(
   config: UiConfig,
   alias: InsertAlias,
   opts: {
-    insertPanel: InsertPanelConfig;
-    hostlessPackages: HostLessPackageInfo[];
     isContentCreator: boolean;
   }
 ): boolean {

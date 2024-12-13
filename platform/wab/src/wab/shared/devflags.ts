@@ -344,6 +344,7 @@ const DEFAULT_DEVFLAGS = {
     componentsLabel: "Custom components",
     aliases: {},
     builtinSections: {},
+    builtinSectionsInstallables: {},
     overrideSections: {},
   }),
   insertableTemplates: ensureType<InsertableTemplatesGroup | undefined>(
