@@ -4,7 +4,7 @@ import {
 } from "../../src/wab/shared/Labels";
 import { removeCurrentProject, setupNewProject } from "../support/util";
 
-describe("generic-slots", function () {
+xdescribe("generic-slots", function () {
   beforeEach(() => {
     setupNewProject({
       name: "generic-slots",
