@@ -23,6 +23,7 @@ import {
   BorderPanelSection,
   BorderRadiusSection,
 } from "@/wab/client/components/style-controls/BorderControls";
+import { OutlinePanelSection } from "@/wab/client/components/style-controls/OutlineControls";
 import {
   MixinExpsProvider,
   mkStyleComponent,
@@ -100,6 +101,7 @@ export interface MixinPanelSelection {
   effect?: boolean;
   border?: boolean;
   sizing?: boolean;
+  outline?: boolean;
   shadow?: boolean;
   position?: boolean;
   transition?: boolean;
@@ -247,6 +249,8 @@ export const MixinFormContent = observer(function MixinFormContent(props: {
       {(!s || s.border) && (
         <BorderRadiusSection expsProvider={expsProvider} vsh={vsh} />
       )}
+
+      {(!s || s.outline) && <OutlinePanelSection />}
 
       {(!s || s.shadow) && (
         <ShadowsPanelSection expsProvider={expsProvider} vsh={vsh} />
