@@ -2747,6 +2747,8 @@ const ALWAYS_VISIBLE_EVENT_HANDLERS = {
   a: ["onClick"],
 };
 
+const COMPONENT_ALWAYS_VISIBLE_EVENT_HANDLERS = ["onChange", "onClick"];
+
 export function getAllEventHandlerOptions(tpl: TplTag | TplComponent) {
   let options: EventHandlerKeyType[] = [];
   if (isTplComponent(tpl)) {
@@ -2820,17 +2822,24 @@ export function getAlwaysVisibleEventHandlerKeysForTpl(
     return withoutNils(
       tpl.component.params
         .filter((param) => {
-          if (
-            !isKnownFunctionType(param.type) ||
-            isOnChangeParam(param, tpl.component)
-          ) {
+          if (!isKnownFunctionType(param.type)) {
             return false;
           }
-          if (!isTplCodeComponent(tpl)) {
+
+          if (isTplCodeComponent(tpl)) {
+            const propType = tpl.component._meta?.props[param.variable.name];
+            return !isAdvancedProp(propType);
+          }
+
+          if (
+            COMPONENT_ALWAYS_VISIBLE_EVENT_HANDLERS.includes(
+              param.variable.name
+            )
+          ) {
             return true;
           }
-          const propType = tpl.component._meta?.props[param.variable.name];
-          return !isAdvancedProp(propType);
+
+          return !isOnChangeParam(param, tpl.component);
         })
         .map((param) => ({ eventHandlerKey: { param }, expr: undefined }))
     );
