@@ -1223,24 +1223,21 @@ export function buildAddItemGroups({
       )
     ),
 
-    // Code components groups
-    ...getCodeComponentsGroups(studioCtx),
-
     // Custom components includes all the components from the project
     {
+      sectionKey: "components",
+      sectionLabel: DEVFLAGS.insertPanelContent.componentsLabel,
       key: "components",
-      label: DEVFLAGS.insertPanelContent.componentsLabel,
+      label: "Project Components",
       items: sortComponentsByName(
         studioCtx.site.components.filter(
           (c) =>
             isReusableComponent(c) &&
-            !isContextCodeComponent(c) &&
-            !isCodeComponentWithSection(c) &&
+            !isCodeComponent(c) &&
             !(
               contentEditorMode &&
               isComponentHiddenFromContentEditor(c, studioCtx)
-            ) &&
-            !isBuiltinCodeComponent(c)
+            )
         )
       ).map((comp) => ({
         ...createAddTplComponent(comp),
@@ -1251,6 +1248,35 @@ export function buildAddItemGroups({
         isCompact: studioCtx.appCtx.appConfig.componentThumbnails,
       })),
     },
+    {
+      sectionKey: "components",
+      sectionLabel: DEVFLAGS.insertPanelContent.componentsLabel,
+      key: "code-components",
+      label: "Code Components",
+      items: sortComponentsByName(
+        studioCtx.site.components.filter(
+          (c) =>
+            isCodeComponent(c) &&
+            !isBuiltinCodeComponent(c) &&
+            !isContextCodeComponent(c) &&
+            !isCodeComponentWithSection(c) &&
+            !(
+              contentEditorMode &&
+              isComponentHiddenFromContentEditor(c, studioCtx)
+            )
+        )
+      ).map((comp) => ({
+        ...createAddTplComponent(comp),
+        // TODO: improve placeholder image!
+        previewImageUrl: studioCtx.appCtx.appConfig.componentThumbnails
+          ? studioCtx.getCachedThumbnail(comp.uuid) ?? placeholderImgUrl()
+          : undefined,
+        isCompact: studioCtx.appCtx.appConfig.componentThumbnails,
+      })),
+    },
+
+    // Code components groups
+    ...getCodeComponentsGroups(studioCtx),
 
     // Insertable Templates
     ...(!isApp &&
