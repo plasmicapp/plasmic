@@ -317,7 +317,17 @@ function create$StateProxy(
           ).set?.(target, property, value, receiver);
           Reflect.set(target, property, value, receiver);
           if (nextSpec?.onChangeProp) {
-            $$state.env.$props[nextSpec.onChangeProp]?.(value);
+            const pathKey = JSON.stringify(nextPath);
+            const isInitOnChange = !$$state.initializedLeafPaths.has(pathKey);
+
+            // We need to call the onChangeProp during initialization process so that the parent
+            // state can be updated with the correct value. We will provide an addtionnal parameter
+            // to the onChangeProp function to indicate that the call is made during initialization.
+            $$state.env.$props[nextSpec.onChangeProp]?.(value, isInitOnChange);
+
+            if (isInitOnChange) {
+              $$state.initializedLeafPaths.add(pathKey);
+            }
           }
         }
         if (!nextNode) {
@@ -460,6 +470,7 @@ export function useDollarState(
         specs: [],
         registrationsQueue: [],
         stateInitializationEnv: { stack: [], visited: new Set<string>() },
+        initializedLeafPaths: new Set(),
       };
     })()
   ).current;

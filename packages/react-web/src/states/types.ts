@@ -111,4 +111,5 @@ export interface Internal$State {
     stack: string[];
     visited: Set<string>;
   };
+  initializedLeafPaths: Set<string>;
 }

@@ -1,3 +1,11 @@
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  isStandaloneVariantGroup,
+  tryGetBaseVariantSetting,
+} from "@/wab/shared/Variants";
+import { AddItemKey } from "@/wab/shared/add-item-keys";
+import { toVarName } from "@/wab/shared/codegen/util";
 import {
   assert,
   assertNever,
@@ -6,18 +14,18 @@ import {
   remove,
   unexpected,
   uniqueName,
+  withoutNils,
 } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
   removeComponentParam,
 } from "@/wab/shared/core/components";
-import { DevFlagsType } from "@/wab/shared/devflags";
 import {
+  ExprCtx,
+  InteractionConditionalMode,
   asCode,
   code,
   codeLit,
-  ExprCtx,
-  InteractionConditionalMode,
   isFallbackSet,
   isRealCodeExpr,
   isRealCodeExprEnsuringType,
@@ -26,33 +34,19 @@ import {
 } from "@/wab/shared/core/exprs";
 import * as Lang from "@/wab/shared/core/lang";
 import { ParamExportType } from "@/wab/shared/core/lang";
-import { AddItemKey } from "@/wab/shared/add-item-keys";
-import { toVarName } from "@/wab/shared/codegen/util";
+import { extractComponentUsages, writeable } from "@/wab/shared/core/sites";
+import * as Tpls from "@/wab/shared/core/tpls";
+import { isTplComponent } from "@/wab/shared/core/tpls";
+import { DevFlagsType } from "@/wab/shared/devflags";
 import { parseExpr } from "@/wab/shared/eval/expression-parser";
 import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import {
   Component,
   ComponentVariantGroup,
   CustomCode,
-  ensureKnownFunctionType,
-  ensureKnownNamedState,
   EventHandler,
   Expr,
   Interaction,
-  isKnownCollectionExpr,
-  isKnownCustomCode,
-  isKnownFunctionArg,
-  isKnownFunctionExpr,
-  isKnownGenericEventHandler,
-  isKnownImageAssetRef,
-  isKnownNamedState,
-  isKnownObjectPath,
-  isKnownPageHref,
-  isKnownTplComponent,
-  isKnownTplRef,
-  isKnownTplTag,
-  isKnownVariantsRef,
-  isKnownVarRef,
   NameArg,
   NamedState,
   Param,
@@ -66,17 +60,24 @@ import {
   TplTag,
   VariantGroup,
   VariantGroupState,
+  ensureKnownFunctionType,
+  ensureKnownNamedState,
+  isKnownCollectionExpr,
+  isKnownCustomCode,
+  isKnownFunctionArg,
+  isKnownFunctionExpr,
+  isKnownGenericEventHandler,
+  isKnownImageAssetRef,
+  isKnownNamedState,
+  isKnownObjectPath,
+  isKnownPageHref,
+  isKnownTplComponent,
+  isKnownTplRef,
+  isKnownTplTag,
+  isKnownVarRef,
+  isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
-import { TplMgr } from "@/wab/shared/TplMgr";
-import { $$$ } from "@/wab/shared/TplQuery";
-import {
-  isStandaloneVariantGroup,
-  tryGetBaseVariantSetting,
-} from "@/wab/shared/Variants";
-import { extractComponentUsages, writeable } from "@/wab/shared/core/sites";
 import { smartHumanize } from "@/wab/shared/strs";
-import * as Tpls from "@/wab/shared/core/tpls";
-import { isTplComponent } from "@/wab/shared/core/tpls";
 import { getPublicUrl } from "@/wab/shared/urls";
 import { isArray } from "lodash";
 
@@ -496,6 +497,21 @@ export function getStateValuePropName(state: State) {
 export function getStateOnChangePropName(state: State) {
   const onChangeParam = state.onChangeParam;
   return onChangeParam ? toVarName(onChangeParam.variable.name) : undefined;
+}
+
+export function getComponentStateOnChangePropNames(
+  component: Component,
+  node: TplComponent
+) {
+  return new Set(
+    withoutNils(
+      component.states.map((state) =>
+        state.tplNode === node && !!state.implicitState
+          ? getStateOnChangePropName(state.implicitState)
+          : null
+      )
+    )
+  );
 }
 
 export function isPrivateState(state: State) {

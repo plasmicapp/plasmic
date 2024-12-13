@@ -223,6 +223,7 @@ import {
   allStyleTokens,
 } from "@/wab/shared/core/sites";
 import {
+  getComponentStateOnChangePropNames,
   getLastPartOfImplicitStateName,
   getStateDisplayName,
   getStateOnChangePropName,
@@ -314,6 +315,7 @@ import {
   deriveSizeStyleValue,
   getPageComponentSizeType,
 } from "@/wab/shared/sizingutils";
+import { JsIdentifier } from "@/wab/shared/utils/regex-js-identifier";
 import { makeVariantComboSorter } from "@/wab/shared/variant-sort";
 import L from "lodash";
 import { shouldUsePlasmicImg } from "src/wab/shared/codegen/react-p/image";
@@ -1470,23 +1472,43 @@ export function serializeTplTagBase(
 
 function mergeEventHandlers(
   userAttrs: Record<string, string>,
-  builtinEventHandlers: Record<string, string[]>
+  builtinEventHandlers: Record<string, string[]>,
+  onChangeAttrs: Set<JsIdentifier> = new Set()
 ) {
-  const chained = (handlerCodes: string[]) => {
-    if (handlerCodes.length === 1) {
-      return handlerCodes[0];
-    } else {
-      return `async (...eventArgs: any) => {
-        ${handlerCodes
-          .map((code) => `(${code}).apply(null, eventArgs);`)
-          .join("\n")}
-      }`;
+  const chainedFunctionCall = (code: string) =>
+    `(${code}).apply(null, eventArgs);`;
+
+  // When dealing with event handlers for plasmic state updates, we won't call the user's event handler
+  // during the state initialization phase. This is provided by the second argument of the event handler
+  // which is a boolean indicating whether the onChange event is triggered during the state initialization phase.
+  const maybeHaltUserAttr = (attr: string) => {
+    if (onChangeAttrs.has(toJsIdentifier(attr))) {
+      return `if(eventArgs.length > 1 && eventArgs[1]) {
+  return;
+}`;
     }
+    return "";
+  };
+
+  const chained = (
+    attr: string,
+    attrBuiltinEventHandlers: string[],
+    userAttr: string[]
+  ) => {
+    return `async (...eventArgs: any) => {
+        ${attrBuiltinEventHandlers.map(chainedFunctionCall).join("\n")}
+
+        ${maybeHaltUserAttr(attr)}
+
+        ${userAttr.map(chainedFunctionCall).join("\n")}
+      }`;
   };
 
   for (const key of Object.keys(builtinEventHandlers)) {
     userAttrs[key] = chained(
-      withoutNils([...builtinEventHandlers[key], userAttrs[key]])
+      key,
+      withoutNils(builtinEventHandlers[key]),
+      withoutNils([userAttrs[key]])
     );
   }
 }
@@ -1907,7 +1929,12 @@ export function serializeTplComponentBase(
           }`;
         }
       });
-    mergeEventHandlers(attrs, builtinEventHandlers);
+
+    mergeEventHandlers(
+      attrs,
+      builtinEventHandlers,
+      getComponentStateOnChangePropNames(ctx.component, node)
+    );
   }
 
   if (
