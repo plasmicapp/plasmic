@@ -4,7 +4,7 @@ import {
 } from "../../src/wab/shared/Labels";
 import { removeCurrentProject, setupNewProject } from "../support/util";
 
-xdescribe("generic-slots", function () {
+describe("generic-slots", function () {
   beforeEach(() => {
     setupNewProject({
       name: "generic-slots",
@@ -18,6 +18,7 @@ xdescribe("generic-slots", function () {
   it("can create, override content, edit default content", function () {
     cy.withinStudioIframe(() => {
       cy.createNewComponent("Widget").then((framed) => {
+        cy.focusFrameRoot(framed);
         cy.justLog("Draw a rect slot.");
         cy.justType("r");
         cy.drawRectRelativeToElt(framed.getFrame(), 10, 10, 50, 50);
@@ -27,6 +28,8 @@ xdescribe("generic-slots", function () {
           cy.justType("{shift}1");
 
           cy.justLog("Insert two Widgets.");
+          cy.focusFrameRoot(framed2);
+          cy.wait(500);
           cy.dragGalleryItemRelativeToElt("Widget", framed2.getFrame(), 10, 10);
           cy.dragGalleryItemRelativeToElt(
             "Widget",
