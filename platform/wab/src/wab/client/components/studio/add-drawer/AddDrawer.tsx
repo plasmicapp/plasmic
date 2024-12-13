@@ -307,6 +307,9 @@ export function createAddTplComponent(component: Component): AddTplItem {
       }
       return tpl;
     },
+    asyncExtraInfo: async (sc): Promise<any> => {
+      return { type: "existing", component };
+    },
     component,
   };
 }
