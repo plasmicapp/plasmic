@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import type { CheckboxGroupProps } from "react-aria-components";
 import { CheckboxGroup } from "react-aria-components";
 import { getCommonProps } from "./common";
 import { PlasmicCheckboxGroupContext } from "./contexts";
+import { OptionsItemIdManager } from "./OptionsItemIdManager";
 import {
   CHECKBOX_COMPONENT_NAME,
   makeDefaultCheckboxChildren,
@@ -11,17 +12,22 @@ import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import {
   CodeComponentMetaOverrides,
-  makeChildComponentName,
+  HasControlContextData,
   makeComponentName,
   Registerable,
   registerComponentHelper,
 } from "./utils";
 import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
+export interface BaseCheckboxControlContextData {
+  values: string[];
+}
+
 const CHECKBOX_GROUP_VARIANTS = ["disabled" as const, "readonly" as const];
 
 export interface BaseCheckboxGroupProps
   extends CheckboxGroupProps,
+    HasControlContextData<BaseCheckboxControlContextData>,
     WithVariants<typeof CHECKBOX_GROUP_VARIANTS> {
   children?: React.ReactNode;
 }
@@ -31,10 +37,25 @@ const { variants, withObservedValues } = pickAriaComponentVariants(
 );
 
 export function BaseCheckboxGroup(props: BaseCheckboxGroupProps) {
-  const { children, plasmicUpdateVariant, ...rest } = props;
+  const { children, plasmicUpdateVariant, setControlContextData, ...rest } =
+    props;
+  const [ids, setIds] = useState<string[]>([]);
+  const idManager = useMemo(() => new OptionsItemIdManager(), []);
+
+  useEffect(() => {
+    setControlContextData?.({
+      values: ids,
+    });
+  }, [ids, setControlContextData]);
+
+  useEffect(() => {
+    idManager.subscribe((_ids: string[]) => {
+      setIds(_ids);
+    });
+  }, [idManager]);
 
   return (
-    <PlasmicCheckboxGroupContext.Provider value={rest}>
+    <PlasmicCheckboxGroupContext.Provider value={{ ...rest, idManager }}>
       <CheckboxGroup {...rest}>
         {({ isDisabled, isReadOnly }) =>
           withObservedValues(
@@ -57,11 +78,6 @@ export function registerCheckboxGroup(
   loader?: Registerable,
   overrides?: CodeComponentMetaOverrides<typeof BaseCheckboxGroup>
 ) {
-  const thisName = makeChildComponentName(
-    overrides?.parentComponentName,
-    componentName
-  );
-
   registerComponentHelper(
     loader,
     BaseCheckboxGroup,
@@ -150,10 +166,12 @@ export function registerCheckboxGroup(
           ],
         },
         value: {
-          type: "array",
+          type: "choice",
           editOnly: true,
           uncontrolledProp: "defaultValue",
           description: "The current value",
+          options: (_props, ctx) => (ctx?.values ? Array.from(ctx.values) : []),
+          multiSelect: true,
         },
         isInvalid: {
           displayName: "Invalid",

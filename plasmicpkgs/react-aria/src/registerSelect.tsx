@@ -11,7 +11,7 @@ import {
   PlasmicListBoxContext,
   PlasmicPopoverTriggerContext,
 } from "./contexts";
-import { ListBoxItemIdManager } from "./ListBoxItemIdManager";
+import { OptionsItemIdManager } from "./OptionsItemIdManager";
 import { BUTTON_COMPONENT_NAME } from "./registerButton";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { LIST_BOX_COMPONENT_NAME } from "./registerListBox";
@@ -115,7 +115,7 @@ export function BaseSelect(props: BaseSelectProps) {
     "aria-label": ariaLabel,
   } = props;
 
-  const idManager = useMemo(() => new ListBoxItemIdManager(), []);
+  const idManager = useMemo(() => new OptionsItemIdManager(), []);
 
   useEffect(() => {
     idManager.subscribe((ids: string[]) => {

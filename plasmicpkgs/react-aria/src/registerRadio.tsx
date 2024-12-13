@@ -1,11 +1,12 @@
 import { PlasmicElement } from "@plasmicapp/host";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import type { RadioProps } from "react-aria-components";
 import { Radio, RadioGroup } from "react-aria-components";
 import { getCommonProps } from "./common";
 import { PlasmicRadioGroupContext } from "./contexts";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import {
+  BaseControlContextData,
   CodeComponentMetaOverrides,
   HasControlContextData,
   Registerable,
@@ -25,9 +26,13 @@ const RADIO_VARIANTS = [
   "selected" as const,
 ];
 
+export interface BaseRadioControlContextData extends BaseControlContextData {
+  idError?: string;
+}
+
 export interface BaseRadioProps
   extends RadioProps,
-    HasControlContextData,
+    HasControlContextData<BaseRadioControlContextData>,
     WithVariants<typeof RADIO_VARIANTS> {
   children: React.ReactNode;
 }
@@ -36,17 +41,52 @@ const { variants, withObservedValues } =
   pickAriaComponentVariants(RADIO_VARIANTS);
 
 export function BaseRadio(props: BaseRadioProps) {
-  const { children, setControlContextData, plasmicUpdateVariant, ...rest } =
-    props;
+  const {
+    children,
+    setControlContextData,
+    plasmicUpdateVariant,
+    value,
+    ...rest
+  } = props;
   const contextProps = React.useContext(PlasmicRadioGroupContext);
   const isStandalone = !contextProps;
+  const [registeredId, setRegisteredId] = useState<string>("");
+
+  useEffect(() => {
+    if (!contextProps?.idManager) {
+      return;
+    }
+
+    const localId = contextProps.idManager.register(value);
+    setRegisteredId(localId);
+
+    return () => {
+      contextProps.idManager.unregister(localId);
+      setRegisteredId("");
+    };
+  }, [value, contextProps?.idManager]);
 
   setControlContextData?.({
     parent: contextProps,
+    idError: (() => {
+      if (value === undefined) {
+        return "Value must be defined";
+      }
+      if (typeof value !== "string") {
+        return "Value must be a string";
+      }
+      if (!value.trim()) {
+        return "Value must be defined";
+      }
+      if (!isStandalone && value != registeredId) {
+        return "Value must be unique";
+      }
+      return undefined;
+    })(),
   });
 
   const radio = (
-    <Radio {...rest}>
+    <Radio {...rest} value={registeredId} key={registeredId}>
       {({
         isHovered,
         isPressed,
@@ -141,6 +181,12 @@ export function registerRadio(
           type: "string",
           description:
             "The value of the input element, used when submitting an HTML form.",
+          validator: (_value, _props, ctx) => {
+            if (ctx?.idError) {
+              return ctx.idError;
+            }
+            return true;
+          },
         },
       },
       trapsFocus: true,

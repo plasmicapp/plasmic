@@ -1,6 +1,6 @@
 type Observer = (ids: string[]) => void;
 
-export class ListBoxItemIdManager {
+export class OptionsItemIdManager {
   private readonly _ids: Set<string> = new Set();
   private readonly _observers: Set<Observer> = new Set();
 

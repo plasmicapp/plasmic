@@ -11,7 +11,7 @@ import {
   PlasmicListBoxContext,
   PlasmicPopoverTriggerContext,
 } from "./contexts";
-import { ListBoxItemIdManager } from "./ListBoxItemIdManager";
+import { OptionsItemIdManager } from "./OptionsItemIdManager";
 import { BUTTON_COMPONENT_NAME } from "./registerButton";
 import { INPUT_COMPONENT_NAME } from "./registerInput";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
@@ -85,7 +85,7 @@ export function BaseComboBox(props: BaseComboboxProps) {
     [className, plasmicUpdateVariant]
   );
 
-  const idManager = useMemo(() => new ListBoxItemIdManager(), []);
+  const idManager = useMemo(() => new OptionsItemIdManager(), []);
 
   useEffect(() => {
     idManager.subscribe((ids: string[]) => {

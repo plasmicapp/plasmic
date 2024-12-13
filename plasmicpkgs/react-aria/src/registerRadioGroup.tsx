@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import type { RadioGroupProps } from "react-aria-components";
 import { RadioGroup } from "react-aria-components";
 import { getCommonProps } from "./common";
 import { PlasmicRadioGroupContext } from "./contexts";
+import { OptionsItemIdManager } from "./OptionsItemIdManager";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { makeDefaultRadioChildren, registerRadio } from "./registerRadio";
 import {
   CodeComponentMetaOverrides,
+  HasControlContextData,
   Registerable,
   makeChildComponentName,
   makeComponentName,
@@ -15,10 +17,15 @@ import {
 } from "./utils";
 import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
 
+export interface BaseRadioGroupControlContextData {
+  values: string[];
+}
+
 const RADIO_GROUP_VARIANTS = ["disabled" as const, "readonly" as const];
 
 export interface BaseRadioGroupProps
   extends RadioGroupProps,
+    HasControlContextData<BaseRadioGroupControlContextData>,
     WithVariants<typeof RADIO_GROUP_VARIANTS> {
   children: React.ReactNode;
 }
@@ -27,10 +34,26 @@ const { variants, withObservedValues } =
   pickAriaComponentVariants(RADIO_GROUP_VARIANTS);
 
 export function BaseRadioGroup(props: BaseRadioGroupProps) {
-  const { children, plasmicUpdateVariant, ...rest } = props;
+  const { children, plasmicUpdateVariant, setControlContextData, ...rest } =
+    props;
+
+  const [ids, setIds] = useState<string[]>([]);
+  const idManager = useMemo(() => new OptionsItemIdManager(), []);
+
+  useEffect(() => {
+    setControlContextData?.({
+      values: ids,
+    });
+  }, [ids, setControlContextData]);
+
+  useEffect(() => {
+    idManager.subscribe((_ids: string[]) => {
+      setIds(_ids);
+    });
+  }, [idManager]);
 
   return (
-    <PlasmicRadioGroupContext.Provider value={props}>
+    <PlasmicRadioGroupContext.Provider value={{ ...props, idManager }}>
       <RadioGroup {...rest}>
         {({ isDisabled, isReadOnly }) =>
           withObservedValues(
@@ -139,11 +162,13 @@ export function registerRadioGroup(
           ],
         },
         value: {
-          type: "string",
+          type: "choice",
           editOnly: true,
           displayName: "Initial value",
           uncontrolledProp: "defaultValue",
           description: "The current value",
+          options: (_props, ctx) => (ctx?.values ? Array.from(ctx.values) : []),
+          multiSelect: false,
         },
         isInvalid: {
           displayName: "Invalid",

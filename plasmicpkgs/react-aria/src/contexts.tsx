@@ -1,5 +1,5 @@
 import React from "react";
-import { ListBoxItemIdManager } from "./ListBoxItemIdManager";
+import { OptionsItemIdManager } from "./OptionsItemIdManager";
 import { BaseCheckboxGroup } from "./registerCheckboxGroup";
 import { BaseDialogTrigger } from "./registerDialogTrigger";
 import type { BaseInput } from "./registerInput";
@@ -22,11 +22,17 @@ export const PlasmicTextFieldContext = React.createContext<
 >(undefined);
 
 export const PlasmicCheckboxGroupContext = React.createContext<
-  React.ComponentProps<typeof BaseCheckboxGroup> | undefined
+  | (React.ComponentProps<typeof BaseCheckboxGroup> & {
+      idManager: OptionsItemIdManager;
+    })
+  | undefined
 >(undefined);
 
 export const PlasmicRadioGroupContext = React.createContext<
-  React.ComponentProps<typeof BaseRadioGroup> | undefined
+  | (React.ComponentProps<typeof BaseRadioGroup> & {
+      idManager: OptionsItemIdManager;
+    })
+  | undefined
 >(undefined);
 
 export const PlasmicDialogTriggerContext = React.createContext<
@@ -50,7 +56,7 @@ export const PlasmicPopoverTriggerContext = React.createContext<
 
 export const PlasmicListBoxContext = React.createContext<
   | {
-      idManager: ListBoxItemIdManager;
+      idManager: OptionsItemIdManager;
     }
   | undefined
 >(undefined);

@@ -1,10 +1,11 @@
 import { PlasmicElement } from "@plasmicapp/host";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import type { CheckboxProps } from "react-aria-components";
 import { Checkbox } from "react-aria-components";
 import { getCommonProps, hasParent } from "./common";
 import { PlasmicCheckboxGroupContext } from "./contexts";
 import {
+  BaseControlContextData,
   CodeComponentMetaOverrides,
   HasControlContextData,
   Registerable,
@@ -25,9 +26,13 @@ const CHECKBOX_VARIANTS = [
   "selected" as const,
 ];
 
+export interface BaseCheckboxControlContextData extends BaseControlContextData {
+  idError?: string;
+}
+
 interface BaseCheckboxProps
   extends CheckboxProps,
-    HasControlContextData,
+    HasControlContextData<BaseCheckboxControlContextData>,
     WithVariants<typeof CHECKBOX_VARIANTS> {
   children: React.ReactNode;
 }
@@ -36,17 +41,54 @@ const { variants, withObservedValues } =
   pickAriaComponentVariants(CHECKBOX_VARIANTS);
 
 export function BaseCheckbox(props: BaseCheckboxProps) {
-  const { children, plasmicUpdateVariant, setControlContextData, ...rest } =
-    props;
+  const {
+    children,
+    plasmicUpdateVariant,
+    setControlContextData,
+    value,
+    ...rest
+  } = props;
   const contextProps = React.useContext(PlasmicCheckboxGroupContext);
+  const isStandalone = !contextProps;
+
+  const [registeredId, setRegisteredId] = useState<string | undefined>();
+
+  useEffect(() => {
+    if (!contextProps?.idManager) {
+      return;
+    }
+
+    const localId = contextProps.idManager.register(value);
+    setRegisteredId(localId);
+
+    return () => {
+      contextProps.idManager.unregister(localId);
+      setRegisteredId(undefined);
+    };
+  }, [value, contextProps?.idManager]);
 
   setControlContextData?.({
     parent: contextProps,
+    idError: (() => {
+      if (value === undefined) {
+        return "Value must be defined";
+      }
+      if (typeof value !== "string") {
+        return "Value must be a string";
+      }
+      if (!value.trim()) {
+        return "Value must be defined";
+      }
+      if (!isStandalone && value != registeredId) {
+        return "Value must be unique";
+      }
+      return undefined;
+    })(),
   });
 
   return (
     <>
-      <Checkbox {...rest}>
+      <Checkbox {...rest} value={registeredId} key={registeredId}>
         {({
           isHovered,
           isPressed,
@@ -166,6 +208,12 @@ export function registerCheckbox(
           description:
             'The value of the checkbox in "selected" state, used when submitting an HTML form.',
           defaultValueHint: "on",
+          validator: (_value, _props, ctx) => {
+            if (ctx?.idError) {
+              return ctx.idError;
+            }
+            return true;
+          },
         },
         isSelected: {
           type: "boolean",
