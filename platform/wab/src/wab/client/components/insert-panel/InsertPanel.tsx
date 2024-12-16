@@ -216,15 +216,29 @@ export const InsertPanel = observer(function InsertPanel_({
 // export const InsertPanel = React.forwardRef(InsertPanel_);
 export default InsertPanel;
 
+/**
+ * Returns true if the item should show a full height preview.
+ * Returns false if the item should show a short height row with an icon.
+ */
 const shouldShowPreview = (group: AddItemGroup): boolean => {
-  // We should only show the preview image in AddDrawer under these conditions
+  if (
+    group.sectionKey === "Code Libraries" ||
+    group.familyKey === "imported-packages"
+  ) {
+    return false;
+  }
+
+  // All items in the section are like this
+  if (group.items.every((i) => !!i.previewImageUrl || !!i.previewVideoUrl)) {
+    return true;
+  }
+  if (group.items.every((i) => !i.previewImageUrl && !i.previewVideoUrl)) {
+    return false;
+  }
+
   return (
-    group.sectionKey !== "Code Libraries" &&
-    group.familyKey !== "imported-packages" &&
-    (group.sectionKey === "insertable-templates" ||
-      group.familyKey === "hostless-packages" ||
-      // All items in the section are like this
-      group.items.every((i) => !!i.previewImageUrl || !!i.previewVideoUrl))
+    group.sectionKey === "insertable-templates" ||
+    group.familyKey === "hostless-packages"
   );
 };
 // Compact only works when we should preview
