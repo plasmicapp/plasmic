@@ -412,13 +412,13 @@ function NavigationDropdown_(
               chosenTemplate.projectId && chosenTemplate.componentName,
               ""
             );
+
             const { screenVariant } =
               await getScreenVariantToInsertableTemplate(studioCtx);
             info = await studioCtx.appCtx.app.withSpinner(
               buildInsertableExtraInfo(
                 studioCtx,
-                chosenTemplate.projectId,
-                chosenTemplate.componentName,
+                chosenTemplate as { projectId: string; componentName: string },
                 screenVariant
               )
             );

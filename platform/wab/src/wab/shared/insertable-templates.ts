@@ -27,6 +27,7 @@ import {
   inlineSlots,
 } from "@/wab/shared/insertable-templates/inliners";
 import {
+  CloneOpts,
   CopyStateExtraInfo,
   InlineComponentContext,
   InsertableTemplateArenaExtraInfo,
@@ -95,7 +96,8 @@ export function cloneInsertableTemplateArena(
 export function cloneInsertableTemplateComponent(
   site: Site,
   info: InsertableTemplateComponentExtraInfo,
-  plumeSite: Site | undefined
+  plumeSite: Site | undefined,
+  opts?: CloneOpts
 ) {
   const seenFonts = new Set<string>();
 
@@ -121,7 +123,10 @@ export function cloneInsertableTemplateComponent(
     tokenImporter
   );
 
-  return { component: componentImporter(info.component), seenFonts };
+  return {
+    component: componentImporter(info.component, opts),
+    seenFonts,
+  };
 }
 
 export function getUnownedTreeCloneUtils(

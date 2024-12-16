@@ -5,6 +5,7 @@ import {
   getValidInsertLocs,
   InsertRelLoc,
 } from "@/wab/client/components/canvas/view-ops";
+import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import S from "@/wab/client/components/insert-panel/InsertPanel.module.scss";
 import InsertPanelTabGroup from "@/wab/client/components/insert-panel/InsertPanelTabGroup";
 import InsertPanelTabItem from "@/wab/client/components/insert-panel/InsertPanelTabItem";
@@ -42,6 +43,7 @@ import {
   AddItemType,
   AddTplItem,
   INSERTABLES_MAP,
+  isTemplateComponent,
   isTplAddItem,
 } from "@/wab/client/definitions/insertables";
 import { DragInsertManager } from "@/wab/client/Dnd";
@@ -126,6 +128,7 @@ import {
   InsertPanelConfig,
 } from "@/wab/shared/ui-config-utils";
 import { placeholderImgUrl } from "@/wab/shared/urls";
+import { Menu } from "antd";
 import cn from "classnames";
 import { UseComboboxGetItemPropsOptions } from "downshift";
 import L, { groupBy, last, uniq } from "lodash";
@@ -470,8 +473,8 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
     const index = allSectionKeysFlattened.findIndex((sec) => sec === section);
     const nextSection =
       allSectionKeysFlattened[
-        (index + step + allSectionKeysFlattened.length) %
-          allSectionKeysFlattened.length
+      (index + step + allSectionKeysFlattened.length) %
+      allSectionKeysFlattened.length
       ];
     setSection(nextSection);
     // This does not work because of some mysterious interaction with the focus tricks we're playing. Not digging into this for now.
@@ -691,20 +694,20 @@ const AddDrawerContext = React.createContext<AddDrawerContextValue | undefined>(
 
 type VirtualItem =
   | {
-      type: "header";
-      group: AddItemGroup;
-      item?: never;
-    }
+    type: "header";
+    group: AddItemGroup;
+    item?: never;
+  }
   | {
-      type: "item";
-      item: AddItem;
-      group: AddItemGroup;
-      itemIndex: number;
-    }
+    type: "item";
+    item: AddItem;
+    group: AddItemGroup;
+    itemIndex: number;
+  }
   | {
-      type: "separator";
-      item?: never;
-    };
+    type: "separator";
+    item?: never;
+  };
 
 const Row = React.memo(function Row(props: {
   data: VirtualItem[][];
@@ -773,70 +776,97 @@ const Row = React.memo(function Row(props: {
           const showCompact = shouldShowCompact(virtualItem);
           const width = showCompact ? compactItemWidth : "100%";
           return (
-            <li
-              {...getItemProps({ item, index: itemIndex })}
-              aria-label={item.label}
-              data-plasmic-add-item-name={item.systemName ?? item.label}
-              role="option"
-              className={item.type === "tpl" ? "grabbable" : ""}
-              style={{
-                width,
-                minWidth: width,
-                maxWidth: width,
-              }}
+            <MaybeWrap
+              cond={isTemplateComponent(item)}
+              wrapper={(children) => (
+                <WithContextMenu
+                  className="pass-through"
+                  overlay={() => (
+                    <Menu>
+                      <Menu.Item
+                        onClick={async () => {
+                          // safe because of `cond={isTemplateComponent(item)}` check
+                          const addTplItem = item as AddTplItem;
+                          const tplNode = await studioCtx.tryInsertTplItem(addTplItem, {
+                            skipDuplicateCheck: true,
+                          });
+                          onInserted(addTplItem, tplNode);
+                        }}
+                      >
+                        Create a new copy of this component
+                      </Menu.Item>
+                    </Menu>
+                  )}
+                >
+                  {children}
+                </WithContextMenu>
+              )}
             >
-              <MaybeWrap
-                cond={isTplAddItem(item)}
-                wrapper={(children) => (
-                  <DraggableInsertable
-                    key={item.key}
-                    shouldInterceptInsert={shouldInterceptOnInsert}
-                    sc={studioCtx}
-                    spec={item as AddTplItem}
-                    onDragStart={onDragStart}
-                    onDragEnd={onDragEnd}
-                  >
-                    {children}
-                  </DraggableInsertable>
-                )}
+              <li
+                {...getItemProps({ item, index: itemIndex })}
+                aria-label={item.label}
+                data-plasmic-add-item-name={item.systemName ?? item.label}
+                role="option"
+                className={item.type === "tpl" ? "grabbable" : ""}
+                style={{
+                  width,
+                  minWidth: width,
+                  maxWidth: width,
+                }}
               >
-                {showPreview ? (
-                  <OmnibarAddItem
-                    title={item.label}
-                    hoverText={
-                      item["hostLessPackageInfo"]?.syntheticPackage
-                        ? "Show package"
-                        : "Install package"
-                    }
-                    _new={item.isNew}
-                    installOnly={item["isPackage"]}
-                    preview={
-                      item.previewImageUrl
-                        ? "image"
-                        : item.previewVideoUrl
-                        ? "video"
-                        : undefined
-                    }
-                    previewImageUrl={item.previewImageUrl}
-                    previewVideoUrl={item.previewVideoUrl}
-                    focused={highlightedItemIndex === itemIndex}
-                  />
-                ) : (
-                  <AddDrawerItem
-                    key={item.key}
-                    studioCtx={studioCtx}
-                    item={item}
-                    matcher={matcher}
-                    isHighlighted={highlightedItemIndex === itemIndex}
-                    validTplLocs={validTplLocs}
-                    onInserted={(tplNode) => {
-                      onInserted(item, tplNode);
-                    }}
-                    indent={indent}
-                  />
-                )}
-              </MaybeWrap>
-            </li>
+                <MaybeWrap
+                  cond={isTplAddItem(item)}
+                  wrapper={(children) => (
+                    <DraggableInsertable
+                      key={item.key}
+                      shouldInterceptInsert={shouldInterceptOnInsert}
+                      sc={studioCtx}
+                      spec={item as AddTplItem}
+                      onDragStart={onDragStart}
+                      onDragEnd={onDragEnd}
+                    >
+                      {children}
+                    </DraggableInsertable>
+                  )}
+                >
+                  {showPreview ? (
+                    <OmnibarAddItem
+                      title={item.label}
+                      hoverText={
+                        item["hostLessPackageInfo"]?.syntheticPackage
+                          ? "Show package"
+                          : "Install package"
+                      }
+                      _new={item.isNew}
+                      installOnly={item["isPackage"]}
+                      preview={
+                        item.previewImageUrl
+                          ? "image"
+                          : item.previewVideoUrl
+                            ? "video"
+                            : undefined
+                      }
+                      previewImageUrl={item.previewImageUrl}
+                      previewVideoUrl={item.previewVideoUrl}
+                      focused={highlightedItemIndex === itemIndex}
+                    />
+                  ) : (
+                    <AddDrawerItem
+                      key={item.key}
+                      studioCtx={studioCtx}
+                      item={item}
+                      matcher={matcher}
+                      isHighlighted={highlightedItemIndex === itemIndex}
+                      validTplLocs={validTplLocs}
+                      onInserted={(tplNode) => {
+                        onInserted(item, tplNode);
+                      }}
+                      indent={indent}
+                    />
+                  )}
+                </MaybeWrap>
+              </li>
+            </MaybeWrap>
           );
         } else if (virtualItem.type === "separator") {
           return (
@@ -857,7 +887,7 @@ const Row = React.memo(function Row(props: {
     </li>
   );
 },
-areEqual);
+  areEqual);
 
 const getTemplateComponents = memoizeOne(function getTemplateComponent(
   studioCtx: StudioCtx
@@ -963,9 +993,8 @@ function getCodeComponentsGroups(studioCtx: StudioCtx): AddItemGroup[] {
         return Object.entries(subGroups).map(
           ([subSection, subSectionComponents]) => {
             return {
-              key: `code-components-${section}${
-                subSection ? `-${subSection}` : ""
-              }`,
+              key: `code-components-${section}${subSection ? `-${subSection}` : ""
+                }`,
               isHeaderLess: !subSection,
               sectionKey: section,
               sectionLabel: section,
@@ -1286,18 +1315,18 @@ export function buildAddItemGroups({
 
     // Insertable Templates
     ...(!isApp &&
-    (!contentEditorMode || customInsertableTemplates) &&
-    !!insertableTemplatesMeta
+      (!contentEditorMode || customInsertableTemplates) &&
+      !!insertableTemplatesMeta
       ? insertableTemplatesMeta.items
-          .filter(
-            (i) =>
-              i.type === "insertable-templates-group" &&
-              i.onlyShownIn !== "old" &&
-              !i.isPageTemplatesGroup
-          )
-          .map((g) =>
-            getInsertableTemplatesSection(g as InsertableTemplatesGroup)
-          )
+        .filter(
+          (i) =>
+            i.type === "insertable-templates-group" &&
+            i.onlyShownIn !== "old" &&
+            !i.isPageTemplatesGroup
+        )
+        .map((g) =>
+          getInsertableTemplatesSection(g as InsertableTemplatesGroup)
+        )
       : []),
 
     canInsertAlias(uiConfig, "icon", canInsertContext) && {
@@ -1319,15 +1348,15 @@ export function buildAddItemGroups({
     },
 
     includeFrames &&
-      canInsertAlias(uiConfig, "frame", canInsertContext) && {
-        key: "frames",
-        label: FRAMES_CAP,
-        items: [
-          INSERTABLES_MAP.pageFrame,
-          INSERTABLES_MAP.componentFrame,
-          INSERTABLES_MAP.screenFrame,
-        ],
-      },
+    canInsertAlias(uiConfig, "frame", canInsertContext) && {
+      key: "frames",
+      label: FRAMES_CAP,
+      items: [
+        INSERTABLES_MAP.pageFrame,
+        INSERTABLES_MAP.componentFrame,
+        INSERTABLES_MAP.screenFrame,
+      ],
+    },
 
     // Plume components.
     // List both un-materialized and all materialized Plume components.
@@ -1342,53 +1371,53 @@ export function buildAddItemGroups({
     // You can choose to show the package, but it's temporary to the session.
     // The section won't show when you re-open the project, you need to choose to re-show it.
     canInsertHostlessPackage(uiConfig, "plume", canInsertContext) &&
-      studioCtx.shownSyntheticSections.get("plume") && {
-        key: "synthetic-plume",
-        label: 'Customizable "headless" components',
-        sectionLabel: "Headless components",
-        familyKey: "imported-packages",
-        items: naturalSort(
-          [
-            ...sortComponentsByName(
-              studioCtx.site.components.filter((c) => c.plumeInfo)
-            ).map((comp) => createAddTplComponent(comp)),
-            ...makePlumeInsertables(studioCtx).map((item) => ({
-              ...item,
-              previewImageUrl: undefined,
-            })),
-          ],
-          (item) => item.label
-        ),
-      },
+    studioCtx.shownSyntheticSections.get("plume") && {
+      key: "synthetic-plume",
+      label: 'Customizable "headless" components',
+      sectionLabel: "Headless components",
+      familyKey: "imported-packages",
+      items: naturalSort(
+        [
+          ...sortComponentsByName(
+            studioCtx.site.components.filter((c) => c.plumeInfo)
+          ).map((comp) => createAddTplComponent(comp)),
+          ...makePlumeInsertables(studioCtx).map((item) => ({
+            ...item,
+            previewImageUrl: undefined,
+          })),
+        ],
+        (item) => item.label
+      ),
+    },
 
     hasPlexus
       ? {
-          key: "ui-kits",
-          sectionLabel: "Design systems",
-          sectionKey: "Design systems",
-          familyKey: "hostless-packages",
-          isHeaderLess: true,
-          items: studioCtx.appCtx.appConfig.installables
-            .filter((meta) => meta.type === "ui-kit")
-            .map(createAddInstallable),
-        }
+        key: "ui-kits",
+        sectionLabel: "Design systems",
+        sectionKey: "Design systems",
+        familyKey: "hostless-packages",
+        isHeaderLess: true,
+        items: studioCtx.appCtx.appConfig.installables
+          .filter((meta) => meta.type === "ui-kit")
+          .map(createAddInstallable),
+      }
       : undefined,
     canInsertHostlessPackage(uiConfig, "unstyled", canInsertContext) &&
-      studioCtx.shownSyntheticSections.get("unstyled") && {
-        key: "synthetic-unstyled",
-        label: "More HTML elements",
-        sectionLabel: "More HTML elements",
-        familyKey: "imported-packages",
-        items: [
-          INSERTABLES_MAP.button,
-          INSERTABLES_MAP.textbox,
-          INSERTABLES_MAP.password,
-          INSERTABLES_MAP.textarea,
-          INSERTABLES_MAP.ul,
-          INSERTABLES_MAP.ol,
-          INSERTABLES_MAP.li,
-        ],
-      },
+    studioCtx.shownSyntheticSections.get("unstyled") && {
+      key: "synthetic-unstyled",
+      label: "More HTML elements",
+      sectionLabel: "More HTML elements",
+      familyKey: "imported-packages",
+      items: [
+        INSERTABLES_MAP.button,
+        INSERTABLES_MAP.textbox,
+        INSERTABLES_MAP.password,
+        INSERTABLES_MAP.textarea,
+        INSERTABLES_MAP.ul,
+        INSERTABLES_MAP.ol,
+        INSERTABLES_MAP.li,
+      ],
+    },
 
     // Imported hostless packages
     ...naturalSort(
@@ -1406,7 +1435,7 @@ export function buildAddItemGroups({
                 !(hostLessComponentsMeta ?? []).some(
                   (group) =>
                     getLeafProjectIdForHostLessPackageMeta(group) ===
-                      dep.projectId && group.hiddenWhenInstalled
+                    dep.projectId && group.hiddenWhenInstalled
                 )
             )
           ).map((comp) => createAddTplComponent(comp)),
@@ -1441,27 +1470,27 @@ export function buildAddItemGroups({
 
     ...(!!hostLessComponentsMeta
       ? getHostLess(studioCtx)
-          .filter((group) =>
-            canInsertHostlessPackage(
-              uiConfig,
-              group.codeName!,
-              canInsertContext
-            )
+        .filter((group) =>
+          canInsertHostlessPackage(
+            uiConfig,
+            group.codeName!,
+            canInsertContext
           )
-          .map((group) => ({
-            ...group,
-            items: group.items.filter(
-              // We want to hide the listings that were shown in "Default components"
-              // This is just a simple way to ensure things don't show up in both menus.
-              (item) => {
-                if (isTplAddItem(item) && item.systemName) {
-                  return !installedHostlessComponents.has(item.systemName);
-                } else {
-                  return true;
-                }
+        )
+        .map((group) => ({
+          ...group,
+          items: group.items.filter(
+            // We want to hide the listings that were shown in "Default components"
+            // This is just a simple way to ensure things don't show up in both menus.
+            (item) => {
+              if (isTplAddItem(item) && item.systemName) {
+                return !installedHostlessComponents.has(item.systemName);
+              } else {
+                return true;
               }
-            ),
-          }))
+            }
+          ),
+        }))
       : []),
   ]);
 

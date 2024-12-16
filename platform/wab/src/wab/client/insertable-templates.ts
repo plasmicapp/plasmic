@@ -260,22 +260,36 @@ export const getHostLessDependenciesToInsertableTemplate = async (
 
 export async function buildInsertableExtraInfo(
   studioCtx: StudioCtx,
-  projectId: string,
-  componentName: string,
+  componentMeta: {
+    projectId: string;
+    componentName?: string;
+    componentId?: string;
+  },
   screenVariant: Variant | undefined
 ): Promise<InsertableTemplateComponentExtraInfo | undefined> {
+  const { componentName, componentId, projectId } = componentMeta;
+
+  if (!componentName && !componentId) {
+    return undefined;
+  }
+
   await studioCtx.projectDependencyManager.fetchInsertableTemplate(projectId);
 
   const it = studioCtx.projectDependencyManager.getInsertableTemplate({
     projectId,
     componentName,
+    componentId,
   });
   if (!it) {
     return undefined;
   }
 
+  const compName =
+    componentName ??
+    it.site.components.find((c) => c.uuid === componentId)?.name;
+
   const template = getAllTemplates(studioCtx).find(
-    (c) => c.projectId === projectId && c.componentName === componentName
+    (c) => c.projectId === projectId && c.componentName === compName
   );
 
   return {

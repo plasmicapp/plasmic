@@ -565,7 +565,8 @@ export class ProjectDependencyManager {
    */
   getInsertableTemplate(meta: {
     projectId: string;
-    componentName: string;
+    componentName?: string;
+    componentId?: string;
   }): { component: Component; site: Site } | undefined {
     const projectId = meta.projectId;
     if (!this.insertableSites[projectId]) {
@@ -574,7 +575,9 @@ export class ProjectDependencyManager {
 
     const site = this.insertableSites[projectId];
     const components = site.components.filter((c) => !isFrameComponent(c));
-    const component = components.find((c) => c.name === meta.componentName);
+    const component = components.find(
+      (c) => c.name === meta.componentName || c.uuid === meta.componentId
+    );
     return !component
       ? undefined
       : {

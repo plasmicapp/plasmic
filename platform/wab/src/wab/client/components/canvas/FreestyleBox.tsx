@@ -267,11 +267,7 @@ function insertFreestyleAsWrapper(viewCtx: ViewCtx, e: React.MouseEvent): void {
       $(targetElt as HTMLElement)
     );
     if (tplToWrap && (isTplTagOrComponent(tplToWrap) || isTplSlot(tplToWrap))) {
-      const newNode = freestyleState.spec.factory(
-        viewOps.viewCtx(),
-        undefined,
-        undefined
-      );
+      const newNode = freestyleState.spec.factory(viewOps.viewCtx(), undefined);
       if (newNode && isTplTag(newNode)) {
         const wrapper = ensureKnownTplTag($$$(newNode).clear().one());
         viewOps.insertAsParent(wrapper, tplToWrap);

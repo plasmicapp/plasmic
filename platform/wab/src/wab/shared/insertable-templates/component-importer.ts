@@ -17,12 +17,14 @@ import {
   makeImageAssetFixer,
 } from "@/wab/shared/insertable-templates/fixers";
 import { ensureHostLessDepComponent } from "@/wab/shared/insertable-templates/inliners";
-import { HostLessDependencies } from "@/wab/shared/insertable-templates/types";
+import {
+  CloneOpts,
+  HostLessDependencies,
+} from "@/wab/shared/insertable-templates/types";
 import {
   Component,
   ComponentTemplateInfo,
   Site,
-  TplComponent,
   TplNode,
   Variant,
 } from "@/wab/shared/model/classes";
@@ -37,7 +39,7 @@ interface OriginInfo {
 
 export type ComponentImporter = (
   comp: Component,
-  tpl?: TplComponent
+  opts?: CloneOpts
 ) => Component;
 
 export function importComponentsInTree(
@@ -48,7 +50,7 @@ export function importComponentsInTree(
 ) {
   for (const tpl of flattenTpls(tplTree)) {
     if (isTplComponent(tpl)) {
-      const newComp = importer(tpl.component, tpl);
+      const newComp = importer(tpl.component);
       if (tpl.component === newComp) {
         // If the component is the same, there's no need to swap it
         continue;
@@ -96,7 +98,7 @@ export function mkInsertableComponentImporter(
     }
   };
 
-  const getNewComponent = (comp: Component, tpl?: TplComponent) => {
+  const getNewComponent: ComponentImporter = (comp, opts) => {
     if (oldToNewComponent.has(comp)) {
       return oldToNewComponent.get(comp)!;
     }
@@ -153,20 +155,22 @@ export function mkInsertableComponentImporter(
       return plumeComp;
     }
 
-    const existing = site.components.find(
-      (c) =>
-        // We can match by name if the there is one in templateInfo, or by (projectId, componentId)
-        // we could also just match by componentId it should be hard to collide, but let's be safe
-        //
-        // It's important to note that components coming from dependencies sites will also be added
-        // with the template projectId
-        //
-        // We also check if the component is a valid replacement based in the params/variants
-        (c.templateInfo?.name &&
-          c.templateInfo?.name === comp.templateInfo?.name) ||
-        (c.templateInfo?.componentId === comp.uuid &&
-          c.templateInfo?.projectId === info.projectId)
-    );
+    const existing = opts?.skipDuplicateCheck
+      ? undefined
+      : site.components.find(
+          (c) =>
+            // We can match by name if the there is one in templateInfo, or by (projectId, componentId)
+            // we could also just match by componentId it should be hard to collide, but let's be safe
+            //
+            // It's important to note that components coming from dependencies sites will also be added
+            // with the template projectId
+            //
+            // We also check if the component is a valid replacement based in the params/variants
+            (c.templateInfo?.name &&
+              c.templateInfo?.name === comp.templateInfo?.name) ||
+            (c.templateInfo?.componentId === comp.uuid &&
+              c.templateInfo?.projectId === info.projectId)
+        );
     if (existing) {
       oldToNewComponent.set(comp, existing);
       return existing;

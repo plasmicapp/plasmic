@@ -54,6 +54,7 @@ import {
   HostLessPackageInfo,
 } from "@/wab/shared/devflags";
 import { Rect } from "@/wab/shared/geom";
+import { CloneOpts } from "@/wab/shared/insertable-templates/types";
 import { Arena, Component, TplNode, TplTag } from "@/wab/shared/model/classes";
 import L from "lodash";
 import * as React from "react";
@@ -111,15 +112,15 @@ export type AddFrameItem = AddItemCommon & {
   addDrawerPreviewImage?: string; // URL to a preview image
 };
 
+export type ExtraInfoOpts = {
+  isDragging?: boolean;
+} & CloneOpts;
+
 export type AddTplItem<T = any> = AddItemCommon & {
   key: AddItemKey | string;
   type: AddItemType.tpl | AddItemType.plume;
   // Assumed to run inside sc.change()
-  factory: (
-    viewCtx: ViewCtx,
-    extraInfo: T,
-    drawnRect?: Rect
-  ) => TplNode | undefined;
+  factory: (viewCtx: ViewCtx, extraInfo: T) => TplNode | undefined;
   /**
    * Assumed to be run just outside sc.change().
    * This will get called twice when user is dragging an item:
@@ -129,7 +130,7 @@ export type AddTplItem<T = any> = AddItemCommon & {
    */
   asyncExtraInfo?: (
     studioCtx: StudioCtx,
-    opts?: { isDragging: boolean }
+    opts?: ExtraInfoOpts
   ) => Promise<T | false>;
   canWrap?: boolean;
   component?: Component;
@@ -154,6 +155,18 @@ export type AddFakeItem<T = any> = AddItemCommon & {
 
 export function isTplAddItem(item: AddItem): item is AddTplItem {
   return item.type === AddItemType.tpl || item.type === AddItemType.plume;
+}
+
+export const INSERTABLE_TEMPLATE_COMPONENT_KEY_PREFIX =
+  "insertable-template-component-";
+
+export function isTemplateComponent(item: AddItem): boolean {
+  return (
+    isTplAddItem(item) &&
+    // Ensure that we have template info either within the component or in the item's devflag meta
+    (!!item.component?.templateInfo ||
+      item.key.startsWith(INSERTABLE_TEMPLATE_COMPONENT_KEY_PREFIX))
+  );
 }
 
 export type AddItem =

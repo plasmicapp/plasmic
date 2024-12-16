@@ -28,6 +28,7 @@ import {
   AddItem,
   AddItemType,
   AddTplItem,
+  INSERTABLE_TEMPLATE_COMPONENT_KEY_PREFIX,
   isTplAddItem,
 } from "@/wab/client/definitions/insertables";
 import {
@@ -76,7 +77,6 @@ import { codeLit } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
-import { allComponents } from "@/wab/shared/core/sites";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import { unbundleProjectDependency } from "@/wab/shared/core/tagged-unbundle";
 import * as Tpls from "@/wab/shared/core/tpls";
@@ -94,6 +94,7 @@ import {
   cloneInsertableTemplateComponent,
 } from "@/wab/shared/insertable-templates";
 import {
+  CloneOpts,
   InsertableTemplateArenaExtraInfo,
   InsertableTemplateComponentExtraInfo,
   InsertableTemplateExtraInfo,
@@ -287,7 +288,48 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
   };
 }
 
-export function createAddTplComponent(component: Component): AddTplItem {
+function cloneTemplateComponent(
+  vc: ViewCtx,
+  { skipDuplicateCheck, ...extraInfo }: CreateAddTemplateComponentExtraInfo,
+  defaultKind?: string
+) {
+  trackEvent("Insertable template component", {
+    insertableName: `${extraInfo.projectId}-${extraInfo.component.name}`,
+  });
+  const { component: comp, seenFonts } = cloneInsertableTemplateComponent(
+    vc.site,
+    extraInfo,
+    vc.studioCtx.projectDependencyManager.plumeSite,
+    { skipDuplicateCheck }
+  );
+  if (defaultKind) {
+    setTimeout(() => {
+      void vc.studioCtx.change(({ success }) => {
+        // ASK: If I try to do this, the Studio hangs (no longer responds to click events) and needs to be restarted. Why?
+        // I had to put it inside a settimeout and then wrap it in a .change to make it work.
+        vc.studioCtx
+          .tplMgr()
+          .addComponentToDefaultComponents(comp, defaultKind);
+        return success();
+      });
+    }, 1000);
+  }
+  postInsertableTemplate(vc.studioCtx, seenFonts);
+  return addTplComponent(vc, comp);
+}
+
+function addTplComponent(vc: ViewCtx, component: Component) {
+  const tpl = vc.variantTplMgr().mkTplComponentWithDefaults(component);
+  const plugin = getPlumeEditorPlugin(tpl.component);
+  if (plugin) {
+    plugin.onComponentInserted?.(component, tpl);
+  }
+  return tpl;
+}
+
+export function createAddTplComponent(
+  component: Component,
+): AddTplItem<CreateAddTplComponentExtraInfo> {
   return {
     type: AddItemType.tpl as const,
     key: `tpl-component-${component.uuid}`,
@@ -299,16 +341,52 @@ export function createAddTplComponent(component: Component): AddTplItem {
     ) : (
       COMPONENT_ICON
     ),
-    factory: (vc: ViewCtx) => {
-      const tpl = vc.variantTplMgr().mkTplComponentWithDefaults(component);
-      const plugin = getPlumeEditorPlugin(tpl.component);
-      if (plugin) {
-        plugin.onComponentInserted?.(component, tpl);
+    factory: (vc: ViewCtx, extraInfo: CreateAddTplComponentExtraInfo) => {
+      if (extraInfo.type === "existing") {
+        return addTplComponent(vc, component);
       }
-      return tpl;
+
+      return cloneTemplateComponent(vc, extraInfo);
     },
-    asyncExtraInfo: async (sc): Promise<any> => {
-      return { type: "existing", component };
+    asyncExtraInfo: async (
+      sc,
+      opts = {}
+    ): Promise<CreateAddTplComponentExtraInfo> => {
+      const { skipDuplicateCheck } = opts;
+      if (!skipDuplicateCheck) {
+        return { type: "existing", component };
+      }
+      if (
+        !component.templateInfo?.projectId ||
+        !component.templateInfo?.componentId
+      ) {
+        return { type: "existing", component };
+      }
+      const { projectId, componentId } = component.templateInfo;
+      const { screenVariant } = await getScreenVariantToInsertableTemplate(sc);
+      return sc.app.withSpinner(
+        (async () => {
+          const info = await buildInsertableExtraInfo(
+            sc,
+            {
+              projectId,
+              componentId,
+            },
+            screenVariant
+          );
+          assert(
+            info,
+            () =>
+              `Template component with id ${component.templateInfo!
+                .componentId!} not found`
+          );
+          return {
+            type: "clone",
+            skipDuplicateCheck,
+            ...info,
+          };
+        })()
+      );
     },
     component,
   };
@@ -400,19 +478,14 @@ export function createAddInsertableTemplate(
     },
     asyncExtraInfo: async (
       sc,
-      opts?: { isDragging: boolean }
+      opts
     ): Promise<InsertableTemplateComponentExtraInfo> => {
       const screenVariant = !opts?.isDragging
         ? (await getScreenVariantToInsertableTemplate(sc)).screenVariant
         : undefined;
       return sc.app.withSpinner(
         (async () => {
-          const info = await buildInsertableExtraInfo(
-            sc,
-            meta.projectId,
-            meta.componentName,
-            screenVariant
-          );
+          const info = await buildInsertableExtraInfo(sc, meta, screenVariant);
           assert(info, () => `Cannot find template for ${meta.componentName}`);
           return info;
         })()
@@ -422,8 +495,11 @@ export function createAddInsertableTemplate(
 }
 
 type CreateAddTemplateComponentExtraInfo =
+  InsertableTemplateComponentExtraInfo & CloneOpts;
+
+type CreateAddTplComponentExtraInfo =
   | { type: "existing"; component: Component }
-  | ({ type: "clone" } & InsertableTemplateComponentExtraInfo);
+  | ({ type: "clone" } & CreateAddTemplateComponentExtraInfo);
 
 /**
  * Creates an Insert Panel entry that lets you add the template component to the canvas.
@@ -439,73 +515,29 @@ export function createAddTemplateComponent(
 ): AddTplItem<CreateAddTemplateComponentExtraInfo> {
   return {
     type: AddItemType.tpl as const,
-    key: `insertable-template-component-${meta.projectId}-${meta.componentName}`,
+    key: `${INSERTABLE_TEMPLATE_COMPONENT_KEY_PREFIX}-${meta.projectId}-${meta.componentName}`,
     label: meta.displayName ?? meta.componentName,
     canWrap: false,
     icon: COMBINATION_ICON,
     previewImageUrl: meta.imageUrl,
-    factory: (
-      vc: ViewCtx,
-      extraInfo: CreateAddTemplateComponentExtraInfo,
-      _drawnRect?: Rect
-    ) => {
-      if (extraInfo.type === "existing") {
-        return createAddTplComponent(extraInfo.component).factory(
-          vc,
-          extraInfo,
-          _drawnRect
-        );
-      }
-      trackEvent("Insertable template component", {
-        insertableName: `${meta.projectId}-${meta.componentName}`,
-      });
-      const { component: comp, seenFonts } = cloneInsertableTemplateComponent(
-        vc.site,
-        extraInfo,
-        vc.studioCtx.projectDependencyManager.plumeSite
-      );
-      if (defaultKind) {
-        setTimeout(() => {
-          void vc.studioCtx.change(({ success }) => {
-            // ASK: If I try to do this, the Studio hangs (no longer responds to click events) and needs to be restarted. Why?
-            // I had to put it inside a settimeout and then wrap it in a .change to make it work.
-            vc.studioCtx
-              .tplMgr()
-              .addComponentToDefaultComponents(comp, defaultKind);
-            return success();
-          });
-        }, 1000);
-      }
-      postInsertableTemplate(vc.studioCtx, seenFonts);
-      return createAddTplComponent(comp).factory(vc, extraInfo, _drawnRect);
-    },
+    factory: (vc: ViewCtx, extraInfo: CreateAddTemplateComponentExtraInfo) =>
+      cloneTemplateComponent(vc, extraInfo, defaultKind),
     asyncExtraInfo: async (
-      sc
+      sc,
+      opts = {}
     ): Promise<CreateAddTemplateComponentExtraInfo> => {
-      const existing = allComponents(sc.site, {
-        includeDeps: "all",
-      }).find((comp) => comp.templateInfo?.name === meta.templateName);
-      if (existing) {
-        return {
-          type: "existing",
-          component: existing,
-        };
-      }
+      const { skipDuplicateCheck } = opts;
       const { screenVariant } = await getScreenVariantToInsertableTemplate(sc);
       return sc.app.withSpinner(
         (async () => {
-          const info = await buildInsertableExtraInfo(
-            sc,
-            meta.projectId,
-            meta.componentName,
-            screenVariant
-          );
+          const info = await buildInsertableExtraInfo(sc, meta, screenVariant);
           assert(
             info,
             () => `Template component ${meta.componentName} not found`
           );
           return {
             type: "clone",
+            skipDuplicateCheck,
             ...info,
           };
         })()

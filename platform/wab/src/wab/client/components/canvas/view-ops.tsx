@@ -4720,11 +4720,7 @@ export class ViewOps {
   tryInsertInsertableSpec<T>(
     spec: {
       key?: AddItemKey | string;
-      factory: (
-        viewCtx: ViewCtx,
-        extraInfo: T,
-        drawnRect?: Rect
-      ) => TplNode | undefined;
+      factory: (viewCtx: ViewCtx, extraInfo: T) => TplNode | undefined;
     },
     loc: InsertRelLoc,
     extraInfo: T,
@@ -4741,7 +4737,7 @@ export class ViewOps {
       if (!tpl) {
         return;
       }
-      const cmptTpl = spec.factory(this.viewCtx(), extraInfo, undefined);
+      const cmptTpl = spec.factory(this.viewCtx(), extraInfo);
       if (!cmptTpl) {
         return;
       }

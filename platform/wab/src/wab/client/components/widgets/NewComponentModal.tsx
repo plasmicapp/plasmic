@@ -83,8 +83,7 @@ function NewComponentModal(props: NewComponentModalProps) {
                   await getScreenVariantToInsertableTemplate(studioCtx);
                 const templateInfo = await buildInsertableExtraInfo(
                   studioCtx,
-                  templateItem.projectId,
-                  templateItem.componentName,
+                  templateItem,
                   screenVariant
                 );
                 onSubmit({ name, insertableTemplateInfo: templateInfo });

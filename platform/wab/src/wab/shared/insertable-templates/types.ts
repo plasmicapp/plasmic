@@ -20,6 +20,10 @@ export type HostLessDependencies = Record<
   }
 >;
 
+export type CloneOpts = {
+  skipDuplicateCheck?: true;
+};
+
 export interface InsertableTemplateExtraInfo {
   site: Site;
   screenVariant: Variant | undefined;
