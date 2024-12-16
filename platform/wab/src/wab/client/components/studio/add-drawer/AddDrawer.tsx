@@ -287,10 +287,7 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
   };
 }
 
-export function createAddTplComponent(
-  component: Component,
-  previewImageUrl?: string
-): AddTplItem {
+export function createAddTplComponent(component: Component): AddTplItem {
   return {
     type: AddItemType.tpl as const,
     key: `tpl-component-${component.uuid}`,
@@ -311,7 +308,6 @@ export function createAddTplComponent(
       return tpl;
     },
     component,
-    previewImageUrl,
   };
 }
 

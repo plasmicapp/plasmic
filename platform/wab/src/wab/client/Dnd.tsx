@@ -832,7 +832,7 @@ export class DragInsertManager {
    * On drag end, if there was a valid insertion, then invokes the factory
    * to create the new TplNode and inserts it at the insertion point.
    */
-  endDrag(spec?: AddTplItem, extraInfo?: any) {
+  endDrag(spec?: AddTplItem, extraInfo?: any): [ViewCtx, TplNode] | undefined {
     this.clearTargeters();
     if (
       this.tentativeVc &&
@@ -845,8 +845,8 @@ export class DragInsertManager {
           this.tentativeVc.arenaFrame()
         );
         insertBySpec(this.tentativeVc, this.tentativeInsertion, tpl, true);
+        return tuple(this.tentativeVc, tpl);
       }
-      return tuple(this.tentativeVc, tpl);
     }
     return undefined;
   }

@@ -18,6 +18,7 @@ import BoxControlsIcon from "@/wab/client/plasmic/plasmic_kit_design_system/Plas
 import { PlasmicAddDrawerItem } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicAddDrawerItem";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { isCodeComponent } from "@/wab/shared/core/components";
+import { TplNode } from "@/wab/shared/model/classes";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -27,7 +28,7 @@ interface AddDrawerItemProps {
   item: AddItem;
   matcher?: Matcher;
   isHighlighted?: boolean;
-  onInserted?: () => void;
+  onInserted?: (tplNode: TplNode | null) => void;
   validTplLocs?: Set<InsertRelLoc>;
   indent: number;
   showPreviewImage?: boolean;
@@ -92,7 +93,7 @@ function AddDrawerItem(props: AddDrawerItemProps) {
 const InsertActions = observer(function InsertActions(props: {
   studioCtx: StudioCtx;
   item: AddTplItem;
-  onInserted?: () => void;
+  onInserted?: (tplNode: TplNode | null) => void;
   validTplLocs?: Set<InsertRelLoc>;
 }) {
   const { studioCtx, item, onInserted, validTplLocs } = props;
@@ -134,8 +135,10 @@ const InsertActions = observer(function InsertActions(props: {
     }
     vc.change(() => {
       e.stopPropagation();
-      vc.getViewOps().tryInsertInsertableSpec(item, loc, extraInfo, undefined);
-      onInserted && onInserted();
+      const tplNode = vc
+        .getViewOps()
+        .tryInsertInsertableSpec(item, loc, extraInfo, undefined);
+      onInserted?.(tplNode);
     });
   };
 

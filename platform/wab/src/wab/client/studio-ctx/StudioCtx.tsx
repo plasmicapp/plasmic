@@ -4313,7 +4313,7 @@ export class StudioCtx extends WithDbCtx {
   //
   // Inserting new tpl nodes
   //
-  async tryInsertTplItem(item: AddTplItem): Promise<void> {
+  async tryInsertTplItem(item: AddTplItem): Promise<TplNode | null> {
     const vc = this.focusedViewCtx();
     if (!vc) {
       if (item.type === "tpl") {
@@ -4326,7 +4326,7 @@ export class StudioCtx extends WithDbCtx {
           message: "First select an element you want to insert to.",
         });
       }
-      return;
+      return null;
     }
 
     // If inserting a template, then insert at innermost main-content-slot, or else root.
@@ -4395,17 +4395,17 @@ export class StudioCtx extends WithDbCtx {
       notification.error({
         message: "Cannot insert this at the current location.",
       });
-      return;
+      return null;
     }
     const extraInfo = item.asyncExtraInfo
       ? await item.asyncExtraInfo(vc.studioCtx)
       : undefined;
     if (extraInfo === false) {
-      return;
+      return null;
     }
-    await this.changeUnsafe(() => {
-      vc.getViewOps().tryInsertInsertableSpec(item, locs[0], extraInfo, target);
-    });
+    return await this.changeUnsafe(() =>
+      vc.getViewOps().tryInsertInsertableSpec(item, locs[0], extraInfo, target)
+    );
   }
 
   async runFakeItem(item: AddFakeItem): Promise<any> {

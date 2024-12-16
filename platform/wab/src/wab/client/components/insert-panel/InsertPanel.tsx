@@ -32,7 +32,10 @@ import {
 } from "@/wab/client/components/studio/add-drawer/AddDrawer";
 import AddDrawerItem from "@/wab/client/components/studio/add-drawer/AddDrawerItem";
 import { AddItemGroup } from "@/wab/client/components/studio/add-drawer/AddDrawerSection";
-import { DraggableInsertable } from "@/wab/client/components/studio/add-drawer/DraggableInsertable";
+import {
+  DraggableInsertable,
+  DraggableInsertableProps,
+} from "@/wab/client/components/studio/add-drawer/DraggableInsertable";
 import { Matcher } from "@/wab/client/components/view-common";
 import { TextboxRef } from "@/wab/client/components/widgets/Textbox";
 import {
@@ -68,6 +71,7 @@ import {
   groupConsecBy,
   maybe,
   mergeSane,
+  notNil,
   only,
   sliding,
   spawnWrapper,
@@ -94,6 +98,7 @@ import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   isComponentRoot,
   isTplColumn,
+  isTplComponent,
   isTplContainer,
   isTplTextBlock,
 } from "@/wab/shared/core/tpls";
@@ -162,15 +167,32 @@ export const InsertPanel = observer(function InsertPanel_({
 }: InsertPanelProps) {
   const studioCtx = useStudioCtx();
   const [isDragging, setDragging] = React.useState(false);
-  const lastUsedItemsRef = React.useRef<AddItem[]>([]);
+  const recentItemsRef = React.useRef<[AddTplItem, Component | null][]>([]);
 
-  const onInsertedItem = (item: AddItem) => {
-    lastUsedItemsRef.current.unshift(item);
-    lastUsedItemsRef.current = L.uniqBy(lastUsedItemsRef.current, (x) => x.key);
-    if (lastUsedItemsRef.current.length > 3) {
-      lastUsedItemsRef.current.length = 3;
+  // Only save insertable items like elements and components.
+  const saveRecentItem = (item: AddTplItem, tplNode: TplNode | null) => {
+    const component =
+      tplNode && isTplComponent(tplNode) ? tplNode.component : null;
+    recentItemsRef.current.unshift([item, component]);
+
+    // Remove duplicates by checking the inserted component first, otherwise the unique key.
+    // We need to check the component because an insertable template AddItem will create a
+    // new component on insertion. Then the next InsertPanel will have a different AddItem
+    // representing the existing component.
+    recentItemsRef.current = L.uniqBy(
+      recentItemsRef.current,
+      ([i, comp]) => comp ?? i.key
+    );
+    if (recentItemsRef.current.length > 3) {
+      recentItemsRef.current.length = 3;
     }
+  };
+
+  const onInserted = (item: AddItem, tplNode: TplNode | null) => {
     onClose();
+    if (isTplAddItem(item)) {
+      saveRecentItem(item, tplNode);
+    }
   };
 
   if (!studioCtx.showAddDrawer() && !isDragging) {
@@ -182,13 +204,19 @@ export const InsertPanel = observer(function InsertPanel_({
       <div className={cn(S.addDrawerAnimationWrapper)}>
         <AddDrawerContent
           studioCtx={studioCtx}
-          onInsertedItem={onInsertedItem}
+          onInserted={onInserted}
           onDragStart={() => {
             setDragging(true);
             onClose();
           }}
-          onDragEnd={() => setDragging(false)}
-          lastUsedItems={[...lastUsedItemsRef.current]}
+          onDragEnd={(item, result) => {
+            setDragging(false);
+            if (result) {
+              const [_viewCtx, tplNode] = result;
+              saveRecentItem(item, tplNode);
+            }
+          }}
+          recentItems={[...recentItemsRef.current]}
         />
       </div>
     </FocusScope>
@@ -197,8 +225,6 @@ export const InsertPanel = observer(function InsertPanel_({
 // export const InsertPanel = React.forwardRef(InsertPanel_);
 export default InsertPanel;
 
-// The key that defines the recent items OmnibarGroup
-const RECENT_GROUP_KEY = "adddrawer-recent";
 const shouldShowPreview = (group: AddItemGroup): boolean => {
   // We should only show the preview image in AddDrawer under these conditions
   return (
@@ -221,13 +247,12 @@ function shouldShowCompact(virtualItem: VirtualItem) {
 
 const AddDrawerContent = observer(function AddDrawerContent(props: {
   studioCtx: StudioCtx;
-  onDragStart: () => void;
-  onDragEnd: () => void;
-  onInsertedItem: (item: AddItem) => void;
-  lastUsedItems: AddItem[];
+  onDragStart: DraggableInsertableProps["onDragStart"];
+  onDragEnd: DraggableInsertableProps["onDragEnd"];
+  onInserted: (item: AddItem, comp: TplNode | null) => void;
+  recentItems: [AddTplItem, Component | null][];
 }) {
-  const { studioCtx, onDragStart, onDragEnd, onInsertedItem, lastUsedItems } =
-    props;
+  const { studioCtx, onDragStart, onDragEnd, onInserted, recentItems } = props;
   const inputRef = React.useRef<TextboxRef>(null);
   const contentRef = React.useRef<HTMLElement>(null);
   const listRef = React.useRef<VariableSizeList>(null);
@@ -252,21 +277,18 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
     studioCtx.site.projectDependencies.slice()
   );
 
-  const allItemGroups = useMemo(
-    () =>
-      buildAddItemGroups({
-        studioCtx,
-        matcher: new Matcher(""),
-        includeFrames: isKnownArena(studioCtx.currentArena),
-        lastUsedItems,
-        filterToTarget,
-        insertLoc,
-        projectDependencies,
-      }),
-    [studioCtx, lastUsedItems, highlightSection, projectDependencies]
-  );
-
-  const allFamilies = groupBy(allItemGroups, (group) => group.familyKey ?? "");
+  const allFamilies = useMemo(() => {
+    const allItemGroups = buildAddItemGroups({
+      studioCtx,
+      matcher: new Matcher(""),
+      includeFrames: isKnownArena(studioCtx.currentArena),
+      recentItems: [],
+      filterToTarget,
+      insertLoc,
+      projectDependencies,
+    });
+    return groupBy(allItemGroups, (group) => group.familyKey ?? "");
+  }, [studioCtx, filterToTarget, insertLoc, projectDependencies]);
   const allSectionKeysFlattened = uniq(
     Object.values(allFamilies).flatMap((sections) =>
       sections.map((sec) => sec.sectionKey ?? sec.key)
@@ -282,7 +304,7 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
         studioCtx: studioCtx,
         matcher: matcher,
         includeFrames: isKnownArena(studioCtx.currentArena),
-        lastUsedItems: lastUsedItems,
+        recentItems,
         filterToTarget,
         insertLoc,
         projectDependencies,
@@ -327,7 +349,7 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
 
       return { virtualItems, items, virtualRows };
     },
-    [studioCtx, lastUsedItems, section, highlightSection, projectDependencies]
+    [studioCtx, recentItems, section, highlightSection, projectDependencies]
   );
 
   const {
@@ -376,23 +398,12 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
     return false;
   };
 
-  const onInserted = (item: AddItem) => {
-    if (shouldInterceptOnInsert(item)) {
-      return;
-    }
-
-    onInsertedItem(item);
-  };
-
   const onInsert = async (item: AddItem) => {
     if (shouldInterceptOnInsert(item)) {
       return;
     }
 
-    if (!(item.type === AddItemType.fake && item.isPackage)) {
-      onInserted(item);
-    }
-
+    let tplNode: TplNode | null = null;
     switch (item.type) {
       case AddItemType.tpl:
       case AddItemType.plume: {
@@ -404,7 +415,7 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
         ) {
           studioCtx.showPresetsModal(component);
         } else {
-          await studioCtx.tryInsertTplItem(item);
+          tplNode = await studioCtx.tryInsertTplItem(item);
         }
         break;
       }
@@ -448,6 +459,8 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
         break;
       }
     }
+
+    onInserted(item, tplNode);
   };
 
   function cycleSection(step: 1 | -1) {
@@ -657,10 +670,10 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
 
 interface AddDrawerContextValue {
   studioCtx: StudioCtx;
-  onDragStart: () => void;
-  onDragEnd: () => void;
+  onDragStart: DraggableInsertableProps["onDragStart"];
+  onDragEnd: DraggableInsertableProps["onDragEnd"];
   matcher: Matcher;
-  onInserted: (item: AddItem) => void;
+  onInserted: (item: AddItem, tplNode: TplNode | null) => void;
   getItemProps: (options: UseComboboxGetItemPropsOptions<AddItem>) => any;
   highlightedItemIndex: number;
   validTplLocs: Set<InsertRelLoc> | undefined;
@@ -811,8 +824,8 @@ const Row = React.memo(function Row(props: {
                     matcher={matcher}
                     isHighlighted={highlightedItemIndex === itemIndex}
                     validTplLocs={validTplLocs}
-                    onInserted={() => {
-                      onInserted(item);
+                    onInserted={(tplNode) => {
+                      onInserted(item, tplNode);
                     }}
                     indent={indent}
                   />
@@ -969,7 +982,7 @@ export function buildAddItemGroups({
   studioCtx,
   includeFrames = true,
   matcher,
-  lastUsedItems = [],
+  recentItems: allRecentItems,
   filterToTarget,
   insertLoc,
   projectDependencies,
@@ -977,7 +990,7 @@ export function buildAddItemGroups({
   includeFrames?: boolean;
   studioCtx: StudioCtx;
   matcher: Matcher;
-  lastUsedItems?: AddItem[];
+  recentItems: [AddTplItem, Component | null][];
   filterToTarget?: boolean;
   insertLoc?: InsertRelLoc;
   projectDependencies: Array<ProjectDependency>;
@@ -1215,13 +1228,11 @@ export function buildAddItemGroups({
             !isBuiltinCodeComponent(c)
         )
       ).map((comp) => ({
-        ...createAddTplComponent(
-          comp,
-          // TODO: improve placeholder image!
-          studioCtx.appCtx.appConfig.componentThumbnails
-            ? studioCtx.getCachedThumbnail(comp.uuid) ?? placeholderImgUrl()
-            : undefined
-        ),
+        ...createAddTplComponent(comp),
+        // TODO: improve placeholder image!
+        previewImageUrl: studioCtx.appCtx.appConfig.componentThumbnails
+          ? studioCtx.getCachedThumbnail(comp.uuid) ?? placeholderImgUrl()
+          : undefined,
         isCompact: studioCtx.appCtx.appConfig.componentThumbnails,
       })),
     },
@@ -1444,37 +1455,57 @@ export function buildAddItemGroups({
     });
   }
 
+  let recentItems = allRecentItems;
+
   if (filterToTarget) {
-    let target: TplNode | SlotSelection | null = null;
     const vc = studioCtx.focusedViewCtx();
     if (vc) {
-      target = vc.focusedTplOrSlotSelection();
+      const target = vc.focusedTplOrSlotSelection();
       if (target) {
         for (const group of groupedItems) {
           group.items = group.items.filter((item) =>
-            isInsertable(item, vc, target!, insertLoc)
+            isInsertable(item, vc, target, insertLoc)
           );
         }
-        lastUsedItems = lastUsedItems.filter((item) =>
-          isInsertable(item, vc, target!, insertLoc)
+        recentItems = recentItems.filter(([item]) =>
+          isInsertable(item, vc, target, insertLoc)
         );
       }
     }
   }
 
-  if (lastUsedItems.length > 0) {
-    const validLastUsedItems = lastUsedItems.filter((x) =>
-      groupedItems.some((group) => group.items.includes(x))
+  if (recentItems.length > 0) {
+    const allItems = groupedItems.flatMap((group) => group.items);
+    const allItemKeys = new Set(allItems.map((item) => item.key));
+    const allItemComponents = new Set(
+      allItems
+        .map((item) =>
+          item.type === "tpl" || item.type === "plume" ? item.component : null
+        )
+        .filter(notNil)
     );
-
-    if (validLastUsedItems.length > 0) {
+    recentItems = recentItems.filter(
+      ([item, comp]) =>
+        allItemKeys.has(item.key) || (comp && allItemComponents.has(comp))
+    );
+    if (recentItems.length > 0) {
+      // Put recently used in the first section
+      const firstGroup = groupedItems[0];
       groupedItems.unshift({
-        key: RECENT_GROUP_KEY,
-        label: "Recently Used...",
+        sectionKey: firstGroup.sectionKey,
+        sectionLabel: firstGroup.sectionLabel,
+        key: "recent",
+        label: "Recent",
         // Note: useCombobox will do shallow comparisons and get confused when there are 2 identical elements
         // For example, highlightedIndex will be set to the first occurrence, leading to a lot of jumping around
         // By just cloning this, we can keep the items distinct
-        items: [...validLastUsedItems.map((i) => L.clone(i))],
+        items: [
+          ...recentItems.map(([item]) => ({
+            ...L.clone(item),
+            // Since not all items have images, remove previewImageUrl to force recents to always show as rows.
+            previewImageUrl: undefined,
+          })),
+        ],
       });
     }
   }
