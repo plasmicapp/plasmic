@@ -7,24 +7,24 @@ import {
   SelectValue,
 } from "react-aria-components";
 import { arrowDown, COMMON_STYLES, getCommonProps } from "./common";
+import { OptionsItemIdManager } from "./OptionsItemIdManager";
 import {
   PlasmicListBoxContext,
   PlasmicPopoverTriggerContext,
 } from "./contexts";
-import { OptionsItemIdManager } from "./OptionsItemIdManager";
 import { BUTTON_COMPONENT_NAME } from "./registerButton";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { LIST_BOX_COMPONENT_NAME } from "./registerListBox";
 import { POPOVER_COMPONENT_NAME } from "./registerPopover";
 import {
-  extractPlasmicDataProps,
   HasControlContextData,
-  makeComponentName,
   Registerable,
+  extractPlasmicDataProps,
+  makeComponentName,
   registerComponentHelper,
   useAutoOpen,
 } from "./utils";
-import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
+import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
 
 // It cannot be used as a hook like useAutoOpen() within the BaseSelect component
 // because it needs access to SelectStateContext, which is only created in the BaseSelect component's render function.
@@ -51,7 +51,7 @@ function SelectAutoOpen(props: any) {
           To ensure hotkeys work properly, we need to shift focus from the active element in the child iframe (artboard iframe) to the parent iframe (__wab_studio-frame) by using window.parent.
         */
         (window.parent.document.activeElement as HTMLElement)?.blur?.();
-      });
+      }, 1);
     },
     close,
   });
