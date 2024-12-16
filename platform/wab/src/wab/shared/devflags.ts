@@ -153,6 +153,8 @@ export interface HostLessPackageInfo {
   syntheticPackage?: boolean;
   type: "hostless-package";
   name: string;
+  /** Don't render the `name` header above the items (mainly for single item groups). */
+  isHeaderLess?: boolean;
   sectionLabel: string;
   hiddenWhenInstalled?: boolean;
   codeName?: string;

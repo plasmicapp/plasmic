@@ -148,14 +148,6 @@ const compactPerRow = 3;
 const compactItemWidth =
   (rightSideContentWidth - (compactPerRow - 1) * sameRowGap) / compactPerRow; // 97.3333333333
 
-const atomicHostlessSections = [
-  "CMS",
-  "Design systems",
-  "Commerce",
-  "Databases",
-  "Code Libraries",
-];
-
 export interface InsertPanelProps extends DefaultInsertPanelProps {
   onClose: () => any;
 }
@@ -317,20 +309,18 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
       // When we see "index", we need to be careful about which index we mean!
 
       let itemIndex = 0;
-      const isAtomicSection = atomicHostlessSections.includes(section);
 
       const virtualItems: VirtualItem[] = groupedItems
         .filter((group) => query || (group.sectionKey ?? group.key) === section)
         .flatMap((group, index) => [
-          ...(!isAtomicSection && !group.isHeaderLess
-            ? [{ type: "header", group } as const]
-            : []),
+          ...(!group.isHeaderLess ? [{ type: "header", group } as const] : []),
+
           ...group.items.map(
             (item) =>
               ({ type: "item", item, group, itemIndex: itemIndex++ } as const)
           ),
 
-          ...(!isAtomicSection && index < groupedItems.length - 1
+          ...(index < groupedItems.length - 1
             ? [{ type: "separator" } as const]
             : []),
         ]);
@@ -880,14 +870,12 @@ const getHostLess = memoizeOne((studioCtx: StudioCtx): AddItemGroup[] => {
           (dep) => dep.projectId === projectId
         )
       );
-      const isAtomicSection = atomicHostlessSections.includes(
-        meta.sectionLabel
-      );
       const newVar: AddItemGroup = {
         hostLessPackageInfo: meta,
         key: `hostless-packages--${meta.projectId}`,
         sectionKey: meta.sectionLabel,
         sectionLabel: meta.sectionLabel,
+        isHeaderLess: meta.isHeaderLess,
         familyKey: "hostless-packages",
         label: meta.name,
         codeName: meta.codeName,
@@ -903,7 +891,7 @@ const getHostLess = memoizeOne((studioCtx: StudioCtx): AddItemGroup[] => {
           .map((item) => {
             item = {
               ...item,
-              displayName: isAtomicSection ? meta.name : item.displayName,
+              displayName: item.displayName,
             };
             if (meta.isInstallOnly) {
               return createInstallOnlyPackage(item, meta);
@@ -1023,7 +1011,9 @@ export function buildAddItemGroups({
 }): AddItemGroup[] {
   const uiConfig = studioCtx.getCurrentUiConfig();
   const hostlessComponentsInDefaultMenu = new Set<string>();
-  const getInsertableTemplatesSection = (group: InsertableTemplatesGroup) => {
+  const getInsertableTemplatesSection = (
+    group: InsertableTemplatesGroup
+  ): AddItemGroup => {
     return {
       key: `insertable-templates-${group.name}`,
       sectionKey: group.sectionKey ?? `insertable-templates`,
@@ -1361,6 +1351,7 @@ export function buildAddItemGroups({
           sectionLabel: "Design systems",
           sectionKey: "Design systems",
           familyKey: "hostless-packages",
+          isHeaderLess: true,
           items: studioCtx.appCtx.appConfig.installables
             .filter((meta) => meta.type === "ui-kit")
             .map(createAddInstallable),
