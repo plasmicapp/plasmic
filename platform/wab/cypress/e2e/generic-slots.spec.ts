@@ -19,6 +19,9 @@ describe("generic-slots", function () {
     cy.withinStudioIframe(() => {
       cy.createNewComponent("Widget").then((framed) => {
         cy.focusFrameRoot(framed);
+        cy.justLog("Draw a rect slot.");
+        cy.justType("r");
+        cy.drawRectRelativeToElt(framed.getFrame(), 10, 10, 50, 50);
 
         cy.createNewFrame().then((framed2) => {
           cy.justLog("Zoom out.");
