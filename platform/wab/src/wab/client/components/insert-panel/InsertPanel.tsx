@@ -407,7 +407,6 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
       return;
     }
 
-    let tplNode: TplNode | null = null;
     switch (item.type) {
       case AddItemType.tpl:
       case AddItemType.plume: {
@@ -419,7 +418,7 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
         ) {
           studioCtx.showPresetsModal(component);
         } else {
-          tplNode = await studioCtx.tryInsertTplItem(item);
+          onInserted(item, await studioCtx.tryInsertTplItem(item));
         }
         break;
       }
@@ -427,6 +426,7 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
         await studioCtx.changeUnsafe(() => {
           item.onInsert(studioCtx);
         });
+        onInserted(item, null);
         break;
       }
       case AddItemType.installable: {
@@ -443,6 +443,7 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
             }
           });
           notifiyInstallableSuccess(item.label);
+          onInserted(item, null);
         } catch (error) {
           notifiyInstallableFailure(item.label, (error as any).message);
         }
@@ -463,8 +464,6 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
         break;
       }
     }
-
-    onInserted(item, tplNode);
   };
 
   function cycleSection(step: 1 | -1) {
