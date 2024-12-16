@@ -277,22 +277,17 @@ export const InteractionPropEditor = observer(
       React.useState(false);
 
     React.useEffect(() => {
-      return autorun(() => {
-        if (
-          studioCtx.newlyAddedEventHandlerKey &&
-          getDisplayNameOfEventHandlerKey(eventHandlerKey, { tpl }) ===
-            getDisplayNameOfEventHandlerKey(
-              studioCtx.newlyAddedEventHandlerKey,
-              {
-                tpl,
-              }
-            )
-        ) {
-          studioCtx.newlyAddedEventHandlerKey = undefined;
-          setShowInteractionModal(true);
-        }
-      });
-    }, [eventHandlerKey]);
+      if (
+        studioCtx.newlyAddedEventHandlerKey &&
+        getDisplayNameOfEventHandlerKey(eventHandlerKey, { tpl }) ===
+          getDisplayNameOfEventHandlerKey(studioCtx.newlyAddedEventHandlerKey, {
+            tpl,
+          })
+      ) {
+        studioCtx.newlyAddedEventHandlerKey = undefined;
+        setShowInteractionModal(true);
+      }
+    }, [eventHandlerKey, studioCtx.newlyAddedEventHandlerKey]);
     return !value || isKnownEventHandler(value) ? (
       <>
         <ActionChip
