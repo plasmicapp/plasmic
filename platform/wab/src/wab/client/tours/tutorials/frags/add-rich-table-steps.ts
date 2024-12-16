@@ -47,7 +47,7 @@ Tables and Lists are great ways to display a collection of data.
 **Insert a Table.**`,
     ...addElementStepFunc({
       highlightTarget: STUDIO_ELEMENTS_TARGETS.addDrawerTableBlock,
-      componentName: "hostless-component-hostless-rich-table",
+      componentName: "hostless-rich-table",
       onNext: async (ctx: OnNextCtx) => {
         ctx.studioCtx.mergeOnboardingTourStateResults({
           richTable: await addRichTable(ctx.studioCtx),

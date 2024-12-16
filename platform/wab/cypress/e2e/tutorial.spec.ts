@@ -103,7 +103,7 @@ describe("Table and form tutorial", function () {
 
                 // #rich-table-add - 4 / 40
                 cy.get("#tour-popup-rich-table-add").should("be.visible");
-                cy.insertFromAddDrawer("Table");
+                cy.insertFromAddDrawer("hostless-rich-table");
                 cy.wait(300);
 
                 // #data-query-switch-component-tab - 5 / 40
@@ -195,7 +195,7 @@ describe("Table and form tutorial", function () {
 
                 // #form-add - 18 / 40
                 cy.get("#tour-popup-form-add").should("be.visible");
-                cy.insertFromAddDrawer("Form");
+                cy.insertFromAddDrawer("plasmic-antd5-form");
                 cy.wait(300);
 
                 // #form-items-add - 19 / 40

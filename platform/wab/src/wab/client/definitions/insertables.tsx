@@ -72,6 +72,10 @@ interface AddItemCommon {
   /** Small icon shown when item is displayed in a single line. */
   icon: React.ReactNode;
   displayLabel?: React.ReactNode;
+  /**
+   * If a hostless component is not installed, `hostlessComponentName` is present.
+   * Otherwise, the hostless component would be presented as `component`.
+   */
   systemName?: string;
   /** Show a NEW banner over the item. **/
   isNew?: boolean;

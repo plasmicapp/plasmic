@@ -143,7 +143,10 @@ export function addElementStepFunc({
       if (event.type !== TutorialEventsType.TplInserted) {
         return false;
       }
-      if (event.params.itemKey !== componentName) {
+      if (
+        event.params.itemKey !== componentName &&
+        event.params.itemSystemName !== componentName
+      ) {
         notification.warn({
           message: "Wrong component inserted",
         });

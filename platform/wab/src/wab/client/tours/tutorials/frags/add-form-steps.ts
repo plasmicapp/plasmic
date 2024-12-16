@@ -26,7 +26,7 @@ This time, we'll use a **Form** component.
 **Find and select Form.** You can scroll or type to filter.`,
     ...addElementStepFunc({
       highlightTarget: STUDIO_ELEMENTS_TARGETS.addDrawerFormBlock,
-      componentName: "hostless-component-plasmic-antd5-form",
+      componentName: "plasmic-antd5-form",
       onNext: async (ctx: OnNextCtx) => {
         ctx.studioCtx.mergeOnboardingTourStateResults({
           form: await addForm(ctx.studioCtx),

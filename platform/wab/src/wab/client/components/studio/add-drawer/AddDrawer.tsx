@@ -524,6 +524,7 @@ export function createAddHostLessComponent(
   return {
     type: AddItemType.tpl as const,
     key: `hostless-component-${meta.componentName}`,
+    systemName: meta.componentName,
     label: meta.displayName,
     canWrap: false,
     icon: COMBINATION_ICON,

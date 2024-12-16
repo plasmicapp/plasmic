@@ -393,6 +393,7 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
         params: {
           itemKey: item.key,
           itemType: item.type,
+          itemSystemName: item.systemName,
         },
       });
       return true;
@@ -1024,7 +1025,7 @@ export function buildAddItemGroups({
   projectDependencies: Array<ProjectDependency>;
 }): AddItemGroup[] {
   const uiConfig = studioCtx.getCurrentUiConfig();
-  const hostlessComponentsInDefaultMenu = new Set<string>();
+  const installedHostlessComponents = new Set<string>();
   const getInsertableTemplatesSection = (
     group: InsertableTemplatesGroup
   ): AddItemGroup => {
@@ -1213,7 +1214,9 @@ export function buildAddItemGroups({
                   ) {
                     for (const item of hostlessGroup.items) {
                       if (item.key === "hostless-component-" + resolved) {
-                        hostlessComponentsInDefaultMenu.add(item.key);
+                        if (isTplAddItem(item) && item.systemName) {
+                          installedHostlessComponents.add(item.systemName);
+                        }
                         return { ...item, isCompact: true };
                       }
                     }
@@ -1388,22 +1391,10 @@ export function buildAddItemGroups({
         ],
       },
 
+    // Imported hostless packages
     ...naturalSort(
-      projectDependencies.map((dep) => ({
-        key: isHostLessPackage(dep.site)
-          ? `hostless-packages--${dep.projectId}`
-          : dep.pkgId,
-        label:
-          hostLessComponentsMeta?.flatMap((pkg) => {
-            return getLeafProjectIdForHostLessPackageMeta(pkg) ===
-              dep.projectId &&
-              pkg.onlyShownIn !== "old" &&
-              shouldShowHostLessPackage(studioCtx, pkg)
-              ? [pkg.name]
-              : [];
-          })[0] ?? dep.name,
-        familyKey: "imported-packages",
-        items: [
+      projectDependencies.map((dep) => {
+        const items = [
           ...sortComponentsByName(
             dep.site.components.filter(
               (c) =>
@@ -1423,8 +1414,29 @@ export function buildAddItemGroups({
           ...dep.site.imageAssets
             .filter((asset) => asset.dataUri)
             .map((asset) => createAddTplImage(asset)),
-        ],
-      })),
+        ];
+        for (const item of items) {
+          if (item.systemName) {
+            installedHostlessComponents.add(item.systemName);
+          }
+        }
+        return {
+          key: isHostLessPackage(dep.site)
+            ? `hostless-packages--${dep.projectId}`
+            : dep.pkgId,
+          label:
+            hostLessComponentsMeta?.flatMap((pkg) => {
+              return getLeafProjectIdForHostLessPackageMeta(pkg) ===
+                dep.projectId &&
+                pkg.onlyShownIn !== "old" &&
+                shouldShowHostLessPackage(studioCtx, pkg)
+                ? [pkg.name]
+                : [];
+            })[0] ?? dep.name,
+          familyKey: "imported-packages",
+          items,
+        };
+      }),
       (item) => item.label
     ),
 
@@ -1442,7 +1454,13 @@ export function buildAddItemGroups({
             items: group.items.filter(
               // We want to hide the listings that were shown in "Default components"
               // This is just a simple way to ensure things don't show up in both menus.
-              (item) => !hostlessComponentsInDefaultMenu.has(item.key)
+              (item) => {
+                if (isTplAddItem(item) && item.systemName) {
+                  return !installedHostlessComponents.has(item.systemName);
+                } else {
+                  return true;
+                }
+              }
             ),
           }))
       : []),
