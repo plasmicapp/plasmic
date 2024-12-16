@@ -56,6 +56,7 @@ import {
 } from "@/wab/shared/core/sites";
 import {
   ensureCorrectImplicitStates,
+  flattenImplicitStates,
   getStateDisplayName,
   isPrivateState,
   isStateUsedInExpr,
@@ -81,7 +82,6 @@ import {
   ArenaFrameGrid,
   ArenaFrameRow,
   Component,
-  ensureKnownTplComponent,
   Expr,
   GlobalVariantGroup,
   ImageAsset,
@@ -1170,6 +1170,7 @@ function upgradeProjectDep(
           // We need to replace the root, just create an empty free box with
           // all vsettings
           replaceTplTreeByEmptyBox(owner);
+          flattenTpls(tpl).forEach((t) => attachedTpls.delete(t));
         } else {
           $$$(tpl).remove({ deep: true });
         }
@@ -1303,39 +1304,45 @@ function upgradeProjectDep(
         );
       }
     }
+    const removedStates = new Set<State>();
+    // First, remove states that are no longer available. Later, after fixing the components,
+    // we will check if the remaining tree still has references to the removed states
     for (const state of [...component.states]) {
-      if (state.implicitState && oldToNewState.has(state.implicitState)) {
-        const newImplicitState = oldToNewState.get(state.implicitState);
+      // Implicit states can be nested inside normal states, (e.g: Plasmic component wrapper)
+      // so we need to flatten the states
+      const flattenedStates = flattenImplicitStates(state);
+      const oldImplicitState = flattenedStates.find(
+        (s) => s.implicitState && oldToNewState.has(s.implicitState)
+      );
+      if (oldImplicitState && oldImplicitState.implicitState) {
+        const newImplicitState = oldToNewState.get(
+          oldImplicitState.implicitState
+        );
         if (newImplicitState && !isPrivateState(newImplicitState)) {
-          state.implicitState = newImplicitState;
+          oldImplicitState.implicitState = newImplicitState;
         } else {
-          const usages = findExprsInComponent(component).filter(({ expr }) =>
-            isStateUsedInExpr(state, expr)
-          );
-          assert(
-            usages.length === 0,
-            `Can't ${
-              newDep ? "upgrade" : "remove"
-            } dependency: Variable "${getStateDisplayName(
-              state
-            )}" is being used in ${getComponentDisplayName(component)}${
-              newDep
-                ? `${
-                    newImplicitState
-                      ? " but is no longer public in"
-                      : " but it was removed from"
-                  } ${getComponentDisplayName(
-                    ensureKnownTplComponent(state.tplNode).component
-                  )}`
-                : ""
-            }.`
-          );
+          removedStates.add(state);
           removeComponentState(site, component, state);
         }
       }
     }
     for (const tpl of flattenTpls(component.tplTree)) {
       fixTpl(tpl, component);
+    }
+
+    // Check if the remainin tree has references to removed states
+    for (const state of removedStates) {
+      const usages = findExprsInComponent(component).filter(({ expr }) =>
+        isStateUsedInExpr(state, expr)
+      );
+      assert(
+        usages.length === 0,
+        `Can't ${
+          newDep ? "upgrade" : "remove"
+        } dependency: Variable "${getStateDisplayName(
+          state
+        )}" is being used in ${getComponentDisplayName(component)}.`
+      );
     }
     component.params.forEach((param) => {
       if (param.defaultExpr) {

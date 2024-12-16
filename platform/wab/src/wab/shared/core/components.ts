@@ -77,6 +77,7 @@ import {
   LOGIN_ACTIONS,
   genOnChangeParamName,
   isOnChangeParam,
+  isStateUsedInExpr,
   mkState,
   removeComponentStateOnly,
 } from "@/wab/shared/core/states";
@@ -158,10 +159,12 @@ import {
   ensureKnownVariantGroupState,
   isKnownArgType,
   isKnownComponentVariantGroup,
+  isKnownCustomCode,
   isKnownEventHandler,
   isKnownFunctionArg,
   isKnownFunctionType,
   isKnownNamedState,
+  isKnownObjectPath,
   isKnownPageHref,
   isKnownRenderExpr,
   isKnownStateChangeHandlerParam,
@@ -174,6 +177,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
 import {
+  isParamUsedInExpr,
   replaceQueryWithPropInCodeExprs,
   replaceStateWithPropInCodeExprs,
   replaceVarWithPropInCodeExprs,
@@ -1919,6 +1923,21 @@ function removeComponentParamRefs(tpl: TplNode, param: Param) {
       }
     }
   }
+  // The above code only finds the `VarRef` class, but we could have references inside
+  // custom expressions (CustomCode/ObjectPath). For now, we will be handling them
+  //   separate here
+  findExprsInNode(tpl).forEach(({ expr }) => {
+    if (
+      isParamUsedInExpr(param, expr) ||
+      (isKnownStateParam(param) && isStateUsedInExpr(param.state, expr))
+    ) {
+      if (isKnownCustomCode(expr)) {
+        expr.code = `(undefined)`;
+      } else if (isKnownObjectPath(expr)) {
+        expr.path = [];
+      }
+    }
+  });
 }
 
 /**

@@ -1,6 +1,12 @@
+import { toVarName } from "@/wab/shared/codegen/util";
 import { assert, isPrefixArray, uniqueName } from "@/wab/shared/common";
 import * as Exprs from "@/wab/shared/core/exprs";
-import { toVarName } from "@/wab/shared/codegen/util";
+import {
+  findRecursiveImplicitStates,
+  getStateVarName,
+  isStateUsedInExpr,
+} from "@/wab/shared/core/states";
+import * as Tpls from "@/wab/shared/core/tpls";
 import {
   parseExpr,
   renameObjectKey,
@@ -20,17 +26,11 @@ import {
   Site,
   TplNode,
 } from "@/wab/shared/model/classes";
-import {
-  findRecursiveImplicitStates,
-  getStateVarName,
-  isStateUsedInExpr,
-} from "@/wab/shared/core/states";
-import * as Tpls from "@/wab/shared/core/tpls";
 
 /**
  * Returns boolean indicating whether `expr` is referencing `param`.
  */
-function isParamUsedInExpr(
+export function isParamUsedInExpr(
   param: Param,
   expr: Expr | null | undefined
 ): boolean {

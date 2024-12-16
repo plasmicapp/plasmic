@@ -1,9 +1,3 @@
-import { TplMgr } from "@/wab/shared/TplMgr";
-import { $$$ } from "@/wab/shared/TplQuery";
-import {
-  isStandaloneVariantGroup,
-  tryGetBaseVariantSetting,
-} from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import { toVarName } from "@/wab/shared/codegen/util";
 import {
@@ -78,7 +72,13 @@ import {
   isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
 import { smartHumanize } from "@/wab/shared/strs";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
 import { getPublicUrl } from "@/wab/shared/urls";
+import {
+  isStandaloneVariantGroup,
+  tryGetBaseVariantSetting,
+} from "@/wab/shared/Variants";
 import { isArray } from "lodash";
 
 export const STATE_VARIABLE_TYPES = [
@@ -393,7 +393,7 @@ function deriveStatefulTagName(node: TplTag) {
   return addItemKey;
 }
 
-function flattenImplicitStates(state: State) {
+export function flattenImplicitStates(state: State) {
   const states = [state];
   while (state.implicitState) {
     states.push(state.implicitState);
