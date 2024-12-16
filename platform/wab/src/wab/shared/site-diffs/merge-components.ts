@@ -1291,6 +1291,29 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
   return conflicts;
 };
 
+function toVariantKey(v: Variant) {
+  if (v.parent) {
+    return v.uuid;
+  }
+
+  if (isBaseVariant(v)) {
+    return BASE_VARIANT_NAME;
+  }
+
+  if (v.codeComponentVariantKeys) {
+    return JSON.stringify({
+      codeComponentName: v.codeComponentName,
+      codeComponentVariantKeys: v.codeComponentVariantKeys,
+    });
+  }
+
+  assert(!!v.selectors, () => `Expected style variant`);
+  return JSON.stringify([
+    JSON.stringify([...v.selectors].sort()),
+    v.forTpl?.uuid ?? null,
+  ]);
+}
+
 export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
   ancestorCtx,
   leftCtx,
@@ -1319,26 +1342,12 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
     );
   }
 
-  const variantKey = (v: Variant) => {
-    if (v.parent) {
-      return v.uuid;
-    }
-    if (isBaseVariant(v)) {
-      return BASE_VARIANT_NAME;
-    }
-    assert(!!v.selectors, () => `Expected style variant`);
-    return JSON.stringify([
-      JSON.stringify([...v.selectors].sort()),
-      v.forTpl?.uuid ?? null,
-    ]);
-  };
-
   const findEquivVS = (node: TplNode, vs: VariantSetting) => {
-    const variantKeys = vs.variants.map((v) => variantKey(v));
+    const variantKeys = vs.variants.map((v) => toVariantKey(v));
     return node.vsettings.find((vs2) =>
       arrayEqIgnoreOrder(
         variantKeys,
-        vs2.variants.map((v) => variantKey(v))
+        vs2.variants.map((v) => toVariantKey(v))
       )
     );
   };
@@ -1675,17 +1684,12 @@ export const mergeComponentVariants: MergeSpecialFieldHandler<Component> = (
         () => `mergeComponentVariants expects all nodes to exist`
       )
   );
+
   const variantKey = (v: Variant) => {
     assert(!v.parent, () => `Did not expect variant from VariantGroup`);
-    if (isBaseVariant(v)) {
-      return BASE_VARIANT_NAME;
-    }
-    assert(!!v.selectors, () => `Expected style variant`);
-    return JSON.stringify([
-      JSON.stringify([...v.selectors].sort()),
-      v.forTpl?.uuid ?? null,
-    ]);
+    return toVariantKey(v);
   };
+
   const mergedVariantKeys = new Set(
     mergedComp.variants.map((v) => variantKey(v))
   );
