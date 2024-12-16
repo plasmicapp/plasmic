@@ -1,9 +1,12 @@
-import { ImageBackground, mkBackgroundLayer } from "@/wab/shared/core/bg-styles";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { getImageSize } from "@/wab/client/image/metadata";
 import { ensure, ensureHTMLElt, ensureString } from "@/wab/shared/common";
-import { Rect } from "@/wab/shared/geom";
+import {
+  ImageBackground,
+  mkBackgroundLayer,
+} from "@/wab/shared/core/bg-styles";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/shared/core/tpls";
 import {
   SVG_MEDIA_TYPE as SVG_CONTENT_TYPE,
   SVG_MEDIA_TYPE,
@@ -14,13 +17,13 @@ import {
   parseDataUrl,
   parseSvgXml,
 } from "@/wab/shared/data-urls";
+import { Rect } from "@/wab/shared/geom";
 import {
   clearExplicitColors,
   convertSvgToTextSized,
   gatherSvgColors,
   isSVG,
 } from "@/wab/shared/svg-utils";
-import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/shared/core/tpls";
 import { notification } from "antd";
 import * as downscale from "downscale";
 import { fileTypeFromBlob } from "file-type-browser";
@@ -189,6 +192,30 @@ export const isDescendant = ({
 
   while (node !== null) {
     if (node === parent) {
+      return true;
+    }
+
+    node = node.parentNode;
+  }
+
+  return false;
+};
+
+export const isContextMenuDescendant = (child: HTMLElement) => {
+  let node = child.parentNode;
+
+  const canvasEditorEl = document.querySelector(".canvas-editor");
+
+  // Not a context menu item, as it's located inside the canvas-editor
+  if (
+    canvasEditorEl &&
+    isDescendant({ parent: canvasEditorEl as HTMLElement, child })
+  ) {
+    return false;
+  }
+
+  while (node !== null) {
+    if ((node as HTMLElement).getAttribute?.("role") === "menu") {
       return true;
     }
 

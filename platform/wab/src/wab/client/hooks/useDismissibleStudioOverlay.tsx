@@ -2,7 +2,7 @@ import {
   plasmicIFrameMouseDownEvent,
   plasmicIFrameWheelEvent,
 } from "@/wab/client/definitions/events";
-import { isDescendant } from "@/wab/client/dom-utils";
+import { isContextMenuDescendant, isDescendant } from "@/wab/client/dom-utils";
 import { RefObject, useCallback, useEffect, useMemo, useRef } from "react";
 
 /**
@@ -40,12 +40,19 @@ export function useDismissibleStudioOverlay({
     // Should NOT dismiss if the event target
     // is descendant of the overlay container
     if (
-      overlayRef &&
+      overlayRef?.current &&
+      e.target instanceof HTMLElement &&
       isDescendant({
-        parent: overlayRef.current as HTMLElement,
-        child: e.target as HTMLElement,
+        parent: overlayRef.current,
+        child: e.target,
       })
     ) {
+      return e.stopPropagation();
+    }
+
+    // Should NOT dismiss if the event target
+    // is a context menu item
+    if (e.target instanceof HTMLElement && isContextMenuDescendant(e.target)) {
       return e.stopPropagation();
     }
 
