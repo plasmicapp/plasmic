@@ -645,7 +645,7 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
                         if (!virtualItem) {
                           return 0;
                         } else if (virtualItem.type === "header") {
-                          return 64;
+                          return 40;
                         } else if (virtualItem.type === "item") {
                           if (shouldShowPreview(virtualItem.group)) {
                             return 112;
@@ -724,7 +724,7 @@ const Row = React.memo(function Row(props: {
         ...style,
         display: "flex",
         gap: sameRowGap,
-        padding: virtualRow[0].type === "item" ? "8px 8px" : undefined,
+        padding: virtualRow[0].type === "item" ? 8 : undefined,
       }}
     >
       {virtualRow.map((virtualItem) => {
@@ -732,10 +732,10 @@ const Row = React.memo(function Row(props: {
           return (
             <ListSectionHeader
               style={{
-                paddingTop: 16,
-                paddingBottom: 0,
+                paddingTop: 8,
                 paddingLeft: 8,
                 paddingRight: 8,
+                paddingBottom: 0,
               }}
             >
               <span
