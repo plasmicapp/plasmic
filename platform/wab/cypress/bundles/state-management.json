@@ -545,7 +545,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "17933032": {
           "component": { "__ref": "17933031" },
@@ -1316,7 +1317,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "40989010": {
           "tag": "div",
@@ -1547,7 +1549,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "40989060": {
           "component": { "__ref": "40989059" },
@@ -1768,7 +1771,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "40989097": {
           "component": { "__ref": "40989096" },
@@ -2138,7 +2142,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "44323002": {
           "component": { "__ref": "44323001" },
@@ -2583,7 +2588,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "44323084": {
           "component": { "__ref": "44323083" },
@@ -4001,7 +4007,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "44324227": {
           "component": { "__ref": "44324226" },
@@ -8313,7 +8320,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "61957272": {
           "component": { "__ref": "61957271" },
@@ -8880,7 +8888,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "61957389": {
           "component": { "__ref": "61957388" },
@@ -9182,7 +9191,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "61957442": {
           "component": { "__ref": "61957441" },
@@ -9410,7 +9420,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "64092002": {
           "uuid": "gVdud7c-SX",
@@ -9440,7 +9451,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "64092003": {
           "type": { "__ref": "64092019" },
@@ -9848,7 +9860,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "64092050": {
           "component": { "__ref": "64092049" },
@@ -10172,7 +10185,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "64092110": {
           "component": { "__ref": "64092109" },
@@ -16370,7 +16384,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "64093040": {
           "component": { "__ref": "64093039" },
@@ -17228,7 +17243,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "64093242": {
           "component": { "__ref": "64093241" },
@@ -17769,7 +17785,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "64093412": {
           "component": { "__ref": "64093411" },
@@ -18938,7 +18955,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "64093649": {
           "component": { "__ref": "64093648" },
@@ -20286,7 +20304,7 @@
         }
       },
       "deps": [],
-      "version": "238-code-component-variants-update-fields"
+      "version": "239-add-server-queries"
     }
   ]
 ]

@@ -201,7 +201,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "28832089": {
           "component": { "__ref": "28832088" },
@@ -2265,7 +2266,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "28832479": {
           "component": { "__ref": "28832478" },
@@ -9010,7 +9012,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "54435018": {
           "component": { "__ref": "54435017" },
@@ -9393,7 +9396,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "54435207": {
           "component": { "__ref": "54435206" },
@@ -10345,7 +10349,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "63011002": {
           "uuid": "tlJr6H6w1p",
@@ -10375,7 +10380,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "63011003": {
           "type": { "__ref": "63011019" },
@@ -10800,7 +10806,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "63011053": {
           "component": { "__ref": "63011052" },
@@ -11592,7 +11599,7 @@
         }
       },
       "deps": [],
-      "version": "238-code-component-variants-update-fields"
+      "version": "239-add-server-queries"
     }
   ]
 ]

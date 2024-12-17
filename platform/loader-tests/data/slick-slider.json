@@ -125,7 +125,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "ZEE1qbzSeuSN": {
           "type": { "__ref": "ejSM67D97QE-" },
@@ -1286,7 +1287,7 @@
         }
       },
       "deps": [],
-      "version": "238-code-component-variants-update-fields"
+      "version": "239-add-server-queries"
     }
   ],
   [
@@ -1834,7 +1835,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "5eA2NrDMnU4V": {
           "uuid": "bbfPDeUbdIxB",
@@ -1864,7 +1866,8 @@
           "figmaMappings": [],
           "alwaysAutoName": true,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "XEPISKeF1Su5": {
           "type": { "__ref": "mkofqeljrS4N" },
@@ -2293,7 +2296,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "UTZQfVbb6_JD": {
           "component": { "__ref": "ZOm9KRROsVGC" },
@@ -2545,7 +2549,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": true,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "nF3BO_KVW0Q5": {
           "component": { "__ref": "P8hUdZkGBYov" },
@@ -8675,7 +8680,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": true,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "0zqw-xWELi39": {
           "component": { "__ref": "CUEv0dZhpMRo" },
@@ -13929,7 +13935,7 @@
         }
       },
       "deps": ["1397401c-b15c-47b2-8659-9b44c397e887"],
-      "version": "238-code-component-variants-update-fields"
+      "version": "239-add-server-queries"
     }
   ]
 ]

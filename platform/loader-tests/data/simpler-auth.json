@@ -536,7 +536,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "2VH-5YdWosjy": {
           "uuid": "Bv3aRg6doUcD",
@@ -566,7 +567,8 @@
           "figmaMappings": [],
           "alwaysAutoName": true,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "hSSsIgYX9Ez_": {
           "uuid": "fdq84SoGgUkZ",
@@ -590,7 +592,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "a8rMN9AF25rn": {
           "uuid": "gzzccGfYfnC_",
@@ -614,7 +617,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "uhJY0og8JLqe": {
           "uuid": "oXQ62Fv4aXXe",
@@ -638,7 +642,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "zc3muSrtBGCI": {
           "uuid": "HJKweunsdmsG",
@@ -701,7 +706,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": true,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "J7HHtq-clz9l": {
           "uuid": "HL30oCyfwH5U",
@@ -725,7 +731,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "y3Gi1ZRR3zFC": {
           "uuid": "aorRODuPYl3R",
@@ -749,7 +756,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "QaKiYYH09Wmz": {
           "component": { "__ref": "hSSsIgYX9Ez_" },
@@ -9399,7 +9407,7 @@
         }
       },
       "deps": [],
-      "version": "238-code-component-variants-update-fields"
+      "version": "239-add-server-queries"
     }
   ]
 ]

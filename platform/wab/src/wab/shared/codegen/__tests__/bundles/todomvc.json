@@ -78,7 +78,8 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
-      "__type": "Component"
+      "__type": "Component",
+      "serverQueries": []
     },
     "3": {
       "type": { "__ref": "56656001" },
@@ -282,7 +283,8 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
-      "__type": "Component"
+      "__type": "Component",
+      "serverQueries": []
     },
     "35": {
       "type": { "__ref": "56656002" },
@@ -797,7 +799,8 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
-      "__type": "Component"
+      "__type": "Component",
+      "serverQueries": []
     },
     "160": {
       "type": { "__ref": "56656003" },
@@ -2170,7 +2173,8 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
-      "__type": "Component"
+      "__type": "Component",
+      "serverQueries": []
     },
     "479": {
       "type": { "__ref": "56656004" },
@@ -2569,7 +2573,8 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
-      "__type": "Component"
+      "__type": "Component",
+      "serverQueries": []
     },
     "543": {
       "type": { "__ref": "56656005" },
@@ -4914,5 +4919,5 @@
     }
   },
   "deps": [],
-  "version": "238-code-component-variants-update-fields"
+  "version": "239-add-server-queries"
 }

@@ -236,7 +236,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "J-ArOVMxLUh5": {
           "name": "title",
@@ -434,7 +435,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "iEGxrZZF3uxa": {
           "name": "dataOp",
@@ -695,7 +697,8 @@
           "figmaMappings": [],
           "alwaysAutoName": true,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "LgdhubFSOeqk": {
           "values": {
@@ -1335,21 +1338,24 @@
           "importName": "sum",
           "defaultExport": false,
           "namespace": "math",
-          "__type": "CustomFunction"
+          "__type": "CustomFunction",
+          "params": []
         },
         "-hD0qzX8Rbv7": {
           "importPath": "./functions",
           "importName": "subtract",
           "defaultExport": true,
           "namespace": "math",
-          "__type": "CustomFunction"
+          "__type": "CustomFunction",
+          "params": []
         },
         "1wavIcOhMzR6": {
           "importPath": "./functions",
           "importName": "greeting",
           "defaultExport": false,
           "namespace": null,
-          "__type": "CustomFunction"
+          "__type": "CustomFunction",
+          "params": []
         },
         "SOeWExDqMzIL": {
           "expr": { "__ref": "Q2V4gWoP0oq8" },
@@ -1445,7 +1451,7 @@
         }
       },
       "deps": [],
-      "version": "238-code-component-variants-update-fields"
+      "version": "239-add-server-queries"
     }
   ]
 ]

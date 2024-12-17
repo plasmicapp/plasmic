@@ -112,7 +112,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "hwJ-868__zyH": {
           "name": "title",
@@ -310,7 +311,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "W5QoCDQfMVkS": {
           "name": "dataOp",
@@ -571,7 +573,8 @@
           "figmaMappings": [],
           "alwaysAutoName": true,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "eBFlfj-UrIIx": {
           "values": {
@@ -1676,7 +1679,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "lNS3uO2nuvgV": {
           "component": { "__ref": "1GEuPT7CEAql" },
@@ -2413,7 +2417,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "J1R4V9ewcmog": {
           "component": { "__ref": "pQqULoBb29eu" },
@@ -2970,7 +2975,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "h8ijY8XRq4ZB": {
           "component": { "__ref": "iU_MSMf0qWxV" },
@@ -4066,7 +4072,7 @@
         }
       },
       "deps": [],
-      "version": "238-code-component-variants-update-fields"
+      "version": "239-add-server-queries"
     }
   ],
   [
@@ -4600,7 +4606,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "DTGLLa841Ac0": {
           "uuid": "U50dwmtj3iqU",
@@ -4630,7 +4637,8 @@
           "figmaMappings": [],
           "alwaysAutoName": true,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "tloZ17yAS6zA": {
           "type": { "__ref": "AUVjH-xBykMM" },
@@ -5054,7 +5062,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "6AS4XiJGpNGs": {
           "component": { "__ref": "TYUH6CV52DHs" },
@@ -5312,7 +5321,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "serverQueries": []
         },
         "qB_pciXYC6gQ": {
           "component": { "__ref": "nrI2erZFK7If" },
@@ -5520,7 +5530,7 @@
         }
       },
       "deps": [],
-      "version": "238-code-component-variants-update-fields"
+      "version": "239-add-server-queries"
     }
   ]
 ]
