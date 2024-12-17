@@ -798,6 +798,7 @@ exports[`model-util works 1`] = `
         },
       ],
       "plumeInfo": null,
+      "serverQueries": [],
       "states": [
         {
           "__iid": "30107001",
@@ -2412,6 +2413,7 @@ exports[`model-util works 1`] = `
         },
       ],
       "plumeInfo": null,
+      "serverQueries": [],
       "states": [
         {
           "__iid": "30107002",
@@ -3106,6 +3108,7 @@ exports[`model-util works 1`] = `
         },
       ],
       "plumeInfo": null,
+      "serverQueries": [],
       "states": [
         {
           "__iid": "30107003",
@@ -4698,6 +4701,7 @@ exports[`model-util works 1`] = `
         },
       ],
       "plumeInfo": null,
+      "serverQueries": [],
       "states": [
         {
           "__iid": "30107004",
@@ -5850,6 +5854,7 @@ exports[`model-util works 1`] = `
         },
       ],
       "plumeInfo": null,
+      "serverQueries": [],
       "states": [
         {
           "__iid": "30107005",
