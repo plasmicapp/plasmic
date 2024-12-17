@@ -749,7 +749,7 @@ const Row = React.memo(function Row(props: {
                   // padding: "24px 16px",
                 }}
               >
-                {virtualItem.group.label}
+                {context.matcher.boldSnippets(virtualItem.group.label)}
               </span>
             </ListSectionHeader>
           );
@@ -831,7 +831,7 @@ const Row = React.memo(function Row(props: {
                 >
                   {showPreview ? (
                     <OmnibarAddItem
-                      title={item.label}
+                      title={matcher.boldSnippets(item.label)}
                       hoverText={
                         item["hostLessPackageInfo"]?.syntheticPackage
                           ? "Show package"
@@ -1514,6 +1514,11 @@ export function buildAddItemGroups({
 
   if (matcher.hasQuery()) {
     groupedItems.forEach((group) => {
+      if (matcher.matches(group.label)) {
+        return; // don't filter items if group label matches
+      }
+
+      // Add items that don't match
       const unmatchedItems = new Set(
         group.items.filter(
           (item) =>
@@ -1521,6 +1526,8 @@ export function buildAddItemGroups({
             (!item.systemName || !matcher.matches(item.systemName))
         )
       );
+
+      // Remove items whose super or sub components match
       const superAndSubCompsOfMatchedComponents = new Set<Component>();
       group.items.forEach((item) => {
         if (
@@ -1543,11 +1550,9 @@ export function buildAddItemGroups({
           unmatchedItems.delete(item);
         }
       });
-      group.items = group.items.filter(
-        (item) =>
-          !(group.key === "Common" && group.familyKey === undefined) &&
-          !unmatchedItems.has(item)
-      );
+
+      // Filter items based on final unmatched items
+      group.items = group.items.filter((item) => !unmatchedItems.has(item));
     });
   }
 
