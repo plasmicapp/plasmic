@@ -228,6 +228,7 @@ export function registerCheckbox(
           description: "Whether the checkbox should be selected by default",
           defaultValueHint: false,
           defaultValue: false,
+          hidden: hasParent,
         },
         isIndeterminate: {
           displayName: "Indeterminate",
