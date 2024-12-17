@@ -263,7 +263,9 @@ function fixupImplicitStates(summary: ChangeSummary) {
   for (const component of summary.deepUpdatedComponents) {
     const site = tryGetOwnerSite(component);
     if (site) {
-      component.states.forEach((state) => {
+      // We iterate backwards since we expect to remove states from the array
+      for (let i = component.states.length - 1; i >= 0; i--) {
+        const state = component.states[i];
         if (state.tplNode && !isTplAttachedToSite(site, state.tplNode)) {
           removeImplicitStatesAfterRemovingTplNode(
             site,
@@ -271,7 +273,7 @@ function fixupImplicitStates(summary: ChangeSummary) {
             state.tplNode
           );
         }
-      });
+      }
     }
   }
   for (const tree of summary.newTrees) {
