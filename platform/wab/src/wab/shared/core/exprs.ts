@@ -3,6 +3,7 @@ import {
   Component,
   CompositeExpr,
   CustomCode,
+  CustomFunctionExpr,
   DataSourceOpExpr,
   DataSourceTemplate,
   EventHandler,
@@ -102,7 +103,7 @@ import { pathToString } from "@/wab/shared/eval/expression-parser";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import { typeDisplayName } from "@/wab/shared/model/model-util";
 import { maybeConvertToIife } from "@/wab/shared/parser-utils";
-import L, { escapeRegExp, isString, mapValues, set } from "lodash";
+import L, { escapeRegExp, groupBy, isString, mapValues, set } from "lodash";
 
 export interface ExprCtx {
   component: Component | null;
@@ -162,6 +163,7 @@ export const summarizeExpr = (expr: Expr, exprCtx: ExprCtx): string =>
     )
     .when(QueryInvalidationExpr, (_expr) => `(query invalidations)`)
     .when(CompositeExpr, (_expr) => `(composite value)`)
+    .when(CustomFunctionExpr, (_expr) => `(custom function)`)
     .result();
 
 // Deep copy is necessary, since with shallow copies, the user could potentially
@@ -338,6 +340,14 @@ export function clone(_expr: Expr): Expr {
           substitutions: mapValues(expr.substitutions, (subexpr) =>
             clone(subexpr)
           ),
+        })
+    )
+    .when(
+      CustomFunctionExpr,
+      (expr) =>
+        new CustomFunctionExpr({
+          func: expr.func,
+          args: expr.args.map((arg) => clone(arg)),
         })
     )
     .result();
@@ -738,6 +748,22 @@ const _asCode = maybeComputedFn(
   return __composite;
 })())
   `.trim()
+        );
+      })
+      .when(CustomFunctionExpr, (expr) => {
+        const { func, args } = expr;
+        const argsMap = groupBy(args, (arg) => arg.argType.argName);
+        const orderedArgs =
+          func.params.map((param) => {
+            if (argsMap[param.argName]) {
+              return getRawCode(argsMap[param.argName][0].expr, exprCtx);
+            }
+            return undefined;
+          }) ?? [];
+        return code(
+          `$$${expr.func.namespace ? `.${expr.func.namespace}` : ""}.${
+            expr.func.importName
+          }(${orderedArgs.join(",")})`
         );
       })
       .result()

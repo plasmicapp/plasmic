@@ -110,6 +110,7 @@ import {
   CollectionExpr,
   CompositeExpr,
   CustomCode,
+  CustomFunctionExpr,
   DataSourceOpExpr,
   EventHandler,
   Expr,
@@ -304,6 +305,7 @@ export function extractLitFromMaybeRenderable(
         CompositeExpr,
         MapExpr,
         CollectionExpr,
+        CustomFunctionExpr,
       ],
       (_expr): [any, boolean] => [_expr, true]
     )

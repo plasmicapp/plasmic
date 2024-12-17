@@ -342,6 +342,7 @@ export function mkComponent(obj: {
     metadata: {},
     states,
     dataQueries: [],
+    serverQueries: [],
     figmaMappings: obj.figmaMappings ?? [],
     alwaysAutoName: obj.alwaysAutoName ?? false,
     trapsFocus: obj.trapsFocus ?? false,
@@ -729,6 +730,7 @@ export function cloneComponent(
       oldToNewComponentQuery.set(componentDataQuery, cloned);
       return cloned;
     }),
+    serverQueries: fromComponent.serverQueries,
     figmaMappings: fromComponent.figmaMappings.map(
       (c) => new FigmaComponentMapping({ ...c })
     ),

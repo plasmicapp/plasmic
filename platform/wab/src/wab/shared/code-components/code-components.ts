@@ -13,6 +13,7 @@ import {
   componentToReferencers,
   componentToTplComponents,
   computedProjectFlags,
+  findCustomFunctionUsages,
   flattenComponent,
 } from "@/wab/shared/cached-selectors";
 import {
@@ -2389,13 +2390,29 @@ export function registeredFunctionId(r: CustomFunctionRegistration) {
 }
 
 export function createCustomFunctionFromRegistration(
-  functionReg: CustomFunctionRegistration
+  functionReg: CustomFunctionRegistration,
+  existingFunction?: CustomFunction
 ) {
+  const existingParams = existingFunction?.params ?? [];
   return new CustomFunction({
     defaultExport: functionReg.meta.isDefaultExport ?? false,
     importName: functionReg.meta.name,
     importPath: functionReg.meta.importPath,
     namespace: functionReg.meta.namespace ?? null,
+    params:
+      functionReg.meta.params?.map((paramReg: string | BaseParam<any>) => {
+        const name = isString(paramReg) ? paramReg : paramReg.name;
+        const argType = isString(paramReg)
+          ? typeFactory.text()
+          : isArray(paramReg.type)
+          ? typeFactory.any()
+          : (convertTsToWabType(paramReg.type ?? "string") as ArgType["type"]);
+        const existingParam = existingParams.find((p) => p.argName === name);
+        if (existingParam && existingParam.type.name === argType.name) {
+          return existingParam;
+        }
+        return typeFactory.arg(name, argType);
+      }) ?? [],
   });
 }
 
@@ -4558,13 +4575,13 @@ async function upsertRegisteredFunctions(
           const updateableFields: Omit<
             CustomFunction,
             "importName" | "namespace" | "typeTag" | "uid"
-          > = pick(createCustomFunctionFromRegistration(functionReg), [
-            "defaultExport",
-            "importPath",
-          ]);
+          > = pick(
+            createCustomFunctionFromRegistration(functionReg, existing),
+            ["defaultExport", "importPath", "params"]
+          );
           if (
             Object.entries(updateableFields).some(
-              ([key, value]) => value !== existing[key]
+              ([key, value]) => !isEqual(value, existing[key])
             )
           ) {
             updatedFunctionRegs.push(functionReg);
@@ -4633,6 +4650,21 @@ async function upsertRegisteredFunctions(
           functionNamespaces.add(functionReg.meta.namespace);
         }
       }
+      const customFunctionUsages = findCustomFunctionUsages(site);
+
+      ctx.observeComponents(
+        customFunctionUsages
+          .filter((usage) => {
+            return usage.customFunctions.some(
+              (fn) =>
+                removedFunctions.has(fn) ||
+                updatedFunctionRegs.some(
+                  (reg) => registeredFunctionId(reg) === customFunctionId(fn)
+                )
+            );
+          })
+          .map((usage) => usage.ownerComponent)
+      );
 
       if (
         newFunctionRegs.length > 0 ||
@@ -4640,7 +4672,7 @@ async function upsertRegisteredFunctions(
         removedFunctions.size > 0
       ) {
         run(
-          await ctx.change<never>(
+          await ctx.change(
             ({ success: changeSuccess }) => {
               const newFunctions: CustomFunction[] = [];
               const updatedFunctions: CustomFunction[] = [];
@@ -4659,10 +4691,32 @@ async function upsertRegisteredFunctions(
                 const updateableFields: Omit<
                   CustomFunction,
                   "importName" | "namespace" | "typeTag" | "uid"
-                > = pick(createCustomFunctionFromRegistration(functionReg), [
-                  "defaultExport",
-                  "importPath",
-                ]);
+                > = pick(
+                  createCustomFunctionFromRegistration(functionReg, existing),
+                  ["defaultExport", "importPath", "params"]
+                );
+                customFunctionUsages.forEach((usage) => {
+                  usage.ownerComponent.serverQueries
+                    .filter((serverQuery) => {
+                      return serverQuery.op?.func === existing;
+                    })
+                    .map((serverQuery) => {
+                      removeWhere(
+                        serverQuery.op!.args,
+                        (arg) =>
+                          !updateableFields.params.find(
+                            (param) => param === arg.argType
+                          )
+                      );
+                    });
+                  removeWhere(
+                    usage.ownerComponent.serverQueries,
+                    (serverQuery) =>
+                      !!serverQuery.op?.func &&
+                      removedFunctions.has(serverQuery.op.func)
+                  );
+                });
+
                 Object.assign(existing, updateableFields);
                 updatedFunctions.push(existing);
               }
@@ -4674,6 +4728,14 @@ async function upsertRegisteredFunctions(
               removeWhere(site.customFunctions, (customFunction) =>
                 removedFunctions.has(customFunction)
               );
+              customFunctionUsages.forEach((usage) => {
+                removeWhere(
+                  usage.ownerComponent.serverQueries,
+                  (serverQuery) =>
+                    !!serverQuery.op?.func &&
+                    removedFunctions.has(serverQuery.op.func)
+                );
+              });
 
               fns.onUpdatedCustomFunctions?.({
                 newFunctions,

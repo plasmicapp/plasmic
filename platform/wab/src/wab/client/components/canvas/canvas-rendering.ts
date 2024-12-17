@@ -221,6 +221,7 @@ import {
   ComponentDataQuery,
   CompositeExpr,
   CustomCode,
+  CustomFunctionExpr,
   DataSourceOpExpr,
   EventHandler,
   Expr,
@@ -2075,6 +2076,9 @@ function computeTplComponentArgs(
           ctx.viewCtx.canvasCtx.win()
         )
       )
+      .when(CustomFunctionExpr, (_expr) =>
+        unexpected(`Cannot evaluate CustomFunctionExpr as a component arg`)
+      )
       .result();
   };
 
@@ -2632,6 +2636,7 @@ function evalTagAttrExprToString(
         TplRef,
         QueryInvalidationExpr,
         CompositeExpr,
+        CustomFunctionExpr,
       ],
       (_) => {
         assert(false, "Unexpected expr type");

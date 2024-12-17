@@ -113,6 +113,7 @@ import {
   CompositeExpr,
   CustomCode,
   CustomFunction,
+  CustomFunctionExpr,
   DataSourceOpExpr,
   EventHandler,
   Expr,
@@ -453,6 +454,7 @@ export function cloneCustomFunction(
     importName: customFunction.importName,
     importPath: customFunction.importPath,
     namespace: customFunction.namespace,
+    params: [],
   });
 }
 
@@ -867,6 +869,9 @@ export function cloneSite(fromSite: Site) {
       )
       .when(FunctionExpr, (functionExpr) =>
         fixGlobalRefForExpr(functionExpr.bodyExpr)
+      )
+      .when(CustomFunctionExpr, (customFunctionExpr) =>
+        customFunctionExpr.args.forEach((arg) => fixGlobalRefForExpr(arg))
       )
       .when([RenderExpr, VirtualRenderExpr], () => {})
       .result();

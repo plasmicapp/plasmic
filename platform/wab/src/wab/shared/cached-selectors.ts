@@ -57,6 +57,7 @@ import {
   getNonVariantParams,
   getParamNames,
   isCodeComponent,
+  isPageComponent,
   isPlumeComponent,
   tryGetVariantGroupValueFromArg,
 } from "@/wab/shared/core/components";
@@ -535,6 +536,29 @@ export const allCustomFunctions = maybeComputedFn(function allCustomFunctions(
   );
   return customFunctions;
 });
+
+export const findCustomFunctionUsages = maybeComputedFn(
+  function findCustomFunctionUsages(site: Site) {
+    return withoutNils(
+      site.components.map((component) => {
+        if (
+          !isPageComponent(component) ||
+          component.serverQueries.length === 0
+        ) {
+          return undefined;
+        }
+        return {
+          ownerComponent: component,
+          customFunctions: withoutNils(
+            component.serverQueries.map((serverQuery) => {
+              return serverQuery.op?.func;
+            })
+          ),
+        };
+      })
+    );
+  }
+);
 
 export const allCodeLibraries = maybeComputedFn(function allCodeLibraries(
   rootSite: Site

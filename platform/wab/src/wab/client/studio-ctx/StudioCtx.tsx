@@ -3189,6 +3189,10 @@ export class StudioCtx extends WithDbCtx {
     ];
   }
 
+  getRegisteredFunctionsMap() {
+    return this._ccRegistry.getRegisteredFunctionsMap();
+  }
+
   getRegisteredLibraries() {
     return [
       ...(swallow(() => this.codeComponentsRegistry.getRegisteredLibraries()) ??

@@ -28,6 +28,7 @@ import {
   isKnownCollectionExpr,
   isKnownCompositeExpr,
   isKnownCustomCode,
+  isKnownCustomFunctionExpr,
   isKnownDataSourceOpExpr,
   isKnownEventHandler,
   isKnownExpr,
@@ -2360,6 +2361,10 @@ export function pushExprs(exprs: Expr[], expr: Expr | null | undefined) {
     Object.values(expr.substitutions).forEach((subExpr) =>
       pushExprs(exprs, subExpr)
     );
+  } else if (isKnownCustomFunctionExpr(expr)) {
+    for (const arg of expr.args) {
+      pushExprs(exprs, arg);
+    }
   }
 }
 
@@ -2435,6 +2440,12 @@ export function findExprsInComponent(component: Component) {
   }
 
   for (const query of component.dataQueries) {
+    if (query.op) {
+      pushExprs(componentExprs, query.op);
+    }
+  }
+
+  for (const query of component.serverQueries) {
     if (query.op) {
       pushExprs(componentExprs, query.op);
     }
