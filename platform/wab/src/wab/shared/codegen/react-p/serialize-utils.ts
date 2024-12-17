@@ -29,6 +29,7 @@ import {
 import { CssProjectDependencies } from "@/wab/shared/core/sites";
 import {
   Component,
+  ComponentServerQuery,
   ImageAsset,
   TplNode,
   Variant,
@@ -622,3 +623,13 @@ export const maybeCondExpr = (maybeCond: string, expr: string) => {
   }
   return `(${maybeCond}) ? (${expr}) : null`;
 };
+
+export function serializeServerQuery(serverQuery: ComponentServerQuery) {
+  return `const ${serverQuery.name} = await ${
+    serverQuery.op!.func.importName
+  }();`;
+}
+
+export function serializeServerQueries(component: Component) {
+  return component.serverQueries.map((q) => serializeServerQuery(q)).join("\n");
+}

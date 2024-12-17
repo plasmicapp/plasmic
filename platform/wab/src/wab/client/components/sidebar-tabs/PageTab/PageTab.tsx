@@ -1,14 +1,15 @@
 /** @format */
 
 import PageSettings from "@/wab/client/components/PageSettings";
-import { ComponentDataQueriesSection } from "@/wab/client/components/sidebar-tabs/component-data-queries-section";
 import S from "@/wab/client/components/sidebar-tabs/ComponentTab/ComponentTab.module.scss";
 import PageMetaPanel from "@/wab/client/components/sidebar-tabs/PageMetaPanel";
 import { PageMinRoleSection } from "@/wab/client/components/sidebar-tabs/PageMinRoleSection";
 import PageURLParametersSection from "@/wab/client/components/sidebar-tabs/PageURLParametersSection";
 import VariablesSection from "@/wab/client/components/sidebar-tabs/StateManagement/VariablesSection";
-import { NamedPanelHeader } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { ComponentDataQueriesSection } from "@/wab/client/components/sidebar-tabs/component-data-queries-section";
+import { ServerQueriesSection } from "@/wab/client/components/sidebar-tabs/server-queries-section";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import { NamedPanelHeader } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { TopModal } from "@/wab/client/components/studio/TopModal";
 import { VariantsPanel } from "@/wab/client/components/variants/VariantsPanel";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -17,8 +18,8 @@ import GearIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Gear";
 import PageIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Page";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { PageComponent } from "@/wab/shared/core/components";
 import { PublicStyleSection } from "@/wab/shared/ApiSchema";
+import { PageComponent } from "@/wab/shared/core/components";
 import { canEditStyleSection } from "@/wab/shared/ui-config-utils";
 import { observer } from "mobx-react";
 import React from "react";
@@ -123,11 +124,18 @@ export const PageTab = observer(function PageTab(props: {
                         </>
                       )}
                       {canEdit(PublicStyleSection.DataQueries) && (
-                        <ComponentDataQueriesSection
-                          component={page}
-                          viewCtx={viewCtx}
-                        />
+                        <>
+                          <ComponentDataQueriesSection
+                            component={page}
+                            viewCtx={viewCtx}
+                          />
+                          <ServerQueriesSection
+                            component={page}
+                            viewCtx={viewCtx}
+                          />
+                        </>
                       )}
+
                       {canEdit(PublicStyleSection.States) && (
                         <VariablesSection component={page} viewCtx={viewCtx} />
                       )}

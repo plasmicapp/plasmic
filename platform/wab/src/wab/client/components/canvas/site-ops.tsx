@@ -142,6 +142,7 @@ import {
   Component,
   ComponentArena,
   ComponentDataQuery,
+  ComponentServerQuery,
   ComponentVariantGroup,
   GlobalVariantGroup,
   ImageAsset,
@@ -1224,7 +1225,7 @@ export class SiteOps {
 
   async removeComponentQuery(component: Component, query: ComponentDataQuery) {
     const refs = findExprsInComponent(component).filter(({ expr }) =>
-      isQueryUsedInExpr(query, expr)
+      isQueryUsedInExpr(query.name, expr)
     );
     if (refs.length > 0) {
       const viewCtx = this.studioCtx.focusedViewCtx();
@@ -1259,6 +1260,48 @@ export class SiteOps {
       () => componentRef.map(({ ownerComponent }) => ownerComponent),
       ({ success }) => {
         this.tplMgr.removeComponentQuery(component, query);
+        return success();
+      }
+    );
+  }
+
+  async removeComponentServerQuery(
+    component: Component,
+    query: ComponentServerQuery
+  ) {
+    const refs = findExprsInComponent(component).filter(({ expr }) =>
+      isQueryUsedInExpr(query.name, expr)
+    );
+    if (refs.length > 0) {
+      const viewCtx = this.studioCtx.focusedViewCtx();
+      const maybeNode = refs.find((r) => r.node)?.node;
+      const key = mkUuid();
+      notification.error({
+        key,
+        message: `Cannot delete server query`,
+        description: (
+          <>
+            It is referenced in the current component.{" "}
+            {viewCtx?.component === component && maybeNode ? (
+              <a
+                onClick={() => {
+                  viewCtx.setStudioFocusByTpl(maybeNode);
+                  notification.close(key);
+                }}
+              >
+                [Go to reference]
+              </a>
+            ) : null}
+          </>
+        ),
+      });
+      return;
+    }
+
+    await this.studioCtx.changeObserved(
+      () => [],
+      ({ success }) => {
+        this.tplMgr.removeComponentServerQuery(component, query);
         return success();
       }
     );

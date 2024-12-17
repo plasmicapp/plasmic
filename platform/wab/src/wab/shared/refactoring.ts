@@ -15,6 +15,7 @@ import {
 import {
   Component,
   ComponentDataQuery,
+  ComponentServerQuery,
   Expr,
   Interaction,
   isKnownCustomCode,
@@ -55,7 +56,7 @@ export function isParamUsedInExpr(
  * Returns boolean indicating whether `expr` is referencing `query`.
  */
 export function isQueryUsedInExpr(
-  query: ComponentDataQuery,
+  queryName: string,
   expr: Expr | null | undefined
 ) {
   if (Exprs.isRealCodeExpr(expr)) {
@@ -64,7 +65,7 @@ export function isQueryUsedInExpr(
       "Real code expression must be CustomCode or ObjectPath"
     );
     const info = parseExpr(expr);
-    const varName = toVarName(query.name);
+    const varName = toVarName(queryName);
     return info.usedDollarVarKeys.$queries.has(varName);
   }
   return false;
@@ -318,6 +319,26 @@ export function renameQueryAndFixExprs(
   const oldVarName = toVarName(query.name);
   query.name = uniqueName(
     component.dataQueries.filter((q) => q !== query).map((q) => q.name),
+    wantedNewName,
+    {
+      normalize: toVarName,
+    }
+  );
+  const newVarName = toVarName(query.name);
+  const refs = Tpls.findExprsInComponent(component);
+  for (const { expr } of refs) {
+    renameObjectInExpr(expr, "$queries", "$queries", oldVarName, newVarName);
+  }
+}
+
+export function renameServerQueryAndFixExprs(
+  component: Component,
+  query: ComponentServerQuery,
+  wantedNewName: string
+) {
+  const oldVarName = toVarName(query.name);
+  query.name = uniqueName(
+    component.serverQueries.filter((q) => q !== query).map((q) => q.name),
     wantedNewName,
     {
       normalize: toVarName,

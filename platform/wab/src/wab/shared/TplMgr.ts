@@ -211,6 +211,7 @@ import {
   Component,
   ComponentArena,
   ComponentDataQuery,
+  ComponentServerQuery,
   ComponentVariantGroup,
   Expr,
   GlobalVariantGroup,
@@ -1258,6 +1259,14 @@ export class TplMgr {
 
   removeComponentQuery(component: Component, query: ComponentDataQuery) {
     removeFromArray(component.dataQueries, query);
+    this.clearReferencesToRemovedQueries(query.uuid);
+  }
+
+  removeComponentServerQuery(
+    component: Component,
+    query: ComponentServerQuery
+  ) {
+    removeFromArray(component.serverQueries, query);
     this.clearReferencesToRemovedQueries(query.uuid);
   }
 
