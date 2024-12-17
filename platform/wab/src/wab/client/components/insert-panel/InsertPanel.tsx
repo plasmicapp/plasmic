@@ -72,7 +72,6 @@ import {
   groupConsecBy,
   maybe,
   mergeSane,
-  notNil,
   only,
   sliding,
   spawnWrapper,
@@ -161,22 +160,22 @@ export const InsertPanel = observer(function InsertPanel_({
 }: InsertPanelProps) {
   const studioCtx = useStudioCtx();
   const [isDragging, setDragging] = React.useState(false);
-  const recentItemsRef = React.useRef<[AddTplItem, Component | null][]>([]);
+  const recentItemsRef = React.useRef<AddTplItem[]>([]);
 
   // Only save insertable items like elements and components.
   const saveRecentItem = (item: AddTplItem, tplNode: TplNode | null) => {
     const component =
       tplNode && isTplComponent(tplNode) ? tplNode.component : null;
-    recentItemsRef.current.unshift([item, component]);
+    if (component) {
+      // If the item resulted in inserting a component, create a fresh item,
+      // since the original item could have been the "pre-install" item,
+      // which has a different key than an "installed" item.
+      recentItemsRef.current.unshift(createAddTplComponent(component));
+    } else {
+      recentItemsRef.current.unshift(item);
+    }
 
-    // Remove duplicates by checking the inserted component first, otherwise the unique key.
-    // We need to check the component because an insertable template AddItem will create a
-    // new component on insertion. Then the next InsertPanel will have a different AddItem
-    // representing the existing component.
-    recentItemsRef.current = L.uniqBy(
-      recentItemsRef.current,
-      ([i, comp]) => comp ?? i.key
-    );
+    recentItemsRef.current = L.uniqBy(recentItemsRef.current, (i) => i.key);
     if (recentItemsRef.current.length > 3) {
       recentItemsRef.current.length = 3;
     }
@@ -258,7 +257,7 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
   onDragStart: DraggableInsertableProps["onDragStart"];
   onDragEnd: DraggableInsertableProps["onDragEnd"];
   onInserted: (item: AddItem, comp: TplNode | null) => void;
-  recentItems: [AddTplItem, Component | null][];
+  recentItems: AddTplItem[];
 }) {
   const { studioCtx, onDragStart, onDragEnd, onInserted, recentItems } = props;
   const inputRef = React.useRef<TextboxRef>(null);
@@ -1047,7 +1046,7 @@ export function buildAddItemGroups({
   includeFrames?: boolean;
   studioCtx: StudioCtx;
   matcher: Matcher;
-  recentItems: [AddTplItem, Component | null][];
+  recentItems: AddTplItem[];
   filterToTarget?: boolean;
   insertLoc?: InsertRelLoc;
   projectDependencies: Array<ProjectDependency>;
@@ -1568,7 +1567,7 @@ export function buildAddItemGroups({
             isInsertable(item, vc, target, insertLoc)
           );
         }
-        recentItems = recentItems.filter(([item]) =>
+        recentItems = recentItems.filter((item) =>
           isInsertable(item, vc, target, insertLoc)
         );
       }
@@ -1578,17 +1577,8 @@ export function buildAddItemGroups({
   if (recentItems.length > 0) {
     const allItems = groupedItems.flatMap((group) => group.items);
     const allItemKeys = new Set(allItems.map((item) => item.key));
-    const allItemComponents = new Set(
-      allItems
-        .map((item) =>
-          item.type === "tpl" || item.type === "plume" ? item.component : null
-        )
-        .filter(notNil)
-    );
-    recentItems = recentItems.filter(
-      ([item, comp]) =>
-        allItemKeys.has(item.key) || (comp && allItemComponents.has(comp))
-    );
+
+    recentItems = recentItems.filter((item) => allItemKeys.has(item.key));
     if (recentItems.length > 0) {
       // Put recently used in the first section
       const firstGroup = groupedItems[0];
@@ -1601,7 +1591,7 @@ export function buildAddItemGroups({
         // For example, highlightedIndex will be set to the first occurrence, leading to a lot of jumping around
         // By just cloning this, we can keep the items distinct
         items: [
-          ...recentItems.map(([item]) => ({
+          ...recentItems.map((item) => ({
             ...L.clone(item),
             // Since not all items have images, remove previewImageUrl to force recents to always show as rows.
             previewImageUrl: undefined,
