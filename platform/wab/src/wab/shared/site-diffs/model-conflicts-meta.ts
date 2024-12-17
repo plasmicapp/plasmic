@@ -436,6 +436,16 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     importName: "generic",
     importPath: "generic",
     namespace: "generic",
+    params: {
+      arrayType: "ordered",
+      conflictType: "merge",
+      mergeKey: "argName",
+      contents: true,
+      handleUpdatedValues: (params, parent, bundler) =>
+        shallowCloneArrayValuesAndAddToBundle(params, parent, bundler, [
+          classes.ArgType,
+        ]),
+    },
   },
   CodeLibrary: {
     importType: "generic",
@@ -646,6 +656,11 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     name: "generic",
     op: "generic",
   },
+  ComponentServerQuery: {
+    uuid: "unexpected",
+    name: "generic",
+    op: "generic",
+  },
   CodeComponentHelper: {
     importName: "generic",
     importPath: "generic",
@@ -736,6 +751,11 @@ export const modelConflictsMeta: ModelConflictsMeta = {
         mergeComponentVariants(ancestor, left, right, merged, bundler, picks),
     },
     dataQueries: {
+      arrayType: "ordered",
+      conflictType: "rename",
+      nameKey: `name`,
+    },
+    serverQueries: {
       arrayType: "ordered",
       conflictType: "rename",
       nameKey: `name`,
@@ -1055,6 +1075,14 @@ export const modelConflictsMeta: ModelConflictsMeta = {
   },
   CollectionExpr: {
     exprs: {
+      arrayType: "ordered",
+      conflictType: "merge",
+      mergeKeyIsIdentity: true,
+    },
+  },
+  CustomFunctionExpr: {
+    func: "generic",
+    args: {
       arrayType: "ordered",
       conflictType: "merge",
       mergeKeyIsIdentity: true,

@@ -236,3 +236,4 @@ platform/wab/src/wab/server/bundle-migrations/235-variant-selectors-no-display-n
 platform/wab/src/wab/server/bundle-migrations/236-rename-duplicated-components.ts
 platform/wab/src/wab/server/bundle-migrations/237-code-component-variants-add-fields.ts
 platform/wab/src/wab/server/bundle-migrations/238-code-component-variants-update-fields.ts
+platform/wab/src/wab/server/bundle-migrations/239-add-server-queries.ts

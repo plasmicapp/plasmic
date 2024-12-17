@@ -224,6 +224,7 @@ CustomFunction
   importName: String
   defaultExport: Bool
   namespace: String?
+  params: [ArgType]
 
 CodeLibrary
   name: String
@@ -346,6 +347,10 @@ ComponentDataQuery
   @Const uuid: String
   name: String
   op: DataSourceOpExpr?
+ComponentServerQuery
+  @Const uuid: String
+  name: String
+  op: CustomFunctionExpr?
 CodeComponentHelper
   importPath: String
   importName: String
@@ -398,6 +403,7 @@ Component
   templateInfo: ComponentTemplateInfo?
   metadata: Map[String, String]
   dataQueries: [ComponentDataQuery]
+  serverQueries: [ComponentServerQuery]
   figmaMappings: [FigmaComponentMapping]
   alwaysAutoName: Bool
   trapsFocus: Bool
@@ -563,6 +569,9 @@ Expr
     queryInvalidation: QueryInvalidationExpr?
     # Minimum role necessary to execute this operation
     roleId: String?
+  CustomFunctionExpr
+    @WeakRef func: CustomFunction
+    args: [FunctionArg]
   VarRef
     @WeakRef variable: Var
   TplRef
