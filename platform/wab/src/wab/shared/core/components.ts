@@ -234,8 +234,9 @@ export const defaultComponentKinds = {
   select: "Select",
   slider: "Slider",
   switch: "Switch",
-  tooltip: "Tooltip",
+  "text-area": "Text Area",
   "text-input": "Text Input",
+  tooltip: "Tooltip",
   unauthorized: "Unauthorized",
 };
 

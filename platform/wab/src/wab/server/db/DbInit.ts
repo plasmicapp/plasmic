@@ -146,6 +146,7 @@ export async function seedTestDb(em: EntityManager) {
             select: "default:select",
             slider: "default:slider",
             switch: "default:switch",
+            textArea: "default:text-area",
             tooltip: "default:tooltip",
           },
           builtinSections: {
