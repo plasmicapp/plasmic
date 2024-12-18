@@ -3,6 +3,7 @@ import { registerCheckbox } from "./registerCheckbox";
 import { registerCheckboxGroup } from "./registerCheckboxGroup";
 import { registerComboBox } from "./registerComboBox";
 import { registerDescription } from "./registerDescription";
+import { registerDialog } from "./registerDialog";
 import { registerDialogTrigger } from "./registerDialogTrigger";
 // import { registerForm } from "./registerForm";
 import { registerHeading } from "./registerHeading";
@@ -26,6 +27,7 @@ export function registerAll(loader?: Registerable) {
   registerText(loader);
   registerHeading(loader);
   registerDescription(loader);
+  registerDialog(loader);
   registerOverlayArrow(loader);
   registerSelect(loader);
   registerComboBox(loader);

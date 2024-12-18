@@ -1,16 +1,12 @@
 import {
+  PlasmicElement,
   usePlasmicCanvasComponentInfo,
   usePlasmicCanvasContext,
 } from "@plasmicapp/host";
 import React, { forwardRef, useImperativeHandle } from "react";
 import { mergeProps } from "react-aria";
-import {
-  Dialog,
-  Modal,
-  ModalOverlay,
-  ModalOverlayProps,
-} from "react-aria-components";
-import { COMMON_STYLES, hasParent } from "./common";
+import { Modal, ModalOverlay, ModalOverlayProps } from "react-aria-components";
+import { hasParent } from "./common";
 import { PlasmicDialogTriggerContext } from "./contexts";
 import { HEADING_COMPONENT_NAME } from "./registerHeading";
 import {
@@ -82,31 +78,51 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
       },
     }));
 
-    /* <Dialog> cannot be used in canvas, because while the dialog is open on the canvas, the focus is trapped inside it, so any Studio modals like the Color Picker modal would glitch due to focus jumping back and forth */
-    const dialogInCanvas = (
-      <div style={COMMON_STYLES} className={className}>
-        {children}
-      </div>
-    );
-
-    const dialog = (
-      <Dialog style={COMMON_STYLES} className={className}>
-        {children}
-      </Dialog>
-    );
-
     return (
       <ModalOverlay
         {...mergedProps}
         className={`${resetClassName} ${modalOverlayClass}`}
       >
-        <Modal>{canvasCtx ? dialogInCanvas : dialog}</Modal>
+        <Modal className={className}>{children}</Modal>
       </ModalOverlay>
     );
   }
 );
 
 export const MODAL_COMPONENT_NAME = makeComponentName("modal");
+
+export const MODAL_DEFAULT_SLOT_CONTENT: PlasmicElement = {
+  type: "vbox",
+  styles: {
+    width: "stretch",
+    padding: 0,
+    gap: "10px",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+  },
+  children: [
+    {
+      type: "component",
+      name: HEADING_COMPONENT_NAME,
+    },
+    {
+      type: "text",
+      value: "This is a Modal!",
+    },
+    {
+      type: "text",
+      value: "You can put anything you can imagine here!",
+      styles: {
+        fontWeight: 500,
+      },
+    },
+    {
+      type: "text",
+      value:
+        "Use it in a `Aria Dialog Trigger` component to trigger it on a button click!",
+    },
+  ],
+};
 
 export function registerModal(
   loader?: Registerable,
@@ -149,38 +165,7 @@ export function registerModal(
         children: {
           type: "slot",
           mergeWithParent: true,
-          defaultValue: {
-            type: "vbox",
-            styles: {
-              width: "stretch",
-              padding: 0,
-              gap: "10px",
-              justifyContent: "flex-start",
-              alignItems: "flex-start",
-            },
-            children: [
-              {
-                type: "component",
-                name: HEADING_COMPONENT_NAME,
-              },
-              {
-                type: "text",
-                value: "This is a Modal!",
-              },
-              {
-                type: "text",
-                value: "You can put anything you can imagine here!",
-                styles: {
-                  fontWeight: 500,
-                },
-              },
-              {
-                type: "text",
-                value:
-                  "Use it in a `Aria Dialog Trigger` component to trigger it on a button click!",
-              },
-            ],
-          },
+          defaultValue: MODAL_DEFAULT_SLOT_CONTENT,
         },
         modalOverlayClass: {
           type: "class",

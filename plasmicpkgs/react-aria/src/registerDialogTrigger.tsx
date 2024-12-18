@@ -3,7 +3,11 @@ import React from "react";
 import { DialogTrigger } from "react-aria-components";
 import { PlasmicDialogTriggerContext } from "./contexts";
 import { BUTTON_COMPONENT_NAME } from "./registerButton";
-import { MODAL_COMPONENT_NAME } from "./registerModal";
+import { DIALOG_COMPONENT_NAME } from "./registerDialog";
+import {
+  MODAL_COMPONENT_NAME,
+  MODAL_DEFAULT_SLOT_CONTENT,
+} from "./registerModal";
 import {
   CodeComponentMetaOverrides,
   Registerable,
@@ -52,7 +56,6 @@ export function registerDialogTrigger(
       importPath: "@plasmicpkgs/react-aria/skinny/registerDialogTrigger",
       importName: "BaseDialogTrigger",
       styleSections: false,
-      isAttachment: true,
       props: {
         trigger: {
           type: "slot",
@@ -71,10 +74,21 @@ export function registerDialogTrigger(
         dialog: {
           type: "slot",
           mergeWithParent: true,
-          defaultValue: {
-            type: "component",
-            name: MODAL_COMPONENT_NAME,
-          },
+          defaultValue: [
+            {
+              type: "component",
+              name: MODAL_COMPONENT_NAME,
+              props: {
+                children: {
+                  type: "component",
+                  name: DIALOG_COMPONENT_NAME,
+                  props: {
+                    children: MODAL_DEFAULT_SLOT_CONTENT,
+                  },
+                },
+              },
+            },
+          ],
         },
         isOpen: {
           type: "boolean",
