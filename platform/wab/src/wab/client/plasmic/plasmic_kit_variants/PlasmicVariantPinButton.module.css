@@ -1,23 +1,23 @@
 .root:global(.__wab_instance) {
   position: relative;
 }
-.svg__fSc0K {
+.svg {
   display: flex;
   position: relative;
   object-fit: cover;
   width: 1rem;
   height: 1rem;
 }
-.svgpinState_pinnedTrue__fSc0KdSe1E {
+.svgpinState_pinnedTrue {
   color: var(--token-Y2CWh0ci95a);
 }
-.svgpinState_pinnedFalse__fSc0KPSWf {
+.svgpinState_pinnedFalse {
   color: var(--token-Y2CWh0ci95a);
 }
-.svgpinState_selected__fSc0KEqRw {
+.svgpinState_selected {
   color: var(--token-Y2CWh0ci95a);
 }
-.svgpinState_evaluatedTrue__fSc0KznhMp {
+.svgpinState_evaluatedTrue {
   color: var(--token-Y2CWh0ci95a);
 }
 .svg__dl131 {
@@ -25,6 +25,5 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }

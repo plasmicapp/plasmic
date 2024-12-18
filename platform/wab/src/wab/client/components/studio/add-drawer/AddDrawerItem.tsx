@@ -63,7 +63,7 @@ function AddDrawerItem(props: AddDrawerItemProps) {
         }
         listItem={{
           style: {
-            paddingLeft: indent * 20,
+            paddingLeft: 16 + indent * 20,
           },
         }}
         className="no-select"

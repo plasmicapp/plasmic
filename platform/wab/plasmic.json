@@ -3200,7 +3200,8 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "customFunctions": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "jsBundleThemes": []
     },
     {
       "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
@@ -3218,19 +3219,6 @@
             "modulePath": "wab/client/components/variants/VariantSection.tsx"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicVariantSection.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "bIuup7JdBZ",
-          "name": "VariantsPanel",
-          "type": "managed",
-          "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicVariantsPanel.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/variants/VariantsPanel.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicVariantsPanel.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         },
@@ -3272,97 +3260,6 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicVariantPinButton.module.css",
           "scheme": "blackbox",
           "componentType": "component"
-        },
-        {
-          "id": "a8J6Zytovv",
-          "name": "ScreenVariantSpec",
-          "type": "managed",
-          "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicScreenVariantSpec.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/variants/ScreenVariantSpec.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicScreenVariantSpec.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "Bj_efGpKWL",
-          "name": "VariantsDrawer",
-          "type": "managed",
-          "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicVariantsDrawer.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/variants/VariantsDrawer.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicVariantsDrawer.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "wv3xEE20Zw",
-          "name": "VariantsDrawerHeader",
-          "type": "managed",
-          "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicVariantsDrawerHeader.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/variants/VariantsDrawerHeader.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicVariantsDrawerHeader.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "f-9OgqRi3D",
-          "name": "VariantsDrawerRow",
-          "type": "managed",
-          "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicVariantsDrawerRow.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/variants/VariantsDrawerRow.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicVariantsDrawerRow.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "W8tzkAR80P",
-          "name": "VariantCombosSection",
-          "type": "managed",
-          "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicVariantCombosSection.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/variants/VariantCombosSection.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicVariantCombosSection.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "bjN-Q1X6w8",
-          "name": "VariantComboPicker",
-          "type": "managed",
-          "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicVariantComboPicker.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/variants/VariantComboPicker.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicVariantComboPicker.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "o_qToCGjTR",
-          "name": "VariantChip",
-          "type": "managed",
-          "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicVariantChip.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/variants/VariantChip.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicVariantChip.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
         }
       ],
       "icons": [],
@@ -3372,18 +3269,20 @@
         {
           "id": "DMjtc-GfU4",
           "name": "PlasmicHead",
+          "displayName": "hostless-plasmic-head",
           "componentImportPath": "@plasmicapp/react-web"
         },
         {
           "id": "i916S7G_mx",
           "name": "Fetcher",
+          "displayName": "plasmic-data-source-fetcher",
           "componentImportPath": "@plasmicapp/react-web/lib/data-sources"
         }
       ],
       "indirect": false,
       "globalContextsFilePath": "",
-      "jsBundleThemes": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "customFunctions": []
     },
     {
       "projectId": "gYEVvAzCcLMHDVPvuYxkFh",
@@ -3737,7 +3636,8 @@
       "indirect": false,
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "dyzP6dbCdycwJpqiR2zkwe",

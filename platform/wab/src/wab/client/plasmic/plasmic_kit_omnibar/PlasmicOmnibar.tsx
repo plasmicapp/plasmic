@@ -35,10 +35,10 @@ import OmnibarTabHeader from "../../components/omnibar/OmnibarTabHeader"; // pla
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import sty from "./PlasmicOmnibar.module.css"; // plasmic-import: paIlCoZKcm/css
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_omnibar.module.css"; // plasmic-import: fQPf2UiMEMhB52C8QQXwWe/projectcss
+import sty from "./PlasmicOmnibar.module.css"; // plasmic-import: paIlCoZKcm/css
 
 import AddPageIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__AddPage"; // plasmic-import: JuZ41tZRcH/icon
 import image49X6ZsC5Ww5 from "../plasmic_kit_design_system/images/image4.svg"; // plasmic-import: 9X6ZsC5ww5/picture
@@ -91,7 +91,16 @@ function PlasmicOmnibar__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -111,7 +120,6 @@ function PlasmicOmnibar__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.tabless,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -612,7 +620,6 @@ function PlasmicOmnibar__RenderFunc(props: {
               />
             </React.Fragment>
           ),
-
           value: args.children,
         })}
       </div>
@@ -633,7 +640,6 @@ const PlasmicDescendants = {
     "text",
     "content",
   ],
-
   header: [
     "header",
     "allTab",
@@ -644,7 +650,6 @@ const PlasmicDescendants = {
     "query",
     "text",
   ],
-
   allTab: ["allTab"],
   insertTab: ["insertTab"],
   focusTab: ["focusTab"],
@@ -675,7 +680,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicOmnibar__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

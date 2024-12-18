@@ -34,10 +34,10 @@ import { Video } from "@plasmicpkgs/plasmic-basic-components";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import sty from "./PlasmicOmnibarAddItem.module.css"; // plasmic-import: KnUjAGcQKT/css
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_omnibar.module.css"; // plasmic-import: fQPf2UiMEMhB52C8QQXwWe/projectcss
+import sty from "./PlasmicOmnibarAddItem.module.css"; // plasmic-import: KnUjAGcQKT/css
 
 import image49X6ZsC5Ww5 from "../plasmic_kit_design_system/images/image4.svg"; // plasmic-import: 9X6ZsC5ww5/picture
 
@@ -115,7 +115,9 @@ function PlasmicOmnibarAddItem__RenderFunc(props: {
         {
           hoverText: "Install package",
         },
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -156,7 +158,6 @@ function PlasmicOmnibarAddItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props._new,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -441,7 +442,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicOmnibarAddItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -8,9 +8,9 @@
   border-radius: 4px;
 }
 .header {
-  flex-direction: row;
   display: flex;
   position: relative;
+  flex-direction: row;
   width: 100%;
   height: var(--token-aDa535tnF);
   border-top-left-radius: 4px;
@@ -21,8 +21,8 @@
 }
 .header > :global(.__wab_flex-container) {
   flex-direction: row;
-  justify-content: flex-start;
   align-items: center;
+  justify-content: flex-start;
   min-width: 0;
   margin-left: calc(0px - 4px);
   width: calc(100% + 4px);
@@ -116,17 +116,17 @@
   flex-shrink: 0;
 }
 .labelContainer {
-  flex-direction: row;
   display: flex;
   position: relative;
+  flex-direction: row;
   width: 100%;
   flex-grow: 1;
   min-width: 0;
 }
 .labelContainer > :global(.__wab_flex-container) {
   flex-direction: row;
-  justify-content: flex-start;
   align-items: center;
+  justify-content: flex-start;
   min-width: 0;
   margin-left: calc(0px - 4px);
   width: calc(100% + 4px);
@@ -149,13 +149,19 @@
   color: var(--token-ElMeFHrIrKT);
 }
 .slotTargetTitle > :global(.__wab_text),
+.slotTargetTitle > :global(.__wab_expr_html_text),
 .slotTargetTitle > :global(.__wab_slot-string-wrapper),
 .slotTargetTitle > :global(.__wab_slot) > :global(.__wab_text),
+.slotTargetTitle > :global(.__wab_slot) > :global(.__wab_expr_html_text),
 .slotTargetTitle > :global(.__wab_slot) > :global(.__wab_slot-string-wrapper),
 .slotTargetTitle
   > :global(.__wab_slot)
   > :global(.__wab_slot)
   > :global(.__wab_text),
+.slotTargetTitle
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_expr_html_text),
 .slotTargetTitle
   > :global(.__wab_slot)
   > :global(.__wab_slot)
@@ -165,6 +171,11 @@
   > :global(.__wab_slot)
   > :global(.__wab_slot)
   > :global(.__wab_text),
+.slotTargetTitle
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_expr_html_text),
 .slotTargetTitle
   > :global(.__wab_slot)
   > :global(.__wab_slot)
@@ -233,7 +244,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .exprButton:global(.__wab_instance) {
@@ -259,7 +269,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .addButton:global(.__wab_instance) {
@@ -277,7 +286,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .emptyAddButton:global(.__wab_instance) {
@@ -343,6 +351,5 @@
 .svg__dhNhp {
   object-fit: cover;
   opacity: 0;
-  width: 1em;
   height: 1em;
 }

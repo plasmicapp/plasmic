@@ -34,22 +34,19 @@
 .svg__cFzz8 {
   object-fit: cover;
   opacity: 1;
-  width: 1em;
-  flex-shrink: 0;
   height: 1em;
-  display: block;
 }
 .freeBox__vSe8B {
-  flex-direction: row;
   display: flex;
   position: relative;
+  flex-direction: row;
   width: 100%;
   min-width: 0;
 }
 .freeBox__vSe8B > :global(.__wab_flex-container) {
   flex-direction: row;
-  justify-content: flex-start;
   align-items: center;
+  justify-content: flex-start;
   min-width: 0;
   margin-left: calc(0px - 4px);
   width: calc(100% + 4px);
@@ -95,8 +92,15 @@
 .recordButtonisIndicated:global(.__wab_instance) {
   flex-shrink: 0;
 }
+.recordButtonisReadOnly:global(.__wab_instance) {
+  flex-shrink: 0;
+}
 .root:hover .recordButton:global(.__wab_instance) {
   flex-shrink: 0;
+}
+.rootisReadOnly:hover .recordButtonisReadOnly:global(.__wab_instance) {
+  flex-shrink: 0;
+  display: none;
 }
 .svg__fzeqg {
   display: flex;
@@ -111,7 +115,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .variantPinButton:global(.__wab_instance):global(.__wab_instance) {
@@ -135,13 +138,11 @@
   max-width: 100%;
   width: 16px;
   height: 16px;
-  display: block;
 }
 .svg___6E2Tt {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .indicator:global(.__wab_instance) {
