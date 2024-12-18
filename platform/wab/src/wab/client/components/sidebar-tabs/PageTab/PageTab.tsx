@@ -129,10 +129,12 @@ export const PageTab = observer(function PageTab(props: {
                             component={page}
                             viewCtx={viewCtx}
                           />
-                          <ServerQueriesSection
-                            component={page}
-                            viewCtx={viewCtx}
-                          />
+                          {appConfig.serverQueries && (
+                            <ServerQueriesSection
+                              component={page}
+                              viewCtx={viewCtx}
+                            />
+                          )}
                         </>
                       )}
 
