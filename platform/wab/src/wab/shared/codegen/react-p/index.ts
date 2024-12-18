@@ -1483,7 +1483,7 @@ function mergeEventHandlers(
   // which is a boolean indicating whether the onChange event is triggered during the state initialization phase.
   const maybeHaltUserAttr = (attr: string) => {
     if (onChangeAttrs.has(toJsIdentifier(attr))) {
-      return `if(eventArgs.length > 1 && eventArgs[1]) {
+      return `if(eventArgs.length > 1 && eventArgs[1] && eventArgs[1]._plasmic_state_init_) {
   return;
 }`;
     }
@@ -1933,7 +1933,9 @@ export function serializeTplComponentBase(
     mergeEventHandlers(
       attrs,
       builtinEventHandlers,
-      getComponentStateOnChangePropNames(ctx.component, node)
+      !isTplCodeComponent(node)
+        ? getComponentStateOnChangePropNames(ctx.component, node)
+        : new Set()
     );
   }
 

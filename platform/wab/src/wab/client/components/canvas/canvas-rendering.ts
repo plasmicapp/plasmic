@@ -1627,7 +1627,9 @@ function renderTplComponent(
     mergeEventHandlers(
       props,
       builtinEventHandlers,
-      getComponentStateOnChangePropNames(ctx.ownerComponent, node)
+      !isTplCodeComponent(node)
+        ? getComponentStateOnChangePropNames(ctx.ownerComponent, node)
+        : new Set()
     );
   }
 
@@ -2248,7 +2250,7 @@ function mergeEventHandlers(
     attrBuiltinEventHandlers: any[],
     userAttr: any[]
   ) => {
-    return async (...args: unknown[]) => {
+    return async (...args: any[]) => {
       for (const handler of attrBuiltinEventHandlers) {
         await handler.apply(null, args);
       }
@@ -2257,7 +2259,8 @@ function mergeEventHandlers(
       if (
         onChangeAttrs.has(toJsIdentifier(attr)) &&
         args.length > 1 &&
-        args[1]
+        args[1] &&
+        args[1]._plasmic_state_init_
       ) {
         return;
       }
