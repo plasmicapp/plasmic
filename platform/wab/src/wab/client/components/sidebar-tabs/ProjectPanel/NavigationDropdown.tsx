@@ -320,6 +320,12 @@ function NavigationDropdown_(
     [setDebouncedQuery]
   );
   const treeRef = useRef<VirtualTreeRef>(null);
+  const expandAll = React.useCallback(() => {
+    treeRef.current?.expandAll();
+  }, [treeRef.current]);
+  const collapseAll = React.useCallback(() => {
+    treeRef.current?.collapseAll();
+  }, [treeRef.current]);
 
   const getRowKey = React.useCallback((row: ArenaPanelRow) => {
     return row.key;
@@ -730,11 +736,11 @@ function NavigationDropdown_(
             },
           }}
           expandButton={{
-            onClick: treeRef.current?.expandAll,
+            onClick: expandAll,
             "data-test-id": "nav-dropdown-expand-all",
           }}
           collapseButton={{
-            onClick: treeRef.current?.collapseAll,
+            onClick: collapseAll,
           }}
         >
           <NavigationDropdownContext.Provider value={contextValue}>

@@ -108,6 +108,12 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   const matcher = new Matcher(debouncedQuery);
 
   const treeRef = React.useRef<VirtualTreeRef>(null);
+  const expandAll = React.useCallback(() => {
+    treeRef.current?.expandAll();
+  }, [treeRef.current]);
+  const collapseAll = React.useCallback(() => {
+    treeRef.current?.collapseAll();
+  }, [treeRef.current]);
 
   const [justAdded, setJustAdded] = React.useState<StyleToken | undefined>(
     undefined
@@ -386,10 +392,10 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
             autoFocus: true,
           },
           expandProps: {
-            onClick: treeRef.current?.expandAll,
+            onClick: expandAll,
           },
           collapseProps: {
-            onClick: treeRef.current?.collapseAll,
+            onClick: collapseAll,
           },
         }}
         isTargeting={isTargeting}
