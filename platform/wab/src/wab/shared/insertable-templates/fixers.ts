@@ -78,6 +78,7 @@ import {
   isKnownCustomCode,
   isKnownExprText,
   isKnownObjectPath,
+  isKnownStyleExpr,
   isKnownTemplatedString,
   isKnownTplTag,
 } from "@/wab/shared/model/classes";
@@ -352,10 +353,8 @@ export function mkInsertableTokenImporter(
       });
     }
 
-    const vsAndTpls = [...findVariantSettingsUnderTpl(tplTree)];
-    for (const [vs, tpl] of vsAndTpls) {
-      const forTag = isKnownTplTag(tpl) ? tpl.tag : "div";
-      const rsHelper = new RuleSetHelpers(vs.rs, forTag);
+    function fixRuleSet(rs: RuleSet, forTag: string) {
+      const rsHelper = new RuleSetHelpers(rs, forTag);
 
       // Iterate over all Rules to resolve token refs
       for (const prop of rsHelper.props()) {
@@ -371,6 +370,21 @@ export function mkInsertableTokenImporter(
               )
             );
           }
+        }
+      }
+    }
+
+    const vsAndTpls = [...findVariantSettingsUnderTpl(tplTree)];
+    for (const [vs, tpl] of vsAndTpls) {
+      const forTag = isKnownTplTag(tpl) ? tpl.tag : "div";
+      fixRuleSet(vs.rs, forTag);
+
+      const styleExprs = vs.args
+        .map((arg) => arg.expr)
+        .filter(isKnownStyleExpr);
+      for (const expr of styleExprs) {
+        for (const style of expr.styles) {
+          fixRuleSet(style.rs, forTag);
         }
       }
     }
