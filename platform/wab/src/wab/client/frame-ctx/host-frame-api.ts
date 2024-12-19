@@ -36,7 +36,11 @@ export type HostFrameApi = {
       "key" | "shiftKey" | "ctrlKey" | "metaKey" | "code" | "keyCode"
     >
   ): Promise<void>;
-  updateLocalizationProjectFlag(val: boolean): Promise<void>;
+  updateLocalizationProjectFlags(
+    localization: boolean,
+    keyScheme?: string,
+    tagPrefix?: string
+  ): Promise<void>;
   switchToBranch(branch: ApiBranch | undefined): Promise<void>;
   mutateSWRKeys(keys: string[]): Promise<void>;
   getUsedRolesInProject(): Promise<{ component: string; roleId: string }[]>;

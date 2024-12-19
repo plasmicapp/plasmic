@@ -69,6 +69,7 @@ import { ExprCtx, getRawCode } from "@/wab/shared/core/exprs";
 import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
 import { CssVarResolver } from "@/wab/shared/core/styles";
 import { DEVFLAGS } from "@/wab/shared/devflags";
+import { LocalizationConfig } from "@/wab/shared/localization";
 import {
   Component,
   ImageAsset,
@@ -778,6 +779,13 @@ export const createProjectOutput = computedFn(
       imageOpts: {
         scheme: "cdn",
       },
+      localization:
+        site.flags.usePlasmicTranslation && site.flags.keyScheme
+          ? ({
+              keyScheme: site.flags.keyScheme,
+              tagPrefix: site.flags.tagPrefix,
+            } as LocalizationConfig)
+          : undefined,
       stylesOpts: { scheme: "css" },
       codeOpts: { reactRuntime: "classic" },
       fontOpts: { scheme: "import" },
@@ -825,6 +833,14 @@ export const createComponentOutput = computedFn(
       imageOpts: {
         scheme: "cdn",
       },
+      localization:
+        studioCtx.site.flags.usePlasmicTranslation &&
+        studioCtx.site.flags.keyScheme
+          ? ({
+              keyScheme: studioCtx.site.flags.keyScheme,
+              tagPrefix: studioCtx.site.flags.tagPrefix,
+            } as LocalizationConfig)
+          : undefined,
       stylesOpts: { scheme: "css" },
       codeOpts: { reactRuntime: "classic" },
       fontOpts: { scheme: "import" },

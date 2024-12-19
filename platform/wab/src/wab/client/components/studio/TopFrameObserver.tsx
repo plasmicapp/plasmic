@@ -21,6 +21,7 @@ import React from "react";
 import { mutate as swrMutate } from "swr";
 
 import { useTopFrameApi } from "@/wab/client/contexts/AppContexts";
+import { LocalizationConfig } from "@/wab/shared/localization";
 
 export interface TopFrameObserverProps {
   preview?: boolean;
@@ -87,9 +88,20 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
           })
         );
       },
-      updateLocalizationProjectFlag: async (v) => {
+      updateLocalizationProjectFlags: async (
+        localization,
+        keyScheme,
+        tagPrefix
+      ) => {
         await studioCtx.change(({ success }) => {
-          studioCtx.site.flags.usePlasmicTranslation = v;
+          studioCtx.site.flags.usePlasmicTranslation = localization;
+          if (keyScheme && localization) {
+            studioCtx.site.flags.keyScheme = keyScheme;
+            studioCtx.site.flags.tagPrefix = tagPrefix;
+          } else {
+            studioCtx.site.flags.keyScheme = undefined;
+            studioCtx.site.flags.tagPrefix = undefined;
+          }
           notification.info({
             message: `Localization is now ${
               studioCtx.site.flags.usePlasmicTranslation ? "on" : "off"
@@ -198,6 +210,12 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
             revisionNum: studioCtx.revisionNum,
             isLocalizationEnabled: !!studioCtx.site.flags.usePlasmicTranslation,
             defaultPageRoleId: studioCtx.site.defaultPageRoleId,
+            localizationScheme: !!studioCtx.site.flags.keyScheme
+              ? ({
+                  keyScheme: studioCtx.site.flags.keyScheme,
+                  tagPrefix: studioCtx.site.flags.tagPrefix,
+                } as LocalizationConfig)
+              : undefined,
           })
         );
       }),

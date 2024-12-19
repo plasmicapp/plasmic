@@ -45,6 +45,7 @@ import {
 import { assert, asyncWrapper, mkUuid, spawn } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS } from "@/wab/shared/devflags";
+import { LocalizationConfig } from "@/wab/shared/localization";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { canEditUiConfig } from "@/wab/shared/ui-config-utils";
 import { message, notification } from "antd";
@@ -457,6 +458,9 @@ export function useTopFrameState({
   >();
   const [isLocalizationEnabled, setIsLocalizationEnabled] =
     React.useState(false);
+  const [localizationScheme, setLocalizationScheme] = React.useState<
+    LocalizationConfig | undefined
+  >(undefined);
   const [dataSourcePicker, setDataSourcePicker] = React.useState<{
     args: Parameters<TopFrameApi["pickDataSource"]>[0];
     resolve: (
@@ -516,6 +520,7 @@ export function useTopFrameState({
         setNoComponents(vals.noComponents);
         setRevisionNum(vals.revisionNum);
         setIsLocalizationEnabled(vals.isLocalizationEnabled);
+        setLocalizationScheme(vals.localizationScheme);
         setDefaultPageRoleId(vals.defaultPageRoleId);
       },
       setLatestPublishedVersionData: asyncWrapper(
@@ -585,6 +590,7 @@ export function useTopFrameState({
     subjectComponentInfo,
     activatedBranch,
     isLocalizationEnabled,
+    localizationScheme,
     dataSourcePicker,
     showPublishModal,
     keepPublishModalOpen,

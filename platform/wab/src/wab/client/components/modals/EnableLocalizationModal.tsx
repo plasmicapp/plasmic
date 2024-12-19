@@ -5,25 +5,30 @@ import {
   showUpsellConfirm,
 } from "@/wab/client/components/modals/PricingModal";
 import Button from "@/wab/client/components/widgets/Button";
+import { Modal } from "@/wab/client/components/widgets/Modal";
+import Select from "@/wab/client/components/widgets/Select";
+import Textbox from "@/wab/client/components/widgets/Textbox";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
 import { ApiProject } from "@/wab/shared/ApiSchema";
 import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
-import { notification } from "antd";
+import { LocalizationConfig } from "@/wab/shared/localization";
+import { Form, notification } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
 import { FocusScope } from "react-aria";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 
 export interface EnableLocalizationModalProps {
   onDone: () => void;
   isLocalizationEnabled: boolean;
+  localizationScheme?: LocalizationConfig;
   project: ApiProject;
 }
 
 export const EnableLocalizationModal = observer(
   function EnableLocalizationModal({
     isLocalizationEnabled,
+    localizationScheme,
     project,
     onDone,
   }: EnableLocalizationModalProps) {
@@ -40,37 +45,67 @@ export const EnableLocalizationModal = observer(
         footer={null}
       >
         <FocusScope contain>
-          This lets you integrate with localization frameworks like Lingui,
-          react-intl, and react-i18next by generating code that applies the
-          localization framework to all localizable strings in the project.{" "}
-          <br /> <br />
-          <a
-            href="https://docs.plasmic.app/learn/localization-frameworks/"
-            target="_blank"
-          >
-            Learn about use with localization frameworks.
-          </a>
-          <div className="mt-xlg">
-            <Button
-              className="mr-sm"
-              type="primary"
-              onClick={async () => {
-                if (
-                  isLocalizationEnabled ||
-                  (await canEnableLocalization(appCtx, project))
-                ) {
-                  await hostFrameApi.updateLocalizationProjectFlag(
-                    !isLocalizationEnabled
-                  );
-                }
-                onDone();
-              }}
-              autoFocus
+          <div className="mb-xlg">
+            This lets you integrate with localization frameworks like Lingui,
+            react-intl, and react-i18next by generating code that applies the
+            localization framework to all localizable strings in the project.{" "}
+            <br /> <br />
+            <a
+              href="https://docs.plasmic.app/learn/localization-frameworks/"
+              target="_blank"
             >
-              Confirm
-            </Button>
-            <Button onClick={() => onDone()}>Cancel</Button>
+              Learn about use with localization frameworks.
+            </a>
           </div>
+          <Form
+            onFinish={async (e) => {
+              if (
+                isLocalizationEnabled ||
+                (await canEnableLocalization(appCtx, project))
+              ) {
+                await hostFrameApi.updateLocalizationProjectFlags(
+                  !isLocalizationEnabled,
+                  e.keyScheme,
+                  e.tagPrefix
+                );
+              }
+              onDone();
+            }}
+          >
+            {!isLocalizationEnabled && (
+              <>
+                <Form.Item label="Key scheme" name="keyScheme">
+                  <Select
+                    defaultValue={localizationScheme?.keyScheme}
+                    placeholder="Set the key scheme to be used in preview"
+                    type="bordered"
+                  >
+                    <Select.Option value="path">Path</Select.Option>
+                    <Select.Option value="content">Content</Select.Option>
+                    <Select.Option value="hash">Hash</Select.Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item label="Tag prefix" name="tagPrefix">
+                  <Textbox
+                    defaultValue={localizationScheme?.tagPrefix}
+                    placeholder="Set the tag prefix to be used in preview"
+                    styleType={["bordered"]}
+                  />
+                </Form.Item>
+              </>
+            )}
+            <Form.Item>
+              <Button
+                htmlType="submit"
+                className="mr-sm"
+                type="primary"
+                autoFocus
+              >
+                Confirm
+              </Button>
+              <Button onClick={() => onDone()}>Cancel</Button>
+            </Form.Item>
+          </Form>
         </FocusScope>
       </Modal>
     );

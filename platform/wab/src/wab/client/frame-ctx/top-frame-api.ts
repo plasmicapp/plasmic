@@ -5,6 +5,7 @@ import { HostFrameApi } from "@/wab/client/frame-ctx/host-frame-api";
 import { TopFrameTourState } from "@/wab/client/tours/tutorials/TutorialTours";
 import { ApiBranch, ApiTeam } from "@/wab/shared/ApiSchema";
 import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
+import { LocalizationConfig } from "@/wab/shared/localization";
 import { LocationListener, UnregisterCallback } from "history";
 
 /**
@@ -29,6 +30,7 @@ export interface TopFrameApi {
     revisionNum: number;
     isLocalizationEnabled: boolean;
     defaultPageRoleId: string | null | undefined;
+    localizationScheme: LocalizationConfig | undefined;
   }): Promise<void>;
 
   // The object states we send separately because, whenever setting them, the
