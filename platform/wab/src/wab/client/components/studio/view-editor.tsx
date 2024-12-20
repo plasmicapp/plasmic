@@ -622,7 +622,10 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
             const viewOps = this.viewOps();
             const focusedTpl = this.ensureViewCtx().focusedTpl();
 
-            if (focusedTpl && canToggleVisibility(focusedTpl)) {
+            if (
+              focusedTpl &&
+              canToggleVisibility(focusedTpl, this.ensureViewCtx())
+            ) {
               const currentVisibility =
                 viewOps.getEffectiveTplVisibility(focusedTpl);
               if (currentVisibility === TplVisibility.Visible) {

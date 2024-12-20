@@ -1745,7 +1745,26 @@ export function isTplVariantable(tplNode: any): tplNode is TplNode {
   return isTplTagOrComponent(tplNode) || isTplSlot(tplNode);
 }
 
-export function canToggleVisibility(tplNode: any): tplNode is TplNode {
+export function canToggleVisibility(
+  tplNode: any,
+  viewCtx: ViewCtx
+): tplNode is TplNode {
+  // Verify if the component's root element is a code component and styleSections is enabled
+  if (
+    isTplComponent(tplNode) &&
+    isTplCodeComponent(tplNode.component.tplTree)
+  ) {
+    const styleSections = viewCtx.getTplCodeComponentMeta(
+      tplNode.component.tplTree
+    )?.styleSections;
+    if (styleSections === false) {
+      return false;
+    } else if (Array.isArray(styleSections)) {
+      return styleSections.includes("visibility");
+    }
+
+    return true;
+  }
   return isTplVariantable(tplNode) && !hasTextAncestor(tplNode);
 }
 

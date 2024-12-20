@@ -582,7 +582,7 @@ export function getRenderBySection(
     [
       Section.Visibility,
       () =>
-        canToggleVisibility(tpl) &&
+        canToggleVisibility(tpl, viewCtx) &&
         showSection(Section.Visibility) && (
           <VisibilitySection
             key={`${tpl.uuid}-visibility`}

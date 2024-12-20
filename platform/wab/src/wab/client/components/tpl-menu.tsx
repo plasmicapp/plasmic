@@ -610,7 +610,11 @@ export function makeTplMenu(
       }
     }
 
-    if (!forMultipleTpls && canToggleVisibility(tpl) && !contentEditorMode) {
+    if (
+      !forMultipleTpls &&
+      canToggleVisibility(tpl, viewCtx) &&
+      !contentEditorMode
+    ) {
       builder.genSub("Set visibility...", (push3) => {
         const choices = getVisibilityChoicesForTpl(viewCtx, tpl);
         choices.forEach((choice) => {

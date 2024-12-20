@@ -469,7 +469,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
         </Tooltip>
       );
     }
-    if (!Tpls.canToggleVisibility(item)) {
+    if (!Tpls.canToggleVisibility(item, viewCtx)) {
       // Can only toggle visibility for tags, components.  But we still want to
       // take up space here so things line up vertically.
       return (
