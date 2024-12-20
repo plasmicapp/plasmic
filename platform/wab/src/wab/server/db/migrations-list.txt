@@ -237,3 +237,4 @@ platform/wab/src/wab/server/bundle-migrations/236-rename-duplicated-components.t
 platform/wab/src/wab/server/bundle-migrations/237-code-component-variants-add-fields.ts
 platform/wab/src/wab/server/bundle-migrations/238-code-component-variants-update-fields.ts
 platform/wab/src/wab/server/bundle-migrations/239-add-server-queries.ts
+platform/wab/src/wab/server/bundle-migrations/240-set-plume-default-component.ts

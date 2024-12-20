@@ -1304,7 +1304,7 @@
           }
         },
         "deps": [],
-        "version": "239-add-server-queries"
+        "version": "240-set-plume-default-component"
       },
       "projectId": "cpkeUeeErCd6XAniAHq8xq",
       "version": "0.0.1",
@@ -2845,7 +2845,7 @@
           }
         },
         "deps": [],
-        "version": "239-add-server-queries"
+        "version": "240-set-plume-default-component"
       }
     },
     {
@@ -4370,7 +4370,7 @@
           "55543038": { "text": ["arg3"], "__type": "TemplatedString" }
         },
         "deps": [],
-        "version": "239-add-server-queries"
+        "version": "240-set-plume-default-component"
       }
     }
   ]

@@ -2448,16 +2448,16 @@ export function removeVariantGroup(
   removeVariantGroupFromSplits(site, group);
 }
 
-export function tryGetDefaultComponent(site: Site, kind: DefaultComponentKind) {
-  return (
-    site.defaultComponents[kind] ??
-    site.components.find((c) => c.plumeInfo?.type === kind)
-  );
+export function tryGetDefaultComponent(
+  site: Site,
+  kind: DefaultComponentKind
+): Component | undefined {
+  return site.defaultComponents[kind];
 }
 
 export function getDefaultComponent(site: Site, kind: DefaultComponentKind) {
   const defaultComponent = tryGetDefaultComponent(site, kind);
-  assert(defaultComponent, `Not found a plume component of the kind ${kind}`);
+  assert(defaultComponent, `Missing default component of the kind "${kind}"`);
   return defaultComponent;
 }
 

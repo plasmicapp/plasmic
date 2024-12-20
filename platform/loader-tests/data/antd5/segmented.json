@@ -27515,7 +27515,7 @@
         }
       },
       "deps": [],
-      "version": "239-add-server-queries"
+      "version": "240-set-plume-default-component"
     }
   ],
   [
@@ -29664,7 +29664,7 @@
         }
       },
       "deps": ["530345ed-8f2a-4344-bc76-1cd18621bd88"],
-      "version": "239-add-server-queries"
+      "version": "240-set-plume-default-component"
     }
   ]
 ]

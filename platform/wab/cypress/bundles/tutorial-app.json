@@ -308,7 +308,7 @@
         "5531023": { "values": {}, "mixins": [], "__type": "RuleSet" }
       },
       "deps": [],
-      "version": "239-add-server-queries"
+      "version": "240-set-plume-default-component"
     }
   ],
   [
@@ -4383,7 +4383,7 @@
         }
       },
       "deps": [],
-      "version": "239-add-server-queries"
+      "version": "240-set-plume-default-component"
     }
   ],
   [
@@ -31485,7 +31485,7 @@
         }
       },
       "deps": [],
-      "version": "239-add-server-queries"
+      "version": "240-set-plume-default-component"
     }
   ],
   [
@@ -33620,7 +33620,7 @@
         "9c488568-819f-4186-896f-d32559c8714f",
         "ea14a8ed-7ed0-46bb-b4b3-ff4cbfd151c3"
       ],
-      "version": "239-add-server-queries"
+      "version": "240-set-plume-default-component"
     }
   ]
 ]

@@ -1161,7 +1161,7 @@
           }
         },
         "deps": [],
-        "version": "239-add-server-queries"
+        "version": "240-set-plume-default-component"
       },
       "projectId": "3Ly8WyuoJ263bQVv2eUgq7",
       "version": "0.0.1",
@@ -2316,7 +2316,7 @@
           }
         },
         "deps": [],
-        "version": "239-add-server-queries"
+        "version": "240-set-plume-default-component"
       },
       "projectId": "3Ly8WyuoJ263bQVv2eUgq7",
       "version": "0.0.1",
@@ -3495,7 +3495,7 @@
           }
         },
         "deps": [],
-        "version": "239-add-server-queries"
+        "version": "240-set-plume-default-component"
       }
     },
     {
@@ -4638,7 +4638,7 @@
           }
         },
         "deps": [],
-        "version": "239-add-server-queries"
+        "version": "240-set-plume-default-component"
       }
     }
   ]

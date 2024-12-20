@@ -966,7 +966,7 @@
           }
         },
         "deps": [],
-        "version": "239-add-server-queries"
+        "version": "240-set-plume-default-component"
       },
       "projectId": "jktPeioPm3Q1RvAsGWDSCe",
       "version": "0.0.1",
@@ -2172,7 +2172,7 @@
           }
         },
         "deps": [],
-        "version": "239-add-server-queries"
+        "version": "240-set-plume-default-component"
       }
     },
     {
@@ -3362,7 +3362,7 @@
           }
         },
         "deps": [],
-        "version": "239-add-server-queries"
+        "version": "240-set-plume-default-component"
       }
     }
   ]
