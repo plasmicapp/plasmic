@@ -79,6 +79,11 @@ describe("hostless-cms", function () {
             cy.contains("CMS Credentials Provider").click();
             cy.get(`#sidebar-modal button[data-test-id="collapse"]`).click();
             cy.wait(200);
+            cy.get(`[data-plasmic-prop="host"]`)
+              .type("{selectall}")
+              .wait(100)
+              .type("{backspace}")
+              .type(`${Cypress.config("baseUrl")}`);
             cy.setSelectedDimStyle(
               "host",
               `{selectall}{backspace}${Cypress.config("baseUrl")}`

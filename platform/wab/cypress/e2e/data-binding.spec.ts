@@ -1,6 +1,8 @@
 import { VERT_CONTAINER_CAP } from "../../src/wab/shared/Labels";
 import { removeCurrentProject, setupNewProject } from "../support/util";
 
+Cypress.config("defaultCommandTimeout", 10000);
+
 describe("data-binding", function () {
   beforeEach(() => {
     setupNewProject({

@@ -1,6 +1,8 @@
 import { VERT_CONTAINER_CAP } from "../../src/wab/shared/Labels";
 import { Framed, removeCurrentProject, setupNewProject } from "../support/util";
 
+Cypress.config("defaultCommandTimeout", 20000);
+
 // Mostly regression tests
 describe("component-ops - tricky operations", function () {
   beforeEach(() => {

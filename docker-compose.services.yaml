@@ -1,0 +1,24 @@
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wab"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    ports:
+      - 5432:5432
+    volumes:
+      - ./platform/wab/tools/docker-dev/db-setup.bash:/docker-entrypoint-initdb.d/db-setup.sh
+
+  verdaccio:
+    image: verdaccio/verdaccio
+    environment:
+      VERDACCIO_PORT: "4873"
+    ports:
+      - 4873:4873
+    volumes:
+      - ./verdaccio-config.yaml:/verdaccio/conf/config.yaml
