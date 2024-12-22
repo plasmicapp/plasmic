@@ -106,46 +106,6 @@ It will print out further instructions on activating your nodeenv, setting up th
   git config submodule.recurse true
   ```
 
-### Internal team git setup for Gerrit
-
-- In case your default linux/mac user is different from your gerrit user name, add the following to your `~/.ssh/config` file:
-
-  ```
-  # Gerrit account
-  Host gerrit.aws.plasmic.app
-    HostName gerrit.aws.plasmic.app
-    User GERRIT_USER
-    IdentityFile ~/.ssh/id_rsa
-  ```
-
-  **NOTE**: To get the above config to work, you need to add your public SSH key to Gerrit user settings, if you haven't already:
-
-  - Ensure you have an `~/.ssh/id_rsa.pub`. If it does not already exist, you can create it by running the following command on your terminal:
-
-  ```
-  ssh-keygen -t rsa -C "your_email@mail.com"
-  ```
-
-  This will create a private `~/.ssh/id_rsa` and a public key `~/.ssh/id_rsa.pub`.
-
-  - Go to Gerrit's SSH Keys section in User Settings.
-  - Paste the contents of the public key `~/.ssh/id_rsa.pub` into the New SSH Key text box.
-  - Click the 'ADD NEW SSH KEY' button.
-
-- Make sure you also have the gerrit commit-msg hook installed on this project, if you haven't already.
-
-  NOTE: Add a missing -O flag! On newer ssh/macos, the default command for gerrit will fail otherwise. More background here: https://bugs.chromium.org/p/gerrit/issues/detail?id=15944
-
-  ```
-  scp -O -p -P 29418 USER@gerrit.aws.plasmic.app:hooks/commit-msg ".git/hooks/"
-  ```
-
-- Also install this on the submodule dir (wab/create-react-app-new), which requires running:
-
-  ```
-  scp -O -p -P 29418 USER@gerrit.aws.plasmic.app:hooks/commit-msg ".git/modules/wab/create-react-app-new/hooks/"
-  ```
-
 ## Application setup
 
 In the project root directory, run:
