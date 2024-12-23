@@ -203,6 +203,7 @@ import { ScreenSizeSpec } from "@/wab/shared/css-size";
 import { CONTENT_LAYOUT_INITIALS } from "@/wab/shared/default-styles";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Pt, Rect, findSpaceForRectSweepRight } from "@/wab/shared/geom";
+import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import { instUtil } from "@/wab/shared/model/InstUtil";
 import {
   Arena,
@@ -1405,6 +1406,8 @@ export class TplMgr {
     )) {
       this.ensureDedicatedArena(comp, originalComp, originalComponentSite);
     }
+
+    ensureComponentsObserved([component]);
 
     if (isContextCodeComponent(component)) {
       this.site().globalContexts.push(
