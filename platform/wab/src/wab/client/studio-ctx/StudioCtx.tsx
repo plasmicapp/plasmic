@@ -814,7 +814,6 @@ export class StudioCtx extends WithDbCtx {
                 if (!currentArena) {
                   return;
                 }
-                console.log("running currentArena change", currentArena);
                 const componentsToObserve = isDedicatedArena(currentArena)
                   ? [currentArena.component]
                   : currentArena.children.map(
@@ -834,10 +833,6 @@ export class StudioCtx extends WithDbCtx {
                 if (!currentViewCtxComponent) {
                   return;
                 }
-                console.log(
-                  "running viewCtx component change",
-                  currentViewCtxComponent
-                );
                 const componentsToObserve = [currentViewCtxComponent];
                 this.dbCtx().maybeObserveComponents(
                   componentsToObserve,

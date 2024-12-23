@@ -1509,7 +1509,6 @@ export class ChangeRecorder implements IChangeRecorder {
       this.observedCompsCache.set(component, currentTime);
       return observedNewComp;
     }, false);
-    console.log("Tried to observe", components, observedResult);
     if (observedResult) {
       mutateGlobalObservable();
       console.log("Mutated global state");
