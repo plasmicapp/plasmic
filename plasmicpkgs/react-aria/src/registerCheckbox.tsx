@@ -212,7 +212,7 @@ export function registerCheckbox(
           type: "string",
           description:
             'The value of the checkbox in "selected" state, used when submitting an HTML form.',
-          defaultValueHint: "on",
+          defaultValueHint: 'Checked value (default: "on")',
           validator: (_value, _props, ctx) => {
             if (ctx?.idError) {
               return ctx.idError;
