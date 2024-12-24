@@ -318,10 +318,13 @@ function create$StateProxy(
           Reflect.set(target, property, value, receiver);
           if (nextSpec?.onChangeProp) {
             const pathKey = JSON.stringify(nextPath);
-            const isInitOnChange = !$$state.initializedLeafPaths.has(pathKey);
+            const isInitOnChange =
+              // If we are dealing with a valueProp it means that this state cell value is provided by the parent
+              // and we don't need to consider initialization calls for it.
+              !nextSpec.valueProp && !$$state.initializedLeafPaths.has(pathKey);
 
             // We need to call the onChangeProp during initialization process so that the parent
-            // state can be updated with the correct value. We will provide an addtionnal parameter
+            // state can be updated with the correct value. We will provide an additional parameter
             // to the onChangeProp function to indicate that the call is made during initialization.
             $$state.env.$props[nextSpec.onChangeProp]?.(value, {
               _plasmic_state_init_: isInitOnChange,
@@ -648,14 +651,10 @@ export function useDollarState(
   useIsomorphicLayoutEffect(() => {
     $$state.specTreeLeaves.forEach((node) => {
       const spec = node.getSpec();
-      if (!spec.isRepeated && spec.type !== "private" && spec.initFunc) {
-        const stateCell = getStateCellFrom$StateRoot(
-          $state,
-          spec.pathObj as ObjectPath
-        );
-        if (stateCell.initialValue === UNINITIALIZED) {
-          initializeStateValue($$state, stateCell, $state);
-        }
+      if (!spec.isRepeated && spec.type !== "private") {
+        // We only need to attempt to access the state cell to trigger initialization,
+        // Check create$StateProxy for more details on how this works.
+        getStateCellFrom$StateRoot($state, spec.pathObj as ObjectPath);
       }
     });
   }, []);

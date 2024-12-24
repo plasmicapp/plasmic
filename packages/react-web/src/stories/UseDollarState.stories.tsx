@@ -2,7 +2,13 @@ import { expect } from "@storybook/jest";
 import { Story } from "@storybook/react";
 import { userEvent, within } from "@storybook/testing-library";
 import React from "react";
-import { generateStateOnChangeProp, get, set, useDollarState } from "../states";
+import {
+  generateStateOnChangeProp,
+  generateStateValueProp,
+  get,
+  set,
+  useDollarState,
+} from "../states";
 import { CyclicStatesReferencesError } from "../states/errors";
 import { $StateSpec } from "../states/types";
 
@@ -2265,8 +2271,7 @@ const _IsOnChangePropImmediatelyFired: Story<{}> = (props) => {
         ],
         {
           $props: props,
-        },
-        { inCanvas: true }
+        }
       );
       return (
         <div>
@@ -2347,6 +2352,199 @@ IsOnChangePropImmediatelyFired.play = async ({ canvasElement }) => {
   await expect(
     (canvas.getByTestId(`isOdd-span`) as HTMLSpanElement).textContent
   ).toEqual(`true`);
+};
+
+const _IsOnChangeFiredWithCorrectInitialValue: Story<{}> = (props) => {
+  const Counter = React.useCallback(
+    (props: {
+      onCountChange: (val: number) => void;
+      delta: number;
+      onDeltaChange: (val: number) => void;
+    }) => {
+      const $state = useDollarState(
+        [
+          {
+            path: "count",
+            type: "readonly",
+            onChangeProp: "onCountChange",
+            initVal: 5,
+            variableType: "number",
+          },
+          {
+            path: "delta",
+            type: "writable",
+            variableType: "number",
+            valueProp: "delta",
+            onChangeProp: "onDeltaChange",
+          },
+        ],
+        {
+          $props: props,
+        }
+      );
+      return (
+        <div>
+          <button
+            onClick={() => ($state.count = $state.count + $state.delta)}
+            data-testid={"counter-btn"}
+          >
+            Counter Increment
+          </button>
+          <br />
+
+          <span data-testid={"inner-delta-span"}>{$state.delta}</span>
+          <br />
+
+          <button
+            onClick={() => ($state.delta = Math.max($state.delta / 2, 1))}
+            data-testid={"half-delta-btn"}
+          >
+            Half delta
+          </button>
+        </div>
+      );
+    },
+    []
+  );
+
+  const $state = useDollarState(
+    [
+      {
+        path: "counter.count",
+        type: "private",
+        variableType: "number",
+      },
+      {
+        path: "counter.delta",
+        type: "private",
+        variableType: "number",
+        initVal: 1,
+      },
+      {
+        path: "invocationsCount",
+        type: "writable",
+        variableType: "array",
+        initVal: [],
+      },
+      {
+        path: "invocationsDelta",
+        type: "writable",
+        variableType: "array",
+        initVal: [],
+      },
+    ],
+    {
+      $props: props,
+    }
+  );
+
+  return (
+    <div>
+      <Counter
+        onCountChange={(...args: any) => {
+          generateStateOnChangeProp($state, ["counter", "count"]).apply(
+            null,
+            args
+          );
+          $state.invocationsCount.push(args);
+        }}
+        delta={generateStateValueProp($state, ["counter", "delta"])}
+        onDeltaChange={(...args: any) => {
+          generateStateOnChangeProp($state, ["counter", "delta"]).apply(
+            null,
+            args
+          );
+          $state.invocationsDelta.push(args);
+        }}
+      />
+      <br />
+
+      <span data-testid="counter-span">{$state.counter.count}</span>
+
+      <br />
+
+      <button
+        onClick={() => ($state.counter.delta = $state.counter.delta * 2)}
+        data-testid={"twice-delta-btn"}
+      >
+        Twice delta
+      </button>
+      <br />
+
+      <span data-testid="delta-span">{$state.counter.delta}</span>
+      <br />
+
+      <span data-testid="invocations-count">
+        {JSON.stringify($state.invocationsCount)}
+      </span>
+
+      <span data-testid="invocations-delta">
+        {JSON.stringify($state.invocationsDelta)}
+      </span>
+    </div>
+  );
+};
+
+export const IsOnChangeFiredWithCorrectInitialValue =
+  _IsOnChangeFiredWithCorrectInitialValue.bind({});
+IsOnChangeFiredWithCorrectInitialValue.args = {};
+IsOnChangeFiredWithCorrectInitialValue.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  await sleep(1);
+
+  expect(
+    (canvas.getByTestId(`counter-span`) as HTMLSpanElement).textContent
+  ).toEqual(`5`);
+  expect(
+    (canvas.getByTestId(`delta-span`) as HTMLSpanElement).textContent
+  ).toEqual(`1`);
+  expect(
+    (canvas.getByTestId(`inner-delta-span`) as HTMLSpanElement).textContent
+  ).toEqual(`1`);
+
+  userEvent.click(canvas.getByTestId("twice-delta-btn"));
+  await sleep(1);
+
+  expect(
+    (canvas.getByTestId(`delta-span`) as HTMLSpanElement).textContent
+  ).toEqual(`2`);
+  expect(
+    (canvas.getByTestId(`inner-delta-span`) as HTMLSpanElement).textContent
+  ).toEqual(`2`);
+
+  userEvent.click(canvas.getByTestId("counter-btn"));
+  await sleep(1);
+
+  expect(
+    (canvas.getByTestId(`counter-span`) as HTMLSpanElement).textContent
+  ).toEqual(`7`);
+  expect(
+    (canvas.getByTestId(`inner-delta-span`) as HTMLSpanElement).textContent
+  ).toEqual(`2`);
+
+  userEvent.click(canvas.getByTestId("half-delta-btn"));
+  await sleep(1);
+
+  expect(
+    (canvas.getByTestId(`delta-span`) as HTMLSpanElement).textContent
+  ).toEqual(`1`);
+  expect(
+    (canvas.getByTestId(`inner-delta-span`) as HTMLSpanElement).textContent
+  ).toEqual(`1`);
+
+  expect(
+    (canvas.getByTestId(`invocations-count`) as HTMLSpanElement).textContent
+  ).toEqual(
+    JSON.stringify([
+      [5, { _plasmic_state_init_: true }],
+      [7, { _plasmic_state_init_: false }],
+    ])
+  );
+
+  expect(
+    (canvas.getByTestId(`invocations-delta`) as HTMLSpanElement).textContent
+  ).toEqual(JSON.stringify([[1, { _plasmic_state_init_: false }]])); // Only the changes inside the component should be recorded
 };
 
 const _ImmutableStateCells: Story<{ people: Person[] }> = (props) => {
