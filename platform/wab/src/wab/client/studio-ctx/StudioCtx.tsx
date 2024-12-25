@@ -2530,7 +2530,7 @@ export class StudioCtx extends WithDbCtx {
 
   private _isAutoOpenMode = observable.box(true);
   get isAutoOpenMode() {
-    return this._isAutoOpenMode.get();
+    return !this.isDraggingObject() && this._isAutoOpenMode.get();
   }
   set isAutoOpenMode(autoOpen: boolean) {
     this._isAutoOpenMode.set(autoOpen);

@@ -328,6 +328,7 @@ export interface RenderingCtx {
     showSlotPlaceholders: boolean;
     showContainersPlaceholders: boolean;
   };
+  isDraggingObject: boolean;
 
   // $state is part of the tpl evaluation environment, which we use to
   // determine if we can cache a rendered tpl node. Since all elements
@@ -1234,6 +1235,7 @@ function makeEmptyRenderingCtx(viewCtx: ViewCtx, valKey: string): RenderingCtx {
       showSlotPlaceholders: viewCtx.studioCtx.showSlotPlaceholder(),
       showContainersPlaceholders: viewCtx.studioCtx.showContainerPlaceholder(),
     },
+    isDraggingObject: viewCtx.studioCtx.isDraggingObject(),
     $stateSnapshot: {},
     setDollarQueries: () => {},
     stateSpecs: [],

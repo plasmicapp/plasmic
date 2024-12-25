@@ -61,6 +61,7 @@ function computeHashFromStableFields(node: TplNode, ctx: RenderingCtx) {
     JSON.stringify(ctx.$ccVariants),
     ctx.updateVariant,
     JSON.stringify(ctx.visibilityOptions),
+    ctx.isDraggingObject,
   ];
 }
 
@@ -87,7 +88,8 @@ type HandledCtxFields =
   | "triggerProps"
   | "$ccVariants"
   | "updateVariant"
-  | "visibilityOptions";
+  | "visibilityOptions"
+  | "isDraggingObject";
 
 type NonStableFieldsFromCtx = Omit<Full<RenderingCtx>, HandledCtxFields> & {
   $stateSnapshot: Record<string, any>;
