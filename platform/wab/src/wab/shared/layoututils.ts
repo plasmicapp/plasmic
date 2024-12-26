@@ -1,9 +1,29 @@
-import { unexpected } from "@/wab/shared/common";
+import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { isMixinPropRef, isTokenRef } from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
+import { unexpected } from "@/wab/shared/common";
+import {
+  CONTENT_LAYOUT,
+  FAKE_FLEX_CONTAINER_PROPS,
+  GAP_PROPS,
+  contentLayoutProps,
+  gridCssProps,
+} from "@/wab/shared/core/style-props";
+import {
+  getTplTagRoot,
+  isTplComponent,
+  isTplVariantable,
+} from "@/wab/shared/core/tpls";
 import { parseCssNumericNew } from "@/wab/shared/css";
+import { CONTENT_LAYOUT_INITIALS } from "@/wab/shared/default-styles";
 import { createGridSpec, showGridCss } from "@/wab/shared/Grids";
 import { HORIZ_CONTAINER_CAP, VERT_CONTAINER_CAP } from "@/wab/shared/Labels";
+import {
+  RuleSet,
+  TplNode,
+  TplTag,
+  VariantSetting,
+} from "@/wab/shared/model/classes";
 import {
   IRuleSetHelpers,
   IRuleSetHelpersX,
@@ -12,21 +32,6 @@ import {
   ReadonlyIRuleSetHelpersX,
 } from "@/wab/shared/RuleSetHelpers";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
-import {
-  CONTENT_LAYOUT,
-  FAKE_FLEX_CONTAINER_PROPS,
-  GAP_PROPS,
-  contentLayoutProps,
-  gridCssProps,
-} from "@/wab/shared/core/style-props";
-import { CONTENT_LAYOUT_INITIALS } from "@/wab/shared/default-styles";
-import {
-  RuleSet,
-  TplNode,
-  TplTag,
-  VariantSetting,
-} from "@/wab/shared/model/classes";
-import { getTplTagRoot, isTplComponent, isTplVariantable } from "@/wab/shared/core/tpls";
 
 export type ContainerType =
   | "free"
@@ -344,4 +349,15 @@ export function isContentLayoutTpl(tpl: TplNode, opts?: { deep?: boolean }) {
     }
   }
   return false;
+}
+
+export function isPositionSet(tpl: TplNode, viewCtx: ViewCtx) {
+  // Check if the position is available and set to something other than "auto".
+  const vtm = viewCtx.variantTplMgr();
+  const targetVariantCombo = vtm.getTargetVariantComboForNode(tpl);
+  const effectiveExp = vtm
+    .effectiveVariantSetting(tpl, targetVariantCombo)
+    .rsh();
+  const curPosType = getRshPositionType(effectiveExp);
+  return curPosType && curPosType !== PositionLayoutType.auto;
 }

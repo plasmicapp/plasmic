@@ -62,8 +62,8 @@ import {
 import {
   computeDefinedIndicator,
   DefinedIndicatorType,
-  isIndicatorExplicitlySet,
   getPropAndValueFromIndicator,
+  isIndicatorExplicitlySet,
 } from "@/wab/shared/defined-indicator";
 import { makeExpProxy, makeMergedExpProxy } from "@/wab/shared/exprs";
 import {
@@ -78,6 +78,7 @@ import {
   ContainerType,
   convertSelfContainerType,
   getRshContainerType,
+  isPositionSet,
   PositionLayoutType,
 } from "@/wab/shared/layoututils";
 import {
@@ -1304,7 +1305,7 @@ export class TplExpsProvider implements ExpsProvider {
 
   showPositioningPanel = () => {
     // Don't show positioning panel for the root node
-    return !!this.tpl.parent;
+    return !!this.tpl.parent || isPositionSet(this.tpl, this.viewCtx);
   };
 
   getTargetDeepLayoutParentRsh = () => {

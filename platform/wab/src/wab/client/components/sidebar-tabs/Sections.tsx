@@ -100,6 +100,7 @@ import {
 import { ValComponent } from "@/wab/shared/core/val-nodes";
 import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
 import { isGridTag } from "@/wab/shared/grid-utils";
+import { isPositionSet } from "@/wab/shared/layoututils";
 import {
   TplComponent,
   TplNode,
@@ -569,7 +570,7 @@ export function getRenderBySection(
       Section.PositioningPanel,
       () =>
         (isTag || isComponent) &&
-        !isRoot &&
+        (!isRoot || isPositionSet(tpl, viewCtx)) &&
         !isColumn &&
         !isTplTextBlock(tpl.parent) &&
         showSection(Section.PositioningPanel) && (
