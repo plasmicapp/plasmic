@@ -3324,10 +3324,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.9.tgz#1cfdd8d4c0e90fd4fed7d7204f70c44914871d31"
   integrity sha512-HO932uH/Y4otaDmjwzJbCLlokxNAdtU9VhDVUZUuVbzh0DhWaNyn/MINCu1oeZ4a6MIjdXFIm/U2VaxNxHYdsw==
 
-"@plasmicapp/react-web@^0.2.360":
-  version "0.2.360"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.360.tgz#e27c87f63ff0273fb3463340bf17c47699f66772"
-  integrity sha512-Hl8UOniRbTOB/H79to8B/DSHVETAftip+bE9oVD0D9B6iTkJEZwSVAvU9B0X0pNIcIcT8Eg301UETN1dkvYMHg==
+"@plasmicapp/react-web@^0.2.361":
+  version "0.2.361"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.361.tgz#d37d14793716dba6dabdeeac22be1cc503d6e836"
+  integrity sha512-CYe0E2NCpFbKym/8DUHNdtNGjPNmzdyzbvP7UCrEuTLXkRPmLpOheEv27POnhcMGunAD40iXPN79BLm39GVdxw==
   dependencies:
     "@plasmicapp/auth-react" "0.0.22"
     "@plasmicapp/data-sources" "0.1.167"
@@ -3366,10 +3366,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/airtable/-/airtable-0.0.222.tgz#74c5c2c567d7817c919d5217676ae643e656abb4"
   integrity sha512-Z9YNHInHOHAhOvY/7NTAiEvA1EuQRE1ASSLDJL6LYKBrwvhUYH9MMcPB6j5jwLfWrZzwQT/a63wqzFfZlq0wiA==
 
-"@plasmicpkgs/antd5@^0.0.260":
-  version "0.0.260"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.260.tgz#be9f491c43b225312535659673e6382fafcf57fb"
-  integrity sha512-smbHbgvSccOlGUALbTfpavhqHhdLmFcCYRt2TZp/LaahwtdQKNycDmjaO7sAupBrVfP5OnXlWkzIaSiCpsPNVw==
+"@plasmicpkgs/antd5@^0.0.261":
+  version "0.0.261"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.261.tgz#97b2f2deb7c798779c7df1f085d3e32bb4dd0a2c"
+  integrity sha512-kkjMcRsrJZmCedIYzQQiQyIhRIxFp7+A/c53MrvvtxUwSvmDT0nl3xfkyHoB1Quairn9IwwDq53zLcp+92Ey3g==
   dependencies:
     antd "^5.12.7"
     classnames "^2.3.2"
