@@ -303,16 +303,7 @@ function cloneTemplateComponent(
     { skipDuplicateCheck }
   );
   if (defaultKind) {
-    setTimeout(() => {
-      void vc.studioCtx.change(({ success }) => {
-        // ASK: If I try to do this, the Studio hangs (no longer responds to click events) and needs to be restarted. Why?
-        // I had to put it inside a settimeout and then wrap it in a .change to make it work.
-        vc.studioCtx
-          .tplMgr()
-          .addComponentToDefaultComponents(comp, defaultKind);
-        return success();
-      });
-    }, 1000);
+    vc.studioCtx.tplMgr().addComponentToDefaultComponents(comp, defaultKind);
   }
   postInsertableTemplate(vc.studioCtx, seenFonts);
   return addTplComponent(vc, comp);
@@ -328,7 +319,7 @@ function addTplComponent(vc: ViewCtx, component: Component) {
 }
 
 export function createAddTplComponent(
-  component: Component,
+  component: Component
 ): AddTplItem<CreateAddTplComponentExtraInfo> {
   return {
     type: AddItemType.tpl as const,
