@@ -104,7 +104,6 @@ import {
   normalizeTableSchema,
   traverseSchemaFields,
 } from "@/wab/server/util/cms-util";
-import { ancestors, leaves, subgraph } from "@/wab/server/util/commit-graphs";
 import { stringToPair } from "@/wab/server/util/hash";
 import { KnownProvider } from "@/wab/server/util/passport-multi-oauth2";
 import {
@@ -246,14 +245,13 @@ import {
   MergeStep,
   tryMerge,
 } from "@/wab/shared/site-diffs/merge-core";
-import { captureMessage } from "@sentry/node";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import fs from "fs";
 import { pwnedPassword } from "hibp";
 import { Draft, createDraft, finishDraft } from "immer";
 import * as _ from "lodash";
-import L, { fromPairs, intersection, pick, uniq } from "lodash";
+import L, { fromPairs, pick, uniq } from "lodash";
 import moment from "moment";
 import { CreateChatCompletionRequest } from "openai";
 import ShortUuid from "short-uuid";
@@ -276,6 +274,8 @@ import {
   UpdateResult,
 } from "typeorm";
 import * as uuid from "uuid";
+
+import { getLowestCommonAncestor } from "@/wab/shared/site-diffs/commit-graph";
 
 export const updatableUserFields = [
   "firstName",
@@ -10376,50 +10376,6 @@ export class DbMgr implements MigrationDbMgr {
       },
     });
   }
-}
-
-export function getLowestCommonAncestor(
-  projectId: ProjectId,
-  graph: CommitGraph,
-  fromBranchId?: BranchId,
-  toBranchId?: BranchId,
-  fromPkgVersionId?: PkgVersionId,
-  toPkgVersionId?: PkgVersionId
-) {
-  // Lowest common ancestors algorithm - find the "best" merge-base.
-  // From https://git-scm.com/docs/git-merge-base: One common ancestor is better than another common ancestor if the latter is an ancestor of the former.
-  const fromAncestors = ancestors(
-    graph.parents,
-    fromPkgVersionId ?? graph.branches[fromBranchId ?? MainBranchId]
-  );
-  const toAncestors = ancestors(
-    graph.parents,
-    toPkgVersionId ?? graph.branches[toBranchId ?? MainBranchId]
-  );
-  const commonAncestors = intersection(fromAncestors, toAncestors);
-  const ancestorsSubgraph = subgraph(graph.parents, commonAncestors);
-  const lowestCommonAncestors = leaves(ancestorsSubgraph);
-
-  // If there are multiple LCAs, log a warning.
-  if (lowestCommonAncestors.length > 1) {
-    captureMessage(
-      "Warning: multiple merge-bases (lowest common ancestors) found",
-      {
-        extra: {
-          projectId,
-          fromBranchId,
-          toBranchId,
-          graph,
-          lowestCommonAncestors,
-        },
-      }
-    );
-  }
-
-  // Choose an arbitrary LCA (not sure if this is the right behavior, need to research git some more, but anyway this is not possible for now given the operations we allow in the UI).
-  const [lowestCommonAncestor] = lowestCommonAncestors;
-
-  return lowestCommonAncestor;
 }
 
 const Includes = <T extends string | number>(value: T): FindOperator<T> =>
