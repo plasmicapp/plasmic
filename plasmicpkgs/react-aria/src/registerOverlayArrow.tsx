@@ -26,7 +26,9 @@ const OVERLAY_ARROW_VARIANTS = [
 
 export interface BaseOverlayArrowProps
   extends OverlayArrowProps,
-    WithVariants<typeof OVERLAY_ARROW_VARIANTS> {}
+    WithVariants<typeof OVERLAY_ARROW_VARIANTS> {
+  children: React.ReactNode;
+}
 
 const { variants, withObservedValues } = pickAriaComponentVariants(
   OVERLAY_ARROW_VARIANTS
@@ -47,7 +49,7 @@ export function BaseOverlayArrow({
     >
       {({ placement }: OverlayArrowRenderProps) =>
         withObservedValues(
-          <>{children}</>,
+          children,
           {
             placementTop: placement === "top",
             placementLeft: placement === "left",
