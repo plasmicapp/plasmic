@@ -22,6 +22,7 @@ export type HostLessDependencies = Record<
 
 export type CloneOpts = {
   skipDuplicateCheck?: true;
+  isDragging?: boolean;
 };
 
 export interface InsertableTemplateExtraInfo {

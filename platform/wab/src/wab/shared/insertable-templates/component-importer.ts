@@ -208,12 +208,12 @@ export function mkInsertableComponentImporter(
       );
     }
 
-    const newComp = cloneComp(comp);
+    const newComp = cloneComp(comp, opts);
     oldToNewComponent.set(comp, newComp);
     return newComp;
   };
 
-  const cloneComp = (comp: Component) => {
+  const cloneComp = (comp: Component, opts?: CloneOpts) => {
     const newComp = cloneComponent(comp, comp.name).component;
     fixupComp(newComp);
     newComp.templateInfo = new ComponentTemplateInfo({
@@ -222,7 +222,9 @@ export function mkInsertableComponentImporter(
       componentId: comp.uuid,
     });
     newComp.name = tplMgr.getUniqueComponentName(newComp.name);
-    tplMgr.attachComponent(newComp, comp, info.site);
+    if (!opts?.isDragging) {
+      tplMgr.attachComponent(newComp, comp, info.site);
+    }
     return newComp;
   };
 

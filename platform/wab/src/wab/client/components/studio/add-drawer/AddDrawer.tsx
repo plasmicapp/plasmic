@@ -290,7 +290,11 @@ export function createAddInstallable(meta: Installable): AddInstallableItem {
 
 function cloneTemplateComponent(
   vc: ViewCtx,
-  { skipDuplicateCheck, ...extraInfo }: CreateAddTemplateComponentExtraInfo,
+  {
+    skipDuplicateCheck,
+    isDragging,
+    ...extraInfo
+  }: CreateAddTemplateComponentExtraInfo,
   defaultKind?: string
 ) {
   trackEvent("Insertable template component", {
@@ -300,9 +304,10 @@ function cloneTemplateComponent(
     vc.site,
     extraInfo,
     vc.studioCtx.projectDependencyManager.plumeSite,
-    { skipDuplicateCheck }
+    { skipDuplicateCheck, isDragging }
   );
-  if (defaultKind) {
+  const isComponentInserted = !isDragging;
+  if (isComponentInserted && defaultKind) {
     vc.studioCtx.tplMgr().addComponentToDefaultComponents(comp, defaultKind);
   }
   postInsertableTemplate(vc.studioCtx, seenFonts);
@@ -373,7 +378,7 @@ export function createAddTplComponent(
           );
           return {
             type: "clone",
-            skipDuplicateCheck,
+            ...opts,
             ...info,
           };
         })()
@@ -517,7 +522,6 @@ export function createAddTemplateComponent(
       sc,
       opts = {}
     ): Promise<CreateAddTemplateComponentExtraInfo> => {
-      const { skipDuplicateCheck } = opts;
       const { screenVariant } = await getScreenVariantToInsertableTemplate(sc);
       return sc.app.withSpinner(
         (async () => {
@@ -528,7 +532,7 @@ export function createAddTemplateComponent(
           );
           return {
             type: "clone",
-            skipDuplicateCheck,
+            ...opts,
             ...info,
           };
         })()

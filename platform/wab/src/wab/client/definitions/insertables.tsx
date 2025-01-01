@@ -112,9 +112,7 @@ export type AddFrameItem = AddItemCommon & {
   addDrawerPreviewImage?: string; // URL to a preview image
 };
 
-export type ExtraInfoOpts = {
-  isDragging?: boolean;
-} & CloneOpts;
+export type ExtraInfoOpts = CloneOpts;
 
 export type AddTplItem<T = any> = AddItemCommon & {
   key: AddItemKey | string;
