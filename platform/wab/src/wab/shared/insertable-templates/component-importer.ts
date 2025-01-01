@@ -5,6 +5,7 @@ import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-cod
 import { assert, ensure } from "@/wab/shared/common";
 import {
   cloneComponent,
+  getDefaultKindForComponent,
   isCodeComponent,
   isHostLessCodeComponent,
   isPlumeComponent,
@@ -224,6 +225,10 @@ export function mkInsertableComponentImporter(
     newComp.name = tplMgr.getUniqueComponentName(newComp.name);
     if (!opts?.isDragging) {
       tplMgr.attachComponent(newComp, comp, info.site);
+      const defaultKind = getDefaultKindForComponent(newComp);
+      if (defaultKind) {
+        tplMgr.addComponentToDefaultComponents(newComp, defaultKind);
+      }
     }
     return newComp;
   };

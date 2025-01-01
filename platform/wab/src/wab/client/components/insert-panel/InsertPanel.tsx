@@ -1114,16 +1114,13 @@ export function buildAddItemGroups({
     isContentCreator: contentEditorMode,
   };
 
-  function handleTemplateAlias(
-    templateName: string,
-    defaultKind?: string
-  ): AddTplItem | undefined {
+  function handleTemplateAlias(templateName: string): AddTplItem | undefined {
     const item = getTemplateComponents(studioCtx).find(
       (i) => i.templateName === templateName
     );
     if (item) {
       return {
-        ...createAddTemplateComponent(item, defaultKind),
+        ...createAddTemplateComponent(item),
         isCompact: true,
       };
     }
@@ -1248,8 +1245,7 @@ export function buildAddItemGroups({
                   // The template name needs to be of format "<PLEXUS_INSERTABLE_ID>/<kind>". E.g. For Plexus button, it will be "plexus/button".
                   // The template name will be fetched from devflags.insertableTemplates.
                   const plexusItem = handleTemplateAlias(
-                    `${PLEXUS_INSERTABLE_ID}/${kind}`,
-                    kind
+                    `${PLEXUS_INSERTABLE_ID}/${kind}`
                   );
                   if (plexusItem) {
                     return {

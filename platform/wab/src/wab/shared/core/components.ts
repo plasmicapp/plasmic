@@ -236,6 +236,7 @@ export const defaultComponentKinds = {
   switch: "Switch",
   "text-area": "Text Area",
   "text-input": "Text Input",
+  "text-field": "Text Field",
   tooltip: "Tooltip",
   unauthorized: "Unauthorized",
 };
@@ -253,6 +254,11 @@ export const asDefaultComponentKind = (kind: string): DefaultComponentKind => {
 
 export const getDefaultComponentLabel = (kind: string) =>
   defaultComponentKinds[kind] ?? kind;
+
+export const getDefaultKindForComponent = (component: Component) =>
+  Object.entries(defaultComponentKinds).find(
+    ([_kind, name]) => name === component.name
+  )?.[0];
 
 export const getDefaultComponentKind = (site: Site, component: Component) =>
   Object.entries(site.defaultComponents).find(

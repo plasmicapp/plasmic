@@ -44,6 +44,7 @@ export function cloneInsertableTemplateArena(
   const tplMgr = new TplMgr({ site });
   let newFonts = new Set<string>();
   const newArena = tplMgr.addArena(arena.name);
+  // For each arena frame
   arena.children.forEach((c) => {
     const { component, seenFonts } = cloneInsertableTemplateComponent(
       site,

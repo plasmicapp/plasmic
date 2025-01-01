@@ -294,8 +294,7 @@ function cloneTemplateComponent(
     skipDuplicateCheck,
     isDragging,
     ...extraInfo
-  }: CreateAddTemplateComponentExtraInfo,
-  defaultKind?: string
+  }: CreateAddTemplateComponentExtraInfo
 ) {
   trackEvent("Insertable template component", {
     insertableName: `${extraInfo.projectId}-${extraInfo.component.name}`,
@@ -306,10 +305,6 @@ function cloneTemplateComponent(
     vc.studioCtx.projectDependencyManager.plumeSite,
     { skipDuplicateCheck, isDragging }
   );
-  const isComponentInserted = !isDragging;
-  if (isComponentInserted && defaultKind) {
-    vc.studioCtx.tplMgr().addComponentToDefaultComponents(comp, defaultKind);
-  }
   postInsertableTemplate(vc.studioCtx, seenFonts);
   return addTplComponent(vc, comp);
 }
@@ -506,8 +501,7 @@ type CreateAddTplComponentExtraInfo =
  * @returns
  */
 export function createAddTemplateComponent(
-  meta: InsertableTemplatesComponent,
-  defaultKind?: string
+  meta: InsertableTemplatesComponent
 ): AddTplItem<CreateAddTemplateComponentExtraInfo> {
   return {
     type: AddItemType.tpl as const,
@@ -517,7 +511,7 @@ export function createAddTemplateComponent(
     icon: COMBINATION_ICON,
     previewImageUrl: meta.imageUrl,
     factory: (vc: ViewCtx, extraInfo: CreateAddTemplateComponentExtraInfo) =>
-      cloneTemplateComponent(vc, extraInfo, defaultKind),
+      cloneTemplateComponent(vc, extraInfo),
     asyncExtraInfo: async (
       sc,
       opts = {}
