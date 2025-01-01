@@ -77,7 +77,7 @@ export function mkInsertableComponentImporter(
   );
   const tplMgr = new TplMgr({ site });
 
-  const fixupComp = (comp: Component) => {
+  const fixupComp = (comp: Component, opts?: CloneOpts) => {
     ensureValidClonedComponent(
       comp,
       {
@@ -91,7 +91,9 @@ export function mkInsertableComponentImporter(
       }
     );
 
-    importComponentsInTree(site, comp.tplTree, comp, getNewComponent);
+    importComponentsInTree(site, comp.tplTree, comp, (c) =>
+      getNewComponent(c, opts)
+    );
 
     // Recursively fixup subcomps
     for (const component of comp.subComps) {
@@ -216,7 +218,7 @@ export function mkInsertableComponentImporter(
 
   const cloneComp = (comp: Component, opts?: CloneOpts) => {
     const newComp = cloneComponent(comp, comp.name).component;
-    fixupComp(newComp);
+    fixupComp(newComp, opts);
     newComp.templateInfo = new ComponentTemplateInfo({
       name: newComp.templateInfo?.name,
       projectId: info.projectId,
