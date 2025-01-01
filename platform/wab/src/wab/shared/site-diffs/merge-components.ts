@@ -57,7 +57,6 @@ import {
   TplTag,
   Variant,
   VariantSetting,
-  VirtualRenderExpr,
   ensureKnownRenderExpr,
   ensureKnownTplComponent,
   ensureKnownTplSlot,
@@ -1126,12 +1125,14 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
           );
 
           if (maybeIids === "VirtualRenderExpr") {
-            $$$(merged).setSlotArgForParam(
-              mergedParam,
-              new VirtualRenderExpr({
-                tpl: [] /* Will be fixed afterwards by `fixVirtualSlotArgs` */,
-              })
-            );
+            // VirtualRenderExpr's are fixed later, this is to ensure that changes in the original
+            // defaultContents are only synced back to this component, once that this content has been
+            // properly merged
+            //
+            // Until there we keep the same reference for defaultContents in the current expr, this way
+            // if this param is untouched we will keep the same content and id refs even after merging
+            //
+            // Check `fixVirtualSlotArgs` to see how this is done
             return;
           }
           const iids: string[] = maybeIids;

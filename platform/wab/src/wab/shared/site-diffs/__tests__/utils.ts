@@ -513,9 +513,20 @@ export function testMergeFromJsonBundle(
       );
     assert(rez.status === "merged", "should have merged");
     rez.preMergedResults = result;
-    return rez;
+    return {
+      ...rez,
+      ancestorSite,
+      aSite,
+      bSite,
+    };
   } else {
     assert(!conflictPicks, "No conflicts");
   }
-  return result;
+
+  return {
+    ...result,
+    ancestorSite,
+    aSite,
+    bSite,
+  };
 }
