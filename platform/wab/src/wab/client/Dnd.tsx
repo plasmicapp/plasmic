@@ -365,6 +365,12 @@ class NodeBox {
   ) {}
 }
 
+type ValidSlotInfoNodeBox = NodeBox & {
+  selectable: ValNode & {
+    slotInfo: NonNullable<ValNode["slotInfo"]>;
+  };
+};
+
 interface BeforeAfterInsertions {
   before: InsertionBox | undefined;
   after: InsertionBox | undefined;
@@ -1606,6 +1612,54 @@ export class NodeTargeter {
     }
 
     const nodeBoxes = Array.from(genNodeBoxes(this.vc)).reverse();
+
+    /* NodeBoxes are generated using domElts. NodeBox is not generated in case of Code components having no DOM wrapping element at the root.
+     * Because of that, insertion points are not calculated for component itself, rather the insertion point is added for it's slot.
+     * To ensure we calculate right insertion points for component itself we have to add a fake nodebox as follows
+     *
+     * 1. Go through the node boxes and figure out if there is any Slot target selectables i.e having slotInfo
+     * 2. If yes, then figure out if there is an existing NodeBox having selectable for the Component related to Slot (selectable.slotInfo.valComponent.tpl.component.name)
+     * 3. If there is no existing nodebox for the Slot's component then we add a fakebox.
+     */
+    const isValidSlotInfoNodeBox = (
+      nb: NodeBox
+    ): nb is ValidSlotInfoNodeBox => {
+      return nb.selectable instanceof ValNode && !!nb.selectable.slotInfo;
+    };
+
+    const componentNodeBoxSet = new Set<string>();
+    const slotNodeBoxes: Array<[ValidSlotInfoNodeBox, string]> = [];
+    nodeBoxes.forEach((nodeBox) => {
+      if (isValidSlotInfoNodeBox(nodeBox)) {
+        slotNodeBoxes.push([
+          nodeBox,
+          nodeBox.selectable.slotInfo.valComponent.tpl.component.name,
+        ]);
+      }
+      if (nodeBox.selectable instanceof ValComponent) {
+        componentNodeBoxSet.add(nodeBox.selectable.tpl.component.name);
+      }
+    });
+
+    slotNodeBoxes.forEach(([slotNodeBox, componentName]) => {
+      if (!componentNodeBoxSet.has(componentName)) {
+        const fakeNodeBox = new NodeBox(
+          slotNodeBox.selectable.slotInfo.valComponent,
+          slotNodeBox.dom,
+          slotNodeBox.box,
+          slotNodeBox.paddingBox,
+          slotNodeBox.boxInScaler,
+          slotNodeBox.flowDir,
+          slotNodeBox.isInFlex,
+          slotNodeBox.isInFlexReverse,
+          true,
+          slotNodeBox.acceptsNeighbors,
+          undefined,
+          slotNodeBox.containerType
+        );
+        nodeBoxes.push(fakeNodeBox);
+      }
+    });
 
     // Creating fake node box if needed
     if (slotChildrenDoms.length > 0) {
