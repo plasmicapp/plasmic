@@ -9,11 +9,11 @@ import {
   Site,
   TplNode,
 } from "@/wab/shared/model/classes";
-import defaultSlotChangeBundle from "@/wab/shared/site-diffs/__tests__/bundles/default-slot-change.json";
+import defaultSlotChangeBundle from "@/wab/shared/site-diffs/_tests_/bundles/default-slot-change.json";
 import {
   fetchLastBundleVersion,
   testMergeFromJsonBundle,
-} from "@/wab/shared/site-diffs/__tests__/utils";
+} from "@/wab/shared/site-diffs/_tests_/utils";
 import { getSlotArg } from "@/wab/shared/SlotUtils";
 
 beforeAll(async () => {

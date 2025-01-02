@@ -84,15 +84,15 @@ import {
 } from "@/wab/shared/model/classes";
 import { withoutUids } from "@/wab/shared/model/model-meta";
 import { typeFactory } from "@/wab/shared/model/model-util";
-import codeComponentsWithSameNameBundle from "@/wab/shared/site-diffs/__tests__/bundles/code-components-with-same-name.json";
-import globalContextBundle from "@/wab/shared/site-diffs/__tests__/bundles/global-context-merge.json";
-import richTextConflict from "@/wab/shared/site-diffs/__tests__/bundles/rich-text-conflict.json";
-import styleTokenBundle from "@/wab/shared/site-diffs/__tests__/bundles/style-tokens-conflict.json";
-import edgeCasesBundle2 from "@/wab/shared/site-diffs/__tests__/bundles/test-edge-cases-merge-2.json";
-import edgeCasesBundle from "@/wab/shared/site-diffs/__tests__/bundles/test-edge-cases-merge.json";
-import mergeDepsBundle from "@/wab/shared/site-diffs/__tests__/bundles/test-merging-deps.json";
-import rerootBundle from "@/wab/shared/site-diffs/__tests__/bundles/test-reroot.json";
-import mergeTplsBundle from "@/wab/shared/site-diffs/__tests__/bundles/test-tpl-merge.json";
+import codeComponentsWithSameNameBundle from "@/wab/shared/site-diffs/_tests_/bundles/code-components-with-same-name.json";
+import globalContextBundle from "@/wab/shared/site-diffs/_tests_/bundles/global-context-merge.json";
+import richTextConflict from "@/wab/shared/site-diffs/_tests_/bundles/rich-text-conflict.json";
+import styleTokenBundle from "@/wab/shared/site-diffs/_tests_/bundles/style-tokens-conflict.json";
+import edgeCasesBundle2 from "@/wab/shared/site-diffs/_tests_/bundles/test-edge-cases-merge-2.json";
+import edgeCasesBundle from "@/wab/shared/site-diffs/_tests_/bundles/test-edge-cases-merge.json";
+import mergeDepsBundle from "@/wab/shared/site-diffs/_tests_/bundles/test-merging-deps.json";
+import rerootBundle from "@/wab/shared/site-diffs/_tests_/bundles/test-reroot.json";
+import mergeTplsBundle from "@/wab/shared/site-diffs/_tests_/bundles/test-tpl-merge.json";
 import {
   basicSite,
   fetchLastBundleVersion,
@@ -101,7 +101,7 @@ import {
   testMergeFromJsonBundle,
   TestResult,
   upsertTokens,
-} from "@/wab/shared/site-diffs/__tests__/utils";
+} from "@/wab/shared/site-diffs/_tests_/utils";
 import { MergeStep } from "@/wab/shared/site-diffs/merge-core";
 import { fillVirtualSlotContents } from "@/wab/shared/SlotUtils";
 import { ensureBaseVariant, TplMgr } from "@/wab/shared/TplMgr";
