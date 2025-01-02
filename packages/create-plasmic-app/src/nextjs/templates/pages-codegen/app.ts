@@ -9,13 +9,14 @@ import { PlasmicRootProvider } from "@plasmicapp/react-web";${ifTs(
 import type { AppProps } from "next/app";`
   )}
 import Head from "next/head";
+import Link from "next/link";
 
 export default function MyApp({ Component, pageProps }${ifTs(
     jsOrTs,
     `: AppProps`
   )}) {
   return (
-    <PlasmicRootProvider Head={Head}>
+    <PlasmicRootProvider Head={Head} Link={Link}>
       <Component {...pageProps} />
     </PlasmicRootProvider>
   );
