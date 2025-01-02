@@ -2194,7 +2194,10 @@ export class ViewOps {
     );
     console.log("Copied styles", props);
     // TODO: also copy mixins
-    this.clipboard().copy({ type: "style", cssProps: props });
+    this.clipboard().copy({
+      type: "style",
+      cssProps: props,
+    });
   }
 
   tryPasteStyleFromClipboard(targetTpl?: TplNode, cssProps?: string[]) {

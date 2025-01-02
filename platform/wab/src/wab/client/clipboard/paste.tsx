@@ -154,6 +154,14 @@ function shouldPerformCrossTabCopy(
   if (copyState.bundleRef.type === "pkg") {
     return true;
   }
+  // We are dealing with the same project and branch, but different tab
+  // perform a cross-tab copy, if local clipboard is empty or the cross-tab clipboard is more recent.
+  if (
+    sc.clipboard.isEmpty() ||
+    sc.clipboard.timeStamp() < copyState.timeStamp
+  ) {
+    return true;
+  }
   // It may be the case that we are dealing with a different revisionNum here
   // but we will assume it's fine, considering the expected time for user to copy/paste
   return false;

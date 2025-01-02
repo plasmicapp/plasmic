@@ -390,6 +390,7 @@ export function getCopyState(
     componentUuid: currentComponent.uuid,
     componentName: currentComponent.name,
     references,
+    timeStamp: viewCtx.clipboard.timeStamp(),
   };
 
   return state;

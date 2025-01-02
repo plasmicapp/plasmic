@@ -172,7 +172,8 @@ export function mkInsertableComponentImporter(
             (c.templateInfo?.name &&
               c.templateInfo?.name === comp.templateInfo?.name) ||
             (c.templateInfo?.componentId === comp.uuid &&
-              c.templateInfo?.projectId === info.projectId)
+              c.templateInfo?.projectId === info.projectId) ||
+            c.uuid === comp.uuid
         );
     if (existing) {
       oldToNewComponent.set(comp, existing);

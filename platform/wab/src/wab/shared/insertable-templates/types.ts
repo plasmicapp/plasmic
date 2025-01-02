@@ -71,6 +71,7 @@ export interface CopyState {
   branchId?: string;
   bundleRef: CopyStateBundleRef;
   references: CopyElementsReference[];
+  timeStamp: number;
 }
 
 export interface CopyStateExtraInfo

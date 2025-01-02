@@ -3,12 +3,12 @@ import {
   PasteResult,
   ensureViewCtxOrThrowUserError,
 } from "@/wab/client/clipboard/common";
-import { ensure } from "@/wab/shared/common";
 import { unwrap } from "@/wab/commons/failable-utils";
 import { cloneArenaFrame } from "@/wab/shared/Arenas";
 import { VariantCombo } from "@/wab/shared/Variants";
-import { ArenaFrame, Component, TplNode } from "@/wab/shared/model/classes";
+import { ensure } from "@/wab/shared/common";
 import * as Tpls from "@/wab/shared/core/tpls";
+import { ArenaFrame, Component, TplNode } from "@/wab/shared/model/classes";
 
 export interface StyleClip {
   type: "style";
@@ -81,8 +81,10 @@ export function cloneClip(x: Clippable): Clippable {
  */
 export class LocalClipboard {
   _contents: undefined | Clippable = undefined;
+  _timeStamp: number = Date.now();
 
   copy(x: Clippable) {
+    this._timeStamp = Date.now();
     this._contents = cloneClip(x);
   }
 
@@ -108,6 +110,10 @@ export class LocalClipboard {
 
   contents() {
     return this._contents;
+  }
+
+  timeStamp() {
+    return this._timeStamp;
   }
 }
 
