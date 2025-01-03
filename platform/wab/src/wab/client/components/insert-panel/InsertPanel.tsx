@@ -1,3 +1,9 @@
+import {
+  getEventDataForTplComponent,
+  InsertItemEventData,
+  InsertOpts,
+  trackInsertItem,
+} from "@/wab/client/analytics/events/insert-item";
 import { getComponentPresets } from "@/wab/client/code-components/code-presets";
 import { useFocusManager } from "@/wab/client/components/aria-utils";
 import {
@@ -45,6 +51,7 @@ import {
   AddItemType,
   AddTplItem,
   INSERTABLES_MAP,
+  isInstallableItem,
   isTemplateComponent,
   isTplAddItem,
 } from "@/wab/client/definitions/insertables";
@@ -102,6 +109,7 @@ import {
   isTplColumn,
   isTplComponent,
   isTplContainer,
+  isTplTag,
   isTplTextBlock,
 } from "@/wab/shared/core/tpls";
 import {
@@ -184,6 +192,12 @@ export const InsertPanel = observer(function InsertPanel_({
 
   const onInserted = (item: AddItem, tplNode: TplNode | null) => {
     onClose();
+
+    trackInsertFromAddDrawer(item, tplNode, {
+      from: "add-drawer",
+      dragged: false,
+    });
+
     if (isTplAddItem(item)) {
       saveRecentItem(item, tplNode);
     }
@@ -207,6 +221,10 @@ export const InsertPanel = observer(function InsertPanel_({
             setDragging(false);
             if (result) {
               const [_viewCtx, tplNode] = result;
+              trackInsertFromAddDrawer(item, tplNode, {
+                from: "add-drawer",
+                dragged: true,
+              });
               saveRecentItem(item, tplNode);
             }
           }}
@@ -463,6 +481,10 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
             : `hostless-packages--${extraInfo.dep[0].projectId}`;
           setSection(sectionKey);
           setHighlightSection(sectionKey);
+          trackInsertFromAddDrawer(item, null, {
+            from: "add-drawer",
+            dragged: false,
+          });
         }
         break;
       }
@@ -1684,4 +1706,49 @@ function getPlacementOptions(studioCtx: StudioCtx) {
       default: !preferToInsertInside,
     },
   ];
+}
+
+function trackInsertFromAddDrawer(
+  item: AddItem,
+  tplNode: TplNode | null,
+  opts: InsertOpts
+) {
+  let eventData: InsertItemEventData = {
+    insertableKey: item.key,
+    insertableName: item.systemName ?? item.label,
+    type: item.type,
+    ...opts,
+  };
+  if (item.key.startsWith("insertable-template-item") && isTplAddItem(item)) {
+    eventData = {
+      ...eventData,
+      sourceProjectId: item.projectId,
+      sourceComponentName: item.label,
+    };
+  } else if (isInstallableItem(item)) {
+    eventData = {
+      ...eventData,
+      sourceProjectId: item.projectId,
+    };
+  } else if (item.key.startsWith("hostless-component-")) {
+    eventData = {
+      ...eventData,
+      isHostless: true,
+      isCodeComponent: true,
+    };
+  } else if (isTplComponent(tplNode)) {
+    eventData = {
+      ...eventData,
+      ...getEventDataForTplComponent(tplNode),
+      insertableKey: eventData.insertableKey,
+    };
+  } else if (isTplTag(tplNode)) {
+    eventData = {
+      ...eventData,
+      type: tplNode.type,
+      tplTag: tplNode.tag,
+    };
+  }
+
+  trackInsertItem(eventData);
 }

@@ -1,3 +1,7 @@
+import {
+  getEventDataForTplComponent,
+  trackInsertItem,
+} from "@/wab/client/analytics/events/insert-item";
 import { mkProjectLocation, openNewTab } from "@/wab/client/cli-routes";
 import RowItem from "@/wab/client/components/RowItem";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
@@ -38,6 +42,7 @@ import {
   isHostLessCodeComponent,
   isReusableComponent,
 } from "@/wab/shared/core/components";
+import { isTplComponent } from "@/wab/shared/core/tpls";
 import { Component } from "@/wab/shared/model/classes";
 import { Menu, Popover, notification } from "antd";
 import { observer } from "mobx-react";
@@ -87,6 +92,16 @@ export const ComponentRow = observer(function ComponentRow(props: {
   return (
     <DraggableInsertable
       sc={studioCtx}
+      onDragEnd={(_spec, result) => {
+        const tplComponent = result?.[1];
+        if (isTplComponent(tplComponent)) {
+          trackInsertItem({
+            from: "components-tab",
+            dragged: true,
+            ...getEventDataForTplComponent(tplComponent),
+          });
+        }
+      }}
       spec={{
         key: component.uuid,
         label: getComponentDisplayName(component),

@@ -131,6 +131,10 @@ import pluralize from "pluralize";
 import React from "react";
 
 import {
+  getEventDataForTplComponent,
+  trackInsertItem,
+} from "@/wab/client/analytics/events/insert-item";
+import {
   FrameClip,
   isStyleClip,
   StyleClip,
@@ -2600,6 +2604,14 @@ export class ViewOps {
     // Fix up the new node before we paste!
     const component = this.viewCtx().currentComponent();
     const newTplSlots: TplSlot[] = [];
+
+    if (isTplComponent(newItem)) {
+      trackInsertItem({
+        from: "copy-paste",
+        ...getEventDataForTplComponent(newItem),
+      });
+    }
+
     for (const newNode of Tpls.flattenTpls(newItem)) {
       if (Tpls.isTplSlot(newNode)) {
         newTplSlots.push(newNode);

@@ -96,6 +96,7 @@ export type AddInstallableItem<T = any> = AddItemCommon & {
   key: string;
   type: AddItemType.installable;
   isPackage: boolean;
+  projectId: string;
   // Assumed to run inside sc.change()
   factory: (
     studioCtx: StudioCtx,
@@ -117,6 +118,7 @@ export type ExtraInfoOpts = CloneOpts;
 export type AddTplItem<T = any> = AddItemCommon & {
   key: AddItemKey | string;
   type: AddItemType.tpl | AddItemType.plume;
+  projectId?: string;
   // Assumed to run inside sc.change()
   factory: (viewCtx: ViewCtx, extraInfo: T) => TplNode | undefined;
   /**
@@ -153,6 +155,10 @@ export type AddFakeItem<T = any> = AddItemCommon & {
 
 export function isTplAddItem(item: AddItem): item is AddTplItem {
   return item.type === AddItemType.tpl || item.type === AddItemType.plume;
+}
+
+export function isInstallableItem(item: AddItem): item is AddInstallableItem {
+  return item.type === AddItemType.installable;
 }
 
 export const INSERTABLE_TEMPLATE_COMPONENT_KEY_PREFIX =
