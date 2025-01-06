@@ -2,15 +2,11 @@
 // This file is owned by you, feel free to edit as you see fit.
 import { Dropdown, Menu } from "antd";
 
-import CommentPost from "@/wab/client/components/comments/CommentPost";
 import CommentPostForm from "@/wab/client/components/comments/CommentPostForm";
 import { useCommentsCtx } from "@/wab/client/components/comments/CommentsProvider";
-import ThreadComments from "@/wab/client/components/comments/ThreadComments";
 import RootComment from "@/wab/client/components/comments/RootComment";
-import {
-  getThreadsFromFocusedComponent,
-  TplComment,
-} from "@/wab/client/components/comments/utils";
+import ThreadComments from "@/wab/client/components/comments/ThreadComments";
+import { getThreadsFromFocusedComponent } from "@/wab/client/components/comments/utils";
 import {
   SidebarModal,
   SidebarModalProvider,
@@ -27,7 +23,7 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
 
-export const DEFAULT_NOTIFICATION_LEVEL = "mentions-and-replies";
+export const DEFAULT_NOTIFICATION_LEVEL = "none";
 export const notifyAboutKeyToLabel = {
   all: "All comments",
   "mentions-and-replies": "Replies only",
