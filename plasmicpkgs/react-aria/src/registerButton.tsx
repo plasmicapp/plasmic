@@ -1,6 +1,7 @@
+import { usePlasmicLink } from "@plasmicapp/host";
 import React from "react";
-import { mergeProps } from "react-aria";
-import type { ButtonProps } from "react-aria-components";
+import { mergeProps, useFocusRing, useHover, useLink } from "react-aria";
+import type { ButtonProps, LinkProps } from "react-aria-components";
 import { Button } from "react-aria-components";
 import { COMMON_STYLES, getCommonProps } from "./common";
 import {
@@ -22,46 +23,113 @@ const BUTTON_VARIANTS = [
 const { variants, withObservedValues } =
   pickAriaComponentVariants(BUTTON_VARIANTS);
 
-interface BaseButtonProps
-  extends ButtonProps,
-    WithVariants<typeof BUTTON_VARIANTS> {
-  children: React.ReactNode;
+type CommonProps = { children: React.ReactNode } & Omit<
+  ButtonProps,
+  "className" | "children"
+> &
+  Omit<LinkProps, "className" | "children">;
+type LinkSpecificProps = Pick<LinkProps, "href" | "target">;
+type ButtonSpecificProps = {
   resetsForm?: boolean;
   submitsForm?: boolean;
+};
+
+interface BaseButtonProps
+  extends CommonProps,
+    LinkSpecificProps,
+    ButtonSpecificProps,
+    WithVariants<typeof BUTTON_VARIANTS> {
+  children: React.ReactNode;
+  className?: string;
 }
 
 export const BaseButton = React.forwardRef(function BaseButtonInner(
   props: BaseButtonProps,
-  ref: React.Ref<HTMLButtonElement>
+  ref: React.Ref<HTMLButtonElement | HTMLAnchorElement>
 ) {
-  const { submitsForm, resetsForm, children, plasmicUpdateVariant, ...rest } =
-    props;
+  const { href } = props;
 
-  const type = submitsForm ? "submit" : resetsForm ? "reset" : "button";
+  if (href) {
+    return (
+      <LinkButton
+        props={props}
+        ref={ref as React.RefObject<HTMLAnchorElement>}
+      />
+    );
+  } else {
+    const { submitsForm, resetsForm, children, plasmicUpdateVariant, ...rest } =
+      props;
+    const type = submitsForm ? "submit" : resetsForm ? "reset" : "button";
 
-  const mergedProps = mergeProps(rest, {
-    type,
+    const buttonProps = mergeProps(rest, {
+      type,
+      style: COMMON_STYLES,
+      ref: ref as React.Ref<HTMLButtonElement>,
+    });
+
+    return (
+      <Button {...buttonProps}>
+        {({ isHovered, isPressed, isFocused, isFocusVisible, isDisabled }) =>
+          withObservedValues(
+            children,
+            {
+              hovered: isHovered,
+              pressed: isPressed,
+              focused: isFocused,
+              focusVisible: isFocusVisible,
+              disabled: isDisabled,
+            },
+            plasmicUpdateVariant
+          )
+        }
+      </Button>
+    );
+  }
+});
+
+function LinkButton({
+  props,
+  ref,
+}: {
+  props: BaseButtonProps;
+  ref: React.RefObject<HTMLAnchorElement>;
+}) {
+  const { href, children, plasmicUpdateVariant, ...rest } = props;
+  const PlasmicLink = usePlasmicLink();
+  const { linkProps, isPressed } = useLink(props, ref);
+  const { hoverProps, isHovered } = useHover(props);
+  const { focusProps, isFocused, isFocusVisible } = useFocusRing();
+
+  const combinedLinkProps = mergeProps(linkProps, hoverProps, focusProps, {
+    href,
+    className: props.className,
+    style: COMMON_STYLES,
     ref,
   });
 
   return (
-    <Button {...mergedProps} style={COMMON_STYLES}>
-      {({ isHovered, isPressed, isFocused, isFocusVisible, isDisabled }) =>
-        withObservedValues(
-          children,
-          {
-            hovered: isHovered,
-            pressed: isPressed,
-            focused: isFocused,
-            focusVisible: isFocusVisible,
-            disabled: isDisabled,
-          },
-          plasmicUpdateVariant
-        )
-      }
-    </Button>
+    <PlasmicLink
+      {...combinedLinkProps}
+      data-focused={isFocused || undefined}
+      data-hovered={isHovered || undefined}
+      data-pressed={isPressed || undefined}
+      data-focus-visible={isFocusVisible || undefined}
+      data-disabled={props.isDisabled || undefined}
+    >
+      {withObservedValues(
+        children,
+        {
+          hovered: isHovered,
+          pressed: isPressed,
+          focused: isFocused,
+          focusVisible: isFocusVisible,
+          disabled: !!rest.isDisabled,
+        },
+        plasmicUpdateVariant
+      )}
+    </PlasmicLink>
   );
-});
+}
 
 export const BUTTON_COMPONENT_NAME = makeComponentName("button");
 
@@ -79,11 +147,18 @@ export function registerButton(
       importName: "BaseButton",
       variants,
       defaultStyles: {
-        borderWidth: "1px",
-        borderStyle: "solid",
+        // Ensure consistent design across rendered elements (button, anchor tag).
+        backgroundColor: "#EFEFEF",
         borderColor: "black",
-        padding: "2px 10px",
+        borderStyle: "solid",
+        borderWidth: "1px",
+        color: "#000000",
         cursor: "pointer",
+        fontFamily: "Arial",
+        fontSize: "1rem",
+        lineHeight: "1.2",
+        padding: "2px 10px",
+        textDecorationLine: "none",
       },
       props: {
         ...getCommonProps<BaseButtonProps>("button", [
@@ -99,11 +174,24 @@ export function registerButton(
             value: "Button",
           },
         },
+        href: {
+          type: "href",
+          description:
+            "The URL this button navigates to. If present, this button is an <a> element.",
+        },
+        target: {
+          type: "choice",
+          options: ["_blank", "_self", "_parent", "_top"],
+          description:
+            "Same as target attribute of <a> element. Only applies when the href prop is present.",
+          hidden: (props) => !props.href,
+          defaultValueHint: "_self",
+        },
         submitsForm: {
           type: "boolean",
           displayName: "Submits form?",
           defaultValueHint: false,
-          hidden: (props) => Boolean(props.resetsForm),
+          hidden: (props) => Boolean(props.resetsForm) || Boolean(props.href),
           description:
             "Whether clicking this button should submit the enclosing form.",
           advanced: true,
@@ -112,7 +200,7 @@ export function registerButton(
           type: "boolean",
           displayName: "Resets form?",
           defaultValueHint: false,
-          hidden: (props) => Boolean(props.submitsForm),
+          hidden: (props) => Boolean(props.submitsForm) || Boolean(props.href),
           description:
             "Whether clicking this button should reset the enclosing form.",
           advanced: true,
