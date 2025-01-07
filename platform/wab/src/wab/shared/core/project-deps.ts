@@ -136,7 +136,7 @@ import {
   isScreenVariantGroup,
   VariantGroupType,
 } from "@/wab/shared/Variants";
-import L from "lodash";
+import { isArray, keyBy, keys, uniqBy } from "lodash";
 
 export type DependencyWalkScope = "all" | "direct";
 
@@ -180,11 +180,11 @@ export function extractTransitiveDepsFromComponents(
   _depMap?: ObjDepMap
 ) {
   // Reverse to have the direct dependencies have more priority
-  const allTokensDict = L.keyBy(
+  const allTokensDict = keyBy(
     allStyleTokens(site, { includeDeps: "all" }).reverse(),
     (t) => t.uuid
   );
-  const allAssetsDict = L.keyBy(
+  const allAssetsDict = keyBy(
     allImageAssets(site, { includeDeps: "all" }).reverse(),
     (t) => t.uuid
   );
@@ -248,11 +248,11 @@ export function extractTransitiveDepsFromComponentDefaultSlots(
   _depMap?: ObjDepMap
 ) {
   // Reverse to have the direct dependencies have more priority
-  const allTokensDict = L.keyBy(
+  const allTokensDict = keyBy(
     allStyleTokens(site, { includeDeps: "all" }).reverse(),
     (t) => t.uuid
   );
-  const allAssetsDict = L.keyBy(
+  const allAssetsDict = keyBy(
     allImageAssets(site, { includeDeps: "all" }).reverse(),
     (t) => t.uuid
   );
@@ -282,7 +282,7 @@ export function extractTransitiveDepsFromTokens(
   _depMap?: ObjDepMap
 ) {
   // Reverse to have the direct dependencies have more priority
-  const allTokensDict = L.keyBy(
+  const allTokensDict = keyBy(
     allStyleTokens(site, { includeDeps: "all" }).reverse(),
     "uuid"
   );
@@ -311,7 +311,7 @@ export function extractTransitiveDepsFromMixins(
   _depMap?: ObjDepMap
 ) {
   // Reverse to have the direct dependencies have more priority
-  const allTokensDict = L.keyBy(
+  const allTokensDict = keyBy(
     allStyleTokens(site, { includeDeps: "all" }).reverse(),
     "uuid"
   );
@@ -332,8 +332,12 @@ export function getTransitiveDepsFromObjs(
   );
   const depMap = _depMap ?? buildObjToDepMap(site);
   const allDeps = withoutNils(objs.map((obj) => depMap.get(obj)));
-  return allDeps.filter(
-    (dep) => transitiveDeps.has(dep) && !site.projectDependencies.includes(dep)
+  return uniqBy(
+    allDeps.filter(
+      (dep) =>
+        transitiveDeps.has(dep) && !site.projectDependencies.includes(dep)
+    ),
+    "projectId"
   );
 }
 
@@ -1375,7 +1379,7 @@ function upgradeProjectDep(
     )
   );
   const fixGlobalPinMap = (pinMap: Record<string, boolean>) => {
-    for (const key of L.keys(pinMap)) {
+    for (const key of keys(pinMap)) {
       if (oldToNewGlobalVariantUuid.has(key)) {
         // This is an old global variant uuid
         const oldPin = pinMap[key];
@@ -1404,7 +1408,7 @@ function upgradeProjectDep(
               return;
             }
           }
-        } else if (L.isArray(cellKey)) {
+        } else if (isArray(cellKey)) {
           if (cellKey.some((v) => oldToNewGlobalVariant.has(v))) {
             const newCellKey = withoutNils(
               cellKey.map((v) =>
