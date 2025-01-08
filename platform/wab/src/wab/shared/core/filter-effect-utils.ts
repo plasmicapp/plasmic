@@ -120,9 +120,9 @@ export const getFilterEffectLabel = (effect: string) => {
 
 export const fromFilterStringToObj = (rawFilter: string): FilterEffect => {
   const FILTER_PATTERN =
-    /(hidden#)?[a-z-]*\((([0-9]+(%|deg|px) ?)|(#[0-9A-F]{6,8})){1,4}\)/g;
+    /(hidden#)?[a-z-]*\((([0-9]+(%|deg|px) ?)|(#[0-9A-F]{6,8})|(var\(--[a-zA-Z0-9-]+\))){1,4}\)/g;
   const FILTER_SPLIT_PATTERN =
-    /(hidden#)?[a-z-]*\(|(([0-9]+(%|deg|px) ?)|(#[0-9A-F]{6,8})){1,4}|\)/g;
+    /(hidden#)?[a-z-]*\(|(([0-9]+(%|deg|px) ?)|(#[0-9A-F]{6,8})|(var\(--[a-zA-Z0-9-]+\))){1,4}|\)/g;
   if (!rawFilter.match(FILTER_PATTERN)) {
     return defaultFilterEffects.blur;
   }

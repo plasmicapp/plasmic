@@ -1,5 +1,6 @@
 import { LabeledStyleItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import ColorSwatch from "@/wab/client/components/style-controls/ColorSwatch";
 import { FilterEffectPanel } from "@/wab/client/components/style-controls/FilterEffectPanel";
 import { ExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
 import {
@@ -9,15 +10,17 @@ import {
 } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import { removeFromArray } from "@/wab/commons/collections";
+import { derefTokenRefs, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import { arrayMoveIndex } from "@/wab/shared/collections";
 import { cx, maybe, spawn, uniqueKey } from "@/wab/shared/common";
-import { removeFromArray } from "@/wab/commons/collections";
 import {
   defaultFilterEffects,
   FilterEffect,
   fromFilterObjToString,
   fromFilterStringToObj,
 } from "@/wab/shared/core/filter-effect-utils";
+import { allColorTokens } from "@/wab/shared/core/sites";
 import { joinCssValues, splitCssValue } from "@/wab/shared/RuleSetHelpers";
 import { capitalize } from "lodash";
 import { observer } from "mobx-react";
@@ -111,6 +114,20 @@ const _GenericFilterEffectSection = (
             }}
           >
             {filters.map((filter: FilterEffect, i: number) => {
+              const isDropShadow = filter.type === "drop-shadow";
+
+              const filterValue = filter.args.slice(-1)?.[0];
+              const colorTokens = allColorTokens(studioCtx.site, {
+                includeDeps: "all",
+              });
+
+              const color = isDropShadow
+                ? derefTokenRefs(colorTokens, filterValue)
+                : null;
+              const token = isDropShadow
+                ? tryParseTokenRef(filterValue, colorTokens)
+                : null;
+
               return (
                 <ListBoxItem
                   key={uniqueKey(filter)}
@@ -125,6 +142,7 @@ const _GenericFilterEffectSection = (
                       <div className="labeled-item__label labeled-item__label--horizontal">
                         {capitalize(filter.type).replace("-", " ")}
                       </div>
+                      {color ? <ColorSwatch color={color} /> : null}
                       <code
                         className={cx([
                           {
@@ -132,7 +150,7 @@ const _GenericFilterEffectSection = (
                           },
                         ])}
                       >
-                        {filter.args.slice(-1)}
+                        {token?.name || filterValue}
                       </code>
                     </div>
                   }
