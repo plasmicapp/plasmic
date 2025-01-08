@@ -10,15 +10,15 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPost";
 import PlasmicReactionButton from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicReactionButton";
 import {
-  isUserProjectEditor,
+  isUserProjectContentEditor,
   isUserProjectOwner,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
+import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import { ApiCommentReaction, CommentId } from "@/wab/shared/ApiSchema";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
 import { ensure, ensureString, maybe, spawn } from "@/wab/shared/common";
-import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, Tooltip } from "antd";
 import Popover from "antd/lib/popover";
@@ -112,7 +112,7 @@ function CommentMenuOptions(props: {
   const appCtx = useAppCtx();
   const api = appCtx.api;
 
-  const isEditor = isUserProjectEditor(
+  const isContentEditor = isUserProjectContentEditor(
     appCtx.selfInfo,
     studioCtx.siteInfo,
     studioCtx.siteInfo.perms
@@ -130,7 +130,9 @@ function CommentMenuOptions(props: {
     <Menu>
       <Menu.Item
         key="change-status"
-        disabled={!isEditor}
+        disabled={
+          !(isContentEditor || appCtx.selfInfo?.id === comment.createdById)
+        }
         onClick={async () => {
           await api.editComment(projectId, branchId, comment.id, {
             resolved: !comment.resolved,

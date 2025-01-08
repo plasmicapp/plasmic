@@ -6853,6 +6853,14 @@ export function checkAccessLevelRank(
   );
 }
 
+export function isUserProjectContentEditor(
+  user: ApiUser | null,
+  project: ApiProject,
+  perms: ApiPermission[]
+) {
+  return checkAccessLevelRank(user, project, perms, "content");
+}
+
 export function isUserProjectEditor(
   user: ApiUser | null,
   project: ApiProject,

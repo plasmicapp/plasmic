@@ -9651,7 +9651,17 @@ export class DbMgr implements MigrationDbMgr {
       id: commentId,
     });
 
-    this.checkUserIdIsSelf(comment.createdById ?? undefined);
+    if (!this.isUserIdSelf(comment.createdById ?? undefined)) {
+      if ("body" in data) {
+        throw new ForbiddenError("Can only do this for self.");
+      }
+      await this.checkProjectPerms(
+        comment.projectId,
+        "content",
+        "resolve a comment",
+        true
+      );
+    }
 
     Object.assign(comment, this.stampUpdate(), data);
     await this.entMgr.save(comment);
