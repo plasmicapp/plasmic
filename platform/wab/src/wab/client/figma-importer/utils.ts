@@ -10,14 +10,14 @@ import {
   Transform,
 } from "@/wab/client/figma-importer/plugin-types";
 import { FigmaData } from "@/wab/client/figma-importer/types";
-import { unzip } from "@/wab/shared/collections";
-import { arrayEqIgnoreOrder, ensure } from "@/wab/shared/common";
 import { arrayReversed } from "@/wab/commons/collections";
-import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
-import { Component, TplNode } from "@/wab/shared/model/classes";
+import { unzip } from "@/wab/shared/collections";
+import { arrayEqIgnoreOrder, ensure } from "@/wab/shared/common";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { MkTplTagOpts, isTplVariantable } from "@/wab/shared/core/tpls";
+import { Component, TplNode } from "@/wab/shared/model/classes";
 import { getBoundingRect } from "@figma-plugin/helpers";
 import { isString } from "lodash";
 import { Matrix } from "transformation-matrix";
@@ -28,7 +28,7 @@ export function transformToMatrix(transform: Transform): Matrix {
 }
 
 export function rgbToString({ r, g, b }: RGB, a: number = 1): string {
-  return `rgba(${Math.floor(r * 255)}, ${Math.floor(g * 255)}, ${Math.floor(
+  return `rgba(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(
     b * 255
   )}, ${a})`;
 }
