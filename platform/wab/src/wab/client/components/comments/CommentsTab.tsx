@@ -23,7 +23,7 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
 
-export const DEFAULT_NOTIFICATION_LEVEL = "none";
+export const DEFAULT_NOTIFICATION_LEVEL = "mentions-and-replies";
 export const notifyAboutKeyToLabel = {
   all: "All comments",
   "mentions-and-replies": "Replies only",

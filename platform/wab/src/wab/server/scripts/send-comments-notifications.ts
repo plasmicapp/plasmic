@@ -97,12 +97,15 @@ async function processUserForProject(
   project: Project,
   notificationsByUser: UserProjectRecord
 ) {
-  const notificationSettings = await dbManager.tryGetNotificationSettings(
-    user.id,
-    toOpaque(projectId)
-  );
+  const notificationSettings: ApiNotificationSettings =
+    (await dbManager.tryGetNotificationSettings(
+      user.id,
+      toOpaque(projectId)
+    )) || {
+      notifyAbout: "mentions-and-replies",
+    };
 
-  if (!notificationSettings) {
+  if (notificationSettings.notifyAbout === "none") {
     return;
   }
 
