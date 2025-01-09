@@ -15,11 +15,13 @@ import * as childProcess from "child_process";
 import "core-js";
 import * as fs from "fs";
 import http from "http";
+import cron from "node-cron";
 import * as path from "path";
 // Must initialize globals early so that imported code can detect what
 // environment we're running in.
 import { addSocketRoutes } from "@/wab/server/app-socket-backend-real";
 import { Config } from "@/wab/server/config";
+import { sendCommentsNotificationEmails } from "@/wab/server/scripts/send-comments-notifications";
 import httpProxy from "http-proxy";
 
 export async function runAppServer(config: Config) {
@@ -72,6 +74,12 @@ export async function runAppServer(config: Config) {
       }
     }
   );
+
+  // runs every 10 minutes
+  cron.schedule("*/10 * * * *", async () => {
+    await sendCommentsNotificationEmails(config);
+  });
+
   return runExpressApp(app, (server) => {
     // Upon upgrading to websocket, also proxy to socket server
     if (socketProxy) {
