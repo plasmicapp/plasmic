@@ -5,7 +5,7 @@ import get from "dlv";
 import * as qs from "qs";
 import React, { ReactNode } from "react";
 import { useStrapiCredentials } from "./StrapiCredentialsProvider";
-import { modulePath, queryParameters, uniq } from "./utils";
+import { getAttributes, modulePath, queryParameters, uniq } from "./utils";
 
 const makeDataProviderName = (collection: string) =>
   `currentStrapi${pascalCase(collection)}Item`;
@@ -171,11 +171,11 @@ export function StrapiCollection({
 
   const collectionData = get(data.data, ["data"]) as any[];
 
-  const filterFieds = collectionData.flatMap((item: any) => {
-    const attributes = get(item, ["attributes"]);
+  const filterFields = collectionData.flatMap((item: any) => {
+    const attributes = getAttributes(item);
     const displayableFields = Object.keys(attributes).filter((field) => {
       const value = attributes[field];
-      const maybeMime = value?.data?.attributes?.mime;
+      const maybeMime = getAttributes(value?.data)?.mime;
       return (
         typeof value !== "object" ||
         (typeof maybeMime === "string" && maybeMime.startsWith("image"))
@@ -185,7 +185,7 @@ export function StrapiCollection({
   });
 
   setControlContextData?.({
-    strapiFields: uniq(filterFieds ?? []),
+    strapiFields: uniq(filterFields ?? []),
   });
   if (filterParameter && !filterValue && !filterField) {
     return <div>Please specify a Filter Field and a Filter Value</div>;
@@ -218,7 +218,7 @@ export function StrapiCollection({
     ? children
     : collection.map((item, index) => (
         <DataProvider
-          key={item.id}
+          key={item.documentId ?? item.id}
           name={"strapiItem"}
           data={item}
           hidden={true}

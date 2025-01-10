@@ -2,7 +2,7 @@ import { ComponentMeta, useSelector } from "@plasmicapp/host";
 import get from "dlv";
 import React from "react";
 import { useStrapiCredentials } from "./StrapiCredentialsProvider";
-import { modulePath } from "./utils";
+import { getAttributes, modulePath } from "./utils";
 
 interface StrapiFieldProps {
   className?: string;
@@ -41,10 +41,10 @@ export function StrapiField({
   }
 
   // Getting only fields that aren't objects
-  const attributes = get(item, ["attributes"]);
+  const attributes = getAttributes(item);
   const displayableFields = Object.keys(attributes).filter((field) => {
     const value = attributes[field];
-    const maybeMime = get(value, "data.attributes.mime");
+    const maybeMime = getAttributes(value?.data)?.mime;
     return (
       typeof value !== "object" ||
       (typeof maybeMime === "string" && maybeMime.startsWith("image"))
@@ -60,8 +60,8 @@ export function StrapiField({
     return <div>StrapiField must specify a field name.</div>;
   }
 
-  const data = get(item, ["attributes", path]);
-  const maybeMime = data?.data?.attributes?.mime;
+  const data = get(attributes, [path]);
+  const maybeMime = getAttributes(data?.data)?.mime;
 
   setControlContextData?.({
     fields: displayableFields,
@@ -72,7 +72,7 @@ export function StrapiField({
     return <div>Please specify a valid field name.</div>;
   } else if (typeof maybeMime === "string" && maybeMime.startsWith("image")) {
     const creds = useStrapiCredentials();
-    const attrs = data.data.attributes;
+    const attrs = getAttributes(data.data);
     const img_url = attrs.url.startsWith("http")
       ? attrs.url
       : creds.host + attrs.url;

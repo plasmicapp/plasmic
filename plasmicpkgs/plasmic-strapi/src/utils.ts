@@ -44,3 +44,14 @@ export const queryParameters = [
 ];
 
 export const uniq = <T>(xs: Array<T>): T[] => Array.from(new Set(xs));
+
+export const getAttributes = (item: Record<string, any>) => {
+  if (!item) return undefined;
+  // Strapi v4
+  if (item.attributes) {
+    return item.attributes;
+  }
+  // Strapi v5
+  const { documentId, locale, ...rest } = item;
+  return rest;
+};
