@@ -2871,13 +2871,8 @@ export class DbMgr implements MigrationDbMgr {
     this.checkSuperUser();
     return await this._queryTeams({}, false)
       .leftJoin(Permission, "perm", "perm.teamId = t.id")
-      .andWhere(
-        `
-          perm.userId = '${userId}'
-          and
-          perm.deletedAt is null
-        `
-      )
+      .where("perm.userId = :userId", { userId })
+      .andWhere(`perm.deletedAt is null`)
       .getMany();
   }
 
