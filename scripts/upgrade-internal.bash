@@ -9,7 +9,7 @@ cd platform
 # flock: For some reason, yarn --mutex contention can cause yarn install to just quietly abort!
 npx --yes concurrently \
   --kill-others-on-fail \
-  --max-processes 1 \
+  --max-processes 7 \
   --timings \
   --names canvas-packages,host-test,loader-bundle-env,loader-html-hydrate,react-web-bundle,sub,wab \
   'cd canvas-packages && flock /tmp/yarn-mutex yarn --mutex network upgrade --latest --pattern "@plasmic(app|pkgs)/*"' \
