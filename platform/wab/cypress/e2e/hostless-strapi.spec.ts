@@ -7,6 +7,9 @@ describe("hostless-strapi", function () {
     cy.intercept(/restaurants/, {
       fixture: "strapi-restaurants.json",
     });
+    cy.intercept(/restaurants-v5/, {
+      fixture: "strapi-v5-restaurants.json",
+    });
     cy.intercept(/undefined/, {
       fixture: "strapi-error.json",
     });
@@ -53,144 +56,176 @@ describe("hostless-strapi", function () {
     removeCurrentProject();
   });
 
-  it("can put strapi fetcher with strapi field, fetch and show data", function () {
-    // Create hostless plasmic project
-    cy.setupProjectWithHostlessPackages({
-      hostLessPackagesInfo: {
-        name: "plasmic-strapi",
-        npmPkg: ["@plasmicpkgs/plasmic-strapi"],
-      },
-    }).then(() => {
-      cy.withinStudioIframe(() => {
-        // Test the components
-        cy.createNewFrame().then((framed) => {
-          cy.focusFrameRoot(framed);
+  describe("can put strapi fetcher with strapi field, fetch and show data", function () {
+    function runTest(version: 4 | 5) {
+      // Create hostless plasmic project
+      cy.setupProjectWithHostlessPackages({
+        hostLessPackagesInfo: {
+          name: "plasmic-strapi",
+          npmPkg: ["@plasmicpkgs/plasmic-strapi"],
+        },
+      }).then(() => {
+        cy.withinStudioIframe(() => {
+          // Test the components
+          cy.createNewFrame().then((framed) => {
+            cy.focusFrameRoot(framed);
 
-          // Add the StrapiCollection component and verify the initial message
-          cy.insertFromAddDrawer("StrapiCollection");
-          cy.getSelectedElt().should(
-            "contain.text",
-            "Please specify a valid collection."
-          );
-          cy.getSelectedElt().should("be.visible");
-          cy.withinLiveMode(() => {
-            cy.contains("Please specify a valid collection.").should(
-              "be.visible"
+            // Add the StrapiCollection component and verify the initial message
+            cy.insertFromAddDrawer("StrapiCollection");
+            cy.getSelectedElt().should(
+              "contain.text",
+              "Please specify a valid collection."
             );
-          });
+            cy.getSelectedElt().should("be.visible");
+            cy.withinLiveMode(() => {
+              cy.contains("Please specify a valid collection.").should(
+                "be.visible"
+              );
+            });
 
-          // Put the collection name and check the message
-          cy.clickDataPlasmicProp("name");
-          cy.justType("restaurants");
-          cy.justType(`{enter}`);
-          cy.wait(500);
-          cy.getSelectedElt().should(
-            "contain.text",
-            "StrapiField must specify a field name"
-          );
-          cy.getSelectedElt().should("be.visible");
-          cy.withinLiveMode(() => {
-            cy.contains("StrapiField must specify a field name").should(
-              "be.visible"
+            // Put the collection name and check the message
+            cy.clickDataPlasmicProp("name");
+            cy.justType(version === 5 ? "restaurants-v5" : "restaurants");
+            cy.justType(`{enter}`);
+            cy.wait(500);
+            cy.getSelectedElt().should(
+              "contain.text",
+              "StrapiField must specify a field name"
             );
-          });
+            cy.getSelectedElt().should("be.visible");
+            cy.withinLiveMode(() => {
+              cy.contains("StrapiField must specify a field name").should(
+                "be.visible"
+              );
+            });
 
-          // Select 'name' in the field and ensure the data was rendered correctly
-          cy.getSelectedElt()
-            .children()
-            .first()
-            .children()
-            .click({ force: true });
-          cy.selectDataPlasmicProp("path", "name");
-          cy.getSelectedElt().should("contain.text", "Café Coffee Day");
-          cy.getSelectedElt().should("be.visible");
-          cy.withinLiveMode(() => {
-            cy.contains("Café Coffee Day").should("be.visible");
-          });
+            // Select 'name' in the field and ensure the data was rendered correctly
+            cy.getSelectedElt()
+              .children()
+              .first()
+              .children()
+              .click({ force: true });
+            cy.selectDataPlasmicProp("path", "name");
+            cy.getSelectedElt().should("contain.text", "Café Coffee Day");
+            cy.getSelectedElt().should("be.visible");
+            cy.withinLiveMode(() => {
+              cy.contains("Café Coffee Day").should("be.visible");
+            });
 
-          // Change the field to be 'photo' and ensure the image has been rendered correcly
-          cy.selectDataPlasmicProp("path", "photo");
-          cy.focusFrameRoot(framed);
-          cy.getSelectedElt().find("img").should("have.attr", "src");
-          cy.withinLiveMode(() => {
-            cy.get(".plasmic_default__div")
-              .find("img")
-              .should("have.attr", "src");
-          });
+            // Change the field to be 'photo' and ensure the image has been rendered correcly
+            cy.selectDataPlasmicProp("path", "photo");
+            cy.focusFrameRoot(framed);
+            cy.getSelectedElt().find("img").should("have.attr", "src");
+            cy.withinLiveMode(() => {
+              cy.get(".plasmic_default__div")
+                .find("img")
+                .should("have.attr", "src");
+            });
 
-          // Ensure no errors happened
-          cy.checkNoErrors();
+            // Ensure no errors happened
+            cy.checkNoErrors();
+          });
         });
       });
+    }
+
+    it("Strapi v4", function () {
+      runTest(4);
+    });
+    it("Strapi v5", function () {
+      runTest(5);
     });
   });
 
-  it("can use context to data bind", function () {
-    // Create hostless plasmic project
-    cy.setupProjectWithHostlessPackages({
-      hostLessPackagesInfo: {
-        name: "plasmic-strapi",
-        npmPkg: ["@plasmicpkgs/plasmic-strapi"],
-      },
-    }).then(() => {
-      cy.withinStudioIframe(() => {
-        // Test the components
-        cy.createNewFrame().then((framed) => {
-          cy.focusFrameRoot(framed);
+  describe("can use context to data bind", function () {
+    function runTest(version: 4 | 5) {
+      // Create hostless plasmic project
+      cy.setupProjectWithHostlessPackages({
+        hostLessPackagesInfo: {
+          name: "plasmic-strapi",
+          npmPkg: ["@plasmicpkgs/plasmic-strapi"],
+        },
+      }).then(() => {
+        cy.withinStudioIframe(() => {
+          // Test the components
+          cy.createNewFrame().then((framed) => {
+            cy.focusFrameRoot(framed);
 
-          // Add the StrapiCollection component and verify the initial message
-          cy.insertFromAddDrawer("StrapiCollection");
+            // Add the StrapiCollection component and verify the initial message
+            cy.insertFromAddDrawer("StrapiCollection");
 
-          // Put the collection name and check the message
-          cy.clickDataPlasmicProp("name");
-          cy.justType("restaurants");
-          cy.justType(`{enter}`);
-          cy.wait(500);
-          cy.getSelectedElt().should(
-            "contain.text",
-            "StrapiField must specify a field name"
-          );
+            // Put the collection name and check the message
+            cy.clickDataPlasmicProp("name");
+            cy.justType(version === 5 ? "restaurants-v5" : "restaurants");
+            cy.justType(`{enter}`);
+            cy.wait(500);
+            cy.getSelectedElt().should(
+              "contain.text",
+              "StrapiField must specify a field name"
+            );
 
-          // Bind 'name' and 'photo' using context
-          cy.getSelectedElt()
-            .children()
-            .first()
-            .click({ force: true })
-            .justType("{del}");
-          cy.insertFromAddDrawer(VERT_CONTAINER_CAP);
-          cy.insertFromAddDrawer("Text").renameTreeNode("Product Name", {
-            programatically: true,
+            // Bind 'name' and 'photo' using context
+            cy.getSelectedElt()
+              .children()
+              .first()
+              .click({ force: true })
+              .justType("{del}");
+            cy.insertFromAddDrawer(VERT_CONTAINER_CAP);
+            cy.insertFromAddDrawer("Text").renameTreeNode("Product Name", {
+              programatically: true,
+            });
+            cy.get(`[data-test-id="text-content"] label`).rightclick();
+            cy.contains("Use dynamic value").click();
+            cy.selectPathInDataPicker(
+              version === 5
+                ? [
+                    // Strapi version 5 does not nest user data inside attributes field
+                    "currentStrapiRestaurantsV5Item",
+                    "name",
+                  ]
+                : ["currentStrapiRestaurantsItem", "attributes", "name"]
+            );
+
+            cy.insertFromAddDrawer("Image");
+            cy.get(`[data-test-id="image-picker"]`).rightclick();
+            cy.contains("Use dynamic value").click();
+            cy.selectPathInDataPicker(
+              version === 5
+                ? [
+                    // Strapi version 5 does not nest user data inside attributes field
+                    "currentStrapiRestaurantsV5Item",
+                    "photo",
+                    "data",
+                    "url",
+                  ]
+                : [
+                    "currentStrapiRestaurantsItem",
+                    "attributes",
+                    "photo",
+                    "data",
+                    "attributes",
+                    "url",
+                  ]
+            );
+
+            cy.withinLiveMode(() => {
+              cy.contains("Café Coffee Day").should("be.visible");
+              cy.get(".plasmic_default__div")
+                .find("img")
+                .should("have.attr", "src");
+            });
+            // Ensure no errors happened
+            cy.checkNoErrors();
           });
-          cy.get(`[data-test-id="text-content"] label`).rightclick();
-          cy.contains("Use dynamic value").click();
-          cy.selectPathInDataPicker([
-            "currentStrapiRestaurantsItem",
-            "attributes",
-            "name",
-          ]);
-
-          cy.insertFromAddDrawer("Image");
-          cy.get(`[data-test-id="image-picker"]`).rightclick();
-          cy.contains("Use dynamic value").click();
-          cy.selectPathInDataPicker([
-            "currentStrapiRestaurantsItem",
-            "attributes",
-            "photo",
-            "data",
-            "attributes",
-            "url",
-          ]);
-
-          cy.withinLiveMode(() => {
-            cy.contains("Café Coffee Day").should("be.visible");
-            cy.get(".plasmic_default__div")
-              .find("img")
-              .should("have.attr", "src");
-          });
-          // Ensure no errors happened
-          cy.checkNoErrors();
         });
       });
+    }
+
+    it("Strapi v4", function () {
+      runTest(4);
+    });
+    it("Strapi v5", function () {
+      runTest(5);
     });
   });
 });
