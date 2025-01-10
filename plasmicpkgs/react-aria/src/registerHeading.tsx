@@ -17,8 +17,9 @@ export function BaseHeading({ children, ...rest }: HeadingProps) {
   );
 }
 
-export const HEADING_COMPONENT_NAME = makeComponentName("heading");
+const HEADING_COMPONENT_NAME = makeComponentName("heading");
 
+/** @deprecated Use Plasmic's built-in `Text` component instead */
 export function registerHeading(
   loader?: Registerable,
   overrides?: CodeComponentMetaOverrides<typeof BaseHeading>
@@ -28,7 +29,7 @@ export function registerHeading(
     BaseHeading,
     {
       name: HEADING_COMPONENT_NAME,
-      displayName: "Aria Heading",
+      displayName: "Aria Heading (deprecated)",
       importPath: "@plasmicpkgs/react-aria/skinny/registerHeading",
       importName: "BaseHeading",
       defaultStyles: {

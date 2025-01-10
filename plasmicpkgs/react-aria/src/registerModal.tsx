@@ -8,7 +8,6 @@ import { mergeProps } from "react-aria";
 import { Modal, ModalOverlay, ModalOverlayProps } from "react-aria-components";
 import { hasParent } from "./common";
 import { PlasmicDialogTriggerContext } from "./contexts";
-import { HEADING_COMPONENT_NAME } from "./registerHeading";
 import {
   CodeComponentMetaOverrides,
   HasControlContextData,
@@ -102,8 +101,9 @@ export const MODAL_DEFAULT_SLOT_CONTENT: PlasmicElement = {
   },
   children: [
     {
-      type: "component",
-      name: HEADING_COMPONENT_NAME,
+      type: "text",
+      value: "Heading",
+      tag: "h2",
     },
     {
       type: "text",
