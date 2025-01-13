@@ -722,7 +722,7 @@ const withPlasmic = (
   opts: PlasmicRichTextOpts,
   sub: SubDeps
 ) => {
-  const { insertData, insertFragment, insertText, isInline, isVoid } = editor;
+  const { insertFragment, insertText, isInline, isVoid } = editor;
 
   editor.isInline = (element) => {
     if (element.type === "TplTag" || element.type === "TplTagExprText") {
@@ -741,12 +741,17 @@ const withPlasmic = (
   };
 
   editor.insertData = (data) => {
-    if (opts.inline || isInInlineNodeMarker(editor, sub)) {
-      const text = data.getData("text/plain").replace(/[\r\n]+/g, " ");
-      insertText(text);
-    } else {
-      insertData(data);
-    }
+    const text =
+      opts.inline || isInInlineNodeMarker(editor, sub)
+        ? // \s includes all whitespace characters, including line-separators (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#line_terminators)
+          data.getData("text/plain").replace(/[\s]+/g, " ")
+        : // The hidden \u2028 line-separator character is rendered by Slatejs as a space character
+          // so the text on canvas shows space, but the preview mode (which does not use Slatejs) shows the line-separator,
+          // resulting in inconsistency between the two modes.
+          // When pasting text from the clipboard to Slatejs text editor, we need to replace the line-separator (\u2028) character with a newline (\n) character
+          // to ensure that the text in canvas and preview mode is consistent.
+          data.getData("text/plain").replace(/[\u2028]/g, "\n");
+    insertText(text);
   };
 
   editor.insertFragment = (fragment: SlateNode[]) => {
