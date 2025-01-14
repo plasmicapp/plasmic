@@ -2539,7 +2539,7 @@ export class StudioCtx extends WithDbCtx {
     this.isAutoOpenMode = !this.isAutoOpenMode;
   }
 
-  private _showCommentsOverlay = observable.box(false);
+  private _showCommentsOverlay = observable.box(true);
   get showCommentsOverlay() {
     return this._showCommentsOverlay.get();
   }
