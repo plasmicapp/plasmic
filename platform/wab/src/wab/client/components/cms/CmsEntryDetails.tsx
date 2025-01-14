@@ -13,6 +13,8 @@ import {
   renderMaybeLocalizedInput,
 } from "@/wab/client/components/cms/CmsInputs";
 import { isCmsTextLike } from "@/wab/client/components/cms/utils";
+import Button from "@/wab/client/components/widgets/Button";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import { useApi, useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultCmsEntryDetailsProps,
@@ -33,7 +35,15 @@ import { spawn } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { substituteUrlParams } from "@/wab/shared/utils/url-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { Drawer, Form, Menu, message, notification, Tooltip } from "antd";
+import {
+  Drawer,
+  Form,
+  Input,
+  Menu,
+  message,
+  notification,
+  Tooltip,
+} from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { isEqual, isNil, mapValues, pickBy } from "lodash";
 import * as React from "react";
@@ -175,6 +185,9 @@ function CmsEntryDetailsForm_(
   const [hasUnpublishedChanges, setHasUnpublishedChanges] = React.useState(
     !!row?.draftData
   );
+  const [showCopyModal, setShowCopyModal] = React.useState(false);
+  const [inputCopyIdentifier, setInputCopyIdentifier] = React.useState("");
+
   const [revision, setRevision] = React.useState(row.revision);
   const [inConflict, setInConflict] = React.useState(false);
   const mutateRow_ = useMutateRow();
@@ -572,16 +585,25 @@ function CmsEntryDetailsForm_(
                             content: "Reverted.",
                           });
                         }}
-                        disabled={isSaving || isPublishing}
+                        disabled={isSaving}
                       >
                         <Tooltip title="Reverts draft data to previously-published data">
                           <span>Revert to published entry</span>
                         </Tooltip>
                       </Menu.Item>
                     )}
-                    <Menu.Divider />
                   </>
                 )}
+                <Menu.Item
+                  key="copy"
+                  onClick={() => {
+                    setInputCopyIdentifier(row.identifier ? `Copy of ${row.identifier}` : "");
+                    setShowCopyModal(true);
+                  }}
+                  disabled={isSaving || isPublishing}
+                >
+                  <span>Duplicate entry</span>
+                </Menu.Item>
                 <Menu.Item
                   key="delete"
                   onClick={async () => {
@@ -632,6 +654,72 @@ function CmsEntryDetailsForm_(
           }}
         />
       </Form>
+      {showCopyModal && (
+        <Modal
+          title="Duplicate CMS entry"
+          footer={null}
+          open={true}
+          onCancel={() => setShowCopyModal(false)}
+        >
+          <Form.Item name="copyIdentifier">
+            <span>
+              {`Duplicate the CMS entry with identifier "${row.identifier}"?`}
+              <br />
+              {`This will create an unpublished copy of the entry and all its data.`}
+            </span>
+            <Input
+              defaultValue={inputCopyIdentifier}
+              onChange={(e) => setInputCopyIdentifier(e.target.value)}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              onClick={async (e) => {
+                e.currentTarget.disabled = true;
+                await message.loading({
+                  key: "copy-message",
+                  content: `Duplicating CMS entry "${
+                    row.identifier ? row.identifier : "Untitled"
+                  }"...`,
+                });
+                const copiedRow = await api.copyCmsRow(row.id, {
+                  identifier: inputCopyIdentifier,
+                });
+                if (copiedRow) {
+                  setShowCopyModal(false);
+                  await message.success({
+                    key: "copy-message",
+                    content: (
+                      <>
+                        {`A duplicate of CMS entry
+                          "${
+                            copiedRow.identifier
+                              ? copiedRow.identifier
+                              : "Untitled"
+                          }"
+                          has been created.`}
+                        <br />
+                        {`You are now viewing the duplicated entry.`}
+                      </>
+                    ),
+                  });
+                  history.push(
+                    UU.cmsEntry.fill({
+                      databaseId: database.id,
+                      tableId: table.id,
+                      rowId: copiedRow.id,
+                    })
+                  );
+                }
+              }}
+            >
+              Copy
+            </Button>
+            <Button onClick={() => setShowCopyModal(false)}>Cancel</Button>
+          </Form.Item>
+        </Modal>
+      )}
     </>
   );
 }

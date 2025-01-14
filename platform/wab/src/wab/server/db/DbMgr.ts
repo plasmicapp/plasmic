@@ -7342,6 +7342,22 @@ export class DbMgr implements MigrationDbMgr {
     await this.entMgr.save(row);
   }
 
+  async copyCmsRow(
+    tableId: CmsTableId,
+    rowId: CmsRowId,
+    opts: {
+      identifier?: string;
+    }
+  ) {
+    await this.checkCmsRowPerms(rowId, "content");
+    const row = await this.getCmsRowById(rowId);
+    const copiedRow = await this.createCmsRow(tableId, {
+      identifier: opts.identifier || undefined,
+      draftData: row.draftData || row.data,
+    });
+    return await this.entMgr.save(copiedRow);
+  }
+
   // TODO We are always querying just the default locale.
   async queryCmsRows(
     tableId: CmsTableId,
