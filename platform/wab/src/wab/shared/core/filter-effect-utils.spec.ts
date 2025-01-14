@@ -54,11 +54,11 @@ describe("fromFilterStringToObj", () => {
 
   it("should parse a filter string with CSS variable as an argument", () => {
     const result = fromFilterStringToObj(
-      "drop-shadow(10px 10px 10px var(--token-color))"
+      "drop-shadow(10px 10px 10px var(--token-c0_lor))"
     );
     expect(result).toEqual({
       type: "drop-shadow",
-      args: ["10px", "10px", "10px", "var(--token-color)"],
+      args: ["10px", "10px", "10px", "var(--token-c0_lor)"],
       visible: true,
     });
   });
