@@ -37,6 +37,7 @@ import {
   isBaseRuleVariant,
   isBaseVariant,
   isCodeComponentVariant,
+  isMaybeInteractiveStyleOrCodeComponentVariant,
   isScreenVariant,
   isStyleOrCodeComponentVariant,
   isStyleVariant,
@@ -1720,10 +1721,13 @@ export function makeBaseRuleNamer(
  */
 export function makePseudoClassAwareRuleNamer(
   component: Component,
-  ruleNamer: RuleNamer
+  ruleNamer: RuleNamer,
+  opts?: {
+    onlyNonInteractivePseudoClasses?: boolean;
+  }
 ): RuleNamer {
   const namer = (tpl: TplNode, vs: VariantSetting) =>
-    showPseudoClassSelector(component, tpl, vs, ruleNamer);
+    showPseudoClassSelector(component, tpl, vs, ruleNamer, opts);
   namer.classNamer = ruleNamer.classNamer;
   return namer;
 }
@@ -1741,11 +1745,21 @@ function showPseudoClassSelector(
   component: Component,
   tpl: TplNode,
   vs: VariantSetting,
-  ruleNamer: RuleNamer
+  ruleNamer: RuleNamer,
+  opts?: {
+    onlyNonInteractivePseudoClasses?: boolean;
+  }
 ) {
-  // We don't need to deal with screen variants, as they are dealt with via
-  // media query in the generated css
-  const variants = vs.variants.filter((v) => !isScreenVariant(v));
+  const variants = vs.variants
+    // We don't need to deal with screen variants, as they are dealt with via
+    // media query in the generated css
+    .filter((v) => !isScreenVariant(v))
+    .filter((v) => {
+      const isNonInteractive =
+        !isMaybeInteractiveStyleOrCodeComponentVariant(v);
+      return opts?.onlyNonInteractivePseudoClasses ? isNonInteractive : true;
+    });
+
   const [
     privateStyleVariants,
     styleVariants,
@@ -1831,10 +1845,10 @@ function showPseudoClassSelector(
   };
 
   if (isRoot) {
-    const styleOrCodeComponentVariants = vs.variants.filter(
+    const styleOrCodeComponentVariants = variants.filter(
       isStyleOrCodeComponentVariant
     );
-    const baseRuleVariants = getBaseRuleVariants(vs.variants);
+    const baseRuleVariants = getBaseRuleVariants(variants);
     const baseRuleVs = ensure(
       tryGetVariantSetting(root, baseRuleVariants),
       () =>
@@ -2659,9 +2673,15 @@ export function makeCanvasRuleNamers(component: Component) {
   const baseRuleNamer = makeBaseRuleNamer(classNamer);
   return {
     interactive: makePseudoElementAwareRuleNamer(
-      makePseudoClassAwareRuleNamer(component, baseRuleNamer)
+      makePseudoClassAwareRuleNamer(component, baseRuleNamer, {
+        onlyNonInteractivePseudoClasses: false,
+      })
     ),
-    nonInteractive: makePseudoElementAwareRuleNamer(baseRuleNamer),
+    nonInteractive: makePseudoElementAwareRuleNamer(
+      makePseudoClassAwareRuleNamer(component, baseRuleNamer, {
+        onlyNonInteractivePseudoClasses: true,
+      })
+    ),
   };
 }
 
@@ -2711,7 +2731,15 @@ export function genCanvasRules(
       // canvas is in interactive mode
       onlyInteractiveCanvasPseudoClasses: true,
     }
-  );
+  )
+    // Remove repeated rules
+    .filter(
+      (rule) =>
+        !nonInteractiveRuleSet.includes(
+          rule.replace(".__interactive_canvas ", "")
+        )
+    );
+
   return [...nonInteractiveRuleSet, ...interactiveRuleSet];
 }
 

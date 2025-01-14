@@ -244,8 +244,21 @@ export type StyleVariant = ComponentStyleVariant | PrivateStyleVariant;
 
 export type StyleOrCodeComponentVariant = CodeComponentVariant | StyleVariant;
 
+const hasInteractiveSelector = (key) =>
+  ["hover", "focus", "press", "active"].some((keyword) =>
+    key.toLowerCase().includes(keyword)
+  );
+
 export function isStyleVariant(variant: Variant): variant is StyleVariant {
   return !!variant.selectors;
+}
+
+export function isMaybeInteractiveStyleVariant(
+  variant: Variant
+): variant is StyleVariant {
+  return (
+    isStyleVariant(variant) && variant.selectors.some(hasInteractiveSelector)
+  );
 }
 
 export function isCodeComponentVariant(
@@ -260,15 +273,21 @@ export function isStyleOrCodeComponentVariant(
   return isStyleVariant(variant) || isCodeComponentVariant(variant);
 }
 
+export function isMaybeInteractiveStyleOrCodeComponentVariant(
+  variant: Variant
+): variant is StyleOrCodeComponentVariant {
+  return (
+    isMaybeInteractiveStyleVariant(variant) ||
+    isMaybeInteractiveCodeComponentVariant(variant)
+  );
+}
+
 export function isMaybeInteractiveCodeComponentVariant(
-  variant: CodeComponentVariant
-): boolean {
-  const interactionKeywords = ["hover", "focus", "press"];
+  variant: Variant
+): variant is CodeComponentVariant {
   return (
     isCodeComponentVariant(variant) &&
-    variant.codeComponentVariantKeys.some((key) =>
-      interactionKeywords.some((keyword) => key.toLowerCase().includes(keyword))
-    )
+    variant.codeComponentVariantKeys.some(hasInteractiveSelector)
   );
 }
 
