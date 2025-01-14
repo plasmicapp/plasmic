@@ -61,6 +61,7 @@ import {
 import {
   cloneDatabase,
   cmsFileUpload,
+  copyRow,
   createDatabase,
   createRows,
   createTable,
@@ -826,6 +827,8 @@ export function addCmsEditorRoutes(app: express.Application) {
   app.get("/api/v1/cmse/rows/:rowId/revisions", withNext(listRowRevisions));
   app.put("/api/v1/cmse/rows/:rowId", withNext(updateRow));
   app.delete("/api/v1/cmse/rows/:rowId", withNext(deleteRow));
+  // Hyuna
+  app.post("/api/v1/cmse/rows/:rowId/copy", withNext(copyRow));
   app.get("/api/v1/cmse/row-revisions/:revId", withNext(getRowRevision));
 
   app.post(

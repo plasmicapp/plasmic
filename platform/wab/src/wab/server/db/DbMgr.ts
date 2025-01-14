@@ -274,6 +274,7 @@ import {
   UpdateResult,
 } from "typeorm";
 import * as uuid from "uuid";
+// Hyuna
 
 import { getLowestCommonAncestor } from "@/wab/shared/site-diffs/commit-graph";
 
@@ -7340,6 +7341,26 @@ export class DbMgr implements MigrationDbMgr {
     const row = await this.getCmsRowById(rowId);
     Object.assign(row, this.stampDelete());
     await this.entMgr.save(row);
+  }
+
+  // Hyuna
+  async copyCmsRow(
+    tableId: CmsTableId,
+    rowId: CmsRowId,
+    opts: {
+      identifier?: string;
+      data?: Dict<Dict<unknown>>;
+      draftData?: Dict<Dict<unknown>> | null;
+    }
+  ) {
+    await this.checkCmsRowPerms(rowId, "content");
+    const row = await this.getCmsRowById(rowId);
+    opts = {
+      identifier: opts.identifier !== "" ? opts.identifier : undefined,
+      draftData: row.draftData || row.data,
+    };
+    const copiedRow = await this.createCmsRow(tableId, opts);
+    return await this.entMgr.save(copiedRow);
   }
 
   // TODO We are always querying just the default locale.

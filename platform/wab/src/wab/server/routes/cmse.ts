@@ -269,6 +269,27 @@ export async function deleteRow(req: Request, res: Response) {
   res.json({});
 }
 
+// Hyuna
+export async function copyRow(req: Request, res: Response) {
+  const mgr = userDbMgr(req);
+  const row = await mgr.getCmsRowById(req.params.rowId as CmsRowId);
+  userAnalytics(req).track({
+    event: "Copy cms row",
+    properties: {
+      rowId: row.id as CmsRowId,
+      tableId: row.tableId,
+      tableName: row.table?.name,
+      databaseId: row.table?.databaseId,
+    },
+  });
+  const copiedRow = await mgr.copyCmsRow(
+    row.tableId as CmsTableId,
+    req.params.rowId as CmsRowId,
+    req.body
+  );
+  res.json(copiedRow);
+}
+
 export async function updateRow(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const row = await mgr.updateCmsRow(req.params.rowId as CmsRowId, req.body);
