@@ -3314,10 +3314,10 @@
     change-case "^4.1.2"
     dlv "^1.1.3"
 
-"@plasmicpkgs/plasmic-strapi@^0.1.156":
-  version "0.1.156"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-strapi/-/plasmic-strapi-0.1.156.tgz#33b3bd945ce3280e41f456ad33dd0911016efda2"
-  integrity sha512-ZL3RABN8uoAAnANXhI3eMcW4c+gl0U8jGqrcMSIpHp5Jm3JhCZDXxWnnB8kxvyTiTE1XdxpfKL584M4Ojffq5w==
+"@plasmicpkgs/plasmic-strapi@^0.1.158":
+  version "0.1.158"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-strapi/-/plasmic-strapi-0.1.158.tgz#7959a1c70b9b1e2b24e91a32eb905431dca6cd7c"
+  integrity sha512-xAGxi8+J8PUmZRa65JcPbl9IUCTtKEx2Q/nnOS5k9xTV5xSn38OAF+CT9SkKGymwrZhFT9wXUSprD8i/EPWUjg==
   dependencies:
     "@types/dlv" "^1.1.2"
     change-case "^4.1.2"
@@ -3365,10 +3365,10 @@
     lucide-react "^0.279.0"
     remeda "^1.27.0"
 
-"@plasmicpkgs/react-aria@^0.0.99":
-  version "0.0.99"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.99.tgz#3d382b24f172952f6cec5abf1b0dbff97ca356bf"
-  integrity sha512-d4cUnHckJ07v930RybEOxhkcr10E2ylCgmWYwF8GAu0YV/CEsfAOl6vuhOdUxjZG4Fcas1wr4+gmaxX7Y4ebnA==
+"@plasmicpkgs/react-aria@^0.0.100":
+  version "0.0.100"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.100.tgz#fcb773ae9360968cf7ebf312285d79c0a15c8c36"
+  integrity sha512-9ZrF7x97/ko90T29c2bB16f8CvDNuYosmoSAAO/L7aJmlh+AO8fZPc861gB36XcQQKYRC1n6bso99QCdnOOW+Q==
   dependencies:
     "@react-aria/i18n" "^3.11.0"
     "@react-aria/utils" "^3.24.0"
