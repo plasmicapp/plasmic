@@ -16,7 +16,7 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import { AnyArena } from "@/wab/shared/Arenas";
-import { ensure, ensureString, xGroupBy } from "@/wab/shared/common";
+import { ensure, ensureString } from "@/wab/shared/common";
 import { isTplVariantable } from "@/wab/shared/core/tpls";
 import { ArenaFrame, ObjInst, TplNode } from "@/wab/shared/model/classes";
 import { mkSemVerSiteElement } from "@/wab/shared/site-diffs";
@@ -141,7 +141,7 @@ export const CanvasCommentMarkers = observer(function CanvasCommentMarkers({
 }) {
   const studioCtx = useStudioCtx();
 
-  const { allComments } = useCommentsCtx();
+  const { threads } = useCommentsCtx();
 
   const viewCtx = studioCtx.tryGetViewCtxForFrame(arenaFrame);
 
@@ -151,16 +151,18 @@ export const CanvasCommentMarkers = observer(function CanvasCommentMarkers({
     return null;
   }
 
-  const commentsForFrame = xGroupBy(
-    allComments.filter((comment) =>
-      isCommentForFrame(studioCtx, viewCtx, comment)
-    ),
-    (comment) => comment.threadId
+  const threadsForFrame = new Map(
+    Array.from(threads.entries()).filter(
+      ([_threadId, comments]) =>
+        isCommentForFrame(studioCtx, viewCtx, comments[0]) &&
+        // only display unresolved comments
+        !comments[0].resolved
+    )
   );
 
   return (
     <>
-      {[...commentsForFrame.values()].map((threadComments) => (
+      {[...threadsForFrame.values()].map((threadComments) => (
         <CanvasCommentMarker
           key={threadComments[0].threadId}
           threadComments={threadComments}
