@@ -6,12 +6,12 @@ import {
   SelectStateContext,
   SelectValue,
 } from "react-aria-components";
-import { arrowDown, COMMON_STYLES, getCommonProps } from "./common";
-import { OptionsItemIdManager } from "./OptionsItemIdManager";
+import { COMMON_STYLES, arrowDown, getCommonProps } from "./common";
 import {
   PlasmicListBoxContext,
   PlasmicPopoverTriggerContext,
 } from "./contexts";
+import { OptionsItemIdManager } from "./OptionsItemIdManager";
 import { BUTTON_COMPONENT_NAME } from "./registerButton";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { LIST_BOX_COMPONENT_NAME } from "./registerListBox";
@@ -61,12 +61,11 @@ function SelectAutoOpen(props: any) {
 
 export interface BaseSelectValueProps
   extends React.ComponentProps<typeof SelectValue> {
-  customize?: boolean;
+  children: React.ReactNode;
 }
 
 export const BaseSelectValue = (props: BaseSelectValueProps) => {
-  const { children, customize, className } = props;
-  const placeholder = customize ? children : "Select an item";
+  const { children: placeholder, className } = props;
   return (
     <SelectValue className={className} style={COMMON_STYLES}>
       {({ isPlaceholder, selectedText }) => (
@@ -175,11 +174,14 @@ export function registerSelect(loader?: Registerable) {
     importName: "BaseSelectValue",
     parentComponentName: SELECT_NAME,
     props: {
+      /** @deprecated use children (Placeholder) directly */
       customize: {
         type: "boolean",
         displayName: "Customize placeholder",
         defaultValue: true,
         description: "Customize the placeholder text and styles",
+        /** Obsolete, but retained (permanently hidden) for backward compatibility.  */
+        hidden: () => true,
       },
       children: {
         type: "slot",
@@ -190,7 +192,6 @@ export function registerSelect(loader?: Registerable) {
             value: "Select an item",
           },
         ],
-        hidden: (props) => !props.customize,
       },
     },
     trapsFocus: true,
