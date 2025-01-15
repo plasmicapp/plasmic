@@ -1,7 +1,7 @@
 import CommentPost from "@/wab/client/components/comments/CommentPost";
 import { TplComment } from "@/wab/client/components/comments/utils";
-import { CommentThreadId } from "@/wab/shared/ApiSchema";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { CommentThreadId } from "@/wab/shared/ApiSchema";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -21,6 +21,7 @@ export default observer(function RootComment({
       comment={comment}
       subjectLabel={comment.label}
       isThread
+      isRootComment
       repliesLinkLabel={
         threadComments.length > 1
           ? `${threadComments.length - 1} replies`

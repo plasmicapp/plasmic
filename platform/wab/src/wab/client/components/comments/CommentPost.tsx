@@ -33,6 +33,7 @@ export interface CommentPostProps extends DefaultCommentPostProps {
   repliesLinkLabel?: React.ReactNode;
   onClick?: () => void;
   isThread?: boolean;
+  isRootComment?: boolean;
 }
 
 // Reactions using unicode emojis hex codes
@@ -105,8 +106,9 @@ function ReactionsByEmoji(props: {
 function CommentMenuOptions(props: {
   comment: TplComment;
   isThread?: boolean;
+  isRootComment?: boolean;
 }) {
-  const { comment, isThread } = props;
+  const { comment, isThread, isRootComment = false } = props;
 
   const studioCtx = useStudioCtx();
   const appCtx = useAppCtx();
@@ -128,19 +130,22 @@ function CommentMenuOptions(props: {
 
   return (
     <Menu>
-      <Menu.Item
-        key="change-status"
-        disabled={
-          !(isContentEditor || appCtx.selfInfo?.id === comment.createdById)
-        }
-        onClick={async () => {
-          await api.editComment(projectId, branchId, comment.id, {
-            resolved: !comment.resolved,
-          });
-        }}
-      >
-        Mark as {comment.resolved ? "unresolved" : "resolved"}
-      </Menu.Item>
+      {isRootComment && (
+        <Menu.Item
+          key="change-status"
+          disabled={
+            !(isContentEditor || appCtx.selfInfo?.id === comment.createdById)
+          }
+          onClick={async () => {
+            await api.editComment(projectId, branchId, comment.id, {
+              resolved: !comment.resolved,
+            });
+          }}
+        >
+          Mark as {comment.resolved ? "unresolved" : "resolved"}
+        </Menu.Item>
+      )}
+
       <Menu.Item
         key="remove"
         disabled={!(isOwner || appCtx.selfInfo?.id === comment.createdById)}
@@ -163,7 +168,14 @@ function CommentMenuOptions(props: {
 }
 
 function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
-  const { comment, subjectLabel, repliesLinkLabel, isThread, ...rest } = props;
+  const {
+    comment,
+    subjectLabel,
+    repliesLinkLabel,
+    isThread,
+    isRootComment = false,
+    ...rest
+  } = props;
 
   const appCtx = useAppCtx();
   const api = appCtx.api;
@@ -263,7 +275,13 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
       btnMore={{
         wrap: (node) => <ClickStopper preventDefault>{node}</ClickStopper>,
         props: {
-          menu: <CommentMenuOptions comment={comment} isThread={isThread} />,
+          menu: (
+            <CommentMenuOptions
+              comment={comment}
+              isThread={isThread}
+              isRootComment={isRootComment}
+            />
+          ),
         },
       }}
     />

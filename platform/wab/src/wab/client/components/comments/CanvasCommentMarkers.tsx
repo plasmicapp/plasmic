@@ -115,6 +115,7 @@ function CanvasCommentMarker(props: {
           comment={comment}
           subjectLabel={<ObjInstLabel subject={subject} />}
           isThread
+          isRootComment
           repliesLinkLabel={
             threadComments.length > 1
               ? `${threadComments.length - 1} replies`

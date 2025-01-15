@@ -27,8 +27,14 @@ function ThreadComments_(
       root={{ ref }}
       {...rest}
       commentsList={{
-        children: comments.map((comment) => {
-          return <CommentPost key={comment.id} comment={comment} />;
+        children: comments.map((comment, index) => {
+          return (
+            <CommentPost
+              key={comment.id}
+              comment={comment}
+              isRootComment={index === 0}
+            />
+          );
         }),
       }}
       replyForm={{
