@@ -202,7 +202,13 @@ export interface ExportOpts {
   targetEnv: TargetEnv;
 }
 
-export type TargetEnv = "loader" | "preview" | "codegen" | "canvas";
+export type TargetEnv =
+  | "loader"
+  | "preview"
+  | "codegen"
+  | "canvas"
+  | "canvas-interactive"
+  | "canvas-non-interactive";
 
 export interface StyleConfig {
   defaultStyleCssFileName: string;

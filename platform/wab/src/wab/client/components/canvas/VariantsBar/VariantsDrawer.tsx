@@ -20,7 +20,6 @@ import {
   isCodeComponentVariant,
   isComponentStyleVariant,
   isGlobalVariant,
-  isMaybeInteractiveStyleVariant,
   isPrivateStyleVariant,
   isScreenVariant,
   isStandaloneVariantGroup,
@@ -355,9 +354,7 @@ function useGroupedVariants(
               <Icon icon={PlasmicIcon__Bolt} />
             </>
           ),
-          variants: shouldShowInteractions
-            ? privateStyleVariants.filter(isMaybeInteractiveStyleVariant)
-            : [],
+          variants: shouldShowInteractions ? privateStyleVariants : [],
         },
         {
           withDivider: true,

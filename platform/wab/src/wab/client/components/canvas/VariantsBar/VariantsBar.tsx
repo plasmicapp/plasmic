@@ -11,17 +11,22 @@ import { plasmicCanvasTransformEvent } from "@/wab/client/definitions/events";
 import PlasmicVariantsBar from "@/wab/client/plasmic/plasmic_kit_variants_bar/PlasmicVariantsBar";
 import { StudioCtx, usePlasmicCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure } from "@/wab/shared/common";
 import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
+import { isDedicatedArena, isMixedArena } from "@/wab/shared/Arenas";
+import { ensure } from "@/wab/shared/common";
 import {
   getSuperComponentVariantGroupToComponent,
   isFrameComponent,
 } from "@/wab/shared/core/components";
 import { Box } from "@/wab/shared/geom";
-import { isDedicatedArena, isMixedArena } from "@/wab/shared/Arenas";
 import { isKnownArenaFrame, Variant } from "@/wab/shared/model/classes";
 import { withoutIrrelevantScreenVariants } from "@/wab/shared/PinManager";
-import { getAllVariantsForTpl, isScreenVariant } from "@/wab/shared/Variants";
+import {
+  getAllVariantsForTpl,
+  isMaybeInteractiveStyleVariant,
+  isPrivateStyleVariant,
+  isScreenVariant,
+} from "@/wab/shared/Variants";
 import { Dropdown } from "antd";
 import defer from "lodash/defer";
 import last from "lodash/lodash";
@@ -259,16 +264,21 @@ export const VariantsBar = observer(function VariantsBar_({
     component: viewCtx.currentComponent(),
     tpl: viewCtx.focusedTpl(),
     site: viewCtx.site,
-  }).filter(
-    // We do not show screen variants in the drawer in dedicated arenas
-    // when in spotlight mode.
-    (v) =>
-      !(
-        isScreenVariant(v) &&
-        spotlightInfo.shouldRender &&
-        isDedicatedArena(studioCtx.currentArena)
-      )
-  );
+  })
+    .filter(
+      // We do not show screen variants in the drawer in dedicated arenas
+      // when in spotlight mode.
+      (v) =>
+        !(
+          isScreenVariant(v) &&
+          spotlightInfo.shouldRender &&
+          isDedicatedArena(studioCtx.currentArena)
+        )
+    )
+    // We do not show non-interactive style variants in the drawer, because they are already shown on the canvas
+    .filter(
+      (v) => !isPrivateStyleVariant(v) || isMaybeInteractiveStyleVariant(v)
+    );
 
   if (allAvailableVariants.length === 0) {
     return null;

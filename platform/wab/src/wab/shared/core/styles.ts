@@ -1313,7 +1313,6 @@ export const showSimpleCssRuleSet = (
   opts: {
     targetEnv: TargetEnv;
     useCssModules?: boolean;
-    onlyInteractiveCanvasPseudoClasses?: boolean;
     whitespaceNormal?: boolean;
     useCssFlexGap?: boolean;
   }
@@ -1325,7 +1324,7 @@ export const showSimpleCssRuleSet = (
 
   let ruleName = ruleNamer(tpl, vs);
 
-  if (isStudio && opts.onlyInteractiveCanvasPseudoClasses) {
+  if (isStudio && opts.targetEnv === "canvas-interactive") {
     if (!ruleName.includes(":")) {
       return [];
     } else {
@@ -1723,7 +1722,7 @@ export function makePseudoClassAwareRuleNamer(
   component: Component,
   ruleNamer: RuleNamer,
   opts?: {
-    onlyNonInteractivePseudoClasses?: boolean;
+    targetEnv?: TargetEnv;
   }
 ): RuleNamer {
   const namer = (tpl: TplNode, vs: VariantSetting) =>
@@ -1747,7 +1746,7 @@ function showPseudoClassSelector(
   vs: VariantSetting,
   ruleNamer: RuleNamer,
   opts?: {
-    onlyNonInteractivePseudoClasses?: boolean;
+    targetEnv?: TargetEnv;
   }
 ) {
   const variants = vs.variants
@@ -1755,9 +1754,16 @@ function showPseudoClassSelector(
     // media query in the generated css
     .filter((v) => !isScreenVariant(v))
     .filter((v) => {
-      const isNonInteractive =
-        !isMaybeInteractiveStyleOrCodeComponentVariant(v);
-      return opts?.onlyNonInteractivePseudoClasses ? isNonInteractive : true;
+      if (!isStyleOrCodeComponentVariant(v)) {
+        return true;
+      }
+      if (opts?.targetEnv === "canvas-interactive") {
+        return isMaybeInteractiveStyleOrCodeComponentVariant(v);
+      }
+      if (opts?.targetEnv === "canvas-non-interactive") {
+        return !isMaybeInteractiveStyleOrCodeComponentVariant(v);
+      }
+      return true;
     });
 
   const [
@@ -2674,12 +2680,12 @@ export function makeCanvasRuleNamers(component: Component) {
   return {
     interactive: makePseudoElementAwareRuleNamer(
       makePseudoClassAwareRuleNamer(component, baseRuleNamer, {
-        onlyNonInteractivePseudoClasses: false,
+        targetEnv: "canvas-interactive",
       })
     ),
     nonInteractive: makePseudoElementAwareRuleNamer(
       makePseudoClassAwareRuleNamer(component, baseRuleNamer, {
-        onlyNonInteractivePseudoClasses: true,
+        targetEnv: "canvas-non-interactive",
       })
     ),
   };
@@ -2714,9 +2720,8 @@ export function genCanvasRules(
     vs,
     ruleNamers.nonInteractive,
     {
-      targetEnv: "canvas",
+      targetEnv: "canvas-non-interactive",
       useCssModules: false,
-      onlyInteractiveCanvasPseudoClasses: false,
     }
   );
   const interactiveRuleSet = showSimpleCssRuleSet(
@@ -2725,20 +2730,12 @@ export function genCanvasRules(
     vs,
     ruleNamers.interactive,
     {
-      targetEnv: "canvas",
-      useCssModules: false,
-      // We will generate the interactive pseudo classes but they only can be activated if the
+      // We will generate the interactivepseudo classes but they only can be activated if the
       // canvas is in interactive mode
-      onlyInteractiveCanvasPseudoClasses: true,
+      targetEnv: "canvas-interactive",
+      useCssModules: false,
     }
-  )
-    // Remove repeated rules
-    .filter(
-      (rule) =>
-        !nonInteractiveRuleSet.includes(
-          rule.replace(".__interactive_canvas ", "")
-        )
-    );
+  );
 
   return [...nonInteractiveRuleSet, ...interactiveRuleSet];
 }
