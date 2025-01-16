@@ -605,7 +605,43 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
 
   if (isTplVariantable(tpl)) {
     // Check that variants referenced by vsettings are all valid
+    const seenVariantsCombo: Set<string> = new Set();
     for (const vs of tpl.vsettings) {
+      const variantKeys = vs.variants
+        .map((v) => {
+          if (v.name) {
+            return `${v.parent?.uid}:${v.name}`;
+          }
+
+          if (v.selectors?.length) {
+            const sortedSelectors = v.selectors.slice().sort();
+            return sortedSelectors.join("|");
+          }
+
+          if (v.codeComponentVariantKeys?.length) {
+            const sortedCodeComponentVariantKeys = v.codeComponentVariantKeys
+              .slice()
+              .sort();
+            return sortedCodeComponentVariantKeys.join("|");
+          }
+
+          return "";
+        })
+        .filter((v) => !!v)
+        .sort();
+
+      const combinationKey = variantKeys.join("|");
+
+      if (seenVariantsCombo.has(combinationKey)) {
+        Sentry.captureException(
+          new InvariantError(
+            `${tplName} contains duplicate variant combo ${combinationKey}`
+          )
+        );
+      } else {
+        seenVariantsCombo.add(combinationKey);
+      }
+
       const [globals, locals] = splitVariantCombo(vs.variants);
       for (const variant of globals) {
         if (!getGlobalVariants(site).includes(variant)) {
