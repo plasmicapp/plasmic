@@ -194,7 +194,9 @@ export const CanvasCommentOverlay = observer(function CanvasCommentOverlay({
     isTplVariantable(tpl) &&
     viewCtx.variantTplMgr().isTargetingNonBaseVariant(tpl);
 
-  const [valNode, doms] = viewCtx.maybeDomsForTpl(tpl);
+  const [valNode, doms] = viewCtx.maybeDomsForTpl(tpl, {
+    ignoreFocusedCloneKey: true,
+  });
 
   const $elt = $(doms ?? []);
 

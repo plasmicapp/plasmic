@@ -260,7 +260,9 @@ export class ViewCtx extends WithDbCtx {
     return this._xFocusedCloneKeys.get();
   }
   private set _focusedCloneKeys(cloneKeys: (string | undefined)[]) {
-    this._xFocusedCloneKeys.set(cloneKeys);
+    if (!arrayEq(this._xFocusedCloneKeys.get(), cloneKeys)) {
+      this._xFocusedCloneKeys.set(cloneKeys);
+    }
   }
   /**
    * @deprecated Use {@link focusedCloneKeys} to handle multi-selection.
@@ -672,7 +674,9 @@ export class ViewCtx extends WithDbCtx {
 
     mobx.runInAction(() => {
       if (x != null) {
-        const [valNode, doms] = this.maybeDomsForTpl(x, anchorCloneKey);
+        const [valNode, doms] = this.maybeDomsForTpl(x, {
+          anchorCloneKey,
+        });
 
         if (opts.appendToMultiSelection) {
           let maybeIdxToDelete: number | undefined = undefined;
@@ -724,15 +728,19 @@ export class ViewCtx extends WithDbCtx {
     });
   }
 
-  maybeDomsForTpl = (tpl: TplNode, cloneKey?: string) => {
-    const valNodes = this.maybeTpl2ValsInContext(tpl, {
-      anchorCloneKey: cloneKey,
-    });
+  maybeDomsForTpl = (
+    tpl: TplNode,
+    opts: {
+      anchorCloneKey?: string;
+      ignoreFocusedCloneKey?: boolean;
+    }
+  ) => {
+    const valNodes = this.maybeTpl2ValsInContext(tpl, opts);
     const valNode = valNodes.length > 0 ? valNodes[0] : null;
     return tuple(
       valNode,
       valNode
-        ? this.renderState.sel2dom(valNode, this.canvasCtx, cloneKey)
+        ? this.renderState.sel2dom(valNode, this.canvasCtx, opts.anchorCloneKey)
         : null
     );
   };
@@ -742,6 +750,7 @@ export class ViewCtx extends WithDbCtx {
     opts?: {
       allowAnyContext?: boolean;
       anchorCloneKey?: string;
+      ignoreFocusedCloneKey?: boolean;
     }
   ) {
     if (!this.valState().maybeValSysRoot()) {
@@ -750,7 +759,8 @@ export class ViewCtx extends WithDbCtx {
     const vals = withoutNils([
       this.renderState.tpl2bestVal(
         x,
-        opts?.anchorCloneKey ?? this.focusedCloneKey()
+        opts?.anchorCloneKey ??
+          (!opts?.ignoreFocusedCloneKey ? this.focusedCloneKey() : undefined)
       ),
     ]);
     if (!vals) {
