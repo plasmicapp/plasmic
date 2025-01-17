@@ -21,12 +21,7 @@ import {
 import { Box } from "@/wab/shared/geom";
 import { isKnownArenaFrame, Variant } from "@/wab/shared/model/classes";
 import { withoutIrrelevantScreenVariants } from "@/wab/shared/PinManager";
-import {
-  getAllVariantsForTpl,
-  isMaybeInteractiveStyleVariant,
-  isPrivateStyleVariant,
-  isScreenVariant,
-} from "@/wab/shared/Variants";
+import { getAllVariantsForTpl, isScreenVariant } from "@/wab/shared/Variants";
 import { Dropdown } from "antd";
 import defer from "lodash/defer";
 import last from "lodash/lodash";
@@ -264,21 +259,16 @@ export const VariantsBar = observer(function VariantsBar_({
     component: viewCtx.currentComponent(),
     tpl: viewCtx.focusedTpl(),
     site: viewCtx.site,
-  })
-    .filter(
-      // We do not show screen variants in the drawer in dedicated arenas
-      // when in spotlight mode.
-      (v) =>
-        !(
-          isScreenVariant(v) &&
-          spotlightInfo.shouldRender &&
-          isDedicatedArena(studioCtx.currentArena)
-        )
-    )
-    // We do not show non-interactive style variants in the drawer, because they are already shown on the canvas
-    .filter(
-      (v) => !isPrivateStyleVariant(v) || isMaybeInteractiveStyleVariant(v)
-    );
+  }).filter(
+    // We do not show screen variants in the drawer in dedicated arenas
+    // when in spotlight mode.
+    (v) =>
+      !(
+        isScreenVariant(v) &&
+        spotlightInfo.shouldRender &&
+        isDedicatedArena(studioCtx.currentArena)
+      )
+  );
 
   if (allAvailableVariants.length === 0) {
     return null;

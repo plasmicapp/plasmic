@@ -1850,6 +1850,14 @@ function showPseudoClassSelector(
     return combo.filter(isBaseRuleVariant);
   };
 
+  // For non-interactive canvas, we want to be able to turn on the variant (for previewing/recording)
+  // even when the selector does not hold
+  // e.g. a :visited selector applied on a link that is not yet visited
+  const baseRuleName =
+    opts?.targetEnv === "canvas-non-interactive"
+      ? `${ruleNamer(tpl, vs)},`
+      : "";
+
   if (isRoot) {
     const styleOrCodeComponentVariants = variants.filter(
       isStyleOrCodeComponentVariant
@@ -1861,12 +1869,12 @@ function showPseudoClassSelector(
         `Expected VariantSettings in tpl ${root.uuid} for combo ` +
         baseRuleVariants.map((v) => `${v.name} (${v.uuid})`).join(", ")
     );
-    return `${ruleNamer(root, baseRuleVs)}${makeSelectorString(
+    return `${baseRuleName}${ruleNamer(root, baseRuleVs)}${makeSelectorString(
       styleOrCodeComponentVariants
     )}`;
   }
 
-  const parts: string[] = [];
+  const parts: string[] = [baseRuleName];
 
   const baseRootRuleVs = ensure(
     tryGetVariantSetting(root, nonStyleVariants),
