@@ -921,7 +921,7 @@ export const mkCanvasText = computedFn(
           onUpdateContext({
             run: mkRunFn(editor, shortcutOpts, sub),
           });
-        }, [editor, initialValue]);
+        }, [editor]);
 
         react.useEffect(() => {
           if (readOnly) {
