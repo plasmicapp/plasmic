@@ -203,6 +203,9 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
           value={comment.body}
           isTextSelectable={!isThread}
           doubleClickToEdit
+          isMultiline
+          cols={40}
+          rows={5}
           disabled={appCtx.selfInfo?.id !== comment.createdById}
           onEdit={(newBody) => {
             spawn(

@@ -40,12 +40,32 @@ export type EditableLabelProps = {
   onAbort?: () => void;
   allowEmptyString?: boolean;
   isTextSelectable?: boolean;
+  isMultiline?: boolean;
+  cols?: number;
+  rows?: number;
 };
 
 export type EditableLabelHandles = { setEditing(editing: boolean): void };
 
-const createInputBoxFactory = (props: React.ComponentProps<"input">) => {
-  return <input {...props} />;
+const createInputBoxFactory = (
+  props: Omit<React.ComponentProps<"input">, "ref"> &
+    Omit<React.ComponentProps<"textarea">, "ref"> & {
+      isMultiline: boolean;
+    },
+  ref: React.Ref<HTMLInputElement | HTMLTextAreaElement>
+) => {
+  const { isMultiline, cols, rows, ...rest } = props;
+  if (isMultiline) {
+    return (
+      <textarea
+        cols={cols}
+        rows={rows}
+        ref={ref as React.Ref<HTMLTextAreaElement>}
+        {...rest}
+      />
+    );
+  }
+  return <input {...rest} ref={ref as React.Ref<HTMLInputElement>} />;
 };
 
 const EditableLabel_: ForwardRefRenderFunction<
@@ -82,6 +102,9 @@ const EditableLabel_: ForwardRefRenderFunction<
     inputBoxClassName,
     allowEmptyString,
     isTextSelectable = false,
+    isMultiline = false,
+    cols,
+    rows,
     ...restProps
   } = props;
 
@@ -97,7 +120,7 @@ const EditableLabel_: ForwardRefRenderFunction<
 
   const [_editing, _setEditing] = useState(defaultEditing);
   const [_value, _setValue] = useState(value);
-  const inputBoxRef = useRef<HTMLInputElement>(null);
+  const inputBoxRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
   const labelBoxRef = useRef<HTMLElement>(null);
 
   useImperativeHandle(ref, () => ({
@@ -212,32 +235,41 @@ const EditableLabel_: ForwardRefRenderFunction<
     ref: labelBoxRef,
     children: _editing ? (
       <OnClickAway onDone={finish}>
-        {inputBoxFactory({
-          ref: inputBoxRef,
-          onBlur: finish,
-          placeholder: inputBoxPlaceholder,
-          value: _value,
-          className: cn("flex-fill", styles.inputBox, inputBoxClassName),
-          onChange: (e) => {
-            _setValue(e.target.value || e.target.textContent || "");
-          },
-          onKeyDown: (e) => {
-            if (e.key === "Escape") {
-              abort();
-            }
-            const content = e.currentTarget.value;
-            if (e.key === "Enter" && (allowEmptyString || content)) {
-              tryFinish(content);
-            }
-          },
-          onClick: (e) => e.stopPropagation(),
-          tabIndex: 1,
-          ...(labelBoxRef.current && {
-            style: {
-              width: labelBoxRef.current.offsetWidth,
+        {inputBoxFactory(
+          {
+            isMultiline,
+            cols,
+            rows,
+            onBlur: finish,
+            placeholder: inputBoxPlaceholder,
+            value: _value,
+            className: cn("flex-fill", styles.inputBox, inputBoxClassName),
+            onChange: (e) => {
+              _setValue(e.target.value ?? e.target.textContent ?? "");
             },
-          }),
-        })}
+            onKeyDown: (e) => {
+              if (e.key === "Escape") {
+                abort();
+              }
+              const content = e.currentTarget.value;
+              if (
+                !isMultiline &&
+                e.key === "Enter" &&
+                (allowEmptyString || content)
+              ) {
+                tryFinish(content);
+              }
+            },
+            onClick: (e) => e.stopPropagation(),
+            tabIndex: 1,
+            ...(labelBoxRef.current && {
+              style: {
+                width: labelBoxRef.current.offsetWidth,
+              },
+            }),
+          },
+          inputBoxRef
+        )}
       </OnClickAway>
     ) : (
       children || value
