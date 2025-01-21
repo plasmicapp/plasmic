@@ -1,8 +1,8 @@
 import { PlasmicCanvasContext } from "@plasmicapp/host";
 import React from "react";
-import { supabase } from "../../util/supabaseClient";
+import { createSupabaseClient } from "@/util/supabase/component";
 import { useAllContexts } from "./Contexts";
-import { getPropValue } from "./DatabaseComponents";
+import { getPropValue } from "@/util/supabase/helpers";
 
 export interface RedirectIfProps {
   children?: any;
@@ -26,6 +26,8 @@ export function RedirectIf(props: RedirectIfProps) {
     testCondition,
     forcePreview,
   } = props;
+  const supabase = createSupabaseClient();
+  
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const contexts = useAllContexts();
   const [condition, setCondition] = React.useState<boolean>(false);

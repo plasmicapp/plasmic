@@ -10,7 +10,7 @@ import {
   getContextAndField,
   getPropValue,
   isContextValueRef,
-} from "./DatabaseComponents";
+} from "@/util/supabase/helpers";
 
 export function FormTextInput({
   name,
@@ -51,8 +51,7 @@ export function FormTextInput({
   );
 }
 
-export interface FormContextComponentProps {
-  children: React.ReactChildren;
+export interface FormContextComponentProps extends React.PropsWithChildren {
   className?: string;
 }
 

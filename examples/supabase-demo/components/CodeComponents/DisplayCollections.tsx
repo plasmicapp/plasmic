@@ -1,11 +1,11 @@
 import { repeatedElement } from "@plasmicapp/host";
-import { Table } from "antd";
+import Table from "antd/lib/table";
 import L from "lodash";
 import React, { ReactNode } from "react";
 import { assertNever } from "../common";
 import { RowContext, SupabaseQueryContext, useAllContexts } from "./Contexts";
-import { getPropValue, SupabaseQuery } from "./DatabaseComponents";
-
+import { SupabaseQuery } from "./DatabaseComponents";
+import { getPropValue } from "@/util/supabase/helpers";
 export interface SupabaseFieldProps {
   className?: string;
   selector?: string;

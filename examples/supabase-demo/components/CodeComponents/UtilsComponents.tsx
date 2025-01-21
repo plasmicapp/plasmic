@@ -1,12 +1,12 @@
 import "@plasmicpkgs/antd/dist/antd.css";
-import { Modal } from "antd";
+import Modal from "antd/lib/modal";
 import React, { MouseEvent, ReactNode, useContext } from "react";
 import {
   DeleteButtonContext,
   SupabaseMutationContext,
   useAllContexts,
 } from "./Contexts";
-import { getPropValue } from "./DatabaseComponents";
+import { getPropValue } from "@/util/supabase/helpers";
 
 interface SupabaseEditButtonProps {
   children?: ReactNode;
