@@ -84,7 +84,7 @@ export function exportSiteComponents(
     if (!includePages && isPageComponent(c)) {
       return false;
     }
-    if (c.name.startsWith("_")) {
+    if (isPageComponent(c) && c.name.startsWith("_")) {
       return false;
     }
     if (componentIdOrNames) {
