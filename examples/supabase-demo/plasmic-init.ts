@@ -31,6 +31,7 @@ const plasmicApiToken = process.env.PLASMIC_API_TOKEN ?? "";
 export const PLASMIC = initPlasmicLoader({
   projects: [
     {
+      version: "updated-auth",
       id: plasmicProjectId,
       token: plasmicApiToken,
     },
