@@ -1,4 +1,4 @@
-import { User } from "@supabase/gotrue-js";
+import { User } from "@supabase/supabase-js";
 import React, { MouseEvent, useContext } from "react";
 import { Control } from "react-hook-form";
 
