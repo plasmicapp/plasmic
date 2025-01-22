@@ -14,19 +14,12 @@ export const FormContext = React.createContext<
     }
   | undefined
 >(undefined);
-export const LogInContext = React.createContext<
-  | {
-      onSubmit: (data: any) => void;
-      errorMessage?: string;
-    }
-  | undefined
->(undefined);
+
 
 export const contextTable: { [key: string]: React.Context<any> } = {
   mutation: SupabaseMutationContext,
   query: SupabaseQueryContext,
   form: FormContext,
-  logIn: LogInContext,
 };
 
 export const useAllContexts = () => {
@@ -35,7 +28,6 @@ export const useAllContexts = () => {
     mutation: useContext(table["mutation"]),
     query: useContext(table["query"]),
     form: useContext(table["form"]),
-    logIn: useContext(table["logIn"]),
   };
   return useContextTable as any;
 };

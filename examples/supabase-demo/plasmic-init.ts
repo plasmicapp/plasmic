@@ -78,18 +78,54 @@ PLASMIC.registerComponent(SupabaseUserLogOut, {
 
 PLASMIC.registerComponent(SupabaseUserLogIn, {
   name: "SupabaseUserLogIn",
+  providesData: true,
+  refActions: {
+    login: {
+      description: 'Log in the user',
+      displayName: 'Log in',
+      argTypes: [
+        {
+          type: 'string',
+          name: 'email',
+          displayName: 'Email',
+        },
+        {
+          type: 'string',
+          displayName: 'Password',
+          name: 'password',
+        },
+      ]
+    }
+  },
   props: {
     children: "slot",
-    redirectOnSuccess: "string",
   },
   importPath: "./components/CodeComponents/DatabaseComponents",
 });
 
 PLASMIC.registerComponent(SupabaseUserSignUp, {
   name: "SupabaseUserSignUp",
+  providesData: true,
+  refActions: {
+    signup: {
+      description: 'Register the user',
+      displayName: 'Sign up',
+      argTypes: [
+        {
+          type: 'string',
+          name: 'email',
+          displayName: 'Email',
+        },
+        {
+          type: 'string',
+          displayName: 'Password',
+          name: 'password',
+        },
+      ]
+    }
+  },
   props: {
     children: "slot",
-    redirectOnSuccess: "string",
   },
   importPath: "./components/CodeComponents/DatabaseComponents",
 });

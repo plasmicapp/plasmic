@@ -1,52 +1,64 @@
-import Alert from "antd/lib/alert";
 import React from "react";
+import { DataProvider } from "@plasmicapp/host";
 import { createSupabaseClient } from "@/util/supabase/component";
-import {
-  LogInContext,
-} from "../Contexts";
 
-export function SupabaseUserSignUp({
-    className,
-    children,
-    redirectOnSuccess,
-  }: {
-    className?: string;
-    children?: React.ReactElement;
-    redirectOnSuccess?: string;
-  }) {
+interface SupabaseUserSignUpProps extends React.PropsWithChildren {
+  className: string;
+}
+
+interface SupabaseUserSignUpRef {
+  signup: (email: string, password: string) => Promise<{ success: boolean }>;
+}
+
+function SupabaseUserSignUpBase(
+  props: SupabaseUserSignUpProps,
+  outterRef: React.Ref<SupabaseUserSignUpRef>
+) {
+    const { className, children } = props;
     const supabase = createSupabaseClient();
-    const ref = React.createRef<HTMLAnchorElement>();
-  
     const [errorMessage, setErrorMessage] = React.useState<string | undefined>(
       undefined
     );
-    const onSubmit = async (formData: any) => {
-      const {error } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-      });
-      console.log(error);
-      if (error) {
-        setErrorMessage(error.message);
-      } else if (redirectOnSuccess) {
-        ref.current?.click();
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+    const interactions = React.useMemo(() => ({
+      async signup(email: string, password: string) {
+        setIsLoading(true);
+
+        const { error } = await supabase.auth.signUp({
+          email,
+          password
+        });
+
+        setIsLoading(false);
+
+        if (error) {
+          setErrorMessage(error.message);
+          return { success: false };
+        }
+
+        return { success: true }
       }
-    };
+    }), []);
+
+    React.useImperativeHandle(
+      outterRef,
+      () => interactions
+    );
+
     return (
       <div className={className}>
-        <LogInContext.Provider
-          value={{
-            onSubmit,
-            errorMessage,
+        <DataProvider
+          name='signupContext'
+          data={{
+            isLoading,
+            signupError: errorMessage,
           }}
         >
           {children}
-        </LogInContext.Provider>
-        {errorMessage && <Alert message={errorMessage}></Alert>}
-        {redirectOnSuccess && (
-          <a href={redirectOnSuccess} ref={ref} hidden={true} />
-        )}
+        </DataProvider>
       </div>
     );
   }
-  
+
+  export const SupabaseUserSignUp = React.forwardRef<SupabaseUserSignUpRef, SupabaseUserSignUpProps>(SupabaseUserSignUpBase);

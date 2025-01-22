@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   FormContext,
-  LogInContext,
   SupabaseMutationContext,
   useAllContexts,
 } from "./Contexts";
@@ -59,13 +58,9 @@ export function FormContextComponent(props: FormContextComponentProps) {
   const { children, className } = props;
   const { control, handleSubmit } = useForm();
 
-  const logInCtx = useContext(LogInContext);
   const mutationCtx = useContext(SupabaseMutationContext);
 
   const onSubmit = async (formData: any) => {
-    if (logInCtx) {
-      logInCtx.onSubmit(formData);
-    }
     if (mutationCtx) {
       mutationCtx.onSubmit(formData);
     }
