@@ -190,11 +190,14 @@ export const CanvasCommentOverlay = observer(function CanvasCommentOverlay({
   className?: string;
   isSelected?: boolean;
 }) {
-  const isTargetingSomeNonBaseVariant =
-    isTplVariantable(tpl) &&
-    viewCtx.variantTplMgr().isTargetingNonBaseVariant(tpl);
+  // We directly use the render count here to make this component depend on it and re-render every time the render count changes
+  // This is necessary for elements that are visible in the canvas conditionally (e.g. auto opened elements)
+  const renderCount = viewCtx.renderCount;
+  if (renderCount === 0) {
+    return null;
+  }
 
-  const [valNode, doms] = viewCtx.maybeDomsForTpl(tpl, {
+  const [_, doms] = viewCtx.maybeDomsForTpl(tpl, {
     ignoreFocusedCloneKey: true,
   });
 
@@ -203,6 +206,10 @@ export const CanvasCommentOverlay = observer(function CanvasCommentOverlay({
   if (!$elt || $elt.length === 0) {
     return null;
   }
+
+  const isTargetingSomeNonBaseVariant =
+    isTplVariantable(tpl) &&
+    viewCtx.variantTplMgr().isTargetingNonBaseVariant(tpl);
 
   const color = isTargetingSomeNonBaseVariant
     ? NON_BASE_VARIANT_COLOR

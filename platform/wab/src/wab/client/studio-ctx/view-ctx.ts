@@ -178,6 +178,10 @@ export class ViewCtx extends WithDbCtx {
     return this.csEvaluator.isFirstRenderComplete;
   }
 
+  get renderCount() {
+    return this.csEvaluator.renderCount;
+  }
+
   private disposals: (() => void)[] = [];
   private _isDisposed = false;
 

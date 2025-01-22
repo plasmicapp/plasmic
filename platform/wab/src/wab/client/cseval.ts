@@ -10,8 +10,8 @@ import {
 } from "@/wab/client/components/variants/ClientPinManager";
 import { globalHookCtx } from "@/wab/client/react-global-hook/globalHook";
 import {
-  RenderState,
   getRenderState,
+  RenderState,
 } from "@/wab/client/studio-ctx/renderState";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ContextFactory } from "@/wab/shared/code-components/context-factory";
@@ -38,7 +38,7 @@ import { ValComponent, ValNode } from "@/wab/shared/core/val-nodes";
 import { ValState } from "@/wab/shared/eval/val-state";
 import { TplNode, Variant } from "@/wab/shared/model/classes";
 import { getImplicitlyActivatedStyleVariants } from "@/wab/shared/Variants";
-import { autorun, observable } from "mobx";
+import { autorun, computed, observable } from "mobx";
 import React from "react";
 import defer = setTimeout;
 
@@ -75,13 +75,21 @@ export abstract class BaseCliSvrEvaluator {
   private _postEvalTasks: (() => any)[] = [];
   private _contextFactory: ContextFactory;
   private _renderState: RenderState;
-  private _isFirstRenderComplete = observable.box(false);
+
+  private _renderCount = observable.box(0);
+  private incrementRenderCount() {
+    this._renderCount.set(this._renderCount.get() + 1);
+  }
+  get renderCount() {
+    return this._renderCount.get();
+  }
+
+  private _isFirstRenderComplete = computed(() => {
+    return this.renderCount > 0;
+  });
 
   get isFirstRenderComplete() {
     return this._isFirstRenderComplete.get();
-  }
-  set isFirstRenderComplete(v) {
-    this._isFirstRenderComplete.set(v);
   }
 
   constructor({ viewCtx }: { viewCtx: ViewCtx }) {
@@ -171,10 +179,10 @@ export abstract class BaseCliSvrEvaluator {
     if (this.rootNode == null) {
       this.rootNode = this.renderRoot();
       viewCtx.canvasCtx.rerender(this.rootNode, viewCtx);
-      this.addPostEval(() => {
-        this.isFirstRenderComplete = true;
-      });
     }
+    this.addPostEval(() => {
+      this.incrementRenderCount();
+    });
   }
 
   private renderRoot() {
