@@ -1,37 +1,37 @@
-import { PlasmicCanvasContext } from "@plasmicapp/host";
+import { DataProvider, PlasmicCanvasContext } from "@plasmicapp/host";
 import { User } from "@supabase/supabase-js";
 import React, { useContext } from "react";
 import { createSupabaseClient } from "@/util/supabase/component";
-import {
-  SupabaseUserSessionContext,
-} from "../Contexts";
 
 export function SupabaseUserSession({
-    className,
     children,
+    staticToken,
   }: {
     className?: string;
+    staticToken?: string;
     children?: React.ReactNode;
   }) {
     const supabase = createSupabaseClient();
-    const [user, setUser] = React.useState<User | null>(null);
-  
+    const [currentUser, setCurrentUser] = React.useState<User | null>(null);
+
     const inEditor = useContext(PlasmicCanvasContext);
     React.useEffect(() => {
-      if (inEditor) {
-        supabase.auth.onAuthStateChange((event, session) => {
-          if (event == "SIGNED_OUT") setUser(null);
-          else if (event === "SIGNED_IN" && session) setUser(session.user);
+        if (inEditor && staticToken) {
+          supabase.auth.getUser(staticToken).then((res) => setCurrentUser(res.data.user));
+          return;
+        }
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+          if (event == "SIGNED_OUT") setCurrentUser(null);
+          else if (event === "SIGNED_IN" && session) setCurrentUser(session.user);
         });
-      }
-    }, [user]);
+
+        return subscription.unsubscribe;
+    }, []);
   
     return (
-      <div className={className}>
-        <SupabaseUserSessionContext.Provider value={{ ...user }}>
+      <DataProvider name="auth" data={currentUser || {}}>
           {children}
-        </SupabaseUserSessionContext.Provider>
-      </div>
+      </DataProvider>
     );
   }
   

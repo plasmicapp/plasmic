@@ -2,10 +2,10 @@
 import React, { ReactNode } from "react";
 import { createSupabaseClient } from "@/util/supabase/component";
 import {
-  SupabaseQueryContext,
   useAllContexts,
 } from "../Contexts";
 
+import { DataProvider } from '@plasmicapp/host';
 import {
   Filter,
   applyFilter,
@@ -45,7 +45,7 @@ export interface SupabaseQueryProps {
       } else {
         setResult(undefined);
       }
-    }, [columns, tableName, filters, single, contexts["session"]]);
+    }, [columns, tableName, filters, single]);
   
     // Error messages are currently rendered in the component
     if (!tableName) {
@@ -79,9 +79,9 @@ export interface SupabaseQueryProps {
   
     return (
       <div className={className}>
-        <SupabaseQueryContext.Provider value={result}>
+        <DataProvider name={tableName} data={result}>
           {children}
-        </SupabaseQueryContext.Provider>
+        </DataProvider>
       </div>
     );
   }
