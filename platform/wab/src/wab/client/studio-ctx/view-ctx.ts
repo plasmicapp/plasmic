@@ -184,6 +184,7 @@ export class ViewCtx extends WithDbCtx {
 
   private disposals: (() => void)[] = [];
   private _isDisposed = false;
+  private _editingTextResizeObserver: ResizeObserver | undefined;
 
   private _nextFocusedTpl: TplNode | undefined;
   nextFocusedTpl() {
@@ -588,6 +589,7 @@ export class ViewCtx extends WithDbCtx {
    */
   dispose() {
     this.disposals.forEach((d) => d());
+    this._editingTextResizeObserver?.disconnect();
     this.canvasObservers.forEach(
       (reaction) => !reaction.isDisposed_ && reaction.dispose()
     );
@@ -833,16 +835,23 @@ export class ViewCtx extends WithDbCtx {
 
   setEditingTextContext(x: EditingTextContext | null) {
     this._editingTextContext.set(x);
+
+    // Update canvas overlay to exclude the area of the text editor, to allow interactions with it.
+    this._editingTextResizeObserver?.disconnect();
     if (x) {
-      this.canvasCtx._$body
-        .find(".__wab_canvas_overlay")
-        .css("display", "none");
+      this._editingTextResizeObserver = new ResizeObserver(
+        ([{ target }]: ResizeObserverEntry[]) => {
+          this.canvasCtx.updateCanvasOverlay(target.getBoundingClientRect());
+        }
+      );
+
+      this.renderState.val2dom(x.val, this.canvasCtx).forEach((domElt) => {
+        this.canvasCtx.updateCanvasOverlay(domElt.getBoundingClientRect());
+        this._editingTextResizeObserver.observe(domElt);
+      });
     } else {
-      this.canvasCtx._$body
-        .find(".__wab_canvas_overlay")
-        .css("display", "block");
+      this.canvasCtx.resetCanvasOverlay();
     }
-    return x;
   }
 
   selectableToCloneKeys(

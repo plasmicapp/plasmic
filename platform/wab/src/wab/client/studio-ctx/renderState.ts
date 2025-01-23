@@ -271,7 +271,7 @@ class RenderStateImpl {
     }
   }
 
-  private val2dom(val: ValNode, cctx: CanvasCtx) {
+  val2dom(val: ValNode, cctx: CanvasCtx) {
     const win = cctx.win();
     const $doms = $(
       asArray(this._fullKey2vals.get(this.bestFullKeyForVal(val))).flatMap(

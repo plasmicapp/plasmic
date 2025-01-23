@@ -185,6 +185,60 @@ export class CanvasCtx {
     }
   }
 
+  /**
+   * Creates the canvas overlay which covers the non-interactive canvas to prevent interactions
+   * See canvas-overlay.md
+   * @param arenaFrame
+   */
+  createCanvasOverlay(arenaFrame: ArenaFrame) {
+    this._$body.append(
+      $("<div />").attr({
+        class: "__wab_canvas_overlay __wab_canvas_overlay_bottom_right",
+        "data-frame-uid": arenaFrame.uid,
+      }),
+      $("<div />").attr({
+        class: "__wab_canvas_overlay __wab_canvas_overlay_top_left",
+        "data-frame-uid": arenaFrame.uid,
+      })
+    );
+  }
+
+  /**
+   * Reset canvas overlay to default state, which is to cover the whole canvas
+   */
+  resetCanvasOverlay() {
+    // the canvas overlay covers the whole canvas
+    this._$body.find(".__wab_canvas_overlay").css("clip-path", "none");
+    // Only one overlay is sufficient
+    this._$body
+      .find(".__wab_canvas_overlay_bottom_right")
+      .css("display", "none");
+  }
+
+  /**
+   * Removes a rectangular region (corresponding to the Slatejs text editor) from the canvas overlay,
+   * to enable interactions within that area.
+   */
+  updateCanvasOverlay(excludingRect: DOMRect) {
+    const { top, bottom, right, left } = excludingRect;
+    // we break the canvas overlay into two parts
+    // one that covers the area to the top and left of the excluded rect
+    this._$body
+      .find(".__wab_canvas_overlay_top_left")
+      .css(
+        "clip-path",
+        `polygon(0 0, 100% 0, 100% ${top}px, ${left}px ${top}px, ${left}px 100%, 0 100%)`
+      );
+    // the other that covers the area to the bottom and right of the excluded rect
+    this._$body
+      .find(".__wab_canvas_overlay_bottom_right")
+      .css(
+        "clip-path",
+        `polygon(100% ${top}px, ${right}px ${top}px, ${right}px ${bottom}px, ${left}px ${bottom}px, ${left}px 100%, 100% 100%)`
+      )
+      .css("display", "block");
+  }
+
   async *initViewPort(
     $viewport: JQuery<HTMLIFrameElement>,
     arenaFrame: ArenaFrame,
@@ -229,12 +283,7 @@ export class CanvasCtx {
       this._$head
     );
     this._$body = this._$html.find("body").first();
-    this._$body.append(
-      $("<div />").attr({
-        class: "__wab_canvas_overlay",
-        "data-frame-uid": arenaFrame.uid,
-      })
-    );
+    this.createCanvasOverlay(arenaFrame);
     yield "user-body-wait";
     this._$userBody = await withTimeout(
       this.waitForUserBody(),
@@ -259,12 +308,7 @@ export class CanvasCtx {
       this._$head
     );
     if (!this._$body.find(".__wab_canvas_overlay").length) {
-      this._$body.append(
-        $("<div />").attr({
-          class: "__wab_canvas_overlay",
-          "data-frame-uid": arenaFrame.uid,
-        })
-      );
+      this.createCanvasOverlay(arenaFrame);
     }
     yield "script-wait";
     scriptExec(
