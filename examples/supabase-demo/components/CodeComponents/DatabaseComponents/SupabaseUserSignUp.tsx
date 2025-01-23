@@ -1,5 +1,5 @@
 import React from "react";
-import { DataProvider } from "@plasmicapp/host";
+import { DataProvider } from "@plasmicapp/loader-nextjs";
 import { createSupabaseClient } from "@/util/supabase/component";
 
 interface SupabaseUserSignUpProps extends React.PropsWithChildren {

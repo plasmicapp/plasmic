@@ -1,11 +1,9 @@
 
 import React, { ReactNode } from "react";
 import { createSupabaseClient } from "@/util/supabase/component";
-import {
-  useAllContexts,
-} from "../Contexts";
+import { useMutablePlasmicQueryData } from '@plasmicapp/react-web/lib/query';
 
-import { DataProvider } from '@plasmicapp/host';
+import { DataProvider, useSelector } from '@plasmicapp/loader-nextjs';
 import {
   Filter,
   applyFilter,
@@ -26,25 +24,13 @@ export interface SupabaseQueryProps {
   
     // These props are set in the Plasmic Studio
     const { children, tableName, columns, className, filters, single } = props;
-    const [result, setResult] = React.useState<any[] | any>(undefined);
-    const [loading, setLoading] = React.useState<boolean>(false);
-    const contexts = useAllContexts();
+    const currentUser = useSelector('auth');
     const validFilters = filters?.filter((f: any) => isValidFilter(f)) as
       | Filter[]
       | undefined;
   
-    // Only query if the user is logged in
     React.useEffect(() => {
-        // TO DO: replace this with a static call from the global auth context, not implemented yet!!
-        // Otherwise this would trigger a network call within every query component
-        //   const user = supabase.auth.user();
-        const user = true;
-      if (user || true) {
-        // Bypass the user check for now
-        makeQuery();
-      } else {
-        setResult(undefined);
-      }
+      makeQuery();
     }, [columns, tableName, filters, single]);
   
     // Error messages are currently rendered in the component
@@ -56,30 +42,34 @@ export interface SupabaseQueryProps {
   
     // Performs the Supabase query
     async function makeQuery() {
-      try {
-        setLoading(true);
-        let query = supabase.from(tableName!).select(columns + ",id");
-        query = applyFilter(query, validFilters, contexts);
-        const { data, error, status } = await (single
-          ? query.single()
-          : query.order("id", { ascending: false }));
-  
-        if (error && status !== 406) {
-          throw error;
-        } else if (data) {
-          setResult(data);
-        }
-      } catch (error) {
-        // Just log query errors at the moment
-        console.log(error);
-      } finally {
-        setLoading(false);
+      // dont perform query if user is not logged in
+      if (!currentUser) {
+        return;
       }
+      let query = supabase.from(tableName!).select(columns + ",id");
+      query = applyFilter(query, validFilters);
+      const { data, error, status } = await (single
+        ? query.single()
+        : query.order("id", { ascending: false }));
+
+      if (error && status !== 406) {
+        throw error;
+      }
+      return data;
     }
+
+    const { data } = useMutablePlasmicQueryData(`${tableName}-${JSON.stringify(filters)}`, async () => {
+      try {
+        return await makeQuery();
+      } catch (err) {
+        console.error(err);
+        return {};
+      }
+    }, {revalidateOnMount: true, revalidateOnFocus: true, });
   
     return (
       <div className={className}>
-        <DataProvider name={tableName} data={result}>
+        <DataProvider name={tableName} data={data}>
           {children}
         </DataProvider>
       </div>

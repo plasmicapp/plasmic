@@ -1,8 +1,6 @@
 import { PlasmicCanvasContext } from "@plasmicapp/host";
 import React from "react";
 import { createSupabaseClient } from "@/util/supabase/component";
-import { useAllContexts } from "./Contexts";
-import { getPropValue } from "@/util/supabase/helpers";
 
 export interface RedirectIfProps {
   children?: any;
@@ -29,7 +27,6 @@ export function RedirectIf(props: RedirectIfProps) {
   const supabase = createSupabaseClient();
   
   const [loaded, setLoaded] = React.useState<boolean>(false);
-  const contexts = useAllContexts();
   const [condition, setCondition] = React.useState<boolean>(false);
   const ref = React.createRef<HTMLAnchorElement>();
   const inEditor = React.useContext(PlasmicCanvasContext);
@@ -75,7 +72,7 @@ export function RedirectIf(props: RedirectIfProps) {
   }
 
   // Set the condition
-  const leftVal = getPropValue(leftExpression, contexts);
+  const leftVal = leftExpression;
   if (!condition) {
     if (operator === "FALSY" && !leftVal) {
       setCondition(true);
@@ -83,7 +80,7 @@ export function RedirectIf(props: RedirectIfProps) {
       if (!!leftVal) {
         setCondition(true);
       }
-      const rightVal = getPropValue(rightExpression ?? "", contexts);
+      const rightVal = rightExpression ?? "";
       if (leftVal === rightVal) {
         setCondition(true);
       }

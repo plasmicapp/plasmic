@@ -4,13 +4,9 @@ import {
   SupabaseQuery,
   SupabaseUserLogIn,
   SupabaseUserLogOut,
-  SupabaseUserSession,
   SupabaseUserSignUp,
 } from "./components/CodeComponents/DatabaseComponents";
-import {
-  FormContextComponent,
-  FormTextInput,
-} from "./components/CodeComponents/Form";
+import { SupabaseUserSession } from './components/CodeComponents/GlobalContexts';
 import { RedirectIf } from "./components/CodeComponents/LogicComponents";
 
 const plasmicProjectId = process.env.PLASMIC_PROJECT_ID ?? "";
@@ -30,29 +26,10 @@ export const PLASMIC = initPlasmicLoader({
 
 PLASMIC.registerGlobalContext(SupabaseUserSession, {
   name: 'SupabaseUserSession',
-  importPath: './components/CodeComponents/DatabaseComponents',
+  importPath: './components/CodeComponents/GlobalContexts',
   providesData: true,
   props: { staticToken: "string" },
 })
-
-PLASMIC.registerComponent(FormTextInput, {
-  name: "FormTextInput",
-  props: {
-    name: "string",
-    children: "slot",
-    defaultValue: "string",
-  },
-  importPath: "./components/CodeComponents/Form",
-});
-
-PLASMIC.registerComponent(FormContextComponent, {
-  name: "FormContext",
-  props: {
-    children: "slot",
-  },
-  importName: "FormContextComponent",
-  importPath: "./components/CodeComponents/Form",
-});
 
 PLASMIC.registerComponent(SupabaseQuery, {
   name: "SupabaseQuery",
@@ -135,13 +112,16 @@ PLASMIC.registerComponent(SupabaseMutation, {
   props: {
     children: "slot",
     tableName: "string",
-    filters: "object",
+    filters: "exprEditor",
     method: {
       type: "choice",
       options: ["upsert", "insert", "update", "delete"],
     },
-    data: "object",
-    redirectOnSuccess: "string",
+    data: "exprEditor",
+    onSuccess: {
+      type: "eventHandler",
+      argTypes: [],
+    }
   },
   importPath: "./components/CodeComponents/DatabaseComponents",
 });

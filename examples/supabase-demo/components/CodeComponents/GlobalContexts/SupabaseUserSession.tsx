@@ -15,6 +15,7 @@ export function SupabaseUserSession({
     const [currentUser, setCurrentUser] = React.useState<User | null>(null);
 
     const inEditor = useContext(PlasmicCanvasContext);
+    
     React.useEffect(() => {
         if (inEditor && staticToken) {
           supabase.auth.getUser(staticToken).then((res) => setCurrentUser(res.data.user));

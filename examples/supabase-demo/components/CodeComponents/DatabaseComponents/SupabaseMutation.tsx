@@ -1,15 +1,8 @@
 import React, { ReactNode } from "react";
 import { createSupabaseClient } from "@/util/supabase/component";
 import {
-  SupabaseMutationContext,
-  useAllContexts,
-} from "../Contexts";
-
-import {
   Filter,
   applyFilter,
-  getContextAndField,
-  isContextValueRef,
   isValidFilter,
 } from '@/util/supabase/helpers';
 
@@ -19,9 +12,9 @@ export interface SupabaseMutationProps {
     children?: ReactNode;
     tableName?: string;
     method?: "upsert" | "insert" | "update" | "delete";
-    redirectOnSuccess?: string;
     filters?: any;
     data?: any;
+    onSuccess?: () => void;
     className?: string;
   }
   export function SupabaseMutation(props: SupabaseMutationProps) {
@@ -29,15 +22,12 @@ export interface SupabaseMutationProps {
       children,
       tableName,
       method,
-      redirectOnSuccess,
       filters,
       data,
       className,
+      onSuccess
     } = props;
     const supabase = createSupabaseClient();
-    const ref = React.createRef<HTMLAnchorElement>();
-  
-    const contexts = useAllContexts();
   
     if (!tableName) {
       return <p>You need to set the tableName prop</p>;
@@ -54,43 +44,27 @@ export interface SupabaseMutationProps {
       | Filter[]
       | undefined;
   
-    async function onSubmit(formData: any) {
-      const { data: { user }} = await supabase.auth.getUser();
-      const parsedData: any = { user_id: user!.id };
-      for (const column in data) {
-        if (!isContextValueRef(data[column])) {
-          parsedData[column] = data[column];
-        } else {
-          const { contextName, field } = getContextAndField(data[column]);
-          if (contextName === "form") {
-            parsedData[column] = formData[field];
-          } else {
-            parsedData[column] = contexts[contextName];
-          }
-        }
-      }
+    async function onSubmit() {
       try {
         const table = supabase.from(tableName!);
         let query: any;
         if (method === "update") {
-          query = table.update(parsedData);
+          query = table.update(data);
         } else if (method === "upsert") {
-          query = table.upsert(parsedData);
+          query = table.upsert(data);
         } else if (method === "insert") {
-          query = table.insert(parsedData);
+          query = table.insert(data);
         } else if (method === "delete") {
           query = table.delete();
         }
   
-        query = applyFilter(query, validFilters, contexts);
-        const { data, error } = await query;
+        query = applyFilter(query, validFilters);
+        const {error } = await query;
   
         if (error) {
           console.log(error);
-        } else if (data) {
-          if (redirectOnSuccess) {
-            ref.current?.click();
-          }
+        } else if (onSuccess) {
+          onSuccess();
         }
       } catch (error) {
         console.log(error);
@@ -98,18 +72,9 @@ export interface SupabaseMutationProps {
     }
   
     return (
-      <div className={className}>
-        <SupabaseMutationContext.Provider
-          value={{
-            onSubmit,
-          }}
-        >
+      <form onSubmit={onSubmit} className={className}>
           {children}
-        </SupabaseMutationContext.Provider>
-        {redirectOnSuccess && (
-          <a href={redirectOnSuccess} ref={ref} hidden={true} />
-        )}
-      </div>
+      </form>
     );
   }
   

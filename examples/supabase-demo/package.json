@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@plasmicapp/loader-nextjs": "^1.0.410",
+    "@plasmicapp/react-web": "^0.2.361",
     "@plasmicpkgs/antd": "^2.0.128",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.48.0",
