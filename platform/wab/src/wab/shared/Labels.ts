@@ -1,5 +1,3 @@
-import { DEVFLAGS } from "@/wab/shared/devflags";
-
 export const PERSONAL_WORKSPACE = "My playground";
 
 export const ARENAS_CAP = "Custom arenas";
@@ -88,11 +86,7 @@ export const VARIANT_OPTION_LOWER = VARIANT_OPTION_CAP.toLowerCase();
 
 export const INTERACTION_VARIANTS_LOWER = "interaction variants";
 
-// This label will be wrong until the devflag is changed in code.
-// TODO: Remove devflag to ensure the label is updated
-export const PRIVATE_STYLE_VARIANTS_CAP = DEVFLAGS.arbitraryCssSelectors
-  ? "Element variants"
-  : "Element states";
+export const PRIVATE_STYLE_VARIANTS_CAP = "Element variants";
 
 export const ARENAS_DESCRIPTION = `${ARENAS_CAP} are where you can lay out artboards however you want, similar to vector design tools.`;
 

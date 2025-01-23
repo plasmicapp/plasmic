@@ -959,7 +959,7 @@
     "Rj7GX2Iy8s0x": { "values": {}, "mixins": [], "__type": "RuleSet" },
     "Gw3H3s8IkqRj": {
       "uuid": "H_NNvwlLKVxe",
-      "name": "Component with element states",
+      "name": "Component with element variants",
       "params": [],
       "states": [],
       "tplTree": { "__ref": "JtisrN1NusHg" },

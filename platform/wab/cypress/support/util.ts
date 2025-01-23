@@ -1167,7 +1167,7 @@ export function toggleElementVariants() {
     .click()
     .wait(200)
     .get(".ant-dropdown-menu")
-    .contains("Element states")
+    .contains("Element variants")
     .click()
     .wait(200);
 }

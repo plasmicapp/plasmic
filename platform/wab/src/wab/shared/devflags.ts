@@ -578,8 +578,6 @@ const DEFAULT_DEVFLAGS = {
   */
   templateTours: {} as Record<string, string>,
 
-  arbitraryCssSelectors: false,
-
   autoOpen: false,
 };
 
@@ -660,7 +658,6 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     authUsersTab: true,
     warningsInCanvas: true,
     previewSteps: true,
-    arbitraryCssSelectors: true,
     autoOpen: true,
   } as Partial<DevFlagsType>);
 }

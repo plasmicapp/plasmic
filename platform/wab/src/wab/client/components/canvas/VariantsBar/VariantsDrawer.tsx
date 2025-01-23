@@ -31,7 +31,7 @@ import * as React from "react";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import defer = setTimeout;
 
-const elementInteractionsLabel = "Element Interactions";
+const elementInteractionsLabel = "Element Variants";
 const styleVariantsLabel = "Component Interactions";
 const codeComponentVariantsLabel = "Registered Variants";
 const baseLabel = "Base";
