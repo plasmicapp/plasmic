@@ -240,11 +240,6 @@ $placeholder-hue: black;
   pointer-events: initial;
 }
 
-// in non-interactive canvas, we only need one overlay if there is no editable text
-.__wab_canvas_overlay_bottom_right {
-  display: none;
-}
-
 .__interactive_canvas .__wab_canvas_overlay {
   display: none !important;
 }

@@ -1627,10 +1627,11 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
         return undefined;
       }
       if (isCanvasOverlay($target)) {
-        const actualTargetElt = targetVc.canvasCtx
-          .$doc()
-          .get(0)
-          .elementsFromPoint(e.clientX, e.clientY)[1];
+        const actualTargetElt =
+          targetVc.canvasCtx.getActualTargetUnderCanvasOverlay(
+            e.clientX,
+            e.clientY
+          );
         return actualTargetElt && [$(actualTargetElt as HTMLElement), targetVc];
       }
 

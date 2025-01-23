@@ -1,6 +1,7 @@
 /// <reference types="@types/resize-observer-browser" />
 import { handleError, normalizeError } from "@/wab/client/ErrorNotifications";
 import { CodeFetchersRegistry } from "@/wab/client/code-fetchers";
+import { isCanvasOverlay } from "@/wab/client/components/canvas/CanvasFrame";
 import {
   CanvasFrameInfo,
   mkCanvas,
@@ -207,12 +208,7 @@ export class CanvasCtx {
    * Reset canvas overlay to default state, which is to cover the whole canvas
    */
   resetCanvasOverlay() {
-    // the canvas overlay covers the whole canvas
     this._$body.find(".__wab_canvas_overlay").css("clip-path", "none");
-    // Only one overlay is sufficient
-    this._$body
-      .find(".__wab_canvas_overlay_bottom_right")
-      .css("display", "none");
   }
 
   /**
@@ -235,8 +231,7 @@ export class CanvasCtx {
       .css(
         "clip-path",
         `polygon(100% ${top}px, ${right}px ${top}px, ${right}px ${bottom}px, ${left}px ${bottom}px, ${left}px 100%, 100% 100%)`
-      )
-      .css("display", "block");
+      );
   }
 
   async *initViewPort(
@@ -511,6 +506,21 @@ export class CanvasCtx {
 
   getRegisteredLibraries(): CodeLibraryRegistration[] {
     return this.ccRegistry.getRegisteredLibraries();
+  }
+
+  /**
+   * Finds the actual target element under the canvas overlay (the layer that covers the non-interactive canvas)
+   * @param x x coordinate of the click event
+   * @param y y coordinate of the click event
+   * @returns the nearest element under the canvas overlay, to be focused as a result of the click
+   */
+  getActualTargetUnderCanvasOverlay(x: number, y: number): Element | undefined {
+    for (const elt of this.$doc().get(0).elementsFromPoint(x, y)) {
+      if (!isCanvasOverlay($(elt))) {
+        return elt;
+      }
+    }
+    return undefined;
   }
 
   // We cannot evaluate it in constructor since by then, the tplRoot hasn't

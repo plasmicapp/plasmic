@@ -195,7 +195,7 @@ export const CanvasFrame = observer(function CanvasFrame({
         }
 
         const actualTarget: HTMLElement = isCanvasOverlay($(e.target))
-          ? canvasCtx().$doc().get(0).elementsFromPoint(e.clientX, e.clientY)[1]
+          ? canvasCtx().getActualTargetUnderCanvasOverlay(e.clientX, e.clientY)
           : e.target;
 
         const $target = $(actualTarget);
