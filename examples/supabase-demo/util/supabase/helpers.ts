@@ -22,7 +22,6 @@ export const applyFilter = (query: any, filters?: Filter[]) => {
   for (const filter of filters ?? []) {
     if (filter.name === "eq") {
       for (const arg of filter.args) {
-        console.log(arg);
         query = query.eq(arg.column, arg.value);
       }
     } else if (filter.name === "match") {

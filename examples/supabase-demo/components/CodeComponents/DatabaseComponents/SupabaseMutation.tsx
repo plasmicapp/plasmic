@@ -44,7 +44,8 @@ export interface SupabaseMutationProps {
       | Filter[]
       | undefined;
   
-    async function onSubmit() {
+    async function onSubmit(e: React.FormEvent) {
+      e?.preventDefault();
       try {
         const table = supabase.from(tableName!);
         let query: any;
@@ -57,13 +58,14 @@ export interface SupabaseMutationProps {
         } else if (method === "delete") {
           query = table.delete();
         }
-  
+        
         query = applyFilter(query, validFilters);
-        const {error } = await query;
-  
+        const { error } = await query;
+
         if (error) {
           console.log(error);
         } else if (onSuccess) {
+          console.log(onSuccess);
           onSuccess();
         }
       } catch (error) {

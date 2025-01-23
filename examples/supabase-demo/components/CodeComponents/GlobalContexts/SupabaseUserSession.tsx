@@ -15,15 +15,16 @@ export function SupabaseUserSession({
     const [currentUser, setCurrentUser] = React.useState<User | null>(null);
 
     const inEditor = useContext(PlasmicCanvasContext);
-    
+
     React.useEffect(() => {
         if (inEditor && staticToken) {
           supabase.auth.getUser(staticToken).then((res) => setCurrentUser(res.data.user));
           return;
         }
+        
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
           if (event == "SIGNED_OUT") setCurrentUser(null);
-          else if (event === "SIGNED_IN" && session) setCurrentUser(session.user);
+          else if (["SIGNED_IN", "INITIAL_SESSION"].includes(event) && session) setCurrentUser(session.user);
         });
 
         return subscription.unsubscribe;

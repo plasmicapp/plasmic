@@ -68,7 +68,11 @@ export default function CatchallPage(props: {
   const pageMeta = plasmicData.entryCompMetas[0];
   return (
     // Pass in the data fetched in getStaticProps as prefetchedData
-    <PlasmicRootProvider pageParams={pageMeta.params} pageQuery={router.query} loader={PLASMIC} prefetchedData={plasmicData}>
+    <PlasmicRootProvider
+      pageParams={pageMeta.params}
+      pageQuery={router.query}
+      loader={PLASMIC}
+      prefetchedData={plasmicData}>
       {
         // plasmicData.entryCompMetas[0].name contains the name
         // of the component you fetched.
