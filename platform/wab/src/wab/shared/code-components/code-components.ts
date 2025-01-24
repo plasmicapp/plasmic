@@ -2413,6 +2413,7 @@ export function createCustomFunctionFromRegistration(
         }
         return typeFactory.arg(name, argType);
       }) ?? [],
+    isQuery: functionReg.meta.isQuery ?? false,
   });
 }
 
@@ -4577,7 +4578,7 @@ async function upsertRegisteredFunctions(
             "importName" | "namespace" | "typeTag" | "uid"
           > = pick(
             createCustomFunctionFromRegistration(functionReg, existing),
-            ["defaultExport", "importPath", "params"]
+            ["defaultExport", "importPath", "params", "isQuery"]
           );
           if (
             Object.entries(updateableFields).some(
@@ -4693,7 +4694,7 @@ async function upsertRegisteredFunctions(
                   "importName" | "namespace" | "typeTag" | "uid"
                 > = pick(
                   createCustomFunctionFromRegistration(functionReg, existing),
-                  ["defaultExport", "importPath", "params"]
+                  ["defaultExport", "importPath", "params", "isQuery"]
                 );
                 customFunctionUsages.forEach((usage) => {
                   usage.ownerComponent.serverQueries

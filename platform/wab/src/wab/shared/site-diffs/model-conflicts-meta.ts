@@ -446,6 +446,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
           classes.ArgType,
         ]),
     },
+    isQuery: "generic",
   },
   CodeLibrary: {
     importType: "generic",

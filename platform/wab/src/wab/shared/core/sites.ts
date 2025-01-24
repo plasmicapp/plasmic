@@ -455,6 +455,7 @@ export function cloneCustomFunction(
     importPath: customFunction.importPath,
     namespace: customFunction.namespace,
     params: [],
+    isQuery: customFunction.isQuery,
   });
 }
 
