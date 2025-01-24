@@ -1174,7 +1174,7 @@
           }
         },
         "deps": [],
-        "version": "240-set-plume-default-component"
+        "version": "241-add-custom-function-flag"
       },
       "projectId": "jktPeioPm3Q1RvAsGWDSCe",
       "version": "3.0.0",
@@ -2385,7 +2385,7 @@
           }
         },
         "deps": [],
-        "version": "240-set-plume-default-component"
+        "version": "241-add-custom-function-flag"
       }
     },
     {
@@ -3552,7 +3552,7 @@
           }
         },
         "deps": [],
-        "version": "240-set-plume-default-component"
+        "version": "241-add-custom-function-flag"
       }
     }
   ]

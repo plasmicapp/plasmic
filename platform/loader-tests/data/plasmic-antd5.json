@@ -27212,7 +27212,7 @@
         }
       },
       "deps": [],
-      "version": "240-set-plume-default-component"
+      "version": "241-add-custom-function-flag"
     }
   ],
   [
@@ -38875,7 +38875,7 @@
         "p4m7rWp5nDGl": { "tpl": [], "__type": "VirtualRenderExpr" }
       },
       "deps": ["b420cd72-36aa-46e8-a9af-795714ebc344"],
-      "version": "240-set-plume-default-component"
+      "version": "241-add-custom-function-flag"
     }
   ]
 ]

@@ -27515,7 +27515,7 @@
         }
       },
       "deps": [],
-      "version": "240-set-plume-default-component"
+      "version": "241-add-custom-function-flag"
     }
   ],
   [
@@ -29934,7 +29934,7 @@
         "0C_x9nWtO9s1": { "tpl": [], "__type": "VirtualRenderExpr" }
       },
       "deps": ["2d9b4d39-3373-465f-8045-538cac45fce6"],
-      "version": "240-set-plume-default-component"
+      "version": "241-add-custom-function-flag"
     }
   ]
 ]

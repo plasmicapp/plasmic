@@ -225,6 +225,7 @@ CustomFunction
   defaultExport: Bool
   namespace: String?
   params: [ArgType]
+  isQuery: Bool
 
 CodeLibrary
   name: String

@@ -27515,7 +27515,7 @@
         }
       },
       "deps": [],
-      "version": "240-set-plume-default-component"
+      "version": "241-add-custom-function-flag"
     }
   ],
   [
@@ -29157,7 +29157,7 @@
         }
       },
       "deps": ["5325bdab-f6eb-4f26-874d-07b1e74aeeab"],
-      "version": "240-set-plume-default-component"
+      "version": "241-add-custom-function-flag"
     }
   ]
 ]

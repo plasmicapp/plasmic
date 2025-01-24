@@ -1339,7 +1339,8 @@
           "defaultExport": false,
           "namespace": "math",
           "__type": "CustomFunction",
-          "params": []
+          "params": [],
+          "isQuery": false
         },
         "-hD0qzX8Rbv7": {
           "importPath": "./functions",
@@ -1347,7 +1348,8 @@
           "defaultExport": true,
           "namespace": "math",
           "__type": "CustomFunction",
-          "params": []
+          "params": [],
+          "isQuery": false
         },
         "1wavIcOhMzR6": {
           "importPath": "./functions",
@@ -1355,7 +1357,8 @@
           "defaultExport": false,
           "namespace": null,
           "__type": "CustomFunction",
-          "params": []
+          "params": [],
+          "isQuery": false
         },
         "SOeWExDqMzIL": {
           "expr": { "__ref": "Q2V4gWoP0oq8" },
@@ -1451,7 +1454,7 @@
         }
       },
       "deps": [],
-      "version": "240-set-plume-default-component"
+      "version": "241-add-custom-function-flag"
     }
   ]
 ]

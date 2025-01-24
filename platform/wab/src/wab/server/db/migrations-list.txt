@@ -238,3 +238,4 @@ platform/wab/src/wab/server/bundle-migrations/237-code-component-variants-add-fi
 platform/wab/src/wab/server/bundle-migrations/238-code-component-variants-update-fields.ts
 platform/wab/src/wab/server/bundle-migrations/239-add-server-queries.ts
 platform/wab/src/wab/server/bundle-migrations/240-set-plume-default-component.ts
+platform/wab/src/wab/server/bundle-migrations/241-add-custom-function-flag.ts

@@ -27515,7 +27515,7 @@
         }
       },
       "deps": [],
-      "version": "240-set-plume-default-component"
+      "version": "241-add-custom-function-flag"
     }
   ],
   [
@@ -29600,7 +29600,7 @@
         "aA9tyZnmtZAM": { "text": ["countries"], "__type": "TemplatedString" }
       },
       "deps": ["c37f5929-869b-409a-95d5-17c69bc4e9d3"],
-      "version": "240-set-plume-default-component"
+      "version": "241-add-custom-function-flag"
     }
   ]
 ]
