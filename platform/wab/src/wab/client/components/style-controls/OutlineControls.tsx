@@ -14,7 +14,6 @@ import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { TokenType } from "@/wab/commons/StyleToken";
 import { isStyleOrCodeComponentVariant } from "@/wab/shared/Variants";
-import { ensure } from "@/wab/shared/common";
 import { Alert } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
@@ -44,12 +43,10 @@ export const OutlinePanelSection = observer(function OutlinePanelSection() {
   const hasOutlineProps = OUTLINE_PROPS.some((prop) => sc.hasTargetProp(prop));
   const isVisible = isOpen || hasOutlineProps;
 
-  const viewCtx = ensure(
-    studioCtx.focusedViewCtx(),
-    "Expected view ctx to exist"
-  );
+  // When editing/creating a Mixin, the focusedViewCtx can be undefined
+  const viewCtx = studioCtx.focusedViewCtx();
   const isStyleOrCodeComponentVariantTargeted = viewCtx
-    .variantTplMgr()
+    ?.variantTplMgr()
     .getCurrentVariantCombo()
     .some(isStyleOrCodeComponentVariant);
 
@@ -84,7 +81,7 @@ export const OutlinePanelSection = observer(function OutlinePanelSection() {
     >
       {isVisible && (
         <>
-          {!isStyleOrCodeComponentVariantTargeted && (
+          {isStyleOrCodeComponentVariantTargeted === false && (
             <Alert
               className="mb-lg"
               message={
