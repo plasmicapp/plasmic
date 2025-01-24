@@ -1,8 +1,7 @@
 
 import React, { ReactNode } from "react";
 import { createSupabaseClient } from "@/util/supabase/component";
-import { useMutablePlasmicQueryData } from '@plasmicapp/react-web/lib/query';
-
+import { useMutablePlasmicQueryData } from "@plasmicapp/query";
 import { DataProvider, useSelector } from '@plasmicapp/loader-nextjs';
 import {
   Filter,

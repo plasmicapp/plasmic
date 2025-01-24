@@ -1,6 +1,6 @@
-import { DataProvider, PlasmicCanvasContext } from "@plasmicapp/host";
+import { DataProvider, usePlasmicCanvasContext } from "@plasmicapp/loader-nextjs";
 import { User } from "@supabase/supabase-js";
-import React, { useContext } from "react";
+import React from "react";
 import { createSupabaseClient } from "@/util/supabase/component";
 
 export function SupabaseUserSession({
@@ -14,7 +14,7 @@ export function SupabaseUserSession({
     const supabase = createSupabaseClient();
     const [currentUser, setCurrentUser] = React.useState<User | null>(null);
 
-    const inEditor = useContext(PlasmicCanvasContext);
+    const inEditor = usePlasmicCanvasContext();
 
     React.useEffect(() => {
         if (inEditor && staticToken) {

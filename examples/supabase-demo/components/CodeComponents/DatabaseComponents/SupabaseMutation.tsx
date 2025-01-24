@@ -6,8 +6,6 @@ import {
   isValidFilter,
 } from '@/util/supabase/helpers';
 
-
-
 export interface SupabaseMutationProps {
     children?: ReactNode;
     tableName?: string;
