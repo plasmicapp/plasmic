@@ -608,7 +608,6 @@ function CmsEntryDetailsForm_(
                 >
                   <span>Duplicate entry</span>
                 </Menu.Item>
-                <Menu.Divider />
                 <Menu.Item
                   key="delete"
                   onClick={async () => {
