@@ -7347,17 +7347,14 @@ export class DbMgr implements MigrationDbMgr {
     rowId: CmsRowId,
     opts: {
       identifier?: string;
-      data?: Dict<Dict<unknown>>;
-      draftData?: Dict<Dict<unknown>> | null;
     }
   ) {
     await this.checkCmsRowPerms(rowId, "content");
     const row = await this.getCmsRowById(rowId);
-    opts = {
-      identifier: opts.identifier !== "" ? opts.identifier : undefined,
+    const copiedRow = await this.createCmsRow(tableId, {
+      identifier: opts.identifier || undefined,
       draftData: row.draftData || row.data,
-    };
-    const copiedRow = await this.createCmsRow(tableId, opts);
+    });
     return await this.entMgr.save(copiedRow);
   }
 

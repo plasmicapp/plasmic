@@ -692,6 +692,7 @@ function CmsEntryDetailsForm_(
                   identifier: inputCopyIdentifier,
                 });
                 if (copiedRow) {
+                  setShowCopyModal(false);
                   await message.success({
                     key: "copy-message",
                     content: (
