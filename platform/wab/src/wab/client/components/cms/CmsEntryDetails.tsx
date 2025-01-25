@@ -185,7 +185,6 @@ function CmsEntryDetailsForm_(
   const [hasUnpublishedChanges, setHasUnpublishedChanges] = React.useState(
     !!row?.draftData
   );
-  // Hyuna
   const [showCopyModal, setShowCopyModal] = React.useState(false);
   const [inputCopyIdentifier, setInputCopyIdentifier] = React.useState("");
 

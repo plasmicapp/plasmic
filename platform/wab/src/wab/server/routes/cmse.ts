@@ -269,7 +269,6 @@ export async function deleteRow(req: Request, res: Response) {
   res.json({});
 }
 
-// Hyuna
 export async function copyRow(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const row = await mgr.getCmsRowById(req.params.rowId as CmsRowId);

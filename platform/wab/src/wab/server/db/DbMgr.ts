@@ -274,7 +274,6 @@ import {
   UpdateResult,
 } from "typeorm";
 import * as uuid from "uuid";
-// Hyuna
 
 import { getLowestCommonAncestor } from "@/wab/shared/site-diffs/commit-graph";
 
@@ -7343,7 +7342,6 @@ export class DbMgr implements MigrationDbMgr {
     await this.entMgr.save(row);
   }
 
-  // Hyuna
   async copyCmsRow(
     tableId: CmsTableId,
     rowId: CmsRowId,
