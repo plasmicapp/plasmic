@@ -597,11 +597,9 @@ function CmsEntryDetailsForm_(
                 <Menu.Item
                   key="copy"
                   onClick={() => {
-                    if (row.identifier) {
-                      setInputCopyIdentifier(`Copy of ${row.identifier}`);
-                    } else {
-                      setInputCopyIdentifier("");
-                    }
+                    setInputCopyIdentifier(
+                      row.identifier ? `Copy of ${row.identifier}` : ""
+                    );
                     setShowCopyModal(true);
                   }}
                   disabled={isSaving || isPublishing}
