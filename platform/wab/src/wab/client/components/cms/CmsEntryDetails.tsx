@@ -606,7 +606,7 @@ function CmsEntryDetailsForm_(
                   }}
                   disabled={isSaving || isPublishing}
                 >
-                  <span>Copy entry</span>
+                  <span>Duplicate entry</span>
                 </Menu.Item>
                 <Menu.Divider />
                 <Menu.Item
@@ -668,7 +668,7 @@ function CmsEntryDetailsForm_(
         >
           <Form.Item name="copyIdentifier">
             <span>
-              {`Duplicate the CMS entry with identifier "${inputCopyIdentifier}"?`}
+              {`Duplicate the CMS entry with identifier "${row.identifier}"?`}
               <br />
               {`This will create an unpublished copy of the entry and all its data.`}
             </span>
