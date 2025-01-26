@@ -7342,7 +7342,7 @@ export class DbMgr implements MigrationDbMgr {
     await this.entMgr.save(row);
   }
 
-  async copyCmsRow(
+  async cloneCmsRow(
     tableId: CmsTableId,
     rowId: CmsRowId,
     opts: {

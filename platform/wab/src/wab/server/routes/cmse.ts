@@ -269,11 +269,11 @@ export async function deleteRow(req: Request, res: Response) {
   res.json({});
 }
 
-export async function copyRow(req: Request, res: Response) {
+export async function cloneRow(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const row = await mgr.getCmsRowById(req.params.rowId as CmsRowId);
   userAnalytics(req).track({
-    event: "Copy cms row",
+    event: "Clone cms row",
     properties: {
       rowId: row.id as CmsRowId,
       tableId: row.tableId,
@@ -281,12 +281,12 @@ export async function copyRow(req: Request, res: Response) {
       databaseId: row.table?.databaseId,
     },
   });
-  const copiedRow = await mgr.copyCmsRow(
+  const clonedRow = await mgr.cloneCmsRow(
     row.tableId as CmsTableId,
     req.params.rowId as CmsRowId,
     req.body
   );
-  res.json(copiedRow);
+  res.json(clonedRow);
 }
 
 export async function updateRow(req: Request, res: Response) {

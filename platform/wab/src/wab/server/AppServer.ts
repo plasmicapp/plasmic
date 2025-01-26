@@ -60,8 +60,8 @@ import {
 } from "@/wab/server/routes/cms";
 import {
   cloneDatabase,
+  cloneRow,
   cmsFileUpload,
-  copyRow,
   createDatabase,
   createRows,
   createTable,
@@ -827,7 +827,7 @@ export function addCmsEditorRoutes(app: express.Application) {
   app.get("/api/v1/cmse/rows/:rowId/revisions", withNext(listRowRevisions));
   app.put("/api/v1/cmse/rows/:rowId", withNext(updateRow));
   app.delete("/api/v1/cmse/rows/:rowId", withNext(deleteRow));
-  app.post("/api/v1/cmse/rows/:rowId/copy", withNext(copyRow));
+  app.post("/api/v1/cmse/rows/:rowId/clone", withNext(cloneRow));
   app.get("/api/v1/cmse/row-revisions/:revId", withNext(getRowRevision));
 
   app.post(

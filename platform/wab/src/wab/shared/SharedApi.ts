@@ -1724,13 +1724,13 @@ export abstract class SharedApi {
     return (await this.put(`/cmse/rows/${rowId}`, opts)) as ApiCmseRow;
   }
 
-  async copyCmsRow(
+  async cloneCmsRow(
     rowId: CmsRowId,
     opts: {
       identifier: string;
     }
   ) {
-    return (await this.post(`/cmse/rows/${rowId}/copy`, opts)) as ApiCmseRow;
+    return (await this.post(`/cmse/rows/${rowId}/clone`, opts)) as ApiCmseRow;
   }
 
   async deleteCmsRow(rowId: CmsRowId) {

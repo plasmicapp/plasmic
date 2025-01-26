@@ -584,13 +584,19 @@ export function useFocusOnDisplayed(
   getInput:
     | React.MutableRefObject<HTMLInputElement | null>
     | (() => HTMLInputElement | undefined | null),
-  autoFocus?: boolean
+  opts?: {
+    autoFocus?: boolean;
+    selectAll?: boolean;
+  }
 ) {
   const callback = React.useCallback(
     (visible: boolean) => {
       const input = isFunction(getInput) ? getInput() : getInput.current;
-      if (input && visible && autoFocus) {
+      if (input && visible && opts?.autoFocus) {
         input.focus();
+        if (opts?.selectAll) {
+          input.select();
+        }
       }
     },
     [getInput]
