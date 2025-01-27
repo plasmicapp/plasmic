@@ -924,6 +924,19 @@ export function makeTplMenu(
     });
   }
 
+  builder.genSection(undefined, (push) => {
+    push(
+      <Menu.Item
+        key="zoom-to-fit-selection"
+        onClick={() => studioCtx.tryZoomToFitSelection()}
+      >
+        <MenuItemContent shortcut={getComboForAction("ZOOM_TO_SELECTION")}>
+          Zoom to fit current selection
+        </MenuItemContent>
+      </Menu.Item>
+    );
+  });
+
   if (
     isAdminTeamEmail(
       viewCtx.appCtx.selfInfo?.email,
