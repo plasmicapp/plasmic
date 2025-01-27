@@ -4,9 +4,11 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "yarn gen-types && yarn gen-schema && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "gen-types": "dotenv -- cross-var npx supabase gen types --project-id \\$SUPABASE_PROJECT_ID > ./types/supabase.ts",
+    "gen-schema": "npx tsx --env-file=.env ./scripts/fetchSupabaseSchema.ts"
   },
   "dependencies": {
     "@plasmicapp/loader-nextjs": "^1.0.410",
@@ -23,8 +25,12 @@
   "devDependencies": {
     "@types/node": "^22.10.7",
     "@types/react": "^18",
+    "cross-var": "^1.1.0",
+    "dotenv-cli": "^8.0.0",
     "eslint": "^9.18.0",
     "eslint-config-next": "^15.1.5",
+    "supabase": "^2.6.8",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   }
 }

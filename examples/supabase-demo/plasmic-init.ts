@@ -8,9 +8,50 @@ import {
 } from "./components/CodeComponents/DatabaseComponents";
 import { SupabaseUserSession } from './components/CodeComponents/GlobalContexts';
 import { RedirectIf } from "./components/CodeComponents/LogicComponents";
+import dbSchema from '@/databaseSchema.json';
+import _ from "lodash";
 
 const plasmicProjectId = process.env.PLASMIC_PROJECT_ID ?? "";
 const plasmicApiToken = process.env.PLASMIC_API_TOKEN ?? "";
+
+const tableNameProp = {
+  type: 'choice' as const,
+  multiSelect: false,
+  options: dbSchema.map((table) => table.name) || [],
+};
+
+const columnProp = {
+  type: 'choice' as const,
+  options: (props: any) => {
+    const table = dbSchema.find((t) => t.name === props.tableName);
+    return table?.columns?.map((column) => column.name) ?? [];
+  },
+};
+
+const filtersProp = {
+  type: 'array' as const,
+  nameFunc: (item: any) => item.name || item.key,
+  itemType: {
+    type: 'object' as const,
+    fields: {
+      name: {
+        type: 'choice' as const,
+        options: ['eq', 'match']
+      },
+      args: {
+        type: 'array' as const,
+        itemType: {
+          type: 'object' as const,
+          fields: {
+            column: columnProp,
+            value: 'string' as const
+          }
+        }
+      }
+    }
+  }
+}
+
 export const PLASMIC = initPlasmicLoader({
   projects: [
     {
@@ -36,9 +77,12 @@ PLASMIC.registerComponent(SupabaseQuery, {
   providesData: true,
   props: {
     children: "slot",
-    tableName: "string",
-    columns: "string",
-    filters: "exprEditor",
+    tableName: tableNameProp,
+    columns: {
+      ...columnProp,
+      multiSelect: true,
+    },
+    filters: filtersProp,
     single: "boolean",
   },
   importPath: "./components/CodeComponents/DatabaseComponents",
@@ -111,8 +155,8 @@ PLASMIC.registerComponent(SupabaseMutation, {
   name: "SupabaseMutation",
   props: {
     children: "slot",
-    tableName: "string",
-    filters: "exprEditor",
+    tableName: tableNameProp,
+    filters: filtersProp,
     method: {
       type: "choice",
       options: ["upsert", "insert", "update", "delete"],

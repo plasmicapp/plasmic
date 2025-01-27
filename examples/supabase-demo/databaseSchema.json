@@ -1,0 +1,79 @@
+[
+  {
+    "name": "entries",
+    "columns": [
+      {
+        "schema": "public",
+        "table": "entries",
+        "name": "id",
+        "default": null,
+        "data_type": "bigint",
+        "format": "int8",
+        "is_identity": true,
+        "is_updatable": true,
+        "is_primary_key": true,
+        "enums": []
+      },
+      {
+        "schema": "public",
+        "table": "entries",
+        "name": "user_id",
+        "default": "auth.uid()",
+        "data_type": "uuid",
+        "format": "uuid",
+        "is_identity": false,
+        "is_updatable": true,
+        "is_primary_key": false,
+        "enums": []
+      },
+      {
+        "schema": "public",
+        "table": "entries",
+        "name": "inserted_at",
+        "default": "now()",
+        "data_type": "timestamp with time zone",
+        "format": "timestamptz",
+        "is_identity": false,
+        "is_updatable": true,
+        "is_primary_key": false,
+        "enums": []
+      },
+      {
+        "schema": "public",
+        "table": "entries",
+        "name": "name",
+        "default": null,
+        "data_type": "text",
+        "format": "text",
+        "is_identity": false,
+        "is_updatable": true,
+        "is_primary_key": false,
+        "enums": []
+      },
+      {
+        "schema": "public",
+        "table": "entries",
+        "name": "description",
+        "default": null,
+        "data_type": "text",
+        "format": "text",
+        "is_identity": false,
+        "is_updatable": true,
+        "is_primary_key": false,
+        "enums": []
+      },
+      {
+        "schema": "public",
+        "table": "entries",
+        "name": "imageUrl",
+        "default": null,
+        "data_type": "text",
+        "format": "text",
+        "is_identity": false,
+        "is_updatable": true,
+        "is_primary_key": false,
+        "enums": []
+      }
+    ]
+  }
+]

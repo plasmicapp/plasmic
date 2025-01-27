@@ -5,10 +5,11 @@ import {
   applyFilter,
   isValidFilter,
 } from '@/util/supabase/helpers';
+import { Database } from "@/types/supabase";
 
 export interface SupabaseMutationProps {
     children?: ReactNode;
-    tableName?: string;
+    tableName?: keyof Database["public"]["Tables"];
     method?: "upsert" | "insert" | "update" | "delete";
     filters?: any;
     data?: any;

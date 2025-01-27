@@ -8,11 +8,12 @@ import {
   applyFilter,
   isValidFilter,
 } from '@/util/supabase/helpers';
+import { Database } from "@/types/supabase";
 
 export interface SupabaseQueryProps {
     children?: ReactNode;
-    tableName?: string;
-    columns?: string;
+    tableName?: keyof Database["public"]["Tables"];
+    columns?: string[];
     className?: string;
     filters?: any;
     single?: boolean;
@@ -20,7 +21,6 @@ export interface SupabaseQueryProps {
   
   export function SupabaseQuery(props: SupabaseQueryProps) {
     const supabase = createSupabaseClient();
-  
     // These props are set in the Plasmic Studio
     const { children, tableName, columns, className, filters, single } = props;
     const currentUser = useSelector('auth');
@@ -28,14 +28,15 @@ export interface SupabaseQueryProps {
       | Filter[]
       | undefined;
   
+    const selectFields = columns?.join(',') || '';
     React.useEffect(() => {
       makeQuery();
-    }, [columns, tableName, filters, single]);
+    }, [selectFields, tableName, filters, single]);
   
     // Error messages are currently rendered in the component
     if (!tableName) {
       return <p>You need to set the tableName prop</p>;
-    } else if (!columns) {
+    } else if (!selectFields) {
       return <p>You need to set the columns prop</p>;
     }
   
@@ -45,7 +46,7 @@ export interface SupabaseQueryProps {
       if (!currentUser) {
         return;
       }
-      let query = supabase.from(tableName!).select(columns + ",id");
+      let query = supabase.from(tableName!).select(selectFields || '');
       query = applyFilter(query, validFilters);
       const { data, error, status } = await (single
         ? query.single()
