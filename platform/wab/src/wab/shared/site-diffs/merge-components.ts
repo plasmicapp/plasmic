@@ -505,10 +505,8 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
         }
       } else if (mergedComp.tplTree.uuid !== compA.tplTree.uuid) {
         mergedComp.tplTree = cloneInst(compA.tplTree, siteA);
-        fixParentPointers(mergedComp.tplTree);
       } else if (mergedComp.tplTree.uuid !== compB.tplTree.uuid) {
         mergedComp.tplTree = cloneInst(compB.tplTree, siteB);
-        fixParentPointers(mergedComp.tplTree);
       }
       const tplInAncestorByUuid = new Map(
         flattenComponent(ancestorComp).map((tpl) => [tpl.uuid, tpl])
@@ -797,6 +795,10 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
         // not very common). In this case, we fix the parent here.
         mergedComp.tplTree.parent = null;
       }
+
+      // We already handled parent conflicts, so we can safely ensure that the
+      // parent pointers are valid now without loss of information.
+      fixParentPointers(mergedComp.tplTree);
     }
   });
 

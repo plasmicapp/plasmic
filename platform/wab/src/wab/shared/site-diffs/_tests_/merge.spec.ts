@@ -93,6 +93,7 @@ import edgeCasesBundle from "@/wab/shared/site-diffs/_tests_/bundles/test-edge-c
 import mergeDepsBundle from "@/wab/shared/site-diffs/_tests_/bundles/test-merging-deps.json";
 import rerootBundle from "@/wab/shared/site-diffs/_tests_/bundles/test-reroot.json";
 import mergeTplsBundle from "@/wab/shared/site-diffs/_tests_/bundles/test-tpl-merge.json";
+import mergeTplParentBundle from "@/wab/shared/site-diffs/_tests_/bundles/test-tpl-parent-merge.json";
 import {
   basicSite,
   fetchLastBundleVersion,
@@ -4967,5 +4968,16 @@ describe("merging", () => {
         (arg) => arg.param.variable.name === "slot2"
       ).length
     ).toEqual(1);
+  });
+
+  it("merge tpls do not have multiple parents", () => {
+    const result = testMergeFromJsonBundle(
+      hackyCast<ProjectFullDataResponse>(mergeTplParentBundle)
+    );
+
+    expect(result).toMatchObject({
+      status: "merged",
+      autoReconciliations: [],
+    });
   });
 });
