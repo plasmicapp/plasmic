@@ -10,6 +10,20 @@ import { ParallaxProviderProps } from "react-scroll-parallax/dist/components/Par
 import ResizeObserver from "resize-observer-polyfill";
 
 /**
+ * A safe wrapper around `useController()` to prevent errors when
+ * `ParallaxProvider` is missing. If the context is unavailable,
+ * `useController()` will throw an error, which we catch and handle
+ * gracefully by returning `null` instead of crashing the component.
+ */
+function useSafeController() {
+  try {
+    return useController();
+  } catch {
+    return null; // Return null instead of throwing an error
+  }
+}
+
+/**
  * This is required to ensure the parallax scrolling works correctly, since if
  * (for instance) images load after the parallax wrapper has calculated the
  * dimensions of the space, it will result in incorrect parallax scrolling
@@ -20,7 +34,7 @@ import ResizeObserver from "resize-observer-polyfill";
  * future.
  */
 function ParallaxCacheUpdate({ children }: React.PropsWithChildren<{}>) {
-  const parallaxController = useController();
+  const parallaxController = useSafeController();
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
