@@ -1851,7 +1851,8 @@ export function serializeTplComponentBase(
           opts?.additionalClassExpr
         )
       : undefined;
-  if (shouldIncludeClassName(node) && serializedAppicableClassName) {
+
+  if (serializedAppicableClassName) {
     const classNameProp =
       (isCodeComponent(node.component) &&
         node.component.codeComponentMeta.classNameProp) ||
@@ -2335,13 +2336,6 @@ function serializeDefaultElementType(
   }
 }
 
-function shouldIncludeClassName(node: TplNode) {
-  return (
-    !isTplCodeComponent(node) ||
-    node.component.codeComponentMeta.styleSections !== false
-  );
-}
-
 /**
  * Returns the default props for the wrapper component
  */
@@ -2361,7 +2355,7 @@ export function serializeDefaultExternalProps(
       }
     `;
   }
-  const root = component.tplTree;
+
   const params = getExternalParams(ctx);
   return `
     export interface ${
@@ -2376,9 +2370,8 @@ export function serializeDefaultExternalProps(
               ctx.projectFlags
             )}`
         )
-        // should only include className to Plasmic component, if it's root supports className
         .join(";\n")}
-      ${shouldIncludeClassName(root) ? "className?: string;" : ""}
+      className?: string;
   }`;
 }
 

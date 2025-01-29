@@ -3327,7 +3327,7 @@ function PlasmicModalDialog__RenderFunc(props) {
             }]);
     }, [$props, $ctx, $refs]);
     var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $refs: $refs });
-    return (createPlasmicElementProxy(BaseDialogTrigger, { "data-plasmic-name": "ariaDialogTrigger", "data-plasmic-override": overrides.ariaDialogTrigger, "data-plasmic-root": true, "data-plasmic-for-node": forNode, dialog: createPlasmicElementProxy(BaseModal, { "data-plasmic-name": "ariaModal", "data-plasmic-override": overrides.ariaModal, className: classNames("__wab_instance", "ModalDialog__ariaModal__eaRon", { "ModalDialog__ariaModalnoTrigger__eaRoneQ53M": hasVariant($state, "noTrigger", "noTrigger") }), defaultOpen: true, isDismissable: args.closeOnBackdropClick, isKeyboardDismissDisabled: args.isKeyboardDismissDisabled, isOpen: generateStateValueProp($state, ["ariaModal", "isOpen"]), modalOverlayClass: classNames({ "pcls_QFOecPzS37aO": true }), onOpenChange: function () {
+    return (createPlasmicElementProxy(BaseDialogTrigger, { "data-plasmic-name": "ariaDialogTrigger", "data-plasmic-override": overrides.ariaDialogTrigger, "data-plasmic-root": true, "data-plasmic-for-node": forNode, className: classNames("__wab_instance", "root_reset_project", "plasmic_default_styles", "plasmic_mixins", "plasmic_tokens", "ModalDialog__ariaDialogTrigger__oSAta", { "ModalDialog__ariaDialogTriggernoTrigger__oSAtaeQ53M": hasVariant($state, "noTrigger", "noTrigger") }), dialog: createPlasmicElementProxy(BaseModal, { "data-plasmic-name": "ariaModal", "data-plasmic-override": overrides.ariaModal, className: classNames("__wab_instance", "ModalDialog__ariaModal__eaRon", { "ModalDialog__ariaModalnoTrigger__eaRoneQ53M": hasVariant($state, "noTrigger", "noTrigger") }), defaultOpen: true, isDismissable: args.closeOnBackdropClick, isKeyboardDismissDisabled: args.isKeyboardDismissDisabled, isOpen: generateStateValueProp($state, ["ariaModal", "isOpen"]), modalOverlayClass: classNames({ "pcls_QFOecPzS37aO": true }), onOpenChange: function () {
                 var eventArgs = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     eventArgs[_i] = arguments[_i];
@@ -3584,7 +3584,7 @@ scrollableContent?: Flex__<"div">;
 "onOpenChange"?: (val: boolean) => void;
 "footer"?: React.ReactNode;
 "noTrigger"?: SingleBooleanChoiceArg<"noTrigger">
-      
+      className?: string;
   }
 
     
@@ -3690,7 +3690,12 @@ scrollableContent?: Flex__<"div">;
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       
-      dialog={<BaseModal
+      className={classNames("__wab_instance", "root_reset_project", "plasmic_default_styles", "plasmic_mixins", "plasmic_tokens", "ModalDialog__ariaDialogTrigger__oSAta", { "ModalDialog__ariaDialogTriggernoTrigger__oSAtaeQ53M": hasVariant(
+      $state,
+      "noTrigger",
+      "noTrigger"
+    ) })}
+dialog={<BaseModal
       
       data-plasmic-name={"ariaModal"}
       data-plasmic-override={overrides.ariaModal}
@@ -4081,7 +4086,7 @@ function PlasmicMyOverlayArrow__RenderFunc(props) {
             return __assign(__assign({}, prev), changes);
         });
     }, []);
-    return (createPlasmicElementProxy(BaseOverlayArrow, { "data-plasmic-name": "root", "data-plasmic-override": overrides.root, "data-plasmic-root": true, "data-plasmic-for-node": forNode, plasmicUpdateVariant: updateVariant },
+    return (createPlasmicElementProxy(BaseOverlayArrow, { "data-plasmic-name": "root", "data-plasmic-override": overrides.root, "data-plasmic-root": true, "data-plasmic-for-node": forNode, className: classNames("__wab_instance", "root_reset_project", "plasmic_default_styles", "plasmic_mixins", "plasmic_tokens", "MyOverlayArrow__root___043Jz"), plasmicUpdateVariant: updateVariant },
         createPlasmicElementProxy("div", { "data-plasmic-name": "freeBox", "data-plasmic-override": overrides.freeBox, className: classNames("plasmic_default__all", "plasmic_default__div", "MyOverlayArrow__freeBox__pU7Yq") })));
 }
 var PlasmicDescendants = {
@@ -4231,7 +4236,7 @@ freeBox?: Flex__<"div">;
     
     export interface DefaultMyOverlayArrowProps {
       
-      
+      className?: string;
   }
 
     
@@ -4319,7 +4324,8 @@ placementRight: false
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       
-      plasmicUpdateVariant={updateVariant}
+      className={classNames("__wab_instance", "root_reset_project", "plasmic_default_styles", "plasmic_mixins", "plasmic_tokens", "MyOverlayArrow__root___043Jz")}
+plasmicUpdateVariant={updateVariant}
       
       >
             <div
@@ -4693,7 +4699,7 @@ function PlasmicNewPage__RenderFunc(props) {
                     } }),
                 createPlasmicElementProxy(Tooltip, { "data-plasmic-name": "tooltip", "data-plasmic-override": overrides.tooltip, className: classNames("__wab_instance", "NewPage__tooltip__tvWgF") }),
                 createPlasmicElementProxy(MyOverlayArrow, { "data-plasmic-name": "myOverlayArrow", "data-plasmic-override": overrides.myOverlayArrow, className: classNames("__wab_instance", "NewPage__myOverlayArrow__h7L7T") }),
-                createPlasmicElementProxy(Fetcher, { "data-plasmic-name": "dataFetcher", "data-plasmic-override": overrides.dataFetcher, queries: {} }, function ($queries) { return createPlasmicElementProxy("div", { className: classNames("plasmic_default__all", "plasmic_default__div", "__wab_text", "NewPage__text__j2Q51") }, "Enter some text"); }),
+                createPlasmicElementProxy(Fetcher, { "data-plasmic-name": "dataFetcher", "data-plasmic-override": overrides.dataFetcher, className: classNames("__wab_instance", "NewPage__dataFetcher__sJSn"), queries: {} }, function ($queries) { return createPlasmicElementProxy("div", { className: classNames("plasmic_default__all", "plasmic_default__div", "__wab_text", "NewPage__text__j2Q51") }, "Enter some text"); }),
                 createPlasmicElementProxy(ModalDialog, { "data-plasmic-name": "modalDialog", "data-plasmic-override": overrides.modalDialog, className: classNames("__wab_instance", "NewPage__modalDialog__eb26A"), isOpen: generateStateValueProp($state, ["modalDialog", "isOpen"]), onOpenChange: function () {
                         var eventArgs = [];
                         for (var _i = 0; _i < arguments.length; _i++) {
@@ -5040,7 +5046,8 @@ onOpenChange={async (...eventArgs: any) => {
       
       
       
-      queries={{}}
+      className={classNames("__wab_instance", "NewPage__dataFetcher__sJSn")}
+queries={{}}
       
       >
             { ($queries: any) => <div
@@ -5935,7 +5942,7 @@ function PlasmicPopoverDialog__RenderFunc(props) {
             }]);
     }, [$props, $ctx, $refs]);
     var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $refs: $refs });
-    return (createPlasmicElementProxy(BaseDialogTrigger, { "data-plasmic-name": "ariaDialogTrigger", "data-plasmic-override": overrides.ariaDialogTrigger, "data-plasmic-root": true, "data-plasmic-for-node": forNode, dialog: createPlasmicElementProxy(Popover, { "data-plasmic-name": "popover", "data-plasmic-override": overrides.popover, content: renderPlasmicSlot({
+    return (createPlasmicElementProxy(BaseDialogTrigger, { "data-plasmic-name": "ariaDialogTrigger", "data-plasmic-override": overrides.ariaDialogTrigger, "data-plasmic-root": true, "data-plasmic-for-node": forNode, className: classNames("__wab_instance", "root_reset_project", "plasmic_default_styles", "plasmic_mixins", "plasmic_tokens", "PopoverDialog__ariaDialogTrigger__cyboy"), dialog: createPlasmicElementProxy(Popover, { "data-plasmic-name": "popover", "data-plasmic-override": overrides.popover, content: renderPlasmicSlot({
                 defaultContents: createPlasmicElementProxy(Stack__, { as: "div", hasGap: true, className: classNames("plasmic_default__all", "plasmic_default__div", "PopoverDialog__freeBox__tC4Ze") },
                     createPlasmicElementProxy("div", { className: classNames("plasmic_default__all", "plasmic_default__div", "__wab_text", "PopoverDialog__text__pn4M") }, "This is a Popover!"),
                     createPlasmicElementProxy("div", { className: classNames("plasmic_default__all", "plasmic_default__div", "__wab_text", "PopoverDialog__text__fcSFe") }, "You can put anything here!")),
@@ -6120,7 +6127,7 @@ popover?: Flex__<typeof Popover>;
 "onOpenChange"?: (val: boolean) => void;
 "showArrow"?: boolean;
 "content"?: React.ReactNode
-      
+      className?: string;
   }
 
     
@@ -6208,7 +6215,8 @@ popover?: Flex__<typeof Popover>;
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       
-      dialog={<Popover
+      className={classNames("__wab_instance", "root_reset_project", "plasmic_default_styles", "plasmic_mixins", "plasmic_tokens", "PopoverDialog__ariaDialogTrigger__cyboy")}
+dialog={<Popover
       
       data-plasmic-name={"popover"}
       data-plasmic-override={overrides.popover}
@@ -6562,7 +6570,7 @@ function PlasmicTooltip__RenderFunc(props) {
             return __assign(__assign({}, prev), changes);
         });
     }, []);
-    return (createPlasmicElementProxy(BaseTooltip, { "data-plasmic-name": "ariaTooltip", "data-plasmic-override": overrides.ariaTooltip, "data-plasmic-root": true, "data-plasmic-for-node": forNode, closeDelay: args.closeDelay, delay: args.delay, isDisabled: args.isDisabled, isOpen: generateStateValueProp($state, ["ariaTooltip", "isOpen"]), onOpenChange: function () {
+    return (createPlasmicElementProxy(BaseTooltip, { "data-plasmic-name": "ariaTooltip", "data-plasmic-override": overrides.ariaTooltip, "data-plasmic-root": true, "data-plasmic-for-node": forNode, className: classNames("__wab_instance", "root_reset_project", "plasmic_default_styles", "plasmic_mixins", "plasmic_tokens", "Tooltip__ariaTooltip__ry2S4"), closeDelay: args.closeDelay, delay: args.delay, isDisabled: args.isDisabled, isOpen: generateStateValueProp($state, ["ariaTooltip", "isOpen"]), onOpenChange: function () {
             var eventArgs = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 eventArgs[_i] = arguments[_i];
@@ -6759,7 +6767,7 @@ svg?: Flex__<"svg">;
 "trigger"?: React.ReactNode;
 "content"?: React.ReactNode;
 "showArrow"?: boolean
-      
+      className?: string;
   }
 
     
@@ -6863,7 +6871,8 @@ placementRight: false
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       
-      closeDelay={args.closeDelay}
+      className={classNames("__wab_instance", "root_reset_project", "plasmic_default_styles", "plasmic_mixins", "plasmic_tokens", "Tooltip__ariaTooltip__ry2S4")}
+closeDelay={args.closeDelay}
 delay={args.delay}
 isDisabled={args.isDisabled}
 isOpen={generateStateValueProp($state, ["ariaTooltip","isOpen"])}
