@@ -3406,10 +3406,10 @@
   dependencies:
     react-quill "^2.0.0"
 
-"@plasmicpkgs/react-scroll-parallax@^0.0.215":
-  version "0.0.215"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-scroll-parallax/-/react-scroll-parallax-0.0.215.tgz#685d61504b893322514e8be120b46383b6b22f3a"
-  integrity sha512-oTESBv/S2QD0KO7wXUvJSavnecnn2hnbvsBZeRVA6qzyM2jDBxuc523mdLV5rFcbFZDrDWDYBunrfkMvP17mJA==
+"@plasmicpkgs/react-scroll-parallax@^0.0.216":
+  version "0.0.216"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-scroll-parallax/-/react-scroll-parallax-0.0.216.tgz#c592c525a8135e59bc0af9a191e70257644fc5fb"
+  integrity sha512-DW9gQKFS9mG0Wkme59BASe0WWIVRCV77iWcoQLjMgfDO4KJaZv4B3EzmmdxD1h3vB4cIvLAoecH7IdiraGbFgQ==
   dependencies:
     react-scroll-parallax "3.0.0-alpha.14"
     resize-observer-polyfill "^1.5.1"
