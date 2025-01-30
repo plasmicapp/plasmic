@@ -238,7 +238,7 @@ export function registerDialog(PLASMIC?: Registerable) {
     displayName: "Dialog Core",
     importPath: "@plasmicpkgs/radix-ui",
     importName: "Dialog",
-    styleSections: false,
+    styleSections: ["visibility"],
     defaultStyles: {
       // Note: unable to set position styles since Plasmic coerces to auto layout
       display: "flex",

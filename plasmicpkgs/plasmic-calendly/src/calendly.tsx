@@ -108,7 +108,7 @@ export const CalendlyCornerPopupMeta: CodeComponentMeta<CalendlyCornerPopupProps
     description: "Shows Popup button on corner of the webpage",
     importPath: modulePath,
     providesData: true,
-    styleSections: false,
+    styleSections: ["visibility"],
     props: {
       accountLink: {
         type: "string",

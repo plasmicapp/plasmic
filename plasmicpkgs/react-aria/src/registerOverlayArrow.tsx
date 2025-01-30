@@ -37,16 +37,12 @@ const { variants, withObservedValues } = pickAriaComponentVariants(
 export function BaseOverlayArrow({
   children,
   plasmicUpdateVariant,
-  className,
 }: BaseOverlayArrowProps) {
   const popoverContext = React.useContext(PopoverContext);
   const tooltipContext = React.useContext(TooltipContext);
   const isStandalone = !popoverContext && !tooltipContext; // i.e. without a trigger to point to
   const overlayArrow = (
-    <OverlayArrow
-      style={{ lineHeight: "0", ...COMMON_STYLES }}
-      className={className}
-    >
+    <OverlayArrow style={{ lineHeight: "0", ...COMMON_STYLES }}>
       {({ placement }: OverlayArrowRenderProps) =>
         withObservedValues(
           children,

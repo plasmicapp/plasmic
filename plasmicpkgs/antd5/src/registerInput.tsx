@@ -122,7 +122,7 @@ export function registerInput(loader?: Registerable) {
   registerComponentHelper(loader, AntdInput, {
     name: inputComponentName,
     displayName: "Input",
-    styleSections: false,
+    styleSections: ["visibility"],
     props: {
       value: {
         type: "string",
@@ -162,7 +162,7 @@ export function registerTextArea(loader?: Registerable) {
     name: textAreaComponentName,
     parentComponentName: inputComponentName,
     displayName: "Text Area",
-    styleSections: false,
+    styleSections: ["visibility"],
     props: {
       value: {
         type: "string",
@@ -203,7 +203,7 @@ export function registerPasswordInput(loader?: Registerable) {
     name: passwordComponentName,
     parentComponentName: inputComponentName,
     displayName: "Password Input",
-    styleSections: false,
+    styleSections: ["visibility"],
     props: {
       value: {
         type: "string",
@@ -241,7 +241,7 @@ export function registerNumberInput(loader?: Registerable) {
     name: inputNumberComponentName,
     parentComponentName: inputComponentName,
     displayName: "Number Input",
-    styleSections: false,
+    styleSections: ["visibility"],
     props: {
       value: {
         type: "number",

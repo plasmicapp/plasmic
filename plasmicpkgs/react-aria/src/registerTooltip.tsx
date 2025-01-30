@@ -31,7 +31,6 @@ export interface BaseTooltipProps
   children: React.ReactElement<HTMLElement>;
   tooltipContent?: React.ReactElement;
   resetClassName?: string;
-  className?: string;
 }
 
 interface TriggerWrapperProps {
