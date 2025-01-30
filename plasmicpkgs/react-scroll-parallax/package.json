@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-scroll-parallax",
-  "version": "0.0.215",
+  "version": "0.0.216",
   "description": "Plasmic registration call for the HTML5 video element",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
