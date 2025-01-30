@@ -55,7 +55,6 @@ const filtersProp = {
 export const PLASMIC = initPlasmicLoader({
   projects: [
     {
-      version: "updated-auth",
       id: plasmicProjectId,
       token: plasmicApiToken,
     },

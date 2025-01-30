@@ -5,7 +5,7 @@ async function fetchSchema() {
     const supabase = createSupabaseClient();
 
     try {
-        const { data, error } = await supabase.rpc('get_table_info' as never);
+        const { data, error } = await supabase.rpc('get_table_info');
         if (error) {
             throw error;
         }
