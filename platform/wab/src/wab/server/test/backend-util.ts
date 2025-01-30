@@ -30,7 +30,7 @@ export async function withDb(
         [1, 2, 3].map(async (num) => {
           const user = await sudo.createUser({
             email: `yang${num}@test.com`,
-            firstName: "Yang",
+            firstName: `Yang ${num}`,
             lastName: "Zhang",
             password: "!53kr3tz!",
             needsIntroSplash: false,
