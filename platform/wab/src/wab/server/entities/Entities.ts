@@ -1251,7 +1251,7 @@ export class HostlessVersion extends Base<"HostlessVersionId"> {
 
 @Entity()
 @Index("PROJECT_AND_BRANCH_IDX", ["projectId", "branchId"])
-export class Comment extends Base<"CommentId"> {
+export class CommentThread extends Base<"CommentThreadId"> {
   @ManyToOne(() => Project, { nullable: false })
   project: Project | null;
 
@@ -1264,21 +1264,37 @@ export class Comment extends Base<"CommentId"> {
   @Column("text", { nullable: true })
   branchId: BranchId | null;
 
-  @Column("boolean", { default: false })
-  resolved: boolean;
-
-  @Column("boolean", { default: false })
-  isEmailNotificationSent: boolean;
-
   @Column("jsonb")
   location: CommentLocation;
 
-  @Column("text")
-  body: string;
+  @OneToMany(() => Comment, (comment) => comment.commentThread)
+  comments: Comment[];
+
+  @OneToMany(
+    () => CommentThreadHistory,
+    (commentThreadHistory) => commentThreadHistory.commentThread
+  )
+  commentThreadHistories: CommentThreadHistory[];
+
+  // this should be in synced with CommentThreadHistory resolved
+  @Column("boolean", { default: false })
+  resolved: boolean;
+
+  @Column("timestamptz", { nullable: true })
+  lastEmailedAt: Date | null;
+}
+
+@Entity()
+export class Comment extends Base<"CommentId"> {
+  @ManyToOne(() => CommentThread, { nullable: false, onDelete: "CASCADE" })
+  commentThread: CommentThread | null;
 
   @Index()
   @Column("text")
-  threadId: CommentThreadId;
+  commentThreadId: CommentThreadId;
+
+  @Column("text")
+  body: string;
 }
 
 @Entity()
@@ -1292,6 +1308,19 @@ export class CommentReaction extends Base<"CommentReactionId"> {
 
   @Column("jsonb")
   data: CommentReactionData;
+}
+
+@Entity()
+export class CommentThreadHistory extends Base<"ThreadHistoryId"> {
+  @ManyToOne(() => CommentThread, { nullable: false, onDelete: "CASCADE" })
+  commentThread: CommentThread | null;
+
+  @Index()
+  @Column("text")
+  commentThreadId: CommentThreadId;
+
+  @Column("boolean")
+  resolved: boolean;
 }
 
 // This table represents the directories that are configured for a team

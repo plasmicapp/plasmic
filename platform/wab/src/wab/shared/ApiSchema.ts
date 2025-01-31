@@ -52,6 +52,7 @@ export type SsoConfigId = Opaque<string, "SsoConfigId">;
 export type TutorialDbId = Opaque<string, "TutorialDbId">;
 export type DataSourceId = Opaque<string, "DataSourceId">;
 export type CopilotInteractionId = Opaque<string, "CopilotInteractionId">;
+export type CommentThreadId = Opaque<string, "CommentThreadId">;
 
 export type MainBranchId = Opaque<string, "MainBranchId">;
 export const MainBranchId = "main" as MainBranchId;
@@ -1540,24 +1541,29 @@ export type CommentLocation = {
   variants: ModelAddr[];
 };
 
-export type CommentThreadId = Opaque<string, "CommentThreadId">;
-
 // Comment data is already branch specific
-export interface CommentData {
-  location: CommentLocation;
+export type RootCommentData = {
   body: string;
-  threadId: CommentThreadId;
-}
+  location: CommentLocation;
+};
+
+export type ThreadCommentData = {
+  body: string;
+};
 
 export interface CommentReactionData {
   emojiName: string;
 }
 
-export interface ApiComment extends ApiEntityBase<CommentId> {
+export interface ApiCommentThread extends ApiEntityBase<CommentThreadId> {
   location: CommentLocation;
-  body: string;
-  threadId: CommentThreadId;
   resolved: boolean;
+  comments: ApiComment[];
+}
+
+export interface ApiComment extends ApiEntityBase<CommentId> {
+  body: string;
+  commentThreadId: CommentThreadId;
 }
 
 export interface ApiCommentReaction extends ApiEntityBase<CommentReactionId> {
@@ -1570,7 +1576,7 @@ export interface ApiNotificationSettings {
 }
 
 export interface GetCommentsResponse {
-  comments: ApiComment[];
+  threads: ApiCommentThread[];
   reactions: ApiCommentReaction[];
   selfNotificationSettings?: ApiNotificationSettings;
   users: ApiUser[];
@@ -1578,15 +1584,11 @@ export interface GetCommentsResponse {
 
 export type UpdateNotificationSettingsRequest = ApiNotificationSettings;
 
-export interface PostCommentRequest {
-  location: CommentLocation;
-  body: string;
-  threadId: CommentThreadId;
-}
-
 export interface EditCommentRequest {
-  body?: string;
-  resolved?: boolean;
+  body: string;
+}
+export interface ResolveThreadRequest {
+  resolved: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
