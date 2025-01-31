@@ -44,3 +44,13 @@ export interface ManyRowsResult<T = any> {
   schema: TableSchema;
   paginate?: Pagination;
 }
+
+export interface ServerQuery<F extends (...args: any[]) => any> {
+  fn: F;
+  execParams: () => Parameters<F>;
+}
+
+export interface ServerQueryResult<T = any> {
+  data: T;
+  isLoading: boolean;
+}

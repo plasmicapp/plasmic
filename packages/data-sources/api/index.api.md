@@ -46,6 +46,9 @@ export function deriveFieldConfigs<T extends BaseFieldConfig>(specifiedFieldsPar
 // @public (undocumented)
 export function executePlasmicDataOp<T extends SingleRowResult | ManyRowsResult>(op: DataOp, opts?: ExecuteOpts): Promise<T>;
 
+// @public
+export function executeServerQuery<F extends (...args: any[]) => any>(serverQuery: ServerQuery<F>): Promise<ServerQueryResult<ReturnType<F>> | ServerQueryResult<{}>>;
+
 // @public (undocumented)
 export function Fetcher(props: FetcherProps): React_2.ReactElement | null;
 
@@ -81,6 +84,12 @@ export interface ManyRowsResult<T = any> {
 }
 
 // @public (undocumented)
+export function mkPlasmicUndefinedServerProxy(): {
+    data: {};
+    isLoading: boolean;
+};
+
+// @public (undocumented)
 export function normalizeData(rawData: unknown): NormalizedData | undefined;
 
 // @public (undocumented)
@@ -104,6 +113,22 @@ export type QueryResult = Partial<ManyRowsResult<any>> & {
     error?: any;
     isLoading?: boolean;
 };
+
+// @public (undocumented)
+export interface ServerQuery<F extends (...args: any[]) => any> {
+    // (undocumented)
+    execParams: () => Parameters<F>;
+    // (undocumented)
+    fn: F;
+}
+
+// @public (undocumented)
+export interface ServerQueryResult<T = any> {
+    // (undocumented)
+    data: T;
+    // (undocumented)
+    isLoading: boolean;
+}
 
 // @public (undocumented)
 export interface SingleRowResult<T = any> {
