@@ -4,29 +4,25 @@ import { createSupabaseClient } from "@/util/supabase/component";
 export function SupabaseUserLogOut({
     className,
     children,
-    redirectOnSuccess,
+    onSuccess,
   }: {
     className?: string;
     children?: React.ReactElement;
-    redirectOnSuccess?: string;
+    onSuccess: () => void;
   }) {
     const supabase = createSupabaseClient();
-    const ref = React.createRef<any>();
   
-    const onLogOut = async () => {
+    const onLogOut = async (e: React.FormEvent) => {
+      e?.preventDefault();
       await supabase.auth.signOut();
-      if (redirectOnSuccess) {
-        ref.current.click();
+      if (onSuccess) {
+        onSuccess();
       }
     };
     return (
-      <div className={className}>
-        {children &&
-          React.cloneElement(children, { ...children.props, onClick: onLogOut })}
-        {redirectOnSuccess && (
-          <a href={redirectOnSuccess} hidden={true} ref={ref} />
-        )}
-      </div>
+      <form onSubmit={onLogOut} className={className}>
+        {children}
+      </form>
     );
   }
   

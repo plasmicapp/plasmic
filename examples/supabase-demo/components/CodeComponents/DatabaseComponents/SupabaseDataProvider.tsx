@@ -10,7 +10,7 @@ import {
 } from '@/util/supabase/helpers';
 import { Database } from "@/types/supabase";
 
-export interface SupabaseQueryProps {
+export interface SupabaseDataProviderProps {
     children?: ReactNode;
     tableName?: keyof Database["public"]["Tables"];
     columns?: string[];
@@ -19,7 +19,7 @@ export interface SupabaseQueryProps {
     single?: boolean;
   }
   
-  export function SupabaseQuery(props: SupabaseQueryProps) {
+  export function SupabaseDataProvider(props: SupabaseDataProviderProps) {
     const supabase = createSupabaseClient();
     // These props are set in the Plasmic Studio
     const { children, tableName, columns, className, filters, single } = props;
@@ -29,10 +29,7 @@ export interface SupabaseQueryProps {
       | undefined;
   
     const selectFields = columns?.join(',') || '';
-    React.useEffect(() => {
-      makeQuery();
-    }, [selectFields, tableName, filters, single]);
-  
+
     // Error messages are currently rendered in the component
     if (!tableName) {
       return <p>You need to set the tableName prop</p>;
@@ -58,6 +55,8 @@ export interface SupabaseQueryProps {
       return data;
     }
 
+    // The first parameter is a unique cache key for the query.
+    // If you want to update the cache - you are able to use the Refresh Data function in the Plasmic Studio.
     const { data } = useMutablePlasmicQueryData(`${tableName}-${JSON.stringify(filters)}`, async () => {
       try {
         return await makeQuery();
@@ -65,6 +64,9 @@ export interface SupabaseQueryProps {
         console.error(err);
         return {};
       }
+      // As an additional way to control the cache flow - you are able to specify the revalidate options.
+      // For example, you can revalidate the data on mount and on page focus, to make sure that data is always up-to-date.
+      // If your data is mostly static - turn these options off.
     }, {revalidateOnMount: true, revalidateOnFocus: true, });
   
     return (

@@ -7,7 +7,7 @@ import {
 } from '@/util/supabase/helpers';
 import { Database } from "@/types/supabase";
 
-export interface SupabaseMutationProps {
+export interface SupabaseFormProps {
     children?: ReactNode;
     tableName?: keyof Database["public"]["Tables"];
     method?: "upsert" | "insert" | "update" | "delete";
@@ -16,7 +16,7 @@ export interface SupabaseMutationProps {
     onSuccess?: () => void;
     className?: string;
   }
-  export function SupabaseMutation(props: SupabaseMutationProps) {
+  export function SupabaseForm(props: SupabaseFormProps) {
     const {
       children,
       tableName,
@@ -48,27 +48,35 @@ export interface SupabaseMutationProps {
       try {
         const table = supabase.from(tableName!);
         let query: any;
-        if (method === "update") {
-          query = table.update(data);
-        } else if (method === "upsert") {
-          query = table.upsert(data);
-        } else if (method === "insert") {
-          query = table.insert(data);
-        } else if (method === "delete") {
-          query = table.delete();
+        switch (method) {
+          case "update": {
+            query = table.update(data);
+            break;
+          }
+          case "upsert": {
+            query = table.upsert(data);
+          }
+          case "insert": {
+            query = table.insert(data);
+          }
+          case "delete": {
+            query = table.delete();
+          }
+          default: {
+            throw new Error("Invalid method");
+          }
         }
         
         query = applyFilter(query, validFilters);
         const { error } = await query;
 
         if (error) {
-          console.log(error);
+          console.error(error);
         } else if (onSuccess) {
-          console.log(onSuccess);
           onSuccess();
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
   

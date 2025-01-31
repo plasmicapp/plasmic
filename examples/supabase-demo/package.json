@@ -12,15 +12,11 @@
   },
   "dependencies": {
     "@plasmicapp/loader-nextjs": "^1.0.410",
-    "@plasmicpkgs/antd": "^2.0.128",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.48.0",
-    "@types/lodash": "^4.17.14",
-    "lodash": "^4.17.21",
     "next": "^14.2.5",
     "react": "^18",
-    "react-dom": "^18",
-    "react-hook-form": "^7.54.2"
+    "react-dom": "^18"
   },
   "devDependencies": {
     "@types/node": "^22.10.7",

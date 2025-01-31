@@ -1,6 +1,13 @@
 import { type GetServerSidePropsContext } from 'next'
 import { createServerClient, serializeCookieHeader } from '@supabase/ssr'
 
+
+/**
+ * This function creates a new Supabase client to be used in the getServerSideProps function on a page.
+ * See more https://nextjs.org/docs/pages/building-your-application/data-fetching/get-server-side-props
+ * Not used in our example. Most of the time you would want to use usePlasmicDataQuery() instead, which works for both SSG and SSR.
+ * See more here: https://docs.plasmic.app/learn/data-code-components/#fetching-data-from-your-code-components instead
+ */
 export function createSupabaseClient({ req, res }: GetServerSidePropsContext) {
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
