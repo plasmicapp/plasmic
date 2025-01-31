@@ -10115,8 +10115,8 @@ export class DbMgr implements MigrationDbMgr {
     await this.projectSyncMetadata().delete({ projectId: id });
     await this.copilotInteractions().delete({ projectId: id });
 
-    // comment reactions deleted by cascade
-    await this.comments().delete({ projectId: id });
+    // comments, comment reactions, history deleted by cascade
+    await this.commentThreads().delete({ projectId: id });
 
     await this.appAuthConfigs().delete({ projectId: id });
     await this.appEndUserAccess().delete({ projectId: id });
