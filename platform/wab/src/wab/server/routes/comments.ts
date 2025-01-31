@@ -101,7 +101,7 @@ async function postRootCommentInProject(req: Request, res: Response) {
   // Ensure the user has access to the project
   await mgr.getProjectById(projectId);
 
-  const { location, body, threadId } = uncheckedCast<RootCommentData>(req.body);
+  const { location, body } = uncheckedCast<RootCommentData>(req.body);
   await mgr.postRootCommentInProject(
     { projectId, branchId },
     {
