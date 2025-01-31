@@ -516,7 +516,7 @@ export class CanvasCtx {
    */
   getActualTargetUnderCanvasOverlay(x: number, y: number): Element | undefined {
     for (const elt of this.$doc().get(0).elementsFromPoint(x, y)) {
-      if (!isCanvasOverlay($(elt))) {
+      if (!isCanvasOverlay($(elt as HTMLElement))) {
         return elt;
       }
     }

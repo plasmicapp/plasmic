@@ -847,7 +847,7 @@ export class ViewCtx extends WithDbCtx {
 
       this.renderState.val2dom(x.val, this.canvasCtx).forEach((domElt) => {
         this.canvasCtx.updateCanvasOverlay(domElt.getBoundingClientRect());
-        this._editingTextResizeObserver.observe(domElt);
+        this._editingTextResizeObserver?.observe(domElt);
       });
     } else {
       this.canvasCtx.resetCanvasOverlay();

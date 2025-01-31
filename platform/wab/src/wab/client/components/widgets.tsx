@@ -1031,7 +1031,7 @@ export function SearchBox(
     () => maybe(ref.current, (x) => x.input()),
     [ref]
   );
-  useFocusOnDisplayed(getInput, props.autoFocus);
+  useFocusOnDisplayed(getInput, { autoFocus: props.autoFocus });
 
   const resetInput = (e: React.SyntheticEvent) => {
     if (ref.current) {

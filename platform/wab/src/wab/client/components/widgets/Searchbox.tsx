@@ -6,11 +6,11 @@ import Textbox, { TextboxRef } from "@/wab/client/components/widgets/Textbox";
 import { useFocusOnDisplayed } from "@/wab/client/dom-utils";
 import { CloseIcon } from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import { PlasmicSearchbox } from "@/wab/client/plasmic/plasmic_kit/PlasmicSearchbox";
-import { maybe } from "@/wab/shared/common";
 import {
   createFakeEvent,
   useForwardedRef,
 } from "@/wab/commons/components/ReactUtil";
+import { maybe } from "@/wab/shared/common";
 import React from "react";
 import { mergeProps } from "react-aria";
 
@@ -30,7 +30,7 @@ const Searchbox = React.forwardRef(function Searchbox(
     [ref]
   );
 
-  useFocusOnDisplayed(getInput, props.autoFocus);
+  useFocusOnDisplayed(getInput, { autoFocus: props.autoFocus });
 
   const resetInput = (e: React.SyntheticEvent) => {
     if (ref.current) {

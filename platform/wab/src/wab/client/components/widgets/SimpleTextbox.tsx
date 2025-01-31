@@ -39,7 +39,7 @@ export const SimpleTextbox = React.forwardRef(function SimpleTextbox(
 
   const autoFocus = props.autoFocus;
 
-  useFocusOnDisplayed(ref, autoFocus);
+  useFocusOnDisplayed(ref, { autoFocus });
 
   useUnmount(() => {
     // Upon unmounting, onBlur will not have a chance to fire, so
