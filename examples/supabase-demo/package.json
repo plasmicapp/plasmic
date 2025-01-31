@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "postinstall": "yarn gen-types && yarn gen-schema",
     "dev": "next dev",
     "build": "yarn gen-types && yarn gen-schema && next build",
     "start": "next start",
