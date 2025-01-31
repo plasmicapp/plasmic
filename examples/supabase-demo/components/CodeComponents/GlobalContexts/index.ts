@@ -1,1 +1,1 @@
-export * from './SupabaseUserSession';
+export * from "./SupabaseUserSession";

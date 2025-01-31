@@ -1,6 +1,6 @@
-import React from "react";
-import { DataProvider } from "@plasmicapp/loader-nextjs";
 import { createSupabaseClient } from "@/util/supabase/component";
+import { DataProvider } from "@plasmicapp/loader-nextjs";
+import React from "react";
 
 interface SupabaseUserSignUpProps extends React.PropsWithChildren {
   className: string;
@@ -14,20 +14,21 @@ function SupabaseUserSignUpBase(
   props: SupabaseUserSignUpProps,
   outterRef: React.Ref<SupabaseUserSignUpRef>
 ) {
-    const { className, children } = props;
-    const supabase = createSupabaseClient();
-    const [errorMessage, setErrorMessage] = React.useState<string | undefined>(
-      undefined
-    );
-    const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const { className, children } = props;
+  const supabase = createSupabaseClient();
+  const [errorMessage, setErrorMessage] = React.useState<string | undefined>(
+    undefined
+  );
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-    const interactions = React.useMemo(() => ({
+  const interactions = React.useMemo(
+    () => ({
       async signup(email: string, password: string) {
         setIsLoading(true);
 
         const { error } = await supabase.auth.signUp({
           email,
-          password
+          password,
         });
 
         setIsLoading(false);
@@ -37,28 +38,30 @@ function SupabaseUserSignUpBase(
           return { success: false };
         }
 
-        return { success: true }
-      }
-    }), []);
+        return { success: true };
+      },
+    }),
+    []
+  );
 
-    React.useImperativeHandle(
-      outterRef,
-      () => interactions
-    );
+  React.useImperativeHandle(outterRef, () => interactions);
 
-    return (
-      <div className={className}>
-        <DataProvider
-          name='signupContext'
-          data={{
-            isLoading,
-            signupError: errorMessage,
-          }}
-        >
-          {children}
-        </DataProvider>
-      </div>
-    );
-  }
+  return (
+    <div className={className}>
+      <DataProvider
+        name="signupContext"
+        data={{
+          isLoading,
+          signupError: errorMessage,
+        }}
+      >
+        {children}
+      </DataProvider>
+    </div>
+  );
+}
 
-  export const SupabaseUserSignUp = React.forwardRef<SupabaseUserSignUpRef, SupabaseUserSignUpProps>(SupabaseUserSignUpBase);
+export const SupabaseUserSignUp = React.forwardRef<
+  SupabaseUserSignUpRef,
+  SupabaseUserSignUpProps
+>(SupabaseUserSignUpBase);

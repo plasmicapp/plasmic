@@ -5,9 +5,8 @@ import {
 } from "@plasmicapp/loader-nextjs";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Error from "next/error";
-import * as React from "react";
-import { PLASMIC } from "../plasmic-init";
 import { useRouter } from "next/router";
+import { PLASMIC } from "../plasmic-init";
 
 /**
  * Use fetchPages() to fetch list of pages that have been created in Plasmic
@@ -72,7 +71,8 @@ export default function CatchallPage(props: {
       pageParams={pageMeta.params}
       pageQuery={router.query}
       loader={PLASMIC}
-      prefetchedData={plasmicData}>
+      prefetchedData={plasmicData}
+    >
       {
         // plasmicData.entryCompMetas[0].name contains the name
         // of the component you fetched.

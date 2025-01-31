@@ -1,5 +1,5 @@
-import { createClient as createClientPrimitive } from '@supabase/supabase-js'
-import type { Database } from '@/types/supabase';
+import type { Database } from "@/types/supabase";
+import { createClient as createClientPrimitive } from "@supabase/supabase-js";
 
 /**
  * This function creates a new Supabase client to be used in the getStaticProps function on a page.
@@ -11,7 +11,7 @@ export function createSupabaseClient() {
   const supabase = createClientPrimitive<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+  );
 
-  return supabase
+  return supabase;
 }

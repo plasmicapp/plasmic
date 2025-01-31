@@ -1,6 +1,6 @@
-import React from "react";
-import { usePlasmicCanvasContext } from "@plasmicapp/loader-nextjs";
 import { createSupabaseClient } from "@/util/supabase/component";
+import { usePlasmicCanvasContext } from "@plasmicapp/loader-nextjs";
+import React from "react";
 
 export interface RedirectIfProps {
   children?: any;
@@ -25,7 +25,7 @@ export function RedirectIf(props: RedirectIfProps) {
     forcePreview,
   } = props;
   const supabase = createSupabaseClient();
-  
+
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const [condition, setCondition] = React.useState<boolean>(false);
   const ref = React.createRef<HTMLAnchorElement>();
@@ -49,7 +49,7 @@ export function RedirectIf(props: RedirectIfProps) {
   }, []);
 
   const shouldRedirect = React.useCallback(
-    () => inEditor && testCondition !== undefined ? testCondition : condition,
+    () => (inEditor && testCondition !== undefined ? testCondition : condition),
     [inEditor, testCondition, condition]
   );
 

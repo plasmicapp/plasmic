@@ -1,6 +1,5 @@
-import { type GetServerSidePropsContext } from 'next'
-import { createServerClient, serializeCookieHeader } from '@supabase/ssr'
-
+import { createServerClient, serializeCookieHeader } from "@supabase/ssr";
+import { type GetServerSidePropsContext } from "next";
 
 /**
  * This function creates a new Supabase client to be used in the getServerSideProps function on a page.
@@ -15,19 +14,22 @@ export function createSupabaseClient({ req, res }: GetServerSidePropsContext) {
     {
       cookies: {
         getAll() {
-          return Object.keys(req.cookies).map((name) => ({ name, value: req.cookies[name] || '' }))
+          return Object.keys(req.cookies).map((name) => ({
+            name,
+            value: req.cookies[name] || "",
+          }));
         },
         setAll(cookiesToSet) {
           res.setHeader(
-            'Set-Cookie',
+            "Set-Cookie",
             cookiesToSet.map(({ name, value, options }) =>
               serializeCookieHeader(name, value, options)
             )
-          )
+          );
         },
       },
     }
-  )
+  );
 
-  return supabase
+  return supabase;
 }
