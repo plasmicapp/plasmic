@@ -1,12 +1,12 @@
+import dbSchema from "@/databaseSchema.json";
 import { initPlasmicLoader } from "@plasmicapp/loader-nextjs";
-import { SupabaseForm } from "./components/CodeComponents/DatabaseComponents/SupabaseForm";
 import { SupabaseDataProvider } from "./components/CodeComponents/DatabaseComponents/SupabaseDataProvider";
+import { SupabaseForm } from "./components/CodeComponents/DatabaseComponents/SupabaseForm";
 import { SupabaseUserLogIn } from "./components/CodeComponents/DatabaseComponents/SupabaseUserLogIn";
 import { SupabaseUserLogOut } from "./components/CodeComponents/DatabaseComponents/SupabaseUserLogOut";
 import { SupabaseUserSignUp } from "./components/CodeComponents/DatabaseComponents/SupabaseUserSignUp";
-import { SupabaseUserSession } from "./components/CodeComponents/GlobalContexts";
+import { SupabaseUserSession } from "./components/CodeComponents/GlobalContexts/SupabaseUserSession";
 import { RedirectIf } from "./components/CodeComponents/LogicComponents";
-import dbSchema from "@/databaseSchema.json";
 
 const plasmicProjectId = process.env.PLASMIC_PROJECT_ID ?? "";
 const plasmicApiToken = process.env.PLASMIC_API_TOKEN ?? "";

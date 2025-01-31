@@ -38,4 +38,4 @@ yarn-error.log*
 
 databaseSchema.json
 
-./types/supabase.ts
+types/supabase.ts
