@@ -63,10 +63,10 @@ import {
   CmsTableId,
   CmsTableSchema,
   CmsTableSettings,
-  CommentData,
   CommentId,
   CommentReactionData,
   CommentReactionId,
+  CommentThreadId,
   CommitGraph,
   ConfirmEmailRequest,
   ConfirmEmailResponse,
@@ -123,7 +123,6 @@ import {
   NextPublishVersionResponse,
   PersonalApiToken,
   PlasmicHostingSettings,
-  PostCommentRequest,
   PostCommentResponse,
   ProcessSvgRequest,
   ProcessSvgResponse,
@@ -142,8 +141,10 @@ import {
   QueryCopilotResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
+  ResolveThreadRequest,
   RevalidatePlasmicHostingRequest,
   RevalidatePlasmicHostingResponse,
+  RootCommentData,
   SelfResponse,
   SendCopilotFeedbackRequest,
   SendEmailsResponse,
@@ -165,6 +166,7 @@ import {
   TeamApiToken,
   TeamId,
   TeamWhiteLabelInfo,
+  ThreadCommentData,
   TrustedHostsListResponse,
   TryMergeRequest,
   TryMergeResponse,
@@ -1843,15 +1845,28 @@ export abstract class SharedApi {
     return this.get(`/comments/${projectBranchId}`);
   }
 
-  async postComment(
+  async postThreadComment(
     projectId: ProjectId,
     branchId: BranchId | undefined,
-    data: CommentData
+    threadId: CommentThreadId,
+    data: ThreadCommentData
+  ): Promise<PostCommentResponse> {
+    const projectBranchId = showProjectBranchId(toOpaque(projectId), branchId);
+    return this.post(
+      `/comments/${projectBranchId}/thread/${threadId}`,
+      ensureType<ThreadCommentData>(data)
+    );
+  }
+
+  async postRootComment(
+    projectId: ProjectId,
+    branchId: BranchId | undefined,
+    data: RootCommentData
   ): Promise<PostCommentResponse> {
     const projectBranchId = showProjectBranchId(toOpaque(projectId), branchId);
     return this.post(
       `/comments/${projectBranchId}`,
-      ensureType<PostCommentRequest>(data)
+      ensureType<RootCommentData>(data)
     );
   }
 
@@ -1860,8 +1875,7 @@ export abstract class SharedApi {
     branchId: BranchId | undefined,
     commentId: CommentId,
     data: {
-      body?: string;
-      resolved?: boolean;
+      body: string;
     }
   ): Promise<{}> {
     return this.put(
@@ -1870,6 +1884,23 @@ export abstract class SharedApi {
         branchId
       )}/comment/${commentId}`,
       ensureType<EditCommentRequest>(data)
+    );
+  }
+
+  async editThread(
+    projectId: ProjectId,
+    branchId: BranchId | undefined,
+    commentThreadId: CommentThreadId,
+    data: {
+      resolved: boolean;
+    }
+  ): Promise<{}> {
+    return this.put(
+      `/comments/${showProjectBranchId(
+        toOpaque(projectId),
+        branchId
+      )}/thread/${commentThreadId}`,
+      ensureType<ResolveThreadRequest>(data)
     );
   }
 

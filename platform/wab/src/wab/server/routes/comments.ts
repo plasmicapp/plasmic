@@ -8,9 +8,11 @@ import {
   CommentThreadId,
   EditCommentRequest,
   GetCommentsResponse,
-  PostCommentRequest,
   PostCommentResponse,
+  ResolveThreadRequest,
+  RootCommentData,
   StudioRoomMessageTypes,
+  ThreadCommentData,
 } from "@/wab/shared/ApiSchema";
 import { parseProjectBranchId } from "@/wab/shared/ApiSchemaUtil";
 import { ensureType, uncheckedCast, withoutNils } from "@/wab/shared/common";
@@ -20,10 +22,21 @@ import { uniq } from "lodash";
 
 export function addCommentsRoutes(app: express.Application) {
   app.get("/api/v1/comments/:projectBranchId", withNext(getCommentsForProject));
-  app.post("/api/v1/comments/:projectBranchId", withNext(postCommentInProject));
+  app.post(
+    "/api/v1/comments/:projectBranchId",
+    withNext(postRootCommentInProject)
+  );
+  app.post(
+    "/api/v1/comments/:projectBranchId/thread/:threadId",
+    withNext(postCommentInThread)
+  );
   app.put(
     "/api/v1/comments/:projectBranchId/comment/:commentId",
     withNext(editComment)
+  );
+  app.put(
+    "/api/v1/comments/:projectBranchId/thread/:commentThreadId",
+    withNext(editThread)
   );
   app.delete(
     "/api/v1/comments/:projectBranchId/comment/:commentId",
@@ -56,14 +69,14 @@ async function getCommentsForProject(req: Request, res: Response) {
   // Ensure the user has access to the project
   await mgr.getProjectById(projectId);
 
-  const comments = await mgr.getCommentsForProject({ projectId, branchId });
-  const reactions = await mgr.getReactionsForComments(comments);
+  const threads = await mgr.getThreadsForProject({ projectId, branchId });
+  const reactions = await mgr.getReactionsForComments(threads);
   const selfNotificationSettings = req.user
     ? await mgr.tryGetNotificationSettings(req.user.id, toOpaque(projectId))
     : undefined;
   const usersIds = uniq(
     withoutNils([
-      ...comments.map((c) => c.createdById),
+      ...threads.map((c) => c.createdById),
       ...reactions.map((r) => r.createdById),
     ])
   );
@@ -71,7 +84,7 @@ async function getCommentsForProject(req: Request, res: Response) {
 
   res.json(
     ensureType<GetCommentsResponse>({
-      comments,
+      threads,
       reactions,
       selfNotificationSettings,
       users,
@@ -79,7 +92,7 @@ async function getCommentsForProject(req: Request, res: Response) {
   );
 }
 
-async function postCommentInProject(req: Request, res: Response) {
+async function postRootCommentInProject(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const { projectId, branchId } = parseProjectBranchId(
     req.params.projectBranchId
@@ -88,13 +101,38 @@ async function postCommentInProject(req: Request, res: Response) {
   // Ensure the user has access to the project
   await mgr.getProjectById(projectId);
 
-  const { location, body, threadId } = uncheckedCast<PostCommentRequest>(
-    req.body
-  );
-  await mgr.postCommentInProject(
+  const { location, body, threadId } = uncheckedCast<RootCommentData>(req.body);
+  await mgr.postRootCommentInProject(
     { projectId, branchId },
     {
       location,
+      body,
+    }
+  );
+
+  res.json(ensureType<PostCommentResponse>({}));
+
+  await broadcastToStudioRoom(
+    req,
+    projectId,
+    StudioRoomMessageTypes.commentsUpdate
+  );
+}
+
+async function postCommentInThread(req: Request, res: Response) {
+  const mgr = userDbMgr(req);
+  const { projectId, branchId } = parseProjectBranchId(
+    req.params.projectBranchId
+  );
+  const threadId = req.params.threadId as CommentThreadId;
+
+  // Ensure the user has access to the project
+  await mgr.getProjectById(projectId);
+
+  const { body } = uncheckedCast<ThreadCommentData>(req.body);
+  await mgr.postCommentInThread(
+    { projectId, branchId },
+    {
       body,
       threadId,
     }
@@ -201,11 +239,30 @@ async function editComment(req: Request, res: Response) {
   await mgr.getProjectById(projectId);
   const commentId = req.params.commentId as CommentId;
 
-  const { body, resolved } = uncheckedCast<EditCommentRequest>(req.body);
-  await mgr.editCommentInProject(commentId, {
-    body,
-    resolved,
-  });
+  const { body } = uncheckedCast<EditCommentRequest>(req.body);
+  await mgr.editCommentInProject(commentId, body);
+
+  res.json({});
+
+  await broadcastToStudioRoom(
+    req,
+    projectId,
+    StudioRoomMessageTypes.commentsUpdate
+  );
+}
+
+async function editThread(req: Request, res: Response) {
+  const mgr = userDbMgr(req);
+  const { projectId, branchId } = parseProjectBranchId(
+    req.params.projectBranchId
+  );
+
+  // Ensure the user has access to the project
+  await mgr.getProjectById(projectId);
+  const commentThreadId = req.params.commentThreadId as CommentThreadId;
+
+  const { resolved } = uncheckedCast<ResolveThreadRequest>(req.body);
+  await mgr.resolveThreadInProject(commentThreadId, resolved);
 
   res.json({});
 

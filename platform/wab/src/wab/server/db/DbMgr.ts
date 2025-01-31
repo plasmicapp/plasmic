@@ -38,6 +38,8 @@ import {
   CmsTable,
   Comment,
   CommentReaction,
+  CommentThread,
+  CommentThreadHistory,
   CopilotInteraction,
   CopilotUsage,
   DataSource,
@@ -271,7 +273,6 @@ import {
   Raw,
   Repository,
   SelectQueryBuilder,
-  UpdateResult,
 } from "typeorm";
 import * as uuid from "uuid";
 
@@ -945,8 +946,16 @@ export class DbMgr implements MigrationDbMgr {
     return this.entMgr.getRepository(HostlessVersion);
   }
 
+  private commentThreads() {
+    return this.entMgr.getRepository(CommentThread);
+  }
+
   private comments() {
     return this.entMgr.getRepository(Comment);
+  }
+
+  private commentThreadHistory() {
+    return this.entMgr.getRepository(CommentThreadHistory);
   }
 
   private commentReactions() {
@@ -9582,63 +9591,78 @@ export class DbMgr implements MigrationDbMgr {
     });
   }
 
-  async getCommentsForProject({
+  async getThreadsForProject({
     projectId,
     branchId,
-  }: ProjectAndBranchId): Promise<Comment[]> {
+  }: ProjectAndBranchId): Promise<CommentThread[]> {
     await this.checkProjectBranchPerms(
       { projectId, branchId },
       "viewer",
       "view comments",
       false
     );
-    return await this.comments().find({
-      where: {
-        projectId,
-        branchId: branchId ?? null,
-        ...excludeDeleted(),
-      },
-    });
+    const query = this.commentThreads()
+      .createQueryBuilder("thread")
+      .leftJoinAndSelect("thread.comments", "comment")
+      .where("thread.projectId = :projectId", { projectId });
+    if (branchId) {
+      query.andWhere("thread.branchId = :branchId", {
+        branchId,
+      });
+    } else {
+      query.andWhere("thread.branchId IS NULL");
+    }
+    return await query
+      .andWhere("thread.deletedAt is null and comment.deletedAt is null")
+      .orderBy("thread.createdAt", "ASC")
+      .addOrderBy("comment.createdAt", "ASC")
+      .getMany();
   }
 
-  async getCommentsForThread(threadId: CommentThreadId): Promise<Comment[]> {
+  async getCommentsForThread(
+    commentThreadId: CommentThreadId
+  ): Promise<Comment[]> {
     return await this.comments().find({
       where: {
-        threadId,
+        commentThreadId,
         ...excludeDeleted(),
       },
       order: {
-        createdAt: "ASC", // Sort by createdAt in ascending order
+        createdAt: "ASC",
       },
       relations: ["createdBy"],
     });
   }
 
-  async getUnnotifiedComments(): Promise<Comment[]> {
+  // TODO: Add a `lastChangedAt` timestamp for threads to track any updates
+  // (new comments, resolution changes). Use this field to filter threads
+  // efficiently instead of checking each comment's createdAt.
+  async getUnnotifiedCommentThreads(): Promise<CommentThread[]> {
     this.checkSuperUser();
-    return await this.comments().find({
-      where: {
-        isEmailNotificationSent: false,
-        ...excludeDeleted(),
-      },
-      order: {
-        createdAt: "ASC", // Sort by createdAt in ascending order
-      },
-      relations: ["createdBy"],
-    });
+    return await this.commentThreads()
+      .createQueryBuilder("thread")
+      .leftJoinAndSelect("thread.comments", "comment")
+      .leftJoinAndSelect("comment.createdBy", "createdBy")
+      .andWhere("thread.deletedAt is null and comment.deletedAt is null")
+      .andWhere(
+        "(thread.lastEmailedAt IS NULL OR comment.createdAt > thread.lastEmailedAt)"
+      )
+      .orderBy("thread.createdAt", "ASC")
+      .addOrderBy("comment.createdAt", "ASC")
+      .getMany();
   }
 
-  async markCommentsAsNotified(commentIds: string[]): Promise<void> {
+  async markCommentsAsNotified(commentThreadIds: string[]): Promise<void> {
     this.checkSuperUser();
-    await this.comments().update(
-      { id: In(commentIds) }, // Match comments by their IDs
-      { isEmailNotificationSent: true } // Set the notification status to true
+    await this.commentThreads().update(
+      { id: In(commentThreadIds) }, // Match comments by their IDs
+      { lastEmailedAt: new Date() } // Set the notification status to true
     );
   }
 
-  async postCommentInProject(
+  async postCommentInThread(
     { projectId, branchId }: ProjectAndBranchId,
-    data: { location: CommentLocation; body: string; threadId: string }
+    data: { body: string; threadId: string }
   ): Promise<Comment> {
     await this.checkProjectBranchPerms(
       { projectId, branchId },
@@ -9646,43 +9670,83 @@ export class DbMgr implements MigrationDbMgr {
       "post comment",
       true
     );
+    const threadId = data.threadId;
     const comment = this.comments().create({
       ...this.stampNew(),
-      projectId,
-      branchId: branchId ?? null,
-      resolved: false,
-      ...data,
+      body: data.body,
+      commentThreadId: threadId,
     });
     await this.entMgr.save([comment]);
     return comment;
   }
 
-  async editCommentInProject(
-    commentId: CommentId,
-    data: {
-      body?: string;
-      resolved?: boolean;
-    }
-  ) {
+  async postRootCommentInProject(
+    { projectId, branchId }: ProjectAndBranchId,
+    data: { location: CommentLocation; body: string }
+  ): Promise<Comment> {
+    await this.checkProjectBranchPerms(
+      { projectId, branchId },
+      "commenter",
+      "post comment",
+      true
+    );
+    const commentThread = this.commentThreads().create({
+      ...this.stampNew(),
+      projectId,
+      branchId: branchId ?? null,
+      ...data,
+    });
+    const comment = this.comments().create({
+      ...this.stampNew(),
+      body: data.body,
+      commentThreadId: commentThread.id,
+    });
+    await this.entMgr.save([commentThread, comment]);
+    return comment;
+  }
+
+  async editCommentInProject(commentId: CommentId, body: string) {
     const comment = await findExactlyOne(this.comments(), {
       id: commentId,
     });
 
     if (!this.isUserIdSelf(comment.createdById ?? undefined)) {
-      if ("body" in data) {
-        throw new ForbiddenError("Can only do this for self.");
-      }
+      throw new ForbiddenError("Can only do this for self.");
+    }
+
+    Object.assign(comment, this.stampUpdate(), { body });
+    await this.entMgr.save(comment);
+
+    return comment;
+  }
+
+  async resolveThreadInProject(
+    commentThreadId: CommentThreadId,
+    resolved: boolean
+  ) {
+    const commentThread = await findExactlyOne(this.commentThreads(), {
+      id: commentThreadId,
+    });
+
+    if (!this.isUserIdSelf(commentThread.createdById ?? undefined)) {
       await this.checkProjectPerms(
-        comment.projectId,
+        commentThread.projectId,
         "content",
         "resolve a comment",
         true
       );
     }
 
-    Object.assign(comment, this.stampUpdate(), data);
-    await this.entMgr.save(comment);
-    return comment;
+    const commentThreadHistory = this.commentThreadHistory().create({
+      ...this.stampNew(),
+      commentThreadId: commentThreadId,
+      resolved: resolved,
+    });
+    Object.assign(commentThread, this.stampUpdate(), {
+      resolved: resolved,
+    });
+    await this.entMgr.save([commentThread, commentThreadHistory]);
+    return commentThread;
   }
 
   async deleteCommentInProject(
@@ -9690,8 +9754,6 @@ export class DbMgr implements MigrationDbMgr {
     commentId: CommentId
   ): Promise<Comment> {
     const comment = await findExactlyOne(this.comments(), {
-      projectId,
-      branchId: branchId ?? null,
       id: commentId,
     });
     if (!this.isUserIdSelf(comment.createdById ?? undefined)) {
@@ -9724,13 +9786,18 @@ export class DbMgr implements MigrationDbMgr {
   async deleteThreadInProject(
     { projectId, branchId }: ProjectAndBranchId,
     threadId: CommentThreadId
-  ): Promise<UpdateResult> {
-    const firstComment = ensure(
-      await this.getFirstCommentInThread(threadId),
-      "Comment in thread should exist"
+  ): Promise<CommentThread> {
+    const commentThread = ensureFound<CommentThread>(
+      await this.commentThreads().findOne({
+        where: {
+          id: threadId,
+          ...excludeDeleted(),
+        },
+      }),
+      `Comment thread with id ${threadId}`
     );
 
-    if (!this.isUserIdSelf(firstComment.createdById ?? undefined)) {
+    if (!this.isUserIdSelf(commentThread.createdById ?? undefined)) {
       await this.checkProjectBranchPerms(
         { projectId, branchId },
         "editor",
@@ -9739,32 +9806,36 @@ export class DbMgr implements MigrationDbMgr {
       );
     }
 
-    const updateQuery = this.comments()
-      .createQueryBuilder()
-      .update()
-      .set(this.stampDelete())
-      .where({
-        projectId,
-        threadId,
-      });
-
-    return updateQuery.execute();
+    Object.assign(commentThread, this.stampDelete());
+    await this.entMgr.save(commentThread);
+    return commentThread;
   }
 
   async getReactionsForComments(
-    comments: Comment[]
+    commentThreads: CommentThread[]
   ): Promise<CommentReaction[]> {
-    if (comments.length === 0) {
+    if (commentThreads.length === 0) {
       return [];
     }
-    const projectId = only([...new Set(comments.map((c) => c.projectId))]);
+    const projectId = only([
+      ...new Set(
+        commentThreads.map((commentThread) => commentThread.projectId)
+      ),
+    ]);
     const branchId =
-      only([...new Set(comments.map((c) => c.branchId))]) ?? undefined;
+      only([
+        ...new Set(
+          commentThreads.map((commentThread) => commentThread.branchId)
+        ),
+      ]) ?? undefined;
     await this.checkProjectBranchPerms(
       { projectId, branchId },
       "viewer",
       "view comment reactions",
       false
+    );
+    const comments = commentThreads.flatMap(
+      (commentThread) => commentThread.comments
     );
     return await this.commentReactions().find({
       where: {
@@ -9818,9 +9889,17 @@ export class DbMgr implements MigrationDbMgr {
   ) {
     const comment = await findExactlyOne(this.comments(), {
       id: commentId,
+      relations: ["commentThread"],
     });
+    const commentThread = ensure(
+      comment.commentThread,
+      `Must have commentThread.`
+    );
     await this.checkProjectBranchPerms(
-      { projectId: comment.projectId, branchId: comment.branchId ?? undefined },
+      {
+        projectId: commentThread.projectId,
+        branchId: commentThread.branchId ?? undefined,
+      },
       requireLevel,
       action,
       addPerm
