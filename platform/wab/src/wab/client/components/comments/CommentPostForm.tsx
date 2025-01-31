@@ -8,8 +8,12 @@ import {
   DefaultCommentPostFormProps,
   PlasmicCommentPostForm,
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPostForm";
-import { CommentData, CommentThreadId } from "@/wab/shared/ApiSchema";
-import { ensure, jsonClone, mkUuid, withoutNils } from "@/wab/shared/common";
+import {
+  CommentThreadId,
+  RootCommentData,
+  ThreadCommentData,
+} from "@/wab/shared/ApiSchema";
+import { ensure, withoutNils } from "@/wab/shared/common";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
@@ -26,7 +30,7 @@ const CommentPostForm = observer(function CommentPostForm(
   const viewCtx = useViewCtxMaybe();
   const focusedTpls = withoutNils(viewCtx?.focusedTpls() ?? []);
 
-  const { projectId, branchId, allComments, bundler, refreshComments } =
+  const { projectId, branchId, allThreads, bundler, refreshComments } =
     useCommentsCtx();
 
   const api = useAppCtx().api;
@@ -39,6 +43,10 @@ const CommentPostForm = observer(function CommentPostForm(
 
   const focusedTpl = focusedTpls[0];
 
+  const currentThread = allThreads.find(
+    (commentThread) => commentThread.id == threadId
+  );
+
   function isValidComment() {
     return body.trim().length > 0;
   }
@@ -47,26 +55,25 @@ const CommentPostForm = observer(function CommentPostForm(
     <form
       onSubmit={async (e) => {
         e.preventDefault();
-        const location = threadId
-          ? jsonClone(
-              ensure(
-                allComments.find((c) => c.threadId === threadId),
-                `Some comment should exist for threadId ${threadId}`
-              ).location
-            )
-          : {
-              subject: bundler.addrOf(ensure(focusedTpl, "")),
-              variants: getSetOfVariantsForViewCtx(viewCtx, bundler).map((pv) =>
-                bundler.addrOf(pv)
-              ),
-            };
-        const commentData: CommentData = {
-          body,
-          threadId: threadId ?? (mkUuid() as CommentThreadId),
-          location,
-        };
         setBody("");
-        await api.postComment(projectId, branchId, commentData);
+        if (threadId) {
+          const commentData: ThreadCommentData = { body };
+          await api.postThreadComment(
+            projectId,
+            branchId,
+            threadId,
+            commentData
+          );
+        } else {
+          const location = {
+            subject: bundler.addrOf(ensure(focusedTpl, "")),
+            variants: getSetOfVariantsForViewCtx(viewCtx, bundler).map((pv) =>
+              bundler.addrOf(pv)
+            ),
+          };
+          const commentData: RootCommentData = { body, location };
+          await api.postRootComment(projectId, branchId, commentData);
+        }
         await refreshComments();
       }}
     >

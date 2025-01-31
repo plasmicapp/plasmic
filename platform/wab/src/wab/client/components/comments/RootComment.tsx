@@ -1,38 +1,42 @@
 import CommentPost from "@/wab/client/components/comments/CommentPost";
-import { TplComment } from "@/wab/client/components/comments/utils";
+import { TplCommentThread } from "@/wab/client/components/comments/utils";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { CommentThreadId } from "@/wab/shared/ApiSchema";
 import { observer } from "mobx-react";
 import * as React from "react";
 
 export default observer(function RootComment({
-  threadComments,
+  commentThread,
   onThreadSelect,
 }: {
-  threadComments: TplComment[];
+  commentThread: TplCommentThread;
   onThreadSelect: (threadId: CommentThreadId) => void;
 }) {
   const studioCtx = useStudioCtx();
-  const [comment] = threadComments;
-  const threadId = comment.threadId;
+  const [comment] = commentThread.comments;
+  const threadId = commentThread.id;
 
   return (
     <CommentPost
       comment={comment}
-      subjectLabel={comment.label}
+      commentThread={commentThread}
+      subjectLabel={commentThread.label}
       isThread
       isRootComment
       repliesLinkLabel={
-        threadComments.length > 1
-          ? `${threadComments.length - 1} replies`
+        commentThread.comments.length > 1
+          ? `${commentThread.comments.length - 1} replies`
           : "Reply"
       }
       onClick={async () => {
         const ownerComponent = studioCtx
           .tplMgr()
-          .findComponentContainingTpl(comment.subject);
+          .findComponentContainingTpl(commentThread.subject);
         if (ownerComponent) {
-          await studioCtx.setStudioFocusOnTpl(ownerComponent, comment.subject);
+          await studioCtx.setStudioFocusOnTpl(
+            ownerComponent,
+            commentThread.subject
+          );
           studioCtx.centerFocusedFrame(1);
         }
         onThreadSelect(threadId);

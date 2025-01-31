@@ -10,20 +10,24 @@ import { Connection } from "typeorm";
 async function postComment(
   dbManager: DbMgr,
   projectId: string,
-  threadId: string,
-  sudo: DbMgr
+  threadId?: string
 ) {
-  const comment = await dbManager.postCommentInProject(
-    { projectId },
-    {
-      body: "comment 1",
-      threadId,
-      location: { subject: { uuid: "", iid: "" }, variants: [] },
-    }
-  );
+  const comment = threadId
+    ? await dbManager.postCommentInThread(
+        { projectId },
+        { body: "reply text", threadId }
+      )
+    : await dbManager.postRootCommentInProject(
+        { projectId },
+        {
+          body: "comment text",
+          location: { subject: { uuid: "", iid: "" }, variants: [] },
+        }
+      );
   return (
-    (await sudo.getUnnotifiedComments()).find((tc) => tc.id === comment.id) ||
-    comment
+    (await dbManager.getCommentsForThread(comment.commentThreadId)).find(
+      (tc) => tc.id === comment.id
+    ) || comment
   );
 }
 
@@ -83,30 +87,19 @@ describe("sendCommentsNotificationEmails", () => {
     await withEndUserNotificationSetup(
       async ({ sudo, users, project, userDbs }) => {
         // user 0 comment
-        const user0comment = await postComment(
-          userDbs[0](),
-          project.id,
-          "thread1",
-          sudo
-        );
+        const user0comment = await postComment(userDbs[0](), project.id);
 
         // User 1 comment
-        const user1Comment = await postComment(
-          userDbs[1](),
-          project.id,
-          "thread2",
-          sudo
-        );
+        const user1Comment = await postComment(userDbs[1](), project.id);
 
         // User 1 reply to user 0 comment
         const user1ReplyToUser0Comment = await postComment(
           userDbs[1](),
           project.id,
-          "thread1",
-          sudo
+          user0comment.commentThreadId
         );
 
-        const { notificationsByUser, recentComments } =
+        const { notificationsByUser, recentCommentThreads } =
           await processUnnotifiedCommentsNotifications(sudo);
 
         // Check if the notificationsByUser structure is correct
@@ -123,15 +116,15 @@ describe("sendCommentsNotificationEmails", () => {
                       projectName: project.name,
                       threads: new Map([
                         [
-                          user1Comment.threadId,
-                          [getNotificationComment(user1Comment)],
-                        ],
-                        [
-                          user1ReplyToUser0Comment.threadId,
+                          user1ReplyToUser0Comment.commentThreadId,
                           [
                             getNotificationComment(user0comment),
                             getNotificationComment(user1ReplyToUser0Comment),
                           ],
+                        ],
+                        [
+                          user1Comment.commentThreadId,
+                          [getNotificationComment(user1Comment)],
                         ],
                       ]),
                     },
@@ -150,7 +143,7 @@ describe("sendCommentsNotificationEmails", () => {
                       projectName: project.name,
                       threads: new Map([
                         [
-                          user0comment.threadId,
+                          user0comment.commentThreadId,
                           [getNotificationComment(user0comment)],
                         ],
                       ]),
@@ -170,11 +163,11 @@ describe("sendCommentsNotificationEmails", () => {
                       projectName: project.name,
                       threads: new Map([
                         [
-                          user0comment.threadId,
+                          user0comment.commentThreadId,
                           [getNotificationComment(user0comment)],
                         ],
                         [
-                          user1Comment.threadId,
+                          user1Comment.commentThreadId,
                           [getNotificationComment(user1Comment)],
                         ],
                       ]),
@@ -187,10 +180,9 @@ describe("sendCommentsNotificationEmails", () => {
         );
 
         // Check if the processed comments match the recentComments
-        expect(recentComments).toEqual([
-          user0comment.id,
-          user1Comment.id,
-          user1ReplyToUser0Comment.id,
+        expect(recentCommentThreads).toEqual([
+          user0comment.commentThreadId,
+          user1Comment.commentThreadId,
         ]);
       }
     );
@@ -199,30 +191,19 @@ describe("sendCommentsNotificationEmails", () => {
     await withEndUserNotificationSetup(
       async ({ sudo, users, project, userDbs }) => {
         // user 0 comment
-        const user0comment = await postComment(
-          userDbs[0](),
-          project.id,
-          "thread1",
-          sudo
-        );
+        const user0comment = await postComment(userDbs[0](), project.id);
 
         // user 1 comment
-        const user1Comment = await postComment(
-          userDbs[1](),
-          project.id,
-          "thread2",
-          sudo
-        );
+        const user1Comment = await postComment(userDbs[1](), project.id);
 
         // User 0 replies to their own comment
         const user0Reply = await postComment(
           userDbs[0](),
           project.id,
-          "thread1",
-          sudo
+          user0comment.commentThreadId
         );
 
-        const { notificationsByUser, recentComments } =
+        const { notificationsByUser, recentCommentThreads } =
           await processUnnotifiedCommentsNotifications(sudo);
 
         // Expect user 0 not to be notified about their own reply
@@ -239,7 +220,7 @@ describe("sendCommentsNotificationEmails", () => {
                       projectName: project.name,
                       threads: new Map([
                         [
-                          user1Comment.threadId,
+                          user1Comment.commentThreadId,
                           [getNotificationComment(user1Comment)],
                         ],
                       ]),
@@ -259,7 +240,7 @@ describe("sendCommentsNotificationEmails", () => {
                       projectName: project.name,
                       threads: new Map([
                         [
-                          user0comment.threadId,
+                          user0comment.commentThreadId,
                           [getNotificationComment(user0comment)],
                         ],
                       ]),
@@ -279,11 +260,11 @@ describe("sendCommentsNotificationEmails", () => {
                       projectName: project.name,
                       threads: new Map([
                         [
-                          user0comment.threadId,
+                          user0comment.commentThreadId,
                           [getNotificationComment(user0comment)],
                         ],
                         [
-                          user1Comment.threadId,
+                          user1Comment.commentThreadId,
                           [getNotificationComment(user1Comment)],
                         ],
                       ]),
@@ -296,10 +277,9 @@ describe("sendCommentsNotificationEmails", () => {
         );
 
         // Check if the processed comments match the recentComments
-        expect(recentComments).toEqual([
-          user0comment.id,
-          user1Comment.id,
-          user0Reply.id,
+        expect(recentCommentThreads).toEqual([
+          user0comment.commentThreadId,
+          user1Comment.commentThreadId,
         ]);
       }
     );
@@ -314,47 +294,34 @@ describe("sendCommentsNotificationEmails", () => {
         });
 
         // user 0 comment
-        const user0comment = await postComment(
-          userDbs[0](),
-          project.id,
-          "thread1",
-          sudo
-        );
+        const user0comment = await postComment(userDbs[0](), project.id);
 
         // user 0 selfReply
         // user 1 should not be notified for this because user 1 has not yet responded
         const user0SelfReply = await postComment(
           userDbs[0](),
           project.id,
-          "thread1",
-          sudo
+          user0comment.commentThreadId
         );
 
         // User 1 comment
-        const user1Comment = await postComment(
-          userDbs[1](),
-          project.id,
-          "thread2",
-          sudo
-        );
+        const user1Comment = await postComment(userDbs[1](), project.id);
 
         // User 1 reply to user 0 comment
         const user1ReplyToUser0Comment = await postComment(
           userDbs[1](),
           project.id,
-          "thread1",
-          sudo
+          user0comment.commentThreadId
         );
 
         // user 0 replied to user 1 comment should be notified
         const user0Replied = await postComment(
           userDbs[0](),
           project.id,
-          "thread2",
-          sudo
+          user1Comment.commentThreadId
         );
 
-        const { notificationsByUser, recentComments } =
+        const { notificationsByUser, recentCommentThreads } =
           await processUnnotifiedCommentsNotifications(sudo);
 
         // User 1 should not be notified about the comment and reply from user 1 on thread1
@@ -362,22 +329,19 @@ describe("sendCommentsNotificationEmails", () => {
           notificationsByUser
             .get(users[1].id)
             ?.projects.get(project.id)
-            ?.threads.get("thread1")
+            ?.threads.get(user0comment.commentThreadId)
         ).toBeUndefined();
         expect(
           notificationsByUser
             .get(users[1].id)
             ?.projects.get(project.id)
-            ?.threads.get("thread2")?.length
+            ?.threads.get(user1Comment.commentThreadId)?.length
         ).toBe(2);
 
         // Check if the processed comments match the recentComments
-        expect(recentComments).toEqual([
-          user0comment.id,
-          user0SelfReply.id,
-          user1Comment.id,
-          user1ReplyToUser0Comment.id,
-          user0Replied.id,
+        expect(recentCommentThreads).toEqual([
+          user0comment.commentThreadId,
+          user1Comment.commentThreadId,
         ]);
       }
     );
@@ -391,31 +355,20 @@ describe("sendCommentsNotificationEmails", () => {
         });
 
         // user 0 comment
-        const user0comment = await postComment(
-          userDbs[0](),
-          project.id,
-          "thread1",
-          sudo
-        );
+        const user0comment = await postComment(userDbs[0](), project.id);
 
         // user 1 comment
-        const user1Comment = await postComment(
-          userDbs[1](),
-          project.id,
-          "thread2",
-          sudo
-        );
+        const user1Comment = await postComment(userDbs[1](), project.id);
 
         // user 1 reply to user 0 comment
         const user1Reply = await postComment(
           userDbs[1](),
           project.id,
-          "thread1",
-          sudo
+          user0comment.commentThreadId
         );
 
         // user 0 should not be notified about the comment
-        const { notificationsByUser, recentComments } =
+        const { notificationsByUser, recentCommentThreads } =
           await processUnnotifiedCommentsNotifications(sudo);
 
         // Check that user 0 has no notifications and no 'projects' entry
@@ -431,7 +384,7 @@ describe("sendCommentsNotificationEmails", () => {
                 projectName: project.name,
                 threads: new Map([
                   [
-                    user0comment.threadId,
+                    user0comment.commentThreadId,
                     [getNotificationComment(user0comment)],
                   ],
                 ]),
@@ -441,10 +394,9 @@ describe("sendCommentsNotificationEmails", () => {
         });
 
         // Check if the processed comments match the recentComments
-        expect(recentComments).toEqual([
-          user0comment.id,
-          user1Comment.id,
-          user1Reply.id,
+        expect(recentCommentThreads).toEqual([
+          user0comment.commentThreadId,
+          user1Comment.commentThreadId,
         ]);
       }
     );
@@ -453,31 +405,20 @@ describe("sendCommentsNotificationEmails", () => {
     await withEndUserNotificationSetup(
       async ({ sudo, users, project, userDbs }) => {
         // Post a comment (user 0)
-        const user0comment = await postComment(
-          userDbs[0](),
-          project.id,
-          "thread1",
-          sudo
-        );
+        const user0comment = await postComment(userDbs[0](), project.id);
 
         // Post another comment (user 1)
-        const user1Comment = await postComment(
-          userDbs[1](),
-          project.id,
-          "thread2",
-          sudo
-        );
+        const user1Comment = await postComment(userDbs[1](), project.id);
 
         // Post a reply (user 1)
         const user1Reply = await postComment(
           userDbs[1](),
           project.id,
-          "thread1",
-          sudo
+          user0comment.commentThreadId
         );
 
         // Process notifications and send out emails
-        const { notificationsByUser, recentComments } =
+        const { notificationsByUser, recentCommentThreads } =
           await processUnnotifiedCommentsNotifications(sudo);
 
         // Ensure that user 0 is notified about the first comment
@@ -494,14 +435,14 @@ describe("sendCommentsNotificationEmails", () => {
                       projectName: project.name,
                       threads: new Map([
                         [
-                          user0comment.threadId,
+                          user0comment.commentThreadId,
                           [
                             getNotificationComment(user0comment),
                             getNotificationComment(user1Reply),
                           ],
                         ],
                         [
-                          user1Comment.threadId,
+                          user1Comment.commentThreadId,
                           [getNotificationComment(user1Comment)],
                         ],
                       ]),
@@ -521,7 +462,7 @@ describe("sendCommentsNotificationEmails", () => {
                       projectName: project.name,
                       threads: new Map([
                         [
-                          user0comment.threadId,
+                          user0comment.commentThreadId,
                           [getNotificationComment(user0comment)],
                         ],
                       ]),
@@ -541,11 +482,11 @@ describe("sendCommentsNotificationEmails", () => {
                       projectName: project.name,
                       threads: new Map([
                         [
-                          user0comment.threadId,
+                          user0comment.commentThreadId,
                           [getNotificationComment(user0comment)],
                         ],
                         [
-                          user1Comment.threadId,
+                          user1Comment.commentThreadId,
                           [getNotificationComment(user1Comment)],
                         ],
                       ]),
@@ -558,18 +499,17 @@ describe("sendCommentsNotificationEmails", () => {
         );
 
         // Check the recentComments array (it should include user0comment, user1Comment, and user0Reply)
-        expect(recentComments).toEqual([
-          user0comment.id,
-          user1Comment.id,
-          user1Reply.id,
+        expect(recentCommentThreads).toEqual([
+          user0comment.commentThreadId,
+          user1Comment.commentThreadId,
         ]);
 
         // Simulate sending notifications, after which the comments should be marked as notified
         // You can either mark them as notified in the system or simulate this in your mock logic
         await sudo.markCommentsAsNotified([
-          user0comment.id,
-          user1Comment.id,
-          user1Reply.id,
+          user0comment.commentThreadId,
+          user1Comment.commentThreadId,
+          user1Reply.commentThreadId,
         ]);
 
         // Process notifications again after the comments have been notified
@@ -594,39 +534,27 @@ describe("sendCommentsNotificationEmails", () => {
         }); // Do not notify at all
 
         // user 0 posts a comment
-        const user0Comment = await postComment(
-          userDbs[0](),
-          project.id,
-          "thread1",
-          sudo
-        );
+        const user0Comment = await postComment(userDbs[0](), project.id);
 
         // user 1 replies to user 0's comment
         const user1Reply = await postComment(
           userDbs[1](),
           project.id,
-          "thread1",
-          sudo
+          user0Comment.commentThreadId
         );
 
         // user 1 posts a comment
-        const user1Comment = await postComment(
-          userDbs[1](),
-          project.id,
-          "thread2",
-          sudo
-        );
+        const user1Comment = await postComment(userDbs[1](), project.id);
 
         // user 2 replies to user 1's comment
         const user2Reply = await postComment(
           userDbs[2](),
           project.id,
-          "thread2",
-          sudo
+          user1Comment.commentThreadId
         );
 
         // Process notifications
-        const { notificationsByUser, recentComments } =
+        const { notificationsByUser, recentCommentThreads } =
           await processUnnotifiedCommentsNotifications(sudo);
 
         // Validate notifications
@@ -643,14 +571,14 @@ describe("sendCommentsNotificationEmails", () => {
                       projectName: project.name,
                       threads: new Map([
                         [
-                          user0Comment.threadId,
+                          user0Comment.commentThreadId,
                           [
                             getNotificationComment(user0Comment),
                             getNotificationComment(user1Reply),
                           ],
                         ],
                         [
-                          user1Comment.threadId,
+                          user1Comment.commentThreadId,
                           [getNotificationComment(user1Comment)],
                         ],
                       ]),
@@ -670,7 +598,7 @@ describe("sendCommentsNotificationEmails", () => {
                       projectName: project.name,
                       threads: new Map([
                         [
-                          user1Comment.threadId,
+                          user1Comment.commentThreadId,
                           [
                             getNotificationComment(user1Comment),
                             getNotificationComment(user2Reply),
@@ -689,11 +617,9 @@ describe("sendCommentsNotificationEmails", () => {
         expect(notificationsByUser.get(users[2].id)).toBeUndefined();
 
         // Validate processed comments
-        expect(recentComments).toEqual([
-          user0Comment.id,
-          user1Reply.id,
-          user1Comment.id,
-          user2Reply.id,
+        expect(recentCommentThreads).toEqual([
+          user0Comment.commentThreadId,
+          user1Comment.commentThreadId,
         ]);
       }
     );

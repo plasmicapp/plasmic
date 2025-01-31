@@ -2,43 +2,43 @@
 // This file is owned by you, feel free to edit as you see fit.
 import CommentPost from "@/wab/client/components/comments/CommentPost";
 import CommentPostForm from "@/wab/client/components/comments/CommentPostForm";
-import { TplComments } from "@/wab/client/components/comments/utils";
+import { TplCommentThread } from "@/wab/client/components/comments/utils";
 import {
   DefaultThreadCommentsProps,
   PlasmicThreadComments,
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicThreadComments";
-import { CommentThreadId } from "@/wab/shared/ApiSchema";
+
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
 export type ThreadCommentsProps = DefaultThreadCommentsProps & {
-  comments: TplComments;
-  threadId: CommentThreadId;
+  commentThread: TplCommentThread;
 };
 
 function ThreadComments_(
   props: ThreadCommentsProps,
   ref: HTMLElementRefOf<"div">
 ) {
-  const { comments, threadId, ...rest } = props;
+  const { commentThread, ...rest } = props;
 
   return (
     <PlasmicThreadComments
       root={{ ref }}
       {...rest}
       commentsList={{
-        children: comments.map((comment, index) => {
+        children: commentThread.comments.map((comment, index) => {
           return (
             <CommentPost
               key={comment.id}
               comment={comment}
               isRootComment={index === 0}
+              commentThread={commentThread}
             />
           );
         }),
       }}
       replyForm={{
-        render: () => <CommentPostForm threadId={threadId} />,
+        render: () => <CommentPostForm threadId={commentThread.id} />,
       }}
     />
   );

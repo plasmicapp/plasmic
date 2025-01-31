@@ -1,5 +1,5 @@
 import { useCommentsCtx } from "@/wab/client/components/comments/CommentsProvider";
-import { TplComment } from "@/wab/client/components/comments/utils";
+import { TplCommentThread } from "@/wab/client/components/comments/utils";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import { ClickStopper } from "@/wab/client/components/widgets";
 import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
@@ -16,7 +16,11 @@ import {
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
-import { ApiCommentReaction, CommentId } from "@/wab/shared/ApiSchema";
+import {
+  ApiComment,
+  ApiCommentReaction,
+  CommentId,
+} from "@/wab/shared/ApiSchema";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
 import { ensure, ensureString, maybe, spawn } from "@/wab/shared/common";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
@@ -28,7 +32,8 @@ import moment from "moment";
 import * as React from "react";
 
 export interface CommentPostProps extends DefaultCommentPostProps {
-  comment: TplComment;
+  comment: ApiComment;
+  commentThread: TplCommentThread;
   subjectLabel?: React.ReactNode;
   repliesLinkLabel?: React.ReactNode;
   onClick?: () => void;
@@ -104,11 +109,12 @@ function ReactionsByEmoji(props: {
 }
 
 function CommentMenuOptions(props: {
-  comment: TplComment;
+  comment: ApiComment;
   isThread?: boolean;
   isRootComment?: boolean;
+  commentThread: TplCommentThread;
 }) {
-  const { comment, isThread, isRootComment = false } = props;
+  const { comment, isThread, commentThread, isRootComment } = props;
 
   const studioCtx = useStudioCtx();
   const appCtx = useAppCtx();
@@ -137,22 +143,25 @@ function CommentMenuOptions(props: {
             !(isContentEditor || appCtx.selfInfo?.id === comment.createdById)
           }
           onClick={async () => {
-            await api.editComment(projectId, branchId, comment.id, {
-              resolved: !comment.resolved,
+            await api.editThread(projectId, branchId, comment.commentThreadId, {
+              resolved: !commentThread.resolved,
             });
           }}
         >
-          Mark as {comment.resolved ? "unresolved" : "resolved"}
+          Mark as {commentThread.resolved ? "unresolved" : "resolved"}
         </Menu.Item>
       )}
-
       <Menu.Item
         key="remove"
         disabled={!(isOwner || appCtx.selfInfo?.id === comment.createdById)}
         onClick={async () => {
           const deleteComment = async () => {
             if (isThread) {
-              await api.deleteThread(projectId, branchId, comment.threadId);
+              await api.deleteThread(
+                projectId,
+                branchId,
+                comment.commentThreadId
+              );
             } else {
               await api.deleteComment(projectId, branchId, comment.id);
             }
@@ -174,6 +183,7 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
     repliesLinkLabel,
     isThread,
     isRootComment = false,
+    commentThread,
     ...rest
   } = props;
 
@@ -283,6 +293,7 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
               comment={comment}
               isThread={isThread}
               isRootComment={isRootComment}
+              commentThread={commentThread}
             />
           ),
         },

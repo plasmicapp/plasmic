@@ -49,7 +49,7 @@ export const CommentsTab = observer(function CommentsTab(
 
   const currentComponent = studioCtx.currentComponent;
 
-  const { selfNotificationSettings, refreshComments, threads } =
+  const { selfNotificationSettings, refreshComments, allThreads } =
     useCommentsCtx();
 
   if (!currentComponent) {
@@ -60,13 +60,17 @@ export const CommentsTab = observer(function CommentsTab(
     focusedSubjectThreads,
     focusedComponentThreads,
     otherComponentsThreads,
-  } = getThreadsFromFocusedComponent(threads, currentComponent, focusedTpl);
+  } = getThreadsFromFocusedComponent(allThreads, currentComponent, focusedTpl);
 
   // We have the focused element threads together, with the focused subject threads first
   const currentFocusThreads = [
     ...focusedSubjectThreads,
     ...focusedComponentThreads,
   ];
+
+  const selectedThread = currentFocusThreads.find(
+    (commentThread) => commentThread.id === shownThreadId
+  );
 
   const projectId = studioCtx.siteInfo.id;
   const branchId = studioCtx.branchInfo()?.id;
@@ -140,9 +144,9 @@ export const CommentsTab = observer(function CommentsTab(
               : { children: "Comment on selected" }
           }
           currentThreadsList={{
-            children: currentFocusThreads.map((threadComments) => (
+            children: currentFocusThreads.map((threadComment) => (
               <RootComment
-                threadComments={threadComments}
+                commentThread={threadComment}
                 onThreadSelect={setShownThreadId}
               />
             )),
@@ -154,24 +158,21 @@ export const CommentsTab = observer(function CommentsTab(
             wrap: (node) => otherComponentsThreads.length > 0 && node,
           }}
           restThreadsList={{
-            children: otherComponentsThreads.map((threadComments) => (
+            children: otherComponentsThreads.map((commentThread) => (
               <RootComment
-                threadComments={threadComments}
+                commentThread={commentThread}
                 onThreadSelect={setShownThreadId}
               />
             )),
           }}
         />
-        {shownThreadId && (
+        {selectedThread && (
           <SidebarModal
             show
             onClose={() => setShownThreadId(undefined)}
-            title={threads.get(shownThreadId)?.[0]?.label}
+            title={selectedThread.label}
           >
-            <ThreadComments
-              comments={threads.get(shownThreadId) ?? []}
-              threadId={shownThreadId}
-            />
+            <ThreadComments commentThread={selectedThread} />
           </SidebarModal>
         )}
       </SidebarModalProvider>

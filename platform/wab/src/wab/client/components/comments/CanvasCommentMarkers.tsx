@@ -4,7 +4,7 @@ import CommentPost from "@/wab/client/components/comments/CommentPost";
 import { useCommentsCtx } from "@/wab/client/components/comments/CommentsProvider";
 import ThreadComments from "@/wab/client/components/comments/ThreadComments";
 import {
-  TplComments,
+  TplCommentThread,
   isCommentForFrame,
 } from "@/wab/client/components/comments/utils";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
@@ -46,32 +46,29 @@ function ObjInstLabel(props: { subject: ObjInst }) {
   );
 }
 
-function ThreadWithHeader(props: { threadComments: TplComments }) {
-  const { threadComments } = props;
+function ThreadWithHeader(props: { commentThread: TplCommentThread }) {
+  const { commentThread } = props;
 
   const { bundler } = useCommentsCtx();
 
-  const [comment] = threadComments;
-  const subject = bundler.objByAddr(comment.location.subject);
-
-  const threadId = comment.threadId;
+  const subject = bundler.objByAddr(commentThread.location.subject);
 
   return (
     <div>
       <h4 style={{ padding: "8px 16px" }}>
         <ObjInstLabel subject={subject} />
       </h4>
-      <ThreadComments comments={threadComments} threadId={threadId} />
+      <ThreadComments commentThread={commentThread} />
     </div>
   );
 }
 
 function CanvasCommentMarker(props: {
-  threadComments: TplComments;
+  commentThread: TplCommentThread;
   arenaFrame: ArenaFrame;
   viewCtx: ViewCtx;
 }) {
-  const { threadComments, arenaFrame, viewCtx } = props;
+  const { commentThread, arenaFrame, viewCtx } = props;
 
   const {
     bundler,
@@ -82,14 +79,15 @@ function CanvasCommentMarker(props: {
     setShownArenaFrame,
   } = useCommentsCtx();
 
+  const threadComments = commentThread.comments;
   const [comment] = threadComments;
-  const subject = bundler.objByAddr(comment.location.subject) as TplNode;
+  const subject = bundler.objByAddr(commentThread.location.subject) as TplNode;
   const author = ensure(
     usersMap.get(ensureString(comment.createdById)),
     "Comment author should exist"
   );
   const isSelected =
-    shownThreadId === comment.threadId && arenaFrame === shownArenaFrame;
+    shownThreadId === commentThread.id && arenaFrame === shownArenaFrame;
   const onClickAway = () => {
     setShownThreadId(undefined);
     setShownArenaFrame(undefined);
@@ -101,7 +99,7 @@ function CanvasCommentMarker(props: {
       className={"CommentMarker"}
       onClick={(e) => {
         if (!isSelected) {
-          setShownThreadId(comment.threadId);
+          setShownThreadId(commentThread.id);
           setShownArenaFrame(arenaFrame);
         }
       }}
@@ -113,6 +111,7 @@ function CanvasCommentMarker(props: {
       <div className={"CommentMarkerHover"}>
         <CommentPost
           comment={comment}
+          commentThread={commentThread}
           subjectLabel={<ObjInstLabel subject={subject} />}
           isThread
           isRootComment
@@ -126,7 +125,7 @@ function CanvasCommentMarker(props: {
       {isSelected && (
         <OnClickAway onDone={onClickAway}>
           <div className={"CommentMarkerSelected"}>
-            <ThreadWithHeader threadComments={threadComments} />
+            <ThreadWithHeader commentThread={commentThread} />
           </div>
         </OnClickAway>
       )}
@@ -142,7 +141,7 @@ export const CanvasCommentMarkers = observer(function CanvasCommentMarkers({
 }) {
   const studioCtx = useStudioCtx();
 
-  const { threads } = useCommentsCtx();
+  const { allThreads } = useCommentsCtx();
 
   const viewCtx = studioCtx.tryGetViewCtxForFrame(arenaFrame);
 
@@ -152,21 +151,19 @@ export const CanvasCommentMarkers = observer(function CanvasCommentMarkers({
     return null;
   }
 
-  const threadsForFrame = new Map(
-    Array.from(threads.entries()).filter(
-      ([_threadId, comments]) =>
-        isCommentForFrame(studioCtx, viewCtx, comments[0]) &&
-        // only display unresolved comments
-        !comments[0].resolved
-    )
+  const threadsForFrame = allThreads.filter(
+    (commentThread) =>
+      isCommentForFrame(studioCtx, viewCtx, commentThread) &&
+      // only display unresolved comments
+      !commentThread.resolved
   );
 
   return (
     <>
-      {[...threadsForFrame.values()].map((threadComments) => (
+      {threadsForFrame.map((commentThread) => (
         <CanvasCommentMarker
-          key={threadComments[0].threadId}
-          threadComments={threadComments}
+          key={commentThread.id}
+          commentThread={commentThread}
           arenaFrame={arenaFrame}
           viewCtx={viewCtx}
         />

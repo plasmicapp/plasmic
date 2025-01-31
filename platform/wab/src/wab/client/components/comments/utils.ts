@@ -1,16 +1,12 @@
-import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
   CommentsContextData,
   CommentsData,
 } from "@/wab/client/components/comments/CommentsProvider";
-import { ApiComment } from "@/wab/shared/ApiSchema";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ApiCommentThread } from "@/wab/shared/ApiSchema";
 import { Bundler, FastBundler } from "@/wab/shared/bundler";
-import {
-  xGroupBy,
-  xMapValues,
-  xSymmetricDifference,
-} from "@/wab/shared/common";
+import { xSymmetricDifference } from "@/wab/shared/common";
 import {
   TplNamable,
   getTplOwnerComponent,
@@ -22,33 +18,33 @@ import { Component, ObjInst, TplNode } from "@/wab/shared/model/classes";
 import assert from "assert";
 import { partition, sortBy } from "lodash";
 
-type LocalizedComment = ApiComment & {
-  location: NonNullable<ApiComment["location"]>;
+type LocalizedCommentThread = ApiCommentThread & {
+  location: NonNullable<ApiCommentThread["location"]>;
 };
 
-export interface TplComment extends LocalizedComment {
+export interface TplCommentThread extends LocalizedCommentThread {
   subject: TplNamable;
   label: string;
   ownerComponent: Component;
 }
 
-export type TplComments = TplComment[];
+export type TplCommentThreads = TplCommentThread[];
 
-export function isValidComment(
+export function isValidCommentThread(
   bundler: Bundler,
-  comment: ApiComment
-): comment is LocalizedComment {
-  if (!comment.location) {
+  thread: ApiCommentThread
+): thread is LocalizedCommentThread {
+  if (!thread.location) {
     return false;
   }
 
-  const subject = bundler.objByAddr(comment.location.subject);
+  const subject = bundler.objByAddr(thread.location.subject);
   // The subject has been deleted since the comment was created
   if (!subject) {
     return false;
   }
 
-  const variants = comment.location.variants.map((addr) =>
+  const variants = thread.location.variants.map((addr) =>
     bundler.objByAddr(addr)
   );
 
@@ -70,62 +66,53 @@ export function isValidComment(
   return !!ownerComponent;
 }
 
-export function getCommentWithModelMetadata(
+export function getCommentThreadWithModelMetadata(
   bundler: Bundler,
-  comment: LocalizedComment
-): TplComment {
-  const inst = bundler.objByAddr(comment.location.subject);
-  assert(isTplNamable(inst), "Comment subject must be a TplNamable");
+  thread: LocalizedCommentThread
+): TplCommentThread {
+  const inst = bundler.objByAddr(thread.location.subject);
+  assert(isTplNamable(inst), "Comment thread subject must be a TplNamable");
 
   const subject = inst;
   const ownerComponent = getTplOwnerComponent(subject);
   return {
-    ...comment,
+    ...thread,
     subject,
     label: summarizeTplNamable(subject),
     ownerComponent,
   };
 }
 
-export function getCommentsWithModelMetadata(
+export function getCommentThreadsWithModelMetadata(
   bundler: Bundler,
-  comments: ApiComment[]
-): TplComments {
-  return comments
-    .filter((comment): comment is LocalizedComment =>
-      isValidComment(bundler, comment)
+  threads: ApiCommentThread[]
+): TplCommentThreads {
+  return threads
+    .filter((thread): thread is LocalizedCommentThread =>
+      isValidCommentThread(bundler, thread)
     )
-    .map((comment) => getCommentWithModelMetadata(bundler, comment));
+    .map((thread) => getCommentThreadWithModelMetadata(bundler, thread));
 }
 
-export function getThreadsFromComments(comments: TplComment[]) {
-  const threads = xMapValues(
-    xGroupBy(comments, (comment) => comment.threadId),
-    (threadComments) =>
-      sortBy(threadComments, (comment) => +new Date(comment.createdAt))
-  );
-  return threads;
-}
-
-function sortThreadsByLastComment(threads: TplComments[]) {
+function sortThreadsByLastComment(threads: TplCommentThreads) {
   return sortBy(
-    [...threads.values()],
-    (thread) => -new Date(thread[thread.length - 1].createdAt)
+    [...threads],
+    (thread) => -new Date(thread.comments[thread.comments.length - 1].createdAt)
   );
 }
 
 export function getThreadsFromFocusedComponent(
-  threads: Map<string, TplComments>,
+  threads: TplCommentThreads,
   focusedComponent: Component,
   focusedTpl: TplNode | null | undefined
 ) {
   const [_focusedComponentThreads, otherComponentsThreads] = partition(
-    [...threads.values()],
-    (thread) => thread[0].ownerComponent === focusedComponent
+    [...threads],
+    (thread) => thread.ownerComponent === focusedComponent
   );
   const [focusedSubjectThreads, focusedComponentThreads] = partition(
     _focusedComponentThreads,
-    (thread) => thread[0].subject === focusedTpl
+    (thread) => thread.subject === focusedTpl
   );
 
   return {
@@ -154,14 +141,13 @@ export function getElementCommentsStats(
   if (!isTplNamable(element)) {
     return count;
   }
-  const threads = commentsCtx.threads;
   const bundler = commentsCtx.bundler;
-  for (const thread of threads.values()) {
-    if (bundler.objByAddr(thread[0].location.subject) === element) {
+  commentsCtx.allThreads.forEach((thread) => {
+    if (bundler.objByAddr(thread.location.subject) === element) {
       count.commentCount += 1;
-      count.replyCount += thread.length - 1;
+      count.replyCount += thread.comments.length - 1;
     }
-  }
+  });
   return count;
 }
 
@@ -196,11 +182,13 @@ export function getSetOfVariantsForViewCtx(
 export function isCommentForFrame(
   studioCtx: StudioCtx,
   viewCtx: ViewCtx,
-  comment: TplComment
+  commentThread: TplCommentThread
 ) {
   const bundler = studioCtx.bundler();
-  const subject = bundler.objByAddr(comment.location.subject);
-  const variants = comment.location.variants.map((v) => bundler.objByAddr(v));
+  const subject = bundler.objByAddr(commentThread.location.subject);
+  const variants = commentThread.location.variants.map((v) =>
+    bundler.objByAddr(v)
+  );
   const ownerComponent = studioCtx
     .tplMgr()
     .findComponentContainingTpl(subject as TplNode);

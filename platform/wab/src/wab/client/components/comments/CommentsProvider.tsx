@@ -1,8 +1,7 @@
 import { apiKey } from "@/wab/client/api";
 import {
-  TplComment,
-  getCommentsWithModelMetadata,
-  getThreadsFromComments,
+  TplCommentThread,
+  getCommentThreadsWithModelMetadata,
 } from "@/wab/client/components/comments/utils";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -21,10 +20,10 @@ import { mkIdMap } from "@/wab/shared/collections";
 import { ensure, sortBy, xGroupBy } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ArenaFrame } from "@/wab/shared/model/classes";
+import { computed } from "mobx";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { ReactNode, createContext, useMemo } from "react";
-import { observer } from "mobx-react";
-import { computed } from "mobx";
 import useSWR, { KeyedMutator } from "swr";
 
 export interface CommentsContextData {
@@ -34,20 +33,18 @@ export interface CommentsContextData {
   setShownArenaFrame: (threadId: ArenaFrame | undefined) => void;
   projectId: ProjectId;
   branchId?: BranchId;
-  allComments: TplComment[];
+  allThreads: TplCommentThread[];
   bundler: FastBundler;
   reactionsByCommentId: Map<CommentId, ApiCommentReaction[]>;
   refreshComments: KeyedMutator<GetCommentsResponse>;
   selfNotificationSettings?: ApiNotificationSettings;
   usersMap: Map<string, ApiUser>;
-  threads: Map<CommentThreadId, TplComment[]>;
 }
 
 export interface CommentsData {
-  allComments: TplComment[];
+  allThreads: TplCommentThread[];
   usersMap: Map<string, ApiUser>;
   reactionsByCommentId: Map<CommentId, ApiCommentReaction[]>;
-  threads: Map<CommentThreadId, TplComment[]>;
   bundler: FastBundler;
   refreshComments: KeyedMutator<GetCommentsResponse>;
   projectId: ProjectId;
@@ -70,10 +67,9 @@ function useCommentsData(): CommentsData {
   const appConfig = studioCtx.appCtx.appConfig;
 
   const defaultCommentsData = {
-    allComments: [],
+    allThreads: [],
     usersMap: new Map<string, ApiUser>(),
     reactionsByCommentId: new Map<CommentId, ApiCommentReaction[]>(),
-    threads: new Map<CommentThreadId, TplComment[]>(),
   };
 
   const bundler = studioCtx.bundler();
@@ -117,23 +113,21 @@ function useCommentsData(): CommentsData {
           return defaultCommentsData;
         }
 
-        const { comments, reactions, users, selfNotificationSettings } =
+        const { threads, reactions, users, selfNotificationSettings } =
           maybeResponse;
 
-        const allComments = getCommentsWithModelMetadata(bundler, comments);
+        const allThreads = getCommentThreadsWithModelMetadata(bundler, threads);
         const usersMap = mkIdMap(users);
         const reactionsByCommentId = xGroupBy(
           sortBy(reactions, (r) => +new Date(r.createdAt)),
           (reaction) => reaction.commentId
         );
-        const threads = getThreadsFromComments(allComments);
 
         return {
-          allComments,
+          allThreads,
           usersMap,
           reactionsByCommentId,
           selfNotificationSettings,
-          threads,
         };
       },
       { name: "commentsData" }

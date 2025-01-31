@@ -6,6 +6,7 @@ import { createMailer } from "@/wab/server/emails/Mailer";
 import { sendUserNotificationEmail } from "@/wab/server/emails/comment-notification-email";
 import {
   Comment,
+  CommentThread,
   Permission,
   Project,
   User,
@@ -42,18 +43,18 @@ export async function processUnnotifiedCommentsNotifications(
   dbManager: DbMgr
 ): Promise<{
   notificationsByUser: UserProjectRecord;
-  recentComments: string[];
+  recentCommentThreads: string[];
 }> {
-  const recentComments = await dbManager.getUnnotifiedComments();
-  const commentsByProject = groupBy(recentComments, "projectId");
+  const recentCommentThreads = await dbManager.getUnnotifiedCommentThreads();
+  const commentThreadsByProject = groupBy(recentCommentThreads, "projectId");
   const notificationsByUser: UserProjectRecord = new Map();
 
   await Promise.all(
-    Object.entries(commentsByProject).map(([projectId, comments]) =>
+    Object.entries(commentThreadsByProject).map(([projectId, commentThreads]) =>
       processCommentsForProject(
         dbManager,
         projectId,
-        comments,
+        commentThreads,
         notificationsByUser
       )
     )
@@ -61,14 +62,16 @@ export async function processUnnotifiedCommentsNotifications(
 
   return {
     notificationsByUser,
-    recentComments: recentComments.map((comment) => comment.id),
+    recentCommentThreads: recentCommentThreads.map(
+      (commentThread) => commentThread.id
+    ),
   };
 }
 
 async function processCommentsForProject(
   dbManager: DbMgr,
   projectId: string,
-  comments: Comment[],
+  commentThreads: CommentThread[],
   notificationsByUser: UserProjectRecord
 ) {
   const permissions = await dbManager.getPermissionsForProject(projectId);
@@ -81,7 +84,7 @@ async function processCommentsForProject(
         dbManager,
         user,
         projectId,
-        comments,
+        commentThreads,
         project,
         notificationsByUser
       )
@@ -93,7 +96,7 @@ async function processUserForProject(
   dbManager: DbMgr,
   user: User,
   projectId: string,
-  comments: Comment[],
+  commentThreads: CommentThread[],
   project: Project,
   notificationsByUser: UserProjectRecord
 ) {
@@ -109,15 +112,17 @@ async function processUserForProject(
     return;
   }
 
-  const filteredComments = filterOutUserComments(user, comments);
-  const commentsByThread = groupBy(filteredComments, "threadId");
+  const filteredCommentThreads = filterOutUserCommentThreads(
+    user,
+    commentThreads
+  );
 
   await Promise.all(
-    Object.entries(commentsByThread).map(([threadId, threadComments]) =>
+    filteredCommentThreads.map((commentThread) =>
       processThreadForUser(
         dbManager,
-        threadId,
-        threadComments,
+        commentThread.id,
+        commentThread.comments,
         user,
         projectId,
         project,
@@ -195,8 +200,23 @@ async function processCommentForUser(
   );
 }
 
-function filterOutUserComments(user: User, comments: Comment[]): Comment[] {
-  return comments.filter((comment) => comment.createdById !== user.id);
+function filterOutUserCommentThreads(
+  user: User,
+  commentThreads: CommentThread[]
+): CommentThread[] {
+  return commentThreads
+    .map((commentThread) => {
+      // Create a new CommentThread instance with filtered comments
+      const filteredThread = new CommentThread();
+      Object.assign(filteredThread, {
+        ...commentThread,
+        comments: commentThread.comments.filter(
+          (comment) => comment.createdById !== user.id
+        ),
+      });
+      return filteredThread;
+    })
+    .filter((commentThread) => commentThread.comments.length > 0);
 }
 
 // Function to update the notificationsByUser structure
@@ -208,7 +228,7 @@ function updateNotificationsByUser(
   comment: Comment,
   completeThreadComments: Comment[]
 ) {
-  const { threadId } = comment;
+  const { commentThreadId } = comment;
   if (!notificationsByUser.has(user.id)) {
     notificationsByUser.set(user.id, {
       userEmail: user.email,
@@ -227,16 +247,18 @@ function updateNotificationsByUser(
 
   const projectThreads = userProjects.projects.get(projectId)!.threads;
 
-  if (!projectThreads.has(threadId)) {
+  if (!projectThreads.has(commentThreadId)) {
+    const commentNotification = getNotificationComment(
+      completeThreadComments[0]
+    );
     // always add root comment
-    projectThreads.set(threadId, [
-      getNotificationComment(completeThreadComments[0]),
-    ]);
+    projectThreads.set(commentThreadId, [commentNotification]);
   }
 
   // Add the current comment only if it's not the root comment
   if (completeThreadComments[0].id !== comment.id) {
-    projectThreads.get(threadId)!.push(getNotificationComment(comment));
+    const commentNotification = getNotificationComment(comment);
+    projectThreads.get(commentThreadId)!.push(commentNotification);
   }
 }
 
@@ -265,7 +287,7 @@ export async function sendCommentsNotificationEmails(config: Config) {
 
       await dbManager.waitLockTransactionResource(COMMENTS_NOTIFICATION_LOCK);
 
-      const { notificationsByUser, recentComments } =
+      const { notificationsByUser, recentCommentThreads } =
         await processUnnotifiedCommentsNotifications(dbManager);
 
       await Promise.all(
@@ -283,7 +305,7 @@ export async function sendCommentsNotificationEmails(config: Config) {
         )
       );
 
-      await dbManager.markCommentsAsNotified(recentComments);
+      await dbManager.markCommentsAsNotified(recentCommentThreads);
     });
   } catch (err) {
     logError(err, "Failed to send comment notification emails");
