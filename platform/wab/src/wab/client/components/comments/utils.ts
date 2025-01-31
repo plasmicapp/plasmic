@@ -159,8 +159,9 @@ export function isElementWithComments(
     return false;
   }
   const bundler = commentsCtx.bundler;
-  return commentsCtx.allComments.some(
-    (comment) => bundler.objByAddr(comment.location.subject) === element
+  return commentsCtx.allThreads.some(
+    (commentThread) =>
+      bundler.objByAddr(commentThread.location.subject) === element
   );
 }
 
