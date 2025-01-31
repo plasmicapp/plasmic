@@ -16,7 +16,7 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import { AnyArena } from "@/wab/shared/Arenas";
-import { ensure, ensureString } from "@/wab/shared/common";
+import { ensure, ensureString, xGroupBy } from "@/wab/shared/common";
 import { isTplVariantable } from "@/wab/shared/core/tpls";
 import { ArenaFrame, ObjInst, TplNode } from "@/wab/shared/model/classes";
 import { mkSemVerSiteElement } from "@/wab/shared/site-diffs";
@@ -67,8 +67,9 @@ function CanvasCommentMarker(props: {
   commentThread: TplCommentThread;
   arenaFrame: ArenaFrame;
   viewCtx: ViewCtx;
+  offsetLeft: number;
 }) {
-  const { commentThread, arenaFrame, viewCtx } = props;
+  const { commentThread, arenaFrame, viewCtx, offsetLeft } = props;
 
   const {
     bundler,
@@ -94,6 +95,7 @@ function CanvasCommentMarker(props: {
   };
   return (
     <CanvasCommentOverlay
+      offsetLeft={offsetLeft}
       tpl={subject}
       viewCtx={viewCtx}
       className={"CommentMarker"}
@@ -147,27 +149,38 @@ export const CanvasCommentMarkers = observer(function CanvasCommentMarkers({
 
   useRerenderOnUserBodyChange(studioCtx, viewCtx);
 
+  const threadsGroupedBySubject = React.useMemo(
+    () =>
+      !viewCtx
+        ? new Map()
+        : xGroupBy(
+            allThreads.filter(
+              (commentThread) =>
+                isCommentForFrame(studioCtx, viewCtx, commentThread) &&
+                !commentThread.resolved // Only unresolved comments
+            ),
+            (commentThread) => commentThread.subject.uuid
+          ),
+    [allThreads, studioCtx, viewCtx]
+  );
+
   if (!viewCtx) {
     return null;
   }
 
-  const threadsForFrame = allThreads.filter(
-    (commentThread) =>
-      isCommentForFrame(studioCtx, viewCtx, commentThread) &&
-      // only display unresolved comments
-      !commentThread.resolved
-  );
-
   return (
     <>
-      {threadsForFrame.map((commentThread) => (
-        <CanvasCommentMarker
-          key={commentThread.id}
-          commentThread={commentThread}
-          arenaFrame={arenaFrame}
-          viewCtx={viewCtx}
-        />
-      ))}
+      {[...threadsGroupedBySubject.values()].map((subjectCommentThreads) =>
+        subjectCommentThreads.map((commentThread, index) => (
+          <CanvasCommentMarker
+            offsetLeft={index * 20}
+            key={commentThread.id}
+            commentThread={commentThread}
+            arenaFrame={arenaFrame}
+            viewCtx={viewCtx}
+          />
+        ))
+      )}
     </>
   );
 });
@@ -179,6 +192,7 @@ export const CanvasCommentOverlay = observer(function CanvasCommentOverlay({
   onClick,
   className,
   isSelected,
+  offsetLeft,
 }: {
   tpl: TplNode;
   children?: ReactNode;
@@ -186,6 +200,7 @@ export const CanvasCommentOverlay = observer(function CanvasCommentOverlay({
   onClick?: (e: any) => void;
   className?: string;
   isSelected?: boolean;
+  offsetLeft: number;
 }) {
   // We directly use the render count here to make this component depend on it and re-render every time the render count changes
   // This is necessary for elements that are visible in the canvas conditionally (e.g. auto opened elements)
@@ -231,7 +246,13 @@ export const CanvasCommentOverlay = observer(function CanvasCommentOverlay({
           backgroundColor: Chroma(color).alpha(0.2).css(),
         }}
       />
-      <div className={className} onClick={onClick}>
+      <div
+        className={className}
+        onClick={onClick}
+        style={{
+          left: `calc(100% - ${offsetLeft}px)`,
+        }}
+      >
         {children}
       </div>
     </CanvasTransformedBox>,
