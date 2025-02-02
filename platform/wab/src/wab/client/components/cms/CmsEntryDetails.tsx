@@ -607,9 +607,7 @@ function CmsEntryDetailsForm_(
                   onClick={async () => {
                     const confirmed = await confirm({
                       title: "Delete entry",
-                      message: `Are you sure you want to delete entry "${
-                        row.identifier ? row.identifier : "Untitled"
-                      }"?`,
+                      message: `Are you sure you want to delete ${entryDisplayName}?`,
                     });
                     if (confirmed) {
                       await api.deleteCmsRow(row.id);
