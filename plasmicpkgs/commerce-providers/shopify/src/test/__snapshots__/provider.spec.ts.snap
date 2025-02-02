@@ -18,18 +18,18 @@ exports[`shopify provider useBrands 1`] = `
 exports[`shopify provider useCart 1`] = `
 {
   "cart1": {
-    "createdAt": "2025-02-03T13:55:13Z",
+    "createdAt": "2025-02-03T13:51:01Z",
     "currency": {
       "code": "USD",
     },
     "customerId": "",
     "discounts": [],
     "email": "",
-    "id": "gid://shopify/Checkout/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+    "id": "gid://shopify/Cart/Z2NwLXVzLXdlc3QxOjAxSks2MThBRzFNWFNUMjdGMDgyUVY3MkVX?key=ffb5f132274379db699677824d7549f3",
     "lineItems": [
       {
         "discounts": [],
-        "id": "gid://shopify/CheckoutLineItem/400462439057000?checkout=a90b6a6995f0cb4d76d9b0aabd98d20a",
+        "id": "gid://shopify/CartLine/c8574109-5967-43f7-99da-aa0c8b4d2502?cart=Z2NwLXVzLXdlc3QxOjAxSks2MThBRzFNWFNUMjdGMDgyUVY3MkVX",
         "name": "Bomber Jacket",
         "options": [
           {
@@ -47,13 +47,16 @@ exports[`shopify provider useCart 1`] = `
         "variant": {
           "id": "gid://shopify/ProductVariant/40046243905700",
           "image": {
+            "alt": undefined,
+            "height": 1000,
             "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/bomber-jacket-0.png?v=1622902777",
+            "width": 1000,
           },
           "listPrice": "5200.0",
           "name": "L / Black",
           "price": "635.99",
-          "requiresShipping": false,
-          "sku": "",
+          "requiresShipping": true,
+          "sku": "gid://shopify/ProductVariant/40046243905700",
         },
         "variantId": "gid://shopify/ProductVariant/40046243905700",
       },
@@ -62,21 +65,21 @@ exports[`shopify provider useCart 1`] = `
     "subtotalPrice": 635.99,
     "taxesIncluded": false,
     "totalPrice": 635.99,
-    "url": "https://next-js-store.myshopify.com/43402854564/checkouts/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+    "url": "https://next-js-store.myshopify.com/cart/c/Z2NwLXVzLXdlc3QxOjAxSks2MThBRzFNWFNUMjdGMDgyUVY3MkVX?key=ffb5f132274379db699677824d7549f3",
   },
   "cart2": {
-    "createdAt": "2025-02-03T13:55:13Z",
+    "createdAt": "2025-02-03T13:51:01Z",
     "currency": {
       "code": "USD",
     },
     "customerId": "",
     "discounts": [],
     "email": "",
-    "id": "gid://shopify/Checkout/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+    "id": "gid://shopify/Cart/Z2NwLXVzLXdlc3QxOjAxSks2MThBRzFNWFNUMjdGMDgyUVY3MkVX?key=ffb5f132274379db699677824d7549f3",
     "lineItems": [
       {
         "discounts": [],
-        "id": "gid://shopify/CheckoutLineItem/400462439057000?checkout=a90b6a6995f0cb4d76d9b0aabd98d20a",
+        "id": "gid://shopify/CartLine/c8574109-5967-43f7-99da-aa0c8b4d2502?cart=Z2NwLXVzLXdlc3QxOjAxSks2MThBRzFNWFNUMjdGMDgyUVY3MkVX",
         "name": "Bomber Jacket",
         "options": [
           {
@@ -94,13 +97,16 @@ exports[`shopify provider useCart 1`] = `
         "variant": {
           "id": "gid://shopify/ProductVariant/40046243905700",
           "image": {
+            "alt": undefined,
+            "height": 1000,
             "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/bomber-jacket-0.png?v=1622902777",
+            "width": 1000,
           },
           "listPrice": "5200.0",
           "name": "L / Black",
           "price": "635.99",
-          "requiresShipping": false,
-          "sku": "",
+          "requiresShipping": true,
+          "sku": "gid://shopify/ProductVariant/40046243905700",
         },
         "variantId": "gid://shopify/ProductVariant/40046243905700",
       },
@@ -109,21 +115,21 @@ exports[`shopify provider useCart 1`] = `
     "subtotalPrice": 1271.98,
     "taxesIncluded": false,
     "totalPrice": 1271.98,
-    "url": "https://next-js-store.myshopify.com/43402854564/checkouts/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+    "url": "https://next-js-store.myshopify.com/cart/c/Z2NwLXVzLXdlc3QxOjAxSks2MThBRzFNWFNUMjdGMDgyUVY3MkVX?key=ffb5f132274379db699677824d7549f3",
   },
   "cart3": {
-    "createdAt": "2025-02-03T13:55:13Z",
+    "createdAt": "2025-02-03T13:51:01Z",
     "currency": {
       "code": "USD",
     },
     "customerId": "",
     "discounts": [],
     "email": "",
-    "id": "gid://shopify/Checkout/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+    "id": "gid://shopify/Cart/Z2NwLXVzLXdlc3QxOjAxSks2MThBRzFNWFNUMjdGMDgyUVY3MkVX?key=ffb5f132274379db699677824d7549f3",
     "lineItems": [
       {
         "discounts": [],
-        "id": "gid://shopify/CheckoutLineItem/400462439057000?checkout=a90b6a6995f0cb4d76d9b0aabd98d20a",
+        "id": "gid://shopify/CartLine/c8574109-5967-43f7-99da-aa0c8b4d2502?cart=Z2NwLXVzLXdlc3QxOjAxSks2MThBRzFNWFNUMjdGMDgyUVY3MkVX",
         "name": "Bomber Jacket",
         "options": [
           {
@@ -141,13 +147,16 @@ exports[`shopify provider useCart 1`] = `
         "variant": {
           "id": "gid://shopify/ProductVariant/40046243905700",
           "image": {
+            "alt": undefined,
+            "height": 1000,
             "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/bomber-jacket-0.png?v=1622902777",
+            "width": 1000,
           },
           "listPrice": "5200.0",
           "name": "L / Black",
           "price": "635.99",
-          "requiresShipping": false,
-          "sku": "",
+          "requiresShipping": true,
+          "sku": "gid://shopify/ProductVariant/40046243905700",
         },
         "variantId": "gid://shopify/ProductVariant/40046243905700",
       },
@@ -156,21 +165,21 @@ exports[`shopify provider useCart 1`] = `
     "subtotalPrice": 1907.97,
     "taxesIncluded": false,
     "totalPrice": 1907.97,
-    "url": "https://next-js-store.myshopify.com/43402854564/checkouts/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+    "url": "https://next-js-store.myshopify.com/cart/c/Z2NwLXVzLXdlc3QxOjAxSks2MThBRzFNWFNUMjdGMDgyUVY3MkVX?key=ffb5f132274379db699677824d7549f3",
   },
   "cart4": {
-    "createdAt": "2025-02-03T13:55:13Z",
+    "createdAt": "2025-02-03T13:51:01Z",
     "currency": {
       "code": "USD",
     },
     "customerId": "",
     "discounts": [],
     "email": "",
-    "id": "gid://shopify/Checkout/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+    "id": "gid://shopify/Cart/Z2NwLXVzLXdlc3QxOjAxSks2MThBRzFNWFNUMjdGMDgyUVY3MkVX?key=ffb5f132274379db699677824d7549f3",
     "lineItems": [
       {
         "discounts": [],
-        "id": "gid://shopify/CheckoutLineItem/400462439057000?checkout=a90b6a6995f0cb4d76d9b0aabd98d20a",
+        "id": "gid://shopify/CartLine/c8574109-5967-43f7-99da-aa0c8b4d2502?cart=Z2NwLXVzLXdlc3QxOjAxSks2MThBRzFNWFNUMjdGMDgyUVY3MkVX",
         "name": "Bomber Jacket",
         "options": [
           {
@@ -188,13 +197,16 @@ exports[`shopify provider useCart 1`] = `
         "variant": {
           "id": "gid://shopify/ProductVariant/40046243905700",
           "image": {
+            "alt": undefined,
+            "height": 1000,
             "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/bomber-jacket-0.png?v=1622902777",
+            "width": 1000,
           },
           "listPrice": "5200.0",
           "name": "L / Black",
           "price": "635.99",
-          "requiresShipping": false,
-          "sku": "",
+          "requiresShipping": true,
+          "sku": "gid://shopify/ProductVariant/40046243905700",
         },
         "variantId": "gid://shopify/ProductVariant/40046243905700",
       },
@@ -203,23 +215,23 @@ exports[`shopify provider useCart 1`] = `
     "subtotalPrice": 1907.97,
     "taxesIncluded": false,
     "totalPrice": 1907.97,
-    "url": "https://next-js-store.myshopify.com/43402854564/checkouts/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+    "url": "https://next-js-store.myshopify.com/cart/c/Z2NwLXVzLXdlc3QxOjAxSks2MThBRzFNWFNUMjdGMDgyUVY3MkVX?key=ffb5f132274379db699677824d7549f3",
   },
   "cart5": {
-    "createdAt": "2025-02-03T13:55:13Z",
+    "createdAt": "2025-02-03T13:51:01Z",
     "currency": {
-      "code": "USD",
+      "code": "XXX",
     },
     "customerId": "",
     "discounts": [],
     "email": "",
-    "id": "gid://shopify/Checkout/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+    "id": "gid://shopify/Cart/Z2NwLXVzLXdlc3QxOjAxSks2MThBRzFNWFNUMjdGMDgyUVY3MkVX?key=ffb5f132274379db699677824d7549f3",
     "lineItems": [],
     "lineItemsSubtotalPrice": 0,
     "subtotalPrice": 0,
     "taxesIncluded": false,
     "totalPrice": 0,
-    "url": "https://next-js-store.myshopify.com/43402854564/checkouts/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+    "url": "https://next-js-store.myshopify.com/cart/c/Z2NwLXVzLXdlc3QxOjAxSks2MThBRzFNWFNUMjdGMDgyUVY3MkVX?key=ffb5f132274379db699677824d7549f3",
   },
 }
 `;
@@ -263,16 +275,22 @@ exports[`shopify provider useProduct 1`] = `
   "availableForSale": true,
   "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.",
   "descriptionHtml": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.</p>",
+  "featuredImage": {
+    "altText": null,
+    "height": 1000,
+    "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/bomber-jacket-0.png?v=1622902777",
+    "width": 1000,
+  },
   "id": "gid://shopify/Product/5447324270756",
   "images": [
     {
-      "altText": null,
+      "alt": undefined,
       "height": 1000,
       "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/bomber-jacket-0.png?v=1622902777",
       "width": 1000,
     },
     {
-      "altText": null,
+      "alt": undefined,
       "height": 1000,
       "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/bomber-jacket-1.png?v=1622902777",
       "width": 1000,
@@ -322,7 +340,17 @@ exports[`shopify provider useProduct 1`] = `
     "value": 635.99,
   },
   "productType": "jacket",
+  "seo": {
+    "description": null,
+    "title": null,
+  },
   "slug": "bomber-jacket",
+  "tags": [
+    "bomber",
+    "jacket",
+    "olive",
+  ],
+  "updatedAt": "2021-06-25T13:53:09Z",
   "variants": [
     {
       "availableForSale": true,
@@ -529,7 +557,6 @@ exports[`shopify provider useProduct 1`] = `
       "sku": "",
     },
   ],
-  "vendor": "Next.js",
 }
 `;
 
@@ -538,18 +565,25 @@ exports[`shopify provider useSearch 1`] = `
   "found": true,
   "products": [
     {
+      "availableForSale": true,
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.",
       "descriptionHtml": "<meta charset="utf-8"><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.</span>",
+      "featuredImage": {
+        "altText": null,
+        "height": 2048,
+        "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Cup-front-black.png?v=1623159405",
+        "width": 2048,
+      },
       "id": "gid://shopify/Product/6621772644516",
       "images": [
         {
-          "altText": null,
+          "alt": undefined,
           "height": 2048,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Cup-front-black.png?v=1623159405",
           "width": 2048,
         },
         {
-          "altText": null,
+          "alt": undefined,
           "height": 2048,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Cup-front-white.png?v=1623159430",
           "width": 2048,
@@ -582,7 +616,14 @@ exports[`shopify provider useSearch 1`] = `
         "currencyCode": "USD",
         "value": 25,
       },
+      "productType": "cup",
+      "seo": {
+        "description": null,
+        "title": null,
+      },
       "slug": "acme-cup",
+      "tags": [],
+      "updatedAt": "2021-06-24T17:14:45Z",
       "variants": [
         {
           "availableForSale": true,
@@ -633,33 +674,39 @@ exports[`shopify provider useSearch 1`] = `
           "sku": "201",
         },
       ],
-      "vendor": "ACME",
     },
     {
+      "availableForSale": true,
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.",
       "descriptionHtml": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.<br></p>",
+      "featuredImage": {
+        "altText": null,
+        "height": 1000,
+        "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/short-sleeve-t-shirt-0.png?v=1622902418",
+        "width": 1000,
+      },
       "id": "gid://shopify/Product/5447325024420",
       "images": [
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/short-sleeve-t-shirt-0.png?v=1622902418",
           "width": 1000,
         },
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/short-sleeve-t-shirt-4.png?v=1622902418",
           "width": 1000,
         },
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/short-sleeve-t-shirt-3.png?v=1622902418",
           "width": 1000,
         },
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/short-sleeve-t-shirt-2.png?v=1622902418",
           "width": 1000,
@@ -726,7 +773,18 @@ exports[`shopify provider useSearch 1`] = `
         "currencyCode": "USD",
         "value": 25,
       },
+      "productType": "t-shirt",
+      "seo": {
+        "description": null,
+        "title": null,
+      },
       "slug": "new-short-sleeve-t-shirt",
+      "tags": [
+        "salmon",
+        "shirt",
+        "tshirt",
+      ],
+      "updatedAt": "2021-06-25T13:53:09Z",
       "variants": [
         {
           "availableForSale": true,
@@ -1409,33 +1467,39 @@ exports[`shopify provider useSearch 1`] = `
           "sku": "",
         },
       ],
-      "vendor": "Next.js",
     },
     {
+      "availableForSale": true,
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.",
       "descriptionHtml": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.</p>",
+      "featuredImage": {
+        "altText": null,
+        "height": 1000,
+        "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/short-sleeve-0.png?v=1622901991",
+        "width": 1000,
+      },
       "id": "gid://shopify/Product/5447324729508",
       "images": [
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/short-sleeve-0.png?v=1622901991",
           "width": 1000,
         },
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/short-sleeve-1.png?v=1622901991",
           "width": 1000,
         },
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/short-sleeve-2.png?v=1622901991",
           "width": 1000,
         },
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/short-sleeve-3.png?v=1622901991",
           "width": 1000,
@@ -1496,7 +1560,16 @@ exports[`shopify provider useSearch 1`] = `
         "currencyCode": "USD",
         "value": 35,
       },
+      "productType": "shirt",
+      "seo": {
+        "description": null,
+        "title": null,
+      },
       "slug": "short-sleeve-t-shirt",
+      "tags": [
+        "shirt",
+      ],
+      "updatedAt": "2021-06-25T13:53:09Z",
       "variants": [
         {
           "availableForSale": true,
@@ -1907,21 +1980,27 @@ exports[`shopify provider useSearch 1`] = `
           "sku": "",
         },
       ],
-      "vendor": "Next.js",
     },
     {
+      "availableForSale": true,
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.",
       "descriptionHtml": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.</p>",
+      "featuredImage": {
+        "altText": null,
+        "height": 1000,
+        "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/bomber-jacket-0.png?v=1622902777",
+        "width": 1000,
+      },
       "id": "gid://shopify/Product/5447324270756",
       "images": [
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/bomber-jacket-0.png?v=1622902777",
           "width": 1000,
         },
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/bomber-jacket-1.png?v=1622902777",
           "width": 1000,
@@ -1970,7 +2049,18 @@ exports[`shopify provider useSearch 1`] = `
         "currencyCode": "USD",
         "value": 635.99,
       },
+      "productType": "jacket",
+      "seo": {
+        "description": null,
+        "title": null,
+      },
       "slug": "bomber-jacket",
+      "tags": [
+        "bomber",
+        "jacket",
+        "olive",
+      ],
+      "updatedAt": "2021-06-25T13:53:09Z",
       "variants": [
         {
           "availableForSale": true,
@@ -2177,15 +2267,21 @@ exports[`shopify provider useSearch 1`] = `
           "sku": "",
         },
       ],
-      "vendor": "Next.js",
     },
     {
+      "availableForSale": true,
       "description": "Wafer cupcake candy macaroon bonbon candy canes cheesecake candy. Donut chupa chups sesame snaps candy chocolate cake chocolate cake danish. Tart cotton candy gummies cotton candy sweet roll. Wafer pie chocolate cake. Caramels toffee gummies. Liquorice sweet oat cake chocolate candy canes toffee bear claw. Chocolate cupcake wafer. Halvah soufflé halvah. Dessert pastry toffee apple pie chocolate cake lemon drops. Tart carrot cake wafer halvah tiramisu fruitcake.",
       "descriptionHtml": "<p><meta charset="utf-8">Wafer cupcake candy macaroon bonbon candy canes cheesecake candy. Donut chupa chups sesame snaps candy chocolate cake chocolate cake danish. Tart cotton candy gummies cotton candy sweet roll. Wafer pie chocolate cake. Caramels toffee gummies. Liquorice sweet oat cake chocolate candy canes toffee bear claw. Chocolate cupcake wafer. Halvah soufflé halvah. Dessert pastry toffee apple pie chocolate cake lemon drops. Tart carrot cake wafer halvah tiramisu fruitcake.<br></p>",
+      "featuredImage": {
+        "altText": null,
+        "height": 900,
+        "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Sticker-mock.png?v=1623256356",
+        "width": 900,
+      },
       "id": "gid://shopify/Product/5447323812004",
       "images": [
         {
-          "altText": null,
+          "alt": undefined,
           "height": 900,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Sticker-mock.png?v=1623256356",
           "width": 900,
@@ -2209,7 +2305,16 @@ exports[`shopify provider useSearch 1`] = `
         "currencyCode": "USD",
         "value": 0,
       },
+      "productType": "sticker",
+      "seo": {
+        "description": "Show off your love for Next.js and Vercel with this unique, limited edition sticker. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last – only 200 of these shirts will be made! All proceeds will be donated to charity.",
+        "title": null,
+      },
       "slug": "sticker",
+      "tags": [
+        "sticker",
+      ],
+      "updatedAt": "2021-06-25T13:53:09Z",
       "variants": [
         {
           "availableForSale": true,
@@ -2233,27 +2338,33 @@ exports[`shopify provider useSearch 1`] = `
           "sku": "",
         },
       ],
-      "vendor": "ACME",
     },
     {
+      "availableForSale": true,
       "description": "Show off your love for Next.js and Vercel with this unique, limited edition quarter zip. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last – only 200 of these shirts will be made! All proceeds will be donated to charity.",
       "descriptionHtml": "<p>Show off your love for Next.js and Vercel with this unique, <strong>limited edition</strong> quarter zip. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last – only 200 of these shirts will be made! <strong>All proceeds will be donated to charity.</strong></p>",
+      "featuredImage": {
+        "altText": null,
+        "height": 1000,
+        "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/QZSide-Model.png?v=1623256247",
+        "width": 1000,
+      },
       "id": "gid://shopify/Product/5447323156644",
       "images": [
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/QZSide-Model.png?v=1623256247",
           "width": 1000,
         },
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/QZ-Back.png?v=1623256248",
           "width": 1000,
         },
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/QZ-Front.png?v=1623256248",
           "width": 1000,
@@ -2302,7 +2413,16 @@ exports[`shopify provider useSearch 1`] = `
         "currencyCode": "USD",
         "value": 90,
       },
+      "productType": "quarter-zip",
+      "seo": {
+        "description": null,
+        "title": null,
+      },
       "slug": "quarter-zip",
+      "tags": [
+        "shirt",
+      ],
+      "updatedAt": "2021-06-25T13:53:09Z",
       "variants": [
         {
           "availableForSale": true,
@@ -2475,33 +2595,39 @@ exports[`shopify provider useSearch 1`] = `
           "sku": "",
         },
       ],
-      "vendor": "ACME",
     },
     {
+      "availableForSale": true,
       "description": "Show off your love for Next.js and Vercel with this unique, limited edition t-shirt. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last – only 200 of these shirts will be made! All proceeds will be donated to charity.",
       "descriptionHtml": "<p><meta charset="utf-8"><span>Show off your love for Next.js and Vercel with this unique, </span><strong>limited edition</strong><span> t-shirt. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last – only 200 of these shirts will be made! </span><strong>All proceeds will be donated to charity.</strong></p>",
+      "featuredImage": {
+        "altText": null,
+        "height": 1000,
+        "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Front-NoModel_ec3be051-d579-4c03-b55b-64449d0b0445.png?v=1623255893",
+        "width": 958,
+      },
       "id": "gid://shopify/Product/5447322697892",
       "images": [
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Front-NoModel_ec3be051-d579-4c03-b55b-64449d0b0445.png?v=1623255893",
           "width": 958,
         },
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/FrontZoom_6302485d-7f7f-4585-b27b-aea85b7d644a.png?v=1623255894",
           "width": 1000,
         },
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Front_c81c04e9-333a-4a6c-b91a-e898f2a6025b.png?v=1623255894",
           "width": 1000,
         },
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Side_748811db-ccd1-48c7-9dcd-64ec2ec88993.png?v=1623255894",
           "width": 1000,
@@ -2550,7 +2676,17 @@ exports[`shopify provider useSearch 1`] = `
         "currencyCode": "USD",
         "value": 50,
       },
+      "productType": "conf-shirt",
+      "seo": {
+        "description": null,
+        "title": null,
+      },
       "slug": "conf-shirt",
+      "tags": [
+        "shirt",
+        "tshirt",
+      ],
+      "updatedAt": "2021-06-25T13:53:09Z",
       "variants": [
         {
           "availableForSale": true,
@@ -2723,7 +2859,6 @@ exports[`shopify provider useSearch 1`] = `
           "sku": "",
         },
       ],
-      "vendor": "ACME",
     },
   ],
 }
@@ -2734,18 +2869,25 @@ exports[`shopify provider useSearch with categoryId 1`] = `
   "found": true,
   "products": [
     {
+      "availableForSale": true,
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.",
       "descriptionHtml": "<meta charset="utf-8"><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.</span>",
+      "featuredImage": {
+        "altText": null,
+        "height": 2048,
+        "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Cup-front-black.png?v=1623159405",
+        "width": 2048,
+      },
       "id": "gid://shopify/Product/6621772644516",
       "images": [
         {
-          "altText": null,
+          "alt": undefined,
           "height": 2048,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Cup-front-black.png?v=1623159405",
           "width": 2048,
         },
         {
-          "altText": null,
+          "alt": undefined,
           "height": 2048,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Cup-front-white.png?v=1623159430",
           "width": 2048,
@@ -2778,7 +2920,14 @@ exports[`shopify provider useSearch with categoryId 1`] = `
         "currencyCode": "USD",
         "value": 25,
       },
+      "productType": "cup",
+      "seo": {
+        "description": null,
+        "title": null,
+      },
       "slug": "acme-cup",
+      "tags": [],
+      "updatedAt": "2021-06-24T17:14:45Z",
       "variants": [
         {
           "availableForSale": true,
@@ -2829,15 +2978,21 @@ exports[`shopify provider useSearch with categoryId 1`] = `
           "sku": "201",
         },
       ],
-      "vendor": "ACME",
     },
     {
+      "availableForSale": true,
       "description": "Wafer cupcake candy macaroon bonbon candy canes cheesecake candy. Donut chupa chups sesame snaps candy chocolate cake chocolate cake danish. Tart cotton candy gummies cotton candy sweet roll. Wafer pie chocolate cake. Caramels toffee gummies. Liquorice sweet oat cake chocolate candy canes toffee bear claw. Chocolate cupcake wafer. Halvah soufflé halvah. Dessert pastry toffee apple pie chocolate cake lemon drops. Tart carrot cake wafer halvah tiramisu fruitcake.",
       "descriptionHtml": "<p><meta charset="utf-8">Wafer cupcake candy macaroon bonbon candy canes cheesecake candy. Donut chupa chups sesame snaps candy chocolate cake chocolate cake danish. Tart cotton candy gummies cotton candy sweet roll. Wafer pie chocolate cake. Caramels toffee gummies. Liquorice sweet oat cake chocolate candy canes toffee bear claw. Chocolate cupcake wafer. Halvah soufflé halvah. Dessert pastry toffee apple pie chocolate cake lemon drops. Tart carrot cake wafer halvah tiramisu fruitcake.<br></p>",
+      "featuredImage": {
+        "altText": null,
+        "height": 900,
+        "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Sticker-mock.png?v=1623256356",
+        "width": 900,
+      },
       "id": "gid://shopify/Product/5447323812004",
       "images": [
         {
-          "altText": null,
+          "alt": undefined,
           "height": 900,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Sticker-mock.png?v=1623256356",
           "width": 900,
@@ -2861,7 +3016,16 @@ exports[`shopify provider useSearch with categoryId 1`] = `
         "currencyCode": "USD",
         "value": 0,
       },
+      "productType": "sticker",
+      "seo": {
+        "description": "Show off your love for Next.js and Vercel with this unique, limited edition sticker. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last – only 200 of these shirts will be made! All proceeds will be donated to charity.",
+        "title": null,
+      },
       "slug": "sticker",
+      "tags": [
+        "sticker",
+      ],
+      "updatedAt": "2021-06-25T13:53:09Z",
       "variants": [
         {
           "availableForSale": true,
@@ -2885,27 +3049,33 @@ exports[`shopify provider useSearch with categoryId 1`] = `
           "sku": "",
         },
       ],
-      "vendor": "ACME",
     },
     {
+      "availableForSale": true,
       "description": "Show off your love for Next.js and Vercel with this unique, limited edition quarter zip. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last – only 200 of these shirts will be made! All proceeds will be donated to charity.",
       "descriptionHtml": "<p>Show off your love for Next.js and Vercel with this unique, <strong>limited edition</strong> quarter zip. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last – only 200 of these shirts will be made! <strong>All proceeds will be donated to charity.</strong></p>",
+      "featuredImage": {
+        "altText": null,
+        "height": 1000,
+        "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/QZSide-Model.png?v=1623256247",
+        "width": 1000,
+      },
       "id": "gid://shopify/Product/5447323156644",
       "images": [
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/QZSide-Model.png?v=1623256247",
           "width": 1000,
         },
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/QZ-Back.png?v=1623256248",
           "width": 1000,
         },
         {
-          "altText": null,
+          "alt": undefined,
           "height": 1000,
           "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/QZ-Front.png?v=1623256248",
           "width": 1000,
@@ -2954,7 +3124,16 @@ exports[`shopify provider useSearch with categoryId 1`] = `
         "currencyCode": "USD",
         "value": 90,
       },
+      "productType": "quarter-zip",
+      "seo": {
+        "description": null,
+        "title": null,
+      },
       "slug": "quarter-zip",
+      "tags": [
+        "shirt",
+      ],
+      "updatedAt": "2021-06-25T13:53:09Z",
       "variants": [
         {
           "availableForSale": true,
@@ -3127,7 +3306,6 @@ exports[`shopify provider useSearch with categoryId 1`] = `
           "sku": "",
         },
       ],
-      "vendor": "ACME",
     },
   ],
 }

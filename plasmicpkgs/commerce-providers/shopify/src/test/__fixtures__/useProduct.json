@@ -2,33 +2,33 @@
   {
     "scope": "https://next-js-store.myshopify.com:443",
     "method": "POST",
-    "path": "/api/2022-04/graphql.json",
+    "path": "/api/2025-01/graphql.json",
     "body": {
-      "query": "\n  query getProductById($id: ID!) {\n    product(id: $id) {\n      ...productFields\n    }\n  }\n\n  \n  fragment productFields on Product {\n    id\n    handle\n    availableForSale\n    title\n    productType\n    vendor\n    description\n    descriptionHtml\n    options {\n      id\n      name\n      values\n    }\n    priceRange {\n      maxVariantPrice {\n        amount\n        currencyCode\n      }\n      minVariantPrice {\n        amount\n        currencyCode\n      }\n    }\n    variants(first: 250) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      edges {\n        node {\n          id\n          title\n          sku\n          availableForSale\n          requiresShipping\n          selectedOptions {\n            name\n            value\n          }\n          priceV2 {\n            amount\n            currencyCode\n          }\n          compareAtPriceV2 {\n            amount\n            currencyCode\n          }\n        }\n      }\n    }\n    images(first: 250) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      edges {\n        node {\n          originalSrc\n          altText\n          width\n          height\n        }\n      }\n    }\n  }\n\n",
+      "query": "\n    query getProductById($id: ID!) {\n  product(id: $id) {\n    ...product\n  }\n}\n    fragment image on Image {\n  url\n  altText\n  width\n  height\n}\nfragment productVariant on ProductVariant {\n  id\n  sku\n  title\n  availableForSale\n  requiresShipping\n  selectedOptions {\n    name\n    value\n  }\n  image {\n    ...image\n  }\n  price {\n    amount\n    currencyCode\n  }\n  compareAtPrice {\n    amount\n    currencyCode\n  }\n}\nfragment product on Product {\n  id\n  handle\n  availableForSale\n  title\n  productType\n  description\n  descriptionHtml\n  options {\n    id\n    name\n    values\n  }\n  priceRange {\n    maxVariantPrice {\n      amount\n      currencyCode\n    }\n    minVariantPrice {\n      amount\n      currencyCode\n    }\n  }\n  variants(first: 250) {\n    edges {\n      node {\n        ...productVariant\n      }\n    }\n  }\n  featuredImage {\n    ...image\n  }\n  images(first: 20) {\n    edges {\n      node {\n        ...image\n      }\n    }\n  }\n  seo {\n    ...seo\n  }\n  tags\n  updatedAt\n  vendor\n}\nfragment seo on SEO {\n  description\n  title\n}",
       "variables": {
         "id": "gid://shopify/Product/5447324270756"
       }
     },
     "status": 200,
     "response": [
-      "1f8b0800000000000013ed57696fdb4610fd2b8bf9cc9094c44322d21489d313462dd46960a0f0873139a226de83d943b11be8bf174bf96e6ad43de224e8176ab59c9d797cefed70f91e3af408cd7b18ace942ebe3903b68a0e7aec932b73603afceb3e5ee6e5616453d9b16d33aafcb0a1258a3ee24410327469d907df206db53f290006e90259e48fad6d8438c21de064ac0b31fe35f8cf1e2c7cbf88bf2afce8778f72acd8674672c34f0139df9f48d83043a72ade5c1b3d1d0c0beb1a4040f2e28d11969ac70ec052af289688d76d47af2c10aec7860d7b2ee0549f68970d489ce08e2e094e9842735182b58b7dc7117b417c10b8927c69220bf4b4d4261af51a0e4b70153b1b4488eb417244991f6418915b62cd9b113928cd890142bcbba67295190f3224889aa3576202ba8279f8ae75eb01ac8761ccb0416d8b64139d4570f22745c75955a28634f78041cdc4341a462cfe83ec42709969db06ba3dbe0049226d4313615dff4e43cba91a15d1511acc648c3b0464bdee2f540a17397d720bde596c9a5b765fade2b090d3c1d9efdafd6a7a8d6d36c78060998512c07cdaff7b58083312aab16455ee6b37c5296f33924a051c58d7bc8bf51dcb62803c54cb00f091c8d97a37d38de267f21f5bc2acbba5ad45591e7c575eabd28eaaddc2f24b6a790c04bb4a7079237f49d25d270bc3d8efd845bfa19754fb1a3293c7b8d9651fb659c8f53a84cd01e1aa86665ba5840026db096747bbe67ba58ef97c397b04d40b1fe7b4bb711eab8d08dfd157bfa41af4c1cafd1c57eb6c4886e85d251eca46e6969c326b81bf3db04a8eb69278a1eb3dfc7e005d22c32574d8bd9222feb3c87ebb6bb2f3271499b3b0dd0c03dbddad2dbc096dce19a8781757f39ef48c68dda1ddc30cc07f48fe5202afe2101e32b60c47125d6ebe94364698d1ad0d2f39d2a77d696d33c4ff33fd36584f4702a67f3a29adfa1f28ef31e9fd33b803e1b72ebc97456dd20f7e8231bf5e8cb716afcd935ce5b643e8655ef67f5f3f46a91cfaaba9edea4f7a39bf58b726bb5288bfc0f743e8a5d3f75bf1e6f136085e379e05f3d5118cb3d6b9487b68506d6de0faec9b2b6d3e9857a696b54e6b2154b72d924cb8b5991e5d3799915655564171f6f2ebbf515f8244f07dd7fbdf96a524da78b7c5ad775944ffa5774e6a189e7e404de71e7d7d04cf23c4f604ddcaffdeedf2d3bfd37f826ff0cdff176bbddfe0e23e6b280410f0000"
+      "1f8b0800000000000013ed98db6ee33610865f85986b45a2651d6c61bb4536db23822668d2c268e10b5a9cc8dcf0a0e5c14dbaf0bb17949d64b37082a668d2a0f08d2c51c399e17cfc47963e01679e41f3097a6b78687d3c151c1ae8046fb2cc2d4d2f2eaeb3d3cdddac2c8a7a9c17794debb28204964c7389d0c0c2a805da830facbd440f09b01513922d247e6bec198b26de064cc00b3fd8bf1becc98f37f6dbf0e7d77dbc7beb86a36bade8bd301a1a3836161511bd0b8a70238d254e78c214fa84b4463b6c3dfa6009e3a217ae15ba2328854f88434eb82128825386138faa379608dd0a2e78d09e044f245b188b04fdc63512c53acd0893e263602939b50c1d6a4f50a242ed832217ac155238e18844435628c98515ba13523282ce93202553adb13d5a821dfa941c7a22548f968b182608c2da3628c7f4ed42888eb36e5d1365ec420c0907f7d4245272647417e24a82158ed8a5d16d7084a146a6a36d4abee9d079e6860a6da29060358b65e897cca2b7ecee4431e76e8e417a2b5a812ebd8fe97baf2434f0a67fbba7f51a69bdc9fab79080196039687e7f4cef278355564d0b5ad2311d95e564020968a6a24acfc49f0809ac980c183dc13124301b0eb36398af93bfe17a5295655d4debaaa0b4b8737d14a1def3fd4eb2f6121278cfece589142bfcce226a98afe7b17988167f66bac3d8be14bbfa9559c1b43f8de371882913b48706aa71994ea790401bac45dd5e1f191ee3fd72f61ed60928a1ffd9d4754c7598e8e224e41d6e6aab07a3c70ab10d98c5025479319ed2b2a614127097011a80bb9e794c3272538687faabc58f415874674bd1f7427737e30e65d41b3ff98cfb0e8c310a4470bb38c4b63d848f35178a6dca1d6cd4fbd2fbde3559d6729d6e1798b646652ebb10125d36ca68312e329a4fcaac28ab22db367c97dd7b721cd0b4d7ddd7abaf46559e4f695ed7755cacf4e778e5a189724be00fc1fd129a11a53481258a6ee93757ebed56780af2d6a89e593cdc41bccc294de943c4872a3d9dee7852549387e87eb1b9ff33cc5fe4f18cbc47ff77def5281f57bb78cf5e46ceb3bd9e9f916ffcd93cb876f37d41413f0e7aafe87f8df8b8aaeb7c27f19792f45ed3cf4bb89a96c5ce7f60b31717f55ed54f663e5f277081cc078bfc87d7a98001d2036f0aaf29d3cff5f39af6d3c0d8a18979ddfb44b499b8956bbc5827e05937bc416e1280e4eeeb9289d2817902a1e7cc233f8cbb2ba7f9e880560779793e1a37e5b8a1d3dfa2e4507363a1819ff0caa71f5cdc697f01c1da7ea13e130000"
     ],
     "rawHeaders": {
       "access-control-allow-origin": "*",
       "alt-svc": "h3=\":443\"; ma=86400",
       "cf-cache-status": "DYNAMIC",
-      "cf-ray": "90c2ead23abf2aec-LAX",
+      "cf-ray": "90c2e4aceb36f7d7-LAX",
       "connection": "keep-alive",
       "content-encoding": "gzip",
       "content-language": "en",
       "content-security-policy": "block-all-mixed-content; frame-ancestors 'none'; upgrade-insecure-requests;",
       "content-type": "application/json; charset=utf-8",
-      "date": "Mon, 03 Feb 2025 13:55:12 GMT",
+      "date": "Mon, 03 Feb 2025 13:51:00 GMT",
       "nel": "{\"success_fraction\":0.01,\"report_to\":\"cf-nel\",\"max_age\":604800}",
       "powered-by": "Shopify",
-      "report-to": "{\"endpoints\":[{\"url\":\"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=7lhEicU3ypukE2o8GLF8yf04UbGQ%2BNU5Qx3mg%2BD1ytNBJEr8g3JloIjwOP2LlCEnPx6oEOLN%2FN9ZfejznoRPe63lFO2bYW0QHRzm6LyoIdzODUfN2Oqhod7dC9IW3LoOsvYW85j8FHMvqDq3Dw%3D%3D\"}],\"group\":\"cf-nel\",\"max_age\":604800}",
+      "report-to": "{\"endpoints\":[{\"url\":\"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=tDSZwuzXx7xXG4oYKaTSnKkjCouNWsR39ig2fQOnbjCNRo0xCc%2BURIC3uQP2mw5N0ad4NEYIU5fGs4cmLYovrILukTKGMSUMwhtiVTqovgQ5Oy3%2F3v692U0a%2Fuaj%2FuKnSqx3QM8ftBpmsVlClw%3D%3D\"}],\"group\":\"cf-nel\",\"max_age\":604800}",
       "server": "cloudflare",
-      "server-timing": "processing;dur=12;desc=\"gc:1\", db;dur=3, asn;desc=\"7922\", edge;desc=\"LAX\", country;desc=\"US\", servedBy;desc=\"9s69\", graphql;desc=\"storefront/query/getProductById\", gqlSelectionNames;desc=\"sfr/product\", requestID;desc=\"4b1c1696-f94d-45b9-b36e-67d63dcbe712-1738590912\", cfRequestDuration;dur=72.000027",
+      "server-timing": "processing;dur=10;desc=\"gc:1\", db;dur=2, asn;desc=\"7922\", edge;desc=\"LAX\", country;desc=\"US\", servedBy;desc=\"w4sr\", graphql;desc=\"storefront/query/getProductById\", gqlSelectionNames;desc=\"sfr/product\", requestID;desc=\"05ccbd3f-d3e7-4927-8e14-faf2f276d78c-1738590660\", cfRequestDuration;dur=61.000109",
       "transfer-encoding": "chunked",
       "vary": "Accept-Encoding,Accept",
       "x-cache": "hit, server",
@@ -37,10 +37,10 @@
       "x-download-options": "noopen",
       "x-frame-options": "DENY",
       "x-permitted-cross-domain-policies": "none",
-      "x-request-id": "4b1c1696-f94d-45b9-b36e-67d63dcbe712-1738590912",
+      "x-request-id": "05ccbd3f-d3e7-4927-8e14-faf2f276d78c-1738590660",
       "x-shardid": "163",
       "x-shopid": "43402854564",
-      "x-shopify-api-version": "2024-04",
+      "x-shopify-api-version": "2025-01",
       "x-sorting-hat-podid": "163",
       "x-sorting-hat-shopid": "43402854564",
       "x-storefront-renderer-rendered": "1",
@@ -51,33 +51,33 @@
   {
     "scope": "https://next-js-store.myshopify.com:443",
     "method": "POST",
-    "path": "/api/2022-04/graphql.json",
+    "path": "/api/2025-01/graphql.json",
     "body": {
-      "query": "\n  query getProductBySlug($slug: String!) {\n    productByHandle(handle: $slug) {\n      ...productFields\n    }\n  }\n\n  \n  fragment productFields on Product {\n    id\n    handle\n    availableForSale\n    title\n    productType\n    vendor\n    description\n    descriptionHtml\n    options {\n      id\n      name\n      values\n    }\n    priceRange {\n      maxVariantPrice {\n        amount\n        currencyCode\n      }\n      minVariantPrice {\n        amount\n        currencyCode\n      }\n    }\n    variants(first: 250) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      edges {\n        node {\n          id\n          title\n          sku\n          availableForSale\n          requiresShipping\n          selectedOptions {\n            name\n            value\n          }\n          priceV2 {\n            amount\n            currencyCode\n          }\n          compareAtPriceV2 {\n            amount\n            currencyCode\n          }\n        }\n      }\n    }\n    images(first: 250) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      edges {\n        node {\n          originalSrc\n          altText\n          width\n          height\n        }\n      }\n    }\n  }\n\n",
+      "query": "\n    query getProductBySlug($slug: String!) {\n  productByHandle(handle: $slug) {\n    ...product\n  }\n}\n    fragment image on Image {\n  url\n  altText\n  width\n  height\n}\nfragment productVariant on ProductVariant {\n  id\n  sku\n  title\n  availableForSale\n  requiresShipping\n  selectedOptions {\n    name\n    value\n  }\n  image {\n    ...image\n  }\n  price {\n    amount\n    currencyCode\n  }\n  compareAtPrice {\n    amount\n    currencyCode\n  }\n}\nfragment product on Product {\n  id\n  handle\n  availableForSale\n  title\n  productType\n  description\n  descriptionHtml\n  options {\n    id\n    name\n    values\n  }\n  priceRange {\n    maxVariantPrice {\n      amount\n      currencyCode\n    }\n    minVariantPrice {\n      amount\n      currencyCode\n    }\n  }\n  variants(first: 250) {\n    edges {\n      node {\n        ...productVariant\n      }\n    }\n  }\n  featuredImage {\n    ...image\n  }\n  images(first: 20) {\n    edges {\n      node {\n        ...image\n      }\n    }\n  }\n  seo {\n    ...seo\n  }\n  tags\n  updatedAt\n  vendor\n}\nfragment seo on SEO {\n  description\n  title\n}",
       "variables": {
         "slug": "bomber-jacket"
       }
     },
     "status": 200,
     "response": [
-      "1f8b0800000000000013ed57db6edb4610fd95c53c332425f12211698ad8699b16466dc44960a0f0c3981c5113ef85d98b6a37d0bf174bf9ded4a87b8993a02f14359a993d3ce7ec68f9013af408cd0718ace942eb77ce5fa2ee24c51077d040cf5d93656e65065e9e6707dbacac2c8a7a362da6755e971524b0ba288213a34ec83e7987ed29794800d7c8124f247d6fec21c6146f0325e0d98ff93b63bef8e932ff02c6ebf321fe7ad5664dba33161af899ce7cface41021db9d6f2e0d9686860cf585282071794e88c345638f60215f944b4463b6a3df96005763cb06b59f78224fb4438ea4467047170ca74c2931a8c15ac5beeb80bda8be085c413634990dfb626a1b0d72850f2fb80a938b0488eb417244991f6418925b62cd9b113928c5893144bcbba67295190f3224889aa3576202ba8279f8ae75eb01ac8761c97092cb06d8372a8af1e44e85875d55a28634f78041cdc4341a462d7e83ec42709969db02ba3dbe0049226d4313715dff5e43cba91a1ed2a22588d9186618596bcc5eb1b85ce5d5e83f4965b2697de96e9a557121a783a3cfb5fadcf51ada7d9f00c1230a3580e9a5fee1b01fb6356562d8abccc67f9a42ce7734840a38a1bf7907fa3b86d51068a9d600f12381a2f477b70bc49fe42eb79559675b5a8ab22cf8bebd6bb51d45bbd7724b6a790c00bb4a7fb92d7f48325d270bc398ef3845b7a85ba1f279ac2b3b76819b53f88f118426582f6d040352bd3c502126883b5a4dbf35dd3c5f5de1cbe804d028af5df2bdd44a863a11be72cf6f4a35e9a78bf4217e7d90146744b948ee224750796d66c82bb11df24405d4f5b51f4d8fd3e062f906691b96a5acc167959e7395c8fdd3d91894bdadc698006ee99d596de07b6e40e573c0cacfbcbb82319376ab77fc3301fd13f2e0751f18f0918ff02461c5762bd9d3e4496d6a8012d3ddfaa72a7b69ce6799aff992e23a48753399b17d5fc0e95779cf7f89cde01f4c5905b4fa6b3ea06b9479fd8a8475f8f53e3c77670de22f331ac7a3fab5fa6578b7c56d5f5f426bd9fdcac5f955bab4559e47fa0f351ecfab9fbf57893002b1ccf03ffea89c258ee59a33cb42d34b0f27e704d96b59d4e2fd44b5ba332972d5992cb26595ecc8a2c9fcecbac28ab22bb787973d9adb7c027793ae8fedbf537936a3a5de4d3baaea37cd2bfa6330f4d3c2727f02b777e05cd24cff30456c4fdca6fbfddb2d37f836ff2cff01d6f369bcdef567201be490f0000"
+      "1f8b0800000000000013ed985b4fe43614c7bf8a759e43e2c97526da6e056cdb6d850a2ab442ad78f0c467325e7cc9fac24257f3dd2b67065856032a55a1a8e2259338e7e6f3f3df99e43370e619b49f61b08687ceef5dbd679a4b8c4382430bbde06d96b9a519c4e22a3b5a5b65555936455ee60d6daa1a12586e9c606ed41cedce07d69da38704d8051392cd257e6fec318b26de064cc00b3fdaef8df6e4a76bfb4d19275743bc7b1386a3ebac18bc301a5a3830161511830b8a70238d254e78c214fa8474463bec3cfa6009e36210ae13ba2728854f88434eb82128825386138f6a309608dd092e78d09e044f249b1b8b04fd3a3412c57acd0893e263602939b20c1d6a4f50a242ed83220bd609299c7044a2211728c9c20add0b291941e7499092a9ced8012dc11e7d4a763d116a40cb454c1304615d179463fa66224447af9bd044193b1763c1c13db68894ec1bdd873893608523766974171c61a891e9689b92ef7a749eb9b143eb2c2458cd621b8625b3e82dbb3d51ccb9eb6390de8a4ea04bef627aef958416de0c6f5f69bd445a6fb2e12d246046580eda3f1ed2fbe16895d5b39256b4a093aa9a4e2101cd5454e9b1f81321810b2603c6487000099c8e87d303385b257f23f4b4aeaaa69e35754969791b7a3f42bd137b4fb2ee1c1278c7ecf9a11417f88345d470b63a8b9b87e8f017a6fb71fb52ecf2376605d3fe288ec721a64cd01e5aa88b2a9dcd20812e588bbabbda373ce6fbf5f81dac125042ff33d7552c757474d109798febdeead1e8a1466c1266b101755e16335a35944202ee3c400b70bb671e908c5cb7e1befdd5e2c7202cbae3a51806a1fbeb718732ea8d1f7ec17d0bc6980522b86d1ce2b63da68f3d178aaddb1d6cd4fbd2fbc1b559d6719d6e26987646652e5b08892e9b64b42cca8ce6d32a2babbacc361bbecbee3c3976683ae8fedb8b6f26759ecf68de344d9cacf42778e9a18d724be093e07e09ed84529ac01245bff4ebabd566293c067967d4c02cee6e215ee594a6f43ee263971e4fb79896f5f43eba5f2deeff0cf357753c21efc9ff9d7733c98b7a1befd3e791f3e9ab9e9f906ffc593fb8b6f37d46413f0cfa55d1ff1af1a26e9a7c2bf1e792f4aba69f96703dabcaadffc04e9f5dd4afaa7e34f3b355020b643e58e43fbe4c058c90ee79537849957ea99f97b49e46c60e4dacebce27a2b5e346aef162958067fdf806b92e0092dbaf4b264a07ce120803671ef96e5c5d39cd273bb4dec9ab9349d156454b67bf47c9a1e6c6420b3fe3a54f3fb8b8d2fe02aa26dabb46130000"
     ],
     "rawHeaders": {
       "access-control-allow-origin": "*",
       "alt-svc": "h3=\":443\"; ma=86400",
       "cf-cache-status": "DYNAMIC",
-      "cf-ray": "90c2ead2eb852aec-LAX",
+      "cf-ray": "90c2e4ad7d2df7d7-LAX",
       "connection": "keep-alive",
       "content-encoding": "gzip",
       "content-language": "en",
       "content-security-policy": "block-all-mixed-content; frame-ancestors 'none'; upgrade-insecure-requests;",
       "content-type": "application/json; charset=utf-8",
-      "date": "Mon, 03 Feb 2025 13:55:12 GMT",
+      "date": "Mon, 03 Feb 2025 13:51:00 GMT",
       "nel": "{\"success_fraction\":0.01,\"report_to\":\"cf-nel\",\"max_age\":604800}",
       "powered-by": "Shopify",
-      "report-to": "{\"endpoints\":[{\"url\":\"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=ZGuniKYLmpcsGA0MvZe4ne4Fb99ix15DiVbbr74oM1KgVit%2Bce8g6YdC0B3b%2FmAJSVOlPNBlg3bA51GMwiuSbsNQB71n1Y2jC8SOqfkOXmrkvLvrLXkXvvp72Zce%2BjKK%2F7%2B6Um2fRsz0ollqGA%3D%3D\"}],\"group\":\"cf-nel\",\"max_age\":604800}",
+      "report-to": "{\"endpoints\":[{\"url\":\"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=htpxqq9MWBKJm1x5ZxGNKtuIFJFFIIuwb5zrYa77xwqPMk0t4EhGV%2FzuJ8PCyczPuoF0gbcM7qKJzJLaUUqRnM5qW%2BQNK68igUZMDTA4B498TBdMK8ZiitEwV%2B2OghTqOXmquZinjaXYcpa5oQ%3D%3D\"}],\"group\":\"cf-nel\",\"max_age\":604800}",
       "server": "cloudflare",
-      "server-timing": "processing;dur=14;desc=\"gc:3\", db;dur=3, asn;desc=\"7922\", edge;desc=\"LAX\", country;desc=\"US\", servedBy;desc=\"6rtr\", graphql;desc=\"storefront/query/getProductBySlug\", gqlSelectionNames;desc=\"sfr/productByHandle\", requestID;desc=\"a105be88-aeb3-43be-bc39-c156be455192-1738590912\", cfRequestDuration;dur=65.999985",
+      "server-timing": "processing;dur=14;desc=\"gc:1\", db;dur=3, asn;desc=\"7922\", edge;desc=\"LAX\", country;desc=\"US\", servedBy;desc=\"6b4q\", graphql;desc=\"storefront/query/getProductBySlug\", gqlSelectionNames;desc=\"sfr/productByHandle\", requestID;desc=\"963c1835-90f6-408b-bf55-d08d17a0850a-1738590660\", cfRequestDuration;dur=62.000036",
       "transfer-encoding": "chunked",
       "vary": "Accept-Encoding,Accept",
       "x-cache": "hit, server",
@@ -86,10 +86,10 @@
       "x-download-options": "noopen",
       "x-frame-options": "DENY",
       "x-permitted-cross-domain-policies": "none",
-      "x-request-id": "a105be88-aeb3-43be-bc39-c156be455192-1738590912",
+      "x-request-id": "963c1835-90f6-408b-bf55-d08d17a0850a-1738590660",
       "x-shardid": "163",
       "x-shopid": "43402854564",
-      "x-shopify-api-version": "2024-04",
+      "x-shopify-api-version": "2025-01",
       "x-sorting-hat-podid": "163",
       "x-sorting-hat-shopid": "43402854564",
       "x-storefront-renderer-rendered": "1",

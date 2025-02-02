@@ -1,81 +1,6 @@
-/*
-  Forked from https://github.com/vercel/commerce/tree/main/packages/shopify/src
-  Changes: 
-    - Added variants info to the query
-*/
-export const productConnectionFragment = /* GraphQL */ `
-  fragment productConnection on ProductConnection {
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-    }
-    edges {
-      node {
-        id
-        handle
-        title
-        vendor
-        handle
-        description
-        descriptionHtml
-        priceRange {
-          minVariantPrice {
-            amount
-            currencyCode
-          }
-        }
-        options {
-          id
-          name
-          values
-        }
-        variants(first: 250) {
-          pageInfo {
-            hasNextPage
-            hasPreviousPage
-          }
-          edges {
-            node {
-              id
-              title
-              sku
-              availableForSale
-              requiresShipping
-              selectedOptions {
-                name
-                value
-              }
-              priceV2 {
-                amount
-                currencyCode
-              }
-              compareAtPriceV2 {
-                amount
-                currencyCode
-              }
-            }
-          }
-        }
-        images(first: 250) {
-          pageInfo {
-            hasNextPage
-            hasPreviousPage
-          }
-          edges {
-            node {
-              originalSrc
-              altText
-              width
-              height
-            }
-          }
-        }
-      }
-    }
-  }
-`
+import { graphql } from "../graphql/gen";
 
-const getAllProductsQuery = /* GraphQL */ `
+export const getAllProductsQuery = graphql(`
   query getAllProducts(
     $first: Int = 250
     $query: String = ""
@@ -88,10 +13,15 @@ const getAllProductsQuery = /* GraphQL */ `
       reverse: $reverse
       query: $query
     ) {
-      ...productConnection
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          ...product
+        }
+      }
     }
   }
-
-  ${productConnectionFragment}
-`
-export default getAllProductsQuery
+`);

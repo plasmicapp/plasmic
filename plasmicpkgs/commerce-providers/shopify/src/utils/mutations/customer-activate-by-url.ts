@@ -1,8 +1,6 @@
-/*
-  Forked from https://github.com/vercel/commerce/tree/main/packages/shopify/src
-  Changes: None
-*/
-const customerActivateByUrlMutation = /* GraphQL */ `
+import { graphql } from "../graphql/gen";
+
+export const customerActivateByUrlMutation = graphql(`
   mutation customerActivateByUrl($activationUrl: URL!, $password: String!) {
     customerActivateByUrl(activationUrl: $activationUrl, password: $password) {
       customer {
@@ -19,5 +17,4 @@ const customerActivateByUrlMutation = /* GraphQL */ `
       }
     }
   }
-`
-export default customerActivateByUrlMutation
+`);

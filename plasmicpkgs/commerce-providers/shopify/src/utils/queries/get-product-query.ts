@@ -1,96 +1,17 @@
-/*
-  Forked from https://github.com/vercel/commerce/tree/main/packages/shopify/src
-  Changes: Added query by product id
-*/
+import { graphql } from "../graphql/gen";
 
-const productFieldsFragment = `
-  fragment productFields on Product {
-    id
-    handle
-    availableForSale
-    title
-    productType
-    vendor
-    description
-    descriptionHtml
-    options {
-      id
-      name
-      values
-    }
-    priceRange {
-      maxVariantPrice {
-        amount
-        currencyCode
-      }
-      minVariantPrice {
-        amount
-        currencyCode
-      }
-    }
-    variants(first: 250) {
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          title
-          sku
-          availableForSale
-          requiresShipping
-          selectedOptions {
-            name
-            value
-          }
-          priceV2 {
-            amount
-            currencyCode
-          }
-          compareAtPriceV2 {
-            amount
-            currencyCode
-          }
-        }
-      }
-    }
-    images(first: 250) {
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          originalSrc
-          altText
-          width
-          height
-        }
-      }
-    }
-  }
-`
-
-export const getProductQueryBySlug = /* GraphQL */ `
+export const getProductQueryBySlug = graphql(`
   query getProductBySlug($slug: String!) {
     productByHandle(handle: $slug) {
-      ...productFields
+      ...product
     }
   }
+`);
 
-  ${productFieldsFragment}
-`
-
-
-export const getProductQueryById = /* GraphQL */ `
+export const getProductQueryById = graphql(`
   query getProductById($id: ID!) {
     product(id: $id) {
-      ...productFields
+      ...product
     }
   }
-
-  ${productFieldsFragment}
-`
-
-export default getProductQueryBySlug;
+`);

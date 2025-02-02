@@ -8,12 +8,10 @@ import {
 import Cookies from "js-cookie";
 import nock from "nock";
 import path from "path";
+import { defaultAccessToken, defaultStoreDomain } from "../graphql-config";
 import { getShopifyProvider } from "../provider";
 
-const provider = getShopifyProvider(
-  "next-js-store.myshopify.com",
-  "ef7d41c7bf7e1c214074d0d3047bcd7b"
-);
+const provider = getShopifyProvider(defaultStoreDomain, defaultAccessToken);
 
 describe("shopify provider", () => {
   beforeAll(() => {

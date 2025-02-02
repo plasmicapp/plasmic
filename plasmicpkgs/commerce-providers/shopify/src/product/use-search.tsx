@@ -3,40 +3,26 @@
   Changes:
     - Added count as a parameter to input
 */
+import type { SearchProductsHook } from "@plasmicpkgs/commerce";
 import { SWRHook, useSearch, UseSearch } from "@plasmicpkgs/commerce";
-
+import { getSearchVariables } from "../utils/get-search-variables";
 import {
   CollectionEdge,
   GetAllProductsQuery,
   GetProductsFromCollectionQueryVariables,
-  Product as ShopifyProduct,
   ProductEdge,
-} from "../schema";
-
-import {
-  getAllProductsQuery,
-  getCollectionProductsQuery,
-  getSearchVariables,
-  normalizeProduct,
-} from "../utils";
-
-import type { SearchProductsHook } from "@plasmicpkgs/commerce";
-
-export type SearchProductsInput = {
-  search?: string;
-  categoryId?: number;
-  brandId?: number;
-  sort?: string;
-  locale?: string;
-  count?: number;
-};
+  Product as ShopifyProduct,
+} from "../utils/graphql/gen/graphql";
+import { normalizeProduct } from "../utils/normalize";
+import { getAllProductsQuery } from "../utils/queries/get-all-products-query";
+import { getCollectionProductsQuery } from "../utils/queries/get-collection-products-query";
 
 const useSearchTyped: UseSearch<typeof handler> = useSearch;
 export default useSearchTyped;
 
 export const handler: SWRHook<SearchProductsHook> = {
   fetchOptions: {
-    query: getAllProductsQuery,
+    query: getAllProductsQuery.toString(),
   },
   async fetcher({ input, options, fetch }) {
     const { categoryId, brandId } = input;
@@ -50,7 +36,7 @@ export const handler: SWRHook<SearchProductsHook> = {
         CollectionEdge,
         GetProductsFromCollectionQueryVariables
       >({
-        query: getCollectionProductsQuery,
+        query: getCollectionProductsQuery.toString(),
         method,
         variables: {
           ...variables,

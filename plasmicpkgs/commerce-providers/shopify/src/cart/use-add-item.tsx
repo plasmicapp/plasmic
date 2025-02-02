@@ -2,26 +2,30 @@
   Forked from https://github.com/vercel/commerce/tree/main/packages/shopify/src
   Changes: None
 */
-import { useCallback } from 'react'
-import type { MutationHook } from '@plasmicpkgs/commerce';
-import { CommerceError } from '@plasmicpkgs/commerce';
-import { useAddItem, UseAddItem } from '@plasmicpkgs/commerce';
-import type { AddItemHook } from '../types/cart'
-import useCart from './use-cart'
-
+import type { MutationHook } from "@plasmicpkgs/commerce";
 import {
-  checkoutLineItemAddMutation,
-  getCheckoutId,
-  checkoutToCart,
-  checkoutCreate,
-} from '../utils'
-import { Mutation, MutationCheckoutLineItemsAddArgs } from '../schema'
+  CartType,
+  CommerceError,
+  useAddItem,
+  UseAddItem,
+} from "@plasmicpkgs/commerce";
+import { useCallback } from "react";
+import { cartCreate } from "../utils/cart-create";
+import { getCartId } from "../utils/get-cart-id";
+import {
+  AddToCartMutation,
+  AddToCartMutationVariables,
+  CartLineInput,
+} from "../utils/graphql/gen/graphql";
+import { addToCartMutation } from "../utils/mutations/cart";
+import { normalizeCart } from "../utils/normalize";
+import useCart from "./use-cart";
 
-export default useAddItem as UseAddItem<typeof handler>
+export default useAddItem as UseAddItem<typeof handler>;
 
-export const handler: MutationHook<AddItemHook> = {
+export const handler: MutationHook<CartType.AddItemHook> = {
   fetchOptions: {
-    query: checkoutLineItemAddMutation,
+    query: addToCartMutation.toString(),
   },
   async fetcher({ input: item, options, fetch }) {
     if (
@@ -29,45 +33,45 @@ export const handler: MutationHook<AddItemHook> = {
       (!Number.isInteger(item.quantity) || item.quantity! < 1)
     ) {
       throw new CommerceError({
-        message: 'The item quantity has to be a valid integer greater than 0',
-      })
+        message: "The item quantity has to be a valid integer greater than 0",
+      });
     }
 
-    const lineItems = [
+    const lines: CartLineInput[] = [
       {
-        variantId: item.variantId,
+        merchandiseId: item.variantId,
         quantity: item.quantity ?? 1,
       },
-    ]
+    ];
 
-    let checkoutId = getCheckoutId()
-    if (!checkoutId) {
-      return checkoutToCart(await checkoutCreate(fetch, lineItems))
+    let cartId = getCartId();
+    if (!cartId) {
+      return await cartCreate(fetch, lines);
     } else {
-      const { checkoutLineItemsAdd } = await fetch<
-        Mutation,
-        MutationCheckoutLineItemsAddArgs
+      const { cartLinesAdd } = await fetch<
+        AddToCartMutation,
+        AddToCartMutationVariables
       >({
         ...options,
         variables: {
-          checkoutId,
-          lineItems,
+          cartId,
+          lines,
         },
-      })
-      return checkoutToCart(checkoutLineItemsAdd)
+      });
+      return normalizeCart(cartLinesAdd?.cart);
     }
   },
   useHook:
     ({ fetch }) =>
     () => {
-      const { mutate } = useCart()
+      const { mutate } = useCart();
       return useCallback(
         async function addItem(input) {
-          const data = await fetch({ input })
-          await mutate(data, false)
-          return data
+          const data = await fetch({ input });
+          await mutate(data, false);
+          return data;
         },
         [fetch, mutate]
-      )
+      );
     },
-}
+};

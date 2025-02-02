@@ -1,30 +1,20 @@
-/* eslint-disable */
-/*
-  Forked from https://github.com/vercel/commerce/tree/main/packages/shopify/src
-  Changes:
-    - When a product doesn't have a variant, Shopify sets the default variant title as "Default Title"
-      Changed to "Default Variant" to have the same default title as the Swell provider.
-*/
-import type { Page } from "../types/page";
-import type { Product } from "@plasmicpkgs/commerce";
-import type { Cart, LineItem } from "../types/cart";
-
-import {
-  Product as ShopifyProduct,
-  Checkout,
-  CheckoutLineItemEdge,
-  SelectedOption,
-  Image,
-  ImageConnection,
-  ProductVariantConnection,
-  MoneyV2,
+import type {
+  Product,
+  ProductImage,
   ProductOption,
-  Page as ShopifyPage,
-  PageEdge,
-  Collection,
-} from "../schema";
+  SiteTypes,
+} from "@plasmicpkgs/commerce";
+import type { ShopifyCart } from "../shopify-types";
 import { colorMap } from "./colors";
-import { Category } from "../types/site";
+import {
+  CartFragment,
+  Collection,
+  ImageFragment,
+  MoneyV2,
+  ProductFragment,
+  SelectedOption,
+  ProductOption as ShopifyProductOption,
+} from "./graphql/gen/graphql";
 
 const money = ({ amount, currencyCode }: MoneyV2) => {
   return {
@@ -40,7 +30,7 @@ const normalizeProductOption = ({
   id,
   name: displayName,
   values,
-}: ProductOption) => {
+}: ShopifyProductOption): ProductOption => {
   return {
     __typename: "MultipleChoiceOption",
     id,
@@ -63,52 +53,6 @@ const normalizeProductOption = ({
   };
 };
 
-const normalizeImage = ({ originalSrc: url, ...rest }: Image) => ({
-  url,
-  ...rest,
-});
-
-const normalizeProductImages = ({ edges }: ImageConnection) =>
-  edges?.map(({ node }) => normalizeImage(node));
-
-const normalizeProductVariants = ({ edges }: ProductVariantConnection) => {
-  return edges?.map(
-    ({
-      node: {
-        id,
-        selectedOptions,
-        sku,
-        title,
-        priceV2,
-        compareAtPriceV2,
-        requiresShipping,
-        availableForSale,
-      },
-    }) => {
-      return {
-        id,
-        name: selectedOptions.some((o) => !isDefaultOption(o))
-          ? title
-          : "Default variant",
-        sku: sku ?? id,
-        price: +priceV2.amount,
-        listPrice: +compareAtPriceV2?.amount,
-        requiresShipping,
-        availableForSale,
-        options: selectedOptions.map(({ name, value }: SelectedOption) => {
-          const options = normalizeProductOption({
-            id,
-            name,
-            values: [value],
-          });
-
-          return options;
-        }),
-      };
-    }
-  );
-};
-
 export function normalizeProduct({
   id,
   title: name,
@@ -116,101 +60,147 @@ export function normalizeProduct({
   images,
   variants,
   description,
-  descriptionHtml,
   handle,
   priceRange,
   options,
-  metafields,
   ...rest
-}: any): Product {
+}: ProductFragment): Product {
   return {
     id,
     name,
-    vendor,
+    description: description || "",
     path: `/${handle}`,
     slug: handle?.replace(/^\/+|\/+$/g, ""),
     price: money(priceRange?.minVariantPrice),
-    images: normalizeProductImages(images),
-    variants: variants ? normalizeProductVariants(variants) : [],
+    images: images.edges.map((edge) => normalizeImage(edge.node)),
+    variants: variants.edges.map(
+      ({
+        node: {
+          id,
+          selectedOptions,
+          sku,
+          title,
+          price,
+          compareAtPrice,
+          requiresShipping,
+          availableForSale,
+        },
+      }) => {
+        return {
+          id,
+          name: selectedOptions.some((o) => !isDefaultOption(o))
+            ? title
+            : "Default variant",
+          sku: sku ?? id,
+          price: +price.amount,
+          listPrice: +compareAtPrice?.amount,
+          requiresShipping,
+          availableForSale,
+          options: selectedOptions.map(({ name, value }) => {
+            const options = normalizeProductOption({
+              id,
+              name,
+              optionValues: [
+                {
+                  id,
+                  name,
+                },
+              ],
+              values: [value],
+            });
+
+            return options;
+          }),
+        };
+      }
+    ),
     options: options
       ? options
           .filter((o: any) => !isDefaultOption(o)) // By default Shopify adds a 'Title' name when there's only one option. We don't need it. https://community.shopify.com/c/Shopify-APIs-SDKs/Adding-new-product-variant-is-automatically-adding-quot-Default/td-p/358095
           .map((o: any) => normalizeProductOption(o))
       : [],
-    ...(description && { description }),
-    ...(descriptionHtml && { descriptionHtml }),
     ...rest,
   };
 }
 
-export function normalizeCart(checkout: any): Cart {
+export function normalizeCart(
+  cart: CartFragment | null | undefined
+): ShopifyCart | undefined {
+  if (!cart) {
+    return undefined;
+  }
   return {
-    id: checkout.id,
-    url: checkout.webUrl,
+    id: cart.id,
+    url: cart.checkoutUrl,
     customerId: "",
     email: "",
-    createdAt: checkout.createdAt,
+    createdAt: cart.createdAt,
     currency: {
-      code: checkout.totalPriceV2?.currencyCode,
+      code: cart.cost.totalAmount?.currencyCode,
     },
-    taxesIncluded: checkout.taxesIncluded,
-    lineItems: checkout.lineItems?.edges.map(normalizeLineItem),
-    lineItemsSubtotalPrice: +checkout.subtotalPriceV2?.amount,
-    subtotalPrice: +checkout.subtotalPriceV2?.amount,
-    totalPrice: +checkout.totalPriceV2?.amount,
+    taxesIncluded: false,
+    lineItems: cart.lines.edges.map(
+      ({ node: { id, quantity, merchandise } }) => {
+        return {
+          id,
+          variantId: merchandise.id,
+          productId: merchandise.product.id,
+          name: merchandise.product.title,
+          quantity,
+          variant: {
+            id: merchandise.id,
+            sku: merchandise.id ?? "",
+            name: merchandise.title,
+            image: normalizeImage(merchandise.image),
+            requiresShipping: merchandise.requiresShipping,
+            price: merchandise.price.amount,
+            listPrice: merchandise.compareAtPrice?.amount,
+          },
+          path: merchandise.product.handle,
+          discounts: [],
+          options:
+            merchandise.title === "Default Title"
+              ? []
+              : merchandise.selectedOptions,
+        };
+      }
+    ),
+    lineItemsSubtotalPrice: +cart.cost.subtotalAmount.amount,
+    subtotalPrice: +cart.cost.subtotalAmount.amount,
+    totalPrice: +cart.cost.totalAmount.amount,
     discounts: [],
   };
 }
 
-function normalizeLineItem({
-  node: { id, title, variant, quantity },
-}: CheckoutLineItemEdge): LineItem {
-  return {
-    id,
-    variantId: String(variant?.id),
-    productId: String(variant?.product.id),
-    name: `${title}`,
-    quantity,
-    variant: {
-      id: String(variant?.id),
-      sku: variant?.sku ?? "",
-      name: variant?.title!,
-      image: {
-        url: variant?.image?.originalSrc || "/product-img-placeholder.svg",
-      },
-      requiresShipping: variant?.requiresShipping ?? false,
-      price: variant?.priceV2?.amount,
-      listPrice: variant?.compareAtPriceV2?.amount,
-    },
-    path: String(variant?.product?.handle),
-    discounts: [],
-    options: variant?.title == "Default Title" ? [] : variant?.selectedOptions,
-  };
-}
-/*
-export const normalizePage = (
-  { title: name, handle, ...page }: ShopifyPage,
-  locale: string = 'en-US'
-): Page => ({
-  ...page,
-  url: `/${locale}/${handle}`,
-  name,
-})
-
-export const normalizePages = (edges: PageEdge[], locale?: string): Page[] =>
-  edges?.map((edge) => normalizePage(edge.node, locale))
-*/
-export const normalizeCategory = ({
+export function normalizeCategory({
   title: name,
   handle,
   id,
   products,
   image,
-}: Collection): Category => ({
-  id,
-  name,
-  slug: handle,
-  path: `/${handle}`,
-  isEmpty: products.edges.length === 0,
-  images: image ? [normalizeImage(image)] : undefined,
-});
+}: Collection): SiteTypes.Category {
+  return {
+    id,
+    name,
+    slug: handle,
+    path: `/${handle}`,
+    isEmpty: products.edges.length === 0,
+    images: image ? [normalizeImage(image)] : undefined,
+  };
+}
+
+function normalizeImage(image: ImageFragment | null | undefined): ProductImage {
+  if (!image) {
+    return {
+      url: "/product-img-placeholder.svg",
+    };
+  }
+
+  const { url, altText, height, width } = image;
+  return {
+    url,
+    alt: altText || undefined,
+    height: height || undefined,
+    width: width || undefined,
+  };
+}

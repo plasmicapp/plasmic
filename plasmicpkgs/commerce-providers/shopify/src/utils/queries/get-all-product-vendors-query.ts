@@ -1,8 +1,6 @@
-/*
-  Forked from https://github.com/vercel/commerce/tree/main/packages/shopify/src
-  Changes: None
-*/
-const getAllProductVendors = /* GraphQL */ `
+import { graphql } from "../graphql/gen";
+
+export const getAllProductVendors = graphql(`
   query getAllProductVendors($first: Int = 250, $cursor: String) {
     products(first: $first, after: $cursor) {
       pageInfo {
@@ -17,5 +15,4 @@ const getAllProductVendors = /* GraphQL */ `
       }
     }
   }
-`
-export default getAllProductVendors
+`);

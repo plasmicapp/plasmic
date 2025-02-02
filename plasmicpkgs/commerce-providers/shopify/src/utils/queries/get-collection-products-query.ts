@@ -1,10 +1,6 @@
-/*
-  Forked from https://github.com/vercel/commerce/tree/main/packages/shopify/src
-  Changes: None
-*/
-import { productConnectionFragment } from './get-all-products-query'
+import { graphql } from "../graphql/gen";
 
-const getCollectionProductsQuery = /* GraphQL */ `
+export const getCollectionProductsQuery = graphql(`
   query getProductsFromCollection(
     $categoryId: ID!
     $first: Int = 250
@@ -14,12 +10,15 @@ const getCollectionProductsQuery = /* GraphQL */ `
     node(id: $categoryId) {
       id
       ... on Collection {
+        ...collection
         products(first: $first, sortKey: $sortKey, reverse: $reverse) {
-          ...productConnection
+          edges {
+            node {
+              ...product
+            }
+          }
         }
       }
     }
   }
-  ${productConnectionFragment}
-`
-export default getCollectionProductsQuery
+`);

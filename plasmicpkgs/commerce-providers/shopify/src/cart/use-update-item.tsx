@@ -7,38 +7,38 @@ import type {
   MutationHookContext,
 } from "@plasmicpkgs/commerce";
 import {
+  CartType,
   useUpdateItem,
   UseUpdateItem,
   ValidationError,
 } from "@plasmicpkgs/commerce";
 import debounce from "debounce";
 import { useCallback } from "react";
-
-import { Mutation, MutationCheckoutLineItemsUpdateArgs } from "../schema";
-import type { LineItem, UpdateItemHook } from "../types/cart";
+import { getCartId } from "../utils/get-cart-id";
 import {
-  checkoutLineItemUpdateMutation,
-  checkoutToCart,
-  getCheckoutId,
-} from "../utils";
+  EditCartItemsMutation,
+  EditCartItemsMutationVariables,
+} from "../utils/graphql/gen/graphql";
+import { editCartItemsMutation } from "../utils/mutations/cart";
+import { normalizeCart } from "../utils/normalize";
 import useCart from "./use-cart";
 import { handler as removeItemHandler } from "./use-remove-item";
 
-export type UpdateItemActionInput<T = any> = T extends LineItem
-  ? Partial<UpdateItemHook["actionInput"]>
-  : UpdateItemHook["actionInput"];
+export type UpdateItemActionInput<T = any> = T extends CartType.LineItem
+  ? Partial<CartType.UpdateItemHook["actionInput"]>
+  : CartType.UpdateItemHook["actionInput"];
 
 export default useUpdateItem as UseUpdateItem<typeof handler>;
 
 export const handler = {
   fetchOptions: {
-    query: checkoutLineItemUpdateMutation,
+    query: editCartItemsMutation.toString(),
   },
   async fetcher({
     input: { itemId, item },
     options,
     fetch,
-  }: HookFetcherContext<UpdateItemHook>) {
+  }: HookFetcherContext<CartType.UpdateItemHook>) {
     if (Number.isInteger(item.quantity)) {
       // Also allow the update hook to remove an item if the quantity is lower than 1
       if (item.quantity! < 1) {
@@ -53,14 +53,14 @@ export const handler = {
         message: "The item quantity has to be a valid integer",
       });
     }
-    const { checkoutLineItemsUpdate } = await fetch<
-      Mutation,
-      MutationCheckoutLineItemsUpdateArgs
+    const { cartLinesUpdate } = await fetch<
+      EditCartItemsMutation,
+      EditCartItemsMutationVariables
     >({
       ...options,
       variables: {
-        checkoutId: getCheckoutId(),
-        lineItems: [
+        cartId: getCartId(),
+        lines: [
           {
             id: itemId,
             quantity: item.quantity,
@@ -69,11 +69,11 @@ export const handler = {
       },
     });
 
-    return checkoutToCart(checkoutLineItemsUpdate);
+    return normalizeCart(cartLinesUpdate?.cart);
   },
   useHook:
-    ({ fetch }: MutationHookContext<UpdateItemHook>) =>
-    <T extends LineItem | undefined = undefined>(
+    ({ fetch }: MutationHookContext<CartType.UpdateItemHook>) =>
+    <T extends CartType.LineItem | undefined = undefined>(
       ctx: {
         item?: T;
         wait?: number;

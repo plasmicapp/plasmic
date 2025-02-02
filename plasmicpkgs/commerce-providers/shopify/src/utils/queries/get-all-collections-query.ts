@@ -1,20 +1,20 @@
-import { collectionFieldsFragment } from "./get-collection-query"
+import { graphql } from "../graphql/gen";
 
-/*
-  Forked from https://github.com/vercel/commerce/tree/main/packages/shopify/src
-  Changes: None
-*/
-const getSiteCollectionsQuery = /* GraphQL */ `
+export const getSiteCollectionsQuery = graphql(`
   query getSiteCollections($first: Int!) {
     collections(first: $first) {
       edges {
         node {
-          ...collectionFieldsFragment
+          ...collection
+          products(first: $first) {
+            edges {
+              node {
+                id
+              }
+            }
+          }
         }
       }
     }
   }
-
-  ${collectionFieldsFragment}
-`
-export default getSiteCollectionsQuery
+`);

@@ -5,6 +5,7 @@ import {
   globalActionsRegistrations,
 } from "@plasmicpkgs/commerce";
 import React from "react";
+import { defaultAccessToken, defaultStoreDomain } from "./graphql-config";
 import { Registerable } from "./registerable";
 import { getCommerceProvider } from "./shopify";
 
@@ -22,11 +23,11 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
   props: {
     storeDomain: {
       type: "string",
-      defaultValue: "next-js-store.myshopify.com",
+      defaultValue: defaultStoreDomain,
     },
     accessToken: {
       type: "string",
-      defaultValue: "ef7d41c7bf7e1c214074d0d3047bcd7b",
+      defaultValue: defaultAccessToken,
     },
   },
   ...{ globalActions: globalActionsRegistrations },

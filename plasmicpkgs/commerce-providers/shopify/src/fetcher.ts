@@ -1,36 +1,43 @@
-/*
-  Forked from https://github.com/vercel/commerce/tree/main/packages/shopify/src
-  Changes: 
-    - Before: The storeDomain and accessToken were defined at build time. 
-      So this file just implemented a fetcher with these parameters defined.
-    - Now: The storeDomain and accessToken are defined at runtime. 
-      So we have to get the fetcher using these parameters.
-*/
-import { Fetcher } from '@plasmicpkgs/commerce'
-import { handleFetchResponse } from './utils'
+import { Fetcher, FetcherError } from "@plasmicpkgs/commerce";
+import { shopifyApiVersion } from "./graphql-config";
 
-export const getFetcher: 
-  (storeDomain: string, accessToken: string) => Fetcher =
-  (storeDomain, accessToken) => {
-    return async ({
-      url = `https://${storeDomain}/api/2022-04/graphql.json`,
-      method = 'POST',
-      variables,
-      query,
-    }) => {
-      const { locale, ...vars } = variables ?? {}
-      return handleFetchResponse(
-        await fetch(url, {
-          method,
-          body: JSON.stringify({ query, variables: vars }),
-          headers: {
-            'X-Shopify-Storefront-Access-Token': accessToken,
-            'Content-Type': 'application/json',
-            ...(locale && {
-              'Accept-Language': locale,
-            }),
-          },
-        })
-      )
+export const getFetcher: (
+  storeDomain: string,
+  accessToken: string
+) => Fetcher = (storeDomain, accessToken) => {
+  return async ({
+    url = `https://${storeDomain}/api/${shopifyApiVersion}/graphql.json`,
+    method = "POST",
+    variables,
+    query,
+  }) => {
+    const { locale, ...vars } = variables ?? {};
+    const res = await fetch(url, {
+      method,
+      body: JSON.stringify({ query, variables: vars }),
+      headers: {
+        "X-Shopify-Storefront-Access-Token": accessToken,
+        "Content-Type": "application/json",
+        ...(locale && {
+          "Accept-Language": locale,
+        }),
+      },
+    });
+    if (res.ok) {
+      const { data, errors } = await res.json();
+      if (errors && errors.length) {
+        throw getError(errors, res.status);
+      }
+
+      return data;
+    } else {
+      const { errors } = await res.json();
+      throw getError(errors, res.status);
     }
+  };
+};
+
+function getError(errors: any[] | null, status: number) {
+  errors = errors ?? [{ message: "Failed to fetch Shopify API" }];
+  return new FetcherError({ errors, status });
 }
