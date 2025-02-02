@@ -10,6 +10,7 @@ import {
   renderMaybeLocalizedInput,
   ValueSwitch,
 } from "@/wab/client/components/cms/CmsInputs";
+import { confirm } from "@/wab/client/components/quick-modals";
 import PlasmicWebhookHeader from "@/wab/client/components/webhooks/plasmic/plasmic_kit_continuous_deployment/PlasmicWebhookHeader";
 import PlasmicWebhooksItem from "@/wab/client/components/webhooks/plasmic/plasmic_kit_continuous_deployment/PlasmicWebhooksItem";
 import { Spinner } from "@/wab/client/components/widgets";
@@ -19,13 +20,25 @@ import { Modal } from "@/wab/client/components/widgets/Modal";
 import Select from "@/wab/client/components/widgets/Select";
 import Textbox from "@/wab/client/components/widgets/Textbox";
 import { useApi } from "@/wab/client/contexts/AppContexts";
-import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import MinusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Minus";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import Trash2Icon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Trash2";
 import {
   DefaultCmsModelDetailsProps,
   PlasmicCmsModelDetails,
 } from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsModelDetails";
+import {
+  ApiCmsDatabase,
+  CMS_TYPE_DISPLAY_NAMES,
+  CmsDatabaseId,
+  CmsFieldMeta,
+  cmsFieldMetaDefaults,
+  CmsMetaType,
+  CmsTableId,
+  CmsTableSettings,
+  CmsTypeMeta,
+  CmsTypeName,
+} from "@/wab/shared/ApiSchema";
 import {
   ensureType,
   jsonClone,
@@ -35,18 +48,6 @@ import {
   uniqueName,
 } from "@/wab/shared/common";
 import { extractParamsFromPagePath } from "@/wab/shared/core/components";
-import {
-  ApiCmsDatabase,
-  CmsDatabaseId,
-  CmsFieldMeta,
-  cmsFieldMetaDefaults,
-  CmsTableId,
-  CmsTableSettings,
-  CmsTypeMeta,
-  CmsTypeName,
-  CMS_TYPE_DISPLAY_NAMES,
-  CmsMetaType,
-} from "@/wab/shared/ApiSchema";
 import { httpMethods } from "@/wab/shared/HttpClientUtil";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import {
@@ -480,9 +481,15 @@ function CmsModelDetails_(
                 <Menu.Item
                   key="delete"
                   onClick={async () => {
-                    await api.deleteCmsTable(tableId);
-                    await mutateTable(databaseId, tableId);
-                    history.push(UU.cmsSchemaRoot.fill({ databaseId }));
+                    const confirmed = await confirm({
+                      title: "Delete model",
+                      message: `Are you sure you want to delete model "${table.name}"?`,
+                    });
+                    if (confirmed) {
+                      await api.deleteCmsTable(tableId);
+                      await mutateTable(databaseId, tableId);
+                      history.push(UU.cmsSchemaRoot.fill({ databaseId }));
+                    }
                   }}
                 >
                   Delete model
