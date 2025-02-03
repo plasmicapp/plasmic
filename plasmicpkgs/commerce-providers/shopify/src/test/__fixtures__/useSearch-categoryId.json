@@ -1,0 +1,52 @@
+[
+  {
+    "scope": "https://next-js-store.myshopify.com:443",
+    "method": "POST",
+    "path": "/api/2022-04/graphql.json",
+    "body": {
+      "query": "\n  query getProductsFromCollection(\n    $categoryId: ID!\n    $first: Int = 250\n    $sortKey: ProductCollectionSortKeys = RELEVANCE\n    $reverse: Boolean = false\n  ) {\n    node(id: $categoryId) {\n      id\n      ... on Collection {\n        products(first: $first, sortKey: $sortKey, reverse: $reverse) {\n          ...productConnection\n        }\n      }\n    }\n  }\n  \n  fragment productConnection on ProductConnection {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n    }\n    edges {\n      node {\n        id\n        handle\n        title\n        vendor\n        handle\n        description\n        descriptionHtml\n        priceRange {\n          minVariantPrice {\n            amount\n            currencyCode\n          }\n        }\n        options {\n          id\n          name\n          values\n        }\n        variants(first: 250) {\n          pageInfo {\n            hasNextPage\n            hasPreviousPage\n          }\n          edges {\n            node {\n              id\n              title\n              sku\n              availableForSale\n              requiresShipping\n              selectedOptions {\n                name\n                value\n              }\n              priceV2 {\n                amount\n                currencyCode\n              }\n              compareAtPriceV2 {\n                amount\n                currencyCode\n              }\n            }\n          }\n        }\n        images(first: 250) {\n          pageInfo {\n            hasNextPage\n            hasPreviousPage\n          }\n          edges {\n            node {\n              originalSrc\n              altText\n              width\n              height\n            }\n          }\n        }\n      }\n    }\n  }\n\n",
+      "variables": {
+        "categoryId": "gid://shopify/Collection/271211167908",
+        "query": ""
+      }
+    },
+    "status": 200,
+    "response": [
+      "1f8b0800000000000013ed58db72e3c611fd95ce3c43b811004196acd49aeb5b4a8ab5e166adda781f5a408398ec60069a8b64ed16abf20ff981bce637923fc997a406bc8892257965cb6bd9e507824473a6fbcce9465ff09ed568914ddf33a96af2dfbc6653b6e0f5348a4cab7ade5c4633250455962b19a5e3244d92a4184fe29205acd7aa7695357e638f0bfa4a36caff6ed1fc99beb3c7b820366d50180abcec58d33957ceecc89701a37a41864dff762f86e395a5a828d2643c4e8b2ccb938279adb216c4a60cab8ef62ad7b380596e07d1b3d9d167301b44e7246ba5d73216b09a4ca579efcfc4a6ec5069ea80f7c675502ba134186e013bb201544a1aaa2c59a7016bde735371b90012dc0660a8865a0171673a5583a5ae571ab8ac78cd6b272d380b024f952620bb524dd0e14222a0e0670e4338d64886a40512d491b4ae83062b2eb8e10604293827018de672c185402063c109815da5744f1a68413684671678d793aeb937e3386055b9cea0dc1e04a4dfb5550d9dd2a77c00eccc434184305372e1fc499ce60674ab64e50c204942e9d786f0d9828c453330b4b2024e4bf434f42d6ab21aaf7e7468cce6ea84d5bce264c2eb6efad276824dd97e4716a16a511bb29f7ccb9c6df6ca6fd9c1bee9511efceec8a7e8c8fd6870ce902f78457f41b9181ef38ecb57a8394a7bece55e849d72d2b2294bf3306601ab9cd624abcbd99019d85fe7cfd97219303584c42a69dc9d2cbe1e5645651ee793a42c337f610193d8795d33ef449f1a50b821ffb06f5a6e8905ec5381d55bf666f9c6ff39e0fb78096e4d4894c5719115e34919e7f124dd496a1b90e6adf334c59e253c472ef054d0e74acfd12fb3da51c0349d39aec9cc5bdef75c2e3672433e9f53fdf50e8db7b1b235e7a9187cf72afd502f05ac525d8f9a9eadbceb77fad05d2e831fc5c3685c16f10e0f2b275df190dccac3da358f40c4cadea312f1661930dee1101c8f1a5e4af3059728e6ba6253d65adb9b691455b50cd72c8795ea2213355c90899228ce465914a7651e657991459baa1ecd5cbfd76825eddea93f7dd8cbc51fcf3f498a7494e4932cce3de5c2bea4efecea4801bbe0b56dd9348db332602df1456b5777d7dcfef8f82e7c98dec0378a1f84efcdf2034333cab36c3c4a476592c671b6db8318cbabb7a477a274be95dcdf817c830d69a85c5fe15b820a657d091d56a8959270aae4a9926b6985920c542d91a1abc5213c57d259a85ad7e370f519db60476024f666b3b955951268fd2ebff5fa6d8d929b368497a82d54cadaadd185eb3aeecdee0acd059105ad84086185bfe737758630438d1d090356350dd146550887fccc29ff40ac1529b4df477575e2f5f653420d95c08b106657ebd6bc5d7814217c89e21c5b30ca358df8efbfa11dee43784ec690b6d0a3b1fa72a311fb5ed02dd04150a724d45af566c3096aadd628075b6bd560b9c68e1b078d76dc0e07bfbd7be90fee6a607e8f80df5a04ec9fea83fda87f58df133f5adb53f80c1da7799ac5c5bd6dcf171a6b4ed2fef21d4f5c9693342fe3555adde4d02dbe4db1ff793b9eadb9bb6afddd2ebaadd4ef6c2cee71eed36f06d6a56caf53d73a81342f46797167a59dc4f155a19dc4f18fa8b3495e14d9b53a7be6505bd27beff8eeb8ff622585d7fc8727fe79ab2e40350d5c2aa741a873824669f03c877f3780b28657a42b1270c16d0bb6e5069ce4678e0210bce3966aa09a7b6db04603ef781fc24bbfb226c31712b881de270dd5006e7769270390ae3b25ed674ead7a400bb625f8939304699c265b1833259b10beb2d0105aa7c9006e5178322a8d8dd769fd13b410b4361cc21764815bb868b92030aeef85cfdd028d85fffde39fa0a4b884348e3d32db9221302dd7d6c00517024efd3c58d31fe09910d06b5511d5577fd54ae260530d458cdbcb3b4bdd4f2179df58ade4e2e006d9fbd15afe9f7ffd6669df1cfd43e9df72f2e0623379ec6a9394233f18dc576d36c375f000a5f12819a7574ae7fc1d5dd33967013b62013b64013b192e2787bf7c352bf2c964921793f8fb732b4430ff48e56c3db706ef6f63cfdfde59e7ee898e1f2874e97d85eea1e37f5c4eca6c9c17a3e1e5cd4d1a8f9e088d474f9dc6224fd2b44ccb2c4f6fa1f1f089d078f86ba071344e46c9add178f254783cf9551099a76511df1a8f274f87c98f4fe5931f055ebc9ef39af68e544de2fa289066e33b478124de9d05fcddcff252f0c5ebbd4ff1e6889266e513c0f5b97f57f9d380bd59ae3ecbff03e6b71547ba1d0000"
+    ],
+    "rawHeaders": {
+      "access-control-allow-origin": "*",
+      "alt-svc": "h3=\":443\"; ma=86400",
+      "cf-cache-status": "DYNAMIC",
+      "cf-ray": "90c2ead199f92aec-LAX",
+      "connection": "keep-alive",
+      "content-encoding": "gzip",
+      "content-language": "en",
+      "content-security-policy": "block-all-mixed-content; frame-ancestors 'none'; upgrade-insecure-requests;",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Mon, 03 Feb 2025 13:55:12 GMT",
+      "nel": "{\"success_fraction\":0.01,\"report_to\":\"cf-nel\",\"max_age\":604800}",
+      "powered-by": "Shopify",
+      "report-to": "{\"endpoints\":[{\"url\":\"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=pEFMJN%2FGjim9WObBxgpcMaT%2FWWbzSkp7s4eCUPbIA0DZcJckHBi1CVefqoy%2BXeeFLHvLfe5kZGJKyw0jH7sTBaVqC7hPOMim7%2FByG9T3Qm2kJQSbub3LcOe5OW%2FuOnK0K9csqcypm8w%2FV%2FcbtA%3D%3D\"}],\"group\":\"cf-nel\",\"max_age\":604800}",
+      "server": "cloudflare",
+      "server-timing": "processing;dur=13;desc=\"gc:1\", db;dur=3, asn;desc=\"7922\", edge;desc=\"LAX\", country;desc=\"US\", servedBy;desc=\"9bws\", graphql;desc=\"storefront/query/getProductsFromCollection\", gqlSelectionNames;desc=\"sfr/node\", requestID;desc=\"e32a492f-b316-4a9f-8d1d-66cb08a0e9a3-1738590912\", cfRequestDuration;dur=65.000057",
+      "transfer-encoding": "chunked",
+      "vary": "Accept-Encoding,Accept",
+      "x-cache": "hit, server",
+      "x-content-type-options": "nosniff",
+      "x-dc": "gcp-us-west1,gcp-us-west1,gcp-us-west1",
+      "x-download-options": "noopen",
+      "x-frame-options": "DENY",
+      "x-permitted-cross-domain-policies": "none",
+      "x-request-id": "e32a492f-b316-4a9f-8d1d-66cb08a0e9a3-1738590912",
+      "x-shardid": "163",
+      "x-shopid": "43402854564",
+      "x-shopify-api-version": "2024-04",
+      "x-sorting-hat-podid": "163",
+      "x-sorting-hat-shopid": "43402854564",
+      "x-storefront-renderer-rendered": "1",
+      "x-xss-protection": "1; mode=block"
+    },
+    "responseIsBinary": false
+  }
+]

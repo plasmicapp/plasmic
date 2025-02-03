@@ -1,0 +1,100 @@
+[
+  {
+    "scope": "https://next-js-store.myshopify.com:443",
+    "method": "POST",
+    "path": "/api/2022-04/graphql.json",
+    "body": {
+      "query": "\n  query getProductById($id: ID!) {\n    product(id: $id) {\n      ...productFields\n    }\n  }\n\n  \n  fragment productFields on Product {\n    id\n    handle\n    availableForSale\n    title\n    productType\n    vendor\n    description\n    descriptionHtml\n    options {\n      id\n      name\n      values\n    }\n    priceRange {\n      maxVariantPrice {\n        amount\n        currencyCode\n      }\n      minVariantPrice {\n        amount\n        currencyCode\n      }\n    }\n    variants(first: 250) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      edges {\n        node {\n          id\n          title\n          sku\n          availableForSale\n          requiresShipping\n          selectedOptions {\n            name\n            value\n          }\n          priceV2 {\n            amount\n            currencyCode\n          }\n          compareAtPriceV2 {\n            amount\n            currencyCode\n          }\n        }\n      }\n    }\n    images(first: 250) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      edges {\n        node {\n          originalSrc\n          altText\n          width\n          height\n        }\n      }\n    }\n  }\n\n",
+      "variables": {
+        "id": "gid://shopify/Product/5447324270756"
+      }
+    },
+    "status": 200,
+    "response": [
+      "1f8b0800000000000013ed57696fdb4610fd2b8bf9cc9094c44322d21489d313462dd46960a0f0873139a226de83d943b11be8bf174bf96e6ad43de224e8176ab59c9d797cefed70f91e3af408cd7b18ace942ebe3903b68a0e7aec932b73603afceb3e5ee6e5616453d9b16d33aafcb0a1258a3ee24410327469d907df206db53f290006e90259e48fad6d8438c21de064ac0b31fe35f8cf1e2c7cbf88bf2afce8778f72acd8674672c34f0139df9f48d83043a72ade5c1b3d1d0c0beb1a4040f2e28d11969ac70ec052af289688d76d47af2c10aec7860d7b2ee0549f68970d489ce08e2e094e9842735182b58b7dc7117b417c10b8927c69220bf4b4d4261af51a0e4b70153b1b4488eb417244991f6418915b62cd9b113928cd890142bcbba67295190f3224889aa3576202ba8279f8ae75eb01ac8761ccb0416d8b64139d4570f22745c75955a28634f78041cdc4341a462cfe83ec42709969db06ba3dbe0049226d4313615dff4e43cba91a15d1511acc648c3b0464bdee2f540a17397d720bde596c9a5b765fade2b090d3c1d9efdafd6a7a8d6d36c78060998512c07cdaff7b58083312aab16455ee6b37c5296f33924a051c58d7bc8bf51dcb62803c54cb00f091c8d97a37d38de267f21f5bc2acbba5ad45591e7c575eabd28eaaddc2f24b6a790c04bb4a7079237f49d25d270bc3d8efd845bfa19754fb1a3293c7b8d9651fb659c8f53a84cd01e1aa86665ba5840026db096747bbe67ba58ef97c397b04d40b1fe7b4bb711eab8d08dfd157bfa41af4c1cafd1c57eb6c4886e85d251eca46e6969c326b81bf3db04a8eb69278a1eb3dfc7e005d22c32574d8bd9222feb3c87ebb6bb2f3271499b3b0dd0c03dbddad2dbc096dce19a8781757f39ef48c68dda1ddc30cc07f48fe5202afe2101e32b60c47125d6ebe94364698d1ad0d2f39d2a77d696d33c4ff33fd36584f4702a67f3a29adfa1f28ef31e9fd33b803e1b72ebc97456dd20f7e8231bf5e8cb716afcd935ce5b643e8655ef67f5f3f46a91cfaaba9edea4f7a39bf58b726bb5288bfc0f743e8a5d3f75bf1e6f136085e379e05f3d5118cb3d6b9487b68506d6de0faec9b2b6d3e9857a696b54e6b2154b72d924cb8b5991e5d3799915655564171f6f2ebbf515f8244f07dd7fbdf96a524da78b7c5ad775944ffa5774e6a189e7e404de71e7d7d04cf23c4f604ddcaffdeedf2d3bfd37f826ff0cdff176bbddfe0e23e6b280410f0000"
+    ],
+    "rawHeaders": {
+      "access-control-allow-origin": "*",
+      "alt-svc": "h3=\":443\"; ma=86400",
+      "cf-cache-status": "DYNAMIC",
+      "cf-ray": "90c2ead23abf2aec-LAX",
+      "connection": "keep-alive",
+      "content-encoding": "gzip",
+      "content-language": "en",
+      "content-security-policy": "block-all-mixed-content; frame-ancestors 'none'; upgrade-insecure-requests;",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Mon, 03 Feb 2025 13:55:12 GMT",
+      "nel": "{\"success_fraction\":0.01,\"report_to\":\"cf-nel\",\"max_age\":604800}",
+      "powered-by": "Shopify",
+      "report-to": "{\"endpoints\":[{\"url\":\"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=7lhEicU3ypukE2o8GLF8yf04UbGQ%2BNU5Qx3mg%2BD1ytNBJEr8g3JloIjwOP2LlCEnPx6oEOLN%2FN9ZfejznoRPe63lFO2bYW0QHRzm6LyoIdzODUfN2Oqhod7dC9IW3LoOsvYW85j8FHMvqDq3Dw%3D%3D\"}],\"group\":\"cf-nel\",\"max_age\":604800}",
+      "server": "cloudflare",
+      "server-timing": "processing;dur=12;desc=\"gc:1\", db;dur=3, asn;desc=\"7922\", edge;desc=\"LAX\", country;desc=\"US\", servedBy;desc=\"9s69\", graphql;desc=\"storefront/query/getProductById\", gqlSelectionNames;desc=\"sfr/product\", requestID;desc=\"4b1c1696-f94d-45b9-b36e-67d63dcbe712-1738590912\", cfRequestDuration;dur=72.000027",
+      "transfer-encoding": "chunked",
+      "vary": "Accept-Encoding,Accept",
+      "x-cache": "hit, server",
+      "x-content-type-options": "nosniff",
+      "x-dc": "gcp-us-west1,gcp-us-west1,gcp-us-west1",
+      "x-download-options": "noopen",
+      "x-frame-options": "DENY",
+      "x-permitted-cross-domain-policies": "none",
+      "x-request-id": "4b1c1696-f94d-45b9-b36e-67d63dcbe712-1738590912",
+      "x-shardid": "163",
+      "x-shopid": "43402854564",
+      "x-shopify-api-version": "2024-04",
+      "x-sorting-hat-podid": "163",
+      "x-sorting-hat-shopid": "43402854564",
+      "x-storefront-renderer-rendered": "1",
+      "x-xss-protection": "1; mode=block"
+    },
+    "responseIsBinary": false
+  },
+  {
+    "scope": "https://next-js-store.myshopify.com:443",
+    "method": "POST",
+    "path": "/api/2022-04/graphql.json",
+    "body": {
+      "query": "\n  query getProductBySlug($slug: String!) {\n    productByHandle(handle: $slug) {\n      ...productFields\n    }\n  }\n\n  \n  fragment productFields on Product {\n    id\n    handle\n    availableForSale\n    title\n    productType\n    vendor\n    description\n    descriptionHtml\n    options {\n      id\n      name\n      values\n    }\n    priceRange {\n      maxVariantPrice {\n        amount\n        currencyCode\n      }\n      minVariantPrice {\n        amount\n        currencyCode\n      }\n    }\n    variants(first: 250) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      edges {\n        node {\n          id\n          title\n          sku\n          availableForSale\n          requiresShipping\n          selectedOptions {\n            name\n            value\n          }\n          priceV2 {\n            amount\n            currencyCode\n          }\n          compareAtPriceV2 {\n            amount\n            currencyCode\n          }\n        }\n      }\n    }\n    images(first: 250) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      edges {\n        node {\n          originalSrc\n          altText\n          width\n          height\n        }\n      }\n    }\n  }\n\n",
+      "variables": {
+        "slug": "bomber-jacket"
+      }
+    },
+    "status": 200,
+    "response": [
+      "1f8b0800000000000013ed57db6edb4610fd95c53c332425f12211698ad8699b16466dc44960a0f0c3981c5113ef85d98b6a37d0bf174bf9ded4a87b8993a02f14359a993d3ce7ec68f9013af408cd0718ace942eb77ce5fa2ee24c51077d040cf5d93656e65065e9e6707dbacac2c8a7a362da6755e971524b0ba288213a34ec83e7987ed29794800d7c8124f247d6fec21c6146f0325e0d98ff93b63bef8e932ff02c6ebf321fe7ad5664dba33161af899ce7cface41021db9d6f2e0d9686860cf585282071794e88c345638f60215f944b4463b6a3df96005763cb06b59f78224fb4438ea4467047170ca74c2931a8c15ac5beeb80bda8be085c413634990dfb626a1b0d72850f2fb80a938b0488eb417244991f6418925b62cd9b113928c5893144bcbba67295190f3224889aa3576202ba8279f8ae75eb01ac8761c97092cb06d8372a8af1e44e85875d55a28634f78041cdc4341a462d7e83ec42709969db02ba3dbe0049226d4313715dff5e43cba91a1ed2a22588d9186618596bcc5eb1b85ce5d5e83f4965b2697de96e9a557121a783a3cfb5fadcf51ada7d9f00c1230a3580e9a5fee1b01fb6356562d8abccc67f9a42ce7734840a38a1bf7907fa3b86d51068a9d600f12381a2f477b70bc49fe42eb79559675b5a8ab22cf8bebd6bb51d45bbd7724b6a790c00bb4a7fb92d7f48325d270bc398ef3845b7a85ba1f279ac2b3b76819b53f88f118426582f6d040352bd3c502126883b5a4dbf35dd3c5f5de1cbe804d028af5df2bdd44a863a11be72cf6f4a35e9a78bf4217e7d90146744b948ee224750796d66c82bb11df24405d4f5b51f4d8fd3e062f906691b96a5acc167959e7395c8fdd3d91894bdadc698006ee99d596de07b6e40e573c0cacfbcbb82319376ab77fc3301fd13f2e0751f18f0918ff02461c5762bd9d3e4496d6a8012d3ddfaa72a7b69ce6799aff992e23a48753399b17d5fc0e95779cf7f89cde01f4c5905b4fa6b3ea06b9479fd8a8475f8f53e3c77670de22f331ac7a3fab5fa6578b7c56d5f5f426bd9fdcac5f955bab4559e47fa0f351ecfab9fbf57893002b1ccf03ffea89c258ee59a33cb42d34b0f27e704d96b59d4e2fd44b5ba332972d5992cb26595ecc8a2c9fcecbac28ab22bb787973d9adb7c027793ae8fedbf537936a3a5de4d3baaea37cd2bfa6330f4d3c2727f02b777e05cd24cff30456c4fdca6fbfddb2d37f836ff2cff01d6f369bcdef567201be490f0000"
+    ],
+    "rawHeaders": {
+      "access-control-allow-origin": "*",
+      "alt-svc": "h3=\":443\"; ma=86400",
+      "cf-cache-status": "DYNAMIC",
+      "cf-ray": "90c2ead2eb852aec-LAX",
+      "connection": "keep-alive",
+      "content-encoding": "gzip",
+      "content-language": "en",
+      "content-security-policy": "block-all-mixed-content; frame-ancestors 'none'; upgrade-insecure-requests;",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Mon, 03 Feb 2025 13:55:12 GMT",
+      "nel": "{\"success_fraction\":0.01,\"report_to\":\"cf-nel\",\"max_age\":604800}",
+      "powered-by": "Shopify",
+      "report-to": "{\"endpoints\":[{\"url\":\"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=ZGuniKYLmpcsGA0MvZe4ne4Fb99ix15DiVbbr74oM1KgVit%2Bce8g6YdC0B3b%2FmAJSVOlPNBlg3bA51GMwiuSbsNQB71n1Y2jC8SOqfkOXmrkvLvrLXkXvvp72Zce%2BjKK%2F7%2B6Um2fRsz0ollqGA%3D%3D\"}],\"group\":\"cf-nel\",\"max_age\":604800}",
+      "server": "cloudflare",
+      "server-timing": "processing;dur=14;desc=\"gc:3\", db;dur=3, asn;desc=\"7922\", edge;desc=\"LAX\", country;desc=\"US\", servedBy;desc=\"6rtr\", graphql;desc=\"storefront/query/getProductBySlug\", gqlSelectionNames;desc=\"sfr/productByHandle\", requestID;desc=\"a105be88-aeb3-43be-bc39-c156be455192-1738590912\", cfRequestDuration;dur=65.999985",
+      "transfer-encoding": "chunked",
+      "vary": "Accept-Encoding,Accept",
+      "x-cache": "hit, server",
+      "x-content-type-options": "nosniff",
+      "x-dc": "gcp-us-west1,gcp-us-west1,gcp-us-west1",
+      "x-download-options": "noopen",
+      "x-frame-options": "DENY",
+      "x-permitted-cross-domain-policies": "none",
+      "x-request-id": "a105be88-aeb3-43be-bc39-c156be455192-1738590912",
+      "x-shardid": "163",
+      "x-shopid": "43402854564",
+      "x-shopify-api-version": "2024-04",
+      "x-sorting-hat-podid": "163",
+      "x-sorting-hat-shopid": "43402854564",
+      "x-storefront-renderer-rendered": "1",
+      "x-xss-protection": "1; mode=block"
+    },
+    "responseIsBinary": false
+  }
+]

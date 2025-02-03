@@ -1,0 +1,3134 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`shopify provider useBrands 1`] = `
+[
+  {
+    "entityId": "acme",
+    "name": "ACME",
+    "path": "brands/acme",
+  },
+  {
+    "entityId": "next.js",
+    "name": "Next.js",
+    "path": "brands/next.js",
+  },
+]
+`;
+
+exports[`shopify provider useCart 1`] = `
+{
+  "cart1": {
+    "createdAt": "2025-02-03T13:55:13Z",
+    "currency": {
+      "code": "USD",
+    },
+    "customerId": "",
+    "discounts": [],
+    "email": "",
+    "id": "gid://shopify/Checkout/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+    "lineItems": [
+      {
+        "discounts": [],
+        "id": "gid://shopify/CheckoutLineItem/400462439057000?checkout=a90b6a6995f0cb4d76d9b0aabd98d20a",
+        "name": "Bomber Jacket",
+        "options": [
+          {
+            "name": "Size",
+            "value": "L",
+          },
+          {
+            "name": "Color",
+            "value": "Black",
+          },
+        ],
+        "path": "bomber-jacket",
+        "productId": "gid://shopify/Product/5447324270756",
+        "quantity": 1,
+        "variant": {
+          "id": "gid://shopify/ProductVariant/40046243905700",
+          "image": {
+            "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/bomber-jacket-0.png?v=1622902777",
+          },
+          "listPrice": "5200.0",
+          "name": "L / Black",
+          "price": "635.99",
+          "requiresShipping": false,
+          "sku": "",
+        },
+        "variantId": "gid://shopify/ProductVariant/40046243905700",
+      },
+    ],
+    "lineItemsSubtotalPrice": 635.99,
+    "subtotalPrice": 635.99,
+    "taxesIncluded": false,
+    "totalPrice": 635.99,
+    "url": "https://next-js-store.myshopify.com/43402854564/checkouts/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+  },
+  "cart2": {
+    "createdAt": "2025-02-03T13:55:13Z",
+    "currency": {
+      "code": "USD",
+    },
+    "customerId": "",
+    "discounts": [],
+    "email": "",
+    "id": "gid://shopify/Checkout/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+    "lineItems": [
+      {
+        "discounts": [],
+        "id": "gid://shopify/CheckoutLineItem/400462439057000?checkout=a90b6a6995f0cb4d76d9b0aabd98d20a",
+        "name": "Bomber Jacket",
+        "options": [
+          {
+            "name": "Size",
+            "value": "L",
+          },
+          {
+            "name": "Color",
+            "value": "Black",
+          },
+        ],
+        "path": "bomber-jacket",
+        "productId": "gid://shopify/Product/5447324270756",
+        "quantity": 2,
+        "variant": {
+          "id": "gid://shopify/ProductVariant/40046243905700",
+          "image": {
+            "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/bomber-jacket-0.png?v=1622902777",
+          },
+          "listPrice": "5200.0",
+          "name": "L / Black",
+          "price": "635.99",
+          "requiresShipping": false,
+          "sku": "",
+        },
+        "variantId": "gid://shopify/ProductVariant/40046243905700",
+      },
+    ],
+    "lineItemsSubtotalPrice": 1271.98,
+    "subtotalPrice": 1271.98,
+    "taxesIncluded": false,
+    "totalPrice": 1271.98,
+    "url": "https://next-js-store.myshopify.com/43402854564/checkouts/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+  },
+  "cart3": {
+    "createdAt": "2025-02-03T13:55:13Z",
+    "currency": {
+      "code": "USD",
+    },
+    "customerId": "",
+    "discounts": [],
+    "email": "",
+    "id": "gid://shopify/Checkout/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+    "lineItems": [
+      {
+        "discounts": [],
+        "id": "gid://shopify/CheckoutLineItem/400462439057000?checkout=a90b6a6995f0cb4d76d9b0aabd98d20a",
+        "name": "Bomber Jacket",
+        "options": [
+          {
+            "name": "Size",
+            "value": "L",
+          },
+          {
+            "name": "Color",
+            "value": "Black",
+          },
+        ],
+        "path": "bomber-jacket",
+        "productId": "gid://shopify/Product/5447324270756",
+        "quantity": 3,
+        "variant": {
+          "id": "gid://shopify/ProductVariant/40046243905700",
+          "image": {
+            "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/bomber-jacket-0.png?v=1622902777",
+          },
+          "listPrice": "5200.0",
+          "name": "L / Black",
+          "price": "635.99",
+          "requiresShipping": false,
+          "sku": "",
+        },
+        "variantId": "gid://shopify/ProductVariant/40046243905700",
+      },
+    ],
+    "lineItemsSubtotalPrice": 1907.97,
+    "subtotalPrice": 1907.97,
+    "taxesIncluded": false,
+    "totalPrice": 1907.97,
+    "url": "https://next-js-store.myshopify.com/43402854564/checkouts/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+  },
+  "cart4": {
+    "createdAt": "2025-02-03T13:55:13Z",
+    "currency": {
+      "code": "USD",
+    },
+    "customerId": "",
+    "discounts": [],
+    "email": "",
+    "id": "gid://shopify/Checkout/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+    "lineItems": [
+      {
+        "discounts": [],
+        "id": "gid://shopify/CheckoutLineItem/400462439057000?checkout=a90b6a6995f0cb4d76d9b0aabd98d20a",
+        "name": "Bomber Jacket",
+        "options": [
+          {
+            "name": "Size",
+            "value": "L",
+          },
+          {
+            "name": "Color",
+            "value": "Black",
+          },
+        ],
+        "path": "bomber-jacket",
+        "productId": "gid://shopify/Product/5447324270756",
+        "quantity": 3,
+        "variant": {
+          "id": "gid://shopify/ProductVariant/40046243905700",
+          "image": {
+            "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/bomber-jacket-0.png?v=1622902777",
+          },
+          "listPrice": "5200.0",
+          "name": "L / Black",
+          "price": "635.99",
+          "requiresShipping": false,
+          "sku": "",
+        },
+        "variantId": "gid://shopify/ProductVariant/40046243905700",
+      },
+    ],
+    "lineItemsSubtotalPrice": 1907.97,
+    "subtotalPrice": 1907.97,
+    "taxesIncluded": false,
+    "totalPrice": 1907.97,
+    "url": "https://next-js-store.myshopify.com/43402854564/checkouts/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+  },
+  "cart5": {
+    "createdAt": "2025-02-03T13:55:13Z",
+    "currency": {
+      "code": "USD",
+    },
+    "customerId": "",
+    "discounts": [],
+    "email": "",
+    "id": "gid://shopify/Checkout/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+    "lineItems": [],
+    "lineItemsSubtotalPrice": 0,
+    "subtotalPrice": 0,
+    "taxesIncluded": false,
+    "totalPrice": 0,
+    "url": "https://next-js-store.myshopify.com/43402854564/checkouts/a90b6a6995f0cb4d76d9b0aabd98d20a?key=adf48137f2d53aee3efb12b6c714c760",
+  },
+}
+`;
+
+exports[`shopify provider useCategories 1`] = `
+[
+  {
+    "id": "gid://shopify/Collection/270412710052",
+    "images": undefined,
+    "isEmpty": false,
+    "name": "New Arrivals",
+    "path": "/clothes",
+    "slug": "clothes",
+  },
+  {
+    "id": "gid://shopify/Collection/271211167908",
+    "images": undefined,
+    "isEmpty": false,
+    "name": "Featured",
+    "path": "/featured",
+    "slug": "featured",
+  },
+]
+`;
+
+exports[`shopify provider useCategories with categoryId 1`] = `
+[
+  {
+    "id": "gid://shopify/Collection/271211167908",
+    "images": undefined,
+    "isEmpty": false,
+    "name": "Featured",
+    "path": "/featured",
+    "slug": "featured",
+  },
+]
+`;
+
+exports[`shopify provider useProduct 1`] = `
+{
+  "availableForSale": true,
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.",
+  "descriptionHtml": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.</p>",
+  "id": "gid://shopify/Product/5447324270756",
+  "images": [
+    {
+      "altText": null,
+      "height": 1000,
+      "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/bomber-jacket-0.png?v=1622902777",
+      "width": 1000,
+    },
+    {
+      "altText": null,
+      "height": 1000,
+      "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/bomber-jacket-1.png?v=1622902777",
+      "width": 1000,
+    },
+  ],
+  "name": "Bomber Jacket",
+  "options": [
+    {
+      "__typename": "MultipleChoiceOption",
+      "displayName": "size",
+      "id": "gid://shopify/ProductOption/6940503015588",
+      "values": [
+        {
+          "label": "L",
+        },
+        {
+          "label": "XL",
+        },
+        {
+          "label": "XXL",
+        },
+      ],
+    },
+    {
+      "__typename": "MultipleChoiceOption",
+      "displayName": "color",
+      "id": "gid://shopify/ProductOption/8655769764004",
+      "values": [
+        {
+          "hexColors": [
+            "#000000",
+          ],
+          "label": "Black",
+        },
+        {
+          "hexColors": [
+            "#556B2F",
+          ],
+          "label": "DarkOliveGreen",
+        },
+      ],
+    },
+  ],
+  "path": "/bomber-jacket",
+  "price": {
+    "currencyCode": "USD",
+    "value": 635.99,
+  },
+  "productType": "jacket",
+  "slug": "bomber-jacket",
+  "variants": [
+    {
+      "availableForSale": true,
+      "id": "gid://shopify/ProductVariant/40046243905700",
+      "listPrice": 5200,
+      "name": "L / Black",
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "size",
+          "id": "gid://shopify/ProductVariant/40046243905700",
+          "values": [
+            {
+              "label": "L",
+            },
+          ],
+        },
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "color",
+          "id": "gid://shopify/ProductVariant/40046243905700",
+          "values": [
+            {
+              "hexColors": [
+                "#000000",
+              ],
+              "label": "Black",
+            },
+          ],
+        },
+      ],
+      "price": 635.99,
+      "requiresShipping": true,
+      "sku": "",
+    },
+    {
+      "availableForSale": true,
+      "id": "gid://shopify/ProductVariant/40046243938468",
+      "listPrice": 5200,
+      "name": "L / DarkOliveGreen",
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "size",
+          "id": "gid://shopify/ProductVariant/40046243938468",
+          "values": [
+            {
+              "label": "L",
+            },
+          ],
+        },
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "color",
+          "id": "gid://shopify/ProductVariant/40046243938468",
+          "values": [
+            {
+              "hexColors": [
+                "#556B2F",
+              ],
+              "label": "DarkOliveGreen",
+            },
+          ],
+        },
+      ],
+      "price": 635.99,
+      "requiresShipping": true,
+      "sku": "",
+    },
+    {
+      "availableForSale": true,
+      "id": "gid://shopify/ProductVariant/40046243971236",
+      "listPrice": 5200,
+      "name": "XL / Black",
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "size",
+          "id": "gid://shopify/ProductVariant/40046243971236",
+          "values": [
+            {
+              "label": "XL",
+            },
+          ],
+        },
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "color",
+          "id": "gid://shopify/ProductVariant/40046243971236",
+          "values": [
+            {
+              "hexColors": [
+                "#000000",
+              ],
+              "label": "Black",
+            },
+          ],
+        },
+      ],
+      "price": 635.99,
+      "requiresShipping": true,
+      "sku": "",
+    },
+    {
+      "availableForSale": true,
+      "id": "gid://shopify/ProductVariant/40046244004004",
+      "listPrice": 5200,
+      "name": "XL / DarkOliveGreen",
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "size",
+          "id": "gid://shopify/ProductVariant/40046244004004",
+          "values": [
+            {
+              "label": "XL",
+            },
+          ],
+        },
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "color",
+          "id": "gid://shopify/ProductVariant/40046244004004",
+          "values": [
+            {
+              "hexColors": [
+                "#556B2F",
+              ],
+              "label": "DarkOliveGreen",
+            },
+          ],
+        },
+      ],
+      "price": 635.99,
+      "requiresShipping": true,
+      "sku": "",
+    },
+    {
+      "availableForSale": true,
+      "id": "gid://shopify/ProductVariant/40046244036772",
+      "listPrice": 5200,
+      "name": "XXL / Black",
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "size",
+          "id": "gid://shopify/ProductVariant/40046244036772",
+          "values": [
+            {
+              "label": "XXL",
+            },
+          ],
+        },
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "color",
+          "id": "gid://shopify/ProductVariant/40046244036772",
+          "values": [
+            {
+              "hexColors": [
+                "#000000",
+              ],
+              "label": "Black",
+            },
+          ],
+        },
+      ],
+      "price": 635.99,
+      "requiresShipping": true,
+      "sku": "",
+    },
+    {
+      "availableForSale": true,
+      "id": "gid://shopify/ProductVariant/40046244069540",
+      "listPrice": 5200,
+      "name": "XXL / DarkOliveGreen",
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "size",
+          "id": "gid://shopify/ProductVariant/40046244069540",
+          "values": [
+            {
+              "label": "XXL",
+            },
+          ],
+        },
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "color",
+          "id": "gid://shopify/ProductVariant/40046244069540",
+          "values": [
+            {
+              "hexColors": [
+                "#556B2F",
+              ],
+              "label": "DarkOliveGreen",
+            },
+          ],
+        },
+      ],
+      "price": 635.99,
+      "requiresShipping": true,
+      "sku": "",
+    },
+  ],
+  "vendor": "Next.js",
+}
+`;
+
+exports[`shopify provider useSearch 1`] = `
+{
+  "found": true,
+  "products": [
+    {
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.",
+      "descriptionHtml": "<meta charset="utf-8"><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.</span>",
+      "id": "gid://shopify/Product/6621772644516",
+      "images": [
+        {
+          "altText": null,
+          "height": 2048,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Cup-front-black.png?v=1623159405",
+          "width": 2048,
+        },
+        {
+          "altText": null,
+          "height": 2048,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Cup-front-white.png?v=1623159430",
+          "width": 2048,
+        },
+      ],
+      "name": "ACME Cup",
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "color",
+          "id": "gid://shopify/ProductOption/8505918849188",
+          "values": [
+            {
+              "hexColors": [
+                "#FFFFFF",
+              ],
+              "label": "White",
+            },
+            {
+              "hexColors": [
+                "#000000",
+              ],
+              "label": "Black",
+            },
+          ],
+        },
+      ],
+      "path": "/acme-cup",
+      "price": {
+        "currencyCode": "USD",
+        "value": 25,
+      },
+      "slug": "acme-cup",
+      "variants": [
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40064679805092",
+          "listPrice": NaN,
+          "name": "White",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40064679805092",
+              "values": [
+                {
+                  "hexColors": [
+                    "#FFFFFF",
+                  ],
+                  "label": "White",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "200",
+        },
+        {
+          "availableForSale": false,
+          "id": "gid://shopify/ProductVariant/40064679837860",
+          "listPrice": NaN,
+          "name": "Black",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40064679837860",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "201",
+        },
+      ],
+      "vendor": "ACME",
+    },
+    {
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.",
+      "descriptionHtml": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.<br></p>",
+      "id": "gid://shopify/Product/5447325024420",
+      "images": [
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/short-sleeve-t-shirt-0.png?v=1622902418",
+          "width": 1000,
+        },
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/short-sleeve-t-shirt-4.png?v=1622902418",
+          "width": 1000,
+        },
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/short-sleeve-t-shirt-3.png?v=1622902418",
+          "width": 1000,
+        },
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/short-sleeve-t-shirt-2.png?v=1622902418",
+          "width": 1000,
+        },
+      ],
+      "name": "New Short Sleeve T-Shirt",
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "size",
+          "id": "gid://shopify/ProductOption/6940503769252",
+          "values": [
+            {
+              "label": "XS",
+            },
+            {
+              "label": "S",
+            },
+            {
+              "label": "M",
+            },
+            {
+              "label": "L",
+            },
+            {
+              "label": "XL",
+            },
+          ],
+        },
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "color",
+          "id": "gid://shopify/ProductOption/8655765471396",
+          "values": [
+            {
+              "hexColors": [
+                "#FFFFFF",
+              ],
+              "label": "white",
+            },
+            {
+              "hexColors": [
+                "#808080",
+              ],
+              "label": "grey",
+            },
+            {
+              "hexColors": [
+                "#00CED1",
+              ],
+              "label": "DarkTurquoise",
+            },
+            {
+              "hexColors": [
+                "#FFA07A",
+              ],
+              "label": "LightSalmon",
+            },
+          ],
+        },
+      ],
+      "path": "/new-short-sleeve-t-shirt",
+      "price": {
+        "currencyCode": "USD",
+        "value": 25,
+      },
+      "slug": "new-short-sleeve-t-shirt",
+      "variants": [
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046230962340",
+          "listPrice": NaN,
+          "name": "XS / white",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046230962340",
+              "values": [
+                {
+                  "label": "XS",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046230962340",
+              "values": [
+                {
+                  "hexColors": [
+                    "#FFFFFF",
+                  ],
+                  "label": "white",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046230995108",
+          "listPrice": NaN,
+          "name": "XS / grey",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046230995108",
+              "values": [
+                {
+                  "label": "XS",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046230995108",
+              "values": [
+                {
+                  "hexColors": [
+                    "#808080",
+                  ],
+                  "label": "grey",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046231027876",
+          "listPrice": NaN,
+          "name": "XS / DarkTurquoise",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046231027876",
+              "values": [
+                {
+                  "label": "XS",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046231027876",
+              "values": [
+                {
+                  "hexColors": [
+                    "#00CED1",
+                  ],
+                  "label": "DarkTurquoise",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046231060644",
+          "listPrice": NaN,
+          "name": "XS / LightSalmon",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046231060644",
+              "values": [
+                {
+                  "label": "XS",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046231060644",
+              "values": [
+                {
+                  "hexColors": [
+                    "#FFA07A",
+                  ],
+                  "label": "LightSalmon",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046231093412",
+          "listPrice": NaN,
+          "name": "S / white",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046231093412",
+              "values": [
+                {
+                  "label": "S",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046231093412",
+              "values": [
+                {
+                  "hexColors": [
+                    "#FFFFFF",
+                  ],
+                  "label": "white",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046231126180",
+          "listPrice": NaN,
+          "name": "S / grey",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046231126180",
+              "values": [
+                {
+                  "label": "S",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046231126180",
+              "values": [
+                {
+                  "hexColors": [
+                    "#808080",
+                  ],
+                  "label": "grey",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046231158948",
+          "listPrice": NaN,
+          "name": "S / DarkTurquoise",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046231158948",
+              "values": [
+                {
+                  "label": "S",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046231158948",
+              "values": [
+                {
+                  "hexColors": [
+                    "#00CED1",
+                  ],
+                  "label": "DarkTurquoise",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046231191716",
+          "listPrice": NaN,
+          "name": "S / LightSalmon",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046231191716",
+              "values": [
+                {
+                  "label": "S",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046231191716",
+              "values": [
+                {
+                  "hexColors": [
+                    "#FFA07A",
+                  ],
+                  "label": "LightSalmon",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046231224484",
+          "listPrice": NaN,
+          "name": "M / white",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046231224484",
+              "values": [
+                {
+                  "label": "M",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046231224484",
+              "values": [
+                {
+                  "hexColors": [
+                    "#FFFFFF",
+                  ],
+                  "label": "white",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046231257252",
+          "listPrice": NaN,
+          "name": "M / grey",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046231257252",
+              "values": [
+                {
+                  "label": "M",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046231257252",
+              "values": [
+                {
+                  "hexColors": [
+                    "#808080",
+                  ],
+                  "label": "grey",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046231290020",
+          "listPrice": NaN,
+          "name": "M / DarkTurquoise",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046231290020",
+              "values": [
+                {
+                  "label": "M",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046231290020",
+              "values": [
+                {
+                  "hexColors": [
+                    "#00CED1",
+                  ],
+                  "label": "DarkTurquoise",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046231322788",
+          "listPrice": NaN,
+          "name": "M / LightSalmon",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046231322788",
+              "values": [
+                {
+                  "label": "M",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046231322788",
+              "values": [
+                {
+                  "hexColors": [
+                    "#FFA07A",
+                  ],
+                  "label": "LightSalmon",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046231355556",
+          "listPrice": NaN,
+          "name": "L / white",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046231355556",
+              "values": [
+                {
+                  "label": "L",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046231355556",
+              "values": [
+                {
+                  "hexColors": [
+                    "#FFFFFF",
+                  ],
+                  "label": "white",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046231388324",
+          "listPrice": NaN,
+          "name": "L / grey",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046231388324",
+              "values": [
+                {
+                  "label": "L",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046231388324",
+              "values": [
+                {
+                  "hexColors": [
+                    "#808080",
+                  ],
+                  "label": "grey",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046231421092",
+          "listPrice": NaN,
+          "name": "L / DarkTurquoise",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046231421092",
+              "values": [
+                {
+                  "label": "L",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046231421092",
+              "values": [
+                {
+                  "hexColors": [
+                    "#00CED1",
+                  ],
+                  "label": "DarkTurquoise",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046231453860",
+          "listPrice": NaN,
+          "name": "L / LightSalmon",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046231453860",
+              "values": [
+                {
+                  "label": "L",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046231453860",
+              "values": [
+                {
+                  "hexColors": [
+                    "#FFA07A",
+                  ],
+                  "label": "LightSalmon",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046231486628",
+          "listPrice": NaN,
+          "name": "XL / white",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046231486628",
+              "values": [
+                {
+                  "label": "XL",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046231486628",
+              "values": [
+                {
+                  "hexColors": [
+                    "#FFFFFF",
+                  ],
+                  "label": "white",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046231519396",
+          "listPrice": NaN,
+          "name": "XL / grey",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046231519396",
+              "values": [
+                {
+                  "label": "XL",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046231519396",
+              "values": [
+                {
+                  "hexColors": [
+                    "#808080",
+                  ],
+                  "label": "grey",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046231552164",
+          "listPrice": NaN,
+          "name": "XL / DarkTurquoise",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046231552164",
+              "values": [
+                {
+                  "label": "XL",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046231552164",
+              "values": [
+                {
+                  "hexColors": [
+                    "#00CED1",
+                  ],
+                  "label": "DarkTurquoise",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046231584932",
+          "listPrice": NaN,
+          "name": "XL / LightSalmon",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046231584932",
+              "values": [
+                {
+                  "label": "XL",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046231584932",
+              "values": [
+                {
+                  "hexColors": [
+                    "#FFA07A",
+                  ],
+                  "label": "LightSalmon",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "",
+        },
+      ],
+      "vendor": "Next.js",
+    },
+    {
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.",
+      "descriptionHtml": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.</p>",
+      "id": "gid://shopify/Product/5447324729508",
+      "images": [
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/short-sleeve-0.png?v=1622901991",
+          "width": 1000,
+        },
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/short-sleeve-1.png?v=1622901991",
+          "width": 1000,
+        },
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/short-sleeve-2.png?v=1622901991",
+          "width": 1000,
+        },
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/short-sleeve-3.png?v=1622901991",
+          "width": 1000,
+        },
+      ],
+      "name": "Short Sleeve T-Shirt",
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "size",
+          "id": "gid://shopify/ProductOption/6940503474340",
+          "values": [
+            {
+              "label": "M",
+            },
+            {
+              "label": "L",
+            },
+            {
+              "label": "XL",
+            },
+          ],
+        },
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "color",
+          "id": "gid://shopify/ProductOption/8655761178788",
+          "values": [
+            {
+              "hexColors": [
+                "#808080",
+              ],
+              "label": "gray",
+            },
+            {
+              "hexColors": [
+                "#F5F5DC",
+              ],
+              "label": "beige",
+            },
+            {
+              "hexColors": [
+                "#FFFFFF",
+              ],
+              "label": "white",
+            },
+            {
+              "hexColors": [
+                "#00CED1",
+              ],
+              "label": "DarkTurquoise",
+            },
+          ],
+        },
+      ],
+      "path": "/short-sleeve-t-shirt",
+      "price": {
+        "currencyCode": "USD",
+        "value": 35,
+      },
+      "slug": "short-sleeve-t-shirt",
+      "variants": [
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/35180690669732",
+          "listPrice": NaN,
+          "name": "M / gray",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/35180690669732",
+              "values": [
+                {
+                  "label": "M",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/35180690669732",
+              "values": [
+                {
+                  "hexColors": [
+                    "#808080",
+                  ],
+                  "label": "gray",
+                },
+              ],
+            },
+          ],
+          "price": 35,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/35180690702500",
+          "listPrice": NaN,
+          "name": "L / gray",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/35180690702500",
+              "values": [
+                {
+                  "label": "L",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/35180690702500",
+              "values": [
+                {
+                  "hexColors": [
+                    "#808080",
+                  ],
+                  "label": "gray",
+                },
+              ],
+            },
+          ],
+          "price": 35,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/35180690735268",
+          "listPrice": NaN,
+          "name": "XL / gray",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/35180690735268",
+              "values": [
+                {
+                  "label": "XL",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/35180690735268",
+              "values": [
+                {
+                  "hexColors": [
+                    "#808080",
+                  ],
+                  "label": "gray",
+                },
+              ],
+            },
+          ],
+          "price": 35,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046203437220",
+          "listPrice": NaN,
+          "name": "M / beige",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046203437220",
+              "values": [
+                {
+                  "label": "M",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046203437220",
+              "values": [
+                {
+                  "hexColors": [
+                    "#F5F5DC",
+                  ],
+                  "label": "beige",
+                },
+              ],
+            },
+          ],
+          "price": 35,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046207369380",
+          "listPrice": NaN,
+          "name": "L / beige",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046207369380",
+              "values": [
+                {
+                  "label": "L",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046207369380",
+              "values": [
+                {
+                  "hexColors": [
+                    "#F5F5DC",
+                  ],
+                  "label": "beige",
+                },
+              ],
+            },
+          ],
+          "price": 35,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046207729828",
+          "listPrice": NaN,
+          "name": "XL / beige",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046207729828",
+              "values": [
+                {
+                  "label": "XL",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046207729828",
+              "values": [
+                {
+                  "hexColors": [
+                    "#F5F5DC",
+                  ],
+                  "label": "beige",
+                },
+              ],
+            },
+          ],
+          "price": 35,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046212612260",
+          "listPrice": NaN,
+          "name": "M / white",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046212612260",
+              "values": [
+                {
+                  "label": "M",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046212612260",
+              "values": [
+                {
+                  "hexColors": [
+                    "#FFFFFF",
+                  ],
+                  "label": "white",
+                },
+              ],
+            },
+          ],
+          "price": 35,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046212907172",
+          "listPrice": NaN,
+          "name": "L / white",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046212907172",
+              "values": [
+                {
+                  "label": "L",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046212907172",
+              "values": [
+                {
+                  "hexColors": [
+                    "#FFFFFF",
+                  ],
+                  "label": "white",
+                },
+              ],
+            },
+          ],
+          "price": 35,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046213300388",
+          "listPrice": NaN,
+          "name": "XL / white",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046213300388",
+              "values": [
+                {
+                  "label": "XL",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046213300388",
+              "values": [
+                {
+                  "hexColors": [
+                    "#FFFFFF",
+                  ],
+                  "label": "white",
+                },
+              ],
+            },
+          ],
+          "price": 35,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046214742180",
+          "listPrice": NaN,
+          "name": "M / DarkTurquoise",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046214742180",
+              "values": [
+                {
+                  "label": "M",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046214742180",
+              "values": [
+                {
+                  "hexColors": [
+                    "#00CED1",
+                  ],
+                  "label": "DarkTurquoise",
+                },
+              ],
+            },
+          ],
+          "price": 35,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046218346660",
+          "listPrice": NaN,
+          "name": "L / DarkTurquoise",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046218346660",
+              "values": [
+                {
+                  "label": "L",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046218346660",
+              "values": [
+                {
+                  "hexColors": [
+                    "#00CED1",
+                  ],
+                  "label": "DarkTurquoise",
+                },
+              ],
+            },
+          ],
+          "price": 35,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046220214436",
+          "listPrice": NaN,
+          "name": "XL / DarkTurquoise",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046220214436",
+              "values": [
+                {
+                  "label": "XL",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046220214436",
+              "values": [
+                {
+                  "hexColors": [
+                    "#00CED1",
+                  ],
+                  "label": "DarkTurquoise",
+                },
+              ],
+            },
+          ],
+          "price": 35,
+          "requiresShipping": true,
+          "sku": "",
+        },
+      ],
+      "vendor": "Next.js",
+    },
+    {
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.",
+      "descriptionHtml": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.</p>",
+      "id": "gid://shopify/Product/5447324270756",
+      "images": [
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/bomber-jacket-0.png?v=1622902777",
+          "width": 1000,
+        },
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/bomber-jacket-1.png?v=1622902777",
+          "width": 1000,
+        },
+      ],
+      "name": "Bomber Jacket",
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "size",
+          "id": "gid://shopify/ProductOption/6940503015588",
+          "values": [
+            {
+              "label": "L",
+            },
+            {
+              "label": "XL",
+            },
+            {
+              "label": "XXL",
+            },
+          ],
+        },
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "color",
+          "id": "gid://shopify/ProductOption/8655769764004",
+          "values": [
+            {
+              "hexColors": [
+                "#000000",
+              ],
+              "label": "Black",
+            },
+            {
+              "hexColors": [
+                "#556B2F",
+              ],
+              "label": "DarkOliveGreen",
+            },
+          ],
+        },
+      ],
+      "path": "/bomber-jacket",
+      "price": {
+        "currencyCode": "USD",
+        "value": 635.99,
+      },
+      "slug": "bomber-jacket",
+      "variants": [
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046243905700",
+          "listPrice": 5200,
+          "name": "L / Black",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046243905700",
+              "values": [
+                {
+                  "label": "L",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046243905700",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+          ],
+          "price": 635.99,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046243938468",
+          "listPrice": 5200,
+          "name": "L / DarkOliveGreen",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046243938468",
+              "values": [
+                {
+                  "label": "L",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046243938468",
+              "values": [
+                {
+                  "hexColors": [
+                    "#556B2F",
+                  ],
+                  "label": "DarkOliveGreen",
+                },
+              ],
+            },
+          ],
+          "price": 635.99,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046243971236",
+          "listPrice": 5200,
+          "name": "XL / Black",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046243971236",
+              "values": [
+                {
+                  "label": "XL",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046243971236",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+          ],
+          "price": 635.99,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046244004004",
+          "listPrice": 5200,
+          "name": "XL / DarkOliveGreen",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046244004004",
+              "values": [
+                {
+                  "label": "XL",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046244004004",
+              "values": [
+                {
+                  "hexColors": [
+                    "#556B2F",
+                  ],
+                  "label": "DarkOliveGreen",
+                },
+              ],
+            },
+          ],
+          "price": 635.99,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046244036772",
+          "listPrice": 5200,
+          "name": "XXL / Black",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046244036772",
+              "values": [
+                {
+                  "label": "XXL",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046244036772",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+          ],
+          "price": 635.99,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40046244069540",
+          "listPrice": 5200,
+          "name": "XXL / DarkOliveGreen",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40046244069540",
+              "values": [
+                {
+                  "label": "XXL",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40046244069540",
+              "values": [
+                {
+                  "hexColors": [
+                    "#556B2F",
+                  ],
+                  "label": "DarkOliveGreen",
+                },
+              ],
+            },
+          ],
+          "price": 635.99,
+          "requiresShipping": true,
+          "sku": "",
+        },
+      ],
+      "vendor": "Next.js",
+    },
+    {
+      "description": "Wafer cupcake candy macaroon bonbon candy canes cheesecake candy. Donut chupa chups sesame snaps candy chocolate cake chocolate cake danish. Tart cotton candy gummies cotton candy sweet roll. Wafer pie chocolate cake. Caramels toffee gummies. Liquorice sweet oat cake chocolate candy canes toffee bear claw. Chocolate cupcake wafer. Halvah soufflé halvah. Dessert pastry toffee apple pie chocolate cake lemon drops. Tart carrot cake wafer halvah tiramisu fruitcake.",
+      "descriptionHtml": "<p><meta charset="utf-8">Wafer cupcake candy macaroon bonbon candy canes cheesecake candy. Donut chupa chups sesame snaps candy chocolate cake chocolate cake danish. Tart cotton candy gummies cotton candy sweet roll. Wafer pie chocolate cake. Caramels toffee gummies. Liquorice sweet oat cake chocolate candy canes toffee bear claw. Chocolate cupcake wafer. Halvah soufflé halvah. Dessert pastry toffee apple pie chocolate cake lemon drops. Tart carrot cake wafer halvah tiramisu fruitcake.<br></p>",
+      "id": "gid://shopify/Product/5447323812004",
+      "images": [
+        {
+          "altText": null,
+          "height": 900,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Sticker-mock.png?v=1623256356",
+          "width": 900,
+        },
+      ],
+      "name": "Sticker",
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "color",
+          "id": "gid://shopify/ProductOption/6940502524068",
+          "values": [
+            {
+              "label": "Gradient",
+            },
+          ],
+        },
+      ],
+      "path": "/sticker",
+      "price": {
+        "currencyCode": "USD",
+        "value": 0,
+      },
+      "slug": "sticker",
+      "variants": [
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40008892580004",
+          "listPrice": 60,
+          "name": "Gradient",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40008892580004",
+              "values": [
+                {
+                  "label": "Gradient",
+                },
+              ],
+            },
+          ],
+          "price": 0,
+          "requiresShipping": true,
+          "sku": "",
+        },
+      ],
+      "vendor": "ACME",
+    },
+    {
+      "description": "Show off your love for Next.js and Vercel with this unique, limited edition quarter zip. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last – only 200 of these shirts will be made! All proceeds will be donated to charity.",
+      "descriptionHtml": "<p>Show off your love for Next.js and Vercel with this unique, <strong>limited edition</strong> quarter zip. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last – only 200 of these shirts will be made! <strong>All proceeds will be donated to charity.</strong></p>",
+      "id": "gid://shopify/Product/5447323156644",
+      "images": [
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/QZSide-Model.png?v=1623256247",
+          "width": 1000,
+        },
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/QZ-Back.png?v=1623256248",
+          "width": 1000,
+        },
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/QZ-Front.png?v=1623256248",
+          "width": 1000,
+        },
+      ],
+      "name": "Quarter Zip",
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "color",
+          "id": "gid://shopify/ProductOption/6940501835940",
+          "values": [
+            {
+              "hexColors": [
+                "#000000",
+              ],
+              "label": "Black",
+            },
+          ],
+        },
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "size",
+          "id": "gid://shopify/ProductOption/6940501803172",
+          "values": [
+            {
+              "label": "S",
+            },
+            {
+              "label": "M",
+            },
+            {
+              "label": "L",
+            },
+            {
+              "label": "XL",
+            },
+            {
+              "label": "XXL",
+            },
+          ],
+        },
+      ],
+      "path": "/quarter-zip",
+      "price": {
+        "currencyCode": "USD",
+        "value": 90,
+      },
+      "slug": "quarter-zip",
+      "variants": [
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40065999569060",
+          "listPrice": 20,
+          "name": "Black / S",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40065999569060",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40065999569060",
+              "values": [
+                {
+                  "label": "S",
+                },
+              ],
+            },
+          ],
+          "price": 90,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40008984756388",
+          "listPrice": 20,
+          "name": "Black / M",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40008984756388",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40008984756388",
+              "values": [
+                {
+                  "label": "M",
+                },
+              ],
+            },
+          ],
+          "price": 90,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40065122828452",
+          "listPrice": 20,
+          "name": "Black / L",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40065122828452",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40065122828452",
+              "values": [
+                {
+                  "label": "L",
+                },
+              ],
+            },
+          ],
+          "price": 90,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40065123713188",
+          "listPrice": 20,
+          "name": "Black / XL",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40065123713188",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40065123713188",
+              "values": [
+                {
+                  "label": "XL",
+                },
+              ],
+            },
+          ],
+          "price": 90,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40065125286052",
+          "listPrice": 20,
+          "name": "Black / XXL",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40065125286052",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40065125286052",
+              "values": [
+                {
+                  "label": "XXL",
+                },
+              ],
+            },
+          ],
+          "price": 90,
+          "requiresShipping": true,
+          "sku": "",
+        },
+      ],
+      "vendor": "ACME",
+    },
+    {
+      "description": "Show off your love for Next.js and Vercel with this unique, limited edition t-shirt. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last – only 200 of these shirts will be made! All proceeds will be donated to charity.",
+      "descriptionHtml": "<p><meta charset="utf-8"><span>Show off your love for Next.js and Vercel with this unique, </span><strong>limited edition</strong><span> t-shirt. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last – only 200 of these shirts will be made! </span><strong>All proceeds will be donated to charity.</strong></p>",
+      "id": "gid://shopify/Product/5447322697892",
+      "images": [
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Front-NoModel_ec3be051-d579-4c03-b55b-64449d0b0445.png?v=1623255893",
+          "width": 958,
+        },
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/FrontZoom_6302485d-7f7f-4585-b27b-aea85b7d644a.png?v=1623255894",
+          "width": 1000,
+        },
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Front_c81c04e9-333a-4a6c-b91a-e898f2a6025b.png?v=1623255894",
+          "width": 1000,
+        },
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Side_748811db-ccd1-48c7-9dcd-64ec2ec88993.png?v=1623255894",
+          "width": 1000,
+        },
+      ],
+      "name": "Special Edition T-Shirt",
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "color",
+          "id": "gid://shopify/ProductOption/6940501311652",
+          "values": [
+            {
+              "hexColors": [
+                "#000000",
+              ],
+              "label": "Black",
+            },
+          ],
+        },
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "size",
+          "id": "gid://shopify/ProductOption/6940501278884",
+          "values": [
+            {
+              "label": "S",
+            },
+            {
+              "label": "M",
+            },
+            {
+              "label": "L",
+            },
+            {
+              "label": "XL",
+            },
+            {
+              "label": "XXL",
+            },
+          ],
+        },
+      ],
+      "path": "/conf-shirt",
+      "price": {
+        "currencyCode": "USD",
+        "value": 50,
+      },
+      "slug": "conf-shirt",
+      "variants": [
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40047332688036",
+          "listPrice": NaN,
+          "name": "Black / S",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40047332688036",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40047332688036",
+              "values": [
+                {
+                  "label": "S",
+                },
+              ],
+            },
+          ],
+          "price": 200,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40009056387236",
+          "listPrice": NaN,
+          "name": "Black / M",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40009056387236",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40009056387236",
+              "values": [
+                {
+                  "label": "M",
+                },
+              ],
+            },
+          ],
+          "price": 200,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40064229212324",
+          "listPrice": NaN,
+          "name": "Black / L",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40064229212324",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40064229212324",
+              "values": [
+                {
+                  "label": "L",
+                },
+              ],
+            },
+          ],
+          "price": 200,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40073451602084",
+          "listPrice": NaN,
+          "name": "Black / XL",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40073451602084",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40073451602084",
+              "values": [
+                {
+                  "label": "XL",
+                },
+              ],
+            },
+          ],
+          "price": 50,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40073450061988",
+          "listPrice": NaN,
+          "name": "Black / XXL",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40073450061988",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40073450061988",
+              "values": [
+                {
+                  "label": "XXL",
+                },
+              ],
+            },
+          ],
+          "price": 50,
+          "requiresShipping": true,
+          "sku": "",
+        },
+      ],
+      "vendor": "ACME",
+    },
+  ],
+}
+`;
+
+exports[`shopify provider useSearch with categoryId 1`] = `
+{
+  "found": true,
+  "products": [
+    {
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.",
+      "descriptionHtml": "<meta charset="utf-8"><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.</span>",
+      "id": "gid://shopify/Product/6621772644516",
+      "images": [
+        {
+          "altText": null,
+          "height": 2048,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Cup-front-black.png?v=1623159405",
+          "width": 2048,
+        },
+        {
+          "altText": null,
+          "height": 2048,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Cup-front-white.png?v=1623159430",
+          "width": 2048,
+        },
+      ],
+      "name": "ACME Cup",
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "color",
+          "id": "gid://shopify/ProductOption/8505918849188",
+          "values": [
+            {
+              "hexColors": [
+                "#FFFFFF",
+              ],
+              "label": "White",
+            },
+            {
+              "hexColors": [
+                "#000000",
+              ],
+              "label": "Black",
+            },
+          ],
+        },
+      ],
+      "path": "/acme-cup",
+      "price": {
+        "currencyCode": "USD",
+        "value": 25,
+      },
+      "slug": "acme-cup",
+      "variants": [
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40064679805092",
+          "listPrice": NaN,
+          "name": "White",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40064679805092",
+              "values": [
+                {
+                  "hexColors": [
+                    "#FFFFFF",
+                  ],
+                  "label": "White",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "200",
+        },
+        {
+          "availableForSale": false,
+          "id": "gid://shopify/ProductVariant/40064679837860",
+          "listPrice": NaN,
+          "name": "Black",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40064679837860",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+          ],
+          "price": 25,
+          "requiresShipping": true,
+          "sku": "201",
+        },
+      ],
+      "vendor": "ACME",
+    },
+    {
+      "description": "Wafer cupcake candy macaroon bonbon candy canes cheesecake candy. Donut chupa chups sesame snaps candy chocolate cake chocolate cake danish. Tart cotton candy gummies cotton candy sweet roll. Wafer pie chocolate cake. Caramels toffee gummies. Liquorice sweet oat cake chocolate candy canes toffee bear claw. Chocolate cupcake wafer. Halvah soufflé halvah. Dessert pastry toffee apple pie chocolate cake lemon drops. Tart carrot cake wafer halvah tiramisu fruitcake.",
+      "descriptionHtml": "<p><meta charset="utf-8">Wafer cupcake candy macaroon bonbon candy canes cheesecake candy. Donut chupa chups sesame snaps candy chocolate cake chocolate cake danish. Tart cotton candy gummies cotton candy sweet roll. Wafer pie chocolate cake. Caramels toffee gummies. Liquorice sweet oat cake chocolate candy canes toffee bear claw. Chocolate cupcake wafer. Halvah soufflé halvah. Dessert pastry toffee apple pie chocolate cake lemon drops. Tart carrot cake wafer halvah tiramisu fruitcake.<br></p>",
+      "id": "gid://shopify/Product/5447323812004",
+      "images": [
+        {
+          "altText": null,
+          "height": 900,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Sticker-mock.png?v=1623256356",
+          "width": 900,
+        },
+      ],
+      "name": "Sticker",
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "color",
+          "id": "gid://shopify/ProductOption/6940502524068",
+          "values": [
+            {
+              "label": "Gradient",
+            },
+          ],
+        },
+      ],
+      "path": "/sticker",
+      "price": {
+        "currencyCode": "USD",
+        "value": 0,
+      },
+      "slug": "sticker",
+      "variants": [
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40008892580004",
+          "listPrice": 60,
+          "name": "Gradient",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40008892580004",
+              "values": [
+                {
+                  "label": "Gradient",
+                },
+              ],
+            },
+          ],
+          "price": 0,
+          "requiresShipping": true,
+          "sku": "",
+        },
+      ],
+      "vendor": "ACME",
+    },
+    {
+      "description": "Show off your love for Next.js and Vercel with this unique, limited edition quarter zip. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last – only 200 of these shirts will be made! All proceeds will be donated to charity.",
+      "descriptionHtml": "<p>Show off your love for Next.js and Vercel with this unique, <strong>limited edition</strong> quarter zip. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last – only 200 of these shirts will be made! <strong>All proceeds will be donated to charity.</strong></p>",
+      "id": "gid://shopify/Product/5447323156644",
+      "images": [
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/QZSide-Model.png?v=1623256247",
+          "width": 1000,
+        },
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/QZ-Back.png?v=1623256248",
+          "width": 1000,
+        },
+        {
+          "altText": null,
+          "height": 1000,
+          "url": "https://cdn.shopify.com/s/files/1/0434/0285/4564/products/QZ-Front.png?v=1623256248",
+          "width": 1000,
+        },
+      ],
+      "name": "Quarter Zip",
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "color",
+          "id": "gid://shopify/ProductOption/6940501835940",
+          "values": [
+            {
+              "hexColors": [
+                "#000000",
+              ],
+              "label": "Black",
+            },
+          ],
+        },
+        {
+          "__typename": "MultipleChoiceOption",
+          "displayName": "size",
+          "id": "gid://shopify/ProductOption/6940501803172",
+          "values": [
+            {
+              "label": "S",
+            },
+            {
+              "label": "M",
+            },
+            {
+              "label": "L",
+            },
+            {
+              "label": "XL",
+            },
+            {
+              "label": "XXL",
+            },
+          ],
+        },
+      ],
+      "path": "/quarter-zip",
+      "price": {
+        "currencyCode": "USD",
+        "value": 90,
+      },
+      "slug": "quarter-zip",
+      "variants": [
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40065999569060",
+          "listPrice": 20,
+          "name": "Black / S",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40065999569060",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40065999569060",
+              "values": [
+                {
+                  "label": "S",
+                },
+              ],
+            },
+          ],
+          "price": 90,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40008984756388",
+          "listPrice": 20,
+          "name": "Black / M",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40008984756388",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40008984756388",
+              "values": [
+                {
+                  "label": "M",
+                },
+              ],
+            },
+          ],
+          "price": 90,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40065122828452",
+          "listPrice": 20,
+          "name": "Black / L",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40065122828452",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40065122828452",
+              "values": [
+                {
+                  "label": "L",
+                },
+              ],
+            },
+          ],
+          "price": 90,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40065123713188",
+          "listPrice": 20,
+          "name": "Black / XL",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40065123713188",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40065123713188",
+              "values": [
+                {
+                  "label": "XL",
+                },
+              ],
+            },
+          ],
+          "price": 90,
+          "requiresShipping": true,
+          "sku": "",
+        },
+        {
+          "availableForSale": true,
+          "id": "gid://shopify/ProductVariant/40065125286052",
+          "listPrice": 20,
+          "name": "Black / XXL",
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "color",
+              "id": "gid://shopify/ProductVariant/40065125286052",
+              "values": [
+                {
+                  "hexColors": [
+                    "#000000",
+                  ],
+                  "label": "Black",
+                },
+              ],
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "displayName": "size",
+              "id": "gid://shopify/ProductVariant/40065125286052",
+              "values": [
+                {
+                  "label": "XXL",
+                },
+              ],
+            },
+          ],
+          "price": 90,
+          "requiresShipping": true,
+          "sku": "",
+        },
+      ],
+      "vendor": "ACME",
+    },
+  ],
+}
+`;

@@ -1,0 +1,50 @@
+[
+  {
+    "scope": "https://next-js-store.myshopify.com:443",
+    "method": "POST",
+    "path": "/api/2022-04/graphql.json",
+    "body": {
+      "query": "\n  query getAllProductVendors($first: Int = 250, $cursor: String) {\n    products(first: $first, after: $cursor) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n      }\n      edges {\n        node {\n          vendor\n        }\n        cursor\n      }\n    }\n  }\n",
+      "variables": {
+        "first": 250
+      }
+    },
+    "status": 200,
+    "response": [
+      "1f8b0800000000000013add2d16a83301406e07739d732ac6e37422fa40acb584e2bd8d16df422d36817c50ca36d55f2eec36e95c13a199b77873f7ff820271dc4ac62e074f056cab88e2a759a59ca4991c87ede3185fc58ad58cac14958aeb8d167ab92ef5f65adbee4da001ea75c81f3dc412163de5fdff322962538e02ea80fda80a82ed529e0cd9d7adca0b9b1f28c0839432fb0694b1a1499bdf4b2e67ef1796e3fed5e6e1ff24b9d2498cf411bffe05a1aae2d148139c20d9d09b8a5e737d47347b973e767aedfc89550bf114d2aa203b66b6b441c3ad388d8921b0cddeb31f1dc99449c518f98e891c3883874febe440b0539621b35fd5fc0d0bff4a4df3a1fdc566bfd0edbfe691e6c030000"
+    ],
+    "rawHeaders": {
+      "access-control-allow-origin": "*",
+      "alt-svc": "h3=\":443\"; ma=86400",
+      "cf-cache-status": "DYNAMIC",
+      "cf-ray": "90c2eace0e0b2aec-LAX",
+      "connection": "keep-alive",
+      "content-encoding": "gzip",
+      "content-language": "en",
+      "content-security-policy": "block-all-mixed-content; frame-ancestors 'none'; upgrade-insecure-requests;",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Mon, 03 Feb 2025 13:55:11 GMT",
+      "nel": "{\"success_fraction\":0.01,\"report_to\":\"cf-nel\",\"max_age\":604800}",
+      "powered-by": "Shopify",
+      "report-to": "{\"endpoints\":[{\"url\":\"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=GI8KtQe9p%2BNMCzHYFM0UdWm9amavd5x308vgD0olCrFaOOMRf2v%2F83%2BELaBrkD9o7KIeBVacweyw3M6ZzEHqOy5kmcCMvK3wBx8vz9lkpjtVj9sPVjmo%2FL0qBvOE3kiK%2F%2FvUWAPJGPJbupLSvw%3D%3D\"}],\"group\":\"cf-nel\",\"max_age\":604800}",
+      "server": "cloudflare",
+      "server-timing": "processing;dur=14, db;dur=4, asn;desc=\"7922\", edge;desc=\"LAX\", country;desc=\"US\", servedBy;desc=\"z5nl\", graphql;desc=\"storefront/query/getAllProductVendors\", gqlSelectionNames;desc=\"sfr/products\", requestID;desc=\"fabe0a79-c07b-4f15-aa47-c0153c083238-1738590911\", cfRequestDuration;dur=82.999706",
+      "transfer-encoding": "chunked",
+      "vary": "Accept-Encoding,Accept",
+      "x-content-type-options": "nosniff",
+      "x-dc": "gcp-us-west1,gcp-us-west1,gcp-us-west1",
+      "x-download-options": "noopen",
+      "x-frame-options": "DENY",
+      "x-permitted-cross-domain-policies": "none",
+      "x-request-id": "fabe0a79-c07b-4f15-aa47-c0153c083238-1738590911",
+      "x-shardid": "163",
+      "x-shopid": "43402854564",
+      "x-shopify-api-version": "2024-04",
+      "x-sorting-hat-podid": "163",
+      "x-sorting-hat-shopid": "43402854564",
+      "x-storefront-renderer-rendered": "1",
+      "x-xss-protection": "1; mode=block"
+    },
+    "responseIsBinary": false
+  }
+]

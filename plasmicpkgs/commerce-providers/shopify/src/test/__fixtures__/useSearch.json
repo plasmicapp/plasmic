@@ -1,0 +1,51 @@
+[
+  {
+    "scope": "https://next-js-store.myshopify.com:443",
+    "method": "POST",
+    "path": "/api/2022-04/graphql.json",
+    "body": {
+      "query": "\n  query getAllProducts(\n    $first: Int = 250\n    $query: String = \"\"\n    $sortKey: ProductSortKeys = RELEVANCE\n    $reverse: Boolean = false\n  ) {\n    products(\n      first: $first\n      sortKey: $sortKey\n      reverse: $reverse\n      query: $query\n    ) {\n      ...productConnection\n    }\n  }\n\n  \n  fragment productConnection on ProductConnection {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n    }\n    edges {\n      node {\n        id\n        handle\n        title\n        vendor\n        handle\n        description\n        descriptionHtml\n        priceRange {\n          minVariantPrice {\n            amount\n            currencyCode\n          }\n        }\n        options {\n          id\n          name\n          values\n        }\n        variants(first: 250) {\n          pageInfo {\n            hasNextPage\n            hasPreviousPage\n          }\n          edges {\n            node {\n              id\n              title\n              sku\n              availableForSale\n              requiresShipping\n              selectedOptions {\n                name\n                value\n              }\n              priceV2 {\n                amount\n                currencyCode\n              }\n              compareAtPriceV2 {\n                amount\n                currencyCode\n              }\n            }\n          }\n        }\n        images(first: 250) {\n          pageInfo {\n            hasNextPage\n            hasPreviousPage\n          }\n          edges {\n            node {\n              originalSrc\n              altText\n              width\n              height\n            }\n          }\n        }\n      }\n    }\n  }\n\n",
+      "variables": {
+        "query": ""
+      }
+    },
+    "status": 200,
+    "response": [
+      "1f8b0800000000000013ed5deb72db36167e152c7f8b120802bc78dceca44e2fdbb1db64956d3dd96632107924a121090600edba1dcfec3bec0bf4efbe46f74df64976405d2cc9921cdb8a4466fcc3b20491c0e1770e3f9c0b08fdeea4dc70e7e877a75432ad12a3ebf77c047f2b86d2be1f73fd3dfc6a5ef2113847439e69e8d8b6970a2e84acf442fb75c7817404da39fae7ef4e2153b0a78bd4397246223deaf5f458966278d57b3919a91704c40b431250cabcc0b1bd166906ce91c3931cdca42a9d8e6384a99b9e9f9c7d854eeaa60b2852a9a66d4ec74941274a9446c8c239724ea5821c895257394a652615d2c2209e83e9a044161a1203a65288a7a2143a11c50841264c076948512a11884ae7324506f2522a248a44a422ad0a832a83323e900a109849d780723e2a38e299f850f12e7aa93868280c820c72284c95a3214f4426b4d02803892e204343258a91c8328e401b546519cf13a94a50084660bae8b941222f41a5c20e5309c493a4ca352fe617820a7bd6bc6b944b3510b5c095beaf105d74228b5165afa45242233596455269c4a1005ed863bbe8ab1168c3758dd0641454a9825b18ca31576014bf799373ad67af5566944804e8eeb29abe3579e61c39c739188e9231571acc173f3b9519bad1cfceb3635df2e2d993229ba8c8e35ead1ca7e3944a24f0775e8ceadb3c17c58f5c095e9897b6dd36f15c5685718e1cc2bad8e93849a51414c9d549cd0cce3ffa2f9cebeb8e236b939890c666b2f8a13eaa1731cc622f8aa87d713a4ec173dbd78955a2a5069e5535ff383f8d8501a7e37c99f1e4bdf3f6faadfdb2966f7f043705a447310e6810c6116638260ba4361352bfaf2c4cd8a2c42fb8c8f82083afa5ea737b985115741c051f2aa140f7c7a22c45319ab56bc8ec9d90feb000e33a54e6c359286addfd483e564b1d279179c9153c9f68d79e694df7fabaf3201cfc300af0020e1325dde0e0adc561aa9a1d0031196fa740bcbdee3822e7b571ecd4bca4122351f0acaf12e7c8191b53eaa35e2f498bee14e56e22f39eee0d4506bae7f530f5690f9388f5280b686f36abf74eaad21d2a59187760afbe5b16a3bf5e7ce105c4f7584c31b39067e635fc6a2697d4712e456ac6ce11c134ea386310a3b1997c5a52fbeee5bbb466ba229f8fef25dfdbeb8f34cd1ea334f409c3845282177d90022e5d3d96cab83a03b800d7b87a2c945930dbefe112f5ed21a85f1f825ebbfde921731fc5aabefb8b7e72535a31bbad7753ca275fa491da3a1ea867c7bdf260ce48607913fb611013466e9c91bef80d967c91f3bed371ecdf99d3714e9d8e737eeabcb5fc74b7bb133016068c869e1f07dbdc9dcba927315270e5749c175cbd7f5da90f9514da369f5a72ecf32c97c5e17d211a101fc701f1e9a20f70de473d74b9e410edd61b5a544b3d9e534f11eb3d84cbc3bb4a139862e6e16815a6a9960f8e522dc7c141f23009a330580569f51e38385acb023500b6000794aec2b648150d006d519c064016fbd45b8ce0f64c5a6de02ccf238117e11590f647596d602c8f45318d56203a0061b58aafbcd80bbd6005b4bdd3558bd88a104aa345823fdb2f5b9db581ad080b27defb2248fb63abad183584ad488c31c12b101d80adb662d534b6f20909a36805b4bdb3d556c89ac5563e638c2dd2fbe97ed9eab40d6ce547914fe80a48fb63abad183584ad28f196ab2ca78761abad58358dad28f3974b32a78760abad90358bad681404642931b367ba3a6f055f312f9e642e9760da63feaa0d8cc518f102ba0ad221f257ade22c16d1d827abb0ed3f7f7518d66a7cc1795df1d4c537755d126342bd68635dd7c318dfd475eda74f52775e2b266d87987e3bc4248f13f3bec57c1a9298d545937931ff8e42fe5311ff732a0b3f15f1dba4ad7b17f0fd9d17f0694827b5e84d05fc07d6ed3d2f8cc2edcb14478a5b4f78006264879cc50fcbaed6612bf63ef3221cc43808e2d0bf9d28e5cd4894f2cd8efc1683d991473a8328c484e1d5287a7f10dd11eb3403229f91e056dcbc3f8cee0a080f0ad224b2c13ef543722be13ee38843df6b13390e0e52e807b11fadde6c7b0469ab213505a490c4d1ed34d51e51da7ebf350326bb60819060f5866b47a5747f20c538f4c2d5c47a3b0a347b03c9f731f6a3b6e685f706130d29595e23d4de92f2de408b7c1a04b78a34edac6ced0b34828947a97fab02d1d2e4fa83606b57a6783943ecc5b1d7a89ca6d76cf148b3c5f31f27debd33c124c4215b7ab47c20f30128f7179ebc87c514f097753bfa6ed6fe94fb6d6536f129f7db266ddd3bf71bf8ac1bc7bbcdfe628fb1c524edadecef34f3db71ceef99ff8dc3c07a21dbf2bfb3279fedf4ff43262ee01b05d08c67b4a81f6316de4a672e3fab7d383f73fb33dc5b0d659dabb4702e23186f2e313cc40ba57eec477429ed39734217947e784c57046a0db8a1476ebbf87b34d4edae7dab2cd5fe9b70d6ad7869dfa67a77c0d43e5ba5d80fc2a524daf9de8df5b3b2d62066cb8f111fce5c9b6eaf8dcf032cc566ab4bc5c2303c7428bb2c9ff738f9ee1bcbfa914726c47cb3aac988e43da8c5854cf396ed9ba4fdc487a0505295097f0f28e1457a85729e7025658106b218c862da9af002344ac6001a6e0eeea217b2a80c4ac655c9eb571b07689e03d2052ff5ece4b14c64c68d3dcb9ebafc31e585d0e32e7acd95418934663ee8a8ca7361875d6cd49700062999655d3491bf14ab7d76d109573c874c232387438059575d742a3e54d2de34d38e2437b7a5bab9e2e9e903e00a2519bfeca2939be3a6b85d5a29bae85b9e5df031d2b21a0eb3fffe078debcf5df402b4066550c9b55157b31e795966b0467494412e0b942a59ea19265c293995b21e6bda353242f15ce80a0d55254c7de19b02df4d7bac3d59c0e766010fda0d65cb7cf1a0689a304271b075c9d3378aa7020a73f8201747514c588497fdddb97c9fc66b58f50be6c36df20836abe80e772068b533309dcadc5c2e6d564658e0d719ddf5336dbc38d1c60f9a673d164cb6c598cfb31f2aae0c28f737b1b823e9ab492b7a23eede94b43f9697480e87e84a560a65f202d0502a34cd2d235ea4e847500964e85298313263a15155880f1574502672612045900adb1b9a4a837e136517bdb647a6a0c5a84042a3d292861c223e3f4b5545071595755c6c2653c9127183cc18d0775501c8d6c7e6629cc862d8457f336808dc540a34e273292c1889e243dba7b177d02883e9c05df40d18248cad72678074559699e5ee8c6b83fef7af7f2359645788606c253363d080ea05d81a5d8a2c43039b654ce12fe87996a152c90420bdf92a9505afc794f52426ccd5c6a9ee31201f6ba364317ab602f6716fdafee71f9f2decb34bff58f8e798dc7bb289773ddb78916ff72ebc3bc1fa7159db59a7d89fac73d994105ed9ca6b96183ef416a32c8e636617eadeda5a13f5507f4fd3d9347dd0d91425f737ce735bace38e898eec32ad80a338a2210b9657f1cc603c6b088c674d8731601e211189e8d2de1a33184f1b02e3691b60f443cff7d65ae37953703c6f05908c44015e6b8fe7cd4172ff50363e1478f5a62f5270cf640ad9722840e8c19382afdeb85ff2d51085d0833f89f9ea8dfbb5dd4ef97182dd377a22411c46f5ee1bf3e82991c5f0f6139725248267e8ab6950b3e6a1cb4f1e484d9f03fdbcbcf9c70651db7f93e111f0fff9c7f4a703ee0ab52623fdf9c7e7a89e5b207cfaa08bed3ce8f23d2f58dcef78274197dd2c2ba2ad0bba68e8fb248822bcb4fea03d41d7b68ae1ee1662e318db802a246b516a7e4cb51f94024a484c3cb2bcc1577b42a6fda014faf6d7a230c1d13a949ae3c76fc6690b23ef16268c032f5e1f383607a75d03d5f868a6f6caddef651dcebc83c41f00669e9bb2307669827d77c0d8c00d28a5718a079852b6e4c2b328f637973f58b487d0a2be823752e6ef021f131ab1d40d87e1d0a52c62ee80840397038fd8204c034af9aaf4f4d091512dfebb24f2124c21767ddfe72ee541e20e628fbb10c5d190f0001336689ce8360e7e17d228f2bc74e02649eab9344a42374e93d40d28240492288a63ff7192bfbd9efcfd1f538463221d700000"
+    ],
+    "rawHeaders": {
+      "access-control-allow-origin": "*",
+      "alt-svc": "h3=\":443\"; ma=86400",
+      "cf-cache-status": "DYNAMIC",
+      "cf-ray": "90c2ead028a22aec-LAX",
+      "connection": "keep-alive",
+      "content-encoding": "gzip",
+      "content-language": "en",
+      "content-security-policy": "block-all-mixed-content; frame-ancestors 'none'; upgrade-insecure-requests;",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Mon, 03 Feb 2025 13:55:12 GMT",
+      "nel": "{\"success_fraction\":0.01,\"report_to\":\"cf-nel\",\"max_age\":604800}",
+      "powered-by": "Shopify",
+      "report-to": "{\"endpoints\":[{\"url\":\"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=Tc%2BEr1K2ONJcCMdc%2BgUwY74QfCCTAUorcYQhOlS97sOgIz5dH5Z23MiyDNGjoR%2BWvrMOIBqSWPTQYdqoJ%2FED2tcwWNVhgJf87PAm%2FrMSK8fTxu2x%2FWQzcjcMTw55v64AoPU8PNtp64xMDVdjhg%3D%3D\"}],\"group\":\"cf-nel\",\"max_age\":604800}",
+      "server": "cloudflare",
+      "server-timing": "processing;dur=142;desc=\"gc:3\", db;dur=64, fetch;dur=95, asn;desc=\"7922\", edge;desc=\"LAX\", country;desc=\"US\", servedBy;desc=\"dfg9\", graphql;desc=\"storefront/query/getAllProducts\", gqlSelectionNames;desc=\"sfr/products\", requestID;desc=\"3dee7057-8666-4329-9fb6-6cac32ac7078-1738590912\", cfRequestDuration;dur=197.999954",
+      "transfer-encoding": "chunked",
+      "vary": "Accept-Encoding,Accept",
+      "x-content-type-options": "nosniff",
+      "x-dc": "gcp-us-west1,gcp-us-west1,gcp-us-west1",
+      "x-download-options": "noopen",
+      "x-frame-options": "DENY",
+      "x-permitted-cross-domain-policies": "none",
+      "x-request-id": "3dee7057-8666-4329-9fb6-6cac32ac7078-1738590912",
+      "x-shardid": "163",
+      "x-shopid": "43402854564",
+      "x-shopify-api-deprecated-reason": "https://shopify.dev/api/usage/versioning#deprecation-practices",
+      "x-shopify-api-version": "2024-04",
+      "x-sorting-hat-podid": "163",
+      "x-sorting-hat-shopid": "43402854564",
+      "x-storefront-renderer-rendered": "1",
+      "x-xss-protection": "1; mode=block"
+    },
+    "responseIsBinary": false
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "scope": "https://next-js-store.myshopify.com:443",
+    "method": "POST",
+    "path": "/api/2022-04/graphql.json",
+    "body": {
+      "query": "\n  query getSiteCollections($first: Int!) {\n    collections(first: $first) {\n      edges {\n        node {\n          ...collectionFieldsFragment\n        }\n      }\n    }\n  }\n\n  \n  fragment collectionFieldsFragment on Collection {\n    id\n    title\n    handle\n    image {\n      originalSrc\n      altText\n      width\n      height\n    }\n    products(first: $first) {\n      ...simpleProductConnection\n    }\n  }\n  \nfragment simpleProductConnection on ProductConnection {\n  edges {\n    node {\n      id\n    }\n  }\n}\n\n\n",
+      "variables": {
+        "first": 250
+      }
+    },
+    "status": 200,
+    "response": [
+      "1f8b0800000000000013c591b16ac33010865fa5dc6c907439498eb652e818ba970ec2bad802d50ab69c528cdfbdb8a54d3a359e3adc703f7cf0df7d33045f3cb8199a9c123725e67e5c570e2d8fe09e67e873e03589011cb4313821c62e9fe2f15d3cfc3002ad24855649a9112a28b1240607077ebbbb1f8678f669840a3adf87cfbc49b974bc46f1d5b70cae9f52aae034e43035e5f6064f5f80300695b56888b432b02cd54d9426b23bd41289506ea4c8e25ecb7a2b85565abdb5e1ae562825c1b2bc2c7f91bf9c28544a19bb97f5959347f6651a385cfb385eb2ff1772397713a5b431f4fda4753e0059e6743ddd020000"
+    ],
+    "rawHeaders": {
+      "access-control-allow-origin": "*",
+      "alt-svc": "h3=\":443\"; ma=86400",
+      "cf-cache-status": "DYNAMIC",
+      "cf-ray": "90c2eaceceec2aec-LAX",
+      "connection": "keep-alive",
+      "content-encoding": "gzip",
+      "content-language": "en",
+      "content-security-policy": "block-all-mixed-content; frame-ancestors 'none'; upgrade-insecure-requests;",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Mon, 03 Feb 2025 13:55:11 GMT",
+      "nel": "{\"success_fraction\":0.01,\"report_to\":\"cf-nel\",\"max_age\":604800}",
+      "powered-by": "Shopify",
+      "report-to": "{\"endpoints\":[{\"url\":\"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=k3ExzV0U9gwnWfd2aZk0%2FLkgASzEARX9OJGfQ%2FV%2FbbQ5GQsNjipPaxdJWSbZN%2FcmEh5qggQKRJnWwTpe5VabTdsHVO77WhuKro7moR%2FnFym5aBQtfBifp1Q5LsDudiQQqRvW7BZyBWUWyh%2BKRQ%3D%3D\"}],\"group\":\"cf-nel\",\"max_age\":604800}",
+      "server": "cloudflare",
+      "server-timing": "processing;dur=17, db;dur=5, asn;desc=\"7922\", edge;desc=\"LAX\", country;desc=\"US\", servedBy;desc=\"tzn4\", graphql;desc=\"storefront/query/getSiteCollections\", gqlSelectionNames;desc=\"sfr/collections\", requestID;desc=\"99dfb45f-c640-45a5-93d3-fbd73fc9446c-1738590911\", cfRequestDuration;dur=70.999861",
+      "transfer-encoding": "chunked",
+      "vary": "Accept-Encoding,Accept",
+      "x-content-type-options": "nosniff",
+      "x-dc": "gcp-us-west1,gcp-us-west1,gcp-us-west1",
+      "x-download-options": "noopen",
+      "x-frame-options": "DENY",
+      "x-permitted-cross-domain-policies": "none",
+      "x-request-id": "99dfb45f-c640-45a5-93d3-fbd73fc9446c-1738590911",
+      "x-shardid": "163",
+      "x-shopid": "43402854564",
+      "x-shopify-api-version": "2024-04",
+      "x-sorting-hat-podid": "163",
+      "x-sorting-hat-shopid": "43402854564",
+      "x-storefront-renderer-rendered": "1",
+      "x-xss-protection": "1; mode=block"
+    },
+    "responseIsBinary": false
+  }
+]
