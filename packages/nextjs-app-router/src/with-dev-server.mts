@@ -2,8 +2,8 @@
 
 import { type ChildProcess } from "child_process";
 import { spawn } from "cross-spawn";
-import fkill from "fkill";
 import getPort from "get-port";
+import { killPortProcess } from "kill-port-process";
 import process from "process";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
@@ -76,7 +76,7 @@ async function main() {
 
   const killDevServer = () => {
     devProcess.kill("SIGKILL");
-    return fkill(`:${port}`, { force: true }).catch((err) => {
+    return killPortProcess([port]).catch((err) => {
       console.error(`Plasmic: Failed to kill dev server: ${err}`);
     });
   };
