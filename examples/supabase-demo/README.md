@@ -10,19 +10,20 @@ This is a demo of building a Pokedex on top of Plasmic (for frontend), Supabase 
 
 ## Getting Started
 
-1. Copy `.env.example` to `.env.local` and populate your Supabase credentials.
+1. Copy `.env.example` to `.env` and populate your Supabase credentials.
    The tutorial above will show you how to properly set up a compatible Supabase project.
+2. Run `yarn` to install dependencies, fetch the schema and types from supabase.
 
-2. Run the development server:
+3. Run the development server:
 
 ```bash
 yarn dev
 ```
 
-3. Open your browser to see the result.
+4. Open your browser to see the result.
 
-4. You can view the Plasmic-built frontend [here](https://studio.plasmic.app/projects/i6YZmFxPJB69NEUgdf79ap). If you want to make edits, clone the Plasmic project and note the new
-   project ID and token. These fields will need to be updated in `.env.local` to reflect your changes.
+5. You can view the Plasmic-built frontend [here](https://studio.plasmic.app/projects/i6YZmFxPJB69NEUgdf79ap). If you want to make edits, clone the Plasmic project and note the new
+   project ID and token. These fields will need to be updated in `.env` to reflect your changes.
 
 ## Learn More
 

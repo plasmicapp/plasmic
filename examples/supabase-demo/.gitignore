@@ -35,3 +35,7 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+databaseSchema.json
+
+types/supabase.ts

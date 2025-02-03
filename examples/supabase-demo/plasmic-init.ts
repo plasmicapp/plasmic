@@ -1,33 +1,54 @@
+import dbSchema from "@/databaseSchema.json";
 import { initPlasmicLoader } from "@plasmicapp/loader-nextjs";
-import {
-  SupabaseMutation,
-  SupabaseQuery,
-  SupabaseUserLogIn,
-  SupabaseUserLogOut,
-  SupabaseUserSession,
-  SupabaseUserSignUp,
-} from "./components/CodeComponents/DatabaseComponents";
-import {
-  SupabaseField,
-  SupabaseGrid,
-  SupabaseGridCollection,
-  SupabaseImgField,
-  SupabaseTableCollection,
-  SupabaseTextField,
-} from "./components/CodeComponents/DisplayCollections";
-import {
-  FormContextComponent,
-  FormTextInput,
-} from "./components/CodeComponents/Form";
+import { SupabaseDataProvider } from "./components/CodeComponents/DatabaseComponents/SupabaseDataProvider";
+import { SupabaseForm } from "./components/CodeComponents/DatabaseComponents/SupabaseForm";
+import { SupabaseUserLogIn } from "./components/CodeComponents/DatabaseComponents/SupabaseUserLogIn";
+import { SupabaseUserLogOut } from "./components/CodeComponents/DatabaseComponents/SupabaseUserLogOut";
+import { SupabaseUserSignUp } from "./components/CodeComponents/DatabaseComponents/SupabaseUserSignUp";
+import { SupabaseUserSession } from "./components/CodeComponents/GlobalContexts/SupabaseUserSession";
 import { RedirectIf } from "./components/CodeComponents/LogicComponents";
-import {
-  SupabaseDeleteButton,
-  SupabaseEditButton,
-  SupabaseModal,
-} from "./components/CodeComponents/UtilsComponents";
 
 const plasmicProjectId = process.env.PLASMIC_PROJECT_ID ?? "";
 const plasmicApiToken = process.env.PLASMIC_API_TOKEN ?? "";
+
+const tableNameProp = {
+  type: "choice" as const,
+  multiSelect: false,
+  options: dbSchema.map((table) => table.name) || [],
+};
+
+const columnProp = {
+  type: "choice" as const,
+  options: (props: any) => {
+    const table = dbSchema.find((t) => t.name === props.tableName);
+    return table?.columns?.map((column) => column.name) ?? [];
+  },
+};
+
+const filtersProp = {
+  type: "array" as const,
+  nameFunc: (item: any) => item.name || item.key,
+  itemType: {
+    type: "object" as const,
+    fields: {
+      name: {
+        type: "choice" as const,
+        options: ["eq", "match"],
+      },
+      args: {
+        type: "array" as const,
+        itemType: {
+          type: "object" as const,
+          fields: {
+            column: columnProp,
+            value: "string" as const,
+          },
+        },
+      },
+    },
+  },
+};
+
 export const PLASMIC = initPlasmicLoader({
   projects: [
     {
@@ -40,294 +61,107 @@ export const PLASMIC = initPlasmicLoader({
   preview: true,
 });
 
-/**
- * Register your code components here for use in the Plasmic Studio
- * See /plasmic-host where the app-host is defined.
- * Once you point your Plasmic project to the app host, you should see your code components
- */
-PLASMIC.registerComponent(SupabaseField, {
-  name: "SupabaseField",
-  props: {
-    selector: "string",
-    type: {
-      type: "choice",
-      defaultValue: "text",
-      options: ["text", "image"],
-    },
-  },
-  importPath: "./components/CodeComponents/DisplayCollections",
+PLASMIC.registerGlobalContext(SupabaseUserSession, {
+  name: "SupabaseUserSession",
+  importPath: "./components/CodeComponents/GlobalContexts",
+  providesData: true,
+  props: { staticToken: "string" },
 });
 
-PLASMIC.registerComponent(SupabaseTextField, {
-  name: "SupabaseTextField",
+PLASMIC.registerComponent(SupabaseDataProvider, {
+  name: "SupabaseDataProvider",
+  providesData: true,
   props: {
-    name: "string",
-  },
-  importPath: "./components/CodeComponents/DisplayCollections",
-});
-
-PLASMIC.registerComponent(SupabaseImgField, {
-  name: "SupabaseImgField",
-  props: {
-    url: "string",
-  },
-  importPath: "./components/CodeComponents/DisplayCollections",
-});
-
-PLASMIC.registerComponent(SupabaseGrid, {
-  name: "SupabaseGrid",
-  props: {
-    tableName: {
-      type: "choice",
-      defaultValue: "entries",
-      options: ["entries"],
-    },
-    tableColumns: {
-      type: "choice",
+    children: "slot",
+    tableName: tableNameProp,
+    columns: {
+      ...columnProp,
       multiSelect: true,
-      options: [
-        "id",
-        "user_id",
-        "name",
-        "imageUrl",
-        "inserted_at",
-        "description",
-      ],
     },
-    queryFilters: "object",
-    children: {
-      type: "slot",
-      defaultValue: {
-        type: "text",
-        value: "Placeholder",
-      },
-    },
-    count: "number",
-    loading: {
-      type: "slot",
-      defaultValue: {
-        type: "text",
-        value: "Loading...",
-      },
-    },
-  },
-  defaultStyles: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr 1fr",
-    gridRowGap: "30px",
-    gridColumnGap: "50px",
-    padding: "8px",
-    maxWidth: "100%",
-  },
-  importPath: "./components/CodeComponents/DisplayCollections",
-});
-
-PLASMIC.registerComponent(SupabaseGridCollection, {
-  name: "SupabaseGridCollection",
-  props: {
-    count: "number",
-    children: {
-      type: "slot",
-      defaultValue: {
-        type: "text",
-        value: "Placeholder",
-      },
-    },
-    loading: {
-      type: "slot",
-      defaultValue: {
-        type: "text",
-        value: "Loading...",
-      },
-    },
-    testLoading: "boolean",
-  },
-  defaultStyles: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr 1fr",
-    gridRowGap: "30px",
-    gridColumnGap: "50px",
-    padding: "8px",
-    maxWidth: "100%",
-  },
-  importPath: "./components/CodeComponents/DisplayCollections",
-});
-
-PLASMIC.registerComponent(FormTextInput, {
-  name: "FormTextInput",
-  props: {
-    name: "string",
-    children: "slot",
-    defaultValue: "string",
-  },
-  importPath: "./components/CodeComponents/Form",
-});
-
-PLASMIC.registerComponent(FormContextComponent, {
-  name: "FormContext",
-  props: {
-    children: "slot",
-  },
-  importName: "FormContextComponent",
-  importPath: "./components/CodeComponents/Form",
-});
-
-PLASMIC.registerComponent(SupabaseQuery, {
-  name: "SupabaseQuery",
-  props: {
-    children: "slot",
-    tableName: "string",
-    columns: "string",
-    filters: "object",
+    filters: filtersProp,
     single: "boolean",
   },
-  importPath: "./components/CodeComponents/DatabaseComponents",
-});
-
-PLASMIC.registerComponent(SupabaseUserSession, {
-  name: "SupabaseUserSession",
-  props: {
-    children: "slot",
-  },
-  importPath: "./components/CodeComponents/DatabaseComponents",
 });
 
 PLASMIC.registerComponent(SupabaseUserLogOut, {
   name: "SupabaseUserLogOut",
   props: {
     children: "slot",
-    redirectOnSuccess: "string",
+    onSuccess: {
+      type: "eventHandler",
+      argTypes: [],
+    },
   },
-  importPath: "./components/CodeComponents/DatabaseComponents",
 });
 
 PLASMIC.registerComponent(SupabaseUserLogIn, {
   name: "SupabaseUserLogIn",
+  providesData: true,
+  refActions: {
+    login: {
+      description: "Log in the user",
+      displayName: "Log in",
+      argTypes: [
+        {
+          type: "string",
+          name: "email",
+          displayName: "Email",
+        },
+        {
+          type: "string",
+          displayName: "Password",
+          name: "password",
+        },
+      ],
+    },
+  },
   props: {
     children: "slot",
-    redirectOnSuccess: "string",
   },
-  importPath: "./components/CodeComponents/DatabaseComponents",
 });
 
 PLASMIC.registerComponent(SupabaseUserSignUp, {
   name: "SupabaseUserSignUp",
+  providesData: true,
+  refActions: {
+    signup: {
+      description: "Register the user",
+      displayName: "Sign up",
+      argTypes: [
+        {
+          type: "string",
+          name: "email",
+          displayName: "Email",
+        },
+        {
+          type: "string",
+          displayName: "Password",
+          name: "password",
+        },
+      ],
+    },
+  },
   props: {
     children: "slot",
-    redirectOnSuccess: "string",
   },
-  importPath: "./components/CodeComponents/DatabaseComponents",
 });
 
-PLASMIC.registerComponent(SupabaseMutation, {
-  name: "SupabaseMutation",
+PLASMIC.registerComponent(SupabaseForm, {
+  name: "SupabaseForm",
   props: {
     children: "slot",
-    tableName: "string",
-    filters: "object",
+    tableName: tableNameProp,
+    filters: filtersProp,
     method: {
       type: "choice",
       options: ["upsert", "insert", "update", "delete"],
     },
-    data: "object",
-    redirectOnSuccess: "string",
-  },
-  importPath: "./components/CodeComponents/DatabaseComponents",
-});
-
-PLASMIC.registerComponent(SupabaseTableCollection, {
-  name: "SupabaseTableCollection",
-  props: {
-    columns: {
-      type: "string",
-    },
-    loading: {
-      type: "slot",
-      defaultValue: {
-        type: "text",
-        value: "Loading...",
-      },
-    },
-    testLoading: "boolean",
-    canEdit: "boolean",
-    canDelete: "boolean",
-    editSlot: {
-      type: "slot",
-      defaultValue: {
-        type: "text",
-        value: "Placeholder",
-      },
-    },
-    deleteSlot: {
-      type: "slot",
-      defaultValue: {
-        type: "text",
-        value: "Placeholder",
-      },
-    },
-    customizeEditAndDelete: "boolean",
-    editPage: "string",
-  },
-  importPath: "./components/CodeComponents/DisplayCollections",
-});
-
-PLASMIC.registerComponent(SupabaseEditButton, {
-  name: "SupabaseEditButton",
-  props: {
-    children: {
-      type: "slot",
-      defaultValue: {
-        type: "text",
-        value: "Placeholder",
-      },
-    },
-    editPage: "string",
-    id: "string",
-  },
-  importPath: "./components/CodeComponents/UtilsComponents",
-});
-
-PLASMIC.registerComponent(SupabaseDeleteButton, {
-  name: "SupabaseDeleteButton",
-  props: {
-    children: {
-      type: "slot",
-      defaultValue: {
-        type: "text",
-        value: "Placeholder",
-      },
-    },
-    id: "string",
-    modal: {
-      type: "slot",
-      defaultValue: {
-        type: "component",
-        name: "SupabaseMutation",
-        props: {
-          children: {
-            type: "component",
-            name: "SupabaseModal",
-          },
-        },
-      },
+    data: "exprEditor",
+    onSuccess: {
+      type: "eventHandler",
+      argTypes: [],
     },
   },
-  importPath: "./components/CodeComponents/UtilsComponents",
-});
-
-PLASMIC.registerComponent(SupabaseModal, {
-  name: "SupabaseModal",
-  props: {
-    children: {
-      type: "slot",
-      defaultValue: {
-        type: "text",
-        value: "Placeholder",
-      },
-    },
-    showModal: "boolean",
-  },
-  importPath: "./components/CodeComponents/UtilsComponents",
 });
 
 PLASMIC.registerComponent(RedirectIf, {
@@ -350,5 +184,4 @@ PLASMIC.registerComponent(RedirectIf, {
     },
     forcePreview: "boolean",
   },
-  importPath: "./components/CodeComponents/LogicComponents",
 });
