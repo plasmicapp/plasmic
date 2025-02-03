@@ -621,6 +621,7 @@ export class VariantTplMgr {
       component === this.getOwningComponentForNewNode(),
       `Cannot to edit element outside of current component context`
     );
+    ensureComponentsObserved([component]);
 
     variantCombo = ensureValidCombo(component, variantCombo);
     this._ensureBaseRuleVariantSetting(tpl, variantCombo, component);
@@ -657,7 +658,6 @@ export class VariantTplMgr {
           tpl.parent?.uuid
         }`;
       });
-      ensureComponentsObserved([component]);
 
       tpl.vsettings.push(vs);
     }
