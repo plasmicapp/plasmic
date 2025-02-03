@@ -30,7 +30,7 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@plasmicapp/loader-react": "^1.0.373",
+    "@plasmicapp/loader-react": "^1.0.374",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   }
