@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "preinstall": "mkdir -p ./types",
     "postinstall": "yarn gen-types && yarn gen-schema",
     "dev": "next dev",
     "build": "yarn gen-types && yarn gen-schema && next build",
