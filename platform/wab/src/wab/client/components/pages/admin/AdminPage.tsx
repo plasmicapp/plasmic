@@ -1144,14 +1144,25 @@ function EditProjectRevBundle() {
       <Form
         onFinish={async (values) => {
           const projectId = values.projectId;
+          const branchId = values.branchId;
+
           const rev = await nonAuthCtx.api.getLatestProjectRevisionAsAdmin(
-            projectId
+            projectId,
+            branchId
           );
           setInitialRev(rev);
         }}
       >
         <Form.Item name="projectId" label="Project ID">
           <Input placeholder="Project ID" />
+        </Form.Item>
+        <Form.Item name="branchId" label="Branch ID (Optional)">
+          <Input placeholder="Branch ID" />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Lookup ProjectRevision
+          </Button>
         </Form.Item>
       </Form>
       <Form>
@@ -1186,7 +1197,8 @@ function EditProjectRevBundle() {
                       await nonAuthCtx.api.saveProjectRevisionDataAsAdmin(
                         initialRev.projectId,
                         initialRev.revision,
-                        data
+                        data,
+                        initialRev.branchId
                       );
                     notification.success({
                       message: `Project saved as revision ${res.revision}`,

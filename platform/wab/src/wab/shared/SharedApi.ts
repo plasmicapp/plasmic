@@ -1253,9 +1253,17 @@ export abstract class SharedApi {
   }
 
   async getLatestProjectRevisionAsAdmin(
-    projectId: string
+    projectId: string,
+    branchId?: string
   ): Promise<ApiProjectRevision> {
-    const res = await this.get(`/admin/project/${projectId}/rev`);
+    const search = new URLSearchParams();
+    if (branchId) {
+      search.set("branchId", branchId);
+    }
+
+    const res = await this.get(
+      `/admin/project/${projectId}/rev?${search.toString()}`
+    );
     return res.rev;
   }
 
@@ -1291,11 +1299,13 @@ export abstract class SharedApi {
   async saveProjectRevisionDataAsAdmin(
     projectId: string,
     revision: number,
-    data: string
+    data: string,
+    branchId: BranchId | null
   ) {
     const res = await this.post(`/admin/project/${projectId}/rev`, {
       revision,
       data: data,
+      branchId,
     });
     return res.rev;
   }

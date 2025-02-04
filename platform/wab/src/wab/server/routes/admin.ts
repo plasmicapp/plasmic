@@ -24,6 +24,7 @@ import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import {
   ApiFeatureTier,
   ApiTeamDiscourseInfo,
+  BranchId,
   DataSourceId,
   FeatureTierId,
   ListFeatureTiersResponse,
@@ -277,14 +278,18 @@ export async function revertProjectRevision(req: Request, res: Response) {
 export async function getLatestProjectRevision(req: Request, res: Response) {
   const mgr = superDbMgr(req);
   const projectId = req.params.projectId as ProjectId;
-  const rev = await mgr.getLatestProjectRev(projectId);
+  const branchId = req.query.branchId as BranchId;
+  const rev = await mgr.getLatestProjectRev(projectId, { branchId });
   res.json({ rev });
 }
 
 export async function saveProjectRevisionData(req: Request, res: Response) {
   const mgr = superDbMgr(req);
   const projectId = req.params.projectId as ProjectId;
-  const rev = await mgr.getLatestProjectRev(projectId);
+  const branchId = req.body.branchId as BranchId;
+
+  const rev = await mgr.getLatestProjectRev(projectId, { branchId });
+
   if (rev.revision !== req.body.revision) {
     throw new BadRequestError(
       `Revision has since been updated from ${req.body.revision} to ${rev.revision}`
@@ -296,6 +301,7 @@ export async function saveProjectRevisionData(req: Request, res: Response) {
 
   const newRev = await mgr.saveProjectRev({
     projectId: projectId,
+    branchId,
     data: req.body.data,
     revisionNum: rev.revision + 1,
   });

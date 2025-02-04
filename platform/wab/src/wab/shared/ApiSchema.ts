@@ -581,6 +581,7 @@ export interface ApiProjectRevision {
   projectId: string;
   revision: number;
   data?: string;
+  branchId: BranchId | null;
 }
 
 export interface ProjectRevWithoutDataResponse {
