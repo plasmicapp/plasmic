@@ -16,6 +16,7 @@ export function SupabaseUserSession({
 }) {
   const supabase = createSupabaseClient();
   const [currentUser, setCurrentUser] = React.useState<User | null>(null);
+  const [isLoaded, setIsLoaded] = React.useState(false);
 
   const inEditor = usePlasmicCanvasContext();
 
@@ -24,7 +25,12 @@ export function SupabaseUserSession({
       if (staticToken) {
         supabase.auth
           .getUser(staticToken)
-          .then((res) => setCurrentUser(res.data.user));
+          .then((res) => {
+            setCurrentUser(res.data.user);
+          })
+          .finally(() => {
+            setIsLoaded(true);
+          });
       }
       return;
     }
@@ -32,9 +38,12 @@ export function SupabaseUserSession({
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event == "SIGNED_OUT") setCurrentUser(null);
-      else if (["SIGNED_IN", "INITIAL_SESSION"].includes(event) && session)
+      if (event == "SIGNED_OUT") {
+        setCurrentUser(null);
+      } else if (["SIGNED_IN", "INITIAL_SESSION"].includes(event) && session) {
         setCurrentUser(session.user);
+      }
+      setIsLoaded(true);
     });
 
     return subscription.unsubscribe;
@@ -42,7 +51,7 @@ export function SupabaseUserSession({
 
   return (
     <DataProvider name="auth" data={currentUser || {}}>
-      {children}
+      {isLoaded && children}
     </DataProvider>
   );
 }

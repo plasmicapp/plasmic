@@ -168,20 +168,10 @@ PLASMIC.registerComponent(RedirectIf, {
   name: "RedirectIf",
   props: {
     children: "slot",
-    operator: {
-      type: "choice",
-      options: ["FALSY", "TRUTHY", "EQUAL", "LESS_THAN", "GREATER_THAN"],
+    onFalse: {
+      type: "eventHandler",
+      argTypes: [],
     },
-    redirectUrl: "string",
-    leftExpression: "string",
-    rightExpression: "string",
-    testCondition: {
-      type: "choice",
-      options: [
-        { label: "TRUTHY", value: true },
-        { label: "FALSY", value: false },
-      ],
-    },
-    forcePreview: "boolean",
+    condition: "exprEditor",
   },
 });

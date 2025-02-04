@@ -7,6 +7,11 @@ function stringOrFirstString(item: string | string[] | undefined) {
   return Array.isArray(item) ? item[0] : item;
 }
 
+/**
+ * This route is used to verify an email.
+ * See more at https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
+ * It gets called when a user clicks a confirmation link in their mailbox.
+ */
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse

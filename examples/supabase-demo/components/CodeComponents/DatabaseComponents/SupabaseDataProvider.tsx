@@ -1,7 +1,11 @@
 import { Database } from "@/types/supabase";
 import { createSupabaseClient } from "@/util/supabase/component";
 import { Filter, applyFilter, isValidFilter } from "@/util/supabase/helpers";
-import { DataProvider, useSelector } from "@plasmicapp/loader-nextjs";
+import {
+  DataProvider,
+  usePlasmicCanvasContext,
+  useSelector,
+} from "@plasmicapp/loader-nextjs";
 import { useMutablePlasmicQueryData } from "@plasmicapp/query";
 import { ReactNode } from "react";
 
@@ -16,6 +20,7 @@ export interface SupabaseDataProviderProps {
 
 export function SupabaseDataProvider(props: SupabaseDataProviderProps) {
   const supabase = createSupabaseClient();
+  const inEditor = usePlasmicCanvasContext();
   // These props are set in the Plasmic Studio
   const { children, tableName, columns, className, filters, single } = props;
   const currentUser = useSelector("auth");
@@ -34,8 +39,9 @@ export function SupabaseDataProvider(props: SupabaseDataProviderProps) {
 
   // Performs the Supabase query
   async function makeQuery() {
-    // dont perform query if user is not logged in
-    if (!currentUser) {
+    // dont perform query if user is not logged in.
+    // allow to query in editor mode for demo purposes
+    if (!inEditor && !currentUser?.email) {
       return;
     }
     let query = supabase.from(tableName!).select(selectFields || "");
