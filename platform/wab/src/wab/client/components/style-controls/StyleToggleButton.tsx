@@ -42,12 +42,11 @@ function StyleToggleButton(props: StyleToggleButtonProps) {
       }}
       isDisabled={isDisabled}
       root={{
-        // @ts-expect-error
+        as: "button",
         props: {
           "aria-disabled": isDisabled,
           "data-plasmic-prop": dataPlasmicProp,
         },
-        // @ts-expect-error
         wrap: (x) =>
           !isDisabled ? (
             <Tooltip

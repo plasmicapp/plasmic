@@ -1,8 +1,10 @@
-import * as React from "react";
 import { ClickStopper } from "@/wab/client/components/widgets";
+import Textbox from "@/wab/client/components/widgets/Textbox";
 import { PlasmicInlineEditable } from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicInlineEditable";
 import { InlineEdit } from "@/wab/commons/components/InlineEdit";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
+import { isReactElementOfType } from "@/wab/shared/react-utils";
+import * as React from "react";
 
 interface InlineEditableProps {
   className?: string;
@@ -36,13 +38,13 @@ function InlineEditable(props: InlineEditableProps) {
           placeholder={placeholder}
           textbox={{
             wrap: (x) =>
-              React.isValidElement(x) ? (
+              isReactElementOfType(Textbox, x) ? (
                 <ClickStopper style={{ width: "100%" }} preventDefault>
                   <OnClickAway onDone={onDone}>
                     {React.cloneElement(x, {
                       autoFocus: true,
                       selectAllOnFocus: true,
-                      defaultValue: value,
+                      defaultValue: value || undefined,
                       onEscape: onDone,
                       onBlur: onDone,
                       onEdit: (newVal: string) => {

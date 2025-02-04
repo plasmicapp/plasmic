@@ -13,7 +13,7 @@ export function requestIdleCallback(callback: IdleCallback): number {
   if ("requestIdleCallback" in window) {
     return (window as any).requestIdleCallback(callback);
   } else {
-    return window.setTimeout(function () {
+    return (window as any).setTimeout(function () {
       const start = Date.now();
       callback({
         didTimeout: false,

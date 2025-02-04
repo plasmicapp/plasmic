@@ -1,5 +1,5 @@
 import { PublicLink } from "@/wab/client/components/PublicLink";
-import { absorb, uncontrollable } from "@/wab/client/components/view-common";
+import { uncontrollable } from "@/wab/client/components/view-common";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { IconButton } from "@/wab/client/components/widgets/IconButton";
 import { Textbox, TextboxRef } from "@/wab/client/components/widgets/Textbox";
@@ -37,7 +37,7 @@ import { isKeyHotkey } from "is-hotkey";
 import L from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { CSSProperties, Key, ReactElement, ReactNode } from "react";
+import { CSSProperties, ReactElement, ReactNode } from "react";
 import {
   DragDropContext,
   Draggable,
@@ -47,14 +47,6 @@ import {
 import { createPortal } from "react-dom";
 import { FaUpload } from "react-icons/fa";
 
-export type HTMLIProps = Omit<JSX.IntrinsicElements["i"], "ref">;
-export class DropdownArrow extends React.Component<HTMLIProps, {}> {
-  render() {
-    // This nesting is necessary to vertically center the arrow
-    return <i {...this.props} className="fas fa-caret-down minor-icon" />;
-  }
-}
-export type HTMLAnchorProps = Omit<JSX.IntrinsicElements["a"], "ref">;
 export function LinkButton(props: React.ComponentProps<"button">) {
   const { className, ...rest } = props;
   return <button className={cx("link-like", className)} {...rest} />;
@@ -121,43 +113,6 @@ export function IconLinkButton(props: PlainLinkButtonProps) {
   );
 }
 
-export class HGroup extends React.Component<
-  { children?: React.ReactNode },
-  {}
-> {
-  render() {
-    return <div className={"hgroup"}>{this.props.children}</div>;
-  }
-}
-export class DropdownPos {
-  my: string;
-  at: string;
-  of?: Element | Document | JQuery.EventBase | Event | React.SyntheticEvent;
-  constructor(args: DropdownPos) {
-    Object.assign(this, L.pick(args, "my", "at", "of"));
-  }
-}
-function canOptionValuesBeKeys(options: Option[]) {
-  return (
-    [...options]
-      .map(({ value }) => {
-        return L.isString(value);
-      })
-      .every(L.identity) &&
-    new Set(
-      [...options].map(({ value }) => {
-        return value;
-      })
-    ).size === options.length
-  );
-}
-
-interface Option<T extends {} = {}> {
-  key?: Key;
-  contents: () => ReactNode;
-  value: T;
-}
-
 type ModalProps = {
   className?: string;
   children: ReactNode;
@@ -169,36 +124,6 @@ export class Modal extends React.Component<ModalProps, {}> {
         {this.props.children}
       </div>
     );
-  }
-}
-type FixedCenteredProps = {
-  fill?: boolean;
-  children?: React.ReactNode;
-};
-// filled means we use a container style that is stretched to span most of the
-// window height, otherwise we just use the children's innate sizing and center
-// it.
-export class FixedCentered extends React.Component<FixedCenteredProps, {}> {
-  render() {
-    if (!this.props.fill) {
-      return (
-        <div className={"fixed-centered__container-outer"}>
-          <div className={"fixed-centered__container-middle"}>
-            <div className={"fixed-centered__container-inner"}>
-              {this.props.children}
-            </div>
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div className={"fixed-centered__glass"}>
-          <div className={"fixed-centered__filled-container"}>
-            {this.props.children}
-          </div>
-        </div>
-      );
-    }
   }
 }
 export class Spinner extends React.Component<{}, {}> {
@@ -390,66 +315,6 @@ export const Tabs = uncontrollable(_Tabs, _Tabs.defaultProps, {
   tabKey: "onSwitch",
 });
 
-type IconButtonSwitchProps<ValueType> = {
-  value?: ValueType;
-  buttonClass?: string;
-  containerClass?: string;
-  deselectValue?: ValueType;
-  onChange: (v: ValueType | undefined) => any;
-  options: {
-    title?: React.ReactNode;
-    value: ValueType;
-    contents: (...args: any[]) => any;
-    key?: any;
-    disabled?: boolean;
-  }[];
-  noDeselect?: boolean;
-};
-export class IconButtonSwitch<
-  ValueType extends string = string
-> extends React.Component<IconButtonSwitchProps<ValueType>, {}> {
-  render() {
-    const valuesCanBeKeys = canOptionValuesBeKeys(this.props.options);
-    return (
-      <div className={cx("icon-btn-switch", this.props.containerClass)}>
-        {this.props.options.map(
-          ({ key, title, value, contents, disabled }, index) => {
-            return (
-              <IconButton
-                key={key != null ? key : valuesCanBeKeys ? value : index}
-                tooltip={title || L.capitalize(value)}
-                className={this.props.buttonClass}
-                isActive={this.props.value === value}
-                onClick={() => {
-                  if (this.props.value === value && this.props.noDeselect) {
-                    return;
-                  }
-                  this.props.onChange(
-                    this.props.value === value
-                      ? this.props.deselectValue
-                      : value
-                  );
-                }}
-                disabled={disabled}
-              >
-                {contents()}
-              </IconButton>
-            );
-          }
-        )}
-      </div>
-    );
-  }
-}
-export const ButtonSwitch = IconButtonSwitch;
-
-export type NumSpinnerProps = {
-  value?: number;
-  incr?: (...args: any[]) => any;
-  decr?: (...args: any[]) => any;
-  onChange: (...args: any[]) => any;
-};
-
 interface DragItemProps {
   dragHandle: () => ReactNode;
   onDragStart?: XDraggableEventHandler;
@@ -494,74 +359,6 @@ export function DragItem({
       )}
     />
   );
-}
-
-type NormalModalProps = {
-  title: string;
-  className?: any;
-  children?: React.ReactNode;
-};
-// To be used with modal-content
-export class NormalModal extends React.Component<NormalModalProps, {}> {
-  render() {
-    return (
-      <Modal className={this.props.className}>
-        <h2 className={"modal-title"}>{this.props.title}</h2>
-        {this.props.children}
-      </Modal>
-    );
-  }
-}
-export class InputBox extends React.Component<
-  React.ComponentProps<"button">,
-  {}
-> {
-  render() {
-    return (
-      <LinkButton
-        {...this.props}
-        className={cx({ "input-box": true }, this.props.className)}
-      >
-        {React.Children.count(this.props.children) === 0
-          ? this.props.placeholder
-          : this.props.children}
-      </LinkButton>
-    );
-  }
-}
-type OnOffSwitchProps = {
-  value?: boolean;
-  onChange?: (...args: any[]) => any;
-  className?: string;
-};
-export class OnOffSwitch extends React.Component<OnOffSwitchProps, {}> {
-  render() {
-    const { value, onChange, className } = this.props;
-    return (
-      <div
-        className={classNames("on-off-switch", className)}
-        onClick={onChange != null ? absorb(() => onChange(!value)) : undefined}
-      >
-        <div
-          className={classNames({
-            "on-off-switch__label": true,
-            "on-off-switch__label--active": value === false,
-          })}
-        >
-          {"Off"}
-        </div>
-
-        <div
-          className={classNames({
-            "on-off-switch__label": true,
-            "on-off-switch__label--active": value === true,
-          })}
-        >
-          {"On"}
-        </div>
-      </div>
-    );
-  }
 }
 
 export interface FileUploaderProps {

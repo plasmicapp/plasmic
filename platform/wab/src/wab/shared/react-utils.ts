@@ -3,6 +3,13 @@ import * as React from "react";
 import { isValidElement } from "react";
 import { failable, IFailable } from "ts-failable";
 
+export function isReactElementOfType<P>(
+  type: React.ComponentType<P>,
+  element: React.ReactNode
+): element is React.ReactElement<P> {
+  return React.isValidElement(element) && element.type === type;
+}
+
 export class InvalidComponentImplError extends CustomError {
   name: "InvalidComponentImplError";
 }
