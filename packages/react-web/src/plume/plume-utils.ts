@@ -31,7 +31,7 @@ export type PlasmicClass<
   A extends Record<string, any>,
   O extends Record<string, any>
 > = {
-  (props: { variants?: V; args?: A; overrides?: O }): React.ReactElement | null;
+  (props: { variants?: V; args?: A; overrides?: O }): React.ReactNode;
   internalVariantProps: (keyof V)[];
   internalArgProps: (keyof A)[];
 };
