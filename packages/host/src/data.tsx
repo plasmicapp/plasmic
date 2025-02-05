@@ -3,6 +3,7 @@ import React, {
   ReactElement,
   ReactNode,
   useContext,
+  useMemo,
 } from "react";
 import { tuple } from "./common";
 
@@ -90,22 +91,25 @@ export function DataProvider({
   label,
   children,
 }: DataProviderProps) {
-  const existingEnv = useDataEnv() ?? {};
-  if (!name) {
+  const parentContext = useDataEnv();
+  const childContext = useMemo(() => {
+    if (!name) {
+      return parentContext;
+    }
+    return {
+      ...parentContext,
+      [name]: data,
+      [mkMetaName(name)]: mkMetaValue({ hidden, advanced, label }),
+    };
+  }, [parentContext, name, data, hidden, advanced, label]);
+
+  if (parentContext === childContext) {
     return <>{children}</>;
-  } else {
-    return (
-      <DataContext.Provider
-        value={{
-          ...existingEnv,
-          [name]: data,
-          [mkMetaName(name)]: mkMetaValue({ hidden, advanced, label }),
-        }}
-      >
-        {children}
-      </DataContext.Provider>
-    );
   }
+
+  return (
+    <DataContext.Provider value={childContext}>{children}</DataContext.Provider>
+  );
 }
 
 /**
