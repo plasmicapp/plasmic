@@ -7,10 +7,9 @@ import {
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
-  BASE_VARIANT_NAME,
-  isBaseVariant,
   mkBaseVariant,
   mkVariantSetting,
+  toVariantKey,
   tryGetBaseVariantSetting,
 } from "@/wab/shared/Variants";
 import { Bundler } from "@/wab/shared/bundler";
@@ -1293,29 +1292,6 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
 
   return conflicts;
 };
-
-function toVariantKey(v: Variant) {
-  if (v.parent) {
-    return v.uuid;
-  }
-
-  if (isBaseVariant(v)) {
-    return BASE_VARIANT_NAME;
-  }
-
-  if (v.codeComponentVariantKeys) {
-    return JSON.stringify({
-      codeComponentName: v.codeComponentName,
-      codeComponentVariantKeys: v.codeComponentVariantKeys,
-    });
-  }
-
-  assert(!!v.selectors, () => `Expected style variant`);
-  return JSON.stringify([
-    JSON.stringify([...v.selectors].sort()),
-    v.forTpl?.uuid ?? null,
-  ]);
-}
 
 export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
   ancestorCtx,

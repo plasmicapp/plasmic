@@ -12,6 +12,7 @@ import {
   isScreenVariant,
   isStyleOrCodeComponentVariant,
   splitVariantCombo,
+  toVariantKey,
   tryGetVariantSetting,
 } from "@/wab/shared/Variants";
 import {
@@ -607,30 +608,8 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
     // Check that variants referenced by vsettings are all valid
     const seenVariantsCombo: Set<string> = new Set();
     for (const vs of tpl.vsettings) {
-      const variantKeys = vs.variants
-        .map((v) => {
-          if (v.name) {
-            return `${v.parent?.uid}:${v.name}`;
-          }
-
-          if (v.selectors?.length) {
-            const sortedSelectors = v.selectors.slice().sort();
-            return sortedSelectors.join("|");
-          }
-
-          if (v.codeComponentVariantKeys?.length) {
-            const sortedCodeComponentVariantKeys = v.codeComponentVariantKeys
-              .slice()
-              .sort();
-            return sortedCodeComponentVariantKeys.join("|");
-          }
-
-          return "";
-        })
-        .filter((v) => !!v)
-        .sort();
-
-      const combinationKey = variantKeys.join("|");
+      const variantKeys = vs.variants.map((v) => toVariantKey(v));
+      const combinationKey = variantKeys.sort().join("|");
 
       if (seenVariantsCombo.has(combinationKey)) {
         Sentry.captureException(
