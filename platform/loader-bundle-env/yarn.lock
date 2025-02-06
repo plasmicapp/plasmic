@@ -3171,10 +3171,10 @@
     debounce "^1.2.1"
     js-cookie "^3.0.5"
 
-"@plasmicpkgs/commerce-shopify@^0.0.214":
-  version "0.0.214"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/commerce-shopify/-/commerce-shopify-0.0.214.tgz#d82f2481fad19685ada607231f6676028e631ceb"
-  integrity sha512-msoUCTOQVFC0dqEX25VJj+WnBKcbIkqIB5X/xGTQfEQyaQAzDUfQ58qGVxyE0c29d6pOqiCLTcMvoJeIVndEAg==
+"@plasmicpkgs/commerce-shopify@^0.0.215":
+  version "0.0.215"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/commerce-shopify/-/commerce-shopify-0.0.215.tgz#b7493cc418b409b07dc26c9b61782fe879630bbb"
+  integrity sha512-9BEpkdwOG174b0LProKggOGKbxVPxgj1ASvFwmsfiH3/ZwYZDCdR8r9PH3fAGTi3uaYOA8dyBPBOiPGG8A9czg==
   dependencies:
     "@plasmicpkgs/commerce" "0.0.207"
     "@types/react" "^18.0.27"
