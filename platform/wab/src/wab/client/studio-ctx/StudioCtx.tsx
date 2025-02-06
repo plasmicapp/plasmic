@@ -2172,10 +2172,9 @@ export class StudioCtx extends WithDbCtx {
       }
     }
     if (this.arenaViewStates.size > DEVFLAGS.liveArenas) {
+      const entries = Array.from(this.arenaViewStates.entries());
       const arenasToFree = orderBy(
-        Array.from(this.arenaViewStates.entries()).filter(
-          ([arena, _info]) => arena !== this.currentArena
-        ),
+        entries.filter(([arena, _info]) => arena !== this.currentArena),
         ([_arena, info]) => info.lastAccess,
         "asc"
       ).slice(0, this.arenaViewStates.size - DEVFLAGS.liveArenas);
@@ -3450,7 +3449,8 @@ export class StudioCtx extends WithDbCtx {
     const viewportCtx = this.viewportCtx;
     if (!viewportCtx) {
       // Window hasn't fully initialized yet, try again after 10ms
-      return setTimeout(() => this.tryZoomToFitArena(), 10);
+      setTimeout(() => this.tryZoomToFitArena(), 10);
+      return;
     }
 
     viewportCtx.zoomToScalerBox(

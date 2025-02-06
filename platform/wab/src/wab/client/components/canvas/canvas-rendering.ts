@@ -555,7 +555,7 @@ function mkInitFuncExpr(
             (viewCtx.component !== exprCtx.component ||
               viewCtx.studioCtx.isInteractiveMode)
           ? getRawCode(state.param.defaultExpr, exprCtx)
-          : undefined ?? `$props["${getStateValuePropName(state)}"]`
+          : `$props["${getStateValuePropName(state)}"]`
       }`
     );
   } else if (!state.tplNode && state.param.previewExpr && isCurrentComponent) {

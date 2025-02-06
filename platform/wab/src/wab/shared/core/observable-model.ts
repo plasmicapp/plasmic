@@ -52,7 +52,7 @@ import {
 } from "@/wab/shared/model/model-meta";
 import { Dictionary, memoize, once } from "lodash";
 import type { IObservableArray, Lambda } from "mobx";
-import type { Atom, IDerivation, IObjectDidChange } from "mobx/dist/internal";
+import type { IAtom, IDerivation, IObjectDidChange } from "mobx/dist/internal";
 import moment from "moment";
 import defaultReact from "react";
 import { failable, IFailable } from "ts-failable";
@@ -1848,7 +1848,7 @@ function hackyMobxUtils() {
     // primitive to represent an observable; it can report that it
     // has been observed, and that it has been changed. We track
     // observation and mutation for each field.
-    const atoms: Record<string, Atom> = {};
+    const atoms: Record<string, IAtom> = {};
     for (const field of allFields) {
       values[field.name] = prepareNewValue(inst[field.name]);
       atoms[field.name] = mobx.createAtom(field.name);
@@ -1911,6 +1911,6 @@ function hackyMobxUtils() {
 export interface ObservableInstAdmin {
   __isObservableInst: boolean;
   __values: Record<string, any>;
-  __atoms: Record<string, Atom>;
+  __atoms: Record<string, IAtom>;
   __changeListeners: Function[] | undefined;
 }

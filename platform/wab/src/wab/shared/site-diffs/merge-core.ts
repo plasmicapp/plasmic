@@ -916,16 +916,15 @@ function visitSpecialHandlers(
     rightFieldCtx: NodeFieldCtx,
     mergedFieldCtx: NodeFieldCtx
   ) => {
-    const vals = [
-      ancFieldCtx.node,
-      leftFieldCtx.node,
-      rightFieldCtx.node,
-      mergedFieldCtx.node,
-    ] as const;
     const fieldInfo = { field, cls };
     // They must all be arrays; if any are nil, then no conflicts!
-    if (vals.every((v) => Array.isArray(v))) {
-      (ancFieldCtx.node as any[]).forEach((v) => {
+    if (
+      Array.isArray(ancFieldCtx.node) &&
+      Array.isArray(leftFieldCtx.node) &&
+      Array.isArray(rightFieldCtx.node) &&
+      Array.isArray(mergedFieldCtx.node)
+    ) {
+      ancFieldCtx.node.forEach((v) => {
         const key = getArrayKey(bundler, v, fieldInfo);
         rec(
           field,
@@ -955,8 +954,13 @@ function visitSpecialHandlers(
           )
         );
       });
-    } else if (vals.every((v) => isLiteralObject(v))) {
-      [...Object.keys(vals[0])].forEach((key) =>
+    } else if (
+      isLiteralObject(ancFieldCtx.node) &&
+      isLiteralObject(leftFieldCtx.node) &&
+      isLiteralObject(rightFieldCtx.node) &&
+      isLiteralObject(mergedFieldCtx.node)
+    ) {
+      [...Object.keys(ancFieldCtx)].forEach((key) =>
         rec(
           field,
           nextCtx(ancFieldCtx, key),
@@ -965,7 +969,9 @@ function visitSpecialHandlers(
           nextCtx(mergedFieldCtx, key)
         )
       );
-    } else if (areSameInstType(...vals)) {
+    } else if (
+      areSameInstType(ancFieldCtx, leftFieldCtx, rightFieldCtx, mergedFieldCtx)
+    ) {
       conflicts.push(
         ...visitSpecialHandlers(
           ancFieldCtx,

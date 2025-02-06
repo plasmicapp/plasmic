@@ -127,7 +127,7 @@ export const mkUseCanvasObserver = computedFn(
 
         return () => {
           vc.canvasObservers.delete(reactionTrackingRef.current!.reaction);
-          if (!reactionTrackingRef.current!.reaction.isDisposed_) {
+          if (!reactionTrackingRef.current!.reaction.isDisposed) {
             reactionTrackingRef.current!.reaction.dispose();
           }
           reactionTrackingRef.current = null;
@@ -177,7 +177,7 @@ const registry = new FinalizationRegistry(function cleanupFunction(
 ) {
   const trackedReaction = cleanupTokenToReactionTrackingMap.get(token);
   if (trackedReaction) {
-    if (!trackedReaction.reaction.isDisposed_) {
+    if (!trackedReaction.reaction.isDisposed) {
       trackedReaction.reaction.dispose();
     }
     cleanupTokenToReactionTrackingMap.delete(token);

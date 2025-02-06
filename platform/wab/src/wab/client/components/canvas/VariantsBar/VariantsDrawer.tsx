@@ -121,8 +121,11 @@ function VariantsDrawer_({
     !hideScreen
   );
 
-  const flattenedVariants: (string | Variant | undefined)[] = useMemo(
-    () => groupedVariants.flatMap((it) => (it.isBase ? "base" : it.variants)),
+  const flattenedVariants = useMemo(
+    () =>
+      groupedVariants.flatMap<string | Variant | undefined>((it) =>
+        it.isBase ? "base" : it.variants
+      ),
     [groupedVariants, shouldShowBase]
   );
   const variantIndices = useMemo(
@@ -312,7 +315,13 @@ function useGroupedVariants(
   shouldShowBase: boolean,
   shouldShowInteractions: boolean,
   shouldShowScreen: boolean
-) {
+): {
+  isBase?: boolean;
+  key: string;
+  withDivider?: boolean;
+  groupLabel?: React.ReactNode;
+  variants?: Variant[];
+}[] {
   const [
     privateStyleVariants,
     codeComponentVariants,
@@ -326,94 +335,81 @@ function useGroupedVariants(
     (v) => !isGlobalVariant(v),
   ]);
 
-  const groupedVariants = useMemo<
-    {
-      isBase?: boolean;
-      key: string;
-      withDivider?: boolean;
-      groupLabel?: React.ReactNode;
-      variants?: Variant[];
-    }[]
-  >(
-    () =>
-      [
-        {
-          show: shouldShowBase,
-          key: "base",
-          get withDivider() {
-            return groupedVariants.length > 1;
-          },
-          isBase: true,
+  return useMemo(() => {
+    const groupedVariants = [
+      {
+        show: shouldShowBase,
+        key: "base",
+        get withDivider() {
+          return groupedVariants.length > 1;
         },
-        {
-          withDivider: true,
-          key: elementInteractionsLabel,
-          groupLabel: (
-            <>
-              {elementInteractionsLabel}
-              <Icon icon={PlasmicIcon__Bolt} />
-            </>
-          ),
-          variants: shouldShowInteractions ? privateStyleVariants : [],
-        },
-        {
-          withDivider: true,
-          key: codeComponentVariantsLabel,
-          groupLabel: (
-            <>
-              {codeComponentVariantsLabel}
-              <Icon icon={PlasmicIcon__Bolt} />
-            </>
-          ),
-          variants: codeComponentVariants,
-        },
-        {
-          withDivider: true,
-          key: styleVariantsLabel,
-          groupLabel: (
-            <>
-              {styleVariantsLabel}
-              <Icon icon={PlasmicIcon__Bolt} />
-            </>
-          ),
-          variants: shouldShowInteractions ? compStyleVariants : [],
-        },
-        {
-          key: "standalone variant groups",
-          variants: compVariants.filter((it) =>
-            isStandaloneVariantGroup(it.parent)
-          ),
-        },
-        ...[
-          ...xGroupBy(
-            compVariants.filter((it) => !isStandaloneVariantGroup(it.parent)),
-            (v) => v.parent!
-          ).entries(),
-          ...xGroupBy(
-            globalVariants.filter(
-              (v) => shouldShowScreen || !isScreenVariant(v)
-            ),
-            (v) => v.parent!
-          ).entries(),
-        ].map(([group, variants]) => ({
-          key: group.param.variable.name,
-          groupLabel: group.param.variable.name,
-          variants: variants as Variant[],
-        })),
-      ].filter((it: any) => it.show || it.variants?.length),
-    [
-      privateStyleVariants,
-      codeComponentVariants,
-      compStyleVariants,
-      compVariants,
-      globalVariants,
-      shouldShowBase,
-      shouldShowInteractions,
-      shouldShowScreen,
-    ]
-  );
-
-  return groupedVariants;
+        isBase: true,
+      },
+      {
+        withDivider: true,
+        key: elementInteractionsLabel,
+        groupLabel: (
+          <>
+            {elementInteractionsLabel}
+            <Icon icon={PlasmicIcon__Bolt} />
+          </>
+        ),
+        variants: shouldShowInteractions ? privateStyleVariants : [],
+      },
+      {
+        withDivider: true,
+        key: codeComponentVariantsLabel,
+        groupLabel: (
+          <>
+            {codeComponentVariantsLabel}
+            <Icon icon={PlasmicIcon__Bolt} />
+          </>
+        ),
+        variants: codeComponentVariants,
+      },
+      {
+        withDivider: true,
+        key: styleVariantsLabel,
+        groupLabel: (
+          <>
+            {styleVariantsLabel}
+            <Icon icon={PlasmicIcon__Bolt} />
+          </>
+        ),
+        variants: shouldShowInteractions ? compStyleVariants : [],
+      },
+      {
+        key: "standalone variant groups",
+        variants: compVariants.filter((it) =>
+          isStandaloneVariantGroup(it.parent)
+        ),
+      },
+      ...[
+        ...xGroupBy(
+          compVariants.filter((it) => !isStandaloneVariantGroup(it.parent)),
+          (v) => v.parent!
+        ).entries(),
+        ...xGroupBy(
+          globalVariants.filter((v) => shouldShowScreen || !isScreenVariant(v)),
+          (v) => v.parent!
+        ).entries(),
+      ].map(([group, variants]) => ({
+        key: group.param.variable.name,
+        groupLabel: group.param.variable.name,
+        variants: variants as Variant[],
+      })),
+    ].filter((it: any) => it.show || it.variants?.length);
+    return groupedVariants;
+  }, [
+    privateStyleVariants,
+    codeComponentVariants,
+    compStyleVariants,
+    compVariants,
+    globalVariants,
+    shouldShowBase,
+    shouldShowInteractions,
+    shouldShowScreen,
+  ]);
 }
 
 export default VariantsDrawer;

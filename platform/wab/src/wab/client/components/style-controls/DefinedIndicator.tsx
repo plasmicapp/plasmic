@@ -651,7 +651,7 @@ const PopoverContent = observer(function PopoverContent(props: {
       <>
         {prefix}
         {types.map((type, i) => {
-          if (type.source === "none" || type.source === "invariantable") {
+          if (type.source === "invariantable") {
             return null;
           }
 

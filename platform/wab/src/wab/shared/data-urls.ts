@@ -57,6 +57,6 @@ export function parseDataUrlToSvgXml(dataUrl: string) {
 
 export function imageDataUriToBlob(dataUri: string) {
   const parsed = parseDataUrl(dataUri);
-  const buffer = parsed.toBuffer().buffer;
+  const buffer = parsed.toBuffer();
   return new Blob([buffer], { type: parsed.contentType });
 }
