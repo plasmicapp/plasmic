@@ -931,7 +931,7 @@ export function makeTplMenu(
         onClick={() => studioCtx.tryZoomToFitSelection()}
       >
         <MenuItemContent shortcut={getComboForAction("ZOOM_TO_SELECTION")}>
-          Zoom to fit current selection
+          Zoom to fit
         </MenuItemContent>
       </Menu.Item>
     );
