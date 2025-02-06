@@ -1,5 +1,6 @@
 import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
 import Button from "@/wab/client/components/widgets/Button";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import Textbox from "@/wab/client/components/widgets/Textbox";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import {
@@ -12,7 +13,6 @@ import { Form } from "antd";
 import { computed } from "mobx";
 import { useLocalStore, useObserver } from "mobx-react";
 import React from "react";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 
 export interface ExtractComponentResponse {
   name: string;
@@ -100,8 +100,12 @@ export function ExtractComponentForm(props: {
             Your new component will also have props for{" "}
             {joinReactNodes(
               [
-                ...linkedParams.map((s) => <code>{s.variable.name}</code>),
-                ...queriesToCreateProps.map((q) => <code>{q.name}</code>),
+                ...linkedParams.map((s) => (
+                  <code key={s.variable.name}>{s.variable.name}</code>
+                )),
+                ...queriesToCreateProps.map((q) => (
+                  <code key={q.name}>{q.name}</code>
+                )),
               ],
               ", "
             )}

@@ -1332,7 +1332,7 @@ export function extractComponent({
       .when(GlobalVariantGroupParam, () => Lang.ParamTypes.GlobalVariantGroup)
       .result();
 
-  const tplSlots = oldTpls.filter(Tpls.isTplSlot);
+  const tplSlots = newTpls.filter(Tpls.isTplSlot);
   if (tplSlots.length > 0) {
     // For each TplSlot that we are extracting in clonedTpl, we need to create the
     // corresponding param for the new Component
