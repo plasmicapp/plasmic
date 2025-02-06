@@ -94,7 +94,7 @@ export function DataProvider({
   const parentContext = useDataEnv();
   const childContext = useMemo(() => {
     if (!name) {
-      return parentContext;
+      return null;
     }
     return {
       ...parentContext,
@@ -103,13 +103,15 @@ export function DataProvider({
     };
   }, [parentContext, name, data, hidden, advanced, label]);
 
-  if (parentContext === childContext) {
+  if (childContext === null) {
     return <>{children}</>;
+  } else {
+    return (
+      <DataContext.Provider value={childContext}>
+        {children}
+      </DataContext.Provider>
+    );
   }
-
-  return (
-    <DataContext.Provider value={childContext}>{children}</DataContext.Provider>
-  );
 }
 
 /**
