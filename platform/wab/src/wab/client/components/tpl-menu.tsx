@@ -937,6 +937,19 @@ export function makeTplMenu(
     );
   });
 
+  if (studioCtx.appCtx.appConfig.comments && isTplNamable(tpl)) {
+    builder.genSection(undefined, (push) => {
+      push(
+        <Menu.Item
+          key="add-comment"
+          onClick={() => viewCtx.setSelectedNewThreadTpl(tpl)}
+        >
+          <MenuItemContent>Add comment</MenuItemContent>
+        </Menu.Item>
+      );
+    });
+  }
+
   if (
     isAdminTeamEmail(
       viewCtx.appCtx.selfInfo?.email,

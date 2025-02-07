@@ -29,6 +29,7 @@ const CommentPostForm = observer(function CommentPostForm(
 
   const viewCtx = useViewCtxMaybe();
   const focusedTpls = withoutNils(viewCtx?.focusedTpls() ?? []);
+  const selectedNewThreadTpl = viewCtx?.getSelectedNewThreadTpl();
 
   const { projectId, branchId, allThreads, bundler, refreshComments } =
     useCommentsCtx();
@@ -41,7 +42,7 @@ const CommentPostForm = observer(function CommentPostForm(
     return null;
   }
 
-  const focusedTpl = focusedTpls[0];
+  const focusedTpl = selectedNewThreadTpl || focusedTpls[0];
 
   const currentThread = allThreads.find(
     (commentThread) => commentThread.id == threadId
@@ -74,6 +75,7 @@ const CommentPostForm = observer(function CommentPostForm(
           const commentData: RootCommentData = { body, location };
           await api.postRootComment(projectId, branchId, commentData);
         }
+        viewCtx.setSelectedNewThreadTpl(null);
         await refreshComments();
       }}
     >

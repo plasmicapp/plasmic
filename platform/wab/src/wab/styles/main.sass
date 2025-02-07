@@ -4567,7 +4567,7 @@ $resizer_size: 8px
 .CommentMarkerOverlay
   display: none
 
-.CommentMarker
+.CommentMarker, .CommentPostMarker
   pointer-events: initial
   position: absolute
   left: 100%
@@ -4583,6 +4583,9 @@ $resizer_size: 8px
   @include CommentMarkerView
   border-radius: 99px
   border-bottom-left-radius: 0
+.CommentPostFormMarker
+  @include CommentMarkerView
+  width: 300px
 .CommentMarkerHover
   @include CommentMarkerView
   display: none

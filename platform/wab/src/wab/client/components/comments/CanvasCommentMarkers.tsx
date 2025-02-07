@@ -1,6 +1,7 @@
 import { CanvasTransformedBox } from "@/wab/client/components/canvas/CanvasTransformedBox";
 import { useRerenderOnUserBodyChange } from "@/wab/client/components/canvas/UserBodyObserver";
 import CommentPost from "@/wab/client/components/comments/CommentPost";
+import CommentPostForm from "@/wab/client/components/comments/CommentPostForm";
 import { useCommentsCtx } from "@/wab/client/components/comments/CommentsProvider";
 import ThreadComments from "@/wab/client/components/comments/ThreadComments";
 import {
@@ -135,6 +136,25 @@ function CanvasCommentMarker(props: {
   );
 }
 
+function CanvasCommentPost(props: { viewCtx: ViewCtx; tpl: TplNode }) {
+  const { viewCtx, tpl } = props;
+
+  return (
+    <CanvasCommentOverlay
+      offsetLeft={0}
+      tpl={tpl}
+      viewCtx={viewCtx}
+      className={"CommentPostMarker"}
+    >
+      <div className={"CommentPostFormMarker"}>
+        <OnClickAway onDone={() => viewCtx.setSelectedNewThreadTpl(null)}>
+          <CommentPostForm />
+        </OnClickAway>
+      </div>
+    </CanvasCommentOverlay>
+  );
+}
+
 export const CanvasCommentMarkers = observer(function CanvasCommentMarkers({
   arenaFrame,
 }: {
@@ -168,8 +188,13 @@ export const CanvasCommentMarkers = observer(function CanvasCommentMarkers({
     return null;
   }
 
+  const selectedNewThreadTpl = viewCtx.getSelectedNewThreadTpl();
+
   return (
     <>
+      {selectedNewThreadTpl && (
+        <CanvasCommentPost viewCtx={viewCtx} tpl={selectedNewThreadTpl} />
+      )}
       {[...threadsGroupedBySubject.values()].map((subjectCommentThreads) =>
         subjectCommentThreads.map((commentThread, index) => (
           <CanvasCommentMarker
