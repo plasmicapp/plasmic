@@ -7271,43 +7271,35 @@ export class DbMgr implements MigrationDbMgr {
         }
       );
     };
-    const duplicatedData = async () => {
-      const duplicatedField: string[] = [];
-      // uniqueFields identifier
+    const duplicatedFields = async () => {
+      const duplicated: string[] = [];
       const uniqueFields = table.schema.fields
         .filter((field) => !field.hidden && field.unique)
         .map((field) => field.identifier);
-      console.log(uniqueFields);
-      // published rows of same table
       const publishedRows = await this.entMgr.find(CmsRow, {
         tableId: table.id,
         draftData: null,
       });
       if (opts.data) {
-        const optsData = Object.values(opts.data)[0];
+        const publishRequest = Object.values(opts.data)[0];
         publishedRows.forEach((publishedRow) => {
-          const publishedRowData = Object.values(publishedRow.data || {})[0];
-          console.log("publishedRowData ", publishedRowData);
-          uniqueFields.forEach((uniqueField) => {
-            if (publishedRowData[uniqueField] === optsData[uniqueField]) {
-              console.log(
-                publishedRowData[uniqueField],
-                "===",
-                optsData[uniqueField]
-              );
-              duplicatedField.push(uniqueField);
-            }
-          });
+          if (publishedRow.data) {
+            const alreadyPublished = Object.values(publishedRow.data)[0];
+            uniqueFields.forEach((uniqueField) => {
+              if (
+                alreadyPublished[uniqueField] === publishRequest[uniqueField]
+              ) {
+                duplicated.push(uniqueField);
+              }
+            });
+          }
         });
-        console.log("duplicatedField: ", duplicatedField);
       }
-      return duplicatedField;
+      return duplicatedFields;
     };
-    const duplicatedField = await duplicatedData();
-    if (duplicatedField.length > 0) {
-      console.log("throwing BadRequestError");
+    if (duplicatedFields.length > 0) {
       throw new BadRequestError(
-        `There are duplicated fields. ${duplicatedField}`
+        `There are duplicated fields. ${duplicatedFields}`
       );
     }
     if ("data" in opts) {
