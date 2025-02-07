@@ -3472,24 +3472,44 @@ export class StudioCtx extends WithDbCtx {
     const focusedFrame = this.focusedFrame();
     if (focusedFrame) {
       this.tryZoomToFitFrame(focusedFrame);
-    } else {
-      const vc = this.focusedViewCtx();
-      if (!vc) {
-        return;
-      }
+      return;
+    }
 
-      const $focusedDom = vc.focusedDomElt();
-      if (!$focusedDom?.length) {
-        return;
-      }
+    const vc = this.focusedViewCtx();
+    if (!vc) {
+      return;
+    }
 
-      const scalerRect = frameToScalerRect(
-        $focusedDom[0].getBoundingClientRect(),
-        vc
-      );
-      this.viewportCtx!.zoomToScalerBox(Box.fromRect(scalerRect), {
-        minPadding: DEFAULT_ZOOM_PADDING,
-      });
+    const $focusedDom = vc.focusedDomElt();
+    if (!$focusedDom?.length) {
+      return;
+    }
+
+    this.tryZoomToFitDomElement($focusedDom[0]);
+  }
+
+  tryZoomToFitDomElement(element: HTMLElement) {
+    const vc = this.focusedViewCtx();
+    if (!vc) {
+      return;
+    }
+
+    const scalerRect = frameToScalerRect(element.getBoundingClientRect(), vc);
+    this.viewportCtx!.zoomToScalerBox(Box.fromRect(scalerRect), {
+      minPadding: DEFAULT_ZOOM_PADDING,
+    });
+  }
+
+  tryZoomToFitTpl(tpl: TplNode) {
+    const vc = this.focusedViewCtx();
+    if (!vc) {
+      return;
+    }
+    const [_, doms] = vc.maybeDomsForTpl(tpl, {
+      ignoreFocusedCloneKey: true,
+    });
+    if (doms?.length) {
+      this.tryZoomToFitDomElement(doms[0]);
     }
   }
 
