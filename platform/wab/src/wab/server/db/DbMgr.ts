@@ -7129,6 +7129,7 @@ export class DbMgr implements MigrationDbMgr {
     if (isArchived !== undefined) {
       table.isArchived = isArchived;
     }
+    console.log(table);
     Object.assign(table, this.stampUpdate());
     await this.entMgr.save(table);
     return table;
@@ -7270,7 +7271,45 @@ export class DbMgr implements MigrationDbMgr {
         }
       );
     };
-
+    const duplicatedData = async () => {
+      const duplicatedField: string[] = [];
+      // uniqueFields identifier
+      const uniqueFields = table.schema.fields
+        .filter((field) => !field.hidden && field.unique)
+        .map((field) => field.identifier);
+      console.log(uniqueFields);
+      // published rows of same table
+      const publishedRows = await this.entMgr.find(CmsRow, {
+        tableId: table.id,
+        draftData: null,
+      });
+      if (opts.data) {
+        const optsData = Object.values(opts.data)[0];
+        publishedRows.forEach((publishedRow) => {
+          const publishedRowData = Object.values(publishedRow.data || {})[0];
+          console.log("publishedRowData ", publishedRowData);
+          uniqueFields.forEach((uniqueField) => {
+            if (publishedRowData[uniqueField] === optsData[uniqueField]) {
+              console.log(
+                publishedRowData[uniqueField],
+                "===",
+                optsData[uniqueField]
+              );
+              duplicatedField.push(uniqueField);
+            }
+          });
+        });
+        console.log("duplicatedField: ", duplicatedField);
+      }
+      return duplicatedField;
+    };
+    const duplicatedField = await duplicatedData();
+    if (duplicatedField.length > 0) {
+      console.log("throwing BadRequestError");
+      throw new BadRequestError(
+        `There are duplicated fields. ${duplicatedField}`
+      );
+    }
     if ("data" in opts) {
       row.data = mergedData(row.data, opts.data);
     }

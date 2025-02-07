@@ -54,7 +54,6 @@ function getRowIdentifierText(
   if (identifier) {
     return { identifier };
   }
-
   const firstTextField = table.schema.fields.find((field, _) =>
     [CmsMetaType.TEXT, CmsMetaType.LONG_TEXT].includes(field.type)
   )?.identifier;
@@ -199,6 +198,8 @@ function CmsEntryDetailsForm_(
   const [form] = useForm();
 
   const hasFormError = React.useCallback(() => {
+    // Hyuna Test
+    console.log(form.getFieldsError());
     return form.getFieldsError().some((f) => f.errors.length > 0);
   }, [form]);
 

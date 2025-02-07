@@ -248,6 +248,7 @@ function MaybeFormItem({
 }) {
   const commonRules = [
     { required: props.required, message: "Field is required" },
+    { unique: true, message: "Field is unique" },
   ];
   const typeSpecificRules =
     [CmsMetaType.TEXT, CmsMetaType.RICH_TEXT].includes(typeName) &&
@@ -256,7 +257,6 @@ function MaybeFormItem({
       : [];
 
   const rules = [...commonRules, ...typeSpecificRules];
-
   return typeName === CmsMetaType.LIST ? (
     <FormNameContext.Provider value={{ name, label }}>
       {props.children as any}
