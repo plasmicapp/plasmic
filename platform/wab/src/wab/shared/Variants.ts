@@ -1060,7 +1060,7 @@ export function toVariantKey(v: Variant) {
   if (v.codeComponentVariantKeys) {
     return JSON.stringify({
       codeComponentName: v.codeComponentName,
-      codeComponentVariantKeys: v.codeComponentVariantKeys.sort(),
+      codeComponentVariantKeys: [...v.codeComponentVariantKeys].sort(),
     });
   }
 
