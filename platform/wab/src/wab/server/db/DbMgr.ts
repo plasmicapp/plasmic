@@ -247,6 +247,7 @@ import {
   MergeStep,
   tryMerge,
 } from "@/wab/shared/site-diffs/merge-core";
+import * as Sentry from "@sentry/node";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import fs from "fs";
@@ -7283,6 +7284,13 @@ export class DbMgr implements MigrationDbMgr {
         draftData: null,
         deletedAt: null,
       });
+
+      if (publishedRows.length > 500) {
+        Sentry.captureEvent({
+          message: "The result of the db query contains more than 500 rows.",
+        });
+      }
+
       const duplicatedFields = () => {
         const duplicated: string[] = [];
         if (opts.data) {
