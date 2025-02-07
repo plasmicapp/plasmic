@@ -289,6 +289,15 @@ export async function cloneRow(req: Request, res: Response) {
   res.json(clonedRow);
 }
 
+export async function checkUniqueFields(req: Request, res: Response) {
+  const mgr = userDbMgr(req);
+  const uniqueFields = await mgr.checkUniqueFields(
+    req.params.tableId as CmsTableId,
+    req.body
+  );
+  res.json(uniqueFields);
+}
+
 export async function updateRow(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const row = await mgr.updateCmsRow(req.params.rowId as CmsRowId, req.body);

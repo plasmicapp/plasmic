@@ -108,6 +108,7 @@ import {
 } from "@/wab/server/util/cms-util";
 import { stringToPair } from "@/wab/server/util/hash";
 import { KnownProvider } from "@/wab/server/util/passport-multi-oauth2";
+import { UniqueViolationError } from "@/wab/shared/ApiErrors/cms-errors";
 import {
   BadRequestError,
   CopilotRateLimitExceededError,
@@ -124,6 +125,7 @@ import {
   BranchId,
   CmsDatabaseId,
   CmsIdAndToken,
+  CmsRowData,
   CmsRowId,
   CmsRowRevisionId,
   CmsTableId,
@@ -157,6 +159,7 @@ import {
   TeamWhiteLabelInfo,
   ThreadHistoryId,
   TutorialDbId,
+  UniqueFieldCheck,
   UserId,
   WorkspaceId,
   branchStatuses,
@@ -177,6 +180,7 @@ import {
 } from "@/wab/shared/Labels";
 import { Bundler } from "@/wab/shared/bundler";
 import { getBundle } from "@/wab/shared/bundles";
+import { getUniqueFieldsData } from "@/wab/shared/cms";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { Dict, mkIdMap, safeHas } from "@/wab/shared/collections";
 import {
@@ -250,6 +254,7 @@ import {
   MergeStep,
   tryMerge,
 } from "@/wab/shared/site-diffs/merge-core";
+import * as Sentry from "@sentry/node";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import fs from "fs";
@@ -276,6 +281,7 @@ import {
   Raw,
   Repository,
   SelectQueryBuilder,
+  getConnection,
 } from "typeorm";
 import * as uuid from "uuid";
 
@@ -7209,6 +7215,34 @@ export class DbMgr implements MigrationDbMgr {
     );
   }
 
+  async checkUniqueFields(
+    tableId: CmsTableId,
+    opts: {
+      rowId: CmsRowId;
+      uniqueFieldsData: Dict<unknown>;
+    }
+  ): Promise<UniqueFieldCheck[]> {
+    const connection = getConnection();
+    const sql = `SELECT id FROM cms_row WHERE "tableId" = '${tableId}' AND "deletedAt" IS NULL`;
+    return Promise.all(
+      Object.entries(opts.uniqueFieldsData).map(
+        async ([fieldIdentifier, value]) => {
+          const dataCheck = ` AND data -> '' @> '{"${fieldIdentifier}" : ${value}}'`;
+          const results: { id: CmsRowId }[] = await connection.query(
+            sql + dataCheck
+          );
+          const conflictRowIds = results.map((result) => result.id);
+          return {
+            fieldIdentifier: fieldIdentifier,
+            value: value,
+            ok: conflictRowIds.length === 0,
+            conflictRowIds: conflictRowIds,
+          };
+        }
+      )
+    );
+  }
+
   async updateCmsRow(
     rowId: CmsRowId,
     opts: {
@@ -7259,9 +7293,27 @@ export class DbMgr implements MigrationDbMgr {
         }
       );
     };
-
     if ("data" in opts) {
       row.data = mergedData(row.data, opts.data);
+      const uniqueFieldIdentifiers = table.schema.fields
+        .filter((field) => !field.hidden && field.unique)
+        .map((field) => field.identifier);
+      if (uniqueFieldIdentifiers.length > 0) {
+        /* Check if unique fields have violations. */
+        if (opts.data) {
+          const uniqueFieldsData = getUniqueFieldsData(
+            uniqueFieldIdentifiers,
+            opts.data as CmsRowData
+          );
+          const uniqueFieldsCheck = await this.checkUniqueFields(table.id, {
+            rowId: row.id,
+            uniqueFieldsData: uniqueFieldsData,
+          });
+          if (uniqueFieldsCheck.some((field) => !field.ok)) {
+            throw new UniqueViolationError(uniqueFieldsCheck);
+          }
+        }
+      }
     }
     if ("draftData" in opts) {
       /* on publish, we set draft data to null, and then we should use
@@ -7354,6 +7406,23 @@ export class DbMgr implements MigrationDbMgr {
       draftData: row.draftData || row.data,
     });
     return await this.entMgr.save(copiedRow);
+  }
+
+  async getPublishedRows(tableId: CmsTableId) {
+    const publishedRows = await this.entMgr.find(CmsRow, {
+      tableId: tableId,
+      data: Not(IsNull()),
+      deletedAt: IsNull(),
+    });
+    if (publishedRows.length > 500) {
+      Sentry.captureEvent({
+        message: "The result of the db query contains more than 500 rows.",
+        extra: {
+          tableId: tableId,
+        },
+      });
+    }
+    return publishedRows;
   }
 
   // TODO We are always querying just the default locale.

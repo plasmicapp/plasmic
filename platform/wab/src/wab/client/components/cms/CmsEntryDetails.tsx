@@ -21,6 +21,7 @@ import {
   DefaultCmsEntryDetailsProps,
   PlasmicCmsEntryDetails,
 } from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsEntryDetails";
+import { isUniqueViolationError } from "@/wab/shared/ApiErrors/cms-errors";
 import {
   ApiCmsDatabase,
   ApiCmseRow,
@@ -28,9 +29,12 @@ import {
   CmsDatabaseId,
   CmsFieldMeta,
   CmsMetaType,
+  CmsRowData,
   CmsRowId,
   CmsTableId,
+  UniqueFieldCheck,
 } from "@/wab/shared/ApiSchema";
+import { getUniqueFieldsData } from "@/wab/shared/cms";
 import { Dict } from "@/wab/shared/collections";
 import { spawn } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
@@ -44,6 +48,11 @@ import { Prompt, Route, useHistory, useRouteMatch } from "react-router";
 import { useBeforeUnload, useInterval } from "react-use";
 
 export type CmsEntryDetailsProps = DefaultCmsEntryDetailsProps;
+export type UniqueFieldStatus = {
+  value: unknown;
+  status: "not started" | "pending" | "ok" | "violation";
+  conflictEntryIds: CmsRowId[];
+};
 
 function getRowIdentifierText(
   table: ApiCmsTable,
@@ -119,7 +128,8 @@ export function renderContentEntryFormFields(
   table: ApiCmsTable,
   database: ApiCmsDatabase,
   locales: string[],
-  disabled: boolean
+  disabled: boolean,
+  uniqueFieldStatus?: Dict<UniqueFieldStatus>
 ) {
   return (
     <>
@@ -145,6 +155,9 @@ export function renderContentEntryFormFields(
                 formItemProps: deriveFormItemPropsFromField(field),
                 typeName: field.type,
                 required: field.required,
+                uniqueStatus: uniqueFieldStatus
+                  ? uniqueFieldStatus[field.identifier]
+                  : undefined,
                 ...(isCmsTextLike(field)
                   ? {
                       maxChars: field.maxChars,
@@ -186,6 +199,28 @@ function CmsEntryDetailsForm_(
   const [inConflict, setInConflict] = React.useState(false);
   const mutateRow_ = useMutateRow();
   const mutateTableRows = useMutateTableRows();
+
+  const [uniqueFieldsStatus, setUniqueFieldsStatus] = React.useState<
+    Dict<UniqueFieldStatus>
+  >(initializeUniqueStatus());
+
+  const isSomeUniqueStatus = (status: string) => {
+    return Object.values(uniqueFieldsStatus).some(
+      (fieldStatus) => fieldStatus.status === status
+    );
+  };
+  const isUniqueFieldUpdated = React.useMemo(
+    () => isSomeUniqueStatus("not started"),
+    [uniqueFieldsStatus]
+  );
+  const isCheckingUniqueness = React.useMemo(
+    () => isSomeUniqueStatus("pending"),
+    [uniqueFieldsStatus]
+  );
+  const hasUniqueViolation = React.useMemo(
+    () => isSomeUniqueStatus("violation"),
+    [uniqueFieldsStatus]
+  );
 
   const mutateRow = async () => {
     const newRow = await mutateRow_(table.id, row.id);
@@ -293,6 +328,80 @@ function CmsEntryDetailsForm_(
     setInConflict(true);
   };
 
+  function dataToUniqueStatus(uniqueData: Dict<unknown>, status: string) {
+    const uniqueStatus = {};
+    Object.entries(uniqueData).forEach(([fieldIdentifier, fieldValue]) => {
+      uniqueStatus[fieldIdentifier] = {
+        value: fieldValue,
+        status: status,
+        conflictEntryIds: [],
+      } as UniqueFieldStatus;
+    });
+    return uniqueStatus as Dict<UniqueFieldStatus>;
+  }
+
+  function initializeUniqueStatus() {
+    const uniqueFieldsIdentifier = table.schema.fields
+      .filter((f) => f.unique)
+      .map((f) => f.identifier);
+    if (row.draftData) {
+      const uniqueDraftFields = getUniqueFieldsData(
+        uniqueFieldsIdentifier,
+        row.draftData as CmsRowData
+      );
+      return dataToUniqueStatus(uniqueDraftFields, "not started");
+    }
+    /** If the data equals the published data. */
+    const uniquePublishedFields = getUniqueFieldsData(
+      uniqueFieldsIdentifier,
+      row.data as CmsRowData
+    );
+    return dataToUniqueStatus(uniquePublishedFields, "ok");
+  }
+
+  async function checkUniqueness() {
+    const updatedUniqueFields = {};
+    setUniqueFieldsStatus((prev) => {
+      const copy = { ...prev };
+      Object.entries(copy).map(([fieldIdentifier, fieldStatus]) => {
+        if (fieldStatus.status === "not started") {
+          updatedUniqueFields[fieldIdentifier] = fieldStatus.value;
+          copy[fieldIdentifier].status = "pending";
+        }
+      });
+      return copy;
+    });
+    await message.loading({
+      key: "uniqueness-message",
+      content: `Checking uniqueness violation...`,
+    });
+    const uniqueFieldsChecked: UniqueFieldCheck[] = await api.checkUniqueFields(
+      table.id,
+      {
+        rowId: row.id,
+        uniqueFieldsData: updatedUniqueFields,
+      }
+    );
+    setUniqueFieldsStatus((prev) => {
+      const copy = { ...prev };
+      uniqueFieldsChecked.forEach((uniqueCheck) => {
+        const identifier = uniqueCheck.fieldIdentifier;
+        if (copy[identifier].value === uniqueCheck.value) {
+          copy[identifier].status = uniqueCheck.ok ? "ok" : "violation";
+          copy[identifier].conflictEntryIds = uniqueCheck.conflictRowIds;
+        }
+      });
+      return copy;
+    });
+    try {
+      await form.validateFields();
+    } catch (err) {
+      /* The validateFields function throws an error with details if any field has an error.
+       We are ignoring this error because we just want to trigger the field validation and
+       antd will automatically show warnings/errors to the user. */
+    }
+  }
+
   async function performSave() {
     const { identifier, ...draftData } = form.getFieldsValue();
     try {
@@ -341,9 +450,14 @@ function CmsEntryDetailsForm_(
         setRevision(row.revision);
         await resetFormByRow();
       }
-    } else if (hasChanges() && !hasFormError()) {
-      if (!isSaving) {
-        spawn(performSave());
+    } else {
+      if (!hasFormError()) {
+        if (hasChanges() && !isSaving) {
+          spawn(performSave());
+        }
+      }
+      if (isUniqueFieldUpdated && !isCheckingUniqueness) {
+        spawn(checkUniqueness());
       }
     }
   }, 2000);
@@ -410,6 +524,24 @@ function CmsEntryDetailsForm_(
             setHasUnsavedChanges(hasChanges());
             setHasUnpublishedChanges(hasPublishableChanges());
             console.log({ changedFields: changedValues, allFields: allValues });
+            setUniqueFieldsStatus((prev) => {
+              const uniqueFieldsIdentifier = table.schema.fields
+                .filter((f) => f.unique)
+                .map((f) => f.identifier);
+              const changedUniqueData = getUniqueFieldsData(
+                uniqueFieldsIdentifier,
+                changedValues as CmsRowData
+              );
+              const changedUniqueStatus = dataToUniqueStatus(
+                changedUniqueData,
+                "not started"
+              );
+              const copy = { ...prev };
+              Object.keys(changedUniqueStatus).forEach((fieldIdentifier) => {
+                copy[fieldIdentifier] = changedUniqueStatus[fieldIdentifier];
+              });
+              return copy;
+            });
           }
         }}
         className={"max-scrollable fill-width"}
@@ -476,36 +608,60 @@ function CmsEntryDetailsForm_(
                         setPublishing(true);
                         const { identifier, ...draftData } =
                           form.getFieldsValue();
-                        await api.updateCmsRow(row.id, {
-                          identifier,
-                          data: draftData,
-                          draftData: null,
-                          revision,
-                        });
-                        await mutateRow();
-                        setPublishing(false);
-                        setHasUnpublishedChanges(false);
-                        await message.success({
-                          content: "Your changes have been published.",
-                          duration: 5,
-                        });
-                        const hooks = table.settings?.webhooks?.filter(
-                          (hook) => hook.event === "publish"
-                        );
-                        if (hooks && hooks.length > 0) {
-                          const hooksResp = await api.triggerCmsTableWebhooks(
-                            table.id,
-                            "publish"
+                        try {
+                          await api.updateCmsRow(row.id, {
+                            identifier,
+                            data: draftData,
+                            draftData: null,
+                            revision,
+                          });
+                          await mutateRow();
+                          setHasUnpublishedChanges(false);
+                          await message.success({
+                            content: "Your changes have been published.",
+                            duration: 5,
+                          });
+                          const hooks = table.settings?.webhooks?.filter(
+                            (hook) => hook.event === "publish"
                           );
-                          const failed = hooksResp.responses.filter(
-                            (r) => r.status !== 200
-                          );
-                          if (failed.length > 0) {
-                            await message.warning({
-                              content: "Some publish hooks failed.",
-                              duration: 5,
-                            });
+                          if (hooks && hooks.length > 0) {
+                            const hooksResp = await api.triggerCmsTableWebhooks(
+                              table.id,
+                              "publish"
+                            );
+                            const failed = hooksResp.responses.filter(
+                              (r) => r.status !== 200
+                            );
+                            if (failed.length > 0) {
+                              await message.warning({
+                                content: "Some publish hooks failed.",
+                                duration: 5,
+                              });
+                            }
                           }
+                        } catch (err) {
+                          if (isUniqueViolationError(err)) {
+                            const checkedUniqueFields: UniqueFieldCheck[] =
+                              err.violations;
+                            setUniqueFieldsStatus((prev) => {
+                              const copy = { ...prev };
+                              checkedUniqueFields.forEach((uniqueField) => {
+                                copy[
+                                  uniqueField.fieldIdentifier
+                                ].conflictEntryIds = uniqueField.conflictRowIds;
+                                copy[uniqueField.fieldIdentifier].value =
+                                  uniqueField.value;
+                                copy[uniqueField.fieldIdentifier].status =
+                                  uniqueField.ok ? "ok" : "violation";
+                              });
+                              return copy;
+                            });
+                            await form.validateFields();
+                          } else {
+                            throw err;
+                          }
+                        } finally {
+                          setPublishing(false);
                         }
                       }
                     }}
@@ -514,7 +670,9 @@ function CmsEntryDetailsForm_(
                       isPublishing ||
                       isSaving ||
                       hasUnsavedChanges ||
-                      hasFormError()
+                      hasFormError() ||
+                      isCheckingUniqueness ||
+                      hasUniqueViolation
                     }
                     tooltip={
                       hasFormError()
@@ -640,7 +798,8 @@ function CmsEntryDetailsForm_(
                 table!,
                 database,
                 database.extraData.locales,
-                inConflict
+                inConflict,
+                uniqueFieldsStatus
               )}
             </div>
           }

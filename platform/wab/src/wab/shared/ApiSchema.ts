@@ -1248,6 +1248,7 @@ export interface CmsBaseType<T> {
   required: boolean;
   hidden: boolean;
   localized: boolean;
+  unique: boolean;
   /** The empty string "" locale is the default locale. */
   defaultValueByLocale: Dict<T>;
 }
@@ -1403,6 +1404,7 @@ export const cmsFieldMetaDefaults: CmsBaseType<unknown> = {
   required: false,
   hidden: false,
   localized: false,
+  unique: false,
   defaultValueByLocale: {},
 } as const;
 
@@ -2119,4 +2121,27 @@ export interface SendEmailsResponse {
 
 export enum StudioRoomMessageTypes {
   commentsUpdate = "commentsUpdate",
+}
+
+export interface UniqueFieldCheck {
+  fieldIdentifier: string;
+  value: unknown;
+  /** If there are no conflicts. */
+  ok: boolean;
+  conflictRowIds: CmsRowId[];
+}
+
+/**
+ * CMS row data is the mapping of locale to data.
+ *
+ * Locale is defined in the database, and data schema is defined in the table.
+ * The mapping always includes the default locale, represented with an empty string ("") key.
+ * Other locales are optional.
+ *
+ * This data type represents what's stored in the database, not what's output by the API.
+ * In the API, the locales that are missing a value falls back to the default locale's value.
+ */
+export interface CmsRowData {
+  [""]: Dict<unknown>;
+  [locale: string]: Dict<unknown>;
 }
