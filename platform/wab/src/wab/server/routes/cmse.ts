@@ -6,6 +6,7 @@ import { getImageSize, isImageSupported } from "@/wab/server/image/metadata";
 import { userAnalytics, userDbMgr } from "@/wab/server/routes/util";
 import { mkApiWorkspace } from "@/wab/server/routes/workspaces";
 import { triggerWebhookOnly } from "@/wab/server/trigger-webhooks";
+import { isUniqueViolationError } from "@/wab/shared/ApiErrors/cms-errors";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   ApiCmsDatabase,
@@ -289,19 +290,38 @@ export async function cloneRow(req: Request, res: Response) {
   res.json(clonedRow);
 }
 
+export async function checkUniqueness(req: Request, res: Response) {
+  const mgr = userDbMgr(req);
+  const uniqueFields = await mgr.checkUniqueFields(
+    req.params.tableId as CmsTableId,
+    req.params.rowId as CmsRowId,
+    req.body
+  );
+  res.json(uniqueFields);
+}
+
 export async function updateRow(req: Request, res: Response) {
   const mgr = userDbMgr(req);
-  const row = await mgr.updateCmsRow(req.params.rowId as CmsRowId, req.body);
-  userAnalytics(req).track({
-    event: "Update cms row",
-    properties: {
-      rowId: row.id as CmsRowId,
-      tableId: row.tableId,
-      tableName: row.table?.name,
-      databaseId: row.table?.databaseId,
-    },
-  });
-  res.json(row);
+  try {
+    const row = await mgr.updateCmsRow(req.params.rowId as CmsRowId, req.body);
+    userAnalytics(req).track({
+      event: "Update cms row",
+      properties: {
+        rowId: row.id as CmsRowId,
+        tableId: row.tableId,
+        tableName: row.table?.name,
+        databaseId: row.table?.databaseId,
+      },
+    });
+    res.json(row);
+  } catch (err) {
+    console.log("found err inside updateRow");
+    console.log(err);
+    if (isUniqueViolationError(err)) {
+      console.log("throwing err");
+      throw err;
+    }
+  }
 }
 
 export async function triggerTableWebhooks(req: Request, res: Response) {

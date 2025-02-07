@@ -235,6 +235,14 @@ const FormNameContext = createContext<
   { name: NamePathz; label: ReactNode } | undefined
 >(undefined);
 
+export class FormValidationError extends Error {
+  type: string;
+  constructor(message: string, type: string) {
+    super(message);
+    this.type = type;
+  }
+}
+
 function MaybeFormItem({
   typeName,
   name,
@@ -245,9 +253,21 @@ function MaybeFormItem({
   name: NamePathz;
   maxChars?: number;
   minChars?: number;
+  uniqueViolation?: boolean;
 }) {
   const commonRules = [
     { required: props.required, message: "Field is required" },
+    {
+      warningOnly: true,
+      validator: (_, value) => {
+        if (props.uniqueViolation) {
+          return Promise.reject(
+            "This field should have unique data to publish entry"
+          );
+        }
+        return Promise.resolve();
+      },
+    },
   ];
   const typeSpecificRules =
     [CmsMetaType.TEXT, CmsMetaType.RICH_TEXT].includes(typeName) &&
@@ -256,7 +276,6 @@ function MaybeFormItem({
       : [];
 
   const rules = [...commonRules, ...typeSpecificRules];
-
   return typeName === CmsMetaType.LIST ? (
     <FormNameContext.Provider value={{ name, label }}>
       {props.children as any}
@@ -276,7 +295,6 @@ export function CmsObjectInput(props: any) {
   } = useContentEntryFormContext();
   assert(typeMeta.type === CmsMetaType.OBJECT, "Must be rendering an object");
   const form = Form.useFormInstance();
-
   return (
     <div
       style={
@@ -572,6 +590,7 @@ interface MaybeLocalizedInputProps {
   fieldPathSuffix: string[];
   formItemProps: FormItemProps;
   typeName: CmsTypeName;
+  uniqueViolation: boolean;
 }
 
 export function renderMaybeLocalizedInput({
@@ -584,7 +603,9 @@ export function renderMaybeLocalizedInput({
   formItemProps,
   typeName,
   required,
+  uniqueViolation,
 }: MaybeLocalizedInputProps) {
+  console.log("?", uniqueViolation, "of ", fieldPathSuffix);
   return (
     <ContentEntryFormContext.Consumer>
       {(ctx_) => {
@@ -608,6 +629,7 @@ export function renderMaybeLocalizedInput({
               minChars={minChars}
               required={required}
               typeName={typeName}
+              uniqueViolation={uniqueViolation}
               {...formItemProps}
               name={[...fieldPath, "", ...fieldPathSuffix]}
             >
@@ -643,6 +665,7 @@ export function renderMaybeLocalizedInput({
                       maxChars={maxChars}
                       minChars={minChars}
                       required={required}
+                      uniqueViolation={uniqueViolation}
                       typeName={typeName}
                       name={[...fieldPath, locale, ...fieldPathSuffix]}
                       noStyle

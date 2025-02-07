@@ -110,6 +110,7 @@ export const ajax = async (
             }
             let transformed = transformErrors(response.error);
             if (!(transformed instanceof Error)) {
+              console.log("making UnknownApiError:", transformed);
               // The error was JSON-parsible, but not one of the known
               // ApiErrors. So it is now just a JSON object, not an Error.
               // We create an UnknownApiError for it instead.
