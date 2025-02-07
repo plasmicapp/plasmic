@@ -1070,3 +1070,12 @@ export function toVariantKey(v: Variant) {
     v.forTpl?.uuid ?? null,
   ]);
 }
+
+export function findDuplicateComponentVariant(
+  component: Component,
+  editingVariant: Variant
+) {
+  return component.variants
+    .filter((v) => v !== editingVariant)
+    .find((v) => toVariantKey(v) === toVariantKey(editingVariant));
+}

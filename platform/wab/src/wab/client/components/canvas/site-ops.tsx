@@ -42,12 +42,16 @@ import {
   VariantGroupType,
   areEquivalentScreenVariants,
   ensureBaseRuleVariantSetting,
+  findDuplicateComponentVariant,
   getDisplayVariants,
   getOrderedScreenVariantSpecs,
   isBaseVariant,
+  isCodeComponentVariant,
   isGlobalVariantGroup,
+  isPrivateStyleVariant,
   isScreenVariantGroup,
   isStandaloneVariantGroup,
+  isStyleVariant,
   makeVariantName,
   removeTplVariantSettings,
   removeTplVariantSettingsContaining,
@@ -1532,14 +1536,34 @@ export class SiteOps {
     );
   }
 
-  removeStyleOrCodeComponentVariantIfEmptyAndUnused(
+  removeStyleOrCodeComponentVariantIfDuplicateOrEmpty(
     component: Component,
     variant: Variant
   ) {
-    this.tplMgr.removeStyleOrCodeComponentVariantIfEmptyAndUnused(
-      component,
-      variant
-    );
+    const duplicateVariant = findDuplicateComponentVariant(component, variant);
+
+    if (duplicateVariant) {
+      this.tplMgr.tryRemoveVariant(variant, component);
+
+      if (!isPrivateStyleVariant(duplicateVariant)) {
+        const componentArena = getComponentArena(this.site, component);
+        if (componentArena) {
+          const existingFrame = getManagedFrameForVariant(
+            this.site,
+            componentArena,
+            duplicateVariant
+          );
+          this.studioCtx.setStudioFocusOnFrame({ frame: existingFrame });
+        }
+      }
+    } else if (
+      (isCodeComponentVariant(variant) &&
+        variant.codeComponentVariantKeys?.length === 0) ||
+      (isStyleVariant(variant) && variant.selectors.length === 0)
+    ) {
+      this.tplMgr.tryRemoveVariant(variant, component);
+    }
+
     this.studioCtx.ensureComponentStackFramesHasOnlyValidVariants(component);
     this.studioCtx.pruneInvalidViewCtxs();
   }

@@ -23,9 +23,9 @@ import {
   isGlobalVariant,
   isPrivateStyleVariant,
   isStyleOrCodeComponentVariant,
-  isStyleVariant,
   makeVariantName,
   StyleOrCodeComponentVariant,
+  toVariantKey,
 } from "@/wab/shared/Variants";
 import { Menu } from "antd";
 import { default as classNames, default as cn } from "classnames";
@@ -174,13 +174,12 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
 
         onDismiss?.();
 
-        if (
-          (isCodeComponentVariant(variant) &&
-            variant.codeComponentVariantKeys?.length === 0) ||
-          (isStyleVariant(variant) && variant.selectors.length === 0)
-        ) {
-          spawn(studioCtx.siteOps().removeVariant(component, variant));
-        }
+        studioCtx
+          .siteOps()
+          .removeStyleOrCodeComponentVariantIfDuplicateOrEmpty(
+            component,
+            variant
+          );
       });
     }
   };
@@ -199,7 +198,7 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
     setChosenSelectors(
       styleOrCodeComponentVariantToSelectors(variant, studioCtx.site)
     );
-  }, [variant.selectors?.join(",")]);
+  }, [toVariantKey(variant)]);
 
   const tplRoot = component.tplTree;
 
@@ -247,7 +246,7 @@ function StyleOrCodeComponentVariantLabel_(
     defaultEditing?: boolean;
     variant: StyleOrCodeComponentVariant;
     forTag: string;
-    onSelectorsChange: (selectors: Selector[]) => void;
+    onSelectorsChange?: (selectors: Selector[]) => void;
     onBlur?: () => void;
     forRoot?: boolean;
     component: Component;
@@ -255,21 +254,18 @@ function StyleOrCodeComponentVariantLabel_(
   ref: React.Ref<EditableLabelHandles>
 ) {
   const studioCtx = useStudioCtx();
-  const {
-    defaultEditing,
-    variant,
-    forTag,
-    onSelectorsChange,
-    forRoot,
-    component,
-  } = props;
-  const selectors = styleOrCodeComponentVariantToSelectors(
-    variant,
-    studioCtx.site
-  );
+  const { defaultEditing, variant, forTag, forRoot, component } = props;
+  const [chosenSelectors, setChosenSelectors] = useState<Selector[]>([]);
 
   const tplRoot = component.tplTree;
   const isPrivate = isPrivateStyleVariant(variant);
+
+  useEffect(() => {
+    setChosenSelectors(
+      styleOrCodeComponentVariantToSelectors(variant, studioCtx.site)
+    );
+  }, [toVariantKey(variant)]);
+
   return (
     <div
       className={classNames({
@@ -284,19 +280,42 @@ function StyleOrCodeComponentVariantLabel_(
             <div onDoubleClick={onStart}>
               <SelectorTags
                 isCodeComponent={isTplCodeComponent(tplRoot)}
-                selectors={selectors}
+                selectors={chosenSelectors}
               />
             </div>
           ) : (
             <SelectorsInput
               autoFocus={true}
-              selectors={selectors}
+              selectors={chosenSelectors}
               onClick={(e) => e.stopPropagation()}
               onBlur={() => {
+                spawn(
+                  studioCtx.change(({ success }) => {
+                    if (isCodeComponentVariant(variant)) {
+                      variant.codeComponentVariantKeys =
+                        chosenSelectors.map(getVariantIdentifier);
+                    } else {
+                      variant.selectors =
+                        chosenSelectors.map(getVariantIdentifier);
+                    }
+
+                    studioCtx
+                      .siteOps()
+                      .removeStyleOrCodeComponentVariantIfDuplicateOrEmpty(
+                        component,
+                        variant
+                      );
+                    return success();
+                  })
+                );
+
                 props.onBlur && props.onBlur();
                 onDone();
               }}
-              onChange={onSelectorsChange}
+              onChange={(sels) => {
+                setChosenSelectors(sels);
+                props?.onSelectorsChange?.(sels);
+              }}
               forPrivateStyleVariant={isPrivate}
               forTag={forTag}
               className="textbox--listitem focused-input-bg"

@@ -1,5 +1,4 @@
 import { StyleOrCodeComponentVariantLabel } from "@/wab/client/components/VariantControls";
-import { getVariantIdentifier } from "@/wab/client/components/sidebar/RuleSetControls";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import VariantRow from "@/wab/client/components/variants/VariantRow";
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
@@ -113,12 +112,6 @@ export const PrivateStyleVariantsPanel = observer(
                         )
                       )
                     ),
-                  onClone: () =>
-                    spawn(
-                      studioCtx.changeUnsafe(() =>
-                        studioCtx.tplMgr().cloneVariant(component, variant)
-                      )
-                    ),
                   onCopyTo: (toVariant) =>
                     spawn(
                       studioCtx.changeUnsafe(() =>
@@ -134,23 +127,9 @@ export const PrivateStyleVariantsPanel = observer(
                     forTag={tpl.tag}
                     forRoot={tpl === component.tplTree}
                     component={component}
-                    onSelectorsChange={(sels) =>
-                      viewCtx.change(() => {
-                        variant.selectors = sels.map(getVariantIdentifier);
-                        setEditingVariant(undefined);
-                      })
-                    }
-                    onBlur={() =>
-                      studioCtx.changeUnsafe(() => {
-                        studioCtx
-                          .siteOps()
-                          .removeStyleOrCodeComponentVariantIfEmptyAndUnused(
-                            component,
-                            variant
-                          );
-                        setEditingVariant(undefined);
-                      })
-                    }
+                    onBlur={() => {
+                      setEditingVariant(undefined);
+                    }}
                     defaultEditing={variant === editingVariant}
                   />
                 }

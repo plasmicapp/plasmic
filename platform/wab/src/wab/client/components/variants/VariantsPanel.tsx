@@ -1,5 +1,4 @@
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
-import { getVariantIdentifier } from "@/wab/client/components/sidebar/RuleSetControls";
 import {
   SidebarSection,
   SidebarSectionHandle,
@@ -81,7 +80,6 @@ import {
   canHaveStyleOrCodeComponentVariant,
   getBaseVariant,
   isBaseVariant,
-  isCodeComponentVariant,
   isGlobalVariantGroup,
   isScreenVariantGroup,
   isStandaloneVariantGroup,
@@ -1003,14 +1001,6 @@ const ComponentStyleVariantRow = observer(
                 return success();
               })
             ),
-          onClone: () =>
-            spawn(
-              studioCtx.change(({ success }) => {
-                studioCtx.tplMgr().cloneVariant(component, variant);
-                return success();
-              })
-            ),
-
           onCopyTo: (toVariant) =>
             spawn(
               studioCtx.change(({ success }) => {
@@ -1030,29 +1020,9 @@ const ComponentStyleVariantRow = observer(
             }
             forRoot={true}
             ref={ref}
-            onSelectorsChange={(sels) =>
-              studioCtx.change(({ success }) => {
-                if (isCodeComponentVariant(variant)) {
-                  variant.codeComponentVariantKeys =
-                    sels.map(getVariantIdentifier);
-                } else {
-                  variant.selectors = sels.map(getVariantIdentifier);
-                }
-                onEdited();
-                return success();
-              })
-            }
-            onBlur={() =>
-              studioCtx.change(({ success }) => {
-                studioCtx
-                  .siteOps()
-                  .removeStyleOrCodeComponentVariantIfEmptyAndUnused(
-                    component,
-                    variant
-                  );
-                return success();
-              })
-            }
+            onBlur={() => {
+              onEdited();
+            }}
             defaultEditing={defaultEditing}
           />
         }

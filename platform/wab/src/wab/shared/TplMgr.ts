@@ -48,7 +48,6 @@ import {
   hasScreenVariant,
   hasStyleOrCodeComponentVariant,
   isBaseVariant,
-  isCodeComponentVariant,
   isGlobalVariant,
   isGlobalVariantGroup,
   isScreenVariant,
@@ -56,7 +55,6 @@ import {
   isStandaloneVariant,
   isStandaloneVariantGroup,
   isStyleOrCodeComponentVariant,
-  isStyleVariant,
   isVariantSettingEmpty,
   mkBaseVariant,
   mkComponentVariantGroup,
@@ -602,34 +600,6 @@ export class TplMgr {
     this.site().styleTokens.forEach((styleToken) => {
       removeFromVariantedValue(styleToken.variantedValues);
     });
-  }
-
-  removeStyleOrCodeComponentVariantIfEmptyAndUnused(
-    component: Component,
-    variant: Variant
-  ) {
-    assert(
-      isStyleOrCodeComponentVariant(variant),
-      "Given variant should be a registered variant"
-    );
-
-    if (isStyleVariant(variant) && variant.selectors.length > 0) {
-      return;
-    }
-
-    if (
-      isCodeComponentVariant(variant) &&
-      variant.codeComponentVariantKeys.length > 0
-    ) {
-      return;
-    }
-
-    const isUsed =
-      this.findReferencingTplsWithNonEmptySetting(component.tplTree, [variant])
-        .length > 0;
-    if (!isUsed) {
-      this.tryRemoveVariant(variant, component);
-    }
   }
 
   findReferencingTplsWithNonEmptySetting(tpl: TplNode, variants: Variant[]) {
