@@ -9,46 +9,48 @@
 // Plasmic Project: 47tFXWjN2C4NyHFGGpaYQ3
 // Component: 6uuAAE1jiCew
 import * as React from "react";
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
 import {
-  hasVariant,
+  Stack as Stack__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants
+  ensureGlobalVariants,
+  hasVariant
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import RandomDynamicPageButton from "../../RandomDynamicPageButton"; // plasmic-import: Q23H1_1M_P/component
 import { useScreenVariants as useScreenVariantsscBjPxgdxdzbv } from "./PlasmicGlobalVariant__Screen"; // plasmic-import: SCBjPXGDXDZBV/globalVariant
 import "@plasmicapp/react-web/lib/plasmic.css";
-import projectcss from "./plasmic_create_plasmic_app.module.css"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
+import projectcss from "./plasmic.module.css"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
 import sty from "./PlasmicHomepage.module.css"; // plasmic-import: 6uuAAE1jiCew/css
+
+createPlasmicElementProxy;
 
 export const PlasmicHomepage__VariantProps = new Array();
 
 export const PlasmicHomepage__ArgProps = new Array();
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicHomepage__RenderFunc(props) {
   const { variants, overrides, forNode } = props;
-  const $ctx = ph.useDataEnv?.() || {};
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
   const $props = {
     ...args,
     ...variants
   };
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-  const currentUser = p.useCurrentUser?.() || {};
-  const [$queries, setDollarQueries] = React.useState({});
   const globalVariants = ensureGlobalVariants({
     screen: useScreenVariantsscBjPxgdxdzbv()
   });
@@ -65,10 +67,11 @@ function PlasmicHomepage__RenderFunc(props) {
             projectcss.root_reset,
             projectcss.plasmic_default_styles,
             projectcss.plasmic_mixins,
+            projectcss.plasmic_tokens,
             sty.root
           )}
         >
-          <p.Stack
+          <Stack__
             as={"section"}
             data-plasmic-name={"section"}
             data-plasmic-override={overrides.section}
@@ -87,7 +90,6 @@ function PlasmicHomepage__RenderFunc(props) {
             >
               {"create-plasmic-app"}
             </h1>
-
             <div
               data-plasmic-name={"text"}
               data-plasmic-override={overrides.text}
@@ -115,7 +117,7 @@ function PlasmicHomepage__RenderFunc(props) {
                 <React.Fragment>
                   <React.Fragment>
                     {
-                      "If you haven't already done so, go back and learn the basics by going through the Plasmic Levels tutorial.\n\nIt's always easier to start from examples! Add a new page using a template—do this from the list of pages in the top left (the gray + button).\n\nOr press the big blue + button to start dragging items into this page.\n\nIntegrate this project into your codebase—press the "
+                      "If you haven't already done so, go back and learn the basics by going through the Plasmic Levels tutorial.\n\nIt's always easier to start from examples! Add a new page using a template\u2014do this from the list of pages in the top left (the gray + button).\n\nOr press the big blue + button to start dragging items into this page.\n\nIntegrate this project into your codebase\u2014press the "
                     }
                   </React.Fragment>
                   <span
@@ -132,7 +134,6 @@ function PlasmicHomepage__RenderFunc(props) {
                 </React.Fragment>
               )}
             </div>
-
             <RandomDynamicPageButton
               data-plasmic-name={"randomDynamicPageButton"}
               data-plasmic-override={overrides.randomDynamicPageButton}
@@ -141,7 +142,7 @@ function PlasmicHomepage__RenderFunc(props) {
                 sty.randomDynamicPageButton
               )}
             />
-          </p.Stack>
+          </Stack__>
         </div>
       </div>
     </React.Fragment>
@@ -162,13 +163,12 @@ function makeNodeComponent(nodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicHomepage__ArgProps,
           internalVariantPropNames: PlasmicHomepage__VariantProps
         }),
       [props, nodeName]
     );
-
     return PlasmicHomepage__RenderFunc({
       variants,
       args,

@@ -149,7 +149,7 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
       : platform === "gatsby"
       ? `${npmRunCmd} develop`
       : platform === "react"
-      ? `${npmRunCmd} start`
+      ? `${npmRunCmd} dev`
       : "";
   const relativeDir = path.relative(process.cwd(), resolvedProjectPath);
 

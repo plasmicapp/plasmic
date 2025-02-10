@@ -9,43 +9,45 @@
 // Plasmic Project: 47tFXWjN2C4NyHFGGpaYQ3
 // Component: AO44A-w7hh
 import * as React from "react";
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
 import {
+  Stack as Stack__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import RandomDynamicPageButton from "../../RandomDynamicPageButton"; // plasmic-import: Q23H1_1M_P/component
 import "@plasmicapp/react-web/lib/plasmic.css";
-import projectcss from "./plasmic_create_plasmic_app.module.css"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
+import projectcss from "./plasmic.module.css"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
 import sty from "./PlasmicDynamicPage.module.css"; // plasmic-import: AO44A-w7hh/css
+
+createPlasmicElementProxy;
 
 export const PlasmicDynamicPage__VariantProps = new Array();
 
 export const PlasmicDynamicPage__ArgProps = new Array();
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicDynamicPage__RenderFunc(props) {
   const { variants, overrides, forNode } = props;
-  const $ctx = ph.useDataEnv?.() || {};
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
   const $props = {
     ...args,
     ...variants
   };
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-  const currentUser = p.useCurrentUser?.() || {};
-  const [$queries, setDollarQueries] = React.useState({});
   return (
     <React.Fragment>
       <div className={projectcss.plasmic_page_wrapper}>
@@ -59,10 +61,11 @@ function PlasmicDynamicPage__RenderFunc(props) {
             projectcss.root_reset,
             projectcss.plasmic_default_styles,
             projectcss.plasmic_mixins,
+            projectcss.plasmic_tokens,
             sty.root
           )}
         >
-          <p.Stack
+          <Stack__
             as={"section"}
             data-plasmic-name={"section"}
             data-plasmic-override={overrides.section}
@@ -79,18 +82,22 @@ function PlasmicDynamicPage__RenderFunc(props) {
                 sty.h1
               )}
             >
-              {(() => {
-                try {
-                  return $ctx.params.slug;
-                } catch (e) {
-                  if (e instanceof TypeError) {
-                    return "Page 1";
+              <React.Fragment>
+                {(() => {
+                  try {
+                    return $ctx.params.slug;
+                  } catch (e) {
+                    if (
+                      e instanceof TypeError ||
+                      e?.plasmicType === "PlasmicUndefinedDataError"
+                    ) {
+                      return "Page 1";
+                    }
+                    throw e;
                   }
-                  throw e;
-                }
-              })()}
+                })()}
+              </React.Fragment>
             </h1>
-
             <RandomDynamicPageButton
               data-plasmic-name={"randomDynamicPageButton"}
               data-plasmic-override={overrides.randomDynamicPageButton}
@@ -99,7 +106,7 @@ function PlasmicDynamicPage__RenderFunc(props) {
                 sty.randomDynamicPageButton
               )}
             />
-          </p.Stack>
+          </Stack__>
         </div>
       </div>
     </React.Fragment>
@@ -119,13 +126,12 @@ function makeNodeComponent(nodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicDynamicPage__ArgProps,
           internalVariantPropNames: PlasmicDynamicPage__VariantProps
         }),
       [props, nodeName]
     );
-
     return PlasmicDynamicPage__RenderFunc({
       variants,
       args,
