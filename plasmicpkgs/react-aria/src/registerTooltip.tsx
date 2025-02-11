@@ -2,7 +2,6 @@ import { usePlasmicCanvasComponentInfo } from "@plasmicapp/host";
 import React from "react";
 import { useFocusable } from "react-aria";
 import { Tooltip, TooltipProps, TooltipTrigger } from "react-aria-components";
-import { isForwardRef } from "react-is";
 import { TooltipTriggerProps } from "react-stately";
 import { COMMON_STYLES, getCommonOverlayProps } from "./common";
 import {
@@ -34,7 +33,6 @@ export interface BaseTooltipProps
   children: React.ReactElement<HTMLElement>;
   tooltipContent?: React.ReactElement;
   resetClassName?: string;
-  className?: string;
 }
 
 interface TriggerWrapperProps {
@@ -44,16 +42,6 @@ interface TriggerWrapperProps {
 
 const { variants, withObservedValues } =
   pickAriaComponentVariants(TOOLTIP_VARIANTS);
-
-const canAcceptRef = (element: any) => {
-  // Check if it's a DOM element (intrinsic element)
-  if (React.isValidElement(element) && typeof element.type === "string") {
-    return true;
-  }
-
-  // Check if it's a forward ref component
-  return isForwardRef(element);
-};
 
 /*
 
@@ -69,15 +57,6 @@ const canAcceptRef = (element: any) => {
 function TriggerWrapper({ children, className }: TriggerWrapperProps) {
   const ref = React.useRef<HTMLDivElement | null>(null);
   const { focusableProps } = useFocusable({}, ref);
-  if (canAcceptRef(children)) {
-    return React.cloneElement(children, {
-      ref,
-      className,
-      style: COMMON_STYLES,
-      ...focusableProps,
-    });
-  }
-
   return (
     <div
       ref={ref}
@@ -111,8 +90,9 @@ export function BaseTooltip(props: BaseTooltipProps) {
 
   const { isSelected, selectedSlotName } =
     usePlasmicCanvasComponentInfo?.(props) ?? {};
-  const isSelectedOnCanvas = selectedSlotName !== "children" && isSelected;
-  const _isOpen = isSelectedOnCanvas || isOpen;
+  const isAutoOpen = selectedSlotName !== "children" && isSelected;
+  const _isOpen = (isAutoOpen || isOpen) ?? false;
+
   return (
     <TooltipTrigger
       isDisabled={isDisabled}
@@ -120,6 +100,7 @@ export function BaseTooltip(props: BaseTooltipProps) {
       closeDelay={closeDelay}
       trigger={trigger}
       isOpen={_isOpen}
+      defaultOpen={defaultOpen}
       onOpenChange={onOpenChange}
     >
       <TriggerWrapper className={resetClassName}>{children}</TriggerWrapper>

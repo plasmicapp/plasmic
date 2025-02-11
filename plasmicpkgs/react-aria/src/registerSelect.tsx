@@ -102,7 +102,6 @@ export interface BaseSelectProps
 
 export function BaseSelect(props: BaseSelectProps) {
   const {
-    defaultSelectedKey,
     selectedKey,
     onSelectionChange,
     onOpenChange,
@@ -144,7 +143,6 @@ export function BaseSelect(props: BaseSelectProps) {
 
   return (
     <Select
-      defaultSelectedKey={defaultSelectedKey}
       selectedKey={selectedKey}
       onSelectionChange={onSelectionChange}
       onOpenChange={onOpenChange}

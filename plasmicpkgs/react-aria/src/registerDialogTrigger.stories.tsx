@@ -12,7 +12,24 @@ const meta: Meta<typeof BaseDialogTrigger> = {
   title: "Components/BaseDialogTrigger",
   component: BaseDialogTrigger,
   args: {
+    defaultOpen: false,
     onOpenChange: fn(),
+  },
+  // TODO: Currently, BaseDialogTrigger can't be controlled because a isOpen is never undefined - its given a default false.
+  // Using the render to use it as a controlled component.
+  // Remove this render function in the PR that fixes the uncontrolled behaviour of BaseDialogTrigger
+  render: ({ isOpen, onOpenChange, ...args }) => {
+    const [open, setOpen] = useState(isOpen);
+    return (
+      <BaseDialogTrigger
+        isOpen={open}
+        onOpenChange={(newValue) => {
+          setOpen(newValue);
+          onOpenChange?.(newValue);
+        }}
+        {...args}
+      />
+    );
   },
 };
 
@@ -28,7 +45,6 @@ const DefaultContent = () => (
 
 export const WithModal: Story = {
   args: {
-    isOpen: false,
     trigger: <BaseButton>Open modal</BaseButton>,
     dialog: (
       <BaseModal isDismissable={true} isKeyboardDismissDisabled={false}>
@@ -37,19 +53,6 @@ export const WithModal: Story = {
         </BaseDialog>
       </BaseModal>
     ),
-  },
-  render: ({ isOpen, onOpenChange, ...args }) => {
-    const [open, setOpen] = useState(isOpen);
-    return (
-      <BaseDialogTrigger
-        isOpen={open}
-        onOpenChange={(newValue) => {
-          setOpen(newValue);
-          onOpenChange?.(newValue);
-        }}
-        {...args}
-      />
-    );
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -92,7 +95,6 @@ export const WithModal: Story = {
 
 export const WithPopover: Story = {
   args: {
-    isOpen: false,
     trigger: <BaseButton>Open popover</BaseButton>,
     dialog: (
       <BasePopover isKeyboardDismissDisabled={false}>
@@ -101,19 +103,6 @@ export const WithPopover: Story = {
         </BaseDialog>
       </BasePopover>
     ),
-  },
-  render: ({ isOpen, onOpenChange, ...args }) => {
-    const [open, setOpen] = useState(isOpen);
-    return (
-      <BaseDialogTrigger
-        isOpen={open}
-        onOpenChange={(newValue) => {
-          setOpen(newValue);
-          onOpenChange?.(newValue);
-        }}
-        {...args}
-      />
-    );
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -156,7 +145,6 @@ export const WithPopover: Story = {
 
 export const WithPopoverNonModal: Story = {
   args: {
-    isOpen: false,
     trigger: <BaseButton>Open popover</BaseButton>,
     dialog: (
       <BasePopover isNonModal={true} isKeyboardDismissDisabled={false}>
@@ -165,19 +153,6 @@ export const WithPopoverNonModal: Story = {
         </BaseDialog>
       </BasePopover>
     ),
-  },
-  render: ({ isOpen, onOpenChange, ...args }) => {
-    const [open, setOpen] = useState(isOpen);
-    return (
-      <BaseDialogTrigger
-        isOpen={open}
-        onOpenChange={(newValue) => {
-          setOpen(newValue);
-          onOpenChange?.(newValue);
-        }}
-        {...args}
-      />
-    );
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -213,7 +188,6 @@ export const WithPopoverNonModal: Story = {
 
 export const SelectedInCanvas: Story = {
   args: {
-    isOpen: false,
     trigger: <BaseButton>Open popover</BaseButton>,
     dialog: (
       <BasePopover isNonModal={true} isKeyboardDismissDisabled={false}>
@@ -223,10 +197,9 @@ export const SelectedInCanvas: Story = {
       </BasePopover>
     ),
   },
-  render: ({ __plasmic_selection_prop__, isOpen, onOpenChange, ...args }) => {
+  render: ({ __plasmic_selection_prop__, ...args }) => {
     const [selected, setSelected] = useState(false);
     const [selectedSlotName, setSelectedSlotName] = useState("");
-    const [open, setOpen] = useState(isOpen);
     useEffect(() => {
       setTimeout(() => {
         setSelected(true);
@@ -246,11 +219,6 @@ export const SelectedInCanvas: Story = {
         }}
       >
         <BaseDialogTrigger
-          isOpen={open}
-          onOpenChange={(newValue) => {
-            setOpen(newValue);
-            onOpenChange?.(newValue);
-          }}
           // Simulate node selection in Plasmic canvas
           __plasmic_selection_prop__={{
             isSelected: selected,
@@ -261,7 +229,7 @@ export const SelectedInCanvas: Story = {
       </PlasmicCanvasContext.Provider>
     );
   },
-  play: async ({ args }) => {
+  play: async () => {
     // popovers are rendered outside canvas, so we need to use document.body
     const doc = within(document.body);
 
@@ -282,7 +250,5 @@ export const SelectedInCanvas: Story = {
       },
       { timeout: 1100 }
     ); // the slot selected is trigger, so the popover should close
-
-    expect(args.onOpenChange).toHaveBeenCalledTimes(2);
   },
 };

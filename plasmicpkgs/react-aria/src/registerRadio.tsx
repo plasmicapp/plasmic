@@ -85,10 +85,6 @@ export function BaseRadio(props: BaseRadioProps) {
     })(),
   });
 
-  if (!registeredId) {
-    return null;
-  }
-
   const radio = (
     <Radio
       {...rest}

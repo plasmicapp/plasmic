@@ -86,10 +86,6 @@ export function BaseListBoxItem(props: BaseListBoxItemProps) {
     })(),
   });
 
-  if (!registeredId) {
-    return null;
-  }
-
   const listboxItem = (
     <ListBoxItem
       key={registeredId}
