@@ -546,7 +546,7 @@ BindingStruct
       type: FunctionType
       @Const @WeakRef state: State
     PropParam
-      type: PrimitiveType | Img | HrefType | TargetType | DateString | DateRangeStrings | QueryData | FunctionType | StylePropType
+      type: PrimitiveType | Img | HrefType | TargetType | DateString | DateRangeStrings | QueryData | FunctionType | StylePropType | ColorPropType
   Arg
     @WeakRef param: Param
     expr: Expr
