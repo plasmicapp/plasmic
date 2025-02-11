@@ -247,8 +247,22 @@ function MaybeFormItem({
   minChars?: number;
 }) {
   const commonRules = [
-    { required: props.required, message: "Field is required" },
-    { unique: true, message: "Field is unique" },
+    // { required: props.required, message: "Field is required"},
+    {
+      validator: async (_, value) => {
+        const errors: string[] = [];
+        if (props.required && !value) {
+          errors.push("Field is required");
+        }
+        if (props.unique) {
+          errors.push("Field must be unique to publish");
+        }
+        if (errors.length > 0) {
+          return Promise.reject(new Error(errors.join("\n")));
+        }
+        return Promise.resolve();
+      },
+    },
   ];
   const typeSpecificRules =
     [CmsMetaType.TEXT, CmsMetaType.RICH_TEXT].includes(typeName) &&
@@ -276,7 +290,6 @@ export function CmsObjectInput(props: any) {
   } = useContentEntryFormContext();
   assert(typeMeta.type === CmsMetaType.OBJECT, "Must be rendering an object");
   const form = Form.useFormInstance();
-
   return (
     <div
       style={
@@ -565,6 +578,7 @@ export function renderEntryField(type: CmsTypeName): ReactElement {
 interface MaybeLocalizedInputProps {
   databaseId: CmsDatabaseId;
   required?: boolean;
+  unique?: boolean;
   fieldPath: string[];
   localized: boolean;
   locales: string[];
@@ -584,6 +598,7 @@ export function renderMaybeLocalizedInput({
   formItemProps,
   typeName,
   required,
+  unique,
 }: MaybeLocalizedInputProps) {
   return (
     <ContentEntryFormContext.Consumer>
@@ -608,6 +623,7 @@ export function renderMaybeLocalizedInput({
               minChars={minChars}
               required={required}
               typeName={typeName}
+              unique={unique}
               {...formItemProps}
               name={[...fieldPath, "", ...fieldPathSuffix]}
             >
@@ -643,6 +659,7 @@ export function renderMaybeLocalizedInput({
                       maxChars={maxChars}
                       minChars={minChars}
                       required={required}
+                      unique={unique}
                       typeName={typeName}
                       name={[...fieldPath, locale, ...fieldPathSuffix]}
                       noStyle

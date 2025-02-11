@@ -144,6 +144,7 @@ export function renderContentEntryFormFields(
                 formItemProps: deriveFormItemPropsFromField(field),
                 typeName: field.type,
                 required: field.required,
+                unique: field.unique,
                 ...(isCmsTextLike(field)
                   ? {
                       maxChars: field.maxChars,
@@ -198,8 +199,6 @@ function CmsEntryDetailsForm_(
   const [form] = useForm();
 
   const hasFormError = React.useCallback(() => {
-    // Hyuna Test
-    console.log(form.getFieldsError());
     return form.getFieldsError().some((f) => f.errors.length > 0);
   }, [form]);
 

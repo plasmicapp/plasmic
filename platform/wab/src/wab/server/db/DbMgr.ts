@@ -7285,9 +7285,12 @@ export class DbMgr implements MigrationDbMgr {
         deletedAt: null,
       });
 
-      if (publishedRows.length >= 500) {
+      if (publishedRows.length > 500) {
         Sentry.captureEvent({
           message: "The result of the db query contains more than 500 rows.",
+          extra: {
+            tableId: table.id,
+          },
         });
       }
 
