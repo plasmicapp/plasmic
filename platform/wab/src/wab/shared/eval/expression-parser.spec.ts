@@ -202,6 +202,19 @@ describe("renameObjectKey", function () {
     );
     expect(newCode).toEqual("$ctx.a + $state.new.yek + $ctx.b");
   });
+
+  it("should rename variable in object", () => {
+    const newCode = renameObjectKey(
+      "{ code: $props.test }",
+      "$props",
+      "$props",
+      "test",
+      "newTest"
+    );
+
+    // Removing spaces to make it easier to compare, since ast formats the code
+    expect(newCode.replace(/\s+/g, " ")).toEqual("{ code: $props.newTest }");
+  });
 });
 
 describe("replaceVarWithProp", function () {

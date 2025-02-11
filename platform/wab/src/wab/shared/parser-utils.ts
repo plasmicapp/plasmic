@@ -31,7 +31,10 @@ export function parseJsCode(code: string) {
   });
 }
 
-export function writeJs(ast: ast.Program, opts?: { indentLevel?: number }) {
+export function writeJs(
+  ast: ast.Program,
+  opts?: { semicolons?: boolean; indentLevel?: number }
+) {
   return generate(ast, {
     format: {
       indent: {
@@ -39,6 +42,7 @@ export function writeJs(ast: ast.Program, opts?: { indentLevel?: number }) {
         adjustMultilineComment: true,
         ...(opts?.indentLevel ? { base: opts.indentLevel } : {}),
       },
+      ...(opts?.semicolons != null ? { semicolons: opts?.semicolons } : {}),
       quotes: "double",
     },
   });

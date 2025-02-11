@@ -365,7 +365,7 @@ export function mergeParsedExprInfos(infos: ParsedExprInfo[]): ParsedExprInfo {
 }
 
 function generateCode(ast: ast.Program): string {
-  const newCode = writeJs(ast);
+  const newCode = writeJs(ast, { semicolons: false });
 
   // Remove trailing semicolon in case the generator added
   return newCode.endsWith(";") ? newCode.slice(0, -1) : newCode;
