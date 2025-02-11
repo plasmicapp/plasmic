@@ -37,6 +37,7 @@
     "jsx": "react",
     "moduleResolution": "node",
     "noEmit": true,
+    "noErrorTruncation": true,
     "noFallthroughCasesInSwitch": true,
     // Not worth it
     "noImplicitAny": false,
