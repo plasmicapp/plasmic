@@ -1,21 +1,28 @@
 import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
-import { IconLinkButton } from "@/wab/client/components/widgets";
+import {
+  IconLinkButton,
+  IFrameAwareDropdownMenu,
+} from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
+import { IconButton } from "@/wab/client/components/widgets/IconButton";
 import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import Select from "@/wab/client/components/widgets/Select";
 import Textbox from "@/wab/client/components/widgets/Textbox";
+import DotsVerticalIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__DotsVertical";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import PlasmicParamSection from "@/wab/client/plasmic/plasmic_kit_state_management/PlasmicParamSection";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { assert, ensure, mkShortId, spawn } from "@/wab/shared/common";
-import { canRenameParam } from "@/wab/shared/core/components";
-import { clone, codeLit, tryExtractJson } from "@/wab/shared/core/exprs";
-import { mkParam } from "@/wab/shared/core/lang";
 import {
   getPropTypeType,
   wabTypeToPropType,
 } from "@/wab/shared/code-components/code-components";
+import { assert, ensure, mkShortId, spawn } from "@/wab/shared/common";
+import { canRenameParam } from "@/wab/shared/core/components";
+import { clone, codeLit, tryExtractJson } from "@/wab/shared/core/exprs";
+import { mkParam } from "@/wab/shared/core/lang";
+import { cloneType } from "@/wab/shared/core/tpls";
 import { COMPONENT_PROP_CAP } from "@/wab/shared/Labels";
 import {
   Component,
@@ -30,10 +37,9 @@ import {
 } from "@/wab/shared/model/classes";
 import { typeDisplayName, typeFactory } from "@/wab/shared/model/model-util";
 import { smartHumanize } from "@/wab/shared/strs";
-import { cloneType } from "@/wab/shared/core/tpls";
+import { Menu } from "antd";
 import { isNaN } from "lodash";
 import React from "react";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 
 function getComponentParamTypeOptions() {
   return [
@@ -47,6 +53,7 @@ function getComponentParamTypeOptions() {
     { value: "href", label: "Link URL", isPrimitive: false },
     { value: "dateString", label: "Date", isPrimitive: true },
     { value: "dateRangeStrings", label: "Date Range", isPrimitive: true },
+    { value: "color", label: "Color", isPrimitive: false },
   ] as const;
 }
 
@@ -280,6 +287,23 @@ export function ComponentPropModal(props: {
                   )}
                   attr="default-value"
                 />
+                <IFrameAwareDropdownMenu
+                  menu={
+                    <Menu>
+                      <Menu.Item
+                        onClick={() => {
+                          setDefaultExpr(undefined);
+                        }}
+                      >
+                        Unset
+                      </Menu.Item>
+                    </Menu>
+                  }
+                >
+                  <IconButton>
+                    <DotsVerticalIcon />
+                  </IconButton>
+                </IFrameAwareDropdownMenu>
               </div>
             ),
         }}
@@ -311,6 +335,23 @@ export function ComponentPropModal(props: {
                   )}
                   attr="preview-value"
                 />
+                <IFrameAwareDropdownMenu
+                  menu={
+                    <Menu>
+                      <Menu.Item
+                        onClick={() => {
+                          setDefaultExpr(undefined);
+                        }}
+                      >
+                        Unset
+                      </Menu.Item>
+                    </Menu>
+                  }
+                >
+                  <IconButton>
+                    <DotsVerticalIcon />
+                  </IconButton>
+                </IFrameAwareDropdownMenu>
               </div>
             ),
         }}

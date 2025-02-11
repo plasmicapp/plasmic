@@ -4,13 +4,13 @@ import { ColorPicker } from "@/wab/client/components/widgets/ColorPicker";
 import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
 import PlasmicColorButton from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicColorButton";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { zeroWidthSpace } from "@/wab/shared/common";
 import { isTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import { TOKEN_CAP } from "@/wab/shared/Labels";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { zeroWidthSpace } from "@/wab/shared/common";
+import { allColorTokens } from "@/wab/shared/core/sites";
 import { StyleToken } from "@/wab/shared/model/classes";
 import Chroma from "@/wab/shared/utils/color-utils";
-import { allColorTokens } from "@/wab/shared/core/sites";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -77,6 +77,7 @@ function _ColorButton(props: ColorButtonProps) {
           root: {
             props: {
               // ref,
+              type: "button",
               "data-plasmic-prop": props["data-plasmic-prop"],
               onClick: (e) => {
                 if (isDisabled) {

@@ -966,6 +966,7 @@ const PropValueEditor_ = (
               )
             : (value as string) || ""
         }
+        valueSetState={valueSetState}
         hideTokenPicker={hackyCast(propType).disableTokens}
         sc={studioCtx}
         data-plasmic-prop={attr}

@@ -125,7 +125,7 @@ describe("hostless-rich-components", () => {
         justType("#E6EEF4{enter}");
         maybeSelectedElt()
           .find(".ant-layout-header")
-          .should("have.css", "background-color", "rgba(230, 238, 244, 0)");
+          .should("have.css", "background-color", "rgb(230, 238, 244)");
         checkDarkFgColors();
         cy.get("[data-test-id='back-sidebar-modal']").click();
 

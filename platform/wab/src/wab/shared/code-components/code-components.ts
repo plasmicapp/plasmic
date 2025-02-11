@@ -3913,10 +3913,7 @@ export function propTypeToWabType(
                 )
               );
             case "color":
-              // temporarily cast to any until type exists on host package
-              return success(
-                typeFactory.color({ noDeref: !!(type as any).keepCssVar })
-              );
+              return success(typeFactory.color({ noDeref: !!type.keepCssVar }));
             case "object":
             case "custom":
             case "dataSource":

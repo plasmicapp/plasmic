@@ -123,7 +123,10 @@ function ColorPicker_({
     return null;
   }
 
-  const realColor = ensure(maybeRealColor, "Unexpected empty real color");
+  const realColor =
+    color === ""
+      ? "#FFFFFF"
+      : ensure(maybeRealColor, "Unexpected empty real color");
   const colorPickerRef = useRef<HTMLDivElement>(null);
   const [pickr, setPickr] = useState<Pickr | null>(null);
   const [mode, setMode] = useState(ColorMode.hex);
