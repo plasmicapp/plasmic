@@ -10,6 +10,7 @@ import {
   makeComponentName,
   Registerable,
   registerComponentHelper,
+  WithPlasmicCanvasComponentInfo,
 } from "./utils";
 import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
@@ -34,6 +35,7 @@ export interface BasePopoverControlContextData {
 }
 export interface BasePopoverProps
   extends React.ComponentProps<typeof Popover>,
+    WithPlasmicCanvasComponentInfo,
     WithVariants<typeof POPOVER_VARIANTS>,
     HasControlContextData<BasePopoverControlContextData> {
   className?: string;

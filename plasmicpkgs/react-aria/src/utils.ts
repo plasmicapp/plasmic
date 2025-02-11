@@ -10,6 +10,13 @@ export type HasControlContextData<T = BaseControlContextData> = {
   setControlContextData?: (ctxData: T) => void;
 };
 
+export type WithPlasmicCanvasComponentInfo = {
+  __plasmic_selection_prop__?: {
+    isSelected: boolean;
+    selectedSlotName?: string | undefined;
+  };
+};
+
 export type BaseControlContextData = {
   parent?: {
     isDisabled?: boolean;

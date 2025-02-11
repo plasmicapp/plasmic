@@ -14,13 +14,14 @@ import {
   makeComponentName,
   Registerable,
   registerComponentHelper,
+  WithPlasmicCanvasComponentInfo,
 } from "./utils";
 
 export interface BaseModalProps
   extends ModalOverlayProps,
+    WithPlasmicCanvasComponentInfo,
     HasControlContextData {
-  heading: React.ReactNode;
-  modalOverlayClass: string;
+  modalOverlayClass?: string;
   resetClassName?: string;
   children?: React.ReactNode;
   className?: string;

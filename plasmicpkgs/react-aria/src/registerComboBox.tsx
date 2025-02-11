@@ -23,6 +23,7 @@ import {
   Registerable,
   registerComponentHelper,
   useAutoOpen,
+  WithPlasmicCanvasComponentInfo,
 } from "./utils";
 import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
@@ -39,6 +40,7 @@ const { variants: COMBOBOX_VARIANTS_DATA } =
 
 export interface BaseComboboxProps
   extends ComboBoxProps<{}>,
+    WithPlasmicCanvasComponentInfo,
     WithVariants<typeof COMBOBOX_VARIANTS>,
     HasControlContextData<BaseComboboxControlContextData> {
   children?: React.ReactNode;

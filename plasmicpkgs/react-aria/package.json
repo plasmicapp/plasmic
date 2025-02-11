@@ -51,20 +51,30 @@
     "react-aria": "^3.33.0",
     "react-aria-components": "^1.2.0",
     "react-keyed-flatten-children": "^3.0.0",
-    "react-stately": "^3.31.0"
+    "react-stately": "^3.31.0",
+    "react-is": "^19.0.0"
   },
   "devDependencies": {
     "@plasmicapp/host": "1.0.210",
     "@rollup/plugin-commonjs": "^11.0.0",
     "@rollup/plugin-json": "^4.0.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
+    "@storybook/addon-interactions": "^8.5.3",
+    "@storybook/addon-webpack5-compiler-swc": "^2.0.0",
+    "@storybook/react": "^8.5.3",
+    "@storybook/react-webpack5": "^8.5.3",
+    "@storybook/test": "^8.5.3",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
+    "@types/react-is": "^19.0.0",
     "glob": "^8.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rollup": "^3.10.1",
     "rollup-plugin-esbuild": "^5.0.0",
+    "storybook": "^8.5.3",
+    "@storybook/addon-actions": "^8.5.3",
+    "@storybook/test-runner": "^0.21.0",
     "typescript": "^5"
   },
   "peerDependencies": {

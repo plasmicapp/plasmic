@@ -1,6 +1,6 @@
 import { usePlasmicCanvasComponentInfo } from "@plasmicapp/host";
 import React from "react";
-import { DialogTrigger } from "react-aria-components";
+import { DialogTrigger, DialogTriggerProps } from "react-aria-components";
 import { PlasmicDialogTriggerContext } from "./contexts";
 import { BUTTON_COMPONENT_NAME } from "./registerButton";
 import { DIALOG_COMPONENT_NAME } from "./registerDialog";
@@ -11,12 +11,14 @@ import {
 import {
   CodeComponentMetaOverrides,
   Registerable,
+  WithPlasmicCanvasComponentInfo,
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
 
 export interface BaseDialogTriggerProps
-  extends React.ComponentProps<typeof DialogTrigger> {
+  extends Omit<DialogTriggerProps, "children">,
+    WithPlasmicCanvasComponentInfo {
   trigger?: React.ReactNode;
   dialog?: React.ReactNode;
 }

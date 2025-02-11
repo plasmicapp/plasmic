@@ -19,6 +19,7 @@ import { POPOVER_COMPONENT_NAME } from "./registerPopover";
 import {
   HasControlContextData,
   Registerable,
+  WithPlasmicCanvasComponentInfo,
   extractPlasmicDataProps,
   makeComponentName,
   registerComponentHelper,
@@ -93,6 +94,7 @@ const { variants: SELECT_VARIANTS_DATA } =
 export interface BaseSelectProps
   extends SelectProps<{}>, // NOTE: We don't need generic type here since we don't use items prop (that needs it). We just need to make the type checker happy
     WithVariants<typeof SELECT_VARIANTS>,
+    WithPlasmicCanvasComponentInfo,
     HasControlContextData<BaseSelectControlContextData> {
   children?: React.ReactNode;
   className?: string;
@@ -100,6 +102,7 @@ export interface BaseSelectProps
 
 export function BaseSelect(props: BaseSelectProps) {
   const {
+    defaultSelectedKey,
     selectedKey,
     onSelectionChange,
     onOpenChange,
@@ -141,6 +144,7 @@ export function BaseSelect(props: BaseSelectProps) {
 
   return (
     <Select
+      defaultSelectedKey={defaultSelectedKey}
       selectedKey={selectedKey}
       onSelectionChange={onSelectionChange}
       onOpenChange={onOpenChange}

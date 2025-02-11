@@ -86,6 +86,10 @@ export function BaseCheckbox(props: BaseCheckboxProps) {
     })(),
   });
 
+  if (!registeredId) {
+    return null;
+  }
+
   return (
     <>
       <Checkbox

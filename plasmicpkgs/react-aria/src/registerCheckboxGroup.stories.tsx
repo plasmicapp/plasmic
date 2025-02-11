@@ -1,0 +1,136 @@
+import type { Meta, StoryObj } from "@storybook/react";
+import { expect, fn, userEvent, within } from "@storybook/test";
+import React from "react";
+import { BaseCheckbox } from "./registerCheckbox";
+import { BaseCheckboxGroup } from "./registerCheckboxGroup";
+
+const meta: Meta<typeof BaseCheckboxGroup> = {
+  title: "Components/BaseCheckboxGroup",
+  component: BaseCheckboxGroup,
+  args: {
+    onChange: fn(),
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof BaseCheckboxGroup>;
+
+// Helper function to create checkbox items
+const createCheckboxItems = (count: number) => {
+  return Array.from({ length: count }, (_, i) => ({
+    value: `checkbox${i + 1}`,
+    label: `Checkbox ${i + 1}`,
+  }));
+};
+
+// Basic CheckboxGroup with no initial selection
+export const Basic: Story = {
+  args: {
+    children: createCheckboxItems(3).map((item) => (
+      <BaseCheckbox value={item.value}>{item.label}</BaseCheckbox>
+    )),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const checkboxes = await canvas.findAllByRole("checkbox");
+    expect(checkboxes).toHaveLength(3);
+
+    // Verify initial state
+    checkboxes.forEach((checkbox) => {
+      expect(checkbox).not.toBeChecked();
+    });
+
+    // Test selection
+    await userEvent.click(checkboxes[1]);
+    expect(checkboxes[1]).toBeChecked();
+    expect(args.onChange).toHaveBeenCalledWith(["checkbox2"]);
+  },
+};
+
+// CheckboxGroup with pre-selected values
+export const WithDefaultSelection: Story = {
+  args: {
+    defaultValue: ["checkbox1", "checkbox3"],
+    children: (
+      <>
+        {createCheckboxItems(3).map((item) => (
+          <BaseCheckbox value={item.value}>{item.label}</BaseCheckbox>
+        ))}
+        <BaseCheckbox defaultSelected value={"Item 4"}>
+          checkbox4
+        </BaseCheckbox>
+      </>
+    ),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const checkboxes = await canvas.findAllByRole("checkbox");
+
+    // Verify initial state
+    expect(checkboxes[0]).toBeChecked(); // via defaultValue prop passed to the group
+    expect(checkboxes[1]).not.toBeChecked();
+    expect(checkboxes[2]).toBeChecked(); // via defaultValue prop passed to the group
+    expect(checkboxes[3]).not.toBeChecked(); // defaultSelected prop passed directly has no effect within group
+
+    // Test deselection
+    await userEvent.click(checkboxes[0]);
+    expect(checkboxes[0]).not.toBeChecked(); //changed
+    expect(checkboxes[1]).not.toBeChecked();
+    expect(checkboxes[2]).toBeChecked();
+    expect(args.onChange).toHaveBeenCalledWith(["checkbox3"]);
+  },
+};
+
+// Disabled CheckboxGroup
+export const Disabled: Story = {
+  args: {
+    isDisabled: true,
+    defaultValue: ["checkbox1"],
+    children: createCheckboxItems(3).map((item) => (
+      <BaseCheckbox key={item.value} value={item.value}>
+        {item.label}
+      </BaseCheckbox>
+    )),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const checkboxes = await canvas.findAllByRole("checkbox");
+
+    // Verify disabled state
+    checkboxes.forEach((checkbox) => {
+      expect(checkbox).toBeDisabled();
+    });
+
+    // Verify clicks don't trigger changes
+    await userEvent.click(checkboxes[1]);
+    expect(args.onChange).not.toHaveBeenCalled();
+    expect(checkboxes[1]).not.toBeChecked();
+  },
+};
+
+// ReadOnly CheckboxGroup
+export const ReadOnly: Story = {
+  args: {
+    isReadOnly: true,
+    defaultValue: ["checkbox1", "checkbox2"],
+    children: createCheckboxItems(3).map((item) => (
+      <BaseCheckbox key={item.value} value={item.value}>
+        {item.label}
+      </BaseCheckbox>
+    )),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const checkboxes = await canvas.findAllByRole("checkbox");
+
+    // Verify readonly state
+    checkboxes.forEach((checkbox) => {
+      expect(checkbox).toHaveAttribute("aria-readonly", "true");
+    });
+
+    // Verify clicks don't trigger changes
+    await userEvent.click(checkboxes[2]);
+    expect(args.onChange).not.toHaveBeenCalled();
+    expect(checkboxes[2]).not.toBeChecked();
+  },
+};

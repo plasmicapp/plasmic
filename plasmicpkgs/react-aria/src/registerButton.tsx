@@ -34,7 +34,7 @@ type ButtonSpecificProps = {
   submitsForm?: boolean;
 };
 
-interface BaseButtonProps
+export interface BaseButtonProps
   extends CommonProps,
     LinkSpecificProps,
     ButtonSpecificProps,

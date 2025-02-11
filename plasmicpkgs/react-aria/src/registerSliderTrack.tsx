@@ -24,7 +24,7 @@ export interface BaseSliderTrackProps
   extends React.ComponentProps<typeof SliderTrack>,
     WithVariants<typeof SLIDER_TRACK_VARIANTS> {
   progressBar?: React.ReactNode;
-  children?: React.ReactElement<HTMLElement>;
+  children?: React.ReactNode;
 }
 
 function isMultiValueGuard(value?: number | number[]): value is number[] {
@@ -35,9 +35,11 @@ export function BaseSliderTrack(props: BaseSliderTrackProps) {
   const context = React.useContext(PlasmicSliderContext);
   const isStandalone = !context;
   const { children, progressBar, plasmicUpdateVariant, ...rest } = props;
-
-  const thumbsLength =
-    context && isMultiValueGuard(context.value) ? context.value.length : 1;
+  const value = useMemo(
+    () => context?.value ?? context?.defaultValue,
+    [context?.value, context?.defaultValue]
+  );
+  const thumbsLength = isMultiValueGuard(value) ? value.length : 1;
   const isMultiValue = thumbsLength > 1;
 
   const { minIndex, maxIndex } = useMemo(() => {
@@ -59,14 +61,14 @@ export function BaseSliderTrack(props: BaseSliderTrackProps) {
    */
   const thumbs = useMemo(() => {
     const thumbNodes = flattenChildren(children);
-    if (!thumbNodes || thumbNodes.length === 0 || !isDefined(context?.value)) {
+    if (!thumbNodes || thumbNodes.length === 0) {
       return [];
     }
 
     const values = isDefined(context)
-      ? Array.isArray(context.value)
-        ? context.value
-        : [context.value]
+      ? Array.isArray(value)
+        ? value
+        : [value]
       : [];
 
     // Last thumb be re-used if the number of thumbs is less than the number of values
@@ -89,7 +91,7 @@ export function BaseSliderTrack(props: BaseSliderTrackProps) {
         index: i,
       } as SliderThumbProps);
     });
-  }, [children, context?.value]);
+  }, [children, value]);
 
   const track = (
     <SliderTrack style={{ position: "relative" }} {...rest}>
