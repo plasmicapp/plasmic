@@ -100,6 +100,7 @@ import { nodeNameBackwardsCompatibility } from "@/wab/shared/codegen/react-p/con
 import {
   getRepetitionIndexInternalName,
   getRepetitionItemInternalName,
+  getRepetitionUuidInternalName,
   serializeDataRepsIndexName,
 } from "@/wab/shared/codegen/react-p/data-reps";
 import { ReactHookSpec } from "@/wab/shared/codegen/react-p/react-hook-spec";
@@ -1280,6 +1281,7 @@ function renderReppable(tplNode: TplNode, ctx: RenderingCtx) {
     const idx = getNumberOfRepeatingAncestors(node) - 1;
     const elementInternalName = getRepetitionItemInternalName(idx);
     const indexInternalName = getRepetitionIndexInternalName(idx);
+    const uuidToIndexInternalName = getRepetitionUuidInternalName(node.uuid);
     const contents = withoutNils(
       collection.map((item, index) =>
         maybe(
@@ -1293,6 +1295,7 @@ function renderReppable(tplNode: TplNode, ctx: RenderingCtx) {
                 [getRepetitionIndexName(dataRep)]: index,
                 [elementInternalName]: item,
                 [indexInternalName]: index,
+                [uuidToIndexInternalName]: index,
               },
               wrappingEnv: ctx.env,
             },
@@ -3483,6 +3486,15 @@ export const mkCanvas = computedFn(
   }
 );
 
+function computeFullKey(ctx: RenderingCtx) {
+  const parts = ctx.valKey.split(".");
+  return parts
+    .map((uuid) => {
+      return `${uuid}[${ctx.env[getRepetitionUuidInternalName(uuid)] ?? 0}]`;
+    })
+    .join(".");
+}
+
 // We want to store the `env` for this node in the props. However, `tplSlots`
 // might render React fragments, which store all the data in the fragment key.
 // Since we can't stringify the envs, we need to create an ID for them.
@@ -3494,7 +3506,9 @@ export function getEnvId(ctx: RenderingCtx) {
   // We create a mobx observable and then subscribe to changes, so we ensure it
   // will only be garbage collected when we're no longer reading from it.
   const box = observable.box(envs, { deep: false });
+  const fullKey = computeFullKey(ctx);
   globalHookCtx.envIdToEnvs.set(id, new WeakRef(box.get()));
+  globalHookCtx.fullKeyToEnvId.set(fullKey, id);
   return id;
 }
 

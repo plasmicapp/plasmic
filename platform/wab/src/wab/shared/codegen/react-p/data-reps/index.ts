@@ -16,6 +16,10 @@ export function getRepetitionIndexInternalName(idx: number) {
   return `__plasmic_idx_${idx}`;
 }
 
+export function getRepetitionUuidInternalName(uuid: string) {
+  return `__plasmic_uuid_to_idx_${uuid}`;
+}
+
 export function serializeDataRepsIndexName(node: TplTag | TplComponent) {
   return [...Array(getNumberOfRepeatingAncestors(node))].map((_, i) =>
     getRepetitionIndexInternalName(i)

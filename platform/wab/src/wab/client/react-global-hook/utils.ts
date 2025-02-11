@@ -135,11 +135,10 @@ export function tryGetRichTextData(node: Fiber):
   return undefined;
 }
 
-export function tryGetNodeCanvasEnvs(
+function tryGetEnvFromId(
   globalHookCtx: GlobalHookCtx,
-  node: Fiber
+  id: string | undefined | null
 ) {
-  const id = tryReadInternalProp(node, dataCanvasEnvsProp);
   return id != null
     ? ensure(
         globalHookCtx.envIdToEnvs
@@ -148,6 +147,22 @@ export function tryGetNodeCanvasEnvs(
         () => `Couldn't find envs`
       )
     : undefined;
+}
+
+export function tryGetNodeCanvasEnvs(
+  globalHookCtx: GlobalHookCtx,
+  node: Fiber
+) {
+  const id = tryReadInternalProp(node, dataCanvasEnvsProp);
+  return tryGetEnvFromId(globalHookCtx, id);
+}
+
+export function tryGetEnvFromFullKey(
+  globalHookCtx: GlobalHookCtx,
+  fullKey: string
+) {
+  const id = globalHookCtx.fullKeyToEnvId.get(fullKey);
+  return tryGetEnvFromId(globalHookCtx, id);
 }
 
 export function tryGetSlotArgInfo(node: Fiber) {
@@ -177,6 +192,7 @@ export function createValNode(opts: {
   valOwner: ValComponent | undefined;
   className: string | undefined;
   frameUid: number;
+  useFullKeyForEnv?: boolean;
 }) {
   const {
     globalHookCtx,
@@ -246,7 +262,10 @@ export function createValNode(opts: {
     )
     .result();
 
-  const envs = tryGetNodeCanvasEnvs(globalHookCtx, node);
+  const envs = opts.useFullKeyForEnv
+    ? tryGetEnvFromFullKey(globalHookCtx, fullKey)
+    : tryGetNodeCanvasEnvs(globalHookCtx, node);
+
   if (envs) {
     valNode.envs = envs;
   }

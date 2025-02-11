@@ -13,6 +13,7 @@ export interface GlobalHookCtx {
   frameUidToValRoot: Map<number, ValComponent | null>;
   frameUidToRenderState: Map<number, RenderState>;
   envIdToEnvs: Map<string, WeakRef<{ env: CanvasEnv; wrappingEnv: CanvasEnv }>>;
+  fullKeyToEnvId: Map<string, string>;
   frameValKeyToContextData: Map<string, WeakRef<any>>;
   dispose: () => void;
 }

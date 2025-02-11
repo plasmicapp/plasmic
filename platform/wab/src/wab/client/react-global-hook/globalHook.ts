@@ -123,6 +123,7 @@ if (officialHook) {
     frameUidToValRoot: observable.map({}, { deep: false }),
     frameUidToRenderState: new Map(),
     envIdToEnvs: new Map(),
+    fullKeyToEnvId: new Map(),
     frameValKeyToContextData: new Map(),
     dispose: () => {
       // clear the custom functions
@@ -547,6 +548,7 @@ if (officialHook) {
                     // the `node` in valNode
                     className: tryGetPlasmicClassName(node),
                     frameUid: currentFrameUid,
+                    useFullKeyForEnv: true,
                   });
 
                   renderState.registerVal(fakeValOwner);
@@ -1022,6 +1024,7 @@ export const globalHookCtx: GlobalHookCtx = officialHook?.plasmic ?? {
   frameUidToValRoot: new Map(),
   frameUidToRenderState: new Map(),
   envIdToEnvs: new Map(),
+  fullKeyToEnvId: new Map(),
   frameValKeyToContextData: new Map(),
   dispose: () => {},
 };
