@@ -16,21 +16,6 @@ const meta: Meta<typeof BaseTooltip> = {
     delay: 0,
     closeDelay: 0,
   },
-  //   TODO: Currently, the BaseTooltip component cannot be uncontrolled, because a false is assumed for isOpen prop, if it is undefined
-  //   Remove this render function in the PR that fixes the issue
-  render: ({ isOpen, onOpenChange, ...args }) => {
-    const [open, setOpen] = useState(isOpen);
-    return (
-      <BaseTooltip
-        isOpen={open}
-        onOpenChange={(newValue) => {
-          setOpen(newValue);
-          onOpenChange?.(newValue);
-        }}
-        {...args}
-      />
-    );
-  },
 };
 
 export default meta;

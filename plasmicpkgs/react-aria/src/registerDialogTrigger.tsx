@@ -32,7 +32,7 @@ export function BaseDialogTrigger(props: BaseDialogTriggerProps) {
 
   const mergedProps = {
     ...rest,
-    isOpen: (isAutoOpen || isOpen) ?? false,
+    isOpen: isAutoOpen || isOpen,
   };
 
   return (

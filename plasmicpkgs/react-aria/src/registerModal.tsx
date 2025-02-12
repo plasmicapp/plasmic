@@ -52,8 +52,7 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
 
     const contextProps = React.useContext(PlasmicDialogTriggerContext);
     const isStandalone = !contextProps;
-    // TODO: React-aria does not like modal being passed defaultOpen while its inside a DialogTrigger.
-    const mergedProps = mergeProps(contextProps, rest, {
+    const mergedProps = mergeProps(rest, {
       isOpen: isStandalone ? isSelected || isOpen : contextProps.isOpen,
       /*
         isDismissable on canvas (non-interactive mode) causes the following two issues:

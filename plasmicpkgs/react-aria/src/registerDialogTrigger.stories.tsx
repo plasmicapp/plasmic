@@ -15,22 +15,6 @@ const meta: Meta<typeof BaseDialogTrigger> = {
     defaultOpen: false,
     onOpenChange: fn(),
   },
-  // TODO: Currently, BaseDialogTrigger can't be controlled because a isOpen is never undefined - its given a default false.
-  // Using the render to use it as a controlled component.
-  // Remove this render function in the PR that fixes the uncontrolled behaviour of BaseDialogTrigger
-  render: ({ isOpen, onOpenChange, ...args }) => {
-    const [open, setOpen] = useState(isOpen);
-    return (
-      <BaseDialogTrigger
-        isOpen={open}
-        onOpenChange={(newValue) => {
-          setOpen(newValue);
-          onOpenChange?.(newValue);
-        }}
-        {...args}
-      />
-    );
-  },
 };
 
 export default meta;

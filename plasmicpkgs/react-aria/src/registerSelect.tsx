@@ -112,6 +112,7 @@ export function BaseSelect(props: BaseSelectProps) {
     name,
     setControlContextData,
     plasmicUpdateVariant,
+    defaultSelectedKey,
     "aria-label": ariaLabel,
   } = props;
 
@@ -143,6 +144,7 @@ export function BaseSelect(props: BaseSelectProps) {
 
   return (
     <Select
+      defaultSelectedKey={defaultSelectedKey}
       selectedKey={selectedKey}
       onSelectionChange={onSelectionChange}
       onOpenChange={onOpenChange}

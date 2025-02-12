@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, fn, userEvent, within } from "@storybook/test";
-import React, { useState } from "react";
+import React from "react";
 import { BaseLabel } from "./registerLabel";
 import { BaseSlider } from "./registerSlider";
 import { BaseSliderOutput } from "./registerSliderOutput";
@@ -19,57 +19,38 @@ const meta: Meta<typeof BaseSlider<number>> = {
     step: 1,
     orientation: "horizontal" as const,
   },
-  // TODO: Currently, the BaseSlider's defaultValue prop is not handled correctly inside BaseSliderTrack, i.e. it can't be uncontrolled
-  // The render function below assigns the defaultValue prop to the value prop - its needed to keep the BaseSlider controlled
-  // This render function needs to be removed in the PR that fixes the handling of defaultValue in BaseSliderTrack.
-  render: (args) => {
-    const [value, setValue] = useState(args.defaultValue);
-    return (
-      <BaseSlider
-        {...args}
-        value={value}
-        onChange={(newValue) => {
-          setValue(newValue);
-          args.onChange?.(newValue);
-        }}
-      />
-    );
-  },
 };
 
 export default meta;
 type Story = StoryObj<typeof BaseSlider<number>>;
 
-// TODO: Currently, BaseSliderTrack does not render any thumbs if there is no value/default value prop
-// The test below needs to be uncommented in the PR that fixes the issue
 // Basic slider with no initial value
-// export const Basic: Story = {
-//     args: {
-//         step: 5,
-//         children: (
-//             <>
-//                 <BaseLabel>Slider label</BaseLabel>
-//                 <BaseSliderOutput>Output</BaseSliderOutput>
-//                 <BaseSliderTrack>
-//                     <BaseSliderThumb autoFocus className={"thumb-1"} />
-//                 </BaseSliderTrack>
-//             </>
-//         ),
-//     },
-//     play: async ({ canvasElement, args }) => {
-//         const canvas = within(canvasElement);
-//         const slider = canvas.getByRole("group");
-//         const label = within(slider).getByText("Slider label");
-//         const thumbs = slider.getElementsByTagName("input");
-//         expect(thumbs).toHaveLength(1);
+export const Basic: Story = {
+  args: {
+    children: (
+      <>
+        <BaseLabel>Slider label</BaseLabel>
+        <BaseSliderOutput>Output</BaseSliderOutput>
+        <BaseSliderTrack>
+          <BaseSliderThumb autoFocus className={"thumb-1"} />
+        </BaseSliderTrack>
+      </>
+    ),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const slider = canvas.getByRole("group");
+    const label = within(slider).getByText("Slider label");
+    const thumbs = slider.getElementsByTagName("input");
+    expect(thumbs).toHaveLength(1);
 
-//         await userEvent.click(label); // Focus on the slider thumb
-//         await userEvent.keyboard("{ArrowRight}"); // Move to the right
+    await userEvent.click(label); // Focus on the slider thumb
+    await userEvent.keyboard("{ArrowRight}"); // Move to the right
 
-//         expect(args.onChange).toHaveBeenCalledWith([5]); // defaults to range slider if no value/defaultValue is provided (that's the default react-aria slider component behaviour)
-//         expect(args.onChangeEnd).toHaveBeenCalledOnce();
-//     },
-// };
+    expect(args.onChange).toHaveBeenCalledWith([1]); // defaults to range slider if no value/defaultValue is provided (that's the default react-aria slider component behaviour)
+    expect(args.onChangeEnd).toHaveBeenCalledOnce();
+  },
+};
 
 // Basic slider with no initial value
 export const WithDefaultValue: Story = {

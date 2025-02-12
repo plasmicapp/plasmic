@@ -87,84 +87,82 @@ export const Basic: Story = {
   },
 };
 
-// TODO: Currently, the BaseSelect does not pass defaultSelectedKey prop to <Select>, causing the below tests to fail.
-// Uncomment the test below in the PR that fixes the issue
-// export const WithDefaultSelection: Story = {
-//   args: {
-//     defaultSelectedKey: "3",
-//     children: (
-//       <BoilerplateSelect>
-//         {createListItems(3).map((item) => (
-//           <BaseListBoxItem textValue={item.textValue} id={item.id}>
-//             {item.children}
-//           </BaseListBoxItem>
-//         ))}
-//       </BoilerplateSelect>
-//     ),
-//   },
-//   play: async ({ canvasElement }) => {
-//     const canvas = within(canvasElement);
-//     // popovers are rendered outside canvas, so we need to use document.body
-//     const doc = within(document.body);
+export const WithDefaultSelection: Story = {
+  args: {
+    defaultSelectedKey: "3",
+    children: (
+      <BoilerplateSelect>
+        {createListItems(3).map((item) => (
+          <BaseListBoxItem textValue={item.textValue} id={item.id}>
+            {item.children}
+          </BaseListBoxItem>
+        ))}
+      </BoilerplateSelect>
+    ),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // popovers are rendered outside canvas, so we need to use document.body
+    const doc = within(document.body);
 
-//     // Get the button and input
-//     const button = canvas.getByRole("button");
+    // Get the button and input
+    const button = canvas.getByRole("button");
 
-//     // Check that listbox is not in the document
-//     expect(doc.queryByRole("listbox")).not.toBeInTheDocument();
+    // Check that listbox is not in the document
+    expect(doc.queryByRole("listbox")).not.toBeInTheDocument();
 
-//     await waitFor(() => expect(button).toHaveTextContent("Item 3")); // via defaultSelectedKey
+    await waitFor(() => expect(button).toHaveTextContent("Item 3")); // via defaultSelectedKey
 
-//     // Open the select
-//     await userEvent.click(button);
+    // Open the select
+    await userEvent.click(button);
 
-//     const options = within(doc.getByRole("listbox")).getAllByRole("option");
-//     await userEvent.click(options[1]);
+    const options = within(doc.getByRole("listbox")).getAllByRole("option");
+    await userEvent.click(options[1]);
 
-//     expect(button).toHaveTextContent("Item 2");
-//   },
-// };
+    expect(button).toHaveTextContent("Item 2");
+  },
+};
 
-// export const Disabled: Story = {
-//   args: {
-//     defaultSelectedKey: "3",
-//     isDisabled: true,
-//     children: (
-//       <BoilerplateSelect>
-//         {createListItems(3).map((item) => (
-//           <BaseListBoxItem textValue={item.textValue} id={item.id}>
-//             {item.children}
-//           </BaseListBoxItem>
-//         ))}
-//       </BoilerplateSelect>
-//     ),
-//   },
-//   play: async ({ canvasElement, args }) => {
-//     const canvas = within(canvasElement);
-//     // popovers are rendered outside canvas, so we need to use document.body
-//     const doc = within(document.body);
+export const Disabled: Story = {
+  args: {
+    defaultSelectedKey: "3",
+    isDisabled: true,
+    children: (
+      <BoilerplateSelect>
+        {createListItems(3).map((item) => (
+          <BaseListBoxItem textValue={item.textValue} id={item.id}>
+            {item.children}
+          </BaseListBoxItem>
+        ))}
+      </BoilerplateSelect>
+    ),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    // popovers are rendered outside canvas, so we need to use document.body
+    const doc = within(document.body);
 
-//     // Get the button and input
-//     const button = canvas.getByRole("button");
+    // Get the button and input
+    const button = canvas.getByRole("button");
 
-//     // Verify disabled state
-//     expect(button).toBeDisabled();
+    // Verify disabled state
+    expect(button).toBeDisabled();
 
-//     await userEvent.tab(); // NOTE: I'm not sure why, but without this, the test is very flaky at the next line.
-//     await waitFor(() => expect(button).toHaveTextContent("Item 3")); // via defaultSelectedKey
+    await userEvent.tab(); // NOTE: I'm not sure why, but without this, the test is very flaky at the next line.
+    await waitFor(() => expect(button).toHaveTextContent("Item 3")); // via defaultSelectedKey
 
-//     // Open the select
-//     await userEvent.click(button);
+    // Open the select
+    await userEvent.click(button);
 
-//     // Check that listbox is not in the document
-//     expect(doc.queryByRole("listbox")).not.toBeInTheDocument();
+    // Check that listbox is not in the document
+    expect(doc.queryByRole("listbox")).not.toBeInTheDocument();
 
-//     expect(button).toHaveTextContent("Item 3"); // unchanged
+    expect(button).toHaveTextContent("Item 3"); // unchanged
 
-//     expect(args.onOpenChange).not.toHaveBeenCalled();
-//     expect(args.onSelectionChange).not.toHaveBeenCalled();
-//   },
-// };
+    expect(args.onOpenChange).not.toHaveBeenCalled();
+    expect(args.onSelectionChange).not.toHaveBeenCalled();
+  },
+};
 
 export const WithDisabledOptions: Story = {
   args: {
