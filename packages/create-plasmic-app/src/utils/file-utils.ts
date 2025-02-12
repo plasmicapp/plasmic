@@ -1,13 +1,16 @@
-import type { PlasmicConfig } from "@plasmicapp/cli/dist/utils/config-utils";
+import type {
+  ComponentConfig,
+  PlasmicConfig,
+} from "@plasmicapp/cli/dist/utils/config-utils";
 import { existsSync, promises as fs, unlinkSync } from "fs";
 import glob from "glob";
 import L from "lodash";
 import * as path from "upath";
 import { README } from "../templates/readme";
 import { WELCOME_PAGE } from "../templates/welcomePage";
-import { JsOrTs, PlatformType } from "../utils/types";
 import { ensure } from "./lang-utils";
 import { installUpgrade } from "./npm-utils";
+import { JsOrTs, PlatformType } from "./types";
 
 /**
  * Runs the search pattern through `glob` and deletes all resulting files
@@ -121,45 +124,56 @@ export default App;
  * @param noPages - don't render links to pages
  * @returns
  */
-export function generateWelcomePage(config: any, platform: string): string {
-  let hasPages = false;
-  let pageComponents: any[];
-  let pagesDir: string;
+export function generateWelcomePage(
+  config: PlasmicConfig,
+  platform: string
+): string {
+  let pages:
+    | {
+        components: ComponentConfig[];
+        dir: string;
+        getPageSection: () => string;
+      }
+    | undefined;
   if (platform !== "react" && config && L.isArray(config.projects)) {
-    pageComponents = L.flatMap(config.projects, (p) => p.components).filter(
+    const components = L.flatMap(config.projects, (p) => p.components).filter(
       (c) => c.componentType === "page"
     );
-    pagesDir = config?.nextjsConfig?.pagesDir ?? config?.gatsbyConfig?.pagesDir;
-    if (pageComponents.length > 0 && pagesDir) {
-      hasPages = true;
-    }
-  }
-  const getPageSection = () => {
-    const pageLinks = pageComponents
-      .map((pc) => {
-        // Get the relative path on the filesystem
-        const relativePath = path.relative(pagesDir, pc.importSpec.modulePath);
-        // Format as an absolute path without the extension name
-        const relativeLink = "/" + stripExtension(relativePath);
-        if (platform === "nextjs") {
-          return `<li><Link href="${relativeLink}">${pc.name} - ${relativeLink}</Link></li>`;
-        } else {
-          return `<li><a style={{ color: "blue" }} href="${relativeLink}">${pc.name} - ${relativeLink}</a></li>`;
-        }
-      })
-      .join("\n");
-    return `
+    const dir =
+      config?.nextjsConfig?.pagesDir ?? config?.gatsbyConfig?.pagesDir;
+    if (components.length > 0 && dir) {
+      pages = {
+        components,
+        dir,
+        getPageSection: () => {
+          const pageLinks = components
+            .map((pc) => {
+              // Get the relative path on the filesystem
+              const relativePath = path.relative(dir, pc.importSpec.modulePath);
+              // Format as an absolute path without the extension name
+              const relativeLink = "/" + stripExtension(relativePath);
+              if (platform === "nextjs") {
+                return `<li><Link href="${relativeLink}">${pc.name} - ${relativeLink}</Link></li>`;
+              } else {
+                return `<li><a style={{ color: "blue" }} href="${relativeLink}">${pc.name} - ${relativeLink}</a></li>`;
+              }
+            })
+            .join("\n");
+          return `
           <h3>Your pages:</h3>
           <ul>
             ${pageLinks}
           </ul>
     `;
-  };
+        },
+      };
+    }
+  }
 
   const content = WELCOME_PAGE(
-    hasPages,
+    !!pages,
     platform,
-    hasPages ? getPageSection() : ""
+    pages?.getPageSection() ?? ""
   );
   return content;
 }

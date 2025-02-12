@@ -22,8 +22,8 @@ const argv = yargs
   .command(
     "$0 [projectName]",
     "Create a Plasmic app with Next.js, Gatsby, or React (Vite)",
-    (yargs) => {
-      yargs
+    (yargs2) => {
+      yargs2
         .usage("Usage: $0 [projectName] [options]")
         .positional("projectName", {
           describe: "Project and NPM package name",
@@ -62,17 +62,17 @@ const argv = yargs
   .strict()
   .help("h")
   .alias("h", "help")
-  .check((argv) => {
+  .check((argv2) => {
     if (
-      argv.scheme === "loader" &&
-      !(argv.platform === "nextjs" || argv.platform === "gatsby")
+      argv2.scheme === "loader" &&
+      !(argv2.platform === "nextjs" || argv2.platform === "gatsby")
     ) {
       throw new Error(`Loader scheme may only be used with Next.js or Gatsby`);
     }
 
     if (
-      argv.appDir &&
-      !(argv.platform === "nextjs" && argv.scheme === "loader")
+      argv2.appDir &&
+      !(argv2.platform === "nextjs" && argv2.scheme === "loader")
     ) {
       throw new Error(
         `App dir may only be used with Next.js and loader scheme`
@@ -119,8 +119,6 @@ async function maybePrompt<T>(
 }
 
 // Keeping these as globals to easily share with our `crash` function
-const projectName: string | undefined =
-  argv._.length > 0 ? argv._[0] + "" : undefined;
 let resolvedProjectPath: string;
 
 /**
