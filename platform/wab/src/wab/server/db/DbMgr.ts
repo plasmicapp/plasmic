@@ -7317,7 +7317,7 @@ export class DbMgr implements MigrationDbMgr {
 
       const duplicated = duplicatedFields();
       if (duplicated.length > 0) {
-        throw new BadRequestError(`There are duplicated fields. ${duplicated}`);
+        throw new BadRequestError(JSON.stringify(duplicated));
       }
     }
 

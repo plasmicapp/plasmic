@@ -247,22 +247,20 @@ function MaybeFormItem({
   minChars?: number;
 }) {
   const commonRules = [
-    // { required: props.required, message: "Field is required"},
-    {
-      validator: async (_, value) => {
-        const errors: string[] = [];
-        if (props.required && !value) {
-          errors.push("Field is required");
-        }
-        if (props.unique) {
-          errors.push("Field must be unique to publish");
-        }
-        if (errors.length > 0) {
-          return Promise.reject(new Error(errors.join("\n")));
-        }
-        return Promise.resolve();
-      },
-    },
+    { required: props.required, message: "Field is required" },
+    // {
+    //   validator: async (_, value) => {
+    //     // const errors: string[] = [];
+    //     // if (props.required && !value) {
+    //     //   errors.push("Field is required");
+    //     // }
+    //     if (props.unique) {
+    //       return Promise.reject(new Error("unique.."));
+    //     }
+    //     return Promise.resolve();
+    //   },
+    // },
+    //     /* If there are entries with duplicated field(s),
   ];
   const typeSpecificRules =
     [CmsMetaType.TEXT, CmsMetaType.RICH_TEXT].includes(typeName) &&
