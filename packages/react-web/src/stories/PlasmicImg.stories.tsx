@@ -1,10 +1,18 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 import React from "react";
 import { PlasmicImg } from "../render/PlasmicImg";
 import "../styles/plasmic.css";
 
-const Template: ComponentStory<typeof PlasmicImg> = (args: any) => {
-  const { containerWidth, containerHeight, ...rest } = args;
+type PlasmicImgTemplateProps = React.ComponentProps<typeof PlasmicImg> & {
+  containerWidth?: number;
+  containerHeight?: number;
+};
+
+const Template: StoryFn<PlasmicImgTemplateProps> = ({
+  containerWidth,
+  containerHeight,
+  ...rest
+}) => {
   return (
     <div style={{ width: containerWidth, height: containerHeight }}>
       <PlasmicImg {...rest} />
@@ -38,11 +46,10 @@ export default {
   },
   args: {
     src: {
-      src:
-        "https://img.plasmic.app/img-optimizer/v1/img/07a7153536a89fef14e0075c7632d6b3.jpg",
+      src: "https://img.plasmic.app/img-optimizer/v1/img/07a7153536a89fef14e0075c7632d6b3.jpg",
       fullWidth: 3840,
       fullHeight: 2160,
     },
     loader: "plasmic",
   },
-} as ComponentMeta<typeof PlasmicImg>;
+} satisfies Meta<PlasmicImgTemplateProps>;
