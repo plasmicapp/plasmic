@@ -112,9 +112,10 @@ describe("variants", function () {
         cy.justLog("Select the child textbox.");
         cy.justType("{enter}");
         cy.justLog("Set placeholder style.");
-        cy.addElementInteraction("placeholder");
+        cy.toggleElementVariants();
+        cy.addElementVariant("placeholder");
         cy.chooseFontSize("48px");
-        cy.disableElementInteraction();
+        cy.stopRecordingElementVariant();
 
         cy.switchToTreeTab();
         cy.withinLiveMode(() => {

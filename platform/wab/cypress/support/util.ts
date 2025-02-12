@@ -702,6 +702,15 @@ export function getFontInput() {
   );
 }
 
+export function underlineText() {
+  cy.switchToDesignTab();
+  return cy
+    .get(
+      `.canvas-editor__right-pane [data-test-id="text-decoration-selector"] [class*="PlasmicStyleToggleButtonGroup"] button:first-child svg`
+    )
+    .click();
+}
+
 export function chooseFont(fontName: string) {
   getFontInput().click();
 
@@ -949,8 +958,9 @@ export function setImageSource(url: string) {
 }
 
 export function changeTagType(tag: string) {
-  cy.get(`[data-test-class="tpl-tag-select"]`).click();
-  cy.contains(tag).click();
+  cy.get(`[data-test-class="tpl-tag-select"] input`).type(`${tag}{enter}`, {
+    force: true,
+  });
 }
 
 export function clearNotifications() {
@@ -1120,21 +1130,26 @@ export function openArtboardSettings() {
   });
 }
 
-export function addElementInteraction(pseudoSelector: string) {
-  toggleElementStates();
+export function addElementVariant(pseudoSelector: string) {
   cy.get("[data-test-id='add-private-interaction-variant-button']")
     .click()
     .wait(200);
   justType(pseudoSelector + "{enter}");
 }
 
-export function disableElementInteraction() {
+export function stopRecordingElementVariant() {
   cy.get(
     `[data-test-id="private-style-variants-section"] [data-test-class="variant-record-button-stop"]`
   ).click();
 }
 
-function toggleElementStates() {
+export function deactivateElementVariant() {
+  cy.get(
+    `[data-test-id="private-style-variants-section"] [data-test-class="variant-pin-button-deactivate"]`
+  ).click();
+}
+
+export function toggleElementVariants() {
   let isOpened = false;
   cy.document().then((doc) => {
     if (

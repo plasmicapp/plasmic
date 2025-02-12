@@ -36,19 +36,19 @@ import {
   isValidFontWeight,
 } from "@/wab/client/typography-utils";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
-import { ensure, filterMapTruthy, maybe } from "@/wab/shared/common";
 import {
   derefTokenRefs,
   TokenType,
   tokenTypeDimOpts,
 } from "@/wab/commons/StyleToken";
-import { fontWeightNumber, parseCssNumericNew } from "@/wab/shared/css";
+import { ensure, filterMapTruthy, maybe } from "@/wab/shared/common";
 import { allStyleTokens } from "@/wab/shared/core/sites";
+import { fontWeightNumber, parseCssNumericNew } from "@/wab/shared/css";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { notification } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { ReactElement } from "react";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 
 interface TypographyContentProps {
   onChange: (cssPropName: string, newValue: string) => void;
@@ -221,6 +221,7 @@ function _Typography({
             label="Decorate"
             autoWidth
             isDisabled={readOnly}
+            data-test-id="text-decoration-selector"
           >
             <StyleToggleButton value="underline">
               <Icon icon={UnderIcon} />
