@@ -22,14 +22,14 @@
   },
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
-      "import": "./dist/antd.esm.js",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/antd.esm.js"
     },
     "./skinny/*": {
+      "types": "./skinny/*.d.ts",
       "require": "./skinny/*.cjs.js",
-      "import": "./skinny/*.esm.js",
-      "types": "./skinny/*.d.ts"
+      "import": "./skinny/*.esm.js"
     }
   },
   "files": [
@@ -50,7 +50,7 @@
     "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.ts --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --lib dom,esnext --esModuleInterop --strict --outDir ./dist/ && cp ./dist/*.d.ts skinny/ && rm skinny/index.d.ts",
     "prepublishOnly": "npm run build",
     "clean": "rm -rf dist/ skinny/*.ts skinny/*.map skinny/*.js",
-    "storybook": "storybook dev -p 6006",
+    "storybook": "storybook dev -p 6006 --no-open",
     "build-storybook": "storybook build",
     "test-storybook": "test-storybook",
     "test": "TEST_CWD=`pwd` yarn --cwd=../.. test"
@@ -73,16 +73,6 @@
     "@rollup/plugin-commonjs": "^11.0.0",
     "@rollup/plugin-json": "^4.0.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
-    "@storybook/addon-actions": "^8.5.3",
-    "@storybook/addon-essentials": "^8.5.3",
-    "@storybook/addon-info": "^5.3.21",
-    "@storybook/addon-interactions": "^8.5.3",
-    "@storybook/addon-links": "^8.5.3",
-    "@storybook/jest": "^0.0.10",
-    "@storybook/react": "^8.5.3",
-    "@storybook/react-webpack5": "^8.5.3",
-    "@storybook/test-runner": "^0.13.0",
-    "@storybook/testing-library": "^0.0.13",
     "@types/lodash": "^4.14.200",
     "@types/node": "^14.0.26",
     "@types/react": "^18.0.27",
@@ -95,9 +85,7 @@
     "rollup": "^3.10.1",
     "rollup-plugin-dts": "^5.0.0",
     "rollup-plugin-esbuild": "^5.0.0",
-    "rollup-plugin-replace-imports": "^1.0.0",
-    "storybook": "^8.5.3",
-    "storybook-addon-mock": "^4.2.1"
+    "rollup-plugin-replace-imports": "^1.0.0"
   },
   "peerDependencies": {
     "@plasmicapp/data-sources": ">=0.1.0",

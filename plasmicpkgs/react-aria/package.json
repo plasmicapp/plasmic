@@ -22,14 +22,14 @@
   },
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
-      "import": "./dist/react-aria.esm.js",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/react-aria.esm.js"
     },
     "./skinny/*": {
+      "types": "./skinny/*.d.ts",
       "require": "./skinny/*.cjs.js",
-      "import": "./skinny/*.esm.js",
-      "types": "./skinny/*.d.ts"
+      "import": "./skinny/*.esm.js"
     }
   },
   "files": [
@@ -40,7 +40,7 @@
     "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.tsx --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --lib esnext,dom,dom.iterable --jsx react --esModuleInterop --strict --outDir ./dist/ && cp ./dist/*.d.ts skinny/ && rm skinny/index.d.ts",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "clean": "rm -rf dist/ skinny/*.ts skinny/*.map skinny/*.js",
-    "storybook": "storybook dev -p 6006",
+    "storybook": "storybook dev -p 6006 --no-open",
     "build-storybook": "storybook build",
     "test-storybook": "test-storybook",
     "upgrade-aria": "yarn upgrade --latest --scope @react-stately && yarn upgrade --latest --scope @react-aria && yarn upgrade --latest --scope react-aria-components"
@@ -59,13 +59,6 @@
     "@rollup/plugin-commonjs": "^11.0.0",
     "@rollup/plugin-json": "^4.0.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
-    "@storybook/addon-actions": "^8.5.3",
-    "@storybook/addon-interactions": "^8.5.3",
-    "@storybook/addon-webpack5-compiler-swc": "^2.0.0",
-    "@storybook/react": "^8.5.3",
-    "@storybook/react-webpack5": "^8.5.3",
-    "@storybook/test": "^8.5.3",
-    "@storybook/test-runner": "^0.21.0",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@types/react-is": "^19.0.0",
@@ -74,7 +67,6 @@
     "react-dom": "^18.2.0",
     "rollup": "^3.10.1",
     "rollup-plugin-esbuild": "^5.0.0",
-    "storybook": "^8.5.3",
     "typescript": "^5"
   },
   "peerDependencies": {

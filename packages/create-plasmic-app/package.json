@@ -12,9 +12,8 @@
     "create-plasmic-app": "./dist/index.js"
   },
   "scripts": {
-    "wtest": "jest --colors --watchAll",
-    "test": "jest --colors",
-    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
+    "test": "TEST_CWD=`pwd` yarn --cwd=../.. test --passWithNoTests",
+    "coverage": "TEST_CWD=`pwd` yarn --cwd=../.. test --coverage --passWithNoTests",
     "build": "eslint 'src/**' && tsc",
     "run-cpa": "yarn build && ts-node run-cpa.ts",
     "create-plasmic-app": "ts-node src/index.ts",
@@ -30,14 +29,7 @@
     "@types/semver": "^7.3.5",
     "@types/update-notifier": "^5.0.0",
     "@types/validate-npm-package-name": "^3.0.2",
-    "@types/yargs": "^16.0.0",
-    "@typescript-eslint/eslint-plugin": "5.59.0",
-    "@typescript-eslint/parser": "5.59.0",
-    "eslint": "^8.50.0",
-    "jest": "^26.6.3",
-    "jest-circus": "^26.6.3",
-    "ts-jest": "^26.5.3",
-    "ts-node": "^10.9.1"
+    "@types/yargs": "^16.0.0"
   },
   "dependencies": {
     "@plasmicapp/cli": "0.1.187",

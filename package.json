@@ -31,11 +31,13 @@
     "upgrade-internal": "bash scripts/upgrade-internal.bash"
   },
   "resolutions": {
-    "eslint": "^8.55.0"
+    "eslint": "^8.55.0",
+    "jest": "29.7.0"
   },
   "packageManager": "yarn@1.22.21",
   "devDependencies": {
     "@microsoft/api-extractor": "7.38.2",
+    "@testing-library/react": "16.2.0",
     "@typescript-eslint/eslint-plugin": "6.21.0",
     "@typescript-eslint/parser": "6.21.0",
     "esbuild": "0.17.18",
@@ -51,12 +53,24 @@
     "eslint-plugin-react": "^7.33.2",
     "if-env": "^1.0.4",
     "jest": "29.7.0",
+    "jest-environment-jsdom": "29.7.0",
     "lerna": "^7.4.2",
     "nx": "^16",
     "prettier": "2.8.8",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "storybook": "8.5.5",
+    "storybook-addon-mock": "5.0.0",
+    "@storybook/addon-essentials": "8.5.5",
+    "@storybook/addon-interactions": "8.5.5",
+    "@storybook/addon-links": "8.5.5",
+    "@storybook/addon-webpack5-compiler-swc": "2.1.0",
+    "@storybook/react": "8.5.5",
+    "@storybook/react-webpack5": "8.5.5",
+    "@storybook/test": "8.5.5",
+    "@storybook/test-runner": "0.21.0",
+    "@storybook/testing-library": "0.2.2"
   },
   "workspaces": [
     "packages/auth-api",
