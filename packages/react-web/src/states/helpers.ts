@@ -233,7 +233,7 @@ export function set(obj: any, keys: any, val: any) {
     x,
     k;
   while (i < l) {
-    k = keys[i++];
+    k = "" + keys[i++];
     if (k === "__proto__" || k === "constructor" || k === "prototype") break;
     const newValue =
       i === l
