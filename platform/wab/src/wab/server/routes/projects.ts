@@ -1138,6 +1138,7 @@ async function ensureSchemaIsUpToDate(req: Request) {
 
 export async function tryMergeBranch(req: Request, res: Response) {
   const mgr = userDbMgr(req);
+  const { projectId } = req.params;
   const { subject, pretend, resolution, autoCommitOnToBranch } =
     req.body as TryMergeRequest;
   const mergeResult = pretend
@@ -1160,7 +1161,19 @@ export async function tryMergeBranch(req: Request, res: Response) {
       ...mergeResult,
     })
   );
+
+  await req.resolveTransaction();
+
+  if (
+    (mergeResult.status === "can be merged" ||
+      mergeResult.status === "resolution accepted") &&
+    mergeResult.pkgVersion &&
+    !pretend
+  ) {
+    await prefillPkgVersion(req, projectId, mergeResult.pkgVersion);
+  }
 }
+
 export async function saveProjectRev(req: Request, res: Response) {
   await ensureSchemaIsUpToDate(req);
 
@@ -1845,6 +1858,44 @@ export async function computeNextProjectVersion(req: Request, res: Response) {
   );
 }
 
+export async function prefillPkgVersion(
+  req: Request,
+  projectId: string,
+  pkgVersion: Pick<PkgVersion, "id" | "version" | "pkgId" | "branchId">
+) {
+  // Take this opportunity to fire off a pre-fill request to codegen-origin
+  console.log(
+    `Pre-filling for ${projectId}@${pkgVersion.version} against ${req.devflags.codegenOriginHost}`
+  );
+  try {
+    const fetchResponse = await fetch(
+      `${req.devflags.codegenOriginHost}/api/v1/loader/code/prefill/${pkgVersion.id}`,
+      {
+        method: "POST",
+      }
+    );
+    if (fetchResponse.status !== 200) {
+      throw new Error(await fetchResponse.text());
+    }
+  } catch (err) {
+    await req.con.transaction(async (entMgr) => {
+      console.error(
+        `Error pre-filling ${projectId}@${pkgVersion.version}; marking as pre-filled anyway`,
+        err
+      );
+      const superMgr = new DbMgr(entMgr, SUPER_USER);
+      await superMgr.updatePkgVersion(
+        pkgVersion.pkgId,
+        pkgVersion.version,
+        pkgVersion.branchId,
+        {
+          isPrefilled: true,
+        }
+      );
+    });
+  }
+}
+
 export async function publishProject(req: Request, res: Response) {
   const body = uncheckedCast<PublishProjectRequest>(req.body);
   if (body.version && !semver.valid(body.version)) {
@@ -1901,37 +1952,7 @@ export async function publishProject(req: Request, res: Response) {
 
   await req.resolveTransaction();
 
-  // Take this opportunity to fire off a pre-fill request to codegen-origin
-  console.log(
-    `Pre-filling for ${projectId}@${pkgVersion.version} against ${req.devflags.codegenOriginHost}`
-  );
-  try {
-    const fetchResponse = await fetch(
-      `${req.devflags.codegenOriginHost}/api/v1/loader/code/prefill/${pkgVersion.id}`,
-      {
-        method: "POST",
-      }
-    );
-    if (fetchResponse.status !== 200) {
-      throw new Error(await fetchResponse.text());
-    }
-  } catch (err) {
-    await req.con.transaction(async (entMgr) => {
-      console.error(
-        `Error pre-filling ${projectId}@${pkgVersion.version}; marking as pre-filled anyway`,
-        err
-      );
-      const superMgr = new DbMgr(entMgr, SUPER_USER);
-      await superMgr.updatePkgVersion(
-        pkgVersion.pkgId,
-        pkgVersion.version,
-        pkgVersion.branchId,
-        {
-          isPrefilled: true,
-        }
-      );
-    });
-  }
+  await prefillPkgVersion(req, projectId, pkgVersion);
 
   // Broadcast to publish listeners
   console.log(

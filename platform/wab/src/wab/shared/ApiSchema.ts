@@ -1755,13 +1755,22 @@ export interface DifferentHostApps extends BaseMergeResult {
   toHostUrl: string | null;
 }
 
+export type PkgVersionSummary = {
+  id: PkgVersionId;
+  version: string;
+  branchId: BranchId | null;
+  pkgId: string;
+};
+
 export interface CanBeMerged extends BaseMergeResult {
   status: "can be merged";
   mergeStep?: MergeStep;
+  pkgVersion?: PkgVersionSummary;
 }
 
 export interface ResolutionAccepted extends BaseMergeResult {
   status: "resolution accepted";
+  pkgVersion?: PkgVersionSummary;
 }
 
 export interface HasConflicts extends BaseMergeResult {

@@ -253,7 +253,7 @@ import fs from "fs";
 import { pwnedPassword } from "hibp";
 import { Draft, createDraft, finishDraft } from "immer";
 import * as _ from "lodash";
-import L, { fromPairs, pick, uniq } from "lodash";
+import L, { fromPairs, omit, pick, uniq } from "lodash";
 import moment from "moment";
 import { CreateChatCompletionRequest } from "openai";
 import ShortUuid from "short-uuid";
@@ -8280,7 +8280,7 @@ export class DbMgr implements MigrationDbMgr {
       });
     }
 
-    await this.publishProject(
+    const { pkgVersion } = await this.publishProject(
       projectId,
       // TODO compute the semantic version bump
       undefined,
@@ -8299,7 +8299,10 @@ export class DbMgr implements MigrationDbMgr {
       });
     }
 
-    return result;
+    return {
+      ...result,
+      pkgVersion: omit(pkgVersion, ["model"]),
+    };
   }
 
   async getWorkspaceToken(workspaceId: WorkspaceId): Promise<string> {
