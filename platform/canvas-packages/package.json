@@ -16,7 +16,7 @@
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@faker-js/faker": "^8.2.0",
-    "@plasmicapp/react-web": "^0.2.367",
+    "@plasmicapp/react-web": "^0.2.368",
     "@plasmicpkgs/airtable": "^0.0.224",
     "@plasmicpkgs/antd": "^2.0.131",
     "@plasmicpkgs/antd5": "^0.0.268",
