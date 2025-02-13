@@ -16,11 +16,13 @@ export {
   usePlasmicDataOp,
   usePlasmicInvalidate,
 } from "./hooks/usePlasmicDataOp";
+export { usePlasmicServerQuery } from "./serverQueries/client";
 export {
   executeServerQuery,
   mkPlasmicUndefinedServerProxy,
 } from "./serverQueries/server";
 export type {
+  ClientQueryResult,
   DataSourceSchema,
   ManyRowsResult,
   Pagination,

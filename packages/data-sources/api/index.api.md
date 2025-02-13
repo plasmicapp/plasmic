@@ -15,6 +15,16 @@ export type BaseFieldConfig = {
     fieldId?: string;
 };
 
+// @public
+export interface ClientQueryResult<T = any> {
+    data?: T;
+    error?: any;
+    isLoading?: boolean;
+    paginate?: Pagination;
+    schema?: TableSchema;
+    total?: number;
+}
+
 // @public (undocumented)
 export interface DataOp {
     // (undocumented)
@@ -47,7 +57,7 @@ export function deriveFieldConfigs<T extends BaseFieldConfig>(specifiedFieldsPar
 export function executePlasmicDataOp<T extends SingleRowResult | ManyRowsResult>(op: DataOp, opts?: ExecuteOpts): Promise<T>;
 
 // @public
-export function executeServerQuery<F extends (...args: any[]) => any>(serverQuery: ServerQuery<F>): Promise<ServerQueryResult<ReturnType<F>> | ServerQueryResult<{}>>;
+export function executeServerQuery<F extends (...args: any[]) => any>(serverQuery: ServerQuery<F>): Promise<ServerQueryResult<ReturnType<F> | {}>>;
 
 // @public (undocumented)
 export function Fetcher(props: FetcherProps): React_2.ReactElement | null;
@@ -115,11 +125,13 @@ export type QueryResult = Partial<ManyRowsResult<any>> & {
 };
 
 // @public (undocumented)
-export interface ServerQuery<F extends (...args: any[]) => any> {
+export interface ServerQuery<F extends (...args: any[]) => Promise<any>> {
     // (undocumented)
     execParams: () => Parameters<F>;
     // (undocumented)
     fn: F;
+    // (undocumented)
+    id: string;
 }
 
 // @public (undocumented)
@@ -184,13 +196,15 @@ export function usePlasmicDataMutationOp<T extends SingleRowResult | ManyRowsRes
 export function usePlasmicDataOp<T extends SingleRowResult | ManyRowsResult, E = any>(dataOp: ResolvableDataOp, opts?: {
     paginate?: Pagination;
     noUndefinedDataProxy?: boolean;
-}): Partial<T> & {
-    error?: E;
-    isLoading?: boolean;
-};
+}): ClientQueryResult<T["data"]>;
 
 // @public
 export function usePlasmicInvalidate(): (invalidatedKeys: string[] | null | undefined) => Promise<any[] | undefined>;
+
+// @public (undocumented)
+export function usePlasmicServerQuery<F extends (...args: any[]) => any>(serverQuery: ServerQuery<F>, fallbackData?: ReturnType<F>, opts?: {
+    noUndefinedDataProxy?: boolean;
+}): Partial<ServerQueryResult<ReturnType<F>>>;
 
 // (No @packageDocumentation comment for this package)
 

@@ -45,12 +45,46 @@ export interface ManyRowsResult<T = any> {
   paginate?: Pagination;
 }
 
-export interface ServerQuery<F extends (...args: any[]) => any> {
+export interface ServerQuery<F extends (...args: any[]) => Promise<any>> {
   fn: F;
   execParams: () => Parameters<F>;
+  id: string;
 }
 
 export interface ServerQueryResult<T = any> {
   data: T;
   isLoading: boolean;
+}
+
+/**
+ * Represents the result of a client-side query.
+ */
+export interface ClientQueryResult<T = any> {
+  /**
+   * The data returned by the query. May be undefined if the query has not yet completed.
+   */
+  data?: T;
+  /**
+   * The schema of the table from which the data was queried. Only available for plasmic data
+   * integration. May be undefined if the query has not yet completed.
+   */
+  schema?: TableSchema;
+  /**
+   * The total number of records available. Only available for plasmic data integration. May be
+   * undefined if the query has not yet completed.
+   */
+  total?: number;
+  /**
+   * Pagination information for the query result. Only available for plasmic data integration. May be
+   * undefined if the query has not yet completed.
+   */
+  paginate?: Pagination;
+  /**
+   * Any error that occurred during the query. This is optional and may be undefined.
+   */
+  error?: any;
+  /**
+   * Indicates whether the query is currently loading.
+   */
+  isLoading?: boolean;
 }

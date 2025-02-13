@@ -1,4 +1,5 @@
 import { ServerQuery, ServerQueryResult } from "../types";
+import { resolveParams } from "./common";
 
 class PlasmicUndefinedServerError extends Error {
   plasmicType: "PlasmicUndefinedServerError";
@@ -38,32 +39,18 @@ export function mkPlasmicUndefinedServerProxy() {
 }
 
 /**
- * This returns either:
- * * The resolved params, if they are available.
- * * PlasmicUndefinedServerError, if when trying to evaluate the params,
- *   we encounter a PlasmicUndefinedServerError, so this operation cannot be
- *   performed until that dependency is resolved.
- * * Throws an error if the params function throws a normal error.
- */
-function resolveParams(params: () => any) {
-  try {
-    return params();
-  } catch (err) {
-    if (isPlasmicUndefinedServerError(err)) {
-      return err;
-    }
-    throw err;
-  }
-}
-
-/**
  * Executes a server query, returning either the result of the query or a
  * PlasmicUndefinedServerProxy if the query depends on data that is not yet ready
  */
 export async function executeServerQuery<F extends (...args: any[]) => any>(
   serverQuery: ServerQuery<F>
-): Promise<ServerQueryResult<ReturnType<F>> | ServerQueryResult<{}>> {
-  const resolvedParams = resolveParams(serverQuery.execParams);
+): Promise<ServerQueryResult<ReturnType<F> | {}>> {
+  const resolvedParams = resolveParams(serverQuery.execParams, (err) => {
+    if (isPlasmicUndefinedServerError(err)) {
+      return err;
+    }
+    throw err;
+  });
   if (isPlasmicUndefinedServerError(resolvedParams)) {
     return mkPlasmicUndefinedServerProxy();
   }
