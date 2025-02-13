@@ -21,7 +21,7 @@ const createPlasmicAppVersion = updateNotify();
 const argv = yargs
   .command(
     "$0 [projectName]",
-    "Create a Plasmic app with Next.js, Gatsby, or Create React App",
+    "Create a Plasmic app with Next.js, Gatsby, or React (Vite)",
     (yargs) => {
       yargs
         .usage("Usage: $0 [projectName] [options]")
@@ -176,8 +176,8 @@ async function run(): Promise<void> {
         value: "gatsby",
       },
       {
-        name: "Create React App (advanced)",
-        short: "Create React App",
+        name: "React (Vite)",
+        short: "React (Vite)",
         value: "react",
       },
     ],
