@@ -1,6 +1,8 @@
 import * as PlasmicQuery from "@plasmicapp/query";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import * as jsxDevRuntime from "react/jsx-dev-runtime";
+import * as jsxRuntime from "react/jsx-runtime";
 import { registerRenderErrorListener, setPlasmicRootNode } from "./canvas-host";
 import * as hostModule from "./exports";
 import { setRepeatedElementFn } from "./repeatedElement";
@@ -21,6 +23,8 @@ if (root.__Sub == null) {
   root.__Sub = {
     React,
     ReactDOM,
+    jsxRuntime,
+    jsxDevRuntime,
     PlasmicQuery,
     hostModule,
     hostVersion,
