@@ -7,6 +7,7 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ApiCommentThread } from "@/wab/shared/ApiSchema";
 import { Bundler, FastBundler } from "@/wab/shared/bundler";
 import { xSymmetricDifference } from "@/wab/shared/common";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   TplNamable,
   getTplOwnerComponent,
@@ -14,7 +15,12 @@ import {
   summarizeTplNamable,
   tryGetTplOwnerComponent,
 } from "@/wab/shared/core/tpls";
-import { Component, ObjInst, TplNode } from "@/wab/shared/model/classes";
+import {
+  Component,
+  ObjInst,
+  TplNode,
+  isKnownTplNode,
+} from "@/wab/shared/model/classes";
 import assert from "assert";
 import { partition, sortBy } from "lodash";
 
@@ -130,15 +136,26 @@ export interface CommentsStats {
   replyCount: number;
 }
 
-export function getElementCommentsStats(
+export function evaluateCommentIndicator(
+  element: TplNode | SlotSelection,
   commentsCtx: CommentsContextData,
-  element: ObjInst
+  studioCtx: StudioCtx
+) {
+  const commentsStats = getElementCommentsStats(element, commentsCtx);
+  const showCommentIndicator =
+    studioCtx.showCommentsPanel && commentsStats.commentCount > 0;
+  return { showCommentIndicator, commentsStats };
+}
+
+export function getElementCommentsStats(
+  element: TplNode | SlotSelection,
+  commentsCtx: CommentsContextData
 ) {
   const count: CommentsStats = {
     commentCount: 0,
     replyCount: 0,
   };
-  if (!isTplNamable(element)) {
+  if (!isKnownTplNode(element) || !isTplNamable(element)) {
     return count;
   }
   const bundler = commentsCtx.bundler;

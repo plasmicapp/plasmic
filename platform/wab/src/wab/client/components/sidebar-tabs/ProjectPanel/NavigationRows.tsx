@@ -28,6 +28,12 @@ import {
 import * as React from "react";
 
 import { COMMANDS } from "@/wab/client/commands/command";
+import CommentIndicatorIcon from "@/wab/client/components/comments/CommentIndicatorIcon";
+import {
+  CommentsContextData,
+  useCommentsCtx,
+} from "@/wab/client/components/comments/CommentsProvider";
+import { evaluateCommentIndicator } from "@/wab/client/components/comments/utils";
 import { menuSection } from "@/wab/client/components/menu-builder";
 import promptDeleteComponent from "@/wab/client/components/modals/componentDeletionModal";
 import { NavigationDropdownContext } from "@/wab/client/components/sidebar-tabs/ProjectPanel/NavigationDropdown";
@@ -111,6 +117,7 @@ export function NavigationArenaRow({
 }: NavigationArenaRowProps) {
   const [renaming, setRenaming] = React.useState(false);
   const studioCtx = useStudioCtx();
+  const commentsCtx = useCommentsCtx();
   const { onClose } = ensure(
     React.useContext(NavigationDropdownContext),
     "Expected NavigationDropdownContext"
@@ -153,7 +160,7 @@ export function NavigationArenaRow({
         onClose();
         await COMMANDS.navigation.switchArena.execute(studioCtx, arena);
       }}
-      icon={<Icon icon={getArenaIcon(arena)} />}
+      icon={<Icon icon={getArenaIcon(arena, studioCtx, commentsCtx)} />}
       isSelected={studioCtx.currentArena === arena}
       menuSize="small"
       menu={menu}
@@ -203,7 +210,26 @@ export function NavigationAnyRow({ element, matcher }: NavigationAnyRowProps) {
   );
 }
 
-function getArenaIcon(arena: AnyArena) {
+function getArenaIcon(
+  arena: AnyArena,
+  studioCtx: StudioCtx,
+  commentsCtx: CommentsContextData
+) {
+  if (isPageArena(arena) || isComponentArena(arena)) {
+    const { showCommentIndicator, commentsStats } = evaluateCommentIndicator(
+      arena.component.tplTree,
+      commentsCtx,
+      studioCtx
+    );
+    if (showCommentIndicator) {
+      return () => (
+        <CommentIndicatorIcon
+          commentCount={commentsStats.commentCount}
+          replyCount={commentsStats.replyCount}
+        />
+      );
+    }
+  }
   return switchType(arena)
     .when(Arena, () => MixedArenaIcon)
     .when(PageArena, () => PageIcon)

@@ -124,7 +124,8 @@ import * as React from "react";
 import { FixedSizeList } from "react-window";
 
 import { TplClip } from "@/wab/client/clipboard/local";
-import { getElementCommentsStats } from "@/wab/client/components/comments/utils";
+import CommentIndicatorIcon from "@/wab/client/components/comments/CommentIndicatorIcon";
+import { evaluateCommentIndicator } from "@/wab/client/components/comments/utils";
 import {
   getNodeSummary,
   OutlineCtx,
@@ -133,7 +134,6 @@ import {
   OutlineNodeKey,
 } from "@/wab/client/components/sidebar-tabs/OutlineCtx";
 import BoltIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Bolt";
-import SpeechBubblesvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__SpeechBubbleSvg";
 import { INTERACTIVE_CAP, REPEATED_CAP } from "@/wab/shared/Labels";
 
 function RepIcon() {
@@ -148,24 +148,6 @@ function ActionIcon() {
   return (
     <Tooltip title={`${INTERACTIVE_CAP} element`}>
       <Icon icon={BoltIcon} />
-    </Tooltip>
-  );
-}
-
-function CommentIcon({
-  commentCount,
-  replyCount,
-}: {
-  commentCount: number;
-  replyCount: number;
-}) {
-  let title = `${commentCount} ${commentCount > 1 ? "comments" : "comment"}`;
-  if (replyCount > 0) {
-    title += ` and ${replyCount} ${replyCount > 1 ? "replies" : "reply"}`;
-  }
-  return (
-    <Tooltip title={title}>
-      <Icon icon={SpeechBubblesvgIcon} />
     </Tooltip>
   );
 }
@@ -407,16 +389,6 @@ const TplTreeNode = observer(function TplTreeNode(props: {
     }
   ).get();
 
-  const getCommentsStats = () => {
-    if (!isKnownTplNode(item)) {
-      return {
-        commentCount: 0,
-        replyCount: 0,
-      };
-    }
-    return getElementCommentsStats(commentsCtx, item);
-  };
-
   const visibilityDataCond = effectiveVs.get()?.dataCond;
   const canvasEnv = isKnownTplNode(item)
     ? viewCtx.getCanvasEnvForTpl(item)
@@ -608,21 +580,6 @@ const TplTreeNode = observer(function TplTreeNode(props: {
     return null;
   };
 
-  const renderCommentIcon = () => {
-    const commentsStats = getCommentsStats();
-    if (commentsStats.commentCount > 0) {
-      return (
-        <IconWrapper>
-          <CommentIcon
-            commentCount={commentsStats.commentCount}
-            replyCount={commentsStats.replyCount}
-          />
-        </IconWrapper>
-      );
-    }
-    return null;
-  };
-
   const customLabel = computed(
     () => {
       if (Tpls.isTplCodeComponent(item) && canvasEnv) {
@@ -729,6 +686,19 @@ const TplTreeNode = observer(function TplTreeNode(props: {
 
   const icon = computed(
     () => {
+      const { showCommentIndicator, commentsStats } = evaluateCommentIndicator(
+        item,
+        commentsCtx,
+        viewCtx.studioCtx
+      );
+      if (showCommentIndicator) {
+        return (
+          <CommentIndicatorIcon
+            commentCount={commentsStats.commentCount}
+            replyCount={commentsStats.replyCount}
+          />
+        );
+      }
       const node = createNodeIcon(item, effectiveVs.get());
       if (plumeDef) {
         return <PlumyIcon def={plumeDef}>{node}</PlumyIcon>;
@@ -890,7 +860,6 @@ const TplTreeNode = observer(function TplTreeNode(props: {
         >
           {icon}
         </div>
-        {renderCommentIcon()}
         {!codeComponentRoot && !codeComponentSlot && (
           <>
             {renderRep()}

@@ -4,6 +4,9 @@ import {
 } from "@/wab/client/analytics/events/insert-item";
 import { mkProjectLocation, openNewTab } from "@/wab/client/cli-routes";
 import RowItem from "@/wab/client/components/RowItem";
+import CommentIndicatorIcon from "@/wab/client/components/comments/CommentIndicatorIcon";
+import { useCommentsCtx } from "@/wab/client/components/comments/CommentsProvider";
+import { evaluateCommentIndicator } from "@/wab/client/components/comments/utils";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { DefaultComponentKindModal } from "@/wab/client/components/modals/DefaultComponentKindModal";
 import { showModalToRefreshCodeComponentProps } from "@/wab/client/components/modals/codeComponentModals";
@@ -56,6 +59,7 @@ export const ComponentRow = observer(function ComponentRow(props: {
 }) {
   const { component, matcher, importedFrom, indentMultiplier } = props;
   const studioCtx = useStudioCtx();
+  const commentsCtx = useCommentsCtx();
   const isPlainComponent =
     isReusableComponent(component) &&
     !isCodeComponent(component) &&
@@ -89,6 +93,23 @@ export const ComponentRow = observer(function ComponentRow(props: {
     studioCtx.site,
     component
   );
+  const icon = (() => {
+    const { showCommentIndicator, commentsStats } = evaluateCommentIndicator(
+      component.tplTree,
+      commentsCtx,
+      studioCtx
+    );
+    if (showCommentIndicator) {
+      return (
+        <CommentIndicatorIcon
+          commentCount={commentsStats.commentCount}
+          replyCount={commentsStats.replyCount}
+        />
+      );
+    }
+    return <Icon icon={ComponentIcon} />;
+  })();
+
   return (
     <DraggableInsertable
       sc={studioCtx}
@@ -123,7 +144,7 @@ export const ComponentRow = observer(function ComponentRow(props: {
           paddingLeft: calcIndent * 16 + 6,
           paddingRight: 6,
         }}
-        icon={<Icon icon={ComponentIcon} />}
+        icon={icon}
         menu={overlay}
         menuSize={"small"}
         onClick={
