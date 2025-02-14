@@ -117,6 +117,8 @@ export const ERROR_PATTERNS_TO_IGNORE = [
   // monaco
   // https://app.shortcut.com/plasmic/story/39095/error-cannot-read-properties-of-null-reading-getstartposition
   "reading 'getStartPosition'",
+  // Monaco tried to use web workers, but the apphost can block it with CSP
+  "EditorSimpleWorker.loadForeignModule",
 
   // antd / rc-align sometimes throw this by using ReactDOM.findDOMNode()
   "Unable to find node on an unmounted component",
