@@ -3324,10 +3324,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.9.tgz#1cfdd8d4c0e90fd4fed7d7204f70c44914871d31"
   integrity sha512-HO932uH/Y4otaDmjwzJbCLlokxNAdtU9VhDVUZUuVbzh0DhWaNyn/MINCu1oeZ4a6MIjdXFIm/U2VaxNxHYdsw==
 
-"@plasmicapp/react-web@^0.2.369":
-  version "0.2.369"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.369.tgz#d515eb4298ddd306b4b9a30a95a6773ef61e5f29"
-  integrity sha512-WZg7dCdJcVpCbaoIMHCyoquMkaUezK3WVRiG3xahrI/FKpdlyqlKJ4JWO6kmPSGjBf4P//0A6UzDcxRW+QBB0w==
+"@plasmicapp/react-web@^0.2.370":
+  version "0.2.370"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.370.tgz#e0df8491ee96547ff252bb98ecac26d12dadfb46"
+  integrity sha512-Mg/AJMtqFb1YM7U+vJNGfD161KU6c6hPjuO1owpTQJba+CMbBeKjCeE85hEXhvZMJIV/OPGTHO1f+X/wqY5G6A==
   dependencies:
     "@plasmicapp/auth-react" "0.0.22"
     "@plasmicapp/data-sources" "0.1.171"
@@ -3366,10 +3366,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/airtable/-/airtable-0.0.225.tgz#ae7e375f0081dac772ac732a092d581e5fd4a884"
   integrity sha512-UoTyJquMNxu03mTnTEPkLcS+Qr/fPxePHRRMHJlnL9ueNL0We7s3eFzqf7ZIn6VmdOHcRpvGdgmWA/1JvcjKkA==
 
-"@plasmicpkgs/antd5@^0.0.270":
-  version "0.0.270"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.270.tgz#44892d51e298c3f0ba3e037af5170b73e5c26c79"
-  integrity sha512-Jth8BTO6nKEx0OuFm+Zyxc3XyFTuTnkLADarEd7xu7bD22pdYwWIrXqNufjQxcCoaeb7Vd6/CTSMY0y1V3DoaA==
+"@plasmicpkgs/antd5@^0.0.271":
+  version "0.0.271"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.271.tgz#07ad3bde26b06fe1a596bc3f54746f7bb1afa453"
+  integrity sha512-iYBjn7kR608K8hb5U6W6PTelNrV9pxtGIChoQE54sFPtIPs3ZTrrJic46SaDOdWv8PI5nxcQeDOx5JW6t8vJYg==
   dependencies:
     antd "^5.12.7"
     classnames "^2.3.2"
@@ -3609,10 +3609,10 @@
     lucide-react "^0.279.0"
     remeda "^1.27.0"
 
-"@plasmicpkgs/react-aria@^0.0.106":
-  version "0.0.106"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.106.tgz#3eaec45efa866cd7d85a2c9968c2fa1a9387564a"
-  integrity sha512-YsJ+lcl9vkPQPYxRv/UxTuATuNpjVhF3qUdd2wp+/rwjKo/cq3TWmrWSRoZV93MmH8Gh88gJK947jQ4XdGzTxA==
+"@plasmicpkgs/react-aria@^0.0.107":
+  version "0.0.107"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.107.tgz#dac0df2f07ad51f0b792433ecbf6ddc9515ca8c8"
+  integrity sha512-j6LVPlSGoBIi0zjgoK5/LARSPyIbcdAnNwP8vqr5+deAcV/ANANeal3k5l0TLEkY3akqWpxzI80M7VPsg1wC+Q==
   dependencies:
     "@react-aria/i18n" "^3.11.0"
     "@react-aria/utils" "^3.24.0"
