@@ -15,6 +15,7 @@ import { getComponentPropTypes } from "@/wab/client/components/sidebar-tabs/Comp
 import {
   getHostLessPkg,
   getSortedHostLessPkgs,
+  getVersionForCanvasPackages,
 } from "@/wab/client/components/studio/studio-bundles";
 import { scriptExec } from "@/wab/client/dom-utils";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -408,7 +409,8 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
 
       // First, install the deps
       for (const [_depName, depModule] of await getSortedHostLessPkgs(
-        pkg.deps
+        pkg.deps,
+        getVersionForCanvasPackages(window.parent)
       )) {
         scriptExec(window.parent, depModule);
       }
@@ -432,7 +434,13 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
       const depLibs = new Set(studioCtx.site.codeLibraries);
 
       // Now install the actual package
-      scriptExec(window.parent, await getHostLessPkg(pkg.name));
+      scriptExec(
+        window.parent,
+        await getHostLessPkg(
+          pkg.name,
+          getVersionForCanvasPackages(window.parent)
+        )
+      );
       studioCtx.codeComponentsRegistry.clear();
       await syncCodeComponentsAndHandleErrors(studioCtx, { force: true });
       assert(

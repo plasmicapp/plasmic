@@ -11,6 +11,7 @@ import {
   getCanvasPkgs,
   getReactWebBundle,
   getSortedHostLessPkgs,
+  getVersionForCanvasPackages,
 } from "@/wab/client/components/studio/studio-bundles";
 import * as domMod from "@/wab/client/dom";
 import { NodeAndOffset } from "@/wab/client/dom";
@@ -145,7 +146,10 @@ export class CanvasCtx {
     this._hostLessPkgsLock = new Promise(
       spawnWrapper(async (resolve: () => void) => {
         await previousFetch;
-        const pkgsData = await getSortedHostLessPkgs(pkgs);
+        const pkgsData = await getSortedHostLessPkgs(
+          pkgs,
+          getVersionForCanvasPackages(this._win)
+        );
         runInAction(() => {
           // We run in action because `installedHostLessPkgs` is observable
           // so we want computed values to re-compute only after all packages

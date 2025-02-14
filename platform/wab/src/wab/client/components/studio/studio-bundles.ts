@@ -22,9 +22,9 @@ const fetchLiveFrameClient = memoizeOne(() =>
   ).then((res) => res.text())
 );
 
-const fetchHostLessPkg = memoize(async (pkg: string) => {
+const fetchHostLessPkg = memoize(async (pkg: string, version: string) => {
   return fetch(
-    `${getPublicUrl()}/static/canvas-packages/build/${pkg}.${COMMITHASH}.js`
+    `${getPublicUrl()}/static/canvas-packages/build/${pkg}${version}.${COMMITHASH}.js`
   ).then((res) => res.text());
 });
 
@@ -40,13 +40,22 @@ export function getLiveFrameClientJs() {
   return fetchLiveFrameClient();
 }
 
-export function getHostLessPkg(pkg: string) {
-  return fetchHostLessPkg(pkg);
+export function getHostLessPkg(pkg: string, version: string) {
+  return fetchHostLessPkg(pkg, version);
 }
 
-export async function getSortedHostLessPkgs(pkgs: string[]) {
+export async function getSortedHostLessPkgs(pkgs: string[], version: string) {
   const sortedPkgs = sortAs(pkgs, fstPartyHostLessComponents, (t) => t);
   return await Promise.all(
-    sortedPkgs.map(async (pkg) => [pkg, await fetchHostLessPkg(pkg)])
+    sortedPkgs.map(async (pkg) => [pkg, await fetchHostLessPkg(pkg, version)])
   );
+}
+
+// Versioning based on bundling made on platform/canvas-packages/esbuild.js
+export function getVersionForCanvasPackages(window: Window | null) {
+  if (!!(window as any)?.__Sub?.jsxRuntime) {
+    return "-v2";
+  }
+
+  return "";
 }

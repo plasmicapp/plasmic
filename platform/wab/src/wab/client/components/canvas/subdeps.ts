@@ -15,6 +15,8 @@ import type domAlign from "dom-align";
 import type $ from "jquery";
 import type React from "react";
 import type ReactDOM from "react-dom";
+import type * as jsxDevRuntime from "react/jsx-dev-runtime";
+import type * as jsxRuntime from "react/jsx-runtime";
 import type ResizeObserver from "resize-observer-polyfill";
 import type * as slate from "slate";
 import type * as slateReact from "slate-react";
@@ -205,6 +207,8 @@ export interface SubDeps {
   hostVersion: string | undefined;
   React: typeof React;
   ReactDOM: typeof ReactDOM;
+  jsxRuntime?: typeof jsxRuntime;
+  jsxDevRuntime?: typeof jsxDevRuntime;
   ResizeObserver: typeof ResizeObserver;
   slate: typeof slate;
   slateReact: typeof slateReact;

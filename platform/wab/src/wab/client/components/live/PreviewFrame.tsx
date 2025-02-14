@@ -1,29 +1,32 @@
-import { trapInteractionError } from "@/wab/client/components/canvas/studio-canvas-util";
-import {
-  onLoadInjectSystemJS,
-  pushPreviewModules,
-} from "@/wab/client/components/live/live-syncer";
-import { PreviewCtx } from "@/wab/client/components/live/PreviewCtx";
 import {
   HandlePosition,
   ResizingHandle,
 } from "@/wab/client/components/ResizingHandle";
-import { getSortedHostLessPkgs } from "@/wab/client/components/studio/studio-bundles";
+import { trapInteractionError } from "@/wab/client/components/canvas/studio-canvas-util";
+import { PreviewCtx } from "@/wab/client/components/live/PreviewCtx";
+import {
+  onLoadInjectSystemJS,
+  pushPreviewModules,
+} from "@/wab/client/components/live/live-syncer";
+import {
+  getSortedHostLessPkgs,
+  getVersionForCanvasPackages,
+} from "@/wab/client/components/studio/studio-bundles";
 import { scriptExec } from "@/wab/client/dom-utils";
 import { maybeToggleTrailingSlash } from "@/wab/client/utils/app-hosting-utils";
+import { isComponentArena } from "@/wab/shared/Arenas";
+import { usedHostLessPkgs } from "@/wab/shared/cached-selectors";
 import { assert, ensure, spawn } from "@/wab/shared/common";
+import {
+  getCustomFrameForActivatedVariants,
+  getFrameForActivatedVariants,
+} from "@/wab/shared/component-arenas";
 import { isPageComponent } from "@/wab/shared/core/components";
 import {
   InteractionArgLoc,
   InteractionLoc,
   isInteractionLoc,
 } from "@/wab/shared/core/exprs";
-import { isComponentArena } from "@/wab/shared/Arenas";
-import { usedHostLessPkgs } from "@/wab/shared/cached-selectors";
-import {
-  getCustomFrameForActivatedVariants,
-  getFrameForActivatedVariants,
-} from "@/wab/shared/component-arenas";
 import { getDedicatedArena } from "@/wab/shared/core/sites";
 import { getPublicUrl } from "@/wab/shared/urls";
 import { autorun } from "mobx";
@@ -141,7 +144,8 @@ export function useLivePreview(previewCtx: PreviewCtx): LivePreview {
         (async () => {
           const newInstalledPkgs = [...installedPkgs];
           for (const [pkg, pkgModule] of await getSortedHostLessPkgs(
-            usedPkgs
+            usedPkgs,
+            getVersionForCanvasPackages(win)
           )) {
             if (!installedPkgsSet.has(pkg)) {
               if (!isMounted()) {

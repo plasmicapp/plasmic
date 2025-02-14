@@ -47,7 +47,10 @@ import {
 } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { TraitRegistry } from "@/wab/client/components/splits/TraitRegistry";
 import gridFramesLayoutStyles from "@/wab/client/components/studio/arenas/GridFramesLayout.module.sass";
-import { getSortedHostLessPkgs } from "@/wab/client/components/studio/studio-bundles";
+import {
+  getSortedHostLessPkgs,
+  getVersionForCanvasPackages,
+} from "@/wab/client/components/studio/studio-bundles";
 import { adjustGridStyleForCurZoom } from "@/wab/client/components/style-controls/GridEditor";
 import {
   AlertData,
@@ -914,7 +917,10 @@ export class StudioCtx extends WithDbCtx {
     this.hostLessPkgsLock = new Promise(
       spawnWrapper(async (resolve: () => void) => {
         await previousFetch;
-        const pkgsData = await getSortedHostLessPkgs(pkgs);
+        const pkgsData = await getSortedHostLessPkgs(
+          pkgs,
+          getVersionForCanvasPackages(this.hostLessPkgsFrame.contentWindow)
+        );
         runInAction(() => {
           // We run in action because `installedHostLessPkgs` is observable
           // so we want computed values to re-compute only after all packages

@@ -104,9 +104,37 @@ const antdModules = {
   "antd/es/upload/style": "__Sub._antd_es_upload_style_",
 };
 
-const clientConfigs = ["index", ...hostlessPkgNames].map((pkg) => ({
+// We will be bundling the canvas-packages in two different ways:
+// 1. Accessing react/jsx-runtime from node_modules/jsx-runtime
+// 2. Accessing react/jsx-runtime from __Sub.jsxRuntime
+//
+// Since the access to __Sub depends on the version of @plasmicapp/host, we need to keep
+// both approaches so that older versions of @plasmicapp/host can still work with the
+// canvas-packages.
+//
+// The code components from rich-components are the only known ones to require the usage
+// of react/jsx-runtime. But, even then we will still bundle all code components in two
+// versions, so that we can have a single concept of versioning for all canvas-packages.
+const clientEntries = [
+  {
+    pkg: "index",
+  },
+  ...hostlessPkgNames.flatMap((pkg) => [
+    {
+      pkg,
+    },
+    {
+      pkg,
+      useSubJSXRuntime: true,
+    },
+  ]),
+];
+
+const clientConfigs = clientEntries.map(({ pkg, useSubJSXRuntime }) => ({
   entryPoints: [`./src/${pkg}.ts`],
-  outfile: `./build/${pkg === "index" ? "client" : pkg}.js`,
+  outfile: `./build/${pkg === "index" ? "client" : pkg}${
+    useSubJSXRuntime ? "-v2" : ""
+  }.js`,
   plugins: [
     // Handle newer antd4 whose transpiled code triggers this limitation (so we don't have to somehow pin antd4 version in our monorepo)
     // https://github.com/evanw/esbuild/issues/1941
@@ -133,6 +161,12 @@ const clientConfigs = ["index", ...hostlessPkgNames].map((pkg) => ({
       ...(pkg.startsWith("commerce-")
         ? { "@plasmicpkgs/commerce": "__PlasmicCommerceCommon" }
         : {}),
+      ...(useSubJSXRuntime
+        ? {
+            "react/jsx-runtime": "__Sub.jsxRuntime",
+            "react/jsx-dev-runtime": "__Sub.jsxDevRuntime",
+          }
+        : {}),
     }),
     alias({
       "react-slick": path.join(
@@ -155,14 +189,18 @@ const clientConfigs = ["index", ...hostlessPkgNames].map((pkg) => ({
         process.cwd(),
         "node_modules/@plasmicapp/host/registerToken/dist/index.esm.js"
       ),
-      "react/jsx-runtime": path.join(
-        process.cwd(),
-        "node_modules/react/jsx-runtime.js"
-      ),
-      "react/jsx-dev-runtime": path.join(
-        process.cwd(),
-        "node_modules/react/jsx-dev-runtime.js"
-      ),
+      ...(useSubJSXRuntime
+        ? {}
+        : {
+            "react/jsx-runtime": path.join(
+              process.cwd(),
+              "node_modules/react/jsx-runtime.js"
+            ),
+            "react/jsx-dev-runtime": path.join(
+              process.cwd(),
+              "node_modules/react/jsx-dev-runtime.js"
+            ),
+          }),
     }),
     inlineCssPlugin(),
   ],
@@ -174,6 +212,7 @@ const clientConfigs = ["index", ...hostlessPkgNames].map((pkg) => ({
       ? Object.keys(antdModules)
       : []),
     ...(pkg.startsWith("commerce-") ? ["@plasmicpkgs/commerce"] : []),
+    ...(useSubJSXRuntime ? ["react/jsx-runtime", "react/jsx-dev-runtime"] : []),
   ],
   platform: "browser",
   target: "es2020",
