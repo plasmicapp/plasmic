@@ -33,6 +33,7 @@ import {
   isKnownPageHref,
   isKnownRenderableType,
   isKnownRenderFuncType,
+  isKnownStyleTokenRef,
   Param,
 } from "@/wab/shared/model/classes";
 import { typeDisplayName, typeFactory } from "@/wab/shared/model/model-util";
@@ -43,17 +44,21 @@ import React from "react";
 
 function getComponentParamTypeOptions() {
   return [
-    { value: "text", label: "Text", isPrimitive: true },
-    { value: "num", label: "Number", isPrimitive: true },
-    { value: "bool", label: "Toggle", isPrimitive: true },
-    { value: "any", label: "Object", isPrimitive: true },
+    { value: "text", label: "Text", isPrimitive: () => true },
+    { value: "num", label: "Number", isPrimitive: () => true },
+    { value: "bool", label: "Toggle", isPrimitive: () => true },
+    { value: "any", label: "Object", isPrimitive: () => true },
     // queryData is just a json object, and so counts as "primitive"
-    { value: "queryData", label: "Fetched data", isPrimitive: true },
-    { value: "eventHandler", label: "Event handler", isPrimitive: false },
-    { value: "href", label: "Link URL", isPrimitive: false },
-    { value: "dateString", label: "Date", isPrimitive: true },
-    { value: "dateRangeStrings", label: "Date Range", isPrimitive: true },
-    { value: "color", label: "Color", isPrimitive: false },
+    { value: "queryData", label: "Fetched data", isPrimitive: () => true },
+    { value: "eventHandler", label: "Event handler", isPrimitive: () => false },
+    { value: "href", label: "Link URL", isPrimitive: () => false },
+    { value: "dateString", label: "Date", isPrimitive: () => true },
+    { value: "dateRangeStrings", label: "Date Range", isPrimitive: () => true },
+    {
+      value: "color",
+      label: "Color",
+      isPrimitive: (val) => !isKnownStyleTokenRef(val),
+    },
   ] as const;
 }
 
@@ -70,7 +75,7 @@ function isDefaultValueValid(paramType: ComponentParamTypeOptions, val: Expr) {
   if (!option) {
     return true;
   }
-  if (option.isPrimitive) {
+  if (option.isPrimitive(val)) {
     const lit = tryExtractJson(val);
     if (paramType === "num") {
       const numeric = typeof lit === "string" ? +lit : lit;
@@ -217,8 +222,7 @@ export function ComponentPropModal(props: {
   if (getPropTypeType(propEditorType) === "dataSourceOpData") {
     propEditorType = wabTypeToPropType(typeFactory["any"]());
   }
-  const isParamTypePrimitive =
-    getComponentParamTypeOption(paramType)?.isPrimitive ?? false;
+  const paramTypeOptions = getComponentParamTypeOption(paramType);
 
   const modalContent = (
     <form
@@ -266,7 +270,7 @@ export function ComponentPropModal(props: {
                 <PropValueEditor
                   label={existingParam?.variable.name ?? "New prop"}
                   value={
-                    isParamTypePrimitive && defaultExpr
+                    paramTypeOptions?.isPrimitive(defaultExpr) && defaultExpr
                       ? tryExtractJson(defaultExpr)
                       : defaultExpr
                   }
@@ -276,7 +280,7 @@ export function ComponentPropModal(props: {
                         ? undefined
                         : isKnownExpr(val)
                         ? val
-                        : isParamTypePrimitive
+                        : paramTypeOptions?.isPrimitive(val)
                         ? codeLit(val)
                         : undefined
                     );
@@ -314,7 +318,7 @@ export function ComponentPropModal(props: {
                 <PropValueEditor
                   label={existingParam?.variable.name ?? "New prop"}
                   value={
-                    isParamTypePrimitive && previewExpr
+                    paramTypeOptions?.isPrimitive(previewExpr) && previewExpr
                       ? tryExtractJson(previewExpr)
                       : previewExpr
                   }
@@ -324,7 +328,7 @@ export function ComponentPropModal(props: {
                         ? undefined
                         : isKnownExpr(val)
                         ? val
-                        : isParamTypePrimitive
+                        : paramTypeOptions?.isPrimitive(previewExpr)
                         ? codeLit(val)
                         : undefined
                     );
