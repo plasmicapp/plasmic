@@ -1,5 +1,6 @@
 import TeamMemberListItem from "@/wab/client/components/dashboard/TeamMemberListItem";
 import { Matcher } from "@/wab/client/components/view-common";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import ShareDialogContent from "@/wab/client/components/widgets/plasmic/ShareDialogContent";
 import Select from "@/wab/client/components/widgets/Select";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
@@ -18,7 +19,6 @@ import { accessLevelRank, GrantableAccessLevel } from "@/wab/shared/EntUtil";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { sortBy } from "lodash";
 import * as React from "react";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 
 interface TeamMemberListProps extends DefaultTeamMemberListProps {
   team?: ApiTeam;
@@ -61,34 +61,20 @@ function TeamMemberList_(
         (m.type === "user" && matcher.matches(fullName(m))) ||
         matcher.matches(m.email)
     )
-    .filter(
-      (m) =>
-        filterSelect === "all" ||
-        (filterSelect === "owner" &&
-          perms.find(
-            (p) => p.user?.email === m.email && p.accessLevel === "owner"
-          )) ||
-        (filterSelect === "editor" &&
-          perms.find(
-            (p) => p.user?.email === m.email && p.accessLevel === "editor"
-          )) ||
-        (filterSelect === "designer" &&
-          perms.find(
-            (p) => p.user?.email === m.email && p.accessLevel === "designer"
-          )) ||
-        (filterSelect === "content" &&
-          perms.find(
-            (p) => p.user?.email === m.email && p.accessLevel === "content"
-          )) ||
-        (filterSelect === "viewer" &&
-          perms.find(
-            (p) =>
-              p.user?.email === m.email &&
-              ["viewer", "commenter"].includes(p.accessLevel)
-          )) ||
-        (filterSelect === "none" &&
-          !perms.find((p) => p.user?.email === m.email))
-    );
+    .filter((m) => {
+      if (filterSelect === "all") {
+        return true;
+      }
+      if (filterSelect === "none") {
+        return !perms.some((p) => p.user?.email === m.email);
+      }
+
+      return perms.some(
+        (p) =>
+          (p.user?.email || p?.email) === m.email &&
+          p.accessLevel === filterSelect
+      );
+    });
   // The following lines perform 2 stable sorts so the members are sorted by
   // access level rank -> name (or email, if it's a member with no user).
   displayedMembers = sortBy(displayedMembers, (m) =>
@@ -135,6 +121,9 @@ function TeamMemberList_(
                     Content Creators
                   </Select.Option>,
                 ]
+              : []),
+            ...(appCtx.appConfig.comments
+              ? [<Select.Option value="commenter">Commenters</Select.Option>]
               : []),
             <Select.Option value="viewer">Viewers</Select.Option>,
             <Select.Option value="none">None</Select.Option>,

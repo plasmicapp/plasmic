@@ -339,7 +339,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                           : undefined) ?? "blocked";
                       if (
                         accessLevelRank(userAccessLevel) <=
-                        accessLevelRank("commenter")
+                        accessLevelRank("viewer")
                       ) {
                         return (
                           <Redirect

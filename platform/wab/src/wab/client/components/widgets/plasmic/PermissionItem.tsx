@@ -1,12 +1,12 @@
-import { Tooltip } from "antd";
-import React, { ReactNode } from "react";
 import TextWithInfo from "@/wab/client/components/TextWithInfo";
-import { ApiFeatureTier } from "@/wab/shared/ApiSchema";
-import { AccessLevel, GrantableAccessLevel } from "@/wab/shared/EntUtil";
-import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import PublishSpinner from "@/wab/client/components/widgets/PublishSpinner";
 import Select from "@/wab/client/components/widgets/Select";
 import PP__PermissionItem from "@/wab/client/components/widgets/plasmic/PlasmicPermissionItem";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { ApiFeatureTier } from "@/wab/shared/ApiSchema";
+import { AccessLevel, GrantableAccessLevel } from "@/wab/shared/EntUtil";
+import { Tooltip } from "antd";
+import React, { ReactNode } from "react";
 
 interface PermissionItemProps {
   email?: ReactNode;
@@ -41,8 +41,13 @@ export const developerTooltip = (
     developer
   </Tooltip>
 );
+export const commenterTooltip = (
+  <Tooltip zIndex={200000} title="Can view and comment on content.">
+    commenter
+  </Tooltip>
+);
 export const viewerTooltip = (
-  <Tooltip zIndex={200000} title="Read only access.">
+  <Tooltip zIndex={200000} title="Can view content.">
     viewer
   </Tooltip>
 );
@@ -73,7 +78,14 @@ function PermissionItem(props: PermissionItemProps) {
           }
         },
         children: [
-          <Select.Option value="commenter">{viewerTooltip}</Select.Option>,
+          <Select.Option value="viewer">{viewerTooltip}</Select.Option>,
+          ...(appCtx.appConfig.comments
+            ? [
+                <Select.Option value="commenter">
+                  {commenterTooltip}
+                </Select.Option>,
+              ]
+            : []),
           <Select.Option
             value="content"
             style={{
