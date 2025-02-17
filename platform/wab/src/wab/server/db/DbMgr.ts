@@ -7130,7 +7130,6 @@ export class DbMgr implements MigrationDbMgr {
     if (isArchived !== undefined) {
       table.isArchived = isArchived;
     }
-    console.log(table);
     Object.assign(table, this.stampUpdate());
     await this.entMgr.save(table);
     return table;
@@ -7222,6 +7221,59 @@ export class DbMgr implements MigrationDbMgr {
     );
   }
 
+  async checkUniqueConstraintViolation(
+    table: CmsTable,
+    uniqueFields: Dict<unknown>
+  ) {
+    const publishedRows = await this.entMgr.find(CmsRow, {
+      tableId: table.id,
+      draftData: null,
+      deletedAt: null,
+    });
+
+    if (publishedRows.length > 500) {
+      Sentry.captureEvent({
+        message: "The result of the db query contains more than 500 rows.",
+        extra: {
+          tableId: table.id,
+        },
+      });
+    }
+
+    const violated: string[] = [];
+
+    Object.entries(uniqueFields).forEach(([identifier, value]) => {
+      publishedRows.forEach((publishedRow) => {
+        if (
+          publishedRow.data &&
+          String(Object.values(publishedRow.data)[0][identifier] ?? "") ===
+            String(value ?? "")
+        ) {
+          violated.push(identifier);
+        }
+      });
+    });
+
+    return violated;
+  }
+
+  async checkUniqueOnPublish(table: CmsTable, optsData: Dict<unknown>) {
+    const uniqueFieldsIdentifiers = table.schema.fields.filter(
+      (field) => !field.hidden && field.unique
+    );
+    if (uniqueFieldsIdentifiers.length === 0) {
+      return;
+    }
+    let uniqueFields = {};
+    uniqueFieldsIdentifiers.forEach((uniqueField) => {
+      uniqueFields = {
+        ...uniqueFields,
+        [uniqueField.identifier]: optsData[uniqueField.identifier],
+      };
+    });
+    return await this.checkUniqueConstraintViolation(table, uniqueFields);
+  }
+
   async updateCmsRow(
     rowId: CmsRowId,
     opts: {
@@ -7273,60 +7325,21 @@ export class DbMgr implements MigrationDbMgr {
       );
     };
 
-    const uniqueFields = table.schema.fields.filter(
-      (field) => !field.hidden && field.unique
-    );
-
-    if (uniqueFields.length > 0) {
-      // If there are unique constraints, ...
-      const publishedRows = await this.entMgr.find(CmsRow, {
-        tableId: table.id,
-        draftData: null,
-        deletedAt: null,
-      });
-
-      if (publishedRows.length > 500) {
-        Sentry.captureEvent({
-          message: "The result of the db query contains more than 500 rows.",
-          extra: {
-            tableId: table.id,
-          },
-        });
-      }
-
-      const duplicatedFields = () => {
-        const duplicated: string[] = [];
-        if (opts.data) {
-          const publishRequest = Object.values(opts.data)[0];
-          publishedRows.forEach((publishedRow) => {
-            if (publishedRow.data) {
-              const alreadyPublished = Object.values(publishedRow.data)[0];
-              uniqueFields.forEach((uniqueField) => {
-                if (
-                  alreadyPublished[uniqueField.identifier] ===
-                  publishRequest[uniqueField.identifier]
-                ) {
-                  duplicated.push(uniqueField.identifier);
-                }
-              });
-            }
-          });
-        }
-        return duplicated;
-      };
-
-      const duplicated = duplicatedFields();
-      if (duplicated.length > 0) {
-        throw new BadRequestError(JSON.stringify(duplicated));
-      }
-    }
-
     if ("data" in opts) {
       row.data = mergedData(row.data, opts.data);
     }
     if ("draftData" in opts) {
       /* on publish, we set draft data to null, and then we should use
       the existing published data to merge, avoiding removing existing fields */
+      if (opts.data && !opts.draftData) {
+        const violated = await this.checkUniqueOnPublish(
+          table,
+          Object.values(opts.data)[0]
+        );
+        if (violated && violated.length > 0) {
+          throw new BadRequestError(JSON.stringify(violated));
+        }
+      }
       row.draftData = mergedData(row.draftData ?? row.data, opts.draftData);
     }
     Object.assign(row, this.stampUpdate());
@@ -7353,11 +7366,9 @@ export class DbMgr implements MigrationDbMgr {
         })
       : undefined;
 
-    await this.entMgr.save(
+    return await this.entMgr.save(
       withoutNils([row, draftRevision, publishedRevision])
     );
-
-    return row;
   }
 
   async listCmsRowRevisionsByRowId(rowId: CmsRowId) {
