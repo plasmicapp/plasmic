@@ -22,11 +22,14 @@ const fetchLiveFrameClient = memoizeOne(() =>
   ).then((res) => res.text())
 );
 
-const fetchHostLessPkg = memoize(async (pkg: string, version: string) => {
-  return fetch(
-    `${getPublicUrl()}/static/canvas-packages/build/${pkg}${version}.${COMMITHASH}.js`
-  ).then((res) => res.text());
-});
+const fetchHostLessPkg = memoize(
+  async (pkg: string, version: string) => {
+    return fetch(
+      `${getPublicUrl()}/static/canvas-packages/build/${pkg}${version}.${COMMITHASH}.js`
+    ).then((res) => res.text());
+  },
+  (pkg, version) => `${pkg}${version}`
+);
 
 export function getCanvasPkgs() {
   return fetchCanvasPkgs();
