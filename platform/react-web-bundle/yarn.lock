@@ -382,10 +382,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources-context/-/data-sources-context-0.1.21.tgz#fcf7ead9d9576084ff9fdcc3eadc4a5856119866"
   integrity sha512-DF86rstDK2zs/aTbPOUTWwXiVmFG2GDxXYvztIfXUNtuCvNDJKAZK2thYaULv9bGTRitPKWlwcz0zAMjYRHavQ==
 
-"@plasmicapp/data-sources@0.1.171":
-  version "0.1.171"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources/-/data-sources-0.1.171.tgz#de3b72583f549eac33402462b253900f786092bb"
-  integrity sha512-br8mBpe+xgDMuZyW6CZi7KQBhoDV7AhF4bN/+0Mcfw4SKvrZx+YWErKMkmQ46Orst+h5hnk7InVdr/xOX6Hw6w==
+"@plasmicapp/data-sources@0.1.172":
+  version "0.1.172"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources/-/data-sources-0.1.172.tgz#4e08c9bc273df85d3315f7217c48886498c2ba1c"
+  integrity sha512-MIRcddmWPDi1OFHnn3LxEbqsOI0RgAE5sD9wTqNYY++xKu301Qexa2TZsWJq8G2AAYIkGHraRGp/N4qeDg8D6Q==
   dependencies:
     "@plasmicapp/data-sources-context" "0.1.21"
     "@plasmicapp/host" "1.0.211"
@@ -449,13 +449,13 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.9.tgz#1cfdd8d4c0e90fd4fed7d7204f70c44914871d31"
   integrity sha512-HO932uH/Y4otaDmjwzJbCLlokxNAdtU9VhDVUZUuVbzh0DhWaNyn/MINCu1oeZ4a6MIjdXFIm/U2VaxNxHYdsw==
 
-"@plasmicapp/react-web@^0.2.370":
-  version "0.2.370"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.370.tgz#e0df8491ee96547ff252bb98ecac26d12dadfb46"
-  integrity sha512-Mg/AJMtqFb1YM7U+vJNGfD161KU6c6hPjuO1owpTQJba+CMbBeKjCeE85hEXhvZMJIV/OPGTHO1f+X/wqY5G6A==
+"@plasmicapp/react-web@^0.2.371":
+  version "0.2.371"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.371.tgz#f712bf1fdca6e1238245b78443de6d396c4da249"
+  integrity sha512-B+HmNeGbPYenmwmY3M1ZOwmCgG8fibEEGzGG+lVXxyCX+7BwfJsOSUQSo0EQ9dJr1xq8mKo8IFLl5jo4YJbS+Q==
   dependencies:
     "@plasmicapp/auth-react" "0.0.22"
-    "@plasmicapp/data-sources" "0.1.171"
+    "@plasmicapp/data-sources" "0.1.172"
     "@plasmicapp/data-sources-context" "0.1.21"
     "@plasmicapp/host" "1.0.211"
     "@plasmicapp/loader-splits" "1.0.62"
