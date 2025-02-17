@@ -435,6 +435,11 @@ export function ensureManagedFrameForVariantInComponentArena(
   row.cols.push(newCell);
   if (isScreenVariant(variant)) {
     ensureActivatedScreenVariantsForTargetScreenVariant(site, frame, variant);
+    ensureComponentArenaColsOrder(
+      site,
+      arena.component,
+      ensureKnownVariantGroup(variant.parent)
+    );
   }
   return frame;
 }
