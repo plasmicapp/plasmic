@@ -7223,7 +7223,7 @@ export class DbMgr implements MigrationDbMgr {
 
   async checkUniqueConstraintViolation(
     table: CmsTable,
-    uniqueFields: Dict<unknown>
+    uniqueFieldData: Dict<unknown>
   ) {
     const publishedRows = await this.entMgr.find(CmsRow, {
       tableId: table.id,
@@ -7242,12 +7242,12 @@ export class DbMgr implements MigrationDbMgr {
 
     const violated: string[] = [];
 
-    Object.entries(uniqueFields).forEach(([identifier, value]) => {
+    Object.entries(uniqueFieldData).forEach(([identifier, uniqueData]) => {
       publishedRows.forEach((publishedRow) => {
         if (
           publishedRow.data &&
           String(Object.values(publishedRow.data)[0][identifier] ?? "") ===
-            String(value ?? "")
+            String(uniqueData ?? "")
         ) {
           violated.push(identifier);
         }
@@ -7257,21 +7257,22 @@ export class DbMgr implements MigrationDbMgr {
     return violated;
   }
 
-  async checkUniqueOnPublish(table: CmsTable, optsData: Dict<unknown>) {
-    const uniqueFieldsIdentifiers = table.schema.fields.filter(
+  async checkUniqueOnPublish(table: CmsTable, optsData: Dict<Dict<unknown>>) {
+    const data = Object.values(optsData)[0];
+    const uniqueFields = table.schema.fields.filter(
       (field) => !field.hidden && field.unique
     );
-    if (uniqueFieldsIdentifiers.length === 0) {
+    if (uniqueFields.length === 0) {
       return;
     }
-    let uniqueFields = {};
-    uniqueFieldsIdentifiers.forEach((uniqueField) => {
-      uniqueFields = {
-        ...uniqueFields,
-        [uniqueField.identifier]: optsData[uniqueField.identifier],
+    let uniqueFieldData = {};
+    uniqueFields.forEach((uniqueField) => {
+      uniqueFieldData = {
+        ...uniqueFieldData,
+        [uniqueField.identifier]: data[uniqueField.identifier],
       };
     });
-    return await this.checkUniqueConstraintViolation(table, uniqueFields);
+    return await this.checkUniqueConstraintViolation(table, uniqueFieldData);
   }
 
   async updateCmsRow(
@@ -7332,10 +7333,7 @@ export class DbMgr implements MigrationDbMgr {
       /* on publish, we set draft data to null, and then we should use
       the existing published data to merge, avoiding removing existing fields */
       if (opts.data && !opts.draftData) {
-        const violated = await this.checkUniqueOnPublish(
-          table,
-          Object.values(opts.data)[0]
-        );
+        const violated = await this.checkUniqueOnPublish(table, opts.data);
         if (violated && violated.length > 0) {
           throw new BadRequestError(JSON.stringify(violated));
         }
