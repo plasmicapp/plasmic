@@ -192,7 +192,7 @@ export function RichList(props: RichListProps) {
   const actuallyBordered = type === "list" ? bordered : false;
   return (
     <div className={className}>
-      <style>{listCss}</style>
+      <style dangerouslySetInnerHTML={{ __html: listCss }} />
       {!hideSearch && (
         <Input.Search
           className={"plasmic-list-search"}
