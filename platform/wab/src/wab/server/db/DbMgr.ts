@@ -1467,7 +1467,7 @@ export class DbMgr implements MigrationDbMgr {
       ...teamPerms,
       ...workspacePerms,
       ...projectPerms.filter(
-        (p) => accessLevelRank(p.accessLevel) >= accessLevelRank("content")
+        (p) => accessLevelRank(p.accessLevel) >= accessLevelRank("commenter")
       ),
     ].map((p) => {
       return {

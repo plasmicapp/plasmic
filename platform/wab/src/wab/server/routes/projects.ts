@@ -219,7 +219,7 @@ export async function listProjects(req: Request, res: Response) {
     .map((project) => project.id);
   const perms = (await mgr.getPermissionsForProjects(privateProjsIds)).concat(
     (await mgr.getPermissionsForProjects(publicProjsIds)).filter((perm) => {
-      return accessLevelRank(perm.accessLevel) >= accessLevelRank("content");
+      return accessLevelRank(perm.accessLevel) >= accessLevelRank("commenter");
     })
   );
 
@@ -1412,7 +1412,9 @@ export async function getProjectRev(req: Request, res: Response) {
       : await mgr.getLatestProjectRev(projectId, { branchId });
   const perms = project.readableByPublic
     ? (await mgr.getPermissionsForProject(projectId)).filter((perm) => {
-        return accessLevelRank(perm.accessLevel) >= accessLevelRank("content");
+        return (
+          accessLevelRank(perm.accessLevel) >= accessLevelRank("commenter")
+        );
       })
     : await mgr.getPermissionsForProject(projectId);
   const depPkgs = await loadDepPackages(
@@ -1501,7 +1503,9 @@ export async function getProjectRevWithoutData(req: Request, res: Response) {
   );
   const perms = project.readableByPublic
     ? (await mgr.getPermissionsForProject(projectId)).filter((perm) => {
-        return accessLevelRank(perm.accessLevel) >= accessLevelRank("content");
+        return (
+          accessLevelRank(perm.accessLevel) >= accessLevelRank("commenter")
+        );
       })
     : await mgr.getPermissionsForProject(projectId);
   res.json(
@@ -1582,7 +1586,9 @@ export async function updateProject(req: Request, res: Response) {
   const apiProject = mkApiProject(project);
   const perms = project.readableByPublic
     ? (await mgr.getPermissionsForProject(projectId)).filter((perm) => {
-        return accessLevelRank(perm.accessLevel) >= accessLevelRank("content");
+        return (
+          accessLevelRank(perm.accessLevel) >= accessLevelRank("commenter")
+        );
       })
     : await mgr.getPermissionsForProject(projectId);
   const owner = await mgr.tryGetUserById(

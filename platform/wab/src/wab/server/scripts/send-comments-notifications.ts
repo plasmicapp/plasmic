@@ -13,6 +13,7 @@ import {
 } from "@/wab/server/entities/Entities";
 import { logError } from "@/wab/server/server-util";
 import { ApiNotificationSettings } from "@/wab/shared/ApiSchema";
+import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { withoutNils } from "@/wab/shared/common";
 import { groupBy, uniqBy } from "lodash";
 
@@ -75,7 +76,7 @@ async function processCommentsForProject(
   notificationsByUser: UserProjectRecord
 ) {
   const permissions = await dbManager.getPermissionsForProject(projectId);
-  const projectUsers = getUniqueUsersFromPermissions(permissions);
+  const projectUsers = getUniqueUsersWithCommentAccess(permissions);
   const project = await dbManager.getProjectById(projectId);
 
   await Promise.all(
@@ -270,8 +271,14 @@ export function getNotificationComment(comment: Comment) {
   };
 }
 
-function getUniqueUsersFromPermissions(permissions: Permission[]) {
-  const users = withoutNils(permissions.map((permission) => permission.user));
+function getUniqueUsersWithCommentAccess(permissions: Permission[]) {
+  const users = withoutNils(
+    permissions
+      .filter(
+        (p) => accessLevelRank(p.accessLevel) >= accessLevelRank("commenter")
+      )
+      .map((permission) => permission.user)
+  );
   return uniqBy(users, (user) => user.id);
 }
 

@@ -181,8 +181,7 @@ export async function setupPassport(
             user.id
           );
           if (
-            accessLevelRank(userCurrentAccessLevel) >=
-            accessLevelRank("commenter")
+            accessLevelRank(userCurrentAccessLevel) >= accessLevelRank("viewer")
           ) {
             return user;
           }
