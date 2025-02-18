@@ -2611,7 +2611,7 @@ export class DbMgr implements MigrationDbMgr {
       org: orgId ? { id: orgId } : null,
       workspace: workspaceId ? { id: workspaceId } : null,
       name,
-      defaultAccessLevel: "commenter",
+      defaultAccessLevel: "viewer",
       inviteOnly: inviteOnly ?? true,
       readableByPublic: false,
       hostUrl: hostUrl ?? null,
@@ -9600,7 +9600,7 @@ export class DbMgr implements MigrationDbMgr {
   }: ProjectAndBranchId): Promise<CommentThread[]> {
     await this.checkProjectBranchPerms(
       { projectId, branchId },
-      "viewer",
+      "commenter",
       "view comments",
       false
     );
@@ -9833,7 +9833,7 @@ export class DbMgr implements MigrationDbMgr {
       ]) ?? undefined;
     await this.checkProjectBranchPerms(
       { projectId, branchId },
-      "viewer",
+      "commenter",
       "view comment reactions",
       false
     );
@@ -9915,7 +9915,7 @@ export class DbMgr implements MigrationDbMgr {
   ): Promise<ApiNotificationSettings | undefined> {
     await this.checkProjectPerms(
       projectId,
-      "viewer",
+      "commenter",
       "get notification settings",
       false
     );
@@ -9933,7 +9933,7 @@ export class DbMgr implements MigrationDbMgr {
   ) {
     await this.checkProjectPerms(
       projectId,
-      "viewer",
+      "commenter",
       "update notification settings",
       false
     );

@@ -1,34 +1,7 @@
 // TODO: add "admin" role to GrantableAccessLevel and AccessLevel (between owner and editor), but do not
 //  allow granting this on workspaces/projects, only on teams.
 
-export type GrantableAccessLevel =
-  | "editor"
-  | "commenter"
-  | "designer"
-  | "content";
-
-export function ensureGrantableAccessLevel(x: string): GrantableAccessLevel {
-  if (
-    x === "editor" ||
-    x === "commenter" ||
-    x === "designer" ||
-    x === "content"
-  ) {
-    return x;
-  } else {
-    throw new Error(`not a grantable access level: ${x}`);
-  }
-}
-
-export type AccessLevel =
-  | "owner"
-  | "editor"
-  | "designer"
-  | "content"
-  | "commenter"
-  | "viewer"
-  | "blocked";
-export const accessLevelOrderAsc: AccessLevel[] = [
+const accessLevelOrderAsc = [
   "blocked",
   "viewer",
   "commenter",
@@ -36,7 +9,23 @@ export const accessLevelOrderAsc: AccessLevel[] = [
   "designer",
   "editor",
   "owner",
-];
+] as const;
+
+export type AccessLevel = (typeof accessLevelOrderAsc)[number];
+
+const grantableAccessLevels = accessLevelOrderAsc.filter(
+  (level) => level !== "owner" && level !== "blocked"
+);
+
+export type GrantableAccessLevel = (typeof grantableAccessLevels)[number];
+
+export function ensureGrantableAccessLevel(x: string): GrantableAccessLevel {
+  if ((grantableAccessLevels as string[]).includes(x)) {
+    return x as GrantableAccessLevel;
+  } else {
+    throw new Error(`not a grantable access level: ${x}`);
+  }
+}
 
 const humanLevelMapping = {
   content: "content creator",

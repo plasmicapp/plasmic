@@ -1250,7 +1250,7 @@ describe("DbMgr", () => {
       await db2().getLatestProjectRev(project.id);
       const perms = await db2().getPermissionsForProject(project.id);
       expect(perms.find((perm) => perm.userId === user2.id)).toMatchObject({
-        accessLevel: "commenter",
+        accessLevel: "viewer",
       });
     }));
 
