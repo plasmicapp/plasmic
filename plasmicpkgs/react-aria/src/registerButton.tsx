@@ -34,10 +34,6 @@ type ButtonSpecificProps = {
   submitsForm?: boolean;
 };
 
-console.log(
-  "TODO: This comment was added just to trigger changes in the react-aria package so lerna builds the react-aria package during storybook_tests CI step."
-);
-
 export interface BaseButtonProps
   extends CommonProps,
     LinkSpecificProps,
