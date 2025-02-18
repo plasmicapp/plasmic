@@ -2238,7 +2238,7 @@ export function switchInteractiveMode() {
   cy.get(`[data-test-id="interactive-switch"]`).click({ force: true });
 }
 
-export function upsertDevFlags(devFlags: Partial<DevFlagsType>) {
+export function getDevFlags() {
   return cy
     .login("admin@admin.example.com")
     .request({
@@ -2246,21 +2246,18 @@ export function upsertDevFlags(devFlags: Partial<DevFlagsType>) {
       method: "GET",
       log: false,
     })
-    .its("body.data", { log: false })
-    .then((rawDevFlags) => {
-      const newDevFlags = {
-        ...JSON.parse(rawDevFlags || "{}"),
-        ...devFlags,
-      };
-      return cy.request({
-        url: "/api/v1/admin/devflags",
-        method: "PUT",
-        log: false,
-        body: {
-          data: JSON.stringify(newDevFlags),
-        },
-      });
-    });
+    .then((resp) => JSON.parse(resp.body.data) as DevFlagsType);
+}
+
+export function upsertDevFlags(devFlags: Partial<DevFlagsType>) {
+  return cy.login("admin@admin.example.com").request({
+    url: "/api/v1/admin/devflags",
+    method: "PUT",
+    log: false,
+    body: {
+      data: JSON.stringify(devFlags),
+    },
+  });
 }
 
 export function createTutorialDb(type: string) {
