@@ -314,7 +314,6 @@ function CmsEntryDetailsForm_(
       ) {
         const isUnique = await api.checkUnique(row.id, uniquenessCheckField);
         if (isUnique) {
-          // Remove the identifier from the violation list
           setNotVaildUniqueFields(
             notValidUniqueFields.filter(
               (notValid) => notValid !== uniquenessCheckField.identifier
@@ -323,7 +322,6 @@ function CmsEntryDetailsForm_(
         } else if (
           !notValidUniqueFields.includes(uniquenessCheckField.identifier)
         ) {
-          // Add the identifier to the violation list
           notValidUniqueFields.push(uniquenessCheckField.identifier);
         }
       }
@@ -436,7 +434,6 @@ function CmsEntryDetailsForm_(
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         onValuesChange={(changedValues: Dict<Dict<unknown>>, allValues) => {
-          console.log(Object.keys(changedValues));
           if (Object.keys(changedValues).length > 0) {
             setHasUnsavedChanges(hasChanges());
             setHasUnpublishedChanges(hasPublishableChanges());
