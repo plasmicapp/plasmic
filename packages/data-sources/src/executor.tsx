@@ -3,18 +3,9 @@ import fetch from "@plasmicapp/isomorphic-unfetch";
 import { wrapLoadingFetcher } from "@plasmicapp/query";
 import stringify from "fast-stringify";
 import { addPlaceholdersToUserArgs } from "./placeholders";
-import { ManyRowsResult, Pagination, SingleRowResult } from "./types";
+import { DataOp, ManyRowsResult, Pagination, SingleRowResult } from "./types";
 
 const DEFAULT_HOST = "https://data.plasmic.app";
-
-export interface DataOp {
-  sourceId: string;
-  opId: string;
-  userArgs?: Record<string, any>;
-  cacheKey?: string;
-  invalidatedKeys?: string[] | null;
-  roleId?: string | null;
-}
 
 interface ExecuteOpts {
   userAuthToken?: string;

@@ -2,7 +2,6 @@ export { usePlasmicDataConfig } from "@plasmicapp/query";
 export { Fetcher, FetcherMeta } from "./components/Fetcher";
 export type { FetcherProps } from "./components/Fetcher";
 export { executePlasmicDataOp } from "./executor";
-export type { DataOp } from "./executor";
 export {
   deriveFieldConfigs,
   normalizeData,
@@ -16,13 +15,17 @@ export {
   usePlasmicDataOp,
   usePlasmicInvalidate,
 } from "./hooks/usePlasmicDataOp";
-export { usePlasmicServerQuery } from "./serverQueries/client";
+export {
+  makeQueryCacheKey,
+  usePlasmicServerQuery,
+} from "./serverQueries/client";
 export {
   executeServerQuery,
   mkPlasmicUndefinedServerProxy,
 } from "./serverQueries/server";
 export type {
   ClientQueryResult,
+  DataOp,
   DataSourceSchema,
   ManyRowsResult,
   Pagination,

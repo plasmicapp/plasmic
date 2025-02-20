@@ -45,6 +45,15 @@ export interface ManyRowsResult<T = any> {
   paginate?: Pagination;
 }
 
+export interface DataOp {
+  sourceId: string;
+  opId: string;
+  userArgs?: Record<string, any>;
+  cacheKey?: string;
+  invalidatedKeys?: string[] | null;
+  roleId?: string | null;
+}
+
 export interface ServerQuery<F extends (...args: any[]) => Promise<any>> {
   fn: F;
   execParams: () => Parameters<F>;

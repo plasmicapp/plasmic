@@ -82,6 +82,9 @@ export function makeCacheKey(dataOp: DataOp, opts?: {
 }): string;
 
 // @public (undocumented)
+export function makeQueryCacheKey(id: string, params: any[]): string;
+
+// @public (undocumented)
 export interface ManyRowsResult<T = any> {
     // (undocumented)
     data: T[];
@@ -202,7 +205,7 @@ export function usePlasmicDataOp<T extends SingleRowResult | ManyRowsResult, E =
 export function usePlasmicInvalidate(): (invalidatedKeys: string[] | null | undefined) => Promise<any[] | undefined>;
 
 // @public (undocumented)
-export function usePlasmicServerQuery<F extends (...args: any[]) => any>(serverQuery: ServerQuery<F>, fallbackData?: ReturnType<F>, opts?: {
+export function usePlasmicServerQuery<F extends (...args: any[]) => Promise<any>>(serverQuery: ServerQuery<F>, fallbackData?: ReturnType<F>, opts?: {
     noUndefinedDataProxy?: boolean;
 }): Partial<ServerQueryResult<ReturnType<F>>>;
 

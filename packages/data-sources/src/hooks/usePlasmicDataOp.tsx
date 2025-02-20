@@ -5,9 +5,10 @@ import {
 } from "@plasmicapp/query";
 import * as React from "react";
 import { isPlasmicUndefinedDataErrorPromise, usePlasmicFetch } from "../common";
-import { DataOp, executePlasmicDataOp } from "../executor";
+import { executePlasmicDataOp } from "../executor";
 import {
   ClientQueryResult,
+  DataOp,
   ManyRowsResult,
   Pagination,
   SingleRowResult,

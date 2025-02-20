@@ -1,8 +1,8 @@
-import React from 'react';
-import { DataOpConfig } from '../components/Fetcher';
-import { DataOp } from '../executor';
-import { swallow } from '../utils';
-import { usePlasmicDataOp } from './usePlasmicDataOp';
+import React from "react";
+import { DataOpConfig } from "../components/Fetcher";
+import { DataOp } from "../types";
+import { swallow } from "../utils";
+import { usePlasmicDataOp } from "./usePlasmicDataOp";
 
 function usePrevious<T>(value: T | undefined): T | undefined {
   const prevValue = React.useRef<T | undefined>(undefined);
@@ -41,7 +41,7 @@ export function useDependencyAwareQuery({
         paginate: { pageIndex, pageSize },
       }),
   });
-  const finalName = name ?? 'data';
+  const finalName = name ?? "data";
   const prevName = usePrevious(finalName);
   React.useEffect(() => {
     if (!(finalName in $queries) || $queries[finalName] !== data) {

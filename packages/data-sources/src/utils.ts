@@ -78,7 +78,9 @@ export function maybe<T, U>(
   x: T | undefined | null,
   f: (y: T) => U
 ): U | undefined {
-  if (x === undefined || x === null) return undefined;
+  if (x === undefined || x === null) {
+    return undefined;
+  }
   return f(x);
 }
 
