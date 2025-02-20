@@ -9615,11 +9615,22 @@ export class DbMgr implements MigrationDbMgr {
     } else {
       query.andWhere("thread.branchId IS NULL");
     }
-    return await query
-      .andWhere("thread.deletedAt is null and comment.deletedAt is null")
+    const threads = await query
+      .andWhere("thread.deletedAt is null")
       .orderBy("thread.createdAt", "ASC")
       .addOrderBy("comment.createdAt", "ASC")
       .getMany();
+
+    // Update deleted comments in place
+    threads.forEach((thread) =>
+      thread.comments.forEach((comment) => {
+        if (comment.deletedAt) {
+          comment.body = "Deleted comment";
+        }
+      })
+    );
+
+    return threads;
   }
 
   async getCommentsForThread(
@@ -9679,7 +9690,18 @@ export class DbMgr implements MigrationDbMgr {
       body: data.body,
       commentThreadId: threadId,
     });
-    await this.entMgr.save([comment]);
+
+    await this.entMgr.save(comment);
+    await this.commentThreads().update(
+      {
+        id: comment.commentThreadId,
+      },
+      {
+        deletedAt: null,
+        deletedById: null,
+      }
+    );
+
     return comment;
   }
 
@@ -9769,6 +9791,21 @@ export class DbMgr implements MigrationDbMgr {
     }
     Object.assign(comment, this.stampDelete());
     await this.entMgr.save(comment);
+
+    await this.commentThreads()
+      .createQueryBuilder()
+      .update()
+      .set({ deletedAt: new Date() })
+      .where("id = :threadId", { threadId: comment.commentThreadId })
+      .andWhere(
+        `NOT EXISTS (
+      SELECT 1 FROM "comment" c
+      WHERE c."commentThreadId" = :threadId AND c."deletedAt" IS NULL
+    )`
+      )
+      .setParameter("threadId", comment.commentThreadId)
+      .execute();
+
     return comment;
   }
 

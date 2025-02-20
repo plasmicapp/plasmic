@@ -151,27 +151,17 @@ function CommentMenuOptions(props: {
           Mark as {commentThread.resolved ? "unresolved" : "resolved"}
         </Menu.Item>
       )}
-      <Menu.Item
-        key="remove"
-        disabled={!(isOwner || appCtx.selfInfo?.id === comment.createdById)}
-        onClick={async () => {
-          const deleteComment = async () => {
-            if (isThread) {
-              await api.deleteThread(
-                projectId,
-                branchId,
-                comment.commentThreadId
-              );
-            } else {
-              await api.deleteComment(projectId, branchId, comment.id);
-            }
-          };
-
-          await deleteComment();
-        }}
-      >
-        Delete {isThread ? "thread" : "comment"}
-      </Menu.Item>
+      {!comment.deletedAt && !isThread && (
+        <Menu.Item
+          key="remove"
+          disabled={!(isOwner || appCtx.selfInfo?.id === comment.createdById)}
+          onClick={async () => {
+            await api.deleteComment(projectId, branchId, comment.id);
+          }}
+        >
+          Delete comment
+        </Menu.Item>
+      )}
     </Menu>
   );
 }
@@ -211,12 +201,15 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
       body={
         <EditableLabel
           value={comment.body}
-          isTextSelectable={!isThread}
+          isTextSelectable={!isThread && !Boolean(comment.deletedAt)}
           doubleClickToEdit
           isMultiline
           cols={40}
           rows={5}
-          disabled={appCtx.selfInfo?.id !== comment.createdById}
+          disabled={
+            appCtx.selfInfo?.id !== comment.createdById ||
+            Boolean(comment.deletedAt)
+          }
           onEdit={(newBody) => {
             spawn(
               api.editComment(projectId, branchId, comment.id, {
