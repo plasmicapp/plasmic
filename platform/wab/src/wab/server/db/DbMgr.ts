@@ -5779,7 +5779,7 @@ export class DbMgr implements MigrationDbMgr {
   ) {
     await this._checkResourcesPerms(
       taggedResourceIds,
-      "commenter",
+      "viewer",
       "grant permission"
     );
 
