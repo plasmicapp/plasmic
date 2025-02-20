@@ -8,7 +8,8 @@
     "upgrade-aria": "yarn upgrade --latest react-aria && npx yarn-deduplicate@latest --scopes @react-aria @react-stately @react-types @internationalized && npx yarn-deduplicate@latest --packages react-aria @swc/helpers"
   },
   "dependenciesComments": {
-    "@ant-design/pro-components": "Must be 2.6.4. Earlier doesn't support newer antd, later incurs a disallowed dynamic require of antd/es/layout/Sider. https://app.shortcut.com/plasmic/story/37043/richlayout-always-initially-loads-with-dark-background"
+    "@ant-design/pro-components": "Must be 2.6.4. Earlier doesn't support newer antd, later incurs a disallowed dynamic require of antd/es/layout/Sider. https://app.shortcut.com/plasmic/story/37043/richlayout-always-initially-loads-with-dark-background",
+    "rc-util": "Must be ^5.44.4. Earlier versions doesn't support React 19+ by attempting to use findDOMNode from react-dom. https://linear.app/plasmic/issue/PLA-11800/investigate-issue-with-rich-components-table-in-react-19"
   },
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
@@ -87,6 +88,7 @@
     "pluralize": "^8.0.0",
     "postcss": "^8.4.12",
     "random": "^4.1.0",
+    "rc-util": "^5.44.4",
     "react-chartjs-2": "^5.2.0",
     "react-quill": "^2.0.0",
     "register-library": "file:../wab/src/wab/shared/register-library",
@@ -130,7 +132,8 @@
   },
   "resolutions": {
     "@plasmicpkgs/antd/antd": "4.19.3",
-    "@plasmicpkgs/react-slick/antd": "4.19.3"
+    "@plasmicpkgs/react-slick/antd": "4.19.3",
+    "rc-util": "^5.44.4"
   },
   "size-limit": [
     {
