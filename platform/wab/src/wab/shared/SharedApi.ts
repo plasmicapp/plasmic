@@ -1750,7 +1750,7 @@ export abstract class SharedApi {
     uniquenessCheckField: { identifier: string; value: unknown }
   ) {
     return await this.put(
-      `cmse/rows/${rowId}/uniquenessCheck`,
+      `cmse/rows/${rowId}/uniqueness`,
       uniquenessCheckField
     );
   }
