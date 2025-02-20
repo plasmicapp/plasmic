@@ -2638,6 +2638,7 @@ const _InCanvasDollarState: StoryFn<{}> = (props) => {
       } as $StateSpec<string>)
   );
   const $state = useDollarState(specs, { $props: props }, { inCanvas: true });
+  $state.eagerInitializeStates(specs);
   console.log(JSON.stringify(activeVariables, null, 2));
   console.log(JSON.stringify(specs, null, 2));
   console.log(JSON.stringify($state, null, 2));
@@ -2955,6 +2956,7 @@ const _AddDeleteSpecsInCanvas: StoryFn<{}> = () => {
       : []),
   ];
   const $state = useDollarState(specs, { $props: {} }, { inCanvas: true });
+  $state.eagerInitializeStates(specs);
   return (
     <div>
       <Counter
