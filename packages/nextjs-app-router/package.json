@@ -27,9 +27,9 @@
   "dependencies": {
     "@plasmicapp/prepass": "1.0.19",
     "@plasmicapp/query": "0.1.79",
+    "cross-port-killer": "1.4.0",
     "cross-spawn": "^7.0.3",
     "get-port": "^7.0.0",
-    "kill-port-process": "^3.2.1",
     "node-html-parser": "^6.1.5",
     "yargs": "^17.7.2"
   },
