@@ -13,7 +13,7 @@ export type HasControlContextData<T = BaseControlContextData> = {
 export type WithPlasmicCanvasComponentInfo = {
   __plasmic_selection_prop__?: {
     isSelected: boolean;
-    selectedSlotName?: string | undefined;
+    selectedSlotName?: string;
   };
 };
 
@@ -41,12 +41,52 @@ export type CodeComponentMetaOverrides<T extends React.ComponentType<any>> =
     >
   >;
 
+/**
+ * This hook determines whether an overlay should be open or not. Unlike `useAutoOpen`, it does not perform any actions.
+ * It takes into account the following:
+ * 1. Whether the overlay is in canvas or preview.
+ * 2. Whether the overlay is selected on canvas
+ * 3. Whether the overlay's trigger slot is selected on canvas
+ */
+export function useIsOpen({
+  triggerSlotName,
+  isOpen,
+  __plasmic_selection_prop__,
+}: {
+  __plasmic_selection_prop__: WithPlasmicCanvasComponentInfo["__plasmic_selection_prop__"];
+  triggerSlotName?: string;
+  isOpen?: boolean;
+}) {
+  const canvasContext = usePlasmicCanvasContext();
+  const { isSelected, selectedSlotName } =
+    usePlasmicCanvasComponentInfo?.({ __plasmic_selection_prop__ }) ?? {};
+
+  // In preview, just use the isOpen prop as is.
+  if (!canvasContext) {
+    return isOpen;
+  }
+
+  // In canvas, override the isOpen prop if the element is selected.
+  const isTriggerSlotSelected =
+    isDefined(selectedSlotName) && selectedSlotName === triggerSlotName;
+
+  const isAutoOpenedBySelection = isSelected && !isTriggerSlotSelected;
+
+  // Component should always be controlled in canvas
+  return Boolean(isAutoOpenedBySelection || isOpen);
+}
+
+/**
+ * This hook is used to perform open/close actions on an overlay. It takes into account the following:
+ * 1. Whether the overlay is in canvas or preview.
+ * 2. Whether the overlay is selected on canvas
+ */
 export function useAutoOpen({
   props,
   open,
   close,
 }: {
-  props: any;
+  props: WithPlasmicCanvasComponentInfo;
   open?: () => void;
   close?: () => void;
 }) {

@@ -1,6 +1,6 @@
 import { PlasmicCanvasContext } from "@plasmicapp/host";
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, fn, userEvent, waitFor, within } from "@storybook/test";
+import { expect, fn, spyOn, userEvent, waitFor, within } from "@storybook/test";
 import React, { useEffect, useState } from "react";
 import { BaseButton } from "./registerButton";
 import { BaseDialog } from "./registerDialog";
@@ -50,6 +50,9 @@ export const WithModal: Story = {
     trigger: <span tabIndex={0}>Open modal</span>, // anything can be used as a trigger
     dialog: (
       <DefaultModalContent
+        // The test ensures that isOpen and defaultOpen are disregarded when inside a dialog trigger
+        defaultOpen={true}
+        isOpen={true}
         isDismissable={true}
         isKeyboardDismissDisabled={false}
       />
@@ -425,6 +428,8 @@ export const SelectedInCanvas: Story = {
     );
   },
   play: async () => {
+    const consoleWarnSpy = spyOn(console, "warn").mockImplementation(() => { });
+
     // popovers are rendered outside canvas, so we need to use document.body
     const doc = within(document.body);
 
@@ -445,6 +450,9 @@ export const SelectedInCanvas: Story = {
       },
       { timeout: 1100 }
     ); // the slot selected is trigger, so the popover should close
+
+    // This is to ensure that the warning "A component changed from controlled to uncontrolled" is not logged
+    expect(consoleWarnSpy).not.toHaveBeenCalled();
   },
 };
 

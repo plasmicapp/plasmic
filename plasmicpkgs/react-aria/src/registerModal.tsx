@@ -1,8 +1,4 @@
-import {
-  PlasmicElement,
-  usePlasmicCanvasComponentInfo,
-  usePlasmicCanvasContext,
-} from "@plasmicapp/host";
+import { PlasmicElement, usePlasmicCanvasContext } from "@plasmicapp/host";
 import React, { forwardRef, useImperativeHandle } from "react";
 import { mergeProps } from "react-aria";
 import { Modal, ModalOverlay, ModalOverlayProps } from "react-aria-components";
@@ -14,6 +10,7 @@ import {
   makeComponentName,
   Registerable,
   registerComponentHelper,
+  useIsOpen,
   WithPlasmicCanvasComponentInfo,
 } from "./utils";
 
@@ -42,25 +39,28 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
       resetClassName,
       setControlContextData,
       isDismissable,
+      defaultOpen,
+      __plasmic_selection_prop__,
       ...rest
     } = props;
 
     const canvasCtx = usePlasmicCanvasContext();
     const isEditMode = canvasCtx && canvasCtx.interactive === false;
-    const isSelected =
-      usePlasmicCanvasComponentInfo?.(props)?.isSelected ?? false;
 
     const contextProps = React.useContext(PlasmicDialogTriggerContext);
     const isStandalone = !contextProps;
-    const mergedProps = mergeProps(rest, {
-      isOpen: isStandalone ? isSelected || isOpen : contextProps.isOpen,
-      /*
-        isDismissable on canvas (non-interactive mode) causes the following two issues:
-        1. Clicking anywhere inside the modal dismisses it
-        2. If the modal is auto-opened due to selection in outline tab, the modal stays open despite issue #1, but the text elements inside the modal are no longer selectable, and therefore the text or headings inside the modal are not editable.
+    const isOpen2 = useIsOpen({ isOpen, __plasmic_selection_prop__ });
 
-        To fix the above issue, we set an interim isDismissable state to false in edit mode, because it only matters in interactive mode.
-      */
+    const mergedProps = mergeProps(rest, {
+      // Since open/defaultOpen props are hidden when the modal is inside dialogTrigger, we also unset them here.
+      isOpen: isStandalone ? isOpen2 : undefined,
+      defaultOpen: isStandalone ? defaultOpen : undefined,
+
+      // isDismissable on canvas (non-interactive mode) causes the following two issues:
+      // 1. Clicking anywhere inside the modal dismisses it
+      // 2. If the modal is auto-opened due to selection in outline tab, the modal stays open despite issue #1, but the text elements inside the modal are no longer selectable, and therefore the text or headings inside the modal are not editable.
+      //
+      // To fix the above issue, we set an interim isDismissable state to false in edit mode, because it only matters in interactive mode.
       isDismissable: isEditMode ? false : isDismissable,
     });
 
@@ -176,6 +176,7 @@ export function registerModal(
           type: "boolean",
           editOnly: true,
           uncontrolledProp: "defaultOpen",
+          // standalone Modals should default to open so that they are visible when inserted
           defaultValueHint: true,
           defaultValue: true,
           hidden: hasParent,

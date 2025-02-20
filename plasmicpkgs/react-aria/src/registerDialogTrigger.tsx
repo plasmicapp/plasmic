@@ -1,4 +1,3 @@
-import { usePlasmicCanvasComponentInfo } from "@plasmicapp/host";
 import React from "react";
 import { mergeProps, useButton } from "react-aria";
 import { DialogTrigger, DialogTriggerProps } from "react-aria-components";
@@ -16,6 +15,7 @@ import {
   WithPlasmicCanvasComponentInfo,
   makeComponentName,
   registerComponentHelper,
+  useIsOpen,
 } from "./utils";
 
 export interface TriggerWrapperProps {
@@ -55,15 +55,18 @@ export interface BaseDialogTriggerProps
 }
 
 export function BaseDialogTrigger(props: BaseDialogTriggerProps) {
-  const { trigger, dialog, isOpen, className, ...rest } = props;
+  const { trigger, dialog, isOpen, className, __plasmic_selection_prop__, ...rest } =
+    props;
 
-  const { isSelected, selectedSlotName } =
-    usePlasmicCanvasComponentInfo?.(props) ?? {};
-  const isAutoOpen = selectedSlotName !== "trigger" && isSelected;
+  const isOpen2 = useIsOpen({
+    triggerSlotName: "trigger",
+    isOpen,
+    __plasmic_selection_prop__,
+  });
 
   const mergedProps = {
     ...rest,
-    isOpen: isAutoOpen || isOpen,
+    isOpen: isOpen2,
   };
 
   return (
