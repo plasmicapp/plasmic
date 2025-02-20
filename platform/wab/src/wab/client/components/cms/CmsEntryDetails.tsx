@@ -313,6 +313,7 @@ function CmsEntryDetailsForm_(
         uniqueIdentifiers.includes(uniquenessCheckField.identifier)
       ) {
         const isUnique = await api.checkUnique(row.id, uniquenessCheckField);
+        console.log(isUnique);
         if (isUnique) {
           setNotVaildUniqueFields(
             notValidUniqueFields.filter(

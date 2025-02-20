@@ -7331,7 +7331,7 @@ export class DbMgr implements MigrationDbMgr {
           opts.data
         );
         if (!notValidUniqueFields) {
-          console.log("There're no unique constraints for this table");
+          console.log("There're no unique constraints in this table");
         } else if (notValidUniqueFields.length > 0) {
           throw new BadRequestError(JSON.stringify(notValidUniqueFields));
         }
