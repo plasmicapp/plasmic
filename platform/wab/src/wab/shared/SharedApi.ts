@@ -1733,7 +1733,11 @@ export abstract class SharedApi {
       noMerge?: boolean;
     }
   ) {
-    return (await this.put(`/cmse/rows/${rowId}`, opts)) as ApiCmseRow;
+    const res: {
+      updated: ApiCmseRow;
+      uniqueConstraintViolation: string[];
+    } = await this.put(`/cmse/rows/${rowId}`, opts);
+    return res;
   }
 
   async cloneCmsRow(
@@ -1743,6 +1747,13 @@ export abstract class SharedApi {
     }
   ) {
     return (await this.post(`/cmse/rows/${rowId}/clone`, opts)) as ApiCmseRow;
+  }
+
+  async checkUnique(
+    rowId: CmsRowId,
+    uniqueValues: { identifier: string; value: unknown }
+  ) {
+    return await this.put(`cmse/rows/${rowId}/uniqueness`, uniqueValues);
   }
 
   async deleteCmsRow(rowId: CmsRowId) {
