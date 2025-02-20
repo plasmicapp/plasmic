@@ -220,13 +220,11 @@ ${codePreviewCtx?.getCode() ?? docsCtxCode}
         // Plasmic* components.
         // See https://github.com/microsoft/monaco-editor/issues/264#issuecomment-654578687
         monaco_.languages.typescript.typescriptDefaults.addExtraLib(
-          // @ts-expect-error: Using raw react types as a string
-          REACT_TYPES,
+          REACT_TYPES as any,
           `file:///node_modules/@types/react/index.d.ts`
         );
         monaco_.languages.typescript.typescriptDefaults.addExtraLib(
-          // @ts-expect-error: Using raw react types as a string
-          REACT_WEB_TYPES,
+          REACT_WEB_TYPES as any,
           `file:///node_modules/@plasmicapp/react-web/index.d.ts`
         );
         monaco_.languages.typescript.typescriptDefaults.addExtraLib(
