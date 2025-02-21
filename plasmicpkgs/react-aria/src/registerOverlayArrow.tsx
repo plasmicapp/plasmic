@@ -28,6 +28,7 @@ export interface BaseOverlayArrowProps
   extends OverlayArrowProps,
     WithVariants<typeof OVERLAY_ARROW_VARIANTS> {
   children: React.ReactNode;
+  className?: string;
 }
 
 const { variants, withObservedValues } = pickAriaComponentVariants(
@@ -37,12 +38,16 @@ const { variants, withObservedValues } = pickAriaComponentVariants(
 export function BaseOverlayArrow({
   children,
   plasmicUpdateVariant,
+  className,
 }: BaseOverlayArrowProps) {
   const popoverContext = React.useContext(PopoverContext);
   const tooltipContext = React.useContext(TooltipContext);
   const isStandalone = !popoverContext && !tooltipContext; // i.e. without a trigger to point to
   const overlayArrow = (
-    <OverlayArrow style={{ lineHeight: "0", ...COMMON_STYLES }}>
+    <OverlayArrow
+      className={className}
+      style={{ lineHeight: "0", ...COMMON_STYLES }}
+    >
       {({ placement }: OverlayArrowRenderProps) =>
         withObservedValues(
           children,
