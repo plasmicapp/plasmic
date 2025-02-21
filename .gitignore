@@ -21,7 +21,6 @@
 .ipynb_checkpoints/
 .venv/
 /.direnv/
-*.tf
 **/.terraform/*
 *.tfstate
 *.tfstate.*
