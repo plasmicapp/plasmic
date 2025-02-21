@@ -4081,7 +4081,7 @@ function PlasmicMyOverlayArrow__RenderFunc(props) {
             return __assign(__assign({}, prev), changes);
         });
     }, []);
-    return (createPlasmicElementProxy(BaseOverlayArrow, { "data-plasmic-name": "root", "data-plasmic-override": overrides.root, "data-plasmic-root": true, "data-plasmic-for-node": forNode, plasmicUpdateVariant: updateVariant },
+    return (createPlasmicElementProxy(BaseOverlayArrow, { "data-plasmic-name": "root", "data-plasmic-override": overrides.root, "data-plasmic-root": true, "data-plasmic-for-node": forNode, className: classNames("__wab_instance", "root_reset_project", "plasmic_default_styles", "plasmic_mixins", "plasmic_tokens", "MyOverlayArrow__root___043Jz"), plasmicUpdateVariant: updateVariant },
         createPlasmicElementProxy("div", { "data-plasmic-name": "freeBox", "data-plasmic-override": overrides.freeBox, className: classNames("plasmic_default__all", "plasmic_default__div", "MyOverlayArrow__freeBox__pU7Yq") })));
 }
 var PlasmicDescendants = {
@@ -4231,7 +4231,7 @@ freeBox?: Flex__<"div">;
     
     export interface DefaultMyOverlayArrowProps {
       
-      
+      className?: string;
   }
 
     
@@ -4319,7 +4319,8 @@ placementRight: false
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       
-      plasmicUpdateVariant={updateVariant}
+      className={classNames("__wab_instance", "root_reset_project", "plasmic_default_styles", "plasmic_mixins", "plasmic_tokens", "MyOverlayArrow__root___043Jz")}
+plasmicUpdateVariant={updateVariant}
       
       >
             <div
@@ -6562,7 +6563,7 @@ function PlasmicTooltip__RenderFunc(props) {
             return __assign(__assign({}, prev), changes);
         });
     }, []);
-    return (createPlasmicElementProxy(BaseTooltip, { "data-plasmic-name": "ariaTooltip", "data-plasmic-override": overrides.ariaTooltip, "data-plasmic-root": true, "data-plasmic-for-node": forNode, closeDelay: args.closeDelay, delay: args.delay, isDisabled: args.isDisabled, isOpen: generateStateValueProp($state, ["ariaTooltip", "isOpen"]), onOpenChange: function () {
+    return (createPlasmicElementProxy(BaseTooltip, { "data-plasmic-name": "ariaTooltip", "data-plasmic-override": overrides.ariaTooltip, "data-plasmic-root": true, "data-plasmic-for-node": forNode, className: classNames("__wab_instance", "root_reset_project", "plasmic_default_styles", "plasmic_mixins", "plasmic_tokens", "Tooltip__ariaTooltip__ry2S4"), closeDelay: args.closeDelay, delay: args.delay, isDisabled: args.isDisabled, isOpen: generateStateValueProp($state, ["ariaTooltip", "isOpen"]), onOpenChange: function () {
             var eventArgs = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 eventArgs[_i] = arguments[_i];
@@ -6759,7 +6760,7 @@ svg?: Flex__<"svg">;
 "trigger"?: React.ReactNode;
 "content"?: React.ReactNode;
 "showArrow"?: boolean
-      
+      className?: string;
   }
 
     
@@ -6863,7 +6864,8 @@ placementRight: false
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       
-      closeDelay={args.closeDelay}
+      className={classNames("__wab_instance", "root_reset_project", "plasmic_default_styles", "plasmic_mixins", "plasmic_tokens", "Tooltip__ariaTooltip__ry2S4")}
+closeDelay={args.closeDelay}
 delay={args.delay}
 isDisabled={args.isDisabled}
 isOpen={generateStateValueProp($state, ["ariaTooltip","isOpen"])}

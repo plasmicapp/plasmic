@@ -2335,10 +2335,14 @@ function serializeDefaultElementType(
   }
 }
 
-function shouldIncludeClassName(node: TplNode) {
+function shouldIncludeClassName(root: TplNode) {
   return (
-    !isTplCodeComponent(node) ||
-    node.component.codeComponentMeta.styleSections !== false
+    // Plasmic component with a tpl tag root needs className prop for interaction variants to work as well as to pass on its CSS to the root.
+    !isTplCodeComponent(root) ||
+    // Plasmic component with code component root needs the className prop for registered variants to work.
+    Object.keys(root.component.codeComponentMeta.variants ?? {}).length > 0 ||
+    // Plasmic component with a styleable code component root needs className prop to pass on its CSS to the root.
+    root.component.codeComponentMeta.styleSections !== false
   );
 }
 
