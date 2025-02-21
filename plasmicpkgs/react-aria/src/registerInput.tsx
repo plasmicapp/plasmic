@@ -1,11 +1,15 @@
-import React, { ChangeEvent, useCallback } from "react";
-import { mergeProps } from "react-aria";
-import type { InputProps, InputRenderProps } from "react-aria-components";
-import { Input } from "react-aria-components";
+import React, { ChangeEvent, ForwardedRef, useEffect } from "react";
+import { mergeProps, useFocusRing, useHover } from "react-aria";
+import {
+  InputContext,
+  type InputProps,
+  useContextProps,
+} from "react-aria-components";
 import { COMMON_STYLES, getCommonProps, resolveAutoComplete } from "./common";
 import { PlasmicInputContext, PlasmicTextFieldContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
+  filterHoverProps,
   HasControlContextData,
   makeComponentName,
   Registerable,
@@ -41,48 +45,77 @@ export const inputHelpers = {
   },
 };
 
-export function BaseInput(props: BaseInputProps) {
+function BaseInput_(
+  props: BaseInputProps,
+  ref: ForwardedRef<HTMLInputElement>
+) {
   const {
     plasmicUpdateVariant,
     setControlContextData,
     autoComplete,
     value,
     className,
-    ...rest
+    ...restProps
   } = props;
   const textFieldContext = React.useContext(PlasmicTextFieldContext);
   const context = React.useContext(PlasmicInputContext);
+  const [inputContextProps, inputRef] = useContextProps(
+    restProps,
+    ref,
+    InputContext
+  );
+
+  const { hoverProps, isHovered } = useHover(props);
+  const { isFocused, isFocusVisible, focusProps } = useFocusRing({
+    isTextInput: true,
+    autoFocus: inputContextProps.autoFocus,
+  });
+
+  const mergedProps = mergeProps(
+    filterHoverProps(inputContextProps),
+    focusProps,
+    hoverProps,
+    {
+      style: COMMON_STYLES,
+      value: context?.isUncontrolled ? undefined : value,
+      autoComplete: resolveAutoComplete(autoComplete),
+      className,
+    }
+  );
+
+  const isDisabled = mergedProps.disabled || false;
+  const isInvalid =
+    !!mergedProps["aria-invalid"] && mergedProps["aria-invalid"] !== "false";
 
   setControlContextData?.({
     parent: textFieldContext,
   });
 
-  const classNameProp = useCallback(
-    ({
-      isDisabled,
-      isFocusVisible,
-      isFocused,
-      isHovered,
-    }: InputRenderProps) => {
-      plasmicUpdateVariant?.({
+  useEffect(() => {
+    if (plasmicUpdateVariant) {
+      plasmicUpdateVariant({
         disabled: isDisabled,
         focused: isFocused,
         focusVisible: isFocusVisible,
         hovered: isHovered,
       });
-      return className ?? "";
-    },
-    [className, plasmicUpdateVariant]
+    }
+  }, [isFocused, isFocusVisible, isHovered, isDisabled, plasmicUpdateVariant]);
+
+  return (
+    <input
+      {...mergedProps}
+      ref={inputRef}
+      data-focused={isFocused || undefined}
+      data-disabled={isDisabled || undefined}
+      data-hovered={isHovered || undefined}
+      data-focus-visible={isFocusVisible || undefined}
+      data-invalid={isInvalid || undefined}
+    />
   );
-
-  const mergedProps = mergeProps(rest, {
-    value: context?.isUncontrolled ? undefined : value,
-    autoComplete: resolveAutoComplete(autoComplete),
-    className: classNameProp,
-  });
-
-  return <Input {...mergedProps} style={COMMON_STYLES} />;
 }
+
+export const BaseInput = React.forwardRef(BaseInput_);
 
 export const INPUT_COMPONENT_NAME = makeComponentName("input");
 

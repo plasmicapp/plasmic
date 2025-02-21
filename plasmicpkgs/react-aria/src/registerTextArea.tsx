@@ -1,11 +1,15 @@
-import React, { ChangeEvent, useCallback } from "react";
-import { mergeProps } from "react-aria";
-import type { InputRenderProps, TextAreaProps } from "react-aria-components";
-import { TextArea } from "react-aria-components";
+import React, { ChangeEvent, ForwardedRef, useEffect } from "react";
+import { mergeProps, useFocusRing, useHover } from "react-aria";
+import {
+  TextAreaContext,
+  TextAreaProps,
+  useContextProps,
+} from "react-aria-components";
 import { COMMON_STYLES, getCommonProps } from "./common";
 import { PlasmicTextFieldContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
+  filterHoverProps,
   HasControlContextData,
   makeComponentName,
   Registerable,
@@ -39,40 +43,73 @@ export const inputHelpers = {
   },
 };
 
-export function BaseTextArea(props: BaseTextAreaProps) {
-  const { className, plasmicUpdateVariant, setControlContextData, ...rest } =
-    props;
+function BaseTextArea_(
+  props: BaseTextAreaProps,
+  ref: ForwardedRef<HTMLTextAreaElement>
+) {
+  const {
+    className,
+    plasmicUpdateVariant,
+    setControlContextData,
+    ...restProps
+  } = props;
 
   const textFieldContext = React.useContext(PlasmicTextFieldContext);
+  const [textAreaContextProps, textAreaRef] = useContextProps(
+    restProps,
+    ref,
+    TextAreaContext
+  );
+
+  const { hoverProps, isHovered } = useHover(textAreaContextProps);
+  const { isFocused, isFocusVisible, focusProps } = useFocusRing({
+    isTextInput: true,
+    autoFocus: textAreaContextProps.autoFocus,
+  });
+
+  const mergedProps = mergeProps(
+    filterHoverProps(textAreaContextProps),
+    focusProps,
+    hoverProps,
+    {
+      style: COMMON_STYLES,
+      className,
+    }
+  );
+
+  const isDisabled = mergedProps.disabled || false;
+  const isInvalid =
+    !!mergedProps["aria-invalid"] && mergedProps["aria-invalid"] !== "false";
 
   setControlContextData?.({
     parent: textFieldContext,
   });
 
-  const classNameProp = useCallback(
-    ({
-      isDisabled,
-      isFocusVisible,
-      isFocused,
-      isHovered,
-    }: InputRenderProps) => {
-      plasmicUpdateVariant?.({
+  useEffect(() => {
+    if (plasmicUpdateVariant) {
+      plasmicUpdateVariant({
         disabled: isDisabled,
         focused: isFocused,
         focusVisible: isFocusVisible,
         hovered: isHovered,
       });
-      return className ?? "";
-    },
-    [className, plasmicUpdateVariant]
+    }
+  }, [isFocused, isFocusVisible, isHovered, isDisabled, plasmicUpdateVariant]);
+
+  return (
+    <textarea
+      {...mergedProps}
+      ref={textAreaRef}
+      data-focused={isFocused || undefined}
+      data-disabled={isDisabled || undefined}
+      data-hovered={isHovered || undefined}
+      data-focus-visible={isFocusVisible || undefined}
+      data-invalid={isInvalid || undefined}
+    />
   );
-
-  const mergedProps = mergeProps(rest, {
-    className: classNameProp,
-  });
-
-  return <TextArea {...mergedProps} style={COMMON_STYLES} />;
 }
+
+export const BaseTextArea = React.forwardRef(BaseTextArea_);
 
 export function registerTextArea(
   loader?: Registerable,

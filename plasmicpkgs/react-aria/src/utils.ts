@@ -5,6 +5,7 @@ import {
 } from "@plasmicapp/host";
 import registerComponent from "@plasmicapp/host/registerComponent";
 import React, { useEffect } from "react";
+import { InputProps, TextAreaProps } from "react-aria-components";
 
 export type HasControlContextData<T = BaseControlContextData> = {
   setControlContextData?: (ctxData: T) => void;
@@ -172,4 +173,16 @@ export function withoutNils<T>(array: (T | undefined | null)[]) {
 
 export function isDefined<T>(thing: T | undefined | null): thing is T {
   return thing !== undefined && thing !== null;
+}
+
+export function filterHoverProps<T extends TextAreaProps | InputProps>(
+  props: T
+) {
+  const {
+    onHoverStart: _onHoverStart,
+    onHoverChange: _onHoverChange,
+    onHoverEnd: _onHoverEnd,
+    ...otherProps
+  } = props;
+  return otherProps;
 }
