@@ -2,6 +2,7 @@ import * as semver from "@/wab/commons/semver";
 import { loadDepPackages } from "@/wab/server/db/DbBundleLoader";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
+import { withSpan } from "@/wab/server/util/apm-util";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { UnsafeBundle } from "@/wab/shared/bundles";
@@ -75,22 +76,27 @@ export async function resolveLatestProjectVersions(
   projectIdsAndTags: { projectId: string; tag: string | undefined }[],
   opts: { prefilledOnly: boolean } = { prefilledOnly: false }
 ) {
-  const pkgVersions = await Promise.all(
-    projectIdsAndTags.map((projectIdAndTag) =>
-      getPkgVersionByProject(
-        dbMgr,
-        projectIdAndTag.projectId,
-        undefined,
-        projectIdAndTag.tag,
-        opts
-      )
-    )
-  );
-  return Object.fromEntries(
-    pkgVersions.map(({ pkg, pkgVersion }) => [
-      pkg.projectId,
-      pkgVersion.version,
-    ])
+  return withSpan(
+    `resolveLatestProjectVersions-${projectIdsAndTags.length}`,
+    async () => {
+      const pkgVersions = await Promise.all(
+        projectIdsAndTags.map((projectIdAndTag) =>
+          getPkgVersionByProject(
+            dbMgr,
+            projectIdAndTag.projectId,
+            undefined,
+            projectIdAndTag.tag,
+            opts
+          )
+        )
+      );
+      return Object.fromEntries(
+        pkgVersions.map(({ pkg, pkgVersion }) => [
+          pkg.projectId,
+          pkgVersion.version,
+        ])
+      );
+    }
   );
 }
 
