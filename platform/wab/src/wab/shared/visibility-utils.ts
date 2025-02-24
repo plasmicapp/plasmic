@@ -1,13 +1,3 @@
-import { isNonNil } from "@/wab/shared/common";
-import { isCodeComponent } from "@/wab/shared/core/components";
-import { PLASMIC_DISPLAY_NONE } from "@/wab/shared/css";
-import {
-  ExprCtx,
-  codeLit,
-  getCodeExpressionWithFallback,
-  isCodeLitVal,
-  isRealCodeExpr,
-} from "@/wab/shared/core/exprs";
 import { RSH, RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
@@ -19,7 +9,22 @@ import {
   tryGetVariantSetting,
 } from "@/wab/shared/Variants";
 import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
+import { isNonNil } from "@/wab/shared/common";
+import { isCodeComponent } from "@/wab/shared/core/components";
+import {
+  ExprCtx,
+  codeLit,
+  getCodeExpressionWithFallback,
+  isCodeLitVal,
+  isRealCodeExpr,
+} from "@/wab/shared/core/exprs";
 import { CONTENT_LAYOUT } from "@/wab/shared/core/style-props";
+import {
+  isTplComponent,
+  isTplTag,
+  isTplVariantable,
+} from "@/wab/shared/core/tpls";
+import { PLASMIC_DISPLAY_NONE } from "@/wab/shared/css";
 import {
   EffectiveVariantSetting,
   getEffectiveVariantSetting,
@@ -35,7 +40,6 @@ import {
   Variant,
   VariantSetting,
 } from "@/wab/shared/model/classes";
-import { isTplComponent, isTplTag, isTplVariantable } from "@/wab/shared/core/tpls";
 
 // When doing "DisplayNone" in css, we set `display: none`.  However,
 // we don't actually want to set that in our RuleSet, because
@@ -90,8 +94,7 @@ export function getVisibilityDataProp(visibility: TplVisibility) {
   }
 }
 
-export function getEffectiveTplVisibility(tpl: TplNode, combo: VariantCombo) {
-  const effectiveVs = getEffectiveVariantSetting(tpl, combo);
+export function getEffectiveVsVisibility(effectiveVs: EffectiveVariantSetting) {
   const dataCond = effectiveVs.dataCond;
   if (!!dataCond && isCodeLitVal(dataCond, false)) {
     return TplVisibility.NotRendered;
@@ -105,6 +108,11 @@ export function getEffectiveTplVisibility(tpl: TplNode, combo: VariantCombo) {
   } else {
     return TplVisibility.Visible;
   }
+}
+
+export function getEffectiveTplVisibility(tpl: TplNode, combo: VariantCombo) {
+  const effectiveVs = getEffectiveVariantSetting(tpl, combo);
+  return getEffectiveVsVisibility(effectiveVs);
 }
 
 export function setTplVisibilityToDisplayNone(

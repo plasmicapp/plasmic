@@ -133,6 +133,7 @@ import {
   switchType,
   tuple,
   unexpected,
+  unreachable,
   withDefaultFunc,
   withoutNils,
 } from "@/wab/shared/common";
@@ -263,6 +264,7 @@ import {
   isKnownStateParam,
   isKnownStyleExpr,
   isKnownStyleScopeClassNamePropType,
+  isKnownTplNode,
   isKnownTplTag,
 } from "@/wab/shared/model/classes";
 import { isRenderFuncType, typeFactory } from "@/wab/shared/model/model-util";
@@ -280,6 +282,10 @@ import {
   makeVariantComboSorter,
   sortedVariantSettings,
 } from "@/wab/shared/variant-sort";
+import {
+  TplVisibility,
+  getEffectiveVsVisibility,
+} from "@/wab/shared/visibility-utils";
 import type { usePlasmicInvalidate } from "@plasmicapp/data-sources";
 import { DataDict, mkMetaName } from "@plasmicapp/host";
 import { $StateSpec } from "@plasmicapp/react-web";
@@ -289,6 +295,7 @@ import {
   last,
   omit,
   pick,
+  reverse,
   uniqBy,
   without,
   zipObject,
@@ -1259,6 +1266,73 @@ export function renderTplNode(node: TplNode, ctx: RenderingCtx) {
   );
 }
 
+function getAutoOpenSelectionInfo(ctx: RenderingCtx, node: TplNode) {
+  return computedFn(
+    () => {
+      // Ensuring that the depencies are tracked
+      const isInteractive = ctx.viewCtx.studioCtx.isInteractiveMode;
+      const isAutoOpenMode = ctx.viewCtx.studioCtx.isAutoOpenMode;
+
+      // The reason why we are using the focusedTplDeepAncestorPath is because
+      // we can't rely on ValNodes or the dom to determine if a node is selected
+      // or not. Since code components are able to conditonally render content
+      // without our knowledge, even us being the ones that provide the content
+      // for the slot, we can't be sure wether the content is attached to the
+      // React tree. Our option is to rely on the model and based on the tpl nodes
+      // stretch the focused elements to include all the tpls that we are able to find.
+      //
+      // The reason for streching the selection is because code components can
+      // have the slot being proxied by a plasmic component, so we need to make sure
+      // that the selection is also handled through it.
+      const path = ctx.viewCtx.focusedTplAncestorsThroughComponents();
+      const nodeIdx = path?.findIndex((s) => s === node) ?? -1;
+
+      if (isInteractive || !isAutoOpenMode || !path || nodeIdx === -1) {
+        return {
+          id: node.uuid,
+          isSelected: false,
+          selectedSlotName: null,
+        };
+      }
+
+      // We now need to know whether this node is really selected or not since
+      // when dealing with proxied components the same node will be reused for
+      // rendering, we will then look into all tpl node ancestors and if they
+      // are present in the valKey
+      const nodeAncestors = path.slice(nodeIdx);
+
+      // We will compute the valKey path without the first element, since it's
+      // a reference to the instance of the current component that is being rendered
+      const valKeyPath = ctx.valKey.split(".").slice(1).join(".");
+
+      // Since ancestors are in the reverse order, we need to reverse them to get
+      // a key in the same order as the valKey
+      const ancestorsKeyPath = reverse(nodeAncestors)
+        .filter(isKnownTplNode)
+        .map((n) => n.uuid)
+        .join(".");
+
+      // If it's truly selected, we should have the same key path
+      const isSelected = valKeyPath === ancestorsKeyPath;
+
+      const descendant = nodeIdx > 0 ? path[nodeIdx - 1] : null;
+
+      return {
+        id: node.uuid,
+        isSelected,
+        selectedSlotName:
+          isSelected && isSlotSelection(descendant)
+            ? descendant?.slotParam?.variable.name
+            : null,
+      };
+    },
+    {
+      name: "getAutoOpenSelectionInfo",
+      equals: comparer.structural,
+    }
+  )();
+}
+
 function renderReppable(tplNode: TplNode, ctx: RenderingCtx) {
   const node = ensureInstance(tplNode, TplTag, TplComponent, TplSlot);
   const activeVSettings = getSortedActiveVariantSettings(node, ctx);
@@ -1389,22 +1463,15 @@ function renderTplComponent(
   ctx: RenderingCtx,
   activeVSettings: VariantSetting[]
 ): React.ReactElement | null {
-  const dataCondExpr = getCondExpr(activeVSettings, ctx);
-  const exprCtx: ExprCtx = {
-    component: ctx.ownerComponent ?? null,
-    projectFlags: ctx.projectFlags,
-    inStudio: true,
-  };
-  const dataCond =
-    dataCondExpr == null
-      ? true
-      : evalCodeWithEnv(
-          getCodeExpressionWithFallback(dataCondExpr, exprCtx),
-          ctx.env,
-          ctx.viewCtx.canvasCtx.win()
-        );
+  const effectiveVs = new EffectiveVariantSetting(
+    node,
+    activeVSettings,
+    ctx.site
+  );
 
-  if (!dataCond) {
+  const { rendered } = getVisibilityWithAutoOpen(ctx, node, effectiveVs);
+
+  if (!rendered) {
     return null;
   }
 
@@ -1423,11 +1490,12 @@ function renderTplComponent(
     return null;
   }
 
-  const effectiveVs = new EffectiveVariantSetting(
-    node,
-    activeVSettings,
-    ctx.site
-  );
+  const exprCtx: ExprCtx = {
+    component: ctx.ownerComponent ?? null,
+    projectFlags: ctx.projectFlags,
+    inStudio: true,
+  };
+
   const props = computeTplComponentArgs(node, effectiveVs, ctx);
   const isComponentRoot = ctx.ownerComponent?.tplTree === node;
   const positionClassName = uniqifyClassName(
@@ -1697,63 +1765,8 @@ function renderTplComponent(
     });
   }
 
-  if (isCodeComponent(node.component) && ctx.projectFlags.autoOpen) {
-    const codeComponentSelectionInfo = computedFn(
-      () => {
-        // Ensuring that the depencies are tracked
-        const isInteractive = ctx.viewCtx.studioCtx.isInteractiveMode;
-        const isAutoOpenMode = ctx.viewCtx.studioCtx.isAutoOpenMode;
-
-        // The reason why we are using the focusedTplDeepAncestorPath is because
-        // we can't rely on ValNodes or the dom to determine if a node is selected
-        // or not. Since code components are able to conditonally render content
-        // without our knowledge, even us being the ones that provide the content
-        // for the slot, we can't be sure wether the content is attached to the
-        // React tree. Our option is to rely on the model and based on the tpl nodes
-        // stretch the focused elements to include all the tpls that we are able to find.
-        //
-        // The reason for streching the selection is because code components can
-        // have the slot being proxied by a plasmic component, so we need to make sure
-        // that the selection is also handled through it.
-        const path = ctx.viewCtx.focusedTplAncestorsThroughComponents();
-        const nodeIdx = path?.findIndex((s) => s === node) ?? -1;
-
-        if (isInteractive || !isAutoOpenMode || !path || nodeIdx === -1) {
-          return {
-            id: node.uuid,
-            isSelected: false,
-            selectedSlotName: null,
-          };
-        }
-
-        // We now need to know whether this node is really selected or not since
-        // when dealing with proxied components the same node will be reused for
-        // rendering, we will then look into all tpl node ancestors and if they
-        // are present in the valKey
-        const nodeAncestors = path.slice(nodeIdx);
-        const isSelected = nodeAncestors.every((ancestor) => {
-          return (
-            isSlotSelection(ancestor) || ctx.valKey.includes(ancestor.uuid)
-          );
-        });
-
-        const descendant = nodeIdx > 0 ? path[nodeIdx - 1] : null;
-
-        return {
-          id: node.uuid,
-          isSelected,
-          selectedSlotName:
-            isSelected && isSlotSelection(descendant)
-              ? descendant?.slotParam?.variable.name
-              : null,
-        };
-      },
-      {
-        name: "canvasCodeComponentCtxValue",
-        equals: comparer.structural,
-      }
-    )();
-
+  if (isCodeComponent(node.component)) {
+    const codeComponentSelectionInfo = getAutoOpenSelectionInfo(ctx, node);
     props[INTERNAL_CC_CANVAS_SELECTION_PROP] = codeComponentSelectionInfo;
   }
 
@@ -2305,20 +2318,9 @@ function renderTplTag(
       effectiveVsWithoutDisabled
     );
 
-  const dataCondExpr = getCondExpr(activeVSettings, ctx);
-  const dataCond =
-    dataCondExpr == null
-      ? true
-      : evalCodeWithEnv(
-          getCodeExpressionWithFallback(dataCondExpr, {
-            component: ctx.ownerComponent ?? null,
-            projectFlags: ctx.projectFlags,
-            inStudio: true,
-          }),
-          ctx.env,
-          ctx.viewCtx.canvasCtx.win()
-        );
-  if (!dataCond) {
+  const { rendered, style } = getVisibilityWithAutoOpen(ctx, node, effectiveVs);
+
+  if (!rendered) {
     return null;
   }
 
@@ -2456,6 +2458,13 @@ function renderTplTag(
   if (tplHasRef(node)) {
     attrs["ref"] = (ref: any) =>
       (ctx.env.$refs[ensure(node.name, `Only named tpls can have ref`)] = ref);
+  }
+
+  if (style) {
+    attrs["style"] = {
+      ...(attrs["style"] ?? {}),
+      ...style,
+    };
   }
 
   if (isTplTextBlock(node)) {
@@ -2723,6 +2732,86 @@ function getCondExpr(
     return condExpr;
   }
   return null;
+}
+
+function evalDataCondExpr(
+  ctx: RenderingCtx,
+  effectiveVs: EffectiveVariantSetting
+) {
+  const dataCondExpr = effectiveVs.dataCond;
+  const exprCtx: ExprCtx = {
+    component: ctx.ownerComponent ?? null,
+    projectFlags: ctx.projectFlags,
+    inStudio: true,
+  };
+  const dataCondResult =
+    dataCondExpr == null
+      ? true
+      : evalCodeWithEnv(
+          getCodeExpressionWithFallback(dataCondExpr, exprCtx),
+          ctx.env,
+          ctx.viewCtx.canvasCtx.win()
+        );
+  return !!dataCondResult;
+}
+
+function getVisibilityWithAutoOpen(
+  ctx: RenderingCtx,
+  node: TplNode,
+  effectiveVs: EffectiveVariantSetting
+) {
+  const visibility = getEffectiveVsVisibility(effectiveVs);
+
+  switch (visibility) {
+    case TplVisibility.Visible: {
+      return {
+        rendered: true,
+      };
+    }
+
+    case TplVisibility.NotRendered:
+    case TplVisibility.CustomExpr: {
+      const dataCondResult = evalDataCondExpr(ctx, effectiveVs);
+      if (dataCondResult) {
+        return {
+          rendered: true,
+        };
+      }
+
+      if (!ctx.projectFlags.autoOpen2) {
+        return {
+          rendered: false,
+        };
+      }
+
+      const autoOpenInfo = getAutoOpenSelectionInfo(ctx, node);
+      return {
+        rendered: autoOpenInfo.isSelected,
+      };
+    }
+
+    case TplVisibility.DisplayNone: {
+      if (!ctx.projectFlags.autoOpen2) {
+        return {
+          rendered: true,
+        };
+      }
+
+      const autoOpenInfo = getAutoOpenSelectionInfo(ctx, node);
+      return {
+        rendered: true,
+        style: autoOpenInfo.isSelected
+          ? {
+              display: effectiveVs.rsh().get("display"),
+            }
+          : undefined,
+      };
+    }
+
+    default: {
+      unreachable(visibility);
+    }
+  }
 }
 
 function deriveTplTagChildren(
@@ -3119,21 +3208,13 @@ function renderTplSlot(
   ctx: RenderingCtx,
   activeVSettings: VariantSetting[]
 ): React.ReactElement | null {
-  const dataCondExpr = getCondExpr(activeVSettings, ctx);
-  const dataCond =
-    dataCondExpr == null
-      ? true
-      : evalCodeWithEnv(
-          getCodeExpressionWithFallback(dataCondExpr, {
-            component: ctx.ownerComponent ?? null,
-            projectFlags: ctx.projectFlags,
-            inStudio: true,
-          }),
-          ctx.env,
-          ctx.viewCtx.canvasCtx.win()
-        );
+  const { rendered } = getVisibilityWithAutoOpen(
+    ctx,
+    node,
+    new EffectiveVariantSetting(node, activeVSettings, ctx.site)
+  );
 
-  if (!dataCond) {
+  if (!rendered) {
     return null;
   }
 

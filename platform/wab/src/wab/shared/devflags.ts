@@ -579,6 +579,7 @@ const DEFAULT_DEVFLAGS = {
   templateTours: {} as Record<string, string>,
 
   autoOpen: false,
+  autoOpen2: false,
 };
 
 Object.assign(DEFAULT_DEVFLAGS, DEFAULT_DEVFLAG_OVERRIDES);
@@ -659,6 +660,7 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     warningsInCanvas: true,
     previewSteps: true,
     autoOpen: true,
+    autoOpen2: true,
   } as Partial<DevFlagsType>);
 }
 
