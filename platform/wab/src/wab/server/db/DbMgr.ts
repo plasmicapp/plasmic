@@ -7221,23 +7221,27 @@ export class DbMgr implements MigrationDbMgr {
     );
   }
 
-  checkUniqueField(
-    publishedRows: CmsRow[],
-    currentRow: CmsRow,
-    uniqueField: { identifier: string; value: unknown }
+  async checkUniqueFields(
+    tableId: CmsTableId,
+    rowId: CmsRowId,
+    fields: Dict<unknown>
   ) {
-    for (const publishedRow of publishedRows) {
-      if (
-        publishedRow.id !== currentRow.id &&
-        publishedRow.data &&
-        String(
-          Object.values(publishedRow.data)[0][uniqueField.identifier] ?? ""
-        ) === String(uniqueField.value ?? "")
-      ) {
-        return false;
+    const publishedRows = await this.getPublishedRows(tableId);
+    const violated: string[] = [];
+    Object.entries(fields).forEach(([identifier, value]) => {
+      for (const publishedRow of publishedRows) {
+        if (
+          publishedRow.id !== rowId &&
+          publishedRow.data &&
+          String(Object.values(publishedRow.data)[0][identifier] ?? "") ===
+            String(value ?? "")
+        ) {
+          violated.push(identifier);
+          break;
+        }
       }
-    }
-    return true;
+    });
+    return violated;
   }
 
   async checkUniqueOnPublish(
@@ -7252,19 +7256,12 @@ export class DbMgr implements MigrationDbMgr {
     if (uniqueIdentifiers.length === 0) {
       return;
     }
-    const publishedRows = await this.getPublishedRows(table.id);
-    const violated: string[] = [];
-    uniqueIdentifiers.forEach((identifier) => {
-      if (
-        !this.checkUniqueField(publishedRows, row, {
-          identifier: identifier,
-          value: data[identifier],
-        })
-      ) {
-        violated.push(identifier);
-      }
-    });
-    return violated;
+    const uniqueFieldsData = Object.fromEntries(
+      Object.entries(data).filter(([identifier, __]) =>
+        uniqueIdentifiers.includes(identifier)
+      )
+    );
+    return await this.checkUniqueFields(table.id, row.id, uniqueFieldsData);
   }
 
   async updateCmsRow(
@@ -7439,22 +7436,7 @@ export class DbMgr implements MigrationDbMgr {
         },
       });
     }
-
     return publishedRows;
-  }
-
-  async checkUnique(
-    tableId: CmsTableId,
-    rowId: CmsRowId,
-    uniquenessCheckField: {
-      identifier: string;
-      value: unknown;
-    }
-  ) {
-    const row = await this.getCmsRowById(rowId);
-    // const table = await this.getCmsTableById(tableId);
-    const publishedRows = await this.getPublishedRows(tableId);
-    return this.checkUniqueField(publishedRows, row, uniquenessCheckField);
   }
 
   // TODO We are always querying just the default locale.

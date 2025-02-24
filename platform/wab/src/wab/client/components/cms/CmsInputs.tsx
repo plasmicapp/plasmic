@@ -56,6 +56,7 @@ interface ContentEntryFormContextValue {
   typeMeta: CmsTypeMeta;
   database: ApiCmsDatabase;
   name: NamePathz;
+  uniqueFail?: boolean;
   directlyInsideList?: boolean;
 }
 
@@ -235,6 +236,14 @@ const FormNameContext = createContext<
   { name: NamePathz; label: ReactNode } | undefined
 >(undefined);
 
+export class FormValidationError extends Error {
+  type: string;
+  constructor(message: string, type: string) {
+    super(message);
+    this.type = type;
+  }
+}
+
 function MaybeFormItem({
   typeName,
   name,
@@ -245,22 +254,26 @@ function MaybeFormItem({
   name: NamePathz;
   maxChars?: number;
   minChars?: number;
+  uniqueFail?: boolean;
 }) {
   const commonRules = [
-    { required: props.required, message: "Field is required" },
-    // {
-    //   validator: async (_, value) => {
-    //     // const errors: string[] = [];
-    //     // if (props.required && !value) {
-    //     //   errors.push("Field is required");
-    //     // }
-    //     if (props.unique) {
-    //       return Promise.reject(new Error("unique.."));
-    //     }
-    //     return Promise.resolve();
-    //   },
-    // },
-    //     /* If there are entries with duplicated field(s),
+    {
+      validator: async (_, value) => {
+        if (props.required && !value) {
+          const er = new Error("test", {
+            cause: new Error("Underlying cause"),
+          });
+          console.log("er:", er);
+          return Promise.reject(new Error("Field is required"));
+        }
+        if (props.uniqueFail) {
+          return Promise.reject(
+            new Error("This field should be unique to publish this entry")
+          );
+        }
+        return Promise.resolve();
+      },
+    },
   ];
   const typeSpecificRules =
     [CmsMetaType.TEXT, CmsMetaType.RICH_TEXT].includes(typeName) &&
@@ -284,6 +297,7 @@ export function CmsObjectInput(props: any) {
     typeMeta,
     database,
     name,
+    uniqueFail,
     directlyInsideList = false,
   } = useContentEntryFormContext();
   assert(typeMeta.type === CmsMetaType.OBJECT, "Must be rendering an object");
@@ -576,7 +590,6 @@ export function renderEntryField(type: CmsTypeName): ReactElement {
 interface MaybeLocalizedInputProps {
   databaseId: CmsDatabaseId;
   required?: boolean;
-  unique?: boolean;
   fieldPath: string[];
   localized: boolean;
   locales: string[];
@@ -584,6 +597,7 @@ interface MaybeLocalizedInputProps {
   fieldPathSuffix: string[];
   formItemProps: FormItemProps;
   typeName: CmsTypeName;
+  uniqueFail: boolean;
 }
 
 export function renderMaybeLocalizedInput({
@@ -596,7 +610,7 @@ export function renderMaybeLocalizedInput({
   formItemProps,
   typeName,
   required,
-  unique,
+  uniqueFail,
 }: MaybeLocalizedInputProps) {
   return (
     <ContentEntryFormContext.Consumer>
@@ -621,7 +635,7 @@ export function renderMaybeLocalizedInput({
               minChars={minChars}
               required={required}
               typeName={typeName}
-              unique={unique}
+              uniqueFail={uniqueFail}
               {...formItemProps}
               name={[...fieldPath, "", ...fieldPathSuffix]}
             >
@@ -657,7 +671,7 @@ export function renderMaybeLocalizedInput({
                       maxChars={maxChars}
                       minChars={minChars}
                       required={required}
-                      unique={unique}
+                      uniqueFail={uniqueFail}
                       typeName={typeName}
                       name={[...fieldPath, locale, ...fieldPathSuffix]}
                       noStyle

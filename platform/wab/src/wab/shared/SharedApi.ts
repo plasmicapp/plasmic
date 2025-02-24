@@ -1747,12 +1747,9 @@ export abstract class SharedApi {
 
   async checkUnique(
     rowId: CmsRowId,
-    uniquenessCheckField: { identifier: string; value: unknown }
+    opts: { uniqueChangedFields: Dict<unknown> }
   ) {
-    return await this.get(
-      `cmse/rows/${rowId}/uniqueness`,
-      uniquenessCheckField
-    );
+    return await this.post(`cmse/rows/${rowId}/uniqueness`, opts);
   }
 
   async deleteCmsRow(rowId: CmsRowId) {

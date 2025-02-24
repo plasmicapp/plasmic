@@ -292,12 +292,12 @@ export async function cloneRow(req: Request, res: Response) {
 export async function checkUniqueness(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const row = await mgr.getCmsRowById(req.params.rowId as CmsRowId);
-  const isUnique = await mgr.checkUnique(
+  const notValidIdentifiers = await mgr.checkUniqueFields(
     row.tableId as CmsTableId,
     row.id as CmsRowId,
-    req.body
+    req.body.uniqueChangedFields
   );
-  res.json(isUnique);
+  res.json(notValidIdentifiers);
 }
 
 export async function updateRow(req: Request, res: Response) {
