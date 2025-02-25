@@ -1237,6 +1237,7 @@ export interface CmsBaseType<T> {
   required: boolean;
   hidden: boolean;
   localized: boolean;
+  unique: boolean;
   /** The empty string "" locale is the default locale. */
   defaultValueByLocale: Dict<T>;
 }
@@ -1392,6 +1393,7 @@ export const cmsFieldMetaDefaults: CmsBaseType<unknown> = {
   required: false,
   hidden: false,
   localized: false,
+  unique: false,
   defaultValueByLocale: {},
 } as const;
 

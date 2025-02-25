@@ -2,11 +2,11 @@ import { CmsTable } from "@/wab/server/entities/Entities";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   CmsFieldMeta,
+  CmsMetaType,
   CmsTableSchema,
   CmsTypeName,
   FilterClause,
   FilterCond,
-  CmsMetaType,
 } from "@/wab/shared/ApiSchema";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { Dict } from "@/wab/shared/collections";
