@@ -7227,6 +7227,14 @@ export class DbMgr implements MigrationDbMgr {
     fields: Dict<unknown>
   ) {
     const publishedRows = await this.getPublishedRows(tableId);
+    if (publishedRows.length > 500) {
+      Sentry.captureEvent({
+        message: "The result of the db query contains more than 500 rows.",
+        extra: {
+          tableId: tableId,
+        },
+      });
+    }
     const violated: string[] = [];
     Object.entries(fields).forEach(([identifier, value]) => {
       for (const publishedRow of publishedRows) {
