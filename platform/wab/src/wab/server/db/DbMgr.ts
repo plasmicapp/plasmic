@@ -242,6 +242,7 @@ import {
   compareSites,
   compareVersionNumbers,
 } from "@/wab/shared/site-diffs";
+import { getLowestCommonAncestor } from "@/wab/shared/site-diffs/commit-graph";
 import {
   DirectConflictPickMap,
   MergeStep,
@@ -275,8 +276,6 @@ import {
   SelectQueryBuilder,
 } from "typeorm";
 import * as uuid from "uuid";
-
-import { getLowestCommonAncestor } from "@/wab/shared/site-diffs/commit-graph";
 
 export const updatableUserFields = [
   "firstName",
@@ -2556,7 +2555,6 @@ export class DbMgr implements MigrationDbMgr {
   async createProject({
     name,
     workspaceId: _workspaceId,
-    orgId,
     ownerId,
     hostUrl,
     clonedFromProjectId,
@@ -2565,8 +2563,6 @@ export class DbMgr implements MigrationDbMgr {
   }: {
     name: string;
     workspaceId?: WorkspaceId;
-    orgId?: string;
-    localBlobIds?: string[];
     ownerId?: string;
     hostUrl?: string | null;
     clonedFromProjectId?: string;
@@ -2586,21 +2582,15 @@ export class DbMgr implements MigrationDbMgr {
     const creatorId = isNormalUser(this.actor) ? this.actor.userId : ownerId;
 
     if (!workspaceId && creatorId) {
-      const personalTeam = await this.teams().findOne({
-        where: {
-          personalTeamOwnerId: creatorId,
-        },
+      const personalTeam = await findExactlyOne(this.teams(), {
+        personalTeamOwnerId: creatorId,
       });
 
-      const personalWorkspace = personalTeam
-        ? await this.workspaces().findOne({
-            where: {
-              teamId: personalTeam.id,
-            },
-          })
-        : undefined;
+      const personalWorkspace = await findExactlyOne(this.workspaces(), {
+        teamId: personalTeam.id,
+      });
 
-      workspaceId = personalWorkspace?.id ?? workspaceId;
+      workspaceId = personalWorkspace.id;
     } else if (workspaceId && inviteOnly === undefined) {
       const team = await this.getTeamByWorkspaceId(workspaceId);
       inviteOnly = team ? true : undefined;
@@ -2608,8 +2598,7 @@ export class DbMgr implements MigrationDbMgr {
 
     const project = this.projects().create({
       ...this.stampNew(true),
-      org: orgId ? { id: orgId } : null,
-      workspace: workspaceId ? { id: workspaceId } : null,
+      workspaceId,
       name,
       defaultAccessLevel: "viewer",
       inviteOnly: inviteOnly ?? true,
