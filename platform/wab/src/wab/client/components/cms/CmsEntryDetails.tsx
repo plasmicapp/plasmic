@@ -54,6 +54,7 @@ function getRowIdentifierText(
   if (identifier) {
     return { identifier };
   }
+
   const firstTextField = table.schema.fields.find((field, _) =>
     [CmsMetaType.TEXT, CmsMetaType.LONG_TEXT].includes(field.type)
   )?.identifier;
@@ -188,7 +189,7 @@ function CmsEntryDetailsForm_(
   const mutateRow_ = useMutateRow();
   const mutateTableRows = useMutateTableRows();
 
-  const [uniqueFieldsIdentifier, setUniqueFieldsIdentifiers] = React.useState<
+  const [uniqueFieldsIdentifier, setUniqueFieldsIdentifier] = React.useState<
     string[]
   >([]);
   const [uniqueChangedFields, setUniqueChangedFields] = React.useState<
@@ -310,7 +311,7 @@ function CmsEntryDetailsForm_(
     setInConflict(true);
   };
 
-  async function checkUniqueFields() {
+  async function checkUniqueness() {
     try {
       const opts = { uniqueChangedFields: uniqueChangedFields };
       const checkedNotValid = await api.checkUnique(row.id, opts);
@@ -323,7 +324,7 @@ function CmsEntryDetailsForm_(
       setNotVaildUniqueFields([
         ...new Set([...checkedValidRemoved, ...checkedNotValid]),
       ]);
-      setUniqueChangedFields({}); // clear
+      setUniqueChangedFields({});
     } catch (err) {
       console.log(err);
     }
@@ -334,7 +335,7 @@ function CmsEntryDetailsForm_(
     try {
       setSaving(true);
       if (isUniqueFieldChanged()) {
-        await checkUniqueFields();
+        await checkUniqueness();
       }
       await api.updateCmsRow(row.id, {
         identifier,
@@ -391,10 +392,11 @@ function CmsEntryDetailsForm_(
   }, [row, validateFields]);
 
   React.useEffect(() => {
-    const uniqueIdentifiers = table.schema.fields
-      .filter((field) => field.unique)
-      .map((field) => field.identifier);
-    setUniqueFieldsIdentifiers(uniqueIdentifiers);
+    setUniqueFieldsIdentifier(
+      table.schema.fields
+        .filter((field) => field.unique)
+        .map((field) => field.identifier)
+    );
   }, []);
 
   useBeforeUnload(() => {
@@ -526,45 +528,45 @@ function CmsEntryDetailsForm_(
                         warnConflict();
                       } else if (row && !hasFormError()) {
                         setPublishing(true);
+                        const { identifier, ...draftData } =
+                          form.getFieldsValue();
                         try {
-                          const { identifier, ...draftData } =
-                            form.getFieldsValue();
                           await api.updateCmsRow(row.id, {
                             identifier,
                             data: draftData,
                             draftData: null,
                             revision,
                           });
-                          await mutateRow();
-                          setPublishing(false);
-                          setHasUnpublishedChanges(false);
-                          await message.success({
-                            content: "Your changes have been published.",
-                            duration: 5,
-                          });
-                          const hooks = table.settings?.webhooks?.filter(
-                            (hook) => hook.event === "publish"
-                          );
-                          if (hooks && hooks.length > 0) {
-                            const hooksResp = await api.triggerCmsTableWebhooks(
-                              table.id,
-                              "publish"
-                            );
-                            const failed = hooksResp.responses.filter(
-                              (r) => r.status !== 200
-                            );
-                            if (failed.length > 0) {
-                              await message.warning({
-                                content: "Some publish hooks failed.",
-                                duration: 5,
-                              });
-                            }
-                          }
                         } catch (err) {
                           setPublishing(false);
                           console.log(err);
                           if (err.statusCode === 400) {
                             setNotVaildUniqueFields(JSON.parse(err.message));
+                          }
+                        }
+                        await mutateRow();
+                        setPublishing(false);
+                        setHasUnpublishedChanges(false);
+                        await message.success({
+                          content: "Your changes have been published.",
+                          duration: 5,
+                        });
+                        const hooks = table.settings?.webhooks?.filter(
+                          (hook) => hook.event === "publish"
+                        );
+                        if (hooks && hooks.length > 0) {
+                          const hooksResp = await api.triggerCmsTableWebhooks(
+                            table.id,
+                            "publish"
+                          );
+                          const failed = hooksResp.responses.filter(
+                            (r) => r.status !== 200
+                          );
+                          if (failed.length > 0) {
+                            await message.warning({
+                              content: "Some publish hooks failed.",
+                              duration: 5,
+                            });
                           }
                         }
                       }
