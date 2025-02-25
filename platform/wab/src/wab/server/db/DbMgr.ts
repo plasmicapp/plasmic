@@ -323,7 +323,6 @@ export const updatableProjectFields = [
   "name",
   "inviteOnly",
   "defaultAccessLevel",
-  "codeSandboxInfos",
   "readableByPublic",
   "hostUrl",
   "workspaceId",
@@ -336,7 +335,6 @@ export const updatableProjectFields = [
 export const editorOnlyUpdatableProjectFields = [
   "inviteOnly",
   "defaultAccessLevel",
-  "codeSandboxInfos",
   "readableByPublic",
   "hostUrl",
   "workspaceId",
@@ -2672,8 +2670,6 @@ export class DbMgr implements MigrationDbMgr {
         "change workspace starters"
       );
     }
-    // We use assignAllowEmpty rather than mergeAllowEmpty to disallow merging
-    // the two codeSandboxInfo array
     assignAllowEmpty(project, this.stampUpdate(), fields);
     await this.entMgr.save(project);
     return await this.getProjectById(id, true);
@@ -2740,11 +2736,6 @@ export class DbMgr implements MigrationDbMgr {
       )
       .setParameters({ teamId, userId });
     return qb.getMany();
-  }
-
-  async listProjectsForOrg(orgId: string) {
-    // TODO add permissions check when moving to new permissions system
-    return await this._queryProjects({ orgId }).getMany();
   }
 
   async listProjectsForSelf() {
@@ -10165,8 +10156,6 @@ export class DbMgr implements MigrationDbMgr {
     project.hostUrl = null;
     project.projectApiToken = null;
     project.secretApiToken = null;
-    project.codeSandboxId = null;
-    project.codeSandboxInfos = null;
     project.workspaceId = null;
     project.extraData = null;
     await this.entMgr.save(project);

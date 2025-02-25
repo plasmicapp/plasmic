@@ -193,7 +193,6 @@ import {
   omitNils,
 } from "@/wab/shared/common";
 import { OperationTemplate } from "@/wab/shared/data-sources-meta/data-sources";
-import { CodeSandboxInfo } from "@/wab/shared/db-json-blobs";
 import { GrantableAccessLevel } from "@/wab/shared/EntUtil";
 import { LowerHttpMethod } from "@/wab/shared/HttpClientUtil";
 import { modelSchemaHash } from "@/wab/shared/model/classes-metas";
@@ -215,7 +214,6 @@ export interface SiteInfo {
   inviteOnly: boolean;
   hostUrl: string | null;
   defaultAccessLevel: GrantableAccessLevel;
-  codeSandboxInfos?: CodeSandboxInfo[];
   clonedFromProjectId: ProjectId | null;
   projectApiToken: string | null;
   workspaceId: WorkspaceId | null;
@@ -584,35 +582,6 @@ export abstract class SharedApi {
       `/auth/sso/test?${new URLSearchParams({ email }).toString()}`
     );
     return res;
-  }
-
-  async publishCodeSandbox(
-    projectId: string,
-    opts: Partial<CodeSandboxInfo>
-  ): Promise<{ id: string }> {
-    return this.post(
-      `/projects/${projectId}/publish-codesandbox`,
-      opts
-    ) as Promise<{
-      id: string;
-    }>;
-  }
-
-  async shareCodeSandbox(
-    projectId: string,
-    sandboxId: string,
-    email: string
-  ): Promise<{}> {
-    return this.post(`/projects/${projectId}/share-codesandbox`, {
-      email,
-      sandboxId,
-    }) as Promise<{}>;
-  }
-
-  async detachCodeSandbox(projectId: string, sandboxId: string): Promise<{}> {
-    return this.post(`/projects/${projectId}/detach-codesandbox`, {
-      sandboxId,
-    }) as Promise<{}>;
   }
 
   async signUp(data: SignUpRequest): Promise<SignUpResponse> {

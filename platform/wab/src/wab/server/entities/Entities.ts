@@ -39,7 +39,7 @@ import type {
 import { Dict } from "@/wab/shared/collections";
 import type { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import type { OperationTemplate } from "@/wab/shared/data-sources-meta/data-sources";
-import { CodeSandboxInfo, WebhookHeader } from "@/wab/shared/db-json-blobs";
+import { WebhookHeader } from "@/wab/shared/db-json-blobs";
 import type { AccessLevel, GrantableAccessLevel } from "@/wab/shared/EntUtil";
 import { LocalizationKeyScheme } from "@/wab/shared/localization";
 import { UiConfig } from "@/wab/shared/ui-config-utils";
@@ -290,19 +290,24 @@ export class User extends OrgChild<"UserId"> {
 }
 
 @Entity()
-export class Project extends OrgChild<"ProjectId"> {
+export class Project extends Base<"ProjectId"> {
   @Column("text") name: string;
+  /**
+   * If true, users visiting the site automatically get
+   * {@link defaultAccessLevel} permissions.
+   */
   @Column("boolean") inviteOnly: boolean;
+  /** See {@link inviteOnly}. */
   @Column("text") defaultAccessLevel: GrantableAccessLevel;
   @Column("text", { nullable: true }) hostUrl: string | null;
   @Column("text", { nullable: true }) clonedFromProjectId: ProjectId | null;
   @Column("text", { nullable: true }) projectApiToken: string | null;
 
   @Column("text", { nullable: true }) secretApiToken: string | null;
-  @Column("text", { nullable: true }) codeSandboxId: string | null;
-  @Column("jsonb", { nullable: true }) codeSandboxInfos:
-    | CodeSandboxInfo[]
-    | null;
+  /**
+   * If true, hides users with viewer permissions from the share dialog.
+   * This can only be set by admins.
+   */
   @Column("boolean") readableByPublic: boolean;
 
   @Column("jsonb", { nullable: true })
