@@ -34,6 +34,9 @@ export function BaseTextField(props: BaseTextFieldProps) {
   const { children, plasmicUpdateVariant, autoComplete, ...rest } = props;
 
   return (
+    // PlasmicTextFieldContext is used by
+    // - BaseInput
+    // - BaseTextArea
     <PlasmicTextFieldContext.Provider value={props}>
       <TextField
         autoComplete={resolveAutoComplete(autoComplete)}

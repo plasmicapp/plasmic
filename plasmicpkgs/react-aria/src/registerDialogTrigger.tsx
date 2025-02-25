@@ -55,8 +55,14 @@ export interface BaseDialogTriggerProps
 }
 
 export function BaseDialogTrigger(props: BaseDialogTriggerProps) {
-  const { trigger, dialog, isOpen, className, __plasmic_selection_prop__, ...rest } =
-    props;
+  const {
+    trigger,
+    dialog,
+    isOpen,
+    className,
+    __plasmic_selection_prop__,
+    ...rest
+  } = props;
 
   const isOpen2 = useIsOpen({
     triggerSlotName: "trigger",
@@ -70,6 +76,7 @@ export function BaseDialogTrigger(props: BaseDialogTriggerProps) {
   };
 
   return (
+    // PlasmicDialogTriggerContext is used by BaseModal
     <PlasmicDialogTriggerContext.Provider value={mergedProps}>
       <DialogTrigger {...mergedProps}>
         {trigger && (

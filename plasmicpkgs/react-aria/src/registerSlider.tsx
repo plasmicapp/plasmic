@@ -33,6 +33,7 @@ export function BaseSlider<T extends number | number[]>(
 ) {
   const { children, plasmicUpdateVariant, ...rest } = props;
   return (
+    // PlasmicSliderContext is used by BaseSliderTrack
     <PlasmicSliderContext.Provider
       value={{
         ...rest,

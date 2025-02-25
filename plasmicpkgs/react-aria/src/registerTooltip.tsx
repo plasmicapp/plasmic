@@ -116,6 +116,7 @@ function ControlledBaseTooltip(props: BaseTooltipProps) {
   });
 
   return (
+    // TooltipTriggerStateContext used by BaseOverlayArrow
     <Provider values={[[TooltipTriggerStateContext, state]]}>
       <TriggerWrapper
         ref={ref}

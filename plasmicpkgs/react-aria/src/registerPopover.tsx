@@ -44,6 +44,7 @@ export interface BasePopoverProps
   matchTriggerWidth?: boolean;
 }
 
+// PopoverContext is used by BasePopover and BaseOverlayArrow
 export function BasePopover(props: BasePopoverProps) {
   const {
     resetClassName,

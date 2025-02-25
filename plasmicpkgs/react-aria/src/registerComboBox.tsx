@@ -99,12 +99,19 @@ export function BaseComboBox(props: BaseComboboxProps) {
 
   return (
     <ComboBox className={classNameProp} {...rest} style={COMMON_STYLES}>
+      {/* PlasmicPopoverTriggerContext is used by BasePopover */}
       <PlasmicPopoverTriggerContext.Provider value={true}>
+        {/* PlasmicListBoxContext is used by
+          - BaseListBox
+          - BaseListBoxItem
+          - BaseSection
+        */}
         <PlasmicListBoxContext.Provider
           value={{
             idManager,
           }}
         >
+          {/* PlasmicInputContext is used by BaseInput */}
           <PlasmicInputContext.Provider value={{ isUncontrolled: true }}>
             <ComboboxAutoOpen {...props} />
             {children}

@@ -6,7 +6,7 @@ import type {
 import {
   OverlayArrow,
   PopoverContext,
-  TooltipContext,
+  TooltipTriggerStateContext,
 } from "react-aria-components";
 import { arrowDown, COMMON_STYLES } from "./common";
 import {
@@ -41,7 +41,7 @@ export function BaseOverlayArrow({
   className,
 }: BaseOverlayArrowProps) {
   const popoverContext = React.useContext(PopoverContext);
-  const tooltipContext = React.useContext(TooltipContext);
+  const tooltipContext = React.useContext(TooltipTriggerStateContext);
   const isStandalone = !popoverContext && !tooltipContext; // i.e. without a trigger to point to
   const overlayArrow = (
     <OverlayArrow

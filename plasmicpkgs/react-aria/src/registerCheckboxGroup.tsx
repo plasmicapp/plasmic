@@ -55,6 +55,7 @@ export function BaseCheckboxGroup(props: BaseCheckboxGroupProps) {
   }, [idManager]);
 
   return (
+    // PlasmicCheckboxGroupContext is used by BaseCheckbox
     <PlasmicCheckboxGroupContext.Provider value={{ ...rest, idManager }}>
       <CheckboxGroup {...rest} style={COMMON_STYLES}>
         {({ isDisabled, isReadOnly }) =>

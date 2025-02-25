@@ -53,6 +53,7 @@ export function BaseRadioGroup(props: BaseRadioGroupProps) {
   }, [idManager]);
 
   return (
+    // PlasmicRadioGroupContext is used by BaseRadio
     <PlasmicRadioGroupContext.Provider value={{ ...props, idManager }}>
       <RadioGroup {...rest} style={COMMON_STYLES}>
         {({ isDisabled, isReadOnly }) =>

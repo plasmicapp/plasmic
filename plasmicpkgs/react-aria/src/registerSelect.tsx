@@ -157,7 +157,13 @@ export function BaseSelect(props: BaseSelectProps) {
       {...extractPlasmicDataProps(props)}
     >
       <SelectAutoOpen {...props} />
+      {/* PlasmicPopoverTriggerContext is used by BasePopover */}
       <PlasmicPopoverTriggerContext.Provider value={true}>
+        {/* PlasmicListBoxContext is used by
+          - BaseListBox
+          - BaseListBoxItem
+          - BaseSection
+        */}
         <PlasmicListBoxContext.Provider
           value={{
             idManager,
