@@ -1027,6 +1027,13 @@ export function xMapValues<K, V1, V2>(
   );
 }
 
+export function getOrSetMap<K, V>(map: Map<K, V>, key: K, defaultValue: V) {
+  if (!map.has(key)) {
+    map.set(key, defaultValue);
+  }
+  return map.get(key)!;
+}
+
 export const xor = (a: boolean, b: boolean) => (!a && b) || (a && !b);
 
 export function checkUnique<T, K = T>(xs: T[], key: (x: T) => K = identity) {

@@ -6,8 +6,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ApiCommentThread } from "@/wab/shared/ApiSchema";
 import { Bundler, FastBundler } from "@/wab/shared/bundler";
-import { xSymmetricDifference } from "@/wab/shared/common";
-import { SlotSelection } from "@/wab/shared/core/slots";
+import { getOrSetMap, xSymmetricDifference } from "@/wab/shared/common";
 import {
   TplNamable,
   getTplOwnerComponent,
@@ -15,14 +14,9 @@ import {
   summarizeTplNamable,
   tryGetTplOwnerComponent,
 } from "@/wab/shared/core/tpls";
-import {
-  Component,
-  ObjInst,
-  TplNode,
-  isKnownTplNode,
-} from "@/wab/shared/model/classes";
+import { Component, ObjInst, TplNode } from "@/wab/shared/model/classes";
 import assert from "assert";
-import { partition, sortBy } from "lodash";
+import { groupBy, partition, sortBy } from "lodash";
 
 type LocalizedCommentThread = ApiCommentThread & {
   location: NonNullable<ApiCommentThread["location"]>;
@@ -136,36 +130,57 @@ export interface CommentsStats {
   replyCount: number;
 }
 
-export function evaluateCommentIndicator(
-  element: TplNode | SlotSelection,
-  commentsCtx: CommentsContextData,
-  studioCtx: StudioCtx
-) {
-  const commentsStats = getElementCommentsStats(element, commentsCtx);
-  const showCommentIndicator =
-    studioCtx.showCommentsPanel && commentsStats.commentCount > 0;
-  return { showCommentIndicator, commentsStats };
-}
+export type CommentStatsMap = Map<string, CommentsStats>;
 
-export function getElementCommentsStats(
-  element: TplNode | SlotSelection,
-  commentsCtx: CommentsContextData
-) {
-  const count: CommentsStats = {
-    commentCount: 0,
-    replyCount: 0,
-  };
-  if (!isKnownTplNode(element) || !isTplNamable(element)) {
-    return count;
-  }
-  const bundler = commentsCtx.bundler;
-  commentsCtx.allThreads.forEach((thread) => {
-    if (bundler.objByAddr(thread.location.subject) === element) {
-      count.commentCount += 1;
-      count.replyCount += thread.comments.length - 1;
+export function computeCommentStats(threads: TplCommentThreads): {
+  commentStatsBySubject: CommentStatsMap;
+  commentStatsByComponent: CommentStatsMap;
+} {
+  const threadsGroupedBySubject = groupBy(
+    threads,
+    (commentThread) => commentThread.subject.uuid
+  );
+
+  const commentStatsBySubject: CommentStatsMap = new Map();
+  const commentStatsByComponent: CommentStatsMap = new Map();
+
+  Object.entries(threadsGroupedBySubject).forEach(
+    ([subjectUuid, commentThreads]) => {
+      // Compute stats for the subject
+      const subjectStats = getOrSetMap<string, CommentsStats>(
+        commentStatsBySubject,
+        subjectUuid,
+        {
+          commentCount: 0,
+          replyCount: 0,
+        }
+      );
+      subjectStats.commentCount = commentThreads.length;
+      subjectStats.replyCount = commentThreads.reduce(
+        (sum, thread) => sum + (thread.comments.length - 1), // comments count excluding the root comment
+        0
+      );
+
+      const [commentThread] = commentThreads;
+      const ownerComponent = tryGetTplOwnerComponent(commentThread.subject);
+      if (ownerComponent) {
+        const ownerUuid = ownerComponent.tplTree.uuid;
+        const componentStats = getOrSetMap<string, CommentsStats>(
+          commentStatsByComponent,
+          ownerUuid,
+          {
+            commentCount: 0,
+            replyCount: 0,
+          }
+        );
+
+        componentStats.commentCount += subjectStats.commentCount;
+        componentStats.replyCount += subjectStats.replyCount;
+      }
     }
-  });
-  return count;
+  );
+
+  return { commentStatsBySubject, commentStatsByComponent };
 }
 
 export function isElementWithComments(

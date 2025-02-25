@@ -1,6 +1,9 @@
 import { apiKey } from "@/wab/client/api";
 import {
+  CommentStatsMap,
+  CommentsStats,
   TplCommentThread,
+  computeCommentStats,
   getCommentThreadsWithModelMetadata,
 } from "@/wab/client/components/comments/utils";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
@@ -34,6 +37,8 @@ export interface CommentsContextData {
   projectId: ProjectId;
   branchId?: BranchId;
   allThreads: TplCommentThread[];
+  commentStatsBySubject: CommentStatsMap;
+  commentStatsByComponent: CommentStatsMap;
   bundler: FastBundler;
   reactionsByCommentId: Map<CommentId, ApiCommentReaction[]>;
   refreshComments: KeyedMutator<GetCommentsResponse>;
@@ -43,6 +48,8 @@ export interface CommentsContextData {
 
 export interface CommentsData {
   allThreads: TplCommentThread[];
+  commentStatsBySubject: CommentStatsMap;
+  commentStatsByComponent: CommentStatsMap;
   usersMap: Map<string, ApiUser>;
   reactionsByCommentId: Map<CommentId, ApiCommentReaction[]>;
   bundler: FastBundler;
@@ -70,6 +77,8 @@ function useCommentsData(): CommentsData {
     allThreads: [],
     usersMap: new Map<string, ApiUser>(),
     reactionsByCommentId: new Map<CommentId, ApiCommentReaction[]>(),
+    commentStatsBySubject: new Map<string, CommentsStats>(),
+    commentStatsByComponent: new Map<string, CommentsStats>(),
   };
 
   const bundler = studioCtx.bundler();
@@ -117,6 +126,8 @@ function useCommentsData(): CommentsData {
           maybeResponse;
 
         const allThreads = getCommentThreadsWithModelMetadata(bundler, threads);
+        const { commentStatsByComponent, commentStatsBySubject } =
+          computeCommentStats(allThreads);
         const usersMap = mkIdMap(users);
         const reactionsByCommentId = xGroupBy(
           sortBy(reactions, (r) => +new Date(r.createdAt)),
@@ -125,6 +136,8 @@ function useCommentsData(): CommentsData {
 
         return {
           allThreads,
+          commentStatsBySubject,
+          commentStatsByComponent,
           usersMap,
           reactionsByCommentId,
           selfNotificationSettings,

@@ -33,7 +33,6 @@ import {
   CommentsContextData,
   useCommentsCtx,
 } from "@/wab/client/components/comments/CommentsProvider";
-import { evaluateCommentIndicator } from "@/wab/client/components/comments/utils";
 import { menuSection } from "@/wab/client/components/menu-builder";
 import promptDeleteComponent from "@/wab/client/components/modals/componentDeletionModal";
 import { NavigationDropdownContext } from "@/wab/client/components/sidebar-tabs/ProjectPanel/NavigationDropdown";
@@ -216,12 +215,10 @@ function getArenaIcon(
   commentsCtx: CommentsContextData
 ) {
   if (isPageArena(arena) || isComponentArena(arena)) {
-    const { showCommentIndicator, commentsStats } = evaluateCommentIndicator(
-      arena.component.tplTree,
-      commentsCtx,
-      studioCtx
+    const commentsStats = commentsCtx.commentStatsByComponent.get(
+      arena.component.tplTree.uuid
     );
-    if (showCommentIndicator) {
+    if (commentsStats && studioCtx.showCommentsPanel) {
       return () => (
         <CommentIndicatorIcon
           commentCount={commentsStats.commentCount}

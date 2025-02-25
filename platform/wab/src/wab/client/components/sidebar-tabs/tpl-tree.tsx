@@ -125,7 +125,6 @@ import { FixedSizeList } from "react-window";
 
 import { TplClip } from "@/wab/client/clipboard/local";
 import CommentIndicatorIcon from "@/wab/client/components/comments/CommentIndicatorIcon";
-import { evaluateCommentIndicator } from "@/wab/client/components/comments/utils";
 import {
   getNodeSummary,
   OutlineCtx,
@@ -686,19 +685,19 @@ const TplTreeNode = observer(function TplTreeNode(props: {
 
   const icon = computed(
     () => {
-      const { showCommentIndicator, commentsStats } = evaluateCommentIndicator(
-        item,
-        commentsCtx,
-        viewCtx.studioCtx
-      );
-      if (showCommentIndicator) {
-        return (
-          <CommentIndicatorIcon
-            commentCount={commentsStats.commentCount}
-            replyCount={commentsStats.replyCount}
-          />
-        );
+      if (isKnownTplNode(item)) {
+        const commentsStats = commentsCtx.commentStatsBySubject.get(item.uuid);
+
+        if (commentsStats && viewCtx.studioCtx.showCommentsPanel) {
+          return (
+            <CommentIndicatorIcon
+              commentCount={commentsStats.commentCount}
+              replyCount={commentsStats.replyCount}
+            />
+          );
+        }
       }
+
       const node = createNodeIcon(item, effectiveVs.get());
       if (plumeDef) {
         return <PlumyIcon def={plumeDef}>{node}</PlumyIcon>;
