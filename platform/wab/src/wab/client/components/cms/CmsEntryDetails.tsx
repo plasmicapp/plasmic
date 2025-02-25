@@ -119,7 +119,8 @@ export function renderContentEntryFormFields(
   database: ApiCmsDatabase,
   locales: string[],
   disabled: boolean,
-  notValidUniquefields: string[]
+  notValidUniqueFields: string[],
+  uniqueFieldsIdentifiers: string[]
 ) {
   return (
     <>
@@ -145,7 +146,8 @@ export function renderContentEntryFormFields(
                 formItemProps: deriveFormItemPropsFromField(field),
                 typeName: field.type,
                 required: field.required,
-                uniqueFail: notValidUniquefields.includes(field.identifier),
+                notValidUniqueFields: notValidUniqueFields,
+                unique: uniqueFieldsIdentifiers.includes(field.identifier),
                 ...(isCmsTextLike(field)
                   ? {
                       maxChars: field.maxChars,
@@ -188,6 +190,9 @@ function CmsEntryDetailsForm_(
   const mutateRow_ = useMutateRow();
   const mutateTableRows = useMutateTableRows();
 
+  const [uniqueFieldsIdentifiers, setUniqueFieldsIdentifiers] = React.useState<
+    string[]
+  >([]);
   const [changedFields, setChangedFields] = React.useState<Dict<unknown>>({});
   const [notValidUniqueFields, setNotVaildUniqueFields] = React.useState<
     string[]
@@ -207,14 +212,6 @@ function CmsEntryDetailsForm_(
   const hasFormError = React.useCallback(() => {
     return form.getFieldsError().some((f) => {
       return f.errors.length > 0;
-    });
-  }, [form]);
-
-  const hasNonSavableError = React.useCallback(() => {
-    return form.getFieldsError().some((f) => {
-      return f.errors.some((e) => {
-        return e.includes("required"); // Should change later to use proper Error class
-      });
     });
   }, [form]);
 
@@ -310,12 +307,9 @@ function CmsEntryDetailsForm_(
   };
 
   async function checkUniqueFields() {
-    const uniqueIdentifiers = table.schema.fields
-      .filter((field) => field.unique)
-      .map((field) => field.identifier);
     const uniqueAndChangedFields = Object.fromEntries(
       Object.entries(changedFields).filter(([key, _]) =>
-        uniqueIdentifiers.includes(key)
+        uniqueFieldsIdentifiers.includes(key)
       )
     );
     const uniqueAndChangedIdentifiers = Object.keys(uniqueAndChangedFields);
@@ -387,7 +381,7 @@ function CmsEntryDetailsForm_(
         setRevision(row.revision);
         await resetFormByRow();
       }
-    } else if (hasChanges() && !hasNonSavableError()) {
+    } else if (hasChanges() && !hasFormError()) {
       if (!isSaving) {
         spawn(performSave());
       }
@@ -397,6 +391,13 @@ function CmsEntryDetailsForm_(
   React.useEffect(() => {
     spawn(validateFields());
   }, [row, validateFields]);
+
+  React.useEffect(() => {
+    const uniqueIdentifiers = table.schema.fields
+      .filter((field) => field.unique)
+      .map((field) => field.identifier);
+    setUniqueFieldsIdentifiers(uniqueIdentifiers);
+  }, []);
 
   useBeforeUnload(() => {
     return hasChanges();
@@ -483,7 +484,7 @@ function CmsEntryDetailsForm_(
               {() =>
                 inConflict ? (
                   <span className="light-error">Conflict detected.</span>
-                ) : hasNonSavableError() ? (
+                ) : hasFormError() ? (
                   <span className="light-error">Some fields are invalid.</span>
                 ) : isSaving ? (
                   "Saving draft..."
@@ -562,6 +563,7 @@ function CmsEntryDetailsForm_(
                           }
                         } catch (err) {
                           setPublishing(false);
+                          console.log(err);
                           if (err.statusCode === 400) {
                             setNotVaildUniqueFields(JSON.parse(err.message));
                           }
@@ -700,7 +702,8 @@ function CmsEntryDetailsForm_(
                 database,
                 database.extraData.locales,
                 inConflict,
-                notValidUniqueFields
+                notValidUniqueFields,
+                uniqueFieldsIdentifiers
               )}
             </div>
           }

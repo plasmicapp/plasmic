@@ -56,7 +56,6 @@ interface ContentEntryFormContextValue {
   typeMeta: CmsTypeMeta;
   database: ApiCmsDatabase;
   name: NamePathz;
-  uniqueFail?: boolean;
   directlyInsideList?: boolean;
 }
 
@@ -254,23 +253,34 @@ function MaybeFormItem({
   name: NamePathz;
   maxChars?: number;
   minChars?: number;
-  uniqueFail?: boolean;
+  unique?: boolean;
+  notValidUniqueFields?: string[];
 }) {
+  console.log(props.notValidUniqueFields);
+  type FieldStatus = "success" | "warning" | "error" | "validating" | undefined;
+  const [fieldStatus, setFieldStatus] = React.useState<FieldStatus>("success");
+  const [helperText, setHelperText] = React.useState(" ");
   const commonRules = [
     {
       validator: async (_, value) => {
-        if (props.required && !value) {
-          const er = new Error("test", {
-            cause: new Error("Underlying cause"),
-          });
-          console.log("er:", er);
-          return Promise.reject(new Error("Field is required"));
+        if (props.required && value.length === 0) {
+          // required 정책 위반
+          setFieldStatus("error");
+          setHelperText("Field is required");
+          return Promise.reject();
         }
-        if (props.uniqueFail) {
-          return Promise.reject(
-            new Error("This field should be unique to publish this entry")
-          );
+        if (
+          props.unique &&
+          props.notValidUniqueFields &&
+          props.notValidUniqueFields.includes(String(name[1]))
+        ) {
+          // unique 정책 위반
+          setFieldStatus("warning");
+          setHelperText("This field should be unique to publish this entry");
+          return Promise.resolve();
         }
+        setFieldStatus("success");
+        setHelperText("");
         return Promise.resolve();
       },
     },
@@ -287,7 +297,14 @@ function MaybeFormItem({
       {props.children as any}
     </FormNameContext.Provider>
   ) : (
-    <Form.Item name={name} label={label} {...props} rules={rules} />
+    <Form.Item
+      name={name}
+      label={label}
+      {...props}
+      rules={rules}
+      help={helperText}
+      validateStatus={fieldStatus}
+    />
   );
 }
 
@@ -297,7 +314,6 @@ export function CmsObjectInput(props: any) {
     typeMeta,
     database,
     name,
-    uniqueFail,
     directlyInsideList = false,
   } = useContentEntryFormContext();
   assert(typeMeta.type === CmsMetaType.OBJECT, "Must be rendering an object");
@@ -597,7 +613,8 @@ interface MaybeLocalizedInputProps {
   fieldPathSuffix: string[];
   formItemProps: FormItemProps;
   typeName: CmsTypeName;
-  uniqueFail: boolean;
+  unique: boolean;
+  notValidUniqueFields: string[];
 }
 
 export function renderMaybeLocalizedInput({
@@ -610,7 +627,8 @@ export function renderMaybeLocalizedInput({
   formItemProps,
   typeName,
   required,
-  uniqueFail,
+  notValidUniqueFields,
+  unique,
 }: MaybeLocalizedInputProps) {
   return (
     <ContentEntryFormContext.Consumer>
@@ -635,7 +653,8 @@ export function renderMaybeLocalizedInput({
               minChars={minChars}
               required={required}
               typeName={typeName}
-              uniqueFail={uniqueFail}
+              unique={unique}
+              notValidUniqueFields={notValidUniqueFields}
               {...formItemProps}
               name={[...fieldPath, "", ...fieldPathSuffix]}
             >
@@ -671,7 +690,8 @@ export function renderMaybeLocalizedInput({
                       maxChars={maxChars}
                       minChars={minChars}
                       required={required}
-                      uniqueFail={uniqueFail}
+                      unique={unique}
+                      notValidUniqueFields={notValidUniqueFields}
                       typeName={typeName}
                       name={[...fieldPath, locale, ...fieldPathSuffix]}
                       noStyle
