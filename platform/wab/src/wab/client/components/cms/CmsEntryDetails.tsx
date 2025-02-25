@@ -188,7 +188,7 @@ function CmsEntryDetailsForm_(
   const mutateRow_ = useMutateRow();
   const mutateTableRows = useMutateTableRows();
 
-  const [uniqueFieldsIdentifiers, setUniqueFieldsIdentifiers] = React.useState<
+  const [uniqueFieldsIdentifier, setUniqueFieldsIdentifiers] = React.useState<
     string[]
   >([]);
   const [uniqueChangedFields, setUniqueChangedFields] = React.useState<
@@ -456,9 +456,7 @@ function CmsEntryDetailsForm_(
             setHasUnpublishedChanges(hasPublishableChanges());
             console.log({ changedFields: changedValues, allFields: allValues });
             const changedField = Object.values(changedValues)[0];
-            if (
-              uniqueFieldsIdentifiers.includes(Object.keys(changedField)[0])
-            ) {
+            if (uniqueFieldsIdentifier.includes(Object.keys(changedField)[0])) {
               setUniqueChangedFields({
                 ...uniqueChangedFields,
                 ...changedField,

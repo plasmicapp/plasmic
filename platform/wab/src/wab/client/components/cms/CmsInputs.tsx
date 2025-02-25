@@ -621,8 +621,7 @@ export function renderMaybeLocalizedInput({
   typeName,
   required,
   uniqueNotValid,
-}: // unique,
-MaybeLocalizedInputProps) {
+}: MaybeLocalizedInputProps) {
   return (
     <ContentEntryFormContext.Consumer>
       {(ctx_) => {
@@ -646,7 +645,6 @@ MaybeLocalizedInputProps) {
               minChars={minChars}
               required={required}
               typeName={typeName}
-              // unique={unique}
               uniqueNotValid={uniqueNotValid}
               {...formItemProps}
               name={[...fieldPath, "", ...fieldPathSuffix]}
@@ -683,7 +681,6 @@ MaybeLocalizedInputProps) {
                       maxChars={maxChars}
                       minChars={minChars}
                       required={required}
-                      // unique={unique}
                       uniqueNotValid={uniqueNotValid}
                       typeName={typeName}
                       name={[...fieldPath, locale, ...fieldPathSuffix]}
