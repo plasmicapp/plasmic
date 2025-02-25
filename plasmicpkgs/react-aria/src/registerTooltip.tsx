@@ -91,7 +91,7 @@ function ControlledBaseTooltip(props: BaseTooltipProps) {
     __plasmic_selection_prop__,
   } = props;
 
-  const isOpen2 = useIsOpen({
+  const isCanvasAwareOpen = useIsOpen({
     triggerSlotName: "children",
     isOpen,
     __plasmic_selection_prop__,
@@ -111,6 +111,7 @@ function ControlledBaseTooltip(props: BaseTooltipProps) {
 
   const state = useTooltipTriggerState({
     ...props,
+    isOpen: isCanvasAwareOpen,
     trigger: trigger === "focus" ? trigger : undefined,
   });
 
@@ -119,7 +120,7 @@ function ControlledBaseTooltip(props: BaseTooltipProps) {
       <TriggerWrapper
         ref={ref}
         className={className}
-        tooltipId={isOpen2 ? tooltipId : undefined}
+        tooltipId={state.isOpen ? tooltipId : undefined}
         isDisabled={isDisabled}
         onOpenChange={onOpenChange}
         triggerOnFocusOnly={trigger === "focus"}
@@ -130,7 +131,6 @@ function ControlledBaseTooltip(props: BaseTooltipProps) {
         triggerRef={ref}
         // @ts-expect-error <Tooltip> is wrongly typed to not have id prop
         id={tooltipId}
-        isOpen={isOpen2}
         offset={offset}
         delay={delay}
         closeDelay={closeDelay}

@@ -1,7 +1,7 @@
 import { PlasmicCanvasContext } from "@plasmicapp/host";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, fn, userEvent, waitFor, within } from "@storybook/test";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BaseButton } from "./registerButton";
 import { BaseTooltip } from "./registerTooltip";
 
@@ -429,16 +429,6 @@ export const SelectedInCanvas: Story = {
     const [selected, setSelected] = useState(false);
     const [selectedSlotName, setSelectedSlotName] = useState("");
 
-    useEffect(() => {
-      setTimeout(() => {
-        setSelected(true);
-        setTimeout(() => {
-          // Simulate trigger slot selection in Plasmic canvas
-          setSelectedSlotName("children");
-        }, 1000);
-      }, 1000);
-    }, []);
-
     return (
       // Simulate Plasmic canvas envirnment
       <PlasmicCanvasContext.Provider
@@ -447,6 +437,15 @@ export const SelectedInCanvas: Story = {
           globalVariants: {},
         }}
       >
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+            .trigger {
+              display: inline-block;
+            }
+        `,
+          }}
+        />
         <BaseTooltip
           {...args}
           // Simulate node selection in Plasmic canvas
@@ -454,24 +453,57 @@ export const SelectedInCanvas: Story = {
             isSelected: selected,
             selectedSlotName,
           }}
+          className="trigger"
         />
+        <button onClick={() => setSelected((prev) => !prev)}>
+          Toggle selection
+        </button>
+        <button onClick={() => setSelectedSlotName("children")}>
+          Select trigger
+        </button>
+        <button onClick={() => setSelectedSlotName("some other slot")}>
+          Select other slot
+        </button>
       </PlasmicCanvasContext.Provider>
     );
   },
-  play: async () => {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const toggleSelectionBtn = canvas.getByText("Toggle selection");
+    const triggerSelectionBtn = canvas.getByText("Select trigger");
+    const otherSlotSelectionBtn = canvas.getByText("Select other slot");
+
     await waitFor(() =>
       expect(
         within(document.body).queryByTestId("tooltip-content")
       ).not.toBeInTheDocument()
     );
 
-    await waitFor(
-      () =>
-        expect(
-          within(document.body).queryByTestId("tooltip-content")
-        ).toBeInTheDocument(),
-      { timeout: 1100 }
+    await userEvent.click(toggleSelectionBtn); // select to open
+
+    await waitFor(() =>
+      expect(
+        within(document.body).queryByTestId("tooltip-content")
+      ).toBeInTheDocument()
     );
+
+    await userEvent.click(triggerSelectionBtn); // selecting trigger should close tooltip
+
+    await waitFor(() =>
+      expect(
+        within(document.body).queryByTestId("tooltip-content")
+      ).not.toBeInTheDocument()
+    );
+
+    await userEvent.click(otherSlotSelectionBtn); // selecting other slot should open tooltip
+
+    await waitFor(() =>
+      expect(
+        within(document.body).queryByTestId("tooltip-content")
+      ).toBeInTheDocument()
+    );
+
+    await userEvent.click(toggleSelectionBtn); // un-select to close
 
     await waitFor(
       () =>
@@ -484,7 +516,118 @@ export const SelectedInCanvas: Story = {
 };
 
 // Ensures that the tooltip is positioned relative to its trigger
-export const TooltipPosition: Story = {
+export const TooltipPositionInCanvas: Story = {
+  render: (args) => {
+    const [className, setClassName] = useState<string | undefined>("trigger");
+    const [selected, setSelected] = useState(false);
+
+    return (
+      <>
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+            .trigger {
+              display: inline-block;
+            }
+          .trigger-right {
+            position: absolute;
+            right: 0;
+          }
+        `,
+          }}
+        />
+        {/* Simulate Plasmic canvas envirnment */}
+        <PlasmicCanvasContext.Provider
+          value={{
+            componentName: "test",
+            globalVariants: {},
+          }}
+        >
+          <button onClick={() => setClassName("trigger trigger-right")}>
+            Move right
+          </button>
+          <button onClick={() => setClassName("trigger")}>Move back</button>
+          <button onClick={() => setSelected((prev) => !prev)}>
+            Toggle selection
+          </button>
+          <BaseTooltip
+            {...args}
+            className={className}
+            __plasmic_selection_prop__={{
+              isSelected: selected,
+            }}
+          />
+        </PlasmicCanvasContext.Provider>
+      </>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const moveRightBtn = canvas.getByText("Move right");
+    const moveBackBtn = canvas.getByText("Move back");
+    const toggleSelectionBtn = canvas.getByText("Toggle selection");
+
+    await waitFor(() =>
+      expect(
+        within(document.body).queryByTestId("tooltip-content")
+      ).not.toBeInTheDocument()
+    );
+
+    await userEvent.click(toggleSelectionBtn); // select to open
+
+    const initialTooltipLeftPosition = await waitFor(() => {
+      const tooltip = within(document.body).getByTestId("tooltip-content");
+      return tooltip.getBoundingClientRect().left;
+    });
+
+    await userEvent.click(toggleSelectionBtn); // un-select to close
+
+    await waitFor(() =>
+      expect(
+        within(document.body).queryByTestId("tooltip-content")
+      ).not.toBeInTheDocument()
+    );
+
+    await userEvent.click(moveRightBtn);
+    await userEvent.click(toggleSelectionBtn); // select to open
+
+    await waitFor(() => {
+      const tooltip = within(document.body).getByTestId("tooltip-content");
+      expect(initialTooltipLeftPosition).not.toEqual(
+        tooltip.getBoundingClientRect().left
+      ); // opens at a different position because the position of the trigger changed
+    });
+
+    await userEvent.click(toggleSelectionBtn); // un-select to close
+
+    await waitFor(() =>
+      expect(
+        within(document.body).queryByTestId("tooltip-content")
+      ).not.toBeInTheDocument()
+    );
+
+    await userEvent.click(moveBackBtn); // move trigger back to initial position
+    await userEvent.click(toggleSelectionBtn); // select to open
+
+    await waitFor(() => {
+      const tooltip = within(document.body).getByTestId("tooltip-content");
+      expect(initialTooltipLeftPosition).toEqual(
+        tooltip.getBoundingClientRect().left
+      ); // opens at the initial position
+    });
+
+    await userEvent.click(toggleSelectionBtn); // un-select to close
+
+    await waitFor(() =>
+      expect(
+        within(document.body).queryByTestId("tooltip-content")
+      ).not.toBeInTheDocument()
+    );
+  },
+};
+
+// Ensures that the tooltip is positioned relative to its trigger
+export const TooltipPositionInPreview: Story = {
   render: (args) => {
     const [className, setClassName] = useState<string | undefined>("trigger");
 
@@ -503,10 +646,14 @@ export const TooltipPosition: Story = {
         `,
           }}
         />
-        <button onClick={() => setClassName("trigger trigger-right")}>
-          Move right
-        </button>
-        <BaseTooltip {...args} className={className} />
+        {/* Simulate Plasmic canvas envirnment */}
+        <>
+          <button onClick={() => setClassName("trigger trigger-right")}>
+            Move right
+          </button>
+          <button onClick={() => setClassName("trigger")}>Move back</button>
+          <BaseTooltip {...args} className={className} />
+        </>
       </>
     );
   },
@@ -514,6 +661,16 @@ export const TooltipPosition: Story = {
     const canvas = within(canvasElement);
     const trigger = canvas.getByText("Show tooltip");
     const moveRightBtn = canvas.getByText("Move right");
+    const moveBackBtn = canvas.getByText("Move back");
+
+    await userEvent.hover(trigger); // toggle open
+
+    const initialTooltipLeftPosition = await waitFor(() => {
+      const tooltip = within(document.body).getByTestId("tooltip-content");
+      return tooltip.getBoundingClientRect().left;
+    });
+
+    await userEvent.unhover(trigger); // toggle close
 
     await waitFor(() =>
       expect(
@@ -521,31 +678,8 @@ export const TooltipPosition: Story = {
       ).not.toBeInTheDocument()
     );
 
-    await userEvent.hover(trigger);
-
-    let initialTooltipLeftPosition: number;
-
-    // Check that tooltip appears
-    await waitFor(() => {
-      const tooltip = within(document.body).getByTestId("tooltip-content");
-      initialTooltipLeftPosition = tooltip.getBoundingClientRect().left;
-    });
-
-    await userEvent.unhover(trigger);
-
-    await userEvent.hover(trigger);
-
-    await waitFor(async () => {
-      const tooltip = within(document.body).getByTestId("tooltip-content");
-      expect(initialTooltipLeftPosition).toEqual(
-        tooltip.getBoundingClientRect().left
-      ); // opens at exactly the same position again
-    });
-
-    await userEvent.unhover(trigger);
-
     await userEvent.click(moveRightBtn);
-    await userEvent.hover(trigger);
+    await userEvent.hover(trigger); // toggle open
 
     await waitFor(() => {
       const tooltip = within(document.body).getByTestId("tooltip-content");
@@ -553,5 +687,31 @@ export const TooltipPosition: Story = {
         tooltip.getBoundingClientRect().left
       ); // opens at a different position because the position of the trigger changed
     });
+
+    await userEvent.unhover(trigger); // toggle close
+
+    await waitFor(() =>
+      expect(
+        within(document.body).queryByTestId("tooltip-content")
+      ).not.toBeInTheDocument()
+    );
+
+    await userEvent.click(moveBackBtn); // move trigger back to initial position
+    await userEvent.hover(trigger); // toggle open
+
+    await waitFor(() => {
+      const tooltip = within(document.body).getByTestId("tooltip-content");
+      expect(initialTooltipLeftPosition).toEqual(
+        tooltip.getBoundingClientRect().left
+      ); // opens at the initial position
+    });
+
+    await userEvent.unhover(trigger); // toggle close
+
+    await waitFor(() =>
+      expect(
+        within(document.body).queryByTestId("tooltip-content")
+      ).not.toBeInTheDocument()
+    );
   },
 };
