@@ -253,10 +253,9 @@ function MaybeFormItem({
   name: NamePathz;
   maxChars?: number;
   minChars?: number;
-  unique?: boolean;
-  notValidUniqueFields?: string[];
+  // unique?: boolean;
+  uniqueNotValid?: boolean;
 }) {
-  console.log(props.notValidUniqueFields);
   type FieldStatus = "success" | "warning" | "error" | "validating" | undefined;
   const [fieldStatus, setFieldStatus] = React.useState<FieldStatus>("success");
   const [helperText, setHelperText] = React.useState(" ");
@@ -264,17 +263,11 @@ function MaybeFormItem({
     {
       validator: async (_, value) => {
         if (props.required && value.length === 0) {
-          // required 정책 위반
           setFieldStatus("error");
           setHelperText("Field is required");
           return Promise.reject();
         }
-        if (
-          props.unique &&
-          props.notValidUniqueFields &&
-          props.notValidUniqueFields.includes(String(name[1]))
-        ) {
-          // unique 정책 위반
+        if (props.uniqueNotValid) {
           setFieldStatus("warning");
           setHelperText("This field should be unique to publish this entry");
           return Promise.resolve();
@@ -613,8 +606,8 @@ interface MaybeLocalizedInputProps {
   fieldPathSuffix: string[];
   formItemProps: FormItemProps;
   typeName: CmsTypeName;
-  unique: boolean;
-  notValidUniqueFields: string[];
+  // unique: boolean;
+  uniqueNotValid: boolean;
 }
 
 export function renderMaybeLocalizedInput({
@@ -627,9 +620,9 @@ export function renderMaybeLocalizedInput({
   formItemProps,
   typeName,
   required,
-  notValidUniqueFields,
-  unique,
-}: MaybeLocalizedInputProps) {
+  uniqueNotValid,
+}: // unique,
+MaybeLocalizedInputProps) {
   return (
     <ContentEntryFormContext.Consumer>
       {(ctx_) => {
@@ -653,8 +646,8 @@ export function renderMaybeLocalizedInput({
               minChars={minChars}
               required={required}
               typeName={typeName}
-              unique={unique}
-              notValidUniqueFields={notValidUniqueFields}
+              // unique={unique}
+              uniqueNotValid={uniqueNotValid}
               {...formItemProps}
               name={[...fieldPath, "", ...fieldPathSuffix]}
             >
@@ -690,8 +683,8 @@ export function renderMaybeLocalizedInput({
                       maxChars={maxChars}
                       minChars={minChars}
                       required={required}
-                      unique={unique}
-                      notValidUniqueFields={notValidUniqueFields}
+                      // unique={unique}
+                      uniqueNotValid={uniqueNotValid}
                       typeName={typeName}
                       name={[...fieldPath, locale, ...fieldPathSuffix]}
                       noStyle

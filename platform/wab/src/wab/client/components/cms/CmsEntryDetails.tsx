@@ -119,8 +119,7 @@ export function renderContentEntryFormFields(
   database: ApiCmsDatabase,
   locales: string[],
   disabled: boolean,
-  notValidUniqueFields: string[],
-  uniqueFieldsIdentifiers: string[]
+  notValidUniqueFields: string[]
 ) {
   return (
     <>
@@ -146,8 +145,7 @@ export function renderContentEntryFormFields(
                 formItemProps: deriveFormItemPropsFromField(field),
                 typeName: field.type,
                 required: field.required,
-                notValidUniqueFields: notValidUniqueFields,
-                unique: uniqueFieldsIdentifiers.includes(field.identifier),
+                uniqueNotValid: notValidUniqueFields.includes(field.identifier),
                 ...(isCmsTextLike(field)
                   ? {
                       maxChars: field.maxChars,
@@ -193,7 +191,9 @@ function CmsEntryDetailsForm_(
   const [uniqueFieldsIdentifiers, setUniqueFieldsIdentifiers] = React.useState<
     string[]
   >([]);
-  const [changedFields, setChangedFields] = React.useState<Dict<unknown>>({});
+  const [uniqueChangedFields, setUniqueChangedFields] = React.useState<
+    Dict<unknown>
+  >({});
   const [notValidUniqueFields, setNotVaildUniqueFields] = React.useState<
     string[]
   >([]);
@@ -272,6 +272,10 @@ function CmsEntryDetailsForm_(
     await validateFields();
   };
 
+  const isUniqueFieldChanged = () => {
+    return Object.keys(uniqueChangedFields).length > 0;
+  };
+
   const warnConflict = () => {
     notification.error({
       message: "Update conflict detected",
@@ -307,29 +311,21 @@ function CmsEntryDetailsForm_(
   };
 
   async function checkUniqueFields() {
-    const uniqueAndChangedFields = Object.fromEntries(
-      Object.entries(changedFields).filter(([key, _]) =>
-        uniqueFieldsIdentifiers.includes(key)
-      )
-    );
-    const uniqueAndChangedIdentifiers = Object.keys(uniqueAndChangedFields);
-    if (uniqueAndChangedIdentifiers.length > 0) {
-      try {
-        const opts = { uniqueChangedFields: uniqueAndChangedFields };
-        const checkedNotValid = await api.checkUnique(row.id, opts);
-        const checkedValid = uniqueAndChangedIdentifiers.filter(
-          (identifier) => !checkedNotValid.includes(identifier)
-        );
-        const checkedValidRemoved = notValidUniqueFields.filter(
-          (notValid) => !checkedValid.includes(notValid)
-        );
-        setNotVaildUniqueFields([
-          ...new Set([...checkedValidRemoved, ...checkedNotValid]),
-        ]);
-        setChangedFields({}); // clear
-      } catch (err) {
-        console.log(err);
-      }
+    try {
+      const opts = { uniqueChangedFields: uniqueChangedFields };
+      const checkedNotValid = await api.checkUnique(row.id, opts);
+      const checkedValid = Object.keys(uniqueChangedFields).filter(
+        (identifier) => !checkedNotValid.includes(identifier)
+      );
+      const checkedValidRemoved = notValidUniqueFields.filter(
+        (notValid) => !checkedValid.includes(notValid)
+      );
+      setNotVaildUniqueFields([
+        ...new Set([...checkedValidRemoved, ...checkedNotValid]),
+      ]);
+      setUniqueChangedFields({}); // clear
+    } catch (err) {
+      console.log(err);
     }
   }
 
@@ -337,7 +333,9 @@ function CmsEntryDetailsForm_(
     const { identifier, ...draftData } = form.getFieldsValue();
     try {
       setSaving(true);
-      await checkUniqueFields();
+      if (isUniqueFieldChanged()) {
+        await checkUniqueFields();
+      }
       await api.updateCmsRow(row.id, {
         identifier,
         draftData,
@@ -458,11 +456,14 @@ function CmsEntryDetailsForm_(
             setHasUnpublishedChanges(hasPublishableChanges());
             console.log({ changedFields: changedValues, allFields: allValues });
             const changedField = Object.values(changedValues)[0];
-            let updatedChangedFields = {};
-            Object.entries(changedField).forEach(([identifier, value]) => {
-              updatedChangedFields = { ...changedFields, [identifier]: value };
-            });
-            setChangedFields(updatedChangedFields);
+            if (
+              uniqueFieldsIdentifiers.includes(Object.keys(changedField)[0])
+            ) {
+              setUniqueChangedFields({
+                ...uniqueChangedFields,
+                ...changedField,
+              });
+            }
           }
         }}
         className={"max-scrollable fill-width"}
@@ -575,7 +576,8 @@ function CmsEntryDetailsForm_(
                       isPublishing ||
                       isSaving ||
                       hasUnsavedChanges ||
-                      hasFormError()
+                      hasFormError() ||
+                      isUniqueFieldChanged()
                     }
                     tooltip={
                       hasFormError()
@@ -702,8 +704,7 @@ function CmsEntryDetailsForm_(
                 database,
                 database.extraData.locales,
                 inConflict,
-                notValidUniqueFields,
-                uniqueFieldsIdentifiers
+                notValidUniqueFields
               )}
             </div>
           }
