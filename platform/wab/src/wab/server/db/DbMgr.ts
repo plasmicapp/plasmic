@@ -561,10 +561,21 @@ export function generateId() {
   return crypto.randomBytes(18).toString("base64").replace(/\W/g, "");
 }
 
+/** Only used for development users in non-prod environments. */
+export const DEFAULT_DEV_PASSWORD = "!53kr3tz!";
+
 export async function checkWeakPassword(password: string | undefined) {
+  if (
+    process.env.NODE_ENV !== "production" &&
+    password === DEFAULT_DEV_PASSWORD
+  ) {
+    return;
+  }
+
   if (password === undefined) {
     return;
   }
+
   const passwordStrength = await ratePasswordStrength(password);
   if (password.length < 6 || passwordStrength < 2) {
     throw new WeakPasswordError();

@@ -4,7 +4,12 @@ import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
 import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { initDb } from "@/wab/server/db/DbInitUtil";
-import { DbMgr, normalActor, SUPER_USER } from "@/wab/server/db/DbMgr";
+import {
+  DbMgr,
+  DEFAULT_DEV_PASSWORD,
+  normalActor,
+  SUPER_USER,
+} from "@/wab/server/db/DbMgr";
 import { seedTestFeatureTiers } from "@/wab/server/db/seed/feature-tier";
 import { FeatureTier, Team, User } from "@/wab/server/entities/Entities";
 import {
@@ -206,7 +211,7 @@ export async function seedTestUserAndProjects(
 
   const user = await db0.createUser({
     email: userInfo.email,
-    password: userInfo.password || "!53kr3tz!",
+    password: userInfo.password || DEFAULT_DEV_PASSWORD,
     firstName: userInfo.firstName || "Plasmic",
     lastName: userInfo.lastName || "User",
     needsIntroSplash: false,
