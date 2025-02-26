@@ -289,7 +289,7 @@ export abstract class SharedApi {
     url: string,
     data?: {},
     opts?: {
-      headers: { [name: string]: string | undefined };
+      headers: { [name: string]: string };
     },
     hideDataOnError?: boolean,
     noErrorTransform?: boolean
@@ -297,9 +297,8 @@ export abstract class SharedApi {
 
   async get(url: string, data?: {}, extraHeaders?: {}) {
     return this.req("get", url, data, {
-      ...this._opts(),
       headers: {
-        ...this._opts().headers,
+        ...this._headers(),
         ...(extraHeaders ?? {}),
       },
     });
@@ -317,9 +316,8 @@ export abstract class SharedApi {
       url,
       data,
       {
-        ...this._opts(),
         headers: {
-          ...this._opts().headers,
+          ...this._headers(),
           ...(extraHeaders ?? {}),
         },
       },
@@ -339,9 +337,8 @@ export abstract class SharedApi {
       url,
       data,
       {
-        ...this._opts(),
         headers: {
-          ...this._opts().headers,
+          ...this._headers(),
           ...(extraHeaders ?? {}),
         },
       },
@@ -351,9 +348,8 @@ export abstract class SharedApi {
 
   async delete(url: string, data?: {}, extraHeaders?: {}) {
     return this.req("delete", url, data, {
-      ...this._opts(),
       headers: {
-        ...this._opts().headers,
+        ...this._headers(),
         ...(extraHeaders ?? {}),
       },
     });
@@ -781,15 +777,15 @@ export abstract class SharedApi {
 
   protected _csrf?: string;
 
-  protected _opts() {
+  protected _headers(): { [key: string]: string } {
     if (this.expectFailure) {
       return {
-        headers: {
-          "x-expect-failure": "true",
-        },
+        "x-expect-failure": "true",
       };
+    } else if (this._csrf) {
+      return { "X-CSRF-Token": this._csrf };
     } else {
-      return { headers: { "X-CSRF-Token": this._csrf } };
+      return {};
     }
   }
 

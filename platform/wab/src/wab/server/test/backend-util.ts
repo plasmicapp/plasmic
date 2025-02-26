@@ -7,10 +7,8 @@ import { Project, User } from "@/wab/server/entities/Entities";
 import { ensure } from "@/wab/shared/common";
 import getPort from "get-port";
 import { customAlphabet } from "nanoid";
-import { alphanumeric } from "nanoid-dictionary";
+import { lowercase, numbers } from "nanoid-dictionary";
 import { EntityManager } from "typeorm";
-
-const dbNameGen = customAlphabet(alphanumeric, 10);
 
 export async function withDb(
   f: (
@@ -78,13 +76,20 @@ export async function getTeamAndWorkspace(db1: DbMgr) {
   return { team, workspace };
 }
 
-export async function createDatabase() {
-  const dbname = `test_${dbNameGen()}`.toLowerCase();
+/**
+ * In CI, creates DB with random name and drops DB in cleanup.
+ * In non-CI, creates DB with wab_dev_<name> and doesn't drop in cleanup,
+ * allowing you to inspect the database after the test.
+ */
+export async function createDatabase(name = "test") {
+  const isCI = !!process.env.CI;
+  const dbname = isCI ? dbNameGen(name) : `wab_dev_${name}`;
   const sucon = await ensureDbConnection(
     "postgresql://superwab@localhost/postgres",
     "super"
   );
   await sucon.query("select 1");
+  await sucon.query(`drop database if exists ${dbname} with (force);`);
   await sucon.query(`create database ${dbname} owner wab;`);
   await sucon.query(`grant pg_signal_backend to wab;`);
   const dburi = `postgresql://wab@localhost/${dbname}`;
@@ -99,7 +104,9 @@ export async function createDatabase() {
     dburi,
     cleanup: async () => {
       await con.close();
-      await sucon.query(`drop database ${dbname} with (force);`);
+      if (isCI) {
+        await sucon.query(`drop database ${dbname} with (force);`);
+      }
       await sucon.close();
     },
   };
@@ -165,4 +172,19 @@ async function withEnvOverrides<T>(
       }
     }
   }
+}
+
+const randomPartGen = customAlphabet(lowercase + numbers, 10);
+
+function dbNameGen(namePart: string) {
+  const date = new Date();
+  const datePart =
+    date.getFullYear() +
+    String(date.getMonth() + 1).padStart(2, "0") +
+    String(date.getDate()).padStart(2, "0") +
+    "_" +
+    String(date.getHours()).padStart(2, "0") +
+    String(date.getMinutes()).padStart(2, "0") +
+    String(date.getSeconds()).padStart(2, "0");
+  return `wab_${namePart}_${datePart}_${randomPartGen()}`;
 }

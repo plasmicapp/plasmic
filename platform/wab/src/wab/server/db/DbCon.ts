@@ -70,7 +70,13 @@ export async function ensureDbConnection(
     connOpts = dburi;
   }
 
-  return await createConnection({ ...connOpts, name });
+  return await createConnection({
+    ...connOpts,
+    name,
+
+    // uncomment this to log all SQL queries
+    // logging: true
+  });
 }
 
 export const MIGRATION_POOL_NAME = "migration-pool";
