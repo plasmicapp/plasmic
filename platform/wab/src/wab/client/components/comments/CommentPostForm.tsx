@@ -38,15 +38,11 @@ const CommentPostForm = observer(function CommentPostForm(
 
   const [body, setBody] = useState("");
 
-  if (!viewCtx || focusedTpls.length !== 1) {
+  if (!viewCtx || (focusedTpls.length !== 1 && !selectedNewThreadTpl)) {
     return null;
   }
 
   const focusedTpl = selectedNewThreadTpl || focusedTpls[0];
-
-  const currentThread = allThreads.find(
-    (commentThread) => commentThread.id == threadId
-  );
 
   function isValidComment() {
     return body.trim().length > 0;
