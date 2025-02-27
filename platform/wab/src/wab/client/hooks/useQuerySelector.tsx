@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-interface Selected {
-  dom: HTMLElement;
+interface Selected<T extends HTMLElement> {
+  dom: T;
   selector: string;
 }
 
@@ -12,8 +12,8 @@ interface Selected {
  * @param selector String containing selector to match using
  * document.querySelector.
  */
-export function useQuerySelector(selector: string) {
-  const [selected, setSelected] = useState<Selected | null>(null);
+export function useQuerySelector<T extends HTMLElement>(selector: string) {
+  const [selected, setSelected] = useState<Selected<T> | null>(null);
   const isValid =
     !!selected && selected.dom.isConnected && selected.selector === selector;
 
@@ -25,7 +25,7 @@ export function useQuerySelector(selector: string) {
 
     const element = document.querySelector(selector);
     if (element) {
-      setSelected({ dom: element as HTMLElement, selector });
+      setSelected({ dom: element as T, selector });
     }
   }, [selector, isValid]);
 

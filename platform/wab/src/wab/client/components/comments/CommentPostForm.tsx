@@ -41,14 +41,13 @@ const CommentPostForm = observer(function CommentPostForm(
   const api = useAppCtx().api;
 
   const formRef = React.useRef<HTMLFormElement>(null);
-  const popoverTargetRef = React.useRef<HTMLDivElement>(null);
+  const inputElementId = `comment-post-input-${editComment?.id}`;
 
-  const { onKeyHandler, onChangeHandler, userMentionsPopover } =
+  const { onKeyHandler, onSelectHandler, userMentionsPopover } =
     useUserMentions({
-      popoverTargetRef,
-      popoverOffset: isEditing ? 0 : -50,
       value,
       onValueChange: setValue,
+      inputSelector: `#${inputElementId}`,
     });
 
   if (!viewCtx || (focusedTpls.length !== 1 && !selectedNewThreadTpl)) {
@@ -106,25 +105,25 @@ const CommentPostForm = observer(function CommentPostForm(
       >
         <PlasmicCommentPostForm
           {...rest}
-          root={{
-            ref: popoverTargetRef,
-          }}
           isEditing={isEditing}
           bodyInput={{
             autoComplete: "off",
             placeholder: "Add a comment",
             textAreaInput: {
+              id: inputElementId,
               value,
+              rows: 5,
             },
             onChange: (val) => {
               if (val === undefined) {
                 // Plexus Input triggers onChange with undefined on first render even if we pass a controlled value
-                onChangeHandler(isEditing ? editComment?.body || "" : "");
+                setValue(isEditing ? editComment?.body || "" : "");
               } else {
-                onChangeHandler(val);
+                setValue(val);
               }
             },
             onKeyDown: onKeyHandler,
+            onSelect: onSelectHandler,
             onBlur: () => {
               if (isEditing) {
                 formRef.current?.requestSubmit();
