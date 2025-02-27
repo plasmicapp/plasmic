@@ -2,7 +2,6 @@ import { useCommentsCtx } from "@/wab/client/components/comments/CommentsProvide
 import { TplCommentThread } from "@/wab/client/components/comments/utils";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import { ClickStopper } from "@/wab/client/components/widgets";
-import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultCommentPostProps,
@@ -22,7 +21,7 @@ import {
   CommentId,
 } from "@/wab/shared/ApiSchema";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
-import { ensure, ensureString, maybe, spawn } from "@/wab/shared/common";
+import { ensure, ensureString, maybe } from "@/wab/shared/common";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, Tooltip } from "antd";
 import Popover from "antd/lib/popover";
@@ -113,8 +112,9 @@ function CommentMenuOptions(props: {
   isThread?: boolean;
   isRootComment?: boolean;
   commentThread: TplCommentThread;
+  onEdit?: (comment: ApiComment) => void;
 }) {
-  const { comment, isThread, commentThread, isRootComment } = props;
+  const { comment, isThread, commentThread, isRootComment, onEdit } = props;
 
   const studioCtx = useStudioCtx();
   const appCtx = useAppCtx();
@@ -152,15 +152,26 @@ function CommentMenuOptions(props: {
         </Menu.Item>
       )}
       {!comment.deletedAt && !isThread && (
-        <Menu.Item
-          key="remove"
-          disabled={!(isOwner || appCtx.selfInfo?.id === comment.createdById)}
-          onClick={async () => {
-            await api.deleteComment(projectId, branchId, comment.id);
-          }}
-        >
-          Delete comment
-        </Menu.Item>
+        <>
+          <Menu.Item
+            key="edit"
+            disabled={!(isOwner || appCtx.selfInfo?.id === comment.createdById)}
+            onClick={() => {
+              onEdit?.(comment);
+            }}
+          >
+            Edit comment
+          </Menu.Item>
+          <Menu.Item
+            key="remove"
+            disabled={!(isOwner || appCtx.selfInfo?.id === comment.createdById)}
+            onClick={async () => {
+              await api.deleteComment(projectId, branchId, comment.id);
+            }}
+          >
+            Delete comment
+          </Menu.Item>
+        </>
       )}
     </Menu>
   );
@@ -176,6 +187,8 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
     commentThread,
     ...rest
   } = props;
+
+  const [isEditing, setIsEditing] = React.useState(false);
 
   const appCtx = useAppCtx();
   const api = appCtx.api;
@@ -193,34 +206,19 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
     ) ?? {};
 
   const [showPicker, setShowPicker] = React.useState(false);
+  const popoverTargetRef = React.useRef<HTMLDivElement>(null);
 
   return (
     <PlasmicCommentPost
-      root={{ ref }}
+      root={{ ref: popoverTargetRef }}
       {...rest}
-      body={
-        <EditableLabel
-          value={comment.body}
-          isTextSelectable={!isThread && !Boolean(comment.deletedAt)}
-          doubleClickToEdit
-          isMultiline
-          cols={40}
-          rows={5}
-          disabled={
-            appCtx.selfInfo?.id !== comment.createdById ||
-            Boolean(comment.deletedAt)
-          }
-          onEdit={(newBody) => {
-            spawn(
-              api.editComment(projectId, branchId, comment.id, {
-                body: newBody,
-              })
-            );
-          }}
-        >
-          <StandardMarkdown>{comment.body}</StandardMarkdown>
-        </EditableLabel>
-      }
+      body={<StandardMarkdown>{comment.body}</StandardMarkdown>}
+      isEditing={isEditing}
+      commentPostForm={{
+        isEditing,
+        setIsEditing,
+        editComment: comment,
+      }}
       timestamp={moment(comment.createdAt).fromNow()}
       thread={isThread}
       userFullName={fullName(author)}
@@ -287,6 +285,9 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
               isThread={isThread}
               isRootComment={isRootComment}
               commentThread={commentThread}
+              onEdit={() => {
+                setIsEditing(true);
+              }}
             />
           ),
         },

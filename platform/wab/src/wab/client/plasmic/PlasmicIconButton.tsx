@@ -88,7 +88,6 @@ export type PlasmicIconButton__VariantsArgs = {
     | "purple"
     | "secondary"
   >;
-
   isActive?: SingleBooleanChoiceArg<"isActive">;
   showAlert?: SingleBooleanChoiceArg<"showAlert">;
   withBackgroundHover?: SingleBooleanChoiceArg<"withBackgroundHover">;
@@ -149,7 +148,6 @@ export interface DefaultIconButtonProps {
     | "purple"
     | "secondary"
   >;
-
   isActive?: SingleBooleanChoiceArg<"isActive">;
   showAlert?: SingleBooleanChoiceArg<"showAlert">;
   withBackgroundHover?: SingleBooleanChoiceArg<"withBackgroundHover">;
@@ -249,7 +247,6 @@ function PlasmicIconButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.withDropdown,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -658,7 +655,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicIconButton__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -666,15 +662,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicIconButton__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicIconButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicIconButton__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicIconButton__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

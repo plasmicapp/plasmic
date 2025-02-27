@@ -62,12 +62,16 @@
 }
 .root .actionButton___focusVisible {
   box-shadow: 0px 0px 0px 2px #0091ff80;
+  outline: none;
 }
 .root .actionButton:active {
   background: var(--token-hoA5qaM-91G);
 }
 .roottype_primary .actionButtontype_primary:hover {
   background: var(--token-mu3x63xzJRW);
+}
+.roottype_primary .actionButtontype_primary____focusVisible {
+  outline: none;
 }
 .roottype_primary .actionButtontype_primary:active {
   background: var(--token-VUsIDivgUss);

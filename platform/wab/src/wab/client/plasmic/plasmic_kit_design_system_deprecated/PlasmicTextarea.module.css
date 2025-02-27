@@ -1,0 +1,460 @@
+.root {
+  display: flex;
+  width: 100%;
+  height: auto;
+  position: relative;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  min-height: 2rem;
+  overflow: visible;
+  min-width: 0;
+  border-radius: 6px;
+}
+.rootstyleType_rectangular {
+  border-radius: 0px;
+}
+.rootstyleType_seamless {
+  background: var(--token-brSQU2ryS);
+}
+.rootstyleType_bordered {
+  box-shadow: inset 0px 0px 0px 1px var(--token-eBt2ZgqRUCz);
+}
+.rootstyleType_white {
+  background: var(--token-iR8SeEwQZ);
+}
+.rootstyleType_gray {
+  background: var(--token-O4S7RMTqZ3);
+}
+.rootstyleType_red {
+  background: var(--token-qYuX4XAEbRt);
+}
+.rootstyleType_green {
+  background: var(--token-h-5XbcO2WhcA);
+}
+.rootstyleType_blue {
+  background: var(--token-yqAf_E0HIjU);
+}
+.rootstyleType_purple {
+  background: var(--token-Cr1odk81N3Y);
+}
+.rootstyleType_topLayout {
+  align-items: flex-start;
+}
+.rooterror {
+  box-shadow: inset 0px 0px 0px 1px var(--token-iDpByWoW0eF);
+}
+.rootwhiteBackground {
+  background: #ffffff;
+}
+.root:focus-within {
+  box-shadow: 0px 0px 0px 2px #0091ff80;
+  outline: none;
+}
+.rootstyleType_gray:focus-within {
+  background: var(--token-iR8SeEwQZ);
+  outline: none;
+}
+.rootstyleType_gray:active {
+  background: var(--token-Ik3bdE1e1Uy);
+}
+.rootstyleType_red:focus-within {
+  background: var(--token-iR8SeEwQZ);
+  outline: none;
+}
+.rootstyleType_red:active {
+  background: var(--token-5kjtdCiiOPB);
+}
+.rootstyleType_green:focus-within {
+  background: var(--token-iR8SeEwQZ);
+  outline: none;
+}
+.rootstyleType_green:active {
+  background: var(--token-Tc_ZOUnBuGQ_);
+}
+.rootstyleType_blue:focus-within {
+  background: var(--token-iR8SeEwQZ);
+  outline: none;
+}
+.rootstyleType_blue:active {
+  background: var(--token-RhvOnhv_xIi);
+}
+.rootstyleType_purple:focus-within {
+  background: var(--token-iR8SeEwQZ);
+  outline: none;
+}
+.rootstyleType_purple:active {
+  background: var(--token-I2zAJ678hbp);
+}
+.rootnoOutline:focus-within {
+  box-shadow: none;
+  outline: none;
+}
+.rootextraPadding:focus-within {
+  box-shadow: none;
+  outline: none;
+}
+.root:hover:not(:focus-within) {
+  box-shadow: inset 0px 0px 0px 1px var(--token-eBt2ZgqRUCz);
+  outline: none;
+}
+.rootstyleType_gray:hover:not(:focus-within) {
+  box-shadow: none;
+  background: var(--token-bV4cCeIniS6);
+  outline: none;
+}
+.rootstyleType_red:hover:not(:focus-within) {
+  box-shadow: none;
+  background: var(--token-HKVCQ5ZKovK);
+  outline: none;
+}
+.rootstyleType_green:hover:not(:focus-within) {
+  box-shadow: none;
+  background: var(--token-5TSkL5SqnvBt);
+  outline: none;
+}
+.rootstyleType_blue:hover:not(:focus-within) {
+  box-shadow: none;
+  background: var(--token-dqEx_KxIoYV);
+  outline: none;
+}
+.rootstyleType_purple:hover:not(:focus-within) {
+  box-shadow: none;
+  background: var(--token-oPrqrxbKHqk);
+  outline: none;
+}
+.rootnoOutline:hover:not(:focus-within) {
+  box-shadow: none;
+  outline: none;
+}
+.rootextraPadding:hover:not(:focus-within) {
+  box-shadow: none;
+  outline: none;
+}
+.prefixContainer {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  left: auto;
+  top: auto;
+  padding-left: 6px;
+}
+.prefixContainerextraPadding_withIcons_withPrefix {
+  padding-left: 16px;
+}
+.rootstyleType_gray:hover:not(:focus-within) .prefixContainerstyleType_gray {
+  outline: none;
+}
+.rootstyleType_red:hover:not(:focus-within) .prefixContainerstyleType_red {
+  outline: none;
+}
+.rootstyleType_purple:hover:not(:focus-within)
+  .prefixContainerstyleType_purple {
+  outline: none;
+}
+.slotTargetPrefixIcon {
+  color: var(--token-UunsGa2Y3t3);
+}
+.slotTargetPrefixIconstyleType_red {
+  color: var(--token-Y2CWh0ci95a);
+}
+.slotTargetPrefixIconstyleType_green {
+  color: var(--token-hIvqQBCxyWwX);
+}
+.slotTargetPrefixIconstyleType_blue {
+  color: var(--token-VUsIDivgUss);
+}
+.slotTargetPrefixIconstyleType_purple {
+  color: var(--token-UCbZU41E8Mj);
+}
+.slotTargetPrefixIconwithIcons_withPrefix_styleType_medium {
+  font-size: 1.25rem;
+}
+.rootstyleType_gray:hover:not(:focus-within)
+  .slotTargetPrefixIconstyleType_gray
+  > *,
+.rootstyleType_gray:hover:not(:focus-within)
+  .slotTargetPrefixIconstyleType_gray
+  > :global(.__wab_slot)
+  > *,
+.rootstyleType_gray:hover:not(:focus-within)
+  .slotTargetPrefixIconstyleType_gray
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.rootstyleType_gray:hover:not(:focus-within)
+  .slotTargetPrefixIconstyleType_gray
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.rootstyleType_gray:hover:not(:focus-within)
+  .slotTargetPrefixIconstyleType_gray
+  > picture
+  > img,
+.rootstyleType_gray:hover:not(:focus-within)
+  .slotTargetPrefixIconstyleType_gray
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.rootstyleType_gray:hover:not(:focus-within)
+  .slotTargetPrefixIconstyleType_gray
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.rootstyleType_gray:hover:not(:focus-within)
+  .slotTargetPrefixIconstyleType_gray
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  outline: none;
+}
+.svg__oc7Ga {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+.textarea {
+  font-size: 12px;
+  line-height: 1.25;
+  display: flex;
+  position: relative;
+  width: 100%;
+  background: var(--token-brSQU2ryS);
+  min-width: 0;
+  padding: 8px;
+  border-width: 0px;
+}
+.textareadisabled {
+  color: rgb(188, 192, 196);
+  background: rgb(245, 247, 250);
+}
+.textareastyleType_right {
+  text-align: right;
+}
+.textareastyleType_rectangular {
+  border-radius: 0px;
+}
+.textareastyleType_mono {
+  font-family: "IBM Plex Mono";
+}
+.textareastyleType_seamless {
+  padding: 0px;
+}
+.textareastyleType_inverted {
+  color: rgb(255, 255, 255);
+}
+.textareastyleType_autoheight {
+  height: auto;
+}
+.textareastyleType_unset {
+  color: rgb(188, 192, 196);
+}
+.textareastyleType_red {
+  color: var(--token-AKguBXlLTkKh);
+}
+.textareastyleType_green {
+  color: var(--token-AKguBXlLTkKh);
+}
+.textareastyleType_blue {
+  color: var(--token-krbUYvO2lx2);
+}
+.textareastyleType_purple {
+  color: var(--token-AKguBXlLTkKh);
+}
+.textareawithIcons_withPrefix {
+  padding-left: 4px;
+}
+.textareawithIcons_withSuffix {
+  padding-right: 4px;
+}
+.textareafontSize_xlarge {
+  font-size: 14px;
+}
+.textareafontStyle_bold {
+  font-weight: 500;
+}
+.textareaextraPadding {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+.textareaextraPadding_withIcons_withPrefix {
+  padding-left: 4px;
+}
+.root:focus-within .textarea {
+  outline: none;
+}
+.rootnoOutline:focus-within .textareanoOutline {
+  outline: none;
+}
+.rootextraPadding:focus-within .textareaextraPadding {
+  outline: none;
+}
+.root:hover:not(:focus-within) .textarea {
+  outline: none;
+}
+.root .textarea::placeholder {
+  color: var(--token-UunsGa2Y3t3);
+}
+.root .textarea:focus {
+  outline: none;
+}
+.rootstyleType_seamless .textareastyleType_seamless:focus {
+  box-shadow: none;
+  background: #ffffff00;
+  outline: none;
+}
+.rootstyleType_red .textareastyleType_red::placeholder {
+  color: var(--token-hIvqQBCxyWwX);
+}
+.rootstyleType_green .textareastyleType_green::placeholder {
+  color: var(--token-hIvqQBCxyWwX);
+}
+.rootstyleType_blue .textareastyleType_blue::placeholder {
+  color: var(--token-VUsIDivgUss);
+}
+.rootstyleType_purple .textareastyleType_purple::placeholder {
+  color: var(--token-hIvqQBCxyWwX);
+}
+.rooterror .textareaerror:focus {
+  outline: none;
+}
+.root .textarea:hover:not(:focus) {
+  outline: none;
+}
+.rootstyleType_seamless .textareastyleType_seamless:hover:not(:focus) {
+  box-shadow: none;
+  outline: none;
+}
+.rootstyleType_red .textareastyleType_red:hover:not(:focus) {
+  outline: none;
+}
+.rootstyleType_green .textareastyleType_green:hover:not(:focus) {
+  outline: none;
+}
+.rootstyleType_blue .textareastyleType_blue:hover:not(:focus) {
+  outline: none;
+}
+.rootstyleType_purple .textareastyleType_purple:hover:not(:focus) {
+  outline: none;
+}
+.suffixContainer {
+  display: flex;
+  position: relative;
+  width: auto;
+  height: auto;
+  left: auto;
+  top: auto;
+  right: auto;
+  flex-direction: row;
+  padding-right: 6px;
+  flex-shrink: 0;
+}
+.slotTargetSuffixIcon {
+  color: var(--token-UunsGa2Y3t3);
+}
+.slotTargetSuffixIconstyleType_red {
+  color: var(--token-iDpByWoW0eF);
+}
+.slotTargetSuffixIconstyleType_green {
+  color: var(--token-GEBK7U4Am62W);
+}
+.slotTargetSuffixIconstyleType_blue {
+  color: var(--token-D666zt2IZPL);
+}
+.slotTargetSuffixIconstyleType_purple {
+  color: var(--token-Izr3_jwKAp1);
+}
+.slotTargetSuffixIconwithIcons_withSuffix_styleType_medium {
+  font-size: 1.25rem;
+}
+.root:hover:not(:focus-within) .slotTargetSuffixIcon > *,
+.root:hover:not(:focus-within) .slotTargetSuffixIcon > :global(.__wab_slot) > *,
+.root:hover:not(:focus-within)
+  .slotTargetSuffixIcon
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.root:hover:not(:focus-within)
+  .slotTargetSuffixIcon
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.root:hover:not(:focus-within) .slotTargetSuffixIcon > picture > img,
+.root:hover:not(:focus-within)
+  .slotTargetSuffixIcon
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.root:hover:not(:focus-within)
+  .slotTargetSuffixIcon
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.root:hover:not(:focus-within)
+  .slotTargetSuffixIcon
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  outline: none;
+}
+.rootstyleType_blue:hover:not(:focus-within)
+  .slotTargetSuffixIconstyleType_blue
+  > *,
+.rootstyleType_blue:hover:not(:focus-within)
+  .slotTargetSuffixIconstyleType_blue
+  > :global(.__wab_slot)
+  > *,
+.rootstyleType_blue:hover:not(:focus-within)
+  .slotTargetSuffixIconstyleType_blue
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.rootstyleType_blue:hover:not(:focus-within)
+  .slotTargetSuffixIconstyleType_blue
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.rootstyleType_blue:hover:not(:focus-within)
+  .slotTargetSuffixIconstyleType_blue
+  > picture
+  > img,
+.rootstyleType_blue:hover:not(:focus-within)
+  .slotTargetSuffixIconstyleType_blue
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.rootstyleType_blue:hover:not(:focus-within)
+  .slotTargetSuffixIconstyleType_blue
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.rootstyleType_blue:hover:not(:focus-within)
+  .slotTargetSuffixIconstyleType_blue
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  outline: none;
+}
+.svg__yGuOu {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}

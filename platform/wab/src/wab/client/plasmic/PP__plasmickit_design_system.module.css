@@ -13,6 +13,44 @@
   --plasmic-token-active-bg: var(--token-G18pc1ITl);
   --token-N3uwCfNqv: var(--token-D666zt2IZPL);
   --plasmic-token-active-fg: var(--token-N3uwCfNqv);
+  --token-YwPV7bN0RvD8: 0.25rem;
+  --plasmic-token-size-4: var(--token-YwPV7bN0RvD8);
+  --token-CVkj_k5wv-Vl: 2rem;
+  --plasmic-token-size-32: var(--token-CVkj_k5wv-Vl);
+  --token-5RiZyijnOOJx: 0.625rem;
+  --plasmic-token-size-10: var(--token-5RiZyijnOOJx);
+  --token-CyMxORMQ0iY7: 0.375rem;
+  --plasmic-token-size-6: var(--token-CyMxORMQ0iY7);
+  --token-RTPypKCJE4bm: #6b7280;
+  --plasmic-token-basic-text-secondary: var(--token-RTPypKCJE4bm);
+  --token-dED0FYPw-qtp: #030712;
+  --plasmic-token-basic-text-primary: var(--token-dED0FYPw-qtp);
+  --token-NQPeu56hWEVO: Inter;
+  --plasmic-token-sans-serif: var(--token-NQPeu56hWEVO);
+  --token-y-e1zIVKHJyd: 1rem;
+  --plasmic-token-font-md: var(--token-y-e1zIVKHJyd);
+  --token-wCNdq3-87nVE: 1.25;
+  --plasmic-token-line-height-md: var(--token-wCNdq3-87nVE);
+  --token-XviUmtZ5j0iF: 0.75rem;
+  --plasmic-token-font-sm: var(--token-XviUmtZ5j0iF);
+  --token-ND9WWUwuMDcO: 1;
+  --plasmic-token-line-height-sm: var(--token-ND9WWUwuMDcO);
+  --token-UgD7DVJpT4oO: 1.25rem;
+  --plasmic-token-font-lg: var(--token-UgD7DVJpT4oO);
+  --token-ArhjzHzow-J7: 1.4;
+  --plasmic-token-line-height-lg: var(--token-ArhjzHzow-J7);
+  --token-Le11TVejD2x2: #dc2626;
+  --plasmic-token-destructive-destructive: var(--token-Le11TVejD2x2);
+  --token-CE-OiWjNhspe: #d1d5db;
+  --plasmic-token-basic-border: var(--token-CE-OiWjNhspe);
+  --token-iCBCh1BQyu-W: #f3f4f6;
+  --plasmic-token-muted-muted-soft: var(--token-iCBCh1BQyu-W);
+  --token-11LpBV8ry6Ok: #e5e7eb;
+  --plasmic-token-muted-muted-soft-hover: var(--token-11LpBV8ry6Ok);
+  --token-vhXSTyxt_gU9: 0.125rem;
+  --plasmic-token-size-2: var(--token-vhXSTyxt_gU9);
+  --token-qP8a3gYPq7fd: #2563eb;
+  --plasmic-token-brand-brand: var(--token-qP8a3gYPq7fd);
 }
 
 .plasmic_default_styles {
@@ -183,7 +221,6 @@
   background-repeat: no-repeat;
   box-shadow: none;
   box-sizing: border-box;
-  text-decoration-line: none;
   margin: 0;
   border-width: 0px;
 }

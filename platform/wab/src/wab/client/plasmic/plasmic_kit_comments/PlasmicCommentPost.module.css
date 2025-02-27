@@ -142,6 +142,9 @@
 .freeBoxthread__dc1JVkhQ {
   margin-top: 8px;
 }
+.freeBoxisEditing__dc1JVuz8Vl {
+  display: none;
+}
 .body {
   width: 100%;
   height: auto;
@@ -152,6 +155,9 @@
   max-width: 100%;
   position: relative;
   opacity: 0;
+  flex-shrink: 0;
+}
+.btnAddReactionisEditing:global(.__wab_instance) {
   flex-shrink: 0;
 }
 .root:hover .btnAddReaction:global(.__wab_instance) {
@@ -187,7 +193,7 @@
   min-width: 0;
   min-height: 0;
 }
-.svg__ehl5T {
+.svg__zi2Rk {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -224,6 +230,9 @@
   > img {
   margin-left: 4px;
   margin-top: 4px;
+}
+.reactionsContainerisEditing {
+  display: none;
 }
 .reactionButton__cMbVc:global(.__wab_instance) {
   position: relative;
@@ -282,11 +291,19 @@
   min-width: 0;
   min-height: 0;
 }
-.svg__cwGdU {
+.svg__fMWe3 {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
+}
+.commentPostForm:global(.__wab_instance) {
+  max-width: 100%;
+  width: 100%;
+  min-width: 0;
+}
+.commentPostFormisEditing:global(.__wab_instance) {
+  display: flex;
 }
 .repliesLink:global(.__wab_instance) {
   max-width: 100%;
@@ -298,13 +315,13 @@
 .repliesLinkthread:global(.__wab_instance) {
   display: flex;
 }
-.svg__oQhpp {
+.svg__jfhS {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
-.svg__pfR4P {
+.svg__hxNzb {
   display: flex;
   position: relative;
   object-fit: cover;

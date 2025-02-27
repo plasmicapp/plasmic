@@ -5,9 +5,11 @@ import {
   TeamId,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
+import { withoutNils } from "@/wab/shared/common";
 import { AccessLevel, accessLevelRank } from "@/wab/shared/EntUtil";
 import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
 import * as _ from "lodash";
+import { uniqBy } from "lodash";
 import { MakeADT } from "ts-adt/MakeADT";
 
 export type ResourceType = "project" | "workspace" | "team";
@@ -179,4 +181,9 @@ export function filterDirectResourcePerms(
   return userId
     ? filteredPerms.filter((p) => p.userId === userId)
     : filteredPerms;
+}
+
+export function getUniqueUsersFromApiPermissions(permissions: ApiPermission[]) {
+  const users = withoutNils(permissions.map((permission) => permission.user));
+  return uniqBy(users, (user) => user.id);
 }

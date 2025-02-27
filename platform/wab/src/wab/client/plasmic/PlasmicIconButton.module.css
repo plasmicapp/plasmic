@@ -317,6 +317,7 @@
 }
 .root___focus__focusVisible:focus {
   box-shadow: 0px 0px 0px 2px #0091ff80;
+  outline: none;
 }
 .slotTargetChildren {
   font-size: 1rem;
@@ -449,6 +450,85 @@
 .rootwithGreenBackgroundHover:active
   .slotTargetChildrenwithGreenBackgroundHover {
   color: var(--token-hIvqQBCxyWwX);
+}
+.root:focus .slotTargetChildren___focus__focusVisible > *,
+.root:focus
+  .slotTargetChildren___focus__focusVisible
+  > :global(.__wab_slot)
+  > *,
+.root:focus
+  .slotTargetChildren___focus__focusVisible
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.root:focus
+  .slotTargetChildren___focus__focusVisible
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.root:focus .slotTargetChildren___focus__focusVisible > picture > img,
+.root:focus
+  .slotTargetChildren___focus__focusVisible
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.root:focus
+  .slotTargetChildren___focus__focusVisible
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.root:focus
+  .slotTargetChildren___focus__focusVisible
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  outline: none;
+}
+.roottype_primary:focus
+  .slotTargetChildren___focus__focusVisible_type_primary
+  > *,
+.roottype_primary:focus
+  .slotTargetChildren___focus__focusVisible_type_primary
+  > :global(.__wab_slot)
+  > *,
+.roottype_primary:focus
+  .slotTargetChildren___focus__focusVisible_type_primary
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.roottype_primary:focus
+  .slotTargetChildren___focus__focusVisible_type_primary
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.roottype_primary:focus
+  .slotTargetChildren___focus__focusVisible_type_primary
+  > picture
+  > img,
+.roottype_primary:focus
+  .slotTargetChildren___focus__focusVisible_type_primary
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.roottype_primary:focus
+  .slotTargetChildren___focus__focusVisible_type_primary
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.roottype_primary:focus
+  .slotTargetChildren___focus__focusVisible_type_primary
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  outline: none;
 }
 .svg__vKQk {
   display: flex;

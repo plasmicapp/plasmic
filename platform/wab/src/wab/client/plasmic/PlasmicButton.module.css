@@ -225,6 +225,7 @@
 }
 .root:focus {
   box-shadow: 0px 0px 0px 2px #0091ff80;
+  outline: none;
 }
 .root:active {
   background: var(--token-Ik3bdE1e1Uy);
@@ -234,12 +235,16 @@
 }
 .roottype_primary:focus {
   box-shadow: 0px 0px 0px 2px #0091ff80;
+  outline: none;
 }
 .roottype_primary:active {
   background: var(--token-VUsIDivgUss);
 }
 .roottype_link:hover {
   background: #ffffff00;
+}
+.roottype_link:focus {
+  outline: none;
 }
 .roottype_link:active {
   background: none;
@@ -267,6 +272,9 @@
 }
 .roottype_clearPrimary:hover {
   background: var(--token-dqEx_KxIoYV);
+}
+.roottype_clearPrimary:focus {
+  outline: none;
 }
 .roottype_clearPrimary:active {
   background: var(--token-RhvOnhv_xIi);
@@ -309,6 +317,7 @@
 }
 .rootwithIcons_endIconOnHover:focus {
   box-shadow: none;
+  outline: none;
 }
 .rootcolor_blue:hover {
   background: var(--token-dqEx_KxIoYV);
@@ -557,6 +566,73 @@
 .slotTargetChildrencolor_darkRed {
   color: var(--token-9jh0BkCENS);
 }
+.root:focus .slotTargetChildren > *,
+.root:focus .slotTargetChildren > :global(.__wab_slot) > *,
+.root:focus
+  .slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.root:focus
+  .slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.root:focus .slotTargetChildren > picture > img,
+.root:focus .slotTargetChildren > :global(.__wab_slot) > picture > img,
+.root:focus
+  .slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.root:focus
+  .slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  outline: none;
+}
+.roottype_primary:focus .slotTargetChildrentype_primary > *,
+.roottype_primary:focus
+  .slotTargetChildrentype_primary
+  > :global(.__wab_slot)
+  > *,
+.roottype_primary:focus
+  .slotTargetChildrentype_primary
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.roottype_primary:focus
+  .slotTargetChildrentype_primary
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.roottype_primary:focus .slotTargetChildrentype_primary > picture > img,
+.roottype_primary:focus
+  .slotTargetChildrentype_primary
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.roottype_primary:focus
+  .slotTargetChildrentype_primary
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.roottype_primary:focus
+  .slotTargetChildrentype_primary
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  outline: none;
+}
 .roottype_link:hover .slotTargetChildrentype_link > :global(.__wab_text),
 .roottype_link:hover
   .slotTargetChildrentype_link
@@ -610,6 +686,148 @@
   > :global(.__wab_slot)
   > :global(.__wab_slot-string-wrapper) {
   text-decoration-line: underline;
+}
+.roottype_link:focus .slotTargetChildrentype_link > *,
+.roottype_link:focus .slotTargetChildrentype_link > :global(.__wab_slot) > *,
+.roottype_link:focus
+  .slotTargetChildrentype_link
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.roottype_link:focus
+  .slotTargetChildrentype_link
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.roottype_link:focus .slotTargetChildrentype_link > picture > img,
+.roottype_link:focus
+  .slotTargetChildrentype_link
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.roottype_link:focus
+  .slotTargetChildrentype_link
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.roottype_link:focus
+  .slotTargetChildrentype_link
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  outline: none;
+}
+.rootcolor_green:focus .slotTargetChildrencolor_green > *,
+.rootcolor_green:focus
+  .slotTargetChildrencolor_green
+  > :global(.__wab_slot)
+  > *,
+.rootcolor_green:focus
+  .slotTargetChildrencolor_green
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.rootcolor_green:focus
+  .slotTargetChildrencolor_green
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.rootcolor_green:focus .slotTargetChildrencolor_green > picture > img,
+.rootcolor_green:focus
+  .slotTargetChildrencolor_green
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.rootcolor_green:focus
+  .slotTargetChildrencolor_green
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.rootcolor_green:focus
+  .slotTargetChildrencolor_green
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  outline: none;
+}
+.rootcolor_red:focus .slotTargetChildrencolor_red > *,
+.rootcolor_red:focus .slotTargetChildrencolor_red > :global(.__wab_slot) > *,
+.rootcolor_red:focus
+  .slotTargetChildrencolor_red
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.rootcolor_red:focus
+  .slotTargetChildrencolor_red
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.rootcolor_red:focus .slotTargetChildrencolor_red > picture > img,
+.rootcolor_red:focus
+  .slotTargetChildrencolor_red
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.rootcolor_red:focus
+  .slotTargetChildrencolor_red
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.rootcolor_red:focus
+  .slotTargetChildrencolor_red
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  outline: none;
+}
+.rootcolor_purple:focus .slotTargetChildrencolor_purple > *,
+.rootcolor_purple:focus
+  .slotTargetChildrencolor_purple
+  > :global(.__wab_slot)
+  > *,
+.rootcolor_purple:focus
+  .slotTargetChildrencolor_purple
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.rootcolor_purple:focus
+  .slotTargetChildrencolor_purple
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.rootcolor_purple:focus .slotTargetChildrencolor_purple > picture > img,
+.rootcolor_purple:focus
+  .slotTargetChildrencolor_purple
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.rootcolor_purple:focus
+  .slotTargetChildrencolor_purple
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.rootcolor_purple:focus
+  .slotTargetChildrencolor_purple
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  outline: none;
 }
 .slotTargetCaption {
   font-size: 11px;
@@ -731,6 +949,36 @@
 .slotTargetCaptioncolor_purple {
   color: var(--token-hIvqQBCxyWwX);
 }
+.root:focus .slotTargetCaption > *,
+.root:focus .slotTargetCaption > :global(.__wab_slot) > *,
+.root:focus
+  .slotTargetCaption
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.root:focus
+  .slotTargetCaption
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.root:focus .slotTargetCaption > picture > img,
+.root:focus .slotTargetCaption > :global(.__wab_slot) > picture > img,
+.root:focus
+  .slotTargetCaption
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.root:focus
+  .slotTargetCaption
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  outline: none;
+}
 .roottype_link:hover .slotTargetCaptiontype_link > :global(.__wab_text),
 .roottype_link:hover
   .slotTargetCaptiontype_link
@@ -784,6 +1032,40 @@
   > :global(.__wab_slot)
   > :global(.__wab_slot-string-wrapper) {
   text-decoration-line: underline;
+}
+.roottype_link:focus .slotTargetCaptiontype_link > *,
+.roottype_link:focus .slotTargetCaptiontype_link > :global(.__wab_slot) > *,
+.roottype_link:focus
+  .slotTargetCaptiontype_link
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.roottype_link:focus
+  .slotTargetCaptiontype_link
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.roottype_link:focus .slotTargetCaptiontype_link > picture > img,
+.roottype_link:focus
+  .slotTargetCaptiontype_link
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.roottype_link:focus
+  .slotTargetCaptiontype_link
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.roottype_link:focus
+  .slotTargetCaptiontype_link
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  outline: none;
 }
 .endIconContainer {
   display: flex;

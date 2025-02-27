@@ -1,0 +1,43 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 280px;
+  height: auto;
+  max-width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+}
+.img__qv3PR {
+  object-fit: cover;
+  max-width: 24px;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.img__qv3PR > picture > img {
+  object-fit: cover;
+}
+.img___0BfRv {
+  object-fit: cover;
+  max-width: 24px;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.img___0BfRv > picture > img {
+  object-fit: cover;
+}
+.img__hAzPn {
+  object-fit: cover;
+  max-width: 24px;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.img__hAzPn > picture > img {
+  object-fit: cover;
+}

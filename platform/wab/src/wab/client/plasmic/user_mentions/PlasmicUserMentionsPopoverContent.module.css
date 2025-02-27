@@ -1,0 +1,87 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 276px;
+  height: auto;
+  max-width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 8px;
+}
+.userList:global(.__wab_instance) {
+  max-width: 100%;
+}
+.img__xyHyJ {
+  object-fit: cover;
+  max-width: 24px;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.img__xyHyJ > picture > img {
+  object-fit: cover;
+}
+.img__sq4V0 {
+  object-fit: cover;
+  max-width: 24px;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.img__sq4V0 > picture > img {
+  object-fit: cover;
+}
+.img__x9Hoa {
+  object-fit: cover;
+  max-width: 24px;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.img__x9Hoa > picture > img {
+  object-fit: cover;
+}
+.freeBox {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  padding: 8px 12px;
+}
+.separator {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  border-bottom: 1px solid #00002f26;
+}
+.button:global(.__wab_instance) {
+  max-width: 100%;
+}
+.svg {
+  object-fit: cover;
+  max-width: 100%;
+  color: #60646c;
+  height: 1em;
+}
+.svg__t8FZl {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}

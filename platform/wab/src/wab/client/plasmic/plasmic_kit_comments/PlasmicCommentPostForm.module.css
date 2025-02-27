@@ -1,18 +1,17 @@
 .root {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 300px;
   height: auto;
   max-width: 100%;
   position: relative;
-  min-width: 0;
-  padding: 16px;
+  background: #ffffff;
+  padding: 12px;
 }
 .root > :global(.__wab_flex-container) {
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  min-width: 0;
   margin-top: calc(0px - 8px);
   height: calc(100% + 8px);
 }
@@ -21,6 +20,9 @@
 .root > :global(.__wab_flex-container) > picture > img,
 .root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
   margin-top: 8px;
+}
+.rootisEditing {
+  padding: 0px;
 }
 .freeBox__njtN0 {
   display: flex;
@@ -34,56 +36,100 @@
   min-width: 0;
   padding: 0px;
 }
-.bodyInput:global(.__wab_instance) {
+.bodyInput:global(.__wab_instance):global(.__wab_instance) {
   max-width: 100%;
 }
-.svg___9Xx4A {
-  display: flex;
+.svg__cKr3S {
   position: relative;
-  object-fit: cover;
-  width: 1.25rem;
-  height: 1.25rem;
+  height: 1em;
 }
-.svg___9NaF {
-  display: flex;
+.svg__rJ3Wx {
   position: relative;
-  object-fit: cover;
-  width: 1.25rem;
-  height: 1.25rem;
+  height: 1em;
 }
-.freeBox__ovWQ {
-  position: absolute;
-  flex-direction: column;
+.freeBox__ekXz {
+  display: flex;
+  flex-direction: row;
+  position: relative;
   align-items: center;
   justify-content: flex-start;
-  width: auto;
+  width: 100%;
   height: auto;
   max-width: 100%;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  cursor: pointer;
-  display: none;
-  padding: 0px;
+  min-width: 0;
 }
-.freeBoxinitial__ovWQZsQtK {
+.freeBoxisEditing__ekXzZsQtK {
+  display: none;
+}
+.freeBox__rndZx {
   display: flex;
-}
-.submitButton:global(.__wab_instance) {
-  max-width: 100%;
+  flex-direction: row;
   position: relative;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
 }
-.submitButtoninitial:global(.__wab_instance) {
-  display: none;
+.mentionIcon:global(.__wab_instance) {
+  max-width: 100%;
 }
-.svg__p5SRw {
+.svg__wnixe {
+  object-fit: cover;
+  max-width: 100%;
+  color: #60646c;
+  height: 1em;
+}
+.svg__yu1U {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
-.svg__pfpQn {
+.shareProjectIcon:global(.__wab_instance) {
+  max-width: 100%;
+}
+.svg__t3Ip6 {
+  object-fit: cover;
+  max-width: 100%;
+  color: #60646c;
+  height: 1em;
+}
+.svg__gdMm5 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.markdownHintsIcon:global(.__wab_instance) {
+  max-width: 100%;
+}
+.svg__kDvAo {
+  object-fit: cover;
+  max-width: 100%;
+  color: #60646c;
+  height: 1em;
+}
+.svg__zv03G {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.submitButton:global(.__wab_instance) {
+  max-width: 100%;
+}
+.submitButtonisEditing:global(.__wab_instance) {
+  display: none;
+}
+.svg__iAqr {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.svg__f4Zdi {
   display: flex;
   position: relative;
   object-fit: cover;

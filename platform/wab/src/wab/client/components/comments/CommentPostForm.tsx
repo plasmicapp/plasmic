@@ -2,6 +2,7 @@
 // This file is owned by you, feel free to edit as you see fit.
 import { useCommentsCtx } from "@/wab/client/components/comments/CommentsProvider";
 import { getSetOfVariantsForViewCtx } from "@/wab/client/components/comments/utils";
+import { useUserMentions } from "@/wab/client/components/user-mentions/useUserMentions";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useViewCtxMaybe } from "@/wab/client/contexts/StudioContexts";
 import {
@@ -9,34 +10,46 @@ import {
   PlasmicCommentPostForm,
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPostForm";
 import {
+  ApiComment,
   CommentThreadId,
   RootCommentData,
   ThreadCommentData,
 } from "@/wab/shared/ApiSchema";
-import { ensure, withoutNils } from "@/wab/shared/common";
+import { ensure, spawn, withoutNils } from "@/wab/shared/common";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
 
 export type CommentPostFormProps = DefaultCommentPostFormProps & {
   threadId?: CommentThreadId;
+  editComment?: ApiComment;
+  setIsEditing?: (val: boolean) => void;
 };
 
 const CommentPostForm = observer(function CommentPostForm(
   props: CommentPostFormProps
 ) {
-  const { threadId, ...rest } = props;
+  const { threadId, isEditing, setIsEditing, editComment, ...rest } = props;
+  const [value, setValue] = useState(editComment?.body || "");
 
   const viewCtx = useViewCtxMaybe();
   const focusedTpls = withoutNils(viewCtx?.focusedTpls() ?? []);
   const selectedNewThreadTpl = viewCtx?.getSelectedNewThreadTpl();
 
-  const { projectId, branchId, allThreads, bundler, refreshComments } =
-    useCommentsCtx();
+  const { projectId, branchId, bundler } = useCommentsCtx();
 
   const api = useAppCtx().api;
 
-  const [body, setBody] = useState("");
+  const formRef = React.useRef<HTMLFormElement>(null);
+  const popoverTargetRef = React.useRef<HTMLDivElement>(null);
+
+  const { onKeyHandler, onChangeHandler, userMentionsPopover } =
+    useUserMentions({
+      popoverTargetRef,
+      popoverOffset: isEditing ? 0 : -50,
+      value,
+      onValueChange: setValue,
+    });
 
   if (!viewCtx || (focusedTpls.length !== 1 && !selectedNewThreadTpl)) {
     return null;
@@ -45,52 +58,89 @@ const CommentPostForm = observer(function CommentPostForm(
   const focusedTpl = selectedNewThreadTpl || focusedTpls[0];
 
   function isValidComment() {
-    return body.trim().length > 0;
+    return (
+      value.trim().length > 0 || value.trim() !== editComment?.body?.trim()
+    );
   }
 
   return (
-    <form
-      onSubmit={async (e) => {
-        e.preventDefault();
-        setBody("");
-        if (threadId) {
-          const commentData: ThreadCommentData = { body };
-          await api.postThreadComment(
-            projectId,
-            branchId,
-            threadId,
-            commentData
-          );
-        } else {
-          const location = {
-            subject: bundler.addrOf(ensure(focusedTpl, "")),
-            variants: getSetOfVariantsForViewCtx(viewCtx, bundler).map((pv) =>
-              bundler.addrOf(pv)
-            ),
-          };
-          const commentData: RootCommentData = { body, location };
-          await api.postRootComment(projectId, branchId, commentData);
-        }
-        viewCtx.setSelectedNewThreadTpl(null);
-        await refreshComments();
-      }}
-    >
-      <PlasmicCommentPostForm
-        {...rest}
-        bodyInput={{
-          name: "comment",
-          placeholder: `${
-            threadId ? "Reply to this thread" : "Post a comment"
-          }`,
-          value: body,
-          onChange: (e) => setBody(e.target.value),
+    <>
+      <form
+        ref={formRef}
+        onSubmit={async (e) => {
+          e.preventDefault();
+
+          if (isEditing && editComment) {
+            if (value.trim() !== editComment.body.trim()) {
+              spawn(
+                api.editComment(projectId, branchId, editComment.id, {
+                  body: value.trim(),
+                })
+              );
+            }
+            setIsEditing?.(false);
+            return;
+          }
+
+          setValue("");
+          if (threadId) {
+            const commentData: ThreadCommentData = { body: value };
+            await api.postThreadComment(
+              projectId,
+              branchId,
+              threadId,
+              commentData
+            );
+          } else {
+            const location = {
+              subject: bundler.addrOf(ensure(focusedTpl, "")),
+              variants: getSetOfVariantsForViewCtx(viewCtx, bundler).map((pv) =>
+                bundler.addrOf(pv)
+              ),
+            };
+            const commentData: RootCommentData = { body: value, location };
+            await api.postRootComment(projectId, branchId, commentData);
+          }
+          viewCtx.setSelectedNewThreadTpl(null);
         }}
-        submitButton={{
-          htmlType: "submit",
-          disabled: !isValidComment(),
-        }}
-      />
-    </form>
+      >
+        <PlasmicCommentPostForm
+          {...rest}
+          root={{
+            ref: popoverTargetRef,
+          }}
+          isEditing={isEditing}
+          bodyInput={{
+            autoComplete: "off",
+            placeholder: "Add a comment",
+            textAreaInput: {
+              value,
+            },
+            onChange: (val) => {
+              if (val === undefined) {
+                // Plexus Input triggers onChange with undefined on first render even if we pass a controlled value
+                onChangeHandler(isEditing ? editComment?.body || "" : "");
+              } else {
+                onChangeHandler(val);
+              }
+            },
+            onKeyDown: onKeyHandler,
+            onBlur: () => {
+              if (isEditing) {
+                formRef.current?.requestSubmit();
+                setIsEditing?.(false);
+              }
+            },
+          }}
+          submitButton={{
+            htmlType: "submit",
+            disabled: !isValidComment(),
+          }}
+        />
+      </form>
+
+      {userMentionsPopover}
+    </>
   );
 });
 

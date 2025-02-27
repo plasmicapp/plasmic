@@ -13,15 +13,15 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import CommentPost from "../../components/comments/CommentPost"; // plasmic-import: l_AKXl2AAu/component
 import CommentPostForm from "../../components/comments/CommentPostForm"; // plasmic-import: qi3Y1X2qZ7/component
 
@@ -44,9 +44,9 @@ type ArgPropType = keyof PlasmicThreadComments__ArgsType;
 export const PlasmicThreadComments__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicThreadComments__OverridesType = {
-  root?: p.Flex<"div">;
-  commentsList?: p.Flex<"div">;
-  replyForm?: p.Flex<typeof CommentPostForm>;
+  root?: Flex__<"div">;
+  commentsList?: Flex__<"div">;
+  replyForm?: Flex__<typeof CommentPostForm>;
 };
 
 export interface DefaultThreadCommentsProps {
@@ -63,18 +63,25 @@ function PlasmicThreadComments__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = p.useCurrentUser?.() || {};
 
   return (
     <div
@@ -138,7 +145,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicThreadComments__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -146,15 +152,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicThreadComments__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicThreadComments__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicThreadComments__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicThreadComments__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

@@ -13,17 +13,18 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
   SingleBooleanChoiceArg,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
   hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import CommentPost from "../../components/comments/CommentPost"; // plasmic-import: l_AKXl2AAu/component
 import CommentPostForm from "../../components/comments/CommentPostForm"; // plasmic-import: qi3Y1X2qZ7/component
 import ListSectionSeparator from "../../components/ListSectionSeparator"; // plasmic-import: uG5_fPM0sK/component
@@ -54,19 +55,19 @@ type ArgPropType = keyof PlasmicCommentsTab__ArgsType;
 export const PlasmicCommentsTab__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicCommentsTab__OverridesType = {
-  root?: p.Flex<"div">;
-  currentSelectionSection?: p.Flex<"div">;
-  freeBox?: p.Flex<"div">;
-  notificationsButton?: p.Flex<typeof Button>;
-  currentlySelectedTitle?: p.Flex<"div">;
-  currentlySelectedPrefix?: p.Flex<"span">;
-  currentlySelectedSubject?: p.Flex<"span">;
-  newThreadForm?: p.Flex<typeof CommentPostForm>;
-  currentThreadsList?: p.Flex<"div">;
-  listSectionSeparator?: p.Flex<typeof ListSectionSeparator>;
-  restThreadsSection?: p.Flex<"div">;
-  text?: p.Flex<"div">;
-  restThreadsList?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  currentSelectionSection?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
+  notificationsButton?: Flex__<typeof Button>;
+  currentlySelectedTitle?: Flex__<"div">;
+  currentlySelectedPrefix?: Flex__<"span">;
+  currentlySelectedSubject?: Flex__<"span">;
+  newThreadForm?: Flex__<typeof CommentPostForm>;
+  currentThreadsList?: Flex__<"div">;
+  listSectionSeparator?: Flex__<typeof ListSectionSeparator>;
+  restThreadsSection?: Flex__<"div">;
+  text?: Flex__<"div">;
+  restThreadsList?: Flex__<"div">;
 };
 
 export interface DefaultCommentsTabProps {
@@ -84,20 +85,27 @@ function PlasmicCommentsTab__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "emptySelection",
@@ -106,10 +114,9 @@ function PlasmicCommentsTab__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.emptySelection,
       },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -185,7 +192,6 @@ function PlasmicCommentsTab__RenderFunc(props: {
                 {"Comments on selected"}
               </span>
             }
-
             <React.Fragment> </React.Fragment>
             {
               <span
@@ -202,7 +208,6 @@ function PlasmicCommentsTab__RenderFunc(props: {
                 {"NAME"}
               </span>
             }
-
             <React.Fragment>{""}</React.Fragment>
           </React.Fragment>
         </div>
@@ -315,7 +320,6 @@ const PlasmicDescendants = {
     "text",
     "restThreadsList",
   ],
-
   currentSelectionSection: [
     "currentSelectionSection",
     "freeBox",
@@ -326,7 +330,6 @@ const PlasmicDescendants = {
     "newThreadForm",
     "currentThreadsList",
   ],
-
   freeBox: ["freeBox", "notificationsButton"],
   notificationsButton: ["notificationsButton"],
   currentlySelectedTitle: [
@@ -334,7 +337,6 @@ const PlasmicDescendants = {
     "currentlySelectedPrefix",
     "currentlySelectedSubject",
   ],
-
   currentlySelectedPrefix: ["currentlySelectedPrefix"],
   currentlySelectedSubject: ["currentlySelectedSubject"],
   newThreadForm: ["newThreadForm"],
@@ -368,7 +370,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCommentsTab__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -376,15 +377,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicCommentsTab__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicCommentsTab__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicCommentsTab__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicCommentsTab__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

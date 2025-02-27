@@ -86,7 +86,6 @@ export type PlasmicTextbox__VariantsArgs = {
     | "purple"
     | "topLayout"
   >;
-
   withIcons?: MultiChoiceArg<"withPrefix" | "withSuffix">;
   error?: SingleBooleanChoiceArg<"error">;
   fontSize?: SingleChoiceArg<"xlarge">;
@@ -109,17 +108,17 @@ export const PlasmicTextbox__VariantProps = new Array<VariantPropType>(
 );
 
 export type PlasmicTextbox__ArgsType = {
-  prefixIcon?: React.ReactNode;
-  suffixIcon?: React.ReactNode;
   placeholder?: string;
   value?: any;
+  prefixIcon?: React.ReactNode;
+  suffixIcon?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicTextbox__ArgsType;
 export const PlasmicTextbox__ArgProps = new Array<ArgPropType>(
-  "prefixIcon",
-  "suffixIcon",
   "placeholder",
-  "value"
+  "value",
+  "prefixIcon",
+  "suffixIcon"
 );
 
 export type PlasmicTextbox__OverridesType = {
@@ -130,10 +129,10 @@ export type PlasmicTextbox__OverridesType = {
 };
 
 export interface DefaultTextboxProps {
-  prefixIcon?: React.ReactNode;
-  suffixIcon?: React.ReactNode;
   placeholder?: string;
   value?: any;
+  prefixIcon?: React.ReactNode;
+  suffixIcon?: React.ReactNode;
   disabled?: SingleBooleanChoiceArg<"disabled">;
   styleType?: MultiChoiceArg<
     | "right"
@@ -153,7 +152,6 @@ export interface DefaultTextboxProps {
     | "purple"
     | "topLayout"
   >;
-
   withIcons?: MultiChoiceArg<"withPrefix" | "withSuffix">;
   error?: SingleBooleanChoiceArg<"error">;
   fontSize?: SingleChoiceArg<"xlarge">;
@@ -254,7 +252,6 @@ function PlasmicTextbox__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.extraPadding,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -729,7 +726,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicTextbox__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -737,15 +733,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicTextbox__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicTextbox__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicTextbox__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicTextbox__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

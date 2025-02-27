@@ -67,6 +67,10 @@
 }
 .root___focusWithin__notFocusVisibleWithin:focus-within {
   box-shadow: 0px 0px 0px 2px #0091ff80;
+  outline: none;
+}
+.rootmedium____focusWithin__notFocusVisibleWithin:focus-within {
+  outline: none;
 }
 .svg {
   position: relative;
@@ -99,6 +103,12 @@
 .rootisChecked:hover .svgisChecked {
   color: #0081f1;
 }
+.root:focus-within .svg___focusWithin__notFocusVisibleWithin {
+  outline: none;
+}
+.rootmedium:focus-within .svgmedium____focusWithin__notFocusVisibleWithin {
+  outline: none;
+}
 .labelContainer {
   display: flex;
   position: relative;
@@ -106,6 +116,9 @@
   align-items: stretch;
   justify-content: flex-start;
   padding-right: 4px;
+}
+.root:focus-within .labelContainer___focusWithin__notFocusVisibleWithin {
+  outline: none;
 }
 .slotTargetChildren {
   font-size: 12px;
@@ -122,4 +135,86 @@
 }
 .slotTargetChildrenmedium_color_purple {
   color: var(--token-ZaJGjVCo3Ue);
+}
+.root:focus-within .slotTargetChildren___focusWithin__notFocusVisibleWithin > *,
+.root:focus-within
+  .slotTargetChildren___focusWithin__notFocusVisibleWithin
+  > :global(.__wab_slot)
+  > *,
+.root:focus-within
+  .slotTargetChildren___focusWithin__notFocusVisibleWithin
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.root:focus-within
+  .slotTargetChildren___focusWithin__notFocusVisibleWithin
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.root:focus-within
+  .slotTargetChildren___focusWithin__notFocusVisibleWithin
+  > picture
+  > img,
+.root:focus-within
+  .slotTargetChildren___focusWithin__notFocusVisibleWithin
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.root:focus-within
+  .slotTargetChildren___focusWithin__notFocusVisibleWithin
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.root:focus-within
+  .slotTargetChildren___focusWithin__notFocusVisibleWithin
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  outline: none;
+}
+.rootmedium:focus-within
+  .slotTargetChildrenmedium____focusWithin__notFocusVisibleWithin
+  > *,
+.rootmedium:focus-within
+  .slotTargetChildrenmedium____focusWithin__notFocusVisibleWithin
+  > :global(.__wab_slot)
+  > *,
+.rootmedium:focus-within
+  .slotTargetChildrenmedium____focusWithin__notFocusVisibleWithin
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.rootmedium:focus-within
+  .slotTargetChildrenmedium____focusWithin__notFocusVisibleWithin
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.rootmedium:focus-within
+  .slotTargetChildrenmedium____focusWithin__notFocusVisibleWithin
+  > picture
+  > img,
+.rootmedium:focus-within
+  .slotTargetChildrenmedium____focusWithin__notFocusVisibleWithin
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.rootmedium:focus-within
+  .slotTargetChildrenmedium____focusWithin__notFocusVisibleWithin
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.rootmedium:focus-within
+  .slotTargetChildrenmedium____focusWithin__notFocusVisibleWithin
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  outline: none;
 }

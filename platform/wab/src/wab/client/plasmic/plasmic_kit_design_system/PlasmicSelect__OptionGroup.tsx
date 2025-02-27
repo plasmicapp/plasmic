@@ -128,7 +128,6 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isLast,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -208,7 +207,6 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
               </Select__Option>
             </React.Fragment>
           ),
-
           value: args.children,
         })}
       </div>
@@ -258,7 +256,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSelect__OptionGroup__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -266,15 +263,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicSelect__OptionGroup__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicSelect__OptionGroup__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicSelect__OptionGroup__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicSelect__OptionGroup__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

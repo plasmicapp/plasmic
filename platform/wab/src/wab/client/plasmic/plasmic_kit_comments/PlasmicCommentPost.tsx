@@ -13,17 +13,21 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
+  PlasmicImg as PlasmicImg__,
   SingleBooleanChoiceArg,
+  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
   hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import CommentPostForm from "../../components/comments/CommentPostForm"; // plasmic-import: qi3Y1X2qZ7/component
 import ReactionButton from "../../components/comments/ReactionButton"; // plasmic-import: FOzDmFDbWm/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
@@ -37,20 +41,23 @@ import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-i
 import sty from "./PlasmicCommentPost.module.css"; // plasmic-import: l_AKXl2AAu/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
-import EmojiHappysvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EmojiHappySvg"; // plasmic-import: 1Vli2Q2_d/icon
+import EmojiHappySvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EmojiHappySvg"; // plasmic-import: 1Vli2Q2_d/icon
 import _69B43A437055B398Eff90A515Ed4F551Svg2AijDeIx4X from "./images/_69B43A437055B398Eff90A515Ed4F551Svg.svg"; // plasmic-import: 2aijDEIx4x/picture
 
 createPlasmicElementProxy;
 
 export type PlasmicCommentPost__VariantMembers = {
   thread: "thread";
+  isEditing: "isEditing";
 };
 export type PlasmicCommentPost__VariantsArgs = {
   thread?: SingleBooleanChoiceArg<"thread">;
+  isEditing?: SingleBooleanChoiceArg<"isEditing">;
 };
 type VariantPropType = keyof PlasmicCommentPost__VariantsArgs;
 export const PlasmicCommentPost__VariantProps = new Array<VariantPropType>(
-  "thread"
+  "thread",
+  "isEditing"
 );
 
 export type PlasmicCommentPost__ArgsType = {};
@@ -58,24 +65,26 @@ type ArgPropType = keyof PlasmicCommentPost__ArgsType;
 export const PlasmicCommentPost__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicCommentPost__OverridesType = {
-  root?: p.Flex<"div">;
-  avatarContainer?: p.Flex<"div">;
-  img?: p.Flex<typeof p.PlasmicImg>;
-  text?: p.Flex<"div">;
-  userFullName?: p.Flex<"span">;
-  timestamp?: p.Flex<"span">;
-  actions?: p.Flex<"div">;
-  btnMore?: p.Flex<typeof MenuButton>;
-  subjectLabel?: p.Flex<"div">;
-  body?: p.Flex<"div">;
-  btnAddReaction?: p.Flex<typeof IconButton>;
-  reactionsContainer?: p.Flex<"div">;
-  btnAddReaction2?: p.Flex<typeof IconButton>;
-  repliesLink?: p.Flex<typeof Button>;
+  root?: Flex__<"div">;
+  avatarContainer?: Flex__<"div">;
+  img?: Flex__<typeof PlasmicImg__>;
+  text?: Flex__<"div">;
+  userFullName?: Flex__<"span">;
+  timestamp?: Flex__<"span">;
+  actions?: Flex__<"div">;
+  btnMore?: Flex__<typeof MenuButton>;
+  subjectLabel?: Flex__<"div">;
+  body?: Flex__<"div">;
+  btnAddReaction?: Flex__<typeof IconButton>;
+  reactionsContainer?: Flex__<"div">;
+  btnAddReaction2?: Flex__<typeof IconButton>;
+  commentPostForm?: Flex__<typeof CommentPostForm>;
+  repliesLink?: Flex__<typeof Button>;
 };
 
 export interface DefaultCommentPostProps {
   thread?: SingleBooleanChoiceArg<"thread">;
+  isEditing?: SingleBooleanChoiceArg<"isEditing">;
   className?: string;
 }
 
@@ -89,20 +98,27 @@ function PlasmicCommentPost__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "thread",
@@ -110,11 +126,16 @@ function PlasmicCommentPost__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.thread,
       },
+      {
+        path: "isEditing",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isEditing,
+      },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -139,7 +160,7 @@ function PlasmicCommentPost__RenderFunc(props: {
         { [sty.rootthread]: hasVariant($state, "thread", "thread") }
       )}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__sfn9I, {
@@ -151,7 +172,7 @@ function PlasmicCommentPost__RenderFunc(props: {
           data-plasmic-override={overrides.avatarContainer}
           className={classNames(projectcss.all, sty.avatarContainer)}
         >
-          <p.PlasmicImg
+          <PlasmicImg__
             data-plasmic-name={"img"}
             data-plasmic-override={overrides.img}
             alt={""}
@@ -198,7 +219,6 @@ function PlasmicCommentPost__RenderFunc(props: {
                 {"User Name"}
               </span>
             }
-
             <React.Fragment> </React.Fragment>
             {
               <span
@@ -215,7 +235,6 @@ function PlasmicCommentPost__RenderFunc(props: {
                 {"3 hours ago"}
               </span>
             }
-
             <React.Fragment>{""}</React.Fragment>
           </React.Fragment>
         </div>
@@ -234,9 +253,14 @@ function PlasmicCommentPost__RenderFunc(props: {
             withBackgroundHover={true}
           />
         </div>
-      </p.Stack>
+      </Stack__>
       <div
         className={classNames(projectcss.all, sty.freeBox___5UHnq, {
+          [sty.freeBoxisEditing___5UHnquz8Vl]: hasVariant(
+            $state,
+            "isEditing",
+            "isEditing"
+          ),
           [sty.freeBoxthread___5UHnqKhQ]: hasVariant(
             $state,
             "thread",
@@ -268,6 +292,11 @@ function PlasmicCommentPost__RenderFunc(props: {
         ) : null}
         <div
           className={classNames(projectcss.all, sty.freeBox__dc1JV, {
+            [sty.freeBoxisEditing__dc1JVuz8Vl]: hasVariant(
+              $state,
+              "isEditing",
+              "isEditing"
+            ),
             [sty.freeBoxthread__dc1JVkhQ]: hasVariant(
               $state,
               "thread",
@@ -282,7 +311,14 @@ function PlasmicCommentPost__RenderFunc(props: {
               projectcss.all,
               projectcss.__wab_text,
               sty.body,
-              { [sty.bodythread]: hasVariant($state, "thread", "thread") }
+              {
+                [sty.bodyisEditing]: hasVariant(
+                  $state,
+                  "isEditing",
+                  "isEditing"
+                ),
+                [sty.bodythread]: hasVariant($state, "thread", "thread"),
+              }
             )}
           >
             {
@@ -292,10 +328,16 @@ function PlasmicCommentPost__RenderFunc(props: {
           <IconButton
             data-plasmic-name={"btnAddReaction"}
             data-plasmic-override={overrides.btnAddReaction}
-            className={classNames("__wab_instance", sty.btnAddReaction)}
+            className={classNames("__wab_instance", sty.btnAddReaction, {
+              [sty.btnAddReactionisEditing]: hasVariant(
+                $state,
+                "isEditing",
+                "isEditing"
+              ),
+            })}
             size={"small"}
           >
-            <EmojiHappysvgIcon
+            <EmojiHappySvgIcon
               className={classNames(projectcss.all, sty.svg___61Fdh)}
               role={"img"}
             />
@@ -308,12 +350,18 @@ function PlasmicCommentPost__RenderFunc(props: {
             </div>
           </IconButton>
         </div>
-        <p.Stack
+        <Stack__
           as={"div"}
           data-plasmic-name={"reactionsContainer"}
           data-plasmic-override={overrides.reactionsContainer}
           hasGap={true}
-          className={classNames(projectcss.all, sty.reactionsContainer)}
+          className={classNames(projectcss.all, sty.reactionsContainer, {
+            [sty.reactionsContainerisEditing]: hasVariant(
+              $state,
+              "isEditing",
+              "isEditing"
+            ),
+          })}
         >
           <ReactionButton
             className={classNames("__wab_instance", sty.reactionButton__cMbVc)}
@@ -345,7 +393,7 @@ function PlasmicCommentPost__RenderFunc(props: {
             className={classNames("__wab_instance", sty.btnAddReaction2)}
             size={"small"}
           >
-            <EmojiHappysvgIcon
+            <EmojiHappySvgIcon
               className={classNames(projectcss.all, sty.svg__bs35C)}
               role={"img"}
             />
@@ -357,7 +405,21 @@ function PlasmicCommentPost__RenderFunc(props: {
               />
             </div>
           </IconButton>
-        </p.Stack>
+        </Stack__>
+        {(hasVariant($state, "isEditing", "isEditing") ? true : false) ? (
+          <CommentPostForm
+            data-plasmic-name={"commentPostForm"}
+            data-plasmic-override={overrides.commentPostForm}
+            className={classNames("__wab_instance", sty.commentPostForm, {
+              [sty.commentPostFormisEditing]: hasVariant(
+                $state,
+                "isEditing",
+                "isEditing"
+              ),
+            })}
+            isEditing={true}
+          />
+        ) : null}
       </div>
       <Button
         data-plasmic-name={"repliesLink"}
@@ -388,9 +450,9 @@ const PlasmicDescendants = {
     "btnAddReaction",
     "reactionsContainer",
     "btnAddReaction2",
+    "commentPostForm",
     "repliesLink",
   ],
-
   avatarContainer: ["avatarContainer", "img"],
   img: ["img"],
   text: ["text", "userFullName", "timestamp"],
@@ -403,6 +465,7 @@ const PlasmicDescendants = {
   btnAddReaction: ["btnAddReaction"],
   reactionsContainer: ["reactionsContainer", "btnAddReaction2"],
   btnAddReaction2: ["btnAddReaction2"],
+  commentPostForm: ["commentPostForm"],
   repliesLink: ["repliesLink"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -411,7 +474,7 @@ type DescendantsType<T extends NodeNameType> =
 type NodeDefaultElementType = {
   root: "div";
   avatarContainer: "div";
-  img: typeof p.PlasmicImg;
+  img: typeof PlasmicImg__;
   text: "div";
   userFullName: "span";
   timestamp: "span";
@@ -422,6 +485,7 @@ type NodeDefaultElementType = {
   btnAddReaction: typeof IconButton;
   reactionsContainer: "div";
   btnAddReaction2: typeof IconButton;
+  commentPostForm: typeof CommentPostForm;
   repliesLink: typeof Button;
 };
 
@@ -430,7 +494,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCommentPost__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -438,15 +501,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicCommentPost__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicCommentPost__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicCommentPost__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicCommentPost__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -498,6 +561,7 @@ export const PlasmicCommentPost = Object.assign(
     btnAddReaction: makeNodeComponent("btnAddReaction"),
     reactionsContainer: makeNodeComponent("reactionsContainer"),
     btnAddReaction2: makeNodeComponent("btnAddReaction2"),
+    commentPostForm: makeNodeComponent("commentPostForm"),
     repliesLink: makeNodeComponent("repliesLink"),
 
     // Metadata about props expected for PlasmicCommentPost
