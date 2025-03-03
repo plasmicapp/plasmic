@@ -185,8 +185,8 @@ export const isDescendant = ({
   parent,
   child,
 }: {
-  parent: HTMLElement;
-  child: HTMLElement;
+  parent: Element;
+  child: Element;
 }) => {
   let node = child.parentNode;
 
@@ -201,21 +201,18 @@ export const isDescendant = ({
   return false;
 };
 
-export const isContextMenuDescendant = (child: HTMLElement) => {
+export const isContextMenuDescendant = (child: Element) => {
   let node = child.parentNode;
 
   const canvasEditorEl = document.querySelector(".canvas-editor");
 
   // Not a context menu item, as it's located inside the canvas-editor
-  if (
-    canvasEditorEl &&
-    isDescendant({ parent: canvasEditorEl as HTMLElement, child })
-  ) {
+  if (canvasEditorEl && isDescendant({ parent: canvasEditorEl, child })) {
     return false;
   }
 
   while (node !== null) {
-    if ((node as HTMLElement).getAttribute?.("role") === "menu") {
+    if (node instanceof HTMLElement && node.getAttribute?.("role") === "menu") {
       return true;
     }
 

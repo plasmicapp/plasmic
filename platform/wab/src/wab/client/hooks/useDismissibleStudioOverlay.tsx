@@ -41,7 +41,7 @@ export function useDismissibleStudioOverlay({
     // is descendant of the overlay container
     if (
       overlayRef?.current &&
-      e.target instanceof HTMLElement &&
+      e.target instanceof Element &&
       isDescendant({
         parent: overlayRef.current,
         child: e.target,
