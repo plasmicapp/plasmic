@@ -2250,7 +2250,7 @@ function getComponentRootTagResetClassNames(
         targetEnv: "canvas",
         prefix: "__wab_",
       }
-    )}`,
+    )}` || undefined,
   ]);
 }
 

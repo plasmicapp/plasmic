@@ -649,6 +649,34 @@ export function extractComponentNamed(name: string) {
   ).click();
 }
 
+export function getVariantFrame(index: number) {
+  return cy
+    .get(`.canvas-editor__frames .canvas-editor__viewport[data-test-frame-uid]`)
+    .eq(index);
+}
+
+export function getBaseFrame() {
+  return getVariantFrame(0);
+}
+
+export function selectRootNode() {
+  cy.switchToTreeTab();
+  return cy
+    .get(`.tpltree__nodeLabel__summary`)
+    .eq(0)
+    .invoke("text")
+    .then((text) => {
+      selectTreeNode([text]);
+    });
+}
+
+export function focusBaseFrame() {
+  return getBaseFrame().then((frame) => {
+    frame.click();
+    return new Framed(frame[0] as HTMLIFrameElement);
+  });
+}
+
 export function getSelectedElt() {
   cy.waitAllEval();
   return curWindow().then((win) => {
@@ -730,7 +758,7 @@ export function getFontSizeInput() {
 
 export function chooseFontSize(fontSize: string) {
   cy.switchToDesignTab();
-  getFontSizeInput().click().focus();
+  getFontSizeInput().eq(0).click().focus();
   justType(fontSize + "{enter}");
 }
 
@@ -1024,6 +1052,32 @@ export function addVariantToGroup(groupName: string, variantName: string) {
 
 export function addInteractionVariant(selector: string) {
   addVariantToGroup("Interaction Variants", selector);
+  cy.get(`[data-test-id="variant-selector-button"]`).click();
+}
+
+export function addRegisteredVariantFromCanvas(variantName: string) {
+  cy.get(`[aria-label="Add registered variant"]`).click();
+  justType(variantName + "{enter}");
+  cy.get(`[data-test-id="variant-selector-button"]`).click();
+}
+
+export function editRegisteredVariantFromCanvas(newVariantName: string) {
+  cy.get(`[class*="variantsList"]`).rightclick();
+  cy.contains("Change variant selectors").click();
+  cy.justType(`{del}${newVariantName}{enter}`);
+  cy.get(`[data-test-id="variant-selector-button"]`).click();
+}
+
+export function editRegisteredVariantFromVariantsTab(
+  existingVariantName: string,
+  newVariantName: string
+) {
+  cy.doVariantMenuCommand(false, existingVariantName, "Edit registered keys");
+  cy.justType(`{del}${newVariantName}{enter}{enter}`);
+}
+
+export function addRegisteredVariantFromVariantsTab(variantName: string) {
+  addVariantToGroup("Registered Variants", variantName);
   cy.get(`[data-test-id="variant-selector-button"]`).click();
 }
 

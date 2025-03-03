@@ -1426,10 +1426,16 @@ export const showSimpleCssRuleSet = (
     // class rule wins.
     rules.push(
       maybeRule(
-        `${ruleName}${L.repeat(
-          getGlobalClassSelector(makeWabInstanceClassName(opts)),
-          getComponentDepth(tpl)
-        )}`,
+        ruleName
+          .split(",")
+          .map(
+            (r) =>
+              `${r}${L.repeat(
+                getGlobalClassSelector(makeWabInstanceClassName(opts)),
+                getComponentDepth(tpl)
+              )}`
+          )
+          .join(","),
         showStyles(styles)
       ),
       ...showClassPropRuleSets(site, tpl, vs, ruleNamer, {
@@ -2732,6 +2738,7 @@ export function genCanvasRules(
       useCssModules: false,
     }
   );
+
   const interactiveRuleSet = showSimpleCssRuleSet(
     ctx,
     tpl,
