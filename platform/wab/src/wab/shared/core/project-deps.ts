@@ -987,6 +987,8 @@ function upgradeProjectDep(
           }
         }
       }
+    } else if (isFallbackableExpr(expr) && expr.fallback) {
+      return shouldDeletePageHRef(expr.fallback);
     }
     return false;
   };
