@@ -1,5 +1,6 @@
 import { toOpaque } from "@/wab/commons/types";
 import { getUser, userDbMgr, withNext } from "@/wab/server/routes/util";
+import { getUniqueUsersWithCommentAccess } from "@/wab/server/scripts/send-comments-notifications";
 import { broadcastToStudioRoom } from "@/wab/server/socket-util";
 import {
   AddCommentReactionRequest,
@@ -74,13 +75,17 @@ async function getCommentsForProject(req: Request, res: Response) {
   const selfNotificationSettings = req.user
     ? await mgr.tryGetNotificationSettings(req.user.id, toOpaque(projectId))
     : undefined;
+
+  const permissions = await mgr.getPermissionsForProject(projectId);
+  const projectUsers = getUniqueUsersWithCommentAccess(permissions);
   const usersIds = uniq(
     withoutNils([
       ...threads.map((c) => c.createdById),
       ...reactions.map((r) => r.createdById),
     ])
   );
-  const users = await mgr.getUsersById(usersIds);
+  const commentUsers = await mgr.getUsersById(usersIds);
+  const users = uniq(withoutNils([...commentUsers, ...projectUsers]));
 
   res.json(
     ensureType<GetCommentsResponse>({

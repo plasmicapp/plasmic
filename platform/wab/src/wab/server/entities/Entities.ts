@@ -1281,12 +1281,35 @@ export class CommentThread extends Base<"CommentThreadId"> {
   )
   commentThreadHistories: CommentThreadHistory[];
 
-  // this should be in synced with CommentThreadHistory resolved
+  /**
+   * Indicates whether the thread is resolved.
+   * This value should always be in sync with `CommentThreadHistory.resolved`.
+   */
   @Column("boolean", { default: false })
   resolved: boolean;
 
+  /**
+   * Timestamp of the last email notification for this thread.
+   * Updated whenever an email notification is sent.
+   */
+  @Index()
   @Column("timestamptz", { nullable: true })
   lastEmailedAt: Date | null;
+
+  @Index()
+  @Column("timestamptz")
+  createdAt: Date;
+
+  /**
+   * Timestamp when the thread was last updated.
+   * This updates when:
+   * - A new comment is added
+   * - The thread is resolved or unresolved
+   * - A reaction is added to a comment in the thread
+   */
+  @Index()
+  @Column("timestamptz")
+  updatedAt: Date;
 }
 
 @Entity()
@@ -1300,6 +1323,10 @@ export class Comment extends Base<"CommentId"> {
 
   @Column("text")
   body: string;
+
+  @Index()
+  @Column("timestamptz")
+  createdAt: Date;
 }
 
 @Entity()
@@ -1313,6 +1340,10 @@ export class CommentReaction extends Base<"CommentReactionId"> {
 
   @Column("jsonb")
   data: CommentReactionData;
+
+  @Index()
+  @Column("timestamptz")
+  createdAt: Date;
 }
 
 @Entity()
@@ -1326,6 +1357,10 @@ export class CommentThreadHistory extends Base<"ThreadHistoryId"> {
 
   @Column("boolean")
   resolved: boolean;
+
+  @Index()
+  @Column("timestamptz")
+  createdAt: Date;
 }
 
 // This table represents the directories that are configured for a team

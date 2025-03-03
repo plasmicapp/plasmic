@@ -9639,35 +9639,114 @@ export class DbMgr implements MigrationDbMgr {
     });
   }
 
-  // TODO: Add a `lastChangedAt` timestamp for threads to track any updates
-  // (new comments, resolution changes). Use this field to filter threads
-  // efficiently instead of checking each comment's createdAt.
-  async getUnnotifiedCommentThreads(): Promise<CommentThread[]> {
+  async getUnnotifiedCommentThreads(before: Date): Promise<CommentThread[]> {
     this.checkSuperUser();
     return await this.commentThreads()
       .createQueryBuilder("thread")
-      .leftJoinAndSelect("thread.comments", "comment")
-      .leftJoinAndSelect("comment.createdBy", "createdBy")
-      .andWhere("thread.deletedAt is null and comment.deletedAt is null")
+      .where("thread.deletedAt IS NULL")
       .andWhere(
-        "(thread.lastEmailedAt IS NULL OR comment.createdAt > thread.lastEmailedAt)"
+        "(thread.lastEmailedAt is NULL OR (thread.updatedAt > thread.lastEmailedAt AND thread.updatedAt <= :before))",
+        { before }
       )
-      .orderBy("thread.createdAt", "ASC")
-      .addOrderBy("comment.createdAt", "ASC")
+      .orderBy("thread.updatedAt", "ASC")
       .getMany();
   }
 
-  async markCommentsAsNotified(commentThreadIds: string[]): Promise<void> {
+  async getUnnotifiedCommentsByThreadIds(
+    threadIds: CommentThreadId[],
+    before: Date
+  ): Promise<Comment[]> {
+    this.checkSuperUser();
+    if (threadIds.length === 0) {
+      return [];
+    }
+
+    return await this.comments()
+      .createQueryBuilder("comment")
+      .leftJoinAndSelect("comment.commentThread", "thread")
+      .leftJoinAndSelect("comment.createdBy", "createdBy")
+      .where("thread.id IN (:...threadIds)", { threadIds })
+      .andWhere(
+        "(thread.lastEmailedAt is NULL OR (comment.createdAt > thread.lastEmailedAt AND comment.createdAt <= :before))",
+        { before }
+      )
+      .andWhere("comment.deletedAt IS NULL")
+      .orderBy("comment.createdAt", "ASC")
+      .getMany();
+  }
+
+  async getUnnotifiedCommentsThreadHistoriesByThreadIds(
+    threadIds: CommentThreadId[],
+    before: Date
+  ): Promise<CommentThreadHistory[]> {
+    this.checkSuperUser();
+    if (threadIds.length === 0) {
+      return [];
+    }
+
+    return await this.commentThreadHistory()
+      .createQueryBuilder("threadHistory")
+      .leftJoinAndSelect("threadHistory.commentThread", "thread")
+      .leftJoinAndSelect("threadHistory.createdBy", "createdBy")
+      .where("thread.id IN (:...threadIds)", { threadIds })
+      .andWhere(
+        "(thread.lastEmailedAt is NULL OR (threadHistory.createdAt > thread.lastEmailedAt AND threadHistory.createdAt <= :before))",
+        { before }
+      )
+      .andWhere("threadHistory.deletedAt IS NULL")
+      .orderBy("threadHistory.createdAt", "ASC")
+      .getMany();
+  }
+
+  async getUnnotifiedCommentsReactionsByThreadIds(
+    threadIds: CommentThreadId[],
+    before: Date
+  ): Promise<CommentReaction[]> {
+    this.checkSuperUser();
+    if (threadIds.length === 0) {
+      return [];
+    }
+
+    return await this.commentReactions()
+      .createQueryBuilder("commentReaction")
+      .leftJoinAndSelect("commentReaction.comment", "comment")
+      .leftJoinAndSelect("comment.commentThread", "thread")
+      .leftJoinAndSelect("commentReaction.createdBy", "reactionCreator")
+      .leftJoinAndSelect("comment.createdBy", "commentCreator")
+      .where("thread.id IN (:...threadIds)", { threadIds })
+      .andWhere(
+        "(thread.lastEmailedAt is NULL OR (commentReaction.createdAt > thread.lastEmailedAt AND commentReaction.createdAt <= :before))",
+        { before }
+      )
+      .andWhere("commentReaction.deletedAt IS NULL")
+      .orderBy("commentReaction.createdAt", "ASC")
+      .getMany();
+  }
+
+  async markCommentThreadsAsNotified(
+    commentThreadIds: string[],
+    notifiedDate: Date
+  ): Promise<void> {
     this.checkSuperUser();
     await this.commentThreads().update(
-      { id: In(commentThreadIds) }, // Match comments by their IDs
-      { lastEmailedAt: new Date() } // Set the notification status to true
+      { id: In(commentThreadIds) },
+      { lastEmailedAt: notifiedDate }
     );
+  }
+
+  async getCommentThreadAndStampUpdate(
+    threadId: CommentThreadId
+  ): Promise<CommentThread> {
+    const commentThread = await findExactlyOne(this.commentThreads(), {
+      id: threadId,
+    });
+    Object.assign(commentThread, this.stampUpdate());
+    return commentThread;
   }
 
   async postCommentInThread(
     { projectId, branchId }: ProjectAndBranchId,
-    data: { body: string; threadId: string }
+    data: { body: string; threadId: CommentThreadId }
   ): Promise<Comment> {
     await this.checkProjectBranchPerms(
       { projectId, branchId },
@@ -9688,6 +9767,7 @@ export class DbMgr implements MigrationDbMgr {
         id: comment.commentThreadId,
       },
       {
+        ...this.stampUpdate(),
         deletedAt: null,
         deletedById: null,
       }
@@ -9762,7 +9842,7 @@ export class DbMgr implements MigrationDbMgr {
       resolved: resolved,
     });
     await this.entMgr.save([commentThread, commentThreadHistory]);
-    return commentThread;
+    return commentThreadHistory;
   }
 
   async deleteCommentInProject(
@@ -9891,7 +9971,13 @@ export class DbMgr implements MigrationDbMgr {
       commentId,
       data,
     });
-    await this.entMgr.save([reaction]);
+    const comment = await findExactlyOne(this.comments(), {
+      id: reaction.commentId,
+    });
+    const commentThread = await this.getCommentThreadAndStampUpdate(
+      comment.commentThreadId
+    );
+    await this.entMgr.save([commentThread, reaction]);
     return reaction;
   }
 
@@ -9907,8 +9993,14 @@ export class DbMgr implements MigrationDbMgr {
       "post comment reaction",
       true
     );
+    const comment = await findExactlyOne(this.comments(), {
+      id: reaction.commentId,
+    });
     Object.assign(reaction, this.stampDelete());
-    await this.entMgr.save([reaction]);
+    const commentThread = await this.getCommentThreadAndStampUpdate(
+      comment.commentThreadId
+    );
+    await this.entMgr.save([commentThread, reaction]);
     return reaction;
   }
 
@@ -9919,7 +10011,7 @@ export class DbMgr implements MigrationDbMgr {
     addPerm: boolean
   ) {
     const comment = await findExactlyOne(this.comments(), {
-      id: commentId,
+      where: { id: commentId },
       relations: ["commentThread"],
     });
     const commentThread = ensure(
