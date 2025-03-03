@@ -563,7 +563,7 @@ export function updateStateAccessType(
     state.onChangeParam.variable.name = onChangePropName;
     state.onChangeParam.exportType = ParamExportType.External;
   } else if (!isPrevStatePrivate && isCurrStatePrivate) {
-    removeImplicitStates(site, component, state);
+    removeImplicitStates(site, state);
     state.onChangeParam.exportType = ParamExportType.ToolsOnly;
   }
 }
@@ -616,16 +616,11 @@ export function* findRecursiveImplicitStates(site: Site, state: State) {
   }
 }
 
-export function removeImplicitStates(
-  site: Site,
-  component: Component,
-  state: State
-) {
-  for (const { component: refComponent, state: refState } of findImplicitStates(
-    site,
-    component,
-    state
-  )) {
+export function removeImplicitStates(site: Site, state: State) {
+  for (const {
+    component: refComponent,
+    state: refState,
+  } of findRecursiveImplicitStates(site, state)) {
     removeComponentState(site, refComponent, refState);
   }
 }
@@ -666,7 +661,7 @@ export function removeComponentStateOnly(
   state: State
 ) {
   if (!isPrivateState(state)) {
-    removeImplicitStates(site, component, state);
+    removeImplicitStates(site, state);
   }
   remove(component.states, state);
 }
