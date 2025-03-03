@@ -18,7 +18,6 @@ require("cypress-log-to-output");
 
 const webpack = require("webpack");
 const wp = require("@cypress/webpack-preprocessor");
-const BlinkDiff = require("blink-diff");
 const fs = require("fs");
 const path = require("path");
 
@@ -92,57 +91,6 @@ module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
   on("file:preprocessor", wp(options));
-
-  on("after:screenshot", (details) => {
-    // If the screenshot was taken with name matching check-X, then we will
-    // compare it to a reference screenshot located at screenshot_refs/X (which
-    // should exist already).
-    if (!details.name || !details.name.startsWith("check-")) {
-      return;
-    }
-    const testImage = details.path;
-    const refImage = path.join(
-      __dirname,
-      "/../screenshotRefs/",
-      details.name + ".png"
-    );
-
-    console.log(
-      "Comparing screenshots:",
-      "\ntestImage:",
-      testImage,
-      "\n refImage:",
-      refImage
-    );
-
-    if (!fs.existsSync(refImage)) {
-      console.log("Reference image doesn't exist.");
-      return Promise.reject(false);
-    }
-
-    // An alternative image comparison library that seems good is resemblejs
-    // https://github.com/HuddleEng/Resemble.js
-    const diff = new BlinkDiff({
-      imageAPath: refImage,
-      imageBPath: testImage,
-      thresholdType: BlinkDiff.THRESHOLD_PERCENT,
-      threshold: 0.2, // allow 20% of pixels to differ
-    });
-
-    return new Promise((resolve, reject) => {
-      diff.run((error, result) => {
-        if (error) {
-          throw error;
-        } else {
-          if (diff.hasPassed(result.code)) {
-            resolve(true);
-          } else {
-            reject(false);
-          }
-        }
-      });
-    });
-  });
 
   on("task", {
     getFetchPolyfill() {

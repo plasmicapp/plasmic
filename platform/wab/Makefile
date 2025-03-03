@@ -24,11 +24,9 @@ src/wab/shared/model/classes.ts: src/wab/gen/modelPegParser.js src/wab/shared/mo
 src/wab/shared/model/classes-metas.ts: src/wab/gen/modelPegParser.js src/wab/shared/model/model-schema.ts tools/gen-models.ts src/wab/shared/model/model-generator.ts
 	yarn gen:models
 src/wab/styles/_tokens.sass: src/wab/styles/plasmic-tokens.theo.json
-	yarn run theo src/wab/styles/plasmic-tokens.theo.json --transform web --format sass --dest src/wab/styles
-	mv src/wab/styles/plasmic-tokens.theo.sass src/wab/styles/_tokens.sass
+	yarn gen:plasmic-tokens-sass
 src/wab/styles/_tokens.ts: src/wab/styles/plasmic-tokens.theo.json
-	yarn run theo src/wab/styles/plasmic-tokens.theo.json --transform web --format module.js --dest src/wab/styles
-	mv src/wab/styles/plasmic-tokens.theo.module.js src/wab/styles/_tokens.ts
+	yarn gen:plasmic-tokens-ts
 src/wab/styles/css-variables.ts: src/wab/styles/css-variables.json
 	node src/wab/styles/css-variables.gen.js
 src/wab/styles/css-variables.scss: src/wab/styles/css-variables.json

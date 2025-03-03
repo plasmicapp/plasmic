@@ -333,22 +333,6 @@ Some pointers:
   auto-scroll things into view (which we almost never want since there's no real
   scrolling in our app).
 
-## Debugging module graph
-
-Look at what modules are big (you may want to compare the results from
-before and after your commit):
-
-    yarn source-map-explorer build/static/js/canvas.js
-
-If you want to figure out how a particular module is getting included, use:
-
-    rm graph.json
-    bash tools/import-chains.bash
-
-import-chains.bash currently just works for canvas-entry.tsx (which is the
-entrypoint for the canvas.js bundle), but it can be easily updated to analyze a
-different entrypoint.
-
 ## Audit licenses of dependencies
 
 For node dependencies, do this from each project directory:
