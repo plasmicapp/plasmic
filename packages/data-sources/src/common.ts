@@ -303,3 +303,11 @@ export function usePlasmicFetch<T, R, E = any>(
     fetchAndUpdateCache,
   ]);
 }
+
+export function getConfig<T>(key: string, defaultValue: T) {
+  if (typeof globalThis === "undefined") {
+    return defaultValue;
+  } else {
+    return (globalThis as any)[key] ?? defaultValue;
+  }
+}

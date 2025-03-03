@@ -2,10 +2,20 @@ import {
   useMutablePlasmicQueryData,
   wrapLoadingFetcher,
 } from "@plasmicapp/query";
-import { isPlasmicUndefinedDataErrorPromise, usePlasmicFetch } from "../common";
+import {
+  getConfig,
+  isPlasmicUndefinedDataErrorPromise,
+  usePlasmicFetch,
+} from "../common";
 import { ClientQueryResult, ServerQuery, ServerQueryResult } from "../types";
 import { pick } from "../utils";
 import { resolveParams } from "./common";
+
+type StudioCacheWrapper = <F extends (...args: any[]) => Promise<any>>(
+  id: string,
+  fn: F,
+  ...args: Parameters<F>
+) => Promise<any>;
 
 export function makeQueryCacheKey(id: string, params: any[]) {
   return `${id}:${JSON.stringify(params)}`;
@@ -28,9 +38,17 @@ export function usePlasmicServerQuery<
     !resolvedParams || isPlasmicUndefinedDataErrorPromise(resolvedParams)
       ? null
       : makeQueryCacheKey(serverQuery.id, resolvedParams);
+  const wrapStudioCache = getConfig(
+    "__PLASMIC_EXECUTE_SERVER_QUERY",
+    (_: string, fn: F, ...args: Parameters<F>) => fn(...args)
+  ) as StudioCacheWrapper;
 
   const fetcher = (params: Parameters<F>) => {
-    return wrapLoadingFetcher(serverQuery.fn)(...params);
+    return wrapLoadingFetcher(wrapStudioCache)(
+      serverQuery.id,
+      serverQuery.fn,
+      ...params
+    );
   };
 
   const resultMapper = (
