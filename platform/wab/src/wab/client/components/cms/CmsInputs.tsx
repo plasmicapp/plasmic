@@ -235,6 +235,14 @@ const FormNameContext = createContext<
   { name: NamePathz; label: ReactNode } | undefined
 >(undefined);
 
+export class FormValidationError extends Error {
+  type: string;
+  constructor(message: string, type: string) {
+    super(message);
+    this.type = type;
+  }
+}
+
 function MaybeFormItem({
   typeName,
   name,
@@ -245,9 +253,30 @@ function MaybeFormItem({
   name: NamePathz;
   maxChars?: number;
   minChars?: number;
+  // unique?: boolean;
+  uniqueNotValid?: boolean;
 }) {
+  type FieldStatus = "success" | "warning" | "error" | "validating" | undefined;
+  const [fieldStatus, setFieldStatus] = React.useState<FieldStatus>("success");
+  const [helperText, setHelperText] = React.useState(" ");
   const commonRules = [
-    { required: props.required, message: "Field is required" },
+    {
+      validator: async (_, value) => {
+        if (props.required && value.length === 0) {
+          setFieldStatus("error");
+          setHelperText("Field is required");
+          return Promise.reject();
+        }
+        if (props.uniqueNotValid) {
+          setFieldStatus("warning");
+          setHelperText("This field should be unique to publish this entry");
+          return Promise.resolve();
+        }
+        setFieldStatus("success");
+        setHelperText("");
+        return Promise.resolve();
+      },
+    },
   ];
   const typeSpecificRules =
     [CmsMetaType.TEXT, CmsMetaType.RICH_TEXT].includes(typeName) &&
@@ -256,13 +285,19 @@ function MaybeFormItem({
       : [];
 
   const rules = [...commonRules, ...typeSpecificRules];
-
   return typeName === CmsMetaType.LIST ? (
     <FormNameContext.Provider value={{ name, label }}>
       {props.children as any}
     </FormNameContext.Provider>
   ) : (
-    <Form.Item name={name} label={label} {...props} rules={rules} />
+    <Form.Item
+      name={name}
+      label={label}
+      {...props}
+      rules={rules}
+      help={helperText}
+      validateStatus={fieldStatus}
+    />
   );
 }
 
@@ -276,7 +311,6 @@ export function CmsObjectInput(props: any) {
   } = useContentEntryFormContext();
   assert(typeMeta.type === CmsMetaType.OBJECT, "Must be rendering an object");
   const form = Form.useFormInstance();
-
   return (
     <div
       style={
@@ -572,6 +606,8 @@ interface MaybeLocalizedInputProps {
   fieldPathSuffix: string[];
   formItemProps: FormItemProps;
   typeName: CmsTypeName;
+  // unique: boolean;
+  uniqueNotValid: boolean;
 }
 
 export function renderMaybeLocalizedInput({
@@ -584,6 +620,7 @@ export function renderMaybeLocalizedInput({
   formItemProps,
   typeName,
   required,
+  uniqueNotValid,
 }: MaybeLocalizedInputProps) {
   return (
     <ContentEntryFormContext.Consumer>
@@ -608,6 +645,7 @@ export function renderMaybeLocalizedInput({
               minChars={minChars}
               required={required}
               typeName={typeName}
+              uniqueNotValid={uniqueNotValid}
               {...formItemProps}
               name={[...fieldPath, "", ...fieldPathSuffix]}
             >
@@ -643,6 +681,7 @@ export function renderMaybeLocalizedInput({
                       maxChars={maxChars}
                       minChars={minChars}
                       required={required}
+                      uniqueNotValid={uniqueNotValid}
                       typeName={typeName}
                       name={[...fieldPath, locale, ...fieldPathSuffix]}
                       noStyle
