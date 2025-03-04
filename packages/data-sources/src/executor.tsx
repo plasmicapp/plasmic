@@ -2,7 +2,6 @@ import { PlasmicDataSourceContextValue } from "@plasmicapp/data-sources-context"
 import fetch from "@plasmicapp/isomorphic-unfetch";
 import { wrapLoadingFetcher } from "@plasmicapp/query";
 import stringify from "fast-stringify";
-import { getConfig } from "./common";
 import { addPlaceholdersToUserArgs } from "./placeholders";
 import { DataOp, ManyRowsResult, Pagination, SingleRowResult } from "./types";
 
@@ -61,4 +60,12 @@ async function _executePlasmicDataOp<
     throw new Error(text);
   }
   return (await resp.json()) as T;
+}
+
+function getConfig<T>(key: string, defaultValue: T) {
+  if (typeof globalThis === "undefined") {
+    return defaultValue;
+  } else {
+    return (globalThis as any)[key] ?? defaultValue;
+  }
 }

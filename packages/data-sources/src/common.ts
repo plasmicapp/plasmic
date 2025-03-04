@@ -304,10 +304,14 @@ export function usePlasmicFetch<T, R, E = any>(
   ]);
 }
 
+/**
+ * New getConfig that reuses the `global.__PLASMIC__` object instead of having multiple
+ * keys in `global`.
+ */
 export function getConfig<T>(key: string, defaultValue: T) {
   if (typeof globalThis === "undefined") {
     return defaultValue;
   } else {
-    return (globalThis as any)[key] ?? defaultValue;
+    return (globalThis as any).__PLASMIC__?.[key] ?? defaultValue;
   }
 }

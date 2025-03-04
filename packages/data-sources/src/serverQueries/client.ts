@@ -38,10 +38,10 @@ export function usePlasmicServerQuery<
     !resolvedParams || isPlasmicUndefinedDataErrorPromise(resolvedParams)
       ? null
       : makeQueryCacheKey(serverQuery.id, resolvedParams);
-  const wrapStudioCache = getConfig(
-    "__PLASMIC_EXECUTE_SERVER_QUERY",
+  const wrapStudioCache: StudioCacheWrapper = getConfig(
+    "EXECUTE_SERVER_QUERY",
     (_: string, fn: F, ...args: Parameters<F>) => fn(...args)
-  ) as StudioCacheWrapper;
+  );
 
   const fetcher = (params: Parameters<F>) => {
     return wrapLoadingFetcher(wrapStudioCache)(
