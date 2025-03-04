@@ -63,11 +63,11 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "39429003": {
           "tag": "div",
@@ -123,13 +123,13 @@
           "uuid": "alPSW_JsSvNP",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "39429009": {
           "values": {
@@ -214,13 +214,13 @@
           "uuid": "iyZ4C-t2qhTHE",
           "name": "Mobile only",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "39429057" },
           "mediaQuery": "(min-width:0px) and (max-width:768px)",
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "39429057": {
           "type": "global-screen",
@@ -329,13 +329,13 @@
           "uuid": "CTIdtczD5oCQB",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "39429072": { "values": {}, "mixins": [], "__type": "RuleSet" },
         "39429073": {
@@ -1128,11 +1128,11 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "62876002": {
           "type": { "__ref": "62876010" },
@@ -1231,13 +1231,13 @@
           "uuid": "0znYo_pHJ",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "62876008": {
           "importPath": "@plasmicapp/react-web",
@@ -1314,11 +1314,11 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "62876023": {
           "component": { "__ref": "62876022" },
@@ -1347,13 +1347,13 @@
           "uuid": "Dzpm0dVQJI",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "62876026": {
           "path": "/hello/[name]",
@@ -1487,7 +1487,7 @@
         "62876048": { "values": {}, "mixins": [], "__type": "RuleSet" }
       },
       "deps": [],
-      "version": "241-add-custom-function-flag"
+      "version": "242-remove-duplicate-variants"
     }
   ]
 ]

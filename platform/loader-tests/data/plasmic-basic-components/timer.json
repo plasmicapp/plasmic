@@ -31,13 +31,13 @@
           "uuid": "Ef4k0RTOUSvo",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "kzXdk6knZEiT": {
           "components": [
@@ -92,11 +92,11 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "fz5LTr5PlOfD": {
           "uuid": "8PMlkKXJz9uU",
@@ -126,11 +126,11 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "fwyWe8zEDO_x": {
           "uuid": "gLLzhPLbjvKg",
@@ -151,11 +151,11 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "Z2qUmJ8ucwKD": {
           "uuid": "vm3I0dJshQph",
@@ -180,11 +180,11 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "eIbHc8zKY3CT": {
           "uuid": "jrquTAh5W_L3",
@@ -210,11 +210,11 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "awAmbZVAiMcx": {
           "uuid": "TuVYJijKINpK",
@@ -239,11 +239,11 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "-QDuc23__xpC": {
           "type": { "__ref": "Y8jIe067p742" },
@@ -302,13 +302,13 @@
           "uuid": "7R4EO7vqER-v",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "VukX7aoATnkP": {
           "importPath": "@plasmicpkgs/plasmic-basic-components",
@@ -511,13 +511,13 @@
           "uuid": "w-jbdHfz1xgY",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "SFovWevvYqpH": {
           "importPath": "@plasmicpkgs/plasmic-basic-components",
@@ -600,13 +600,13 @@
           "uuid": "IFoVJ1Z3Sdi6",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "7CflaUCfkCqK": {
           "importPath": "@plasmicpkgs/plasmic-basic-components",
@@ -710,13 +710,13 @@
           "uuid": "2V7KRwPwtnlM",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "gPaPieigYdSJ": {
           "importPath": "@plasmicpkgs/plasmic-basic-components",
@@ -840,13 +840,13 @@
           "uuid": "Pk1zb_JiBYOc",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "uRN3sgohWc6E": {
           "importPath": "@plasmicpkgs/plasmic-basic-components",
@@ -949,13 +949,13 @@
           "uuid": "nif9W-sOFgbT",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "8AK8wfAtI01Y": {
           "importPath": "@plasmicpkgs/plasmic-basic-components",
@@ -1349,11 +1349,11 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "02FCmET1mnT7": {
           "type": { "__ref": "jEpoTKUq5x4p" },
@@ -1412,13 +1412,13 @@
           "uuid": "JPvA2Kzna-oI",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "7FDA2WlplvPH": {
           "importPath": "@plasmicpkgs/plasmic-basic-components",
@@ -1522,7 +1522,7 @@
         }
       },
       "deps": [],
-      "version": "241-add-custom-function-flag"
+      "version": "242-remove-duplicate-variants"
     }
   ],
   [
@@ -1981,13 +1981,13 @@
           "uuid": "AZbZB8Dkxs9C",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "Fnz_G6HMnUr8": {
           "components": [
@@ -2067,11 +2067,11 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "_508Rzy9eVKN": {
           "uuid": "bNhFrmCctfMq",
@@ -2098,11 +2098,11 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": true,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "6E-BG1PCIlgW": {
           "type": { "__ref": "1vuvbD0cJ4Up" },
@@ -2201,13 +2201,13 @@
           "uuid": "Tv1F26OVoyxw",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "86TTaV6SoCCA": {
           "importPath": "@plasmicapp/react-web",
@@ -2351,13 +2351,13 @@
           "uuid": "p7HJgVhL-Fe0",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "iyXW4jDxhsN6": {
           "importPath": "@plasmicapp/react-web/lib/data-sources",
@@ -2537,11 +2537,11 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "TuIXVbeBQoYs": {
           "component": { "__ref": "e13a_ukefuzg" },
@@ -2588,13 +2588,13 @@
           "uuid": "9l_e3RLzqYCO",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "wILNcnpZcQal": {
           "path": "/timer-test",
@@ -2901,11 +2901,11 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": true,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "ZZy-gqT9jwN8": {
           "component": { "__ref": "M3D_20Qsreym" },
@@ -3439,61 +3439,61 @@
           "uuid": "nWJR4WCeEMGi",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "Lm_Y4jYRxbu0": {
           "uuid": "bFZTfOcZ4Zwu",
           "name": "",
           "selectors": [":focus-visible-within"],
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "fLNraCYnhsPw": {
           "uuid": "zmjVSYv4gIDf",
           "name": "",
           "selectors": [":focus-within"],
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "rXS3ClnNzXCb": {
           "uuid": "LZX7QRpWwuVe",
           "name": "",
           "selectors": [":hover"],
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "QClRYrh3WRQd": {
           "uuid": "yYIg_CDIuTQT",
           "name": "",
           "selectors": [":active"],
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "i-hQCl_7TWIx": {
           "type": "component",
@@ -4571,253 +4571,253 @@
           "uuid": "4xpRDuAC0x4T",
           "name": "Show Start Icon",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "i-hQCl_7TWIx" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "yq9QffPpyM2J": {
           "uuid": "SzLWNzA-FLQi",
           "name": "Show End Icon",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "2hf86NcLQ4N2" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "zcO4mBn4V1wT": {
           "uuid": "6BCIiYLRy3Cl",
           "name": "Is Disabled",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "ABhERiaFKJty" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "iUI-B46ZLwtT": {
           "uuid": "vVZfJeIc6o5I",
           "name": "Rounded",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "RiJHlchMNNjf" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "-vX-qimNWhqd": {
           "uuid": "xqSTxEzGVyGf",
           "name": "Round",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "RiJHlchMNNjf" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "n27l-fRMsuCS": {
           "uuid": "ahzPqDY4TSKe",
           "name": "Sharp",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "RiJHlchMNNjf" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "RiiM8z4glg_B": {
           "uuid": "D57gS_UWUYOY",
           "name": "Compact",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "FNXqANmtGzgi" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "UMpGQ1nwhNff": {
           "uuid": "mvenRT-6peMr",
           "name": "Minimal",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "FNXqANmtGzgi" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "Q_bQVPxXY6kG": {
           "uuid": "cUaOualvKu8C",
           "name": "Blue",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "XVHFUpOQXFl5" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "QNx57Blo8rTr": {
           "uuid": "cPw_NaR2b6iW",
           "name": "Green",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "XVHFUpOQXFl5" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "kpUxY5ieaAQf": {
           "uuid": "8z4nnfMtYz2D",
           "name": "Yellow",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "XVHFUpOQXFl5" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "lomZRpMcCROC": {
           "uuid": "M6utl0BrSKzV",
           "name": "Red",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "XVHFUpOQXFl5" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "YWeDO5D2a9V4": {
           "uuid": "e9PQGOBEB5i_",
           "name": "Sand",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "XVHFUpOQXFl5" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "1hbJwXKAevLS": {
           "uuid": "72bipNh4D1xA",
           "name": "White",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "XVHFUpOQXFl5" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "rozacXTR5145": {
           "uuid": "6K3qaau_zR53",
           "name": "Soft Blue",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "XVHFUpOQXFl5" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "wlgMCJ5ZrEuD": {
           "uuid": "8Y8NMDnTadON",
           "name": "Soft Green",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "XVHFUpOQXFl5" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "KY5faWPazsCy": {
           "uuid": "IUlfafPgeNSB",
           "name": "Soft Yellow",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "XVHFUpOQXFl5" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "Ne7YQqMc4g89": {
           "uuid": "Yh7NytQL3D24",
           "name": "Soft Red",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "XVHFUpOQXFl5" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "tYFUx8VxDxot": {
           "uuid": "ICSPFbTCKfh8",
           "name": "Soft Sand",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "XVHFUpOQXFl5" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "YPpaIyQG98LD": {
           "uuid": "uXFID5DR9Egd",
           "name": "Clear",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "XVHFUpOQXFl5" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "0FdCSZaRreQX": {
           "uuid": "5gz0ksY_DGXY",
           "name": "Link",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "XVHFUpOQXFl5" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "MkbbDY55eCrT": {
           "cols": [
@@ -9705,11 +9705,11 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": true,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "i2_aBIwJZ9Cw": {
           "component": { "__ref": "SxIYAk_gqRFL" },
@@ -10279,73 +10279,73 @@
           "uuid": "9oiMS4AAUNKo",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "nsqywtL8e_i2": {
           "uuid": "q1ue7rWcWKTd",
           "name": "",
           "selectors": [":focus"],
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": { "__ref": "YYWrVnw8Ms6k" },
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "mZ61Fzq6V8wx": {
           "uuid": "WaD5GmZ_c_dC",
           "name": "",
           "selectors": [":hover"],
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "vE-s9RcGBOxA": {
           "uuid": "6-QDt-6pTxcN",
           "name": "",
           "selectors": [":focus-within"],
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "QjPLchsmNmoh": {
           "uuid": "p81OYgmXYh-5",
           "name": "",
           "selectors": [":focus-visible-within"],
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "B0y4N0dBd-DZ": {
           "uuid": "Q6Rw8iIqk9-5",
           "name": "",
           "selectors": ["::placeholder"],
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": { "__ref": "YYWrVnw8Ms6k" },
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "WQoLuHdsA5JA": {
           "type": "component",
@@ -10753,49 +10753,49 @@
           "uuid": "_CxwFtzd2htW",
           "name": "Show Start Icon",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "WQoLuHdsA5JA" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "9pZrwTMscDML": {
           "uuid": "NyfU77zdzGeh",
           "name": "Show End Icon",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "klbQglf23kJq" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "4ocP4fyAdtx5": {
           "uuid": "3Kn7QBZoD-nM",
           "name": "Is Disabled",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "hADfV0e-xpY0" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "Hom0u9iJgkB-": {
           "uuid": "LF27WELVWLgU",
           "name": "Dark",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "gHGFxwuPOAht" },
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "BexU7_5zEOGS": {
           "cols": [
@@ -12206,7 +12206,7 @@
         "ppmsVxHk1e_-": { "text": ["interval"], "__type": "TemplatedString" }
       },
       "deps": ["a3a6a4ab-6ef7-466e-8589-a26854d0253c"],
-      "version": "241-add-custom-function-flag"
+      "version": "242-remove-duplicate-variants"
     }
   ]
 ]

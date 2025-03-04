@@ -8,13 +8,13 @@
           "uuid": "nRkRgAzVfwED",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "9i96EdQdnOLh": {
           "markers": [],
@@ -233,11 +233,11 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "J-ArOVMxLUh5": {
           "name": "title",
@@ -347,13 +347,13 @@
           "uuid": "CAOYHqmIMKC6",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "m483lBt1ztFC": {
           "values": { "display": "flex", "flex-direction": "row" },
@@ -432,11 +432,11 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "iEGxrZZF3uxa": {
           "name": "dataOp",
@@ -587,13 +587,13 @@
           "uuid": "JGWKJwj95Oe3",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "nLXGPbrOelu8": { "values": {}, "mixins": [], "__type": "RuleSet" },
         "v5z3L5mJm5tW": {
@@ -694,11 +694,11 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": true,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "LgdhubFSOeqk": {
           "values": {
@@ -1161,13 +1161,13 @@
           "uuid": "U_Yw42D9Ph1D",
           "name": "Mobile only",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": { "__ref": "vxxNGDGRgWjc" },
           "mediaQuery": "(min-width:0px) and (max-width:768px)",
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "vxxNGDGRgWjc": {
           "type": "global-screen",
@@ -1291,13 +1291,13 @@
           "uuid": "eaN2IYpaC4W1",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "Q22M2ebLSpNE": {
           "components": [
@@ -1338,27 +1338,27 @@
           "importName": "sum",
           "defaultExport": false,
           "namespace": "math",
-          "__type": "CustomFunction",
           "params": [],
-          "isQuery": false
+          "isQuery": false,
+          "__type": "CustomFunction"
         },
         "-hD0qzX8Rbv7": {
           "importPath": "./functions",
           "importName": "subtract",
           "defaultExport": true,
           "namespace": "math",
-          "__type": "CustomFunction",
           "params": [],
-          "isQuery": false
+          "isQuery": false,
+          "__type": "CustomFunction"
         },
         "1wavIcOhMzR6": {
           "importPath": "./functions",
           "importName": "greeting",
           "defaultExport": false,
           "namespace": null,
-          "__type": "CustomFunction",
           "params": [],
-          "isQuery": false
+          "isQuery": false,
+          "__type": "CustomFunction"
         },
         "SOeWExDqMzIL": {
           "expr": { "__ref": "Q2V4gWoP0oq8" },
@@ -1454,7 +1454,7 @@
         }
       },
       "deps": [],
-      "version": "241-add-custom-function-flag"
+      "version": "242-remove-duplicate-variants"
     }
   ]
 ]

@@ -75,11 +75,11 @@
       "templateInfo": null,
       "metadata": {},
       "dataQueries": [],
+      "serverQueries": [],
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
-      "__type": "Component",
-      "serverQueries": []
+      "__type": "Component"
     },
     "3": {
       "type": { "__ref": "56656001" },
@@ -144,13 +144,13 @@
       "uuid": "fOjGWsJuT",
       "name": "base",
       "selectors": null,
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "parent": null,
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant",
-      "codeComponentName": null,
-      "codeComponentVariantKeys": null
+      "__type": "Variant"
     },
     "11": {
       "values": {
@@ -183,13 +183,13 @@
       "uuid": "nrFPZhhb9z9",
       "name": "Dark",
       "selectors": null,
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "parent": { "__ref": "25" },
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant",
-      "codeComponentName": null,
-      "codeComponentVariantKeys": null
+      "__type": "Variant"
     },
     "25": {
       "type": "global-user-defined",
@@ -280,11 +280,11 @@
       "templateInfo": null,
       "metadata": {},
       "dataQueries": [],
+      "serverQueries": [],
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
-      "__type": "Component",
-      "serverQueries": []
+      "__type": "Component"
     },
     "35": {
       "type": { "__ref": "56656002" },
@@ -372,13 +372,13 @@
       "uuid": "qoPKnfB22H3",
       "name": "base",
       "selectors": null,
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "parent": null,
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant",
-      "codeComponentName": null,
-      "codeComponentVariantKeys": null
+      "__type": "Variant"
     },
     "44": {
       "code": "\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAxMiA2IiBoZWlnaHQ9IjYiIHdpZHRoPSIxMiI+CjxwYXRoIGZpbGw9ImJsYWNrIiBkPSJNMC42MTIgMC4xMTJMNS44NDQgMy4yMkwxMS4wNzYgMC4xMTJWMi41TDUuODQ0IDUuNTI0TDAuNjEyIDIuNDg4VjAuMTEyWiIvPgo8L3N2Zz4K\"",
@@ -414,13 +414,13 @@
       "uuid": "u1DOkEANbuQ",
       "name": "empty",
       "selectors": null,
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "parent": { "__ref": "57" },
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant",
-      "codeComponentName": null,
-      "codeComponentVariantKeys": null
+      "__type": "Variant"
     },
     "57": {
       "type": "component",
@@ -435,13 +435,13 @@
       "uuid": "qnGDYG2-r2N",
       "name": "all-checked",
       "selectors": null,
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "parent": { "__ref": "57" },
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant",
-      "codeComponentName": null,
-      "codeComponentVariantKeys": null
+      "__type": "Variant"
     },
     "60": { "values": {}, "mixins": [], "__type": "RuleSet" },
     "61": { "code": "false", "fallback": null, "__type": "CustomCode" },
@@ -707,13 +707,13 @@
       "uuid": "Mz19VU8rwb",
       "name": "empty",
       "selectors": null,
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "parent": { "__ref": "149" },
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant",
-      "codeComponentName": null,
-      "codeComponentVariantKeys": null
+      "__type": "Variant"
     },
     "149": {
       "type": "component",
@@ -796,11 +796,11 @@
       "templateInfo": null,
       "metadata": {},
       "dataQueries": [],
+      "serverQueries": [],
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
-      "__type": "Component",
-      "serverQueries": []
+      "__type": "Component"
     },
     "160": {
       "type": { "__ref": "56656003" },
@@ -937,13 +937,13 @@
       "uuid": "sJAdt3n86Ze",
       "name": "base",
       "selectors": null,
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "parent": null,
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant",
-      "codeComponentName": null,
-      "codeComponentVariantKeys": null
+      "__type": "Variant"
     },
     "173": {
       "code": "\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgc3Ryb2tlLXdpZHRoPSIwIiBmaWxsPSJjdXJyZW50Q29sb3IiIHN0cm9rZT0iY3VycmVudENvbG9yIj48cGF0aCBkPSJNMTczLjg5OCA0MzkuNDA0bC0xNjYuNC0xNjYuNGMtOS45OTctOS45OTctOS45OTctMjYuMjA2IDAtMzYuMjA0bDM2LjIwMy0zNi4yMDRjOS45OTctOS45OTggMjYuMjA3LTkuOTk4IDM2LjIwNCAwTDE5MiAzMTIuNjkgNDMyLjA5NSA3Mi41OTZjOS45OTctOS45OTcgMjYuMjA3LTkuOTk3IDM2LjIwNCAwbDM2LjIwMyAzNi4yMDRjOS45OTcgOS45OTcgOS45OTcgMjYuMjA2IDAgMzYuMjA0bC0yOTQuNCAyOTQuNDAxYy05Ljk5OCA5Ljk5Ny0yNi4yMDcgOS45OTctMzYuMjA0LS4wMDF6Ii8+PC9zdmc+\"",
@@ -978,13 +978,13 @@
       "uuid": "MJGFkao2MgA",
       "name": "checked",
       "selectors": null,
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "parent": { "__ref": "185" },
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant",
-      "codeComponentName": null,
-      "codeComponentVariantKeys": null
+      "__type": "Variant"
     },
     "185": {
       "type": "component",
@@ -999,13 +999,13 @@
       "uuid": "BiyRgR0UtVP",
       "name": "editing",
       "selectors": null,
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "parent": { "__ref": "185" },
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant",
-      "codeComponentName": null,
-      "codeComponentVariantKeys": null
+      "__type": "Variant"
     },
     "188": {
       "code": "\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgc3Ryb2tlLXdpZHRoPSIwIiBmaWxsPSJjdXJyZW50Q29sb3IiIHN0cm9rZT0iY3VycmVudENvbG9yIiBzdHlsZT0iZmlsbDogcmdiKDQsIDE0MywgNjQpOyI+PHBhdGggZD0iTTE3My44OTggNDM5LjQwNGwtMTY2LjQtMTY2LjRjLTkuOTk3LTkuOTk3LTkuOTk3LTI2LjIwNiAwLTM2LjIwNGwzNi4yMDMtMzYuMjA0YzkuOTk3LTkuOTk4IDI2LjIwNy05Ljk5OCAzNi4yMDQgMEwxOTIgMzEyLjY5IDQzMi4wOTUgNzIuNTk2YzkuOTk3LTkuOTk3IDI2LjIwNy05Ljk5NyAzNi4yMDQgMGwzNi4yMDMgMzYuMjA0YzkuOTk3IDkuOTk3IDkuOTk3IDI2LjIwNiAwIDM2LjIwNGwtMjk0LjQgMjk0LjQwMWMtOS45OTggOS45OTctMjYuMjA3IDkuOTk3LTM2LjIwNC0uMDAxeiIvPjwvc3ZnPg==\"",
@@ -1038,13 +1038,13 @@
       "uuid": "CeGgGNdBKL5",
       "name": "",
       "selectors": [":hover"],
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "parent": null,
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant",
-      "codeComponentName": null,
-      "codeComponentVariantKeys": null
+      "__type": "Variant"
     },
     "198": { "values": {}, "mixins": [], "__type": "RuleSet" },
     "199": {
@@ -2170,11 +2170,11 @@
       "templateInfo": null,
       "metadata": {},
       "dataQueries": [],
+      "serverQueries": [],
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
-      "__type": "Component",
-      "serverQueries": []
+      "__type": "Component"
     },
     "479": {
       "type": { "__ref": "56656004" },
@@ -2294,13 +2294,13 @@
       "uuid": "q2QvVpF6eCe",
       "name": "base",
       "selectors": null,
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "parent": null,
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant",
-      "codeComponentName": null,
-      "codeComponentVariantKeys": null
+      "__type": "Variant"
     },
     "492": { "values": {}, "mixins": [], "__type": "RuleSet" },
     "493": { "markers": [], "text": "2", "__type": "RawText" },
@@ -2335,13 +2335,13 @@
       "uuid": "AR2Ovy94u8A",
       "name": "HasCompleted",
       "selectors": null,
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "parent": { "__ref": "500" },
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant",
-      "codeComponentName": null,
-      "codeComponentVariantKeys": null
+      "__type": "Variant"
     },
     "500": {
       "type": "component",
@@ -2356,25 +2356,25 @@
       "uuid": "g8t-4xvcYUw",
       "name": "singular-left",
       "selectors": null,
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "parent": { "__ref": "500" },
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant",
-      "codeComponentName": null,
-      "codeComponentVariantKeys": null
+      "__type": "Variant"
     },
     "503": {
       "uuid": "rQSLhLe97YB",
       "name": "empty",
       "selectors": null,
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "parent": { "__ref": "500" },
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant",
-      "codeComponentName": null,
-      "codeComponentVariantKeys": null
+      "__type": "Variant"
     },
     "505": { "values": {}, "mixins": [], "__type": "RuleSet" },
     "506": {
@@ -2570,11 +2570,11 @@
       "templateInfo": null,
       "metadata": {},
       "dataQueries": [],
+      "serverQueries": [],
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
-      "__type": "Component",
-      "serverQueries": []
+      "__type": "Component"
     },
     "543": {
       "type": { "__ref": "56656005" },
@@ -2676,13 +2676,13 @@
       "uuid": "Y3U-2j28S-V",
       "name": "base",
       "selectors": null,
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "parent": null,
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant",
-      "codeComponentName": null,
-      "codeComponentVariantKeys": null
+      "__type": "Variant"
     },
     "555": { "values": {}, "mixins": [], "__type": "RuleSet" },
     "556": { "markers": [], "text": "All", "__type": "RawText" },
@@ -2717,13 +2717,13 @@
       "uuid": "9_a2YxXirvS",
       "name": "",
       "selectors": [":hover"],
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "parent": null,
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant",
-      "codeComponentName": null,
-      "codeComponentVariantKeys": null
+      "__type": "Variant"
     },
     "563": { "values": {}, "mixins": [], "__type": "RuleSet" },
     "564": {
@@ -2741,13 +2741,13 @@
       "uuid": "egUZysHrviX",
       "name": "Selected",
       "selectors": null,
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "parent": { "__ref": "567" },
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant",
-      "codeComponentName": null,
-      "codeComponentVariantKeys": null
+      "__type": "Variant"
     },
     "567": {
       "type": "component",
@@ -3657,13 +3657,13 @@
       "uuid": "Qoau-29-b3J",
       "name": "base",
       "selectors": null,
+      "codeComponentName": null,
+      "codeComponentVariantKeys": null,
       "parent": null,
       "mediaQuery": null,
       "description": null,
       "forTpl": null,
-      "__type": "Variant",
-      "codeComponentName": null,
-      "codeComponentVariantKeys": null
+      "__type": "Variant"
     },
     "851": { "values": {}, "mixins": [], "__type": "RuleSet" },
     "852": {
@@ -4919,5 +4919,5 @@
     }
   },
   "deps": [],
-  "version": "241-add-custom-function-flag"
+  "version": "242-remove-duplicate-variants"
 }
