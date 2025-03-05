@@ -19,6 +19,7 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  renderPlasmicSlot,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
@@ -37,16 +38,20 @@ type VariantPropType = keyof PlasmicUserMentionDisplay__VariantsArgs;
 export const PlasmicUserMentionDisplay__VariantProps =
   new Array<VariantPropType>();
 
-export type PlasmicUserMentionDisplay__ArgsType = {};
+export type PlasmicUserMentionDisplay__ArgsType = {
+  children?: React.ReactNode;
+};
 type ArgPropType = keyof PlasmicUserMentionDisplay__ArgsType;
-export const PlasmicUserMentionDisplay__ArgProps = new Array<ArgPropType>();
+export const PlasmicUserMentionDisplay__ArgProps = new Array<ArgPropType>(
+  "children"
+);
 
 export type PlasmicUserMentionDisplay__OverridesType = {
   root?: Flex__<"span">;
-  text?: Flex__<"div">;
 };
 
 export interface DefaultUserMentionDisplayProps {
+  children?: React.ReactNode;
   className?: string;
 }
 
@@ -98,27 +103,33 @@ function PlasmicUserMentionDisplay__RenderFunc(props: {
         sty.root
       )}
     >
-      <div
-        data-plasmic-name={"text"}
-        data-plasmic-override={overrides.text}
-        className={classNames(projectcss.all, projectcss.__wab_text, sty.text)}
-      >
-        {"User name"}
-      </div>
+      {renderPlasmicSlot({
+        defaultContents: (
+          <div
+            className={classNames(
+              projectcss.all,
+              projectcss.__wab_text,
+              sty.text__gSlk
+            )}
+          >
+            {"User name"}
+          </div>
+        ),
+        value: args.children,
+        className: classNames(sty.slotTargetChildren),
+      })}
     </span>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root", "text"],
-  text: ["text"],
+  root: ["root"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "span";
-  text: "div";
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -181,7 +192,6 @@ export const PlasmicUserMentionDisplay = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
-    text: makeNodeComponent("text"),
 
     // Metadata about props expected for PlasmicUserMentionDisplay
     internalVariantProps: PlasmicUserMentionDisplay__VariantProps,

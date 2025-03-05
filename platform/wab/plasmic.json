@@ -8479,6 +8479,11 @@
           "id": "tzSml-ZqphbQ",
           "name": "SortSvgIcon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__SortSvg.tsx"
+        },
+        {
+          "id": "WYUJK2ligiuj",
+          "name": "Share3SvgIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Share3Svg.tsx"
         }
       ],
       "images": [],

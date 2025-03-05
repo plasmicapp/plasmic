@@ -1,4 +1,5 @@
 import { Avatar } from "@/wab/client/components/studio/Avatar";
+import { useShareDialog } from "@/wab/client/components/top-bar/useShareDialog";
 import UserListItem from "@/wab/client/components/user-mentions/UserListItem";
 import {
   DefaultUserMentionsPopoverContentProps,
@@ -20,6 +21,7 @@ function UserMentionsPopoverContent_(
   ref: HTMLElementRefOf<"div">
 ) {
   const { users, highlightIndex = 0, onSelectUser, ...plasmicProps } = props;
+  const { openShareDialog } = useShareDialog();
 
   return (
     <PlasmicUserMentionsPopoverContent
@@ -40,6 +42,11 @@ function UserMentionsPopoverContent_(
             }}
           />
         )),
+      }}
+      shareProject={{
+        onClick: () => {
+          openShareDialog();
+        },
       }}
     />
   );

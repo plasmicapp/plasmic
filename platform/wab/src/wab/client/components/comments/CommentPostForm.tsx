@@ -2,6 +2,7 @@
 // This file is owned by you, feel free to edit as you see fit.
 import { MarkdownHintsPopoverContent } from "@/wab/client/components/comments/MarkdownHintsPopoverContent";
 import { getSetOfVariantsForViewCtx } from "@/wab/client/components/comments/utils";
+import { useShareDialog } from "@/wab/client/components/top-bar/useShareDialog";
 import { Popover } from "@/wab/client/components/plexus/Popover";
 import { useUserMentions } from "@/wab/client/components/user-mentions/useUserMentions";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
@@ -52,6 +53,8 @@ const CommentPostForm = observer(function CommentPostForm(
     onValueChange: setValue,
     inputSelector: `#${inputElementId}`,
   });
+
+  const { openShareDialog } = useShareDialog();
 
   // Either an existing thread should be selected, or a newThreadTpl should be set.
   if (
@@ -167,6 +170,11 @@ const CommentPostForm = observer(function CommentPostForm(
           mentionIcon={{
             onClick: () => {
               handleMentionClick();
+            },
+          }}
+          shareProjectIcon={{
+            onClick: () => {
+              openShareDialog();
             },
           }}
         />

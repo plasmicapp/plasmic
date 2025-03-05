@@ -52,7 +52,7 @@ export type PlasmicUserMentionsPopoverContent__OverridesType = {
   userList?: Flex__<typeof UserList>;
   freeBox?: Flex__<"div">;
   separator?: Flex__<"div">;
-  button?: Flex__<typeof Button>;
+  shareProject?: Flex__<typeof Button>;
   svg?: Flex__<"svg">;
 };
 
@@ -125,9 +125,9 @@ function PlasmicUserMentionsPopoverContent__RenderFunc(props: {
         />
       </div>
       <Button
-        data-plasmic-name={"button"}
-        data-plasmic-override={overrides.button}
-        className={classNames("__wab_instance", sty.button)}
+        data-plasmic-name={"shareProject"}
+        data-plasmic-override={overrides.shareProject}
+        className={classNames("__wab_instance", sty.shareProject)}
         size={"stretch"}
         startIcon={
           <IconIcon
@@ -147,11 +147,11 @@ function PlasmicUserMentionsPopoverContent__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root", "userList", "freeBox", "separator", "button", "svg"],
+  root: ["root", "userList", "freeBox", "separator", "shareProject", "svg"],
   userList: ["userList"],
   freeBox: ["freeBox", "separator"],
   separator: ["separator"],
-  button: ["button", "svg"],
+  shareProject: ["shareProject", "svg"],
   svg: ["svg"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -162,7 +162,7 @@ type NodeDefaultElementType = {
   userList: typeof UserList;
   freeBox: "div";
   separator: "div";
-  button: typeof Button;
+  shareProject: typeof Button;
   svg: "svg";
 };
 
@@ -230,7 +230,7 @@ export const PlasmicUserMentionsPopoverContent = Object.assign(
     userList: makeNodeComponent("userList"),
     freeBox: makeNodeComponent("freeBox"),
     separator: makeNodeComponent("separator"),
-    button: makeNodeComponent("button"),
+    shareProject: makeNodeComponent("shareProject"),
     svg: makeNodeComponent("svg"),
 
     // Metadata about props expected for PlasmicUserMentionsPopoverContent

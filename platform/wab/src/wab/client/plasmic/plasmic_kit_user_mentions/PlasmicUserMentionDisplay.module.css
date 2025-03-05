@@ -1,17 +1,19 @@
 .root {
   display: inline-flex;
-  flex-direction: column;
   position: relative;
   width: auto;
   height: auto;
-  justify-content: flex-start;
-  align-items: center;
   justify-self: flex-start;
+  border-bottom: 1px dotted var(--token-ewevznWxvl9h);
 }
-.text {
+.slotTargetChildren {
+  color: var(--token-ewevznWxvl9h);
+  font-size: var(--token-A0Cg7LpJPdae);
+  line-height: var(--token-TxckqK7aktpC);
+}
+.text__gSlk {
   position: relative;
   width: auto;
   height: auto;
   max-width: 100%;
-  color: #0d74ce;
 }
