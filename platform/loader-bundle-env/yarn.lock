@@ -3013,10 +3013,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources-context/-/data-sources-context-0.1.21.tgz#fcf7ead9d9576084ff9fdcc3eadc4a5856119866"
   integrity sha512-DF86rstDK2zs/aTbPOUTWwXiVmFG2GDxXYvztIfXUNtuCvNDJKAZK2thYaULv9bGTRitPKWlwcz0zAMjYRHavQ==
 
-"@plasmicapp/data-sources@0.1.173":
-  version "0.1.173"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources/-/data-sources-0.1.173.tgz#8343119cf1ef980caf0ce0bf5f7e7e8ebd2564d3"
-  integrity sha512-I0rJ9GDHs9IcFdf6ojrUpeCAUezeq87VNF2fmfAVYjTiNGkZ4S7k7rkJGimJC/dJda8GlOBVRUwd9vOP0zue8w==
+"@plasmicapp/data-sources@0.1.174":
+  version "0.1.174"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources/-/data-sources-0.1.174.tgz#aeeb67125f218904a02890d4536a6f5d7988f11d"
+  integrity sha512-sPwtg28zIspPLkYTu6x+lFMWgvLGBxdH1KZ+1Lew7HoJyjhFCqeWEQLik6CyKxTFwfL0vDy2y9GHvMJ7Pojabg==
   dependencies:
     "@plasmicapp/data-sources-context" "0.1.21"
     "@plasmicapp/host" "1.0.211"
@@ -3080,13 +3080,13 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.9.tgz#1cfdd8d4c0e90fd4fed7d7204f70c44914871d31"
   integrity sha512-HO932uH/Y4otaDmjwzJbCLlokxNAdtU9VhDVUZUuVbzh0DhWaNyn/MINCu1oeZ4a6MIjdXFIm/U2VaxNxHYdsw==
 
-"@plasmicapp/react-web@^0.2.374":
-  version "0.2.374"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.374.tgz#6e63853bc72548b39a13942595b0f27e5cd32fb3"
-  integrity sha512-vcKRvYtp+xlA18iUxKe8WdA56NLWuVvEJD/J2MbiAboRYl+LBR5ETS4BuGnPBKt0g3RgWdqFbur/xa8QThpYeg==
+"@plasmicapp/react-web@^0.2.375":
+  version "0.2.375"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.375.tgz#b7b2c8b3be2c01b9c631316b0f435140e6496a6c"
+  integrity sha512-ISi0LvBZd866O8k8v6meKRLiKF0veDdHed7hXM5MyIXkV0VxMUbJqlgS1A00gbmJf2/QC8eUn+xFvZ/9Gwlkmw==
   dependencies:
     "@plasmicapp/auth-react" "0.0.22"
-    "@plasmicapp/data-sources" "0.1.173"
+    "@plasmicapp/data-sources" "0.1.174"
     "@plasmicapp/data-sources-context" "0.1.21"
     "@plasmicapp/host" "1.0.211"
     "@plasmicapp/loader-splits" "1.0.62"
@@ -3122,10 +3122,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/airtable/-/airtable-0.0.225.tgz#ae7e375f0081dac772ac732a092d581e5fd4a884"
   integrity sha512-UoTyJquMNxu03mTnTEPkLcS+Qr/fPxePHRRMHJlnL9ueNL0We7s3eFzqf7ZIn6VmdOHcRpvGdgmWA/1JvcjKkA==
 
-"@plasmicpkgs/antd5@^0.0.275":
-  version "0.0.275"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.275.tgz#b648345292eef42e887fbff295ebecc4b96e6ea8"
-  integrity sha512-vvF+0MZZ5cPsskSUhl9TX1GzQ0n1a/jSRvy69HS3WqKJESS25a4K9tzZolLNxXPlPIevxoegoXm+Zh36fsTY/w==
+"@plasmicpkgs/antd5@^0.0.276":
+  version "0.0.276"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.276.tgz#8663c608babd9b5c3453d60782ce8b9a3a303baa"
+  integrity sha512-l92T8XhxLt1v37w7ZHXHpA5QUA8IYQhE8FKr3eCHRg76YXgFsFgx+IWG42Djsp1Q2IlNMw9E1Hkr/MZcEO/QbA==
   dependencies:
     antd "^5.12.7"
     classnames "^2.3.2"
@@ -3291,10 +3291,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-query/-/plasmic-query-0.0.230.tgz#2aa5fd4ac6fbab5e8daf25d705ab4add617e8b93"
   integrity sha512-DXdxzRRAStENCfz55szxZixmivrADr6J6aRrf9bXVD+OQAUpaMGzteEtu+8JD+HhQjt+abaAFouG0BnCBxL0pw==
 
-"@plasmicpkgs/plasmic-rich-components@^1.0.205":
-  version "1.0.205"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-rich-components/-/plasmic-rich-components-1.0.205.tgz#96509086b3bfff8c8f7a1da412fb8d88b154392c"
-  integrity sha512-dJF8QYA5tRgkg1tXIKCIc73h3/Eg6aZlWJNeUV2k1IwA18q6GnPgZNfP2dsyCle8/snpGPCrUU/68N62B8GEgA==
+"@plasmicpkgs/plasmic-rich-components@^1.0.206":
+  version "1.0.206"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-rich-components/-/plasmic-rich-components-1.0.206.tgz#75716bfc5a0d132dd5991ec1b0b861b7a5a8912d"
+  integrity sha512-KYK0EFxTsJ1A/zd/Nk0H2UCrF2zJOWhgegDdIQvwPAiLt4rBT71RO+CWovSIMhzK+ec3EmHbUC8ixUVUOH/Xvw==
   dependencies:
     "@ctrl/tinycolor" "^3.6.1"
     "@plasmicpkgs/luxon-parser" "^3.4.4"
@@ -3385,10 +3385,10 @@
     "@emotion/react" "^11.11.4"
     react-awesome-reveal "^4.2.12"
 
-"@plasmicpkgs/react-chartjs-2@^1.0.119":
-  version "1.0.119"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-chartjs-2/-/react-chartjs-2-1.0.119.tgz#a1491a57c7b61a1807f4e2dda6e6d429ebd1b221"
-  integrity sha512-9rMH7IHp8l85ywSmHbDInRoMYgAPqKX00xAXViLGwZa6OK5rOySVUJo6LI8bViCPYvdi9eoVo7fV+92975yRAg==
+"@plasmicpkgs/react-chartjs-2@^1.0.120":
+  version "1.0.120"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-chartjs-2/-/react-chartjs-2-1.0.120.tgz#eea4687d8c66ea095b15d989699ec31d2eef077b"
+  integrity sha512-pxcexpTQePRxydfGIx5gWIHfBUxHePZ6GTHL5ZsUtaalTBpziJhPEAWxvhj/fzwWSl/2c9f+MFbZze5kAkfFlQ==
   dependencies:
     deepmerge "^4.3.1"
 
@@ -3399,10 +3399,10 @@
   dependencies:
     react-parallax-tilt "^1.5.74"
 
-"@plasmicpkgs/react-quill@^1.0.72":
-  version "1.0.72"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-quill/-/react-quill-1.0.72.tgz#db78b7a689e1759c4336dba071fbc71ee84292ad"
-  integrity sha512-nClq/Qep3Sm11yNx7aSRX3kNB8iTyOGMUEM8Xt4BH8stml2mYbI0NyC42GHAYFU9oAIj1H16CbqB0PkKGj5WTQ==
+"@plasmicpkgs/react-quill@^1.0.73":
+  version "1.0.73"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-quill/-/react-quill-1.0.73.tgz#ed9cb09a5cf0bcb9415724d700012da292c5a5af"
+  integrity sha512-YMvnjOa3uur52O8KgOxoVc8hbirq2/DCibxwfnD2SrQHMx+XArnnzyhG4yOz/VHgfRFB/lMzHQ4oTGFie33pgg==
   dependencies:
     react-quill "^2.0.0"
 
