@@ -1,5 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter%3Aital%2Cwght%400%2C400%3B0%2C500%3B0%2C700&family=IBM+Plex+Mono%3Aital%2Cwght%400%2C400%3B0%2C500%3B0%2C700&display=swap");
 
+.plasmic_tokens {
+  --token-wWR6BkgklO68: #ffffff;
+  --plasmic-token-basic-container-background: var(--token-wWR6BkgklO68);
+}
+
 .plasmic_default_styles {
   --mixin-qP3g6Hd5AdC_text-decoration-line: none;
   --mixin-qP3g6Hd5AdC_font-family: "Inter", sans-serif;

@@ -31,6 +31,16 @@
       }
     },
     {
+      "name": "Basic/Container-Background",
+      "type": "color",
+      "value": "#FFFFFF",
+      "category": "color",
+      "meta": {
+        "projectId": "BP7V3EkXPURJVwwMyWoHn",
+        "id": "wWR6BkgklO68"
+      }
+    },
+    {
       "name": "Basic/Container-Background-Dark",
       "type": "color",
       "value": "#171717",
@@ -38,6 +48,16 @@
       "meta": {
         "projectId": "kTSMroKPFv65RRTb44SCtk",
         "id": "weplVryPJBoS"
+      }
+    },
+    {
+      "name": "Basic/Container-Background-Dark",
+      "type": "color",
+      "value": "#171717",
+      "category": "color",
+      "meta": {
+        "projectId": "tXkSR39sgCDWSitZxC5xFV",
+        "id": "7ojREB1C2lcs"
       }
     },
     {

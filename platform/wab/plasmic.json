@@ -1925,6 +1925,47 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicDialog.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "sbyrU_8SkoWY",
+          "name": "PlexusButton",
+          "type": "managed",
+          "projectId": "tXkSR39sgCDWSitZxC5xFV",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicPlexusButton.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/plexus/PlexusButton.tsx",
+            "exportName": "PlexusButton"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicPlexusButton.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "FRA2fXjcDHo2",
+          "name": "OverlayArrow",
+          "type": "managed",
+          "projectId": "tXkSR39sgCDWSitZxC5xFV",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicOverlayArrow.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/plexus/OverlayArrow.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicOverlayArrow.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "FYmdApEkhOiH",
+          "name": "Popover",
+          "type": "managed",
+          "projectId": "tXkSR39sgCDWSitZxC5xFV",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicPopover.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/plexus/Popover.tsx",
+            "exportName": "Popover"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicPopover.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
@@ -3232,6 +3273,11 @@
           "id": "C21gcG8B3Wlx",
           "name": "ChevronDownIcon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/icons/PlasmicIcon__ChevronDown.tsx"
+        },
+        {
+          "id": "292IBDA68F8r",
+          "name": "TriangleFilledIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/icons/PlasmicIcon__TriangleFilled.tsx"
         }
       ],
       "images": [
@@ -3289,7 +3335,8 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "customFunctions": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "jsBundleThemes": []
     },
     {
       "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
@@ -10250,6 +10297,34 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicReactionButton.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "pTr2lSrGWq8O",
+          "name": "MarkdownHintsPopoverContent",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicMarkdownHintsPopoverContent.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/MarkdownHintsPopoverContent.tsx",
+            "exportName": "MarkdownHintsPopoverContent"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicMarkdownHintsPopoverContent.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "T7mVQBFEWA-V",
+          "name": "MarkdownHintRow",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicMarkdownHintRow.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/MarkdownHintRow.tsx",
+            "exportName": "MarkdownHintRow"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicMarkdownHintRow.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
@@ -10267,6 +10342,11 @@
           "id": "4ZDQfZwOzIuI",
           "name": "Icon3Icon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_comments/icons/PlasmicIcon__Icon3.tsx"
+        },
+        {
+          "id": "JcPEriMfIfa3",
+          "name": "ChevronDownSvgIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_comments/icons/PlasmicIcon__ChevronDownSvg.tsx"
         }
       ],
       "images": [
@@ -10293,8 +10373,7 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "frhoorZk3bxNXU73uUyvHm",
