@@ -28,7 +28,6 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/data-sources": "0.1.174",
     "@plasmicapp/host": "1.0.211",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
@@ -38,7 +37,6 @@
     "tslib": "^2.2.0"
   },
   "peerDependencies": {
-    "@plasmicapp/data-sources": ">=0.1.52",
     "@plasmicapp/host": ">=1.0.0",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
