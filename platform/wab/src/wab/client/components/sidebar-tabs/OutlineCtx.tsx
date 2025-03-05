@@ -1,4 +1,3 @@
-import { CommentsData } from "@/wab/client/components/comments/CommentsProvider";
 import { isElementWithComments } from "@/wab/client/components/comments/utils";
 import { Matcher } from "@/wab/client/components/view-common";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -290,7 +289,6 @@ export class OutlineCtx {
       return;
     }
     const matcher = this.matcher;
-    const commentsData = this.studioCtx.commentsData;
 
     for (const viewCtx of this.studioCtx.viewCtxs) {
       // This lets us walk up the Tpl ancestor path, but making jumps across
@@ -354,9 +352,9 @@ export class OutlineCtx {
                 ? viewCtx.variantTplMgr().effectiveVariantSetting(tpl)
                 : undefined;
               if (
-                Array.from(
-                  getSearchableTexts(tpl, viewCtx, commentsData, vs)
-                ).some((t) => matcher.matches(t))
+                Array.from(getSearchableTexts(tpl, viewCtx, vs)).some((t) =>
+                  matcher.matches(t)
+                )
               ) {
                 yield tpl;
               }
@@ -424,9 +422,9 @@ export class OutlineCtx {
 function* getSearchableTexts(
   tpl: TplNode,
   viewCtx: ViewCtx,
-  commentsData?: CommentsData,
   vs?: EffectiveVariantSetting
 ) {
+  const commentsCtx = viewCtx.studioCtx.commentsCtx;
   if (Tpls.isTplRepeated(tpl)) {
     yield REPEATED_CAP;
   }
@@ -435,7 +433,7 @@ function* getSearchableTexts(
     yield INTERACTIVE_CAP;
   }
 
-  if (commentsData && isElementWithComments(commentsData, tpl)) {
+  if (commentsCtx && isElementWithComments(commentsCtx, tpl)) {
     yield COMMENTS_LOWER;
   }
 

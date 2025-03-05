@@ -48,6 +48,15 @@ import {
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
 import {
+  XDraggable,
+  XDraggableEvent,
+} from "@/wab/commons/components/XDraggable";
+import { sidesAndCorners, styleCase } from "@/wab/commons/ViewUtil";
+import {
+  isHeightAutoDerived,
+  isPositionManagedFrame,
+} from "@/wab/shared/Arenas";
+import {
   ensure,
   ensureArray,
   ensureInstance,
@@ -55,33 +64,10 @@ import {
   spawnWrapper,
 } from "@/wab/shared/common";
 import {
-  XDraggable,
-  XDraggableEvent,
-} from "@/wab/commons/components/XDraggable";
-import { sidesAndCorners, styleCase } from "@/wab/commons/ViewUtil";
-import { DEVFLAGS } from "@/wab/shared/devflags";
-import {
-  Corner,
-  isAxisSide,
-  Pt,
-  Side,
-  sideOrCornerToSides,
-  sideToOrient,
-  sideToSize,
-} from "@/wab/shared/geom";
-import { isSelectableLocked, Selectable, SQ } from "@/wab/shared/core/selection";
-import {
-  isHeightAutoDerived,
-  isPositionManagedFrame,
-} from "@/wab/shared/Arenas";
-import { createNumericSize, showSizeCss, Unit } from "@/wab/shared/css-size";
-import {
-  ArenaFrame,
-  isKnownArena,
-  isKnownArenaFrame,
-  TplNode,
-} from "@/wab/shared/model/classes";
-import { isTplAutoSizable, resetTplSize } from "@/wab/shared/sizingutils";
+  isSelectableLocked,
+  Selectable,
+  SQ,
+} from "@/wab/shared/core/selection";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   isTplColumns,
@@ -96,6 +82,24 @@ import {
   ValSlot,
   ValTag,
 } from "@/wab/shared/core/val-nodes";
+import { createNumericSize, showSizeCss, Unit } from "@/wab/shared/css-size";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import {
+  Corner,
+  isAxisSide,
+  Pt,
+  Side,
+  sideOrCornerToSides,
+  sideToOrient,
+  sideToSize,
+} from "@/wab/shared/geom";
+import {
+  ArenaFrame,
+  isKnownArena,
+  isKnownArenaFrame,
+  TplNode,
+} from "@/wab/shared/model/classes";
+import { isTplAutoSizable, resetTplSize } from "@/wab/shared/sizingutils";
 import { notification } from "antd";
 import { ArgsProps } from "antd/lib/notification";
 import cn from "classnames";
@@ -157,6 +161,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
   >(undefined);
   const plasmicCtx = usePlasmicCtx();
   const studioCtx = plasmicCtx.studioCtx;
+  const commentCtx = studioCtx.commentsCtx;
   const viewCtx =
     plasmicCtx.viewCtx && !plasmicCtx.viewCtx.isDisposed
       ? plasmicCtx.viewCtx
@@ -471,7 +476,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
           <div
             className="hoverbox"
             onContextMenu={(e) => {
-              if (viewCtx) {
+              if (viewCtx && commentCtx) {
                 viewCtx.tryBlurEditingText();
                 const menu = getContextMenuForFocusedTpl(viewCtx);
                 maybeShowContextMenu(e.nativeEvent, menu);

@@ -26,7 +26,6 @@ import {
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import CommentPost from "../../components/comments/CommentPost"; // plasmic-import: l_AKXl2AAu/component
-import CommentPostForm from "../../components/comments/CommentPostForm"; // plasmic-import: qi3Y1X2qZ7/component
 import ListSectionSeparator from "../../components/ListSectionSeparator"; // plasmic-import: uG5_fPM0sK/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
@@ -62,7 +61,6 @@ export type PlasmicCommentsTab__OverridesType = {
   currentlySelectedTitle?: Flex__<"div">;
   currentlySelectedPrefix?: Flex__<"span">;
   currentlySelectedSubject?: Flex__<"span">;
-  newThreadForm?: Flex__<typeof CommentPostForm>;
   currentThreadsList?: Flex__<"div">;
   listSectionSeparator?: Flex__<typeof ListSectionSeparator>;
   restThreadsSection?: Flex__<"div">;
@@ -211,12 +209,6 @@ function PlasmicCommentsTab__RenderFunc(props: {
             <React.Fragment>{""}</React.Fragment>
           </React.Fragment>
         </div>
-        <CommentPostForm
-          data-plasmic-name={"newThreadForm"}
-          data-plasmic-override={overrides.newThreadForm}
-          className={classNames("__wab_instance", sty.newThreadForm)}
-        />
-
         <div
           data-plasmic-name={"currentThreadsList"}
           data-plasmic-override={overrides.currentThreadsList}
@@ -313,7 +305,6 @@ const PlasmicDescendants = {
     "currentlySelectedTitle",
     "currentlySelectedPrefix",
     "currentlySelectedSubject",
-    "newThreadForm",
     "currentThreadsList",
     "listSectionSeparator",
     "restThreadsSection",
@@ -327,7 +318,6 @@ const PlasmicDescendants = {
     "currentlySelectedTitle",
     "currentlySelectedPrefix",
     "currentlySelectedSubject",
-    "newThreadForm",
     "currentThreadsList",
   ],
   freeBox: ["freeBox", "notificationsButton"],
@@ -339,7 +329,6 @@ const PlasmicDescendants = {
   ],
   currentlySelectedPrefix: ["currentlySelectedPrefix"],
   currentlySelectedSubject: ["currentlySelectedSubject"],
-  newThreadForm: ["newThreadForm"],
   currentThreadsList: ["currentThreadsList"],
   listSectionSeparator: ["listSectionSeparator"],
   restThreadsSection: ["restThreadsSection", "text", "restThreadsList"],
@@ -357,7 +346,6 @@ type NodeDefaultElementType = {
   currentlySelectedTitle: "div";
   currentlySelectedPrefix: "span";
   currentlySelectedSubject: "span";
-  newThreadForm: typeof CommentPostForm;
   currentThreadsList: "div";
   listSectionSeparator: typeof ListSectionSeparator;
   restThreadsSection: "div";
@@ -377,15 +365,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicCommentsTab__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicCommentsTab__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    // Specify args directly as props
-    Omit<PlasmicCommentsTab__ArgsType, ReservedPropsType> &
-    // Specify overrides for each element directly as props
-    Omit<
+    /* Specify args directly as props*/ Omit<
+      PlasmicCommentsTab__ArgsType,
+      ReservedPropsType
+    > &
+    /* Specify overrides for each element directly as props*/ Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    // Specify props for the root element
-    Omit<
+    /* Specify props for the root element*/ Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -431,7 +419,6 @@ export const PlasmicCommentsTab = Object.assign(
     currentlySelectedTitle: makeNodeComponent("currentlySelectedTitle"),
     currentlySelectedPrefix: makeNodeComponent("currentlySelectedPrefix"),
     currentlySelectedSubject: makeNodeComponent("currentlySelectedSubject"),
-    newThreadForm: makeNodeComponent("newThreadForm"),
     currentThreadsList: makeNodeComponent("currentThreadsList"),
     listSectionSeparator: makeNodeComponent("listSectionSeparator"),
     restThreadsSection: makeNodeComponent("restThreadsSection"),

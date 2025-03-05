@@ -2,7 +2,6 @@ import {
   getPreferredInsertLocs,
   InsertRelLoc,
 } from "@/wab/client/components/canvas/view-ops";
-import { useCommentsCtx } from "@/wab/client/components/comments/CommentsProvider";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import { PlumyIcon } from "@/wab/client/components/plume/plume-markers";
 import {
@@ -43,7 +42,11 @@ import LockIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon
 import UnlockIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Unlock";
 import VerticalDashIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__VerticalDash";
 import RepeatingsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__RepeatingSvg";
-import { DragInsertState, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import {
+  DragInsertState,
+  StudioCtx,
+  useStudioCtx,
+} from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import {
@@ -184,7 +187,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
     isDropParent,
   } = props;
 
-  const commentsCtx = useCommentsCtx();
+  const commentsCtx = useStudioCtx().commentsCtx;
   const component = $$$(item).owningComponent();
   const isInFrame = !!viewCtx
     .componentStackFrames()
@@ -686,7 +689,9 @@ const TplTreeNode = observer(function TplTreeNode(props: {
   const icon = computed(
     () => {
       if (isKnownTplNode(item)) {
-        const commentsStats = commentsCtx.commentStatsBySubject.get(item.uuid);
+        const commentsStats = commentsCtx
+          .computedData()
+          .commentStatsBySubject.get(item.uuid);
 
         if (commentsStats && viewCtx.studioCtx.showCommentsPanel) {
           return (

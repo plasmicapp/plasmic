@@ -26,6 +26,7 @@ import { CanvasArenaShell } from "@/wab/client/components/canvas/canvas-arena";
 import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import { closestTaggedNonTextDomElt } from "@/wab/client/components/canvas/studio-canvas-util";
 import { getMergedTextArg } from "@/wab/client/components/canvas/view-ops";
+import { CommentsDialogs } from "@/wab/client/components/comments/CommentsDialogs";
 import CommentsTab from "@/wab/client/components/comments/CommentsTab";
 import { DevContainer } from "@/wab/client/components/dev";
 import InsertPanelWrapper from "@/wab/client/components/insert-panel/InsertPanelWrapper";
@@ -1942,6 +1943,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                   hexColor={watchedPlayer.color}
                 />
               )}
+              <CommentsDialogs studioCtx={studioCtx} />
               {studioCtx.showDevControls && (
                 <div className="canvas-editor__top-pane">
                   <div className="canvas-editor__top-pane__floating-elements-container">

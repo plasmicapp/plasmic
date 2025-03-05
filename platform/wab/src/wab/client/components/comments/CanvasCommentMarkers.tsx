@@ -1,9 +1,6 @@
 import { CanvasTransformedBox } from "@/wab/client/components/canvas/CanvasTransformedBox";
 import { useRerenderOnUserBodyChange } from "@/wab/client/components/canvas/UserBodyObserver";
 import CommentPost from "@/wab/client/components/comments/CommentPost";
-import CommentPostForm from "@/wab/client/components/comments/CommentPostForm";
-import { useCommentsCtx } from "@/wab/client/components/comments/CommentsProvider";
-import ThreadComments from "@/wab/client/components/comments/ThreadComments";
 import {
   TplCommentThread,
   isCommentForFrame,
@@ -15,7 +12,6 @@ import {
 } from "@/wab/client/components/studio/GlobalCssVariables";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import { AnyArena } from "@/wab/shared/Arenas";
 import { ensure, ensureString, xGroupBy } from "@/wab/shared/common";
 import { isTplVariantable } from "@/wab/shared/core/tpls";
@@ -47,53 +43,24 @@ function ObjInstLabel(props: { subject: ObjInst }) {
   );
 }
 
-function ThreadWithHeader(props: { commentThread: TplCommentThread }) {
-  const { commentThread } = props;
-
-  const { bundler } = useCommentsCtx();
-
-  const subject = bundler.objByAddr(commentThread.location.subject);
-
-  return (
-    <div>
-      <h4 style={{ padding: "8px 16px" }}>
-        <ObjInstLabel subject={subject} />
-      </h4>
-      <ThreadComments commentThread={commentThread} />
-    </div>
-  );
-}
-
-function CanvasCommentMarker(props: {
+const CanvasCommentMarker = observer(function CanvasCommentMarker(props: {
   commentThread: TplCommentThread;
-  arenaFrame: ArenaFrame;
   viewCtx: ViewCtx;
   offsetLeft: number;
 }) {
-  const { commentThread, arenaFrame, viewCtx, offsetLeft } = props;
-
-  const {
-    bundler,
-    usersMap,
-    shownThreadId,
-    setShownThreadId,
-    shownArenaFrame,
-    setShownArenaFrame,
-  } = useCommentsCtx();
+  const { commentThread, viewCtx, offsetLeft } = props;
+  const commentsCtx = viewCtx.studioCtx.commentsCtx;
 
   const threadComments = commentThread.comments;
   const [comment] = threadComments;
-  const subject = bundler.objByAddr(commentThread.location.subject) as TplNode;
+  const subject = commentsCtx
+    .bundler()
+    .objByAddr(commentThread.location.subject) as TplNode;
   const author = ensure(
-    usersMap.get(ensureString(comment.createdById)),
+    commentsCtx.computedData().usersMap.get(ensureString(comment.createdById)),
     "Comment author should exist"
   );
-  const isSelected =
-    shownThreadId === commentThread.id && arenaFrame === shownArenaFrame;
-  const onClickAway = () => {
-    setShownThreadId(undefined);
-    setShownArenaFrame(undefined);
-  };
+  const isSelected = commentsCtx.openThreadId() === commentThread.id;
   return (
     <CanvasCommentOverlay
       offsetLeft={offsetLeft}
@@ -102,8 +69,7 @@ function CanvasCommentMarker(props: {
       className={"CommentMarker"}
       onClick={(e) => {
         if (!isSelected) {
-          setShownThreadId(commentThread.id);
-          setShownArenaFrame(arenaFrame);
+          commentsCtx.openCommentThreadDialog(viewCtx, commentThread.id);
         }
       }}
       isSelected={isSelected}
@@ -125,35 +91,9 @@ function CanvasCommentMarker(props: {
           }
         />
       </div>
-      {isSelected && (
-        <OnClickAway onDone={onClickAway}>
-          <div className={"CommentMarkerSelected"}>
-            <ThreadWithHeader commentThread={commentThread} />
-          </div>
-        </OnClickAway>
-      )}
     </CanvasCommentOverlay>
   );
-}
-
-function CanvasCommentPost(props: { viewCtx: ViewCtx; tpl: TplNode }) {
-  const { viewCtx, tpl } = props;
-
-  return (
-    <CanvasCommentOverlay
-      offsetLeft={0}
-      tpl={tpl}
-      viewCtx={viewCtx}
-      className={"CommentPostMarker"}
-    >
-      <div className={"CommentPostFormMarker"}>
-        <OnClickAway onDone={() => viewCtx.setSelectedNewThreadTpl(null)}>
-          <CommentPostForm />
-        </OnClickAway>
-      </div>
-    </CanvasCommentOverlay>
-  );
-}
+});
 
 export const CanvasCommentMarkers = observer(function CanvasCommentMarkers({
   arenaFrame,
@@ -163,7 +103,7 @@ export const CanvasCommentMarkers = observer(function CanvasCommentMarkers({
 }) {
   const studioCtx = useStudioCtx();
 
-  const { allThreads } = useCommentsCtx();
+  const commentsCtx = studioCtx.commentsCtx;
 
   const viewCtx = studioCtx.tryGetViewCtxForFrame(arenaFrame);
 
@@ -174,34 +114,28 @@ export const CanvasCommentMarkers = observer(function CanvasCommentMarkers({
       !viewCtx
         ? new Map()
         : xGroupBy(
-            allThreads.filter(
-              (commentThread) =>
-                isCommentForFrame(studioCtx, viewCtx, commentThread) &&
-                !commentThread.resolved // Only unresolved comments
-            ),
+            commentsCtx
+              .computedData()
+              .unresolvedThreads.filter((commentThread) =>
+                isCommentForFrame(studioCtx, viewCtx, commentThread)
+              ),
             (commentThread) => commentThread.subject.uuid
           ),
-    [allThreads, studioCtx, viewCtx]
+    [commentsCtx.computedData().unresolvedThreads, studioCtx, viewCtx]
   );
 
   if (!viewCtx) {
     return null;
   }
 
-  const selectedNewThreadTpl = viewCtx.getSelectedNewThreadTpl();
-
   return (
     <>
-      {selectedNewThreadTpl && (
-        <CanvasCommentPost viewCtx={viewCtx} tpl={selectedNewThreadTpl} />
-      )}
       {[...threadsGroupedBySubject.values()].map((subjectCommentThreads) =>
         subjectCommentThreads.map((commentThread, index) => (
           <CanvasCommentMarker
             offsetLeft={index * 20}
             key={commentThread.id}
             commentThread={commentThread}
-            arenaFrame={arenaFrame}
             viewCtx={viewCtx}
           />
         ))

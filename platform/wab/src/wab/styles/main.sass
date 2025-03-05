@@ -4567,11 +4567,17 @@ $resizer_size: 8px
 .CommentMarkerOverlay
   display: none
 
-.CommentMarker, .CommentPostMarker
+.CommentMarker
   pointer-events: initial
   position: absolute
   left: 100%
   bottom: 100%
+
+.CommentModal
+  position: absolute,
+  top: 10px,
+  right: 10px,
+  z-index: 999,
 
 @mixin CommentMarkerView
   @include popup-box-hoverable
@@ -4583,9 +4589,6 @@ $resizer_size: 8px
   @include CommentMarkerView
   border-radius: 99px
   border-bottom-left-radius: 0
-.CommentPostFormMarker
-  @include CommentMarkerView
-  width: 300px
 .CommentMarkerHover
   @include CommentMarkerView
   display: none
@@ -4593,19 +4596,10 @@ $resizer_size: 8px
   top: 0
   left: 0
   width: 300px
-.CommentMarkerSelected
-  @include CommentMarkerView
-  display: none
-  position: absolute
-  top: 0
-  left: 0
-  border-radius: 8px !important
-  cursor: unset
-  width: 300px
 
 .CommentMarkerContainer:hover:not(.CommentMarkerContainerSelected) .CommentMarkerHover
   display: unset
-.CommentMarkerContainerSelected .CommentMarkerSelected
+.CommentMarkerContainerSelected
   display: unset
 .CommentMarker:hover, .CommentMarkerContainerSelected
   .CommentMarkerInitial

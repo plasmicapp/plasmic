@@ -1,4 +1,3 @@
-import { useCommentsCtx } from "@/wab/client/components/comments/CommentsProvider";
 import { TplCommentThread } from "@/wab/client/components/comments/utils";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import { ClickStopper } from "@/wab/client/components/widgets";
@@ -57,10 +56,11 @@ function ReactionsByEmoji(props: {
 }) {
   const { commentId, reactionsByEmoji } = props;
 
-  const appCtx = useAppCtx();
+  const studioCtx = useStudioCtx();
+  const appCtx = studioCtx.appCtx;
   const api = appCtx.api;
 
-  const { projectId, branchId, usersMap } = useCommentsCtx();
+  const commentsCtx = studioCtx.commentsCtx;
 
   return (
     <>
@@ -72,7 +72,14 @@ function ReactionsByEmoji(props: {
           <Tooltip
             title={reactions
               .map((r) =>
-                fullName(ensure(usersMap.get(ensure(r.createdById, "")), ""))
+                fullName(
+                  ensure(
+                    commentsCtx
+                      .computedData()
+                      .usersMap.get(ensure(r.createdById, "")),
+                    ""
+                  )
+                )
               )
               .join(", ")}
           >
@@ -82,6 +89,8 @@ function ReactionsByEmoji(props: {
               count={<>{reactions.length}</>}
               onClick={async (e) => {
                 e.stopPropagation();
+                const projectId = commentsCtx.projectId();
+                const branchId = commentsCtx.branchId();
                 if (currentUsersReaction) {
                   await api.removeReactionFromComment(
                     projectId,
@@ -132,7 +141,9 @@ function CommentMenuOptions(props: {
     studioCtx.siteInfo.perms
   );
 
-  const { projectId, branchId } = useCommentsCtx();
+  const commentsCtx = studioCtx.commentsCtx;
+  const branchId = commentsCtx.branchId();
+  const projectId = commentsCtx.projectId();
 
   return (
     <Menu>
@@ -190,19 +201,20 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
 
   const [isEditing, setIsEditing] = React.useState(false);
 
-  const appCtx = useAppCtx();
+  const studioCtx = useStudioCtx();
+  const appCtx = studioCtx.appCtx;
   const api = appCtx.api;
-  const { projectId, branchId, usersMap, reactionsByCommentId } =
-    useCommentsCtx();
+  const commentsCtx = studioCtx.commentsCtx;
 
   const author = ensure(
-    usersMap.get(ensureString(comment.createdById)),
+    commentsCtx.computedData().usersMap.get(ensureString(comment.createdById)),
     `Author of comment ${comment.createdById} should be present in usersMap`
   );
 
   const reactionsByEmoji =
-    maybe(reactionsByCommentId.get(comment.id), (xs) =>
-      groupBy(xs, (x) => x.data.emojiName)
+    maybe(
+      commentsCtx.computedData().reactionsByCommentId.get(comment.id),
+      (xs) => groupBy(xs, (x) => x.data.emojiName)
     ) ?? {};
 
   const [showPicker, setShowPicker] = React.useState(false);
@@ -250,8 +262,8 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
                       reactions={REACTIONS}
                       onEmojiClick={async (emoji) => {
                         await api.addReactionToComment(
-                          projectId,
-                          branchId,
+                          commentsCtx.projectId(),
+                          commentsCtx.branchId(),
                           comment.id,
                           {
                             emojiName: emoji.unified,

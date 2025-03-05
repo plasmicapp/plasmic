@@ -1911,6 +1911,20 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicTextField.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "en2IIw2C3_aI",
+          "name": "Dialog",
+          "type": "managed",
+          "projectId": "tXkSR39sgCDWSitZxC5xFV",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicDialog.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/widgets/Dialog.tsx",
+            "exportName": "Dialog"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicDialog.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
@@ -3213,6 +3227,11 @@
           "id": "y6Ei15gXp_-T",
           "name": "Circle2Icon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/icons/PlasmicIcon__Circle2.tsx"
+        },
+        {
+          "id": "C21gcG8B3Wlx",
+          "name": "ChevronDownIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/icons/PlasmicIcon__ChevronDown.tsx"
         }
       ],
       "images": [
@@ -3270,8 +3289,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "customFunctions": [],
-      "splitsProviderFilePath": "",
-      "jsBundleThemes": []
+      "splitsProviderFilePath": ""
     },
     {
       "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
@@ -11302,7 +11320,8 @@
           "componentImportPath": "@plasmicapp/react-web/lib/data-sources"
         }
       ],
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     }
   ],
   "globalVariants": {

@@ -30,7 +30,6 @@ import {
   getFocusedInsertAnchor,
   getPreferredInsertLocs,
 } from "@/wab/client/components/canvas/view-ops";
-import { CommentsData } from "@/wab/client/components/comments/CommentsProvider";
 import {
   clearDarkMask,
   createDarkMask,
@@ -84,6 +83,7 @@ import { PLATFORM } from "@/wab/client/platform";
 import { requestIdleCallbackAsync } from "@/wab/client/requestidlecallback";
 import { plasmicExtensionAvailable } from "@/wab/client/screenshot-util";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
+import { CommentsCtx } from "@/wab/client/studio-ctx/comments-ctx";
 import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
 import { MultiplayerCtx } from "@/wab/client/studio-ctx/multiplayer-ctx";
 import {
@@ -586,6 +586,7 @@ export class StudioCtx extends WithDbCtx {
   private static ALT = 18;
   private disposals: (() => void)[] = [];
   _dbCtx: DbCtx;
+  readonly commentsCtx: CommentsCtx;
   readonly clipboard = new LocalClipboard();
   fontManager: FontManager;
   previewCtx: PreviewCtx | undefined;
@@ -627,6 +628,7 @@ export class StudioCtx extends WithDbCtx {
     });
 
     ({ dbCtx: this._dbCtx } = args);
+    this.commentsCtx = new CommentsCtx(this);
 
     this.rightTabKey = this.appCtx.appConfig.rightTabs
       ? RightTabKey.settings
@@ -1610,6 +1612,7 @@ export class StudioCtx extends WithDbCtx {
     this.dbCtx().dispose();
     this.viewCtxs.forEach((vc) => vc.dispose());
     this.viewCtxs.clear();
+    this.commentsCtx.dispose();
     window.clearInterval(this.asyncSaverTimer);
     spawn(this.stopListeningForSocketEvents());
   }
@@ -2403,14 +2406,6 @@ export class StudioCtx extends WithDbCtx {
 
   toggleCommentsPanel() {
     this._showCommentsPanel.set(!this.showCommentsPanel);
-  }
-
-  private _xCommentsData = observable.box<CommentsData | undefined>(undefined);
-  get commentsData() {
-    return this._xCommentsData.get();
-  }
-  set commentsData(commentsData: CommentsData | undefined) {
-    this._xCommentsData.set(commentsData);
   }
 
   private _xLeftPaneWidth = observable.box(LEFT_PANE_INIT_WIDTH);

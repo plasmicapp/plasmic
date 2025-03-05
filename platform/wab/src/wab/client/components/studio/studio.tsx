@@ -1,7 +1,6 @@
 import { analytics } from "@/wab/client/analytics";
 import { maybeConvertToHostLessProject } from "@/wab/client/code-components/code-components";
 import { BottomModalsProvider } from "@/wab/client/components/BottomModal";
-import { CommentsProvider } from "@/wab/client/components/comments/CommentsProvider";
 import { showPlasmicImgModal } from "@/wab/client/components/modals/PlasmicImgModal";
 import { ShortcutsModal } from "@/wab/client/components/studio/Shortcuts";
 import {
@@ -87,17 +86,15 @@ export class Studio extends React.Component<StudioProps, {}> {
   render() {
     return (
       <ShortcutsModal>
-        <CommentsProvider>
-          <BottomModalsProvider>
-            <div className={"studio"}>
-              <div className={"studio__main-area"}>{this.props.children}</div>
-            </div>
-            <React.Suspense fallback={null}>
-              <TopProjectNavTour />
-              <StudioTutorialTours />
-            </React.Suspense>
-          </BottomModalsProvider>
-        </CommentsProvider>
+        <BottomModalsProvider>
+          <div className={"studio"}>
+            <div className={"studio__main-area"}>{this.props.children}</div>
+          </div>
+          <React.Suspense fallback={null}>
+            <TopProjectNavTour />
+            <StudioTutorialTours />
+          </React.Suspense>
+        </BottomModalsProvider>
       </ShortcutsModal>
     );
   }

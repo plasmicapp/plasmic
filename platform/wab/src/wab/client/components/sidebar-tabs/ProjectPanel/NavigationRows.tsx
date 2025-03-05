@@ -29,10 +29,6 @@ import * as React from "react";
 
 import { COMMANDS } from "@/wab/client/commands/command";
 import CommentIndicatorIcon from "@/wab/client/components/comments/CommentIndicatorIcon";
-import {
-  CommentsContextData,
-  useCommentsCtx,
-} from "@/wab/client/components/comments/CommentsProvider";
 import { menuSection } from "@/wab/client/components/menu-builder";
 import promptDeleteComponent from "@/wab/client/components/modals/componentDeletionModal";
 import { NavigationDropdownContext } from "@/wab/client/components/sidebar-tabs/ProjectPanel/NavigationDropdown";
@@ -116,7 +112,6 @@ export function NavigationArenaRow({
 }: NavigationArenaRowProps) {
   const [renaming, setRenaming] = React.useState(false);
   const studioCtx = useStudioCtx();
-  const commentsCtx = useCommentsCtx();
   const { onClose } = ensure(
     React.useContext(NavigationDropdownContext),
     "Expected NavigationDropdownContext"
@@ -159,7 +154,7 @@ export function NavigationArenaRow({
         onClose();
         await COMMANDS.navigation.switchArena.execute(studioCtx, arena);
       }}
-      icon={<Icon icon={getArenaIcon(arena, studioCtx, commentsCtx)} />}
+      icon={<Icon icon={getArenaIcon(arena, studioCtx)} />}
       isSelected={studioCtx.currentArena === arena}
       menuSize="small"
       menu={menu}
@@ -209,15 +204,11 @@ export function NavigationAnyRow({ element, matcher }: NavigationAnyRowProps) {
   );
 }
 
-function getArenaIcon(
-  arena: AnyArena,
-  studioCtx: StudioCtx,
-  commentsCtx: CommentsContextData
-) {
+function getArenaIcon(arena: AnyArena, studioCtx: StudioCtx) {
   if (isPageArena(arena) || isComponentArena(arena)) {
-    const commentsStats = commentsCtx.commentStatsByComponent.get(
-      arena.component.tplTree.uuid
-    );
+    const commentsStats = studioCtx.commentsCtx
+      .computedData()
+      .commentStatsByComponent.get(arena.component.tplTree.uuid);
     if (commentsStats && studioCtx.showCommentsPanel) {
       return () => (
         <CommentIndicatorIcon

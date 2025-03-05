@@ -5,7 +5,6 @@ import {
 import { mkProjectLocation, openNewTab } from "@/wab/client/cli-routes";
 import RowItem from "@/wab/client/components/RowItem";
 import CommentIndicatorIcon from "@/wab/client/components/comments/CommentIndicatorIcon";
-import { useCommentsCtx } from "@/wab/client/components/comments/CommentsProvider";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { DefaultComponentKindModal } from "@/wab/client/components/modals/DefaultComponentKindModal";
 import { showModalToRefreshCodeComponentProps } from "@/wab/client/components/modals/codeComponentModals";
@@ -58,7 +57,7 @@ export const ComponentRow = observer(function ComponentRow(props: {
 }) {
   const { component, matcher, importedFrom, indentMultiplier } = props;
   const studioCtx = useStudioCtx();
-  const commentsCtx = useCommentsCtx();
+  const commentsCtx = studioCtx.commentsCtx;
   const isPlainComponent =
     isReusableComponent(component) &&
     !isCodeComponent(component) &&
@@ -93,9 +92,9 @@ export const ComponentRow = observer(function ComponentRow(props: {
     component
   );
   const icon = (() => {
-    const commentsStats = commentsCtx.commentStatsByComponent.get(
-      component.tplTree.uuid
-    );
+    const commentsStats = commentsCtx
+      .computedData()
+      .commentStatsByComponent.get(component.tplTree.uuid);
     if (commentsStats && studioCtx.showCommentsPanel) {
       return (
         <CommentIndicatorIcon

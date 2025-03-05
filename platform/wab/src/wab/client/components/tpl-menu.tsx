@@ -120,7 +120,9 @@ export function makeTreeNodeMenu(
   if (node instanceof SlotSelection) {
     return makeSlotSelectionMenu(viewCtx, node, onMenuClick);
   } else {
-    return makeTplMenu(viewCtx, node, onMenuClick, { fromTplTreePanel: true });
+    return makeTplMenu(viewCtx, node, onMenuClick, {
+      fromTplTreePanel: true,
+    });
   }
 }
 
@@ -237,6 +239,7 @@ export function makeTplMenu(
   );
 
   const builder = new MenuBuilder();
+  const commentsCtx = viewCtx.studioCtx.commentsCtx;
   const component = viewCtx.currentComponent();
   const hasSiblings =
     tpl.parent && $$$(tpl.parent).children().toArray().length > 1;
@@ -942,7 +945,7 @@ export function makeTplMenu(
       push(
         <Menu.Item
           key="add-comment"
-          onClick={() => viewCtx.setSelectedNewThreadTpl(tpl)}
+          onClick={() => commentsCtx.openNewCommentDialog(viewCtx, tpl)}
         >
           <MenuItemContent>Add comment</MenuItemContent>
         </Menu.Item>

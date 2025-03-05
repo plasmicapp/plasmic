@@ -2,12 +2,12 @@
   "projects": [
     {
       "projectId": "tXkSR39sgCDWSitZxC5xFV",
-      "version": "87.1.2",
+      "version": "88.0.1",
       "dependencies": {
         "sDniSX4oPUZFyk2sXXb3nh": "6.1.1",
         "oT38tGyqov9SPWHpf3Y2Rf": "5.7.0",
         "95xp9cYcv7HrNWpFWWhbcv": "2.3.0",
-        "gmeH6XgPaBtkt51HunAo4g": "18.12.0"
+        "gmeH6XgPaBtkt51HunAo4g": "18.14.0"
       },
       "lang": "ts",
       "fileLocks": [
@@ -1657,9 +1657,24 @@
           "checksum": "075affa62dbd4231f6f9d5cfe217158e"
         },
         {
+          "type": "renderModule",
+          "assetId": "en2IIw2C3_aI",
+          "checksum": "0b146086bb3c08bedad0f56d4a43a399"
+        },
+        {
+          "type": "cssRules",
+          "assetId": "en2IIw2C3_aI",
+          "checksum": "0b146086bb3c08bedad0f56d4a43a399"
+        },
+        {
+          "type": "icon",
+          "assetId": "C21gcG8B3Wlx",
+          "checksum": "16fc2992a27af8b00a583f6916e43d65"
+        },
+        {
           "assetId": "tXkSR39sgCDWSitZxC5xFV",
           "type": "projectCss",
-          "checksum": "03061d7cea0db0d8c8f52a9916a1ca8a"
+          "checksum": "c799a327da0294e09e8ee98193ca954c"
         }
       ],
       "codegenVersion": "0.0.1"
@@ -8594,7 +8609,7 @@
         "tXkSR39sgCDWSitZxC5xFV": "87.1.1",
         "oT38tGyqov9SPWHpf3Y2Rf": "5.7.0",
         "95xp9cYcv7HrNWpFWWhbcv": "2.3.0",
-        "gmeH6XgPaBtkt51HunAo4g": "18.12.0"
+        "gmeH6XgPaBtkt51HunAo4g": "18.14.0"
       },
       "lang": "ts",
       "fileLocks": [
@@ -8606,12 +8621,12 @@
         {
           "type": "renderModule",
           "assetId": "bV6LLO0B3Y",
-          "checksum": "c0e302d85ea6fc55c44791d2d0a3a861"
+          "checksum": "ba809b676f69994e7cc81243ba0fd330"
         },
         {
           "type": "cssRules",
           "assetId": "bV6LLO0B3Y",
-          "checksum": "c0e302d85ea6fc55c44791d2d0a3a861"
+          "checksum": "ba809b676f69994e7cc81243ba0fd330"
         },
         {
           "type": "renderModule",
@@ -9381,7 +9396,7 @@
     },
     {
       "projectId": "gmeH6XgPaBtkt51HunAo4g",
-      "version": "18.12.0",
+      "version": "18.14.0",
       "dependencies": {},
       "lang": "ts",
       "fileLocks": [

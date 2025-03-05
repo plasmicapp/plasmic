@@ -1,7 +1,4 @@
-import {
-  CommentsContextData,
-  CommentsData,
-} from "@/wab/client/components/comments/CommentsProvider";
+import { CommentsCtx } from "@/wab/client/studio-ctx/comments-ctx";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ApiCommentThread } from "@/wab/shared/ApiSchema";
@@ -132,6 +129,12 @@ export interface CommentsStats {
 
 export type CommentStatsMap = Map<string, CommentsStats>;
 
+export function getUnresolvedThreads(
+  threads: TplCommentThreads
+): TplCommentThreads {
+  return threads.filter((thread) => !thread.resolved);
+}
+
 export function computeCommentStats(threads: TplCommentThreads): {
   commentStatsBySubject: CommentStatsMap;
   commentStatsByComponent: CommentStatsMap;
@@ -146,36 +149,38 @@ export function computeCommentStats(threads: TplCommentThreads): {
 
   Object.entries(threadsGroupedBySubject).forEach(
     ([subjectUuid, commentThreads]) => {
-      // Compute stats for the subject
-      const subjectStats = getOrSetMap<string, CommentsStats>(
-        commentStatsBySubject,
-        subjectUuid,
-        {
-          commentCount: 0,
-          replyCount: 0,
-        }
-      );
-      subjectStats.commentCount = commentThreads.length;
-      subjectStats.replyCount = commentThreads.reduce(
-        (sum, thread) => sum + (thread.comments.length - 1), // comments count excluding the root comment
-        0
-      );
-
-      const [commentThread] = commentThreads;
-      const ownerComponent = tryGetTplOwnerComponent(commentThread.subject);
-      if (ownerComponent) {
-        const ownerUuid = ownerComponent.tplTree.uuid;
-        const componentStats = getOrSetMap<string, CommentsStats>(
-          commentStatsByComponent,
-          ownerUuid,
+      if (commentThreads.length > 0) {
+        // Compute stats for the subject
+        const subjectStats = getOrSetMap<string, CommentsStats>(
+          commentStatsBySubject,
+          subjectUuid,
           {
             commentCount: 0,
             replyCount: 0,
           }
         );
+        subjectStats.commentCount = commentThreads.length;
+        subjectStats.replyCount = commentThreads.reduce(
+          (sum, thread) => sum + (thread.comments.length - 1), // comments count excluding the root comment
+          0
+        );
 
-        componentStats.commentCount += subjectStats.commentCount;
-        componentStats.replyCount += subjectStats.replyCount;
+        const [commentThread] = commentThreads;
+        const ownerComponent = tryGetTplOwnerComponent(commentThread.subject);
+        if (ownerComponent) {
+          const ownerUuid = ownerComponent.tplTree.uuid;
+          const componentStats = getOrSetMap<string, CommentsStats>(
+            commentStatsByComponent,
+            ownerUuid,
+            {
+              commentCount: 0,
+              replyCount: 0,
+            }
+          );
+
+          componentStats.commentCount += subjectStats.commentCount;
+          componentStats.replyCount += subjectStats.replyCount;
+        }
       }
     }
   );
@@ -184,17 +189,19 @@ export function computeCommentStats(threads: TplCommentThreads): {
 }
 
 export function isElementWithComments(
-  commentsCtx: CommentsContextData | CommentsData,
+  commentsCtx: CommentsCtx,
   element: ObjInst
 ) {
   if (!isTplNamable(element)) {
     return false;
   }
-  const bundler = commentsCtx.bundler;
-  return commentsCtx.allThreads.some(
-    (commentThread) =>
-      bundler.objByAddr(commentThread.location.subject) === element
-  );
+  return commentsCtx
+    .computedData()
+    .unresolvedThreads.some(
+      (commentThread) =>
+        commentsCtx.bundler().objByAddr(commentThread.location.subject) ===
+        element
+    );
 }
 
 export function getSetOfVariantsForViewCtx(

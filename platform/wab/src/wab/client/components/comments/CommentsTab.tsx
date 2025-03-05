@@ -2,26 +2,18 @@
 // This file is owned by you, feel free to edit as you see fit.
 import { Dropdown, Menu } from "antd";
 
-import CommentPostForm from "@/wab/client/components/comments/CommentPostForm";
-import { useCommentsCtx } from "@/wab/client/components/comments/CommentsProvider";
 import RootComment from "@/wab/client/components/comments/RootComment";
-import ThreadComments from "@/wab/client/components/comments/ThreadComments";
 import { getThreadsFromFocusedComponent } from "@/wab/client/components/comments/utils";
-import {
-  SidebarModal,
-  SidebarModalProvider,
-} from "@/wab/client/components/sidebar/SidebarModal";
 import { useViewCtxMaybe } from "@/wab/client/contexts/StudioContexts";
 import {
   DefaultCommentsTabProps,
   PlasmicCommentsTab,
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentsTab";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { CommentThreadId } from "@/wab/shared/ApiSchema";
+import { ensure } from "@/wab/shared/common";
 import { isTplNamable, summarizeTplNamable } from "@/wab/shared/core/tpls";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { useState } from "react";
 
 export const DEFAULT_NOTIFICATION_LEVEL = "mentions-and-replies";
 export const notifyAboutKeyToLabel = {
@@ -38,10 +30,6 @@ export const CommentsTab = observer(function CommentsTab(
   const studioCtx = useStudioCtx();
   const viewCtx = useViewCtxMaybe();
 
-  const [shownThreadId, setShownThreadId] = useState<
-    CommentThreadId | undefined
-  >(undefined);
-
   let focusedTpl = viewCtx?.focusedTpl();
   if (!isTplNamable(focusedTpl)) {
     focusedTpl = null;
@@ -49,8 +37,7 @@ export const CommentsTab = observer(function CommentsTab(
 
   const currentComponent = studioCtx.currentComponent;
 
-  const { selfNotificationSettings, refreshComments, allThreads } =
-    useCommentsCtx();
+  const commentsCtx = studioCtx.commentsCtx;
 
   if (!currentComponent) {
     return null;
@@ -60,7 +47,11 @@ export const CommentsTab = observer(function CommentsTab(
     focusedSubjectThreads,
     focusedComponentThreads,
     otherComponentsThreads,
-  } = getThreadsFromFocusedComponent(allThreads, currentComponent, focusedTpl);
+  } = getThreadsFromFocusedComponent(
+    commentsCtx.computedData().allThreads,
+    currentComponent,
+    focusedTpl
+  );
 
   // We have the focused element threads together, with the focused subject threads first
   const currentFocusThreads = [
@@ -68,15 +59,14 @@ export const CommentsTab = observer(function CommentsTab(
     ...focusedComponentThreads,
   ];
 
-  const selectedThread = currentFocusThreads.find(
-    (commentThread) => commentThread.id === shownThreadId
-  );
-
   const projectId = studioCtx.siteInfo.id;
   const branchId = studioCtx.branchInfo()?.id;
 
   const currentNotificationLevel =
-    selfNotificationSettings?.notifyAbout ?? DEFAULT_NOTIFICATION_LEVEL;
+    commentsCtx.selfNotificationSettings()?.notifyAbout ??
+    DEFAULT_NOTIFICATION_LEVEL;
+
+  const openViewCtx = commentsCtx.openViewCtx();
 
   return (
     <div
@@ -85,97 +75,93 @@ export const CommentsTab = observer(function CommentsTab(
         overflow: "scroll",
       }}
     >
-      <SidebarModalProvider containerSelector=".comments-tab">
-        <PlasmicCommentsTab
-          {...props}
-          emptySelection={!focusedTpl}
-          notificationsButton={{
-            props: {
-              children: `Notifications: ${notifyAboutKeyToLabel[currentNotificationLevel]}`,
-            },
-            wrap: (node) => (
-              <Dropdown
-                overlay={
-                  <Menu selectedKeys={[currentNotificationLevel]}>
-                    <Menu.ItemGroup title={"Notify me about"}>
-                      {Object.entries(notifyAboutKeyToLabel).map(
-                        ([key, label]) => (
-                          <Menu.Item
-                            key={key}
-                            onClick={async () => {
-                              await studioCtx.appCtx.api.updateNotificationSettings(
-                                projectId,
-                                branchId,
-                                {
-                                  ...selfNotificationSettings,
-                                  notifyAbout: key as any,
-                                }
-                              );
-                              await refreshComments();
-                            }}
-                          >
-                            {label}
-                          </Menu.Item>
-                        )
-                      )}
-                    </Menu.ItemGroup>
-                  </Menu>
-                }
-              >
-                {node}
-              </Dropdown>
-            ),
-          }}
-          currentlySelectedTitle={{
-            wrap: focusedTpl ? (it) => it : () => null,
-          }}
-          currentlySelectedSubject={{
-            children:
-              focusedTpl && viewCtx
-                ? summarizeTplNamable(
-                    focusedTpl,
-                    viewCtx.effectiveCurrentVariantSetting(focusedTpl).rsh()
-                  )
-                : undefined,
-          }}
-          currentlySelectedPrefix={
-            currentFocusThreads.length > 0
-              ? {}
-              : { children: "Comment on selected" }
-          }
-          currentThreadsList={{
-            children: currentFocusThreads.map((threadComment) => (
-              <RootComment
-                commentThread={threadComment}
-                onThreadSelect={setShownThreadId}
-              />
-            )),
-          }}
-          newThreadForm={{
-            render: () => (focusedTpl ? <CommentPostForm /> : null),
-          }}
-          restThreadsSection={{
-            wrap: (node) => otherComponentsThreads.length > 0 && node,
-          }}
-          restThreadsList={{
-            children: otherComponentsThreads.map((commentThread) => (
-              <RootComment
-                commentThread={commentThread}
-                onThreadSelect={setShownThreadId}
-              />
-            )),
-          }}
-        />
-        {selectedThread && (
-          <SidebarModal
-            show
-            onClose={() => setShownThreadId(undefined)}
-            title={selectedThread.label}
-          >
-            <ThreadComments commentThread={selectedThread} />
-          </SidebarModal>
-        )}
-      </SidebarModalProvider>
+      <PlasmicCommentsTab
+        {...props}
+        emptySelection={!focusedTpl}
+        notificationsButton={{
+          props: {
+            children: `Notifications: ${notifyAboutKeyToLabel[currentNotificationLevel]}`,
+          },
+          wrap: (node) => (
+            <Dropdown
+              overlay={
+                <Menu selectedKeys={[currentNotificationLevel]}>
+                  <Menu.ItemGroup title={"Notify me about"}>
+                    {Object.entries(notifyAboutKeyToLabel).map(
+                      ([key, label]) => (
+                        <Menu.Item
+                          key={key}
+                          onClick={async () => {
+                            await studioCtx.appCtx.api.updateNotificationSettings(
+                              projectId,
+                              branchId,
+                              {
+                                ...commentsCtx.selfNotificationSettings(),
+                                notifyAbout: key as any,
+                              }
+                            );
+                            await commentsCtx.fetchComments();
+                          }}
+                        >
+                          {label}
+                        </Menu.Item>
+                      )
+                    )}
+                  </Menu.ItemGroup>
+                </Menu>
+              }
+            >
+              {node}
+            </Dropdown>
+          ),
+        }}
+        currentlySelectedTitle={{
+          wrap: focusedTpl ? (it) => it : () => null,
+        }}
+        currentlySelectedSubject={{
+          children:
+            focusedTpl && openViewCtx
+              ? summarizeTplNamable(
+                  focusedTpl,
+                  openViewCtx.effectiveCurrentVariantSetting(focusedTpl).rsh()
+                )
+              : undefined,
+        }}
+        currentlySelectedPrefix={
+          currentFocusThreads.length > 0
+            ? {}
+            : { children: "Comment on selected" }
+        }
+        currentThreadsList={{
+          children: currentFocusThreads.map((threadComment) => (
+            <RootComment
+              commentThread={threadComment}
+              onThreadSelect={(threadId) =>
+                commentsCtx.openCommentThreadDialog(
+                  ensure(viewCtx, ""),
+                  threadId
+                )
+              }
+            />
+          )),
+        }}
+        restThreadsSection={{
+          wrap: (node) => otherComponentsThreads.length > 0 && node,
+        }}
+        restThreadsList={{
+          children: otherComponentsThreads.map((commentThread) => (
+            <RootComment
+              commentThread={commentThread}
+              onThreadSelect={(threadId) =>
+                commentsCtx.openCommentThreadDialog(
+                  ensure(viewCtx, ""),
+                  threadId
+                )
+              }
+            />
+          )),
+        }}
+      />
     </div>
   );
 });

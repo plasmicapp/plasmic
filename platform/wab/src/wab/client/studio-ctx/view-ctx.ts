@@ -187,19 +187,8 @@ export class ViewCtx extends WithDbCtx {
   private _editingTextResizeObserver: ResizeObserver | undefined;
 
   private _nextFocusedTpl: TplNode | undefined;
-  private _selectedNewThreadTpl = observable.box<TplNode | null>(null, {
-    name: "ViewCtx.selectedNewThreadTpl",
-  });
   nextFocusedTpl() {
     return this._nextFocusedTpl;
-  }
-
-  getSelectedNewThreadTpl() {
-    return this._selectedNewThreadTpl.get();
-  }
-
-  setSelectedNewThreadTpl(tpl: TplNode | null) {
-    this._selectedNewThreadTpl.set(tpl);
   }
 
   private _highlightParam = observable.box<

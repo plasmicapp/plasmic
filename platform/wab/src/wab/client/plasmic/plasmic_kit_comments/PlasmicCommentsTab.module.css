@@ -62,10 +62,6 @@
 .currentlySelectedSubject {
   font-weight: 700;
 }
-.newThreadForm:global(.__wab_instance) {
-  width: 100%;
-  min-width: 0;
-}
 .currentThreadsList {
   display: flex;
   position: relative;
