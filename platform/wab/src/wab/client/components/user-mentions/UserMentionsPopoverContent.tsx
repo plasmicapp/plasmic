@@ -12,13 +12,14 @@ export interface UserMentionsPopoverContentProps
   extends DefaultUserMentionsPopoverContentProps {
   users: ApiUser[];
   highlightIndex: number;
+  onSelectUser: (user: ApiUser) => void;
 }
 
 function UserMentionsPopoverContent_(
   props: UserMentionsPopoverContentProps,
   ref: HTMLElementRefOf<"div">
 ) {
-  const { users, highlightIndex = 0, ...plasmicProps } = props;
+  const { users, highlightIndex = 0, onSelectUser, ...plasmicProps } = props;
 
   return (
     <PlasmicUserMentionsPopoverContent
@@ -34,6 +35,9 @@ function UserMentionsPopoverContent_(
             username={`${user.firstName} ${user.lastName}`}
             isHighlighted={index === highlightIndex}
             avatar={<Avatar user={user} size={"small"} />}
+            root={{
+              onClick: () => onSelectUser(user),
+            }}
           />
         )),
       }}

@@ -2,10 +2,11 @@ import { UserMentionsPopoverContent } from "@/wab/client/components/user-mention
 import DropdownOverlay from "@/wab/client/components/widgets/DropdownOverlay";
 import { useQuerySelector } from "@/wab/client/hooks/useQuerySelector";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ApiUser } from "@/wab/shared/ApiSchema";
 import { getUniqueUsersFromApiPermissions } from "@/wab/shared/perms";
 import * as React from "react";
 import { useCallback, useState } from "react";
-import { useOverlayPosition } from "react-aria";
+import { useInteractOutside, useOverlayPosition } from "react-aria";
 
 export function useUserMentions({
   popoverOffset = 0,
@@ -48,6 +49,23 @@ export function useUserMentions({
     isOpen: mentionActive,
   });
 
+  // When we click on user in popover, it makes input lose focus,
+  // so we detect click inside popover and keep the input focus, otherwise we close the popover.
+  useInteractOutside({
+    ref: { current: inputElement },
+    onInteractOutside: (event) => {
+      if (
+        overlayRef.current &&
+        overlayRef.current.contains(event.target as Node)
+      ) {
+        inputElement?.focus();
+        return;
+      }
+
+      setMentionText("");
+    },
+  });
+
   const setInputCaretPosition = useCallback(
     (caretIndex: number) => {
       // Use setTimeout to ensure this happens after the state update
@@ -59,6 +77,26 @@ export function useUserMentions({
       }, 0);
     },
     [inputElement]
+  );
+
+  const handleSelectUser = useCallback(
+    (selectedUser: ApiUser) => {
+      if (!inputElement) {
+        return;
+      }
+
+      const caretIndex = inputElement.selectionStart || 0;
+      const { newValue, newCaretPosition } = completeMention(
+        value,
+        caretIndex,
+        selectedUser.email
+      );
+
+      onValueChange(newValue);
+      setMentionText("");
+      setInputCaretPosition(newCaretPosition);
+    },
+    [onValueChange, value, inputElement, setInputCaretPosition]
   );
 
   const onKeyHandler = useCallback(
@@ -75,36 +113,14 @@ export function useUserMentions({
         } else if (e.key === "Enter") {
           e.preventDefault();
           const selectedUser = filteredUsers[highlightIndex];
-          if (selectedUser) {
-            if (!inputElement) {
-              return;
-            }
-
-            const caretIndex = inputElement.selectionStart || 0;
-            const { newValue, newCaretPosition } = completeMention(
-              value,
-              caretIndex,
-              selectedUser.email
-            );
-
-            onValueChange(newValue);
-            setMentionText("");
-            setInputCaretPosition(newCaretPosition);
-          }
+          handleSelectUser(selectedUser);
         }
       }
     },
-    [
-      filteredUsers,
-      onValueChange,
-      value,
-      mentionActive,
-      inputElement,
-      setInputCaretPosition,
-    ]
+    [filteredUsers, handleSelectUser, highlightIndex, mentionActive]
   );
 
-  const onSelectHandler = useCallback(() => {
+  const onInputSelectHandler = useCallback(() => {
     if (!inputElement) {
       setMentionText("");
       return;
@@ -145,6 +161,7 @@ export function useUserMentions({
       <UserMentionsPopoverContent
         users={filteredUsers}
         highlightIndex={highlightIndex}
+        onSelectUser={handleSelectUser}
       />
     </DropdownOverlay>
   ) : null;
@@ -152,7 +169,7 @@ export function useUserMentions({
   return {
     userMentionsPopover,
     onKeyHandler,
-    onSelectHandler,
+    onSelectHandler: onInputSelectHandler,
     handleMentionClick,
   };
 }

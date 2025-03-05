@@ -3,10 +3,13 @@
 import {
   DefaultUserListItemProps,
   PlasmicUserListItem,
+  PlasmicUserListItem__OverridesType,
 } from "@/wab/client/plasmic/user_mentions/PlasmicUserListItem";
 import * as React from "react";
 
-export type UserListItemProps = DefaultUserListItemProps;
+export interface UserListItemProps extends DefaultUserListItemProps {
+  root: PlasmicUserListItem__OverridesType["root"];
+}
 
 function UserListItem(props: UserListItemProps) {
   return <PlasmicUserListItem {...props} />;
