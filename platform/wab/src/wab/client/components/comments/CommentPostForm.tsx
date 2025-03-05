@@ -43,12 +43,16 @@ const CommentPostForm = observer(function CommentPostForm(
   const formRef = React.useRef<HTMLFormElement>(null);
   const inputElementId = `comment-post-input-${editComment?.id}`;
 
-  const { onKeyHandler, onSelectHandler, userMentionsPopover } =
-    useUserMentions({
-      value,
-      onValueChange: setValue,
-      inputSelector: `#${inputElementId}`,
-    });
+  const {
+    onKeyHandler,
+    onSelectHandler,
+    userMentionsPopover,
+    handleMentionClick,
+  } = useUserMentions({
+    value,
+    onValueChange: setValue,
+    inputSelector: `#${inputElementId}`,
+  });
 
   if (!viewCtx || (focusedTpls.length !== 1 && !selectedNewThreadTpl)) {
     return null;
@@ -134,6 +138,11 @@ const CommentPostForm = observer(function CommentPostForm(
           submitButton={{
             htmlType: "submit",
             disabled: !isValidComment(),
+          }}
+          mentionIcon={{
+            onClick: () => {
+              handleMentionClick();
+            },
           }}
         />
       </form>

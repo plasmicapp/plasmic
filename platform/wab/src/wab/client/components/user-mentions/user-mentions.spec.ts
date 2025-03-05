@@ -1,7 +1,11 @@
 import { _testOnlyUserMentionsUtils } from "@/wab/client/components/user-mentions/useUserMentions";
 
-const { getTokenStartIndex, findMentionText, completeMention } =
-  _testOnlyUserMentionsUtils;
+const {
+  getTokenStartIndex,
+  findMentionText,
+  completeMention,
+  typeTextAtCaretPosition,
+} = _testOnlyUserMentionsUtils;
 
 describe("getTokenStartIndex", () => {
   it("should return the current index when at the start of a string", () => {
@@ -129,5 +133,30 @@ describe("completeMention", () => {
     const result = completeMention("Hello @", 7, "john@example.com");
     expect(result.newValue).toBe("Hello @john@example.com ");
     expect(result.newCaretPosition).toBe(24);
+  });
+});
+
+describe("typeTextAtCaretPosition", () => {
+  it("should insert text at caret position", () => {
+    const result1 = typeTextAtCaretPosition("Hello", "World", 5);
+    expect(result1.newValue).toBe("HelloWorld");
+    expect(result1.newCaretPosition).toBe(10);
+
+    const result2 = typeTextAtCaretPosition("Hello ", "@", 6);
+    expect(result2.newValue).toBe("Hello @");
+    expect(result2.newCaretPosition).toBe(7);
+
+    const result3 = typeTextAtCaretPosition("Start End", "Middle ", 6);
+    expect(result3.newValue).toBe("Start Middle End");
+    expect(result3.newCaretPosition).toBe(13);
+
+    const result4 = typeTextAtCaretPosition(
+      "Replace @John Text",
+      "@john@example.com",
+      8,
+      13
+    );
+    expect(result4.newValue).toBe("Replace @john@example.com Text");
+    expect(result4.newCaretPosition).toBe(25);
   });
 });
