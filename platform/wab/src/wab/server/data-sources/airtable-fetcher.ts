@@ -1,4 +1,3 @@
-import { ensure } from "@/wab/shared/common";
 import {
   JSON_LOGIC_REVERSE_OPERATORS,
   toJsonLogicFormat,
@@ -10,6 +9,7 @@ import {
   BadRequestError,
   UnauthorizedError,
 } from "@/wab/shared/ApiErrors/errors";
+import { assert, ensure } from "@/wab/shared/common";
 import {
   AirtableDataSource,
   FAKE_AIRTABLE_FIELD,
@@ -35,7 +35,6 @@ import {
 import { compile, Formula } from "@qualifyze/airtable-formulator";
 import Airtable from "airtable";
 import { AirtableBase } from "airtable/lib/airtable_base";
-import assert from "assert";
 import { isNumber, omit } from "lodash";
 import moize from "moize";
 import refresh from "passport-oauth2-refresh";

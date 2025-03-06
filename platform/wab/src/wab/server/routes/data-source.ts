@@ -1,4 +1,3 @@
-import { ensureType, hackyCast } from "@/wab/shared/common";
 import { fetchBases } from "@/wab/server/data-sources/airtable-fetcher";
 import {
   executeDataSourceOperation,
@@ -25,6 +24,7 @@ import {
   UserId,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
+import { assert, ensureType, hackyCast } from "@/wab/shared/common";
 import {
   GenericDataSource,
   getAllDataSourceTypes,
@@ -38,7 +38,6 @@ import {
 import { dropFakeDatabase } from "@/wab/shared/data-sources-meta/fake-meta";
 import { DATA_SOURCE_LOWER } from "@/wab/shared/Labels";
 import * as Sentry from "@sentry/node";
-import assert from "assert";
 import { Request, Response } from "express-serve-static-core";
 
 export function mkApiDataSource(
@@ -326,7 +325,7 @@ export async function getDataSourceById(req: Request, res: Response) {
 export async function listAirtableBases(req: Request, res: Response) {
   const mgr = superDbMgr(req);
   assert(req.user, "Unexpected undefined user");
-  const tokenData = await mgr.tryGetOauthToken(req.user?.id, "airtable");
+  const tokenData = await mgr.tryGetOauthToken(req.user.id, "airtable");
   if (!tokenData) {
     throw new NotFoundError("Oauth token not found");
   }

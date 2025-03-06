@@ -3,7 +3,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ApiCommentThread } from "@/wab/shared/ApiSchema";
 import { Bundler, FastBundler } from "@/wab/shared/bundler";
-import { getOrSetMap, xSymmetricDifference } from "@/wab/shared/common";
+import { assert, getOrSetMap, xSymmetricDifference } from "@/wab/shared/common";
 import {
   TplNamable,
   getTplOwnerComponent,
@@ -12,7 +12,6 @@ import {
   tryGetTplOwnerComponent,
 } from "@/wab/shared/core/tpls";
 import { Component, ObjInst, TplNode } from "@/wab/shared/model/classes";
-import assert from "assert";
 import { groupBy, partition, sortBy } from "lodash";
 
 type LocalizedCommentThread = ApiCommentThread & {

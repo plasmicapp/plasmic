@@ -2,10 +2,9 @@ import type { SubDeps } from "@/wab/client/components/canvas/subdeps";
 import { getCanvasPkgs } from "@/wab/client/components/studio/studio-bundles";
 import { scriptExec } from "@/wab/client/dom-utils";
 import { lt } from "@/wab/commons/semver";
-import { withTimeout } from "@/wab/shared/common";
+import { assert, withTimeout } from "@/wab/shared/common";
 import { requiredPackageVersions } from "@/wab/shared/required-versions";
 import { notification } from "antd";
-import assert from "assert";
 import React from "react";
 
 /**
