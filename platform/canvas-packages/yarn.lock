@@ -3629,10 +3629,10 @@
     "@emotion/react" "^11.11.4"
     react-awesome-reveal "^4.2.12"
 
-"@plasmicpkgs/react-chartjs-2@^1.0.120":
-  version "1.0.120"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-chartjs-2/-/react-chartjs-2-1.0.120.tgz#eea4687d8c66ea095b15d989699ec31d2eef077b"
-  integrity sha512-pxcexpTQePRxydfGIx5gWIHfBUxHePZ6GTHL5ZsUtaalTBpziJhPEAWxvhj/fzwWSl/2c9f+MFbZze5kAkfFlQ==
+"@plasmicpkgs/react-chartjs-2@^1.0.121":
+  version "1.0.121"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-chartjs-2/-/react-chartjs-2-1.0.121.tgz#a83207f47f089a97ed3928a536e0edef3ef2424e"
+  integrity sha512-M1pPxzoULNKPTA/NOCqyPFAd0E+cl2ja+ocaBfp0XnTqJfM1iIaeReNE1TLEeZPffMUFhK8f+UJQeFumzcWPlQ==
   dependencies:
     deepmerge "^4.3.1"
 
@@ -3643,10 +3643,10 @@
   dependencies:
     react-parallax-tilt "^1.5.74"
 
-"@plasmicpkgs/react-quill@^1.0.73":
-  version "1.0.73"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-quill/-/react-quill-1.0.73.tgz#ed9cb09a5cf0bcb9415724d700012da292c5a5af"
-  integrity sha512-YMvnjOa3uur52O8KgOxoVc8hbirq2/DCibxwfnD2SrQHMx+XArnnzyhG4yOz/VHgfRFB/lMzHQ4oTGFie33pgg==
+"@plasmicpkgs/react-quill@^1.0.74":
+  version "1.0.74"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-quill/-/react-quill-1.0.74.tgz#45f0605f4e5540b75863088d389a5d30e3ed9afb"
+  integrity sha512-wTTCTpmbbmGSxHp3kdw+W0D3ZZ6iZMrrLV7pg4FvO52aPxTwZuaXdlJRhpYtqQKbXTgArMBRpV9rnJ6prVDAvg==
   dependencies:
     react-quill "^2.0.0"
 
