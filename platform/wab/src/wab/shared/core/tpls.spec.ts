@@ -1,9 +1,13 @@
 import * as Components from "@/wab/shared/core/components";
 import { ComponentType } from "@/wab/shared/core/components";
 import { mkParam } from "@/wab/shared/core/lang";
-import { isSlotSelection, SlotSelection } from "@/wab/shared/core/slots";
+import { isSlotSelection } from "@/wab/shared/core/slots";
 import * as Tpls from "@/wab/shared/core/tpls";
-import { isKnownTplSlot, TplNode } from "@/wab/shared/model/classes";
+import {
+  ensureKnownTplNode,
+  isKnownTplSlot,
+  TplNode,
+} from "@/wab/shared/model/classes";
 import { withoutUids } from "@/wab/shared/model/model-meta";
 import { typeFactory } from "@/wab/shared/model/model-util";
 import { mkBaseVariant } from "@/wab/shared/Variants";
@@ -34,119 +38,139 @@ describe("flattenTpls", () =>
     return expect(flattened).toEqual(xs);
   }));
 
-describe("ancestorsThroughComponentsWithSlotSelections", () => {
-  it("should include all tpls through components", () => {
-    // Using a single base variant for everything to simplify the test
-    // this doesn't affect the execution of ancestorsThroughComponentsWithSlotSelections
-    const baseVariant = mkBaseVariant();
+function ancestorsThroughComponentsUtils() {
+  // Using a single base variant for everything to simplify the test
+  // this doesn't affect the execution of ancestorsThroughComponentsWithSlotSelections
+  const baseVariant = mkBaseVariant();
 
-    const basicComponent = Components.mkComponent({
-      tplTree: Tpls.mkTplTagX(
-        "div",
-        {
-          name: "basicComponent-root",
-        },
-        []
-      ),
-      type: ComponentType.Plain,
-    });
-
-    function createComponentWithSlot(name: string, type: ComponentType) {
-      const slotParam = mkParam({
-        name: "children",
-        type: typeFactory.renderable(),
-        paramType: "slot",
-      });
-
-      const tplSlot = Tpls.mkSlot(slotParam);
-
-      const tplTree = Tpls.mkTplTagX(
-        "div",
-        {
-          name: `${name}-root`,
-        },
-        [tplSlot]
-      );
-
-      const component = Components.mkComponent({
-        tplTree,
-        params: [slotParam],
-        type,
-        codeComponentMeta:
-          type === ComponentType.Code ? ({} as any) : undefined,
-      });
-      return component;
-    }
-
-    const basicComponentInstance = Tpls.mkTplComponentX({
-      name: "basicComponent-instance",
-      component: basicComponent,
-      baseVariant,
-    });
-
-    const plainComponent = createComponentWithSlot(
-      "plainComponent",
-      ComponentType.Plain
-    );
-    const codeComponent = createComponentWithSlot(
-      "codeComponent",
-      ComponentType.Code
-    );
-
-    const tree = Tpls.mkTplTagX(
+  const basicComponent = Components.mkComponent({
+    tplTree: Tpls.mkTplTagX(
       "div",
       {
-        name: "root",
+        name: "basicComponent-root",
       },
-      [
-        Tpls.mkTplComponentX({
-          name: "codeComponent-instance",
-          component: codeComponent,
-          baseVariant,
-          children: [
-            Tpls.mkTplComponentX({
-              name: "plainComponent-instance",
-              component: plainComponent,
-              baseVariant,
-              children: [basicComponentInstance],
-            }),
-          ],
-        }),
-      ]
+      []
+    ),
+    type: ComponentType.Plain,
+  });
+
+  function createComponentWithSlot(name: string, type: ComponentType) {
+    const slotParam = mkParam({
+      name: "children",
+      type: typeFactory.renderable(),
+      paramType: "slot",
+    });
+
+    const tplSlot = Tpls.mkSlot(slotParam);
+
+    const tplTree = Tpls.mkTplTagX(
+      "div",
+      {
+        name: `${name}-root`,
+      },
+      [tplSlot]
     );
 
-    function describeNode(node: TplNode | SlotSelection) {
-      if (isSlotSelection(node)) {
-        return {
-          type: "slotSelection",
-          slotName: node.slotParam.variable.name,
-        };
-      }
-      if (isKnownTplSlot(node)) {
-        return {
-          type: "tplSlot",
-          slotName: node.param.variable.name,
-        };
-      }
+    const component = Components.mkComponent({
+      tplTree,
+      params: [slotParam],
+      type,
+      codeComponentMeta: type === ComponentType.Code ? ({} as any) : undefined,
+    });
+    return component;
+  }
+
+  const basicComponentInstance = Tpls.mkTplComponentX({
+    name: "basicComponent-instance",
+    component: basicComponent,
+    baseVariant,
+  });
+
+  const plainComponent = createComponentWithSlot(
+    "plainComponent",
+    ComponentType.Plain
+  );
+  const codeComponent = createComponentWithSlot(
+    "codeComponent",
+    ComponentType.Code
+  );
+
+  const tree = Tpls.mkTplTagX(
+    "div",
+    {
+      name: "root",
+    },
+    [
+      Tpls.mkTplComponentX({
+        name: "codeComponent-instance",
+        component: codeComponent,
+        baseVariant,
+        children: [
+          Tpls.mkTplComponentX({
+            name: "plainComponent-instance",
+            component: plainComponent,
+            baseVariant,
+            children: [basicComponentInstance],
+          }),
+        ],
+      }),
+    ]
+  );
+
+  function describeNode({ node, layer }: Tpls.NodeWithLayer) {
+    if (isSlotSelection(node)) {
       return {
-        type: "node",
-        name: node.name,
+        type: "slotSelection",
+        slotName: node.slotParam.variable.name,
+        layer,
       };
     }
+    if (isKnownTplSlot(node)) {
+      return {
+        type: "tplSlot",
+        slotName: node.param.variable.name,
+        layer,
+      };
+    }
+    return {
+      type: "node",
+      name: node.name,
+      layer,
+    };
+  }
+
+  return {
+    baseVariant,
+    basicComponentInstance,
+    codeComponent,
+    describeNode,
+    plainComponent,
+    tree,
+  };
+}
+describe("ancestorsThroughComponentsWithSlotSelections", () => {
+  it("should include all tpls through components", () => {
+    const {
+      baseVariant,
+      basicComponentInstance,
+      codeComponent,
+      describeNode,
+      tree,
+    } = ancestorsThroughComponentsUtils();
 
     expect(
       Tpls.ancestorsThroughComponentsWithSlotSelections(
         basicComponentInstance
       ).map(describeNode)
     ).toEqual([
-      { type: "node", name: "basicComponent-instance" },
-      { type: "slotSelection", slotName: "children" },
-      { type: "tplSlot", slotName: "children" },
-      { type: "node", name: "plainComponent-root" },
-      { type: "node", name: "plainComponent-instance" },
-      { type: "slotSelection", slotName: "children" },
-      { type: "node", name: "codeComponent-instance" },
-      { type: "node", name: "root" },
+      { type: "node", name: "basicComponent-instance", layer: 0 },
+      { type: "slotSelection", slotName: "children", layer: 0 },
+      { type: "tplSlot", slotName: "children", layer: 1 },
+      { type: "node", name: "plainComponent-root", layer: 1 },
+      { type: "node", name: "plainComponent-instance", layer: 0 },
+      { type: "slotSelection", slotName: "children", layer: 0 },
+      { type: "node", name: "codeComponent-instance", layer: 0 },
+      { type: "node", name: "root", layer: 0 },
     ]);
 
     expect(
@@ -157,15 +181,15 @@ describe("ancestorsThroughComponentsWithSlotSelections", () => {
         }
       ).map(describeNode)
     ).toEqual([
-      { type: "node", name: "basicComponent-root" },
-      { type: "node", name: "basicComponent-instance" },
-      { type: "slotSelection", slotName: "children" },
-      { type: "tplSlot", slotName: "children" },
-      { type: "node", name: "plainComponent-root" },
-      { type: "node", name: "plainComponent-instance" },
-      { type: "slotSelection", slotName: "children" },
-      { type: "node", name: "codeComponent-instance" },
-      { type: "node", name: "root" },
+      { type: "node", name: "basicComponent-root", layer: 1 },
+      { type: "node", name: "basicComponent-instance", layer: 0 },
+      { type: "slotSelection", slotName: "children", layer: 0 },
+      { type: "tplSlot", slotName: "children", layer: 1 },
+      { type: "node", name: "plainComponent-root", layer: 1 },
+      { type: "node", name: "plainComponent-instance", layer: 0 },
+      { type: "slotSelection", slotName: "children", layer: 0 },
+      { type: "node", name: "codeComponent-instance", layer: 0 },
+      { type: "node", name: "root", layer: 0 },
     ]);
 
     const codeComponentInstance = Tpls.mkTplComponentX({
@@ -178,12 +202,60 @@ describe("ancestorsThroughComponentsWithSlotSelections", () => {
       Tpls.ancestorsThroughComponentsWithSlotSelections(
         codeComponentInstance
       ).map(describeNode)
-    ).toEqual([{ type: "node", name: "codeComponent-instance" }]);
+    ).toEqual([{ type: "node", name: "codeComponent-instance", layer: 0 }]);
 
     expect(
       Tpls.ancestorsThroughComponentsWithSlotSelections(codeComponentInstance, {
         includeTplComponentRoot: true,
       }).map(describeNode)
-    ).toEqual([{ type: "node", name: "codeComponent-instance" }]);
+    ).toEqual([{ type: "node", name: "codeComponent-instance", layer: 0 }]);
+  });
+});
+
+describe("computeAncestorsValKey", () => {
+  it("should properly use the layers to ignore nodes", () => {
+    const {
+      baseVariant,
+      basicComponentInstance,
+      codeComponent,
+      describeNode,
+      plainComponent,
+      tree,
+    } = ancestorsThroughComponentsUtils();
+
+    const ancestors = Tpls.ancestorsThroughComponentsWithSlotSelections(
+      basicComponentInstance
+    );
+    /**
+     * The order of the output is
+     * 0: { type: "node", name: "basicComponent-instance", layer: 0 },
+     * 1: { type: "slotSelection", slotName: "children", layer: 0 },
+     * 2: { type: "tplSlot", slotName: "children", layer: 1 },
+     * 3: { type: "node", name: "plainComponent-root", layer: 1 },
+     * 4: { type: "node", name: "plainComponent-instance", layer: 0 },
+     * 5: { type: "slotSelection", slotName: "children", layer: 0 },
+     * 6: { type: "node", name: "codeComponent-instance", layer: 0 },
+     * 7: { type: "node", name: "root", layer: 0 },
+     */
+    const ancestorsValKey = Tpls.computeAncestorsValKey(ancestors);
+    expect(ancestorsValKey).toEqual(
+      [ancestors[7], ancestors[6], ancestors[4], ancestors[0]]
+        .map((el) => ensureKnownTplNode(el.node).uuid)
+        .join(".")
+    );
+
+    const ancestorsValKey2 = Tpls.computeAncestorsValKey(ancestors.slice(2));
+    expect(ancestorsValKey2).toEqual(
+      [ancestors[7], ancestors[6], ancestors[4], ancestors[3], ancestors[2]]
+        .map((el) => ensureKnownTplNode(el.node).uuid)
+        .join(".")
+    );
+
+    const ancestorsValKey3 = Tpls.computeAncestorsValKey(ancestors.slice(3));
+    expect(ancestorsValKey3).toEqual(
+      [ancestors[7], ancestors[6], ancestors[4], ancestors[3]]
+        .map((el) => ensureKnownTplNode(el.node).uuid)
+        .join(".")
+    );
   });
 });

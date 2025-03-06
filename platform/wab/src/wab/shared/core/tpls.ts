@@ -196,7 +196,7 @@ import {
   tryGetBaseVariantSetting,
   VariantCombo,
 } from "@/wab/shared/Variants";
-import L, { uniq, uniqBy } from "lodash";
+import L, { reverse, uniq, uniqBy } from "lodash";
 import * as US from "underscore.string";
 
 /**
@@ -1325,15 +1325,18 @@ export function ancestors(tpl: TplNode): TplNode[] {
  * that are present in the `tplTree` of the component owning the slot, this makes
  * the list of nodes returned by the function not necessarily respect the parent-child
  * relationship of the nodes in the tree. But this is useful when we want to know about
- * elements involved in the dom composition to render a given tpl.
+ * elements involved in the dom composition to render a given tpl. The function will
+ * also return the 'layer' of the node, which is how many broken parent-child relationships
+ * the node is away from the original tpl node.
  */
+export type NodeWithLayer = { node: TplNode | SlotSelection; layer: number };
 export function ancestorsThroughComponentsWithSlotSelections(
   tpl: TplNode | SlotSelection,
   opts: {
     includeTplComponentRoot?: boolean;
   } = {}
-): (TplNode | SlotSelection)[] {
-  const allAncestors: (TplNode | SlotSelection)[] = [];
+): NodeWithLayer[] {
+  const allAncestors: NodeWithLayer[] = [];
   let curNode: TplNode | SlotSelection | undefined | null = tpl;
 
   if (
@@ -1343,12 +1346,19 @@ export function ancestorsThroughComponentsWithSlotSelections(
   ) {
     // We will consider the tpl component root as part of the ancestors chain even if it is not
     // technically an ancestor of the tpl node, we may want to extend it later to go down in the
-    // chain of nodes until finding a code component or tpl tag
-    allAncestors.push(tpl.component.tplTree);
+    // chain of nodes until finding a code component or tpl tag, since we are entering the tpl.component
+    // tree, it's a deeper layer than the tpl node itself
+    allAncestors.push({
+      node: tpl.component.tplTree,
+      layer: 1,
+    });
   }
 
   while (curNode) {
-    allAncestors.push(curNode);
+    allAncestors.push({
+      node: curNode,
+      layer: 0,
+    });
     if (isSlotSelection(curNode)) {
       // If the current node is a slot selection, we need to check if we can break through the
       // slot boundary to get to the tpl node that is present in the tplTree of the component owning the slot.
@@ -1365,7 +1375,12 @@ export function ancestorsThroughComponentsWithSlotSelections(
         // Before updating the current node, we include all the ancestors of the tpl slot going
         // through the tpl tree of the component owning the slot
         allAncestors.push(
-          ...ancestorsThroughComponentsWithSlotSelections(tplSlot)
+          ...ancestorsThroughComponentsWithSlotSelections(tplSlot).map(
+            (el) => ({
+              node: el.node,
+              layer: el.layer + 1,
+            })
+          )
         );
         curNode = tplComponent;
       }
@@ -1374,6 +1389,68 @@ export function ancestorsThroughComponentsWithSlotSelections(
     }
   }
   return allAncestors;
+}
+
+export function computeAncestorsValKey(ancestorsWithLayers: NodeWithLayer[]) {
+  // To compute the ancestors key we need to consider the layer of each node,
+  // consider the following example:
+  //
+  // Component "Main"
+  // tplTree:
+  //  - TplComponent "A"
+  //    - Slot "children"
+  //      - TplComponent "B"
+  //        - Slot "children"
+  //          - TplText
+  //
+  // Component "A"
+  // tplTree:
+  //    - TplTag root-A
+  //      - Slot target "children"
+  //
+  // Component "B"
+  // tplTree:
+  //    - TplTag root-B
+  //      - Slot target "children"
+  //
+  // Let's use "Main" component for demonstration
+  // the valKey of the instance of "B" in the "Main" component will be:
+  // "(some prefix).(uuid of A).(uuid of B)"
+  //
+  // while the tplTag root of "A" will have the valKey:
+  // "(some prefix).(uuid of A).(uuid of root-A)"
+  //
+  // This happens because the RenderingCtx of "A" is going to be passed to internal use
+  // of both their internal tags as well as it's children.
+  //
+  // So now that we need to compute the ancestors key, we need to consider the layer of
+  // the elements, so that we ignore the elements that are 'ValNode' ancestors but that are
+  // not part of the valKey. We can do that by just considering the tpl nodes and their layers
+  // by only accepting the tpl nodes that have a layer equal or less than the current node.
+  //
+  // In the example above, if we would compute the ancestors key of the root of "B" in the "Main"
+  // component, we know that the root of component "B" is in the layer 1, so once we reach the
+  // the instance of "B" in the "Main" component, we can ignore the root of "A" since it's in the
+  // layer 1 too and it's not part of the valKey.
+  //
+  // Reference:
+  // `computeRenderedArg`, `deriveTplTagChildren`, `renderTplSlot`, `useCtxFromInternalComponentProps`
+  // from cans
+  let layer = ancestorsWithLayers[0].layer;
+  const valKeyAncestors: TplNode[] = [];
+
+  for (const anc of ancestorsWithLayers) {
+    if (anc.layer <= layer) {
+      if (isKnownTplNode(anc.node)) {
+        valKeyAncestors.push(anc.node);
+      }
+      layer = anc.layer;
+    }
+  }
+
+  return reverse(valKeyAncestors)
+    .map((anc) => anc.uuid)
+    .join(".");
 }
 
 export const summarizeTpl = (

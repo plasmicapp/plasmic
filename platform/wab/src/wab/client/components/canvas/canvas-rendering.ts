@@ -190,6 +190,7 @@ import {
   RawTextLike,
   TplTextTag,
   ancestorsUp,
+  computeAncestorsValKey,
   getNumberOfRepeatingAncestors,
   getOwnerSite,
   isExprText,
@@ -264,7 +265,6 @@ import {
   isKnownStateParam,
   isKnownStyleExpr,
   isKnownStyleScopeClassNamePropType,
-  isKnownTplNode,
   isKnownTplTag,
 } from "@/wab/shared/model/classes";
 import { isRenderFuncType, typeFactory } from "@/wab/shared/model/model-util";
@@ -295,7 +295,6 @@ import {
   last,
   omit,
   pick,
-  reverse,
   uniqBy,
   without,
   zipObject,
@@ -1285,7 +1284,7 @@ function getAutoOpenSelectionInfo(ctx: RenderingCtx, node: TplNode) {
       // have the slot being proxied by a plasmic component, so we need to make sure
       // that the selection is also handled through it.
       const path = ctx.viewCtx.focusedTplAncestorsThroughComponents();
-      const nodeIdx = path?.findIndex((s) => s === node) ?? -1;
+      const nodeIdx = path?.findIndex((s) => s.node === node) ?? -1;
 
       if (isInteractive || !isAutoOpenMode || !path || nodeIdx === -1) {
         return {
@@ -1295,27 +1294,15 @@ function getAutoOpenSelectionInfo(ctx: RenderingCtx, node: TplNode) {
         };
       }
 
-      // We now need to know whether this node is really selected or not since
-      // when dealing with proxied components the same node will be reused for
-      // rendering, we will then look into all tpl node ancestors and if they
-      // are present in the valKey
       const nodeAncestors = path.slice(nodeIdx);
+      const ancestorsKeyPath = computeAncestorsValKey(nodeAncestors);
 
-      // We will compute the valKey path without the first element, since it's
-      // a reference to the instance of the current component that is being rendered
-      const valKeyPath = ctx.valKey.split(".").slice(1).join(".");
+      // If it's truly selected, we should have the ancestors key as a suffix, since there is
+      // a prefix containing the current component instance and global contexts and that is not
+      // explicitly part of the model, but only how the rendering is done.
+      const isSelected = ctx.valKey.endsWith(ancestorsKeyPath);
 
-      // Since ancestors are in the reverse order, we need to reverse them to get
-      // a key in the same order as the valKey
-      const ancestorsKeyPath = reverse(nodeAncestors)
-        .filter(isKnownTplNode)
-        .map((n) => n.uuid)
-        .join(".");
-
-      // If it's truly selected, we should have the same key path
-      const isSelected = valKeyPath === ancestorsKeyPath;
-
-      const descendant = nodeIdx > 0 ? path[nodeIdx - 1] : null;
+      const descendant = nodeIdx > 0 ? path[nodeIdx - 1].node : null;
 
       return {
         id: node.uuid,
