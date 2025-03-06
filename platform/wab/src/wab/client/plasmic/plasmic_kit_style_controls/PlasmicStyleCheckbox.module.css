@@ -64,6 +64,7 @@
 .root:focus-within .checkbox {
   box-shadow: inset 0px 0px 0px 1px #0091ff80;
   margin-left: calc(0px + 4px) !important;
+  outline: none;
   border-radius: 4px;
 }
 .labelContainer {

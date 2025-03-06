@@ -109,7 +109,6 @@ function PlasmicCollapsableSection__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isExpanded,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -217,7 +216,6 @@ function PlasmicCollapsableSection__RenderFunc(props: {
               {"Section content here and there and everywhere!!  Yup okay!"}
             </div>
           ),
-
           value: args.children,
         })}
       </div>
@@ -259,7 +257,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCollapsableSection__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -1499,7 +1499,7 @@
     },
     {
       "projectId": "tXkSR39sgCDWSitZxC5xFV",
-      "projectName": "[PlasmicKit] Design System (deprecated)",
+      "projectName": "[PlasmicKit] Design System",
       "version": ">=42.0.0",
       "cssFilePath": "wab/client/plasmic/PP__plasmickit_design_system.module.css",
       "components": [
@@ -3335,8 +3335,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "customFunctions": [],
-      "splitsProviderFilePath": "",
-      "jsBundleThemes": []
+      "splitsProviderFilePath": ""
     },
     {
       "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
@@ -3422,7 +3421,7 @@
     },
     {
       "projectId": "gYEVvAzCcLMHDVPvuYxkFh",
-      "projectName": "[PlasmicKit] New Design System (former \"Style Controls\")",
+      "projectName": "[PlasmicKit] Style Controls",
       "version": ">=0.0.0",
       "cssFilePath": "wab/client/plasmic/plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css",
       "components": [
@@ -10378,7 +10377,8 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "frhoorZk3bxNXU73uUyvHm",

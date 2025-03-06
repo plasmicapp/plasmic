@@ -176,7 +176,6 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.valueSetState,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -278,7 +277,6 @@ function PlasmicDimTokenSelector__RenderFunc(props: {
                 </Chip>
               </React.Fragment>
             ),
-
             value: args.existingTokens,
             className: classNames(sty.slotTargetExistingTokens, {
               [sty.slotTargetExistingTokensshowCurrentTokens]: hasVariant(
@@ -415,7 +413,6 @@ const PlasmicDescendants = {
     "suffixContainer",
     "dropdownToggle",
   ],
-
   existingTokensContainer: ["existingTokensContainer"],
   textbox: ["textbox"],
   suffixContainer: ["suffixContainer", "dropdownToggle"],
@@ -437,7 +434,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDimTokenSelector__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -70,27 +70,27 @@ export const PlasmicStyleSelect__VariantProps = new Array<VariantPropType>(
 );
 
 export type PlasmicStyleSelect__ArgsType = {
-  selectedContent?: React.ReactNode;
-  placeholder?: React.ReactNode;
-  children?: React.ReactNode;
   value?: "Dynamic options";
   name?: string;
   options?: any;
   onChange?: (value: string) => void;
   "aria-label"?: string;
   "aria-labelledby"?: string;
+  selectedContent?: React.ReactNode;
+  placeholder?: React.ReactNode;
+  children?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicStyleSelect__ArgsType;
 export const PlasmicStyleSelect__ArgProps = new Array<ArgPropType>(
-  "selectedContent",
-  "placeholder",
-  "children",
   "value",
   "name",
   "options",
   "onChange",
   "aria-label",
-  "aria-labelledby"
+  "aria-labelledby",
+  "selectedContent",
+  "placeholder",
+  "children"
 );
 
 export type PlasmicStyleSelect__OverridesType = {
@@ -195,7 +195,6 @@ function PlasmicStyleSelect__RenderFunc(props: {
         onChangeProp: "onChange",
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -451,7 +450,6 @@ const PlasmicDescendants = {
     "overlay",
     "optionsContainer",
   ],
-
   trigger: ["trigger", "contentContainer", "dropdownIcon"],
   contentContainer: ["contentContainer"],
   dropdownIcon: ["dropdownIcon"],
@@ -475,7 +473,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicStyleSelect__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
