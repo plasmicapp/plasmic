@@ -18,11 +18,13 @@ export type WithPlasmicCanvasComponentInfo = {
   };
 };
 
+export type ControlContextData = {
+  isDisabled?: boolean;
+  isReadOnly?: boolean;
+};
+
 export type BaseControlContextData = {
-  parent?: {
-    isDisabled?: boolean;
-    isReadOnly?: boolean;
-  };
+  parent?: ControlContextData;
 };
 
 export type Registerable = {

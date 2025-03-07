@@ -11,6 +11,7 @@ import {
   CodeComponentMetaOverrides,
   filterHoverProps,
   HasControlContextData,
+  isDefined,
   makeComponentName,
   Registerable,
   registerComponentHelper,
@@ -77,7 +78,10 @@ function BaseInput_(
     hoverProps,
     {
       style: COMMON_STYLES,
-      value: context?.isUncontrolled ? undefined : value,
+      value:
+        context?.isUncontrolled || isDefined(textFieldContext)
+          ? undefined
+          : value,
       autoComplete: resolveAutoComplete(autoComplete),
       className,
     }

@@ -7,7 +7,7 @@ import type { BaseLabel } from "./registerLabel";
 import { BaseRadioGroup } from "./registerRadioGroup";
 import type { BaseSection } from "./registerSection";
 import { BaseSlider } from "./registerSlider";
-import { BaseTextField } from "./registerTextField";
+import { ControlContextData } from "./utils";
 
 // We pass down context props via our own Plasmic*Context instead of directly
 // using react-aria-component's *Context, because react-aria-component's
@@ -18,7 +18,7 @@ import { BaseTextField } from "./registerTextField";
 
 // Creating the text field context here because input/textarea inside text field receive a null for the TextFieldContext
 export const PlasmicTextFieldContext = React.createContext<
-  React.ComponentProps<typeof BaseTextField> | undefined
+  ControlContextData | undefined
 >(undefined);
 
 export const PlasmicCheckboxGroupContext = React.createContext<

@@ -1,11 +1,13 @@
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
+import glob from "glob";
 import path from "path";
 import esbuild from "rollup-plugin-esbuild";
-import glob from "glob";
 
-const SKINNY_INPUTS = glob.sync("./src/register*.ts*");
+const SKINNY_INPUTS = glob
+  .sync("./src/register*.ts*")
+  .filter((file) => !file.includes("stories"));
 
 export default [
   {

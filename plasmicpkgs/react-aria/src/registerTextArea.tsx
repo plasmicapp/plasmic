@@ -11,6 +11,7 @@ import {
   CodeComponentMetaOverrides,
   filterHoverProps,
   HasControlContextData,
+  isDefined,
   makeComponentName,
   Registerable,
   registerComponentHelper,
@@ -51,6 +52,7 @@ function BaseTextArea_(
     className,
     plasmicUpdateVariant,
     setControlContextData,
+    value,
     ...restProps
   } = props;
 
@@ -72,6 +74,7 @@ function BaseTextArea_(
     focusProps,
     hoverProps,
     {
+      value: isDefined(textFieldContext) ? undefined : value,
       style: COMMON_STYLES,
       className,
     }
