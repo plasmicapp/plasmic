@@ -36,7 +36,7 @@ import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import:
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicCommentPost.module.css"; // plasmic-import: l_AKXl2AAu/css
 
@@ -49,15 +49,18 @@ createPlasmicElementProxy;
 export type PlasmicCommentPost__VariantMembers = {
   thread: "thread";
   isEditing: "isEditing";
+  isDeleted: "isDeleted";
 };
 export type PlasmicCommentPost__VariantsArgs = {
   thread?: SingleBooleanChoiceArg<"thread">;
   isEditing?: SingleBooleanChoiceArg<"isEditing">;
+  isDeleted?: SingleBooleanChoiceArg<"isDeleted">;
 };
 type VariantPropType = keyof PlasmicCommentPost__VariantsArgs;
 export const PlasmicCommentPost__VariantProps = new Array<VariantPropType>(
   "thread",
-  "isEditing"
+  "isEditing",
+  "isDeleted"
 );
 
 export type PlasmicCommentPost__ArgsType = {};
@@ -85,6 +88,7 @@ export type PlasmicCommentPost__OverridesType = {
 export interface DefaultCommentPostProps {
   thread?: SingleBooleanChoiceArg<"thread">;
   isEditing?: SingleBooleanChoiceArg<"isEditing">;
+  isDeleted?: SingleBooleanChoiceArg<"isDeleted">;
   className?: string;
 }
 
@@ -132,6 +136,12 @@ function PlasmicCommentPost__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isEditing,
       },
+      {
+        path: "isDeleted",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isDeleted,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -154,7 +164,7 @@ function PlasmicCommentPost__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
+        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         sty.root,
         { [sty.rootthread]: hasVariant($state, "thread", "thread") }
@@ -176,7 +186,9 @@ function PlasmicCommentPost__RenderFunc(props: {
             data-plasmic-name={"img"}
             data-plasmic-override={overrides.img}
             alt={""}
-            className={classNames(sty.img)}
+            className={classNames(sty.img, {
+              [sty.imgisEditing]: hasVariant($state, "isEditing", "isEditing"),
+            })}
             displayHeight={"auto"}
             displayMaxHeight={"none"}
             displayMaxWidth={"100%"}
@@ -241,12 +253,23 @@ function PlasmicCommentPost__RenderFunc(props: {
         <div
           data-plasmic-name={"actions"}
           data-plasmic-override={overrides.actions}
-          className={classNames(projectcss.all, sty.actions)}
+          className={classNames(projectcss.all, sty.actions, {
+            [sty.actionsisDeleted]: hasVariant(
+              $state,
+              "isDeleted",
+              "isDeleted"
+            ),
+          })}
         >
           <MenuButton
             data-plasmic-name={"btnMore"}
             data-plasmic-override={overrides.btnMore}
             className={classNames("__wab_instance", sty.btnMore, {
+              [sty.btnMoreisDeleted]: hasVariant(
+                $state,
+                "isDeleted",
+                "isDeleted"
+              ),
               [sty.btnMorethread]: hasVariant($state, "thread", "thread"),
             })}
             size={"small"}
@@ -312,6 +335,11 @@ function PlasmicCommentPost__RenderFunc(props: {
               projectcss.__wab_text,
               sty.body,
               {
+                [sty.bodyisDeleted]: hasVariant(
+                  $state,
+                  "isDeleted",
+                  "isDeleted"
+                ),
                 [sty.bodyisEditing]: hasVariant(
                   $state,
                   "isEditing",
@@ -329,6 +357,11 @@ function PlasmicCommentPost__RenderFunc(props: {
             data-plasmic-name={"btnAddReaction"}
             data-plasmic-override={overrides.btnAddReaction}
             className={classNames("__wab_instance", sty.btnAddReaction, {
+              [sty.btnAddReactionisDeleted]: hasVariant(
+                $state,
+                "isDeleted",
+                "isDeleted"
+              ),
               [sty.btnAddReactionisEditing]: hasVariant(
                 $state,
                 "isEditing",
@@ -356,6 +389,11 @@ function PlasmicCommentPost__RenderFunc(props: {
           data-plasmic-override={overrides.reactionsContainer}
           hasGap={true}
           className={classNames(projectcss.all, sty.reactionsContainer, {
+            [sty.reactionsContainerisDeleted]: hasVariant(
+              $state,
+              "isDeleted",
+              "isDeleted"
+            ),
             [sty.reactionsContainerisEditing]: hasVariant(
               $state,
               "isEditing",

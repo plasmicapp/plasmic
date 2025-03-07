@@ -88,6 +88,7 @@ export type PlasmicTextarea__VariantsArgs = {
     | "purple"
     | "topLayout"
   >;
+
   withIcons?: MultiChoiceArg<"withPrefix" | "withSuffix">;
   error?: SingleBooleanChoiceArg<"error">;
   fontSize?: SingleChoiceArg<"xlarge">;
@@ -160,6 +161,7 @@ export interface DefaultTextareaProps {
     | "purple"
     | "topLayout"
   >;
+
   withIcons?: MultiChoiceArg<"withPrefix" | "withSuffix">;
   error?: SingleBooleanChoiceArg<"error">;
   fontSize?: SingleChoiceArg<"xlarge">;
@@ -266,6 +268,7 @@ function PlasmicTextarea__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props["value"],
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -772,6 +775,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicTextarea__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

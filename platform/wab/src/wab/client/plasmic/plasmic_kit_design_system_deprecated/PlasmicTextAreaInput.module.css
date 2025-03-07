@@ -3,8 +3,8 @@
   object-fit: cover;
   position: relative;
   box-shadow: inset 0px 0px 0px 1px var(--token-CE-OiWjNhspe);
-  font-size: var(--token-XviUmtZ5j0iF);
-  line-height: var(--token-ND9WWUwuMDcO);
+  font-size: var(--token-y-e1zIVKHJyd);
+  line-height: var(--token-wCNdq3-87nVE);
   width: 100%;
   color: var(--token-dED0FYPw-qtp);
   font-family: var(--token-NQPeu56hWEVO);
@@ -14,10 +14,9 @@
   border-style: none;
 }
 .ariaTextArea[data-focused]:global(.__wab_instance) {
-  outline-width: 2px;
+  outline-width: thin;
   outline-style: solid;
   outline-color: var(--token-qP8a3gYPq7fd);
-  outline-offset: 1px;
 }
 .ariaTextArea[data-disabled]:global(.__wab_instance) {
   cursor: not-allowed;

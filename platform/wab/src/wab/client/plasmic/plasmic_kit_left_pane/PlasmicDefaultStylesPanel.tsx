@@ -142,6 +142,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -399,6 +400,7 @@ const PlasmicDescendants = {
     "pseudoClassSelect",
     "content",
   ],
+
   selector: [
     "selector",
     "freeBox",
@@ -408,17 +410,20 @@ const PlasmicDescendants = {
     "tagSelect",
     "pseudoClassSelect",
   ],
+
   freeBox: [
     "freeBox",
     "globalVariantSelectorContainer",
     "globalVariantSelect",
     "option",
   ],
+
   globalVariantSelectorContainer: [
     "globalVariantSelectorContainer",
     "globalVariantSelect",
     "option",
   ],
+
   globalVariantSelect: ["globalVariantSelect", "option"],
   option: ["option"],
   tagSelect: ["tagSelect"],
@@ -445,6 +450,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDefaultStylesPanel__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -132,6 +132,7 @@ function PlasmicDialog__RenderFunc(props: {
             {"Heading"}
           </h3>
         ),
+
         value: args.heading,
       })}
       <div
@@ -168,6 +169,7 @@ function PlasmicDialog__RenderFunc(props: {
               </div>
             </Stack__>
           ),
+
           value: args.content,
         })}
       </div>
@@ -209,6 +211,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDialog__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

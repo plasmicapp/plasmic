@@ -103,7 +103,7 @@
     {
       "name": "Brand/Brand",
       "type": "color",
-      "value": "#2563EB",
+      "value": "#0091FF",
       "category": "color",
       "meta": {
         "projectId": "tXkSR39sgCDWSitZxC5xFV",
@@ -143,7 +143,7 @@
     {
       "name": "Brand/Brand-Foreground",
       "type": "color",
-      "value": "#EFF6FF",
+      "value": "#EDF6FF",
       "category": "color",
       "meta": {
         "projectId": "tXkSR39sgCDWSitZxC5xFV",
@@ -313,7 +313,7 @@
     {
       "name": "Font-LG",
       "type": "fontsize",
-      "value": "1.25rem",
+      "value": "16px",
       "category": "fontsize",
       "meta": {
         "projectId": "tXkSR39sgCDWSitZxC5xFV",
@@ -333,7 +333,7 @@
     {
       "name": "Font-MD",
       "type": "fontsize",
-      "value": "1rem",
+      "value": "12px",
       "category": "fontsize",
       "meta": {
         "projectId": "tXkSR39sgCDWSitZxC5xFV",
@@ -353,7 +353,7 @@
     {
       "name": "Font-SM",
       "type": "fontsize",
-      "value": "0.75rem",
+      "value": "10px",
       "category": "fontsize",
       "meta": {
         "projectId": "tXkSR39sgCDWSitZxC5xFV",
@@ -463,7 +463,7 @@
     {
       "name": "Line-height-MD",
       "type": "lineheight",
-      "value": "1.25",
+      "value": "16px",
       "category": "lineheight",
       "meta": {
         "projectId": "tXkSR39sgCDWSitZxC5xFV",

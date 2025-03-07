@@ -126,6 +126,7 @@ function PlasmicLeftImportsPanel__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.withUpdateAll,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -329,6 +330,7 @@ const PlasmicDescendants = {
     "updateButton",
     "content",
   ],
+
   leftSearchPanel: ["leftSearchPanel"],
   importsHeader: [
     "importsHeader",
@@ -337,6 +339,7 @@ const PlasmicDescendants = {
     "refreshButton",
     "updateButton",
   ],
+
   freeBox: ["freeBox", "importButton", "refreshButton", "updateButton"],
   importButton: ["importButton"],
   refreshButton: ["refreshButton"],
@@ -362,6 +365,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftImportsPanel__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

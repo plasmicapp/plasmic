@@ -2,8 +2,8 @@
 // This file is owned by you, feel free to edit as you see fit.
 import { MarkdownHintsPopoverContent } from "@/wab/client/components/comments/MarkdownHintsPopoverContent";
 import { getSetOfVariantsForViewCtx } from "@/wab/client/components/comments/utils";
-import { useShareDialog } from "@/wab/client/components/top-bar/useShareDialog";
 import { Popover } from "@/wab/client/components/plexus/Popover";
+import { useShareDialog } from "@/wab/client/components/top-bar/useShareDialog";
 import { useUserMentions } from "@/wab/client/components/user-mentions/useUserMentions";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
@@ -25,13 +25,15 @@ import { useState } from "react";
 export type CommentPostFormProps = DefaultCommentPostFormProps & {
   threadId?: CommentThreadId;
   editComment?: ApiComment;
-  setIsEditing?: (val: boolean) => void;
+  onCancel?: () => void;
+  onSubmit?: () => void;
 };
 
 const CommentPostForm = observer(function CommentPostForm(
   props: CommentPostFormProps
 ) {
-  const { threadId, isEditing, setIsEditing, editComment, ...rest } = props;
+  const { threadId, isEditing, editComment, onSubmit, onCancel, ...rest } =
+    props;
   const [value, setValue] = useState(editComment?.body || "");
 
   const studioCtx = useStudioCtx();
@@ -40,7 +42,6 @@ const CommentPostForm = observer(function CommentPostForm(
 
   const api = useAppCtx().api;
 
-  const formRef = React.useRef<HTMLFormElement>(null);
   const inputElementId = `comment-post-input-${editComment?.id}`;
 
   const {
@@ -70,116 +71,120 @@ const CommentPostForm = observer(function CommentPostForm(
     );
   }
 
+  const handleAddComment = async () => {
+    setValue("");
+    if (threadId) {
+      const commentData: ThreadCommentData = { body: value };
+      await api.postThreadComment(
+        commentsCtx.projectId(),
+        commentsCtx.branchId(),
+        threadId,
+        commentData
+      );
+    } else {
+      const location = {
+        subject: commentsCtx
+          .bundler()
+          .addrOf(ensure(commentsCtx.openThreadTpl(), "")),
+        variants: getSetOfVariantsForViewCtx(
+          ensure(commentsCtx.openViewCtx(), ""),
+          commentsCtx.bundler()
+        ).map((pv) => commentsCtx.bundler().addrOf(pv)),
+      };
+      const commentData: RootCommentData = {
+        body: value,
+        location,
+      };
+      await api.postRootComment(
+        commentsCtx.projectId(),
+        commentsCtx.branchId(),
+        commentData
+      );
+      commentsCtx.closeCommentDialogs();
+    }
+    onSubmit?.();
+  };
+
+  const handleEditComment = async (updatedComment?: ApiComment) => {
+    if (updatedComment && value.trim() !== updatedComment.body.trim()) {
+      spawn(
+        api.editComment(
+          commentsCtx.projectId(),
+          commentsCtx.branchId(),
+          updatedComment.id,
+          {
+            body: value.trim(),
+          }
+        )
+      );
+    }
+    onSubmit?.();
+    setValue("");
+  };
+
   return (
     <>
-      <form
-        ref={formRef}
-        onSubmit={async (e) => {
-          e.preventDefault();
-
-          if (isEditing && editComment) {
-            if (value.trim() !== editComment.body.trim()) {
-              spawn(
-                api.editComment(
-                  commentsCtx.projectId(),
-                  commentsCtx.branchId(),
-                  editComment.id,
-                  {
-                    body: value.trim(),
-                  }
-                )
-              );
+      <PlasmicCommentPostForm
+        {...rest}
+        isEditing={isEditing}
+        bodyInput={{
+          autoComplete: "off",
+          placeholder: "Add a comment",
+          textAreaInput: {
+            id: inputElementId,
+            value,
+            rows: 5,
+            type: "soft",
+          },
+          onChange: (val) => {
+            if (val === undefined) {
+              // Plexus Input triggers onChange with undefined on first render even if we pass a controlled value
+              setValue(isEditing ? editComment?.body || "" : "");
+            } else {
+              setValue(val);
             }
-            setIsEditing?.(false);
-            return;
-          }
-
-          setValue("");
-          if (threadId) {
-            const commentData: ThreadCommentData = { body: value };
-            await api.postThreadComment(
-              commentsCtx.projectId(),
-              commentsCtx.branchId(),
-              threadId,
-              commentData
-            );
-          } else {
-            const location = {
-              subject: commentsCtx
-                .bundler()
-                .addrOf(ensure(commentsCtx.openThreadTpl(), "")),
-              variants: getSetOfVariantsForViewCtx(
-                ensure(commentsCtx.openViewCtx(), ""),
-                commentsCtx.bundler()
-              ).map((pv) => commentsCtx.bundler().addrOf(pv)),
-            };
-            const commentData: RootCommentData = { body: value, location };
-            await api.postRootComment(
-              commentsCtx.projectId(),
-              commentsCtx.branchId(),
-              commentData
-            );
-            commentsCtx.closeCommentDialogs();
-          }
+          },
+          onKeyDown: onKeyHandler,
+          onSelect: onSelectHandler,
         }}
-      >
-        <PlasmicCommentPostForm
-          {...rest}
-          isEditing={isEditing}
-          bodyInput={{
-            autoComplete: "off",
-            placeholder: "Add a comment",
-            textAreaInput: {
-              id: inputElementId,
-              value,
-              rows: 5,
-            },
-            onChange: (val) => {
-              if (val === undefined) {
-                // Plexus Input triggers onChange with undefined on first render even if we pass a controlled value
-                setValue(isEditing ? editComment?.body || "" : "");
-              } else {
-                setValue(val);
-              }
-            },
-            onKeyDown: onKeyHandler,
-            onSelect: onSelectHandler,
-            onBlur: () => {
-              if (isEditing) {
-                formRef.current?.requestSubmit();
-                setIsEditing?.(false);
-              }
-            },
-          }}
-          submitButton={{
-            htmlType: "submit",
-            disabled: !isValidComment(),
-          }}
-          markdownHintsIcon={{
-            render: (iconProps, HintIconComponent) => {
-              return (
-                <Popover
-                  trigger={<HintIconComponent {...iconProps} />}
-                  content={<MarkdownHintsPopoverContent />}
-                  offset={0}
-                  placement={"bottom"}
-                />
-              );
-            },
-          }}
-          mentionIcon={{
-            onClick: () => {
-              handleMentionClick();
-            },
-          }}
-          shareProjectIcon={{
-            onClick: () => {
-              openShareDialog();
-            },
-          }}
-        />
-      </form>
-
+        submitButton={{
+          onClick: async () => {
+            if (isEditing) {
+              spawn(handleEditComment(editComment));
+            } else {
+              spawn(handleAddComment());
+            }
+          },
+          disabled: !isValidComment(),
+        }}
+        cancelButton={{
+          onClick: () => {
+            onCancel?.();
+          },
+        }}
+        markdownHintsIcon={{
+          render: (iconProps, HintIconComponent) => {
+            return (
+              <Popover
+                trigger={<HintIconComponent {...iconProps} />}
+                content={<MarkdownHintsPopoverContent />}
+                offset={0}
+                placement={"bottom"}
+              />
+            );
+          },
+        }}
+        mentionIcon={{
+          onClick: () => {
+            handleMentionClick();
+          },
+        }}
+        shareProjectIcon={{
+          onClick: () => {
+            openShareDialog();
+          },
+        }}
+      />
       {userMentionsPopover}
     </>
   );

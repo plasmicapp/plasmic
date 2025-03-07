@@ -112,6 +112,7 @@ export type PlasmicLeftTabStrip__VariantsArgs = {
     | "copilot"
     | "lint"
   >;
+
   showAvatar?: SingleBooleanChoiceArg<"showAvatar">;
   withInsertButton?: SingleBooleanChoiceArg<"withInsertButton">;
 };
@@ -176,6 +177,7 @@ export interface DefaultLeftTabStripProps {
     | "copilot"
     | "lint"
   >;
+
   showAvatar?: SingleBooleanChoiceArg<"showAvatar">;
   withInsertButton?: SingleBooleanChoiceArg<"withInsertButton">;
   className?: string;
@@ -233,6 +235,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           $props.withInsertButton,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -386,6 +389,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
               />
             </React.Fragment>
           ),
+
           value: args.buttons,
         })}
       </div>
@@ -1175,6 +1179,7 @@ const PlasmicDescendants = {
     "players",
     "avatar",
   ],
+
   insert: ["insert"],
   divider: ["divider"],
   copilot: ["copilot"],
@@ -1234,6 +1239,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftTabStrip__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

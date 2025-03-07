@@ -86,6 +86,7 @@ export type PlasmicTextbox__VariantsArgs = {
     | "purple"
     | "topLayout"
   >;
+
   withIcons?: MultiChoiceArg<"withPrefix" | "withSuffix">;
   error?: SingleBooleanChoiceArg<"error">;
   fontSize?: SingleChoiceArg<"xlarge">;
@@ -152,6 +153,7 @@ export interface DefaultTextboxProps {
     | "purple"
     | "topLayout"
   >;
+
   withIcons?: MultiChoiceArg<"withPrefix" | "withSuffix">;
   error?: SingleBooleanChoiceArg<"error">;
   fontSize?: SingleChoiceArg<"xlarge">;
@@ -252,6 +254,7 @@ function PlasmicTextbox__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.extraPadding,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -726,6 +729,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicTextbox__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

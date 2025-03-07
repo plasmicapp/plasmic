@@ -116,6 +116,7 @@ function PlasmicLabel__RenderFunc(props: {
           $props.requirementIndicator,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -237,6 +238,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLabel__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

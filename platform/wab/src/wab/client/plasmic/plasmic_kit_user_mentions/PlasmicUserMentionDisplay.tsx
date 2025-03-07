@@ -115,6 +115,7 @@ function PlasmicUserMentionDisplay__RenderFunc(props: {
             {"User name"}
           </div>
         ),
+
         value: args.children,
         className: classNames(sty.slotTargetChildren),
       })}
@@ -137,6 +138,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicUserMentionDisplay__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

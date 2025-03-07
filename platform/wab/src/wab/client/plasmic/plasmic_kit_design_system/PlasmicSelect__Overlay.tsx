@@ -112,6 +112,7 @@ function PlasmicSelect__Overlay__RenderFunc(props: {
           $props.relativePlacement,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -311,6 +312,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSelect__Overlay__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

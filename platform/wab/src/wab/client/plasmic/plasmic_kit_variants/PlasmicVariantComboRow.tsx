@@ -118,6 +118,7 @@ function PlasmicVariantComboRow__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isIndicated,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -192,6 +193,7 @@ function PlasmicVariantComboRow__RenderFunc(props: {
               </div>
             </Chip>
           ),
+
           value: args.labelContainer,
         })}
       </Stack__>
@@ -245,6 +247,7 @@ const PlasmicDescendants = {
     "visibleButton",
     "indicator",
   ],
+
   iconContainer: ["iconContainer"],
   labelContainer: ["labelContainer"],
   actionsContainer: ["actionsContainer", "visibleButton"],
@@ -268,6 +271,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicVariantComboRow__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

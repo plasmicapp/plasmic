@@ -108,6 +108,7 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.showAlert,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -207,6 +208,7 @@ const PlasmicDescendants = {
     "publishButton",
     "content",
   ],
+
   leftSearchPanel: ["leftSearchPanel"],
   versionsHeader: ["versionsHeader", "publishButton"],
   publishButton: ["publishButton"],
@@ -228,6 +230,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftVersionsPanel__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

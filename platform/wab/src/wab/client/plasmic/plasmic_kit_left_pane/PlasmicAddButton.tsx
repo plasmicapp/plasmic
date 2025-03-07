@@ -106,6 +106,7 @@ function PlasmicAddButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isActive,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -192,6 +193,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicAddButton__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

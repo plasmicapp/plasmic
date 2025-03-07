@@ -171,6 +171,7 @@ const PlasmicDescendants = {
     "newComponentButton",
     "content",
   ],
+
   leftPaneHeader: ["leftPaneHeader", "description", "newComponentButton"],
   description: ["description"],
   newComponentButton: ["newComponentButton"],
@@ -192,6 +193,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftLintIssuesPanel__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

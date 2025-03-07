@@ -180,6 +180,7 @@ function PlasmicVariantSection__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.showIcon,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -564,6 +565,7 @@ function PlasmicVariantSection__RenderFunc(props: {
                   {"Something"}
                 </VariantRow>
               ),
+
               value: args.children,
             })}
           </div>
@@ -589,6 +591,7 @@ const PlasmicDescendants = {
     "body",
     "variantsContainer",
   ],
+
   header: [
     "header",
     "iconContainer",
@@ -601,6 +604,7 @@ const PlasmicDescendants = {
     "emptyAddButton",
     "dragHandle",
   ],
+
   iconContainer: ["iconContainer"],
   labelContainer: ["labelContainer"],
   actionsContainer: [
@@ -611,6 +615,7 @@ const PlasmicDescendants = {
     "addButton",
     "emptyAddButton",
   ],
+
   menuButton: ["menuButton"],
   settingsButton: ["settingsButton"],
   exprButton: ["exprButton"],
@@ -644,6 +649,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicVariantSection__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

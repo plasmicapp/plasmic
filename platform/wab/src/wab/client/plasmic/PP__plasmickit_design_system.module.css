@@ -27,15 +27,15 @@
   --plasmic-token-basic-text-primary: var(--token-dED0FYPw-qtp);
   --token-NQPeu56hWEVO: Inter;
   --plasmic-token-sans-serif: var(--token-NQPeu56hWEVO);
-  --token-y-e1zIVKHJyd: 1rem;
+  --token-y-e1zIVKHJyd: 12px;
   --plasmic-token-font-md: var(--token-y-e1zIVKHJyd);
-  --token-wCNdq3-87nVE: 1.25;
+  --token-wCNdq3-87nVE: 16px;
   --plasmic-token-line-height-md: var(--token-wCNdq3-87nVE);
-  --token-XviUmtZ5j0iF: 0.75rem;
+  --token-XviUmtZ5j0iF: 10px;
   --plasmic-token-font-sm: var(--token-XviUmtZ5j0iF);
   --token-ND9WWUwuMDcO: 1;
   --plasmic-token-line-height-sm: var(--token-ND9WWUwuMDcO);
-  --token-UgD7DVJpT4oO: 1.25rem;
+  --token-UgD7DVJpT4oO: 16px;
   --plasmic-token-font-lg: var(--token-UgD7DVJpT4oO);
   --token-ArhjzHzow-J7: 1.4;
   --plasmic-token-line-height-lg: var(--token-ArhjzHzow-J7);
@@ -49,7 +49,7 @@
   --plasmic-token-muted-muted-soft-hover: var(--token-11LpBV8ry6Ok);
   --token-vhXSTyxt_gU9: 0.125rem;
   --plasmic-token-size-2: var(--token-vhXSTyxt_gU9);
-  --token-qP8a3gYPq7fd: #2563eb;
+  --token-qP8a3gYPq7fd: var(--token-D666zt2IZPL);
   --plasmic-token-brand-brand: var(--token-qP8a3gYPq7fd);
   --token-rqQDmopteQdV: #ffffff;
   --plasmic-token-basic-container-background: var(--token-rqQDmopteQdV);
@@ -99,7 +99,7 @@
   --plasmic-token-interaction-disabled: var(--token-lzUd2yT9mONr);
   --token-OpqgFV3u3Ad_: #00000033;
   --plasmic-token-interaction-pressed: var(--token-OpqgFV3u3Ad_);
-  --token-sVzFDRV7ByQj: #eff6ff;
+  --token-sVzFDRV7ByQj: var(--token-yqAf_E0HIjU);
   --plasmic-token-brand-brand-foreground: var(--token-sVzFDRV7ByQj);
   --token-9DPE9saBArps: #f9fafb;
   --plasmic-token-neutral-neutral-foreground: var(--token-9DPE9saBArps);
@@ -125,6 +125,8 @@
   --plasmic-token-destructive-destructive-soft-foreground: var(
     --token-2ziDTor6aAuH
   );
+  --token-7ojREB1C2lcs: #171717;
+  --plasmic-token-basic-container-background-dark: var(--token-7ojREB1C2lcs);
 }
 
 .plasmic_default_styles {

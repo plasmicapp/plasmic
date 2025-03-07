@@ -118,6 +118,7 @@ function PlasmicStyleToggleButtonGroup__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.autoWidth,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -200,6 +201,7 @@ function PlasmicStyleToggleButtonGroup__RenderFunc(props: {
               </StyleToggleButton>
             </React.Fragment>
           ),
+
           value: args.children,
         })}
       </Stack__>
@@ -224,6 +226,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicStyleToggleButtonGroup__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

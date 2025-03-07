@@ -218,6 +218,7 @@ const PlasmicDescendants = {
     "saveButton",
     "content",
   ],
+
   left: ["left", "details"],
   details: ["details"],
   right: ["right", "duplicateButton", "saveButton"],

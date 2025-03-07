@@ -131,6 +131,7 @@ function PlasmicListSection__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.collapseState,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -287,6 +288,7 @@ function PlasmicListSection__RenderFunc(props: {
                 </ListItem>
               </React.Fragment>
             ),
+
             value: args.children,
           })}
         </div>
@@ -321,6 +323,7 @@ const PlasmicDescendants = {
     "itemsContainer",
     "listSectionSeparator",
   ],
+
   listSectionHeader: ["listSectionHeader", "iconButton"],
   iconButton: ["iconButton"],
   itemsContainer: ["itemsContainer"],
@@ -342,6 +345,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicListSection__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

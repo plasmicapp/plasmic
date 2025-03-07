@@ -228,8 +228,14 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
       isEditing={isEditing}
       commentPostForm={{
         isEditing,
-        setIsEditing,
         editComment: comment,
+        threadId: comment.commentThreadId,
+        onSubmit: () => {
+          setIsEditing(false);
+        },
+        onCancel: () => {
+          setIsEditing(false);
+        },
       }}
       timestamp={moment(comment.createdAt).fromNow()}
       thread={isThread}

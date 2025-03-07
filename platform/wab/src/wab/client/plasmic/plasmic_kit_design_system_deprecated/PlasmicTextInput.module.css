@@ -3,8 +3,8 @@
   box-shadow: inset 0px 0px 0px 1px var(--token-CE-OiWjNhspe);
   color: var(--token-dED0FYPw-qtp);
   font-family: var(--token-NQPeu56hWEVO);
-  font-size: var(--token-XviUmtZ5j0iF);
-  line-height: var(--token-ND9WWUwuMDcO);
+  font-size: var(--token-y-e1zIVKHJyd);
+  line-height: var(--token-wCNdq3-87nVE);
   width: 100%;
   position: relative;
   outline-style: none;
@@ -18,8 +18,7 @@
 }
 .ariaInput[data-focused]:global(.__wab_instance) {
   outline-style: solid;
-  outline-width: var(--token-vhXSTyxt_gU9);
-  outline-offset: 1px;
+  outline-width: thin;
   outline-color: var(--token-qP8a3gYPq7fd);
 }
 .ariaInputtype_soft:global(.__wab_instance) {

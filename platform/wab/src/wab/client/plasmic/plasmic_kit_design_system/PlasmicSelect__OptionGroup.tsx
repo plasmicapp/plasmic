@@ -128,6 +128,7 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isLast,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -207,6 +208,7 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
               </Select__Option>
             </React.Fragment>
           ),
+
           value: args.children,
         })}
       </div>
@@ -256,6 +258,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSelect__OptionGroup__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

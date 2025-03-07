@@ -113,6 +113,7 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.rightOptions,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -285,6 +286,7 @@ const PlasmicDescendants = {
     "collapseButton",
     "filterButton",
   ],
+
   searchbox: ["searchbox"],
   freeBox: ["freeBox", "expandButton", "collapseButton", "filterButton"],
   expandButton: ["expandButton"],
@@ -308,6 +310,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftSearchPanel__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -8,7 +8,7 @@
   max-width: 100%;
   position: relative;
   min-width: 0;
-  padding: 8px 16px;
+  padding: 8px 2px;
 }
 .root:hover {
   background: var(--token-9jh0BkCENS);
@@ -90,12 +90,18 @@
   max-width: 100%;
   padding: 0px;
 }
+.actionsisDeleted {
+  display: none;
+}
 .btnMore:global(.__wab_instance):global(.__wab_instance) {
   position: relative;
   opacity: 0;
   flex-shrink: 0;
 }
 .btnMorethread:global(.__wab_instance):global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.btnMoreisDeleted:global(.__wab_instance):global(.__wab_instance) {
   flex-shrink: 0;
 }
 .root:hover .btnMore:global(.__wab_instance):global(.__wab_instance) {
@@ -117,6 +123,9 @@
   max-width: 100%;
   min-width: 0;
   padding: 0px 0px 0px 40px;
+}
+.freeBoxisEditing___5UHnquz8Vl {
+  padding-left: 0px;
 }
 .subjectLabel {
   width: 100%;
@@ -151,6 +160,9 @@
   max-width: 800px;
   min-width: 0;
 }
+.bodyisDeleted {
+  color: var(--token-RTPypKCJE4bm);
+}
 .btnAddReaction:global(.__wab_instance) {
   max-width: 100%;
   position: relative;
@@ -159,6 +171,10 @@
 }
 .btnAddReactionisEditing:global(.__wab_instance) {
   flex-shrink: 0;
+}
+.btnAddReactionisDeleted:global(.__wab_instance) {
+  flex-shrink: 0;
+  display: none;
 }
 .root:hover .btnAddReaction:global(.__wab_instance) {
   opacity: 1;
@@ -193,7 +209,7 @@
   min-width: 0;
   min-height: 0;
 }
-.svg__sE70P {
+.svg__xhYRg {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -232,6 +248,9 @@
   margin-top: 4px;
 }
 .reactionsContainerisEditing {
+  display: none;
+}
+.reactionsContainerisDeleted {
   display: none;
 }
 .reactionButton__cMbVc:global(.__wab_instance) {
@@ -291,7 +310,7 @@
   min-width: 0;
   min-height: 0;
 }
-.svg__t4Cqc {
+.svg__sttGh {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -315,13 +334,13 @@
 .repliesLinkthread:global(.__wab_instance) {
   display: flex;
 }
-.svg__ugnkL {
+.svg__uBf8C {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
-.svg__sZpH {
+.svg__x2Rye {
   display: flex;
   position: relative;
   object-fit: cover;

@@ -123,6 +123,7 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => "",
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -310,6 +311,7 @@ const PlasmicDescendants = {
     "option",
     "content",
   ],
+
   leftSearchPanel: ["leftSearchPanel"],
   leftPaneHeader: [
     "leftPaneHeader",
@@ -318,12 +320,14 @@ const PlasmicDescendants = {
     "globalVariantSelect",
     "option",
   ],
+
   importTokensButton: ["importTokensButton"],
   globalVariantsSelectContainer: [
     "globalVariantsSelectContainer",
     "globalVariantSelect",
     "option",
   ],
+
   globalVariantSelect: ["globalVariantSelect", "option"],
   option: ["option"],
   content: ["content"],
@@ -347,6 +351,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftGeneralTokensPanel__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

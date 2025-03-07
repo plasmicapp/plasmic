@@ -117,6 +117,7 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.state,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -462,6 +463,7 @@ const PlasmicDescendants = {
     "img",
     "publishButton",
   ],
+
   closeButton: ["closeButton"],
   hint: ["hint"],
   title: ["title"],
@@ -489,6 +491,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPublishDialogContent__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
