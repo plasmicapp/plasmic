@@ -27,6 +27,7 @@ packages:
   - plasmicpkgs/antd5
   - plasmicpkgs/chakra-ui
   - plasmicpkgs/commerce-providers/*
+  - plasmicpkgs/fetch
   - plasmicpkgs/framer-motion
   - plasmicpkgs/keen-slider
   - plasmicpkgs/lottie-react
