@@ -62,6 +62,7 @@ function computeHashFromStableFields(node: TplNode, ctx: RenderingCtx) {
     ctx.updateVariant,
     JSON.stringify(ctx.visibilityOptions),
     ctx.isDraggingObject,
+    ctx.viewCtx.studioCtx.isAutoOpenMode,
   ];
 }
 
