@@ -111,7 +111,7 @@ export async function createDatabase(name = "test") {
     cleanup: async () => {
       await con.close();
       if (isCI) {
-        await sucon.query(`drop database ${dbname} with (force);`);
+        await sucon.query(`drop database if exists ${dbname} with (force);`);
       }
       await sucon.close();
     },
