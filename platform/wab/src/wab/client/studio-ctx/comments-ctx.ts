@@ -17,14 +17,14 @@ import { mkIdMap } from "@/wab/shared/collections";
 import { sortBy, xGroupBy } from "@/wab/shared/common";
 import { TplNamable } from "@/wab/shared/core/tpls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { autorun, computed, observable } from "mobx";
+import { autorun, computed, observable, runInAction } from "mobx";
 
 export class CommentsCtx {
   private disposals: (() => void)[] = [];
 
-  private readonly _openThreadId = observable.box<CommentThreadId | undefined>(
-    undefined
-  );
+  private readonly _openedThreadId = observable.box<
+    CommentThreadId | undefined
+  >(undefined);
   private readonly _openedNewThreadTpl = observable.box<TplNamable | undefined>(
     undefined
   );
@@ -73,11 +73,11 @@ export class CommentsCtx {
     return this._computedData.get();
   }
 
-  openThreadId() {
-    return this._openThreadId.get();
+  openedThreadId() {
+    return this._openedThreadId.get();
   }
 
-  openThreadTpl() {
+  openedThreadTpl() {
     return this._openedNewThreadTpl.get();
   }
 
@@ -97,20 +97,29 @@ export class CommentsCtx {
     return this.studioCtx.siteInfo.id;
   }
 
-  openViewCtx() {
+  openedViewCtx() {
     return this._openedViewCtx.get();
   }
 
-  openCommentThreadDialog(viewCtx: ViewCtx, threadId: CommentThreadId) {
-    this._openThreadId.set(threadId);
-    this._openedViewCtx.set(viewCtx);
-    this._openedNewThreadTpl.set(undefined);
+  openCommentThreadDialog(
+    threadId: CommentThreadId,
+    viewCtx?: ViewCtx | undefined // If undefined, the element or its corresponding view context must be in focus for correct behavior.
+  ) {
+    runInAction(() => {
+      // Use the provided viewCtx, or fall back to the currently focused view context if not provided.
+      // This ensures the comment thread opens in the correct context, as the element should already be focused.
+      this._openedViewCtx.set(viewCtx || this.studioCtx.focusedViewCtx());
+      this._openedThreadId.set(threadId);
+      this._openedNewThreadTpl.set(undefined);
+    });
   }
 
   openNewCommentDialog(viewCtx: ViewCtx, tpl: TplNamable) {
-    this._openThreadId.set(undefined);
-    this._openedViewCtx.set(viewCtx);
-    this._openedNewThreadTpl.set(tpl);
+    runInAction(() => {
+      this._openedThreadId.set(undefined);
+      this._openedViewCtx.set(viewCtx);
+      this._openedNewThreadTpl.set(tpl);
+    });
   }
 
   async fetchComments() {
@@ -133,9 +142,11 @@ export class CommentsCtx {
   }
 
   closeCommentDialogs() {
-    this._openThreadId.set(undefined);
-    this._openedViewCtx.set(undefined);
-    this._openedNewThreadTpl.set(undefined);
+    runInAction(() => {
+      this._openedThreadId.set(undefined);
+      this._openedViewCtx.set(undefined);
+      this._openedNewThreadTpl.set(undefined);
+    });
   }
 
   dispose() {

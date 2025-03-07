@@ -38,13 +38,13 @@
   position: relative;
   align-self: flex-end;
 }
-.svg___1AWzm {
+.svg___7YkVm {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
-.svg__dxtNk {
+.svg__rDcgF {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -72,7 +72,7 @@
   height: auto;
   max-width: 100%;
   min-width: 0;
-  padding: 0px;
+  padding: 0px var(--token-YwPV7bN0RvD8);
 }
 .commentPost__oqqsp:global(.__wab_instance) {
   position: relative;
@@ -118,7 +118,7 @@
   height: auto;
   max-width: 100%;
   min-width: 0;
-  padding: 0px;
+  padding: 0px var(--token-YwPV7bN0RvD8);
 }
 .restThreadsListemptySelection {
   padding-top: 10px;

@@ -353,36 +353,36 @@ function PlasmicCommentPost__RenderFunc(props: {
               "Hello there! This comment is long. Hello there! This comment is long. Hello there! This comment is long. Hello there! This comment is long. Hello there! This comment is long. "
             }
           </div>
-          <IconButton
-            data-plasmic-name={"btnAddReaction"}
-            data-plasmic-override={overrides.btnAddReaction}
-            className={classNames("__wab_instance", sty.btnAddReaction, {
-              [sty.btnAddReactionisDeleted]: hasVariant(
-                $state,
-                "isDeleted",
-                "isDeleted"
-              ),
-              [sty.btnAddReactionisEditing]: hasVariant(
-                $state,
-                "isEditing",
-                "isEditing"
-              ),
-            })}
-            size={"small"}
-          >
-            <EmojiHappySvgIcon
-              className={classNames(projectcss.all, sty.svg___61Fdh)}
+        </div>
+        <IconButton
+          data-plasmic-name={"btnAddReaction"}
+          data-plasmic-override={overrides.btnAddReaction}
+          className={classNames("__wab_instance", sty.btnAddReaction, {
+            [sty.btnAddReactionisDeleted]: hasVariant(
+              $state,
+              "isDeleted",
+              "isDeleted"
+            ),
+            [sty.btnAddReactionisEditing]: hasVariant(
+              $state,
+              "isEditing",
+              "isEditing"
+            ),
+          })}
+          size={"small"}
+        >
+          <EmojiHappySvgIcon
+            className={classNames(projectcss.all, sty.svg__weZQ)}
+            role={"img"}
+          />
+
+          <div className={classNames(projectcss.all, sty.freeBox__qSrcv)}>
+            <PlusIcon
+              className={classNames(projectcss.all, sty.svg__mr4Aq)}
               role={"img"}
             />
-
-            <div className={classNames(projectcss.all, sty.freeBox__xBuRf)}>
-              <PlusIcon
-                className={classNames(projectcss.all, sty.svg__lgliq)}
-                role={"img"}
-              />
-            </div>
-          </IconButton>
-        </div>
+          </div>
+        </IconButton>
         <Stack__
           as={"div"}
           data-plasmic-name={"reactionsContainer"}
@@ -539,15 +539,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicCommentPost__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicCommentPost__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    // Specify args directly as props
-    Omit<PlasmicCommentPost__ArgsType, ReservedPropsType> &
-    // Specify overrides for each element directly as props
-    Omit<
+    /* Specify args directly as props*/ Omit<
+      PlasmicCommentPost__ArgsType,
+      ReservedPropsType
+    > &
+    /* Specify overrides for each element directly as props*/ Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    // Specify props for the root element
-    Omit<
+    /* Specify props for the root element*/ Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

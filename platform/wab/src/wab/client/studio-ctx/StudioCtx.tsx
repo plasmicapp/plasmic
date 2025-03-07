@@ -7,7 +7,7 @@ import {
 } from "@/wab/client/ErrorNotifications";
 import { ProjectDependencyManager } from "@/wab/client/ProjectDependencyManager";
 import { zoomJump } from "@/wab/client/Zoom";
-import { apiKey, invalidationKey } from "@/wab/client/api";
+import { invalidationKey } from "@/wab/client/api";
 import { getProjectReleases } from "@/wab/client/api-hooks";
 import { storageViewAsKey } from "@/wab/client/app-auth/constants";
 import {
@@ -3679,9 +3679,7 @@ export class StudioCtx extends WithDbCtx {
         }
       },
       commentsUpdate: async () => {
-        await mutate(
-          apiKey(`getComments`, this.siteInfo.id, this.branchInfo()?.id)
-        );
+        await this.commentsCtx.fetchComments();
       },
       update: async (data: any) => {
         // Just run syncProjects() for now when any project has been updated

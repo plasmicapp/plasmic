@@ -226,6 +226,7 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
       {...rest}
       body={<StandardMarkdown>{comment.body}</StandardMarkdown>}
       isEditing={isEditing}
+      isDeleted={Boolean(comment.deletedAt)}
       commentPostForm={{
         isEditing,
         editComment: comment,

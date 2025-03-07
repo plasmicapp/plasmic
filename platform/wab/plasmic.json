@@ -3335,7 +3335,8 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "customFunctions": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "jsBundleThemes": []
     },
     {
       "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
@@ -10369,6 +10370,48 @@
             "exportName": "CommentMarkerHoverDialog"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentMarkerHoverDialog.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "tccr1SFVw_AY",
+          "name": "CommentsDialogHead",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentsDialogHead.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/CommentsDialogHead.tsx",
+            "exportName": "CommentsDialogHead"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentsDialogHead.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "UhTNVxujj1gR",
+          "name": "ThreadCommentsDialog",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicThreadCommentsDialog.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/ThreadCommentsDialog.tsx",
+            "exportName": "ThreadCommentsDialog"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicThreadCommentsDialog.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "bGnXEIS7pS-Y",
+          "name": "CommentPostFormDialog",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPostFormDialog.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/CommentPostFormDialog.tsx",
+            "exportName": "CommentPostFormDialog"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPostFormDialog.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         }

@@ -59,7 +59,7 @@ const CommentPostForm = observer(function CommentPostForm(
 
   // Either an existing thread should be selected, or a newThreadTpl should be set.
   if (
-    (!commentsCtx.openViewCtx() || !commentsCtx.openThreadTpl()) &&
+    (!commentsCtx.openedViewCtx() || !commentsCtx.openedThreadTpl()) &&
     !threadId
   ) {
     return null;
@@ -85,9 +85,9 @@ const CommentPostForm = observer(function CommentPostForm(
       const location = {
         subject: commentsCtx
           .bundler()
-          .addrOf(ensure(commentsCtx.openThreadTpl(), "")),
+          .addrOf(ensure(commentsCtx.openedThreadTpl(), "")),
         variants: getSetOfVariantsForViewCtx(
-          ensure(commentsCtx.openViewCtx(), ""),
+          ensure(commentsCtx.openedViewCtx(), ""),
           commentsCtx.bundler()
         ).map((pv) => commentsCtx.bundler().addrOf(pv)),
       };

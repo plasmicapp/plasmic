@@ -10,7 +10,6 @@ import {
   PlasmicCommentsTab,
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentsTab";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure } from "@/wab/shared/common";
 import { isTplNamable, summarizeTplNamable } from "@/wab/shared/core/tpls";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -66,8 +65,6 @@ export const CommentsTab = observer(function CommentsTab(
     commentsCtx.selfNotificationSettings()?.notifyAbout ??
     DEFAULT_NOTIFICATION_LEVEL;
 
-  const openViewCtx = commentsCtx.openViewCtx();
-
   return (
     <div
       className={"comments-tab flex-even"}
@@ -120,10 +117,10 @@ export const CommentsTab = observer(function CommentsTab(
         }}
         currentlySelectedSubject={{
           children:
-            focusedTpl && openViewCtx
+            focusedTpl && viewCtx
               ? summarizeTplNamable(
                   focusedTpl,
-                  openViewCtx.effectiveCurrentVariantSetting(focusedTpl).rsh()
+                  viewCtx.effectiveCurrentVariantSetting(focusedTpl).rsh()
                 )
               : undefined,
         }}
@@ -137,10 +134,7 @@ export const CommentsTab = observer(function CommentsTab(
             <RootComment
               commentThread={threadComment}
               onThreadSelect={(threadId) =>
-                commentsCtx.openCommentThreadDialog(
-                  ensure(viewCtx, ""),
-                  threadId
-                )
+                commentsCtx.openCommentThreadDialog(threadId)
               }
             />
           )),
@@ -153,10 +147,7 @@ export const CommentsTab = observer(function CommentsTab(
             <RootComment
               commentThread={commentThread}
               onThreadSelect={(threadId) =>
-                commentsCtx.openCommentThreadDialog(
-                  ensure(viewCtx, ""),
-                  threadId
-                )
+                commentsCtx.openCommentThreadDialog(threadId)
               }
             />
           )),

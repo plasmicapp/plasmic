@@ -116,8 +116,8 @@
   display: flex;
   position: relative;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
+  align-items: flex-start;
+  justify-content: center;
   width: 100%;
   height: auto;
   max-width: 100%;
@@ -180,13 +180,13 @@
   opacity: 1;
   flex-shrink: 0;
 }
-.svg___61Fdh {
+.svg__weZQ {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
-.freeBox__xBuRf {
+.freeBox__qSrcv {
   display: flex;
   position: absolute;
   flex-direction: column;
@@ -201,7 +201,7 @@
   right: 4px;
   border-radius: 1000px;
 }
-.svg__lgliq {
+.svg__mr4Aq {
   display: flex;
   object-fit: cover;
   width: 100%;
@@ -209,7 +209,7 @@
   min-width: 0;
   min-height: 0;
 }
-.svg__xhYRg {
+.svg__buObV {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -310,7 +310,7 @@
   min-width: 0;
   min-height: 0;
 }
-.svg__sttGh {
+.svg__qrjTd {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -334,13 +334,13 @@
 .repliesLinkthread:global(.__wab_instance) {
   display: flex;
 }
-.svg__uBf8C {
+.svg__sxFHx {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
-.svg__x2Rye {
+.svg__mGbzt {
   display: flex;
   position: relative;
   object-fit: cover;

@@ -72,7 +72,7 @@ const CanvasCommentMarker = observer(function CanvasCommentMarker(props: {
     commentsCtx.computedData().usersMap.get(ensureString(comment.createdById)),
     "Comment author should exist"
   );
-  const isSelected = commentsCtx.openThreadId() === commentThread.id;
+  const isSelected = commentsCtx.openedThreadId() === commentThread.id;
   return (
     <CanvasCommentOverlay
       offsetRight={offsetRight}
@@ -81,7 +81,7 @@ const CanvasCommentMarker = observer(function CanvasCommentMarker(props: {
       className={"CommentMarker"}
       onClick={(e) => {
         if (!isSelected) {
-          commentsCtx.openCommentThreadDialog(viewCtx, commentThread.id);
+          commentsCtx.openCommentThreadDialog(commentThread.id, viewCtx);
         }
       }}
       isSelected={isSelected}
