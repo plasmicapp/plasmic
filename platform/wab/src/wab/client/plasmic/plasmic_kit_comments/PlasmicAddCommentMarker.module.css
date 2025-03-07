@@ -1,0 +1,38 @@
+.icon:global(.__wab_instance) {
+  max-width: 100%;
+  width: auto;
+  height: auto;
+}
+.freeBox {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  background: var(--token-rqQDmopteQdV);
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--token-YwPV7bN0RvD8);
+}
+.icon:hover .freeBox {
+  background: var(--token-D666zt2IZPL);
+}
+.svg {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-D666zt2IZPL);
+  left: auto;
+  top: auto;
+  height: 1em;
+  flex-shrink: 0;
+}
+.icon:hover .svg {
+  color: var(--token-rqQDmopteQdV);
+}
+.svg__thGrn {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}

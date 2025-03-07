@@ -1,0 +1,17 @@
+.root {
+  display: flex;
+  position: relative;
+  width: 300px;
+  height: auto;
+  background: var(--token-rqQDmopteQdV);
+  justify-self: flex-start;
+  flex-direction: column;
+  border-radius: var(--token-uzWT6AFCY);
+  border: 3px solid var(--token-rqQDmopteQdV);
+}
+.commentPost__gb2D7:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+  left: auto;
+  top: auto;
+}

@@ -3335,7 +3335,8 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "customFunctions": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "jsBundleThemes": []
     },
     {
       "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
@@ -10329,6 +10330,48 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicMarkdownHintRow.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "b0TlBn4m87ta",
+          "name": "AddCommentMarker",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicAddCommentMarker.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/AddCommentMarker.tsx",
+            "exportName": "AddCommentMarker"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicAddCommentMarker.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "hxUVoCIPsT_h",
+          "name": "CommentMarker",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentMarker.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/CommentMarker.tsx",
+            "exportName": "CommentMarker"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentMarker.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "i0Lda0egxbAJ",
+          "name": "CommentMarkerHoverDialog",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentMarkerHoverDialog.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/CommentMarkerHoverDialog.tsx",
+            "exportName": "CommentMarkerHoverDialog"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentMarkerHoverDialog.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
@@ -10377,8 +10420,7 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "frhoorZk3bxNXU73uUyvHm",

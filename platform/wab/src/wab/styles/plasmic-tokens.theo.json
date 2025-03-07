@@ -31,16 +31,6 @@
       }
     },
     {
-      "name": "Basic/Container-Background",
-      "type": "color",
-      "value": "#FFFFFF",
-      "category": "color",
-      "meta": {
-        "projectId": "BP7V3EkXPURJVwwMyWoHn",
-        "id": "wWR6BkgklO68"
-      }
-    },
-    {
       "name": "Basic/Container-Background-Dark",
       "type": "color",
       "value": "#171717",

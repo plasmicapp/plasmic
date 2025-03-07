@@ -1,0 +1,23 @@
+.root {
+  display: inline-flex;
+  flex-direction: column;
+  position: relative;
+  width: auto;
+  height: auto;
+  justify-content: center;
+  align-items: center;
+  background: var(--token-rqQDmopteQdV);
+  justify-self: flex-start;
+  border-radius: var(--token-G5TIO9SLc);
+  border: 3px solid var(--token-rqQDmopteQdV);
+}
+.img__j2Sic {
+  object-fit: cover;
+  max-width: 100%;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.img__j2Sic > picture > img {
+  object-fit: cover;
+}
