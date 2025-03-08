@@ -248,6 +248,7 @@ import {
   MergeStep,
   tryMerge,
 } from "@/wab/shared/site-diffs/merge-core";
+import * as Sentry from "@sentry/node";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import fs from "fs";
@@ -7211,6 +7212,57 @@ export class DbMgr implements MigrationDbMgr {
     );
   }
 
+  async checkUniqueFields(
+    tableId: CmsTableId,
+    rowId: CmsRowId,
+    fields: Dict<unknown>
+  ) {
+    const publishedRows = await this.getPublishedRows(tableId);
+    if (publishedRows.length > 500) {
+      Sentry.captureEvent({
+        message: "The result of the db query contains more than 500 rows.",
+        extra: {
+          tableId: tableId,
+        },
+      });
+    }
+    const violated: string[] = [];
+    Object.entries(fields).forEach(([identifier, value]) => {
+      for (const publishedRow of publishedRows) {
+        if (
+          publishedRow.id !== rowId &&
+          publishedRow.data &&
+          String(Object.values(publishedRow.data)[0][identifier] ?? "") ===
+            String(value ?? "")
+        ) {
+          violated.push(identifier);
+          break;
+        }
+      }
+    });
+    return violated;
+  }
+
+  async checkUniqueOnPublish(
+    table: CmsTable,
+    row: CmsRow,
+    optsData: Dict<Dict<unknown>>
+  ) {
+    const data = Object.values(optsData)[0];
+    const uniqueIdentifiers = table.schema.fields
+      .filter((field) => !field.hidden && field.unique)
+      .map((field) => field.identifier);
+    if (uniqueIdentifiers.length === 0) {
+      return;
+    }
+    const uniqueFieldsData = Object.fromEntries(
+      Object.entries(data).filter(([identifier, __]) =>
+        uniqueIdentifiers.includes(identifier)
+      )
+    );
+    return await this.checkUniqueFields(table.id, row.id, uniqueFieldsData);
+  }
+
   async updateCmsRow(
     rowId: CmsRowId,
     opts: {
@@ -7268,6 +7320,18 @@ export class DbMgr implements MigrationDbMgr {
     if ("draftData" in opts) {
       /* on publish, we set draft data to null, and then we should use
       the existing published data to merge, avoiding removing existing fields */
+      if (opts.data && !opts.draftData) {
+        const notValidUniqueFields = await this.checkUniqueOnPublish(
+          table,
+          row,
+          opts.data
+        );
+        if (!notValidUniqueFields) {
+          console.log("There're no unique constraints in this table");
+        } else if (notValidUniqueFields.length > 0) {
+          throw new BadRequestError(JSON.stringify(notValidUniqueFields));
+        }
+      }
       row.draftData = mergedData(row.draftData ?? row.data, opts.draftData);
     }
     Object.assign(row, this.stampUpdate());
@@ -7294,11 +7358,9 @@ export class DbMgr implements MigrationDbMgr {
         })
       : undefined;
 
-    await this.entMgr.save(
+    return await this.entMgr.save(
       withoutNils([row, draftRevision, publishedRevision])
     );
-
-    return row;
   }
 
   async listCmsRowRevisionsByRowId(rowId: CmsRowId) {
@@ -7356,6 +7418,24 @@ export class DbMgr implements MigrationDbMgr {
       draftData: row.draftData || row.data,
     });
     return await this.entMgr.save(copiedRow);
+  }
+
+  async getPublishedRows(tableId: CmsTableId) {
+    const publishedRows = await this.entMgr.find(CmsRow, {
+      tableId: tableId,
+      draftData: null,
+      deletedAt: null,
+    });
+
+    if (publishedRows.length > 500) {
+      Sentry.captureEvent({
+        message: "The result of the db query contains more than 500 rows.",
+        extra: {
+          tableId: tableId,
+        },
+      });
+    }
+    return publishedRows;
   }
 
   // TODO We are always querying just the default locale.

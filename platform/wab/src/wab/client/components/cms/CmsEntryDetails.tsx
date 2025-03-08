@@ -119,7 +119,8 @@ export function renderContentEntryFormFields(
   table: ApiCmsTable,
   database: ApiCmsDatabase,
   locales: string[],
-  disabled: boolean
+  disabled: boolean,
+  notValidUniqueFields: string[]
 ) {
   return (
     <>
@@ -145,6 +146,7 @@ export function renderContentEntryFormFields(
                 formItemProps: deriveFormItemPropsFromField(field),
                 typeName: field.type,
                 required: field.required,
+                uniqueNotValid: notValidUniqueFields.includes(field.identifier),
                 ...(isCmsTextLike(field)
                   ? {
                       maxChars: field.maxChars,
@@ -187,6 +189,16 @@ function CmsEntryDetailsForm_(
   const mutateRow_ = useMutateRow();
   const mutateTableRows = useMutateTableRows();
 
+  const [uniqueFieldsIdentifier, setUniqueFieldsIdentifier] = React.useState<
+    string[]
+  >([]);
+  const [uniqueChangedFields, setUniqueChangedFields] = React.useState<
+    Dict<unknown>
+  >({});
+  const [notValidUniqueFields, setNotVaildUniqueFields] = React.useState<
+    string[]
+  >([]);
+
   const mutateRow = async () => {
     const newRow = await mutateRow_(table.id, row.id);
     if (newRow) {
@@ -199,7 +211,9 @@ function CmsEntryDetailsForm_(
   const [form] = useForm();
 
   const hasFormError = React.useCallback(() => {
-    return form.getFieldsError().some((f) => f.errors.length > 0);
+    return form.getFieldsError().some((f) => {
+      return f.errors.length > 0;
+    });
   }, [form]);
 
   const dataEquals = (
@@ -259,6 +273,10 @@ function CmsEntryDetailsForm_(
     await validateFields();
   };
 
+  const isUniqueFieldChanged = () => {
+    return Object.keys(uniqueChangedFields).length > 0;
+  };
+
   const warnConflict = () => {
     notification.error({
       message: "Update conflict detected",
@@ -293,10 +311,32 @@ function CmsEntryDetailsForm_(
     setInConflict(true);
   };
 
+  async function checkUniqueness() {
+    try {
+      const opts = { uniqueChangedFields: uniqueChangedFields };
+      const checkedNotValid = await api.checkUnique(row.id, opts);
+      const checkedValid = Object.keys(uniqueChangedFields).filter(
+        (identifier) => !checkedNotValid.includes(identifier)
+      );
+      const checkedValidRemoved = notValidUniqueFields.filter(
+        (notValid) => !checkedValid.includes(notValid)
+      );
+      setNotVaildUniqueFields([
+        ...new Set([...checkedValidRemoved, ...checkedNotValid]),
+      ]);
+      setUniqueChangedFields({});
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   async function performSave() {
     const { identifier, ...draftData } = form.getFieldsValue();
     try {
       setSaving(true);
+      if (isUniqueFieldChanged()) {
+        await checkUniqueness();
+      }
       await api.updateCmsRow(row.id, {
         identifier,
         draftData,
@@ -319,7 +359,6 @@ function CmsEntryDetailsForm_(
         await form.validateFields();
         return true;
       } catch (err) {
-        console.error("Validation failed:", err);
         return !(err.errorFields?.length > 0);
       }
     };
@@ -351,6 +390,14 @@ function CmsEntryDetailsForm_(
   React.useEffect(() => {
     spawn(validateFields());
   }, [row, validateFields]);
+
+  React.useEffect(() => {
+    setUniqueFieldsIdentifier(
+      table.schema.fields
+        .filter((field) => field.unique)
+        .map((field) => field.identifier)
+    );
+  }, []);
 
   useBeforeUnload(() => {
     return hasChanges();
@@ -405,11 +452,18 @@ function CmsEntryDetailsForm_(
         }}
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
-        onValuesChange={(changedValues, allValues) => {
+        onValuesChange={(changedValues: Dict<Dict<unknown>>, allValues) => {
           if (Object.keys(changedValues).length > 0) {
             setHasUnsavedChanges(hasChanges());
             setHasUnpublishedChanges(hasPublishableChanges());
             console.log({ changedFields: changedValues, allFields: allValues });
+            const changedField = Object.values(changedValues)[0];
+            if (uniqueFieldsIdentifier.includes(Object.keys(changedField)[0])) {
+              setUniqueChangedFields({
+                ...uniqueChangedFields,
+                ...changedField,
+              });
+            }
           }
         }}
         className={"max-scrollable fill-width"}
@@ -476,35 +530,43 @@ function CmsEntryDetailsForm_(
                         setPublishing(true);
                         const { identifier, ...draftData } =
                           form.getFieldsValue();
-                        await api.updateCmsRow(row.id, {
-                          identifier,
-                          data: draftData,
-                          draftData: null,
-                          revision,
-                        });
-                        await mutateRow();
-                        setPublishing(false);
-                        setHasUnpublishedChanges(false);
-                        await message.success({
-                          content: "Your changes have been published.",
-                          duration: 5,
-                        });
-                        const hooks = table.settings?.webhooks?.filter(
-                          (hook) => hook.event === "publish"
-                        );
-                        if (hooks && hooks.length > 0) {
-                          const hooksResp = await api.triggerCmsTableWebhooks(
-                            table.id,
-                            "publish"
+                        try {
+                          await api.updateCmsRow(row.id, {
+                            identifier,
+                            data: draftData,
+                            draftData: null,
+                            revision,
+                          });
+                          await mutateRow();
+                          setPublishing(false);
+                          setHasUnpublishedChanges(false);
+                          await message.success({
+                            content: "Your changes have been published.",
+                            duration: 5,
+                          });
+                          const hooks = table.settings?.webhooks?.filter(
+                            (hook) => hook.event === "publish"
                           );
-                          const failed = hooksResp.responses.filter(
-                            (r) => r.status !== 200
-                          );
-                          if (failed.length > 0) {
-                            await message.warning({
-                              content: "Some publish hooks failed.",
-                              duration: 5,
-                            });
+                          if (hooks && hooks.length > 0) {
+                            const hooksResp = await api.triggerCmsTableWebhooks(
+                              table.id,
+                              "publish"
+                            );
+                            const failed = hooksResp.responses.filter(
+                              (r) => r.status !== 200
+                            );
+                            if (failed.length > 0) {
+                              await message.warning({
+                                content: "Some publish hooks failed.",
+                                duration: 5,
+                              });
+                            }
+                          }
+                        } catch (err) {
+                          setPublishing(false);
+                          console.log(err);
+                          if (err.statusCode === 400) {
+                            setNotVaildUniqueFields(JSON.parse(err.message));
                           }
                         }
                       }
@@ -514,7 +576,8 @@ function CmsEntryDetailsForm_(
                       isPublishing ||
                       isSaving ||
                       hasUnsavedChanges ||
-                      hasFormError()
+                      hasFormError() ||
+                      isUniqueFieldChanged()
                     }
                     tooltip={
                       hasFormError()
@@ -640,7 +703,8 @@ function CmsEntryDetailsForm_(
                 table!,
                 database,
                 database.extraData.locales,
-                inConflict
+                inConflict,
+                notValidUniqueFields
               )}
             </div>
           }
