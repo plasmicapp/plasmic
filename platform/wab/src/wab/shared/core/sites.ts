@@ -1360,7 +1360,7 @@ export function getReferencingComponents(site: Site, component: Component) {
 export const getAllSiteFrames = maybeComputedFn(function getAllSiteFrames(
   site: Site
 ) {
-  return getSiteArenas(site).flatMap((arena) => getArenaFrames(arena));
+  return getSiteArenas(site).flatMap((arena) => getArenaFrames(arena, true));
 });
 
 export function getAllSitePageFrames(site: Site) {

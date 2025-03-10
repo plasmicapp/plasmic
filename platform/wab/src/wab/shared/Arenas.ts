@@ -21,6 +21,8 @@ import {
 } from "@/wab/shared/model/classes";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { arrayReversed, removeFromArray } from "@/wab/commons/collections";
+import { ArenaType, arenaTypes } from "@/wab/shared/ApiSchema";
 import {
   assert,
   ensure,
@@ -28,15 +30,8 @@ import {
   mkShortId,
   pairwise,
   switchType,
+  withoutNils,
 } from "@/wab/shared/common";
-import { arrayReversed, removeFromArray } from "@/wab/commons/collections";
-import {
-  allComponentVariants,
-  isPageComponent,
-  isPageFrame,
-} from "@/wab/shared/core/components";
-import { Pt } from "@/wab/shared/geom";
-import { ArenaType, arenaTypes } from "@/wab/shared/ApiSchema";
 import {
   deriveDefaultFrameSize,
   ensureActivatedScreenVariantsForComponentArena,
@@ -53,7 +48,23 @@ import {
   removeManagedFramesFromComponentArenaForVariantGroup,
   syncComponentArenaFrameSize,
 } from "@/wab/shared/component-arenas";
+import {
+  allComponentVariants,
+  isPageComponent,
+  isPageFrame,
+} from "@/wab/shared/core/components";
+import {
+  allGlobalVariants,
+  getAllSiteFrames,
+  getComponentArena,
+  getPageArena,
+  getResponsiveStrategy,
+  getSiteArenas,
+  getSiteScreenSizes,
+} from "@/wab/shared/core/sites";
+import { clone, mkTplComponent } from "@/wab/shared/core/tpls";
 import { parseScreenSpec, ScreenSizeSpec } from "@/wab/shared/css-size";
+import { Pt } from "@/wab/shared/geom";
 import { COMBINATIONS_CAP } from "@/wab/shared/Labels";
 import {
   getPageArenaRowLabel,
@@ -65,6 +76,7 @@ import {
 import { FramePinManager } from "@/wab/shared/PinManager";
 import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
 import { isStretchyComponent } from "@/wab/shared/sizingutils";
+import { capitalizeFirst } from "@/wab/shared/strs";
 import {
   ensureValidCombo,
   getBaseVariant,
@@ -74,17 +86,6 @@ import {
   getPartitionedScreenVariantsByTargetVariant,
   isScreenVariant,
 } from "@/wab/shared/Variants";
-import {
-  allGlobalVariants,
-  getAllSiteFrames,
-  getComponentArena,
-  getPageArena,
-  getResponsiveStrategy,
-  getSiteArenas,
-  getSiteScreenSizes,
-} from "@/wab/shared/core/sites";
-import { capitalizeFirst } from "@/wab/shared/strs";
-import { clone, mkTplComponent } from "@/wab/shared/core/tpls";
 import { has, isArray, isEmpty, keyBy, orderBy } from "lodash";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { IObservableValue, observable } from "mobx";
@@ -236,27 +237,29 @@ export function getPositionedArenaFrames(arena: Arena): PositionedArenaFrame[] {
 }
 
 export function getArenaFrames(
-  arena: AnyArena | null | undefined
+  arena: AnyArena | null | undefined,
+  includeAll = false
 ): ArenaFrame[] {
-  return switchType(arena)
-    .when(Arena, (it) => it.children)
-    .when(ComponentArena, (it) =>
-      it._focusedFrame
-        ? [it._focusedFrame]
-        : [
+  return withoutNils(
+    switchType(arena)
+      .when(Arena, (it) => it.children)
+      .when([ComponentArena, PageArena], (it) => {
+        if (includeAll) {
+          return [
+            it._focusedFrame,
             ...getArenaFramesInGrid(it.matrix),
             ...getArenaFramesInGrid(it.customMatrix),
-          ]
-    )
-    .when(PageArena, (it) =>
-      it._focusedFrame
-        ? [it._focusedFrame]
-        : [
-            ...getArenaFramesInGrid(it.matrix),
-            ...getArenaFramesInGrid(it.customMatrix),
-          ]
-    )
-    .elseUnsafe(() => []);
+          ];
+        }
+        return it._focusedFrame
+          ? [it._focusedFrame]
+          : [
+              ...getArenaFramesInGrid(it.matrix),
+              ...getArenaFramesInGrid(it.customMatrix),
+            ];
+      })
+      .elseUnsafe(() => [])
+  );
 }
 
 export const getArenaFrameDesc = (
