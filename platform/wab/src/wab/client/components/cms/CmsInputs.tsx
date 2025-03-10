@@ -261,6 +261,7 @@ function MaybeFormItem({
       warningOnly: true,
       validator: (_, value) => {
         if (props.uniqueViolation) {
+          console.log("this field... violation!!!!", props.uniqueViolation);
           return Promise.reject(
             "This field should have unique data to publish entry"
           );
@@ -605,7 +606,6 @@ export function renderMaybeLocalizedInput({
   required,
   uniqueViolation,
 }: MaybeLocalizedInputProps) {
-  console.log("?", uniqueViolation, "of ", fieldPathSuffix);
   return (
     <ContentEntryFormContext.Consumer>
       {(ctx_) => {

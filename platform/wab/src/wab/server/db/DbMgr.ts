@@ -7217,8 +7217,24 @@ export class DbMgr implements MigrationDbMgr {
 
   getConflictingCmsRowIds(publishedRows: CmsRow[], data: Dict<unknown>) {
     const [identifier, value] = Object.entries(data)[0];
-    console.log("checking this field:", data);
-    return publishedRows
+    console.log("howmany pub row;", publishedRows.length);
+    publishedRows.map((row) => {
+      console.log("row.data:", row.data);
+      if (row.data) {
+        console.log(
+          "published:",
+          String(Object.values(row.data)[0][identifier] ?? "")
+        );
+        console.log("current:", String(value ?? ""));
+        console.log(
+          "equals?",
+          row.data &&
+            String(Object.values(row.data)[0][identifier] ?? "") ===
+              String(value ?? "")
+        );
+      }
+    });
+    const conflictingCmsRowIds = publishedRows
       .filter(
         (row) =>
           row.data &&
@@ -7226,27 +7242,14 @@ export class DbMgr implements MigrationDbMgr {
             String(value ?? "")
       )
       .map((row) => {
-        console.log("checking conflicting ? this row:", row.identifier);
         return row.id;
       });
+    return conflictingCmsRowIds;
   }
 
-  async checkUniqueFields(
-    tableId: CmsTableId,
-    rowId: CmsRowId,
-    opts: Dict<Dict<unknown>>
-  ) {
-    const publishedRows = await this.getPublishedRows(tableId);
-    if (publishedRows.length > 500) {
-      Sentry.captureEvent({
-        message: "The result of the db query contains more than 500 rows.",
-        extra: {
-          tableId: tableId,
-        },
-      });
-    }
-    console.log("inside checkUniqueFields");
-    console.log("data?:", opts.data);
+  async checkUniqueFields(rowId: CmsRowId, opts: Dict<Dict<unknown>>) {
+    const row = await this.getCmsRowById(rowId);
+    const publishedRows = await this.getPublishedRows(row.tableId);
     return Object.entries(opts.data).map(([identifier, value]) => {
       const conflictRowIds = this.getConflictingCmsRowIds(publishedRows, {
         [identifier]: value,
@@ -7272,14 +7275,12 @@ export class DbMgr implements MigrationDbMgr {
     if (uniqueIdentifiers.length === 0) {
       return;
     }
-    console.log("checkUniqueOnPublish");
     const uniqueFieldsData = Object.fromEntries(
       Object.entries(data).filter(([identifier, __]) =>
         uniqueIdentifiers.includes(identifier)
       )
     );
-    console.log("filtered only unique fields;", uniqueFieldsData);
-    return await this.checkUniqueFields(table.id, row.id, {
+    return await this.checkUniqueFields(row.id, {
       data: uniqueFieldsData,
     });
   }
@@ -7334,24 +7335,20 @@ export class DbMgr implements MigrationDbMgr {
         }
       );
     };
-
-    if ("data" in opts) {
-      row.data = mergedData(row.data, opts.data);
-    }
-    if ("draftData" in opts) {
-      /* on publish, we set draft data to null, and then we should use
-      the existing published data to merge, avoiding removing existing fields */
-      if (opts.data && !opts.draftData) {
-        const uniqueFields = await this.checkUniqueOnPublish(
-          table,
-          row,
-          opts.data
+    if ("data" in opts && "draftData" in opts && opts.data && !opts.draftData) {
+      /* on publish */
+      const uniqueFields = await this.checkUniqueOnPublish(
+        table,
+        row,
+        opts.data
+      );
+      if (!uniqueFields) {
+        console.log("There're no unique constraints in this table");
+      } else {
+        const violationFields = uniqueFields.filter(
+          (uniqueField) => !uniqueField.ok
         );
-        if (!uniqueFields) {
-          console.log("There're no unique constraints in this table");
-        } else if (
-          uniqueFields.filter((uniqueField) => !uniqueField.ok).length > 0
-        ) {
+        if (violationFields.length > 0) {
           const uniqueViolationError: UniqueViolationError = {
             name: "unique-violation",
             violations: uniqueFields,
@@ -7361,8 +7358,16 @@ export class DbMgr implements MigrationDbMgr {
           throw uniqueViolationError;
         }
       }
+    }
+    if ("data" in opts) {
+      row.data = mergedData(row.data, opts.data);
+    }
+    if ("draftData" in opts) {
+      /* on publish, we set draft data to null, and then we should use
+      the existing published data to merge, avoiding removing existing fields */
       row.draftData = mergedData(row.draftData ?? row.data, opts.draftData);
     }
+
     Object.assign(row, this.stampUpdate());
     row.revision = (row.revision ?? 0) + 1;
 
@@ -7457,7 +7462,7 @@ export class DbMgr implements MigrationDbMgr {
       data: Not(IsNull()),
       deletedAt: IsNull(),
     });
-
+    console.log("publishedRow found:", publishedRows);
     if (publishedRows.length > 500) {
       Sentry.captureEvent({
         message: "The result of the db query contains more than 500 rows.",

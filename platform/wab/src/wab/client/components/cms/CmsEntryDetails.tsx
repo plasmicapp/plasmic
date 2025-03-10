@@ -21,6 +21,7 @@ import {
   DefaultCmsEntryDetailsProps,
   PlasmicCmsEntryDetails,
 } from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsEntryDetails";
+import { isUniqueViolationError } from "@/wab/shared/ApiErrors/cms-errors";
 import {
   ApiCmsDatabase,
   ApiCmseRow,
@@ -183,11 +184,6 @@ function CmsEntryDetailsForm_(
 ) {
   const { database, table, row, ...rest } = props;
   const api = useApi();
-  // const uniqueFieldsIdentifier = React.useMemo(() => {
-  //   return table.schema.fields
-  //     .filter((field) => field.unique)
-  //     .map((field) => field.identifier);
-  // }, [table]);
 
   const [isSaving, setSaving] = React.useState(false);
   const [isPublishing, setPublishing] = React.useState(false);
@@ -206,21 +202,7 @@ function CmsEntryDetailsForm_(
 
   const [uniqueFieldStatus, setUniqueFieldStatus] = React.useState<
     Dict<UniqueFieldStatus>
-  >({});
-  console.log("uniqueFieldStatus..", uniqueFieldStatus);
-
-  // React.useEffect(() => {
-  //   const fieldsValue = form.getFieldsValue()[""];
-  //   const fieldsStatus = {};
-  //   Object.entries(fieldsValue).forEach(([fieldIdentifier, fieldValue]) => {
-  //     fieldsStatus[fieldIdentifier] = {
-  //       value: fieldValue,
-  //       status: "not started",
-  //       conflictEntryIds: [],
-  //     } as UniqueFieldStatus;
-  //   });
-  //   setUniqueFieldStatus(fieldsStatus);
-  // }, []);
+  >(updateFieldStatus());
 
   const mutateRow = async () => {
     const newRow = await mutateRow_(table.id, row.id);
@@ -233,8 +215,13 @@ function CmsEntryDetailsForm_(
 
   const [form] = useForm();
 
+  const uniqueFieldsIdentifier = React.useMemo(() => {
+    return table.schema.fields
+      .filter((field) => field.unique)
+      .map((field) => field.identifier);
+  }, [table]);
+
   const hasFormError = React.useCallback(() => {
-    console.log(form.getFieldsError());
     return form.getFieldsError().some((f) => f.errors.length > 0);
   }, [form]);
 
@@ -277,6 +264,16 @@ function CmsEntryDetailsForm_(
       row.identifier !== (identifier ?? row.identifier) ||
       (Object.keys(draftData).length > 0 &&
         !dataEquals(row.draftData ?? row.data, removeUndefined(draftData)))
+    );
+  };
+
+  const hasUniqueFieldChanges = () => {
+    return (
+      Object.entries(uniqueFieldStatus).filter(
+        ([identifier, status]) =>
+          uniqueFieldsIdentifier.includes(identifier) &&
+          status.status === "not started"
+      ).length > 0
     );
   };
 
@@ -329,31 +326,64 @@ function CmsEntryDetailsForm_(
     setInConflict(true);
   };
 
+  function getFirstLocale(data: Dict<Dict<unknown>>) {
+    return data[""];
+  }
+
+  function updateFieldStatus() {
+    const defaultUniqueFieldStatus = {};
+    if (row.draftData) {
+      const draftData = getFirstLocale(row.draftData);
+      Object.entries(draftData).forEach(([fieldIdentifier, fieldValue]) => {
+        defaultUniqueFieldStatus[fieldIdentifier] = {
+          value: fieldValue,
+          status: "not started",
+          conflictEntryIds: [],
+        };
+      });
+    }
+    return defaultUniqueFieldStatus;
+  }
+
   async function checkUniqueness() {
     setCheckingUniqueness(true);
-    const changedUniqueFieldStatus = Object.entries(uniqueFieldStatus).filter(
-      ([_, fieldStatus]) => fieldStatus.status === "not started"
-    );
     const uniqueCheckData: Dict<unknown> = {};
-    changedUniqueFieldStatus.forEach(([fieldIdentifier, fieldStatus]) => {
-      uniqueCheckData[fieldIdentifier] = fieldStatus.value;
-      fieldStatus.status = "pending";
+    setUniqueFieldStatus((prev) => {
+      const copy = { ...prev };
+      Object.entries(copy).map(([fieldIdentifier, fieldStatus]) => {
+        if (
+          uniqueFieldsIdentifier.includes(fieldIdentifier) &&
+          fieldStatus.status === "not started"
+        ) {
+          uniqueCheckData[fieldIdentifier] = fieldStatus.value;
+          fieldStatus.status = "pending";
+        }
+      });
+      return copy;
     });
     const uniqueFields: UniqueFieldCheck[] = await api.checkUnique(row.id, {
       data: uniqueCheckData,
     });
     setUniqueFieldStatus((prev) => {
       const copy = { ...prev };
+
       uniqueFields.forEach((uniqueFieldCheck) => {
-        const prevFieldStatus = copy[uniqueFieldCheck.fieldIdentifier];
-        if (prevFieldStatus.status === "pending") {
-          prevFieldStatus.conflictEntryIds = uniqueFieldCheck.conflictRowIds;
-          prevFieldStatus.status = uniqueFieldCheck.ok ? "ok" : "violation";
+        console.log(
+          "after: pending포함되어야함:",
+          copy[uniqueFieldCheck.fieldIdentifier].status
+        );
+        if (copy[uniqueFieldCheck.fieldIdentifier].status === "pending") {
+          copy[uniqueFieldCheck.fieldIdentifier].status = uniqueFieldCheck.ok
+            ? "ok"
+            : "violation";
+          copy[uniqueFieldCheck.fieldIdentifier].conflictEntryIds =
+            uniqueFieldCheck.conflictRowIds;
         }
       });
       return copy;
     });
     setCheckingUniqueness(false);
+    await form.validateFields();
   }
 
   async function performSave() {
@@ -410,6 +440,8 @@ function CmsEntryDetailsForm_(
       if (!isCheckingUniqueness) {
         spawn(checkUniqueness());
       }
+    } else if (hasUniqueFieldChanges() && !isCheckingUniqueness) {
+      spawn(checkUniqueness());
     }
   }, 2000);
 
@@ -475,8 +507,8 @@ function CmsEntryDetailsForm_(
             setHasUnsavedChanges(hasChanges());
             setHasUnpublishedChanges(hasPublishableChanges());
             console.log({ changedFields: changedValues, allFields: allValues });
-            setUniqueFieldStatus((prevStatus) => {
-              const copy = { ...prevStatus };
+            setUniqueFieldStatus((prev) => {
+              const copy = { ...prev };
               Object.values(changedValues).forEach((changedValue) => {
                 Object.entries(changedValue).forEach(
                   ([fieldIdentifier, fieldValue]) => {
@@ -590,21 +622,23 @@ function CmsEntryDetailsForm_(
                           }
                         } catch (err) {
                           setPublishing(false);
-                          if (err.statusCode === 409) {
+                          if (isUniqueViolationError(err)) {
                             const checkedUniqueFields: UniqueFieldCheck[] =
-                              JSON.parse(err.message);
-                            const checkedUniqueFieldsStatus = {};
-                            checkedUniqueFields.forEach((uniqueField) => {
-                              checkedUniqueFieldsStatus[
-                                uniqueField.fieldIdentifier
-                              ] = {
-                                value: uniqueField.value,
-                                conflictEntryIds: uniqueField.conflictRowIds,
-                                status: uniqueField.ok ? "ok" : "violation",
-                              } as UniqueFieldStatus;
+                              err.violations;
+                            setUniqueFieldStatus((prev) => {
+                              const copy = { ...prev };
+                              checkedUniqueFields.forEach((uniqueField) => {
+                                copy[
+                                  uniqueField.fieldIdentifier
+                                ].conflictEntryIds = uniqueField.conflictRowIds;
+                                copy[uniqueField.fieldIdentifier].value =
+                                  uniqueField.value;
+                                copy[uniqueField.fieldIdentifier].status =
+                                  uniqueField.ok ? "ok" : "violation";
+                              });
+                              return copy;
                             });
-                            setUniqueFieldStatus(checkedUniqueFieldsStatus);
-                            // form.validateFields();
+                            await form.validateFields();
                           } else {
                             throw err;
                           }
