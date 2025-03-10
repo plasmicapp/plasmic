@@ -189,6 +189,10 @@ const clientConfigs = clientEntries.map(({ pkg, useSubJSXRuntime }) => ({
         process.cwd(),
         "node_modules/@plasmicapp/host/registerToken/dist/index.esm.js"
       ),
+      "@plasmicapp/host/registerFunction": path.join(
+        process.cwd(),
+        "node_modules/@plasmicapp/host/registerFunction/dist/index.esm.js"
+      ),
       ...(useSubJSXRuntime
         ? {}
         : {
