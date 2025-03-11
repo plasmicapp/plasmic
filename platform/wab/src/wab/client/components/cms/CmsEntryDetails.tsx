@@ -440,11 +440,11 @@ function CmsEntryDetailsForm_(
         await resetFormByRow();
       }
     } else if (!hasFormError()) {
-      if (isUniqueFieldUpdated() && !isCheckingUniqueness) {
-        spawn(checkUniqueness());
-      }
       if (hasChanges() && !isSaving) {
         spawn(performSave());
+      }
+      if (isUniqueFieldUpdated() && !isCheckingUniqueness) {
+        spawn(checkUniqueness());
       }
     }
   }, 2000);
