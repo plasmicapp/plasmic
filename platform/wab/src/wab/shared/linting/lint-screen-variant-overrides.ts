@@ -61,7 +61,6 @@ const lintTpl = maybeComputedFn(
 
 const lintVs = maybeComputedFn(
   function lintVs(component: Component, tpl: TplNode, vs: VariantSetting) {
-    console.log("LINTING", component.name, tpl.uuid);
     const issues: NonCssScreenVariantOverrideLintIssue[] = [];
     for (const attr of Object.keys(vs.attrs)) {
       issues.push({
