@@ -203,7 +203,6 @@ function CmsEntryDetailsForm_(
   const [uniqueFieldStatus, setUniqueFieldStatus] = React.useState<
     Dict<UniqueFieldStatus>
   >(initializeUniqueStatus());
-  console.log(uniqueFieldStatus);
 
   const mutateRow = async () => {
     const newRow = await mutateRow_(table.id, row.id);
