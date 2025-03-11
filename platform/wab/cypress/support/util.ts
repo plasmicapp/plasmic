@@ -260,16 +260,17 @@ export function waitForNewFrame(
   waitStudioLoaded();
   return cy.get(".canvas-editor__canvas-clipper").then(() => {
     return curDocument().then((doc) => {
-      const existingFrames = doc.querySelectorAll(
-        ".canvas-editor__viewport[data-test-frame-uid]"
-      );
+      const existingFrames =
+        doc.querySelectorAll(
+          ".canvas-editor__frames .canvas-editor__viewport[data-test-frame-uid]"
+        ) ?? [];
 
       before();
 
       return cy
         .wait(4000)
         .get(
-          ".canvas-editor__viewport[data-test-frame-uid]" +
+          ".canvas-editor__frames .canvas-editor__viewport[data-test-frame-uid]" +
             withoutNils(
               [...existingFrames.values()].map((e) =>
                 e.getAttribute("data-test-frame-uid")
@@ -385,6 +386,16 @@ export function createNewPageInOwnArena(
 export function turnOffDesignMode() {
   cy.get("#view-menu").click();
   cy.contains("Turn off design mode").click();
+}
+
+export function turnOffAutoOpenMode() {
+  cy.get("#view-menu").click();
+  cy.contains("Turn off auto-open mode").click();
+}
+
+export function turnOnAutoOpenMode() {
+  cy.get("#view-menu").click();
+  cy.contains("Turn on auto-open mode").click();
 }
 
 export function refreshFocusedArena() {
@@ -737,6 +748,26 @@ export function underlineText() {
       `.canvas-editor__right-pane [data-test-id="text-decoration-selector"] [class*="PlasmicStyleToggleButtonGroup"] button:first-child svg`
     )
     .click();
+}
+
+export function setVisible() {
+  cy.get('[data-plasmic-prop="display-visible"]').click();
+}
+
+export function setDisplayNone() {
+  cy.get('[data-plasmic-prop="display-not-visible"]').click();
+}
+
+export function setNotRendered() {
+  cy.get('[data-plasmic-prop="display-not-visible"]').rightclick();
+  cy.contains("Not rendered").click();
+}
+
+export function setDynamicVisibility(customCode: string) {
+  cy.get('[data-plasmic-prop="display-not-visible"]').rightclick();
+  cy.contains("Use dynamic value").click();
+  cy.wait(500);
+  cy.enterCustomCodeInDataPicker(customCode);
 }
 
 export function chooseFont(fontName: string) {
