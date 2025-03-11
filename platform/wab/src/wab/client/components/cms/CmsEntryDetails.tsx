@@ -203,6 +203,7 @@ function CmsEntryDetailsForm_(
   const [uniqueFieldStatus, setUniqueFieldStatus] = React.useState<
     Dict<UniqueFieldStatus>
   >(initializeUniqueStatus());
+  console.log(uniqueFieldStatus);
 
   const mutateRow = async () => {
     const newRow = await mutateRow_(table.id, row.id);
@@ -438,12 +439,12 @@ function CmsEntryDetailsForm_(
         setRevision(row.revision);
         await resetFormByRow();
       }
-    } else if ((hasChanges() || isUniqueFieldUpdated()) && !hasFormError()) {
-      if (!isSaving) {
-        spawn(performSave());
-      }
-      if (!isCheckingUniqueness) {
+    } else if (!hasFormError()) {
+      if (isUniqueFieldUpdated() && !isCheckingUniqueness) {
         spawn(checkUniqueness());
+      }
+      if (hasChanges() && !isSaving) {
+        spawn(performSave());
       }
     }
   }, 2000);
