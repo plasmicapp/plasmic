@@ -7215,45 +7215,50 @@ export class DbMgr implements MigrationDbMgr {
     );
   }
 
-  getConflictingCmsRowIds(publishedRows: CmsRow[], data: Dict<unknown>) {
-    const [identifier, value] = Object.entries(data)[0];
-    console.log("howmany pub row;", publishedRows.length);
-    publishedRows.map((row) => {
-      console.log("row.data:", row.data);
-      if (row.data) {
-        console.log(
-          "published:",
-          String(Object.values(row.data)[0][identifier] ?? "")
-        );
-        console.log("current:", String(value ?? ""));
-        console.log(
-          "equals?",
-          row.data &&
-            String(Object.values(row.data)[0][identifier] ?? "") ===
-              String(value ?? "")
-        );
-      }
-    });
+  isNormalizedEqual(val1: unknown, val2: unknown) {
+    return (val1 ?? "") === (val2 ?? "");
+  }
+
+  getDefaultLocale(data: Dict<Dict<unknown>>) {
+    return data[""];
+  }
+
+  getConflictingCmsRowIds(
+    publishedRows: CmsRow[],
+    currentRowId: CmsRowId,
+    identifier: string,
+    value: unknown
+  ) {
     const conflictingCmsRowIds = publishedRows
-      .filter(
-        (row) =>
-          row.data &&
-          String(Object.values(row.data)[0][identifier] ?? "") ===
-            String(value ?? "")
-      )
-      .map((row) => {
-        return row.id;
-      });
+      .filter((publishedRow) => {
+        if (publishedRow.data) {
+          const publishedValue = this.getDefaultLocale(publishedRow.data)[
+            identifier
+          ];
+          return (
+            publishedRow.id !== currentRowId &&
+            this.isNormalizedEqual(publishedValue, value)
+          );
+        }
+        return false;
+      })
+      .map((row) => row.id);
     return conflictingCmsRowIds;
   }
 
-  async checkUniqueFields(rowId: CmsRowId, opts: Dict<Dict<unknown>>) {
-    const row = await this.getCmsRowById(rowId);
-    const publishedRows = await this.getPublishedRows(row.tableId);
+  async checkUniqueData(
+    tableId: CmsTableId,
+    rowId: CmsRowId,
+    opts: Dict<Dict<unknown>>
+  ) {
+    const publishedRows = await this.getPublishedRows(tableId);
     return Object.entries(opts.data).map(([identifier, value]) => {
-      const conflictRowIds = this.getConflictingCmsRowIds(publishedRows, {
-        [identifier]: value,
-      });
+      const conflictRowIds = this.getConflictingCmsRowIds(
+        publishedRows,
+        rowId,
+        identifier,
+        value
+      );
       return {
         fieldIdentifier: identifier,
         value: value,
@@ -7268,7 +7273,8 @@ export class DbMgr implements MigrationDbMgr {
     row: CmsRow,
     optsData: Dict<Dict<unknown>>
   ) {
-    const data = Object.values(optsData)[0]; // change to get the right one (not the first index, default locale value)
+    const data = this.getDefaultLocale(optsData);
+    console.log(data);
     const uniqueIdentifiers = table.schema.fields
       .filter((field) => !field.hidden && field.unique)
       .map((field) => field.identifier);
@@ -7280,7 +7286,7 @@ export class DbMgr implements MigrationDbMgr {
         uniqueIdentifiers.includes(identifier)
       )
     );
-    return await this.checkUniqueFields(row.id, {
+    return await this.checkUniqueData(table.id, row.id, {
       data: uniqueFieldsData,
     });
   }
@@ -7296,6 +7302,7 @@ export class DbMgr implements MigrationDbMgr {
       noMerge?: boolean;
     }
   ) {
+    console.log("updating:", opts.data);
     const row = await this.getCmsRowById(rowId);
     const table = await this.getCmsTableById(row.tableId);
     await this.checkCmsDatabasePerms(table.databaseId, "content");
@@ -7395,7 +7402,7 @@ export class DbMgr implements MigrationDbMgr {
     await this.entMgr.save(
       withoutNils([row, draftRevision, publishedRevision])
     );
-
+    console.log("published, ", row);
     return row;
   }
 
@@ -7462,7 +7469,6 @@ export class DbMgr implements MigrationDbMgr {
       data: Not(IsNull()),
       deletedAt: IsNull(),
     });
-    console.log("publishedRow found:", publishedRows);
     if (publishedRows.length > 500) {
       Sentry.captureEvent({
         message: "The result of the db query contains more than 500 rows.",

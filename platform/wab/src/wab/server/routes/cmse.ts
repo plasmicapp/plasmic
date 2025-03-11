@@ -291,7 +291,9 @@ export async function cloneRow(req: Request, res: Response) {
 
 export async function checkUniqueness(req: Request, res: Response) {
   const mgr = userDbMgr(req);
-  const uniqueFields = await mgr.checkUniqueFields(
+  const row = await mgr.getCmsRowById(req.params.rowId as CmsRowId);
+  const uniqueFields = await mgr.checkUniqueData(
+    row.tableId,
     req.params.rowId as CmsRowId,
     req.body
   );
