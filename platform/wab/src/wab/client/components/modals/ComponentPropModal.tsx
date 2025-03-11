@@ -49,11 +49,11 @@ function getComponentParamTypeOptions() {
     { value: "bool", label: "Toggle", isPrimitive: () => true },
     { value: "any", label: "Object", isPrimitive: () => true },
     // queryData is just a json object, and so counts as "primitive"
-    { value: "queryData", label: "Fetched data", isPrimitive: () => true },
-    { value: "eventHandler", label: "Event handler", isPrimitive: () => false },
+    { value: "queryData", label: "Query data", isPrimitive: () => true },
+    { value: "eventHandler", label: "Function", isPrimitive: () => false },
     { value: "href", label: "Link URL", isPrimitive: () => false },
     { value: "dateString", label: "Date", isPrimitive: () => true },
-    { value: "dateRangeStrings", label: "Date Range", isPrimitive: () => true },
+    { value: "dateRangeStrings", label: "Date range", isPrimitive: () => true },
     {
       value: "color",
       label: "Color",

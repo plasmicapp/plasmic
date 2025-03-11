@@ -322,10 +322,10 @@ export function convertVariableTypeToPropType(
 export function typeDisplayName(type: Type, shortDescription?: boolean) {
   return switchType(type)
     .when(Text, () => "text")
-    .when(BoolType, () => "yes/no")
+    .when(BoolType, () => "toggle")
     .when(Num, () => "number")
     .when(Img, () => "image")
-    .when(AnyType, () => "data")
+    .when(AnyType, () => "object")
     .when(Choice, (t) =>
       !shortDescription
         ? `choice of ${t.options.map((v) => jsLiteral(v)).join(", ")}`
@@ -347,9 +347,13 @@ export function typeDisplayName(type: Type, shortDescription?: boolean) {
           .join(", ")}`;
       }
     })
-    .when(HrefType, () => `link url`)
+    .when(HrefType, () => `link URL`)
     .when(TargetType, () => "target")
     .when(FunctionType, () => `function`)
+    .when(DateRangeStrings, () => "date range")
+    .when(DateString, () => "date")
+    .when(QueryData, () => "query data")
+    .when(ColorPropType, () => "color")
     .elseUnsafe(() => `${type.name} object`);
 }
 
