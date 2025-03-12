@@ -7402,7 +7402,7 @@ export class DbMgr implements MigrationDbMgr {
     await this.entMgr.save(
       withoutNils([row, draftRevision, publishedRevision])
     );
-    console.log("published, ", row);
+
     return row;
   }
 

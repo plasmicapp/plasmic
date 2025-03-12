@@ -417,6 +417,7 @@ function CmsEntryDetailsForm_(
         await form.validateFields();
         return true;
       } catch (err) {
+        console.error("Validation failed:", err);
         return !(err.errorFields?.length > 0);
       }
     };
