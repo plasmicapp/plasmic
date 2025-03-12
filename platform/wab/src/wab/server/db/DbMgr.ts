@@ -9598,6 +9598,7 @@ export class DbMgr implements MigrationDbMgr {
     const query = this.commentThreads()
       .createQueryBuilder("thread")
       .leftJoinAndSelect("thread.comments", "comment")
+      .leftJoinAndSelect("thread.commentThreadHistories", "history")
       .where("thread.projectId = :projectId", { projectId });
     if (branchId) {
       query.andWhere("thread.branchId = :branchId", {

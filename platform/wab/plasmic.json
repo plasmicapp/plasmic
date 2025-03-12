@@ -10414,6 +10414,20 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPostFormDialog.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "qiIt-rIFSO0f",
+          "name": "ThreadHistory",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicThreadHistory.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/ThreadHistory.tsx",
+            "exportName": "ThreadHistory"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicThreadHistory.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [

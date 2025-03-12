@@ -48,6 +48,7 @@ export type CmsRowId = Opaque<string, "CmsRowId">;
 export type CmsRowRevisionId = Opaque<string, "CmsRowRevisionId">;
 export type CommentId = Opaque<string, "CommentId">;
 export type CommentReactionId = Opaque<string, "CommentReactionId">;
+export type ThreadHistoryId = Opaque<string, "ThreadHistoryId">;
 export type SsoConfigId = Opaque<string, "SsoConfigId">;
 export type TutorialDbId = Opaque<string, "TutorialDbId">;
 export type DataSourceId = Opaque<string, "DataSourceId">;
@@ -1560,6 +1561,13 @@ export interface ApiCommentThread extends ApiEntityBase<CommentThreadId> {
   location: CommentLocation;
   resolved: boolean;
   comments: ApiComment[];
+  commentThreadHistories: ApiCommentThreadHistory[];
+}
+
+export interface ApiCommentThreadHistory
+  extends ApiEntityBase<ThreadHistoryId> {
+  resolved: boolean;
+  commentThreadId: CommentThreadId;
 }
 
 export interface ApiComment extends ApiEntityBase<CommentId> {

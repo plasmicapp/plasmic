@@ -2,14 +2,27 @@
 // This file is owned by you, feel free to edit as you see fit.
 import CommentPost from "@/wab/client/components/comments/CommentPost";
 import CommentPostForm from "@/wab/client/components/comments/CommentPostForm";
+import { ThreadHistory } from "@/wab/client/components/comments/ThreadHistory";
 import { TplCommentThread } from "@/wab/client/components/comments/utils";
 import {
   DefaultThreadCommentsProps,
   PlasmicThreadComments,
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicThreadComments";
+import { ApiComment, ApiCommentThreadHistory } from "@/wab/shared/ApiSchema";
+import { unexpected } from "@/wab/shared/common";
 
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
+
+type Item = ApiComment | ApiCommentThreadHistory;
+
+function isComment(item: Item): item is ApiComment {
+  return "body" in item;
+}
+
+function isCommentThreadHistory(item: Item): item is ApiCommentThreadHistory {
+  return "resolved" in item;
+}
 
 export type ThreadCommentsProps = DefaultThreadCommentsProps & {
   commentThread: TplCommentThread;
@@ -21,20 +34,33 @@ function ThreadComments_(
 ) {
   const { commentThread, ...rest } = props;
 
+  const sortedThreadItems = React.useMemo(() => {
+    return [...commentThread.comments, ...commentThread.commentThreadHistories]
+      .map<[Item, Date]>((item) => [item, new Date(item.createdAt)])
+      .sort((a, b) => a[1].getTime() - b[1].getTime())
+      .map((pair) => pair[0]);
+  }, [commentThread.comments, commentThread.commentThreadHistories]);
+
   return (
     <PlasmicThreadComments
       root={{ ref }}
       {...rest}
       commentsList={{
-        children: commentThread.comments.map((comment, index) => {
-          return (
-            <CommentPost
-              key={comment.id}
-              comment={comment}
-              isRootComment={index === 0}
-              commentThread={commentThread}
-            />
-          );
+        children: sortedThreadItems.map((item, index) => {
+          if (isComment(item)) {
+            return (
+              <CommentPost
+                key={item.id}
+                comment={item}
+                isRootComment={index === 0}
+                commentThread={commentThread}
+              />
+            );
+          } else if (isCommentThreadHistory(item)) {
+            return <ThreadHistory history={item} />;
+          } else {
+            unexpected();
+          }
         }),
       }}
       replyForm={{
