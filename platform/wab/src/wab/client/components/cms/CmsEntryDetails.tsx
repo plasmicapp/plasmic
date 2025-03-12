@@ -269,7 +269,7 @@ function CmsEntryDetailsForm_(
     );
   };
 
-  const hasUniqueViolationWarning = () => {
+  const hasUniqueViolationField = () => {
     return (
       Object.values(uniqueFieldStatus).filter(
         (fieldStatus) => fieldStatus.status === "violation"
@@ -592,7 +592,6 @@ function CmsEntryDetailsForm_(
                         const { identifier, ...draftData } =
                           form.getFieldsValue();
                         try {
-                          console.log("on publish, draftData ?", draftData);
                           await api.updateCmsRow(row.id, {
                             identifier,
                             data: draftData,
@@ -656,7 +655,7 @@ function CmsEntryDetailsForm_(
                       hasUnsavedChanges ||
                       hasFormError() ||
                       isCheckingUniqueness ||
-                      hasUniqueViolationWarning()
+                      hasUniqueViolationField()
                     }
                     tooltip={
                       hasFormError()
