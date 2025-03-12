@@ -1252,7 +1252,7 @@ export function buildAddItemGroups({
                 } else if (
                   canInsertHostlessPackage(uiConfig, "plume", canInsertContext)
                 ) {
-                  if (!hasPlexus || DEVFLAGS.runningInCypress) {
+                  if (!hasPlexus) {
                     const plumeItem = makePlumeInsertables(studioCtx, kind);
                     if (plumeItem.length > 0) {
                       return {

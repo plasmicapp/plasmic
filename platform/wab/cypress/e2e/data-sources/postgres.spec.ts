@@ -1,4 +1,5 @@
 import { v4 } from "uuid";
+import { DevFlagsType } from "../../../src/wab/shared/devflags";
 import { HORIZ_CONTAINER_CAP } from "../../../src/wab/shared/Labels";
 import {
   createTutorialDataSource,
@@ -11,7 +12,15 @@ const TUTORIAL_DB_TYPE = "northwind";
 
 describe("Postgres Data Source", () => {
   let dsname = "";
+  let origDevFlags: DevFlagsType;
   beforeEach(() => {
+    cy.getDevFlags().then((devFlags) => {
+      origDevFlags = devFlags;
+      cy.upsertDevFlags({
+        ...origDevFlags,
+        plexus: false,
+      });
+    });
     dsname = `TutorialDB ${v4()}`;
     createTutorialDataSource(TUTORIAL_DB_TYPE, dsname);
     return setupNewProject({
@@ -22,6 +31,9 @@ describe("Postgres Data Source", () => {
   afterEach(() => {
     cy.deleteDataSourceOfCurrentTest();
     removeCurrentProject();
+    if (origDevFlags) {
+      cy.upsertDevFlags(origDevFlags);
+    }
   });
 
   it("postgres basic queries", () => {

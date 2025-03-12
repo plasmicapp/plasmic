@@ -12,14 +12,11 @@ import {
 } from "@/wab/server/db/DbMgr";
 import { seedTestFeatureTiers } from "@/wab/server/db/seed/feature-tier";
 import { FeatureTier, Team, User } from "@/wab/server/entities/Entities";
-import {
-  getBundleInfo,
-  getDevflagForInsertableTemplateItem,
-  PkgMgr,
-} from "@/wab/server/pkg-mgr";
+import { getBundleInfo, PkgMgr } from "@/wab/server/pkg-mgr";
 import { initializeGlobals } from "@/wab/server/svr-init";
 import { Bundler } from "@/wab/shared/bundler";
 import { ensureType, spawn } from "@/wab/shared/common";
+import { defaultComponentKinds } from "@/wab/shared/core/components";
 import { createSite } from "@/wab/shared/core/sites";
 import { InsertableTemplatesGroup, Installable } from "@/wab/shared/devflags";
 import {
@@ -27,6 +24,7 @@ import {
   PLEXUS_INSERTABLE_ID,
   PLUME_INSERTABLE_ID,
 } from "@/wab/shared/insertables";
+import { kebabCase, startCase } from "lodash";
 import { EntityManager } from "typeorm";
 
 initializeGlobals();
@@ -104,6 +102,8 @@ export async function seedTestDb(em: EntityManager) {
     sysnames.map(async (sysname) => await new PkgMgr(db, sysname).seedPkg())
   );
 
+  const plexusBundleInfo = getBundleInfo(PLEXUS_INSERTABLE_ID);
+
   await db.setDevFlagOverrides(
     JSON.stringify(
       {
@@ -114,20 +114,41 @@ export async function seedTestDb(em: EntityManager) {
             isInstallOnly: true,
             isNew: true,
             name: "Plasmic Design System",
-            projectId: getBundleInfo(PLEXUS_INSERTABLE_ID).projectId,
+            projectId: plexusBundleInfo.projectId,
             imageUrl: "https://static1.plasmic.app/plasmic-logo.png",
             entryPoint: {
               type: "arena",
-              name: "Index",
+              name: "Components",
             },
           },
         ]),
         insertableTemplates: ensureType<InsertableTemplatesGroup | undefined>({
           type: "insertable-templates-group",
           name: "root",
-          items: sysnames
-            .map(getDevflagForInsertableTemplateItem)
-            .filter((insertableGroup) => insertableGroup.items.length > 0),
+          // The below achieves the following for each plexus component:
+          // {
+          //   "type": "insertable-templates-component",
+          //   "projectId": "mSQqkNd8CL5vNdDTXJPXfU",
+          //   "componentName": "Plexus Button",
+          //   "templateName": "plexus/button",
+          //   "imageUrl": "https://static1.plasmic.app/antd_button.svg"
+          // }
+          items: [
+            {
+              type: "insertable-templates-group" as const,
+              name: "Components",
+              items: Object.keys(defaultComponentKinds).map((item) => ({
+                componentName: startCase(item),
+                templateName: `${plexusBundleInfo.sysname}/${kebabCase(item)}`,
+                imageUrl: `https://static1.plasmic.app/insertables/${kebabCase(
+                  item
+                )}.svg`,
+                type: "insertable-templates-component" as const,
+                projectId: plexusBundleInfo.projectId,
+                tokenResolution: "reuse-by-name" as const,
+              })),
+            },
+          ].filter((insertableGroup) => insertableGroup.items.length > 0),
         }),
         insertPanelContent: {
           aliases: {
@@ -136,22 +157,10 @@ export async function seedTestDb(em: EntityManager) {
             pageMeta: "builtincc:hostless-plasmic-head",
 
             // Default components
-            button: "default:button",
-            checkbox: "default:checkbox",
-            checkboxGroup: "default:checkbox-group",
-            combobox: "default:combobox",
-            drawer: "default:drawer",
-            input: "default:text-input",
-            modal: "default:modal",
-            popover: "default:popover",
-            radio: "default:radio",
-            radioGroup: "default:radio-group",
-            rangeSlider: "default:range-slider",
-            select: "default:select",
-            slider: "default:slider",
-            switch: "default:switch",
-            textArea: "default:text-area",
-            tooltip: "default:tooltip",
+            ...Object.keys(defaultComponentKinds).reduce((acc, defaultKind) => {
+              acc[defaultKind] = `default:${defaultKind}`;
+              return acc;
+            }, {}),
           },
           builtinSections: {
             Home: {
@@ -169,25 +178,15 @@ export async function seedTestDb(em: EntityManager) {
                 "image",
                 "icon",
               ],
-              "Starter components": [
-                "button",
-                "input",
-                "select",
-                "switch",
-                "checkbox",
-                "checkbox-group",
-                "radio",
-                "radio-group",
-                "slider",
-                "range-slider",
-                "combobox",
-                "modal",
-                "drawer",
-                "popover",
-                "tooltip",
-              ],
+              // This may use Plexus or Plume depending on the `plexus` devflag
+              "Customizable components": Object.keys(defaultComponentKinds),
               Advanced: ["pageMeta", "dataFetcher"],
             },
+          },
+          // Install all button
+          builtinSectionsInstallables: {
+            // We only need it for Plexus
+            "Customizable components": plexusBundleInfo.projectId,
           },
         },
       },

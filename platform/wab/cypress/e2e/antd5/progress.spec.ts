@@ -1,5 +1,16 @@
+import { DevFlagsType } from "../../../src/wab/shared/devflags";
+import { removeCurrentProject } from "../../support/util";
+
 describe("Antd5 progress", () => {
+  let origDevFlags: DevFlagsType;
   beforeEach(() => {
+    cy.getDevFlags().then((devFlags) => {
+      origDevFlags = devFlags;
+      cy.upsertDevFlags({
+        ...origDevFlags,
+        plexus: false,
+      });
+    });
     cy.setupProjectWithHostlessPackages({
       hostLessPackagesInfo: [
         {
@@ -8,6 +19,13 @@ describe("Antd5 progress", () => {
         },
       ],
     });
+  });
+
+  afterEach(() => {
+    if (origDevFlags) {
+      cy.upsertDevFlags(origDevFlags);
+    }
+    removeCurrentProject();
   });
 
   it("works", () => {

@@ -184,7 +184,11 @@ export async function promptChooseInstallableDependencies(
       ["desc", "asc"]
     ),
   });
-  return res?.map((i) => i.item);
+  return res
+    ?.map((i) => i.item)
+    .filter(
+      (dep) => !studioCtx.projectDependencyManager.containsPkgId(dep.pkgId)
+    );
 }
 
 interface DescAndTags {

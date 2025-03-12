@@ -1,4 +1,5 @@
 import { v4 } from "uuid";
+import { DevFlagsType } from "../../../src/wab/shared/devflags";
 import {
   Framed,
   removeCurrentProject,
@@ -7,8 +8,16 @@ import {
 
 describe("HTTP Data Source", () => {
   let dsname = "";
+  let origDevFlags: DevFlagsType;
   beforeEach(() => {
     dsname = `HTTP ${v4()}`;
+    cy.getDevFlags().then((devFlags) => {
+      origDevFlags = devFlags;
+      cy.upsertDevFlags({
+        ...origDevFlags,
+        plexus: false,
+      });
+    });
     cy.createDataSource({
       source: "http",
       name: dsname,
@@ -27,6 +36,9 @@ describe("HTTP Data Source", () => {
   afterEach(() => {
     cy.deleteDataSourceOfCurrentTest();
     removeCurrentProject();
+    if (origDevFlags) {
+      cy.upsertDevFlags(origDevFlags);
+    }
   });
 
   it("http basic queries", () => {

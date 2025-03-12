@@ -1,4 +1,3 @@
-import { Bundle } from "../../src/wab/shared/bundles";
 import codeLibs from "./code-libs.json";
 import formsBundle from "./forms.json";
 import staleMigrationBundle from "./stale-bundle.json";
@@ -11,4 +10,4 @@ export default {
   "stale-bundle": staleMigrationBundle,
   forms: formsBundle,
   "code-libs": codeLibs,
-} as Record<string, Bundle>;
+};

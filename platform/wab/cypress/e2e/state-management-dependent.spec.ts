@@ -1,13 +1,25 @@
+import { DevFlagsType } from "../../src/wab/shared/devflags";
 import {
   removeCurrentProject,
   setupProjectFromTemplate,
 } from "../support/util";
 
 describe("state-management-dependents", function () {
+  let origDevFlags: DevFlagsType;
   beforeEach(() => {
+    cy.getDevFlags().then((devFlags) => {
+      origDevFlags = devFlags;
+      cy.upsertDevFlags({
+        ...origDevFlags,
+        plexus: false,
+      });
+    });
     setupProjectFromTemplate("state-management");
   });
   afterEach(() => {
+    if (origDevFlags) {
+      cy.upsertDevFlags(origDevFlags);
+    }
     removeCurrentProject();
   });
 

@@ -1,3 +1,4 @@
+import { DevFlagsType } from "../../../src/wab/shared/devflags";
 import {
   checkFormValuesInCanvas,
   Framed,
@@ -5,7 +6,15 @@ import {
 } from "../../support/util";
 
 describe("dynamic-initial-value", function () {
+  let origDevFlags: DevFlagsType;
   beforeEach(() => {
+    cy.getDevFlags().then((devFlags) => {
+      origDevFlags = devFlags;
+      cy.upsertDevFlags({
+        ...origDevFlags,
+        plexus: false,
+      });
+    });
     cy.setupProjectWithHostlessPackages({
       hostLessPackagesInfo: [
         {
@@ -20,6 +29,9 @@ describe("dynamic-initial-value", function () {
   });
 
   afterEach(() => {
+    if (origDevFlags) {
+      cy.upsertDevFlags(origDevFlags);
+    }
     removeCurrentProject();
   });
 

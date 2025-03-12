@@ -618,6 +618,11 @@ export function waitAllEval() {
   });
 }
 
+export function waitLoadingComplete() {
+  cy.wait(200);
+  cy.get(".ScreenDimmer", { timeout: 10000 }).should("not.exist");
+}
+
 export function waitForFrameToLoad() {
   cy.wait(1000);
   cy.waitAllEval();
@@ -732,6 +737,17 @@ export function undoAndRedo() {
   }
 
   undo();
+}
+
+/**
+ * Performs an undo operation in the editor.
+ * @param times - Number of times to perform the undo operation (default: 1)
+ */
+export function undoTimes(times = 1) {
+  for (let i = 0; i < times; i++) {
+    cy.waitAllEval();
+    justType(`{cmd}z`);
+  }
 }
 
 export function getFontInput() {
@@ -955,6 +971,10 @@ export function switchToTreeTab() {
   switchToLeftTab("outline");
 }
 
+export function switchToStyleTokensTab() {
+  switchToLeftTab("tokens");
+}
+
 export function switchToComponentsTab() {
   switchToLeftTab("components");
 }
@@ -1037,13 +1057,38 @@ export function treeTab() {
   return cy.get(".outline-tab");
 }
 
-export function projectPanel() {
-  switchToTreeTab();
+export function openProjectPanel() {
   cy.get("#proj-nav-button").click();
-  cy.wait(500);
+}
+
+export function expandAllProjectPanel() {
   cy.get(`[data-test-id="nav-dropdown-expand-all"]`).click();
-  cy.wait(500);
+}
+
+export function getProjectPanelContents() {
   return cy.get(testIds.projectPanel.selector);
+}
+
+export function projectPanel() {
+  openProjectPanel();
+  cy.wait(200);
+  expandAllProjectPanel();
+  cy.wait(200);
+  return getProjectPanelContents();
+}
+
+export function getComponentsCount() {
+  return getProjectPanelContents()
+    .find(`[class*="sizeContainer"]`)
+    .last()
+    .invoke("text");
+}
+
+export function getArenasCount() {
+  return getProjectPanelContents()
+    .find(`[class*="sizeContainer"]`)
+    .first()
+    .invoke("text");
 }
 
 export function branchPanel() {
@@ -1326,7 +1371,7 @@ function waitCanvasOrPreviewIframeLoaded(
   );
 }
 
-function addDrawerItem(itemName: string, displayName?: string) {
+export function addDrawerItem(itemName: string, displayName?: string) {
   addDrawer().find("input").click();
   justType(itemName);
   return addDrawer()

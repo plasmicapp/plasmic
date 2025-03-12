@@ -1,13 +1,25 @@
+import { DevFlagsType } from "../../src/wab/shared/devflags";
 import { removeCurrentProject, setupNewProject } from "../support/util";
 
 describe("data-rep", function () {
+  let origDevFlags: DevFlagsType;
   beforeEach(() => {
+    cy.getDevFlags().then((devFlags) => {
+      origDevFlags = devFlags;
+      cy.upsertDevFlags({
+        ...origDevFlags,
+        plexus: false,
+      });
+    });
     setupNewProject({
       name: "data-rep",
     });
   });
 
   afterEach(() => {
+    if (origDevFlags) {
+      cy.upsertDevFlags(origDevFlags);
+    }
     removeCurrentProject();
   });
 
