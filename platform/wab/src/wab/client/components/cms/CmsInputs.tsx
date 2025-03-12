@@ -235,14 +235,6 @@ const FormNameContext = createContext<
   { name: NamePathz; label: ReactNode } | undefined
 >(undefined);
 
-export class FormValidationError extends Error {
-  type: string;
-  constructor(message: string, type: string) {
-    super(message);
-    this.type = type;
-  }
-}
-
 function MaybeFormItem({
   typeName,
   name,
@@ -261,7 +253,6 @@ function MaybeFormItem({
       warningOnly: true,
       validator: (_, value) => {
         if (props.uniqueViolation) {
-          console.log("this field... violation!!!!", props.uniqueViolation);
           return Promise.reject(
             "This field should have unique data to publish entry"
           );
