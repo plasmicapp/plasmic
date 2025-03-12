@@ -7375,7 +7375,6 @@ export class DbMgr implements MigrationDbMgr {
       the existing published data to merge, avoiding removing existing fields */
       row.draftData = mergedData(row.draftData ?? row.data, opts.draftData);
     }
-
     Object.assign(row, this.stampUpdate());
     row.revision = (row.revision ?? 0) + 1;
 
