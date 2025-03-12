@@ -7215,8 +7215,8 @@ export class DbMgr implements MigrationDbMgr {
     );
   }
 
-  isNormalizedEqual(val1: unknown, val2: unknown) {
-    return (val1 ?? "") === (val2 ?? "");
+  undefinedToEmptyString(val: unknown) {
+    return val ?? "";
   }
 
   getDefaultLocale(data: Dict<Dict<unknown>>) {
@@ -7237,7 +7237,8 @@ export class DbMgr implements MigrationDbMgr {
           ];
           return (
             publishedRow.id !== currentRowId &&
-            this.isNormalizedEqual(publishedValue, value)
+            this.undefinedToEmptyString(publishedValue) ===
+              this.undefinedToEmptyString(value)
           );
         }
         return false;
@@ -7302,7 +7303,6 @@ export class DbMgr implements MigrationDbMgr {
       noMerge?: boolean;
     }
   ) {
-    console.log("updating:", opts.data);
     const row = await this.getCmsRowById(rowId);
     const table = await this.getCmsTableById(row.tableId);
     await this.checkCmsDatabasePerms(table.databaseId, "content");
@@ -7342,6 +7342,7 @@ export class DbMgr implements MigrationDbMgr {
         }
       );
     };
+
     if ("data" in opts && "draftData" in opts && opts.data && !opts.draftData) {
       /* on publish */
       const uniqueFields = await this.checkUniqueOnPublish(

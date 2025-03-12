@@ -268,6 +268,7 @@ function MaybeFormItem({
       : [];
 
   const rules = [...commonRules, ...typeSpecificRules];
+
   return typeName === CmsMetaType.LIST ? (
     <FormNameContext.Provider value={{ name, label }}>
       {props.children as any}
@@ -287,6 +288,7 @@ export function CmsObjectInput(props: any) {
   } = useContentEntryFormContext();
   assert(typeMeta.type === CmsMetaType.OBJECT, "Must be rendering an object");
   const form = Form.useFormInstance();
+
   return (
     <div
       style={
