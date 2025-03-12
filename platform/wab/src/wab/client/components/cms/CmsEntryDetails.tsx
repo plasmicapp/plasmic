@@ -356,15 +356,15 @@ function CmsEntryDetailsForm_(
 
   async function checkUniqueness() {
     setCheckingUniqueness(true);
-    let changedUniqueFields = {};
+    const changedUniqueFields = {};
+    /* The field is changed to "pending" before the request.
+      If the user changes the field value before the response,
+      the status is changed to "not started," and the previous result is ignored. */
     setUniqueFieldStatus((prev) => {
       const copy = { ...prev };
       Object.entries(copy).map(([fieldIdentifier, fieldStatus]) => {
         if (fieldStatus.status === "not started") {
-          changedUniqueFields = {
-            ...changedUniqueFields,
-            [fieldIdentifier]: fieldStatus.value,
-          };
+          changedUniqueFields[fieldIdentifier] = fieldStatus.value;
           fieldStatus.status = "pending";
         }
       });
@@ -378,11 +378,11 @@ function CmsEntryDetailsForm_(
     );
     setUniqueFieldStatus((prev) => {
       const copy = { ...prev };
-      uniqueFieldsCheck.forEach((uniqueFieldCheck) => {
-        const field = copy[uniqueFieldCheck.fieldIdentifier];
-        if (field.status === "pending") {
-          field.status = uniqueFieldCheck.ok ? "ok" : "violation";
-          field.conflictEntryIds = uniqueFieldCheck.conflictRowIds;
+      uniqueFieldsCheck.forEach((uniqueCheck) => {
+        const identifier = uniqueCheck.fieldIdentifier;
+        if (copy[identifier].status === "pending") {
+          copy[identifier].status = uniqueCheck.ok ? "ok" : "violation";
+          copy[identifier].conflictEntryIds = uniqueCheck.conflictRowIds;
         }
       });
       return copy;
