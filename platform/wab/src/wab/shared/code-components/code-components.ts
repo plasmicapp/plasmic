@@ -2148,11 +2148,12 @@ function updateChangedClassNameProp(
   after: Param
 ) {
   assert(
-    isKnownClassNamePropType(before.type) &&
-      isKnownClassNamePropType(after.type),
+    isKnownClassNamePropType(before.type),
     "Params must be of ClassNamePropType"
   );
-  const newSelectors = after.type.selectors;
+  const newSelectors = isKnownClassNamePropType(after.type)
+    ? after.type.selectors
+    : [];
   const shouldRemove = (sty: SelectorRuleSet) => {
     if (!sty.selector) {
       // This used to be the Base style...
@@ -2168,9 +2169,13 @@ function updateChangedClassNameProp(
   };
   for (const tpl of componentToTplComponents(ctx.site, component)) {
     for (const vs of tpl.vsettings) {
-      for (const arg of vs.args) {
-        if (arg.param === before && isKnownStyleExpr(arg.expr)) {
-          removeWhere(arg.expr.styles, (s) => shouldRemove(s));
+      if (!isKnownClassNamePropType(after.type)) {
+        removeWhere(vs.args, (arg) => arg.param === before);
+      } else {
+        for (const arg of vs.args) {
+          if (arg.param === before && isKnownStyleExpr(arg.expr)) {
+            removeWhere(arg.expr.styles, (s) => shouldRemove(s));
+          }
         }
       }
     }
@@ -2223,10 +2228,7 @@ function doUpdateComponentProps(
       ...hardUpdatedProps.map(({ after }) => after)
     );
     xDifference(updatedProps, hardUpdatedProps).forEach(({ before, after }) => {
-      if (
-        isKnownClassNamePropType(before.type) &&
-        isKnownClassNamePropType(after.type)
-      ) {
+      if (isKnownClassNamePropType(before.type)) {
         updateChangedClassNameProp(ctx, component, before, after);
       }
 
