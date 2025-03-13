@@ -69,7 +69,7 @@ export { wrappedFetch as fetch };
 
 const registerFetchParams: CustomFunctionMeta<typeof wrappedFetch> = {
   name: "fetch",
-  importPath: "@plasmicapp/fetch",
+  importPath: "@plasmicpkgs/fetch",
   params: [
     {
       name: "url",
