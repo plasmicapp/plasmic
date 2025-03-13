@@ -83,7 +83,10 @@ import { PLATFORM } from "@/wab/client/platform";
 import { requestIdleCallbackAsync } from "@/wab/client/requestidlecallback";
 import { plasmicExtensionAvailable } from "@/wab/client/screenshot-util";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
-import { CommentsCtx } from "@/wab/client/studio-ctx/comments-ctx";
+import {
+  COMMENTS_DIALOG_RIGHT_ZOOM_PADDING,
+  CommentsCtx,
+} from "@/wab/client/studio-ctx/comments-ctx";
 import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
 import { MultiplayerCtx } from "@/wab/client/studio-ctx/multiplayer-ctx";
 import {
@@ -3495,9 +3498,19 @@ export class StudioCtx extends WithDbCtx {
       return;
     }
 
+    // Adjust right zoom padding if the comments dialog is open
+    const rightZoomPadding = this.commentsCtx.openedViewCtx()
+      ? COMMENTS_DIALOG_RIGHT_ZOOM_PADDING
+      : DEFAULT_ZOOM_PADDING;
+
     const scalerRect = frameToScalerRect(element.getBoundingClientRect(), vc);
     this.viewportCtx!.zoomToScalerBox(Box.fromRect(scalerRect), {
-      minPadding: DEFAULT_ZOOM_PADDING,
+      minPadding: {
+        left: DEFAULT_ZOOM_PADDING,
+        right: rightZoomPadding,
+        top: DEFAULT_ZOOM_PADDING,
+        bottom: DEFAULT_ZOOM_PADDING,
+      },
     });
   }
 

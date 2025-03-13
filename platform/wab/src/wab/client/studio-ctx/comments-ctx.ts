@@ -19,6 +19,7 @@ import { TplNamable } from "@/wab/shared/core/tpls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { autorun, computed, observable, runInAction } from "mobx";
 
+export const COMMENTS_DIALOG_RIGHT_ZOOM_PADDING = 320;
 export class CommentsCtx {
   private disposals: (() => void)[] = [];
 

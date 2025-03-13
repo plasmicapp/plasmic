@@ -37,9 +37,9 @@ export default observer(function RootComment({
             ownerComponent,
             commentThread.subject
           );
-          studioCtx.centerFocusedFrame(1);
+          onThreadSelect(threadId);
+          studioCtx.tryZoomToFitSelection();
         }
-        onThreadSelect(threadId);
       }}
     />
   );
