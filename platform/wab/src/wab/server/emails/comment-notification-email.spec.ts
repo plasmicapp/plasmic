@@ -3,11 +3,11 @@ import {
   sendUserNotificationEmail,
 } from "@/wab/server/emails/comment-notification-email";
 import { setupEmailTest } from "@/wab/server/emails/test/email-test-util";
+import { getTeamAndWorkspace } from "@/wab/server/test/backend-util";
 import {
   createNotification,
-  getTeamAndWorkspace,
   withEndUserNotificationSetup,
-} from "@/wab/server/test/backend-util";
+} from "@/wab/server/test/comments-util";
 import { CommentThreadId, ProjectId } from "@/wab/shared/ApiSchema";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
 

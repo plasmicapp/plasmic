@@ -15,9 +15,11 @@ import {
   Project,
   User,
 } from "@/wab/server/entities/Entities";
+import { extractMentionedEmails } from "@/wab/server/scripts/utils";
 import { logError } from "@/wab/server/server-util";
 import {
   ApiNotificationSettings,
+  CommentId,
   CommentThreadId,
   ProjectId,
   UserId,
@@ -34,6 +36,7 @@ export type NotificationsByUser = Map<
 
 class Context {
   readonly completeThreadComments: Map<CommentThreadId, Comment[]> = new Map();
+  readonly mentionedEmailsPerComment: Map<CommentId, string[]> = new Map();
 
   constructor(
     readonly dbManager: DbMgr,
@@ -57,6 +60,19 @@ class Context {
     );
     this.completeThreadComments.set(threadId, completeThreadComments);
     return completeThreadComments;
+  }
+
+  /**
+   * Get mentioned user emails in a comment.
+   */
+  getMentionedEmails(comment: Comment): string[] {
+    const emails = this.mentionedEmailsPerComment.get(comment.id);
+    if (emails) {
+      return emails;
+    }
+    const mentionedEmails = extractMentionedEmails(comment.body);
+    this.mentionedEmailsPerComment.set(comment.id, mentionedEmails);
+    return mentionedEmails;
   }
 }
 
@@ -276,11 +292,14 @@ async function processCommentForUser(
   const userParticipatedBefore = completeThreadComments.some(
     (tc) => tc.createdById === user.id && tc.createdAt < comment.createdAt
   );
+  const mentionedEmails = ctx.getMentionedEmails(comment);
+  const userMentioned = mentionedEmails.includes(user.email);
 
   const notify = shouldNotify(
     notificationSettings.notifyAbout,
     isReply,
-    userParticipatedBefore
+    userParticipatedBefore,
+    userMentioned
   );
 
   if (!notify || comment.createdById === user.id) {
@@ -317,10 +336,16 @@ async function processThreadHistoriesForUser(
 
     for (const commentThreadHistory of commentThreadHistories) {
       if (commentThreadHistory.commentThread?.projectId === project.id) {
+        const isMentionOrReplyNotification =
+          notificationSettings.notifyAbout === "mentions-and-replies" &&
+          hasUserParticipatedInThread(user, completeThreadComments);
+
+        const isAllNotificationsEnabled =
+          notificationSettings.notifyAbout === "all";
+
         if (
-          notificationSettings.notifyAbout !== "none" &&
-          commentThreadHistory.createdById !== user.id &&
-          hasUserParticipatedInThread(user, completeThreadComments)
+          (isMentionOrReplyNotification || isAllNotificationsEnabled) &&
+          commentThreadHistory.createdById !== user.id
         ) {
           const rootComment = completeThreadComments[0];
           notifications.push({
@@ -469,15 +494,15 @@ export async function sendCommentsNotificationEmails(
 function shouldNotify(
   notifyAbout: "all" | "mentions-and-replies" | "none",
   isReply: boolean,
-  userParticipated: boolean
+  userParticipated: boolean,
+  userMentioned: boolean
 ): boolean {
-  if (notifyAbout === "all" && !isReply) {
+  if (notifyAbout === "all") {
     return true;
   }
   if (
-    ["mentions-and-replies", "all"].includes(notifyAbout) &&
-    isReply &&
-    userParticipated
+    notifyAbout === "mentions-and-replies" &&
+    ((isReply && userParticipated) || userMentioned)
   ) {
     return true;
   }
