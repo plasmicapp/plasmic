@@ -27,13 +27,20 @@ export async function upsertS3CacheEntry<T>(opts: {
     console.log(`S3 cache miss for ${bucket} ${key}; computing`);
     const content = await f();
     const serialized = serialize(content);
-    await s3
-      .putObject({
-        Bucket: bucket,
-        Key: key,
-        Body: serialized,
-      })
-      .promise();
+    try {
+      await s3
+        .putObject({
+          Bucket: bucket,
+          Key: key,
+          Body: serialized,
+        })
+        .promise();
+    } catch (e) {
+      if (process.env.NODE_ENV !== "development") {
+        throw e;
+      }
+      console.error("Unable to add content to S3", e);
+    }
     return content;
   }
 }
