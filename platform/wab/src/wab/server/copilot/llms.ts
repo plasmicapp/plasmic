@@ -2,10 +2,14 @@
  * Wrappers around LLM APIs. Currently just for caching and simple logging.
  */
 
-import { last, mkShortId } from "@/wab/shared/common";
 import { DbMgr } from "@/wab/server/db/DbMgr";
-import { getAnthropicApiKey, getOpenaiApiKey } from "@/wab/server/secrets";
+import {
+  getAnthropicApiKey,
+  getDynamoDbSecrets,
+  getOpenaiApiKey,
+} from "@/wab/server/secrets";
 import { DynamoDbCache, SimpleCache } from "@/wab/server/simple-cache";
+import { last, mkShortId } from "@/wab/shared/common";
 import { showCompletionRequest } from "@/wab/shared/copilot/prompt-utils";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import axios from "axios";
@@ -28,6 +32,8 @@ const openaiRaw = new OpenAIApi(
 );
 
 const anthropicApiKey = getAnthropicApiKey();
+
+const dynamoDbCredentials = getDynamoDbSecrets();
 
 const verbose = false;
 
@@ -177,20 +183,34 @@ export class AnthropicWrapper {
   };
 }
 
-export const createOpenAIClient = (dbMgr?: DbMgr) =>
+export const createOpenAIClient = (_?: DbMgr) =>
   new OpenAIWrapper(
     openaiRaw,
     new DynamoDbCache(
       new DynamoDBClient({
+        ...(dynamoDbCredentials
+          ? {
+              credentials: {
+                ...dynamoDbCredentials,
+              },
+            }
+          : {}),
         region: "us-west-2",
       })
     )
   );
 
-export const createAnthropicClient = (dbMgr?: DbMgr) =>
+export const createAnthropicClient = (_?: DbMgr) =>
   new AnthropicWrapper(
     new DynamoDbCache(
       new DynamoDBClient({
+        ...(dynamoDbCredentials
+          ? {
+              credentials: {
+                ...dynamoDbCredentials,
+              },
+            }
+          : {}),
         region: "us-west-2",
       })
     )
