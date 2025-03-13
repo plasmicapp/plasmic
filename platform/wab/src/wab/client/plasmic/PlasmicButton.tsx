@@ -85,7 +85,6 @@ export type PlasmicButton__VariantsArgs = {
     | "bordered"
     | "leftAligned"
   >;
-
   withIcons?: MultiChoiceArg<"startIcon" | "endIcon" | "endIconOnHover">;
   font?: SingleChoiceArg<"bold" | "dim">;
   size?: SingleChoiceArg<"small" | "stretch" | "wide" | "compact" | "medium">;
@@ -105,19 +104,19 @@ export const PlasmicButton__VariantProps = new Array<VariantPropType>(
 );
 
 export type PlasmicButton__ArgsType = {
-  children?: React.ReactNode;
-  startIcon?: React.ReactNode;
-  endIcon?: React.ReactNode;
-  caption?: React.ReactNode;
   isSubmit?: boolean;
+  startIcon?: React.ReactNode;
+  children?: React.ReactNode;
+  caption?: React.ReactNode;
+  endIcon?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicButton__ArgsType;
 export const PlasmicButton__ArgProps = new Array<ArgPropType>(
-  "children",
+  "isSubmit",
   "startIcon",
-  "endIcon",
+  "children",
   "caption",
-  "isSubmit"
+  "endIcon"
 );
 
 export type PlasmicButton__OverridesType = {
@@ -128,11 +127,11 @@ export type PlasmicButton__OverridesType = {
 };
 
 export interface DefaultButtonProps {
-  children?: React.ReactNode;
-  startIcon?: React.ReactNode;
-  endIcon?: React.ReactNode;
-  caption?: React.ReactNode;
   isSubmit?: boolean;
+  startIcon?: React.ReactNode;
+  children?: React.ReactNode;
+  caption?: React.ReactNode;
+  endIcon?: React.ReactNode;
   type?: MultiChoiceArg<
     | "primary"
     | "link"
@@ -151,7 +150,6 @@ export interface DefaultButtonProps {
     | "bordered"
     | "leftAligned"
   >;
-
   withIcons?: MultiChoiceArg<"startIcon" | "endIcon" | "endIconOnHover">;
   font?: SingleChoiceArg<"bold" | "dim">;
   size?: SingleChoiceArg<"small" | "stretch" | "wide" | "compact" | "medium">;
@@ -236,7 +234,6 @@ function PlasmicButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.color,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -1253,7 +1250,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicButton__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

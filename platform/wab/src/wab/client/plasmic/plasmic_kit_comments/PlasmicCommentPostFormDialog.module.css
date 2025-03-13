@@ -4,15 +4,20 @@
 .commentsDialogHead:global(.__wab_instance) {
   max-width: 100%;
 }
-.commentPostForm:global(.__wab_instance) {
-  max-width: 100%;
-}
-.freeBox__wkCoP {
+.freeBox {
   display: flex;
   flex-direction: row;
   position: relative;
-  align-items: center;
-  justify-content: flex-end;
-  width: 100%;
-  min-width: 0;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding-right: var(--token-8b4HJYZr1yuK);
+  padding-left: var(--token-8b4HJYZr1yuK);
+}
+.commentPostForm:global(.__wab_instance) {
+  max-width: 100%;
+  top: 0px;
+  z-index: 1;
+  position: sticky;
+  left: 0px;
+  flex-shrink: 0;
 }

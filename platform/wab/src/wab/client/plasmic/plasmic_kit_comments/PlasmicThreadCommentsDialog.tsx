@@ -22,12 +22,14 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import CommentPostForm from "../../components/comments/CommentPostForm"; // plasmic-import: qi3Y1X2qZ7/component
 import { CommentsDialogHead } from "../../components/comments/CommentsDialogHead"; // plasmic-import: tccr1SFVw_AY/component
 import ThreadComments from "../../components/comments/ThreadComments"; // plasmic-import: QY53tkpvLv/component
 import { Dialog } from "../../components/widgets/Dialog"; // plasmic-import: en2IIw2C3_aI/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
+import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicThreadCommentsDialog.module.css"; // plasmic-import: UhTNVxujj1gR/css
 
 createPlasmicElementProxy;
@@ -46,6 +48,8 @@ export type PlasmicThreadCommentsDialog__OverridesType = {
   root?: Flex__<typeof Dialog>;
   commentsDialogHead?: Flex__<typeof CommentsDialogHead>;
   threadComments?: Flex__<typeof ThreadComments>;
+  freeBox?: Flex__<"div">;
+  replyForm?: Flex__<typeof CommentPostForm>;
 };
 
 export interface DefaultThreadCommentsDialogProps {
@@ -96,6 +100,19 @@ function PlasmicThreadCommentsDialog__RenderFunc(props: {
           className={classNames("__wab_instance", sty.threadComments)}
         />
       }
+      footer={
+        <div
+          data-plasmic-name={"freeBox"}
+          data-plasmic-override={overrides.freeBox}
+          className={classNames(projectcss.all, sty.freeBox)}
+        >
+          <CommentPostForm
+            data-plasmic-name={"replyForm"}
+            data-plasmic-override={overrides.replyForm}
+            className={classNames("__wab_instance", sty.replyForm)}
+          />
+        </div>
+      }
       heading={
         <CommentsDialogHead
           data-plasmic-name={"commentsDialogHead"}
@@ -109,9 +126,17 @@ function PlasmicThreadCommentsDialog__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root", "commentsDialogHead", "threadComments"],
+  root: [
+    "root",
+    "commentsDialogHead",
+    "threadComments",
+    "freeBox",
+    "replyForm",
+  ],
   commentsDialogHead: ["commentsDialogHead"],
   threadComments: ["threadComments"],
+  freeBox: ["freeBox", "replyForm"],
+  replyForm: ["replyForm"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -120,6 +145,8 @@ type NodeDefaultElementType = {
   root: typeof Dialog;
   commentsDialogHead: typeof CommentsDialogHead;
   threadComments: typeof ThreadComments;
+  freeBox: "div";
+  replyForm: typeof CommentPostForm;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -134,15 +161,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicThreadCommentsDialog__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicThreadCommentsDialog__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicThreadCommentsDialog__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicThreadCommentsDialog__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -184,6 +211,8 @@ export const PlasmicThreadCommentsDialog = Object.assign(
     // Helper components rendering sub-elements
     commentsDialogHead: makeNodeComponent("commentsDialogHead"),
     threadComments: makeNodeComponent("threadComments"),
+    freeBox: makeNodeComponent("freeBox"),
+    replyForm: makeNodeComponent("replyForm"),
 
     // Metadata about props expected for PlasmicThreadCommentsDialog
     internalVariantProps: PlasmicThreadCommentsDialog__VariantProps,

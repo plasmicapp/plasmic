@@ -28,6 +28,7 @@ import { Dialog } from "../../components/widgets/Dialog"; // plasmic-import: en2
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
+import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicCommentPostFormDialog.module.css"; // plasmic-import: bGnXEIS7pS-Y/css
 
 createPlasmicElementProxy;
@@ -45,6 +46,7 @@ export const PlasmicCommentPostFormDialog__ArgProps = new Array<ArgPropType>();
 export type PlasmicCommentPostFormDialog__OverridesType = {
   root?: Flex__<typeof Dialog>;
   commentsDialogHead?: Flex__<typeof CommentsDialogHead>;
+  freeBox?: Flex__<"div">;
   commentPostForm?: Flex__<typeof CommentPostForm>;
 };
 
@@ -89,12 +91,19 @@ function PlasmicCommentPostFormDialog__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames("__wab_instance", sty.root)}
-      content={
-        <CommentPostForm
-          data-plasmic-name={"commentPostForm"}
-          data-plasmic-override={overrides.commentPostForm}
-          className={classNames("__wab_instance", sty.commentPostForm)}
-        />
+      content={null}
+      footer={
+        <div
+          data-plasmic-name={"freeBox"}
+          data-plasmic-override={overrides.freeBox}
+          className={classNames(projectcss.all, sty.freeBox)}
+        >
+          <CommentPostForm
+            data-plasmic-name={"commentPostForm"}
+            data-plasmic-override={overrides.commentPostForm}
+            className={classNames("__wab_instance", sty.commentPostForm)}
+          />
+        </div>
       }
       heading={
         <CommentsDialogHead
@@ -109,8 +118,9 @@ function PlasmicCommentPostFormDialog__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root", "commentsDialogHead", "commentPostForm"],
+  root: ["root", "commentsDialogHead", "freeBox", "commentPostForm"],
   commentsDialogHead: ["commentsDialogHead"],
+  freeBox: ["freeBox", "commentPostForm"],
   commentPostForm: ["commentPostForm"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -119,6 +129,7 @@ type DescendantsType<T extends NodeNameType> =
 type NodeDefaultElementType = {
   root: typeof Dialog;
   commentsDialogHead: typeof CommentsDialogHead;
+  freeBox: "div";
   commentPostForm: typeof CommentPostForm;
 };
 
@@ -134,15 +145,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicCommentPostFormDialog__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicCommentPostFormDialog__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicCommentPostFormDialog__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicCommentPostFormDialog__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -183,6 +194,7 @@ export const PlasmicCommentPostFormDialog = Object.assign(
   {
     // Helper components rendering sub-elements
     commentsDialogHead: makeNodeComponent("commentsDialogHead"),
+    freeBox: makeNodeComponent("freeBox"),
     commentPostForm: makeNodeComponent("commentPostForm"),
 
     // Metadata about props expected for PlasmicCommentPostFormDialog

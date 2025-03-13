@@ -132,10 +132,10 @@ const CommentPostForm = observer(function CommentPostForm(
           placeholder: "Add a comment",
           textAreaInput: {
             id: inputElementId,
-            value,
             rows: 5,
             type: "soft",
           },
+          value,
           onChange: (val) => {
             if (val === undefined) {
               // Plexus Input triggers onChange with undefined on first render even if we pass a controlled value

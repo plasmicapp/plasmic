@@ -7,12 +7,19 @@
 .threadComments:global(.__wab_instance) {
   max-width: 100%;
 }
-.freeBox__ot1B {
+.freeBox {
   display: flex;
   flex-direction: row;
   position: relative;
-  align-items: center;
-  justify-content: flex-end;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 0px var(--token-8b4HJYZr1yuK);
+}
+.replyForm:global(.__wab_instance) {
   width: 100%;
+  left: 0px;
+  top: 0px;
+  z-index: 1;
+  position: sticky;
   min-width: 0;
 }

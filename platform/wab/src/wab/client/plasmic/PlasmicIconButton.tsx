@@ -88,7 +88,6 @@ export type PlasmicIconButton__VariantsArgs = {
     | "purple"
     | "secondary"
   >;
-
   isActive?: SingleBooleanChoiceArg<"isActive">;
   showAlert?: SingleBooleanChoiceArg<"showAlert">;
   withBackgroundHover?: SingleBooleanChoiceArg<"withBackgroundHover">;
@@ -110,15 +109,15 @@ export const PlasmicIconButton__VariantProps = new Array<VariantPropType>(
 );
 
 export type PlasmicIconButton__ArgsType = {
+  hoverText?: string;
   children?: React.ReactNode;
   children2?: React.ReactNode;
-  hoverText?: string;
 };
 type ArgPropType = keyof PlasmicIconButton__ArgsType;
 export const PlasmicIconButton__ArgProps = new Array<ArgPropType>(
+  "hoverText",
   "children",
-  "children2",
-  "hoverText"
+  "children2"
 );
 
 export type PlasmicIconButton__OverridesType = {
@@ -127,9 +126,9 @@ export type PlasmicIconButton__OverridesType = {
 };
 
 export interface DefaultIconButtonProps {
+  hoverText?: string;
   children?: React.ReactNode;
   children2?: React.ReactNode;
-  hoverText?: string;
   disabled?: SingleBooleanChoiceArg<"disabled">;
   size?: SingleChoiceArg<"small" | "large" | "vertical" | "medium">;
   type?: MultiChoiceArg<
@@ -149,7 +148,6 @@ export interface DefaultIconButtonProps {
     | "purple"
     | "secondary"
   >;
-
   isActive?: SingleBooleanChoiceArg<"isActive">;
   showAlert?: SingleBooleanChoiceArg<"showAlert">;
   withBackgroundHover?: SingleBooleanChoiceArg<"withBackgroundHover">;
@@ -249,7 +247,6 @@ function PlasmicIconButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.withDropdown,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -658,7 +655,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicIconButton__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

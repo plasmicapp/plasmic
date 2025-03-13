@@ -58,7 +58,6 @@ export const PlasmicDialog__ArgProps = new Array<ArgPropType>(
 export type PlasmicDialog__OverridesType = {
   root?: Flex__<typeof BaseDialog>;
   scrollableContent?: Flex__<"div">;
-  freeBox?: Flex__<"div">;
 };
 
 export interface DefaultDialogProps {
@@ -171,29 +170,17 @@ function PlasmicDialog__RenderFunc(props: {
           value: args.content,
         })}
       </div>
-      {$props.showFooter ? (
-        <div
-          data-plasmic-name={"freeBox"}
-          data-plasmic-override={overrides.freeBox}
-          className={classNames(projectcss.all, sty.freeBox)}
-        >
-          {renderPlasmicSlot({
-            defaultContents: (
-              <div className={classNames(projectcss.all, sty.freeBox__ux52K)} />
-            ),
-
-            value: args.footer,
-          })}
-        </div>
-      ) : null}
+      {renderPlasmicSlot({
+        defaultContents: null,
+        value: args.footer,
+      })}
     </BaseDialog>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root", "scrollableContent", "freeBox"],
+  root: ["root", "scrollableContent"],
   scrollableContent: ["scrollableContent"],
-  freeBox: ["freeBox"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -201,7 +188,6 @@ type DescendantsType<T extends NodeNameType> =
 type NodeDefaultElementType = {
   root: typeof BaseDialog;
   scrollableContent: "div";
-  freeBox: "div";
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -216,15 +202,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicDialog__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicDialog__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicDialog__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicDialog__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -265,7 +251,6 @@ export const PlasmicDialog = Object.assign(
   {
     // Helper components rendering sub-elements
     scrollableContent: makeNodeComponent("scrollableContent"),
-    freeBox: makeNodeComponent("freeBox"),
 
     // Metadata about props expected for PlasmicDialog
     internalVariantProps: PlasmicDialog__VariantProps,
