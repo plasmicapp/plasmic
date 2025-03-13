@@ -7,7 +7,6 @@ import {
   FrameViewMode,
   isDuplicatableFrame,
   isMixedArena,
-  isPositionManagedFrame,
 } from "@/wab/shared/Arenas";
 import { toVarName } from "@/wab/shared/codegen/util";
 import {
@@ -583,7 +582,7 @@ export class ViewOps {
     // changes made to frame's top and left props,
     // to make sure we have a smooth resizing,
     // we directly update them here
-    if (isPositionManagedFrame(this.studioCtx(), frame)) {
+    if (this.studioCtx().isPositionManagedFrame(frame)) {
       const domElt = this.viewCtx().canvasCtx.viewportContainer();
       domElt.style.setProperty("width", `${rect.width}px`);
       domElt.style.setProperty("height", `${rect.height}px`);
@@ -594,7 +593,7 @@ export class ViewOps {
 
     window.requestAnimationFrame(() => {
       this.change(() => {
-        if (isPositionManagedFrame(this.studioCtx(), frame)) {
+        if (this.studioCtx().isPositionManagedFrame(frame)) {
           frame.top = rect.top;
           frame.left = rect.left;
         }

@@ -52,10 +52,7 @@ import {
   XDraggableEvent,
 } from "@/wab/commons/components/XDraggable";
 import { sidesAndCorners, styleCase } from "@/wab/commons/ViewUtil";
-import {
-  isHeightAutoDerived,
-  isPositionManagedFrame,
-} from "@/wab/shared/Arenas";
+import { isHeightAutoDerived } from "@/wab/shared/Arenas";
 import {
   ensure,
   ensureArray,
@@ -293,7 +290,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
     const clientPt = new Pt(e.mouseEvent.pageX, e.mouseEvent.pageY);
     const focusedObjects = studioCtx.hoverBoxControlledObjs;
     if (focusedObjects.length === 1 && isKnownArenaFrame(focusedObjects[0])) {
-      if (isPositionManagedFrame(studioCtx, focusedObjects[0])) {
+      if (studioCtx.isPositionManagedFrame(focusedObjects[0])) {
         return;
       }
       dragMoveManager.current = new DragMoveFrameManager(

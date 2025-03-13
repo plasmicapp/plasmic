@@ -1150,6 +1150,10 @@ export class StudioCtx extends WithDbCtx {
     this.tryZoomToFitArena();
   }
 
+  isPositionManagedFrame(frame: ArenaFrame) {
+    return this.focusedMode || (frame.left == null && frame.top == null);
+  }
+
   /**
    * @deprecated use {@link getRootSubReact} instead.
    */

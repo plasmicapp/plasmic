@@ -78,7 +78,6 @@ import {
   isDedicatedArena,
   isMixedArena,
   isPageArena,
-  isPositionManagedFrame,
 } from "@/wab/shared/Arenas";
 import { ARENAS_DESCRIPTION, ARENA_LOWER } from "@/wab/shared/Labels";
 import {
@@ -1351,7 +1350,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
             vc.getViewOps().isRootNodeOfFrame(focusObjs[0].tpl))
         ) {
           const frame = vc.arenaFrame();
-          if (isPositionManagedFrame(vc.studioCtx, frame)) {
+          if (vc.studioCtx.isPositionManagedFrame(frame)) {
             return;
           }
 

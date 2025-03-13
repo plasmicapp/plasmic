@@ -1,6 +1,4 @@
-import { ensure, ensureArrayOfInstances, partitions } from "@/wab/shared/common";
 import { insertAt, removeFromArray } from "@/wab/commons/collections";
-import { allComponentVariants } from "@/wab/shared/core/components";
 import {
   ensureActivatedScreenVariantsForArena,
   ensureActivatedScreenVariantsForFrameByWidth,
@@ -11,9 +9,20 @@ import {
 } from "@/wab/shared/Arenas";
 import { usedGlobalVariantGroups } from "@/wab/shared/cached-selectors";
 import {
+  ensure,
+  ensureArrayOfInstances,
+  partitions,
+} from "@/wab/shared/common";
+import {
   ensureCellKey,
   makeComponentArenaCustomMatrix,
 } from "@/wab/shared/component-arenas";
+import { allComponentVariants } from "@/wab/shared/core/components";
+import {
+  allGlobalVariants,
+  getResponsiveStrategy,
+  getSiteScreenSizes,
+} from "@/wab/shared/core/sites";
 import {
   ArenaFrame,
   ArenaFrameCell,
@@ -37,14 +46,8 @@ import {
   isScreenVariantGroup,
   makeVariantName,
 } from "@/wab/shared/Variants";
-import {
-  allGlobalVariants,
-  getResponsiveStrategy,
-  getSiteScreenSizes,
-} from "@/wab/shared/core/sites";
 import { orderBy } from "lodash";
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { IObservableArray } from "mobx";
+import type { IObservableArray } from "mobx";
 
 export function mkPageArena({
   component,

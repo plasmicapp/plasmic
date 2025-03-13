@@ -3,6 +3,15 @@ import { getOffsetRect } from "@/wab/client/dom";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
+  TokenType,
+  lazyDerefTokenRefsWithDeps,
+} from "@/wab/commons/StyleToken";
+import {
+  ensureActivatedScreenVariantsForFrameByWidth,
+  getFrameHeight,
+  isComponentArena,
+} from "@/wab/shared/Arenas";
+import {
   CustomError,
   absmax,
   ensure,
@@ -15,10 +24,15 @@ import {
   spawn,
   tuple,
 } from "@/wab/shared/common";
+import { Selectable } from "@/wab/shared/core/selection";
+import { ValComponent, ValTag } from "@/wab/shared/core/val-nodes";
 import {
-  TokenType,
-  lazyDerefTokenRefsWithDeps,
-} from "@/wab/commons/StyleToken";
+  Size,
+  createNumericSize,
+  parseAtomicSize,
+  showSizeCss,
+} from "@/wab/shared/css-size";
+import { makeMergedExpProxy } from "@/wab/shared/exprs";
 import {
   Box,
   ClientRect,
@@ -37,28 +51,13 @@ import {
   sideToOrient,
   sizeAxisToSides,
 } from "@/wab/shared/geom";
-import { Selectable } from "@/wab/shared/core/selection";
-import {
-  ensureActivatedScreenVariantsForFrameByWidth,
-  getFrameHeight,
-  isComponentArena,
-  isPositionManagedFrame,
-} from "@/wab/shared/Arenas";
-import {
-  Size,
-  createNumericSize,
-  parseAtomicSize,
-  showSizeCss,
-} from "@/wab/shared/css-size";
-import { IRuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
-import { makeMergedExpProxy } from "@/wab/shared/exprs";
 import {
   PositionLayoutType,
   getRshPositionType,
 } from "@/wab/shared/layoututils";
 import { ArenaFrame, Site } from "@/wab/shared/model/classes";
+import { IRuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { isSpecialSizeVal } from "@/wab/shared/sizingutils";
-import { ValComponent, ValTag } from "@/wab/shared/core/val-nodes";
 import { failable } from "ts-failable";
 
 export interface ManipState {
@@ -145,7 +144,7 @@ export function mkFreestyleManipForFocusedFrame(
         return failure(new ManipulatorAbortedError());
       }
 
-      const validDimProps = isPositionManagedFrame(sc, focusedFrame)
+      const validDimProps = sc.isPositionManagedFrame(focusedFrame)
         ? ["width", "height"]
         : ["width", "height", "top", "left"];
       const fakeSty = {

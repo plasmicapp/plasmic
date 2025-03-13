@@ -1,26 +1,3 @@
-import {
-  Arena,
-  ArenaChild,
-  ArenaFrame,
-  ArenaFrameCell,
-  ArenaFrameGrid,
-  ArenaFrameParams,
-  ArenaFrameRow,
-  Component,
-  ComponentArena,
-  ensureKnownArenaFrame,
-  isKnownArena,
-  isKnownArenaFrame,
-  isKnownComponentArena,
-  isKnownPageArena,
-  isKnownVariant,
-  PageArena,
-  Site,
-  Variant,
-  VariantGroup,
-} from "@/wab/shared/model/classes";
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { arrayReversed, removeFromArray } from "@/wab/commons/collections";
 import { ArenaType, arenaTypes } from "@/wab/shared/ApiSchema";
 import {
@@ -66,6 +43,27 @@ import { clone, mkTplComponent } from "@/wab/shared/core/tpls";
 import { parseScreenSpec, ScreenSizeSpec } from "@/wab/shared/css-size";
 import { Pt } from "@/wab/shared/geom";
 import { COMBINATIONS_CAP } from "@/wab/shared/Labels";
+import {
+  Arena,
+  ArenaChild,
+  ArenaFrame,
+  ArenaFrameCell,
+  ArenaFrameGrid,
+  ArenaFrameParams,
+  ArenaFrameRow,
+  Component,
+  ComponentArena,
+  ensureKnownArenaFrame,
+  isKnownArena,
+  isKnownArenaFrame,
+  isKnownComponentArena,
+  isKnownPageArena,
+  isKnownVariant,
+  PageArena,
+  Site,
+  Variant,
+  VariantGroup,
+} from "@/wab/shared/model/classes";
 import {
   getPageArenaRowLabel,
   makePageArenaFrame,
@@ -615,13 +613,6 @@ export function getActivatedVariantsForFrame(site: Site, frame: ArenaFrame) {
   }
 
   return new Set(ensureValidCombo(component, [...variants]));
-}
-
-export function isPositionManagedFrame(
-  studioCtx: StudioCtx,
-  frame: ArenaFrame
-) {
-  return studioCtx.focusedMode || (frame.left == null && frame.top == null);
 }
 
 export function ensurePositionManagedFrame(frame: ArenaFrame) {
