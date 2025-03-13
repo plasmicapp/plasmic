@@ -356,29 +356,30 @@ function CmsEntryDetailsForm_(
 
   async function checkUniqueness() {
     setCheckingUniqueness(true);
-    const changedUniqueFields = {};
-    /* The field is changed to "pending" before the request.
-      If the user changes the field value before the response,
-      the status is changed to "not started," and the previous result is ignored. */
+    const updatedUniqueFields = {};
+    /* The status of the field should be "pending" before the request.
+      If the user updates the field value before the response,
+      the status would changed to "not started", and the previous response is ignored. */
     setUniqueFieldStatus((prev) => {
       const copy = { ...prev };
       Object.entries(copy).map(([fieldIdentifier, fieldStatus]) => {
         if (fieldStatus.status === "not started") {
-          changedUniqueFields[fieldIdentifier] = fieldStatus.value;
+          updatedUniqueFields[fieldIdentifier] = fieldStatus.value;
           fieldStatus.status = "pending";
         }
       });
       return copy;
     });
-    const uniqueFieldsCheck: UniqueFieldCheck[] = await api.checkUnique(
-      row.id,
+    const uniqueFieldsChecked: UniqueFieldCheck[] = await api.checkUniqueFields(
+      table.id,
       {
-        data: changedUniqueFields,
+        rowId: row.id,
+        defaultLocaleUniqueFields: updatedUniqueFields,
       }
     );
     setUniqueFieldStatus((prev) => {
       const copy = { ...prev };
-      uniqueFieldsCheck.forEach((uniqueCheck) => {
+      uniqueFieldsChecked.forEach((uniqueCheck) => {
         const identifier = uniqueCheck.fieldIdentifier;
         if (copy[identifier].status === "pending") {
           copy[identifier].status = uniqueCheck.ok ? "ok" : "violation";
@@ -513,6 +514,7 @@ function CmsEntryDetailsForm_(
             console.log({ changedFields: changedValues, allFields: allValues });
             setUniqueFieldStatus((prev) => {
               const copy = { ...prev };
+              /* locale? */
               Object.values(changedValues).forEach((changedValue) => {
                 Object.entries(changedValue).forEach(
                   ([fieldIdentifier, fieldValue]) => {

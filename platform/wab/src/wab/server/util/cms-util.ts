@@ -3,6 +3,7 @@ import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   CmsFieldMeta,
   CmsMetaType,
+  CmsRowData,
   CmsTableSchema,
   CmsTypeName,
   FilterClause,
@@ -321,4 +322,12 @@ const typeToPgType = (type: CmsTypeName) => {
     default:
       throw new BadRequestError(`Cannot filter by a column of type ${type}`);
   }
+};
+
+export const normalizeData = (data: unknown | null) => {
+  return data ?? "";
+};
+
+export const getDefaultLocale = (cmsRowData: CmsRowData) => {
+  return cmsRowData[""];
 };

@@ -289,12 +289,10 @@ export async function cloneRow(req: Request, res: Response) {
   res.json(clonedRow);
 }
 
-export async function checkUniqueness(req: Request, res: Response) {
+export async function checkUniqueFields(req: Request, res: Response) {
   const mgr = userDbMgr(req);
-  const row = await mgr.getCmsRowById(req.params.rowId as CmsRowId);
-  const uniqueFields = await mgr.checkUniqueData(
-    row.tableId,
-    req.params.rowId as CmsRowId,
+  const uniqueFields = await mgr.checkUniqueFields(
+    req.params.tableId as CmsTableId,
     req.body
   );
   res.json(uniqueFields);

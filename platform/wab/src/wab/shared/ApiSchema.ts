@@ -2096,5 +2096,20 @@ export interface UniqueFieldCheck {
   value: unknown;
   /** If there are no conflicts. */
   ok: boolean;
-  conflictRowIds: string[];
+  conflictRowIds: CmsRowId[];
+}
+
+/**
+ * CMS row data is the mapping of locale to data.
+ *
+ * Locale is defined in the database, and data schema is defined in the table.
+ * The mapping always includes the default locale, represented with an empty string ("") key.
+ * Other locales are optional.
+ *
+ * This data type represents what's stored in the database, not what's output by the API.
+ * In the API, the locales that are missing a value falls back to the default locale's value.
+ */
+export interface CmsRowData {
+  [""]: Dict<unknown>;
+  [locale: string]: Dict<unknown>;
 }
