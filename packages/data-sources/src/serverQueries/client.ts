@@ -32,7 +32,9 @@ export function usePlasmicServerQuery<
     if (isPlasmicUndefinedDataErrorPromise(err)) {
       return err;
     }
-    throw err;
+    // We are swallowing the error here because it may be an invalid
+    // access of a server query that is not yet ready
+    return null;
   });
   const key =
     !resolvedParams || isPlasmicUndefinedDataErrorPromise(resolvedParams)
