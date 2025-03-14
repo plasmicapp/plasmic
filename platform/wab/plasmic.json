@@ -3335,8 +3335,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "customFunctions": [],
-      "splitsProviderFilePath": "",
-      "jsBundleThemes": []
+      "splitsProviderFilePath": ""
     },
     {
       "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
@@ -10476,7 +10475,8 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "frhoorZk3bxNXU73uUyvHm",

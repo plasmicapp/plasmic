@@ -36,6 +36,9 @@ import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_syst
 import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicCommentsTab.module.css"; // plasmic-import: bV6LLO0B3Y/css
 
+import BellSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BellSvg"; // plasmic-import: eCJ0k221t/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+
 createPlasmicElementProxy;
 
 export type PlasmicCommentsTab__VariantMembers = {
@@ -57,6 +60,7 @@ export type PlasmicCommentsTab__OverridesType = {
   root?: Flex__<"div">;
   currentSelectionSection?: Flex__<"div">;
   freeBox?: Flex__<"div">;
+  filterButton?: Flex__<typeof Button>;
   notificationsButton?: Flex__<typeof Button>;
   currentlySelectedTitle?: Flex__<"div">;
   currentlySelectedPrefix?: Flex__<"span">;
@@ -156,12 +160,33 @@ function PlasmicCommentsTab__RenderFunc(props: {
           className={classNames(projectcss.all, sty.freeBox)}
         >
           <Button
+            data-plasmic-name={"filterButton"}
+            data-plasmic-override={overrides.filterButton}
+            className={classNames("__wab_instance", sty.filterButton)}
+            endIcon={
+              <ChevronDownSvgIcon
+                className={classNames(projectcss.all, sty.svg__tbr0E)}
+                role={"img"}
+              />
+            }
+            pointerCursor={true}
+            size={"compact"}
+            type={["clear"]}
+            withIcons={["endIcon"]}
+          >
+            {"All comments"}
+          </Button>
+          <Button
             data-plasmic-name={"notificationsButton"}
             data-plasmic-override={overrides.notificationsButton}
             className={classNames("__wab_instance", sty.notificationsButton)}
-            type={["link"]}
+            pointerCursor={true}
+            type={["clear"]}
           >
-            {"Notifications: all"}
+            <BellSvgIcon
+              className={classNames(projectcss.all, sty.svg__vlq5B)}
+              role={"img"}
+            />
           </Button>
         </div>
         <div
@@ -301,6 +326,7 @@ const PlasmicDescendants = {
     "root",
     "currentSelectionSection",
     "freeBox",
+    "filterButton",
     "notificationsButton",
     "currentlySelectedTitle",
     "currentlySelectedPrefix",
@@ -314,13 +340,15 @@ const PlasmicDescendants = {
   currentSelectionSection: [
     "currentSelectionSection",
     "freeBox",
+    "filterButton",
     "notificationsButton",
     "currentlySelectedTitle",
     "currentlySelectedPrefix",
     "currentlySelectedSubject",
     "currentThreadsList",
   ],
-  freeBox: ["freeBox", "notificationsButton"],
+  freeBox: ["freeBox", "filterButton", "notificationsButton"],
+  filterButton: ["filterButton"],
   notificationsButton: ["notificationsButton"],
   currentlySelectedTitle: [
     "currentlySelectedTitle",
@@ -342,6 +370,7 @@ type NodeDefaultElementType = {
   root: "div";
   currentSelectionSection: "div";
   freeBox: "div";
+  filterButton: typeof Button;
   notificationsButton: typeof Button;
   currentlySelectedTitle: "div";
   currentlySelectedPrefix: "span";
@@ -415,6 +444,7 @@ export const PlasmicCommentsTab = Object.assign(
     // Helper components rendering sub-elements
     currentSelectionSection: makeNodeComponent("currentSelectionSection"),
     freeBox: makeNodeComponent("freeBox"),
+    filterButton: makeNodeComponent("filterButton"),
     notificationsButton: makeNodeComponent("notificationsButton"),
     currentlySelectedTitle: makeNodeComponent("currentlySelectedTitle"),
     currentlySelectedPrefix: makeNodeComponent("currentlySelectedPrefix"),

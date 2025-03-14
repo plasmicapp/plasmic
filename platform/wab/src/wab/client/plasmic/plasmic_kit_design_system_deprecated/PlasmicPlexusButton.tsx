@@ -44,7 +44,7 @@ createPlasmicElementProxy;
 
 export type PlasmicPlexusButton__VariantMembers = {
   color: "neutral" | "muted" | "success" | "warning" | "errorDestructive";
-  type: "soft" | "bordered";
+  type: "soft" | "bordered" | "clear";
   size: "extraSmall" | "small" | "large" | "extraLarge";
   iconStart: "iconStart";
   iconEnd: "iconEnd";
@@ -55,8 +55,7 @@ export type PlasmicPlexusButton__VariantsArgs = {
   color?: SingleChoiceArg<
     "neutral" | "muted" | "success" | "warning" | "errorDestructive"
   >;
-
-  type?: SingleChoiceArg<"soft" | "bordered">;
+  type?: SingleChoiceArg<"soft" | "bordered" | "clear">;
   size?: SingleChoiceArg<"extraSmall" | "small" | "large" | "extraLarge">;
   iconStart?: SingleBooleanChoiceArg<"iconStart">;
   iconEnd?: SingleBooleanChoiceArg<"iconEnd">;
@@ -121,8 +120,7 @@ export interface DefaultPlexusButtonProps {
   color?: SingleChoiceArg<
     "neutral" | "muted" | "success" | "warning" | "errorDestructive"
   >;
-
-  type?: SingleChoiceArg<"soft" | "bordered">;
+  type?: SingleChoiceArg<"soft" | "bordered" | "clear">;
   size?: SingleChoiceArg<"extraSmall" | "small" | "large" | "extraLarge">;
   iconStart?: SingleBooleanChoiceArg<"iconStart">;
   iconEnd?: SingleBooleanChoiceArg<"iconEnd">;
@@ -209,7 +207,6 @@ function PlasmicPlexusButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.flatSide,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -268,6 +265,9 @@ function PlasmicPlexusButton__RenderFunc(props: {
           [sty.rootcolor_warning_type_bordered]:
             hasVariant($state, "color", "warning") &&
             hasVariant($state, "type", "bordered"),
+          [sty.rootcolor_warning_type_clear]:
+            hasVariant($state, "color", "warning") &&
+            hasVariant($state, "type", "clear"),
           [sty.rootflatSide_bottom]: hasVariant($state, "flatSide", "bottom"),
           [sty.rootflatSide_left]: hasVariant($state, "flatSide", "left"),
           [sty.rootflatSide_right]: hasVariant($state, "flatSide", "right"),
@@ -296,6 +296,19 @@ function PlasmicPlexusButton__RenderFunc(props: {
           [sty.roottype_bordered_color_success]:
             hasVariant($state, "color", "success") &&
             hasVariant($state, "type", "bordered"),
+          [sty.roottype_clear]: hasVariant($state, "type", "clear"),
+          [sty.roottype_clear_color_errorDestructive]:
+            hasVariant($state, "color", "errorDestructive") &&
+            hasVariant($state, "type", "clear"),
+          [sty.roottype_clear_color_muted]:
+            hasVariant($state, "color", "muted") &&
+            hasVariant($state, "type", "clear"),
+          [sty.roottype_clear_color_neutral]:
+            hasVariant($state, "color", "neutral") &&
+            hasVariant($state, "type", "clear"),
+          [sty.roottype_clear_color_success]:
+            hasVariant($state, "color", "success") &&
+            hasVariant($state, "type", "clear"),
           [sty.roottype_soft]: hasVariant($state, "type", "soft"),
           [sty.roottype_soft_color_errorDestructive]:
             hasVariant($state, "color", "errorDestructive") &&
@@ -475,6 +488,11 @@ function PlasmicPlexusButton__RenderFunc(props: {
           [sty.interactionEffecttype_bordered_color_success]:
             hasVariant($state, "color", "success") &&
             hasVariant($state, "type", "bordered"),
+          [sty.interactionEffecttype_clear]: hasVariant(
+            $state,
+            "type",
+            "clear"
+          ),
           [sty.interactionEffecttype_soft]: hasVariant($state, "type", "soft"),
         })}
         style={
@@ -526,6 +544,11 @@ function PlasmicPlexusButton__RenderFunc(props: {
           [sty.freeBoxtype_bordered_color_success__sFawTTynr2ATzQx]:
             hasVariant($state, "color", "success") &&
             hasVariant($state, "type", "bordered"),
+          [sty.freeBoxtype_clear__sFawTr7V1G]: hasVariant(
+            $state,
+            "type",
+            "clear"
+          ),
         })}
       >
         <div
@@ -535,6 +558,9 @@ function PlasmicPlexusButton__RenderFunc(props: {
               "color",
               "neutral"
             ),
+            [sty.freeBoxcolor_warning_type_clear__yCk3FmKw5R7V1G]:
+              hasVariant($state, "color", "warning") &&
+              hasVariant($state, "type", "clear"),
             [sty.freeBoxiconStart__yCk3FxXwgG]: hasVariant(
               $state,
               "iconStart",
@@ -603,6 +629,9 @@ function PlasmicPlexusButton__RenderFunc(props: {
               [sty.slotTargetStartcolor_warning_type_bordered]:
                 hasVariant($state, "color", "warning") &&
                 hasVariant($state, "type", "bordered"),
+              [sty.slotTargetStartcolor_warning_type_clear]:
+                hasVariant($state, "color", "warning") &&
+                hasVariant($state, "type", "clear"),
               [sty.slotTargetStarticonStart]: hasVariant(
                 $state,
                 "iconStart",
@@ -645,6 +674,18 @@ function PlasmicPlexusButton__RenderFunc(props: {
               [sty.slotTargetStarttype_bordered_color_success]:
                 hasVariant($state, "color", "success") &&
                 hasVariant($state, "type", "bordered"),
+              [sty.slotTargetStarttype_clear_color_errorDestructive]:
+                hasVariant($state, "color", "errorDestructive") &&
+                hasVariant($state, "type", "clear"),
+              [sty.slotTargetStarttype_clear_color_muted]:
+                hasVariant($state, "color", "muted") &&
+                hasVariant($state, "type", "clear"),
+              [sty.slotTargetStarttype_clear_color_neutral]:
+                hasVariant($state, "color", "neutral") &&
+                hasVariant($state, "type", "clear"),
+              [sty.slotTargetStarttype_clear_color_success]:
+                hasVariant($state, "color", "success") &&
+                hasVariant($state, "type", "clear"),
               [sty.slotTargetStarttype_soft]: hasVariant(
                 $state,
                 "type",
@@ -680,7 +721,6 @@ function PlasmicPlexusButton__RenderFunc(props: {
               {"Text"}
             </div>
           ),
-
           value: args.label,
           className: classNames(sty.slotTargetLabel, {
             [sty.slotTargetLabelcolor_errorDestructive]: hasVariant(
@@ -711,6 +751,9 @@ function PlasmicPlexusButton__RenderFunc(props: {
             [sty.slotTargetLabelcolor_warning_type_bordered]:
               hasVariant($state, "color", "warning") &&
               hasVariant($state, "type", "bordered"),
+            [sty.slotTargetLabelcolor_warning_type_clear]:
+              hasVariant($state, "color", "warning") &&
+              hasVariant($state, "type", "clear"),
             [sty.slotTargetLabeliconEnd]: hasVariant(
               $state,
               "iconEnd",
@@ -758,6 +801,23 @@ function PlasmicPlexusButton__RenderFunc(props: {
             [sty.slotTargetLabeltype_bordered_color_success]:
               hasVariant($state, "color", "success") &&
               hasVariant($state, "type", "bordered"),
+            [sty.slotTargetLabeltype_clear]: hasVariant(
+              $state,
+              "type",
+              "clear"
+            ),
+            [sty.slotTargetLabeltype_clear_color_errorDestructive]:
+              hasVariant($state, "color", "errorDestructive") &&
+              hasVariant($state, "type", "clear"),
+            [sty.slotTargetLabeltype_clear_color_muted]:
+              hasVariant($state, "color", "muted") &&
+              hasVariant($state, "type", "clear"),
+            [sty.slotTargetLabeltype_clear_color_neutral]:
+              hasVariant($state, "color", "neutral") &&
+              hasVariant($state, "type", "clear"),
+            [sty.slotTargetLabeltype_clear_color_success]:
+              hasVariant($state, "color", "success") &&
+              hasVariant($state, "type", "clear"),
             [sty.slotTargetLabeltype_soft]: hasVariant($state, "type", "soft"),
             [sty.slotTargetLabeltype_soft_color_errorDestructive]:
               hasVariant($state, "color", "errorDestructive") &&
@@ -798,6 +858,9 @@ function PlasmicPlexusButton__RenderFunc(props: {
               "size",
               "small"
             ),
+            [sty.freeBoxtype_clear_color_neutral__w5P1Tr7V1GQVhYc]:
+              hasVariant($state, "color", "neutral") &&
+              hasVariant($state, "type", "clear"),
           })}
         >
           {renderPlasmicSlot({
@@ -838,6 +901,9 @@ function PlasmicPlexusButton__RenderFunc(props: {
               [sty.slotTargetEndcolor_warning_type_bordered]:
                 hasVariant($state, "color", "warning") &&
                 hasVariant($state, "type", "bordered"),
+              [sty.slotTargetEndcolor_warning_type_clear]:
+                hasVariant($state, "color", "warning") &&
+                hasVariant($state, "type", "clear"),
               [sty.slotTargetEndiconEnd]: hasVariant(
                 $state,
                 "iconEnd",
@@ -885,6 +951,18 @@ function PlasmicPlexusButton__RenderFunc(props: {
               [sty.slotTargetEndtype_bordered_color_success]:
                 hasVariant($state, "color", "success") &&
                 hasVariant($state, "type", "bordered"),
+              [sty.slotTargetEndtype_clear_color_errorDestructive]:
+                hasVariant($state, "color", "errorDestructive") &&
+                hasVariant($state, "type", "clear"),
+              [sty.slotTargetEndtype_clear_color_muted]:
+                hasVariant($state, "color", "muted") &&
+                hasVariant($state, "type", "clear"),
+              [sty.slotTargetEndtype_clear_color_neutral]:
+                hasVariant($state, "color", "neutral") &&
+                hasVariant($state, "type", "clear"),
+              [sty.slotTargetEndtype_clear_color_success]:
+                hasVariant($state, "color", "success") &&
+                hasVariant($state, "type", "clear"),
               [sty.slotTargetEndtype_soft]: hasVariant($state, "type", "soft"),
               [sty.slotTargetEndtype_soft_color_errorDestructive]:
                 hasVariant($state, "color", "errorDestructive") &&
@@ -930,7 +1008,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPlexusButton__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -15,7 +15,6 @@ import {
   Project,
   User,
 } from "@/wab/server/entities/Entities";
-import { extractMentionedEmails } from "@/wab/server/scripts/utils";
 import { logError } from "@/wab/server/server-util";
 import {
   ApiNotificationSettings,
@@ -25,6 +24,10 @@ import {
   UserId,
 } from "@/wab/shared/ApiSchema";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
+import {
+  extractMentionedEmails,
+  hasUserParticipatedInThread,
+} from "@/wab/shared/comments-utils";
 import { ensure, withoutNils, xGroupBy, xMapValues } from "@/wab/shared/common";
 
 const COMMENTS_NOTIFICATION_LOCK = "comments_notification_lock";
@@ -338,7 +341,7 @@ async function processThreadHistoriesForUser(
       if (commentThreadHistory.commentThread?.projectId === project.id) {
         const isMentionOrReplyNotification =
           notificationSettings.notifyAbout === "mentions-and-replies" &&
-          hasUserParticipatedInThread(user, completeThreadComments);
+          hasUserParticipatedInThread(user.id, completeThreadComments);
 
         const isAllNotificationsEnabled =
           notificationSettings.notifyAbout === "all";
@@ -425,13 +428,6 @@ function filterOutUserCommentThreads(
     const comments = ctx.newComments.get(commentThread.id) || [];
     return comments.some((comment) => comment.createdById !== user.id);
   });
-}
-
-function hasUserParticipatedInThread(
-  user: User,
-  completeThreadComments: Comment[]
-): boolean {
-  return completeThreadComments.some((tc) => tc.createdById === user.id);
 }
 
 export function getUniqueUsersWithCommentAccess(

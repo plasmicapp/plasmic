@@ -1,4 +1,4 @@
-import { extractMentionedEmails } from "@/wab/server/scripts/utils";
+import { extractMentionedEmails } from "@/wab/shared/comments-utils";
 
 describe("extractMentionedEmails", function () {
   it("should extract user emails", () => {

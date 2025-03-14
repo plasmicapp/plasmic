@@ -27,24 +27,46 @@
   width: 100%;
   height: auto;
   max-width: 800px;
-  align-items: flex-start;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
   min-width: 0;
-  padding: 16px;
+  padding: 16px 12px;
   border-bottom: 1px solid var(--token-Ik3bdE1e1Uy);
+}
+.filterButton:global(.__wab_instance) {
+  max-width: 100%;
+}
+.svg___2F7Kh {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.svg__tbr0E {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-0IloF6TmFvF);
+  height: 1em;
 }
 .notificationsButton:global(.__wab_instance) {
   max-width: 100%;
   position: relative;
   align-self: flex-end;
 }
-.svg___23DLd {
+.svg__uuw9F {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
-.svg___2QF0F {
+.svg__vlq5B {
+  object-fit: cover;
+  max-width: 100%;
+  width: 16px;
+  height: 16px;
+}
+.svg__hXayz {
   display: flex;
   position: relative;
   object-fit: cover;

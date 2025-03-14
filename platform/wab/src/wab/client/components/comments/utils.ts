@@ -3,6 +3,10 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ApiCommentThread } from "@/wab/shared/ApiSchema";
 import { Bundler, FastBundler } from "@/wab/shared/bundler";
+import {
+  extractMentionedEmails,
+  hasUserParticipatedInThread,
+} from "@/wab/shared/comments-utils";
 import { assert, getOrSetMap, xSymmetricDifference } from "@/wab/shared/common";
 import {
   TplNamable,
@@ -25,6 +29,13 @@ export interface TplCommentThread extends LocalizedCommentThread {
 }
 
 export type TplCommentThreads = TplCommentThread[];
+export type CommentFilter = "all" | "mentions-and-replies" | "resolved";
+
+export const FilterValueToLabel: Record<CommentFilter, string> = {
+  all: "All comments",
+  "mentions-and-replies": "Mentions and replies",
+  resolved: "Resolved",
+};
 
 export function isValidCommentThread(
   bundler: Bundler,
@@ -116,6 +127,37 @@ export function getThreadsFromFocusedComponent(
     focusedComponentThreads: sortThreadsByLastComment(focusedComponentThreads),
     otherComponentsThreads: sortThreadsByLastComment(otherComponentsThreads),
   };
+}
+
+export function filterThreads(
+  threads: TplCommentThreads,
+  filter: CommentFilter,
+  studioCtx: StudioCtx
+) {
+  const selfInfo = studioCtx.appCtx.selfInfo;
+  assert(selfInfo, "Expected selfInfo to exists in AppCtx");
+
+  if (filter === "mentions-and-replies") {
+    return threads.filter((thread) =>
+      thread.comments.some((comment) => {
+        if (extractMentionedEmails(comment.body).includes(selfInfo.email)) {
+          return true;
+        }
+
+        if (hasUserParticipatedInThread(selfInfo.id, thread.comments)) {
+          return true;
+        }
+
+        return false;
+      })
+    );
+  }
+
+  if (filter === "resolved") {
+    return threads.filter((thread) => thread.resolved);
+  }
+
+  return threads;
 }
 
 /** Number of threads and replies for an element */

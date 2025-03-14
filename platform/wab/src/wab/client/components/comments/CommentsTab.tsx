@@ -3,7 +3,12 @@
 import { Dropdown, Menu } from "antd";
 
 import RootComment from "@/wab/client/components/comments/RootComment";
-import { getThreadsFromFocusedComponent } from "@/wab/client/components/comments/utils";
+import {
+  CommentFilter,
+  filterThreads,
+  FilterValueToLabel,
+  getThreadsFromFocusedComponent,
+} from "@/wab/client/components/comments/utils";
 import { useViewCtxMaybe } from "@/wab/client/contexts/StudioContexts";
 import {
   DefaultCommentsTabProps,
@@ -42,15 +47,17 @@ export const CommentsTab = observer(function CommentsTab(
     return null;
   }
 
+  const threads = filterThreads(
+    commentsCtx.computedData().allThreads,
+    commentsCtx.commentsFilter(),
+    studioCtx
+  );
+
   const {
     focusedSubjectThreads,
     focusedComponentThreads,
     otherComponentsThreads,
-  } = getThreadsFromFocusedComponent(
-    commentsCtx.computedData().allThreads,
-    currentComponent,
-    focusedTpl
-  );
+  } = getThreadsFromFocusedComponent(threads, currentComponent, focusedTpl);
 
   // We have the focused element threads together, with the focused subject threads first
   const currentFocusThreads = [
@@ -76,9 +83,6 @@ export const CommentsTab = observer(function CommentsTab(
         {...props}
         emptySelection={!focusedTpl}
         notificationsButton={{
-          props: {
-            children: `Notifications: ${notifyAboutKeyToLabel[currentNotificationLevel]}`,
-          },
           wrap: (node) => (
             <Dropdown
               overlay={
@@ -105,6 +109,31 @@ export const CommentsTab = observer(function CommentsTab(
                       )
                     )}
                   </Menu.ItemGroup>
+                </Menu>
+              }
+            >
+              {node}
+            </Dropdown>
+          ),
+        }}
+        filterButton={{
+          props: {
+            children: FilterValueToLabel[commentsCtx.commentsFilter()],
+          },
+          wrap: (node) => (
+            <Dropdown
+              overlay={
+                <Menu selectedKeys={[commentsCtx.commentsFilter()]}>
+                  {Object.entries(FilterValueToLabel).map(([key, label]) => (
+                    <Menu.Item
+                      key={key}
+                      onClick={async () => {
+                        commentsCtx.setCommentsFilter(key as CommentFilter);
+                      }}
+                    >
+                      {label}
+                    </Menu.Item>
+                  ))}
                 </Menu>
               }
             >

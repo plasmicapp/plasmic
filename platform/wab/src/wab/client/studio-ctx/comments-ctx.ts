@@ -1,4 +1,5 @@
 import {
+  CommentFilter,
   computeCommentStats,
   getCommentThreadsWithModelMetadata,
   getUnresolvedThreads,
@@ -36,6 +37,8 @@ export class CommentsCtx {
   private readonly _selfNotificationSettings = observable.box<
     ApiNotificationSettings | undefined
   >(undefined);
+
+  private _commentsFilter = observable.box<CommentFilter>("all");
 
   constructor(private readonly studioCtx: StudioCtx) {
     this.disposals.push(
@@ -88,6 +91,14 @@ export class CommentsCtx {
 
   selfNotificationSettings() {
     return this._selfNotificationSettings.get();
+  }
+
+  commentsFilter() {
+    return this._commentsFilter.get();
+  }
+
+  setCommentsFilter(filter: CommentFilter) {
+    this._commentsFilter.set(filter);
   }
 
   branchId() {

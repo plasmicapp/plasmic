@@ -1,3 +1,4 @@
+import { ApiComment, UserId } from "@/wab/shared/ApiSchema";
 import { pattern, regex } from "regex";
 
 const pBoundary = pattern`(^ | \s)`; // Start of string or whitespace
@@ -21,4 +22,11 @@ export function extractMentionedEmails(body: string) {
   return [...body.matchAll(mentionEmailPattern)].map(
     ([_whole, email]) => email
   );
+}
+
+export function hasUserParticipatedInThread(
+  userId: UserId,
+  threadComments: ApiComment[]
+): boolean {
+  return threadComments.some((tc) => tc.createdById === userId);
 }
