@@ -839,40 +839,79 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                 )
               );
             }
-            if (propType.type === "slot") {
+            if (propType.hidden && typeof propType.hidden !== "function") {
+              return failure(
+                new CodeComponentRegistrationTypeError(
+                  errorPrefix +
+                    `Prop ${propName} has invalid "hidden" value - expects a function but got: ${propType.hidden}`
+                )
+              );
+            }
+
+            if ("editOnly" in propType && propType.editOnly) {
               if (
-                !isNil(propType.allowedComponents) &&
-                !isArrayOfStrings(propType.allowedComponents)
+                !isNil(propType.uncontrolledProp) &&
+                !isString(propType.uncontrolledProp)
               ) {
                 return failure(
                   new CodeComponentRegistrationTypeError(
                     errorPrefix +
-                      `Prop ${propName} has invalid "slot" type. \`PropType.allowedComponents\` expects an array of strings, but received: ${propType.allowedComponents}`
+                      `Prop ${propName} has invalid "uncontrolled prop". \`PropType.uncontrolledProp\` expects a string, but received: ${propType.uncontrolledProp}`
                   )
                 );
               }
-            } else {
-              if (propType.hidden && typeof propType.hidden !== "function") {
-                return failure(
-                  new CodeComponentRegistrationTypeError(
-                    errorPrefix +
-                      `Prop ${propName} has invalid "hidden" value - expects a function but got: ${propType.hidden}`
-                  )
-                );
-              }
-              if (
-                propType.type === "dataSelector" &&
-                !isObject(propType.data) &&
-                typeof propType.data !== "function"
-              ) {
-                return failure(
-                  new CodeComponentRegistrationTypeError(
-                    errorPrefix +
-                      `Prop ${propName} has invalid "data" type. \`PropType.data\` expects an object or a function, but received: ${propType.data}`
-                  )
-                );
-              }
-              if (propType.type === "choice") {
+            }
+            if (
+              !isNil(propType.displayName) &&
+              !isString(propType.displayName)
+            ) {
+              return failure(
+                new CodeComponentRegistrationTypeError(
+                  errorPrefix +
+                    `Prop ${propName} has invalid "display name". \`PropType.displayName\` expects a string, but received: ${propType.displayName}`
+                )
+              );
+            }
+            if (
+              !isNil(propType.description) &&
+              !isString(propType.description)
+            ) {
+              return failure(
+                new CodeComponentRegistrationTypeError(
+                  errorPrefix +
+                    `Prop ${propName} has invalid "description". \`PropType.description\` expects a string, but received: ${propType.description}`
+                )
+              );
+            }
+
+            switch (propType.type) {
+              case "slot":
+                if (
+                  !isNil(propType.allowedComponents) &&
+                  !isArrayOfStrings(propType.allowedComponents)
+                ) {
+                  return failure(
+                    new CodeComponentRegistrationTypeError(
+                      errorPrefix +
+                        `Prop ${propName} has invalid "slot" type. \`PropType.allowedComponents\` expects an array of strings, but received: ${propType.allowedComponents}`
+                    )
+                  );
+                }
+                break;
+              case "dataSelector":
+                if (
+                  !isObject(propType.data) &&
+                  typeof propType.data !== "function"
+                ) {
+                  return failure(
+                    new CodeComponentRegistrationTypeError(
+                      errorPrefix +
+                        `Prop ${propName} has invalid "data" type. \`PropType.data\` expects an object or a function, but received: ${propType.data}`
+                    )
+                  );
+                }
+                break;
+              case "choice":
                 if (
                   !isArrayOfStrings(propType.options) &&
                   !(
@@ -894,62 +933,28 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                     )
                   );
                 }
-              }
-              if (propType.type === "code" && !isString(propType.lang)) {
-                return failure(
-                  new CodeComponentRegistrationTypeError(
-                    errorPrefix +
-                      `Prop ${propName} has invalid "code" type. \`PropType.lang\` expects a string, but received: ${propType.lang}`
-                  )
-                );
-              }
-              if (
-                propType.type === "dataSource" &&
-                !isString(propType.dataSource)
-              ) {
-                return failure(
-                  new CodeComponentRegistrationTypeError(
-                    errorPrefix +
-                      `Prop ${propName} has invalid "dataSource" type. \`PropType.dataSource\` expects a string, but received: ${propType.dataSource}`
-                  )
-                );
-              }
-              if ("editOnly" in propType && propType.editOnly) {
-                if (
-                  !isNil(propType.uncontrolledProp) &&
-                  !isString(propType.uncontrolledProp)
-                ) {
+                break;
+              case "code":
+                if (!isString(propType.lang)) {
                   return failure(
                     new CodeComponentRegistrationTypeError(
                       errorPrefix +
-                        `Prop ${propName} has invalid "uncontrolled prop". \`PropType.uncontrolledProp\` expects a string, but received: ${propType.uncontrolledProp}`
+                        `Prop ${propName} has invalid "code" type. \`PropType.lang\` expects a string, but received: ${propType.lang}`
                     )
                   );
                 }
-              }
-              if (
-                !isNil(propType.displayName) &&
-                !isString(propType.displayName)
-              ) {
-                return failure(
-                  new CodeComponentRegistrationTypeError(
-                    errorPrefix +
-                      `Prop ${propName} has invalid "display name". \`PropType.displayName\` expects a string, but received: ${propType.displayName}`
-                  )
-                );
-              }
-              if (
-                !isNil(propType.description) &&
-                !isString(propType.description)
-              ) {
-                return failure(
-                  new CodeComponentRegistrationTypeError(
-                    errorPrefix +
-                      `Prop ${propName} has invalid "description". \`PropType.description\` expects a string, but received: ${propType.description}`
-                  )
-                );
-              }
-              if (propType.type === "number" || propType.type === "string") {
+                break;
+              case "dataSource":
+                if (!isString(propType.dataSource)) {
+                  return failure(
+                    new CodeComponentRegistrationTypeError(
+                      errorPrefix +
+                        `Prop ${propName} has invalid "dataSource" type. \`PropType.dataSource\` expects a string, but received: ${propType.dataSource}`
+                    )
+                  );
+                }
+                break;
+              case "number": {
                 if (!isNil(propType.control) && !isString(propType.control)) {
                   return failure(
                     new CodeComponentRegistrationTypeError(
@@ -958,8 +963,6 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                     )
                   );
                 }
-              }
-              if (propType.type === "number") {
                 const checkNumberOrFunction = (attr: string) => {
                   const val = propType[attr];
                   if (
@@ -992,8 +995,19 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                 if (res) {
                   return res;
                 }
+                break;
               }
-              if (propType.type === "custom") {
+              case "string":
+                if (!isNil(propType.control) && !isString(propType.control)) {
+                  return failure(
+                    new CodeComponentRegistrationTypeError(
+                      errorPrefix +
+                        `Numeric prop ${propName} has invalid "control" attr. \`PropType.control\` expects a string, but received: ${propType.control}`
+                    )
+                  );
+                }
+                break;
+              case "custom":
                 if (!checkReactComponent(propType.control)) {
                   return failure(
                     new CodeComponentRegistrationTypeError(
@@ -1002,7 +1016,52 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                     )
                   );
                 }
-              }
+                break;
+              case "eventHandler":
+                if (isNil(propType.argTypes)) {
+                  return failure(
+                    new CodeComponentRegistrationTypeError(
+                      errorPrefix +
+                        `Event handler prop ${propName} has invalid "argTypes" attr. \`PropType.argTypes\` expects an array of objects, but received: ${propType.argTypes}`
+                    )
+                  );
+                }
+                break;
+              case "cardPicker":
+                if (
+                  !(
+                    Array.isArray(propType.options) &&
+                    propType.options.every(
+                      (option) =>
+                        typeof option.value === "string" &&
+                        typeof option.imgUrl === "string"
+                    )
+                  ) &&
+                  !(typeof propType.options === "function")
+                ) {
+                  return failure(
+                    new CodeComponentRegistrationTypeError(
+                      errorPrefix +
+                        `Prop ${propName} has invalid "cardPicker" type. \`PropType.options\` expects an array of value-imgUrl pair or a function, but received: ${propType.options}`
+                    )
+                  );
+                }
+                break;
+              // Exaustive list with no checks for now
+              case "href":
+              case "dateString":
+              case "dateRangeStrings":
+              case "boolean":
+              case "object":
+              case "imageUrl":
+              case "exprEditor":
+              case "richText":
+              case "color":
+              case "class":
+              case "themeResetClass":
+              case "array":
+              case "formValidationRules":
+                break;
             }
           }
         }
