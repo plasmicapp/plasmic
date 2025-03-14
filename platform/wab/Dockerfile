@@ -29,7 +29,7 @@ COPY --chown=normaluser .tmp/plasmic-deployed.json /home/normaluser/src/wab/clie
 
 # Run make, but touch src/wab/client/plasmic-deployed.json so it
 # doesn't get made (see above)
-RUN mkdir -p src/wab/gen/ && [[ -f src/wab/client/plasmic-deployed.json ]] && touch src/wab/client/plasmic-deployed.json && make
+RUN mkdir -p src/wab/gen/ && touch src/wab/client/plasmic-deployed.json && make
 
 RUN rm -rf ./node_modules
 RUN yarn install --production --frozen-lockfile && yarn cache clean
