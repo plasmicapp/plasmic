@@ -101,13 +101,16 @@ import {
 } from "@/wab/server/tutorialdb/tutorialdb-utils";
 import { generateSomeApiToken } from "@/wab/server/util/Tokens";
 import {
+  getDefaultLocale,
   makeSqlCondition,
   makeTypedFieldSql,
+  normalizeData,
   normalizeTableSchema,
   traverseSchemaFields,
 } from "@/wab/server/util/cms-util";
 import { stringToPair } from "@/wab/server/util/hash";
 import { KnownProvider } from "@/wab/server/util/passport-multi-oauth2";
+import { UniqueViolationError } from "@/wab/shared/ApiErrors/cms-errors";
 import {
   BadRequestError,
   CopilotRateLimitExceededError,
@@ -124,6 +127,7 @@ import {
   BranchId,
   CmsDatabaseId,
   CmsIdAndToken,
+  CmsRowData,
   CmsRowId,
   CmsRowRevisionId,
   CmsTableId,
@@ -156,6 +160,7 @@ import {
   TeamMember,
   TeamWhiteLabelInfo,
   TutorialDbId,
+  UniqueFieldCheck,
   UserId,
   WorkspaceId,
   branchStatuses,
@@ -248,6 +253,7 @@ import {
   MergeStep,
   tryMerge,
 } from "@/wab/shared/site-diffs/merge-core";
+import * as Sentry from "@sentry/node";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import fs from "fs";
@@ -7211,6 +7217,53 @@ export class DbMgr implements MigrationDbMgr {
     );
   }
 
+  getConflictingCmsRowIds(
+    publishedRows: CmsRow[],
+    currentRowId: CmsRowId,
+    fieldIdentifier: string,
+    value: unknown
+  ) {
+    const conflictingCmsRowIds = publishedRows
+      .filter((publishedRow) => {
+        const publishedDefaultLocale = getDefaultLocale(
+          publishedRow.data as CmsRowData
+        );
+        return (
+          publishedRow.id !== currentRowId &&
+          normalizeData(publishedDefaultLocale[fieldIdentifier]) ===
+            normalizeData(value)
+        );
+      })
+      .map((row) => row.id);
+    return conflictingCmsRowIds;
+  }
+
+  async checkUniqueFields(
+    tableId: CmsTableId,
+    opts: {
+      rowId: CmsRowId;
+      defaultLocaleUniqueFields: Dict<unknown>;
+    }
+  ): Promise<UniqueFieldCheck[]> {
+    const publishedRows = await this.getPublishedRows(tableId);
+    return Object.entries(opts.defaultLocaleUniqueFields).map(
+      ([fieldIdentifier, value]) => {
+        const conflictRowIds = this.getConflictingCmsRowIds(
+          publishedRows,
+          opts.rowId,
+          fieldIdentifier,
+          value
+        );
+        return {
+          fieldIdentifier: fieldIdentifier,
+          value: value,
+          ok: conflictRowIds.length === 0,
+          conflictRowIds: conflictRowIds,
+        };
+      }
+    );
+  }
+
   async updateCmsRow(
     rowId: CmsRowId,
     opts: {
@@ -7261,9 +7314,29 @@ export class DbMgr implements MigrationDbMgr {
         }
       );
     };
-
     if ("data" in opts) {
       row.data = mergedData(row.data, opts.data);
+      const uniqueFieldIdentifiers = table.schema.fields
+        .filter((field) => !field.hidden && field.unique)
+        .map((field) => field.identifier);
+      if (uniqueFieldIdentifiers.length > 0) {
+        /* Check unique fields have violation. */
+        if (opts.data) {
+          const defaultLocale = getDefaultLocale(opts.data as CmsRowData);
+          const defaultLocaleUniqueFields = Object.fromEntries(
+            Object.entries(defaultLocale).filter(([identifier, __]) =>
+              uniqueFieldIdentifiers.includes(identifier)
+            )
+          );
+          const uniqueFieldsCheck = await this.checkUniqueFields(table.id, {
+            rowId: row.id,
+            defaultLocaleUniqueFields: defaultLocaleUniqueFields,
+          });
+          if (uniqueFieldsCheck.some((field) => !field.ok)) {
+            throw new UniqueViolationError(uniqueFieldsCheck);
+          }
+        }
+      }
     }
     if ("draftData" in opts) {
       /* on publish, we set draft data to null, and then we should use
@@ -7356,6 +7429,23 @@ export class DbMgr implements MigrationDbMgr {
       draftData: row.draftData || row.data,
     });
     return await this.entMgr.save(copiedRow);
+  }
+
+  async getPublishedRows(tableId: CmsTableId) {
+    const publishedRows = await this.entMgr.find(CmsRow, {
+      tableId: tableId,
+      data: Not(IsNull()),
+      deletedAt: IsNull(),
+    });
+    if (publishedRows.length > 500) {
+      Sentry.captureEvent({
+        message: "The result of the db query contains more than 500 rows.",
+        extra: {
+          tableId: tableId,
+        },
+      });
+    }
+    return publishedRows;
   }
 
   // TODO We are always querying just the default locale.

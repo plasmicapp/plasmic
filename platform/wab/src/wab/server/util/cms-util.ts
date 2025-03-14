@@ -2,11 +2,12 @@ import { CmsTable } from "@/wab/server/entities/Entities";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   CmsFieldMeta,
+  CmsMetaType,
+  CmsRowData,
   CmsTableSchema,
   CmsTypeName,
   FilterClause,
   FilterCond,
-  CmsMetaType,
 } from "@/wab/shared/ApiSchema";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { Dict } from "@/wab/shared/collections";
@@ -321,4 +322,12 @@ const typeToPgType = (type: CmsTypeName) => {
     default:
       throw new BadRequestError(`Cannot filter by a column of type ${type}`);
   }
+};
+
+export const normalizeData = (data: unknown | null) => {
+  return data ?? "";
+};
+
+export const getDefaultLocale = (cmsRowData: CmsRowData) => {
+  return cmsRowData[""];
 };

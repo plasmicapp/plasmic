@@ -248,6 +248,11 @@ function renderModelFieldForm(
           <ValueSwitch />
         </Form.Item>
       )}
+      {![CmsMetaType.LIST, CmsMetaType.OBJECT].includes(selectedType) && (
+        <Form.Item label={"Unique"} name={[...fieldPath, "unique"]} required>
+          <ValueSwitch />
+        </Form.Item>
+      )}
       <Form.Item
         label={"Helper text"}
         name={[...fieldPath, "helperText"]}
@@ -647,6 +652,7 @@ function ModelFields({
                       helperText: "",
                       required: false,
                       hidden: false,
+                      unique: false,
                       type: CmsMetaType.TEXT,
                       defaultValueByLocale: {},
                     })

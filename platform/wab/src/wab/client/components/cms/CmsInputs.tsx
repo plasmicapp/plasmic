@@ -245,9 +245,21 @@ function MaybeFormItem({
   name: NamePathz;
   maxChars?: number;
   minChars?: number;
+  uniqueViolation?: boolean;
 }) {
   const commonRules = [
     { required: props.required, message: "Field is required" },
+    {
+      warningOnly: true,
+      validator: (_, value) => {
+        if (props.uniqueViolation) {
+          return Promise.reject(
+            "This field should have unique data to publish entry"
+          );
+        }
+        return Promise.resolve();
+      },
+    },
   ];
   const typeSpecificRules =
     [CmsMetaType.TEXT, CmsMetaType.RICH_TEXT].includes(typeName) &&
@@ -572,6 +584,7 @@ interface MaybeLocalizedInputProps {
   fieldPathSuffix: string[];
   formItemProps: FormItemProps;
   typeName: CmsTypeName;
+  uniqueViolation: boolean;
 }
 
 export function renderMaybeLocalizedInput({
@@ -584,6 +597,7 @@ export function renderMaybeLocalizedInput({
   formItemProps,
   typeName,
   required,
+  uniqueViolation,
 }: MaybeLocalizedInputProps) {
   return (
     <ContentEntryFormContext.Consumer>
@@ -608,6 +622,7 @@ export function renderMaybeLocalizedInput({
               minChars={minChars}
               required={required}
               typeName={typeName}
+              uniqueViolation={uniqueViolation}
               {...formItemProps}
               name={[...fieldPath, "", ...fieldPathSuffix]}
             >
@@ -643,6 +658,7 @@ export function renderMaybeLocalizedInput({
                       maxChars={maxChars}
                       minChars={minChars}
                       required={required}
+                      uniqueViolation={uniqueViolation}
                       typeName={typeName}
                       name={[...fieldPath, locale, ...fieldPathSuffix]}
                       noStyle
