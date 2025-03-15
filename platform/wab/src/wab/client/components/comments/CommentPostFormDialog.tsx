@@ -54,7 +54,7 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog(
   }
 
   return (
-    <div className="CommentDialog">
+    <div className="CommentDialogContainer">
       <PlasmicCommentPostFormDialog
         {...props}
         commentsDialogHead={{

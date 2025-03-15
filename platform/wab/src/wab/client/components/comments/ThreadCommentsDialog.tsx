@@ -63,7 +63,7 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog(
   }
 
   return (
-    <div className="CommentDialog">
+    <div className="CommentDialogContainer">
       <PlasmicThreadCommentsDialog
         commentsDialogHead={{
           close: {

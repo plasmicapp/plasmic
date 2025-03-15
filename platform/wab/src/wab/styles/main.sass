@@ -4573,11 +4573,17 @@ $resizer_size: 8px
   right: 0%
   bottom: 100%
 
-.CommentDialog
+.CommentDialogContainer
   position: absolute
   top: 10px
   right: 10px
   z-index: 999
+  height: calc(100% - 20px)
+  pointer-events: none
+
+  section
+    max-height: 100% !important
+    pointer-events: auto
 
 .CommentMarkerInitial
   @include popup-box-hoverable
