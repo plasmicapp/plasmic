@@ -10,6 +10,9 @@
   min-width: 0;
   padding: 8px 2px;
 }
+.rootthread {
+  padding: var(--token-8b4HJYZr1yuK);
+}
 .root:hover {
   background: var(--token-9jh0BkCENS);
 }
@@ -100,6 +103,7 @@
 }
 .btnMorethread:global(.__wab_instance):global(.__wab_instance) {
   flex-shrink: 0;
+  display: none;
 }
 .btnMoreisDeleted:global(.__wab_instance):global(.__wab_instance) {
   flex-shrink: 0;
@@ -111,6 +115,15 @@
 .rootthread:hover
   .btnMorethread:global(.__wab_instance):global(.__wab_instance) {
   flex-shrink: 0;
+}
+.threadHistoryStatus:global(.__wab_instance) {
+  max-width: 100%;
+  flex-shrink: 0;
+  display: none;
+}
+.threadHistoryStatusthread:global(.__wab_instance) {
+  flex-shrink: 0;
+  display: flex;
 }
 .freeBox___5UHnq {
   display: flex;
@@ -209,7 +222,7 @@
   min-width: 0;
   min-height: 0;
 }
-.svg__hnjGs {
+.svg__eFoKq {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -310,7 +323,7 @@
   min-width: 0;
   min-height: 0;
 }
-.svg__ztEfw {
+.svg__fcWv {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -334,13 +347,13 @@
 .repliesLinkthread:global(.__wab_instance) {
   display: flex;
 }
-.svg___0Pnm2 {
+.svg__nA8UR {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
-.svg__xeeTi {
+.svg___0OFaW {
   display: flex;
   position: relative;
   object-fit: cover;

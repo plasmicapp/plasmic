@@ -29,6 +29,7 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import CommentPostForm from "../../components/comments/CommentPostForm"; // plasmic-import: qi3Y1X2qZ7/component
 import ReactionButton from "../../components/comments/ReactionButton"; // plasmic-import: FOzDmFDbWm/component
+import { ThreadHistoryStatus } from "../../components/comments/ThreadHistoryStatus"; // plasmic-import: E0P_lFzVr70L/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
@@ -76,6 +77,7 @@ export type PlasmicCommentPost__OverridesType = {
   timestamp?: Flex__<"span">;
   actions?: Flex__<"div">;
   btnMore?: Flex__<typeof MenuButton>;
+  threadHistoryStatus?: Flex__<typeof ThreadHistoryStatus>;
   subjectLabel?: Flex__<"div">;
   body?: Flex__<"div">;
   btnAddReaction?: Flex__<typeof IconButton>;
@@ -167,7 +169,10 @@ function PlasmicCommentPost__RenderFunc(props: {
         plasmic_plasmic_kit_design_system_css.plasmic_tokens,
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         sty.root,
-        { [sty.rootthread]: hasVariant($state, "thread", "thread") }
+        {
+          [sty.rootisEditing]: hasVariant($state, "isEditing", "isEditing"),
+          [sty.rootthread]: hasVariant($state, "thread", "thread"),
+        }
       )}
     >
       <Stack__
@@ -259,6 +264,7 @@ function PlasmicCommentPost__RenderFunc(props: {
               "isDeleted",
               "isDeleted"
             ),
+            [sty.actionsthread]: hasVariant($state, "thread", "thread"),
           })}
         >
           <MenuButton
@@ -274,6 +280,18 @@ function PlasmicCommentPost__RenderFunc(props: {
             })}
             size={"small"}
             withBackgroundHover={true}
+          />
+
+          <ThreadHistoryStatus
+            data-plasmic-name={"threadHistoryStatus"}
+            data-plasmic-override={overrides.threadHistoryStatus}
+            className={classNames("__wab_instance", sty.threadHistoryStatus, {
+              [sty.threadHistoryStatusthread]: hasVariant(
+                $state,
+                "thread",
+                "thread"
+              ),
+            })}
           />
         </div>
       </Stack__>
@@ -483,6 +501,7 @@ const PlasmicDescendants = {
     "timestamp",
     "actions",
     "btnMore",
+    "threadHistoryStatus",
     "subjectLabel",
     "body",
     "btnAddReaction",
@@ -496,8 +515,9 @@ const PlasmicDescendants = {
   text: ["text", "userFullName", "timestamp"],
   userFullName: ["userFullName"],
   timestamp: ["timestamp"],
-  actions: ["actions", "btnMore"],
+  actions: ["actions", "btnMore", "threadHistoryStatus"],
   btnMore: ["btnMore"],
+  threadHistoryStatus: ["threadHistoryStatus"],
   subjectLabel: ["subjectLabel"],
   body: ["body"],
   btnAddReaction: ["btnAddReaction"],
@@ -518,6 +538,7 @@ type NodeDefaultElementType = {
   timestamp: "span";
   actions: "div";
   btnMore: typeof MenuButton;
+  threadHistoryStatus: typeof ThreadHistoryStatus;
   subjectLabel: "div";
   body: "div";
   btnAddReaction: typeof IconButton;
@@ -539,15 +560,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicCommentPost__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicCommentPost__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    // Specify args directly as props
-    Omit<PlasmicCommentPost__ArgsType, ReservedPropsType> &
-    // Specify overrides for each element directly as props
-    Omit<
+    /* Specify args directly as props*/ Omit<
+      PlasmicCommentPost__ArgsType,
+      ReservedPropsType
+    > &
+    /* Specify overrides for each element directly as props*/ Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    // Specify props for the root element
-    Omit<
+    /* Specify props for the root element*/ Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -594,6 +615,7 @@ export const PlasmicCommentPost = Object.assign(
     timestamp: makeNodeComponent("timestamp"),
     actions: makeNodeComponent("actions"),
     btnMore: makeNodeComponent("btnMore"),
+    threadHistoryStatus: makeNodeComponent("threadHistoryStatus"),
     subjectLabel: makeNodeComponent("subjectLabel"),
     body: makeNodeComponent("body"),
     btnAddReaction: makeNodeComponent("btnAddReaction"),

@@ -146,6 +146,9 @@
 .roottype_secondary {
   background: var(--token-O4S7RMTqZ3);
 }
+.roottype_black {
+  background: var(--token-wRTnrRwLX);
+}
 .rootisActive {
   background: var(--token-Ik3bdE1e1Uy);
 }
@@ -382,6 +385,10 @@
   > picture
   > img {
   overflow: hidden;
+  transition-property: all;
+  transition-duration: 1s;
+  -webkit-transition-property: all;
+  -webkit-transition-duration: 1s;
 }
 .slotTargetChildrensize_large {
   font-size: 24px;
@@ -406,6 +413,9 @@
 }
 .slotTargetChildrentype_purple {
   color: var(--token-UCbZU41E8Mj);
+}
+.slotTargetChildrentype_black {
+  color: var(--token-iR8SeEwQZ);
 }
 .slotTargetChildrenisActive {
   color: var(--token-0IloF6TmFvF);
@@ -635,4 +645,7 @@
   right: 0;
   color: var(--token-fVn5vRhXJxQ);
   height: 1em;
+}
+.svgisLoading {
+  display: block;
 }

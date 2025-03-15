@@ -15,7 +15,7 @@ import {
   PlasmicCommentsTab,
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentsTab";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { isTplNamable, summarizeTplNamable } from "@/wab/shared/core/tpls";
+import { isTplNamable } from "@/wab/shared/core/tpls";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -82,6 +82,7 @@ export const CommentsTab = observer(function CommentsTab(
       <PlasmicCommentsTab
         {...props}
         emptySelection={!focusedTpl}
+        noComments={Boolean(focusedTpl && !focusedSubjectThreads.length)}
         notificationsButton={{
           wrap: (node) => (
             <Dropdown
@@ -141,23 +142,10 @@ export const CommentsTab = observer(function CommentsTab(
             </Dropdown>
           ),
         }}
-        currentlySelectedTitle={{
-          wrap: focusedTpl ? (it) => it : () => null,
+        selectedSubjectHead={{
+          tpl: isTplNamable(focusedTpl) ? focusedTpl : undefined,
+          viewCtx,
         }}
-        currentlySelectedSubject={{
-          children:
-            focusedTpl && viewCtx
-              ? summarizeTplNamable(
-                  focusedTpl,
-                  viewCtx.effectiveCurrentVariantSetting(focusedTpl).rsh()
-                )
-              : undefined,
-        }}
-        currentlySelectedPrefix={
-          currentFocusThreads.length > 0
-            ? {}
-            : { children: "Comment on selected" }
-        }
         currentThreadsList={{
           children: currentFocusThreads.map((threadComment) => (
             <RootComment

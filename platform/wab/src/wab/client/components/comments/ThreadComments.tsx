@@ -51,7 +51,6 @@ function ThreadComments_(
               <CommentPost
                 key={item.id}
                 comment={item}
-                isRootComment={index === 0}
                 commentThread={commentThread}
               />
             );

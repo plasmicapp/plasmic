@@ -22,7 +22,6 @@ export default observer(function RootComment({
       commentThread={commentThread}
       subjectLabel={commentThread.label}
       isThread
-      isRootComment
       repliesLinkLabel={
         commentThread.comments.length > 1
           ? `${commentThread.comments.length - 1} replies`

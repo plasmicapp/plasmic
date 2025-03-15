@@ -1,0 +1,21 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: var(--token-CVkj_k5wv-Vl);
+  position: relative;
+  width: var(--token-CVkj_k5wv-Vl);
+}
+.svg {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.svg__vwQWz {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}

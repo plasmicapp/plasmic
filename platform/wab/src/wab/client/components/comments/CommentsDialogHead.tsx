@@ -24,8 +24,6 @@ import * as React from "react";
 export interface CommentsDialogHeadProps
   extends DefaultCommentsDialogHeadProps {
   close?: PlasmicCommentsDialogHead__OverridesType["close"];
-  name?: PlasmicCommentsDialogHead__OverridesType["name"];
-  type?: PlasmicCommentsDialogHead__OverridesType["type"];
 }
 
 function CommentsDialogHead_(

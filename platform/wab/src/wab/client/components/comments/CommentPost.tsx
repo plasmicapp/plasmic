@@ -8,7 +8,6 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPost";
 import PlasmicReactionButton from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicReactionButton";
 import {
-  isUserProjectContentEditor,
   isUserProjectOwner,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
@@ -36,7 +35,6 @@ export interface CommentPostProps extends DefaultCommentPostProps {
   repliesLinkLabel?: React.ReactNode;
   onClick?: () => void;
   isThread?: boolean;
-  isRootComment?: boolean;
 }
 
 // Reactions using unicode emojis hex codes
@@ -119,21 +117,14 @@ function ReactionsByEmoji(props: {
 function CommentMenuOptions(props: {
   comment: ApiComment;
   isThread?: boolean;
-  isRootComment?: boolean;
   commentThread: TplCommentThread;
   onEdit?: (comment: ApiComment) => void;
 }) {
-  const { comment, isThread, commentThread, isRootComment, onEdit } = props;
+  const { comment, isThread, commentThread, onEdit } = props;
 
   const studioCtx = useStudioCtx();
   const appCtx = useAppCtx();
   const api = appCtx.api;
-
-  const isContentEditor = isUserProjectContentEditor(
-    appCtx.selfInfo,
-    studioCtx.siteInfo,
-    studioCtx.siteInfo.perms
-  );
 
   const isOwner = isUserProjectOwner(
     appCtx.selfInfo,
@@ -147,21 +138,6 @@ function CommentMenuOptions(props: {
 
   return (
     <Menu>
-      {isRootComment && (
-        <Menu.Item
-          key="change-status"
-          disabled={
-            !(isContentEditor || appCtx.selfInfo?.id === comment.createdById)
-          }
-          onClick={async () => {
-            await api.editThread(projectId, branchId, comment.commentThreadId, {
-              resolved: !commentThread.resolved,
-            });
-          }}
-        >
-          Mark as {commentThread.resolved ? "unresolved" : "resolved"}
-        </Menu.Item>
-      )}
       {!comment.deletedAt && !isThread && (
         <>
           <Menu.Item
@@ -194,7 +170,6 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
     subjectLabel,
     repliesLinkLabel,
     isThread,
-    isRootComment = false,
     commentThread,
     ...rest
   } = props;
@@ -295,6 +270,9 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
           </Popover>
         ),
       }}
+      threadHistoryStatus={{
+        commentThread,
+      }}
       btnMore={{
         wrap: (node) => <ClickStopper preventDefault>{node}</ClickStopper>,
         props: {
@@ -302,7 +280,6 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
             <CommentMenuOptions
               comment={comment}
               isThread={isThread}
-              isRootComment={isRootComment}
               commentThread={commentThread}
               onEdit={() => {
                 setIsEditing(true);

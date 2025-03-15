@@ -15,13 +15,19 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  SingleBooleanChoiceArg,
+  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { SelectedSubjectHead } from "../../components/comments/SelectedSubjectHead"; // plasmic-import: PTsdlYdahZ76/component
+import { ThreadHistoryStatus } from "../../components/comments/ThreadHistoryStatus"; // plasmic-import: E0P_lFzVr70L/component
 import ListSectionSeparator from "../../components/ListSectionSeparator"; // plasmic-import: uG5_fPM0sK/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
@@ -36,11 +42,15 @@ import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy
 
 createPlasmicElementProxy;
 
-export type PlasmicCommentsDialogHead__VariantMembers = {};
-export type PlasmicCommentsDialogHead__VariantsArgs = {};
+export type PlasmicCommentsDialogHead__VariantMembers = {
+  isThread: "isThread";
+};
+export type PlasmicCommentsDialogHead__VariantsArgs = {
+  isThread?: SingleBooleanChoiceArg<"isThread">;
+};
 type VariantPropType = keyof PlasmicCommentsDialogHead__VariantsArgs;
 export const PlasmicCommentsDialogHead__VariantProps =
-  new Array<VariantPropType>();
+  new Array<VariantPropType>("isThread");
 
 export type PlasmicCommentsDialogHead__ArgsType = {};
 type ArgPropType = keyof PlasmicCommentsDialogHead__ArgsType;
@@ -49,15 +59,16 @@ export const PlasmicCommentsDialogHead__ArgProps = new Array<ArgPropType>();
 export type PlasmicCommentsDialogHead__OverridesType = {
   root?: Flex__<"div">;
   head?: Flex__<"div">;
+  selectedSubjectHead?: Flex__<typeof SelectedSubjectHead>;
   freeBox?: Flex__<"div">;
-  name?: Flex__<"div">;
-  type?: Flex__<"div">;
+  threadHistoryStatus?: Flex__<typeof ThreadHistoryStatus>;
   close?: Flex__<typeof IconButton>;
   svg?: Flex__<"svg">;
   listSectionSeparator?: Flex__<typeof ListSectionSeparator>;
 };
 
 export interface DefaultCommentsDialogHeadProps {
+  isThread?: SingleBooleanChoiceArg<"isThread">;
   className?: string;
 }
 
@@ -91,6 +102,24 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
+    () => [
+      {
+        path: "isThread",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isThread,
+      },
+    ],
+    [$props, $ctx, $refs]
+  );
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $refs,
+  });
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -113,48 +142,52 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
         data-plasmic-override={overrides.head}
         className={classNames(projectcss.all, sty.head)}
       >
-        <div
+        <SelectedSubjectHead
+          data-plasmic-name={"selectedSubjectHead"}
+          data-plasmic-override={overrides.selectedSubjectHead}
+          className={classNames("__wab_instance", sty.selectedSubjectHead)}
+        />
+
+        <Stack__
+          as={"div"}
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
-          className={classNames(projectcss.all, sty.freeBox)}
+          hasGap={true}
+          className={classNames(projectcss.all, sty.freeBox, {
+            [sty.freeBoxisThread]: hasVariant($state, "isThread", "isThread"),
+          })}
         >
-          <div
-            data-plasmic-name={"name"}
-            data-plasmic-override={overrides.name}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.name
-            )}
-          >
-            {"Name"}
-          </div>
-          <div
-            data-plasmic-name={"type"}
-            data-plasmic-override={overrides.type}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.type
-            )}
-          >
-            {"Type"}
-          </div>
-        </div>
-        <IconButton
-          data-plasmic-name={"close"}
-          data-plasmic-override={overrides.close}
-          className={classNames("__wab_instance", sty.close)}
-          size={"medium"}
-          type={["seamless"]}
-        >
-          <CloseIcon
-            data-plasmic-name={"svg"}
-            data-plasmic-override={overrides.svg}
-            className={classNames(projectcss.all, sty.svg)}
-            role={"img"}
+          <ThreadHistoryStatus
+            data-plasmic-name={"threadHistoryStatus"}
+            data-plasmic-override={overrides.threadHistoryStatus}
+            className={classNames("__wab_instance", sty.threadHistoryStatus, {
+              [sty.threadHistoryStatusisThread]: hasVariant(
+                $state,
+                "isThread",
+                "isThread"
+              ),
+            })}
           />
-        </IconButton>
+
+          <IconButton
+            data-plasmic-name={"close"}
+            data-plasmic-override={overrides.close}
+            className={classNames("__wab_instance", sty.close, {
+              [sty.closeisThread]: hasVariant($state, "isThread", "isThread"),
+            })}
+            size={"medium"}
+            type={["seamless"]}
+          >
+            <CloseIcon
+              data-plasmic-name={"svg"}
+              data-plasmic-override={overrides.svg}
+              className={classNames(projectcss.all, sty.svg, {
+                [sty.svgisThread]: hasVariant($state, "isThread", "isThread"),
+              })}
+              role={"img"}
+            />
+          </IconButton>
+        </Stack__>
       </div>
       <ListSectionSeparator
         data-plasmic-name={"listSectionSeparator"}
@@ -169,17 +202,24 @@ const PlasmicDescendants = {
   root: [
     "root",
     "head",
+    "selectedSubjectHead",
     "freeBox",
-    "name",
-    "type",
+    "threadHistoryStatus",
     "close",
     "svg",
     "listSectionSeparator",
   ],
-  head: ["head", "freeBox", "name", "type", "close", "svg"],
-  freeBox: ["freeBox", "name", "type"],
-  name: ["name"],
-  type: ["type"],
+  head: [
+    "head",
+    "selectedSubjectHead",
+    "freeBox",
+    "threadHistoryStatus",
+    "close",
+    "svg",
+  ],
+  selectedSubjectHead: ["selectedSubjectHead"],
+  freeBox: ["freeBox", "threadHistoryStatus", "close", "svg"],
+  threadHistoryStatus: ["threadHistoryStatus"],
   close: ["close", "svg"],
   svg: ["svg"],
   listSectionSeparator: ["listSectionSeparator"],
@@ -190,9 +230,9 @@ type DescendantsType<T extends NodeNameType> =
 type NodeDefaultElementType = {
   root: "div";
   head: "div";
+  selectedSubjectHead: typeof SelectedSubjectHead;
   freeBox: "div";
-  name: "div";
-  type: "div";
+  threadHistoryStatus: typeof ThreadHistoryStatus;
   close: typeof IconButton;
   svg: "svg";
   listSectionSeparator: typeof ListSectionSeparator;
@@ -210,15 +250,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicCommentsDialogHead__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicCommentsDialogHead__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    // Specify args directly as props
-    Omit<PlasmicCommentsDialogHead__ArgsType, ReservedPropsType> &
-    // Specify overrides for each element directly as props
-    Omit<
+    /* Specify args directly as props*/ Omit<
+      PlasmicCommentsDialogHead__ArgsType,
+      ReservedPropsType
+    > &
+    /* Specify overrides for each element directly as props*/ Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    // Specify props for the root element
-    Omit<
+    /* Specify props for the root element*/ Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -259,9 +299,9 @@ export const PlasmicCommentsDialogHead = Object.assign(
   {
     // Helper components rendering sub-elements
     head: makeNodeComponent("head"),
+    selectedSubjectHead: makeNodeComponent("selectedSubjectHead"),
     freeBox: makeNodeComponent("freeBox"),
-    _name: makeNodeComponent("name"),
-    type: makeNodeComponent("type"),
+    threadHistoryStatus: makeNodeComponent("threadHistoryStatus"),
     close: makeNodeComponent("close"),
     svg: makeNodeComponent("svg"),
     listSectionSeparator: makeNodeComponent("listSectionSeparator"),
