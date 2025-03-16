@@ -253,35 +253,34 @@ function MaybeFormItem({
 }) {
   const history = useHistory();
   const match = useRRouteMatch(UU.cmsEntry);
+  const unique = props.uniqueStatus;
   const commonRules = [
     { required: props.required, message: "Field is required" },
     {
       warningOnly: true,
       validator: (_, value) => {
-        if (props.uniqueStatus) {
-          const unique = props.uniqueStatus;
-          if (
-            unique.status === "violation" &&
-            unique.conflictEntryIds.length > 0
-          ) {
-            const firstConflictingRow = unique.conflictEntryIds[0];
-            const conflictingRRoute = UU.cmsEntry.fill({
-              ...match!.params,
-              rowId: firstConflictingRow,
-            });
-            return Promise.reject(
-              <>
-                This field should have unique data to publish entry.{" "}
-                <a
-                  onClick={() => {
-                    history.push(conflictingRRoute);
-                  }}
-                >
-                  See conflicting entry
-                </a>
-              </>
-            );
-          }
+        if (
+          unique &&
+          unique.status === "violation" &&
+          unique.conflictEntryIds.length > 0
+        ) {
+          const firstConflictingRow = unique.conflictEntryIds[0];
+          const conflictingRowRoute = UU.cmsEntry.fill({
+            ...match!.params,
+            rowId: firstConflictingRow,
+          });
+          return Promise.reject(
+            <>
+              This field should have unique data to publish entry.{" "}
+              <a
+                onClick={() => {
+                  history.push(conflictingRowRoute);
+                }}
+              >
+                See conflicting entry
+              </a>
+            </>
+          );
         }
         return Promise.resolve();
       },
