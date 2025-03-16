@@ -1,9 +1,6 @@
 import { CmsRowData } from "@/wab/shared/ApiSchema";
-import { Dict } from "@/wab/shared/collections";
 
-type CmsLocaleRowData = Dict<unknown>;
-
-export function getDefaultLocale(data: CmsRowData): CmsLocaleRowData {
+export function getDefaultLocale(data: CmsRowData) {
   return data[""];
 }
 
