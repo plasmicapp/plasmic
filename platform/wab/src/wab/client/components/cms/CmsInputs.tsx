@@ -1,9 +1,12 @@
-import { UU } from "@/wab/client/cli-routes";
+import { useRRouteMatch, UU } from "@/wab/client/cli-routes";
 import {
   useCmsRows,
   useCmsTableMaybe,
 } from "@/wab/client/components/cms/cms-contexts";
-import { getRowIdentifierNode } from "@/wab/client/components/cms/CmsEntryDetails";
+import {
+  getRowIdentifierNode,
+  UniqueFieldStatus,
+} from "@/wab/client/components/cms/CmsEntryDetails";
 import { isCmsTextLike } from "@/wab/client/components/cms/utils";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { FileUploader, Spinner } from "@/wab/client/components/widgets";
@@ -45,6 +48,7 @@ import moment from "moment";
 import * as React from "react";
 import { createContext, ReactElement, ReactNode, useContext } from "react";
 import { GrNewWindow } from "react-icons/all";
+import { useHistory } from "react-router";
 const LazyRichTextEditor = React.lazy(
   () => import("@/wab/client/components/RichTextEditor")
 );
@@ -245,17 +249,39 @@ function MaybeFormItem({
   name: NamePathz;
   maxChars?: number;
   minChars?: number;
-  uniqueViolation?: boolean;
+  uniqueStatus?: UniqueFieldStatus;
 }) {
+  const history = useHistory();
+  const match = useRRouteMatch(UU.cmsEntry);
   const commonRules = [
     { required: props.required, message: "Field is required" },
     {
       warningOnly: true,
       validator: (_, value) => {
-        if (props.uniqueViolation) {
-          return Promise.reject(
-            "This field should have unique data to publish entry"
-          );
+        if (props.uniqueStatus) {
+          const unique = props.uniqueStatus;
+          if (
+            unique.status === "violation" &&
+            unique.conflictEntryIds.length > 0
+          ) {
+            const firstConflictingRow = unique.conflictEntryIds[0];
+            const conflictingRRoute = UU.cmsEntry.fill({
+              ...match!.params,
+              rowId: firstConflictingRow,
+            });
+            return Promise.reject(
+              <>
+                This field should have unique data to publish entry.{" "}
+                <a
+                  onClick={() => {
+                    history.push(conflictingRRoute);
+                  }}
+                >
+                  See conflicting entry
+                </a>
+              </>
+            );
+          }
         }
         return Promise.resolve();
       },
@@ -584,7 +610,7 @@ interface MaybeLocalizedInputProps {
   fieldPathSuffix: string[];
   formItemProps: FormItemProps;
   typeName: CmsTypeName;
-  uniqueViolation: boolean;
+  uniqueStatus?: UniqueFieldStatus;
 }
 
 export function renderMaybeLocalizedInput({
@@ -597,7 +623,7 @@ export function renderMaybeLocalizedInput({
   formItemProps,
   typeName,
   required,
-  uniqueViolation,
+  uniqueStatus,
 }: MaybeLocalizedInputProps) {
   return (
     <ContentEntryFormContext.Consumer>
@@ -622,8 +648,8 @@ export function renderMaybeLocalizedInput({
               minChars={minChars}
               required={required}
               typeName={typeName}
-              uniqueViolation={uniqueViolation}
               {...formItemProps}
+              uniqueStatus={uniqueStatus}
               name={[...fieldPath, "", ...fieldPathSuffix]}
             >
               {children}
@@ -658,7 +684,7 @@ export function renderMaybeLocalizedInput({
                       maxChars={maxChars}
                       minChars={minChars}
                       required={required}
-                      uniqueViolation={uniqueViolation}
+                      uniqueStatus={uniqueStatus}
                       typeName={typeName}
                       name={[...fieldPath, locale, ...fieldPathSuffix]}
                       noStyle

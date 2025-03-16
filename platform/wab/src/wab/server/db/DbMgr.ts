@@ -101,7 +101,6 @@ import {
 } from "@/wab/server/tutorialdb/tutorialdb-utils";
 import { generateSomeApiToken } from "@/wab/server/util/Tokens";
 import {
-  getDefaultLocale,
   makeSqlCondition,
   makeTypedFieldSql,
   normalizeData,
@@ -181,6 +180,7 @@ import {
 } from "@/wab/shared/Labels";
 import { Bundler } from "@/wab/shared/bundler";
 import { getBundle } from "@/wab/shared/bundles";
+import { getDefaultLocale, getUniqueFieldsData } from "@/wab/shared/cms";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { Dict, mkIdMap, safeHas } from "@/wab/shared/collections";
 import {
@@ -7242,11 +7242,11 @@ export class DbMgr implements MigrationDbMgr {
     tableId: CmsTableId,
     opts: {
       rowId: CmsRowId;
-      defaultLocaleUniqueFields: Dict<unknown>;
+      uniqueFieldsData: Dict<unknown>;
     }
   ): Promise<UniqueFieldCheck[]> {
     const publishedRows = await this.getPublishedRows(tableId);
-    return Object.entries(opts.defaultLocaleUniqueFields).map(
+    return Object.entries(opts.uniqueFieldsData).map(
       ([fieldIdentifier, value]) => {
         const conflictRowIds = this.getConflictingCmsRowIds(
           publishedRows,
@@ -7322,15 +7322,19 @@ export class DbMgr implements MigrationDbMgr {
       if (uniqueFieldIdentifiers.length > 0) {
         /* Check unique fields have violation. */
         if (opts.data) {
-          const defaultLocale = getDefaultLocale(opts.data as CmsRowData);
-          const defaultLocaleUniqueFields = Object.fromEntries(
-            Object.entries(defaultLocale).filter(([identifier, __]) =>
-              uniqueFieldIdentifiers.includes(identifier)
-            )
+          const uniqueFieldsData = getUniqueFieldsData(
+            uniqueFieldIdentifiers,
+            opts.data as CmsRowData
           );
+          // const defaultLocale = getDefaultLocale(opts.data as CmsRowData);
+          // const defaultLocaleUniqueFields = Object.fromEntries(
+          //   Object.entries(defaultLocale).filter(([identifier, __]) =>
+          //     uniqueFieldIdentifiers.includes(identifier)
+          //   )
+          // );
           const uniqueFieldsCheck = await this.checkUniqueFields(table.id, {
             rowId: row.id,
-            defaultLocaleUniqueFields: defaultLocaleUniqueFields,
+            uniqueFieldsData: uniqueFieldsData,
           });
           if (uniqueFieldsCheck.some((field) => !field.ok)) {
             throw new UniqueViolationError(uniqueFieldsCheck);

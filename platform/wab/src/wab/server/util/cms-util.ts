@@ -3,7 +3,6 @@ import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   CmsFieldMeta,
   CmsMetaType,
-  CmsRowData,
   CmsTableSchema,
   CmsTypeName,
   FilterClause,
@@ -326,8 +325,4 @@ const typeToPgType = (type: CmsTypeName) => {
 
 export const normalizeData = (data: unknown | null) => {
   return data ?? "";
-};
-
-export const getDefaultLocale = (cmsRowData: CmsRowData) => {
-  return cmsRowData[""];
 };
