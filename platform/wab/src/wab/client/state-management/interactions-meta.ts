@@ -1,7 +1,14 @@
 import { getTplRefActions } from "@/wab/client/state-management/ref-actions";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ApiDataSource } from "@/wab/shared/ApiSchema";
+import {
+  isPlainObjectPropType,
+  propTypeToWabType,
+  StudioPropType,
+} from "@/wab/shared/code-components/code-components";
+import { toVarName } from "@/wab/shared/codegen/util";
 import { assert, ensure, ensureInstance } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
+import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
 import {
   codeLit,
   customCode,
@@ -10,15 +17,22 @@ import {
   tryExtractString,
 } from "@/wab/shared/core/exprs";
 import { ParamExportType } from "@/wab/shared/core/lang";
-import { ApiDataSource } from "@/wab/shared/ApiSchema";
 import {
-  isPlainObjectPropType,
-  propTypeToWabType,
-  StudioPropType,
-} from "@/wab/shared/code-components/code-components";
-import { toVarName } from "@/wab/shared/codegen/util";
-import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
+  getStateVarName,
+  mkInteraction,
+  UpdateVariableOperations,
+  updateVariableOperations,
+  UpdateVariantOperations,
+  updateVariantOperations,
+} from "@/wab/shared/core/states";
+import {
+  EventHandlerKeyType,
+  isEventHandlerKeyForAttr,
+  isEventHandlerKeyForFuncType,
+  isEventHandlerKeyForParam,
+} from "@/wab/shared/core/tpls";
 import { ALL_QUERIES } from "@/wab/shared/data-sources-meta/data-sources";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { CanvasEnv } from "@/wab/shared/eval";
 import {
   DATA_SOURCE_LOWER,
@@ -57,20 +71,6 @@ import {
 } from "@/wab/shared/model/model-util";
 import { SiteInfo } from "@/wab/shared/SharedApi";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
-import {
-  getStateVarName,
-  mkInteraction,
-  UpdateVariableOperations,
-  updateVariableOperations,
-  UpdateVariantOperations,
-  updateVariantOperations,
-} from "@/wab/shared/core/states";
-import {
-  EventHandlerKeyType,
-  isEventHandlerKeyForAttr,
-  isEventHandlerKeyForFuncType,
-  isEventHandlerKeyForParam,
-} from "@/wab/shared/core/tpls";
 import { mkMetaName } from "@plasmicapp/host";
 import { GlobalActionRegistration } from "@plasmicapp/host/registerGlobalContext";
 import { get, startCase } from "lodash";
@@ -631,6 +631,11 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
       return `Run ${ensureKnownVarRef(eventRef).variable.name}`;
     },
     getDefaultArgs: () => ({}),
+    resetDependentArgs(args, _ctx, updatedArg) {
+      if (updatedArg === "eventRef") {
+        delete args.args;
+      }
+    },
   },
   invalidateDataQuery: {
     displayName: "Refresh data",
