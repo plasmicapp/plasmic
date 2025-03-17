@@ -1966,4 +1966,96 @@ describe("sendCommentsNotificationEmails", () => {
       }
     );
   });
+  it("should not notify user if reacted to self comment", async () => {
+    await withEndUserNotificationSetup(
+      async ({ sudo, users, project, userDbs }) => {
+        // user 0 comment
+        const user0comment = await addComment(userDbs[0](), project.id);
+
+        // User 1 comment
+        const user1Comment = await addComment(userDbs[1](), project.id);
+
+        // User 1 reply to user 0 comment
+        const user1ReplyToUser0Comment = await addComment(
+          userDbs[1](),
+          project.id,
+          user0comment.commentThreadId
+        );
+
+        // user 0 reacted to self comment, user 0 should not be notified
+        const user0CommentReaction = await reactOnComment(
+          userDbs[0](),
+          user0comment.id
+        );
+
+        // user 0 reacted to user 1 comment, user 1 should be notified
+        const user1CommentReaction = await reactOnComment(
+          userDbs[0](),
+          user1Comment.id
+        );
+
+        const { notificationsByUser, recentCommentThreads } =
+          await processUnnotifiedCommentsNotifications(sudo);
+
+        // Check if the notificationsByUser structure is correct
+        // user 1 not be notified of self reaction
+        const expectedNotification: NotificationsByUser = new Map([
+          [
+            users[0].id,
+            new Map([
+              [
+                project.id,
+                new Map([
+                  [
+                    user1ReplyToUser0Comment.commentThreadId,
+                    [
+                      await createNotification(
+                        user1ReplyToUser0Comment.commentThreadId,
+                        users[0],
+                        project,
+                        user1ReplyToUser0Comment.createdAt,
+                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                        sudo
+                      ),
+                    ],
+                  ],
+                ]),
+              ],
+            ]),
+          ],
+          [
+            users[1].id,
+            new Map([
+              [
+                project.id,
+                new Map([
+                  [
+                    user1Comment.commentThreadId,
+                    [
+                      await createNotification(
+                        user1Comment.commentThreadId,
+                        users[1],
+                        project,
+                        user1CommentReaction.createdAt,
+                        { type: "REACTION", reaction: user1CommentReaction },
+                        sudo
+                      ),
+                    ],
+                  ],
+                ]),
+              ],
+            ]),
+          ],
+        ]);
+
+        expect(notificationsByUser).toEqual(expectedNotification);
+
+        // Check if the processed threads match the recentThreads
+        expect(recentCommentThreads).toEqual([
+          user0comment.commentThreadId,
+          user1Comment.commentThreadId,
+        ]);
+      }
+    );
+  });
 });

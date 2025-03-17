@@ -397,7 +397,10 @@ async function processCommentReactionForProject(
         project.id
       );
 
-      if (notificationSettings.notifyAbout !== "none") {
+      if (
+        notificationSettings.notifyAbout !== "none" &&
+        commentUser.id !== commentReaction.createdById
+      ) {
         const rootComment = completeThreadComments[0];
         notifications.push({
           user: commentUser,
