@@ -42,6 +42,7 @@ import { repeatedElement } from '@plasmicapp/loader-react';
 import { ServerResponse } from 'http';
 import { TokenRegistration } from '@plasmicapp/loader-react';
 import { useDataEnv } from '@plasmicapp/loader-react';
+import { usePlasmicCanvasComponentInfo } from '@plasmicapp/loader-react';
 import { usePlasmicCanvasContext } from '@plasmicapp/loader-react';
 import { usePlasmicComponent } from '@plasmicapp/loader-react';
 import { usePlasmicQueryData } from '@plasmicapp/loader-react';

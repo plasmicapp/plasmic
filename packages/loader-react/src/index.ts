@@ -17,6 +17,7 @@ export {
   PlasmicTranslatorContext,
   repeatedElement,
   useDataEnv,
+  usePlasmicCanvasComponentInfo,
   usePlasmicCanvasContext,
   useSelector,
   useSelectors,

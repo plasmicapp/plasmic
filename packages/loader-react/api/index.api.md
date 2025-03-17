@@ -54,6 +54,7 @@ import { TrackRenderOptions } from '@plasmicapp/loader-core';
 import { TraitMeta } from '@plasmicapp/host';
 import { useDataEnv } from '@plasmicapp/host';
 import type { useMutablePlasmicQueryData } from '@plasmicapp/query';
+import { usePlasmicCanvasComponentInfo } from '@plasmicapp/host';
 import { usePlasmicCanvasContext } from '@plasmicapp/host';
 import { usePlasmicQueryData } from '@plasmicapp/query';
 import { useSelector } from '@plasmicapp/host';
@@ -320,6 +321,8 @@ export { repeatedElement }
 export { TokenRegistration }
 
 export { useDataEnv }
+
+export { usePlasmicCanvasComponentInfo }
 
 export { usePlasmicCanvasContext }
 

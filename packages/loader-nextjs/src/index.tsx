@@ -21,6 +21,7 @@ export {
   plasmicPrepass,
   repeatedElement,
   useDataEnv,
+  usePlasmicCanvasComponentInfo,
   usePlasmicCanvasContext,
   usePlasmicComponent,
   usePlasmicQueryData,
