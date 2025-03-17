@@ -31,6 +31,7 @@ import { getAncestorSlotArg } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { isBaseVariant } from "@/wab/shared/Variants";
+import { FastBundler } from "@/wab/shared/bundler";
 import {
   allCustomFunctions,
   getLinkedCodeProps,
@@ -117,7 +118,7 @@ import {
 } from "@plasmicapp/react-web";
 import asynclib from "async";
 import $ from "jquery";
-import L, { defer, groupBy, head, isEqual } from "lodash";
+import L, { defer, groupBy, head, isEqual, sortBy } from "lodash";
 import * as mobx from "mobx";
 import { comparer, computed, observable } from "mobx";
 import { computedFn } from "mobx-utils";
@@ -2525,4 +2526,19 @@ export function ensureVariantRs(
     RSH(vs.rs, tpl).merge(props);
   }
   return vs.rs;
+}
+
+export function getSetOfVariantsForViewCtx(
+  viewCtx: ViewCtx,
+  bundler: FastBundler
+) {
+  return sortBy(
+    [
+      ...viewCtx.currentComponentStackFrame().getPinnedVariants().keys(),
+      ...viewCtx.globalFrame.getPinnedVariants().keys(),
+      ...viewCtx.currentComponentStackFrame().getTargetVariants(),
+      ...viewCtx.globalFrame.getTargetVariants(),
+    ],
+    (v) => bundler.addrOf(v)?.iid
+  );
 }

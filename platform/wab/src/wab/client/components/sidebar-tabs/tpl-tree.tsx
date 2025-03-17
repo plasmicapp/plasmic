@@ -47,7 +47,10 @@ import {
   StudioCtx,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
-import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import {
+  getSetOfVariantsForViewCtx,
+  ViewCtx,
+} from "@/wab/client/studio-ctx/view-ctx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import {
   canSetDisplayNone,
@@ -128,6 +131,7 @@ import { FixedSizeList } from "react-window";
 
 import { TplClip } from "@/wab/client/clipboard/local";
 import CommentIndicatorIcon from "@/wab/client/components/comments/CommentIndicatorIcon";
+import { getSubjectVariantsKey } from "@/wab/client/components/comments/utils";
 import {
   getNodeSummary,
   OutlineCtx,
@@ -686,18 +690,50 @@ const TplTreeNode = observer(function TplTreeNode(props: {
     ? getPlumeElementDef(component, item)
     : undefined;
 
+  const getCommentStatsForTpl = (tpl: TplNode) => {
+    const commentStatsBySubject = commentsCtx
+      .computedData()
+      .commentStatsBySubject.get(tpl.uuid);
+
+    if (!commentStatsBySubject) {
+      return null;
+    }
+
+    const result = {
+      commentCount: commentStatsBySubject.commentCount,
+      replyCount: commentStatsBySubject.replyCount,
+      otherVariantsCount: 0,
+    };
+
+    if (viewCtx.studioCtx.focusedMode) {
+      const variants = getSetOfVariantsForViewCtx(viewCtx, viewCtx.bundler());
+      const commentStatsByVariant = commentsCtx
+        .computedData()
+        .commentStatsByVariant.get(getSubjectVariantsKey(tpl, variants));
+
+      if (!commentStatsByVariant) {
+        return null;
+      }
+
+      result.commentCount = commentStatsByVariant.commentCount;
+      result.replyCount = commentStatsByVariant.replyCount;
+      result.otherVariantsCount =
+        commentStatsBySubject.commentCount - commentStatsByVariant.commentCount;
+    }
+
+    return result;
+  };
+
   const icon = computed(
     () => {
-      if (isKnownTplNode(item)) {
-        const commentsStats = commentsCtx
-          .computedData()
-          .commentStatsBySubject.get(item.uuid);
-
-        if (commentsStats && viewCtx.studioCtx.showCommentsPanel) {
+      if (isKnownTplNode(item) && viewCtx.studioCtx.showCommentsPanel) {
+        const commentStats = getCommentStatsForTpl(item);
+        if (commentStats) {
           return (
             <CommentIndicatorIcon
-              commentCount={commentsStats.commentCount}
-              replyCount={commentsStats.replyCount}
+              commentCount={commentStats.commentCount}
+              replyCount={commentStats.replyCount}
+              otherVariantsCount={commentStats.otherVariantsCount}
             />
           );
         }

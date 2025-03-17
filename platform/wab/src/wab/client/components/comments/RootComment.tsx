@@ -31,10 +31,12 @@ export default observer(function RootComment({
         const ownerComponent = studioCtx
           .tplMgr()
           .findComponentContainingTpl(commentThread.subject);
+
         if (ownerComponent) {
           await studioCtx.setStudioFocusOnTpl(
             ownerComponent,
-            commentThread.subject
+            commentThread.subject,
+            commentThread.variants
           );
           onThreadSelect(threadId);
           studioCtx.tryZoomToFitSelection();

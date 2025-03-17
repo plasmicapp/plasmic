@@ -1071,6 +1071,13 @@ export function toVariantKey(v: Variant) {
   ]);
 }
 
+export function toVariantComboKey(variantCombo: VariantCombo) {
+  return variantCombo
+    .map((v) => toVariantKey(v))
+    .sort()
+    .join(",");
+}
+
 export function findDuplicateComponentVariant(
   component: Component,
   editingVariant: Variant

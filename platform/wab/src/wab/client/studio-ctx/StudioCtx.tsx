@@ -113,6 +113,7 @@ import {
   withProvider,
 } from "@/wab/commons/components/ContextUtil";
 import { safeCallbackify } from "@/wab/commons/control";
+import { unwrap } from "@/wab/commons/failable-utils";
 import { isLatest, latestTag, lt } from "@/wab/commons/semver";
 import { DeepReadonly } from "@/wab/commons/types";
 import { UnauthorizedError } from "@/wab/shared/ApiErrors/errors";
@@ -147,6 +148,7 @@ import {
   isDedicatedArena,
   isHeightAutoDerived,
   isMixedArena,
+  isPageArena,
   normalizeMixedArenaFrames,
   setFocusedFrame,
   syncArenaFrameSize,
@@ -160,7 +162,7 @@ import {
 } from "@/wab/shared/SharedApi";
 import { isSlot, tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
 import { addEmptyQuery } from "@/wab/shared/TplMgr";
-import { isVariantSettingEmpty } from "@/wab/shared/Variants";
+import { VariantCombo, isVariantSettingEmpty } from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import {
   Bundle,
@@ -203,6 +205,7 @@ import {
   maybe,
   mkShortId,
   removeWhere,
+  setEquals,
   spawn,
   spawnWrapper,
   swallow,
@@ -213,7 +216,10 @@ import {
   xDifference,
   xGroupBy,
 } from "@/wab/shared/common";
-import { ensureActivatedScreenVariantsForComponentArenaFrame } from "@/wab/shared/component-arenas";
+import {
+  ensureActivatedScreenVariantsForComponentArenaFrame,
+  getComponentArenaBaseFrame,
+} from "@/wab/shared/component-arenas";
 import { RootComponentVariantFrame } from "@/wab/shared/component-frame";
 import {
   CodeComponent,
@@ -312,6 +318,7 @@ import {
   isKnownArenaFrame,
   isKnownComponentArena,
   isKnownProjectDependency,
+  isKnownVariant,
   isKnownVariantSetting,
 } from "@/wab/shared/model/classes";
 import { modelSchemaHash } from "@/wab/shared/model/classes-metas";
@@ -365,6 +372,7 @@ import {
   groupBy,
   head,
   isNil,
+  keyBy,
   mapValues,
   maxBy,
   memoize,
@@ -2361,23 +2369,74 @@ export class StudioCtx extends WithDbCtx {
     this.setHighLevelFocusOnly(this.tryGetViewCtxForFrame(frame), undefined);
   }
 
-  async setStudioFocusOnTpl(component: Component, tpl: TplNode) {
-    if (this.focusedViewCtx()?.component === component) {
+  async setStudioFocusOnTpl(
+    component: Component,
+    tpl: TplNode,
+    variants?: VariantCombo
+  ) {
+    if (this.focusedViewCtx()?.component === component && !variants?.length) {
       this.focusedViewCtx()?.setStudioFocusByTpl(tpl);
-    } else {
-      let arena: ComponentArena | PageArena | undefined = undefined;
-      await this.change(({ success }) => {
-        arena = this.switchToComponentArena(component);
-        return success();
-      });
-      if (arena) {
-        const firstFrame = getArenaFrames(arena)[0];
-        const viewCtx = await this.awaitViewCtxForFrame(firstFrame);
-        if (viewCtx) {
-          viewCtx.setStudioFocusByTpl(tpl);
-        }
+      return;
+    }
+
+    const arena = unwrap(
+      await this.change<void, AnyArena | null>(({ success }) => {
+        const switchedArena =
+          this.switchToComponentArena(component) ?? this.currentArena;
+        return success(switchedArena);
+      })
+    );
+
+    if (arena) {
+      assert(
+        isPageArena(arena) || isComponentArena(arena),
+        "Current arena should be a page or component arena"
+      );
+      const baseFrame = getComponentArenaBaseFrame(arena);
+
+      const frame = variants?.length
+        ? this.getArenaFrameForSetOfVariants(arena, variants) ?? baseFrame
+        : baseFrame;
+
+      const viewCtx = await this.awaitViewCtxForFrame(frame);
+      if (viewCtx) {
+        viewCtx.setStudioFocusByTpl(tpl);
       }
     }
+  }
+
+  getArenaFrameForSetOfVariants(
+    arena: ComponentArena | PageArena,
+    variants: VariantCombo
+  ) {
+    const frames = getArenaFrames(arena);
+    const allComponentVariantsMap = keyBy(
+      allComponentVariants(arena.component),
+      (v) => v.uuid
+    );
+    const allGlobalVariantsMap = keyBy(
+      allGlobalVariants(this.site, { includeDeps: "direct" }),
+      (v) => v.uuid
+    );
+
+    for (const frame of frames) {
+      const frameVariants = [
+        ...Object.keys(frame.pinnedVariants).map(
+          (uuid) => allComponentVariantsMap[uuid]
+        ),
+        ...Object.keys(frame.pinnedGlobalVariants).map(
+          (uuid) => allGlobalVariantsMap[uuid]
+        ),
+        ...frame.targetVariants,
+        ...frame.targetGlobalVariants,
+      ].filter((v) => isKnownVariant(v));
+
+      if (setEquals(new Set(variants), new Set(frameVariants))) {
+        return frame;
+      }
+    }
+
+    return undefined;
   }
 
   /** Returns frame the StudioCtx is focused on, if only focused on frame and not selectables */

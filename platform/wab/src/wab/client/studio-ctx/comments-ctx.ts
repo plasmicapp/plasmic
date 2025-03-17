@@ -65,6 +65,7 @@ export class CommentsCtx {
       unresolvedThreads,
       commentStatsBySubject: commentStats.commentStatsBySubject,
       commentStatsByComponent: commentStats.commentStatsByComponent,
+      commentStatsByVariant: commentStats.commentStatsByVariant,
       usersMap: mkIdMap(this._rawUsers.get()),
       reactionsByCommentId: xGroupBy(
         sortBy(this._rawReactions.get(), (r) => +new Date(r.createdAt)),

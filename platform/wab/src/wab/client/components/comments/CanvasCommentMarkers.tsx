@@ -5,8 +5,9 @@ import { CommentMarker } from "@/wab/client/components/comments/CommentMarker";
 import { CommentMarkerHoverDialog } from "@/wab/client/components/comments/CommentMarkerHoverDialog";
 import CommentPost from "@/wab/client/components/comments/CommentPost";
 import {
-  TplCommentThread,
+  getSubjectVariantsKey,
   isCommentForFrame,
+  TplCommentThread,
 } from "@/wab/client/components/comments/utils";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import {
@@ -14,7 +15,10 @@ import {
   NON_BASE_VARIANT_COLOR,
 } from "@/wab/client/components/studio/GlobalCssVariables";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import {
+  getSetOfVariantsForViewCtx,
+  ViewCtx,
+} from "@/wab/client/studio-ctx/view-ctx";
 import { AnyArena } from "@/wab/shared/Arenas";
 import {
   ensure,
@@ -114,15 +118,16 @@ export function CanvasAddCommentMarker(props: {
 }) {
   const { viewCtx, tpl } = props;
   const commentsCtx = viewCtx.studioCtx.commentsCtx;
-  const commentStatsBySubject =
-    commentsCtx.computedData().commentStatsBySubject;
+  const commentStats = commentsCtx.computedData().commentStatsByVariant;
 
   if (!isTplNamable(tpl)) {
     return null;
   }
+  const variants = getSetOfVariantsForViewCtx(viewCtx, viewCtx.bundler());
+
   const offsetRight =
-    (commentStatsBySubject.get(tpl.uuid)?.commentCount || 0) *
-    HORIZONTAL_MARKER_OFFSET;
+    (commentStats.get(getSubjectVariantsKey(tpl, variants))?.commentCount ||
+      0) * HORIZONTAL_MARKER_OFFSET;
   return (
     <CanvasCommentOverlay
       tpl={tpl}

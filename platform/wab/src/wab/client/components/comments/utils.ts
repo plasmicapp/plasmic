@@ -1,21 +1,31 @@
 import { CommentsCtx } from "@/wab/client/studio-ctx/comments-ctx";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import {
+  getSetOfVariantsForViewCtx,
+  ViewCtx,
+} from "@/wab/client/studio-ctx/view-ctx";
 import { ApiCommentThread } from "@/wab/shared/ApiSchema";
-import { Bundler, FastBundler } from "@/wab/shared/bundler";
+import { Bundler } from "@/wab/shared/bundler";
 import {
   extractMentionedEmails,
   hasUserParticipatedInThread,
 } from "@/wab/shared/comments-utils";
 import { assert, getOrSetMap, xSymmetricDifference } from "@/wab/shared/common";
 import {
-  TplNamable,
   getTplOwnerComponent,
   isTplNamable,
   summarizeTplNamable,
+  TplNamable,
   tryGetTplOwnerComponent,
 } from "@/wab/shared/core/tpls";
-import { Component, ObjInst, TplNode } from "@/wab/shared/model/classes";
+import {
+  Component,
+  isKnownVariant,
+  ObjInst,
+  TplNode,
+  Variant,
+} from "@/wab/shared/model/classes";
+import { toVariantComboKey } from "@/wab/shared/Variants";
 import { groupBy, partition, sortBy } from "lodash";
 
 type LocalizedCommentThread = ApiCommentThread & {
@@ -24,6 +34,7 @@ type LocalizedCommentThread = ApiCommentThread & {
 
 export interface TplCommentThread extends LocalizedCommentThread {
   subject: TplNamable;
+  variants: Variant[];
   label: string;
   ownerComponent: Component;
 }
@@ -80,11 +91,21 @@ export function getCommentThreadWithModelMetadata(
   const inst = bundler.objByAddr(thread.location.subject);
   assert(isTplNamable(inst), "Comment thread subject must be a TplNamable");
 
+  const variants = thread.location.variants.map((variantAddr) => {
+    const variantInst = bundler.objByAddr(variantAddr);
+    assert(
+      isKnownVariant(variantInst),
+      "Comment thread must be on valid variant"
+    );
+    return variantInst;
+  });
+
   const subject = inst;
   const ownerComponent = getTplOwnerComponent(subject);
   return {
     ...thread,
     subject,
+    variants,
     label: summarizeTplNamable(subject),
     ownerComponent,
   };
@@ -176,9 +197,14 @@ export function getUnresolvedThreads(
   return threads.filter((thread) => !thread.resolved);
 }
 
+export function getSubjectVariantsKey(subject: TplNode, variants: Variant[]) {
+  return `${subject.uuid},${toVariantComboKey(variants)}`;
+}
+
 export function computeCommentStats(threads: TplCommentThreads): {
   commentStatsBySubject: CommentStatsMap;
   commentStatsByComponent: CommentStatsMap;
+  commentStatsByVariant: CommentStatsMap;
 } {
   const threadsGroupedBySubject = groupBy(
     threads,
@@ -187,6 +213,7 @@ export function computeCommentStats(threads: TplCommentThreads): {
 
   const commentStatsBySubject: CommentStatsMap = new Map();
   const commentStatsByComponent: CommentStatsMap = new Map();
+  const commentStatsByVariant: CommentStatsMap = new Map();
 
   Object.entries(threadsGroupedBySubject).forEach(
     ([subjectUuid, commentThreads]) => {
@@ -226,7 +253,36 @@ export function computeCommentStats(threads: TplCommentThreads): {
     }
   );
 
-  return { commentStatsBySubject, commentStatsByComponent };
+  const threadsGroupedByVariants = groupBy(threads, (commentThread) =>
+    getSubjectVariantsKey(commentThread.subject, commentThread.variants)
+  );
+
+  Object.entries(threadsGroupedByVariants).forEach(
+    ([subjectVariantsKey, commentThreads]) => {
+      if (commentThreads.length > 0) {
+        // Compute stats for the variant
+        const variant = getOrSetMap<string, CommentsStats>(
+          commentStatsByVariant,
+          subjectVariantsKey,
+          {
+            commentCount: 0,
+            replyCount: 0,
+          }
+        );
+        variant.commentCount = commentThreads.length;
+        variant.replyCount = commentThreads.reduce(
+          (sum, thread) => sum + (thread.comments.length - 1), // comments count excluding the root comment
+          0
+        );
+      }
+    }
+  );
+
+  return {
+    commentStatsBySubject,
+    commentStatsByComponent,
+    commentStatsByVariant,
+  };
 }
 
 export function isElementWithComments(
@@ -245,21 +301,6 @@ export function isElementWithComments(
     );
 }
 
-export function getSetOfVariantsForViewCtx(
-  viewCtx: ViewCtx,
-  bundler: FastBundler
-) {
-  return sortBy(
-    [
-      ...viewCtx.currentComponentStackFrame().getPinnedVariants().keys(),
-      ...viewCtx.globalFrame.getPinnedVariants().keys(),
-      ...viewCtx.currentComponentStackFrame().getTargetVariants(),
-      ...viewCtx.globalFrame.getTargetVariants(),
-    ],
-    (v) => bundler.addrOf(v).iid
-  );
-}
-
 export function isCommentForFrame(
   studioCtx: StudioCtx,
   viewCtx: ViewCtx,
@@ -267,15 +308,15 @@ export function isCommentForFrame(
 ) {
   const bundler = studioCtx.bundler();
   const subject = bundler.objByAddr(commentThread.location.subject);
-  const variants = commentThread.location.variants.map((v) =>
-    bundler.objByAddr(v)
-  );
   const ownerComponent = studioCtx
     .tplMgr()
     .findComponentContainingTpl(subject as TplNode);
+
   const isForFrame =
     viewCtx.component === ownerComponent &&
-    xSymmetricDifference(variants, getSetOfVariantsForViewCtx(viewCtx, bundler))
-      .length === 0;
+    xSymmetricDifference(
+      commentThread.variants,
+      getSetOfVariantsForViewCtx(viewCtx, bundler)
+    ).length === 0;
   return isForFrame;
 }
