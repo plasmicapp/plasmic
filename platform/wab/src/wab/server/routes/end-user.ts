@@ -1,11 +1,10 @@
-import { sortBy, withoutNils } from "@/wab/shared/common";
 import {
   executeDataSourceOperation,
   getDataSourceOperation,
 } from "@/wab/server/data-sources/data-source-utils";
 import { getMigratedUserPropsOpBundle } from "@/wab/server/data-sources/end-user-utils";
-import { getDevFlagsMergedWithOverrides } from "@/wab/server/db/appconfig";
 import { DbMgr, ForbiddenError } from "@/wab/server/db/DbMgr";
+import { getDevFlagsMergedWithOverrides } from "@/wab/server/db/appconfig";
 import { sendAppEndUserInviteEmail } from "@/wab/server/emails/app-end-user-invite-email";
 import {
   AppAccessRegistry,
@@ -34,9 +33,10 @@ import {
   ProjectId,
   TeamId,
 } from "@/wab/shared/ApiSchema";
+import { accessLevelRank } from "@/wab/shared/EntUtil";
+import { sortBy, withoutNils } from "@/wab/shared/common";
 import { GenericDataSource } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { OperationTemplate } from "@/wab/shared/data-sources-meta/data-sources";
-import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { prodUrlForProject } from "@/wab/shared/project-urls";
 import { Request, Response } from "express-serve-static-core";
 import { groupBy, isString, pick, uniq } from "lodash";
@@ -799,13 +799,15 @@ export async function listAppAccessRegistries(req: Request, res: Response) {
     endUsers.map((user) => [user.id.toString(), user])
   );
   res.json({
-    accesses: registries.map((registry) =>
-      mkApiAppAccessRegistry(
-        registry,
-        endUsersById.get(registry.endUserId)!,
-        matchingRolesByEndUserid.get(registry.endUserId)!
-      )
-    ),
+    accesses: registries
+      .filter((reg) => endUsersById.has(reg.endUserId))
+      .map((registry) =>
+        mkApiAppAccessRegistry(
+          registry,
+          endUsersById.get(registry.endUserId)!,
+          matchingRolesByEndUserid.get(registry.endUserId)!
+        )
+      ),
     total: await mgr.countAppAccessRegistries(projectId, search),
   });
 }
