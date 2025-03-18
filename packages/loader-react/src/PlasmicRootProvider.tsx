@@ -7,7 +7,6 @@ import { InternalPlasmicComponentLoader } from "./loader-client";
 import { ComponentRenderData, PlasmicComponentLoader } from "./loader-shared";
 import { MaybeWrap, useForceUpdate } from "./utils";
 import {
-  ensureVariationCookies,
   getGlobalVariantsFromSplits,
   mergeGlobalVariantsSpec,
 } from "./variation";
@@ -269,7 +268,6 @@ export function PlasmicRootProvider(
   ]);
 
   React.useEffect(() => {
-    ensureVariationCookies(variation);
     loader.trackRender({
       renderCtx: {
         // We track the provider as a single entity

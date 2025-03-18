@@ -64,7 +64,9 @@ export function getActiveVariation(opts: {
   const variation: Record<string, string> = {};
   splits.forEach((split) => {
     const key = getSplitKey(split);
-    const knownVal = getKnownValue?.(key);
+    // We will only get the known value for experiments, for segments we will always evaluate the traits
+    const knownVal =
+      split.type === "experiment" ? getKnownValue?.(key) : undefined;
     if (knownVal) {
       variation[key] = knownVal;
       return;
