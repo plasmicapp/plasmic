@@ -136,7 +136,10 @@ function ServerQueriesSection_(props: {
           uuid: mkShortId(),
           name: toVarName(
             uniqueName(
-              component.serverQueries.map((q) => q.name),
+              [
+                ...component.serverQueries.map((q) => q.name),
+                ...component.dataQueries.map((q) => q.name),
+              ],
               "query",
               {
                 normalize: toVarName,
@@ -173,7 +176,12 @@ function ServerQueriesSection_(props: {
       }
     >
       {component.serverQueries.map((query) => (
-        <ServerQueryRow component={component} viewCtx={viewCtx} query={query} />
+        <ServerQueryRow
+          key={query.name}
+          component={component}
+          viewCtx={viewCtx}
+          query={query}
+        />
       ))}
     </SidebarSection>
   );

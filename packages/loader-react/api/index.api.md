@@ -44,6 +44,7 @@ import { default as React_3 } from 'react';
 import { reactDom } from 'react-dom';
 import { reactJsxDevRuntime } from 'react/jsx-dev-runtime';
 import { reactJsxRuntime } from 'react/jsx-runtime';
+import { registerFunction } from '@plasmicapp/host';
 import { Registry } from '@plasmicapp/loader-core';
 import { repeatedElement } from '@plasmicapp/host';
 import { Split } from '@plasmicapp/loader-fetcher';
@@ -259,6 +260,8 @@ export class PlasmicComponentLoader {
     substituteComponent<P>(component: React.ComponentType<P>, name: ComponentLookupSpec): void;
     // (undocumented)
     trackConversion(value?: number): void;
+    // (undocumented)
+    unstable__getServerQueriesData(renderData: ComponentRenderData, $ctx: Record<string, any>): Promise<any>;
 }
 
 // @public @deprecated (undocumented)

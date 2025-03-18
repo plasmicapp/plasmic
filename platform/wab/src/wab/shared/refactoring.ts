@@ -338,7 +338,10 @@ export function renameServerQueryAndFixExprs(
 ) {
   const oldVarName = toVarName(query.name);
   query.name = uniqueName(
-    component.serverQueries.filter((q) => q !== query).map((q) => q.name),
+    [
+      ...component.serverQueries.filter((q) => q !== query).map((q) => q.name),
+      ...component.dataQueries.map((q) => q.name),
+    ],
     wantedNewName,
     {
       normalize: toVarName,

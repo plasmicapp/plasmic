@@ -16,15 +16,15 @@ import {
   isStandaloneVariantGroup,
   isStyleVariant,
 } from "@/wab/shared/Variants";
-import { componentToReferenced } from "@/wab/shared/cached-selectors";
+import {
+  allCustomFunctions,
+  componentToReferenced,
+} from "@/wab/shared/cached-selectors";
 import {
   getBuiltinComponentRegistrations,
   isBuiltinCodeComponent,
 } from "@/wab/shared/code-components/builtin-code-components";
-import {
-  customFunctionId,
-  isCodeComponentWithHelpers,
-} from "@/wab/shared/code-components/code-components";
+import { isCodeComponentWithHelpers } from "@/wab/shared/code-components/code-components";
 import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
 import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import {
@@ -126,16 +126,27 @@ import {
   makeRenderFuncName,
   makeRootResetClassName,
   makeStylesImports,
+  makeTaggedPlasmicImport,
   makeUseClient,
   makeVariantPropsName,
   makeVariantsArgTypeName,
   makeWabHtmlTextClassName,
   maybeCondExpr,
-  serializeServerQueries,
   wrapGlobalContexts,
   wrapGlobalProvider,
   wrapInDataCtxReader,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
+import {
+  getRscMetadata,
+  serializeUseDollarServerQueries,
+} from "@/wab/shared/codegen/react-p/server-queries";
+import {
+  makePlasmicQueryImports,
+  makePlasmicServerRscComponentName,
+  makeServerQueryClientDollarQueryInit,
+  serializeServerQueryEntryType,
+} from "@/wab/shared/codegen/react-p/server-queries/serializer";
+import { isServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { makeSplitsProviderBundle } from "@/wab/shared/codegen/react-p/splits";
 import {
   serializeInitFunc,
@@ -503,6 +514,12 @@ export function computeSerializerSiteContext(
       allImageAssets(site, { includeDeps: "all" }),
       site.activeTheme
     ),
+    customFunctionToOwnerSite: new Map(
+      allCustomFunctions(site).map(({ customFunction, site: refSite }) => [
+        customFunction,
+        refSite,
+      ])
+    ),
   };
 }
 
@@ -612,6 +629,9 @@ export function exportReactPresentational(
     referencedComponents.push(unauthorizedComp);
   }
 
+  const hasServerQueries =
+    component.serverQueries.filter(isServerQueryWithOperation).length > 0;
+
   const ctx: SerializerBaseContext = {
     componentGenHelper,
     component,
@@ -646,6 +666,8 @@ export function exportReactPresentational(
     },
     fakeTpls,
     replacedHostlessComponentImportPath,
+    useRSC: !!opts.platformOptions?.nextjs?.appDir,
+    hasServerQueries,
   };
   const variantsType = serializeVariantsArgsType(ctx);
   const argsType = serializeArgsType(ctx);
@@ -756,6 +778,7 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
         ? `import * as plasmicAuth from "${getPlasmicAuthPackageName(opts)}";`
         : ""
     }
+    ${makePlasmicQueryImports(ctx)}
     ${
       ctx.usesDataSourceInteraction ||
       ctx.usesLoginInteraction ||
@@ -765,7 +788,9 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
     }
     ${
       ctx.usesDataSourceInteraction || ctx.usesComponentLevelQueries
-        ? `import { executePlasmicDataOp, usePlasmicDataOp, usePlasmicInvalidate } from "${getDataSourcesPackageName()}";`
+        ? `import { executePlasmicDataOp, usePlasmicDataOp, usePlasmicInvalidate${
+            ctx.useRSC || ctx.hasServerQueries ? `, usePlasmicServerQuery` : ""
+          } } from "${getDataSourcesPackageName()}";`
         : ""
     }
     ${
@@ -785,6 +810,7 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
     ${makePictureImports(site, component, ctx.exportOpts, "managed")}
     ${makeSuperCompImports(component, ctx.exportOpts)}
     ${customFunctionsAndLibsImport}
+    ${serializeUseDollarServerQueries(ctx)}
 
     ${
       // We make a reference to createPlasmicElementProxy, as in some setups,
@@ -859,6 +885,7 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
     displayName: component.name,
     renderModule,
     skeletonModule,
+    rscMetadata: getRscMetadata(ctx),
     cssRules: serializeCssRules(ctx),
     renderModuleFileName: `${
       opts.idFileNames
@@ -1190,6 +1217,8 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
   );
   const superComps = getSuperComponents(component);
   const dataQueries = component.dataQueries.filter((q) => !!q.op);
+  const shouldUseDollarQueries =
+    ctx.usesComponentLevelQueries || ctx.useRSC || ctx.hasServerQueries;
   return `
     const $props = {
       ...args,
@@ -1216,7 +1245,7 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
     }
 
     ${
-      ctx.usesComponentLevelQueries
+      shouldUseDollarQueries
         ? `let [$queries, setDollarQueries] = React.useState<Record<string, ReturnType<typeof usePlasmicDataOp>>>({});`
         : ""
     }
@@ -1226,7 +1255,7 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
           (${serializeStateSpecs(component, ctx)})
         , [$props, $ctx, $refs]);
         const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: ${
-          ctx.usesComponentLevelQueries ? "$queries" : "{}"
+          shouldUseDollarQueries ? "$queries" : "{}"
         }, $refs});`
         : ""
     }
@@ -1243,15 +1272,16 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
 
     ${
       // We put this here so the expressions have access to $state
-      ctx.usesComponentLevelQueries
+      shouldUseDollarQueries
         ? `
       const new$Queries: Record<string, ReturnType<typeof usePlasmicDataOp>> = {
-        ${dataQueries
-          .map(
+        ${withoutNils([
+          ...dataQueries.map(
             (q) =>
               `${toVarName(q.name)}: (${serializeComponentLevelQuery(q, ctx)})`
-          )
-          .join(",\n")}
+          ),
+          makeServerQueryClientDollarQueryInit(ctx),
+        ]).join(",\n")}
       };
       if (Object.keys(new$Queries).some(k => new$Queries[k] !== $queries[k])) {
         setDollarQueries(new$Queries);
@@ -2362,6 +2392,7 @@ export function serializeDefaultExternalProps(
   if (isPageComponent(ctx.component) && ctx.exportOpts.platform === "nextjs") {
     return `
       export interface ${makeDefaultExternalPropsName(component)} {
+        ${ctx.useRSC ? serializeServerQueryEntryType(component) ?? "" : ""}
       }
     `;
   }
@@ -2415,21 +2446,27 @@ function serializePageAwareSkeletonWrapperTs(
     return g.variants.length > 0;
   });
 
-  const plasmicModuleImports = [nodeComponentName];
-  let content = `<${nodeComponentName} />`,
+  const rscNodeComponentName = makePlasmicServerRscComponentName(component);
+
+  const plasmicModuleImports = [
+    ctx.useRSC ? rscNodeComponentName : nodeComponentName,
+  ];
+
+  let content = ctx.useRSC
+      ? `<${makePlasmicServerRscComponentName(
+          component
+        )} params={params} searchParams={searchParams} />`
+      : `<${nodeComponentName}>`,
     getStaticProps = "",
     componentPropsDecl = "",
     componentPropsSig = "";
   if (opts.platform === "nextjs") {
     if (isNextjsAppDir) {
       componentPropsSig = `{ params, searchParams }: {
-params?: Record<string, string | string[] | undefined>;
-searchParams?: Record<string, string | string[] | undefined>;
+params?: Promise<Record<string, string | string[] | undefined>>;
+searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }`;
-      content = `<PageParamsProvider__
-        params={params}
-        query={searchParams}
-      >
+      content = `<PageParamsProvider__ params={await params}>
         ${content}
       </PageParamsProvider__>`;
     } else {
@@ -2479,6 +2516,17 @@ searchParams?: Record<string, string | string[] | undefined>;
     }`;
   }
 
+  const nodeImport = makeTaggedPlasmicImport(
+    plasmicModuleImports,
+    `${opts.relPathFromImplToManagedDir}/${
+      ctx.useRSC
+        ? makePlasmicServerRscComponentName(component)
+        : plasmicComponentName
+    }`,
+    component.uuid,
+    ctx.useRSC ? "rscServer" : "render"
+  );
+
   return `
     // This is a skeleton starter React page generated by Plasmic.
     // This file is owned by you, feel free to edit as you see fit.
@@ -2489,9 +2537,7 @@ searchParams?: Record<string, string | string[] | undefined>;
   )}";
     ${globalContextsImport}
     ${makeGlobalGroupImports(globalGroups, opts)}
-    import {${plasmicModuleImports.join(", ")}} from "${
-    opts.relPathFromImplToManagedDir
-  }/${plasmicComponentName}";  // plasmic-import: ${component.uuid}/render
+    ${nodeImport}
     ${
       isPageComponent(component) &&
       opts.platform === "nextjs" &&
@@ -2502,16 +2548,6 @@ searchParams?: Record<string, string | string[] | undefined>;
         export { Head };`
         : ""
     }
-
-    ${component.serverQueries
-      .map((q) => {
-        return `import { ${
-          q.op!.func.importName
-        } } from "./importPath__${customFunctionId(
-          q.op!.func
-        )}"; // plasmic-import: ${customFunctionId(q.op!.func)}/customFunction`;
-      })
-      .join("\n")}
 
     ${componentSubstitutionApi}
 
@@ -2534,8 +2570,6 @@ searchParams?: Record<string, string | string[] | undefined>;
       // 3. Overrides for any named node in the component to attach behavior and data,
       // 4. Props to set on the root node.
       ${globalGroupsComment}
-
-      ${serializeServerQueries(component)}
 
       return (${content});
     }

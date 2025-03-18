@@ -103,6 +103,13 @@ async function writeCodeBundleToDisk(dir: string, output: CodegenOutputBundle) {
       comp.skeletonModule
     );
     await fs.writeFile(path.join(dir, comp.cssFileName), comp.cssRules);
+
+    if (comp.rscMetadata?.serverQueriesExecFunc) {
+      await fs.writeFile(
+        path.join(dir, comp.rscMetadata!.serverQueriesExecFunc.fileName),
+        comp.rscMetadata!.serverQueriesExecFunc.module
+      );
+    }
   }
 
   for (const icon of output.iconAssets) {

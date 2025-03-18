@@ -89,6 +89,7 @@ import {
   isBuiltinCodeComponent,
 } from "@/wab/shared/code-components/builtin-code-components";
 import {
+  customFunctionId,
   isCodeComponentWithHelpers,
   isPlainObjectPropType,
   tryGetStateHelpers,
@@ -114,6 +115,7 @@ import {
   makeWabSlotClassName,
   makeWabTextClassName,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
+import { isServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { deriveReactHookSpecs } from "@/wab/shared/codegen/react-p/utils";
 import {
   paramToVarName,
@@ -274,6 +276,7 @@ import {
   getPlumeCodegenPlugin,
   getPlumeEditorPlugin,
 } from "@/wab/shared/plume/plume-registry";
+import { getCustomFunctionParams } from "@/wab/shared/server-queries";
 import { hashExpr } from "@/wab/shared/site-diffs";
 import { PageSizeType, deriveSizeStyleValue } from "@/wab/shared/sizingutils";
 import { placeholderImgUrl } from "@/wab/shared/urls";
@@ -3644,8 +3647,8 @@ const mkComponentLevelQueryFetcher = computedFn(
                 );
               }
             : undefined;
-        const new$Queries = Object.fromEntries(
-          component.dataQueries
+        const new$Queries = Object.fromEntries([
+          ...component.dataQueries
             .filter((query) => !!query.op)
             .map(
               (query) =>
@@ -3653,8 +3656,37 @@ const mkComponentLevelQueryFetcher = computedFn(
                   toVarName(query.name),
                   sub.dataSources?.usePlasmicDataOp(getDataOp(query)),
                 ] as const
-            )
-        );
+            ),
+          ...component.serverQueries
+            .filter(isServerQueryWithOperation)
+            .map((query) => {
+              const funcId = customFunctionId(query.op.func);
+              const funcReg = ctx.viewCtx.canvasCtx
+                .getRegisteredFunctionsMap()
+                .get(funcId);
+              if (!funcReg) {
+                return [toVarName(query.name), undefined] as const;
+              }
+              return [
+                toVarName(query.name),
+                sub.dataSources?.usePlasmicServerQuery({
+                  id: funcId,
+                  fn: funcReg.function,
+                  execParams: () =>
+                    getCustomFunctionParams(
+                      query.op,
+                      ctx.env,
+                      {
+                        component,
+                        projectFlags: ctx.projectFlags,
+                        inStudio: true,
+                      },
+                      ctx.viewCtx.canvasCtx.win()
+                    ),
+                }),
+              ] as const;
+            }),
+        ]);
         defer(() => {
           Object.keys(new$Queries).forEach((k) => {
             try {
@@ -3712,7 +3744,8 @@ function wrapInComponentDataQueries(ctx: RenderingCtx, component: Component) {
     mkComponentLevelQueryFetcher(
       ctx.sub,
       ctx.viewCtx,
-      component.dataQueries.filter((query) => !!query.op).length
+      component.dataQueries.filter((query) => !!query.op).length +
+        component.serverQueries.filter(isServerQueryWithOperation).length
     ),
     {
       ctx,

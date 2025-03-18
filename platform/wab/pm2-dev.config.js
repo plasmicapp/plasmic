@@ -76,6 +76,7 @@ module.exports = {
         INTEGRATIONS_HOST: "http://localhost:3003",
         ENABLED_GET_EMAIL_VERIFICATION_TOKEN: true,
         DISABLE_BWRAP: "1",
+        NODE_ENV: "development",
       },
       interpreter: "none",
     },

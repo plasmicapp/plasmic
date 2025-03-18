@@ -11,6 +11,7 @@ import type {
 } from "@plasmicapp/host";
 import type * as ReactWeb from "@plasmicapp/react-web";
 import type * as PlasmicDataSources from "@plasmicapp/react-web/lib/data-sources";
+import type * as PlasmicQuery from "@plasmicapp/react-web/lib/query";
 import type domAlign from "dom-align";
 import type $ from "jquery";
 import type React from "react";
@@ -228,6 +229,7 @@ export interface SubDeps {
   setRepeatedElementFn?: (fn: RepeatedElementFnType) => void;
   GenericErrorBoundary: React.ComponentType<{ className?: string }>;
   PlasmicCanvasContext?: typeof PlasmicCanvasContext;
+  PlasmicQuery?: typeof PlasmicQuery;
   PageParamsProvider: typeof PageParamsProvider;
   DataProvider: typeof DataProvider;
   DataContext: typeof DataContext;

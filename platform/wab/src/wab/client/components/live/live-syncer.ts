@@ -8,6 +8,7 @@ import {
   getReactWebBundle,
 } from "@/wab/client/components/studio/studio-bundles";
 import { scriptExec } from "@/wab/client/dom-utils";
+import { PlasmicWindowInternals } from "@/wab/client/frame-ctx/windows";
 import { requestIdleCallback } from "@/wab/client/requestidlecallback";
 import { StudioAppUser, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { safeCallbackify } from "@/wab/commons/control";
@@ -723,6 +724,9 @@ export async function onLoadInjectSystemJS(
         .__PlasmicDataSourcesContextBundle,
     })
   );
+  (frameWindow as any).__PLASMIC__ = {
+    EXECUTE_SERVER_QUERY: studioCtx.executeServerQuery,
+  } as PlasmicWindowInternals;
   (frameWindow as any).__PLASMIC_EXECUTE_DATA_OP =
     studioCtx.executePlasmicDataOp;
   (frameWindow as any).__PLASMIC_MUTATE_DATA_OP =

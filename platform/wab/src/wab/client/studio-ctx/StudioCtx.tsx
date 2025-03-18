@@ -357,6 +357,7 @@ import {
   DataOp,
   executePlasmicDataOp,
   makeCacheKey,
+  makeQueryCacheKey,
 } from "@plasmicapp/data-sources";
 import type { ParamType, VoidType } from "@plasmicapp/host/registerFunction";
 import * as Sentry from "@sentry/browser";
@@ -3251,7 +3252,12 @@ export class StudioCtx extends WithDbCtx {
   }
 
   getRegisteredFunctionsMap() {
-    return this._ccRegistry.getRegisteredFunctionsMap();
+    return new Map([
+      ...Array.from(this._ccRegistry.getRegisteredFunctionsMap().entries()),
+      ...Array.from(
+        this.hostLessRegistry.getRegisteredFunctionsMap().entries()
+      ),
+    ]);
   }
 
   getRegisteredLibraries() {
@@ -6684,6 +6690,22 @@ export class StudioCtx extends WithDbCtx {
 
       this.dataOpCache[cacheKey] = execute();
 
+      return this.dataOpCache[cacheKey];
+    }
+  );
+
+  executeServerQuery = asyncMaxAtATime(
+    10,
+    async <F extends (...args) => Promise<any>>(
+      id: string,
+      fn: F,
+      ...args: Parameters<F>
+    ) => {
+      const cacheKey = makeQueryCacheKey(id, args);
+      if (cacheKey in this.dataOpCache) {
+        return this.dataOpCache[cacheKey];
+      }
+      this.dataOpCache[cacheKey] = fn(...args);
       return this.dataOpCache[cacheKey];
     }
   );

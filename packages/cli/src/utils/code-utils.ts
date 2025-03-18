@@ -18,9 +18,9 @@ import { logger } from "../deps";
 import { GLOBAL_SETTINGS } from "../globals";
 import { HandledError } from "../utils/error";
 import {
+  CONFIG_FILE_NAME,
   CodeComponentConfig,
   ComponentConfig,
-  CONFIG_FILE_NAME,
   CustomFunctionConfig,
   GlobalVariantGroupConfig,
   IconConfig,
@@ -173,6 +173,8 @@ type PlasmicImportType =
   | "globalContext"
   | "customFunction"
   | "splitsProvider"
+  | "rscClient"
+  | "rscServer"
   | undefined;
 
 const validJsIdentifierChars = [
@@ -201,7 +203,7 @@ function tryParsePlasmicImportSpec(node: ImportDeclaration) {
         "plasmic-import:\\s+([",
         ...validJsIdentifierChars,
         "\\.",
-        "]+)(?:\\/(component|css|render|globalVariant|projectcss|defaultcss|icon|picture|jsBundle|codeComponent|globalContext|customFunction|splitsProvider))?",
+        "]+)(?:\\/(component|css|render|globalVariant|projectcss|defaultcss|icon|picture|jsBundle|codeComponent|globalContext|customFunction|splitsProvider|rscClient|rscServer))?",
       ].join("")
     )
   );
@@ -439,6 +441,46 @@ export function replaceImports(
         true
       );
       stmt.source.value = realPath;
+    } else if (type === "rscClient") {
+      const compConfig = fixImportContext.components[uuid];
+      if (!compConfig) {
+        throwMissingReference(context, "component", uuid, fromPath);
+      }
+      const clientModulePath = compConfig.rsc?.clientModulePath;
+      if (!clientModulePath) {
+        throw new HandledError(
+          `Encountered Plasmic component "${uuid}" that is missing a rscClientModulePath.`
+        );
+      }
+
+      stmt.source.value = makeImportPath(
+        context,
+        fromPath,
+        clientModulePath,
+        true
+      );
+    } else if (type === "rscServer") {
+      const compConfig = fixImportContext.components[uuid];
+      if (!compConfig) {
+        throwMissingReference(context, "component", uuid, fromPath);
+      }
+      const serverModulePath = compConfig.rsc?.serverModulePath;
+      if (!serverModulePath) {
+        throw new HandledError(
+          `Encountered Plasmic component "${uuid}" that is missing a rscServerModulePath.`
+        );
+      }
+
+      logger.info(
+        `Fixing "rscServer" with "${serverModulePath}" and from "${fromPath}"`
+      );
+
+      stmt.source.value = makeImportPath(
+        context,
+        fromPath,
+        serverModulePath,
+        true
+      );
     }
   });
 
@@ -569,6 +611,17 @@ export async function fixAllImportStatements(
   let lastError: any = undefined;
   for (const project of config.projects) {
     for (const compConfig of project.components) {
+      try {
+        await fixRscModulesImports(
+          context,
+          baseDir,
+          fixImportContext,
+          compConfig
+        );
+      } catch (err) {
+        lastError = err;
+      }
+
       const compSummary = summary?.get(compConfig.id);
       if (summary && !compSummary) {
         continue;
@@ -874,5 +927,45 @@ async function fixSplitsProviderImportStatements(
         force: true,
       });
     }
+  }
+}
+
+export async function fixRscModulesImports(
+  context: PlasmicContext,
+  baseDir: string,
+  fixImportContext: FixImportContext,
+  compConfig: ComponentConfig
+) {
+  const errors: any[] = [];
+
+  for (const modulePath of [
+    compConfig.rsc?.clientModulePath,
+    compConfig.rsc?.serverModulePath,
+  ]) {
+    if (!modulePath) {
+      continue;
+    }
+
+    logger.info(`Fixing rsc import statements... ${modulePath}`);
+
+    try {
+      await fixFileImportStatements(
+        context,
+        modulePath,
+        fixImportContext,
+        false,
+        baseDir
+      );
+    } catch (err) {
+      logger.error(
+        `Error encountered while fixing imports for rsc modules ${compConfig.name}: ${err}`
+      );
+
+      errors.push(err);
+    }
+  }
+
+  if (errors.length) {
+    throw errors[0];
   }
 }

@@ -1139,6 +1139,7 @@ export default PlasmicButton;
     
     
     
+    
     import { BaseButton } from "@plasmicpkgs/react-aria/skinny/registerButton";
     
     
@@ -1150,6 +1151,7 @@ export default PlasmicButton;
   
     import CircleIcon from "./PlasmicIcon__Circle";  // plasmic-import: 4hS9BR4cg9TV/icon
 import ChevronDownIcon from "./PlasmicIcon__ChevronDown";  // plasmic-import: lZo9OmVojh_m/icon
+    
     
     
     
@@ -1183,21 +1185,17 @@ flatSide?: MultiChoiceArg<"top" | "right" | "bottom" | "left">
   
 
     
-    export type PlasmicButton__ArgsType = {
-    "disabled"?: boolean;
+export type PlasmicButton__ArgsType = {"disabled"?: boolean;
 "submitsForm"?: boolean;
 "resetsForm"?: boolean;
 "ariaLabel"?: string;
 "onClick"?: (event: any) => void;
 "label"?: React.ReactNode;
 "start"?: React.ReactNode;
-"end"?: React.ReactNode
-  };
-    type ArgPropType = keyof PlasmicButton__ArgsType;
-    export const PlasmicButton__ArgProps = new Array<ArgPropType>(
-      
-      "disabled","submitsForm","resetsForm","ariaLabel","onClick","label","start","end");
-  
+"end"?: React.ReactNode;};
+type ArgPropType = keyof PlasmicButton__ArgsType;
+export const PlasmicButton__ArgProps = new Array<ArgPropType>("disabled", "submitsForm", "resetsForm", "ariaLabel", "onClick", "label", "start", "end");
+
 
     export type PlasmicButton__OverridesType = {
     root?: Flex__<typeof BaseButton>;
@@ -2552,12 +2550,14 @@ export default PlasmicHelloWorld;
     
     
     
+    
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
     
     import  "./plasmic.css"; // plasmic-import: project/projectcss
     import  "./PlasmicHelloWorld.css" // plasmic-import: 3khyLeywU1SP/css
   
+    
     
     
     
@@ -2578,12 +2578,10 @@ export default PlasmicHelloWorld;
   
 
     
-    export type PlasmicHelloWorld__ArgsType = {};
-    type ArgPropType = keyof PlasmicHelloWorld__ArgsType;
-    export const PlasmicHelloWorld__ArgProps = new Array<ArgPropType>(
-      
-      );
-  
+export type PlasmicHelloWorld__ArgsType = {};
+type ArgPropType = keyof PlasmicHelloWorld__ArgsType;
+export const PlasmicHelloWorld__ArgProps = new Array<ArgPropType>();
+
 
     export type PlasmicHelloWorld__OverridesType = {
     root?: Flex__<"div">;
@@ -3511,6 +3509,7 @@ export default PlasmicModalDialog;
     
     
     
+    
     import { BaseDialogTrigger } from "@plasmicpkgs/react-aria/skinny/registerDialogTrigger";
 import Button from "./Button";  // plasmic-import: D557GwRUy2HJ/component
 import { BaseModal } from "@plasmicpkgs/react-aria/skinny/registerModal";
@@ -3525,6 +3524,7 @@ import { BaseHeading } from "@plasmicpkgs/react-aria/skinny/registerHeading";
   
     import CircleIcon from "./PlasmicIcon__Circle";  // plasmic-import: 4hS9BR4cg9TV/icon
 import ChevronDownIcon from "./PlasmicIcon__ChevronDown";  // plasmic-import: lZo9OmVojh_m/icon
+    
     
     
     
@@ -3546,8 +3546,7 @@ import ChevronDownIcon from "./PlasmicIcon__ChevronDown";  // plasmic-import: lZ
   
 
     
-    export type PlasmicModalDialog__ArgsType = {
-    "isOpen"?: boolean;
+export type PlasmicModalDialog__ArgsType = {"isOpen"?: boolean;
 "trigger"?: React.ReactNode;
 "closeOnBackdropClick"?: boolean;
 "content"?: React.ReactNode;
@@ -3556,13 +3555,10 @@ import ChevronDownIcon from "./PlasmicIcon__ChevronDown";  // plasmic-import: lZ
 "showFooter"?: boolean;
 "isKeyboardDismissDisabled"?: boolean;
 "onOpenChange"?: (val: boolean) => void;
-"footer"?: React.ReactNode
-  };
-    type ArgPropType = keyof PlasmicModalDialog__ArgsType;
-    export const PlasmicModalDialog__ArgProps = new Array<ArgPropType>(
-      
-      "isOpen","trigger","closeOnBackdropClick","content","heading","showHeader","showFooter","isKeyboardDismissDisabled","onOpenChange","footer");
-  
+"footer"?: React.ReactNode;};
+type ArgPropType = keyof PlasmicModalDialog__ArgsType;
+export const PlasmicModalDialog__ArgProps = new Array<ArgPropType>("isOpen", "trigger", "closeOnBackdropClick", "content", "heading", "showHeader", "showFooter", "isKeyboardDismissDisabled", "onOpenChange", "footer");
+
 
     export type PlasmicModalDialog__OverridesType = {
     ariaDialogTrigger?: Flex__<typeof BaseDialogTrigger>;
@@ -4187,6 +4183,7 @@ export default PlasmicMyOverlayArrow;
     
     
     
+    
     import { BaseOverlayArrow } from "@plasmicpkgs/react-aria/skinny/registerOverlayArrow";
     
     
@@ -4196,6 +4193,7 @@ export default PlasmicMyOverlayArrow;
     import  "./plasmic.css"; // plasmic-import: project/projectcss
     import  "./PlasmicMyOverlayArrow.css" // plasmic-import: N_LiHbyjn30l/css
   
+    
     
     
     
@@ -4216,12 +4214,10 @@ export default PlasmicMyOverlayArrow;
   
 
     
-    export type PlasmicMyOverlayArrow__ArgsType = {};
-    type ArgPropType = keyof PlasmicMyOverlayArrow__ArgsType;
-    export const PlasmicMyOverlayArrow__ArgProps = new Array<ArgPropType>(
-      
-      );
-  
+export type PlasmicMyOverlayArrow__ArgsType = {};
+type ArgPropType = keyof PlasmicMyOverlayArrow__ArgsType;
+export const PlasmicMyOverlayArrow__ArgProps = new Array<ArgPropType>();
+
 
     export type PlasmicMyOverlayArrow__OverridesType = {
     root?: Flex__<typeof BaseOverlayArrow>;
@@ -4836,6 +4832,7 @@ export default PlasmicNewPage;
     
     
     
+    
     import PopoverDialog from "./PopoverDialog";  // plasmic-import: 5gJnBNi_9h0B/component
 import Button from "./Button";  // plasmic-import: D557GwRUy2HJ/component
 import Tooltip from "./Tooltip";  // plasmic-import: pI05-1YiCa_b/component
@@ -4856,6 +4853,7 @@ import ChevronDownIcon from "./PlasmicIcon__ChevronDown";  // plasmic-import: lZ
     
     
     
+    
 
     createPlasmicElementProxy
 
@@ -4872,12 +4870,10 @@ import ChevronDownIcon from "./PlasmicIcon__ChevronDown";  // plasmic-import: lZ
   
 
     
-    export type PlasmicNewPage__ArgsType = {};
-    type ArgPropType = keyof PlasmicNewPage__ArgsType;
-    export const PlasmicNewPage__ArgProps = new Array<ArgPropType>(
-      
-      );
-  
+export type PlasmicNewPage__ArgsType = {};
+type ArgPropType = keyof PlasmicNewPage__ArgsType;
+export const PlasmicNewPage__ArgProps = new Array<ArgPropType>();
+
 
     export type PlasmicNewPage__OverridesType = {
     root?: Flex__<"div">;
@@ -5480,6 +5476,7 @@ export default PlasmicPopover;
     
     
     
+    
     import { BasePopover } from "@plasmicpkgs/react-aria/skinny/registerPopover";
     
     
@@ -5490,6 +5487,7 @@ export default PlasmicPopover;
     import  "./PlasmicPopover.css" // plasmic-import: 6YHxfeslQ2vo/css
   
     import TriangleFilledIcon from "./PlasmicIcon__TriangleFilled";  // plasmic-import: OXFt6YDTVY2b/icon
+    
     
     
     
@@ -5509,18 +5507,14 @@ export default PlasmicPopover;
   
 
     
-    export type PlasmicPopover__ArgsType = {
-    "offset"?: number;
+export type PlasmicPopover__ArgsType = {"offset"?: number;
 "shouldFlip"?: boolean;
 "placement"?: "bottom"|"bottom left"|"bottom right"|"top"|"top left"|"top right";
 "content"?: React.ReactNode;
-"showArrow"?: boolean
-  };
-    type ArgPropType = keyof PlasmicPopover__ArgsType;
-    export const PlasmicPopover__ArgProps = new Array<ArgPropType>(
-      
-      "offset","shouldFlip","placement","content","showArrow");
-  
+"showArrow"?: boolean;};
+type ArgPropType = keyof PlasmicPopover__ArgsType;
+export const PlasmicPopover__ArgProps = new Array<ArgPropType>("offset", "shouldFlip", "placement", "content", "showArrow");
+
 
     export type PlasmicPopover__OverridesType = {
     root?: Flex__<typeof BasePopover>;
@@ -6060,6 +6054,7 @@ export default PlasmicPopoverDialog;
     
     
     
+    
     import { BaseDialogTrigger } from "@plasmicpkgs/react-aria/skinny/registerDialogTrigger";
 import Button from "./Button";  // plasmic-import: D557GwRUy2HJ/component
 import Popover from "./Popover";  // plasmic-import: 6YHxfeslQ2vo/component
@@ -6073,6 +6068,7 @@ import Popover from "./Popover";  // plasmic-import: 6YHxfeslQ2vo/component
   
     import CircleIcon from "./PlasmicIcon__Circle";  // plasmic-import: 4hS9BR4cg9TV/icon
 import ChevronDownIcon from "./PlasmicIcon__ChevronDown";  // plasmic-import: lZo9OmVojh_m/icon
+    
     
     
     
@@ -6092,20 +6088,16 @@ import ChevronDownIcon from "./PlasmicIcon__ChevronDown";  // plasmic-import: lZ
   
 
     
-    export type PlasmicPopoverDialog__ArgsType = {
-    "trigger"?: React.ReactNode;
+export type PlasmicPopoverDialog__ArgsType = {"trigger"?: React.ReactNode;
 "shouldFlip"?: boolean;
 "placement"?: "bottom"|"bottom left"|"bottom right"|"top"|"top left"|"top right";
 "offset"?: number;
 "onOpenChange"?: (val: boolean) => void;
 "showArrow"?: boolean;
-"content"?: React.ReactNode
-  };
-    type ArgPropType = keyof PlasmicPopoverDialog__ArgsType;
-    export const PlasmicPopoverDialog__ArgProps = new Array<ArgPropType>(
-      
-      "trigger","shouldFlip","placement","offset","onOpenChange","showArrow","content");
-  
+"content"?: React.ReactNode;};
+type ArgPropType = keyof PlasmicPopoverDialog__ArgsType;
+export const PlasmicPopoverDialog__ArgProps = new Array<ArgPropType>("trigger", "shouldFlip", "placement", "offset", "onOpenChange", "showArrow", "content");
+
 
     export type PlasmicPopoverDialog__OverridesType = {
     ariaDialogTrigger?: Flex__<typeof BaseDialogTrigger>;
@@ -6702,6 +6694,7 @@ export default PlasmicTooltip;
     
     
     
+    
     import { BaseTooltip } from "@plasmicpkgs/react-aria/skinny/registerTooltip";
     
     
@@ -6712,6 +6705,7 @@ export default PlasmicTooltip;
     import  "./PlasmicTooltip.css" // plasmic-import: pI05-1YiCa_b/css
   
     import TriangleInvertedFilledIcon from "./PlasmicIcon__TriangleInvertedFilled";  // plasmic-import: fCmbgRnChaU7/icon
+    
     
     
     
@@ -6731,20 +6725,16 @@ export default PlasmicTooltip;
   
 
     
-    export type PlasmicTooltip__ArgsType = {
-    "delay"?: number;
+export type PlasmicTooltip__ArgsType = {"delay"?: number;
 "closeDelay"?: number;
 "placement"?: "top"|"bottom"|"left"|"right";
 "isDisabled"?: boolean;
 "trigger"?: React.ReactNode;
 "content"?: React.ReactNode;
-"showArrow"?: boolean
-  };
-    type ArgPropType = keyof PlasmicTooltip__ArgsType;
-    export const PlasmicTooltip__ArgProps = new Array<ArgPropType>(
-      
-      "delay","closeDelay","placement","isDisabled","trigger","content","showArrow");
-  
+"showArrow"?: boolean;};
+type ArgPropType = keyof PlasmicTooltip__ArgsType;
+export const PlasmicTooltip__ArgProps = new Array<ArgPropType>("delay", "closeDelay", "placement", "isDisabled", "trigger", "content", "showArrow");
+
 
     export type PlasmicTooltip__OverridesType = {
     ariaTooltip?: Flex__<typeof BaseTooltip>;

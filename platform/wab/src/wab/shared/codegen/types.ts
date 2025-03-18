@@ -269,6 +269,21 @@ export interface ComponentExportOutput {
   pageMetadata?: PageMetadata;
 
   metadata: { [key: string]: string };
+
+  rscMetadata?: {
+    pageWrappers: Record<
+      "client" | "server",
+      {
+        module: string;
+        fileName: string;
+      }
+    >;
+
+    serverQueriesExecFunc?: {
+      module: string;
+      fileName: string;
+    };
+  };
 }
 
 export interface CustomFunctionConfig {

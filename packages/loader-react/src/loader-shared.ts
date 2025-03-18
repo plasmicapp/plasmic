@@ -259,6 +259,12 @@ export function customFunctionImportAlias<F extends (...args: any[]) => any>(
     : `${customFunctionPrefix}${meta.name}`;
 }
 
+export function internalSetRegisteredFunction<
+  F extends (...args: any[]) => any
+>(fn: F, meta: CustomFunctionMeta<F>) {
+  REGISTERED_CUSTOM_FUNCTIONS[customFunctionImportAlias(meta)] = fn;
+}
+
 interface BuiltinRegisteredModules {
   react: typeof import("react");
   "react-dom": typeof import("react-dom");
@@ -267,6 +273,7 @@ interface BuiltinRegisteredModules {
   "@plasmicapp/query": typeof import("@plasmicapp/query");
   "@plasmicapp/data-sources-context": typeof import("@plasmicapp/data-sources-context");
   "@plasmicapp/host": typeof import("@plasmicapp/host");
+  "@plasmicapp/host/registerFunction": typeof import("@plasmicapp/host").registerFunction;
   "@plasmicapp/loader-runtime-registry": {
     components: Record<string, React.ComponentType<any>>;
     globalVariantHooks: Record<string, () => any>;
@@ -688,6 +695,10 @@ ${this.bundle.bundleKey}`
   public trackRender(opts?: TrackRenderOptions) {
     this.tracker.trackRender(opts);
   }
+
+  public loadServerQueriesModule(fileName: string) {
+    return this.registry.load(fileName);
+  }
 }
 
 /**
@@ -902,5 +913,31 @@ export class PlasmicComponentLoader {
 
   clearCache() {
     return this.__internal.clearCache();
+  }
+
+  async unstable__getServerQueriesData(
+    renderData: ComponentRenderData,
+    $ctx: Record<string, any>
+  ) {
+    if (renderData.entryCompMetas.length === 0) {
+      return {};
+    }
+
+    const fileName = renderData.entryCompMetas[0].serverQueriesExecFuncFileName;
+
+    if (!fileName) {
+      return {};
+    }
+
+    const module = this.__internal.loadServerQueriesModule(fileName);
+    const { executeServerQueries } = module;
+
+    try {
+      const $serverQueries = await executeServerQueries($ctx);
+      return $serverQueries;
+    } catch (err) {
+      console.error("Error executing server queries function", err);
+      return {};
+    }
   }
 }

@@ -596,7 +596,12 @@ export const customFunctionsAndLibsUsedByComponent = maybeComputedFn(
       )
     );
     const usedFunctionIds = new Set<string>(
-      codeExprs.flatMap(({ code }) => parse$$PropertyAccesses(code))
+      withoutNils([
+        ...codeExprs.flatMap(({ code }) => parse$$PropertyAccesses(code)),
+        ...component.serverQueries.map((sq) =>
+          sq.op ? customFunctionId(sq.op.func) : null
+        ),
+      ])
     );
     const codeLibraryByJsIdentifier = new Map(
       allCodeLibraries(site).map(({ codeLibrary }) => [

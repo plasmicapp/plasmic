@@ -288,6 +288,11 @@ export interface ComponentConfig {
 
   /** Plume type if component is a Plume component */
   plumeType?: string;
+
+  rsc?: {
+    serverModulePath: string;
+    clientModulePath: string;
+  };
 }
 
 export interface IconConfig {

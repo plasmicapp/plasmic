@@ -1,6 +1,9 @@
 import { AppCtx } from "@/wab/client/app-ctx";
 import { DbCtx } from "@/wab/client/db";
-import { initRootCanvasPkgs } from "@/wab/client/frame-ctx/windows";
+import {
+  initRootCanvasPkgs,
+  PlasmicWindowInternals,
+} from "@/wab/client/frame-ctx/windows";
 import { loadSiteDbCtx } from "@/wab/client/init-ctx";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { SiteInfo } from "@/wab/shared/SharedApi";
@@ -23,6 +26,9 @@ function createStudioCtx({ dbCtx }: { dbCtx: DbCtx; siteInfo: SiteInfo }) {
 
   spawn(initRootCanvasPkgs());
 
+  (window as any).__PLASMIC__ = {
+    EXECUTE_SERVER_QUERY: studioCtx.executeServerQuery,
+  } as PlasmicWindowInternals;
   (window as any).__PLASMIC_EXECUTE_DATA_OP = studioCtx.executePlasmicDataOp;
   (window as any).__PLASMIC_MUTATE_DATA_OP =
     studioCtx.refreshFetchedDataFromPlasmicQuery;

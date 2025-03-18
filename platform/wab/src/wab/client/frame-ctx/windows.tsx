@@ -7,6 +7,14 @@ import { requiredPackageVersions } from "@/wab/shared/required-versions";
 import { notification } from "antd";
 import React from "react";
 
+export interface PlasmicWindowInternals {
+  EXECUTE_SERVER_QUERY?: (
+    id: string,
+    fn: (...args) => Promise<any>,
+    ...args: any[]
+  ) => Promise<any>;
+}
+
 /**
  * window.parent is the root window of the host app (either user's host app or our own),
  * where @plasmicapp/host is loaded.

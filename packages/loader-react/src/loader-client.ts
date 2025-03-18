@@ -22,10 +22,10 @@ import { createUseGlobalVariant } from "./global-variants";
 import {
   BaseInternalPlasmicComponentLoader,
   CodeComponentMeta,
-  customFunctionImportAlias,
   CustomFunctionMeta,
   GlobalContextMeta,
   InitOptions,
+  internalSetRegisteredFunction,
   PlasmicRootWatcher,
   REGISTERED_CODE_COMPONENT_HELPERS,
   REGISTERED_CUSTOM_FUNCTIONS,
@@ -62,6 +62,7 @@ export class InternalPlasmicComponentLoader extends BaseInternalPlasmicComponent
         "@plasmicapp/query": PlasmicQuery,
         "@plasmicapp/data-sources-context": PlasmicDataSourcesContext,
         "@plasmicapp/host": PlasmicHost,
+        "@plasmicapp/host/registerFunction": internalSetRegisteredFunction,
         "@plasmicapp/loader-runtime-registry": {
           components: SUBSTITUTED_COMPONENTS,
           globalVariantHooks: SUBSTITUTED_GLOBAL_VARIANT_HOOKS,
@@ -122,7 +123,7 @@ export class InternalPlasmicComponentLoader extends BaseInternalPlasmicComponent
       ...meta,
       importPath: meta.importPath ?? "",
     });
-    REGISTERED_CUSTOM_FUNCTIONS[customFunctionImportAlias(meta)] = fn;
+    internalSetRegisteredFunction(fn, meta);
   }
 
   registerGlobalContext<T extends React.ComponentType<any>>(

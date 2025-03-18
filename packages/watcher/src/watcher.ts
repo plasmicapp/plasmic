@@ -1,4 +1,3 @@
-import type { Socket } from "socket.io-client";
 import socketio from "socket.io-client";
 
 export interface PlasmicRemoteChangeListener {
@@ -9,7 +8,7 @@ export interface PlasmicRemoteChangeListener {
 
 export class PlasmicRemoteChangeWatcher {
   private watchers: PlasmicRemoteChangeListener[] = [];
-  private socket: Socket | undefined = undefined;
+  private socket: ReturnType<typeof socketio> | undefined = undefined;
   private host: string;
 
   constructor(
@@ -78,7 +77,7 @@ export class PlasmicRemoteChangeWatcher {
       });
     });
 
-    socket.on("error", (data) => {
+    socket.on("error", (data: any) => {
       console.error(`${new Date().toISOString()}: Encountered error ${data}`);
       this.watchers.forEach((watcher) => watcher.onError?.(data));
       socket.disconnect();

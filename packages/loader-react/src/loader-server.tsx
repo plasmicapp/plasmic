@@ -26,6 +26,7 @@ import {
   ServerProvidedContext,
   ServerProvidedData,
   customFunctionImportAlias,
+  internalSetRegisteredFunction,
 } from "./loader-shared";
 import { swrSerialize } from "./swr-util";
 import {
@@ -394,6 +395,7 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
             usePlasmicCanvasComponentInfo: () => null,
           };
         })(),
+        "@plasmicapp/host/registerFunction": internalSetRegisteredFunction,
         "@plasmicapp/loader-runtime-registry": {
           components: SUBSTITUTED_COMPONENTS,
           globalVariantHooks: SUBSTITUTED_GLOBAL_VARIANT_HOOKS,

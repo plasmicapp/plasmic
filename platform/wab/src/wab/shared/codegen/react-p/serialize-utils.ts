@@ -1,5 +1,6 @@
 import { VariantGroupType } from "@/wab/shared/Variants";
 import { CodeComponentWithHelpers } from "@/wab/shared/code-components/code-components";
+import { PlasmicImportType } from "@/wab/shared/codegen/react-p/types";
 import { makeChildrenStr } from "@/wab/shared/codegen/react-p/utils";
 import {
   CodegenScheme,
@@ -19,7 +20,7 @@ import {
   makeGlobalVariantGroupContextName,
   makeGlobalVariantGroupFileName,
 } from "@/wab/shared/codegen/variants";
-import { ensure } from "@/wab/shared/common";
+import { ensure, ensureArray } from "@/wab/shared/common";
 import {
   getCodeComponentImportName,
   getSuperComponents,
@@ -29,7 +30,6 @@ import {
 import { CssProjectDependencies } from "@/wab/shared/core/sites";
 import {
   Component,
-  ComponentServerQuery,
   ImageAsset,
   TplNode,
   Variant,
@@ -624,12 +624,12 @@ export const maybeCondExpr = (maybeCond: string, expr: string) => {
   return `(${maybeCond}) ? (${expr}) : null`;
 };
 
-export function serializeServerQuery(serverQuery: ComponentServerQuery) {
-  return `const ${serverQuery.name} = await ${
-    serverQuery.op!.func.importName
-  }();`;
-}
-
-export function serializeServerQueries(component: Component) {
-  return component.serverQueries.map((q) => serializeServerQuery(q)).join("\n");
+export function makeTaggedPlasmicImport(
+  imports: string | string[],
+  source: string,
+  id: string,
+  type: PlasmicImportType
+) {
+  const importStr = ensureArray(imports).join(", ");
+  return `import { ${importStr} } from "${source}"; // plasmic-import: ${id}/${type}`;
 }

@@ -15,6 +15,7 @@ export interface ComponentMeta {
   isGlobalContextProvider: boolean;
   pageMetadata?: PageMetadata;
   metadata?: Record<string, string>;
+  serverQueriesExecFuncFileName?: string;
 }
 
 export interface PageMeta extends ComponentMeta {

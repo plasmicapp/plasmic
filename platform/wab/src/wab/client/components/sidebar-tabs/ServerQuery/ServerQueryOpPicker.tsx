@@ -10,7 +10,7 @@ import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
 import Button from "@/wab/client/components/widgets/Button";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import SearchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
-import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import {
   customFunctionId,
@@ -21,10 +21,9 @@ import {
   ensure,
   mkShortId,
   spawn,
-  swallow,
   withoutFalsy,
 } from "@/wab/shared/common";
-import { ExprCtx, codeLit, getRawCode } from "@/wab/shared/core/exprs";
+import { ExprCtx, clone, codeLit } from "@/wab/shared/core/exprs";
 import {
   ComponentServerQuery,
   CustomFunctionExpr,
@@ -43,7 +42,8 @@ import { useMountedState } from "react-use";
 
 import styles from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryOpPicker.module.scss";
 import { Tab, Tabs } from "@/wab/client/components/widgets";
-import { tryEvalExpr } from "@/wab/shared/eval";
+import { allCustomFunctions } from "@/wab/shared/cached-selectors";
+import { executeCustomFunctionOp } from "@/wab/shared/server-queries";
 
 const LazyCodePreview = React.lazy(
   () => import("@/wab/client/components/coding/CodePreview")
@@ -83,7 +83,9 @@ export function ServerQueryOpDraftForm(props: {
     exprCtx,
   } = props;
   const studioCtx = useStudioCtx();
-  const availableCustomFunction = studioCtx.site.customFunctions;
+  const availableCustomFunction = allCustomFunctions(studioCtx.site).map(
+    ({ customFunction }) => customFunction
+  );
   const propValueEditorContext = React.useMemo(() => {
     return {
       componentPropValues: {},
@@ -119,6 +121,7 @@ export function ServerQueryOpDraftForm(props: {
       <LabeledItemRow label={"Custom function"}>
         <StyleSelect
           value={value?.func ? customFunctionId(value.func) : undefined}
+          placeholder={"Select a custom function"}
           valueSetState={value?.func ? "isSet" : undefined}
           isDisabled={isDisabled || readOnly}
           onChange={(id) => {
@@ -164,7 +167,7 @@ export function ServerQueryOpDraftForm(props: {
                       return;
                     }
                     const newExpr = isKnownExpr(expr) ? expr : codeLit(expr);
-                    const newArgs = [...(value?.args ?? [])];
+                    const newArgs = value?.args ?? [];
                     const changedArg = newArgs.find(
                       (arg) => arg.argType === curArg?.argType
                     );
@@ -213,9 +216,14 @@ function _ServerQueryOpPreview(props: {
   const popExecuteQueue = React.useCallback(async () => {
     if (executeQueue.length > 0) {
       const [nextOp, ...rest] = executeQueue;
+      const functionId = customFunctionId(nextOp.func);
+      const regFunc = ensure(
+        studioCtx.getRegisteredFunctionsMap().get(functionId),
+        "Missing registered function for server query"
+      );
       try {
         const result = await executeCustomFunctionOp(
-          studioCtx,
+          regFunc,
           nextOp,
           env,
           exprCtx
@@ -322,7 +330,7 @@ export const ServerQueryOpExprFormAndPreview = observer(
     const isMounted = useMountedState();
     const [draft, setDraft] = React.useState<CustomFunctionExprDraft>(() => ({
       queryName: isKnownComponentServerQuery(parent) ? parent.name : undefined,
-      ...(value ?? {}),
+      ...(value ? clone(value) : {}),
     }));
     const [sourceFetchError, setSourceFetchError] = React.useState<
       Error | undefined
@@ -452,40 +460,3 @@ export const ServerQueryOpExprFormAndPreview = observer(
     return contents;
   }
 );
-
-export async function executeCustomFunctionOp(
-  studioCtx: StudioCtx,
-  expr: CustomFunctionExpr,
-  env: Record<string, any> | undefined,
-  exprCtx: ExprCtx
-) {
-  const { func, args } = expr;
-  const functionId = customFunctionId(func);
-  const argsMap = groupBy(args, (arg) => arg.argType.argName);
-  const regFunc = ensure(
-    studioCtx.getRegisteredFunctionsMap().get(functionId),
-    "Missing registered function for server query"
-  );
-  const argLits =
-    func.params.map((param) => {
-      if (argsMap[param.argName]) {
-        return (
-          swallow(
-            () =>
-              tryEvalExpr(
-                getRawCode(argsMap[param.argName][0].expr, exprCtx),
-                env ?? {}
-              )?.val
-          ) ?? undefined
-        );
-      }
-      return undefined;
-    }) ?? [];
-  try {
-    const serverData = await regFunc.function(...argLits);
-
-    return serverData;
-  } catch (err) {
-    return { error: err };
-  }
-}

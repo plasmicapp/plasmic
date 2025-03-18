@@ -53,6 +53,7 @@ export interface ComponentMeta {
   isCode?: boolean;
   pageMetadata?: PageMetadata;
   metadata: { [key: string]: string };
+  serverQueriesExecFuncFileName?: string;
 }
 
 export interface GlobalGroupMeta {
@@ -164,6 +165,13 @@ async function bundleModulesEsbuild(
           o.projectConfig.globalContextBundle
             ? makeGlobalContextsProviderFileName(o.projectConfig.projectId)
             : []
+        ),
+        ...codegenOutputs.flatMap((o) =>
+          withoutNils(
+            o.components.map(
+              (c) => c.rscMetadata?.serverQueriesExecFunc?.fileName
+            )
+          )
         ),
       ],
       bundle: true,
@@ -735,6 +743,11 @@ function makeLoaderBundleOutput(
       isGlobalContextProvider: compOutput.isGlobalContextProvider,
       pageMetadata: compOutput.pageMetadata,
       metadata: compOutput.metadata,
+      serverQueriesExecFuncFileName:
+        compOutput.rscMetadata?.serverQueriesExecFunc?.fileName.replace(
+          ".tsx",
+          ".js"
+        ),
     };
   }
 
