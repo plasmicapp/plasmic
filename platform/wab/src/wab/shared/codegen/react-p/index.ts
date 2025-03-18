@@ -2453,9 +2453,7 @@ function serializePageAwareSkeletonWrapperTs(
   ];
 
   let content = ctx.useRSC
-      ? `<${makePlasmicServerRscComponentName(
-          component
-        )} params={params} searchParams={searchParams} />`
+      ? `<${rscNodeComponentName} params={params} searchParams={searchParams} />`
       : `<${nodeComponentName} />`,
     getStaticProps = "",
     componentPropsDecl = "",
