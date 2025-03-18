@@ -2456,7 +2456,7 @@ function serializePageAwareSkeletonWrapperTs(
       ? `<${makePlasmicServerRscComponentName(
           component
         )} params={params} searchParams={searchParams} />`
-      : `<${nodeComponentName}>`,
+      : `<${nodeComponentName} />`,
     getStaticProps = "",
     componentPropsDecl = "",
     componentPropsSig = "";
