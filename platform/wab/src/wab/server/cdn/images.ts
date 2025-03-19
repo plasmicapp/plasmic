@@ -77,7 +77,7 @@ export async function uploadFileToS3(
             Key: storagePath,
             Body: optimizedBuffer,
             ContentType: mime,
-            ACL: "public-read",
+            ACL: !process.env.S3_ENDPOINT ? "public-read" : undefined, // TODO: Remove this when we migrate to GCS,
             CacheControl: `max-age=3600, s-maxage=31536000`,
           })
           .promise();

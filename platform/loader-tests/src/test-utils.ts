@@ -65,7 +65,7 @@ export async function runCypressTest(opts: {
             }/loader-tests/${diffFile}`,
             Body: fs.readFileSync(diffFile),
             ContentType: "image/png",
-            ACL: "public-read",
+            ACL: !process.env.S3_ENDPOINT ? "public-read" : undefined, // TODO: Remove this when we migrate to GCS,
           })
           .promise();
         console.log(`Diff: ${Location}`);
