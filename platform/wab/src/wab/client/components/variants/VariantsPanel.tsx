@@ -51,8 +51,7 @@ import { findNonEmptyCombos } from "@/wab/shared/cached-selectors";
 import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
 import { ensure, ensureInstance, partitions, spawn } from "@/wab/shared/common";
 import {
-  allComponentStyleVariants,
-  allStyleOrCodeComponentVariants,
+  allComponentStyleOrCodeComponentVariants,
   getSuperComponents,
   isPageComponent,
 } from "@/wab/shared/core/components";
@@ -185,9 +184,8 @@ export const VariantsPanel = observer(
     const canChangeVariants = vcontroller.canChangeActiveVariants();
     const superComps = getSuperComponents(component);
 
-    const styleVariants = allComponentStyleVariants(component);
     const styleOrCodeComponentVariants =
-      allStyleOrCodeComponentVariants(component);
+      allComponentStyleOrCodeComponentVariants(component);
     const baseVariant = getBaseVariant(component);
     const combos = findNonEmptyCombos(component);
     const selectedVariants = vcontroller.getTargetedVariants();

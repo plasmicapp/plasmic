@@ -260,6 +260,7 @@ import {
   isBaseVariant,
   isGlobalVariant,
   isPrivateStyleVariant,
+  toVariantKey,
   tryGetBaseVariantSetting,
   tryGetPrivateStyleVariant,
   VariantCombo,
@@ -2624,6 +2625,7 @@ export class ViewOps {
         common.assert(!!base && base.variants[0] === component.variants[0]);
 
         // fix private style variant by cloning.
+        const clonedPrivateStyleVariants = new Map<string, Variant>();
         newNode.vsettings.forEach((vs) => {
           const privateSV = tryGetPrivateStyleVariant(vs.variants);
           if (privateSV) {
@@ -2632,10 +2634,21 @@ export class ViewOps {
               index !== -1,
               "Unexpected not found privateSV in variant list"
             );
+            const privateSVKey = toVariantKey(privateSV);
+            // Reuse the cloned version if it already exists.
+            const variant = clonedPrivateStyleVariants.get(privateSVKey)!;
+            if (variant) {
+              vs.variants[index] = variant;
+              return;
+            }
             const clonedPrivateSV = cloneVariant(privateSV);
             clonedPrivateSV.forTpl = newNode;
-            vs.variants[index] = clonedPrivateSV;
             component.variants.push(clonedPrivateSV);
+            clonedPrivateStyleVariants.set(
+              toVariantKey(privateSV),
+              clonedPrivateSV
+            );
+            vs.variants[index] = clonedPrivateSV;
           }
         });
       }

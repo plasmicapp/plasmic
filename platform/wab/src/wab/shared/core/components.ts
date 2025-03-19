@@ -1806,6 +1806,12 @@ export function allStyleOrCodeComponentVariants(component: Component) {
   return component.variants.filter(isStyleOrCodeComponentVariant);
 }
 
+export function allComponentStyleOrCodeComponentVariants(component: Component) {
+  return component.variants.filter(
+    (v) => isComponentStyleVariant(v) || isCodeComponentVariant(v)
+  );
+}
+
 export function allPrivateStyleVariants(component: Component, tpl: TplNode) {
   return component.variants.filter(
     (v) => isPrivateStyleVariant(v) && v.forTpl === tpl
