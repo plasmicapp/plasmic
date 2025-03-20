@@ -371,6 +371,10 @@ function CmsEntryDetailsForm_(
       });
       return copy;
     });
+    await message.loading({
+      key: "uniqueness-message",
+      content: `Checking uniqueness violation...`,
+    });
     const uniqueFieldsChecked: UniqueFieldCheck[] = await api.checkUniqueFields(
       table.id,
       {
@@ -389,7 +393,12 @@ function CmsEntryDetailsForm_(
       });
       return copy;
     });
-    await form.validateFields();
+    try {
+      await form.validateFields();
+    } catch (err) {
+      /* The validateFields function throws an error with details if any field has an error.
+       We are ignoring this error as it is unrelated to checking the unique field. */
+    }
   }
 
   async function performSave() {
@@ -440,9 +449,11 @@ function CmsEntryDetailsForm_(
         setRevision(row.revision);
         await resetFormByRow();
       }
-    } else if (!hasFormError()) {
-      if (hasChanges() && !isSaving) {
-        spawn(performSave());
+    } else {
+      if (!hasFormError()) {
+        if (hasChanges() && !isSaving) {
+          spawn(performSave());
+        }
       }
       if (isUniqueFieldUpdated && !isCheckingUniqueness) {
         spawn(checkUniqueness());
