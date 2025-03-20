@@ -172,6 +172,8 @@ import {
   ensureKnownTplTag,
   isKnownClassNamePropType,
   isKnownPropParam,
+  isKnownRenderFuncType,
+  isKnownRenderableType,
   isKnownStateParam,
   isKnownStyleExpr,
   isKnownVirtualRenderExpr,
@@ -2132,6 +2134,14 @@ export function compareComponentPropsWithMeta(
             return true;
           }
           if (!!(registered as any).isLocalizable !== p.isLocalizable) {
+            return true;
+          }
+          if (
+            (isKnownRenderableType(registered.type) ||
+              isKnownRenderFuncType(registered.type)) &&
+            (isKnownRenderableType(p.type) || isKnownRenderFuncType(p.type)) &&
+            !!registered.type.allowRootWrapper !== !!p.type.allowRootWrapper
+          ) {
             return true;
           }
         }
