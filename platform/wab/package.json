@@ -22,7 +22,6 @@
     "socket-server": "npm run run-ts -- src/wab/server/app-socket-backend-real.ts",
     "build": "rsbuild build",
     "cypress:open": "cypress open",
-    "db:migrate-bundles": "npm run run-ts -- src/wab/server/scripts/bundle-migrator.ts",
     "migrate-dev-bundles": "npm run run-ts -- src/wab/server/scripts/dev-bundle-migrator.ts",
     "db:eval-corpus": "npm run run-ts -- src/wab/server/copilot/internal/sandbox/corpus-eval.ts",
     "db:reset": "bash tools/docker-dev/db-reset.bash",
