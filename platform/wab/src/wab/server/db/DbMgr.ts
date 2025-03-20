@@ -9609,8 +9609,9 @@ export class DbMgr implements MigrationDbMgr {
     }
     const threads = await query
       .andWhere("thread.deletedAt is null")
-      .orderBy("thread.createdAt", "ASC")
+      .orderBy("thread.updatedAt", "DESC")
       .addOrderBy("comment.createdAt", "ASC")
+      .addOrderBy("history.createdAt", "ASC")
       .getMany();
 
     // Update deleted comments in place
