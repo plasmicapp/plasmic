@@ -10464,15 +10464,29 @@
         },
         {
           "id": "PTsdlYdahZ76",
-          "name": "SelectedSubjectHead",
+          "name": "CommentsHeader",
           "type": "managed",
           "projectId": "BP7V3EkXPURJVwwMyWoHn",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicSelectedSubjectHead.tsx",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentsHeader.tsx",
           "importSpec": {
-            "modulePath": "wab/client/components/comments/SelectedSubjectHead.tsx",
-            "exportName": "SelectedSubjectHead"
+            "modulePath": "wab/client/components/comments/CommentsHeader.tsx",
+            "exportName": "CommentsHeader"
           },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicSelectedSubjectHead.module.css",
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentsHeader.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "nObxvgrqmfvo",
+          "name": "ThreadList",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicThreadList.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/ThreadList.tsx",
+            "exportName": "ThreadList"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicThreadList.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         }

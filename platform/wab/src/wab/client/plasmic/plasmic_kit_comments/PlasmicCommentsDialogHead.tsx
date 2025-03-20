@@ -26,7 +26,7 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import { SelectedSubjectHead } from "../../components/comments/SelectedSubjectHead"; // plasmic-import: PTsdlYdahZ76/component
+import { CommentsHeader } from "../../components/comments/CommentsHeader"; // plasmic-import: PTsdlYdahZ76/component
 import { ThreadHistoryStatus } from "../../components/comments/ThreadHistoryStatus"; // plasmic-import: E0P_lFzVr70L/component
 import ListSectionSeparator from "../../components/ListSectionSeparator"; // plasmic-import: uG5_fPM0sK/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
@@ -59,7 +59,7 @@ export const PlasmicCommentsDialogHead__ArgProps = new Array<ArgPropType>();
 export type PlasmicCommentsDialogHead__OverridesType = {
   root?: Flex__<"div">;
   head?: Flex__<"div">;
-  selectedSubjectHead?: Flex__<typeof SelectedSubjectHead>;
+  commentsHeader?: Flex__<typeof CommentsHeader>;
   freeBox?: Flex__<"div">;
   threadHistoryStatus?: Flex__<typeof ThreadHistoryStatus>;
   close?: Flex__<typeof IconButton>;
@@ -142,10 +142,10 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
         data-plasmic-override={overrides.head}
         className={classNames(projectcss.all, sty.head)}
       >
-        <SelectedSubjectHead
-          data-plasmic-name={"selectedSubjectHead"}
-          data-plasmic-override={overrides.selectedSubjectHead}
-          className={classNames("__wab_instance", sty.selectedSubjectHead)}
+        <CommentsHeader
+          data-plasmic-name={"commentsHeader"}
+          data-plasmic-override={overrides.commentsHeader}
+          className={classNames("__wab_instance", sty.commentsHeader)}
         />
 
         <Stack__
@@ -202,7 +202,7 @@ const PlasmicDescendants = {
   root: [
     "root",
     "head",
-    "selectedSubjectHead",
+    "commentsHeader",
     "freeBox",
     "threadHistoryStatus",
     "close",
@@ -211,13 +211,13 @@ const PlasmicDescendants = {
   ],
   head: [
     "head",
-    "selectedSubjectHead",
+    "commentsHeader",
     "freeBox",
     "threadHistoryStatus",
     "close",
     "svg",
   ],
-  selectedSubjectHead: ["selectedSubjectHead"],
+  commentsHeader: ["commentsHeader"],
   freeBox: ["freeBox", "threadHistoryStatus", "close", "svg"],
   threadHistoryStatus: ["threadHistoryStatus"],
   close: ["close", "svg"],
@@ -230,7 +230,7 @@ type DescendantsType<T extends NodeNameType> =
 type NodeDefaultElementType = {
   root: "div";
   head: "div";
-  selectedSubjectHead: typeof SelectedSubjectHead;
+  commentsHeader: typeof CommentsHeader;
   freeBox: "div";
   threadHistoryStatus: typeof ThreadHistoryStatus;
   close: typeof IconButton;
@@ -299,7 +299,7 @@ export const PlasmicCommentsDialogHead = Object.assign(
   {
     // Helper components rendering sub-elements
     head: makeNodeComponent("head"),
-    selectedSubjectHead: makeNodeComponent("selectedSubjectHead"),
+    commentsHeader: makeNodeComponent("commentsHeader"),
     freeBox: makeNodeComponent("freeBox"),
     threadHistoryStatus: makeNodeComponent("threadHistoryStatus"),
     close: makeNodeComponent("close"),

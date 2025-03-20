@@ -15,48 +15,34 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  hasVariant,
-  useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import CommentPost from "../../components/comments/CommentPost"; // plasmic-import: l_AKXl2AAu/component
-import { SelectedSubjectHead } from "../../components/comments/SelectedSubjectHead"; // plasmic-import: PTsdlYdahZ76/component
 import ListSectionSeparator from "../../components/ListSectionSeparator"; // plasmic-import: uG5_fPM0sK/component
+import { CommentsHeader } from "../../components/comments/CommentsHeader"; // plasmic-import: PTsdlYdahZ76/component
+import { ThreadList } from "../../components/comments/ThreadList"; // plasmic-import: nObxvgrqmfvo/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
+import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicCommentsTab.module.css"; // plasmic-import: bV6LLO0B3Y/css
+import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 
 import BellSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BellSvg"; // plasmic-import: eCJ0k221t/icon
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import SpeechBubblePlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SpeechBubblePlusSvg"; // plasmic-import: g2gTPsRaJ/icon
 
 createPlasmicElementProxy;
 
-export type PlasmicCommentsTab__VariantMembers = {
-  emptySelection: "emptySelection";
-  noComments: "noComments";
-};
-export type PlasmicCommentsTab__VariantsArgs = {
-  emptySelection?: SingleBooleanChoiceArg<"emptySelection">;
-  noComments?: SingleBooleanChoiceArg<"noComments">;
-};
+export type PlasmicCommentsTab__VariantMembers = {};
+export type PlasmicCommentsTab__VariantsArgs = {};
 type VariantPropType = keyof PlasmicCommentsTab__VariantsArgs;
-export const PlasmicCommentsTab__VariantProps = new Array<VariantPropType>(
-  "emptySelection",
-  "noComments"
-);
+export const PlasmicCommentsTab__VariantProps = new Array<VariantPropType>();
 
 export type PlasmicCommentsTab__ArgsType = {};
 type ArgPropType = keyof PlasmicCommentsTab__ArgsType;
@@ -67,17 +53,13 @@ export type PlasmicCommentsTab__OverridesType = {
   currentSelectionSection?: Flex__<"div">;
   filterButton?: Flex__<typeof Button>;
   notificationsButton?: Flex__<typeof Button>;
-  selectedSubjectHead?: Flex__<typeof SelectedSubjectHead>;
-  emptySelectionCard?: Flex__<"div">;
-  noCommentsCard?: Flex__<"div">;
-  currentThreadsList?: Flex__<"div">;
-  restThreadsSection?: Flex__<"div">;
-  restThreadsList?: Flex__<"div">;
+  currentHeader?: Flex__<typeof CommentsHeader>;
+  currentThreads?: Flex__<typeof ThreadList>;
+  restHeader?: Flex__<typeof CommentsHeader>;
+  restThreads?: Flex__<typeof ThreadList>;
 };
 
 export interface DefaultCommentsTabProps {
-  emptySelection?: SingleBooleanChoiceArg<"emptySelection">;
-  noComments?: SingleBooleanChoiceArg<"noComments">;
   className?: string;
 }
 
@@ -111,30 +93,6 @@ function PlasmicCommentsTab__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
-    () => [
-      {
-        path: "emptySelection",
-        type: "private",
-        variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.emptySelection,
-      },
-      {
-        path: "noComments",
-        type: "private",
-        variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noComments,
-      },
-    ],
-    [$props, $ctx, $refs]
-  );
-  const $state = useDollarState(stateSpecs, {
-    $props,
-    $ctx,
-    $queries: {},
-    $refs,
-  });
-
   return (
     <div
       data-plasmic-name={"root"}
@@ -149,55 +107,22 @@ function PlasmicCommentsTab__RenderFunc(props: {
         projectcss.plasmic_tokens,
         plasmic_plasmic_kit_design_system_css.plasmic_tokens,
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        sty.root,
-        {
-          [sty.rootemptySelection]: hasVariant(
-            $state,
-            "emptySelection",
-            "emptySelection"
-          ),
-          [sty.rootnoComments]: hasVariant($state, "noComments", "noComments"),
-        }
+        sty.root
       )}
     >
       <div
         data-plasmic-name={"currentSelectionSection"}
         data-plasmic-override={overrides.currentSelectionSection}
-        className={classNames(projectcss.all, sty.currentSelectionSection, {
-          [sty.currentSelectionSectionemptySelection]: hasVariant(
-            $state,
-            "emptySelection",
-            "emptySelection"
-          ),
-        })}
+        className={classNames(projectcss.all, sty.currentSelectionSection)}
       >
-        <div
-          className={classNames(projectcss.all, sty.freeBox__uwLXj, {
-            [sty.freeBoxemptySelection__uwLXjk5Ys6]: hasVariant(
-              $state,
-              "emptySelection",
-              "emptySelection"
-            ),
-            [sty.freeBoxnoComments__uwLXjyfyTz]: hasVariant(
-              $state,
-              "noComments",
-              "noComments"
-            ),
-          })}
-        >
+        <div className={classNames(projectcss.all, sty.freeBox__uwLXj)}>
           <Button
             data-plasmic-name={"filterButton"}
             data-plasmic-override={overrides.filterButton}
             className={classNames("__wab_instance", sty.filterButton)}
             endIcon={
               <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__tbr0E, {
-                  [sty.svgemptySelection__tbr0Ek5Ys6]: hasVariant(
-                    $state,
-                    "emptySelection",
-                    "emptySelection"
-                  ),
-                })}
+                className={classNames(projectcss.all, sty.svg__tbr0E)}
                 role={"img"}
               />
             }
@@ -221,198 +146,6 @@ function PlasmicCommentsTab__RenderFunc(props: {
             />
           </Button>
         </div>
-        <div
-          className={classNames(projectcss.all, sty.freeBox__kuS3, {
-            [sty.freeBoxemptySelection__kuS3K5Ys6]: hasVariant(
-              $state,
-              "emptySelection",
-              "emptySelection"
-            ),
-            [sty.freeBoxnoComments__kuS3YfyTz]: hasVariant(
-              $state,
-              "noComments",
-              "noComments"
-            ),
-          })}
-        >
-          <SelectedSubjectHead
-            data-plasmic-name={"selectedSubjectHead"}
-            data-plasmic-override={overrides.selectedSubjectHead}
-            className={classNames("__wab_instance", sty.selectedSubjectHead, {
-              [sty.selectedSubjectHeademptySelection]: hasVariant(
-                $state,
-                "emptySelection",
-                "emptySelection"
-              ),
-              [sty.selectedSubjectHeadnoComments]: hasVariant(
-                $state,
-                "noComments",
-                "noComments"
-              ),
-            })}
-          />
-
-          <Stack__
-            as={"div"}
-            data-plasmic-name={"emptySelectionCard"}
-            data-plasmic-override={overrides.emptySelectionCard}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.emptySelectionCard, {
-              [sty.emptySelectionCardemptySelection]: hasVariant(
-                $state,
-                "emptySelection",
-                "emptySelection"
-              ),
-              [sty.emptySelectionCardnoComments]: hasVariant(
-                $state,
-                "noComments",
-                "noComments"
-              ),
-            })}
-          >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__feo23,
-                {
-                  [sty.textemptySelection__feo23K5Ys6]: hasVariant(
-                    $state,
-                    "emptySelection",
-                    "emptySelection"
-                  ),
-                  [sty.textnoComments__feo23YfyTz]: hasVariant(
-                    $state,
-                    "noComments",
-                    "noComments"
-                  ),
-                }
-              )}
-            >
-              {"Nothing selected"}
-            </div>
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__fzmlw,
-                {
-                  [sty.textemptySelection__fzmlwk5Ys6]: hasVariant(
-                    $state,
-                    "emptySelection",
-                    "emptySelection"
-                  ),
-                  [sty.textnoComments__fzmlwyfyTz]: hasVariant(
-                    $state,
-                    "noComments",
-                    "noComments"
-                  ),
-                }
-              )}
-            >
-              {
-                "Select an element on the canvas or the tree to leave a comment."
-              }
-            </div>
-          </Stack__>
-          {(hasVariant($state, "noComments", "noComments") ? true : false) ? (
-            <Stack__
-              as={"div"}
-              data-plasmic-name={"noCommentsCard"}
-              data-plasmic-override={overrides.noCommentsCard}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.noCommentsCard, {
-                [sty.noCommentsCardemptySelection]: hasVariant(
-                  $state,
-                  "emptySelection",
-                  "emptySelection"
-                ),
-                [sty.noCommentsCardnoComments]: hasVariant(
-                  $state,
-                  "noComments",
-                  "noComments"
-                ),
-              })}
-            >
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__lKmcb,
-                  {
-                    [sty.textemptySelection__lKmcbk5Ys6]: hasVariant(
-                      $state,
-                      "emptySelection",
-                      "emptySelection"
-                    ),
-                    [sty.textnoComments__lKmcbyfyTz]: hasVariant(
-                      $state,
-                      "noComments",
-                      "noComments"
-                    ),
-                  }
-                )}
-              >
-                {"No comments"}
-              </div>
-              <div
-                className={classNames(projectcss.all, sty.freeBox__gBvZj)}
-                style={{ display: "inline-block" }}
-              >
-                <span
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.span,
-                    projectcss.__wab_text,
-                    sty.span__vDhf5,
-                    {
-                      [sty.spanemptySelection__vDhf5K5Ys6]: hasVariant(
-                        $state,
-                        "emptySelection",
-                        "emptySelection"
-                      ),
-                      [sty.spannoComments__vDhf5YfyTz]: hasVariant(
-                        $state,
-                        "noComments",
-                        "noComments"
-                      ),
-                    }
-                  )}
-                >
-                  {"Use"}
-                </span>
-                <SpeechBubblePlusSvgIcon
-                  className={classNames(projectcss.all, sty.svg__nXldQ)}
-                  role={"img"}
-                  style={{ display: "inline", "vertical-align": "middle" }}
-                />
-
-                <span
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.span,
-                    projectcss.__wab_text,
-                    sty.span___1R7Vu,
-                    {
-                      [sty.spanemptySelection___1R7Vuk5Ys6]: hasVariant(
-                        $state,
-                        "emptySelection",
-                        "emptySelection"
-                      ),
-                      [sty.spannoComments___1R7VuyfyTz]: hasVariant(
-                        $state,
-                        "noComments",
-                        "noComments"
-                      ),
-                    }
-                  )}
-                >
-                  {"to leave a comment on this selected element."}
-                </span>
-              </div>
-            </Stack__>
-          ) : null}
-        </div>
         <ListSectionSeparator
           className={classNames(
             "__wab_instance",
@@ -420,27 +153,19 @@ function PlasmicCommentsTab__RenderFunc(props: {
           )}
         />
 
-        <div
-          data-plasmic-name={"currentThreadsList"}
-          data-plasmic-override={overrides.currentThreadsList}
-          className={classNames(projectcss.all, sty.currentThreadsList)}
-        >
-          <CommentPost
-            className={classNames("__wab_instance", sty.commentPost__nx6EP, {
-              [sty.commentPostemptySelection__nx6EPk5Ys6]: hasVariant(
-                $state,
-                "emptySelection",
-                "emptySelection"
-              ),
-              [sty.commentPostnoComments__nx6EPyfyTz]: hasVariant(
-                $state,
-                "noComments",
-                "noComments"
-              ),
-            })}
-            thread={true}
+        <div className={classNames(projectcss.all, sty.freeBox__vqCBj)}>
+          <CommentsHeader
+            data-plasmic-name={"currentHeader"}
+            data-plasmic-override={overrides.currentHeader}
+            className={classNames("__wab_instance", sty.currentHeader)}
+            showCount={true}
           />
         </div>
+        <ThreadList
+          data-plasmic-name={"currentThreads"}
+          data-plasmic-override={overrides.currentThreads}
+          className={classNames("__wab_instance", sty.currentThreads)}
+        />
       </div>
       <ListSectionSeparator
         className={classNames(
@@ -449,50 +174,21 @@ function PlasmicCommentsTab__RenderFunc(props: {
         )}
       />
 
-      <div
-        data-plasmic-name={"restThreadsSection"}
-        data-plasmic-override={overrides.restThreadsSection}
-        className={classNames(projectcss.all, sty.restThreadsSection)}
-      >
-        <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text__hPjMa,
-            {
-              [sty.textemptySelection__hPjMak5Ys6]: hasVariant(
-                $state,
-                "emptySelection",
-                "emptySelection"
-              ),
-            }
-          )}
-        >
-          {"Jump to comments elsewhere"}
-        </div>
-        <div
-          data-plasmic-name={"restThreadsList"}
-          data-plasmic-override={overrides.restThreadsList}
-          className={classNames(projectcss.all, sty.restThreadsList, {
-            [sty.restThreadsListemptySelection]: hasVariant(
-              $state,
-              "emptySelection",
-              "emptySelection"
-            ),
-          })}
-        >
-          <CommentPost
-            className={classNames("__wab_instance", sty.commentPost__fyIcK, {
-              [sty.commentPostemptySelection__fyIcKk5Ys6]: hasVariant(
-                $state,
-                "emptySelection",
-                "emptySelection"
-              ),
-            })}
-            thread={true}
-          />
-        </div>
+      <div className={classNames(projectcss.all, sty.freeBox__kdUo2)}>
+        <CommentsHeader
+          data-plasmic-name={"restHeader"}
+          data-plasmic-override={overrides.restHeader}
+          className={classNames("__wab_instance", sty.restHeader)}
+          name={"Other arenas"}
+          nameOnly={true}
+          showCount={true}
+        />
       </div>
+      <ThreadList
+        data-plasmic-name={"restThreads"}
+        data-plasmic-override={overrides.restThreads}
+        className={classNames("__wab_instance", sty.restThreads)}
+      />
     </div>
   ) as React.ReactElement | null;
 }
@@ -503,30 +199,24 @@ const PlasmicDescendants = {
     "currentSelectionSection",
     "filterButton",
     "notificationsButton",
-    "selectedSubjectHead",
-    "emptySelectionCard",
-    "noCommentsCard",
-    "currentThreadsList",
-    "restThreadsSection",
-    "restThreadsList",
+    "currentHeader",
+    "currentThreads",
+    "restHeader",
+    "restThreads",
   ],
   currentSelectionSection: [
     "currentSelectionSection",
     "filterButton",
     "notificationsButton",
-    "selectedSubjectHead",
-    "emptySelectionCard",
-    "noCommentsCard",
-    "currentThreadsList",
+    "currentHeader",
+    "currentThreads",
   ],
   filterButton: ["filterButton"],
   notificationsButton: ["notificationsButton"],
-  selectedSubjectHead: ["selectedSubjectHead"],
-  emptySelectionCard: ["emptySelectionCard"],
-  noCommentsCard: ["noCommentsCard"],
-  currentThreadsList: ["currentThreadsList"],
-  restThreadsSection: ["restThreadsSection", "restThreadsList"],
-  restThreadsList: ["restThreadsList"],
+  currentHeader: ["currentHeader"],
+  currentThreads: ["currentThreads"],
+  restHeader: ["restHeader"],
+  restThreads: ["restThreads"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -536,12 +226,10 @@ type NodeDefaultElementType = {
   currentSelectionSection: "div";
   filterButton: typeof Button;
   notificationsButton: typeof Button;
-  selectedSubjectHead: typeof SelectedSubjectHead;
-  emptySelectionCard: "div";
-  noCommentsCard: "div";
-  currentThreadsList: "div";
-  restThreadsSection: "div";
-  restThreadsList: "div";
+  currentHeader: typeof CommentsHeader;
+  currentThreads: typeof ThreadList;
+  restHeader: typeof CommentsHeader;
+  restThreads: typeof ThreadList;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -607,12 +295,10 @@ export const PlasmicCommentsTab = Object.assign(
     currentSelectionSection: makeNodeComponent("currentSelectionSection"),
     filterButton: makeNodeComponent("filterButton"),
     notificationsButton: makeNodeComponent("notificationsButton"),
-    selectedSubjectHead: makeNodeComponent("selectedSubjectHead"),
-    emptySelectionCard: makeNodeComponent("emptySelectionCard"),
-    noCommentsCard: makeNodeComponent("noCommentsCard"),
-    currentThreadsList: makeNodeComponent("currentThreadsList"),
-    restThreadsSection: makeNodeComponent("restThreadsSection"),
-    restThreadsList: makeNodeComponent("restThreadsList"),
+    currentHeader: makeNodeComponent("currentHeader"),
+    currentThreads: makeNodeComponent("currentThreads"),
+    restHeader: makeNodeComponent("restHeader"),
+    restThreads: makeNodeComponent("restThreads"),
 
     // Metadata about props expected for PlasmicCommentsTab
     internalVariantProps: PlasmicCommentsTab__VariantProps,

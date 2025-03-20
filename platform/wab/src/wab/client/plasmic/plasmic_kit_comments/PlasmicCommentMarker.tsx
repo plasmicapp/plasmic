@@ -40,9 +40,7 @@ export type PlasmicCommentMarker__VariantsArgs = {};
 type VariantPropType = keyof PlasmicCommentMarker__VariantsArgs;
 export const PlasmicCommentMarker__VariantProps = new Array<VariantPropType>();
 
-export type PlasmicCommentMarker__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicCommentMarker__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicCommentMarker__ArgsType;
 export const PlasmicCommentMarker__ArgProps = new Array<ArgPropType>(
   "children"
@@ -146,7 +144,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCommentMarker__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

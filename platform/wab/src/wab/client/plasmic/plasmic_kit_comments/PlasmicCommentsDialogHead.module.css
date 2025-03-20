@@ -18,7 +18,7 @@
   min-width: 0;
   margin: 0px 0px var(--token-O2OprmOFWLju);
 }
-.selectedSubjectHead:global(.__wab_instance) {
+.commentsHeader:global(.__wab_instance) {
   position: relative;
 }
 .freeBox {

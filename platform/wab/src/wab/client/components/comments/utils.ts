@@ -26,7 +26,7 @@ import {
   Variant,
 } from "@/wab/shared/model/classes";
 import { toVariantComboKey } from "@/wab/shared/Variants";
-import { groupBy, partition, sortBy } from "lodash";
+import { groupBy, partition } from "lodash";
 
 type LocalizedCommentThread = ApiCommentThread & {
   location: NonNullable<ApiCommentThread["location"]>;
@@ -122,31 +122,19 @@ export function getCommentThreadsWithModelMetadata(
     .map((thread) => getCommentThreadWithModelMetadata(bundler, thread));
 }
 
-function sortThreadsByLastComment(threads: TplCommentThreads) {
-  return sortBy(
-    [...threads],
-    (thread) => -new Date(thread.comments[thread.comments.length - 1].createdAt)
-  );
-}
-
 export function getThreadsFromFocusedComponent(
   threads: TplCommentThreads,
   focusedComponent: Component,
   focusedTpl: TplNode | null | undefined
 ) {
-  const [_focusedComponentThreads, otherComponentsThreads] = partition(
+  const [focusedComponentThreads, otherComponentsThreads] = partition(
     [...threads],
     (thread) => thread.ownerComponent === focusedComponent
   );
-  const [focusedSubjectThreads, focusedComponentThreads] = partition(
-    _focusedComponentThreads,
-    (thread) => thread.subject === focusedTpl
-  );
 
   return {
-    focusedSubjectThreads: sortThreadsByLastComment(focusedSubjectThreads),
-    focusedComponentThreads: sortThreadsByLastComment(focusedComponentThreads),
-    otherComponentsThreads: sortThreadsByLastComment(otherComponentsThreads),
+    focusedComponentThreads: focusedComponentThreads,
+    otherComponentsThreads: otherComponentsThreads,
   };
 }
 

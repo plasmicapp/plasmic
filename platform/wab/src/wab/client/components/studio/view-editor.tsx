@@ -2161,7 +2161,9 @@ const RightPane = observer(function RightPane(props: {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      {disabled && <div className="canvas-editor__disable-right-pane" />}
+      {disabled && !studioCtx.showCommentsPanel && (
+        <div className="canvas-editor__disable-right-pane" />
+      )}
       {DEVFLAGS.demo || appConfig.comments || appConfig.rightTabs ? (
         studioCtx.showCommentsPanel ? (
           <CommentsTab />
