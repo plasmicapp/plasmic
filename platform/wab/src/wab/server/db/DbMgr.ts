@@ -101,9 +101,9 @@ import {
 } from "@/wab/server/tutorialdb/tutorialdb-utils";
 import { generateSomeApiToken } from "@/wab/server/util/Tokens";
 import {
+  getConflictingCmsRowIds,
   makeSqlCondition,
   makeTypedFieldSql,
-  normalizeData,
   normalizeTableSchema,
   traverseSchemaFields,
 } from "@/wab/server/util/cms-util";
@@ -180,7 +180,7 @@ import {
 } from "@/wab/shared/Labels";
 import { Bundler } from "@/wab/shared/bundler";
 import { getBundle } from "@/wab/shared/bundles";
-import { getDefaultLocale, getUniqueFieldsData } from "@/wab/shared/cms";
+import { getUniqueFieldsData } from "@/wab/shared/cms";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { Dict, mkIdMap, safeHas } from "@/wab/shared/collections";
 import {
@@ -7217,27 +7217,6 @@ export class DbMgr implements MigrationDbMgr {
     );
   }
 
-  getConflictingCmsRowIds(
-    publishedRows: CmsRow[],
-    currentRowId: CmsRowId,
-    fieldIdentifier: string,
-    value: unknown
-  ) {
-    const conflictingCmsRowIds = publishedRows
-      .filter((publishedRow) => {
-        const publishedDefaultLocale = getDefaultLocale(
-          publishedRow.data as CmsRowData
-        );
-        return (
-          publishedRow.id !== currentRowId &&
-          normalizeData(publishedDefaultLocale[fieldIdentifier]) ===
-            normalizeData(value)
-        );
-      })
-      .map((row) => row.id);
-    return conflictingCmsRowIds;
-  }
-
   async checkUniqueFields(
     tableId: CmsTableId,
     opts: {
@@ -7248,7 +7227,7 @@ export class DbMgr implements MigrationDbMgr {
     const publishedRows = await this.getPublishedRows(tableId);
     return Object.entries(opts.uniqueFieldsData).map(
       ([fieldIdentifier, value]) => {
-        const conflictRowIds = this.getConflictingCmsRowIds(
+        const conflictRowIds = getConflictingCmsRowIds(
           publishedRows,
           opts.rowId,
           fieldIdentifier,
@@ -7326,12 +7305,6 @@ export class DbMgr implements MigrationDbMgr {
             uniqueFieldIdentifiers,
             opts.data as CmsRowData
           );
-          // const defaultLocale = getDefaultLocale(opts.data as CmsRowData);
-          // const defaultLocaleUniqueFields = Object.fromEntries(
-          //   Object.entries(defaultLocale).filter(([identifier, __]) =>
-          //     uniqueFieldIdentifiers.includes(identifier)
-          //   )
-          // );
           const uniqueFieldsCheck = await this.checkUniqueFields(table.id, {
             rowId: row.id,
             uniqueFieldsData: uniqueFieldsData,
