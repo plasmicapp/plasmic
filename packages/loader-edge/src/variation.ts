@@ -127,17 +127,19 @@ export const getActiveVariation = (opts: {
   splits: Split[];
   traits: Record<string, string | number | boolean>;
   path: string;
+  enableUnseededExperiments?: boolean;
 }) => {
-  const { splits, traits, path } = opts;
+  const { splits, traits, path, enableUnseededExperiments } = opts;
   return getActiveVariationSplits({
     splits,
     traits: {
       pageUrl: path,
       ...traits,
     },
+    enableUnseededExperiments,
     getKnownValue: () => undefined,
     updateKnownValue: () => null,
-    getRandomValue: (key) => {
+    getRandomValue: (key: string) => {
       const rand = getSeededRandomFunction((traits[PLASMIC_SEED] ?? "") + key);
       return rand();
     },
