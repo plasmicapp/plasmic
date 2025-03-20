@@ -12,6 +12,7 @@ const meta: Meta<typeof BaseDialogTrigger> = {
   title: "Components/BaseDialogTrigger",
   component: BaseDialogTrigger,
   args: {
+    trigger: <span>Open popover</span>, // react-aria requires a trigger prop, otherwise it will throw a warning from the PressResponder
     defaultOpen: false,
     onOpenChange: fn(),
   },
@@ -319,16 +320,17 @@ export const WithPopoverNonModal: Story = {
 
 export const ControlledDialog: Story = {
   args: {
-    trigger: undefined,
     dialog: <DefaultPopoverContent />,
+    isOpen: false,
   },
-  render: ({ isOpen, dialog }) => {
+  render: ({ isOpen, dialog, trigger }) => {
     const [open, setOpen] = useState(isOpen);
     return (
       <>
         <span onClick={() => setOpen((prev) => !prev)}>Toggle</span>
         <BaseDialogTrigger
           isOpen={open}
+          trigger={trigger}
           onOpenChange={setOpen}
           dialog={dialog}
         />
@@ -392,7 +394,6 @@ export const AriaButtonTrigger: Story = {
 
 export const SelectedInCanvas: Story = {
   args: {
-    trigger: undefined,
     dialog: <DefaultPopoverContent isKeyboardDismissDisabled={false} />,
   },
   render: ({ __plasmic_selection_prop__, ...args }) => {
@@ -428,7 +429,7 @@ export const SelectedInCanvas: Story = {
     );
   },
   play: async () => {
-    const consoleWarnSpy = spyOn(console, "warn").mockImplementation(() => { });
+    const consoleWarnSpy = spyOn(console, "warn").mockImplementation(() => {});
 
     // popovers are rendered outside canvas, so we need to use document.body
     const doc = within(document.body);
