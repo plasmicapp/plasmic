@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback } from "react";
 import {
   ComboBox,
   ComboBoxProps,
@@ -11,13 +11,14 @@ import {
   PlasmicListBoxContext,
   PlasmicPopoverTriggerContext,
 } from "./contexts";
-import { OptionsItemIdManager } from "./OptionsItemIdManager";
+import { useIdManager } from "./OptionsItemIdManager";
 import { BUTTON_COMPONENT_NAME } from "./registerButton";
 import { INPUT_COMPONENT_NAME } from "./registerInput";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { LIST_BOX_COMPONENT_NAME } from "./registerListBox";
 import { POPOVER_COMPONENT_NAME } from "./registerPopover";
 import {
+  BaseControlContextDataForLists,
   HasControlContextData,
   makeComponentName,
   Registerable,
@@ -29,10 +30,6 @@ import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
 const COMBOBOX_NAME = makeComponentName("combobox");
 
-export interface BaseComboboxControlContextData {
-  itemIds: string[];
-}
-
 const COMBOBOX_VARIANTS = ["disabled" as const];
 
 const { variants: COMBOBOX_VARIANTS_DATA } =
@@ -42,7 +39,7 @@ export interface BaseComboboxProps
   extends ComboBoxProps<{}>,
     WithPlasmicCanvasComponentInfo,
     WithVariants<typeof COMBOBOX_VARIANTS>,
-    HasControlContextData<BaseComboboxControlContextData> {
+    HasControlContextData<BaseControlContextDataForLists> {
   children?: React.ReactNode;
   isOpen?: boolean;
   className?: string;
@@ -87,15 +84,16 @@ export function BaseComboBox(props: BaseComboboxProps) {
     [className, plasmicUpdateVariant]
   );
 
-  const idManager = useMemo(() => new OptionsItemIdManager(), []);
-
-  useEffect(() => {
-    idManager.subscribe((ids: string[]) => {
+  const updateIds = useCallback(
+    (ids: string[]) => {
       setControlContextData?.({
         itemIds: ids,
       });
-    });
-  }, []);
+    },
+    [setControlContextData]
+  );
+
+  const idManager = useIdManager(updateIds);
 
   return (
     <ComboBox className={classNameProp} {...rest} style={COMMON_STYLES}>

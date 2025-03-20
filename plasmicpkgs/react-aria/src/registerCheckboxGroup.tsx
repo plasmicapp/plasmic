@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback } from "react";
 import type { CheckboxGroupProps } from "react-aria-components";
 import { CheckboxGroup } from "react-aria-components";
 import { COMMON_STYLES, getCommonProps } from "./common";
 import { PlasmicCheckboxGroupContext } from "./contexts";
-import { OptionsItemIdManager } from "./OptionsItemIdManager";
+import { useIdManager } from "./OptionsItemIdManager";
 import {
   CHECKBOX_COMPONENT_NAME,
   makeDefaultCheckboxChildren,
@@ -11,6 +11,7 @@ import {
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import {
+  BaseControlContextDataForLists,
   CodeComponentMetaOverrides,
   HasControlContextData,
   makeComponentName,
@@ -19,15 +20,11 @@ import {
 } from "./utils";
 import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
-export interface BaseCheckboxControlContextData {
-  values: string[];
-}
-
 const CHECKBOX_GROUP_VARIANTS = ["disabled" as const, "readonly" as const];
 
 export interface BaseCheckboxGroupProps
   extends CheckboxGroupProps,
-    HasControlContextData<BaseCheckboxControlContextData>,
+    HasControlContextData<BaseControlContextDataForLists>,
     WithVariants<typeof CHECKBOX_GROUP_VARIANTS> {
   children?: React.ReactNode;
 }
@@ -39,21 +36,17 @@ const { variants, withObservedValues } = pickAriaComponentVariants(
 export function BaseCheckboxGroup(props: BaseCheckboxGroupProps) {
   const { children, plasmicUpdateVariant, setControlContextData, ...rest } =
     props;
-  const [ids, setIds] = useState<string[]>([]);
-  const idManager = useMemo(() => new OptionsItemIdManager(), []);
 
-  useEffect(() => {
-    setControlContextData?.({
-      values: ids,
-    });
-  }, [ids, setControlContextData]);
+  const updateIds = useCallback(
+    (ids: string[]) => {
+      setControlContextData?.({
+        itemIds: ids,
+      });
+    },
+    [setControlContextData]
+  );
 
-  useEffect(() => {
-    idManager.subscribe((_ids: string[]) => {
-      setIds(_ids);
-    });
-  }, [idManager]);
-
+  const idManager = useIdManager(updateIds);
   return (
     // PlasmicCheckboxGroupContext is used by BaseCheckbox
     <PlasmicCheckboxGroupContext.Provider value={{ ...rest, idManager }}>
@@ -171,7 +164,8 @@ export function registerCheckboxGroup(
           editOnly: true,
           uncontrolledProp: "defaultValue",
           description: "The current value",
-          options: (_props, ctx) => (ctx?.values ? Array.from(ctx.values) : []),
+          options: (_props, ctx) =>
+            ctx?.itemIds ? Array.from(ctx.itemIds) : [],
           multiSelect: true,
         },
         isInvalid: {

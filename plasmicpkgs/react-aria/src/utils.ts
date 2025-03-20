@@ -27,6 +27,10 @@ export type BaseControlContextData = {
   parent?: ControlContextData;
 };
 
+export type BaseControlContextDataForLists = {
+  itemIds: string[];
+};
+
 export type Registerable = {
   registerComponent: typeof registerComponent;
 };

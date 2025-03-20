@@ -1,9 +1,10 @@
 import { PlasmicElement } from "@plasmicapp/host";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import type { CheckboxProps } from "react-aria-components";
 import { Checkbox } from "react-aria-components";
 import { COMMON_STYLES, getCommonProps, hasParent } from "./common";
 import { PlasmicCheckboxGroupContext } from "./contexts";
+import { useOptionsItemId } from "./OptionsItemIdManager";
 import {
   BaseControlContextData,
   CodeComponentMetaOverrides,
@@ -49,41 +50,15 @@ export function BaseCheckbox(props: BaseCheckboxProps) {
     ...rest
   } = props;
   const contextProps = React.useContext(PlasmicCheckboxGroupContext);
-  const isStandalone = !contextProps;
 
-  const [registeredId, setRegisteredId] = useState<string | undefined>();
-
-  useEffect(() => {
-    if (!contextProps?.idManager) {
-      return;
-    }
-
-    const localId = contextProps.idManager.register(value);
-    setRegisteredId(localId);
-
-    return () => {
-      contextProps.idManager.unregister(localId);
-      setRegisteredId(undefined);
-    };
-  }, [value, contextProps?.idManager]);
+  const { registeredId, idError } = useOptionsItemId(
+    value,
+    contextProps?.idManager
+  );
 
   setControlContextData?.({
     parent: contextProps,
-    idError: (() => {
-      if (value === undefined) {
-        return "Value must be defined";
-      }
-      if (typeof value !== "string") {
-        return "Value must be a string";
-      }
-      if (!value.trim()) {
-        return "Value must be defined";
-      }
-      if (!isStandalone && value != registeredId) {
-        return "Value must be unique";
-      }
-      return undefined;
-    })(),
+    idError,
   });
 
   return (

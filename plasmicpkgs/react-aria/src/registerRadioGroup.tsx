@@ -1,13 +1,14 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback } from "react";
 import type { RadioGroupProps } from "react-aria-components";
 import { RadioGroup } from "react-aria-components";
 import { COMMON_STYLES, getCommonProps } from "./common";
 import { PlasmicRadioGroupContext } from "./contexts";
-import { OptionsItemIdManager } from "./OptionsItemIdManager";
+import { useIdManager } from "./OptionsItemIdManager";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { makeDefaultRadioChildren, registerRadio } from "./registerRadio";
 import {
+  BaseControlContextDataForLists,
   CodeComponentMetaOverrides,
   HasControlContextData,
   Registerable,
@@ -17,15 +18,11 @@ import {
 } from "./utils";
 import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
 
-export interface BaseRadioGroupControlContextData {
-  values: string[];
-}
-
 const RADIO_GROUP_VARIANTS = ["disabled" as const, "readonly" as const];
 
 export interface BaseRadioGroupProps
   extends RadioGroupProps,
-    HasControlContextData<BaseRadioGroupControlContextData>,
+    HasControlContextData<BaseControlContextDataForLists>,
     WithVariants<typeof RADIO_GROUP_VARIANTS> {
   children: React.ReactNode;
 }
@@ -37,20 +34,16 @@ export function BaseRadioGroup(props: BaseRadioGroupProps) {
   const { children, plasmicUpdateVariant, setControlContextData, ...rest } =
     props;
 
-  const [ids, setIds] = useState<string[]>([]);
-  const idManager = useMemo(() => new OptionsItemIdManager(), []);
+  const updateIds = useCallback(
+    (ids: string[]) => {
+      setControlContextData?.({
+        itemIds: ids,
+      });
+    },
+    [setControlContextData]
+  );
 
-  useEffect(() => {
-    setControlContextData?.({
-      values: ids,
-    });
-  }, [ids, setControlContextData]);
-
-  useEffect(() => {
-    idManager.subscribe((_ids: string[]) => {
-      setIds(_ids);
-    });
-  }, [idManager]);
+  const idManager = useIdManager(updateIds);
 
   return (
     // PlasmicRadioGroupContext is used by BaseRadio
@@ -168,7 +161,8 @@ export function registerRadioGroup(
           displayName: "Initial value",
           uncontrolledProp: "defaultValue",
           description: "The current value",
-          options: (_props, ctx) => (ctx?.values ? Array.from(ctx.values) : []),
+          options: (_props, ctx) =>
+            ctx?.itemIds ? Array.from(ctx.itemIds) : [],
           multiSelect: false,
         },
         isInvalid: {

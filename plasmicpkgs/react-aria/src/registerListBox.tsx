@@ -1,14 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Key, ListBox, ListBoxRenderProps } from "react-aria-components";
 import { COMMON_STYLES } from "./common";
 import { PlasmicListBoxContext } from "./contexts";
-import { OptionsItemIdManager } from "./OptionsItemIdManager";
+import { useIdManager } from "./OptionsItemIdManager";
 import {
   makeDefaultListBoxItemChildren,
   registerListBoxItem,
 } from "./registerListBoxItem";
 import { registerSection } from "./registerSection";
 import {
+  BaseControlContextDataForLists,
   CodeComponentMetaOverrides,
   HasControlContextData,
   makeComponentName,
@@ -17,8 +18,8 @@ import {
 } from "./utils";
 import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
-export interface BaseListBoxControlContextData {
-  itemIds: string[];
+export interface BaseListBoxControlContextData
+  extends BaseControlContextDataForLists {
   isStandalone: boolean;
 }
 
@@ -70,10 +71,8 @@ export function BaseListBox(props: BaseListBoxProps) {
   const context = React.useContext(PlasmicListBoxContext);
   const isStandalone = !context;
   const [ids, setIds] = useState<string[]>([]);
-  const idManager = useMemo(
-    () => context?.idManager ?? new OptionsItemIdManager(),
-    []
-  );
+
+  const idManager = useIdManager(setIds, context?.idManager);
 
   useEffect(() => {
     setControlContextData?.({
@@ -81,12 +80,6 @@ export function BaseListBox(props: BaseListBoxProps) {
       isStandalone,
     });
   }, [ids, isStandalone, setControlContextData]);
-
-  useEffect(() => {
-    idManager.subscribe((_ids: string[]) => {
-      setIds(_ids);
-    });
-  }, []);
 
   const classNameProp = useCallback(
     ({ isFocusVisible, isFocused }: ListBoxRenderProps) => {

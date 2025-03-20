@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback } from "react";
 import {
   Select,
   SelectProps,
@@ -11,12 +11,13 @@ import {
   PlasmicListBoxContext,
   PlasmicPopoverTriggerContext,
 } from "./contexts";
-import { OptionsItemIdManager } from "./OptionsItemIdManager";
+import { useIdManager } from "./OptionsItemIdManager";
 import { BUTTON_COMPONENT_NAME } from "./registerButton";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { LIST_BOX_COMPONENT_NAME } from "./registerListBox";
 import { POPOVER_COMPONENT_NAME } from "./registerPopover";
 import {
+  BaseControlContextDataForLists,
   HasControlContextData,
   Registerable,
   WithPlasmicCanvasComponentInfo,
@@ -78,10 +79,6 @@ export const BaseSelectValue = (props: BaseSelectValueProps) => {
 
 const SELECT_NAME = makeComponentName("select");
 
-export interface BaseSelectControlContextData {
-  itemIds: string[];
-}
-
 const SELECT_VARIANTS = [
   "focused" as const,
   "focusVisible" as const,
@@ -95,7 +92,7 @@ export interface BaseSelectProps
   extends SelectProps<{}>, // NOTE: We don't need generic type here since we don't use items prop (that needs it). We just need to make the type checker happy
     WithVariants<typeof SELECT_VARIANTS>,
     WithPlasmicCanvasComponentInfo,
-    HasControlContextData<BaseSelectControlContextData> {
+    HasControlContextData<BaseControlContextDataForLists> {
   children?: React.ReactNode;
   className?: string;
 }
@@ -116,15 +113,16 @@ export function BaseSelect(props: BaseSelectProps) {
     "aria-label": ariaLabel,
   } = props;
 
-  const idManager = useMemo(() => new OptionsItemIdManager(), []);
-
-  useEffect(() => {
-    idManager.subscribe((ids: string[]) => {
+  const updateIds = useCallback(
+    (ids: string[]) => {
       setControlContextData?.({
         itemIds: ids,
       });
-    });
-  }, []);
+    },
+    [setControlContextData]
+  );
+
+  const idManager = useIdManager(updateIds);
 
   const classNameProp = useCallback(
     ({

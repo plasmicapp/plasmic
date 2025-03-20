@@ -1,9 +1,10 @@
 import { PlasmicElement } from "@plasmicapp/host";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import type { RadioProps } from "react-aria-components";
 import { Radio, RadioGroup } from "react-aria-components";
 import { COMMON_STYLES, getCommonProps } from "./common";
 import { PlasmicRadioGroupContext } from "./contexts";
+import { useOptionsItemId } from "./OptionsItemIdManager";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import {
   BaseControlContextData,
@@ -50,39 +51,14 @@ export function BaseRadio(props: BaseRadioProps) {
   } = props;
   const contextProps = React.useContext(PlasmicRadioGroupContext);
   const isStandalone = !contextProps;
-  const [registeredId, setRegisteredId] = useState<string>("");
-
-  useEffect(() => {
-    if (!contextProps?.idManager) {
-      return;
-    }
-
-    const localId = contextProps.idManager.register(value);
-    setRegisteredId(localId);
-
-    return () => {
-      contextProps.idManager.unregister(localId);
-      setRegisteredId("");
-    };
-  }, [value, contextProps?.idManager]);
+  const { registeredId, idError } = useOptionsItemId(
+    value,
+    contextProps?.idManager
+  );
 
   setControlContextData?.({
     parent: contextProps,
-    idError: (() => {
-      if (value === undefined) {
-        return "Value must be defined";
-      }
-      if (typeof value !== "string") {
-        return "Value must be a string";
-      }
-      if (!value.trim()) {
-        return "Value must be defined";
-      }
-      if (!isStandalone && value != registeredId) {
-        return "Value must be unique";
-      }
-      return undefined;
-    })(),
+    idError,
   });
 
   const radio = (
