@@ -120,10 +120,8 @@ function renderModelFieldForm(
   handles: any,
   locales: string[],
   hasLocalization: boolean,
-  uniqueDisabled,
-  setUniqueDisabled,
-  localizedDisabled,
-  setLocalizedDisabled
+  uniqueState: [boolean, React.Dispatch<React.SetStateAction<boolean>>],
+  localizedState: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
 ) {
   function moveBy(delta: number) {
     const fields = form.getFieldValue(fullFieldsPath);
@@ -133,6 +131,9 @@ function renderModelFieldForm(
   }
 
   const selectedType = form.getFieldValue([...fullFieldPath, "type"]);
+
+  const [isUniqueDisabled, setUniqueDisabled] = uniqueState;
+  const [isLocalizedDisabled, setLocalizedDisabled] = localizedState;
 
   return (
     <div className={"vlist-gap-xlg"}>
@@ -247,19 +248,37 @@ function renderModelFieldForm(
         <Form.Item
           label={"Localized"}
           name={[...fieldPath, "localized"]}
+          help={
+            isLocalizedDisabled
+              ? "The localized attribute cannot be selected when the field is unique."
+              : null
+          }
           required
         >
           <ValueSwitch
-            disabled={localizedDisabled}
-            onChange={(e) => setUniqueDisabled(e)}
+            disabled={isLocalizedDisabled}
+            onChange={(e: boolean) => {
+              setUniqueDisabled(e);
+            }}
           />
         </Form.Item>
       )}
       {![CmsMetaType.LIST, CmsMetaType.OBJECT].includes(selectedType) && (
-        <Form.Item label={"Unique"} name={[...fieldPath, "unique"]} required>
+        <Form.Item
+          label={"Unique"}
+          name={[...fieldPath, "unique"]}
+          help={
+            isUniqueDisabled
+              ? "The unique attribute cannot be selected when the field is localized."
+              : null
+          }
+          required
+        >
           <ValueSwitch
-            disabled={uniqueDisabled}
-            onChange={(e) => setLocalizedDisabled(e)}
+            disabled={isUniqueDisabled}
+            onChange={(e: boolean) => {
+              setLocalizedDisabled(e);
+            }}
           />
         </Form.Item>
       )}
@@ -577,8 +596,8 @@ function ModelFields({
 
   const databaseId = database.id;
   const [expandedKeys, setExpandedKeys] = React.useState<string[] | string>([]);
-  const [uniqueDisabled, setUniqueDisabled] = React.useState(false);
-  const [localizedDisabled, setLocalizedDisabled] = React.useState(false);
+  const uniqueState = React.useState(false);
+  const localizedState = React.useState(false);
 
   return (
     <Form.List name={fieldsPath}>
@@ -639,10 +658,8 @@ function ModelFields({
                         handles,
                         database.extraData.locales,
                         hasLocalization,
-                        uniqueDisabled,
-                        setUniqueDisabled,
-                        localizedDisabled,
-                        setLocalizedDisabled
+                        uniqueState,
+                        localizedState
                       )
                     }
                   </Form.Item>
