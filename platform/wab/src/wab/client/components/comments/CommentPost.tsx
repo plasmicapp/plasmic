@@ -1,3 +1,4 @@
+import { ReactionsByEmoji } from "@/wab/client/components/comments/ReactionsByEmoji";
 import { TplCommentThread } from "@/wab/client/components/comments/utils";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import { ClickStopper } from "@/wab/client/components/widgets";
@@ -6,25 +7,17 @@ import {
   DefaultCommentPostProps,
   PlasmicCommentPost,
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPost";
-import PlasmicReactionButton from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicReactionButton";
 import {
   isUserProjectOwner,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
-import { OnClickAway } from "@/wab/commons/components/OnClickAway";
-import {
-  ApiComment,
-  ApiCommentReaction,
-  CommentId,
-} from "@/wab/shared/ApiSchema";
+import { ApiComment } from "@/wab/shared/ApiSchema";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
 import { ensure, ensureString, maybe } from "@/wab/shared/common";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { Menu, Tooltip } from "antd";
-import Popover from "antd/lib/popover";
-import EmojiPicker, { Emoji } from "emoji-picker-react";
-import { Dictionary, groupBy } from "lodash";
+import { Menu } from "antd";
+import { groupBy } from "lodash";
 import moment from "moment";
 import * as React from "react";
 
@@ -35,83 +28,6 @@ export interface CommentPostProps extends DefaultCommentPostProps {
   repliesLinkLabel?: React.ReactNode;
   onClick?: () => void;
   isThread?: boolean;
-}
-
-// Reactions using unicode emojis hex codes
-const REACTIONS = [
-  "1f44d", // 👍
-  "1f44f", // 👏
-  "1f4af", // 💯
-  "2705", // ✅
-  "1f525", // 🔥
-  "274c", // ❌
-  "1f44e", // 👎
-];
-
-function ReactionsByEmoji(props: {
-  commentId: CommentId;
-  reactionsByEmoji: Dictionary<ApiCommentReaction[]>;
-}) {
-  const { commentId, reactionsByEmoji } = props;
-
-  const studioCtx = useStudioCtx();
-  const appCtx = studioCtx.appCtx;
-  const api = appCtx.api;
-
-  const commentsCtx = studioCtx.commentsCtx;
-
-  return (
-    <>
-      {Object.entries(reactionsByEmoji).map(([emojiName, reactions]) => {
-        const currentUsersReaction = reactions.find(
-          (r) => r.createdById === appCtx.selfInfo?.id
-        );
-        return (
-          <Tooltip
-            title={reactions
-              .map((r) =>
-                fullName(
-                  ensure(
-                    commentsCtx
-                      .computedData()
-                      .usersMap.get(ensure(r.createdById, "")),
-                    ""
-                  )
-                )
-              )
-              .join(", ")}
-          >
-            <PlasmicReactionButton
-              includesSelf={!!currentUsersReaction}
-              emoji={<Emoji size={20} unified={emojiName} />}
-              count={<>{reactions.length}</>}
-              onClick={async (e) => {
-                e.stopPropagation();
-                const projectId = commentsCtx.projectId();
-                const branchId = commentsCtx.branchId();
-                if (currentUsersReaction) {
-                  await api.removeReactionFromComment(
-                    projectId,
-                    branchId,
-                    currentUsersReaction.id
-                  );
-                } else {
-                  await api.addReactionToComment(
-                    projectId,
-                    branchId,
-                    commentId,
-                    {
-                      emojiName,
-                    }
-                  );
-                }
-              }}
-            />
-          </Tooltip>
-        );
-      })}
-    </>
-  );
 }
 
 function CommentMenuOptions(props: {
@@ -192,11 +108,11 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
       (xs) => groupBy(xs, (x) => x.data.emojiName)
     ) ?? {};
 
-  const [showPicker, setShowPicker] = React.useState(false);
   const popoverTargetRef = React.useRef<HTMLDivElement>(null);
 
   return (
     <PlasmicCommentPost
+      className="CommentPost"
       root={{ ref: popoverTargetRef }}
       {...rest}
       body={<StandardMarkdown>{comment.body}</StandardMarkdown>}
@@ -225,49 +141,6 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
             commentId={comment.id}
             reactionsByEmoji={reactionsByEmoji}
           />
-        ),
-      }}
-      btnAddReaction={{
-        render: (innerProps, Comp) => (
-          <Popover
-            trigger={[]}
-            open={showPicker}
-            onOpenChange={(x) => setShowPicker(x)}
-            overlayClassName={"NoPaddingPopover NoBackgroundStyles"}
-            content={
-              <div>
-                <OnClickAway onDone={() => setShowPicker(false)}>
-                  <div onClick={(e) => e.stopPropagation()}>
-                    <EmojiPicker
-                      reactionsDefaultOpen
-                      allowExpandReactions={false}
-                      reactions={REACTIONS}
-                      onEmojiClick={async (emoji) => {
-                        await api.addReactionToComment(
-                          commentsCtx.projectId(),
-                          commentsCtx.branchId(),
-                          comment.id,
-                          {
-                            emojiName: emoji.unified,
-                          }
-                        );
-
-                        setShowPicker(false);
-                      }}
-                    />
-                  </div>
-                </OnClickAway>
-              </div>
-            }
-          >
-            <Comp
-              {...innerProps}
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowPicker(true);
-              }}
-            />
-          </Popover>
         ),
       }}
       threadHistoryStatus={{

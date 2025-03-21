@@ -41,8 +41,7 @@ import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_syst
 import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicCommentPost.module.css"; // plasmic-import: l_AKXl2AAu/css
 
-import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
-import EmojiHappySvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EmojiHappySvg"; // plasmic-import: 1Vli2Q2_d/icon
+import EmojiPlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EmojiPlusSvg"; // plasmic-import: rtrSZZiat/icon
 import _69B43A437055B398Eff90A515Ed4F551Svg2AijDeIx4X from "./images/_69B43A437055B398Eff90A515Ed4F551Svg.svg"; // plasmic-import: 2aijDEIx4x/picture
 
 createPlasmicElementProxy;
@@ -80,9 +79,9 @@ export type PlasmicCommentPost__OverridesType = {
   threadHistoryStatus?: Flex__<typeof ThreadHistoryStatus>;
   subjectLabel?: Flex__<"div">;
   body?: Flex__<"div">;
-  btnAddReaction?: Flex__<typeof IconButton>;
   reactionsContainer?: Flex__<"div">;
-  btnAddReaction2?: Flex__<typeof IconButton>;
+  btnAddReaction?: Flex__<typeof IconButton>;
+  svg?: Flex__<"svg">;
   commentPostForm?: Flex__<typeof CommentPostForm>;
   repliesLink?: Flex__<typeof Button>;
 };
@@ -372,35 +371,6 @@ function PlasmicCommentPost__RenderFunc(props: {
             }
           </div>
         </div>
-        <IconButton
-          data-plasmic-name={"btnAddReaction"}
-          data-plasmic-override={overrides.btnAddReaction}
-          className={classNames("__wab_instance", sty.btnAddReaction, {
-            [sty.btnAddReactionisDeleted]: hasVariant(
-              $state,
-              "isDeleted",
-              "isDeleted"
-            ),
-            [sty.btnAddReactionisEditing]: hasVariant(
-              $state,
-              "isEditing",
-              "isEditing"
-            ),
-          })}
-          size={"small"}
-        >
-          <EmojiHappySvgIcon
-            className={classNames(projectcss.all, sty.svg__weZQ)}
-            role={"img"}
-          />
-
-          <div className={classNames(projectcss.all, sty.freeBox__qSrcv)}>
-            <PlusIcon
-              className={classNames(projectcss.all, sty.svg__mr4Aq)}
-              role={"img"}
-            />
-          </div>
-        </IconButton>
         <Stack__
           as={"div"}
           data-plasmic-name={"reactionsContainer"}
@@ -444,22 +414,18 @@ function PlasmicCommentPost__RenderFunc(props: {
           />
 
           <IconButton
-            data-plasmic-name={"btnAddReaction2"}
-            data-plasmic-override={overrides.btnAddReaction2}
-            className={classNames("__wab_instance", sty.btnAddReaction2)}
+            data-plasmic-name={"btnAddReaction"}
+            data-plasmic-override={overrides.btnAddReaction}
+            className={classNames("__wab_instance", sty.btnAddReaction)}
             size={"small"}
+            type={["round"]}
           >
-            <EmojiHappySvgIcon
-              className={classNames(projectcss.all, sty.svg__bs35C)}
+            <EmojiPlusSvgIcon
+              data-plasmic-name={"svg"}
+              data-plasmic-override={overrides.svg}
+              className={classNames(projectcss.all, sty.svg)}
               role={"img"}
             />
-
-            <div className={classNames(projectcss.all, sty.freeBox___0N5Wz)}>
-              <PlusIcon
-                className={classNames(projectcss.all, sty.svg__qvPY)}
-                role={"img"}
-              />
-            </div>
           </IconButton>
         </Stack__>
         {(hasVariant($state, "isEditing", "isEditing") ? true : false) ? (
@@ -504,9 +470,9 @@ const PlasmicDescendants = {
     "threadHistoryStatus",
     "subjectLabel",
     "body",
-    "btnAddReaction",
     "reactionsContainer",
-    "btnAddReaction2",
+    "btnAddReaction",
+    "svg",
     "commentPostForm",
     "repliesLink",
   ],
@@ -520,9 +486,9 @@ const PlasmicDescendants = {
   threadHistoryStatus: ["threadHistoryStatus"],
   subjectLabel: ["subjectLabel"],
   body: ["body"],
-  btnAddReaction: ["btnAddReaction"],
-  reactionsContainer: ["reactionsContainer", "btnAddReaction2"],
-  btnAddReaction2: ["btnAddReaction2"],
+  reactionsContainer: ["reactionsContainer", "btnAddReaction", "svg"],
+  btnAddReaction: ["btnAddReaction", "svg"],
+  svg: ["svg"],
   commentPostForm: ["commentPostForm"],
   repliesLink: ["repliesLink"],
 } as const;
@@ -541,9 +507,9 @@ type NodeDefaultElementType = {
   threadHistoryStatus: typeof ThreadHistoryStatus;
   subjectLabel: "div";
   body: "div";
-  btnAddReaction: typeof IconButton;
   reactionsContainer: "div";
-  btnAddReaction2: typeof IconButton;
+  btnAddReaction: typeof IconButton;
+  svg: "svg";
   commentPostForm: typeof CommentPostForm;
   repliesLink: typeof Button;
 };
@@ -618,9 +584,9 @@ export const PlasmicCommentPost = Object.assign(
     threadHistoryStatus: makeNodeComponent("threadHistoryStatus"),
     subjectLabel: makeNodeComponent("subjectLabel"),
     body: makeNodeComponent("body"),
-    btnAddReaction: makeNodeComponent("btnAddReaction"),
     reactionsContainer: makeNodeComponent("reactionsContainer"),
-    btnAddReaction2: makeNodeComponent("btnAddReaction2"),
+    btnAddReaction: makeNodeComponent("btnAddReaction"),
+    svg: makeNodeComponent("svg"),
     commentPostForm: makeNodeComponent("commentPostForm"),
     repliesLink: makeNodeComponent("repliesLink"),
 

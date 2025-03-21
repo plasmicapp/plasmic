@@ -176,58 +176,6 @@
 .bodyisDeleted {
   color: var(--token-RTPypKCJE4bm);
 }
-.btnAddReaction:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-  opacity: 0;
-  flex-shrink: 0;
-}
-.btnAddReactionisEditing:global(.__wab_instance) {
-  flex-shrink: 0;
-}
-.btnAddReactionisDeleted:global(.__wab_instance) {
-  flex-shrink: 0;
-  display: none;
-}
-.root:hover .btnAddReaction:global(.__wab_instance) {
-  opacity: 1;
-  flex-shrink: 0;
-}
-.svg__weZQ {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  height: 1em;
-}
-.freeBox__qSrcv {
-  display: flex;
-  position: absolute;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  width: 6px;
-  height: 6px;
-  background: #ffffff;
-  left: auto;
-  top: auto;
-  bottom: 4px;
-  right: 4px;
-  border-radius: 1000px;
-}
-.svg__mr4Aq {
-  display: flex;
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-  min-width: 0;
-  min-height: 0;
-}
-.svg__eolji {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  height: 1em;
-}
 .reactionsContainer {
   display: flex;
   position: relative;
@@ -236,13 +184,14 @@
   height: auto;
   max-width: 100%;
   min-width: 0;
-  padding: 0px;
+  padding: var(--token-YwPV7bN0RvD8) 0px 0px;
 }
 .reactionsContainer > :global(.__wab_flex-container) {
   flex-direction: row;
   align-items: stretch;
   justify-content: flex-start;
   flex-wrap: wrap;
+  align-content: center;
   min-width: 0;
   margin-left: calc(0px - 4px);
   width: calc(100% + 4px);
@@ -284,44 +233,21 @@
 .reactionButton__nAY7:global(.__wab_instance) {
   position: relative;
 }
-.btnAddReaction2:global(.__wab_instance) {
+.btnAddReaction:global(.__wab_instance) {
   max-width: 100%;
   position: relative;
   opacity: 0;
   flex-shrink: 0;
 }
-.root:hover .btnAddReaction2:global(.__wab_instance) {
+.root:hover .btnAddReaction:global(.__wab_instance) {
   opacity: 1;
   flex-shrink: 0;
 }
-.svg__bs35C {
+.svg {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
-}
-.freeBox___0N5Wz {
-  display: flex;
-  position: absolute;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  width: 6px;
-  height: 6px;
-  background: #ffffff;
-  left: auto;
-  top: auto;
-  bottom: 4px;
-  right: 4px;
-  border-radius: 1000px;
-}
-.svg__qvPY {
-  display: flex;
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-  min-width: 0;
-  min-height: 0;
 }
 .svg__uEq9Y {
   display: flex;
