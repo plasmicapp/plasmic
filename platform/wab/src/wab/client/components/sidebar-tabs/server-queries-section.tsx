@@ -1,4 +1,8 @@
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
+import {
+  CustomFunctionExprPreview,
+  CustomFunctionExprSummary,
+} from "@/wab/client/components/sidebar-tabs/ServerQuery/CustomFunctionExprPreview";
 import { useServerQueryBottomModal } from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryBottomModal";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { IconLinkButton } from "@/wab/client/components/widgets";
@@ -102,14 +106,13 @@ const ServerQueryRow = observer(
         >
           {query.op ? (
             <div className="flex flex-col fill-width">
-              {query.name}
-              {/* <DataSourceOpExprSummary expr={query.op} /> */}
-              {/* <DataSourceOpValuePreview
+              <CustomFunctionExprSummary expr={query.op} />
+              <CustomFunctionExprPreview
                 expr={query.op}
                 env={env}
                 title={`Query data results for "${query.name}"`}
                 exprCtx={exprCtx}
-              /> */}
+              />
             </div>
           ) : (
             <div className="dimfg">Click to configure...</div>

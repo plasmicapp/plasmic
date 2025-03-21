@@ -147,6 +147,7 @@ import {
   isCodeComponent,
   isHostLessCodeComponent,
 } from "@/wab/shared/core/components";
+import { getCustomFunctionParams } from "@/wab/shared/core/custom-functions";
 import {
   ExprCtx,
   InteractionArgLoc,
@@ -276,7 +277,6 @@ import {
   getPlumeCodegenPlugin,
   getPlumeEditorPlugin,
 } from "@/wab/shared/plume/plume-registry";
-import { getCustomFunctionParams } from "@/wab/shared/server-queries";
 import { hashExpr } from "@/wab/shared/site-diffs";
 import { PageSizeType, deriveSizeStyleValue } from "@/wab/shared/sizingutils";
 import { placeholderImgUrl } from "@/wab/shared/urls";

@@ -43,7 +43,11 @@ import { useMountedState } from "react-use";
 import styles from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryOpPicker.module.scss";
 import { Tab, Tabs } from "@/wab/client/components/widgets";
 import { allCustomFunctions } from "@/wab/shared/cached-selectors";
-import { executeCustomFunctionOp } from "@/wab/shared/server-queries";
+import {
+  executeCustomFunctionOp,
+  useCustomFunctionOp,
+} from "@/wab/shared/core/custom-functions";
+import type { ServerQueryResult } from "@plasmicapp/react-web/lib/data-sources";
 
 const LazyCodePreview = React.lazy(
   () => import("@/wab/client/components/coding/CodePreview")
@@ -199,15 +203,16 @@ export function ServerQueryOpDraftForm(props: {
 }
 
 function _ServerQueryOpPreview(props: {
+  data?: Partial<ServerQueryResult>;
   executeQueue: CustomFunctionExpr[];
   setExecuteQueue: React.Dispatch<React.SetStateAction<CustomFunctionExpr[]>>;
   env?: Record<string, any>;
   exprCtx: ExprCtx;
 }) {
-  const { executeQueue, setExecuteQueue, env, exprCtx } = props;
+  const { data, executeQueue, setExecuteQueue, env, exprCtx } = props;
   const studioCtx = useStudioCtx();
   const [mutateOpResults, setMutateOpResults] = React.useState<any | undefined>(
-    undefined
+    data
   );
   const [expandLevel, setExpandLevel] = React.useState(3);
 
@@ -223,7 +228,7 @@ function _ServerQueryOpPreview(props: {
       );
       try {
         const result = await executeCustomFunctionOp(
-          regFunc,
+          regFunc.function,
           nextOp,
           env,
           exprCtx
@@ -339,6 +344,16 @@ export const ServerQueryOpExprFormAndPreview = observer(
     const [executeQueue, setExecuteQueue] = React.useState<
       CustomFunctionExpr[]
     >([]);
+    const functionId = value ? customFunctionId(value.func) : undefined;
+    const regFunc = functionId
+      ? studioCtx.getRegisteredFunctionsMap().get(functionId)
+      : undefined;
+    const result = useCustomFunctionOp(
+      regFunc?.function ?? (() => undefined),
+      value,
+      env,
+      exprCtx
+    );
 
     const missingRequiredArgs = [];
     // const missingRequiredArgs = getMissingRequiredArgsFromDraft(
@@ -449,6 +464,7 @@ export const ServerQueryOpExprFormAndPreview = observer(
             </BottomModalButtons>
           </div>
           <ServerQueryOpPreview
+            data={result}
             executeQueue={executeQueue}
             setExecuteQueue={setExecuteQueue}
             env={env}

@@ -1,15 +1,98 @@
 import { removeFromArray } from "@/wab/commons/collections";
 import { customFunctionId } from "@/wab/shared/code-components/code-components";
-import { withoutNils } from "@/wab/shared/common";
+import { swallow, withoutNils } from "@/wab/shared/common";
+import {
+  clone,
+  ExprCtx,
+  getRawCode,
+  isFallbackSet,
+} from "@/wab/shared/core/exprs";
 import { findExprsInNode } from "@/wab/shared/core/tpls";
+import { tryEvalExpr } from "@/wab/shared/eval";
 import {
   CustomFunction,
   CustomFunctionExpr,
-  ProjectDependency,
-  TplNode,
   isKnownCustomFunctionExpr,
   isKnownEventHandler,
+  ProjectDependency,
+  TplNode,
 } from "@/wab/shared/model/classes";
+import {
+  executeServerQuery,
+  usePlasmicServerQuery,
+} from "@plasmicapp/react-web/lib/data-sources";
+import { groupBy } from "lodash";
+
+export async function executeCustomFunctionOp(
+  fn: (...args: any[]) => any,
+  expr: CustomFunctionExpr,
+  env: Record<string, any> | undefined,
+  exprCtx: ExprCtx,
+  currGlobalThis?: typeof globalThis
+) {
+  try {
+    const serverData = await executeServerQuery({
+      id: customFunctionId(expr.func),
+      fn,
+      execParams: () =>
+        getCustomFunctionParams(expr, env, exprCtx, currGlobalThis),
+    });
+
+    return serverData;
+  } catch (err) {
+    return { error: err };
+  }
+}
+
+export function useCustomFunctionOp(
+  fn: (...args: any[]) => any,
+  expr: CustomFunctionExpr | undefined,
+  env: Record<string, any> | undefined,
+  exprCtx: ExprCtx,
+  currGlobalThis?: typeof globalThis
+) {
+  return usePlasmicServerQuery(
+    {
+      id: expr ? customFunctionId(expr.func) : "",
+      fn,
+      execParams: () =>
+        expr ? getCustomFunctionParams(expr, env, exprCtx, currGlobalThis) : [],
+    },
+    undefined,
+    { noUndefinedDataProxy: true }
+  );
+}
+
+export function getCustomFunctionParams(
+  expr: CustomFunctionExpr,
+  env: Record<string, any> | undefined,
+  exprCtx: ExprCtx,
+  currGlobalThis?: typeof globalThis
+) {
+  const { func, args } = expr;
+  const argsMap = groupBy(args, (arg) => arg.argType.argName);
+  return (
+    func.params.map((param) => {
+      if (argsMap[param.argName]) {
+        const clonedExpr = clone(argsMap[param.argName][0].expr);
+        if (isFallbackSet(clonedExpr)) {
+          clonedExpr.fallback = undefined;
+        }
+        return (
+          swallow(
+            () =>
+              tryEvalExpr(
+                getRawCode(clonedExpr, exprCtx),
+                env ?? {},
+                currGlobalThis
+              )?.val
+          ) ?? undefined
+        );
+      }
+      return undefined;
+    }) ?? []
+  );
+}
 
 export function getOldToNewCustomFunctions(
   oldDep: ProjectDependency,
