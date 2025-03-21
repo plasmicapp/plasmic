@@ -119,7 +119,11 @@ function renderModelFieldForm(
   fullFieldsPath: any[],
   handles: any,
   locales: string[],
-  hasLocalization: boolean
+  hasLocalization: boolean,
+  uniqueDisabled,
+  setUniqueDisabled,
+  localizedDisabled,
+  setLocalizedDisabled
 ) {
   function moveBy(delta: number) {
     const fields = form.getFieldValue(fullFieldsPath);
@@ -245,12 +249,18 @@ function renderModelFieldForm(
           name={[...fieldPath, "localized"]}
           required
         >
-          <ValueSwitch />
+          <ValueSwitch
+            disabled={localizedDisabled}
+            onChange={(e) => setUniqueDisabled(e)}
+          />
         </Form.Item>
       )}
       {![CmsMetaType.LIST, CmsMetaType.OBJECT].includes(selectedType) && (
         <Form.Item label={"Unique"} name={[...fieldPath, "unique"]} required>
-          <ValueSwitch />
+          <ValueSwitch
+            disabled={uniqueDisabled}
+            onChange={(e) => setLocalizedDisabled(e)}
+          />
         </Form.Item>
       )}
       <Form.Item
@@ -567,6 +577,8 @@ function ModelFields({
 
   const databaseId = database.id;
   const [expandedKeys, setExpandedKeys] = React.useState<string[] | string>([]);
+  const [uniqueDisabled, setUniqueDisabled] = React.useState(false);
+  const [localizedDisabled, setLocalizedDisabled] = React.useState(false);
 
   return (
     <Form.List name={fieldsPath}>
@@ -626,7 +638,11 @@ function ModelFields({
                         fullFieldsPath,
                         handles,
                         database.extraData.locales,
-                        hasLocalization
+                        hasLocalization,
+                        uniqueDisabled,
+                        setUniqueDisabled,
+                        localizedDisabled,
+                        setLocalizedDisabled
                       )
                     }
                   </Form.Item>

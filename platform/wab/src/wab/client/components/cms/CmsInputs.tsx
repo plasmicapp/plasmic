@@ -75,7 +75,13 @@ export function useContentEntryFormContext(): ContentEntryFormContextValue {
 }
 
 export function ValueSwitch(props: any) {
-  return <Switch {...props} isChecked={props.value} />;
+  return (
+    <Switch
+      {...props}
+      isDisabled={props.disabled}
+      isChecked={props.isChecked && props.value}
+    />
+  );
 }
 
 // TODO make sure this is in the local timezone
