@@ -8,31 +8,28 @@ import {
 } from "@/wab/shared/ApiSchema";
 import { tuple } from "@/wab/shared/common";
 import { captureMessage } from "@sentry/node";
-import { countBy, intersection, uniq } from "lodash";
+import { countBy, intersection } from "lodash";
 
 /** Return all unique ancestors start from given node. */
 export function ancestors(
   graph: CommitParentGraph,
-  node: PkgVersionId,
-  // The first call creates the cache, and the recursive
-  // calls re-use the same map to avoid computing the same
-  // value multiple times for the same parent (which could
-  // result in an exponential runtime)
-  memoizedValues = new Map<PkgVersionId, PkgVersionId[]>()
+  node: PkgVersionId
 ): PkgVersionId[] {
-  const cached = memoizedValues.get(node);
-  if (cached) {
-    return cached;
+  const result: PkgVersionId[] = [];
+  const stack: PkgVersionId[] = [node];
+  const seen = new Set<PkgVersionId>();
+  while (stack.length > 0) {
+    const current = stack.pop()!;
+    if (seen.has(current)) {
+      continue;
+    }
+    seen.add(current);
+    result.push(current);
+    for (const parent of [...graph[current]].reverse()) {
+      stack.push(parent);
+    }
   }
-  const res = uniq([
-    node,
-    ...graph[node].flatMap((parent) =>
-      // Pass the `memoizedValues` in the recursive calls
-      ancestors(graph, parent, memoizedValues)
-    ),
-  ]);
-  memoizedValues.set(node, res);
-  return res;
+  return result;
 }
 
 /** Return the graph filtered to only the specified nodes. */

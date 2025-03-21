@@ -5,6 +5,7 @@ import {
   PkgVersionId,
   ProjectId,
 } from "@/wab/shared/ApiSchema";
+import bigCommitGraph from "@/wab/shared/site-diffs/_tests_/data/big-commit-graph.json";
 import {
   ancestors,
   getLowestCommonAncestor,
@@ -62,6 +63,29 @@ describe("commit-graph", () => {
         "2",
         "1",
       ]);
+    });
+
+    it("should be efficient even for big commit graphs", () => {
+      expect(
+        ancestors(
+          bigCommitGraph.commitGraph.parents,
+          bigCommitGraph.commitGraph.branches.main as PkgVersionId
+        )
+      ).toMatchSnapshot();
+
+      expect(
+        ancestors(
+          bigCommitGraph.commitGraph.parents,
+          bigCommitGraph.commitGraph.branches.branchA as PkgVersionId
+        )
+      ).toMatchSnapshot();
+
+      expect(
+        ancestors(
+          bigCommitGraph.commitGraph.parents,
+          bigCommitGraph.commitGraph.branches.branchB as PkgVersionId
+        )
+      ).toMatchSnapshot();
     });
   });
 
