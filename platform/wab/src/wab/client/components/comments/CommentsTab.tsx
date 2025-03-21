@@ -1,7 +1,6 @@
 import RootComment from "@/wab/client/components/comments/RootComment";
 import {
   CommentFilter,
-  filterThreads,
   FilterValueToLabel,
   getThreadsFromFocusedComponent,
 } from "@/wab/client/components/comments/utils";
@@ -18,8 +17,8 @@ import * as React from "react";
 
 export const DEFAULT_NOTIFICATION_LEVEL = "mentions-and-replies";
 export const notifyAboutKeyToLabel = {
-  all: "All comments",
-  "mentions-and-replies": "Replies only",
+  all: "Everything",
+  "mentions-and-replies": "Mentions and replies",
   none: "None",
 } as const;
 
@@ -44,11 +43,7 @@ export const CommentsTab = observer(function CommentsTab(
     return null;
   }
 
-  const threads = filterThreads(
-    commentsCtx.computedData().allThreads,
-    commentsCtx.commentsFilter(),
-    studioCtx
-  );
+  const threads = commentsCtx.filteredThreads();
 
   const { focusedComponentThreads, otherComponentsThreads } =
     getThreadsFromFocusedComponent(threads, currentComponent, focusedTpl);

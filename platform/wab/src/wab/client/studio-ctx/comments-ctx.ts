@@ -2,7 +2,6 @@ import {
   CommentFilter,
   computeCommentStats,
   getCommentThreadsWithModelMetadata,
-  getUnresolvedThreads,
 } from "@/wab/client/components/comments/utils";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
@@ -15,10 +14,16 @@ import {
   GetCommentsResponse,
 } from "@/wab/shared/ApiSchema";
 import { mkIdMap } from "@/wab/shared/collections";
-import { sortBy, xGroupBy } from "@/wab/shared/common";
+import {
+  extractMentionedEmails,
+  hasUserParticipatedInThread,
+} from "@/wab/shared/comments-utils";
+import { assert, sortBy, xGroupBy } from "@/wab/shared/common";
 import { TplNamable } from "@/wab/shared/core/tpls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { autorun, computed, observable, runInAction } from "mobx";
+import { partition } from "lodash";
+import { autorun, observable, runInAction } from "mobx";
+import { computedFn } from "mobx-utils";
 
 export const COMMENTS_DIALOG_RIGHT_ZOOM_PADDING = 320;
 export class CommentsCtx {
@@ -53,16 +58,20 @@ export class CommentsCtx {
     );
   }
 
-  private readonly _computedData = computed(() => {
+  private readonly _computedData = computedFn(() => {
     const allThreads = getCommentThreadsWithModelMetadata(
       this.bundler(),
       this._rawThreads.get()
     );
-    const unresolvedThreads = getUnresolvedThreads(allThreads);
+    const [resolvedThreads, unresolvedThreads] = partition(
+      allThreads,
+      (thread) => thread.resolved
+    );
     const commentStats = computeCommentStats(unresolvedThreads);
     return {
       allThreads,
       unresolvedThreads,
+      resolvedThreads,
       commentStatsBySubject: commentStats.commentStatsBySubject,
       commentStatsByComponent: commentStats.commentStatsByComponent,
       commentStatsByVariant: commentStats.commentStatsByVariant,
@@ -75,7 +84,7 @@ export class CommentsCtx {
   });
 
   computedData() {
-    return this._computedData.get();
+    return this._computedData();
   }
 
   openedThreadId() {
@@ -125,6 +134,37 @@ export class CommentsCtx {
       this._openedThreadId.set(threadId);
       this._openedNewThreadTpl.set(undefined);
     });
+  }
+
+  filteredThreads() {
+    const selfInfo = this.studioCtx.appCtx.selfInfo;
+    const filter = this.commentsFilter();
+    const { resolvedThreads, unresolvedThreads, allThreads } =
+      this.computedData();
+
+    assert(selfInfo, "Expected selfInfo to exists in AppCtx");
+
+    if (filter === "mentions-and-replies") {
+      return allThreads.filter((thread) =>
+        thread.comments.some((comment) => {
+          if (extractMentionedEmails(comment.body).includes(selfInfo.email)) {
+            return true;
+          }
+
+          if (hasUserParticipatedInThread(selfInfo.id, thread.comments)) {
+            return true;
+          }
+
+          return false;
+        })
+      );
+    }
+
+    if (filter === "resolved") {
+      return resolvedThreads;
+    }
+
+    return unresolvedThreads;
   }
 
   openNewCommentDialog(viewCtx: ViewCtx, tpl: TplNamable) {
