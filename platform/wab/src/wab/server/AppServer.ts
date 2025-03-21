@@ -59,6 +59,7 @@ import {
   upsertDatabaseTables,
 } from "@/wab/server/routes/cms";
 import {
+  checkUniqueFields,
   cloneDatabase,
   cloneRow,
   cmsFileUpload,
@@ -828,6 +829,10 @@ export function addCmsEditorRoutes(app: express.Application) {
   app.put("/api/v1/cmse/rows/:rowId", withNext(updateRow));
   app.delete("/api/v1/cmse/rows/:rowId", withNext(deleteRow));
   app.post("/api/v1/cmse/rows/:rowId/clone", withNext(cloneRow));
+  app.post(
+    "/api/v1/cmse/tables/:tableId/check-unique-fields",
+    withNext(checkUniqueFields)
+  );
   app.get("/api/v1/cmse/row-revisions/:revId", withNext(getRowRevision));
 
   app.post(

@@ -1,5 +1,18 @@
-import { traverseSchemaFields } from "@/wab/server/util/cms-util";
-import { CmsFieldMeta } from "@/wab/shared/ApiSchema";
+import { CmsRow } from "@/wab/server/entities/Entities";
+import {
+  getConflictingCmsRowIds,
+  traverseSchemaFields,
+} from "@/wab/server/util/cms-util";
+import {
+  CmsFieldMeta,
+  CmsRowData,
+  CmsRowId,
+  CmsTableId,
+  UserId,
+} from "@/wab/shared/ApiSchema";
+import { getDefaultLocale } from "@/wab/shared/cms";
+import { Dict } from "@/wab/shared/collections";
+import { cloneDeep, Dictionary } from "lodash";
 
 const createField = (
   identifier: string,
@@ -148,5 +161,126 @@ describe("traverseSchemaFields", () => {
         createField("childField2", "number"),
       ]),
     ]);
+  });
+});
+
+const createData = (...args: string[]): Dict<unknown> => ({
+  field1: args[0],
+  field2: args[1],
+  field3: args[2],
+});
+
+const createRowData = (...args: string[]): CmsRowData =>
+  ({
+    "": createData(...args),
+  } as CmsRowData);
+
+const addLocaleData = (
+  row: CmsRow,
+  localeData: Dict<unknown>,
+  locale: string
+) => {
+  if (row.data) {
+    row.data = { ...row.data, [locale]: localeData } as CmsRowData;
+  }
+};
+
+const createRow = (id: CmsRowId, data?: CmsRowData): CmsRow => ({
+  id: id,
+  identifier: null,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  deletedAt: null,
+  createdById: "null" as UserId,
+  createdBy: null,
+  updatedById: "null" as UserId,
+  updatedBy: null,
+  deletedById: "null" as UserId,
+  deletedBy: null,
+  tableId: "null" as CmsTableId,
+  table: null,
+  rank: "",
+  data: data || null,
+  draftData: null,
+  revision: 0,
+  toJSON: function (): Dictionary<any> {
+    throw new Error("Function not implemented.");
+  },
+  validate: function (): Promise<void> {
+    throw new Error("Function not implemented.");
+  },
+});
+
+function generateDummyRows(number: number) {
+  const dummyRows: CmsRow[] = [];
+  for (let i = 0; i < number; i++) {
+    const args: string[] = [];
+    for (let j = 0; j < 3; j++) {
+      args.push(String(3 * i + j));
+    }
+    dummyRows.push(createRow(String(i) as CmsRowId, createRowData(...args)));
+  }
+  return dummyRows;
+}
+
+function getRandomIndex(range: number) {
+  return Math.floor(Math.random() * range);
+}
+
+function getDefaultLocaleFieldValue(row: CmsRow, fieldIdentifier: string) {
+  return getDefaultLocale(row.data as CmsRowData)[fieldIdentifier];
+}
+
+describe("getConflictingCmsRowIds", () => {
+  let publishedRows = generateDummyRows(100);
+
+  it("should ignore the current checking row in the published rows", () => {
+    const randomRow = publishedRows[getRandomIndex(publishedRows.length)];
+    const fieldIdentifier = "field1";
+    const fieldValue = getDefaultLocaleFieldValue(randomRow, fieldIdentifier);
+    const result = getConflictingCmsRowIds(
+      publishedRows,
+      randomRow.id,
+      fieldIdentifier,
+      fieldValue
+    );
+    expect(result).toEqual([]);
+  });
+
+  it("should only check default locale data", () => {
+    const localeData = createData("locale1", "locale2", "locale3");
+    publishedRows.forEach((row) => addLocaleData(row, localeData, "US"));
+    const randomRow = publishedRows[getRandomIndex(publishedRows.length)];
+    const fieldIdentifier = "field1";
+    const fieldValue = getDefaultLocaleFieldValue(randomRow, fieldIdentifier);
+    const result = getConflictingCmsRowIds(
+      publishedRows,
+      randomRow.id,
+      fieldIdentifier,
+      fieldValue
+    );
+    expect(result).toEqual([]);
+  });
+
+  it("should return all of the conflicting rows", () => {
+    publishedRows = generateDummyRows(100);
+
+    for (let i = 0; i < 20; i++) {
+      for (let j = 1; j < 5; j++) {
+        // The initial set of 20 rows data is repeated every 20 rows.
+        publishedRows[20 * j + i].data = cloneDeep(publishedRows[i].data);
+      }
+    }
+    const randomRow =
+      publishedRows[Math.floor(Math.random() * publishedRows.length)];
+    const fieldIdentifier = "field1";
+    const fieldValue = getDefaultLocaleFieldValue(randomRow, fieldIdentifier);
+    const result = getConflictingCmsRowIds(
+      publishedRows,
+      randomRow.id,
+      fieldIdentifier,
+      fieldValue
+    );
+    expect(result.length).toEqual(4);
   });
 });
