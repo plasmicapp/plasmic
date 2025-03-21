@@ -64,7 +64,6 @@ export type PlasmicSelect__VariantsArgs = {
   type?: SingleChoiceArg<
     "hugging" | "seamless" | "bordered" | "wide" | "medium"
   >;
-
   hasIcon?: SingleBooleanChoiceArg<"hasIcon">;
   size?: SingleChoiceArg<"small" | "tiny">;
   font?: MultiChoiceArg<"bold">;
@@ -123,7 +122,6 @@ export interface DefaultSelectProps extends pp.BaseSelectProps {
   type?: SingleChoiceArg<
     "hugging" | "seamless" | "bordered" | "wide" | "medium"
   >;
-
   hasIcon?: SingleBooleanChoiceArg<"hasIcon">;
   size?: SingleChoiceArg<"small" | "tiny">;
   font?: MultiChoiceArg<"bold">;
@@ -218,7 +216,6 @@ function PlasmicSelect__RenderFunc(props: {
         onChangeProp: "onChange",
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -572,7 +569,6 @@ function PlasmicSelect__RenderFunc(props: {
                     </Select__Option>
                   </React.Fragment>
                 ),
-
                 value: args.children,
               })}
             </div>
@@ -684,7 +680,6 @@ const PlasmicDescendants = {
     "overlay",
     "optionsContainer",
   ],
-
   trigger: ["trigger", "contentContainer", "dropdownIcon"],
   contentContainer: ["contentContainer"],
   dropdownIcon: ["dropdownIcon"],
@@ -708,7 +703,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSelect__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -51,9 +51,7 @@ export const PlasmicLabel__VariantProps = new Array<VariantPropType>(
   "requirementIndicator"
 );
 
-export type PlasmicLabel__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicLabel__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicLabel__ArgsType;
 export const PlasmicLabel__ArgProps = new Array<ArgPropType>("children");
 
@@ -116,7 +114,6 @@ function PlasmicLabel__RenderFunc(props: {
           $props.requirementIndicator,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -238,7 +235,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLabel__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -246,15 +242,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicLabel__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicLabel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    // Specify args directly as props
-    Omit<PlasmicLabel__ArgsType, ReservedPropsType> &
-    // Specify overrides for each element directly as props
-    Omit<
+    /* Specify args directly as props*/ Omit<
+      PlasmicLabel__ArgsType,
+      ReservedPropsType
+    > &
+    /* Specify overrides for each element directly as props*/ Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    // Specify props for the root element
-    Omit<
+    /* Specify props for the root element*/ Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

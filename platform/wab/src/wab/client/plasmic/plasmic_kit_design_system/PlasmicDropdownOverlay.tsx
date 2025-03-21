@@ -37,9 +37,7 @@ type VariantPropType = keyof PlasmicDropdownOverlay__VariantsArgs;
 export const PlasmicDropdownOverlay__VariantProps =
   new Array<VariantPropType>();
 
-export type PlasmicDropdownOverlay__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicDropdownOverlay__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicDropdownOverlay__ArgsType;
 export const PlasmicDropdownOverlay__ArgProps = new Array<ArgPropType>(
   "children"
@@ -123,7 +121,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDropdownOverlay__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -131,15 +128,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicDropdownOverlay__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicDropdownOverlay__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    // Specify args directly as props
-    Omit<PlasmicDropdownOverlay__ArgsType, ReservedPropsType> &
-    // Specify overrides for each element directly as props
-    Omit<
+    /* Specify args directly as props*/ Omit<
+      PlasmicDropdownOverlay__ArgsType,
+      ReservedPropsType
+    > &
+    /* Specify overrides for each element directly as props*/ Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    // Specify props for the root element
-    Omit<
+    /* Specify props for the root element*/ Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

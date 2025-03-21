@@ -58,9 +58,7 @@ export const PlasmicMenuButton__VariantProps = new Array<VariantPropType>(
   "size"
 );
 
-export type PlasmicMenuButton__ArgsType = {
-  hoverText?: string;
-};
+export type PlasmicMenuButton__ArgsType = { hoverText?: string };
 type ArgPropType = keyof PlasmicMenuButton__ArgsType;
 export const PlasmicMenuButton__ArgProps = new Array<ArgPropType>("hoverText");
 
@@ -135,7 +133,6 @@ function PlasmicMenuButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.size,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -216,7 +213,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicMenuButton__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -224,15 +220,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicMenuButton__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicMenuButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    // Specify args directly as props
-    Omit<PlasmicMenuButton__ArgsType, ReservedPropsType> &
-    // Specify overrides for each element directly as props
-    Omit<
+    /* Specify args directly as props*/ Omit<
+      PlasmicMenuButton__ArgsType,
+      ReservedPropsType
+    > &
+    /* Specify overrides for each element directly as props*/ Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    // Specify props for the root element
-    Omit<
+    /* Specify props for the root element*/ Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

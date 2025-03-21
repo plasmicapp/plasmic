@@ -151,9 +151,7 @@ function PlasmicThreadHistoryStatus__RenderFunc(props: {
         data-plasmic-name={"tooltip"}
         data-plasmic-override={overrides.tooltip}
         content={
-          hasVariant($state, "resolved", "resolved")
-            ? "Re-open comment thread"
-            : "Resolve comment thread"
+          hasVariant($state, "resolved", "resolved") ? "Re-open" : "Resolve"
         }
         isDisabled={
           hasVariant($state, "isLoading", "isLoading") ? true : undefined

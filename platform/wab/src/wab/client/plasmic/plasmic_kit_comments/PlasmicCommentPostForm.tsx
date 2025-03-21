@@ -163,6 +163,7 @@ function PlasmicCommentPostForm__RenderFunc(props: {
           data-plasmic-name={"bodyInput"}
           data-plasmic-override={overrides.bodyInput}
           autoComplete={["off"]}
+          autoFocus={true}
           className={classNames("__wab_instance", sty.bodyInput, {
             [sty.bodyInputisEditing]: hasVariant(
               $state,

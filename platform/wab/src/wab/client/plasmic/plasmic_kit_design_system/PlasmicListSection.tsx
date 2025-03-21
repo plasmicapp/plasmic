@@ -131,7 +131,6 @@ function PlasmicListSection__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.collapseState,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -288,7 +287,6 @@ function PlasmicListSection__RenderFunc(props: {
                 </ListItem>
               </React.Fragment>
             ),
-
             value: args.children,
           })}
         </div>
@@ -323,7 +321,6 @@ const PlasmicDescendants = {
     "itemsContainer",
     "listSectionSeparator",
   ],
-
   listSectionHeader: ["listSectionHeader", "iconButton"],
   iconButton: ["iconButton"],
   itemsContainer: ["itemsContainer"],
@@ -345,7 +342,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicListSection__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -353,15 +349,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicListSection__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicListSection__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    // Specify args directly as props
-    Omit<PlasmicListSection__ArgsType, ReservedPropsType> &
-    // Specify overrides for each element directly as props
-    Omit<
+    /* Specify args directly as props*/ Omit<
+      PlasmicListSection__ArgsType,
+      ReservedPropsType
+    > &
+    /* Specify overrides for each element directly as props*/ Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    // Specify props for the root element
-    Omit<
+    /* Specify props for the root element*/ Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

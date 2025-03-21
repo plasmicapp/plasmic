@@ -230,7 +230,7 @@ function PlasmicThreadHistory__RenderFunc(props: {
           >
             {hasVariant($state, "isResolved", "isResolved")
               ? "Comment thread resolved."
-              : "Comment thread unresolved."}
+              : "Comment thread reopened."}
           </div>
         </div>
       </div>

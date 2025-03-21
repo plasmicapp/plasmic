@@ -38,9 +38,7 @@ export type PlasmicDescription__VariantsArgs = {};
 type VariantPropType = keyof PlasmicDescription__VariantsArgs;
 export const PlasmicDescription__VariantProps = new Array<VariantPropType>();
 
-export type PlasmicDescription__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicDescription__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicDescription__ArgsType;
 export const PlasmicDescription__ArgProps = new Array<ArgPropType>("children");
 
@@ -132,7 +130,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDescription__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -140,15 +137,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicDescription__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicDescription__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    // Specify args directly as props
-    Omit<PlasmicDescription__ArgsType, ReservedPropsType> &
-    // Specify overrides for each element directly as props
-    Omit<
+    /* Specify args directly as props*/ Omit<
+      PlasmicDescription__ArgsType,
+      ReservedPropsType
+    > &
+    /* Specify overrides for each element directly as props*/ Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    // Specify props for the root element
-    Omit<
+    /* Specify props for the root element*/ Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
