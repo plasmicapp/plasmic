@@ -51,7 +51,11 @@ function getComponentParamTypeOptions() {
     // queryData is just a json object, and so counts as "primitive"
     { value: "queryData", label: "Query data", isPrimitive: () => true },
     { value: "eventHandler", label: "Function", isPrimitive: () => false },
-    { value: "href", label: "Link URL", isPrimitive: () => false },
+    {
+      value: "href",
+      label: "Link URL",
+      isPrimitive: (val) => !isKnownPageHref(val),
+    },
     { value: "dateString", label: "Date", isPrimitive: () => true },
     { value: "dateRangeStrings", label: "Date range", isPrimitive: () => true },
     {
