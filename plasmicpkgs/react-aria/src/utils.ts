@@ -111,8 +111,7 @@ export function useAutoOpen({
     } else {
       close?.();
     }
-    // Not putting open and close in the useEffect dependencies array, because it causes a re-render loop.
-  }, [isSelected, inPlasmicCanvas]);
+  }, [isSelected, inPlasmicCanvas, open, close]);
 }
 
 export function registerComponentHelper<T extends React.ComponentType<any>>(
