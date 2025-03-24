@@ -211,7 +211,7 @@ const createRow = (id: CmsRowId, data?: CmsRowData): CmsRow => ({
   },
 });
 
-function generateDummyRows(number: number) {
+function generateAllFieldUniqueRows(number: number) {
   const dummyRows: CmsRow[] = [];
   for (let i = 0; i < number; i++) {
     const args: string[] = [];
@@ -232,7 +232,7 @@ function getDefaultLocaleFieldValue(row: CmsRow, fieldIdentifier: string) {
 }
 
 describe("getConflictingCmsRowIds", () => {
-  let publishedRows = generateDummyRows(100);
+  let publishedRows = generateAllFieldUniqueRows(100);
 
   it("should ignore the current checking row in the published rows", () => {
     const randomRow = publishedRows[getRandomIndex(publishedRows.length)];
@@ -263,7 +263,7 @@ describe("getConflictingCmsRowIds", () => {
   });
 
   it("should return all of the conflicting rows", () => {
-    publishedRows = generateDummyRows(100);
+    publishedRows = generateAllFieldUniqueRows(100);
 
     for (let i = 0; i < 20; i++) {
       for (let j = 1; j < 5; j++) {

@@ -326,8 +326,17 @@ const typeToPgType = (type: CmsTypeName) => {
   }
 };
 
-export const normalizeData = (data: unknown | null) => {
-  return data ?? "";
+export const normalizeData = (value: unknown) => {
+  return value ?? "";
+};
+
+export const isConflicting = (val1: unknown, val2: unknown) => {
+  const normalizedVal1 = normalizeData(val1);
+  const normalizedVal2 = normalizeData(val2);
+  if (normalizedVal1 === "" && normalizedVal2 === "") {
+    return false;
+  }
+  return normalizedVal1 === normalizedVal2;
 };
 
 export const getConflictingCmsRowIds = (
@@ -338,13 +347,11 @@ export const getConflictingCmsRowIds = (
 ): CmsRowId[] => {
   const conflictingCmsRowIds = publishedRows
     .filter((publishedRow) => {
-      const publishedDefaultLocale = getDefaultLocale(
-        publishedRow.data as CmsRowData
-      );
+      const publishedValue = getDefaultLocale(publishedRow.data as CmsRowData)[
+        fieldIdentifier
+      ];
       return (
-        publishedRow.id !== currentRowId &&
-        normalizeData(publishedDefaultLocale[fieldIdentifier]) ===
-          normalizeData(value)
+        publishedRow.id !== currentRowId && isConflicting(publishedValue, value)
       );
     })
     .map((row) => row.id);
