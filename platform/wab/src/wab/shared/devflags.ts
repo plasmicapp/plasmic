@@ -512,7 +512,6 @@ const DEFAULT_DEVFLAGS = {
   spacingVisualizer202209: true,
   gapControls: false,
   contentOnly: false,
-  publishWithTags: true,
   ancestorsBoxes: true,
   branching: false,
   disableBranching: false,

@@ -1,5 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter%3Aital%2Cwght%400%2C400%3B0%2C500%3B0%2C600&display=swap");
 
+.plasmic_tokens {
+  --token-2sBLV2d7TMXe: #323436;
+  --plasmic-token-spectrum-gray-20: var(--token-2sBLV2d7TMXe);
+}
+
 .plasmic_default_styles {
   --mixin-qP3g6Hd5AdC_text-decoration-line: none;
   --mixin-qP3g6Hd5AdC_font-family: "Inter", sans-serif;
@@ -79,7 +84,6 @@
   background-repeat: no-repeat;
   box-shadow: none;
   box-sizing: border-box;
-  text-decoration-line: none;
   margin: 0;
   border-width: 0px;
 }

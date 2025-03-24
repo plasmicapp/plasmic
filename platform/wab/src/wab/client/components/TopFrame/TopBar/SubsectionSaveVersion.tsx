@@ -7,9 +7,8 @@ import {
   PlasmicSubsectionSaveVersion,
 } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicSubsectionSaveVersion";
 import type { PublishResult } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ApiProject } from "@/wab/shared/ApiSchema";
+import { spawn } from "@/wab/shared/common";
 import {
   INITIAL_VERSION_NUMBER,
   SemVerReleaseType,
@@ -142,7 +141,7 @@ function SubsectionSaveVersion(props: SubsectionSaveVersionProps) {
           const previousTagsOptions = previousTags.map((tag) => {
             return <Option key={tag}>{tag}</Option>;
           });
-          return DEVFLAGS.publishWithTags ? (
+          return (
             <Select
               mode="tags"
               style={{ width: "100%" }}
@@ -152,7 +151,7 @@ function SubsectionSaveVersion(props: SubsectionSaveVersionProps) {
             >
               {previousTagsOptions}
             </Select>
-          ) : null;
+          );
         },
       }}
       description={{

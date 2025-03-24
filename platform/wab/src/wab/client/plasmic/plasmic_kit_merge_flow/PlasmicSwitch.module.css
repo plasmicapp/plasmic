@@ -6,10 +6,10 @@
   height: auto;
   align-items: center;
 }
-.root:focus-within {
+.root___focusVisibleWithin {
   outline: none;
 }
-.root___focusVisibleWithin {
+.root:focus-within {
   outline: none;
 }
 .toggle {
@@ -22,10 +22,10 @@
   height: 32px;
   flex-shrink: 0;
 }
-.root:focus-within .toggle {
+.root .toggle___focusVisibleWithin {
   outline: none;
 }
-.root .toggle___focusVisibleWithin {
+.root:focus-within .toggle {
   outline: none;
 }
 .track {
@@ -51,19 +51,19 @@
 .root:hover .track {
   background: #eeeeec;
 }
-.rootisChecked:hover .trackisChecked {
-  background: #0081f1;
+.root .track___focusVisibleWithin {
+  box-shadow: 0px 0px 0px 3px #96c7f2;
+  outline: none;
 }
 .root:focus-within .track {
   box-shadow: 0px 0px 0px 3px #96c7f2;
   outline: none;
 }
-.root .track___focusVisibleWithin {
-  box-shadow: 0px 0px 0px 3px #96c7f2;
-  outline: none;
-}
 .root:active .track {
   background: #e9e9e6;
+}
+.rootisChecked:hover .trackisChecked {
+  background: #0081f1;
 }
 .thumb {
   display: block;
@@ -93,10 +93,10 @@
   background: #f9f9f9;
   border-color: #c8c7c1;
 }
-.root:focus-within .thumb {
+.root .thumb___focusVisibleWithin {
   outline: none;
 }
-.root .thumb___focusVisibleWithin {
+.root:focus-within .thumb {
   outline: none;
 }
 .labelContainer {

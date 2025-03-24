@@ -2,29 +2,13 @@ import { SiteDiffs } from "@/wab/client/components/modals/SiteDiffs";
 import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
 import Button from "@/wab/client/components/widgets/Button";
 import { Icon } from "@/wab/client/components/widgets/Icon";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import { Textbox } from "@/wab/client/components/widgets/Textbox";
 import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
 import ImageBlockIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageBlock";
 import MixinIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Mixin";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import {
-  ensure,
-  hackyCast,
-  intersectSets,
-  mergeSets,
-  spawn,
-  withoutNils,
-} from "@/wab/shared/common";
-import { getComponentDisplayName } from "@/wab/shared/core/components";
-import { DEVFLAGS } from "@/wab/shared/devflags";
-import {
-  buildObjToDepMap,
-  extractTransitiveDepsFromComponents,
-  extractTransitiveDepsFromMixins,
-  extractTransitiveDepsFromTokens,
-  getTransitiveDepsFromObjs,
-} from "@/wab/shared/core/project-deps";
 import { componentToReferenced } from "@/wab/shared/cached-selectors";
 import {
   extractUsedIconAssetsForComponents,
@@ -38,6 +22,27 @@ import {
   extractUsedTokensForTokens,
 } from "@/wab/shared/codegen/style-tokens";
 import {
+  ensure,
+  hackyCast,
+  intersectSets,
+  mergeSets,
+  spawn,
+  withoutNils,
+} from "@/wab/shared/common";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
+import {
+  buildObjToDepMap,
+  extractTransitiveDepsFromComponents,
+  extractTransitiveDepsFromMixins,
+  extractTransitiveDepsFromTokens,
+  getTransitiveDepsFromObjs,
+} from "@/wab/shared/core/project-deps";
+import {
+  allStyleTokens,
+  createSite,
+  isHostLessPackage,
+} from "@/wab/shared/core/sites";
+import {
   isKnownComponent,
   isKnownImageAsset,
   isKnownMixin,
@@ -50,12 +55,10 @@ import {
   SemVerReleaseType,
 } from "@/wab/shared/site-diffs";
 import { filterUsefulDiffs } from "@/wab/shared/site-diffs/filter-useful-diffs";
-import { allStyleTokens, createSite, isHostLessPackage } from "@/wab/shared/core/sites";
 import { Alert, Form, Select } from "antd";
 import L from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 
 const { Option } = Select;
 
@@ -257,20 +260,18 @@ function PublishContent(props: {
           styleType={"bordered"}
         />
       </p>
-      {DEVFLAGS.publishWithTags ? (
-        <p>
-          <Select
-            mode="tags"
-            style={{ width: "100%" }}
-            placeholder="Tags (optional) ..."
-            aria-label="Tags selector"
-            onChange={(newTags) => setTags(newTags)}
-            tokenSeparators={[","]}
-          >
-            {previousTagsOptions}
-          </Select>
-        </p>
-      ) : null}
+      <p>
+        <Select
+          mode="tags"
+          style={{ width: "100%" }}
+          placeholder="Tags (optional) ..."
+          aria-label="Tags selector"
+          onChange={(newTags) => setTags(newTags)}
+          tokenSeparators={[","]}
+        >
+          {previousTagsOptions}
+        </Select>
+      </p>
       {diffs && (
         <p>
           <SiteDiffs diffs={diffs} />

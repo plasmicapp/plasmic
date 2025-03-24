@@ -1139,8 +1139,14 @@ async function ensureSchemaIsUpToDate(req: Request) {
 export async function tryMergeBranch(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const { projectId } = req.params;
-  const { subject, pretend, resolution, autoCommitOnToBranch } =
-    req.body as TryMergeRequest;
+  const {
+    subject,
+    pretend,
+    resolution,
+    autoCommitOnToBranch,
+    description,
+    tags,
+  } = req.body as TryMergeRequest;
   const mergeResult = pretend
     ? await mgr.previewMergeBranch({
         ...subject,
@@ -1152,6 +1158,8 @@ export async function tryMergeBranch(req: Request, res: Response) {
         ...subject,
         resolution,
         autoCommitOnToBranch,
+        description,
+        tags,
         excludeMergeStepFromResult: true,
       });
   // Prevent attempting to serialize MergeStep (not serializable)

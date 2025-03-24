@@ -875,6 +875,8 @@ export interface TryMergeRequest {
   pretend: boolean;
   resolution?: MergeResolution;
   autoCommitOnToBranch?: boolean;
+  description?: string;
+  tags?: string[];
 }
 
 export type TryMergeResponse = MergeResult;

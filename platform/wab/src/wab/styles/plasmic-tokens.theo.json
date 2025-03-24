@@ -1361,6 +1361,16 @@
       }
     },
     {
+      "name": "Spectrum/Gray/20",
+      "type": "color",
+      "value": "#323436",
+      "category": "color",
+      "meta": {
+        "projectId": "p8FkKgCnyuat1kHSEYAKfW",
+        "id": "2sBLV2d7TMXe"
+      }
+    },
+    {
       "name": "Spectrum/Gray/30",
       "type": "color",
       "value": "rgb(74,76,79)",

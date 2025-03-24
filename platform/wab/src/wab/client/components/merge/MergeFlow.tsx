@@ -64,11 +64,14 @@ import {
 } from "@/wab/shared/site-diffs/merge-core";
 import { capitalizeFirst } from "@/wab/shared/strs";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { notification } from "antd";
+import { Input, Select, notification } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { ReactElement, useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
+
+const { TextArea } = Input;
+const { Option } = Select;
 
 interface MergeModalWrapperProps {
   project: ApiProject;
@@ -139,6 +142,20 @@ function MergeFlow_(
   const api = appCtx.api;
   const projectId = project.id;
   const { hostFrameApi } = useTopFrameCtx();
+  const [previousTags, setPreviousTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
+  const [description, setDescription] = useState<string>("");
+
+  React.useEffect(() => {
+    spawn(
+      (async () => {
+        const projectReleases = await hostFrameApi.getProjectReleases();
+        setPreviousTags([
+          ...new Set(projectReleases?.map((release) => release.tags).flat()),
+        ] as string[]);
+      })()
+    );
+  }, []);
 
   const { fromBranchId, toBranchId } = subject;
   const { data, error } = useSWR(
@@ -518,7 +535,7 @@ function MergeFlow_(
         icon={innermostIcon}
         name={
           <span className="wrap-word">
-            {descriptionsAndTypes.map(([description]) => description)}
+            {descriptionsAndTypes.map(([desc]) => desc)}
           </span>
         }
         subtext={[
@@ -541,6 +558,8 @@ function MergeFlow_(
   const canMerge =
     pretendMergeResult.status !== "uncommitted changes on destination branch" &&
     pretendMergeResult.status !== "app host mismatch";
+
+  const defaultDescription = `Merged from branch ${fromBranch?.name}`;
 
   switch (mode) {
     case "main":
@@ -586,6 +605,33 @@ function MergeFlow_(
                   : "destination branch changes"
               );
             },
+          }}
+          tagsSelector={{
+            render: () => {
+              const previousTagsOptions = previousTags.map((tag) => {
+                return <Option key={tag}>{tag}</Option>;
+              });
+              return (
+                <Select
+                  mode="tags"
+                  style={{ width: "100%" }}
+                  placeholder="Enter the tags here (optional) ..."
+                  onChange={setTags}
+                  tokenSeparators={[","]}
+                >
+                  {previousTagsOptions}
+                </Select>
+              );
+            },
+          }}
+          description={{
+            render: () => (
+              <TextArea
+                value={description}
+                placeholder={defaultDescription}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            ),
           }}
           destinationBranchChanges={{
             onClick: () => {
@@ -704,6 +750,8 @@ function MergeFlow_(
                 const realMerge = await api.tryMergeBranch(projectId, {
                   subject,
                   pretend: false,
+                  description: description || defaultDescription,
+                  tags,
                   autoCommitOnToBranch: !isMainBranchId(toBranchId),
                   resolution:
                     pretendMergeResult.status === "has conflicts"

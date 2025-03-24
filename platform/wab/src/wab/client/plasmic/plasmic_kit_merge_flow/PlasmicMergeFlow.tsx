@@ -25,7 +25,6 @@ import {
   generateStateOnChangeProp,
   generateStateValueProp,
   hasVariant,
-  useCurrentUser,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -34,6 +33,7 @@ import Conflict from "../../components/merge/Conflict"; // plasmic-import: RM-Ya
 import LineItem from "../../components/merge/LineItem"; // plasmic-import: VgvN9iOqwZ/component
 import Switch from "../../components/merge/Switch"; // plasmic-import: AJepyKzS-T-/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -74,102 +74,22 @@ export const PlasmicMergeFlow__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicMergeFlow__OverridesType = {
   root?: Flex__<"div">;
-  reviewAndMergeBranch?: Flex__<"div">;
-  frame8?: Flex__<"div">;
-  frame25?: Flex__<"div">;
-  frame1864?: Flex__<"div">;
-  button?: Flex__<"div">;
-  startIconsContainer?: Flex__<"div">;
-  labelsContainer?: Flex__<"div">;
-  labelText?: Flex__<"div">;
-  label?: Flex__<"div">;
-  labelIconsContainer?: Flex__<"div">;
-  endIconsContainer?: Flex__<"div">;
-  button2?: Flex__<"div">;
-  startIconsContainer2?: Flex__<"div">;
-  labelsContainer2?: Flex__<"div">;
-  labelText2?: Flex__<"div">;
-  label2?: Flex__<"div">;
-  labelIconsContainer2?: Flex__<"div">;
-  endIconsContainer2?: Flex__<"div">;
-  frame1863?: Flex__<"div">;
   sourceBranchChanges?: Flex__<"button">;
-  startIconsContainer3?: Flex__<"div">;
-  labelsContainer3?: Flex__<"div">;
-  labelText3?: Flex__<"div">;
-  label3?: Flex__<"div">;
-  labelIconsContainer3?: Flex__<"div">;
-  endIconsContainer3?: Flex__<"div">;
   destinationBranchChanges?: Flex__<"button">;
-  startIconsContainer4?: Flex__<"div">;
-  labelsContainer4?: Flex__<"div">;
-  labelText4?: Flex__<"div">;
-  label4?: Flex__<"div">;
   labelIconsContainer4?: Flex__<"div">;
-  endIconsContainer4?: Flex__<"div">;
-  dividerSeparator?: Flex__<"div">;
-  frame4?: Flex__<"div">;
-  frame23?: Flex__<"div">;
-  frame1857?: Flex__<"div">;
-  button5?: Flex__<"div">;
-  startIconsContainer5?: Flex__<"div">;
-  labelsContainer5?: Flex__<"div">;
-  labelText5?: Flex__<"div">;
-  label5?: Flex__<"div">;
-  label6?: Flex__<"div">;
-  labelIconsContainer5?: Flex__<"div">;
-  endIconsContainer5?: Flex__<"div">;
   showAllSwitchContainer?: Flex__<"div">;
   showAllSwitch?: Flex__<typeof Switch>;
-  frame1856?: Flex__<"div">;
-  frame1860?: Flex__<"div">;
-  button7?: Flex__<"div">;
-  startIconsContainer7?: Flex__<"div">;
-  labelsContainer7?: Flex__<"div">;
-  labelText7?: Flex__<"div">;
-  label8?: Flex__<"div">;
-  labelIconsContainer7?: Flex__<"div">;
-  endIconsContainer7?: Flex__<"div">;
-  frame1855?: Flex__<"div">;
-  button8?: Flex__<"div">;
-  startIconsContainer8?: Flex__<"div">;
-  labelsContainer8?: Flex__<"div">;
-  labelText8?: Flex__<"div">;
-  label9?: Flex__<"div">;
-  labelIconsContainer8?: Flex__<"div">;
-  endIconsContainer8?: Flex__<"div">;
-  button9?: Flex__<"div">;
-  startIconsContainer9?: Flex__<"div">;
-  labelsContainer9?: Flex__<"div">;
-  labelText9?: Flex__<"div">;
-  label10?: Flex__<"div">;
-  labelIconsContainer9?: Flex__<"div">;
-  endIconsContainer9?: Flex__<"div">;
-  dividerSeparator2?: Flex__<"div">;
-  frame5?: Flex__<"div">;
   pairedChanges?: Flex__<"div">;
-  name?: Flex__<"div">;
-  name2?: Flex__<"div">;
-  name3?: Flex__<"div">;
-  dividerSeparator3?: Flex__<"div">;
-  frame6?: Flex__<"div">;
   reconciliationsContainer?: Flex__<"div">;
-  frame18?: Flex__<"div">;
-  button13?: Flex__<"div">;
   startIconsContainer13?: Flex__<"div">;
-  labelsContainer13?: Flex__<"div">;
-  labelText13?: Flex__<"div">;
-  label15?: Flex__<"div">;
   labelIconsContainer13?: Flex__<"div">;
   endIconsContainer13?: Flex__<"div">;
   reconciliations?: Flex__<"div">;
   blockedContainer?: Flex__<"div">;
   mergeBlockedTitle?: Flex__<"div">;
   mergeBlockedMsg?: Flex__<"div">;
-  dividerSeparator5?: Flex__<"div">;
-  frame9?: Flex__<"div">;
-  frame24?: Flex__<"div">;
-  frame19?: Flex__<"div">;
+  description?: Flex__<"textarea">;
+  tagsSelector?: Flex__<typeof Select>;
   cancelButton?: Flex__<typeof Button>;
   finishButton?: Flex__<typeof Button>;
   spinnerContainer?: Flex__<"div">;
@@ -192,7 +112,16 @@ function PlasmicMergeFlow__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -202,8 +131,6 @@ function PlasmicMergeFlow__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = useCurrentUser?.() || {};
 
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
@@ -231,8 +158,13 @@ function PlasmicMergeFlow__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.blocked,
       },
+      {
+        path: "description.value",
+        type: "private",
+        variableType: "text",
+        initFunc: ({ $props, $state, $queries, $ctx }) => "",
+      },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -266,16 +198,14 @@ function PlasmicMergeFlow__RenderFunc(props: {
     >
       <Stack__
         as={"div"}
-        data-plasmic-name={"reviewAndMergeBranch"}
-        data-plasmic-override={overrides.reviewAndMergeBranch}
         hasGap={true}
-        className={classNames(projectcss.all, sty.reviewAndMergeBranch, {
-          [sty.reviewAndMergeBranchblocked]: hasVariant(
+        className={classNames(projectcss.all, sty.freeBox___5XViU, {
+          [sty.freeBoxblocked___5XViU1MFev]: hasVariant(
             $state,
             "blocked",
             "blocked"
           ),
-          [sty.reviewAndMergeBranchloading]: hasVariant(
+          [sty.freeBoxloading___5XViUjPjj]: hasVariant(
             $state,
             "loading",
             "loading"
@@ -283,45 +213,46 @@ function PlasmicMergeFlow__RenderFunc(props: {
         })}
       >
         <div
-          data-plasmic-name={"frame8"}
-          data-plasmic-override={overrides.frame8}
-          className={classNames(projectcss.all, sty.frame8, {
-            [sty.frame8blocked]: hasVariant($state, "blocked", "blocked"),
-            [sty.frame8loading]: hasVariant($state, "loading", "loading"),
+          className={classNames(projectcss.all, sty.freeBox__ng1Mz, {
+            [sty.freeBoxblocked__ng1Mz1MFev]: hasVariant(
+              $state,
+              "blocked",
+              "blocked"
+            ),
+            [sty.freeBoxloading__ng1MZjPjj]: hasVariant(
+              $state,
+              "loading",
+              "loading"
+            ),
           })}
         >
           <Stack__
             as={"div"}
-            data-plasmic-name={"frame25"}
-            data-plasmic-override={overrides.frame25}
             hasGap={true}
-            className={classNames(projectcss.all, sty.frame25, {
-              [sty.frame25blocked]: hasVariant($state, "blocked", "blocked"),
-              [sty.frame25loading]: hasVariant($state, "loading", "loading"),
+            className={classNames(projectcss.all, sty.freeBox__qjcS0, {
+              [sty.freeBoxblocked__qjcS01MFev]: hasVariant(
+                $state,
+                "blocked",
+                "blocked"
+              ),
+              [sty.freeBoxloading__qjcS0JPjj]: hasVariant(
+                $state,
+                "loading",
+                "loading"
+              ),
             })}
           >
-            <div
-              data-plasmic-name={"frame1864"}
-              data-plasmic-override={overrides.frame1864}
-              className={classNames(projectcss.all, sty.frame1864)}
-            >
+            <div className={classNames(projectcss.all, sty.freeBox__d9Waw)}>
               <Stack__
                 as={"div"}
-                data-plasmic-name={"button"}
-                data-plasmic-override={overrides.button}
                 hasGap={true}
-                className={classNames(projectcss.all, sty.button)}
+                className={classNames(projectcss.all, sty.freeBox__eDeVh)}
               >
                 {false ? (
                   <Stack__
                     as={"div"}
-                    data-plasmic-name={"startIconsContainer"}
-                    data-plasmic-override={overrides.startIconsContainer}
                     hasGap={true}
-                    className={classNames(
-                      projectcss.all,
-                      sty.startIconsContainer
-                    )}
+                    className={classNames(projectcss.all, sty.freeBox___0E0Sg)}
                   >
                     <FramePlusIcon
                       className={classNames(projectcss.all, sty.svg__pv5KQ)}
@@ -329,23 +260,15 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     />
                   </Stack__>
                 ) : null}
-                <div
-                  data-plasmic-name={"labelsContainer"}
-                  data-plasmic-override={overrides.labelsContainer}
-                  className={classNames(projectcss.all, sty.labelsContainer)}
-                >
+                <div className={classNames(projectcss.all, sty.freeBox__kggB)}>
                   <div
-                    data-plasmic-name={"labelText"}
-                    data-plasmic-override={overrides.labelText}
-                    className={classNames(projectcss.all, sty.labelText)}
+                    className={classNames(projectcss.all, sty.freeBox__r9Bdd)}
                   >
                     <div
-                      data-plasmic-name={"label"}
-                      data-plasmic-override={overrides.label}
                       className={classNames(
                         projectcss.all,
                         projectcss.__wab_text,
-                        sty.label
+                        sty.text__lUvMr
                       )}
                     >
                       {"Review changes"}
@@ -364,12 +287,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   </div>
                   {false ? (
                     <div
-                      data-plasmic-name={"labelIconsContainer"}
-                      data-plasmic-override={overrides.labelIconsContainer}
-                      className={classNames(
-                        projectcss.all,
-                        sty.labelIconsContainer
-                      )}
+                      className={classNames(projectcss.all, sty.freeBox__iwyI7)}
                     >
                       <ChevronDownIcon
                         className={classNames(projectcss.all, sty.svg__oMQg)}
@@ -381,13 +299,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 {false ? (
                   <Stack__
                     as={"div"}
-                    data-plasmic-name={"endIconsContainer"}
-                    data-plasmic-override={overrides.endIconsContainer}
                     hasGap={true}
-                    className={classNames(
-                      projectcss.all,
-                      sty.endIconsContainer
-                    )}
+                    className={classNames(projectcss.all, sty.freeBox___6YdgV)}
                   >
                     <PlasmicImg__
                       alt={""}
@@ -411,20 +324,13 @@ function PlasmicMergeFlow__RenderFunc(props: {
               </Stack__>
               <Stack__
                 as={"div"}
-                data-plasmic-name={"button2"}
-                data-plasmic-override={overrides.button2}
                 hasGap={true}
-                className={classNames(projectcss.all, sty.button2)}
+                className={classNames(projectcss.all, sty.freeBox__jd4MV)}
               >
                 <Stack__
                   as={"div"}
-                  data-plasmic-name={"startIconsContainer2"}
-                  data-plasmic-override={overrides.startIconsContainer2}
                   hasGap={true}
-                  className={classNames(
-                    projectcss.all,
-                    sty.startIconsContainer2
-                  )}
+                  className={classNames(projectcss.all, sty.freeBox___4K6Q6)}
                 >
                   <CloseIcon
                     className={classNames(projectcss.all, sty.svg__r3Owl)}
@@ -433,22 +339,16 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 </Stack__>
                 {false ? (
                   <div
-                    data-plasmic-name={"labelsContainer2"}
-                    data-plasmic-override={overrides.labelsContainer2}
-                    className={classNames(projectcss.all, sty.labelsContainer2)}
+                    className={classNames(projectcss.all, sty.freeBox__vfrFn)}
                   >
                     <div
-                      data-plasmic-name={"labelText2"}
-                      data-plasmic-override={overrides.labelText2}
-                      className={classNames(projectcss.all, sty.labelText2)}
+                      className={classNames(projectcss.all, sty.freeBox__lJhL1)}
                     >
                       <div
-                        data-plasmic-name={"label2"}
-                        data-plasmic-override={overrides.label2}
                         className={classNames(
                           projectcss.all,
                           projectcss.__wab_text,
-                          sty.label2
+                          sty.text__sy7Wj
                         )}
                       >
                         {"Variants"}
@@ -467,11 +367,9 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     </div>
                     {false ? (
                       <div
-                        data-plasmic-name={"labelIconsContainer2"}
-                        data-plasmic-override={overrides.labelIconsContainer2}
                         className={classNames(
                           projectcss.all,
-                          sty.labelIconsContainer2
+                          sty.freeBox__rx9Cd
                         )}
                       >
                         <ChevronDownIcon
@@ -488,13 +386,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 {false ? (
                   <Stack__
                     as={"div"}
-                    data-plasmic-name={"endIconsContainer2"}
-                    data-plasmic-override={overrides.endIconsContainer2}
                     hasGap={true}
-                    className={classNames(
-                      projectcss.all,
-                      sty.endIconsContainer2
-                    )}
+                    className={classNames(projectcss.all, sty.freeBox__qrpge)}
                   >
                     <PlasmicImg__
                       alt={""}
@@ -519,11 +412,9 @@ function PlasmicMergeFlow__RenderFunc(props: {
             </div>
             <Stack__
               as={"div"}
-              data-plasmic-name={"frame1863"}
-              data-plasmic-override={overrides.frame1863}
               hasGap={true}
-              className={classNames(projectcss.all, sty.frame1863, {
-                [sty.frame1863blocked]: hasVariant(
+              className={classNames(projectcss.all, sty.freeBox__tiUf4, {
+                [sty.freeBoxblocked__tiUf41MFev]: hasVariant(
                   $state,
                   "blocked",
                   "blocked"
@@ -538,7 +429,14 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 className={classNames(
                   projectcss.all,
                   projectcss.button,
-                  sty.sourceBranchChanges
+                  sty.sourceBranchChanges,
+                  {
+                    [sty.sourceBranchChangesblocked]: hasVariant(
+                      $state,
+                      "blocked",
+                      "blocked"
+                    ),
+                  }
                 )}
                 ref={(ref) => {
                   $refs["sourceBranchChanges"] = ref;
@@ -547,13 +445,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 {false ? (
                   <Stack__
                     as={"div"}
-                    data-plasmic-name={"startIconsContainer3"}
-                    data-plasmic-override={overrides.startIconsContainer3}
                     hasGap={true}
-                    className={classNames(
-                      projectcss.all,
-                      sty.startIconsContainer3
-                    )}
+                    className={classNames(projectcss.all, sty.freeBox___5Fo1K)}
                   >
                     <FramePlusIcon
                       className={classNames(projectcss.all, sty.svg__rwequ)}
@@ -561,23 +454,15 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     />
                   </Stack__>
                 ) : null}
-                <div
-                  data-plasmic-name={"labelsContainer3"}
-                  data-plasmic-override={overrides.labelsContainer3}
-                  className={classNames(projectcss.all, sty.labelsContainer3)}
-                >
+                <div className={classNames(projectcss.all, sty.freeBox__fMyi7)}>
                   <div
-                    data-plasmic-name={"labelText3"}
-                    data-plasmic-override={overrides.labelText3}
-                    className={classNames(projectcss.all, sty.labelText3)}
+                    className={classNames(projectcss.all, sty.freeBox__fUtGh)}
                   >
                     <div
-                      data-plasmic-name={"label3"}
-                      data-plasmic-override={overrides.label3}
                       className={classNames(
                         projectcss.all,
                         projectcss.__wab_text,
-                        sty.label3
+                        sty.text__kp5Wz
                       )}
                     >
                       {"in this branch"}
@@ -596,12 +481,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   </div>
                   {false ? (
                     <div
-                      data-plasmic-name={"labelIconsContainer3"}
-                      data-plasmic-override={overrides.labelIconsContainer3}
-                      className={classNames(
-                        projectcss.all,
-                        sty.labelIconsContainer3
-                      )}
+                      className={classNames(projectcss.all, sty.freeBox__rDMa)}
                     >
                       <ChevronDownIcon
                         className={classNames(projectcss.all, sty.svg__rHMaH)}
@@ -612,10 +492,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 </div>
                 <Stack__
                   as={"div"}
-                  data-plasmic-name={"endIconsContainer3"}
-                  data-plasmic-override={overrides.endIconsContainer3}
                   hasGap={true}
-                  className={classNames(projectcss.all, sty.endIconsContainer3)}
+                  className={classNames(projectcss.all, sty.freeBox__dwEzg)}
                 >
                   <ArrowRightIcon
                     className={classNames(projectcss.all, sty.svg__qeCf)}
@@ -640,13 +518,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 {false ? (
                   <Stack__
                     as={"div"}
-                    data-plasmic-name={"startIconsContainer4"}
-                    data-plasmic-override={overrides.startIconsContainer4}
                     hasGap={true}
-                    className={classNames(
-                      projectcss.all,
-                      sty.startIconsContainer4
-                    )}
+                    className={classNames(projectcss.all, sty.freeBox__iWcvc)}
                   >
                     <FramePlusIcon
                       className={classNames(projectcss.all, sty.svg__igbUt)}
@@ -654,23 +527,13 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     />
                   </Stack__>
                 ) : null}
-                <div
-                  data-plasmic-name={"labelsContainer4"}
-                  data-plasmic-override={overrides.labelsContainer4}
-                  className={classNames(projectcss.all, sty.labelsContainer4)}
-                >
-                  <div
-                    data-plasmic-name={"labelText4"}
-                    data-plasmic-override={overrides.labelText4}
-                    className={classNames(projectcss.all, sty.labelText4)}
-                  >
+                <div className={classNames(projectcss.all, sty.freeBox__deRok)}>
+                  <div className={classNames(projectcss.all, sty.freeBox__eJE)}>
                     <div
-                      data-plasmic-name={"label4"}
-                      data-plasmic-override={overrides.label4}
                       className={classNames(
                         projectcss.all,
                         projectcss.__wab_text,
-                        sty.label4
+                        sty.text___8FduF
                       )}
                     >
                       {"in main branch since this branch was created"}
@@ -705,10 +568,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 </div>
                 <Stack__
                   as={"div"}
-                  data-plasmic-name={"endIconsContainer4"}
-                  data-plasmic-override={overrides.endIconsContainer4}
                   hasGap={true}
-                  className={classNames(projectcss.all, sty.endIconsContainer4)}
+                  className={classNames(projectcss.all, sty.freeBox__frmUb)}
                 >
                   <ArrowRightIcon
                     className={classNames(projectcss.all, sty.svg__mAv6V)}
@@ -720,54 +581,39 @@ function PlasmicMergeFlow__RenderFunc(props: {
           </Stack__>
           <Stack__
             as={"div"}
-            data-plasmic-name={"dividerSeparator"}
-            data-plasmic-override={overrides.dividerSeparator}
             hasGap={true}
-            className={classNames(projectcss.all, sty.dividerSeparator, {
-              [sty.dividerSeparatorblocked]: hasVariant(
+            className={classNames(projectcss.all, sty.freeBox__hyDgo, {
+              [sty.freeBoxblocked__hyDgo1MFev]: hasVariant(
                 $state,
                 "blocked",
                 "blocked"
               ),
             })}
           >
-            <div
-              data-plasmic-name={"frame4"}
-              data-plasmic-override={overrides.frame4}
-              className={classNames(projectcss.all, sty.frame4)}
-            />
+            <div className={classNames(projectcss.all, sty.freeBox__omzv8)} />
           </Stack__>
           <Stack__
             as={"div"}
-            data-plasmic-name={"frame23"}
-            data-plasmic-override={overrides.frame23}
             hasGap={true}
-            className={classNames(projectcss.all, sty.frame23, {
-              [sty.frame23blocked]: hasVariant($state, "blocked", "blocked"),
+            className={classNames(projectcss.all, sty.freeBox__ulNmQ, {
+              [sty.freeBoxblocked__ulNmQ1MFev]: hasVariant(
+                $state,
+                "blocked",
+                "blocked"
+              ),
             })}
           >
-            <div
-              data-plasmic-name={"frame1857"}
-              data-plasmic-override={overrides.frame1857}
-              className={classNames(projectcss.all, sty.frame1857)}
-            >
+            <div className={classNames(projectcss.all, sty.freeBox__bsiUw)}>
               <Stack__
                 as={"div"}
-                data-plasmic-name={"button5"}
-                data-plasmic-override={overrides.button5}
                 hasGap={true}
-                className={classNames(projectcss.all, sty.button5)}
+                className={classNames(projectcss.all, sty.freeBox__bRbRl)}
               >
                 {false ? (
                   <Stack__
                     as={"div"}
-                    data-plasmic-name={"startIconsContainer5"}
-                    data-plasmic-override={overrides.startIconsContainer5}
                     hasGap={true}
-                    className={classNames(
-                      projectcss.all,
-                      sty.startIconsContainer5
-                    )}
+                    className={classNames(projectcss.all, sty.freeBox___7Y1W)}
                   >
                     <FramePlusIcon
                       className={classNames(projectcss.all, sty.svg__b5Ju)}
@@ -775,36 +621,26 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     />
                   </Stack__>
                 ) : null}
-                <div
-                  data-plasmic-name={"labelsContainer5"}
-                  data-plasmic-override={overrides.labelsContainer5}
-                  className={classNames(projectcss.all, sty.labelsContainer5)}
-                >
+                <div className={classNames(projectcss.all, sty.freeBox__tWrBp)}>
                   <Stack__
                     as={"div"}
-                    data-plasmic-name={"labelText5"}
-                    data-plasmic-override={overrides.labelText5}
                     hasGap={true}
-                    className={classNames(projectcss.all, sty.labelText5)}
+                    className={classNames(projectcss.all, sty.freeBox__fsfy0)}
                   >
                     <div
-                      data-plasmic-name={"label5"}
-                      data-plasmic-override={overrides.label5}
                       className={classNames(
                         projectcss.all,
                         projectcss.__wab_text,
-                        sty.label5
+                        sty.text__uH8Hs
                       )}
                     >
                       {"Conflicting changes"}
                     </div>
                     <div
-                      data-plasmic-name={"label6"}
-                      data-plasmic-override={overrides.label6}
                       className={classNames(
                         projectcss.all,
                         projectcss.__wab_text,
-                        sty.label6
+                        sty.text__knemq
                       )}
                     >
                       {"Pick the branch to keep changes from."}
@@ -812,12 +648,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   </Stack__>
                   {false ? (
                     <div
-                      data-plasmic-name={"labelIconsContainer5"}
-                      data-plasmic-override={overrides.labelIconsContainer5}
-                      className={classNames(
-                        projectcss.all,
-                        sty.labelIconsContainer5
-                      )}
+                      className={classNames(projectcss.all, sty.freeBox__lXxKw)}
                     >
                       <ChevronDownIcon
                         className={classNames(projectcss.all, sty.svg__qtac)}
@@ -829,13 +660,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 {false ? (
                   <Stack__
                     as={"div"}
-                    data-plasmic-name={"endIconsContainer5"}
-                    data-plasmic-override={overrides.endIconsContainer5}
                     hasGap={true}
-                    className={classNames(
-                      projectcss.all,
-                      sty.endIconsContainer5
-                    )}
+                    className={classNames(projectcss.all, sty.freeBox__wFkmb)}
                   >
                     <PlasmicImg__
                       alt={""}
@@ -876,11 +702,21 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         "isChecked",
                       ]) ?? false
                     }
-                    onChange={(...eventArgs) => {
-                      generateStateOnChangeProp($state, [
-                        "showAllSwitch",
-                        "isChecked",
-                      ])(eventArgs[0]);
+                    onChange={async (...eventArgs: any) => {
+                      ((...eventArgs) => {
+                        generateStateOnChangeProp($state, [
+                          "showAllSwitch",
+                          "isChecked",
+                        ])(eventArgs[0]);
+                      }).apply(null, eventArgs);
+
+                      if (
+                        eventArgs.length > 1 &&
+                        eventArgs[1] &&
+                        eventArgs[1]._plasmic_state_init_
+                      ) {
+                        return;
+                      }
                     }}
                   >
                     <div
@@ -898,29 +734,31 @@ function PlasmicMergeFlow__RenderFunc(props: {
             </div>
             <Stack__
               as={"div"}
-              data-plasmic-name={"frame1856"}
-              data-plasmic-override={overrides.frame1856}
               hasGap={true}
-              className={classNames(projectcss.all, sty.frame1856, {
-                [sty.frame1856empty]: hasVariant($state, "empty", "empty"),
+              className={classNames(projectcss.all, sty.freeBox__iM7TU, {
+                [sty.freeBoxempty__iM7TUk797E]: hasVariant(
+                  $state,
+                  "empty",
+                  "empty"
+                ),
               })}
             >
               <Stack__
                 as={"div"}
-                data-plasmic-name={"frame1860"}
-                data-plasmic-override={overrides.frame1860}
                 hasGap={true}
-                className={classNames(projectcss.all, sty.frame1860, {
-                  [sty.frame1860empty]: hasVariant($state, "empty", "empty"),
+                className={classNames(projectcss.all, sty.freeBox__dcTi7, {
+                  [sty.freeBoxempty__dcTi7K797E]: hasVariant(
+                    $state,
+                    "empty",
+                    "empty"
+                  ),
                 })}
               >
                 <Stack__
                   as={"div"}
-                  data-plasmic-name={"button7"}
-                  data-plasmic-override={overrides.button7}
                   hasGap={true}
-                  className={classNames(projectcss.all, sty.button7, {
-                    [sty.button7blocked]: hasVariant(
+                  className={classNames(projectcss.all, sty.freeBox__vW2G2, {
+                    [sty.freeBoxblocked__vW2G21MFev]: hasVariant(
                       $state,
                       "blocked",
                       "blocked"
@@ -930,13 +768,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   {false ? (
                     <Stack__
                       as={"div"}
-                      data-plasmic-name={"startIconsContainer7"}
-                      data-plasmic-override={overrides.startIconsContainer7}
                       hasGap={true}
-                      className={classNames(
-                        projectcss.all,
-                        sty.startIconsContainer7
-                      )}
+                      className={classNames(projectcss.all, sty.freeBox__fFhWx)}
                     >
                       <FramePlusIcon
                         className={classNames(projectcss.all, sty.svg__zuEam)}
@@ -945,22 +778,16 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     </Stack__>
                   ) : null}
                   <div
-                    data-plasmic-name={"labelsContainer7"}
-                    data-plasmic-override={overrides.labelsContainer7}
-                    className={classNames(projectcss.all, sty.labelsContainer7)}
+                    className={classNames(projectcss.all, sty.freeBox___2NNJ)}
                   >
                     <div
-                      data-plasmic-name={"labelText7"}
-                      data-plasmic-override={overrides.labelText7}
-                      className={classNames(projectcss.all, sty.labelText7)}
+                      className={classNames(projectcss.all, sty.freeBox__l8H0)}
                     >
                       <div
-                        data-plasmic-name={"label8"}
-                        data-plasmic-override={overrides.label8}
                         className={classNames(
                           projectcss.all,
                           projectcss.__wab_text,
-                          sty.label8
+                          sty.text___8D6Zw
                         )}
                       >
                         {"Object"}
@@ -979,11 +806,9 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     </div>
                     {false ? (
                       <div
-                        data-plasmic-name={"labelIconsContainer7"}
-                        data-plasmic-override={overrides.labelIconsContainer7}
                         className={classNames(
                           projectcss.all,
-                          sty.labelIconsContainer7
+                          sty.freeBox__iu7Ph
                         )}
                       >
                         <ChevronDownIcon
@@ -999,13 +824,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   {false ? (
                     <Stack__
                       as={"div"}
-                      data-plasmic-name={"endIconsContainer7"}
-                      data-plasmic-override={overrides.endIconsContainer7}
                       hasGap={true}
-                      className={classNames(
-                        projectcss.all,
-                        sty.endIconsContainer7
-                      )}
+                      className={classNames(projectcss.all, sty.freeBox__uJ5Wf)}
                     >
                       <PlasmicImg__
                         alt={""}
@@ -1029,27 +849,21 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 </Stack__>
                 <Stack__
                   as={"div"}
-                  data-plasmic-name={"frame1855"}
-                  data-plasmic-override={overrides.frame1855}
                   hasGap={true}
-                  className={classNames(projectcss.all, sty.frame1855)}
+                  className={classNames(projectcss.all, sty.freeBox___9XHyG)}
                 >
                   <Stack__
                     as={"div"}
-                    data-plasmic-name={"button8"}
-                    data-plasmic-override={overrides.button8}
                     hasGap={true}
-                    className={classNames(projectcss.all, sty.button8)}
+                    className={classNames(projectcss.all, sty.freeBox__yl1Mo)}
                   >
                     {false ? (
                       <Stack__
                         as={"div"}
-                        data-plasmic-name={"startIconsContainer8"}
-                        data-plasmic-override={overrides.startIconsContainer8}
                         hasGap={true}
                         className={classNames(
                           projectcss.all,
-                          sty.startIconsContainer8
+                          sty.freeBox__e9Ghe
                         )}
                       >
                         <FramePlusIcon
@@ -1059,25 +873,19 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       </Stack__>
                     ) : null}
                     <div
-                      data-plasmic-name={"labelsContainer8"}
-                      data-plasmic-override={overrides.labelsContainer8}
-                      className={classNames(
-                        projectcss.all,
-                        sty.labelsContainer8
-                      )}
+                      className={classNames(projectcss.all, sty.freeBox__a4BLq)}
                     >
                       <div
-                        data-plasmic-name={"labelText8"}
-                        data-plasmic-override={overrides.labelText8}
-                        className={classNames(projectcss.all, sty.labelText8)}
+                        className={classNames(
+                          projectcss.all,
+                          sty.freeBox__ziNtG
+                        )}
                       >
                         <div
-                          data-plasmic-name={"label9"}
-                          data-plasmic-override={overrides.label9}
                           className={classNames(
                             projectcss.all,
                             projectcss.__wab_text,
-                            sty.label9
+                            sty.text__iXNhU
                           )}
                         >
                           {"Main\nbranch"}
@@ -1096,11 +904,9 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       </div>
                       {false ? (
                         <div
-                          data-plasmic-name={"labelIconsContainer8"}
-                          data-plasmic-override={overrides.labelIconsContainer8}
                           className={classNames(
                             projectcss.all,
-                            sty.labelIconsContainer8
+                            sty.freeBox__mnDjo
                           )}
                         >
                           <ChevronDownIcon
@@ -1116,12 +922,10 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     {false ? (
                       <Stack__
                         as={"div"}
-                        data-plasmic-name={"endIconsContainer8"}
-                        data-plasmic-override={overrides.endIconsContainer8}
                         hasGap={true}
                         className={classNames(
                           projectcss.all,
-                          sty.endIconsContainer8
+                          sty.freeBox___7Swbw
                         )}
                       >
                         <PlasmicImg__
@@ -1146,20 +950,16 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   </Stack__>
                   <Stack__
                     as={"div"}
-                    data-plasmic-name={"button9"}
-                    data-plasmic-override={overrides.button9}
                     hasGap={true}
-                    className={classNames(projectcss.all, sty.button9)}
+                    className={classNames(projectcss.all, sty.freeBox__zsNEo)}
                   >
                     {false ? (
                       <Stack__
                         as={"div"}
-                        data-plasmic-name={"startIconsContainer9"}
-                        data-plasmic-override={overrides.startIconsContainer9}
                         hasGap={true}
                         className={classNames(
                           projectcss.all,
-                          sty.startIconsContainer9
+                          sty.freeBox___6DxoJ
                         )}
                       >
                         <FramePlusIcon
@@ -1169,25 +969,19 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       </Stack__>
                     ) : null}
                     <div
-                      data-plasmic-name={"labelsContainer9"}
-                      data-plasmic-override={overrides.labelsContainer9}
-                      className={classNames(
-                        projectcss.all,
-                        sty.labelsContainer9
-                      )}
+                      className={classNames(projectcss.all, sty.freeBox__oajyO)}
                     >
                       <div
-                        data-plasmic-name={"labelText9"}
-                        data-plasmic-override={overrides.labelText9}
-                        className={classNames(projectcss.all, sty.labelText9)}
+                        className={classNames(
+                          projectcss.all,
+                          sty.freeBox__muFrq
+                        )}
                       >
                         <div
-                          data-plasmic-name={"label10"}
-                          data-plasmic-override={overrides.label10}
                           className={classNames(
                             projectcss.all,
                             projectcss.__wab_text,
-                            sty.label10
+                            sty.text__qtmHr
                           )}
                         >
                           {"This\nbranch"}
@@ -1206,11 +1000,9 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       </div>
                       {false ? (
                         <div
-                          data-plasmic-name={"labelIconsContainer9"}
-                          data-plasmic-override={overrides.labelIconsContainer9}
                           className={classNames(
                             projectcss.all,
-                            sty.labelIconsContainer9
+                            sty.freeBox__yc4Gp
                           )}
                         >
                           <ChevronDownIcon
@@ -1226,12 +1018,10 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     {false ? (
                       <Stack__
                         as={"div"}
-                        data-plasmic-name={"endIconsContainer9"}
-                        data-plasmic-override={overrides.endIconsContainer9}
                         hasGap={true}
                         className={classNames(
                           projectcss.all,
-                          sty.endIconsContainer9
+                          sty.freeBox__sKs4
                         )}
                       >
                         <PlasmicImg__
@@ -1258,15 +1048,11 @@ function PlasmicMergeFlow__RenderFunc(props: {
               </Stack__>
               <Stack__
                 as={"div"}
-                data-plasmic-name={"dividerSeparator2"}
-                data-plasmic-override={overrides.dividerSeparator2}
                 hasGap={true}
-                className={classNames(projectcss.all, sty.dividerSeparator2)}
+                className={classNames(projectcss.all, sty.freeBox__miviq)}
               >
                 <div
-                  data-plasmic-name={"frame5"}
-                  data-plasmic-override={overrides.frame5}
-                  className={classNames(projectcss.all, sty.frame5)}
+                  className={classNames(projectcss.all, sty.freeBox__kWgE9)}
                 />
               </Stack__>
               <Stack__
@@ -1290,55 +1076,21 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       "empty"
                     ),
                   })}
-                  name={
-                    <div
-                      data-plasmic-name={"name"}
-                      data-plasmic-override={overrides.name}
-                      className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
-                        sty.name
-                      )}
-                    >
-                      {"Homepage"}
-                    </div>
-                  }
+                  name={"Homepage"}
                   subtext={"Some changes were auto merged"}
                 />
 
                 <Conflict
                   className={classNames("__wab_instance", sty.conflict__i7Jgd)}
                   hasSubtext={true}
-                  name={
-                    <div
-                      className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
-                        sty.text__ngSaV
-                      )}
-                    >
-                      {"Homepage"}
-                    </div>
-                  }
+                  name={"Homepage"}
                   subtext={"Some changes were auto merged"}
                 />
 
                 <Conflict
                   className={classNames("__wab_instance", sty.conflict__u2SIb)}
                   merged={true}
-                  name={
-                    <div
-                      data-plasmic-name={"name2"}
-                      data-plasmic-override={overrides.name2}
-                      className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
-                        sty.name2
-                      )}
-                    >
-                      {"Homepage"}
-                    </div>
-                  }
+                  name={"Homepage"}
                   subtext={"Some changes were auto merged"}
                 />
 
@@ -1351,19 +1103,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     ),
                   })}
                   merged={true}
-                  name={
-                    <div
-                      data-plasmic-name={"name3"}
-                      data-plasmic-override={overrides.name3}
-                      className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
-                        sty.name3
-                      )}
-                    >
-                      {"Homepage"}
-                    </div>
-                  }
+                  name={"Homepage"}
                   subtext={"Some changes were auto merged"}
                 />
               </Stack__>
@@ -1387,11 +1127,9 @@ function PlasmicMergeFlow__RenderFunc(props: {
           </Stack__>
           <Stack__
             as={"div"}
-            data-plasmic-name={"dividerSeparator3"}
-            data-plasmic-override={overrides.dividerSeparator3}
             hasGap={true}
-            className={classNames(projectcss.all, sty.dividerSeparator3, {
-              [sty.dividerSeparator3blocked]: hasVariant(
+            className={classNames(projectcss.all, sty.freeBox__iXqLb, {
+              [sty.freeBoxblocked__iXqLb1MFev]: hasVariant(
                 $state,
                 "blocked",
                 "blocked"
@@ -1399,10 +1137,12 @@ function PlasmicMergeFlow__RenderFunc(props: {
             })}
           >
             <div
-              data-plasmic-name={"frame6"}
-              data-plasmic-override={overrides.frame6}
-              className={classNames(projectcss.all, sty.frame6, {
-                [sty.frame6empty]: hasVariant($state, "empty", "empty"),
+              className={classNames(projectcss.all, sty.freeBox__ewyyN, {
+                [sty.freeBoxempty__ewyyNk797E]: hasVariant(
+                  $state,
+                  "empty",
+                  "empty"
+                ),
               })}
             />
           </Stack__>
@@ -1428,17 +1168,11 @@ function PlasmicMergeFlow__RenderFunc(props: {
               }
             )}
           >
-            <div
-              data-plasmic-name={"frame18"}
-              data-plasmic-override={overrides.frame18}
-              className={classNames(projectcss.all, sty.frame18)}
-            >
+            <div className={classNames(projectcss.all, sty.freeBox__pBIaG)}>
               <Stack__
                 as={"div"}
-                data-plasmic-name={"button13"}
-                data-plasmic-override={overrides.button13}
                 hasGap={true}
-                className={classNames(projectcss.all, sty.button13)}
+                className={classNames(projectcss.all, sty.freeBox__kw1KW)}
               >
                 {false ? (
                   <Stack__
@@ -1457,23 +1191,15 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     />
                   </Stack__>
                 ) : null}
-                <div
-                  data-plasmic-name={"labelsContainer13"}
-                  data-plasmic-override={overrides.labelsContainer13}
-                  className={classNames(projectcss.all, sty.labelsContainer13)}
-                >
+                <div className={classNames(projectcss.all, sty.freeBox__x8BCz)}>
                   <div
-                    data-plasmic-name={"labelText13"}
-                    data-plasmic-override={overrides.labelText13}
-                    className={classNames(projectcss.all, sty.labelText13)}
+                    className={classNames(projectcss.all, sty.freeBox__ctAYm)}
                   >
                     <div
-                      data-plasmic-name={"label15"}
-                      data-plasmic-override={overrides.label15}
                       className={classNames(
                         projectcss.all,
                         projectcss.__wab_text,
-                        sty.label15
+                        sty.text__ifdJl
                       )}
                     >
                       {"Automatically reconciled changes"}
@@ -1667,31 +1393,132 @@ function PlasmicMergeFlow__RenderFunc(props: {
           ) : null}
           <Stack__
             as={"div"}
-            data-plasmic-name={"dividerSeparator5"}
-            data-plasmic-override={overrides.dividerSeparator5}
             hasGap={true}
-            className={classNames(projectcss.all, sty.dividerSeparator5)}
+            className={classNames(projectcss.all, sty.freeBox___7ZvWs)}
           >
-            <div
-              data-plasmic-name={"frame9"}
-              data-plasmic-override={overrides.frame9}
-              className={classNames(projectcss.all, sty.frame9)}
-            />
+            <div className={classNames(projectcss.all, sty.freeBox__sq5KK)} />
           </Stack__>
           <Stack__
             as={"div"}
-            data-plasmic-name={"frame24"}
-            data-plasmic-override={overrides.frame24}
             hasGap={true}
-            className={classNames(projectcss.all, sty.frame24)}
+            className={classNames(projectcss.all, sty.freeBox___8VwQ3)}
           >
             <Stack__
               as={"div"}
-              data-plasmic-name={"frame19"}
-              data-plasmic-override={overrides.frame19}
               hasGap={true}
-              className={classNames(projectcss.all, sty.frame19, {
-                [sty.frame19empty]: hasVariant($state, "empty", "empty"),
+              className={classNames(projectcss.all, sty.freeBox___6AaCb, {
+                [sty.freeBoxblocked___6AaCb1MFev]: hasVariant(
+                  $state,
+                  "blocked",
+                  "blocked"
+                ),
+              })}
+            >
+              <div
+                className={classNames(
+                  projectcss.all,
+                  projectcss.__wab_text,
+                  sty.text__tPwaU
+                )}
+              >
+                {"Merge and save version"}
+              </div>
+              <div
+                className={classNames(
+                  projectcss.all,
+                  projectcss.__wab_text,
+                  sty.text__uUu0C
+                )}
+              >
+                {
+                  "Merging will cause a new version to be saved. Publish actions will not be run."
+                }
+              </div>
+            </Stack__>
+            <div
+              className={classNames(projectcss.all, sty.freeBox__tBNhD, {
+                [sty.freeBoxblocked__tBNhD1MFev]: hasVariant(
+                  $state,
+                  "blocked",
+                  "blocked"
+                ),
+              })}
+            >
+              <div
+                className={classNames(
+                  projectcss.all,
+                  projectcss.__wab_text,
+                  sty.text__wsqMx,
+                  {
+                    [sty.textblocked__wsqMx1MFev]: hasVariant(
+                      $state,
+                      "blocked",
+                      "blocked"
+                    ),
+                  }
+                )}
+              >
+                {"Description"}
+              </div>
+              <textarea
+                data-plasmic-name={"description"}
+                data-plasmic-override={overrides.description}
+                className={classNames(
+                  projectcss.all,
+                  projectcss.textarea,
+                  sty.description
+                )}
+                onChange={async (...eventArgs: any) => {
+                  ((e) => {
+                    generateStateOnChangeProp($state, ["description", "value"])(
+                      e.target.value
+                    );
+                  }).apply(null, eventArgs);
+                }}
+                placeholder={"Enter description here (optional)…"}
+                ref={(ref) => {
+                  $refs["description"] = ref;
+                }}
+                rows={2}
+                value={
+                  generateStateValueProp($state, ["description", "value"]) ?? ""
+                }
+              />
+            </div>
+            <div
+              className={classNames(projectcss.all, sty.freeBox__d3QkI, {
+                [sty.freeBoxblocked__d3QkI1MFev]: hasVariant(
+                  $state,
+                  "blocked",
+                  "blocked"
+                ),
+              })}
+            >
+              <div
+                className={classNames(
+                  projectcss.all,
+                  projectcss.__wab_text,
+                  sty.text__dd2Qx
+                )}
+              >
+                {"Tags"}
+              </div>
+              <Select
+                data-plasmic-name={"tagsSelector"}
+                data-plasmic-override={overrides.tagsSelector}
+                className={classNames("__wab_instance", sty.tagsSelector)}
+                type={"bordered"}
+              />
+            </div>
+            <Stack__
+              as={"div"}
+              hasGap={true}
+              className={classNames(projectcss.all, sty.freeBox__sZadF, {
+                [sty.freeBoxempty__sZadFk797E]: hasVariant(
+                  $state,
+                  "empty",
+                  "empty"
+                ),
               })}
             >
               <Button
@@ -1716,6 +1543,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 disabled={
                   hasVariant($state, "blocked", "blocked") ? true : undefined
                 }
+                isSubmit={false}
                 type={["primary"]}
               >
                 {"Merge"}
@@ -1783,749 +1611,43 @@ function PlasmicMergeFlow__RenderFunc(props: {
 const PlasmicDescendants = {
   root: [
     "root",
-    "reviewAndMergeBranch",
-    "frame8",
-    "frame25",
-    "frame1864",
-    "button",
-    "startIconsContainer",
-    "labelsContainer",
-    "labelText",
-    "label",
-    "labelIconsContainer",
-    "endIconsContainer",
-    "button2",
-    "startIconsContainer2",
-    "labelsContainer2",
-    "labelText2",
-    "label2",
-    "labelIconsContainer2",
-    "endIconsContainer2",
-    "frame1863",
     "sourceBranchChanges",
-    "startIconsContainer3",
-    "labelsContainer3",
-    "labelText3",
-    "label3",
-    "labelIconsContainer3",
-    "endIconsContainer3",
     "destinationBranchChanges",
-    "startIconsContainer4",
-    "labelsContainer4",
-    "labelText4",
-    "label4",
     "labelIconsContainer4",
-    "endIconsContainer4",
-    "dividerSeparator",
-    "frame4",
-    "frame23",
-    "frame1857",
-    "button5",
-    "startIconsContainer5",
-    "labelsContainer5",
-    "labelText5",
-    "label5",
-    "label6",
-    "labelIconsContainer5",
-    "endIconsContainer5",
     "showAllSwitchContainer",
     "showAllSwitch",
-    "frame1856",
-    "frame1860",
-    "button7",
-    "startIconsContainer7",
-    "labelsContainer7",
-    "labelText7",
-    "label8",
-    "labelIconsContainer7",
-    "endIconsContainer7",
-    "frame1855",
-    "button8",
-    "startIconsContainer8",
-    "labelsContainer8",
-    "labelText8",
-    "label9",
-    "labelIconsContainer8",
-    "endIconsContainer8",
-    "button9",
-    "startIconsContainer9",
-    "labelsContainer9",
-    "labelText9",
-    "label10",
-    "labelIconsContainer9",
-    "endIconsContainer9",
-    "dividerSeparator2",
-    "frame5",
     "pairedChanges",
-    "name",
-    "name2",
-    "name3",
-    "dividerSeparator3",
-    "frame6",
     "reconciliationsContainer",
-    "frame18",
-    "button13",
     "startIconsContainer13",
-    "labelsContainer13",
-    "labelText13",
-    "label15",
     "labelIconsContainer13",
     "endIconsContainer13",
     "reconciliations",
     "blockedContainer",
     "mergeBlockedTitle",
     "mergeBlockedMsg",
-    "dividerSeparator5",
-    "frame9",
-    "frame24",
-    "frame19",
+    "description",
+    "tagsSelector",
     "cancelButton",
     "finishButton",
     "spinnerContainer",
   ],
-
-  reviewAndMergeBranch: [
-    "reviewAndMergeBranch",
-    "frame8",
-    "frame25",
-    "frame1864",
-    "button",
-    "startIconsContainer",
-    "labelsContainer",
-    "labelText",
-    "label",
-    "labelIconsContainer",
-    "endIconsContainer",
-    "button2",
-    "startIconsContainer2",
-    "labelsContainer2",
-    "labelText2",
-    "label2",
-    "labelIconsContainer2",
-    "endIconsContainer2",
-    "frame1863",
-    "sourceBranchChanges",
-    "startIconsContainer3",
-    "labelsContainer3",
-    "labelText3",
-    "label3",
-    "labelIconsContainer3",
-    "endIconsContainer3",
-    "destinationBranchChanges",
-    "startIconsContainer4",
-    "labelsContainer4",
-    "labelText4",
-    "label4",
-    "labelIconsContainer4",
-    "endIconsContainer4",
-    "dividerSeparator",
-    "frame4",
-    "frame23",
-    "frame1857",
-    "button5",
-    "startIconsContainer5",
-    "labelsContainer5",
-    "labelText5",
-    "label5",
-    "label6",
-    "labelIconsContainer5",
-    "endIconsContainer5",
-    "showAllSwitchContainer",
-    "showAllSwitch",
-    "frame1856",
-    "frame1860",
-    "button7",
-    "startIconsContainer7",
-    "labelsContainer7",
-    "labelText7",
-    "label8",
-    "labelIconsContainer7",
-    "endIconsContainer7",
-    "frame1855",
-    "button8",
-    "startIconsContainer8",
-    "labelsContainer8",
-    "labelText8",
-    "label9",
-    "labelIconsContainer8",
-    "endIconsContainer8",
-    "button9",
-    "startIconsContainer9",
-    "labelsContainer9",
-    "labelText9",
-    "label10",
-    "labelIconsContainer9",
-    "endIconsContainer9",
-    "dividerSeparator2",
-    "frame5",
-    "pairedChanges",
-    "name",
-    "name2",
-    "name3",
-    "dividerSeparator3",
-    "frame6",
-    "reconciliationsContainer",
-    "frame18",
-    "button13",
-    "startIconsContainer13",
-    "labelsContainer13",
-    "labelText13",
-    "label15",
-    "labelIconsContainer13",
-    "endIconsContainer13",
-    "reconciliations",
-    "blockedContainer",
-    "mergeBlockedTitle",
-    "mergeBlockedMsg",
-    "dividerSeparator5",
-    "frame9",
-    "frame24",
-    "frame19",
-    "cancelButton",
-    "finishButton",
-  ],
-
-  frame8: [
-    "frame8",
-    "frame25",
-    "frame1864",
-    "button",
-    "startIconsContainer",
-    "labelsContainer",
-    "labelText",
-    "label",
-    "labelIconsContainer",
-    "endIconsContainer",
-    "button2",
-    "startIconsContainer2",
-    "labelsContainer2",
-    "labelText2",
-    "label2",
-    "labelIconsContainer2",
-    "endIconsContainer2",
-    "frame1863",
-    "sourceBranchChanges",
-    "startIconsContainer3",
-    "labelsContainer3",
-    "labelText3",
-    "label3",
-    "labelIconsContainer3",
-    "endIconsContainer3",
-    "destinationBranchChanges",
-    "startIconsContainer4",
-    "labelsContainer4",
-    "labelText4",
-    "label4",
-    "labelIconsContainer4",
-    "endIconsContainer4",
-    "dividerSeparator",
-    "frame4",
-    "frame23",
-    "frame1857",
-    "button5",
-    "startIconsContainer5",
-    "labelsContainer5",
-    "labelText5",
-    "label5",
-    "label6",
-    "labelIconsContainer5",
-    "endIconsContainer5",
-    "showAllSwitchContainer",
-    "showAllSwitch",
-    "frame1856",
-    "frame1860",
-    "button7",
-    "startIconsContainer7",
-    "labelsContainer7",
-    "labelText7",
-    "label8",
-    "labelIconsContainer7",
-    "endIconsContainer7",
-    "frame1855",
-    "button8",
-    "startIconsContainer8",
-    "labelsContainer8",
-    "labelText8",
-    "label9",
-    "labelIconsContainer8",
-    "endIconsContainer8",
-    "button9",
-    "startIconsContainer9",
-    "labelsContainer9",
-    "labelText9",
-    "label10",
-    "labelIconsContainer9",
-    "endIconsContainer9",
-    "dividerSeparator2",
-    "frame5",
-    "pairedChanges",
-    "name",
-    "name2",
-    "name3",
-    "dividerSeparator3",
-    "frame6",
-    "reconciliationsContainer",
-    "frame18",
-    "button13",
-    "startIconsContainer13",
-    "labelsContainer13",
-    "labelText13",
-    "label15",
-    "labelIconsContainer13",
-    "endIconsContainer13",
-    "reconciliations",
-    "blockedContainer",
-    "mergeBlockedTitle",
-    "mergeBlockedMsg",
-    "dividerSeparator5",
-    "frame9",
-    "frame24",
-    "frame19",
-    "cancelButton",
-    "finishButton",
-  ],
-
-  frame25: [
-    "frame25",
-    "frame1864",
-    "button",
-    "startIconsContainer",
-    "labelsContainer",
-    "labelText",
-    "label",
-    "labelIconsContainer",
-    "endIconsContainer",
-    "button2",
-    "startIconsContainer2",
-    "labelsContainer2",
-    "labelText2",
-    "label2",
-    "labelIconsContainer2",
-    "endIconsContainer2",
-    "frame1863",
-    "sourceBranchChanges",
-    "startIconsContainer3",
-    "labelsContainer3",
-    "labelText3",
-    "label3",
-    "labelIconsContainer3",
-    "endIconsContainer3",
-    "destinationBranchChanges",
-    "startIconsContainer4",
-    "labelsContainer4",
-    "labelText4",
-    "label4",
-    "labelIconsContainer4",
-    "endIconsContainer4",
-  ],
-
-  frame1864: [
-    "frame1864",
-    "button",
-    "startIconsContainer",
-    "labelsContainer",
-    "labelText",
-    "label",
-    "labelIconsContainer",
-    "endIconsContainer",
-    "button2",
-    "startIconsContainer2",
-    "labelsContainer2",
-    "labelText2",
-    "label2",
-    "labelIconsContainer2",
-    "endIconsContainer2",
-  ],
-
-  button: [
-    "button",
-    "startIconsContainer",
-    "labelsContainer",
-    "labelText",
-    "label",
-    "labelIconsContainer",
-    "endIconsContainer",
-  ],
-
-  startIconsContainer: ["startIconsContainer"],
-  labelsContainer: [
-    "labelsContainer",
-    "labelText",
-    "label",
-    "labelIconsContainer",
-  ],
-
-  labelText: ["labelText", "label"],
-  label: ["label"],
-  labelIconsContainer: ["labelIconsContainer"],
-  endIconsContainer: ["endIconsContainer"],
-  button2: [
-    "button2",
-    "startIconsContainer2",
-    "labelsContainer2",
-    "labelText2",
-    "label2",
-    "labelIconsContainer2",
-    "endIconsContainer2",
-  ],
-
-  startIconsContainer2: ["startIconsContainer2"],
-  labelsContainer2: [
-    "labelsContainer2",
-    "labelText2",
-    "label2",
-    "labelIconsContainer2",
-  ],
-
-  labelText2: ["labelText2", "label2"],
-  label2: ["label2"],
-  labelIconsContainer2: ["labelIconsContainer2"],
-  endIconsContainer2: ["endIconsContainer2"],
-  frame1863: [
-    "frame1863",
-    "sourceBranchChanges",
-    "startIconsContainer3",
-    "labelsContainer3",
-    "labelText3",
-    "label3",
-    "labelIconsContainer3",
-    "endIconsContainer3",
-    "destinationBranchChanges",
-    "startIconsContainer4",
-    "labelsContainer4",
-    "labelText4",
-    "label4",
-    "labelIconsContainer4",
-    "endIconsContainer4",
-  ],
-
-  sourceBranchChanges: [
-    "sourceBranchChanges",
-    "startIconsContainer3",
-    "labelsContainer3",
-    "labelText3",
-    "label3",
-    "labelIconsContainer3",
-    "endIconsContainer3",
-  ],
-
-  startIconsContainer3: ["startIconsContainer3"],
-  labelsContainer3: [
-    "labelsContainer3",
-    "labelText3",
-    "label3",
-    "labelIconsContainer3",
-  ],
-
-  labelText3: ["labelText3", "label3"],
-  label3: ["label3"],
-  labelIconsContainer3: ["labelIconsContainer3"],
-  endIconsContainer3: ["endIconsContainer3"],
+  sourceBranchChanges: ["sourceBranchChanges"],
   destinationBranchChanges: [
     "destinationBranchChanges",
-    "startIconsContainer4",
-    "labelsContainer4",
-    "labelText4",
-    "label4",
-    "labelIconsContainer4",
-    "endIconsContainer4",
-  ],
-
-  startIconsContainer4: ["startIconsContainer4"],
-  labelsContainer4: [
-    "labelsContainer4",
-    "labelText4",
-    "label4",
     "labelIconsContainer4",
   ],
-
-  labelText4: ["labelText4", "label4"],
-  label4: ["label4"],
   labelIconsContainer4: ["labelIconsContainer4"],
-  endIconsContainer4: ["endIconsContainer4"],
-  dividerSeparator: ["dividerSeparator", "frame4"],
-  frame4: ["frame4"],
-  frame23: [
-    "frame23",
-    "frame1857",
-    "button5",
-    "startIconsContainer5",
-    "labelsContainer5",
-    "labelText5",
-    "label5",
-    "label6",
-    "labelIconsContainer5",
-    "endIconsContainer5",
-    "showAllSwitchContainer",
-    "showAllSwitch",
-    "frame1856",
-    "frame1860",
-    "button7",
-    "startIconsContainer7",
-    "labelsContainer7",
-    "labelText7",
-    "label8",
-    "labelIconsContainer7",
-    "endIconsContainer7",
-    "frame1855",
-    "button8",
-    "startIconsContainer8",
-    "labelsContainer8",
-    "labelText8",
-    "label9",
-    "labelIconsContainer8",
-    "endIconsContainer8",
-    "button9",
-    "startIconsContainer9",
-    "labelsContainer9",
-    "labelText9",
-    "label10",
-    "labelIconsContainer9",
-    "endIconsContainer9",
-    "dividerSeparator2",
-    "frame5",
-    "pairedChanges",
-    "name",
-    "name2",
-    "name3",
-  ],
-
-  frame1857: [
-    "frame1857",
-    "button5",
-    "startIconsContainer5",
-    "labelsContainer5",
-    "labelText5",
-    "label5",
-    "label6",
-    "labelIconsContainer5",
-    "endIconsContainer5",
-    "showAllSwitchContainer",
-    "showAllSwitch",
-  ],
-
-  button5: [
-    "button5",
-    "startIconsContainer5",
-    "labelsContainer5",
-    "labelText5",
-    "label5",
-    "label6",
-    "labelIconsContainer5",
-    "endIconsContainer5",
-  ],
-
-  startIconsContainer5: ["startIconsContainer5"],
-  labelsContainer5: [
-    "labelsContainer5",
-    "labelText5",
-    "label5",
-    "label6",
-    "labelIconsContainer5",
-  ],
-
-  labelText5: ["labelText5", "label5", "label6"],
-  label5: ["label5"],
-  label6: ["label6"],
-  labelIconsContainer5: ["labelIconsContainer5"],
-  endIconsContainer5: ["endIconsContainer5"],
   showAllSwitchContainer: ["showAllSwitchContainer", "showAllSwitch"],
   showAllSwitch: ["showAllSwitch"],
-  frame1856: [
-    "frame1856",
-    "frame1860",
-    "button7",
-    "startIconsContainer7",
-    "labelsContainer7",
-    "labelText7",
-    "label8",
-    "labelIconsContainer7",
-    "endIconsContainer7",
-    "frame1855",
-    "button8",
-    "startIconsContainer8",
-    "labelsContainer8",
-    "labelText8",
-    "label9",
-    "labelIconsContainer8",
-    "endIconsContainer8",
-    "button9",
-    "startIconsContainer9",
-    "labelsContainer9",
-    "labelText9",
-    "label10",
-    "labelIconsContainer9",
-    "endIconsContainer9",
-    "dividerSeparator2",
-    "frame5",
-    "pairedChanges",
-    "name",
-    "name2",
-    "name3",
-  ],
-
-  frame1860: [
-    "frame1860",
-    "button7",
-    "startIconsContainer7",
-    "labelsContainer7",
-    "labelText7",
-    "label8",
-    "labelIconsContainer7",
-    "endIconsContainer7",
-    "frame1855",
-    "button8",
-    "startIconsContainer8",
-    "labelsContainer8",
-    "labelText8",
-    "label9",
-    "labelIconsContainer8",
-    "endIconsContainer8",
-    "button9",
-    "startIconsContainer9",
-    "labelsContainer9",
-    "labelText9",
-    "label10",
-    "labelIconsContainer9",
-    "endIconsContainer9",
-  ],
-
-  button7: [
-    "button7",
-    "startIconsContainer7",
-    "labelsContainer7",
-    "labelText7",
-    "label8",
-    "labelIconsContainer7",
-    "endIconsContainer7",
-  ],
-
-  startIconsContainer7: ["startIconsContainer7"],
-  labelsContainer7: [
-    "labelsContainer7",
-    "labelText7",
-    "label8",
-    "labelIconsContainer7",
-  ],
-
-  labelText7: ["labelText7", "label8"],
-  label8: ["label8"],
-  labelIconsContainer7: ["labelIconsContainer7"],
-  endIconsContainer7: ["endIconsContainer7"],
-  frame1855: [
-    "frame1855",
-    "button8",
-    "startIconsContainer8",
-    "labelsContainer8",
-    "labelText8",
-    "label9",
-    "labelIconsContainer8",
-    "endIconsContainer8",
-    "button9",
-    "startIconsContainer9",
-    "labelsContainer9",
-    "labelText9",
-    "label10",
-    "labelIconsContainer9",
-    "endIconsContainer9",
-  ],
-
-  button8: [
-    "button8",
-    "startIconsContainer8",
-    "labelsContainer8",
-    "labelText8",
-    "label9",
-    "labelIconsContainer8",
-    "endIconsContainer8",
-  ],
-
-  startIconsContainer8: ["startIconsContainer8"],
-  labelsContainer8: [
-    "labelsContainer8",
-    "labelText8",
-    "label9",
-    "labelIconsContainer8",
-  ],
-
-  labelText8: ["labelText8", "label9"],
-  label9: ["label9"],
-  labelIconsContainer8: ["labelIconsContainer8"],
-  endIconsContainer8: ["endIconsContainer8"],
-  button9: [
-    "button9",
-    "startIconsContainer9",
-    "labelsContainer9",
-    "labelText9",
-    "label10",
-    "labelIconsContainer9",
-    "endIconsContainer9",
-  ],
-
-  startIconsContainer9: ["startIconsContainer9"],
-  labelsContainer9: [
-    "labelsContainer9",
-    "labelText9",
-    "label10",
-    "labelIconsContainer9",
-  ],
-
-  labelText9: ["labelText9", "label10"],
-  label10: ["label10"],
-  labelIconsContainer9: ["labelIconsContainer9"],
-  endIconsContainer9: ["endIconsContainer9"],
-  dividerSeparator2: ["dividerSeparator2", "frame5"],
-  frame5: ["frame5"],
-  pairedChanges: ["pairedChanges", "name", "name2", "name3"],
-  name: ["name"],
-  name2: ["name2"],
-  name3: ["name3"],
-  dividerSeparator3: ["dividerSeparator3", "frame6"],
-  frame6: ["frame6"],
+  pairedChanges: ["pairedChanges"],
   reconciliationsContainer: [
     "reconciliationsContainer",
-    "frame18",
-    "button13",
     "startIconsContainer13",
-    "labelsContainer13",
-    "labelText13",
-    "label15",
     "labelIconsContainer13",
     "endIconsContainer13",
     "reconciliations",
   ],
-
-  frame18: [
-    "frame18",
-    "button13",
-    "startIconsContainer13",
-    "labelsContainer13",
-    "labelText13",
-    "label15",
-    "labelIconsContainer13",
-    "endIconsContainer13",
-  ],
-
-  button13: [
-    "button13",
-    "startIconsContainer13",
-    "labelsContainer13",
-    "labelText13",
-    "label15",
-    "labelIconsContainer13",
-    "endIconsContainer13",
-  ],
-
   startIconsContainer13: ["startIconsContainer13"],
-  labelsContainer13: [
-    "labelsContainer13",
-    "labelText13",
-    "label15",
-    "labelIconsContainer13",
-  ],
-
-  labelText13: ["labelText13", "label15"],
-  label15: ["label15"],
   labelIconsContainer13: ["labelIconsContainer13"],
   endIconsContainer13: ["endIconsContainer13"],
   reconciliations: ["reconciliations"],
@@ -2534,13 +1656,10 @@ const PlasmicDescendants = {
     "mergeBlockedTitle",
     "mergeBlockedMsg",
   ],
-
   mergeBlockedTitle: ["mergeBlockedTitle"],
   mergeBlockedMsg: ["mergeBlockedMsg"],
-  dividerSeparator5: ["dividerSeparator5", "frame9"],
-  frame9: ["frame9"],
-  frame24: ["frame24", "frame19", "cancelButton", "finishButton"],
-  frame19: ["frame19", "cancelButton", "finishButton"],
+  description: ["description"],
+  tagsSelector: ["tagsSelector"],
   cancelButton: ["cancelButton"],
   finishButton: ["finishButton"],
   spinnerContainer: ["spinnerContainer"],
@@ -2550,102 +1669,22 @@ type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
-  reviewAndMergeBranch: "div";
-  frame8: "div";
-  frame25: "div";
-  frame1864: "div";
-  button: "div";
-  startIconsContainer: "div";
-  labelsContainer: "div";
-  labelText: "div";
-  label: "div";
-  labelIconsContainer: "div";
-  endIconsContainer: "div";
-  button2: "div";
-  startIconsContainer2: "div";
-  labelsContainer2: "div";
-  labelText2: "div";
-  label2: "div";
-  labelIconsContainer2: "div";
-  endIconsContainer2: "div";
-  frame1863: "div";
   sourceBranchChanges: "button";
-  startIconsContainer3: "div";
-  labelsContainer3: "div";
-  labelText3: "div";
-  label3: "div";
-  labelIconsContainer3: "div";
-  endIconsContainer3: "div";
   destinationBranchChanges: "button";
-  startIconsContainer4: "div";
-  labelsContainer4: "div";
-  labelText4: "div";
-  label4: "div";
   labelIconsContainer4: "div";
-  endIconsContainer4: "div";
-  dividerSeparator: "div";
-  frame4: "div";
-  frame23: "div";
-  frame1857: "div";
-  button5: "div";
-  startIconsContainer5: "div";
-  labelsContainer5: "div";
-  labelText5: "div";
-  label5: "div";
-  label6: "div";
-  labelIconsContainer5: "div";
-  endIconsContainer5: "div";
   showAllSwitchContainer: "div";
   showAllSwitch: typeof Switch;
-  frame1856: "div";
-  frame1860: "div";
-  button7: "div";
-  startIconsContainer7: "div";
-  labelsContainer7: "div";
-  labelText7: "div";
-  label8: "div";
-  labelIconsContainer7: "div";
-  endIconsContainer7: "div";
-  frame1855: "div";
-  button8: "div";
-  startIconsContainer8: "div";
-  labelsContainer8: "div";
-  labelText8: "div";
-  label9: "div";
-  labelIconsContainer8: "div";
-  endIconsContainer8: "div";
-  button9: "div";
-  startIconsContainer9: "div";
-  labelsContainer9: "div";
-  labelText9: "div";
-  label10: "div";
-  labelIconsContainer9: "div";
-  endIconsContainer9: "div";
-  dividerSeparator2: "div";
-  frame5: "div";
   pairedChanges: "div";
-  name: "div";
-  name2: "div";
-  name3: "div";
-  dividerSeparator3: "div";
-  frame6: "div";
   reconciliationsContainer: "div";
-  frame18: "div";
-  button13: "div";
   startIconsContainer13: "div";
-  labelsContainer13: "div";
-  labelText13: "div";
-  label15: "div";
   labelIconsContainer13: "div";
   endIconsContainer13: "div";
   reconciliations: "div";
   blockedContainer: "div";
   mergeBlockedTitle: "div";
   mergeBlockedMsg: "div";
-  dividerSeparator5: "div";
-  frame9: "div";
-  frame24: "div";
-  frame19: "div";
+  description: "textarea";
+  tagsSelector: typeof Select;
   cancelButton: typeof Button;
   finishButton: typeof Button;
   spinnerContainer: "div";
@@ -2656,7 +1695,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicMergeFlow__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -2664,15 +1702,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicMergeFlow__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicMergeFlow__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicMergeFlow__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicMergeFlow__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -2712,102 +1750,22 @@ export const PlasmicMergeFlow = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
-    reviewAndMergeBranch: makeNodeComponent("reviewAndMergeBranch"),
-    frame8: makeNodeComponent("frame8"),
-    frame25: makeNodeComponent("frame25"),
-    frame1864: makeNodeComponent("frame1864"),
-    button: makeNodeComponent("button"),
-    startIconsContainer: makeNodeComponent("startIconsContainer"),
-    labelsContainer: makeNodeComponent("labelsContainer"),
-    labelText: makeNodeComponent("labelText"),
-    label: makeNodeComponent("label"),
-    labelIconsContainer: makeNodeComponent("labelIconsContainer"),
-    endIconsContainer: makeNodeComponent("endIconsContainer"),
-    button2: makeNodeComponent("button2"),
-    startIconsContainer2: makeNodeComponent("startIconsContainer2"),
-    labelsContainer2: makeNodeComponent("labelsContainer2"),
-    labelText2: makeNodeComponent("labelText2"),
-    label2: makeNodeComponent("label2"),
-    labelIconsContainer2: makeNodeComponent("labelIconsContainer2"),
-    endIconsContainer2: makeNodeComponent("endIconsContainer2"),
-    frame1863: makeNodeComponent("frame1863"),
     sourceBranchChanges: makeNodeComponent("sourceBranchChanges"),
-    startIconsContainer3: makeNodeComponent("startIconsContainer3"),
-    labelsContainer3: makeNodeComponent("labelsContainer3"),
-    labelText3: makeNodeComponent("labelText3"),
-    label3: makeNodeComponent("label3"),
-    labelIconsContainer3: makeNodeComponent("labelIconsContainer3"),
-    endIconsContainer3: makeNodeComponent("endIconsContainer3"),
     destinationBranchChanges: makeNodeComponent("destinationBranchChanges"),
-    startIconsContainer4: makeNodeComponent("startIconsContainer4"),
-    labelsContainer4: makeNodeComponent("labelsContainer4"),
-    labelText4: makeNodeComponent("labelText4"),
-    label4: makeNodeComponent("label4"),
     labelIconsContainer4: makeNodeComponent("labelIconsContainer4"),
-    endIconsContainer4: makeNodeComponent("endIconsContainer4"),
-    dividerSeparator: makeNodeComponent("dividerSeparator"),
-    frame4: makeNodeComponent("frame4"),
-    frame23: makeNodeComponent("frame23"),
-    frame1857: makeNodeComponent("frame1857"),
-    button5: makeNodeComponent("button5"),
-    startIconsContainer5: makeNodeComponent("startIconsContainer5"),
-    labelsContainer5: makeNodeComponent("labelsContainer5"),
-    labelText5: makeNodeComponent("labelText5"),
-    label5: makeNodeComponent("label5"),
-    label6: makeNodeComponent("label6"),
-    labelIconsContainer5: makeNodeComponent("labelIconsContainer5"),
-    endIconsContainer5: makeNodeComponent("endIconsContainer5"),
     showAllSwitchContainer: makeNodeComponent("showAllSwitchContainer"),
     showAllSwitch: makeNodeComponent("showAllSwitch"),
-    frame1856: makeNodeComponent("frame1856"),
-    frame1860: makeNodeComponent("frame1860"),
-    button7: makeNodeComponent("button7"),
-    startIconsContainer7: makeNodeComponent("startIconsContainer7"),
-    labelsContainer7: makeNodeComponent("labelsContainer7"),
-    labelText7: makeNodeComponent("labelText7"),
-    label8: makeNodeComponent("label8"),
-    labelIconsContainer7: makeNodeComponent("labelIconsContainer7"),
-    endIconsContainer7: makeNodeComponent("endIconsContainer7"),
-    frame1855: makeNodeComponent("frame1855"),
-    button8: makeNodeComponent("button8"),
-    startIconsContainer8: makeNodeComponent("startIconsContainer8"),
-    labelsContainer8: makeNodeComponent("labelsContainer8"),
-    labelText8: makeNodeComponent("labelText8"),
-    label9: makeNodeComponent("label9"),
-    labelIconsContainer8: makeNodeComponent("labelIconsContainer8"),
-    endIconsContainer8: makeNodeComponent("endIconsContainer8"),
-    button9: makeNodeComponent("button9"),
-    startIconsContainer9: makeNodeComponent("startIconsContainer9"),
-    labelsContainer9: makeNodeComponent("labelsContainer9"),
-    labelText9: makeNodeComponent("labelText9"),
-    label10: makeNodeComponent("label10"),
-    labelIconsContainer9: makeNodeComponent("labelIconsContainer9"),
-    endIconsContainer9: makeNodeComponent("endIconsContainer9"),
-    dividerSeparator2: makeNodeComponent("dividerSeparator2"),
-    frame5: makeNodeComponent("frame5"),
     pairedChanges: makeNodeComponent("pairedChanges"),
-    _name: makeNodeComponent("name"),
-    name2: makeNodeComponent("name2"),
-    name3: makeNodeComponent("name3"),
-    dividerSeparator3: makeNodeComponent("dividerSeparator3"),
-    frame6: makeNodeComponent("frame6"),
     reconciliationsContainer: makeNodeComponent("reconciliationsContainer"),
-    frame18: makeNodeComponent("frame18"),
-    button13: makeNodeComponent("button13"),
     startIconsContainer13: makeNodeComponent("startIconsContainer13"),
-    labelsContainer13: makeNodeComponent("labelsContainer13"),
-    labelText13: makeNodeComponent("labelText13"),
-    label15: makeNodeComponent("label15"),
     labelIconsContainer13: makeNodeComponent("labelIconsContainer13"),
     endIconsContainer13: makeNodeComponent("endIconsContainer13"),
     reconciliations: makeNodeComponent("reconciliations"),
     blockedContainer: makeNodeComponent("blockedContainer"),
     mergeBlockedTitle: makeNodeComponent("mergeBlockedTitle"),
     mergeBlockedMsg: makeNodeComponent("mergeBlockedMsg"),
-    dividerSeparator5: makeNodeComponent("dividerSeparator5"),
-    frame9: makeNodeComponent("frame9"),
-    frame24: makeNodeComponent("frame24"),
-    frame19: makeNodeComponent("frame19"),
+    description: makeNodeComponent("description"),
+    tagsSelector: makeNodeComponent("tagsSelector"),
     cancelButton: makeNodeComponent("cancelButton"),
     finishButton: makeNodeComponent("finishButton"),
     spinnerContainer: makeNodeComponent("spinnerContainer"),

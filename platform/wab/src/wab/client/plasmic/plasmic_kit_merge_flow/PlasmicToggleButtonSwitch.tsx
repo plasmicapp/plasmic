@@ -23,7 +23,6 @@ import {
   createPlasmicElementProxy,
   deriveRenderOpts,
   hasVariant,
-  useCurrentUser,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -89,7 +88,16 @@ function PlasmicToggleButtonSwitch__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -100,8 +108,6 @@ function PlasmicToggleButtonSwitch__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = useCurrentUser?.() || {};
-
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
@@ -111,7 +117,6 @@ function PlasmicToggleButtonSwitch__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.side,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -372,7 +377,6 @@ const PlasmicDescendants = {
     "labelIconsContainer12",
     "endIconsContainer12",
   ],
-
   left: [
     "left",
     "startIconsContainer11",
@@ -382,7 +386,6 @@ const PlasmicDescendants = {
     "labelIconsContainer11",
     "endIconsContainer11",
   ],
-
   startIconsContainer11: ["startIconsContainer11"],
   labelsContainer11: [
     "labelsContainer11",
@@ -390,7 +393,6 @@ const PlasmicDescendants = {
     "label13",
     "labelIconsContainer11",
   ],
-
   labelText11: ["labelText11", "label13"],
   label13: ["label13"],
   labelIconsContainer11: ["labelIconsContainer11"],
@@ -404,7 +406,6 @@ const PlasmicDescendants = {
     "labelIconsContainer12",
     "endIconsContainer12",
   ],
-
   startIconsContainer12: ["startIconsContainer12"],
   labelsContainer12: [
     "labelsContainer12",
@@ -412,7 +413,6 @@ const PlasmicDescendants = {
     "label14",
     "labelIconsContainer12",
   ],
-
   labelText12: ["labelText12", "label14"],
   label14: ["label14"],
   labelIconsContainer12: ["labelIconsContainer12"],
@@ -444,7 +444,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicToggleButtonSwitch__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -452,15 +451,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicToggleButtonSwitch__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicToggleButtonSwitch__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicToggleButtonSwitch__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicToggleButtonSwitch__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

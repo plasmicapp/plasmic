@@ -16,7 +16,6 @@ import Textbox from "@/wab/client/components/widgets/Textbox";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { maybe, nullToUndefined } from "@/wab/shared/common";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Site } from "@/wab/shared/model/classes";
 import { Form, notification, Select } from "antd";
 import L, { orderBy } from "lodash";
@@ -235,20 +234,18 @@ export async function promptTagsAndDesc(
             data-test-id="promptDesc"
           />
         </Form.Item>
-        {DEVFLAGS.publishWithTags ? (
-          <Form.Item name="tags" label={"Enter the new tags"}>
-            <Select
-              mode="tags"
-              style={{ width: "100%" }}
-              placeholder="Tags"
-              tokenSeparators={[","]}
-              autoFocus
-              data-test-id="promptTags"
-            >
-              {previousTagsOptions}
-            </Select>
-          </Form.Item>
-        ) : null}
+        <Form.Item name="tags" label={"Enter the new tags"}>
+          <Select
+            mode="tags"
+            style={{ width: "100%" }}
+            placeholder="Tags"
+            tokenSeparators={[","]}
+            autoFocus
+            data-test-id="promptTags"
+          >
+            {previousTagsOptions}
+          </Select>
+        </Form.Item>
         <Form.Item style={{ margin: 0 }}>
           <Button
             className="mr-sm"

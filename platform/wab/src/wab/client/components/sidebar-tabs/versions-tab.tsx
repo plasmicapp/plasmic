@@ -9,21 +9,20 @@ import {
   Spinner,
 } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import { VERT_MENU_ICON } from "@/wab/client/icons";
 import PlasmicLeftVersionsPanel from "@/wab/client/plasmic/plasmic_kit/PlasmicLeftVersionsPanel";
 import { promptTagsAndDesc } from "@/wab/client/prompts";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { MaybeWrap, swallowClick } from "@/wab/commons/components/ReactUtil";
-import { DEVFLAGS } from "@/wab/shared/devflags";
+import { ApiUser, BranchId } from "@/wab/shared/ApiSchema";
+import { getUserEmail } from "@/wab/shared/ApiSchemaUtil";
 import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
 import { Alert, Form, Menu, Spin, Tag, Tooltip } from "antd";
 import L from "lodash";
 import { observer } from "mobx-react";
 import moment from "moment";
 import React from "react";
-import { Modal } from "@/wab/client/components/widgets/Modal";
-import { ApiUser, BranchId } from "@/wab/shared/ApiSchema";
-import { getUserEmail } from "@/wab/shared/ApiSchemaUtil";
 
 async function publishProject(
   studioCtx: StudioCtx,
@@ -234,9 +233,7 @@ const VersionItem = function (props: {
             );
           }}
         >
-          {DEVFLAGS.publishWithTags
-            ? "Edit tags and description"
-            : "Edit description"}
+          Edit tags and description
         </Menu.Item>
       );
 
@@ -279,7 +276,7 @@ const VersionItem = function (props: {
           <div className="flex-fill text-ellipsis text-unselectable">
             {matcher.boldSnippets(data.title)}
           </div>
-          {DEVFLAGS.publishWithTags && data.tags?.length > 0 && (
+          {data.tags?.length > 0 && (
             <div>
               {data.tags.map((tag) => {
                 return <Tag>{tag}</Tag>;

@@ -642,6 +642,8 @@ type MergeArgs = MergeSrcDst & {
   };
   autoCommitOnToBranch?: boolean;
   excludeMergeStepFromResult?: boolean;
+  description?: string;
+  tags?: string[];
 };
 
 function getCommitChainFromCommit(
@@ -7912,6 +7914,8 @@ export class DbMgr implements MigrationDbMgr {
       resolution,
       autoCommitOnToBranch = false,
       excludeMergeStepFromResult = false,
+      description = "Auto-generated commit post-merge",
+      tags = [],
     }: MergeArgs,
     { mode }: { mode: "preview" | "try" }
   ): Promise<MergeResult> {
@@ -8275,8 +8279,8 @@ export class DbMgr implements MigrationDbMgr {
       projectId,
       // TODO compute the semantic version bump
       undefined,
-      [],
-      "Auto-generated commit post-merge",
+      tags,
+      description,
       undefined,
       undefined,
       toBranchId,

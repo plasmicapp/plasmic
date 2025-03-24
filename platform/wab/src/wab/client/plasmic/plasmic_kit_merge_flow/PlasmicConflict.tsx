@@ -24,7 +24,6 @@ import {
   deriveRenderOpts,
   hasVariant,
   renderPlasmicSlot,
-  useCurrentUser,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -109,7 +108,16 @@ function PlasmicConflict__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -119,8 +127,6 @@ function PlasmicConflict__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = useCurrentUser?.() || {};
 
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
@@ -137,7 +143,6 @@ function PlasmicConflict__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.merged,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -225,7 +230,6 @@ function PlasmicConflict__RenderFunc(props: {
                   {"Homepage"}
                 </div>
               ),
-
               value: args.name,
               className: classNames(sty.slotTargetName, {
                 [sty.slotTargetNamehasSubtext]: hasVariant(
@@ -448,7 +452,6 @@ const PlasmicDescendants = {
     "labelIconsContainer12",
     "endIconsContainer12",
   ],
-
   button10: [
     "button10",
     "startIconsContainer10",
@@ -459,7 +462,6 @@ const PlasmicDescendants = {
     "labelIconsContainer10",
     "endIconsContainer10",
   ],
-
   startIconsContainer10: ["startIconsContainer10", "icon"],
   icon: ["icon"],
   labelsContainer10: [
@@ -468,7 +470,6 @@ const PlasmicDescendants = {
     "subtext",
     "labelIconsContainer10",
   ],
-
   labelText10: ["labelText10", "subtext"],
   subtext: ["subtext"],
   labelIconsContainer10: ["labelIconsContainer10"],
@@ -484,7 +485,6 @@ const PlasmicDescendants = {
     "labelIconsContainer12",
     "endIconsContainer12",
   ],
-
   startIconsContainer12: ["startIconsContainer12"],
   labelsContainer12: [
     "labelsContainer12",
@@ -493,7 +493,6 @@ const PlasmicDescendants = {
     "text",
     "labelIconsContainer12",
   ],
-
   labelText12: ["labelText12", "label14", "text"],
   label14: ["label14"],
   text: ["text"],
@@ -529,7 +528,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicConflict__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -537,15 +535,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicConflict__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicConflict__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicConflict__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicConflict__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
