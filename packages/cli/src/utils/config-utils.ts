@@ -289,8 +289,15 @@ export interface ComponentConfig {
   /** Plume type if component is a Plume component */
   plumeType?: string;
 
+  /**
+   * RSC metadata for this component. The structure of the config changes when this is set:
+   * renderModuleFilePath points to the client blackbox render module.
+   * importSpec points to the server skeleton file.
+   */
   rsc?: {
+    /** The server blackbox render module  */
     serverModulePath: string;
+    /** The client skeleton file */
     clientModulePath: string;
   };
 }

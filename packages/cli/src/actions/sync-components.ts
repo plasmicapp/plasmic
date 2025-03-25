@@ -232,6 +232,26 @@ export async function syncProjectComponents(
         }
         renameFile(context, compConfig.importSpec.modulePath, skeletonPath);
         compConfig.importSpec.modulePath = skeletonPath;
+        if (
+          compConfig.rsc?.clientModulePath &&
+          fileExists(context, compConfig.rsc.clientModulePath)
+        ) {
+          const clientModulePath = skeletonPath.replace(
+            /\.tsx$/,
+            "-client.tsx"
+          );
+          if (context.cliArgs.quiet !== true) {
+            logger.info(
+              `Renaming page file: ${compConfig.rsc.clientModulePath} -> ${clientModulePath}\t['${project.projectName}' ${project.projectId}/${id} ${project.version}]`
+            );
+          }
+          renameFile(
+            context,
+            compConfig.rsc.clientModulePath,
+            clientModulePath
+          );
+          compConfig.rsc.clientModulePath = clientModulePath;
+        }
       }
 
       compConfig.plumeType = plumeType;
@@ -306,6 +326,8 @@ export async function syncProjectComponents(
     }
     summary.set(id, { skeletonModuleModified });
 
-    await syncRscFiles(context, project, bundle, compConfig);
+    await syncRscFiles(context, project, bundle, compConfig, {
+      shouldRegenerate,
+    });
   }
 }

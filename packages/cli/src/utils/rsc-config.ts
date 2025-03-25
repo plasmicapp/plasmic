@@ -6,7 +6,10 @@ export async function syncRscFiles(
   context: PlasmicContext,
   project: ProjectConfig,
   bundle: ComponentBundle,
-  compConfig: ComponentConfig
+  compConfig: ComponentConfig,
+  opts: {
+    shouldRegenerate: boolean;
+  }
 ) {
   const rscMetadata = bundle.rscMetadata;
   if (rscMetadata) {
@@ -39,13 +42,15 @@ export async function syncRscFiles(
     );
     compConfig.rsc.clientModulePath = clientModuleFilePath;
 
-    await writeFileContent(
-      context,
-      clientModuleFilePath,
-      rscMetadata.pageWrappers.client.module,
-      {
-        force: false,
-      }
-    );
+    if (opts.shouldRegenerate) {
+      await writeFileContent(
+        context,
+        clientModuleFilePath,
+        rscMetadata.pageWrappers.client.module,
+        {
+          force: false,
+        }
+      );
+    }
   }
 }

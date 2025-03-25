@@ -946,8 +946,6 @@ export async function fixRscModulesImports(
       continue;
     }
 
-    logger.info(`Fixing rsc import statements... ${modulePath}`);
-
     try {
       await fixFileImportStatements(
         context,

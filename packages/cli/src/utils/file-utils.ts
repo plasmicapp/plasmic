@@ -463,10 +463,17 @@ export function readFileText(path: string): string {
         case "create":
           return ensureString(action.content);
         case "rename":
-          return readFileText(action.newPath);
+          // eslint-disable-next-line no-restricted-properties
+          return fs.readFileSync(path, "utf8");
         case "delete":
           throw new HandledError("File does not exists");
       }
+    }
+    // If we are buffering files and the file has been renamed, only the old file path
+    // exists in disk, so we need to read the content from the old file path.
+    const renamedFilePath = renamedFiles.get(path);
+    if (renamedFilePath) {
+      return readFileText(renamedFilePath);
     }
   }
 
@@ -503,7 +510,6 @@ export function renameFileBuffered(oldPath: string, newPath: string) {
     if (renamedFile !== undefined) {
       oldPath = renamedFile;
     }
-
     buffer.set(oldPath, { type: "rename", newPath });
     renamedFiles.set(newPath, oldPath);
   } else {
