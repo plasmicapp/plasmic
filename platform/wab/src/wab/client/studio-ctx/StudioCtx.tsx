@@ -30,6 +30,7 @@ import {
   getFocusedInsertAnchor,
   getPreferredInsertLocs,
 } from "@/wab/client/components/canvas/view-ops";
+import { TplCommentThread } from "@/wab/client/components/comments/utils";
 import {
   clearDarkMask,
   createDarkMask,
@@ -7004,6 +7005,19 @@ export function isUserProjectContentEditor(
   perms: ApiPermission[]
 ) {
   return checkAccessLevelRank(user, project, perms, "content");
+}
+
+export function canUpdateHistory(
+  studioCtx: StudioCtx,
+  thread: TplCommentThread
+): boolean {
+  const appCtx = studioCtx.appCtx;
+  const isProjectContentEditor = isUserProjectContentEditor(
+    appCtx.selfInfo,
+    studioCtx.siteInfo,
+    studioCtx.siteInfo.perms
+  );
+  return isProjectContentEditor || appCtx.selfInfo?.id === thread.createdById;
 }
 
 export function isUserProjectEditor(

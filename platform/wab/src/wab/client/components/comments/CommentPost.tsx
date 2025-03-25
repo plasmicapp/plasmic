@@ -8,6 +8,7 @@ import {
   PlasmicCommentPost,
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPost";
 import {
+  canUpdateHistory,
   isUserProjectOwner,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
@@ -110,6 +111,9 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
 
   const popoverTargetRef = React.useRef<HTMLDivElement>(null);
 
+  const canUpdateThreadHistory =
+    isThread && canUpdateHistory(studioCtx, commentThread);
+
   return (
     <PlasmicCommentPost
       className="CommentPost"
@@ -129,6 +133,7 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
           setIsEditing(false);
         },
       }}
+      canUpdateHistory={canUpdateThreadHistory}
       timestamp={moment(comment.createdAt).fromNow()}
       thread={isThread}
       userFullName={fullName(author)}

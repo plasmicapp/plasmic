@@ -50,17 +50,20 @@ export type PlasmicCommentPost__VariantMembers = {
   thread: "thread";
   isEditing: "isEditing";
   isDeleted: "isDeleted";
+  canUpdateHistory: "canUpdateHistory";
 };
 export type PlasmicCommentPost__VariantsArgs = {
   thread?: SingleBooleanChoiceArg<"thread">;
   isEditing?: SingleBooleanChoiceArg<"isEditing">;
   isDeleted?: SingleBooleanChoiceArg<"isDeleted">;
+  canUpdateHistory?: SingleBooleanChoiceArg<"canUpdateHistory">;
 };
 type VariantPropType = keyof PlasmicCommentPost__VariantsArgs;
 export const PlasmicCommentPost__VariantProps = new Array<VariantPropType>(
   "thread",
   "isEditing",
-  "isDeleted"
+  "isDeleted",
+  "canUpdateHistory"
 );
 
 export type PlasmicCommentPost__ArgsType = {};
@@ -90,6 +93,7 @@ export interface DefaultCommentPostProps {
   thread?: SingleBooleanChoiceArg<"thread">;
   isEditing?: SingleBooleanChoiceArg<"isEditing">;
   isDeleted?: SingleBooleanChoiceArg<"isDeleted">;
+  canUpdateHistory?: SingleBooleanChoiceArg<"canUpdateHistory">;
   className?: string;
 }
 
@@ -143,6 +147,13 @@ function PlasmicCommentPost__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isDeleted,
       },
+      {
+        path: "canUpdateHistory",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) =>
+          $props.canUpdateHistory,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -178,6 +189,11 @@ function PlasmicCommentPost__RenderFunc(props: {
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__sfn9I, {
+          [sty.freeBoxcanUpdateHistory__sfn9IsmvQ]: hasVariant(
+            $state,
+            "canUpdateHistory",
+            "canUpdateHistory"
+          ),
           [sty.freeBoxthread__sfn9IkhQ]: hasVariant($state, "thread", "thread"),
         })}
       >
@@ -258,6 +274,11 @@ function PlasmicCommentPost__RenderFunc(props: {
           data-plasmic-name={"actions"}
           data-plasmic-override={overrides.actions}
           className={classNames(projectcss.all, sty.actions, {
+            [sty.actionscanUpdateHistory]: hasVariant(
+              $state,
+              "canUpdateHistory",
+              "canUpdateHistory"
+            ),
             [sty.actionsisDeleted]: hasVariant(
               $state,
               "isDeleted",
@@ -285,6 +306,11 @@ function PlasmicCommentPost__RenderFunc(props: {
             data-plasmic-name={"threadHistoryStatus"}
             data-plasmic-override={overrides.threadHistoryStatus}
             className={classNames("__wab_instance", sty.threadHistoryStatus, {
+              [sty.threadHistoryStatuscanUpdateHistory]: hasVariant(
+                $state,
+                "canUpdateHistory",
+                "canUpdateHistory"
+              ),
               [sty.threadHistoryStatusthread]: hasVariant(
                 $state,
                 "thread",
@@ -526,15 +552,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicCommentPost__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicCommentPost__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicCommentPost__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicCommentPost__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

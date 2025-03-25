@@ -127,7 +127,7 @@ export const CommentsTab = observer(function CommentsTab(
           name: currentComponent.name,
           type: currentComponent.type,
           showCount: true,
-          count: focusedComponentThreads.length,
+          count: `${focusedComponentThreads.length}`,
         }}
         currentThreads={{
           noComments: focusedComponentThreads.length === 0,
@@ -144,20 +144,25 @@ export const CommentsTab = observer(function CommentsTab(
           },
         }}
         restHeader={{
-          count: otherComponentsThreads.length,
+          wrap: (node) => otherComponentsThreads.length > 0 && node,
+          props: {
+            count: `${otherComponentsThreads.length}`,
+          },
         }}
         restThreads={{
-          noComments: otherComponentsThreads.length === 0,
-          threads: {
-            children: otherComponentsThreads.map((commentThread) => (
-              <RootComment
-                key={commentThread.id}
-                commentThread={commentThread}
-                onThreadSelect={(threadId) =>
-                  commentsCtx.openCommentThreadDialog(threadId)
-                }
-              />
-            )),
+          wrap: (node) => otherComponentsThreads.length > 0 && node,
+          props: {
+            threads: {
+              children: otherComponentsThreads.map((commentThread) => (
+                <RootComment
+                  key={commentThread.id}
+                  commentThread={commentThread}
+                  onThreadSelect={(threadId) =>
+                    commentsCtx.openCommentThreadDialog(threadId)
+                  }
+                />
+              )),
+            },
           },
         }}
       />

@@ -1,11 +1,10 @@
 import CommentPostForm from "@/wab/client/components/comments/CommentPostForm";
-import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultThreadCommentsDialogProps,
   PlasmicThreadCommentsDialog,
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicThreadCommentsDialog";
 import {
-  isUserProjectContentEditor,
+  canUpdateHistory,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { summarizeTpl } from "@/wab/shared/core/tpls";
@@ -18,7 +17,6 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog(
   props: ThreadCommentsDialogProps
 ) {
   const studioCtx = useStudioCtx();
-  const appCtx = useAppCtx();
   const commentsCtx = studioCtx.commentsCtx;
   const viewCtx = commentsCtx.openedViewCtx();
 
@@ -30,20 +28,13 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog(
     [commentsCtx.computedData().allThreads, commentsCtx.openedThreadId()]
   );
 
-  const isContentEditor = isUserProjectContentEditor(
-    appCtx.selfInfo,
-    studioCtx.siteInfo,
-    studioCtx.siteInfo.perms
-  );
-
   const threadSubject = selectedThread?.subject;
 
   if (!threadSubject || !viewCtx) {
     return null;
   }
 
-  const showThreadStatusIndicator =
-    isContentEditor || appCtx.selfInfo?.id === selectedThread.createdById;
+  const canUpdateThreadHistory = canUpdateHistory(studioCtx, selectedThread);
 
   return (
     <div className="CommentDialogContainer">
@@ -59,7 +50,7 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog(
               viewCtx.effectiveCurrentVariantSetting(threadSubject).rsh()
             ),
           },
-          isThread: showThreadStatusIndicator,
+          isThread: canUpdateThreadHistory,
           threadHistoryStatus: {
             commentThread: selectedThread,
           },

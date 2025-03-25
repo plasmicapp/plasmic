@@ -123,6 +123,10 @@
 }
 .threadHistoryStatusthread:global(.__wab_instance) {
   flex-shrink: 0;
+  display: none;
+}
+.threadHistoryStatuscanUpdateHistory:global(.__wab_instance) {
+  flex-shrink: 0;
   display: flex;
 }
 .freeBox___5UHnq {
