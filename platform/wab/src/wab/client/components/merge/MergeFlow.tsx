@@ -149,7 +149,9 @@ function MergeFlow_(
   React.useEffect(() => {
     spawn(
       (async () => {
-        const projectReleases = await hostFrameApi.getProjectReleases();
+        const projectReleases = await hostFrameApi.getProjectReleases({
+          mainBranchOnly: true,
+        });
         setPreviousTags([
           ...new Set(projectReleases?.map((release) => release.tags).flat()),
         ] as string[]);

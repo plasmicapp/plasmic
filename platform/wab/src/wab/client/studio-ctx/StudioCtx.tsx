@@ -5477,13 +5477,16 @@ export class StudioCtx extends WithDbCtx {
   /**
    * For this projectId, fetch all available releases from the server,
    * sorted by [latest => oldest]
+   *
+   * @param opts - if mainBranchOnly is true, only return releases from the main branch
    **/
-  async getProjectReleases(): Promise<PkgVersionInfoMeta[]> {
+  async getProjectReleases(
+    opts = { mainBranchOnly: false }
+  ): Promise<PkgVersionInfoMeta[]> {
     const projectId = this.siteInfo.id;
     const appCtx = this.appCtx;
-    // ASK: Why send branchId? Do we ever have releases for branchIds? Because as far as I know, the branch can only be merged to main, then published
-    // const branchId = this.branchInfo()?.id;
-    return await getProjectReleases(appCtx, projectId, undefined);
+    const branchId = opts.mainBranchOnly ? undefined : this.branchInfo()?.id;
+    return await getProjectReleases(appCtx, projectId, branchId);
   }
 
   async hasChangesSinceLastPublish() {
