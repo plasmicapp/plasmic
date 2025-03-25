@@ -26,7 +26,11 @@ import {
   withoutNils,
   xGroupBy,
 } from "@/wab/shared/common";
-import { isTplNamable, isTplVariantable } from "@/wab/shared/core/tpls";
+import {
+  getTplOwnerComponent,
+  isTplNamable,
+  isTplVariantable,
+} from "@/wab/shared/core/tpls";
 import { ArenaFrame, ObjInst, TplNode } from "@/wab/shared/model/classes";
 import { mkSemVerSiteElement } from "@/wab/shared/site-diffs";
 import Chroma from "@/wab/shared/utils/color-utils";
@@ -119,8 +123,14 @@ export function CanvasAddCommentMarker(props: {
   const { viewCtx, tpl } = props;
   const commentsCtx = viewCtx.studioCtx.commentsCtx;
   const commentStats = commentsCtx.computedData().commentStatsByVariant;
+  const spotlightComponent = viewCtx?.currentComponentCtx()?.component();
+  const ownerComponent = getTplOwnerComponent(tpl);
 
-  if (!isTplNamable(tpl)) {
+  // Don't show the add comment marker if the component is in spotlight mode
+  // and is a child of the spotlighted component.
+  const isSpotlightChild = ownerComponent === spotlightComponent;
+
+  if (!isTplNamable(tpl) || isSpotlightChild) {
     return null;
   }
   const variants = getSetOfVariantsForViewCtx(viewCtx, viewCtx.bundler());
