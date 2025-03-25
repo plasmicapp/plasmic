@@ -61,6 +61,11 @@ function serializeServerQueriesServerWrapper(
     serializeServerQueriesFetchFunction(ctx);
 
   return `
+/* eslint-disable */
+/* tslint:disable */
+// @ts-nocheck
+/* prettier-ignore-start */
+
 import * as React from "react";
 ${makeComponentTypeImport(opts, component)}
 
@@ -204,7 +209,7 @@ export async function executeServerQueries($ctx: any) {
       .join("\n")}
   };
 
-  const serverQueries: Record<string, ServerQuery> = {
+  const serverQueries: Record<string, ServerQuery<(typeof $$)[keyof typeof $$]>> = {
     ${serverQueries
       .map(
         (query) => `
