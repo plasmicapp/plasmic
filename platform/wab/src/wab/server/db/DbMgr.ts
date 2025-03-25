@@ -9613,7 +9613,7 @@ export class DbMgr implements MigrationDbMgr {
     }
     const threads = await query
       .andWhere("thread.deletedAt is null")
-      .orderBy("thread.updatedAt", "DESC")
+      .orderBy("thread.createdAt", "DESC")
       .addOrderBy("comment.createdAt", "ASC")
       .addOrderBy("history.createdAt", "ASC")
       .getMany();
