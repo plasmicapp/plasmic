@@ -679,10 +679,9 @@ export const CanvasFrame = observer(function CanvasFrame({
             />
           </span>
         </XDraggable>
-        {studioCtx.appCtx.appConfig.comments &&
-          studioCtx.showCommentsOverlay && (
-            <CanvasCommentMarkers arena={arena} arenaFrame={arenaFrame} />
-          )}
+        {studioCtx.showComments() && studioCtx.showCommentsOverlay && (
+          <CanvasCommentMarkers arena={arena} arenaFrame={arenaFrame} />
+        )}
         {studioCtx.appCtx.appConfig.warningsInCanvas && (
           <CanvasActions arena={arena} arenaFrame={arenaFrame} />
         )}

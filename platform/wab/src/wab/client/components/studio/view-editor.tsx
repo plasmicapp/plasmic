@@ -2164,7 +2164,7 @@ const RightPane = observer(function RightPane(props: {
       {disabled && !studioCtx.showCommentsPanel && (
         <div className="canvas-editor__disable-right-pane" />
       )}
-      {DEVFLAGS.demo || appConfig.comments || appConfig.rightTabs ? (
+      {DEVFLAGS.demo || studioCtx.showComments() || appConfig.rightTabs ? (
         studioCtx.showCommentsPanel ? (
           <CommentsTab />
         ) : (

@@ -127,11 +127,22 @@ function ShareDialogContent(props: ShareDialogContentProps) {
     appCtx.selfInfo,
     perms
   );
+  const teamId =
+    resource.type === "project"
+      ? resource.resource.teamId
+      : resource.type === "workspace"
+      ? resource.resource.team.id
+      : resource.resource.id;
+
   const ownAccessLevelRank = accessLevelRank(ownAccessLevel);
   // Anyone can invite to a resource if they have at least viewer access
   // but it will require editor access to update invite by link
   const canInvite = ownAccessLevelRank >= accessLevelRank("viewer");
   const canEdit = ownAccessLevelRank >= accessLevelRank("editor");
+  const canHaveCommenterRole =
+    canEdit &&
+    (appCtx.appConfig.comments ||
+      (teamId && appCtx.appConfig.commentsTeamIds.includes(teamId)));
   const [requireSignUp, setRequireSignUp] = React.useState(false);
   const [inviteAccessLevel, setInviteAccessLevel] =
     React.useState<GrantableAccessLevel>(canEdit ? "editor" : "viewer");
@@ -281,6 +292,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
                 revokes: [],
               });
             }}
+            canHaveCommenterRole={!!canHaveCommenterRole}
             onRevoke={async () => {
               await doGrantRevoke({
                 revokes: [{ email: permEmail }],
@@ -308,7 +320,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
         onChange: (key) => setInviteAccessLevel(key as GrantableAccessLevel),
         children: [
           <Select.Option value="viewer">{viewerTooltip}</Select.Option>,
-          ...(appCtx.appConfig.comments
+          ...(canHaveCommenterRole
             ? [
                 <Select.Option value="commenter">
                   {commenterTooltip}
@@ -371,7 +383,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
                   : updateTeam(value as GrantableAccessLevel),
               children: [
                 <Select.Option value="viewer">{viewerTooltip}</Select.Option>,
-                ...(appCtx.appConfig.comments
+                ...(canHaveCommenterRole
                   ? [
                       <Select.Option value="commenter">
                         {commenterTooltip}

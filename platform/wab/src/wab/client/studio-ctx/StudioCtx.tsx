@@ -2777,6 +2777,30 @@ export class StudioCtx extends WithDbCtx {
   }
 
   //
+  // Comments
+  //
+  showComments() {
+    const team = this.appCtx
+      .getAllTeams()
+      .find((t) => t.id === this.siteInfo.teamId);
+    const accessLevel = getAccessLevelToResource(
+      { type: "project", resource: this.siteInfo },
+      this.appCtx.selfInfo,
+      this.siteInfo.perms
+    );
+    return (
+      this.appCtx.appConfig.comments ||
+      (accessLevelRank(accessLevel) >= accessLevelRank("commenter") &&
+        ((this.siteInfo.teamId &&
+          this.appCtx.appConfig.commentsTeamIds.includes(
+            this.siteInfo.teamId
+          )) ||
+          (team?.parentTeamId &&
+            this.appCtx.appConfig.commentsTeamIds.includes(team.parentTeamId))))
+    );
+  }
+
+  //
   // Managing the "Add Drawer"
   //
   private _showAddDrawer = observable.box(false);

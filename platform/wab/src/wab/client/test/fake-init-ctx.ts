@@ -7,11 +7,11 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { fakePromisifiedApi } from "@/wab/client/test/FakeApi";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { SiteInfo } from "@/wab/shared/SharedApi";
 import { FastBundler } from "@/wab/shared/bundler";
-import { ArenaFrame } from "@/wab/shared/model/classes";
 import { createSite } from "@/wab/shared/core/sites";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { ArenaFrame } from "@/wab/shared/model/classes";
 import { createMemoryHistory } from "history";
 
 export function fakeApp() {
@@ -34,6 +34,8 @@ export function fakeAppCtx() {
     appConfig: DEVFLAGS,
     bundler: new FastBundler(),
     history,
+    teams: [],
+    workspaces: [],
   });
 
   return {
@@ -51,9 +53,11 @@ export function fakeDbCtx() {
     app: appCtxDeps.app,
     appCtx: appCtxDeps.appCtx,
     site: createSite(),
+    // @ts-expect-error
     siteInfo: {
       id: "ProjectId123",
       name: "Test Site",
+      perms: [],
     } as SiteInfo,
   });
   return {

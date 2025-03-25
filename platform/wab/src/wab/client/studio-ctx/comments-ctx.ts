@@ -20,7 +20,6 @@ import {
 } from "@/wab/shared/comments-utils";
 import { assert, sortBy, xGroupBy } from "@/wab/shared/common";
 import { TplNamable } from "@/wab/shared/core/tpls";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { partition } from "lodash";
 import { autorun, observable, runInAction } from "mobx";
 import { computedFn } from "mobx-utils";
@@ -178,7 +177,7 @@ export class CommentsCtx {
   async fetchComments() {
     const projectId = this.studioCtx.siteInfo.id;
     const branchId = this.studioCtx.dbCtx().branchInfo?.id;
-    if (!(DEVFLAGS.demo || this.studioCtx.appCtx.appConfig.comments)) {
+    if (!this.studioCtx.showComments()) {
       return;
     }
 

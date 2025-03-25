@@ -175,7 +175,7 @@ const ViewButton = observer(function ViewButton(props: ViewButtonProps) {
             );
           }
 
-          if (appCtx.appConfig.comments) {
+          if (studioCtx.showComments()) {
             const showCommentsOverlay = studioCtx.showCommentsOverlay;
             push(
               <Menu.Item

@@ -940,7 +940,7 @@ export function makeTplMenu(
     );
   });
 
-  if (studioCtx.appCtx.appConfig.comments && isTplNamable(tpl)) {
+  if (studioCtx.showComments() && isTplNamable(tpl)) {
     builder.genSection(undefined, (push) => {
       push(
         <Menu.Item

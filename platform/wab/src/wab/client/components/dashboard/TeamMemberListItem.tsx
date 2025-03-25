@@ -19,6 +19,7 @@ import {
 import {
   ApiFeatureTier,
   ApiPermission,
+  TeamId,
   TeamMember,
 } from "@/wab/shared/ApiSchema";
 import { fullName, getUserEmail } from "@/wab/shared/ApiSchemaUtil";
@@ -36,6 +37,7 @@ interface TeamMemberListItemProps extends DefaultTeamMemberListItemProps {
   changeRole: (email: string, role?: GrantableAccessLevel) => Promise<void>;
   removeUser: (email: string) => Promise<void>;
   disabled?: boolean;
+  teamId?: TeamId;
 }
 
 function TeamMemberListItem_(
@@ -50,6 +52,7 @@ function TeamMemberListItem_(
     changeRole,
     removeUser,
     disabled,
+    teamId,
     ...rest
   } = props;
   const appCtx = useAppCtx();
@@ -60,6 +63,10 @@ function TeamMemberListItem_(
     )
       ? perm.accessLevel
       : "none";
+
+  const canHaveCommenterRole =
+    appCtx.appConfig.comments ||
+    (teamId && appCtx.appConfig.commentsTeamIds.includes(teamId));
   const noneDesc =
     "'None' means that the user has no team-wide permissions, but may have individual workspace or project permissions. Users with `None` will still count towards your seat count.";
   return (
@@ -136,7 +143,7 @@ function TeamMemberListItem_(
               </TextWithInfo>
             )}
           </Select.Option>,
-          ...(appCtx.appConfig.comments
+          ...(canHaveCommenterRole
             ? [
                 <Select.Option value="commenter">
                   {commenterTooltip}
