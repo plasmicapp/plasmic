@@ -116,6 +116,7 @@ export async function ${componentName}(props: ${componentPropsName}) {
     pageRoute,
     pagePath,
     params: pageParams,
+    query: searchParams,
   };
 
   const ${SERVER_QUERIES_VAR_NAME} = await executeServerQueries($ctx);
@@ -193,6 +194,26 @@ function serializeServerQueriesFetchFunction(ctx: SerializerBaseContext) {
   const { customFunctionsAndLibsImport, serializedCustomFunctionsAndLibs } =
     serializeCustomFunctionsAndLibs(ctx);
 
+  const serverQueriesDeclaration = `
+    const serverQueries: Record<string, ServerQuery<(typeof $$)[keyof typeof $$]>> = {
+    ${serverQueries
+      .map(
+        (query) => `
+      ${toVarName(query.name)}: {
+        id: "${customFunctionId(query.op.func)}",
+        fn: $$.${query.op.func.importName},
+        execParams: () => [${serializeServerQueryCustomFunctionArgs(
+          query.op,
+          ctx.exprCtx
+        )}],
+      },`
+      )
+      .join("\n")}
+    };
+  `;
+
+  const usesSearchParams = serverQueriesDeclaration.includes("$ctx.query");
+
   const module = `
 ${customFunctionsAndLibsImport}
 
@@ -209,27 +230,15 @@ export async function executeServerQueries($ctx: any) {
       .join("\n")}
   };
 
-  const serverQueries: Record<string, ServerQuery<(typeof $$)[keyof typeof $$]>> = {
-    ${serverQueries
-      .map(
-        (query) => `
-      ${toVarName(query.name)}: {
-        id: "${customFunctionId(query.op.func)}",
-        fn: $$.${query.op.func.importName},
-        execParams: () => [${serializeServerQueryCustomFunctionArgs(
-          query.op,
-          ctx.exprCtx
-        )}],
-      },`
-      )
-      .join("\n")}
-  };
+  ${usesSearchParams ? "await $ctx.query;" : ""}
+
+  ${serverQueriesDeclaration}
 
   do {
     await Promise.all(
       Object.keys(serverQueries).map(async (key) => {
         $queries[key] = await executeServerQuery(serverQueries[key]);
-        if (!$queries[key].data.isUndefinedServerProxy) {
+        if (!$queries[key].data?.isUndefinedServerProxy) {
           delete serverQueries[key];
         }
       })
