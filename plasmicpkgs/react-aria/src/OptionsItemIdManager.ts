@@ -1,4 +1,5 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useIsomorphicLayoutEffect } from "./utils";
 
 type Observer = (ids: string[]) => void;
 
@@ -74,9 +75,9 @@ export const useOptionsItemId = (
   requestedId?: string,
   idManager?: OptionsItemIdManager
 ) => {
-  const [registeredId, setRegisteredId] = useState("");
+  const [registeredId, setRegisteredId] = useState<string | undefined>();
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!idManager) {
       return;
     }

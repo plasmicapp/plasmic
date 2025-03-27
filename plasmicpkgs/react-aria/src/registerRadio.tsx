@@ -64,7 +64,7 @@ export function BaseRadio(props: BaseRadioProps) {
   const radio = (
     <Radio
       {...rest}
-      value={registeredId}
+      value={registeredId ?? ""}
       key={registeredId}
       style={COMMON_STYLES}
     >

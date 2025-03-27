@@ -11,6 +11,12 @@ export type HasControlContextData<T = BaseControlContextData> = {
   setControlContextData?: (ctxData: T) => void;
 };
 
+export const isBrowser = typeof window !== "undefined";
+
+export const useIsomorphicLayoutEffect = isBrowser
+  ? React.useLayoutEffect
+  : React.useEffect;
+
 export type WithPlasmicCanvasComponentInfo = {
   __plasmic_selection_prop__?: {
     isSelected: boolean;
