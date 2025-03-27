@@ -6,7 +6,6 @@ import { CommentMarkerHoverDialog } from "@/wab/client/components/comments/Comme
 import CommentPost from "@/wab/client/components/comments/CommentPost";
 import {
   getSubjectVariantsKey,
-  isCommentForFrame,
   TplCommentThread,
 } from "@/wab/client/components/comments/utils";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
@@ -20,12 +19,7 @@ import {
   ViewCtx,
 } from "@/wab/client/studio-ctx/view-ctx";
 import { AnyArena } from "@/wab/shared/Arenas";
-import {
-  ensure,
-  ensureString,
-  withoutNils,
-  xGroupBy,
-} from "@/wab/shared/common";
+import { ensure, ensureString, withoutNils } from "@/wab/shared/common";
 import {
   getTplOwnerComponent,
   isTplNamable,
@@ -174,24 +168,12 @@ export const CanvasCommentMarkers = observer(function CanvasCommentMarkers({
 
   useRerenderOnUserBodyChange(studioCtx, viewCtx);
 
-  const threadsGroupedBySubject = React.useMemo(
-    () =>
-      !viewCtx
-        ? new Map()
-        : xGroupBy(
-            commentsCtx
-              .computedData()
-              .unresolvedThreads.filter((commentThread) =>
-                isCommentForFrame(studioCtx, viewCtx, commentThread)
-              ),
-            (commentThread) => commentThread.subject.uuid
-          ),
-    [commentsCtx.computedData().unresolvedThreads, studioCtx, viewCtx]
-  );
-
-  if (!viewCtx) {
+  if (!viewCtx || !viewCtx.isVisible()) {
     return null;
   }
+
+  const threadsGroupedBySubject =
+    commentsCtx.getThreadsGroupedBySubjectForViewCtx(viewCtx);
 
   return (
     <>

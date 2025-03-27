@@ -249,13 +249,13 @@ export function isElementWithComments(
 }
 
 export function isCommentForFrame(
-  studioCtx: StudioCtx,
   viewCtx: ViewCtx,
   commentThread: TplCommentThread
 ) {
-  const bundler = studioCtx.bundler();
+  const bundler = viewCtx.bundler();
   const subject = bundler.objByAddr(commentThread.location.subject);
-  const ownerComponent = studioCtx
+
+  const ownerComponent = viewCtx
     .tplMgr()
     .findComponentContainingTpl(subject as TplNode);
 

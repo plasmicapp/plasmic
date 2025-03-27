@@ -2,6 +2,7 @@ import {
   CommentFilter,
   computeCommentStats,
   getCommentThreadsWithModelMetadata,
+  isCommentForFrame,
 } from "@/wab/client/components/comments/utils";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
@@ -85,6 +86,17 @@ export class CommentsCtx {
   computedData() {
     return this._computedData();
   }
+
+  readonly getThreadsGroupedBySubjectForViewCtx = computedFn(
+    (viewCtx: ViewCtx) => {
+      return xGroupBy(
+        this.computedData().unresolvedThreads.filter((commentThread) =>
+          isCommentForFrame(viewCtx, commentThread)
+        ),
+        (commentThread) => commentThread.subject.uuid
+      );
+    }
+  );
 
   openedThreadId() {
     return this._openedThreadId.get();

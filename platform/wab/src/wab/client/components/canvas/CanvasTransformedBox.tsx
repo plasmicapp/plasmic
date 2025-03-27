@@ -1,6 +1,6 @@
 import { recomputeBounds } from "@/wab/client/components/canvas/HoverBox";
 import { frameToScalerRect } from "@/wab/client/coords";
-import { hasLayoutBox } from "@/wab/client/dom";
+import { useElementHasLayout } from "@/wab/client/dom-utils";
 import { cssPropsForInvertTransform } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { unexpected } from "@/wab/shared/common";
@@ -27,11 +27,12 @@ export const CanvasTransformedBox = observer(function CanvasTransformedBox({
   children?: ReactNode;
   keepDims?: boolean;
 }) {
-  const elt = $elt.get().filter(hasLayoutBox);
-  if (elt.length === 0 || !elt[0].isConnected) {
+  const element = useElementHasLayout($elt);
+  if (!element) {
     return null;
   }
-  const eltRect = recomputeBounds($(elt)).rect();
+
+  const eltRect = recomputeBounds($(element)).rect();
   const scalerRect =
     relativeTo === "arena"
       ? frameToScalerRect(eltRect, viewCtx)
