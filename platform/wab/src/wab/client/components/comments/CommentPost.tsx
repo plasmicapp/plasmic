@@ -119,7 +119,11 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
       className="CommentPost"
       root={{ ref: popoverTargetRef }}
       {...rest}
-      body={<StandardMarkdown>{comment.body}</StandardMarkdown>}
+      body={
+        comment.deletedAt ? null : (
+          <StandardMarkdown>{comment.body}</StandardMarkdown>
+        )
+      }
       isEditing={isEditing}
       isDeleted={Boolean(comment.deletedAt)}
       commentPostForm={{

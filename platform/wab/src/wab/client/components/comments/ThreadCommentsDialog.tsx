@@ -50,7 +50,7 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog(
               viewCtx.effectiveCurrentVariantSetting(threadSubject).rsh()
             ),
           },
-          isThread: canUpdateThreadHistory,
+          canUpdateHistory: canUpdateThreadHistory,
           threadHistoryStatus: {
             commentThread: selectedThread,
           },

@@ -392,9 +392,9 @@ function PlasmicCommentPost__RenderFunc(props: {
               }
             )}
           >
-            {
-              "Hello there! This comment is long. Hello there! This comment is long. Hello there! This comment is long. Hello there! This comment is long. Hello there! This comment is long. "
-            }
+            {hasVariant($state, "isDeleted", "isDeleted")
+              ? "Deleted comment"
+              : "Hello there! This comment is long. Hello there! This comment is long. Hello there! This comment is long. Hello there! This comment is long. Hello there! This comment is long. "}
           </div>
         </div>
         <Stack__

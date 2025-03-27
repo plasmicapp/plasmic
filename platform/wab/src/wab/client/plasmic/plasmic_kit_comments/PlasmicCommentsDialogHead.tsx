@@ -43,14 +43,14 @@ import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy
 createPlasmicElementProxy;
 
 export type PlasmicCommentsDialogHead__VariantMembers = {
-  isThread: "isThread";
+  canUpdateHistory: "canUpdateHistory";
 };
 export type PlasmicCommentsDialogHead__VariantsArgs = {
-  isThread?: SingleBooleanChoiceArg<"isThread">;
+  canUpdateHistory?: SingleBooleanChoiceArg<"canUpdateHistory">;
 };
 type VariantPropType = keyof PlasmicCommentsDialogHead__VariantsArgs;
 export const PlasmicCommentsDialogHead__VariantProps =
-  new Array<VariantPropType>("isThread");
+  new Array<VariantPropType>("canUpdateHistory");
 
 export type PlasmicCommentsDialogHead__ArgsType = {};
 type ArgPropType = keyof PlasmicCommentsDialogHead__ArgsType;
@@ -68,7 +68,7 @@ export type PlasmicCommentsDialogHead__OverridesType = {
 };
 
 export interface DefaultCommentsDialogHeadProps {
-  isThread?: SingleBooleanChoiceArg<"isThread">;
+  canUpdateHistory?: SingleBooleanChoiceArg<"canUpdateHistory">;
   className?: string;
 }
 
@@ -105,10 +105,11 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
-        path: "isThread",
+        path: "canUpdateHistory",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isThread,
+        initFunc: ({ $props, $state, $queries, $ctx }) =>
+          $props.canUpdateHistory,
       },
     ],
     [$props, $ctx, $refs]
@@ -154,17 +155,21 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
           data-plasmic-override={overrides.freeBox}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox, {
-            [sty.freeBoxisThread]: hasVariant($state, "isThread", "isThread"),
+            [sty.freeBoxcanUpdateHistory]: hasVariant(
+              $state,
+              "canUpdateHistory",
+              "canUpdateHistory"
+            ),
           })}
         >
           <ThreadHistoryStatus
             data-plasmic-name={"threadHistoryStatus"}
             data-plasmic-override={overrides.threadHistoryStatus}
             className={classNames("__wab_instance", sty.threadHistoryStatus, {
-              [sty.threadHistoryStatusisThread]: hasVariant(
+              [sty.threadHistoryStatuscanUpdateHistory]: hasVariant(
                 $state,
-                "isThread",
-                "isThread"
+                "canUpdateHistory",
+                "canUpdateHistory"
               ),
             })}
           />
@@ -173,7 +178,11 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
             data-plasmic-name={"close"}
             data-plasmic-override={overrides.close}
             className={classNames("__wab_instance", sty.close, {
-              [sty.closeisThread]: hasVariant($state, "isThread", "isThread"),
+              [sty.closecanUpdateHistory]: hasVariant(
+                $state,
+                "canUpdateHistory",
+                "canUpdateHistory"
+              ),
             })}
             size={"medium"}
             type={["seamless"]}
@@ -182,7 +191,11 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
               data-plasmic-name={"svg"}
               data-plasmic-override={overrides.svg}
               className={classNames(projectcss.all, sty.svg, {
-                [sty.svgisThread]: hasVariant($state, "isThread", "isThread"),
+                [sty.svgcanUpdateHistory]: hasVariant(
+                  $state,
+                  "canUpdateHistory",
+                  "canUpdateHistory"
+                ),
               })}
               role={"img"}
             />
@@ -250,15 +263,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicCommentsDialogHead__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicCommentsDialogHead__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicCommentsDialogHead__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicCommentsDialogHead__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

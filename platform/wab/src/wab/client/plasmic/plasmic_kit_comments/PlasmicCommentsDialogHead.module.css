@@ -32,16 +32,19 @@
   align-items: center;
   justify-content: center;
 }
-.freeBoxisThread > :global(.__wab_flex-container) {
+.freeBoxcanUpdateHistory > :global(.__wab_flex-container) {
   margin-left: calc(0px - var(--token-uzWT6AFCY));
   width: calc(100% + var(--token-uzWT6AFCY));
   margin-top: calc(0px - 0px);
   height: calc(100% + 0px);
 }
-.freeBoxisThread > :global(.__wab_flex-container) > *,
-.freeBoxisThread > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBoxisThread > :global(.__wab_flex-container) > picture > img,
-.freeBoxisThread
+.freeBoxcanUpdateHistory > :global(.__wab_flex-container) > *,
+.freeBoxcanUpdateHistory
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > *,
+.freeBoxcanUpdateHistory > :global(.__wab_flex-container) > picture > img,
+.freeBoxcanUpdateHistory
   > :global(.__wab_flex-container)
   > :global(.__wab_slot)
   > picture
@@ -54,7 +57,7 @@
   flex-shrink: 0;
   display: none;
 }
-.threadHistoryStatusisThread:global(.__wab_instance) {
+.threadHistoryStatuscanUpdateHistory:global(.__wab_instance) {
   flex-shrink: 0;
   display: flex;
 }

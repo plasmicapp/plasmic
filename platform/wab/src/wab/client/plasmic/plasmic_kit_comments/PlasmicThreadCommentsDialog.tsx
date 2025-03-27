@@ -117,8 +117,8 @@ function PlasmicThreadCommentsDialog__RenderFunc(props: {
         <CommentsDialogHead
           data-plasmic-name={"commentsDialogHead"}
           data-plasmic-override={overrides.commentsDialogHead}
+          canUpdateHistory={true}
           className={classNames("__wab_instance", sty.commentsDialogHead)}
-          isThread={true}
         />
       }
       showFooter={false}
@@ -162,15 +162,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicThreadCommentsDialog__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicThreadCommentsDialog__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicThreadCommentsDialog__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicThreadCommentsDialog__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

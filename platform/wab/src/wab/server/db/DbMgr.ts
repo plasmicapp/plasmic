@@ -9622,7 +9622,7 @@ export class DbMgr implements MigrationDbMgr {
     threads.forEach((thread) =>
       thread.comments.forEach((comment) => {
         if (comment.deletedAt) {
-          comment.body = "Deleted comment";
+          comment.body = "";
         }
       })
     );
