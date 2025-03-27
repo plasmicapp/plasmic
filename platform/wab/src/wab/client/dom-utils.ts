@@ -1,6 +1,7 @@
 import { AppCtx } from "@/wab/client/app-ctx";
 import { hasLayoutBox } from "@/wab/client/dom";
 import { getImageSize } from "@/wab/client/image/metadata";
+import { useForceUpdate } from "@/wab/client/useForceUpdate";
 import { ensure, ensureHTMLElt, ensureString } from "@/wab/shared/common";
 import {
   ImageBackground,
@@ -780,26 +781,20 @@ export async function untilClosed(popup: Window) {
  * before the target element is connected to DOM. Hence, we need to attach an
  * observer to return the element when it's connected to DOM and has valid layout.
  */
-export function useElementHasLayout($elt: JQuery<HTMLElement>) {
-  const [element, setElement] = React.useState<HTMLElement>();
+export function useElementHasLayout(elt: HTMLElement | null) {
+  const forceUpdate = useForceUpdate();
+  const element = elt?.isConnected && hasLayoutBox(elt) ? elt : null;
 
   React.useEffect(() => {
-    if (!$elt || $elt.length === 0) {
+    if (!elt) {
       return;
     }
 
-    const el = $elt[0];
+    const eltObserver = new ResizeObserver(forceUpdate);
 
-    const eltObserver = new ResizeObserver(() => {
-      if (el.isConnected && hasLayoutBox(el)) {
-        setElement(el);
-        eltObserver.disconnect();
-      }
-    });
-
-    eltObserver.observe(el);
+    eltObserver.observe(elt);
     return () => eltObserver.disconnect();
-  }, [$elt]);
+  }, [elt]);
 
   return element;
 }

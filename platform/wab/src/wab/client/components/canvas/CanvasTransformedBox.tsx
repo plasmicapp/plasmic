@@ -27,7 +27,7 @@ export const CanvasTransformedBox = observer(function CanvasTransformedBox({
   children?: ReactNode;
   keepDims?: boolean;
 }) {
-  const element = useElementHasLayout($elt);
+  const element = useElementHasLayout($elt.length > 0 ? $elt[0] : null);
   if (!element) {
     return null;
   }
