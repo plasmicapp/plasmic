@@ -3183,7 +3183,7 @@ describe("merging", () => {
   it("Regression tests and edge cases", () => {
     const result = testMergeFromJsonBundle(
       hackyCast<ProjectFullDataResponse>(edgeCasesBundle),
-      ["right"]
+      { conflictPicks: ["right"] }
     );
     expect(result).toMatchObject({
       status: "merged",
@@ -4321,7 +4321,7 @@ describe("merging", () => {
   it("Test merging rich text with conflict", () => {
     const result = testMergeFromJsonBundle(
       hackyCast<ProjectFullDataResponse>(richTextConflict),
-      ["left"]
+      { conflictPicks: ["left"] }
     );
     expect(result).toMatchObject({
       status: "merged",

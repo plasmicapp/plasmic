@@ -421,7 +421,13 @@ export function testMerge({
 
 export function testMergeFromJsonBundle(
   json: ProjectFullDataResponse,
-  conflictPicks?: BranchSide[]
+  {
+    conflictPicks,
+    skipConflictsChecks,
+  }: {
+    conflictPicks?: BranchSide[];
+    skipConflictsChecks?: boolean;
+  } = {}
 ) {
   assert(
     json.branches.length === 1,
@@ -470,6 +476,11 @@ export function testMergeFromJsonBundle(
   ).site;
   const result: MergeStep & { preMergedResults?: MergeDirectConflict } =
     tryMerge(ancestorSite, aSite, bSite, mergedSite, bundler, undefined);
+
+  if (skipConflictsChecks) {
+    return result;
+  }
+
   if (result.status === "needs-resolution") {
     assert(
       conflictPicks,

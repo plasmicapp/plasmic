@@ -1,11 +1,11 @@
 import { Leaves, Paths } from "@/wab/commons/types";
 import { Bundler } from "@/wab/shared/bundler";
 import {
-  TypeStamped,
   assert,
   ensure,
   ensureInstance,
   switchType,
+  TypeStamped,
   unexpected,
 } from "@/wab/shared/common";
 import {
@@ -18,7 +18,7 @@ import {
   ProjectDependency,
 } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
-import { Type, isWeakRefField } from "@/wab/shared/model/model-meta";
+import { isWeakRefField, Type } from "@/wab/shared/model/model-meta";
 import { NodeCtx } from "@/wab/shared/model/model-tree-util";
 import {
   mergeComponentVariants,
@@ -850,17 +850,13 @@ export const modelConflictsMeta: ModelConflictsMeta = {
   },
   EventHandler: {
     interactions: {
-      arrayType: "ordered",
-      conflictType: "merge",
-      mergeKeyIsIdentity: true,
+      arrayType: "atomic",
     },
   },
   GenericEventHandler: {
     handlerType: "generic",
     interactions: {
-      arrayType: "ordered",
-      conflictType: "merge",
-      mergeKeyIsIdentity: true,
+      arrayType: "atomic",
     },
   },
   Interaction: {
@@ -868,7 +864,9 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     interactionName: "harmless",
     condExpr: "harmless",
     conditionalMode: "harmless",
-    args: "unexpected",
+    args: {
+      arrayType: "atomic",
+    },
     uuid: "generic",
     parent: "unexpected",
   },
