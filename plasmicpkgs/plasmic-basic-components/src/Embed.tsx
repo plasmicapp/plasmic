@@ -23,11 +23,7 @@ export interface EmbedProps {
  * One last complication is that Next.js can run the effect multiple times in development mode. There's nothing actually
  * that we can/should do about that, but just something to be aware of if you are here debugging issues.
  */
-export default function Embed({
-  className,
-  code,
-  hideInEditor = false,
-}: EmbedProps) {
+export function Embed({ className, code, hideInEditor = false }: EmbedProps) {
   const rootElt = useRef<HTMLDivElement>(null);
   const inEditor = usePlasmicCanvasContext();
   const htmlId = useId?.();

@@ -34,7 +34,7 @@ function isCurrentLocationInSkipPaths(skipPaths?: Array<{ path: string }>) {
   );
 }
 
-export default function ConditionGuard({
+export function ConditionGuard({
   condition,
   onNotSatisfied,
   children,
@@ -50,7 +50,8 @@ export default function ConditionGuard({
 export const conditionGuardMeta: ComponentMeta<ConditionGuardProps> = {
   name: "hostless-condition-guard",
   displayName: "Condition Guard",
-  description: "Ensure some condition, or else run an interaction. Examples: ensure all users have a database row, or require new users to setup a profile.",
+  description:
+    "Ensure some condition, or else run an interaction. Examples: ensure all users have a database row, or require new users to setup a profile.",
   importName: "ConditionGuard",
   importPath: "@plasmicpkgs/plasmic-basic-components",
   props: {
@@ -59,7 +60,8 @@ export const conditionGuardMeta: ComponentMeta<ConditionGuardProps> = {
       type: "boolean",
       displayName: "Condition",
       description: "The condition to guard against",
-      helpText: "Condition to check. Render contents only if true. Run interaction if false.",
+      helpText:
+        "Condition to check. Render contents only if true. Run interaction if false.",
       defaultValue: true,
     },
     onNotSatisfied: {

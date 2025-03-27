@@ -9,12 +9,7 @@ export interface IframeProps {
   onLoad?: React.ComponentProps<"iframe">["onLoad"];
 }
 
-export default function Iframe({
-  preview,
-  src,
-  className,
-  onLoad,
-}: IframeProps) {
+export function Iframe({ preview, src, className, onLoad }: IframeProps) {
   const isEditing = useContext(PlasmicCanvasContext);
   if (isEditing && !preview) {
     return (

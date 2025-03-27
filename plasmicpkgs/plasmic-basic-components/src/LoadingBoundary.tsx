@@ -40,7 +40,7 @@ function warnDisabledLoadingBoundary() {
   }
 }
 
-export default function LoadingBoundary({
+export function LoadingBoundary({
   children,
   forceLoading,
   loadingState,
