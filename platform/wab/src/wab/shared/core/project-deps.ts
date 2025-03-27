@@ -12,6 +12,7 @@ import {
   isPageArena,
 } from "@/wab/shared/Arenas";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
+import { ensureOnlyValidCodeComponentVariantsInComponent } from "@/wab/shared/code-components/variants";
 import {
   collectUsedIconAssetsForTpl,
   collectUsedPictureAssetsForTpl,
@@ -1339,9 +1340,14 @@ function upgradeProjectDep(
         }
       }
     }
+
     for (const tpl of flattenTpls(component.tplTree)) {
       fixTpl(tpl, component);
     }
+
+    // We need to ensure the code component variants only after we've fixed all the tpls
+    // so that we ensure with the upgraded version of the component
+    ensureOnlyValidCodeComponentVariantsInComponent(site, component);
 
     // Check if the remainin tree has references to removed states
     for (const state of removedStates) {

@@ -108,6 +108,7 @@ import {
   isEventHandlerKeyForAttr,
   isEventHandlerKeyForFuncType,
   isEventHandlerKeyForParam,
+  isTplCodeComponent,
   isTplComponent,
   isTplSlot,
   mkSlot,
@@ -1266,7 +1267,14 @@ async function fixCodeComponentsVariants(
     const componentsToObserve: Component[] = [];
 
     ctx.site.components.forEach((c) => {
-      if (!isCodeComponent(c)) {
+      // We ignore the hostless code components roots here, to let this be handled by the server upgrade
+      if (
+        !isCodeComponent(c) &&
+        !(
+          isTplCodeComponent(c.tplTree) &&
+          isHostLessCodeComponent(c.tplTree.component)
+        )
+      ) {
         const { unregisterdKeys } =
           getInvalidCodeComponentVariantsInComponent(c);
 
