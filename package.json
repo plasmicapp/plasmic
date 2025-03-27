@@ -29,7 +29,8 @@
     "setup:wab": "cd platform/wab && yarn",
     "test": "jest $TEST_CWD",
     "typecheck": "cd platform/wab && yarn ts-watch",
-    "upgrade-internal": "bash scripts/upgrade-internal.bash"
+    "upgrade-internal": "bash scripts/upgrade-internal.bash",
+    "msw:update": "msw init ./msw --save=false"
   },
   "resolutions": {
     "eslint": "^8.55.0",
@@ -57,6 +58,8 @@
     "jest-environment-jsdom": "29.7.0",
     "knip": "5.45.0",
     "lerna": "^7.4.2",
+    "msw": "2.7.3",
+    "msw-storybook-addon": "2.0.4",
     "nx": "^16",
     "prettier": "2.8.8",
     "ts-node": "^10.9.2",
