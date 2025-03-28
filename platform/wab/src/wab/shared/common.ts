@@ -5,7 +5,6 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import * as Immutable from "immutable";
 import type { MemoizedFunction } from "lodash";
 import {
-  Truthy,
   assignIn,
   assignWith,
   camelCase,
@@ -32,6 +31,7 @@ import {
   reverse,
   split,
   takeWhile,
+  Truthy,
   uniqBy,
   uniqueId,
   upperFirst,
@@ -42,7 +42,11 @@ import { nanoid } from "nanoid";
 import { Key } from "react";
 import ShortUuid from "short-uuid";
 import { inspect as utilInspect } from "util";
-import { v4 as Uuidv4 } from "uuid";
+import {
+  v4 as Uuidv4,
+  validate as UuidValidate,
+  version as UuidVersion,
+} from "uuid";
 
 const reAll = require("regexp.execall");
 
@@ -1357,6 +1361,10 @@ export const mkShortId = () => nanoid(12);
 export const mkShortUuid = () => {
   return ShortUuid().fromUUID(mkUuid());
 };
+
+export function isUuidV4(id: string) {
+  return UuidValidate(id) && UuidVersion(id) === 4;
+}
 
 export function groupConsecBy<T, K>(
   xs: T[],

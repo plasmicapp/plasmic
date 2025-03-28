@@ -1547,11 +1547,14 @@ export type CommentLocation = {
 
 // Comment data is already branch specific
 export type RootCommentData = {
+  commentThreadId: CommentThreadId;
+  commentId: CommentId;
   body: string;
   location: CommentLocation;
 };
 
 export type ThreadCommentData = {
+  id: CommentId;
   body: string;
 };
 
@@ -1599,6 +1602,7 @@ export interface EditCommentRequest {
   body: string;
 }
 export interface ResolveThreadRequest {
+  id: ThreadHistoryId;
   resolved: boolean;
 }
 
@@ -1617,6 +1621,7 @@ export interface DomainsForProjectResponse {
 }
 
 export interface AddCommentReactionRequest {
+  id: CommentReactionId;
   data: CommentReactionData;
 }
 

@@ -155,6 +155,7 @@ import {
   TeamId,
   TeamMember,
   TeamWhiteLabelInfo,
+  ThreadHistoryId,
   TutorialDbId,
   UserId,
   WorkspaceId,
@@ -187,6 +188,7 @@ import {
   ensureString,
   filterMapTruthy,
   generate,
+  isUuidV4,
   jsonClone,
   last,
   maybe,
@@ -1043,12 +1045,15 @@ export class DbMgr implements MigrationDbMgr {
   /**
    * Generate standard new-object timestamps and ID.
    */
-  protected stampNew(genShortUuid?: boolean): StampNewFields {
+  protected stampNew(opts?: {
+    id?: string;
+    genShortUuid?: boolean;
+  }): StampNewFields {
     const actorUserId = this.tryGetNormalActorId() ?? null;
     const UUID = uuid.v4();
     const date = new Date();
     return {
-      id: genShortUuid ? shortUuid.fromUUID(UUID) : UUID,
+      id: opts?.genShortUuid ? shortUuid.fromUUID(UUID) : opts?.id || UUID,
       createdAt: date,
       createdById: actorUserId,
       updatedAt: date,
@@ -1159,7 +1164,7 @@ export class DbMgr implements MigrationDbMgr {
     const user = await this.getUserById(userId);
     const devflags = await getDevFlagsMergedWithOverrides(this);
     const team = this.teams().create({
-      ...this.stampNew(true),
+      ...this.stampNew({ genShortUuid: true }),
       name,
       billingEmail: user.email,
       inviteId: generateId(),
@@ -2315,7 +2320,7 @@ export class DbMgr implements MigrationDbMgr {
       "create workspace"
     );
     const workspace = this.workspaces().create({
-      ...this.stampNew(true),
+      ...this.stampNew({ genShortUuid: true }),
       name,
       description,
       team: { id: teamId },
@@ -2343,7 +2348,7 @@ export class DbMgr implements MigrationDbMgr {
   }): Promise<Workspace> {
     this.checkSuperUser();
     const workspace = this.workspaces().create({
-      ...this.stampNew(true),
+      ...this.stampNew({ genShortUuid: true }),
       id,
       name,
       description,
@@ -2608,7 +2613,7 @@ export class DbMgr implements MigrationDbMgr {
     }
 
     const project = this.projects().create({
-      ...this.stampNew(true),
+      ...this.stampNew({ genShortUuid: true }),
       workspaceId,
       name,
       defaultAccessLevel: "viewer",
@@ -3682,7 +3687,7 @@ export class DbMgr implements MigrationDbMgr {
   ) {
     this.allowAnyone();
     const projectSyncMetadata = this.projectSyncMetadata().create({
-      ...this.stampNew(true),
+      ...this.stampNew({ genShortUuid: true }),
       projectId,
       revision,
       projectRevId,
@@ -6577,7 +6582,7 @@ export class DbMgr implements MigrationDbMgr {
     });
     if (!hostlessVersion) {
       hostlessVersion = this.hostlessVersions().create({
-        ...this.stampNew(true),
+        ...this.stampNew({ genShortUuid: true }),
         versionCount: 1,
       });
       await this.hostlessVersions().save(hostlessVersion);
@@ -6735,7 +6740,7 @@ export class DbMgr implements MigrationDbMgr {
   ) {
     await this.checkWorkspacePerms(workspaceId, "editor", "create data source");
     const dataSource = this.dataSources().create({
-      ...this.stampNew(true),
+      ...this.stampNew({ genShortUuid: true }),
       workspaceId,
       name: opts.name,
       credentials: opts.credentials ?? {},
@@ -6961,7 +6966,7 @@ export class DbMgr implements MigrationDbMgr {
       "create CMS database"
     );
     const db = this.cmsDatabases().create({
-      ...this.stampNew(true),
+      ...this.stampNew({ genShortUuid: true }),
       name: opts.name,
       workspaceId: opts.workspaceId,
       extraData: { locales: [] },
@@ -7038,7 +7043,7 @@ export class DbMgr implements MigrationDbMgr {
   }): Promise<CmsTable> {
     await this.checkCmsDatabasePerms(opts.databaseId, "editor");
     const table = this.cmsTables().create({
-      ...this.stampNew(true),
+      ...this.stampNew({ genShortUuid: true }),
       name: opts.name,
       identifier: toVarName(opts.identifier),
       description: opts.description,
@@ -7186,7 +7191,7 @@ export class DbMgr implements MigrationDbMgr {
 
       // TODO: Verify that data is valid per field type!!
       const row = this.cmsRows().create({
-        ...this.stampNew(true),
+        ...this.stampNew({ genShortUuid: true }),
         tableId: tableId,
         identifier: opts.identifier,
         rank: "",
@@ -7277,7 +7282,7 @@ export class DbMgr implements MigrationDbMgr {
 
     const draftRevision = opts.draftData
       ? this.cmsRowRevisions().create({
-          ...this.stampNew(true),
+          ...this.stampNew({ genShortUuid: true }),
           rowId: rowId,
           data: ensure(
             row.draftData,
@@ -7289,7 +7294,7 @@ export class DbMgr implements MigrationDbMgr {
 
     const publishedRevision = opts.data
       ? this.cmsRowRevisions().create({
-          ...this.stampNew(true),
+          ...this.stampNew({ genShortUuid: true }),
           rowId: rowId,
           data: ensure(row.data, "All cms rows must have the data dictionary"),
           isPublished: true,
@@ -7732,7 +7737,7 @@ export class DbMgr implements MigrationDbMgr {
     checkBranchFields({ name }, allBranches);
 
     const branch = this.branches().create({
-      ...this.stampNew(true),
+      ...this.stampNew({ genShortUuid: true }),
       name,
       status: "active",
       projectId,
@@ -9752,7 +9757,7 @@ export class DbMgr implements MigrationDbMgr {
 
   async postCommentInThread(
     { projectId, branchId }: ProjectAndBranchId,
-    data: { body: string; threadId: CommentThreadId }
+    data: { id: CommentId; threadId: CommentThreadId; body: string }
   ): Promise<Comment> {
     await this.checkProjectBranchPerms(
       { projectId, branchId },
@@ -9760,13 +9765,17 @@ export class DbMgr implements MigrationDbMgr {
       "post comment",
       true
     );
-    const threadId = data.threadId;
+    const { id, body, threadId } = data;
+    if (!isUuidV4(id)) {
+      throw new BadRequestError(
+        "Invalid UUID format: 'id' must be a valid UUID."
+      );
+    }
     const comment = this.comments().create({
-      ...this.stampNew(),
-      body: data.body,
+      ...this.stampNew({ id }),
       commentThreadId: threadId,
+      body: body,
     });
-
     await this.entMgr.save(comment);
     await this.commentThreads().update(
       {
@@ -9784,7 +9793,12 @@ export class DbMgr implements MigrationDbMgr {
 
   async postRootCommentInProject(
     { projectId, branchId }: ProjectAndBranchId,
-    data: { location: CommentLocation; body: string }
+    data: {
+      commentThreadId: CommentThreadId;
+      commentId: CommentId;
+      location: CommentLocation;
+      body: string;
+    }
   ): Promise<Comment> {
     await this.checkProjectBranchPerms(
       { projectId, branchId },
@@ -9792,16 +9806,27 @@ export class DbMgr implements MigrationDbMgr {
       "post comment",
       true
     );
+    const { commentThreadId, commentId, location, body } = data;
+    if (!isUuidV4(commentThreadId)) {
+      throw new BadRequestError(
+        "Invalid UUID format: 'commentThreadId' must be a valid UUID."
+      );
+    }
+    if (!isUuidV4(commentId)) {
+      throw new BadRequestError(
+        "Invalid UUID format: 'commentId' must be a valid UUID."
+      );
+    }
     const commentThread = this.commentThreads().create({
-      ...this.stampNew(),
+      ...this.stampNew({ id: commentThreadId }),
       projectId,
       branchId: branchId ?? null,
-      ...data,
+      location,
     });
     const comment = this.comments().create({
-      ...this.stampNew(),
-      body: data.body,
+      ...this.stampNew({ id: commentId }),
       commentThreadId: commentThread.id,
+      body,
     });
     await this.entMgr.save([commentThread, comment]);
     return comment;
@@ -9823,6 +9848,7 @@ export class DbMgr implements MigrationDbMgr {
   }
 
   async resolveThreadInProject(
+    id: ThreadHistoryId,
     commentThreadId: CommentThreadId,
     resolved: boolean
   ) {
@@ -9839,8 +9865,13 @@ export class DbMgr implements MigrationDbMgr {
       );
     }
 
+    if (!isUuidV4(id)) {
+      throw new BadRequestError(
+        "Invalid UUID format: 'id' must be a valid UUID."
+      );
+    }
     const commentThreadHistory = this.commentThreadHistory().create({
-      ...this.stampNew(),
+      ...this.stampNew({ id }),
       commentThreadId: commentThreadId,
       resolved: resolved,
     });
@@ -9963,6 +9994,7 @@ export class DbMgr implements MigrationDbMgr {
   }
 
   async addCommentReaction(
+    id: CommentReactionId,
     commentId: CommentId,
     data: CommentReactionData
   ): Promise<CommentReaction> {
@@ -9972,8 +10004,13 @@ export class DbMgr implements MigrationDbMgr {
       "post comment reaction",
       true
     );
+    if (!isUuidV4(id)) {
+      throw new BadRequestError(
+        "Invalid UUID format: 'id' must be a valid UUID."
+      );
+    }
     const reaction = this.commentReactions().create({
-      ...this.stampNew(),
+      ...this.stampNew({ id }),
       commentId,
       data,
     });

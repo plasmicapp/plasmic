@@ -11,7 +11,9 @@ import {
   CommentId,
   CommentReactionId,
   CommentThreadId,
+  ThreadHistoryId,
 } from "@/wab/shared/ApiSchema";
+import * as uuid from "uuid";
 
 async function addComment(
   dbManager: DbMgr,
@@ -21,13 +23,15 @@ async function addComment(
   const comment = threadId
     ? await dbManager.postCommentInThread(
         { projectId },
-        { body: "reply text", threadId }
+        { body: "reply text", threadId, id: uuid.v4() as CommentId }
       )
     : await dbManager.postRootCommentInProject(
         { projectId },
         {
           body: "comment text",
           location: { subject: { uuid: "", iid: "" }, variants: [] },
+          commentId: uuid.v4() as CommentId,
+          commentThreadId: uuid.v4() as CommentThreadId,
         }
       );
   return comment;
@@ -39,6 +43,7 @@ async function updatedThreadStatus(
   status: boolean = false
 ) {
   const threadHistory = await dbManager.resolveThreadInProject(
+    uuid.v4() as ThreadHistoryId,
     threadId,
     Boolean(status)
   );
@@ -46,9 +51,13 @@ async function updatedThreadStatus(
 }
 
 async function reactOnComment(dbManager: DbMgr, commentId: CommentId) {
-  const commentReaction = await dbManager.addCommentReaction(commentId, {
-    emojiName: "1f44d",
-  });
+  const commentReaction = await dbManager.addCommentReaction(
+    uuid.v4() as CommentReactionId,
+    commentId,
+    {
+      emojiName: "1f44d",
+    }
+  );
   return commentReaction;
 }
 
@@ -338,6 +347,7 @@ describe("sendCommentsNotificationEmails", () => {
           {
             body: `@${users[0].email} should check`,
             threadId: user1Comment.commentThreadId,
+            id: uuid.v4() as CommentId,
           }
         );
 
@@ -1505,6 +1515,7 @@ describe("sendCommentsNotificationEmails", () => {
           {
             body: `@${users[2].email} should check`,
             threadId: user0comment.commentThreadId,
+            id: uuid.v4() as CommentId,
           }
         );
 
@@ -1590,6 +1601,7 @@ describe("sendCommentsNotificationEmails", () => {
           {
             body: `@${users[1].email} should check`,
             threadId: user0comment.commentThreadId,
+            id: uuid.v4() as CommentId,
           }
         );
 
@@ -1656,6 +1668,7 @@ describe("sendCommentsNotificationEmails", () => {
           {
             body: `@${users[2].email} should check`,
             threadId: user0comment.commentThreadId,
+            id: uuid.v4() as CommentId,
           }
         );
 
@@ -1741,6 +1754,7 @@ describe("sendCommentsNotificationEmails", () => {
           {
             body: `${users[2].email} should check`,
             threadId: user0comment.commentThreadId,
+            id: uuid.v4() as CommentId,
           }
         );
 
@@ -1812,6 +1826,7 @@ describe("sendCommentsNotificationEmails", () => {
           {
             body: `@${users[1].email} should check`,
             threadId: user0comment.commentThreadId,
+            id: uuid.v4() as CommentId,
           }
         );
 

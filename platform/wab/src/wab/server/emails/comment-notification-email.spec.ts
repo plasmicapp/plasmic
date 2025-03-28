@@ -8,8 +8,15 @@ import {
   createNotification,
   withEndUserNotificationSetup,
 } from "@/wab/server/test/comments-util";
-import { CommentThreadId, ProjectId } from "@/wab/shared/ApiSchema";
+import {
+  CommentId,
+  CommentReactionId,
+  CommentThreadId,
+  ProjectId,
+  ThreadHistoryId,
+} from "@/wab/shared/ApiSchema";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
+import * as uuid from "uuid";
 
 // Utility function to normalize HTML by removing extra whitespace
 const normalizeHtml = (html) => html.replace(/\s+/g, " ");
@@ -26,6 +33,8 @@ describe("sendUserNotificationEmail", () => {
           {
             body: "comment text",
             location: { subject: { uuid: "", iid: "" }, variants: [] },
+            commentId: uuid.v4() as CommentId,
+            commentThreadId: uuid.v4() as CommentThreadId,
           }
         );
 
@@ -102,6 +111,8 @@ describe("sendUserNotificationEmail", () => {
           {
             body: "comment text",
             location: { subject: { uuid: "", iid: "" }, variants: [] },
+            commentId: uuid.v4() as CommentId,
+            commentThreadId: uuid.v4() as CommentThreadId,
           }
         );
 
@@ -111,9 +122,12 @@ describe("sendUserNotificationEmail", () => {
           {
             body: "comment text",
             location: { subject: { uuid: "", iid: "" }, variants: [] },
+            commentId: uuid.v4() as CommentId,
+            commentThreadId: uuid.v4() as CommentThreadId,
           }
         ); // User 1 reply to user 0 comment
         const user0CommentReaction = await userDbs[0]().addCommentReaction(
+          uuid.v4() as CommentReactionId,
           user1Comment.id,
           {
             emojiName: "1f44d",
@@ -122,14 +136,19 @@ describe("sendUserNotificationEmail", () => {
 
         const user0CommentThreadHistory =
           await await userDbs[0]().resolveThreadInProject(
+            uuid.v4() as ThreadHistoryId,
             user0comment.commentThreadId,
             true
           );
 
         const user0ReactionOnUser1Comment =
-          await userDbs[0]().addCommentReaction(user1Comment.id, {
-            emojiName: "1f44d",
-          });
+          await userDbs[0]().addCommentReaction(
+            uuid.v4() as CommentReactionId,
+            user1Comment.id,
+            {
+              emojiName: "1f44d",
+            }
+          );
 
         // Mock input
         const notifications: Map<
@@ -240,6 +259,8 @@ describe("sendUserNotificationEmail", () => {
           {
             body: "comment text",
             location: { subject: { uuid: "", iid: "" }, variants: [] },
+            commentId: uuid.v4() as CommentId,
+            commentThreadId: uuid.v4() as CommentThreadId,
           }
         );
 
@@ -250,6 +271,8 @@ describe("sendUserNotificationEmail", () => {
             {
               body: "comment text",
               location: { subject: { uuid: "", iid: "" }, variants: [] },
+              commentId: uuid.v4() as CommentId,
+              commentThreadId: uuid.v4() as CommentThreadId,
             }
           );
 
@@ -259,10 +282,13 @@ describe("sendUserNotificationEmail", () => {
           {
             body: "comment text",
             location: { subject: { uuid: "", iid: "" }, variants: [] },
+            commentId: uuid.v4() as CommentId,
+            commentThreadId: uuid.v4() as CommentThreadId,
           }
         );
 
         const user0CommentReaction = await userDbs[0]().addCommentReaction(
+          uuid.v4() as CommentReactionId,
           user1Comment.id,
           {
             emojiName: "1f44d",
@@ -271,14 +297,19 @@ describe("sendUserNotificationEmail", () => {
 
         const user0CommentThreadHistory =
           await await userDbs[0]().resolveThreadInProject(
+            uuid.v4() as ThreadHistoryId,
             user0comment.commentThreadId,
             true
           );
 
         const user0ReactionOnUser1Comment =
-          await userDbs[0]().addCommentReaction(user1Comment.id, {
-            emojiName: "1f44d",
-          });
+          await userDbs[0]().addCommentReaction(
+            uuid.v4() as CommentReactionId,
+            user1Comment.id,
+            {
+              emojiName: "1f44d",
+            }
+          );
 
         // Mock input
         const notifications: Map<

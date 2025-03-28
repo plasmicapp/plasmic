@@ -8,7 +8,8 @@ import {
   PlasmicThreadHistoryStatus,
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicThreadHistoryStatus";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { CommentThreadId } from "@/wab/shared/ApiSchema";
+import { CommentThreadId, ThreadHistoryId } from "@/wab/shared/ApiSchema";
+import { mkUuid } from "@/wab/shared/common";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 import useSWRMutation from "swr/mutation";
@@ -37,6 +38,7 @@ function ThreadHistoryStatus_(
           commentsCtx.branchId(),
           commentThread.id,
           {
+            id: mkUuid() as ThreadHistoryId,
             resolved: !commentThread?.resolved,
           }
         )
@@ -47,6 +49,7 @@ function ThreadHistoryStatus_(
         commentsCtx.branchId(),
         arg,
         {
+          id: mkUuid() as ThreadHistoryId,
           resolved: !commentThread?.resolved,
         }
       );

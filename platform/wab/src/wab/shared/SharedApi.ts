@@ -167,6 +167,7 @@ import {
   TeamId,
   TeamWhiteLabelInfo,
   ThreadCommentData,
+  ThreadHistoryId,
   TrustedHostsListResponse,
   TryMergeRequest,
   TryMergeResponse,
@@ -1867,6 +1868,7 @@ export abstract class SharedApi {
     branchId: BranchId | undefined,
     commentThreadId: CommentThreadId,
     data: {
+      id: ThreadHistoryId;
       resolved: boolean;
     }
   ): Promise<{}> {
@@ -1910,6 +1912,7 @@ export abstract class SharedApi {
   }
 
   async addReactionToComment(
+    id: CommentReactionId,
     projectId: ProjectId,
     branchId: BranchId | undefined,
     commentId: CommentId,
@@ -1920,7 +1923,7 @@ export abstract class SharedApi {
       `/comments/${projectBranchId}/comment/${encodeURIComponent(
         commentId
       )}/reactions`,
-      ensureType<AddCommentReactionRequest>({ data })
+      ensureType<AddCommentReactionRequest>({ id, data })
     );
   }
 

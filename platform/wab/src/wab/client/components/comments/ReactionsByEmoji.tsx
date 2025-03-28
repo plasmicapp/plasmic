@@ -4,9 +4,13 @@ import PlasmicReactionButton from "@/wab/client/plasmic/plasmic_kit_comments/Pla
 import EmojiPlusSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__EmojiPlusSvg";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
-import { ApiCommentReaction, CommentId } from "@/wab/shared/ApiSchema";
+import {
+  ApiCommentReaction,
+  CommentId,
+  CommentReactionId,
+} from "@/wab/shared/ApiSchema";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
-import { ensure } from "@/wab/shared/common";
+import { ensure, mkUuid } from "@/wab/shared/common";
 import { Tooltip } from "antd";
 import Popover from "antd/lib/popover";
 import EmojiPicker, { Emoji } from "emoji-picker-react";
@@ -49,6 +53,7 @@ function ReactionsPopover(props: { commentId: CommentId }) {
                 reactions={REACTIONS}
                 onEmojiClick={async (emoji) => {
                   await api.addReactionToComment(
+                    mkUuid() as CommentReactionId,
                     commentsCtx.projectId(),
                     commentsCtx.branchId(),
                     commentId,
@@ -130,6 +135,7 @@ export function ReactionsByEmoji(props: {
                   );
                 } else {
                   await api.addReactionToComment(
+                    mkUuid() as CommentReactionId,
                     projectId,
                     branchId,
                     commentId,

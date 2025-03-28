@@ -13,11 +13,12 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { getSetOfVariantsForViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
   ApiComment,
+  CommentId,
   CommentThreadId,
   RootCommentData,
   ThreadCommentData,
 } from "@/wab/shared/ApiSchema";
-import { ensure, spawn } from "@/wab/shared/common";
+import { ensure, mkUuid, spawn } from "@/wab/shared/common";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
@@ -74,7 +75,10 @@ const CommentPostForm = observer(function CommentPostForm(
   const handleAddComment = async () => {
     setValue("");
     if (threadId) {
-      const commentData: ThreadCommentData = { body: value };
+      const commentData: ThreadCommentData = {
+        id: mkUuid() as CommentId,
+        body: value,
+      };
       await api.postThreadComment(
         commentsCtx.projectId(),
         commentsCtx.branchId(),
@@ -92,6 +96,8 @@ const CommentPostForm = observer(function CommentPostForm(
         ).map((pv) => commentsCtx.bundler().addrOf(pv)),
       };
       const commentData: RootCommentData = {
+        commentId: mkUuid() as CommentId,
+        commentThreadId: mkUuid() as CommentThreadId,
         body: value,
         location,
       };
