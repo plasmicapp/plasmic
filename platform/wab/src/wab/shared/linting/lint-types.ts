@@ -40,8 +40,9 @@ export interface InvalidTplNestingLintIssue extends BaseLintIssue {
 
 export interface InvalidDomNestingLintIssue extends BaseLintIssue {
   type: "invalid-dom-nesting";
-  component: Component;
+  ancestorComponent: Component;
   ancestorTpl: TplNode;
+  component: Component;
   descendantTpl: TplNode;
 }
 
