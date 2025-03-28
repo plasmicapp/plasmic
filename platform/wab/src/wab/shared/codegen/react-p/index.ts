@@ -787,7 +787,9 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
         : ""
     }
     ${
-      ctx.usesDataSourceInteraction || ctx.usesComponentLevelQueries
+      ctx.usesDataSourceInteraction ||
+      ctx.usesComponentLevelQueries ||
+      ctx.hasServerQueries
         ? `import { executePlasmicDataOp, usePlasmicDataOp, usePlasmicInvalidate${
             ctx.hasServerQueries ? `, usePlasmicServerQuery` : ""
           } } from "${getDataSourcesPackageName()}";`
