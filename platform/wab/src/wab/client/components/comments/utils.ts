@@ -1,5 +1,4 @@
 import { CommentsCtx } from "@/wab/client/studio-ctx/comments-ctx";
-import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   getSetOfVariantsForViewCtx,
   ViewCtx,
@@ -23,6 +22,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { toVariantComboKey } from "@/wab/shared/Variants";
 import { groupBy, partition } from "lodash";
+import { toJS } from "mobx";
 
 type LocalizedCommentThread = ApiCommentThread & {
   location: NonNullable<ApiCommentThread["location"]>;
@@ -98,8 +98,9 @@ export function getCommentThreadWithModelMetadata(
 
   const subject = inst;
   const ownerComponent = getTplOwnerComponent(subject);
+
   return {
-    ...thread,
+    ...toJS(thread), // to ensure MobX observers detect all changes in thread
     subject,
     variants,
     label: summarizeTplNamable(subject),
@@ -266,4 +267,23 @@ export function isCommentForFrame(
       getSetOfVariantsForViewCtx(viewCtx, bundler)
     ).length === 0;
   return isForFrame;
+}
+
+export function makeCommonFields(userId: string): {
+  createdAt: string;
+  updatedAt: string;
+  createdById: string;
+  updatedById: string;
+  deletedAt: null;
+  deletedById: null;
+} {
+  const now = new Date().toISOString();
+  return {
+    createdAt: now,
+    updatedAt: now,
+    createdById: userId,
+    updatedById: userId,
+    deletedAt: null,
+    deletedById: null,
+  };
 }

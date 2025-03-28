@@ -4,7 +4,6 @@ import { MarkdownHintsPopoverContent } from "@/wab/client/components/comments/Ma
 import { Popover } from "@/wab/client/components/plexus/Popover";
 import { useShareDialog } from "@/wab/client/components/top-bar/useShareDialog";
 import { useUserMentions } from "@/wab/client/components/user-mentions/useUserMentions";
-import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultCommentPostFormProps,
   PlasmicCommentPostForm,
@@ -13,12 +12,11 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { getSetOfVariantsForViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
   ApiComment,
-  CommentId,
   CommentThreadId,
   RootCommentData,
   ThreadCommentData,
 } from "@/wab/shared/ApiSchema";
-import { ensure, mkUuid, spawn } from "@/wab/shared/common";
+import { ensure, spawn } from "@/wab/shared/common";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
@@ -40,8 +38,6 @@ const CommentPostForm = observer(function CommentPostForm(
   const studioCtx = useStudioCtx();
 
   const commentsCtx = studioCtx.commentsCtx;
-
-  const api = useAppCtx().api;
 
   const inputElementId = `comment-post-input-${editComment?.id}`;
 
@@ -75,16 +71,8 @@ const CommentPostForm = observer(function CommentPostForm(
   const handleAddComment = async () => {
     setValue("");
     if (threadId) {
-      const commentData: ThreadCommentData = {
-        id: mkUuid() as CommentId,
-        body: value,
-      };
-      await api.postThreadComment(
-        commentsCtx.projectId(),
-        commentsCtx.branchId(),
-        threadId,
-        commentData
-      );
+      const commentData: Omit<ThreadCommentData, "id"> = { body: value };
+      commentsCtx.postThreadComment(threadId, commentData);
     } else {
       const location = {
         subject: commentsCtx
@@ -95,17 +83,14 @@ const CommentPostForm = observer(function CommentPostForm(
           commentsCtx.bundler()
         ).map((pv) => commentsCtx.bundler().addrOf(pv)),
       };
-      const commentData: RootCommentData = {
-        commentId: mkUuid() as CommentId,
-        commentThreadId: mkUuid() as CommentThreadId,
+      const commentData: Omit<
+        RootCommentData,
+        "commentThreadId" | "commentId"
+      > = {
         body: value,
         location,
       };
-      await api.postRootComment(
-        commentsCtx.projectId(),
-        commentsCtx.branchId(),
-        commentData
-      );
+      commentsCtx.postRootComment(commentData);
       commentsCtx.closeCommentDialogs();
     }
     onSubmit?.();
@@ -113,16 +98,7 @@ const CommentPostForm = observer(function CommentPostForm(
 
   const handleEditComment = async (updatedComment?: ApiComment) => {
     if (updatedComment && value.trim() !== updatedComment.body.trim()) {
-      spawn(
-        api.editComment(
-          commentsCtx.projectId(),
-          commentsCtx.branchId(),
-          updatedComment.id,
-          {
-            body: value.trim(),
-          }
-        )
-      );
+      commentsCtx.editComment(updatedComment.id, value.trim());
     }
     onSubmit?.();
     setValue("");

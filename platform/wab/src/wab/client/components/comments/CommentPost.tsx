@@ -34,14 +34,12 @@ export interface CommentPostProps extends DefaultCommentPostProps {
 function CommentMenuOptions(props: {
   comment: ApiComment;
   isThread?: boolean;
-  commentThread: TplCommentThread;
   onEdit?: (comment: ApiComment) => void;
 }) {
-  const { comment, isThread, commentThread, onEdit } = props;
+  const { comment, isThread, onEdit } = props;
 
   const studioCtx = useStudioCtx();
   const appCtx = useAppCtx();
-  const api = appCtx.api;
 
   const isOwner = isUserProjectOwner(
     appCtx.selfInfo,
@@ -50,8 +48,6 @@ function CommentMenuOptions(props: {
   );
 
   const commentsCtx = studioCtx.commentsCtx;
-  const branchId = commentsCtx.branchId();
-  const projectId = commentsCtx.projectId();
 
   return (
     <Menu>
@@ -69,8 +65,8 @@ function CommentMenuOptions(props: {
           <Menu.Item
             key="remove"
             disabled={!(isOwner || appCtx.selfInfo?.id === comment.createdById)}
-            onClick={async () => {
-              await api.deleteComment(projectId, branchId, comment.id);
+            onClick={() => {
+              commentsCtx.deleteComment(comment.id);
             }}
           >
             Delete comment
@@ -94,8 +90,6 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
   const [isEditing, setIsEditing] = React.useState(false);
 
   const studioCtx = useStudioCtx();
-  const appCtx = studioCtx.appCtx;
-  const api = appCtx.api;
   const commentsCtx = studioCtx.commentsCtx;
 
   const author = ensure(
@@ -162,7 +156,6 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
             <CommentMenuOptions
               comment={comment}
               isThread={isThread}
-              commentThread={commentThread}
               onEdit={() => {
                 setIsEditing(true);
               }}

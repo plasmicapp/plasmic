@@ -52,16 +52,9 @@ function ReactionsPopover(props: { commentId: CommentId }) {
                 allowExpandReactions={false}
                 reactions={REACTIONS}
                 onEmojiClick={async (emoji) => {
-                  await api.addReactionToComment(
-                    mkUuid() as CommentReactionId,
-                    commentsCtx.projectId(),
-                    commentsCtx.branchId(),
-                    commentId,
-                    {
-                      emojiName: emoji.unified,
-                    }
-                  );
-
+                  commentsCtx.addReactionToComment(commentId, {
+                    emojiName: emoji.unified,
+                  });
                   setShowPicker(false);
                 }}
               />
@@ -123,26 +116,16 @@ export function ReactionsByEmoji(props: {
               includesSelf={!!currentUsersReaction}
               emoji={<Emoji size={20} unified={emojiName} />}
               count={<>{reactions.length}</>}
-              onClick={async (e) => {
+              onClick={(e) => {
                 e.stopPropagation();
-                const projectId = commentsCtx.projectId();
-                const branchId = commentsCtx.branchId();
                 if (currentUsersReaction) {
-                  await api.removeReactionFromComment(
-                    projectId,
-                    branchId,
+                  commentsCtx.removeReactionFromComment(
                     currentUsersReaction.id
                   );
                 } else {
-                  await api.addReactionToComment(
-                    mkUuid() as CommentReactionId,
-                    projectId,
-                    branchId,
-                    commentId,
-                    {
-                      emojiName,
-                    }
-                  );
+                  commentsCtx.addReactionToComment(commentId, {
+                    emojiName,
+                  });
                 }
               }}
             />
