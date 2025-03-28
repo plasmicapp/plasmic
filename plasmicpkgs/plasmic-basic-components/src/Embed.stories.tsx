@@ -172,9 +172,6 @@ ${makeStatusAndScript(2)}
 ${makeStatusAndScript(3)}`,
   },
   parameters: {
-    test: {
-      dangerouslyIgnoreUnhandledErrors: true, // TODO: fix
-    },
     msw: {
       handlers: [
         makeScriptResolver(1, 400),
@@ -204,10 +201,10 @@ ${makeStatusAndScript(3)}`,
       "Expect no changes on parent re-render in the middle of script loading",
       async () => {
         await userEvent.click(canvas.getByText("Re-render parent"));
-        // expect(canvas.getByTestId("count")).toHaveTextContent("1");
-        // expect(canvas.getByTestId("status1")).toHaveTextContent("done");
-        // expect(canvas.getByTestId("status2")).toHaveTextContent("loading");
-        // expect(canvas.getByTestId("status3")).toHaveTextContent("initial");
+        expect(canvas.getByTestId("count")).toHaveTextContent("1");
+        expect(canvas.getByTestId("status1")).toHaveTextContent("done");
+        expect(canvas.getByTestId("status2")).toHaveTextContent("loading");
+        expect(canvas.getByTestId("status3")).toHaveTextContent("initial");
       }
     );
 
@@ -215,30 +212,29 @@ ${makeStatusAndScript(3)}`,
       "Expect script2 to be done and script3 to start loading",
       async () => {
         await waitFor(() => {
-          // expect(canvas.getByTestId("count")).toHaveTextContent("2");
-          // expect(canvas.getByTestId("status1")).toHaveTextContent("done");
-          // expect(canvas.getByTestId("status2")).toHaveTextContent("done");
-          // expect(canvas.getByTestId("status3")).toHaveTextContent("loading");
+          expect(canvas.getByTestId("count")).toHaveTextContent("2");
+          expect(canvas.getByTestId("status1")).toHaveTextContent("done");
+          expect(canvas.getByTestId("status2")).toHaveTextContent("done");
+          expect(canvas.getByTestId("status3")).toHaveTextContent("loading");
         });
       }
     );
 
     await step("Expect script3 to be done", async () => {
       await waitFor(() => {
-        // expect(canvas.getByTestId("count")).toHaveTextContent("3");
-        expect(canvas.getByTestId("count")).toHaveTextContent("5"); // TODO: this is wrong, should be 3
-        // expect(canvas.getByTestId("status1")).toHaveTextContent("done");
-        // expect(canvas.getByTestId("status2")).toHaveTextContent("done");
-        // expect(canvas.getByTestId("status3")).toHaveTextContent("done");
+        expect(canvas.getByTestId("count")).toHaveTextContent("3");
+        expect(canvas.getByTestId("status1")).toHaveTextContent("done");
+        expect(canvas.getByTestId("status2")).toHaveTextContent("done");
+        expect(canvas.getByTestId("status3")).toHaveTextContent("done");
       });
     });
 
     await step("Expect no changes on parent re-render, again", async () => {
       await userEvent.click(canvas.getByText("Re-render parent"));
-      // expect(canvas.getByTestId("count")).toHaveTextContent("3");
-      // expect(canvas.getByTestId("status1")).toHaveTextContent("done");
-      // expect(canvas.getByTestId("status2")).toHaveTextContent("done");
-      // expect(canvas.getByTestId("status3")).toHaveTextContent("done");
+      expect(canvas.getByTestId("count")).toHaveTextContent("3");
+      expect(canvas.getByTestId("status1")).toHaveTextContent("done");
+      expect(canvas.getByTestId("status2")).toHaveTextContent("done");
+      expect(canvas.getByTestId("status3")).toHaveTextContent("done");
     });
 
     await step(

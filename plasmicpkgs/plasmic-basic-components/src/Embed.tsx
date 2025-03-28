@@ -43,7 +43,9 @@ export function Embed({ className, code, hideInEditor = false }: EmbedProps) {
     ) {
       return;
     }
+
     // Load scripts sequentially one at a time, since later scripts can depend on earlier ones.
+    let cleanup = false;
     (async () => {
       for (const oldScript of Array.from(
         ensure(rootElt.current).querySelectorAll("script")
@@ -62,10 +64,16 @@ export function Embed({ className, code, hideInEditor = false }: EmbedProps) {
           await new Promise((resolve) =>
             newScript.addEventListener("load", resolve)
           );
+          if (cleanup) {
+            return;
+          }
         }
       }
+      return () => {
+        cleanup = true;
+      };
     })();
-  }, [htmlId, firstRender, code, hideInEditor, inEditor]);
+  }, [htmlId, code, hideInEditor, inEditor]);
   const effectiveCode =
     hideInEditor && inEditor
       ? ""
