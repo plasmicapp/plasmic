@@ -108,9 +108,9 @@ export function ${makeGlobalVariantGroupUseName(vg)}() {
   }
 
   return `
-    // @ts-nocheck
     /* eslint-disable */
     /* tslint:disable */
+    // @ts-nocheck
     /* prettier-ignore-start */
 
     ${makeUseClient(opts)}

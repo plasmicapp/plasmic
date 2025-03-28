@@ -742,9 +742,9 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
   // components that we may be importing into this file. We don't need
   // to worry about non-components, as we don't expect name collisions there.
   const renderModule = `
-    // @ts-nocheck
     /* eslint-disable */
     /* tslint:disable */
+    // @ts-nocheck
     /* prettier-ignore-start */
     ${
       opts.codeOpts.reactRuntime === "automatic"
