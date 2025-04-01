@@ -1,8 +1,3 @@
-import DOMPurify_ from "dompurify";
-
-// compatibility with nodejs :-/
-const DOMPurify: typeof DOMPurify_ = (DOMPurify_ as any).default || DOMPurify_;
-
 /**
  * Mutates the svg element to remove any references to
  * explicit colors, and set to currentColor instead.
@@ -66,20 +61,6 @@ export function convertSvgToTextSized(svg: SVGSVGElement) {
   if (svg.style) {
     delete (svg as any).style["width"];
     delete (svg as any).style["height"];
-  }
-}
-
-// When sanitizing SVGs, we allow <use xlink:href="" /> that reference
-// local nodes.  Copied from
-// https://github.com/cure53/DOMPurify/issues/233
-function xlinkHook(node: Element) {
-  if (node.tagName === "use") {
-    if (node.hasAttribute("xlink:href")) {
-      const href = node.getAttribute("xlink:href");
-      if (href && !href.match(/^#/)) {
-        node.remove();
-      }
-    }
   }
 }
 
