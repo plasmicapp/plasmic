@@ -156,8 +156,8 @@ export function ${componentName}(props: ${defaultPropsName}) {
 }
 
 export function serializeUseDollarServerQueries(ctx: SerializerBaseContext) {
-  // We don't need to generate this hook if we're using RSC or if we don't have server queries
-  if (ctx.useRSC || !ctx.hasServerQueries) {
+  // We don't need to generate this hook if we don't have server queries
+  if (!ctx.hasServerQueries) {
     return "";
   }
 
@@ -167,7 +167,11 @@ export function serializeUseDollarServerQueries(ctx: SerializerBaseContext) {
   );
 
   return `
-function useDollarServerQueries($ctx: any, $queries: any) {
+function useDollarServerQueries(
+  $ctx: any,
+  $queries: any,
+  fallbackDataObject: Record<string, any> = {}
+) {
   return {
     ${serverQueries
       .map(
@@ -178,7 +182,7 @@ function useDollarServerQueries($ctx: any, $queries: any) {
           query.op,
           ctx.exprCtx
         )}],
-        }),`
+        }, fallbackDataObject?.["${toVarName(query.name)}"]?.data),`
       )
       .join("\n")}
   };

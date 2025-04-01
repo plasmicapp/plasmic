@@ -37,12 +37,8 @@ export function makePlasmicClientRscComponentFileName(component: Component) {
 export function makeServerQueryClientDollarQueryInit(
   ctx: SerializerBaseContext
 ) {
-  if (ctx.useRSC) {
-    return `...($props.${SERVER_QUERIES_VAR_NAME} ?? {})`;
-  }
-
   if (ctx.hasServerQueries) {
-    return `...useDollarServerQueries($ctx, $queries)`;
+    return `...useDollarServerQueries($ctx, $queries, $props?.${SERVER_QUERIES_VAR_NAME} ?? {})`;
   }
 
   return undefined;
