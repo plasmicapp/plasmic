@@ -336,6 +336,19 @@ function* _genComponentErrors(site: Site, component: Component) {
     );
   }
 
+  const seenVariantKeys: string[] = [];
+  for (const variant of component.variants) {
+    if (seenVariantKeys.includes(toVariantKey(variant))) {
+      yield new InvariantError(
+        `Component ${getComponentDisplayName(
+          component
+        )} contains duplicate variant ${toVariantKey(variant)}`
+      );
+    }
+
+    seenVariantKeys.push(toVariantKey(variant));
+  }
+
   const seenTplUuids = new Set<string>();
 
   // Check that all children tpl nodes are valid
@@ -612,10 +625,8 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
       const combinationKey = variantKeys.sort().join("|");
 
       if (seenVariantsCombo.has(combinationKey)) {
-        Sentry.captureException(
-          new InvariantError(
-            `${tplName} contains duplicate variant combo ${combinationKey}`
-          )
+        yield new InvariantError(
+          `${tplName} contains duplicate variant combo ${combinationKey}`
         );
       } else {
         seenVariantsCombo.add(combinationKey);

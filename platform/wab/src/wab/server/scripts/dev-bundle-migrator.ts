@@ -75,6 +75,7 @@ const paths = [
   "src/wab/server/__tests__/bundle-migrations/fixtures/code-component-variants.migrated.json",
   "src/wab/server/__tests__/bundle-migrations/fixtures/plume-default-components.migrated.json",
   "src/wab/server/__tests__/bundle-migrations/fixtures/duplicate-variants.migrated.json",
+  "src/wab/server/__tests__/bundle-migrations/fixtures/merge-duplicate-variants.migrated.json",
 ];
 
 async function migrate() {

@@ -4977,7 +4977,7 @@
           }
         },
         "deps": [],
-        "version": "242-remove-duplicate-variants"
+        "version": "243-merge-duplicate-variants"
       },
       "projectId": "dNoM99U17XFRGCXZ5SUbc1",
       "version": "0.0.1",
@@ -10223,7 +10223,7 @@
           "65055094": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "242-remove-duplicate-variants"
+        "version": "243-merge-duplicate-variants"
       }
     },
     {
@@ -15303,7 +15303,7 @@
           "52044046": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "242-remove-duplicate-variants"
+        "version": "243-merge-duplicate-variants"
       }
     }
   ]

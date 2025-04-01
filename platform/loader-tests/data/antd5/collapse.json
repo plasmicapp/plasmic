@@ -27515,7 +27515,7 @@
         }
       },
       "deps": [],
-      "version": "242-remove-duplicate-variants"
+      "version": "243-merge-duplicate-variants"
     }
   ],
   [
@@ -29934,7 +29934,7 @@
         "0C_x9nWtO9s1": { "tpl": [], "__type": "VirtualRenderExpr" }
       },
       "deps": ["2d9b4d39-3373-465f-8045-538cac45fce6"],
-      "version": "242-remove-duplicate-variants"
+      "version": "243-merge-duplicate-variants"
     }
   ]
 ]

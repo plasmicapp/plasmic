@@ -740,7 +740,7 @@
         }
       },
       "deps": [],
-      "version": "242-remove-duplicate-variants"
+      "version": "243-merge-duplicate-variants"
     }
   ],
   [
@@ -2122,7 +2122,7 @@
         "tkbX31iChEAr": { "text": ["quill-state"], "__type": "TemplatedString" }
       },
       "deps": ["b911462e-59ce-455d-b8d3-0d84f50a35dd"],
-      "version": "242-remove-duplicate-variants"
+      "version": "243-merge-duplicate-variants"
     }
   ]
 ]

@@ -2514,7 +2514,7 @@
           }
         },
         "deps": [],
-        "version": "242-remove-duplicate-variants"
+        "version": "243-merge-duplicate-variants"
       },
       "projectId": "2YAtuqUruz4SscKrr5g25x",
       "version": "0.0.1",
@@ -4718,7 +4718,7 @@
           "53903362": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "242-remove-duplicate-variants"
+        "version": "243-merge-duplicate-variants"
       }
     },
     {
@@ -7400,7 +7400,7 @@
           }
         },
         "deps": [],
-        "version": "242-remove-duplicate-variants"
+        "version": "243-merge-duplicate-variants"
       }
     }
   ]

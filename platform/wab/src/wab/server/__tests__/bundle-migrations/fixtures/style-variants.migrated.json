@@ -1892,5 +1892,5 @@
     }
   },
   "deps": [],
-  "version": "242-remove-duplicate-variants"
+  "version": "243-merge-duplicate-variants"
 }

@@ -6162,7 +6162,7 @@
           "53898074": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "242-remove-duplicate-variants"
+        "version": "243-merge-duplicate-variants"
       },
       "projectId": "5txi3zd6hPLtbkzbV8p6jB",
       "version": "0.0.1",
@@ -12390,7 +12390,7 @@
           "63532015": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "242-remove-duplicate-variants"
+        "version": "243-merge-duplicate-variants"
       }
     },
     {
@@ -18701,7 +18701,7 @@
           }
         },
         "deps": [],
-        "version": "242-remove-duplicate-variants"
+        "version": "243-merge-duplicate-variants"
       }
     }
   ]

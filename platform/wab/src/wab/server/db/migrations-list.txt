@@ -240,3 +240,4 @@ platform/wab/src/wab/server/bundle-migrations/239-add-server-queries.ts
 platform/wab/src/wab/server/bundle-migrations/240-set-plume-default-component.ts
 platform/wab/src/wab/server/bundle-migrations/241-add-custom-function-flag.ts
 platform/wab/src/wab/server/bundle-migrations/242-remove-duplicate-variants.ts
+platform/wab/src/wab/server/bundle-migrations/243-merge-duplicate-variants.ts
