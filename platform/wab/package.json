@@ -280,7 +280,7 @@
     "dayjs": "^1.11.9",
     "debug": "2.6.9",
     "dom-align": "^1.12.0",
-    "dompurify": "^2.0.12",
+    "dompurify": "^2.5.8",
     "dotenv": "^8.2.0",
     "downscale": "^1.0.6",
     "downshift": "^6.1.9",
