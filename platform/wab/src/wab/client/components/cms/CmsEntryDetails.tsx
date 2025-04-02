@@ -397,7 +397,8 @@ function CmsEntryDetailsForm_(
       await form.validateFields();
     } catch (err) {
       /* The validateFields function throws an error with details if any field has an error.
-       We are ignoring this error as it is unrelated to checking the unique field. */
+       We are ignoring this error because we just want to trigger the field validation and
+       antd will automatically show warnings/errors to the user. */
     }
   }
 

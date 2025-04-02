@@ -339,6 +339,8 @@ export const isConflicting = (val1: unknown, val2: unknown) => {
   return normalizedVal1 === normalizedVal2;
 };
 
+/** If users turn on the unique attribute later,
+ there might be multiple conflicting rows. */
 export const getConflictingCmsRowIds = (
   publishedRows: CmsRow[],
   currentRowId: CmsRowId,

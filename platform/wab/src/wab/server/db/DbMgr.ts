@@ -7299,7 +7299,7 @@ export class DbMgr implements MigrationDbMgr {
         .filter((field) => !field.hidden && field.unique)
         .map((field) => field.identifier);
       if (uniqueFieldIdentifiers.length > 0) {
-        /* Check unique fields have violation. */
+        /* Check if unique fields have violations. */
         if (opts.data) {
           const uniqueFieldsData = getUniqueFieldsData(
             uniqueFieldIdentifiers,

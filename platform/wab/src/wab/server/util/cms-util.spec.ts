@@ -192,9 +192,10 @@ describe("getConflictingCmsRowIds", () => {
   const id1 = "1" as CmsRowId;
   const id2 = "2" as CmsRowId;
   const id3 = "3" as CmsRowId;
+  let rows: CmsRow[] = [];
 
   it("should ignore the current checking row and only check default locale data", () => {
-    const rows = [
+    rows = [
       createRow(id1, { "": { field: 1 }, us: { field: 4 } }),
       createRow(id2, { "": { field: 2 }, us: { field: 4 } }),
       createRow(id3, { "": { field: 3 }, us: { field: 4 } }),
@@ -217,18 +218,20 @@ describe("getConflictingCmsRowIds", () => {
   });
 
   it("should return all of the conflicting rows", () => {
-    const rows: CmsRow[] = [];
-    rows.push(createRow(id1, { "": { field: 1 } }));
-    rows.push(createRow(id2, { "": { field: 1 } }));
-    rows.push(createRow(id3, { "": { field: 1 } }));
+    rows = [
+      createRow(id1, { "": { field: 1 } }),
+      createRow(id2, { "": { field: 1 } }),
+      createRow(id3, { "": { field: 1 } }),
+    ];
     expect(getConflictingCmsRowIds(rows, id1, "field", 1)).toEqual([id2, id3]);
   });
 
   it("should only check the requested field", () => {
-    const rows: CmsRow[] = [];
-    rows.push(createRow(id1, { "": { field1: 1, field2: 2 } }));
-    rows.push(createRow(id2, { "": { field1: 2, field2: 1 } }));
-    rows.push(createRow(id3, { "": { field1: 2, field2: 2 } }));
+    rows = [
+      createRow(id1, { "": { field1: 1, field2: 2 } }),
+      createRow(id2, { "": { field1: 2, field2: 1 } }),
+      createRow(id3, { "": { field1: 2, field2: 2 } }),
+    ];
     expect(getConflictingCmsRowIds(rows, id3, "field1", 1)).toEqual([id1]);
     expect(getConflictingCmsRowIds(rows, id3, "field2", 1)).toEqual([id2]);
   });
