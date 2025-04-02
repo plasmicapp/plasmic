@@ -212,11 +212,7 @@ import type {
   PropTypeBaseDefault,
 } from "@plasmicapp/host/dist/prop-types";
 import { RefActionRegistration } from "@plasmicapp/host/registerComponent";
-import {
-  BaseParam,
-  ParamType,
-  VoidType,
-} from "@plasmicapp/host/registerFunction";
+import { ParamType } from "@plasmicapp/host/registerFunction";
 import {
   assign,
   clone,
@@ -2479,7 +2475,7 @@ export function createCustomFunctionFromRegistration(
     importPath: functionReg.meta.importPath,
     namespace: functionReg.meta.namespace ?? null,
     params:
-      functionReg.meta.params?.map((paramReg: string | BaseParam<any>) => {
+      functionReg.meta.params?.map((paramReg: string | ParamType<any, any>) => {
         const name = isString(paramReg) ? paramReg : paramReg.name;
         const argType = isString(paramReg)
           ? typeFactory.text()
@@ -4491,7 +4487,7 @@ async function upsertRegisteredFunctions(
       const updatedFunctionRegs: CustomFunctionRegistration[] = [];
       const removedFunctions = new Set<CustomFunction>();
 
-      const isValidType = (type: ParamType<any> | VoidType): boolean => {
+      const isValidType = (type: any): boolean => {
         if (Array.isArray(type)) {
           return type.every((t) => isValidType(t));
         }
@@ -4582,7 +4578,7 @@ async function upsertRegisteredFunctions(
           }
           for (const param of functionReg.meta.params as (
             | string
-            | BaseParam<any>
+            | ParamType<any, any>
           )[]) {
             if (isString(param)) {
               if (!isValidJsIdentifier(param)) {

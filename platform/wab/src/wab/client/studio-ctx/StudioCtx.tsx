@@ -360,7 +360,6 @@ import {
   makeCacheKey,
   makeQueryCacheKey,
 } from "@plasmicapp/data-sources";
-import type { ParamType, VoidType } from "@plasmicapp/host/registerFunction";
 import * as Sentry from "@sentry/browser";
 import { message, notification } from "antd";
 import { ArgsProps } from "antd/lib/notification";
@@ -4557,7 +4556,7 @@ export class StudioCtx extends WithDbCtx {
     const getCustomFunctionDeclaration = (
       customFunction: classes.CustomFunction
     ) => {
-      const registeredTypeToTs = (type: VoidType | ParamType<any>): string => {
+      const registeredTypeToTs = (type: any): string => {
         if (Array.isArray(type)) {
           return type.map((t) => registeredTypeToTs(t)).join(" | ");
         }
