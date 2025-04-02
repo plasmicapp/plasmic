@@ -2045,6 +2045,7 @@ export function buildParamToComponent(components: Component[]) {
 // 1. Upon unbundling, we record the root of each Component in the unbundled site
 // 2. Upon creating a new Component
 // 3. Upon TplQuery operations
+// 4. Upon adding a new site dependency
 const TPLROOT_TO_COMPONENT = new WeakMap<TplNode, Component>();
 export function getTplOwnerComponent(tpl: TplNode) {
   return ensure(

@@ -1,3 +1,4 @@
+import { resolveAllTokenRefs } from "@/wab/commons/StyleToken";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -6,7 +7,6 @@ import {
   strictFind,
   withoutNils,
 } from "@/wab/shared/common";
-import { resolveAllTokenRefs } from "@/wab/commons/StyleToken";
 import {
   isCodeComponent,
   isHostLessCodeComponent,
@@ -15,6 +15,21 @@ import {
 } from "@/wab/shared/core/components";
 import { clone as cloneExpr } from "@/wab/shared/core/exprs";
 import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
+import { allStyleTokens, isHostLessPackage } from "@/wab/shared/core/sites";
+import { createExpandedRuleSetMerger } from "@/wab/shared/core/styles";
+import {
+  clone as cloneTpl,
+  deepTrackComponents,
+  findVariantSettingsUnderTpl,
+  fixParentPointers,
+  flattenTplsBottomUp,
+  isTplCodeComponent,
+  isTplComponent,
+  isTplSlot,
+  isTplTag,
+  isTplVariantable,
+  walkTpls,
+} from "@/wab/shared/core/tpls";
 import {
   adaptEffectiveVariantSetting,
   EffectiveVariantSetting,
@@ -53,20 +68,6 @@ import {
   mkVariantSetting,
   tryGetBaseVariantSetting,
 } from "@/wab/shared/Variants";
-import { allStyleTokens, isHostLessPackage } from "@/wab/shared/core/sites";
-import { createExpandedRuleSetMerger } from "@/wab/shared/core/styles";
-import {
-  clone as cloneTpl,
-  findVariantSettingsUnderTpl,
-  fixParentPointers,
-  flattenTplsBottomUp,
-  isTplCodeComponent,
-  isTplComponent,
-  isTplSlot,
-  isTplTag,
-  isTplVariantable,
-  walkTpls,
-} from "@/wab/shared/core/tpls";
 import { flatten } from "lodash";
 
 /**
@@ -704,6 +705,10 @@ export function ensureHostLessDepComponent(
     console.log(`Installing missing hostless package ${missingDep.name}`);
 
     targetSite.projectDependencies.push(missingDep);
+
+    // Be sure to track it, so that we can properly to do some fixups
+    // as effectiveVs may require `getTplOwnerComponent`
+    deepTrackComponents(missingDep.site);
 
     // We need to sync new global contexts as well, and we will
     // copy over values for new global contexts from sourceSite
