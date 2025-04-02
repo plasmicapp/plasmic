@@ -2,7 +2,7 @@
 FROM node:18-alpine
 
 # System setup
-RUN apk add --no-cache bash=5.2.15-r5 make=4.4.1-r1 bubblewrap=0.8.0-r1
+RUN apk add --no-cache bash~=5 make~=4 bubblewrap~=0.11
 SHELL ["/bin/bash","-o", "pipefail","-l","-c"]
 
 RUN echo | adduser normaluser --disabled-password
