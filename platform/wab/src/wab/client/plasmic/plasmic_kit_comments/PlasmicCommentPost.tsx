@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -194,6 +194,11 @@ function PlasmicCommentPost__RenderFunc(props: {
             "canUpdateHistory",
             "canUpdateHistory"
           ),
+          [sty.freeBoxisEditing__sfn9Iuz8Vl]: hasVariant(
+            $state,
+            "isEditing",
+            "isEditing"
+          ),
           [sty.freeBoxthread__sfn9IkhQ]: hasVariant($state, "thread", "thread"),
         })}
       >
@@ -261,7 +266,19 @@ function PlasmicCommentPost__RenderFunc(props: {
                   projectcss.span,
                   projectcss.__wab_text,
                   projectcss.plasmic_default__inline,
-                  sty.timestamp
+                  sty.timestamp,
+                  {
+                    [sty.timestampisDeleted]: hasVariant(
+                      $state,
+                      "isDeleted",
+                      "isDeleted"
+                    ),
+                    [sty.timestampthread]: hasVariant(
+                      $state,
+                      "thread",
+                      "thread"
+                    ),
+                  }
                 )}
               >
                 {"3 hours ago"}
@@ -343,6 +360,11 @@ function PlasmicCommentPost__RenderFunc(props: {
               projectcss.__wab_text,
               sty.subjectLabel,
               {
+                [sty.subjectLabelisEditing]: hasVariant(
+                  $state,
+                  "isEditing",
+                  "isEditing"
+                ),
                 [sty.subjectLabelthread]: hasVariant(
                   $state,
                   "thread",
@@ -378,6 +400,11 @@ function PlasmicCommentPost__RenderFunc(props: {
               projectcss.__wab_text,
               sty.body,
               {
+                [sty.bodycanUpdateHistory]: hasVariant(
+                  $state,
+                  "canUpdateHistory",
+                  "canUpdateHistory"
+                ),
                 [sty.bodyisDeleted]: hasVariant(
                   $state,
                   "isDeleted",

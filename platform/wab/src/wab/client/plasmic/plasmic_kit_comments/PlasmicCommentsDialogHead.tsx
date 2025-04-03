@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -146,7 +146,13 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
         <CommentsHeader
           data-plasmic-name={"commentsHeader"}
           data-plasmic-override={overrides.commentsHeader}
-          className={classNames("__wab_instance", sty.commentsHeader)}
+          className={classNames("__wab_instance", sty.commentsHeader, {
+            [sty.commentsHeadercanUpdateHistory]: hasVariant(
+              $state,
+              "canUpdateHistory",
+              "canUpdateHistory"
+            ),
+          })}
         />
 
         <Stack__
@@ -177,15 +183,9 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
           <IconButton
             data-plasmic-name={"close"}
             data-plasmic-override={overrides.close}
-            className={classNames("__wab_instance", sty.close, {
-              [sty.closecanUpdateHistory]: hasVariant(
-                $state,
-                "canUpdateHistory",
-                "canUpdateHistory"
-              ),
-            })}
             size={"medium"}
             type={["seamless"]}
+            withBackgroundHover={true}
           >
             <CloseIcon
               data-plasmic-name={"svg"}

@@ -6,7 +6,6 @@
   max-width: 100%;
   position: relative;
   background: #ffffff;
-  padding: 12px 0px;
 }
 .root > :global(.__wab_flex-container) {
   flex-direction: column;
@@ -31,10 +30,6 @@
   height: auto;
   max-width: 100%;
   min-width: 0;
-  padding: 0px;
-}
-.bodyInput:global(.__wab_instance):global(.__wab_instance) {
-  max-width: 100%;
 }
 .svg__fzlje {
   position: relative;
@@ -162,9 +157,6 @@
 .svg__bjfjp {
   position: relative;
   height: 1em;
-}
-.submitButton:global(.__wab_instance):global(.__wab_instance) {
-  max-width: 100%;
 }
 .svg___90ZA7 {
   position: relative;

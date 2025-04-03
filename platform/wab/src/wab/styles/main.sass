@@ -5819,3 +5819,13 @@ a, button.link-like
 .selectable-text
   user-select: text
   cursor: text
+
+.comment-body
+  @extend .selectable-text
+  ul
+    list-style-type: unset
+    li
+      list-style-type: unset
+  ol
+    li
+      list-style-type: decimal

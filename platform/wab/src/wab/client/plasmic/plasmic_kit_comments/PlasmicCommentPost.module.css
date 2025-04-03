@@ -260,9 +260,7 @@
   height: 1em;
 }
 .commentPostForm:global(.__wab_instance) {
-  max-width: 100%;
-  width: 100%;
-  min-width: 0;
+  margin-top: 12px;
 }
 .commentPostFormisEditing:global(.__wab_instance) {
   display: flex;

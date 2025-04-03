@@ -10,8 +10,7 @@
   position: relative;
   align-items: stretch;
   justify-content: flex-start;
-  padding-right: var(--token-8b4HJYZr1yuK);
-  padding-left: var(--token-8b4HJYZr1yuK);
+  padding: var(--token-8b4HJYZr1yuK);
 }
 .commentPostForm:global(.__wab_instance) {
   max-width: 100%;

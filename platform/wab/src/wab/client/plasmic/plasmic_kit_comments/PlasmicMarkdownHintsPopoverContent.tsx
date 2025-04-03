@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -15,6 +15,7 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  PlasmicLink as PlasmicLink__,
   Stack as Stack__,
   StrictProps,
   classNames,
@@ -24,7 +25,6 @@ import {
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import { MarkdownHintRow } from "../../components/comments/MarkdownHintRow"; // plasmic-import: T7mVQBFEWA-V/component
-import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -50,7 +50,8 @@ export const PlasmicMarkdownHintsPopoverContent__ArgProps =
 
 export type PlasmicMarkdownHintsPopoverContent__OverridesType = {
   root?: Flex__<"div">;
-  moreButton?: Flex__<typeof Button>;
+  freeBox?: Flex__<"div">;
+  link?: Flex__<"a">;
   svg?: Flex__<"svg">;
   content?: Flex__<"div">;
 };
@@ -106,7 +107,11 @@ function PlasmicMarkdownHintsPopoverContent__RenderFunc(props: {
         sty.root
       )}
     >
-      <div className={classNames(projectcss.all, sty.freeBox__iwFae)}>
+      <div
+        data-plasmic-name={"freeBox"}
+        data-plasmic-override={overrides.freeBox}
+        className={classNames(projectcss.all, sty.freeBox)}
+      >
         <div
           className={classNames(
             projectcss.all,
@@ -116,35 +121,32 @@ function PlasmicMarkdownHintsPopoverContent__RenderFunc(props: {
         >
           {"Markdown hints"}
         </div>
-        <div className={classNames(projectcss.all, sty.freeBox__nEgoZ)}>
-          <Button
-            data-plasmic-name={"moreButton"}
-            data-plasmic-override={overrides.moreButton}
-            className={classNames("__wab_instance", sty.moreButton)}
-            endIcon={
-              <ArrowUpRightSvgIcon
-                data-plasmic-name={"svg"}
-                data-plasmic-override={overrides.svg}
-                className={classNames(projectcss.all, sty.svg)}
-                role={"img"}
-              />
-            }
-            pointerCursor={true}
-            size={"small"}
-            type={["link"]}
-            withIcons={["endIcon"]}
+        <Stack__
+          as={PlasmicLink__}
+          data-plasmic-name={"link"}
+          data-plasmic-override={overrides.link}
+          hasGap={true}
+          className={classNames(projectcss.all, projectcss.a, sty.link)}
+          href={"https://commonmark.org/help/"}
+          platform={"react"}
+          target={"_blank"}
+        >
+          <div
+            className={classNames(
+              projectcss.all,
+              projectcss.__wab_text,
+              sty.text__mEhd3
+            )}
           >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__zu6GG
-              )}
-            >
-              {"More"}
-            </div>
-          </Button>
-        </div>
+            {"More"}
+          </div>
+          <ArrowUpRightSvgIcon
+            data-plasmic-name={"svg"}
+            data-plasmic-override={overrides.svg}
+            className={classNames(projectcss.all, sty.svg)}
+            role={"img"}
+          />
+        </Stack__>
       </div>
       <Stack__
         as={"div"}
@@ -166,8 +168,9 @@ function PlasmicMarkdownHintsPopoverContent__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root", "moreButton", "svg", "content"],
-  moreButton: ["moreButton", "svg"],
+  root: ["root", "freeBox", "link", "svg", "content"],
+  freeBox: ["freeBox", "link", "svg"],
+  link: ["link", "svg"],
   svg: ["svg"],
   content: ["content"],
 } as const;
@@ -176,7 +179,8 @@ type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
-  moreButton: typeof Button;
+  freeBox: "div";
+  link: "a";
   svg: "svg";
   content: "div";
 };
@@ -197,15 +201,15 @@ type NodeComponentProps<T extends NodeNameType> =
     PlasmicMarkdownHintsPopoverContent__VariantsArgs,
     ReservedPropsType
   > &
-    /* Specify args directly as props*/ Omit<
-      PlasmicMarkdownHintsPopoverContent__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicMarkdownHintsPopoverContent__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -246,7 +250,8 @@ export const PlasmicMarkdownHintsPopoverContent = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
-    moreButton: makeNodeComponent("moreButton"),
+    freeBox: makeNodeComponent("freeBox"),
+    link: makeNodeComponent("link"),
     svg: makeNodeComponent("svg"),
     content: makeNodeComponent("content"),
 

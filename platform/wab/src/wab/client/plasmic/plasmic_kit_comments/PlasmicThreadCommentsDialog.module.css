@@ -1,11 +1,14 @@
-.root:global(.__wab_instance):global(.__wab_instance) {
-  max-width: 100%;
-}
 .commentsDialogHead:global(.__wab_instance) {
   max-width: 100%;
 }
+.commentsDialogHeadhover:global(.__wab_instance) {
+  display: none;
+}
 .threadComments:global(.__wab_instance) {
   max-width: 100%;
+}
+.commentPosthover:global(.__wab_instance) {
+  display: flex;
 }
 .freeBox {
   display: flex;
@@ -13,7 +16,10 @@
   position: relative;
   align-items: stretch;
   justify-content: flex-start;
-  padding: 0px var(--token-8b4HJYZr1yuK);
+  padding: var(--token-8b4HJYZr1yuK);
+}
+.freeBoxhover {
+  padding-top: 0px;
 }
 .replyForm:global(.__wab_instance) {
   width: 100%;
@@ -22,4 +28,8 @@
   z-index: 1;
   position: sticky;
   min-width: 0;
+}
+.replyFormhover:global(.__wab_instance) {
+  flex-shrink: 0;
+  display: none;
 }

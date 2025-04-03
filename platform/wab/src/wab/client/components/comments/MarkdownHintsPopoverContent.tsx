@@ -15,7 +15,7 @@ const MARKDOWN_HINTS = [
     rules: ["# H1", "## H2", "### H3"],
   },
   { name: "Bold", rules: ["**bold**"] },
-  { name: "Italic", rules: ["**italic**"] },
+  { name: "Italic", rules: ["*italic*"] },
   { name: "Blockquote", rules: ["> blockquote"] },
   {
     name: "Ordered list",

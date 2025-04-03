@@ -115,7 +115,9 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
       {...rest}
       body={
         comment.deletedAt ? null : (
-          <StandardMarkdown>{comment.body}</StandardMarkdown>
+          <StandardMarkdown className="comment-body">
+            {comment.body}
+          </StandardMarkdown>
         )
       }
       isEditing={isEditing}

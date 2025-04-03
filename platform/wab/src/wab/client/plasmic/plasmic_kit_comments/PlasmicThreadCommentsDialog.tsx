@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -15,13 +15,17 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  SingleBooleanChoiceArg,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import CommentPost from "../../components/comments/CommentPost"; // plasmic-import: l_AKXl2AAu/component
 import CommentPostForm from "../../components/comments/CommentPostForm"; // plasmic-import: qi3Y1X2qZ7/component
 import { CommentsDialogHead } from "../../components/comments/CommentsDialogHead"; // plasmic-import: tccr1SFVw_AY/component
 import ThreadComments from "../../components/comments/ThreadComments"; // plasmic-import: QY53tkpvLv/component
@@ -34,11 +38,15 @@ import sty from "./PlasmicThreadCommentsDialog.module.css"; // plasmic-import: U
 
 createPlasmicElementProxy;
 
-export type PlasmicThreadCommentsDialog__VariantMembers = {};
-export type PlasmicThreadCommentsDialog__VariantsArgs = {};
+export type PlasmicThreadCommentsDialog__VariantMembers = {
+  hover: "hover";
+};
+export type PlasmicThreadCommentsDialog__VariantsArgs = {
+  hover?: SingleBooleanChoiceArg<"hover">;
+};
 type VariantPropType = keyof PlasmicThreadCommentsDialog__VariantsArgs;
 export const PlasmicThreadCommentsDialog__VariantProps =
-  new Array<VariantPropType>();
+  new Array<VariantPropType>("hover");
 
 export type PlasmicThreadCommentsDialog__ArgsType = {};
 type ArgPropType = keyof PlasmicThreadCommentsDialog__ArgsType;
@@ -48,11 +56,13 @@ export type PlasmicThreadCommentsDialog__OverridesType = {
   root?: Flex__<typeof Dialog>;
   commentsDialogHead?: Flex__<typeof CommentsDialogHead>;
   threadComments?: Flex__<typeof ThreadComments>;
+  commentPost?: Flex__<typeof CommentPost>;
   freeBox?: Flex__<"div">;
   replyForm?: Flex__<typeof CommentPostForm>;
 };
 
 export interface DefaultThreadCommentsDialogProps {
+  hover?: SingleBooleanChoiceArg<"hover">;
   className?: string;
 }
 
@@ -86,30 +96,66 @@ function PlasmicThreadCommentsDialog__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
+    () => [
+      {
+        path: "hover",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hover,
+      },
+    ],
+    [$props, $ctx, $refs]
+  );
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $refs,
+  });
+
   return (
     <Dialog
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      className={classNames("__wab_instance", sty.root)}
       content={
-        <ThreadComments
-          data-plasmic-name={"threadComments"}
-          data-plasmic-override={overrides.threadComments}
-          className={classNames("__wab_instance", sty.threadComments)}
-        />
+        <React.Fragment>
+          {(hasVariant($state, "hover", "hover") ? false : true) ? (
+            <ThreadComments
+              data-plasmic-name={"threadComments"}
+              data-plasmic-override={overrides.threadComments}
+              className={classNames("__wab_instance", sty.threadComments, {
+                [sty.threadCommentshover]: hasVariant($state, "hover", "hover"),
+              })}
+            />
+          ) : null}
+          {(hasVariant($state, "hover", "hover") ? true : false) ? (
+            <CommentPost
+              data-plasmic-name={"commentPost"}
+              data-plasmic-override={overrides.commentPost}
+              className={classNames("__wab_instance", {
+                [sty.commentPosthover]: hasVariant($state, "hover", "hover"),
+              })}
+            />
+          ) : null}
+        </React.Fragment>
       }
       footer={
         <div
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
-          className={classNames(projectcss.all, sty.freeBox)}
+          className={classNames(projectcss.all, sty.freeBox, {
+            [sty.freeBoxhover]: hasVariant($state, "hover", "hover"),
+          })}
         >
           <CommentPostForm
             data-plasmic-name={"replyForm"}
             data-plasmic-override={overrides.replyForm}
-            className={classNames("__wab_instance", sty.replyForm)}
+            className={classNames("__wab_instance", sty.replyForm, {
+              [sty.replyFormhover]: hasVariant($state, "hover", "hover"),
+            })}
           />
         </div>
       }
@@ -118,7 +164,9 @@ function PlasmicThreadCommentsDialog__RenderFunc(props: {
           data-plasmic-name={"commentsDialogHead"}
           data-plasmic-override={overrides.commentsDialogHead}
           canUpdateHistory={true}
-          className={classNames("__wab_instance", sty.commentsDialogHead)}
+          className={classNames("__wab_instance", sty.commentsDialogHead, {
+            [sty.commentsDialogHeadhover]: hasVariant($state, "hover", "hover"),
+          })}
         />
       }
       showFooter={false}
@@ -131,11 +179,13 @@ const PlasmicDescendants = {
     "root",
     "commentsDialogHead",
     "threadComments",
+    "commentPost",
     "freeBox",
     "replyForm",
   ],
   commentsDialogHead: ["commentsDialogHead"],
   threadComments: ["threadComments"],
+  commentPost: ["commentPost"],
   freeBox: ["freeBox", "replyForm"],
   replyForm: ["replyForm"],
 } as const;
@@ -146,6 +196,7 @@ type NodeDefaultElementType = {
   root: typeof Dialog;
   commentsDialogHead: typeof CommentsDialogHead;
   threadComments: typeof ThreadComments;
+  commentPost: typeof CommentPost;
   freeBox: "div";
   replyForm: typeof CommentPostForm;
 };
@@ -212,6 +263,7 @@ export const PlasmicThreadCommentsDialog = Object.assign(
     // Helper components rendering sub-elements
     commentsDialogHead: makeNodeComponent("commentsDialogHead"),
     threadComments: makeNodeComponent("threadComments"),
+    commentPost: makeNodeComponent("commentPost"),
     freeBox: makeNodeComponent("freeBox"),
     replyForm: makeNodeComponent("replyForm"),
 

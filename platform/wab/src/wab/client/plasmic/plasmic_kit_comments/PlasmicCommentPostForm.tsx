@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -164,13 +164,6 @@ function PlasmicCommentPostForm__RenderFunc(props: {
           data-plasmic-override={overrides.bodyInput}
           autoComplete={["off"]}
           autoFocus={true}
-          className={classNames("__wab_instance", sty.bodyInput, {
-            [sty.bodyInputisEditing]: hasVariant(
-              $state,
-              "isEditing",
-              "isEditing"
-            ),
-          })}
           multiLine={true}
           onChange={async (...eventArgs: any) => {
             generateStateOnChangeProp($state, ["bodyInput", "value"]).apply(
@@ -221,6 +214,7 @@ function PlasmicCommentPostForm__RenderFunc(props: {
                 ),
               })}
               type={[]}
+              withBackgroundHover={true}
             >
               <IconIcon
                 className={classNames(projectcss.all, sty.svg__wnixe)}
@@ -232,6 +226,7 @@ function PlasmicCommentPostForm__RenderFunc(props: {
               data-plasmic-override={overrides.shareProjectIcon}
               className={classNames("__wab_instance", sty.shareProjectIcon)}
               type={[]}
+              withBackgroundHover={true}
             >
               <Icon2Icon
                 className={classNames(projectcss.all, sty.svg__t3Ip6)}
@@ -243,6 +238,7 @@ function PlasmicCommentPostForm__RenderFunc(props: {
               data-plasmic-override={overrides.markdownHintsIcon}
               className={classNames("__wab_instance", sty.markdownHintsIcon)}
               type={[]}
+              withBackgroundHover={true}
             >
               <Icon3Icon
                 className={classNames(projectcss.all, sty.svg__kDvAo)}
@@ -364,15 +360,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicCommentPostForm__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicCommentPostForm__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicCommentPostForm__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicCommentPostForm__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
