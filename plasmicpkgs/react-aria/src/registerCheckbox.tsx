@@ -24,7 +24,6 @@ const CHECKBOX_VARIANTS = [
   "disabled" as const,
   "selected" as const,
   "readonly" as const,
-  "selected" as const,
 ];
 
 export interface BaseCheckboxControlContextData extends BaseControlContextData {
