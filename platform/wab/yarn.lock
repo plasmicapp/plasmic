@@ -3838,10 +3838,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-embed-css/-/plasmic-embed-css-0.1.197.tgz#81870e8e1660b10674391cceb6632dfdd29e15ab"
   integrity sha512-VjiQSQMrnXRl1iECPu/JToDuHTco9rGaWX4YT2Y/KoAu4NOcOI5mzlQGbkXwyaMAofhztkF1MfaVojbsHpW8Uw==
 
-"@plasmicpkgs/react-aria@^0.0.124":
-  version "0.0.124"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.124.tgz#cccb6be45bebf6b8a19c94fa17f810802065073b"
-  integrity sha512-q/q72Z2g+VjYz4pwrH31hC51NJ5t8yZa3poSdCjwW8qYpSq969BH3GPPQO5AmEF4jGZxcIY9zaTT7HEWTY3LVw==
+"@plasmicpkgs/react-aria@^0.0.125":
+  version "0.0.125"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.125.tgz#b4b7cd3afc750f3a6d6c62faf7e4c3597ae9f81b"
+  integrity sha512-jwAsEk6KF0ztU+/H19L0+J0buTa+7oictZTad0oK2pERXuB/hs7wm2mTqDBcJae2Aq4/MQmOFGsxZmFIPd7EVw==
   dependencies:
     "@react-aria/i18n" "^3.11.0"
     "@react-aria/utils" "^3.24.0"
