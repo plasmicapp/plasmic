@@ -27,7 +27,11 @@ import {
   getNonTransitiveDepDefaultComponents,
 } from "@/wab/shared/core/sites";
 import { unbundleProjectDependency } from "@/wab/shared/core/tagged-unbundle";
-import { trackComponentRoot, trackComponentSite } from "@/wab/shared/core/tpls";
+import {
+  deepTrackComponents,
+  trackComponentRoot,
+  trackComponentSite,
+} from "@/wab/shared/core/tpls";
 import { InsertableIconsGroup } from "@/wab/shared/devflags";
 import {
   inlineMixins,
@@ -555,6 +559,10 @@ export class ProjectDependencyManager {
     ).projectDependency.site;
     this.insertableSites[projectId] = insertableSite;
     this.insertableVersions[projectId] = latestPkgVersion.etag;
+
+    // Be sure to track it, so that we can properly to do some fixups
+    // as effectiveVs may require `getTplOwnerComponent`
+    deepTrackComponents(insertableSite);
   }
 
   /**

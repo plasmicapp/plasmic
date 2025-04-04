@@ -29,10 +29,6 @@ import {
   unexpected,
   withoutNils,
 } from "@/wab/shared/common";
-import {
-  isCodeComponent,
-  isPlumeComponent,
-} from "@/wab/shared/core/components";
 import { code, isFallbackableExpr } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { mkImageAssetRef } from "@/wab/shared/core/image-assets";
@@ -395,12 +391,13 @@ export function mkInsertableTokenImporter(
 
 /**
  * Checks that the tplTree is a valid insertable template
- * - For now, just checks that there are no TplSlots and TplComponents
- * @param tplTree
+ * - For now, just checks that there are no TplSlots and unexpected TplComponents
+ * @param tplTree tpl tree to walk
+ * @param allowedComponentUuids if null, all components are allowed
  */
 export function assertValidInsertable(
   tplTree: TplNode,
-  allowComponents: boolean
+  allowedComponentUuids: Set<string> | null
 ): void {
   walkTpls(tplTree, {
     pre(tpl, path) {
@@ -408,14 +405,14 @@ export function assertValidInsertable(
         console.warn("Path:");
         console.warn(path);
         assert(false, "Insertable templates cannot have TplSlots");
-      } else if (isTplComponent(tpl) && !allowComponents) {
-        if (
-          !(isPlumeComponent(tpl.component) || isCodeComponent(tpl.component))
-        ) {
-          console.warn("Path:");
-          console.warn(path);
-          assert(false, "Insertable templates cannot have TplComponents");
-        }
+      } else if (
+        allowedComponentUuids &&
+        isTplComponent(tpl) &&
+        allowedComponentUuids.has(tpl.component.uuid)
+      ) {
+        console.warn("Allowed component UUIDs:", allowedComponentUuids);
+        console.warn("Path:", path);
+        assert(false, "Insertable templates cannot have TplComponents");
       }
       return true;
     },
