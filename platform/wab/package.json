@@ -223,12 +223,6 @@
     "@popperjs/core": "2.11.6",
     "@qualifyze/airtable-formulator": "^1.3.1",
     "@react-awesome-query-builder/antd": "^6.1.2",
-    "@rollup/plugin-alias": "^3.1.9",
-    "@rollup/plugin-commonjs": "^19.0.2",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.3.0",
-    "@rollup/plugin-replace": "^4.0.0",
-    "@rollup/plugin-sucrase": "^4.0.4",
     "@sentry/browser": "^6.6.0",
     "@sentry/integrations": "^6.6.0",
     "@sentry/node": "^6.6.0",
@@ -369,8 +363,6 @@
     "platform": "^1.3.6",
     "playwright": "1.38.1",
     "pluralize": "^8.0.0",
-    "postcss": "^8.3.0",
-    "postcss-csso": "^5.0.1",
     "posthog-js": "^1.139.0",
     "prettier": "2.8.8",
     "prism-react-renderer": "^1.1.1",
@@ -409,9 +401,6 @@
     "regexp.execall": "^1.0.2",
     "remark-gfm": "^3.0.1",
     "resize-observer-polyfill": "^1.5.1",
-    "rollup": "2.58.3",
-    "rollup-plugin-postcss": "^4.0.0",
-    "rollup-plugin-terser": "^7.0.2",
     "safe-stable-stringify": "^2.4.3",
     "sass": "^1.63.4",
     "semver": "^6.3.0",
@@ -456,12 +445,10 @@
     "zod": "^3.8.1"
   },
   "resolutionsComments": {
-    "ini": "CVE-2020-7788 for 1.3.5",
-    "postcss-modules": "CVE-2022-37601 for 4.0.0"
+    "ini": "CVE-2020-7788 for 1.3.5"
   },
   "resolutions": {
     "ini": "1.3.6",
-    "postcss-modules": "^4.3.0",
     "react-aria-components": "1.2.0"
   },
   "browserslist": [

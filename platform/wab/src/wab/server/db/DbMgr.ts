@@ -6371,11 +6371,7 @@ export class DbMgr implements MigrationDbMgr {
     });
   }
 
-  async getRecentLoaderPublishments(
-    projectId: string,
-    opts?: { minLoaderVersion?: number }
-  ) {
-    const minLoaderVersion = opts?.minLoaderVersion;
+  async getRecentLoaderPublishments(projectId: string) {
     let loaderPublishments = await this.loaderPublishments().find({
       where: {
         projectId,
@@ -6398,11 +6394,6 @@ export class DbMgr implements MigrationDbMgr {
               moment(latest.updatedAt).diff(moment(p.updatedAt), "days") < 3
           ),
       ];
-    }
-    if (minLoaderVersion) {
-      loaderPublishments = loaderPublishments.filter(
-        (p) => p.loaderVersion >= minLoaderVersion
-      );
     }
     return loaderPublishments;
   }

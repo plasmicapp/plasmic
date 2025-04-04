@@ -77,8 +77,7 @@ export class LoaderBundlingError extends ApiError {
 export class LoaderDeprecatedVersionError extends ApiError {
   name = "LoaderDeprecatedVersionError";
   statusCode = 412;
-  message =
-    "An internal error occurred. Please upgrade your @plasmicapp/* packages.";
+  message = "Please upgrade your @plasmicapp/* packages.";
 }
 
 // This is not an ApiError by design, so that we consider it an unhandled error

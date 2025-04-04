@@ -19,15 +19,9 @@ export async function prefillCloudfront(
   const pkgVersion = await mgr.getPkgVersionById(pkgVersionId);
   const pkg = await mgr.getPkgById(pkgVersion.pkgId);
   const projectId = pkg.projectId;
-
-  // Only prefill for loader versions >= 7 (the cut-off for using esbuild)
-  // Otherwise, running rollup on old loader versions is killing our
-  // codegen pods regularly :-/
   const loaderPublishmentsRaw = await mgr.getRecentLoaderPublishments(
-    projectId,
-    { minLoaderVersion: 7 }
+    projectId
   );
-
   const loaderPublishments = uniqBy(loaderPublishmentsRaw, (publishment) =>
     [
       publishment.platform,

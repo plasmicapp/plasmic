@@ -21,21 +21,11 @@ import {
   PageMetadata,
 } from "@/wab/shared/codegen/types";
 import { ensure, withoutNils } from "@/wab/shared/common";
-import alias from "@rollup/plugin-alias";
-import commonjs from "@rollup/plugin-commonjs";
-import json from "@rollup/plugin-json";
-import resolve from "@rollup/plugin-node-resolve";
-import replace from "@rollup/plugin-replace";
-import sucrase from "@rollup/plugin-sucrase";
 import esbuild, { Plugin as EsbuildPlugin, Metafile } from "esbuild";
 import { promises as fs } from "fs";
 import { glob } from "glob";
 import { flatMap, kebabCase, sortBy } from "lodash";
 import path from "path";
-import csso from "postcss-csso";
-import { OutputOptions, rollup } from "rollup";
-import postcss from "rollup-plugin-postcss";
-import { terser } from "rollup-plugin-terser";
 
 export interface ComponentMeta {
   id: string;
@@ -514,148 +504,55 @@ Object.assign(exports,module.exports);
   return output;
 }
 
-async function bundleModulesRollup(
-  dir: string,
-  codegenOutputs: CodegenOutputBundle[],
-  componentDeps: Record<string, string[]>,
-  opts: BundleOpts
-) {
-  const outputBrowser = await buildWithRollup(dir, codegenOutputs, opts, true);
-  const outputServer =
-    opts.loaderVersion > 2
-      ? await buildWithRollup(dir, codegenOutputs, opts, false)
-      : undefined;
-  const ensureString = (value: string | Uint8Array) => {
-    if (typeof value === "string") {
-      return value;
-    } else {
-      return Buffer.from(value).toString("utf-8");
-    }
-  };
-
-  const entry2css = new Map<string, string>(
-    codegenOutputs.flatMap((o) =>
-      o.components.map(
-        (c) =>
-          [
-            componentEntrypoint(c).replace(".tsx", ".js"),
-            c.cssFileName,
-          ] as const
-      )
-    )
-  );
-
-  const getModules = (output: typeof outputBrowser) =>
-    sortBy(
-      withoutNils(
-        output.map<CodeModule | AssetModule | undefined>((out) => {
-          if (out.type === "chunk") {
-            return {
-              fileName: out.fileName,
-              code: ensureString(out.code),
-              imports: [
-                ...out.imports,
-                ...withoutNils([entry2css.get(out.fileName)]),
-              ],
-              type: "code",
-            };
-          } else if (out.type === "asset") {
-            return {
-              fileName: out.fileName,
-              source: ensureString(out.source),
-              type: "asset",
-            };
-          } else {
-            return undefined;
-          }
-        })
-      ),
-      (x) => x.fileName
-    );
-
-  const modules = {
-    browser: getModules(outputBrowser),
-    server: opts.browserOnly || !outputServer ? [] : getModules(outputServer),
-  };
-
-  const output = makeLoaderBundleOutput(
-    modules,
-    codegenOutputs,
-    componentDeps,
-    opts
-  );
-
-  // Write out the bundle for debugging
-  await fs.writeFile(
-    path.join(dir, "build", "bundle.json"),
-    JSON.stringify(output, undefined, 2)
-  );
-  return output;
-}
-
 export async function bundleModules(
   dir: string,
   codegenOutputs: CodegenOutputBundle[],
   componentDeps: Record<string, string[]>,
   componentRefs: ComponentReference[],
-  opts: BundleOpts,
-  preferEsbuild: boolean
+  opts: BundleOpts
 ): Promise<LoaderBundleOutput> {
-  if (preferEsbuild && opts.loaderVersion >= 7) {
-    // esbuild only supports loaderVersion >= 7; the compponent
-    // and global variant substitution API is necessary to ensure
-    // component substitutions and specifying global variants work.
-    return withSpan("loader-bundle-esbuild", async () => {
-      try {
-        return await bundleModulesEsbuild(
-          dir,
-          codegenOutputs,
-          componentDeps,
-          opts
-        );
-      } catch (err) {
-        const bundleErrorStr: string = err.toString();
-        console.error(
-          `Error bundling with esbuild: ${bundleErrorStr}: ${err.stack}`
-        );
-        try {
-          const errPrefix = await uploadErrorFiles(err, dir);
-          console.log(`Errors uploaded: ${errPrefix}`);
-        } catch (err2) {
-          console.error(`Error uploading error files: ${err2.toString()}`);
-        }
-
-        const transformedBundleErrorStr = transformBundlerErrors(
-          bundleErrorStr,
-          componentRefs
-        );
-
-        if (transformedBundleErrorStr) {
-          console.log(`transformedError: ${transformedBundleErrorStr}`);
-          throw new LoaderBundlingError(transformedBundleErrorStr);
-        }
-
-        await checkEsbuildFatalError(bundleErrorStr);
-
-        throw new Error(`Error bundling with esbuild: ${bundleErrorStr}`);
-      }
-    });
-  } else {
-    return await withSpan("loader-bundle-rollup", async () => {
-      try {
-        return await bundleModulesRollup(
-          dir,
-          codegenOutputs,
-          componentDeps,
-          opts
-        );
-      } catch (err) {
-        // Building with rollup failed, but this is deprecated, so we will only warn
-        // the user and ignore the error.
-        throw new LoaderDeprecatedVersionError();
-      }
-    });
+  // esbuild only supports loaderVersion >= 7; the compponent
+  // and global variant substitution API is necessary to ensure
+  // component substitutions and specifying global variants work.
+  if (opts.loaderVersion < 7) {
+    throw new LoaderDeprecatedVersionError();
   }
+
+  return withSpan("loader-bundle-esbuild", async () => {
+    try {
+      return await bundleModulesEsbuild(
+        dir,
+        codegenOutputs,
+        componentDeps,
+        opts
+      );
+    } catch (err) {
+      const bundleErrorStr: string = err.toString();
+      console.error(
+        `Error bundling with esbuild: ${bundleErrorStr}: ${err.stack}`
+      );
+      try {
+        const errPrefix = await uploadErrorFiles(err, dir);
+        console.log(`Errors uploaded: ${errPrefix}`);
+      } catch (err2) {
+        console.error(`Error uploading error files: ${err2.toString()}`);
+      }
+
+      const transformedBundleErrorStr = transformBundlerErrors(
+        bundleErrorStr,
+        componentRefs
+      );
+
+      if (transformedBundleErrorStr) {
+        console.log(`transformedError: ${transformedBundleErrorStr}`);
+        throw new LoaderBundlingError(transformedBundleErrorStr);
+      }
+
+      await checkEsbuildFatalError(bundleErrorStr);
+
+      throw new Error(`Error bundling with esbuild: ${bundleErrorStr}`);
+    }
+  });
 }
 
 function deriveEsbuildDefines(opts: {
@@ -800,146 +697,6 @@ function makeLoaderBundleOutput(
     deferChunksByDefault: false,
     disableRootLoadingBoundaryByDefault: true,
   };
-  return output;
-}
-
-async function buildWithRollup(
-  dir: string,
-  codegenOutputs: CodegenOutputBundle[],
-  opts: BundleOpts,
-  browserBuild: boolean
-) {
-  const components = codegenOutputs.flatMap((o) => o.components);
-  const external = deriveExternals(opts);
-  const bundle = await rollup({
-    input: [
-      // See module-writers for why this is here :-/
-      path.join(dir, "css-entrypoint.tsx"),
-      path.join(dir, "root-provider.tsx"),
-      ...codegenOutputs.flatMap((output) =>
-        output.globalVariants.map((v) => path.join(dir, v.contextFileName))
-      ),
-      ...codegenOutputs.flatMap((output) =>
-        output.projectConfig.globalContextBundle
-          ? path.join(
-              dir,
-              makeGlobalContextsProviderFileName(output.projectConfig.projectId)
-            )
-          : ([] as string[])
-      ),
-      ...codegenOutputs.flatMap((output) =>
-        output.components.map((comp) =>
-          path.join(dir, componentEntrypoint(comp))
-        )
-      ),
-    ],
-    external,
-    plugins: [
-      alias({
-        entries: [
-          {
-            find: /^enquire\.js$/,
-            replacement: "enquire-js",
-          },
-          {
-            find: /^slick-carousel\/slick\/slick-theme\.css$/,
-            replacement: "slick-carousel-theme/slick/slick-theme.css",
-          },
-        ],
-      }),
-      resolve({
-        browser: browserBuild,
-        preferBuiltins: false,
-        moduleDirectories: [path.join(dir, "node_modules")],
-      }),
-
-      // Our version of rollup (2.58.3) and commonjs (19.0.2) cannot properly handle
-      // readable-stream's circular dependencies via dynamic requires. Instead,
-      // we are doing this ugly hack based on this post:
-      // https://github.com/rollup/rollup/issues/1507#issuecomment-340550539
-      // See also:
-      // - https://gerrit.aws.plasmic.app/c/plasmic/+/10030
-      // - https://app.shortcut.com/plasmic/story/24972/hydration-error-when-using-select
-      replace({
-        delimiters: ["", ""],
-        values: {
-          "require('readable-stream/transform')": "require('stream').Transform",
-          'require("readable-stream/transform")': 'require("stream").Transform',
-          "readable-stream": "stream",
-        },
-      }),
-      commonjs(),
-
-      // Version 0 expects all CSS to be in entrypoint.css. Starting from
-      // Version 1, we create a css file for every component css file
-      ...(opts.loaderVersion >= 1
-        ? components.map((c) =>
-            postcss({
-              extract: c.cssFileName,
-              plugins: [csso({ restructure: false })],
-              include: new RegExp("/" + c.cssFileName, "g"),
-            })
-          )
-        : []),
-      // This extracts all other css (react-web, project globals, etc)
-      // into entrypoint.css (excluding component css).  Version 0 doesn't
-      // do the exclusion, as it expects all css to be in entrypoint.css
-      postcss({
-        extract: "entrypoint.css",
-        plugins: [csso({ restructure: false })],
-        exclude: (opts.loaderVersion >= 1 ? components : []).map(
-          (c) => new RegExp("/" + c.cssFileName, "g")
-        ),
-      }),
-      json(),
-
-      // Make sure the renderer files use createPlasmicElementProxy
-      // as the jsx pragma
-      sucrase({
-        include: RE_RENDERER_FILE,
-        exclude: ["node_modules/**"],
-        transforms: ["typescript", "jsx"],
-        jsxPragma: "createPlasmicElementProxy",
-        production: opts.mode === "production",
-      }),
-      // All other files should use the normal jsx pragma
-      sucrase({
-        exclude: ["node_modules/**", RE_RENDERER_FILE],
-        transforms: ["typescript", "jsx"],
-        production: opts.mode === "production",
-      }),
-      replace({
-        // Get production-mode react
-        preventAssignment: true,
-        values: {
-          "process.env.NODE_ENV": JSON.stringify(opts.mode),
-        },
-      }),
-
-      // Use terser for production mode
-      ...(opts.mode === "production" ? [terser()] : []),
-    ],
-  });
-
-  const outputOpts: OutputOptions = {
-    format: "cjs",
-    preserveModules: !(opts.loaderVersion > 1),
-    preserveModulesRoot: dir,
-    sourcemap: opts.mode === "development",
-    exports: "named",
-    dir: path.join(dir, "build"),
-    chunkFileNames: `[name].js`,
-  };
-  const { output } = await bundle.generate(outputOpts);
-
-  // also write bundle to disk for debugging
-  await bundle.write(outputOpts);
-  await fs.writeFile(
-    path.join(dir, "build", "rollup-output.json"),
-    JSON.stringify(output, undefined, 2)
-  );
-
-  await bundle.close();
   return output;
 }
 

@@ -1,4 +1,3 @@
-import { spawnWrapper } from "@/wab/shared/common";
 import {
   bundleModules,
   LoaderBundleOutput,
@@ -8,6 +7,7 @@ import {
   CodegenOutputBundle,
   ComponentReference,
 } from "@/wab/server/workers/codegen";
+import { spawnWrapper } from "@/wab/shared/common";
 import tmp from "tmp";
 
 export async function workerBuildAssets(
@@ -19,7 +19,6 @@ export async function workerBuildAssets(
     mode: "production" | "development";
     loaderVersion: number;
     browserOnly: boolean;
-    preferEsbuild: boolean;
   }
 ) {
   return new Promise<LoaderBundleOutput>((resolve, reject) => {
@@ -45,8 +44,7 @@ export async function workerBuildAssets(
                 mode: opts.mode,
                 loaderVersion: opts.loaderVersion,
                 browserOnly: opts.browserOnly,
-              },
-              opts.preferEsbuild
+              }
             );
             resolve(result);
             cleanup();
