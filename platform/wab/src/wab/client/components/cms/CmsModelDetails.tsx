@@ -168,6 +168,7 @@ function renderModelFieldForm(
             };
             if ([CmsMetaType.LIST, CmsMetaType.OBJECT].includes(meta.type)) {
               meta.fields = [];
+              meta["unique"] = false;
             }
             const blob = jsonClone(form.getFieldValue([]));
             L.set(blob, fullFieldPath, meta);
