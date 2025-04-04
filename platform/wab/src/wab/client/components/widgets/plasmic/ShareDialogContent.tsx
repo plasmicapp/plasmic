@@ -143,7 +143,6 @@ function ShareDialogContent(props: ShareDialogContentProps) {
     canEdit &&
     (appCtx.appConfig.comments ||
       (teamId && appCtx.appConfig.commentsTeamIds.includes(teamId)));
-  const [requireSignUp, setRequireSignUp] = React.useState(false);
   const [inviteAccessLevel, setInviteAccessLevel] =
     React.useState<GrantableAccessLevel>(canEdit ? "editor" : "viewer");
   const [email, setEmail] = React.useState("");
@@ -204,7 +203,6 @@ function ShareDialogContent(props: ShareDialogContentProps) {
       const { enqueued } = await doGrantRevoke({
         grants: [{ email: cleaned, accessLevel: inviteAccessLevel }],
         revokes: [],
-        requireSignUp,
       });
 
       if (enqueued) {
@@ -461,10 +459,6 @@ function ShareDialogContent(props: ShareDialogContentProps) {
             }
           : undefined
       }
-      requireSignUpSwitch={{
-        isChecked: requireSignUp,
-        onChange: setRequireSignUp,
-      }}
       noShareByLink={noShareByLink}
       shareByLinkSwitch={
         resource.type !== "workspace"

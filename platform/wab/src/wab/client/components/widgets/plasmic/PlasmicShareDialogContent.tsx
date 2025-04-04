@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -41,18 +41,18 @@ import PermissionItem from "./PermissionItem"; // plasmic-import: GFrmKeyhlA/com
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
+import plasmic_plasmic_kit_color_tokens_css from "../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_design_system_deprecated_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "../../../plasmic/PP__plasmickit_share_dialog.module.css"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicShareDialogContent.module.css"; // plasmic-import: cWsnP3_PIix/css
 
 import LinkIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Link"; // plasmic-import: BQBWbw0fg66Lw/icon
 import ResetIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Reset"; // plasmic-import: Dj3u-HuPv94sN/icon
-import ArrowRightsvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import ClosesvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
-import PlussvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
-import SearchsvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
+import ArrowRightSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import CloseSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import PlusSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import SearchSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
 
 createPlasmicElementProxy;
 
@@ -67,7 +67,6 @@ export type PlasmicShareDialogContent__VariantsArgs = {
   state?: SingleChoiceArg<
     "submitting" | "invalidEmail" | "unlogged" | "noPermToShare"
   >;
-
   shareByLinkAllowed?: SingleChoiceArg<"yes" | "no">;
   resourceType?: SingleChoiceArg<"project" | "workspace" | "team">;
   permsCascade?: MultiChoiceArg<"showWorkspace" | "showTeam">;
@@ -102,7 +101,6 @@ export type PlasmicShareDialogContent__OverridesType = {
   newUserEmail?: Flex__<typeof Textbox>;
   newUserRoleDropdown?: Flex__<typeof Select>;
   sendInviteButton?: Flex__<typeof Button>;
-  requireSignUpSwitch?: Flex__<typeof Checkbox>;
   loginLink?: Flex__<"a">;
   permsContainer?: Flex__<"div">;
 };
@@ -112,7 +110,6 @@ export interface DefaultShareDialogContentProps {
   state?: SingleChoiceArg<
     "submitting" | "invalidEmail" | "unlogged" | "noPermToShare"
   >;
-
   shareByLinkAllowed?: SingleChoiceArg<"yes" | "no">;
   resourceType?: SingleChoiceArg<"project" | "workspace" | "team">;
   permsCascade?: MultiChoiceArg<"showWorkspace" | "showTeam">;
@@ -130,7 +127,16 @@ function PlasmicShareDialogContent__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -202,20 +208,12 @@ function PlasmicShareDialogContent__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => "value1",
       },
       {
-        path: "requireSignUpSwitch.isChecked",
-        type: "private",
-        variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
-          hasVariant($state, "shareByLinkAllowed", "no") ? [] : "isChecked",
-      },
-      {
         path: "noShareByLink",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.noShareByLink,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -475,11 +473,21 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                       ? true
                       : undefined
                   }
-                  onChange={(...eventArgs) => {
-                    generateStateOnChangeProp($state, [
-                      "shareByLinkSwitch",
-                      "isChecked",
-                    ])(eventArgs[0]);
+                  onChange={async (...eventArgs: any) => {
+                    ((...eventArgs) => {
+                      generateStateOnChangeProp($state, [
+                        "shareByLinkSwitch",
+                        "isChecked",
+                      ])(eventArgs[0]);
+                    }).apply(null, eventArgs);
+
+                    if (
+                      eventArgs.length > 1 &&
+                      eventArgs[1] &&
+                      eventArgs[1]._plasmic_state_init_
+                    ) {
+                      return;
+                    }
                   }}
                 >
                   {hasVariant($state, "resourceType", "team")
@@ -500,7 +508,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                       ),
                     })}
                     endIcon={
-                      <ChevronDownsvgIcon
+                      <ChevronDownSvgIcon
                         className={classNames(projectcss.all, sty.svg___9J48P)}
                         role={"img"}
                       />
@@ -583,16 +591,26 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     sty.shareByLinkPermDropdown
                   )}
                   icon={
-                    <PlussvgIcon
+                    <PlusSvgIcon
                       className={classNames(projectcss.all, sty.svg__lJfWp)}
                       role={"img"}
                     />
                   }
-                  onChange={(...eventArgs) => {
-                    generateStateOnChangeProp($state, [
-                      "shareByLinkPermDropdown",
-                      "value",
-                    ])(eventArgs[0]);
+                  onChange={async (...eventArgs: any) => {
+                    ((...eventArgs) => {
+                      generateStateOnChangeProp($state, [
+                        "shareByLinkPermDropdown",
+                        "value",
+                      ])(eventArgs[0]);
+                    }).apply(null, eventArgs);
+
+                    if (
+                      eventArgs.length > 1 &&
+                      eventArgs[1] &&
+                      eventArgs[1]._plasmic_state_init_
+                    ) {
+                      return;
+                    }
                   }}
                   type={"bordered"}
                   value={generateStateValueProp($state, [
@@ -849,14 +867,14 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 }
                 placeholder={"Invite someone by email…"}
                 prefixIcon={
-                  <SearchsvgIcon
+                  <SearchSvgIcon
                     className={classNames(projectcss.all, sty.svg__yai2I)}
                     role={"img"}
                   />
                 }
                 styleType={["bordered"]}
                 suffixIcon={
-                  <ClosesvgIcon
+                  <CloseSvgIcon
                     className={classNames(projectcss.all, sty.svg___9G5Fh)}
                     role={"img"}
                   />
@@ -932,16 +950,26 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     }
                   )}
                   icon={
-                    <PlussvgIcon
+                    <PlusSvgIcon
                       className={classNames(projectcss.all, sty.svg__frLSs)}
                       role={"img"}
                     />
                   }
-                  onChange={(...eventArgs) => {
-                    generateStateOnChangeProp($state, [
-                      "newUserRoleDropdown",
-                      "value",
-                    ])(eventArgs[0]);
+                  onChange={async (...eventArgs: any) => {
+                    ((...eventArgs) => {
+                      generateStateOnChangeProp($state, [
+                        "newUserRoleDropdown",
+                        "value",
+                      ])(eventArgs[0]);
+                    }).apply(null, eventArgs);
+
+                    if (
+                      eventArgs.length > 1 &&
+                      eventArgs[1] &&
+                      eventArgs[1]._plasmic_state_init_
+                    ) {
+                      return;
+                    }
                   }}
                   type={"bordered"}
                   value={generateStateValueProp($state, [
@@ -1004,14 +1032,14 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     : undefined
                 }
                 endIcon={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__kjUa7)}
                     role={"img"}
                   />
                 }
                 size={"wide"}
                 startIcon={
-                  <ArrowRightsvgIcon
+                  <ArrowRightSvgIcon
                     className={classNames(projectcss.all, sty.svg__n9OjC)}
                     role={"img"}
                   />
@@ -1027,108 +1055,6 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   : "Invite"}
               </Button>
             </Stack__>
-            {(
-              hasVariant($state, "resourceType", "workspace") ? false : true
-            ) ? (
-              <Stack__
-                as={"div"}
-                hasGap={true}
-                className={classNames(projectcss.all, sty.freeBox__sSlzt, {
-                  [sty.freeBoxpermsCascade_showTeam__sSlzt57XP]: hasVariant(
-                    $state,
-                    "permsCascade",
-                    "showTeam"
-                  ),
-                  [sty.freeBoxpermsCascade_showWorkspace__sSlztGxhbk]:
-                    hasVariant($state, "permsCascade", "showWorkspace"),
-                  [sty.freeBoxresourceType_project__sSlztwbkdw]: hasVariant(
-                    $state,
-                    "resourceType",
-                    "project"
-                  ),
-                  [sty.freeBoxresourceType_team__sSlztHn7Mj]: hasVariant(
-                    $state,
-                    "resourceType",
-                    "team"
-                  ),
-                  [sty.freeBoxresourceType_workspace__sSlztN5Uns]: hasVariant(
-                    $state,
-                    "resourceType",
-                    "workspace"
-                  ),
-                  [sty.freeBoxshareByLinkAllowed_no__sSlztTjDou]: hasVariant(
-                    $state,
-                    "shareByLinkAllowed",
-                    "no"
-                  ),
-                  [sty.freeBoxshareByLinkAllowed_yes__sSlztn4Zx6]: hasVariant(
-                    $state,
-                    "shareByLinkAllowed",
-                    "yes"
-                  ),
-                })}
-              >
-                <Checkbox
-                  data-plasmic-name={"requireSignUpSwitch"}
-                  data-plasmic-override={overrides.requireSignUpSwitch}
-                  className={classNames(
-                    "__wab_instance",
-                    sty.requireSignUpSwitch,
-                    {
-                      [sty.requireSignUpSwitchpermsCascade_showTeam]:
-                        hasVariant($state, "permsCascade", "showTeam"),
-                      [sty.requireSignUpSwitchpermsCascade_showWorkspace]:
-                        hasVariant($state, "permsCascade", "showWorkspace"),
-                      [sty.requireSignUpSwitchresourceType_team]: hasVariant(
-                        $state,
-                        "resourceType",
-                        "team"
-                      ),
-                      [sty.requireSignUpSwitchshareByLinkAllowed_no]:
-                        hasVariant($state, "shareByLinkAllowed", "no"),
-                      [sty.requireSignUpSwitchstate_noPermToShare]: hasVariant(
-                        $state,
-                        "state",
-                        "noPermToShare"
-                      ),
-                      [sty.requireSignUpSwitchstate_submitting]: hasVariant(
-                        $state,
-                        "state",
-                        "submitting"
-                      ),
-                      [sty.requireSignUpSwitchstate_unlogged]: hasVariant(
-                        $state,
-                        "state",
-                        "unlogged"
-                      ),
-                    }
-                  )}
-                  isChecked={
-                    generateStateValueProp($state, [
-                      "requireSignUpSwitch",
-                      "isChecked",
-                    ]) ?? false
-                  }
-                  isDisabled={
-                    hasVariant($state, "state", "noPermToShare")
-                      ? true
-                      : hasVariant($state, "state", "unlogged")
-                      ? true
-                      : hasVariant($state, "state", "submitting")
-                      ? true
-                      : undefined
-                  }
-                  onChange={(...eventArgs) => {
-                    generateStateOnChangeProp($state, [
-                      "requireSignUpSwitch",
-                      "isChecked",
-                    ])(eventArgs[0]);
-                  }}
-                >
-                  {"Invite existing Plasmic users only"}
-                </Checkbox>
-              </Stack__>
-            ) : null}
           </div>
           {(
             hasVariant($state, "state", "noPermToShare")
@@ -1413,7 +1339,6 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   />
                 </React.Fragment>
               ),
-
               value: args.existingPermItems,
             })}
           </Stack__>
@@ -1435,11 +1360,9 @@ const PlasmicDescendants = {
     "newUserEmail",
     "newUserRoleDropdown",
     "sendInviteButton",
-    "requireSignUpSwitch",
     "loginLink",
     "permsContainer",
   ],
-
   shareByLinkSwitch: ["shareByLinkSwitch"],
   copyLink: ["copyLink"],
   shareByLinkPermDropdown: ["shareByLinkPermDropdown"],
@@ -1450,15 +1373,12 @@ const PlasmicDescendants = {
     "newUserEmail",
     "newUserRoleDropdown",
     "sendInviteButton",
-    "requireSignUpSwitch",
     "loginLink",
     "permsContainer",
   ],
-
   newUserEmail: ["newUserEmail"],
   newUserRoleDropdown: ["newUserRoleDropdown"],
   sendInviteButton: ["sendInviteButton"],
-  requireSignUpSwitch: ["requireSignUpSwitch"],
   loginLink: ["loginLink"],
   permsContainer: ["permsContainer"],
 } as const;
@@ -1476,7 +1396,6 @@ type NodeDefaultElementType = {
   newUserEmail: typeof Textbox;
   newUserRoleDropdown: typeof Select;
   sendInviteButton: typeof Button;
-  requireSignUpSwitch: typeof Checkbox;
   loginLink: "a";
   permsContainer: "div";
 };
@@ -1486,7 +1405,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicShareDialogContent__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -1494,15 +1412,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicShareDialogContent__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicShareDialogContent__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicShareDialogContent__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicShareDialogContent__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -1551,7 +1469,6 @@ export const PlasmicShareDialogContent = Object.assign(
     newUserEmail: makeNodeComponent("newUserEmail"),
     newUserRoleDropdown: makeNodeComponent("newUserRoleDropdown"),
     sendInviteButton: makeNodeComponent("sendInviteButton"),
-    requireSignUpSwitch: makeNodeComponent("requireSignUpSwitch"),
     loginLink: makeNodeComponent("loginLink"),
     permsContainer: makeNodeComponent("permsContainer"),
 
