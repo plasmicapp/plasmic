@@ -345,7 +345,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user1MentionUser0 = await userDbs[1]().postCommentInThread(
           { projectId: project.id },
           {
-            body: `@${users[0].email} should check`,
+            body: `@<${users[0].email}> should check`,
             threadId: user1Comment.commentThreadId,
             id: uuid.v4() as CommentId,
           }
@@ -1513,7 +1513,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user1ReplyToUser0Comment = await userDbs[1]().postCommentInThread(
           { projectId: project.id },
           {
-            body: `@${users[2].email} should check`,
+            body: `@<${users[2].email}> should check`,
             threadId: user0comment.commentThreadId,
             id: uuid.v4() as CommentId,
           }
@@ -1599,7 +1599,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user1ReplyToUser0Comment = await userDbs[1]().postCommentInThread(
           { projectId: project.id },
           {
-            body: `@${users[1].email} should check`,
+            body: `@<${users[1].email}> should check`,
             threadId: user0comment.commentThreadId,
             id: uuid.v4() as CommentId,
           }
@@ -1666,7 +1666,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user1ReplyToUser0Comment = await userDbs[1]().postCommentInThread(
           { projectId: project.id },
           {
-            body: `@${users[2].email} should check`,
+            body: `@<${users[2].email}> should check`,
             threadId: user0comment.commentThreadId,
             id: uuid.v4() as CommentId,
           }
@@ -1752,7 +1752,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user1ReplyToUser0Comment = await userDbs[1]().postCommentInThread(
           { projectId: project.id },
           {
-            body: `${users[2].email} should check`,
+            body: `<${users[2].email}> should check`,
             threadId: user0comment.commentThreadId,
             id: uuid.v4() as CommentId,
           }
@@ -1824,7 +1824,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user2MentionUser1 = await userDbs[2]().postCommentInThread(
           { projectId: project.id },
           {
-            body: `@${users[1].email} should check`,
+            body: `@<${users[1].email}> should check`,
             threadId: user0comment.commentThreadId,
             id: uuid.v4() as CommentId,
           }

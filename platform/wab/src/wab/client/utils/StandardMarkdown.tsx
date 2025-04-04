@@ -1,4 +1,5 @@
 import { UserMentionDisplay } from "@/wab/client/components/user-mentions/UserMentionDisplay";
+import { MENTION_EMAIL_REGEX } from "@/wab/shared/comments-utils";
 import React, { ComponentProps } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -10,10 +11,8 @@ export function StandardMarkdown(props: ComponentProps<typeof ReactMarkdown>) {
       : props.children;
 
   function processUserMentions(content: string) {
-    // Remove the leading @ from the mention @email
-    const mentionRegex = /@(\S+@\S+\.\S+)/gm;
-    return content.replace(mentionRegex, (_match, email) => {
-      return email;
+    return content.replace(MENTION_EMAIL_REGEX, (_match, email) => {
+      return `<mention:${email}>`;
     });
   }
 
@@ -34,12 +33,12 @@ export function StandardMarkdown(props: ComponentProps<typeof ReactMarkdown>) {
             </a>
           );
 
-          const isEmailLink = href?.startsWith("mailto:");
-          if (isEmailLink) {
-            const email = href!.replace("mailto:", "");
+          const hrefProperty =
+            restProps.node.properties?.href?.toString() || "";
+          if (hrefProperty.startsWith("mention:")) {
             return (
               <UserMentionDisplay
-                email={email}
+                email={hrefProperty.slice(8)}
                 defaultEmailDisplay={defaultLinkNode}
               />
             );

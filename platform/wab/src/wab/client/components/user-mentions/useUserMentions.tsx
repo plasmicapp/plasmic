@@ -7,6 +7,7 @@ import { getUniqueUsersFromApiPermissions } from "@/wab/shared/perms";
 import * as React from "react";
 import { useCallback, useState } from "react";
 import { useInteractOutside, useOverlayPosition } from "react-aria";
+import { regex } from "regex";
 
 export function useUserMentions({
   popoverOffset = 0,
@@ -20,20 +21,19 @@ export function useUserMentions({
   inputSelector: string;
 }) {
   const [highlightIndex, setHighlightIndex] = useState(0);
-  const [mentionText, setMentionText] = useState("");
-  const mentionActive = mentionText !== "";
+  const [mentionText, setMentionText] = useState<string | undefined>(undefined);
+  const mentionActive = mentionText !== undefined;
 
   const studioCtx = useStudioCtx();
   const users = getUniqueUsersFromApiPermissions(studioCtx.siteInfo.perms);
 
-  const filterText = mentionText.slice(1); // first character is @
   const filteredUsers = users.filter(
     (user) =>
-      !filterText ||
+      mentionText === undefined ||
       `${user.firstName} ${user.lastName}`
         .toLowerCase()
-        .includes(filterText.toLowerCase()) ||
-      user.email.toLowerCase().includes(filterText.toLowerCase())
+        .includes(mentionText.toLowerCase()) ||
+      user.email.toLowerCase().includes(mentionText.toLowerCase())
   );
 
   const inputElement =
@@ -62,7 +62,7 @@ export function useUserMentions({
         return;
       }
 
-      setMentionText("");
+      setMentionText(undefined);
     },
   });
 
@@ -93,7 +93,7 @@ export function useUserMentions({
       );
 
       onValueChange(newValue);
-      setMentionText("");
+      setMentionText(undefined);
       setInputCaretPosition(newCaretPosition);
     },
     [onValueChange, value, inputElement, setInputCaretPosition]
@@ -122,7 +122,7 @@ export function useUserMentions({
 
   const onInputSelectHandler = useCallback(() => {
     if (!inputElement) {
-      setMentionText("");
+      setMentionText(undefined);
       return;
     }
 
@@ -188,13 +188,24 @@ function getTokenStartIndex(value: string, caretIndex: number) {
 
 function findMentionText(value: string, caretIndex: number) {
   if (caretIndex === 0) {
-    return "";
+    return undefined;
   }
 
   const tokenStart = getTokenStartIndex(value, caretIndex);
   const token = value.slice(tokenStart, caretIndex);
 
-  return token.startsWith("@") ? token : "";
+  const mentionTextRegex = regex("g")`
+    ^
+    (@<|@)
+    (?<mentionText>[^\s>]*)
+    $
+  `;
+  const match = mentionTextRegex.exec(token);
+  if (!match?.groups) {
+    return undefined;
+  }
+
+  return match.groups.mentionText;
 }
 
 function completeMention(
@@ -203,9 +214,10 @@ function completeMention(
   selectedUserEmail: string
 ) {
   const tokenStart = getTokenStartIndex(value, caretIndex);
+
   return typeTextAtCaretPosition(
     value,
-    `@${selectedUserEmail} `,
+    `@<${selectedUserEmail}> `,
     tokenStart,
     caretIndex
   );

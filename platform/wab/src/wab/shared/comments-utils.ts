@@ -1,25 +1,25 @@
 import { ApiComment, UserId } from "@/wab/shared/ApiSchema";
 import { pattern, regex } from "regex";
 
-const pBoundary = pattern`(^ | \s)`; // Start of string or whitespace
-const pEmailLocal = pattern`[\p{L}\p{N}._%+\-]+`; // Unicode letters, numbers, and email-safe symbols
-const pDomainPart = pattern`[\p{L}\p{N}\-]+`; // Domain segment (letters, numbers, hyphens)
-const pDot = pattern`\.`; // Strict dot (no extra whitespace)
+/* https://github.github.com/gfm/#email-address
+ */
+const pEmailLocal = pattern`[a-zA-Z0-9.!#$%&'+*\/=?^_\`\{\|\}~\-]+`; // letters, numbers, and email-safe symbols
+const pDomainPart = pattern`[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?`; // Domain segment (letters, numbers, hyphens)
+const pDot = pattern`\.`;
 
-const mentionEmailPattern = regex("g")`
-  ${pBoundary}              # Preceding boundary (start or whitespace)
-  @                         # Literal @ symbol
+export const MENTION_EMAIL_REGEX = regex("g")`
+  @<                        # Start of mention @<
   (?<email>                 # Named capture group for the email
     ${pEmailLocal}          # Local part before @
     @                       # Separator
     ${pDomainPart}          # First domain segment
-    (?: ${pDot} ${pDomainPart} )+  # One or more additional domain segments
+    (?: ${pDot} ${pDomainPart} )*  # Zero or more additional domain segments
   )
-  (?= [\s .,!?] | $)        # Lookahead for ending boundary
+  >                         # Ends at closing angle bracket >
 `;
 
 export function extractMentionedEmails(body: string) {
-  return [...body.matchAll(mentionEmailPattern)].map(
+  return [...body.matchAll(MENTION_EMAIL_REGEX)].map(
     ([_whole, email]) => email
   );
 }
